@@ -18,70 +18,42 @@ package eu.esdihumboldt.hale.common.core.io.project.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.eclipse.core.runtime.FileLocator;
+
 import com.google.common.io.Files;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
-import eu.esdihumboldt.hale.common.core.io.impl.AbstractExportProvider;
-import eu.esdihumboldt.hale.common.core.io.project.ProjectWriter;
-import eu.esdihumboldt.hale.common.core.io.project.model.Project;
-import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
+import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
+import eu.esdihumboldt.hale.common.core.io.project.util.XMLSchemaUpdater;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 
 /**
- * Provides support for saving projects as zip
+ * Save projects (including all related resources) as an archive (zip)
  * 
  * @author Patrick Lieb
  */
-public class ArchiveProjectWriter extends AbstractExportProvider implements ProjectWriter {
+public class ArchiveProjectWriter extends AbstractProjectWriter {
 
-	private Project project;
+	private static final ALogger log = ALoggerFactory.getLogger(ArchiveProjectWriter.class);
 
-	private Map<String, ProjectFile> projectFiles;
-
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.IOProvider#isCancelable()
-	 */
-	@Override
-	public boolean isCancelable() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.project.ProjectWriter#setProjectFiles(java.util.Map)
-	 */
-	@Override
-	public void setProjectFiles(Map<String, ProjectFile> projectFiles) {
-		this.projectFiles = projectFiles;
-
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.project.ProjectWriter#setProject(eu.esdihumboldt.hale.common.core.io.project.model.Project)
-	 */
-	@Override
-	public void setProject(Project project) {
-		this.project = project;
-
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.project.ProjectWriter#getProject()
-	 */
-	@Override
-	public Project getProject() {
-		return project;
-	}
+	private static final String XSD_CONTENT_TYPE = "eu.esdihumboldt.hale.io.xsd";
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#execute(eu.esdihumboldt.hale.common.core.io.ProgressIndicator,
@@ -90,25 +62,37 @@ public class ArchiveProjectWriter extends AbstractExportProvider implements Proj
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
+		// all files related to the project are copied into a temporary
+		// directory first and the packed into a zip file
 
-		XMLProjectWriter writer = new XMLProjectWriter();
-
+		// create temporary directory and project file
 		File tempDir = Files.createTempDir();
-
 		File baseFile = new File(tempDir, "project.halex");
-		LocatableOutputSupplier<FileOutputStream> out = new FileIOSupplier(baseFile);
 
+		LocatableOutputSupplier<OutputStream> out = new FileIOSupplier(baseFile);
+		ZipOutputStream zip = new ZipOutputStream(getTarget().getOutput());
+
+		// copy resources to the temp directory and update xml schemas
+		updateResources(tempDir);
+
+		// update target save configuration of the project
+		IOConfiguration config = getProject().getSaveConfiguration();
+		config.getProviderConfiguration().remove(PARAM_TARGET);
+		config.getProviderConfiguration().put(PARAM_TARGET, baseFile.toURI().toString());
+		getProject().setSaveConfiguration(config);
+
+		// write project file via XMLProjectWriter
+		XMLProjectWriter writer = new XMLProjectWriter();
 		writer.setTarget(out);
-		writer.setProject(project);
-		writer.setProjectFiles(projectFiles);
+		writer.setProject(getProject());
+		writer.setProjectFiles(getProjectFiles());
 		IOReport report = writer.execute(progress, reporter);
 
-		setProject(writer.getProject());
-		ZipOutputStream zip = new ZipOutputStream(getTarget().getOutput());
-		zipDirectory(tempDir, zip);
-
+		// put the complete temp directory into a zip file
+		zipDirectory(tempDir, zip, "");
 		zip.close();
 
+		// delete the temp directory
 		deleteDirectory(tempDir);
 
 		return report;
@@ -119,13 +103,81 @@ public class ArchiveProjectWriter extends AbstractExportProvider implements Proj
 	 */
 	@Override
 	protected String getDefaultTypeName() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
-	private void zipDirectory(File zipDir, ZipOutputStream zos) {
+	// update the resources and copy them into target directory
+	private void updateResources(File targetDirectory) throws IOException {
 
-		//
+		List<IOConfiguration> resources = getProject().getResources();
+		// every resource needs his own directory
+		int count = 1;
+		for (IOConfiguration resource : resources) {
+			Map<String, String> providerConfig = resource.getProviderConfiguration();
+			Map<String, String> newProvConf = new HashMap<String, String>();
+			URI path;
+			try {
+				path = new URI(providerConfig.get(ImportProvider.PARAM_SOURCE));
+			} catch (URISyntaxException e1) {
+				log.debug("Path of resource is invalid", e1);
+				continue;
+			}
+			String scheme = path.getScheme();
+			// if scheme is null it has to be a local file represented by a
+			// relative path
+			if (scheme != null) {
+				if (scheme.equals("bundleentry")) {
+					try {
+						// get absolute path of the bundleentry file
+						path = FileLocator.toFileURL(path.toURL()).toURI();
+					} catch (URISyntaxException e) {
+						log.debug("Bundleentry is invalid", e);
+						continue;
+					}
+				}
+				else if (!scheme.equals("file")) {
+					// URI represents no local file and can not be updated
+					continue;
+				}
+			}
+
+			// only xml schemas have to be updated
+			String contentType = providerConfig.get(ImportProvider.PARAM_CONTENT_TYPE);
+			if (contentType.equals(XSD_CONTENT_TYPE)) {
+				File file = new File(path);
+
+				// every resource file is copied into an own resource directory
+				// in the target directory
+				File newDirectory = new File(targetDirectory, "resource" + count);
+				try {
+					newDirectory.mkdir();
+				} catch (SecurityException e) {
+					throw new IOException("Can not create directory " + newDirectory.toString(), e);
+				}
+				File newFile = new File(newDirectory, file.getName());
+				Files.copy(file, newFile);
+
+				// the XMLSchemaUpdater manipulates the current schema and
+				// copies the included and imported schemas to the directory
+				XMLSchemaUpdater.update(newFile, file);
+				newProvConf.put(ImportProvider.PARAM_SOURCE, new File(new File(targetDirectory,
+						"resource" + count), file.getName()).toURI().toString());
+				count++;
+			}
+
+			// update provider configuration
+			for (String key : newProvConf.keySet()) {
+				resource.getProviderConfiguration().remove(key);
+				resource.getProviderConfiguration().put(key, newProvConf.get(key));
+			}
+
+		}
+	}
+
+	// zip all files (with subdirectories) to the ZipOutputStream
+	private void zipDirectory(File zipDir, ZipOutputStream zos, String parentFolder)
+			throws IOException {
+
 		String[] dirList = zipDir.list();
 		byte[] readBuffer = new byte[2156];
 		int bytesIn = 0;
@@ -133,27 +185,30 @@ public class ArchiveProjectWriter extends AbstractExportProvider implements Proj
 		for (int i = 0; i < dirList.length; i++) {
 
 			File f = new File(zipDir, dirList[i]);
-			// only if there is a directory in zipDir
-			// if (f.isDirectory()) {
-			// zipDirectory(f, zos);
-			// continue;
-			// }
-			try {
-				FileInputStream fis = new FileInputStream(f);
-				ZipEntry anEntry = new ZipEntry(f.getName());
-				zos.putNextEntry(anEntry);
-
-				while ((bytesIn = fis.read(readBuffer)) != -1) {
-					zos.write(readBuffer, 0, bytesIn);
-				}
-				fis.close();
-			} catch (IOException e) {
-				// handle exception
+			if (f.isDirectory()) {
+				if (parentFolder.isEmpty())
+					zipDirectory(f, zos, f.getName());
+				else
+					zipDirectory(f, zos, parentFolder + "/" + f.getName());
+				continue;
 			}
+			FileInputStream fis = new FileInputStream(f);
+			ZipEntry anEntry;
+			if (parentFolder.isEmpty())
+				anEntry = new ZipEntry(f.getName());
+			else
+				anEntry = new ZipEntry(parentFolder + "/" + f.getName());
+			zos.putNextEntry(anEntry);
+
+			while ((bytesIn = fis.read(readBuffer)) != -1) {
+				zos.write(readBuffer, 0, bytesIn);
+			}
+			fis.close();
 		}
 	}
 
-	private boolean deleteDirectory(File directory) {
+	// delete the complete directory
+	private void deleteDirectory(File directory) {
 		if (directory.exists()) {
 			File[] fileList = directory.listFiles();
 			for (int i = 0; i < fileList.length; i++) {
@@ -161,11 +216,14 @@ public class ArchiveProjectWriter extends AbstractExportProvider implements Proj
 					deleteDirectory(fileList[i]);
 				}
 				else {
-					fileList[i].delete();
+					try {
+						fileList[i].delete();
+					} catch (SecurityException e) {
+						log.debug("Can not delete directories because of SecurityManager", e);
+					}
+
 				}
 			}
 		}
-		return (directory.delete());
 	}
-
 }

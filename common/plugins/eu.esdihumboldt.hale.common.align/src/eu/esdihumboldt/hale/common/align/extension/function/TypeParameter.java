@@ -74,7 +74,7 @@ public final class TypeParameter extends AbstractParameter {
 	}
 
 	/**
-	 * Get the property conditions
+	 * Get the property conditions. All conditions have to match.
 	 * 
 	 * @return the property conditions
 	 */

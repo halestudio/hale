@@ -28,7 +28,7 @@ import org.eclipse.ui.services.IDisposable;
  * 
  * @author Simon Templer
  */
-public abstract class SelectionFilter extends AbstactSelectionProvider implements IDisposable {
+public abstract class SelectionFilter extends AbstractSelectionProvider implements IDisposable {
 
 	private final ISelectionProvider selectionProvider;
 	private ISelectionChangedListener listener;
@@ -61,7 +61,7 @@ public abstract class SelectionFilter extends AbstactSelectionProvider implement
 	protected abstract ISelection filter(ISelection selection);
 
 	/**
-	 * @see AbstactSelectionProvider#getSelection()
+	 * @see AbstractSelectionProvider#getSelection()
 	 */
 	@Override
 	public ISelection getSelection() {

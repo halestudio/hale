@@ -16,12 +16,14 @@
 package eu.esdihumboldt.hale.io.html;
 
 import java.awt.Dimension;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -264,7 +266,7 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements Proj
 
 				file_template = new File(tempDir, "template.vm");
 				URL templatePath = this.getClass().getResource("template.html");
-				FileOutputStream fos = new FileOutputStream(file_template);
+				OutputStream fos = new BufferedOutputStream(new FileOutputStream(file_template));
 				InputStream stream = templatePath.openStream();
 
 				// copys the InputStream into FileOutputStream
@@ -366,7 +368,7 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements Proj
 				off_graph.resize(width, height);
 
 				try {
-					off_graph.saveImage(new FileOutputStream(file), null);
+					off_graph.saveImage(new BufferedOutputStream(new FileOutputStream(file)), null);
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				} catch (IOException e) {

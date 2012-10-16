@@ -25,6 +25,7 @@ import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.views.properties.PropertySheet;
@@ -46,10 +47,20 @@ public class OpenPropertiesHandler extends AbstractHandler {
 	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
+		unpinAndOpenPropertiesView(HandlerUtil.getActiveWorkbenchWindow(event));
+		return null;
+	}
+
+	/**
+	 * Unpin and open the porperties view.
+	 * 
+	 * @param activeWindow the active workbench window
+	 */
+	public static void unpinAndOpenPropertiesView(IWorkbenchWindow activeWindow) {
 		try {
 			// unpin the property sheet if possible
-			IViewReference ref = HandlerUtil.getActiveWorkbenchWindow(event).getActivePage()
-					.findViewReference(IPageLayout.ID_PROP_SHEET);
+			IViewReference ref = activeWindow.getActivePage().findViewReference(
+					IPageLayout.ID_PROP_SHEET);
 			if (ref != null) {
 				IViewPart part = ref.getView(false);
 				if (part instanceof PropertySheet) {
@@ -57,7 +68,7 @@ public class OpenPropertiesHandler extends AbstractHandler {
 					if (sheet.isPinned()) {
 						sheet.setPinned(false);
 
-						IWorkbenchPart activePart = HandlerUtil.getActivePart(event);
+						IWorkbenchPart activePart = activeWindow.getActivePage().getActivePart();
 
 						/*
 						 * Feign the part has been activated (cause else the
@@ -67,8 +78,7 @@ public class OpenPropertiesHandler extends AbstractHandler {
 						sheet.partActivated(activePart);
 
 						// get the current selection
-						ISelection sel = HandlerUtil.getActivePart(event).getSite()
-								.getSelectionProvider().getSelection();
+						ISelection sel = activePart.getSite().getSelectionProvider().getSelection();
 
 						// Update the properties view with the current selection
 						sheet.selectionChanged(activePart, sel);
@@ -77,12 +87,10 @@ public class OpenPropertiesHandler extends AbstractHandler {
 			}
 
 			// show the view
-			HandlerUtil.getActiveWorkbenchWindow(event).getActivePage()
-					.showView(IPageLayout.ID_PROP_SHEET);
+			activeWindow.getActivePage().showView(IPageLayout.ID_PROP_SHEET);
 		} catch (PartInitException e) {
 			log.error("Error opening properties view", e);
 		}
-		return null;
 	}
 
 }

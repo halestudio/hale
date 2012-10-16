@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Transform external data</title>
+</head>
+<body>
+	<h1>Transform external data</h1>
+	<p>To transform your data you don't need to load all of it into
+		HALE. Usually it's a better practice to only load a representative
+		sample of your data, to help you verify the mapping and quickly get
+		feedback on its transformation. Once you have defined the mapping you
+		have the possibility to transform your data without loading it into
+		the project, but launching a dedicated data transformation job.</p>
+	<p>
+		To <a class="command-link"
+			href='javascript:executeCommand("eu.esdihumboldt.hale.ui.transformation")'><img
+			src="PLUGINS_ROOT/org.eclipse.help/command_link.png"
+			alt="command link">transform external data</a>, select
+		<i>Transformation</i>&#8594;<i>Transform external data...</i> from the main menu.
+		Next you will be prompted to select source data files that you want to use.
+		Click on <i>Add source file</i> to add another file.
+		The instance import wizard will open for you to select the file of your choice.
+		After adding at least one file you can proceed to select the target file as in the
+		transformed data export wizard.
+	</p>
+	<p>
+		If your alignment only contains one-to-one type relations, e.g. <i>Retype</i>,
+		the data will directly be transformed and streamed from the data source to the target file.<br>
+		If you also use for example <i>Merge</i> or <i>Join</i> the source
+		data will first be read into a temporary database for performance
+		reasons.
+	</p>
+
+	<br>
+	<!-- related concepts -->
+
+	<!-- related tasks: load source data, save transformed data -->
+	<div>
+		<br> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelt.png">
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/data/working_source_data.html">Working with a source data set</a><br>
+			For information on the import wizard.
+		</p>
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/data/save_transformation.html">Save the transformation result</a><br>
+			For information on the export wizard.
+		</p>
+	</div>
+</body>
+</html>

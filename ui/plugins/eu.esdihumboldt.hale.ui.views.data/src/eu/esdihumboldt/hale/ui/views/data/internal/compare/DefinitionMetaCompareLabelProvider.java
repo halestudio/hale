@@ -16,12 +16,18 @@
 
 package eu.esdihumboldt.hale.ui.views.data.internal.compare;
 
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.instance.extension.metadata.MetadataInfo;
 import eu.esdihumboldt.hale.common.instance.extension.metadata.MetadataInfoExtension;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.views.data.internal.Messages;
@@ -33,6 +39,43 @@ import eu.esdihumboldt.hale.ui.views.data.internal.Messages;
  * @author Sebastian Reinhardt
  */
 public class DefinitionMetaCompareLabelProvider extends DefinitionLabelProvider {
+
+	private final Map<String, Image> metaimages;
+
+	/**
+	 * Create a label provider that will use short names for
+	 * {@link EntityDefinition}s.
+	 */
+	public DefinitionMetaCompareLabelProvider() {
+		super();
+		metaimages = new HashMap<String, Image>();
+	}
+
+	/**
+	 * Create a label provider for {@link Definition}s and
+	 * {@link EntityDefinition}.
+	 * 
+	 * @param longNames if for {@link EntityDefinition}s long names shall be
+	 *            used
+	 */
+	public DefinitionMetaCompareLabelProvider(boolean longNames) {
+		super(longNames, false);
+		metaimages = new HashMap<String, Image>();
+	}
+
+	/**
+	 * Create a label provider for {@link Definition}s and
+	 * {@link EntityDefinition}.
+	 * 
+	 * @param longNames if for {@link EntityDefinition}s long names shall be
+	 *            used
+	 * @param suppressMandatory if the mandatory overlay for properties shall be
+	 *            suppressed (defaults to <code>false</code>)
+	 */
+	public DefinitionMetaCompareLabelProvider(boolean longNames, boolean suppressMandatory) {
+		super(longNames, suppressMandatory);
+		metaimages = new HashMap<String, Image>();
+	}
 
 	/**
 	 * @see eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider#getText(java.lang.Object)
@@ -63,8 +106,37 @@ public class DefinitionMetaCompareLabelProvider extends DefinitionLabelProvider 
 		if (element instanceof Set<?>) {
 			return CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_META);
 		}
+		if (element instanceof String) {
+			MetadataInfo meta = MetadataInfoExtension.getInstance().get((String) element);
+			if (meta != null) {
+				if (metaimages.containsKey(element)) {
+					return metaimages.get(element);
+				}
+				else {
+					URL icon = meta.getIconURL();
+					if (icon != null) {
+						Image img = ImageDescriptor.createFromURL(icon).createImage();
+						metaimages.put((String) element, img);
+						return img;
+					}
+				}
 
+			}
+		}
 		return super.getImage(element);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider#dispose()
+	 */
+	@Override
+	public void dispose() {
+		for (Image img : metaimages.values()) {
+			img.dispose();
+		}
+		metaimages.clear();
+
+		super.dispose();
 	}
 
 }

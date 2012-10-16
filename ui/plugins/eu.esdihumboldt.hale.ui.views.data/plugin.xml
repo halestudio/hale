@@ -24,10 +24,16 @@
    <extension
          point="eu.esdihumboldt.hale.ui.views.data">
       <instanceView
+            class="eu.esdihumboldt.hale.ui.views.data.internal.compare.PopulatedInstanceTreeViewer"
+            icon="icons/compare2.gif"
+            id="eu.esdihumboldt.hale.ui.views.data.compare"
+            name="Compare (only populated)">
+      </instanceView>
+      <instanceView
             class="eu.esdihumboldt.hale.ui.views.data.internal.compare.DefinitionInstanceTreeViewer"
             icon="icons/compare.gif"
-            id="eu.esdihumboldt.hale.ui.views.data.compare"
-            name="Compare">
+            id="eu.esdihumboldt.hale.ui.views.data.compare.all"
+            name="Compare (full schema)">
       </instanceView>
       <instanceView
             class="eu.esdihumboldt.hale.ui.views.data.internal.explore.InstanceExplorer"

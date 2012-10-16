@@ -22,6 +22,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.xml.sax.SAXParseException;
+
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -64,7 +66,23 @@ public class XmlInstanceValidator extends AbstractInstanceValidator {
 		InputStream in = getSource().getInput();
 		try {
 			Report report = val.validate(in);
-			// TODO use the report information/replace old report definition
+
+			// use the report information to populate reporter
+			for (SAXParseException warning : report.getWarnings()) {
+				reporter.warn(new IOMessageImpl(//
+						warning.getLocalizedMessage(),//
+						warning,//
+						warning.getLineNumber(),//
+						warning.getColumnNumber()));
+			}
+			for (SAXParseException error : report.getErrors()) {
+				reporter.error(new IOMessageImpl(//
+						error.getLocalizedMessage(),//
+						error,//
+						error.getLineNumber(),//
+						error.getColumnNumber()));
+			}
+
 			reporter.setSuccess(report.isValid());
 			return reporter;
 		} finally {

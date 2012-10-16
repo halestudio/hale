@@ -33,6 +33,7 @@ import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.core.report.Message;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -66,7 +67,7 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 
 	private final DefinitionImages images = new DefinitionImages();
 
-	private Map<LinkedList<Object>, Integer> chosenPaths = new HashMap<LinkedList<Object>, Integer>();
+	private final Map<LinkedList<Object>, Integer> chosenPaths = new HashMap<LinkedList<Object>, Integer>();
 
 	/**
 	 * Create an instance label provider for tree based on a
@@ -96,12 +97,15 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 		boolean definition = false; // if a definition is represented
 
 		// First segment is TypeDefinition.
-		if (treePath.getFirstSegment() instanceof TypeDefinition) {
+		if (treePath.getFirstSegment() instanceof EntityDefinition) {
 			definition = true;
 
-			segmentList.add(treePath.getFirstSegment());
+			segmentList.add(((EntityDefinition) treePath.getFirstSegment()).getType());
 			for (int i = 1; value != null && i < treePath.getSegmentCount(); i++) {
 				Object segment = treePath.getSegment(i);
+				if (segment instanceof EntityDefinition) {
+					segment = ((EntityDefinition) segment).getDefinition();
+				}
 				segmentList.add(segment);
 				if (segment instanceof ChildDefinition<?>) {
 					childDef = (ChildDefinition<?>) segment;
@@ -221,8 +225,13 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 	 */
 	public void selectPath(TreePath path, int choice) {
 		LinkedList<Object> segmentList = new LinkedList<Object>();
-		for (int i = 0; i < path.getSegmentCount(); i++)
-			segmentList.add(path.getSegment(i));
+		for (int i = 0; i < path.getSegmentCount(); i++) {
+			Object element = path.getSegment(i);
+			if (element instanceof EntityDefinition) {
+				element = ((EntityDefinition) element).getDefinition();
+			}
+			segmentList.add(element);
+		}
 		if (choice == 1)
 			chosenPaths.remove(segmentList);
 		else
@@ -244,7 +253,7 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 	 */
 	@Override
 	public String getToolTipText(Object element) {
-		if (element instanceof TypeDefinition) {
+		if (element instanceof EntityDefinition) {
 			InstanceValidationReport report = InstanceValidator.validate(instance);
 
 			Collection<InstanceValidationMessage> warnings = report.getWarnings();

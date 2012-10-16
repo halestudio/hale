@@ -135,6 +135,7 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 			LocatableInputSupplier<? extends InputStream> source = new FileIOSupplier(new File(
 					fileName));
 			validator.setSource(source);
+			validator.setContentType(getContentType());
 
 			// XXX configuration pages for validator?
 
@@ -142,19 +143,25 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 
 			// validate and execute provider
 			try {
-				IOReport report = validateAndExecute(validator, defReport);
-				// add report to report server
-				ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(
-						ReportService.class);
-				repService.addReport(report);
-				// show message to user
-				if (report.isSuccess()) {
-					// info message
-					log.userInfo(report.getSummary());
-				}
-				else {
-					// error message
-					log.userError(report.getSummary());
+				// validate configuration
+				validator.validate();
+				IOReport report = execute(validator, defReport);
+
+				if (report != null) {
+					// add report to report server
+					ReportService repService = (ReportService) PlatformUI.getWorkbench()
+							.getService(ReportService.class);
+					repService.addReport(report);
+					// show message to user
+					if (report.isSuccess()) {
+						// info message
+						log.userInfo(report.getSummary());
+					}
+					else {
+						// error message
+						log.userError(report.getSummary()
+								+ "\nPlease see the report for more details.");
+					}
 				}
 			} catch (IOProviderConfigurationException e) {
 				log.userError("The validator could not be executed", e);

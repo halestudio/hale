@@ -7,7 +7,7 @@
       <text>
          HUMBOLDT Alignment Editor (HALE)
 
-Version 2.5.0.M2
+Version 2.5.0.RC1
 
 Build ___build___
 Revision ___revision___
@@ -113,7 +113,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.cst.functions.inspire"/>
       <plugin id="eu.esdihumboldt.cst.functions.numeric"/>
       <plugin id="eu.esdihumboldt.cst.functions.string"/>
-      <plugin id="eu.esdihumboldt.cst.test"/>
+      <plugin id="eu.esdihumboldt.cst.test" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.common.align"/>
       <plugin id="eu.esdihumboldt.hale.common.align.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.cache"/>
@@ -152,6 +152,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.io.jdbc.ui"/>
       <plugin id="eu.esdihumboldt.hale.io.oml"/>
       <plugin id="eu.esdihumboldt.hale.io.oml.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.project.jaxb"/>
       <plugin id="eu.esdihumboldt.hale.io.shp"/>
       <plugin id="eu.esdihumboldt.hale.io.shp.ui"/>
       <plugin id="eu.esdihumboldt.hale.io.xml"/>
@@ -179,6 +180,8 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.ui.geometry"/>
       <plugin id="eu.esdihumboldt.hale.ui.instancevalidation"/>
       <plugin id="eu.esdihumboldt.hale.ui.logback.config" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.ui.schema.presets"/>
+      <plugin id="eu.esdihumboldt.hale.ui.schema.presets.inspire"/>
       <plugin id="eu.esdihumboldt.hale.ui.style"/>
       <plugin id="eu.esdihumboldt.hale.ui.util"/>
       <plugin id="eu.esdihumboldt.hale.ui.util.graph"/>
@@ -196,6 +199,9 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.util.orient.embedded"/>
       <plugin id="eu.esdihumboldt.util.orient.embedded.test"/>
       <plugin id="eu.esdihumboldt.util.resource"/>
+      <plugin id="eu.esdihumboldt.util.resource.schemas.citygml"/>
+      <plugin id="eu.esdihumboldt.util.resource.schemas.inspire"/>
+      <plugin id="eu.esdihumboldt.util.resource.schemas.inspire.annex1"/>
       <plugin id="eu.esdihumboldt.util.resource.schemas.opengis.net"/>
       <plugin id="eu.esdihumboldt.util.resource.schemas.test"/>
       <plugin id="eu.esdihumboldt.util.test" fragment="true"/>
@@ -374,8 +380,12 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.io.xsd" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.ui.cst" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
+      <plugin id="org.springframework.aop" autoStart="true" startLevel="0" />
+      <plugin id="org.springframework.beans" autoStart="true" startLevel="0" />
+      <plugin id="org.springframework.context" autoStart="true" startLevel="0" />
+      <plugin id="org.springframework.core" autoStart="true" startLevel="0" />
       <plugin id="org.springframework.osgi.core" autoStart="true" startLevel="0" />
-      <plugin id="org.springframework.osgi.extender" autoStart="true" startLevel="0" />
+      <plugin id="org.springframework.osgi.extender" autoStart="true" startLevel="5" />
    </configurations>
 
 </product>

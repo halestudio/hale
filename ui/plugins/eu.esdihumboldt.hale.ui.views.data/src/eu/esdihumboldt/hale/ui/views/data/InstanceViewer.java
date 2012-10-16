@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
@@ -35,8 +36,9 @@ public interface InstanceViewer {
 	 * Create the viewer controls.
 	 * 
 	 * @param parent the parent composite
+	 * @param schemaSpace the represented schema space
 	 */
-	public void createControls(Composite parent);
+	public void createControls(Composite parent, SchemaSpaceID schemaSpace);
 
 	/**
 	 * Set the input.

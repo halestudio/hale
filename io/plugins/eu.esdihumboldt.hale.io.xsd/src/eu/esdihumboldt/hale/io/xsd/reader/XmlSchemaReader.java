@@ -155,7 +155,8 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 	/**
 	 * The generated namespace prefixes
 	 */
-	private Identifiers<String> namespaceGeneratedPrefixes = new Identifiers<String>("ns", true, 1);
+	private final Identifiers<String> namespaceGeneratedPrefixes = new Identifiers<String>("ns",
+			true, 1);
 
 	/**
 	 * @see SchemaReader#getSchema()
@@ -474,13 +475,8 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 											// prevent loading the location in
 											// the call to loadSchema
 					loadSchema(location, importedSchema, imports, progress, mainSchema
-							&& imp instanceof XmlSchemaInclude); // is part of
-																	// main
-																	// schema if
-																	// it's a
-																	// main
-																	// schema
-																	// include
+							&& imp instanceof XmlSchemaInclude);
+					// is part of main schema if it's a main schema include
 				}
 				if (imp instanceof XmlSchemaInclude) {
 					includes.add(location);

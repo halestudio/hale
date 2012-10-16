@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -136,7 +137,8 @@ public class DefaultAlignmentIOTest {
 		File alignmentFile = tmp.newFile("alignment.xml");
 		System.out.println(alignmentFile.getAbsolutePath());
 
-		DefaultAlignmentIO.save(align, new FileOutputStream(alignmentFile));
+		DefaultAlignmentIO.save(align,
+				new BufferedOutputStream(new FileOutputStream(alignmentFile)));
 
 		// load alignment
 		// TODO use and check reporter?
@@ -144,10 +146,10 @@ public class DefaultAlignmentIOTest {
 				source, target);
 
 		// compare loaded alignment
-		Collection<? extends MutableCell> cells = align2.getCells();
+		Collection<? extends Cell> cells = align2.getCells();
 		assertFalse(cells.isEmpty());
 
-		Iterator<? extends MutableCell> it = cells.iterator();
+		Iterator<? extends Cell> it = cells.iterator();
 
 		// cell 1
 		Cell ncell1 = it.next();

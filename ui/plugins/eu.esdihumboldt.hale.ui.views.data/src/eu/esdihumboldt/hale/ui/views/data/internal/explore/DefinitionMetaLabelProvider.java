@@ -16,6 +16,11 @@
 
 package eu.esdihumboldt.hale.ui.views.data.internal.explore;
 
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
@@ -36,6 +41,8 @@ import eu.esdihumboldt.hale.ui.views.data.internal.Metadata;
  */
 public class DefinitionMetaLabelProvider extends DefinitionLabelProvider {
 
+	private final Map<String, Image> metaimages;
+
 	/**
 	 * Create a label provider for {@link Definition}s and
 	 * {@link EntityDefinition}, which supports Images for Meta Data
@@ -47,6 +54,28 @@ public class DefinitionMetaLabelProvider extends DefinitionLabelProvider {
 	 */
 	public DefinitionMetaLabelProvider(boolean longNames, boolean suppressMandatory) {
 		super(longNames, suppressMandatory);
+		metaimages = new HashMap<String, Image>();
+	}
+
+	/**
+	 * Create a label provider for {@link Definition}s and
+	 * {@link EntityDefinition}.
+	 * 
+	 * @param longNames if for {@link EntityDefinition}s long names shall be
+	 *            used
+	 */
+	public DefinitionMetaLabelProvider(boolean longNames) {
+		super(longNames, false);
+		metaimages = new HashMap<String, Image>();
+	}
+
+	/**
+	 * Create a label provider that will use short names for
+	 * {@link EntityDefinition}s.
+	 */
+	public DefinitionMetaLabelProvider() {
+		super();
+		metaimages = new HashMap<String, Image>();
 	}
 
 	/**
@@ -84,8 +113,38 @@ public class DefinitionMetaLabelProvider extends DefinitionLabelProvider {
 		if (element == Metadata.METADATA) {
 			return CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_META);
 		}
+		if (element instanceof String) {
+			MetadataInfo meta = MetadataInfoExtension.getInstance().get((String) element);
+			if (meta != null) {
+				if (metaimages.containsKey(element)) {
+					return metaimages.get(element);
+				}
+				else {
+					URL icon = meta.getIconURL();
+					if (icon != null) {
+						Image img = ImageDescriptor.createFromURL(icon).createImage();
+						metaimages.put((String) element, img);
+						return img;
+					}
+				}
+
+			}
+		}
 
 		return super.getImage(element);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider#dispose()
+	 */
+	@Override
+	public void dispose() {
+		for (Image img : metaimages.values()) {
+			img.dispose();
+		}
+		metaimages.clear();
+
+		super.dispose();
 	}
 
 }

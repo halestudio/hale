@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -96,6 +97,17 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 	}
 
 	/**
+	 * Get the unmodifiable map of inherited children.
+	 * 
+	 * @return the inherited children, names mapped to definitions
+	 */
+	protected Map<QName, ChildDefinition<?>> getInheritedChildren() {
+		initInheritedChildren();
+
+		return Collections.unmodifiableMap(inheritedChildren);
+	}
+
+	/**
 	 * {@inheritDoc}<br>
 	 * May not be called while creating the model.
 	 * 
@@ -121,28 +133,31 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 	 * May not be called while creating the model.
 	 */
 	private void initInheritedChildren() {
-		if (inheritedChildren == null) {
-			inheritedChildren = new LinkedHashMap<QName, ChildDefinition<?>>();
+		synchronized (this) {
+			if (inheritedChildren == null) {
+				inheritedChildren = new LinkedHashMap<QName, ChildDefinition<?>>();
 
-			// populate inherited attributes
-			DefaultTypeDefinition parent = getSuperType();
-			LinkedList<DefaultTypeDefinition> parents = new LinkedList<DefaultTypeDefinition>();
-			while (parent != null) {
-				parents.add(parent);
+				// populate inherited attributes
+				DefaultTypeDefinition parent = getSuperType();
+				LinkedList<DefaultTypeDefinition> parents = new LinkedList<DefaultTypeDefinition>();
+				while (parent != null) {
+					parents.add(parent);
 
-				parent = parent.getSuperType();
-			}
+					parent = parent.getSuperType();
+				}
 
-			// add children starting from the topmost supertype
-			Iterator<DefaultTypeDefinition> it = parents.descendingIterator();
-			while (it.hasNext()) {
-				parent = it.next();
+				// add children starting from the topmost supertype
+				Iterator<DefaultTypeDefinition> it = parents.descendingIterator();
+				while (it.hasNext()) {
+					parent = it.next();
 
-				for (ChildDefinition<?> parentChild : parent.getDeclaredChildren()) {
-					// create reparented copy
-					ChildDefinition<?> reparent = DefinitionUtil.reparentChild(parentChild, this);
+					for (ChildDefinition<?> parentChild : parent.getDeclaredChildren()) {
+						// create reparented copy
+						ChildDefinition<?> reparent = DefinitionUtil.reparentChild(parentChild,
+								this);
 
-					inheritedChildren.put(reparent.getName(), reparent);
+						inheritedChildren.put(reparent.getName(), reparent);
+					}
 				}
 			}
 		}

@@ -64,6 +64,11 @@
                   description="Property to assign the generated identifier to"
                   maxOccurrence="1"
                   minOccurrence="1">
+               <bindingCondition
+                     allowCollection="false"
+                     allowConversion="true"
+                     compatibleClass="java.lang.String">
+               </bindingCondition>
             </property>
          </targetProperties>
          <functionParameter

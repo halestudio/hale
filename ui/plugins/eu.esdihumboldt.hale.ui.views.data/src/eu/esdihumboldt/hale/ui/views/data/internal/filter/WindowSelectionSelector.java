@@ -35,14 +35,18 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Widget;
+import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
@@ -66,7 +70,7 @@ import eu.esdihumboldt.hale.ui.views.data.AbstractDataView;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class WindowSelectionSelector implements InstanceSelector {
+public class WindowSelectionSelector implements AdvancedInstanceSelector {
 
 	/**
 	 * Instance selector control
@@ -302,6 +306,13 @@ public class WindowSelectionSelector implements InstanceSelector {
 													// loops)
 					&& selection instanceof InstanceSelection) {
 				lastSelection = (InstanceSelection) selection;
+				if (part != null) {
+					selectionImage = part.getTitleImage();
+				}
+				else {
+					selectionImage = null;
+				}
+				updateButton();
 				updateTypeSelection();
 			}
 		}
@@ -311,6 +322,10 @@ public class WindowSelectionSelector implements InstanceSelector {
 	private InstanceSelectorControl current;
 	private final DataSet dataSet;
 	private InstanceSelection lastSelection;
+
+	private Button activator;
+	private Image defaultImage;
+	private Image selectionImage;
 
 	/**
 	 * Constructor
@@ -354,9 +369,91 @@ public class WindowSelectionSelector implements InstanceSelector {
 	 * Show the given selection.
 	 * 
 	 * @param is the selection to show
+	 * @param image an image to show for the selection, may be <code>null</code>
 	 */
-	public void showSelection(InstanceSelection is) {
-		if (current != null && !current.isDisposed())
-			current.selectionChanged(null, is);
+	public void showSelection(InstanceSelection is, final Image image) {
+		if (current != null && !current.isDisposed()) {
+			current.selectionChanged(new IWorkbenchPart() { // dummy part
+
+						@Override
+						public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
+							// dummy
+							return null;
+						}
+
+						@Override
+						public void setFocus() {
+							// dummy
+						}
+
+						@Override
+						public void removePropertyListener(IPropertyListener listener) {
+							// dummy
+						}
+
+						@Override
+						public String getTitleToolTip() {
+							// dummy
+							return null;
+						}
+
+						@Override
+						public Image getTitleImage() {
+							return image;
+						}
+
+						@Override
+						public String getTitle() {
+							// dummy
+							return null;
+						}
+
+						@Override
+						public IWorkbenchPartSite getSite() {
+							// dummy
+							return null;
+						}
+
+						@Override
+						public void dispose() {
+							// dummy
+						}
+
+						@Override
+						public void createPartControl(Composite parent) {
+							// dummy
+						}
+
+						@Override
+						public void addPropertyListener(IPropertyListener listener) {
+							// dummy
+						}
+					}, is);
+		}
+	}
+
+	/**
+	 * @see AdvancedInstanceSelector#setActivator(Button)
+	 */
+	@Override
+	public void setActivator(Button activator) {
+		defaultImage = activator.getImage();
+		this.activator = activator;
+		updateButton();
+	}
+
+	/**
+	 * Update the activator button image.
+	 */
+	private void updateButton() {
+		if (activator != null) {
+			if (selectionImage != null) {
+				activator.setImage(selectionImage);
+			}
+			else {
+				activator.setImage(defaultImage);
+			}
+//			activator.redraw();
+		}
 	}
 }

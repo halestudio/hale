@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.hale.ui.function.contribution;
 
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.ui.PlatformUI;
@@ -25,9 +26,18 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.TypeParameter;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.Property;
+import eu.esdihumboldt.hale.common.align.model.Type;
+import eu.esdihumboldt.hale.common.align.model.condition.EntityCondition;
+import eu.esdihumboldt.hale.common.align.model.condition.PropertyCondition;
+import eu.esdihumboldt.hale.common.align.model.condition.TypeCondition;
+import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
+import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.ui.function.contribution.internal.AbstractWizardAction;
@@ -123,9 +133,107 @@ public class SchemaSelectionFunctionContribution extends AbstractFunctionWizardC
 			return false;
 		}
 
+		// check mandatory source/target with special conditions
+		if (!checkMandatoryConditions(sourceItems, function.getSource())) {
+			return false;
+		}
+		if (!checkMandatoryConditions(targetItems, function.getTarget())) {
+			return false;
+		}
+
 		// TODO other checks?
 
 		return true;
+	}
+
+	/**
+	 * Checks if all entities that are mandatory in the function definition and
+	 * have specific attached conditions can be met by at least one of the given
+	 * schema entities.
+	 * 
+	 * @param schemaEntities the schema entities
+	 * @param functionEntities the entities as defined in the function
+	 * @return if the conditions on mandatory function entities can be met
+	 */
+	protected boolean checkMandatoryConditions(Set<EntityDefinition> schemaEntities,
+			Iterable<? extends AbstractParameter> functionEntities) {
+		for (AbstractParameter functionEntity : functionEntities) {
+			if (functionEntity.getMinOccurrence() != 0) {
+				// entity is mandatory
+
+				if (functionEntity instanceof PropertyParameter) {
+					PropertyParameter pp = (PropertyParameter) functionEntity;
+					if (!pp.getConditions().isEmpty()) {
+						// check if there is an entity given that matches the
+						// conditions
+						if (!checkConditions(pp.getConditions(), schemaEntities)) {
+							// conditions not met
+							return false;
+						}
+					}
+				}
+				else if (functionEntity instanceof TypeParameter) {
+					TypeParameter tp = (TypeParameter) functionEntity;
+					if (!tp.getConditions().isEmpty()) {
+						// check if there is an entity given that matches the
+						// conditions
+						if (!checkConditions(tp.getConditions(), schemaEntities)) {
+							// conditions not met
+							return false;
+						}
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Check if the given conditions can be met by at least on of the given
+	 * schema entities.
+	 * 
+	 * @param conditions the conditions to be met
+	 * @param schemaEntities the schema entities to test
+	 * @return if the conditions are met by one of the entities
+	 */
+	private boolean checkConditions(List<? extends EntityCondition<?>> conditions,
+			Set<EntityDefinition> schemaEntities) {
+		for (EntityDefinition entity : schemaEntities) {
+			boolean entityValid = true;
+			for (EntityCondition<?> condition : conditions) {
+				if (!checkCondition(condition, entity)) {
+					entityValid = false;
+				}
+			}
+			if (entityValid) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if the given condition is met by the given entity.
+	 * 
+	 * @param condition the condition
+	 * @param entity the entity to test
+	 * @return if the entity meets the condition
+	 */
+	private boolean checkCondition(EntityCondition<?> condition, EntityDefinition entity) {
+		if (condition instanceof PropertyCondition) {
+			if (entity instanceof PropertyEntityDefinition) {
+				Property p = new DefaultProperty((PropertyEntityDefinition) entity);
+				return ((PropertyCondition) condition).accept(p);
+			}
+		}
+		else if (condition instanceof TypeCondition) {
+			if (entity instanceof TypeEntityDefinition) {
+				Type t = new DefaultType((TypeEntityDefinition) entity);
+				return ((TypeCondition) condition).accept(t);
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -152,6 +260,14 @@ public class SchemaSelectionFunctionContribution extends AbstractFunctionWizardC
 			return false;
 		}
 		if (!checkCount(targetItems.size(), function.getTarget(), false)) {
+			return false;
+		}
+
+		// check mandatory source/target with special conditions
+		if (!checkMandatoryConditions(sourceItems, function.getSource())) {
+			return false;
+		}
+		if (!checkMandatoryConditions(targetItems, function.getTarget())) {
 			return false;
 		}
 

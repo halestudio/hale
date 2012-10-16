@@ -78,7 +78,7 @@ public class InstanceValidationReportDetailsLabelProvider extends StyledCellLabe
 								contentProvider.getMessageCount(treePath)),
 						StyledString.COUNTER_STYLER);
 			else
-				text.append(MessageFormat.format("({0} of {1} warnings)",
+				text.append(MessageFormat.format("(showing {0} of {1})",
 						InstanceValidationReportDetailsContentProvider.LIMIT,
 						contentProvider.getMessageCount(treePath)), StyledString.COUNTER_STYLER);
 		}

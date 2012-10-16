@@ -35,6 +35,7 @@ import de.cs3d.ui.util.eclipse.extension.exclusive.ExclusiveExtensionContributio
 import de.cs3d.util.eclipse.extension.exclusive.ExclusiveExtension;
 import de.cs3d.util.eclipse.extension.exclusive.ExclusiveExtension.ExclusiveExtensionListener;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.util.selection.SelectionProviderFacade;
 import eu.esdihumboldt.hale.ui.views.data.internal.DataViewPlugin;
@@ -117,17 +118,22 @@ public abstract class AbstractDataView extends PropertiesViewPart implements
 
 	private final InstanceSelector defaultInstanceSelector;
 
+	private final SchemaSpaceID schemaSpace;
+
 	/**
 	 * Creates a table view
 	 * 
 	 * @param instanceSelector the feature selector
+	 * @param schemaSpace the represented schema space
 	 * @param controllerPreferenceKey the preference key for storing the
 	 *            instance view controller configuration
 	 */
-	public AbstractDataView(InstanceSelector instanceSelector, String controllerPreferenceKey) {
+	public AbstractDataView(InstanceSelector instanceSelector, SchemaSpaceID schemaSpace,
+			String controllerPreferenceKey) {
 		super();
 
 		this.defaultInstanceSelector = instanceSelector;
+		this.schemaSpace = schemaSpace;
 		this.controller = new InstanceViewController(DataViewPlugin.getDefault()
 				.getPreferenceStore(), controllerPreferenceKey);
 	}
@@ -241,7 +247,7 @@ public abstract class AbstractDataView extends PropertiesViewPart implements
 		}
 
 		// create new viewer controls
-		viewer.createControls(viewerComposite);
+		viewer.createControls(viewerComposite, schemaSpace);
 
 		viewer.setInput(lastType, lastSelection);
 
@@ -296,6 +302,8 @@ public abstract class AbstractDataView extends PropertiesViewPart implements
 	}
 
 	/**
+	 * Set the current instance selector.
+	 * 
 	 * @param instanceSelector the instance selector to set
 	 */
 	public void setInstanceSelector(InstanceSelector instanceSelector) {
@@ -303,7 +311,6 @@ public abstract class AbstractDataView extends PropertiesViewPart implements
 			return;
 
 		selectionFacade.setSelectionProvider(null); // disable selection
-													// provider
 
 		// remove listener
 		if (this.instanceSelector != null)

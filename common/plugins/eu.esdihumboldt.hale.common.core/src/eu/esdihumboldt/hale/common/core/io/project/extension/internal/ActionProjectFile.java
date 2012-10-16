@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.common.core.io.project.extension.internal;
 
 import static com.google.common.base.Preconditions.checkState;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -101,7 +102,7 @@ public class ActionProjectFile implements ProjectFile {
 
 		// direct the stream to a temporary file
 		File tmpFile = File.createTempFile("project-file", null);
-		OutputStream out = new FileOutputStream(tmpFile);
+		OutputStream out = new BufferedOutputStream(new FileOutputStream(tmpFile));
 		try {
 			IOUtils.copy(in, out);
 			out.flush();

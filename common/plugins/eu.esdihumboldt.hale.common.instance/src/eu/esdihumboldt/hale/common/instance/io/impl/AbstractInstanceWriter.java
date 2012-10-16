@@ -24,6 +24,7 @@ import com.google.common.collect.Iterables;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractExportProvider;
+import eu.esdihumboldt.hale.common.core.io.impl.GZipEnabledExport;
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -36,8 +37,7 @@ import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.5
  */
-public abstract class AbstractInstanceWriter extends AbstractExportProvider implements
-		InstanceWriter {
+public abstract class AbstractInstanceWriter extends GZipEnabledExport implements InstanceWriter {
 
 //	private String commonSRSName;
 
@@ -46,9 +46,9 @@ public abstract class AbstractInstanceWriter extends AbstractExportProvider impl
 	private SchemaSpace targetSchema;
 
 	/**
-	 * @see AbstractExportProvider#validate()
+	 * Additionally checks for instances.
 	 * 
-	 *      Additionally checks for instances
+	 * @see AbstractExportProvider#validate()
 	 */
 	@Override
 	public void validate() throws IOProviderConfigurationException {

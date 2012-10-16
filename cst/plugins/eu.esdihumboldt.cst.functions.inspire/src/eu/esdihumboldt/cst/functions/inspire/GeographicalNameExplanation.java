@@ -17,7 +17,11 @@
 package eu.esdihumboldt.cst.functions.inspire;
 
 import java.text.MessageFormat;
+import java.util.List;
 
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExtension;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -27,40 +31,144 @@ import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
  * Explanation class for the geographical name function
  * 
  * @author Kevin Mais
- * 
  */
 public class GeographicalNameExplanation extends AbstractCellExplanation implements
 		GeographicalNameFunction {
 
-	private static final String EXPLANATION_PATTERN = "This function creates the INSPIRE-compliant geographical name based on value of the {0} property and the parameters set by the page. <br />";
-
 	@Override
 	protected String getExplanation(Cell cell, boolean html) {
-		Entity source = CellUtil.getFirstEntity(cell.getSource());
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 
+		PropertyFunction function = PropertyFunctionExtension.getInstance().get(ID);
+
 		StringBuilder sb = new StringBuilder();
-		sb.append(EXPLANATION_PATTERN);
-		sb.append("<br />");
-		sb.append("The {1} property consists of the <i>grammatical gender/number, language, name status, nativeness, pronunciation ipa/soundlink, source of name</i> and an amount of <i>spellings</i> based on the quantity of the source properties.<br />");
-		sb.append("<br />");
-		sb.append("Each spelling is made of values for <i>script</i>, <i>text</i> and <i>transliterationScheme</i>. The <i>text</i> values are the values from the source properties, e.g. {0}. The <i>script/transliterationScheme</i> can be set manually.");
+		sb.append("The {0} property is populated with an Inspire Geographical Name composed as follows:");
+		addLineBreak(sb, html);
+		addLineBreak(sb, html);
+
+		// unique parameters
+		if (html)
+			sb.append("<ul>");
+		addOptionalParameter(sb, cell, PROPERTY_NAMESTATUS, function, html);
+		addOptionalParameter(sb, cell, PROPERTY_LANGUAGE, function, html);
+		addOptionalParameter(sb, cell, PROPERTY_NATIVENESS, function, html);
+		addOptionalParameter(sb, cell, PROPERTY_SOURCEOFNAME, function, html);
+		addOptionalParameter(sb, cell, PROPERTY_PRONUNCIATIONIPA, function, html);
+		addOptionalParameter(sb, cell, PROPERTY_PRONUNCIATIONSOUNDLINK, function, html);
+		addOptionalParameter(sb, cell, PROPERTY_GRAMMA_GENDER, function, html);
+		addOptionalParameter(sb, cell, PROPERTY_GRAMMA_NUMBER, function, html);
+		if (html)
+			sb.append("</ul>");
+
+		addLineBreak(sb, html);
+
+		// per source parameters
+		List<? extends Entity> sources = cell.getSource().get(null);
+//		PROPERTY_TEXT
+		List<String> scripts = cell.getTransformationParameters().get(PROPERTY_SCRIPT);
+		List<String> transs = cell.getTransformationParameters().get(PROPERTY_TRANSLITERATION);
+
+		if (!sources.isEmpty()) {
+			sb.append("For each source property a spelling is created, the spelling text is the value of the source property.");
+			addLineBreak(sb, html);
+
+			if (html) {
+				sb.append("<table border=\"1\">");
+				sb.append("<tr><th>Source property</th><th>Script</th><th>Transliteration</th></tr>");
+			}
+
+			int index = 0;
+			for (Entity source : sources) {
+				String script = (index < scripts.size()) ? (scripts.get(index)) : (null);
+				String trans = (index < transs.size()) ? (transs.get(index)) : (null);
+
+				if (html) {
+					sb.append("<tr>");
+					sb.append("<td>");
+					sb.append(formatEntity(source, html, false));
+					sb.append("</td>");
+					sb.append("<td>");
+					if (script != null) {
+						sb.append(script);
+					}
+					sb.append("</td>");
+					sb.append("<td>");
+					if (trans != null) {
+						sb.append(trans);
+					}
+					sb.append("</td>");
+					sb.append("</tr>");
+				}
+				else {
+					sb.append("Source: ");
+					sb.append(formatEntity(source, html, false));
+					addLineBreak(sb, html);
+
+					if (script != null && !script.isEmpty()) {
+						sb.append("  Script: ");
+						sb.append(script);
+						addLineBreak(sb, html);
+					}
+
+					if (trans != null && !trans.isEmpty()) {
+						sb.append("  Transliteration: ");
+						sb.append(trans);
+						addLineBreak(sb, html);
+					}
+
+					addLineBreak(sb, html);
+				}
+
+				index++;
+			}
+
+			if (html) {
+				sb.append("</table>");
+			}
+		}
 
 		String result = sb.toString();
 
-		if (html && source != null && target != null) {
-			return MessageFormat.format(result, formatEntity(source, true, true),
-					formatEntity(target, true, true));
+		if (target != null) {
+			result = MessageFormat.format(result, formatEntity(target, html, true));
+		}
+
+		return result;
+	}
+
+	private void addLineBreak(StringBuilder sb, boolean html) {
+		if (html) {
+			sb.append("<br />");
 		}
 		else {
-			result.replaceAll("<br />", "\n");
-			result.replaceAll("<i>", "");
-			result.replaceAll("</i>", "");
-			result.replaceAll("<b>", "");
-			result.replaceAll("</b>", "");
-			return MessageFormat.format(result, formatEntity(source, false, true),
-					formatEntity(target, false, true));
+			sb.append('\n');
 		}
 	}
 
+	private void addOptionalParameter(StringBuilder sb, Cell cell, String paramName,
+			PropertyFunction function, boolean html) {
+		String value = CellUtil.getFirstParameter(cell, paramName);
+		if (value != null && !value.isEmpty()) {
+			FunctionParameter param = function.getParameter(paramName);
+
+			if (html) {
+				sb.append("<li><i>");
+			}
+			else {
+				sb.append("- ");
+			}
+			sb.append(param.getDisplayName());
+			if (html) {
+				sb.append("</i>");
+			}
+			sb.append(": ");
+			sb.append(value);
+			if (html) {
+				sb.append("</li>");
+			}
+			else {
+				sb.append('\n');
+			}
+		}
+	}
 }

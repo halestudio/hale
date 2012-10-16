@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.ui.function.FunctionWizard;
 import eu.esdihumboldt.hale.ui.function.contribution.AbstractFunctionWizardContribution;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardDescriptor;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
+import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 
 /**
  * Action for creating a function wizard
@@ -88,7 +89,8 @@ public abstract class AbstractWizardAction<T extends AbstractFunctionWizardContr
 			// initialize the wizard
 			wizard.init();
 
-			WizardDialog dialog = new WizardDialog(Display.getCurrent().getActiveShell(), wizard);
+			HaleWizardDialog dialog = new HaleWizardDialog(Display.getCurrent().getActiveShell(),
+					wizard);
 
 			if (dialog.open() == WizardDialog.OK) {
 				MutableCell cell = wizard.getResult();

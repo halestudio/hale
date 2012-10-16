@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.ToolBar;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.ui.function.contribution.internal.AbstractWizardAction;
 import eu.esdihumboldt.hale.ui.function.contribution.internal.ReplaceFunctionWizardAction;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardDescriptor;
@@ -120,6 +121,17 @@ public class ReplaceFunctionWizardContribution extends SchemaSelectionFunctionCo
 	protected boolean checkCount(int count, Set<? extends AbstractParameter> entities,
 			boolean isTarget) {
 		// ignore the count
+		return true;
+	}
+
+	/**
+	 * @see SchemaSelectionFunctionContribution#checkMandatoryConditions(Set,
+	 *      Iterable)
+	 */
+	@Override
+	protected boolean checkMandatoryConditions(Set<EntityDefinition> schemaEntities,
+			Iterable<? extends AbstractParameter> functionEntities) {
+		// ignore conditions
 		return true;
 	}
 

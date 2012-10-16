@@ -103,9 +103,12 @@
                   description="The property a value shall be assigned to"
                   maxOccurrence="1"
                   minOccurrence="1">
+               <valueCondition
+                     allowAugmented="false" />
             </property>
          </targetProperties>
          <functionParameter
+               description="The value to be assigned."
                label="Value"
                maxOccurrence="1"
                minOccurrence="1"
@@ -123,6 +126,9 @@
                   description="The source property to be mapped to a property in the target schema"
                   maxOccurrence="1"
                   minOccurrence="1">
+               <valueCondition
+                     allowAugmented="true">
+               </valueCondition>
             </property>
          </sourceProperties>
          <targetProperties>
@@ -130,6 +136,9 @@
                   description="The target property that corresponds to the source property"
                   maxOccurrence="1"
                   minOccurrence="1">
+               <valueCondition
+                     allowAugmented="true">
+               </valueCondition>
             </property>
          </targetProperties>
          <functionParameter
@@ -157,6 +166,11 @@
                   maxOccurrence="n"
                   minOccurrence="0"
                   name="var">
+               <bindingCondition
+                     allowCollection="false"
+                     allowConversion="true"
+                     compatibleClass="java.lang.String">
+               </bindingCondition>
             </property>
          </sourceProperties>
          <targetProperties>
@@ -164,6 +178,11 @@
                   description="The property is populated with the formatted string"
                   maxOccurrence="1"
                   minOccurrence="1">
+               <bindingCondition
+                     allowCollection="false"
+                     allowConversion="true"
+                     compatibleClass="java.lang.String">
+               </bindingCondition>
             </property>
          </targetProperties>
          <functionParameter

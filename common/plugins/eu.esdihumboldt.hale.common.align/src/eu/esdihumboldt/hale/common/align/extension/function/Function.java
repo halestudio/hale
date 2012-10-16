@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.common.align.extension.function;
 
 import java.net.URL;
+import java.util.Collection;
 import java.util.Set;
 
 import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
@@ -55,7 +56,7 @@ public interface Function extends Identifiable {
 	 * 
 	 * @return the defined parameters
 	 */
-	public Set<FunctionParameter> getDefinedParameters();
+	public Collection<FunctionParameter> getDefinedParameters();
 
 	/**
 	 * Get the icon URL

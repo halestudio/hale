@@ -52,6 +52,7 @@ public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionW
 	private Editor<?> editor;
 	private Composite page;
 	private Composite title;
+	private PropertyDefinition target = null;
 
 	/**
 	 * Constructor.
@@ -67,14 +68,23 @@ public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionW
 	@Override
 	protected void onShowPage(boolean firstShow) {
 		super.onShowPage(firstShow);
-		// selected target could've changed!
-		if (title != null) {
-			title.dispose();
+
+		// should never be null here, but better be safe than sorry
+		if (getWizard().getUnfinishedCell().getTarget() != null) {
+			PropertyDefinition propDef = (PropertyDefinition) getWizard().getUnfinishedCell()
+					.getTarget().values().iterator().next().getDefinition().getDefinition();
+			if (!propDef.equals(target)) {
+				// target property definition changed, rebuild editor
+				target = propDef;
+				if (title != null) {
+					title.dispose();
+				}
+				if (editor != null)
+					editor.getControl().dispose();
+				createContent(page);
+				page.layout();
+			}
 		}
-		if (editor != null)
-			editor.getControl().dispose();
-		createContent(page);
-		page.layout();
 	}
 
 	/**

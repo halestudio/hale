@@ -131,6 +131,11 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 	 */
 	@Override
 	public Population getPopulation(EntityDefinition entity) {
+		if (entity.getSchemaSpace() == null) {
+			// can't determine population
+			return UNKNOWN_POPULATION;
+		}
+
 		Population population;
 		synchronized (this) {
 			switch (entity.getSchemaSpace()) {

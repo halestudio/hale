@@ -55,6 +55,7 @@ import eu.esdihumboldt.hale.io.oml.helper.GeographicalNameTranslator;
 import eu.esdihumboldt.hale.io.oml.helper.IdentifierTranslator;
 import eu.esdihumboldt.hale.io.oml.helper.MathematicalExpressionTranslator;
 import eu.esdihumboldt.hale.io.oml.helper.NetworkExpansionTranslator;
+import eu.esdihumboldt.hale.io.oml.helper.NilReasonTranslator;
 import eu.esdihumboldt.hale.io.oml.helper.NotSupportedTranslator;
 import eu.esdihumboldt.hale.io.oml.helper.OrdinatesToPointTranslator;
 import eu.esdihumboldt.hale.io.oml.helper.RenameTranslator;
@@ -83,7 +84,7 @@ import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 @SuppressWarnings("restriction")
 public class OmlReader extends AbstractAlignmentReader implements AlignmentReader {
 
-	private Map<String, FunctionTranslator> map = new HashMap<String, FunctionTranslator>();
+	private final Map<String, FunctionTranslator> map = new HashMap<String, FunctionTranslator>();
 
 	private MutableAlignment mutableAlignment = null;
 
@@ -115,7 +116,7 @@ public class OmlReader extends AbstractAlignmentReader implements AlignmentReade
 		map.put("eu.esdihumboldt.cst.corefunctions.CentroidFunction", new CentroidTranslator());
 		map.put("eu.esdihumboldt.cst.corefunctions.ClipByRectangleFunction",
 				new NotSupportedTranslator());
-		map.put("eu.esdihumboldt.cst.corefunctions.NilReasonFunction", new NotSupportedTranslator());
+		map.put("eu.esdihumboldt.cst.corefunctions.NilReasonFunction", new NilReasonTranslator());
 		map.put("eu.esdihumboldt.cst.corefunctions.inspire.GeographicalNameFunction",
 				new GeographicalNameTranslator());
 		map.put("eu.esdihumboldt.cst.corefunctions.inspire.IdentifierFunction",

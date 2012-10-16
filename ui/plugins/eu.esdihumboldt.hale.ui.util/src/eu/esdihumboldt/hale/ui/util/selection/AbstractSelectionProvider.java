@@ -28,7 +28,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
  * 
  * @author Simon Templer
  */
-public class AbstactSelectionProvider implements ISelectionProvider {
+public class AbstractSelectionProvider implements ISelectionProvider {
 
 	private ISelection lastSelection;
 

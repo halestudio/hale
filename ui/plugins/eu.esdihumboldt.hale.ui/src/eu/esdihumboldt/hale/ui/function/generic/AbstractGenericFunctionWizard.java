@@ -22,8 +22,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.swt.graphics.Image;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -48,6 +50,7 @@ import eu.esdihumboldt.hale.ui.function.generic.pages.FunctionWizardPage;
 import eu.esdihumboldt.hale.ui.function.generic.pages.GenericParameterPage;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
+import eu.esdihumboldt.hale.ui.util.wizard.TitleImageWizard;
 
 /**
  * Generic function wizard
@@ -57,7 +60,7 @@ import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
  * @author Simon Templer
  */
 public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter, T extends AbstractFunction<P>>
-		extends AbstractFunctionWizard {
+		extends AbstractFunctionWizard implements TitleImageWizard {
 
 	private static final ALogger log = ALoggerFactory
 			.getLogger(AbstractGenericFunctionWizard.class);
@@ -68,6 +71,8 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 	private EntitiesPage<T, P, ?> entitiesPage;
 
 	private List<ParameterPage> parameterPages;
+
+	private Image functionImage;
 
 	/**
 	 * Create a generic function wizard for a certain function based on a schema
@@ -286,4 +291,34 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 		}
 		return current;
 	}
+
+	/**
+	 * @see TitleImageWizard#getTitleImage()
+	 */
+	@Override
+	public Image getTitleImage() {
+		if (functionImage == null) {
+			try {
+				functionImage = ImageDescriptor.createFromURL(getFunction().getIconURL())
+						.createImage();
+			} catch (Exception e) {
+				// ignore
+			}
+		}
+
+		return functionImage;
+	}
+
+	/**
+	 * @see Wizard#dispose()
+	 */
+	@Override
+	public void dispose() {
+		if (functionImage != null) {
+			functionImage.dispose();
+		}
+
+		super.dispose();
+	}
+
 }
