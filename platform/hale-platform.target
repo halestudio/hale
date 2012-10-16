@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.6"?>
-
-<target name="eu.esdihumboldt.hale.platform" sequenceNumber="24">
+<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="27">
 <locations>
 <location path="${project_loc:hale-platform}/target/org.jdesktop.swingx" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.aopalliance" type="Directory"/>
@@ -20,7 +18,7 @@
 <location path="${project_loc:hale-platform}/target/org.springframework.osgi" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/javax.mail" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/javax.activation" type="Directory"/>
-<location includeAllPlatforms="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.sdk.ide" version="3.7.1.M20110909-1335"/>
 <repository location="http://www.cityserver3d.de/updates/eclipse/updates/3.7"/>
 </location>
@@ -67,7 +65,7 @@
 <location path="${project_loc:hale-platform}/target/org.springframework.osgi" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.eclipse.xsd" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/eu.esdihumboldt.util.resource" type="Directory"/>
-<location includeAllPlatforms="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.emf.sdk.feature.group" version="2.7.1.v20110913-1526"/>
 <unit id="org.eclipse.gef.sdk.feature.group" version="3.7.1.v20110830-1143-7G7W2A5WNgEQNgNXBJgcPLWZeMNI"/>
 <unit id="org.eclipse.gmf.runtime.sdk.feature.group" version="1.5.0.v20110607-1200-67N09E9QnChoWswz-3wf_rz0kQ8Y"/>
@@ -76,5 +74,12 @@
 <unit id="org.eclipse.xtext.sdk.feature.group" version="2.0.1.v201108020636"/>
 <repository location="http://www.cityserver3d.de/updates/releases/indigo"/>
 </location>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="com.google.guava.runtime.feature.feature.group" version="11.0.1"/>
+<unit id="com.google.guava.sdk.feature.feature.group" version="11.0.1"/>
+<repository location="http://www.cityserver3d.de/updates2/3d021ec249c463f4af0979c664f63f37ca57d90c/guava-osgi"/>
+</location>
+<location path="${project_loc:hale-platform}/target/org.eclipse.jetty" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.eclipse.gemini" type="Directory"/>
 </locations>
 </target>
