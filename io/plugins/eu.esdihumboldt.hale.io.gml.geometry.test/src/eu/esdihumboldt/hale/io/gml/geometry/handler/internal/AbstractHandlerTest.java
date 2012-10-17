@@ -68,16 +68,12 @@ public abstract class AbstractHandlerTest {
 	@BeforeClass
 	public static void initAll() {
 		List<String> bundlesToStart = new ArrayList<String>();
-		bundlesToStart.add("org.springframework.osgi.core"); // for osgi
-																// extensions in
-																// application
-																// context
-		bundlesToStart.add("org.springframework.osgi.extender"); // activate the
-																	// extender
-		bundlesToStart.add("eu.esdihumboldt.hale.common.convert"); // activate
-																	// the
-																	// conversion
-																	// service
+		// for osgi extensions in application context
+		bundlesToStart.add("org.eclipse.gemini.blueprint.core");
+		// activate the extender
+		bundlesToStart.add("org.eclipse.gemini.blueprint.extender");
+		// activate the conversion service
+		bundlesToStart.add("eu.esdihumboldt.hale.common.convert");
 
 		Map<String, Bundle> bundles = new HashMap<String, Bundle>();
 		BundleContext context = OsgiUtilsActivator.getInstance().getContext();
