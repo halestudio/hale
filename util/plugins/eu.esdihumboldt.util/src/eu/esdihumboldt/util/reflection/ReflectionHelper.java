@@ -36,22 +36,10 @@ import java.util.jar.JarFile;
 import java.util.zip.ZipException;
 
 /**
- * <p>
- * Title: ReflectionHelper
- * </p>
- * <p>
- * Description: Provides several utility methods which use Java Reflections to
- * access hidden types, fields and methods.
- * </p>
- * <p>
- * Copyright: Copyright (c) 2004-2008
- * </p>
- * <p>
- * Company: Fraunhofer IGD
- * </p>
+ * Provides several utility methods which use Java Reflections to access hidden
+ * types, fields and methods.
  * 
  * @author Michel Kraemer
- * @version $Id: ReflectionHelper.java 6090 2009-12-11 09:50:36Z mkraemer $
  */
 public class ReflectionHelper {
 
@@ -429,6 +417,46 @@ public class ReflectionHelper {
 		}
 
 		return ReflectionHelper.<T> invokeGetter(bean, getter);
+	}
+
+	/**
+	 * Invokes a getter for a property, or gets the matching field, no matter
+	 * what.
+	 * 
+	 * @param bean the object to invoke the getter on
+	 * @param propertyName the name of the property to retrieve
+	 * @param valueClass the class of the property or field
+	 * @return the property's value
+	 * @throws IllegalArgumentException if the argument's type is invalid
+	 * @throws InvocationTargetException if the getter throws an exception
+	 * @throws IllegalStateException is the field could be found or accessed
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T getDeepPropertyOrField(Object bean, String propertyName, Class<T> valueClass)
+			throws IllegalArgumentException, InvocationTargetException {
+		try {
+			return ReflectionHelper.getDeepProperty(bean, propertyName);
+		} catch (NoSuchMethodException e) {/* ignore */
+		} catch (IllegalAccessException e) {/* ignore */
+		}
+
+		// there is no getter for the property. try to get the field directly
+		Field f = findDeepField(bean.getClass(), propertyName, valueClass);
+		if (f == null) {
+			throw new IllegalStateException("Could not find " + "field for property "
+					+ propertyName + " in class " + bean.getClass().getCanonicalName());
+		}
+
+		boolean access = f.isAccessible();
+		f.setAccessible(true);
+		try {
+			return (T) f.get(bean);
+		} catch (Exception e) {
+			throw new IllegalStateException("Could not get " + "field for property " + propertyName
+					+ "in class " + bean.getClass().getCanonicalName(), e);
+		} finally {
+			f.setAccessible(access);
+		}
 	}
 
 	/**
