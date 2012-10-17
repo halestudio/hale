@@ -50,6 +50,20 @@ public class PropertiesFile extends Properties {
 	 * @throws IOException if creating or loading the file fails
 	 */
 	public PropertiesFile(File file) throws IOException {
+		this(file, null);
+	}
+
+	/**
+	 * Create or load the given properties file.
+	 * 
+	 * @param file the properties file
+	 * @param defaults the default properties
+	 * 
+	 * @throws IOException if creating or loading the file fails
+	 */
+	public PropertiesFile(File file, Properties defaults) throws IOException {
+		super(defaults);
+
 		this.file = file;
 
 		if (!file.exists()) {
