@@ -23,7 +23,7 @@
 	<context-param>
 		<param-name>contextClass</param-name>
 		<param-value>
-			org.springframework.web.context.support.XmlWebApplicationContext
+			eu.esdihumboldt.hale.server.security.extender.SecuredBundleXmlWebApplicationContext
 		</param-value>
 	</context-param>
 
