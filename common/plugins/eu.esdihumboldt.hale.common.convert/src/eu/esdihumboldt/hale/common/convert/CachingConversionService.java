@@ -22,19 +22,19 @@ import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
 import org.springframework.core.convert.converter.GenericConverter;
-import org.springframework.core.convert.support.GenericConversionService;
+import org.springframework.core.convert.support.DefaultConversionService;
 
 /**
  * Conversion service that caches converters retrieved for type descriptors.
  * 
  * @author Simon Templer
  */
-public class CachingConversionService extends GenericConversionService {
+public class CachingConversionService extends DefaultConversionService {
 
 	/**
 	 * Target type mapped to source type mapped to converter
 	 */
-	private final Map<TypeDescriptor, Map<TypeDescriptor, GenericConverter>> converters = new HashMap<TypeDescriptor, Map<TypeDescriptor, GenericConverter>>();
+	private Map<TypeDescriptor, Map<TypeDescriptor, GenericConverter>> converters;
 
 	@Override
 	public void addConverter(GenericConverter converter) {
@@ -61,14 +61,19 @@ public class CachingConversionService extends GenericConversionService {
 	}
 
 	private void reset() {
-		synchronized (converters) {
-			converters.clear();
+		// may be called from super type constructor!
+		synchronized (this) {
+			converters = null;
 		}
 	}
 
 	@Override
 	protected GenericConverter getConverter(TypeDescriptor sourceType, TypeDescriptor targetType) {
-		synchronized (converters) {
+		synchronized (this) {
+			if (converters == null) {
+				converters = new HashMap<TypeDescriptor, Map<TypeDescriptor, GenericConverter>>();
+			}
+
 			Map<TypeDescriptor, GenericConverter> targetConverters = converters.get(targetType);
 
 			if (targetConverters == null) {
@@ -88,5 +93,4 @@ public class CachingConversionService extends GenericConversionService {
 			return sourceConverter;
 		}
 	}
-
 }
