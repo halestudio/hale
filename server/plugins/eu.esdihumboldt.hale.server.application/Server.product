@@ -29,22 +29,39 @@
       <plugin id="ch.qos.logback.classic"/>
       <plugin id="ch.qos.logback.core"/>
       <plugin id="ch.qos.logback.slf4j" fragment="true"/>
+      <plugin id="com.google.guava"/>
       <plugin id="com.springsource.javax.el"/>
       <plugin id="com.springsource.javax.servlet.jsp"/>
       <plugin id="com.springsource.org.aopalliance"/>
+      <plugin id="com.springsource.org.apache.xmlbeans"/>
+      <plugin id="de.cs3d.util.eclipse"/>
       <plugin id="de.cs3d.util.logging"/>
       <plugin id="de.cs3d.util.logging.logback"/>
       <plugin id="de.cs3d.util.logging.logback.appender" fragment="true"/>
+      <plugin id="de.fhg.igd.concurrency"/>
+      <plugin id="de.fhg.igd.osgi.util"/>
+      <plugin id="edu.umd.cs.findbugs.annotations"/>
       <plugin id="eu.esdihumboldt.hale.platform.extension" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.server.application"/>
       <plugin id="eu.esdihumboldt.hale.server.logback.config" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.server.security.extender"/>
       <plugin id="eu.esdihumboldt.hale.server.war"/>
       <plugin id="eu.esdihumboldt.hale.server.webapp"/>
       <plugin id="eu.esdihumboldt.hale.server.webapp.war"/>
+      <plugin id="eu.esdihumboldt.util"/>
+      <plugin id="eu.esdihumboldt.util.resource"/>
+      <plugin id="eu.esdihumboldt.util.resource.schemas.citygml"/>
+      <plugin id="eu.esdihumboldt.util.resource.schemas.inspire"/>
+      <plugin id="eu.esdihumboldt.util.resource.schemas.inspire.annex1"/>
+      <plugin id="eu.esdihumboldt.util.resource.schemas.opengis.net"/>
+      <plugin id="eu.esdihumboldt.util.resource.schemas.test"/>
       <plugin id="javax.servlet"/>
       <plugin id="jcl.over.slf4j"/>
       <plugin id="jul.to.slf4j"/>
       <plugin id="log4j.over.slf4j"/>
+      <plugin id="org.apache.commons.lang"/>
+      <plugin id="org.apache.httpcomponents.httpclient"/>
+      <plugin id="org.apache.httpcomponents.httpcore"/>
       <plugin id="org.apache.wicket.wicket"/>
       <plugin id="org.apache.wicket.wicket-ioc"/>
       <plugin id="org.apache.wicket.wicket-spring"/>
@@ -56,6 +73,7 @@
       <plugin id="org.eclipse.equinox.common"/>
       <plugin id="org.eclipse.equinox.preferences"/>
       <plugin id="org.eclipse.equinox.registry"/>
+      <plugin id="org.eclipse.equinox.security"/>
       <plugin id="org.eclipse.gemini.blueprint.core"/>
       <plugin id="org.eclipse.gemini.blueprint.extender"/>
       <plugin id="org.eclipse.gemini.blueprint.io"/>
@@ -81,6 +99,9 @@
       <plugin id="org.springframework.core"/>
       <plugin id="org.springframework.expression"/>
       <plugin id="org.springframework.osgi.web.mini"/>
+      <plugin id="org.springframework.security.config"/>
+      <plugin id="org.springframework.security.core"/>
+      <plugin id="org.springframework.security.web"/>
       <plugin id="org.springframework.web"/>
       <plugin id="org.springframework.web.servlet"/>
       <plugin id="slf4j.ext"/>
@@ -97,6 +118,7 @@
       <plugin id="org.springframework.beans" autoStart="true" startLevel="0" />
       <plugin id="org.springframework.context" autoStart="true" startLevel="0" />
       <plugin id="org.springframework.core" autoStart="true" startLevel="0" />
+      <plugin id="org.springframework.security.config" autoStart="true" startLevel="2" />
       <plugin id="org.springframework.web" autoStart="true" startLevel="0" />
    </configurations>
 
