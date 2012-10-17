@@ -104,8 +104,6 @@
       <plugin id="org.springframework.beans"/>
       <plugin id="org.springframework.context"/>
       <plugin id="org.springframework.core"/>
-      <plugin id="org.springframework.osgi.core"/>
-      <plugin id="org.springframework.osgi.io"/>
       <plugin id="org.springframework.transaction"/>
       <plugin id="slf4j.ext"/>
    </plugins>

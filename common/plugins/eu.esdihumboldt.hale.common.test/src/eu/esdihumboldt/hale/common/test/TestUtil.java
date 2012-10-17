@@ -151,9 +151,9 @@ public class TestUtil {
 	public static void startConversionService() {
 		List<String> bundlesToStart = new ArrayList<String>();
 		// for osgi extensions in application context
-		bundlesToStart.add("org.springframework.osgi.core");
+		bundlesToStart.add("org.eclipse.gemini.blueprint.core");
 		// activate the extender
-		bundlesToStart.add("org.springframework.osgi.extender");
+		bundlesToStart.add("org.eclipse.gemini.blueprint.extender");
 		// activate the conversion service
 		bundlesToStart.add("eu.esdihumboldt.hale.common.convert");
 
