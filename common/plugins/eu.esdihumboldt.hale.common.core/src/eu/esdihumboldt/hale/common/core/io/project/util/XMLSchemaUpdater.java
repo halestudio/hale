@@ -17,7 +17,11 @@
 package eu.esdihumboldt.hale.common.core.io.project.util;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -47,11 +51,12 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.google.common.io.Files;
+import com.google.common.io.ByteStreams;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectWriter;
+import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 
 /**
  * Class for updating XML schemas in the {@link ArchiveProjectWriter}.<br>
@@ -65,7 +70,7 @@ public class XMLSchemaUpdater {
 
 	private static final ALogger log = ALoggerFactory.getLogger(XMLSchemaUpdater.class);
 
-	private static final Map<File, File> imports = new HashMap<File, File>();
+	private static final Map<URI, File> imports = new HashMap<URI, File>();
 
 	private final static String IMPORT = "schema/import";
 	private final static String INCLUDE = "schema/include";
@@ -92,20 +97,21 @@ public class XMLSchemaUpdater {
 	 * 
 	 * @param resource the file of the new resource (will be adapted)
 	 * @param oldFile the file of the old resource (will be untouched)
+	 * @param webResources true if web resources should be copied and updated
+	 *            too otherwise false
 	 * @throws IOException if file can not be updated
 	 */
-	public static void update(File resource, File oldFile) throws IOException {
+	public static void update(File resource, URI oldFile, boolean webResources) throws IOException {
 
-		changeNodeAndCopyFile(resource, oldFile, IMPORT);
+		changeNodeAndCopyFile(resource, oldFile, IMPORT, webResources);
 
-		changeNodeAndCopyFile(resource, oldFile, INCLUDE);
+		changeNodeAndCopyFile(resource, oldFile, INCLUDE, webResources);
 	}
 
-	private static void changeNodeAndCopyFile(File currentSchema, File oldPath,
-			String xPathExpression) throws IOException {
+	private static void changeNodeAndCopyFile(File currentSchema, URI oldPath,
+			String xPathExpression, boolean allResources) throws IOException {
 
 		File curSchema = currentSchema;
-		File oldSchemaPath = oldPath;
 
 		// counter for the directory because every resource should have his own
 		// directory
@@ -166,38 +172,71 @@ public class XMLSchemaUpdater {
 			// only local resources have to be updated
 			// if scheme is null it has to be a local file represented by a
 			// relative path
+			InputStream input = null;
 			if (scheme != null) {
-				if (scheme.equals("bundleentry")) {
-					// get absolute path of the bundleentry file
-					location = FileLocator.toFileURL(file.toURL()).toString();
+				if (allResources && (scheme.equals("http") || scheme.equals("https"))
+						|| scheme.equals("resource")) {
+					DefaultInputSupplier supplier = new DefaultInputSupplier(file);
+					input = supplier.getInput();
 				}
-				else if (!scheme.equals("file")) {
+				else if (scheme.equals("bundleentry")) {
+					try {
+						File in = new File(FileLocator.toFileURL(file.toURL()).toURI());
+						input = new FileInputStream(in);
+					} catch (URISyntaxException e) {
+						log.debug("Can not open FileInputStream", e);
+					}
+				}
+				else if (scheme.equals("file")) {
+					input = new FileInputStream(new File(file));
+				}
+				else
+					continue;
+			}
+			else
+				try {
+					URI in = new URI(oldPath.toString().substring(0,
+							oldPath.toString().lastIndexOf("/") + 1)
+							+ file.toString());
+					input = new DefaultInputSupplier(in).getInput();
+				} catch (URISyntaxException e1) {
+					log.debug("Path of old Schema or current file is invalid", e1);
 					continue;
 				}
-			}
 
-			File includedOldFile = oldSchemaPath;
 			String filename = location;
 			if (location.contains("/"))
 				filename = location.substring(location.lastIndexOf("/"));
-			includedOldFile = includedOldFile.getParentFile();
 
 			// every file needs his own directory because if name conflicts
 			filename = count + "/" + filename;
 
-			// the absolute location of the included xml schema
-			includedOldFile = new File(includedOldFile, location);
-
 			File includednewFile = null;
 
-			if (imports.containsKey(includedOldFile)) {
+			URI path = null;
+			// if URI is not absolute we have to resolve an absolute URI
+			if (!file.isAbsolute()) {
+				try {
+					// get the absolute path of the included schema
+					path = new URI(oldPath.toString().substring(0,
+							oldPath.toString().lastIndexOf("/") + 1)
+							+ location);
+				} catch (URISyntaxException e) {
+					log.debug("Path of old Schema or current file is invalid", e);
+					continue;
+				}
+			}
+			else
+				path = file;
+
+			if (imports.containsKey(path)) {
 				// if the current xml schema is already updated we have to
 				// find the relative path to this resource
-				String relative = getRelativePath(imports.get(includedOldFile).toURI().toString(),
+				String relative = getRelativePath(imports.get(path).toURI().toString(),
 						currentSchema.toURI().toString(), "/");
 				locationNode.setNodeValue(relative);
 			}
-			else {
+			else if (input != null) {
 
 				// we need the directory of the file
 				curSchema = currentSchema.getParentFile();
@@ -212,14 +251,16 @@ public class XMLSchemaUpdater {
 				}
 
 				// copy to new directory
-				Files.copy(includedOldFile, includednewFile);
+				OutputStream output = new FileOutputStream(includednewFile);
+				ByteStreams.copy(input, output);
 
 				// set new location in the xml schema
 				locationNode.setNodeValue(filename);
 
 				// every xml schema should be updated (and copied) only once
 				// so we save the currently adapted resource in a map
-				imports.put(includedOldFile, includednewFile);
+
+				imports.put(path, includednewFile);
 			}
 
 			// write new XML-File
@@ -246,7 +287,7 @@ public class XMLSchemaUpdater {
 			// if the newFile is not null we found a new file which is not
 			// read yet so we have to update it
 			if (includednewFile != null) {
-				update(includednewFile, includedOldFile);
+				update(includednewFile, path, allResources);
 
 			}
 		}
