@@ -40,6 +40,11 @@ public abstract class BaseWebApplication extends WebApplication {
 	@Override
 	public void init() {
 		super.init();
+
+		// enforce mounts so security interceptors based on URLs can't be fooled
+		getSecuritySettings().setEnforceMounts(true);
+
 		addComponentInstantiationListener(new DynamicSpringComponentInjector());
 	}
+
 }
