@@ -50,8 +50,8 @@ public class WelcomePage extends BasePage {
 	/**
 	 * Header keys
 	 */
-	private static final String ADMIN_NAME = "Webapp-Name";
-	private static final String ADMIN_HIDE = "Webapp-Hide";
+	private static final String WEBAPP_NAME = "Webapp-Name";
+	private static final String WEBAPP_HIDE = "Webapp-Hide";
 	private static final String BUNDLE_NAME = "Bundle-Name";
 
 	/**
@@ -72,6 +72,13 @@ public class WelcomePage extends BasePage {
 	 * Default constructor
 	 */
 	public WelcomePage() {
+		// nothing to do here
+	}
+
+	@Override
+	protected void addControls(boolean loggedIn) {
+		super.addControls(loggedIn);
+
 		// create a model which loads the list of war bundles dynamically
 		IModel<List<BundleInfo>> listViewModel = new LoadableDetachableModel<List<BundleInfo>>() {
 
@@ -128,9 +135,9 @@ public class WelcomePage extends BasePage {
 	 * @return the bundle's name
 	 */
 	private static String getHumanReadableName(Bundle b) {
-		String name = b.getHeaders().get(ADMIN_NAME);
+		String name = b.getHeaders().get(WEBAPP_NAME);
 		if (name == null) {
-			_log.warn("Bundle " + b.getSymbolicName() + " has no " + "\"" + ADMIN_NAME
+			_log.warn("Bundle " + b.getSymbolicName() + " has no " + "\"" + WEBAPP_NAME
 					+ "\" header defined. Using " + "\"" + BUNDLE_NAME + "\"");
 			name = b.getHeaders().get(BUNDLE_NAME);
 		}
@@ -144,7 +151,7 @@ public class WelcomePage extends BasePage {
 	 * @return true if the bundle is hidden, false if it should be listed
 	 */
 	private static boolean isHidden(Bundle b) {
-		String hide = b.getHeaders().get(ADMIN_HIDE);
+		String hide = b.getHeaders().get(WEBAPP_HIDE);
 		return Boolean.parseBoolean(hide);
 	}
 }

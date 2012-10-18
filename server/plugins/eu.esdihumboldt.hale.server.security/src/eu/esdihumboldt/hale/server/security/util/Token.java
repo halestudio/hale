@@ -13,24 +13,26 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.server.console.war.pages;
+package eu.esdihumboldt.hale.server.security.util;
 
-import eu.esdihumboldt.hale.server.webapp.pages.SecuredPage;
-import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
+import java.util.UUID;
 
 /**
- * The main page for the administration console view. It provides access to the
- * OSGi console via the web interface
+ * Token utility.
  * 
- * @author Michel Kraemer
+ * @author Simon Templer
  */
-@PageDescription(title = "Console")
-public class WelcomePage extends SecuredPage {
+public class Token {
+
+	private static final String RUNTIME_TOKEN = UUID.randomUUID().toString();
 
 	/**
-	 * Default constructor
+	 * Get a token that is always the same in this JVM instance.
+	 * 
+	 * @return the runtime token
 	 */
-	public WelcomePage() {
-		// nothing to do here
+	public String getRuntimeToken() {
+		return RUNTIME_TOKEN;
 	}
+
 }
