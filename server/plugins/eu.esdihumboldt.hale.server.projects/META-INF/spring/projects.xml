@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		<!-- ignore if not present to allow using internal default -->
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+	</bean>
+
+	<bean id="scavenger"
+		class="eu.esdihumboldt.hale.server.projects.impl.ProjectScavengerImpl">
+		<constructor-arg ref="environments" />
+		<constructor-arg value="${hale.projectsloc}" />
+	</bean>
+
+	<bean id="environments"
+		class="eu.esdihumboldt.hale.common.headless.impl.EnvironmentManagerImpl">
+	</bean>
+
+	<bean id="projectCommands"
+		class="eu.esdihumboldt.hale.server.projects.internal.ProjectCommands">
+		<property name="projects" ref="scavenger" />
+	</bean>
+
+</beans>
