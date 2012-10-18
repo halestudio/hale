@@ -157,7 +157,7 @@ public class ActionProjectFile implements ProjectFile {
 
 			// find advisor
 			@SuppressWarnings("rawtypes")
-			IOAdvisor advisor = IOAdvisorExtension.getInstance().findAdvisor(loadActionId);
+			IOAdvisor advisor = getLoadAdvisor(loadActionId);
 			checkState(advisor != null, "No advisor for loading project file found");
 
 			// configure provider
@@ -174,6 +174,17 @@ public class ActionProjectFile implements ProjectFile {
 				applyFile = null;
 			}
 		}
+	}
+
+	/**
+	 * Get the advisor for loading the file. The default implementation uses the
+	 * {@link IOAdvisorExtension} to look for a matching advisor.
+	 * 
+	 * @param loadActionId the action ID for loading the project file
+	 * @return the advisor
+	 */
+	protected IOAdvisor<?> getLoadAdvisor(String loadActionId) {
+		return IOAdvisorExtension.getInstance().findAdvisor(loadActionId);
 	}
 
 	private void setParameters(IOProvider provider, Map<String, String> parameters) {
