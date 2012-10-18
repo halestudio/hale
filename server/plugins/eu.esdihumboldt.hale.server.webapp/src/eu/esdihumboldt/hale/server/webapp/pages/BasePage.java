@@ -18,13 +18,22 @@ package eu.esdihumboldt.hale.server.webapp.pages;
 
 import java.util.Calendar;
 
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.behavior.HeaderContributor;
 import org.apache.wicket.markup.html.CSSPackageResource;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import eu.esdihumboldt.hale.server.security.UserConstants;
 import eu.esdihumboldt.hale.server.webapp.BaseWebApplication;
 import eu.esdihumboldt.hale.server.webapp.components.SimpleBreadcrumbPanel;
 import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
@@ -42,6 +51,57 @@ public abstract class BasePage extends WebPage {
 	 * Default constructor
 	 */
 	public BasePage() {
+		super();
+
+		init();
+	}
+
+	/**
+	 * @see WebPage#WebPage(PageParameters)
+	 */
+	public BasePage(PageParameters parameters) {
+		super(parameters);
+
+		init();
+	}
+
+	/**
+	 * Add the page controls
+	 */
+	protected final void init() {
+		// check if logged in
+		SecurityContext securityContext = SecurityContextHolder.getContext();
+		if (securityContext != null) {
+			Authentication authentication = securityContext.getAuthentication();
+			if (authentication != null && authentication.isAuthenticated()) {
+				boolean user = false;
+				for (GrantedAuthority authority : authentication.getAuthorities()) {
+					if (authority.getAuthority().equals(UserConstants.ROLE_USER)
+							|| authority.getAuthority().equals(UserConstants.ROLE_ADMIN)) {
+
+						user = true;
+						break;
+					}
+				}
+				// logged in
+				if (user) {
+					addControls(true);
+
+					return;
+				}
+			}
+		}
+
+		// not logged in or login forbidden
+		addControls(false);
+	}
+
+	/**
+	 * Add page controls
+	 * 
+	 * @param loggedIn if a user is logged in
+	 */
+	protected void addControls(boolean loggedIn) {
 		// add base css to page
 		HeaderContributor css = CSSPackageResource.getHeaderContribution(new ResourceReference(
 				BasePage.class, BasePage.class.getSimpleName() + ".css"));
@@ -72,6 +132,27 @@ public abstract class BasePage extends WebPage {
 		pageTitleLabel.setEscapeModelStrings(false);
 		add(pageTitleLabel);
 
+		WebMarkupContainer loginLogoutPanel = new WebMarkupContainer("loginLogoutPanel");
+		// loginLogoutPanel.setVisible(...); XXX visibility can be toggled
+		if (!loggedIn) {
+			// login link
+			BookmarkablePageLink<Void> link;
+			loginLogoutPanel.add(link = new BookmarkablePageLink<Void>("loginLogout",
+					LoginPage.class));
+			link.add(new Label("label", "Login"));
+		}
+		else {
+			// logout link
+//			loginLogoutPanel.add(new LogoutLink("loginLogout"));
+			ExternalLink link;
+			loginLogoutPanel.add(link = new ExternalLink("loginLogout",
+					((WebApplication) getApplication()).getServletContext().getContextPath()
+							+ "/j_spring_security_logout"));
+			link.add(new Label("label", "Logout"));
+		}
+		add(loginLogoutPanel);
+
 		add(new SimpleBreadcrumbPanel("breadcrumb", this.getClass(), "Home", "/"));
 	}
+
 }

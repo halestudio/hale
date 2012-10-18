@@ -12,11 +12,54 @@
 
 	<!-- allow HTTP security -->
 	<http realm="HALE Web">
-		<intercept-url pattern="//console/**" access="ROLE_ADMIN" />
-		<intercept-url pattern="/**" access="ROLE_ANONYMOUS" />
-		<http-basic />
-		<logout />
+		<remember-me services-ref="rememberMeServices" key="hale-server-remember-me" />
+	
+		<!-- login -->
+		<intercept-url pattern="/login" access="ROLE_ANONYMOUS,ROLE_USER,ROLE_ADMIN" requires-channel="any" />
+		
+		<!-- resources needed for login page -->
+		<intercept-url pattern="/resources/org.apache.wicket.markup.html.WicketEventReference/wicket-event.js" access="ROLE_ANONYMOUS,ROLE_USER,ROLE_ADMIN" requires-channel="any" />
+		<intercept-url pattern="/resources/org.apache.wicket.ajax.WicketAjaxReference/wicket-ajax.js" access="ROLE_ANONYMOUS,ROLE_USER,ROLE_ADMIN" requires-channel="any" />
+		<intercept-url pattern="/resources/eu.esdihumboldt.hale.server.webapp.pages.BasePage/BasePage.css" access="ROLE_ANONYMOUS,ROLE_USER,ROLE_ADMIN" requires-channel="any" />
+		<intercept-url pattern="/resources/eu.esdihumboldt.hale.server.webapp.pages.BasePage/graphics/*" access="ROLE_ANONYMOUS,ROLE_USER,ROLE_ADMIN" requires-channel="any" />
+		
+		<!-- admin access -->
+		<intercept-url pattern="//console/**" access="ROLE_ADMIN" requires-channel="any" />
+		
+		<!-- everything else -->
+		<intercept-url pattern="/**" access="ROLE_ANONYMOUS,ROLE_USER,ROLE_ADMIN" requires-channel="any" />
+		
+		<form-login login-page="/login" authentication-failure-handler-ref="failureHandler" />
+		<anonymous /> <!-- is needed for login page -->
+		<logout/>
 	</http>
+	
+	<beans:bean id="rememberMeServices" class="eu.esdihumboldt.hale.server.webapp.util.MultiWarRememberMeServices">
+		<beans:constructor-arg value="hale-server-remember-me" />
+		<beans:constructor-arg ref="userDetails" />
+		<beans:property name="alwaysRemember" value="true" />
+	</beans:bean>
+	
+	<!-- beans:bean id="rememberMeServices" class="org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices">
+		<beans:constructor-arg value="hale-server-remember-me" />
+		<beans:constructor-arg ref="userDetails" />
+		<beans:property name="alwaysRemember" value="true" />
+	</beans:bean-->
+	
+	
+	<beans:bean
+		id="failureHandler"
+		class="org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler">
+		
+		<beans:property name="defaultFailureUrl" value="/login?failure=unknown" />
+		<beans:property name="exceptionMappings">
+			<beans:map>
+				<!-- beans:entry key="org.springframework.security.core.userdetails.UsernameNotFoundException" value="/login?failure=principal" /-->
+				<beans:entry key="org.springframework.security.authentication.BadCredentialsException" value="/login?failure=credentials" />
+				<beans:entry key="org.springframework.security.authentication.DisabledException" value="/login?failure=disabled" />
+			</beans:map>
+		</beans:property>
+	</beans:bean>
 
 	<!-- Create authentication manager and reference authentication provider 
 		configured below -->

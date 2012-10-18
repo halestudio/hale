@@ -16,14 +16,23 @@
 
 package eu.esdihumboldt.hale.server.webapp;
 
+import org.apache.wicket.authorization.strategies.page.SimplePageAuthorizationStrategy;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import eu.esdihumboldt.hale.server.security.UserConstants;
+import eu.esdihumboldt.hale.server.webapp.pages.LoginPage;
+import eu.esdihumboldt.hale.server.webapp.pages.SecuredPage;
 import eu.esdihumboldt.hale.server.webapp.util.DynamicSpringComponentInjector;
 
 /**
  * A basic class for web applications
  * 
  * @author Michel Kraemer
+ * @author Simon Templer
  */
 public abstract class BaseWebApplication extends WebApplication {
 
@@ -44,7 +53,39 @@ public abstract class BaseWebApplication extends WebApplication {
 		// enforce mounts so security interceptors based on URLs can't be fooled
 		getSecuritySettings().setEnforceMounts(true);
 
+		getSecuritySettings().setAuthorizationStrategy(
+				new SimplePageAuthorizationStrategy(SecuredPage.class, LoginPage.class) {
+
+					@Override
+					protected boolean isAuthorized() {
+						SecurityContext securityContext = SecurityContextHolder.getContext();
+						if (securityContext != null) {
+							Authentication authentication = securityContext.getAuthentication();
+							if (authentication != null && authentication.isAuthenticated()) {
+								for (GrantedAuthority authority : authentication.getAuthorities()) {
+									if (authority.getAuthority().equals(UserConstants.ROLE_USER)
+											|| authority.getAuthority().equals(
+													UserConstants.ROLE_ADMIN)) {
+
+										// allow access only for users/admins
+										return true;
+									}
+								}
+							}
+						}
+
+						return false;
+					}
+
+				});
+
 		addComponentInstantiationListener(new DynamicSpringComponentInjector());
+
+		// add login page to every application based on this one
+		// XXX make configurable?
+
+		// login page
+		mountBookmarkablePage("/login", LoginPage.class);
 	}
 
 }
