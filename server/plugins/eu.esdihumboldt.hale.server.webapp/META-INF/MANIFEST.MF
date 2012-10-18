@@ -6,6 +6,7 @@ Bundle-Version: 2.5.0.qualifier
 Bundle-Vendor: Data Harmonisation Panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: javax.servlet;version="2.5.0",
+ javax.servlet.http;version="2.5.0",
  org.apache.wicket,
  org.apache.wicket.application;version="1.4.2",
  org.apache.wicket.behavior;version="1.4.2",
@@ -16,15 +17,20 @@ Import-Package: javax.servlet;version="2.5.0",
  org.apache.wicket.markup.html.list;version="1.4.2",
  org.apache.wicket.markup.html.panel;version="1.4.2",
  org.apache.wicket.protocol.http;version="1.4.2",
+ org.apache.wicket.settings;version="1.4.2",
  org.apache.wicket.spring;version="1.4.2",
  org.apache.wicket.spring.injection.annot;version="1.4.2",
  org.osgi.framework;version="1.6.0",
  org.osgi.util.tracker;version="1.5.0",
+ org.slf4j;version="1.5.11",
  org.springframework.context;version="3.0.0.RELEASE",
+ org.springframework.security.core;version="3.1.0.RELEASE",
+ org.springframework.security.core.context;version="3.1.0.RELEASE",
  org.springframework.web.context;version="3.0.0.RELEASE",
  org.springframework.web.context.support;version="3.0.0.RELEASE"
 Export-Package: eu.esdihumboldt.hale.server.webapp,
  eu.esdihumboldt.hale.server.webapp.components,
+ eu.esdihumboldt.hale.server.webapp.filter,
  eu.esdihumboldt.hale.server.webapp.pages,
  eu.esdihumboldt.hale.server.webapp.pages.graphics,
  eu.esdihumboldt.hale.server.webapp.util
