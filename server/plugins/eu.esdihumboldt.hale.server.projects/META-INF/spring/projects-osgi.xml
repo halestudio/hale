@@ -19,5 +19,11 @@
 	<!-- project commands for console -->
 	<osgi:service interface="org.eclipse.osgi.framework.console.CommandProvider"
 		ref="projectCommands" />
+		
+	<!-- user details service (security) -->
+	<osgi:reference
+		id="userDetailsService"
+		interface="org.springframework.security.core.userdetails.UserDetailsService"
+		cardinality="1..1" />
 
 </beans>
