@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sec="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
 
 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -10,19 +10,57 @@
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
 	</bean>
 
+	<!-- project scavenger -->
 	<bean id="scavenger"
 		class="eu.esdihumboldt.hale.server.projects.impl.ProjectScavengerImpl">
 		<constructor-arg ref="environments" />
 		<constructor-arg value="${hale.projectsloc}" />
+		
+		<!-- add security interceptor -->
+		<sec:intercept-methods
+			access-decision-manager-ref="methodAccessDecisionManager">
+
+			<sec:protect method="*" access="ROLE_ADMIN" />
+			<!-- sec:protect method="transaction" access="ROLE_ADMIN,INVOKE_OBJECTSERVICE" /-->
+		</sec:intercept-methods>
 	</bean>
 
+	<!-- transformation environment manager -->
 	<bean id="environments"
 		class="eu.esdihumboldt.hale.common.headless.impl.EnvironmentManagerImpl">
 	</bean>
 
+	<!-- projects commands -->
 	<bean id="projectCommands"
 		class="eu.esdihumboldt.hale.server.projects.internal.ProjectCommands">
 		<property name="projects" ref="scavenger" />
 	</bean>
+
+	<!-- role voter -->
+	<bean id="roleVoter" class="org.springframework.security.access.vote.RoleVoter" />
+
+	<!-- voter for ObjectService invocations -->
+	<!-- bean id="objectServiceVoter"
+		class="de.fhg.igd.objects.security.user.voter.ObjectServiceInvocationVoter" /-->
+
+	<!-- access decision manager -->
+	<bean id="methodAccessDecisionManager"
+		class="org.springframework.security.access.vote.AffirmativeBased">
+		<property name="allowIfAllAbstainDecisions">
+			<value>false</value>
+		</property>
+		<property name="decisionVoters">
+			<list>
+				<ref local="roleVoter" />
+				<!-- ref local="objectServiceVoter" /-->
+			</list>
+		</property>
+	</bean>
+
+	<!-- users -->
+	<sec:authentication-manager>
+		<sec:authentication-provider
+			user-service-ref="userDetailsService" />
+	</sec:authentication-manager>
 
 </beans>
