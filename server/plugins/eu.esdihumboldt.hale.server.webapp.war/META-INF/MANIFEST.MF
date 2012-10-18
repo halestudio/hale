@@ -10,11 +10,13 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: de.cs3d.util.logging,
  eu.esdihumboldt.hale.server.security.extender,
+ eu.esdihumboldt.hale.server.security.util,
  eu.esdihumboldt.hale.server.webapp,
  eu.esdihumboldt.hale.server.webapp.filter,
  eu.esdihumboldt.hale.server.webapp.pages,
  eu.esdihumboldt.hale.server.webapp.util,
  org.apache.wicket;version="1.4.2",
+ org.apache.wicket.markup.html;version="1.4.2",
  org.apache.wicket.markup.html.link;version="1.4.2",
  org.apache.wicket.markup.html.list;version="1.4.2",
  org.apache.wicket.model;version="1.4.2",

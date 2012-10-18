@@ -164,6 +164,7 @@
       <plugin id="eu.esdihumboldt.hale.common.convert.wkt" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.console.war" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.projects" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.server.security" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.security.user.simple" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.war" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.webapp.war" autoStart="true" startLevel="0" />

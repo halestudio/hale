@@ -13,24 +13,29 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.server.console.war.pages;
+package eu.esdihumboldt.hale.server.security.util;
 
-import eu.esdihumboldt.hale.server.webapp.pages.SecuredPage;
-import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
+import javax.servlet.http.HttpSession;
 
 /**
- * The main page for the administration console view. It provides access to the
- * OSGi console via the web interface
+ * Tracker for sessions (possibly from multiple web applications).
  * 
- * @author Michel Kraemer
+ * @author Simon Templer
  */
-@PageDescription(title = "Console")
-public class WelcomePage extends SecuredPage {
+public interface SessionTracker {
 
 	/**
-	 * Default constructor
+	 * Add a session.
+	 * 
+	 * @param session the HTTP session
 	 */
-	public WelcomePage() {
-		// nothing to do here
-	}
+	public void addSession(HttpSession session);
+
+	/**
+	 * Remove a session.
+	 * 
+	 * @param session the HTTP session
+	 */
+	public void removeSession(HttpSession session);
+
 }

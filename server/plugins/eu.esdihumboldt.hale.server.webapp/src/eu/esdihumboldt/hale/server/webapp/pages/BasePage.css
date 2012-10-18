@@ -269,6 +269,61 @@ dt {
 
 /* Forms */
 
+input.field {
+	border: 1px solid #EBECF0;
+}
+
+input.field-valid {
+	border: 1px solid #2DB300;
+}
+
+input.field-invalid {
+	border: 1px solid #FF0000;
+}
+
+.field-msg, .field-msg-ERROR, .field-msg-WARNING, .field-msg-INFO, .field-msg-valid {
+	font-family:Arial, sans-serif;
+ 	font-size: 0.9em;
+ 	font-style: italic;
+}
+
+p.field-msg, p.field-msg-ERROR, p.field-msg-WARNING, p.field-msg-INFO, p.field-msg-valid {
+	margin-top: 0px;
+	margin-bottom: 0px;
+	padding-top: 2px;
+	text-align: left;
+}
+
+.field-msg-ERROR {
+	color: #FF0000;
+	
+	background-image: url("graphics/error.gif");
+	background-position: left 2px;
+	background-repeat: no-repeat;
+	padding-left: 24px;
+	min-height: 16px;
+}
+
+.field-msg-WARNING {
+	background-image: url("graphics/warn.gif");
+	background-position: left 2px;
+	background-repeat: no-repeat;
+	padding-left: 24px;
+	min-height: 16px;
+}
+
+.field-msg-INFO {
+	color: #2DB300;
+}
+
+.field-msg-valid {
+	background-image: url("graphics/ok.png");
+	background-position: left 2px;
+	background-repeat: no-repeat;
+	padding-left: 24px;
+	min-height: 16px;
+}
+
 fieldset {
 	width: 550px;
 	padding-left: 10px;
@@ -409,6 +464,45 @@ tbody tr.odd {
 
 table input[type=text] {
 	width: 100%;
+}
+
+/* Wicket feedback panel */
+
+#main ul.feedbackPanel {
+	padding-left: 16px;
+}
+
+#main li.feedbackPanelERROR {
+	/*list-style-image: url("error.gif");*/
+	
+	list-style-type: none;
+	background-image: url("graphics/error.gif");
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding-left: 24px;
+	min-height: 16px;
+}
+
+#main li.feedbackPanelWARNING {
+	/*list-style-image: url("warn.gif");*/
+	
+	list-style-type: none;
+	background-image: url("graphics/warn.gif");
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding-left: 24px;
+	min-height: 16px;
+}
+
+#main li.feedbackPanelINFO {
+	/*list-style-image: url("info.gif");*/
+	
+	list-style-type: none;
+	background-image: url("graphics/tasks.gif");
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding-left: 24px;
+	min-height: 16px;
 }
 
 /* Multiple file upload forms */

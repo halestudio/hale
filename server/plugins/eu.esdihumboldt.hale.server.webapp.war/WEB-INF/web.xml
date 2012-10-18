@@ -50,6 +50,9 @@
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
+	<listener>
+		<listener-class>eu.esdihumboldt.hale.server.security.util.SpringSessionTrackerListener</listener-class>
+	</listener>
 
 	<servlet>
 		<servlet-name>default</servlet-name>
