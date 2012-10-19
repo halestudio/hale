@@ -143,12 +143,14 @@ public abstract class BasePage extends WebPage {
 		}
 		else {
 			// logout link
-//			loginLogoutPanel.add(new LogoutLink("loginLogout"));
 			ExternalLink link;
 			loginLogoutPanel.add(link = new ExternalLink("loginLogout",
 					((WebApplication) getApplication()).getServletContext().getContextPath()
 							+ "/j_spring_security_logout"));
-			link.add(new Label("label", "Logout"));
+
+			// determine user name
+			String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+			link.add(new Label("label", "Logout (" + userName + ")"));
 		}
 		add(loginLogoutPanel);
 
