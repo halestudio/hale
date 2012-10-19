@@ -74,6 +74,28 @@ img {
 	float: left;
 }
 
+#header #mainheader {
+	display: block;
+	float: left;
+}
+
+#header #auxheader {
+	display: block;
+	float: right;
+	padding: 0px;
+	margin-top: 34px;
+}
+
+#header #auxheader a {
+	color: #0082BE;
+	text-decoration: none;
+	font-size: 12px;
+}
+
+#header #auxheader a:HOVER {
+	text-decoration: underline;
+}
+
 #header #logo-title {
 	padding-left: 12px;
 	white-space: nowrap;

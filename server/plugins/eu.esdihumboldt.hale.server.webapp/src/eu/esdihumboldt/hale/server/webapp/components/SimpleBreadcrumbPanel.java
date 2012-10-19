@@ -71,7 +71,7 @@ public class SimpleBreadcrumbPanel extends Panel {
 
 		// add bread crumbs
 		Vector<Class<? extends Page>> links = new Vector<Class<? extends Page>>();
-		while (anno != null && anno.parent() != WebPage.class) {
+		while (anno != null && anno.parent() != null) {
 			Class<? extends WebPage> par = anno.parent();
 			if (!par.isAnnotationPresent(PageDescription.class)) {
 				break;
