@@ -44,7 +44,9 @@ public abstract class BaseWebApplication extends WebApplication {
 	/**
 	 * @return the main title of this application
 	 */
-	public abstract String getMainTitle();
+	public String getMainTitle() {
+		return DEFAULT_TITLE;
+	}
 
 	@Override
 	public void init() {

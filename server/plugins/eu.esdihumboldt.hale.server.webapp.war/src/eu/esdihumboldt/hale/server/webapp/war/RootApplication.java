@@ -36,11 +36,4 @@ public class RootApplication extends BaseWebApplication {
 		return WelcomePage.class;
 	}
 
-	/**
-	 * @see BaseWebApplication#getMainTitle()
-	 */
-	@Override
-	public String getMainTitle() {
-		return "HALE Web";
-	}
 }

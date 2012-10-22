@@ -28,14 +28,6 @@ import eu.esdihumboldt.hale.server.webapp.BaseWebApplication;
 public class ConsoleApplication extends BaseWebApplication {
 
 	/**
-	 * @see BaseWebApplication#getMainTitle()
-	 */
-	@Override
-	public String getMainTitle() {
-		return "HALE Web Administration Console";
-	}
-
-	/**
 	 * @see org.apache.wicket.Application#getHomePage()
 	 */
 	@Override
