@@ -305,7 +305,7 @@ input.field-invalid {
 
 .field-msg, .field-msg-ERROR, .field-msg-WARNING, .field-msg-INFO, .field-msg-valid {
 	font-family:Arial, sans-serif;
- 	font-size: 0.9em;
+ 	font-size: 13px;
  	font-style: italic;
 }
 
@@ -350,16 +350,16 @@ fieldset {
 	width: 550px;
 	padding-left: 10px;
 	padding-right: 10px;
-	padding-bottom: 20px;
+	padding-bottom: 10px;
 	margin-bottom: 20px;
-	border: 1px dotted #7db3a7;
+	border: 1px solid #EBECF0;
 	display: block;
 	clear: both;
 }
 
 fieldset legend {
 	font-weight: bold;
-	color: #000000;
+	color: #0082BE;
 	background-color: #ffffff;
 }
 

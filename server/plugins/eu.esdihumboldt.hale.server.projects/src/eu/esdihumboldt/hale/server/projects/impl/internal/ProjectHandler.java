@@ -246,22 +246,38 @@ public class ProjectHandler {
 
 		});
 
-		if (candidates == null || candidates.length == 0) {
-			return null;
+		if (candidates != null) {
+			if (candidates.length == 1) {
+				return candidates[0].getName();
+			}
+
+			// more than one candidate, do a more thorough check
+			// TODO warn that there are multiple?
+			for (File candidate : candidates) {
+				FileIOSupplier supplier = new FileIOSupplier(candidate);
+				// find content type against stream
+				IContentType contentType = HaleIO.findContentType(ProjectReader.class, supplier,
+						null);
+				if (contentType != null) {
+					return candidate.getName();
+				}
+			}
 		}
 
-		if (candidates.length == 1) {
-			return candidates[0].getName();
-		}
+		// none found? check in subdirectories
+		File[] subdirs = projectDir.listFiles(new FileFilter() {
 
-		// more than one candidate, do a more thorough check
-		// TODO warn that there are multiple?
-		for (File candidate : candidates) {
-			FileIOSupplier supplier = new FileIOSupplier(candidate);
-			// find content type against stream
-			IContentType contentType = HaleIO.findContentType(ProjectReader.class, supplier, null);
-			if (contentType != null) {
-				return candidate.getName();
+			@Override
+			public boolean accept(File pathname) {
+				return pathname.isDirectory() && !pathname.isHidden();
+			}
+		});
+		if (subdirs != null) {
+			for (File subdir : subdirs) {
+				String name = findProjectFile(subdir);
+				if (name != null) {
+					return subdir.getName() + "/" + name;
+				}
 			}
 		}
 

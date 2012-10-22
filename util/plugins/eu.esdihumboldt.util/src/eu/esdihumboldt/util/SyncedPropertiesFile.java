@@ -89,7 +89,12 @@ public class SyncedPropertiesFile {
 	 */
 	public void setProperty(String key, String value) throws IOException {
 		properties.sync(false);
-		properties.setProperty(key, value);
+		if (value == null) {
+			properties.remove(key);
+		}
+		else {
+			properties.setProperty(key, value);
+		}
 		properties.sync(true);
 	}
 
@@ -108,7 +113,12 @@ public class SyncedPropertiesFile {
 			// ignore, but log
 			log.warn("Error reading configuration", e);
 		}
-		properties.setProperty(key, value);
+		if (value == null) {
+			properties.remove(key);
+		}
+		else {
+			properties.setProperty(key, value);
+		}
 		try {
 			// save
 			properties.sync(true);
