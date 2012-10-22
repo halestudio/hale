@@ -6,7 +6,7 @@
     <file>logs/ObjectsServer.log</file>
     <filter class="de.cs3d.util.logging.logback.appender.FlattenFilter" />
     <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-      <pattern>%d{ISO8601} %-5level [%mdc{user}] %C{1}:%L - %m%n</pattern>
+      <pattern>%d{ISO8601} %-5level [%mdc{user}:%mdc{remote}] %C{1}:%L - %m%n</pattern>
     </encoder>
     <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
       <maxIndex>1</maxIndex>
@@ -19,7 +19,7 @@
   <appender name="CONSOLE" class="de.cs3d.util.logging.logback.appender.StaticConsoleAppender">
   	<filter class="de.cs3d.util.logging.logback.appender.FlattenFilter" />
     <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-      <Pattern>%d{dd.MM.yyyy HH:mm:ss} %-5level %C{1}.%M\(%L\) - %m%n</Pattern>
+      <Pattern>%d{dd.MM.yyyy HH:mm:ss} %-5level [%mdc{user}:%mdc{remote}] %C{1}.%M\(%L\) - %m%n</Pattern>
     </encoder>
   </appender>
   <logger name="eu.esdihumboldt" level="INFO" />

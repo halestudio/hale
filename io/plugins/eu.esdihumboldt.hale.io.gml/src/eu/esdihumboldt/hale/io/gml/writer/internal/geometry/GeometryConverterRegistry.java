@@ -154,7 +154,7 @@ public class GeometryConverterRegistry {
 			if (results.containsKey(converter.getTargetType())) {
 				// for any reason this was already calculated (e.g.
 				// preconversion when descending into converter levels)
-				return results.get(results.get(converter.getTargetType()));
+				return results.get(converter.getTargetType());
 			}
 
 			// convert

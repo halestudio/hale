@@ -41,8 +41,8 @@ import eu.esdihumboldt.hale.common.core.report.ReportSession;
  */
 public class ReportReader {
 
-	private ReportFactory rf = ReportFactory.getInstance();
-	private MessageFactory mf = MessageFactory.getInstance();
+	private final ReportFactory rf = ReportFactory.getInstance();
+	private final MessageFactory mf = MessageFactory.getInstance();
 	private static final ALogger _log = ALoggerFactory.getLogger(ReportReader.class);
 
 	/**
@@ -152,7 +152,7 @@ public class ReportReader {
 			while (reader.ready()) {
 				temp = reader.readLine();
 
-				if (temp.isEmpty()) {
+				if (temp == null || temp.isEmpty()) {
 					continue;
 				}
 
