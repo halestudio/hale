@@ -37,6 +37,7 @@
       <plugin id="com.springsource.javax.media.jai.core"/>
       <plugin id="com.springsource.javax.persistence"/>
       <plugin id="com.springsource.javax.servlet.jsp"/>
+      <plugin id="com.springsource.net.sf.cglib"/>
       <plugin id="com.springsource.org.aopalliance"/>
       <plugin id="com.springsource.org.apache.commons.beanutils"/>
       <plugin id="com.springsource.org.apache.commons.collections"/>
@@ -73,6 +74,7 @@
       <plugin id="eu.esdihumboldt.hale.server.console.war"/>
       <plugin id="eu.esdihumboldt.hale.server.logback.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.server.projects"/>
+      <plugin id="eu.esdihumboldt.hale.server.projects.war"/>
       <plugin id="eu.esdihumboldt.hale.server.security"/>
       <plugin id="eu.esdihumboldt.hale.server.security.default" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.server.security.extender"/>
@@ -103,6 +105,7 @@
       <plugin id="org.apache.httpcomponents.httpclient"/>
       <plugin id="org.apache.httpcomponents.httpcore"/>
       <plugin id="org.apache.wicket.wicket"/>
+      <plugin id="org.apache.wicket.wicket-extensions"/>
       <plugin id="org.apache.wicket.wicket-ioc"/>
       <plugin id="org.apache.wicket.wicket-spring"/>
       <plugin id="org.apache.ws.commons.schema"/>
@@ -165,6 +168,7 @@
       <plugin id="eu.esdihumboldt.hale.common.convert.wkt" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.console.war" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.projects" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.server.projects.war" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.security" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.security.user.simple" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.war" autoStart="true" startLevel="0" />

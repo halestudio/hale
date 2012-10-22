@@ -16,6 +16,7 @@ Import-Package: com.google.common.io;version="11.0.1",
  eu.esdihumboldt.hale.common.headless.impl,
  eu.esdihumboldt.util,
  org.aopalliance.aop;version="1.0.0",
+ org.apache.commons.io,
  org.slf4j;version="1.5.11",
  org.springframework.aop;version="3.1.1.RELEASE",
  org.springframework.aop.framework;version="3.1.1.RELEASE",
@@ -23,3 +24,7 @@ Import-Package: com.google.common.io;version="11.0.1",
  org.springframework.security.access.vote;version="3.1.0.RELEASE",
  org.springframework.security.core.userdetails;version="3.1.0.RELEASE"
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0"
+Export-Package: eu.esdihumboldt.hale.server.projects,
+ eu.esdihumboldt.hale.server.projects.impl,
+ eu.esdihumboldt.hale.server.projects.impl.internal;x-internal:=true,
+ eu.esdihumboldt.hale.server.projects.internal;x-internal:=true

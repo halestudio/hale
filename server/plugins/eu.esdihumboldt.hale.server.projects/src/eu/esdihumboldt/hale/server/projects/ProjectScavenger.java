@@ -67,7 +67,13 @@ public interface ProjectScavenger {
 	 */
 	public File reserveProjectId(String projectId) throws ScavengerException;
 
-	// TODO release project ID
+	/**
+	 * Release a previously reserved project identifier. Also removes the
+	 * project folder.
+	 * 
+	 * @param projectId the project idnetifier
+	 */
+	public void releaseProjectId(String projectId);
 
 	/**
 	 * Determines if adding a project generally is allowed/possible.
