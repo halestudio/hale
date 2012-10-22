@@ -42,10 +42,25 @@ public abstract class BaseWebApplication extends WebApplication {
 	public static final String DEFAULT_TITLE = "HALE Web";
 
 	/**
+	 * Name of the system property that allows to specify a custom main title.
+	 */
+	public static final String SYSTEM_PROPERTY_MAIN_TITLE = "hale.webapp.maintitle";
+
+	/**
+	 * Get the default application title. Is either the value of the system
+	 * property {@value #SYSTEM_PROPERTY_MAIN_TITLE} or {@link #DEFAULT_TITLE}.
+	 * 
+	 * @return the default title
+	 */
+	public static String getDefaulTitle() {
+		return System.getProperty(SYSTEM_PROPERTY_MAIN_TITLE, DEFAULT_TITLE);
+	}
+
+	/**
 	 * @return the main title of this application
 	 */
 	public String getMainTitle() {
-		return DEFAULT_TITLE;
+		return getDefaulTitle();
 	}
 
 	@Override
