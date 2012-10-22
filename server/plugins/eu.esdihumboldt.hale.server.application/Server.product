@@ -80,6 +80,7 @@
       <plugin id="eu.esdihumboldt.hale.server.users.demo" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.server.war"/>
       <plugin id="eu.esdihumboldt.hale.server.webapp"/>
+      <plugin id="eu.esdihumboldt.hale.server.webapp.branding.default" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.server.webapp.war"/>
       <plugin id="eu.esdihumboldt.util"/>
       <plugin id="eu.esdihumboldt.util.resource"/>

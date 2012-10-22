@@ -43,5 +43,4 @@ Export-Package: eu.esdihumboldt.hale.server.webapp,
  eu.esdihumboldt.hale.server.webapp.components,
  eu.esdihumboldt.hale.server.webapp.filter,
  eu.esdihumboldt.hale.server.webapp.pages,
- eu.esdihumboldt.hale.server.webapp.pages.graphics,
  eu.esdihumboldt.hale.server.webapp.util
