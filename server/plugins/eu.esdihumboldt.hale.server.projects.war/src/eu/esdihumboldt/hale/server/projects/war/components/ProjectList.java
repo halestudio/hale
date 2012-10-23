@@ -18,17 +18,23 @@ package eu.esdihumboldt.hale.server.projects.war.components;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.WebComponent;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.image.Image;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.resource.ContextRelativeResource;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.server.projects.ProjectScavenger;
+import eu.esdihumboldt.hale.server.projects.ProjectScavenger.Status;
 
 /**
  * Project list.
@@ -74,15 +80,103 @@ public class ProjectList extends Panel {
 
 			private static final long serialVersionUID = -6740090246572869212L;
 
+			private boolean odd = true; // starting with one
+
 			/**
 			 * @see ListView#populateItem(ListItem)
 			 */
 			@Override
 			protected void populateItem(ListItem<String> item) {
+				if (odd) {
+					item.add(new SimpleAttributeModifier("class", "odd"));
+				}
+				odd = !odd;
+
 				final String id = item.getModelObject();
 
+				// identifier
 				item.add(new Label("identifier", id));
-				item.add(new Label("status", projects.getStatus(id).toString()));
+
+				// status
+				Status status = projects.getStatus(id);
+				String statusImagePath;
+				String statusTitle;
+				switch (status) {
+				case ACTIVE:
+					statusImagePath = "/images/ok.png";
+					statusTitle = "Active";
+					break;
+				case INACTIVE:
+					statusImagePath = "/images/sleeping.gif";
+					statusTitle = "Inactive";
+					break;
+				case BROKEN:
+					statusImagePath = "/images/error.gif";
+					statusTitle = "Project cannot be loaded";
+					break;
+				case NOT_AVAILABLE:
+				default:
+					statusImagePath = "/images/unknown.gif";
+					statusTitle = "Project file missing or not set";
+				}
+				Image statusImage = new Image("status",
+						new ContextRelativeResource(statusImagePath));
+				statusImage.add(new SimpleAttributeModifier("title", statusTitle));
+				item.add(statusImage);
+
+				// action
+				String actionImagePath;
+				String actionTitle;
+				boolean showAction;
+				Link<?> actionLink;
+				switch (status) {
+				case ACTIVE:
+					actionTitle = "Stop";
+					actionImagePath = "/images/stop.gif";
+					showAction = true;
+					actionLink = new Link<Void>("action") {
+
+						private static final long serialVersionUID = 393941411843332519L;
+
+						@Override
+						public void onClick() {
+							projects.deactivate(id);
+						}
+
+					};
+					break;
+				case BROKEN:
+				case INACTIVE:
+				case NOT_AVAILABLE:
+				default:
+					actionTitle = "Start";
+					actionImagePath = "/images/start.gif";
+					showAction = status.equals(Status.INACTIVE);
+					actionLink = new Link<Void>("action") {
+
+						private static final long serialVersionUID = 393941411843332519L;
+
+						@Override
+						public void onClick() {
+							projects.activate(id);
+						}
+
+					};
+					break;
+				}
+				Image actionImage = new Image("image", new ContextRelativeResource(actionImagePath));
+				actionImage.add(new SimpleAttributeModifier("title", actionTitle));
+				actionLink.add(actionImage);
+				actionLink.setVisible(showAction);
+				item.add(actionLink);
+
+				// name
+				String projectName = "";
+				ProjectInfo info = projects.getInfo(id);
+				if (info != null) {
+					projectName = info.getName();
+				}
+				item.add(new Label("name", projectName));
 			}
 
 		};

@@ -417,6 +417,11 @@ table.no-stretch {
 	width: auto;
 }
 
+table.no-stretch thead td {
+	padding-left: 12px;
+	padding-right: 12px;
+}
+
 table {
 	width: 100%;
 }
@@ -426,57 +431,8 @@ td {
 	vertical-align: top;
 }
 
-table .column-view-edit-delete {
-	width: 70px;
-	text-align: right;
-}
-
-table .column-view-delete {
-	width: 48px;
-	text-align: right;
-}
-
-table .column-view-edit-delete img, table .column-view-delete img {
-	width: 16px;
-	margin-left: 3px;
-}
-
-table .delete-column {
-	width: 20px;
-	vertical-align: middle;
-}
-
-table .column-name {
-	width: 150px;
-}
-
-table .column-rule-name {
-	width: 250px;
-}
-
-table .column-model {
-	width: 100px;
-}
-
-table .column-description {
-	width: auto;
-}
-
-table .column-srs {
-	width: 80px;
-}
-
-table .column-action {
-	width: 80px;
-}
-
-table .column-timestamp {
-	width: 80px;
-}
-
 thead td {
-	background-color: #eeeeee;
-	border-bottom: 1px solid #00a885;
+	border-bottom: 1px solid #0082BE;
 	font-weight: bold;
 }
 
