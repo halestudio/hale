@@ -28,6 +28,11 @@
             id="eu.esdihumboldt.hale.ui.application.perspective.data"
             name="%perspective.data.name">
       </perspective>
+      <perspective
+            class="eu.esdihumboldt.hale.ui.application.ThorstenPerspective"
+            id="thorsten"
+            name="Thorsten">
+      </perspective>
    </extension>
    <extension
          id="id1"
