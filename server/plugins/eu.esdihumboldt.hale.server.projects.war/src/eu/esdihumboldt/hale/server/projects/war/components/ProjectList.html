@@ -7,14 +7,22 @@
 <body>
 <wicket:panel>
 	<table class="no-stretch">
-		<tr wicket:id="caption">
-			<th style="text-align: left;">Identifier</th>
-			<th>Status</th>
-		</tr>
-		<tr wicket:id="projects">
-			<td wicket:id="identifier">[Identifier]</td>
-			<td wicket:id="status" style="text-align: center; font-style: italic;">[Status]</td>
-		</tr>
+		<thead>
+			<tr wicket:id="caption">
+				<td>Status</td>
+				<td>Actions</td>
+				<td>Identifier</td>
+				<td>Name</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr wicket:id="projects">
+				<td style="text-align: center;"><img wicket:id="status" /></td>
+				<td style="text-align: center;"><a wicket:id="action"><img wicket:id="image" /></a></td>
+				<td wicket:id="identifier" style="font-family: monospace; vertical-align: middle">[Identifier]</td>
+				<td wicket:id="name" style="vertical-align: middle">[Name]</td>
+			</tr>
+		</tbody>
 	</table>
 	<p wicket:id="noprojects">No projects available</p>
 </wicket:panel>
