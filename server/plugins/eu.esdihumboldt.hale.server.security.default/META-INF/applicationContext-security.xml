@@ -31,6 +31,7 @@
 		
 		<!-- admin access -->
 		<intercept-url pattern="//console/**" access="ROLE_ADMIN" requires-channel="any" />
+		<intercept-url pattern="//projects/**" access="ROLE_ADMIN" requires-channel="any" />
 		
 		<!-- everything else -->
 		<intercept-url pattern="/**" access="ROLE_ANONYMOUS,ROLE_USER,ROLE_ADMIN" requires-channel="any" />
