@@ -241,6 +241,19 @@ h3 {
 	font-weight: bold;
 }
 
+h2.exception {
+	padding-left: 24px;
+}
+
+p.exception {
+	background-image: url("graphics/error.gif");
+	background-position: left center;
+	background-repeat: no-repeat;
+	color: #FF0000;
+	padding-left: 24px;
+	min-height: 16px;
+}
+
 .success {
 	color: #008800;
 	font-weight: bold;
