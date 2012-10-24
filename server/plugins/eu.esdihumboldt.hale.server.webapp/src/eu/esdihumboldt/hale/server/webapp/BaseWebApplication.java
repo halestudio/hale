@@ -16,14 +16,22 @@
 
 package eu.esdihumboldt.hale.server.webapp;
 
+import org.apache.wicket.Page;
+import org.apache.wicket.Request;
+import org.apache.wicket.RequestCycle;
+import org.apache.wicket.Response;
 import org.apache.wicket.authorization.strategies.page.SimplePageAuthorizationStrategy;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.protocol.http.WebRequest;
+import org.apache.wicket.protocol.http.WebRequestCycle;
+import org.apache.wicket.protocol.http.WebResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import eu.esdihumboldt.hale.server.security.UserConstants;
+import eu.esdihumboldt.hale.server.webapp.pages.ExceptionPage;
 import eu.esdihumboldt.hale.server.webapp.pages.LoginPage;
 import eu.esdihumboldt.hale.server.webapp.pages.SecuredPage;
 import eu.esdihumboldt.hale.server.webapp.util.DynamicSpringComponentInjector;
@@ -103,6 +111,21 @@ public abstract class BaseWebApplication extends WebApplication {
 
 		// login page
 		mountBookmarkablePage("/login", LoginPage.class);
+	}
+
+	/**
+	 * @see WebApplication#newRequestCycle(Request, Response)
+	 */
+	@Override
+	public RequestCycle newRequestCycle(Request request, Response response) {
+		return new WebRequestCycle(this, (WebRequest) request, (WebResponse) response) {
+
+			@Override
+			public Page onRuntimeException(Page page, RuntimeException e) {
+				return new ExceptionPage(e);
+			}
+
+		};
 	}
 
 }
