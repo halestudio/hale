@@ -22,14 +22,12 @@ import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.WebComponent;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
-import org.apache.wicket.resource.ContextRelativeResource;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
@@ -103,24 +101,24 @@ public class ProjectList extends Panel {
 				String statusTitle;
 				switch (status) {
 				case ACTIVE:
-					statusImagePath = "/images/ok.png";
+					statusImagePath = "images/ok.png";
 					statusTitle = "Active";
 					break;
 				case INACTIVE:
-					statusImagePath = "/images/sleeping.gif";
+					statusImagePath = "images/sleeping.gif";
 					statusTitle = "Inactive";
 					break;
 				case BROKEN:
-					statusImagePath = "/images/error.gif";
+					statusImagePath = "images/error.gif";
 					statusTitle = "Project cannot be loaded";
 					break;
 				case NOT_AVAILABLE:
 				default:
-					statusImagePath = "/images/unknown.gif";
+					statusImagePath = "images/unknown.gif";
 					statusTitle = "Project file missing or not set";
 				}
-				Image statusImage = new Image("status",
-						new ContextRelativeResource(statusImagePath));
+				WebComponent statusImage = new WebComponent("status");
+				statusImage.add(new SimpleAttributeModifier("src", statusImagePath));
 				statusImage.add(new SimpleAttributeModifier("title", statusTitle));
 				item.add(statusImage);
 
@@ -132,7 +130,7 @@ public class ProjectList extends Panel {
 				switch (status) {
 				case ACTIVE:
 					actionTitle = "Stop";
-					actionImagePath = "/images/stop.gif";
+					actionImagePath = "images/stop.gif";
 					showAction = true;
 					actionLink = new Link<Void>("action") {
 
@@ -150,7 +148,7 @@ public class ProjectList extends Panel {
 				case NOT_AVAILABLE:
 				default:
 					actionTitle = "Start";
-					actionImagePath = "/images/start.gif";
+					actionImagePath = "images/start.gif";
 					showAction = status.equals(Status.INACTIVE);
 					actionLink = new Link<Void>("action") {
 
@@ -164,7 +162,8 @@ public class ProjectList extends Panel {
 					};
 					break;
 				}
-				Image actionImage = new Image("image", new ContextRelativeResource(actionImagePath));
+				WebComponent actionImage = new WebComponent("image");
+				actionImage.add(new SimpleAttributeModifier("src", actionImagePath));
 				actionImage.add(new SimpleAttributeModifier("title", actionTitle));
 				actionLink.add(actionImage);
 				actionLink.setVisible(showAction);
