@@ -88,6 +88,7 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		IOConfiguration config = getProject().getSaveConfiguration();
 		config.getProviderConfiguration().remove(PARAM_TARGET);
 		config.getProviderConfiguration().put(PARAM_TARGET, baseFile.toURI().toString());
+//		config.getProviderConfiguration().put(PARAM_TARGET, getTarget().getLocation().toString());
 		getProject().setSaveConfiguration(config);
 
 		// write project file via XMLProjectWriter
@@ -172,6 +173,7 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 				File newFile = new File(newDirectory, name);
 				OutputStream output = new FileOutputStream(newFile);
 				ByteStreams.copy(input, output);
+				output.close();
 
 				// the XMLSchemaUpdater manipulates the current schema and
 				// copies the included and imported schemas to the directory

@@ -253,6 +253,7 @@ public class XMLSchemaUpdater {
 				// copy to new directory
 				OutputStream output = new FileOutputStream(includednewFile);
 				ByteStreams.copy(input, output);
+				output.close();
 
 				// set new location in the xml schema
 				locationNode.setNodeValue(filename);
@@ -288,7 +289,6 @@ public class XMLSchemaUpdater {
 			// read yet so we have to update it
 			if (includednewFile != null) {
 				update(includednewFile, path, allResources);
-
 			}
 		}
 	}
