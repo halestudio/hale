@@ -88,7 +88,6 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		IOConfiguration config = getProject().getSaveConfiguration();
 		config.getProviderConfiguration().remove(PARAM_TARGET);
 		config.getProviderConfiguration().put(PARAM_TARGET, baseFile.toURI().toString());
-//		config.getProviderConfiguration().put(PARAM_TARGET, getTarget().getLocation().toString());
 		getProject().setSaveConfiguration(config);
 
 		// write project file via XMLProjectWriter
