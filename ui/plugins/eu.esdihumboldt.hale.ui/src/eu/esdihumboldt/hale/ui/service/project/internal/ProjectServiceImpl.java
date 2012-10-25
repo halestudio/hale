@@ -184,6 +184,10 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					main = provider.getProject();
 					updater.updateProject(main, provider.getSource().getLocation());
 					if ("file".equalsIgnoreCase(provider.getSource().getLocation().getScheme())) {
+						// the source of ArchiveProjectReader is a temporary
+						// directory. need the originally source to show the
+						// correct archive file in the RecentFilesService.
+						// otherwise complications with UILocationUpdater above
 						if (provider instanceof ArchiveProjectReader)
 							projectFile = new File(((ArchiveProjectReader) provider)
 									.getOriginallySource().getLocation());
