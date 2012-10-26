@@ -84,6 +84,7 @@
       <plugin id="eu.esdihumboldt.hale.server.webapp"/>
       <plugin id="eu.esdihumboldt.hale.server.webapp.branding.default" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.server.webapp.war"/>
+      <plugin id="eu.esdihumboldt.hale.server.webtransform.war"/>
       <plugin id="eu.esdihumboldt.util"/>
       <plugin id="eu.esdihumboldt.util.resource"/>
       <plugin id="eu.esdihumboldt.util.resource.schemas.citygml"/>
@@ -173,6 +174,7 @@
       <plugin id="eu.esdihumboldt.hale.server.security.user.simple" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.war" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.webapp.war" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.server.webtransform.war" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.registry" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.gemini.blueprint.core" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.gemini.blueprint.extender" autoStart="true" startLevel="2" />
