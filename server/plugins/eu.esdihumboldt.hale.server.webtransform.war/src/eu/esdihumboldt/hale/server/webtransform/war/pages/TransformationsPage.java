@@ -17,14 +17,15 @@ package eu.esdihumboldt.hale.server.webtransform.war.pages;
 
 import eu.esdihumboldt.hale.server.webapp.pages.BasePage;
 import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
+import eu.esdihumboldt.hale.server.webtransform.war.components.TransformationList;
 
 /**
  * Page listing transformation environments.
  * 
  * @author Simon Templer
  */
-@PageDescription(title = "Transformers")
-public class TransformersPage extends BasePage {
+@PageDescription(title = "Transformations")
+public class TransformationsPage extends BasePage {
 
 	/**
 	 * @see BasePage#addControls(boolean)
@@ -33,7 +34,7 @@ public class TransformersPage extends BasePage {
 	protected void addControls(boolean loggedIn) {
 		super.addControls(loggedIn);
 
-		// TODO
+		add(new TransformationList("transformations", true));
 	}
 
 }

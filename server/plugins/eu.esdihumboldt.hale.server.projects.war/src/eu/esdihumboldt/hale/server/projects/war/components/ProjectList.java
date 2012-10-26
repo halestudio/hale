@@ -74,7 +74,7 @@ public class ProjectList extends Panel {
 
 		};
 
-		final ListView<String> files = new ListView<String>("projects", projectsModel) {
+		final ListView<String> projectList = new ListView<String>("projects", projectsModel) {
 
 			private static final long serialVersionUID = -6740090246572869212L;
 
@@ -179,7 +179,7 @@ public class ProjectList extends Panel {
 			}
 
 		};
-		add(files);
+		add(projectList);
 
 		add(new WebComponent("noprojects") {
 
