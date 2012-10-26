@@ -15,7 +15,7 @@
 
 package eu.esdihumboldt.hale.server.webapp.pages;
 
-import org.apache.wicket.PageParameters;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 /**
  * A web page that only may be shown to a logged in user.
@@ -23,6 +23,8 @@ import org.apache.wicket.PageParameters;
  * @author Simon Templer
  */
 public abstract class SecuredPage extends BasePage {
+
+	private static final long serialVersionUID = -1274734579343448637L;
 
 	/**
 	 * @see BasePage#BasePage()

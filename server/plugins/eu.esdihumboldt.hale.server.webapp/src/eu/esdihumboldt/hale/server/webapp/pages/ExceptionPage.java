@@ -21,6 +21,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.request.http.WebResponse;
 import org.springframework.security.access.AccessDeniedException;
 
 import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
@@ -32,6 +33,8 @@ import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
  */
 @PageDescription(title = "Error")
 public class ExceptionPage extends BasePage {
+
+	private static final long serialVersionUID = 6090567597067611331L;
 
 	private final Map<Class<? extends Exception>, ExceptionInfo<?>> infos = new LinkedHashMap<Class<? extends Exception>, ExceptionInfo<?>>();
 
@@ -150,13 +153,12 @@ public class ExceptionPage extends BasePage {
 	}
 
 	/**
-	 * @see org.apache.wicket.markup.html.WebPage#configureResponse()
+	 * @see org.apache.wicket.markup.html.WebPage#configureResponse(WebResponse)
 	 */
 	@Override
-	protected void configureResponse() {
-		super.configureResponse();
-		getWebRequestCycle().getWebResponse().getHttpServletResponse()
-				.setStatus(getStatus(exception));
+	protected void configureResponse(WebResponse webResponse) {
+		super.configureResponse(webResponse);
+		webResponse.setStatus(getStatus(exception));
 	}
 
 	/**

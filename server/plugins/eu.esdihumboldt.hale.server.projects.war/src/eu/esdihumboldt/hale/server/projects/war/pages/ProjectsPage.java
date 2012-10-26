@@ -29,6 +29,8 @@ import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
 @PageDescription(title = "Projects")
 public class ProjectsPage extends SecuredPage {
 
+	private static final long serialVersionUID = 221216335635652135L;
+
 	/**
 	 * @see SecuredPage#addControls()
 	 */

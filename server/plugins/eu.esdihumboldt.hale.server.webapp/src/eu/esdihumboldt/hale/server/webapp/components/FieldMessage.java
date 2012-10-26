@@ -17,9 +17,11 @@
 package eu.esdihumboldt.hale.server.webapp.components;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
+import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.model.IModel;
@@ -39,6 +41,8 @@ public class FieldMessage extends Label {
 	private final IModel<String> text;
 
 	private final FormComponent<?> formComponent;
+
+//	private final FeedbackCollector collector;
 
 	private final boolean specialValidStyle;
 
@@ -69,6 +73,8 @@ public class FieldMessage extends Label {
 		this.text = text;
 		this.formComponent = formComponent;
 		this.specialValidStyle = specialValidStyle;
+//		this.collector = new FeedbackCollector(formComponent);
+//		collector.setIncludeSession(false);
 
 		setOutputMarkupId(true);
 	}
@@ -80,22 +86,25 @@ public class FieldMessage extends Label {
 	protected void onBeforeRender() {
 		super.onBeforeRender();
 
-		if (formComponent.getFeedbackMessage() != null) {
-			setDefaultModel(new Model<Serializable>(formComponent.getFeedbackMessage().getMessage()));
+		List<FeedbackMessage> msgs = formComponent.getFeedbackMessages().toList(); // collector.collect();
+		// only collect the last message (XXX correct like this?)
+		FeedbackMessage msg = (msgs.isEmpty()) ? (null) : (msgs.get(msgs.size() - 1));
+		if (msg != null) {
+			setDefaultModel(new Model<Serializable>(msg.getMessage()));
 
-			add(new AttributeModifier("class", true, new Model<String>(getCssClass(formComponent
-					.getFeedbackMessage().getLevelAsString()))));
+			add(new AttributeModifier("class", new Model<String>(
+					getCssClass(msg.getLevelAsString()))));
 		}
 		else {
 			if (specialValidStyle && formComponent.isValid() && formComponent.checkRequired()) {
 				setDefaultModel(new Model<String>(""));
 
-				add(new AttributeModifier("class", true, new Model<String>(getValidCssClass())));
+				add(new AttributeModifier("class", new Model<String>(getValidCssClass())));
 			}
 			else {
 				setDefaultModel(text);
 
-				add(new AttributeModifier("class", true, new Model<String>(getDefaultCssClass())));
+				add(new AttributeModifier("class", new Model<String>(getDefaultCssClass())));
 			}
 		}
 	}

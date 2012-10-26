@@ -59,7 +59,7 @@
 	</servlet>
 
 	<servlet>
-		<servlet-name>wicket</servlet-name>
+		<servlet-name>wicket-console</servlet-name>
 		<servlet-class>org.apache.wicket.protocol.http.WicketServlet</servlet-class>
 		<init-param>
 			<param-name>applicationFactoryClassName</param-name>
@@ -87,7 +87,7 @@
 
 	<!-- map wicket servlet -->
 	<servlet-mapping>
-		<servlet-name>wicket</servlet-name>
+		<servlet-name>wicket-console</servlet-name>
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
 </web-app>

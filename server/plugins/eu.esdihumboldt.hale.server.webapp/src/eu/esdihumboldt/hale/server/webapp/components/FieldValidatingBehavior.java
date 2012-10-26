@@ -75,13 +75,13 @@ public class FieldValidatingBehavior extends AjaxFormComponentUpdatingBehavior {
 		FormComponent<?> formComponent = getFormComponent();
 
 		if (formComponent.isValid() == valid) {
-			formComponent.add(new AttributeModifier("class", true, new Model<String>(
-					getCssClass(valid))));
-			target.addComponent(formComponent);
+			formComponent
+					.add(new AttributeModifier("class", new Model<String>(getCssClass(valid))));
+			target.add(formComponent);
 		}
 
 		if (component != null) {
-			target.addComponent(component);
+			target.add(component);
 		}
 	}
 

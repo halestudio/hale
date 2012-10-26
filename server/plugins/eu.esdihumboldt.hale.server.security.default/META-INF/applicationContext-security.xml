@@ -24,10 +24,10 @@
 		<intercept-url pattern="/login" access="ROLE_ANONYMOUS,ROLE_USER,ROLE_ADMIN" requires-channel="any" />
 		
 		<!-- resources needed for login page -->
-		<intercept-url pattern="/resources/org.apache.wicket.markup.html.WicketEventReference/wicket-event.js" access="ROLE_ANONYMOUS,ROLE_USER,ROLE_ADMIN" requires-channel="any" />
-		<intercept-url pattern="/resources/org.apache.wicket.ajax.WicketAjaxReference/wicket-ajax.js" access="ROLE_ANONYMOUS,ROLE_USER,ROLE_ADMIN" requires-channel="any" />
-		<intercept-url pattern="/resources/eu.esdihumboldt.hale.server.webapp.pages.BasePage/BasePage.css" access="ROLE_ANONYMOUS,ROLE_USER,ROLE_ADMIN" requires-channel="any" />
-		<intercept-url pattern="/resources/eu.esdihumboldt.hale.server.webapp.pages.BasePage/graphics/*" access="ROLE_ANONYMOUS,ROLE_USER,ROLE_ADMIN" requires-channel="any" />
+		<intercept-url pattern="/wicket/resource/org.apache.wicket.resource.JQueryResourceReference/jquery/jquery*.js" access="ROLE_ANONYMOUS,ROLE_USER,ROLE_ADMIN" requires-channel="any" />
+		<intercept-url pattern="/wicket/resource/org.apache.wicket.ajax.AbstractDefaultAjaxBehavior/res/js/wicket-event-jquery*.js" access="ROLE_ANONYMOUS,ROLE_USER,ROLE_ADMIN" requires-channel="any" />
+		<intercept-url pattern="/wicket/resource/eu.esdihumboldt.hale.server.webapp.pages.BasePage/BasePage*.css" access="ROLE_ANONYMOUS,ROLE_USER,ROLE_ADMIN" requires-channel="any" />
+		<intercept-url pattern="/wicket/resource/eu.esdihumboldt.hale.server.webapp.pages.BasePage/graphics/*" access="ROLE_ANONYMOUS,ROLE_USER,ROLE_ADMIN" requires-channel="any" />
 		
 		<!-- admin access -->
 		<intercept-url pattern="//console/**" access="ROLE_ADMIN" requires-channel="any" />

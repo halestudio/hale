@@ -47,6 +47,8 @@ import eu.esdihumboldt.hale.server.webapp.war.internal.Activator;
 @PageDescription(title = "Home", root = true)
 public class WelcomePage extends BasePage {
 
+	private static final long serialVersionUID = 4112352006256827014L;
+
 	/**
 	 * Header keys
 	 */

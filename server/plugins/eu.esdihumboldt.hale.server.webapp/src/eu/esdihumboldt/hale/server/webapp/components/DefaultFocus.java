@@ -17,36 +17,34 @@
 package eu.esdihumboldt.hale.server.webapp.components;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.behavior.AbstractBehavior;
-import org.apache.wicket.markup.html.IHeaderResponse;
+import org.apache.wicket.behavior.Behavior;
+import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.OnLoadHeaderItem;
 
 /**
  * Add this behavior to a component for it to have the focus.
  * 
  * @author Simon Templer
  */
-public class DefaultFocus extends AbstractBehavior {
+public class DefaultFocus extends Behavior {
 
 	private static final long serialVersionUID = -6001239595605543034L;
 
-	private Component component;
-
 	/**
-	 * @see AbstractBehavior#bind(Component)
+	 * @see Behavior#bind(Component)
 	 */
 	@Override
 	public void bind(Component component) {
-		this.component = component;
 		component.setOutputMarkupId(true);
 	}
 
 	/**
-	 * @see AbstractBehavior#renderHead(IHeaderResponse)
+	 * @see Behavior#renderHead(Component, IHeaderResponse)
 	 */
 	@Override
-	public void renderHead(IHeaderResponse iHeaderResponse) {
-		super.renderHead(iHeaderResponse);
-		iHeaderResponse.renderOnLoadJavascript("document.getElementById('"
-				+ component.getMarkupId() + "').focus();");
+	public void renderHead(Component component, IHeaderResponse iHeaderResponse) {
+		super.renderHead(component, iHeaderResponse);
+		iHeaderResponse.render(OnLoadHeaderItem.forScript("document.getElementById('"
+				+ component.getMarkupId() + "').focus();"));
 	}
 }

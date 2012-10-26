@@ -93,6 +93,7 @@
       <plugin id="eu.esdihumboldt.util.resource.schemas.opengis.net"/>
       <plugin id="eu.esdihumboldt.util.resource.schemas.test"/>
       <plugin id="gnu.trove"/>
+      <plugin id="javax.inject"/>
       <plugin id="javax.measure"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.xml"/>
@@ -105,10 +106,12 @@
       <plugin id="org.apache.commons.lang"/>
       <plugin id="org.apache.httpcomponents.httpclient"/>
       <plugin id="org.apache.httpcomponents.httpcore"/>
-      <plugin id="org.apache.wicket.wicket"/>
-      <plugin id="org.apache.wicket.wicket-extensions"/>
-      <plugin id="org.apache.wicket.wicket-ioc"/>
-      <plugin id="org.apache.wicket.wicket-spring"/>
+      <plugin id="org.apache.wicket.core"/>
+      <plugin id="org.apache.wicket.extensions"/>
+      <plugin id="org.apache.wicket.ioc"/>
+      <plugin id="org.apache.wicket.request"/>
+      <plugin id="org.apache.wicket.spring"/>
+      <plugin id="org.apache.wicket.util"/>
       <plugin id="org.apache.ws.commons.schema"/>
       <plugin id="org.apache.xerces"/>
       <plugin id="org.apache.xml.resolver"/>

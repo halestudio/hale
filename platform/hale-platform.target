@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="39">
+<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="41">
 <locations>
 <location path="${project_loc:hale-platform}/target/org.codehaus.groovy" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/net.sf.cglib" type="Directory"/>
@@ -53,7 +53,6 @@
 <location path="${project_loc:hale-platform}/target/javax.persistence" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/fr.inrialpes.exmo" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/au.com.bytecode" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/com.onespatial" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.eclipse.gemini" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.springframework" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/eu.esdihumboldt.hale.prefixmapper" type="Directory"/>
@@ -76,5 +75,7 @@
 <location path="${project_loc:hale-platform}/target/javax.xml.stream" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.eclipse.jetty" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.eclipse.zest" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/com.onespatial" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/javax.inject" type="Directory"/>
 </locations>
 </target>

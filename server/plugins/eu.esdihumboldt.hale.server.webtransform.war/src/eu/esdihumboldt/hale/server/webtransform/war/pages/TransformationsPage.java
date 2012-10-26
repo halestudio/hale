@@ -27,6 +27,8 @@ import eu.esdihumboldt.hale.server.webtransform.war.components.TransformationLis
 @PageDescription(title = "Transformations")
 public class TransformationsPage extends BasePage {
 
+	private static final long serialVersionUID = -6833840854005980199L;
+
 	/**
 	 * @see BasePage#addControls(boolean)
 	 */
