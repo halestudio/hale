@@ -18,16 +18,16 @@ package eu.esdihumboldt.hale.server.webapp.pages;
 
 import java.util.Calendar;
 
-import org.apache.wicket.PageParameters;
-import org.apache.wicket.ResourceReference;
-import org.apache.wicket.behavior.HeaderContributor;
-import org.apache.wicket.markup.html.CSSPackageResource;
+import org.apache.wicket.markup.head.CssReferenceHeaderItem;
+import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.request.resource.CssResourceReference;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -46,6 +46,8 @@ import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
  * @author Simon Templer
  */
 public abstract class BasePage extends WebPage {
+
+	private static final long serialVersionUID = 8363436886319254849L;
 
 	/**
 	 * Default constructor
@@ -97,16 +99,23 @@ public abstract class BasePage extends WebPage {
 	}
 
 	/**
+	 * @see org.apache.wicket.Component#renderHead(IHeaderResponse)
+	 */
+	@Override
+	public void renderHead(IHeaderResponse response) {
+		super.renderHead(response);
+
+		// add base css to page
+		response.render(CssReferenceHeaderItem.forReference(new CssResourceReference(
+				BasePage.class, BasePage.class.getSimpleName() + ".css")));
+	}
+
+	/**
 	 * Add page controls
 	 * 
 	 * @param loggedIn if a user is logged in
 	 */
 	protected void addControls(boolean loggedIn) {
-		// add base css to page
-		HeaderContributor css = CSSPackageResource.getHeaderContribution(new ResourceReference(
-				BasePage.class, BasePage.class.getSimpleName() + ".css"));
-		add(css);
-
 		// set link to home page
 		WebApplication app = (WebApplication) this.getApplication();
 
@@ -156,5 +165,4 @@ public abstract class BasePage extends WebPage {
 
 		add(new SimpleBreadcrumbPanel("breadcrumb", this.getClass(), "Home", "/"));
 	}
-
 }

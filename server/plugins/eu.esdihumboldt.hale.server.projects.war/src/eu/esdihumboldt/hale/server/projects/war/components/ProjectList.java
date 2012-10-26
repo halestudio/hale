@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.server.projects.war.components;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.wicket.behavior.SimpleAttributeModifier;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.WebComponent;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -86,7 +86,7 @@ public class ProjectList extends Panel {
 			@Override
 			protected void populateItem(ListItem<String> item) {
 				if (odd) {
-					item.add(new SimpleAttributeModifier("class", "odd"));
+					item.add(AttributeModifier.replace("class", "odd"));
 				}
 				odd = !odd;
 
@@ -118,8 +118,8 @@ public class ProjectList extends Panel {
 					statusTitle = "Project file missing or not set";
 				}
 				WebComponent statusImage = new WebComponent("status");
-				statusImage.add(new SimpleAttributeModifier("src", statusImagePath));
-				statusImage.add(new SimpleAttributeModifier("title", statusTitle));
+				statusImage.add(AttributeModifier.replace("src", statusImagePath));
+				statusImage.add(AttributeModifier.replace("title", statusTitle));
 				item.add(statusImage);
 
 				// action
@@ -163,8 +163,8 @@ public class ProjectList extends Panel {
 					break;
 				}
 				WebComponent actionImage = new WebComponent("image");
-				actionImage.add(new SimpleAttributeModifier("src", actionImagePath));
-				actionImage.add(new SimpleAttributeModifier("title", actionTitle));
+				actionImage.add(AttributeModifier.replace("src", actionImagePath));
+				actionImage.add(AttributeModifier.replace("title", actionTitle));
 				actionLink.add(actionImage);
 				actionLink.setVisible(showAction);
 				item.add(actionLink);

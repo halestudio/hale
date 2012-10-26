@@ -27,6 +27,8 @@ import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
 @PageDescription(title = "Upload", parent = ProjectsPage.class)
 public class UploadPage extends SecuredPage {
 
+	private static final long serialVersionUID = 6946535530058858323L;
+
 	/**
 	 * @see SecuredPage#addControls()
 	 */

@@ -15,12 +15,7 @@
 
 package eu.esdihumboldt.hale.server.projects.war;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.wicket.Page;
-import org.apache.wicket.extensions.ajax.markup.html.form.upload.UploadWebRequest;
-import org.apache.wicket.protocol.http.WebApplication;
-import org.apache.wicket.protocol.http.WebRequest;
 
 import eu.esdihumboldt.hale.server.projects.war.pages.ProjectsPage;
 import eu.esdihumboldt.hale.server.projects.war.pages.UploadPage;
@@ -42,22 +37,13 @@ public class ProjectsApplication extends BaseWebApplication {
 	}
 
 	/**
-	 * @see WebApplication#newWebRequest(HttpServletRequest)
-	 */
-	@Override
-	protected WebRequest newWebRequest(HttpServletRequest servletRequest) {
-		// support for upload progress
-		return new UploadWebRequest(servletRequest);
-	}
-
-	/**
 	 * @see BaseWebApplication#init()
 	 */
 	@Override
 	public void init() {
 		super.init();
 
-		mountBookmarkablePage("/upload", UploadPage.class);
+		mountPage("/upload", UploadPage.class);
 	}
 
 }

@@ -15,8 +15,8 @@
 
 package eu.esdihumboldt.hale.server.webapp.pages;
 
-import org.apache.wicket.markup.html.IHeaderContributor;
-import org.apache.wicket.markup.html.IHeaderResponse;
+import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.OnLoadHeaderItem;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 
 import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
@@ -27,7 +27,9 @@ import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
  * @author Simon Templer
  */
 @PageDescription(title = "Login")
-public class LoginPage extends BasePage implements IHeaderContributor {
+public class LoginPage extends BasePage {
+
+	private static final long serialVersionUID = -4327575549717532905L;
 
 	/**
 	 * Name of the failure parameter
@@ -59,7 +61,8 @@ public class LoginPage extends BasePage implements IHeaderContributor {
 	protected void addControls(boolean loggedIn) {
 		super.addControls(loggedIn);
 
-		String failureName = getRequest().getParameter(PARAM_FAILURE);
+		String failureName = getRequest().getRequestParameters().getParameterValue(PARAM_FAILURE)
+				.toOptionalString();
 
 		if (failureName != null) {
 			Failure failure;
@@ -90,8 +93,10 @@ public class LoginPage extends BasePage implements IHeaderContributor {
 
 	@Override
 	public void renderHead(IHeaderResponse response) {
+		super.renderHead(response);
+
 		// set focus to username field
-		response.renderOnLoadJavascript("document.f.j_username.focus();");
+		response.render(OnLoadHeaderItem.forScript("document.f.j_username.focus();"));
 	}
 
 }

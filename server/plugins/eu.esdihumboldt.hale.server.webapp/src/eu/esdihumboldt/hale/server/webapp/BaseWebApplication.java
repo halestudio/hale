@@ -16,15 +16,14 @@
 
 package eu.esdihumboldt.hale.server.webapp;
 
-import org.apache.wicket.Page;
-import org.apache.wicket.Request;
-import org.apache.wicket.RequestCycle;
-import org.apache.wicket.Response;
 import org.apache.wicket.authorization.strategies.page.SimplePageAuthorizationStrategy;
+import org.apache.wicket.core.request.handler.PageProvider;
+import org.apache.wicket.core.request.handler.RenderPageRequestHandler;
 import org.apache.wicket.protocol.http.WebApplication;
-import org.apache.wicket.protocol.http.WebRequest;
-import org.apache.wicket.protocol.http.WebRequestCycle;
-import org.apache.wicket.protocol.http.WebResponse;
+import org.apache.wicket.request.IRequestHandler;
+import org.apache.wicket.request.cycle.AbstractRequestCycleListener;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -34,7 +33,6 @@ import eu.esdihumboldt.hale.server.security.UserConstants;
 import eu.esdihumboldt.hale.server.webapp.pages.ExceptionPage;
 import eu.esdihumboldt.hale.server.webapp.pages.LoginPage;
 import eu.esdihumboldt.hale.server.webapp.pages.SecuredPage;
-import eu.esdihumboldt.hale.server.webapp.util.DynamicSpringComponentInjector;
 
 /**
  * A basic class for web applications
@@ -104,28 +102,21 @@ public abstract class BaseWebApplication extends WebApplication {
 
 				});
 
-		addComponentInstantiationListener(new DynamicSpringComponentInjector());
+		getComponentInstantiationListeners().add(new SpringComponentInjector(this));
+
+		getRequestCycleListeners().add(new AbstractRequestCycleListener() {
+
+			@Override
+			public IRequestHandler onException(RequestCycle cycle, Exception ex) {
+				return new RenderPageRequestHandler(new PageProvider(new ExceptionPage(ex)));
+			}
+		});
 
 		// add login page to every application based on this one
 		// XXX make configurable?
 
 		// login page
-		mountBookmarkablePage("/login", LoginPage.class);
-	}
-
-	/**
-	 * @see WebApplication#newRequestCycle(Request, Response)
-	 */
-	@Override
-	public RequestCycle newRequestCycle(Request request, Response response) {
-		return new WebRequestCycle(this, (WebRequest) request, (WebResponse) response) {
-
-			@Override
-			public Page onRuntimeException(Page page, RuntimeException e) {
-				return new ExceptionPage(e);
-			}
-
-		};
+		mountPage("/login", LoginPage.class);
 	}
 
 }

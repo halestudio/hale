@@ -27,6 +27,8 @@ import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
 @PageDescription(title = "Console")
 public class WelcomePage extends SecuredPage {
 
+	private static final long serialVersionUID = -1394082788930930935L;
+
 	/**
 	 * Default constructor
 	 */
