@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.server.webtransform.war;
 import org.apache.wicket.Page;
 
 import eu.esdihumboldt.hale.server.webapp.BaseWebApplication;
-import eu.esdihumboldt.hale.server.webtransform.war.pages.TransformersPage;
+import eu.esdihumboldt.hale.server.webtransform.war.pages.TransformationsPage;
 
 /**
  * Web transformation webapp.
@@ -32,7 +32,7 @@ public class WebTransformApplication extends BaseWebApplication {
 	 */
 	@Override
 	public Class<? extends Page> getHomePage() {
-		return TransformersPage.class;
+		return TransformationsPage.class;
 	}
 
 }

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:wicket="http://wicket.sourceforge.net/"
+	xml:lang="en">
+<body>
+<wicket:panel>
+	<table class="no-stretch">
+		<thead>
+			<tr wicket:id="caption">
+				<td>Identifier</td>
+				<td>Name</td>
+			</tr>
+		</thead>
+		<tbody wicket:id="transformations">
+			<tr class="odd">
+				<td wicket:id="identifier" style="font-family: monospace; vertical-align: middle">[Identifier]</td>
+				<td wicket:id="name" style="vertical-align: middle">[Name]</td>
+			</tr>
+			<tr style="font-size: 0.9em;">
+				<td></td>
+				<td>
+					<a><img src="images/doctrans.gif" />&nbsp;Upload and transform</a>
+				</td>
+			</tr>
+			<tr style="height: 12px;"><td></td><td></td></tr>
+		</tbody>
+	</table>
+	<p wicket:id="notransformations">No transformations available</p>
+</wicket:panel>
+</body>
+</html>
+  

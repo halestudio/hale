@@ -453,6 +453,10 @@ tbody tr.odd {
 	background-color: #f6f6f6;
 }
 
+tbody.odd tr {
+	background-color: #f6f6f6;
+}
+
 table input[type=text] {
 	width: 100%;
 }
