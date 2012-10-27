@@ -18,7 +18,6 @@ package eu.esdihumboldt.hale.server.webtransform.war.components;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.wicket.markup.html.WebComponent;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -55,12 +54,7 @@ public class TransformationList extends Panel {
 	public TransformationList(String id, boolean showCaption) {
 		super(id);
 
-		// caption
-		WebMarkupContainer caption = new WebMarkupContainer("caption");
-		caption.setVisible(showCaption);
-		add(caption);
-
-		// attachment list
+		// transformations list
 		final IModel<? extends List<TransformationEnvironment>> transformationsModel = new LoadableDetachableModel<List<TransformationEnvironment>>() {
 
 			private static final long serialVersionUID = 7277175702043541004L;
@@ -106,16 +100,14 @@ public class TransformationList extends Panel {
 		};
 		add(transformationList);
 
-		add(new WebComponent("notransformations") {
+		boolean noTransformations = transformationsModel.getObject().isEmpty();
 
-			private static final long serialVersionUID = 3116030626059724802L;
+		// caption
+		WebMarkupContainer caption = new WebMarkupContainer("caption");
+		caption.setVisible(showCaption && !noTransformations);
+		add(caption);
 
-			@Override
-			public boolean isVisible() {
-				return transformationsModel.getObject().isEmpty();
-			}
-
-		});
+		add(new WebMarkupContainer("notransformations").setVisible(noTransformations));
 	}
 
 }
