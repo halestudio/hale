@@ -57,12 +57,7 @@ public class ProjectList extends Panel {
 	public ProjectList(String id, boolean showCaption) {
 		super(id);
 
-		// caption
-		WebMarkupContainer caption = new WebMarkupContainer("caption");
-		caption.setVisible(showCaption);
-		add(caption);
-
-		// attachment list
+		// projects list
 		final IModel<? extends List<String>> projectsModel = new LoadableDetachableModel<List<String>>() {
 
 			private static final long serialVersionUID = 7277175702043541004L;
@@ -181,16 +176,14 @@ public class ProjectList extends Panel {
 		};
 		add(projectList);
 
-		add(new WebComponent("noprojects") {
+		boolean noProjects = projectsModel.getObject().isEmpty();
 
-			private static final long serialVersionUID = 3116030626059724802L;
+		// caption
+		WebMarkupContainer caption = new WebMarkupContainer("caption");
+		caption.setVisible(showCaption && !noProjects);
+		add(caption);
 
-			@Override
-			public boolean isVisible() {
-				return projectsModel.getObject().isEmpty();
-			}
-
-		});
+		add(new WebMarkupContainer("noprojects").setVisible(noProjects));
 	}
 
 }
