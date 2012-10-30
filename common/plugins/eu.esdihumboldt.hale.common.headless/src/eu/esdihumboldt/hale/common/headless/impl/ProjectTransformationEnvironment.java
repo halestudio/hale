@@ -18,14 +18,26 @@ package eu.esdihumboldt.hale.common.headless.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
+import com.google.common.base.Strings;
+
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
+import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
+import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.headless.TransformationEnvironment;
+import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
+import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 
 /**
@@ -34,6 +46,9 @@ import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
  * @author Simon Templer
  */
 public class ProjectTransformationEnvironment implements TransformationEnvironment {
+
+	private static final ALogger log = ALoggerFactory
+			.getLogger(ProjectTransformationEnvironment.class);
 
 	private final Project project;
 
@@ -44,6 +59,10 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 	private final SchemaSpace targetSchema;
 
 	private final Alignment alignment;
+
+	private final List<IOConfiguration> exportTemplates = new ArrayList<IOConfiguration>();
+
+	private final List<IOConfiguration> exportPresets = new ArrayList<IOConfiguration>();
 
 	/**
 	 * Create a transformation environment based on a project file.
@@ -87,6 +106,73 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 	 */
 	protected void init(Project project) {
 		// TODO import/export configurations for data
+
+		// export presets
+		for (IOConfiguration conf : project.getResources()) {
+			if (InstanceIO.ACTION_SAVE_TRANSFORMED_DATA.equals(conf.getActionId())) {
+				// configuration for data export
+				IOConfiguration c = conf.clone();
+
+				// check provider
+				IOProviderDescriptor factory = HaleIO.findIOProviderFactory(InstanceWriter.class,
+						null, c.getProviderId());
+				if (factory != null) {
+					if (Strings.isNullOrEmpty(c.getName())) {
+						c.setName(factory.getDisplayName());
+					}
+					exportPresets.add(c);
+				}
+				else {
+					log.error("I/O provider for export preset not found.");
+				}
+			}
+		}
+
+		// export templates
+		Collection<IOProviderDescriptor> writerFactories = HaleIO
+				.getProviderFactories(InstanceWriter.class);
+		for (IOProviderDescriptor factory : writerFactories) {
+			try {
+				InstanceWriter writer = (InstanceWriter) factory.createExtensionObject();
+				writer.setTargetSchema(getTargetSchema());
+
+				writer.checkCompatibility();
+
+				IOConfiguration conf = new IOConfiguration();
+				conf.setActionId(InstanceIO.ACTION_SAVE_TRANSFORMED_DATA);
+				conf.setProviderId(factory.getIdentifier());
+				conf.setName(factory.getDisplayName());
+				exportTemplates.add(conf);
+			} catch (IOProviderConfigurationException e) {
+				// ignore
+			} catch (Exception e) {
+				log.error("Error initializing instance writer for testing compatibility", e);
+			}
+		}
+	}
+
+	/**
+	 * @see TransformationEnvironment#getExportPresets()
+	 */
+	@Override
+	public Collection<? extends IOConfiguration> getExportPresets() {
+		List<IOConfiguration> result = new ArrayList<IOConfiguration>();
+		for (IOConfiguration conf : exportPresets) {
+			result.add(conf.clone());
+		}
+		return result;
+	}
+
+	/**
+	 * @see TransformationEnvironment#getExportTemplates()
+	 */
+	@Override
+	public Collection<? extends IOConfiguration> getExportTemplates() {
+		List<IOConfiguration> result = new ArrayList<IOConfiguration>();
+		for (IOConfiguration conf : exportTemplates) {
+			result.add(conf.clone());
+		}
+		return result;
 	}
 
 	@Override
