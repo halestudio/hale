@@ -13,7 +13,8 @@
 				<td>Name</td>
 			</tr>
 		</thead>
-		<tbody wicket:id="transformations">
+		<tbody>
+			<wicket:container wicket:id="transformations">
 			<tr class="odd">
 				<td wicket:id="identifier" style="font-family: monospace; vertical-align: middle">[Identifier]</td>
 				<td wicket:id="name" style="vertical-align: middle">[Name]</td>
@@ -21,10 +22,11 @@
 			<tr style="font-size: 0.9em;">
 				<td></td>
 				<td>
-					<a><img src="images/doctrans.gif" />&nbsp;Upload and transform</a>
+					<a wicket:id="upload"><img src="images/doctrans.gif" />&nbsp;Upload and transform</a>
 				</td>
 			</tr>
 			<tr style="height: 12px;"><td></td><td></td></tr>
+			</wicket:container>
 		</tbody>
 	</table>
 	<p wicket:id="notransformations" style="font-style: italic;">No transformations available</p>
