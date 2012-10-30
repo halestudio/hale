@@ -5,7 +5,8 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.server.webapp
 Bundle-Version: 2.5.0.qualifier
 Bundle-Vendor: Data Harmonisation Panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: eu.esdihumboldt.hale.server.security,
+Import-Package: de.cs3d.util.logging,
+ eu.esdihumboldt.hale.server.security,
  eu.esdihumboldt.util,
  javax.servlet;version="2.5.0",
  javax.servlet.http;version="2.5.0",

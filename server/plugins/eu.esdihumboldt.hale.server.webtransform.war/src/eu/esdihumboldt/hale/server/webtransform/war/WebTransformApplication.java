@@ -19,6 +19,7 @@ import org.apache.wicket.Page;
 
 import eu.esdihumboldt.hale.server.webapp.BaseWebApplication;
 import eu.esdihumboldt.hale.server.webtransform.war.pages.TransformationsPage;
+import eu.esdihumboldt.hale.server.webtransform.war.pages.UploadPage;
 
 /**
  * Web transformation webapp.
@@ -26,6 +27,16 @@ import eu.esdihumboldt.hale.server.webtransform.war.pages.TransformationsPage;
  * @author Simon Templer
  */
 public class WebTransformApplication extends BaseWebApplication {
+
+	/**
+	 * @see eu.esdihumboldt.hale.server.webapp.BaseWebApplication#init()
+	 */
+	@Override
+	public void init() {
+		super.init();
+
+		mountPage("/upload/${" + UploadPage.PARAMETER_PROJECT + "}", UploadPage.class);
+	}
 
 	/**
 	 * @see org.apache.wicket.Application#getHomePage()
