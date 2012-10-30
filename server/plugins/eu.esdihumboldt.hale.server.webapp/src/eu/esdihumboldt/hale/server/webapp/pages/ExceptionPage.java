@@ -24,6 +24,8 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.request.http.WebResponse;
 import org.springframework.security.access.AccessDeniedException;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
 
 /**
@@ -33,6 +35,8 @@ import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
  */
 @PageDescription(title = "Error")
 public class ExceptionPage extends BasePage {
+
+	private static final ALogger log = ALoggerFactory.getLogger(ExceptionPage.class);
 
 	private static final long serialVersionUID = 6090567597067611331L;
 
@@ -76,6 +80,9 @@ public class ExceptionPage extends BasePage {
 	@SuppressWarnings("unchecked")
 	public ExceptionPage(Exception e) {
 		this.exception = e;
+
+		// log exception
+		log.error("Wicket internal error: " + e.getMessage(), e);
 
 		// custom exception handling
 		// TODO make this extendable/configurable?
