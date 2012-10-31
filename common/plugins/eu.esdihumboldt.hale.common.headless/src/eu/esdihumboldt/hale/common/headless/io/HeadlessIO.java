@@ -86,21 +86,8 @@ public abstract class HeadlessIO {
 		}
 
 		// ... and provider
-		IOProvider provider = null;
-		IOProviderDescriptor descriptor = IOProviderExtension.getInstance().getFactory(
-				conf.getProviderId());
-		if (descriptor != null) {
-			try {
-				provider = descriptor.createExtensionObject();
-			} catch (Exception e) {
-				throw new IOException(
-						MessageFormat.format(
-								"Could not execute I/O configuration, provider with ID {0} could not be created.",
-								conf.getProviderId()), e);
-			}
-
-			// configure settings
-			provider.loadConfiguration(conf.getProviderConfiguration());
+		IOProvider provider = loadProvider(conf);
+		if (provider != null) {
 			// execute provider
 			executeProvider(provider, advisor, null, reportHandler);
 			// XXX progress?!!
@@ -110,6 +97,32 @@ public abstract class HeadlessIO {
 					"Could not execute I/O configuration, provider with ID {0} not found.",
 					conf.getProviderId()));
 		}
+	}
+
+	/**
+	 * Load and configure the I/O provider specified by the given I/O
+	 * configuration.
+	 * 
+	 * @param conf the I/O configuration
+	 * @return the provider or <code>null</code> if it was not found or could
+	 *         not be created
+	 */
+	public static IOProvider loadProvider(IOConfiguration conf) {
+		IOProvider provider = null;
+		IOProviderDescriptor descriptor = IOProviderExtension.getInstance().getFactory(
+				conf.getProviderId());
+		if (descriptor != null) {
+			try {
+				provider = descriptor.createExtensionObject();
+
+				// configure settings
+				provider.loadConfiguration(conf.getProviderConfiguration());
+			} catch (Exception e) {
+				log.error("Could not instantiate I/O provider.", e);
+			}
+		}
+
+		return provider;
 	}
 
 	/**

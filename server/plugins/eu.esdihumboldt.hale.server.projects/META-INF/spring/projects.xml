@@ -35,6 +35,44 @@
 		class="eu.esdihumboldt.hale.server.projects.internal.ProjectCommands">
 		<property name="projects" ref="scavenger" />
 	</bean>
+	
+	<!-- workspace service -->
+	<bean id="workspaces"
+		class="eu.esdihumboldt.hale.server.projects.impl.WorkspaceServiceImpl">
+		<constructor-arg value="${hale.workspacesloc}" />
+	</bean>
+	
+	<!-- Jobs -->
+    <bean id="workspacesJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="workspaces"/>
+		<property name="targetMethod" value="trigger"/>
+		<property name="concurrent" value="false"/>
+	</bean>
+	
+	<!-- Triggers -->
+	<bean id="workspacesTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+	    <property name="jobDetail" ref="workspacesJob" />
+	    <!-- 30 seconds -->
+	    <property name="startDelay" value="30000" />
+	    <!-- repeat every 600 seconds -->
+	    <property name="repeatInterval" value="600000" />
+	</bean>
+	
+	<!-- bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	    <property name="jobDetail" ref="jobDetail" />
+		<!- run every morning at 3 AM ->
+	    <property name="cronExpression" value="0 0 3 * * ?" />
+	</bean -->
+	
+	<!-- Scheduler -->
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+	    <property name="triggers">
+	        <list>
+	            <!-- ref bean="cronTrigger" /-->
+	            <ref bean="workspacesTrigger" />
+	        </list>
+	    </property>
+	</bean>
 
 	<!-- role voter -->
 	<bean id="roleVoter" class="org.springframework.security.access.vote.RoleVoter" />

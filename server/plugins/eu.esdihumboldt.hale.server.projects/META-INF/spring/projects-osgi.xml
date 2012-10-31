@@ -20,6 +20,10 @@
 	<osgi:service interface="org.eclipse.osgi.framework.console.CommandProvider"
 		ref="projectCommands" />
 		
+	<!-- workspace service -->
+	<osgi:service id="workspaceService"
+		interface="eu.esdihumboldt.hale.server.projects.WorkspaceService" ref="workspaces" />
+		
 	<!-- user details service (security) -->
 	<osgi:reference
 		id="userDetailsService"

@@ -46,6 +46,7 @@
       <plugin id="com.springsource.org.apache.xmlbeans"/>
       <plugin id="com.springsource.org.castor"/>
       <plugin id="com.springsource.org.picocontainer"/>
+      <plugin id="com.springsource.org.quartz"/>
       <plugin id="com.vividsolutions.jts"/>
       <plugin id="de.cs3d.util.eclipse"/>
       <plugin id="de.cs3d.util.logging"/>
@@ -99,6 +100,8 @@
       <plugin id="javax.servlet"/>
       <plugin id="javax.xml"/>
       <plugin id="jcl.over.slf4j"/>
+      <plugin id="joda-time"/>
+      <plugin id="jsr305"/>
       <plugin id="jul.to.slf4j"/>
       <plugin id="log4j.over.slf4j"/>
       <plugin id="net.sf.ehcache"/>
@@ -163,6 +166,7 @@
       <plugin id="org.springframework.security.config"/>
       <plugin id="org.springframework.security.core"/>
       <plugin id="org.springframework.security.web"/>
+      <plugin id="org.springframework.transaction"/>
       <plugin id="org.springframework.web"/>
       <plugin id="org.springframework.web.servlet"/>
       <plugin id="slf4j.ext"/>
