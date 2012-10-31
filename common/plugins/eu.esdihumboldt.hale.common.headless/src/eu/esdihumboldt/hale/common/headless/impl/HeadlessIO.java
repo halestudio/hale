@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.common.core.io.extension.IOProviderExtension;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.report.ReportHandler;
 
 /**
  * Utilities for headless execution of I/O configurations and providers.
@@ -48,13 +49,14 @@ public abstract class HeadlessIO {
 	 * 
 	 * @param configurations the I/O configurations
 	 * @param advisors map of advisors, action ID mapped to responsible advisor
+	 * @param reportHandler the report handler, may be <code>null</code>
 	 * @throws IOException if an error occurs executing a configuration
 	 */
 	public static void executeConfigurations(final List<IOConfiguration> configurations,
-			Map<String, IOAdvisor<?>> advisors) throws IOException {
+			Map<String, IOAdvisor<?>> advisors, ReportHandler reportHandler) throws IOException {
 		// TODO sort by dependencies?
 		for (IOConfiguration conf : configurations) {
-			executeConfiguration(conf, advisors);
+			executeConfiguration(conf, advisors, reportHandler);
 		}
 	}
 
@@ -64,10 +66,11 @@ public abstract class HeadlessIO {
 	 * 
 	 * @param conf the I/O configuration
 	 * @param advisors map of advisors, action ID mapped to responsible advisor
+	 * @param reportHandler the report handler, may be <code>null</code>
 	 * @throws IOException if an error occurs executing a configuration
 	 */
-	public static void executeConfiguration(IOConfiguration conf, Map<String, IOAdvisor<?>> advisors)
-			throws IOException {
+	public static void executeConfiguration(IOConfiguration conf,
+			Map<String, IOAdvisor<?>> advisors, ReportHandler reportHandler) throws IOException {
 		// get advisor ...
 		final String actionId = conf.getActionId();
 		IOAdvisor<?> advisor = advisors.get(actionId);
@@ -95,7 +98,8 @@ public abstract class HeadlessIO {
 			// configure settings
 			provider.loadConfiguration(conf.getProviderConfiguration());
 			// execute provider
-			executeProvider(provider, advisor, null); // XXX progress?!!
+			executeProvider(provider, advisor, null, reportHandler);
+			// XXX progress?!!
 		}
 		else {
 			throw new IOException(MessageFormat.format(
@@ -110,12 +114,13 @@ public abstract class HeadlessIO {
 	 * @param provider the I/O provider
 	 * @param advisor the I/O advisor
 	 * @param progress the progress indicator
+	 * @param reportHandler the report handler, may be <code>null</code>
 	 * @throws IOException if executing the provider fails
 	 */
 	@SuppressWarnings("unchecked")
 	public static void executeProvider(final IOProvider provider,
-			@SuppressWarnings("rawtypes") final IOAdvisor advisor, ProgressIndicator progress)
-			throws IOException {
+			@SuppressWarnings("rawtypes") final IOAdvisor advisor, ProgressIndicator progress,
+			ReportHandler reportHandler) throws IOException {
 		IOReporter reporter = provider.createReporter();
 		ATransaction trans = log.begin(reporter.getTaskName());
 		try {
@@ -125,8 +130,9 @@ public abstract class HeadlessIO {
 
 			// execute
 			IOReport report = provider.execute(progress);
-
-			// TODO do anything with the report?
+			if (reportHandler != null) {
+				reportHandler.publishReport(report);
+			}
 
 			// handle results
 			if (report.isSuccess()) {

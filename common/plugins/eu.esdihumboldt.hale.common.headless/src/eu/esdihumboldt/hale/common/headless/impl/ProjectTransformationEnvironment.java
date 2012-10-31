@@ -35,6 +35,7 @@ import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
+import eu.esdihumboldt.hale.common.core.report.ReportHandler;
 import eu.esdihumboldt.hale.common.headless.TransformationEnvironment;
 import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
@@ -69,10 +70,13 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 	 * 
 	 * @param id the identifier for the transformation environment
 	 * @param input the project file input
+	 * @param reportHandler the report handler for the reports during project
+	 *            loading, may be <code>null</code>
 	 * @throws IOException if loading the project fails
 	 */
 	public ProjectTransformationEnvironment(String id,
-			LocatableInputSupplier<? extends InputStream> input) throws IOException {
+			LocatableInputSupplier<? extends InputStream> input, ReportHandler reportHandler)
+			throws IOException {
 		super();
 		this.id = id;
 
@@ -84,9 +88,10 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 			// configure reader
 			reader.setSource(input);
 
-			HeadlessProjectAdvisor advisor = new HeadlessProjectAdvisor();
-			HeadlessIO.executeProvider(reader, advisor, null); // XXX
-																// progress???!!
+			HeadlessProjectAdvisor advisor = new HeadlessProjectAdvisor(reportHandler);
+			HeadlessIO.executeProvider(reader, advisor, null, reportHandler);
+			// XXX progress???!!
+
 			project = advisor.getProject();
 			sourceSchema = advisor.getSourceSchema();
 			targetSchema = advisor.getTargetSchema();
