@@ -76,7 +76,9 @@ public class IOReportImplDefinition extends AbstractReportDefinition<IOReport, I
 	protected Properties asProperties(IOReport report) {
 		Properties props = super.asProperties(report);
 
-		props.setProperty(KEY_IOREPORT_TARGET, report.getTarget().getLocation().toString());
+		if (report.getTarget().getLocation() != null) {
+			props.setProperty(KEY_IOREPORT_TARGET, report.getTarget().getLocation().toString());
+		}
 
 		return props;
 	}

@@ -15,7 +15,11 @@
 
 package eu.esdihumboldt.hale.server.webtransform.war.pages;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -33,10 +37,21 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
+import org.joda.time.Duration;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
+import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.headless.EnvironmentService;
 import eu.esdihumboldt.hale.common.headless.TransformationEnvironment;
+import eu.esdihumboldt.hale.common.headless.io.HeadlessIO;
+import eu.esdihumboldt.hale.common.headless.report.ReportFile;
+import eu.esdihumboldt.hale.common.headless.transform.Transformation;
+import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
+import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
+import eu.esdihumboldt.hale.server.projects.WorkspaceService;
 
 /**
  * Form for uploading and transforming data.
@@ -49,6 +64,9 @@ public class UploadAndTransForm extends Form<Void> {
 
 	@SpringBean
 	private EnvironmentService environmentService;
+
+	@SpringBean
+	private WorkspaceService workspaceService;
 
 	private final String projectId;
 
@@ -143,7 +161,50 @@ public class UploadAndTransForm extends Form<Void> {
 	protected void onSubmit() {
 		List<FileUpload> uploads = file.getFileUploads();
 
-		super.onSubmit();
+		TransformationEnvironment env = environmentService.getEnvironment(projectId);
+
+		if (env != null) {
+			List<InstanceReader> readers = Lists.transform(uploads,
+					new Function<FileUpload, InstanceReader>() {
+
+						@Override
+						public InstanceReader apply(@Nullable FileUpload input) {
+							InstanceReader reader = null;
+							try {
+								// XXX not really necessary here to use
+								// findImportProvider, HaleIO.findIOProvider
+								// could be used instead
+								reader = HeadlessIO.findImportProvider(InstanceReader.class,
+										input.getInputStream());
+							} catch (IOException e) {
+								throw new IllegalStateException(
+										"Unable to read uploaded source file", e);
+							}
+							if (reader == null) {
+								throw new IllegalStateException(
+										"Could not find I/O provider for source file.");
+							}
+							return reader;
+						}
+					});
+
+			InstanceWriter writer = (InstanceWriter) HeadlessIO.loadProvider(target);
+
+			// lease workspace folder
+			File workspace = workspaceService.leaseWorkspace(Duration.standardDays(1));
+			// report file
+			File reportFile = new File(workspace, "reports.log");
+			// output file
+			File out = new File(workspace, "out.xml"); // TODO file extension
+			writer.setTarget(new FileIOSupplier(out));
+
+			Transformation.transform(readers, writer, env, new ReportFile(reportFile));
+
+			info("Transformation started: " + workspace.getName());
+		}
+		else {
+			error("Could not retrieve associated transformation environment, please ensure the corresponding project is activated.");
+		}
 	}
 
 	/**
