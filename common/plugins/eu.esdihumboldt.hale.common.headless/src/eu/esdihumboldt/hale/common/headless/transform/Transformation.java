@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.transformation;
+package eu.esdihumboldt.hale.common.headless.transform;
 
 import java.io.File;
 
@@ -32,6 +32,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.functions.RetypeFunction;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReport;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
+import eu.esdihumboldt.hale.common.core.io.ProgressMonitorIndicator;
 import eu.esdihumboldt.hale.common.core.report.ReportHandler;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -39,7 +40,6 @@ import eu.esdihumboldt.hale.common.instance.orient.storage.BrowseOrientInstanceC
 import eu.esdihumboldt.hale.common.instance.orient.storage.LocalOrientDB;
 import eu.esdihumboldt.hale.common.instance.orient.storage.StoreInstancesJob;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
-import eu.esdihumboldt.hale.ui.io.util.ProgressMonitorIndicator;
 
 /**
  * Utility class for handling batch transformation. Uses {@link ExportJob} and
@@ -66,10 +66,9 @@ public class Transformation {
 	 * @param sourceSchema the source schema
 	 * @param reportHandler the report handler
 	 */
-	public static void transform(InstanceCollection sources,
-			final TransformDataInstanceSink targetSink, final ExportJob exportJob,
-			final ValidationJob validationJob, final Alignment alignment, SchemaSpace sourceSchema,
-			final ReportHandler reportHandler) {
+	public static void transform(InstanceCollection sources, final LimboInstanceSink targetSink,
+			final ExportJob exportJob, final ValidationJob validationJob,
+			final Alignment alignment, SchemaSpace sourceSchema, final ReportHandler reportHandler) {
 		final InstanceCollection sourceToUse;
 
 		// Check whether to create a temporary database or not.

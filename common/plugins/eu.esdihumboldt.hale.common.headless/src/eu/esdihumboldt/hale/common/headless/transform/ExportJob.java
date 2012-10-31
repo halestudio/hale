@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.transformation;
+package eu.esdihumboldt.hale.common.headless.transform;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -24,16 +24,15 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
+import eu.esdihumboldt.hale.common.core.io.ProgressMonitorIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.report.ReportHandler;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
-import eu.esdihumboldt.hale.ui.io.util.ProgressMonitorIndicator;
 
 /**
- * Job for exporting transformed data supplied in a
- * {@link TransformDataInstanceSink}.
+ * Job for exporting transformed data supplied in a {@link LimboInstanceSink}.
  * 
  * @author Kai Schwierczek
  * @author Simon Templer
@@ -42,7 +41,7 @@ public class ExportJob extends Job {
 
 	private static final ALogger log = ALoggerFactory.getLogger(ExportJob.class);
 
-	private final TransformDataInstanceSink targetSink;
+	private final LimboInstanceSink targetSink;
 	private final InstanceWriter writer;
 	private final IOAdvisor<InstanceWriter> advisor;
 	private final ReportHandler reportHandler;
@@ -56,7 +55,7 @@ public class ExportJob extends Job {
 	 * @param advisor the advisor
 	 * @param reportHandler the report handler
 	 */
-	public ExportJob(TransformDataInstanceSink targetSink, InstanceWriter writer,
+	public ExportJob(LimboInstanceSink targetSink, InstanceWriter writer,
 			IOAdvisor<InstanceWriter> advisor, ReportHandler reportHandler) {
 		super("Export");
 
