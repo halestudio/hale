@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.headless.io;
+package eu.esdihumboldt.hale.common.core.io.supplier;
 
 import java.io.BufferedInputStream;
 import java.io.FilterInputStream;
@@ -21,9 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
+import com.google.common.io.CountingInputStream;
 import com.google.common.io.LimitInputStream;
-
-import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 
 /**
  * Provides input supplier based on a single input stream, that allow to consume
@@ -36,7 +35,46 @@ import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
  */
 public class LookupStreamResource {
 
-	private final InputStream input;
+	/**
+	 * Stream that prevents mark and reset being called, as this should be
+	 * controlled by the {@link LookupStreamResource}.
+	 */
+	private static class PreventMark extends FilterInputStream {
+
+		/**
+		 * @see FilterInputStream#FilterInputStream(InputStream)
+		 */
+		protected PreventMark(InputStream in) {
+			super(in);
+		}
+
+		/**
+		 * @see java.io.FilterInputStream#mark(int)
+		 */
+		@Override
+		public synchronized void mark(int readlimit) {
+			// ignore
+		}
+
+		/**
+		 * @see java.io.FilterInputStream#reset()
+		 */
+		@Override
+		public synchronized void reset() throws IOException {
+			throw new IOException("mark not supported");
+		}
+
+		/**
+		 * @see java.io.FilterInputStream#markSupported()
+		 */
+		@Override
+		public boolean markSupported() {
+			return false;
+		}
+
+	}
+
+	private final CountingInputStream input;
 	private final URI location;
 	private final int lookupLimit;
 
@@ -53,13 +91,11 @@ public class LookupStreamResource {
 		super();
 		this.location = location;
 		this.lookupLimit = lookupLimit;
-		if (input.markSupported()) {
-			this.input = input;
-		}
-		else {
+		if (!input.markSupported()) {
 			// add mark support
-			this.input = new BufferedInputStream(input);
+			input = new BufferedInputStream(input);
 		}
+		this.input = new CountingInputStream(input);
 		this.input.mark(lookupLimit);
 	}
 
@@ -79,15 +115,16 @@ public class LookupStreamResource {
 			@Override
 			public InputStream getInput() throws IOException {
 				input.reset();
-				return new FilterInputStream(new LimitInputStream(input, lookupLimit)) {
+				return new PreventMark(new FilterInputStream(new LimitInputStream(input,
+						lookupLimit)) {
 
 					@Override
 					public void close() throws IOException {
 						// don't close stream, reset instead
-						reset();
+						input.reset();
 					}
 
-				};
+				});
 			}
 
 			@Override
@@ -106,19 +143,39 @@ public class LookupStreamResource {
 	public LocatableInputSupplier<? extends InputStream> getInputSupplier() {
 		return new LocatableInputSupplier<InputStream>() {
 
-			boolean first = true;
-
 			@Override
 			public InputStream getInput() throws IOException {
-				if (first) {
-					first = false;
-				}
-				else {
+				if (input.getCount() > lookupLimit) {
 					throw new IllegalStateException("Input stream can only be consumed once.");
 				}
 
 				input.reset();
-				return input;
+				return new PreventMark(new FilterInputStream(input) {
+
+					/**
+					 * @see java.io.FilterInputStream#close()
+					 */
+					@Override
+					public void close() throws IOException {
+						if (((CountingInputStream) in).getCount() > lookupLimit) {
+							// close only if lookupLimit has been exceeded
+							super.close();
+						}
+						else {
+							// otherwise reset
+							reset();
+						}
+					}
+
+					@Override
+					protected void finalize() throws Throwable {
+						super.finalize();
+
+						// close the underlying stream if not yet done
+						super.close();
+					}
+
+				});
 			}
 
 			@Override

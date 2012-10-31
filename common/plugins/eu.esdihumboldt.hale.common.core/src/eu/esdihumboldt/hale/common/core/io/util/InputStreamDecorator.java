@@ -16,11 +16,13 @@
 
 package eu.esdihumboldt.hale.common.core.io.util;
 
+import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Decorator on an {@link InputStream}
+ * Decorator on an {@link InputStream}. Alternative to {@link FilterInputStream}
+ * that calls the same methods on the decoratee that were actually called.
  * 
  * @author Simon Templer
  */
@@ -58,8 +60,8 @@ public class InputStreamDecorator extends InputStream {
 	 * @see java.io.InputStream#mark(int)
 	 */
 	@Override
-	public void mark(int arg0) {
-		in.mark(arg0);
+	public void mark(int readLimit) {
+		in.mark(readLimit);
 	}
 
 	/**
@@ -82,16 +84,16 @@ public class InputStreamDecorator extends InputStream {
 	 * @see java.io.InputStream#read(byte[], int, int)
 	 */
 	@Override
-	public int read(byte[] arg0, int arg1, int arg2) throws IOException {
-		return in.read(arg0, arg1, arg2);
+	public int read(byte[] b, int off, int len) throws IOException {
+		return in.read(b, off, len);
 	}
 
 	/**
 	 * @see java.io.InputStream#read(byte[])
 	 */
 	@Override
-	public int read(byte[] arg0) throws IOException {
-		return in.read(arg0);
+	public int read(byte[] b) throws IOException {
+		return in.read(b);
 	}
 
 	/**
@@ -106,8 +108,8 @@ public class InputStreamDecorator extends InputStream {
 	 * @see java.io.InputStream#skip(long)
 	 */
 	@Override
-	public long skip(long arg0) throws IOException {
-		return in.skip(arg0);
+	public long skip(long n) throws IOException {
+		return in.skip(n);
 	}
 
 	/**
