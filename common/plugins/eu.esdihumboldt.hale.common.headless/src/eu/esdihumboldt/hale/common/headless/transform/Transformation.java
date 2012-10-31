@@ -16,6 +16,10 @@
 package eu.esdihumboldt.hale.common.headless.transform;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+import javax.annotation.Nullable;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -24,6 +28,8 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
@@ -32,10 +38,19 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.functions.RetypeFunction;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReport;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
+import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.ProgressMonitorIndicator;
+import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
 import eu.esdihumboldt.hale.common.core.report.ReportHandler;
+import eu.esdihumboldt.hale.common.headless.TransformationEnvironment;
+import eu.esdihumboldt.hale.common.headless.impl.ProjectTransformationEnvironment;
+import eu.esdihumboldt.hale.common.headless.io.HeadlessIO;
+import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
+import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.impl.MultiInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.orient.storage.BrowseOrientInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.orient.storage.LocalOrientDB;
 import eu.esdihumboldt.hale.common.instance.orient.storage.StoreInstancesJob;
@@ -50,10 +65,90 @@ import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
  */
 public class Transformation {
 
-//	public static void transform(List<InstanceReader> sources, InstanceWriter target,
-//			TransformationEnvironment environment) {
-//
-//	}
+	/**
+	 * Transform the instances provided through the given instance readers and
+	 * supply the result to the given instance writer.
+	 * 
+	 * @param sources the instance readers
+	 * @param target the target instance writer
+	 * @param environment the transformation environment
+	 * @param reportHandler the report handler
+	 */
+	public static void transform(List<InstanceReader> sources, InstanceWriter target,
+			final TransformationEnvironment environment, final ReportHandler reportHandler) {
+		final IOAdvisor<InstanceReader> loadDataAdvisor = new AbstractIOAdvisor<InstanceReader>() {
+
+			/**
+			 * @see IOAdvisor#prepareProvider(IOProvider)
+			 */
+			@Override
+			public void prepareProvider(InstanceReader provider) {
+				super.prepareProvider(provider);
+
+				provider.setSourceSchema(environment.getSourceSchema());
+			}
+
+			/**
+			 * @see AbstractIOAdvisor#updateConfiguration(IOProvider)
+			 */
+			@Override
+			public void updateConfiguration(InstanceReader provider) {
+				super.updateConfiguration(provider);
+
+				if (environment instanceof ProjectTransformationEnvironment) {
+					// set project CRS manager as CRS provider
+					/*
+					 * Resource based CRS settings will however not work, as the
+					 * resource identifiers will not match
+					 */
+					provider.setCRSProvider(new ProjectCRSManager(provider, null,
+							((ProjectTransformationEnvironment) environment).getProject()));
+				}
+			}
+		};
+
+		List<InstanceCollection> sourceList = Lists.transform(sources,
+				new Function<InstanceReader, InstanceCollection>() {
+
+					@Override
+					public InstanceCollection apply(@Nullable InstanceReader input) {
+						try {
+							HeadlessIO.executeProvider(input, loadDataAdvisor, null, reportHandler);
+							// XXX progress?!
+						} catch (IOException e) {
+							throw new IllegalStateException("Failed to load source data", e);
+						}
+						return input.getInstances();
+					}
+				});
+
+		MultiInstanceCollection sourceCollection = new MultiInstanceCollection(sourceList);
+
+		final LimboInstanceSink targetSink = new LimboInstanceSink();
+
+		IOAdvisor<InstanceWriter> saveDataAdvisor = new AbstractIOAdvisor<InstanceWriter>() {
+
+			/**
+			 * @see IOAdvisor#prepareProvider(IOProvider)
+			 */
+			@Override
+			public void prepareProvider(InstanceWriter provider) {
+				super.prepareProvider(provider);
+
+				// set target schema
+				provider.setTargetSchema(environment.getTargetSchema());
+
+				// set instances to export
+				provider.setInstances(targetSink.getInstanceCollection());
+			}
+
+		};
+
+		ExportJob exportJob = new ExportJob(targetSink, target, saveDataAdvisor, reportHandler);
+		ValidationJob validationJob = null; // no validation
+		transform(sourceCollection, targetSink, exportJob, validationJob,
+				environment.getAlignment(), environment.getSourceSchema(), reportHandler);
+	}
 
 	/**
 	 * Transform the given instances, according to the given alignment.

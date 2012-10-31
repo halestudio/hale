@@ -13,9 +13,10 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.headless.impl;
+package eu.esdihumboldt.hale.common.headless.io;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
@@ -23,8 +24,10 @@ import java.util.Map;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
+import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderExtension;
@@ -32,6 +35,7 @@ import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.report.ReportHandler;
+import eu.esdihumboldt.hale.common.headless.impl.ProjectTransformationEnvironment;
 
 /**
  * Utilities for headless execution of I/O configurations and providers.
@@ -113,7 +117,7 @@ public abstract class HeadlessIO {
 	 * 
 	 * @param provider the I/O provider
 	 * @param advisor the I/O advisor
-	 * @param progress the progress indicator
+	 * @param progress the progress indicator, may be <code>null</code>
 	 * @param reportHandler the report handler, may be <code>null</code>
 	 * @throws IOException if executing the provider fails
 	 */
@@ -147,6 +151,24 @@ public abstract class HeadlessIO {
 		} finally {
 			trans.end();
 		}
+	}
+
+	/**
+	 * Automatically find an import provider to load a resource that is
+	 * available through an input stream that can only be read once.
+	 * 
+	 * @param type the import provider type
+	 * @param in the input stream
+	 * @return the import provider or <code>null</code> if none was found
+	 */
+	public static <T extends ImportProvider> T findImportProvider(Class<T> type, InputStream in) {
+		LookupStreamResource res = new LookupStreamResource(in, null, 8192);
+		T provider = HaleIO.findIOProvider(type, res.getLookupSupplier(), null);
+		if (provider != null) {
+			provider.setSource(res.getInputSupplier());
+			return provider;
+		}
+		return null;
 	}
 
 }

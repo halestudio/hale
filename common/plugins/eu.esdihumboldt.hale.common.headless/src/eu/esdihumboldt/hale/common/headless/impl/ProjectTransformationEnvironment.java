@@ -37,6 +37,7 @@ import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.core.report.ReportHandler;
 import eu.esdihumboldt.hale.common.headless.TransformationEnvironment;
+import eu.esdihumboldt.hale.common.headless.io.HeadlessIO;
 import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
@@ -187,6 +188,15 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 
 	@Override
 	public ProjectInfo getProjectInfo() {
+		return project;
+	}
+
+	/**
+	 * Get the associated project.
+	 * 
+	 * @return the project, must not be changed
+	 */
+	public Project getProject() {
 		return project;
 	}
 
