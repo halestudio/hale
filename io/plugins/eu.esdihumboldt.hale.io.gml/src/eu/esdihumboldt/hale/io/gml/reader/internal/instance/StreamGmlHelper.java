@@ -41,7 +41,7 @@ import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableGroup;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
-import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
+import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
@@ -101,8 +101,8 @@ public abstract class StreamGmlHelper {
 
 		MutableInstance instance;
 		if (indexInStream == null) {
-			instance = new OInstance(type, null); // not necessary to associate
-													// data set
+			// not necessary to associate data set
+			instance = new DefaultInstance(type, null);
 		}
 		else {
 			instance = new StreamGmlInstance(type, indexInStream);

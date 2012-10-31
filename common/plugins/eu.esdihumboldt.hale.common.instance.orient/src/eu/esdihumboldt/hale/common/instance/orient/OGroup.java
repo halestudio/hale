@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.instance.model.impl;
+package eu.esdihumboldt.hale.common.instance.orient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,8 +39,8 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableGroup;
-import eu.esdihumboldt.hale.common.instance.model.impl.internal.ONamespaceMap;
-import eu.esdihumboldt.hale.common.instance.model.impl.internal.OSerializationHelper;
+import eu.esdihumboldt.hale.common.instance.orient.internal.ONamespaceMap;
+import eu.esdihumboldt.hale.common.instance.orient.internal.OSerializationHelper;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;

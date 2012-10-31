@@ -54,8 +54,12 @@ import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
-import eu.esdihumboldt.hale.common.instance.model.impl.internal.ONamespaceMap;
-import eu.esdihumboldt.hale.common.instance.model.impl.internal.OSerializationHelper;
+import eu.esdihumboldt.hale.common.instance.orient.internal.ONamespaceMap;
+import eu.esdihumboldt.hale.common.instance.orient.internal.OSerializationHelper;
+import eu.esdihumboldt.hale.common.instance.orient.storage.BrowseOrientInstanceCollection;
+import eu.esdihumboldt.hale.common.instance.orient.storage.DatabaseReference;
+import eu.esdihumboldt.hale.common.instance.orient.storage.LocalOrientDB;
+import eu.esdihumboldt.hale.common.instance.orient.storage.OrientInstanceReference;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -241,7 +245,7 @@ public class OrientInstanceService extends AbstractInstanceService {
 	@Override
 	public void addSourceInstances(InstanceCollection sourceInstances) {
 		notifyDatasetAboutToChange(DataSet.SOURCE);
-		final StoreInstancesJob storeInstances = new StoreInstancesJob(
+		final HaleStoreInstancesJob storeInstances = new HaleStoreInstancesJob(
 				"Load source instances into database", source, sourceInstances) {
 
 			@Override
@@ -403,7 +407,7 @@ public class OrientInstanceService extends AbstractInstanceService {
 						return;
 					}
 
-					OrientInstanceSink sink = new OrientInstanceSink(transformed, true);
+					HaleOrientInstanceSink sink = new HaleOrientInstanceSink(transformed, true);
 					TransformationReport report;
 					ATransaction trans = log.begin("Instance transformation");
 					try {
