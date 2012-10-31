@@ -14,16 +14,16 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.instance.model.impl.internal;
+package eu.esdihumboldt.hale.common.instance.orient.internal;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.codec.DecoderException;
 
-import eu.esdihumboldt.hale.common.instance.model.impl.OGroup;
-import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
-import eu.esdihumboldt.hale.common.instance.model.impl.ONameUtil;
+import eu.esdihumboldt.hale.common.instance.orient.OGroup;
+import eu.esdihumboldt.hale.common.instance.orient.OInstance;
+import eu.esdihumboldt.hale.common.instance.orient.ONameUtil;
 import eu.esdihumboldt.util.Identifiers;
 
 /**

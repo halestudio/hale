@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.service.instance.internal.orient;
+package eu.esdihumboldt.hale.common.instance.orient.storage;
 
 import com.orientechnologies.orient.core.db.ODatabase;
 

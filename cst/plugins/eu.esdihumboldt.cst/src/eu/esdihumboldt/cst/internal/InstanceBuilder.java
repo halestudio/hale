@@ -22,8 +22,8 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.Transformatio
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableGroup;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
+import eu.esdihumboldt.hale.common.instance.model.impl.DefaultGroup;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
-import eu.esdihumboldt.hale.common.instance.model.impl.OGroup;
 
 /**
  * Populates an instance from a transformation tree.
@@ -73,7 +73,7 @@ public class InstanceBuilder {
 		boolean empty = true;
 		MutableGroup group;
 		if (node.getDefinition().asGroup() != null) {
-			group = new OGroup(node.getDefinition().asGroup());
+			group = new DefaultGroup(node.getDefinition().asGroup());
 		}
 		else if (node.getDefinition().asProperty() != null) {
 			group = new DefaultInstance(node.getDefinition().asProperty().getPropertyType(), null);

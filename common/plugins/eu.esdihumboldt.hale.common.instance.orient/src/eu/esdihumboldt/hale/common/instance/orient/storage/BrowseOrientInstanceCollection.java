@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.service.instance.internal.orient;
+package eu.esdihumboldt.hale.common.instance.orient.storage;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,8 +37,8 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.InstanceResolver;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
-import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
-import eu.esdihumboldt.hale.common.instance.model.impl.internal.ONamespaceMap;
+import eu.esdihumboldt.hale.common.instance.orient.OInstance;
+import eu.esdihumboldt.hale.common.instance.orient.internal.ONamespaceMap;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
@@ -47,7 +47,6 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
  * 
  * @author Simon Templer
  */
-@SuppressWarnings("restriction")
 public class BrowseOrientInstanceCollection implements InstanceCollection {
 
 	private class OrientInstanceIterator implements ResourceIterator<Instance> {

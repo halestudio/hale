@@ -44,7 +44,7 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
-import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
+import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
@@ -120,9 +120,9 @@ public class FilterTest {
 		autoDef.addChild(new DefaultPropertyDefinition(new QName("Name"), autoDef, stringType));
 		autoDef.addChild(new DefaultPropertyDefinition(new QName("Besitzer"), autoDef, personDef));
 
-		MutableInstance auto = new OInstance(autoDef, null);
+		MutableInstance auto = new DefaultInstance(autoDef, null);
 		auto.addProperty(new QName("Name"), "Mein Porsche");
-		MutableInstance ich = new OInstance(personDef, null);
+		MutableInstance ich = new DefaultInstance(personDef, null);
 		ich.addProperty(new QName("Name"), "Ich");
 		auto.addProperty(new QName("Besitzer"), ich);
 
@@ -370,9 +370,9 @@ public class FilterTest {
 		autoDef.addChild(new DefaultPropertyDefinition(new QName("Name"), autoDef, stringType));
 		autoDef.addChild(new DefaultPropertyDefinition(new QName("Besitzer"), autoDef, personDef));
 
-		MutableInstance auto = new OInstance(autoDef, null);
+		MutableInstance auto = new DefaultInstance(autoDef, null);
 		auto.addProperty(new QName("Name"), "Mein Porsche");
-		MutableInstance ich = new OInstance(personDef, null);
+		MutableInstance ich = new DefaultInstance(personDef, null);
 		ich.addProperty(new QName("Name"), "Ich");
 		auto.addProperty(new QName("Besitzer"), ich);
 

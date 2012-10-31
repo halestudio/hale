@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.service.instance.internal.orient;
+package eu.esdihumboldt.hale.common.instance.orient.storage;
 
 import net.jcip.annotations.Immutable;
 
@@ -26,11 +26,11 @@ import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
-import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
+import eu.esdihumboldt.hale.common.instance.orient.OInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
- * Instance reference for an {@link OrientInstanceService}
+ * Instance reference for an instance stored in a {@link LocalOrientDB}.
  * 
  * @author Simon Templer
  */

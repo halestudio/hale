@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.instance.model.impl;
+package eu.esdihumboldt.hale.common.instance.orient;
 
 import java.util.Arrays;
 import java.util.Collection;

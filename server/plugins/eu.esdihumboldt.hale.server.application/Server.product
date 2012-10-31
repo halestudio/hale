@@ -62,6 +62,7 @@
       <plugin id="eu.esdihumboldt.hale.common.core"/>
       <plugin id="eu.esdihumboldt.hale.common.headless"/>
       <plugin id="eu.esdihumboldt.hale.common.instance"/>
+      <plugin id="eu.esdihumboldt.hale.common.instance.orient"/>
       <plugin id="eu.esdihumboldt.hale.common.schema"/>
       <plugin id="eu.esdihumboldt.hale.io.csv"/>
       <plugin id="eu.esdihumboldt.hale.io.gml"/>

@@ -31,7 +31,7 @@
  *     www.vividsolutions.com
  */
 
-package eu.esdihumboldt.hale.common.instance.model.impl.internal;
+package eu.esdihumboldt.hale.common.instance.orient.internal;
 
 import java.io.IOException;
 

@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.service.instance.internal.orient;
+package eu.esdihumboldt.hale.common.instance.orient.storage;
 
 import java.text.MessageFormat;
 
@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.ui.PlatformUI;
 
 import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
@@ -32,14 +31,11 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
-import eu.esdihumboldt.hale.common.instance.extension.metadata.MetadataWorker;
-import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
-import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
-import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
-import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
+import eu.esdihumboldt.hale.common.instance.orient.OInstance;
 
 /**
  * Store instances in a database
@@ -80,9 +76,6 @@ public abstract class StoreInstancesJob extends Job {
 
 		int count = 0;
 
-		PopulationService ps = (PopulationService) PlatformUI.getWorkbench().getService(
-				PopulationService.class);
-
 		// get database connection
 		DatabaseReference<ODatabaseDocumentTx> ref = database.openWrite();
 		ODatabaseDocumentTx db = ref.getDatabase();
@@ -97,27 +90,19 @@ public abstract class StoreInstancesJob extends Job {
 			long lastUpdate = 0; // last count update
 
 			ResourceIterator<Instance> it = instances.iterator();
-			MetadataWorker metaworker = new MetadataWorker();
 			try {
 				while (it.hasNext() && !monitor.isCanceled()) {
 					Instance instance = it.next();
+
+					// further processing before storing
+					processInstance(instance);
 
 					// get/create OInstance
 					OInstance conv = ((instance instanceof OInstance) ? ((OInstance) instance)
 							: (new OInstance(instance)));
 
-					// generate metadata into instance
-					metaworker.generate(conv);
-
-					// population count
-					/*
-					 * XXX This is done here because otherwise the whole data
-					 * set would have again to be retrieved from the database.
-					 * See PopulationServiceImpl
-					 */
-					if (ps != null) {
-						ps.addToPopulation(instance, DataSet.SOURCE);
-					}
+					// update the instance to store, e.g. generating metadata
+					updateInstance(conv);
 
 					ODatabaseRecordThreadLocal.INSTANCE.set(db);
 					// configure the document
@@ -169,7 +154,27 @@ public abstract class StoreInstancesJob extends Job {
 		monitor.done();
 
 		return new Status((monitor.isCanceled()) ? (IStatus.CANCEL) : (IStatus.OK),
-				HALEUIPlugin.PLUGIN_ID, message);
+				"eu.esdihumboldt.hale.common.instance.orient", message);
+	}
+
+	/**
+	 * Update an instance before it is converted and saved, e.g. adding
+	 * metadata. The default implementation does nothing and may be overridden.
+	 * 
+	 * @param instance the instance
+	 */
+	protected void updateInstance(MutableInstance instance) {
+		// override me
+	}
+
+	/**
+	 * Process an instance before it is saved. The default implementation does
+	 * nothing and may be overridden.
+	 * 
+	 * @param instance the instance, may not be changed in any way
+	 */
+	protected void processInstance(Instance instance) {
+		// override me
 	}
 
 	/**
