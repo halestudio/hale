@@ -38,6 +38,7 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderExtension;
+import eu.esdihumboldt.hale.common.core.io.supplier.LookupStreamResource;
 
 /**
  * Hale I/O utilities
@@ -343,6 +344,24 @@ public abstract class HaleIO {
 		}
 
 		return HaleIO.createIOProvider(providerType, contentType, null);
+	}
+
+	/**
+	 * Automatically find an import provider to load a resource that is
+	 * available through an input stream that can only be read once.
+	 * 
+	 * @param type the import provider type
+	 * @param in the input stream
+	 * @return the import provider or <code>null</code> if none was found
+	 */
+	public static <T extends ImportProvider> T findImportProvider(Class<T> type, InputStream in) {
+		LookupStreamResource res = new LookupStreamResource(in, null, 64 * 1024);
+		T provider = HaleIO.findIOProvider(type, res.getLookupSupplier(), null);
+		if (provider != null) {
+			provider.setSource(res.getInputSupplier());
+			return provider;
+		}
+		return null;
 	}
 
 	/**

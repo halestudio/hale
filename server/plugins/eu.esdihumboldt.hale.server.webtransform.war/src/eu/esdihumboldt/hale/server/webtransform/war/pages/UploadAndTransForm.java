@@ -42,11 +42,12 @@ import org.joda.time.Duration;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
+import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.headless.EnvironmentService;
+import eu.esdihumboldt.hale.common.headless.HeadlessIO;
 import eu.esdihumboldt.hale.common.headless.TransformationEnvironment;
-import eu.esdihumboldt.hale.common.headless.io.HeadlessIO;
 import eu.esdihumboldt.hale.common.headless.report.ReportFile;
 import eu.esdihumboldt.hale.common.headless.transform.Transformation;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
@@ -174,7 +175,7 @@ public class UploadAndTransForm extends Form<Void> {
 								// XXX not really necessary here to use
 								// findImportProvider, HaleIO.findIOProvider
 								// could be used instead
-								reader = HeadlessIO.findImportProvider(InstanceReader.class,
+								reader = HaleIO.findImportProvider(InstanceReader.class,
 										input.getInputStream());
 							} catch (IOException e) {
 								throw new IllegalStateException(
