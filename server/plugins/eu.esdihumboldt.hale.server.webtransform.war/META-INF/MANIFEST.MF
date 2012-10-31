@@ -7,10 +7,20 @@ Web-ContextPath: /webtransform
 Webapp-Name: Transformations
 Bundle-Vendor: Data Harmonisation Panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: de.cs3d.util.logging,
+Import-Package: com.google.common.base;version="11.0.1",
+ com.google.common.collect;version="11.0.1",
+ de.cs3d.util.logging,
+ eu.esdihumboldt.hale.common.core.io,
  eu.esdihumboldt.hale.common.core.io.project,
  eu.esdihumboldt.hale.common.core.io.project.model,
+ eu.esdihumboldt.hale.common.core.io.supplier,
+ eu.esdihumboldt.hale.common.core.report,
  eu.esdihumboldt.hale.common.headless,
+ eu.esdihumboldt.hale.common.headless.io,
+ eu.esdihumboldt.hale.common.headless.report,
+ eu.esdihumboldt.hale.common.headless.transform,
+ eu.esdihumboldt.hale.common.instance.io,
+ eu.esdihumboldt.hale.server.projects,
  eu.esdihumboldt.hale.server.security.extender,
  eu.esdihumboldt.hale.server.security.util,
  eu.esdihumboldt.hale.server.webapp,
@@ -18,6 +28,7 @@ Import-Package: de.cs3d.util.logging,
  eu.esdihumboldt.hale.server.webapp.pages,
  eu.esdihumboldt.hale.server.webapp.util,
  org.eclipse.jetty.servlet;version="7.6.0",
+ org.joda.time;version="2.1.0",
  org.slf4j;version="1.5.11",
  org.springframework.web.context;version="3.1.1.RELEASE",
  org.springframework.web.filter;version="3.1.1.RELEASE"
@@ -25,4 +36,5 @@ Require-Bundle: org.apache.wicket.core;bundle-version="6.2.0",
  org.apache.wicket.request;bundle-version="6.2.0",
  org.apache.wicket.util;bundle-version="6.2.0",
  org.apache.wicket.spring;bundle-version="6.2.0",
- org.apache.wicket.extensions;bundle-version="6.2.0"
+ org.apache.wicket.extensions;bundle-version="6.2.0",
+ jsr305;bundle-version="2.0.1"
