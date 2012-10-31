@@ -24,8 +24,6 @@ import java.text.MessageFormat;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.ExportProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -77,7 +75,7 @@ public class DefaultProjectReader extends AbstractProjectReader {
 
 	}
 
-	private static final ALogger log = ALoggerFactory.getLogger(DefaultProjectReader.class);
+//	private static final ALogger log = ALoggerFactory.getLogger(DefaultProjectReader.class);
 
 	/**
 	 * If the project shall be read from a ZIP archive
@@ -176,7 +174,7 @@ public class DefaultProjectReader extends AbstractProjectReader {
 							input.close();
 						}
 					} catch (Exception e) {
-						log.debug("Loading project file failed", e);
+						reporter.error(new IOMessageImpl("Loading project file failed", e));
 					}
 
 					if (!fileSuccess) {

@@ -160,10 +160,20 @@ public class ProjectHandler {
 						try {
 							transformationEnvironment = new ProjectTransformationEnvironment(
 									projectId, new FileIOSupplier(projectFile), rf);
-						} catch (IOException e) {
+							// check alignment
+							if (transformationEnvironment.getAlignment() == null) {
+								throw new IllegalStateException(
+										"Alignment missing or failed to load");
+							}
+							if (transformationEnvironment.getAlignment().getTypeCells().isEmpty()) {
+								throw new IllegalStateException(
+										"Alignment contains no type relations");
+							}
+						} catch (Exception e) {
 							log.error("Could not load transformation environment for project "
 									+ projectId, e);
 							status = Status.BROKEN;
+							transformationEnvironment = null;
 							envManager.removeEnvironment(projectId);
 
 							// log the exception as report
