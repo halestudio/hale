@@ -11,5 +11,8 @@
 	<!-- service references -->
 	<osgi:reference id="environments" availability="mandatory"
 		interface="eu.esdihumboldt.hale.common.headless.EnvironmentService" />
+		
+	<osgi:reference id="workspaces" availability="mandatory"
+		interface="eu.esdihumboldt.hale.server.projects.WorkspaceService" />
 
 </beans>
