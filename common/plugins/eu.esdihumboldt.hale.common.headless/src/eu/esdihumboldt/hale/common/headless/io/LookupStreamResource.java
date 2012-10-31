@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
+import com.google.common.io.CountingInputStream;
 import com.google.common.io.LimitInputStream;
 
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
@@ -36,7 +37,7 @@ import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
  */
 public class LookupStreamResource {
 
-	private final InputStream input;
+	private final CountingInputStream input;
 	private final URI location;
 	private final int lookupLimit;
 
@@ -53,13 +54,11 @@ public class LookupStreamResource {
 		super();
 		this.location = location;
 		this.lookupLimit = lookupLimit;
-		if (input.markSupported()) {
-			this.input = input;
-		}
-		else {
+		if (!input.markSupported()) {
 			// add mark support
-			this.input = new BufferedInputStream(input);
+			input = new BufferedInputStream(input);
 		}
+		this.input = new CountingInputStream(input);
 		this.input.mark(lookupLimit);
 	}
 
@@ -84,7 +83,7 @@ public class LookupStreamResource {
 					@Override
 					public void close() throws IOException {
 						// don't close stream, reset instead
-						reset();
+						input.reset();
 					}
 
 				};
@@ -106,19 +105,39 @@ public class LookupStreamResource {
 	public LocatableInputSupplier<? extends InputStream> getInputSupplier() {
 		return new LocatableInputSupplier<InputStream>() {
 
-			boolean first = true;
-
 			@Override
 			public InputStream getInput() throws IOException {
-				if (first) {
-					first = false;
-				}
-				else {
+				if (input.getCount() > lookupLimit) {
 					throw new IllegalStateException("Input stream can only be consumed once.");
 				}
 
 				input.reset();
-				return input;
+				return new FilterInputStream(input) {
+
+					/**
+					 * @see java.io.FilterInputStream#close()
+					 */
+					@Override
+					public void close() throws IOException {
+						if (((CountingInputStream) in).getCount() > lookupLimit) {
+							// close only if lookupLimit has been exceeded
+							super.close();
+						}
+						else {
+							// otherwise reset
+							reset();
+						}
+					}
+
+					@Override
+					protected void finalize() throws Throwable {
+						super.finalize();
+
+						// close the underlying stream if not yet done
+						super.close();
+					}
+
+				};
 			}
 
 			@Override

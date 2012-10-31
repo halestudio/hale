@@ -175,7 +175,7 @@ public abstract class HeadlessIO {
 	 * @return the import provider or <code>null</code> if none was found
 	 */
 	public static <T extends ImportProvider> T findImportProvider(Class<T> type, InputStream in) {
-		LookupStreamResource res = new LookupStreamResource(in, null, 8192);
+		LookupStreamResource res = new LookupStreamResource(in, null, 64 * 1024);
 		T provider = HaleIO.findIOProvider(type, res.getLookupSupplier(), null);
 		if (provider != null) {
 			provider.setSource(res.getInputSupplier());
