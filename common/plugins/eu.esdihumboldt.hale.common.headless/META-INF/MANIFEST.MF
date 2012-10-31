@@ -28,6 +28,8 @@ Import-Package: com.google.common.base;version="11.0.1",
  eu.esdihumboldt.hale.common.core.io.supplier,
  eu.esdihumboldt.hale.common.core.report,
  eu.esdihumboldt.hale.common.core.report.writer,
+ eu.esdihumboldt.hale.common.instance.geometry,
+ eu.esdihumboldt.hale.common.instance.geometry.impl,
  eu.esdihumboldt.hale.common.instance.io,
  eu.esdihumboldt.hale.common.instance.model,
  eu.esdihumboldt.hale.common.instance.model.impl,
@@ -36,7 +38,8 @@ Import-Package: com.google.common.base;version="11.0.1",
  eu.esdihumboldt.hale.common.schema.model,
  eu.esdihumboldt.hale.common.schema.model.impl,
  org.slf4j;version="1.5.11"
-Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0"
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
+ jsr305;bundle-version="2.0.1"
 Export-Package: eu.esdihumboldt.hale.common.headless,
  eu.esdihumboldt.hale.common.headless.impl,
  eu.esdihumboldt.hale.common.headless.report,

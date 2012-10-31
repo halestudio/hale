@@ -99,6 +99,7 @@
       <plugin id="javax.servlet"/>
       <plugin id="javax.xml"/>
       <plugin id="jcl.over.slf4j"/>
+      <plugin id="jsr305"/>
       <plugin id="jul.to.slf4j"/>
       <plugin id="log4j.over.slf4j"/>
       <plugin id="net.sf.ehcache"/>

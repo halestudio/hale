@@ -10,36 +10,37 @@
  * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
  * 
  * Contributors:
- *     HUMBOLDT EU Integrated Project #030962
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.io.instance.crs;
+package eu.esdihumboldt.hale.common.headless.transform;
 
-import org.eclipse.ui.PlatformUI;
-
+import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider;
 import eu.esdihumboldt.hale.common.instance.geometry.impl.AbstractCRSManager;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
-import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 
 /**
- * Default CRS Manager, configuration backed by the {@link ProjectService}.
+ * CRS manager that retrieves information about configured CRS from a project.
  * 
  * @author Simon Templer
  */
-public class DefaultCRSManager extends AbstractCRSManager {
+public class ProjectCRSManager extends AbstractCRSManager {
 
-	private final ProjectService projectService;
+	private final Project project;
 
 	/**
+	 * Create a CRS manager based on the given project.
+	 * 
+	 * @param reader the instance reader
+	 * @param provider the CRS provider
+	 * @param project the project
+	 * 
 	 * @see AbstractCRSManager#AbstractCRSManager(InstanceReader, CRSProvider)
 	 */
-	public DefaultCRSManager(InstanceReader reader, CRSProvider provider) {
+	public ProjectCRSManager(InstanceReader reader, CRSProvider provider, Project project) {
 		super(reader, provider);
-
-		projectService = (ProjectService) PlatformUI.getWorkbench()
-				.getService(ProjectService.class);
+		this.project = project;
 	}
 
 	/**
@@ -47,7 +48,7 @@ public class DefaultCRSManager extends AbstractCRSManager {
 	 */
 	@Override
 	protected void storeValue(String key, String value) {
-		projectService.getConfigurationService().set(key, value);
+		project.getProperties().put(key, value);
 	}
 
 	/**
@@ -55,7 +56,7 @@ public class DefaultCRSManager extends AbstractCRSManager {
 	 */
 	@Override
 	protected String loadValue(String key) {
-		return projectService.getConfigurationService().get(key);
+		return project.getProperties().get(key);
 	}
 
 }
