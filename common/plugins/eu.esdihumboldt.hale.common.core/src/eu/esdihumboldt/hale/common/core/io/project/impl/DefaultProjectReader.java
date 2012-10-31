@@ -150,9 +150,9 @@ public class DefaultProjectReader extends AbstractProjectReader {
 			}
 		}
 
-		PathUpdate update = new PathUpdate(URI.create(getProject().getSaveConfiguration()
-				.getProviderConfiguration().get(ExportProvider.PARAM_TARGET)), getSource()
-				.getLocation());
+		URI oldProjectLocation = URI.create(getProject().getSaveConfiguration()
+				.getProviderConfiguration().get(ExportProvider.PARAM_TARGET));
+		PathUpdate update = new PathUpdate(oldProjectLocation, getSource().getLocation());
 
 		// check if there are any external project files listed
 		if (getProjectFiles() != null) { // only if project files set at all
@@ -160,8 +160,13 @@ public class DefaultProjectReader extends AbstractProjectReader {
 				ProjectFile projectFile = getProjectFiles().get(fileInfo.getName());
 				if (projectFile != null) {
 					URI location = fileInfo.getLocation();
-					if (!IOUtils.testStream(fileInfo.getLocation(), false))
+					if (!IOUtils.testStream(location, false))
 						location = update.changePath(location);
+					if (!IOUtils.testStream(location, false)) {
+						// fall-back to location relative to project file
+						location = URI.create(getSource().getLocation().toString() + "."
+								+ fileInfo.getName());
+					}
 					boolean fileSuccess = false;
 					try {
 						InputStream input = location.toURL().openStream();
