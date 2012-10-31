@@ -91,6 +91,16 @@ public interface ProjectScavenger {
 	public Status getStatus(String projectId);
 
 	/**
+	 * Get the file where the reports form loading the project are stored. The
+	 * file may not be changed, deleted, etc.
+	 * 
+	 * @param projectId the project identifier
+	 * @return the log file or <code>null</code> if the project with the given
+	 *         identifier does not exist
+	 */
+	public File getLoadReports(String projectId);
+
+	/**
 	 * Get the project info for the project with the given identifier, if
 	 * available.
 	 * 

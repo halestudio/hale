@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.server.projects.war.components;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,7 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.WebComponent;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.DownloadLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -171,6 +173,17 @@ public class ProjectList extends Panel {
 					projectName = info.getName();
 				}
 				item.add(new Label("name", projectName));
+
+				// download log
+				File logFile = projects.getLoadReports(id);
+				DownloadLink log = new DownloadLink("log", logFile, id + ".log");
+				log.setVisible(logFile != null && logFile.exists());
+				WebComponent logImage = new WebComponent("image");
+				if (status == Status.BROKEN) {
+					logImage.add(AttributeModifier.replace("src", "images/error_log.gif"));
+				}
+				log.add(logImage);
+				item.add(log);
 			}
 
 		};

@@ -280,6 +280,18 @@ public class ProjectScavengerImpl implements ProjectScavenger {
 		}
 	}
 
+	@Override
+	public File getLoadReports(String projectId) {
+		synchronized (projects) {
+			ProjectHandler project = projects.get(projectId);
+			if (project != null) {
+				return project.getLoadReportFile();
+			}
+		}
+
+		return null;
+	}
+
 	/**
 	 * @see ProjectScavenger#getInfo(String)
 	 */

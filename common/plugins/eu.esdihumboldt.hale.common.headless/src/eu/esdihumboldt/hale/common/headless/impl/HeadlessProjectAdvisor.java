@@ -33,6 +33,7 @@ import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.common.core.io.project.util.LocationUpdater;
+import eu.esdihumboldt.hale.common.core.report.ReportHandler;
 import eu.esdihumboldt.hale.common.schema.io.SchemaIO;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 
@@ -111,10 +112,20 @@ public class HeadlessProjectAdvisor extends AbstractIOAdvisor<ProjectReader> {
 	private Project project;
 
 	/**
-	 * Default constructor
+	 * The report handler
 	 */
-	public HeadlessProjectAdvisor() {
+	private final ReportHandler reportHandler;
+
+	/**
+	 * Default constructor
+	 * 
+	 * @param reportHandler the report handler to use when executing contained
+	 *            I/O configurations, may be <code>null</code>
+	 */
+	public HeadlessProjectAdvisor(ReportHandler reportHandler) {
 		super();
+
+		this.reportHandler = reportHandler;
 
 		advisors = new HashMap<String, IOAdvisor<?>>();
 
@@ -159,7 +170,7 @@ public class HeadlessProjectAdvisor extends AbstractIOAdvisor<ProjectReader> {
 		// execute loaded I/O configurations
 		List<IOConfiguration> confs = new ArrayList<IOConfiguration>(project.getResources());
 		try {
-			HeadlessIO.executeConfigurations(confs, advisors);
+			HeadlessIO.executeConfigurations(confs, advisors, reportHandler);
 		} catch (IOException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
