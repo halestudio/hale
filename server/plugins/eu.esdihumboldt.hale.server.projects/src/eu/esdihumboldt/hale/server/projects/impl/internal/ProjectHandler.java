@@ -133,7 +133,8 @@ public class ProjectHandler {
 		else {
 			File reportFile = getLoadReportFile();
 
-			if (reportFile.exists()) {
+			if ((transformationEnvironment == null && config.isEnabled() || projectInfo == null)
+					&& reportFile.exists()) {
 				// delete old reports
 				reportFile.delete();
 			}
