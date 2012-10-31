@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.io.instance.crs;
+package eu.esdihumboldt.hale.common.instance.geometry.impl;
 
 import java.util.List;
 
@@ -60,7 +60,8 @@ public abstract class AbstractCRSManager implements CRSProvider {
 	 * Create a CRS manager.
 	 * 
 	 * @param reader the instance reader
-	 * @param provider the internal CRS provider to use
+	 * @param provider the internal CRS provider to use, may be
+	 *            <code>null</code>
 	 */
 	public AbstractCRSManager(InstanceReader reader, CRSProvider provider) {
 		super();
