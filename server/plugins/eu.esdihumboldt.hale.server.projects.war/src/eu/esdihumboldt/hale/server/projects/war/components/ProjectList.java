@@ -75,17 +75,15 @@ public class ProjectList extends Panel {
 
 			private static final long serialVersionUID = -6740090246572869212L;
 
-			private boolean odd = true; // starting with one
-
 			/**
 			 * @see ListView#populateItem(ListItem)
 			 */
 			@Override
 			protected void populateItem(ListItem<String> item) {
+				final boolean odd = item.getIndex() % 2 == 1;
 				if (odd) {
 					item.add(AttributeModifier.replace("class", "odd"));
 				}
-				odd = !odd;
 
 				final String id = item.getModelObject();
 
@@ -141,8 +139,22 @@ public class ProjectList extends Panel {
 					};
 					break;
 				case BROKEN:
-				case INACTIVE:
 				case NOT_AVAILABLE:
+					actionTitle = "Rescan";
+					actionImagePath = "images/refresh.gif";
+					showAction = true;
+					actionLink = new Link<Void>("action") {
+
+						private static final long serialVersionUID = -4403828305588875839L;
+
+						@Override
+						public void onClick() {
+							projects.triggerScan();
+						}
+
+					};
+					break;
+				case INACTIVE:
 				default:
 					actionTitle = "Start";
 					actionImagePath = "images/start.gif";

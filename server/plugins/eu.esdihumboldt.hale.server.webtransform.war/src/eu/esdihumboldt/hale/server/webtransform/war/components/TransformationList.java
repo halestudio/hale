@@ -74,18 +74,11 @@ public class TransformationList extends Panel {
 
 			private static final long serialVersionUID = -6740090246572869212L;
 
-//			private boolean odd = true; // starting with one
-
 			/**
 			 * @see ListView#populateItem(ListItem)
 			 */
 			@Override
 			protected void populateItem(ListItem<TransformationEnvironment> item) {
-//				if (odd) {
-//					item.add(new SimpleAttributeModifier("class", "odd"));
-//				}
-//				odd = !odd;
-
 				final TransformationEnvironment env = item.getModelObject();
 
 				// identifier
