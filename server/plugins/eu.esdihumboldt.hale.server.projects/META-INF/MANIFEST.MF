@@ -7,6 +7,7 @@ Bundle-Vendor: Data Harmonisation Panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.google.common.io;version="11.0.1",
  de.cs3d.util.logging,
+ eu.esdihumboldt.hale.common.align.model,
  eu.esdihumboldt.hale.common.core.io,
  eu.esdihumboldt.hale.common.core.io.extension,
  eu.esdihumboldt.hale.common.core.io.project,
