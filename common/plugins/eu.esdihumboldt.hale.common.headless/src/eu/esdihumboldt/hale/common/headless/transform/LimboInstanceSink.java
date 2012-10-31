@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.transformation;
+package eu.esdihumboldt.hale.common.headless.transform;
 
 import java.util.NoSuchElementException;
 import java.util.concurrent.BlockingDeque;
@@ -30,11 +30,12 @@ import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.PseudoInstanceReference;
 
 /**
- * Instance sink for the transform data wizard.
+ * Sink that holds instances in a limbo, to be collected through the offered
+ * instance collection.
  * 
  * @author Kai Schwierczek
  */
-public class TransformDataInstanceSink implements InstanceSink {
+public class LimboInstanceSink implements InstanceSink {
 
 	private static final Instance END = new DefaultInstance(null, null);
 

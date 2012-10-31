@@ -14,11 +14,10 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.io.util;
+package eu.esdihumboldt.hale.common.core.io;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 
 /**
  * Progress indicator using an {@link IProgressMonitor}

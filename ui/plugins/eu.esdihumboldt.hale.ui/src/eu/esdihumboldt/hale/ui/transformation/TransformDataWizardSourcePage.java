@@ -34,6 +34,9 @@ import org.eclipse.swt.widgets.Composite;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.headless.transform.ExportJob;
+import eu.esdihumboldt.hale.common.headless.transform.LimboInstanceSink;
+import eu.esdihumboldt.hale.common.headless.transform.ValidationJob;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -54,7 +57,7 @@ public class TransformDataWizardSourcePage extends WizardPage {
 	private ExportJob exportJob;
 	private ValidationJob validationJob;
 
-	private final TransformDataInstanceSink targetSink;
+	private final LimboInstanceSink targetSink;
 
 	/**
 	 * Creates the transform data wizard page for selecting source data files.
@@ -65,7 +68,7 @@ public class TransformDataWizardSourcePage extends WizardPage {
 	 * @param targetSink the target sink
 	 */
 	public TransformDataWizardSourcePage(IWizardContainer container,
-			TransformDataInstanceSink targetSink) {
+			LimboInstanceSink targetSink) {
 		super("sourceSelection");
 		this.targetSink = targetSink;
 		setTitle("Source instance selection");
