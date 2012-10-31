@@ -88,7 +88,7 @@ public class LocationUpdater {
 					/*
 					 * For this the fallback method is not called intentionally,
 					 * as in the project service, this update has no effect, as
-					 * the project files are laready loaded in the
+					 * the project files are already loaded in the
 					 * DefaultProjectReader.
 					 */
 				}
