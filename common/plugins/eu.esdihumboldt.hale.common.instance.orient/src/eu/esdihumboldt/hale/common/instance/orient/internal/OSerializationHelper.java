@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.instance.model.impl.internal;
+package eu.esdihumboldt.hale.common.instance.orient.internal;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -49,8 +49,8 @@ import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
-import eu.esdihumboldt.hale.common.instance.model.impl.OGroup;
-import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
+import eu.esdihumboldt.hale.common.instance.orient.OGroup;
+import eu.esdihumboldt.hale.common.instance.orient.OInstance;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;

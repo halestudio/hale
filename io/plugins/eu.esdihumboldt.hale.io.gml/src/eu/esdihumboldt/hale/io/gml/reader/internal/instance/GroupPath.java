@@ -27,7 +27,7 @@ import java.util.Stack;
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.common.instance.model.MutableGroup;
-import eu.esdihumboldt.hale.common.instance.model.impl.OGroup;
+import eu.esdihumboldt.hale.common.instance.model.impl.DefaultGroup;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
@@ -95,7 +95,7 @@ public class GroupPath {
 			checkState(child instanceof GroupPropertyDefinition);
 
 			// create group
-			MutableGroup group = new OGroup(child);
+			MutableGroup group = new DefaultGroup(child);
 
 			// add to parent
 			QName propertyName = ((GroupPropertyDefinition) child).getName();
