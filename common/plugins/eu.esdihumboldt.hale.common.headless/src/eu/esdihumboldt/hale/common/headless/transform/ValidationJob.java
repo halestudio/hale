@@ -18,7 +18,6 @@ package eu.esdihumboldt.hale.common.headless.transform;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
@@ -36,7 +35,7 @@ import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
  * @author Kai Schwierczek
  * @author Simon Templer
  */
-public class ValidationJob extends Job {
+public class ValidationJob extends AbstractTransformationJob {
 
 	private static final ALogger log = ALoggerFactory.getLogger(ValidationJob.class);
 

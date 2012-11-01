@@ -82,7 +82,7 @@ public class TransformDataWizard extends Wizard {
 
 		Transformation.transform(rawSources, targetSink, sourceSelectionPage.getExportJob(),
 				sourceSelectionPage.getValidationJob(), alignment,
-				ss.getSchemas(SchemaSpaceID.SOURCE), DefaultReportHandler.getInstance());
+				ss.getSchemas(SchemaSpaceID.SOURCE), DefaultReportHandler.getInstance(), null);
 
 		return true;
 	}

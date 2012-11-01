@@ -223,7 +223,8 @@ public class UploadAndTransForm extends Form<Void> {
 			File out = new File(workspace, "out.xml"); // TODO file extension
 			writer.setTarget(new FileIOSupplier(out));
 
-			Transformation.transform(readers, writer, env, new ReportFile(reportFile));
+			Transformation.transform(readers, writer, env, new ReportFile(reportFile),
+					workspace.getName());
 
 			info("Transformation started: " + workspace.getName());
 		}
