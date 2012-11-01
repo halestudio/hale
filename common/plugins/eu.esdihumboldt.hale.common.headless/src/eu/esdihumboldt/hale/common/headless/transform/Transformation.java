@@ -203,7 +203,8 @@ public class Transformation {
 		}
 
 		// create transformation job
-		final AbstractTransformationJob transformJob = new AbstractTransformationJob("Transform") {
+		final AbstractTransformationJob transformJob = new AbstractTransformationJob(
+				"Transformation") {
 
 			/**
 			 * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)

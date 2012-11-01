@@ -9,17 +9,14 @@
 	<table class="no-stretch">
 		<tbody>
 			<wicket:container wicket:id="jobs">
-			<tr class="odd">
-				<th colspan="2" wicket:id="name" style="vertical-align: middle">[Name]</th>
+			<tr>
+				<td colspan="2" wicket:id="name" style="font-weight: bold;">[Name]</td>
 			</tr>
 			<tr>
 				<td><progress wicket:id="progress"></progress></td>
-				<td wicket:id="task">[Task]</td>
+				<td wicket:id="task" style="font-style: italic;">[Task]</td>
 			</tr>
-			<tr>
-				<td></td>
-				<td wicket:id="subtask" style="font-style: italic;">[Subtask]</td>
-			</tr>
+			<tr style="height: 12px;"><td></td><td></td></tr>
 			</wicket:container>
 		</tbody>
 	</table>

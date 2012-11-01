@@ -19,7 +19,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -61,6 +60,7 @@ public class JobPanel extends Panel {
 
 		// update panel
 		add(new AjaxSelfUpdatingTimerBehavior(Duration.milliseconds(1500)));
+		// TODO add option to stop?
 
 		// job list
 		final IModel<? extends List<Job>> jobModel = new LoadableDetachableModel<List<Job>>() {
@@ -83,28 +83,10 @@ public class JobPanel extends Panel {
 			 */
 			@Override
 			protected void populateItem(final ListItem<Job> item) {
-				final boolean odd = item.getIndex() % 2 == 1;
-				if (odd) {
-					item.add(AttributeModifier.replace("class", "odd"));
-				}
-
-				// status
-//				String status;
-//				switch (job.getState()) {
-//				case Job.WAITING:
-//					status = "waiting";
-//					break;
-//				case Job.SLEEPING:
-//					status = "sleeping";
-//					break;
-//				case Job.RUNNING:
-//					status = "running";
-//					break;
-//				case Job.NONE:
-//				default:
-//					status = "unknown";
+//				final boolean odd = item.getIndex() % 2 == 1;
+//				if (odd) {
+//					item.add(AttributeModifier.replace("class", "odd"));
 //				}
-//				item.add(new Label("status", status));
 
 				// name
 				item.add(new Label("name", item.getModelObject().getName()));
@@ -129,10 +111,11 @@ public class JobPanel extends Panel {
 				item.add(progress);
 
 				// task name
-				item.add(new Label("task", progressModel.getObject().getTaskName()));
-
-				// subtask
-				item.add(new Label("subtask", progressModel.getObject().getSubTask()));
+				String task = progressModel.getObject().getSubTask();
+				if (task == null || task.isEmpty()) {
+					task = progressModel.getObject().getTaskName();
+				}
+				item.add(new Label("task", task));
 			}
 
 		};
