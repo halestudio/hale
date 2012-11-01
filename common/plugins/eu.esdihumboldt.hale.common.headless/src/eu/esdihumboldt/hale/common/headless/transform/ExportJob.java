@@ -56,7 +56,7 @@ public class ExportJob extends AbstractTransformationJob {
 	 */
 	public ExportJob(LimboInstanceSink targetSink, InstanceWriter writer,
 			IOAdvisor<InstanceWriter> advisor, ReportHandler reportHandler) {
-		super("Export");
+		super("Encoding");
 
 		this.targetSink = targetSink;
 		this.writer = writer;
