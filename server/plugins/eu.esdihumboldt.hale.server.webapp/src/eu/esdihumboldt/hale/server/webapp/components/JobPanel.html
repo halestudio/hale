@@ -8,10 +8,16 @@
 <wicket:panel>
 	<table class="no-stretch">
 		<tbody>
-			<tr wicket:id="jobs">
+			<wicket:container wicket:id="jobs">
+			<tr class="odd">
 				<td wicket:id="status">[Status]</td>
 				<td wicket:id="name" style="vertical-align: middle">[Name]</td>
 			</tr>
+			<tr>
+				<td></td>
+				<td><progress wicket:id="progress"></progress></td>
+			</tr>
+			</wicket:container>
 		</tbody>
 	</table>
 	<p wicket:id="nojobs" style="font-style: italic;">No jobs running</p>

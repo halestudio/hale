@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.server.webtransform.war.pages;
 
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+
 import eu.esdihumboldt.hale.common.headless.transform.AbstractTransformationJob;
 import eu.esdihumboldt.hale.server.webapp.components.JobPanel;
 import eu.esdihumboldt.hale.server.webapp.pages.BasePage;
@@ -35,11 +37,23 @@ public class StatusPage extends BasePage {
 	 */
 	public static final String PARAMETER_WORKSPACE = "workspace";
 
+	/**
+	 * Create a status page with the given page parameters.
+	 * 
+	 * @param parameters the page parameters
+	 */
+	public StatusPage(PageParameters parameters) {
+		super(parameters);
+	}
+
 	@Override
 	protected void addControls(boolean loggedIn) {
 		super.addControls(loggedIn);
 
 		String workspaceId = getPageParameters().get(PARAMETER_WORKSPACE).toString();
+		if (workspaceId == null) {
+			throw new IllegalStateException("No workspace ID specified");
+		}
 
 		add(new JobPanel("jobs", AbstractTransformationJob.createFamily(workspaceId)));
 	}
