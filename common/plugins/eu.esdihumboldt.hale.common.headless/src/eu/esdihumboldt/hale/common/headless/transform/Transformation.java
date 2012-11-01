@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
 import com.google.common.base.Function;
@@ -73,9 +72,13 @@ public class Transformation {
 	 * @param target the target instance writer
 	 * @param environment the transformation environment
 	 * @param reportHandler the report handler
+	 * @param processId the identifier for the transformation process, may be
+	 *            <code>null</code> if grouping the jobs to a job family is not
+	 *            necessary
 	 */
 	public static void transform(List<InstanceReader> sources, InstanceWriter target,
-			final TransformationEnvironment environment, final ReportHandler reportHandler) {
+			final TransformationEnvironment environment, final ReportHandler reportHandler,
+			Object processId) {
 		final IOAdvisor<InstanceReader> loadDataAdvisor = new AbstractIOAdvisor<InstanceReader>() {
 
 			/**
@@ -150,7 +153,7 @@ public class Transformation {
 		ExportJob exportJob = new ExportJob(targetSink, target, saveDataAdvisor, reportHandler);
 		ValidationJob validationJob = null; // no validation
 		transform(sourceCollection, targetSink, exportJob, validationJob,
-				environment.getAlignment(), environment.getSourceSchema(), reportHandler);
+				environment.getAlignment(), environment.getSourceSchema(), reportHandler, processId);
 	}
 
 	/**
@@ -163,10 +166,14 @@ public class Transformation {
 	 * @param alignment the alignment, may not be changed outside this method
 	 * @param sourceSchema the source schema
 	 * @param reportHandler the report handler
+	 * @param processId the identifier for the transformation process, may be
+	 *            <code>null</code> if grouping the jobs to a job family is not
+	 *            necessary
 	 */
 	public static void transform(InstanceCollection sources, final LimboInstanceSink targetSink,
 			final ExportJob exportJob, final ValidationJob validationJob,
-			final Alignment alignment, SchemaSpace sourceSchema, final ReportHandler reportHandler) {
+			final Alignment alignment, SchemaSpace sourceSchema, final ReportHandler reportHandler,
+			final Object processId) {
 		final InstanceCollection sourceToUse;
 
 		// Check whether to create a temporary database or not.
@@ -195,7 +202,7 @@ public class Transformation {
 		}
 
 		// create transformation job
-		final Job transformJob = new Job("Transform") {
+		final AbstractTransformationJob transformJob = new AbstractTransformationJob("Transform") {
 
 			/**
 			 * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
@@ -222,6 +229,15 @@ public class Transformation {
 				return Status.OK_STATUS;
 			}
 		};
+
+		// set process IDs to group jobs in a job family
+		if (processId != null) {
+			transformJob.setProcessId(processId);
+			exportJob.setProcessId(processId);
+			if (validationJob != null) {
+				validationJob.setProcessId(processId);
+			}
+		}
 
 		exportJob.setUser(true);
 
