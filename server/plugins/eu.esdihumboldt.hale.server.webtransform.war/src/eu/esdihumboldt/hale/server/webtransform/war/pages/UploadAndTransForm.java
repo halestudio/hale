@@ -39,23 +39,20 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
-import org.joda.time.Duration;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.headless.EnvironmentService;
-import eu.esdihumboldt.hale.common.headless.HeadlessIO;
 import eu.esdihumboldt.hale.common.headless.TransformationEnvironment;
-import eu.esdihumboldt.hale.common.headless.WorkspaceService;
-import eu.esdihumboldt.hale.common.headless.report.ReportFile;
-import eu.esdihumboldt.hale.common.headless.transform.Transformation;
+import eu.esdihumboldt.hale.common.headless.transform.TransformationWorkspace;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
-import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 
 /**
  * Form for uploading and transforming data.
@@ -66,11 +63,10 @@ public class UploadAndTransForm extends Form<Void> {
 
 	private static final long serialVersionUID = 8904573677189598470L;
 
-	@SpringBean
-	private EnvironmentService environmentService;
+	private static final ALogger log = ALoggerFactory.getLogger(UploadAndTransForm.class);
 
 	@SpringBean
-	private WorkspaceService workspaceService;
+	private EnvironmentService environmentService;
 
 	private final String projectId;
 
@@ -165,73 +161,59 @@ public class UploadAndTransForm extends Form<Void> {
 	protected void onSubmit() {
 		List<FileUpload> uploads = file.getFileUploads();
 
-		TransformationEnvironment env = environmentService.getEnvironment(projectId);
+		final TransformationWorkspace workspace = new TransformationWorkspace();
 
-		if (env != null) {
-			// lease workspace folder
-			File workspace = workspaceService.leaseWorkspace(Duration.standardDays(1));
-			final File source = new File(workspace, "source");
-			source.mkdir();
+		List<InstanceReader> readers = Lists.transform(uploads,
+				new Function<FileUpload, InstanceReader>() {
 
-			List<InstanceReader> readers = Lists.transform(uploads,
-					new Function<FileUpload, InstanceReader>() {
+					private int count;
 
-						private int count;
-
-						@Override
-						public InstanceReader apply(@Nullable final FileUpload input) {
-							/*
-							 * Copy uploaded file to source folder, because the
-							 * input stream retrieved from the FileUpload is
-							 * automatically closed with the end of the request.
-							 */
-							File file = new File(source, (count++) + "_"
-									+ input.getClientFileName());
-							try {
-								input.writeTo(file);
-							} catch (IOException e) {
-								throw new IllegalStateException(
-										"Unable to read uploaded source file", e);
-							}
-							// TODO clean up later on?!
-
-							InstanceReader reader = null;
-							try {
-								LocatableInputSupplier<? extends InputStream> in = new FileIOSupplier(
-										file);
-								reader = HaleIO.findIOProvider(InstanceReader.class, in,
-										input.getClientFileName());
-								if (reader != null) {
-									reader.setSource(in);
-								}
-							} catch (Exception e) {
-								throw new IllegalStateException(
-										"Unable to read uploaded source file", e);
-							}
-							if (reader == null) {
-								throw new IllegalStateException(
-										"Could not find I/O provider for source file.");
-							}
-							return reader;
+					@Override
+					public InstanceReader apply(@Nullable final FileUpload input) {
+						/*
+						 * Copy uploaded file to source folder, because the
+						 * input stream retrieved from the FileUpload is
+						 * automatically closed with the end of the request.
+						 */
+						File file = new File(workspace.getSourceFolder(), (count++) + "_"
+								+ input.getClientFileName());
+						try {
+							input.writeTo(file);
+						} catch (IOException e) {
+							throw new IllegalStateException("Unable to read uploaded source file",
+									e);
 						}
-					});
+						// TODO clean up later on?!
 
-			InstanceWriter writer = (InstanceWriter) HeadlessIO.loadProvider(target);
+						InstanceReader reader = null;
+						try {
+							LocatableInputSupplier<? extends InputStream> in = new FileIOSupplier(
+									file);
+							reader = HaleIO.findIOProvider(InstanceReader.class, in,
+									input.getClientFileName());
+							if (reader != null) {
+								reader.setSource(in);
+							}
+						} catch (Exception e) {
+							throw new IllegalStateException("Unable to read uploaded source file",
+									e);
+						}
+						if (reader == null) {
+							throw new IllegalStateException(
+									"Could not find I/O provider for source file.");
+						}
+						return reader;
+					}
+				});
 
-			// report file
-			File reportFile = new File(workspace, "reports.log");
-			// output file
-			File out = new File(workspace, "out.xml"); // TODO file extension
-			writer.setTarget(new FileIOSupplier(out));
-
-			Transformation.transform(readers, writer, env, new ReportFile(reportFile),
-					workspace.getName());
-
+		try {
+			workspace.transform(projectId, readers, target);
 			setResponsePage(StatusPage.class,
-					new PageParameters().add(StatusPage.PARAMETER_WORKSPACE, workspace.getName()));
-		}
-		else {
-			error("Could not retrieve associated transformation environment, please ensure the corresponding project is activated.");
+					new PageParameters().add(StatusPage.PARAMETER_WORKSPACE, workspace.getId()));
+		} catch (Exception e) {
+			log.error("Error launching transformation process", e);
+			error("Error launching transformation process");
+			workspace.delete();
 		}
 	}
 
