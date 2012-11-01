@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.common.headless.impl;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -98,7 +99,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 	 * @see WorkspaceService#leaseWorkspace(ReadableDuration)
 	 */
 	@Override
-	public File leaseWorkspace(ReadableDuration duration) {
+	public String leaseWorkspace(ReadableDuration duration) {
 		File workspace = newFolder();
 
 		DateTime leaseEnd = DateTime.now().plus(duration);
@@ -114,7 +115,36 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 			throw new IllegalStateException("Can't write to workspace folder", e);
 		}
 
+		return workspace.getName();
+	}
+
+	/**
+	 * @see WorkspaceService#getWorkspaceFolder(String)
+	 */
+	@Override
+	public File getWorkspaceFolder(String id) throws FileNotFoundException {
+		File workspace = new File(parentDir, id);
+		if (!workspace.exists()) {
+			throw new FileNotFoundException("Workspace folder does not exist");
+		}
 		return workspace;
+	}
+
+	/**
+	 * @see WorkspaceService#deleteWorkspace(String)
+	 */
+	@Override
+	public void deleteWorkspace(String id) {
+		try {
+			File workspace = getWorkspaceFolder(id);
+
+			// delete folder
+			FileUtils.deleteDirectory(workspace);
+			// delete configuration file
+			configFile(workspace).delete();
+		} catch (IOException e) {
+			log.error("Error deleting workspace folder", e);
+		}
 	}
 
 	/**
