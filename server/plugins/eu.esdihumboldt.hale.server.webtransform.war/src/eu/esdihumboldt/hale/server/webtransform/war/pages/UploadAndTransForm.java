@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.server.webtransform.war.pages;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -45,6 +46,7 @@ import com.google.common.collect.Lists;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
+import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.headless.EnvironmentService;
 import eu.esdihumboldt.hale.common.headless.HeadlessIO;
 import eu.esdihumboldt.hale.common.headless.TransformationEnvironment;
@@ -165,19 +167,43 @@ public class UploadAndTransForm extends Form<Void> {
 		TransformationEnvironment env = environmentService.getEnvironment(projectId);
 
 		if (env != null) {
+			// lease workspace folder
+			File workspace = workspaceService.leaseWorkspace(Duration.standardDays(1));
+			final File source = new File(workspace, "source");
+			source.mkdir();
+
 			List<InstanceReader> readers = Lists.transform(uploads,
 					new Function<FileUpload, InstanceReader>() {
 
+						private int count;
+
 						@Override
-						public InstanceReader apply(@Nullable FileUpload input) {
+						public InstanceReader apply(@Nullable final FileUpload input) {
+							/*
+							 * Copy uploaded file to source folder, because the
+							 * input stream retrieved from the FileUpload is
+							 * automatically closed with the end of the request.
+							 */
+							File file = new File(source, (count++) + "_"
+									+ input.getClientFileName());
+							try {
+								input.writeTo(file);
+							} catch (IOException e) {
+								throw new IllegalStateException(
+										"Unable to read uploaded source file", e);
+							}
+							// TODO clean up later on?!
+
 							InstanceReader reader = null;
 							try {
-								// XXX not really necessary here to use
-								// findImportProvider, HaleIO.findIOProvider
-								// could be used instead
-								reader = HaleIO.findImportProvider(InstanceReader.class,
-										input.getInputStream());
-							} catch (IOException e) {
+								LocatableInputSupplier<? extends InputStream> in = new FileIOSupplier(
+										file);
+								reader = HaleIO.findIOProvider(InstanceReader.class, in,
+										input.getClientFileName());
+								if (reader != null) {
+									reader.setSource(in);
+								}
+							} catch (Exception e) {
 								throw new IllegalStateException(
 										"Unable to read uploaded source file", e);
 							}
@@ -191,8 +217,6 @@ public class UploadAndTransForm extends Form<Void> {
 
 			InstanceWriter writer = (InstanceWriter) HeadlessIO.loadProvider(target);
 
-			// lease workspace folder
-			File workspace = workspaceService.leaseWorkspace(Duration.standardDays(1));
 			// report file
 			File reportFile = new File(workspace, "reports.log");
 			// output file

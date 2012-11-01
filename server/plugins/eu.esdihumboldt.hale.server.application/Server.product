@@ -31,7 +31,9 @@
       <plugin id="ch.qos.logback.core"/>
       <plugin id="ch.qos.logback.slf4j" fragment="true"/>
       <plugin id="com.google.guava"/>
+      <plugin id="com.iabcinc.jmep"/>
       <plugin id="com.orientechnologies.orient"/>
+      <plugin id="com.springsource.antlr"/>
       <plugin id="com.springsource.javax.el"/>
       <plugin id="com.springsource.javax.media.jai.codec"/>
       <plugin id="com.springsource.javax.media.jai.core"/>
@@ -45,6 +47,7 @@
       <plugin id="com.springsource.org.apache.commons.pool"/>
       <plugin id="com.springsource.org.apache.xmlbeans"/>
       <plugin id="com.springsource.org.castor"/>
+      <plugin id="com.springsource.org.codehaus.groovy"/>
       <plugin id="com.springsource.org.picocontainer"/>
       <plugin id="com.springsource.org.quartz"/>
       <plugin id="com.vividsolutions.jts"/>
@@ -55,12 +58,20 @@
       <plugin id="de.fhg.igd.concurrency"/>
       <plugin id="de.fhg.igd.osgi.util"/>
       <plugin id="edu.umd.cs.findbugs.annotations"/>
+      <plugin id="eu.esdihumboldt.cst"/>
+      <plugin id="eu.esdihumboldt.cst.functions.core"/>
+      <plugin id="eu.esdihumboldt.cst.functions.geometric"/>
+      <plugin id="eu.esdihumboldt.cst.functions.groovy"/>
+      <plugin id="eu.esdihumboldt.cst.functions.inspire"/>
+      <plugin id="eu.esdihumboldt.cst.functions.numeric"/>
+      <plugin id="eu.esdihumboldt.cst.functions.string"/>
       <plugin id="eu.esdihumboldt.hale.common.align"/>
       <plugin id="eu.esdihumboldt.hale.common.cache"/>
       <plugin id="eu.esdihumboldt.hale.common.convert"/>
       <plugin id="eu.esdihumboldt.hale.common.convert.core"/>
       <plugin id="eu.esdihumboldt.hale.common.convert.wkt"/>
       <plugin id="eu.esdihumboldt.hale.common.core"/>
+      <plugin id="eu.esdihumboldt.hale.common.filter"/>
       <plugin id="eu.esdihumboldt.hale.common.headless"/>
       <plugin id="eu.esdihumboldt.hale.common.instance"/>
       <plugin id="eu.esdihumboldt.hale.common.instance.orient"/>
@@ -131,9 +142,11 @@
       <plugin id="org.eclipse.emf.ecore"/>
       <plugin id="org.eclipse.equinox.app"/>
       <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.ds"/>
       <plugin id="org.eclipse.equinox.preferences"/>
       <plugin id="org.eclipse.equinox.registry"/>
       <plugin id="org.eclipse.equinox.security"/>
+      <plugin id="org.eclipse.equinox.util"/>
       <plugin id="org.eclipse.gemini.blueprint.core"/>
       <plugin id="org.eclipse.gemini.blueprint.extender"/>
       <plugin id="org.eclipse.gemini.blueprint.io"/>
@@ -153,6 +166,7 @@
       <plugin id="org.eclipse.xsd"/>
       <plugin id="org.geotools"/>
       <plugin id="org.jdom"/>
+      <plugin id="org.objectweb.asm"/>
       <plugin id="org.opengis"/>
       <plugin id="org.slf4j.api"/>
       <plugin id="org.springframework.aop"/>
@@ -173,9 +187,11 @@
    </plugins>
 
    <configurations>
+      <plugin id="eu.esdihumboldt.cst" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.common.convert" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.common.convert.core" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.common.convert.wkt" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.common.instance" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.console.war" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.projects" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.projects.war" autoStart="true" startLevel="0" />
@@ -184,6 +200,7 @@
       <plugin id="eu.esdihumboldt.hale.server.war" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.webapp.war" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.webtransform.war" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.registry" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.gemini.blueprint.core" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.gemini.blueprint.extender" autoStart="true" startLevel="2" />
