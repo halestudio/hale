@@ -38,7 +38,7 @@
 	
 	<!-- workspace service -->
 	<bean id="workspaces"
-		class="eu.esdihumboldt.hale.server.projects.impl.WorkspaceServiceImpl">
+		class="eu.esdihumboldt.hale.common.headless.impl.WorkspaceServiceImpl">
 		<constructor-arg value="${hale.workspacesloc}" />
 	</bean>
 	
