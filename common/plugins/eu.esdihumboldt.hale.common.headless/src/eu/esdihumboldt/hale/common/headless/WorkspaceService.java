@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.server.projects;
+package eu.esdihumboldt.hale.common.headless;
 
 import java.io.File;
 
