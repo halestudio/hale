@@ -34,6 +34,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
@@ -226,7 +227,8 @@ public class UploadAndTransForm extends Form<Void> {
 			Transformation.transform(readers, writer, env, new ReportFile(reportFile),
 					workspace.getName());
 
-			info("Transformation started: " + workspace.getName());
+			setResponsePage(StatusPage.class,
+					new PageParameters().add(StatusPage.PARAMETER_WORKSPACE, workspace.getName()));
 		}
 		else {
 			error("Could not retrieve associated transformation environment, please ensure the corresponding project is activated.");

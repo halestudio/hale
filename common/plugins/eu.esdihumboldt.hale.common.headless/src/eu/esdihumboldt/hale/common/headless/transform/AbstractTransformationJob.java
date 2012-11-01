@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.common.headless.transform;
 
+import java.io.Serializable;
+
 import javax.annotation.concurrent.Immutable;
 
 import org.eclipse.core.runtime.jobs.Job;
@@ -32,7 +34,9 @@ public abstract class AbstractTransformationJob extends Job {
 	 * transformation jobs can be in the same family.
 	 */
 	@Immutable
-	private static class Token {
+	private static class Token implements Serializable {
+
+		private static final long serialVersionUID = 7065167014725940851L;
 
 		private final Object identifier;
 
@@ -84,10 +88,22 @@ public abstract class AbstractTransformationJob extends Job {
 	}
 
 	/**
-	 * @param processId the processId to set
+	 * Set the process identifier to set the job family.
+	 * 
+	 * @param processId the process identifier
 	 */
 	public void setProcessId(Object processId) {
-		this.family = new Token(processId);
+		this.family = createFamily(processId);
+	}
+
+	/**
+	 * Create a family token based on the given process identifier.
+	 * 
+	 * @param processId the process identifier
+	 * @return the job family
+	 */
+	public static Token createFamily(Object processId) {
+		return new Token(processId);
 	}
 
 	/**
