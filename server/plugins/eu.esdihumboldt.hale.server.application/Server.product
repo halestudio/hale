@@ -184,6 +184,7 @@
       <plugin id="org.springframework.web"/>
       <plugin id="org.springframework.web.servlet"/>
       <plugin id="slf4j.ext"/>
+      <plugin id="wicketstuff-html5"/>
    </plugins>
 
    <configurations>

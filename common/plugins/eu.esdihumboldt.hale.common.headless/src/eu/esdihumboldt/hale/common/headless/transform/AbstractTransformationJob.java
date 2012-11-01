@@ -30,8 +30,8 @@ import org.eclipse.core.runtime.jobs.Job;
 public abstract class AbstractTransformationJob extends Job {
 
 	/**
-	 * Internal class wrapping a process identifier to ensure that only
-	 * transformation jobs can be in the same family.
+	 * Internal class wrapping a process identifier to ensure that there are no
+	 * other jobs that can accidentally be in the same family.
 	 */
 	@Immutable
 	private static class Token implements Serializable {
@@ -93,7 +93,7 @@ public abstract class AbstractTransformationJob extends Job {
 	 * @param processId the process identifier
 	 */
 	public void setProcessId(Object processId) {
-		this.family = createFamily(processId);
+		this.family = new Token(processId);
 	}
 
 	/**
@@ -102,7 +102,7 @@ public abstract class AbstractTransformationJob extends Job {
 	 * @param processId the process identifier
 	 * @return the job family
 	 */
-	public static Token createFamily(Object processId) {
+	public static Serializable createFamily(Object processId) {
 		return new Token(processId);
 	}
 

@@ -31,6 +31,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.util.time.Duration;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
+import org.wicketstuff.html5.markup.html.Progress;
 
 /**
  * Panel showing job status.
@@ -106,14 +107,26 @@ public class JobPanel extends Panel {
 
 				// name
 				item.add(new Label("name", job.getName()));
+
+				// progress
+//				ProgressBar progress = new ProgressBar("progress", model);
+				Progress progress = new Progress("progress");
+				item.add(progress);
 			}
 
 		};
 		add(jobList);
 
-		boolean noJobs = jobModel.getObject().isEmpty();
+		add(new WebMarkupContainer("nojobs") {
 
-		add(new WebMarkupContainer("nojobs").setVisible(noJobs));
+			private static final long serialVersionUID = -7752350858497246457L;
+
+			@Override
+			public boolean isVisible() {
+				return jobModel.getObject().isEmpty();
+			}
+
+		});
 	}
 
 }

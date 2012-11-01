@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
 import com.google.common.base.Function;
@@ -273,13 +274,23 @@ public class Transformation {
 
 		if (useTempDatabase) {
 			// run store instance job first...
-			StoreInstancesJob storeJob = new StoreInstancesJob(
-					"Load source instances into temporary database", db, sources) {
+			Job storeJob = new StoreInstancesJob("Load source instances into temporary database",
+					db, sources) {
 
 				@Override
 				protected void onComplete() {
 					// onComplete is also called if monitor is cancelled...
 				}
+
+				@Override
+				public boolean belongsTo(Object family) {
+					if (processId == null) {
+						return super.belongsTo(family);
+					}
+
+					return AbstractTransformationJob.createFamily(processId).equals(family);
+				}
+
 			};
 			// and schedule jobs on successful completion
 			storeJob.addJobChangeListener(new JobChangeAdapter() {
@@ -295,6 +306,7 @@ public class Transformation {
 					}
 				}
 			});
+
 			storeJob.schedule();
 		}
 		else {
