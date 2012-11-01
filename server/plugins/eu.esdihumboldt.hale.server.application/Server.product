@@ -86,6 +86,7 @@
       <plugin id="eu.esdihumboldt.hale.server.application"/>
       <plugin id="eu.esdihumboldt.hale.server.console.war"/>
       <plugin id="eu.esdihumboldt.hale.server.logback.config" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.server.progress"/>
       <plugin id="eu.esdihumboldt.hale.server.projects"/>
       <plugin id="eu.esdihumboldt.hale.server.projects.war"/>
       <plugin id="eu.esdihumboldt.hale.server.security"/>
@@ -194,6 +195,7 @@
       <plugin id="eu.esdihumboldt.hale.common.convert.wkt" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.common.instance" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.console.war" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.server.progress" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.projects" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.projects.war" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.security" autoStart="true" startLevel="0" />
