@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.server.webtransform.war;
 import org.apache.wicket.Page;
 
 import eu.esdihumboldt.hale.server.webapp.BaseWebApplication;
+import eu.esdihumboldt.hale.server.webtransform.war.pages.StatusPage;
 import eu.esdihumboldt.hale.server.webtransform.war.pages.TransformationsPage;
 import eu.esdihumboldt.hale.server.webtransform.war.pages.UploadPage;
 
@@ -36,6 +37,8 @@ public class WebTransformApplication extends BaseWebApplication {
 		super.init();
 
 		mountPage("/upload/${" + UploadPage.PARAMETER_PROJECT + "}", UploadPage.class);
+
+		mountPage("/status/${" + StatusPage.PARAMETER_WORKSPACE + "}", StatusPage.class);
 	}
 
 	/**
