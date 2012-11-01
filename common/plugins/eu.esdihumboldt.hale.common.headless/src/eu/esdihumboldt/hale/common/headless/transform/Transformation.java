@@ -144,6 +144,9 @@ public class Transformation {
 
 		};
 
+		saveDataAdvisor.prepareProvider(target);
+		saveDataAdvisor.updateConfiguration(target);
+
 		ExportJob exportJob = new ExportJob(targetSink, target, saveDataAdvisor, reportHandler);
 		ValidationJob validationJob = null; // no validation
 		transform(sourceCollection, targetSink, exportJob, validationJob,

@@ -52,7 +52,7 @@ public class ExportJob extends Job {
 	 * 
 	 * @param targetSink the target sink
 	 * @param writer the instance writer
-	 * @param advisor the advisor
+	 * @param advisor the advisor, to handle the results
 	 * @param reportHandler the report handler
 	 */
 	public ExportJob(LimboInstanceSink targetSink, InstanceWriter writer,
