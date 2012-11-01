@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.common.headless;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import org.joda.time.ReadableDuration;
 
@@ -33,8 +34,24 @@ public interface WorkspaceService {
 	 * depending on when the service is triggered).
 	 * 
 	 * @param duration the lease duration
-	 * @return the workspace folder
+	 * @return the workspace identifier
 	 */
-	public File leaseWorkspace(ReadableDuration duration);
+	public String leaseWorkspace(ReadableDuration duration);
+
+	/**
+	 * Get the workspace folder for the given workspace identifier.
+	 * 
+	 * @param id the workspace identifier
+	 * @return the workspace folder
+	 * @throws FileNotFoundException if the workspace does not exist
+	 */
+	public File getWorkspaceFolder(String id) throws FileNotFoundException;
+
+	/**
+	 * Delete the workspace with the given identifier.
+	 * 
+	 * @param id the workspace identifier
+	 */
+	public void deleteWorkspace(String id);
 
 }
