@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.server.projects.impl;
+package eu.esdihumboldt.hale.common.headless.impl;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -28,7 +28,7 @@ import org.joda.time.ReadableDuration;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.hale.server.projects.WorkspaceService;
+import eu.esdihumboldt.hale.common.headless.WorkspaceService;
 import eu.esdihumboldt.util.PropertiesFile;
 
 /**

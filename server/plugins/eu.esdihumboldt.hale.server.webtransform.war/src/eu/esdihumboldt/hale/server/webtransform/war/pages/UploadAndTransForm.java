@@ -51,11 +51,11 @@ import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.headless.EnvironmentService;
 import eu.esdihumboldt.hale.common.headless.HeadlessIO;
 import eu.esdihumboldt.hale.common.headless.TransformationEnvironment;
+import eu.esdihumboldt.hale.common.headless.WorkspaceService;
 import eu.esdihumboldt.hale.common.headless.report.ReportFile;
 import eu.esdihumboldt.hale.common.headless.transform.Transformation;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
-import eu.esdihumboldt.hale.server.projects.WorkspaceService;
 
 /**
  * Form for uploading and transforming data.
