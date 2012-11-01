@@ -23,12 +23,14 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import eu.esdihumboldt.hale.common.headless.EnvironmentService;
 import eu.esdihumboldt.hale.common.headless.TransformationEnvironment;
 import eu.esdihumboldt.hale.server.webapp.pages.BasePage;
+import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
 
 /**
  * Page for uploading data for transformation.
  * 
  * @author Simon Templer
  */
+@PageDescription(parent = TransformationsPage.class, title = "Upload")
 public class UploadPage extends BasePage {
 
 	private static final long serialVersionUID = -2188490515045737872L;
