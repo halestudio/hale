@@ -33,6 +33,9 @@ import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
 import org.wicketstuff.html5.markup.html.Progress;
 
+import de.fhg.igd.osgi.util.OsgiUtils;
+import eu.esdihumboldt.hale.server.progress.ProgressService;
+
 /**
  * Panel showing job status.
  * 
@@ -79,39 +82,57 @@ public class JobPanel extends Panel {
 			 * @see ListView#populateItem(ListItem)
 			 */
 			@Override
-			protected void populateItem(ListItem<Job> item) {
+			protected void populateItem(final ListItem<Job> item) {
 				final boolean odd = item.getIndex() % 2 == 1;
 				if (odd) {
 					item.add(AttributeModifier.replace("class", "odd"));
 				}
 
-				final Job job = item.getModelObject();
-
 				// status
-				String status;
-				switch (job.getState()) {
-				case Job.WAITING:
-					status = "waiting";
-					break;
-				case Job.SLEEPING:
-					status = "sleeping";
-					break;
-				case Job.RUNNING:
-					status = "running";
-					break;
-				case Job.NONE:
-				default:
-					status = "unknown";
-				}
-				item.add(new Label("status", status));
+//				String status;
+//				switch (job.getState()) {
+//				case Job.WAITING:
+//					status = "waiting";
+//					break;
+//				case Job.SLEEPING:
+//					status = "sleeping";
+//					break;
+//				case Job.RUNNING:
+//					status = "running";
+//					break;
+//				case Job.NONE:
+//				default:
+//					status = "unknown";
+//				}
+//				item.add(new Label("status", status));
 
 				// name
-				item.add(new Label("name", job.getName()));
+				item.add(new Label("name", item.getModelObject().getName()));
+
+				final IModel<eu.esdihumboldt.hale.server.progress.Progress> progressModel = new LoadableDetachableModel<eu.esdihumboldt.hale.server.progress.Progress>() {
+
+					private static final long serialVersionUID = 2666038645533292585L;
+
+					@Override
+					protected eu.esdihumboldt.hale.server.progress.Progress load() {
+						ProgressService ps = OsgiUtils.getService(ProgressService.class);
+						if (ps == null) {
+							return null;
+						}
+						return ps.getJobProgress(item.getModelObject());
+					}
+
+				};
 
 				// progress
-//				ProgressBar progress = new ProgressBar("progress", model);
-				Progress progress = new Progress("progress");
+				Progress progress = new JobProgress("progress", progressModel);
 				item.add(progress);
+
+				// task name
+				item.add(new Label("task", progressModel.getObject().getTaskName()));
+
+				// subtask
+				item.add(new Label("subtask", progressModel.getObject().getSubTask()));
 			}
 
 		};
