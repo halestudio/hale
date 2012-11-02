@@ -195,24 +195,31 @@ public class StatusPage extends BasePage {
 		}
 		add(new Label("leaseEnd", leaseEnd));
 
-		// timer
-		add(new AbstractAjaxTimerBehavior(Duration.milliseconds(1500)) {
+		boolean transformationFinished = workspace.getObject().isTransformationFinished();
+		if (transformationFinished) {
+			// disable job timer
+			jobs.getTimer().stopOnNextUpdate();
+		}
+		else {
+			// timer
+			add(new AbstractAjaxTimerBehavior(Duration.milliseconds(1500)) {
 
-			private static final long serialVersionUID = -3726349470723024150L;
+				private static final long serialVersionUID = -3726349470723024150L;
 
-			@Override
-			protected void onTimer(AjaxRequestTarget target) {
-				if (workspace.getObject().isTransformationFinished()) {
-					// update status and result
-					target.add(status);
-					target.add(result);
+				@Override
+				protected void onTimer(AjaxRequestTarget target) {
+					if (workspace.getObject().isTransformationFinished()) {
+						// update status and result
+						target.add(status);
+						target.add(result);
 
-					// stop timers
-					stop(target);
-					jobs.getTimer().stopOnNextUpdate();
+						// stop timers
+						stop(target);
+						jobs.getTimer().stopOnNextUpdate();
+					}
 				}
-			}
-		});
+			});
+		}
 	}
 
 }
