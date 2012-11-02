@@ -15,8 +15,15 @@
 
 package eu.esdihumboldt.hale.server.webtransform.war.pages;
 
-import org.apache.wicket.request.mapper.parameter.PageParameters;
+import java.io.FileNotFoundException;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.wicket.request.http.flow.AbortWithHttpErrorCodeException;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+
+import eu.esdihumboldt.hale.common.headless.WorkspaceService;
 import eu.esdihumboldt.hale.common.headless.transform.AbstractTransformationJob;
 import eu.esdihumboldt.hale.server.webapp.components.JobPanel;
 import eu.esdihumboldt.hale.server.webapp.pages.BasePage;
@@ -37,6 +44,9 @@ public class StatusPage extends BasePage {
 	 */
 	public static final String PARAMETER_WORKSPACE = "workspace";
 
+	@SpringBean
+	private WorkspaceService workspaces;
+
 	/**
 	 * Create a status page with the given page parameters.
 	 * 
@@ -50,9 +60,17 @@ public class StatusPage extends BasePage {
 	protected void addControls(boolean loggedIn) {
 		super.addControls(loggedIn);
 
-		String workspaceId = getPageParameters().get(PARAMETER_WORKSPACE).toString();
-		if (workspaceId == null) {
-			throw new IllegalStateException("No workspace ID specified");
+		String workspaceId = getPageParameters().get(PARAMETER_WORKSPACE).toOptionalString();
+		if (workspaceId == null || workspaceId.isEmpty()) {
+			throw new AbortWithHttpErrorCodeException(HttpServletResponse.SC_NOT_FOUND,
+					"Workspace ID not specified.");
+		}
+
+		try {
+			workspaces.getWorkspaceFolder(workspaceId);
+		} catch (FileNotFoundException e) {
+			throw new AbortWithHttpErrorCodeException(HttpServletResponse.SC_NOT_FOUND,
+					"Workspace does not exist.");
 		}
 
 		add(new JobPanel("jobs", AbstractTransformationJob.createFamily(workspaceId)));
