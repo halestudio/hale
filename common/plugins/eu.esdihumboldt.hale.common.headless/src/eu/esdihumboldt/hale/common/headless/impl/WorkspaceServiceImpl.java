@@ -132,9 +132,13 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 	 */
 	@Override
 	public File getWorkspaceFolder(String id) throws FileNotFoundException {
+		if (id == null || id.isEmpty()) {
+			throw new FileNotFoundException("Invalid workspace ID");
+		}
+
 		File workspace = new File(parentDir, id);
-		if (!workspace.exists()) {
-			throw new FileNotFoundException("Workspace folder does not exist");
+		if (!workspace.exists() || !configFile(workspace).exists()) {
+			throw new FileNotFoundException("Workspace does not exist");
 		}
 		return workspace;
 	}
