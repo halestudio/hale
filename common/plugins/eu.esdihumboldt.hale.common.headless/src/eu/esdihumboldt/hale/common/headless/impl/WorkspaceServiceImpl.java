@@ -19,6 +19,9 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
@@ -38,6 +41,12 @@ import eu.esdihumboldt.util.PropertiesFile;
  * @author Simon Templer
  */
 public class WorkspaceServiceImpl implements WorkspaceService {
+
+	/**
+	 * Prefix of property names that are part of the external workspace
+	 * settings.
+	 */
+	private static final String PROPERTY_SETTING_PREFIX = "setting_";
 
 	/**
 	 * Suffix of the configuration file for a workspace folder, that is placed
@@ -128,6 +137,65 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 			throw new FileNotFoundException("Workspace folder does not exist");
 		}
 		return workspace;
+	}
+
+	/**
+	 * @see WorkspaceService#getLeaseEnd(String)
+	 */
+	@Override
+	public DateTime getLeaseEnd(String workspaceId) throws IOException {
+		PropertiesFile config = getConfiguration(workspaceId);
+		String leaseEnd = config.getProperty(PROPERTY_LEASE_END);
+		return DateTime.parse(leaseEnd);
+	}
+
+	private PropertiesFile getConfiguration(String workspaceId) throws IOException {
+		File configFile = configFile(getWorkspaceFolder(workspaceId));
+		if (configFile.exists()) {
+			return new PropertiesFile(configFile);
+		}
+
+		throw new FileNotFoundException("Workspace configuration file missing");
+	}
+
+	/**
+	 * @see WorkspaceService#getSettings(String)
+	 */
+	@Override
+	public Map<String, String> getSettings(String workspaceId) throws IOException {
+		PropertiesFile config = getConfiguration(workspaceId);
+		@SuppressWarnings("unchecked")
+		Enumeration<String> enProps = (Enumeration<String>) config.propertyNames();
+
+		Map<String, String> result = new HashMap<String, String>();
+		while (enProps.hasMoreElements()) {
+			String property = enProps.nextElement();
+			if (property.startsWith(PROPERTY_SETTING_PREFIX)) {
+				result.put(property.substring(PROPERTY_SETTING_PREFIX.length()),
+						config.getProperty(property));
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * @see WorkspaceService#set(String, String, String)
+	 */
+	@Override
+	public void set(String workspaceId, String setting, String value) throws IOException {
+		PropertiesFile config = getConfiguration(workspaceId);
+
+		String key = PROPERTY_SETTING_PREFIX + setting;
+
+		if (value == null) {
+			config.remove(key);
+		}
+		else {
+			config.setProperty(key, value);
+		}
+
+		config.save();
 	}
 
 	/**
