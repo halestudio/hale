@@ -124,6 +124,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 			throw new IllegalStateException("Can't write to workspace folder", e);
 		}
 
+		log.info("Leasing workspace " + workspace.getName() + " until " + leaseEnd.toString());
+
 		return workspace.getName();
 	}
 
@@ -214,6 +216,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 			FileUtils.deleteDirectory(workspace);
 			// delete configuration file
 			configFile(workspace).delete();
+
+			log.info("Removed workspace " + workspace.getName() + ".");
 		} catch (IOException e) {
 			log.error("Error deleting workspace folder", e);
 		}
@@ -255,6 +259,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 					}
 					else {
 						configFile(candidate).delete();
+						log.info("Removed workspace " + candidate.getName()
+								+ " after lease expired.");
 					}
 				}
 			}
