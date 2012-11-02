@@ -19,7 +19,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -44,22 +43,26 @@ public class JobPanel extends Panel {
 
 	private static final long serialVersionUID = 1567693599697840713L;
 
+	private final StoppableAjaxSelfUpdatingTimer timer;
+
 	/**
 	 * Create a job panel.
 	 * 
 	 * @param id the component ID
 	 * @param jobFamily the job family, may be <code>null</code> if all jobs
 	 *            should be shown
+	 * @param hideNoJobs if the message stating that there are no jobs running
+	 *            should be hidden
 	 * 
 	 * @see IJobManager#find(Object)
 	 */
-	public JobPanel(String id, final Serializable jobFamily) {
+	public JobPanel(String id, final Serializable jobFamily, final boolean hideNoJobs) {
 		super(id);
 
 		setOutputMarkupId(true);
 
 		// update panel
-		add(new AjaxSelfUpdatingTimerBehavior(Duration.milliseconds(1500)));
+		add(timer = new StoppableAjaxSelfUpdatingTimer(Duration.milliseconds(1500)));
 		// TODO add option to stop?
 
 		// job list
@@ -127,10 +130,19 @@ public class JobPanel extends Panel {
 
 			@Override
 			public boolean isVisible() {
-				return jobModel.getObject().isEmpty();
+				return !hideNoJobs && jobModel.getObject().isEmpty();
 			}
 
 		});
+	}
+
+	/**
+	 * Get the timer updating the panel.
+	 * 
+	 * @return the timer
+	 */
+	public StoppableAjaxSelfUpdatingTimer getTimer() {
+		return timer;
 	}
 
 }
