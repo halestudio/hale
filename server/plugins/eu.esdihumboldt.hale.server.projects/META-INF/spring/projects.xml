@@ -17,12 +17,12 @@
 		<constructor-arg value="${hale.projectsloc}" />
 		
 		<!-- add security interceptor -->
-		<sec:intercept-methods
+		<!-- sec:intercept-methods
 			access-decision-manager-ref="methodAccessDecisionManager">
 
 			<sec:protect method="*" access="ROLE_ADMIN" />
-			<!-- sec:protect method="transaction" access="ROLE_ADMIN,INVOKE_OBJECTSERVICE" /-->
-		</sec:intercept-methods>
+			sec:protect method="transaction" access="ROLE_ADMIN,INVOKE_OBJECTSERVICE" />
+		</sec:intercept-methods-->
 	</bean>
 
 	<!-- transformation environment manager -->
@@ -75,14 +75,15 @@
 	</bean>
 
 	<!-- role voter -->
-	<bean id="roleVoter" class="org.springframework.security.access.vote.RoleVoter" />
+	<!-- bean id="roleVoter" class="org.springframework.security.access.vote.RoleVoter" /-->
 
 	<!-- voter for ObjectService invocations -->
 	<!-- bean id="objectServiceVoter"
 		class="de.fhg.igd.objects.security.user.voter.ObjectServiceInvocationVoter" /-->
 
 	<!-- access decision manager -->
-	<bean id="methodAccessDecisionManager"
+	<!-- SHOULD BE THE SAME FOR ALL CONTEXTS -->
+	<!-- bean id="methodAccessDecisionManager"
 		class="org.springframework.security.access.vote.AffirmativeBased">
 		<property name="allowIfAllAbstainDecisions">
 			<value>false</value>
@@ -90,15 +91,16 @@
 		<property name="decisionVoters">
 			<list>
 				<ref local="roleVoter" />
-				<!-- ref local="objectServiceVoter" /-->
+				<ref local="objectServiceVoter" />
 			</list>
 		</property>
-	</bean>
+	</bean-->
 
 	<!-- users -->
-	<sec:authentication-manager>
+	<!-- SHOULD BE THE SAME FOR ALL CONTEXTS -->
+	<!-- sec:authentication-manager>
 		<sec:authentication-provider
 			user-service-ref="userDetailsService" />
-	</sec:authentication-manager>
+	</sec:authentication-manager-->
 
 </beans>
