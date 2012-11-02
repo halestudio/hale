@@ -18,7 +18,11 @@ package eu.esdihumboldt.hale.server.webtransform.war.pages;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -27,11 +31,19 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.markup.html.form.select.IOptionRenderer;
 import org.apache.wicket.extensions.markup.html.form.select.Select;
 import org.apache.wicket.extensions.markup.html.form.select.SelectOptions;
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -39,20 +51,27 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.content.IContentType;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.io.ExportProvider;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.headless.EnvironmentService;
+import eu.esdihumboldt.hale.common.headless.HeadlessIO;
 import eu.esdihumboldt.hale.common.headless.TransformationEnvironment;
 import eu.esdihumboldt.hale.common.headless.transform.TransformationWorkspace;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
+import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 
 /**
  * Form for uploading and transforming data.
@@ -60,6 +79,60 @@ import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
  * @author Simon Templer
  */
 public class UploadAndTransForm extends Form<Void> {
+
+	/**
+	 * Model for a parameter field.
+	 */
+	private class FieldFieldModel implements IModel<String> {
+
+		private static final long serialVersionUID = 7866817725347689084L;
+
+		private final String param;
+
+		/**
+		 * Create a model for a parameter field.
+		 * 
+		 * @param param the parameter name
+		 */
+		public FieldFieldModel(String param) {
+			this.param = param;
+		}
+
+		@Override
+		public void detach() {
+			// nuthin'
+		}
+
+		@Override
+		public String getObject() {
+			return getTarget().getProviderConfiguration().get(param);
+		}
+
+		@Override
+		public void setObject(String object) {
+			getTarget().getProviderConfiguration().put(param, object);
+		}
+
+	}
+
+	/**
+	 * Choice renderer for content type IDs.
+	 */
+	private static class ContentTypeChoiceRenderer implements IChoiceRenderer<String> {
+
+		private static final long serialVersionUID = -6542046435287452517L;
+
+		@Override
+		public Object getDisplayValue(String object) {
+			return Platform.getContentTypeManager().getContentType(object).getName();
+		}
+
+		@Override
+		public String getIdValue(String object, int index) {
+			return object;
+		}
+
+	}
 
 	private static final long serialVersionUID = 8904573677189598470L;
 
@@ -126,32 +199,112 @@ public class UploadAndTransForm extends Form<Void> {
 		// target selection
 		Select<IOConfiguration> selectTarget = new Select<IOConfiguration>("target",
 				new PropertyModel<IOConfiguration>(this, "target"));
+		add(selectTarget);
+
+		TransformationEnvironment env = environmentService.getEnvironment(projectId);
+
+		// determine presets
+		Collection<? extends IOConfiguration> presetList = env.getExportPresets();
+		SelectOptions<IOConfiguration> presets = new SelectOptions<IOConfiguration>("presets",
+				presetList, RENDERER);
+		selectTarget.add(presets);
+
+		// determine valid exporters
+		Collection<? extends IOConfiguration> templateList = env.getExportTemplates();
+		SelectOptions<IOConfiguration> exporters = new SelectOptions<IOConfiguration>("exporters",
+				templateList, RENDERER);
+		selectTarget.add(exporters);
+
+		// initial selection
+		if (!presetList.isEmpty()) {
+			setTarget(presetList.iterator().next());
+		}
+		else if (!templateList.isEmpty()) {
+			setTarget(templateList.iterator().next());
+		}
+
+		// panel for I/O configuration
+		final WebMarkupContainer config = new WebMarkupContainer("config");
+		config.setOutputMarkupId(true);
+		add(config);
+
+		IModel<List<String>> parameterModel = new LoadableDetachableModel<List<String>>() {
+
+			private static final long serialVersionUID = 1018038661733512580L;
+
+			@Override
+			protected List<String> load() {
+				Set<String> properties = new LinkedHashSet<String>();
+
+				if (target != null && target.getProviderId() != null) {
+					// must have
+					properties.add(IOProvider.PARAM_CONTENT_TYPE);
+
+					// what is supported
+
+					IOProvider p = HeadlessIO.loadProvider(target);
+					properties.addAll(p.getSupportedParameters());
+
+					// not allowed
+					properties.remove(ExportProvider.PARAM_TARGET);
+				}
+
+				return new ArrayList<String>(properties);
+			}
+		};
+
+		ListView<String> parameterView = new ListView<String>("param", parameterModel) {
+
+			private static final long serialVersionUID = -7838477347365823022L;
+
+			@Override
+			protected void populateItem(ListItem<String> item) {
+				boolean isContentType = IOProvider.PARAM_CONTENT_TYPE.equals(item.getModelObject());
+
+				// name
+				item.add(new Label("name", item.getModelObject()));
+
+				// text field
+				TextField<String> textField = new TextField<String>("field", new FieldFieldModel(
+						item.getModelObject()));
+				textField.setVisible(!isContentType);
+				item.add(textField);
+
+				// contentType select field
+				DropDownChoice<String> contentType;
+				if (isContentType) {
+					IOProviderDescriptor pf = HaleIO.findIOProviderFactory(InstanceWriter.class,
+							null, getTarget().getProviderId());
+					List<String> types = new ArrayList<String>();
+					for (IContentType type : pf.getSupportedTypes()) {
+						types.add(type.getId());
+					}
+					contentType = new DropDownChoice<String>("contentType", new FieldFieldModel(
+							item.getModelObject()), types, new ContentTypeChoiceRenderer());
+				}
+				else {
+					contentType = new DropDownChoice<String>("contentType", new ArrayList<String>());
+					contentType.setVisible(false);
+				}
+				item.add(contentType);
+			}
+
+		};
+		config.add(parameterView);
+
+		// update parameter panel on target selection change
 		selectTarget.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 
 			private static final long serialVersionUID = 8004015871380712045L;
 
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
-				// TODO update config panel
-//				target.add(components);
+				// update config panel
+
+				target.add(config);
 			}
 
 		});
-		add(selectTarget);
-
-		TransformationEnvironment env = environmentService.getEnvironment(projectId);
-
-		// determine presets
-		SelectOptions<IOConfiguration> presets = new SelectOptions<IOConfiguration>("presets",
-				env.getExportPresets(), RENDERER);
-		selectTarget.add(presets);
-
-		// determine valid exporters
-		SelectOptions<IOConfiguration> exporters = new SelectOptions<IOConfiguration>("exporters",
-				env.getExportTemplates(), RENDERER);
-		selectTarget.add(exporters);
-
-		// TODO panel for I/O configuration
 	}
 
 	/**
@@ -160,6 +313,10 @@ public class UploadAndTransForm extends Form<Void> {
 	@Override
 	protected void onSubmit() {
 		List<FileUpload> uploads = file.getFileUploads();
+		if (uploads == null || uploads.isEmpty()) {
+			error("Please specify files to transform.");
+			return;
+		}
 
 		final TransformationWorkspace workspace = new TransformationWorkspace();
 
