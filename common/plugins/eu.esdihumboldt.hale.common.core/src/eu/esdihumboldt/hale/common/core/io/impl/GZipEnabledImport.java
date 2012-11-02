@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.common.core.io.impl;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -35,7 +36,7 @@ public abstract class GZipEnabledImport extends AbstractImportProvider {
 	/**
 	 * Input supplier wrapping the input stream in a {@link GZIPInputStream}.
 	 */
-	public static class GZipInputSupplier implements LocatableInputSupplier<GZIPInputStream> {
+	public static class GZipInputSupplier implements LocatableInputSupplier<InputStream> {
 
 		private final LocatableInputSupplier<? extends InputStream> source;
 
@@ -49,8 +50,8 @@ public abstract class GZipEnabledImport extends AbstractImportProvider {
 		}
 
 		@Override
-		public GZIPInputStream getInput() throws IOException {
-			return new GZIPInputStream(source.getInput());
+		public InputStream getInput() throws IOException {
+			return new BufferedInputStream(new GZIPInputStream(source.getInput()));
 		}
 
 		@Override
