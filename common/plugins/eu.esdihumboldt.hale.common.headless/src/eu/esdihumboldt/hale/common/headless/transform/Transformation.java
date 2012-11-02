@@ -31,6 +31,8 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
@@ -76,10 +78,13 @@ public class Transformation {
 	 * @param processId the identifier for the transformation process, may be
 	 *            <code>null</code> if grouping the jobs to a job family is not
 	 *            necessary
+	 * @return the future representing the successful completion of the
+	 *         transformation (note that a successful completion doesn't
+	 *         necessary mean there weren't any internal transformation errors)
 	 */
-	public static void transform(List<InstanceReader> sources, InstanceWriter target,
-			final TransformationEnvironment environment, final ReportHandler reportHandler,
-			Object processId) {
+	public static ListenableFuture<Boolean> transform(List<InstanceReader> sources,
+			InstanceWriter target, final TransformationEnvironment environment,
+			final ReportHandler reportHandler, Object processId) {
 		final IOAdvisor<InstanceReader> loadDataAdvisor = new AbstractIOAdvisor<InstanceReader>() {
 
 			/**
@@ -153,7 +158,7 @@ public class Transformation {
 
 		ExportJob exportJob = new ExportJob(targetSink, target, saveDataAdvisor, reportHandler);
 		ValidationJob validationJob = null; // no validation
-		transform(sourceCollection, targetSink, exportJob, validationJob,
+		return transform(sourceCollection, targetSink, exportJob, validationJob,
 				environment.getAlignment(), environment.getSourceSchema(), reportHandler, processId);
 	}
 
@@ -170,11 +175,16 @@ public class Transformation {
 	 * @param processId the identifier for the transformation process, may be
 	 *            <code>null</code> if grouping the jobs to a job family is not
 	 *            necessary
+	 * @return the future representing the successful completion of the
+	 *         transformation (note that a successful completion doesn't
+	 *         necessary mean there weren't any internal transformation errors)
 	 */
-	public static void transform(InstanceCollection sources, final LimboInstanceSink targetSink,
-			final ExportJob exportJob, final ValidationJob validationJob,
-			final Alignment alignment, SchemaSpace sourceSchema, final ReportHandler reportHandler,
-			final Object processId) {
+	public static ListenableFuture<Boolean> transform(InstanceCollection sources,
+			final LimboInstanceSink targetSink, final ExportJob exportJob,
+			final ValidationJob validationJob, final Alignment alignment, SchemaSpace sourceSchema,
+			final ReportHandler reportHandler, final Object processId) {
+		final SettableFuture<Boolean> result = SettableFuture.create();
+
 		final InstanceCollection sourceToUse;
 
 		// Check whether to create a temporary database or not.
@@ -227,8 +237,12 @@ public class Transformation {
 				// publish report
 				reportHandler.publishReport(report);
 
-				// XXX return something else, if report is not successful
-				return Status.OK_STATUS;
+				if (report.isSuccess()) {
+					return Status.OK_STATUS;
+				}
+				else {
+					return ERROR_STATUS;
+				}
 			}
 		};
 
@@ -246,9 +260,6 @@ public class Transformation {
 		// the jobs should cancel each other
 		transformJob.addJobChangeListener(new JobChangeAdapter() {
 
-			/**
-			 * @see org.eclipse.core.runtime.jobs.JobChangeAdapter#done(org.eclipse.core.runtime.jobs.IJobChangeEvent)
-			 */
 			@Override
 			public void done(IJobChangeEvent event) {
 				if (!event.getResult().isOK())
@@ -261,15 +272,22 @@ public class Transformation {
 		// after export is done, validation should run
 		exportJob.addJobChangeListener(new JobChangeAdapter() {
 
-			/**
-			 * @see org.eclipse.core.runtime.jobs.JobChangeAdapter#done(org.eclipse.core.runtime.jobs.IJobChangeEvent)
-			 */
 			@Override
 			public void done(IJobChangeEvent event) {
-				if (!event.getResult().isOK())
+				if (!event.getResult().isOK()) {
 					transformJob.cancel();
-				else if (validationJob != null)
-					validationJob.schedule();
+
+					// failure
+					failure(result, event);
+				}
+				else {
+					// success
+					result.set(true);
+
+					if (validationJob != null) {
+						validationJob.schedule();
+					}
+				}
 			}
 		});
 
@@ -296,14 +314,14 @@ public class Transformation {
 			// and schedule jobs on successful completion
 			storeJob.addJobChangeListener(new JobChangeAdapter() {
 
-				/**
-				 * @see org.eclipse.core.runtime.jobs.JobChangeAdapter#done(org.eclipse.core.runtime.jobs.IJobChangeEvent)
-				 */
 				@Override
 				public void done(IJobChangeEvent event) {
 					if (event.getResult().isOK()) {
 						exportJob.schedule();
 						transformJob.schedule();
+					}
+					else {
+						failure(result, event);
 					}
 				}
 			});
@@ -315,6 +333,27 @@ public class Transformation {
 			exportJob.schedule();
 			transformJob.schedule();
 		}
+
+		return result;
 	}
 
+	private static void failure(SettableFuture<Boolean> result, IJobChangeEvent event) {
+		// signal if was canceled
+		/*
+		 * XXX disabled as the transform job will cancel the export job if it
+		 * fails
+		 */
+//		if (event.getResult().matches(IStatus.CANCEL)) {
+//			result.cancel(false);
+//		}
+
+		// failed - try setting exception
+		if (event.getResult() != null && event.getResult().getException() != null) {
+			result.setException(event.getResult().getException());
+		}
+
+		// in case there was no exception or setting it failed, just state that
+		// execution was not successful
+		result.set(false);
+	}
 }
