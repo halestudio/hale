@@ -183,7 +183,6 @@ public class UploadAndTransForm extends Form<Void> {
 							throw new IllegalStateException("Unable to read uploaded source file",
 									e);
 						}
-						// TODO clean up later on?!
 
 						InstanceReader reader = null;
 						try {
