@@ -92,14 +92,13 @@ public class ValidationJob extends AbstractTransformationJob {
 		if (report.isSuccess()) {
 			// info message
 			log.userInfo(report.getSummary());
+			return Status.OK_STATUS;
 		}
 		else {
 			// error message
 			log.userError(report.getSummary());
+			return ERROR_STATUS;
 		}
-
-		// XXX return something depending on report success?
-		return Status.OK_STATUS;
 	}
 
 }

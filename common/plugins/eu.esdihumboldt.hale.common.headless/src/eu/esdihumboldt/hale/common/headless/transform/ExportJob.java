@@ -113,14 +113,12 @@ public class ExportJob extends AbstractTransformationJob {
 
 			// let advisor handle results
 			advisor.handleResults(writer);
+			return Status.OK_STATUS;
 		}
 		else {
-			// error message
 			log.userError(report.getSummary());
+			return ERROR_STATUS;
 		}
-
-		// XXX return something depending on report success?
-		return Status.OK_STATUS;
 	}
 
 }

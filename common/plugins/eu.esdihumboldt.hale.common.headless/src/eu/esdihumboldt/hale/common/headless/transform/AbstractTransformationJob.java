@@ -19,6 +19,8 @@ import java.io.Serializable;
 
 import javax.annotation.concurrent.Immutable;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
 /**
@@ -77,6 +79,11 @@ public abstract class AbstractTransformationJob extends Job {
 		}
 
 	}
+
+	/**
+	 * Constant for an error status.
+	 */
+	protected static final Status ERROR_STATUS = new Status(IStatus.ERROR, "unknown", "error");
 
 	private Token family;
 
