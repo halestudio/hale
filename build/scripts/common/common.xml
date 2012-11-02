@@ -531,6 +531,25 @@
 		</tar>
 	</target>
 
+	<!-- pack server for mac -->
+	<target name="server-pack-macosx">
+		<property name="buildVersion" value="${buildId}-${version}-${tag}" />
+
+		<!-- TODO some kind of launcher script? -->
+		
+		<tar destfile="${release}/${buildId}-${version}-${tag.hyphen}${os}.${ws}.${arch}.tar.gz"
+			compression="gzip" longfile="gnu">
+			<tarfileset dir="${release}" mode="755">
+				<include name="${buildVersion}/${launcherName}.app/Contents/MacOS/${launcherName}" />
+			</tarfileset>
+
+			<tarfileset dir="${release}">
+				<include name="${buildVersion}/**" />
+				<exclude name="${buildVersion}/${launcherName}.app/Contents/MacOS/${launcherName}" />
+			</tarfileset>
+		</tar>
+	</target>
+
 	<!-- run all unit test bundles found in the plugins directory -->
 	<target name="run-unit-tests">
 		<property name="plugins" value="${release}/src/plugins" />
