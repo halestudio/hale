@@ -17,6 +17,9 @@ package eu.esdihumboldt.hale.server.webtransform.war.pages;
 
 import java.util.Collection;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.wicket.request.http.flow.AbortWithHttpErrorCodeException;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
@@ -76,14 +79,15 @@ public class UploadPage extends BasePage {
 		String projectId = getPageParameters().get(PARAMETER_PROJECT).toOptionalString();
 		if (projectId != null) {
 			if (environmentService.getEnvironment(projectId) == null) {
-				throw new IllegalStateException("Project with identifer " + projectId
-						+ " not available.");
+				throw new AbortWithHttpErrorCodeException(HttpServletResponse.SC_NOT_FOUND,
+						"Transformation project not found.");
 			}
 
 			add(new UploadAndTransForm("action", projectId));
 		}
 		else {
-			throw new IllegalStateException("No transformation project specified.");
+			throw new AbortWithHttpErrorCodeException(HttpServletResponse.SC_NOT_FOUND,
+					"No transformation project specified.");
 		}
 	}
 
