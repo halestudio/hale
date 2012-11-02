@@ -17,7 +17,10 @@ package eu.esdihumboldt.hale.common.headless;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.joda.time.ReadableDuration;
 
 /**
@@ -46,6 +49,46 @@ public interface WorkspaceService {
 	 * @throws FileNotFoundException if the workspace does not exist
 	 */
 	public File getWorkspaceFolder(String id) throws FileNotFoundException;
+
+	/**
+	 * Get the lease end date and time of the workspace with the given
+	 * identifier.
+	 * 
+	 * @param workspaceId the workspace identifier
+	 * @return the lease end, if the workspace exists
+	 * @throws FileNotFoundException if the workspace does not exist
+	 * @throws IOException if the workspace configuration file cannot be read
+	 */
+	public DateTime getLeaseEnd(String workspaceId) throws FileNotFoundException, IOException;
+
+	/**
+	 * Get the workspace settings.
+	 * 
+	 * @param workspaceId the workspace identifier
+	 * @return the current workspace settings, changes to the map will not be
+	 *         reflected in the settings
+	 * @throws FileNotFoundException if the workspace does not exist
+	 * @throws IOException if the workspace configuration file cannot be read
+	 * 
+	 * @see #set(String, String, String)
+	 */
+	public Map<String, String> getSettings(String workspaceId) throws FileNotFoundException,
+			IOException;
+
+	/**
+	 * Change a workspace setting.
+	 * 
+	 * @param workspaceId the workspace identifier
+	 * @param setting the name of the setting
+	 * @param value the value, <code>null</code> to remove the setting
+	 * @throws FileNotFoundException if the workspace does not exist
+	 * @throws IOException if the workspace configuration file cannot be read or
+	 *             written
+	 * 
+	 * @see #getSettings(String)
+	 */
+	public void set(String workspaceId, String setting, String value) throws FileNotFoundException,
+			IOException;
 
 	/**
 	 * Delete the workspace with the given identifier.
