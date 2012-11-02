@@ -53,6 +53,12 @@ public abstract class BaseWebApplication extends WebApplication {
 	public static final String SYSTEM_PROPERTY_MAIN_TITLE = "hale.webapp.maintitle";
 
 	/**
+	 * Name of the system property that allows enabling/disabling the login
+	 * page.
+	 */
+	public static final String SYSTEM_PROPERTY_LOGIN_PAGE = "hale.webapp.loginpage";
+
+	/**
 	 * Get the default application title. Is either the value of the system
 	 * property {@value #SYSTEM_PROPERTY_MAIN_TITLE} or {@link #DEFAULT_TITLE}.
 	 * 
@@ -67,6 +73,17 @@ public abstract class BaseWebApplication extends WebApplication {
 	 */
 	public String getMainTitle() {
 		return getDefaulTitle();
+	}
+
+	/**
+	 * States if the login page is enabled for this application. The default
+	 * implementation looks at the {@value #SYSTEM_PROPERTY_LOGIN_PAGE} system
+	 * property for this, if not specified the default is <code>false</code>.
+	 * 
+	 * @return if the login page is enabled
+	 */
+	public boolean isLoginPageEnabled() {
+		return Boolean.parseBoolean(System.getProperty(SYSTEM_PROPERTY_LOGIN_PAGE, "false"));
 	}
 
 	@Override
@@ -112,11 +129,11 @@ public abstract class BaseWebApplication extends WebApplication {
 			}
 		});
 
-		// add login page to every application based on this one
-		// XXX make configurable?
-
-		// login page
-		mountPage("/login", LoginPage.class);
+		// add login page to every application based on this one (if enabled)
+		if (isLoginPageEnabled()) {
+			// login page
+			mountPage("/login", LoginPage.class);
+		}
 	}
 
 }
