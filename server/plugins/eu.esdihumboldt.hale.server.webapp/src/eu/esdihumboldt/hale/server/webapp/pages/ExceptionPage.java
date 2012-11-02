@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.request.http.WebResponse;
+import org.apache.wicket.request.http.flow.AbortWithHttpErrorCodeException;
 import org.springframework.security.access.AccessDeniedException;
 
 import de.cs3d.util.logging.ALogger;
@@ -113,6 +114,32 @@ public class ExceptionPage extends BasePage {
 			}
 		};
 		infos.put(accessDenied.getExceptionType(), accessDenied);
+
+		ExceptionInfo<?> abortWithErrorCode = new ExceptionInfo<AbortWithHttpErrorCodeException>() {
+
+			private static final long serialVersionUID = -3440057330226741496L;
+
+			@Override
+			public Class<AbortWithHttpErrorCodeException> getExceptionType() {
+				return AbortWithHttpErrorCodeException.class;
+			}
+
+			@Override
+			public String getErrorTitle(AbortWithHttpErrorCodeException exception) {
+				return "Error " + exception.getErrorCode();
+			}
+
+			@Override
+			public String getErrorMessage(AbortWithHttpErrorCodeException exception) {
+				return exception.getMessage();
+			}
+
+			@Override
+			public int getHttpErrorCode(AbortWithHttpErrorCodeException exception) {
+				return exception.getErrorCode();
+			}
+		};
+		infos.put(abortWithErrorCode.getExceptionType(), abortWithErrorCode);
 
 		// determine exception info and assign exception variable
 		info = determineExceptionInfo(e);
