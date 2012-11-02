@@ -169,7 +169,11 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 	 */
 	@Override
 	public Map<String, String> getSettings(String workspaceId) throws IOException {
-		PropertiesFile config = getConfiguration(workspaceId);
+		PropertiesFile config;
+		synchronized (this) { // TODO better locking, read/write, based in
+								// workspaceId?!
+			config = getConfiguration(workspaceId);
+		}
 		@SuppressWarnings("unchecked")
 		Enumeration<String> enProps = (Enumeration<String>) config.propertyNames();
 
@@ -190,18 +194,21 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 	 */
 	@Override
 	public void set(String workspaceId, String setting, String value) throws IOException {
-		PropertiesFile config = getConfiguration(workspaceId);
+		synchronized (this) { // TODO better locking, read/write, based on
+								// workspaceId?!
+			PropertiesFile config = getConfiguration(workspaceId);
 
-		String key = PROPERTY_SETTING_PREFIX + setting;
+			String key = PROPERTY_SETTING_PREFIX + setting;
 
-		if (value == null) {
-			config.remove(key);
+			if (value == null) {
+				config.remove(key);
+			}
+			else {
+				config.setProperty(key, value);
+			}
+
+			config.save();
 		}
-		else {
-			config.setProperty(key, value);
-		}
-
-		config.save();
 	}
 
 	/**

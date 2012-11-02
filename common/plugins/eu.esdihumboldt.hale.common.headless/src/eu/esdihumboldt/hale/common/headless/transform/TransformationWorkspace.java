@@ -17,12 +17,21 @@ package eu.esdihumboldt.hale.common.headless.transform;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.core.runtime.content.IContentType;
 import org.joda.time.Duration;
 import org.joda.time.ReadableDuration;
 
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
@@ -42,6 +51,8 @@ import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
  */
 public class TransformationWorkspace {
 
+	private static final ALogger log = ALoggerFactory.getLogger(TransformationWorkspace.class);
+
 	/**
 	 * Name of the report file placed in a workspace folder.
 	 */
@@ -58,6 +69,12 @@ public class TransformationWorkspace {
 	 * workspace.
 	 */
 	private static final String WORKSPACE_TARGET_FOLDER = "target";
+
+	/**
+	 * Name of the workspace setting that holds information about the completion
+	 * of the transformation.
+	 */
+	private static final String SETTING_TRANSFORMATION_SUCCESS = "transformationSuccess";
 
 	private final WorkspaceService workspaces;
 
@@ -153,10 +170,13 @@ public class TransformationWorkspace {
 	 * @param envId the environment ID
 	 * @param sources the instance readers
 	 * @param target the configuration of the target instance writer
+	 * @return the future representing the successful completion of the
+	 *         transformation (note that a successful completion doesn't
+	 *         necessary mean there weren't any internal transformation errors)
 	 * @throws Exception if launching the transformation fails
 	 */
-	public void transform(String envId, List<InstanceReader> sources, IOConfiguration target)
-			throws Exception {
+	public ListenableFuture<Boolean> transform(String envId, List<InstanceReader> sources,
+			IOConfiguration target) throws Exception {
 		EnvironmentService environments = OsgiUtils.getService(EnvironmentService.class);
 		if (environments == null) {
 			throw new IllegalStateException("WorkspaceService not available through OSGi");
@@ -175,10 +195,96 @@ public class TransformationWorkspace {
 		File out = new File(targetFolder, "result." + getFileExtension(writer.getContentType()));
 		writer.setTarget(new FileIOSupplier(out));
 
-		Transformation.transform(sources, writer, env, new ReportFile(reportFile),
-				workspace.getName());
+		ListenableFuture<Boolean> result = Transformation.transform(sources, writer, env,
+				new ReportFile(reportFile), workspace.getName());
 
-		// TODO transformation call-back?
+		Futures.addCallback(result, new FutureCallback<Boolean>() {
+
+			@Override
+			public void onSuccess(Boolean result) {
+				try {
+					setTransformationSuccess(result);
+				} catch (IOException e) {
+					log.error("Failed to set transformation success for workspace", e);
+				}
+			}
+
+			@Override
+			public void onFailure(Throwable t) {
+				try {
+					setTransformationSuccess(false);
+				} catch (IOException e) {
+					log.error("Failed to set transformation success for workspace", e);
+				}
+			}
+		});
+
+		return result;
+	}
+
+	/**
+	 * Determines if a previously with
+	 * {@link #transform(String, List, IOConfiguration)} started transformation
+	 * process is finished. Regardless of the success or failure.
+	 * 
+	 * @return <code>true</code> if the transformation is finished,
+	 *         <code>false</code> if the transformation is still running, no
+	 *         transformation was started or the workspace no longer exists
+	 */
+	public boolean isTransformationFinished() {
+		try {
+			Map<String, String> settings = workspaces.getSettings(workspaceId);
+			return settings.containsKey(SETTING_TRANSFORMATION_SUCCESS);
+		} catch (IOException e) {
+			// ignore
+			return false;
+		}
+	}
+
+	/**
+	 * Determines if a previously with
+	 * {@link #transform(String, List, IOConfiguration)} started transformation
+	 * process was complete successfully. Note that a successful completion
+	 * doesn't necessary mean there weren't any internal transformation errors.
+	 * The {@link #getReportFile()} holds more detailed information.<br>
+	 * <br>
+	 * This method may only be called of the transformation is finished,
+	 * otherwise an {@link IllegalStateException} will be thrown.
+	 * 
+	 * @return if the transformation was completed successfully
+	 * @throws IllegalStateException if the transformation is not finished
+	 * 
+	 * @see #isTransformationFinished()
+	 */
+	public boolean isTransformationSuccessful() throws IllegalStateException {
+		try {
+			Map<String, String> settings = workspaces.getSettings(workspaceId);
+			String success = settings.get(SETTING_TRANSFORMATION_SUCCESS);
+			if (success == null) {
+				throw new IllegalStateException("Transformation not finished");
+			}
+			return Boolean.parseBoolean(success);
+		} catch (IOException e) {
+			// ignore
+			return false;
+		}
+	}
+
+	/**
+	 * Set if the transformation was successfully completed. Must be called when
+	 * the transformation is finished. Also deletes the source folder in the
+	 * workspace.
+	 * 
+	 * @param success if the transformation was completed successfully
+	 * @throws FileNotFoundException if the workspace does not exist
+	 * @throws IOException if the workspace configuration file cannot be read or
+	 *             written
+	 */
+	protected void setTransformationSuccess(boolean success) throws FileNotFoundException,
+			IOException {
+		workspaces.set(workspaceId, SETTING_TRANSFORMATION_SUCCESS, String.valueOf(success));
+
+		FileUtils.deleteDirectory(getSourceFolder());
 	}
 
 	/**
@@ -201,35 +307,49 @@ public class TransformationWorkspace {
 	}
 
 	/**
-	 * @return the workspaceId
+	 * @return the workspace ID
 	 */
 	public String getId() {
 		return workspaceId;
 	}
 
 	/**
-	 * @return the workspace
+	 * @return the workspace folder
 	 */
 	public File getWorkspace() {
 		return workspace;
 	}
 
 	/**
-	 * @return the targetFolder
+	 * Get the target folder. This folder holds the transformation results after
+	 * the transformation is finished and successful.
+	 * 
+	 * @return the target folder
+	 * 
+	 * @see #isTransformationFinished()
+	 * @see #isTransformationSuccessful()
 	 */
 	public File getTargetFolder() {
 		return targetFolder;
 	}
 
 	/**
-	 * @return the sourceFolder
+	 * Get the source folder. Files placed in this folder will be deleted after
+	 * the transformation has finished.
+	 * 
+	 * @return the source folder
 	 */
 	public File getSourceFolder() {
 		return sourceFolder;
 	}
 
 	/**
-	 * @return the reportFile
+	 * Get the report file. It holds information about the finished
+	 * transformation.
+	 * 
+	 * @return the report file
+	 * 
+	 * @see #isTransformationFinished()
 	 */
 	public File getReportFile() {
 		return reportFile;
