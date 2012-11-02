@@ -15,7 +15,7 @@
 
 package eu.esdihumboldt.hale.server.console.war.pages;
 
-import eu.esdihumboldt.hale.server.webapp.pages.SecuredPage;
+import eu.esdihumboldt.hale.server.webapp.pages.BasePage;
 import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
 
 /**
@@ -25,7 +25,7 @@ import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
  * @author Michel Kraemer
  */
 @PageDescription(title = "Console")
-public class WelcomePage extends SecuredPage {
+public class WelcomePage extends BasePage {
 
 	private static final long serialVersionUID = -1394082788930930935L;
 

@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.server.projects.war.pages;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 
 import eu.esdihumboldt.hale.server.projects.war.components.ProjectList;
-import eu.esdihumboldt.hale.server.webapp.pages.SecuredPage;
+import eu.esdihumboldt.hale.server.webapp.pages.BasePage;
 import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
 
 /**
@@ -27,16 +27,16 @@ import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
  * @author Simon Templer
  */
 @PageDescription(title = "Projects")
-public class ProjectsPage extends SecuredPage {
+public class ProjectsPage extends BasePage {
 
 	private static final long serialVersionUID = 221216335635652135L;
 
 	/**
-	 * @see SecuredPage#addControls()
+	 * @see BasePage#addControls(boolean)
 	 */
 	@Override
-	protected void addControls() {
-		super.addControls();
+	protected void addControls(boolean loggedIn) {
+		super.addControls(loggedIn);
 
 		add(new BookmarkablePageLink<Void>("upload", UploadPage.class));
 		add(new ProjectList("projects", true));

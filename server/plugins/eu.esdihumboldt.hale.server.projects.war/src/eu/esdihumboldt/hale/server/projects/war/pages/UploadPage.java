@@ -16,7 +16,7 @@
 package eu.esdihumboldt.hale.server.projects.war.pages;
 
 import eu.esdihumboldt.hale.server.projects.war.components.UploadForm;
-import eu.esdihumboldt.hale.server.webapp.pages.SecuredPage;
+import eu.esdihumboldt.hale.server.webapp.pages.BasePage;
 import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
 
 /**
@@ -25,16 +25,16 @@ import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
  * @author Simon Templer
  */
 @PageDescription(title = "Upload", parent = ProjectsPage.class)
-public class UploadPage extends SecuredPage {
+public class UploadPage extends BasePage {
 
 	private static final long serialVersionUID = 6946535530058858323L;
 
 	/**
-	 * @see SecuredPage#addControls()
+	 * @see BasePage#addControls(boolean)
 	 */
 	@Override
-	protected void addControls() {
-		super.addControls();
+	protected void addControls(boolean loggedIn) {
+		super.addControls(loggedIn);
 
 		add(new UploadForm("upload"));
 	}

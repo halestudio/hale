@@ -117,10 +117,13 @@ public abstract class BasePage extends WebPage {
 		// set link to home page
 		WebApplication app = (WebApplication) this.getApplication();
 
-		// set application title
+		// set application title & determine if login page is enabled
 		String applicationTitle = BaseWebApplication.DEFAULT_TITLE;
+		boolean loginEnabled = false;
 		if (app instanceof BaseWebApplication) {
-			applicationTitle = ((BaseWebApplication) app).getMainTitle();
+			BaseWebApplication bwa = (BaseWebApplication) app;
+			applicationTitle = bwa.getMainTitle();
+			loginEnabled = bwa.isLoginPageEnabled();
 		}
 		String pageTitle = applicationTitle.replace("-", "&raquo;");
 		Label applicatonTitleLabel = new Label("base-application-title", applicationTitle);
@@ -137,7 +140,7 @@ public abstract class BasePage extends WebPage {
 		add(pageTitleLabel);
 
 		WebMarkupContainer loginLogoutPanel = new WebMarkupContainer("loginLogoutPanel");
-		// loginLogoutPanel.setVisible(...); XXX visibility can be toggled
+		loginLogoutPanel.setVisible(loginEnabled);
 		if (!loggedIn) {
 			// login link
 			BookmarkablePageLink<Void> link;
@@ -160,4 +163,5 @@ public abstract class BasePage extends WebPage {
 
 		add(new SimpleBreadcrumbPanel("breadcrumb", this.getClass(), "Home", "/"));
 	}
+
 }

@@ -8,7 +8,7 @@
 
    <launcherArgs>
       <programArgs>-nl en_US -clean -console -consoleLog</programArgs>
-      <vmArgs>-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Djetty.home.bundle=org.eclipse.jetty.osgi.boot -Dwicket.configuration=deployment -Dspring.security.strategy=MODE_INHERITABLETHREADLOCAL -Xmx800m -XX:MaxPermSize=128m -Dcache.level1.enabled=false -Dcache.level1.size=0 -Dcache.level2.enabled=false -Dcache.level2.size=0 -Djetty.port=8080</vmArgs>
+      <vmArgs>-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Djetty.home.bundle=org.eclipse.jetty.osgi.boot -Dwicket.configuration=deployment -Dspring.security.strategy=MODE_INHERITABLETHREADLOCAL -Xmx800m -XX:MaxPermSize=128m -Dcache.level1.enabled=false -Dcache.level1.size=0 -Dcache.level2.enabled=false -Dcache.level2.size=0 -Djetty.port=8080 -Dhale.webapp.loginpage=false</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
@@ -90,7 +90,6 @@
       <plugin id="eu.esdihumboldt.hale.server.projects"/>
       <plugin id="eu.esdihumboldt.hale.server.projects.war"/>
       <plugin id="eu.esdihumboldt.hale.server.security"/>
-      <plugin id="eu.esdihumboldt.hale.server.security.default" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.server.security.extender"/>
       <plugin id="eu.esdihumboldt.hale.server.security.user.simple"/>
       <plugin id="eu.esdihumboldt.hale.server.users.demo" fragment="true"/>
