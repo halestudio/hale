@@ -16,8 +16,6 @@
 
 package eu.esdihumboldt.hale.server.webapp.pages;
 
-import java.util.Calendar;
-
 import org.apache.wicket.markup.head.CssReferenceHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -118,9 +116,6 @@ public abstract class BasePage extends WebPage {
 	protected void addControls(boolean loggedIn) {
 		// set link to home page
 		WebApplication app = (WebApplication) this.getApplication();
-
-		// add current year for copyright
-		add(new Label("base-year", String.valueOf(Calendar.getInstance().get(Calendar.YEAR))));
 
 		// set application title
 		String applicationTitle = BaseWebApplication.DEFAULT_TITLE;
