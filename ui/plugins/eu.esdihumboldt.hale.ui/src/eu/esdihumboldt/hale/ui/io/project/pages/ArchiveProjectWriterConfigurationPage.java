@@ -33,9 +33,13 @@ import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 public class ArchiveProjectWriterConfigurationPage extends
 		AbstractConfigurationPage<ArchiveProjectWriter, IOWizard<ArchiveProjectWriter>> {
 
-	private Button button;
+	private Button webresources;
+
+	private Button noexcludedfiles;
 
 	private static final String WEB_RESOURCES = "webresources";
+
+	private static final String NO_EXLUDED_FILES = "noexcludedfiles";
 
 	/**
 	 * 
@@ -43,8 +47,8 @@ public class ArchiveProjectWriterConfigurationPage extends
 	public ArchiveProjectWriterConfigurationPage() {
 		super("archiveWriter");
 
-		setTitle("Web resources");
-		setDescription("Pack web resources to the archive");
+		setTitle("Additonal Export Options");
+		setDescription("Choose resources which should be pack to the archive");
 	}
 
 	/**
@@ -70,9 +74,13 @@ public class ArchiveProjectWriterConfigurationPage extends
 	protected void createContent(Composite page) {
 		page.setLayout(new GridLayout(1, false));
 
-		button = new Button(page, SWT.CHECK);
-		button.setSelection(false); // default
-		button.setText("Retrieve also all web resources");
+		noexcludedfiles = new Button(page, SWT.CHECK);
+		noexcludedfiles.setSelection(false); // default
+		noexcludedfiles.setText("Do not retrieve all exluded files");
+
+		webresources = new Button(page, SWT.CHECK);
+		webresources.setSelection(false); // default
+		webresources.setText("Retrieve all web resources");
 
 		setPageComplete(true);
 	}
@@ -82,7 +90,8 @@ public class ArchiveProjectWriterConfigurationPage extends
 	 */
 	@Override
 	public boolean updateConfiguration(ArchiveProjectWriter provider) {
-		provider.setParameter(WEB_RESOURCES, String.valueOf(button.getSelection()));
+		provider.setParameter(NO_EXLUDED_FILES, String.valueOf(noexcludedfiles.getSelection()));
+		provider.setParameter(WEB_RESOURCES, String.valueOf(webresources.getSelection()));
 		return true;
 	}
 
