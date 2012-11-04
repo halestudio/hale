@@ -60,7 +60,15 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 
 	private static final String XSD_CONTENT_TYPE = "eu.esdihumboldt.hale.io.xsd";
 
-	private static final String WEB_RESOURCES = "webresources";
+	/**
+	 * Parameter for including or excluding web resources
+	 */
+	public static final String INCLUDE_WEB_RESOURCES = "includeweb";
+
+	/**
+	 * Parameter for including or excluding data files
+	 */
+	public static final String EXLUDE_DATA_FILES = "excludedata";
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#execute(eu.esdihumboldt.hale.common.core.io.ProgressIndicator,
@@ -79,8 +87,8 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		LocatableOutputSupplier<OutputStream> out = new FileIOSupplier(baseFile);
 		ZipOutputStream zip = new ZipOutputStream(getTarget().getOutput());
 
-		// false if getParameter is null is desired
-		boolean webresources = Boolean.parseBoolean(getParameter(WEB_RESOURCES));
+		// false is default and if getParameter is null is desired
+		boolean webresources = Boolean.parseBoolean(getParameter(INCLUDE_WEB_RESOURCES));
 		// copy resources to the temp directory and update xml schemas
 		updateResources(tempDir, webresources);
 
@@ -117,7 +125,19 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		List<IOConfiguration> resources = getProject().getResources();
 		// every resource needs his own directory
 		int count = 1;
+		// true if excluded files should be skipped, false is default
+		boolean noexcludedfiles = Boolean.parseBoolean(getParameter(EXLUDE_DATA_FILES));
 		for (IOConfiguration resource : resources) {
+			// import of
+			// eu.esdihumboldt.hale.common.instance.io.InstanceIO.ACTION_LOAD_SOURCE_DATA
+			// needed
+			if (noexcludedfiles
+					&& resource.getProviderId().equals(
+							"eu.esdihumboldt.hale.io.instance.read.source"))
+
+				// skip excluded files
+				continue;
+
 			Map<String, String> providerConfig = resource.getProviderConfiguration();
 			Map<String, String> newProvConf = new HashMap<String, String>();
 			String path = providerConfig.get(ImportProvider.PARAM_SOURCE);
