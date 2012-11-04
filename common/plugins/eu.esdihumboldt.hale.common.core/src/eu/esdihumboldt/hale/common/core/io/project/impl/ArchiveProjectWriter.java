@@ -62,6 +62,8 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 
 	private static final String WEB_RESOURCES = "webresources";
 
+	private static final String NO_DATA_FILES = "nodatafiles";
+
 	/**
 	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#execute(eu.esdihumboldt.hale.common.core.io.ProgressIndicator,
 	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
@@ -80,9 +82,12 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		ZipOutputStream zip = new ZipOutputStream(getTarget().getOutput());
 
 		// false if getParameter is null is desired
-		boolean webresources = Boolean.parseBoolean(getParameter(WEB_RESOURCES));
-		// copy resources to the temp directory and update xml schemas
-		updateResources(tempDir, webresources);
+		boolean nodatafiles = Boolean.parseBoolean(getParameter(NO_DATA_FILES));
+		if (!nodatafiles) {
+			boolean webresources = Boolean.parseBoolean(getParameter(WEB_RESOURCES));
+			// copy resources to the temp directory and update xml schemas
+			updateResources(tempDir, webresources);
+		}
 
 		// update target save configuration of the project
 		IOConfiguration config = getProject().getSaveConfiguration();

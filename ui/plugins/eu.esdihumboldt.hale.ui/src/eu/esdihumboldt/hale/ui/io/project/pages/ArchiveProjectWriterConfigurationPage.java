@@ -16,6 +16,8 @@
 package eu.esdihumboldt.hale.ui.io.project.pages;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -33,9 +35,13 @@ import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 public class ArchiveProjectWriterConfigurationPage extends
 		AbstractConfigurationPage<ArchiveProjectWriter, IOWizard<ArchiveProjectWriter>> {
 
-	private Button button;
+	private Button webresources;
+
+	private Button nodatafiles;
 
 	private static final String WEB_RESOURCES = "webresources";
+
+	private static final String NO_DATA_FILES = "nodatafiles";
 
 	/**
 	 * 
@@ -43,8 +49,8 @@ public class ArchiveProjectWriterConfigurationPage extends
 	public ArchiveProjectWriterConfigurationPage() {
 		super("archiveWriter");
 
-		setTitle("Web resources");
-		setDescription("Pack web resources to the archive");
+		setTitle("Additonal Export Options");
+		setDescription("Choose resources which should be pack to the archive");
 	}
 
 	/**
@@ -70,9 +76,31 @@ public class ArchiveProjectWriterConfigurationPage extends
 	protected void createContent(Composite page) {
 		page.setLayout(new GridLayout(1, false));
 
-		button = new Button(page, SWT.CHECK);
-		button.setSelection(false); // default
-		button.setText("Retrieve also all web resources");
+		nodatafiles = new Button(page, SWT.CHECK);
+		nodatafiles.setSelection(false); // default
+		nodatafiles.setText("Retrieve only project and alignment files");
+		nodatafiles.addSelectionListener(new SelectionListener() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (nodatafiles.getSelection()) {
+					webresources.setSelection(false);
+					webresources.setEnabled(false);
+				}
+				else
+					webresources.setEnabled(true);
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// nothing
+			}
+
+		});
+
+		webresources = new Button(page, SWT.CHECK);
+		webresources.setSelection(false); // default
+		webresources.setText("Retrieve also all web resources");
 
 		setPageComplete(true);
 	}
@@ -82,7 +110,8 @@ public class ArchiveProjectWriterConfigurationPage extends
 	 */
 	@Override
 	public boolean updateConfiguration(ArchiveProjectWriter provider) {
-		provider.setParameter(WEB_RESOURCES, String.valueOf(button.getSelection()));
+		provider.setParameter(NO_DATA_FILES, String.valueOf(nodatafiles.getSelection()));
+		provider.setParameter(WEB_RESOURCES, String.valueOf(webresources.getSelection()));
 		return true;
 	}
 
