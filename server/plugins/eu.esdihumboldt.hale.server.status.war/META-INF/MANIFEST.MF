@@ -19,4 +19,5 @@ Import-Package: eu.esdihumboldt.hale.server.security.extender,
 Require-Bundle: org.apache.wicket.spring;bundle-version="6.2.0",
  org.apache.wicket.core;bundle-version="6.2.0",
  org.apache.wicket.request;bundle-version="6.2.0",
- org.apache.wicket.util;bundle-version="6.2.0"
+ org.apache.wicket.util;bundle-version="6.2.0",
+ org.apache.wicket.extensions;bundle-version="6.2.0"
