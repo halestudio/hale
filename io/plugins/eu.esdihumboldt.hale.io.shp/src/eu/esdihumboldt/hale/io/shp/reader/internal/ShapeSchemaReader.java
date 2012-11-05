@@ -16,7 +16,9 @@
 package eu.esdihumboldt.hale.io.shp.reader.internal;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.MessageFormat;
+import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
@@ -35,6 +37,7 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
@@ -197,6 +200,31 @@ public class ShapeSchemaReader extends AbstractSchemaReader {
 	@Override
 	protected String getDefaultTypeName() {
 		return ShapefileConstants.DEFAULT_TYPE_NAME;
+	}
+
+	/**
+	 * Get the type definition from a Shapefile.
+	 * 
+	 * @param source the Shapefile source
+	 * @return the type definition or <code>null</code> in case reading the type
+	 *         was not possible
+	 */
+	public static TypeDefinition readShapeType(LocatableInputSupplier<? extends InputStream> source) {
+		ShapeSchemaReader reader = new ShapeSchemaReader();
+		reader.setSource(source);
+		try {
+			reader.execute(null);
+			Collection<? extends TypeDefinition> types = reader.getSchema()
+					.getMappingRelevantTypes();
+			if (!types.isEmpty()) {
+				return types.iterator().next();
+			}
+			else {
+				return null;
+			}
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 }

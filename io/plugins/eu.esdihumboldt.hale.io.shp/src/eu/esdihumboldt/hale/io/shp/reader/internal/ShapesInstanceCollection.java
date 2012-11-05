@@ -18,7 +18,9 @@ package eu.esdihumboldt.hale.io.shp.reader.internal;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 
@@ -72,6 +74,8 @@ public class ShapesInstanceCollection implements InstanceCollection {
 		private TypeDefinition currentType;
 
 		private SimpleFeatureIterator currentIterator;
+
+		private final Set<QName> missingProperties = new HashSet<QName>();
 
 		/**
 		 * Create a new iterator on the data store.
@@ -168,6 +172,16 @@ public class ShapesInstanceCollection implements InstanceCollection {
 				Object value = property.getValue();
 				QName propertyName = new QName(property.getName().getNamespaceURI(), property
 						.getName().getLocalPart());
+
+				if (type.getChild(propertyName) == null) {
+					if (!missingProperties.contains(propertyName)) {
+						log.warn("Discarding values of porperty " + propertyName.getLocalPart()
+								+ " as it is not contained in the schema type.");
+						missingProperties.add(propertyName);
+					}
+					// only add values for properties contained in the type
+					continue;
+				}
 
 				// wrap geometry
 				if (value instanceof Geometry) {
