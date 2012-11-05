@@ -43,6 +43,7 @@ import eu.esdihumboldt.hale.ui.common.definition.selector.TypeDefinitionSelector
 import eu.esdihumboldt.hale.ui.io.IOWizardPage;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 import eu.esdihumboldt.hale.ui.io.instance.InstanceReaderConfigurationPage;
+import eu.esdihumboldt.util.Pair;
 
 /**
  * Configuration page for selecting the schema type for Shapefile instances.
@@ -121,11 +122,12 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage implement
 
 			if (selector.getSelectedObject() == null) {
 				// try to find a candidate for default selection
-				for (TypeDefinition type : getWizard().getProvider().getSourceSchema()
-						.getMappingRelevantTypes()) {
-					if (isValidType(type)) {
-						selector.setSelection(new StructuredSelection(type));
-						break;
+				if (lastType != null) {
+					Pair<TypeDefinition, Integer> pt = ShapeInstanceReader
+							.getMostCompatibleShapeType(
+									getWizard().getProvider().getSourceSchema(), lastType);
+					if (pt != null) {
+						selector.setSelection(new StructuredSelection(pt.getFirst()));
 					}
 				}
 			}
