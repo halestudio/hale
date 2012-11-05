@@ -16,9 +16,21 @@
 
 package eu.esdihumboldt.hale.common.schema.io;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.content.IContentType;
 
+import de.fhg.igd.osgi.util.configuration.AbstractConfigurationService;
+import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
+import eu.esdihumboldt.hale.common.core.io.project.model.Project;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
+import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
+import eu.esdihumboldt.hale.common.schema.model.impl.AbstractDefinition;
 
 /**
  * Schema I/O utilities
@@ -53,6 +65,61 @@ public abstract class SchemaIO {
 	 */
 	public static SchemaReader createSchemaReader(IContentType contentType, String providerId) {
 		return HaleIO.createIOProvider(SchemaReader.class, contentType, providerId);
+	}
+
+	/**
+	 * Load the configuration of mapping relevant types.
+	 * 
+	 * @param types the types
+	 * @param spaceID the schema space identifier
+	 * @param configurationService the configuration service
+	 */
+	public static void loadMappingRelevantTypesConfig(TypeIndex types, SchemaSpaceID spaceID,
+			IConfigurationService configurationService) {
+		String paramName = "mappable" + (spaceID == SchemaSpaceID.SOURCE ? "Source" : "Target")
+				+ "Type";
+		List<String> mappableConfig = configurationService.getList(paramName);
+		if (mappableConfig != null) {
+			for (TypeDefinition type : types.getTypes()) {
+				// don't like warnings, and direct cast to
+				// AbstractDefinition<TypeConstraint> gives warning...
+				Definition<TypeConstraint> def = type;
+				if (mappableConfig.contains(type.getName().toString()))
+					((AbstractDefinition<TypeConstraint>) def)
+							.setConstraint(MappingRelevantFlag.ENABLED);
+				else
+					((AbstractDefinition<TypeConstraint>) def)
+							.setConstraint(MappingRelevantFlag.DISABLED);
+			}
+		}
+	}
+
+	/**
+	 * Load the configuration of mapping relevant types.
+	 * 
+	 * @param types the types
+	 * @param spaceID the schema space identifier
+	 * @param project the project holding the configuration information
+	 */
+	public static void loadMappingRelevantTypesConfig(TypeIndex types, SchemaSpaceID spaceID,
+			final Project project) {
+		loadMappingRelevantTypesConfig(types, spaceID, new AbstractConfigurationService() {
+
+			@Override
+			protected void setValue(String key, String value) {
+				project.getProperties().put(key, value);
+			}
+
+			@Override
+			protected void removeValue(String key) {
+				project.getProperties().remove(key);
+			}
+
+			@Override
+			protected String getValue(String key) {
+				return project.getProperties().get(key);
+			}
+		});
 	}
 
 }

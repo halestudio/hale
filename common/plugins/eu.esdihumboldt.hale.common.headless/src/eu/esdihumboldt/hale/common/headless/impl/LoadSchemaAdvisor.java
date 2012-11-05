@@ -20,6 +20,9 @@ import java.util.Collections;
 import java.util.List;
 
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
+import eu.esdihumboldt.hale.common.core.io.project.model.Project;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.schema.io.SchemaIO;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
@@ -34,6 +37,27 @@ import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace;
 class LoadSchemaAdvisor extends AbstractIOAdvisor<SchemaReader> {
 
 	private final List<Schema> schemas = new ArrayList<Schema>();
+
+	private final SchemaSpaceID ssid;
+
+	private Project project;
+
+	/**
+	 * Create an advisor for loading a schema.
+	 * 
+	 * @param ssid the schema space ID
+	 */
+	public LoadSchemaAdvisor(SchemaSpaceID ssid) {
+		super();
+		this.ssid = ssid;
+	}
+
+	/**
+	 * @param project the project to set
+	 */
+	public void setProject(Project project) {
+		this.project = project;
+	}
 
 	@Override
 	public void prepareProvider(SchemaReader provider) {
@@ -67,14 +91,10 @@ class LoadSchemaAdvisor extends AbstractIOAdvisor<SchemaReader> {
 		// TODO cache?
 		DefaultSchemaSpace dss = new DefaultSchemaSpace();
 
-		/*
-		 * XXX what about settings for mapping relevant types??? they are
-		 * important for the data loading. See
-		 * HeadleassProjectAdvisor.handleResults
-		 */
-
 		// add all schemas
 		for (Schema schema : schemas) {
+			// load information about mapping relevant types
+			SchemaIO.loadMappingRelevantTypesConfig(schema, ssid, project);
 			dss.addSchema(schema);
 		}
 
