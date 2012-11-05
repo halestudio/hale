@@ -74,6 +74,10 @@
 			<bind-xml name="provider-id" node="attribute" />
 		</field>
 		
+		<field name="name" type="string" required="false">
+			<bind-xml name="name" node="attribute" />
+		</field>
+		
 		<field name="providerConfiguration" collection="map" required="false">
 			<bind-xml name="setting">
 				<class name="org.exolab.castor.mapping.MapItem">

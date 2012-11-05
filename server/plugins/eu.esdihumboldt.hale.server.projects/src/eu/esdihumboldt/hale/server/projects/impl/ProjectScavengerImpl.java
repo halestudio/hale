@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osgi.service.datalocation.Location;
 
@@ -231,6 +232,29 @@ public class ProjectScavengerImpl implements ProjectScavenger {
 		}
 	}
 
+	/**
+	 * @see ProjectScavenger#releaseProjectId(String)
+	 */
+	@Override
+	public void releaseProjectId(String projectId) {
+		if (!allowAddProject()) {
+			return;
+		}
+
+		synchronized (projects) {
+			if (reserved.contains(projectId)) {
+				reserved.remove(projectId);
+
+				// delete directoy
+				try {
+					FileUtils.deleteDirectory(new File(huntingGrounds, projectId));
+				} catch (IOException e) {
+					log.error("Error deleting project directory content", e);
+				}
+			}
+		}
+	}
+
 	@Override
 	public boolean allowAddProject() {
 		return huntingGrounds.isDirectory();
@@ -254,6 +278,18 @@ public class ProjectScavengerImpl implements ProjectScavenger {
 				return project.getStatus();
 			}
 		}
+	}
+
+	@Override
+	public File getLoadReports(String projectId) {
+		synchronized (projects) {
+			ProjectHandler project = projects.get(projectId);
+			if (project != null) {
+				return project.getLoadReportFile();
+			}
+		}
+
+		return null;
 	}
 
 	/**

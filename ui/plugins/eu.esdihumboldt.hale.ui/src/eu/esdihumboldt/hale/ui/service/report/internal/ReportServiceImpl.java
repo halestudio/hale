@@ -230,13 +230,11 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.service.report.ReportService#saveCurrentReports(java.io.File)
+	 * @see ReportService#saveCurrentReports(File)
 	 */
 	@Override
 	public boolean saveCurrentReports(File file) throws IOException {
-		ReportWriter rw = new ReportWriter();
-
-		return rw.writeAll(file, this.getCurrentReports());
+		return ReportWriter.write(file, this.getCurrentReports().values(), false);
 	}
 
 	/**
@@ -273,16 +271,13 @@ public class ReportServiceImpl implements ReportService {
 			return;
 		}
 
-		// create a ReportWriter
-		ReportWriter rw = new ReportWriter();
-
 		// iterate through all sessions
 		for (ReportSession s : this.reps.values()) {
 			SimpleDateFormat df = new SimpleDateFormat("yyyy_MM_dd_HH_mm");
 			File file = new File(folder.getPath() + "/" + df.format(new Date(s.getId())) + "-"
 					+ s.getId() + ".log");
 			try {
-				rw.writeAll(file, s.getAllReports());
+				ReportWriter.write(file, s.getAllReports().values(), false);
 			} catch (IOException e) {
 				// error during saving
 				_log.error("Cannot save report session.", e.getStackTrace());

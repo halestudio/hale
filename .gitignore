@@ -24,4 +24,7 @@ Thumbs.db
 # and mac too
 .DS_Store
 
+# and linux too
+*~
+
 #.gitignore

@@ -16,6 +16,8 @@
 package eu.esdihumboldt.hale.io.shp.reader.internal;
 
 import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
@@ -28,12 +30,18 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceReader;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.io.shp.ShapefileConstants;
 import eu.esdihumboldt.hale.io.shp.internal.Messages;
+import eu.esdihumboldt.util.Pair;
 
 /**
  * Reads instances from a shapefile.
@@ -82,14 +90,129 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 				defaultType = getSourceSchema().getType(QName.valueOf(typename));
 			} catch (Exception e) {
 				// ignore
+			}
+		}
+		if (defaultType == null) {
+			// check if typename was supplied w/o namespace
+			try {
+				defaultType = getSourceSchema().getType(
+						new QName(ShapefileConstants.SHAPEFILE_NS, typename));
+			} catch (Exception e) {
+				// ignore
 				// TODO report?
 			}
 		}
+		if (defaultType == null) {
+			reporter.info(new IOMessageImpl(
+					"No type name supplied as parameter, trying to auto-detect the schema type.",
+					null));
+			TypeDefinition dataType = ShapeSchemaReader.readShapeType(getSource());
+			if (dataType == null) {
+				throw new IOException("Could not read shapefile structure information");
+			}
+			Pair<TypeDefinition, Integer> tp = getMostCompatibleShapeType(getSourceSchema(),
+					dataType);
+			if (tp == null) {
+				throw new IOProviderConfigurationException(
+						"No schema type specified and auto-detection failed");
+			}
+			defaultType = tp.getFirst();
+			reporter.info(new IOMessageImpl(MessageFormat.format(
+					"Auto-deteted {0} as schema type, with a {1}% compatibility rating.",
+					defaultType.getName(), tp.getSecond()), null));
+		}
+
 		instances = new ShapesInstanceCollection(store, defaultType, getSourceSchema(),
 				getCrsProvider());
 
 		reporter.setSuccess(true);
 		return reporter;
+	}
+
+	/**
+	 * Determine the type out of the the mapping relevant types in the given
+	 * type index, that matches the given data type best.
+	 * 
+	 * @param types the type index
+	 * @param dataType the Shapefile data type
+	 * @return the most compatible type found together with is compatibility
+	 *         rating or <code>null</code> if there is no type that at least has
+	 *         one matching property
+	 * 
+	 * @see #checkCompatibility(TypeDefinition, TypeDefinition)
+	 */
+	public static Pair<TypeDefinition, Integer> getMostCompatibleShapeType(TypeIndex types,
+			TypeDefinition dataType) {
+		int maxCompatibility = -1;
+		TypeDefinition maxType = null;
+		for (TypeDefinition schemaType : types.getMappingRelevantTypes()) {
+			if (ShapefileConstants.SHAPEFILE_NS.equals(schemaType.getName().getNamespaceURI())) {
+				// is a shapefile type
+
+				int comp = checkCompatibility(schemaType, dataType);
+				if (comp >= 100) {
+					// return an exact match directly
+					return new Pair<TypeDefinition, Integer>(schemaType, 100);
+				}
+				else if (comp > maxCompatibility) {
+					maxType = schemaType;
+					maxCompatibility = comp;
+				}
+				else if (maxCompatibility > 0 && comp == maxCompatibility) {
+					// TODO debug message? possible duplicate?
+				}
+			}
+		}
+
+		if (maxType != null && maxCompatibility > 0) {
+			// return the type with the maximum compatibility rating
+			return new Pair<TypeDefinition, Integer>(maxType, maxCompatibility);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Determines if the compatibility rating between the two Shapefile type
+	 * definitions.
+	 * 
+	 * @param schemaType the type to test for compatibility
+	 * @param dataType the type representing the data to read
+	 * @return the percentage of compatibility (value from <code>0</code> to
+	 *         <code>100</code>), where <code>100</code> represents an exact
+	 *         match and <code>0</code> no compatibility
+	 */
+	public static int checkCompatibility(TypeDefinition schemaType, TypeDefinition dataType) {
+		// Shapefile types are flat, so only regard properties
+		Collection<? extends PropertyDefinition> children = DefinitionUtil
+				.getAllProperties(dataType);
+		int count = children.size();
+		int schemaCount = DefinitionUtil.getAllProperties(schemaType).size();
+
+		// check for every property if it exists with the schema, with the same
+		// name
+		int num = 0;
+		for (PropertyDefinition property : children) {
+			ChildDefinition<?> child = schemaType.getChild(property.getName());
+			if (child != null && child.asProperty() != null) {
+				num++;
+			}
+		}
+
+		if (num == count && count == schemaCount) {
+			// exact match
+			return 100;
+		}
+		else {
+			int percentage = (int) Math.round((double) (num * 100) / (double) count);
+			if (percentage > 1) {
+				// reduce value by one, to ensure 100 is not returned, but only
+				// return zero if there actually is no match
+				percentage -= 1;
+			}
+			// compatibility measure with a max of 99
+			return percentage;
+		}
 	}
 
 	/**

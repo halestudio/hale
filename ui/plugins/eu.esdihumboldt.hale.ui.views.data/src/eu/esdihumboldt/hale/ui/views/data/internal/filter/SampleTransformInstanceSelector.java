@@ -51,6 +51,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReport;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
 import eu.esdihumboldt.hale.common.align.transformation.service.impl.DefaultInstanceSink;
+import eu.esdihumboldt.hale.common.core.io.ProgressMonitorIndicator;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceMetadata;
@@ -59,7 +60,6 @@ import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstanceCollection
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
-import eu.esdihumboldt.hale.ui.io.util.ProgressMonitorIndicator;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.instance.sample.InstanceSampleService;

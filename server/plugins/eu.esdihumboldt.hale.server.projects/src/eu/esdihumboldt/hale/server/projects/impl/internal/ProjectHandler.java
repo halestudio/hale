@@ -30,10 +30,17 @@ import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
+import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
+import eu.esdihumboldt.hale.common.core.report.Message;
+import eu.esdihumboldt.hale.common.core.report.ReportHandler;
+import eu.esdihumboldt.hale.common.core.report.Reporter;
+import eu.esdihumboldt.hale.common.core.report.impl.DefaultReporter;
+import eu.esdihumboldt.hale.common.core.report.impl.MessageImpl;
 import eu.esdihumboldt.hale.common.headless.EnvironmentManager;
 import eu.esdihumboldt.hale.common.headless.TransformationEnvironment;
 import eu.esdihumboldt.hale.common.headless.impl.ProjectTransformationEnvironment;
+import eu.esdihumboldt.hale.common.headless.report.ReportFile;
 import eu.esdihumboldt.hale.server.projects.ProjectScavenger.Status;
 
 /**
@@ -52,21 +59,39 @@ public class ProjectHandler {
 	public static final String CONFIG_FILE_NAME = "project.properties";
 
 	/**
+	 * The name of the log file in the project folder, containing the reports
+	 * from loading the project.
+	 */
+	public static final String REPORT_FILE_NAME = "project-load.log";
+
+	/**
 	 * The configuration file.
 	 */
 	private final ProjectProperties config;
 
 	/**
-	 * The
+	 * The transformation environment, if the project is active.
 	 */
 	private TransformationEnvironment transformationEnvironment;
 
+	/**
+	 * The project information, if the project was loaded.
+	 */
 	private ProjectInfo projectInfo;
 
+	/**
+	 * The project folder
+	 */
 	private final File projectFolder;
 
+	/**
+	 * The current project status.
+	 */
 	private Status status = Status.NOT_AVAILABLE;
 
+	/**
+	 * The project identifier.
+	 */
 	private final String projectId;
 
 	/**
@@ -106,9 +131,20 @@ public class ProjectHandler {
 			envManager.removeEnvironment(projectId);
 		}
 		else {
+			File reportFile = getLoadReportFile();
+
+			if ((transformationEnvironment == null && config.isEnabled() || projectInfo == null)
+					&& reportFile.exists()) {
+				// delete old reports
+				reportFile.delete();
+			}
+
+			// store reports in file
+			ReportFile rf = new ReportFile(reportFile);
+
 			// load project info if not yet done
 			if (projectInfo == null) {
-				projectInfo = loadProjectInfo(projectFile);
+				projectInfo = loadProjectInfo(projectFile, rf);
 			}
 
 			if (projectInfo == null) {
@@ -123,13 +159,28 @@ public class ProjectHandler {
 					if (transformationEnvironment == null) {
 						try {
 							transformationEnvironment = new ProjectTransformationEnvironment(
-									projectId, new FileIOSupplier(projectFile));
-							// TODO what about the reports?
-						} catch (IOException e) {
+									projectId, new FileIOSupplier(projectFile), rf);
+							// check alignment
+							if (transformationEnvironment.getAlignment() == null) {
+								throw new IllegalStateException(
+										"Alignment missing or failed to load");
+							}
+							if (transformationEnvironment.getAlignment().getTypeCells().isEmpty()) {
+								throw new IllegalStateException(
+										"Alignment contains no type relations");
+							}
+						} catch (Exception e) {
 							log.error("Could not load transformation environment for project "
 									+ projectId, e);
 							status = Status.BROKEN;
+							transformationEnvironment = null;
 							envManager.removeEnvironment(projectId);
+
+							// log the exception as report
+							Reporter<Message> report = new DefaultReporter<Message>(
+									"Load project transformation environment", Message.class, false);
+							report.error(new MessageImpl(e.getMessage(), e));
+							rf.publishReport(report);
 						}
 					}
 					else {
@@ -179,19 +230,30 @@ public class ProjectHandler {
 	}
 
 	/**
+	 * Get the file the reports for loading the project are stored in.
+	 * 
+	 * @return the report file
+	 */
+	public File getLoadReportFile() {
+		return new File(projectFolder, REPORT_FILE_NAME);
+	}
+
+	/**
 	 * Load project information.
 	 * 
 	 * @param projectFile the project file
+	 * @param reportHandler the report handler
 	 * @return the project info or <code>null</code> if the project file could
 	 *         not be loaded
 	 */
-	private ProjectInfo loadProjectInfo(File projectFile) {
+	private ProjectInfo loadProjectInfo(File projectFile, ReportHandler reportHandler) {
 		FileIOSupplier in = new FileIOSupplier(projectFile);
 		ProjectReader reader = HaleIO
 				.findIOProvider(ProjectReader.class, in, projectFile.getName());
 		reader.setSource(in);
 		try {
-			reader.execute(null);
+			IOReport report = reader.execute(null);
+			reportHandler.publishReport(report);
 		} catch (Exception e) {
 			log.error(
 					"Failed to load project information for project at "
@@ -246,22 +308,38 @@ public class ProjectHandler {
 
 		});
 
-		if (candidates == null || candidates.length == 0) {
-			return null;
+		if (candidates != null) {
+			if (candidates.length == 1) {
+				return candidates[0].getName();
+			}
+
+			// more than one candidate, do a more thorough check
+			// TODO warn that there are multiple?
+			for (File candidate : candidates) {
+				FileIOSupplier supplier = new FileIOSupplier(candidate);
+				// find content type against stream
+				IContentType contentType = HaleIO.findContentType(ProjectReader.class, supplier,
+						null);
+				if (contentType != null) {
+					return candidate.getName();
+				}
+			}
 		}
 
-		if (candidates.length == 1) {
-			return candidates[0].getName();
-		}
+		// none found? check in subdirectories
+		File[] subdirs = projectDir.listFiles(new FileFilter() {
 
-		// more than one candidate, do a more thorough check
-		// TODO warn that there are multiple?
-		for (File candidate : candidates) {
-			FileIOSupplier supplier = new FileIOSupplier(candidate);
-			// find content type against stream
-			IContentType contentType = HaleIO.findContentType(ProjectReader.class, supplier, null);
-			if (contentType != null) {
-				return candidate.getName();
+			@Override
+			public boolean accept(File pathname) {
+				return pathname.isDirectory() && !pathname.isHidden();
+			}
+		});
+		if (subdirs != null) {
+			for (File subdir : subdirs) {
+				String name = findProjectFile(subdir);
+				if (name != null) {
+					return subdir.getName() + "/" + name;
+				}
 			}
 		}
 

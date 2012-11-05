@@ -15,8 +15,11 @@
 
 package eu.esdihumboldt.hale.common.headless;
 
+import java.util.Collection;
+
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
+import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 
 /**
@@ -61,6 +64,23 @@ public interface TransformationEnvironment {
 	 * @return the target schemas
 	 */
 	public SchemaSpace getTargetSchema();
+
+	/**
+	 * Get the export presets configured for the project.
+	 * 
+	 * @return copies of the export presets, fully configured except for the
+	 *         target
+	 */
+	public Collection<? extends IOConfiguration> getExportPresets();
+
+	/**
+	 * Get export templates compatible to the target schema, not fully
+	 * configured.
+	 * 
+	 * @return copies of the export templates, configured at least with the
+	 *         action and provider ID
+	 */
+	public Collection<? extends IOConfiguration> getExportTemplates();
 
 	// TODO import/export configurations
 

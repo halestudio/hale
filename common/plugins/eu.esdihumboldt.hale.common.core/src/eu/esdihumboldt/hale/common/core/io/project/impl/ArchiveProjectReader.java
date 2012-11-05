@@ -61,14 +61,19 @@ public class ArchiveProjectReader extends AbstractProjectReader {
 		// create the project file via XMLProjectReader
 		File baseFile = new File(tempDir, "project.halex");
 		LocatableInputSupplier<InputStream> source = new FileIOSupplier(baseFile);
+
+		// save old save configuration
+		LocatableInputSupplier<? extends InputStream> oldSource = getSource();
+
 		setSource(source);
 		reader.setSource(source);
 		reader.setProjectFiles(getProjectFiles());
 		IOReport report = reader.execute(progress, reporter);
 		setProject(reader.getProject());
+//		setSource(oldSource);
 
 		// delete the temporary directory
-		deleteDirectory(tempDir);
+		deleteDirectoryOnExit(tempDir);
 
 		return report;
 	}
@@ -116,17 +121,18 @@ public class ArchiveProjectReader extends AbstractProjectReader {
 		zipinputstream.close();
 	}
 
-	// delete the complete directory
-	private void deleteDirectory(File directory) {
+	private void deleteDirectoryOnExit(File directory) {
 		if (directory.exists()) {
-			File[] fileList = directory.listFiles();
 			directory.deleteOnExit();
-			for (int i = fileList.length - 1; i > 0; i--) {
-				if (fileList[i].isDirectory()) {
-					deleteDirectory(fileList[i]);
-				}
-				else {
-					fileList[i].deleteOnExit();
+			File[] files = directory.listFiles();
+			if (files != null) {
+				for (File f : files) {
+					if (f.isDirectory()) {
+						deleteDirectoryOnExit(f);
+					}
+					else {
+						f.deleteOnExit();
+					}
 				}
 			}
 		}

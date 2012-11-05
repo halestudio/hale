@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.hale.common.core.io.project.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,13 +28,56 @@ import eu.esdihumboldt.hale.common.core.io.IOProvider;
  * 
  * @author Simon Templer
  */
-public class IOConfiguration {
+public class IOConfiguration implements Serializable, Cloneable {
+
+	private static final long serialVersionUID = 8248743659873733496L;
 
 	private String actionId;
 
 	private String providerId;
 
+	private String name;
+
 	private final Map<String, String> providerConfiguration = new HashMap<String, String>();
+
+	/**
+	 * Default constructor
+	 */
+	public IOConfiguration() {
+		super();
+	}
+
+	/**
+	 * Creates an independent copy of the {@link IOConfiguration}.
+	 * 
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public IOConfiguration clone() {
+		IOConfiguration copy = new IOConfiguration();
+
+		copy.setActionId(getActionId());
+		copy.setProviderId(getProviderId());
+		copy.setName(getName());
+
+		copy.getProviderConfiguration().putAll(getProviderConfiguration());
+
+		return copy;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	/**
 	 * @return the action ID

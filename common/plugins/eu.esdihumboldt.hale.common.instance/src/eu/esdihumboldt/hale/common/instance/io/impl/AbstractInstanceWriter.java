@@ -64,8 +64,8 @@ public abstract class AbstractInstanceWriter extends GZipEnabledExport implement
 	 */
 	@Override
 	public void checkCompatibility() throws IOProviderConfigurationException {
-		if (targetSchema == null || instances == null) {
-			fail("Target schema or instances not defined.");
+		if (targetSchema == null) {
+			fail("Target schema not defined.");
 		}
 	}
 

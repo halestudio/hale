@@ -67,7 +67,13 @@ public interface ProjectScavenger {
 	 */
 	public File reserveProjectId(String projectId) throws ScavengerException;
 
-	// TODO release project ID
+	/**
+	 * Release a previously reserved project identifier. Also removes the
+	 * project folder.
+	 * 
+	 * @param projectId the project idnetifier
+	 */
+	public void releaseProjectId(String projectId);
 
 	/**
 	 * Determines if adding a project generally is allowed/possible.
@@ -83,6 +89,16 @@ public interface ProjectScavenger {
 	 * @return the project status
 	 */
 	public Status getStatus(String projectId);
+
+	/**
+	 * Get the file where the reports form loading the project are stored. The
+	 * file may not be changed, deleted, etc.
+	 * 
+	 * @param projectId the project identifier
+	 * @return the log file or <code>null</code> if the project with the given
+	 *         identifier does not exist
+	 */
+	public File getLoadReports(String projectId);
 
 	/**
 	 * Get the project info for the project with the given identifier, if

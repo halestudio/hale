@@ -237,13 +237,15 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 		for (QName propertyName : group.getPropertyNames()) {
 			EntityDefinition propertyDef = AlignmentUtil.getChild(groupDef, propertyName);
 
-			Object[] values = group.getProperty(propertyName);
+			if (propertyDef != null) {
+				Object[] values = group.getProperty(propertyName);
 
-			increase(propertyDef, values.length);
+				increase(propertyDef, values.length);
 
-			for (Object value : values) {
-				if (value instanceof Group) {
-					addToPopulation((Group) value, propertyDef);
+				for (Object value : values) {
+					if (value instanceof Group) {
+						addToPopulation((Group) value, propertyDef);
+					}
 				}
 			}
 		}

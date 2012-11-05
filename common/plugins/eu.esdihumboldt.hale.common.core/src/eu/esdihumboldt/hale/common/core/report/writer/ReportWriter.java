@@ -16,13 +16,14 @@
 
 package eu.esdihumboldt.hale.common.core.report.writer;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.List;
+import java.util.Collection;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.Lists;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
@@ -32,6 +33,7 @@ import eu.esdihumboldt.hale.common.core.report.Report;
 import eu.esdihumboldt.hale.common.core.report.ReportFactory;
 
 /**
+ * Writes reports to a file.
  * 
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -39,27 +41,13 @@ import eu.esdihumboldt.hale.common.core.report.ReportFactory;
  */
 public class ReportWriter {
 
-	/**
-	 * Contains all {@link Report}s.
-	 */
-	private Multimap<Class<? extends Report<?>>, Report<?>> reports = HashMultimap.create();
-
 	private static final ALogger _log = ALoggerFactory.getLogger(ReportWriter.class);
 
 	/**
 	 * Constructor.
 	 */
-	public ReportWriter() {
+	private ReportWriter() {
 		/* nothing */
-	}
-
-	/**
-	 * Adds all {@link Report}s.
-	 * 
-	 * @param multimap {@link List} of {@link Report}s
-	 */
-	public void addAllReports(Multimap<Class<? extends Report<?>>, Report<?>> multimap) {
-		this.reports.putAll(multimap);
 	}
 
 	/**
@@ -67,12 +55,30 @@ public class ReportWriter {
 	 * 
 	 * @param file target file
 	 * @param reports reports to be saved
+	 * @param append if the reports should be appended to the file instead of
+	 *            overwriting it
 	 * 
 	 * @return true on success
 	 * 
 	 * @throws IOException if IO fails
 	 */
-	public boolean writeAll(File file, Multimap<Class<? extends Report<?>>, Report<?>> reports)
+	public static boolean write(File file, boolean append, Report<?>... reports) throws IOException {
+		return write(file, Lists.newArrayList(reports), append);
+	}
+
+	/**
+	 * Writes all {@link Report}s to a {@link File}.
+	 * 
+	 * @param file target file
+	 * @param reports reports to be saved
+	 * @param append if the reports should be appended to the file instead of
+	 *            overwriting it
+	 * 
+	 * @return true on success
+	 * 
+	 * @throws IOException if IO fails
+	 */
+	public static boolean write(File file, Collection<Report<?>> reports, boolean append)
 			throws IOException {
 		// check if the file exists
 		if (!file.exists()) {
@@ -93,40 +99,44 @@ public class ReportWriter {
 		}
 
 		// create PrintStream
-		PrintStream p = new PrintStream(file);
+		PrintStream p = new PrintStream(
+				new BufferedOutputStream(new FileOutputStream(file, append)));
+		try {
+			// get an instance of ReportFactory
+			ReportFactory rf = ReportFactory.getInstance();
+			MessageFactory mf = MessageFactory.getInstance();
 
-		// get an instance of ReportFactory
-		ReportFactory rf = ReportFactory.getInstance();
-		MessageFactory mf = MessageFactory.getInstance();
+			// iterate through all reports
+			for (Report<?> r : reports) {
+				// write them to the file
+				p.print(rf.asString(r));
 
-		// iterate through all reports
-		for (Report<?> r : reports.values()) {
-			// write them to the file
-			p.print(rf.asString(r));
+				for (Message m : r.getErrors()) {
+					p.println("!ERROR");
+					p.print(mf.asString(m));
+				}
 
-			for (Message m : r.getErrors()) {
-				p.println("!ERROR");
-				p.print(mf.asString(m));
+				for (Message m : r.getWarnings()) {
+					p.println("!WARN");
+					p.print(mf.asString(m));
+				}
+
+				for (Message m : r.getInfos()) {
+					p.println("!INFO");
+					p.print(mf.asString(m));
+				}
 			}
 
-			for (Message m : r.getWarnings()) {
-				p.println("!WARN");
-				p.print(mf.asString(m));
-			}
+			// new line at end of file to allow appending
+			p.println();
 
-			for (Message m : r.getInfos()) {
-				p.println("!INFO");
-				p.print(mf.asString(m));
-			}
+			p.flush();
+		} finally {
+			// close stream
+			p.close();
 		}
-
-		// set an end marker
-		p.print("!END");
-
-		// close stream
-		p.flush();
-		p.close();
 
 		return true;
 	}
+
 }

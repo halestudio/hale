@@ -241,6 +241,19 @@ h3 {
 	font-weight: bold;
 }
 
+h2.exception {
+	padding-left: 24px;
+}
+
+p.exception {
+	background-image: url("graphics/error.gif");
+	background-position: left center;
+	background-repeat: no-repeat;
+	color: #FF0000;
+	padding-left: 24px;
+	min-height: 16px;
+}
+
 .success {
 	color: #008800;
 	font-weight: bold;
@@ -263,6 +276,45 @@ h3 {
 .footnotemark {
 	font-size: 65%;
 	vertical-align: text-top;
+}
+
+/* Tabbed panel */
+div.tabpanel div.tab-row li {
+  margin: 0;
+  padding: 0;
+  display: inline;
+  list-style-type: none;
+}
+
+div.tabpanel div.tab-row a:link,
+ div.tabpanel div.tab-row a:visited {
+  float: left;
+  background: #f3f3f3;
+  font-size: 12px;
+  line-height: 14px;
+  font-weight: bold;
+  padding: 2px 10px 2px 10px;
+  margin-right: 4px;
+  border: 1px solid #ccc;
+  text-decoration: none;
+  color: #666;
+}
+
+div.tabpanel div.tab-row li.selected a:link,
+ div.tabpanel div.tab-row a:visited.active {
+  border-bottom: 1px solid #fff;
+  background: #fff;
+  color: #000;
+}
+
+div.tabpanel div.tab-row a:hover {
+  background: #fff;
+}
+
+div.tabpanel div.tab-panel {
+  border: 1px solid #ccc;
+  padding: 12px;
+  clear: both;
 }
 
 /* Special sections */
@@ -305,7 +357,7 @@ input.field-invalid {
 
 .field-msg, .field-msg-ERROR, .field-msg-WARNING, .field-msg-INFO, .field-msg-valid {
 	font-family:Arial, sans-serif;
- 	font-size: 0.9em;
+ 	font-size: 13px;
  	font-style: italic;
 }
 
@@ -350,16 +402,16 @@ fieldset {
 	width: 550px;
 	padding-left: 10px;
 	padding-right: 10px;
-	padding-bottom: 20px;
+	padding-bottom: 10px;
 	margin-bottom: 20px;
-	border: 1px dotted #7db3a7;
+	border: 1px solid #EBECF0;
 	display: block;
 	clear: both;
 }
 
 fieldset legend {
 	font-weight: bold;
-	color: #000000;
+	color: #0082BE;
 	background-color: #ffffff;
 }
 
@@ -417,6 +469,11 @@ table.no-stretch {
 	width: auto;
 }
 
+table.no-stretch thead td {
+	padding-left: 12px;
+	padding-right: 12px;
+}
+
 table {
 	width: 100%;
 }
@@ -426,61 +483,16 @@ td {
 	vertical-align: top;
 }
 
-table .column-view-edit-delete {
-	width: 70px;
-	text-align: right;
-}
-
-table .column-view-delete {
-	width: 48px;
-	text-align: right;
-}
-
-table .column-view-edit-delete img, table .column-view-delete img {
-	width: 16px;
-	margin-left: 3px;
-}
-
-table .delete-column {
-	width: 20px;
-	vertical-align: middle;
-}
-
-table .column-name {
-	width: 150px;
-}
-
-table .column-rule-name {
-	width: 250px;
-}
-
-table .column-model {
-	width: 100px;
-}
-
-table .column-description {
-	width: auto;
-}
-
-table .column-srs {
-	width: 80px;
-}
-
-table .column-action {
-	width: 80px;
-}
-
-table .column-timestamp {
-	width: 80px;
-}
-
 thead td {
-	background-color: #eeeeee;
-	border-bottom: 1px solid #00a885;
+	border-bottom: 1px solid #0082BE;
 	font-weight: bold;
 }
 
 tbody tr.odd {
+	background-color: #f6f6f6;
+}
+
+tbody.odd tr {
 	background-color: #f6f6f6;
 }
 

@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.ui.io.instance.crs;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider;
+import eu.esdihumboldt.hale.common.instance.geometry.impl.AbstractCRSManager;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 

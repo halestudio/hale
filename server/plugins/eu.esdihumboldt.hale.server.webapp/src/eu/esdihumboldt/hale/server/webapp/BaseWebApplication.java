@@ -17,16 +17,22 @@
 package eu.esdihumboldt.hale.server.webapp;
 
 import org.apache.wicket.authorization.strategies.page.SimplePageAuthorizationStrategy;
+import org.apache.wicket.core.request.handler.PageProvider;
+import org.apache.wicket.core.request.handler.RenderPageRequestHandler;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.request.IRequestHandler;
+import org.apache.wicket.request.cycle.AbstractRequestCycleListener;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import eu.esdihumboldt.hale.server.security.UserConstants;
+import eu.esdihumboldt.hale.server.webapp.pages.ExceptionPage;
 import eu.esdihumboldt.hale.server.webapp.pages.LoginPage;
 import eu.esdihumboldt.hale.server.webapp.pages.SecuredPage;
-import eu.esdihumboldt.hale.server.webapp.util.DynamicSpringComponentInjector;
 
 /**
  * A basic class for web applications
@@ -47,6 +53,12 @@ public abstract class BaseWebApplication extends WebApplication {
 	public static final String SYSTEM_PROPERTY_MAIN_TITLE = "hale.webapp.maintitle";
 
 	/**
+	 * Name of the system property that allows enabling/disabling the login
+	 * page.
+	 */
+	public static final String SYSTEM_PROPERTY_LOGIN_PAGE = "hale.webapp.loginpage";
+
+	/**
 	 * Get the default application title. Is either the value of the system
 	 * property {@value #SYSTEM_PROPERTY_MAIN_TITLE} or {@link #DEFAULT_TITLE}.
 	 * 
@@ -61,6 +73,17 @@ public abstract class BaseWebApplication extends WebApplication {
 	 */
 	public String getMainTitle() {
 		return getDefaulTitle();
+	}
+
+	/**
+	 * States if the login page is enabled for this application. The default
+	 * implementation looks at the {@value #SYSTEM_PROPERTY_LOGIN_PAGE} system
+	 * property for this, if not specified the default is <code>false</code>.
+	 * 
+	 * @return if the login page is enabled
+	 */
+	public boolean isLoginPageEnabled() {
+		return Boolean.parseBoolean(System.getProperty(SYSTEM_PROPERTY_LOGIN_PAGE, "false"));
 	}
 
 	@Override
@@ -96,13 +119,21 @@ public abstract class BaseWebApplication extends WebApplication {
 
 				});
 
-		addComponentInstantiationListener(new DynamicSpringComponentInjector());
+		getComponentInstantiationListeners().add(new SpringComponentInjector(this));
 
-		// add login page to every application based on this one
-		// XXX make configurable?
+		getRequestCycleListeners().add(new AbstractRequestCycleListener() {
 
-		// login page
-		mountBookmarkablePage("/login", LoginPage.class);
+			@Override
+			public IRequestHandler onException(RequestCycle cycle, Exception ex) {
+				return new RenderPageRequestHandler(new PageProvider(new ExceptionPage(ex)));
+			}
+		});
+
+		// add login page to every application based on this one (if enabled)
+		if (isLoginPageEnabled()) {
+			// login page
+			mountPage("/login", LoginPage.class);
+		}
 	}
 
 }

@@ -39,13 +39,11 @@ import com.google.common.base.Preconditions;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
-import eu.esdihumboldt.hale.common.schema.model.Definition;
+import eu.esdihumboldt.hale.common.schema.io.SchemaIO;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
-import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
-import eu.esdihumboldt.hale.common.schema.model.impl.AbstractDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.internal.AbstractRemoveResourcesOperation;
@@ -97,23 +95,8 @@ public class SchemaServiceImpl extends AbstractSchemaService {
 	public void addSchema(Schema schema, SchemaSpaceID spaceID) {
 		Preconditions.checkNotNull(spaceID);
 
-		String paramName = "mappable" + (spaceID == SchemaSpaceID.SOURCE ? "Source" : "Target")
-				+ "Type";
-		List<String> mappableConfig = getProjectService().getConfigurationService().getList(
-				paramName);
-		if (mappableConfig != null) {
-			for (TypeDefinition type : schema.getTypes()) {
-				// don't like warnings, and direct cast to
-				// AbstractDefinition<TypeConstraint> gives warning...
-				Definition<TypeConstraint> def = type;
-				if (mappableConfig.contains(type.getName().toString()))
-					((AbstractDefinition<TypeConstraint>) def)
-							.setConstraint(MappingRelevantFlag.ENABLED);
-				else
-					((AbstractDefinition<TypeConstraint>) def)
-							.setConstraint(MappingRelevantFlag.DISABLED);
-			}
-		}
+		SchemaIO.loadMappingRelevantTypesConfig(schema, spaceID, getProjectService()
+				.getConfigurationService());
 
 		DefaultSchemaSpace space = (DefaultSchemaSpace) getSchemas(spaceID);
 		space.addSchema(schema);

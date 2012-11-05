@@ -26,7 +26,7 @@ import eu.esdihumboldt.cst.doc.functions.FunctionReferenceConstants;
 import eu.esdihumboldt.cst.doc.functions.internal.toc.FunctionTopic;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
-import eu.esdihumboldt.hale.common.instance.model.impl.ONameUtil;
+import eu.esdihumboldt.hale.common.instance.orient.ONameUtil;
 import eu.esdihumboldt.hale.doc.util.context.SingleTopicContext;
 
 /**
