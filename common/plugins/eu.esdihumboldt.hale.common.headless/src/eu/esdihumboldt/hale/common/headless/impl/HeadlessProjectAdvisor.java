@@ -35,6 +35,7 @@ import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.common.core.io.project.util.LocationUpdater;
 import eu.esdihumboldt.hale.common.core.report.ReportHandler;
 import eu.esdihumboldt.hale.common.headless.HeadlessIO;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.io.SchemaIO;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 
@@ -130,10 +131,10 @@ public class HeadlessProjectAdvisor extends AbstractIOAdvisor<ProjectReader> {
 
 		advisors = new HashMap<String, IOAdvisor<?>>();
 
-		sourceSchemaAdvisor = new LoadSchemaAdvisor();
+		sourceSchemaAdvisor = new LoadSchemaAdvisor(SchemaSpaceID.SOURCE);
 		advisors.put(SchemaIO.ACTION_LOAD_SOURCE_SCHEMA, sourceSchemaAdvisor);
 
-		targetSchemaAdvisor = new LoadSchemaAdvisor();
+		targetSchemaAdvisor = new LoadSchemaAdvisor(SchemaSpaceID.TARGET);
 		advisors.put(SchemaIO.ACTION_LOAD_TARGET_SCHEMA, targetSchemaAdvisor);
 	}
 
@@ -166,7 +167,9 @@ public class HeadlessProjectAdvisor extends AbstractIOAdvisor<ProjectReader> {
 		project = provider.getProject();
 		UPDATER.updateProject(project, provider.getSource().getLocation());
 
-		// FIXME inject information about mappable types into advisors!
+		// inject project into advisors (mappable types)
+		sourceSchemaAdvisor.setProject(project);
+		targetSchemaAdvisor.setProject(project);
 
 		// execute loaded I/O configurations
 		List<IOConfiguration> confs = new ArrayList<IOConfiguration>(project.getResources());
