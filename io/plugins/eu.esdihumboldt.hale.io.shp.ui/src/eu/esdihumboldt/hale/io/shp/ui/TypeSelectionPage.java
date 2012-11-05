@@ -120,21 +120,7 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage implement
 			// if the source has changed
 
 			lastSource = currentSource;
-			ShapeSchemaReader reader = new ShapeSchemaReader();
-			reader.setSource(lastSource);
-			try {
-				reader.execute(null);
-				Collection<? extends TypeDefinition> types = reader.getSchema()
-						.getMappingRelevantTypes();
-				if (!types.isEmpty()) {
-					lastType = types.iterator().next();
-				}
-				else {
-					lastType = null;
-				}
-			} catch (Exception e) {
-				lastType = null;
-			}
+			lastType = ShapeSchemaReader.readShapeType(lastSource);
 
 			if (selector.getSelectedObject() == null) {
 				// try to find a candidate for default selection
