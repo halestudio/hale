@@ -18,11 +18,12 @@ package eu.esdihumboldt.hale.server.status.war.pages;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
+import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.Model;
 
+import eu.esdihumboldt.hale.server.status.war.components.JobPanelWrapper;
 import eu.esdihumboldt.hale.server.status.war.components.memory.MemoryPanel;
 import eu.esdihumboldt.hale.server.webapp.pages.BasePage;
 import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
@@ -53,6 +54,16 @@ public class StatusPage extends BasePage {
 			}
 		});
 
-		add(new AjaxTabbedPanel<AbstractTab>("tabs", tabs));
+		tabs.add(new AbstractTab(Model.of("Jobs")) {
+
+			private static final long serialVersionUID = -8792707190741096316L;
+
+			@Override
+			public WebMarkupContainer getPanel(String panelId) {
+				return new JobPanelWrapper(panelId);
+			}
+		});
+
+		add(new TabbedPanel<AbstractTab>("tabs", tabs));
 	}
 }
