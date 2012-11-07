@@ -96,7 +96,7 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements Proj
 
 	@Override
 	protected String getDefaultTypeName() {
-		return null;
+		return "HTML mapping documentation";
 	}
 
 	@Override
