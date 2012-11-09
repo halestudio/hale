@@ -54,6 +54,21 @@ public interface TransformationExample {
 	public Alignment getAlignment() throws Exception;
 
 	/**
+	 * Get the target container namespace (XML specific).
+	 * 
+	 * @return the name of the target file root element namespace,
+	 *         <code>null</code> represents the target schema default namespace
+	 */
+	public String getTargetContainerNamespace();
+
+	/**
+	 * Get the target container name (XML specific).
+	 * 
+	 * @return the local name of the target file root element
+	 */
+	public String getTargetContainerName();
+
+	/**
 	 * Get the source instances, load them if they were not loaded yet.
 	 * 
 	 * @return the source instances

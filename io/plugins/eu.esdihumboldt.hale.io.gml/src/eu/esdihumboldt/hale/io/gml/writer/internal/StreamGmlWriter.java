@@ -70,6 +70,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.io.gml.internal.simpletype.SimpleTypeUtil;
+import eu.esdihumboldt.hale.io.gml.writer.XmlWriterBase;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.AbstractTypeMatcher;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.DefinitionPath;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.Descent;
@@ -87,7 +88,7 @@ import eu.esdihumboldt.util.Pair;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class StreamGmlWriter extends AbstractInstanceWriter {
+public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriterBase {
 
 	/**
 	 * Schema instance namespace (for specifying schema locations)
@@ -95,16 +96,6 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	public static final String SCHEMA_INSTANCE_NS = XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI; //$NON-NLS-1$
 
 	private static final ALogger log = ALoggerFactory.getLogger(StreamGmlWriter.class);
-
-	/**
-	 * The parameter name for the XML root element name
-	 */
-	public static final String PARAM_ROOT_ELEMENT_NAME = "xml.rootElement.name";
-
-	/**
-	 * The parameter name for the XML root element namespace
-	 */
-	public static final String PARAM_ROOT_ELEMENT_NAMESPACE = "xml.rootElement.namespace";
 
 	/**
 	 * The parameter name for the flag specifying if a geometry should be
@@ -401,27 +392,9 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 		QName containerName = (container == null) ? (null) : (container.getName());
 
 		if (containerDefinition == null) {
-			// no container defined, try to use a custom root element
-			String namespace = getParameter(PARAM_ROOT_ELEMENT_NAMESPACE);
-			// determine target namespace
-			if (namespace == null) {
-				// default to target namespace
-				namespace = targetIndex.getNamespace();
-			}
-			String elementName = getParameter(PARAM_ROOT_ELEMENT_NAME);
-
-			// find root element
-			if (elementName != null) {
-				Iterator<XmlElement> it = targetIndex.getElements().values().iterator();
-				while (it.hasNext() && containerDefinition == null) {
-					XmlElement el = it.next();
-					if (el.getName().getNamespaceURI().equals(namespace)
-							&& el.getName().getLocalPart().equals(elementName)) {
-						containerDefinition = el.getType();
-						containerName = el.getName();
-					}
-				}
-			}
+			XmlElement containerElement = getConfiguredContainerElement(this, getXMLIndex());
+			containerDefinition = containerElement.getType();
+			containerName = containerElement.getName();
 		}
 
 		if (containerDefinition == null || containerName == null) {
@@ -525,6 +498,35 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 		writer.writeEndDocument();
 
 		writer.close();
+	}
+
+	/**
+	 * Get the for an I/O provider configured target container element, assuming
+	 * the I/O provider uses the {@link #PARAM_ROOT_ELEMENT_NAMESPACE} and
+	 * {@value #PARAM_ROOT_ELEMENT_NAME} parameters for this.
+	 * 
+	 * @param provider the I/O provider
+	 * @param targetIndex the target XML index
+	 * @return the container element or <code>null</code> if it was not found
+	 */
+	public static XmlElement getConfiguredContainerElement(IOProvider provider, XmlIndex targetIndex) {
+		// no container defined, try to use a custom root element
+		String namespace = provider.getParameter(PARAM_ROOT_ELEMENT_NAMESPACE);
+		// determine target namespace
+		if (namespace == null) {
+			// default to target namespace
+			namespace = targetIndex.getNamespace();
+		}
+		String elementName = provider.getParameter(PARAM_ROOT_ELEMENT_NAME);
+
+		// find root element
+		XmlElement containerElement = null;
+		if (elementName != null) {
+			QName name = new QName(namespace, elementName);
+			containerElement = targetIndex.getElements().get(name);
+		}
+
+		return containerElement;
 	}
 
 	/**

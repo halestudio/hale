@@ -55,6 +55,11 @@ public class XsltTransformationTest extends DefaultTransformationTest {
 		export.setAlignment(example.getAlignment());
 		export.setSourceSchema(new DefaultSchemaSpace().addSchema(example.getSourceSchema()));
 		export.setTargetSchema(new DefaultSchemaSpace().addSchema(example.getTargetSchema()));
+
+		export.setParameter(XsltExport.PARAM_ROOT_ELEMENT_NAMESPACE,
+				example.getTargetContainerNamespace());
+		export.setParameter(XsltExport.PARAM_ROOT_ELEMENT_NAME, example.getTargetContainerName());
+
 		File tempXsltFile = File.createTempFile("xsltest", ".xsl");
 		export.setTarget(new FileIOSupplier(tempXsltFile));
 		IOReport res = export.execute(new LogProgressIndicator());
