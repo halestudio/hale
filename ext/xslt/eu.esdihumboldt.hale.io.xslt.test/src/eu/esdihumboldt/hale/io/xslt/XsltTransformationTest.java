@@ -38,6 +38,7 @@ import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace;
 import eu.esdihumboldt.hale.common.test.TestUtil;
 
 /**
@@ -52,6 +53,8 @@ public class XsltTransformationTest extends DefaultTransformationTest {
 		// export alignment to XSLT
 		XsltExport export = new XsltExport();
 		export.setAlignment(example.getAlignment());
+		export.setSourceSchema(new DefaultSchemaSpace().addSchema(example.getSourceSchema()));
+		export.setTargetSchema(new DefaultSchemaSpace().addSchema(example.getTargetSchema()));
 		File tempXsltFile = File.createTempFile("xsltest", ".xsl");
 		export.setTarget(new FileIOSupplier(tempXsltFile));
 		IOReport res = export.execute(new LogProgressIndicator());
