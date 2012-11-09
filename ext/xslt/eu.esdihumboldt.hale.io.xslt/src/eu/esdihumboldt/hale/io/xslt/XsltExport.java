@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.swing.GroupLayout.Alignment;
+import javax.xml.namespace.QName;
 
 import org.apache.commons.io.FileUtils;
 
@@ -65,8 +66,11 @@ public class XsltExport extends AbstractAlignmentWriter {
 		try {
 			log.info("Template directory: " + templateDir.getAbsolutePath());
 
+			// FIXME only for testing!
+			QName containerName = new QName("http://www.example.org/t2/", "collection");
+
 			XsltGenerator generator = new XsltGenerator(templateDir, getAlignment(),
-					getTargetSchema(), reporter, progress);
+					getTargetSchema(), reporter, progress, containerName);
 			return generator.write(getTarget());
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl("XSLT generation failed", e));
