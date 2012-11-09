@@ -86,6 +86,7 @@ public class XsltGenerator {
 		// custom resource loader does not work in OSGi context, so copy
 		// templates to template folder
 		ve.setProperty(VelocityEngine.FILE_RESOURCE_LOADER_PATH, workDir.getAbsolutePath());
+		ve.setProperty(VelocityEngine.RUNTIME_LOG_LOGSYSTEM, new AVelocityLogger());
 		ve.init();
 	}
 
