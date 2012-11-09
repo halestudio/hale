@@ -16,6 +16,7 @@ Import-Package: com.google.common.io;version="11.0.1",
  org.apache.velocity.context;version="1.6.2",
  org.apache.velocity.exception;version="1.6.2",
  org.apache.velocity.runtime;version="1.6.2",
+ org.apache.velocity.runtime.log;version="1.6.2",
  org.apache.velocity.runtime.resource;version="1.6.2",
  org.apache.velocity.runtime.resource.loader;version="1.6.2",
  org.slf4j;version="1.5.11"
