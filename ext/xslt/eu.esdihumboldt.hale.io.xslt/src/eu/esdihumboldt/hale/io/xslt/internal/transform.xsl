@@ -11,8 +11,21 @@
 	
 	<xsl:output method="xml" encoding="UTF-8" indent="yes" />
 	
-	<xsl:template match="/">
-		<xsl:message>Document root</xsl:message>
-		<dummy></dummy>
+	<!-- Root template -->
+	<xsl:template match="/" >
+		#foreach ($target in $targets)
+		<xsl:variable name="${target}">
+			<!-- Transform objects into temporary document -->
+			<xsl:call-template name="${target}" />
+		</xsl:variable>
+		#end
+		<!-- Organize transformed objects in container -->
+		#include("container.xsl")
 	</xsl:template>
+	
+	<!-- Relation templates -->
+#foreach ($include in $includes)
+	#include($include)
+	
+#end
 </xsl:transform>
