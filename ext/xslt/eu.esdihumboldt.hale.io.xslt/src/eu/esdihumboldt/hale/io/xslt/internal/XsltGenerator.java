@@ -23,6 +23,11 @@ import java.io.Writer;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.app.event.EventCartridge;
+import org.apache.velocity.app.event.InvalidReferenceEventHandler;
+import org.apache.velocity.context.Context;
+import org.apache.velocity.exception.ParseErrorException;
+import org.apache.velocity.util.introspection.Info;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -48,6 +53,7 @@ public class XsltGenerator {
 	private final Alignment alignment;
 	private final XmlIndex targetSchema;
 	private final File workDir;
+	private final EventCartridge eventCartridge = new EventCartridge();
 
 	/**
 	 * Create a XSLT generator.
@@ -88,6 +94,36 @@ public class XsltGenerator {
 		ve.setProperty(VelocityEngine.FILE_RESOURCE_LOADER_PATH, workDir.getAbsolutePath());
 		ve.setProperty(VelocityEngine.RUNTIME_LOG_LOGSYSTEM, new AVelocityLogger());
 		ve.init();
+
+		// initialize default event cartridge
+		eventCartridge.addInvalidReferenceEventHandler(new InvalidReferenceEventHandler() {
+
+			private void report(Info info, String reference) {
+				throw new ParseErrorException("Error while merging template - invalid reference: "
+						+ reference, info, reference);
+			}
+
+			@Override
+			public boolean invalidSetMethod(Context context, String leftreference,
+					String rightreference, Info info) {
+				report(info, leftreference + "." + rightreference);
+				return false;
+			}
+
+			@Override
+			public Object invalidMethod(Context context, String reference, Object object,
+					String method, Info info) {
+				report(info, reference);
+				return null;
+			}
+
+			@Override
+			public Object invalidGetMethod(Context context, String reference, Object object,
+					String property, Info info) {
+				report(info, reference);
+				return null;
+			}
+		});
 	}
 
 	/**
@@ -100,7 +136,7 @@ public class XsltGenerator {
 	public IOReport write(LocatableOutputSupplier<? extends OutputStream> target) throws Exception {
 		Template root = ve.getTemplate(Templates.ROOT, "UTF-8");
 
-		VelocityContext context = new VelocityContext();
+		VelocityContext context = createContext();
 
 		OutputStream out = target.getOutput();
 		Writer writer = new OutputStreamWriter(out, "UTF-8");
@@ -113,6 +149,17 @@ public class XsltGenerator {
 
 		reporter.setSuccess(reporter.getErrors().isEmpty());
 		return reporter;
+	}
+
+	/**
+	 * Create a new {@link VelocityContext}.
+	 * 
+	 * @return the context configured with the default event cartridge
+	 */
+	protected VelocityContext createContext() {
+		VelocityContext context = new VelocityContext();
+		context.attachEventCartridge(eventCartridge);
+		return context;
 	}
 
 }
