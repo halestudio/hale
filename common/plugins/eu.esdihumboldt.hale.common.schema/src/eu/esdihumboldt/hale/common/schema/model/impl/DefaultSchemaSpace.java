@@ -49,8 +49,9 @@ public class DefaultSchemaSpace implements SchemaSpace {
 	 * Adds a schema
 	 * 
 	 * @param schema the schema to add
+	 * @return this schema space for chaining
 	 */
-	public void addSchema(Schema schema) {
+	public DefaultSchemaSpace addSchema(Schema schema) {
 		synchronized (this) {
 			schemas.add(schema);
 			if (allTypes != null) {
@@ -60,6 +61,7 @@ public class DefaultSchemaSpace implements SchemaSpace {
 				mappingRelevantTypes.addAll(schema.getMappingRelevantTypes());
 			}
 		}
+		return this;
 	}
 
 	// XXX needed? will result in problems with shared types because the load

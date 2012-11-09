@@ -21,8 +21,10 @@ import org.eclipse.ui.PlatformUI;
 import eu.esdihumboldt.hale.common.align.io.AlignmentWriter;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.io.DefaultIOAdvisor;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
 /**
  * Advisor for writing the alignment service alignment
@@ -41,6 +43,11 @@ public class AlignmentExportAdvisor extends DefaultIOAdvisor<AlignmentWriter> {
 		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
 				AlignmentService.class);
 		provider.setAlignment(as.getAlignment());
+
+		SchemaService ss = (SchemaService) PlatformUI.getWorkbench()
+				.getService(SchemaService.class);
+		provider.setSourceSchema(ss.getSchemas(SchemaSpaceID.SOURCE));
+		provider.setTargetSchema(ss.getSchemas(SchemaSpaceID.TARGET));
 	}
 
 }

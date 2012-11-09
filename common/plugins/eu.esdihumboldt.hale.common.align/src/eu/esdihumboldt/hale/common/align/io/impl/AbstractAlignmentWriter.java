@@ -20,6 +20,7 @@ import eu.esdihumboldt.hale.common.align.io.AlignmentWriter;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractExportProvider;
+import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 
 /**
  * Abstract alignment writer implementation
@@ -30,6 +31,8 @@ public abstract class AbstractAlignmentWriter extends AbstractExportProvider imp
 		AlignmentWriter {
 
 	private Alignment alignment;
+	private SchemaSpace sourceSchema;
+	private SchemaSpace targetSchema;
 
 	/**
 	 * @see AlignmentWriter#setAlignment(Alignment)
@@ -37,6 +40,22 @@ public abstract class AbstractAlignmentWriter extends AbstractExportProvider imp
 	@Override
 	public void setAlignment(Alignment alignment) {
 		this.alignment = alignment;
+	}
+
+	/**
+	 * @see AlignmentWriter#setSourceSchema(SchemaSpace)
+	 */
+	@Override
+	public void setSourceSchema(SchemaSpace sourceSchema) {
+		this.sourceSchema = sourceSchema;
+	}
+
+	/**
+	 * @see AlignmentWriter#setTargetSchema(SchemaSpace)
+	 */
+	@Override
+	public void setTargetSchema(SchemaSpace targetSchema) {
+		this.targetSchema = targetSchema;
 	}
 
 	/**
@@ -49,6 +68,26 @@ public abstract class AbstractAlignmentWriter extends AbstractExportProvider imp
 	}
 
 	/**
+	 * Get the source schema.
+	 * 
+	 * @return the source schema
+	 */
+	protected SchemaSpace getSourceSchema() {
+		return sourceSchema;
+	}
+
+	/**
+	 * Get the source schema.
+	 * 
+	 * @return the target schema
+	 */
+	protected SchemaSpace getTargetSchema() {
+		return targetSchema;
+	}
+
+	/**
+	 * Checks for the alignment being available.
+	 * 
 	 * @see AbstractExportProvider#validate()
 	 */
 	@Override
