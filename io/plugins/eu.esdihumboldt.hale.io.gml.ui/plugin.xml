@@ -8,6 +8,9 @@
          <provider
                ref="eu.esdihumboldt.hale.io.xml.writer">
          </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.xslt">
+         </provider>
       </configPage>
    </extension>
    <extension

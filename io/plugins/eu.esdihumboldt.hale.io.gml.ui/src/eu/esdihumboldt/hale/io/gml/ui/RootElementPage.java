@@ -38,16 +38,16 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
-import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
+import eu.esdihumboldt.hale.io.gml.writer.XmlWriterBase;
 import eu.esdihumboldt.hale.io.gml.writer.internal.StreamGmlWriter;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
+import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.IOWizardPage;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
-import eu.esdihumboldt.hale.ui.io.instance.InstanceWriterConfigurationPage;
 
 /**
  * Configuration page for setting an XML root element
@@ -56,7 +56,8 @@ import eu.esdihumboldt.hale.ui.io.instance.InstanceWriterConfigurationPage;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 @SuppressWarnings("restriction")
-public class RootElementPage extends InstanceWriterConfigurationPage {
+public class RootElementPage extends
+		AbstractConfigurationPage<XmlWriterBase, IOWizard<XmlWriterBase>> {
 
 	private ListViewer list;
 	private Text filterText;
@@ -75,7 +76,7 @@ public class RootElementPage extends InstanceWriterConfigurationPage {
 	 * @see IOWizardPage#updateConfiguration(IOProvider)
 	 */
 	@Override
-	public boolean updateConfiguration(InstanceWriter provider) {
+	public boolean updateConfiguration(XmlWriterBase provider) {
 		ISelection sel = list.getSelection();
 
 		if (!sel.isEmpty() && sel instanceof IStructuredSelection) {

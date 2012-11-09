@@ -50,6 +50,8 @@ public class InternalExample implements TransformationExample {
 	private final URI targetSchemaLocation;
 	private final URI sourceDataLocation;
 	private final URI targetDataLocation;
+	private final String targetContainerNamespace;
+	private final String targetContainerName;
 
 	/**
 	 * Create a transformation example. All provided locations are specific to
@@ -61,16 +63,20 @@ public class InternalExample implements TransformationExample {
 	 * @param alignmentLocation the alignment location
 	 * @param sourceDataLocation the source data location
 	 * @param targetDataLocation the target data location
+	 * @param targetContainerNamespace the target container namespace
+	 * @param targetContainerName the target container name
 	 * @throws URISyntaxException if a location was invalid
 	 */
 	public InternalExample(String sourceSchemaLocation, String targetSchemaLocation,
-			String alignmentLocation, String sourceDataLocation, String targetDataLocation)
-			throws URISyntaxException {
+			String alignmentLocation, String sourceDataLocation, String targetDataLocation,
+			String targetContainerNamespace, String targetContainerName) throws URISyntaxException {
 		this.sourceSchemaLocation = toLocalURI(sourceSchemaLocation);
 		this.targetSchemaLocation = toLocalURI(targetSchemaLocation);
 		this.sourceDataLocation = toLocalURI(sourceDataLocation);
 		this.targetDataLocation = toLocalURI(targetDataLocation);
 		this.alignmentLocation = toLocalURI(alignmentLocation);
+		this.targetContainerNamespace = targetContainerNamespace;
+		this.targetContainerName = targetContainerName;
 	}
 
 	/**
@@ -83,6 +89,16 @@ public class InternalExample implements TransformationExample {
 	 */
 	private URI toLocalURI(String location) throws URISyntaxException {
 		return InternalExample.class.getResource(location).toURI();
+	}
+
+	@Override
+	public String getTargetContainerNamespace() {
+		return targetContainerNamespace;
+	}
+
+	@Override
+	public String getTargetContainerName() {
+		return targetContainerName;
 	}
 
 	@Override

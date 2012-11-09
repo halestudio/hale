@@ -32,6 +32,11 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
+import eu.esdihumboldt.hale.io.gml.writer.XmlWriterBase;
+import eu.esdihumboldt.hale.io.gml.writer.internal.StreamGmlWriter;
+import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
+import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 import eu.esdihumboldt.hale.io.xslt.internal.XsltGenerator;
 
 /**
@@ -39,9 +44,20 @@ import eu.esdihumboldt.hale.io.xslt.internal.XsltGenerator;
  * 
  * @author Simon Templer
  */
-public class XsltExport extends AbstractAlignmentWriter {
+@SuppressWarnings("restriction")
+public class XsltExport extends AbstractAlignmentWriter implements XmlWriterBase {
 
 	private static final ALogger log = ALoggerFactory.getLogger(XsltExport.class);
+
+	/**
+	 * Default constructor
+	 */
+	public XsltExport() {
+		super();
+
+		addSupportedParameter(PARAM_ROOT_ELEMENT_NAMESPACE);
+		addSupportedParameter(PARAM_ROOT_ELEMENT_NAME);
+	}
 
 	@Override
 	public boolean isCancelable() {
@@ -65,8 +81,19 @@ public class XsltExport extends AbstractAlignmentWriter {
 		try {
 			log.info("Template directory: " + templateDir.getAbsolutePath());
 
-			XsltGenerator generator = new XsltGenerator(templateDir, getAlignment(),
-					getTargetSchema(), reporter, progress);
+			XmlIndex index = StreamGmlWriter.getXMLIndex(getTargetSchema());
+			if (index == null) {
+				throw new IllegalStateException("Target schema contains no XML schema");
+			}
+
+			XmlElement containerElement = StreamGmlWriter
+					.getConfiguredContainerElement(this, index);
+			if (containerElement == null) {
+				throw new IllegalStateException("No target container element specified");
+			}
+
+			XsltGenerator generator = new XsltGenerator(templateDir, getAlignment(), index,
+					reporter, progress, containerElement);
 			return generator.write(getTarget());
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl("XSLT generation failed", e));
@@ -81,6 +108,12 @@ public class XsltExport extends AbstractAlignmentWriter {
 	@Override
 	protected String getDefaultTypeName() {
 		return "XSLT transformation";
+	}
+
+	@Override
+	public SchemaSpace getTargetSchema() {
+		// expose target schema
+		return super.getTargetSchema();
 	}
 
 }

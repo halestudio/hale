@@ -21,12 +21,15 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
+import eu.esdihumboldt.hale.io.gml.writer.internal.StreamGmlWriter;
 
 /**
  * Represents a path in a type definition hierarchy (regarding subtypes and
@@ -92,6 +95,17 @@ public class DefinitionPath {
 		@Override
 		public boolean isDowncast() {
 			return true;
+		}
+
+		/**
+		 * @see PathElement#prepareWrite(XMLStreamWriter)
+		 */
+		@Override
+		public void prepareWrite(XMLStreamWriter writer) throws XMLStreamException {
+			// add xsi:type
+			writer.writeAttribute(StreamGmlWriter.SCHEMA_INSTANCE_NS, "type", getType().getName()
+					.getLocalPart()); // XXX namespace needed for
+										// the attribute value?
 		}
 
 		/**
@@ -315,6 +329,11 @@ public class DefinitionPath {
 			return true;
 		}
 
+		@Override
+		public void prepareWrite(XMLStreamWriter writer) throws XMLStreamException {
+			// do nothing
+		}
+
 		/**
 		 * @see java.lang.Object#hashCode()
 		 */
@@ -414,6 +433,11 @@ public class DefinitionPath {
 			return false;
 		}
 
+		@Override
+		public void prepareWrite(XMLStreamWriter writer) throws XMLStreamException {
+			// do nothing
+		}
+
 		/**
 		 * @see Object#hashCode()
 		 */
@@ -482,6 +506,18 @@ public class DefinitionPath {
 		lastType = firstType;
 		lastName = elementName;
 		lastUnique = unique;
+	}
+
+	/**
+	 * Create a path with at least one element.
+	 * 
+	 * @param elements the path elements
+	 */
+	public DefinitionPath(List<PathElement> elements) {
+		this(elements.get(elements.size() - 1).getType(), elements.get(elements.size() - 1)
+				.getName(), elements.get(elements.size() - 1).isUnique());
+
+		steps.addAll(elements);
 	}
 
 //	/**

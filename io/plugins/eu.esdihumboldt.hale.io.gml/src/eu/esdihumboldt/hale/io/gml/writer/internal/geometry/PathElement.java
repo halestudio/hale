@@ -17,6 +17,8 @@
 package eu.esdihumboldt.hale.io.gml.writer.internal.geometry;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
@@ -75,5 +77,14 @@ public interface PathElement {
 	 * @return if this path element represents an element that can't be repeated
 	 */
 	public boolean isUnique();
+
+	/**
+	 * Write additional attributes/elements after the path element has been
+	 * started.
+	 * 
+	 * @param writer the XML stream writer
+	 * @throws XMLStreamException if an error occurs writing XML to the stream
+	 */
+	public abstract void prepareWrite(XMLStreamWriter writer) throws XMLStreamException;
 
 }
