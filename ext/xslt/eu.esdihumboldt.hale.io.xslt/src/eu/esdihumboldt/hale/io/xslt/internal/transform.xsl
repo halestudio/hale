@@ -3,6 +3,9 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+#foreach ($prefix_ns in $additionalNamespaces.entrySet())
+	xmlns:${prefix_ns.Key}="${prefix_ns.Value}"
+#end
 	version="2.0"
 	xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform http://www.w3.org/2007/schema-for-xslt20.xsd">
 	

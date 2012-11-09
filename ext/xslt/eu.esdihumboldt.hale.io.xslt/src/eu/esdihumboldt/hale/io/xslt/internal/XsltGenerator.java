@@ -19,6 +19,11 @@ import java.io.File;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.xml.XMLConstants;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -28,6 +33,10 @@ import org.apache.velocity.app.event.InvalidReferenceEventHandler;
 import org.apache.velocity.context.Context;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.util.introspection.Info;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.ImmutableBiMap;
+import com.google.common.collect.ImmutableMap;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -47,12 +56,43 @@ import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 @SuppressWarnings("restriction")
 public class XsltGenerator {
 
+	/**
+	 * Fixed prefix for the XSLT namespace.
+	 */
+	public static final String NS_PREFIX_XSL = "xsl";
+
+	/**
+	 * Fixed prefix for the XML Schema Instance namespace.
+	 */
+	public static final String NS_PREFIX_XSI = "xsi";
+
+	/**
+	 * Fixed prefix for the XML Schema namespace.
+	 */
+	public static final String NS_PREFIX_XS = "xs";
+
+	/**
+	 * Namespace URI for XSLT.
+	 */
+	public static final String NS_URI_XSL = "http://www.w3.org/1999/XSL/Transform";
+
+	/**
+	 * Fixed namespace prefixes. Prefixes mapped to namespaces.
+	 */
+	private static final Map<String, String> FIXED_PREFIXES = ImmutableMap.of( //
+			NS_PREFIX_XSI, XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, //
+			NS_PREFIX_XS, XMLConstants.W3C_XML_SCHEMA_NS_URI, //
+			NS_PREFIX_XSL, NS_URI_XSL);
+
+	private static final String DEFAULT_NS_PREFIX = "ns";
+
 	private final VelocityEngine ve;
 	private final IOReporter reporter;
 	private final ProgressIndicator progress;
 	private final Alignment alignment;
 	private final XmlIndex targetSchema;
 	private final File workDir;
+	private final BiMap<String, String> prefixes;
 	private final EventCartridge eventCartridge = new EventCartridge();
 
 	/**
@@ -82,18 +122,36 @@ public class XsltGenerator {
 		}
 		this.targetSchema = index;
 
+		// initialize the velocity template engine
 		Templates.copyTemplates(workDir);
-
 		ve = new VelocityEngine();
-
 //		ve.setProperty("resource.loader", "main, file");
 //		ve.setProperty("main.resource.loader.class",
 //				eu.esdihumboldt.hale.io.xslt.internal.Templates.class);
 		// custom resource loader does not work in OSGi context, so copy
 		// templates to template folder
 		ve.setProperty(VelocityEngine.FILE_RESOURCE_LOADER_PATH, workDir.getAbsolutePath());
+		// custom logger
 		ve.setProperty(VelocityEngine.RUNTIME_LOG_LOGSYSTEM, new AVelocityLogger());
 		ve.init();
+
+		// initialize the prefix map
+		Map<String, String> prefixes = new HashMap<String, String>(FIXED_PREFIXES);
+		for (Entry<String, String> pair : this.targetSchema.getPrefixes().entrySet()) {
+			String ns = pair.getKey();
+			String prefix = pair.getValue();
+
+			if (!prefixes.containsValue(ns)) {
+				// namespace not yet added
+				int i = 1;
+				while (prefix == null || prefix.isEmpty() || prefixes.containsKey(prefix)) {
+					// find an alternate prefix
+					prefix = DEFAULT_NS_PREFIX + i++;
+				}
+				prefixes.put(prefix, ns);
+			}
+		}
+		this.prefixes = ImmutableBiMap.copyOf(prefixes);
 
 		// initialize default event cartridge
 		eventCartridge.addInvalidReferenceEventHandler(new InvalidReferenceEventHandler() {
@@ -137,6 +195,13 @@ public class XsltGenerator {
 		Template root = ve.getTemplate(Templates.ROOT, "UTF-8");
 
 		VelocityContext context = createContext();
+
+		// namespaces that occur additionally to the fixed namespaces
+		Map<String, String> additionalNamespaces = new HashMap<String, String>(prefixes);
+		for (String fixedPrefix : FIXED_PREFIXES.keySet()) {
+			additionalNamespaces.remove(fixedPrefix);
+		}
+		context.put("additionalNamespaces", additionalNamespaces);
 
 		OutputStream out = target.getOutput();
 		Writer writer = new OutputStreamWriter(out, "UTF-8");
