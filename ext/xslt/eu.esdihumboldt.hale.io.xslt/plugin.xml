@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="eu.esdihumboldt.hale.xslt" name="XSL Transformation Functions" schema="schema/eu.esdihumboldt.hale.xslt.exsd"/>
    <extension
          point="eu.esdihumboldt.hale.io.provider">
       <provider
@@ -21,6 +22,14 @@
             name="XSLT transformation"
             priority="normal">
       </content-type>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.xslt">
+      <typeTransformation
+            class="eu.esdihumboldt.hale.io.xslt.transformations.XslRetype"
+            function="eu.esdihumboldt.hale.align.retype"
+            id="eu.esdihumboldt.hale.align.retype.xslt">
+      </typeTransformation>
    </extension>
 
 </plugin>
