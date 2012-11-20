@@ -57,10 +57,12 @@ import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.gml.writer.internal.GmlWriterUtil;
@@ -71,6 +73,9 @@ import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.Descent;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.PathElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
+import eu.esdihumboldt.hale.io.xslt.XslTypeTransformation;
+import eu.esdihumboldt.hale.io.xslt.XsltGenerationContext;
+import eu.esdihumboldt.hale.io.xslt.extension.XslTypeTransformationExtension;
 import eu.esdihumboldt.util.CustomIdentifiers;
 
 /**
@@ -80,7 +85,7 @@ import eu.esdihumboldt.util.CustomIdentifiers;
  * @author Simon Templer
  */
 @SuppressWarnings("restriction")
-public class XsltGenerator {
+public class XsltGenerator implements XsltGenerationContext {
 
 	/**
 	 * Fixed prefix for the XSLT namespace.
@@ -96,11 +101,6 @@ public class XsltGenerator {
 	 * Fixed prefix for the XML Schema namespace.
 	 */
 	public static final String NS_PREFIX_XS = "xs";
-
-	/**
-	 * Namespace URI for XSLT.
-	 */
-	public static final String NS_URI_XSL = "http://www.w3.org/1999/XSL/Transform";
 
 	/**
 	 * Fixed namespace prefixes. Prefixes mapped to namespaces.
@@ -265,8 +265,6 @@ public class XsltGenerator {
 		Template root = ve.getTemplate(Templates.ROOT, "UTF-8");
 
 		VelocityContext context = createContext();
-		// collects XSL fragments to include in the main file
-		Set<String> includes = new HashSet<String>();
 		// collects IDs of type cells
 		Set<String> typeIds = new HashSet<String>();
 
@@ -274,15 +272,10 @@ public class XsltGenerator {
 		for (Cell typeCell : alignment.getTypeCells()) {
 			Entity targetEntity = CellUtil.getFirstEntity(typeCell.getTarget());
 			if (targetEntity != null) {
+				// assign identifiers for type transformations
 				String targetName = targetEntity.getDefinition().getDefinition().getName()
 						.getLocalPart();
 				String id = cellIdentifiers.getId(typeCell, targetName);
-				String filename = "_" + id + ".xsl";
-
-				File file = new File(workDir, filename);
-				generateTypeTransformation(id, typeCell, file);
-
-				includes.add(filename);
 				typeIds.add(id);
 			}
 			else {
@@ -290,9 +283,29 @@ public class XsltGenerator {
 			}
 		}
 
+		// collects IDs of type cells mapped to target element names
+		Map<String, QName> targetElements = new HashMap<String, QName>();
+		// collects XSL fragments to include in the main file
+		Set<String> includes = new HashSet<String>();
+
 		// container
 		File container = new File(workDir, "container.xsl");
-		generateContainer(typeIds, container);
+		generateContainer(typeIds, container, targetElements);
+
+		for (Entry<String, QName> entry : targetElements.entrySet()) {
+			// generate XSL fragments for type transformations
+			String id = entry.getKey();
+			QName elementName = entry.getValue();
+			Cell typeCell = cellIdentifiers.getObject(id);
+
+			XmlElement targetElement = targetSchema.getElements().get(elementName);
+
+			String filename = "_" + id + ".xsl";
+			File file = new File(workDir, filename);
+			includes.add(filename);
+
+			generateTypeTransformation(id, targetElement, typeCell, file);
+		}
 
 		// namespaces that occur additionally to the fixed namespaces
 		Map<String, String> additionalNamespaces = new HashMap<String, String>(prefixes);
@@ -332,12 +345,14 @@ public class XsltGenerator {
 	 * @param typeIds the identifiers of the type transformations, they are also
 	 *            the names of the variables holding the temporary documents
 	 * @param templateFile the file to write the fragment to
+	 * @param targetElements an empty map that is populated with variable names
+	 *            mapped to target element names
 	 * @throws IOException if an error occurs writing the template
 	 * @throws XMLStreamException if an error occurs writing XML content to the
 	 *             template
 	 */
-	protected void generateContainer(Set<String> typeIds, File templateFile)
-			throws XMLStreamException, IOException {
+	protected void generateContainer(Set<String> typeIds, File templateFile,
+			Map<String, QName> targetElements) throws XMLStreamException, IOException {
 		// group typeIds by target type
 		Multimap<TypeDefinition, String> groupedResults = HashMultimap.create();
 		for (String typeId : typeIds) {
@@ -353,7 +368,7 @@ public class XsltGenerator {
 		}
 
 		// generate container and integration of temporary documents
-		writeContainerFragment(templateFile, groupedResults);
+		writeContainerFragment(templateFile, groupedResults, targetElements);
 	}
 
 	/**
@@ -362,12 +377,15 @@ public class XsltGenerator {
 	 * @param templateFile the file to write to
 	 * @param groupedResults the result variable names grouped by associated
 	 *            target type
+	 * @param targetElements an empty map that is populated with variable names
+	 *            mapped to target element names
 	 * @throws IOException if an error occurs writing the template
 	 * @throws XMLStreamException if an error occurs writing XML content to the
 	 *             template
 	 */
 	private void writeContainerFragment(File templateFile,
-			Multimap<TypeDefinition, String> groupedResults) throws XMLStreamException, IOException {
+			Multimap<TypeDefinition, String> groupedResults, Map<String, QName> targetElements)
+			throws XMLStreamException, IOException {
 		XMLStreamWriter writer = setupXMLWriter(new BufferedOutputStream(new FileOutputStream(
 				templateFile)));
 		try {
@@ -393,9 +411,8 @@ public class XsltGenerator {
 
 					if (defPath != null) {
 						// insert xsl:for-each at the appropriate position in
-						// the
-						// path
-						defPath = pathInsertForEach(defPath, entry.getValue());
+						// the path
+						defPath = pathInsertForEach(defPath, entry.getValue(), targetElements);
 					}
 
 					// store path (may be null)
@@ -434,10 +451,13 @@ public class XsltGenerator {
 	 * @param path the path where target instances should be written to
 	 * @param variable the variable name of the xsl:variable holding the
 	 *            instances
+	 * @param targetElements an empty map that is populated with variable names
+	 *            mapped to target element names
 	 * @return the adapted path including the for-each instruction and w/o the
 	 *         last path element
 	 */
-	private DefinitionPath pathInsertForEach(DefinitionPath path, String variable) {
+	private DefinitionPath pathInsertForEach(DefinitionPath path, String variable,
+			Map<String, QName> targetElements) {
 		List<PathElement> elements = new ArrayList<PathElement>(path.getSteps());
 
 		int index = elements.size() - 1;
@@ -460,6 +480,12 @@ public class XsltGenerator {
 
 		// insert for-each element before last non-unique element
 		elements.add(index, new XslForEach("$" + variable));
+
+		/*
+		 * Store last element name for variable, this information is needed for
+		 * the type transformation.
+		 */
+		targetElements.put(variable, elements.get(elements.size() - 1).getName());
 
 		// remove last element
 		elements.remove(elements.size() - 1);
@@ -534,15 +560,25 @@ public class XsltGenerator {
 	 * @param templateName name of the XSL template
 	 * @param typeCell the type relation
 	 * @param targetfile the target file to write the fragment to
+	 * @param targetElement the target element to use to hold a transformed
+	 *            instance
+	 * @throws TransformationException if an unrecoverable error occurs during
+	 *             the XSLT transformation generation
 	 */
-	protected void generateTypeTransformation(String templateName, Cell typeCell, File targetfile) {
-		// TODO Auto-generated method stub
+	protected void generateTypeTransformation(String templateName, XmlElement targetElement,
+			Cell typeCell, File targetfile) throws TransformationException {
+		XslTypeTransformation xslt;
 		try {
-			targetfile.createNewFile();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			xslt = XslTypeTransformationExtension.getInstance().getTransformation(
+					typeCell.getTransformationIdentifier());
+		} catch (Exception e) {
+			throw new TransformationException(
+					"Could not retrieve XSLT transformation generator for cell function", e);
 		}
+
+		xslt.setContext(this);
+
+		xslt.generateTemplate(templateName, targetElement, typeCell, new FileIOSupplier(targetfile));
 	}
 
 	/**

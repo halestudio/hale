@@ -16,18 +16,22 @@
 package eu.esdihumboldt.hale.io.xslt.extension;
 
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
-import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
-import eu.esdihumboldt.hale.io.xslt.XslTypeTransformation;
+import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.io.xslt.XslTransformation;
 
 /**
- * Factory interface for the {@link XslTypeTransformation} extension.
+ * Factory interface for the {@link XslTransformation} extensions.
  * 
  * @author Simon Templer
+ * @param <T> the concrete type of XSLT transformation
+ * @param <X> the concrete function type associated to the XSLT transformation
+ *            type
  */
-public interface XslTypeTransformationFactory extends ExtensionObjectFactory<XslTypeTransformation> {
+public interface XslTransformationFactory<T extends XslTransformation, X extends Function> extends
+		ExtensionObjectFactory<T> {
 
 	/**
-	 * Get the identifier of the function the {@link XslTypeTransformation} is
+	 * Get the identifier of the function the {@link XslTransformation} is
 	 * linked to.
 	 * 
 	 * @return the function identifier
@@ -35,10 +39,10 @@ public interface XslTypeTransformationFactory extends ExtensionObjectFactory<Xsl
 	public String getFunctionId();
 
 	/**
-	 * Get the function the {@link XslTypeTransformation} is linked to.
+	 * Get the function the {@link XslTransformation} is linked to.
 	 * 
 	 * @return the function
 	 */
-	public TypeFunction getFunction();
+	public X getFunction();
 
 }

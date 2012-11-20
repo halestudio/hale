@@ -16,12 +16,17 @@
 package eu.esdihumboldt.hale.io.xslt;
 
 /**
- * Translates a property transformation function to a XSLT template.
+ * Translates a transformation function to a XSLT template.
  * 
  * @author Simon Templer
  */
-public interface XslPropertyTransformation extends XslTransformation {
+public interface XslTransformation {
 
-	// TODO
+	/**
+	 * Set the XSLT generation context.
+	 * 
+	 * @param context the context of the current generation process
+	 */
+	public void setContext(XsltGenerationContext context);
 
 }
