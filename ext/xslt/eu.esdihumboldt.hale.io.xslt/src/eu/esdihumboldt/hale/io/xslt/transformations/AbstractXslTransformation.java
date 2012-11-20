@@ -15,25 +15,30 @@
 
 package eu.esdihumboldt.hale.io.xslt.transformations;
 
-import java.io.OutputStream;
-
-import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
-import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
-import eu.esdihumboldt.hale.io.xslt.XslTypeTransformation;
+import eu.esdihumboldt.hale.io.xslt.XslTransformation;
+import eu.esdihumboldt.hale.io.xslt.XsltGenerationContext;
 
 /**
- * XSLT representation of the Retype function.
+ * Base class for XSLT transformations.
  * 
  * @author Simon Templer
  */
-public class XslRetype extends AbstractXslTransformation implements XslTypeTransformation {
+public abstract class AbstractXslTransformation implements XslTransformation {
+
+	private XsltGenerationContext context;
 
 	@Override
-	public void generateTemplate(String templateName, XmlElement targetElement, Cell typeCell,
-			LocatableOutputSupplier<? extends OutputStream> out) {
-		// TODO Auto-generated method stub
+	public void setContext(XsltGenerationContext context) {
+		this.context = context;
+	}
 
+	/**
+	 * Get the XSLT generation context.
+	 * 
+	 * @return the context of the current XSLT generation process
+	 */
+	protected XsltGenerationContext context() {
+		return context;
 	}
 
 }
