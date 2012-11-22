@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="46">
+<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="48">
 <locations>
 <location path="${project_loc:hale-platform}/target/org.eclipse.jetty" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.javolution" type="Directory"/>
@@ -11,15 +11,6 @@
 <location path="${project_loc:hale-platform}/target/org.apache.commons.httpclient.contrib.ssl" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.apache.httpcomponents" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.apache.xerces" type="Directory"/>
-<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.emf.sdk.feature.group" version="2.7.1.v20110913-1526"/>
-<unit id="org.eclipse.gef.sdk.feature.group" version="3.7.1.v20110830-1143-7G7W2A5WNgEQNgNXBJgcPLWZeMNI"/>
-<unit id="org.eclipse.gmf.runtime.sdk.feature.group" version="1.5.0.v20110607-1200-67N09E9QnChoWswz-3wf_rz0kQ8Y"/>
-<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.0.1.v201108020809"/>
-<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.0.1.v201108020506"/>
-<unit id="org.eclipse.xtext.sdk.feature.group" version="2.0.1.v201108020636"/>
-<repository location="http://www.cityserver3d.de/updates/releases/indigo"/>
-</location>
 <location path="${project_loc:hale-platform}/target/org.quartz" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/com.iabcinc.jmep" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/javax.el" type="Directory"/>
@@ -72,13 +63,22 @@
 <location path="${project_loc:hale-platform}/target/com.sun.xml.bind" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.geotiff" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.springframework" type="Directory"/>
-<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.sdk.ide" version="3.7.1.M20110909-1335"/>
-<repository location="http://www.cityserver3d.de/updates/eclipse/updates/3.7"/>
-</location>
 <location path="${project_loc:hale-platform}/target/com.vividsolutions.jts" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/javax.mail" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/fr.inrialpes.exmo" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.jdesktop.swingx" type="Directory"/>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.sdk.ide" version="3.8.1.M20120914-1540"/>
+<repository location="http://download.eclipse.org/eclipse/updates/3.8"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.xtext.sdk.feature.group" version="2.3.1.v201208210947"/>
+<unit id="org.eclipse.emf.sdk.feature.group" version="2.8.1.v20120917-0436"/>
+<unit id="org.eclipse.gef.sdk.feature.group" version="3.9.0.201208201742"/>
+<unit id="org.eclipse.gmf.runtime.sdk.feature.group" version="1.6.0.v20120517-1809-67R09E9QuFflXswwIO_z0E3d4k_X"/>
+<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.3.0.v201206120758"/>
+<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.3.0.v201206110920"/>
+<repository location="http://download.eclipse.org/releases/juno/"/>
+</location>
 </locations>
 </target>

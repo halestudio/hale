@@ -203,6 +203,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.util.resource.schemas.test"/>
       <plugin id="eu.esdihumboldt.util.test" fragment="true"/>
       <plugin id="gnu.trove"/>
+      <plugin id="javax.el"/>
       <plugin id="javax.measure"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.servlet.jsp"/>
@@ -226,13 +227,12 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.apache.batik.xml"/>
       <plugin id="org.apache.commons.codec"/>
       <plugin id="org.apache.commons.convert"/>
-      <plugin id="org.apache.commons.el"/>
       <plugin id="org.apache.commons.httpclient"/>
       <plugin id="org.apache.commons.io"/>
       <plugin id="org.apache.commons.lang"/>
       <plugin id="org.apache.httpcomponents.httpclient"/>
       <plugin id="org.apache.httpcomponents.httpcore"/>
-      <plugin id="org.apache.jasper"/>
+      <plugin id="org.apache.jasper.glassfish"/>
       <plugin id="org.apache.lucene"/>
       <plugin id="org.apache.lucene.analysis"/>
       <plugin id="org.apache.lucene.core"/>
@@ -295,6 +295,13 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.eclipse.help.base"/>
       <plugin id="org.eclipse.help.ui"/>
       <plugin id="org.eclipse.help.webapp"/>
+      <plugin id="org.eclipse.jetty.continuation"/>
+      <plugin id="org.eclipse.jetty.http"/>
+      <plugin id="org.eclipse.jetty.io"/>
+      <plugin id="org.eclipse.jetty.security"/>
+      <plugin id="org.eclipse.jetty.server"/>
+      <plugin id="org.eclipse.jetty.servlet"/>
+      <plugin id="org.eclipse.jetty.util"/>
       <plugin id="org.eclipse.jface"/>
       <plugin id="org.eclipse.jface.databinding"/>
       <plugin id="org.eclipse.jface.text"/>
@@ -338,8 +345,6 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.junit"/>
       <plugin id="org.junit4"/>
       <plugin id="org.libtiff.jai"/>
-      <plugin id="org.mortbay.jetty.server"/>
-      <plugin id="org.mortbay.jetty.util"/>
       <plugin id="org.objectweb.asm"/>
       <plugin id="org.opengis"/>
       <plugin id="org.slf4j.api"/>
