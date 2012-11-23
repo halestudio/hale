@@ -25,6 +25,7 @@ import java.awt.image.WritableRaster;
 import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.RGB;
@@ -79,7 +80,20 @@ public class SwingRcpUtilities {
 	public static void setupLookAndFeel() {
 		if (!lafInitialized) {
 			try {
-				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+				if (Platform.WS_GTK.equals(Platform.getWS())) {
+					/*
+					 * Work-around for Eclipse Bug 341799
+					 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=341799
+					 * 
+					 * A LookAndFeel other than the GTK look and feel has to be
+					 * used when using GTK as window managing system in SWT, as
+					 * access to GTK of ATW/Swing and SWT is not synchronized.
+					 */
+					UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+				}
+				else {
+					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+				}
 			} catch (Exception e) {
 				_log.error("Error setting system look and feel", e); //$NON-NLS-1$
 			}
