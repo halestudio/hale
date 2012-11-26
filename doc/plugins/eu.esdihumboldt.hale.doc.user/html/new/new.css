@@ -1,0 +1,33 @@
+table.news td {
+	border-top: solid thin black;
+}
+
+table.news tr {
+	vertical-align: top;
+}
+
+table.news {
+	width: 600px;
+	max-width: 100%;
+}
+
+table.news tr td.section {
+	font-size: 20px;
+	font-weight: bold;
+}
+
+table.news tr td.title {
+	vertical-align: top;
+	width: 30%;
+	font-weight: bold;
+	min-width: 100px;
+}
+
+table.news tr td.content {
+	vertical-align: top;
+	width: 70%;
+}
+
+table.news tr td.content p img {
+	max-width: 550px;
+}
