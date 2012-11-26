@@ -41,6 +41,7 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.impl.SubtaskProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.util.XMLSchemaUpdater;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -89,8 +90,9 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 
 		// false is default and if getParameter is null is desired
 		boolean webresources = Boolean.parseBoolean(getParameter(INCLUDE_WEB_RESOURCES));
+		SubtaskProgressIndicator subtask = new SubtaskProgressIndicator(progress);
 		// copy resources to the temp directory and update xml schemas
-		updateResources(tempDir, webresources);
+		updateResources(tempDir, webresources, subtask);
 
 		// update target save configuration of the project
 		IOConfiguration config = getProject().getSaveConfiguration();
@@ -120,93 +122,104 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 	}
 
 	// update the resources and copy them into target directory
-	private void updateResources(File targetDirectory, boolean allResources) throws IOException {
+	private void updateResources(File targetDirectory, boolean allResources,
+			ProgressIndicator progress) throws IOException {
+		progress.begin("Copy resources", ProgressIndicator.UNKNOWN);
+		try {
+			List<IOConfiguration> resources = getProject().getResources();
+			// every resource needs his own directory
+			int count = 1;
+			// true if excluded files should be skipped, false is default
+			boolean noexcludedfiles = Boolean.parseBoolean(getParameter(EXLUDE_DATA_FILES));
+			for (IOConfiguration resource : resources) {
+				// import of
+				// eu.esdihumboldt.hale.common.instance.io.InstanceIO.ACTION_LOAD_SOURCE_DATA
+				// needed
+				if (noexcludedfiles
+						&& resource.getProviderId().equals(
+								"eu.esdihumboldt.hale.io.instance.read.source"))
 
-		List<IOConfiguration> resources = getProject().getResources();
-		// every resource needs his own directory
-		int count = 1;
-		// true if excluded files should be skipped, false is default
-		boolean noexcludedfiles = Boolean.parseBoolean(getParameter(EXLUDE_DATA_FILES));
-		for (IOConfiguration resource : resources) {
-			// import of
-			// eu.esdihumboldt.hale.common.instance.io.InstanceIO.ACTION_LOAD_SOURCE_DATA
-			// needed
-			if (noexcludedfiles
-					&& resource.getProviderId().equals(
-							"eu.esdihumboldt.hale.io.instance.read.source"))
+					// skip excluded files
+					continue;
 
-				// skip excluded files
-				continue;
-
-			Map<String, String> providerConfig = resource.getProviderConfiguration();
-			Map<String, String> newProvConf = new HashMap<String, String>();
-			String path = providerConfig.get(ImportProvider.PARAM_SOURCE);
-			URI pathUri;
-			try {
-				pathUri = new URI(path);
-			} catch (URISyntaxException e1) {
-				log.debug("Path of resource is invalid", e1);
-				continue;
-			}
-			String scheme = pathUri.getScheme();
-			InputStream input = null;
-			// if scheme is null it has to be a local file represented by a
-			// relative path
-			if (scheme != null) {
-				if (allResources && (scheme.equals("http") || scheme.equals("https"))
-						|| scheme.equals("resource")) {
-					DefaultInputSupplier supplier = new DefaultInputSupplier(pathUri);
-					input = supplier.getInput();
+				Map<String, String> providerConfig = resource.getProviderConfiguration();
+				Map<String, String> newProvConf = new HashMap<String, String>();
+				String path = providerConfig.get(ImportProvider.PARAM_SOURCE);
+				URI pathUri;
+				try {
+					pathUri = new URI(path);
+				} catch (URISyntaxException e1) {
+					log.debug("Path of resource is invalid", e1);
+					continue;
 				}
-				else if (scheme.equals("bundleentry")) {
-					try {
-						File in = new File(FileLocator.toFileURL(pathUri.toURL()).toURI());
-						input = new FileInputStream(in);
-					} catch (URISyntaxException e) {
-						e.printStackTrace();
+				String scheme = pathUri.getScheme();
+				InputStream input = null;
+				// if scheme is null it has to be a local file represented by a
+				// relative path
+				if (scheme != null) {
+					if (allResources && (scheme.equals("http") || scheme.equals("https"))
+							|| scheme.equals("resource")) {
+						DefaultInputSupplier supplier = new DefaultInputSupplier(pathUri);
+						input = supplier.getInput();
 					}
-				}
-				else if (scheme.equals("file")) {
-					input = new FileInputStream(new File(pathUri));
+					else if (scheme.equals("bundleentry")) {
+						try {
+							File in = new File(FileLocator.toFileURL(pathUri.toURL()).toURI());
+							input = new FileInputStream(in);
+						} catch (URISyntaxException e) {
+							e.printStackTrace();
+						}
+					}
+					else if (scheme.equals("file")) {
+						input = new FileInputStream(new File(pathUri));
+					}
+					else
+						continue;
 				}
 				else
-					continue;
-			}
-			else
-				input = new FileInputStream(new File(pathUri));
+					input = new FileInputStream(new File(pathUri));
 
-			// only xml schemas have to be updated
-			String contentType = providerConfig.get(ImportProvider.PARAM_CONTENT_TYPE);
-			if (contentType.equals(XSD_CONTENT_TYPE)) {
+				// only xml schemas have to be updated
+				String contentType = providerConfig.get(ImportProvider.PARAM_CONTENT_TYPE);
+				if (contentType.equals(XSD_CONTENT_TYPE)) {
+					progress.setCurrentTask("Reorganizing XML schema at " + path);
 
-				// every resource file is copied into an own resource directory
-				// in the target directory
-				File newDirectory = new File(targetDirectory, "resource" + count);
-				try {
-					newDirectory.mkdir();
-				} catch (SecurityException e) {
-					throw new IOException("Can not create directory " + newDirectory.toString(), e);
+					// every resource file is copied into an own resource
+					// directory
+					// in the target directory
+					File newDirectory = new File(targetDirectory, "resource" + count);
+					try {
+						newDirectory.mkdir();
+					} catch (SecurityException e) {
+						throw new IOException(
+								"Can not create directory " + newDirectory.toString(), e);
+					}
+					// get name of the file
+					String name = path.toString().substring(path.lastIndexOf("/"), path.length());
+					File newFile = new File(newDirectory, name);
+					OutputStream output = new FileOutputStream(newFile);
+					ByteStreams.copy(input, output);
+					output.close();
+
+					// the XMLSchemaUpdater manipulates the current schema and
+					// copies the included and imported schemas to the directory
+					XMLSchemaUpdater.update(newFile, pathUri, allResources);
+					newProvConf.put(ImportProvider.PARAM_SOURCE, new File(new File(targetDirectory,
+							"resource" + count), name).toURI().toString());
+					count++;
 				}
-				// get name of the file
-				String name = path.toString().substring(path.lastIndexOf("/"), path.length());
-				File newFile = new File(newDirectory, name);
-				OutputStream output = new FileOutputStream(newFile);
-				ByteStreams.copy(input, output);
-				output.close();
+				else {
+					progress.setCurrentTask("Copying resource at " + path);
+				}
 
-				// the XMLSchemaUpdater manipulates the current schema and
-				// copies the included and imported schemas to the directory
-				XMLSchemaUpdater.update(newFile, pathUri, allResources);
-				newProvConf.put(ImportProvider.PARAM_SOURCE, new File(new File(targetDirectory,
-						"resource" + count), name).toURI().toString());
-				count++;
+				// update provider configuration
+				for (String key : newProvConf.keySet()) {
+					resource.getProviderConfiguration().remove(key);
+					resource.getProviderConfiguration().put(key, newProvConf.get(key));
+				}
 			}
-
-			// update provider configuration
-			for (String key : newProvConf.keySet()) {
-				resource.getProviderConfiguration().remove(key);
-				resource.getProviderConfiguration().put(key, newProvConf.get(key));
-			}
+		} finally {
+			progress.end();
 		}
 	}
 
