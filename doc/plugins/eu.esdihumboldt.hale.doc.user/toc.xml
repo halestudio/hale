@@ -10,7 +10,9 @@
       <anchor id="introduction"/>
    </topic>
    <topic label="What&apos;s new?">
-      <topic href="html/new/2_5_0_RC1/new.xhtml" label="2.5.0.RC1">
+      <topic href="html/new/2_5_0.xhtml" label="New in 2.5">
+         <topic href="html/new/2_5_0_RC1.xhtml" label="2.5.0.RC1">
+         </topic>
       </topic>
    </topic>
    <topic label="Getting Started">
