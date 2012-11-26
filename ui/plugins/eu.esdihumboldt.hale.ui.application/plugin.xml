@@ -30,7 +30,8 @@
       </perspective>
       <perspective
             class="eu.esdihumboldt.hale.ui.application.ThorstenPerspective"
-            id="thorsten"
+            icon="icons/dhp.png"
+            id="eu.esdihumboldt.hale.ui.application.perspective.thorsten"
             name="Thorsten">
       </perspective>
    </extension>
