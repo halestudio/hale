@@ -72,11 +72,11 @@ public class ArchiveProjectWriterConfigurationPage extends
 
 		excludeDataFiles = new Button(page, SWT.CHECK);
 		excludeDataFiles.setSelection(false); // default
-		excludeDataFiles.setText("Exclude all data files");
+		excludeDataFiles.setText("Exclude source data");
 
 		includeWebResources = new Button(page, SWT.CHECK);
 		includeWebResources.setSelection(false); // default
-		includeWebResources.setText("Include all web resources");
+		includeWebResources.setText("Include web resources (http)");
 
 		setPageComplete(true);
 	}
