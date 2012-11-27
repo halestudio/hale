@@ -121,8 +121,7 @@ public class XMLSchemaUpdater {
 		try {
 			builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
-			log.debug("Can not create a DocumentBuilder", e);
-			return;
+			throw new IOException("Can not create a DocumentBuilder", e);
 		}
 		builder.setEntityResolver(new EntityResolver() {
 
@@ -149,8 +148,7 @@ public class XMLSchemaUpdater {
 		} catch (XPathExpressionException e) {
 			// should not happen because of constant variables IMPORT and
 			// INCLUDE
-			log.debug("The XPathExpression is wrong", e);
-			return;
+			throw new IOException("The XPathExpression is wrong", e);
 		}
 
 		// iterate over all imports or includes and get the schemaLocations
@@ -161,78 +159,57 @@ public class XMLSchemaUpdater {
 			Node locationNode = identifier.getAttributes().getNamedItem("schemaLocation");
 			String location = locationNode.getNodeValue();
 
-			URI file = null;
+			URI fileUri = null;
 			try {
-				file = new URI(location);
+				fileUri = new URI(location);
 			} catch (URISyntaxException e1) {
-				log.debug("The schemaLocation is no valid file", e1);
+				log.error("The schemaLocation is no valid file", e1);
 				continue;
 			}
-			String scheme = file.getScheme();
-			// only local resources have to be updated
+
+			if (!fileUri.isAbsolute()) {
+				fileUri = oldPath.resolve(fileUri);
+			}
+
+			String scheme = fileUri.getScheme();
 			// if scheme is null it has to be a local file represented by a
 			// relative path
 			InputStream input = null;
-			if (scheme != null) {
-				if (allResources && (scheme.equals("http") || scheme.equals("https"))
-						|| scheme.equals("resource")) {
-					DefaultInputSupplier supplier = new DefaultInputSupplier(file);
-					input = supplier.getInput();
-				}
-				else if (scheme.equals("bundleentry")) {
-					try {
-						File in = new File(FileLocator.toFileURL(file.toURL()).toURI());
-						input = new FileInputStream(in);
-					} catch (URISyntaxException e) {
-						log.debug("Can not open FileInputStream", e);
-					}
-				}
-				else if (scheme.equals("file")) {
-					input = new FileInputStream(new File(file));
-				}
-				else
-					continue;
+			if (allResources && (scheme.equals("http") || scheme.equals("https"))
+					|| scheme.equals("resource")) {
+				DefaultInputSupplier supplier = new DefaultInputSupplier(fileUri);
+				input = supplier.getInput();
 			}
-			else
+			else if (scheme.equals("bundleentry")) {
+				File in = null;
 				try {
-					URI in = new URI(oldPath.toString().substring(0,
-							oldPath.toString().lastIndexOf("/") + 1)
-							+ file.toString());
-					input = new DefaultInputSupplier(in).getInput();
-				} catch (URISyntaxException e1) {
-					log.debug("Path of old Schema or current file is invalid", e1);
+					in = new File(FileLocator.toFileURL(fileUri.toURL()).toURI());
+				} catch (Exception e) {
+					log.debug("Can not locate bundleentry", e);
 					continue;
 				}
+				input = new FileInputStream(in);
+			}
+			else if (scheme.equals("file")) {
+				input = new FileInputStream(new File(fileUri));
+			}
+			else {
+				// file is invalid - do nothing
+				continue;
+			}
 
+			// every file needs his own directory because if name conflicts
 			String filename = location;
 			if (location.contains("/"))
 				filename = location.substring(location.lastIndexOf("/"));
-
-			// every file needs his own directory because if name conflicts
 			filename = count + "/" + filename;
 
 			File includednewFile = null;
 
-			URI path = null;
-			// if URI is not absolute we have to resolve an absolute URI
-			if (!file.isAbsolute()) {
-				try {
-					// get the absolute path of the included schema
-					path = new URI(oldPath.toString().substring(0,
-							oldPath.toString().lastIndexOf("/") + 1)
-							+ location);
-				} catch (URISyntaxException e) {
-					log.debug("Path of old Schema or current file is invalid", e);
-					continue;
-				}
-			}
-			else
-				path = file;
-
-			if (imports.containsKey(path)) {
+			if (imports.containsKey(fileUri)) {
 				// if the current xml schema is already updated we have to
 				// find the relative path to this resource
-				String relative = getRelativePath(imports.get(path).toURI().toString(),
+				String relative = getRelativePath(imports.get(fileUri).toURI().toString(),
 						currentSchema.toURI().toString(), "/");
 				locationNode.setNodeValue(relative);
 			}
@@ -260,8 +237,7 @@ public class XMLSchemaUpdater {
 
 				// every xml schema should be updated (and copied) only once
 				// so we save the currently adapted resource in a map
-
-				imports.put(path, includednewFile);
+				imports.put(fileUri, includednewFile);
 			}
 
 			// write new XML-File
@@ -288,7 +264,7 @@ public class XMLSchemaUpdater {
 			// if the newFile is not null we found a new file which is not
 			// read yet so we have to update it
 			if (includednewFile != null) {
-				update(includednewFile, path, allResources);
+				update(includednewFile, fileUri, allResources);
 			}
 		}
 	}

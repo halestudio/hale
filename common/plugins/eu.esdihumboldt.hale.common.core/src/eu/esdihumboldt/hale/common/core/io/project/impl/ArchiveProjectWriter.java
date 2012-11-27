@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,14 +89,22 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		LocatableOutputSupplier<OutputStream> out = new FileIOSupplier(baseFile);
 		ZipOutputStream zip = new ZipOutputStream(getTarget().getOutput());
 
-		// false is default and if getParameter is null is desired
+		// false is correct if getParameter is null because false is default
 		boolean webresources = Boolean.parseBoolean(getParameter(INCLUDE_WEB_RESOURCES));
 		SubtaskProgressIndicator subtask = new SubtaskProgressIndicator(progress);
+
+		// save old IO configurations
+		List<IOConfiguration> oldResources = new ArrayList<IOConfiguration>();
+		for (int i = 0; i < getProject().getResources().size(); i++)
+			// clone all IO configurations to work on different objects
+			oldResources.add(getProject().getResources().get(i).clone());
+		IOConfiguration config = getProject().getSaveConfiguration();
+		IOConfiguration oldSaveConfig = config;
+
 		// copy resources to the temp directory and update xml schemas
 		updateResources(tempDir, webresources, subtask);
 
 		// update target save configuration of the project
-		IOConfiguration config = getProject().getSaveConfiguration();
 		config.getProviderConfiguration().remove(PARAM_TARGET);
 		config.getProviderConfiguration().put(PARAM_TARGET, baseFile.toURI().toString());
 		getProject().setSaveConfiguration(config);
@@ -115,9 +124,14 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		try {
 			FileUtils.deleteDirectory(tempDir);
 		} catch (IOException e) {
-			log.debug("Can not delete file", e);
+			log.debug("Can not delete directory " + tempDir.toString(), e);
 		}
 
+		// reset all IOConfigurations for further IO operations
+		getProject().setSaveConfiguration(oldSaveConfig);
+		List<IOConfiguration> resources = getProject().getResources();
+		resources.clear();
+		resources.addAll(oldResources);
 		return report;
 	}
 
@@ -129,18 +143,19 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 			List<IOConfiguration> resources = getProject().getResources();
 			// every resource needs his own directory
 			int count = 1;
-			// true if excluded files should be skipped, false is default
-			boolean noexcludedfiles = Boolean.parseBoolean(getParameter(EXLUDE_DATA_FILES));
+			// true if excluded files should be skipped; false is default
+			boolean excludeDataFiles = Boolean.parseBoolean(getParameter(EXLUDE_DATA_FILES));
 			for (IOConfiguration resource : resources) {
-				// import of
+				// check if ActionId is equal to
 				// eu.esdihumboldt.hale.common.instance.io.InstanceIO.ACTION_LOAD_SOURCE_DATA
-				// needed
-				if (noexcludedfiles
-						&& resource.getProviderId().equals(
-								"eu.esdihumboldt.hale.io.instance.read.source"))
-
-					// skip excluded files
+				// import not possible due to cycle errors
+				if (excludeDataFiles
+						&& resource.getActionId().equals(
+								"eu.esdihumboldt.hale.io.instance.read.source")) {
+					// delete reference in project file
+					resources.remove(resource);
 					continue;
+				}
 
 				Map<String, String> providerConfig = resource.getProviderConfiguration();
 				Map<String, String> newProvConf = new HashMap<String, String>();
@@ -163,12 +178,13 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 						input = supplier.getInput();
 					}
 					else if (scheme.equals("bundleentry")) {
+						File in = null;
 						try {
-							File in = new File(FileLocator.toFileURL(pathUri.toURL()).toURI());
-							input = new FileInputStream(in);
-						} catch (URISyntaxException e) {
-							e.printStackTrace();
+							in = new File(FileLocator.toFileURL(pathUri.toURL()).toURI());
+						} catch (Exception e) {
+							log.debug("Can not locate bundleentry", e);
 						}
+						input = new FileInputStream(in);
 					}
 					else if (scheme.equals("file")) {
 						input = new FileInputStream(new File(pathUri));
@@ -181,36 +197,37 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 
 				// only xml schemas have to be updated
 				String contentType = providerConfig.get(ImportProvider.PARAM_CONTENT_TYPE);
+
+				progress.setCurrentTask("Reorganizing XML schema at " + path);
+
+				// every resource file is copied into an own resource
+				// directory in the target directory
+				File newDirectory = new File(targetDirectory, "resource" + count);
+				try {
+					newDirectory.mkdir();
+				} catch (SecurityException e) {
+					throw new IOException("Can not create directory " + newDirectory.toString(), e);
+				}
+
+				// the filename
+				String name = path.toString().substring(path.lastIndexOf("/"), path.length());
+
+				File newFile = new File(newDirectory, name);
+				OutputStream output = new FileOutputStream(newFile);
+				ByteStreams.copy(input, output);
+				output.close();
+
+				// update all other schema files
 				if (contentType.equals(XSD_CONTENT_TYPE)) {
-					progress.setCurrentTask("Reorganizing XML schema at " + path);
-
-					// every resource file is copied into an own resource
-					// directory
-					// in the target directory
-					File newDirectory = new File(targetDirectory, "resource" + count);
-					try {
-						newDirectory.mkdir();
-					} catch (SecurityException e) {
-						throw new IOException(
-								"Can not create directory " + newDirectory.toString(), e);
-					}
-					// get name of the file
-					String name = path.toString().substring(path.lastIndexOf("/"), path.length());
-					File newFile = new File(newDirectory, name);
-					OutputStream output = new FileOutputStream(newFile);
-					ByteStreams.copy(input, output);
-					output.close();
-
-					// the XMLSchemaUpdater manipulates the current schema and
-					// copies the included and imported schemas to the directory
 					XMLSchemaUpdater.update(newFile, pathUri, allResources);
-					newProvConf.put(ImportProvider.PARAM_SOURCE, new File(new File(targetDirectory,
-							"resource" + count), name).toURI().toString());
-					count++;
 				}
 				else {
 					progress.setCurrentTask("Copying resource at " + path);
 				}
+
+				newProvConf.put(ImportProvider.PARAM_SOURCE, new File(new File(targetDirectory,
+						"resource" + count), name).toURI().toString());
+				count++;
 
 				// update provider configuration
 				for (String key : newProvConf.keySet()) {
