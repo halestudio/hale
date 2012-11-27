@@ -59,6 +59,7 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 	private static final ALogger log = ALoggerFactory.getLogger(ArchiveProjectWriter.class);
 
 	private static final String XSD_CONTENT_TYPE = "eu.esdihumboldt.hale.io.xsd";
+	private static final String GML_CONTENT_TYPE = "eu.esdihumboldt.hale.io.gml";
 
 	/**
 	 * Parameter for including or excluding web resources
@@ -94,6 +95,9 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 
 		// update target save configuration of the project
 		IOConfiguration config = getProject().getSaveConfiguration();
+		// save old io configurations
+		IOConfiguration oldSaveConfig = config;
+		List<IOConfiguration> oldResources = getProject().getResources();
 		config.getProviderConfiguration().remove(PARAM_TARGET);
 		config.getProviderConfiguration().put(PARAM_TARGET, baseFile.toURI().toString());
 		getProject().setSaveConfiguration(config);
@@ -116,6 +120,10 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 			log.debug("Can not delete file", e);
 		}
 
+		// reset all IOConfigurations for further IO operations
+		getProject().setSaveConfiguration(oldSaveConfig);
+		getProject().getResources().clear();
+		getProject().getResources().addAll(oldResources);
 		return report;
 	}
 
@@ -125,18 +133,19 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		List<IOConfiguration> resources = getProject().getResources();
 		// every resource needs his own directory
 		int count = 1;
-		// true if excluded files should be skipped, false is default
-		boolean noexcludedfiles = Boolean.parseBoolean(getParameter(EXLUDE_DATA_FILES));
+		// true if excluded files should be skipped; false is default
+		boolean excludeDataFiles = Boolean.parseBoolean(getParameter(EXLUDE_DATA_FILES));
 		for (IOConfiguration resource : resources) {
 			// import of
 			// eu.esdihumboldt.hale.common.instance.io.InstanceIO.ACTION_LOAD_SOURCE_DATA
 			// needed
-			if (noexcludedfiles
-					&& resource.getProviderId().equals(
-							"eu.esdihumboldt.hale.io.instance.read.source"))
-
-				// skip excluded files
+			if (excludeDataFiles
+					&& resource.getActionId()
+							.equals("eu.esdihumboldt.hale.io.instance.read.source")) {
+				// delete reference in project file
+				resources.remove(resource);
 				continue;
+			}
 
 			Map<String, String> providerConfig = resource.getProviderConfiguration();
 			Map<String, String> newProvConf = new HashMap<String, String>();
@@ -177,7 +186,7 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 
 			// only xml schemas have to be updated
 			String contentType = providerConfig.get(ImportProvider.PARAM_CONTENT_TYPE);
-			if (contentType.equals(XSD_CONTENT_TYPE)) {
+			if (contentType.equals(XSD_CONTENT_TYPE) || contentType.equals(GML_CONTENT_TYPE)) {
 
 				// every resource file is copied into an own resource directory
 				// in the target directory

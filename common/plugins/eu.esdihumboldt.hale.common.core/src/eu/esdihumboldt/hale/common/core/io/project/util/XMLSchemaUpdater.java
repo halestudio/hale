@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -160,6 +161,9 @@ public class XMLSchemaUpdater {
 				return;
 			Node locationNode = identifier.getAttributes().getNamedItem("schemaLocation");
 			String location = locationNode.getNodeValue();
+			if (location.startsWith("./")) {
+				location = location.substring(location.indexOf("/") + 1, location.length());
+			}
 
 			URI file = null;
 			try {
@@ -169,7 +173,6 @@ public class XMLSchemaUpdater {
 				continue;
 			}
 			String scheme = file.getScheme();
-			// only local resources have to be updated
 			// if scheme is null it has to be a local file represented by a
 			// relative path
 			InputStream input = null;
@@ -195,6 +198,8 @@ public class XMLSchemaUpdater {
 			}
 			else
 				try {
+					// check if oldPath represents a web resource
+
 					URI in = new URI(oldPath.toString().substring(0,
 							oldPath.toString().lastIndexOf("/") + 1)
 							+ file.toString());
@@ -218,9 +223,17 @@ public class XMLSchemaUpdater {
 			if (!file.isAbsolute()) {
 				try {
 					// get the absolute path of the included schema
-					path = new URI(oldPath.toString().substring(0,
-							oldPath.toString().lastIndexOf("/") + 1)
-							+ location);
+					String oldScheme = oldPath.getScheme();
+					if (oldScheme.equals("http") || oldScheme.equals("https")) {
+						URL url = new URL(oldPath.toString().substring(0,
+								oldPath.toString().lastIndexOf("/") + 1)
+								+ location);
+						path = url.toURI();
+					}
+					else
+						path = new URI(oldPath.toString().substring(0,
+								oldPath.toString().lastIndexOf("/") + 1)
+								+ location);
 				} catch (URISyntaxException e) {
 					log.debug("Path of old Schema or current file is invalid", e);
 					continue;
