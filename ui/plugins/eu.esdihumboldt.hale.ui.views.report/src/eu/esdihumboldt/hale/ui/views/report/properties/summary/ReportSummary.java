@@ -52,6 +52,11 @@ public class ReportSummary extends AbstractReportSummary {
 	public Text timeText;
 
 	/**
+	 * Text for duration
+	 */
+	public Text durationText;
+
+	/**
 	 * @see AbstractPropertySection#createControls(Composite,
 	 *      TabbedPropertySheetPage)
 	 */
@@ -92,7 +97,6 @@ public class ReportSummary extends AbstractReportSummary {
 		summaryLabe.setLayoutData(data);
 
 		// timestamp and time related stuff
-		// TODO calculate duration if possible
 		timeText = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
 		timeText.setEditable(false);
 		data = new FormData();
@@ -107,6 +111,21 @@ public class ReportSummary extends AbstractReportSummary {
 		data.right = new FormAttachment(timeText, -ITabbedPropertyConstants.HSPACE);
 		data.top = new FormAttachment(timeText, 0, SWT.CENTER);
 		timeLabel.setLayoutData(data);
+
+		durationText = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
+		durationText.setEditable(false);
+		data = new FormData();
+		data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
+		data.right = new FormAttachment(100, 0);
+		data.top = new FormAttachment(timeText, ITabbedPropertyConstants.VSPACE);
+		durationText.setLayoutData(data);
+
+		CLabel durationLabel = getWidgetFactory().createCLabel(composite, "Duration:"); //$NON-NLS-1$
+		data = new FormData();
+		data.left = new FormAttachment(0, 0);
+		data.right = new FormAttachment(durationText, -ITabbedPropertyConstants.HSPACE);
+		data.top = new FormAttachment(durationText, 0, SWT.CENTER);
+		durationLabel.setLayoutData(data);
 	}
 
 	/**
@@ -117,5 +136,6 @@ public class ReportSummary extends AbstractReportSummary {
 		successText.setText(report.isSuccess() + "");
 		summaryText.setText(report.getSummary());
 		timeText.setText(report.getTimestamp() + "");
+		durationText.setText((report.getDuration() == 0) ? "" : report.getDuration() + " msec");
 	}
 }

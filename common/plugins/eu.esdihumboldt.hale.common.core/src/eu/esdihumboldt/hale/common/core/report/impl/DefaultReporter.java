@@ -257,6 +257,17 @@ public class DefaultReporter<T extends Message> implements Reporter<T> {
 		return startTime;
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.common.core.report.Report#getDuration()
+	 */
+	@Override
+	public long getDuration() {
+		if (getStartTime() != null) {
+			return (getTimestamp().getTime() - getStartTime().getTime());
+		}
+		return 0;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder result = new StringBuilder();
