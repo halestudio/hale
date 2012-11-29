@@ -41,8 +41,8 @@ import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableGroup;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
+import eu.esdihumboldt.hale.common.instance.model.impl.DefaultGroup;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
-import eu.esdihumboldt.hale.common.instance.model.impl.OGroup;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -175,7 +175,7 @@ public class Rename extends AbstractSingleTargetPropertyTransformation<Transform
 										// children?
 			else {
 				// group
-				MutableGroup group = new OGroup(targetDefinition.asGroup());
+				MutableGroup group = new DefaultGroup(targetDefinition.asGroup());
 				if (renameChildren((Group) source, group, targetDefinition, allowIgnoreNamespaces))
 					return group;
 				else

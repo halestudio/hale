@@ -16,10 +16,14 @@
 
 package eu.esdihumboldt.hale.common.core.io.supplier;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 
 import com.google.common.io.InputSupplier;
@@ -32,8 +36,8 @@ import com.google.common.io.OutputSupplier;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.2
  */
-public class FileIOSupplier implements LocatableInputSupplier<FileInputStream>,
-		LocatableOutputSupplier<FileOutputStream> {
+public class FileIOSupplier implements LocatableInputSupplier<InputStream>,
+		LocatableOutputSupplier<OutputStream> {
 
 	private final File file;
 
@@ -51,16 +55,16 @@ public class FileIOSupplier implements LocatableInputSupplier<FileInputStream>,
 	 * @see InputSupplier#getInput()
 	 */
 	@Override
-	public FileInputStream getInput() throws IOException {
-		return new FileInputStream(file);
+	public InputStream getInput() throws IOException {
+		return new BufferedInputStream(new FileInputStream(file));
 	}
 
 	/**
 	 * @see OutputSupplier#getOutput()
 	 */
 	@Override
-	public FileOutputStream getOutput() throws IOException {
-		return new FileOutputStream(file);
+	public OutputStream getOutput() throws IOException {
+		return new BufferedOutputStream(new FileOutputStream(file));
 	}
 
 	/**

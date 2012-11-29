@@ -11,7 +11,7 @@
 	+~~~~~~~~~~~~~+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+-->
 
 <!--+ 
-	| Buildfile for Client Applications
+	| Buildfile for Server Applications
 	|
 	| Usage:
 	|   ant -f build.xml -Declipse=<eclipse root> -Dproduct=<product file>
@@ -77,7 +77,7 @@
 <project name="Server Application" default="package-server">
 	
 	<description>
-		Client Application Build File
+		Server Application Build File
 	</description>
 	
 	<!-- ant file location -->

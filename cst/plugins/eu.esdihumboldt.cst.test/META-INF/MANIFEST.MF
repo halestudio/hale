@@ -10,6 +10,7 @@ Require-Bundle: eu.esdihumboldt.cst;bundle-version="2.5.0",
 Import-Package: de.cs3d.util.logging,
  eu.esdihumboldt.hale.common.core.io,
  eu.esdihumboldt.hale.common.core.io.impl,
+ eu.esdihumboldt.hale.common.core.io.supplier,
  eu.esdihumboldt.hale.common.instance.model,
  eu.esdihumboldt.hale.common.schema.model,
  eu.esdihumboldt.hale.common.schema.model.impl,
@@ -19,3 +20,4 @@ Import-Package: de.cs3d.util.logging,
  org.exolab.castor.xml,
  org.junit;version="4.8.1",
  org.slf4j;version="1.5.11"
+Export-Package: eu.esdihumboldt.cst.test

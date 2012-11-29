@@ -19,10 +19,6 @@ package eu.esdihumboldt.hale.ui.transformation;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ListViewer;
@@ -34,20 +30,19 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.PlatformUI;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
-import de.cs3d.util.logging.ATransaction;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
-import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.headless.transform.ExportJob;
+import eu.esdihumboldt.hale.common.headless.transform.LimboInstanceSink;
+import eu.esdihumboldt.hale.common.headless.transform.ValidationJob;
+import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
+import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.ui.DefaultReportHandler;
 import eu.esdihumboldt.hale.ui.io.instance.InstanceExportWizard;
 import eu.esdihumboldt.hale.ui.io.instance.InstanceImportWizard;
-import eu.esdihumboldt.hale.ui.io.util.ProgressMonitorIndicator;
-import eu.esdihumboldt.hale.ui.service.report.ReportService;
 import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 
 /**
@@ -57,15 +52,12 @@ import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
  */
 public class TransformDataWizardSourcePage extends WizardPage {
 
-	private static final ALogger log = ALoggerFactory
-			.getLogger(TransformDataWizardSourcePage.class);
-
 	private final InternalInstanceExportWizard exportWizard;
 	private final List<InstanceCollection> sourceCollections = new ArrayList<InstanceCollection>();
-	private Job exportJob;
-	private Job validationJob;
+	private ExportJob exportJob;
+	private ValidationJob validationJob;
 
-	private final TransformDataInstanceSink targetSink;
+	private final LimboInstanceSink targetSink;
 
 	/**
 	 * Creates the transform data wizard page for selecting source data files.
@@ -76,7 +68,7 @@ public class TransformDataWizardSourcePage extends WizardPage {
 	 * @param targetSink the target sink
 	 */
 	public TransformDataWizardSourcePage(IWizardContainer container,
-			TransformDataInstanceSink targetSink) {
+			LimboInstanceSink targetSink) {
 		super("sourceSelection");
 		this.targetSink = targetSink;
 		setTitle("Source instance selection");
@@ -158,7 +150,7 @@ public class TransformDataWizardSourcePage extends WizardPage {
 	 * 
 	 * @return the export job
 	 */
-	public Job getExportJob() {
+	public ExportJob getExportJob() {
 		return exportJob;
 	}
 
@@ -167,7 +159,7 @@ public class TransformDataWizardSourcePage extends WizardPage {
 	 * 
 	 * @return the validation job, may be null
 	 */
-	public Job getValidationJob() {
+	public ValidationJob getValidationJob() {
 		return validationJob;
 	}
 
@@ -185,124 +177,12 @@ public class TransformDataWizardSourcePage extends WizardPage {
 			// this may get called twice: once for the export, and afterwards
 			// another time for the validation
 			if (exportJob == null) {
-				exportJob = new Job("Export") {
-
-					/**
-					 * @see org.eclipse.core.runtime.jobs.Job#canceling()
-					 */
-					@Override
-					protected void canceling() {
-						// must cancel sink, otherwise it may be blocking
-						targetSink.done(true);
-					}
-
-					/**
-					 * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-					 */
-					@Override
-					protected IStatus run(IProgressMonitor monitor) {
-						defaultReporter.setSuccess(false);
-						IOReport report = defaultReporter;
-						try {
-							ATransaction trans = log.begin(defaultReporter.getTaskName());
-							try {
-								IOReport result = provider.execute(new ProgressMonitorIndicator(
-										monitor));
-								if (result != null) {
-									report = result;
-								}
-								else {
-									defaultReporter.setSuccess(true);
-								}
-							} catch (Throwable e) {
-								defaultReporter
-										.error(new IOMessageImpl(e.getLocalizedMessage(), e));
-							} finally {
-								trans.end();
-							}
-						} catch (Throwable e) {
-							defaultReporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
-						}
-
-						if (monitor.isCanceled())
-							return Status.CANCEL_STATUS;
-
-						// add report to report service
-						ReportService repService = (ReportService) PlatformUI.getWorkbench()
-								.getService(ReportService.class);
-						repService.addReport(report);
-
-						// show message to user
-						if (report.isSuccess()) {
-							// no message, we rely on the report being
-							// shown/processed
-
-							// let advisor handle results
-							getAdvisor().handleResults(getProvider());
-						}
-						else {
-							// error message
-							log.userError(report.getSummary());
-						}
-
-						// XXX return something depending on report success?
-						return Status.OK_STATUS;
-					}
-				};
+				exportJob = new ExportJob(targetSink, (InstanceWriter) provider, getAdvisor(),
+						DefaultReportHandler.getInstance());
 			}
 			else if (validationJob == null) {
-				validationJob = new Job("Validation") {
-
-					/**
-					 * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-					 */
-					@Override
-					protected IStatus run(IProgressMonitor monitor) {
-						defaultReporter.setSuccess(false);
-						IOReport report = defaultReporter;
-						try {
-							ATransaction trans = log.begin(defaultReporter.getTaskName());
-							try {
-								IOReport result = provider.execute(new ProgressMonitorIndicator(
-										monitor));
-								if (result != null) {
-									report = result;
-								}
-								else {
-									defaultReporter.setSuccess(true);
-								}
-							} catch (Throwable e) {
-								defaultReporter
-										.error(new IOMessageImpl(e.getLocalizedMessage(), e));
-							} finally {
-								trans.end();
-							}
-						} catch (Throwable e) {
-							defaultReporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
-						}
-
-						if (monitor.isCanceled())
-							return Status.CANCEL_STATUS;
-
-						// add report to report service
-						ReportService repService = (ReportService) PlatformUI.getWorkbench()
-								.getService(ReportService.class);
-						repService.addReport(report);
-
-						// show message to user
-						if (report.isSuccess()) {
-							// info message
-							log.userInfo(report.getSummary());
-						}
-						else {
-							// error message
-							log.userError(report.getSummary());
-						}
-
-						// XXX return something depending on report success?
-						return Status.OK_STATUS;
-					}
-				};
+				validationJob = new ValidationJob((InstanceValidator) provider,
+						DefaultReportHandler.getInstance());
 			}
 			else
 				throw new IllegalStateException("Unknown calls to export wizard's execute.");

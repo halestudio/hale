@@ -21,6 +21,7 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocumentListener;
@@ -264,7 +265,8 @@ public class FilterEditor implements Editor<Filter> {
 		// property select
 		propertySelect = new PropertyDefinitionSelector(page, typeDefinition, null);
 		propertySelect.getControl().setLayoutData(
-				new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+				GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).minSize(100, SWT.DEFAULT)
+						.grab(true, false).create());
 
 		// filter here
 

@@ -51,6 +51,7 @@ import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.ProgressMonitorIndicator;
 import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorExtension;
 import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorFactory;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
@@ -60,6 +61,7 @@ import eu.esdihumboldt.hale.common.core.io.project.ProjectIO;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectWriter;
+import eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectReader;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
@@ -70,7 +72,6 @@ import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.ui.io.project.OpenProjectWizard;
 import eu.esdihumboldt.hale.ui.io.project.SaveProjectWizard;
-import eu.esdihumboldt.hale.ui.io.util.ProgressMonitorIndicator;
 import eu.esdihumboldt.hale.ui.io.util.ThreadProgressMonitor;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.RecentFilesService;
@@ -182,8 +183,18 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				synchronized (ProjectServiceImpl.this) {
 					main = provider.getProject();
 					updater.updateProject(main, provider.getSource().getLocation());
-					if ("file".equalsIgnoreCase(provider.getSource().getLocation().getScheme()))
-						projectFile = new File(provider.getSource().getLocation());
+					if ("file".equalsIgnoreCase(provider.getSource().getLocation().getScheme())) {
+						// the source of ArchiveProjectReader is a temporary
+						// directory. need the originally source to show the
+						// correct archive file in the RecentFilesService.
+						// otherwise complications with UILocationUpdater above
+						if (provider instanceof ArchiveProjectReader)
+							projectFile = new File(((ArchiveProjectReader) provider)
+									.getOriginallySource().getLocation());
+						else
+							projectFile = new File(provider.getSource().getLocation());
+					}
+
 					changed = false;
 					RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench()
 							.getService(RecentFilesService.class);

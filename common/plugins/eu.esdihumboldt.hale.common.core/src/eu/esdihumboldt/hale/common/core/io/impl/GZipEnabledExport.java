@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.common.core.io.impl;
 
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
@@ -35,7 +36,7 @@ public abstract class GZipEnabledExport extends AbstractExportProvider {
 	/**
 	 * Output supplier wrapping the output stream in a {@link GZIPOutputStream}
 	 */
-	public static class GZipOutputSupplier implements LocatableOutputSupplier<GZIPOutputStream> {
+	public static class GZipOutputSupplier implements LocatableOutputSupplier<OutputStream> {
 
 		private final LocatableOutputSupplier<? extends OutputStream> target;
 
@@ -49,8 +50,8 @@ public abstract class GZipEnabledExport extends AbstractExportProvider {
 		}
 
 		@Override
-		public GZIPOutputStream getOutput() throws IOException {
-			return new GZIPOutputStream(target.getOutput());
+		public OutputStream getOutput() throws IOException {
+			return new BufferedOutputStream(new GZIPOutputStream(target.getOutput()), 64 * 1024);
 		}
 
 		@Override

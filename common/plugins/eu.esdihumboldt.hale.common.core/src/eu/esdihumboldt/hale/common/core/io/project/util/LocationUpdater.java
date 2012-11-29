@@ -49,9 +49,15 @@ public class LocationUpdater {
 		if (saveconfig == null)
 			return;
 
+		// old project location
 		URI targetLoc = URI.create(saveconfig.getProviderConfiguration().get(
 				ExportProvider.PARAM_TARGET));
+
 		if (!targetLoc.equals(newProjectLoc)) {
+			// update save configuration
+			saveconfig.getProviderConfiguration().put(ExportProvider.PARAM_TARGET,
+					newProjectLoc.toString());
+
 			PathUpdate update = new PathUpdate(targetLoc, newProjectLoc);
 
 			// update I/O configurations
@@ -82,7 +88,7 @@ public class LocationUpdater {
 					/*
 					 * For this the fallback method is not called intentionally,
 					 * as in the project service, this update has no effect, as
-					 * the project files are laready loaded in the
+					 * the project files are already loaded in the
 					 * DefaultProjectReader.
 					 */
 				}

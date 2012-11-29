@@ -24,8 +24,6 @@ import java.text.MessageFormat;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.ExportProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -77,7 +75,7 @@ public class DefaultProjectReader extends AbstractProjectReader {
 
 	}
 
-	private static final ALogger log = ALoggerFactory.getLogger(DefaultProjectReader.class);
+//	private static final ALogger log = ALoggerFactory.getLogger(DefaultProjectReader.class);
 
 	/**
 	 * If the project shall be read from a ZIP archive
@@ -152,9 +150,9 @@ public class DefaultProjectReader extends AbstractProjectReader {
 			}
 		}
 
-		PathUpdate update = new PathUpdate(URI.create(getProject().getSaveConfiguration()
-				.getProviderConfiguration().get(ExportProvider.PARAM_TARGET)), getSource()
-				.getLocation());
+		URI oldProjectLocation = URI.create(getProject().getSaveConfiguration()
+				.getProviderConfiguration().get(ExportProvider.PARAM_TARGET));
+		PathUpdate update = new PathUpdate(oldProjectLocation, getSource().getLocation());
 
 		// check if there are any external project files listed
 		if (getProjectFiles() != null) { // only if project files set at all
@@ -162,8 +160,13 @@ public class DefaultProjectReader extends AbstractProjectReader {
 				ProjectFile projectFile = getProjectFiles().get(fileInfo.getName());
 				if (projectFile != null) {
 					URI location = fileInfo.getLocation();
-					if (!IOUtils.testStream(fileInfo.getLocation(), false))
+					if (!IOUtils.testStream(location, false))
 						location = update.changePath(location);
+					if (!IOUtils.testStream(location, false)) {
+						// fall-back to location relative to project file
+						location = URI.create(getSource().getLocation().toString() + "."
+								+ fileInfo.getName());
+					}
 					boolean fileSuccess = false;
 					try {
 						InputStream input = location.toURL().openStream();
@@ -176,7 +179,7 @@ public class DefaultProjectReader extends AbstractProjectReader {
 							input.close();
 						}
 					} catch (Exception e) {
-						log.debug("Loading project file failed", e);
+						reporter.error(new IOMessageImpl("Loading project file failed", e));
 					}
 
 					if (!fileSuccess) {

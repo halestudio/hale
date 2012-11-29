@@ -102,7 +102,7 @@ public class DigitCountValidator extends AbstractValidator {
 				return null;
 			else
 				return "Input must have at most " + length + " total digits but has "
-						+ decimal.scale() + ".";
+						+ numberString.length() + ".";
 		default:
 			return null; // all types checked, doesn't happen
 		}

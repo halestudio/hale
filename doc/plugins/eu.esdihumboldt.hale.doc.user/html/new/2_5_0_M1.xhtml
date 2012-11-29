@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="stylesheet" type="text/css" href="new.css" />
+<title>What's new in HALE 2.5.0.M1</title>
+</head>
+<body>
+	<h1>What's new in HALE 2.5.0.M1</h1>
+	<p>Here are descriptions of some of the more interesting or
+		significant changes made to HALE for the 2.5.0.M1 milestone release.
+		The described features are new since the 2.1.2 release.</p>
+
+	<ul>
+		<li><a href="#2_5_0_M1_UI">User Interface</a></li>
+		<li><a href="#2_5_0_M1_Core">Under the Hood</a></li>
+	</ul>
+
+	<table border="0" cellpadding="15" cellspacing="0" class="news"
+		id="2_5_0_M1">
+		<tbody>
+
+			<!-- User Interface -->
+			<tr>
+				<td class="section" colspan="2" id="2_5_0_M1_UI" rowspan="1"><h2>User
+						Interface</h2></td>
+			</tr>
+
+			<tr id="welcome">
+				<td class="title">Welcome page &amp; Getting started guide</td>
+				<td class="content">When first starting HALE you will be
+					greeted by a Welcome page which quickly gets you going on working
+					on an existing project or starting a new one. The guide gets you
+					started on the basic workflow when working with HALE.
+					<p>
+						<img src="2_5_0_M1_images/firststeps.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="help">
+				<td class="title">Integrated user guide</td>
+				<td class="content">The integrated help can be launched through
+					the toolbar or the Help menu - it includes a user guide for HALE,
+					describing the main workflow, the different perspectives and views
+					and explains how to perform certain tasks and the concepts behind
+					them.
+					<p>
+						<img src="2_5_0_M1_images/helpbrowser.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="contextualhelp">
+				<td class="title">Context-sensitive help</td>
+				<td class="content">Pressing F1 will open a view with help
+					topics that are related to your active view and possibly even for
+					your current selection. For example, with a cell selected in the
+					alignment view, the help will provide you with the link to the
+					documentation of the related transformation function.
+					<p>
+						<img src="2_5_0_M1_images/helpcontext.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="reports">
+				<td class="title">Reports on performed actions</td>
+				<td class="content">Actions like loading or saving data,
+					loading schemas, performing the transformation or exporting the
+					alignment produce a detailed report. Select a report in the Report
+					List view to access eventual warnings and errors that occurred
+					during the process in the Properties view.
+					<p>
+						<img src="2_5_0_M1_images/reports.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="propertiesview">
+				<td class="title">Inspect selection in Properties view</td>
+				<td class="content">Detailed information on a selected object
+					is now displayed in the Properties view - currently this works for
+					schema elements, alignment cells, functions and reports.
+					Programmers can easily extend it with additional sections.
+					<p>
+						<img src="2_5_0_M1_images/properties.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="alignmentview">
+				<td class="title">Alignment view</td>
+				<td class="content">The Mapping Graph view has been reworked to
+					better integrate with the rest of the application and is now called
+					Alignment view. It renders the old mapping view obsolete, as
+					editing and deleting cells can now be performed on the alignment
+					view selection, and details on the selected cell are displayed in
+					the Properties view.
+					<p>
+						<img src="2_5_0_M1_images/alignment.png" />
+					</p>
+					<p>
+						For more information, please have a look at the <a
+							href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/views/alignment.html">Alignment
+							view</a> documentation.
+					</p>
+				</td>
+			</tr>
+
+			<tr id="mapview">
+				<td class="title">New map view</td>
+				<td class="content">The map view has been replaced by a new
+					component that is able to put the data into context by displaying
+					it on a background map. By default, OpenStreetMap is used as the
+					background map. Instances in the map can be selected and their
+					style adapted with an integrated editor.
+					<p>
+						<img src="2_5_0_M1_images/map.png" />
+					</p>
+					<p>
+						For more information, please have a look at the <a
+							href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user.views.styledmap/html/map_view.html">Map
+							view</a> documentation.
+					</p>
+				</td>
+			</tr>
+
+			<tr id="mergefunction">
+				<td class="title">Merge instances of the same type</td>
+				<td class="content">A new type relation has been added, that
+					allows to merge multiple source instances of the same type, based
+					on an equal property value. The other properties are either merged
+					also, or all values of the property are available in the merged
+					instance.
+					<p>
+						<img src="2_5_0_M1_images/merge.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="typehierarchyview">
+				<td class="title">Type Hierarchy view</td>
+				<td class="content">The new Type Hierarchy view can be used to
+					inspect the hierarchy of a specific schema type. Select a schema
+					element, e.g. in the Schema Explorer, and the associated type and
+					its super and sub-types will be displayed. You can focus on another
+					type in the hierarchy by double clicking on it.
+					<p>
+						<img src="2_5_0_M1_images/typehierarchy.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="functionview">
+				<td class="title">Functions view</td>
+				<td class="content">Get an overview of the available
+					transformation functions. Detailed information on a selected
+					function can be obtained either through the Properties view or the
+					contextual help (pressing F1).
+					<p>
+						<img src="2_5_0_M1_images/functions.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="csvsupport">
+				<td class="title">Support for CSV files</td>
+				<td class="content">Comma Separated Value (CSV) files can now
+					be used as source schema and data. For the schema, column names can
+					either be used as available in the first row of the file, or
+					specified manually.
+					<p>
+						<img src="2_5_0_M1_images/csv.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="mappingrelevant">
+				<td class="title">Mapping relevant types</td>
+				<td class="content">Not all typed defined in a schema are
+					usually relevant for a mapping. Now you can customize which types
+					are relevant for your mapping in the source and target schemas -
+					thus, only those types are displayed in the Schema Explorer, and
+					only data instances of these types are loaded when loading source
+					data.
+					<p>
+						<img src="2_5_0_M1_images/mappable.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="contexts">
+				<td class="title">Create contexts on schema elements</td>
+				<td class="content">A context on a schema element may represent
+					a condition applied to it, an element at a certain index or just an
+					additional instance of a target property that may be populated.
+					Contexts can be created for a selected schema element through the
+					context menu in the Schema Explorer, if applicable.
+					<p>
+						<img src="2_5_0_M1_images/contextsample.png" />
+					</p>
+					<p>
+						For more information, please have a look at the more detailed <a
+							href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/contexts.html">Contexts</a>
+						documentation.
+					</p>
+				</td>
+			</tr>
+
+			<tr id="filternested">
+				<td class="title">Filters on nested properties</td>
+				<td class="content">Filters for use in the data views and
+					condition contexts have been improved to support specifying nested
+					properties. Use the <i>Insert attribute name</i> button to choose a
+					schema element and insert the corresponding name.
+					<p>
+						<img src="2_5_0_M1_images/filternested.png" />
+					</p>
+					<p>
+						For more information, please have a look at the documentation on <a
+							href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/contexts.html">CQL
+							Filter</a>s.
+					</p>
+				</td>
+			</tr>
+
+			<tr id="humanreadablecells">
+				<td class="title">Cell explanations</td>
+				<td class="content">It is not always easy to grasp how a
+					transformation function works and what effect a defined relation
+					has. On a selected mapping cell you now get an explanation
+					(displayed in the Properties view) that expresses the relation in a
+					more human understandable way.
+					<p>
+						<img src="2_5_0_M1_images/humanreadablecells.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="mappingdoc">
+				<td class="title">Improved HTML mapping documentation</td>
+				<td class="content">The export of your mapping as a HTML file
+					presents you with a mapping documentation you can easily share.
+					First you get an overview of all type relations, then for each type
+					relation the relevant property relations, including their
+					explanation.
+					<p>
+						<img src="2_5_0_M1_images/mappingdoc.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="undoredo">
+				<td class="title">Undo/Redo support</td>
+				<td class="content">When creating your mapping you now can undo
+					or redo the performed steps, like adding, replacing or deleting
+					cells.
+					<p>
+						<img src="2_5_0_M1_images/undoredo.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="structuralrename">
+				<td class="title">Structural rename</td>
+				<td class="content">The Rename relation now supports copying a
+					complex structured property, given that the structure of the target
+					property is similar.
+					<p>
+						<img src="2_5_0_M1_images/structuralrename.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="genwizard">
+				<td class="title">Generic function wizard</td>
+				<td class="content">Instead of letting each transformation
+					function provide its own wizard for it to be configurable through
+					the user interface, setting the source and target entities and
+					specifying parameters is done through the generic function wizard.
+					This makes it a lot easier to extend HALE with new transformation
+					functions. If desired, functions can still provide their own wizard
+					pages for the parameter configuration.
+					<p>
+						<img src="2_5_0_M1_images/genwizard.png" />
+					</p>
+				</td>
+			</tr>
+
+			<!-- Under the Hood -->
+			<tr>
+				<td class="section" colspan="2" id="2_5_0_M1_Core" rowspan="1"><h2>Under
+						the Hood</h2></td>
+			</tr>
+
+			<tr id="architecture_25">
+				<td class="title">New application architecture</td>
+				<td class="content">HALE has undergone a major restructuring of
+					the whole application, motivated by the following goals:
+					<ul>
+						<li>Simple but flexible and extendable models for schema,
+							data and alignment</li>
+						<li>Modular architecture that allows the use in different
+							environments (e.g. UI and Server)</li>
+						<li>Common infrastructure for all I/O operations</li>
+						<li>Support transformation of large data sets</li>
+						<li>Allow to easily extend HALE with additional functionality</li>
+					</ul> There are several extension points allowing HALE to be extended by
+					Plug-ins. Apart from the general UI extension points provided by
+					Eclipse RCP, which for instance allow you to add your own views,
+					these are some of the functionalities you can extend:
+					<ul>
+						<li>Transformation function definitions and implementations</li>
+						<li>Converters for automatic value conversion</li>
+						<li>Import and export formats for schema, data, alignment
+							etc.</li>
+						<li>Map tools, overlays, layouts and maps</li>
+						<li>Instance representations in data views</li>
+						<li>include online resources for offline use</li>
+					</ul>
+				</td>
+			</tr>
+
+			<tr id="internaldborient">
+				<td class="title">Internal database based on OrientDB</td>
+				<td class="content">Data now is stored in a temporary internal
+					database instead of being held in the memory all the time. This
+					allows to deal with bigger data sets, as only those instances
+					actually needed are retrieved from the database. Transformation can
+					be performed in a streaming like process, where loading data,
+					transformation and storing the transformation result are done in
+					parallel.
+					<p>
+						<img src="2_5_0_M1_images/orientdblogo.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="multischema">
+				<td class="title">Multiple schemas as source or target</td>
+				<td class="content">You can combine multiple schemas to form
+					your source and target schemas, for example an XML Schema together
+					with a Shapefile and a CSV file could form your source schema.
+					Currently there is one exception to this, you can't load multiple
+					XML Schemas into source or target. This is to prevent namespace
+					incompatibilities and duplicated schema elements - if you need to
+					use multiple XML Schemas, you can use the workaround as described <a
+					href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/reference/import/xml_schema.html">here</a>.
+				</td>
+			</tr>
+
+			<tr id="xmlstreaming">
+				<td class="title">Streaming XML and GML</td>
+				<td class="content">Generic XML and GML reader and writer that
+					support streaming, i.e. they read or write the data instance by
+					instance instead of all at once.</td>
+			</tr>
+
+			<tr id="conversionservice">
+				<td class="title">Conversion service and automated conversion</td>
+				<td class="content">A conversion service is provided as OSGi
+					service in the application and can be used for value conversions
+					and extended with custom converters. In addition, transformation
+					function results are automatically converted to the corresponding
+					target property type (if the function does not prohibit this).</td>
+			</tr>
+
+			<tr id="cst_25">
+				<td class="title">New transformation service implementation</td>
+				<td class="content">The Conceptual Schema Transformer (CST) has
+					been reimplemented based on the new models. It is the default
+					transformation service implementation and uses a transformation
+					tree to handle the transformation of complex structures with
+					varying cardinalities.</td>
+			</tr>
+
+			<tr id="resourcesbundle">
+				<td class="title">Bundle schemas with HALE</td>
+				<td class="content">Plugins may extend HALE to provide schemas
+					for offline use. Some well-known schemas are already bundled with
+					HALE, e.g. the GML 3.2.1 schema, to speed up schema loading.</td>
+			</tr>
+
+		</tbody>
+	</table>
+</body>
+</html>

@@ -16,8 +16,10 @@
 
 package eu.esdihumboldt.hale.ui.util.graph;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.imageio.ImageIO;
@@ -47,7 +49,7 @@ public class ExportGraphAction extends Action {
 
 	private static final ALogger log = ALoggerFactory.getLogger(ExportGraphAction.class);
 
-	private GraphViewer viewer;
+	private final GraphViewer viewer;
 
 	/**
 	 * Create an action that renders and saves a graph to a file.
@@ -117,7 +119,7 @@ public class ExportGraphAction extends Action {
 					public void run(IProgressMonitor monitor) throws InvocationTargetException,
 							InterruptedException {
 						try {
-							FileOutputStream out = new FileOutputStream(file);
+							OutputStream out = new BufferedOutputStream(new FileOutputStream(file));
 
 							if (ext.equalsIgnoreCase("gv") || ext.equalsIgnoreCase("dot")) {
 								OffscreenGraph.saveDot(graph, out);

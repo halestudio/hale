@@ -17,6 +17,7 @@
 package eu.esdihumboldt.cst.doc.functions.internal.content;
 
 import java.awt.Dimension;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -245,7 +246,8 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 					off_graph.resize(width, height);
 
 					try {
-						off_graph.saveImage(new FileOutputStream(_functionFile), null);
+						off_graph.saveImage(new BufferedOutputStream(new FileOutputStream(
+								_functionFile)), null);
 					} catch (IOException e) {
 						log.warn("Conversion from Graph to Image failed!");
 					} finally {

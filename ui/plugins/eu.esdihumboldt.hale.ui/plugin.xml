@@ -800,6 +800,13 @@
                ref="eu.esdihumboldt.hale.io.project.hale25.writer">
          </provider>
       </configPage>
+      <configPage
+            class="eu.esdihumboldt.hale.ui.io.project.pages.ArchiveProjectWriterConfigurationPage"
+            order="0">
+         <provider
+               ref="eu.esdihumboldt.hale.io.project.hale25.zip.writer">
+         </provider>
+      </configPage>
    </extension>
    <extension
          point="org.eclipse.ui.commandImages">

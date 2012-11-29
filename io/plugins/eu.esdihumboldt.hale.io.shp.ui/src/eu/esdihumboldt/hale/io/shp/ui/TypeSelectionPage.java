@@ -17,7 +17,6 @@
 package eu.esdihumboldt.hale.io.shp.ui;
 
 import java.io.InputStream;
-import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
@@ -35,17 +34,16 @@ import org.eclipse.swt.widgets.Label;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
-import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
-import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
-import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.shp.ShapefileConstants;
+import eu.esdihumboldt.hale.io.shp.reader.internal.ShapeInstanceReader;
 import eu.esdihumboldt.hale.io.shp.reader.internal.ShapeSchemaReader;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.common.definition.selector.TypeDefinitionSelector;
 import eu.esdihumboldt.hale.ui.io.IOWizardPage;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 import eu.esdihumboldt.hale.ui.io.instance.InstanceReaderConfigurationPage;
+import eu.esdihumboldt.util.Pair;
 
 /**
  * Configuration page for selecting the schema type for Shapefile instances.
@@ -120,29 +118,16 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage implement
 			// if the source has changed
 
 			lastSource = currentSource;
-			ShapeSchemaReader reader = new ShapeSchemaReader();
-			reader.setSource(lastSource);
-			try {
-				reader.execute(null);
-				Collection<? extends TypeDefinition> types = reader.getSchema()
-						.getMappingRelevantTypes();
-				if (!types.isEmpty()) {
-					lastType = types.iterator().next();
-				}
-				else {
-					lastType = null;
-				}
-			} catch (Exception e) {
-				lastType = null;
-			}
+			lastType = ShapeSchemaReader.readShapeType(lastSource);
 
 			if (selector.getSelectedObject() == null) {
 				// try to find a candidate for default selection
-				for (TypeDefinition type : getWizard().getProvider().getSourceSchema()
-						.getMappingRelevantTypes()) {
-					if (isValidType(type)) {
-						selector.setSelection(new StructuredSelection(type));
-						break;
+				if (lastType != null) {
+					Pair<TypeDefinition, Integer> pt = ShapeInstanceReader
+							.getMostCompatibleShapeType(
+									getWizard().getProvider().getSourceSchema(), lastType);
+					if (pt != null) {
+						selector.setSelection(new StructuredSelection(pt.getFirst()));
 					}
 				}
 			}
@@ -165,10 +150,18 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage implement
 		TypeDefinition selected = selector.getSelectedObject();
 
 		if (selected != null) {
-			if (isValidType(selected)) {
+			int comp = ShapeInstanceReader.checkCompatibility(selected, lastType);
+
+			if (comp > 0) {
 				setPageComplete(true);
-				setMessage("The selected type is compatible to the file structure.",
-						DialogPage.INFORMATION);
+				if (comp >= 100) {
+					setMessage("The selected type is compatible to the file structure.",
+							DialogPage.INFORMATION);
+				}
+				else {
+					setMessage("The selected type is only ~" + comp
+							+ "% compatible to the file structure.", WARNING);
+				}
 				return;
 			}
 			else {
@@ -187,27 +180,15 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage implement
 	 * Determines if the given type is compatible to the structure of the
 	 * selected file.
 	 * 
-	 * @param type the type to test
+	 * @param schemaType the type to test
 	 * @return if the type is compatible
 	 */
-	protected boolean isValidType(TypeDefinition type) {
+	protected boolean isValidType(TypeDefinition schemaType) {
 		if (lastType == null) {
 			return false; // should not happen
 		}
 
-		// Shapefile types are flat, so only regard properties
-		Collection<? extends PropertyDefinition> children = DefinitionUtil
-				.getAllProperties(lastType);
-
-		// every property must exist in the target type, with the same name
-		for (PropertyDefinition property : children) {
-			ChildDefinition<?> child = type.getChild(property.getName());
-			if (child == null || child.asProperty() == null) {
-				return false;
-			}
-		}
-
-		return true;
+		return ShapeInstanceReader.checkCompatibility(schemaType, lastType) > 0;
 	}
 
 	/**

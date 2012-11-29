@@ -10,7 +10,15 @@
       <anchor id="introduction"/>
    </topic>
    <topic label="What&apos;s new?">
-      <topic href="html/new/2_5_0_RC1/new.xhtml" label="2.5.0.RC1">
+      <topic href="html/new/2_5_0.xhtml" label="New in 2.5">
+         <topic href="html/new/2_5_0_RC1.xhtml" label="2.5.0.RC1">
+         </topic>
+         <topic href="html/new/2_5_0_M2.xhtml" label="2.5.0.M2">
+         </topic>
+         <topic href="html/new/2_5_0_M1.xhtml" label="2.5.0.M1">
+         </topic>
+         <topic href="html/new/2_5_0_before_after.html" label="Before and after">
+         </topic>
       </topic>
    </topic>
    <topic label="Getting Started">
@@ -23,6 +31,8 @@
       <topic href="html/getting_started/data_perspective.html" label="The data perspective">
       </topic>
       <anchor id="gettingstarted"/>
+      <topic href="html/getting_started/thorsten_perspective.html" label="The Thorsten perspective">
+      </topic>
    </topic>
    <topic label="Concepts">
       <topic label="Schema">

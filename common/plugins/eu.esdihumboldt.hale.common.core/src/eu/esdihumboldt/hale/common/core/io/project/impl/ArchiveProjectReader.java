@@ -17,7 +17,6 @@
 package eu.esdihumboldt.hale.common.core.io.project.impl;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -45,6 +44,10 @@ public class ArchiveProjectReader extends AbstractProjectReader {
 
 	private static final ALogger log = ALoggerFactory.getLogger(ArchiveProjectReader.class);
 
+	// The reader saves the temporary directory as 'source' to load all
+	// resources, but sometimes you need the old originally source (the archive)
+	private LocatableInputSupplier<? extends InputStream> oldSource;
+
 	/**
 	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#execute(eu.esdihumboldt.hale.common.core.io.ProgressIndicator,
 	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
@@ -61,7 +64,11 @@ public class ArchiveProjectReader extends AbstractProjectReader {
 
 		// create the project file via XMLProjectReader
 		File baseFile = new File(tempDir, "project.halex");
-		LocatableInputSupplier<FileInputStream> source = new FileIOSupplier(baseFile);
+		LocatableInputSupplier<InputStream> source = new FileIOSupplier(baseFile);
+
+		// save old save configuration
+		oldSource = getSource();
+
 		setSource(source);
 		reader.setSource(source);
 		reader.setProjectFiles(getProjectFiles());
@@ -69,7 +76,7 @@ public class ArchiveProjectReader extends AbstractProjectReader {
 		setProject(reader.getProject());
 
 		// delete the temporary directory
-		deleteDirectory(tempDir);
+		deleteDirectoryOnExit(tempDir);
 
 		return report;
 	}
@@ -117,19 +124,28 @@ public class ArchiveProjectReader extends AbstractProjectReader {
 		zipinputstream.close();
 	}
 
-	// delete the complete directory
-	private void deleteDirectory(File directory) {
+	private void deleteDirectoryOnExit(File directory) {
 		if (directory.exists()) {
-			File[] fileList = directory.listFiles();
 			directory.deleteOnExit();
-			for (int i = fileList.length - 1; i > 0; i--) {
-				if (fileList[i].isDirectory()) {
-					deleteDirectory(fileList[i]);
-				}
-				else {
-					fileList[i].deleteOnExit();
+			File[] files = directory.listFiles();
+			if (files != null) {
+				for (File f : files) {
+					if (f.isDirectory()) {
+						deleteDirectoryOnExit(f);
+					}
+					else {
+						f.deleteOnExit();
+					}
 				}
 			}
 		}
 	}
+
+	/**
+	 * @return the originally source of the archive
+	 */
+	public LocatableInputSupplier<? extends InputStream> getOriginallySource() {
+		return oldSource;
+	}
+
 }

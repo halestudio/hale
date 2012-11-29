@@ -185,7 +185,7 @@ public class DefaultProjectWriter extends AbstractProjectWriter {
 
 				// write entry
 				ProjectFile file = entry.getValue();
-				FileOutputStream out = new FileOutputStream(pfile);
+				OutputStream out = new BufferedOutputStream(new FileOutputStream(pfile));
 				try {
 					file.store(out);
 				} catch (Exception e) {

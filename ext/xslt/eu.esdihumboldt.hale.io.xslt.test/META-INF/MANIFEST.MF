@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Alignment XSLT Export Tests
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.xslt.test
+Bundle-Version: 2.5.0.qualifier
+Bundle-Vendor: Fraunhofer IGD
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: eu.esdihumboldt.hale.io.xslt;bundle-version="2.5.0",
+ eu.esdihumboldt.hale.common.instance;bundle-version="2.5.0",
+ eu.esdihumboldt.hale.common.schema;bundle-version="2.5.0",
+ eu.esdihumboldt.hale.common.align;bundle-version="2.5.0",
+ eu.esdihumboldt.hale.common.core;bundle-version="2.5.0",
+ eu.esdihumboldt.hale.common.test;bundle-version="2.5.0",
+ eu.esdihumboldt.hale.io.gml;bundle-version="2.5.0"
+Import-Package: com.google.common.io;version="11.0.1",
+ eu.esdihumboldt.cst.test,
+ org.junit;version="4.8.2"

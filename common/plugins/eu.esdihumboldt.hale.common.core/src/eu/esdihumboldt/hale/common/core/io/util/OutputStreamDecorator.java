@@ -16,11 +16,14 @@
 
 package eu.esdihumboldt.hale.common.core.io.util;
 
+import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * Decorator for an {@link OutputStream}
+ * Decorator for an {@link OutputStream}. Alternative to
+ * {@link FilterOutputStream} that calls the same methods on the decoratee that
+ * were actually called.
  * 
  * @author Simon Templer
  */

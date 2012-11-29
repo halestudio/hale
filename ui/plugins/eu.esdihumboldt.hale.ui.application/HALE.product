@@ -7,7 +7,7 @@
       <text>
          HUMBOLDT Alignment Editor (HALE)
 
-Version 2.5.0.RC1
+Version 2.5.0
 
 Build ___build___
 Revision ___revision___
@@ -39,6 +39,7 @@ http://www.esdi-community.eu/projects/show/hale
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
@@ -111,7 +112,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.cst.functions.inspire"/>
       <plugin id="eu.esdihumboldt.cst.functions.numeric"/>
       <plugin id="eu.esdihumboldt.cst.functions.string"/>
-      <plugin id="eu.esdihumboldt.cst.test" fragment=""/>
+      <plugin id="eu.esdihumboldt.cst.test"/>
       <plugin id="eu.esdihumboldt.hale.common.align"/>
       <plugin id="eu.esdihumboldt.hale.common.align.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.cache"/>
@@ -124,7 +125,9 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.common.core.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.filter"/>
       <plugin id="eu.esdihumboldt.hale.common.filter.test"/>
+      <plugin id="eu.esdihumboldt.hale.common.headless"/>
       <plugin id="eu.esdihumboldt.hale.common.instance"/>
+      <plugin id="eu.esdihumboldt.hale.common.instance.orient"/>
       <plugin id="eu.esdihumboldt.hale.common.instancevalidator"/>
       <plugin id="eu.esdihumboldt.hale.common.propertyaccessor" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.schema"/>
@@ -205,6 +208,8 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="javax.servlet"/>
       <plugin id="javax.servlet.jsp"/>
       <plugin id="jcl.over.slf4j"/>
+      <plugin id="joda-time"/>
+      <plugin id="jsr305"/>
       <plugin id="jul.to.slf4j"/>
       <plugin id="log4j.over.slf4j"/>
       <plugin id="net.sf.ehcache"/>
@@ -279,6 +284,9 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.eclipse.equinox.security.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.equinox.security.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.equinox.util"/>
+      <plugin id="org.eclipse.gemini.blueprint.core"/>
+      <plugin id="org.eclipse.gemini.blueprint.extender"/>
+      <plugin id="org.eclipse.gemini.blueprint.io"/>
       <plugin id="org.eclipse.gmf.runtime.common.core"/>
       <plugin id="org.eclipse.gmf.runtime.common.ui"/>
       <plugin id="org.eclipse.gmf.runtime.draw2d.ui"/>
@@ -342,9 +350,6 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.springframework.context"/>
       <plugin id="org.springframework.core"/>
       <plugin id="org.springframework.expression"/>
-      <plugin id="org.springframework.osgi.core"/>
-      <plugin id="org.springframework.osgi.extender"/>
-      <plugin id="org.springframework.osgi.io"/>
       <plugin id="org.springframework.transaction"/>
       <plugin id="org.w3c.css.sac"/>
       <plugin id="org.w3c.dom.events"/>
@@ -372,12 +377,12 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.io.xsd" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.ui.cst" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.gemini.blueprint.core" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.gemini.blueprint.extender" autoStart="true" startLevel="5" />
       <plugin id="org.springframework.aop" autoStart="true" startLevel="0" />
       <plugin id="org.springframework.beans" autoStart="true" startLevel="0" />
       <plugin id="org.springframework.context" autoStart="true" startLevel="0" />
       <plugin id="org.springframework.core" autoStart="true" startLevel="0" />
-      <plugin id="org.springframework.osgi.core" autoStart="true" startLevel="0" />
-      <plugin id="org.springframework.osgi.extender" autoStart="true" startLevel="5" />
    </configurations>
 
 </product>

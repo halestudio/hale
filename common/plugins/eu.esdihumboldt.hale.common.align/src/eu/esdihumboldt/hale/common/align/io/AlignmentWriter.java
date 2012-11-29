@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.common.align.io;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.core.io.ExportProvider;
+import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 
 /**
  * Provides support for writing alignments
@@ -27,10 +28,24 @@ import eu.esdihumboldt.hale.common.core.io.ExportProvider;
 public interface AlignmentWriter extends ExportProvider {
 
 	/**
-	 * Set the alignment to write
+	 * Set the alignment to write.
 	 * 
 	 * @param alignment the alignment
 	 */
 	public void setAlignment(Alignment alignment);
+
+	/**
+	 * Set the source schema associated to the alignment.
+	 * 
+	 * @param source the source schema
+	 */
+	public void setSourceSchema(SchemaSpace source);
+
+	/**
+	 * Set the target schema associated to the alignment.
+	 * 
+	 * @param target the target schema
+	 */
+	public void setTargetSchema(SchemaSpace target);
 
 }

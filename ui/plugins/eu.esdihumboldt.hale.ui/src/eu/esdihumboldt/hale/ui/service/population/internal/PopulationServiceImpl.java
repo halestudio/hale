@@ -131,6 +131,11 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 	 */
 	@Override
 	public Population getPopulation(EntityDefinition entity) {
+		if (entity.getSchemaSpace() == null) {
+			// can't determine population
+			return UNKNOWN_POPULATION;
+		}
+
 		Population population;
 		synchronized (this) {
 			switch (entity.getSchemaSpace()) {
@@ -232,13 +237,15 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 		for (QName propertyName : group.getPropertyNames()) {
 			EntityDefinition propertyDef = AlignmentUtil.getChild(groupDef, propertyName);
 
-			Object[] values = group.getProperty(propertyName);
+			if (propertyDef != null) {
+				Object[] values = group.getProperty(propertyName);
 
-			increase(propertyDef, values.length);
+				increase(propertyDef, values.length);
 
-			for (Object value : values) {
-				if (value instanceof Group) {
-					addToPopulation((Group) value, propertyDef);
+				for (Object value : values) {
+					if (value instanceof Group) {
+						addToPopulation((Group) value, propertyDef);
+					}
 				}
 			}
 		}

@@ -66,8 +66,8 @@ public interface InstanceWriter extends ExportProvider {
 
 	/**
 	 * Validate the basic {@link InstanceWriter} configuration, to determine if
-	 * the target schema (and instances) are compatible to the writer. Other
-	 * parameters should be ignored for the check.
+	 * the target schema (and instances if set) are compatible to the writer.
+	 * Other parameters should be ignored for the check.
 	 * 
 	 * @throws IOProviderConfigurationException if the I/O provider was not
 	 *             configured properly
