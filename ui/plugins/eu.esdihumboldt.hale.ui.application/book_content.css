@@ -120,4 +120,4 @@ pre code {
 	background-color: #F3F3F3;
 }
 /* prevent image forcing scrollbars */
-img { max-width: 100% }
+.fit { max-width: 100% }
