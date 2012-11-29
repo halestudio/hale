@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Before and after</title>
+<script type="text/javascript"
+	src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/scripts/beforeafter/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript"
+	src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/scripts/beforeafter/js/jquery-ui-1.8.13.custom.min.js"></script>
+	<!-- Before/After JQuery Plugin from http://www.catchmyfame.com/2009/06/25/jquery-beforeafter-plugin/ -->
+<script type="text/javascript"
+	src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/scripts/beforeafter/js/jquery.beforeafter-1.4.min.js"></script>
+<script type="text/javascript">
+	$(function() {
+		$('#badefault')
+				.beforeAfter(
+						{
+							imagePath : '../../../eu.esdihumboldt.hale.doc.user/scripts/beforeafter/js/',
+							beforeLinkText : 'HALE 2.1',
+							afterLinkText : 'HALE 2.5'
+						});
+
+		$('#badata')
+				.beforeAfter(
+						{
+							imagePath : '../../../eu.esdihumboldt.hale.doc.user/scripts/beforeafter/js/',
+							beforeLinkText : 'HALE 2.1',
+							afterLinkText : 'HALE 2.5'
+						});
+	});
+</script>
+</head>
+<body>
+	<h1>Before and after</h1>
+	<p>This gives you an impression on how the look of HALE has changed
+		between the 2.1 and 2.5 releases. The data and default perspectives
+		were already there in 2.1 and the layout hasn't changed that much - move the
+		slider to compare them.</p>
+
+	<h2>Data perspective</h2>
+
+	<div id="badata">
+		<div>
+			<img style="max-width: none;" alt="HALE 2.1"
+				src="images/data_21_match_800.jpg" width="800" height="645" />
+		</div>
+		<div>
+			<img style="max-width: none;" alt="HALE 2.5"
+				src="images/data_25_match_800.jpg" width="800" height="645" />
+		</div>
+	</div>
+
+	<h2>Default perspective</h2>
+
+	<div id="badefault">
+		<div>
+			<img style="max-width: none;" alt="HALE 2.1"
+				src="images/default_21_800.jpg" width="800" height="645" />
+		</div>
+		<div>
+			<img style="max-width: none;" alt="HALE 2.5"
+				src="images/default_25_800.jpg" width="800" height="645" />
+		</div>
+	</div>
+</body>
+</html>
