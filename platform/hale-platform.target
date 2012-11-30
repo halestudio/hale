@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="46">
+<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="47">
 <locations>
 <location path="${project_loc:hale-platform}/target/org.eclipse.jetty" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.javolution" type="Directory"/>
@@ -80,5 +80,6 @@
 <location path="${project_loc:hale-platform}/target/javax.mail" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/fr.inrialpes.exmo" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.jdesktop.swingx" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/eu.esdihumboldt.hale" type="Directory"/>
 </locations>
 </target>

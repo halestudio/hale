@@ -1,0 +1,9 @@
+Allow using the internal browser for displaying the help on Windows and
+Mac OS X.
+On some Linux systems the JVM may crash when the help browser based on
+SWT is used, so the configuration is separated into OS specific fragments.
+
+IMPORTANT: This fragment needs to be available prepackaged in the target
+platform, because the PDE build won't build the fragments on its own. As such,
+changes made here must be in snych with the packaged fragment in the target
+platform!

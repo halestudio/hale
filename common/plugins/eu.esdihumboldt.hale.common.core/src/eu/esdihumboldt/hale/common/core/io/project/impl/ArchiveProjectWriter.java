@@ -32,7 +32,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FileUtils;
-import org.eclipse.core.runtime.FileLocator;
 
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
@@ -47,6 +46,7 @@ import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.util.XMLSchemaUpdater;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
@@ -72,10 +72,6 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 	 */
 	public static final String EXLUDE_DATA_FILES = "excludedata";
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#execute(eu.esdihumboldt.hale.common.core.io.ProgressIndicator,
-	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
-	 */
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
@@ -90,7 +86,7 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		ZipOutputStream zip = new ZipOutputStream(getTarget().getOutput());
 
 		// false is correct if getParameter is null because false is default
-		boolean webresources = Boolean.parseBoolean(getParameter(INCLUDE_WEB_RESOURCES));
+		boolean includeWebresources = Boolean.parseBoolean(getParameter(INCLUDE_WEB_RESOURCES));
 		SubtaskProgressIndicator subtask = new SubtaskProgressIndicator(progress);
 
 		// save old IO configurations
@@ -102,7 +98,7 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		IOConfiguration oldSaveConfig = config;
 
 		// copy resources to the temp directory and update xml schemas
-		updateResources(tempDir, webresources, subtask);
+		updateResources(tempDir, includeWebresources, subtask, reporter);
 
 		// update target save configuration of the project
 		config.getProviderConfiguration().remove(PARAM_TARGET);
@@ -136,8 +132,8 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 	}
 
 	// update the resources and copy them into target directory
-	private void updateResources(File targetDirectory, boolean allResources,
-			ProgressIndicator progress) throws IOException {
+	private void updateResources(File targetDirectory, boolean includeWebResources,
+			ProgressIndicator progress, IOReporter reporter) throws IOException {
 		progress.begin("Copy resources", ProgressIndicator.UNKNOWN);
 		try {
 			List<IOConfiguration> resources = getProject().getResources();
@@ -164,7 +160,8 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 				try {
 					pathUri = new URI(path);
 				} catch (URISyntaxException e1) {
-					log.debug("Path of resource is invalid", e1);
+					reporter.error(new IOMessageImpl("Skipped resource because of invalid URI: "
+							+ path, e1));
 					continue;
 				}
 				String scheme = pathUri.getScheme();
@@ -172,33 +169,27 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 				// if scheme is null it has to be a local file represented by a
 				// relative path
 				if (scheme != null) {
-					if (allResources && (scheme.equals("http") || scheme.equals("https"))
-							|| scheme.equals("resource")) {
+					if (includeWebResources || // web resources are OK
+							!(scheme.equals("http") || scheme.equals("https"))
+					// or not a web resource
+					) {
 						DefaultInputSupplier supplier = new DefaultInputSupplier(pathUri);
 						input = supplier.getInput();
 					}
-					else if (scheme.equals("bundleentry")) {
-						File in = null;
-						try {
-							in = new File(FileLocator.toFileURL(pathUri.toURL()).toURI());
-						} catch (Exception e) {
-							log.debug("Can not locate bundleentry", e);
-						}
-						input = new FileInputStream(in);
-					}
-					else if (scheme.equals("file")) {
-						input = new FileInputStream(new File(pathUri));
-					}
-					else
+					else {
+						// web resource that should not be included this time
 						continue;
+					}
 				}
-				else
-					input = new FileInputStream(new File(pathUri));
+				else {
+					// now can't open that, can we?
+					reporter.error(new IOMessageImpl(
+							"Skipped resource because it cannot be loaded from "
+									+ pathUri.toString(), null));
+					continue;
+				}
 
-				// only xml schemas have to be updated
-				String contentType = providerConfig.get(ImportProvider.PARAM_CONTENT_TYPE);
-
-				progress.setCurrentTask("Reorganizing XML schema at " + path);
+				progress.setCurrentTask("Copying resource at " + path);
 
 				// every resource file is copied into an own resource
 				// directory in the target directory
@@ -217,12 +208,13 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 				ByteStreams.copy(input, output);
 				output.close();
 
-				// update all other schema files
+				// update schema files
+
+				// only xml schemas have to be updated
+				String contentType = providerConfig.get(ImportProvider.PARAM_CONTENT_TYPE);
 				if (contentType.equals(XSD_CONTENT_TYPE)) {
-					XMLSchemaUpdater.update(newFile, pathUri, allResources);
-				}
-				else {
-					progress.setCurrentTask("Copying resource at " + path);
+					progress.setCurrentTask("Reorganizing XML schema at " + path);
+					XMLSchemaUpdater.update(newFile, pathUri, includeWebResources, reporter);
 				}
 
 				newProvConf.put(ImportProvider.PARAM_SOURCE, new File(new File(targetDirectory,

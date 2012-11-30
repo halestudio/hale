@@ -40,7 +40,6 @@ http://www.esdi-community.eu/projects/show/hale
       </win>
    </launcher>
 
-
    <vm>
    </vm>
 
@@ -161,6 +160,8 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.prefixmapper"/>
       <plugin id="eu.esdihumboldt.hale.ui"/>
       <plugin id="eu.esdihumboldt.hale.ui.application"/>
+      <plugin id="eu.esdihumboldt.hale.ui.application.help.external" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.ui.application.help.internal" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.ui.cache"/>
       <plugin id="eu.esdihumboldt.hale.ui.codelist"/>
       <plugin id="eu.esdihumboldt.hale.ui.common"/>
