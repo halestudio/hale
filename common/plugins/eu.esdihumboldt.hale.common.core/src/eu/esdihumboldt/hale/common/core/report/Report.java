@@ -59,14 +59,6 @@ public interface Report<T extends Message> {
 	public Date getTimestamp();
 
 	/**
-	 * Get the duration of the report in milliseconds. Returns 0 if
-	 * {@link #getTimestamp()} is {@code null}
-	 * 
-	 * @return the duration time
-	 */
-	public long getDuration();
-
-	/**
 	 * Get the start time of the report. This is optional. If a start time is
 	 * present the {@link #getTimestamp()} can be seen as an end time and used
 	 * to compute a duration.
