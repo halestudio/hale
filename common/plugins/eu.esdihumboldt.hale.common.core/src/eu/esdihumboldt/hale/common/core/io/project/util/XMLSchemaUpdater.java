@@ -70,8 +70,6 @@ public class XMLSchemaUpdater {
 
 	private static final ALogger log = ALoggerFactory.getLogger(XMLSchemaUpdater.class);
 
-	private static final Map<URI, File> imports = new HashMap<URI, File>();
-
 	private final static String IMPORT = "schema/import";
 	private final static String INCLUDE = "schema/include";
 
@@ -105,13 +103,18 @@ public class XMLSchemaUpdater {
 	 */
 	public static void update(File resource, URI oldFile, boolean includeWebResources,
 			IOReporter reporter) throws IOException {
-		changeNodeAndCopyFile(resource, oldFile, IMPORT, includeWebResources, reporter);
-		changeNodeAndCopyFile(resource, oldFile, INCLUDE, includeWebResources, reporter);
+		update(resource, oldFile, includeWebResources, reporter, new HashMap<URI, File>());
+	}
+
+	private static void update(File resource, URI oldFile, boolean includeWebResources,
+			IOReporter reporter, Map<URI, File> imports) throws IOException {
+		changeNodeAndCopyFile(resource, oldFile, IMPORT, includeWebResources, reporter, imports);
+		changeNodeAndCopyFile(resource, oldFile, INCLUDE, includeWebResources, reporter, imports);
 	}
 
 	private static void changeNodeAndCopyFile(File currentSchema, URI oldPath,
-			String xPathExpression, boolean includeWebResources, IOReporter reporter)
-			throws IOException {
+			String xPathExpression, boolean includeWebResources, IOReporter reporter,
+			Map<URI, File> imports) throws IOException {
 		File curSchema = currentSchema;
 
 		// counter for the directory because every resource should have his own
@@ -263,7 +266,7 @@ public class XMLSchemaUpdater {
 			// if the newFile is not null we found a new file which is not
 			// read yet so we have to update it
 			if (includednewFile != null) {
-				update(includednewFile, locationUri, includeWebResources, reporter);
+				update(includednewFile, locationUri, includeWebResources, reporter, imports);
 			}
 		}
 	}
