@@ -181,8 +181,8 @@ public class XMLSchemaUpdater {
 			InputStream input = null;
 			if (scheme != null) {
 				if (includeWebResources || // web resources are OK
-						!(scheme.equals("http") || scheme.equals("https") || scheme
-								.equals("resource")) // not a web resource
+						!(scheme.equals("http") || scheme.equals("https"))
+				// or not a web resource
 				) {
 					DefaultInputSupplier supplier = new DefaultInputSupplier(locationUri);
 					input = supplier.getInput();
