@@ -25,8 +25,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
-import org.joda.time.Period;
-import org.joda.time.format.PeriodFormat;
 
 import eu.esdihumboldt.hale.common.core.report.Report;
 
@@ -113,21 +111,6 @@ public class ReportSummary extends AbstractReportSummary {
 		data.right = new FormAttachment(timeText, -ITabbedPropertyConstants.HSPACE);
 		data.top = new FormAttachment(timeText, 0, SWT.CENTER);
 		timeLabel.setLayoutData(data);
-
-		durationText = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
-		durationText.setEditable(false);
-		data = new FormData();
-		data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
-		data.right = new FormAttachment(100, 0);
-		data.top = new FormAttachment(timeText, ITabbedPropertyConstants.VSPACE);
-		durationText.setLayoutData(data);
-
-		CLabel durationLabel = getWidgetFactory().createCLabel(composite, "Duration:"); //$NON-NLS-1$
-		data = new FormData();
-		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(durationText, -ITabbedPropertyConstants.HSPACE);
-		data.top = new FormAttachment(durationText, 0, SWT.CENTER);
-		durationLabel.setLayoutData(data);
 	}
 
 	/**
@@ -138,6 +121,5 @@ public class ReportSummary extends AbstractReportSummary {
 		successText.setText(report.isSuccess() + "");
 		summaryText.setText(report.getSummary());
 		timeText.setText(report.getTimestamp() + "");
-		durationText.setText(PeriodFormat.wordBased().print(new Period(report.getDuration())));
 	}
 }

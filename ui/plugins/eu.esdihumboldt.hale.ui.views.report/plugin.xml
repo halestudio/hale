@@ -28,9 +28,10 @@
       <propertySections
             contributorId="eu.esdihumboldt.hale.ui.views.report.properties">
          <propertySection
+               afterSection="eu.esdihumboldt.hale.ui.views.report.properties.summary.duration"
                class="eu.esdihumboldt.hale.ui.views.report.properties.summary.ReportIOSummary"
                enablesFor="1"
-               id="eu.esdihumboldt.hale.ui.views.report.properties.summary.name"
+               id="eu.esdihumboldt.hale.ui.views.report.properties.summary.io"
                tab="eu.esdihumboldt.hale.ui.views.report.properties.summary">
             <input
                   type="eu.esdihumboldt.hale.common.core.io.report.IOReport">
@@ -71,6 +72,14 @@
             <input
                   type="eu.esdihumboldt.hale.common.core.report.Report">
             </input>
+         </propertySection>
+         <propertySection
+               afterSection="eu.esdihumboldt.hale.ui.views.report.properties.summary.name"
+               class="eu.esdihumboldt.hale.ui.views.report.properties.summary.DurationSection"
+               enablesFor="1"
+               filter="eu.esdihumboldt.hale.ui.views.report.properties.summary.DurationSectionFilter"
+               id="eu.esdihumboldt.hale.ui.views.report.properties.summary.duration"
+               tab="eu.esdihumboldt.hale.ui.views.report.properties.summary">
          </propertySection>
       </propertySections>
    </extension>
