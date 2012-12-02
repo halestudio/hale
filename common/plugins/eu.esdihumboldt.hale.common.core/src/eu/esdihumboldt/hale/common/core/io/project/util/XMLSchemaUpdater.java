@@ -176,8 +176,6 @@ public class XMLSchemaUpdater {
 			}
 
 			String scheme = locationUri.getScheme();
-			// if scheme is null it has to be a local file represented by a
-			// relative path
 			InputStream input = null;
 			if (scheme != null) {
 				if (includeWebResources || // web resources are OK
