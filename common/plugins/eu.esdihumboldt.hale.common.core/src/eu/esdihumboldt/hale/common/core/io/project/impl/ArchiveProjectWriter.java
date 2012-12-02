@@ -166,8 +166,6 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 				}
 				String scheme = pathUri.getScheme();
 				InputStream input = null;
-				// if scheme is null it has to be a local file represented by a
-				// relative path
 				if (scheme != null) {
 					if (includeWebResources || // web resources are OK
 							!(scheme.equals("http") || scheme.equals("https"))
