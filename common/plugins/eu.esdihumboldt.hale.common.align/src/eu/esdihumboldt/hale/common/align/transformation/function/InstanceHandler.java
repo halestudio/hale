@@ -20,6 +20,7 @@ import java.util.Map;
 
 import com.google.common.collect.ListMultimap;
 
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
@@ -53,7 +54,7 @@ public interface InstanceHandler<E extends TransformationEngine> {
 	 */
 	public ResourceIterator<FamilyInstance> partitionInstances(InstanceCollection instances,
 			String transformationIdentifier, E engine,
-			ListMultimap<String, String> transformationParameters,
+			ListMultimap<String, ParameterValue> transformationParameters,
 			Map<String, String> executionParameters, TransformationLog log)
 			throws TransformationException;
 }

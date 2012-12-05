@@ -234,16 +234,15 @@ public abstract class GmlWriterUtil {
 		QName name = step.getName();
 		if (!step.isTransient()) {
 			writeStartElement(writer, name);
-			if (step.isDowncast()) {
-				// add xsi:type
-				writer.writeAttribute(StreamGmlWriter.SCHEMA_INSTANCE_NS, "type", step.getType()
-						.getName().getLocalPart()); // XXX namespace needed for
-													// the attribute value?
-			}
+
 			// write eventual required ID
 			if (generateRequiredID) {
 				GmlWriterUtil.writeRequiredID(writer, step.getType(), null, false);
 			}
+
+			// write additional attributes/elements according to the path
+			// element
+			step.prepareWrite(writer);
 		}
 	}
 

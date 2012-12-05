@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="stylesheet" type="text/css" href="new.css" />
+<title>What's new in HALE 2.5.0.RC1</title>
+</head>
+<body>
+	<h1>What's new in HALE 2.5.0.RC1</h1>
+	<p>Here are descriptions of some of the more interesting or
+		significant changes made to HALE for the 2.5.0.RC1 release candidate.
+		The described features are new since the 2.5.0.M2 milestone release.</p>
+
+	<ul>
+		<li><a href="#2_5_0_RC1_UI" shape="rect">User Interface</a></li>
+		<li><a href="#2_5_0_RC1_Core" shape="rect">Under the Hood</a></li>
+	</ul>
+
+	<table border="0" cellpadding="15" cellspacing="0" class="news" id="2_5_0_RC1">
+		<tbody>
+
+			<!-- User Interface -->
+			<tr>
+				<td class="section" colspan="2" id="2_5_0_RC1_UI" rowspan="1"><h2>User
+						Interface</h2></td>
+			</tr>
+
+			<tr id="validation">
+				<td class="title" colspan="1" rowspan="1">Validation of
+					transformed instances</td>
+				<td class="content" colspan="1" rowspan="1">During the
+					transformation, all new instances are validated against the
+					constraints that come with the target schema. The results are
+					presented in the validation report, highlighting any problems with
+					missing or invalid property values, grouped by the property where
+					they occur. Problematic instances can be inspected in the data
+					view.
+					<p>
+						<img src="2_5_0_RC1_images/validation_properties.png" />
+					</p>
+					<p>
+						For more information, see <a
+							href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/data/validate_data.html">Validate
+							the transformed data</a>.
+					</p>
+				</td>
+			</tr>
+
+			<tr id="validation-data-view">
+				<td class="title" colspan="1" rowspan="1">Instance validation
+					in data views</td>
+				<td class="content" colspan="1" rowspan="1">Validation
+					information is also available in the data views. When using the <em>Compare</em>
+					mode, a validation summary is displayed as tooltip. In the <em>Explore</em>
+					mode, validation warnings are shown for the affected properties.
+					<p>
+						<img src="2_5_0_RC1_images/validate_data_view.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="population">
+				<td class="title" colspan="1" rowspan="1">Instance population</td>
+				<td class="content" colspan="1" rowspan="1">If you have loaded
+					a source data set, information about how the schema elements are
+					populated in the data are displayed. The population states the
+					overall count of instances of the respective type or values of the
+					respective property. In the <em>Schema Explorer</em> you can filter
+					unpopulated properties to only focus on those where values are
+					present.
+					<p>
+						<img src="2_5_0_RC1_images/population_example.png" />
+					</p>
+					<p>
+						For more information, see the <a
+							href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/reference/schema_elements.html">Schema
+							elements</a> reference.
+					</p>
+				</td>
+			</tr>
+
+			<tr id="schema-presets">
+				<td class="title" colspan="1" rowspan="1">Load pre-defined
+					schemas</td>
+				<td class="content" colspan="1" rowspan="1">HALE now offers a
+					selection of pre-defined schemas you can load. When importing a
+					source or target schema just select <b>From preset</b> and then
+					click on the selection field to show the list of pre-defined
+					schemas. The tag <em>Bundled</em> marks a schema that is bundled
+					with HALE and can be loaded without internet connection.
+					<p>Currently the presets include CityGML schemas from
+						citygml.org and the INSPIRE Annex I GML Application Schemas from
+						the INSPIRE schema repository.</p>
+					<p>
+						<img src="2_5_0_RC1_images/preset.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="compare-population">
+				<td class="title" colspan="1" rowspan="1">Compare only
+					populated properties</td>
+				<td class="content" colspan="1" rowspan="1">In the data views
+					there is a new variant of the <em>Compare</em> mode, which only
+					displays properties populated in the loaded source data set or the
+					live transformation result - this makes it easier to compare
+					instances, especially with very complex schemas.
+					<p>
+						<img src="2_5_0_RC1_images/compare_populated.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="transform-external">
+				<td class="title" colspan="1" rowspan="1">Transform external
+					data</td>
+				<td class="content" colspan="1" rowspan="1">Up to now you had
+					to load your data into HALE to execute a transformation and export
+					it - but using source data to support in the mapping creation with
+					HALE is best done with a manageable example. In the new <em>Transformation</em>
+					menu you have the possibility to launch a dedicated transformation
+					job based on the current alignment and schemas, to transform bigger
+					data sets.
+					<p>
+						<img src="2_5_0_RC1_images/transform_menu.png" />
+					</p>
+					<p>
+						For more information, see <a
+							href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/data/transform_data.html">Transform
+							external data</a>.
+					</p>
+				</td>
+			</tr>
+
+			<tr id="mapping-view">
+				<td class="title" colspan="1" rowspan="1">Show cells associated
+					to a schema element</td>
+				<td class="content" colspan="1" rowspan="1">If you want to see
+					or edit the mapping cells associated with a specific schema element
+					you can use the new <em>Mapping View</em>. It displays the cells
+					associated to the schema element selected in the <em>Schema
+						Explorer</em>. Like in the <a
+					href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/views/alignment.html">Alignment
+						View</a>, you can use the context menu to edit or delete a mapping
+					cell.
+					<p>
+						<img src="2_5_0_RC1_images/mapping_show.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="cell-replace">
+				<td class="title" colspan="1" rowspan="1">Replace a mapping
+					cell</td>
+				<td class="content" colspan="1" rowspan="1">Replacing a mapping
+					cell up to now was a two-step task - deleting the old relation and
+					then creating a new one. This can be tedious if you are working
+					with a source data set and the transformation is run in between.
+					Now for property relations you have the possibility to do it in one
+					step. For replacement, every property function is offered, not
+					restricted to those applicable to the properties involved in the
+					relation you want to delete.
+					<p>
+						<img src="2_5_0_RC1_images/replace_cell.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="compare-select">
+				<td class="title" colspan="1" rowspan="1">Select specific
+					values in Compare mode in data views</td>
+				<td class="content" colspan="1" rowspan="1">When using the <em>Compare</em>
+					mode in a data view, you now can select a specific value for a
+					property if there are multiple. So if a value is annotated with
+					something like <b>(1 of 7)</b> you can hover over the corresponding
+					table cell and select a different value (e.g. the second, third,
+					etc.) from the combo box that appears.
+					<p>
+						<img src="2_5_0_RC1_images/compare_select.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="sequential-id-function">
+				<td class="title" colspan="1" rowspan="1">Generate sequential
+					identifiers</td>
+				<td class="content" colspan="1" rowspan="1">A new function has
+					been added that allows generating sequential identifiers. You can
+					specify a prefix and suffix as desired or needed to create a valid
+					value for the target property.
+					<p>
+						<img src="2_5_0_RC1_images/sequential_id_function.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="crs-select">
+				<td class="title" colspan="1" rowspan="1">Specify missing SRS
+					information</td>
+				<td class="content" colspan="1" rowspan="1">If the spatial
+					reference system can't be determined for a geometry when loading a
+					Shapefile or GML file, HALE now asks you to specify the SRS to use,
+					either through an EPSG code or a WKT string.
+					<p>
+						<img src="2_5_0_RC1_images/crs_select.png" />
+					</p>
+				</td>
+			</tr>
+
+			<!-- Under the Hood -->
+			<tr>
+				<td class="section" colspan="2" id="2_5_0_RC1_Core" rowspan="1"><h2>Under
+						the Hood</h2></td>
+			</tr>
+
+			<tr id="java-bundled">
+				<td class="title" colspan="1" rowspan="1">Java bundled with
+					HALE on Windows and Linux</td>
+				<td class="content" colspan="1" rowspan="1">No need to install
+					Java yourself - HALE includes its own version of Java it runs with.
+					If you want to use your local version of Java, just delete the <em>jre</em>
+					folder in the HALE directory.
+					<p>
+						<img src="2_5_0_RC1_images/duke.png" width="100" height="180" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="gzip-support">
+				<td class="title" colspan="1" rowspan="1">GZiped XML</td>
+				<td class="content" colspan="1" rowspan="1">HALE now supports
+					directly reading, writing and validating <b>gzip</b> compressed XML
+					or GML files.
+				</td>
+			</tr>
+
+			<tr id="shapefile-import-memory">
+				<td class="title" colspan="1" rowspan="1">Improved Shapefile
+					data import</td>
+				<td class="content" colspan="1" rowspan="1">When loading data
+					from a Shapefile, the contained features are streamed instead of
+					loaded completely into memory. This allows loading big Shapefiles
+					or using them in the external data transformation.</td>
+			</tr>
+
+			<tr id="orientdb-space">
+				<td class="title" colspan="1" rowspan="1">Improved internal
+					database storage</td>
+				<td class="content" colspan="1" rowspan="1">The space the
+					internal database uses has been drastically reduced. The internal
+					database serves for temporarily storing source and transformed
+					instances.</td>
+			</tr>
+
+			<tr id="2_1-projects">
+				<td class="title" colspan="1" rowspan="1">Load HALE 2.1
+					projects</td>
+				<td class="content" colspan="1" rowspan="1">Projects created in
+					HALE up to version 2.1.x can now be imported again, though with
+					some limitations:
+					<ul>
+						<li>Previously defined filters are not applied</li>
+						<li>The <em>NilReasonFunction</em> is converted to an assignment
+						</li>
+						<li>The <em>BoundingBoxFunction</em> is not supported
+						</li>
+						<li>The <em>ClipByRectangleFunction</em> is not supported
+						</li>
+						<li>Problems can arise if multiple properties with the same
+							local name but different namespace exist in a type and were
+							mapped.</li>
+					</ul> Please take a look at the reports after importing such a project,
+					to identify if and where there might be problems.
+				</td>
+			</tr>
+
+		</tbody>
+	</table>
+</body>
+</html>

@@ -1,0 +1,7 @@
+Forces use of external browser on Linux. On some systems the JVM may crash when
+the help browser based on SWT is used.
+
+IMPORTANT: This fragment needs to be available prepackaged in the target
+platform, because the PDE build won't build the fragments on its own. As such,
+changes made here must be in snych with the packaged fragment in the target
+platform!

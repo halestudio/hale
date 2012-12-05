@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="HALE Server" id="eu.esdihumboldt.hale.server.application.Server" application="org.eclipse.ui.ide.workbench" version="2.5.0" useFeatures="false" includeLaunchers="true">
+<product name="HALE Server" id="eu.esdihumboldt.hale.server.application.Server" application="org.eclipse.ui.ide.workbench" version="2.5.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -76,6 +76,7 @@
       <plugin id="eu.esdihumboldt.hale.common.instance"/>
       <plugin id="eu.esdihumboldt.hale.common.instance.orient"/>
       <plugin id="eu.esdihumboldt.hale.common.schema"/>
+      <plugin id="eu.esdihumboldt.hale.common.scripting"/>
       <plugin id="eu.esdihumboldt.hale.io.csv"/>
       <plugin id="eu.esdihumboldt.hale.io.gml"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.geometry"/>

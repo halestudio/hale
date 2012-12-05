@@ -22,6 +22,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.IContextProvider;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
@@ -128,7 +129,7 @@ public class StyledMapView extends MapView {
 				ISelection sel = getSite().getSelectionProvider().getSelection();
 
 				// show summary about selected instances
-				if (!sel.isEmpty() && sel instanceof InstanceSelection) {
+				if (sel != null && !sel.isEmpty() && sel instanceof InstanceSelection) {
 					List<Object> source = new ArrayList<Object>();
 					List<Object> transformed = new ArrayList<Object>();
 
@@ -193,8 +194,17 @@ public class StyledMapView extends MapView {
 
 						@Override
 						public void run() {
-							swtMenu.setLocation(e.getXOnScreen(), e.getYOnScreen());
-							swtMenu.setVisible(true);
+							if (Platform.WS_GTK.equals(Platform.getWS())) {
+								/*
+								 * Work-around (or rather hack) for Eclipse Bug
+								 * 233450
+								 */
+								GTKAWTBridgePopupFix.showMenu(swtMenu);
+							}
+							else {
+								swtMenu.setLocation(e.getXOnScreen(), e.getYOnScreen());
+								swtMenu.setVisible(true);
+							}
 						}
 
 					});

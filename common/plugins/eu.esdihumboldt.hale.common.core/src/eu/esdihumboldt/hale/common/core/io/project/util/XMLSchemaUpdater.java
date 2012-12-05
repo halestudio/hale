@@ -17,7 +17,6 @@
 package eu.esdihumboldt.hale.common.core.io.project.util;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,7 +42,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.eclipse.core.runtime.FileLocator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -56,6 +54,8 @@ import com.google.common.io.ByteStreams;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectWriter;
+import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 
 /**
@@ -69,8 +69,6 @@ import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 public class XMLSchemaUpdater {
 
 	private static final ALogger log = ALoggerFactory.getLogger(XMLSchemaUpdater.class);
-
-	private static final Map<URI, File> imports = new HashMap<URI, File>();
 
 	private final static String IMPORT = "schema/import";
 	private final static String INCLUDE = "schema/include";
@@ -97,20 +95,26 @@ public class XMLSchemaUpdater {
 	 * 
 	 * @param resource the file of the new resource (will be adapted)
 	 * @param oldFile the file of the old resource (will be untouched)
-	 * @param webResources true if web resources should be copied and updated
-	 *            too otherwise false
+	 * @param includeWebResources true if web resources should be copied and
+	 *            updated too otherwise false
+	 * @param reporter the reporter of the current I/O process where errors
+	 *            should be reported to
 	 * @throws IOException if file can not be updated
 	 */
-	public static void update(File resource, URI oldFile, boolean webResources) throws IOException {
+	public static void update(File resource, URI oldFile, boolean includeWebResources,
+			IOReporter reporter) throws IOException {
+		update(resource, oldFile, includeWebResources, reporter, new HashMap<URI, File>());
+	}
 
-		changeNodeAndCopyFile(resource, oldFile, IMPORT, webResources);
-
-		changeNodeAndCopyFile(resource, oldFile, INCLUDE, webResources);
+	private static void update(File resource, URI oldFile, boolean includeWebResources,
+			IOReporter reporter, Map<URI, File> imports) throws IOException {
+		changeNodeAndCopyFile(resource, oldFile, IMPORT, includeWebResources, reporter, imports);
+		changeNodeAndCopyFile(resource, oldFile, INCLUDE, includeWebResources, reporter, imports);
 	}
 
 	private static void changeNodeAndCopyFile(File currentSchema, URI oldPath,
-			String xPathExpression, boolean allResources) throws IOException {
-
+			String xPathExpression, boolean includeWebResources, IOReporter reporter,
+			Map<URI, File> imports) throws IOException {
 		File curSchema = currentSchema;
 
 		// counter for the directory because every resource should have his own
@@ -121,15 +125,14 @@ public class XMLSchemaUpdater {
 		try {
 			builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
-			log.debug("Can not create a DocumentBuilder", e);
-			return;
+			throw new IOException("Can not create a DocumentBuilder", e);
 		}
 		builder.setEntityResolver(new EntityResolver() {
 
 			@Override
 			public InputSource resolveEntity(String publicId, String systemId) throws SAXException,
 					IOException {
-
+				// FIXME some documentation would be nice why this is OK here?!
 				return new InputSource(new StringReader(""));
 			}
 		});
@@ -149,8 +152,7 @@ public class XMLSchemaUpdater {
 		} catch (XPathExpressionException e) {
 			// should not happen because of constant variables IMPORT and
 			// INCLUDE
-			log.debug("The XPathExpression is wrong", e);
-			return;
+			throw new IOException("The XPathExpression is wrong", e);
 		}
 
 		// iterate over all imports or includes and get the schemaLocations
@@ -161,78 +163,53 @@ public class XMLSchemaUpdater {
 			Node locationNode = identifier.getAttributes().getNamedItem("schemaLocation");
 			String location = locationNode.getNodeValue();
 
-			URI file = null;
+			URI locationUri = null;
 			try {
-				file = new URI(location);
+				locationUri = new URI(location);
 			} catch (URISyntaxException e1) {
-				log.debug("The schemaLocation is no valid file", e1);
+				reporter.error(new IOMessageImpl("The schemaLocation is no valid file", e1));
 				continue;
 			}
-			String scheme = file.getScheme();
-			// only local resources have to be updated
-			// if scheme is null it has to be a local file represented by a
-			// relative path
+
+			if (!locationUri.isAbsolute()) {
+				locationUri = oldPath.resolve(locationUri);
+			}
+
+			String scheme = locationUri.getScheme();
 			InputStream input = null;
 			if (scheme != null) {
-				if (allResources && (scheme.equals("http") || scheme.equals("https"))
-						|| scheme.equals("resource")) {
-					DefaultInputSupplier supplier = new DefaultInputSupplier(file);
+				if (includeWebResources || // web resources are OK
+						!(scheme.equals("http") || scheme.equals("https"))
+				// or not a web resource
+				) {
+					DefaultInputSupplier supplier = new DefaultInputSupplier(locationUri);
 					input = supplier.getInput();
 				}
-				else if (scheme.equals("bundleentry")) {
-					try {
-						File in = new File(FileLocator.toFileURL(file.toURL()).toURI());
-						input = new FileInputStream(in);
-					} catch (URISyntaxException e) {
-						log.debug("Can not open FileInputStream", e);
-					}
-				}
-				else if (scheme.equals("file")) {
-					input = new FileInputStream(new File(file));
-				}
-				else
+				else {
+					// web resource that should not be included this time
 					continue;
+				}
 			}
-			else
-				try {
-					URI in = new URI(oldPath.toString().substring(0,
-							oldPath.toString().lastIndexOf("/") + 1)
-							+ file.toString());
-					input = new DefaultInputSupplier(in).getInput();
-				} catch (URISyntaxException e1) {
-					log.debug("Path of old Schema or current file is invalid", e1);
-					continue;
-				}
-
-			String filename = location;
-			if (location.contains("/"))
-				filename = location.substring(location.lastIndexOf("/"));
+			else {
+				// file is invalid - at least report that
+				reporter.error(new IOMessageImpl(
+						"Skipped resource because it cannot be loaded from "
+								+ locationUri.toString(), null));
+				continue;
+			}
 
 			// every file needs his own directory because if name conflicts
+			String filename = location;
+			if (location.contains("/"))
+				filename = location.substring(location.lastIndexOf("/") + 1);
 			filename = count + "/" + filename;
 
 			File includednewFile = null;
 
-			URI path = null;
-			// if URI is not absolute we have to resolve an absolute URI
-			if (!file.isAbsolute()) {
-				try {
-					// get the absolute path of the included schema
-					path = new URI(oldPath.toString().substring(0,
-							oldPath.toString().lastIndexOf("/") + 1)
-							+ location);
-				} catch (URISyntaxException e) {
-					log.debug("Path of old Schema or current file is invalid", e);
-					continue;
-				}
-			}
-			else
-				path = file;
-
-			if (imports.containsKey(path)) {
+			if (imports.containsKey(locationUri)) {
 				// if the current xml schema is already updated we have to
 				// find the relative path to this resource
-				String relative = getRelativePath(imports.get(path).toURI().toString(),
+				String relative = getRelativePath(imports.get(locationUri).toURI().toString(),
 						currentSchema.toURI().toString(), "/");
 				locationNode.setNodeValue(relative);
 			}
@@ -260,8 +237,7 @@ public class XMLSchemaUpdater {
 
 				// every xml schema should be updated (and copied) only once
 				// so we save the currently adapted resource in a map
-
-				imports.put(path, includednewFile);
+				imports.put(locationUri, includednewFile);
 			}
 
 			// write new XML-File
@@ -288,7 +264,7 @@ public class XMLSchemaUpdater {
 			// if the newFile is not null we found a new file which is not
 			// read yet so we have to update it
 			if (includednewFile != null) {
-				update(includednewFile, path, allResources);
+				update(includednewFile, locationUri, includeWebResources, reporter, imports);
 			}
 		}
 	}

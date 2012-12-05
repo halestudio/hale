@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="eu.esdihumboldt.hale.xslt" name="XSL Transformation Functions" schema="schema/eu.esdihumboldt.hale.xslt.exsd"/>
+   <extension
+         point="eu.esdihumboldt.hale.io.provider">
+      <provider
+            class="eu.esdihumboldt.hale.io.xslt.XsltExport"
+            id="eu.esdihumboldt.hale.io.xslt"
+            name="XSLT transformation">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.xslt">
+         </contentType>
+      </provider>
+   </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="xsl, xslt,xml"
+            id="eu.esdihumboldt.hale.io.xslt"
+            name="XSLT transformation"
+            priority="normal">
+      </content-type>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.xslt">
+      <typeTransformation
+            class="eu.esdihumboldt.hale.io.xslt.transformations.XslRetype"
+            function="eu.esdihumboldt.hale.align.retype"
+            id="eu.esdihumboldt.hale.align.retype.xslt">
+      </typeTransformation>
+   </extension>
+
+</plugin>

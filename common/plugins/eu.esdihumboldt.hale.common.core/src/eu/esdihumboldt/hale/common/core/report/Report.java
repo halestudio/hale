@@ -94,4 +94,5 @@ public interface Report<T extends Message> {
 	 * @return the message type
 	 */
 	public Class<T> getMessageType();
+
 }

@@ -29,8 +29,8 @@ import org.springframework.core.convert.ConversionException;
  */
 public class DigitCountValidator extends AbstractValidator {
 
-	private Type type;
-	private int length;
+	private final Type type;
+	private final int length;
 
 	/**
 	 * Construct a validator that checks the digit count of the input to match
@@ -102,7 +102,7 @@ public class DigitCountValidator extends AbstractValidator {
 				return null;
 			else
 				return "Input must have at most " + length + " total digits but has "
-						+ decimal.scale() + ".";
+						+ numberString.length() + ".";
 		default:
 			return null; // all types checked, doesn't happen
 		}

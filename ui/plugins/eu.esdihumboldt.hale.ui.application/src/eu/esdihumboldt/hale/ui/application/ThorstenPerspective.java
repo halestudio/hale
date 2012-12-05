@@ -32,12 +32,6 @@ import eu.esdihumboldt.hale.ui.views.schemas.SchemasView;
 public class ThorstenPerspective implements IPerspectiveFactory {
 
 	/**
-	 * Identifer of the map view (which is not a dependency of this bundle). See
-	 * StyledMapView.ID
-	 */
-	public static final String MAP_ID = "eu.esdihumboldt.hale.ui.views.styledmap";
-
-	/**
 	 * @see org.eclipse.ui.IPerspectiveFactory#createInitialLayout(org.eclipse.ui.IPageLayout)
 	 */
 	@Override
@@ -49,7 +43,7 @@ public class ThorstenPerspective implements IPerspectiveFactory {
 				"bottomLeft", IPageLayout.BOTTOM, 0.5f, editorArea); //$NON-NLS-1$
 		bottomLeft.addView(IPageLayout.ID_PROP_SHEET);
 		bottomLeft.addView(AlignmentView.ID);
-		bottomLeft.addView(MAP_ID);
+		// map is added here through perspective extension
 
 		// bottom right
 		IFolderLayout bottomRight = _layout.createFolder(

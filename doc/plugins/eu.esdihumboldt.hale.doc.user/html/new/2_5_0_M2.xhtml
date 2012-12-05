@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="stylesheet" type="text/css" href="new.css" />
+<title>What's new in HALE 2.5.0.M2</title>
+</head>
+<body>
+	<h1>What's new in HALE 2.5.0.M2</h1>
+	<p>Here are descriptions of some of the more interesting or
+		significant changes made to HALE for the 2.5.0.M2 milestone release.
+		The described features are new since the 2.5.0.M1 milestone release.</p>
+
+	<ul>
+		<li><a href="#2_5_0_M2_UI">User Interface</a></li>
+		<li><a href="#2_5_0_M2_Core">Under the Hood</a></li>
+	</ul>
+
+	<table border="0" cellpadding="15" cellspacing="0" class="news"
+		id="2_5_0_M2">
+		<tbody>
+
+			<!-- User Interface -->
+			<tr>
+				<td class="section" colspan="2" id="2_5_0_M2_UI" rowspan="1"><h2>User
+						Interface</h2></td>
+			</tr>
+
+			<tr id="examples">
+				<td class="title">Integrated example projects</td>
+				<td class="content">Example projects can now be integrated and
+					shipped with HALE. For now it comes with some simple examples to
+					explain basic functionalities and two examples based on a
+					geographic data set from Ordnance Survey - one with a Retype, the
+					other with a Merge type relation.
+					<p>
+						<img src="2_5_0_M2_images/example.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="toggletrans">
+				<td class="title">Enable/disable live transformation</td>
+				<td class="content">The transformation of the source data you
+					loaded into HALE is triggered on every change to the mapping.
+					Sometimes this may hinder your workflow, especially when you are
+					dealing with a big data set. Now you can enable or disable the
+					transformation at your convenience.
+					<p>
+						<img src="2_5_0_M2_images/toggletrans.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="maptips">
+				<td class="title">Map tooltips</td>
+				<td class="content">Quickly identify instances in the map
+					through the tooltip when hovering over it. Press <strong>c</strong>
+					to copy the tooltip content to the clipboard.
+					<p>
+						<img src="2_5_0_M2_images/maptip.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="mappointstyle">
+				<td class="title">Support styling of point geometries</td>
+				<td class="content">The geometry renderer in the new map view
+					so far missed the capability to render custom styles for point
+					geometries. Now you can use the SLD editor to assign different
+					markers, graphics or your custom SLD to your point objects.
+					<p>
+						<img src="2_5_0_M2_images/mappoints.png" />
+					</p>
+				</td>
+			</tr>
+
+			<!-- Under the Hood -->
+			<tr>
+				<td class="section" colspan="2" id="2_5_0_M2_Core" rowspan="1"><h2>Under
+						the Hood</h2></td>
+			</tr>
+
+			<tr id="readgmlgeometries">
+				<td class="title">Improved geometry support for reading XML/GML</td>
+				<td class="content">Many more GML geometry types are now
+					supported when reading XML files. Please have a look at the <a
+					href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/reference/import/xml_data.html">XML
+						Data Import</a> for a detailed listing.
+				</td>
+			</tr>
+
+			<tr id="undoredocontexts">
+				<td class="title">Undo/redo support also for contexts</td>
+				<td class="content">Creating or removing a context on a schema
+					element can now be undone.</td>
+			</tr>
+
+		</tbody>
+	</table>
+</body>
+</html>

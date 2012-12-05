@@ -26,25 +26,25 @@ import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 
 /**
- * Archive Project Writer Configuration Page for additional web resources
+ * Archive Project Writer Configuration Page for additional project resources
  * 
  * @author Patrick Lieb
  */
 public class ArchiveProjectWriterConfigurationPage extends
 		AbstractConfigurationPage<ArchiveProjectWriter, IOWizard<ArchiveProjectWriter>> {
 
-	private Button button;
+	private Button includeWebResources;
 
-	private static final String WEB_RESOURCES = "webresources";
+	private Button excludeDataFiles;
 
 	/**
-	 * 
+	 * Default Constuctor
 	 */
 	public ArchiveProjectWriterConfigurationPage() {
 		super("archiveWriter");
 
-		setTitle("Web resources");
-		setDescription("Pack web resources to the archive");
+		setTitle("Additonal Export Options");
+		setDescription("Adapt options to include or exclude resources to the archive");
 	}
 
 	/**
@@ -70,9 +70,13 @@ public class ArchiveProjectWriterConfigurationPage extends
 	protected void createContent(Composite page) {
 		page.setLayout(new GridLayout(1, false));
 
-		button = new Button(page, SWT.CHECK);
-		button.setSelection(false); // default
-		button.setText("Retrieve also all web resources");
+		excludeDataFiles = new Button(page, SWT.CHECK);
+		excludeDataFiles.setSelection(false); // default
+		excludeDataFiles.setText("Exclude source data");
+
+		includeWebResources = new Button(page, SWT.CHECK);
+		includeWebResources.setSelection(false); // default
+		includeWebResources.setText("Include web resources (http)");
 
 		setPageComplete(true);
 	}
@@ -82,7 +86,10 @@ public class ArchiveProjectWriterConfigurationPage extends
 	 */
 	@Override
 	public boolean updateConfiguration(ArchiveProjectWriter provider) {
-		provider.setParameter(WEB_RESOURCES, String.valueOf(button.getSelection()));
+		provider.setParameter(ArchiveProjectWriter.EXLUDE_DATA_FILES,
+				String.valueOf(excludeDataFiles.getSelection()));
+		provider.setParameter(ArchiveProjectWriter.INCLUDE_WEB_RESOURCES,
+				String.valueOf(includeWebResources.getSelection()));
 		return true;
 	}
 

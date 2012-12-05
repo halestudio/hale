@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.ui.functions.core;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -46,6 +47,7 @@ import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
@@ -76,7 +78,7 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 	private TypeDefinition sourceType;
 	private Set<EntityDefinition> selection = new HashSet<EntityDefinition>();
 	private Set<EntityDefinition> filtered = new HashSet<EntityDefinition>();
-	private DefinitionLabelProvider labelProvider = new DefinitionLabelProvider();
+	private final DefinitionLabelProvider labelProvider = new DefinitionLabelProvider();
 
 	/**
 	 * Constructor.
@@ -106,11 +108,11 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 		// for additional_property: selected properties can change!
 		if (parameter.getName().equals(PARAMETER_ADDITIONAL_PROPERTY)) {
 			filtered = new HashSet<EntityDefinition>();
-			List<String> properties = unfinishedCell.getTransformationParameters().get(
+			List<ParameterValue> properties = unfinishedCell.getTransformationParameters().get(
 					PARAMETER_PROPERTY);
 			boolean oldSelectionChanged = false;
-			for (String propertyPath : properties) {
-				EntityDefinition def = getEntityDefinition(propertyPath, sourceType);
+			for (ParameterValue propertyPath : properties) {
+				EntityDefinition def = getEntityDefinition(propertyPath.getValue(), sourceType);
 				filtered.add(def);
 				if (selection.remove(def))
 					oldSelectionChanged = true;
@@ -127,7 +129,7 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 	 */
 	@Override
 	public void setParameter(Set<FunctionParameter> params,
-			ListMultimap<String, String> initialValues) {
+			ListMultimap<String, ParameterValue> initialValues) {
 		if (params.size() > 1)
 			throw new IllegalArgumentException("MergeParameterPage is only for one parameter");
 		parameter = params.iterator().next();
@@ -141,7 +143,14 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 
 		if (initialValues != null) {
 			// cell gets edited
-			initialSelection = initialValues.get(parameter.getName());
+			List<ParameterValue> tmp = initialValues.get(parameter.getName());
+			if (tmp != null) {
+				initialSelection = new ArrayList<String>(tmp.size());
+				for (ParameterValue value : tmp)
+					initialSelection.add(value.getValue());
+			}
+			else
+				initialSelection = Collections.emptyList();
 			setPageComplete(true);
 		}
 	}
@@ -150,8 +159,8 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 	 * @see eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage#getConfiguration()
 	 */
 	@Override
-	public ListMultimap<String, String> getConfiguration() {
-		ListMultimap<String, String> configuration = ArrayListMultimap.create();
+	public ListMultimap<String, ParameterValue> getConfiguration() {
+		ListMultimap<String, ParameterValue> configuration = ArrayListMultimap.create();
 		for (EntityDefinition selected : selection) {
 			// build property path (QNames separated by .)
 			String propertyPath = Joiner.on('.').join(
@@ -165,7 +174,7 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 							}));
 
 			// add it to configuration
-			configuration.put(parameter.getName(), propertyPath);
+			configuration.put(parameter.getName(), new ParameterValue(propertyPath));
 		}
 
 		return configuration;

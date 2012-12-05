@@ -1,29 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="44">
+<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="47">
 <locations>
-<location path="${project_loc:hale-platform}/target/org.codehaus.groovy" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/net.sf.cglib" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/ch.qos.logback" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.w3c.dom.mathml" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.eclipse.jetty" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.javolution" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/com.google.guava" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/com.iabcinc.jmep" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/com.orientechnologies" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/javax.activation" type="Directory"/>
-<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.sdk.ide" version="3.7.1.M20110909-1335"/>
-<repository location="http://www.cityserver3d.de/updates/eclipse/updates/3.7"/>
-</location>
-<location path="${project_loc:hale-platform}/target/org.apache.wicket" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.eclipse.xsd" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.jvnet.staxex" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/javax.el" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/edu.umd.cs.findbugs" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/net.java" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/de.cs3d.util" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/eu.esdihumboldt.util.resource" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.jdom" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.wicketstuff" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.apache.commons.httpclient.contrib.ssl" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.apache.velocity" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/net.sf.ehcache.core" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.aopalliance" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.aopalliance" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.apache.httpcomponents" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.apache.xerces" type="Directory"/>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.emf.sdk.feature.group" version="2.7.1.v20110913-1526"/>
 <unit id="org.eclipse.gef.sdk.feature.group" version="3.7.1.v20110830-1143-7G7W2A5WNgEQNgNXBJgcPLWZeMNI"/>
@@ -41,51 +28,66 @@
 <location path="${project_loc:hale-platform}/target/org.xmlpull" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.postgresql.jdbc" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.jscience" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.w3c.css.sac" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/com.hp.hpl.jena" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.apache.httpcomponents" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/javax.media.jai" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.jdesktop.swingx" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/de.cs3d.util" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.custommonkey" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.geotools" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.apache.commons" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/javax.mail" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.apache.xalan" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.apache.ws" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.codehaus.castor" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.castor" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.antlr" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.apache.xerces" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/javax.persistence" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/fr.inrialpes.exmo" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/au.com.bytecode" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.eclipse.gemini" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.springframework" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/eu.esdihumboldt.hale.prefixmapper" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.picocontainer" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.apache.xml.serializer" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.wicketstuff" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.jdom" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/de.cs3d.map" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.dom4j" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/gnu.trove" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.slf4j" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.apache.xmlbeans" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.javolution" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/com.vividsolutions.jts" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/javax.servlet" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.geotiff" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/eu.esdihumboldt.util.resource" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.springframework.security" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/com.sun.xml.bind" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/javax.xml.stream" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.eclipse.jetty" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.eclipse.zest" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/com.onespatial" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/javax.inject" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/javax.annotation" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.joda" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.quartz" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/com.iabcinc.jmep" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/javax.el" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/gnu.trove" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.eclipse.zest" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.antlr" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/edu.umd.cs.findbugs" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.codehaus.castor" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.eclipse.gemini" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.w3c.css.sac" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.aopalliance" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/net.java" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.w3c.dom.mathml" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.eclipse.xsd" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/javax.activation" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.apache.xmlbeans" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.jscience" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/javax.annotation" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.codehaus.groovy" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.apache.xml.serializer" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/javax.inject" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/com.hp.hpl.jena" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.apache.ws" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.dom4j" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.apache.wicket" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/com.onespatial" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.springframework.security" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/javax.media.jai" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/de.cs3d.map" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.jvnet.staxex" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.joda" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/ch.qos.logback" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/com.orientechnologies" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.geotools" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/javax.persistence" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.apache.commons" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.picocontainer" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.custommonkey" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.apache.velocity" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/eu.esdihumboldt.hale.prefixmapper" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/au.com.bytecode" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/javax.servlet" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/javax.xml.stream" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.castor" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.apache.xalan" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/net.sf.cglib" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.aopalliance" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.slf4j" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/net.sf.ehcache.core" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/com.sun.xml.bind" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.geotiff" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.springframework" type="Directory"/>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.sdk.ide" version="3.7.1.M20110909-1335"/>
+<repository location="http://www.cityserver3d.de/updates/eclipse/updates/3.7"/>
+</location>
+<location path="${project_loc:hale-platform}/target/com.vividsolutions.jts" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/javax.mail" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/fr.inrialpes.exmo" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.jdesktop.swingx" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/eu.esdihumboldt.hale" type="Directory"/>
 </locations>
 </target>

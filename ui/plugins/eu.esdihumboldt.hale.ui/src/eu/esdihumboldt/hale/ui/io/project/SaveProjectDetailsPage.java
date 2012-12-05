@@ -85,7 +85,8 @@ public class SaveProjectDetailsPage extends IOWizardPage<ProjectWriter, SaveProj
 				.create());
 
 		description = new Text(page, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER);
-		description.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
+		description.setLayoutData(GridDataFactory.fillDefaults().grab(true, true)
+				.hint(500, SWT.DEFAULT).create());
 
 		// listen for state changes on field editors
 		IPropertyChangeListener stateListener = new IPropertyChangeListener() {

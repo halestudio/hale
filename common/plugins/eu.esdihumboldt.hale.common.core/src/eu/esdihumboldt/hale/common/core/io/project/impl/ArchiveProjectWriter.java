@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FileUtils;
-import org.eclipse.core.runtime.FileLocator;
 
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
@@ -41,10 +41,12 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.impl.SubtaskProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.util.XMLSchemaUpdater;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
@@ -60,12 +62,16 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 
 	private static final String XSD_CONTENT_TYPE = "eu.esdihumboldt.hale.io.xsd";
 
-	private static final String WEB_RESOURCES = "webresources";
+	/**
+	 * Parameter for including or excluding web resources
+	 */
+	public static final String INCLUDE_WEB_RESOURCES = "includeweb";
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#execute(eu.esdihumboldt.hale.common.core.io.ProgressIndicator,
-	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
+	 * Parameter for including or excluding data files
 	 */
+	public static final String EXLUDE_DATA_FILES = "excludedata";
+
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
@@ -79,16 +85,24 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		LocatableOutputSupplier<OutputStream> out = new FileIOSupplier(baseFile);
 		ZipOutputStream zip = new ZipOutputStream(getTarget().getOutput());
 
-		// false if getParameter is null is desired
-		boolean webresources = Boolean.parseBoolean(getParameter(WEB_RESOURCES));
+		// false is correct if getParameter is null because false is default
+		boolean includeWebresources = Boolean.parseBoolean(getParameter(INCLUDE_WEB_RESOURCES));
+		SubtaskProgressIndicator subtask = new SubtaskProgressIndicator(progress);
+
+		// save old IO configurations
+		List<IOConfiguration> oldResources = new ArrayList<IOConfiguration>();
+		for (int i = 0; i < getProject().getResources().size(); i++)
+			// clone all IO configurations to work on different objects
+			oldResources.add(getProject().getResources().get(i).clone());
+		IOConfiguration config = getProject().getSaveConfiguration();
+		IOConfiguration oldSaveConfig = config;
+
 		// copy resources to the temp directory and update xml schemas
-		updateResources(tempDir, webresources);
+		updateResources(tempDir, includeWebresources, subtask, reporter);
 
 		// update target save configuration of the project
-		IOConfiguration config = getProject().getSaveConfiguration();
 		config.getProviderConfiguration().remove(PARAM_TARGET);
 		config.getProviderConfiguration().put(PARAM_TARGET, baseFile.toURI().toString());
-//		config.getProviderConfiguration().put(PARAM_TARGET, getTarget().getLocation().toString());
 		getProject().setSaveConfiguration(config);
 
 		// write project file via XMLProjectWriter
@@ -106,88 +120,113 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		try {
 			FileUtils.deleteDirectory(tempDir);
 		} catch (IOException e) {
-			log.debug("Can not delete file", e);
+			log.debug("Can not delete directory " + tempDir.toString(), e);
 		}
 
+		// reset all IOConfigurations for further IO operations
+		getProject().setSaveConfiguration(oldSaveConfig);
+		List<IOConfiguration> resources = getProject().getResources();
+		resources.clear();
+		resources.addAll(oldResources);
 		return report;
 	}
 
 	// update the resources and copy them into target directory
-	private void updateResources(File targetDirectory, boolean allResources) throws IOException {
-
-		List<IOConfiguration> resources = getProject().getResources();
-		// every resource needs his own directory
-		int count = 1;
-		for (IOConfiguration resource : resources) {
-			Map<String, String> providerConfig = resource.getProviderConfiguration();
-			Map<String, String> newProvConf = new HashMap<String, String>();
-			String path = providerConfig.get(ImportProvider.PARAM_SOURCE);
-			URI pathUri;
-			try {
-				pathUri = new URI(path);
-			} catch (URISyntaxException e1) {
-				log.debug("Path of resource is invalid", e1);
-				continue;
-			}
-			String scheme = pathUri.getScheme();
-			InputStream input = null;
-			// if scheme is null it has to be a local file represented by a
-			// relative path
-			if (scheme != null) {
-				if (allResources && (scheme.equals("http") || scheme.equals("https"))
-						|| scheme.equals("resource")) {
-					DefaultInputSupplier supplier = new DefaultInputSupplier(pathUri);
-					input = supplier.getInput();
+	private void updateResources(File targetDirectory, boolean includeWebResources,
+			ProgressIndicator progress, IOReporter reporter) throws IOException {
+		progress.begin("Copy resources", ProgressIndicator.UNKNOWN);
+		try {
+			List<IOConfiguration> resources = getProject().getResources();
+			// every resource needs his own directory
+			int count = 1;
+			// true if excluded files should be skipped; false is default
+			boolean excludeDataFiles = Boolean.parseBoolean(getParameter(EXLUDE_DATA_FILES));
+			for (IOConfiguration resource : resources) {
+				// check if ActionId is equal to
+				// eu.esdihumboldt.hale.common.instance.io.InstanceIO.ACTION_LOAD_SOURCE_DATA
+				// import not possible due to cycle errors
+				if (excludeDataFiles
+						&& resource.getActionId().equals(
+								"eu.esdihumboldt.hale.io.instance.read.source")) {
+					// delete reference in project file
+					resources.remove(resource);
+					continue;
 				}
-				else if (scheme.equals("bundleentry")) {
-					try {
-						File in = new File(FileLocator.toFileURL(pathUri.toURL()).toURI());
-						input = new FileInputStream(in);
-					} catch (URISyntaxException e) {
-						e.printStackTrace();
+
+				Map<String, String> providerConfig = resource.getProviderConfiguration();
+				Map<String, String> newProvConf = new HashMap<String, String>();
+				String path = providerConfig.get(ImportProvider.PARAM_SOURCE);
+				URI pathUri;
+				try {
+					pathUri = new URI(path);
+				} catch (URISyntaxException e1) {
+					reporter.error(new IOMessageImpl("Skipped resource because of invalid URI: "
+							+ path, e1));
+					continue;
+				}
+				String scheme = pathUri.getScheme();
+				InputStream input = null;
+				if (scheme != null) {
+					if (includeWebResources || // web resources are OK
+							!(scheme.equals("http") || scheme.equals("https"))
+					// or not a web resource
+					) {
+						DefaultInputSupplier supplier = new DefaultInputSupplier(pathUri);
+						input = supplier.getInput();
+					}
+					else {
+						// web resource that should not be included this time
+						continue;
 					}
 				}
-				else if (scheme.equals("file")) {
-					input = new FileInputStream(new File(pathUri));
-				}
-				else
+				else {
+					// now can't open that, can we?
+					reporter.error(new IOMessageImpl(
+							"Skipped resource because it cannot be loaded from "
+									+ pathUri.toString(), null));
 					continue;
-			}
-			else
-				input = new FileInputStream(new File(pathUri));
+				}
 
-			// only xml schemas have to be updated
-			String contentType = providerConfig.get(ImportProvider.PARAM_CONTENT_TYPE);
-			if (contentType.equals(XSD_CONTENT_TYPE)) {
+				progress.setCurrentTask("Copying resource at " + path);
 
-				// every resource file is copied into an own resource directory
-				// in the target directory
+				// every resource file is copied into an own resource
+				// directory in the target directory
 				File newDirectory = new File(targetDirectory, "resource" + count);
 				try {
 					newDirectory.mkdir();
 				} catch (SecurityException e) {
 					throw new IOException("Can not create directory " + newDirectory.toString(), e);
 				}
-				// get name of the file
+
+				// the filename
 				String name = path.toString().substring(path.lastIndexOf("/"), path.length());
+
 				File newFile = new File(newDirectory, name);
 				OutputStream output = new FileOutputStream(newFile);
 				ByteStreams.copy(input, output);
 				output.close();
 
-				// the XMLSchemaUpdater manipulates the current schema and
-				// copies the included and imported schemas to the directory
-				XMLSchemaUpdater.update(newFile, pathUri, allResources);
+				// update schema files
+
+				// only xml schemas have to be updated
+				String contentType = providerConfig.get(ImportProvider.PARAM_CONTENT_TYPE);
+				if (contentType.equals(XSD_CONTENT_TYPE)) {
+					progress.setCurrentTask("Reorganizing XML schema at " + path);
+					XMLSchemaUpdater.update(newFile, pathUri, includeWebResources, reporter);
+				}
+
 				newProvConf.put(ImportProvider.PARAM_SOURCE, new File(new File(targetDirectory,
 						"resource" + count), name).toURI().toString());
 				count++;
-			}
 
-			// update provider configuration
-			for (String key : newProvConf.keySet()) {
-				resource.getProviderConfiguration().remove(key);
-				resource.getProviderConfiguration().put(key, newProvConf.get(key));
+				// update provider configuration
+				for (String key : newProvConf.keySet()) {
+					resource.getProviderConfiguration().remove(key);
+					resource.getProviderConfiguration().put(key, newProvConf.get(key));
+				}
 			}
+		} finally {
+			progress.end();
 		}
 	}
 

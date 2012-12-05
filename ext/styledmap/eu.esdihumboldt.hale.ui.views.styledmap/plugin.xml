@@ -358,5 +358,17 @@
             restorable="true">
       </view>
    </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="eu.esdihumboldt.hale.ui.application.perspective.thorsten">
+         <view
+               id="eu.esdihumboldt.hale.ui.views.styledmap"
+               minimized="false"
+               relationship="stack"
+               relative="org.eclipse.ui.views.PropertySheet">
+         </view>
+      </perspectiveExtension>
+   </extension>
 
 </plugin>

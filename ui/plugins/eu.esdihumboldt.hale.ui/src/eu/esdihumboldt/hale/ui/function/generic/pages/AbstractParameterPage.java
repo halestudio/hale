@@ -29,6 +29,7 @@ import com.google.common.collect.Multimaps;
 
 import eu.esdihumboldt.hale.common.align.extension.function.Function;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 
@@ -40,7 +41,7 @@ import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 public abstract class AbstractParameterPage extends
 		HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements ParameterPage {
 
-	private ListMultimap<String, String> initialValues;
+	private ListMultimap<String, ParameterValue> initialValues;
 	private ImmutableMap<String, FunctionParameter> parametersToHandle;
 
 	/**
@@ -80,7 +81,7 @@ public abstract class AbstractParameterPage extends
 	 */
 	@Override
 	public void setParameter(Set<FunctionParameter> params,
-			ListMultimap<String, String> initialValues) {
+			ListMultimap<String, ParameterValue> initialValues) {
 		Builder<String, FunctionParameter> builder = ImmutableMap.builder();
 		for (FunctionParameter param : params) {
 			builder.put(param.getName(), param);
@@ -99,7 +100,7 @@ public abstract class AbstractParameterPage extends
 	 * 
 	 * @return parameter names mapped to their initial values (unmodifiable)
 	 */
-	protected ListMultimap<String, String> getInitialValues() {
+	protected ListMultimap<String, ParameterValue> getInitialValues() {
 		return initialValues;
 	}
 
@@ -119,8 +120,8 @@ public abstract class AbstractParameterPage extends
 	 * @param def the default value to return if the value is not present
 	 * @return the first parameter value or the provided default value
 	 */
-	protected String getOptionalInitialValue(String parameterName, String def) {
-		List<String> values = getInitialValues().get(parameterName);
+	protected ParameterValue getOptionalInitialValue(String parameterName, ParameterValue def) {
+		List<ParameterValue> values = getInitialValues().get(parameterName);
 		if (values != null && !values.isEmpty()) {
 			return values.get(0);
 		}

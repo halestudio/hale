@@ -32,6 +32,8 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="script">
+            <functionParameterBinding>
+            </functionParameterBinding>
          </functionParameter>
       </propertyFunction>
    </extension>

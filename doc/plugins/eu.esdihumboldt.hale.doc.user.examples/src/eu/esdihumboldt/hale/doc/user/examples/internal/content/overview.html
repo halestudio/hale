@@ -7,13 +7,19 @@
 <body>
 
 	<h1>Example projects</h1>
-	
+
+	<p>
+		Following is a list of example projects that are shipped with your
+		version of HALE. You can load them in HALE and experiment with them.
+		To save your work based on an example project, save the project as a <i>HALE
+			project archive</i>.
+	</p>
+
 	<table>
-	#foreach ($project in $projects)
+		#foreach ($project in $projects)
 		<tr>
-			<td style="padding-right: 24px; font-weight: bold;">
-				<a href="projects/${project.id}.html">$project.info.name</a>
-			</td>
+			<td style="padding-right: 24px; font-weight: bold;"><a
+				href="projects/${project.id}.html">$project.info.name</a></td>
 		</tr>
 		#if ($project.summary)
 		<tr>
@@ -29,8 +35,10 @@
 				src="PLUGINS_ROOT/org.eclipse.help/command_link.png"
 				alt="command link"></img> Load example</a></td>
 		</tr-->
-		<tr><td><br /></td></tr>
-	#end
+		<tr>
+			<td><br /></td>
+		</tr>
+		#end
 	</table>
 
 	<p class="Note">We are always looking for data we can include as

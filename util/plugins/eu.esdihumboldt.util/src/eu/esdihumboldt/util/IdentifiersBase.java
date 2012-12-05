@@ -74,7 +74,7 @@ public abstract class IdentifiersBase<T> {
 	}
 
 	/**
-	 * Get the id of the given object iff it has an Id.
+	 * Get the id of the given object if it has an Id.
 	 * 
 	 * @param object the object
 	 * @return the id of the object

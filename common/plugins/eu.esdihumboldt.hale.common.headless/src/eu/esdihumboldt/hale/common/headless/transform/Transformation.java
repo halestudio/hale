@@ -294,7 +294,7 @@ public class Transformation {
 		if (useTempDatabase) {
 			// run store instance job first...
 			Job storeJob = new StoreInstancesJob("Load source instances into temporary database",
-					db, sources) {
+					db, sources, reportHandler) {
 
 				@Override
 				protected void onComplete() {

@@ -81,7 +81,10 @@ public class Identifiers<T> extends IdentifiersBase<T> {
 		String id = ids.get(object);
 
 		if (id == null) {
-			id = prefix + num++; // "you're beautiful" - james blunt
+			while (id == null || ids.containsKey(id)) {
+				// make sure the ID was not already added through other means
+				id = prefix + num++;
+			}
 			putObjectIdentifier(object, id);
 			onInsertion(num - 1, id, object);
 		}

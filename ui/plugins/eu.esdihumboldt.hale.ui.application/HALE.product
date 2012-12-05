@@ -7,7 +7,7 @@
       <text>
          HUMBOLDT Alignment Editor (HALE)
 
-Version 2.5.0.RC1
+Version 2.5.0
 
 Build ___build___
 Revision ___revision___
@@ -132,6 +132,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.common.instancevalidator"/>
       <plugin id="eu.esdihumboldt.hale.common.propertyaccessor" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.schema"/>
+      <plugin id="eu.esdihumboldt.hale.common.scripting"/>
       <plugin id="eu.esdihumboldt.hale.common.test"/>
       <plugin id="eu.esdihumboldt.hale.doc.user"/>
       <plugin id="eu.esdihumboldt.hale.doc.user.examples"/>
@@ -165,6 +166,8 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.prefixmapper"/>
       <plugin id="eu.esdihumboldt.hale.ui"/>
       <plugin id="eu.esdihumboldt.hale.ui.application"/>
+      <plugin id="eu.esdihumboldt.hale.ui.application.help.external" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.ui.application.help.internal" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.ui.cache"/>
       <plugin id="eu.esdihumboldt.hale.ui.codelist"/>
       <plugin id="eu.esdihumboldt.hale.ui.common"/>
@@ -175,7 +178,6 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.ui.filter"/>
       <plugin id="eu.esdihumboldt.hale.ui.firststeps"/>
       <plugin id="eu.esdihumboldt.hale.ui.functions.core"/>
-      <plugin id="eu.esdihumboldt.hale.ui.functions.geometric"/>
       <plugin id="eu.esdihumboldt.hale.ui.functions.groovy"/>
       <plugin id="eu.esdihumboldt.hale.ui.functions.inspire"/>
       <plugin id="eu.esdihumboldt.hale.ui.functions.numeric"/>
@@ -184,6 +186,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.ui.logback.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.ui.schema.presets"/>
       <plugin id="eu.esdihumboldt.hale.ui.schema.presets.inspire"/>
+      <plugin id="eu.esdihumboldt.hale.ui.scripting"/>
       <plugin id="eu.esdihumboldt.hale.ui.style"/>
       <plugin id="eu.esdihumboldt.hale.ui.util"/>
       <plugin id="eu.esdihumboldt.hale.ui.util.graph"/>

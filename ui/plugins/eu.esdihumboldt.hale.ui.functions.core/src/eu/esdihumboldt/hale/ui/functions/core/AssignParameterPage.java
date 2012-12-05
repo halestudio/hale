@@ -32,11 +32,14 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
+import eu.esdihumboldt.hale.common.align.model.functions.AssignFunction;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.common.Editor;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeEditorFactory;
 import eu.esdihumboldt.hale.ui.common.definition.DefinitionLabelFactory;
+import eu.esdihumboldt.hale.ui.common.definition.editors.EditorChooserEditor;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
 
@@ -46,9 +49,9 @@ import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
  * @author Kai Schwierczek
  */
 public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>>
-		implements ParameterPage {
+		implements ParameterPage, AssignFunction {
 
-	private String initialValue;
+	private ParameterValue initialValue;
 	private Editor<?> editor;
 	private Composite page;
 	private Composite title;
@@ -93,11 +96,11 @@ public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionW
 	 */
 	@Override
 	public void setParameter(Set<FunctionParameter> params,
-			ListMultimap<String, String> initialValues) {
+			ListMultimap<String, ParameterValue> initialValues) {
 		// this page is only for parameter value, ignore params
 		if (initialValues == null)
 			return;
-		List<String> values = initialValues.get("value");
+		List<ParameterValue> values = initialValues.get(PARAMETER_VALUE);
 		if (!values.isEmpty()) {
 			initialValue = values.get(0);
 			setPageComplete(true);
@@ -108,10 +111,11 @@ public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionW
 	 * @see eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage#getConfiguration()
 	 */
 	@Override
-	public ListMultimap<String, String> getConfiguration() {
-		ListMultimap<String, String> configuration = ArrayListMultimap.create(1, 1);
+	public ListMultimap<String, ParameterValue> getConfiguration() {
+		ListMultimap<String, ParameterValue> configuration = ArrayListMultimap.create(1, 1);
 		if (editor != null && !editor.getControl().isDisposed())
-			configuration.put("value", editor.getAsText());
+			configuration.put(PARAMETER_VALUE,
+					new ParameterValue(editor.getValueType(), editor.getAsText()));
 		return configuration;
 	}
 
@@ -138,7 +142,7 @@ public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionW
 			label.setText(" = ");
 
 			editor = ((AttributeEditorFactory) PlatformUI.getWorkbench().getService(
-					AttributeEditorFactory.class)).createEditor(page, propDef);
+					AttributeEditorFactory.class)).createEditor(page, propDef, false);
 			editor.getControl().setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 			editor.setPropertyChangeListener(new IPropertyChangeListener() {
 
@@ -149,8 +153,11 @@ public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionW
 				}
 			});
 		}
-		if (editor != null && initialValue != null)
-			editor.setAsText(initialValue);
+		if (editor != null && initialValue != null) {
+			editor.setAsText(initialValue.getValue());
+			if (editor instanceof EditorChooserEditor)
+				((EditorChooserEditor<?>) editor).selectEditor(initialValue.getType());
+		}
 
 		if (editor != null)
 			setPageComplete(editor.isValid());
