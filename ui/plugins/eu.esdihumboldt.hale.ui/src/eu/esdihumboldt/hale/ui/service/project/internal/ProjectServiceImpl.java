@@ -23,6 +23,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -51,6 +52,7 @@ import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.ProgressMonitorIndicator;
 import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorExtension;
 import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorFactory;
@@ -295,9 +297,10 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	 * @param configurations the I/O configurations
 	 */
 	private void executeConfigurations(final List<IOConfiguration> configurations) {
+		Map<String, String> loadedConfs = new HashMap<String, String>();
 		// TODO sort by dependencies
 		for (IOConfiguration conf : configurations) {
-			executeConfiguration(conf);
+			executeConfiguration(conf, loadedConfs);
 		}
 	}
 
@@ -305,8 +308,9 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	 * Execute a single I/O configuration.
 	 * 
 	 * @param conf the I/O configuration
+	 * @param loadedConfs the already loaded provider configurations
 	 */
-	private void executeConfiguration(IOConfiguration conf) {
+	private void executeConfiguration(IOConfiguration conf, Map<String, String> loadedConfs) {
 		// get provider ...
 		IOProvider provider = null;
 		IOProviderDescriptor descriptor = IOProviderExtension.getInstance().getFactory(
@@ -349,10 +353,18 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 											advisors.get(0).getIdentifier()), e);
 					return;
 				}
-				// configure settings
-				provider.loadConfiguration(conf.getProviderConfiguration());
-				// execute provider
-				executeProvider(provider, advisor);
+
+				String source = conf.getProviderConfiguration().get(ImportProvider.PARAM_SOURCE);
+				if (!loadedConfs.containsKey(actionId) || !loadedConfs.containsValue(source)) {
+					// configure settings
+					provider.loadConfiguration(conf.getProviderConfiguration());
+					// execute provider
+					executeProvider(provider, advisor);
+					loadedConfs.put(actionId, source);
+				}
+				else
+					log.info("Skipped already loaded resource");
+
 			}
 			else {
 				log.error(MessageFormat.format(
@@ -768,7 +780,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	 */
 	@Override
 	public void executeAndRemember(IOConfiguration conf) {
-		executeConfiguration(conf);
+		executeConfiguration(conf, new HashMap<String, String>());
 		synchronized (this) {
 			main.getResources().add(conf);
 		}
