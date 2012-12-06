@@ -15,7 +15,13 @@
 
 package eu.esdihumboldt.hale.io.xslt;
 
+import java.io.InputStream;
+
 import javax.xml.namespace.NamespaceContext;
+
+import org.apache.velocity.Template;
+
+import com.google.common.io.InputSupplier;
 
 /**
  * Context for a XSLT generation process.
@@ -36,5 +42,34 @@ public interface XsltGenerationContext {
 	 *         namespaces
 	 */
 	public NamespaceContext getNamespaceContext();
+
+	/**
+	 * Load a velocity template associated to a XSL transformation. The template
+	 * encoding is assumed to be UTF-8.
+	 * 
+	 * @param transformation the transformation class
+	 * @param resource the resource the template can be retrieved from
+	 * @param id the identifier of the template, must be unique for this
+	 *            template in context of the XSL transformation
+	 * @return the loaded template
+	 * @throws Exception if loading the template failed
+	 */
+	public Template loadTemplate(Class<? extends XslTransformation> transformation,
+			InputSupplier<? extends InputStream> resource, String id) throws Exception;
+
+	/**
+	 * Load a velocity template associated to a XSL transformation placed in a
+	 * default location. The default location is right next to the
+	 * transformation class with the same name as the class but with
+	 * <code>xsl</code> as file extension. Please note that as <code>id</code>
+	 * for the template <code>null</code> will be used. The template encoding is
+	 * assumed to be UTF-8.
+	 * 
+	 * @param transformation the transformation class
+	 * @return the loaded template
+	 * @throws Exception if loading the template failed
+	 */
+	public Template loadTemplate(Class<? extends XslTransformation> transformation)
+			throws Exception;
 
 }
