@@ -81,19 +81,23 @@ public class XsltExport extends AbstractAlignmentWriter implements XmlWriterBase
 		try {
 			log.info("Template directory: " + templateDir.getAbsolutePath());
 
-			XmlIndex index = StreamGmlWriter.getXMLIndex(getTargetSchema());
-			if (index == null) {
+			XmlIndex targetIndex = StreamGmlWriter.getXMLIndex(getTargetSchema());
+			if (targetIndex == null) {
 				throw new IllegalStateException("Target schema contains no XML schema");
 			}
+			XmlIndex sourceIndex = StreamGmlWriter.getXMLIndex(getSourceSchema());
+			if (sourceIndex == null) {
+				throw new IllegalStateException("Source schema contains no XML schema");
+			}
 
-			XmlElement containerElement = StreamGmlWriter
-					.getConfiguredContainerElement(this, index);
+			XmlElement containerElement = StreamGmlWriter.getConfiguredContainerElement(this,
+					targetIndex);
 			if (containerElement == null) {
 				throw new IllegalStateException("No target container element specified");
 			}
 
-			XsltGenerator generator = new XsltGenerator(templateDir, getAlignment(), index,
-					reporter, progress, containerElement);
+			XsltGenerator generator = new XsltGenerator(templateDir, getAlignment(), sourceIndex,
+					targetIndex, reporter, progress, containerElement);
 			return generator.write(getTarget());
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl("XSLT generation failed", e));

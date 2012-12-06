@@ -135,6 +135,11 @@ public class XsltGenerator implements XsltGenerationContext {
 	private final XmlIndex targetSchema;
 
 	/**
+	 * The source XML schema.
+	 */
+	private XmlIndex sourceSchema;
+
+	/**
 	 * The working directory where the templates reside.
 	 */
 	private final File workDir;
@@ -168,6 +173,7 @@ public class XsltGenerator implements XsltGenerationContext {
 	 *            up, e.g. after {@link #write(LocatableOutputSupplier)} was
 	 *            called
 	 * @param alignment the alignment
+	 * @param sourceSchema the source schema
 	 * @param targetSchema the target schema
 	 * @param reporter the reporter for documenting errors
 	 * @param progress the progress indicator for indicating the generation
@@ -176,15 +182,16 @@ public class XsltGenerator implements XsltGenerationContext {
 	 *            in the target XML file
 	 * @throws Exception if an error occurs initializing the generator
 	 */
-	public XsltGenerator(File workDir, Alignment alignment, XmlIndex targetSchema,
-			IOReporter reporter, ProgressIndicator progress, XmlElement containerElement)
-			throws Exception {
+	public XsltGenerator(File workDir, Alignment alignment, XmlIndex sourceSchema,
+			XmlIndex targetSchema, IOReporter reporter, ProgressIndicator progress,
+			XmlElement containerElement) throws Exception {
 		this.reporter = reporter;
 		this.progress = progress;
 		this.alignment = alignment;
 		this.workDir = workDir;
 		this.targetContainer = containerElement;
 		this.targetSchema = targetSchema;
+		this.sourceSchema = sourceSchema;
 
 		// initialize the velocity template engine
 		Templates.copyTemplates(workDir);
@@ -201,16 +208,20 @@ public class XsltGenerator implements XsltGenerationContext {
 
 		// initialize the prefix map
 		NamespaceContextImpl prefixes = new NamespaceContextImpl();
+
 		// fixed prefixes
 		for (Entry<String, String> entry : FIXED_PREFIXES.entrySet()) {
 			prefixes.add(entry.getKey(), entry.getValue());
 		}
+		// target schema prefixes
 		for (Entry<String, String> pair : this.targetSchema.getPrefixes().entrySet()) {
-			String ns = pair.getKey();
-			String prefix = pair.getValue();
-
-			prefixes.add(prefix, ns);
+			prefixes.add(pair.getValue(), pair.getKey());
 		}
+		// source schema prefixes
+		for (Entry<String, String> pair : this.sourceSchema.getPrefixes().entrySet()) {
+			prefixes.add(pair.getValue(), pair.getKey());
+		}
+
 		this.prefixes = prefixes;
 
 		// initialize default event cartridge
