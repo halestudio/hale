@@ -255,8 +255,10 @@ public class XsltGenerator implements XsltGenerationContext {
 
 		// container
 		File container = new File(workDir, "container.xsl");
+		progress.setCurrentTask("Generating container");
 		generateContainer(typeIds, container, targetElements);
 
+		progress.setCurrentTask("Generate type transformations");
 		for (Entry<String, QName> entry : targetElements.entrySet()) {
 			// generate XSL fragments for type transformations
 			String id = entry.getKey();
