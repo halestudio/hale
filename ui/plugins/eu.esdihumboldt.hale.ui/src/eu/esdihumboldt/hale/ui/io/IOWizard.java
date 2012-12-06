@@ -44,9 +44,12 @@ import de.cs3d.util.logging.ATransaction;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.ProgressMonitorIndicator;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderExtension;
+import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
+import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
@@ -499,6 +502,32 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 		try {
 			// validate configuration
 			provider.validate();
+
+			ProjectService ps = null;
+			if (actionId != null) {
+				// XXX instead move project resource to action?
+				ActionUI factory = ActionUIExtension.getInstance().findActionUI(actionId);
+				if (factory.isProjectResource()) {
+					ps = (ProjectService) PlatformUI.getWorkbench()
+							.getService(ProjectService.class);
+
+					// prevent loading of duplicate resources
+					String currentResource = ((ImportProvider) provider).getSource().getLocation()
+							.toASCIIString();
+					List<IOConfiguration> resources = ((Project) ps.getProjectInfo())
+							.getResources();
+					for (IOConfiguration res : resources) {
+						String resource = res.getProviderConfiguration().get(
+								ImportProvider.PARAM_SOURCE);
+						// resource is already loaded into the project
+						if (resource != null && resource.equals(currentResource)) {
+							log.userError("Resource is already loaded. Loading duplicate resources is aborted!");
+							return false;
+						}
+					}
+				}
+			}
+
 			IOReport report = execute(provider, defReport);
 
 			if (report != null) {
@@ -515,16 +544,8 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 					advisor.handleResults(getProvider());
 
 					// add to project service if necessary
-					if (actionId != null) {
-						// XXX instead move project resource to action?
-						ActionUI factory = ActionUIExtension.getInstance().findActionUI(actionId);
-
-						if (factory.isProjectResource()) {
-							ProjectService ps = (ProjectService) PlatformUI.getWorkbench()
-									.getService(ProjectService.class);
-							ps.rememberIO(actionId, getProviderFactory().getIdentifier(), provider);
-						}
-					}
+					if (ps != null)
+						ps.rememberIO(actionId, getProviderFactory().getIdentifier(), provider);
 
 					return true;
 				}
