@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.io.xslt;
 
 import static org.junit.Assert.assertTrue;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -65,6 +66,10 @@ public class XsltTransformationTest extends DefaultTransformationTest {
 		IOReport res = export.execute(new LogProgressIndicator());
 		assertTrue("XSLT export not successful", res.isSuccess());
 		assertTrue("Errors during XSLT export", res.getErrors().isEmpty());
+
+		// XXX
+		Desktop.getDesktop().browse(tempXsltFile.toURI());
+		// XXX
 
 		// invoke XSLT on source file to produce target
 		File target = File.createTempFile("xsltest", ".xml");

@@ -25,7 +25,11 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.event.EventCartridge;
 
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.gml.writer.internal.IndentingXMLStreamWriter;
+import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
+import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xslt.internal.FailOnInvalidReference;
 
 /**
@@ -35,6 +39,57 @@ import eu.esdihumboldt.hale.io.xslt.internal.FailOnInvalidReference;
  */
 @SuppressWarnings("restriction")
 public abstract class XslTransformationUtil {
+
+	/**
+	 * Create a XPath statement to select instances specified by the given type
+	 * entity definition.
+	 * 
+	 * @param ted the type entity definition
+	 * @param context the context for the XPath expression, e.g. the empty
+	 *            string for the document root or <code>/</code> for anywhere in
+	 *            the document
+	 * @param namespaces the namespace context
+	 * @return the XPath expression or <code>null</code> if there are no
+	 *         elements that match the type
+	 */
+	public static String selectInstances(TypeEntityDefinition ted, String context,
+			NamespaceContext namespaces) {
+		TypeDefinition type = ted.getDefinition();
+
+		// get the XML elements associated to the type
+		XmlElements elements = type.getConstraint(XmlElements.class);
+
+		if (elements.getElements().isEmpty()) {
+			return null;
+		}
+
+		// XXX which elements should be used?
+		// for now use all elements
+		StringBuilder select = new StringBuilder();
+		boolean first = true;
+		for (XmlElement element : elements.getElements()) {
+			if (first) {
+				first = false;
+			}
+			else {
+				select.append(" | ");
+			}
+
+			select.append(context);
+			select.append('/');
+			String ns = element.getName().getNamespaceURI();
+			if (ns != null && !ns.isEmpty()) {
+				String prefix = namespaces.getPrefix(ns);
+				if (prefix != null && !prefix.isEmpty()) {
+					select.append(prefix);
+					select.append(':');
+				}
+			}
+			select.append(element.getName().getLocalPart());
+		}
+
+		return select.toString();
+	}
 
 	/**
 	 * Setup a XML writer configured with the namespace prefixes.

@@ -13,7 +13,7 @@
  *     Fraunhofer IGD
  */
 
-package eu.esdihumboldt.hale.io.xslt.transformations;
+package eu.esdihumboldt.hale.io.xslt.transformations.base;
 
 import eu.esdihumboldt.hale.io.xslt.XslTransformation;
 import eu.esdihumboldt.hale.io.xslt.XsltGenerationContext;

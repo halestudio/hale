@@ -15,25 +15,33 @@
 
 package eu.esdihumboldt.hale.io.xslt.transformations;
 
-import java.io.OutputStream;
+import org.apache.velocity.VelocityContext;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
-import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
+import eu.esdihumboldt.hale.common.align.model.CellUtil;
+import eu.esdihumboldt.hale.common.align.model.Type;
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.io.xslt.XslTransformationUtil;
 import eu.esdihumboldt.hale.io.xslt.XslTypeTransformation;
+import eu.esdihumboldt.hale.io.xslt.transformations.base.AbstractVelocityXslTypeTransformation;
 
 /**
  * XSLT representation of the Retype function.
  * 
  * @author Simon Templer
  */
-public class XslRetype extends AbstractXslTransformation implements XslTypeTransformation {
+public class XslRetype extends AbstractVelocityXslTypeTransformation implements
+		XslTypeTransformation {
+
+	private static final String CONTEXT_PARAM_SELECT_INSTANCES = "select_instances";
 
 	@Override
-	public void generateTemplate(String templateName, XmlElement targetElement, Cell typeCell,
-			LocatableOutputSupplier<? extends OutputStream> out) {
-		// TODO Auto-generated method stub
+	protected void configureTemplate(VelocityContext context, Cell typeCell) {
+		Type source = (Type) CellUtil.getFirstEntity(typeCell.getSource());
 
+		TypeEntityDefinition ted = source.getDefinition();
+		context.put(CONTEXT_PARAM_SELECT_INSTANCES,
+				XslTransformationUtil.selectInstances(ted, "/", context().getNamespaceContext()));
 	}
 
 }

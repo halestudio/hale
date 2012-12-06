@@ -19,6 +19,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -41,10 +42,14 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.exception.ParseErrorException;
+import org.apache.velocity.exception.ResourceNotFoundException;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
+import com.google.common.io.ByteStreams;
+import com.google.common.io.InputSupplier;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
@@ -65,6 +70,7 @@ import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.Descent;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.PathElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
+import eu.esdihumboldt.hale.io.xslt.XslTransformation;
 import eu.esdihumboldt.hale.io.xslt.XslTransformationUtil;
 import eu.esdihumboldt.hale.io.xslt.XslTypeTransformation;
 import eu.esdihumboldt.hale.io.xslt.XsltGenerationContext;
@@ -523,6 +529,42 @@ public class XsltGenerator implements XsltGenerationContext {
 		xslt.setContext(this);
 
 		xslt.generateTemplate(templateName, targetElement, typeCell, new FileIOSupplier(targetfile));
+	}
+
+	@Override
+	public Template loadTemplate(Class<? extends XslTransformation> transformation,
+			InputSupplier<? extends InputStream> resource, String id)
+			throws ResourceNotFoundException, ParseErrorException, Exception {
+		File templateFile = new File(workDir, "_" + transformation.getCanonicalName()
+				+ ((id == null) ? ("") : ("_" + id)) + ".xsl");
+
+		synchronized (ve) {
+			if (!templateFile.exists()) {
+				// copy template to template directory
+				InputStream in = resource.getInput();
+				OutputStream out = new FileOutputStream(templateFile);
+				try {
+					ByteStreams.copy(in, out);
+				} finally {
+					out.close();
+					in.close();
+				}
+			}
+		}
+
+		return ve.getTemplate(templateFile.getName(), "UTF-8");
+	}
+
+	@Override
+	public Template loadTemplate(final Class<? extends XslTransformation> transformation)
+			throws Exception {
+		return loadTemplate(transformation, new InputSupplier<InputStream>() {
+
+			@Override
+			public InputStream getInput() throws IOException {
+				return transformation.getResourceAsStream(transformation.getSimpleName() + ".xsl");
+			}
+		}, null);
 	}
 
 }
