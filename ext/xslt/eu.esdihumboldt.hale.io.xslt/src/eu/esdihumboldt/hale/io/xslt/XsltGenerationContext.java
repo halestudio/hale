@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.io.xslt;
 
+import javax.xml.namespace.NamespaceContext;
+
 /**
  * Context for a XSLT generation process.
  * 
@@ -27,6 +29,12 @@ public interface XsltGenerationContext {
 	 */
 	public static final String NS_URI_XSL = "http://www.w3.org/1999/XSL/Transform";
 
-	// TODO add what's necessary
+	/**
+	 * Get the namespace context available for the XSLT.
+	 * 
+	 * @return the namespace context holding the association of prefixes to
+	 *         namespaces
+	 */
+	public NamespaceContext getNamespaceContext();
 
 }

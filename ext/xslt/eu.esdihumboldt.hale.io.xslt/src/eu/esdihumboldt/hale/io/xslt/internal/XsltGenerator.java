@@ -33,6 +33,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.xml.XMLConstants;
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -47,9 +48,7 @@ import org.apache.velocity.context.Context;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.util.introspection.Info;
 
-import com.google.common.collect.BiMap;
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 
@@ -111,11 +110,6 @@ public class XsltGenerator implements XsltGenerationContext {
 			NS_PREFIX_XSL, NS_URI_XSL);
 
 	/**
-	 * The prefix for generated namespace prefixes.
-	 */
-	private static final String DEFAULT_NS_PREFIX = "ns";
-
-	/**
 	 * The template engine.
 	 */
 	private final VelocityEngine ve;
@@ -148,7 +142,7 @@ public class XsltGenerator implements XsltGenerationContext {
 	/**
 	 * Namespace prefixes mapped to namespaces.
 	 */
-	private final BiMap<String, String> prefixes;
+	private final NamespaceContextImpl prefixes;
 
 	/**
 	 * The default event cartridge.
@@ -206,22 +200,18 @@ public class XsltGenerator implements XsltGenerationContext {
 		ve.init();
 
 		// initialize the prefix map
-		Map<String, String> prefixes = new HashMap<String, String>(FIXED_PREFIXES);
+		NamespaceContextImpl prefixes = new NamespaceContextImpl();
+		// fixed prefixes
+		for (Entry<String, String> entry : FIXED_PREFIXES.entrySet()) {
+			prefixes.add(entry.getKey(), entry.getValue());
+		}
 		for (Entry<String, String> pair : this.targetSchema.getPrefixes().entrySet()) {
 			String ns = pair.getKey();
 			String prefix = pair.getValue();
 
-			if (!prefixes.containsValue(ns)) {
-				// namespace not yet added
-				int i = 1;
-				while (prefix == null || prefix.isEmpty() || prefixes.containsKey(prefix)) {
-					// find an alternate prefix
-					prefix = DEFAULT_NS_PREFIX + i++;
-				}
-				prefixes.put(prefix, ns);
-			}
+			prefixes.add(prefix, ns);
 		}
-		this.prefixes = ImmutableBiMap.copyOf(prefixes);
+		this.prefixes = prefixes;
 
 		// initialize default event cartridge
 		eventCartridge.addInvalidReferenceEventHandler(new InvalidReferenceEventHandler() {
@@ -252,6 +242,11 @@ public class XsltGenerator implements XsltGenerationContext {
 				return null;
 			}
 		});
+	}
+
+	@Override
+	public NamespaceContext getNamespaceContext() {
+		return prefixes;
 	}
 
 	/**
@@ -308,7 +303,7 @@ public class XsltGenerator implements XsltGenerationContext {
 		}
 
 		// namespaces that occur additionally to the fixed namespaces
-		Map<String, String> additionalNamespaces = new HashMap<String, String>(prefixes);
+		Map<String, String> additionalNamespaces = new HashMap<String, String>(prefixes.asMap());
 		for (String fixedPrefix : FIXED_PREFIXES.keySet()) {
 			additionalNamespaces.remove(fixedPrefix);
 		}
@@ -509,9 +504,7 @@ public class XsltGenerator implements XsltGenerationContext {
 		// create XML stream writer with UTF-8 encoding
 		XMLStreamWriter tmpWriter = outputFactory.createXMLStreamWriter(outStream, "UTF-8"); //$NON-NLS-1$
 
-		for (Entry<String, String> entry : prefixes.entrySet()) {
-			tmpWriter.setPrefix(entry.getKey(), entry.getValue());
-		}
+		tmpWriter.setNamespaceContext(prefixes);
 
 		return new IndentingXMLStreamWriter(tmpWriter);
 	}
