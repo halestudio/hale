@@ -35,18 +35,12 @@ import java.util.Set;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.app.event.EventCartridge;
-import org.apache.velocity.app.event.InvalidReferenceEventHandler;
-import org.apache.velocity.context.Context;
-import org.apache.velocity.exception.ParseErrorException;
-import org.apache.velocity.util.introspection.Info;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
@@ -65,13 +59,13 @@ import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.gml.writer.internal.GmlWriterUtil;
-import eu.esdihumboldt.hale.io.gml.writer.internal.IndentingXMLStreamWriter;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.AbstractTypeMatcher;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.DefinitionPath;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.Descent;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.PathElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
+import eu.esdihumboldt.hale.io.xslt.XslTransformationUtil;
 import eu.esdihumboldt.hale.io.xslt.XslTypeTransformation;
 import eu.esdihumboldt.hale.io.xslt.XsltGenerationContext;
 import eu.esdihumboldt.hale.io.xslt.extension.XslTypeTransformationExtension;
@@ -137,7 +131,7 @@ public class XsltGenerator implements XsltGenerationContext {
 	/**
 	 * The source XML schema.
 	 */
-	private XmlIndex sourceSchema;
+	private final XmlIndex sourceSchema;
 
 	/**
 	 * The working directory where the templates reside.
@@ -148,11 +142,6 @@ public class XsltGenerator implements XsltGenerationContext {
 	 * Namespace prefixes mapped to namespaces.
 	 */
 	private final NamespaceContextImpl prefixes;
-
-	/**
-	 * The default event cartridge.
-	 */
-	private final EventCartridge eventCartridge = new EventCartridge();
 
 	/**
 	 * The cell identifiers.
@@ -223,36 +212,6 @@ public class XsltGenerator implements XsltGenerationContext {
 		}
 
 		this.prefixes = prefixes;
-
-		// initialize default event cartridge
-		eventCartridge.addInvalidReferenceEventHandler(new InvalidReferenceEventHandler() {
-
-			private void report(Info info, String reference) {
-				throw new ParseErrorException("Error while merging template - invalid reference: "
-						+ reference, info, reference);
-			}
-
-			@Override
-			public boolean invalidSetMethod(Context context, String leftreference,
-					String rightreference, Info info) {
-				report(info, leftreference + "." + rightreference);
-				return false;
-			}
-
-			@Override
-			public Object invalidMethod(Context context, String reference, Object object,
-					String method, Info info) {
-				report(info, reference);
-				return null;
-			}
-
-			@Override
-			public Object invalidGetMethod(Context context, String reference, Object object,
-					String property, Info info) {
-				report(info, reference);
-				return null;
-			}
-		});
 	}
 
 	@Override
@@ -270,7 +229,7 @@ public class XsltGenerator implements XsltGenerationContext {
 	public IOReport write(LocatableOutputSupplier<? extends OutputStream> target) throws Exception {
 		Template root = ve.getTemplate(Templates.ROOT, "UTF-8");
 
-		VelocityContext context = createContext();
+		VelocityContext context = XslTransformationUtil.createStrictVelocityContext();
 		// collects IDs of type cells
 		Set<String> typeIds = new HashSet<String>();
 
@@ -392,8 +351,8 @@ public class XsltGenerator implements XsltGenerationContext {
 	private void writeContainerFragment(File templateFile,
 			Multimap<TypeDefinition, String> groupedResults, Map<String, QName> targetElements)
 			throws XMLStreamException, IOException {
-		XMLStreamWriter writer = setupXMLWriter(new BufferedOutputStream(new FileOutputStream(
-				templateFile)));
+		XMLStreamWriter writer = XslTransformationUtil.setupXMLWriter(new BufferedOutputStream(
+				new FileOutputStream(templateFile)), prefixes);
 		try {
 			// write container
 			GmlWriterUtil.writeStartElement(writer, targetContainer.getName());
@@ -500,27 +459,6 @@ public class XsltGenerator implements XsltGenerationContext {
 	}
 
 	/**
-	 * Setup a XML writer configured with the namespace prefixes.
-	 * 
-	 * @param outStream the output stream to write the XML content to
-	 * @return the XML stream writer
-	 * @throws XMLStreamException if an error occurs setting up the writer
-	 */
-	private XMLStreamWriter setupXMLWriter(OutputStream outStream) throws XMLStreamException {
-		// create and set-up a writer
-		XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
-		// will set namespaces if these not set explicitly
-		outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", //$NON-NLS-1$
-				Boolean.valueOf(true));
-		// create XML stream writer with UTF-8 encoding
-		XMLStreamWriter tmpWriter = outputFactory.createXMLStreamWriter(outStream, "UTF-8"); //$NON-NLS-1$
-
-		tmpWriter.setNamespaceContext(prefixes);
-
-		return new IndentingXMLStreamWriter(tmpWriter);
-	}
-
-	/**
 	 * Find a matching attribute for the given member type in the given
 	 * container type
 	 * 
@@ -583,17 +521,6 @@ public class XsltGenerator implements XsltGenerationContext {
 		xslt.setContext(this);
 
 		xslt.generateTemplate(templateName, targetElement, typeCell, new FileIOSupplier(targetfile));
-	}
-
-	/**
-	 * Create a new {@link VelocityContext}.
-	 * 
-	 * @return the context configured with the default event cartridge
-	 */
-	protected VelocityContext createContext() {
-		VelocityContext context = new VelocityContext();
-		context.attachEventCartridge(eventCartridge);
-		return context;
 	}
 
 }
