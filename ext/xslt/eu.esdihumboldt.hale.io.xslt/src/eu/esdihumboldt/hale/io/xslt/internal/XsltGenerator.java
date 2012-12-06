@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.Future;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
@@ -298,12 +299,16 @@ public class XsltGenerator implements XsltGenerationContext {
 		context.put("includes", includes);
 
 		OutputStream out = target.getOutput();
-		Writer writer = new OutputStreamWriter(out, "UTF-8");
+		XMLPrettyPrinter printer = new XMLPrettyPrinter(out);
+		Future<?> ready = printer.start();
+		Writer writer = new OutputStreamWriter(printer, "UTF-8");
 		try {
 			root.merge(context, writer);
 			writer.flush();
 		} finally {
 			writer.close();
+			ready.get();
+			out.close();
 		}
 
 		reporter.setSuccess(reporter.getErrors().isEmpty());
