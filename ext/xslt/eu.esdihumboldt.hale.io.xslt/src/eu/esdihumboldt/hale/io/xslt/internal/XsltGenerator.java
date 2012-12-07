@@ -400,7 +400,7 @@ public class XsltGenerator implements XsltGenerationContext {
 					lastDescent = Descent.descend(writer, defPath, lastDescent, false);
 
 					// write single target instance from variable
-					GmlWriterUtil.writeEmptyElement(writer, new QName(NS_URI_XSL, "value-of"));
+					GmlWriterUtil.writeEmptyElement(writer, new QName(NS_URI_XSL, "copy-of"));
 					writer.writeAttribute("select", ".");
 				}
 				else {
