@@ -8,6 +8,13 @@
             key="cst.ttree.populated"
             label="Transformation tree">
       </metadata>
+      <action
+            class="eu.esdihumboldt.hale.ui.cst.debug.metadata.internal.MetadataGraphAction"
+            icon="icons/tree_mode.gif"
+            id="eu.esdihumboldt.hale.ui.cst.debug.action1"
+            key="cst.ttree.populated"
+            name="Display tree dot graph">
+      </action>
    </extension>
    <extension
          point="eu.esdihumboldt.cst.instancetransformation">
