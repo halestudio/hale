@@ -28,7 +28,8 @@ public interface MetadataAction {
 	 * 
 	 * @param key the metadata key
 	 * @param value the metadata value
+	 * @throws Exception the execution may throw an exception
 	 */
-	public void execute(Object key, Object value);
+	public void execute(Object key, Object value) throws Exception;
 
 }
