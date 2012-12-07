@@ -160,27 +160,32 @@ public class ExportSelectTargetPage<P extends ExportProvider, W extends ExportWi
 	@Override
 	public boolean updateConfiguration(P provider) {
 		try {
-			final URI uri = new URI(targetFile.getStringValue());
+			URI uri = new URI(targetFile.getStringValue());
+			if (!uri.isAbsolute()) {
+				// was a file
+				uri = new File(targetFile.getStringValue()).toURI();
+			}
+			final URI location = uri;
 			provider.setTarget(new LocatableOutputSupplier<OutputStream>() {
 
 				@Override
 				public OutputStream getOutput() throws IOException {
-					File file = new File(uri);
+					File file = new File(location);
 					return new FileOutputStream(file);
-					
-					//XXX other URIs unsupported for now
+
+					// XXX other URIs unsupported for now
 				}
 
 				@Override
 				public URI getLocation() {
-					return uri;
+					return location;
 				}
 			});
 			return true;
 		} catch (URISyntaxException e) {
 			// ignore, assume it's a file
 		}
-		
+
 		File file = new File(targetFile.getStringValue());
 		provider.setTarget(new FileIOSupplier(file));
 		return true;
