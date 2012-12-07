@@ -16,6 +16,13 @@
 
 package eu.esdihumboldt.hale.ui.cst.debug.metadata.internal;
 
+import java.io.ByteArrayOutputStream;
+
+import com.tinkerpop.blueprints.Graph;
+import com.tinkerpop.blueprints.util.io.graphml.GraphMLWriter;
+
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.cst.extension.hooks.TransformationTreeHook;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
@@ -30,6 +37,9 @@ import eu.esdihumboldt.hale.ui.cst.debug.metadata.TransformationTreeMetadata;
 public class TransformationTreeMetadataHook implements TransformationTreeHook,
 		TransformationTreeMetadata {
 
+	private static final ALogger log = ALoggerFactory
+			.getLogger(TransformationTreeMetadataHook.class);
+
 	/**
 	 * @see TransformationTreeHook#processTransformationTree(TransformationTree,
 	 *      TreeState, MutableInstance)
@@ -40,15 +50,20 @@ public class TransformationTreeMetadataHook implements TransformationTreeHook,
 		if (state == TreeState.SOURCE_POPULATED) { // TODO key per state - for
 													// now only support this
 													// state
-			// TODO get "serializable tree"
-			// suggestion: write dot export based on a transformation tree
-			// visitor
 
-			// TODO store tree as metadata
-//			target.setMetaData(KEY_POPULATED_TREE, treeVal);
-			// XXX dummy
-			target.setMetaData(KEY_POPULATED_TREE, "TODO");
+			TreeGraphProvider prov = new TreeGraphMLProvider(tree);
+			Graph graph = prov.generateGraph();
+			GraphMLWriter writer = new GraphMLWriter(graph);
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			try {
+				writer.outputGraph(out);
+			} catch (Exception e) {
+				log.error("Error converting GraphML Graph to String", e);
+			}
+
+			String graphstring = new String(out.toByteArray());
+
+			target.setMetaData(KEY_POPULATED_TREE, graphstring);
 		}
 	}
-
 }
