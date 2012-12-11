@@ -1,0 +1,88 @@
+<?xml version="1.0" ?>
+<tns:collection xmlns:tns="http://www.example.org/t2/" xmlns:ns1="http://www.w3.org/1999/xhtml" xmlns:hfp="http://www.w3.org/2001/XMLSchema-hasFacetAndProperty" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/t2/ file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cm_multi_3/t2.xsd">
+  <tns:t2>
+    <b>
+      <bt>a110 and a210</bt>
+    </b>
+    <b>
+      <bt>a111 and a211</bt>
+    </b>
+    <b>
+      <bt>a112 and a212</bt>
+    </b>
+    <b>
+      <bt>a113 and a213</bt>
+    </b>
+    <b>
+      <bt>a114 and a214</bt>
+    </b>
+  </tns:t2>
+  <tns:t2>
+    <b>
+      <bt>a115 and a215</bt>
+    </b>
+    <b>
+      <bt>a116 and a216</bt>
+    </b>
+    <b>
+      <bt>a117 and a217</bt>
+    </b>
+    <b>
+      <bt>a118 and a218</bt>
+    </b>
+    <b>
+      <bt>a119 and a219</bt>
+    </b>
+  </tns:t2>
+  <tns:t2>
+    <b>
+      <bt>a15 and a25</bt>
+    </b>
+    <b>
+      <bt>a16 and a26</bt>
+    </b>
+    <b>
+      <bt>a17 and a27</bt>
+    </b>
+    <b>
+      <bt>a18 and a28</bt>
+    </b>
+    <b>
+      <bt>a19 and a29</bt>
+    </b>
+  </tns:t2>
+  <tns:t2>
+    <b>
+      <bt>a10 and a20</bt>
+    </b>
+    <b>
+      <bt>a11 and a21</bt>
+    </b>
+    <b>
+      <bt>a12 and a22</bt>
+    </b>
+    <b>
+      <bt>a13 and a23</bt>
+    </b>
+    <b>
+      <bt>a14 and a24</bt>
+    </b>
+  </tns:t2>
+  <tns:t2>
+    <b>
+      <bt>a120 and a220</bt>
+    </b>
+    <b>
+      <bt>a121 and a221</bt>
+    </b>
+    <b>
+      <bt>a122 and a222</bt>
+    </b>
+    <b>
+      <bt>a123 and a223</bt>
+    </b>
+    <b>
+      <bt>a124 and a224</bt>
+    </b>
+  </tns:t2>
+</tns:collection>

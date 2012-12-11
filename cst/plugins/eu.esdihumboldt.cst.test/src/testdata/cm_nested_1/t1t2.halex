@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hale-project version="2.5.0">
+    <name>Context matching test - Nested contexts - Variant 1</name>
+    <author>Simon Templer</author>
+    <created>2012-12-11T13:56:03.017+01:00</created>
+    <modified>2012-12-11T14:01:02.830+01:00</modified>
+    <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
+        <setting name="projectFiles.separate">false</setting>
+        <setting name="target">file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cm_nested_1/t1t2.halex</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
+    </save-config>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.source" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="resourceId">5efe0f16-d388-445a-b0a1-0951d599890c</setting>
+        <setting name="source">file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cm_nested_1/t1.xsd</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.target" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="resourceId">31a72595-8052-4a5c-a262-3690b6016777</setting>
+        <setting name="source">file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cm_nested_1/t2.xsd</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.instance.read.source" provider-id="eu.esdihumboldt.hale.io.xml.reader">
+        <setting name="resourceId">6746455b-2f99-47c4-adbc-5394903a73a2</setting>
+        <setting name="source">file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cm_nested_1/instance1.xml</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.gml</setting>
+    </resource>
+    <file name="styles.sld" location="file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cm_nested_1/t1t2.halex.styles.sld"/>
+    <file name="alignment.xml" location="file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cm_nested_1/t1t2.halex.alignment.xml"/>
+</hale-project>
