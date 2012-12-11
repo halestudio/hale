@@ -39,6 +39,10 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.Transformatio
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTreeUtil;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
+import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.graph.figures.EntityFigure;
 import eu.esdihumboldt.hale.ui.common.graph.figures.TransformationNodeShape;
@@ -55,8 +59,8 @@ import eu.esdihumboldt.util.IdentityWrapper;
  */
 public class TransformationTreeLabelProvider extends GraphLabelProvider {
 
-	private Color disabledBackgroundColor;
-	private Color valueBackgroundColor;
+	private final Color disabledBackgroundColor;
+	private final Color valueBackgroundColor;
 
 	/**
 	 * Default constructor
@@ -289,6 +293,7 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 
 		ShapePainter shape = null;
 		String contextText = null;
+		String cardText = null;
 
 		if (element instanceof TransformationTree) {
 			shape = new TransformationNodeShape(10, SWT.NONE);
@@ -297,6 +302,9 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 			TargetNode node = (TargetNode) element;
 
 			contextText = AlignmentUtil.getContextText(node.getEntityDefinition());
+			if (!hasTransformationAnnotations(element)) {
+				cardText = getCardinalityText(node.getEntityDefinition().getDefinition());
+			}
 
 			if (node.getAssignments().isEmpty()) {
 				shape = new TransformationNodeShape(10, SWT.NONE);
@@ -310,6 +318,9 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 			SourceNode node = (SourceNode) element;
 
 			contextText = AlignmentUtil.getContextText(node.getEntityDefinition());
+			if (!hasTransformationAnnotations(element)) {
+				cardText = getCardinalityText(node.getEntityDefinition().getDefinition());
+			}
 
 			if (node.getParent() == null) {
 				shape = new TransformationNodeShape(10, SWT.NONE);
@@ -321,8 +332,8 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 
 		if (shape != null) {
 			CustomShapeFigure figure;
-			if (contextText != null) {
-				figure = new EntityFigure(shape, contextText);
+			if (contextText != null || cardText != null) {
+				figure = new EntityFigure(shape, contextText, cardText);
 			}
 			else {
 				figure = new CustomShapeLabel(shape);
@@ -334,6 +345,33 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 		element = TransformationTreeUtil.extractObject(element);
 
 		return super.getFigure(element);
+	}
+
+	private String getCardinalityText(Definition<?> definition) {
+		if (!(definition instanceof ChildDefinition<?>)) {
+			return null;
+		}
+
+		Cardinality card = DefinitionUtil.getCardinality((ChildDefinition<?>) definition);
+		if (card.getMaxOccurs() == Cardinality.UNBOUNDED) {
+			if (card.getMinOccurs() == 0) {
+				return "*";
+			}
+			if (card.getMinOccurs() == 1) {
+				return "+";
+			}
+			return card.getMinOccurs() + "+";
+		}
+		else if (card.getMaxOccurs() == 1) {
+			if (card.getMinOccurs() == 0) {
+				return "?";
+			}
+			if (card.getMinOccurs() == 1) {
+				return null;
+			}
+		}
+
+		return card.getMinOccurs() + ".." + card.getMaxOccurs();
 	}
 
 	/**

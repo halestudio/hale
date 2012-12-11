@@ -421,10 +421,10 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			String contextText = AlignmentUtil.getContextText((EntityDefinition) element);
 			switch (((EntityDefinition) element).getSchemaSpace()) {
 			case SOURCE:
-				figure = new EntityFigure(new FingerPost(10, SWT.RIGHT), contextText);
+				figure = new EntityFigure(new FingerPost(10, SWT.RIGHT), contextText, null);
 				break;
 			case TARGET:
-				figure = new EntityFigure(new FingerPost(10, SWT.LEFT), contextText);
+				figure = new EntityFigure(new FingerPost(10, SWT.LEFT), contextText, null);
 				break;
 			}
 		}

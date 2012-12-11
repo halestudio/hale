@@ -39,14 +39,19 @@ public class EntityFigure extends CustomShapeFigure {
 	 * 
 	 * @param painter the shape
 	 * @param contextText the context text, may be <code>null</code>
+	 * @param cardinalityText the cardinality text, may be <code>null</code>
 	 */
-	public EntityFigure(ShapePainter painter, final String contextText) {
+	public EntityFigure(ShapePainter painter, final String contextText, final String cardinalityText) {
 		super(painter);
 
 		setAntialias(SWT.ON);
 
 		GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = (contextText == null) ? (1) : (2);
+		gridLayout.numColumns = 1;
+		if (cardinalityText != null)
+			gridLayout.numColumns++;
+		if (contextText != null)
+			gridLayout.numColumns++;
 		gridLayout.marginHeight = 3;
 		gridLayout.marginWidth = 3;
 		setLayoutManager(gridLayout);
@@ -55,6 +60,18 @@ public class EntityFigure extends CustomShapeFigure {
 		Label label = new Label();
 		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
 		add(label, gridData);
+
+		// the additional label for the cardinality text
+		if (cardinalityText != null) {
+			Label cardLabel = new Label();
+			ColorRegistry colorRegistry = JFaceResources.getColorRegistry();
+			// XXX uses the same color as in schema explorer label provider -
+			// centralize this?
+			cardLabel.setForegroundColor(colorRegistry.get(JFacePreferences.COUNTER_COLOR));
+			cardLabel.setText(cardinalityText);
+			GridData cardGridData = new GridData(GridData.END, GridData.CENTER, false, true);
+			add(cardLabel, cardGridData);
+		}
 
 		// the additional label for the context text
 		if (contextText != null) {
