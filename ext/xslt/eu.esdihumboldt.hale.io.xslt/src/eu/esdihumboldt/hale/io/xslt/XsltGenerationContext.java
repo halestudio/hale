@@ -16,24 +16,23 @@
 package eu.esdihumboldt.hale.io.xslt;
 
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import javax.xml.namespace.NamespaceContext;
 
 import org.apache.velocity.Template;
 
 import com.google.common.io.InputSupplier;
+import com.google.common.io.OutputSupplier;
+
+import eu.esdihumboldt.hale.common.align.model.Alignment;
 
 /**
  * Context for a XSLT generation process.
  * 
  * @author Simon Templer
  */
-public interface XsltGenerationContext {
-
-	/**
-	 * Namespace URI for XSLT.
-	 */
-	public static final String NS_URI_XSL = "http://www.w3.org/1999/XSL/Transform";
+public interface XsltGenerationContext extends XsltConstants {
 
 	/**
 	 * Get the namespace context available for the XSLT.
@@ -44,32 +43,59 @@ public interface XsltGenerationContext {
 	public NamespaceContext getNamespaceContext();
 
 	/**
-	 * Load a velocity template associated to a XSL transformation. The template
-	 * encoding is assumed to be UTF-8.
+	 * Get the alignment the XSLT is generated from.
 	 * 
-	 * @param transformation the transformation class
+	 * @return the alignment
+	 */
+	public Alignment getAlignment();
+
+	/**
+	 * Load a velocity template associated to a XSL transformation or function.
+	 * The template encoding is assumed to be UTF-8.
+	 * 
+	 * @param transformation the transformation or function class
 	 * @param resource the resource the template can be retrieved from
 	 * @param id the identifier of the template, must be unique for this
 	 *            template in context of the XSL transformation
 	 * @return the loaded template
 	 * @throws Exception if loading the template failed
 	 */
-	public Template loadTemplate(Class<? extends XslTransformation> transformation,
+	public Template loadTemplate(Class<?> transformation,
 			InputSupplier<? extends InputStream> resource, String id) throws Exception;
 
 	/**
-	 * Load a velocity template associated to a XSL transformation placed in a
-	 * default location. The default location is right next to the
-	 * transformation class with the same name as the class but with
-	 * <code>xsl</code> as file extension. Please note that as <code>id</code>
-	 * for the template <code>null</code> will be used. The template encoding is
-	 * assumed to be UTF-8.
+	 * Load a velocity template associated to a XSL transformation or function
+	 * placed in a default location. The default location is right next to the
+	 * class with the same name as the class but with <code>xsl</code> as file
+	 * extension. Please note that as <code>id</code> for the template
+	 * <code>null</code> will be used. The template encoding is assumed to be
+	 * UTF-8.
 	 * 
-	 * @param transformation the transformation class
+	 * @param transformation the transformation or function class
 	 * @return the loaded template
 	 * @throws Exception if loading the template failed
 	 */
-	public Template loadTemplate(Class<? extends XslTransformation> transformation)
-			throws Exception;
+	public Template loadTemplate(Class<?> transformation) throws Exception;
+
+	/**
+	 * Add an include to the XSL transformation. Output written to the returned
+	 * output supplier will be included as child to the <code>transform</code>
+	 * element of the XSL file. The encoding of the output should be UTF-8.<br>
+	 * <br>
+	 * This can be used to add top-level declarations to the transformation,
+	 * such as template definitions.
+	 * 
+	 * @return the output supplier to be used to write the XSL fragment to
+	 *         include
+	 */
+	public OutputSupplier<? extends OutputStream> addInclude();
+
+	/**
+	 * Get the property transformation for the given function identifier.
+	 * 
+	 * @param functionId the function identifier
+	 * @return the property transformation instance or <code>null</code>
+	 */
+	public XslPropertyTransformation getPropertyTransformation(String functionId);
 
 }
