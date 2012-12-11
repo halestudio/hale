@@ -23,6 +23,8 @@ import org.apache.velocity.Template;
 
 import com.google.common.io.InputSupplier;
 
+import eu.esdihumboldt.hale.common.align.model.Alignment;
+
 /**
  * Context for a XSLT generation process.
  * 
@@ -36,12 +38,24 @@ public interface XsltGenerationContext {
 	public static final String NS_URI_XSL = "http://www.w3.org/1999/XSL/Transform";
 
 	/**
+	 * Namespace URI for custom XSL functions provided by the export.
+	 */
+	public static final String NS_CUSTOM_XSL = "http://www.esdi-humboldt.eu/hale/xsl";
+
+	/**
 	 * Get the namespace context available for the XSLT.
 	 * 
 	 * @return the namespace context holding the association of prefixes to
 	 *         namespaces
 	 */
 	public NamespaceContext getNamespaceContext();
+
+	/**
+	 * Get the alignment the XSLT is generated from.
+	 * 
+	 * @return the alignment
+	 */
+	public Alignment getAlignment();
 
 	/**
 	 * Load a velocity template associated to a XSL transformation. The template
