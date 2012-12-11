@@ -67,11 +67,7 @@ public class TransformationTreeImpl extends AbstractGroupNode implements Transfo
 
 		sourceNodes = new SourceNodeFactory();
 
-		// dummy target type entity (there may not be any contexts associated to
-		// target types)
-		TypeEntityDefinition targetType = new TypeEntityDefinition(type, SchemaSpaceID.TARGET, null);
-
-		Collection<? extends Cell> cells = alignment.getPropertyCells(null, targetType);
+		Collection<? extends Cell> cells = getRelevantPropertyCells(alignment, type);
 
 		// partition cells by child
 		ListMultimap<EntityDefinition, CellNode> childCells = ArrayListMultimap.create();
@@ -103,6 +99,24 @@ public class TransformationTreeImpl extends AbstractGroupNode implements Transfo
 		}
 
 		children = Collections.unmodifiableList(childList);
+	}
+
+	/**
+	 * Get the property cells relevant for the transformation tree from the
+	 * given alignment. The default implementation returns all property cells
+	 * related to the target type.
+	 * 
+	 * @param alignment the alignment
+	 * @param targetType the target type
+	 * @return the property cells
+	 */
+	protected Collection<? extends Cell> getRelevantPropertyCells(Alignment alignment,
+			TypeDefinition targetType) {
+		// dummy target type entity (there may not be any contexts associated to
+		// target types)
+		TypeEntityDefinition targetEntity = new TypeEntityDefinition(targetType,
+				SchemaSpaceID.TARGET, null);
+		return alignment.getPropertyCells(null, targetEntity);
 	}
 
 	/**
