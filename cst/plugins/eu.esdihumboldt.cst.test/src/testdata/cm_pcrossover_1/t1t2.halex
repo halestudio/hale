@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hale-project version="2.5.0">
+    <name>Context matching test - Property crossover - Variant 1</name>
+    <author>Simon Templer</author>
+    <created>2012-12-11T14:48:43.671+01:00</created>
+    <modified>2012-12-11T14:55:58.426+01:00</modified>
+    <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
+        <setting name="projectFiles.separate">false</setting>
+        <setting name="target">file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cm_pcrossover_1/t1t2.halex</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
+    </save-config>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.source" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="resourceId">1cf4d5ed-6001-44b5-b9bb-b7b1ca5fd78e</setting>
+        <setting name="source">file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cm_pcrossover_1/t1.xsd</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.target" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="resourceId">113fbe82-9283-45ff-8b92-b49a9743eda2</setting>
+        <setting name="source">file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cm_pcrossover_1/t2.xsd</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.instance.read.source" provider-id="eu.esdihumboldt.hale.io.xml.reader">
+        <setting name="resourceId">a1daf26b-d3b1-4961-9982-4a60085a1b9f</setting>
+        <setting name="source">file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cm_pcrossover_1/instance1.xml</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.gml</setting>
+    </resource>
+    <file name="styles.sld" location="file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cm_pcrossover_1/t1t2.halex.styles.sld"/>
+    <file name="alignment.xml" location="file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cm_pcrossover_1/t1t2.halex.alignment.xml"/>
+</hale-project>
