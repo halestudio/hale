@@ -103,12 +103,18 @@ public class XsltGenerator implements XsltGenerationContext {
 	public static final String NS_PREFIX_XS = "xs";
 
 	/**
+	 * Fixed prefix for the HALE XSL namespace.
+	 */
+	public static final String NS_PREFIX_CUSTOM_XSL = "hx";
+
+	/**
 	 * Fixed namespace prefixes. Prefixes mapped to namespaces.
 	 */
 	private static final Map<String, String> FIXED_PREFIXES = ImmutableMap.of( //
 			NS_PREFIX_XSI, XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, //
 			NS_PREFIX_XS, XMLConstants.W3C_XML_SCHEMA_NS_URI, //
-			NS_PREFIX_XSL, NS_URI_XSL);
+			NS_PREFIX_XSL, NS_URI_XSL, //
+			NS_PREFIX_CUSTOM_XSL, NS_CUSTOM_XSL);
 
 	/**
 	 * The template engine.
@@ -224,6 +230,11 @@ public class XsltGenerator implements XsltGenerationContext {
 	@Override
 	public NamespaceContext getNamespaceContext() {
 		return prefixes;
+	}
+
+	@Override
+	public Alignment getAlignment() {
+		return alignment;
 	}
 
 	/**
