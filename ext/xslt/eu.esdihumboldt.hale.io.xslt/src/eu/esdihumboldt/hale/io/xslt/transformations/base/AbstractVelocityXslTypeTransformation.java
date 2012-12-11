@@ -77,7 +77,10 @@ public abstract class AbstractVelocityXslTypeTransformation extends
 	 * @param context the velocity context only filled with the default
 	 *            parameters yet
 	 * @param typeCell the type cell
+	 * @throws TransformationException if the template cannot be configured
+	 *             completely
 	 */
-	protected abstract void configureTemplate(VelocityContext context, Cell typeCell);
+	protected abstract void configureTemplate(VelocityContext context, Cell typeCell)
+			throws TransformationException;
 
 }

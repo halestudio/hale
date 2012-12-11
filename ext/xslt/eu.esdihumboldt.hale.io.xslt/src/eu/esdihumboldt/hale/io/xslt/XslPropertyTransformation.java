@@ -15,13 +15,28 @@
 
 package eu.esdihumboldt.hale.io.xslt;
 
+import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
+import eu.esdihumboldt.hale.io.xslt.functions.XslFunction;
+
 /**
- * Translates a property transformation function to a XSLT template.
+ * Translates a property transformation function to a XSLT template. Property
+ * transformations designed to live through the whole XSLT generation process so
+ * state can be shared between different calls to {@link #selectFunction(Cell)}.
  * 
  * @author Simon Templer
  */
 public interface XslPropertyTransformation extends XslTransformation {
 
-	// TODO
+	/**
+	 * Select the function that should handle the given property cell.
+	 * 
+	 * @param cell a cell representing a property transformation with a
+	 *            transformation function associated to this XSL transformation
+	 * @return the selected function
+	 * @throws TransformationException if for the given cell no function can be
+	 *             supplied
+	 */
+	public XslFunction selectFunction(Cell cell) throws TransformationException;
 
 }

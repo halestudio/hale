@@ -87,6 +87,28 @@ public abstract class CellUtil {
 	}
 
 	/**
+	 * Get the first parameter with the given name in the given cell.
+	 * 
+	 * @param cell the cell
+	 * @param parameterName the parameter name
+	 * @param defaultValue the default value to return if the parameter is not
+	 *            specified
+	 * @return the raw parameter value or <code>null</code>
+	 */
+	public static String getOptionalRawParameter(Cell cell, String parameterName,
+			String defaultValue) {
+		ListMultimap<String, ParameterValue> params = cell.getTransformationParameters();
+		if (params != null) {
+			List<ParameterValue> values = params.get(parameterName);
+			if (values != null && !values.isEmpty()) {
+				return values.get(0).getValue();
+			}
+		}
+
+		return defaultValue;
+	}
+
+	/**
 	 * Get a short description of a cell.
 	 * 
 	 * @param cell the cell

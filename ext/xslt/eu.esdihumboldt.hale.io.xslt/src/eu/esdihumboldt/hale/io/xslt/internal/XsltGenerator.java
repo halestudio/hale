@@ -50,7 +50,9 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.google.common.io.ByteStreams;
+import com.google.common.io.Files;
 import com.google.common.io.InputSupplier;
+import com.google.common.io.OutputSupplier;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
@@ -71,10 +73,12 @@ import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.Descent;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.PathElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
-import eu.esdihumboldt.hale.io.xslt.XslTransformation;
+import eu.esdihumboldt.hale.io.xslt.XslPropertyTransformation;
 import eu.esdihumboldt.hale.io.xslt.XslTransformationUtil;
 import eu.esdihumboldt.hale.io.xslt.XslTypeTransformation;
+import eu.esdihumboldt.hale.io.xslt.XsltConstants;
 import eu.esdihumboldt.hale.io.xslt.XsltGenerationContext;
+import eu.esdihumboldt.hale.io.xslt.extension.XslPropertyTransformationExtension;
 import eu.esdihumboldt.hale.io.xslt.extension.XslTypeTransformationExtension;
 import eu.esdihumboldt.util.CustomIdentifiers;
 
@@ -85,22 +89,84 @@ import eu.esdihumboldt.util.CustomIdentifiers;
  * @author Simon Templer
  */
 @SuppressWarnings("restriction")
-public class XsltGenerator implements XsltGenerationContext {
+public class XsltGenerator implements XsltConstants {
 
-	/**
-	 * Fixed prefix for the XSLT namespace.
-	 */
-	public static final String NS_PREFIX_XSL = "xsl";
+	private final XsltGenerationContext context = new XsltGenerationContext() {
 
-	/**
-	 * Fixed prefix for the XML Schema Instance namespace.
-	 */
-	public static final String NS_PREFIX_XSI = "xsi";
+		private int numIncludes = 0;
 
-	/**
-	 * Fixed prefix for the XML Schema namespace.
-	 */
-	public static final String NS_PREFIX_XS = "xs";
+		private final Map<String, XslPropertyTransformation> cachedTransformations = new HashMap<String, XslPropertyTransformation>();
+
+		@Override
+		public NamespaceContext getNamespaceContext() {
+			return prefixes;
+		}
+
+		@Override
+		public Alignment getAlignment() {
+			return alignment;
+		}
+
+		@Override
+		public XslPropertyTransformation getPropertyTransformation(String functionId) {
+			XslPropertyTransformation result = cachedTransformations.get(functionId);
+			if (result == null) {
+				try {
+					result = XslPropertyTransformationExtension.getInstance().getTransformation(
+							functionId);
+				} catch (Exception e) {
+					return null;
+				}
+				cachedTransformations.put(functionId, result);
+			}
+			return result;
+		}
+
+		@Override
+		public Template loadTemplate(Class<?> transformation,
+				InputSupplier<? extends InputStream> resource, String id)
+				throws ResourceNotFoundException, ParseErrorException, Exception {
+			File templateFile = new File(workDir, "_" + transformation.getCanonicalName()
+					+ ((id == null) ? ("") : ("_" + id)) + ".xsl");
+
+			synchronized (ve) {
+				if (!templateFile.exists()) {
+					// copy template to template directory
+					InputStream in = resource.getInput();
+					OutputStream out = new FileOutputStream(templateFile);
+					try {
+						ByteStreams.copy(in, out);
+					} finally {
+						out.close();
+						in.close();
+					}
+				}
+			}
+
+			return ve.getTemplate(templateFile.getName(), "UTF-8");
+		}
+
+		@Override
+		public Template loadTemplate(final Class<?> transformation) throws Exception {
+			return loadTemplate(transformation, new InputSupplier<InputStream>() {
+
+				@Override
+				public InputStream getInput() throws IOException {
+					return transformation.getResourceAsStream(transformation.getSimpleName()
+							+ ".xsl");
+				}
+			}, null);
+		}
+
+		@Override
+		public OutputSupplier<? extends OutputStream> addInclude() {
+			String filename = "include_" + (++numIncludes) + ".xsl";
+			includes.add(filename);
+			File file = new File(workDir, filename);
+			return Files.newOutputStreamSupplier(file, false);
+		}
+
+	};
 
 	/**
 	 * Fixed namespace prefixes. Prefixes mapped to namespaces.
@@ -108,7 +174,8 @@ public class XsltGenerator implements XsltGenerationContext {
 	private static final Map<String, String> FIXED_PREFIXES = ImmutableMap.of( //
 			NS_PREFIX_XSI, XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, //
 			NS_PREFIX_XS, XMLConstants.W3C_XML_SCHEMA_NS_URI, //
-			NS_PREFIX_XSL, NS_URI_XSL);
+			NS_PREFIX_XSL, NS_URI_XSL, //
+			NS_PREFIX_CUSTOM_XSL, NS_CUSTOM_XSL);
 
 	/**
 	 * The template engine.
@@ -144,6 +211,11 @@ public class XsltGenerator implements XsltGenerationContext {
 	 * The working directory where the templates reside.
 	 */
 	private final File workDir;
+
+	/**
+	 * Collects XSL fragments to include in the main file
+	 */
+	private final Set<String> includes = new HashSet<String>();
 
 	/**
 	 * Namespace prefixes mapped to namespaces.
@@ -221,11 +293,6 @@ public class XsltGenerator implements XsltGenerationContext {
 		this.prefixes = prefixes;
 	}
 
-	@Override
-	public NamespaceContext getNamespaceContext() {
-		return prefixes;
-	}
-
 	/**
 	 * Generate the XSLT transformation and write it to the given target.
 	 * 
@@ -257,8 +324,6 @@ public class XsltGenerator implements XsltGenerationContext {
 
 		// collects IDs of type cells mapped to target element names
 		Map<String, QName> targetElements = new HashMap<String, QName>();
-		// collects XSL fragments to include in the main file
-		Set<String> includes = new HashSet<String>();
 
 		// container
 		File container = new File(workDir, "container.xsl");
@@ -296,6 +361,7 @@ public class XsltGenerator implements XsltGenerationContext {
 		context.put("targets", typeIds);
 
 		// includes
+		// TODO check if files to include are actually there?
 		context.put("includes", includes);
 
 		OutputStream out = target.getOutput();
@@ -531,45 +597,9 @@ public class XsltGenerator implements XsltGenerationContext {
 					"Could not retrieve XSLT transformation generator for cell function", e);
 		}
 
-		xslt.setContext(this);
+		xslt.setContext(context);
 
 		xslt.generateTemplate(templateName, targetElement, typeCell, new FileIOSupplier(targetfile));
-	}
-
-	@Override
-	public Template loadTemplate(Class<? extends XslTransformation> transformation,
-			InputSupplier<? extends InputStream> resource, String id)
-			throws ResourceNotFoundException, ParseErrorException, Exception {
-		File templateFile = new File(workDir, "_" + transformation.getCanonicalName()
-				+ ((id == null) ? ("") : ("_" + id)) + ".xsl");
-
-		synchronized (ve) {
-			if (!templateFile.exists()) {
-				// copy template to template directory
-				InputStream in = resource.getInput();
-				OutputStream out = new FileOutputStream(templateFile);
-				try {
-					ByteStreams.copy(in, out);
-				} finally {
-					out.close();
-					in.close();
-				}
-			}
-		}
-
-		return ve.getTemplate(templateFile.getName(), "UTF-8");
-	}
-
-	@Override
-	public Template loadTemplate(final Class<? extends XslTransformation> transformation)
-			throws Exception {
-		return loadTemplate(transformation, new InputSupplier<InputStream>() {
-
-			@Override
-			public InputStream getInput() throws IOException {
-				return transformation.getResourceAsStream(transformation.getSimpleName() + ".xsl");
-			}
-		}, null);
 	}
 
 }
