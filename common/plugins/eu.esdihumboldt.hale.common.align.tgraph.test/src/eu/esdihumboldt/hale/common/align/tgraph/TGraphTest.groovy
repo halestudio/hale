@@ -26,7 +26,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.Transformatio
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.TransformationTreeImpl
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.TreeToGraphVisitor
 import eu.esdihumboldt.hale.common.align.tgraph.TGraphConstants.NodeType
-import eu.esdihumboldt.hale.common.align.tgraph.internal.TGraphImpl
+import eu.esdihumboldt.hale.common.align.tgraph.impl.TGraphImpl
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 
 
@@ -38,7 +38,6 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
  * 
  * @author Simon Templer
  */
-@SuppressWarnings("restriction")
 class TGraphTest extends GroovyTestCase implements TGraphConstants {
 
 	static {

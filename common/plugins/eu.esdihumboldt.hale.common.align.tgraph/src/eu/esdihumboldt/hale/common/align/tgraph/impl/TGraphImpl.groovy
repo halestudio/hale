@@ -13,21 +13,20 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.align.tgraph.internal
+package eu.esdihumboldt.hale.common.align.tgraph.impl
 
 import com.tinkerpop.blueprints.Direction
 import com.tinkerpop.blueprints.Edge
 import com.tinkerpop.blueprints.Graph
 import com.tinkerpop.blueprints.Vertex
 import com.tinkerpop.blueprints.util.ElementHelper
-import com.tinkerpop.gremlin.groovy.Gremlin
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree
 import eu.esdihumboldt.hale.common.align.tgraph.TGraph
+import eu.esdihumboldt.hale.common.align.tgraph.TGraphHelpers
 import eu.esdihumboldt.hale.common.align.tgraph.TGraphConstants.NodeType
-import eu.esdihumboldt.hale.common.schema.model.ChildDefinition
-import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality
+import eu.esdihumboldt.hale.common.align.tgraph.impl.internal.TGraphFactory
 
 
 
@@ -39,28 +38,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality
 class TGraphImpl implements TGraph {
 
 	static {
-		Gremlin.load()
-
-		Vertex.metaClass.entity = {
-			->
-			delegate.getProperty(P_ENTITY)
-		}
-		Vertex.metaClass.cardinality = {
-			->
-			EntityDefinition entity = delegate.entity()
-			switch (entity.getDefinition()) {
-				case ChildDefinition:
-					return delegate.entity().getDefinition().getConstraint(Cardinality)
-				default:
-				// e.g. a type
-				//TODO allow different type cardinalities for Join etc.
-					return Cardinality.CC_EXACTLY_ONCE;
-			}
-		}
-		Cardinality.metaClass.mayOccurMultipleTimes = {
-			->
-			delegate.maxOccurs == Cardinality.UNBOUNDED || delegate.maxOccurs > 1
-		}
+		TGraphHelpers.load()
 	}
 
 	/** The internal graph */
