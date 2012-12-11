@@ -26,10 +26,15 @@
    <extension
          point="eu.esdihumboldt.hale.xslt">
       <typeTransformation
-            class="eu.esdihumboldt.hale.io.xslt.transformations.XslRetype"
+            class="eu.esdihumboldt.hale.io.xslt.transformations.type.retype.XslRetype"
             function="eu.esdihumboldt.hale.align.retype"
             id="eu.esdihumboldt.hale.align.retype.xslt">
       </typeTransformation>
+      <propertyTransformation
+            class="eu.esdihumboldt.hale.io.xslt.transformations.property.rename.XslRename"
+            function="eu.esdihumboldt.hale.align.rename"
+            id="eu.esdihumboldt.hale.align.rename.xslt">
+      </propertyTransformation>
    </extension>
 
 </plugin>

@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.align.tgraph.internal;
+package eu.esdihumboldt.hale.common.align.tgraph.impl.internal;
 
 import java.util.Set;
 
