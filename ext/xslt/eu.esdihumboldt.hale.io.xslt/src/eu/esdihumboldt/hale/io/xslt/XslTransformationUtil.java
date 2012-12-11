@@ -92,7 +92,8 @@ public abstract class XslTransformationUtil {
 	}
 
 	/**
-	 * Setup a XML writer configured with the namespace prefixes.
+	 * Setup a XML writer configured with the namespace prefixes and UTF-8
+	 * encoding.
 	 * 
 	 * @param outStream the output stream to write the XML content to
 	 * @param namespaces the namespace context, e.g. as retrieved from a

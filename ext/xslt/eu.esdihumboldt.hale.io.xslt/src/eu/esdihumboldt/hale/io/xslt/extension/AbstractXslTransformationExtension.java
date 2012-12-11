@@ -124,7 +124,7 @@ public abstract class AbstractXslTransformationExtension<T extends XslTransforma
 	 * function identifier.
 	 * 
 	 * @param functionId the function identifier
-	 * @return the associated XSLT transformation
+	 * @return the associated XSLT transformation, for each call a new instance
 	 * @throws Exception if no XSLT transformation is available for the function
 	 *             or the instantiation fails
 	 */
