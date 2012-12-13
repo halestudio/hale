@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hale-alignment>
+    <cell transformation="eu.esdihumboldt.hale.align.retype">
+        <source>
+            <class>
+                <type>{http://www.example.org/t1/}T1</type>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type>{http://www.example.org/t2/}T2</type>
+            </class>
+        </target>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}T1</type>
+                <child>item</child>
+                <child>a</child>
+                <child>a1</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}T2</type>
+                <child>b</child>
+                <child>b1</child>
+            </property>
+        </target>
+        <parameter name="structuralRename" type="default" value="false"/>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}T1</type>
+                <child>item</child>
+                <child>a</child>
+                <child>a2</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}T2</type>
+                <child>b</child>
+                <child>b2</child>
+            </property>
+        </target>
+        <parameter name="structuralRename" type="default" value="false"/>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}T1</type>
+                <child>item</child>
+                <child>c</child>
+                <child>c1</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}T2</type>
+                <child>d</child>
+                <child>d1</child>
+            </property>
+        </target>
+        <parameter name="structuralRename" type="default" value="false"/>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}T1</type>
+                <child>item</child>
+                <child>c</child>
+                <child>c2</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}T2</type>
+                <child>d</child>
+                <child>d2</child>
+            </property>
+        </target>
+        <parameter name="structuralRename" type="default" value="false"/>
+    </cell>
+</hale-alignment>

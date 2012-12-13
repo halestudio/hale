@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:collection xmlns:tns="http://www.example.org/t1/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.example.org/t1/ file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cm_nested_6/t1.xsd">
+    <tns:t1>
+        <a a1="a10" a2="a20">a0</a>
+        <a a1="a11" a2="a21">a1</a>
+        <a a1="a12" a2="a22">a2</a>
+    </tns:t1>
+    <tns:t1>
+        <a a1="a13" a2="a23">a3</a>
+        <a a1="a14" a2="a24">a4</a>
+        <a a1="a15" a2="a25">a5</a>
+    </tns:t1>
+    <tns:t1>
+        <a a1="a16" a2="a26">a6</a>
+        <a a1="a17" a2="a27">a7</a>
+        <a a1="a18" a2="a28">a8</a>
+    </tns:t1>
+</tns:collection>
