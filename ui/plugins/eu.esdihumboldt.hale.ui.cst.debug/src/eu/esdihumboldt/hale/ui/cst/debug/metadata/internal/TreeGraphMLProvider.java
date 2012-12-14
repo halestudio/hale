@@ -109,14 +109,18 @@ public class TreeGraphMLProvider implements TreeGraphProvider {
 			}
 			if (value instanceof Instance) {
 				if (((Instance) value).getValue() != null) {
-					vertex.setProperty("value", shortenString(((Instance) value).getValue()
-							.toString()));
+					vertex.setProperty("group", getChildrencountString(value));
+					vertex.setProperty("value", ((Instance) value).getValue().toString());
 					vertex.setProperty("type", "source");
 				}
 			}
 			else {
 				vertex.setProperty("name", name);
 				vertex.setProperty("type", "source");
+				if (value instanceof String) {
+					vertex.setProperty("value", value);
+				}
+
 			}
 
 		}
@@ -149,22 +153,7 @@ public class TreeGraphMLProvider implements TreeGraphProvider {
 			return "Group(" + Iterables.size(((Group) value).getPropertyNames()) + ")";
 		}
 
-		return shortenString(value.toString());
-
-	}
-
-	/**
-	 * utility method for shortening strings in a graph
-	 * 
-	 * @param string the string to shorten
-	 * @return the shortened string
-	 */
-	private String shortenString(String string) {
-
-		if (string.length() > 40) {
-			string = string.substring(0, 37) + "...";
-		}
-		return string;
+		return value.toString();
 
 	}
 }
