@@ -21,6 +21,8 @@ import java.io.IOException;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Dialog;
@@ -70,7 +72,22 @@ public class GraphMLDialog extends Dialog {
 	 */
 	public void open() throws IOException {
 		Shell parent = super.getParent();
-		Shell shell = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+		final Shell shell = new Shell(parent, SWT.DIALOG_TRIM | SWT.MIN | SWT.MODELESS);
+		shell.setFocus();
+		shell.addFocusListener(new FocusListener() {
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				shell.setMinimized(true);
+
+			}
+
+			@Override
+			public void focusGained(FocusEvent e) {
+				// ignore
+
+			}
+		});
 		shell.setLayout(GridLayoutFactory.fillDefaults().create());
 		shell.setText(getText());
 

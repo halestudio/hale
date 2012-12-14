@@ -30,7 +30,6 @@ import com.tinkerpop.blueprints.Vertex;
 
 import eu.esdihumboldt.hale.ui.common.graph.figures.TransformationNodeShape;
 import eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider;
-import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure;
 import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure.ShapePainter;
 import eu.esdihumboldt.hale.ui.util.graph.CustomShapeLabel;
 import eu.esdihumboldt.hale.ui.util.graph.shapes.FingerPost;
@@ -44,6 +43,11 @@ import eu.esdihumboldt.hale.ui.util.graph.shapes.StretchedHexagon;
 
 public class GraphMLLabelProvider extends LabelProvider implements IFigureProvider,
 		IEntityStyleProvider {
+
+	/**
+	 * the maximum figure width of a graph figure
+	 */
+	public static final int MAX_FIGURE_WIDTH = 150;
 
 	private final int entityBorderWidth = 1;
 	private final Color entityBorderColor;
@@ -59,6 +63,7 @@ public class GraphMLLabelProvider extends LabelProvider implements IFigureProvid
 	private final Color cellBackgroundColor;
 	private final Color cellHighlightColor;
 	private final Color cellForegroundColor;
+	private final Color valueBackgroundColor;
 
 	/**
 	 * standard constructor
@@ -77,6 +82,7 @@ public class GraphMLLabelProvider extends LabelProvider implements IFigureProvid
 		propertyBackgroundColor = new Color(display, 220, 250, 200);
 		entityHighlightColor = new Color(display, 250, 250, 130);
 		entityBorderHighlightColor = display.getSystemColor(SWT.COLOR_GRAY);
+		valueBackgroundColor = new Color(display, 220, 245, 245);
 
 		// cell colors
 		cellBorderColor = null;
@@ -92,9 +98,22 @@ public class GraphMLLabelProvider extends LabelProvider implements IFigureProvid
 	 */
 	@Override
 	public String getText(Object element) {
+		String result = "";
+
 		if (element instanceof Vertex) {
-			return ((Vertex) element).getProperty("name").toString();
+			Vertex vex = (Vertex) element;
+			result = result + vex.getProperty("name");
+			if (vex.getProperty("type").equals("source")) {
+				if (vex.getProperty("group") != null) {
+					result = result + "\n" + vex.getProperty("group");
+				}
+				if (vex.getProperty("value") != null) {
+					result = result + "\n" + vex.getProperty("value");
+				}
+			}
+			return result;
 		}
+
 		if (element instanceof Edge) {
 			return ((Edge) element).getLabel();
 
@@ -109,7 +128,6 @@ public class GraphMLLabelProvider extends LabelProvider implements IFigureProvid
 	@Override
 	public IFigure getFigure(Object element) {
 		ShapePainter shape = null;
-		// String contextText = null;
 
 		if (element instanceof Vertex) {
 			Vertex vex = (Vertex) element;
@@ -135,23 +153,20 @@ public class GraphMLLabelProvider extends LabelProvider implements IFigureProvid
 
 				if (vex.getVertices(Direction.IN).iterator().hasNext()
 						&& vex.getVertices(Direction.OUT).iterator().hasNext()) {
-					// shape = new SourceNodeRecordShape(10, SWT.RIGHT);
-					shape = new TransformationNodeShape(10, SWT.NONE);
+					shape = new FingerPost(10, SWT.RIGHT);
 				}
 				else
 					shape = new TransformationNodeShape(10, SWT.NONE);
-				// shape = new SourceNodeRecordShape(10, SWT.RIGHT);
-
 			}
 			else if (vex.getProperty("type").equals("cell")) {
 				shape = new StretchedHexagon(10);
 			}
 
 			if (shape != null) {
-				CustomShapeFigure figure;
+				CustomShapeLabel figure;
 
 				figure = new CustomShapeLabel(shape);
-				// figure.setMaximumWidth(MAX_FIGURE_WIDTH);
+				figure.setMaximumWidth(MAX_FIGURE_WIDTH);
 				return figure;
 			}
 		}
@@ -257,13 +272,19 @@ public class GraphMLLabelProvider extends LabelProvider implements IFigureProvid
 	public Color getBackgroundColour(Object entity) {
 		if (entity instanceof Vertex) {
 			Vertex vex = (Vertex) entity;
-			// TODO disabled and value
+
 			if (vex.getProperty("type").equals("root")) {
 				return typeBackgroundColor;
 			}
-			else if (vex.getProperty("type").equals("target")
-					|| vex.getProperty("type").equals("source")) {
+			else if (vex.getProperty("type").equals("target")) {
 				return propertyBackgroundColor;
+			}
+			else if (vex.getProperty("type").equals("source")) {
+				if (vex.getProperty("group") != null || vex.getProperty("value") != null) {
+					return valueBackgroundColor;
+				}
+				else
+					return propertyBackgroundColor;
 			}
 			else if (vex.getProperty("type").equals("cell")) {
 				return cellBackgroundColor;
