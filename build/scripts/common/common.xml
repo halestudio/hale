@@ -341,7 +341,7 @@
 			<arg value="-application" />
 			<arg value="org.eclipse.ant.core.antRunner" />
 			<arg value="-buildfile" />
-			<arg value="${eclipse}/plugins/org.eclipse.pde.build_3.7.0.v20110512-1320/scripts/productBuild/productBuild.xml" />
+			<arg value="${eclipse}/plugins/org.eclipse.pde.build_3.7.0.v20111116-2009/scripts/productBuild/productBuild.xml" />
 			<arg value="-Dbuilder=${toString:absoluteCommon}" />
 			<!-- path to build.properties -->
 			<arg value="-DbuildDirectory=${toString:absoluteBuild}" />
@@ -602,7 +602,7 @@
 			<syspropertyset refid="proxy-props" />
 			<classpath>
 				<!--pathelement path="${plugins}/org.eclipse.osgi_3.7.1.201111171613.jar" /-->
-				<pathelement path="${plugins}/org.eclipse.osgi_3.7.1.R37x_v20110808-1106.jar" />
+				<pathelement path="${plugins}/org.eclipse.osgi_3.7.2.v20120110-1415.jar" />
 				<!--fileset dir="${plugins}">
 					<include name="de.cs3d.util.osgi.test_*.jar" />
 				</fileset-->
