@@ -47,7 +47,6 @@
       <plugin id="com.springsource.org.apache.commons.pool"/>
       <plugin id="com.springsource.org.apache.xmlbeans"/>
       <plugin id="com.springsource.org.castor"/>
-      <plugin id="com.springsource.org.codehaus.groovy"/>
       <plugin id="com.springsource.org.picocontainer"/>
       <plugin id="com.springsource.org.quartz"/>
       <plugin id="com.vividsolutions.jts"/>
@@ -108,6 +107,7 @@
       <plugin id="eu.esdihumboldt.util.resource.schemas.opengis.net"/>
       <plugin id="eu.esdihumboldt.util.resource.schemas.test"/>
       <plugin id="gnu.trove"/>
+      <plugin id="groovy"/>
       <plugin id="javax.inject"/>
       <plugin id="javax.measure"/>
       <plugin id="javax.servlet"/>
