@@ -116,6 +116,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.cst.test"/>
       <plugin id="eu.esdihumboldt.hale.common.align"/>
       <plugin id="eu.esdihumboldt.hale.common.align.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.common.align.tgraph"/>
       <plugin id="eu.esdihumboldt.hale.common.cache"/>
       <plugin id="eu.esdihumboldt.hale.common.cache.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.codelist"/>
