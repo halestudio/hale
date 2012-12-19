@@ -24,6 +24,7 @@ import eu.esdihumboldt.hale.common.align.model.Alignment
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.TransformationTreeImpl
 import eu.esdihumboldt.hale.common.align.tgraph.TransformationGraphConstants.NodeType
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 
 
 /**
@@ -33,30 +34,33 @@ import eu.esdihumboldt.hale.common.align.tgraph.TransformationGraphConstants.Nod
  * 
  * @author Simon Templer
  */
-class TransformationGraphTest extends GroovyTestCase {
+class TransformationGraphTest extends GroovyTestCase implements TransformationGraphConstants {
 
 	static {
-		Gremlin.load();
+		Gremlin.load()
 	}
 
 	void testSimpleRename() {
 		TransformationExample sample = TransformationExamples
-				.getExample(TransformationExamples.SIMPLE_RENAME);
-		Alignment alignment = sample.getAlignment();
+				.getExample(TransformationExamples.SIMPLE_RENAME)
+		Alignment alignment = sample.getAlignment()
 
 		// get the target type
-		def type = alignment.getTypeCells().iterator().next().getTarget().values().iterator().next()
-				.getDefinition().getDefinition();
+		TypeDefinition type =
+				alignment.typeCells.asList().first() // first type cell
+				.target.values().asList().first() // first target type
+				.definition.definition // its type definition
 
 		// create the transformation tree
-		TransformationTree tree = new TransformationTreeImpl(type, alignment);
+		TransformationTree tree = new TransformationTreeImpl(type, alignment)
 
 		// create the transformation graph
-		Graph g = TransformationGraph.create(tree);
+		Graph g = TransformationGraph.create(tree)
 
-		assertEquals(4, g.V.filter{it.type == NodeType.Cell}.count());
-		assertEquals(5, g.V.filter{it.type == NodeType.Source}.count());
-		assertEquals(5, g.V.filter{it.type == NodeType.Target}.count());
+		// check vertices count of the different types in different ways
+		assertEquals(4, g.V.filter{it.type == NodeType.Cell}.count())
+		assertEquals(5, g.V('type', NodeType.Source).count())
+		assertEquals(5, g.V(P_TYPE, NodeType.Target).count())
 	}
 
 }
