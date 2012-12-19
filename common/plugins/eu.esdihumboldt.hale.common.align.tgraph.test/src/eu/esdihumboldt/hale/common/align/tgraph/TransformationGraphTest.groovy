@@ -15,7 +15,6 @@
 
 package eu.esdihumboldt.hale.common.align.tgraph
 
-import com.tinkerpop.blueprints.Graph
 import com.tinkerpop.gremlin.groovy.Gremlin
 
 import eu.esdihumboldt.cst.test.TransformationExample
@@ -30,7 +29,8 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 /**
  * {@link TransformationGraph} tests.<br>
  * <br>
- * Not using JUnit 4 features, as this doesn't seem to work with Eclipse.
+ * Not using JUnit 4 features, as this doesn't seem to work with Eclipse
+ * (at least out of the box).
  * 
  * @author Simon Templer
  */
@@ -40,7 +40,11 @@ class TransformationGraphTest extends GroovyTestCase implements TransformationGr
 		Gremlin.load()
 	}
 
-	void testSimpleRename() {
+	/**
+	 * Simple test for a mapping with a Retype and four Renames, checking if
+	 * the vertices count is OK.  
+	 */
+	void testCountSimpleRename() {
 		TransformationExample sample = TransformationExamples
 				.getExample(TransformationExamples.SIMPLE_RENAME)
 		Alignment alignment = sample.getAlignment()
@@ -55,12 +59,16 @@ class TransformationGraphTest extends GroovyTestCase implements TransformationGr
 		TransformationTree tree = new TransformationTreeImpl(type, alignment)
 
 		// create the transformation graph
-		Graph g = TransformationGraph.create(tree)
+		TransformationGraph tg = new TransformationGraph(tree)
 
 		// check vertices count of the different types in different ways
-		assertEquals(4, g.V.filter{it.type == NodeType.Cell}.count())
-		assertEquals(5, g.V('type', NodeType.Source).count())
-		assertEquals(5, g.V(P_TYPE, NodeType.Target).count())
+		assertEquals(4, tg.graph.V.filter{it.type == NodeType.Cell}.count())
+		assertEquals(5, tg.graph.V('type', NodeType.Source).count())
+		assertEquals(5, tg.graph.V(P_TYPE, NodeType.Target).count())
+	}
+
+	void testProxyMultiResultNodes() {
+
 	}
 
 }
