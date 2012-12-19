@@ -13,28 +13,25 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.align.tgraph
+package eu.esdihumboldt.hale.common.align.tgraph;
 
-import com.tinkerpop.blueprints.Graph
-import com.tinkerpop.blueprints.impls.tg.TinkerGraphFactory
-import com.tinkerpop.gremlin.groovy.Gremlin
+import static org.junit.Assert.assertFalse;
+
+import org.junit.Test;
 
 /**
- * Groovy sample class for testing the build.
+ * Sample test class.
  * 
  * @author Simon Templer
  */
-class Sample {
+public class SampleTest {
 
-	static {
-		Gremlin.load()
-	}
-	
-	public List exampleMethod() {
-		Graph g = TinkerGraphFactory.createTinkerGraph()
-		def results = []
-		g.v(1).out('knows').fill(results)
-		return results
+	/**
+	 * Simple test if gremlin execution succeeds.
+	 */
+	@Test
+	public void execute() {
+		assertFalse(new Sample().exampleMethod().isEmpty());
 	}
 
 }
