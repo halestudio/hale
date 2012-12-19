@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="54">
+<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="58">
 <locations>
 <location path="${project_loc:hale-platform}/target/org.eclipse.jetty" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.javolution" type="Directory"/>
@@ -95,5 +95,9 @@
 <location path="${project_loc:hale-platform}/target/org.codehaus.jettison" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.codehaus.jackson.mapper" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/EDU.oswego.cs.dl.util.concurrent" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/jline" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/com.tinkerpop.pipes" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/com.tinkerpop.gremlin" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.fusesource" type="Directory"/>
 </locations>
 </target>
