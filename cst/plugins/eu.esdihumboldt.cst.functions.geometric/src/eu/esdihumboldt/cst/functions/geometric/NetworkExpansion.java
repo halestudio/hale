@@ -19,6 +19,10 @@ package eu.esdihumboldt.cst.functions.geometric;
 import java.util.List;
 import java.util.Map;
 
+import javax.script.ScriptException;
+
+import org.springframework.core.convert.ConversionException;
+
 import com.google.common.collect.ListMultimap;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.operation.buffer.BufferBuilder;
@@ -30,6 +34,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
+import eu.esdihumboldt.hale.common.convert.ConversionUtil;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.geometry.GeometryFinder;
 import eu.esdihumboldt.hale.common.instance.helper.DepthFirstInstanceTraverser;
@@ -38,6 +43,7 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.common.scripting.scripts.mathematical.MathScript;
 import eu.esdihumboldt.hale.common.scripting.transformation.AbstractSingleTargetScriptedPropertyTransformation;
 
 /**
@@ -68,8 +74,18 @@ public class NetworkExpansion extends
 		try {
 			bufferWidth = Double.parseDouble(bufferWidthString);
 		} catch (NumberFormatException e) {
-			throw new TransformationException("Failed to convert buffer width ("
-					+ bufferWidthString + ") to double.", e);
+			// For backwards compatibility try to run the string as script.
+			MathScript mathScript = new MathScript();
+			try {
+				Object result = mathScript.evaluate(bufferWidthString,
+						variables.get(ENTITY_VARIABLE));
+				bufferWidth = ConversionUtil.getAs(result, Double.class);
+			} catch (ScriptException e1) {
+				throw new TransformationException("Failed to evaluate buffer width expression.", e1);
+			} catch (ConversionException e2) {
+				throw new TransformationException(
+						"Failed to convert buffer width expression result to double.", e2);
+			}
 		}
 
 		// get input geometry

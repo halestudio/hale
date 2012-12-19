@@ -20,4 +20,6 @@ Import-Package: com.google.common.base,
  org.slf4j,
  org.springframework.core.convert
 Export-Package: eu.esdihumboldt.hale.common.scripting,
+ eu.esdihumboldt.hale.common.scripting.scripts.groovy,
+ eu.esdihumboldt.hale.common.scripting.scripts.mathematical,
  eu.esdihumboldt.hale.common.scripting.transformation
