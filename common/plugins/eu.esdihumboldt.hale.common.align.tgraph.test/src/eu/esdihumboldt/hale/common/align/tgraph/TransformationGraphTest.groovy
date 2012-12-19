@@ -15,7 +15,6 @@
 
 package eu.esdihumboldt.hale.common.align.tgraph
 
-import com.tinkerpop.blueprints.Graph
 import com.tinkerpop.gremlin.groovy.Gremlin
 
 import eu.esdihumboldt.cst.test.TransformationExample
@@ -30,7 +29,8 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 /**
  * {@link TransformationGraph} tests.<br>
  * <br>
- * Not using JUnit 4 features, as this doesn't seem to work with Eclipse.
+ * Not using JUnit 4 features, as this doesn't seem to work with Eclipse
+ * (at least out of the box).
  * 
  * @author Simon Templer
  */
@@ -40,27 +40,80 @@ class TransformationGraphTest extends GroovyTestCase implements TransformationGr
 		Gremlin.load()
 	}
 
-	void testSimpleRename() {
-		TransformationExample sample = TransformationExamples
-				.getExample(TransformationExamples.SIMPLE_RENAME)
+	/**
+	 * Simple test for a mapping with a Retype and four Renames, checking if
+	 * the vertices count is OK.  
+	 */
+	void testCountSimpleRename() {
+		TransformationGraph tg = createGraph(TransformationExamples.SIMPLE_RENAME)
+
+		// check vertices count of the different types in different ways
+		assertEquals(4, tg.graph.V.filter{it.type == NodeType.Cell}.count())
+		assertEquals(5, tg.graph.V('type', NodeType.Source).count())
+		assertEquals(5, tg.graph.V(P_TYPE, NodeType.Target).count())
+	}
+
+	/**
+	 * Tests proxying multi result nodes on the
+	 * {@link TransformationExamples#CM_UNION_1} example.
+	 */
+	void testProxyMultiResultNodes1() {
+		TransformationGraph tg = createGraph(TransformationExamples.CM_UNION_1)
+
+		// there should be seven vertices
+		assertEquals(7, tg.graph.V.count())
+		// none of them proxy nodes
+		assertEquals(0, tg.graph.V(P_TYPE, NodeType.Proxy).count())
+
+		tg.proxyMultiResultNodes();
+
+		// there should be two new nodes
+		assertEquals(9, tg.graph.V.count())
+		// both of them proxies
+		assertEquals(2, tg.graph.V(P_TYPE, NodeType.Proxy).count())
+	}
+
+	/**
+	 * Tests proxying multi result nodes on the
+	 * {@link TransformationExamples#CM_UNION_2} example.
+	 */
+	void testProxyMultiResultNodes2() {
+		TransformationGraph tg = createGraph(TransformationExamples.CM_UNION_2)
+
+		// there should be seven vertices
+		assertEquals(11, tg.graph.V.count())
+		// none of them proxy nodes
+		assertEquals(0, tg.graph.V(P_TYPE, NodeType.Proxy).count())
+
+		tg.proxyMultiResultNodes();
+
+		// there should be two new nodes
+		assertEquals(13, tg.graph.V.count())
+		// both of them proxies
+		assertEquals(2, tg.graph.V(P_TYPE, NodeType.Proxy).count())
+	}
+
+	/**
+	 * Create the transformation graph for the given example ID.
+	 * @param exampleId the example ID as defined by
+	 *   {@link TransformationExamples}
+	 * @return the transformation graph
+	 */
+	private TransformationGraph createGraph(String exampleId) {
+		TransformationExample sample = TransformationExamples.getExample(exampleId)
 		Alignment alignment = sample.getAlignment()
 
 		// get the target type
 		TypeDefinition type =
-				alignment.typeCells.asList().first() // first type cell
-				.target.values().asList().first() // first target type
+				alignment.typeCells.asList()[0] // first type cell
+				.target.values().asList()[0] // first target type
 				.definition.definition // its type definition
 
 		// create the transformation tree
 		TransformationTree tree = new TransformationTreeImpl(type, alignment)
 
 		// create the transformation graph
-		Graph g = TransformationGraph.create(tree)
-
-		// check vertices count of the different types in different ways
-		assertEquals(4, g.V.filter{it.type == NodeType.Cell}.count())
-		assertEquals(5, g.V('type', NodeType.Source).count())
-		assertEquals(5, g.V(P_TYPE, NodeType.Target).count())
+		new TransformationGraph(tree)
 	}
 
 }

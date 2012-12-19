@@ -31,7 +31,9 @@ public interface TransformationGraphConstants {
 		/** Target nodes */
 		Target,
 		/** Cells */
-		Cell
+		Cell,
+		/** Proxy for a target node */
+		Proxy
 	}
 
 	// node properties
@@ -87,5 +89,10 @@ public interface TransformationGraphConstants {
 	 * Label for edges between target nodes.
 	 */
 	public static final String EDGE_PARENT = "parent";
+
+	/**
+	 * Label for edges between target nodes.
+	 */
+	public static final String EDGE_PROXY = "proxies";
 
 }
