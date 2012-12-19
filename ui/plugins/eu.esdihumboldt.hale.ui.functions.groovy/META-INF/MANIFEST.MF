@@ -7,8 +7,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.ui,
  com.google.guava,
  org.eclipse.jface.text;bundle-version="3.7.1",
- com.springsource.org.codehaus.groovy;bundle-version="1.7.3",
- eu.esdihumboldt.hale.ui;bundle-version="2.5.0"
+ eu.esdihumboldt.hale.ui;bundle-version="2.5.0",
+ groovy;bundle-version="1.8.6"
 Import-Package: eu.esdihumboldt.cst.functions.groovy,
  eu.esdihumboldt.hale.common.align.extension.function,
  eu.esdihumboldt.hale.common.align.model,
