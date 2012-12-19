@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.align.tgraph;
+package eu.esdihumboldt.hale.common.align.tgraph.internal;
 
 import java.util.Set;
 
@@ -30,13 +30,14 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.TreeToGraphVisitor;
+import eu.esdihumboldt.hale.common.align.tgraph.TransformationGraphConstants;
 
 /**
  * Helper for transformation graphs based on a {@link TransformationTree}.
  * 
  * @author Simon Templer
  */
-public class TransformationGraph implements TransformationGraphConstants {
+public class TransformationGraphFactory implements TransformationGraphConstants {
 
 	/**
 	 * Create a transformation graph from a transformation tree.
