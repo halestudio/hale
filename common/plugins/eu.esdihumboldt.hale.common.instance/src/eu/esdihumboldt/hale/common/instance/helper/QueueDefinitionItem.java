@@ -32,8 +32,8 @@ import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 public class QueueDefinitionItem {
 
 	private ChildDefinition<?> def;
-	private List<QName> qnames;
-	private List<List<QName>> loops;
+	private final List<QName> qnames;
+	private final List<List<QName>> loops;
 
 	/**
 	 * Create a definition item.
@@ -93,7 +93,7 @@ public class QueueDefinitionItem {
 	}
 
 	/**
-	 * adds known loop paths wich appear in the path of the
+	 * adds known loop paths which appear in the path of the
 	 * instance-definition-tree on the way to the definition of this item
 	 * 
 	 * @param loopQNames the loop paths to add
