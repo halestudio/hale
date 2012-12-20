@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.common.instance.helper;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,9 +32,12 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Collections2;
 
+import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * This class provides plubic static methods for resolving propertys from
@@ -148,7 +152,7 @@ public class PropertyResolver {
 		}
 		// definition based check and retrieval
 		if (hasProperty(instance, propertyPath)) {
-			LinkedList<String> paths = getKnownQueryPath(instance, propertyPath);
+			LinkedList<String> paths = getQueryPath(instance, propertyPath);
 			Collection<Object> result = new ArrayList<Object>();
 
 			for (String path : paths) {
@@ -347,26 +351,39 @@ public class PropertyResolver {
 
 		lastQDI.set(qdi);
 
-		if (definitioncache.containsKey(qdi)) {
-
-			if (definitioncache.get(qdi).isEmpty()) {
-				return false;
-			}
-			else
-				return true;
-
-		}
+		if (definitioncache.containsKey(qdi))
+			return !definitioncache.get(qdi).isEmpty();
 		else
 			return analyzeDefinition(instance, qdi);
 	}
 
 	/**
+	 * Returns all possible fully qualified (with namespaces) paths matching the
+	 * given query.
+	 * 
+	 * @param typeDef the type definition
+	 * @param dataSet the data set
+	 * @param query the query
+	 * @return a list of all possible paths matching the query (which may be
+	 *         empty)
+	 */
+	public static List<List<QName>> getQueryPaths(TypeDefinition typeDef, DataSet dataSet,
+			String query) {
+		Instance instance = new DefaultInstance(typeDef, dataSet);
+		List<String> paths = getQueryPath(instance, query);
+		ArrayList<List<QName>> result = new ArrayList<List<QName>>(paths.size());
+		for (String path : paths)
+			result.add(getQNamesFromPath(path));
+		return Collections.unmodifiableList(result);
+	}
+
+	/**
 	 * this method can be used to search a single index over the whole
-	 * instance-definition-tree (for example "*"querys) the method writes the
+	 * instance-definition-tree (for example "*" queries) the method writes the
 	 * found paths into the cache
 	 * 
-	 * @param children a list of Childdefinitions from the rootdefinition of the
-	 *            instance-definition-tree
+	 * @param children a list of ChildDefinitions from the root definition of
+	 *            the instance-definition-tree
 	 * @param path the list of QNames split up from the original querypath
 	 * @param qdi the cacheindex produced from the instance root definition and
 	 *            the querypath
@@ -662,11 +679,11 @@ public class PropertyResolver {
 	 * Method for easy comparing of two QName objects. The first QName can miss
 	 * the URI part. Then only the local parts getting compared.
 	 * 
-	 * @param qname1 the QName (usually from the filterquery), wich can miss an
+	 * @param qname1 the QName (usually from the filterquery), which can miss an
 	 *            URI part
 	 * @param qname2 the second QName
 	 * @return true, if both are equal or if the first QName doesn't have an URI
-	 *         part and poth localparts are equal. Else false...
+	 *         part and both localparts are equal. Else false...
 	 */
 	private static boolean compareQName(QName qname1, QName qname2) {
 
@@ -690,19 +707,24 @@ public class PropertyResolver {
 	}
 
 	/**
-	 * Gets a certain definitionpath from the Cache by generating the cacheindex
-	 * object from a given Instance (its Definitions) and the pathquery
+	 * Returns possible fully qualified (with namespace) paths for the given
+	 * String which could not contain all namespaces.<br>
+	 * The path can be splitted using {@link #getQNamesFromPath(String)}
 	 * 
-	 * @param instance the given instance wich should contain the definitions
+	 * @param instance the given instance which should contain the definitions
 	 *            mentioned in the paths
 	 * @param query the pathstring from the filterquery
 	 * @return a list of Strings with possible paths inside the definitions of
 	 *         the instance
 	 */
-	public static LinkedList<String> getKnownQueryPath(Instance instance, String query) {
-
+	public static LinkedList<String> getQueryPath(Instance instance, String query) {
 		QueryDefinitionIndex qdi = new QueryDefinitionIndex(instance.getDefinition(),
 				instance.getDataSet(), query);
+
+		lastQDI.set(qdi);
+
+		if (!definitioncache.containsKey(qdi))
+			analyzeDefinition(instance, qdi);
 
 		return definitioncache.get(qdi);
 
