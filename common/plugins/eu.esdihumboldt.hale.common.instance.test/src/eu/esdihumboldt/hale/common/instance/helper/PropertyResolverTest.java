@@ -99,7 +99,7 @@ public class PropertyResolverTest {
 
 			assertTrue(PropertyResolver.hasProperty(instance,
 					"{http://www.example.com}shipto.{http://www.example.com}city"));
-			assertTrue(PropertyResolver.getKnownQueryPath(instance,
+			assertTrue(PropertyResolver.getQueryPath(instance,
 					"{http://www.example.com}shipto.{http://www.example.com}city").contains(
 					"{http://www.example.com}shipto.{http://www.example.com}city"));
 
