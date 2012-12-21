@@ -17,4 +17,6 @@ Require-Bundle: eu.esdihumboldt.hale.common.align.tgraph;bundle-version="2.5.0",
  gremlin-groovy;bundle-version="2.1.0",
  gremlin-java;bundle-version="2.1.0",
  com.tinkerpop.blueprints;bundle-version="2.1.0",
- pipes;bundle-version="2.1.0"
+ pipes;bundle-version="2.1.0",
+ eu.esdihumboldt.hale.common.align;bundle-version="2.5.0",
+ eu.esdihumboldt.hale.common.instance;bundle-version="2.5.0"

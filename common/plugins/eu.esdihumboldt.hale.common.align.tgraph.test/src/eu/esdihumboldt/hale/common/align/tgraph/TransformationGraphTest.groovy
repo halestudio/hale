@@ -15,11 +15,13 @@
 
 package eu.esdihumboldt.hale.common.align.tgraph
 
+import com.tinkerpop.blueprints.Vertex
 import com.tinkerpop.gremlin.groovy.Gremlin
 
 import eu.esdihumboldt.cst.test.TransformationExample
 import eu.esdihumboldt.cst.test.TransformationExamples
 import eu.esdihumboldt.hale.common.align.model.Alignment
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.TransformationTreeImpl
 import eu.esdihumboldt.hale.common.align.tgraph.TransformationGraphConstants.NodeType
@@ -51,6 +53,22 @@ class TransformationGraphTest extends GroovyTestCase implements TransformationGr
 		assertEquals(4, tg.graph.V.filter{it.type == NodeType.Cell}.count())
 		assertEquals(5, tg.graph.V('type', NodeType.Source).count())
 		assertEquals(5, tg.graph.V(P_TYPE, NodeType.Target).count())
+	}
+
+	/**
+	 * Simple test for a mapping with a Retype and four Renames, checking the
+	 * correct target type node is retrieved.
+	 */
+	void testTargetSimpleRename() {
+		TransformationGraph tg = createGraph(TransformationExamples.SIMPLE_RENAME)
+
+		Vertex targetType = tg.getTarget();
+		assertNotNull(targetType)
+
+		TypeEntityDefinition ted = targetType.getProperty(P_ENTITY)
+		assertNotNull(ted)
+
+		assertEquals('T2', ted.definition.name.localPart)
 	}
 
 	/**
