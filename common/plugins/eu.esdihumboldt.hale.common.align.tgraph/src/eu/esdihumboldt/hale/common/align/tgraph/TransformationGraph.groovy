@@ -57,11 +57,20 @@ class TransformationGraph implements TransformationGraphConstants {
 	}
 
 	/**
-	 * Get the graph
-	 * @return
+	 * Get the graph.
+	 * @return the internal graph
 	 */
 	Graph getGraph() {
 		graph
+	}
+
+	/**
+	 * Get the graph vertex representing the target type.
+	 * @return the target type vertex
+	 */
+	Vertex getTarget() {
+		// get the target node that has no outgoing edges
+		graph.V(P_TYPE, NodeType.Target).filter{!it.outE.hasNext()}.next()
 	}
 
 	/**
@@ -76,25 +85,24 @@ class TransformationGraph implements TransformationGraphConstants {
 				.filter{
 					it.inE(EDGE_RESULT).count() > 1} // with more than one cell attached
 				.inE(EDGE_RESULT) // and get the incoming result edges
+				.sideEffect{
+					// for each of those edges
+					// create a bypass
 
-		for (Edge resultEdge : resultEdges) {
-			// for each of those edges
-			// create a bypass
+					Vertex proxy = graph.addVertex()
+					proxy.setProperty P_TYPE, NodeType.Proxy
 
-			Vertex proxy = graph.addVertex()
-			proxy.setProperty P_TYPE, NodeType.Proxy
+					Edge newResult = graph.addEdge(null,
+							it.getVertex(Direction.IN), proxy, EDGE_RESULT)
+					// copy properties from original edge
+					ElementHelper.copyProperties(it, newResult)
 
-			Edge newResult = graph.addEdge(null,
-					resultEdge.getVertex(Direction.IN), proxy, EDGE_RESULT)
-			// copy properties from original edge
-			ElementHelper.copyProperties(resultEdge, newResult)
+					graph.addEdge(null,
+							proxy, it.getVertex(Direction.OUT), EDGE_PROXY)
 
-			graph.addEdge(null,
-					proxy, resultEdge.getVertex(Direction.OUT), EDGE_PROXY)
-
-			// remove the original edge
-			graph.removeEdge(resultEdge)
-		}
+					// remove the original edge
+					graph.removeEdge(it)
+				}.iterate() // make sure to actually traverse the graph
 
 		this
 	}

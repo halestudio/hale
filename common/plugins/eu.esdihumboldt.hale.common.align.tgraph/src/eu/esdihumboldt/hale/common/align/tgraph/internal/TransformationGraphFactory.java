@@ -23,6 +23,7 @@ import com.tinkerpop.blueprints.Graph;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.GroupNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
@@ -31,6 +32,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.Transformatio
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.TreeToGraphVisitor;
 import eu.esdihumboldt.hale.common.align.tgraph.TransformationGraphConstants;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 
 /**
  * Helper for transformation graphs based on a {@link TransformationTree}.
@@ -176,10 +178,21 @@ public class TransformationGraphFactory implements TransformationGraphConstants 
 		if (node instanceof TargetNode) {
 			setVertexProperties(vertex, (TargetNode) node);
 		}
+		if (node instanceof TransformationTree) {
+			setVertexProperties(vertex, (TransformationTree) node);
+		}
 	}
 
 	private static void setVertexProperties(Vertex vertex, TargetNode node) {
 		vertex.setProperty(P_ENTITY, node.getEntityDefinition());
+	}
+
+	private static void setVertexProperties(Vertex vertex, TransformationTree node) {
+		// create a type entity definition
+		// TODO also include the filter
+		TypeEntityDefinition ted = new TypeEntityDefinition(node.getType(), SchemaSpaceID.TARGET,
+				null);
+		vertex.setProperty(P_ENTITY, ted);
 	}
 
 }
