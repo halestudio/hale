@@ -38,6 +38,11 @@ abstract class TransformationExamples {
 	public static final String CM_UNION_1 = 'cm_union_1'
 	public static final String CM_UNION_2 = 'cm_union_2'
 
+	public static final String CM_MULTI_2 = 'cm_multi_2'
+	public static final String CM_MULTI_4 = 'cm_multi_4'
+
+	public static final String CM_NESTED_1 = 'cm_nested_1'
+
 	/**
 	 * Internal example map.
 	 */
@@ -77,7 +82,10 @@ abstract class TransformationExamples {
 		(CARDINALITY_MOVE): defaultExample(CARDINALITY_MOVE),
 		// context matching examples
 		(CM_UNION_1): defaultExample(CM_UNION_1),
-		(CM_UNION_2): defaultExample(CM_UNION_2)
+		(CM_UNION_2): defaultExample(CM_UNION_2),
+		(CM_MULTI_2): defaultExample(CM_MULTI_2),
+		(CM_MULTI_4): defaultExample(CM_MULTI_4),
+		(CM_NESTED_1): defaultExample(CM_NESTED_1)
 	];
 
 	static def defaultExample(String folder) {

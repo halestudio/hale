@@ -24,6 +24,7 @@ import eu.esdihumboldt.hale.common.align.model.Alignment
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.TransformationTreeImpl
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.TreeToGraphVisitor
 import eu.esdihumboldt.hale.common.align.tgraph.TGraphConstants.NodeType
 import eu.esdihumboldt.hale.common.align.tgraph.internal.TGraphImpl
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
@@ -74,6 +75,96 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 	}
 
 	/**
+	 * Simple test for a mapping with a Retype and four Renames, checking
+	 * context matching is performed correctly.
+	 */
+	void testContextSimpleRename() {
+		TGraph tg = createGraph(TransformationExamples.SIMPLE_RENAME)
+
+		tg.proxyMultiResultNodes()
+		tg.performContextMatching()
+
+		// contexts in this example are unambiguous
+		assertContext(tg, 'id', 'id')
+		assertContext(tg, 'a1', 'a2')
+		assertContext(tg, 'b1', 'b2')
+		assertContext(tg, 'c1', 'c2')
+
+		// 4 contexts altogether
+		assertEquals(4, tg.graph.E.filter{it.label == EDGE_CONTEXT}.count())
+	}
+
+	/**
+	 * Check if context matching is performed correctly for the
+	 * {@link TransformationExamples#CM_MULTI_2} example.
+	 */
+	void testContextCMMulti2() {
+		TGraph tg = createGraph(TransformationExamples.CM_MULTI_2)
+
+		tg.proxyMultiResultNodes()
+		tg.performContextMatching()
+
+		assertContext(tg, 't1', 'b') // could also be a -> b
+		assertContext(tg, 'a', 'bt')
+
+		// 2 contexts altogether
+		assertEquals(2, tg.graph.E.filter{it.label == EDGE_CONTEXT}.count())
+	}
+
+	/**
+	 * Check if context matching is performed correctly for the
+	 * {@link TransformationExamples#CM_MULTI_4} example.
+	 */
+	void testContextCMMulti4() {
+		TGraph tg = createGraph(TransformationExamples.CM_MULTI_4)
+
+		tg.proxyMultiResultNodes()
+		tg.performContextMatching()
+
+		assertContext(tg, 'a', 'b')
+		assertContext(tg, 'a', 'bt') //XXX
+
+		// 2 contexts altogether
+		assertEquals(2, tg.graph.E.filter{it.label == EDGE_CONTEXT}.count())
+	}
+
+	/**
+	 * Check if context matching is performed correctly for the
+	 * {@link TransformationExamples#CM_NESTED_1} example.
+	 */
+	void testContextCMNested1() {
+		TGraph tg = createGraph(TransformationExamples.CM_NESTED_1)
+
+		tg.proxyMultiResultNodes()
+		tg.performContextMatching()
+
+		// contexts in this example are unambiguous
+		assertContext(tg, 'a', 'b')
+		assertContext(tg, 'a1', 'b1')
+		assertContext(tg, 'a2', 'b2')
+
+		// 3 contexts altogether
+		assertEquals(3, tg.graph.E.filter{it.label == EDGE_CONTEXT}.count())
+	}
+
+	/**
+	 * Assert if there is a context match between a source and target node in
+	 * the given graph.
+	 * 
+	 * @param tg the transformation graph
+	 * @param source the source name (i.e. the node id w/o prefix)
+	 * @param target the target name (i.e. the node id w/o prefix)
+	 */
+	void assertContext(TGraph tg, String source, String target) {
+		def sourceId = TreeToGraphVisitor.SOURCE_PREFIX + source
+		def targetId = TreeToGraphVisitor.TARGET_PREFIX + target
+
+		def sourceNode = tg.graph.getVertex(sourceId)
+		def targetNodes = sourceNode.out(EDGE_CONTEXT).filter{it.id == targetId}.toList()
+		assertEquals(1, targetNodes.size())
+	}
+
+	/**
 	 * Tests proxying multi result nodes on the
 	 * {@link TransformationExamples#CM_UNION_1} example.
 	 */
@@ -83,14 +174,14 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 		// there should be seven vertices
 		assertEquals(7, tg.graph.V.count())
 		// none of them proxy nodes
-		assertEquals(0, tg.graph.V(P_TYPE, NodeType.Proxy).count())
+		assertEquals(0, tg.graph.V(P_PROXY, true).count())
 
 		tg.proxyMultiResultNodes();
 
 		// there should be two new nodes
 		assertEquals(9, tg.graph.V.count())
 		// both of them proxies
-		assertEquals(2, tg.graph.V(P_TYPE, NodeType.Proxy).count())
+		assertEquals(2, tg.graph.V(P_PROXY, true).count())
 	}
 
 	/**
@@ -103,14 +194,14 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 		// there should be seven vertices
 		assertEquals(11, tg.graph.V.count())
 		// none of them proxy nodes
-		assertEquals(0, tg.graph.V(P_TYPE, NodeType.Proxy).count())
+		assertEquals(0, tg.graph.V(P_PROXY, true).count())
 
 		tg.proxyMultiResultNodes();
 
 		// there should be two new nodes
 		assertEquals(13, tg.graph.V.count())
 		// both of them proxies
-		assertEquals(2, tg.graph.V(P_TYPE, NodeType.Proxy).count())
+		assertEquals(2, tg.graph.V(P_PROXY, true).count())
 	}
 
 	/**
