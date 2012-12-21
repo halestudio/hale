@@ -23,13 +23,15 @@ import java.util.Set;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
+import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
-import eu.esdihumboldt.util.Identifiers;
+import eu.esdihumboldt.util.CustomIdentifiers;
 
 /**
  * {@link TransformationTree} Visitor for generating parameters to create a
@@ -39,9 +41,13 @@ import eu.esdihumboldt.util.Identifiers;
  */
 public class TreeToGraphVisitor extends AbstractTargetToSourceVisitor {
 
+	private static final String TARGET_PREFIX = "t:";
+	private static final String SOURCE_PREFIX = "s:";
+	private static final String CELL_PREFIX = "c:";
+
 	private final Deque<String> visited;
 	private final SetMultimap<String, String> dotMap;
-	private final Identifiers<TransformationNode> ids;
+	private final CustomIdentifiers<TransformationNode> ids;
 
 	/**
 	 * standard constructor
@@ -50,7 +56,7 @@ public class TreeToGraphVisitor extends AbstractTargetToSourceVisitor {
 		super();
 		visited = new LinkedList<String>();
 		dotMap = HashMultimap.create();
-		ids = new Identifiers<TransformationNode>(TransformationNode.class, false);
+		ids = new CustomIdentifiers<TransformationNode>("node", false);
 	}
 
 	/**
@@ -58,8 +64,7 @@ public class TreeToGraphVisitor extends AbstractTargetToSourceVisitor {
 	 */
 	@Override
 	public boolean visit(TransformationTree root) {
-
-		String id = ids.getId(root);
+		String id = ids.getId(root, TARGET_PREFIX + root.getType().getDisplayName());
 
 		visited.addFirst(id);
 
@@ -77,7 +82,7 @@ public class TreeToGraphVisitor extends AbstractTargetToSourceVisitor {
 			cont = false;
 		}
 
-		String id = ids.getId(target);
+		String id = ids.getId(target, TARGET_PREFIX + target.getDefinition().getDisplayName());
 		String parentId = visited.peekFirst();
 		dotMap.put(parentId, id);
 		visited.addFirst(id);
@@ -95,7 +100,17 @@ public class TreeToGraphVisitor extends AbstractTargetToSourceVisitor {
 			cont = false;
 		}
 
-		String id = ids.getId(cell);
+		String functionName;
+		AbstractFunction<?> function = FunctionUtil.getFunction(cell.getCell()
+				.getTransformationIdentifier());
+		if (function != null) {
+			functionName = function.getDisplayName();
+		}
+		else {
+			functionName = cell.getCell().getTransformationIdentifier();
+		}
+
+		String id = ids.getId(cell, CELL_PREFIX + functionName);
 		String parentId = visited.peekFirst();
 		dotMap.put(parentId, id);
 		visited.addFirst(id);
@@ -113,7 +128,7 @@ public class TreeToGraphVisitor extends AbstractTargetToSourceVisitor {
 			cont = false;
 		}
 
-		String id = ids.getId(source);
+		String id = ids.getId(source, SOURCE_PREFIX + source.getDefinition().getDisplayName());
 		String parentId = visited.peekFirst();
 		dotMap.put(parentId, id);
 		visited.addFirst(id);
