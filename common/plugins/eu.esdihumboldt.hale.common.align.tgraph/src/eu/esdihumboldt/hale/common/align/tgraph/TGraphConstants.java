@@ -32,8 +32,6 @@ public interface TGraphConstants {
 		Target,
 		/** Cells */
 		Cell,
-		/** Proxy for a target node */
-		Proxy
 	}
 
 	// node properties
@@ -42,6 +40,12 @@ public interface TGraphConstants {
 	 * Property holding the node type. This property is mandatory.
 	 */
 	public static final String P_TYPE = "type";
+
+	/**
+	 * Property holding the information if a node actually is a proxy for
+	 * another node.
+	 */
+	public static final String P_PROXY = "isProxy";
 
 	/**
 	 * Property holding the associated entity definition. This property is
@@ -94,5 +98,16 @@ public interface TGraphConstants {
 	 * Label for edges between target nodes.
 	 */
 	public static final String EDGE_PROXY = "proxies";
+
+	/**
+	 * Label for edges identifying a context match between source and target.
+	 */
+	public static final String EDGE_CONTEXT = "relatesTo";
+
+	/**
+	 * Edges labels of the core graph, i.e. w/o context matches.
+	 */
+	public static final String[] EDGES_CORE = { EDGE_CHILD, EDGE_VARIABLE, EDGE_RESULT,
+			EDGE_PARENT, EDGE_PROXY };
 
 }

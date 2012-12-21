@@ -38,6 +38,33 @@ abstract class TransformationExamples {
 	public static final String CM_UNION_1 = 'cm_union_1'
 	public static final String CM_UNION_2 = 'cm_union_2'
 
+	public static final String CM_CCROSSOVER_1 = 'cm_ccrossover_1'
+
+	public static final String CM_PCROSSOVER_1 = 'cm_pcrossover_1'
+	public static final String CM_PCROSSOVER_1B = 'cm_pcrossover_1b'
+	public static final String CM_PCROSSOVER_2 = 'cm_pcrossover_2'
+	public static final String CM_PCROSSOVER_3 = 'cm_pcrossover_3'
+	public static final String CM_PCROSSOVER_4 = 'cm_pcrossover_4'
+	public static final String CM_PCROSSOVER_4_EX_1 = 'cm_pcrossover_4_ex_1'
+	public static final String CM_PCROSSOVER_4_EX_2 = 'cm_pcrossover_4_ex_2'
+	public static final String CM_PCROSSOVER_5 = 'cm_pcrossover_5'
+	public static final String CM_PCROSSOVER_6 = 'cm_pcrossover_6'
+	public static final String CM_PCROSSOVER_6B = 'cm_pcrossover_6b'
+
+	public static final String CM_MULTI_1 = 'cm_multi_1'
+	public static final String CM_MULTI_1B = 'cm_multi_1b'
+	public static final String CM_MULTI_2 = 'cm_multi_2'
+	public static final String CM_MULTI_3 = 'cm_multi_3'
+	public static final String CM_MULTI_4 = 'cm_multi_4'
+
+	public static final String CM_NESTED_1 = 'cm_nested_1'
+	public static final String CM_NESTED_2 = 'cm_nested_2'
+	public static final String CM_NESTED_3 = 'cm_nested_3'
+	public static final String CM_NESTED_3B = 'cm_nested_3b'
+	public static final String CM_NESTED_4 = 'cm_nested_4'
+	public static final String CM_NESTED_5 = 'cm_nested_5'
+	public static final String CM_NESTED_6 = 'cm_nested_6'
+
 	/**
 	 * Internal example map.
 	 */
@@ -77,7 +104,34 @@ abstract class TransformationExamples {
 		(CARDINALITY_MOVE): defaultExample(CARDINALITY_MOVE),
 		// context matching examples
 		(CM_UNION_1): defaultExample(CM_UNION_1),
-		(CM_UNION_2): defaultExample(CM_UNION_2)
+		(CM_UNION_2): defaultExample(CM_UNION_2),
+
+		(CM_CCROSSOVER_1): defaultExample(CM_CCROSSOVER_1),
+
+		(CM_PCROSSOVER_1): defaultExample(CM_PCROSSOVER_1),
+		(CM_PCROSSOVER_1B): defaultExample(CM_PCROSSOVER_1B),
+		(CM_PCROSSOVER_2): defaultExample(CM_PCROSSOVER_2),
+		(CM_PCROSSOVER_3): defaultExample(CM_PCROSSOVER_3),
+		(CM_PCROSSOVER_4): defaultExample(CM_PCROSSOVER_4),
+		(CM_PCROSSOVER_4_EX_1): defaultExample(CM_PCROSSOVER_4_EX_1),
+		(CM_PCROSSOVER_4_EX_2): defaultExample(CM_PCROSSOVER_4_EX_2),
+		(CM_PCROSSOVER_5): defaultExample(CM_PCROSSOVER_5),
+		(CM_PCROSSOVER_6): defaultExample(CM_PCROSSOVER_6),
+		(CM_PCROSSOVER_6B): defaultExample(CM_PCROSSOVER_6B),
+
+		(CM_MULTI_1): defaultExample(CM_MULTI_1),
+		(CM_MULTI_1B): defaultExample(CM_MULTI_1B),
+		(CM_MULTI_2): defaultExample(CM_MULTI_2),
+		(CM_MULTI_3): defaultExample(CM_MULTI_3),
+		(CM_MULTI_4): defaultExample(CM_MULTI_4),
+
+		(CM_NESTED_1): defaultExample(CM_NESTED_1),
+		(CM_NESTED_2): defaultExample(CM_NESTED_2),
+		(CM_NESTED_3): defaultExample(CM_NESTED_3),
+		(CM_NESTED_3B): defaultExample(CM_NESTED_3B),
+		(CM_NESTED_4): defaultExample(CM_NESTED_4),
+		(CM_NESTED_5): defaultExample(CM_NESTED_5),
+		(CM_NESTED_6): defaultExample(CM_NESTED_6)
 	];
 
 	static def defaultExample(String folder) {
