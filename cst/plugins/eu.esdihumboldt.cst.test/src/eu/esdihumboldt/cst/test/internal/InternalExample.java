@@ -73,7 +73,13 @@ public class InternalExample implements TransformationExample {
 		this.sourceSchemaLocation = toLocalURI(sourceSchemaLocation);
 		this.targetSchemaLocation = toLocalURI(targetSchemaLocation);
 		this.sourceDataLocation = toLocalURI(sourceDataLocation);
-		this.targetDataLocation = toLocalURI(targetDataLocation);
+		URI tdl = null;
+		try {
+			tdl = toLocalURI(targetDataLocation);
+		} catch (Exception e) {
+			// allow examples w/o target data
+		}
+		this.targetDataLocation = tdl;
 		this.alignmentLocation = toLocalURI(alignmentLocation);
 		this.targetContainerNamespace = targetContainerNamespace;
 		this.targetContainerName = targetContainerName;
@@ -139,6 +145,9 @@ public class InternalExample implements TransformationExample {
 	@Override
 	public InstanceCollection getTargetInstances() throws IOProviderConfigurationException,
 			IOException {
+		if (targetDataLocation == null) {
+			throw new IllegalStateException("Example has no target data");
+		}
 		if (targetInstances == null) {
 			targetInstances = TestUtil.loadInstances(targetDataLocation, getTargetSchema());
 		}
@@ -167,6 +176,9 @@ public class InternalExample implements TransformationExample {
 
 	@Override
 	public LocatableInputSupplier<? extends InputStream> getTargetDataInput() {
+		if (targetDataLocation == null) {
+			throw new IllegalStateException("Example has no target data");
+		}
 		return new DefaultInputSupplier(targetDataLocation);
 	}
 

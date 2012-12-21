@@ -41,9 +41,20 @@ import eu.esdihumboldt.util.CustomIdentifiers;
  */
 public class TreeToGraphVisitor extends AbstractTargetToSourceVisitor {
 
-	private static final String TARGET_PREFIX = "t:";
-	private static final String SOURCE_PREFIX = "s:";
-	private static final String CELL_PREFIX = "c:";
+	/**
+	 * Target node ID prefix
+	 */
+	public static final String TARGET_PREFIX = "t:";
+
+	/**
+	 * Source node ID prefix
+	 */
+	public static final String SOURCE_PREFIX = "s:";
+
+	/**
+	 * Cell node ID prefix
+	 */
+	public static final String CELL_PREFIX = "c:";
 
 	private final Deque<String> visited;
 	private final SetMultimap<String, String> dotMap;
