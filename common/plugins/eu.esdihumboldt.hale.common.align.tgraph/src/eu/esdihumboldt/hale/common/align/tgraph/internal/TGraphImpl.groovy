@@ -78,7 +78,8 @@ class TGraphImpl implements TGraph {
 					// create a bypass
 
 					Vertex proxy = graph.addVertex()
-					proxy.setProperty P_TYPE, NodeType.Proxy
+					proxy.setProperty P_TYPE, NodeType.Target
+					proxy.setProperty P_PROXY, true
 
 					Edge newResult = graph.addEdge(null,
 							it.getVertex(Direction.IN), proxy, EDGE_RESULT)
@@ -94,4 +95,33 @@ class TGraphImpl implements TGraph {
 
 		this
 	}
+
+	@Override
+	TGraph performContextMatching() {
+		/*
+		 * XXX First experiments with context matching.
+		 * For now looking only at simple examples
+		 * w/o a context hierarchy (e.g. simple rename) 
+		 */
+
+		// get the target type node
+		def root = getTarget();
+
+		// get all its direct children
+		def children = root.in.has(P_TYPE, NodeType.Target)
+
+		for (Vertex node : children) {
+			// for each child (which is a target node)
+
+			// determine all paths leading to this child
+			def paths = []
+//			Tree t = new Tree();
+			node.as('start').in.sideEffect{paths.addAll(it.path.toList())}.loop('start'){true}.enablePath().iterate()
+//			paths = node.as('start').in.loop('start'){it.loops<3}.path.toList()
+//			paths = node.as('start').in.loop('start'){true}.tree(t).iterate()
+			println paths
+//			println t
+		}
+	}
+
 }

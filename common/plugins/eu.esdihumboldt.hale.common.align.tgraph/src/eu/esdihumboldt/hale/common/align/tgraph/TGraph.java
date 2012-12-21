@@ -48,4 +48,12 @@ public interface TGraph extends TGraphConstants {
 	 */
 	public TGraph proxyMultiResultNodes();
 
+	/**
+	 * Perform context matching on the transformation graph.<br>
+	 * XXX work in progress
+	 * 
+	 * @return this transformation graph
+	 */
+	public TGraph performContextMatching();
+
 }
