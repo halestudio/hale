@@ -78,7 +78,8 @@ class TGraphImpl implements TGraph {
 					// create a bypass
 
 					Vertex proxy = graph.addVertex()
-					proxy.setProperty P_TYPE, NodeType.Proxy
+					proxy.setProperty P_TYPE, NodeType.Target
+					proxy.setProperty P_PROXY, true
 
 					Edge newResult = graph.addEdge(null,
 							it.getVertex(Direction.IN), proxy, EDGE_RESULT)
@@ -94,4 +95,94 @@ class TGraphImpl implements TGraph {
 
 		this
 	}
+
+	@Override
+	TGraph performContextMatching() {
+		/*
+		 * XXX First experiments with context matching.
+		 * For now looking only at simple examples
+		 * w/o a context hierarchy (e.g. simple rename, cm_multi_2/4) 
+		 */
+
+		// get the target type node
+		def root = getTarget();
+
+		// get all its direct children
+		def children = root.in.has(P_TYPE, NodeType.Target)
+
+		for (Vertex node : children) {
+			// for each child (which is a target node)
+
+			// determine all paths leading to this node
+			/*
+			 * This is only working because there are no cycles in the graph
+			 * and all incoming connections are acceptable. 
+			 */
+			def paths = node.in.loop(1){
+				it.object.inE.hasNext() // loop while there is an incoming edge
+			}.path.toList()
+
+			// reverse paths so they start with source (type) nodes
+			paths = paths.collect{it.reverse()}
+
+			//XXX debug
+			println "Paths: $paths"
+
+			// find candidates for context match
+
+			/*
+			 * All paths have to have at least the one item in common -
+			 * otherwise there is no point on the source side where they
+			 * converge.
+			 */
+			// find the elements equal in all paths
+			def common = findCommonPaths(paths)
+
+			//XXX debug
+			println "Common: $common"
+
+			/*
+			 * TODO Analyze common elements
+			 * Are there any outgoing connections other than the determined paths?
+			 * Are they candidates for the context match?
+			 * Changes to the graph may be necessary to use an element as context.  
+			 */
+			/*
+			 * TODO Check for alternative contexts by grouping child nodes that
+			 * occur in the paths. 
+			 */
+
+			/*
+			 * XXX Now what about the children of node?
+			 * XXX How to pass the node context as parent context?
+			 */
+		}
+	}
+
+	/**
+	 * Find the common elements in a list of paths.
+	 * 
+	 * @param paths the paths, a list of lists
+	 * @return the list of common leading elements
+	 */
+	private def findCommonPaths(def paths) {
+		assert paths
+		assert paths.size() > 0
+
+		def common
+		for (path in paths) {
+			if (common == null) {
+				common = path
+			} else {
+				for (int i = 0; i < Math.min(common.size(), path.size()); i++) {
+					if (common[i] != path[i]) {
+						common = common.take(i)
+						break;
+					}
+				}
+			}
+		}
+		return common
+	}
+
 }
