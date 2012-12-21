@@ -31,7 +31,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.TreeToGraphVisitor;
-import eu.esdihumboldt.hale.common.align.tgraph.TransformationGraphConstants;
+import eu.esdihumboldt.hale.common.align.tgraph.TGraphConstants;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 
 /**
@@ -39,7 +39,7 @@ import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
  * 
  * @author Simon Templer
  */
-public class TransformationGraphFactory implements TransformationGraphConstants {
+public class TGraphFactory implements TGraphConstants {
 
 	/**
 	 * Create a transformation graph from a transformation tree.
