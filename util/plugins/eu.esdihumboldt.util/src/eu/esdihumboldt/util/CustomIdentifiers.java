@@ -56,9 +56,14 @@ public class CustomIdentifiers<T> extends Identifiers<T> {
 	 *         is either the desiredId or the desiredId with a suffix
 	 */
 	public String getId(T object, final String desiredId) {
+		String currentId = fetchId(object);
+		if (currentId != null) {
+			return currentId;
+		}
+
 		String id = desiredId;
 		int num = 2;
-		while (getObject(desiredId) != null) {
+		while (getObject(id) != null) {
 			// change id
 			id = desiredId + "_" + num++;
 		}
