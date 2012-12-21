@@ -32,8 +32,6 @@ public interface TGraphConstants {
 		Target,
 		/** Cells */
 		Cell,
-		/** Proxy for a target node */
-		Proxy
 	}
 
 	// node properties
@@ -42,6 +40,12 @@ public interface TGraphConstants {
 	 * Property holding the node type. This property is mandatory.
 	 */
 	public static final String P_TYPE = "type";
+
+	/**
+	 * Property holding the information if a node actually is a proxy for
+	 * another node.
+	 */
+	public static final String P_PROXY = "isProxy";
 
 	/**
 	 * Property holding the associated entity definition. This property is

@@ -74,6 +74,46 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 	}
 
 	/**
+	 * Simple test for a mapping with a Retype and four Renames, checking
+	 * context matching is performed correctly.
+	 */
+	void testContextSimpleRename() {
+		TGraph tg = createGraph(TransformationExamples.SIMPLE_RENAME)
+
+		tg.proxyMultiResultNodes()
+		tg.performContextMatching()
+
+		//TODO checks
+	}
+
+	/**
+	 * Check if context matching is performed correctly for the
+	 * {@link TransformationExamples#CM_MULTI_2} example.
+	 */
+	void testContextCMMulti2() {
+		TGraph tg = createGraph(TransformationExamples.CM_MULTI_2)
+
+		tg.proxyMultiResultNodes()
+		tg.performContextMatching()
+
+		//TODO checks
+	}
+
+
+	/**
+	 * Check if context matching is performed correctly for the
+	 * {@link TransformationExamples#CM_MULTI_4} example.
+	 */
+	void testContextCMMulti4() {
+		TGraph tg = createGraph(TransformationExamples.CM_MULTI_4)
+
+		tg.proxyMultiResultNodes()
+		tg.performContextMatching()
+
+		//TODO checks
+	}
+
+	/**
 	 * Tests proxying multi result nodes on the
 	 * {@link TransformationExamples#CM_UNION_1} example.
 	 */
@@ -83,14 +123,14 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 		// there should be seven vertices
 		assertEquals(7, tg.graph.V.count())
 		// none of them proxy nodes
-		assertEquals(0, tg.graph.V(P_TYPE, NodeType.Proxy).count())
+		assertEquals(0, tg.graph.V(P_PROXY, true).count())
 
 		tg.proxyMultiResultNodes();
 
 		// there should be two new nodes
 		assertEquals(9, tg.graph.V.count())
 		// both of them proxies
-		assertEquals(2, tg.graph.V(P_TYPE, NodeType.Proxy).count())
+		assertEquals(2, tg.graph.V(P_PROXY, true).count())
 	}
 
 	/**
@@ -103,14 +143,14 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 		// there should be seven vertices
 		assertEquals(11, tg.graph.V.count())
 		// none of them proxy nodes
-		assertEquals(0, tg.graph.V(P_TYPE, NodeType.Proxy).count())
+		assertEquals(0, tg.graph.V(P_PROXY, true).count())
 
 		tg.proxyMultiResultNodes();
 
 		// there should be two new nodes
 		assertEquals(13, tg.graph.V.count())
 		// both of them proxies
-		assertEquals(2, tg.graph.V(P_TYPE, NodeType.Proxy).count())
+		assertEquals(2, tg.graph.V(P_PROXY, true).count())
 	}
 
 	/**
