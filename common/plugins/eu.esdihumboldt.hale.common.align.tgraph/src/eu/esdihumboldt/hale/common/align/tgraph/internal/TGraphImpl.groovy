@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.align.tgraph
+package eu.esdihumboldt.hale.common.align.tgraph.internal
 
 import com.tinkerpop.blueprints.Direction
 import com.tinkerpop.blueprints.Edge
@@ -22,8 +22,8 @@ import com.tinkerpop.blueprints.Vertex
 import com.tinkerpop.blueprints.util.ElementHelper
 
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree
-import eu.esdihumboldt.hale.common.align.tgraph.TransformationGraphConstants.NodeType
-import eu.esdihumboldt.hale.common.align.tgraph.internal.TransformationGraphFactory
+import eu.esdihumboldt.hale.common.align.tgraph.TGraph
+import eu.esdihumboldt.hale.common.align.tgraph.TGraphConstants.NodeType
 
 
 
@@ -32,7 +32,7 @@ import eu.esdihumboldt.hale.common.align.tgraph.internal.TransformationGraphFact
  * 
  * @author Simon Templer
  */
-class TransformationGraph implements TransformationGraphConstants {
+class TGraphImpl implements TGraph {
 
 	/** The internal graph */
 	private Graph graph
@@ -42,8 +42,8 @@ class TransformationGraph implements TransformationGraphConstants {
 	 * 
 	 * @param ttree the transformation tree
 	 */
-	TransformationGraph(TransformationTree ttree) {
-		graph = TransformationGraphFactory.create(ttree)
+	TGraphImpl(TransformationTree ttree) {
+		graph = TGraphFactory.create(ttree)
 	}
 
 	/**
@@ -52,35 +52,23 @@ class TransformationGraph implements TransformationGraphConstants {
 	 * @param g the graph, the caller is responsible for it to be a valid
 	 *   transformation graph
 	 */
-	TransformationGraph(Graph g) {
+	TGraphImpl(Graph g) {
 		graph = g
 	}
 
-	/**
-	 * Get the graph.
-	 * @return the internal graph
-	 */
+	@Override
 	Graph getGraph() {
 		graph
 	}
 
-	/**
-	 * Get the graph vertex representing the target type.
-	 * @return the target type vertex
-	 */
+	@Override
 	Vertex getTarget() {
 		// get the target node that has no outgoing edges
 		graph.V(P_TYPE, NodeType.Target).filter{!it.outE.hasNext()}.next()
 	}
 
-	/**
-	 * Create proxy nodes for target nodes that have multiple cells assigning
-	 * results to it - for each incoming edge from a cell a proxy node is
-	 * created.
-	 * 
-	 * @return this transformation graph
-	 */
-	TransformationGraph proxyMultiResultNodes() {
+	@Override
+	TGraph proxyMultiResultNodes() {
 		def resultEdges = graph.V(P_TYPE, NodeType.Target) // find target nodes
 				.filter{
 					it.inE(EDGE_RESULT).count() > 1} // with more than one cell attached
