@@ -20,7 +20,7 @@ package eu.esdihumboldt.hale.common.align.tgraph;
  * 
  * @author Simon Templer
  */
-public interface TransformationGraphConstants {
+public interface TGraphConstants {
 
 	/**
 	 * Node types in the transformation graph.

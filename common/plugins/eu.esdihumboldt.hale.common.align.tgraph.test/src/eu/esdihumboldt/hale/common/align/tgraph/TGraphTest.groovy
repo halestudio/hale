@@ -24,7 +24,8 @@ import eu.esdihumboldt.hale.common.align.model.Alignment
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.TransformationTreeImpl
-import eu.esdihumboldt.hale.common.align.tgraph.TransformationGraphConstants.NodeType
+import eu.esdihumboldt.hale.common.align.tgraph.TGraphConstants.NodeType
+import eu.esdihumboldt.hale.common.align.tgraph.internal.TGraphImpl
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 
 
@@ -36,7 +37,8 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
  * 
  * @author Simon Templer
  */
-class TransformationGraphTest extends GroovyTestCase implements TransformationGraphConstants {
+@SuppressWarnings("restriction")
+class TGraphTest extends GroovyTestCase implements TGraphConstants {
 
 	static {
 		Gremlin.load()
@@ -47,7 +49,7 @@ class TransformationGraphTest extends GroovyTestCase implements TransformationGr
 	 * the vertices count is OK.  
 	 */
 	void testCountSimpleRename() {
-		TransformationGraph tg = createGraph(TransformationExamples.SIMPLE_RENAME)
+		TGraph tg = createGraph(TransformationExamples.SIMPLE_RENAME)
 
 		// check vertices count of the different types in different ways
 		assertEquals(4, tg.graph.V.filter{it.type == NodeType.Cell}.count())
@@ -60,7 +62,7 @@ class TransformationGraphTest extends GroovyTestCase implements TransformationGr
 	 * correct target type node is retrieved.
 	 */
 	void testTargetSimpleRename() {
-		TransformationGraph tg = createGraph(TransformationExamples.SIMPLE_RENAME)
+		TGraph tg = createGraph(TransformationExamples.SIMPLE_RENAME)
 
 		Vertex targetType = tg.getTarget();
 		assertNotNull(targetType)
@@ -76,7 +78,7 @@ class TransformationGraphTest extends GroovyTestCase implements TransformationGr
 	 * {@link TransformationExamples#CM_UNION_1} example.
 	 */
 	void testProxyMultiResultNodes1() {
-		TransformationGraph tg = createGraph(TransformationExamples.CM_UNION_1)
+		TGraph tg = createGraph(TransformationExamples.CM_UNION_1)
 
 		// there should be seven vertices
 		assertEquals(7, tg.graph.V.count())
@@ -96,7 +98,7 @@ class TransformationGraphTest extends GroovyTestCase implements TransformationGr
 	 * {@link TransformationExamples#CM_UNION_2} example.
 	 */
 	void testProxyMultiResultNodes2() {
-		TransformationGraph tg = createGraph(TransformationExamples.CM_UNION_2)
+		TGraph tg = createGraph(TransformationExamples.CM_UNION_2)
 
 		// there should be seven vertices
 		assertEquals(11, tg.graph.V.count())
@@ -117,7 +119,7 @@ class TransformationGraphTest extends GroovyTestCase implements TransformationGr
 	 *   {@link TransformationExamples}
 	 * @return the transformation graph
 	 */
-	private TransformationGraph createGraph(String exampleId) {
+	private TGraph createGraph(String exampleId) {
 		TransformationExample sample = TransformationExamples.getExample(exampleId)
 		Alignment alignment = sample.getAlignment()
 
@@ -131,7 +133,7 @@ class TransformationGraphTest extends GroovyTestCase implements TransformationGr
 		TransformationTree tree = new TransformationTreeImpl(type, alignment)
 
 		// create the transformation graph
-		new TransformationGraph(tree)
+		new TGraphImpl(tree)
 	}
 
 }
