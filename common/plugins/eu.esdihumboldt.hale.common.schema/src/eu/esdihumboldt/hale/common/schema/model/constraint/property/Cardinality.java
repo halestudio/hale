@@ -145,4 +145,10 @@ public class Cardinality implements GroupPropertyConstraint, PropertyConstraint 
 	public long getMaxOccurs() {
 		return maxOccurs;
 	}
+
+	@Override
+	public String toString() {
+		return getMinOccurs() + ".." + ((getMaxOccurs() == UNBOUNDED) ? ('n') : (getMaxOccurs()));
+	}
+
 }
