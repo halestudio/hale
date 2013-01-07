@@ -26,9 +26,9 @@ import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.SAXParseException;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
-import de.cs3d.util.logging.ATransaction;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ATransaction;
 import eu.esdihumboldt.hale.io.xml.validator.Report;
 import eu.esdihumboldt.hale.io.xml.validator.Validator;
 

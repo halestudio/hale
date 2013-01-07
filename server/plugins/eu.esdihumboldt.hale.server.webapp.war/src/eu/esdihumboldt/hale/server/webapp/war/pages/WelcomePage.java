@@ -29,8 +29,8 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.osgi.framework.Bundle;
 import org.springframework.osgi.web.deployer.support.DefaultContextPathStrategy;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.server.webapp.pages.BasePage;
 import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
 import eu.esdihumboldt.hale.server.webapp.war.internal.Activator;

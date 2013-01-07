@@ -19,8 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 
 /**
  * Properties file that is in sync with its physical counterpart.

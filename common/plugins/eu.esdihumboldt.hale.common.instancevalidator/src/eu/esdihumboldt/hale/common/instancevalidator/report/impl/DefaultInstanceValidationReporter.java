@@ -16,7 +16,7 @@
 
 package eu.esdihumboldt.hale.common.instancevalidator.report.impl;
 
-import de.cs3d.util.logging.ALogger;
+import de.fhg.igd.slf4jplus.ALogger;
 import eu.esdihumboldt.hale.common.core.report.impl.DefaultReporter;
 import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationMessage;
 import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationReport;

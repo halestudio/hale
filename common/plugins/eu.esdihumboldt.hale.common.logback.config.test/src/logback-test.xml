@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <configuration>
-  <appender name="CONSOLE" class="de.cs3d.util.logging.logback.appender.StaticConsoleAppender">
-  	<filter class="de.cs3d.util.logging.logback.appender.FlattenFilter" />
+  <appender name="CONSOLE" class="de.fhg.igd.slf4jplus.logback.appender.StaticConsoleAppender">
+  	<filter class="de.fhg.igd.slf4jplus.logback.appender.FlattenFilter" />
     <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
       <Pattern>%d{dd.MM.yyyy HH:mm:ss} %-5level %C{1}.%M\(%L\) - %m%n</Pattern>
     </encoder>

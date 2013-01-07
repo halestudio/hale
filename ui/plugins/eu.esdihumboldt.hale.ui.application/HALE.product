@@ -90,14 +90,14 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="de.cs3d.common.metamodel"/>
       <plugin id="de.cs3d.ui.bookmarks"/>
       <plugin id="de.cs3d.ui.util.eclipse"/>
-      <plugin id="de.cs3d.ui.util.logging.errorlog"/>
-      <plugin id="de.cs3d.ui.util.logging.userstatus"/>
+      <plugin id="de.fhg.igd.slf4jplus.ui.errorlog"/>
+      <plugin id="de.fhg.igd.slf4jplus.ui.userstatus"/>
       <plugin id="de.cs3d.util.eclipse"/>
       <plugin id="de.cs3d.util.helper"/>
-      <plugin id="de.cs3d.util.logging"/>
-      <plugin id="de.cs3d.util.logging.logback"/>
-      <plugin id="de.cs3d.util.logging.logback.appender" fragment="true"/>
-      <plugin id="de.cs3d.util.logging.logback.observer"/>
+      <plugin id="de.fhg.igd.slf4jplus"/>
+      <plugin id="de.fhg.igd.slf4jplus.logback"/>
+      <plugin id="de.fhg.igd.slf4jplus.logback.appender" fragment="true"/>
+      <plugin id="de.fhg.igd.slf4jplus.logback.observer"/>
       <plugin id="de.fhg.igd.concurrency"/>
       <plugin id="de.fhg.igd.mapviewer"/>
       <plugin id="de.fhg.igd.mapviewer.server.openstreetmap"/>
@@ -379,8 +379,8 @@ http://www.esdi-community.eu/projects/show/hale
    </plugins>
 
    <configurations>
-      <plugin id="de.cs3d.ui.util.logging.errorlog" autoStart="true" startLevel="0" />
-      <plugin id="de.cs3d.util.logging.logback" autoStart="true" startLevel="1" />
+      <plugin id="de.fhg.igd.slf4jplus.ui.errorlog" autoStart="true" startLevel="0" />
+      <plugin id="de.fhg.igd.slf4jplus.logback" autoStart="true" startLevel="1" />
       <plugin id="eu.esdihumboldt.cst" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.common.align" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.common.convert" autoStart="true" startLevel="0" />

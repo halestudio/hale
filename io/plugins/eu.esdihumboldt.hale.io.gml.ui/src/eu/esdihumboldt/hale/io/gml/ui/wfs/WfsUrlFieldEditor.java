@@ -22,8 +22,8 @@ import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Composite;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.WfsDescribeFeatureConfiguration;
 import eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.WfsDescribeFeatureWizard;
 import eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.WfsGetFeatureConfiguration;

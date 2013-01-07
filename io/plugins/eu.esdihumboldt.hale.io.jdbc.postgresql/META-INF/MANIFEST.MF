@@ -8,7 +8,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.vividsolutions.jts,
  com.vividsolutions.jts.geom,
- de.cs3d.util.logging,
+ de.fhg.igd.slf4jplus,
  org.osgi.framework;version="1.3.0",
  org.postgis;version="9.0.801",
  org.postgresql;version="8.3.604",

@@ -4,7 +4,7 @@
   <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <!--See also http://logback.qos.ch/manual/appenders.html#RollingFileAppender-->
     <file>logs/ObjectsServer.log</file>
-    <filter class="de.cs3d.util.logging.logback.appender.FlattenFilter" />
+    <filter class="de.fhg.igd.slf4jplus.logback.appender.FlattenFilter" />
     <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
       <pattern>%d{ISO8601} %-5level [%mdc{user}:%mdc{remote}] %C{1}:%L - %m%n</pattern>
     </encoder>
@@ -16,8 +16,8 @@
       <MaxFileSize>2MB</MaxFileSize>
     </triggeringPolicy>
   </appender>
-  <appender name="CONSOLE" class="de.cs3d.util.logging.logback.appender.StaticConsoleAppender">
-  	<filter class="de.cs3d.util.logging.logback.appender.FlattenFilter" />
+  <appender name="CONSOLE" class="de.fhg.igd.slf4jplus.logback.appender.StaticConsoleAppender">
+  	<filter class="de.fhg.igd.slf4jplus.logback.appender.FlattenFilter" />
     <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
       <Pattern>%d{dd.MM.yyyy HH:mm:ss} %-5level [%mdc{user}:%mdc{remote}] %C{1}.%M\(%L\) - %m%n</Pattern>
     </encoder>

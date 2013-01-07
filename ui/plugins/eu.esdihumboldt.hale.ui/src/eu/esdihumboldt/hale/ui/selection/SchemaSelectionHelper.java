@@ -19,8 +19,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.PlatformUI;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 
 import eu.esdihumboldt.hale.ui.selection.impl.DefaultSchemaSelection;
 import eu.esdihumboldt.hale.ui.util.selection.SelectionTracker;

@@ -16,7 +16,7 @@
 
 package eu.esdihumboldt.hale.common.core.io.report.impl;
 
-import de.cs3d.util.logging.ALogger;
+import de.fhg.igd.slf4jplus.ALogger;
 import eu.esdihumboldt.hale.common.core.io.report.IOMessage;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;

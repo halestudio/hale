@@ -25,9 +25,9 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
-import de.cs3d.util.logging.ATransaction;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ATransaction;
 import eu.esdihumboldt.hale.common.instance.extension.validation.ConstraintValidatorExtension;
 import eu.esdihumboldt.hale.common.instance.extension.validation.GroupPropertyConstraintValidator;
 import eu.esdihumboldt.hale.common.instance.extension.validation.InstanceValidationContext;

@@ -25,7 +25,7 @@ Export-Package: eu.esdihumboldt.hale.ui.util,
  eu.esdihumboldt.hale.ui.util.viewer.tree,
  eu.esdihumboldt.hale.ui.util.wizard
 Import-Package: de.cs3d.util.eclipse,
- de.cs3d.util.logging,
+ de.fhg.igd.slf4jplus,
  de.fhg.igd.osgi.util;version="1.0.0",
  eu.esdihumboldt.util,
  eu.esdihumboldt.util.http,

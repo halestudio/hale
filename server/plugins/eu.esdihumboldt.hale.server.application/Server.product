@@ -51,9 +51,9 @@
       <plugin id="com.springsource.org.quartz"/>
       <plugin id="com.vividsolutions.jts"/>
       <plugin id="de.cs3d.util.eclipse"/>
-      <plugin id="de.cs3d.util.logging"/>
-      <plugin id="de.cs3d.util.logging.logback"/>
-      <plugin id="de.cs3d.util.logging.logback.appender" fragment="true"/>
+      <plugin id="de.fhg.igd.slf4jplus"/>
+      <plugin id="de.fhg.igd.slf4jplus.logback"/>
+      <plugin id="de.fhg.igd.slf4jplus.logback.appender" fragment="true"/>
       <plugin id="de.fhg.igd.concurrency"/>
       <plugin id="de.fhg.igd.osgi.util"/>
       <plugin id="edu.umd.cs.findbugs.annotations"/>

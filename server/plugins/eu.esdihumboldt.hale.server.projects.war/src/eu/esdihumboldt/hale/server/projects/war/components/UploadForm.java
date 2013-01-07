@@ -45,8 +45,8 @@ import org.apache.wicket.validation.validator.PatternValidator;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.server.projects.ProjectScavenger;
 import eu.esdihumboldt.hale.server.projects.ScavengerException;
 import eu.esdihumboldt.hale.server.projects.war.pages.ProjectsPage;
