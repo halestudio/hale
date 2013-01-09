@@ -21,6 +21,7 @@ import java.util.Map;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimaps;
 
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyTransformation;
@@ -89,11 +90,11 @@ public abstract class AbstractPropertyTransformation<E extends TransformationEng
 
 	/**
 	 * @see TransformationFunction#execute(String, TransformationEngine, Map,
-	 *      TransformationLog)
+	 *      TransformationLog, Cell)
 	 */
 	@Override
 	public void execute(String transformationIdentifier, E engine,
-			Map<String, String> executionParameters, TransformationLog log)
+			Map<String, String> executionParameters, TransformationLog log, Cell typeCell)
 			throws TransformationException {
 		results = evaluate(transformationIdentifier, engine, variables, resultNames,
 				executionParameters, log);
