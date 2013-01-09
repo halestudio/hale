@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.hale.common.align.transformation.service;
 
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
@@ -33,8 +34,10 @@ public interface PropertyTransformer {
 	 * @param source the source instances
 	 * @param target the target instance
 	 * @param typeLog the type transformation log
+	 * @param typeCell the type cell
 	 */
-	public void publish(FamilyInstance source, MutableInstance target, TransformationLog typeLog);
+	public void publish(FamilyInstance source, MutableInstance target, TransformationLog typeLog,
+			Cell typeCell);
 
 	/**
 	 * Join with the property transformer and wait for its completion, e.g. if

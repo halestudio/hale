@@ -30,9 +30,11 @@ import com.google.common.collect.ListMultimap;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
@@ -40,7 +42,6 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
-import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
@@ -51,23 +52,26 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 @Immutable
 public class TransformationTreeImpl extends AbstractGroupNode implements TransformationTree {
 
+	private final Cell typeCell;
 	private final TypeDefinition type;
 	private final SourceNodeFactory sourceNodes;
 	private final List<TargetNode> children;
 
 	/**
-	 * Create a transformation tree
+	 * Create a transformation tree based on a type cell.
 	 * 
-	 * @param type the type definition serving as root
 	 * @param alignment the alignment holding the cells
+	 * @param typeCell the type cell this tree is representing
 	 */
-	public TransformationTreeImpl(TypeDefinition type, Alignment alignment) {
+	public TransformationTreeImpl(Alignment alignment, Cell typeCell) {
 		super(null);
-		this.type = type;
+		this.typeCell = typeCell;
+		this.type = ((Type) CellUtil.getFirstEntity(typeCell.getTarget())).getDefinition()
+				.getDefinition();
 
 		sourceNodes = new SourceNodeFactory();
 
-		Collection<? extends Cell> cells = getRelevantPropertyCells(alignment, type);
+		Collection<? extends Cell> cells = getRelevantPropertyCells(alignment, typeCell);
 
 		// partition cells by child
 		ListMultimap<EntityDefinition, CellNode> childCells = ArrayListMultimap.create();
@@ -104,19 +108,14 @@ public class TransformationTreeImpl extends AbstractGroupNode implements Transfo
 	/**
 	 * Get the property cells relevant for the transformation tree from the
 	 * given alignment. The default implementation returns all property cells
-	 * related to the target type.
+	 * related to the type cell.
 	 * 
 	 * @param alignment the alignment
-	 * @param targetType the target type
+	 * @param typeCell the type cell type
 	 * @return the property cells
 	 */
-	protected Collection<? extends Cell> getRelevantPropertyCells(Alignment alignment,
-			TypeDefinition targetType) {
-		// dummy target type entity (there may not be any contexts associated to
-		// target types)
-		TypeEntityDefinition targetEntity = new TypeEntityDefinition(targetType,
-				SchemaSpaceID.TARGET, null);
-		return alignment.getPropertyCells(null, targetEntity);
+	protected Collection<? extends Cell> getRelevantPropertyCells(Alignment alignment, Cell typeCell) {
+		return alignment.getPropertyCells(typeCell);
 	}
 
 	/**
@@ -189,5 +188,13 @@ public class TransformationTreeImpl extends AbstractGroupNode implements Transfo
 			if (node.getParent() == null)
 				rootNodes.add(node);
 		return rootNodes;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree#getTypeCell()
+	 */
+	@Override
+	public Cell getTypeCell() {
+		return typeCell;
 	}
 }

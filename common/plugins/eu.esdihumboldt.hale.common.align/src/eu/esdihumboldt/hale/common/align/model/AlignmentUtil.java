@@ -18,7 +18,6 @@ package eu.esdihumboldt.hale.common.align.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -267,28 +266,6 @@ public abstract class AlignmentUtil {
 		}
 
 		return createEntity(entity.getType(), newPath, entity.getSchemaSpace(), entity.getFilter());
-	}
-
-	/**
-	 * Get a collection of property cells from a type cell
-	 * 
-	 * @param align the alignment to get the property cells from
-	 * @param tCell the type cell
-	 * @return the property cells
-	 */
-	public static Collection<? extends Cell> getPropertyCellsFromTypeCell(Alignment align,
-			Cell tCell) {
-		TypeEntityDefinition targetType = (TypeEntityDefinition) tCell.getTarget().values()
-				.iterator().next().getDefinition();
-		Iterator<? extends Entity> it = tCell.getSource().values().iterator();
-		Collection<TypeEntityDefinition> typeEntityCollection = new ArrayList<TypeEntityDefinition>();
-
-		while (it.hasNext()) {
-			typeEntityCollection.add((TypeEntityDefinition) it.next().getDefinition());
-		}
-
-		return align.getPropertyCells(typeEntityCollection, targetType);
-
 	}
 
 	/**

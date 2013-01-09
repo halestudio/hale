@@ -29,12 +29,16 @@ import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ComplexParameterType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ConditionType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.DocumentationType
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ModifierType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.NamedEntityType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ObjectFactory
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ParameterType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.PropertyType
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AlignmentType.Base
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType.Type
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ModifierType.DisableFor
 import eu.esdihumboldt.hale.common.align.model.Alignment
+import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell
 import eu.esdihumboldt.hale.common.align.model.Cell
 import eu.esdihumboldt.hale.common.align.model.ChildContext
 import eu.esdihumboldt.hale.common.align.model.Entity
@@ -43,6 +47,7 @@ import eu.esdihumboldt.hale.common.align.model.Property
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter
 import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager
 import eu.esdihumboldt.hale.common.instance.model.Filter
+
 
 
 
@@ -74,12 +79,33 @@ class AlignmentToJaxb {
 	AlignmentType convert() throws Exception {
 		AlignmentType align = new AlignmentType()
 
+		alignment.baseAlignments.collect(align.base) {
+			new Base(prefix: it.key, location: it.value);
+		}
+
 		// convert cells
 		for (Cell cell in alignment.cells) {
-			align.cell << convert(cell)
+			if (!(cell instanceof BaseAlignmentCell)) {
+				align.cellOrModifier << convert(cell)
+			}
 		}
 
 		return align
+	}
+
+	protected void addModifier(Cell cell, AlignmentType align) {
+		Set<Cell> disabledFor = cell.disabledFor
+		if (cell instanceof BaseAlignmentCell) {
+			disabledFor = ((BaseAlignmentCell) cell).additionalDisabledFor
+		}
+		if (!disabledFor.empty) {
+			ModifierType modifier = new ModifierType()
+			modifier.cell = cell.id
+			disabledFor.collect(modifier.disableFor) {
+				new DisableFor(parent: it.id)
+			}
+			align.cellOrModifier << modifier;
+		}
 	}
 
 	protected CellType convert(Cell cell) {
@@ -88,10 +114,13 @@ class AlignmentToJaxb {
 		// the transformation id
 		result.relation = cell.transformationIdentifier
 
+		// the cell id
+		result.id = cell.id;
+
 		// the transformation parameters
 		cell.transformationParameters?.entries()?.each { Entry<String, ParameterValue> param ->
 			def p = convert(param.key, param.value)
-			if (p) result.abstractParameter << p 
+			if (p) result.abstractParameter << p
 		}
 
 		// source entities
@@ -133,13 +162,13 @@ class AlignmentToJaxb {
 		 */
 		if (!value.representedAsDOM) {
 			// normal value
-			return of.createParameter(new ParameterType(name: name, value: value.stringRepresentation, 
-				type: (value.needsProcessing() ? value.type : null)))
+			return of.createParameter(new ParameterType(name: name, value: value.stringRepresentation,
+			type: (value.needsProcessing() ? value.type : null)))
 		}
 		else {
 			// complex value or element
 			return of.createComplexParameter(
-				new ComplexParameterType(name: name, any: value.getDOMRepresentation()))
+			new ComplexParameterType(name: name, any: value.getDOMRepresentation()))
 		}
 	}
 
