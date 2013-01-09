@@ -16,7 +16,9 @@
 
 package eu.esdihumboldt.hale.common.align.model;
 
+import java.net.URI;
 import java.util.Collection;
+import java.util.Map;
 
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
@@ -28,6 +30,13 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * @author Simon Templer
  */
 public interface Alignment {
+
+	/**
+	 * Get the base alignments.
+	 * 
+	 * @return the base alignments
+	 */
+	public Map<String, URI> getBaseAlignments();
 
 	/**
 	 * Get the collection of cells contained in the alignment.
@@ -75,5 +84,14 @@ public interface Alignment {
 	 */
 	public Collection<? extends Cell> getPropertyCells(Iterable<TypeEntityDefinition> sourceTypes,
 			TypeEntityDefinition targetType);
+
+	/**
+	 * Returns the cell referenced by the given id string or <code>null</code>
+	 * if it cannot be found.
+	 * 
+	 * @param cellId the cell id
+	 * @return the cell or <code>null</code> if it cannot be found
+	 */
+	public Cell getCell(String cellId);
 
 }

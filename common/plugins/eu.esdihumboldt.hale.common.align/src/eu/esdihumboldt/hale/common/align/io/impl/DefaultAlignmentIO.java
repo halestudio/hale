@@ -27,7 +27,6 @@ import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.exolab.castor.xml.XMLContext;
 import org.xml.sax.InputSource;
@@ -63,24 +62,8 @@ public class DefaultAlignmentIO {
 	 */
 	public static MutableAlignment load(InputStream in, IOReporter reporter, TypeIndex sourceTypes,
 			TypeIndex targetTypes) throws MappingException, MarshalException, ValidationException {
-		Mapping mapping = new Mapping(AlignmentBean.class.getClassLoader());
-		mapping.loadMapping(new InputSource(AlignmentBean.class
-				.getResourceAsStream("AlignmentBean.xml")));
-
-		XMLContext context = new XMLContext();
-		context.addMapping(mapping);
-
-		Unmarshaller unmarshaller = context.createUnmarshaller();
-		try {
-			AlignmentBean bean = (AlignmentBean) unmarshaller.unmarshal(new InputSource(in));
-			return bean.createAlignment(reporter, sourceTypes, targetTypes);
-		} finally {
-			try {
-				in.close();
-			} catch (IOException e) {
-				// ignore
-			}
-		}
+		AlignmentBean bean = AlignmentBean.load(in, reporter);
+		return bean.createAlignment(reporter, sourceTypes, targetTypes);
 	}
 
 	/**

@@ -16,20 +16,25 @@
 
 package eu.esdihumboldt.hale.common.align.model.impl;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
+import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
+import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
@@ -68,6 +73,11 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	private final ListMultimap<TypeDefinition, Cell> cellsPerTargetType = ArrayListMultimap
 			.create();
 
+	private int nextCellId = 1;
+	private final Map<String, URI> baseAlignments = new HashMap<String, URI>();
+
+	private final Map<String, Cell> idToCell = new HashMap<String, Cell>();
+
 	/**
 	 * Default constructor.
 	 */
@@ -90,6 +100,9 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	 */
 	@Override
 	public void addCell(Cell cell) {
+		// XXX a way around the MutableCell?
+		if (cell.getId() == null)
+			((MutableCell) cell).setId(String.valueOf(nextCellId++));
 		internalAdd(cell);
 	}
 
@@ -100,6 +113,7 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	 */
 	private void internalAdd(Cell cell) {
 		cells.add(cell);
+		idToCell.put(cell.getId(), cell);
 
 		// check if cell is a type cell
 		if (AlignmentUtil.isTypeCell(cell)) {
@@ -287,4 +301,51 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 		return Collections.unmodifiableCollection(typeCells);
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.MutableAlignment#addBaseAlignment(java.lang.String,java.net.URI,java.util.Collection)
+	 */
+	@Override
+	public void addBaseAlignment(String prefix, URI uri, Collection<BaseAlignmentCell> cells) {
+		if (baseAlignments.containsKey(prefix))
+			throw new IllegalArgumentException("prefix " + prefix + " already in use.");
+		baseAlignments.put(prefix, uri);
+		for (BaseAlignmentCell cell : cells)
+			addCell(cell);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.Alignment#getBaseAlignments()
+	 */
+	@Override
+	public Map<String, URI> getBaseAlignments() {
+		return Collections.unmodifiableMap(baseAlignments);
+	}
+
+	/**
+	 * Sets the next cell id to assign. This is used for consistency reasons
+	 * with alignments extending this alignment.
+	 * 
+	 * @param nextCellId the next cell id to use
+	 */
+	public void setNextCellId(int nextCellId) {
+		this.nextCellId = nextCellId;
+	}
+
+	/**
+	 * Get the next cell id to assign. This is used for consistency reasons with
+	 * alignments extending this alignment.
+	 * 
+	 * @return the next cell id
+	 */
+	public int getNextCellId() {
+		return nextCellId;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.Alignment#getCell(java.lang.String)
+	 */
+	@Override
+	public Cell getCell(String cellId) {
+		return idToCell.get(cellId);
+	}
 }

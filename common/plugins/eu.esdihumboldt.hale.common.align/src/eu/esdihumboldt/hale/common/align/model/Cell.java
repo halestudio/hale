@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.common.align.model;
 
+import java.util.Set;
+
 import com.google.common.collect.ListMultimap;
 
 /**
@@ -57,4 +59,17 @@ public interface Cell {
 	 */
 	public String getTransformationIdentifier();
 
+	/**
+	 * Get the id for identifying the cell.
+	 * 
+	 * @return the id
+	 */
+	public String getId();
+
+	/**
+	 * Returns the cells this cell is disabled for.
+	 * 
+	 * @return the cells this cell is disabled for
+	 */
+	public Set<Cell> getDisabledFor();
 }
