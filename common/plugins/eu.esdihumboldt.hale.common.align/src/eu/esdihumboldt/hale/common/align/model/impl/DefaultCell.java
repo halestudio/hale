@@ -36,6 +36,8 @@ public class DefaultCell implements Cell, MutableCell {
 	private ListMultimap<String, ? extends Entity> target;
 	private ListMultimap<String, ParameterValue> parameters;
 	private String transformation;
+	private int id;
+	private boolean active = true;
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.align.model.MutableCell#setTransformationIdentifier(java.lang.String)
@@ -120,6 +122,38 @@ public class DefaultCell implements Cell, MutableCell {
 		} catch (Throwable e) {
 			return super.toString();
 		}
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.Cell#getId()
+	 */
+	@Override
+	public int getId() {
+		return id;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.MutableCell#setId(int)
+	 */
+	@Override
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.MutableCell#setActive(boolean)
+	 */
+	@Override
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.Cell#isActive()
+	 */
+	@Override
+	public boolean isActive() {
+		return active;
 	}
 
 }

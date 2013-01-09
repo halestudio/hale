@@ -4,14 +4,34 @@
 <mapping>
 	<class name="eu.esdihumboldt.hale.common.align.io.impl.internal.AlignmentBean" auto-complete="true">
 		<map-to xml="hale-alignment" />
-	
+
+		<field name="base" type="string" required="false">
+			<bind-xml name="base" node="attribute" />
+		</field>
+		<field name="nextCellId" type="int" required="false">
+			<bind-xml name="nextCellId" node="attribute" />
+		</field>
 		<field name="cells" collection="collection" type="eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean">
 			<bind-xml name="cell" node="element" />
 		</field>
+		<field name="modifiers" collection="collection" type="eu.esdihumboldt.hale.common.align.io.impl.internal.ModifierBean">
+			<bind-xml name="modifier" node="element" />
+		</field>
 	</class>
-	<class name="eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean" auto-complete="true">
+	<class name="eu.esdihumboldt.hale.common.align.io.impl.internal.ModifierBean" auto-complete="true">	
+		<field name="name" type="string" required="true">
+			<bind-xml name="name" node="attribute" />
+		</field>
+		<field name="value" type="string" required="true">
+			<bind-xml name="value" node="attribute" />
+		</field>
+	</class>
+	<class name="eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean" auto-complete="true">	
 		<field name="transformationIdentifier" type="string" required="true">
 			<bind-xml name="transformation" node="attribute" />
+		</field>
+		<field name="id" type="int" required="false">
+			<bind-xml name="cellId" node="attribute" />
 		</field>
 		
 		<field name="source" collection="arraylist" type="eu.esdihumboldt.hale.common.align.io.impl.internal.NamedEntityBean">

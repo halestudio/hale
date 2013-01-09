@@ -57,4 +57,17 @@ public interface Cell {
 	 */
 	public String getTransformationIdentifier();
 
+	/**
+	 * Get the id for identifying the cell within an alignment.
+	 * 
+	 * @return the id
+	 */
+	public int getId();
+
+	/**
+	 * Returns whether the cell is active or not.
+	 * 
+	 * @return whether the cell is active or not
+	 */
+	public boolean isActive();
 }

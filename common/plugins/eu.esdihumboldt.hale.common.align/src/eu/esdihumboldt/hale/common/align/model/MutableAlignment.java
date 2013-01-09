@@ -16,7 +16,6 @@
 
 package eu.esdihumboldt.hale.common.align.model;
 
-
 /**
  * Mutable {@link Alignment} which is used where changes to the alignment are
  * allowed.
@@ -40,5 +39,20 @@ public interface MutableAlignment extends Alignment {
 	 * @return if the cell was present and removed
 	 */
 	public boolean removeCell(Cell cell);
+
+	/**
+	 * Sets the base alignment.
+	 * 
+	 * @param alignment the new base alignment
+	 */
+	public void setBaseAlignment(Alignment alignment);
+
+	/**
+	 * Sets the next cell id to assign. This is used for consistency reasons
+	 * with alignments extending this alignment.
+	 * 
+	 * @param nextCellId the next cell id to use
+	 */
+	public void setNextCellId(int nextCellId);
 
 }

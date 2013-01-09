@@ -16,15 +16,25 @@
 
 package eu.esdihumboldt.hale.common.align.io.impl.internal;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
+
+import eu.esdihumboldt.hale.common.align.io.impl.DefaultAlignmentIO;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
@@ -34,7 +44,10 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
  */
 public class AlignmentBean {
 
+	private String base;
+	private int nextCellId;
 	private Collection<CellBean> cells = new LinkedHashSet<CellBean>();
+	private Collection<ModifierBean> modifiers = new ArrayList<ModifierBean>();
 
 	/**
 	 * Default constructor
@@ -55,6 +68,9 @@ public class AlignmentBean {
 		for (Cell cell : alignment.getCells()) {
 			CellBean cellBean = new CellBean(cell);
 			cells.add(cellBean);
+			if (!cell.isActive())
+				modifiers.add(new ModifierBean(ModifierBean.DEACTIVATE_CELL, alignment
+						.getCellId(cell)));
 		}
 	}
 
@@ -68,15 +84,44 @@ public class AlignmentBean {
 	 * @param targetTypes the target types to use for resolving definition
 	 *            references
 	 * @return the alignment
+	 * @throws MappingException if the mapping could not be loaded
+	 * @throws MarshalException if the alignment could not be read
+	 * @throws ValidationException if the input stream did not provide valid XML
 	 */
 	public MutableAlignment createAlignment(IOReporter reporter, TypeIndex sourceTypes,
-			TypeIndex targetTypes) {
+			TypeIndex targetTypes) throws MappingException, MarshalException, ValidationException {
 		MutableAlignment alignment = new DefaultAlignment();
+
+		if (base != null) {
+			try {
+				// TODO try to update base path according to this alignments
+				// path-change?
+				Alignment baseAlignment = DefaultAlignmentIO.load(new DefaultInputSupplier(new URI(
+						base)).getInput(), reporter, sourceTypes, targetTypes);
+				alignment.setBaseAlignment(baseAlignment);
+			} catch (URISyntaxException e) {
+				throw new MarshalException("Invalid base alignment URI.", e);
+			} catch (IOException e) {
+				throw new MarshalException("Cannot open base alignment.", e);
+			}
+		}
+
+		alignment.setNextCellId(nextCellId);
 
 		for (CellBean cellBean : cells) {
 			MutableCell cell = cellBean.createCell(reporter, sourceTypes, targetTypes);
 			if (cell != null) {
 				alignment.addCell(cell);
+			}
+		}
+
+		for (ModifierBean modifierBean : modifiers) {
+			if (ModifierBean.DEACTIVATE_CELL.equals(modifierBean.getName())) {
+				MutableCell cell = (MutableCell) alignment.getCell(modifierBean.getValue());
+				if (cell == null)
+					; // TODO log warning?
+				else
+					cell.setActive(false);
 			}
 		}
 
@@ -99,6 +144,52 @@ public class AlignmentBean {
 	 */
 	public void setCells(Collection<CellBean> cells) {
 		this.cells = cells;
+	}
+
+	/**
+	 * Get the alignment modifiers
+	 * 
+	 * @return the modifiers
+	 */
+	public Collection<ModifierBean> getModifiers() {
+		return modifiers;
+	}
+
+	/**
+	 * Set the alignment modifiers
+	 * 
+	 * @param modifiers the modifiers to set
+	 */
+	public void setModifiers(Collection<ModifierBean> modifiers) {
+		this.modifiers = modifiers;
+	}
+
+	/**
+	 * @return the nextCellId
+	 */
+	public int getNextCellId() {
+		return nextCellId;
+	}
+
+	/**
+	 * @param nextCellId the nextCellId to set
+	 */
+	public void setNextCellId(int nextCellId) {
+		this.nextCellId = nextCellId;
+	}
+
+	/**
+	 * @return the base
+	 */
+	public String getBase() {
+		return base;
+	}
+
+	/**
+	 * @param base the base to set
+	 */
+	public void setBase(String base) {
+		this.base = base;
 	}
 
 }

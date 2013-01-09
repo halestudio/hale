@@ -30,6 +30,13 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 public interface Alignment {
 
 	/**
+	 * Get the base alignment.
+	 * 
+	 * @return the base alignment
+	 */
+	public Alignment getBaseAlignment();
+
+	/**
 	 * Get the collection of cells contained in the alignment.
 	 * 
 	 * @return the alignment cells
@@ -76,4 +83,30 @@ public interface Alignment {
 	public Collection<? extends Cell> getPropertyCells(Iterable<TypeEntityDefinition> sourceTypes,
 			TypeEntityDefinition targetType);
 
+	/**
+	 * Returns the cell referenced by the given id string or <code>null</code>
+	 * if it cannot be found.
+	 * 
+	 * @param cellId the cell id
+	 * @return the cell or <code>null</code> if it cannot be found
+	 */
+	public Cell getCell(String cellId);
+
+	/**
+	 * Returns the id string that references the given cell which has to be a
+	 * part of this alignment.
+	 * 
+	 * @param cell the cell in question
+	 * @return the id string for the given cell or <code>null</code> if the cell
+	 *         is not part of this alignment.
+	 */
+	public String getCellId(Cell cell);
+
+	/**
+	 * Get the next cell id to assign. This is used for consistency reasons with
+	 * alignments extending this alignment.
+	 * 
+	 * @return the next cell id
+	 */
+	public int getNextCellId();
 }

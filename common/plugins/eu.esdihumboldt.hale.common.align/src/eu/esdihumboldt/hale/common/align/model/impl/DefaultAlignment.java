@@ -68,6 +68,9 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	private final ListMultimap<TypeDefinition, Cell> cellsPerTargetType = ArrayListMultimap
 			.create();
 
+	private int nextCellId = 1;
+	private Alignment baseAlignment;
+
 	/**
 	 * Default constructor.
 	 */
@@ -287,4 +290,74 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 		return Collections.unmodifiableCollection(typeCells);
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.Alignment#getCell(java.lang.String)
+	 */
+	@Override
+	public Cell getCell(String cellId) {
+		if (cellId.charAt(0) == 'p') {
+			if (baseAlignment == null)
+				return null;
+			else
+				return baseAlignment.getCell(cellId.substring(1));
+		}
+
+		int id = Integer.parseInt(cellId);
+		for (Cell cell : cells)
+			if (cell.getId() == id)
+				return cell;
+		return null;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.Alignment#getCellId(eu.esdihumboldt.hale.common.align.model.Cell)
+	 */
+	@Override
+	public String getCellId(Cell cell) {
+		if (cells.contains(cell))
+			return String.valueOf(cell.getId());
+		else {
+			if (baseAlignment == null)
+				return null;
+			else {
+				String recursion = baseAlignment.getCellId(cell);
+				if (recursion == null)
+					return null;
+				else
+					return 'p' + recursion;
+			}
+		}
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.MutableAlignment#setBaseAlignment(eu.esdihumboldt.hale.common.align.model.Alignment)
+	 */
+	@Override
+	public void setBaseAlignment(Alignment alignment) {
+		this.baseAlignment = alignment;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.Alignment#getBaseAlignment()
+	 */
+	@Override
+	public Alignment getBaseAlignment() {
+		return baseAlignment;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.MutableAlignment#setNextCellId(int)
+	 */
+	@Override
+	public void setNextCellId(int nextCellId) {
+		this.nextCellId = nextCellId;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.Alignment#getNextCellId()
+	 */
+	@Override
+	public int getNextCellId() {
+		return nextCellId;
+	}
 }

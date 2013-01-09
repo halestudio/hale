@@ -48,6 +48,8 @@ public class CellBean {
 
 	private String transformationIdentifier;
 
+	private int id;
+
 	/**
 	 * Default constructor. Creates an empty cell bean.
 	 */
@@ -79,6 +81,8 @@ public class CellBean {
 		for (Entry<String, ? extends Entity> targetEntity : cell.getTarget().entries()) {
 			target.add(new NamedEntityBean(targetEntity.getKey(), targetEntity.getValue()));
 		}
+
+		this.id = cell.getId();
 	}
 
 	/**
@@ -105,6 +109,8 @@ public class CellBean {
 			}
 			cell.setTransformationParameters(parameters);
 		}
+
+		cell.setId(id);
 
 		try {
 			cell.setSource(createEntities(source, sourceTypes, SchemaSpaceID.SOURCE));
@@ -205,4 +211,21 @@ public class CellBean {
 		this.transformationIdentifier = transformationIdentifier;
 	}
 
+	/**
+	 * Set the id
+	 * 
+	 * @param id the id
+	 */
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	/**
+	 * Get the id
+	 * 
+	 * @return the id
+	 */
+	public int getId() {
+		return id;
+	}
 }
