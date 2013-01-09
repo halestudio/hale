@@ -1,0 +1,360 @@
+/*
+ * Copyright (c) 2013 Data Harmonisation Panel
+ * 
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
+ */
+
+package eu.esdihumboldt.hale.common.align.io.impl.internal;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
+import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell;
+import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
+import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
+import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
+import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
+import eu.esdihumboldt.util.Pair;
+
+/**
+ * Base class for converting alignment representations to alignments.
+ * 
+ * @author Kai Schwierczek
+ * @param <A> the alignment representation type
+ * @param <C> the cell representation type
+ * @param <M> the cell modifier representation type
+ */
+public abstract class AbstractBaseAlignmentLoader<A, C, M> {
+
+	/**
+	 * Load a alignment representation from the given stream. This method must
+	 * close the stream after it is done.
+	 * 
+	 * @param in the input stream
+	 * @param reporter the I/O reporter to report any errors to, may be
+	 *            <code>null</code>
+	 * @return a alignment representation
+	 * @throws IOException if some kind of exception occurs while loading the
+	 *             alignment
+	 */
+	protected abstract A loadAlignment(InputStream in, IOReporter reporter) throws IOException;
+
+	/**
+	 * Returns a map of prefix, URI pairs of base alignments for the given
+	 * alignment.
+	 * 
+	 * @param alignment the alignment representation in question
+	 * @return a map of prefix, URI pairs of base alignments
+	 */
+	protected abstract Map<String, URI> getBases(A alignment);
+
+	/**
+	 * Returns a collection of cell representations of the given alignment
+	 * representation.
+	 * 
+	 * @param alignment the alignment representation in question
+	 * @return cell representations
+	 */
+	protected abstract Collection<C> getCells(A alignment);
+
+	/**
+	 * Create a cell from the given cell representation
+	 * 
+	 * @param cell the cell representation
+	 * @param sourceTypes the source types to use for resolving definition
+	 *            references
+	 * @param targetTypes the target types to use for resolving definition
+	 *            references
+	 * @param reporter the I/O reporter to report any errors to, may be
+	 *            <code>null</code>
+	 * @return a cell for the given cell representation
+	 */
+	protected abstract MutableCell createCell(C cell, TypeIndex sourceTypes, TypeIndex targetTypes,
+			IOReporter reporter);
+
+	/**
+	 * Returns a collection of modifier representations of the given alignment
+	 * representation.
+	 * 
+	 * @param alignment the alignment representation in question
+	 * @return modifier representations
+	 */
+	protected abstract Collection<M> getModifiers(A alignment);
+
+	/**
+	 * Returns the raw cell id that is modified by the given modifier.
+	 * 
+	 * @param modifier the modifier representation in question
+	 * @return the cell id that is modified
+	 */
+	protected abstract String getModifiedCell(M modifier);
+
+	/**
+	 * Returns the disabled for list of the given modifier representation.
+	 * 
+	 * @param modifier the modifier representation in question
+	 * @return the disabled for list
+	 */
+	protected abstract Collection<String> getDisabledForList(M modifier);
+
+	/**
+	 * Creates an alignment from the given alignment representation.
+	 * 
+	 * @param start the main alignment representation
+	 * @param sourceTypes the source types to use for resolving definition
+	 *            references
+	 * @param targetTypes the target types to use for resolving definition
+	 *            references
+	 * @param reporter the I/O reporter to report any errors to, may be
+	 *            <code>null</code>
+	 * @return the alignment for the given alignment representation
+	 */
+	protected final MutableAlignment createAlignment(A start, TypeIndex sourceTypes,
+			TypeIndex targetTypes, IOReporter reporter) {
+		Map<A, Map<String, String>> prefixMapping = new HashMap<A, Map<String, String>>();
+		Map<A, Pair<String, URI>> alignmentToInfo = new HashMap<A, Pair<String, URI>>();
+
+		// fill needed maps
+		generatePrefixMapping(start, reporter, prefixMapping, alignmentToInfo);
+
+		// create alignment
+		DefaultAlignment alignment = new DefaultAlignment();
+
+		// add cells of base alignments
+		for (Entry<A, Pair<String, URI>> base : alignmentToInfo.entrySet()) {
+			Collection<C> baseCells = getCells(base.getKey());
+			Collection<BaseAlignmentCell> createdCells = new ArrayList<BaseAlignmentCell>(
+					baseCells.size());
+			for (C baseCell : baseCells) {
+				MutableCell cell = createCell(baseCell, sourceTypes, targetTypes, reporter);
+				if (cell != null)
+					createdCells.add(new BaseAlignmentCell(cell, base.getValue().getSecond(), base
+							.getValue().getFirst()));
+			}
+			alignment.addBaseAlignment(base.getValue().getFirst(), base.getValue().getSecond(),
+					createdCells);
+		}
+
+		// add cells of main alignment
+		// XXX check whether they got cell ids already? add them otherwise?
+		for (C mainCell : getCells(start)) {
+			MutableCell cell = createCell(mainCell, sourceTypes, targetTypes, reporter);
+			if (cell != null)
+				alignment.addCell(cell);
+		}
+
+		// add modifiers of base alignments
+		for (Entry<A, Pair<String, URI>> base : alignmentToInfo.entrySet())
+			applyModifiers(alignment, getModifiers(base.getKey()),
+					prefixMapping.get(base.getKey()), base.getValue().getFirst(), true, reporter);
+
+		// add modifiers of main alignment
+		applyModifiers(alignment, getModifiers(start), prefixMapping.get(start), null, false,
+				reporter);
+
+		return alignment;
+	}
+
+	/**
+	 * Function to fill the prefixMapping and alignmentToInfo maps.
+	 * 
+	 * @param start the main alignment representation
+	 * @param reporter the reporter
+	 * @param prefixMapping gets filled with a mapping from local to global
+	 *            prefixes
+	 * @param alignmentToInfo gets filled with a mapping from base alignment
+	 *            representations to prefixes and URIs
+	 */
+	private void generatePrefixMapping(A start, IOReporter reporter,
+			Map<A, Map<String, String>> prefixMapping, Map<A, Pair<String, URI>> alignmentToInfo) {
+		Map<String, URI> base = getBases(start);
+
+		// also a mapping for this alignment itself in case the same URI is
+		// defined for two prefixes
+		prefixMapping.put(start, new HashMap<String, String>());
+
+		// set of already seen URIs
+		Set<URI> knownURIs = new HashSet<URI>();
+
+		// reverse map of base
+		Map<URI, String> uriToPrefix = new HashMap<URI, String>();
+
+		// check base for doubles, and invert it for later
+		for (Entry<String, URI> baseEntry : base.entrySet()) {
+			if (knownURIs.contains(baseEntry.getValue())) {
+				reporter.warn(new IOMessageImpl("The same base alignment was included twice.", null));
+				prefixMapping.get(start).put(baseEntry.getKey(),
+						uriToPrefix.get(baseEntry.getValue()));
+			}
+			else {
+				knownURIs.add(baseEntry.getValue());
+				prefixMapping.get(start).put(baseEntry.getKey(), baseEntry.getKey());
+				uriToPrefix.put(baseEntry.getValue(), baseEntry.getKey());
+			}
+		}
+
+		// find all alignments to load (also missing ones) and load the beans
+		LinkedList<URI> queue = new LinkedList<URI>(knownURIs);
+		while (!queue.isEmpty()) {
+			URI baseURI = queue.pollFirst();
+			A baseA;
+			try {
+				// XXX update path according to path change of main alignment?
+				baseA = loadAlignment(new DefaultInputSupplier(baseURI).getInput(), reporter);
+			} catch (IOException e) {
+				reporter.warn(new IOMessageImpl("Couldn't load a base alignment.", e));
+				continue;
+			}
+
+			// add to alignment info map
+			alignmentToInfo.put(baseA, new Pair<String, URI>(uriToPrefix.get(baseURI), baseURI));
+
+			// load "missing" base alignments, too, add prefix mapping
+			for (Entry<String, URI> baseEntry : getBases(baseA).entrySet()) {
+				URI uri = baseEntry.getValue();
+				// check whether this base alignment is missing
+				if (!knownURIs.contains(uri)) {
+					reporter.info(new IOMessageImpl(
+							"A base alignment referenced another base alignment that was not yet known. It is now included, too.",
+							null));
+					queue.add(uri);
+					knownURIs.add(uri);
+					String prefix = generatePrefix(base.keySet());
+					base.put(prefix, uri);
+					uriToPrefix.put(uri, prefix);
+					prefixMapping.get(start).put(prefix, prefix);
+				}
+				// add prefix mapping
+				if (!prefixMapping.containsKey(baseA))
+					prefixMapping.put(baseA, new HashMap<String, String>());
+				prefixMapping.get(baseA).put(baseEntry.getKey(), uriToPrefix.get(uri));
+			}
+		}
+	}
+
+	/**
+	 * Apply modifiers on the alignment.
+	 * 
+	 * @param alignment the alignment to work on
+	 * @param modifiers the modifiers to apply
+	 * @param prefixMapping the mapping of prefixes (see
+	 *            {@link #getCell(Alignment, String, String, Map, IOReporter)})
+	 * @param defaultPrefix the default prefix (may be <code>null</code>) (see
+	 *            {@link #getCell(Alignment, String, String, Map, IOReporter)})
+	 * @param base whether the added modifiers are from a base alignment or the
+	 *            main alignment
+	 * @param reporter the I/O reporter to report any errors to, may be
+	 *            <code>null</code>
+	 */
+	private void applyModifiers(Alignment alignment, Collection<M> modifiers,
+			Map<String, String> prefixMapping, String defaultPrefix, boolean base,
+			IOReporter reporter) {
+		for (M modifier : modifiers) {
+			Cell cell = getCell(alignment, getModifiedCell(modifier), defaultPrefix, prefixMapping,
+					reporter);
+			if (cell == null)
+				continue;
+
+			for (String disabledForId : getDisabledForList(modifier)) {
+				Cell other = getCell(alignment, disabledForId, defaultPrefix, prefixMapping,
+						reporter);
+				if (other == null)
+					continue;
+				else if (!AlignmentUtil.isTypeCell(other)) {
+					reporter.warn(new IOMessageImpl(
+							"The cell referenced in disable-for is not a type cell.", null));
+					continue;
+				}
+				else if (!alignment.getPropertyCells(other).contains(cell)) {
+					reporter.warn(new IOMessageImpl(
+							"The cell referenced in disable-for does not contain the cell that gets modified.",
+							null));
+					continue;
+				}
+
+				// base is true -> modified cell has to be of a base alignment
+				// so it has to be a BaseAlignmentCell
+				if (base)
+					((BaseAlignmentCell) cell).setBaseDisabledFor(cell, true);
+				else
+					cell.setDisabledFor(other, true);
+			}
+			// XXX handle additional properties
+		}
+	}
+
+	/**
+	 * Returns the cell in question or null, if it could not be found in which
+	 * case a suitable warning was generated.
+	 * 
+	 * @param alignment the alignment which contains the cell
+	 * @param cellId the cell id
+	 * @param defaultPrefix the prefix to use if the cell id does not contain a
+	 *            prefix, may be <code>null</code>
+	 * @param prefixMapping the prefix map to transform the prefix of the cell
+	 *            id with, if it has one
+	 * @param reporter the I/O reporter to report any errors to, may be
+	 *            <code>null</code>
+	 * @return the cell in question or <code>null</code>
+	 */
+	private Cell getCell(Alignment alignment, String cellId, String defaultPrefix,
+			Map<String, String> prefixMapping, IOReporter reporter) {
+		String prefix = defaultPrefix;
+		// check if the cell id references another base alignment
+		int prefixSplit = cellId.indexOf(':');
+		if (prefixSplit != -1) {
+			prefix = prefixMapping.get(cellId.substring(0, prefixSplit));
+			if (prefix == null) {
+				reporter.warn(new IOMessageImpl("A modifier used an unknown cell prefix", null));
+				return null;
+			}
+			cellId = cellId.substring(prefixSplit + 1);
+		}
+
+		if (prefix != null)
+			cellId = prefix + ':' + cellId;
+		Cell cell = alignment.getCell(cellId);
+		if (cell == null)
+			reporter.warn(new IOMessageImpl("A cell referenced by a modifier could not be found",
+					null));
+
+		return cell;
+	}
+
+	/**
+	 * Generates a new prefix.
+	 * 
+	 * @param prefixes the existing prefixes
+	 * @return a new prefix
+	 */
+	private String generatePrefix(Set<String> prefixes) {
+		int prefixNumber = 1;
+		while (prefixes.contains("ba" + prefixNumber))
+			prefixNumber++;
+		return "ba" + prefixNumber;
+	}
+}

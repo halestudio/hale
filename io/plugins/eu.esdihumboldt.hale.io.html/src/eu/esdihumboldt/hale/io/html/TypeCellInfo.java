@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
-import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.util.Identifiers;
@@ -55,8 +54,7 @@ public class TypeCellInfo extends CellInfo implements ICellInfo {
 	 */
 	public Collection<ICellInfo> getPropertyCellsInfo() {
 		Collection<ICellInfo> propCellInfo = new ArrayList<ICellInfo>();
-		Collection<? extends Cell> propCells = AlignmentUtil.getPropertyCellsFromTypeCell(align,
-				getCell());
+		Collection<? extends Cell> propCells = align.getPropertyCells(getCell());
 
 		Iterator<? extends Cell> it = propCells.iterator();
 

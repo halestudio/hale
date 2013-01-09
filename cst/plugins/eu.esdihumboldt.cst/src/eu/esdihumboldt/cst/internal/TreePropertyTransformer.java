@@ -29,6 +29,7 @@ import eu.esdihumboldt.cst.extension.hooks.HooksUtil;
 import eu.esdihumboldt.cst.extension.hooks.TransformationTreeHook.TreeState;
 import eu.esdihumboldt.cst.extension.hooks.TransformationTreeHooks;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.ContextMatcher;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.impl.matcher.AsDeepAsPossible;
@@ -103,11 +104,11 @@ public class TreePropertyTransformer implements PropertyTransformer {
 
 	/**
 	 * @see PropertyTransformer#publish(FamilyInstance, MutableInstance,
-	 *      TransformationLog)
+	 *      TransformationLog, Cell)
 	 */
 	@Override
 	public void publish(final FamilyInstance source, final MutableInstance target,
-			final TransformationLog typeLog) {
+			final TransformationLog typeLog, final Cell typeCell) {
 		executorService.execute(new Runnable() {
 
 			@Override
@@ -133,7 +134,7 @@ public class TreePropertyTransformer implements PropertyTransformer {
 					// identify transformations to be executed on given
 					// instances
 					// create/get a transformation tree
-					TransformationTree tree = treePool.getTree(target.getDefinition());
+					TransformationTree tree = treePool.getTree(typeCell);
 
 					// State: base tree
 					HooksUtil.executeTreeHooks(treeHooks, TreeState.MINIMAL, tree, target);

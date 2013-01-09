@@ -23,7 +23,6 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.Transfor
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.TreeToGraphVisitor
 import eu.esdihumboldt.hale.common.align.tgraph.TGraph
 import eu.esdihumboldt.hale.common.align.tgraph.impl.TGraphImpl
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 
 
 /**
@@ -42,10 +41,10 @@ class TransformationTraverserTest extends GroovyTestCase {
 
 		OrderTransformationTraverser t = new OrderTransformationTraverser()
 		t.traverse(tg)
-		
+
 		checkOrder(t.nodes, ['id', 'a2', 'b2', 'c2'])
 	}
-	
+
 	/**
 	 * Test the traversion order for the
 	 * {@link TransformationExamples#CM_NESTED_1} example.
@@ -55,10 +54,10 @@ class TransformationTraverserTest extends GroovyTestCase {
 
 		OrderTransformationTraverser t = new OrderTransformationTraverser()
 		t.traverse(tg)
-		
+
 		checkOrder(t.nodes, ['b', 'b1', 'b2'])
 	}
-	
+
 	/**
 	 * Test the traversion order for the
 	 * {@link TransformationExamples#CM_NESTED_4} example.
@@ -68,13 +67,21 @@ class TransformationTraverserTest extends GroovyTestCase {
 
 		OrderTransformationTraverser t = new OrderTransformationTraverser()
 		t.traverse(tg)
-		
-		checkOrder(t.nodes, ['element', 'b', 'b1', 'b2', 'd', 'd1', 'd2'])
+
+		checkOrder(t.nodes, [
+			'element',
+			'b',
+			'b1',
+			'b2',
+			'd',
+			'd1',
+			'd2'
+		])
 	}
-	
+
 	private void checkOrder(def nodes, def names) {
 		assertEquals(nodes.size(), names.size())
-		
+
 		for (i in 0..nodes.size() - 1) {
 			def targetId = TreeToGraphVisitor.TARGET_PREFIX + names[i]
 			assertEquals(targetId, nodes[i].id)
@@ -91,14 +98,11 @@ class TransformationTraverserTest extends GroovyTestCase {
 		TransformationExample sample = TransformationExamples.getExample(exampleId)
 		Alignment alignment = sample.getAlignment()
 
-		// get the target type
-		TypeDefinition type =
-				alignment.typeCells.asList()[0] // first type cell
-				.target.values().asList()[0] // first target type
-				.definition.definition // its type definition
+		// get the type cell
+		def typeCell = alignment.typeCells.asList()[0] // first type cell
 
 		// create the transformation tree
-		TransformationTree tree = new TransformationTreeImpl(type, alignment)
+		TransformationTree tree = new TransformationTreeImpl(alignment, typeCell)
 
 		// create the transformation graph
 		new TGraphImpl(tree)

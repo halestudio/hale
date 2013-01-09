@@ -177,7 +177,7 @@ public class FunctionExecutor extends CellNodeValidator {
 		// execute function
 		try {
 			((PropertyTransformation) function).execute(transformation.getIdentifier(), engine,
-					transformation.getExecutionParameters(), cellLog);
+					transformation.getExecutionParameters(), cellLog, cell);
 		} catch (Throwable e) {
 			// TODO instead try another transformation?
 			cellLog.error(cellLog.createMessage(

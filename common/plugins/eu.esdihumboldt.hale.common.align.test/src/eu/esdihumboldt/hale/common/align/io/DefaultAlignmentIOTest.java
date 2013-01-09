@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.common.align.io;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedOutputStream;
@@ -27,12 +28,15 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -41,24 +45,33 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 
+import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
+import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
+import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.filter.FilterGeoCqlImpl;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
+import eu.esdihumboldt.hale.common.test.TestUtil;
 
 /**
  * Test saving and loading an alignment
@@ -246,6 +259,275 @@ public abstract class DefaultAlignmentIOTest {
 
 			TestAnnotation nann2 = (TestAnnotation) annotations.get(1);
 			assertEquals(ann2, nann2);
+		}
+	}
+
+	/**
+	 * Tests id generation, save and load.
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testIDSaveLoad() throws Exception {
+		DefaultAlignment alignment = new DefaultAlignment();
+
+		Schema schema = TestUtil.loadSchema(getClass().getResource("/testdata/simple/t1.xsd")
+				.toURI());
+
+		DefaultCell cell = new DefaultCell();
+		cell.setTransformationIdentifier("trans1");
+
+		ListMultimap<String, Type> source = ArrayListMultimap.create();
+		source.put(null, new DefaultType(new TypeEntityDefinition(schema.getMappingRelevantTypes()
+				.iterator().next(), SchemaSpaceID.SOURCE, null)));
+		cell.setSource(source);
+
+		ListMultimap<String, Type> target = ArrayListMultimap.create();
+		target.put(null, new DefaultType(new TypeEntityDefinition(schema.getMappingRelevantTypes()
+				.iterator().next(), SchemaSpaceID.TARGET, null)));
+		cell.setTarget(target);
+
+		// add cell and check id generation
+		assertNull(cell.getId());
+		alignment.addCell(cell);
+		assertNotNull(cell.getId());
+		assertNotNull(alignment.getCell(cell.getId()));
+
+		// save / load
+		File alignmentFile = tmp.newFile("alignment.xml");
+		System.out.println(alignmentFile.getAbsolutePath());
+		saveAlignment(alignment, new BufferedOutputStream(new FileOutputStream(alignmentFile)));
+
+		MutableAlignment alignment2 = loadAlignment(new FileInputStream(alignmentFile), schema,
+				schema);
+
+		// check cell id
+		assertEquals(cell.getId(), alignment2.getCells().iterator().next().getId());
+	}
+
+	/**
+	 * Tests base alignment add, save and load.
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testBaseAlignmentSaveLoad() throws Exception {
+		DefaultAlignment baseAlignment = new DefaultAlignment();
+		MutableAlignment alignment = new DefaultAlignment();
+
+		Schema schema = TestUtil.loadSchema(getClass().getResource("/testdata/simple/t1.xsd")
+				.toURI());
+		TypeDefinition t = schema.getMappingRelevantTypes().iterator().next();
+
+		DefaultCell cell1 = new DefaultCell();
+		cell1.setTransformationIdentifier("trans1");
+
+		ListMultimap<String, Type> source = ArrayListMultimap.create();
+		source.put(null, new DefaultType(new TypeEntityDefinition(t, SchemaSpaceID.SOURCE, null)));
+		cell1.setSource(source);
+
+		ListMultimap<String, Type> target = ArrayListMultimap.create();
+		target.put(null, new DefaultType(new TypeEntityDefinition(t, SchemaSpaceID.TARGET, null)));
+		cell1.setTarget(target);
+
+		DefaultCell cell2 = new DefaultCell();
+		cell2.setTransformationIdentifier("trans2");
+
+		List<ChildContext> childContext = new ArrayList<ChildContext>();
+		PropertyDefinition child = DefinitionUtil.getChild(t, new QName("a1")).asProperty();
+		childContext.add(new ChildContext(child));
+		ListMultimap<String, Property> source2 = ArrayListMultimap.create();
+		source2.put(null, new DefaultProperty(new PropertyEntityDefinition(t, childContext,
+				SchemaSpaceID.SOURCE, null)));
+		cell2.setSource(source2);
+
+		ListMultimap<String, Property> target2 = ArrayListMultimap.create();
+		target2.put(null, new DefaultProperty(new PropertyEntityDefinition(t, childContext,
+				SchemaSpaceID.TARGET, null)));
+		cell2.setTarget(target2);
+
+		// save base alignment
+		baseAlignment.addCell(cell1);
+		File baseAlignmentFile = tmp.newFile("alignment_base.xml");
+		System.out.println(baseAlignmentFile.getAbsolutePath());
+		saveAlignment(baseAlignment, new BufferedOutputStream(new FileOutputStream(
+				baseAlignmentFile)));
+
+		// generate extended alignment
+		// save / load hack since there currently is no way to load a base
+		// alignment afterwards
+		alignment.addBaseAlignment("pre", baseAlignmentFile.toURI(),
+				Collections.<BaseAlignmentCell> emptyList());
+		File alignmentFile = tmp.newFile("alignment_extended.xml");
+		System.out.println(alignmentFile.getAbsolutePath());
+		saveAlignment(alignment, new BufferedOutputStream(new FileOutputStream(alignmentFile)));
+		alignment = loadAlignment(new FileInputStream(alignmentFile), schema, schema);
+
+		assertEquals(1, alignment.getCells().size());
+		assertEquals("pre:" + cell1.getId(), alignment.getCells().iterator().next().getId());
+
+		alignment.addCell(cell2);
+		assertEquals(2, alignment.getCells().size());
+		assertEquals(1, alignment.getPropertyCells(cell1).size());
+
+		// save extended alignment
+		System.out.println(alignmentFile.getAbsolutePath());
+		saveAlignment(alignment, new BufferedOutputStream(new FileOutputStream(alignmentFile)));
+
+		// load extended
+		MutableAlignment alignment2 = loadAlignment(new FileInputStream(alignmentFile), schema,
+				schema);
+
+		assertEquals(2, alignment2.getCells().size());
+		assertEquals(1, alignment2.getTypeCells().size());
+		Cell typeCell = alignment2.getTypeCells().iterator().next();
+		assertTrue(typeCell instanceof BaseAlignmentCell);
+		assertEquals("pre:" + cell1.getId(), typeCell.getId());
+		assertEquals(1, alignment2.getPropertyCells(typeCell).size());
+		assertFalse(alignment2.getPropertyCells(typeCell).iterator().next() instanceof BaseAlignmentCell);
+	}
+
+	/**
+	 * Tests cell disable save and load.
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Ignore
+	@Test
+	public void testCellDisableSaveLoad() throws Exception {
+		DefaultAlignment baseAlignment = new DefaultAlignment();
+		MutableAlignment alignment = new DefaultAlignment();
+
+		Schema schema = TestUtil.loadSchema(getClass().getResource("/testdata/simple/t1.xsd")
+				.toURI());
+
+		Iterator<? extends TypeDefinition> iter = schema.getMappingRelevantTypes().iterator();
+		TypeDefinition t = iter.next();
+
+		// generate base alignment
+		DefaultCell cell1 = new DefaultCell();
+		cell1.setTransformationIdentifier("trans1");
+
+		ListMultimap<String, Type> source = ArrayListMultimap.create();
+		source.put(null, new DefaultType(new TypeEntityDefinition(t, SchemaSpaceID.SOURCE, null)));
+		cell1.setSource(source);
+
+		ListMultimap<String, Type> target = ArrayListMultimap.create();
+		target.put(null, new DefaultType(new TypeEntityDefinition(t, SchemaSpaceID.TARGET, null)));
+		cell1.setTarget(target);
+
+		DefaultCell cell2 = new DefaultCell();
+		cell2.setTransformationIdentifier("trans2");
+
+		List<ChildContext> childContext2 = new ArrayList<ChildContext>();
+		PropertyDefinition child2 = DefinitionUtil.getChild(t, new QName("a1")).asProperty();
+		childContext2.add(new ChildContext(child2));
+		ListMultimap<String, Property> source2 = ArrayListMultimap.create();
+		source2.put(null, new DefaultProperty(new PropertyEntityDefinition(t, childContext2,
+				SchemaSpaceID.SOURCE, null)));
+		cell2.setSource(source2);
+
+		ListMultimap<String, Property> target2 = ArrayListMultimap.create();
+		target2.put(null, new DefaultProperty(new PropertyEntityDefinition(t, childContext2,
+				SchemaSpaceID.TARGET, null)));
+		cell2.setTarget(target2);
+
+		DefaultCell cell3 = new DefaultCell();
+		cell3.setTransformationIdentifier("trans3");
+
+		List<ChildContext> childContext3 = new ArrayList<ChildContext>();
+		PropertyDefinition child3 = DefinitionUtil.getChild(t, new QName("b1")).asProperty();
+		childContext3.add(new ChildContext(child3));
+		ListMultimap<String, Property> source3 = ArrayListMultimap.create();
+		source3.put(null, new DefaultProperty(new PropertyEntityDefinition(t, childContext3,
+				SchemaSpaceID.SOURCE, null)));
+		cell3.setSource(source3);
+
+		ListMultimap<String, Property> target3 = ArrayListMultimap.create();
+		target3.put(null, new DefaultProperty(new PropertyEntityDefinition(t, childContext3,
+				SchemaSpaceID.TARGET, null)));
+		cell3.setTarget(target3);
+
+		baseAlignment.addCell(cell1);
+		baseAlignment.addCell(cell2);
+		baseAlignment.addCell(cell3);
+
+		assertEquals(3, baseAlignment.getCells().size());
+		Cell typeCell = baseAlignment.getTypeCells().iterator().next();
+		assertEquals(2, baseAlignment.getPropertyCells(typeCell).size());
+		// test disable, it should not be with the related property cells
+		cell2.setDisabledFor(cell1, true);
+		assertEquals(1, baseAlignment.getPropertyCells(typeCell).size());
+		assertTrue(cell2.getDisabledFor().contains(cell1));
+		cell2.setDisabledFor(cell1, false);
+		assertFalse(cell2.getDisabledFor().contains(cell1));
+		cell2.setDisabledFor(cell1, true);
+		assertEquals(1, baseAlignment.getPropertyCells(typeCell).size());
+
+		// save base alignment
+		File baseAlignmentFile = tmp.newFile("alignment_base.xml");
+		System.out.println(baseAlignmentFile.getAbsolutePath());
+		saveAlignment(baseAlignment, new BufferedOutputStream(new FileOutputStream(
+				baseAlignmentFile)));
+
+		// load base alignment
+		MutableAlignment baseAlignment2 = loadAlignment(new FileInputStream(baseAlignmentFile),
+				schema, schema);
+		typeCell = baseAlignment2.getTypeCells().iterator().next();
+		assertEquals(3, baseAlignment2.getCells().size());
+		// test again that it is still disabled
+		assertEquals(1, baseAlignment2.getPropertyCells(typeCell).size());
+
+		// disable the remaining enabled cell in extended alignment
+		// save / load hack since there currently is no way to load a base
+		// alignment afterwards
+		alignment.addBaseAlignment("pre", baseAlignmentFile.toURI(),
+				Collections.<BaseAlignmentCell> emptyList());
+		File alignmentFile = tmp.newFile("alignment_extended.xml");
+		System.out.println(alignmentFile.getAbsolutePath());
+		saveAlignment(alignment, new BufferedOutputStream(new FileOutputStream(alignmentFile)));
+		alignment = loadAlignment(new FileInputStream(alignmentFile), schema, schema);
+		// check cells
+		typeCell = alignment.getTypeCells().iterator().next();
+		assertEquals(3, alignment.getCells().size());
+		assertEquals(1, alignment.getPropertyCells(typeCell).size());
+		// disable remaining cell
+		alignment.getPropertyCells(typeCell).iterator().next().setDisabledFor(typeCell, true);
+		assertEquals(0, alignment.getPropertyCells(typeCell).size());
+
+		// save / load extended alignment
+		System.out.println(alignmentFile.getAbsolutePath());
+		saveAlignment(alignment, new BufferedOutputStream(new FileOutputStream(alignmentFile)));
+
+		// load extended
+		MutableAlignment alignment2 = loadAlignment(new FileInputStream(alignmentFile), schema,
+				schema);
+
+		// test disabled again
+		assertEquals(3, alignment2.getCells().size());
+		// test again that it is still disabled
+		assertEquals(0, alignment2.getPropertyCells(typeCell).size());
+
+		// more specifically test whether the disables come from base alignment
+		// or extended alignment
+		typeCell = alignment2.getTypeCells().iterator().next();
+		Collection<? extends Cell> cells = alignment2.getCells();
+
+		for (Cell cell : cells) {
+			if (cell.getTransformationIdentifier().equals("trans1"))
+				continue; // the type cell
+			if (cell.getTransformationIdentifier().equals("trans2")) {
+				// the cell disabled in the base alignment
+				assertTrue(cell instanceof BaseAlignmentCell);
+				assertEquals(1, cell.getDisabledFor().size());
+				assertEquals(0, ((BaseAlignmentCell) cell).getAdditionalDisabledFor().size());
+			}
+			if (cell.getTransformationIdentifier().equals("trans3")) {
+				// the cell disabled in the extended alignment
+				assertTrue(cell instanceof BaseAlignmentCell);
+				assertEquals(1, cell.getDisabledFor().size());
+				assertEquals(1, ((BaseAlignmentCell) cell).getAdditionalDisabledFor().size());
+			}
 		}
 	}
 
