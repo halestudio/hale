@@ -47,4 +47,8 @@ public interface MutableCell extends Cell {
 	 */
 	public void setTarget(ListMultimap<String, ? extends Entity> target);
 
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id);
 }

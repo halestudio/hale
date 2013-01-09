@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.common.align.model.impl;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -43,6 +44,8 @@ public class DefaultCell implements Cell, MutableCell {
 	private ListMultimap<String, ? extends Entity> target;
 	private ListMultimap<String, ParameterValue> parameters;
 	private String transformation;
+	private String id;
+	private final Set<Cell> disabledFor = new HashSet<Cell>();
 
 	private final ListMultimap<String, String> documentation = ArrayListMultimap.create();
 	private final ListMultimap<String, Object> annotations = ArrayListMultimap.create();
@@ -172,6 +175,42 @@ public class DefaultCell implements Cell, MutableCell {
 		} catch (Throwable e) {
 			return super.toString();
 		}
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.Cell#getId()
+	 */
+	@Override
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.MutableCell#setId(String)
+	 */
+	@Override
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.MutableCell#setDisabledFor(eu.esdihumboldt.hale.common.align.model.Cell,
+	 *      boolean)
+	 */
+	@Override
+	public void setDisabledFor(Cell cell, boolean disabled) {
+		if (disabled)
+			disabledFor.add(cell);
+		else
+			disabledFor.remove(cell);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.Cell#getDisabledFor()
+	 */
+	@Override
+	public Set<Cell> getDisabledFor() {
+		return Collections.unmodifiableSet(disabledFor);
 	}
 
 }

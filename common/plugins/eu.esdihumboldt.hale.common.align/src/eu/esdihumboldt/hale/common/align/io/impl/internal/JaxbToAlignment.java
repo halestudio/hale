@@ -15,20 +15,34 @@
 
 package eu.esdihumboldt.hale.common.align.io.impl.internal;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
+import javax.xml.transform.stream.StreamSource;
 
+import com.google.common.base.Function;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.extension.annotation.AnnotationExtension;
+import eu.esdihumboldt.hale.common.align.io.impl.JaxbAlignmentIO;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AbstractEntityType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AbstractParameterType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AlignmentType;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AlignmentType.Base;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AnnotationType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.CellType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ChildContextType;
@@ -36,6 +50,8 @@ import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ComplexParameterType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ConditionType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.DocumentationType;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ModifierType;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ModifierType.DisableFor;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.NamedEntityType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ParameterType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.PropertyType;
@@ -48,7 +64,6 @@ import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.Type;
-import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
@@ -73,7 +88,8 @@ import eu.esdihumboldt.util.Pair;
  * 
  * @author Simon Templer
  */
-public class JaxbToAlignment {
+public class JaxbToAlignment extends
+		AbstractBaseAlignmentLoader<AlignmentType, CellType, ModifierType> {
 
 	private final TypeIndex targetTypes;
 	private final TypeIndex sourceTypes;
@@ -95,21 +111,44 @@ public class JaxbToAlignment {
 	}
 
 	/**
+	 * Load a {@link AlignmentType} from an input stream. The stream is closed
+	 * at the end.
+	 * 
+	 * @param in the input stream
+	 * @param reporter the I/O reporter to report any errors to, may be
+	 *            <code>null</code>
+	 * @return the alignment
+	 * @throws JAXBException if reading the alignment failed
+	 */
+	public static AlignmentType load(InputStream in, IOReporter reporter) throws JAXBException {
+		JAXBContext jc;
+		JAXBElement<AlignmentType> root = null;
+		jc = JAXBContext.newInstance(JaxbAlignmentIO.ALIGNMENT_CONTEXT);
+		Unmarshaller u = jc.createUnmarshaller();
+
+		// it will debug problems while unmarshalling
+		u.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
+
+		try {
+			root = u.unmarshal(new StreamSource(in), AlignmentType.class);
+		} finally {
+			try {
+				in.close();
+			} catch (IOException e) {
+				// ignore
+			}
+		}
+
+		return root.getValue();
+	}
+
+	/**
 	 * Create the converted alignment.
 	 * 
 	 * @return the resolved alignment
 	 */
 	public MutableAlignment convert() {
-		MutableAlignment result = new DefaultAlignment();
-
-		for (CellType cellType : alignment.getCell()) {
-			MutableCell cell = convert(cellType);
-			if (cell != null) {
-				result.addCell(cell);
-			}
-		}
-
-		return result;
+		return super.createAlignment(alignment, sourceTypes, targetTypes, reporter);
 	}
 
 	private MutableCell convert(CellType cell) {
@@ -181,6 +220,8 @@ public class JaxbToAlignment {
 				result.getDocumentation().put(doc.getType(), doc.getValue());
 			}
 		}
+
+		result.setId(cell.getId());
 
 		return result;
 	}
@@ -322,6 +363,91 @@ public class JaxbToAlignment {
 			return new QName(qname.getName());
 		}
 		return new QName(qname.getNs(), qname.getName());
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.io.impl.internal.AbstractBaseAlignmentLoader#loadAlignment(java.io.InputStream,
+	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
+	 */
+	@Override
+	protected AlignmentType loadAlignment(InputStream in, IOReporter reporter) throws IOException {
+		try {
+			return load(in, reporter);
+		} catch (JAXBException e) {
+			throw new IOException(e);
+		}
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.io.impl.internal.AbstractBaseAlignmentLoader#getBases(java.lang.Object)
+	 */
+	@Override
+	protected Map<String, URI> getBases(AlignmentType alignment) {
+		Map<String, URI> baseMap = new HashMap<String, URI>();
+		for (Base base : alignment.getBase())
+			baseMap.put(base.getPrefix(), URI.create(base.getLocation()));
+		return baseMap;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.io.impl.internal.AbstractBaseAlignmentLoader#getCells(java.lang.Object)
+	 */
+	@Override
+	protected Collection<CellType> getCells(AlignmentType alignment) {
+		List<CellType> cells = new ArrayList<CellType>();
+		for (Object cellOrModifier : alignment.getCellOrModifier())
+			if (cellOrModifier instanceof CellType)
+				cells.add((CellType) cellOrModifier);
+		return cells;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.io.impl.internal.AbstractBaseAlignmentLoader#createCell(java.lang.Object,
+	 *      eu.esdihumboldt.hale.common.schema.model.TypeIndex,
+	 *      eu.esdihumboldt.hale.common.schema.model.TypeIndex,
+	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
+	 */
+	@Override
+	protected MutableCell createCell(CellType cell, TypeIndex sourceTypes, TypeIndex targetTypes,
+			IOReporter reporter) {
+		return convert(cell);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.io.impl.internal.AbstractBaseAlignmentLoader#getModifiers(java.lang.Object)
+	 */
+	@Override
+	protected Collection<ModifierType> getModifiers(AlignmentType alignment) {
+		List<ModifierType> modifiers = new ArrayList<ModifierType>();
+		for (Object cellOrModifier : alignment.getCellOrModifier())
+			if (cellOrModifier instanceof ModifierType)
+				modifiers.add((ModifierType) cellOrModifier);
+		return modifiers;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.io.impl.internal.AbstractBaseAlignmentLoader#getModifiedCell(java.lang.Object)
+	 */
+	@Override
+	protected String getModifiedCell(ModifierType modifier) {
+		return modifier.getCell();
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.io.impl.internal.AbstractBaseAlignmentLoader#getDisabledForList(java.lang.Object)
+	 */
+	@Override
+	protected Collection<String> getDisabledForList(ModifierType modifier) {
+		return Collections2.transform(modifier.getDisableFor(), new Function<DisableFor, String>() {
+
+			/**
+			 * @see com.google.common.base.Function#apply(java.lang.Object)
+			 */
+			@Override
+			public String apply(DisableFor input) {
+				return input.getParent();
+			}
+		});
 	}
 
 }
