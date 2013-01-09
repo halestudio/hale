@@ -24,6 +24,10 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
+
 import eu.esdihumboldt.hale.common.align.io.AlignmentReader;
 import eu.esdihumboldt.hale.common.align.io.impl.AbstractAlignmentReader;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.AlignmentBean;
@@ -203,8 +207,16 @@ public class OmlReader extends AbstractAlignmentReader implements AlignmentReade
 			// set the cells for the alignment after the all iterations
 			align.setCells(cells);
 
-			mutableAlignment = align
-					.createAlignment(reporter, getSourceSchema(), getTargetSchema());
+			try {
+				mutableAlignment = align.createAlignment(reporter, getSourceSchema(),
+						getTargetSchema());
+			} catch (MarshalException e) {
+				throw new IOException(e);
+			} catch (ValidationException e) {
+				throw new IOException(e);
+			} catch (MappingException e) {
+				throw new IOException(e);
+			}
 
 			reporter.setSuccess(true);
 

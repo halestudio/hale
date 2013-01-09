@@ -277,7 +277,7 @@ public class ConceptualSchemaTransformer implements TransformationService {
 
 				try {
 					((TypeTransformation) function).execute(transformation.getFunctionId(), engine,
-							executionParameters, cellLog);
+							executionParameters, cellLog, typeCell);
 				} catch (TransformationException e) {
 					cellLog.error(cellLog.createMessage(
 							"Type transformation failed, skipping instance.", e));

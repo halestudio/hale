@@ -22,11 +22,11 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.ContextMatcher;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.TransformationTreeImpl;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.ResetVisitor;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Pool for transformation trees.
@@ -37,7 +37,7 @@ public class TransformationTreePool {
 
 	private final Alignment alignment;
 
-	private final ListMultimap<TypeDefinition, TransformationTree> trees;
+	private final ListMultimap<Cell, TransformationTree> trees;
 
 	private final ResetVisitor resetVisitor = new ResetVisitor();
 
@@ -59,14 +59,14 @@ public class TransformationTreePool {
 	/**
 	 * Get a transformation tree from the pool.
 	 * 
-	 * @param targetType the target type for the transformation tree
+	 * @param typeCell the type cell for the transformation tree
 	 * @return the transformation tree
 	 */
-	public TransformationTree getTree(TypeDefinition targetType) {
+	public TransformationTree getTree(Cell typeCell) {
 		synchronized (trees) {
-			List<TransformationTree> treeList = trees.get(targetType);
+			List<TransformationTree> treeList = trees.get(typeCell);
 			if (treeList.isEmpty()) {
-				TransformationTree tree = new TransformationTreeImpl(targetType, alignment);
+				TransformationTree tree = new TransformationTreeImpl(alignment, typeCell);
 				if (matcher != null) {
 					matcher.findMatches(tree);
 				}
@@ -87,7 +87,7 @@ public class TransformationTreePool {
 	public void releaseTree(TransformationTree tree) {
 		tree.accept(resetVisitor); // remove all annotations
 		synchronized (trees) {
-			trees.put(tree.getType(), tree);
+			trees.put(tree.getTypeCell(), tree);
 		}
 	}
 

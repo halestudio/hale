@@ -16,20 +16,26 @@
 
 package eu.esdihumboldt.hale.common.align.model.impl;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
+import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
+import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
@@ -68,6 +74,11 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	private final ListMultimap<TypeDefinition, Cell> cellsPerTargetType = ArrayListMultimap
 			.create();
 
+	private int nextCellId = 1;
+	private final Map<String, URI> baseAlignments = new HashMap<String, URI>();
+
+	private final Map<String, Cell> idToCell = new HashMap<String, Cell>();
+
 	/**
 	 * Default constructor.
 	 */
@@ -90,6 +101,9 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	 */
 	@Override
 	public void addCell(Cell cell) {
+		// XXX a way around the MutableCell?
+		if (cell.getId() == null)
+			((MutableCell) cell).setId(String.valueOf(nextCellId++));
 		internalAdd(cell);
 	}
 
@@ -100,6 +114,7 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	 */
 	private void internalAdd(Cell cell) {
 		cells.add(cell);
+		idToCell.put(cell.getId(), cell);
 
 		// check if cell is a type cell
 		if (AlignmentUtil.isTypeCell(cell)) {
@@ -165,33 +180,44 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	}
 
 	/**
-	 * @see Alignment#getPropertyCells(Iterable, TypeEntityDefinition)
+	 * @see Alignment#getPropertyCells(Cell)
 	 */
 	@Override
-	public Collection<? extends Cell> getPropertyCells(Iterable<TypeEntityDefinition> sourceTypes,
-			TypeEntityDefinition targetType) {
+	public Collection<? extends Cell> getPropertyCells(Cell typeCell) {
+		if (!AlignmentUtil.isTypeCell(typeCell))
+			throw new IllegalArgumentException("Given cell is not a type cell.");
+
 		List<Cell> result = new ArrayList<Cell>();
 
-		for (Cell cell : cellsPerTargetType.get(targetType.getDefinition())) {
-			// check all cells associated to the target type
+		// get target type definition
+		TypeDefinition targetType = ((TypeEntityDefinition) typeCell.getTarget().values()
+				.iterator().next().getDefinition()).getDefinition();
 
-			if (!AlignmentUtil.isTypeCell(cell)) {
-				// cell is a property cell
-				if (sourceTypes == null || AlignmentUtil.isAugmentation(cell)) {
-					// cell is an augmentation or we accept any source type
-					if (associatedWithType(cell.getTarget(), Collections.singleton(targetType))) {
-						// cell is associated to the target entity
+		// collect source entity definitions
+		Iterator<? extends Entity> it = typeCell.getSource().values().iterator();
+		Collection<TypeEntityDefinition> sourceTypes = new ArrayList<TypeEntityDefinition>();
+		while (it.hasNext())
+			sourceTypes.add((TypeEntityDefinition) it.next().getDefinition());
+
+		for (Cell cell : cellsPerTargetType.get(targetType)) {
+			// check all cells associated to the target type
+			if (!AlignmentUtil.isTypeCell(cell) && !cell.getDisabledFor().contains(typeCell)) {
+				// cell is a property cell that isn't disabled
+				TypeDefinition otherTargetType = cell.getTarget().values().iterator().next()
+						.getDefinition().getType();
+				if (otherTargetType.equals(targetType)) {
+					// cell is associated to the target entity
+					if (AlignmentUtil.isAugmentation(cell)) {
+						// cell is an augmentation
 						result.add(cell);
 					}
-				}
-				else {
-					// cell is a property mapping
-					if (associatedWithType(cell.getSource(), sourceTypes)
-							&& associatedWithType(cell.getTarget(),
-									Collections.singleton(targetType))) {
-						// cell is associated to a relation between a source
-						// type and the target type
-						result.add(cell);
+					else {
+						// cell is a property mapping
+						if (matchesSources(cell.getSource(), sourceTypes)) {
+							// cell is associated to a relation between a source
+							// type and the target type
+							result.add(cell);
+						}
 					}
 				}
 			}
@@ -201,27 +227,35 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	}
 
 	/**
-	 * Determines if any of the given entities is associated to at least one of
+	 * Determines if all of the given entities are associated to at least one of
 	 * the given type entity definitions.
 	 * 
-	 * @param entities the entities
-	 * @param types the type entity definitions
-	 * @return if there is an entity associated to one of the types
+	 * @param propertyCellSources the entities
+	 * @param typeCellSources the type entity definitions
+	 * @return if all entities are associated to at least one of the types
 	 */
-	private boolean associatedWithType(ListMultimap<String, ? extends Entity> entities,
-			Iterable<TypeEntityDefinition> types) {
-		// FIXME this will not work correctly when filters for types are
-		// implemented!
-		for (Entity entity : entities.values()) {
-			TypeDefinition entityType = entity.getDefinition().getType();
-			for (TypeEntityDefinition type : types) {
-				if (entityType.equals(type.getDefinition())) {
-					return true;
+	private boolean matchesSources(ListMultimap<String, ? extends Entity> propertyCellSources,
+			Iterable<TypeEntityDefinition> typeCellSources) {
+		for (Entity entity : propertyCellSources.values()) {
+			TypeEntityDefinition propertyCellSource = AlignmentUtil.getTypeEntity(entity
+					.getDefinition());
+			// filtered type cells also include property cells from unfiltered
+			// ones
+			boolean found = false;
+			for (TypeEntityDefinition typeCellSource : typeCellSources)
+				if (propertyCellSource.getDefinition().equals(typeCellSource.getDefinition())
+						&& (propertyCellSource.getFilter() == null || propertyCellSource
+								.getFilter().equals(typeCellSource.getFilter()))) {
+					found = true;
+					break;
 				}
-			}
+			// if one of the property cell's sources is not part of the type
+			// cell it should not be included
+			if (!found)
+				return false;
 		}
 
-		return false;
+		return true;
 	}
 
 	/**
@@ -287,4 +321,51 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 		return Collections.unmodifiableCollection(typeCells);
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.MutableAlignment#addBaseAlignment(java.lang.String,java.net.URI,java.util.Collection)
+	 */
+	@Override
+	public void addBaseAlignment(String prefix, URI uri, Collection<BaseAlignmentCell> cells) {
+		if (baseAlignments.containsKey(prefix))
+			throw new IllegalArgumentException("prefix " + prefix + " already in use.");
+		baseAlignments.put(prefix, uri);
+		for (BaseAlignmentCell cell : cells)
+			addCell(cell);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.Alignment#getBaseAlignments()
+	 */
+	@Override
+	public Map<String, URI> getBaseAlignments() {
+		return Collections.unmodifiableMap(baseAlignments);
+	}
+
+	/**
+	 * Sets the next cell id to assign. This is used for consistency reasons
+	 * with alignments extending this alignment.
+	 * 
+	 * @param nextCellId the next cell id to use
+	 */
+	public void setNextCellId(int nextCellId) {
+		this.nextCellId = nextCellId;
+	}
+
+	/**
+	 * Get the next cell id to assign. This is used for consistency reasons with
+	 * alignments extending this alignment.
+	 * 
+	 * @return the next cell id
+	 */
+	public int getNextCellId() {
+		return nextCellId;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.Alignment#getCell(java.lang.String)
+	 */
+	@Override
+	public Cell getCell(String cellId) {
+		return idToCell.get(cellId);
+	}
 }

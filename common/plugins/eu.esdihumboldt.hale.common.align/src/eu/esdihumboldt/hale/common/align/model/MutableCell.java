@@ -47,4 +47,14 @@ public interface MutableCell extends Cell {
 	 */
 	public void setTarget(ListMultimap<String, ? extends Entity> target);
 
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id);
+
+	/**
+	 * @param cell the cell to disable/enable this cell for
+	 * @param disabled whether the cell should be disabled or not
+	 */
+	public void setDisabledFor(Cell cell, boolean disabled);
 }
