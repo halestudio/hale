@@ -19,6 +19,7 @@ package eu.esdihumboldt.cst.functions.core;
 import java.util.Map;
 
 import net.jcip.annotations.Immutable;
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.functions.RetypeFunction;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationFunction;
@@ -38,16 +39,16 @@ public class Retype extends AbstractTypeTransformation<TransformationEngine> imp
 
 	/**
 	 * @see TransformationFunction#execute(String, TransformationEngine, Map,
-	 *      TransformationLog)
+	 *      TransformationLog, Cell)
 	 */
 	@Override
 	public void execute(String transformationIdentifier, TransformationEngine engine,
-			Map<String, String> executionParameters, TransformationLog log) {
+			Map<String, String> executionParameters, TransformationLog log, Cell cell) {
 		// for each source instance create a target instance
 		TypeDefinition targetType = getTarget().values().iterator().next().getDefinition()
 				.getDefinition();
 		MutableInstance target = getInstanceFactory().createInstance(targetType);
-		getPropertyTransformer().publish(getSource(), target, log);
+		getPropertyTransformer().publish(getSource(), target, log, cell);
 	}
 
 }

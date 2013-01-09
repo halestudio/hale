@@ -7,3 +7,4 @@
 
 @javax.xml.bind.annotation.XmlSchema(namespace = "http://www.esdi-humboldt.eu/hale/alignment", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
 package eu.esdihumboldt.hale.common.align.io.impl.internal.generated;
+

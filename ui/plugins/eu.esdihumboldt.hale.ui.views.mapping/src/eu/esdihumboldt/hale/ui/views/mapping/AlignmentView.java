@@ -47,7 +47,6 @@ import com.google.common.collect.ListMultimap;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
-import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -317,7 +316,7 @@ public class AlignmentView extends AbstractMappingView {
 					AlignmentService.class);
 			Collection<Cell> cells = new ArrayList<Cell>();
 			cells.add(typeCell);
-			cells.addAll(AlignmentUtil.getPropertyCellsFromTypeCell(as.getAlignment(), typeCell));
+			cells.addAll(as.getAlignment().getPropertyCells(typeCell));
 			getViewer().setInput(cells);
 		}
 		else {

@@ -16,14 +16,28 @@
 
 package eu.esdihumboldt.hale.common.align.io.impl.internal;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
+
+import org.exolab.castor.mapping.Mapping;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Unmarshaller;
+import org.exolab.castor.xml.ValidationException;
+import org.exolab.castor.xml.XMLContext;
+import org.xml.sax.InputSource;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
-import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
@@ -32,9 +46,12 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
  * 
  * @author Simon Templer
  */
-public class AlignmentBean {
+public class AlignmentBean extends
+		AbstractBaseAlignmentLoader<AlignmentBean, CellBean, ModifierBean> {
 
+	private Map<String, URI> base = new HashMap<String, URI>();
 	private Collection<CellBean> cells = new LinkedHashSet<CellBean>();
+	private Collection<ModifierBean> modifiers = new ArrayList<ModifierBean>();
 
 	/**
 	 * Default constructor
@@ -53,13 +70,71 @@ public class AlignmentBean {
 
 		// populate bean from alignment
 		for (Cell cell : alignment.getCells()) {
+			generateModifier(cell);
+			if (cell instanceof BaseAlignmentCell)
+				continue;
 			CellBean cellBean = new CellBean(cell);
 			cells.add(cellBean);
 		}
 	}
 
 	/**
-	 * Create an alignment from the information in the bean
+	 * Load an AlignmentBean from an input stream. The stream is closed at the
+	 * end.
+	 * 
+	 * @param in the input stream
+	 * @param reporter the I/O reporter to report any errors to, may be
+	 *            <code>null</code>
+	 * @return the AlignmentBean
+	 * 
+	 * @throws MappingException if the mapping could not be loaded
+	 * @throws MarshalException if the alignment could not be read
+	 * @throws ValidationException if the input stream did not provide valid XML
+	 */
+	public static AlignmentBean load(InputStream in, IOReporter reporter) throws MappingException,
+			MarshalException, ValidationException {
+		Mapping mapping = new Mapping(AlignmentBean.class.getClassLoader());
+		mapping.loadMapping(new InputSource(AlignmentBean.class
+				.getResourceAsStream("AlignmentBean.xml")));
+
+		XMLContext context = new XMLContext();
+		context.addMapping(mapping);
+
+		Unmarshaller unmarshaller = context.createUnmarshaller();
+		try {
+			return (AlignmentBean) unmarshaller.unmarshal(new InputSource(in));
+		} finally {
+			try {
+				in.close();
+			} catch (IOException e) {
+				// ignore
+			}
+		}
+	}
+
+	/**
+	 * Generates and adds a modifier for the given cell if necessary.
+	 * 
+	 * @param cell the cell to generate a modifier for
+	 */
+	private void generateModifier(Cell cell) {
+		Collection<Cell> disabledFor;
+		if (cell instanceof BaseAlignmentCell)
+			disabledFor = ((BaseAlignmentCell) cell).getAdditionalDisabledFor();
+		else
+			disabledFor = cell.getDisabledFor();
+		if (!disabledFor.isEmpty()) {
+			ModifierBean modifier = new ModifierBean(cell.getId());
+			ArrayList<String> disabledForIds = new ArrayList<String>(disabledFor.size());
+			for (Cell other : disabledFor)
+				disabledForIds.add(other.getId());
+			modifier.setDisableForRelation(disabledForIds);
+			modifiers.add(modifier);
+		}
+	}
+
+	/**
+	 * Create an alignment from the information in the bean.
 	 * 
 	 * @param reporter the I/O reporter to report any errors to, may be
 	 *            <code>null</code>
@@ -71,16 +146,7 @@ public class AlignmentBean {
 	 */
 	public MutableAlignment createAlignment(IOReporter reporter, TypeIndex sourceTypes,
 			TypeIndex targetTypes) {
-		MutableAlignment alignment = new DefaultAlignment();
-
-		for (CellBean cellBean : cells) {
-			MutableCell cell = cellBean.createCell(reporter, sourceTypes, targetTypes);
-			if (cell != null) {
-				alignment.addCell(cell);
-			}
-		}
-
-		return alignment;
+		return super.createAlignment(this, sourceTypes, targetTypes, reporter);
 	}
 
 	/**
@@ -99,6 +165,107 @@ public class AlignmentBean {
 	 */
 	public void setCells(Collection<CellBean> cells) {
 		this.cells = cells;
+	}
+
+	/**
+	 * Get the alignment modifiers
+	 * 
+	 * @return the modifiers
+	 */
+	public Collection<ModifierBean> getModifiers() {
+		return modifiers;
+	}
+
+	/**
+	 * Set the alignment modifiers
+	 * 
+	 * @param modifiers the modifiers to set
+	 */
+	public void setModifiers(Collection<ModifierBean> modifiers) {
+		this.modifiers = modifiers;
+	}
+
+	/**
+	 * @return the base
+	 */
+	public Map<String, URI> getBase() {
+		return base;
+	}
+
+	/**
+	 * @param base the base to set
+	 */
+	public void setBase(Map<String, URI> base) {
+		this.base = base;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.io.impl.internal.AbstractBaseAlignmentLoader#loadAlignment(java.io.InputStream,
+	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
+	 */
+	@Override
+	protected AlignmentBean loadAlignment(InputStream in, IOReporter reporter) throws IOException {
+		try {
+			return load(in, reporter);
+		} catch (MarshalException e) {
+			throw new IOException(e);
+		} catch (ValidationException e) {
+			throw new IOException(e);
+		} catch (MappingException e) {
+			throw new IOException(e);
+		}
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.io.impl.internal.AbstractBaseAlignmentLoader#getBases(java.lang.Object)
+	 */
+	@Override
+	protected Map<String, URI> getBases(AlignmentBean alignment) {
+		return alignment.base;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.io.impl.internal.AbstractBaseAlignmentLoader#getCells(java.lang.Object)
+	 */
+	@Override
+	protected Collection<CellBean> getCells(AlignmentBean alignment) {
+		return alignment.cells;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.io.impl.internal.AbstractBaseAlignmentLoader#createCell(java.lang.Object,
+	 *      eu.esdihumboldt.hale.common.schema.model.TypeIndex,
+	 *      eu.esdihumboldt.hale.common.schema.model.TypeIndex,
+	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
+	 */
+	@Override
+	protected MutableCell createCell(CellBean cell, TypeIndex sourceTypes, TypeIndex targetTypes,
+			IOReporter reporter) {
+		return cell.createCell(reporter, sourceTypes, targetTypes);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.io.impl.internal.AbstractBaseAlignmentLoader#getModifiers(java.lang.Object)
+	 */
+	@Override
+	protected Collection<ModifierBean> getModifiers(AlignmentBean alignment) {
+		return alignment.modifiers;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.io.impl.internal.AbstractBaseAlignmentLoader#getModifiedCell(java.lang.Object)
+	 */
+	@Override
+	protected String getModifiedCell(ModifierBean modifier) {
+		return modifier.getCell();
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.io.impl.internal.AbstractBaseAlignmentLoader#getDisabledForList(java.lang.Object)
+	 */
+	@Override
+	protected Collection<String> getDisabledForList(ModifierBean modifier) {
+		return modifier.getDisableForRelation();
 	}
 
 }

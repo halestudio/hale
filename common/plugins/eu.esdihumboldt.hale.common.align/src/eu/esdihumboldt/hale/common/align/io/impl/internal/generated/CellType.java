@@ -5,11 +5,11 @@
 // Generated on: 2013.01.30 at 08:26:17 AM CET 
 //
 
-
 package eu.esdihumboldt.hale.common.align.io.impl.internal.generated;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -17,13 +17,19 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
-
+import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * <p>Java class for CellType complex type.
+ * <p>
+ * Java class for CellType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="CellType">
@@ -39,6 +45,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;/choice>
  *       &lt;/sequence>
  *       &lt;attribute name="relation" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="id" use="required" type="{http://www.w3.org/2001/XMLSchema}ID" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -47,168 +54,186 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CellType", propOrder = {
-    "source",
-    "target",
-    "abstractParameter",
-    "documentationOrAnnotation"
-})
+@XmlType(name = "CellType", propOrder = { "source", "target", "abstractParameter",
+		"documentationOrAnnotation" })
 public class CellType {
 
-    protected List<NamedEntityType> source;
-    @XmlElement(required = true)
-    protected List<NamedEntityType> target;
-    @XmlElementRef(name = "AbstractParameter", namespace = "http://www.esdi-humboldt.eu/hale/alignment", type = JAXBElement.class)
-    protected List<JAXBElement<? extends AbstractParameterType>> abstractParameter;
-    @XmlElements({
-        @XmlElement(name = "annotation", type = AnnotationType.class),
-        @XmlElement(name = "documentation", type = DocumentationType.class)
-    })
-    protected List<Object> documentationOrAnnotation;
-    @XmlAttribute(required = true)
-    protected String relation;
+	protected List<NamedEntityType> source;
+	@XmlElement(required = true)
+	protected List<NamedEntityType> target;
+	@XmlElementRef(name = "AbstractParameter", namespace = "http://www.esdi-humboldt.eu/hale/alignment", type = JAXBElement.class)
+	protected List<JAXBElement<? extends AbstractParameterType>> abstractParameter;
+	@XmlElements({ @XmlElement(name = "annotation", type = AnnotationType.class),
+			@XmlElement(name = "documentation", type = DocumentationType.class) })
+	protected List<Object> documentationOrAnnotation;
+	@XmlAttribute(required = true)
+	protected String relation;
+	@XmlAttribute(required = true)
+	@XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+	@XmlID
+	@XmlSchemaType(name = "ID")
+	protected String id;
 
-    /**
-     * Gets the value of the source property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the source property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getSource().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link NamedEntityType }
-     * 
-     * 
-     */
-    public List<NamedEntityType> getSource() {
-        if (source == null) {
-            source = new ArrayList<NamedEntityType>();
-        }
-        return this.source;
-    }
+	/**
+	 * Gets the value of the source property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a
+	 * snapshot. Therefore any modification you make to the returned list will
+	 * be present inside the JAXB object. This is why there is not a
+	 * <CODE>set</CODE> method for the source property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getSource().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list
+	 * {@link NamedEntityType }
+	 * 
+	 * 
+	 */
+	public List<NamedEntityType> getSource() {
+		if (source == null) {
+			source = new ArrayList<NamedEntityType>();
+		}
+		return this.source;
+	}
 
-    /**
-     * Gets the value of the target property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the target property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getTarget().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link NamedEntityType }
-     * 
-     * 
-     */
-    public List<NamedEntityType> getTarget() {
-        if (target == null) {
-            target = new ArrayList<NamedEntityType>();
-        }
-        return this.target;
-    }
+	/**
+	 * Gets the value of the target property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a
+	 * snapshot. Therefore any modification you make to the returned list will
+	 * be present inside the JAXB object. This is why there is not a
+	 * <CODE>set</CODE> method for the target property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getTarget().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list
+	 * {@link NamedEntityType }
+	 * 
+	 * 
+	 */
+	public List<NamedEntityType> getTarget() {
+		if (target == null) {
+			target = new ArrayList<NamedEntityType>();
+		}
+		return this.target;
+	}
 
-    /**
-     * Gets the value of the abstractParameter property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the abstractParameter property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getAbstractParameter().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link JAXBElement }{@code <}{@link AbstractParameterType }{@code >}
-     * {@link JAXBElement }{@code <}{@link ComplexParameterType }{@code >}
-     * {@link JAXBElement }{@code <}{@link ParameterType }{@code >}
-     * 
-     * 
-     */
-    public List<JAXBElement<? extends AbstractParameterType>> getAbstractParameter() {
-        if (abstractParameter == null) {
-            abstractParameter = new ArrayList<JAXBElement<? extends AbstractParameterType>>();
-        }
-        return this.abstractParameter;
-    }
+	/**
+	 * Gets the value of the abstractParameter property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a
+	 * snapshot. Therefore any modification you make to the returned list will
+	 * be present inside the JAXB object. This is why there is not a
+	 * <CODE>set</CODE> method for the abstractParameter property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getAbstractParameter().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list
+	 * {@link JAXBElement }{@code <}{@link AbstractParameterType }{@code >}
+	 * {@link JAXBElement }{@code <}{@link ComplexParameterType }{@code >}
+	 * {@link JAXBElement }{@code <}{@link ParameterType }{@code >}
+	 * 
+	 * 
+	 */
+	public List<JAXBElement<? extends AbstractParameterType>> getAbstractParameter() {
+		if (abstractParameter == null) {
+			abstractParameter = new ArrayList<JAXBElement<? extends AbstractParameterType>>();
+		}
+		return this.abstractParameter;
+	}
 
-    /**
-     * Gets the value of the documentationOrAnnotation property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the documentationOrAnnotation property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getDocumentationOrAnnotation().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link AnnotationType }
-     * {@link DocumentationType }
-     * 
-     * 
-     */
-    public List<Object> getDocumentationOrAnnotation() {
-        if (documentationOrAnnotation == null) {
-            documentationOrAnnotation = new ArrayList<Object>();
-        }
-        return this.documentationOrAnnotation;
-    }
+	/**
+	 * Gets the value of the documentationOrAnnotation property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a
+	 * snapshot. Therefore any modification you make to the returned list will
+	 * be present inside the JAXB object. This is why there is not a
+	 * <CODE>set</CODE> method for the documentationOrAnnotation property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getDocumentationOrAnnotation().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list
+	 * {@link AnnotationType } {@link DocumentationType }
+	 * 
+	 * 
+	 */
+	public List<Object> getDocumentationOrAnnotation() {
+		if (documentationOrAnnotation == null) {
+			documentationOrAnnotation = new ArrayList<Object>();
+		}
+		return this.documentationOrAnnotation;
+	}
 
-    /**
-     * Gets the value of the relation property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getRelation() {
-        return relation;
-    }
+	/**
+	 * Gets the value of the relation property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getRelation() {
+		return relation;
+	}
 
-    /**
-     * Sets the value of the relation property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setRelation(String value) {
-        this.relation = value;
-    }
+	/**
+	 * Sets the value of the relation property.
+	 * 
+	 * @param value allowed object is {@link String }
+	 * 
+	 */
+	public void setRelation(String value) {
+		this.relation = value;
+	}
+
+	/**
+	 * Gets the value of the id property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * Sets the value of the id property.
+	 * 
+	 * @param value allowed object is {@link String }
+	 * 
+	 */
+	public void setId(String value) {
+		this.id = value;
+	}
 
 }

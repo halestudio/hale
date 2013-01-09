@@ -16,9 +16,10 @@
 
 package eu.esdihumboldt.hale.common.align.model;
 
+import java.net.URI;
 import java.util.Collection;
+import java.util.Map;
 
-import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
@@ -28,6 +29,13 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * @author Simon Templer
  */
 public interface Alignment {
+
+	/**
+	 * Get the base alignments.
+	 * 
+	 * @return the base alignments
+	 */
+	public Map<String, URI> getBaseAlignments();
 
 	/**
 	 * Get the collection of cells contained in the alignment.
@@ -64,16 +72,20 @@ public interface Alignment {
 
 	/**
 	 * Get the cells representing a mapping between properties that are
-	 * associated with the given source and target types. Augmentations for the
-	 * given target type will also be returned.
+	 * associated with the given cell.
 	 * 
-	 * @param sourceTypes the source types or <code>null</code> for any source
-	 *            type
-	 * @param targetType the target types
-	 * @return the property cells associated with the relation between the given
-	 *         source and target types.
+	 * @param typeCell the cell in question, has to be a type cell
+	 * @return the property cells associated with the given type cell.
 	 */
-	public Collection<? extends Cell> getPropertyCells(Iterable<TypeEntityDefinition> sourceTypes,
-			TypeEntityDefinition targetType);
+	public Collection<? extends Cell> getPropertyCells(Cell typeCell);
+
+	/**
+	 * Returns the cell referenced by the given id string or <code>null</code>
+	 * if it cannot be found.
+	 * 
+	 * @param cellId the cell id
+	 * @return the cell or <code>null</code> if it cannot be found
+	 */
+	public Cell getCell(String cellId);
 
 }

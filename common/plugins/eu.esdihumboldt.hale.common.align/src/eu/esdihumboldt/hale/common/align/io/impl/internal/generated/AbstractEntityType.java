@@ -5,7 +5,6 @@
 // Generated on: 2013.01.30 at 08:26:17 AM CET 
 //
 
-
 package eu.esdihumboldt.hale.common.align.io.impl.internal.generated;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,11 +12,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for AbstractEntityType complex type.
+ * <p>
+ * Java class for AbstractEntityType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="AbstractEntityType">
@@ -32,10 +33,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "AbstractEntityType")
-@XmlSeeAlso({
-    ClassType.class
-})
+@XmlSeeAlso({ ClassType.class })
 public abstract class AbstractEntityType {
-
 
 }
