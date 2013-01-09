@@ -20,6 +20,7 @@ import java.util.Map;
 
 import com.google.common.collect.ListMultimap;
 
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
@@ -62,8 +63,8 @@ public interface PropertyTransformation<E extends TransformationEngine> extends
 
 	/**
 	 * Get the
-	 * {@link #execute(String, TransformationEngine, Map, TransformationLog)}ion
-	 * results.
+	 * {@link #execute(String, TransformationEngine, Map, TransformationLog, Cell)}
+	 * ion results.
 	 * 
 	 * @return the execution results, result names are mapped to result values
 	 * @see #setExpectedResult(ListMultimap)

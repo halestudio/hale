@@ -16,16 +16,12 @@
 
 package eu.esdihumboldt.hale.common.align.io.impl;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.stream.StreamSource;
 
 import eu.esdihumboldt.hale.common.align.io.impl.internal.AlignmentToJaxb;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.JaxbToAlignment;
@@ -43,7 +39,10 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
  */
 public class JaxbAlignmentIO {
 
-	private static final String ALIGNMENT_CONTEXT = "eu.esdihumboldt.hale.common.align.io.impl.internal.generated";
+	/**
+	 * The JAXB context path for alignments.
+	 */
+	public static final String ALIGNMENT_CONTEXT = "eu.esdihumboldt.hale.common.align.io.impl.internal.generated";
 
 	/**
 	 * Load a default alignment from an input stream.
@@ -60,26 +59,7 @@ public class JaxbAlignmentIO {
 	 */
 	public static MutableAlignment load(InputStream in, IOReporter reporter, TypeIndex sourceTypes,
 			TypeIndex targetTypes) throws JAXBException {
-		JAXBContext jc;
-		JAXBElement<AlignmentType> root = null;
-		jc = JAXBContext.newInstance(ALIGNMENT_CONTEXT);
-		Unmarshaller u = jc.createUnmarshaller();
-
-		// it will debug problems while unmarshalling
-		u.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
-
-		try {
-			root = u.unmarshal(new StreamSource(in), AlignmentType.class);
-		} finally {
-			try {
-				in.close();
-			} catch (IOException e) {
-				// ignore
-			}
-		}
-
-		AlignmentType genAlignment = root.getValue();
-
+		AlignmentType genAlignment = JaxbToAlignment.load(in, reporter);
 		// convert to alignment
 		return new JaxbToAlignment(genAlignment, reporter, sourceTypes, targetTypes).convert();
 	}
@@ -95,7 +75,6 @@ public class JaxbAlignmentIO {
 	 */
 	public static void save(Alignment alignment, IOReporter reporter, OutputStream out)
 			throws Exception {
-		// TODO convert to alignment type
 		AlignmentType align = new AlignmentToJaxb(alignment, reporter).convert();
 
 		JAXBContext jc = JAXBContext.newInstance(ALIGNMENT_CONTEXT);

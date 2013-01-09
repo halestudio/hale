@@ -27,7 +27,6 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.Transfor
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.TreeToGraphVisitor
 import eu.esdihumboldt.hale.common.align.tgraph.TGraphConstants.NodeType
 import eu.esdihumboldt.hale.common.align.tgraph.impl.TGraphImpl
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 
 
 /**
@@ -577,14 +576,11 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 		TransformationExample sample = TransformationExamples.getExample(exampleId)
 		Alignment alignment = sample.getAlignment()
 
-		// get the target type
-		TypeDefinition type =
-				alignment.typeCells.asList()[0] // first type cell
-				.target.values().asList()[0] // first target type
-				.definition.definition // its type definition
+		// get the type cell
+		def typeCell = alignment.typeCells.asList()[0] // first type cell
 
 		// create the transformation tree
-		TransformationTree tree = new TransformationTreeImpl(type, alignment)
+		TransformationTree tree = new TransformationTreeImpl(alignment, typeCell)
 
 		// create the transformation graph
 		new TGraphImpl(tree)
