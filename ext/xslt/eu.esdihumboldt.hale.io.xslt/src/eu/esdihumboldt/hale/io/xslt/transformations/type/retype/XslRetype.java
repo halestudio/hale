@@ -16,12 +16,9 @@
 package eu.esdihumboldt.hale.io.xslt.transformations.type.retype;
 
 import java.io.StringWriter;
-import java.util.Collection;
 
 import org.apache.velocity.VelocityContext;
 
-import eu.esdihumboldt.hale.common.align.model.Alignment;
-import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Type;
@@ -31,7 +28,6 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.Transfor
 import eu.esdihumboldt.hale.common.align.tgraph.TGraph;
 import eu.esdihumboldt.hale.common.align.tgraph.impl.TGraphImpl;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.xslt.XslTransformationUtil;
 import eu.esdihumboldt.hale.io.xslt.XslTypeTransformation;
 import eu.esdihumboldt.hale.io.xslt.transformations.base.AbstractTransformationTraverser;
@@ -70,21 +66,8 @@ public class XslRetype extends AbstractVelocityXslTypeTransformation implements
 	 * @throws TransformationException if creating the fragment failed
 	 */
 	protected String createPropertiesFragment(final Cell typeCell) throws TransformationException {
-		/*
-		 * Create the transformation tree with only those property cells related
-		 * to the type cell.
-		 */
-		Type target = (Type) CellUtil.getFirstEntity(typeCell.getTarget());
-		final TransformationTree tree = new TransformationTreeImpl(target.getDefinition()
-				.getDefinition(), context().getAlignment()) {
-
-			@Override
-			protected Collection<? extends Cell> getRelevantPropertyCells(Alignment alignment,
-					TypeDefinition targetType) {
-				return AlignmentUtil.getPropertyCellsFromTypeCell(alignment, typeCell);
-			}
-
-		};
+		final TransformationTree tree = new TransformationTreeImpl(context().getAlignment(),
+				typeCell);
 
 		/*
 		 * Create the transformation graph derived from the transformation tree

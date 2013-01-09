@@ -20,6 +20,7 @@ import java.util.Map;
 
 import com.google.common.collect.ListMultimap;
 
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
@@ -58,11 +59,12 @@ public interface TransformationFunction<E extends TransformationEngine> {
 	 *            be <code>null</code>
 	 * @param log the transformation log to report any information about the
 	 *            execution of the transformation to
+	 * @param cell the cell for this function
 	 * @throws TransformationException if an unrecoverable error occurs during
 	 *             transformation
 	 */
 	public void execute(String transformationIdentifier, E engine,
-			Map<String, String> executionParameters, TransformationLog log)
+			Map<String, String> executionParameters, TransformationLog log, Cell cell)
 			throws TransformationException;
 
 	// TODO reset method? or something like it

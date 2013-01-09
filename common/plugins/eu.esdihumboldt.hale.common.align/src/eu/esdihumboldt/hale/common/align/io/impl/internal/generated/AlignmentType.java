@@ -5,28 +5,47 @@
 // Generated on: 2013.01.30 at 08:26:17 AM CET 
 //
 
-
 package eu.esdihumboldt.hale.common.align.io.impl.internal.generated;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for AlignmentType complex type.
+ * <p>
+ * Java class for AlignmentType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="AlignmentType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;choice maxOccurs="unbounded" minOccurs="0">
- *         &lt;element ref="{http://www.esdi-humboldt.eu/hale/alignment}cell"/>
- *       &lt;/choice>
+ *       &lt;sequence>
+ *         &lt;element name="base" maxOccurs="unbounded" minOccurs="0">
+ *           &lt;complexType>
+ *             &lt;complexContent>
+ *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *                 &lt;attribute name="prefix" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *                 &lt;attribute name="location" use="required" type="{http://www.w3.org/2001/XMLSchema}anyURI" />
+ *               &lt;/restriction>
+ *             &lt;/complexContent>
+ *           &lt;/complexType>
+ *         &lt;/element>
+ *         &lt;choice maxOccurs="unbounded" minOccurs="0">
+ *           &lt;element ref="{http://www.esdi-humboldt.eu/hale/alignment}cell"/>
+ *           &lt;element ref="{http://www.esdi-humboldt.eu/hale/alignment}modifier"/>
+ *         &lt;/choice>
+ *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -35,40 +54,145 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AlignmentType", propOrder = {
-    "cell"
-})
+@XmlType(name = "AlignmentType", propOrder = { "base", "cellOrModifier" })
 public class AlignmentType {
 
-    protected List<CellType> cell;
+	protected List<AlignmentType.Base> base;
+	@XmlElements({ @XmlElement(name = "modifier", type = ModifierType.class),
+			@XmlElement(name = "cell", type = CellType.class) })
+	protected List<Object> cellOrModifier;
 
-    /**
-     * Gets the value of the cell property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the cell property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getCell().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link CellType }
-     * 
-     * 
-     */
-    public List<CellType> getCell() {
-        if (cell == null) {
-            cell = new ArrayList<CellType>();
-        }
-        return this.cell;
-    }
+	/**
+	 * Gets the value of the base property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a
+	 * snapshot. Therefore any modification you make to the returned list will
+	 * be present inside the JAXB object. This is why there is not a
+	 * <CODE>set</CODE> method for the base property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getBase().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list
+	 * {@link AlignmentType.Base }
+	 * 
+	 * 
+	 */
+	public List<AlignmentType.Base> getBase() {
+		if (base == null) {
+			base = new ArrayList<AlignmentType.Base>();
+		}
+		return this.base;
+	}
+
+	/**
+	 * Gets the value of the cellOrModifier property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a
+	 * snapshot. Therefore any modification you make to the returned list will
+	 * be present inside the JAXB object. This is why there is not a
+	 * <CODE>set</CODE> method for the cellOrModifier property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getCellOrModifier().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list
+	 * {@link ModifierType } {@link CellType }
+	 * 
+	 * 
+	 */
+	public List<Object> getCellOrModifier() {
+		if (cellOrModifier == null) {
+			cellOrModifier = new ArrayList<Object>();
+		}
+		return this.cellOrModifier;
+	}
+
+	/**
+	 * <p>
+	 * Java class for anonymous complex type.
+	 * 
+	 * <p>
+	 * The following schema fragment specifies the expected content contained
+	 * within this class.
+	 * 
+	 * <pre>
+	 * &lt;complexType>
+	 *   &lt;complexContent>
+	 *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+	 *       &lt;attribute name="prefix" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
+	 *       &lt;attribute name="location" use="required" type="{http://www.w3.org/2001/XMLSchema}anyURI" />
+	 *     &lt;/restriction>
+	 *   &lt;/complexContent>
+	 * &lt;/complexType>
+	 * </pre>
+	 * 
+	 * 
+	 */
+	@XmlAccessorType(XmlAccessType.FIELD)
+	@XmlType(name = "")
+	public static class Base {
+
+		@XmlAttribute(required = true)
+		protected String prefix;
+		@XmlAttribute(required = true)
+		@XmlSchemaType(name = "anyURI")
+		protected String location;
+
+		/**
+		 * Gets the value of the prefix property.
+		 * 
+		 * @return possible object is {@link String }
+		 * 
+		 */
+		public String getPrefix() {
+			return prefix;
+		}
+
+		/**
+		 * Sets the value of the prefix property.
+		 * 
+		 * @param value allowed object is {@link String }
+		 * 
+		 */
+		public void setPrefix(String value) {
+			this.prefix = value;
+		}
+
+		/**
+		 * Gets the value of the location property.
+		 * 
+		 * @return possible object is {@link String }
+		 * 
+		 */
+		public String getLocation() {
+			return location;
+		}
+
+		/**
+		 * Sets the value of the location property.
+		 * 
+		 * @param value allowed object is {@link String }
+		 * 
+		 */
+		public void setLocation(String value) {
+			this.location = value;
+		}
+
+	}
 
 }

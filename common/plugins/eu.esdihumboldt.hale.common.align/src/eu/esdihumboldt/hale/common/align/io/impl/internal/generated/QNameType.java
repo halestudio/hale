@@ -5,7 +5,6 @@
 // Generated on: 2013.01.30 at 08:26:17 AM CET 
 //
 
-
 package eu.esdihumboldt.hale.common.align.io.impl.internal.generated;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -15,13 +14,15 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * A qualified name with local part and namespace
  * 
- * <p>Java class for QNameType complex type.
+ * <p>
+ * Java class for QNameType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="QNameType">
@@ -38,64 +39,54 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "QNameType")
-@XmlSeeAlso({
-    eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType.Type.class,
-    ChildContextType.class
-})
+@XmlSeeAlso({ eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType.Type.class,
+		ChildContextType.class })
 public class QNameType {
 
-    @XmlAttribute(required = true)
-    protected String name;
-    @XmlAttribute
-    @XmlSchemaType(name = "anyURI")
-    protected String ns;
+	@XmlAttribute(required = true)
+	protected String name;
+	@XmlAttribute
+	@XmlSchemaType(name = "anyURI")
+	protected String ns;
 
-    /**
-     * Gets the value of the name property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getName() {
-        return name;
-    }
+	/**
+	 * Gets the value of the name property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getName() {
+		return name;
+	}
 
-    /**
-     * Sets the value of the name property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setName(String value) {
-        this.name = value;
-    }
+	/**
+	 * Sets the value of the name property.
+	 * 
+	 * @param value allowed object is {@link String }
+	 * 
+	 */
+	public void setName(String value) {
+		this.name = value;
+	}
 
-    /**
-     * Gets the value of the ns property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getNs() {
-        return ns;
-    }
+	/**
+	 * Gets the value of the ns property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getNs() {
+		return ns;
+	}
 
-    /**
-     * Sets the value of the ns property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setNs(String value) {
-        this.ns = value;
-    }
+	/**
+	 * Sets the value of the ns property.
+	 * 
+	 * @param value allowed object is {@link String }
+	 * 
+	 */
+	public void setNs(String value) {
+		this.ns = value;
+	}
 
 }

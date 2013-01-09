@@ -5,7 +5,6 @@
 // Generated on: 2013.01.30 at 08:26:17 AM CET 
 //
 
-
 package eu.esdihumboldt.hale.common.align.io.impl.internal.generated;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -14,11 +13,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for ClassType complex type.
+ * <p>
+ * Java class for ClassType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="ClassType">
@@ -45,97 +46,81 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ClassType", propOrder = {
-    "type"
-})
-@XmlSeeAlso({
-    PropertyType.class
-})
-public class ClassType
-    extends AbstractEntityType
-{
+@XmlType(name = "ClassType", propOrder = { "type" })
+@XmlSeeAlso({ PropertyType.class })
+public class ClassType extends AbstractEntityType {
 
-    @XmlElement(required = true)
-    protected ClassType.Type type;
+	@XmlElement(required = true)
+	protected ClassType.Type type;
 
-    /**
-     * Gets the value of the type property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ClassType.Type }
-     *     
-     */
-    public ClassType.Type getType() {
-        return type;
-    }
+	/**
+	 * Gets the value of the type property.
+	 * 
+	 * @return possible object is {@link ClassType.Type }
+	 * 
+	 */
+	public ClassType.Type getType() {
+		return type;
+	}
 
-    /**
-     * Sets the value of the type property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ClassType.Type }
-     *     
-     */
-    public void setType(ClassType.Type value) {
-        this.type = value;
-    }
+	/**
+	 * Sets the value of the type property.
+	 * 
+	 * @param value allowed object is {@link ClassType.Type }
+	 * 
+	 */
+	public void setType(ClassType.Type value) {
+		this.type = value;
+	}
 
+	/**
+	 * <p>
+	 * Java class for anonymous complex type.
+	 * 
+	 * <p>
+	 * The following schema fragment specifies the expected content contained
+	 * within this class.
+	 * 
+	 * <pre>
+	 * &lt;complexType>
+	 *   &lt;complexContent>
+	 *     &lt;extension base="{http://www.esdi-humboldt.eu/hale/alignment}QNameType">
+	 *       &lt;sequence>
+	 *         &lt;element name="condition" type="{http://www.esdi-humboldt.eu/hale/alignment}ConditionType" minOccurs="0"/>
+	 *       &lt;/sequence>
+	 *     &lt;/extension>
+	 *   &lt;/complexContent>
+	 * &lt;/complexType>
+	 * </pre>
+	 * 
+	 * 
+	 */
+	@XmlAccessorType(XmlAccessType.FIELD)
+	@XmlType(name = "", propOrder = { "condition" })
+	public static class Type extends QNameType {
 
-    /**
-     * <p>Java class for anonymous complex type.
-     * 
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     * 
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;extension base="{http://www.esdi-humboldt.eu/hale/alignment}QNameType">
-     *       &lt;sequence>
-     *         &lt;element name="condition" type="{http://www.esdi-humboldt.eu/hale/alignment}ConditionType" minOccurs="0"/>
-     *       &lt;/sequence>
-     *     &lt;/extension>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     * 
-     * 
-     */
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "condition"
-    })
-    public static class Type
-        extends QNameType
-    {
+		protected ConditionType condition;
 
-        protected ConditionType condition;
+		/**
+		 * Gets the value of the condition property.
+		 * 
+		 * @return possible object is {@link ConditionType }
+		 * 
+		 */
+		public ConditionType getCondition() {
+			return condition;
+		}
 
-        /**
-         * Gets the value of the condition property.
-         * 
-         * @return
-         *     possible object is
-         *     {@link ConditionType }
-         *     
-         */
-        public ConditionType getCondition() {
-            return condition;
-        }
+		/**
+		 * Sets the value of the condition property.
+		 * 
+		 * @param value allowed object is {@link ConditionType }
+		 * 
+		 */
+		public void setCondition(ConditionType value) {
+			this.condition = value;
+		}
 
-        /**
-         * Sets the value of the condition property.
-         * 
-         * @param value
-         *     allowed object is
-         *     {@link ConditionType }
-         *     
-         */
-        public void setCondition(ConditionType value) {
-            this.condition = value;
-        }
-
-    }
+	}
 
 }

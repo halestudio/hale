@@ -5,20 +5,22 @@
 // Generated on: 2013.01.30 at 08:26:17 AM CET 
 //
 
-
 package eu.esdihumboldt.hale.common.align.io.impl.internal.generated;
 
 import java.math.BigInteger;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for ChildContextType complex type.
+ * <p>
+ * Java class for ChildContextType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="ChildContextType">
@@ -37,90 +39,72 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ChildContextType", propOrder = {
-    "condition",
-    "context",
-    "index"
-})
-public class ChildContextType
-    extends QNameType
-{
+@XmlType(name = "ChildContextType", propOrder = { "condition", "context", "index" })
+public class ChildContextType extends QNameType {
 
-    protected ConditionType condition;
-    protected BigInteger context;
-    @XmlSchemaType(name = "nonNegativeInteger")
-    protected BigInteger index;
+	protected ConditionType condition;
+	protected BigInteger context;
+	@XmlSchemaType(name = "nonNegativeInteger")
+	protected BigInteger index;
 
-    /**
-     * Gets the value of the condition property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ConditionType }
-     *     
-     */
-    public ConditionType getCondition() {
-        return condition;
-    }
+	/**
+	 * Gets the value of the condition property.
+	 * 
+	 * @return possible object is {@link ConditionType }
+	 * 
+	 */
+	public ConditionType getCondition() {
+		return condition;
+	}
 
-    /**
-     * Sets the value of the condition property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ConditionType }
-     *     
-     */
-    public void setCondition(ConditionType value) {
-        this.condition = value;
-    }
+	/**
+	 * Sets the value of the condition property.
+	 * 
+	 * @param value allowed object is {@link ConditionType }
+	 * 
+	 */
+	public void setCondition(ConditionType value) {
+		this.condition = value;
+	}
 
-    /**
-     * Gets the value of the context property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
-     */
-    public BigInteger getContext() {
-        return context;
-    }
+	/**
+	 * Gets the value of the context property.
+	 * 
+	 * @return possible object is {@link BigInteger }
+	 * 
+	 */
+	public BigInteger getContext() {
+		return context;
+	}
 
-    /**
-     * Sets the value of the context property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
-     */
-    public void setContext(BigInteger value) {
-        this.context = value;
-    }
+	/**
+	 * Sets the value of the context property.
+	 * 
+	 * @param value allowed object is {@link BigInteger }
+	 * 
+	 */
+	public void setContext(BigInteger value) {
+		this.context = value;
+	}
 
-    /**
-     * Gets the value of the index property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
-     */
-    public BigInteger getIndex() {
-        return index;
-    }
+	/**
+	 * Gets the value of the index property.
+	 * 
+	 * @return possible object is {@link BigInteger }
+	 * 
+	 */
+	public BigInteger getIndex() {
+		return index;
+	}
 
-    /**
-     * Sets the value of the index property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
-     */
-    public void setIndex(BigInteger value) {
-        this.index = value;
-    }
+	/**
+	 * Sets the value of the index property.
+	 * 
+	 * @param value allowed object is {@link BigInteger }
+	 * 
+	 */
+	public void setIndex(BigInteger value) {
+		this.index = value;
+	}
 
 }

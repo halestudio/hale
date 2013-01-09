@@ -109,4 +109,23 @@ public interface Cell {
 	 */
 	public String getTransformationIdentifier();
 
+	/**
+	 * Get the id for identifying the cell.
+	 * 
+	 * @return the id
+	 */
+	public String getId();
+
+	/**
+	 * Returns the cells this cell is disabled for.
+	 * 
+	 * @return the cells this cell is disabled for
+	 */
+	public Set<Cell> getDisabledFor();
+
+	/**
+	 * @param cell the cell to disable/enable this cell for
+	 * @param disabled whether the cell should be disabled or not
+	 */
+	public void setDisabledFor(Cell cell, boolean disabled);
 }
