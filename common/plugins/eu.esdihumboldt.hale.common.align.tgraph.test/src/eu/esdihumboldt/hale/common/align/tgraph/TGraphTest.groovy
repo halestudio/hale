@@ -118,6 +118,8 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 		tg.performContextMatching()
 
 		//TODO check
+
+		//XXX requires multi-node context
 	}
 
 	/**
@@ -130,7 +132,11 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 		tg.proxyMultiResultNodes()
 		tg.performContextMatching()
 
-		//TODO check
+		//XXX alternatives only w/ multi-node context
+		assertContext(tg, 't1', 'b')
+		assertContext(tg, 'item', 'bt')
+
+		assertEquals(2, tg.graph.E.filter{it.label == EDGE_CONTEXT}.count())
 	}
 
 	/**
@@ -161,6 +167,8 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 		tg.performContextMatching()
 
 		//TODO check
+
+		//XXX requires multi-node context
 	}
 
 	/**
@@ -209,7 +217,17 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 		tg.proxyMultiResultNodes()
 		tg.performContextMatching()
 
-		//TODO check
+		// contexts in this example are unambiguous
+		assertContext(tg, 'item', 'element')
+		assertContext(tg, 'a', 'b')
+		assertContext(tg, 'a1', 'b1')
+		assertContext(tg, 'a2', 'b2')
+		assertContext(tg, 'c', 'd')
+		assertContext(tg, 'c1', 'd1')
+		assertContext(tg, 'c2', 'd2')
+
+		// 7 contexts altogether
+		assertEquals(7, tg.graph.E.filter{it.label == EDGE_CONTEXT}.count())
 	}
 
 	/**
@@ -222,7 +240,16 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 		tg.proxyMultiResultNodes()
 		tg.performContextMatching()
 
-		//TODO check
+		//XXX alternatives would involve splitting item
+		assertContext(tg, 'a', 'b')
+		assertContext(tg, 'a1', 'b1')
+		assertContext(tg, 'a2', 'b2')
+		assertContext(tg, 'c', 'd')
+		assertContext(tg, 'c1', 'd1')
+		assertContext(tg, 'c2', 'd2')
+
+		// 6 contexts altogether
+		assertEquals(6, tg.graph.E.filter{it.label == EDGE_CONTEXT}.count())
 	}
 
 	/**
@@ -235,7 +262,17 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 		tg.proxyMultiResultNodes()
 		tg.performContextMatching()
 
-		//TODO check
+		//XXX alternatives would involve splitting item
+		//FIXME item would be better match
+		assertContext(tg, 'a', 'b')
+		assertContext(tg, 'a1', 'b1')
+		assertContext(tg, 'a2', 'b2')
+		assertContext(tg, 'c', 'd')
+		assertContext(tg, 'c1', 'd1')
+		assertContext(tg, 'c2', 'd2')
+
+		// 6 contexts altogether
+		assertEquals(6, tg.graph.E.filter{it.label == EDGE_CONTEXT}.count())
 	}
 
 	/**
@@ -248,7 +285,17 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 		tg.proxyMultiResultNodes()
 		tg.performContextMatching()
 
-		//TODO check
+		//XXX are there other alternatives for element?
+		assertContext(tg, 't1', 'element')
+		assertContext(tg, 'a', 'b')
+		assertContext(tg, 'a1', 'b1')
+		assertContext(tg, 'a2', 'b2')
+		assertContext(tg, 'c', 'd')
+		assertContext(tg, 'c1', 'd1')
+		assertContext(tg, 'c2', 'd2')
+
+		// 7 contexts altogether
+		assertEquals(7, tg.graph.E.filter{it.label == EDGE_CONTEXT}.count())
 	}
 
 	/**
@@ -275,7 +322,14 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 		tg.proxyMultiResultNodes()
 		tg.performContextMatching()
 
-		//TODO check
+		// contexts in this example are unambiguous
+		assertContext(tg, 'a', 'b')
+		assertContext(tg, 'a1', 'b1')
+		assertContext(tg, 'a2', 'b2')
+		assertContext(tg, 'a', 'x')
+
+		// 4 contexts altogether
+		assertEquals(4, tg.graph.E.filter{it.label == EDGE_CONTEXT}.count())
 	}
 
 	/**
@@ -289,6 +343,8 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 		tg.performContextMatching()
 
 		//TODO check
+
+		//XXX requires multi-node context
 	}
 
 	/**
@@ -302,6 +358,8 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 		tg.performContextMatching()
 
 		//TODO check
+
+		//XXX requires multi-node context
 	}
 
 	/**
@@ -315,6 +373,8 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 		tg.performContextMatching()
 
 		//TODO check
+
+		//XXX requires multi-node context
 	}
 
 	/**
@@ -328,6 +388,8 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 		tg.performContextMatching()
 
 		//TODO check
+
+		//XXX requires multi-node context
 	}
 
 	/**
@@ -341,6 +403,8 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 		tg.performContextMatching()
 
 		//TODO check
+
+		//XXX requires multi-node context
 	}
 
 	/**
@@ -382,6 +446,8 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 		tg.performContextMatching()
 
 		//TODO check
+
+		//XXX requires multi-node context
 	}
 
 	/**
@@ -395,6 +461,8 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 		tg.performContextMatching()
 
 		//TODO check
+
+		//XXX requires multi-node context
 	}
 
 	/**
@@ -408,6 +476,8 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 		tg.performContextMatching()
 
 		//TODO check
+
+		//XXX requires multi-node context
 	}
 
 	/**
@@ -421,6 +491,8 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 		tg.performContextMatching()
 
 		//TODO check
+
+		//XXX requires cardinality 1 for proxied node to have valid contexts?
 	}
 
 	/**
@@ -434,6 +506,8 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 		tg.performContextMatching()
 
 		//TODO check
+
+		//XXX requires cardinality 1 for proxied node to have valid contexts?
 	}
 
 	/**
