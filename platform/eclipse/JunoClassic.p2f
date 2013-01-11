@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <?p2f version='1.0.0'?>
 <p2f version='1.0.0'>
-  <ius size='6'>
+  <ius size='10'>
     <iu id='org.eclipse.sdk.ide' name='Eclipse SDK' version='4.2.1.M20120914-1800'>
       <repositories size='2'>
-        <repository location='http://download.eclipse.org/releases/juno'/>
         <repository location='http://download.eclipse.org/eclipse/updates/4.2'/>
+        <repository location='http://download.eclipse.org/releases/juno'/>
       </repositories>
     </iu>
     <iu id='org.eclipse.wst.web_ui.feature.feature.group' name='Eclipse Web Developer Tools' version='3.4.1.v201208170345-7O7MFsPEMkBJz0wtb-ccsarPSceUIHO9iKk6XVPV'>
@@ -18,9 +18,29 @@
         <repository location='http://download.eclipse.org/releases/juno'/>
       </repositories>
     </iu>
-    <iu id='edu.umd.cs.findbugs.plugin.eclipse.feature.group' name='FindBugs Feature' version='2.0.1.20120712'>
+    <iu id='edu.umd.cs.findbugs.plugin.eclipse.feature.group' name='FindBugs Feature' version='2.0.2.20121210'>
       <repositories size='1'>
         <repository location='http://findbugs.cs.umd.edu/eclipse'/>
+      </repositories>
+    </iu>
+    <iu id='org.codehaus.groovy17.feature.feature.group' name='Groovy Compiler 1.7.10 Feature' version='2.7.2.xx-RELEASE-20121219-0800-e42'>
+      <repositories size='1'>
+        <repository location='http://dist.springsource.org/release/GRECLIPSE/e4.2/'/>
+      </repositories>
+    </iu>
+    <iu id='org.codehaus.groovy18.feature.feature.group' name='Groovy Compiler 1.8 Feature' version='2.7.2.xx-RELEASE-20121219-0800-e42'>
+      <repositories size='1'>
+        <repository location='http://dist.springsource.org/release/GRECLIPSE/e4.2/'/>
+      </repositories>
+    </iu>
+    <iu id='org.codehaus.groovy20.feature.feature.group' name='Groovy Compiler 2.0 Feature' version='2.7.2.xx-RELEASE-20121219-0800-e42'>
+      <repositories size='1'>
+        <repository location='http://dist.springsource.org/release/GRECLIPSE/e4.2/'/>
+      </repositories>
+    </iu>
+    <iu id='org.codehaus.groovy.eclipse.feature.feature.group' name='Groovy-Eclipse Feature' version='2.7.2.xx-RELEASE-20121219-0800-e42'>
+      <repositories size='1'>
+        <repository location='http://dist.springsource.org/release/GRECLIPSE/e4.2/'/>
       </repositories>
     </iu>
     <iu id='com.javadude.workingsets.feature.feature.group' name='JavaDude Automated Working Sets Feature' version='2.1.2'>
