@@ -63,24 +63,8 @@ public class XsltTransformationTest extends DefaultTransformationTest {
 	// XXX XSLT not yet in a state for this to work
 	@Override
 	@Test
-	public void testCMMulti2() throws Exception {
-		super.testCMMulti2();
-	}
-
-	@Ignore
-	// XXX XSLT not yet in a state for this to work
-	@Override
-	@Test
 	public void testCMMulti3() throws Exception {
 		super.testCMMulti3();
-	}
-
-	@Ignore
-	// XXX XSLT not yet in a state for this to work
-	@Override
-	@Test
-	public void testCMMulti4() throws Exception {
-		super.testCMMulti4();
 	}
 
 	@Ignore

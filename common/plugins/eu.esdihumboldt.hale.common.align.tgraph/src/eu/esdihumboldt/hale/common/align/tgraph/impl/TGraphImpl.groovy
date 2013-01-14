@@ -225,14 +225,27 @@ class TGraphImpl implements TGraph {
 		/*
 		 * TODO Determine an appropriate default candidate?!
 		 */
-		def context = findBestCandidate(candidates, target)
-
+		def context;
+		if (candidates) {
+			context = findBestCandidate(candidates, target)
+		}
+		else {
+			// no context may be also valid, e.g. for assignments
+			// the context then is the same as the parent context
+			context = parentContext
+			
+			//XXX debug
+			println "No context for node $target, using parent context"
+		}
+		
 		//XXX debug
 		println "Selected candidate: $context"
 
 		// create the context edge
 		// from source to target not to introduce any cycles into the graph
-		graph.addEdge(null, context, target, EDGE_CONTEXT)
+		if (context) {
+			graph.addEdge(null, context, target, EDGE_CONTEXT)
+		}
 
 		/*
 		 * Perform the context matching for the node children, passing the

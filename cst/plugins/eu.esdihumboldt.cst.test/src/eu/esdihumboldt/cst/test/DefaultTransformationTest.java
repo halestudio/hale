@@ -39,6 +39,17 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 	}
 
 	/**
+	 * Test based on a very simple mapping with a retype, renames and an
+	 * assignment.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testSimpleAssign() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.SIMPLE_ASSIGN));
+	}
+
+	/**
 	 * Test based on a simple mapping with a retype and renames, where high
 	 * cardinalities are allowed.
 	 * 

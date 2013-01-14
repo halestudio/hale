@@ -33,11 +33,12 @@ public interface InlineFunction extends XslFunction {
 	 * 
 	 * @param cell the mapping cell
 	 * @param variables the function variables, variable names are mapped to the
-	 *            corresponding XPath expressions, but not guaranteed to be in
-	 *            the same order as {@link Cell#getSource()}
+	 *            XSL variables containing the corresponding XPath expressions,
+	 *            but not guaranteed to be in the same order as
+	 *            {@link Cell#getSource()}
 	 * @return the XML fragment to be used as part of the attribute or element
 	 *         sequence constructor
 	 */
-	public String getSequence(Cell cell, ListMultimap<String, String> variables);
+	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables);
 
 }
