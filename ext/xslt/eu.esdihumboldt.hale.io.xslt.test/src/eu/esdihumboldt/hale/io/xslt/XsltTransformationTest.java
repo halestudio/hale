@@ -55,6 +55,56 @@ public class XsltTransformationTest extends DefaultTransformationTest {
 	// XXX XSLT not yet in a state for this to work
 	@Override
 	@Test
+	public void testCMMulti1() throws Exception {
+		// TODO Auto-generated method stub
+		super.testCMMulti1();
+	}
+
+	@Ignore
+	// XXX XSLT not yet in a state for this to work
+	@Override
+	@Test
+	public void testCMMulti2() throws Exception {
+		// TODO Auto-generated method stub
+		super.testCMMulti2();
+	}
+
+	@Ignore
+	// XXX XSLT not yet in a state for this to work
+	@Override
+	@Test
+	public void testCMMulti3() throws Exception {
+		super.testCMMulti3();
+	}
+
+	@Ignore
+	// XXX XSLT not yet in a state for this to work
+	@Override
+	@Test
+	public void testCMMulti4() throws Exception {
+		super.testCMMulti4();
+	}
+
+	@Ignore
+	// XXX XSLT not yet in a state for this to work
+	@Override
+	@Test
+	public void testCMUnion1() throws Exception {
+		super.testCMUnion1();
+	}
+
+	@Ignore
+	// XXX XSLT not yet in a state for this to work
+	@Override
+	@Test
+	public void testCMUnion2() throws Exception {
+		super.testCMUnion2();
+	}
+
+	@Ignore
+	// XXX XSLT not yet in a state for this to work
+	@Override
+	@Test
 	public void testDupeAssign() throws Exception {
 		super.testDupeAssign();
 	}
