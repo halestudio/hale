@@ -35,6 +35,16 @@
             function="eu.esdihumboldt.hale.align.rename"
             id="eu.esdihumboldt.hale.align.rename.xslt">
       </propertyTransformation>
+      <propertyTransformation
+            class="eu.esdihumboldt.hale.io.xslt.transformations.property.XslAssign"
+            function="eu.esdihumboldt.hale.align.assign"
+            id="eu.esdihumboldt.hale.align.assign.xslt">
+      </propertyTransformation>
+      <propertyTransformation
+            class="eu.esdihumboldt.hale.io.xslt.transformations.property.XslFormattedString"
+            function="eu.esdihumboldt.hale.align.formattedstring"
+            id="eu.esdihumboldt.hale.align.formattedstring.xslt">
+      </propertyTransformation>
    </extension>
 
 </plugin>
