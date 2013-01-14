@@ -55,14 +55,6 @@ public class XsltTransformationTest extends DefaultTransformationTest {
 	// XXX XSLT not yet in a state for this to work
 	@Override
 	@Test
-	public void testCardinalityRename() throws Exception {
-		super.testCardinalityRename();
-	}
-
-	@Ignore
-	// XXX XSLT not yet in a state for this to work
-	@Override
-	@Test
 	public void testDupeAssign() throws Exception {
 		super.testDupeAssign();
 	}
@@ -97,14 +89,6 @@ public class XsltTransformationTest extends DefaultTransformationTest {
 	@Test
 	public void testCardinalityMerge_2() throws Exception {
 		super.testCardinalityMerge_2();
-	}
-
-	@Ignore
-	// XXX XSLT not yet in a state for this to work
-	@Override
-	@Test
-	public void testSimpleComplex() throws Exception {
-		super.testSimpleComplex();
 	}
 
 	@Ignore
