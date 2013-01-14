@@ -13,29 +13,29 @@
  *     Fraunhofer IGD
  */
 
-package eu.esdihumboldt.hale.io.xslt.transformations.property.rename;
+package eu.esdihumboldt.hale.io.xslt.transformations.property;
 
 import com.google.common.collect.ListMultimap
 
 import eu.esdihumboldt.hale.common.align.model.Cell
+import eu.esdihumboldt.hale.common.align.model.functions.FormattedStringFunction
 import eu.esdihumboldt.hale.io.xslt.functions.InlineFunction
 import eu.esdihumboldt.hale.io.xslt.functions.XslVariable
+import eu.esdihumboldt.hale.io.xslt.transformations.base.AbstractFunctionTransformation
 
 
 /**
- * Variant of the rename function w/o structural rename, only copying the value.
+ * XSLT representation of the FormattedString function.
  * 
  * @author Simon Templer
  */
-class RenameValue implements InlineFunction {
+class XslFormattedString extends AbstractFunctionTransformation implements InlineFunction, FormattedStringFunction {
 
 	@Override
 	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables) {
-		def select = variables.get(null)[0].XPath
-		"""<xsl:value-of select="$select" />""";
-
-		//def sw = new StringWriter()
-		//new MarkupBuilder(sw).'xsl:value'(select: variables.get(null).get(0))
-		//sw.toString()
+		//XXX something like
+		"""
+		<xsl:value-of select="concat('text', @id, 'text2')" />
+		"""
 	}
 }

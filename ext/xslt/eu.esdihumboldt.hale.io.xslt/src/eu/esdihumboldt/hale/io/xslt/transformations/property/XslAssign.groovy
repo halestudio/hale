@@ -13,29 +13,28 @@
  *     Fraunhofer IGD
  */
 
-package eu.esdihumboldt.hale.io.xslt.transformations.property.rename;
+package eu.esdihumboldt.hale.io.xslt.transformations.property
 
 import com.google.common.collect.ListMultimap
 
 import eu.esdihumboldt.hale.common.align.model.Cell
+import eu.esdihumboldt.hale.common.align.model.CellUtil
+import eu.esdihumboldt.hale.common.align.model.functions.AssignFunction
 import eu.esdihumboldt.hale.io.xslt.functions.InlineFunction
 import eu.esdihumboldt.hale.io.xslt.functions.XslVariable
+import eu.esdihumboldt.hale.io.xslt.transformations.base.AbstractFunctionTransformation
 
 
 /**
- * Variant of the rename function w/o structural rename, only copying the value.
+ * XSLT implementation of the Assign function.
  * 
  * @author Simon Templer
  */
-class RenameValue implements InlineFunction {
+class XslAssign extends AbstractFunctionTransformation implements InlineFunction, AssignFunction {
 
 	@Override
 	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables) {
-		def select = variables.get(null)[0].XPath
-		"""<xsl:value-of select="$select" />""";
-
-		//def sw = new StringWriter()
-		//new MarkupBuilder(sw).'xsl:value'(select: variables.get(null).get(0))
-		//sw.toString()
+		//XXX correct to directly return value?
+		use(CellUtil) { "<xsl:text>${cell.getFirstRawParameter(PARAMETER_VALUE)}</xsl:text>" }
 	}
 }
