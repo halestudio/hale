@@ -24,6 +24,7 @@ import de.cs3d.util.logging.ALogger
 import de.cs3d.util.logging.ALoggerFactory
 import eu.esdihumboldt.hale.common.align.model.Cell
 import eu.esdihumboldt.hale.common.align.tgraph.TGraph
+import eu.esdihumboldt.hale.common.align.tgraph.TGraphConstants.NodeType
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag
 import eu.esdihumboldt.hale.io.xslt.XslPropertyTransformation
@@ -31,6 +32,7 @@ import eu.esdihumboldt.hale.io.xslt.XsltConstants
 import eu.esdihumboldt.hale.io.xslt.XsltGenerationContext
 import eu.esdihumboldt.hale.io.xslt.functions.InlineFunction
 import eu.esdihumboldt.hale.io.xslt.functions.XslFunction
+import eu.esdihumboldt.hale.io.xslt.functions.impl.XslVariableImpl
 import eu.esdihumboldt.hale.io.xslt.transformations.base.AbstractTransformationTraverser
 
 /**
@@ -49,6 +51,8 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 
 	private final XsltGenerationContext xsltContext
 
+	private Vertex rootContext
+
 	/**
 	 * @param writer
 	 */
@@ -65,6 +69,23 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 	@Override
 	public void traverse(TGraph graph) {
 		tagsToClose.clear()
+
+		/*
+		 * XXX Currently no context for the target type, so we have to set
+		 * it manually.
+		 *
+		 * XXX this only is valid for Retype!
+		 */
+		// select any source node from the graph
+		def node = graph.graph.V(P_TYPE, NodeType.Source).next()
+		// find the source root
+		def ctxs = node.in(EDGE_CHILD).loop(1){it.object.inE(EDGE_CHILD).hasNext()}.toList()
+		assert ctxs.size() <= 1
+		if (ctxs)
+			rootContext = ctxs[0]
+		else
+			rootContext = node
+
 		super.traverse(graph);
 	}
 
@@ -74,39 +95,37 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 
 		// determine node context & parent context
 		Vertex context = node.context()
+		Vertex parentContext = node.parentContext()
 
-		if (context) {
-			Vertex parentContext = node.parentContext()
-			if (!parentContext) {
-				/*
-				 * XXX Currently no context for the target type, so we have to set
-				 * it manually.
-				 */
-				def ctxs = context.in(EDGE_CHILD).loop(1){it.object.inE(EDGE_CHILD).hasNext()}.toList()
-				assert ctxs.size() == 1
-				parentContext = ctxs[0]
-			}
+		if (!parentContext) {
+			parentContext = rootContext
+		}
+		if (!context) {
+			// if no context is set, assume it's the same as the parent context
+			context = parentContext
+		}
 
-			// determine context path in relation to parent context for use in for-each
-			String selectContext = selectNode(context, parentContext)
+		// determine context path in relation to parent context for use in for-each
+		String selectContext = selectNode(context, parentContext)
 
-			// specifies if an attribute or element should be written
-			final boolean attribute;
-			// specifies the maximum number of target occurrences
-			final int targetMaxNum;
+		// specifies if an attribute or element should be written
+		final boolean attribute;
+		// specifies the maximum number of target occurrences
+		final int targetMaxNum;
 
-			if (node.definition().asProperty() &&
-			node.definition().asProperty().getConstraint(XmlAttributeFlag).enabled) {
-				// attribute
-				attribute = true
-				targetMaxNum = 1
-			}
-			else {
-				// group or element
-				attribute = false
-				targetMaxNum = node.cardinality().maxOccurs
-			}
+		if (node.definition().asProperty() &&
+		node.definition().asProperty().getConstraint(XmlAttributeFlag).enabled) {
+			// attribute
+			attribute = true
+			targetMaxNum = 1
+		}
+		else {
+			// group or element
+			attribute = false
+			targetMaxNum = node.cardinality().maxOccurs
+		}
 
+		if (context != parentContext) {
 			// restrict selection according to targetMaxNum
 			//XXX for now only if target may occur only once
 			//TODO compare with source cardinality
@@ -118,55 +137,52 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 			// select the context and loop if applicable
 			writer << """<xsl:for-each select="$selectContext">"""
 			closeTags.insert(0, '</xsl:for-each>')
+		}
 
-			// start the element/attribute
-			def local = node.definition().name.localPart
-			def namespace = node.definition().name.namespaceURI
-			writer << "<xsl:${attribute ? 'attribute' : 'element'} name=\"$local\""
-			if (namespace)
-				writer << " namespace=\"$namespace\""
-			writer << '>'
-			closeTags.insert(0, "</xsl:${attribute ? 'attribute' : 'element'}>")
-			//XXX do this always? For now assumption is this is needed further down
+		// start the element/attribute
+		def local = node.definition().name.localPart
+		def namespace = node.definition().name.namespaceURI
+		writer << "<xsl:${attribute ? 'attribute' : 'element'} name=\"$local\""
+		if (namespace)
+			writer << " namespace=\"$namespace\""
+		writer << '>'
+		closeTags.insert(0, "</xsl:${attribute ? 'attribute' : 'element'}>")
+		//XXX do this always? For now assumption is this is needed further down
 
-			// retrieve cell
-			def cells = node.in(EDGE_RESULT).toList()
-			// there may only be one cell coming in (if any)
-			assert cells.size() <= 1
-			if (cells) {
-				Vertex cellNode = cells[0]
-				Cell cell = cellNode.cell()
+		// retrieve cell
+		def cells = node.in(EDGE_RESULT).toList()
+		// there may only be one cell coming in (if any)
+		assert cells.size() <= 1
+		if (cells) {
+			Vertex cellNode = cells[0]
+			Cell cell = cellNode.cell()
 
-				// get associated property transformation
-				XslPropertyTransformation xpt = xsltContext.getPropertyTransformation(
-						cell.transformationIdentifier)
+			// get associated property transformation
+			XslPropertyTransformation xpt = xsltContext.getPropertyTransformation(
+					cell.transformationIdentifier)
 
-				// ...and the function to apply
-				XslFunction function = xpt.selectFunction(cell)
-				switch (function) {
-					case InlineFunction:
-						def variables = ArrayListMultimap.create()
-						def varPaths = cellNode.inE(EDGE_VARIABLE).outV.path.toList()
-						for (varPath in varPaths) {
-							assert varPath.size() == 3
-							def names = varPath[1].getProperty(P_VAR_NAMES)
-							def sourceNode = varPath[2]
+			// ...and the function to apply
+			XslFunction function = xpt.selectFunction(cell)
+			switch (function) {
+				case InlineFunction:
+					def variables = ArrayListMultimap.create()
+					def varPaths = cellNode.inE(EDGE_VARIABLE).outV.path.toList()
+					for (varPath in varPaths) {
+						assert varPath.size() == 3
+						def names = varPath[1].getProperty(P_VAR_NAMES)
+						def sourceNode = varPath[2]
 
-							def sourceXPath = selectNode(sourceNode, context)
-							for (name in names) {
-								variables.put(name, sourceXPath)
-							}
+						def sourceXPath = selectNode(sourceNode, context)
+						for (name in names) {
+							variables.put(name, new XslVariableImpl(sourceNode.entity(), sourceXPath))
 						}
-						String fragment = function.getSequence(cell, variables)
-						writer << fragment
-						break;
-					default:
-					//XXX others not supported yet
-						throw new IllegalStateException("Function of type $function.getClass() not supported")
-				}
-			}
-			else {
-				//XXX anything to do?
+					}
+					String fragment = function.getSequence(cell, variables)
+					writer << fragment
+					break;
+				default:
+				//XXX others not supported yet
+					throw new IllegalStateException("Function of type $function.getClass() not supported")
 			}
 
 			//XXX what about proxies? not handled yet anywhere in traverser

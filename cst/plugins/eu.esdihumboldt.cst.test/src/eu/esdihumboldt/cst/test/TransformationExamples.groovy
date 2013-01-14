@@ -26,6 +26,7 @@ import eu.esdihumboldt.cst.test.internal.InternalExample
 abstract class TransformationExamples {
 
 	public static final String SIMPLE_RENAME = 'simplerename'
+	public static final String SIMPLE_ASSIGN = 'simpleassign'
 	public static final String CARD_RENAME = 'cardrename'
 	public static final String DUPE_ASSIGN = 'dupeassign'
 	public static final String PROPERTY_JOIN = 'propjoin'
@@ -70,6 +71,7 @@ abstract class TransformationExamples {
 	 */
 	private static final def internalExamples = [
 		(SIMPLE_RENAME): defaultExample(SIMPLE_RENAME),
+		(SIMPLE_ASSIGN): defaultExample(SIMPLE_ASSIGN),
 		(CARD_RENAME): defaultExample(CARD_RENAME),
 		(DUPE_ASSIGN): defaultExample(DUPE_ASSIGN),
 		(PROPERTY_JOIN): defaultExample(PROPERTY_JOIN),
