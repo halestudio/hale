@@ -155,4 +155,81 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 		testTransform(TransformationExamples.getExample(TransformationExamples.CARDINALITY_MOVE));
 	}
 
+	/**
+	 * Transformation test for the context matching example
+	 * {@link TransformationExamples#CM_MULTI_1}.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testCMMulti1() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.CM_MULTI_1));
+	}
+
+	/**
+	 * Transformation test for the context matching example
+	 * {@link TransformationExamples#CM_MULTI_2}.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testCMMulti2() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.CM_MULTI_2));
+	}
+
+	/**
+	 * Transformation test for the context matching example
+	 * {@link TransformationExamples#CM_MULTI_3}.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testCMMulti3() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.CM_MULTI_3));
+	}
+
+	/**
+	 * Transformation test for the context matching example
+	 * {@link TransformationExamples#CM_MULTI_4}.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testCMMulti4() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.CM_MULTI_4));
+	}
+
+	/**
+	 * Transformation test for the context matching example
+	 * {@link TransformationExamples#CM_NESTED_1}.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testCMNested1() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.CM_NESTED_1));
+	}
+
+	/**
+	 * Transformation test for the context matching example
+	 * {@link TransformationExamples#CM_UNION_1}.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testCMUnion1() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.CM_UNION_1));
+	}
+
+	/**
+	 * Transformation test for the context matching example
+	 * {@link TransformationExamples#CM_UNION_2}.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testCMUnion2() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.CM_UNION_2));
+	}
+
 }
