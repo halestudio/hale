@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.io.xslt.XsltConstants
 import eu.esdihumboldt.hale.io.xslt.XsltGenerationContext
 import eu.esdihumboldt.hale.io.xslt.functions.InlineFunction
 import eu.esdihumboldt.hale.io.xslt.functions.XslFunction
+import eu.esdihumboldt.hale.io.xslt.functions.impl.XslVariableImpl
 import eu.esdihumboldt.hale.io.xslt.transformations.base.AbstractTransformationTraverser
 
 /**
@@ -154,7 +155,7 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 
 							def sourceXPath = selectNode(sourceNode, context)
 							for (name in names) {
-								variables.put(name, sourceXPath)
+								variables.put(name, new XslVariableImpl(sourceNode.entity(), sourceXPath))
 							}
 						}
 						String fragment = function.getSequence(cell, variables)
