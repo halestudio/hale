@@ -37,15 +37,19 @@ import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DefaultValue;
 import eu.esdihumboldt.hale.io.jdbc.constraints.SQLType;
+import eu.esdihumboldt.hale.io.jdbc.constraints.internal.GeometryAdvisorConstraint;
 
 /**
  * Writes instance to a database through a JDBC connection.
+ * 
  * @author Simon Templer
  */
 public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCConstants {
@@ -65,7 +69,7 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 		InstanceCollection instances = getInstances();
-		
+
 		Connection connection = null;
 		try {
 			// connect to the database
@@ -77,18 +81,17 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 				reporter.setSummary("Failed to connect to database.");
 				return reporter;
 			}
-			
+
 //			URI jdbcURI = getTarget().getLocation();
-			
+
 			writeInstances(connection, instances, progress, reporter);
-			
+
 			reporter.setSuccess(true);
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
 			reporter.setSuccess(false);
 			reporter.setSummary("Saving instances to database failed.");
-		}
-		finally {
+		} finally {
 			if (connection != null) {
 				try {
 					connection.close();
@@ -98,34 +101,33 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 			}
 			progress.end();
 		}
-		
+
 		return reporter;
 	}
 
 	/**
 	 * Write instances to a database connection
+	 * 
 	 * @param connection the database connection
 	 * @param instances the instances to write
 	 * @param progress the progress indicator
 	 * @param reporter the reporter
 	 * @throws Exception if saving the instances fails
 	 */
-	private void writeInstances(Connection connection,
-			InstanceCollection instances, ProgressIndicator progress,
-			IOReporter reporter) throws Exception {
+	private void writeInstances(Connection connection, InstanceCollection instances,
+			ProgressIndicator progress, IOReporter reporter) throws Exception {
 		connection.setAutoCommit(false);
-		
+
 		boolean trackProgress = instances.hasSize();
-		progress.begin("Write instances to database",
-				(trackProgress) ? (instances.size())
-						: (ProgressIndicator.UNKNOWN));
-		
+		progress.begin("Write instances to database", (trackProgress) ? (instances.size())
+				: (ProgressIndicator.UNKNOWN));
+
 		// maps type definitions to prepared statements
 		Map<TypeDefinition, Map<Set<QName>, PreparedStatement>> typeStatements = new HashMap<TypeDefinition, Map<Set<QName>, PreparedStatement>>();
 		Map<TypeDefinition, Map<Set<QName>, Integer>> typeCount = new HashMap<TypeDefinition, Map<Set<QName>, Integer>>();
-		
-		//TODO some kind of ordering needed?! because of IDs and constraints!
-		
+
+		// TODO some kind of ordering needed?! because of IDs and constraints!
+
 		ResourceIterator<Instance> it = instances.iterator();
 		try {
 			while (it.hasNext() && !progress.isCanceled()) {
@@ -149,24 +151,25 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 				typeCountMap.put(properties, count + 1);
 
 				// get prepared statement for instance type
-				PreparedStatement statement = getInsertStatement(type, 
-						properties, typeStatements, connection);
-				
+				PreparedStatement statement = getInsertStatement(type, properties, typeStatements,
+						connection);
+
 				// populate insert statement with values
 				populateInsertStatement(statement, properties, instance, reporter);
-				
+
 				statement.addBatch();
-				
+
 				if (count % 100 == 0) {
 					statement.executeBatch();
-					// TODO statement.getGeneratedKeys() / does not work with batches for PostgreSQL
+					// TODO statement.getGeneratedKeys() / does not work with
+					// batches for PostgreSQL
 				}
-				
+
 				if (trackProgress) {
 					progress.advance(1);
 				}
 			}
-			
+
 			// execute remaining batches
 			for (Map<Set<QName>, PreparedStatement> typeSpecificMap : typeStatements.values()) {
 				if (progress.isCanceled())
@@ -188,23 +191,24 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 		} finally {
 			// close iterator
 			it.close();
-			
+
 			// close statements
 			for (Map<Set<QName>, PreparedStatement> typeSpecificMap : typeStatements.values())
 				for (PreparedStatement statement : typeSpecificMap.values())
 					statement.close();
 		}
 
-		// right now cancel => rollback. Otherwise this would have to be in front of it.close()...
+		// right now cancel => rollback. Otherwise this would have to be in
+		// front of it.close()...
 //		if (progress.isCanceled() && it.hasNext()) {
 //			reporter.error(new IOMessageImpl("Saving to database was canceled, not all instances were saved.", null));
 //		}
 	}
 
 	/**
-	 * Filters the set of properties to only contain properties that can be used for inserting
-	 * (e. g. no groups).
-	 *
+	 * Filters the set of properties to only contain properties that can be used
+	 * for inserting (e. g. no groups).
+	 * 
 	 * @param type the type definition
 	 * @param properties the available properties
 	 */
@@ -222,16 +226,18 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 
 	/**
 	 * Create a prepared insert statement, based on the given type definition.
-	 *
+	 * 
 	 * @param type the type definition
-	 * @param properties the set properties of the instance for which this statement is
-	 * @param typeStatements the already created statements 
+	 * @param properties the set properties of the instance for which this
+	 *            statement is
+	 * @param typeStatements the already created statements
 	 * @param connection the database connection
 	 * @return the insert statement
 	 * @throws SQLException if creating the prepared statement fails
 	 */
 	private PreparedStatement getInsertStatement(TypeDefinition type, Set<QName> properties,
-			Map<TypeDefinition, Map<Set<QName>, PreparedStatement>> typeStatements, Connection connection) throws SQLException {
+			Map<TypeDefinition, Map<Set<QName>, PreparedStatement>> typeStatements,
+			Connection connection) throws SQLException {
 		Map<Set<QName>, PreparedStatement> typeSpecificMap = typeStatements.get(type);
 		if (typeSpecificMap == null) {
 			typeSpecificMap = new HashMap<Set<QName>, PreparedStatement>();
@@ -239,17 +245,17 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 		}
 
 		PreparedStatement result = typeSpecificMap.get(properties);
-		
+
 		if (result == null) {
 			String tableName = type.getName().getLocalPart();
-			
+
 			// create prepared statement SQL
 			StringBuffer pSql = new StringBuffer();
-			
+
 			pSql.append("INSERT INTO \"");
 			pSql.append(tableName);
 			pSql.append("\" (");
-			
+
 			StringBuffer valuesSql = new StringBuffer();
 
 			boolean first = true;
@@ -264,13 +270,15 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 				pSql.append('"').append(property.getLocalPart()).append('"');
 				valuesSql.append('?');
 			}
-			
+
 			pSql.append(") VALUES (");
 			pSql.append(valuesSql);
 			pSql.append(")");
 
-			// XXX Actually we don't necessarily need the auto generated keys, we need the primary key!
-			// XXX , Statement.RETURN_GENERATED_KEYS does not work with batches in PostgreSQL
+			// XXX Actually we don't necessarily need the auto generated keys,
+			// we need the primary key!
+			// XXX , Statement.RETURN_GENERATED_KEYS does not work with batches
+			// in PostgreSQL
 			result = connection.prepareStatement(pSql.toString());
 			typeSpecificMap.put(properties, result);
 		}
@@ -280,7 +288,7 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 
 	/**
 	 * Populate a prepared insert statement with values from the given instance.
-	 *
+	 * 
 	 * @param statement the insert statement
 	 * @param properties the properties to fill the statement with
 	 * @param instance the instance
@@ -290,24 +298,28 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 	private void populateInsertStatement(PreparedStatement statement, Set<QName> properties,
 			Instance instance, IOReporter reporter) throws SQLException {
 		TypeDefinition type = instance.getDefinition();
-		
+
 		int index = 1;
 		for (QName propertyName : properties) {
 			PropertyDefinition property = (PropertyDefinition) type.getChild(propertyName);
 			Object[] values = instance.getProperty(propertyName);
 			SQLType sqlType = property.getPropertyType().getConstraint(SQLType.class);
 			if (!sqlType.isSet()) {
-				reporter.error(new IOMessageImpl("SQL type not set. Please only export to schemas read from a database.", null));
+				reporter.error(new IOMessageImpl(
+						"SQL type not set. Please only export to schemas read from a database.",
+						null));
 				statement.setObject(index, null);
 				continue;
 			}
 			if (values != null && values.length > 1)
-				reporter.warn(new IOMessageImpl("Multiple values for a property. Only exporting first.", null));
+				reporter.warn(new IOMessageImpl(
+						"Multiple values for a property. Only exporting first.", null));
 			Object value = (values == null || values.length == 0) ? null : values[0];
 
 			if (values == null || values.length == 0) {
 				// XXX The default value could be a function call.
-				// Better would be to leave the column out of the insert statement, or set it to the SQL keyword "DEFAULT".
+				// Better would be to leave the column out of the insert
+				// statement, or set it to the SQL keyword "DEFAULT".
 				DefaultValue defaultValue = property.getConstraint(DefaultValue.class);
 				if (defaultValue.isSet())
 					statement.setObject(index, defaultValue.getValue(), sqlType.getType());
@@ -318,38 +330,61 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 					// set it to null here and let query fail (probably)
 					// XXX maybe skip this insert?
 					statement.setNull(index, sqlType.getType());
-					reporter.warn(new IOMessageImpl("Property no value, not nillable, no default value, insert will probably fail.", null));
+					reporter.warn(new IOMessageImpl(
+							"Property no value, not nillable, no default value, insert will probably fail.",
+							null));
 				}
-			} else if (value == null)
+			}
+			else if (value == null)
 				statement.setNull(index, sqlType.getType());
 			else
-				setStatementParameter(statement, index, value, 
-						property, sqlType.getType());
-			
+				setStatementParameter(statement, index, value, property, sqlType.getType(),
+						reporter);
+
 			index++;
 		}
 	}
 
 	/**
 	 * Set a prepared statement parameter value.
-	 *
+	 * 
 	 * @param statement the prepared statement
 	 * @param index the parameter index
 	 * @param value the value, not <code>null</code>
 	 * @param propertyDef the associated property definition
-	 * @param sqlType the sql type
+	 * @param sqlType the SQL type
+	 * @param reporter the reporter
 	 * @throws SQLException if setting the parameter fails
 	 */
-	private void setStatementParameter(PreparedStatement statement, int index,
-			Object value, PropertyDefinition propertyDef, int sqlType) throws SQLException {
+	private void setStatementParameter(PreparedStatement statement, int index, Object value,
+			PropertyDefinition propertyDef, int sqlType, IOReporter reporter) throws SQLException {
+		if (propertyDef.getPropertyType().getConstraint(GeometryType.class).isGeometry()) {
+			// is a geometry column
+
+			// get the geometry advisor
+			GeometryAdvisor<?> advisor = propertyDef.getPropertyType()
+					.getConstraint(GeometryAdvisorConstraint.class).getAdvisor();
+			if (advisor != null) {
+				// use the advisor to convert the geometry
+				if (value instanceof GeometryProperty<?>) {
+					// XXX JTS geometry conversion needed beforehand?
+					value = advisor.convertGeometry((GeometryProperty<?>) value,
+							propertyDef.getPropertyType());
+				}
+				else {
+					reporter.error(new IOMessageImpl(
+							"Geometry value is not of type GeometryProperty and could thus not be converted for the database",
+							null));
+				}
+			}
+		}
+
+		// TODO handling of other types?
+
+		// set the value
 		statement.setObject(index, value, sqlType);
-		
-		//TODO handling of geometries, other types?
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#getDefaultTypeName()
-	 */
 	@Override
 	protected String getDefaultTypeName() {
 		return "Database";

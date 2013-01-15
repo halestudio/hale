@@ -38,6 +38,9 @@ import schemacrawler.schemacrawler.SchemaCrawlerException;
 import schemacrawler.schemacrawler.SchemaCrawlerOptions;
 import schemacrawler.schemacrawler.SchemaInfoLevel;
 import schemacrawler.utility.SchemaCrawlerUtility;
+
+import com.vividsolutions.jts.geom.Geometry;
+
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -70,10 +73,11 @@ import eu.esdihumboldt.hale.io.jdbc.extension.internal.GeometryTypeInfo;
 
 /**
  * Reads a database schema through JDBC.
+ * 
  * @author Simon Templer
  */
 public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConstants {
-	
+
 	private DefaultSchema typeIndex;
 
 	/**
@@ -81,7 +85,7 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 	 */
 	public JDBCSchemaReader() {
 		super();
-		
+
 		addSupportedParameter(PARAM_USER);
 		addSupportedParameter(PARAM_PASSWORD);
 	}
@@ -109,7 +113,7 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 		typeIndex = null;
-		
+
 		progress.begin("Read database schema", ProgressIndicator.UNKNOWN);
 		Connection connection = null;
 		try {
@@ -123,9 +127,9 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 				reporter.setSummary("Failed to connect to database.");
 				return reporter;
 			}
-			
+
 			URI jdbcURI = getSource().getLocation();
-			
+
 			final SchemaCrawlerOptions options = new SchemaCrawlerOptions();
 			SchemaInfoLevel level = new SchemaInfoLevel();
 			level.setTag("hale");
@@ -138,13 +142,16 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 			level.setRetrieveTables(true);
 			level.setRetrieveColumnDataTypes(true);
 			level.setRetrieveUserDefinedColumnDataTypes(true);
-			level.setRetrieveTableColumns(true); // to get table columns information, also includes primary key
+			level.setRetrieveTableColumns(true); // to get table columns
+													// information, also
+													// includes primary key
 			level.setRetrieveForeignKeys(true); // to get linking information
 //			level.setRetrieveIndices(true); // to get info about UNIQUE indices for validation
-			// XXX For some advanced info / DBMS specific info we'll need a  properties file. See Config & InformationSchemaViews. 
-		    level.setTag("hale");
+			// XXX For some advanced info / DBMS specific info we'll need a
+			// properties file. See Config & InformationSchemaViews.
+			level.setTag("hale");
 			options.setSchemaInfoLevel(level);
-			
+
 			final Database database = SchemaCrawlerUtility.getDatabase(connection, options);
 			String quotes = "\"";
 			try {
@@ -157,33 +164,36 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 
 			String overallNamespace = jdbcURI.toString();
 			if (jdbcURI.getRawFragment() != null) {
-				overallNamespace = overallNamespace.substring(0,
-						overallNamespace.length()
-								- jdbcURI.getRawFragment().length());
+				overallNamespace = overallNamespace.substring(0, overallNamespace.length()
+						- jdbcURI.getRawFragment().length());
 			}
-			
+
 			// create the type index
 			typeIndex = new DefaultSchema(overallNamespace, jdbcURI);
-			
+
 			for (final schemacrawler.schema.Schema schema : database.getSchemas()) {
 				// each schema represents a namespace
 				String namespace = overallNamespace + "/" + unquote(schema.getName());
-				
+
 				for (final Table table : schema.getTables()) {
 					// each table is a type
-					
-					// get the type definition
-					TypeDefinition type = getOrCreateTableType(table, overallNamespace, namespace, typeIndex, connection, reporter);
 
-					// get ResultSetMetaData for extra info about columns (e. g. auto increment)
+					// get the type definition
+					TypeDefinition type = getOrCreateTableType(table, overallNamespace, namespace,
+							typeIndex, connection, reporter);
+
+					// get ResultSetMetaData for extra info about columns (e. g.
+					// auto increment)
 					ResultsColumns additionalInfo = null;
 					Statement stmt = null;
 					try {
 						stmt = connection.createStatement();
-						ResultSet rs = stmt.executeQuery("SELECT * FROM " + quote(schema.getName()) + "." + quote(table.getName()) + " WHERE 1 = 0");
+						ResultSet rs = stmt.executeQuery("SELECT * FROM " + quote(schema.getName())
+								+ "." + quote(table.getName()) + " WHERE 1 = 0");
 						additionalInfo = SchemaCrawlerUtility.getResultColumns(rs);
 					} catch (SQLException sqle) {
-						reporter.warn(new IOMessageImpl("Couldn't retrieve additional column meta data.", sqle));
+						reporter.warn(new IOMessageImpl(
+								"Couldn't retrieve additional column meta data.", sqle));
 					} finally {
 						if (stmt != null)
 							try {
@@ -195,14 +205,19 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 
 					// create property definitions for each column
 					for (final Column column : table.getColumns()) {
-						DefaultPropertyDefinition property = getOrCreateProperty(type, column, overallNamespace, namespace, typeIndex, connection, reporter);
+						DefaultPropertyDefinition property = getOrCreateProperty(type, column,
+								overallNamespace, namespace, typeIndex, connection, reporter);
 
 						// Set auto increment flag if meta data says so.
-						// Not sure, whether that covers every case of "auto increment" for every DBMS (probably not).
-						// But there is nothing else we can do in general without lots of DBMS specific code or asking the user for input.
+						// Not sure, whether that covers every case of
+						// "auto increment" for every DBMS (probably not).
+						// But there is nothing else we can do in general
+						// without lots of DBMS specific code or asking the user
+						// for input.
 						// XXX does not work for example for PostgreSQL
 						if (additionalInfo != null) {
-							// ResultColumns does not quote the column namen in contrast to every other place
+							// ResultColumns does not quote the column namen in
+							// contrast to every other place
 							ResultsColumn rc = additionalInfo.getColumn(unquote(column.getName()));
 							if (rc.isAutoIncrement())
 								property.setConstraint(AutoIncrementFlag.get(true));
@@ -210,12 +225,11 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 					}
 				}
 			}
-			
+
 			reporter.setSuccess(true);
 		} catch (SchemaCrawlerException e) {
 			throw new IOProviderConfigurationException("Failed to read database schema", e);
-		}
-		finally {
+		} finally {
 			if (connection != null) {
 				try {
 					connection.close();
@@ -225,13 +239,13 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 			}
 			progress.end();
 		}
-		
+
 		return reporter;
 	}
 
 	/**
 	 * Removes one pair of leading/trailing quotes ("x" or 'x' becomes x).
-	 *
+	 * 
 	 * @param s the string to remove quotes from
 	 * @return the string with one pair of quotes less if possible
 	 */
@@ -246,7 +260,7 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 
 	/**
 	 * Adds a pair of quotes ("x") if no quotes (" or ') are present.
-	 *
+	 * 
 	 * @param s the string to quote
 	 * @return the quoted string
 	 */
@@ -260,10 +274,11 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 	}
 
 	/**
-	 * Gets or creates a property definition for the given column.
-	 * Its type definition is created, too, if necessary.
-	 *
-	 * @param tableType the type definition of the parent table this column belongs too
+	 * Gets or creates a property definition for the given column. Its type
+	 * definition is created, too, if necessary.
+	 * 
+	 * @param tableType the type definition of the parent table this column
+	 *            belongs too
 	 * @param column the column to get or create a property definition for
 	 * @param overallNamespace the database namespace
 	 * @param namespace the schema namespace
@@ -273,8 +288,8 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 	 * @return the property definition for the given column
 	 */
 	private DefaultPropertyDefinition getOrCreateProperty(TypeDefinition tableType, Column column,
-			String overallNamespace, String namespace, DefaultSchema typeIndex, Connection connection,
-			IOReporter reporter) {
+			String overallNamespace, String namespace, DefaultSchema typeIndex,
+			Connection connection, IOReporter reporter) {
 		QName name = new QName(unquote(column.getName()));
 
 		// check for existing property definition
@@ -284,13 +299,12 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 
 		// create new one
 		// determine the column type
-		TypeDefinition columnType = getOrCreateColumnType(
-				column, overallNamespace, typeIndex, connection,
-				reporter);
-		
+		TypeDefinition columnType = getOrCreateColumnType(column, overallNamespace, typeIndex,
+				connection, tableType, reporter);
+
 		// create the property
-		DefaultPropertyDefinition property = new DefaultPropertyDefinition(
-				name, tableType, columnType);
+		DefaultPropertyDefinition property = new DefaultPropertyDefinition(name, tableType,
+				columnType);
 
 		// configure property
 		if (column.getRemarks() != null && !column.getRemarks().isEmpty()) {
@@ -299,20 +313,25 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 		property.setConstraint(NillableFlag.get(column.isNullable()));
 		// XXX Default value is read as string from the meta data.
 		// This is probably not really a problem, but should be noted!
-		// XXX In particular the default value can be a function call like for example GETDATE().
+		// XXX In particular the default value can be a function call like for
+		// example GETDATE().
 		String defaultValue = column.getDefaultValue();
 		if (defaultValue != null) {
 			property.setConstraint(new DefaultValue(defaultValue));
 			property.setConstraint(Cardinality.CC_OPTIONAL);
-		} else
+		}
+		else
 			property.setConstraint(Cardinality.CC_EXACTLY_ONCE);
 
-		// XXX constraint for column.isPartOfPrimaryKey(), column.isPartOfUniqueIndex()
+		// XXX constraint for column.isPartOfPrimaryKey(),
+		// column.isPartOfUniqueIndex()
 		// XXX what if the foreign key consists of multiple columns?
-		//      those indices/foreign keys should maybe belong to the table type, since they can have multiple columns
+		// those indices/foreign keys should maybe belong to the table type,
+		// since they can have multiple columns
 		if (column.isPartOfForeignKey()) {
 			Column referenced = column.getReferencedColumn();
-			property.setConstraint(new Reference(getOrCreateTableType(referenced.getParent(), overallNamespace, namespace, typeIndex, connection, reporter)));
+			property.setConstraint(new Reference(getOrCreateTableType(referenced.getParent(),
+					overallNamespace, namespace, typeIndex, connection, reporter)));
 		}
 
 		return property;
@@ -320,47 +339,73 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 
 	/**
 	 * Get or create the type definition for the given column.
-	 *
+	 * 
 	 * @param column the column
 	 * @param overallNamespace the database namespace
 	 * @param types the type index
 	 * @param connection the database connection
+	 * @param tableType the type definition of the table the column is part of
 	 * @param reporter the reporter
 	 * @return the type definition for the column type
 	 */
-	private TypeDefinition getOrCreateColumnType(Column column, final String overallNamespace, 
-			DefaultSchema types, Connection connection, IOReporter reporter) {
-		//XXX what about shared types?
-		// TODO the size/width info (VARCHAR(_30_)) is in column, the columntype/-name is not sufficient
+	private TypeDefinition getOrCreateColumnType(Column column, final String overallNamespace,
+			DefaultSchema types, Connection connection, TypeDefinition tableType,
+			IOReporter reporter) {
+		// XXX what about shared types?
+		// TODO the size/width info (VARCHAR(_30_)) is in column, the
+		// columntype/-name is not sufficient
 
 		ColumnDataType columnType = column.getType();
 		String localName = columnType.getName();
-		
+
 		QName typeName = new QName(overallNamespace, localName);
+
+		// check for geometry type
+		GeometryTypeInfo geomType = GeometryTypeExtension.getInstance().getTypeInfo(
+				columnType.getName(), connection);
+		@SuppressWarnings("rawtypes")
+		GeometryAdvisor geomAdvisor = null;
+		if (geomType != null) {
+			geomAdvisor = geomType.getGeometryAdvisor();
+
+			// determine if a type specifically for this column is needed
+			if (!geomAdvisor.isFixedType(columnType)) {
+				// must use a specific type definition for this column
+				// -> use a type name based on the column
+
+				// new namespace is the table and column name
+				String ns = tableType.getName().getNamespaceURI() + '/'
+						+ tableType.getName().getLocalPart() + '/' + unquote(column.getName());
+
+				typeName = new QName(ns, localName);
+			}
+		}
 
 		// check for existing type
 		TypeDefinition existing = types.getType(typeName);
 		if (existing != null)
 			return existing;
-		
+
 		// create new type
 		DefaultTypeDefinition type = new DefaultTypeDefinition(typeName);
 		type.setConstraint(HasValueFlag.ENABLED);
 		type.setConstraint(SQLType.get(columnType.getType()));
-		
-		// check for geometry type
-		GeometryTypeInfo geomType = GeometryTypeExtension.getInstance().getTypeInfo(
-				columnType.getName(), connection);
 
-		if (geomType != null) {
+		if (geomType != null && geomAdvisor != null) {
 			// configure geometry type
-			type.setConstraint(GeometryType.get(geomType.getGeometryType()));
-			type.setConstraint(Binding.get(GeometryProperty.class)); // always a single geometry
+			@SuppressWarnings("unchecked")
+			Class<? extends Geometry> geomClass = geomAdvisor.configureGeometryColumnType(
+					connection, column, type);
+			type.setConstraint(GeometryType.get(geomClass));
+			// always a single geometry
+			type.setConstraint(Binding.get(GeometryProperty.class));
+			// remember advisor for type (used in instance writer)
+			type.setConstraint(geomType.getConstraint());
 		}
 		else {
 			// configure type
 			try {
-				 // XXX more sophisticated class loading?
+				// XXX more sophisticated class loading?
 				Class<?> binding = Class.forName(column.getType().getTypeClassName());
 				type.setConstraint(Binding.get(binding));
 
@@ -370,7 +415,7 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 			}
 		}
 
-		//TODO validation constraint
+		// TODO validation constraint
 
 		if (columnType.getRemarks() != null && !columnType.getRemarks().isEmpty())
 			type.setDescription(columnType.getRemarks());
@@ -381,7 +426,7 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 
 	/**
 	 * Get or create the type definition for the given table.
-	 *
+	 * 
 	 * @param table the table
 	 * @param overallNamespace the database namespace
 	 * @param namespace the schema namespace
@@ -416,15 +461,21 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 		if (key != null) {
 			IndexColumn[] columns = key.getColumns();
 			if (columns.length > 1) {
-				reporter.warn(new IOMessageImpl("Primary keys over multiple columns are not yet supported.", null));
-			} else if (columns.length == 1) {
-				// create constraint, get property definition for original table column (maybe could use index column, too)
+				reporter.warn(new IOMessageImpl(
+						"Primary keys over multiple columns are not yet supported.", null));
+			}
+			else if (columns.length == 1) {
+				// create constraint, get property definition for original table
+				// column (maybe could use index column, too)
 				type.setConstraint(new eu.esdihumboldt.hale.common.schema.model.constraint.type.PrimaryKey(
-						Collections.<ChildDefinition<?>>singletonList(getOrCreateProperty(type, table.getColumn(columns[0].getName()), overallNamespace, namespace, types, connection, reporter))));
+						Collections.<ChildDefinition<?>> singletonList(getOrCreateProperty(type,
+								table.getColumn(columns[0].getName()), overallNamespace, namespace,
+								types, connection, reporter))));
 			}
 		}
 
-		// TODO validation of constraints? Most are about several instances (i. e. UNIQUE)
+		// TODO validation of constraints? Most are about several instances (i.
+		// e. UNIQUE)
 
 		types.addType(type);
 		return type;

@@ -101,13 +101,13 @@
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="type" type="string" use="required">
+         <attribute name="advisor" type="string" use="required">
             <annotation>
                <documentation>
-                  The associated JTS geometry type
+                  The advisor used for handling geometry columns and values.
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn="com.vividsolutions.jts.geom.Geometry:"/>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.io.jdbc.GeometryAdvisor"/>
                </appinfo>
             </annotation>
          </attribute>
