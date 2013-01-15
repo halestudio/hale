@@ -84,7 +84,7 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 
 	private IContentType contentType;
 
-	private final Multimap<String, AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> configPages;
+	private Multimap<String, AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> configPages;
 
 	private final List<IWizardPage> mainPages = new ArrayList<IWizardPage>();
 
@@ -131,6 +131,10 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 	public void setAdvisor(IOAdvisor<P> advisor, String actionId) {
 		this.advisor = advisor;
 		this.actionId = actionId;
+
+		// recreate possible configuration pages now that advisor is set
+		configPages = ConfigurationPageExtension.getInstance()
+				.getConfigurationPages(getFactories());
 	}
 
 	/**
