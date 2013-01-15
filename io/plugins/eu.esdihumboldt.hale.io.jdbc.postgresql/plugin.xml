@@ -9,10 +9,10 @@
             type="org.postgresql.PGConnection">
       </connection>
       <geometrytype
+            advisor="eu.esdihumboldt.hale.io.jdbc.postgresql.PostGISGeometries"
             connection="org.postgresql.PGConnection"
             id="eu.esdihumboldt.hale.io.jdbc.postgresql.postgis.geometry"
-            name="geometry"
-            type="com.vividsolutions.jts.geom.Geometry">
+            name="geometry">
       </geometrytype>
    </extension>
 

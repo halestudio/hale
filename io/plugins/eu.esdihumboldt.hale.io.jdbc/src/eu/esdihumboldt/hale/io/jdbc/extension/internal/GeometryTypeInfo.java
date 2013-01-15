@@ -20,52 +20,59 @@ import java.sql.Connection;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import com.vividsolutions.jts.geom.Geometry;
-
 import de.cs3d.util.eclipse.extension.ExtensionUtil;
 import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
+import eu.esdihumboldt.hale.io.jdbc.GeometryAdvisor;
+import eu.esdihumboldt.hale.io.jdbc.constraints.internal.GeometryAdvisorConstraint;
 
 /**
  * Holds information about a geometry type.
+ * 
  * @author Simon Templer
  */
 public class GeometryTypeInfo implements Identifiable {
-	
+
 //	private static final ALogger log = ALoggerFactory.getLogger(GeometryTypeInfo.class);
 
 	private final String elementId;
 	private final Class<?> connectionType;
 	private final String typeName;
-	private final Class<? extends Geometry> geometryType;
-	
+	private final GeometryAdvisor<?> advisor;
+	private final GeometryAdvisorConstraint constraint;
+
 	/**
-	 * Create a connection configuration from a corresponding 
-	 * configuration element.
+	 * Create a connection configuration from a corresponding configuration
+	 * element.
+	 * 
 	 * @param elementId the identifier
 	 * @param element the configuration element
 	 */
 	@SuppressWarnings("unchecked")
-	public GeometryTypeInfo(String elementId,
-			IConfigurationElement element) {
+	public GeometryTypeInfo(String elementId, IConfigurationElement element) {
 		this.elementId = elementId;
-		
+
 		connectionType = ExtensionUtil.loadClass(element, "connection");
-		geometryType = (Class<? extends Geometry>) ExtensionUtil.loadClass(element, "type");
-		
+		Class<? extends GeometryAdvisor<?>> advisorClass = (Class<? extends GeometryAdvisor<?>>) ExtensionUtil
+				.loadClass(element, "advisor");
+		try {
+			advisor = advisorClass.newInstance();
+		} catch (Exception e) {
+			throw new IllegalStateException("Failed to create geometry advisor", e);
+		}
+		constraint = new GeometryAdvisorConstraint(advisor);
+
 		typeName = element.getAttribute("name");
 	}
 
-	/**
-	 * @see de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable#getId()
-	 */
 	@Override
 	public String getId() {
 		return elementId;
 	}
-	
+
 	/**
-	 * Determines if the geometry type applies to a database
-	 * with the given connection.
+	 * Determines if the geometry type applies to a database with the given
+	 * connection.
+	 * 
 	 * @param connection the database connection
 	 * @return if the geometry type is valid for the database
 	 */
@@ -74,17 +81,24 @@ public class GeometryTypeInfo implements Identifiable {
 	}
 
 	/**
-	 * @return the typeName
+	 * @return the type name
 	 */
 	public String getTypeName() {
 		return typeName;
 	}
 
 	/**
-	 * @return the geometryType
+	 * @return the associated geometry advisor
 	 */
-	public Class<? extends Geometry> getGeometryType() {
-		return geometryType;
+	public GeometryAdvisor<?> getGeometryAdvisor() {
+		return advisor;
+	}
+
+	/**
+	 * @return the geometry advisor constraint
+	 */
+	public GeometryAdvisorConstraint getConstraint() {
+		return constraint;
 	}
 
 }
