@@ -86,7 +86,19 @@ public abstract class AbstractMappingView extends PropertiesViewPart implements
 	 * @return the content provider
 	 */
 	protected IContentProvider createContentProvider() {
-		return new CellGraphContentProvider();
+		return new CellGraphContentProvider() {
+
+			@Override
+			public Object getSource(Object rel) {
+				return super.getDestination(rel);
+			}
+
+			@Override
+			public Object getDestination(Object rel) {
+				return super.getSource(rel);
+			}
+
+		};
 	}
 
 	/**
@@ -96,7 +108,7 @@ public abstract class AbstractMappingView extends PropertiesViewPart implements
 	 */
 	protected LayoutAlgorithm createLayout() {
 		LayoutAlgorithm layout;
-		layout = new TreeLayoutAlgorithm(TreeLayoutAlgorithm.LEFT_RIGHT);
+		layout = new TreeLayoutAlgorithm(TreeLayoutAlgorithm.RIGHT_LEFT);
 		return layout;
 	}
 
