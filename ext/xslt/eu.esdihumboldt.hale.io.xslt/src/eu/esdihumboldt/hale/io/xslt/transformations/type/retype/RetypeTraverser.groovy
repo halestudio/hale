@@ -30,7 +30,6 @@ import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag
 import eu.esdihumboldt.hale.io.xslt.XslPropertyTransformation
 import eu.esdihumboldt.hale.io.xslt.XsltConstants
 import eu.esdihumboldt.hale.io.xslt.XsltGenerationContext
-import eu.esdihumboldt.hale.io.xslt.functions.InlineFunction
 import eu.esdihumboldt.hale.io.xslt.functions.XslFunction
 import eu.esdihumboldt.hale.io.xslt.functions.impl.XslVariableImpl
 import eu.esdihumboldt.hale.io.xslt.transformations.base.AbstractTransformationTraverser
@@ -163,27 +162,20 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 
 			// ...and the function to apply
 			XslFunction function = xpt.selectFunction(cell)
-			switch (function) {
-				case InlineFunction:
-					def variables = ArrayListMultimap.create()
-					def varPaths = cellNode.inE(EDGE_VARIABLE).outV.path.toList()
-					for (varPath in varPaths) {
-						assert varPath.size() == 3
-						def names = varPath[1].getProperty(P_VAR_NAMES)
-						def sourceNode = varPath[2]
+			def variables = ArrayListMultimap.create()
+			def varPaths = cellNode.inE(EDGE_VARIABLE).outV.path.toList()
+			for (varPath in varPaths) {
+				assert varPath.size() == 3
+				def names = varPath[1].getProperty(P_VAR_NAMES)
+				def sourceNode = varPath[2]
 
-						def sourceXPath = selectNode(sourceNode, context)
-						for (name in names) {
-							variables.put(name, new XslVariableImpl(sourceNode.entity(), sourceXPath))
-						}
-					}
-					String fragment = function.getSequence(cell, variables)
-					writer << fragment
-					break;
-				default:
-				//XXX others not supported yet
-					throw new IllegalStateException("Function of type $function.getClass() not supported")
+				def sourceXPath = selectNode(sourceNode, context)
+				for (name in names) {
+					variables.put(name, new XslVariableImpl(sourceNode.entity(), sourceXPath))
+				}
 			}
+			String fragment = function.getSequence(cell, variables, xsltContext)
+			writer << fragment
 
 			//XXX what about proxies? not handled yet anywhere in traverser
 		}

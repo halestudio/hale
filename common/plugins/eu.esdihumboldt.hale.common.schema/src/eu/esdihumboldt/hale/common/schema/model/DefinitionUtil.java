@@ -227,4 +227,25 @@ public abstract class DefinitionUtil {
 		return count;
 	}
 
+	/**
+	 * Get the represented definition group of a definition.
+	 * 
+	 * @param def the definition
+	 * @return for a property definition its property type, for a type
+	 *         definition or a group property definition the definition itself
+	 */
+	public static DefinitionGroup getDefinitionGroup(Definition<?> def) {
+		if (def instanceof TypeDefinition) {
+			return (TypeDefinition) def;
+		}
+		if (def instanceof PropertyDefinition) {
+			return ((PropertyDefinition) def).getPropertyType();
+		}
+		if (def instanceof GroupPropertyDefinition) {
+			return (GroupPropertyDefinition) def;
+		}
+
+		throw new IllegalStateException("Illegal definition type encountered");
+	}
+
 }
