@@ -20,7 +20,8 @@ import com.google.common.collect.ListMultimap
 import eu.esdihumboldt.hale.common.align.model.Cell
 import eu.esdihumboldt.hale.common.align.model.CellUtil
 import eu.esdihumboldt.hale.common.align.model.functions.AssignFunction
-import eu.esdihumboldt.hale.io.xslt.functions.InlineFunction
+import eu.esdihumboldt.hale.io.xslt.XsltGenerationContext
+import eu.esdihumboldt.hale.io.xslt.functions.XslFunction
 import eu.esdihumboldt.hale.io.xslt.functions.XslVariable
 import eu.esdihumboldt.hale.io.xslt.transformations.base.AbstractFunctionTransformation
 
@@ -30,10 +31,11 @@ import eu.esdihumboldt.hale.io.xslt.transformations.base.AbstractFunctionTransfo
  * 
  * @author Simon Templer
  */
-class XslAssign extends AbstractFunctionTransformation implements InlineFunction, AssignFunction {
+class XslAssign extends AbstractFunctionTransformation implements AssignFunction {
 
 	@Override
-	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables) {
+	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables,
+	XsltGenerationContext context) {
 		//XXX correct to directly return value?
 		use(CellUtil) { "<xsl:text>${cell.getFirstRawParameter(PARAMETER_VALUE)}</xsl:text>" }
 	}

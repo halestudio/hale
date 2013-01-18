@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -247,7 +248,7 @@ public class XsltGenerator implements XsltConstants {
 	/**
 	 * Collects XSL fragments to include in the main file
 	 */
-	private final Set<String> includes = new HashSet<String>();
+	private final Set<String> includes = new LinkedHashSet<String>();
 
 	/**
 	 * Namespace prefixes mapped to namespaces.

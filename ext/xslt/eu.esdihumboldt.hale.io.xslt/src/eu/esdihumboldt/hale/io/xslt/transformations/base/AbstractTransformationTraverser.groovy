@@ -102,18 +102,18 @@ abstract class AbstractTransformationTraverser implements TGraphConstants {
 					 * Allow to handle unmapped mandatory properties, e.g.
 					 * elements that are mandatory but nillable.
 					 */
-					handleUnmappedProperty(node, child);
+					handleUnmappedProperty(child);
 				}
 			}
 		}
 	}
 
 	/**
-	 * Handle a child for which not target node exists.
+	 * Handle a child for which no target node exists.
 	 * 
-	 * @param node the target node
+	 * @param child the child definition
 	 */
-	protected abstract void handleUnmappedProperty(Vertex node);
+	protected abstract void handleUnmappedProperty(ChildDefinition<?> child);
 
 	/**
 	 * Called when leaving a target node and its children.

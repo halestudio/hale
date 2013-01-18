@@ -25,12 +25,13 @@ import de.cs3d.util.logging.ALoggerFactory
 import eu.esdihumboldt.hale.common.align.model.Cell
 import eu.esdihumboldt.hale.common.align.tgraph.TGraph
 import eu.esdihumboldt.hale.common.align.tgraph.TGraphConstants.NodeType
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition
+import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag
 import eu.esdihumboldt.hale.io.xslt.XslPropertyTransformation
 import eu.esdihumboldt.hale.io.xslt.XsltConstants
 import eu.esdihumboldt.hale.io.xslt.XsltGenerationContext
-import eu.esdihumboldt.hale.io.xslt.functions.InlineFunction
 import eu.esdihumboldt.hale.io.xslt.functions.XslFunction
 import eu.esdihumboldt.hale.io.xslt.functions.impl.XslVariableImpl
 import eu.esdihumboldt.hale.io.xslt.transformations.base.AbstractTransformationTraverser
@@ -163,27 +164,20 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 
 			// ...and the function to apply
 			XslFunction function = xpt.selectFunction(cell)
-			switch (function) {
-				case InlineFunction:
-					def variables = ArrayListMultimap.create()
-					def varPaths = cellNode.inE(EDGE_VARIABLE).outV.path.toList()
-					for (varPath in varPaths) {
-						assert varPath.size() == 3
-						def names = varPath[1].getProperty(P_VAR_NAMES)
-						def sourceNode = varPath[2]
+			def variables = ArrayListMultimap.create()
+			def varPaths = cellNode.inE(EDGE_VARIABLE).outV.path.toList()
+			for (varPath in varPaths) {
+				assert varPath.size() == 3
+				def names = varPath[1].getProperty(P_VAR_NAMES)
+				def sourceNode = varPath[2]
 
-						def sourceXPath = selectNode(sourceNode, context)
-						for (name in names) {
-							variables.put(name, new XslVariableImpl(sourceNode.entity(), sourceXPath))
-						}
-					}
-					String fragment = function.getSequence(cell, variables)
-					writer << fragment
-					break;
-				default:
-				//XXX others not supported yet
-					throw new IllegalStateException("Function of type $function.getClass() not supported")
+				def sourceXPath = selectNode(sourceNode, context)
+				for (name in names) {
+					variables.put(name, new XslVariableImpl(sourceNode.entity(), sourceXPath))
+				}
 			}
+			String fragment = function.getSequence(cell, variables, xsltContext)
+			writer << fragment
 
 			//XXX what about proxies? not handled yet anywhere in traverser
 		}
@@ -247,12 +241,10 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 				if (ns != null && !ns.isEmpty()) {
 					String prefix = xsltContext.namespaceContext.getPrefix(ns);
 					if (prefix) {
-						xpath.append('$prefix:');
+						xpath.append("$prefix:");
 					}
 				}
 				xpath.append(element.definition().name.localPart);
-
-				//FIXME what about if the definition is represented by an attribute
 
 				//XXX what about contexts? conditions, index etc
 			}
@@ -261,21 +253,21 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 	}
 
 	@Override
-	protected void handleUnmappedProperty(Vertex node) {
-		if (node.cardinality().minOccurs > 0) {
-			if (node.definition().asProperty() != null) {
-				if (definition().asProperty().getConstraint(XmlAttributeFlag).enabled) {
+	protected void handleUnmappedProperty(ChildDefinition<?> child) {
+		if (DefinitionUtil.getCardinality(child).minOccurs > 0) {
+			if (child.asProperty() != null) {
+				if (child.asProperty().getConstraint(XmlAttributeFlag).enabled) {
 					// a mandatory attribute
 					log.warn("No mapping for a mandatory attribute");
 				}
 				else {
 					// a mandatory element
-					if (node.definition().asProperty().getConstraint(NillableFlag).enabled) {
+					if (child.asProperty().getConstraint(NillableFlag).enabled) {
 						// a nillable mandatory element
 						try {
-							def name = node.definition().name.localPart
+							def name = child.name.localPart
 							def prefix = xsltContext.namespaceContext.getPrefix(
-									node.definition().name.namespaceURI)
+									child.name.namespaceURI)
 							if (prefix) {
 								prefix << ':'
 							}

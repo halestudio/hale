@@ -18,7 +18,6 @@ package eu.esdihumboldt.hale.io.xslt.transformations.property.rename;
 import eu.esdihumboldt.hale.common.align.model.Cell
 import eu.esdihumboldt.hale.common.align.model.CellUtil
 import eu.esdihumboldt.hale.common.align.model.functions.RenameFunction
-import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException
 import eu.esdihumboldt.hale.io.xslt.XslPropertyTransformation
 import eu.esdihumboldt.hale.io.xslt.functions.XslFunction
 import eu.esdihumboldt.hale.io.xslt.transformations.base.AbstractXslTransformation
@@ -36,7 +35,8 @@ RenameFunction {
 	/**
 	 * Simple value rename function
 	 */
-	final RenameValue value = new RenameValue()
+	private final RenameValue value = new RenameValue()
+
 
 	@Override
 	public XslFunction selectFunction(Cell cell) {
@@ -46,11 +46,11 @@ RenameFunction {
 
 			if (!structuralRename) {
 				// copy value only
-				return value
+				value
 			}
 			else {
-				//TODO
-				throw new TransformationException('Rename implementation not complete')
+				// copy structure
+				new StructuralRename()
 			}
 		}
 	}

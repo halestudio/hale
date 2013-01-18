@@ -18,7 +18,8 @@ package eu.esdihumboldt.hale.io.xslt.transformations.property.rename;
 import com.google.common.collect.ListMultimap
 
 import eu.esdihumboldt.hale.common.align.model.Cell
-import eu.esdihumboldt.hale.io.xslt.functions.InlineFunction
+import eu.esdihumboldt.hale.io.xslt.XsltGenerationContext
+import eu.esdihumboldt.hale.io.xslt.functions.XslFunction
 import eu.esdihumboldt.hale.io.xslt.functions.XslVariable
 
 
@@ -27,10 +28,11 @@ import eu.esdihumboldt.hale.io.xslt.functions.XslVariable
  * 
  * @author Simon Templer
  */
-class RenameValue implements InlineFunction {
+class RenameValue implements XslFunction {
 
 	@Override
-	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables) {
+	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables,
+	XsltGenerationContext context) {
 		def select = variables.get(null)[0].XPath
 		"""<xsl:value-of select="$select" />""";
 
