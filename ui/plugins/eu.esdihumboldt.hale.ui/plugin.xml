@@ -532,6 +532,24 @@
             </with>
          </enabledWhen>
       </action-ui>
+      <action-ui
+            action="eu.esdihumboldt.hale.io.instance.write.transformed"
+            customTitle="Save export transformed data"
+            id="eu.esdihumboldt.hale.io.instance.write.transformed.save.ui"
+            label="Save Transformed data..."
+            priority="10"
+            projectResource="false"
+            wizard="eu.esdihumboldt.hale.ui.io.instance.SaveInstanceExportWizard">
+         <enabledWhen
+               disabledReason="No transformed instances available">
+            <with
+                  variable="hale.instances.has_transformed">
+               <equals
+                     value="true">
+               </equals>
+            </with>
+         </enabledWhen>
+      </action-ui>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.ui.io.source">

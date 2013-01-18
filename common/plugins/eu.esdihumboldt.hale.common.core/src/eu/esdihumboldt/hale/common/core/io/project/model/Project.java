@@ -92,14 +92,19 @@ public class Project implements ProjectInfo {
 		Mapping mapping = new Mapping(Project.class.getClassLoader());
 		mapping.loadMapping(new InputSource(Project.class.getResourceAsStream("Project.xml")));
 
+		// TODO
+//		IOConfiguration ioc = new IOConfiguration();
+//		ioc.setProviderId("prov-test");
+//		ioc.setActionId("act-test");
+//		ioc.setName("name-test");
+//		ioc.getProviderConfiguration().put("asödlkjf", "badabadadada");
+//		((Project) project).getExportConfigurations().add(ioc);
+
 		XMLContext context = new XMLContext();
-		context.setProperty("org.exolab.castor.indent", true); // enable
-																// indentation
-																// for
-																// marshaling as
-																// project files
-																// should be
-																// very small
+		// enable indentation for marshaling as project files should be very
+		// small
+		context.setProperty("org.exolab.castor.indent", true);
+
 		context.addMapping(mapping);
 		Marshaller marshaller = context.createMarshaller();
 //		marshaller.setEncoding("UTF-8"); XXX not possible using the XMLContext but UTF-8 seems to be default, see http://jira.codehaus.org/browse/CASTOR-2846
@@ -165,6 +170,11 @@ public class Project implements ProjectInfo {
 	 * Project file locations
 	 */
 	private final List<ProjectFileInfo> projectFiles = new ArrayList<ProjectFileInfo>();
+
+	/**
+	 * TODO correct here export configurations
+	 */
+	private final List<IOConfiguration> exportConfigurations = new ArrayList<IOConfiguration>();
 
 	/**
 	 * @return the configurations
@@ -268,6 +278,23 @@ public class Project implements ProjectInfo {
 	public void setSaveConfiguration(IOConfiguration saveConfiguration) {
 		this.saveConfiguration = saveConfiguration;
 	}
+
+	/**
+	 * TODO
+	 * 
+	 * @return the configurations
+	 */
+	public List<IOConfiguration> getExportConfigurations() {
+		return exportConfigurations;
+	}
+
+//	public void addExportConfiguration(IOConfiguration exportConfiguration) {
+//		exportConfigurations.add(exportConfiguration);
+//	}
+//
+//	public boolean removeExportConfiguration(IOConfiguration exportConfiguration) {
+//		return exportConfigurations.remove(exportConfiguration);
+//	}
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.core.io.project.ProjectInfo#getDescription()
