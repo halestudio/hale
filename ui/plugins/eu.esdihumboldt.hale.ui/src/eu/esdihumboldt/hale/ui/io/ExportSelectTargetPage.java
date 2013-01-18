@@ -200,4 +200,11 @@ public class ExportSelectTargetPage<P extends ExportProvider, W extends ExportWi
 		return targetFile.getStringValue();
 	}
 
+	/**
+	 * @return the file field editor for the target file
+	 */
+	protected SaveFileFieldEditor getSaveFieldEditor() {
+		return targetFile;
+	}
+
 }
