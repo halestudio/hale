@@ -27,6 +27,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -35,6 +36,7 @@ import org.eclipse.swt.widgets.Composite;
 import eu.esdihumboldt.hale.common.core.io.ExportProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
+import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 
 /**
@@ -49,6 +51,10 @@ import eu.esdihumboldt.hale.ui.HaleWizardPage;
  */
 public class ExportSelectProviderPage<P extends ExportProvider, W extends ExportWizard<P>> extends
 		IOWizardPage<P, W> {
+
+	ListViewer providers;
+
+	Collection<IOProviderDescriptor> factories;
 
 	/**
 	 * Default constructor
@@ -68,7 +74,7 @@ public class ExportSelectProviderPage<P extends ExportProvider, W extends Export
 
 		// create provider combo
 //		ComboViewer providers = new ComboViewer(page, SWT.DROP_DOWN | SWT.READ_ONLY);
-		ListViewer providers = new ListViewer(page, SWT.BORDER);
+		providers = new ListViewer(page, SWT.BORDER);
 		providers.getControl().setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		providers.setContentProvider(ArrayContentProvider.getInstance());
 		providers.setLabelProvider(new LabelProvider() {
@@ -82,7 +88,7 @@ public class ExportSelectProviderPage<P extends ExportProvider, W extends Export
 			}
 
 		});
-		Collection<IOProviderDescriptor> factories = getWizard().getFactories();
+		factories = getWizard().getFactories();
 		providers.setInput(factories);
 
 		providers.addDoubleClickListener(new IDoubleClickListener() {
@@ -151,4 +157,14 @@ public class ExportSelectProviderPage<P extends ExportProvider, W extends Export
 		return true;
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.ui.io.IOWizardPage#loadPreSelection(eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration)
+	 */
+	@Override
+	public void loadPreSelection(IOConfiguration conf) {
+		for (IOProviderDescriptor desc : factories) {
+			if (desc.getIdentifier().equals(conf.getProviderId()))
+				providers.setSelection(new StructuredSelection(desc), true);
+		}
+	}
 }

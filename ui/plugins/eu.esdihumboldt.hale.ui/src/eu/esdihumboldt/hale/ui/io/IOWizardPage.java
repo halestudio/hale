@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.ui.io;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 
 /**
@@ -55,5 +56,17 @@ public abstract class IOWizardPage<P extends IOProvider, W extends IOWizard<P>> 
 	 * @return if the page is valid and updating the provider was successful
 	 */
 	public abstract boolean updateConfiguration(P provider);
+
+	/**
+	 * Load a preselection into the wizard page (eg. load a text into the
+	 * textfield, or select an item in the combo viewer). It will not work, if
+	 * it is not implemented by the used wizard page<br>
+	 * <b>Currently not used</b>
+	 * 
+	 * @param conf the configuration which should be loaded
+	 */
+	public void loadPreSelection(IOConfiguration conf) {
+		// has to be implemented by upper classes
+	}
 
 }

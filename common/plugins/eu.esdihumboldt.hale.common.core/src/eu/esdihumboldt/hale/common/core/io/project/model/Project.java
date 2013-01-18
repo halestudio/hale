@@ -112,6 +112,11 @@ public class Project implements ProjectInfo {
 	private final List<ProjectFileInfo> projectFiles = new ArrayList<ProjectFileInfo>();
 
 	/**
+	 * The saved export configurations
+	 */
+	private final List<IOConfiguration> exportConfigurations = new ArrayList<IOConfiguration>();
+
+	/**
 	 * @return the configurations
 	 */
 	public List<IOConfiguration> getResources() {
@@ -215,6 +220,23 @@ public class Project implements ProjectInfo {
 	public void setSaveConfiguration(IOConfiguration saveConfiguration) {
 		this.saveConfiguration = saveConfiguration;
 	}
+
+	/**
+	 * TODO
+	 * 
+	 * @return the configurations
+	 */
+	public List<IOConfiguration> getExportConfigurations() {
+		return exportConfigurations;
+	}
+
+//	public void addExportConfiguration(IOConfiguration exportConfiguration) {
+//		exportConfigurations.add(exportConfiguration);
+//	}
+//
+//	public boolean removeExportConfiguration(IOConfiguration exportConfiguration) {
+//		return exportConfigurations.remove(exportConfiguration);
+//	}
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.core.io.project.ProjectInfo#getDescription()
