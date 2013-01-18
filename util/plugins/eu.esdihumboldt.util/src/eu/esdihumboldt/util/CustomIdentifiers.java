@@ -63,12 +63,22 @@ public class CustomIdentifiers<T> extends Identifiers<T> {
 
 		String id = desiredId;
 		int num = 2;
-		while (getObject(id) != null) {
+		while (isReserved(id) || getObject(id) != null) {
 			// change id
 			id = desiredId + "_" + num++;
 		}
 		putObjectIdentifier(object, id);
 		return id;
+	}
+
+	/**
+	 * Determines if a given ID is reserved and may not be used.
+	 * 
+	 * @param id the ID to test
+	 * @return if the ID is reserved and may not be used for a new object
+	 */
+	protected boolean isReserved(String id) {
+		return false;
 	}
 
 }

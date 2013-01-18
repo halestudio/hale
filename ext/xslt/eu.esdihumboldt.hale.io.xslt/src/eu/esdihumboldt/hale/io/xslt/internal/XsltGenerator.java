@@ -166,6 +166,38 @@ public class XsltGenerator implements XsltConstants {
 			return Files.newOutputStreamSupplier(file, false);
 		}
 
+		@Override
+		public String reserveTemplateName(String desiredName) {
+			synchronized (templateNames) {
+				String id = desiredName;
+				int num = 1;
+				while (!isValidNewId(id)) {
+					if (id.startsWith(cellIdentifiers.getPrefix())) {
+						desiredName = '_' + desiredName;
+						id = desiredName;
+					}
+					else {
+						id = desiredName + '_' + num++;
+					}
+				}
+				templateNames.add(id);
+				return id;
+			}
+		}
+
+		private boolean isValidNewId(String id) {
+			if (id.startsWith(cellIdentifiers.getPrefix())) {
+				// may not start with the cell identifiers prefix
+				return false;
+			}
+			if (cellIdentifiers.getObject(id) != null) {
+				// already used by a cell
+				return false;
+			}
+			// may not be used if already reserved
+			return !templateNames.contains(id);
+		}
+
 	};
 
 	/**
@@ -223,10 +255,25 @@ public class XsltGenerator implements XsltConstants {
 	private final NamespaceContextImpl prefixes;
 
 	/**
+	 * The reserved template names.
+	 */
+	private final Set<String> templateNames = new HashSet<String>();
+
+	/**
 	 * The cell identifiers.
 	 */
 	private final CustomIdentifiers<Cell> cellIdentifiers = new CustomIdentifiers<Cell>(Cell.class,
-			true);
+			true) {
+
+		@Override
+		protected boolean isReserved(String id) {
+			synchronized (templateNames) {
+				// names in this set are reserved
+				return templateNames.contains(id);
+			}
+		}
+
+	};
 
 	/**
 	 * The name of the container in the target schema.
