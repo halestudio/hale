@@ -15,6 +15,11 @@
 
 package eu.esdihumboldt.hale.io.xslt.functions;
 
+import com.google.common.collect.ListMultimap;
+
+import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.io.xslt.XsltGenerationContext;
+
 /**
  * Provides the concrete XSL implementation of a property transformation.
  * 
@@ -22,6 +27,21 @@ package eu.esdihumboldt.hale.io.xslt.functions;
  */
 public interface XslFunction {
 
-	// base interface for different types of function implementations
+	/**
+	 * Get the XSL sequence defining the target of the given mapping cell. This
+	 * will be the content of a <code>xsl:attribute</code> or
+	 * <code>xsl:element</code> instruction.
+	 * 
+	 * @param cell the mapping cell
+	 * @param variables the function variables, variable names are mapped to the
+	 *            XSL variables containing the corresponding XPath expressions,
+	 *            but not guaranteed to be in the same order as
+	 *            {@link Cell#getSource()}
+	 * @param xsltContext the XSLT generation context
+	 * @return the XML fragment to be used as part of the attribute or element
+	 *         sequence constructor
+	 */
+	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables,
+			XsltGenerationContext xsltContext);
 
 }

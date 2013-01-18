@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:collection xmlns:tns="http://www.example.org/t1/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.example.org/t1/ t1.xsd">
+    <tns:t1>
+        <tns:part name="bicycle">
+            <sub>
+                <tns:part name="tire" />
+            </sub>
+            <sub>
+                <tns:part name="break">
+                    <sub>
+                        <tns:part name="handle"></tns:part>
+                    </sub>
+                </tns:part>
+            </sub>
+        </tns:part>
+        <tns:part name="something" />
+        <tns:part name="very complex">
+            <sub>
+                <tns:part name="simple" />
+            </sub>
+            <sub>
+                <tns:part name="slightly complex">
+                    <sub>
+                        <tns:part name="trivial"></tns:part>
+                    </sub>
+                </tns:part>
+            </sub>
+            <sub>
+                <tns:part name="long">
+                    <sub>
+                        <tns:part name="not as long">
+                            <sub>
+                                <tns:part name="middle sized">
+                                    <sub>
+                                        <tns:part name="short"></tns:part>
+                                    </sub>
+                                    <sub>
+                                        <tns:part name="even shorter"></tns:part>
+                                    </sub>
+                                    <sub>
+                                        <tns:part name="nearly nonexistent"></tns:part>
+                                    </sub>
+                                </tns:part>
+                            </sub>
+                        </tns:part>
+                    </sub>
+                </tns:part>
+            </sub>
+        </tns:part>
+    </tns:t1>
+    <tns:t1>
+        <tns:part name="traditional">
+            <sub>
+                <tns:part name="conservative">
+                    <sub>
+                        <tns:part name="preservative"></tns:part>
+                    </sub>
+                </tns:part>
+            </sub>
+        </tns:part>
+    </tns:t1>
+</tns:collection>

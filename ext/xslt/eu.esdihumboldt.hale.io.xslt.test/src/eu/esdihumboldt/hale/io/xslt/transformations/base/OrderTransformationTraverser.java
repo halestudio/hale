@@ -21,6 +21,7 @@ import java.util.List;
 import com.tinkerpop.blueprints.Vertex;
 
 import eu.esdihumboldt.hale.common.align.tgraph.TGraph;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 
 /**
  * Traverser that simply collects nodes in the traversal order.
@@ -38,8 +39,8 @@ public class OrderTransformationTraverser extends AbstractTransformationTraverse
 	}
 
 	@Override
-	protected void handleUnmappedProperty(Vertex node) {
-		nodes.add(node);
+	protected void handleUnmappedProperty(ChildDefinition<?> child) {
+		// XXX no node present!
 	}
 
 	@Override

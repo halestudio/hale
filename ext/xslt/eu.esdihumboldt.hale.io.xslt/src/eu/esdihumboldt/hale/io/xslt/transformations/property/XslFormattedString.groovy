@@ -23,7 +23,8 @@ import eu.esdihumboldt.cst.functions.core.FormattedString as FS
 import eu.esdihumboldt.hale.common.align.model.Cell
 import eu.esdihumboldt.hale.common.align.model.CellUtil
 import eu.esdihumboldt.hale.common.align.model.functions.FormattedStringFunction
-import eu.esdihumboldt.hale.io.xslt.functions.InlineFunction
+import eu.esdihumboldt.hale.io.xslt.XsltGenerationContext
+import eu.esdihumboldt.hale.io.xslt.functions.XslFunction
 import eu.esdihumboldt.hale.io.xslt.functions.XslVariable
 import eu.esdihumboldt.hale.io.xslt.transformations.base.AbstractFunctionTransformation
 
@@ -32,10 +33,11 @@ import eu.esdihumboldt.hale.io.xslt.transformations.base.AbstractFunctionTransfo
  * 
  * @author Simon Templer
  */
-class XslFormattedString extends AbstractFunctionTransformation implements InlineFunction, FormattedStringFunction {
+class XslFormattedString extends AbstractFunctionTransformation implements FormattedStringFunction {
 
 	@Override
-	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables) {
+	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables,
+	XsltGenerationContext context) {
 		// get the pattern parameter
 		def pattern = CellUtil.getFirstRawParameter(cell, PARAMETER_PATTERN)
 		if (!pattern) {

@@ -35,6 +35,8 @@ abstract class TransformationExamples {
 	public static final String CARDINALITY_MERGE_2 = 'cardmerge_2'
 	public static final String SIMPLE_COMPLEX = 'simplecomplex'
 	public static final String CARDINALITY_MOVE = 'cardmove'
+	public static final String STRUCTURAL_RENAME_1 = 'structuralrename_1'
+	public static final String STRUCTURAL_RENAME_2 = 'structuralrename_2'
 
 	public static final String CM_UNION_1 = 'cm_union_1'
 	public static final String CM_UNION_2 = 'cm_union_2'
@@ -104,6 +106,8 @@ abstract class TransformationExamples {
 			containerName: 'collection'
 		],
 		(CARDINALITY_MOVE): defaultExample(CARDINALITY_MOVE),
+		(STRUCTURAL_RENAME_1): defaultExample(STRUCTURAL_RENAME_1),
+		(STRUCTURAL_RENAME_2): defaultExample(STRUCTURAL_RENAME_2),
 		// context matching examples
 		(CM_UNION_1): defaultExample(CM_UNION_1),
 		(CM_UNION_2): defaultExample(CM_UNION_2),
