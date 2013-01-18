@@ -83,12 +83,21 @@ public interface XsltGenerationContext extends XsltConstants {
 	 * element of the XSL file. The encoding of the output should be UTF-8.<br>
 	 * <br>
 	 * This can be used to add top-level declarations to the transformation,
-	 * such as template definitions.
+	 * such as XSL template definitions.
 	 * 
 	 * @return the output supplier to be used to write the XSL fragment to
 	 *         include
 	 */
 	public OutputSupplier<? extends OutputStream> addInclude();
+
+	/**
+	 * Reserve a name for an XSL template if possible.
+	 * 
+	 * @param desiredName the desired template name to reserve
+	 * @return the reserved template name, this is the desired name if it was
+	 *         not already taken
+	 */
+	public String reserveTemplateName(String desiredName);
 
 	/**
 	 * Get the property transformation for the given function identifier.
