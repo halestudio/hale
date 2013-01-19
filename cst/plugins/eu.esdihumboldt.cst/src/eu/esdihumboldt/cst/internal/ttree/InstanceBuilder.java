@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.cst.internal;
+package eu.esdihumboldt.cst.internal.ttree;
 
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.GroupNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;

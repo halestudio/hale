@@ -31,7 +31,7 @@ import com.google.common.collect.Multimaps;
 
 import eu.esdihumboldt.cst.internal.EngineManager;
 import eu.esdihumboldt.cst.internal.TransformationContext;
-import eu.esdihumboldt.cst.internal.TreePropertyTransformer;
+import eu.esdihumboldt.cst.internal.ttree.TreePropertyTransformer;
 import eu.esdihumboldt.cst.internal.util.CountingInstanceSink;
 import eu.esdihumboldt.hale.common.align.extension.transformation.TypeTransformationExtension;
 import eu.esdihumboldt.hale.common.align.extension.transformation.TypeTransformationFactory;

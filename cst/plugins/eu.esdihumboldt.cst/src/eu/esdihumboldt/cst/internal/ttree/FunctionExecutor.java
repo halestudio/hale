@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.cst.internal;
+package eu.esdihumboldt.cst.internal.ttree;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -27,6 +27,8 @@ import org.springframework.core.convert.ConversionException;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
+import eu.esdihumboldt.cst.internal.EngineManager;
+import eu.esdihumboldt.cst.internal.TransformationContext;
 import eu.esdihumboldt.hale.common.align.extension.transformation.PropertyTransformationExtension;
 import eu.esdihumboldt.hale.common.align.extension.transformation.PropertyTransformationFactory;
 import eu.esdihumboldt.hale.common.align.model.Cell;

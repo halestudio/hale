@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.cst.internal;
+package eu.esdihumboldt.cst.internal.ttree;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -28,6 +28,8 @@ import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.cst.extension.hooks.HooksUtil;
 import eu.esdihumboldt.cst.extension.hooks.TransformationTreeHook.TreeState;
 import eu.esdihumboldt.cst.extension.hooks.TransformationTreeHooks;
+import eu.esdihumboldt.cst.internal.EngineManager;
+import eu.esdihumboldt.cst.internal.TransformationContext;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.ContextMatcher;
@@ -118,12 +120,8 @@ public class TreePropertyTransformer implements PropertyTransformer {
 					Collection<Instance> sources = InstanceUtil.getInstanceOutOfFamily(source);
 					Set<Object> ids = new HashSet<Object>();
 					for (Instance inst : sources) {
-						List<Object> sourceIDs = inst.getMetaData(InstanceMetadata.METADATA_ID); // Merge
-																									// instances
-																									// may
-																									// have
-																									// multiple
-																									// IDs
+						// Merge instances may have multiple IDs
+						List<Object> sourceIDs = inst.getMetaData(InstanceMetadata.METADATA_ID);
 						if (sourceIDs != null) {
 							ids.addAll(sourceIDs);
 						}
