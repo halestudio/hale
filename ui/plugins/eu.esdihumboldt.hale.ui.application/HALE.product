@@ -351,7 +351,6 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.javolution"/>
       <plugin id="org.jdesktop.swingx"/>
       <plugin id="org.jdesktop.swingx.mapviewer"/>
-      <plugin id="org.jdesktop.swingx.mapviewer.source"/>
       <plugin id="org.jdom"/>
       <plugin id="org.jscience"/>
       <plugin id="org.junit"/>
