@@ -134,7 +134,7 @@ class StructuralRename implements XslFunction, RenameFunction {
 							// copy using template
 							'xsl:for-each'(select: selectSource) {
 								// target is an element
-								'xsl:element'(child.name.asMap()) {
+								'xsl:element'(child.name.asMap(xsltContext)) {
 									if (child.hasChildren()) {
 										// only use the template if the element has children of its own
 										String subTemplate = generateTemplate(
@@ -197,7 +197,7 @@ class StructuralRename implements XslFunction, RenameFunction {
 				
 				// if the source is there, copy the value
 				xsl.'xsl:if'(test: testSource) {
-					'xsl:attribute'(target.name.asMap()) { 'xsl:value-of'(select: selectSource) }
+					'xsl:attribute'(target.name.asMap(xsltContext)) { 'xsl:value-of'(select: selectSource) }
 				}
 				
 				if (required) {
@@ -207,12 +207,12 @@ class StructuralRename implements XslFunction, RenameFunction {
 						def defaultValue = generateDefaultValue(target)
 						if (defaultValue) {
 							if (defaultValue instanceof Closure) {
-								'xsl:attribute'(target.name.asMap()) {
+								'xsl:attribute'(target.name.asMap(xsltContext)) {
 									defaultValue(xsl)
 								}
 							}
 							else {
-								'xsl:attribute'(target.name.asMap(), defaultValue)
+								'xsl:attribute'(target.name.asMap(xsltContext), defaultValue)
 							}
 						}
 						else {

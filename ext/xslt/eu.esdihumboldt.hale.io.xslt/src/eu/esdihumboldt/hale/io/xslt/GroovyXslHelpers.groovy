@@ -48,6 +48,26 @@ class GroovyXslHelpers {
 	}
 
 	/**
+	 * Convert a QName to a map that can be used with a markup builder to
+	 * specify an XSL attribute or element. It includes the namespace prefix
+	 * if applicable.
+	 *
+	 * @param name the name
+	 * @param xsltContext the XSLT generation context 
+	 * @return the map containing name and if specified namespace
+	 */
+	static Map<String, String> asMap(QName name, XsltGenerationContext xsltContext) {
+		if (name.namespaceURI) {
+			def prefix = xsltContext.namespaceContext.getPrefix(name.namespaceURI)
+			if (prefix) {
+				return [name: "${prefix}:${name.localPart}", namespace: name.namespaceURI]
+			}
+		}
+
+		asMap(name)
+	}
+
+	/**
 	 * Create a XPath fragment for selecting the given child definition.
 	 * 
 	 * @param child the child definition

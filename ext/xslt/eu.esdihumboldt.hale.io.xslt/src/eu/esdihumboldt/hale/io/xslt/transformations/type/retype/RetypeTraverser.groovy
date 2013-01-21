@@ -143,6 +143,13 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 		// start the element/attribute
 		def local = node.definition().name.localPart
 		def namespace = node.definition().name.namespaceURI
+		if (namespace) {
+			def prefix = xsltContext.namespaceContext.getPrefix(namespace)
+			if (prefix) {
+				// add prefix
+				local = "${prefix}:${local}"
+			}
+		}
 		writer << "<xsl:${attribute ? 'attribute' : 'element'} name=\"$local\""
 		if (namespace)
 			writer << " namespace=\"$namespace\""
