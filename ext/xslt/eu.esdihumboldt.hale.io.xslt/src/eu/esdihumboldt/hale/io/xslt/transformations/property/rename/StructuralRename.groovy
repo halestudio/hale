@@ -114,22 +114,8 @@ class StructuralRename implements XslFunction, RenameFunction {
 					// go through target children
 					// first all attributes
 					for (PropertyDefinition child in target.getAllProperties().findAll{it.isAttribute()}) {
-						PropertyDefinition sourceMatch = findMatch(child, source, ignoreNamespaces)
-						if (sourceMatch) {
-							//TODO determine source XPath
-							String selectSource = '$' + T_PARAM_SOURCE + '/' + sourceMatch.asXPath(xsltContext);
-							//TODO restrict selection cardinality?
-							// target is an attribute
-							if (child.hasValue() && sourceMatch.hasValue()) {
-								// value copy is possible
-								'xsl:if'(test: (sourceMatch.isAttribute() ? selectSource : "${selectSource}.text()")) {
-									'xsl:attribute'(child.name.asMap()) { 'xsl:value-of'(select: selectSource) }
-								}
-							}
-							else {
-								//TODO warn?
-							}
-						}
+						// generate attribute if possible
+						generateAttribute(xsl, child, source)
 					}
 					// then through all elements
 					for (PropertyDefinition child in target.getAllProperties().findAll{!it.isAttribute()}) {
@@ -178,6 +164,43 @@ class StructuralRename implements XslFunction, RenameFunction {
 		}
 
 		return templateName
+	}
+
+	/**
+	 * Generate a target attribute.
+	 * 	
+	 * @param xsl the XSL builder
+	 * @param target the target attribute definition
+	 * @param sourceParent the source parent definition
+	 */
+	private void generateAttribute(def xsl, PropertyDefinition target, DefinitionGroup sourceParent) {
+		// find match for target in source
+		PropertyDefinition sourceMatch = findMatch(target, sourceParent, ignoreNamespaces)
+		if (sourceMatch) {
+			// a match exists
+			
+			// determine source XPath
+			String selectSource = '$' + T_PARAM_SOURCE + '/' + sourceMatch.asXPath(xsltContext);
+			
+			//TODO restrict selection cardinality?
+			
+			// try to determine default value for required property
+			//TODO
+			
+			if (target.hasValue() && sourceMatch.hasValue()) {
+				// value copy is possible
+				
+				// XPath that determines if the source has a value
+				def testSource = sourceMatch.isAttribute() ? selectSource : "${selectSource}.text()"
+				
+				xsl.'xsl:if'(test: testSource) {
+					'xsl:attribute'(target.name.asMap()) { 'xsl:value-of'(select: selectSource) }
+				}
+			}
+			else {
+				//TODO warn?
+			}
+		}
 	}
 
 	/**
