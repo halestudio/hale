@@ -193,7 +193,7 @@ class StructuralRename implements XslFunction, RenameFunction {
 				// value copy is possible
 				
 				// XPath that determines if the source has a value
-				def testSource = sourceMatch.isAttribute() ? selectSource : "${selectSource}.text()"
+				def testSource = sourceMatch.isAttribute() ? selectSource : "${selectSource}/text()"
 				
 				// if the source is there, copy the value
 				xsl.'xsl:if'(test: testSource) {
