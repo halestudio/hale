@@ -117,12 +117,14 @@ class StructuralRename implements XslFunction, RenameFunction {
 						ChildDefinition sourceMatch = findMatch(child, source)
 						if (sourceMatch) {
 							//TODO determine source XPath
-							String selectSource = '$' + T_PARAM_SOURCE + '/' + child.asXPath(xsltContext);
+							String selectSource = '$' + T_PARAM_SOURCE + '/' + sourceMatch.asXPath(xsltContext);
 							//TODO restrict selection cardinality?
 							// target is an attribute
 							if (child.hasValue() && sourceMatch.hasValue()) {
 								// value copy is possible
-								'xsl:attribute'(child.name.asMap()) { 'xsl:value-of'(select: selectSource) }
+								'xsl:if'(test: (sourceMatch.isAttribute() ? selectSource : "${selectSource}.text()")) {
+									'xsl:attribute'(child.name.asMap()) { 'xsl:value-of'(select: selectSource) }
+								}
 							}
 							else {
 								//TODO warn?
@@ -134,7 +136,7 @@ class StructuralRename implements XslFunction, RenameFunction {
 						ChildDefinition sourceMatch = findMatch(child, source)
 						if (sourceMatch) {
 							//TODO determine source XPath
-							String selectSource = '$' + T_PARAM_SOURCE + '/' + child.asXPath(xsltContext);
+							String selectSource = '$' + T_PARAM_SOURCE + '/' + sourceMatch.asXPath(xsltContext);
 							//TODO restrict selection cardinality?
 							// copy using template
 							'xsl:for-each'(select: selectSource) {
@@ -163,6 +165,7 @@ class StructuralRename implements XslFunction, RenameFunction {
 
 					// handle eventual value
 					if (source.hasValue() && target.hasValue()) {
+						//XXX a condition needed if the source actually has a value?
 						'xsl:value-of'(select: '$' + T_PARAM_SOURCE)
 					}
 				}
