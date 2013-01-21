@@ -483,6 +483,8 @@ public class XsltGenerator implements XsltConstants {
 		try {
 			// write container
 			GmlWriterUtil.writeStartElement(writer, targetContainer.getName());
+			// generate an eventual required identifier on the container
+			GmlWriterUtil.writeRequiredID(writer, targetContainer.getType(), null, false);
 
 			// cache definition paths
 			Map<TypeDefinition, DefinitionPath> paths = new HashMap<TypeDefinition, DefinitionPath>();
