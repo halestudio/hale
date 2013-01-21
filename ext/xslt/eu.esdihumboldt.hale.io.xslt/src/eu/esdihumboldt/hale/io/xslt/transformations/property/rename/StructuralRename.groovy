@@ -20,9 +20,9 @@ import com.google.common.collect.ListMultimap
 import eu.esdihumboldt.hale.common.align.model.Cell
 import eu.esdihumboldt.hale.common.align.model.CellUtil
 import eu.esdihumboldt.hale.common.align.model.functions.RenameFunction
-import eu.esdihumboldt.hale.common.schema.model.ChildDefinition
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
 import eu.esdihumboldt.hale.io.xslt.GroovyXslHelpers
 import eu.esdihumboldt.hale.io.xslt.XsltGenerationContext
 import eu.esdihumboldt.hale.io.xslt.functions.XslFunction
@@ -113,8 +113,8 @@ class StructuralRename implements XslFunction, RenameFunction {
 					'xsl:param'(name: T_PARAM_SOURCE)
 					// go through target children
 					// first all attributes
-					for (ChildDefinition child in target.getAllChildren().findAll{it.isAttribute()}) {
-						ChildDefinition sourceMatch = findMatch(child, source)
+					for (PropertyDefinition child in target.getAllProperties().findAll{it.isAttribute()}) {
+						PropertyDefinition sourceMatch = findMatch(child, source, ignoreNamespaces)
 						if (sourceMatch) {
 							//TODO determine source XPath
 							String selectSource = '$' + T_PARAM_SOURCE + '/' + sourceMatch.asXPath(xsltContext);
@@ -132,8 +132,13 @@ class StructuralRename implements XslFunction, RenameFunction {
 						}
 					}
 					// then through all elements
-					for (ChildDefinition child in target.getAllChildren().findAll{!it.isAttribute()}) {
-						ChildDefinition sourceMatch = findMatch(child, source)
+					for (PropertyDefinition child in target.getAllProperties().findAll{!it.isAttribute()}) {
+						/*
+						 * FIXME Going through the properties like this has a problem:
+						 * The target structure eventually may not be build correctly!
+						 * Choices, repeated groups!
+						 */
+						PropertyDefinition sourceMatch = findMatch(child, source, ignoreNamespaces)
 						if (sourceMatch) {
 							//TODO determine source XPath
 							String selectSource = '$' + T_PARAM_SOURCE + '/' + sourceMatch.asXPath(xsltContext);
@@ -177,20 +182,30 @@ class StructuralRename implements XslFunction, RenameFunction {
 
 	/**
 	 * Find a match to the target property in the source group, based on the
-	 * name. Namespaces may be ignored if the cell was configured accordingly.
+	 * name.
 	 * 
 	 * @param target the target property
 	 * @param sourceParent the source group
+	 * @param ignoreNamespace if the namespace may be ignored 
 	 * @return the source property that was found having a matching name
 	 */
-	private ChildDefinition findMatch(ChildDefinition target, DefinitionGroup sourceParent) {
+	private PropertyDefinition findMatch(PropertyDefinition target, DefinitionGroup sourceParent,
+		boolean ignoreNamespaces) {
 		// best match is always the one with the exact same name
 		def match = sourceParent.getChild(target.name)
 
+		if (!match || !match.asProperty() && !ignoreNamespaces) {
+			// look for strict matches in the contained groups
+			for (group in sourceParent.getAllChildren().findAll{it.asGroup()}) {
+				match = findMatch(target, group, false)
+				if (match) break
+			}
+		}
+		
 		if (!match && ignoreNamespaces) {
 			// also accept 'weak' matches
 			//XXX for now, just take the first weak match
-			for (candidate in sourceParent.getAllChildren()) {
+			for (candidate in sourceParent.getAllProperties()) {
 				if (candidate.name.localPart == target.name.localPart) {
 					match = candidate
 					break
