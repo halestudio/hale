@@ -570,9 +570,6 @@ public class XsltGenerator implements XsltConstants {
 			throw new IllegalStateException("No element in member path repeatable");
 		}
 
-		// insert for-each element before last non-unique element
-		elements.add(index, new XslForEach("$" + variable));
-
 		/*
 		 * Store last element name for variable, this information is needed for
 		 * the type transformation.
@@ -581,6 +578,21 @@ public class XsltGenerator implements XsltConstants {
 
 		// remove last element
 		elements.remove(elements.size() - 1);
+
+		// insert for-each element before last non-unique element
+
+		if (index == elements.size()) {
+			/*
+			 * There seems to be a problem with compiling the XSLT if the
+			 * for-each is the last element in the path. Then insert the whole
+			 * variable in once piece.
+			 */
+			elements.add(index, new XslForEach("$" + variable));
+		}
+		else {
+			// loop for each element in the variable
+			elements.add(index, new XslForEach("$" + variable + "/*"));
+		}
 
 		return new DefinitionPath(elements);
 	}
