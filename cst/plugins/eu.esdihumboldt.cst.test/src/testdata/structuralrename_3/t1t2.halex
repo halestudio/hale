@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hale-project version="2.5.0">
+    <name>Simple structural rename</name>
+    <author>Simon Templer</author>
+    <created>2013-01-18T16:56:46.443+01:00</created>
+    <modified>2013-01-18T17:01:21.407+01:00</modified>
+    <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
+        <setting name="projectFiles.separate">false</setting>
+        <setting name="target">file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/structuralrename_3/t1t2.halex</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
+    </save-config>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.source" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="resourceId">c52ba90d-8a2e-4ec2-b2ba-1f4dc08cfeae</setting>
+        <setting name="source">file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/structuralrename_3/t1.xsd</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.target" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="resourceId">046d191a-d5ec-46f9-b3ce-4465cfad0713</setting>
+        <setting name="source">file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/structuralrename_3/t2.xsd</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.instance.read.source" provider-id="eu.esdihumboldt.hale.io.xml.reader">
+        <setting name="resourceId">35061890-5bb8-476e-bc86-2cf9e6aa59f5</setting>
+        <setting name="source">file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/structuralrename_3/instance1.xml</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.gml</setting>
+    </resource>
+    <file name="styles.sld" location="file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/structuralrename_3/t1t2.halex.styles.sld"/>
+    <file name="alignment.xml" location="file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/structuralrename_3/t1t2.halex.alignment.xml"/>
+</hale-project>
