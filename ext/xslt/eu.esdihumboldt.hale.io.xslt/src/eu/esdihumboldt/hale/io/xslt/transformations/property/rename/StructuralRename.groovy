@@ -23,6 +23,7 @@ import eu.esdihumboldt.hale.common.align.model.functions.RenameFunction
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
+import eu.esdihumboldt.hale.io.gml.writer.internal.GmlWriterUtil
 import eu.esdihumboldt.hale.io.xslt.GroovyXslHelpers
 import eu.esdihumboldt.hale.io.xslt.XsltGenerationContext
 import eu.esdihumboldt.hale.io.xslt.functions.XslFunction
@@ -35,6 +36,7 @@ import groovy.xml.MarkupBuilder
  * 
  * @author Simon Templer
  */
+@SuppressWarnings("restriction")
 class StructuralRename implements XslFunction, RenameFunction {
 
 	/**
@@ -114,22 +116,8 @@ class StructuralRename implements XslFunction, RenameFunction {
 					// go through target children
 					// first all attributes
 					for (PropertyDefinition child in target.getAllProperties().findAll{it.isAttribute()}) {
-						PropertyDefinition sourceMatch = findMatch(child, source, ignoreNamespaces)
-						if (sourceMatch) {
-							//TODO determine source XPath
-							String selectSource = '$' + T_PARAM_SOURCE + '/' + sourceMatch.asXPath(xsltContext);
-							//TODO restrict selection cardinality?
-							// target is an attribute
-							if (child.hasValue() && sourceMatch.hasValue()) {
-								// value copy is possible
-								'xsl:if'(test: (sourceMatch.isAttribute() ? selectSource : "${selectSource}.text()")) {
-									'xsl:attribute'(child.name.asMap()) { 'xsl:value-of'(select: selectSource) }
-								}
-							}
-							else {
-								//TODO warn?
-							}
-						}
+						// generate attribute if possible
+						generateAttribute(xsl, child, source)
 					}
 					// then through all elements
 					for (PropertyDefinition child in target.getAllProperties().findAll{!it.isAttribute()}) {
@@ -178,6 +166,85 @@ class StructuralRename implements XslFunction, RenameFunction {
 		}
 
 		return templateName
+	}
+
+	/**
+	 * Generate a target attribute.
+	 * 	
+	 * @param xsl the XSL builder
+	 * @param target the target attribute definition
+	 * @param sourceParent the source parent definition
+	 */
+	private void generateAttribute(def xsl, PropertyDefinition target, DefinitionGroup sourceParent) {
+		// find match for target in source
+		PropertyDefinition sourceMatch = findMatch(target, sourceParent, ignoreNamespaces)
+		if (sourceMatch) {
+			// a match exists
+			
+			// determine source XPath
+			String selectSource = '$' + T_PARAM_SOURCE + '/' + sourceMatch.asXPath(xsltContext);
+			
+			//TODO restrict selection cardinality?
+			
+			// determine if this is a required attribute
+			def required = target.getCardinality().minOccurs > 0
+			
+			if (target.hasValue() && sourceMatch.hasValue()) {
+				// value copy is possible
+				
+				// XPath that determines if the source has a value
+				def testSource = sourceMatch.isAttribute() ? selectSource : "${selectSource}.text()"
+				
+				// if the source is there, copy the value
+				xsl.'xsl:if'(test: testSource) {
+					'xsl:attribute'(target.name.asMap()) { 'xsl:value-of'(select: selectSource) }
+				}
+				
+				if (required) {
+					// if the source is not there, warn or use default
+					xsl.'xsl:if'(test: "not($testSource)") {
+						// try to determine default value
+						def defaultValue = generateDefaultValue(target)
+						if (defaultValue) {
+							if (defaultValue instanceof Closure) {
+								'xsl:attribute'(target.name.asMap()) {
+									defaultValue(xsl)
+								}
+							}
+							else {
+								'xsl:attribute'(target.name.asMap(), defaultValue)
+							}
+						}
+						else {
+							xsl.'xsl:message'("Could not provide a value for required attribute $target.name.localPart")
+						}
+					}
+				}
+				
+			}
+			else {
+				//TODO warn through reporter?
+			}
+		}
+	}
+	
+	/**
+	 * Generate a default value for the given mandatory target property.
+	 * 
+	 * @param target the property definition
+	 * @return a value, a closure taking the XSL builder as argument, or
+	 *   <code>null</code>
+	 */
+	private def generateDefaultValue(PropertyDefinition target) {
+		// special case: mandatory id
+		if (target.isAttribute() && GmlWriterUtil.isID(target.getPropertyType())) {
+			return {
+				xsl ->
+				xsl.'xsl:value-of'(select: 'generate-id()')
+			}
+		}
+		
+		null
 	}
 
 	/**
