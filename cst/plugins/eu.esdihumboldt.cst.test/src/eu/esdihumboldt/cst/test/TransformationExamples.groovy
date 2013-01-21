@@ -37,6 +37,7 @@ abstract class TransformationExamples {
 	public static final String CARDINALITY_MOVE = 'cardmove'
 	public static final String STRUCTURAL_RENAME_1 = 'structuralrename_1'
 	public static final String STRUCTURAL_RENAME_2 = 'structuralrename_2'
+	public static final String STRUCTURAL_RENAME_3 = 'structuralrename_3'
 
 	public static final String CM_UNION_1 = 'cm_union_1'
 	public static final String CM_UNION_2 = 'cm_union_2'
@@ -108,6 +109,7 @@ abstract class TransformationExamples {
 		(CARDINALITY_MOVE): defaultExample(CARDINALITY_MOVE),
 		(STRUCTURAL_RENAME_1): defaultExample(STRUCTURAL_RENAME_1),
 		(STRUCTURAL_RENAME_2): defaultExample(STRUCTURAL_RENAME_2),
+		(STRUCTURAL_RENAME_3): defaultExample(STRUCTURAL_RENAME_3),
 		// context matching examples
 		(CM_UNION_1): defaultExample(CM_UNION_1),
 		(CM_UNION_2): defaultExample(CM_UNION_2),
