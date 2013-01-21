@@ -571,7 +571,7 @@ public class XsltGenerator implements XsltConstants {
 		}
 
 		// insert for-each element before last non-unique element
-		elements.add(index, new XslForEach("$" + variable));
+		elements.add(index, new XslForEach("$" + variable + "/*"));
 
 		/*
 		 * Store last element name for variable, this information is needed for
