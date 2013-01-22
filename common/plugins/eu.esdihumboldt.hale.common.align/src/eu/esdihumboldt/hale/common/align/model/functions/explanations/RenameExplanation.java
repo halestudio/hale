@@ -48,8 +48,13 @@ public class RenameExplanation extends AbstractCellExplanation implements Rename
 			text += " adds the same value to the {1} property. If necessary a conversion is applied.";
 			String structuralRename = CellUtil.getFirstRawParameter(cell,
 					PARAMETER_STRUCTURAL_RENAME);
-			if (Boolean.parseBoolean(structuralRename))
-				text += " Furthermore child properties get added, too, if the property names match.";
+			boolean ignoreNamespaces = Boolean.parseBoolean(CellUtil.getFirstRawParameter(cell,
+					PARAMETER_IGNORE_NAMESPACES));
+			if (Boolean.parseBoolean(structuralRename)) {
+				text += " Furthermore child properties are copied, too, if the property names in source and target match.";
+				if (ignoreNamespaces)
+					text += " When comparing child property names, differing namespaces may be ignored.";
+			}
 			return MessageFormat.format(text, formatEntity(source, html, true),
 					formatEntity(target, html, true));
 		}
