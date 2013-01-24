@@ -54,7 +54,7 @@ public class SchemaExplorer {
 
 	private final TreeViewer tree;
 
-	private SchemaSpaceID schemaSpace;
+	private final SchemaSpaceID schemaSpace;
 
 	/**
 	 * Create a schema explorer
