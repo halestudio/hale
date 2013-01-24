@@ -105,7 +105,12 @@ public class XsltExport extends AbstractAlignmentWriter implements XmlWriterBase
 			return reporter;
 		} finally {
 			progress.end();
-			FileUtils.deleteDirectory(templateDir);
+			try {
+				FileUtils.deleteDirectory(templateDir);
+			} catch (Exception e) {
+				// failure to delete the directory is not fatal
+				log.warn("Failed to delete temporary directory", e);
+			}
 		}
 	}
 
