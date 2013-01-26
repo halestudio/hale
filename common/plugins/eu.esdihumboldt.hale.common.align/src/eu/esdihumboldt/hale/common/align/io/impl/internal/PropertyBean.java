@@ -149,8 +149,8 @@ public class PropertyBean extends EntityBean<PropertyEntityDefinition> {
 	 * @return a pair of child and a list with the full path from parent to the
 	 *         child
 	 */
-	private Pair<ChildDefinition<?>, List<ChildDefinition<?>>> findChild(DefinitionGroup parent,
-			QName childName) {
+	public static Pair<ChildDefinition<?>, List<ChildDefinition<?>>> findChild(
+			DefinitionGroup parent, QName childName) {
 
 		ChildDefinition<?> child = parent.getChild(childName);
 		if (child == null) {

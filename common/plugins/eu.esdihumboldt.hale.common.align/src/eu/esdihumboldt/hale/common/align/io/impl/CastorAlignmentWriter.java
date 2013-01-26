@@ -32,7 +32,7 @@ import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
  * 
  * @author Simon Templer
  */
-public class DefaultAlignmentWriter extends AbstractAlignmentWriter {
+public class CastorAlignmentWriter extends AbstractAlignmentWriter {
 
 	/**
 	 * @see IOProvider#isCancelable()
@@ -52,7 +52,7 @@ public class DefaultAlignmentWriter extends AbstractAlignmentWriter {
 
 		OutputStream out = getTarget().getOutput();
 		try {
-			DefaultAlignmentIO.save(getAlignment(), out);
+			CastorAlignmentIO.save(getAlignment(), out);
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl(e.getMessage(), e));
 			reporter.setSuccess(false);

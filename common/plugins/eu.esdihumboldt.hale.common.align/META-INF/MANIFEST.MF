@@ -34,6 +34,7 @@ Import-Package: com.google.common.base;version="1.6.0",
  eu.esdihumboldt.hale.common.schema.model.constraint.type,
  eu.esdihumboldt.hale.common.schema.model.impl,
  eu.esdihumboldt.hale.common.schema.model.impl.internal,
+ eu.esdihumboldt.hale.prefixmapper,
  eu.esdihumboldt.util,
  eu.esdihumboldt.util.definition,
  javax.annotation,
@@ -43,7 +44,8 @@ Import-Package: com.google.common.base;version="1.6.0",
  org.springframework.core.convert;version="3.0.0.RELEASE"
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  org.castor.xml;bundle-version="1.3.0",
- eu.esdihumboldt.hale.common.schema;bundle-version="2.5.0"
+ eu.esdihumboldt.hale.common.schema;bundle-version="2.5.0",
+ groovy;bundle-version="1.8.6"
 Export-Package: eu.esdihumboldt.hale.common.align.extension.category,
  eu.esdihumboldt.hale.common.align.extension.engine,
  eu.esdihumboldt.hale.common.align.extension.function,

@@ -299,8 +299,8 @@
             base-type="org.eclipse.core.runtime.xml"
             file-extensions="align,xml"
             id="eu.esdihumboldt.hale.io.align.default"
-            name="HALE alignment"
-            priority="normal">
+            name="HALE alignment (2.5)"
+            priority="low">
          <describer
                class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
             <parameter
@@ -309,23 +309,53 @@
             </parameter>
          </describer>
       </content-type>
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="align,xml"
+            id="eu.esdihumboldt.hale.io.align.26"
+            name="HALE alignment"
+            priority="normal">
+         <describer
+               class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+            <parameter
+                  name="element"
+                  value="{http://www.esdi-humboldt.eu/hale/alignment}alignment">
+            </parameter>
+         </describer>
+      </content-type>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.io.provider">
       <provider
-            class="eu.esdihumboldt.hale.common.align.io.impl.DefaultAlignmentReader"
+            class="eu.esdihumboldt.hale.common.align.io.impl.CastorAlignmentReader"
             id="eu.esdihumboldt.hale.io.align.default.reader"
-            name="HALE alignment">
+            name="HALE alignment (2.5)">
          <contentType
                ref="eu.esdihumboldt.hale.io.align.default">
          </contentType>
       </provider>
       <provider
-            class="eu.esdihumboldt.hale.common.align.io.impl.DefaultAlignmentWriter"
+            class="eu.esdihumboldt.hale.common.align.io.impl.CastorAlignmentWriter"
             id="eu.esdihumboldt.hale.io.align.default.writer"
-            name="HALE alignment">
+            name="HALE alignment (2.5)">
          <contentType
                ref="eu.esdihumboldt.hale.io.align.default">
+         </contentType>
+      </provider>
+      <provider
+            class="eu.esdihumboldt.hale.common.align.io.impl.JaxbAlignmentWriter"
+            id="eu.esdihumboldt.hale.io.align.26.writer"
+            name="HALE alignment (2.6)">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.align.26">
+         </contentType>
+      </provider>
+      <provider
+            class="eu.esdihumboldt.hale.common.align.io.impl.JaxbAlignmentReader"
+            id="eu.esdihumboldt.hale.io.align.26.reader"
+            name="HALE alignment (2.6)">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.align.26">
          </contentType>
       </provider>
    </extension>
@@ -338,7 +368,7 @@
          </load>
          <save
                action="eu.esdihumboldt.hale.io.align.write"
-               provider="eu.esdihumboldt.hale.io.align.default.writer">
+               provider="eu.esdihumboldt.hale.io.align.26.writer">
          </save>
       </action-file>
    </extension>

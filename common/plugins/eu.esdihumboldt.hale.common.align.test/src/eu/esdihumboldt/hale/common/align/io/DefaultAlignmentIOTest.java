@@ -24,6 +24,8 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -38,7 +40,6 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import eu.esdihumboldt.hale.common.align.io.impl.DefaultAlignmentIO;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
@@ -51,15 +52,16 @@ import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 
 /**
- * Test saving and loading a default alignment
+ * Test saving and loading an alignment
  * 
  * @author Simon Templer
  */
-public class DefaultAlignmentIOTest {
+public abstract class DefaultAlignmentIOTest {
 
 	/**
 	 * Temporary folder for tests
@@ -138,13 +140,11 @@ public class DefaultAlignmentIOTest {
 		File alignmentFile = tmp.newFile("alignment.xml");
 		System.out.println(alignmentFile.getAbsolutePath());
 
-		DefaultAlignmentIO.save(align,
-				new BufferedOutputStream(new FileOutputStream(alignmentFile)));
+		saveAlignment(align, new BufferedOutputStream(new FileOutputStream(alignmentFile)));
 
 		// load alignment
 		// TODO use and check reporter?
-		MutableAlignment align2 = DefaultAlignmentIO.load(new FileInputStream(alignmentFile), null,
-				source, target);
+		MutableAlignment align2 = loadAlignment(new FileInputStream(alignmentFile), source, target);
 
 		// compare loaded alignment
 		Collection<? extends Cell> cells = align2.getCells();
@@ -181,5 +181,27 @@ public class DefaultAlignmentIOTest {
 		assertEquals(2, param2.keySet().size());
 		assertEquals(3, param2.values().size());
 	}
+
+	/**
+	 * Load an alignment.
+	 * 
+	 * @param input the input stream to read from
+	 * @param source the source types for resolving source entities
+	 * @param target the target types for resolving target entities
+	 * @return the loaded alignment
+	 * @throws Exception if an error occurs loading the alignment
+	 */
+	protected abstract MutableAlignment loadAlignment(InputStream input, TypeIndex source,
+			TypeIndex target) throws Exception;
+
+	/**
+	 * Save an alignment.
+	 * 
+	 * @param align the alignment to save
+	 * @param output the output stream to write to
+	 * @throws Exception if an error occurs loading the alignment
+	 */
+	protected abstract void saveAlignment(MutableAlignment align, OutputStream output)
+			throws Exception;
 
 }
