@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns="http://www.esdi-humboldt.eu/hale/alignment"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.esdi-humboldt.eu/hale/alignment"
+	version="2.6" elementFormDefault="qualified">
+	
+	<!-- Alignment -->
+	<xs:element name="alignment" type="AlignmentType">
+		<xs:annotation>
+			<xs:documentation>A collection of alignment cells.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	
+	<xs:complexType name="AlignmentType">
+		<!-- TODO base alignments -->
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element ref="cell" minOccurs="1" />
+			<!-- TODO cell modifiers -->
+		</xs:choice>
+	</xs:complexType>
+	
+	<!-- Cell -->
+	<xs:element name="cell" type="CellType">
+		<xs:annotation>
+			<xs:documentation>Represents a class or property relation.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	
+	<xs:complexType name="CellType">
+		<xs:sequence>
+			<xs:element name="source" type="NamedEntityType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="target" type="NamedEntityType" minOccurs="1" maxOccurs="unbounded" />
+			<xs:element name="parameter" type="ParameterType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="documentation" type="DocumentationType" minOccurs="1" />
+				<xs:element name="annotation" type="AnnotationType" minOccurs="1" />
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name="relation" type="xs:string" use="required" />
+		<!-- TODO cell ID -->
+	</xs:complexType>
+	
+	<!-- Annotations -->
+	<xs:simpleType name="preserveWhitespaceString">
+		<xs:restriction base="xs:string">
+			<xs:whiteSpace value="preserve" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="DocumentationType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="type" type="preserveWhitespaceString" use="optional" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name="AnnotationType">
+		<xs:sequence>
+			<xs:any processContents="skip" />
+		</xs:sequence>
+		<xs:attribute name="type" type="xs:string" use="required" />
+	</xs:complexType>
+	
+	<!-- Named entity -->
+	<xs:complexType name="NamedEntityType">
+		<xs:sequence>
+			<xs:element ref="AbstractEntity" minOccurs="1" />
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="optional" />
+	</xs:complexType>
+	
+	<!-- Entity -->
+	<xs:element name="AbstractEntity" type="AbstractEntityType" abstract="true" />
+	
+	<xs:complexType name="AbstractEntityType" abstract="true" />
+	
+	<!-- Class -->
+	<xs:element name="class" type="ClassType" substitutionGroup="AbstractEntity" />
+	
+	<xs:complexType name="ClassType">
+		<xs:complexContent>
+			<xs:extension base="AbstractEntityType">
+				<xs:sequence>
+					<xs:element name="type" minOccurs="1">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="QNameType">
+									<xs:sequence>
+										<xs:element name="condition" type="ConditionType" minOccurs="0" />
+									</xs:sequence>
+								</xs:extension>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<!-- Property -->
+	<xs:element name="property" type="PropertyType" substitutionGroup="AbstractEntity" />
+	
+	<xs:complexType name="PropertyType">
+		<xs:complexContent>
+			<xs:extension base="ClassType">
+				<xs:sequence>
+					<xs:element name="child" type="ChildContextType" minOccurs="1" maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="ChildContextType">
+		<xs:complexContent>
+			<xs:extension base="QNameType">
+				<xs:choice minOccurs="0">
+					<xs:element name="condition" type="ConditionType" minOccurs="1" />
+					<!-- For the context name in HALE at some point a string would make sense
+					     to have real _named_ contexts. -->
+					<xs:element name="context" type="xs:integer" minOccurs="1" />
+					<xs:element name="index" type="xs:nonNegativeInteger" minOccurs="1" />
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<!-- Parameter -->
+	<xs:complexType name="ParameterType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="name" type="xs:string" use="required" />
+				<xs:attribute name="type" type="xs:string" use="optional" default="default" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<!-- Qualified name -->
+	<xs:complexType name="QNameType">
+		<xs:annotation>
+			<xs:documentation>A qualified name with local part and namespace</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="name" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Contains the local name.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ns" type="xs:anyURI" use="optional">
+			<xs:annotation>
+				<xs:documentation>Contains the namespace URI if applicable.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<!-- Condition -->
+	<xs:complexType name="ConditionType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="lang" type="xs:string" use="optional" default="CQL" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+</xs:schema>
