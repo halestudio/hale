@@ -16,9 +16,16 @@
 
 package eu.esdihumboldt.hale.common.align.model.impl;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimaps;
 
+import eu.esdihumboldt.hale.common.align.extension.annotation.AnnotationExtension;
+import eu.esdihumboldt.hale.common.align.model.AnnotationDescriptor;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -36,6 +43,9 @@ public class DefaultCell implements Cell, MutableCell {
 	private ListMultimap<String, ? extends Entity> target;
 	private ListMultimap<String, ParameterValue> parameters;
 	private String transformation;
+
+	private final ListMultimap<String, String> documentation = ArrayListMultimap.create();
+	private final ListMultimap<String, Object> annotations = ArrayListMultimap.create();
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.align.model.MutableCell#setTransformationIdentifier(java.lang.String)
@@ -100,6 +110,48 @@ public class DefaultCell implements Cell, MutableCell {
 			return null;
 		}
 		return Multimaps.unmodifiableListMultimap(parameters);
+	}
+
+	/**
+	 * Add an annotation object.
+	 * 
+	 * @param type the annotation type
+	 * @param annotation the annotation object
+	 */
+	public void addAnnotation(String type, Object annotation) {
+		annotations.put(type, annotation);
+	}
+
+	@Override
+	public List<?> getAnnotations(String type) {
+		return Collections.unmodifiableList(annotations.get(type));
+	}
+
+	@Override
+	public Object addAnnotation(String type) {
+		AnnotationDescriptor<?> descriptor = AnnotationExtension.getInstance().get(type);
+		if (descriptor != null) {
+			// add and return the new annotation object
+			Object annotation = descriptor.create();
+			annotations.put(type, annotation);
+			return annotation;
+		}
+		return null;
+	}
+
+	@Override
+	public Set<String> getAnnotationTypes() {
+		return Collections.unmodifiableSet(annotations.keySet());
+	}
+
+	@Override
+	public void removeAnnotation(String type, Object annotation) {
+		annotations.remove(type, annotation);
+	}
+
+	@Override
+	public ListMultimap<String, String> getDocumentation() {
+		return documentation;
 	}
 
 	/**
