@@ -43,7 +43,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
  * 
  * @author Simon Templer
  */
-public class DefaultAlignmentIO {
+public class CastorAlignmentIO {
 
 	/**
 	 * Load a default alignment from an input stream.

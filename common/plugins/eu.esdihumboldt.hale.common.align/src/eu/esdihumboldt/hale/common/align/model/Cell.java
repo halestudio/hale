@@ -16,6 +16,9 @@
 
 package eu.esdihumboldt.hale.common.align.model;
 
+import java.util.List;
+import java.util.Set;
+
 import com.google.common.collect.ListMultimap;
 
 /**
@@ -43,12 +46,61 @@ public interface Cell {
 
 	/**
 	 * Get the transformation parameters that shall be applied to the
-	 * transformation specified by {@link #getTransformationIdentifier()}.
+	 * transformation specified by {@link #getTransformationIdentifier()}. The
+	 * map may not be modified.
 	 * 
 	 * @return the transformation parameters, parameter names are mapped to
 	 *         parameter values, may be <code>null</code>
 	 */
 	public ListMultimap<String, ParameterValue> getTransformationParameters();
+
+	/**
+	 * Get the annotations of the given type.
+	 * 
+	 * @param type the annotation type identifier as registered in the
+	 *            corresponding extension point
+	 * @return the list of annotation objects or an empty list
+	 */
+	public List<?> getAnnotations(String type);
+
+	/**
+	 * Get the annotation types present in the cell.
+	 * 
+	 * @return the set of annotation type identifiers
+	 */
+	public Set<String> getAnnotationTypes();
+
+	/**
+	 * Add a new annotation object. The annotation object will be of the type
+	 * associated with the {@link AnnotationDescriptor} registered for the given
+	 * type identifier.
+	 * 
+	 * @param type the annotation type identifier as registered in the
+	 *            corresponding extension point
+	 * @return a new annotation object as created by
+	 *         {@link AnnotationDescriptor#create()} or <code>null</code> if no
+	 *         annotation definition with that type identifier exists
+	 */
+	public Object addAnnotation(String type);
+
+	/**
+	 * Remove the given annotation object.
+	 * 
+	 * @param type the annotation type identifier as registered in the
+	 *            corresponding extension point
+	 * @param annotation the annotation object associated to the annotation type
+	 *            that should be removed
+	 */
+	public void removeAnnotation(String type, Object annotation);
+
+	/**
+	 * Get the cell documentation. This essentially are key-value pairs similar
+	 * to cell annotations but represented only by a string value.
+	 * 
+	 * @return documentation types mapped to string values, changes are
+	 *         reflected in the cell (not thread safe)
+	 */
+	public ListMultimap<String, String> getDocumentation();
 
 	/**
 	 * Get the identifier for the transformation referenced by the cell.

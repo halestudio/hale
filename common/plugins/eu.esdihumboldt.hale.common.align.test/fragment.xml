@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<fragment>
+   <extension
+         point="eu.esdihumboldt.hale.align.annotation">
+      <annotation
+            descriptor="eu.esdihumboldt.hale.common.align.io.TestAnnotationDescriptor"
+            type="test">
+      </annotation>
+   </extension>
+
+</fragment>

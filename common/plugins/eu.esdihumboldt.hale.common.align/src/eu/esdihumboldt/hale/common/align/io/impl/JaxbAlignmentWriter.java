@@ -17,10 +17,8 @@
 package eu.esdihumboldt.hale.common.align.io.impl;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.OutputStream;
 
-import eu.esdihumboldt.hale.common.align.io.AlignmentReader;
-import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -30,21 +28,11 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 
 /**
- * HALE alignment reader
+ * HALE alignment writer
  * 
  * @author Simon Templer
  */
-public class DefaultAlignmentReader extends AbstractAlignmentReader {
-
-	private MutableAlignment alignment;
-
-	/**
-	 * @see AlignmentReader#getAlignment()
-	 */
-	@Override
-	public MutableAlignment getAlignment() {
-		return alignment;
-	}
+public class JaxbAlignmentWriter extends AbstractAlignmentWriter {
 
 	/**
 	 * @see IOProvider#isCancelable()
@@ -60,17 +48,17 @@ public class DefaultAlignmentReader extends AbstractAlignmentReader {
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
-		progress.begin("Load HALE alignment", ProgressIndicator.UNKNOWN);
+		progress.begin("Save HALE alignment", ProgressIndicator.UNKNOWN);
 
-		InputStream in = getSource().getInput();
+		OutputStream out = getTarget().getOutput();
 		try {
-			alignment = DefaultAlignmentIO.load(in, reporter, getSourceSchema(), getTargetSchema());
+			JaxbAlignmentIO.save(getAlignment(), reporter, out);
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl(e.getMessage(), e));
 			reporter.setSuccess(false);
 			return reporter;
 		} finally {
-			in.close();
+			out.close();
 		}
 
 		progress.end();

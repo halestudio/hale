@@ -38,7 +38,7 @@ import org.springframework.core.convert.ConversionService;
 import de.fhg.igd.osgi.util.OsgiUtils;
 import de.fhg.igd.osgi.util.OsgiUtils.Condition;
 import de.fhg.igd.osgi.util.OsgiUtilsActivator;
-import eu.esdihumboldt.hale.common.align.io.impl.DefaultAlignmentIO;
+import eu.esdihumboldt.hale.common.align.io.impl.CastorAlignmentIO;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -111,7 +111,7 @@ public class TestUtil {
 				return location;
 			}
 		}, "Load alignment", true);
-		Alignment alignment = DefaultAlignmentIO.load(input.getInput(), report, sourceTypes,
+		Alignment alignment = CastorAlignmentIO.load(input.getInput(), report, sourceTypes,
 				targetTypes);
 
 		assertTrue("Errors are contained in the report", report.getErrors().isEmpty());
