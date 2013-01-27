@@ -44,4 +44,11 @@ public interface ICellInfo {
 	 */
 	public String getExplanationAsHtml();
 
+	/**
+	 * Get the cell notes, if any.
+	 * 
+	 * @return the notes or <code>null</code>
+	 */
+	public String getNotes();
+
 }

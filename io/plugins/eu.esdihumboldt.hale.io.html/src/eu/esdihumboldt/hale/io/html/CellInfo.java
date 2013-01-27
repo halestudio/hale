@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.io.html;
 
+import java.util.List;
+
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
@@ -124,6 +126,19 @@ public class CellInfo implements ICellInfo {
 	 */
 	public Cell getCell() {
 		return cell;
+	}
+
+	@Override
+	public String getNotes() {
+		List<String> docs = getCell().getDocumentation().get(null);
+		if (!docs.isEmpty()) {
+			String notes = docs.get(0);
+			if (notes != null && !notes.isEmpty()) {
+				return notes;
+			}
+		}
+
+		return null;
 	}
 
 }
