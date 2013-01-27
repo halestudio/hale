@@ -29,6 +29,15 @@ p.explanation {
 	max-width: 580px;
 }
 
+p.notes {
+	white-space: pre-wrap;
+	margin-left: 0px;
+	max-width: 564px;
+	border: solid 1px #DDD;
+	background-color: #FAFAFA;
+	padding: 8px;
+}
+
 img {
 	border-style: none;
 }
