@@ -20,6 +20,8 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -141,6 +143,17 @@ public class RootElementPage extends
 			public void selectionChanged(SelectionChangedEvent event) {
 				ISelection selection = event.getSelection();
 				setPageComplete(!selection.isEmpty());
+			}
+		});
+
+		list.addDoubleClickListener(new IDoubleClickListener() {
+
+			@Override
+			public void doubleClick(DoubleClickEvent event) {
+				if (canFlipToNextPage()) {
+					getContainer().showPage(getNextPage());
+					return;
+				}
 			}
 		});
 
