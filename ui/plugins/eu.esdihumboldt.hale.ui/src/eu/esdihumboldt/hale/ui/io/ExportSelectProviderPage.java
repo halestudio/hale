@@ -19,13 +19,12 @@ package eu.esdihumboldt.hale.ui.io;
 import java.util.Collection;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -66,7 +65,8 @@ public class ExportSelectProviderPage<P extends ExportProvider, W extends Export
 		page.setLayout(new GridLayout(1, false));
 
 		// create provider combo
-		ComboViewer providers = new ComboViewer(page, SWT.DROP_DOWN | SWT.READ_ONLY);
+//		ComboViewer providers = new ComboViewer(page, SWT.DROP_DOWN | SWT.READ_ONLY);
+		ListViewer providers = new ListViewer(page, SWT.BORDER);
 		providers.getControl().setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		providers.setContentProvider(ArrayContentProvider.getInstance());
 		providers.setLabelProvider(new LabelProvider() {
@@ -83,10 +83,10 @@ public class ExportSelectProviderPage<P extends ExportProvider, W extends Export
 		Collection<IOProviderDescriptor> factories = getWizard().getFactories();
 		providers.setInput(factories);
 
-		// set selection
-		if (!factories.isEmpty()) {
-			providers.setSelection(new StructuredSelection(factories.iterator().next()), true);
-		}
+		// set initial selection
+//		if (!factories.isEmpty()) {
+//			providers.setSelection(new StructuredSelection(factories.iterator().next()), true);
+//		}
 
 		// process current selection
 		ISelection selection = providers.getSelection();
