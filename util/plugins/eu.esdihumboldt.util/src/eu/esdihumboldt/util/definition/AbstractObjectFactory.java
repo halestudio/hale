@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import eu.esdihumboldt.util.Pair;
+
 /**
  * Provides support for converting certain objects to a definition string and
  * vice versa based on the {@link ObjectDefinition}ies available for the
@@ -63,8 +65,32 @@ public abstract class AbstractObjectFactory<T, D extends ObjectDefinition<? exte
 	 * 
 	 * @see #getDefinitions()
 	 */
-	@SuppressWarnings("unchecked")
 	public <X extends T> String asString(X object) {
+		Pair<String, String> idString = asPair(object);
+
+		if (idString != null) {
+			return idString.getFirst() + ':' + idString.getSecond();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get the object type identifier and the string representation of the
+	 * object. Please note that the string representation is not the same as the
+	 * definition string retrieved through {@link #asString(Object)}.
+	 * 
+	 * @param <X> the object type, an {@link ObjectDefinition} supporting this
+	 *            type must be available
+	 * @param object the object to create a string representation for
+	 * @return the object type identifier and string representation of the
+	 *         object, <code>null</code> if no corresponding
+	 *         {@link ObjectDefinition} is available
+	 * 
+	 * @see #getDefinitions()
+	 */
+	@SuppressWarnings("unchecked")
+	public <X extends T> Pair<String, String> asPair(X object) {
 		// check if the given object is null
 		if (object == null) {
 			return null;
@@ -78,13 +104,13 @@ public abstract class AbstractObjectFactory<T, D extends ObjectDefinition<? exte
 			// comparison based on classes
 			if (definition.getObjectClass() != null
 					&& definition.getObjectClass().equals(object.getClass())) {
-				return definition.getIdentifier()
-						+ ":" + ((ObjectDefinition<T>) definition).asString(object); //$NON-NLS-1$
+				return new Pair<String, String>(definition.getIdentifier(),
+						((ObjectDefinition<T>) definition).asString(object));
 			}
 			// compare based on interfaces
 			else if (definition.getObjectClass().isInterface() && compare(object, definition)) {
-				return definition.getIdentifier()
-						+ ":" + ((ObjectDefinition<T>) definition).asString(object); //$NON-NLS-1$
+				return new Pair<String, String>(definition.getIdentifier(),
+						((ObjectDefinition<T>) definition).asString(object));
 			}
 		}
 
@@ -157,10 +183,10 @@ public abstract class AbstractObjectFactory<T, D extends ObjectDefinition<? exte
 	}
 
 	/**
-	 * Parse the given definition string and create a CRS definition instance.
+	 * Parse the given definition string and create a corresponding object.
 	 * 
 	 * @param value the definition string to parse
-	 * @return the CRS definition instance or <code>null</code>
+	 * @return the created object or <code>null</code>
 	 */
 	public T parse(String value) {
 		if (value == null || value.isEmpty()) {
@@ -172,6 +198,24 @@ public abstract class AbstractObjectFactory<T, D extends ObjectDefinition<? exte
 			if (value.startsWith(prefix)) {
 				String main = value.substring(prefix.length());
 				return definition.parse(main);
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Recreate an object from type identifier and string representation as
+	 * retrieved using {@link #asPair(Object)}.
+	 * 
+	 * @param typeId the type identifier
+	 * @param value the object string representation
+	 * @return the created object or <code>null</code>
+	 */
+	public T from(String typeId, String value) {
+		for (D definition : getDefinitions()) {
+			if (definition.getIdentifier().equals(typeId)) {
+				return definition.parse(value);
 			}
 		}
 
