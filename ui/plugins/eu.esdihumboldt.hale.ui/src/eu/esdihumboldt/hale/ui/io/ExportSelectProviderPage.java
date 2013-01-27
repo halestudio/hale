@@ -19,6 +19,8 @@ package eu.esdihumboldt.hale.ui.io;
 import java.util.Collection;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -82,6 +84,17 @@ public class ExportSelectProviderPage<P extends ExportProvider, W extends Export
 		});
 		Collection<IOProviderDescriptor> factories = getWizard().getFactories();
 		providers.setInput(factories);
+
+		providers.addDoubleClickListener(new IDoubleClickListener() {
+
+			@Override
+			public void doubleClick(DoubleClickEvent event) {
+				if (canFlipToNextPage()) {
+					getContainer().showPage(getNextPage());
+					return;
+				}
+			}
+		});
 
 		// set initial selection
 //		if (!factories.isEmpty()) {
