@@ -1,6 +1,3 @@
-
-
-
 /*
  * Copyright (c) 2013 Data Harmonisation Panel
  * 
@@ -42,8 +39,6 @@ import eu.esdihumboldt.hale.common.align.model.Property
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter
 import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager
 import eu.esdihumboldt.hale.common.instance.model.Filter
-
-
 
 
 /**
@@ -126,7 +121,8 @@ class AlignmentToJaxb {
 	}
 
 	protected ParameterType convert(String name, ParameterValue value) {
-		new ParameterType(name: name, value: value.value, type: value.type ?: ParameterValue.DEFAULT_TYPE)
+		new ParameterType(name: name, value: value.value,
+			type: (!value.type || value.type == ParameterValue.DEFAULT_TYPE ? null : value.type))
 	}
 
 	protected NamedEntityType convert(String name, Entity entity) {
