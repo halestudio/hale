@@ -49,7 +49,7 @@ public class MergeExplanation extends AbstractCellExplanation implements MergeFu
 		if (source != null && target != null && properties != null && !properties.isEmpty()) {
 			StringBuffer propertiesString = new StringBuffer();
 			for (int i = 0; i < properties.size(); i++) {
-				propertiesString.append(quoteText(properties.get(i).getValue(), html));
+				propertiesString.append(quoteText(properties.get(i).getStringValue(), html));
 
 				if (i == properties.size() - 2) {
 					propertiesString.append(" and ");

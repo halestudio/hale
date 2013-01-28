@@ -59,7 +59,7 @@ public class ParameterValueBean {
 	public ParameterValueBean(String name, ParameterValue value) {
 		this.name = name;
 		this.type = value.getType();
-		this.value = value.getValue();
+		this.value = value.getStringValue();
 	}
 
 	/**

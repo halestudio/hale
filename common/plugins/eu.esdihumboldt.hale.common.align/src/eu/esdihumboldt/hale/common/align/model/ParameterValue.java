@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.common.align.model;
 
 import net.jcip.annotations.Immutable;
+import eu.esdihumboldt.hale.common.core.io.LegacyComplexValue;
 
 /**
  * Class to represent the value of a transformation parameter.
@@ -31,7 +32,7 @@ public class ParameterValue {
 	public static final String DEFAULT_TYPE = "default";
 
 	private final String type;
-	private final String value;
+	private final Object value;
 
 	/**
 	 * Constructor specifying the type and the value.
@@ -39,7 +40,7 @@ public class ParameterValue {
 	 * @param type the type of the value
 	 * @param value the value
 	 */
-	public ParameterValue(String type, String value) {
+	public ParameterValue(String type, Object value) {
 		this.type = type;
 		this.value = value;
 	}
@@ -54,7 +55,8 @@ public class ParameterValue {
 	}
 
 	/**
-	 * Returns the type of the value. Either "default" or some script id.
+	 * Returns the type of the value. Either "default", <code>null</code> or
+	 * some script id.
 	 * 
 	 * @return the type
 	 */
@@ -67,7 +69,48 @@ public class ParameterValue {
 	 * 
 	 * @return the value
 	 */
-	public String getValue() {
+	public Object getValue() {
 		return value;
 	}
+
+	/**
+	 * Get the complex parameter value.
+	 * 
+	 * @param valueType the value type
+	 * @return the complex parameter value
+	 * @throws IllegalStateException if the value is of the wrong type and
+	 *             fall-back to a {@link LegacyComplexValue} does not succeed or
+	 *             is not possible
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T getComplexValue(Class<T> valueType) {
+		if (value == null)
+			return null;
+		if (valueType.isAssignableFrom(value.getClass()))
+			return (T) value;
+		try {
+			if (String.class.isAssignableFrom(value.getClass())
+					&& LegacyComplexValue.class.isAssignableFrom(valueType)) {
+				LegacyComplexValue lcv = (LegacyComplexValue) valueType.newInstance();
+				lcv.loadFromString(getStringValue());
+				return (T) lcv;
+			}
+		} catch (Exception e) {
+			// ignore
+		}
+		throw new IllegalStateException("Could not load complex value parameter.");
+	}
+
+	/**
+	 * Get the parameter value as string. Uses the toString method on
+	 * {@link #getValue()}.
+	 * 
+	 * @return the string parameter value
+	 */
+	public String getStringValue() {
+		if (value == null)
+			return null;
+		return value.toString();
+	}
+
 }

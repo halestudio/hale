@@ -8,5 +8,15 @@
             type="test">
       </annotation>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.complexvalue">
+      <complexValue
+            descriptor="eu.esdihumboldt.hale.common.align.io.TestAnnotationDescriptor"
+            id="eu.esdihumboldt.hale.common.align.test.complexValue"
+            name="comment"
+            namespace="http://www.esdi-humboldt.eu/hale/test"
+            type="eu.esdihumboldt.hale.common.align.io.TestAnnotation">
+      </complexValue>
+   </extension>
 
 </fragment>

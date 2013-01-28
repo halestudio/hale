@@ -260,7 +260,7 @@ public class OMLReaderTest {
 		List<ParameterValue> values = params.get("classificationMapping");
 
 		for (int i = 0; i < values.size(); i++) {
-			String temp = values.get(i).getValue();
+			String temp = values.get(i).getStringValue();
 
 			if (i == 0) {
 				assertEquals("onGroundSurface 3", temp);
@@ -308,7 +308,7 @@ public class OMLReaderTest {
 			// each cell can have more than one value, so iterate through them
 			// for each cell too
 			for (int j = 0; j < values.size(); j++) {
-				String temp = values.get(j).getValue();
+				String temp = values.get(j).getStringValue();
 
 				// "i" is the index for the cell number
 				// "j" stands for the indices of the values per cell
@@ -372,7 +372,7 @@ public class OMLReaderTest {
 
 		assertEquals(1, values.size());
 		// size is always 1
-		String temp = values.get(0).getValue();
+		String temp = values.get(0).getStringValue();
 
 		assertEquals("0.005", temp);
 	}
@@ -405,7 +405,7 @@ public class OMLReaderTest {
 			ListMultimap<String, ParameterValue> params = cell.getTransformationParameters();
 			List<ParameterValue> values = params.get("bufferWidth");
 
-			String temp = values.get(0).getValue();
+			String temp = values.get(0).getStringValue();
 
 			if (i == 0) {
 				assertEquals("50", temp);
@@ -451,7 +451,7 @@ public class OMLReaderTest {
 
 			assertEquals(1, values.size());
 			// size is always 1
-			String temp = values.get(0).getValue();
+			String temp = values.get(0).getStringValue();
 
 			// test cell #1
 			if (i == 0) {
@@ -503,7 +503,7 @@ public class OMLReaderTest {
 
 			assertEquals(1, values.size());
 			// size is always 1
-			String temp = values.get(0).getValue();
+			String temp = values.get(0).getStringValue();
 
 			// test cell #1
 			if (i == 0) {
@@ -557,7 +557,7 @@ public class OMLReaderTest {
 
 			assertEquals(1, values.size());
 			// size is always 1
-			String temp = values.get(0).getValue();
+			String temp = values.get(0).getStringValue();
 
 			// test cell #1
 			if (i == 0) {
@@ -697,7 +697,7 @@ public class OMLReaderTest {
 
 		assertEquals(1, values.size());
 
-		String date = values.get(0).getValue();
+		String date = values.get(0).getStringValue();
 
 		assertEquals("yyyy-MM-dd HH:mm:ss", date);
 	}
@@ -728,7 +728,7 @@ public class OMLReaderTest {
 		// test the amount and the correctness of the parameter
 		assertEquals(1, values.size());
 
-		String date = values.get(0).getValue();
+		String date = values.get(0).getStringValue();
 
 		assertEquals("income * age/10", date);
 
@@ -928,9 +928,9 @@ public class OMLReaderTest {
 		assertEquals("unknown", source.get(0).getValue());
 
 		for (int i = 0; i < text.size(); i++) {
-			String spellText = text.get(i).getValue();
-			String spellScript = script.get(i).getValue();
-			String spellTrans = trans.get(i).getValue();
+			String spellText = text.get(i).getStringValue();
+			String spellScript = script.get(i).getStringValue();
+			String spellTrans = trans.get(i).getStringValue();
 			if (i == 0) {
 				assertEquals("identifier", spellText);
 				assertEquals("idScript", spellScript);

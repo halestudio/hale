@@ -13,27 +13,32 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.align.model;
+package eu.esdihumboldt.hale.common.core.io;
 
-import eu.esdihumboldt.hale.common.core.io.ComplexValueType;
-
+import org.w3c.dom.Element;
 
 /**
- * Descriptor for cell annotations.
+ * Handles storing a complex value to a DOM or loading it from a DOM.
  * 
- * The interface provides methods for serialization and deserialization to/from
- * DOM (and therefore XML), as the annotations are stored in the alignment file.
- * 
- * @param <T> the type of the annoation object
+ * @param <T> the type of the complex value
  * @author Simon Templer
  */
-public interface AnnotationDescriptor<T> extends ComplexValueType<T> {
+public interface ComplexValueType<T> {
 
 	/**
-	 * Create a new annotation object.
+	 * Load the complex value from a document object model.
 	 * 
-	 * @return the new annotation object
+	 * @param fragment the complex value fragment root element
+	 * @return the loaded complex value
 	 */
-	public T create();
+	public T fromDOM(Element fragment);
+
+	/**
+	 * Store the complex value to a document object model.
+	 * 
+	 * @param value the complex value to save
+	 * @return the complex value fragment root element
+	 */
+	public Element toDOM(T value);
 
 }

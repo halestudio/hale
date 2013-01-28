@@ -86,7 +86,7 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 						parent, binding, parameter.getValidator());
 				if (initialValue != null) {
 					result.selectEditor(initialValue.getType());
-					result.setAsText(initialValue.getValue());
+					result.setAsText(initialValue.getStringValue());
 				}
 				else
 					result.selectDefaultEditor();
@@ -100,14 +100,14 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 					resultEditor = new DefaultFunctionParameterEditor(parent, binding,
 							parameter.getValidator());
 				if (initialValue != null)
-					resultEditor.setAsText(initialValue.getValue());
+					resultEditor.setAsText(initialValue.getStringValue());
 				return resultEditor;
 			}
 		}
 		else {
 			EnumerationEditor editor = new EnumerationEditor(parent, parameter.getEnumeration());
 			if (initialValue != null)
-				editor.setAsText(initialValue.getValue());
+				editor.setAsText(initialValue.getStringValue());
 			return editor;
 		}
 	}

@@ -148,7 +148,7 @@ public class SequentialIDParameterPage extends AbstractParameterPage implements
 			controlLayout.applyTo(sequence.getControl());
 
 			Sequence initialValue = Sequence.valueOf(getOptionalInitialValue(PARAM_SEQUENCE,
-					new ParameterValue(Sequence.type.name())).getValue());
+					new ParameterValue(Sequence.type.name())).getStringValue());
 			sequence.setSelection(new StructuredSelection(initialValue));
 
 			sequence.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -169,7 +169,8 @@ public class SequentialIDParameterPage extends AbstractParameterPage implements
 			prefix = new Text(page, SWT.SINGLE | SWT.BORDER);
 			controlLayout.applyTo(prefix);
 
-			prefix.setText(getOptionalInitialValue(PARAM_PREFIX, new ParameterValue("")).getValue());
+			prefix.setText(getOptionalInitialValue(PARAM_PREFIX, new ParameterValue(""))
+					.getStringValue());
 
 			prefix.addModifyListener(new ModifyListener() {
 
@@ -189,7 +190,8 @@ public class SequentialIDParameterPage extends AbstractParameterPage implements
 			suffix = new Text(page, SWT.SINGLE | SWT.BORDER);
 			controlLayout.applyTo(suffix);
 
-			suffix.setText(getOptionalInitialValue(PARAM_SUFFIX, new ParameterValue("")).getValue());
+			suffix.setText(getOptionalInitialValue(PARAM_SUFFIX, new ParameterValue(""))
+					.getStringValue());
 
 			suffix.addModifyListener(new ModifyListener() {
 

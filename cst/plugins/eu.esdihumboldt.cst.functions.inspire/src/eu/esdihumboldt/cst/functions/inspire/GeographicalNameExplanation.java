@@ -81,8 +81,10 @@ public class GeographicalNameExplanation extends AbstractCellExplanation impleme
 
 			int index = 0;
 			for (Entity source : sources) {
-				String script = (index < scripts.size()) ? (scripts.get(index).getValue()) : (null);
-				String trans = (index < transs.size()) ? (transs.get(index).getValue()) : (null);
+				String script = (index < scripts.size()) ? (scripts.get(index).getStringValue())
+						: (null);
+				String trans = (index < transs.size()) ? (transs.get(index).getStringValue())
+						: (null);
 
 				if (html) {
 					sb.append("<tr>");

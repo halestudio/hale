@@ -67,15 +67,12 @@ public abstract class AbstractTransformationFunction<E extends TransformationEng
 	public ListMultimap<String, String> getRawParameters() {
 		return Multimaps.transformValues(parameters, new Function<ParameterValue, String>() {
 
-			/**
-			 * @see com.google.common.base.Function#apply(java.lang.Object)
-			 */
 			@Override
 			public String apply(ParameterValue input) {
 				if (input == null)
 					return null;
 				else
-					return input.getValue();
+					return input.getStringValue();
 			}
 		});
 	}
@@ -137,7 +134,7 @@ public abstract class AbstractTransformationFunction<E extends TransformationEng
 					"Mandatory parameter {0} not defined", parameterName));
 		}
 
-		return parameters.get(parameterName).get(0).getValue();
+		return parameters.get(parameterName).get(0).getStringValue();
 	}
 
 	/**
@@ -154,6 +151,44 @@ public abstract class AbstractTransformationFunction<E extends TransformationEng
 			return defaultValue;
 		}
 
-		return parameters.get(parameterName).get(0).getValue();
+		return parameters.get(parameterName).get(0).getStringValue();
 	}
+
+	/**
+	 * Get the first parameter defined with the given parameter name. Throws a
+	 * {@link TransformationException} if such a parameter doesn't exist.
+	 * 
+	 * @param parameterName the parameter name
+	 * @return the parameter value
+	 * @throws TransformationException if a parameter with the given name
+	 *             doesn't exist
+	 */
+	protected ParameterValue getParameterChecked(String parameterName)
+			throws TransformationException {
+		if (getParameters() == null || getParameters().get(parameterName) == null
+				|| getParameters().get(parameterName).isEmpty()) {
+			throw new TransformationException(MessageFormat.format(
+					"Mandatory parameter {0} not defined", parameterName));
+		}
+
+		return getParameters().get(parameterName).get(0);
+	}
+
+	/**
+	 * Get the first parameter defined with the given parameter name. If no such
+	 * parameter exists, the given default value is returned.
+	 * 
+	 * @param parameterName the parameter name
+	 * @param defaultValue the default value for the parameter
+	 * @return the parameter value, or the default if none is specified
+	 */
+	protected ParameterValue getOptionalParameter(String parameterName, Object defaultValue) {
+		if (getParameters() == null || getParameters().get(parameterName) == null
+				|| getParameters().get(parameterName).isEmpty()) {
+			return new ParameterValue(null, defaultValue);
+		}
+
+		return getParameters().get(parameterName).get(0);
+	}
+
 }

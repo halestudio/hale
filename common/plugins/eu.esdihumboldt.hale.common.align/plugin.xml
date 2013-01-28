@@ -336,14 +336,6 @@
          </contentType>
       </provider>
       <provider
-            class="eu.esdihumboldt.hale.common.align.io.impl.CastorAlignmentWriter"
-            id="eu.esdihumboldt.hale.io.align.default.writer"
-            name="HALE alignment (2.5)">
-         <contentType
-               ref="eu.esdihumboldt.hale.io.align.default">
-         </contentType>
-      </provider>
-      <provider
             class="eu.esdihumboldt.hale.common.align.io.impl.JaxbAlignmentWriter"
             id="eu.esdihumboldt.hale.io.align.26.writer"
             name="HALE alignment (2.6)">

@@ -17,12 +17,18 @@ package eu.esdihumboldt.hale.common.align.io.impl.internal
 
 import java.util.Map.Entry
 
+import javax.xml.bind.JAXBElement
+
+import org.w3c.dom.Element
+
 import eu.esdihumboldt.hale.common.align.extension.annotation.AnnotationExtension
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AbstractParameterType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AlignmentType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AnnotationType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.CellType
-import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ChildContextType
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ComplexParameterType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ConditionType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.DocumentationType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.NamedEntityType
@@ -36,9 +42,12 @@ import eu.esdihumboldt.hale.common.align.model.ChildContext
 import eu.esdihumboldt.hale.common.align.model.Entity
 import eu.esdihumboldt.hale.common.align.model.ParameterValue
 import eu.esdihumboldt.hale.common.align.model.Property
+import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueDefinition
+import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueExtension
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter
 import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager
 import eu.esdihumboldt.hale.common.instance.model.Filter
+
 
 
 /**
@@ -85,7 +94,7 @@ class AlignmentToJaxb {
 
 		// the transformation parameters
 		cell.transformationParameters?.entries()?.each { Entry<String, ParameterValue> param ->
-			result.parameter << convert(param.key, param.value)
+			result.abstractParameter << convert(param.key, param.value)
 		}
 
 		// source entities
@@ -97,13 +106,13 @@ class AlignmentToJaxb {
 		cell.target?.entries()?.each { Entry<String, ? extends Entity> entity ->
 			result.target << convert(entity.key, entity.value)
 		}
-		
+
 		// documentations
 		cell.documentation.entries().each {
 			// create documentation element from each multimap entry
 			result.documentationOrAnnotation << new DocumentationType(type: it.key, value: it.value)
 		}
-		
+
 		// annotations
 		for (String type in cell.annotationTypes) {
 			def descriptor = AnnotationExtension.instance.get(type)
@@ -120,9 +129,23 @@ class AlignmentToJaxb {
 		return result
 	}
 
-	protected ParameterType convert(String name, ParameterValue value) {
-		new ParameterType(name: name, value: value.value,
-			type: (!value.type || value.type == ParameterValue.DEFAULT_TYPE ? null : value.type))
+	protected JAXBElement<? extends AbstractParameterType> convert(String name, ParameterValue value) {
+		if (value.value instanceof String || value.value == null) {
+			// normal value
+			return of.createParameter(new ParameterType(name: name, value: value.value, 
+				type: (!value.type || value.type == ParameterValue.DEFAULT_TYPE ? null : value.type)))
+		}
+		else {
+			// complex value
+			ComplexValueDefinition cvd = ComplexValueExtension.instance.getDefinition(value.value.class)
+			if (cvd) {
+				Element element = cvd.toDOM(value.value)
+				return of.createComplexParameter(new ComplexParameterType(name: name, any: element))
+			}
+			else {
+				throw new IllegalStateException('No definition for complex parameter value found')
+			}
+		}
 	}
 
 	protected NamedEntityType convert(String name, Entity entity) {
@@ -145,10 +168,10 @@ class AlignmentToJaxb {
 
 		// set the type
 		result.abstractEntity.value.type = new Type(
-			name: entity.definition.type.name.localPart,
-			ns: entity.definition.type.name.namespaceURI ?: null)
-		result.abstractEntity.value.type.condition = entity.definition.filter ? 
-			convert(entity.definition.filter) : null
+		name: entity.definition.type.name.localPart,
+		ns: entity.definition.type.name.namespaceURI ?: null)
+		result.abstractEntity.value.type.condition = entity.definition.filter ?
+		convert(entity.definition.filter) : null
 
 		// add children
 		if (entity instanceof Property) {
@@ -165,7 +188,7 @@ class AlignmentToJaxb {
 
 		result.name = context.child.name.localPart
 		result.ns = context.child.name.namespaceURI ?: null
-		
+
 		result.context = context.contextName
 		result.index = context.index
 		result.condition = context.condition ? convert(context.condition.filter) : null
@@ -177,7 +200,7 @@ class AlignmentToJaxb {
 		if (!filter) return null
 
 		def rep = FilterDefinitionManager.getInstance().asPair(filter)
-		
+
 		new ConditionType(lang: rep.first, value: rep.second)
 	}
 

@@ -19,18 +19,23 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
+
+import org.w3c.dom.Element;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.extension.annotation.AnnotationExtension;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AbstractEntityType;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AbstractParameterType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AlignmentType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AnnotationType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.CellType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ChildContextType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ComplexParameterType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ConditionType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.DocumentationType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.NamedEntityType;
@@ -51,6 +56,8 @@ import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueDefinition;
+import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueExtension;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager;
@@ -112,11 +119,38 @@ public class JaxbToAlignment {
 
 		result.setTransformationIdentifier(cell.getRelation());
 
-		if (!cell.getParameter().isEmpty()) {
+		if (!cell.getAbstractParameter().isEmpty()) {
 			ListMultimap<String, ParameterValue> parameters = ArrayListMultimap.create();
-			for (ParameterType param : cell.getParameter()) {
-				parameters.put(param.getName(),
-						new ParameterValue(param.getType(), param.getValue()));
+			for (JAXBElement<? extends AbstractParameterType> param : cell.getAbstractParameter()) {
+				AbstractParameterType apt = param.getValue();
+				if (apt instanceof ParameterType) {
+					ParameterType pt = (ParameterType) apt;
+					parameters.put(pt.getName(), new ParameterValue(pt.getType(), pt.getValue()));
+				}
+				else if (apt instanceof ComplexParameterType) {
+					ComplexParameterType cpt = (ComplexParameterType) apt;
+					Element element = cpt.getAny();
+					QName name;
+					if (element.getNamespaceURI() != null && !element.getNamespaceURI().isEmpty()) {
+						name = new QName(element.getNamespaceURI(), element.getLocalName());
+					}
+					else {
+						name = new QName(element.getLocalName());
+					}
+					ComplexValueDefinition cvt = ComplexValueExtension.getInstance().getDefinition(
+							name);
+					if (cvt != null) {
+						Object value = cvt.fromDOM(element);
+						parameters.put(cpt.getName(), new ParameterValue(null, value));
+					}
+					else {
+						throw new IllegalStateException(
+								"Could not load complex parameter value for element "
+										+ name.toString());
+					}
+				}
+				else
+					throw new IllegalStateException("Illegal parameter type");
 			}
 			result.setTransformationParameters(parameters);
 		}
@@ -124,7 +158,7 @@ public class JaxbToAlignment {
 		try {
 			result.setSource(convertEntities(cell.getSource(), sourceTypes, SchemaSpaceID.SOURCE));
 			result.setTarget(convertEntities(cell.getTarget(), targetTypes, SchemaSpaceID.TARGET));
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			if (reporter != null) {
 				reporter.error(new IOMessageImpl("Could not create cell", e));
 			}

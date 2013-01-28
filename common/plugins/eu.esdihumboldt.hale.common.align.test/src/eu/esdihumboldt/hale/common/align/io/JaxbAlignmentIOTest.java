@@ -50,4 +50,9 @@ public class JaxbAlignmentIOTest extends DefaultAlignmentIOTest {
 		return true;
 	}
 
+	@Override
+	protected boolean supportsComplexParameters() {
+		return true;
+	}
+
 }

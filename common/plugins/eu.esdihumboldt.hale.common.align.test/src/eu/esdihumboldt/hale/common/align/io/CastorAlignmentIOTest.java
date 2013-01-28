@@ -50,4 +50,9 @@ public class CastorAlignmentIOTest extends DefaultAlignmentIOTest {
 		return false;
 	}
 
+	@Override
+	protected boolean supportsComplexParameters() {
+		return false;
+	}
+
 }
