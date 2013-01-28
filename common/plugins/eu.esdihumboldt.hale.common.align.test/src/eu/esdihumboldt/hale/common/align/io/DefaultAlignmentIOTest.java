@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.common.align.io;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -129,6 +130,15 @@ public abstract class DefaultAlignmentIOTest {
 		parameters2.put("test", new ParameterValue("4"));
 		parameters2.put("tx", new ParameterValue("5"));
 		parameters2.put("tx", new ParameterValue("6"));
+
+		// complex parameter value
+		if (supportsComplexParameters()) {
+			TestAnnotation commentParam = new TestAnnotation();
+			commentParam.setAuthor("Gerd");
+			commentParam.setComment("Should a comment really be used as parameter?");
+			parameters2.put("comment", new ParameterValue(null, commentParam));
+		}
+
 		cell2.setTransformationParameters(parameters2);
 
 		ListMultimap<String, Type> target2 = ArrayListMultimap.create();
@@ -214,8 +224,16 @@ public abstract class DefaultAlignmentIOTest {
 
 		// parameters
 		ListMultimap<String, ParameterValue> param2 = ncell2.getTransformationParameters();
-		assertEquals(2, param2.keySet().size());
-		assertEquals(3, param2.values().size());
+		if (!supportsComplexParameters()) {
+			assertEquals(2, param2.keySet().size());
+			assertEquals(3, param2.values().size());
+		}
+		else {
+			assertEquals(3, param2.keySet().size());
+			assertEquals(4, param2.values().size());
+			ParameterValue complexParam = param2.get("comment").get(0);
+			assertTrue(complexParam.getValue() instanceof TestAnnotation);
+		}
 
 		// annotations
 		if (supportsAnnotations()) {
@@ -265,5 +283,12 @@ public abstract class DefaultAlignmentIOTest {
 	 * @return if documentations are supported
 	 */
 	protected abstract boolean supportsDocumentation();
+
+	/**
+	 * Determine if the alignment I/O supports complex parameter values.
+	 * 
+	 * @return if complex parameter values are supported
+	 */
+	protected abstract boolean supportsComplexParameters();
 
 }

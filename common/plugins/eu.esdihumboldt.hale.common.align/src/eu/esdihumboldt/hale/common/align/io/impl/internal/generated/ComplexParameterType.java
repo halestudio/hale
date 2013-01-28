@@ -11,25 +11,23 @@ package eu.esdihumboldt.hale.common.align.io.impl.internal.generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 import org.w3c.dom.Element;
 
 
 /**
- * <p>Java class for AnnotationType complex type.
+ * <p>Java class for ComplexParameterType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="AnnotationType">
+ * &lt;complexType name="ComplexParameterType">
  *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *     &lt;extension base="{http://www.esdi-humboldt.eu/hale/alignment}AbstractParameterType">
  *       &lt;sequence>
  *         &lt;any/>
  *       &lt;/sequence>
- *       &lt;attribute name="type" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
- *     &lt;/restriction>
+ *     &lt;/extension>
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
@@ -37,15 +35,15 @@ import org.w3c.dom.Element;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AnnotationType", propOrder = {
+@XmlType(name = "ComplexParameterType", propOrder = {
     "any"
 })
-public class AnnotationType {
+public class ComplexParameterType
+    extends AbstractParameterType
+{
 
     @XmlAnyElement
     protected Element any;
-    @XmlAttribute(required = true)
-    protected String type;
 
     /**
      * Gets the value of the any property.
@@ -69,30 +67,6 @@ public class AnnotationType {
      */
     public void setAny(Element value) {
         this.any = value;
-    }
-
-    /**
-     * Gets the value of the type property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getType() {
-        return type;
-    }
-
-    /**
-     * Sets the value of the type property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setType(String value) {
-        this.type = value;
     }
 
 }

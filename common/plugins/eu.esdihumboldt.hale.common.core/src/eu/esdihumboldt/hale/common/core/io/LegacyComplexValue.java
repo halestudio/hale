@@ -13,27 +13,21 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.align.model;
-
-import eu.esdihumboldt.hale.common.core.io.ComplexValueType;
-
+package eu.esdihumboldt.hale.common.core.io;
 
 /**
- * Descriptor for cell annotations.
+ * Interface for complex values supporting a string representation for backwards
+ * compatibility. Implementors must have a default constructor.
  * 
- * The interface provides methods for serialization and deserialization to/from
- * DOM (and therefore XML), as the annotations are stored in the alignment file.
- * 
- * @param <T> the type of the annoation object
  * @author Simon Templer
  */
-public interface AnnotationDescriptor<T> extends ComplexValueType<T> {
+public interface LegacyComplexValue {
 
 	/**
-	 * Create a new annotation object.
+	 * Load the object from a string representation.
 	 * 
-	 * @return the new annotation object
+	 * @param value the object's string representation
 	 */
-	public T create();
+	public void loadFromString(String value);
 
 }

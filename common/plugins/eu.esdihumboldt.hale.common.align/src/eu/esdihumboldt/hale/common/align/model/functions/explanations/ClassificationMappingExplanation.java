@@ -54,7 +54,7 @@ public class ClassificationMappingExplanation extends AbstractCellExplanation im
 		if (target != null && source != null) {
 			StringBuilder mappingString = new StringBuilder();
 			for (ParameterValue value : mappings) {
-				String s = value.getValue();
+				String s = value.getStringValue();
 				try {
 					mappingString.append(quoteText(
 							URLDecoder.decode(s.substring(0, s.indexOf(' ')), "UTF-8"), false));
@@ -110,7 +110,7 @@ public class ClassificationMappingExplanation extends AbstractCellExplanation im
 			mappingString
 					.append("<table border=\"1\"><tr><th>Target value</th><th>Source values</th></tr>");
 			for (ParameterValue value : mappings) {
-				String s = value.getValue();
+				String s = value.getStringValue();
 				mappingString.append("<tr><td>");
 				try {
 					mappingString.append(quoteText(

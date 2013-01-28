@@ -29,7 +29,7 @@
 		<xs:sequence>
 			<xs:element name="source" type="NamedEntityType" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="target" type="NamedEntityType" minOccurs="1" maxOccurs="unbounded" />
-			<xs:element name="parameter" type="ParameterType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element ref="AbstractParameter" minOccurs="0" maxOccurs="unbounded" />
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
 				<xs:element name="documentation" type="DocumentationType" minOccurs="1" />
 				<xs:element name="annotation" type="AnnotationType" minOccurs="1" />
@@ -125,14 +125,34 @@
 	</xs:complexType>
 	
 	<!-- Parameter -->
-	<xs:complexType name="ParameterType">
-		<xs:simpleContent>
-			<xs:extension base="xs:string">
-				<xs:attribute name="name" type="xs:string" use="required" />
-				<xs:attribute name="type" type="xs:string" use="optional" default="default" />
-			</xs:extension>
-		</xs:simpleContent>
+	<xs:element name="AbstractParameter" type="AbstractParameterType" />
+	
+	<xs:complexType name="AbstractParameterType">
+		<xs:attribute name="name" type="xs:string" use="required" />
 	</xs:complexType>
+	
+	<xs:complexType name="ComplexParameterType">
+		<xs:complexContent>
+			<xs:extension base="AbstractParameterType">
+				<xs:sequence>
+					<xs:any processContents="skip" minOccurs="1" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:element name="complexParameter" type="ComplexParameterType" substitutionGroup="AbstractParameter" />
+	
+	<xs:complexType name="ParameterType">
+		<xs:complexContent>
+			<xs:extension base="AbstractParameterType">
+				<xs:attribute name="type" type="xs:string" use="optional" default="default" />
+				<xs:attribute name="value" type="xs:string" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:element name="parameter" type="ParameterType" substitutionGroup="AbstractParameter" />
 	
 	<!-- Qualified name -->
 	<xs:complexType name="QNameType">

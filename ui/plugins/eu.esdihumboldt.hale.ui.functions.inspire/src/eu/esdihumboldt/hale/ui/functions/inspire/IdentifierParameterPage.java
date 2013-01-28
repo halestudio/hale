@@ -108,11 +108,12 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 	public void setParameter(Set<FunctionParameter> params,
 			ListMultimap<String, ParameterValue> initialValues) {
 		if (initialValues != null) {
-			initialCountry = initialValues.get(COUNTRY_PARAMETER_NAME).get(0).getValue();
-			initialProvider = initialValues.get(DATA_PROVIDER_PARAMETER_NAME).get(0).getValue();
-			initialProduct = initialValues.get(PRODUCT_PARAMETER_NAME).get(0).getValue();
-			initialVersion = initialValues.get(VERSION).get(0).getValue();
-			initialVersionNil = initialValues.get(VERSION_NIL_REASON).get(0).getValue();
+			initialCountry = initialValues.get(COUNTRY_PARAMETER_NAME).get(0).getStringValue();
+			initialProvider = initialValues.get(DATA_PROVIDER_PARAMETER_NAME).get(0)
+					.getStringValue();
+			initialProduct = initialValues.get(PRODUCT_PARAMETER_NAME).get(0).getStringValue();
+			initialVersion = initialValues.get(VERSION).get(0).getStringValue();
+			initialVersionNil = initialValues.get(VERSION_NIL_REASON).get(0).getStringValue();
 		}
 		else {
 			initialCountry = "";

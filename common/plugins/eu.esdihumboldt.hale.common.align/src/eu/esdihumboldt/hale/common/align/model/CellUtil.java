@@ -79,7 +79,7 @@ public abstract class CellUtil {
 		if (params != null) {
 			List<ParameterValue> values = params.get(parameterName);
 			if (values != null && !values.isEmpty()) {
-				return values.get(0).getValue();
+				return values.get(0).getStringValue();
 			}
 		}
 
@@ -101,7 +101,7 @@ public abstract class CellUtil {
 		if (params != null) {
 			List<ParameterValue> values = params.get(parameterName);
 			if (values != null && !values.isEmpty()) {
-				return values.get(0).getValue();
+				return values.get(0).getStringValue();
 			}
 		}
 

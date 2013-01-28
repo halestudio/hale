@@ -159,7 +159,7 @@ public abstract class SourceListParameterPage<T> extends
 		if (initialValues != null) {
 			List<ParameterValue> initialData = initialValues.get(getParameterName());
 			if (initialData.size() > 0)
-				initialValue = initialData.get(0).getValue();
+				initialValue = initialData.get(0).getStringValue();
 		}
 	}
 

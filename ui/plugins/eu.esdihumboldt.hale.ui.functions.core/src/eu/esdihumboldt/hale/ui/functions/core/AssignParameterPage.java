@@ -154,7 +154,7 @@ public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionW
 			});
 		}
 		if (editor != null && initialValue != null) {
-			editor.setAsText(initialValue.getValue());
+			editor.setAsText(initialValue.getStringValue());
 			if (editor instanceof EditorChooserEditor)
 				((EditorChooserEditor<?>) editor).selectEditor(initialValue.getType());
 		}
