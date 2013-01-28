@@ -47,17 +47,24 @@ public class ClassificationMapping extends
 			ListMultimap<String, PropertyValue> variables, String resultName,
 			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
 			TransformationLog log) throws TransformationException {
-		checkParameter(PARAMETER_CLASSIFICATIONS, 1);
+		try {
+			checkParameter(PARAMETER_CLASSIFICATIONS, 1);
+		} catch (TransformationException e) {
+			log.warn(log.createMessage("No classification specified", e));
+		}
+
+		String source = variables.values().iterator().next().getValueAs(String.class);
 
 		List<String> mappings = getRawParameters().get(PARAMETER_CLASSIFICATIONS);
-		String source = variables.values().iterator().next().getValueAs(String.class);
-		try {
-			String sourceValue = URLEncoder.encode(source, "UTF-8");
-			for (String s : mappings)
-				if (s.contains(' ' + sourceValue + ' ') || s.endsWith(' ' + sourceValue))
-					return URLDecoder.decode(s.substring(0, s.indexOf(' ')), "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			// UTF-8 should be everywhere
+		if (!mappings.isEmpty()) {
+			try {
+				String sourceValue = URLEncoder.encode(source, "UTF-8");
+				for (String s : mappings)
+					if (s.contains(' ' + sourceValue + ' ') || s.endsWith(' ' + sourceValue))
+						return URLDecoder.decode(s.substring(0, s.indexOf(' ')), "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				// UTF-8 should be everywhere
+			}
 		}
 
 		String notClassifiedAction = getRawOptionalParameter(PARAMETER_NOT_CLASSIFIED_ACTION,
