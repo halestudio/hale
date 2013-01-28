@@ -5,6 +5,7 @@
    <extension-point id="eu.esdihumboldt.hale.io.action" name="I/O actions and advisors" schema="schema/eu.esdihumboldt.hale.io.action.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.io.project" name="Project extensions" schema="schema/eu.esdihumboldt.hale.io.project.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.report" name="Report" schema="schema/eu.esdihumboldt.hale.report.exsd"/>
+   <extension-point id="eu.esdihumboldt.hale.io.complexvalue" name="Complex Values" schema="schema/eu.esdihumboldt.hale.io.complexvalue.exsd"/>
    <extension
          point="org.eclipse.core.contenttype.contentTypes">
       <content-type

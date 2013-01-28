@@ -67,7 +67,7 @@ public abstract class AbstractScriptedPropertyTransformation<E extends Transform
 		if (originalParameters != null) {
 			for (Map.Entry<String, ParameterValue> entry : originalParameters.entries()) {
 				if (ParameterValue.DEFAULT_TYPE.equals(entry.getValue().getType()))
-					transformedParameters.put(entry.getKey(), entry.getValue().getValue());
+					transformedParameters.put(entry.getKey(), entry.getValue().getStringValue());
 				else {
 					// type is a script
 					ScriptFactory factory = ScriptExtension.getInstance().getFactory(
@@ -83,7 +83,8 @@ public abstract class AbstractScriptedPropertyTransformation<E extends Transform
 					}
 					Object result;
 					try {
-						result = script.evaluate(entry.getValue().getValue(), variables.values());
+						result = script.evaluate(entry.getValue().getStringValue(),
+								variables.values());
 					} catch (ScriptException e) {
 						throw new TransformationException(
 								"Couldn't evaluate a transformation parameter", e);

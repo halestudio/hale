@@ -108,7 +108,7 @@ public class ParameterEditorExtension extends
 			try {
 				Editor<?> editor = fact.createExtensionObject().createEditor(parent);
 				if (initialValue != null)
-					editor.setAsText(initialValue.getValue());
+					editor.setAsText(initialValue.getStringValue());
 				return editor;
 			} catch (Exception e) {
 				// ignore, use default
