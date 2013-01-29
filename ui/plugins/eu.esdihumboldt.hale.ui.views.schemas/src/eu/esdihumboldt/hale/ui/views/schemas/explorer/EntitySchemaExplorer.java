@@ -30,6 +30,7 @@ import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.InheritedPropertiesFilter;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 import eu.esdihumboldt.hale.ui.service.entity.util.EntityTypeIndexContentProvider;
+import eu.esdihumboldt.hale.ui.service.entity.util.EntityTypeIndexHierarchy;
 import eu.esdihumboldt.hale.ui.service.population.UnpopulatedPropertiesFilter;
 import eu.esdihumboldt.hale.ui.util.viewer.FilterAction;
 import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
@@ -42,6 +43,10 @@ import eu.esdihumboldt.hale.ui.views.schemas.internal.SchemasViewPlugin;
  * @author Simon Templer
  */
 public class EntitySchemaExplorer extends SchemaExplorer {
+
+	private EntityTypeIndexContentProvider listProvider;
+
+	private EntityTypeIndexHierarchy hierarchyProvider;
 
 	/**
 	 * Create an {@link EntityDefinition} based schema explorer
@@ -61,8 +66,11 @@ public class EntitySchemaExplorer extends SchemaExplorer {
 	protected IContentProvider createContentProvider(TreeViewer tree) {
 		EntityDefinitionService service = (EntityDefinitionService) PlatformUI.getWorkbench()
 				.getService(EntityDefinitionService.class);
-		return new TreePathProviderAdapter(new EntityTypeIndexContentProvider(tree, service,
-				getSchemaSpace()));
+
+		hierarchyProvider = new EntityTypeIndexHierarchy(getTreeViewer(), service, getSchemaSpace());
+		listProvider = new EntityTypeIndexContentProvider(tree, service, getSchemaSpace());
+
+		return new TreePathProviderAdapter(listProvider);
 	}
 
 	/**
@@ -70,6 +78,16 @@ public class EntitySchemaExplorer extends SchemaExplorer {
 	 */
 	@Override
 	protected void prependToolbarActions(ToolBarManager manager) {
+		manager.add(new ContentProviderAction("Types as list", SchemasViewPlugin
+				.getImageDescriptor("icons/flat_hierarchy.png"), getTreeViewer(), listProvider,
+				true));
+
+		manager.add(new ContentProviderAction("Type hierarchy", SchemasViewPlugin
+				.getImageDescriptor("icons/inheritance_hierarchy.png"), getTreeViewer(),
+				hierarchyProvider, false));
+
+		manager.add(new Separator());
+
 		ViewerFilter unpopulated = new UnpopulatedPropertiesFilter();
 		manager.add(new FilterAction("Hide unpopulated properties", "Show unpopulated properties",
 				SchemasViewPlugin.getImageDescriptor("icons/empty.gif"), getTreeViewer(),
