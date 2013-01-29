@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Comparator for {@link Definition}s. Groups group properties and normal
@@ -89,16 +90,21 @@ public class DefinitionComparator extends ViewerComparator {
 			element = ((EntityDefinition) element).getDefinition();
 		}
 
-		if (element instanceof GroupPropertyDefinition) {
+		if (element instanceof TypeDefinition) {
+			// types first
 			return 0;
 		}
-		if (element instanceof PropertyDefinition) {
+
+		if (element instanceof GroupPropertyDefinition) {
 			return 1;
+		}
+		if (element instanceof PropertyDefinition) {
+			return 2;
 		}
 		// used if instances contain metadata, used in
 		// DefinitionInstanceTreeViewer
 		if (element instanceof Set) {
-			return 2;
+			return 3;
 		}
 
 		return super.category(element);
