@@ -16,7 +16,6 @@
 
 package eu.esdihumboldt.hale.ui.views.schemas.explorer;
 
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -31,7 +30,6 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 
-import eu.esdihumboldt.hale.common.schema.Classification;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
@@ -39,7 +37,6 @@ import eu.esdihumboldt.hale.ui.common.definition.viewer.SchemaPatternFilter;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TypeIndexContentProvider;
 import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathFilteredTree;
 import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
-import eu.esdihumboldt.hale.ui.views.schemas.internal.Messages;
 
 /**
  * Explorer for schema definitions
@@ -136,41 +133,42 @@ public class SchemaExplorer {
 
 		prependToolbarActions(manager);
 
-		manager.add(new ClassificationFilterAction(Classification.ABSTRACT_FT,
-				"Hide abstract feature types", "Show abstract feature types",
-				"/icons/see_abstract_ft.png", classFilter));
-
-		manager.add(new ClassificationFilterAction(Classification.CONCRETE_FT,
-				"Hide concrete feature types", "Show concrete feature types",
-				"/icons/see_concrete_ft.png", classFilter));
-
-		manager.add(new ClassificationFilterAction(Classification.ABSTRACT_TYPE,
-				"Hide abstract property types", "Show abstract property types",
-				"/icons/see_abstract_type.png", classFilter));
-
-		manager.add(new ClassificationFilterAction(Classification.CONCRETE_TYPE,
-				Messages.ModelNavigationView_PropertyHide,
-				Messages.ModelNavigationView_PropertyShow, "/icons/see_concrete_type.png",
-				classFilter));
-
-		manager.add(new Separator());
-
-		manager.add(new ClassificationFilterAction(Classification.STRING_PROPERTY,
-				Messages.ModelNavigationView_StringHide, Messages.ModelNavigationView_StringShow,
-				"/icons/see_string_attribute.png", classFilter));
-
-		manager.add(new ClassificationFilterAction(Classification.NUMERIC_PROPERTY,
-				Messages.ModelNavigationView_NumericHide, Messages.ModelNavigationView_NumericShow,
-				"/icons/see_number_attribute.png", classFilter));
-
-		manager.add(new ClassificationFilterAction(Classification.GEOMETRIC_PROPERTY,
-				Messages.ModelNavigationView_GeometryHide,
-				Messages.ModelNavigationView_GeometryShow, "/icons/see_geometry_attribute.png",
-				classFilter));
-
-		manager.add(new ClassificationFilterAction(Classification.COMPLEX_PROPERTY,
-				"Hide complex properties", "Show complex properties",
-				"/icons/see_property_type.gif", classFilter));
+		// disabled rarely used filters not to clutter up the UI
+//		manager.add(new ClassificationFilterAction(Classification.ABSTRACT_FT,
+//				"Hide abstract feature types", "Show abstract feature types",
+//				"/icons/see_abstract_ft.png", classFilter));
+//
+//		manager.add(new ClassificationFilterAction(Classification.CONCRETE_FT,
+//				"Hide concrete feature types", "Show concrete feature types",
+//				"/icons/see_concrete_ft.png", classFilter));
+//
+//		manager.add(new ClassificationFilterAction(Classification.ABSTRACT_TYPE,
+//				"Hide abstract property types", "Show abstract property types",
+//				"/icons/see_abstract_type.png", classFilter));
+//
+//		manager.add(new ClassificationFilterAction(Classification.CONCRETE_TYPE,
+//				Messages.ModelNavigationView_PropertyHide,
+//				Messages.ModelNavigationView_PropertyShow, "/icons/see_concrete_type.png",
+//				classFilter));
+//
+//		manager.add(new Separator());
+//
+//		manager.add(new ClassificationFilterAction(Classification.STRING_PROPERTY,
+//				Messages.ModelNavigationView_StringHide, Messages.ModelNavigationView_StringShow,
+//				"/icons/see_string_attribute.png", classFilter));
+//
+//		manager.add(new ClassificationFilterAction(Classification.NUMERIC_PROPERTY,
+//				Messages.ModelNavigationView_NumericHide, Messages.ModelNavigationView_NumericShow,
+//				"/icons/see_number_attribute.png", classFilter));
+//
+//		manager.add(new ClassificationFilterAction(Classification.GEOMETRIC_PROPERTY,
+//				Messages.ModelNavigationView_GeometryHide,
+//				Messages.ModelNavigationView_GeometryShow, "/icons/see_geometry_attribute.png",
+//				classFilter));
+//
+//		manager.add(new ClassificationFilterAction(Classification.COMPLEX_PROPERTY,
+//				"Hide complex properties", "Show complex properties",
+//				"/icons/see_property_type.gif", classFilter));
 
 		manager.update(false);
 
