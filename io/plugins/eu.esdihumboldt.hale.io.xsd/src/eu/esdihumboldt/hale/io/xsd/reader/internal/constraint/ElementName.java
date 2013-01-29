@@ -46,11 +46,13 @@ public class ElementName extends DisplayName {
 	@Override
 	public String getCustomName() {
 		Collection<? extends XmlElement> elements = xmlElements.getElements();
-		if (elements != null && !elements.isEmpty()) {
-			// choose first element
+		if (elements != null && elements.size() == 1) {
+			// only use the element name if it is unique
 			return elements.iterator().next().getDisplayName();
-			// FIXME what to do if there are multiple elements? prefer ones that
-			// are flagged Mappable? (not done currently)
+			/*
+			 * FIXME do something else if there are multiple elements? prefer
+			 * ones that are flagged Mappable? (not done currently)
+			 */
 		}
 
 		return super.getCustomName();
