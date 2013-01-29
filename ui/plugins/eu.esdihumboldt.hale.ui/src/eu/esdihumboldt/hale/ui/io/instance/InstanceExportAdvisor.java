@@ -16,8 +16,6 @@
 
 package eu.esdihumboldt.hale.ui.io.instance;
 
-import org.eclipse.ui.PlatformUI;
-
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
@@ -42,13 +40,11 @@ public class InstanceExportAdvisor extends DefaultIOAdvisor<InstanceWriter> {
 		super.prepareProvider(provider);
 
 		// set target schema
-		SchemaService ss = (SchemaService) PlatformUI.getWorkbench()
-				.getService(SchemaService.class);
+		SchemaService ss = getService(SchemaService.class);
 		provider.setTargetSchema(ss.getSchemas(SchemaSpaceID.TARGET));
 
 		// set instances to export
-		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
-				InstanceService.class);
+		InstanceService is = getService(InstanceService.class);
 		provider.setInstances(is.getInstances(DataSet.TRANSFORMED));
 	}
 

@@ -70,6 +70,7 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.io.project.OpenProjectWizard;
 import eu.esdihumboldt.hale.ui.io.project.SaveProjectWizard;
 import eu.esdihumboldt.hale.ui.io.util.ThreadProgressMonitor;
@@ -171,7 +172,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				super.updateConfiguration(provider);
 
 				// set project files
-				Map<String, ProjectFile> projectFiles = ProjectIO.createDefaultProjectFiles();
+				Map<String, ProjectFile> projectFiles = ProjectIO.createDefaultProjectFiles(HaleUI
+						.getServiceProvider());
 				provider.setProjectFiles(projectFiles);
 			}
 
@@ -249,7 +251,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			public void updateConfiguration(ProjectWriter provider) {
 				provider.getProject().setModified(new Date());
 				provider.getProject().setHaleVersion(haleVersion);
-				Map<String, ProjectFile> projectFiles = ProjectIO.createDefaultProjectFiles();
+				Map<String, ProjectFile> projectFiles = ProjectIO.createDefaultProjectFiles(HaleUI
+						.getServiceProvider());
 				notifyBeforeSave(projectFiles); // get additional files from
 												// listeners
 				provider.setProjectFiles(projectFiles);
@@ -341,7 +344,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			if (advisors != null && !advisors.isEmpty()) {
 				IOAdvisor<?> advisor;
 				try {
-					advisor = advisors.get(0).createExtensionObject();
+					advisor = advisors.get(0).createAdvisor(HaleUI.getServiceProvider());
 				} catch (Exception e) {
 					log.error(
 							MessageFormat

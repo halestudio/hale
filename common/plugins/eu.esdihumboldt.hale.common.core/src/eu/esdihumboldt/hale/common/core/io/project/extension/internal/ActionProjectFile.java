@@ -33,6 +33,7 @@ import org.apache.commons.io.IOUtils;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
+import eu.esdihumboldt.hale.common.core.ServiceProvider;
 import eu.esdihumboldt.hale.common.core.io.ExportProvider;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOAction;
@@ -67,6 +68,8 @@ public class ActionProjectFile implements ProjectFile {
 
 	private File applyFile;
 
+	private final ServiceProvider serviceProvider;
+
 	/**
 	 * Create a project file based on an I/O action
 	 * 
@@ -79,16 +82,19 @@ public class ActionProjectFile implements ProjectFile {
 	 * @param saveProviderId the provider identifier to use for saving the file
 	 * @param saveParameters the parameters for the I/O provider used for saving
 	 *            the file
+	 * @param serviceProvider the service provider the I/O advisor should
+	 *            retrieve services through
 	 */
 	public ActionProjectFile(String loadActionId, String loadProviderId,
 			Map<String, String> loadParameters, String saveActionId, String saveProviderId,
-			Map<String, String> saveParameters) {
+			Map<String, String> saveParameters, ServiceProvider serviceProvider) {
 		this.loadActionId = loadActionId;
 		this.loadProviderId = loadProviderId;
 		this.loadParameters = loadParameters;
 		this.saveActionId = saveActionId;
 		this.saveProviderId = saveProviderId;
 		this.saveParameters = saveParameters;
+		this.serviceProvider = serviceProvider;
 	}
 
 	/**
@@ -157,7 +163,7 @@ public class ActionProjectFile implements ProjectFile {
 
 			// find advisor
 			@SuppressWarnings("rawtypes")
-			IOAdvisor advisor = getLoadAdvisor(loadActionId);
+			IOAdvisor advisor = getLoadAdvisor(loadActionId, serviceProvider);
 			checkState(advisor != null, "No advisor for loading project file found");
 
 			// configure provider
@@ -181,10 +187,11 @@ public class ActionProjectFile implements ProjectFile {
 	 * {@link IOAdvisorExtension} to look for a matching advisor.
 	 * 
 	 * @param loadActionId the action ID for loading the project file
+	 * @param serviceProvider the service provider for the advisor
 	 * @return the advisor
 	 */
-	protected IOAdvisor<?> getLoadAdvisor(String loadActionId) {
-		return IOAdvisorExtension.getInstance().findAdvisor(loadActionId);
+	protected IOAdvisor<?> getLoadAdvisor(String loadActionId, ServiceProvider serviceProvider) {
+		return IOAdvisorExtension.getInstance().findAdvisor(loadActionId, serviceProvider);
 	}
 
 	private void setParameters(IOProvider provider, Map<String, String> parameters) {
@@ -246,7 +253,8 @@ public class ActionProjectFile implements ProjectFile {
 
 		// find advisor
 		@SuppressWarnings("rawtypes")
-		IOAdvisor advisor = IOAdvisorExtension.getInstance().findAdvisor(saveActionId);
+		IOAdvisor advisor = IOAdvisorExtension.getInstance().findAdvisor(saveActionId,
+				serviceProvider);
 		checkState(advisor != null, "No advisor for saving project file found");
 
 		// configure provider

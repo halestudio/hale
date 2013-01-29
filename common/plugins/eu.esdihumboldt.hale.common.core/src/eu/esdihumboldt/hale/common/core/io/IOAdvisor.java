@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.common.core.io;
 
+import eu.esdihumboldt.hale.common.core.ServiceProvider;
+
 /**
  * Advises in the configuration of an {@link IOProvider} in a certain context
  * (e.g. the UI services) and integrates the execution results into this
@@ -26,6 +28,17 @@ package eu.esdihumboldt.hale.common.core.io;
  * @author Simon Templer
  */
 public interface IOAdvisor<T extends IOProvider> {
+
+	/**
+	 * Set the service provider through which the advisor can access services in
+	 * the current context. This method must be called before
+	 * {@link #prepareProvider(IOProvider)},
+	 * {@link #updateConfiguration(IOProvider)} or
+	 * {@link #handleResults(IOProvider)} is called
+	 * 
+	 * @param serviceProvider the service provider
+	 */
+	public void setServiceProvider(ServiceProvider serviceProvider);
 
 	/**
 	 * Prepare the I/O provider when it is created. This may be executed even if

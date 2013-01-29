@@ -22,7 +22,11 @@ import org.eclipse.core.commands.operations.IUndoContext;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.operations.UndoRedoActionGroup;
+
+import de.fhg.igd.osgi.util.OsgiUtils;
+import eu.esdihumboldt.hale.common.core.ServiceProvider;
 
 /**
  * Hale UI utility methods.
@@ -30,6 +34,32 @@ import org.eclipse.ui.operations.UndoRedoActionGroup;
  * @author Simon Templer
  */
 public abstract class HaleUI {
+
+	private static final ServiceProvider uiServiceProvider = new ServiceProvider() {
+
+		@Override
+		public <T> T getService(Class<T> serviceInterface) {
+			// first try workbench
+			@SuppressWarnings("unchecked")
+			T service = (T) PlatformUI.getWorkbench().getService(serviceInterface);
+
+			// then OSGi
+			if (service == null) {
+				service = OsgiUtils.getService(serviceInterface);
+			}
+
+			return service;
+		}
+	};
+
+	/**
+	 * Get the service provider for the HALE UI context.
+	 * 
+	 * @return the service provider instance
+	 */
+	public static ServiceProvider getServiceProvider() {
+		return uiServiceProvider;
+	}
 
 	/**
 	 * Register a view site for undo/redo in workbench context.

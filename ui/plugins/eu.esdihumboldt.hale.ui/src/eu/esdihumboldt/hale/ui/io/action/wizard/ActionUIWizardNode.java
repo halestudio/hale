@@ -25,6 +25,7 @@ import org.eclipse.swt.graphics.Image;
 
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorExtension;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.action.ActionUI;
 import eu.esdihumboldt.hale.ui.util.wizard.AbstractWizardNode;
@@ -70,7 +71,7 @@ public class ActionUIWizardNode extends AbstractWizardNode {
 		try {
 			IOWizard<?> wizard = actionUI.createExtensionObject();
 			IOAdvisor<?> advisor = IOAdvisorExtension.getInstance().findAdvisor(
-					actionUI.getActionID());
+					actionUI.getActionID(), HaleUI.getServiceProvider());
 			((IOWizard) wizard).setAdvisor(advisor, actionUI.getActionID());
 			return wizard;
 		} catch (Exception e) {
