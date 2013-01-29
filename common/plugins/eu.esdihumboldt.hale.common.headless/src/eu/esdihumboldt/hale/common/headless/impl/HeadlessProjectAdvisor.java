@@ -24,6 +24,7 @@ import java.util.Map;
 import eu.esdihumboldt.hale.common.align.io.AlignmentIO;
 import eu.esdihumboldt.hale.common.align.io.AlignmentReader;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.core.ServiceProvider;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
@@ -123,9 +124,12 @@ public class HeadlessProjectAdvisor extends AbstractIOAdvisor<ProjectReader> {
 	 * 
 	 * @param reportHandler the report handler to use when executing contained
 	 *            I/O configurations, may be <code>null</code>
+	 * @param serviceProvider the service provider in the current context
 	 */
-	public HeadlessProjectAdvisor(ReportHandler reportHandler) {
+	public HeadlessProjectAdvisor(ReportHandler reportHandler, ServiceProvider serviceProvider) {
 		super();
+
+		setServiceProvider(serviceProvider);
 
 		this.reportHandler = reportHandler;
 
@@ -150,12 +154,13 @@ public class HeadlessProjectAdvisor extends AbstractIOAdvisor<ProjectReader> {
 				AlignmentIO.ACTION_LOAD_ALIGNMENT, //
 				null, // auto-detect provider for loading
 				new HashMap<String, String>(), // no parameters givens
-				null, null, null) // give null for save related parts (should
-									// not be called
+				null, null, null, this) // give null for save related parts
+										// (should not be called)
 				{
 
 					@Override
-					protected IOAdvisor<?> getLoadAdvisor(String loadActionId) {
+					protected IOAdvisor<?> getLoadAdvisor(String loadActionId,
+							ServiceProvider serviceProvider) {
 						return alignmentAdvisor;
 					}
 				});

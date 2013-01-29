@@ -17,10 +17,14 @@
 package eu.esdihumboldt.hale.common.core.io.extension;
 
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
+import eu.esdihumboldt.hale.common.core.ServiceProvider;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 
 /**
- * Factory for {@link IOAdvisor}s
+ * Factory for {@link IOAdvisor}s.
+ * 
+ * Use {@link #createAdvisor(ServiceProvider)} to create an {@link IOAdvisor}
+ * instance, calling {@link #createExtensionObject()} is disallowed.
  * 
  * @author Simon Templer
  */
@@ -32,5 +36,15 @@ public interface IOAdvisorFactory extends ExtensionObjectFactory<IOAdvisor<?>> {
 	 * @return the associated action ID
 	 */
 	public String getActionID();
+
+	/**
+	 * Create an I/O advisor with the given service provider.
+	 * 
+	 * @param serviceProvider the service provider the advisor will use to
+	 *            access services
+	 * @return the I/O advisor
+	 * @throws Exception if instantiating the I/O advisor fails
+	 */
+	public IOAdvisor<?> createAdvisor(ServiceProvider serviceProvider) throws Exception;
 
 }

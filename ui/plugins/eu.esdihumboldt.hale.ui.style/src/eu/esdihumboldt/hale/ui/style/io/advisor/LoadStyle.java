@@ -16,8 +16,6 @@
 
 package eu.esdihumboldt.hale.ui.style.io.advisor;
 
-import org.eclipse.ui.PlatformUI;
-
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
 import eu.esdihumboldt.hale.ui.io.DefaultIOAdvisor;
@@ -36,7 +34,7 @@ public class LoadStyle extends DefaultIOAdvisor<StyleReader> {
 	 */
 	@Override
 	public void handleResults(StyleReader provider) {
-		StyleService ss = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
+		StyleService ss = getService(StyleService.class);
 
 		ss.addStyles(provider.getStyles());
 

@@ -15,8 +15,6 @@
  */
 package eu.esdihumboldt.hale.ui.codelist.io;
 
-import org.eclipse.ui.PlatformUI;
-
 import eu.esdihumboldt.hale.common.codelist.CodeList;
 import eu.esdihumboldt.hale.common.codelist.io.CodeListReader;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
@@ -38,8 +36,7 @@ public class CodeListImportAdvisor extends DefaultIOAdvisor<CodeListReader> {
 	public void handleResults(CodeListReader provider) {
 		CodeList code = provider.getCodeList();
 
-		CodeListService cs = (CodeListService) PlatformUI.getWorkbench().getService(
-				CodeListService.class);
+		CodeListService cs = getService(CodeListService.class);
 		cs.addCodeList(code);
 
 		super.handleResults(provider);
