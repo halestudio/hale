@@ -19,8 +19,6 @@ package eu.esdihumboldt.hale.ui.function.contribution;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.ui.PlatformUI;
-
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
@@ -29,7 +27,6 @@ import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeParameter;
-import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.align.model.Type;
@@ -98,14 +95,18 @@ public class SchemaSelectionFunctionContribution extends AbstractFunctionWizardC
 	 *         <code>false</code> otherwise
 	 */
 	private boolean matchPropertyFunction(PropertyFunction function, SchemaSelection selection) {
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-				AlignmentService.class);
-
-		if (!AlignmentUtil.hasTypeRelation(as.getAlignment())) {
-			// don't allow creating property relations if there are no type
-			// relations present
-			return false;
-		}
+		/*
+		 * Deactivated restriction that property cells can only be created with
+		 * existing type cells.
+		 */
+//		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+//				AlignmentService.class);
+//
+//		if (!AlignmentUtil.hasTypeRelation(as.getAlignment())) {
+//			// don't allow creating property relations if there are no type
+//			// relations present
+//			return false;
+//		}
 
 		if (selection == null || selection.isEmpty()) {
 			// for no selection always allow creating a new cell if there are
