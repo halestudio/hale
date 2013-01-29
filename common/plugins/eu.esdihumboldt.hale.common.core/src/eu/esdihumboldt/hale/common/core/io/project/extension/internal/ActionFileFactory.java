@@ -24,6 +24,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.IConfigurationElement;
 
 import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
+import eu.esdihumboldt.hale.common.core.ServiceProvider;
 import eu.esdihumboldt.hale.common.core.io.project.extension.ProjectFileFactory;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 
@@ -36,13 +37,17 @@ public class ActionFileFactory implements ProjectFileFactory {
 
 	private final IConfigurationElement conf;
 
+	private final ServiceProvider serviceProvider;
+
 	/**
 	 * Create a factory based on the given configuration
 	 * 
 	 * @param element the configuration element
+	 * @param serviceProvider the service provider to use for I/O advisors
 	 */
-	public ActionFileFactory(IConfigurationElement element) {
+	public ActionFileFactory(IConfigurationElement element, ServiceProvider serviceProvider) {
 		this.conf = element;
+		this.serviceProvider = serviceProvider;
 	}
 
 	/**
@@ -83,7 +88,7 @@ public class ActionFileFactory implements ProjectFileFactory {
 		checkNotNull(saveActionId, "Action ID for saving the project file not specified");
 
 		return new ActionProjectFile(loadActionId, loadProviderId, loadParameters, saveActionId,
-				saveProviderId, saveParameters);
+				saveProviderId, saveParameters, serviceProvider);
 	}
 
 	private void addParameters(Map<String, String> parameterMap, IConfigurationElement conf) {

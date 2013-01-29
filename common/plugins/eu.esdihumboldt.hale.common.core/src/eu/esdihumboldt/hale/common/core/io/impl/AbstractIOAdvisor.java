@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.hale.common.core.io.impl;
 
+import eu.esdihumboldt.hale.common.core.ServiceProvider;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 
@@ -26,7 +27,20 @@ import eu.esdihumboldt.hale.common.core.io.IOProvider;
  * 
  * @author Simon Templer
  */
-public abstract class AbstractIOAdvisor<T extends IOProvider> implements IOAdvisor<T> {
+public abstract class AbstractIOAdvisor<T extends IOProvider> implements IOAdvisor<T>,
+		ServiceProvider {
+
+	private ServiceProvider serviceProvider;
+
+	@Override
+	public void setServiceProvider(ServiceProvider serviceProvider) {
+		this.serviceProvider = serviceProvider;
+	}
+
+	@Override
+	public <X> X getService(Class<X> serviceInterface) {
+		return serviceProvider.getService(serviceInterface);
+	}
 
 	/**
 	 * @see IOAdvisor#prepareProvider(IOProvider)

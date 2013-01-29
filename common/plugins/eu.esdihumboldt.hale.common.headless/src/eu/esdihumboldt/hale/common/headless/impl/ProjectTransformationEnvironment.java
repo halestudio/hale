@@ -27,6 +27,7 @@ import com.google.common.base.Strings;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.core.ServiceProvider;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
@@ -67,6 +68,18 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 	private final List<IOConfiguration> exportPresets = new ArrayList<IOConfiguration>();
 
 	/**
+	 * Project context service provider.
+	 */
+	private final ServiceProvider serviceProvider = new ServiceProvider() {
+
+		@Override
+		public <T> T getService(Class<T> serviceInterface) {
+			// FIXME access services like LookupTable service!
+			return null;
+		}
+	};
+
+	/**
 	 * Create a transformation environment based on a project file.
 	 * 
 	 * @param id the identifier for the transformation environment
@@ -89,7 +102,8 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 			// configure reader
 			reader.setSource(input);
 
-			HeadlessProjectAdvisor advisor = new HeadlessProjectAdvisor(reportHandler);
+			HeadlessProjectAdvisor advisor = new HeadlessProjectAdvisor(reportHandler,
+					serviceProvider);
 			HeadlessIO.executeProvider(reader, advisor, null, reportHandler);
 			// XXX progress???!!
 

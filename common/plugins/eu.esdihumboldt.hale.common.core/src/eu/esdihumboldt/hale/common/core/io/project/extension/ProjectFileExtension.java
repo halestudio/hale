@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.common.core.io.project.extension;
 import org.eclipse.core.runtime.IConfigurationElement;
 
 import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension;
+import eu.esdihumboldt.hale.common.core.ServiceProvider;
 import eu.esdihumboldt.hale.common.core.io.project.extension.internal.ActionFileFactory;
 import eu.esdihumboldt.hale.common.core.io.project.extension.internal.CustomFileFactory;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
@@ -31,29 +32,21 @@ import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 public class ProjectFileExtension extends IdentifiableExtension<ProjectFileFactory> {
 
 	/**
-	 * Get the extension instance
-	 * 
-	 * @return the project file extension
-	 */
-	public static ProjectFileExtension getInstance() {
-		if (instance == null) {
-			instance = new ProjectFileExtension();
-		}
-		return instance;
-	}
-
-	/**
 	 * The project extension point ID
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.io.project";
 
-	private static ProjectFileExtension instance;
+	private final ServiceProvider serviceProvider;
 
 	/**
-	 * Default constructor
+	 * Create a project file extension instance.
+	 * 
+	 * @param serviceProvider the service provider to use for eventual I/O
+	 *            advisors created
 	 */
-	private ProjectFileExtension() {
+	public ProjectFileExtension(ServiceProvider serviceProvider) {
 		super(ID);
+		this.serviceProvider = serviceProvider;
 	}
 
 	/**
@@ -70,7 +63,7 @@ public class ProjectFileExtension extends IdentifiableExtension<ProjectFileFacto
 	@Override
 	protected ProjectFileFactory create(String elementId, IConfigurationElement element) {
 		if (element.getName().equals("action-file")) {
-			return new ActionFileFactory(element);
+			return new ActionFileFactory(element, serviceProvider);
 		}
 		else if (element.getName().equals("custom-file")) {
 			return new CustomFileFactory(element);

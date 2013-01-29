@@ -29,6 +29,7 @@ import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
 import de.cs3d.util.eclipse.extension.FactoryFilter;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.ServiceProvider;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 
 /**
@@ -86,6 +87,23 @@ public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdviso
 			return conf.getAttribute("action");
 		}
 
+		@Override
+		public IOAdvisor<?> createExtensionObject() throws Exception {
+			throw new IllegalStateException(
+					"Creating an I/O advisor w/o service provider forbidden");
+		}
+
+		@Override
+		public IOAdvisor<?> createAdvisor(ServiceProvider serviceProvider) throws Exception {
+			if (serviceProvider == null)
+				throw new IllegalArgumentException(
+						"Service provider must be specified when creating an I/O advisor");
+
+			IOAdvisor<?> advisor = super.createExtensionObject();
+			advisor.setServiceProvider(serviceProvider);
+			return advisor;
+		}
+
 	}
 
 	private static final ALogger log = ALoggerFactory.getLogger(IOAdvisorExtension.class);
@@ -126,9 +144,11 @@ public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdviso
 	 * Find the advisor for an action
 	 * 
 	 * @param actionId the action identifier
+	 * @param serviceProvider the service provider the new advisor shall be
+	 *            configured with
 	 * @return the advisor or <code>null</code>
 	 */
-	public IOAdvisor<?> findAdvisor(final String actionId) {
+	public IOAdvisor<?> findAdvisor(final String actionId, final ServiceProvider serviceProvider) {
 		// find associated advisor(s)
 		List<IOAdvisorFactory> advisors = getFactories(new FactoryFilter<IOAdvisor<?>, IOAdvisorFactory>() {
 
@@ -156,7 +176,7 @@ public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdviso
 			}
 
 			try {
-				advisor = advisors.get(0).createExtensionObject();
+				advisor = advisors.get(0).createAdvisor(serviceProvider);
 			} catch (Exception e) {
 				log.error("Error creating advisor instance", e);
 				advisor = null;

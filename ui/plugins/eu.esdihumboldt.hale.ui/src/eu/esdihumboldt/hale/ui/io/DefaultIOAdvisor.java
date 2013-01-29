@@ -16,8 +16,6 @@
 
 package eu.esdihumboldt.hale.ui.io;
 
-import org.eclipse.ui.PlatformUI;
-
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
@@ -40,8 +38,7 @@ public abstract class DefaultIOAdvisor<T extends IOProvider> extends AbstractIOA
 		super.prepareProvider(provider);
 
 		if (provider instanceof ProjectInfoAware) {
-			ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-					ProjectService.class);
+			ProjectService ps = getService(ProjectService.class);
 			if (ps != null) {
 				((ProjectInfoAware) provider).setProjectInfo(ps.getProjectInfo());
 			}

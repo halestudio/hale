@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import eu.esdihumboldt.hale.common.core.ServiceProvider;
 import eu.esdihumboldt.hale.common.core.io.project.extension.ProjectFileExtension;
 import eu.esdihumboldt.hale.common.core.io.project.extension.ProjectFileFactory;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
@@ -45,12 +46,15 @@ public abstract class ProjectIO {
 	 * Create a set of default project files for use with {@link ProjectReader}
 	 * and {@link ProjectWriter}
 	 * 
+	 * @param serviceProvider the service provider to use for eventual I/O
+	 *            advisors created
 	 * @return the default project files
 	 */
-	public static Map<String, ProjectFile> createDefaultProjectFiles() {
+	public static Map<String, ProjectFile> createDefaultProjectFiles(ServiceProvider serviceProvider) {
 		Map<String, ProjectFile> result = new HashMap<String, ProjectFile>();
 
-		Collection<ProjectFileFactory> elements = ProjectFileExtension.getInstance().getElements();
+		Collection<ProjectFileFactory> elements = new ProjectFileExtension(serviceProvider)
+				.getElements();
 		for (ProjectFileFactory element : elements) {
 			result.put(element.getId(), element.createProjectFile());
 		}

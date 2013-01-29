@@ -35,6 +35,7 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorExtension;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 
@@ -109,7 +110,8 @@ public class IOWizardAction extends AbstractFactoryAction<ActionUI> {
 			final String actionId = getFactory().getActionID();
 
 			// find associated advisor
-			IOAdvisor<?> advisor = IOAdvisorExtension.getInstance().findAdvisor(actionId);
+			IOAdvisor<?> advisor = IOAdvisorExtension.getInstance().findAdvisor(actionId,
+					HaleUI.getServiceProvider());
 			checkState(advisor != null, "No advisor for action found");
 
 			// create wizard
