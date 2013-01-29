@@ -27,6 +27,7 @@ import org.eclipse.ui.PlatformUI;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
+import eu.esdihumboldt.hale.ui.common.definition.viewer.InheritedPropertiesFilter;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 import eu.esdihumboldt.hale.ui.service.entity.util.EntityTypeIndexContentProvider;
 import eu.esdihumboldt.hale.ui.service.population.UnpopulatedPropertiesFilter;
@@ -69,10 +70,15 @@ public class EntitySchemaExplorer extends SchemaExplorer {
 	 */
 	@Override
 	protected void prependToolbarActions(ToolBarManager manager) {
-		ViewerFilter filter = new UnpopulatedPropertiesFilter();
+		ViewerFilter unpopulated = new UnpopulatedPropertiesFilter();
 		manager.add(new FilterAction("Hide unpopulated properties", "Show unpopulated properties",
-				SchemasViewPlugin.getImageDescriptor("icons/empty.gif"), getTreeViewer(), filter,
-				true, true));
+				SchemasViewPlugin.getImageDescriptor("icons/empty.gif"), getTreeViewer(),
+				unpopulated, true, true));
+
+		ViewerFilter inherited = new InheritedPropertiesFilter();
+		manager.add(new FilterAction("Hide inherited properties", "Show inherited properties",
+				SchemasViewPlugin.getImageDescriptor("icons/inherited.gif"), getTreeViewer(),
+				inherited, true, true));
 
 		manager.add(new Separator());
 	}
