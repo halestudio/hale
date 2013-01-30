@@ -26,7 +26,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.operations.UndoRedoActionGroup;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
-import eu.esdihumboldt.hale.common.core.ServiceProvider;
+import eu.esdihumboldt.hale.common.core.service.ServiceManager;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
  * Hale UI utility methods.
@@ -37,11 +38,22 @@ public abstract class HaleUI {
 
 	private static final ServiceProvider uiServiceProvider = new ServiceProvider() {
 
+		/**
+		 * Project scope services
+		 */
+		private final ServiceProvider projectScope = new ServiceManager(
+				ServiceManager.SCOPE_PROJECT);
+
+		@SuppressWarnings("unchecked")
 		@Override
 		public <T> T getService(Class<T> serviceInterface) {
-			// first try workbench
-			@SuppressWarnings("unchecked")
-			T service = (T) PlatformUI.getWorkbench().getService(serviceInterface);
+			// first try project scope
+			T service = projectScope.getService(serviceInterface);
+
+			// then workbench
+			if (service == null) {
+				service = (T) PlatformUI.getWorkbench().getService(serviceInterface);
+			}
 
 			// then OSGi
 			if (service == null) {

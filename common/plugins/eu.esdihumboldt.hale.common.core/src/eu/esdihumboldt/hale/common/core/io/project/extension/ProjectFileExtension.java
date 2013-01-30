@@ -19,10 +19,10 @@ package eu.esdihumboldt.hale.common.core.io.project.extension;
 import org.eclipse.core.runtime.IConfigurationElement;
 
 import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension;
-import eu.esdihumboldt.hale.common.core.ServiceProvider;
 import eu.esdihumboldt.hale.common.core.io.project.extension.internal.ActionFileFactory;
 import eu.esdihumboldt.hale.common.core.io.project.extension.internal.CustomFileFactory;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
  * Extension for {@link ProjectFile}s

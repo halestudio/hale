@@ -27,7 +27,6 @@ import com.google.common.base.Strings;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
-import eu.esdihumboldt.hale.common.core.ServiceProvider;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
@@ -37,6 +36,8 @@ import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.core.report.ReportHandler;
+import eu.esdihumboldt.hale.common.core.service.ServiceManager;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.headless.HeadlessIO;
 import eu.esdihumboldt.hale.common.headless.TransformationEnvironment;
 import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
@@ -72,10 +73,13 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 	 */
 	private final ServiceProvider serviceProvider = new ServiceProvider() {
 
+		private final ServiceProvider projectScope = new ServiceManager(
+				ServiceManager.SCOPE_PROJECT);
+
 		@Override
 		public <T> T getService(Class<T> serviceInterface) {
-			// FIXME access services like LookupTable service!
-			return null;
+			// FIXME global scope not supported yet
+			return projectScope.getService(serviceInterface);
 		}
 	};
 

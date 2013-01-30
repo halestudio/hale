@@ -23,7 +23,7 @@ import java.util.Map;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.transformation.function.ExecutionContext;
-import eu.esdihumboldt.hale.common.core.ServiceProvider;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
  * Execution context for the transformation.

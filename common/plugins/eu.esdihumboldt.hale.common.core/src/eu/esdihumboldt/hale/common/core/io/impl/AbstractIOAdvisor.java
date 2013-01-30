@@ -16,9 +16,9 @@
 
 package eu.esdihumboldt.hale.common.core.io.impl;
 
-import eu.esdihumboldt.hale.common.core.ServiceProvider;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
  * Abstract {@link IOAdvisor} base implementation
