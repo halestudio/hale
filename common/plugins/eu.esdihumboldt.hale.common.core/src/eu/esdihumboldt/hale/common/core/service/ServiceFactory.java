@@ -13,22 +13,23 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.core;
+package eu.esdihumboldt.hale.common.core.service;
 
 /**
- * Interface for retrieving a service in a given context.
+ * Service factory interface.
  * 
  * @author Simon Templer
  */
-public interface ServiceProvider {
+public interface ServiceFactory {
 
 	/**
-	 * Get the service of the given type if available.
+	 * Create a new instance of a service.
 	 * 
-	 * @param serviceInterface the service interface or type
-	 * @return the service instance in the current context or <code>null</code>
-	 *         if no such service exists
+	 * @param serviceInterface the service interface
+	 * @param serviceLocator the service provider for accessing dependency
+	 *            services
+	 * @return the new service instance
 	 */
-	public <T> T getService(Class<T> serviceInterface);
+	public <T> T createService(Class<T> serviceInterface, ServiceProvider serviceLocator);
 
 }

@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.common.align.transformation.function;
 
 import java.util.Map;
 
-import eu.esdihumboldt.hale.common.core.ServiceProvider;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
  * Execution context of a transformation process. The information put into the

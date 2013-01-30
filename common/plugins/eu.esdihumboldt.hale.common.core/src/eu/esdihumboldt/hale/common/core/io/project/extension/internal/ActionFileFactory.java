@@ -24,9 +24,9 @@ import java.util.Map;
 import org.eclipse.core.runtime.IConfigurationElement;
 
 import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
-import eu.esdihumboldt.hale.common.core.ServiceProvider;
 import eu.esdihumboldt.hale.common.core.io.project.extension.ProjectFileFactory;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
  * Factory for I/O action related project files

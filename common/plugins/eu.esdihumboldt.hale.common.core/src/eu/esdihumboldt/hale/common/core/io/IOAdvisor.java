@@ -16,7 +16,7 @@
 
 package eu.esdihumboldt.hale.common.core.io;
 
-import eu.esdihumboldt.hale.common.core.ServiceProvider;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
  * Advises in the configuration of an {@link IOProvider} in a certain context

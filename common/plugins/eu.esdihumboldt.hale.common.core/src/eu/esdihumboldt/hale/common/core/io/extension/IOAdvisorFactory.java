@@ -17,8 +17,8 @@
 package eu.esdihumboldt.hale.common.core.io.extension;
 
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
-import eu.esdihumboldt.hale.common.core.ServiceProvider;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
  * Factory for {@link IOAdvisor}s.
