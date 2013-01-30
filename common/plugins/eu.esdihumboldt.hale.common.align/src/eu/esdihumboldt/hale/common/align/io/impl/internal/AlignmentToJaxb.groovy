@@ -94,7 +94,8 @@ class AlignmentToJaxb {
 
 		// the transformation parameters
 		cell.transformationParameters?.entries()?.each { Entry<String, ParameterValue> param ->
-			result.abstractParameter << convert(param.key, param.value)
+			def p = convert(param.key, param.value)
+			if (p) result.abstractParameter << p 
 		}
 
 		// source entities
@@ -130,10 +131,18 @@ class AlignmentToJaxb {
 	}
 
 	protected JAXBElement<? extends AbstractParameterType> convert(String name, ParameterValue value) {
+		/*
+		 * XXX are null parameters working like this OK? or should there be no
+		 * parameter created at all? 
+		 */
 		if (value.value instanceof String || value.value == null) {
 			// normal value
 			return of.createParameter(new ParameterType(name: name, value: value.value, 
 				type: (!value.type || value.type == ParameterValue.DEFAULT_TYPE ? null : value.type)))
+		}
+		else if (value.value instanceof Element) {
+			// parameter is the DOM
+			return of.createComplexParameter(new ComplexParameterType(name: name, any: value.value))
 		}
 		else {
 			// complex value
