@@ -18,6 +18,8 @@ package eu.esdihumboldt.hale.common.align.transformation.function;
 
 import java.util.Map;
 
+import eu.esdihumboldt.hale.common.core.ServiceProvider;
+
 /**
  * Execution context of a transformation process. The information put into the
  * execution context is held for the whole transformation process. It can be
@@ -28,7 +30,7 @@ import java.util.Map;
  * 
  * @author Simon Templer
  */
-public interface ExecutionContext {
+public interface ExecutionContext extends ServiceProvider {
 
 	/**
 	 * Get the execution context for the cell associated to the executed

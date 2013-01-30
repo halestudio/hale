@@ -54,6 +54,7 @@ import eu.esdihumboldt.hale.common.align.transformation.report.impl.Transformati
 import eu.esdihumboldt.hale.common.align.transformation.service.InstanceSink;
 import eu.esdihumboldt.hale.common.align.transformation.service.PropertyTransformer;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
+import eu.esdihumboldt.hale.common.core.ServiceProvider;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.impl.SubtaskProgressIndicator;
 import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
@@ -76,14 +77,15 @@ public class ConceptualSchemaTransformer implements TransformationService {
 
 	/**
 	 * @see TransformationService#transform(Alignment, InstanceCollection,
-	 *      InstanceSink, ProgressIndicator)
+	 *      InstanceSink, ServiceProvider, ProgressIndicator)
 	 */
 	@Override
 	public TransformationReport transform(Alignment alignment, InstanceCollection source,
-			InstanceSink target, ProgressIndicator progressIndicator) {
+			InstanceSink target, ServiceProvider serviceProvider,
+			ProgressIndicator progressIndicator) {
 		TransformationReporter reporter = new DefaultTransformationReporter(
 				"Instance transformation", true);
-		TransformationContext context = new TransformationContext();
+		TransformationContext context = new TransformationContext(serviceProvider);
 
 		final SubtaskProgressIndicator sub = new SubtaskProgressIndicator(progressIndicator) {
 

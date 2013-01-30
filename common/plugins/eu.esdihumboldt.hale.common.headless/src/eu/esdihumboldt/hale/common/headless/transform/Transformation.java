@@ -40,6 +40,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.functions.RetypeFunction;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReport;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
+import eu.esdihumboldt.hale.common.core.ServiceProvider;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.ProgressMonitorIndicator;
@@ -159,7 +160,8 @@ public class Transformation {
 		ExportJob exportJob = new ExportJob(targetSink, target, saveDataAdvisor, reportHandler);
 		ValidationJob validationJob = null; // no validation
 		return transform(sourceCollection, targetSink, exportJob, validationJob,
-				environment.getAlignment(), environment.getSourceSchema(), reportHandler, processId);
+				environment.getAlignment(), environment.getSourceSchema(), reportHandler,
+				environment, processId);
 	}
 
 	/**
@@ -172,6 +174,7 @@ public class Transformation {
 	 * @param alignment the alignment, may not be changed outside this method
 	 * @param sourceSchema the source schema
 	 * @param reportHandler the report handler
+	 * @param serviceProvider the service provider in the transformation context
 	 * @param processId the identifier for the transformation process, may be
 	 *            <code>null</code> if grouping the jobs to a job family is not
 	 *            necessary
@@ -182,7 +185,8 @@ public class Transformation {
 	public static ListenableFuture<Boolean> transform(InstanceCollection sources,
 			final LimboInstanceSink targetSink, final ExportJob exportJob,
 			final ValidationJob validationJob, final Alignment alignment, SchemaSpace sourceSchema,
-			final ReportHandler reportHandler, final Object processId) {
+			final ReportHandler reportHandler, final ServiceProvider serviceProvider,
+			final Object processId) {
 		final SettableFuture<Boolean> result = SettableFuture.create();
 
 		final InstanceCollection sourceToUse;
@@ -225,7 +229,8 @@ public class Transformation {
 						.getService(TransformationService.class);
 
 				TransformationReport report = transformationService.transform(alignment,
-						sourceToUse, targetSink, new ProgressMonitorIndicator(monitor));
+						sourceToUse, targetSink, serviceProvider, new ProgressMonitorIndicator(
+								monitor));
 
 				if (monitor.isCanceled()) {
 					targetSink.done(true);

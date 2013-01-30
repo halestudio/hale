@@ -25,6 +25,7 @@ import eu.esdihumboldt.cst.ConceptualSchemaTransformer;
 import eu.esdihumboldt.cst.test.DefaultTransformationTest;
 import eu.esdihumboldt.cst.test.TransformationExample;
 import eu.esdihumboldt.hale.common.align.transformation.service.impl.DefaultInstanceSink;
+import eu.esdihumboldt.hale.common.core.ServiceProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.NullProgressIndicator;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 
@@ -227,8 +228,16 @@ public class ConceptualSchemaTransformerTest extends DefaultTransformationTest {
 	protected List<Instance> transformData(TransformationExample example) throws Exception {
 		ConceptualSchemaTransformer transformer = new ConceptualSchemaTransformer();
 		DefaultInstanceSink sink = new DefaultInstanceSink();
+		// FIXME for now using null service provider
+		ServiceProvider serviceProvider = new ServiceProvider() {
+
+			@Override
+			public <T> T getService(Class<T> serviceInterface) {
+				return null;
+			}
+		};
 		transformer.transform(example.getAlignment(), example.getSourceInstances(), sink,
-				new NullProgressIndicator());
+				serviceProvider, new NullProgressIndicator());
 
 		return sink.getInstances();
 	}

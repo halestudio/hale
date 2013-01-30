@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.common.align.transformation.service;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReport;
+import eu.esdihumboldt.hale.common.core.ServiceProvider;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 
@@ -35,11 +36,14 @@ public interface TransformationService {
 	 * @param alignment the alignment
 	 * @param source the source instances
 	 * @param target the transformed instance sink
+	 * @param serviceProvider provider for services that can be accessed by
+	 *            transformation functions in context of the transformation
 	 * @param progressIndicator the progress indicator
 	 * @return the transformation report
 	 */
 	public TransformationReport transform(Alignment alignment, InstanceCollection source,
-			InstanceSink target, ProgressIndicator progressIndicator);
+			InstanceSink target, ServiceProvider serviceProvider,
+			ProgressIndicator progressIndicator);
 
 	/**
 	 * States if the execution of the transformation is cancelable.
