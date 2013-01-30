@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jaxb:bindings xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" jaxb:version="2.0">
+	<jaxb:bindings schemaLocation="project.xsd" node="/xsd:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package
+				name="eu.esdihumboldt.hale.common.core.io.project.model.internal.generated" />
+		</jaxb:schemaBindings>
+	</jaxb:bindings>
+</jaxb:bindings>

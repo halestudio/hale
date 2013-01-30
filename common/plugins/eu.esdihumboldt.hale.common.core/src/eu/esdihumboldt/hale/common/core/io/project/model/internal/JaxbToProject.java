@@ -1,0 +1,123 @@
+/*
+ * Copyright (c) 2013 Data Harmonisation Panel
+ * 
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
+ */
+
+package eu.esdihumboldt.hale.common.core.io.project.model.internal;
+
+import java.net.URI;
+import java.util.Date;
+import java.util.Map;
+
+import javax.xml.bind.JAXBElement;
+import javax.xml.datatype.XMLGregorianCalendar;
+
+import org.osgi.framework.Version;
+
+import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
+import eu.esdihumboldt.hale.common.core.io.project.model.Project;
+import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFileInfo;
+import eu.esdihumboldt.hale.common.core.io.project.model.internal.generated.ComplexPropertyType;
+import eu.esdihumboldt.hale.common.core.io.project.model.internal.generated.IOConfigurationType;
+import eu.esdihumboldt.hale.common.core.io.project.model.internal.generated.ProjectFileType;
+import eu.esdihumboldt.hale.common.core.io.project.model.internal.generated.ProjectType;
+import eu.esdihumboldt.hale.common.core.io.project.model.internal.generated.PropertyType;
+
+/**
+ * Converts a JAXB {@link ProjectType} to a {@link Project}.
+ * 
+ * @author Simon Templer
+ */
+public class JaxbToProject {
+
+	/**
+	 * Convert the given project.
+	 * 
+	 * @param project the project to convert
+	 * @return the project model object
+	 */
+	public static Project convert(ProjectType project) {
+		Project result = new Project();
+
+		result.setAuthor(project.getAuthor());
+		result.setCreated(toDate(project.getCreated()));
+		result.setDescription(project.getDescription());
+		result.setHaleVersion(toVersion(project.getVersion()));
+		result.setModified(toDate(project.getModified()));
+		result.setName(project.getName());
+
+		result.setSaveConfiguration(toIOConfiguration(project.getSaveConfig()));
+
+		for (IOConfigurationType resource : project.getResource()) {
+			result.getResources().add(toIOConfiguration(resource));
+		}
+
+		for (ProjectFileType file : project.getFile()) {
+			result.getProjectFiles().add(
+					new ProjectFileInfo(file.getName(), URI.create(file.getLocation())));
+		}
+
+		for (JAXBElement<?> property : project.getAbstractProperty()) {
+			Object value = property.getValue();
+			if (value instanceof PropertyType) {
+				addProperty(result.getProperties(), (PropertyType) value);
+			}
+			else if (value instanceof ComplexPropertyType) {
+				// TODO
+			}
+		}
+
+		return result;
+	}
+
+	private static IOConfiguration toIOConfiguration(IOConfigurationType config) {
+		IOConfiguration result = new IOConfiguration();
+
+		result.setActionId(config.getActionId());
+		result.setProviderId(config.getProviderId());
+		result.setName(config.getName());
+
+		for (JAXBElement<?> setting : config.getAbstractSetting()) {
+			Object value = setting.getValue();
+			if (value instanceof PropertyType) {
+				addProperty(result.getProviderConfiguration(), (PropertyType) value);
+			}
+			else if (value instanceof ComplexPropertyType) {
+				// TODO
+			}
+		}
+
+		return result;
+	}
+
+	private static void addProperty(Map<String, String> properties, PropertyType value) {
+		properties.put(value.getName(), value.getValue());
+	}
+
+	private static Version toVersion(String version) {
+		if (version == null) {
+			return null;
+		}
+
+		return Version.parseVersion(version);
+	}
+
+	private static Date toDate(XMLGregorianCalendar date) {
+		if (date == null) {
+			return null;
+		}
+
+		return date.toGregorianCalendar().getTime();
+	}
+
+}
