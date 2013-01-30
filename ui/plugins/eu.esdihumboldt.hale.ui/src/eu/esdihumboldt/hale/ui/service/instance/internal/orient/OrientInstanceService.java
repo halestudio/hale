@@ -412,7 +412,7 @@ public class OrientInstanceService extends AbstractInstanceService {
 					ATransaction trans = log.begin("Instance transformation");
 					try {
 						report = ts.transform(alignment, sources, sink,
-								new ProgressMonitorIndicator(monitor));
+								HaleUI.getServiceProvider(), new ProgressMonitorIndicator(monitor));
 
 						// publish report
 						ReportService rs = (ReportService) PlatformUI.getWorkbench().getService(

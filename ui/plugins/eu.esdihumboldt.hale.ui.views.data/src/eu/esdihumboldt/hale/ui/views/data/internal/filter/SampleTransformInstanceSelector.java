@@ -58,6 +58,7 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceMetadata;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstanceCollection;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
@@ -196,8 +197,10 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 							DefaultInstanceSink target = new DefaultInstanceSink();
 
 							// transform features
-							TransformationReport report = cst.transform(alService.getAlignment(), // Alignment
-									instances, target, new ProgressMonitorIndicator(monitor));
+							TransformationReport report = cst.transform(
+									alService.getAlignment(), // Alignment
+									instances, target, HaleUI.getServiceProvider(),
+									new ProgressMonitorIndicator(monitor));
 
 							if (!report.isSuccess()) {
 								// TODO log message

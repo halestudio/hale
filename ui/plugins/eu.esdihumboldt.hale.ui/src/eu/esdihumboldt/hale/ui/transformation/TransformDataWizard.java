@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.MultiInstanceCollection;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.DefaultReportHandler;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
@@ -82,7 +83,8 @@ public class TransformDataWizard extends Wizard {
 
 		Transformation.transform(rawSources, targetSink, sourceSelectionPage.getExportJob(),
 				sourceSelectionPage.getValidationJob(), alignment,
-				ss.getSchemas(SchemaSpaceID.SOURCE), DefaultReportHandler.getInstance(), null);
+				ss.getSchemas(SchemaSpaceID.SOURCE), DefaultReportHandler.getInstance(),
+				HaleUI.getServiceProvider(), null);
 
 		return true;
 	}

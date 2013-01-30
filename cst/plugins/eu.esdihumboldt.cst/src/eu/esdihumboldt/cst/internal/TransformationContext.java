@@ -23,6 +23,7 @@ import java.util.Map;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.transformation.function.ExecutionContext;
+import eu.esdihumboldt.hale.common.core.ServiceProvider;
 
 /**
  * Execution context for the transformation.
@@ -45,6 +46,19 @@ public class TransformationContext {
 			.synchronizedMap(new HashMap<Object, Object>());
 
 	private final Map<Cell, ExecutionContext> cachedContexts = new IdentityHashMap<Cell, ExecutionContext>();
+
+	private final ServiceProvider serviceProvider;
+
+	/**
+	 * Create a transformation context.
+	 * 
+	 * @param serviceProvider the provider for services needed by transformation
+	 *            functions
+	 */
+	public TransformationContext(ServiceProvider serviceProvider) {
+		super();
+		this.serviceProvider = serviceProvider;
+	}
 
 	/**
 	 * Get the execution context for the given cell.
@@ -85,6 +99,11 @@ public class TransformationContext {
 					@Override
 					public Map<Object, Object> getCellContext() {
 						return cellContext;
+					}
+
+					@Override
+					public <T> T getService(Class<T> serviceInterface) {
+						return serviceProvider.getService(serviceInterface);
 					}
 				};
 			}

@@ -229,4 +229,9 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 		return targetSchema;
 	}
 
+	@Override
+	public <T> T getService(Class<T> serviceInterface) {
+		return serviceProvider.getService(serviceInterface);
+	}
+
 }
