@@ -16,29 +16,18 @@
 
 package eu.esdihumboldt.hale.common.core.io.project.model;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.exolab.castor.mapping.Mapping;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.Unmarshaller;
-import org.exolab.castor.xml.ValidationException;
-import org.exolab.castor.xml.XMLContext;
 import org.osgi.framework.Version;
-import org.xml.sax.InputSource;
 
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
+import eu.esdihumboldt.hale.common.core.io.project.model.internal.JaxbProjectIO;
 
 /**
  * Represents a project.
@@ -53,28 +42,10 @@ public class Project implements ProjectInfo {
 	 * @param in the input stream
 	 * @return the project
 	 * 
-	 * @throws MappingException if the mapping could not be loaded
-	 * @throws MarshalException if the project could not be read
-	 * @throws ValidationException if the input stream did not provide valid XML
+	 * @throws Exception if the project could not be loaded
 	 */
-	public static Project load(InputStream in) throws MappingException, MarshalException,
-			ValidationException {
-		Mapping mapping = new Mapping(Project.class.getClassLoader());
-		mapping.loadMapping(new InputSource(Project.class.getResourceAsStream("Project.xml")));
-
-		XMLContext context = new XMLContext();
-		context.addMapping(mapping);
-
-		Unmarshaller unmarshaller = context.createUnmarshaller();
-		try {
-			return (Project) unmarshaller.unmarshal(new InputSource(in));
-		} finally {
-			try {
-				in.close();
-			} catch (IOException e) {
-				// ignore
-			}
-		}
+	public static Project load(InputStream in) throws Exception {
+		return JaxbProjectIO.load(in);
 	}
 
 	/**
@@ -82,38 +53,10 @@ public class Project implements ProjectInfo {
 	 * 
 	 * @param project the project to save
 	 * @param out the output stream
-	 * @throws MappingException if the mapping could not be loaded
-	 * @throws ValidationException if the mapping is no valid XML
-	 * @throws MarshalException if the project could not be marshaled
-	 * @throws IOException if the output could not be written
+	 * @throws Exception if saving the project fails
 	 */
-	public static void save(ProjectInfo project, OutputStream out) throws MappingException,
-			MarshalException, ValidationException, IOException {
-		Mapping mapping = new Mapping(Project.class.getClassLoader());
-		mapping.loadMapping(new InputSource(Project.class.getResourceAsStream("Project.xml")));
-
-		XMLContext context = new XMLContext();
-		context.setProperty("org.exolab.castor.indent", true); // enable
-																// indentation
-																// for
-																// marshaling as
-																// project files
-																// should be
-																// very small
-		context.addMapping(mapping);
-		Marshaller marshaller = context.createMarshaller();
-//		marshaller.setEncoding("UTF-8"); XXX not possible using the XMLContext but UTF-8 seems to be default, see http://jira.codehaus.org/browse/CASTOR-2846
-		Writer writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
-		try {
-			marshaller.setWriter(writer);
-			marshaller.marshal(project);
-		} finally {
-			try {
-				writer.close();
-			} catch (IOException e) {
-				// ignore
-			}
-		}
+	public static void save(Project project, OutputStream out) throws Exception {
+		JaxbProjectIO.save(project, out);
 	}
 
 	/**
