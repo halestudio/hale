@@ -124,10 +124,12 @@ public class JaxbToAlignment {
 			for (JAXBElement<? extends AbstractParameterType> param : cell.getAbstractParameter()) {
 				AbstractParameterType apt = param.getValue();
 				if (apt instanceof ParameterType) {
+					// treat string parameters or null parameters
 					ParameterType pt = (ParameterType) apt;
 					parameters.put(pt.getName(), new ParameterValue(pt.getType(), pt.getValue()));
 				}
 				else if (apt instanceof ComplexParameterType) {
+					// complex parameters
 					ComplexParameterType cpt = (ComplexParameterType) apt;
 					Element element = cpt.getAny();
 					QName name;
@@ -140,13 +142,16 @@ public class JaxbToAlignment {
 					ComplexValueDefinition cvt = ComplexValueExtension.getInstance().getDefinition(
 							name);
 					if (cvt != null) {
+						// create and return the complex parameter value
 						Object value = cvt.fromDOM(element);
 						parameters.put(cpt.getName(), new ParameterValue(null, value));
 					}
 					else {
-						throw new IllegalStateException(
-								"Could not load complex parameter value for element "
-										+ name.toString());
+						// the parameter value is the XML
+						parameters.put(cpt.getName(), new ParameterValue(null, element));
+//						throw new IllegalStateException(
+//								"Could not load complex parameter value for element "
+//										+ name.toString());
 					}
 				}
 				else

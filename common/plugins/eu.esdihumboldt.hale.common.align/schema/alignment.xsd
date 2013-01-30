@@ -152,7 +152,7 @@
 		</xs:complexContent>
 	</xs:complexType>
 	
-	<xs:element name="parameter" type="ParameterType" substitutionGroup="AbstractParameter" />
+	<xs:element name="parameter" type="ParameterType" substitutionGroup="AbstractParameter" nillable="true" />
 	
 	<!-- Qualified name -->
 	<xs:complexType name="QNameType">
