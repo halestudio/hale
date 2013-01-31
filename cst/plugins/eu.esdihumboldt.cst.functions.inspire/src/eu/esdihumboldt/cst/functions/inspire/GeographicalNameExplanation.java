@@ -81,9 +81,9 @@ public class GeographicalNameExplanation extends AbstractCellExplanation impleme
 
 			int index = 0;
 			for (Entity source : sources) {
-				String script = (index < scripts.size()) ? (scripts.get(index).getStringValue())
+				String script = (index < scripts.size()) ? (scripts.get(index).as(String.class))
 						: (null);
-				String trans = (index < transs.size()) ? (transs.get(index).getStringValue())
+				String trans = (index < transs.size()) ? (transs.get(index).as(String.class))
 						: (null);
 
 				if (html) {
@@ -151,7 +151,7 @@ public class GeographicalNameExplanation extends AbstractCellExplanation impleme
 
 	private void addOptionalParameter(StringBuilder sb, Cell cell, String paramName,
 			PropertyFunction function, boolean html) {
-		String value = CellUtil.getFirstRawParameter(cell, paramName);
+		String value = CellUtil.getFirstParameter(cell, paramName).as(String.class);
 		if (value != null && !value.isEmpty()) {
 			FunctionParameter param = function.getParameter(paramName);
 

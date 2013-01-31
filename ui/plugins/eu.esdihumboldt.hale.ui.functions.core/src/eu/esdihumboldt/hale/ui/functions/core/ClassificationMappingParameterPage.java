@@ -133,7 +133,7 @@ public class ClassificationMappingParameterPage extends
 
 		List<ParameterValue> mappings = initialValues.get(PARAMETER_CLASSIFICATIONS);
 		for (ParameterValue value : mappings) {
-			String s = value.getStringValue();
+			String s = value.as(String.class);
 			String[] splitted = s.split(" ");
 			try {
 				for (int i = 0; i < splitted.length; i++)
@@ -150,7 +150,7 @@ public class ClassificationMappingParameterPage extends
 		List<ParameterValue> notClassifiedActionParams = initialValues
 				.get(PARAMETER_NOT_CLASSIFIED_ACTION);
 		if (!notClassifiedActionParams.isEmpty())
-			notClassifiedAction = notClassifiedActionParams.get(0).getStringValue();
+			notClassifiedAction = notClassifiedActionParams.get(0).as(String.class);
 	}
 
 	/**

@@ -136,18 +136,18 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 			ListMultimap<String, ParameterValue> initialValues) {
 		if (initialValues != null && initialValues.size() != 0) {
 			// set the initial values if they exist
-			gender = initialValues.get(PROPERTY_GRAMMA_GENDER).get(0).getStringValue();
-			number = initialValues.get(PROPERTY_GRAMMA_NUMBER).get(0).getStringValue();
-			language = initialValues.get(PROPERTY_LANGUAGE).get(0).getStringValue();
-			nameStatus = initialValues.get(PROPERTY_NAMESTATUS).get(0).getStringValue();
-			nativeness = initialValues.get(PROPERTY_NATIVENESS).get(0).getStringValue();
-			ipa = initialValues.get(PROPERTY_PRONUNCIATIONIPA).get(0).getStringValue();
+			gender = initialValues.get(PROPERTY_GRAMMA_GENDER).get(0).as(String.class);
+			number = initialValues.get(PROPERTY_GRAMMA_NUMBER).get(0).as(String.class);
+			language = initialValues.get(PROPERTY_LANGUAGE).get(0).as(String.class);
+			nameStatus = initialValues.get(PROPERTY_NAMESTATUS).get(0).as(String.class);
+			nativeness = initialValues.get(PROPERTY_NATIVENESS).get(0).as(String.class);
+			ipa = initialValues.get(PROPERTY_PRONUNCIATIONIPA).get(0).as(String.class);
 			try {
-				sound = initialValues.get(PROPERTY_PRONUNCIATIONSOUNDLINK).get(0).getStringValue();
+				sound = initialValues.get(PROPERTY_PRONUNCIATIONSOUNDLINK).get(0).as(String.class);
 			} catch (Exception e) {
 				sound = "";
 			}
-			sourceOfName = initialValues.get(PROPERTY_SOURCEOFNAME).get(0).getStringValue();
+			sourceOfName = initialValues.get(PROPERTY_SOURCEOFNAME).get(0).as(String.class);
 
 			// script and transliteration can have more than one value, so set
 			// lists for them
@@ -156,7 +156,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 				tmp = initialValues.get(PROPERTY_SCRIPT);
 				scripts = new ArrayList<String>(tmp.size());
 				for (ParameterValue value : tmp)
-					scripts.add(value.getStringValue());
+					scripts.add(value.as(String.class));
 			}
 			else
 				scripts = Collections.emptyList();
@@ -164,7 +164,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 				tmp = initialValues.get(PROPERTY_TRANSLITERATION);
 				trans = new ArrayList<String>(tmp.size());
 				for (ParameterValue value : tmp)
-					trans.add(value.getStringValue());
+					trans.add(value.as(String.class));
 			}
 			else
 				trans = Collections.emptyList();

@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.io.xslt.transformations.property.rename;
 import eu.esdihumboldt.hale.common.align.model.Cell
 import eu.esdihumboldt.hale.common.align.model.CellUtil
 import eu.esdihumboldt.hale.common.align.model.functions.RenameFunction
+import eu.esdihumboldt.hale.common.core.io.Value
 import eu.esdihumboldt.hale.io.xslt.XslPropertyTransformation
 import eu.esdihumboldt.hale.io.xslt.functions.XslFunction
 import eu.esdihumboldt.hale.io.xslt.transformations.base.AbstractXslTransformation
@@ -41,8 +42,8 @@ RenameFunction {
 	@Override
 	public XslFunction selectFunction(Cell cell) {
 		use (CellUtil) {
-			def structuralRename = Boolean.parseBoolean(cell.getOptionalRawParameter(
-					PARAMETER_STRUCTURAL_RENAME, 'false'))
+			def structuralRename = cell.getOptionalParameter(
+					PARAMETER_STRUCTURAL_RENAME, Value.of(false)).as(Boolean)
 
 			if (!structuralRename) {
 				// copy value only

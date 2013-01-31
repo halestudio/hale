@@ -21,6 +21,7 @@ import java.util.Map;
 
 import com.google.common.collect.ListMultimap;
 
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
@@ -60,27 +61,27 @@ public class GeographicalName extends
 		}
 
 		// get all parameters defined by the wizard page
-		String ipa = getRawParameterChecked(PROPERTY_PRONUNCIATIONIPA);
+		String ipa = getParameterChecked(PROPERTY_PRONUNCIATIONIPA).as(String.class);
 		// we need a default value and a try/catch-block because in older
 		// version we couldn't edit the pronunciationSoundLink text field
 		String sound = "";
 		try {
-			sound = getRawParameterChecked(PROPERTY_PRONUNCIATIONSOUNDLINK);
+			sound = getParameterChecked(PROPERTY_PRONUNCIATIONSOUNDLINK).as(String.class);
 		} catch (Exception e) {
 			// do nothing
 		}
-		String language = getRawParameterChecked(PROPERTY_LANGUAGE);
-		String sourceOfName = getRawParameterChecked(PROPERTY_SOURCEOFNAME);
-		String nameStatus = getRawParameterChecked(PROPERTY_NAMESTATUS);
-		String nativeness = getRawParameterChecked(PROPERTY_NATIVENESS);
-		String gender = getRawParameterChecked(PROPERTY_GRAMMA_GENDER);
-		String number = getRawParameterChecked(PROPERTY_GRAMMA_NUMBER);
+		String language = getParameterChecked(PROPERTY_LANGUAGE).as(String.class);
+		String sourceOfName = getParameterChecked(PROPERTY_SOURCEOFNAME).as(String.class);
+		String nameStatus = getParameterChecked(PROPERTY_NAMESTATUS).as(String.class);
+		String nativeness = getParameterChecked(PROPERTY_NATIVENESS).as(String.class);
+		String gender = getParameterChecked(PROPERTY_GRAMMA_GENDER).as(String.class);
+		String number = getParameterChecked(PROPERTY_GRAMMA_NUMBER).as(String.class);
 
 		// get the script and transliteration parameters
 		// should have the same order like source properties
-		ListMultimap<String, String> params = getRawParameters();
-		List<String> scripts = params.get(PROPERTY_SCRIPT);
-		List<String> trans = params.get(PROPERTY_TRANSLITERATION);
+		ListMultimap<String, ParameterValue> params = getParameters();
+		List<ParameterValue> scripts = params.get(PROPERTY_SCRIPT);
+		List<ParameterValue> trans = params.get(PROPERTY_TRANSLITERATION);
 
 		if (inputs.size() != scripts.size() || inputs.size() != trans.size()) {
 			throw new TransformationException(
@@ -227,9 +228,9 @@ public class GeographicalName extends
 			DefaultInstance transliterationInstance = new DefaultInstance(transliterationType, null);
 
 			// build the spelling instance
-			scriptInstance.setValue(scripts.get(i));
+			scriptInstance.setValue(scripts.get(i).as(String.class));
 
-			transliterationInstance.setValue(trans.get(i));
+			transliterationInstance.setValue(trans.get(i).as(String.class));
 
 			spellOfNameInst.addProperty(spellOfNameChildScript.getName(), scriptInstance);
 			// set text value from inputs

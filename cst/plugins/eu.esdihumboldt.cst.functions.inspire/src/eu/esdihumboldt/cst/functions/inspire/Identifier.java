@@ -52,11 +52,11 @@ public class Identifier extends AbstractSingleTargetPropertyTransformation<Trans
 		String source = input.getValueAs(String.class);
 
 		// get all values for the parameters set by the parameter page
-		String countryName = getRawParameterChecked(COUNTRY_PARAMETER_NAME);
-		String providerName = getRawParameterChecked(DATA_PROVIDER_PARAMETER_NAME);
-		String productName = getRawParameterChecked(PRODUCT_PARAMETER_NAME);
-		String version = getRawParameterChecked(VERSION);
-		String versionNilReason = getRawParameterChecked(VERSION_NIL_REASON);
+		String countryName = getParameterChecked(COUNTRY_PARAMETER_NAME).as(String.class);
+		String providerName = getParameterChecked(DATA_PROVIDER_PARAMETER_NAME).as(String.class);
+		String productName = getParameterChecked(PRODUCT_PARAMETER_NAME).as(String.class);
+		String version = getParameterChecked(VERSION).as(String.class);
+		String versionNilReason = getParameterChecked(VERSION_NIL_REASON).as(String.class);
 
 		// definition of the target property (inspireId in this case)
 		TypeDefinition targetType = resultProperty.getDefinition().getPropertyType();

@@ -39,7 +39,7 @@ class XslFormattedString extends AbstractFunctionTransformation implements Forma
 	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables,
 	XsltGenerationContext context) {
 		// get the pattern parameter
-		def pattern = CellUtil.getFirstRawParameter(cell, PARAMETER_PATTERN)
+		def pattern = CellUtil.getFirstParameter(cell, PARAMETER_PATTERN).as(String)
 		if (!pattern) {
 			// empty text if no pattern
 			return "<xsl:text />"

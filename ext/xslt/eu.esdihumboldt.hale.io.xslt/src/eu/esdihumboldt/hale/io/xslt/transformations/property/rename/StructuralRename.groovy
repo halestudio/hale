@@ -20,6 +20,7 @@ import com.google.common.collect.ListMultimap
 import eu.esdihumboldt.hale.common.align.model.Cell
 import eu.esdihumboldt.hale.common.align.model.CellUtil
 import eu.esdihumboldt.hale.common.align.model.functions.RenameFunction
+import eu.esdihumboldt.hale.common.core.io.Value
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
@@ -66,8 +67,8 @@ class StructuralRename implements XslFunction, RenameFunction {
 		this.xsltContext = xsltContext;
 
 		use (CellUtil, DefinitionUtil) {
-			ignoreNamespaces = Boolean.parseBoolean(cell.getOptionalRawParameter(
-					PARAMETER_IGNORE_NAMESPACES, 'false'));
+			ignoreNamespaces = cell.getOptionalParameter(
+					PARAMETER_IGNORE_NAMESPACES, Value.of(false)).as(Boolean);
 
 			XslVariable sourceVar = variables.get(null)[0]
 
