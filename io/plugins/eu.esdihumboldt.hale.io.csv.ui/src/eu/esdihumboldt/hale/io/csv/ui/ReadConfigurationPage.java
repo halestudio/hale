@@ -36,6 +36,7 @@ import com.google.common.collect.HashBiMap;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVConfiguration;
@@ -58,7 +59,7 @@ public class ReadConfigurationPage extends
 	private Combo quote;
 	private Combo escape;
 
-	private HashBiMap<String, String> bmap;
+	private final HashBiMap<String, String> bmap;
 
 	private QName last_name;
 
@@ -136,22 +137,22 @@ public class ReadConfigurationPage extends
 		String esc = escape.getText();
 
 		if (bmap.get(sep) != null) {
-			provider.setParameter(CSVConstants.PARAM_SEPARATOR, bmap.get(sep));
+			provider.setParameter(CSVConstants.PARAM_SEPARATOR, Value.of(bmap.get(sep)));
 		}
 		else {
-			provider.setParameter(CSVConstants.PARAM_SEPARATOR, sep);
+			provider.setParameter(CSVConstants.PARAM_SEPARATOR, Value.of(sep));
 		}
 		if (bmap.get(qu) != null) {
-			provider.setParameter(CSVConstants.PARAM_QUOTE, bmap.get(qu));
+			provider.setParameter(CSVConstants.PARAM_QUOTE, Value.of(bmap.get(qu)));
 		}
 		else {
-			provider.setParameter(CSVConstants.PARAM_QUOTE, qu);
+			provider.setParameter(CSVConstants.PARAM_QUOTE, Value.of(qu));
 		}
 		if (bmap.get(esc) != null) {
-			provider.setParameter(CSVConstants.PARAM_ESCAPE, bmap.get(esc));
+			provider.setParameter(CSVConstants.PARAM_ESCAPE, Value.of(bmap.get(esc)));
 		}
 		else {
-			provider.setParameter(CSVConstants.PARAM_ESCAPE, esc);
+			provider.setParameter(CSVConstants.PARAM_ESCAPE, Value.of(esc));
 		}
 		return true;
 	}
@@ -241,26 +242,27 @@ public class ReadConfigurationPage extends
 
 			if (Math.max(tab, comma) == tab && Math.max(tab, pipe) == tab
 					&& Math.max(tab, semicolon) == tab) {
-				p.setParameter(CSVConstants.PARAM_SEPARATOR, "TAB");
+				p.setParameter(CSVConstants.PARAM_SEPARATOR, Value.of("TAB"));
 			}
 			else if (Math.max(comma, tab) == comma && Math.max(comma, pipe) == comma
 					&& Math.max(comma, semicolon) == comma) {
-				p.setParameter(CSVConstants.PARAM_SEPARATOR, ",");
+				p.setParameter(CSVConstants.PARAM_SEPARATOR, Value.of(","));
 			}
 			else if (Math.max(semicolon, tab) == semicolon
 					&& Math.max(semicolon, comma) == semicolon
 					&& Math.max(semicolon, pipe) == semicolon) {
-				p.setParameter(CSVConstants.PARAM_SEPARATOR, ";");
+				p.setParameter(CSVConstants.PARAM_SEPARATOR, Value.of(";"));
 			}
 			else {
-				p.setParameter(CSVConstants.PARAM_SEPARATOR, "|");
+				p.setParameter(CSVConstants.PARAM_SEPARATOR, Value.of("|"));
 			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		String selection = getWizard().getProvider().getParameter(CSVConstants.PARAM_SEPARATOR);
+		String selection = getWizard().getProvider().getParameter(CSVConstants.PARAM_SEPARATOR)
+				.getAs(String.class);
 		for (int i = 0; i < separatorSelection.length; i++) {
 			if (separatorSelection[i] == selection) {
 				separator.select(i);
@@ -272,7 +274,8 @@ public class ReadConfigurationPage extends
 		}
 
 		if (p instanceof InstanceReader) {
-			QName name = QName.valueOf(p.getParameter(CSVConstants.PARAM_TYPENAME));
+			QName name = QName.valueOf(p.getParameter(CSVConstants.PARAM_TYPENAME).getAs(
+					String.class));
 
 			if (last_name == null || !(last_name.equals(name))) {
 				TypeDefinition type = ((InstanceReader) p).getSourceSchema().getType(name);

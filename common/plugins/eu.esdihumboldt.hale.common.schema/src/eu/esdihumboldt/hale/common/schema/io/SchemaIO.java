@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.content.IContentType;
 import de.fhg.igd.osgi.util.configuration.AbstractConfigurationService;
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
@@ -107,7 +108,7 @@ public abstract class SchemaIO {
 
 			@Override
 			protected void setValue(String key, String value) {
-				project.getProperties().put(key, value);
+				project.getProperties().put(key, Value.of(value));
 			}
 
 			@Override
@@ -117,7 +118,7 @@ public abstract class SchemaIO {
 
 			@Override
 			protected String getValue(String key) {
-				return project.getProperties().get(key);
+				return project.getProperties().get(key).getAs(String.class);
 			}
 		});
 	}

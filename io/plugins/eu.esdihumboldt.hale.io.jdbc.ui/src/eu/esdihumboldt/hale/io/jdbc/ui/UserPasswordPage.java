@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.io.jdbc.JDBCConstants;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.IOWizardPage;
@@ -31,11 +32,12 @@ import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 
 /**
  * Configuration page for specifying database connection user name and password.
+ * 
  * @author Simon Templer
  */
 public class UserPasswordPage extends AbstractConfigurationPage<IOProvider, IOWizard<IOProvider>>
-	implements JDBCConstants {
-	
+		implements JDBCConstants {
+
 	private Text user;
 	private Text password;
 
@@ -44,7 +46,7 @@ public class UserPasswordPage extends AbstractConfigurationPage<IOProvider, IOWi
 	 */
 	public UserPasswordPage() {
 		super("userPassword", "Authentication", null);
-		
+
 		setDescription("Please enter user name and password for the database connection");
 	}
 
@@ -69,9 +71,10 @@ public class UserPasswordPage extends AbstractConfigurationPage<IOProvider, IOWi
 	 */
 	@Override
 	public boolean updateConfiguration(IOProvider provider) {
-		provider.setParameter(PARAM_USER, (user.getText().isEmpty())?(null):(user.getText()));
-		provider.setParameter(PARAM_PASSWORD, password.getText());
-		
+		provider.setParameter(PARAM_USER,
+				Value.of((user.getText().isEmpty()) ? (null) : (user.getText())));
+		provider.setParameter(PARAM_PASSWORD, Value.of(password.getText()));
+
 		return true;
 	}
 
@@ -81,23 +84,26 @@ public class UserPasswordPage extends AbstractConfigurationPage<IOProvider, IOWi
 	@Override
 	protected void createContent(Composite page) {
 		page.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
-		
+
 		// user
 		Label labelUser = new Label(page, SWT.NONE);
 		labelUser.setText("User:");
 		labelUser.setLayoutData(GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER).create());
-		
+
 		user = new Text(page, SWT.BORDER | SWT.SINGLE);
-		user.setLayoutData(GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).create());
-		
+		user.setLayoutData(GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER)
+				.grab(true, false).create());
+
 		// user
 		Label labelPassword = new Label(page, SWT.NONE);
 		labelPassword.setText("Password:");
-		labelPassword.setLayoutData(GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER).create());
-		
+		labelPassword.setLayoutData(GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER)
+				.create());
+
 		password = new Text(page, SWT.BORDER | SWT.SINGLE | SWT.PASSWORD);
-		password.setLayoutData(GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).create());
-		
+		password.setLayoutData(GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER)
+				.grab(true, false).create());
+
 		setPageComplete(false);
 	}
 

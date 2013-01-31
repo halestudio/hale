@@ -34,6 +34,7 @@ import org.springframework.core.convert.ConversionService;
 import de.fhg.igd.osgi.util.OsgiUtils;
 import de.fhg.igd.osgi.util.OsgiUtils.Condition;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
@@ -223,7 +224,7 @@ public class PropertyResolverTest {
 		//
 
 		InstanceReader instanceReader = new XmlInstanceReader();
-		instanceReader.setParameter(XmlInstanceReader.PARAM_IGNORE_ROOT, "false");
+		instanceReader.setParameter(XmlInstanceReader.PARAM_IGNORE_ROOT, Value.of(false));
 
 		instanceReader.setSource(new DefaultInputSupplier(xmlLocation));
 		instanceReader.setSourceSchema(sourceSchema);

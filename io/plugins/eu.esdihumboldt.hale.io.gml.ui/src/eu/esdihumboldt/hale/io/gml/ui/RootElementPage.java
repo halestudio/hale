@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.io.gml.writer.XmlWriterBase;
@@ -88,8 +89,9 @@ public class RootElementPage extends
 				QName name = ((XmlElement) selected).getName();
 
 				provider.setParameter(StreamGmlWriter.PARAM_ROOT_ELEMENT_NAMESPACE,
-						name.getNamespaceURI());
-				provider.setParameter(StreamGmlWriter.PARAM_ROOT_ELEMENT_NAME, name.getLocalPart());
+						Value.of(name.getNamespaceURI()));
+				provider.setParameter(StreamGmlWriter.PARAM_ROOT_ELEMENT_NAME,
+						Value.of(name.getLocalPart()));
 				return true;
 			}
 		}

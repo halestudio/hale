@@ -22,6 +22,7 @@ import java.util.Map;
 
 import eu.esdihumboldt.hale.common.core.io.ExportProvider;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFileInfo;
@@ -50,30 +51,32 @@ public class LocationUpdater {
 			return;
 
 		// old project location
-		URI targetLoc = URI.create(saveconfig.getProviderConfiguration().get(
-				ExportProvider.PARAM_TARGET));
+		URI targetLoc = URI.create(saveconfig.getProviderConfiguration()
+				.get(ExportProvider.PARAM_TARGET).toString());
 
 		if (!targetLoc.equals(newProjectLoc)) {
 			// update save configuration
 			saveconfig.getProviderConfiguration().put(ExportProvider.PARAM_TARGET,
-					newProjectLoc.toString());
+					Value.of(newProjectLoc.toString()));
 
 			PathUpdate update = new PathUpdate(targetLoc, newProjectLoc);
 
 			// update I/O configurations
 			List<IOConfiguration> configuration = project.getResources();
 			for (IOConfiguration providerconf : configuration) {
-				final Map<String, String> conf = providerconf.getProviderConfiguration();
-				final URI uri = URI.create(conf.get(ImportProvider.PARAM_SOURCE));
+				final Map<String, Value> conf = providerconf.getProviderConfiguration();
+				final URI uri = URI.create(conf.get(ImportProvider.PARAM_SOURCE)
+						.getAs(String.class));
 				if (!IOUtils.testStream(uri, true)) {
 					URI newUri = update.changePath(uri);
 					if (IOUtils.testStream(newUri, true))
-						conf.put(ImportProvider.PARAM_SOURCE, newUri.toString());
+						conf.put(ImportProvider.PARAM_SOURCE, Value.of(newUri.toString()));
 					else {
 						// not found
 						URI replacement = updatePathFallback(uri);
 						if (replacement != null) {
-							conf.put(ImportProvider.PARAM_SOURCE, replacement.toString());
+							conf.put(ImportProvider.PARAM_SOURCE,
+									Value.of(replacement.toString()));
 						}
 					}
 				}

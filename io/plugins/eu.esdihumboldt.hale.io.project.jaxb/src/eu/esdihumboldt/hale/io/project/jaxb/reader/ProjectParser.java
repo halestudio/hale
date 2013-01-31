@@ -39,6 +39,7 @@ import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractImportProvider;
@@ -218,7 +219,8 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 			for (ConfigData data : section.getData()) {
 				// TODO check if this is compatible with
 				// NamespaceConfigurationItem
-				project.getProperties().put(prefix + "/" + data.getKey(), data.getValue());
+				project.getProperties()
+						.put(prefix + "/" + data.getKey(), Value.of(data.getValue()));
 			}
 		}
 	}
@@ -577,9 +579,11 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 
 		// provider configuration
 		// source
-		conf.getProviderConfiguration().put(AbstractImportProvider.PARAM_SOURCE, source.toString());
+		conf.getProviderConfiguration().put(AbstractImportProvider.PARAM_SOURCE,
+				Value.of(source.toString()));
 		// content type
-		conf.getProviderConfiguration().put(AbstractImportProvider.PARAM_CONTENT_TYPE, ct.getId());
+		conf.getProviderConfiguration().put(AbstractImportProvider.PARAM_CONTENT_TYPE,
+				Value.of(ct.getId()));
 
 		// no dependencies needed
 

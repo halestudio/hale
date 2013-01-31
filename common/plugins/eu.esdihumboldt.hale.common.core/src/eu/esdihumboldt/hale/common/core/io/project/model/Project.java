@@ -26,6 +26,8 @@ import java.util.TreeMap;
 
 import org.osgi.framework.Version;
 
+import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueExtension;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.model.internal.JaxbProjectIO;
 
@@ -102,7 +104,7 @@ public class Project implements ProjectInfo {
 	/**
 	 * Project properties
 	 */
-	private final Map<String, String> properties = new TreeMap<String, String>();
+	private final Map<String, Value> properties = new TreeMap<String, Value>();
 
 	/**
 	 * Project file locations
@@ -192,9 +194,11 @@ public class Project implements ProjectInfo {
 	}
 
 	/**
-	 * @return the properties
+	 * @return the project properties, values are either strings, DOM elements
+	 *         or complex value types defined in the
+	 *         {@link ComplexValueExtension}
 	 */
-	public Map<String, String> getProperties() {
+	public Map<String, Value> getProperties() {
 		return properties;
 	}
 

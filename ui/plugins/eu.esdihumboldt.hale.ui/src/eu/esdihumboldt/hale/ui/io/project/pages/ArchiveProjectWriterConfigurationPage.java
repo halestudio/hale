@@ -20,6 +20,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectWriter;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
@@ -81,15 +82,12 @@ public class ArchiveProjectWriterConfigurationPage extends
 		setPageComplete(true);
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.io.IOWizardPage#updateConfiguration(eu.esdihumboldt.hale.common.core.io.IOProvider)
-	 */
 	@Override
 	public boolean updateConfiguration(ArchiveProjectWriter provider) {
 		provider.setParameter(ArchiveProjectWriter.EXLUDE_DATA_FILES,
-				String.valueOf(excludeDataFiles.getSelection()));
+				Value.of(excludeDataFiles.getSelection()));
 		provider.setParameter(ArchiveProjectWriter.INCLUDE_WEB_RESOURCES,
-				String.valueOf(includeWebResources.getSelection()));
+				Value.of(includeWebResources.getSelection()));
 		return true;
 	}
 

@@ -24,10 +24,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
+
 import org.apache.commons.io.FilenameUtils;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager;
+import org.w3c.dom.Element;
 
 import com.google.common.base.Preconditions;
 import com.google.common.io.InputSupplier;
@@ -36,6 +39,8 @@ import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
 import de.cs3d.util.eclipse.extension.FactoryFilter;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueDefinition;
+import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueExtension;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderExtension;
 import eu.esdihumboldt.hale.common.core.io.supplier.LookupStreamResource;
@@ -375,6 +380,103 @@ public abstract class HaleIO {
 	 */
 	public static boolean isCompatibleContentType(IContentType parentType, IContentType valueType) {
 		return valueType.isKindOf(parentType);
+	}
+
+	/**
+	 * Get the value of a complex property represented as a DOM element.
+	 * 
+	 * @param element the DOM element
+	 * @return the complex value converted through the
+	 *         {@link ComplexValueExtension}, or the original element
+	 */
+	public static Object getComplexValue(Element element) {
+		QName name;
+		if (element.getNamespaceURI() != null && !element.getNamespaceURI().isEmpty()) {
+			name = new QName(element.getNamespaceURI(), element.getLocalName());
+		}
+		else {
+			name = new QName(element.getLocalName());
+		}
+		ComplexValueDefinition cvt = ComplexValueExtension.getInstance().getDefinition(name);
+		if (cvt != null) {
+			// create and return the complex parameter value
+			return cvt.fromDOM(element);
+		}
+
+		// the element itself is the complex value
+		return element;
+	}
+
+	/**
+	 * Get the value of a complex property represented as a DOM element.
+	 * 
+	 * @param element the DOM element
+	 * @param expectedType the expected parameter type, this must be either
+	 *            {@link String}, DOM {@link Element} or a complex value type
+	 *            defined in the {@link ComplexValueExtension}
+	 * @return the complex value or <code>null</code> if it could not be created
+	 *         from the element
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T getComplexValue(Element element, Class<T> expectedType) {
+		if (element == null) {
+			return null;
+		}
+
+		QName name;
+		if (element.getNamespaceURI() != null && !element.getNamespaceURI().isEmpty()) {
+			name = new QName(element.getNamespaceURI(), element.getLocalName());
+		}
+		else {
+			name = new QName(element.getLocalName());
+		}
+		ComplexValueDefinition cvt = ComplexValueExtension.getInstance().getDefinition(name);
+		Object value = null;
+		try {
+			value = cvt.fromDOM(element);
+		} catch (Exception e) {
+			// ignore
+		}
+
+		if (value != null && expectedType.isAssignableFrom(value.getClass())) {
+			return (T) value;
+		}
+
+		// maybe the element itself is OK
+		if (expectedType.isAssignableFrom(element.getClass())) {
+			return (T) element;
+		}
+
+		if (expectedType.isAssignableFrom(String.class)) {
+			// FIXME use legacy complex value if possible
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get the representation of a complex value as a DOM element. Uses the
+	 * {@link ComplexValueExtension}.
+	 * 
+	 * @param value the complex value
+	 * @return the DOM representation
+	 * @throws IllegalStateException if the value is neither a DOM element nor
+	 *             can be converted to one using the
+	 *             {@link ComplexValueExtension}
+	 */
+	public static Element getComplexElement(Object value) {
+		if (value instanceof Element) {
+			// as is
+			return (Element) value;
+		}
+
+		ComplexValueDefinition cvd = ComplexValueExtension.getInstance().getDefinition(
+				value.getClass());
+		if (cvd != null) {
+			return cvd.toDOM(value);
+		}
+
+		throw new IllegalStateException("No definition for complex parameter value found");
 	}
 
 //	/**

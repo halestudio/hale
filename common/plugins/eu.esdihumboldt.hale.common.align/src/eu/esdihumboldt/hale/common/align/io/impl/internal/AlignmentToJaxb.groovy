@@ -19,8 +19,6 @@ import java.util.Map.Entry
 
 import javax.xml.bind.JAXBElement
 
-import org.w3c.dom.Element
-
 import eu.esdihumboldt.hale.common.align.extension.annotation.AnnotationExtension
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AbstractParameterType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AlignmentType
@@ -42,8 +40,7 @@ import eu.esdihumboldt.hale.common.align.model.ChildContext
 import eu.esdihumboldt.hale.common.align.model.Entity
 import eu.esdihumboldt.hale.common.align.model.ParameterValue
 import eu.esdihumboldt.hale.common.align.model.Property
-import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueDefinition
-import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueExtension
+import eu.esdihumboldt.hale.common.core.io.HaleIO
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter
 import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager
 import eu.esdihumboldt.hale.common.instance.model.Filter
@@ -140,20 +137,10 @@ class AlignmentToJaxb {
 			return of.createParameter(new ParameterType(name: name, value: value.value, 
 				type: (!value.type || value.type == ParameterValue.DEFAULT_TYPE ? null : value.type)))
 		}
-		else if (value.value instanceof Element) {
-			// parameter is the DOM
-			return of.createComplexParameter(new ComplexParameterType(name: name, any: value.value))
-		}
 		else {
-			// complex value
-			ComplexValueDefinition cvd = ComplexValueExtension.instance.getDefinition(value.value.class)
-			if (cvd) {
-				Element element = cvd.toDOM(value.value)
-				return of.createComplexParameter(new ComplexParameterType(name: name, any: element))
-			}
-			else {
-				throw new IllegalStateException('No definition for complex parameter value found')
-			}
+			// complex value or element
+			return of.createComplexParameter(
+				new ComplexParameterType(name: name, any: HaleIO.getComplexElement(value.value)))
 		}
 	}
 

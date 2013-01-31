@@ -24,6 +24,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.IConfigurationElement;
 
 import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.extension.ProjectFileFactory;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
@@ -65,7 +66,7 @@ public class ActionFileFactory implements ProjectFileFactory {
 	public ProjectFile createProjectFile() {
 		String loadActionId = null;
 		String loadProviderId = null;
-		Map<String, String> loadParameters = new HashMap<String, String>();
+		Map<String, Value> loadParameters = new HashMap<String, Value>();
 		IConfigurationElement[] load = conf.getChildren("load");
 		if (load != null && load.length > 0) {
 			loadActionId = load[0].getAttribute("action");
@@ -77,7 +78,7 @@ public class ActionFileFactory implements ProjectFileFactory {
 
 		String saveActionId = null;
 		String saveProviderId = null;
-		Map<String, String> saveParameters = new HashMap<String, String>();
+		Map<String, Value> saveParameters = new HashMap<String, Value>();
 		IConfigurationElement[] save = conf.getChildren("save");
 		if (save != null && save.length > 0) {
 			saveActionId = save[0].getAttribute("action");
@@ -91,10 +92,12 @@ public class ActionFileFactory implements ProjectFileFactory {
 				saveProviderId, saveParameters, serviceProvider);
 	}
 
-	private void addParameters(Map<String, String> parameterMap, IConfigurationElement conf) {
+	private void addParameters(Map<String, Value> parameterMap, IConfigurationElement conf) {
 		IConfigurationElement[] parameters = conf.getChildren("parameter");
 		for (IConfigurationElement parameter : parameters) {
-			parameterMap.put(parameter.getAttribute("name"), parameter.getAttribute("value"));
+			// only supporting simple string parameters
+			parameterMap.put(parameter.getAttribute("name"),
+					Value.of(parameter.getAttribute("value")));
 		}
 	}
 
