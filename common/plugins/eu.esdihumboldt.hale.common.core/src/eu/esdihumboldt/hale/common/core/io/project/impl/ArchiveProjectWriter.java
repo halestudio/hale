@@ -41,6 +41,7 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.impl.SubtaskProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.util.XMLSchemaUpdater;
@@ -86,7 +87,8 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		ZipOutputStream zip = new ZipOutputStream(getTarget().getOutput());
 
 		// false is correct if getParameter is null because false is default
-		boolean includeWebresources = Boolean.parseBoolean(getParameter(INCLUDE_WEB_RESOURCES));
+		boolean includeWebresources = getParameter(INCLUDE_WEB_RESOURCES).getAs(Boolean.class,
+				false);
 		SubtaskProgressIndicator subtask = new SubtaskProgressIndicator(progress);
 
 		// save old IO configurations
@@ -102,7 +104,7 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 
 		// update target save configuration of the project
 		config.getProviderConfiguration().remove(PARAM_TARGET);
-		config.getProviderConfiguration().put(PARAM_TARGET, baseFile.toURI().toString());
+		config.getProviderConfiguration().put(PARAM_TARGET, Value.of(baseFile.toURI().toString()));
 		getProject().setSaveConfiguration(config);
 
 		// write project file via XMLProjectWriter
@@ -140,7 +142,7 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 			// every resource needs his own directory
 			int count = 1;
 			// true if excluded files should be skipped; false is default
-			boolean excludeDataFiles = Boolean.parseBoolean(getParameter(EXLUDE_DATA_FILES));
+			boolean excludeDataFiles = getParameter(EXLUDE_DATA_FILES).getAs(Boolean.class, false);
 			for (IOConfiguration resource : resources) {
 				// check if ActionId is equal to
 				// eu.esdihumboldt.hale.common.instance.io.InstanceIO.ACTION_LOAD_SOURCE_DATA
@@ -153,9 +155,9 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 					continue;
 				}
 
-				Map<String, String> providerConfig = resource.getProviderConfiguration();
-				Map<String, String> newProvConf = new HashMap<String, String>();
-				String path = providerConfig.get(ImportProvider.PARAM_SOURCE);
+				Map<String, Value> providerConfig = resource.getProviderConfiguration();
+				Map<String, Value> newProvConf = new HashMap<String, Value>();
+				String path = providerConfig.get(ImportProvider.PARAM_SOURCE).toString();
 				URI pathUri;
 				try {
 					pathUri = new URI(path);
@@ -209,14 +211,15 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 				// update schema files
 
 				// only xml schemas have to be updated
-				String contentType = providerConfig.get(ImportProvider.PARAM_CONTENT_TYPE);
+				String contentType = providerConfig.get(ImportProvider.PARAM_CONTENT_TYPE).getAs(
+						String.class);
 				if (contentType.equals(XSD_CONTENT_TYPE)) {
 					progress.setCurrentTask("Reorganizing XML schema at " + path);
 					XMLSchemaUpdater.update(newFile, pathUri, includeWebResources, reporter);
 				}
 
-				newProvConf.put(ImportProvider.PARAM_SOURCE, new File(new File(targetDirectory,
-						"resource" + count), name).toURI().toString());
+				newProvConf.put(ImportProvider.PARAM_SOURCE, Value.of(new File(new File(
+						targetDirectory, "resource" + count), name).toURI().toString()));
 				count++;
 
 				// update provider configuration

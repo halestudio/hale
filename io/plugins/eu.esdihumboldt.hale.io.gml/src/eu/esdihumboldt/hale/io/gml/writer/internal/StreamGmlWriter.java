@@ -511,13 +511,13 @@ public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriter
 	 */
 	public static XmlElement getConfiguredContainerElement(IOProvider provider, XmlIndex targetIndex) {
 		// no container defined, try to use a custom root element
-		String namespace = provider.getParameter(PARAM_ROOT_ELEMENT_NAMESPACE);
+		String namespace = provider.getParameter(PARAM_ROOT_ELEMENT_NAMESPACE).getAs(String.class);
 		// determine target namespace
 		if (namespace == null) {
 			// default to target namespace
 			namespace = targetIndex.getNamespace();
 		}
-		String elementName = provider.getParameter(PARAM_ROOT_ELEMENT_NAME);
+		String elementName = provider.getParameter(PARAM_ROOT_ELEMENT_NAME).getAs(String.class);
 
 		// find root element
 		XmlElement containerElement = null;
@@ -976,13 +976,9 @@ public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriter
 	 */
 	protected StreamGeometryWriter getGeometryWriter() {
 		if (geometryWriter == null) {
-			boolean simplifyGeometry;
-			if (getParameter(PARAM_SIMPLIFY_GEOMETRY) == null) {
-				// default to true
-				simplifyGeometry = true;
-			}
-			else
-				simplifyGeometry = Boolean.parseBoolean(getParameter(PARAM_SIMPLIFY_GEOMETRY));
+			// default to true
+			boolean simplifyGeometry = getParameter(PARAM_SIMPLIFY_GEOMETRY).getAs(Boolean.class,
+					true);
 
 			geometryWriter = StreamGeometryWriter.getDefaultInstance(gmlNs, simplifyGeometry);
 		}

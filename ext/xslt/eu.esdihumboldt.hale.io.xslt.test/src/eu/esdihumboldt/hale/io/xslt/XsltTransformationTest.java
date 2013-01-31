@@ -34,6 +34,7 @@ import org.junit.Test;
 
 import eu.esdihumboldt.cst.test.DefaultTransformationTest;
 import eu.esdihumboldt.cst.test.TransformationExample;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.impl.LogProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
@@ -140,8 +141,9 @@ public class XsltTransformationTest extends DefaultTransformationTest {
 		export.setTargetSchema(new DefaultSchemaSpace().addSchema(example.getTargetSchema()));
 
 		export.setParameter(XsltExport.PARAM_ROOT_ELEMENT_NAMESPACE,
-				example.getTargetContainerNamespace());
-		export.setParameter(XsltExport.PARAM_ROOT_ELEMENT_NAME, example.getTargetContainerName());
+				Value.of(example.getTargetContainerNamespace()));
+		export.setParameter(XsltExport.PARAM_ROOT_ELEMENT_NAME,
+				Value.of(example.getTargetContainerName()));
 
 		File tempXsltFile = File.createTempFile("xsltest", ".xsl");
 		export.setTarget(new FileIOSupplier(tempXsltFile));

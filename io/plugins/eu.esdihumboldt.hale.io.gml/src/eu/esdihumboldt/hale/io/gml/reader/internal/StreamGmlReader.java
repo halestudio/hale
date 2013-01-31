@@ -75,12 +75,8 @@ public class StreamGmlReader extends AbstractInstanceReader {
 		progress.begin("Prepare loading of " + getTypeName(), ProgressIndicator.UNKNOWN);
 
 		try {
-			String pIgnoreRoot = getParameter(PARAM_IGNORE_ROOT);
-			boolean ignoreRoot = (pIgnoreRoot == null || pIgnoreRoot.isEmpty()) ? (true) : (Boolean
-					.parseBoolean(pIgnoreRoot));
-
-			String pStrict = getParameter(PARAM_STRICT);
-			boolean strict = (pStrict == null) ? (false) : (Boolean.parseBoolean(pStrict));
+			boolean ignoreRoot = getParameter(PARAM_IGNORE_ROOT).getAs(Boolean.class, true);
+			boolean strict = getParameter(PARAM_STRICT).getAs(Boolean.class, false);
 
 			instances = new GmlInstanceCollection(getSource(), getSourceSchema(),
 					restrictToFeatures, ignoreRoot, strict, getCrsProvider());

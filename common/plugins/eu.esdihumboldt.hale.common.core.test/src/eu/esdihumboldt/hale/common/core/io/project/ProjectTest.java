@@ -31,6 +31,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.osgi.framework.Version;
 
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 
@@ -78,11 +79,12 @@ public class ProjectTest {
 		String providerId1;
 		conf1.setProviderId(providerId1 = "some provider");
 		String key1;
-		String value1;
-		conf1.getProviderConfiguration().put(key1 = "some key", value1 = "some value");
-		String value2;
+		Value value1;
+		conf1.getProviderConfiguration().put(key1 = "some key", value1 = Value.of("some value"));
+		Value value2;
 		String key2;
-		conf1.getProviderConfiguration().put(key2 = "some other key", value2 = "some other value");
+		conf1.getProviderConfiguration().put(key2 = "some other key",
+				value2 = Value.of("some other value"));
 
 		IOConfiguration conf2;
 		project.getResources().add(conf2 = new IOConfiguration());
@@ -117,8 +119,8 @@ public class ProjectTest {
 		assertEquals(advisorId1, c1.getActionId());
 		assertEquals(providerId1, c1.getProviderId());
 		assertEquals(2, c1.getProviderConfiguration().size());
-		assertTrue(c1.getProviderConfiguration().get(key1).equals(value1));
-		assertTrue(c1.getProviderConfiguration().get(key2).equals(value2));
+		assertTrue(c1.getProviderConfiguration().get(key1).getValue().equals(value1.getValue()));
+		assertTrue(c1.getProviderConfiguration().get(key2).getValue().equals(value2.getValue()));
 
 		IOConfiguration c2 = it.next();
 		assertNotNull(c2);

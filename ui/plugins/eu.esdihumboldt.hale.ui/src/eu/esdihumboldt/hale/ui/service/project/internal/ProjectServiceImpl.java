@@ -52,6 +52,7 @@ import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.ProgressMonitorIndicator;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorExtension;
 import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorFactory;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
@@ -107,7 +108,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		@Override
 		protected String getValue(String key) {
 			synchronized (ProjectServiceImpl.this) {
-				return main.getProperties().get(key);
+				return main.getProperties().get(key).getAs(String.class);
 			}
 		}
 
@@ -128,7 +129,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		@Override
 		protected void setValue(String key, String value) {
 			synchronized (ProjectServiceImpl.this) {
-				main.getProperties().put(key, value);
+				main.getProperties().put(key, Value.of(value));
 			}
 			setChanged();
 		}

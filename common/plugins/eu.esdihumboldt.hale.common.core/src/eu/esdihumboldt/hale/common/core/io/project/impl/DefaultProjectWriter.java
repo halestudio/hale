@@ -29,6 +29,7 @@ import java.util.zip.ZipOutputStream;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractExportProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectIO;
@@ -117,20 +118,17 @@ public class DefaultProjectWriter extends AbstractProjectWriter {
 	 * @see AbstractExportProvider#storeConfiguration(Map)
 	 */
 	@Override
-	public void storeConfiguration(Map<String, String> configuration) {
+	public void storeConfiguration(Map<String, Value> configuration) {
 		// store if separate files are to be used
-		configuration.put(PARAM_SEPARATE_FILES, String.valueOf(useSeparateFiles));
+		configuration.put(PARAM_SEPARATE_FILES, Value.of(useSeparateFiles));
 
 		super.storeConfiguration(configuration);
 	}
 
-	/**
-	 * @see AbstractExportProvider#setParameter(String, String)
-	 */
 	@Override
-	public void setParameter(String name, String value) {
+	public void setParameter(String name, Value value) {
 		if (name.equals(PARAM_SEPARATE_FILES)) {
-			setUseSeparateFiles(Boolean.valueOf(value));
+			setUseSeparateFiles(value.getAs(Boolean.class));
 		}
 		else {
 			super.setParameter(name, value);
