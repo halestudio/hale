@@ -112,7 +112,7 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 					PARAMETER_PROPERTY);
 			boolean oldSelectionChanged = false;
 			for (ParameterValue propertyPath : properties) {
-				EntityDefinition def = getEntityDefinition(propertyPath.getStringValue(),
+				EntityDefinition def = getEntityDefinition(propertyPath.as(String.class),
 						sourceType);
 				filtered.add(def);
 				if (selection.remove(def))
@@ -148,7 +148,7 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 			if (tmp != null) {
 				initialSelection = new ArrayList<String>(tmp.size());
 				for (ParameterValue value : tmp)
-					initialSelection.add(value.getStringValue());
+					initialSelection.add(value.as(String.class));
 			}
 			else
 				initialSelection = Collections.emptyList();

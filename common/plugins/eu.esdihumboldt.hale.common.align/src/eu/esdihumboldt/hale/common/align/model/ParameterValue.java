@@ -16,7 +16,10 @@
 package eu.esdihumboldt.hale.common.align.model;
 
 import net.jcip.annotations.Immutable;
-import eu.esdihumboldt.hale.common.core.io.LegacyComplexValue;
+
+import org.w3c.dom.Element;
+
+import eu.esdihumboldt.hale.common.core.io.Value;
 
 /**
  * Class to represent the value of a transformation parameter.
@@ -24,15 +27,16 @@ import eu.esdihumboldt.hale.common.core.io.LegacyComplexValue;
  * @author Kai Schwierczek
  */
 @Immutable
-public class ParameterValue {
+public class ParameterValue extends Value {
 
 	/**
-	 * The name of the default type of value.
+	 * The name of the default type of value. <code>null</code> represents also
+	 * the default type.
 	 */
 	public static final String DEFAULT_TYPE = "default";
 
 	private final String type;
-	private final Object value;
+	private final Value value;
 
 	/**
 	 * Constructor specifying the type and the value.
@@ -40,25 +44,44 @@ public class ParameterValue {
 	 * @param type the type of the value
 	 * @param value the value
 	 */
-	public ParameterValue(String type, Object value) {
+	public ParameterValue(String type, Value value) {
 		this.type = type;
 		this.value = value;
 	}
 
 	/**
-	 * Constructor specifying the value only. type will be default.
+	 * Constructor specifying the value only. Type will be the default.
 	 * 
 	 * @param value the value
 	 */
-	public ParameterValue(String value) {
+	public ParameterValue(Value value) {
 		this(DEFAULT_TYPE, value);
 	}
 
 	/**
-	 * Returns the type of the value. Either "default", <code>null</code> or
-	 * some script id.
+	 * Create a simple string value. Type will be the default.
 	 * 
-	 * @return the type
+	 * @param value the value
+	 */
+	public ParameterValue(String value) {
+		this(DEFAULT_TYPE, Value.of(value));
+	}
+
+	/**
+	 * Determines if the parameter needs further processing to be used, i.e. the
+	 * parameter type is neither {@link #DEFAULT_TYPE} nor <code>null</code>.
+	 * 
+	 * @return if the parameter needs processing
+	 */
+	public boolean needsProcessing() {
+		return type != null && !DEFAULT_TYPE.equals(type);
+	}
+
+	/**
+	 * Returns the type of the value. Either {@value #DEFAULT_TYPE},
+	 * <code>null</code> or a script id.
+	 * 
+	 * @return the associated parameter type
 	 */
 	public String getType() {
 		return type;
@@ -69,48 +92,48 @@ public class ParameterValue {
 	 * 
 	 * @return the value
 	 */
+	@Override
 	public Object getValue() {
 		return value;
 	}
 
-	/**
-	 * Get the complex parameter value.
-	 * 
-	 * @param valueType the value type
-	 * @return the complex parameter value
-	 * @throws IllegalStateException if the value is of the wrong type and
-	 *             fall-back to a {@link LegacyComplexValue} does not succeed or
-	 *             is not possible
-	 */
-	@SuppressWarnings("unchecked")
-	public <T> T getComplexValue(Class<T> valueType) {
-		if (value == null)
-			return null;
-		if (valueType.isAssignableFrom(value.getClass()))
-			return (T) value;
-		try {
-			if (String.class.isAssignableFrom(value.getClass())
-					&& LegacyComplexValue.class.isAssignableFrom(valueType)) {
-				LegacyComplexValue lcv = (LegacyComplexValue) valueType.newInstance();
-				lcv.loadFromString(getStringValue());
-				return (T) lcv;
-			}
-		} catch (Exception e) {
-			// ignore
-		}
-		throw new IllegalStateException("Could not load complex value parameter.");
+	@Override
+	public <T> T as(Class<T> expectedType) {
+		return value.as(expectedType);
+	}
+
+	@Override
+	public <T> T as(Class<T> expectedType, T defValue) {
+		return value.as(expectedType, defValue);
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return value.isEmpty();
+	}
+
+	@Override
+	public boolean isRepresentedAsDOM() {
+		return value.isRepresentedAsDOM();
+	}
+
+	@Override
+	public Element getDOMReprensentation() {
+		return value.getDOMReprensentation();
+	}
+
+	@Override
+	public String getStringRepresentation() {
+		return value.getStringRepresentation();
 	}
 
 	/**
-	 * Get the parameter value as string. Uses the toString method on
-	 * {@link #getValue()}.
+	 * Get the internal value.
 	 * 
-	 * @return the string parameter value
+	 * @return the internal value
 	 */
-	public String getStringValue() {
-		if (value == null)
-			return null;
-		return value.toString();
+	public Value intern() {
+		return value;
 	}
 
 }

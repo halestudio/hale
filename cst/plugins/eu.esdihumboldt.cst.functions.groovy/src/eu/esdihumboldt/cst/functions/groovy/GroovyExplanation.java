@@ -42,7 +42,7 @@ public class GroovyExplanation extends AbstractCellExplanation implements Groovy
 	protected String getExplanation(Cell cell, boolean html) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 
-		String script = CellUtil.getFirstRawParameter(cell, PARAMETER_SCRIPT);
+		String script = CellUtil.getFirstParameter(cell, PARAMETER_SCRIPT).as(String.class);
 		List<? extends Entity> sources = (cell.getSource() == null) ? (null) : (cell.getSource()
 				.get(ENTITY_VARIABLE));
 

@@ -34,6 +34,7 @@ import com.google.common.collect.ListMultimap;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.AssignFunction;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.common.Editor;
@@ -115,7 +116,7 @@ public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionW
 		ListMultimap<String, ParameterValue> configuration = ArrayListMultimap.create(1, 1);
 		if (editor != null && !editor.getControl().isDisposed())
 			configuration.put(PARAMETER_VALUE,
-					new ParameterValue(editor.getValueType(), editor.getAsText()));
+					new ParameterValue(editor.getValueType(), Value.of(editor.getAsText())));
 		return configuration;
 	}
 
@@ -154,7 +155,7 @@ public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionW
 			});
 		}
 		if (editor != null && initialValue != null) {
-			editor.setAsText(initialValue.getStringValue());
+			editor.setAsText(initialValue.as(String.class));
 			if (editor instanceof EditorChooserEditor)
 				((EditorChooserEditor<?>) editor).selectEditor(initialValue.getType());
 		}

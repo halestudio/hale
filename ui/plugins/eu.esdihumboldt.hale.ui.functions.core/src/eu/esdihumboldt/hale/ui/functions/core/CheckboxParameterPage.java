@@ -76,10 +76,8 @@ public class CheckboxParameterPage extends HaleWizardPage<AbstractGenericFunctio
 		selected = new HashMap<FunctionParameter, Boolean>((int) (params.size() * 1.4));
 		for (FunctionParameter param : params) {
 			if (initialValues != null && !initialValues.get(param.getName()).isEmpty())
-				selected.put(
-						param,
-						Boolean.parseBoolean(initialValues.get(param.getName()).get(0)
-								.getStringValue()));
+				selected.put(param,
+						initialValues.get(param.getName()).get(0).as(Boolean.class, false));
 			else
 				selected.put(param, false);
 		}

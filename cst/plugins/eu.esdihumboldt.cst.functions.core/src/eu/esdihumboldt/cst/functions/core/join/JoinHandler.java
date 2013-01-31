@@ -87,7 +87,7 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 		// type on the right side.
 
 		// first collect relevant properties per type to build an index of those
-		String joinParameter = transformationParameters.get(PARAMETER_JOIN).get(0).getStringValue();
+		String joinParameter = transformationParameters.get(PARAMETER_JOIN).get(0).as(String.class);
 		String[] typesAndProps = joinParameter.split("::", -1);
 
 		// has two be two parts

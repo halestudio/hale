@@ -79,7 +79,7 @@ public class PropertiesMergeHandler extends
 
 		List<List<QName>> properties = new ArrayList<List<QName>>();
 		for (ParameterValue property : transformationParameters.get(PARAMETER_PROPERTY)) {
-			properties.add(PropertyResolver.getQNamesFromPath(property.getStringValue()));
+			properties.add(PropertyResolver.getQNamesFromPath(property.as(String.class)));
 		}
 
 		List<List<QName>> additionalProperties = new ArrayList<List<QName>>();
@@ -87,7 +87,7 @@ public class PropertiesMergeHandler extends
 			for (ParameterValue property : transformationParameters
 					.get(PARAMETER_ADDITIONAL_PROPERTY)) {
 				additionalProperties.add(PropertyResolver.getQNamesFromPath(property
-						.getStringValue()));
+						.as(String.class)));
 			}
 		}
 
@@ -98,7 +98,7 @@ public class PropertiesMergeHandler extends
 		}
 		else {
 			autoDetect = Boolean.parseBoolean(transformationParameters.get(PARAMETER_AUTO_DETECT)
-					.get(0).getStringValue());
+					.get(0).as(String.class));
 		}
 
 		return new PropertiesMergeConfig(properties, additionalProperties, autoDetect);

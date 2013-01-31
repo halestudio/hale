@@ -43,7 +43,7 @@ public class FormattedStringExplanation extends AbstractCellExplanation implemen
 	@Override
 	protected String getExplanation(Cell cell, boolean html) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
-		String pattern = CellUtil.getFirstRawParameter(cell, PARAMETER_PATTERN);
+		String pattern = CellUtil.getFirstParameter(cell, PARAMETER_PATTERN).as(String.class);
 		List<? extends Entity> sources = cell.getSource().get(ENTITY_VARIABLE);
 
 		if (target != null && pattern != null) {
