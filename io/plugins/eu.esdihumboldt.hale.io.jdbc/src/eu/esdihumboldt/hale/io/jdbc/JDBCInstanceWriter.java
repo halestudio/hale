@@ -337,6 +337,7 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 			}
 			else if (value == null)
 				statement.setNull(index, sqlType.getType());
+
 			else
 				setStatementParameter(statement, index, value, property, sqlType.getType(),
 						reporter);
@@ -368,8 +369,13 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 				// use the advisor to convert the geometry
 				if (value instanceof GeometryProperty<?>) {
 					// XXX JTS geometry conversion needed beforehand?
-					value = advisor.convertGeometry((GeometryProperty<?>) value,
-							propertyDef.getPropertyType());
+					try {
+						value = advisor.convertGeometry((GeometryProperty<?>) value,
+								propertyDef.getPropertyType());
+					} catch (Exception e) {
+						reporter.error(new IOMessageImpl("Something went wrong during conversion",
+								e));
+					}
 				}
 				else {
 					reporter.error(new IOMessageImpl(

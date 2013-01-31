@@ -71,7 +71,9 @@ public interface GeometryAdvisor<C> {
 	 *            that was previously configured using
 	 *            {@link #configureGeometryColumnType(Object, Column, DefaultTypeDefinition)}
 	 * @return the converted geometry that can be written to the database
+	 * @throws Exception something went wrong
 	 */
-	public Object convertGeometry(GeometryProperty<?> geom, TypeDefinition columnType);
+	public Object convertGeometry(GeometryProperty<?> geom, TypeDefinition columnType)
+			throws Exception;
 
 }
