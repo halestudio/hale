@@ -111,7 +111,7 @@ public class CSVSchemaReader extends AbstractSchemaReader implements CSVConstant
 			firstLine = reader.readNext();
 
 			// create type definition
-			String typename = getParameter(PARAM_TYPENAME).getAs(String.class);
+			String typename = getParameter(PARAM_TYPENAME).as(String.class);
 			if (typename == null || typename.isEmpty()) {
 				reporter.setSuccess(false);
 				reporter.error(new IOMessageImpl("No Typename was set", null));
@@ -140,14 +140,14 @@ public class CSVSchemaReader extends AbstractSchemaReader implements CSVConstant
 				comboSelections = combs.split(",");
 			}
 			else {
-				comboSelections = getParameter(PARAM_PROPERTYTYPE).getAs(String.class).split(",");
+				comboSelections = getParameter(PARAM_PROPERTYTYPE).as(String.class).split(",");
 			}
 			String[] properties;
 			if (getParameter(PARAM_PROPERTY).isEmpty()) {
 				properties = firstLine;
 			}
 			else {
-				properties = getParameter(PARAM_PROPERTY).getAs(String.class).split(",");
+				properties = getParameter(PARAM_PROPERTY).as(String.class).split(",");
 			}
 			// fails if there are less or more property names or property types
 			// than the entries in the first line

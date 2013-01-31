@@ -87,7 +87,7 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		ZipOutputStream zip = new ZipOutputStream(getTarget().getOutput());
 
 		// false is correct if getParameter is null because false is default
-		boolean includeWebresources = getParameter(INCLUDE_WEB_RESOURCES).getAs(Boolean.class,
+		boolean includeWebresources = getParameter(INCLUDE_WEB_RESOURCES).as(Boolean.class,
 				false);
 		SubtaskProgressIndicator subtask = new SubtaskProgressIndicator(progress);
 
@@ -142,7 +142,7 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 			// every resource needs his own directory
 			int count = 1;
 			// true if excluded files should be skipped; false is default
-			boolean excludeDataFiles = getParameter(EXLUDE_DATA_FILES).getAs(Boolean.class, false);
+			boolean excludeDataFiles = getParameter(EXLUDE_DATA_FILES).as(Boolean.class, false);
 			for (IOConfiguration resource : resources) {
 				// check if ActionId is equal to
 				// eu.esdihumboldt.hale.common.instance.io.InstanceIO.ACTION_LOAD_SOURCE_DATA
@@ -211,7 +211,7 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 				// update schema files
 
 				// only xml schemas have to be updated
-				String contentType = providerConfig.get(ImportProvider.PARAM_CONTENT_TYPE).getAs(
+				String contentType = providerConfig.get(ImportProvider.PARAM_CONTENT_TYPE).as(
 						String.class);
 				if (contentType.equals(XSD_CONTENT_TYPE)) {
 					progress.setCurrentTask("Reorganizing XML schema at " + path);

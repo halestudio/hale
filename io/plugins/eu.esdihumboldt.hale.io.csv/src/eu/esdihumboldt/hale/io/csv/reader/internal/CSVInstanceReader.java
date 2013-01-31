@@ -73,7 +73,7 @@ public class CSVInstanceReader extends AbstractInstanceReader {
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 
-		boolean skipFirst = getParameter(PARAM_SKIP_FIRST_LINE).getAs(Boolean.class);
+		boolean skipFirst = getParameter(PARAM_SKIP_FIRST_LINE).as(Boolean.class);
 		instances = new DefaultInstanceCollection(new ArrayList<Instance>());
 		int line = 0;
 
@@ -81,7 +81,7 @@ public class CSVInstanceReader extends AbstractInstanceReader {
 
 		// build instances
 		TypeDefinition type = getSourceSchema().getType(
-				QName.valueOf(getParameter(CSVConstants.PARAM_TYPENAME).getAs(String.class)));
+				QName.valueOf(getParameter(CSVConstants.PARAM_TYPENAME).as(String.class)));
 
 		PropertyDefinition[] propAr = type.getChildren().toArray(
 				new PropertyDefinition[type.getChildren().size()]);

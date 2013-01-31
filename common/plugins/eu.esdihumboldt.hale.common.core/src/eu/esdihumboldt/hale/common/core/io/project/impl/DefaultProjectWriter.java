@@ -128,7 +128,7 @@ public class DefaultProjectWriter extends AbstractProjectWriter {
 	@Override
 	public void setParameter(String name, Value value) {
 		if (name.equals(PARAM_SEPARATE_FILES)) {
-			setUseSeparateFiles(value.getAs(Boolean.class));
+			setUseSeparateFiles(value.as(Boolean.class));
 		}
 		else {
 			super.setParameter(name, value);

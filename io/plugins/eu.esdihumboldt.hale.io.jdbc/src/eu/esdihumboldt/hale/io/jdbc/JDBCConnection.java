@@ -85,8 +85,8 @@ public abstract class JDBCConnection implements JDBCConstants {
 		Preconditions.checkArgument(jdbcURI != null, "JDBC URI needed");
 		Preconditions.checkArgument(jdbcURI.toString().startsWith("jdbc:"), "Invalid JDBC URI");
 
-		String user = jdbcIOProvider.getParameter(PARAM_USER).getAs(String.class);
-		String password = jdbcIOProvider.getParameter(PARAM_PASSWORD).getAs(String.class);
+		String user = jdbcIOProvider.getParameter(PARAM_USER).as(String.class);
+		String password = jdbcIOProvider.getParameter(PARAM_PASSWORD).as(String.class);
 
 		// connect to the database
 		return JDBCConnection.getConnection(jdbcURI, user, password);
