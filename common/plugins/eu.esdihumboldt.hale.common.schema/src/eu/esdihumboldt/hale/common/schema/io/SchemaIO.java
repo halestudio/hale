@@ -118,7 +118,7 @@ public abstract class SchemaIO {
 
 			@Override
 			protected String getValue(String key) {
-				return project.getProperties().get(key).getAs(String.class);
+				return project.getProperties().get(key).as(String.class);
 			}
 		});
 	}

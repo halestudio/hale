@@ -66,7 +66,7 @@ public class LocationUpdater {
 			for (IOConfiguration providerconf : configuration) {
 				final Map<String, Value> conf = providerconf.getProviderConfiguration();
 				final URI uri = URI.create(conf.get(ImportProvider.PARAM_SOURCE)
-						.getAs(String.class));
+						.as(String.class));
 				if (!IOUtils.testStream(uri, true)) {
 					URI newUri = update.changePath(uri);
 					if (IOUtils.testStream(newUri, true))

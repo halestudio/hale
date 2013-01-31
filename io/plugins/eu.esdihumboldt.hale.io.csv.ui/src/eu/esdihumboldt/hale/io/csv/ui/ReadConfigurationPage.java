@@ -262,7 +262,7 @@ public class ReadConfigurationPage extends
 		}
 
 		String selection = getWizard().getProvider().getParameter(CSVConstants.PARAM_SEPARATOR)
-				.getAs(String.class);
+				.as(String.class);
 		for (int i = 0; i < separatorSelection.length; i++) {
 			if (separatorSelection[i] == selection) {
 				separator.select(i);
@@ -274,7 +274,7 @@ public class ReadConfigurationPage extends
 		}
 
 		if (p instanceof InstanceReader) {
-			QName name = QName.valueOf(p.getParameter(CSVConstants.PARAM_TYPENAME).getAs(
+			QName name = QName.valueOf(p.getParameter(CSVConstants.PARAM_TYPENAME).as(
 					String.class));
 
 			if (last_name == null || !(last_name.equals(name))) {

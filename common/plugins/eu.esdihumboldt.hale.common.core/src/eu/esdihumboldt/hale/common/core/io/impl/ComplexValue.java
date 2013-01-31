@@ -45,7 +45,7 @@ public class ComplexValue extends Value {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T getAs(Class<T> expectedType) {
+	public <T> T as(Class<T> expectedType) {
 		if (value == null) {
 			return null;
 		}
@@ -83,12 +83,12 @@ public class ComplexValue extends Value {
 
 	@Override
 	public String getStringRepresentation() {
-		return getAs(String.class);
+		return as(String.class);
 	}
 
 	@Override
-	public <T> T getAs(Class<T> expectedType, T defValue) {
-		T value = getAs(expectedType);
+	public <T> T as(Class<T> expectedType, T defValue) {
+		T value = as(expectedType);
 		if (value == null)
 			return defValue;
 		return value;

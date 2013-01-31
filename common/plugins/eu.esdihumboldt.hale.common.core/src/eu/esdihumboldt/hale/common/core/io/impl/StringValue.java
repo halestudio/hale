@@ -74,7 +74,7 @@ public class StringValue extends Value {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T getAs(Class<T> expectedType) {
+	public <T> T as(Class<T> expectedType) {
 		if (value == null) {
 			return null;
 		}
@@ -129,8 +129,8 @@ public class StringValue extends Value {
 	}
 
 	@Override
-	public <T> T getAs(Class<T> expectedType, T defValue) {
-		T value = getAs(expectedType);
+	public <T> T as(Class<T> expectedType, T defValue) {
+		T value = as(expectedType);
 		if (value == null)
 			return defValue;
 		return value;

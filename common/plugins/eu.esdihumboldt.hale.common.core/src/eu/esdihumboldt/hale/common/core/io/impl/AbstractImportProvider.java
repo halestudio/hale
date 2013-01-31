@@ -135,11 +135,11 @@ public abstract class AbstractImportProvider extends AbstractIOProvider implemen
 	@Override
 	public void setParameter(String name, Value value) {
 		if (name.equals(PARAM_SOURCE)) {
-			setSource(new DefaultInputSupplier(URI.create(value.getAs(String.class))));
+			setSource(new DefaultInputSupplier(URI.create(value.as(String.class))));
 		}
 		if (name.equals(PARAM_RESOURCE_ID)) {
 			// set resource id
-			this.resourceIdentifier = value.getAs(String.class);
+			this.resourceIdentifier = value.as(String.class);
 		}
 		else {
 			super.setParameter(name, value);

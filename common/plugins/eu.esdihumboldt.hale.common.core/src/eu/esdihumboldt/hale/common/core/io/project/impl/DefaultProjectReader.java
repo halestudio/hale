@@ -151,7 +151,7 @@ public class DefaultProjectReader extends AbstractProjectReader {
 		}
 
 		URI oldProjectLocation = URI.create(getProject().getSaveConfiguration()
-				.getProviderConfiguration().get(ExportProvider.PARAM_TARGET).getAs(String.class));
+				.getProviderConfiguration().get(ExportProvider.PARAM_TARGET).as(String.class));
 		PathUpdate update = new PathUpdate(oldProjectLocation, getSource().getLocation());
 
 		// check if there are any external project files listed

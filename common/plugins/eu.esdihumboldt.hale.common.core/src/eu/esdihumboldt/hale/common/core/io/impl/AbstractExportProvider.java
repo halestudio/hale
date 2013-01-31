@@ -90,7 +90,7 @@ public abstract class AbstractExportProvider extends AbstractIOProvider implemen
 	public void setParameter(String name, Value value) {
 		if (name.equals(PARAM_TARGET)) {
 			try {
-				File file = new File(URI.create(value.getAs(String.class)));
+				File file = new File(URI.create(value.as(String.class)));
 				setTarget(new FileIOSupplier(file));
 			} catch (IllegalArgumentException e) {
 				// ignore, can't set target

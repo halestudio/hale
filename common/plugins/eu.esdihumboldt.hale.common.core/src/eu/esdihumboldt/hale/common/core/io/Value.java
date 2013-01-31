@@ -39,12 +39,12 @@ public abstract class Value {
 	public static final Value NULL = new Value() {
 
 		@Override
-		public <T> T getAs(Class<T> expectedType) {
+		public <T> T as(Class<T> expectedType) {
 			return null;
 		}
 
 		@Override
-		public <T> T getAs(Class<T> expectedType, T defValue) {
+		public <T> T as(Class<T> expectedType, T defValue) {
 			return defValue;
 		}
 
@@ -134,7 +134,7 @@ public abstract class Value {
 	 * @return the value as the expected type or <code>null</code> if it could
 	 *         not be created/converted
 	 */
-	public abstract <T> T getAs(Class<T> expectedType);
+	public abstract <T> T as(Class<T> expectedType);
 
 	/**
 	 * Get the value as the expected type if possible, a default value
@@ -148,7 +148,7 @@ public abstract class Value {
 	 * @return the value as the expected type or the given default value if it
 	 *         could not be created/converted
 	 */
-	public abstract <T> T getAs(Class<T> expectedType, T defValue);
+	public abstract <T> T as(Class<T> expectedType, T defValue);
 
 	/**
 	 * Get the internal value.<br>

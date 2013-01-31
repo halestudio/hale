@@ -108,7 +108,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		@Override
 		protected String getValue(String key) {
 			synchronized (ProjectServiceImpl.this) {
-				return main.getProperties().get(key).getAs(String.class);
+				return main.getProperties().get(key).as(String.class);
 			}
 		}
 

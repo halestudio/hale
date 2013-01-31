@@ -196,7 +196,7 @@ public abstract class AbstractIOProvider implements IOProvider {
 		if (name.equals(PARAM_CONTENT_TYPE)) {
 			// configure content type
 			setContentType(Platform.getContentTypeManager().getContentType(
-					value.getAs(String.class)));
+					value.as(String.class)));
 		}
 		else {
 			// load generic parameter
