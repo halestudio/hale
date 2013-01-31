@@ -32,6 +32,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractPropertyTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.scripting.Script;
 import eu.esdihumboldt.hale.common.scripting.ScriptExtension;
 import eu.esdihumboldt.hale.common.scripting.ScriptFactory;
@@ -46,15 +47,8 @@ import eu.esdihumboldt.hale.common.scripting.ScriptFactory;
 public abstract class AbstractScriptedPropertyTransformation<E extends TransformationEngine>
 		extends AbstractPropertyTransformation<E> {
 
-	private ListMultimap<String, String> transformedParameters;
+	private ListMultimap<String, Value> transformedParameters;
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractPropertyTransformation#evaluate(java.lang.String,
-	 *      eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine,
-	 *      com.google.common.collect.ListMultimap,
-	 *      com.google.common.collect.ListMultimap, java.util.Map,
-	 *      eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog)
-	 */
 	@Override
 	protected final ListMultimap<String, Object> evaluate(String transformationIdentifier,
 			E engine, ListMultimap<String, PropertyValue> variables,
@@ -62,12 +56,12 @@ public abstract class AbstractScriptedPropertyTransformation<E extends Transform
 			Map<String, String> executionParameters, TransformationLog log)
 			throws TransformationException {
 		ListMultimap<String, ParameterValue> originalParameters = getParameters();
-		ListMultimap<String, String> transformedParameters = ArrayListMultimap.create();
+		ListMultimap<String, Value> transformedParameters = ArrayListMultimap.create();
 
 		if (originalParameters != null) {
 			for (Map.Entry<String, ParameterValue> entry : originalParameters.entries()) {
-				if (ParameterValue.DEFAULT_TYPE.equals(entry.getValue().getType()))
-					transformedParameters.put(entry.getKey(), entry.getValue().getStringValue());
+				if (!entry.getValue().needsProcessing())
+					transformedParameters.put(entry.getKey(), entry.getValue().intern());
 				else {
 					// type is a script
 					ScriptFactory factory = ScriptExtension.getInstance().getFactory(
@@ -83,14 +77,14 @@ public abstract class AbstractScriptedPropertyTransformation<E extends Transform
 					}
 					Object result;
 					try {
-						result = script.evaluate(entry.getValue().getStringValue(),
+						result = script.evaluate(entry.getValue().as(String.class),
 								variables.values());
 					} catch (ScriptException e) {
 						throw new TransformationException(
 								"Couldn't evaluate a transformation parameter", e);
 					}
 					// XXX use conversion service instead of valueOf?
-					transformedParameters.put(entry.getKey(), String.valueOf(result));
+					transformedParameters.put(entry.getKey(), Value.simple(result));
 				}
 			}
 		}
@@ -130,7 +124,7 @@ public abstract class AbstractScriptedPropertyTransformation<E extends Transform
 	 * 
 	 * @return the transformed parameters
 	 */
-	protected ListMultimap<String, String> getTransformedParameters() {
+	protected ListMultimap<String, Value> getTransformedParameters() {
 		return transformedParameters;
 	}
 
@@ -144,7 +138,7 @@ public abstract class AbstractScriptedPropertyTransformation<E extends Transform
 	 * @throws TransformationException if a parameter with the given name
 	 *             doesn't exist
 	 */
-	protected String getTransformedParameterChecked(String parameterName)
+	protected Value getTransformedParameterChecked(String parameterName)
 			throws TransformationException {
 		if (transformedParameters == null || transformedParameters.get(parameterName) == null
 				|| transformedParameters.get(parameterName).isEmpty()) {
@@ -163,7 +157,7 @@ public abstract class AbstractScriptedPropertyTransformation<E extends Transform
 	 * @param defaultValue the default value for the parameter
 	 * @return the parameter value, or the default if none is specified
 	 */
-	protected String getTransformedOptionalParameter(String parameterName, String defaultValue) {
+	protected Value getTransformedOptionalParameter(String parameterName, Value defaultValue) {
 		if (transformedParameters == null || transformedParameters.get(parameterName) == null
 				|| transformedParameters.get(parameterName).isEmpty()) {
 			return defaultValue;

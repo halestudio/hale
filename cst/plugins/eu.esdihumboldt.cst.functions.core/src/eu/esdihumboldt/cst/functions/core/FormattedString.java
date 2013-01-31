@@ -53,7 +53,7 @@ public class FormattedString extends
 			ListMultimap<String, PropertyValue> variables, String resultName,
 			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
 			TransformationLog log) throws TransformationException, NoResultException {
-		String pattern = getRawParameterChecked(PARAMETER_PATTERN);
+		String pattern = getParameterChecked(PARAMETER_PATTERN).as(String.class);
 
 		// name/value mapping
 		Map<String, Object> values = new LinkedHashMap<String, Object>();

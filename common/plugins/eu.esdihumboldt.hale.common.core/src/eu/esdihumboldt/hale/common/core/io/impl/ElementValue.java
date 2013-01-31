@@ -29,6 +29,8 @@ public class ElementValue extends Value {
 
 	private final Element element;
 
+	private final Object value;
+
 	/**
 	 * Create a value based on a DOM element.
 	 * 
@@ -37,6 +39,8 @@ public class ElementValue extends Value {
 	public ElementValue(Element element) {
 		super();
 		this.element = element;
+		// create the default value
+		this.value = HaleIO.getComplexValue(element);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -55,13 +59,12 @@ public class ElementValue extends Value {
 
 	@Override
 	public Object getValue() {
-		// XXX should this rather be the complex value?
-		return element;
+		return value;
 	}
 
 	@Override
 	public boolean isEmpty() {
-		return element == null;
+		return value == null;
 	}
 
 	@Override
@@ -70,7 +73,7 @@ public class ElementValue extends Value {
 	}
 
 	@Override
-	public Element getDOMReprensentation() {
+	public Element getDOMRepresentation() {
 		return element;
 	}
 

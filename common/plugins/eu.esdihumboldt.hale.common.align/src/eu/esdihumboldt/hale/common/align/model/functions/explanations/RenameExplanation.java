@@ -46,11 +46,11 @@ public class RenameExplanation extends AbstractCellExplanation implements Rename
 			else
 				text = "For each value in {0}";
 			text += " adds the same value to the {1} property. If necessary a conversion is applied.";
-			String structuralRename = CellUtil.getFirstRawParameter(cell,
-					PARAMETER_STRUCTURAL_RENAME);
-			boolean ignoreNamespaces = Boolean.parseBoolean(CellUtil.getFirstRawParameter(cell,
-					PARAMETER_IGNORE_NAMESPACES));
-			if (Boolean.parseBoolean(structuralRename)) {
+			boolean structuralRename = CellUtil
+					.getFirstParameter(cell, PARAMETER_STRUCTURAL_RENAME).as(Boolean.class, false);
+			boolean ignoreNamespaces = CellUtil
+					.getFirstParameter(cell, PARAMETER_IGNORE_NAMESPACES).as(Boolean.class, false);
+			if (structuralRename) {
 				text += " Furthermore child properties are copied, too, if the property names in source and target match.";
 				if (ignoreNamespaces)
 					text += " When comparing child property names, differing namespaces may be ignored.";

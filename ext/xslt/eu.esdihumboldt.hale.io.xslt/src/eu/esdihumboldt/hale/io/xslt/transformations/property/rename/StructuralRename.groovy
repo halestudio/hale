@@ -66,8 +66,8 @@ class StructuralRename implements XslFunction, RenameFunction {
 		this.xsltContext = xsltContext;
 
 		use (CellUtil, DefinitionUtil) {
-			ignoreNamespaces = Boolean.parseBoolean(cell.getOptionalRawParameter(
-					PARAMETER_IGNORE_NAMESPACES, 'false'));
+			ignoreNamespaces = cell.getOptionalParameter(
+					PARAMETER_IGNORE_NAMESPACES, Value.of(false)).as(Boolean);
 
 			XslVariable sourceVar = variables.get(null)[0]
 

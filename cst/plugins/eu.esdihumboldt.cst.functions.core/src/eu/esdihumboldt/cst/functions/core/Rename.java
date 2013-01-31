@@ -36,6 +36,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.TransformationE
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.convert.ConversionUtil;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -72,11 +73,11 @@ public class Rename extends AbstractSingleTargetPropertyTransformation<Transform
 		// get the source value
 		Object sourceValue = variables.values().iterator().next().getValue();
 
-		String structuralRename = getRawOptionalParameter(PARAMETER_STRUCTURAL_RENAME, "false");
-		boolean structuralRenameEnabled = Boolean.parseBoolean(structuralRename);
+		boolean structuralRenameEnabled = getOptionalParameter(PARAMETER_STRUCTURAL_RENAME,
+				Value.of(false)).as(Boolean.class);
 
-		String ignoreNamespaces = getRawOptionalParameter(PARAMETER_IGNORE_NAMESPACES, "false");
-		boolean ignoreNamespacesEnabled = Boolean.parseBoolean(ignoreNamespaces);
+		boolean ignoreNamespacesEnabled = getOptionalParameter(PARAMETER_IGNORE_NAMESPACES,
+				Value.of(false)).as(Boolean.class);
 
 		// not a group? just return value.
 		if (!(sourceValue instanceof Group))

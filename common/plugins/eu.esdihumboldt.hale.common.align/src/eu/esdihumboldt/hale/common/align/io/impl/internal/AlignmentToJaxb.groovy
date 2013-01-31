@@ -40,7 +40,6 @@ import eu.esdihumboldt.hale.common.align.model.ChildContext
 import eu.esdihumboldt.hale.common.align.model.Entity
 import eu.esdihumboldt.hale.common.align.model.ParameterValue
 import eu.esdihumboldt.hale.common.align.model.Property
-import eu.esdihumboldt.hale.common.core.io.HaleIO
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter
 import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager
 import eu.esdihumboldt.hale.common.instance.model.Filter
@@ -132,15 +131,15 @@ class AlignmentToJaxb {
 		 * XXX are null parameters working like this OK? or should there be no
 		 * parameter created at all? 
 		 */
-		if (value.value instanceof String || value.value == null) {
+		if (!value.representedAsDOM) {
 			// normal value
-			return of.createParameter(new ParameterType(name: name, value: value.value, 
-				type: (!value.type || value.type == ParameterValue.DEFAULT_TYPE ? null : value.type)))
+			return of.createParameter(new ParameterType(name: name, value: value.stringRepresentation, 
+				type: (value.needsProcessing() ? value.type : null)))
 		}
 		else {
 			// complex value or element
 			return of.createComplexParameter(
-				new ComplexParameterType(name: name, any: HaleIO.getComplexElement(value.value)))
+				new ComplexParameterType(name: name, any: value.getDOMRepresentation()))
 		}
 	}
 

@@ -44,7 +44,8 @@ public class NetworkExpansionExplanation extends AbstractCellExplanation impleme
 	@Override
 	protected String getExplanation(Cell cell, boolean html) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
-		String expression = CellUtil.getFirstRawParameter(cell, PARAMETER_BUFFER_WIDTH);
+		String expression = CellUtil.getFirstParameter(cell, PARAMETER_BUFFER_WIDTH).as(
+				String.class);
 		List<? extends Entity> variables = cell.getSource().get(ENTITY_VARIABLE);
 		List<? extends Entity> geom = cell.getSource().get(null);
 

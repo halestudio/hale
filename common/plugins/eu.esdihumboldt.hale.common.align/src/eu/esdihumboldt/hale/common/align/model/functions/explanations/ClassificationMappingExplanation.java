@@ -48,13 +48,13 @@ public class ClassificationMappingExplanation extends AbstractCellExplanation im
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
 		List<ParameterValue> mappings = cell.getTransformationParameters().get(
 				PARAMETER_CLASSIFICATIONS);
-		String notClassifiedAction = CellUtil.getFirstRawParameter(cell,
-				PARAMETER_NOT_CLASSIFIED_ACTION);
+		String notClassifiedAction = CellUtil.getFirstParameter(cell,
+				PARAMETER_NOT_CLASSIFIED_ACTION).as(String.class);
 
 		if (target != null && source != null) {
 			StringBuilder mappingString = new StringBuilder();
 			for (ParameterValue value : mappings) {
-				String s = value.getStringValue();
+				String s = value.as(String.class);
 				try {
 					mappingString.append(quoteText(
 							URLDecoder.decode(s.substring(0, s.indexOf(' ')), "UTF-8"), false));
@@ -102,15 +102,15 @@ public class ClassificationMappingExplanation extends AbstractCellExplanation im
 
 		List<ParameterValue> mappings = cell.getTransformationParameters().get(
 				PARAMETER_CLASSIFICATIONS);
-		String notClassifiedAction = CellUtil.getFirstRawParameter(cell,
-				PARAMETER_NOT_CLASSIFIED_ACTION);
+		String notClassifiedAction = CellUtil.getFirstParameter(cell,
+				PARAMETER_NOT_CLASSIFIED_ACTION).as(String.class);
 
 		if (target != null && source != null) {
 			StringBuilder mappingString = new StringBuilder();
 			mappingString
 					.append("<table border=\"1\"><tr><th>Target value</th><th>Source values</th></tr>");
 			for (ParameterValue value : mappings) {
-				String s = value.getStringValue();
+				String s = value.as(String.class);
 				mappingString.append("<tr><td>");
 				try {
 					mappingString.append(quoteText(

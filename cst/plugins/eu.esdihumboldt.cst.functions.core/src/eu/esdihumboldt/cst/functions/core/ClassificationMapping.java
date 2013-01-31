@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
+import eu.esdihumboldt.hale.common.core.io.Value;
 
 /**
  * Classification mapping function to map values of an attribute to a different
@@ -55,20 +56,22 @@ public class ClassificationMapping extends
 
 		String source = variables.values().iterator().next().getValueAs(String.class);
 
-		List<String> mappings = getRawParameters().get(PARAMETER_CLASSIFICATIONS);
+		List<? extends Value> mappings = getParameters().get(PARAMETER_CLASSIFICATIONS);
 		if (!mappings.isEmpty()) {
 			try {
 				String sourceValue = URLEncoder.encode(source, "UTF-8");
-				for (String s : mappings)
+				for (Value value : mappings) {
+					String s = value.as(String.class);
 					if (s.contains(' ' + sourceValue + ' ') || s.endsWith(' ' + sourceValue))
 						return URLDecoder.decode(s.substring(0, s.indexOf(' ')), "UTF-8");
+				}
 			} catch (UnsupportedEncodingException e) {
 				// UTF-8 should be everywhere
 			}
 		}
 
-		String notClassifiedAction = getRawOptionalParameter(PARAMETER_NOT_CLASSIFIED_ACTION,
-				USE_NULL_ACTION);
+		String notClassifiedAction = getOptionalParameter(PARAMETER_NOT_CLASSIFIED_ACTION,
+				Value.of(USE_NULL_ACTION)).as(String.class);
 
 		if (USE_SOURCE_ACTION.equals(notClassifiedAction))
 			return source;

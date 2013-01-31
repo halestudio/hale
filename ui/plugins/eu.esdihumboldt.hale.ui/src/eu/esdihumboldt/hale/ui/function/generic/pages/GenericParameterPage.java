@@ -52,6 +52,7 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.common.Editor;
 import eu.esdihumboldt.hale.ui.function.extension.ParameterEditorExtension;
@@ -135,15 +136,14 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 		this.initialValues = initialValues;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage#getConfiguration()
-	 */
 	@Override
 	public ListMultimap<String, ParameterValue> getConfiguration() {
 		ListMultimap<String, ParameterValue> conf = ArrayListMultimap.create();
 		for (Map.Entry<FunctionParameter, Pair<Editor<?>, Button>> entry : inputFields.entries())
-			conf.put(entry.getKey().getName(), new ParameterValue(entry.getValue().getFirst()
-					.getValueType(), entry.getValue().getFirst().getAsText()));
+			conf.put(entry.getKey().getName(), //
+					new ParameterValue( //
+							entry.getValue().getFirst().getValueType(), //
+							Value.of(entry.getValue().getFirst().getAsText())));
 		return conf;
 	}
 
