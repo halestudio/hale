@@ -15,12 +15,28 @@
 
 package eu.esdihumboldt.hale.io.jdbc.postgresql;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import org.geotools.geometry.jts.JTS;
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
+import org.postgis.PGgeometry;
 import org.postgresql.PGConnection;
+import org.postgresql.jdbc2.AbstractJdbc2Connection;
 
 import schemacrawler.schema.Column;
 import schemacrawler.schema.ColumnDataType;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -30,7 +46,7 @@ import eu.esdihumboldt.hale.io.jdbc.GeometryAdvisor;
 /**
  * Geometry advisor for PostGIS.
  * 
- * @author Simon Templer
+ * @author Simon Templer, Dominik Reuter
  */
 public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 
@@ -47,16 +63,90 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 	@Override
 	public Class<? extends Geometry> configureGeometryColumnType(PGConnection connection,
 			Column column, DefaultTypeDefinition type) {
-		// TODO determine SRS and store that information using a constraint
-		// TODO determine actual geometry type
-		return Geometry.class;
+		AbstractJdbc2Connection con = (AbstractJdbc2Connection) connection;
+
+		String columnValueName = column.getParent().getName();
+		String geometryType = "";
+		try {
+			Statement stmt = con.createStatement();
+			// Get the srid, dimension and geometry type
+			ResultSet rs = stmt
+					.executeQuery("SELECT srid,type,coord_dimension FROM geometry_columns WHERE f_table_name = "
+							+ "'" + columnValueName + "'");
+			if (rs.next()) {
+				geometryType = rs.getString("type");
+				String dimension = rs.getString("coord_dimension");
+
+				// Get the epsg code for the srid
+				String srid = rs.getString("srid");
+				ResultSet r = stmt
+						.executeQuery("SELECT auth_srid, auth_name, srtext FROM spatial_ref_sys WHERE srid = "
+								+ srid);
+				if (r.next()) {
+					// Create Constraint to save the informations
+					GeometryMetadata columnTypeConstraint = new GeometryMetadata(
+							r.getString("auth_srid"), Integer.parseInt(dimension),
+							r.getString("srtext"), r.getString("auth_name"));
+					type.setConstraint(columnTypeConstraint);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		// In this case we have no geometry column
+		if (geometryType.equals("")) {
+			return null;
+		}
+		// return the geometryType
+		if (geometryType.equalsIgnoreCase("MultiPolygon")) {
+			return MultiPolygon.class;
+		}
+		else if (geometryType.equalsIgnoreCase("MultiPoint")) {
+			return MultiPoint.class;
+		}
+		else if (geometryType.equalsIgnoreCase("MultiLineString")) {
+			return MultiLineString.class;
+		}
+		else if (geometryType.equalsIgnoreCase("LinearRing")) {
+			return LinearRing.class;
+		}
+		else if (geometryType.equalsIgnoreCase("Point")) {
+			return Point.class;
+		}
+		else if (geometryType.equalsIgnoreCase("Polygon")) {
+			return Polygon.class;
+		}
+		else {
+			return Geometry.class;
+		}
 	}
 
 	@Override
-	public Object convertGeometry(GeometryProperty<?> geom, TypeDefinition columnType) {
-		// TODO convert geometry to target SRS
-		// TODO convert geometry to PGgeometry
-		return geom.getGeometry();
-	}
+	public Object convertGeometry(GeometryProperty<?> geom, TypeDefinition columnType)
+			throws Exception {
 
+		PGgeometry pGeometry = null;
+		// Transform from sourceCRS to targetCRS
+		GeometryMetadata columnTypeMetadata = columnType.getConstraint(GeometryMetadata.class);
+
+		// transform
+		CoordinateReferenceSystem targetCRS = null;
+		if (columnTypeMetadata.getSrsName().equals("EPSG")) {
+			targetCRS = CRS.decode(columnTypeMetadata.getSrsName() + ":"
+					+ columnTypeMetadata.getSrs());
+		}
+		else {
+			targetCRS = CRS.parseWKT(columnTypeMetadata.getSrsText());
+		}
+
+		MathTransform transform = CRS
+				.findMathTransform(geom.getCRSDefinition().getCRS(), targetCRS);
+		Geometry targetGeometry = JTS.transform(geom.getGeometry(), transform);
+
+		// Convert the jts Geometry to postgis PGgeometry and set the SRSID
+		pGeometry = new PGgeometry(targetGeometry.toText());
+		pGeometry.getGeometry().setSrid(Integer.parseInt(columnTypeMetadata.getSrs()));
+		return pGeometry;
+	}
 }
