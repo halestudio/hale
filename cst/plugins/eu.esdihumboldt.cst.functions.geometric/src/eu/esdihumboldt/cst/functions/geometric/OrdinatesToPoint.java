@@ -67,7 +67,7 @@ public class OrdinatesToPoint extends
 
 		// get crs definition if srs is specified
 		CRSDefinition crsDef = null;
-		String srs = getRawOptionalParameter(PARAMETER_REFERENCE_SYSTEM, null);
+		String srs = getOptionalParameter(PARAMETER_REFERENCE_SYSTEM, null).as(String.class);
 		if (srs != null)
 			crsDef = new CodeDefinition(srs, null);
 

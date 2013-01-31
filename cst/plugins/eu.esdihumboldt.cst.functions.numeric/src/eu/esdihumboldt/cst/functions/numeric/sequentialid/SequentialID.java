@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.TransformationE
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
+import eu.esdihumboldt.hale.common.core.io.Value;
 
 /**
  * Function that generates a sequential identifier.
@@ -48,10 +49,11 @@ public class SequentialID extends AbstractSingleTargetPropertyTransformation<Tra
 			TransformationLog log) throws TransformationException, NoResultException {
 		// get parameter values
 
-		String prefix = getRawOptionalParameter(PARAM_PREFIX, "");
-		String suffix = getRawOptionalParameter(PARAM_SUFFIX, "");
+		String prefix = getOptionalParameter(PARAM_PREFIX, Value.of("")).as(String.class);
+		String suffix = getOptionalParameter(PARAM_SUFFIX, Value.of("")).as(String.class);
 		// assume type as default for sequence
-		String sequenceStr = getRawOptionalParameter(PARAM_SEQUENCE, Sequence.type.name());
+		String sequenceStr = getOptionalParameter(PARAM_SEQUENCE, Value.of(Sequence.type.name()))
+				.as(String.class);
 
 		// select appropriate context and key
 		Sequence sequence = Sequence.valueOf(sequenceStr);

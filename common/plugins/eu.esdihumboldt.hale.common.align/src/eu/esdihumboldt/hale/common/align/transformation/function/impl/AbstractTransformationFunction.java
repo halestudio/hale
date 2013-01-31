@@ -18,7 +18,6 @@ package eu.esdihumboldt.hale.common.align.transformation.function.impl;
 
 import java.text.MessageFormat;
 
-import com.google.common.base.Function;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimaps;
 
@@ -27,6 +26,7 @@ import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEng
 import eu.esdihumboldt.hale.common.align.transformation.function.ExecutionContext;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationFunction;
+import eu.esdihumboldt.hale.common.core.io.Value;
 
 /**
  * Transformation function base class
@@ -57,24 +57,6 @@ public abstract class AbstractTransformationFunction<E extends TransformationEng
 	 */
 	public ListMultimap<String, ParameterValue> getParameters() {
 		return parameters;
-	}
-
-	/**
-	 * Returns the raw parameter value map ignoring specified types.
-	 * 
-	 * @return the raw parameter values
-	 */
-	public ListMultimap<String, String> getRawParameters() {
-		return Multimaps.transformValues(parameters, new Function<ParameterValue, String>() {
-
-			@Override
-			public String apply(ParameterValue input) {
-				if (input == null)
-					return null;
-				else
-					return input.getStringValue();
-			}
-		});
 	}
 
 	/**
@@ -127,42 +109,6 @@ public abstract class AbstractTransformationFunction<E extends TransformationEng
 	 * @throws TransformationException if a parameter with the given name
 	 *             doesn't exist
 	 */
-	protected String getRawParameterChecked(String parameterName) throws TransformationException {
-		if (parameters == null || parameters.get(parameterName) == null
-				|| parameters.get(parameterName).isEmpty()) {
-			throw new TransformationException(MessageFormat.format(
-					"Mandatory parameter {0} not defined", parameterName));
-		}
-
-		return parameters.get(parameterName).get(0).getStringValue();
-	}
-
-	/**
-	 * Get the first parameter defined with the given parameter name. If no such
-	 * parameter exists, the given default value is returned.
-	 * 
-	 * @param parameterName the parameter name
-	 * @param defaultValue the default value for the parameter
-	 * @return the parameter value, or the default if none is specified
-	 */
-	protected String getRawOptionalParameter(String parameterName, String defaultValue) {
-		if (parameters == null || parameters.get(parameterName) == null
-				|| parameters.get(parameterName).isEmpty()) {
-			return defaultValue;
-		}
-
-		return parameters.get(parameterName).get(0).getStringValue();
-	}
-
-	/**
-	 * Get the first parameter defined with the given parameter name. Throws a
-	 * {@link TransformationException} if such a parameter doesn't exist.
-	 * 
-	 * @param parameterName the parameter name
-	 * @return the parameter value
-	 * @throws TransformationException if a parameter with the given name
-	 *             doesn't exist
-	 */
 	protected ParameterValue getParameterChecked(String parameterName)
 			throws TransformationException {
 		if (getParameters() == null || getParameters().get(parameterName) == null
@@ -182,10 +128,10 @@ public abstract class AbstractTransformationFunction<E extends TransformationEng
 	 * @param defaultValue the default value for the parameter
 	 * @return the parameter value, or the default if none is specified
 	 */
-	protected ParameterValue getOptionalParameter(String parameterName, Object defaultValue) {
+	protected ParameterValue getOptionalParameter(String parameterName, Value defaultValue) {
 		if (getParameters() == null || getParameters().get(parameterName) == null
 				|| getParameters().get(parameterName).isEmpty()) {
-			return new ParameterValue(null, defaultValue);
+			return new ParameterValue(defaultValue);
 		}
 
 		return getParameters().get(parameterName).get(0);

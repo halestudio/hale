@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.common.align.io.impl.internal;
 
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
+import eu.esdihumboldt.hale.common.core.io.Value;
 
 /**
  * Combines a parameter name and value
@@ -59,7 +60,7 @@ public class ParameterValueBean {
 	public ParameterValueBean(String name, ParameterValue value) {
 		this.name = name;
 		this.type = value.getType();
-		this.value = value.getStringValue();
+		this.value = value.as(String.class);
 	}
 
 	/**
@@ -122,6 +123,6 @@ public class ParameterValueBean {
 	 * @return the created parameter value
 	 */
 	public ParameterValue createParameterValue() {
-		return new ParameterValue(type, value);
+		return new ParameterValue(type, Value.of(value));
 	}
 }

@@ -64,7 +64,7 @@ public abstract class Value {
 		}
 
 		@Override
-		public Element getDOMReprensentation() {
+		public Element getDOMRepresentation() {
 			return null;
 		}
 
@@ -173,7 +173,7 @@ public abstract class Value {
 	 * serializing it.
 	 * 
 	 * @return if the value can be represented as {@link Element}
-	 * @see #getDOMReprensentation()
+	 * @see #getDOMRepresentation()
 	 * @see #getStringRepresentation()
 	 */
 	public abstract boolean isRepresentedAsDOM();
@@ -185,7 +185,7 @@ public abstract class Value {
 	 *         {@link #isRepresentedAsDOM()} yields <code>false</code>
 	 * @see #isRepresentedAsDOM()
 	 */
-	public abstract Element getDOMReprensentation();
+	public abstract Element getDOMRepresentation();
 
 	/**
 	 * Get the value's string representation.

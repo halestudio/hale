@@ -51,6 +51,7 @@ import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.filter.FilterGeoCqlImpl;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
@@ -136,7 +137,7 @@ public abstract class DefaultAlignmentIOTest {
 			TestAnnotation commentParam = new TestAnnotation();
 			commentParam.setAuthor("Gerd");
 			commentParam.setComment("Should a comment really be used as parameter?");
-			parameters2.put("comment", new ParameterValue(null, commentParam));
+			parameters2.put("comment", new ParameterValue(Value.complex(commentParam)));
 		}
 
 		cell2.setTransformationParameters(parameters2);

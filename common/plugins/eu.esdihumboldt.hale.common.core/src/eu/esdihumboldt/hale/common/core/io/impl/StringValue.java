@@ -109,7 +109,7 @@ public class StringValue extends Value {
 	}
 
 	@Override
-	public Element getDOMReprensentation() {
+	public Element getDOMRepresentation() {
 		return null;
 	}
 

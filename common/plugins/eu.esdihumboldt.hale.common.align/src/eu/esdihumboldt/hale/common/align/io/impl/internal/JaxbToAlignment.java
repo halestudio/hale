@@ -54,7 +54,8 @@ import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
-import eu.esdihumboldt.hale.common.core.io.HaleIO;
+import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.io.impl.ElementValue;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager;
@@ -123,13 +124,14 @@ public class JaxbToAlignment {
 				if (apt instanceof ParameterType) {
 					// treat string parameters or null parameters
 					ParameterType pt = (ParameterType) apt;
-					parameters.put(pt.getName(), new ParameterValue(pt.getType(), pt.getValue()));
+					parameters.put(pt.getName(),
+							new ParameterValue(pt.getType(), Value.of(pt.getValue())));
 				}
 				else if (apt instanceof ComplexParameterType) {
 					// complex parameters
 					ComplexParameterType cpt = (ComplexParameterType) apt;
-					Object value = HaleIO.getComplexValue(cpt.getAny());
-					parameters.put(cpt.getName(), new ParameterValue(null, value));
+					parameters.put(cpt.getName(),
+							new ParameterValue(new ElementValue(cpt.getAny())));
 				}
 				else
 					throw new IllegalStateException("Illegal parameter type");

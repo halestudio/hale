@@ -140,7 +140,7 @@ public class ProjectToJaxb {
 			ComplexPropertyType result = new ComplexPropertyType();
 
 			result.setName(name);
-			result.setAny(value.getDOMReprensentation());
+			result.setAny(value.getDOMRepresentation());
 
 			return result;
 		}

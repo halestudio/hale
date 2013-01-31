@@ -26,6 +26,7 @@ import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
+import eu.esdihumboldt.hale.common.core.io.Value;
 
 /**
  * Cell related utility methods.
@@ -53,37 +54,23 @@ public abstract class CellUtil {
 	 * 
 	 * @param cell the cell
 	 * @param parameterName the parameter name
-	 * @return the parameter value or <code>null</code>
+	 * @return the parameter value or a parameter value representing
+	 *         <code>null</code>
 	 */
 	public static ParameterValue getFirstParameter(Cell cell, String parameterName) {
+		ParameterValue result = null;
 		ListMultimap<String, ParameterValue> params = cell.getTransformationParameters();
 		if (params != null) {
 			List<ParameterValue> values = params.get(parameterName);
 			if (values != null && !values.isEmpty()) {
-				return values.get(0);
+				result = values.get(0);
 			}
 		}
 
-		return null;
-	}
-
-	/**
-	 * Get the first parameter with the given name in the given cell.
-	 * 
-	 * @param cell the cell
-	 * @param parameterName the parameter name
-	 * @return the raw parameter value or <code>null</code>
-	 */
-	public static String getFirstRawParameter(Cell cell, String parameterName) {
-		ListMultimap<String, ParameterValue> params = cell.getTransformationParameters();
-		if (params != null) {
-			List<ParameterValue> values = params.get(parameterName);
-			if (values != null && !values.isEmpty()) {
-				return values.get(0).getStringValue();
-			}
+		if (result == null) {
+			return ParameterValue.NULL;
 		}
-
-		return null;
+		return result;
 	}
 
 	/**
@@ -95,17 +82,18 @@ public abstract class CellUtil {
 	 *            specified
 	 * @return the raw parameter value or <code>null</code>
 	 */
-	public static String getOptionalRawParameter(Cell cell, String parameterName,
-			String defaultValue) {
+	public static ParameterValue getOptionalParameter(Cell cell, String parameterName,
+			Value defaultValue) {
 		ListMultimap<String, ParameterValue> params = cell.getTransformationParameters();
 		if (params != null) {
 			List<ParameterValue> values = params.get(parameterName);
 			if (values != null && !values.isEmpty()) {
-				return values.get(0).getStringValue();
+				// XXX should also be checked if the parameter value is empty?
+				return values.get(0);
 			}
 		}
 
-		return defaultValue;
+		return new ParameterValue(defaultValue);
 	}
 
 	/**

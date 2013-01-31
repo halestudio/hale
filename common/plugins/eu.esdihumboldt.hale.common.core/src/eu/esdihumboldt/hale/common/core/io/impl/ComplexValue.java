@@ -77,7 +77,7 @@ public class ComplexValue extends Value {
 	}
 
 	@Override
-	public Element getDOMReprensentation() {
+	public Element getDOMRepresentation() {
 		return HaleIO.getComplexElement(value);
 	}
 

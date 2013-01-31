@@ -71,11 +71,6 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 		}
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.common.definition.AttributeEditorFactory#createEditor(org.eclipse.swt.widgets.Composite,
-	 *      eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter,
-	 *      ParameterValue)
-	 */
 	@Override
 	public Editor<?> createEditor(Composite parent, FunctionParameter parameter,
 			ParameterValue initialValue) {
@@ -86,7 +81,7 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 						parent, binding, parameter.getValidator());
 				if (initialValue != null) {
 					result.selectEditor(initialValue.getType());
-					result.setAsText(initialValue.getStringValue());
+					result.setAsText(initialValue.as(String.class));
 				}
 				else
 					result.selectDefaultEditor();
@@ -100,14 +95,14 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 					resultEditor = new DefaultFunctionParameterEditor(parent, binding,
 							parameter.getValidator());
 				if (initialValue != null)
-					resultEditor.setAsText(initialValue.getStringValue());
+					resultEditor.setAsText(initialValue.as(String.class));
 				return resultEditor;
 			}
 		}
 		else {
 			EnumerationEditor editor = new EnumerationEditor(parent, parameter.getEnumeration());
 			if (initialValue != null)
-				editor.setAsText(initialValue.getStringValue());
+				editor.setAsText(initialValue.as(String.class));
 			return editor;
 		}
 	}
