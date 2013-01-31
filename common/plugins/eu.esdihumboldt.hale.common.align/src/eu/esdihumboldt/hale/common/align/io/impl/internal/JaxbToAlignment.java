@@ -22,8 +22,6 @@ import java.util.List;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
-import org.w3c.dom.Element;
-
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
@@ -56,8 +54,7 @@ import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
-import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueDefinition;
-import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueExtension;
+import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager;
@@ -131,28 +128,8 @@ public class JaxbToAlignment {
 				else if (apt instanceof ComplexParameterType) {
 					// complex parameters
 					ComplexParameterType cpt = (ComplexParameterType) apt;
-					Element element = cpt.getAny();
-					QName name;
-					if (element.getNamespaceURI() != null && !element.getNamespaceURI().isEmpty()) {
-						name = new QName(element.getNamespaceURI(), element.getLocalName());
-					}
-					else {
-						name = new QName(element.getLocalName());
-					}
-					ComplexValueDefinition cvt = ComplexValueExtension.getInstance().getDefinition(
-							name);
-					if (cvt != null) {
-						// create and return the complex parameter value
-						Object value = cvt.fromDOM(element);
-						parameters.put(cpt.getName(), new ParameterValue(null, value));
-					}
-					else {
-						// the parameter value is the XML
-						parameters.put(cpt.getName(), new ParameterValue(null, element));
-//						throw new IllegalStateException(
-//								"Could not load complex parameter value for element "
-//										+ name.toString());
-					}
+					Object value = HaleIO.getComplexValue(cpt.getAny());
+					parameters.put(cpt.getName(), new ParameterValue(null, value));
 				}
 				else
 					throw new IllegalStateException("Illegal parameter type");

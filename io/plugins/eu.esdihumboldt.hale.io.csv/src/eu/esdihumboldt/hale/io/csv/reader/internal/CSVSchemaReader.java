@@ -85,13 +85,10 @@ public class CSVSchemaReader extends AbstractSchemaReader implements CSVConstant
 		return schema;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractImportProvider#validate()
-	 */
 	@Override
 	public void validate() throws IOProviderConfigurationException {
 		super.validate();
-		if (getParameter(PARAM_TYPENAME) == null || getParameter(PARAM_TYPENAME) == "") {
+		if (getParameter(PARAM_TYPENAME).isEmpty()) {
 			fail("No Typename specified");
 		}
 	}
@@ -114,11 +111,8 @@ public class CSVSchemaReader extends AbstractSchemaReader implements CSVConstant
 			firstLine = reader.readNext();
 
 			// create type definition
-			String typename;
-			if (getParameter(PARAM_TYPENAME) != null && !getParameter(PARAM_TYPENAME).isEmpty()) {
-				typename = getParameter(PARAM_TYPENAME);
-			}
-			else {
+			String typename = getParameter(PARAM_TYPENAME).toString();
+			if (typename == null || typename.isEmpty()) {
 				reporter.setSuccess(false);
 				reporter.error(new IOMessageImpl("No Typename was set", null));
 				return reporter;
@@ -136,7 +130,7 @@ public class CSVSchemaReader extends AbstractSchemaReader implements CSVConstant
 
 			StringBuffer defaultPropertyTypeBuffer = new StringBuffer();
 			String[] comboSelections;
-			if (getParameter(PARAM_PROPERTYTYPE) == null || getParameter(PARAM_PROPERTYTYPE) == "") {
+			if (getParameter(PARAM_PROPERTYTYPE).isEmpty()) {
 				for (int i = 0; i < firstLine.length; i++) {
 					defaultPropertyTypeBuffer.append("java.lang.String");
 					defaultPropertyTypeBuffer.append(",");
@@ -146,14 +140,14 @@ public class CSVSchemaReader extends AbstractSchemaReader implements CSVConstant
 				comboSelections = combs.split(",");
 			}
 			else {
-				comboSelections = getParameter(PARAM_PROPERTYTYPE).split(",");
+				comboSelections = getParameter(PARAM_PROPERTYTYPE).getAs(String.class).split(",");
 			}
 			String[] properties;
 			if (getParameter(PARAM_PROPERTY) == null) {
 				properties = firstLine;
 			}
 			else {
-				properties = getParameter(PARAM_PROPERTY).split(",");
+				properties = getParameter(PARAM_PROPERTY).getAs(String.class).split(",");
 			}
 			// fails if there are less or more property names or property types
 			// than the entries in the first line

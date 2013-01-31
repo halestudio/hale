@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -214,7 +215,7 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage implement
 	public boolean updateConfiguration(InstanceReader provider) {
 		if (selector.getSelectedObject() != null) {
 			QName name = selector.getSelectedObject().getName();
-			provider.setParameter(PARAM_TYPENAME, name.toString());
+			provider.setParameter(PARAM_TYPENAME, Value.of(name.toString()));
 		}
 		else {
 			return false;

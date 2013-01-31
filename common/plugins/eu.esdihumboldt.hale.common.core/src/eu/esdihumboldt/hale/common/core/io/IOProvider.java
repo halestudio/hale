@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.content.IContentType;
 
+import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueExtension;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 
@@ -103,30 +104,38 @@ public interface IOProvider {
 	 * Set a parameter
 	 * 
 	 * @param name the parameter name
-	 * @param value the parameter value
+	 * @param value the parameter value, it is either a string, a DOM elements
+	 *            or a complex value types defined in the
+	 *            {@link ComplexValueExtension}
 	 */
-	public void setParameter(String name, String value);
+	public void setParameter(String name, Value value);
 
 	/**
 	 * Get the value for the given parameter name
 	 * 
 	 * @param name the parameter name
-	 * @return the parameter value or <code>null</code>
+	 * @return the parameter value or <code>null</code>, the value is either a
+	 *         string, a DOM elements or a complex value types defined in the
+	 *         {@link ComplexValueExtension}
 	 */
-	public String getParameter(String name);
+	public Value getParameter(String name);
 
 	/**
 	 * Load the configuration from a map of key/value pairs
 	 * 
-	 * @param configuration the configuration to load
+	 * @param configuration the configuration to load, values are either
+	 *            strings, DOM elements or complex value types defined in the
+	 *            {@link ComplexValueExtension}
 	 */
-	public void loadConfiguration(Map<String, String> configuration);
+	public void loadConfiguration(Map<String, Value> configuration);
 
 	/**
 	 * Store the configuration in a map of key/value pairs
 	 * 
-	 * @param configuration the configuration to populate
+	 * @param configuration the configuration to populate, values are either
+	 *            strings, DOM elements or complex value types defined in the
+	 *            {@link ComplexValueExtension}
 	 */
-	public void storeConfiguration(Map<String, String> configuration);
+	public void storeConfiguration(Map<String, Value> configuration);
 
 }

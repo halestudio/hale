@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.common.headless.transform;
 
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider;
 import eu.esdihumboldt.hale.common.instance.geometry.impl.AbstractCRSManager;
@@ -48,7 +49,7 @@ public class ProjectCRSManager extends AbstractCRSManager {
 	 */
 	@Override
 	protected void storeValue(String key, String value) {
-		project.getProperties().put(key, value);
+		project.getProperties().put(key, Value.of(value));
 	}
 
 	/**
@@ -56,7 +57,7 @@ public class ProjectCRSManager extends AbstractCRSManager {
 	 */
 	@Override
 	protected String loadValue(String key) {
-		return project.getProperties().get(key);
+		return project.getProperties().get(key).getAs(String.class);
 	}
 
 }

@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.common.align.io.AlignmentReader;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
 import eu.esdihumboldt.hale.common.core.io.project.extension.internal.ActionProjectFile;
@@ -153,7 +154,7 @@ public class HeadlessProjectAdvisor extends AbstractIOAdvisor<ProjectReader> {
 		projectFiles.put(AlignmentIO.PROJECT_FILE_ALIGNMENT, new ActionProjectFile(
 				AlignmentIO.ACTION_LOAD_ALIGNMENT, //
 				null, // auto-detect provider for loading
-				new HashMap<String, String>(), // no parameters givens
+				new HashMap<String, Value>(), // no parameters givens
 				null, null, null, this) // give null for save related parts
 										// (should not be called)
 				{

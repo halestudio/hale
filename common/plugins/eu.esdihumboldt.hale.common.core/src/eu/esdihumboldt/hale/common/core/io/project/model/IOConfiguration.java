@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueExtension;
 
 /**
  * Object holding all information necessary to reproduce an {@link IOProvider}
@@ -38,7 +40,7 @@ public class IOConfiguration implements Serializable, Cloneable {
 
 	private String name;
 
-	private final Map<String, String> providerConfiguration = new HashMap<String, String>();
+	private final Map<String, Value> providerConfiguration = new HashMap<String, Value>();
 
 	/**
 	 * Default constructor
@@ -108,9 +110,13 @@ public class IOConfiguration implements Serializable, Cloneable {
 	}
 
 	/**
-	 * @return the providerConfiguration
+	 * Get the I/O provider configuration.
+	 * 
+	 * @return the provider configuration, values are either strings, DOM
+	 *         elements or complex value types defined in the
+	 *         {@link ComplexValueExtension}
 	 */
-	public Map<String, String> getProviderConfiguration() {
+	public Map<String, Value> getProviderConfiguration() {
 		return providerConfiguration;
 	}
 

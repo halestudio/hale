@@ -56,7 +56,7 @@ public class CSVUtil implements CSVConstants {
 	 * @return the separator char
 	 */
 	public static char getSep(ImportProvider provider) {
-		String separator = provider.getParameter(PARAM_SEPARATOR);
+		String separator = provider.getParameter(PARAM_SEPARATOR).getAs(String.class);
 		char sep = ((separator == null || separator.isEmpty()) ? (DEFAULT_SEPARATOR) : (separator
 				.charAt(0)));
 
@@ -70,7 +70,7 @@ public class CSVUtil implements CSVConstants {
 	 * @return the quote char
 	 */
 	public static char getQuote(ImportProvider provider) {
-		String quote = provider.getParameter(PARAM_QUOTE);
+		String quote = provider.getParameter(PARAM_QUOTE).getAs(String.class);
 		char qu = (quote == null || quote.isEmpty()) ? (DEFAULT_QUOTE) : (quote.charAt(0));
 
 		return qu;
@@ -83,7 +83,7 @@ public class CSVUtil implements CSVConstants {
 	 * @return the escape char
 	 */
 	public static char getEscape(ImportProvider provider) {
-		String escape = provider.getParameter(PARAM_ESCAPE);
+		String escape = provider.getParameter(PARAM_ESCAPE).getAs(String.class);
 		char esc = (escape == null || escape.isEmpty()) ? (DEFAULT_ESCAPE) : (escape.charAt(0));
 
 		return esc;

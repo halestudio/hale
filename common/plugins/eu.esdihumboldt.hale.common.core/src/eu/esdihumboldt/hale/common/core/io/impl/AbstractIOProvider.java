@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.content.IContentType;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 
@@ -45,7 +46,7 @@ public abstract class AbstractIOProvider implements IOProvider {
 	/**
 	 * The configuration parameters
 	 */
-	private final Map<String, String> parameters = new HashMap<String, String>();
+	private final Map<String, Value> parameters = new HashMap<String, Value>();
 
 	/**
 	 * The supported configuration parameter names
@@ -120,31 +121,31 @@ public abstract class AbstractIOProvider implements IOProvider {
 	}
 
 	/**
-	 * Uses {@link #setParameter(String, String)} to load the configuration. For
+	 * Uses {@link #setParameter(String, Value)} to load the configuration. For
 	 * changing the behavior please override
-	 * {@link #setParameter(String, String)}
+	 * {@link #setParameter(String, Value)}
 	 * 
 	 * @see IOProvider#loadConfiguration(Map)
 	 */
 	@Override
-	public final void loadConfiguration(Map<String, String> configuration) {
-		for (Entry<String, String> entry : configuration.entrySet()) {
+	public final void loadConfiguration(Map<String, Value> configuration) {
+		for (Entry<String, Value> entry : configuration.entrySet()) {
 			setParameter(entry.getKey(), entry.getValue());
 		}
 	}
 
 	/**
 	 * Stores all parameters that were set using
-	 * {@link #setParameter(String, String)} in the configuration. For changing
+	 * {@link #setParameter(String, Value)} in the configuration. For changing
 	 * the behavior please override this method.
 	 * 
 	 * @see IOProvider#storeConfiguration(Map)
 	 */
 	@Override
-	public void storeConfiguration(Map<String, String> configuration) {
+	public void storeConfiguration(Map<String, Value> configuration) {
 		// store content type (if set)
 		if (contentType != null) {
-			configuration.put(PARAM_CONTENT_TYPE, contentType.getId());
+			configuration.put(PARAM_CONTENT_TYPE, Value.of(contentType.getId()));
 		}
 
 		// store generic parameters
@@ -175,8 +176,11 @@ public abstract class AbstractIOProvider implements IOProvider {
 	 * @see IOProvider#getParameter(String)
 	 */
 	@Override
-	public String getParameter(String name) {
-		return parameters.get(name);
+	public Value getParameter(String name) {
+		Value value = parameters.get(name);
+		if (value == null)
+			value = Value.NULL;
+		return value;
 	}
 
 	/**
@@ -187,14 +191,12 @@ public abstract class AbstractIOProvider implements IOProvider {
 		return Collections.unmodifiableSet(supported);
 	}
 
-	/**
-	 * @see IOProvider#setParameter(String, String)
-	 */
 	@Override
-	public void setParameter(String name, String value) {
+	public void setParameter(String name, Value value) {
 		if (name.equals(PARAM_CONTENT_TYPE)) {
 			// configure content type
-			setContentType(Platform.getContentTypeManager().getContentType(value));
+			setContentType(Platform.getContentTypeManager().getContentType(
+					value.getAs(String.class)));
 		}
 		else {
 			// load generic parameter

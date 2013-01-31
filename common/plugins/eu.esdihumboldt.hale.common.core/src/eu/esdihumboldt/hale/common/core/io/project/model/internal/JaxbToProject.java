@@ -24,6 +24,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.osgi.framework.Version;
 
+import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.io.impl.ElementValue;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFileInfo;
@@ -73,7 +75,7 @@ public class JaxbToProject {
 				addProperty(result.getProperties(), (PropertyType) value);
 			}
 			else if (value instanceof ComplexPropertyType) {
-				// TODO
+				addProperty(result.getProperties(), (ComplexPropertyType) value);
 			}
 		}
 
@@ -93,15 +95,19 @@ public class JaxbToProject {
 				addProperty(result.getProviderConfiguration(), (PropertyType) value);
 			}
 			else if (value instanceof ComplexPropertyType) {
-				// TODO
+				addProperty(result.getProviderConfiguration(), (ComplexPropertyType) value);
 			}
 		}
 
 		return result;
 	}
 
-	private static void addProperty(Map<String, String> properties, PropertyType value) {
-		properties.put(value.getName(), value.getValue());
+	private static void addProperty(Map<String, Value> properties, PropertyType value) {
+		properties.put(value.getName(), Value.of(value.getValue()));
+	}
+
+	private static void addProperty(Map<String, Value> properties, ComplexPropertyType value) {
+		properties.put(value.getName(), new ElementValue(value.getAny()));
 	}
 
 	private static Version toVersion(String version) {

@@ -25,6 +25,7 @@ import java.util.Map;
 import eu.esdihumboldt.hale.common.core.io.ExportProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.DefaultIOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
@@ -73,26 +74,23 @@ public abstract class AbstractExportProvider extends AbstractIOProvider implemen
 	 * @see AbstractIOProvider#storeConfiguration(Map)
 	 */
 	@Override
-	public void storeConfiguration(Map<String, String> configuration) {
+	public void storeConfiguration(Map<String, Value> configuration) {
 		// store target if possible
 		if (target != null) {
 			URI location = target.getLocation();
 			if (location != null) {
-				configuration.put(PARAM_TARGET, location.toString());
+				configuration.put(PARAM_TARGET, Value.of(location.toString()));
 			}
 		}
 
 		super.storeConfiguration(configuration);
 	}
 
-	/**
-	 * @see AbstractIOProvider#setParameter(String, String)
-	 */
 	@Override
-	public void setParameter(String name, String value) {
+	public void setParameter(String name, Value value) {
 		if (name.equals(PARAM_TARGET)) {
 			try {
-				File file = new File(URI.create(value));
+				File file = new File(URI.create(value.getAs(String.class)));
 				setTarget(new FileIOSupplier(file));
 			} catch (IllegalArgumentException e) {
 				// ignore, can't set target

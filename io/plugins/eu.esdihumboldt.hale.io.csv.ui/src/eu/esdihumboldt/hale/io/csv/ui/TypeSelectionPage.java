@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -121,18 +122,15 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage implement
 		setPageComplete(false);
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.io.IOWizardPage#updateConfiguration(eu.esdihumboldt.hale.common.core.io.IOProvider)
-	 */
 	@Override
 	public boolean updateConfiguration(InstanceReader provider) {
 
 		provider.setParameter(CSVInstanceReader.PARAM_SKIP_FIRST_LINE,
-				String.valueOf(button.getSelection()));
+				Value.of(button.getSelection()));
 		if (sel.getSelectedObject() != null) {
 			QName name = sel.getSelectedObject().getName();
 			String param_name = name.toString();
-			provider.setParameter(CSVConstants.PARAM_TYPENAME, param_name);
+			provider.setParameter(CSVConstants.PARAM_TYPENAME, Value.of(param_name));
 		}
 		else {
 			return false;

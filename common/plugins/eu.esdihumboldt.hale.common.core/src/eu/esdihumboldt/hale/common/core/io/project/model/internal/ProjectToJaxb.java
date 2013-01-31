@@ -23,10 +23,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.w3c.dom.Element;
-
-import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueDefinition;
-import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueExtension;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFileInfo;
@@ -84,7 +81,7 @@ public class ProjectToJaxb {
 		}
 
 		// properties
-		for (Entry<String, String> property : project.getProperties().entrySet()) {
+		for (Entry<String, Value> property : project.getProperties().entrySet()) {
 			Object p = createProperty(property.getKey(), property.getValue());
 			if (p instanceof PropertyType) {
 				result.getAbstractProperty().add(of.createProperty((PropertyType) p));
@@ -113,7 +110,7 @@ public class ProjectToJaxb {
 		result.setName(config.getName());
 		result.setProviderId(config.getProviderId());
 
-		for (Entry<String, String> setting : config.getProviderConfiguration().entrySet()) {
+		for (Entry<String, Value> setting : config.getProviderConfiguration().entrySet()) {
 			Object property = createProperty(setting.getKey(), setting.getValue());
 			if (property instanceof PropertyType) {
 				result.getAbstractSetting().add(of.createSetting((PropertyType) property));
@@ -127,37 +124,28 @@ public class ProjectToJaxb {
 		return result;
 	}
 
-	private static Object createProperty(String name, Object value) {
-		if (value instanceof String || value == null) {
-			// string property value or null
+	private static Object createProperty(String name, Value value) {
+		if (value == null) {
+			// null value
 			PropertyType result = new PropertyType();
 			result.setName(name);
-			result.setValue((String) value);
 			return result;
 		}
-		else if (value instanceof Element) {
-			// parameter is the DOM
+		else if (value.isRepresentedAsDOM()) {
+			// complex value or element
 			ComplexPropertyType result = new ComplexPropertyType();
 
 			result.setName(name);
-			result.setAny((Element) value);
+			result.setAny(value.getDOMReprensentation());
 
 			return result;
 		}
 		else {
-			// complex value
-			ComplexValueDefinition cvd = ComplexValueExtension.getInstance().getDefinition(
-					value.getClass());
-			if (cvd != null) {
-				ComplexPropertyType result = new ComplexPropertyType();
-				Element element = cvd.toDOM(value);
-				result.setName(name);
-				result.setAny(element);
-				return result;
-			}
-			else {
-				throw new IllegalStateException("No definition for complex parameter value found");
-			}
+			// string property value
+			PropertyType result = new PropertyType();
+			result.setName(name);
+			result.setValue(value.getStringRepresentation());
+			return result;
 		}
 	}
 

@@ -83,7 +83,7 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 
 		progress.setCurrentTask("Extracting shape instances");
 
-		String typename = getParameter(PARAM_TYPENAME);
+		String typename = getParameter(PARAM_TYPENAME).getAs(String.class);
 		TypeDefinition defaultType = null;
 		if (typename != null && !typename.isEmpty()) {
 			try {

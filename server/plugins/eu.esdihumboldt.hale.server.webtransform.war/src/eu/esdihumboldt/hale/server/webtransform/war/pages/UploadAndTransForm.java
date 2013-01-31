@@ -62,6 +62,7 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.ExportProvider;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
@@ -105,12 +106,12 @@ public class UploadAndTransForm extends Form<Void> {
 
 		@Override
 		public String getObject() {
-			return getTarget().getProviderConfiguration().get(param);
+			return getTarget().getProviderConfiguration().get(param).getAs(String.class);
 		}
 
 		@Override
 		public void setObject(String object) {
-			getTarget().getProviderConfiguration().put(param, object);
+			getTarget().getProviderConfiguration().put(param, Value.of(object));
 		}
 
 	}

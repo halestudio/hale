@@ -45,6 +45,7 @@ import org.eclipse.swt.widgets.Group;
 import au.com.bytecode.opencsv.CSVReader;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.io.csv.PropertyTypeExtension;
@@ -70,9 +71,9 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 	private StringFieldEditor sfe;
 	private Group group;
 	private String[] last_firstLine = null;
-	private List<TypeNameField> fields = new ArrayList<TypeNameField>();
-	private List<ComboViewer> comboFields = new ArrayList<ComboViewer>();
-	private List<Boolean> validSel = new ArrayList<Boolean>();
+	private final List<TypeNameField> fields = new ArrayList<TypeNameField>();
+	private final List<ComboViewer> comboFields = new ArrayList<ComboViewer>();
+	private final List<Boolean> validSel = new ArrayList<Boolean>();
 	private Boolean valid = true;
 	private Boolean isValid = true;
 	private ScrolledComposite sc;
@@ -114,7 +115,7 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 	@Override
 	public boolean updateConfiguration(SchemaReader provider) {
 
-		provider.setParameter(CSVSchemaReader.PARAM_TYPENAME, sfe.getStringValue());
+		provider.setParameter(CSVSchemaReader.PARAM_TYPENAME, Value.of(sfe.getStringValue()));
 
 		StringBuffer propNamesBuffer = new StringBuffer();
 		StringBuffer comboViewerBuffer = new StringBuffer();
@@ -133,12 +134,12 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 		oldNamesBuffer.deleteCharAt(oldNamesBuffer.lastIndexOf(","));
 		String oldNames = oldNamesBuffer.toString();
 		if (oldNames.equals(propNames)) {
-			provider.setParameter(CSVInstanceReader.PARAM_SKIP_FIRST_LINE, "True");
+			provider.setParameter(CSVInstanceReader.PARAM_SKIP_FIRST_LINE, Value.of("True"));
 		}
 		else {
-			provider.setParameter(CSVInstanceReader.PARAM_SKIP_FIRST_LINE, "False");
+			provider.setParameter(CSVInstanceReader.PARAM_SKIP_FIRST_LINE, Value.of("False"));
 		}
-		provider.setParameter(CSVSchemaReader.PARAM_PROPERTY, propNames);
+		provider.setParameter(CSVSchemaReader.PARAM_PROPERTY, Value.of(propNames));
 
 		for (ComboViewer combo : comboFields) {
 			comboViewerBuffer.append(((PropertyTypeFactory) ((IStructuredSelection) combo
@@ -147,7 +148,7 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 		}
 		comboViewerBuffer.deleteCharAt(comboViewerBuffer.lastIndexOf(","));
 		String combViewNames = comboViewerBuffer.toString();
-		provider.setParameter(CSVSchemaReader.PARAM_PROPERTYTYPE, combViewNames);
+		provider.setParameter(CSVSchemaReader.PARAM_PROPERTYTYPE, Value.of(combViewNames));
 
 		return true;
 

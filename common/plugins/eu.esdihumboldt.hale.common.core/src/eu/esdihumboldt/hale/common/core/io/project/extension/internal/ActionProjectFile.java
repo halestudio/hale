@@ -39,6 +39,7 @@ import eu.esdihumboldt.hale.common.core.io.IOAction;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.extension.IOActionExtension;
 import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorExtension;
 import eu.esdihumboldt.hale.common.core.io.impl.LogProgressIndicator;
@@ -59,9 +60,9 @@ public class ActionProjectFile implements ProjectFile {
 
 	private static final ALogger log = ALoggerFactory.getLogger(ActionProjectFile.class);
 
-	private final Map<String, String> saveParameters;
+	private final Map<String, Value> saveParameters;
 	private final String saveProviderId;
-	private final Map<String, String> loadParameters;
+	private final Map<String, Value> loadParameters;
 	private final String loadProviderId;
 	private final String loadActionId;
 	private final String saveActionId;
@@ -86,8 +87,8 @@ public class ActionProjectFile implements ProjectFile {
 	 *            retrieve services through
 	 */
 	public ActionProjectFile(String loadActionId, String loadProviderId,
-			Map<String, String> loadParameters, String saveActionId, String saveProviderId,
-			Map<String, String> saveParameters, ServiceProvider serviceProvider) {
+			Map<String, Value> loadParameters, String saveActionId, String saveProviderId,
+			Map<String, Value> saveParameters, ServiceProvider serviceProvider) {
 		this.loadActionId = loadActionId;
 		this.loadProviderId = loadProviderId;
 		this.loadParameters = loadParameters;
@@ -194,8 +195,8 @@ public class ActionProjectFile implements ProjectFile {
 		return IOAdvisorExtension.getInstance().findAdvisor(loadActionId, serviceProvider);
 	}
 
-	private void setParameters(IOProvider provider, Map<String, String> parameters) {
-		for (Entry<String, String> entry : parameters.entrySet()) {
+	private void setParameters(IOProvider provider, Map<String, Value> parameters) {
+		for (Entry<String, Value> entry : parameters.entrySet()) {
 			provider.setParameter(entry.getKey(), entry.getValue());
 		}
 	}

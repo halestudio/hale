@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.DefaultIOReporter;
@@ -114,34 +115,31 @@ public abstract class AbstractImportProvider extends AbstractIOProvider implemen
 	 * @see AbstractIOProvider#storeConfiguration(Map)
 	 */
 	@Override
-	public void storeConfiguration(Map<String, String> configuration) {
+	public void storeConfiguration(Map<String, Value> configuration) {
 		// store source if possible
 		if (source != null) {
 			URI location = source.getLocation();
 			if (location != null) {
-				configuration.put(PARAM_SOURCE, location.toString());
+				configuration.put(PARAM_SOURCE, Value.of(location.toString()));
 			}
 		}
 
 		// store resource identifier (if set)
 		if (resourceIdentifier != null) {
-			configuration.put(PARAM_RESOURCE_ID, resourceIdentifier);
+			configuration.put(PARAM_RESOURCE_ID, Value.of(resourceIdentifier));
 		}
 
 		super.storeConfiguration(configuration);
 	}
 
-	/**
-	 * @see AbstractIOProvider#setParameter(String, String)
-	 */
 	@Override
-	public void setParameter(String name, String value) {
+	public void setParameter(String name, Value value) {
 		if (name.equals(PARAM_SOURCE)) {
-			setSource(new DefaultInputSupplier(URI.create(value)));
+			setSource(new DefaultInputSupplier(URI.create(value.getAs(String.class))));
 		}
 		if (name.equals(PARAM_RESOURCE_ID)) {
 			// set resource id
-			this.resourceIdentifier = value;
+			this.resourceIdentifier = value.getAs(String.class);
 		}
 		else {
 			super.setParameter(name, value);
