@@ -522,8 +522,8 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 						List<IOConfiguration> resources = ((Project) ps.getProjectInfo())
 								.getResources();
 						for (IOConfiguration conf : resources) {
-							String resource = conf.getProviderConfiguration().get(
-									ImportProvider.PARAM_SOURCE);
+							String resource = conf.getProviderConfiguration()
+									.get(ImportProvider.PARAM_SOURCE).as(String.class);
 							// resource is already loaded into the project
 							if (resource != null && resource.equals(currentResource)) {
 								log.userError("Resource is already loaded. Loading duplicate resources is aborted!");
