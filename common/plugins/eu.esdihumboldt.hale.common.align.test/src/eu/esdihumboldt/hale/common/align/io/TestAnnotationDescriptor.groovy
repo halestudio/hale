@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.common.align.io
 import org.w3c.dom.Element
 
 import eu.esdihumboldt.hale.common.align.model.AnnotationDescriptor
-import groovy.xml.DOMBuilder
+import groovy.xml.StreamingDOMBuilder
 import groovy.xml.dom.DOMCategory
 
 
@@ -49,13 +49,12 @@ class TestAnnotationDescriptor implements AnnotationDescriptor<TestAnnotation> {
 
 	@Override
 	Element toDOM(TestAnnotation annotation) {
-		// using DOMBuilder create the DOM structure from the annotation object
-		def builder = DOMBuilder.newInstance()
-		// w/o namespace
-		//def fragment = builder.comment(author: annotation.author, annotation.comment)
-		// with namespace (cleaner document)
-		def fragment = builder.'test:comment'('xmlns:test': NS, author: annotation.author, annotation.comment)
+		// using StreamingDOMBuilder create the DOM structure from the annotation object
+		def fragment = new StreamingDOMBuilder().bind{
+			namespaces << [test: NS]
+			'test:comment'('xmlns:test': NS, author: annotation.author, annotation.comment)
+		}()
 
-		return fragment;
+		return fragment.documentElement;
 	}
 }
