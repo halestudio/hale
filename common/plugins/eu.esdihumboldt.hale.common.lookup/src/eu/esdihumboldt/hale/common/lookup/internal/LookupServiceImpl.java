@@ -30,7 +30,7 @@ import eu.esdihumboldt.hale.common.lookup.LookupTableInfo;
  */
 public class LookupServiceImpl implements LookupService {
 
-	private final Map<String, LookupTableInfo> tables = new HashMap<>();
+	private final Map<String, LookupTableInfo> tables = new HashMap<String, LookupTableInfo>();
 
 	@Override
 	public void registerTable(String id, LookupTableInfo tableInfo) throws IllegalArgumentException {
@@ -51,8 +51,7 @@ public class LookupServiceImpl implements LookupService {
 	@Override
 	public Set<String> getTableIDs() {
 		synchronized (tables) {
-			return new HashSet<>(tables.keySet());
+			return new HashSet<String>(tables.keySet());
 		}
 	}
-
 }
