@@ -46,6 +46,7 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationRep
 import eu.esdihumboldt.hale.common.align.transformation.report.impl.CellLog;
 import eu.esdihumboldt.hale.common.align.transformation.report.impl.TransformationMessageImpl;
 import eu.esdihumboldt.hale.common.convert.ConversionUtil;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
@@ -229,6 +230,12 @@ public class FunctionExecutor extends CellNodeValidator {
 							// TODO any conversion necessary/possible
 						}
 					}
+					else {
+						// unwrap value
+						if (value instanceof Value) {
+							value = ((Value) value).getValue();
+						}
+					}
 
 					/*
 					 * If the value is no group, but it should be one, create an
@@ -266,6 +273,22 @@ public class FunctionExecutor extends CellNodeValidator {
 		PropertyDefinition def = propertyEntityDefinition.getDefinition();
 		Binding binding = def.getPropertyType().getConstraint(Binding.class);
 		Class<?> target = binding.getBinding();
+
+		// special handling for Value
+		if (value instanceof Value) {
+			// try value's internal conversion
+			Object result = ((Value) value).as(target);
+			if (result != null) {
+				return result;
+			}
+			else {
+				// unwrap value
+				value = ((Value) value).getValue();
+				if (value == null) {
+					return null;
+				}
+			}
+		}
 
 		if (target.isAssignableFrom(value.getClass())) {
 			return value;
