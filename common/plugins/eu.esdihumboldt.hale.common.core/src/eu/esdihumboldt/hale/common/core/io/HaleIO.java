@@ -395,7 +395,7 @@ public abstract class HaleIO {
 			name = new QName(element.getNamespaceURI(), element.getLocalName());
 		}
 		else {
-			name = new QName(element.getLocalName());
+			name = new QName(element.getTagName()); // .getLocalName());
 		}
 		ComplexValueDefinition cvt = ComplexValueExtension.getInstance().getDefinition(name);
 		if (cvt != null) {
@@ -428,14 +428,17 @@ public abstract class HaleIO {
 			name = new QName(element.getNamespaceURI(), element.getLocalName());
 		}
 		else {
-			name = new QName(element.getLocalName());
+			String ln = element.getTagName(); // .getLocalName();
+			name = new QName(ln);
 		}
 		ComplexValueDefinition cvt = ComplexValueExtension.getInstance().getDefinition(name);
 		Object value = null;
-		try {
-			value = cvt.fromDOM(element);
-		} catch (Exception e) {
-			// ignore
+		if (cvt != null) {
+			try {
+				value = cvt.fromDOM(element);
+			} catch (Exception e) {
+				throw new IllegalStateException("Failed to load complex value from DOM", e);
+			}
 		}
 
 		if (value != null && expectedType.isAssignableFrom(value.getClass())) {
