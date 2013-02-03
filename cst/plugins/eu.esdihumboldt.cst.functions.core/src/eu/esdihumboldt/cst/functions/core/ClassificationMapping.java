@@ -16,15 +16,12 @@
 
 package eu.esdihumboldt.cst.functions.core;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingFunction;
+import eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingUtil;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
@@ -32,6 +29,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.TransformationE
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.lookup.LookupTable;
 
 /**
  * Classification mapping function to map values of an attribute to a different
@@ -56,18 +54,11 @@ public class ClassificationMapping extends
 
 		String source = variables.values().iterator().next().getValueAs(String.class);
 
-		List<? extends Value> mappings = getParameters().get(PARAMETER_CLASSIFICATIONS);
-		if (!mappings.isEmpty()) {
-			try {
-				String sourceValue = URLEncoder.encode(source, "UTF-8");
-				for (Value value : mappings) {
-					String s = value.as(String.class);
-					if (s.contains(' ' + sourceValue + ' ') || s.endsWith(' ' + sourceValue))
-						return URLDecoder.decode(s.substring(0, s.indexOf(' ')), "UTF-8");
-				}
-			} catch (UnsupportedEncodingException e) {
-				// UTF-8 should be everywhere
-			}
+		LookupTable lookup = ClassificationMappingUtil.getClassificationLookup(getParameters(),
+				getExecutionContext());
+		Value target = lookup.lookup(Value.of(source));
+		if (target != null) {
+			return target.getValue();
 		}
 
 		String notClassifiedAction = getOptionalParameter(PARAMETER_NOT_CLASSIFIED_ACTION,

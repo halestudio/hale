@@ -16,17 +16,18 @@
 
 package eu.esdihumboldt.hale.common.align.model.functions.explanations;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.text.MessageFormat;
-import java.util.List;
+
+import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
-import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingFunction;
+import eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingUtil;
 import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
+import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.lookup.LookupTable;
 
 /**
  * Explanation for classification mapping cells.
@@ -39,39 +40,30 @@ public class ClassificationMappingExplanation extends AbstractCellExplanation im
 	private static final String EXPLANATION_PATTERN = "Populates the {0} property from the {1} property with values according to the following mapping:\n"
 			+ "{2}\nNot mapped source values will result in the following target value: {3}.";
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.CellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell)
-	 */
 	@Override
 	public String getExplanation(Cell cell) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
-		List<ParameterValue> mappings = cell.getTransformationParameters().get(
-				PARAMETER_CLASSIFICATIONS);
+		// FIXME provide service provider!
+		LookupTable lookup = ClassificationMappingUtil.getClassificationLookup(
+				cell.getTransformationParameters(), null);
+		ListMultimap<Value, Value> revLookup = lookup.reverse();
 		String notClassifiedAction = CellUtil.getFirstParameter(cell,
 				PARAMETER_NOT_CLASSIFIED_ACTION).as(String.class);
 
 		if (target != null && source != null) {
 			StringBuilder mappingString = new StringBuilder();
-			for (ParameterValue value : mappings) {
-				String s = value.as(String.class);
-				try {
-					mappingString.append(quoteText(
-							URLDecoder.decode(s.substring(0, s.indexOf(' ')), "UTF-8"), false));
-				} catch (UnsupportedEncodingException e) {
-					// UTF-8 is everywhere
-				}
+			for (Value targetValue : revLookup.keySet()) {
+				mappingString.append(quoteText(targetValue.as(String.class), false));
 				mappingString.append(" when source value is one of ");
-				String[] splitted = s.split(" ");
-				for (int i = 1; i < splitted.length; i++) {
-					if (i != 1)
+				int i = 1;
+				for (Value sourceValue : revLookup.get(targetValue)) {
+					if (i != 1) {
 						mappingString.append(", ");
-					try {
-						mappingString.append(quoteText(URLDecoder.decode(splitted[i], "UTF-8"),
-								false));
-					} catch (UnsupportedEncodingException e) {
-						// UTF-8 is everywhere
 					}
+					mappingString.append(quoteText(sourceValue.as(String.class), false));
+
+					i++;
 				}
 				mappingString.append(".\n");
 			}
@@ -92,16 +84,15 @@ public class ClassificationMappingExplanation extends AbstractCellExplanation im
 		return null;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.CellExplanation#getExplanationAsHtml(eu.esdihumboldt.hale.common.align.model.Cell)
-	 */
 	@Override
 	public String getExplanationAsHtml(Cell cell) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
 
-		List<ParameterValue> mappings = cell.getTransformationParameters().get(
-				PARAMETER_CLASSIFICATIONS);
+		// FIXME provide service provider!
+		LookupTable lookup = ClassificationMappingUtil.getClassificationLookup(
+				cell.getTransformationParameters(), null);
+		ListMultimap<Value, Value> revLookup = lookup.reverse();
 		String notClassifiedAction = CellUtil.getFirstParameter(cell,
 				PARAMETER_NOT_CLASSIFIED_ACTION).as(String.class);
 
@@ -109,26 +100,17 @@ public class ClassificationMappingExplanation extends AbstractCellExplanation im
 			StringBuilder mappingString = new StringBuilder();
 			mappingString
 					.append("<table border=\"1\"><tr><th>Target value</th><th>Source values</th></tr>");
-			for (ParameterValue value : mappings) {
-				String s = value.as(String.class);
+			for (Value targetValue : revLookup.keySet()) {
 				mappingString.append("<tr><td>");
-				try {
-					mappingString.append(quoteText(
-							URLDecoder.decode(s.substring(0, s.indexOf(' ')), "UTF-8"), true));
-				} catch (UnsupportedEncodingException e) {
-					// UTF-8 is everywhere
-				}
+				mappingString.append(quoteText(targetValue.as(String.class), true));
 				mappingString.append("</td><td>");
-				String[] splitted = s.split(" ");
-				for (int i = 1; i < splitted.length; i++) {
-					if (i != 1)
+				int i = 1;
+				for (Value sourceValue : revLookup.get(targetValue)) {
+					if (i != 1) {
 						mappingString.append(", ");
-					try {
-						mappingString.append(quoteText(URLDecoder.decode(splitted[i], "UTF-8"),
-								true));
-					} catch (UnsupportedEncodingException e) {
-						// UTF-8 is everywhere
 					}
+					mappingString.append(quoteText(sourceValue.as(String.class), true));
+					i++;
 				}
 				mappingString.append("</td></tr>");
 			}
@@ -151,10 +133,6 @@ public class ClassificationMappingExplanation extends AbstractCellExplanation im
 		return null;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell,
-	 *      boolean)
-	 */
 	@Override
 	protected String getExplanation(Cell cell, boolean html) {
 		if (html)

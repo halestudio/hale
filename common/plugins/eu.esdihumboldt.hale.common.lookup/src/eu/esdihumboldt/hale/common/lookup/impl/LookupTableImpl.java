@@ -46,7 +46,7 @@ public class LookupTableImpl implements LookupTable {
 	 */
 	public LookupTableImpl(Map<Value, Value> table) {
 		super();
-		this.table = new HashMap<>(table);
+		this.table = new HashMap<Value, Value>(table);
 	}
 
 	@Override
