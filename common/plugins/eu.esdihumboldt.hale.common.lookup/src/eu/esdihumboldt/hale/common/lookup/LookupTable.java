@@ -17,14 +17,16 @@ package eu.esdihumboldt.hale.common.lookup;
 
 import java.util.Set;
 
+import com.google.common.collect.ListMultimap;
+
+import eu.esdihumboldt.hale.common.core.io.Value;
+
 /**
  * Lookup table interface.
  * 
- * @param <K> the lookup key type
- * @param <V> the type of values retrieved from the table
  * @author Simon Templer
  */
-public interface LookupTable<K, V> {
+public interface LookupTable {
 
 	/**
 	 * Look up a value associated to a given key.
@@ -32,15 +34,21 @@ public interface LookupTable<K, V> {
 	 * @param key the key
 	 * @return the associated value or <code>null</code>
 	 */
-	public V lookup(K key);
+	public Value lookup(Value key);
 
 	/**
 	 * Get all keys available in the lookup table.
 	 * 
 	 * @return the set of lookup keys
 	 */
-	public Set<K> getKeys();
+	public Set<Value> getKeys();
 
-//	public Class<K> getKeyType();
+	/**
+	 * Get the reverse of the lookup. Note that in the reverse representation
+	 * there may be multiple values for a key.
+	 * 
+	 * @return the reverse representation of the lookup table
+	 */
+	public ListMultimap<Value, Value> reverse();
 
 }

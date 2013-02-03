@@ -31,8 +31,7 @@ public interface LookupService {
 	 * @param tableInfo the lookup table plus meta information
 	 * @throws IllegalArgumentException if the given identifier is already used
 	 */
-	public void registerTable(String id, LookupTableInfo<?, ?> tableInfo)
-			throws IllegalArgumentException;
+	public void registerTable(String id, LookupTableInfo tableInfo) throws IllegalArgumentException;
 
 	/**
 	 * Get the lookup table registered with the given identifier.
@@ -41,7 +40,7 @@ public interface LookupService {
 	 * @return the lookup table plus meta information if a table with the given
 	 *         identifier exists, otherwise <code>null</code>
 	 */
-	public LookupTableInfo<?, ?> getTable(String id);
+	public LookupTableInfo getTable(String id);
 
 	/**
 	 * Get the identifiers of the available lookup tables.
