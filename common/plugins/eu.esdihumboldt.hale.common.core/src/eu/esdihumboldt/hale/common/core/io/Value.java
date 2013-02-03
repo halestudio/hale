@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.common.core.io;
 
+import java.util.Objects;
+
 import org.w3c.dom.Element;
 
 import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueExtension;
@@ -195,5 +197,44 @@ public abstract class Value {
 	 * @see #isRepresentedAsDOM()
 	 */
 	public abstract String getStringRepresentation();
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Value))
+			return false;
+		Value other = (Value) obj;
+		if (!other.isRepresentedAsDOM() && !isRepresentedAsDOM()) {
+			/*
+			 * Both represented as String, use string representation to compare
+			 */
+			return Objects.equals(other.getStringRepresentation(), getStringRepresentation());
+		}
+
+		// in any other case, compare the internal values
+		return Objects.equals(other.getValue(), getValue());
+	}
+
+	@Override
+	public int hashCode() {
+		if (!isRepresentedAsDOM()) {
+			/*
+			 * If represented through a string, use the string hash code.
+			 */
+			return Objects.hashCode(getStringRepresentation());
+		}
+
+		// in any other case, use the internal value hash code
+		return Objects.hashCode(getValue());
+	}
+
+	@Override
+	public String toString() {
+		String def = "Value<null>";
+		Object value = getValue();
+		if (value != null) {
+			def = value.toString();
+		}
+		return as(String.class, def);
+	}
 
 }
