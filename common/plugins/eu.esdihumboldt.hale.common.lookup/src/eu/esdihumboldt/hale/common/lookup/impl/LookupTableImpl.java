@@ -70,4 +70,9 @@ public class LookupTableImpl implements LookupTable {
 		return result;
 	}
 
+	@Override
+	public Map<Value, Value> asMap() {
+		return Collections.unmodifiableMap(table);
+	}
+
 }

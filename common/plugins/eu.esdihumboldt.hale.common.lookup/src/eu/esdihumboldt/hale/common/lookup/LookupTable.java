@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.common.lookup;
 
+import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.ListMultimap;
@@ -50,5 +51,12 @@ public interface LookupTable {
 	 * @return the reverse representation of the lookup table
 	 */
 	public ListMultimap<Value, Value> reverse();
+
+	/**
+	 * Get the lookup table as map.
+	 * 
+	 * @return the map representation of the lookup table, may not be modified
+	 */
+	public Map<Value, Value> asMap();
 
 }

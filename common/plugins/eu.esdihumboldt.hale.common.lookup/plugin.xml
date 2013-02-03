@@ -12,5 +12,14 @@
          </service>
       </services>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.complexvalue">
+      <complexValue
+            descriptor="eu.esdihumboldt.hale.common.lookup.internal.LookupTableType"
+            id="eu.esdihumboldt.hale.common.lookup.lookuptable"
+            name="lookup-table"
+            type="eu.esdihumboldt.hale.common.lookup.LookupTable">
+      </complexValue>
+   </extension>
 
 </plugin>
