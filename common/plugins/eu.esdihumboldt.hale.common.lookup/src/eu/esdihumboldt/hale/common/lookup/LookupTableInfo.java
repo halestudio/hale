@@ -18,11 +18,9 @@ package eu.esdihumboldt.hale.common.lookup;
 /**
  * Lookup table and meta information.
  * 
- * @param <K> the lookup key type
- * @param <V> the type of values retrieved from the table
  * @author Simon Templer
  */
-public interface LookupTableInfo<K, V> {
+public interface LookupTableInfo {
 
 	/**
 	 * Get the lookup table human readable name.
@@ -43,6 +41,6 @@ public interface LookupTableInfo<K, V> {
 	 * 
 	 * @return the lookup table
 	 */
-	public LookupTable<K, V> getTable();
+	public LookupTable getTable();
 
 }

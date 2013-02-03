@@ -18,41 +18,56 @@ package eu.esdihumboldt.hale.common.lookup.impl;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import net.jcip.annotations.Immutable;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
+
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.lookup.LookupTable;
 
 /**
  * Simple lookup table implementation based on a {@link Map}.
  * 
- * @param <K> the lookup key type
- * @param <V> the type of values retrieved from the table
  * @author Simon Templer
  */
 @Immutable
-public class LookupTableImpl<K, V> implements LookupTable<K, V> {
+public class LookupTableImpl implements LookupTable {
 
-	private final Map<K, V> table;
+	private final Map<Value, Value> table;
 
 	/**
 	 * Create a new lookup table based on the given map.
 	 * 
 	 * @param table the lookup table map
 	 */
-	public LookupTableImpl(Map<K, V> table) {
+	public LookupTableImpl(Map<Value, Value> table) {
 		super();
 		this.table = new HashMap<>(table);
 	}
 
 	@Override
-	public V lookup(K key) {
+	public Value lookup(Value key) {
 		return table.get(key);
 	}
 
 	@Override
-	public Set<K> getKeys() {
+	public Set<Value> getKeys() {
 		return Collections.unmodifiableSet(table.keySet());
+	}
+
+	@Override
+	public ListMultimap<Value, Value> reverse() {
+		ListMultimap<Value, Value> result = ArrayListMultimap.create();
+
+		for (Entry<Value, Value> entry : table.entrySet()) {
+			result.put(entry.getValue(), entry.getKey());
+		}
+
+		return result;
 	}
 
 }

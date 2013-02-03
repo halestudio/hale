@@ -29,6 +29,6 @@ public interface LookupTableImport extends ImportProvider {
 	 * 
 	 * @return the lookup table
 	 */
-	public LookupTableInfo<?, ?> getLookupTable();
+	public LookupTableInfo getLookupTable();
 
 }
