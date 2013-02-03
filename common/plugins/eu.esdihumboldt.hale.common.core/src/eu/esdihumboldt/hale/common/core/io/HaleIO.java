@@ -428,7 +428,8 @@ public abstract class HaleIO {
 			name = new QName(element.getNamespaceURI(), element.getLocalName());
 		}
 		else {
-			name = new QName(element.getLocalName());
+			String ln = element.getTagName(); // .getLocalName();
+			name = new QName(ln);
 		}
 		ComplexValueDefinition cvt = ComplexValueExtension.getInstance().getDefinition(name);
 		Object value = null;

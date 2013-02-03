@@ -148,7 +148,7 @@ public class ComplexValueExtension extends IdentifiableExtension<ComplexValueDef
 
 		// look for any definition for a super type
 		for (ComplexValueDefinition def : getElements()) {
-			if (valueType.isAssignableFrom(def.getValueType())) {
+			if (def.getValueType().isAssignableFrom(valueType)) {
 				return def;
 			}
 		}
