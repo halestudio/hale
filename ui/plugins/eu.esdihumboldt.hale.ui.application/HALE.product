@@ -116,7 +116,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.cst.functions.string"/>
       <plugin id="eu.esdihumboldt.cst.test"/>
       <plugin id="eu.esdihumboldt.hale.common.align"/>
-      <plugin id="eu.esdihumboldt.hale.common.align.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.common.align.test"/>
       <plugin id="eu.esdihumboldt.hale.common.align.tgraph"/>
       <plugin id="eu.esdihumboldt.hale.common.align.tgraph.test"/>
       <plugin id="eu.esdihumboldt.hale.common.cache"/>
@@ -133,6 +133,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.common.instance"/>
       <plugin id="eu.esdihumboldt.hale.common.instance.orient"/>
       <plugin id="eu.esdihumboldt.hale.common.instancevalidator"/>
+      <plugin id="eu.esdihumboldt.hale.common.lookup"/>
       <plugin id="eu.esdihumboldt.hale.common.propertyaccessor" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.schema"/>
       <plugin id="eu.esdihumboldt.hale.common.scripting"/>
