@@ -25,6 +25,30 @@ import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 public interface LookupTableImport extends ImportProvider {
 
 	/**
+	 * Name of the parameter specifying the lookup table name.
+	 */
+	public static final String PARAM_NAME = "name";
+
+	/**
+	 * Name of the parameter specifying the lookup table description.
+	 */
+	public static final String PARAM_DESCRIPTION = "description";
+
+	/**
+	 * Set the human readable name for the lookup table to import.
+	 * 
+	 * @param name the lookup table name
+	 */
+	public void setName(String name);
+
+	/**
+	 * Set the lookup table description.
+	 * 
+	 * @param description the lookup table description, may be <code>null</code>
+	 */
+	public void setDescription(String description);
+
+	/**
 	 * Get the loaded lookup table.
 	 * 
 	 * @return the lookup table
