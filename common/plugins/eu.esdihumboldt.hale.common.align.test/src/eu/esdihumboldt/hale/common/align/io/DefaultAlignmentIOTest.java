@@ -28,9 +28,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -345,31 +345,31 @@ public abstract class DefaultAlignmentIOTest {
 				SchemaSpaceID.TARGET, null)));
 		cell2.setTarget(target2);
 
-		// save base alignment
+		// add cell1 to base alignment
 		baseAlignment.addCell(cell1);
+
+		// save base alignment
 		File baseAlignmentFile = tmp.newFile("alignment_base.xml");
 		System.out.println(baseAlignmentFile.getAbsolutePath());
 		saveAlignment(baseAlignment, new BufferedOutputStream(new FileOutputStream(
 				baseAlignmentFile)));
 
-		// generate extended alignment
-		// save / load hack since there currently is no way to load a base
-		// alignment afterwards
-		alignment.addBaseAlignment("pre", baseAlignmentFile.toURI(),
-				Collections.<BaseAlignmentCell> emptyList());
-		File alignmentFile = tmp.newFile("alignment_extended.xml");
-		System.out.println(alignmentFile.getAbsolutePath());
-		saveAlignment(alignment, new BufferedOutputStream(new FileOutputStream(alignmentFile)));
-		alignment = loadAlignment(new FileInputStream(alignmentFile), schema, schema);
+		// add as base alignment to extended alignment
+		addBaseAlignment(alignment, baseAlignmentFile.toURI(), schema, schema);
+		assertEquals(1, alignment.getBaseAlignments().size());
+		String usedPrefix = alignment.getBaseAlignments().keySet().iterator().next();
 
 		assertEquals(1, alignment.getCells().size());
-		assertEquals("pre:" + cell1.getId(), alignment.getCells().iterator().next().getId());
+		assertEquals(usedPrefix + ":" + cell1.getId(), alignment.getCells().iterator().next()
+				.getId());
 
+		// add cell2 to extended alignment
 		alignment.addCell(cell2);
 		assertEquals(2, alignment.getCells().size());
 		assertEquals(1, alignment.getPropertyCells(cell1).size());
 
 		// save extended alignment
+		File alignmentFile = tmp.newFile("alignment_extended.xml");
 		System.out.println(alignmentFile.getAbsolutePath());
 		saveAlignment(alignment, new BufferedOutputStream(new FileOutputStream(alignmentFile)));
 
@@ -381,7 +381,7 @@ public abstract class DefaultAlignmentIOTest {
 		assertEquals(1, alignment2.getTypeCells().size());
 		Cell typeCell = alignment2.getTypeCells().iterator().next();
 		assertTrue(typeCell instanceof BaseAlignmentCell);
-		assertEquals("pre:" + cell1.getId(), typeCell.getId());
+		assertEquals(usedPrefix + ":" + cell1.getId(), typeCell.getId());
 		assertEquals(1, alignment2.getPropertyCells(typeCell).size());
 		assertFalse(alignment2.getPropertyCells(typeCell).iterator().next() instanceof BaseAlignmentCell);
 	}
@@ -479,14 +479,12 @@ public abstract class DefaultAlignmentIOTest {
 		assertEquals(1, baseAlignment2.getPropertyCells(typeCell).size());
 
 		// disable the remaining enabled cell in extended alignment
-		// save / load hack since there currently is no way to load a base
-		// alignment afterwards
-		alignment.addBaseAlignment("pre", baseAlignmentFile.toURI(),
-				Collections.<BaseAlignmentCell> emptyList());
+		addBaseAlignment(alignment, baseAlignmentFile.toURI(), schema, schema);
+		assertEquals(1, alignment.getBaseAlignments().size());
+		String usedPrefix = alignment.getBaseAlignments().keySet().iterator().next();
+
 		File alignmentFile = tmp.newFile("alignment_extended.xml");
-		System.out.println(alignmentFile.getAbsolutePath());
-		saveAlignment(alignment, new BufferedOutputStream(new FileOutputStream(alignmentFile)));
-		alignment = loadAlignment(new FileInputStream(alignmentFile), schema, schema);
+
 		// check cells
 		typeCell = alignment.getTypeCells().iterator().next();
 		assertEquals(3, alignment.getCells().size());
@@ -510,8 +508,8 @@ public abstract class DefaultAlignmentIOTest {
 
 		// more specifically test whether the disables come from base alignment
 		// or extended alignment
-		Cell baseDisableCell = alignment2.getCell("pre:" + baseDisableCellId);
-		Cell extendedDisableCell = alignment2.getCell("pre:" + extendedDisableCellId);
+		Cell baseDisableCell = alignment2.getCell(usedPrefix + ":" + baseDisableCellId);
+		Cell extendedDisableCell = alignment2.getCell(usedPrefix + ":" + extendedDisableCellId);
 
 		assertTrue(baseDisableCell instanceof BaseAlignmentCell);
 		assertEquals(1, baseDisableCell.getDisabledFor().size());
@@ -546,6 +544,17 @@ public abstract class DefaultAlignmentIOTest {
 	 */
 	protected abstract void saveAlignment(MutableAlignment align, OutputStream output)
 			throws Exception;
+
+	/**
+	 * Add the given base alignment to the given alignment.
+	 * 
+	 * @param align the alignment
+	 * @param newBase the base alignment to add
+	 * @param source the source types for resolving source entities
+	 * @param target the target types for resolving target entities
+	 */
+	protected abstract void addBaseAlignment(MutableAlignment align, URI newBase, TypeIndex source,
+			TypeIndex target);
 
 	/**
 	 * Determine if the alignment I/O supports annotations.

@@ -97,6 +97,16 @@ public class JaxbToAlignment extends
 	private final AlignmentType alignment;
 
 	/**
+	 * Private constructor for internal use.
+	 */
+	private JaxbToAlignment() {
+		this.alignment = null;
+		this.reporter = null;
+		this.sourceTypes = null;
+		this.targetTypes = null;
+	}
+
+	/**
 	 * @param alignment the alignment read using JAXB
 	 * @param reporter where to report problems to, may be <code>null</code>
 	 * @param sourceTypes the source types for resolving source entities
@@ -143,6 +153,24 @@ public class JaxbToAlignment extends
 	}
 
 	/**
+	 * Adds the given base alignment to the given alignment.
+	 * 
+	 * @param alignment the alignment to add a base alignment to
+	 * @param newBase URI of the new base alignment
+	 * @param sourceTypes the source types to use for resolving definition
+	 *            references
+	 * @param targetTypes the target types to use for resolving definition
+	 *            references
+	 * @param reporter the I/O reporter to report any errors to, may be
+	 *            <code>null</code>
+	 */
+	public static void addBaseAlignment(MutableAlignment alignment, URI newBase,
+			TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter) {
+		new JaxbToAlignment().internalAddBaseAlignment(alignment, newBase, sourceTypes,
+				targetTypes, reporter);
+	}
+
+	/**
 	 * Create the converted alignment.
 	 * 
 	 * @return the resolved alignment
@@ -151,7 +179,8 @@ public class JaxbToAlignment extends
 		return super.createAlignment(alignment, sourceTypes, targetTypes, reporter);
 	}
 
-	private MutableCell convert(CellType cell) {
+	private MutableCell convert(CellType cell, TypeIndex sourceTypes, TypeIndex targetTypes,
+			IOReporter reporter) {
 		DefaultCell result = new DefaultCell();
 
 		result.setTransformationIdentifier(cell.getRelation());
@@ -410,7 +439,7 @@ public class JaxbToAlignment extends
 	@Override
 	protected MutableCell createCell(CellType cell, TypeIndex sourceTypes, TypeIndex targetTypes,
 			IOReporter reporter) {
-		return convert(cell);
+		return convert(cell, sourceTypes, targetTypes, reporter);
 	}
 
 	/**

@@ -17,9 +17,12 @@ package eu.esdihumboldt.hale.common.align.io;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 
 import eu.esdihumboldt.hale.common.align.io.impl.CastorAlignmentIO;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
+import eu.esdihumboldt.hale.common.core.io.report.impl.DefaultIOReporter;
+import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
@@ -33,6 +36,19 @@ public class CastorAlignmentIOTest extends DefaultAlignmentIOTest {
 	protected MutableAlignment loadAlignment(InputStream input, TypeIndex source, TypeIndex target)
 			throws Exception {
 		return CastorAlignmentIO.load(input, null, source, target);
+	}
+
+	@Override
+	protected void addBaseAlignment(MutableAlignment align, final URI newBase, TypeIndex source,
+			TypeIndex target) {
+		CastorAlignmentIO.addBaseAlignment(align, newBase, source, target, new DefaultIOReporter(
+				new Locatable() {
+
+					@Override
+					public URI getLocation() {
+						return newBase;
+					}
+				}, "addBaseAlignment", true));
 	}
 
 	@Override

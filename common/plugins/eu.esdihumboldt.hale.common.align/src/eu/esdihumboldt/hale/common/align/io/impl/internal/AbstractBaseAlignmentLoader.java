@@ -65,7 +65,7 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 
 	/**
 	 * Returns a map of prefix, URI pairs of base alignments for the given
-	 * alignment.
+	 * alignment. The returned map must be modifiable.
 	 * 
 	 * @param alignment the alignment representation in question
 	 * @return a map of prefix, URI pairs of base alignments
@@ -122,6 +122,126 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 	protected abstract Collection<String> getDisabledForList(M modifier);
 
 	/**
+	 * Adds the given base alignment to the given alignment.
+	 * 
+	 * @param alignment the alignment to add a base alignment to
+	 * @param newBase URI of the new base alignment
+	 * @param sourceTypes the source types to use for resolving definition
+	 *            references
+	 * @param targetTypes the target types to use for resolving definition
+	 *            references
+	 * @param reporter the I/O reporter to report any errors to, may be
+	 *            <code>null</code>
+	 */
+	protected final void internalAddBaseAlignment(MutableAlignment alignment, URI newBase,
+			TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter) {
+		Map<A, Map<String, String>> prefixMapping = new HashMap<A, Map<String, String>>();
+		Map<A, Pair<String, URI>> alignmentToInfo = new HashMap<A, Pair<String, URI>>();
+
+		if (generatePrefixMapping(newBase, alignment.getBaseAlignments(), prefixMapping,
+				alignmentToInfo, reporter)) {
+			// add cells of base alignments
+			// XXX check whether they got cell ids already? add them otherwise?
+			for (Entry<A, Pair<String, URI>> base : alignmentToInfo.entrySet()) {
+				Collection<C> baseCells = getCells(base.getKey());
+				Collection<BaseAlignmentCell> createdCells = new ArrayList<BaseAlignmentCell>(
+						baseCells.size());
+				for (C baseCell : baseCells) {
+					MutableCell cell = createCell(baseCell, sourceTypes, targetTypes, reporter);
+					if (cell != null)
+						createdCells.add(new BaseAlignmentCell(cell, base.getValue().getSecond(),
+								base.getValue().getFirst()));
+				}
+				alignment.addBaseAlignment(base.getValue().getFirst(), base.getValue().getSecond(),
+						createdCells);
+			}
+
+			// add modifiers of base alignments
+			for (Entry<A, Pair<String, URI>> base : alignmentToInfo.entrySet())
+				applyModifiers(alignment, getModifiers(base.getKey()),
+						prefixMapping.get(base.getKey()), base.getValue().getFirst(), true,
+						reporter);
+		}
+	}
+
+	/**
+	 * Function to fill the prefixMapping and alignmentToInfo maps.
+	 * 
+	 * @param newBase the URI of the new base alignment to add
+	 * @param existingBases the map of existing bases
+	 * @param prefixMapping gets filled with a mapping from local to global
+	 *            prefixes
+	 * @param alignmentToInfo gets filled with a mapping from base alignment
+	 *            representations to prefixes and URIs
+	 * @param reporter the reporter
+	 * @return whether newBase actually is a new base and the add process should
+	 *         continue
+	 */
+	private boolean generatePrefixMapping(URI newBase, Map<String, URI> existingBases,
+			Map<A, Map<String, String>> prefixMapping, Map<A, Pair<String, URI>> alignmentToInfo,
+			IOReporter reporter) {
+		// set of already seen URIs
+		Set<URI> knownURIs = new HashSet<URI>();
+
+		// reverse map of base
+		Map<URI, String> uriToPrefix = new HashMap<URI, String>();
+
+		// create URI to prefix map and known URIs
+		for (Entry<String, URI> baseEntry : existingBases.entrySet()) {
+			knownURIs.add(baseEntry.getValue());
+			uriToPrefix.put(baseEntry.getValue(), baseEntry.getKey());
+		}
+
+		if (uriToPrefix.containsKey(newBase)) {
+			reporter.info(new IOMessageImpl("The base alignment is already included.", null));
+			return false;
+		}
+
+		Set<String> existingPrefixes = new HashSet<String>(existingBases.keySet());
+		String newPrefix = generatePrefix(existingPrefixes);
+		uriToPrefix.put(newBase, newPrefix);
+
+		// find all alignments to load (also missing ones) and load the beans
+		LinkedList<URI> queue = new LinkedList<URI>();
+		queue.add(newBase);
+		while (!queue.isEmpty()) {
+			URI baseURI = queue.pollFirst();
+			A baseA;
+			try {
+				// XXX update path according to path change of main alignment?
+				baseA = loadAlignment(new DefaultInputSupplier(baseURI).getInput(), reporter);
+			} catch (IOException e) {
+				reporter.warn(new IOMessageImpl("Couldn't load a base alignment.", e));
+				continue;
+			}
+
+			// add to alignment info map
+			alignmentToInfo.put(baseA, new Pair<String, URI>(uriToPrefix.get(baseURI), baseURI));
+			prefixMapping.put(baseA, new HashMap<String, String>());
+
+			// load "missing" base alignments, too, add prefix mapping
+			for (Entry<String, URI> baseEntry : getBases(baseA).entrySet()) {
+				URI uri = baseEntry.getValue();
+				// check whether this base alignment is missing
+				if (!knownURIs.contains(uri)) {
+					reporter.info(new IOMessageImpl(
+							"A base alignment referenced another base alignment that was not yet known. It is now included, too.",
+							null));
+					queue.add(uri);
+					knownURIs.add(uri);
+					String prefix = generatePrefix(existingPrefixes);
+					existingPrefixes.add(prefix);
+					uriToPrefix.put(uri, prefix);
+				}
+				// add prefix mapping
+				prefixMapping.get(baseA).put(baseEntry.getKey(), uriToPrefix.get(uri));
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Creates an alignment from the given alignment representation.
 	 * 
 	 * @param start the main alignment representation
@@ -139,12 +259,13 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 		Map<A, Pair<String, URI>> alignmentToInfo = new HashMap<A, Pair<String, URI>>();
 
 		// fill needed maps
-		generatePrefixMapping(start, reporter, prefixMapping, alignmentToInfo);
+		generatePrefixMapping(start, prefixMapping, alignmentToInfo, reporter);
 
 		// create alignment
 		DefaultAlignment alignment = new DefaultAlignment();
 
 		// add cells of base alignments
+		// XXX check whether they got cell ids already? add them otherwise?
 		for (Entry<A, Pair<String, URI>> base : alignmentToInfo.entrySet()) {
 			Collection<C> baseCells = getCells(base.getKey());
 			Collection<BaseAlignmentCell> createdCells = new ArrayList<BaseAlignmentCell>(
@@ -160,7 +281,6 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 		}
 
 		// add cells of main alignment
-		// XXX check whether they got cell ids already? add them otherwise?
 		for (C mainCell : getCells(start)) {
 			MutableCell cell = createCell(mainCell, sourceTypes, targetTypes, reporter);
 			if (cell != null)
@@ -183,14 +303,14 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 	 * Function to fill the prefixMapping and alignmentToInfo maps.
 	 * 
 	 * @param start the main alignment representation
-	 * @param reporter the reporter
 	 * @param prefixMapping gets filled with a mapping from local to global
 	 *            prefixes
 	 * @param alignmentToInfo gets filled with a mapping from base alignment
 	 *            representations to prefixes and URIs
+	 * @param reporter the reporter
 	 */
-	private void generatePrefixMapping(A start, IOReporter reporter,
-			Map<A, Map<String, String>> prefixMapping, Map<A, Pair<String, URI>> alignmentToInfo) {
+	private void generatePrefixMapping(A start, Map<A, Map<String, String>> prefixMapping,
+			Map<A, Pair<String, URI>> alignmentToInfo, IOReporter reporter) {
 		Map<String, URI> base = getBases(start);
 
 		// also a mapping for this alignment itself in case the same URI is
