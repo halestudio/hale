@@ -38,4 +38,10 @@ public interface MathematicalExpressionFunction {
 	 */
 	public static final String ENTITY_VARIABLE = "var";
 
+	/**
+	 * A regular expression of the set of special characters used to split an
+	 * expression.
+	 */
+	public static final String MATH_SPECIALS = "\\[|\\(|\\)|\\]|\\+|\\-|\\*|\\^|\\/|%";
+
 }
