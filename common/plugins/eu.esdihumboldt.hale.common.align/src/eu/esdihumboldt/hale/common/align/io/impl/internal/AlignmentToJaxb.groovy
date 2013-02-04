@@ -88,6 +88,7 @@ class AlignmentToJaxb {
 			if (!(cell instanceof BaseAlignmentCell)) {
 				align.cellOrModifier << convert(cell)
 			}
+			addModifier(cell, align);
 		}
 
 		return align

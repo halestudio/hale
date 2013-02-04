@@ -36,7 +36,6 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -392,7 +391,6 @@ public abstract class DefaultAlignmentIOTest {
 	 * 
 	 * @throws Exception if an error occurs
 	 */
-	@Ignore
 	@Test
 	public void testCellDisableSaveLoad() throws Exception {
 		DefaultAlignment baseAlignment = new DefaultAlignment();
@@ -450,7 +448,9 @@ public abstract class DefaultAlignmentIOTest {
 
 		baseAlignment.addCell(cell1);
 		baseAlignment.addCell(cell2);
+		String baseDisableCellId = cell2.getId();
 		baseAlignment.addCell(cell3);
+		String extendedDisableCellId = cell3.getId();
 
 		assertEquals(3, baseAlignment.getCells().size());
 		Cell typeCell = baseAlignment.getTypeCells().iterator().next();
@@ -502,7 +502,7 @@ public abstract class DefaultAlignmentIOTest {
 		// load extended
 		MutableAlignment alignment2 = loadAlignment(new FileInputStream(alignmentFile), schema,
 				schema);
-
+		typeCell = alignment2.getTypeCells().iterator().next();
 		// test disabled again
 		assertEquals(3, alignment2.getCells().size());
 		// test again that it is still disabled
@@ -510,25 +510,19 @@ public abstract class DefaultAlignmentIOTest {
 
 		// more specifically test whether the disables come from base alignment
 		// or extended alignment
-		typeCell = alignment2.getTypeCells().iterator().next();
-		Collection<? extends Cell> cells = alignment2.getCells();
+		Cell baseDisableCell = alignment2.getCell("pre:" + baseDisableCellId);
+		Cell extendedDisableCell = alignment2.getCell("pre:" + extendedDisableCellId);
 
-		for (Cell cell : cells) {
-			if (cell.getTransformationIdentifier().equals("trans1"))
-				continue; // the type cell
-			if (cell.getTransformationIdentifier().equals("trans2")) {
-				// the cell disabled in the base alignment
-				assertTrue(cell instanceof BaseAlignmentCell);
-				assertEquals(1, cell.getDisabledFor().size());
-				assertEquals(0, ((BaseAlignmentCell) cell).getAdditionalDisabledFor().size());
-			}
-			if (cell.getTransformationIdentifier().equals("trans3")) {
-				// the cell disabled in the extended alignment
-				assertTrue(cell instanceof BaseAlignmentCell);
-				assertEquals(1, cell.getDisabledFor().size());
-				assertEquals(1, ((BaseAlignmentCell) cell).getAdditionalDisabledFor().size());
-			}
-		}
+		assertTrue(baseDisableCell instanceof BaseAlignmentCell);
+		assertEquals(1, baseDisableCell.getDisabledFor().size());
+		assertEquals(1, ((BaseAlignmentCell) baseDisableCell).getBaseDisabledFor().size());
+		assertEquals(0, ((BaseAlignmentCell) baseDisableCell).getAdditionalDisabledFor().size());
+
+		assertTrue(extendedDisableCell instanceof BaseAlignmentCell);
+		assertEquals(1, extendedDisableCell.getDisabledFor().size());
+		assertEquals(0, ((BaseAlignmentCell) extendedDisableCell).getBaseDisabledFor().size());
+		assertEquals(1, ((BaseAlignmentCell) extendedDisableCell).getAdditionalDisabledFor().size());
+
 	}
 
 	/**
