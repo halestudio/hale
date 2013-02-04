@@ -20,10 +20,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
-
 import eu.esdihumboldt.cst.test.TransformationExample;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
@@ -124,8 +120,7 @@ public class InternalExample implements TransformationExample {
 	}
 
 	@Override
-	public Alignment getAlignment() throws MarshalException, ValidationException, MappingException,
-			IOException, IOProviderConfigurationException {
+	public Alignment getAlignment() throws Exception {
 		if (alignment == null) {
 			alignment = TestUtil.loadAlignment(alignmentLocation, getSourceSchema(),
 					getTargetSchema());
