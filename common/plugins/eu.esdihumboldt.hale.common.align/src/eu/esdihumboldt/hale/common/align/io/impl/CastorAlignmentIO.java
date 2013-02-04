@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.net.URI;
 
 import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.mapping.MappingException;
@@ -64,6 +65,23 @@ public class CastorAlignmentIO {
 			TypeIndex targetTypes) throws MappingException, MarshalException, ValidationException {
 		AlignmentBean bean = AlignmentBean.load(in, reporter);
 		return bean.createAlignment(reporter, sourceTypes, targetTypes);
+	}
+
+	/**
+	 * Adds the given base alignment to the given alignment.
+	 * 
+	 * @param alignment the alignment to add a base alignment to
+	 * @param newBase URI of the new base alignment
+	 * @param sourceTypes the source types to use for resolving definition
+	 *            references
+	 * @param targetTypes the target types to use for resolving definition
+	 *            references
+	 * @param reporter the I/O reporter to report any errors to, may be
+	 *            <code>null</code>
+	 */
+	public static void addBaseAlignment(MutableAlignment alignment, URI newBase,
+			TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter) {
+		AlignmentBean.addBaseAlignment(alignment, newBase, sourceTypes, targetTypes, reporter);
 	}
 
 	/**
