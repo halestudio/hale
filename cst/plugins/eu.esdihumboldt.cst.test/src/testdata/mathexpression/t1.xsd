@@ -6,7 +6,7 @@
     		<element name="b1" type="decimal" maxOccurs="1" minOccurs="1"></element>
     		<element name="c1" type="decimal" maxOccurs="1" minOccurs="1"></element>
     	</sequence>
-    	<attribute name="id" type="string"></attribute>
+    	<attribute name="divider" type="decimal"></attribute>
     </complexType>
 
     <element name="t1" type="tns:T1"></element>
