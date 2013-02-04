@@ -15,43 +15,57 @@
 
 package eu.esdihumboldt.hale.io.xslt.transformations.property.mathexpression;
 
+import java.util.regex.Pattern
+
+import com.google.common.collect.ListMultimap
+
+import eu.esdihumboldt.cst.functions.numeric.MathematicalExpressionFunction
 import eu.esdihumboldt.hale.common.align.model.Cell
-import eu.esdihumboldt.hale.common.align.model.functions.RenameFunction
-import eu.esdihumboldt.hale.io.xslt.XslPropertyTransformation
-import eu.esdihumboldt.hale.io.xslt.functions.XslFunction
-import eu.esdihumboldt.hale.io.xslt.transformations.base.AbstractXslTransformation
+import eu.esdihumboldt.hale.common.align.model.CellUtil
+import eu.esdihumboldt.hale.io.xslt.XsltGenerationContext
+import eu.esdihumboldt.hale.io.xslt.functions.XslVariable
+import eu.esdihumboldt.hale.io.xslt.transformations.base.AbstractFunctionTransformation
 
 
 /**
- * XSLT representation of the Rename function. It delegates to different kinds
- * of {@link XslFunction} depending on the cell configuration.
+ * XSLT representation of the Mathematical Expression function.
  * 
- * @author Simon Templer
+ * @author Andrea Antonello
  */
-class XslMathExpression extends AbstractXslTransformation implements XslPropertyTransformation,
-RenameFunction {
-
-	/**
-	 * Simple value rename function
-	 */
-	//	private final RenameValue value = new RenameValue()
-
+class XslMathExpression extends AbstractFunctionTransformation implements MathematicalExpressionFunction {
 
 	@Override
-	public XslFunction selectFunction(Cell cell) {
-		//		use (CellUtil) {
-		//			def structuralRename = cell.getOptionalParameter(
-		//					PARAMETER_STRUCTURAL_RENAME, Value.of(false)).as(Boolean)
-		//
-		//			if (!structuralRename) {
-		//				// copy value only
-		//				value
-		//			}
-		//			else {
-		//				// copy structure
-		//				new StructuralRename()
-		//			}
-		//		}
-		null
+	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables,
+			XsltGenerationContext context) {
+		// get the pattern parameter
+		def pattern = CellUtil.getFirstParameter(cell, PARAMETER_PATTERN).as(String)
+		if (!pattern) {
+			// empty text if no pattern
+			return "<xsl:text />"
+		}
+
+		// map pattern variable names to XPath expressions
+		def varNames = [:]
+		for (XslVariable var in variables.get(ENTITY_VARIABLE)) {
+			use (FS) {
+				varNames.addValue(var.XPath, var.entity)
+			}
+		}
+
+		// replace markers in pattern
+		/*
+		 * FIXME this is quick and dirty! doesn't handle escaping
+		 * (like in FormattedString) or single quotes occurring in
+		 * the pattern
+		 */
+		for (def entry in varNames.entrySet()) {
+			def name = entry.key
+			def xpath = entry.value
+			pattern = pattern.replaceAll(Pattern.quote("{$name}"), "', $xpath, '");
+		}
+
+		"""
+		<xsl:value-of select="concat('$pattern')" />
+		"""
 	}
 }
