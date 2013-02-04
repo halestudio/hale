@@ -518,14 +518,16 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 					// prevent loading of duplicate resources
 					if (provider instanceof ImportProvider) {
 						String currentResource = ((ImportProvider) provider).getSource()
-								.getLocation().toASCIIString();
+								.getLocation().toString();
 						List<IOConfiguration> resources = ((Project) ps.getProjectInfo())
 								.getResources();
 						for (IOConfiguration conf : resources) {
 							String resource = conf.getProviderConfiguration()
 									.get(ImportProvider.PARAM_SOURCE).as(String.class);
+							String action = conf.getActionId();
 							// resource is already loaded into the project
-							if (resource != null && resource.equals(currentResource)) {
+							if (resource != null && resource.equals(currentResource)
+									&& Objects.equal(actionId, action)) {
 								log.userError("Resource is already loaded. Loading duplicate resources is aborted!");
 								return false;
 							}
