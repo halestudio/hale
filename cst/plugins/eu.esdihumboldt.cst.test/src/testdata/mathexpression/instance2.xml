@@ -3,9 +3,9 @@
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:schemaLocation="http://www.example.org/t2/ t2.xsd">
     <tns:t2 id="id0">
-        <a2>0.5</a2>
+        <a2>0.75</a2>
     </tns:t2>
     <tns:t2 id="id1">
-        <a2>-1</a2>
+        <a2>-0.5</a2>
     </tns:t2>
 </tns:collection>
