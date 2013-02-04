@@ -15,9 +15,9 @@
 
 package eu.esdihumboldt.hale.common.core.io;
 
-import java.util.Objects;
-
 import org.w3c.dom.Element;
+
+import com.google.common.base.Objects;
 
 import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueExtension;
 import eu.esdihumboldt.hale.common.core.io.impl.ComplexValue;
@@ -207,11 +207,11 @@ public abstract class Value {
 			/*
 			 * Both represented as String, use string representation to compare
 			 */
-			return Objects.equals(other.getStringRepresentation(), getStringRepresentation());
+			return Objects.equal(other.getStringRepresentation(), getStringRepresentation());
 		}
 
 		// in any other case, compare the internal values
-		return Objects.equals(other.getValue(), getValue());
+		return Objects.equal(other.getValue(), getValue());
 	}
 
 	@Override
