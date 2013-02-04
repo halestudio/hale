@@ -66,7 +66,7 @@ class XslMathExpression extends AbstractFunctionTransformation implements Mathem
 		StringBuilder sb = new StringBuilder();
 		for (String item : splitExpression) {
 			item = checkXsltOwn(item)
-			def xpath = varNames.get(item)
+			def xpath = varNames.get(item.trim())
 			if (xpath) {
 				sb.append("$xpath");
 			}else{
