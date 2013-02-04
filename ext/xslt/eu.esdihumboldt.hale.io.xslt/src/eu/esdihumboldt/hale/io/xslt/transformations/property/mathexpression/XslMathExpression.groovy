@@ -15,13 +15,17 @@
 
 package eu.esdihumboldt.hale.io.xslt.transformations.property.mathexpression;
 
+import java.util.regex.Matcher
 import java.util.regex.Pattern
 
+import com.google.common.base.Joiner
 import com.google.common.collect.ListMultimap
 
 import eu.esdihumboldt.cst.functions.numeric.MathematicalExpressionFunction
 import eu.esdihumboldt.hale.common.align.model.Cell
 import eu.esdihumboldt.hale.common.align.model.CellUtil
+import eu.esdihumboldt.hale.common.align.model.ChildContext
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition
 import eu.esdihumboldt.hale.io.xslt.XsltGenerationContext
 import eu.esdihumboldt.hale.io.xslt.functions.XslVariable
 import eu.esdihumboldt.hale.io.xslt.transformations.base.AbstractFunctionTransformation
@@ -37,35 +41,108 @@ class XslMathExpression extends AbstractFunctionTransformation implements Mathem
 	@Override
 	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables,
 			XsltGenerationContext context) {
-		// get the pattern parameter
-		def pattern = CellUtil.getFirstParameter(cell, PARAMETER_PATTERN).as(String)
-		if (!pattern) {
-			// empty text if no pattern
+		// get the expression parameter
+		def expression = CellUtil.getFirstParameter(cell, PARAMETER_EXPRESSION).as(String)
+		if (!expression) {
+			// empty text if no expression
 			return "<xsl:text />"
 		}
 
-		// map pattern variable names to XPath expressions
+		// map variable names to XPath expressions
 		def varNames = [:]
 		for (XslVariable var in variables.get(ENTITY_VARIABLE)) {
-			use (FS) {
-				varNames.addValue(var.XPath, var.entity)
+			//			use (FS) {
+			addValue(varNames, var.XPath, var.entity)
+			//			}
+		}
+
+		// replace markers in expression
+
+		/*
+		 * define a set of special characters that 
+		 * split an expression as regular expression
+		 */
+		String pattern = "\\[|\\(|\\)|\\]|\\+|\\-|\\*|\\^|\\/";
+
+		/*
+		 * split the expression around special characters and
+		 * make sure the variables are substituted.
+		 */
+		String[] splitExpression = splitAndKeep(expression, pattern);
+		StringBuilder sb = new StringBuilder();
+		for (String item : splitExpression) {
+			def xpath = varNames.get(item)
+			if (xpath) {
+				sb.append("$xpath");
+			}else{
+				sb.append(item);
 			}
 		}
+		def finalExpression = sb.toString();
 
-		// replace markers in pattern
-		/*
-		 * FIXME this is quick and dirty! doesn't handle escaping
-		 * (like in FormattedString) or single quotes occurring in
-		 * the pattern
-		 */
-		for (def entry in varNames.entrySet()) {
-			def name = entry.key
-			def xpath = entry.value
-			pattern = pattern.replaceAll(Pattern.quote("{$name}"), "', $xpath, '");
+		//		/*
+		//		 * FIXME this is quick and dirty! doesn't handle escaping
+		//		 * (like in FormattedString) or single quotes occurring in
+		//		 * the pattern
+		//		 */
+		//		for (def entry in varNames.entrySet()) {
+		//			def name = entry.key
+		//			def xpath = entry.value
+		//			pattern = pattern.replaceAll(Pattern.quote("{$name}"), "', $xpath, '");
+		//		}
+
+		"""
+		<xsl:value-of select="$finalExpression" />
+		"""
+	}
+
+
+	/**
+	 * Add a value to the given map of values, with the variable names derived
+	 * from the associated property definition.
+	 *
+	 * @param values the map associating variable names to values
+	 * @param value the value
+	 * @param property the associated property
+	 */
+	public static void addValue(Map<String, Object> values, Object value,
+			PropertyEntityDefinition property) {
+		// determine the variable name
+		String name = property.getDefinition().getName().getLocalPart();
+
+		// add with short name, but ensure no variable with only a short
+		// name is overridden
+		if (!values.keySet().contains(name) || property.getPropertyPath().size() == 1) {
+			values.put(name, value);
 		}
 
-		"""
-		<xsl:value-of select="concat('$pattern')" />
-		"""
+		// add with long name if applicable
+		if (property.getPropertyPath().size() > 1) {
+			List<String> names = new ArrayList<String>();
+			for (ChildContext context : property.getPropertyPath()) {
+				names.add(context.getChild().getName().getLocalPart());
+			}
+			String longName = Joiner.on('.').join(names);
+			values.put(longName, value);
+		}
+	}
+
+	private	String[] splitAndKeep(String input, String regex) {
+		ArrayList<String> res = new ArrayList<String>();
+		Pattern p = Pattern.compile(regex);
+		Matcher m = p.matcher(input);
+		int pos = 0;
+		while (m.find()) {
+			String string = input.substring(pos, m.end() - 1).trim();
+			if (string.length() != 0)
+				res.add(string);
+			string = input.substring(m.end() - 1, m.end()).trim();
+			if (string.length() != 0)
+				res.add(string);
+			pos = m.end();
+		}
+		if (pos < input.length())
+			res.add(input.substring(pos));
+		return res.toArray(new String[res.size()]);
 	}
 }
