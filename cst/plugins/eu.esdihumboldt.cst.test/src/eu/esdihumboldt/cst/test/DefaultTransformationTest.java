@@ -197,6 +197,16 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 	}
 
 	/**
+	 * A simple Math Expression transformation test.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testMathExpression() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.MATH_EXPRESSION));
+	}
+
+	/**
 	 * Transformation test for the context matching example
 	 * {@link TransformationExamples#CM_MULTI_1}.
 	 * 
