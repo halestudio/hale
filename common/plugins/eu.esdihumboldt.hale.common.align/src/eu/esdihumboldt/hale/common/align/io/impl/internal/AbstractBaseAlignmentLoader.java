@@ -232,6 +232,7 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 
 			// add to alignment info map
 			alignmentToInfo.put(baseA, new Pair<String, URI>(uriToPrefix.get(baseURI), baseURI));
+			prefixMapping.put(baseA, new HashMap<String, String>());
 
 			// load "missing" base alignments, too, add prefix mapping
 			for (Entry<String, URI> baseEntry : getBases(baseA).entrySet()) {
@@ -249,8 +250,6 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 					prefixMapping.get(start).put(prefix, prefix);
 				}
 				// add prefix mapping
-				if (!prefixMapping.containsKey(baseA))
-					prefixMapping.put(baseA, new HashMap<String, String>());
 				prefixMapping.get(baseA).put(baseEntry.getKey(), uriToPrefix.get(uri));
 			}
 		}
@@ -299,7 +298,7 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 				// base is true -> modified cell has to be of a base alignment
 				// so it has to be a BaseAlignmentCell
 				if (base)
-					((BaseAlignmentCell) cell).setBaseDisabledFor(cell, true);
+					((BaseAlignmentCell) cell).setBaseDisabledFor(other, true);
 				else
 					cell.setDisabledFor(other, true);
 			}
