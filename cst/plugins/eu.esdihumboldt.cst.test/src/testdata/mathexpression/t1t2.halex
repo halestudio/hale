@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<hale-project version="2.5.0.qualifier">
+    <name>Math Expressione test </name>
+    <author>hydrologis</author>
+    <description>Math Expressione test project</description>
+    <created>2013-02-04T14:58:28.276+01:00</created>
+    <modified>2013-02-04T15:00:59.256+01:00</modified>
+    <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
+        <setting name="projectFiles.separate">false</setting>
+        <setting name="target">file:/home/hydrologis/development/hale-git/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/mathexpression/t1t2.halex</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
+    </save-config>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.source" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="resourceId">91c12308-946e-491a-8e28-922d6baef217</setting>
+        <setting name="source">file:/home/hydrologis/development/hale-git/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/mathexpression/t1.xsd</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.target" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="resourceId">4a479e07-e9b4-4189-96e4-c3ea57c23b81</setting>
+        <setting name="source">file:/home/hydrologis/development/hale-git/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/mathexpression/t2.xsd</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <file name="styles.sld" location="file:/home/hydrologis/development/hale-git/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/mathexpression/t1t2.halex.styles.sld"/>
+    <file name="alignment.xml" location="file:/home/hydrologis/development/hale-git/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/mathexpression/t1t2.halex.alignment.xml"/>
+</hale-project>

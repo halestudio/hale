@@ -1,30 +1,42 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<hale-project version="2.5.0.qualifier">
-    <name>math expressione test</name>
-    <author>andrea</author>
-    <description>math expressione test project</description>
-    <created>2013-02-04T14:46:44.643+01:00</created>
-    <modified>2013-02-04T14:53:47.415+01:00</modified>
-    <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
-        <setting name="projectFiles.separate">false</setting>
-        <setting name="target">file:/home/hydrologis/development/hale-git/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/mathexpression/t1t2.halex.alignment.xml</setting>
-        <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
-    </save-config>
-    <resource action-id="eu.esdihumboldt.hale.io.schema.read.source" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
-        <setting name="resourceId">fbef8a5d-3cde-431c-a6f2-49e0c59cf772</setting>
-        <setting name="source">file:/home/hydrologis/development/hale-git/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/mathexpression/t1.xsd</setting>
-        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
-    </resource>
-    <resource action-id="eu.esdihumboldt.hale.io.schema.read.target" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
-        <setting name="resourceId">2f52ef48-36d1-4b56-bc67-9745649ad827</setting>
-        <setting name="source">file:/home/hydrologis/development/hale-git/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/mathexpression/t2.xsd</setting>
-        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
-    </resource>
-    <resource action-id="eu.esdihumboldt.hale.io.instance.read.source" provider-id="eu.esdihumboldt.hale.io.gml.reader">
-        <setting name="resourceId">2c720e72-f167-400b-8518-5b29bdcad250</setting>
-        <setting name="source">file:/home/hydrologis/development/hale-git/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/mathexpression/instance1.xml</setting>
-        <setting name="contentType">eu.esdihumboldt.hale.io.gml</setting>
-    </resource>
-    <file name="styles.sld" location="file:/home/hydrologis/development/hale-git/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/mathexpression/t1t2.halex.alignment.xml.styles.sld"/>
-    <file name="alignment.xml" location="file:/home/hydrologis/development/hale-git/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/mathexpression/t1t2.halex.alignment.xml.alignment.xml"/>
-</hale-project>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="C84a4943c-3c18-44fd-a3ac-e20e1eeaf5a7">
+        <source>
+            <class>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="T2" ns="http://www.example.org/t2/"/>
+            </class>
+        </target>
+    </cell>
+    <cell relation="eu.esdihumboldt.cst.functions.numeric.mathexpression" id="C4c24899b-8959-476b-ba7b-fe47f5a2438d">
+        <source name="var">
+            <property>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+                <child name="a1"/>
+            </property>
+        </source>
+        <source name="var">
+            <property>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+                <child name="b1"/>
+            </property>
+        </source>
+        <source name="var">
+            <property>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+                <child name="c1"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="T2" ns="http://www.example.org/t2/"/>
+                <child name="a2"/>
+            </property>
+        </target>
+        <parameter value="(a1+b1 -c1 )  / (a1* b1)" name="expression"/>
+    </cell>
+</alignment>
