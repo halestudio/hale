@@ -28,8 +28,11 @@ public class MathTest {
 
 	public static void main(String[] args) {
 
-		String exp = "[(a + b*6/c^4- d)asd]";
-		String pattern = "\\[|\\(|\\)|\\]|\\+|\\-|\\*|\\^|\\/";
+		String sa = "/";
+		System.out.println("/".equals(sa));
+
+		String exp = "[(a + b*6/c^4- d)asd] 4%6]";
+		String pattern = "\\[|\\(|\\)|\\]|\\+|\\-|\\*|\\^|\\/|%";
 
 		String[] splitAndKeep = splitAndKeep(exp, pattern);
 		for (String s : splitAndKeep) {
@@ -52,8 +55,12 @@ public class MathTest {
 				res.add(string);
 			pos = m.end();
 		}
-		if (pos < input.length())
-			res.add(input.substring(pos));
+		if (pos < input.length()) {
+			String string = input.substring(pos).trim();
+
+			if (string.length() != 0)
+				res.add(input.substring(pos).trim());
+		}
 		return res.toArray(new String[res.size()]);
 	}
 

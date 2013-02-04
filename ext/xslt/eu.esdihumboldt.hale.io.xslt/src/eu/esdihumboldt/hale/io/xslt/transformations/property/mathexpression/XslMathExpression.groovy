@@ -51,26 +51,21 @@ class XslMathExpression extends AbstractFunctionTransformation implements Mathem
 		// map variable names to XPath expressions
 		def varNames = [:]
 		for (XslVariable var in variables.get(ENTITY_VARIABLE)) {
-			//			use (FS) {
-			addValue(varNames, var.XPath, var.entity)
-			//			}
+			def xpath =var.XPath;
+			def entity = var.entity;
+			addValue(varNames, xpath, entity)
 		}
 
 		// replace markers in expression
 
 		/*
-		 * define a set of special characters that 
-		 * split an expression as regular expression
-		 */
-		String pattern = "\\[|\\(|\\)|\\]|\\+|\\-|\\*|\\^|\\/";
-
-		/*
 		 * split the expression around special characters and
 		 * make sure the variables are substituted.
 		 */
-		String[] splitExpression = splitAndKeep(expression, pattern);
+		String[] splitExpression = splitAndKeep(expression, MATH_SPECIALS);
 		StringBuilder sb = new StringBuilder();
 		for (String item : splitExpression) {
+			item = checkXsltOwn(item)
 			def xpath = varNames.get(item)
 			if (xpath) {
 				sb.append("$xpath");
@@ -80,20 +75,20 @@ class XslMathExpression extends AbstractFunctionTransformation implements Mathem
 		}
 		def finalExpression = sb.toString();
 
-		//		/*
-		//		 * FIXME this is quick and dirty! doesn't handle escaping
-		//		 * (like in FormattedString) or single quotes occurring in
-		//		 * the pattern
-		//		 */
-		//		for (def entry in varNames.entrySet()) {
-		//			def name = entry.key
-		//			def xpath = entry.value
-		//			pattern = pattern.replaceAll(Pattern.quote("{$name}"), "', $xpath, '");
-		//		}
-
 		"""
 		<xsl:value-of select="$finalExpression" />
 		"""
+	}
+
+	private String checkXsltOwn(String item){
+		if (item.trim().equals("/")) {
+			return " div "
+		}
+		if (item.trim().equals("%")) {
+			return " mod "
+		}
+
+		return item
 	}
 
 
@@ -135,14 +130,18 @@ class XslMathExpression extends AbstractFunctionTransformation implements Mathem
 		while (m.find()) {
 			String string = input.substring(pos, m.end() - 1).trim();
 			if (string.length() != 0)
-				res.add(string);
+				res.add(" " + string + " ");
 			string = input.substring(m.end() - 1, m.end()).trim();
 			if (string.length() != 0)
-				res.add(string);
+				res.add(" " + string + " ");
 			pos = m.end();
 		}
-		if (pos < input.length())
-			res.add(input.substring(pos));
+		if (pos < input.length()){
+			String string = input.substring(pos).trim();
+
+			if (string.length() != 0)
+				res.add(" " + string + " ");
+		}
 		return res.toArray(new String[res.size()]);
 	}
 }
