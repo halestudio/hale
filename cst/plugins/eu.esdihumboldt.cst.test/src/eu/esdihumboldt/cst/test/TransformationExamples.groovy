@@ -40,6 +40,7 @@ abstract class TransformationExamples {
 	public static final String STRUCTURAL_RENAME_3 = 'structuralrename_3'
 	public static final String MATH_EXPRESSION = 'mathexpression'
 	public static final String GENERATEUID = 'generateuid'
+	public static final String CLASSIFICATION_1 = 'classification1'
 
 	public static final String CM_UNION_1 = 'cm_union_1'
 	public static final String CM_UNION_2 = 'cm_union_2'
@@ -114,6 +115,7 @@ abstract class TransformationExamples {
 		(STRUCTURAL_RENAME_3): defaultExample(STRUCTURAL_RENAME_3),
 		(MATH_EXPRESSION): defaultExample(MATH_EXPRESSION),
 		(GENERATEUID): defaultExample(GENERATEUID),
+		(CLASSIFICATION_1): defaultExample(CLASSIFICATION_1),
 		// context matching examples
 		(CM_UNION_1): defaultExample(CM_UNION_1),
 		(CM_UNION_2): defaultExample(CM_UNION_2),
