@@ -22,7 +22,7 @@
             id="eu.esdihumboldt.cst.functions.core.assign">
       </propertyTransformation>
       <propertyTransformation
-            class="eu.esdihumboldt.cst.functions.core.GenerateUniqueId"
+            class="eu.esdihumboldt.cst.functions.core.GenerateUID"
             engine="eu.esdihumboldt.align.java"
             function="eu.esdihumboldt.hale.align.generateuid"
             id="eu.esdihumboldt.cst.functions.core.generateuid">
