@@ -16,10 +16,18 @@
 
 package eu.esdihumboldt.cst.test;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.util.List;
+import java.util.TreeSet;
+
+import javax.xml.namespace.QName;
 
 import org.junit.Ignore;
 import org.junit.Test;
+
+import eu.esdihumboldt.hale.common.instance.model.Instance;
 
 /**
  * Tests for the CST's alignment processor implementation
@@ -58,6 +66,33 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 	@Test
 	public void testSimpleAssign() throws Exception {
 		testTransform(TransformationExamples.getExample(TransformationExamples.SIMPLE_ASSIGN));
+	}
+
+	/**
+	 * Test for the generateduid. Since the uid is always different, just test
+	 * for them being unique.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testGenerateUID() throws Exception {
+		TransformationExample example = TransformationExamples
+				.getExample(TransformationExamples.GENERATEUID);
+		List<Instance> transformedData = transformData(example);
+
+		TreeSet<String> uniqueIdSet = new TreeSet<String>();
+		for (Instance instance : transformedData) {
+			Iterable<QName> propertyNames = instance.getPropertyNames();
+			for (QName propertyName : propertyNames) {
+				Object[] property = instance.getProperty(propertyName);
+				for (Object object : property) {
+					boolean added = uniqueIdSet.add(object.toString());
+					if (!added) {
+						assertTrue("Found duplicated id when should be unique.", added);
+					}
+				}
+			}
+		}
 	}
 
 	/**
