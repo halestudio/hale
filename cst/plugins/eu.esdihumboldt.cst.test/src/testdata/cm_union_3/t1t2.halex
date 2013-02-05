@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<hale-project version="2.5.0.qualifier">
+    <name>Simple cell union example</name>
+    <author>Simon Templer</author>
+    <created>2013-02-05T15:47:00.891+01:00</created>
+    <modified>2013-02-05T15:50:01.244+01:00</modified>
+    <save-config provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer" action-id="project.save">
+        <setting name="projectFiles.separate">false</setting>
+        <setting name="target">file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cm_union_3/t1t2.halex</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
+    </save-config>
+    <resource provider-id="eu.esdihumboldt.hale.io.xsd.reader" action-id="eu.esdihumboldt.hale.io.schema.read.source">
+        <setting name="resourceId">89f381f5-fa71-4afe-8d34-eb1881701253</setting>
+        <setting name="source">file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cm_union_3/t1.xsd</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource provider-id="eu.esdihumboldt.hale.io.xsd.reader" action-id="eu.esdihumboldt.hale.io.schema.read.target">
+        <setting name="resourceId">83b7c12a-4c61-491f-a126-ec89a362f59e</setting>
+        <setting name="source">file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cm_union_3/t2.xsd</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource provider-id="eu.esdihumboldt.hale.io.xml.reader" action-id="eu.esdihumboldt.hale.io.instance.read.source">
+        <setting name="resourceId">4fc3160a-3490-4f52-9546-d70d7d8c1366</setting>
+        <setting name="source">file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cm_union_3/instance1.xml</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.gml</setting>
+    </resource>
+    <file location="file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cm_union_3/t1t2.halex.styles.sld" name="styles.sld"/>
+    <file location="file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cm_union_3/t1t2.halex.alignment.xml" name="alignment.xml"/>
+</hale-project>
