@@ -18,10 +18,9 @@ package eu.esdihumboldt.hale.io.xslt.transformations.property
 import com.google.common.collect.ListMultimap
 
 import eu.esdihumboldt.hale.common.align.model.Cell
-import eu.esdihumboldt.hale.common.align.model.CellUtil
-import eu.esdihumboldt.hale.common.align.model.functions.AssignFunction
+import eu.esdihumboldt.hale.common.align.model.functions.GenerateUIDFunction
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition
 import eu.esdihumboldt.hale.io.xslt.XsltGenerationContext
-import eu.esdihumboldt.hale.io.xslt.functions.XslFunction
 import eu.esdihumboldt.hale.io.xslt.functions.XslVariable
 import eu.esdihumboldt.hale.io.xslt.transformations.base.AbstractFunctionTransformation
 
@@ -31,12 +30,20 @@ import eu.esdihumboldt.hale.io.xslt.transformations.base.AbstractFunctionTransfo
  * 
  * @author Andrea Antonello 
  */
-class XslGenerateUniqueId extends AbstractFunctionTransformation implements AssignFunction {
+class XslGenerateUID extends AbstractFunctionTransformation implements GenerateUIDFunction {
 
 	@Override
 	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables,
 			XsltGenerationContext context) {
-		//XXX correct to directly return value?
-		use(CellUtil) { "<xsl:text>${cell.getFirstParameter(PARAMETER_VALUE).as(String)}</xsl:text>" }
+		def target = cell.getTarget().get(null)[0];
+		PropertyEntityDefinition d = target.getDefinition();
+		def localName = d.getDefinition().getName().getLocalPart();
+		def typeName = d.getType().getName().getLocalPart();
+
+		def prefix = typeName + "_"+ localName
+
+		"""
+			$prefix<xsl:value-of select="position()" />_<xsl:value-of select="generate-id()" />
+		"""
 	}
 }

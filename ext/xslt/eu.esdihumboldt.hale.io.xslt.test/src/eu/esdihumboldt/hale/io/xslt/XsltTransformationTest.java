@@ -54,6 +54,12 @@ public class XsltTransformationTest extends DefaultTransformationTest {
 
 	@Override
 	@Test
+	public void testGenerateUID() throws Exception {
+		super.testGenerateUID();
+	}
+
+	@Override
+	@Test
 	public void testMathExpression() throws Exception {
 		super.testMathExpression();
 	}
