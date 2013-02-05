@@ -491,7 +491,7 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 
 		//TODO check
 
-		//XXX requires cardinality 1 for proxied node to have valid contexts?
+		//XXX requires multi-node context
 	}
 
 	/**
@@ -506,7 +506,40 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 
 		//TODO check
 
-		//XXX requires cardinality 1 for proxied node to have valid contexts?
+		//XXX eventually requires multi-node context
+	}
+
+	/**
+	 * Check if context matching is performed correctly for the
+	 * {@link TransformationExamples#CM_UNION_3} example.
+	 */
+	void testContextCMUnion3() {
+		TGraph tg = createGraph(TransformationExamples.CM_UNION_3)
+
+		tg.proxyMultiResultNodes()
+		tg.performContextMatching()
+
+		// contexts in this example are unambiguous
+		assertContext(tg, 't1', 'b')
+		assertProxyContext(tg, 'a1', 'b')
+		assertProxyContext(tg, 'a2', 'b')
+
+		// 3 contexts altogether
+		assertEquals(3, tg.graph.E.filter{it.label == EDGE_CONTEXT}.count())
+	}
+
+	/**
+	 * Check if context matching is performed correctly for the
+	 * {@link TransformationExamples#CM_UNION_4} example.
+	 */
+	void testContextCMUnion4() {
+		TGraph tg = createGraph(TransformationExamples.CM_UNION_4)
+
+		tg.proxyMultiResultNodes()
+		tg.performContextMatching()
+
+		// one context for the proxy connected to the Rename relation
+		assertProxyContext(tg, 't1', 'b')
 	}
 
 	/**
@@ -523,6 +556,23 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 
 		def sourceNode = tg.graph.getVertex(sourceId)
 		def targetNodes = sourceNode.out(EDGE_CONTEXT).filter{it.id == targetId}.toList()
+		assertEquals(1, targetNodes.size())
+	}
+
+	/**
+	 * Assert if there is a context match between a source and target proxy
+	 * node in the given graph.
+	 *
+	 * @param tg the transformation graph
+	 * @param source the source name (i.e. the node id w/o prefix)
+	 * @param target the proxied target name (i.e. the node id w/o prefix)
+	 */
+	void assertProxyContext(TGraph tg, String source, String target) {
+		def sourceId = TreeToGraphVisitor.SOURCE_PREFIX + source
+		def targetId = TreeToGraphVisitor.TARGET_PREFIX + target
+
+		def sourceNode = tg.graph.getVertex(sourceId)
+		def targetNodes = sourceNode.out(EDGE_CONTEXT).out(EDGE_PROXY).filter{it.id == targetId}.toList()
 		assertEquals(1, targetNodes.size())
 	}
 
@@ -562,6 +612,46 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 
 		// there should be two new nodes
 		assertEquals(13, tg.graph.V.count())
+		// both of them proxies
+		assertEquals(2, tg.graph.V(P_PROXY, true).count())
+	}
+
+	/**
+	 * Tests proxying multi result nodes on the
+	 * {@link TransformationExamples#CM_UNION_3} example.
+	 */
+	void testProxyMultiResultNodes3() {
+		TGraph tg = createGraph(TransformationExamples.CM_UNION_3)
+
+		// there should be seven vertices
+		assertEquals(7, tg.graph.V.count())
+		// none of them proxy nodes
+		assertEquals(0, tg.graph.V(P_PROXY, true).count())
+
+		tg.proxyMultiResultNodes();
+
+		// there should be two new nodes
+		assertEquals(9, tg.graph.V.count())
+		// both of them proxies
+		assertEquals(2, tg.graph.V(P_PROXY, true).count())
+	}
+
+	/**
+	 * Tests proxying multi result nodes on the
+	 * {@link TransformationExamples#CM_UNION_4} example.
+	 */
+	void testProxyMultiResultNodes4() {
+		TGraph tg = createGraph(TransformationExamples.CM_UNION_4)
+
+		// there should be six vertices
+		assertEquals(6, tg.graph.V.count())
+		// none of them proxy nodes
+		assertEquals(0, tg.graph.V(P_PROXY, true).count())
+
+		tg.proxyMultiResultNodes();
+
+		// there should be two new nodes
+		assertEquals(8, tg.graph.V.count())
 		// both of them proxies
 		assertEquals(2, tg.graph.V(P_PROXY, true).count())
 	}
