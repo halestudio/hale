@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="C84a4943c-3c18-44fd-a3ac-e20e1eeaf5a7">
+        <source>
+            <class>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="T2" ns="http://www.example.org/t2/"/>
+            </class>
+        </target>
+    </cell>
+    <cell relation="eu.esdihumboldt.cst.functions.numeric.mathexpression" id="C4c24899b-8959-476b-ba7b-fe47f5a2438d">
+        <source name="var">
+            <property>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+                <child name="a1"/>
+            </property>
+        </source>
+        <source name="var">
+            <property>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+                <child name="b1"/>
+            </property>
+        </source>
+        <source name="var">
+            <property>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+                <child name="c1"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="T2" ns="http://www.example.org/t2/"/>
+                <child name="a2"/>
+            </property>
+        </target>
+        <parameter value="(a1+b1 -c1 )  / (a1* b1)" name="expression"/>
+    </cell>
+</alignment>

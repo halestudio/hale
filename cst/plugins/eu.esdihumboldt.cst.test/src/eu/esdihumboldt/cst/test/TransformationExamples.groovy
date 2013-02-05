@@ -39,6 +39,7 @@ abstract class TransformationExamples {
 	public static final String STRUCTURAL_RENAME_1 = 'structuralrename_1'
 	public static final String STRUCTURAL_RENAME_2 = 'structuralrename_2'
 	public static final String STRUCTURAL_RENAME_3 = 'structuralrename_3'
+	public static final String MATH_EXPRESSION = 'mathexpression'
 
 	public static final String CM_UNION_1 = 'cm_union_1'
 	public static final String CM_UNION_2 = 'cm_union_2'
@@ -112,6 +113,7 @@ abstract class TransformationExamples {
 		(STRUCTURAL_RENAME_1): defaultExample(STRUCTURAL_RENAME_1),
 		(STRUCTURAL_RENAME_2): defaultExample(STRUCTURAL_RENAME_2),
 		(STRUCTURAL_RENAME_3): defaultExample(STRUCTURAL_RENAME_3),
+		(MATH_EXPRESSION): defaultExample(MATH_EXPRESSION),
 		// context matching examples
 		(CM_UNION_1): defaultExample(CM_UNION_1),
 		(CM_UNION_2): defaultExample(CM_UNION_2),
@@ -146,14 +148,14 @@ abstract class TransformationExamples {
 
 	static def defaultExample(String folder) {
 		[
-					sourceSchema: "/testdata/${folder}/t1.xsd",
-					targetSchema: "/testdata/${folder}/t2.xsd",
-					alignment: "/testdata/${folder}/t1t2.halex.alignment.xml",
-					sourceData: "/testdata/${folder}/instance1.xml",
-					transformedData: "/testdata/${folder}/instance2.xml",
-					containerNamespace: null,
-					containerName: 'collection'
-				]
+			sourceSchema: "/testdata/${folder}/t1.xsd",
+			targetSchema: "/testdata/${folder}/t2.xsd",
+			alignment: "/testdata/${folder}/t1t2.halex.alignment.xml",
+			sourceData: "/testdata/${folder}/instance1.xml",
+			transformedData: "/testdata/${folder}/instance2.xml",
+			containerNamespace: null,
+			containerName: 'collection'
+		]
 	}
 
 	/**

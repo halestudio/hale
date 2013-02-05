@@ -27,9 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -39,6 +36,7 @@ import de.fhg.igd.osgi.util.OsgiUtils;
 import de.fhg.igd.osgi.util.OsgiUtils.Condition;
 import de.fhg.igd.osgi.util.OsgiUtilsActivator;
 import eu.esdihumboldt.hale.common.align.io.impl.CastorAlignmentIO;
+import eu.esdihumboldt.hale.common.align.io.impl.JaxbAlignmentIO;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -94,14 +92,10 @@ public class TestUtil {
 	 * @param sourceTypes the source type index
 	 * @param targetTypes the target type index
 	 * @return the loaded alignment
-	 * @throws IOException if the alignment or other resources could not be
-	 *             loaded
-	 * @throws MappingException if the mapping is faulty or could not be applied
-	 * @throws ValidationException if there was a validation error
-	 * @throws MarshalException if unmarshaling the alignment failed
+	 * @throws Exception if the alignment or other resources could not be loaded
 	 */
 	public static Alignment loadAlignment(final URI location, Schema sourceTypes, Schema targetTypes)
-			throws MarshalException, ValidationException, MappingException, IOException {
+			throws Exception {
 		DefaultInputSupplier input = new DefaultInputSupplier(location);
 
 		IOReporter report = new DefaultIOReporter(new Locatable() {
@@ -111,8 +105,12 @@ public class TestUtil {
 				return location;
 			}
 		}, "Load alignment", true);
-		Alignment alignment = CastorAlignmentIO.load(input.getInput(), report, sourceTypes,
-				targetTypes);
+		Alignment alignment;
+		try {
+			alignment = CastorAlignmentIO.load(input.getInput(), report, sourceTypes, targetTypes);
+		} catch (Exception e) {
+			alignment = JaxbAlignmentIO.load(input.getInput(), report, sourceTypes, targetTypes);
+		}
 
 		assertTrue("Errors are contained in the report", report.getErrors().isEmpty());
 
