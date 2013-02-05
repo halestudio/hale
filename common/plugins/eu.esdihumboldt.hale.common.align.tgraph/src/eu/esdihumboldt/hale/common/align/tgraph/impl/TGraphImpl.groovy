@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.align.tgraph.TGraph
 import eu.esdihumboldt.hale.common.align.tgraph.TGraphHelpers
 import eu.esdihumboldt.hale.common.align.tgraph.TGraphConstants.NodeType
 import eu.esdihumboldt.hale.common.align.tgraph.impl.internal.TGraphFactory
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality
 
 
 
@@ -98,6 +99,42 @@ class TGraphImpl implements TGraph {
 
 					// remove the original edge
 					graph.removeEdge(it)
+					
+					/*
+					 * Proxy cardinalities
+					 */
+					
+					/*
+					 * First attempt was to set the entity cardinality on the
+					 * proxies and an cardinality of 0..1 for the proxied node.
+					 * This has the advantage that context matching can be
+					 * performed separately for the proxies if the entity may
+					 * occur multiple times.
+					 * However, this poses a problem when the proxied node has
+					 * children - they would be reduced to the new parent's
+					 * cardinality.
+					 * Moving the cardinality to the proxies must instead
+					 * involve duplicating the whole associated subgraph with
+					 * eventually also introducing proxies on the source side. 
+					 */
+					// set a single cardinality on the proxied vertex
+//					Vertex proxied = it.getVertex(Direction.IN)
+//					proxied.setProperty(P_CARDINALITY, Cardinality.CC_OPTIONAL);
+					// and set the entity cardinality on the proxy
+					//assert proxied.entity()
+//					proxy.setProperty(P_CARDINALITY,
+//						proxied.entity().getDefinition().getConstraint(Cardinality))
+					
+					/*
+					 * The alternative used now is to keep the cardinality of the
+					 * proxied node as is and use a cardinality of 0..1 for the
+					 * proxies. This means the context is defined by the proxied
+					 * node and children can be handled normally.
+					 * Through this the possibilities in context matching are
+					 * more limited than with the first approach, but can be made
+					 * to work much easier for the cases it covers.
+					 */
+					proxy.setProperty(P_CARDINALITY, Cardinality.CC_OPTIONAL)
 				}.iterate() // actually traverse the graph
 
 		this
