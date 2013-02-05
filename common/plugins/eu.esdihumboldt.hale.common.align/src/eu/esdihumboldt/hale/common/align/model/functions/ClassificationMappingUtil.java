@@ -58,7 +58,7 @@ public class ClassificationMappingUtil implements ClassificationMappingFunction 
 				if (parts.length > 0) {
 					Value target = Value.of(URLDecoder.decode(parts[0], "UTF-8"));
 					for (int i = 1; i < parts.length; i++) {
-						lookupMap.put(Value.of(URLDecoder.decode(parts[0], "UTF-8")), target);
+						lookupMap.put(Value.of(URLDecoder.decode(parts[i], "UTF-8")), target);
 					}
 				}
 			}
