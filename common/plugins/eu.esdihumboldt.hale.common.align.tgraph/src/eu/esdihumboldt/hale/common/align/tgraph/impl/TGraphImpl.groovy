@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.align.tgraph.TGraph
 import eu.esdihumboldt.hale.common.align.tgraph.TGraphHelpers
 import eu.esdihumboldt.hale.common.align.tgraph.TGraphConstants.NodeType
 import eu.esdihumboldt.hale.common.align.tgraph.impl.internal.TGraphFactory
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality
 
 
 
@@ -98,6 +99,14 @@ class TGraphImpl implements TGraph {
 
 					// remove the original edge
 					graph.removeEdge(it)
+					
+					// set a single cardinality on the proxied vertex
+					Vertex proxied = it.getVertex(Direction.IN)
+					proxied.setProperty(P_CARDINALITY, Cardinality.CC_OPTIONAL);
+					// and set the entity cardinality on the proxy
+					assert proxied.entity()
+					proxy.setProperty(P_CARDINALITY,
+						proxied.entity().getDefinition().getConstraint(Cardinality))
 				}.iterate() // actually traverse the graph
 
 		this
