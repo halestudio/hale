@@ -50,6 +50,8 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 
 	private final LinkedList tagsToClose = new LinkedList()
 
+	private final LinkedList contexts = new LinkedList()
+
 	private final XsltGenerationContext xsltContext
 
 	private Vertex rootContext
@@ -70,6 +72,7 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 	@Override
 	public void traverse(TGraph graph) {
 		tagsToClose.clear()
+		contexts.clear()
 
 		/*
 		 * XXX Currently no context for the target type, so we have to set
@@ -157,6 +160,19 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 		closeTags.insert(0, "</xsl:${attribute ? 'attribute' : 'element'}>")
 		//XXX do this always? For now assumption is this is needed further down
 
+		// push information for leaveProperty
+		tagsToClose.push(closeTags.toString())
+		contexts.push(context)
+	}
+
+	@Override
+	protected void leaveProperty(Vertex node) {
+		/*
+		 * Determine property value when leaving the property, so eventual
+		 * child attributes are created before the property content. 
+		 */
+		Vertex context = contexts.pop()
+
 		// retrieve cell
 		def cells = node.in(EDGE_RESULT).toList()
 		// there may only be one cell coming in (if any)
@@ -192,11 +208,6 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 			// XXX what can be done if there is no context?
 		}
 
-		tagsToClose.push(closeTags.toString())
-	}
-
-	@Override
-	protected void leaveProperty(Vertex node) {
 		String closeTags = tagsToClose.pop()
 		writer << closeTags
 	}

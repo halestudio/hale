@@ -39,6 +39,17 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 	}
 
 	/**
+	 * Test based on a very simple mapping where on the target side there is a
+	 * simple type property with attributes.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testSimpleAttribute() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.SIMPLE_ATTRIBUTE));
+	}
+
+	/**
 	 * Test based on a very simple mapping with a retype, renames and an
 	 * assignment.
 	 * 
