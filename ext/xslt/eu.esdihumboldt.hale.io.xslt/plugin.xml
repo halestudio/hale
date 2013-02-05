@@ -50,6 +50,11 @@
             function="eu.esdihumboldt.cst.functions.numeric.mathexpression"
             id="eu.esdihumboldt.hale.align.mathexpression.xslt">
       </propertyTransformation>
+      <propertyTransformation
+            class="eu.esdihumboldt.hale.io.xslt.transformations.property.XslGenerateUID"
+            function="eu.esdihumboldt.hale.align.generateuid"
+            id="eu.esdihumboldt.hale.align.generateuid.xslt">
+      </propertyTransformation>
    </extension>
 
 </plugin>
