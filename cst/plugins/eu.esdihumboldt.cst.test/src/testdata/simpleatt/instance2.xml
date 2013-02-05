@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+<tns:collection xmlns:tns="http://www.example.org/t2/" xmlns:ns1="http://www.w3.org/1999/xhtml" xmlns:hfp="http://www.w3.org/2001/XMLSchema-hasFacetAndProperty" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/t2/ file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/simpleatt/t2.xsd">
+  <tns:t2>
+    <person age="personAge0" income="personIncome0" street="personStreet0" city="personCity0">personName0</person>
+  </tns:t2>
+  <tns:t2 id="id2">
+    <person age="personAge2" income="personIncome2" street="personStreet2" city="personCity2">personName2</person>
+  </tns:t2>
+  <tns:t2 id="id3">
+    <person age="personAge3" income="personIncome3" street="personStreet3" city="personCity3">personName3</person>
+  </tns:t2>
+  <tns:t2 id="id1">
+    <person age="personAge1" income="personIncome1" street="personStreet1" city="personCity1">personName1</person>
+  </tns:t2>
+  <tns:t2 id="id5">
+    <person age="personAge5" income="personIncome5" street="personStreet5" city="personCity5">personName5</person>
+  </tns:t2>
+  <tns:t2>
+    <person age="personAge7" income="personIncome7" street="personStreet7" city="personCity7">personName7</person>
+  </tns:t2>
+  <tns:t2 id="id6">
+    <person age="personAge6" income="personIncome6" street="personStreet6" city="personCity6">personName6</person>
+  </tns:t2>
+  <tns:t2 id="id8">
+    <person age="personAge8" income="personIncome8" street="personStreet8" city="personCity8">personName8</person>
+  </tns:t2>
+  <tns:t2 id="id4">
+    <person age="personAge4" income="personIncome4" street="personStreet4" city="personCity4">personName4</person>
+  </tns:t2>
+</tns:collection>
