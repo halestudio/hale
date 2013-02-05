@@ -55,6 +55,11 @@
             function="eu.esdihumboldt.hale.align.generateuid"
             id="eu.esdihumboldt.hale.align.generateuid.xslt">
       </propertyTransformation>
+      <propertyTransformation
+            class="eu.esdihumboldt.hale.io.xslt.transformations.property.classification.XslClassification"
+            function="eu.esdihumboldt.hale.align.classification"
+            id="eu.esdihumboldt.hale.align.classification.xslt">
+      </propertyTransformation>
    </extension>
 
 </plugin>
