@@ -69,34 +69,6 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 	}
 
 	/**
-	 * Test for the generateduid. Since the uid is always different, just test
-	 * for them being unique.
-	 * 
-	 * @throws Exception if an error occurs executing the test
-	 */
-	@Test
-	public void testGenerateUID() throws Exception {
-		TransformationExample example = TransformationExamples
-				.getExample(TransformationExamples.GENERATEUID);
-		List<Instance> transformedData = transformData(example);
-		TreeSet<String> uniqueIdSet = new TreeSet<String>();
-		for (Instance instance : transformedData) {
-			Iterable<QName> propertyNames = instance.getPropertyNames();
-			for (QName propertyName : propertyNames) {
-				Object[] property = instance.getProperty(propertyName);
-				for (Object object : property) {
-					boolean added = uniqueIdSet.add(object.toString());
-					if (!added) {
-						assertTrue(
-								"Found duplicated id when should be unique: " + object.toString(),
-								added);
-					}
-				}
-			}
-		}
-	}
-
-	/**
 	 * Test based on a simple mapping with a retype and renames, where high
 	 * cardinalities are allowed.
 	 * 
@@ -251,6 +223,44 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 	@Test
 	public void testMathExpression() throws Exception {
 		testTransform(TransformationExamples.getExample(TransformationExamples.MATH_EXPRESSION));
+	}
+
+	/**
+	 * Test for the generateduid. Since the uid is always different, just test
+	 * for them being unique.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testGenerateUID() throws Exception {
+		TransformationExample example = TransformationExamples
+				.getExample(TransformationExamples.GENERATEUID);
+		List<Instance> transformedData = transformData(example);
+		TreeSet<String> uniqueIdSet = new TreeSet<String>();
+		for (Instance instance : transformedData) {
+			Iterable<QName> propertyNames = instance.getPropertyNames();
+			for (QName propertyName : propertyNames) {
+				Object[] property = instance.getProperty(propertyName);
+				for (Object object : property) {
+					boolean added = uniqueIdSet.add(object.toString());
+					if (!added) {
+						assertTrue(
+								"Found duplicated id when should be unique: " + object.toString(),
+								added);
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Test for the classification.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testClassification1() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.CLASSIFICATION_1));
 	}
 
 	/**
