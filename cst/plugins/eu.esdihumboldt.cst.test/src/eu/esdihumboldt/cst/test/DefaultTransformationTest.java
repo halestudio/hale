@@ -79,7 +79,6 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 		TransformationExample example = TransformationExamples
 				.getExample(TransformationExamples.GENERATEUID);
 		List<Instance> transformedData = transformData(example);
-
 		TreeSet<String> uniqueIdSet = new TreeSet<String>();
 		for (Instance instance : transformedData) {
 			Iterable<QName> propertyNames = instance.getPropertyNames();
@@ -88,7 +87,9 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 				for (Object object : property) {
 					boolean added = uniqueIdSet.add(object.toString());
 					if (!added) {
-						assertTrue("Found duplicated id when should be unique.", added);
+						assertTrue(
+								"Found duplicated id when should be unique: " + object.toString(),
+								added);
 					}
 				}
 			}
