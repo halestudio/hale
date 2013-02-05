@@ -55,6 +55,13 @@ class TGraphHelpers implements TGraphConstants {
 				}
 				Vertex.metaClass.cardinality = {
 					->
+					def card = delegate.getProperty(P_CARDINALITY);
+					if (card) {
+						// a cardinality set as property overrides other cardinalities
+						return card
+					}
+
+					// try to retrieve the cardinality from the entity definition
 					EntityDefinition entity = delegate.entity()
 					switch (entity.getDefinition()) {
 						case ChildDefinition:

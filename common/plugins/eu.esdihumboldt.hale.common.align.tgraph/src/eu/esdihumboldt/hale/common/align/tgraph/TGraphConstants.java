@@ -60,6 +60,15 @@ public interface TGraphConstants {
 	public static final String P_CELL = "cell";
 
 	/**
+	 * Property holding an entity cardinality. Such a property value overrides
+	 * the cardinality of the associated entity.
+	 * 
+	 * @see #P_ENTITY
+	 * @see TGraphHelpers
+	 */
+	public static final String P_CARDINALITY = "cardinality";
+
+	/**
 	 * Property holding the original transformation tree node.
 	 */
 	public static final String P_ORG_NODE = "ttreeNode";
