@@ -20,6 +20,8 @@ import com.google.common.collect.ListMultimap
 import eu.esdihumboldt.hale.common.align.model.Cell
 import eu.esdihumboldt.hale.common.align.model.functions.GenerateUIDFunction
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import eu.esdihumboldt.hale.io.xslt.XsltGenerationContext
 import eu.esdihumboldt.hale.io.xslt.functions.XslVariable
 import eu.esdihumboldt.hale.io.xslt.transformations.base.AbstractFunctionTransformation
@@ -37,8 +39,14 @@ class XslGenerateUID extends AbstractFunctionTransformation implements GenerateU
 			XsltGenerationContext context) {
 		def target = cell.getTarget().get(null)[0];
 		PropertyEntityDefinition d = target.getDefinition();
-		def localName = d.getDefinition().getName().getLocalPart();
-		def typeName = d.getType().getName().getLocalPart();
+
+		// get the property definition
+		PropertyDefinition propertyDefinition = d.getDefinition()
+		def localName = propertyDefinition.getName().getLocalPart();
+
+		// get the type definition
+		TypeDefinition typeDefinition = d.getType()
+		def typeName = typeDefinition.getName().getLocalPart();
 
 		def prefix = typeName + "_"+ localName
 
