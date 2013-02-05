@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="C9c9b67e9-f634-4780-aaa7-4224aaa61858">
+        <source>
+            <class>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="T2" ns="http://www.example.org/t2/"/>
+            </class>
+        </target>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="Cec7e27e1-cb89-4ce0-919e-4a2f56c4ad25">
+        <source>
+            <property>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+                <child name="a1"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="T2" ns="http://www.example.org/t2/"/>
+                <child name="a2"/>
+            </property>
+        </target>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="Cc51518ec-9d84-4249-bed0-b0ae0cc70376">
+        <source>
+            <property>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+                <child name="id"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="T2" ns="http://www.example.org/t2/"/>
+                <child name="id"/>
+            </property>
+        </target>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.generateuid" id="Ca41049b2-37ed-4925-a95c-3392a16a86b3">
+        <target>
+            <property>
+                <type name="T2" ns="http://www.example.org/t2/"/>
+                <child name="b2"/>
+            </property>
+        </target>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.generateuid" id="C3f8b01ab-cff5-402a-a349-0cb26d517720">
+        <target>
+            <property>
+                <type name="T2" ns="http://www.example.org/t2/"/>
+                <child name="c2"/>
+            </property>
+        </target>
+    </cell>
+</alignment>
