@@ -22,6 +22,12 @@
             id="eu.esdihumboldt.cst.functions.core.assign">
       </propertyTransformation>
       <propertyTransformation
+            class="eu.esdihumboldt.cst.functions.core.GenerateUniqueId"
+            engine="eu.esdihumboldt.align.java"
+            function="eu.esdihumboldt.hale.align.generateuid"
+            id="eu.esdihumboldt.cst.functions.core.generateuid">
+      </propertyTransformation>
+      <propertyTransformation
             class="eu.esdihumboldt.cst.functions.core.ClassificationMapping"
             engine="eu.esdihumboldt.align.java"
             function="eu.esdihumboldt.hale.align.classification"
