@@ -128,4 +128,11 @@ public interface Cell {
 	 * @param disabled whether the cell should be disabled or not
 	 */
 	public void setDisabledFor(Cell cell, boolean disabled);
+
+	/**
+	 * Returns the priority for the cell.
+	 * 
+	 * @return the {@link Priority priority}.
+	 */
+	public Priority getPriority();
 }

@@ -32,6 +32,7 @@ import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
+import eu.esdihumboldt.hale.common.align.model.Priority;
 
 /**
  * Default implementation of an alignment cell
@@ -45,6 +46,10 @@ public class DefaultCell implements Cell, MutableCell {
 	private ListMultimap<String, ParameterValue> parameters;
 	private String transformation;
 	private String id;
+	/**
+	 * The {@link Cell}'s {@link Priority}. Defaults to {@link Priority#NORMAL}.
+	 */
+	private Priority priority = Priority.NORMAL;
 	private final Set<Cell> disabledFor = new HashSet<Cell>();
 
 	private final ListMultimap<String, String> documentation = ArrayListMultimap.create();
@@ -211,6 +216,22 @@ public class DefaultCell implements Cell, MutableCell {
 	@Override
 	public Set<Cell> getDisabledFor() {
 		return Collections.unmodifiableSet(disabledFor);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.MutableCell#setPriority(eu.esdihumboldt.hale.common.align.model.Priority)
+	 */
+	@Override
+	public void setPriority(Priority priority) {
+		this.priority = priority;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.Cell#getPriority()
+	 */
+	@Override
+	public Priority getPriority() {
+		return priority;
 	}
 
 }
