@@ -51,6 +51,14 @@ public enum Priority {
 	}
 
 	/**
+	 * @see java.lang.Enum#toString()
+	 */
+	@Override
+	public String toString() {
+		return value();
+	}
+
+	/**
 	 * Get {@link Priority} from string value.
 	 * 
 	 * @param v the string value.
