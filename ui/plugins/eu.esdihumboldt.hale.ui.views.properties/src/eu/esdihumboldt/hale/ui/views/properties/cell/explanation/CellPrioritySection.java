@@ -31,7 +31,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.Priority;
-import eu.esdihumboldt.hale.ui.service.project.ProjectService;
+import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.views.properties.cell.AbstractCellSection;
 
 /**
@@ -67,18 +67,14 @@ public class CellPrioritySection extends AbstractCellSection {
 			 */
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				AlignmentService alignmentService = (AlignmentService) PlatformUI.getWorkbench()
+						.getService(AlignmentService.class);
 				String priorityText = combo.getText();
 				Priority priority = Priority.fromValue(priorityText);
 				Cell cell = getCell();
-				if (cell instanceof MutableCell) {
-					MutableCell mutableCell = (MutableCell) cell;
-					mutableCell.setPriority(priority);
 
-					ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-							ProjectService.class);
-					if (ps != null) {
-						ps.setChanged();
-					}
+				if (cell instanceof MutableCell) {
+					alignmentService.setCellProperty(cell.getId(), Cell.PROPERTY_PRIORITY, priority);
 				}
 			}
 		});
