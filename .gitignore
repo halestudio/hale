@@ -27,4 +27,7 @@ Thumbs.db
 # and linux too
 *~
 
+# backup files (ex. vi)
+*.swp
+
 #.gitignore
