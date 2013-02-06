@@ -15,15 +15,10 @@
 
 package eu.esdihumboldt.hale.io.xslt.transformations.property.classification;
 
-import java.util.regex.Matcher
-import java.util.regex.Pattern
-
-import com.google.common.base.Joiner
 import com.google.common.collect.ListMultimap
 
 import eu.esdihumboldt.hale.common.align.model.Cell
 import eu.esdihumboldt.hale.common.align.model.CellUtil
-import eu.esdihumboldt.hale.common.align.model.ChildContext
 import eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingFunction
 import eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingUtil
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition
@@ -48,9 +43,6 @@ class XslClassification extends AbstractFunctionTransformation implements Classi
 	@Override
 	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables,
 			XsltGenerationContext context) {
-		println "************************"
-		println "************************"
-		println "************************"
 
 		def target = cell.getTarget().get(null)[0];
 		PropertyEntityDefinition d = target.getDefinition();
@@ -61,23 +53,32 @@ class XslClassification extends AbstractFunctionTransformation implements Classi
 		def var = variables.get(null)[0].XPath
 		def setVar = """"""
 
+		/*
+		 * handle special cases of not maching class
+		 */
 		String notClassifiedAction = CellUtil.getOptionalParameter(cell,
 				PARAMETER_NOT_CLASSIFIED_ACTION, Value.of(USE_NULL_ACTION)).as(String.class);
 
+		// use source
 		if (USE_SOURCE_ACTION.equals(notClassifiedAction))
 			setVar = """
 				<xsl:variable name="endVar" >
 					<xsl:value-of select="$var"/>
 				</xsl:variable>
 			"""
-		else if (notClassifiedAction.startsWith(USE_FIXED_VALUE_ACTION_PREFIX)){
+		else
+		// fixed value
+		if (notClassifiedAction.startsWith(USE_FIXED_VALUE_ACTION_PREFIX)){
+
 			def fixedValue = notClassifiedAction.substring(notClassifiedAction.indexOf(':') + 1);
 			setVar = """
 				<xsl:variable name="endVar" >
 					<xsl:value-of select="$fixedValue"/>
 				</xsl:variable>
 				"""
-		} else {
+		} else
+		// return null
+		{
 			if (propertyDefinition.asProperty().getConstraint(XmlAttributeFlag).enabled) {
 				// TODO handling of nullability of attributes might be discussed in future
 				setVar = """
@@ -109,22 +110,24 @@ class XslClassification extends AbstractFunctionTransformation implements Classi
 
 
 		def transformationParameters = cell.getTransformationParameters()
-		// TODO doc
+		/*
+		 * FIXME currently the context is passed as null. 
+		 * This means that the lookup table is embedded in each piece of xsl 
+		 * per property. This will have to be improved for better 
+		 * lookup table maintenance, maybe from a dedicated file. 
+		 */
 		def lookup = ClassificationMappingUtil.getClassificationLookup(transformationParameters,null);
 		def complexElement = HaleIO.getComplexElement(lookup)
 
 		def serializedElement = XmlUtil.serialize(complexElement);
+		// remove the xml header... TODO could be done better?
 		serializedElement = serializedElement.split("\\?\\>")[1]
-		//		serializedElement = new XmlSlurper(false, false).parseText(serializedElement);
 		def lookupVar = """
 			<xsl:variable name="lookup" >
 				$serializedElement
 			</xsl:variable>
 			"""
-		println lookupVar
 
-
-		println "VARIABLE: "+var
 		def check = """
 				$setVar
 				<xsl:variable name="checkVar" >
@@ -139,8 +142,6 @@ class XslClassification extends AbstractFunctionTransformation implements Classi
                     <xsl:value-of select="\$endVar"/>
                 </xsl:if>
 			"""
-		println check
-
 
 		"""
 			$lookupVar
@@ -160,57 +161,4 @@ class XslClassification extends AbstractFunctionTransformation implements Classi
 		return item
 	}
 
-
-	/**
-	 * Add a value to the given map of values, with the variable names derived
-	 * from the associated property definition.
-	 *
-	 * @param values the map associating variable names to values
-	 * @param value the value
-	 * @param property the associated property
-	 */
-	public static void addValue(Map<String, Object> values, Object value,
-			PropertyEntityDefinition property) {
-		// determine the variable name
-		String name = property.getDefinition().getName().getLocalPart();
-
-		// add with short name, but ensure no variable with only a short
-		// name is overridden
-		if (!values.keySet().contains(name) || property.getPropertyPath().size() == 1) {
-			values.put(name, value);
-		}
-
-		// add with long name if applicable
-		if (property.getPropertyPath().size() > 1) {
-			List<String> names = new ArrayList<String>();
-			for (ChildContext context : property.getPropertyPath()) {
-				names.add(context.getChild().getName().getLocalPart());
-			}
-			String longName = Joiner.on('.').join(names);
-			values.put(longName, value);
-		}
-	}
-
-	private	String[] splitAndKeep(String input, String regex) {
-		ArrayList<String> res = new ArrayList<String>();
-		Pattern p = Pattern.compile(regex);
-		Matcher m = p.matcher(input);
-		int pos = 0;
-		while (m.find()) {
-			String string = input.substring(pos, m.end() - 1).trim();
-			if (string.length() != 0)
-				res.add(" " + string + " ");
-			string = input.substring(m.end() - 1, m.end()).trim();
-			if (string.length() != 0)
-				res.add(" " + string + " ");
-			pos = m.end();
-		}
-		if (pos < input.length()){
-			String string = input.substring(pos).trim();
-
-			if (string.length() != 0)
-				res.add(" " + string + " ");
-		}
-		return res.toArray(new String[res.size()]);
-	}
 }
