@@ -56,8 +56,6 @@ class XslMathExpression extends AbstractFunctionTransformation implements Mathem
 			addValue(varNames, xpath, entity)
 		}
 
-		// replace markers in expression
-
 		/*
 		 * split the expression around special characters and
 		 * make sure the variables are substituted.
