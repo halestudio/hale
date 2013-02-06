@@ -49,4 +49,13 @@ public enum Priority {
 	public String getLabel() {
 		return _label;
 	}
+
+	/**
+	 * Getter for the cell priority key to use in properties maps.
+	 * 
+	 * @return the key.
+	 */
+	public static String getPriorityKey() {
+		return "Cell_Priority_key";
+	}
 }

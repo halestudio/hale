@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.ui.service.align.internal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -24,6 +25,7 @@ import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.align.model.Priority;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceAdapter;
@@ -84,6 +86,7 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 			public void cellsAdded(Iterable<Cell> cells) {
 				projectService.setChanged();
 			}
+
 		});
 	}
 
@@ -167,6 +170,41 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 			}
 		}
 		notifyCellsRemoved(removed);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.align.AlignmentService#setCellProperty(java.lang.String,
+	 *      java.lang.String, java.lang.Object)
+	 */
+	@Override
+	public void setCellProperty(String cellId, String propertyName, Object property) {
+		if (propertyName == null || property == null) {
+			throw new IllegalArgumentException("Mandatory parameter is null");
+		}
+		Cell cell = getAlignment().getCell(cellId);
+		if (cell instanceof MutableCell) {
+			MutableCell mutableCell = (MutableCell) cell;
+			if (Priority.getPriorityKey().equals(propertyName)) {
+				if (property instanceof Priority) {
+					Priority priority = (Priority) property;
+					mutableCell.setPriority(priority);
+				}
+				if (property instanceof String) {
+					String priorityStr = (String) property;
+					Priority priority = Priority.valueOf(priorityStr);
+					if (priority != null) {
+						mutableCell.setPriority(priority);
+					}
+					else {
+						throw new IllegalArgumentException();
+					}
+				}
+				notifyCellsUpdated(Arrays.asList(cell));
+			}
+		}
+		else {
+			throw new IllegalArgumentException("No mutable cell by the given id found: " + cellId);
+		}
 	}
 
 }

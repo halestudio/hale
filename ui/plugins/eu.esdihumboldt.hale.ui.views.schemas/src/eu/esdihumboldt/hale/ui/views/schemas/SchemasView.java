@@ -485,6 +485,12 @@ public class SchemasView extends PropertiesViewPart {
 			public void alignmentCleared() {
 				refreshInDisplayThread();
 			}
+
+			@Override
+			public void cellsUpdated(Iterable<Cell> cells) {
+				// TODO Auto-generated method stub
+
+			}
 		});
 
 		PopulationService ps = (PopulationService) PlatformUI.getWorkbench().getService(

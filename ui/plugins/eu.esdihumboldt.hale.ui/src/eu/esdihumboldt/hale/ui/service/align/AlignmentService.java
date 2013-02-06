@@ -70,6 +70,15 @@ public interface AlignmentService {
 	public void removeCells(Cell... cells);
 
 	/**
+	 * Sets a property for the cell.
+	 * 
+	 * @param cellId the cell id to set the property from.
+	 * @param propertyName the name of the property to set.
+	 * @param property the value of the property.
+	 */
+	public void setCellProperty(String cellId, String propertyName, Object property);
+
+	/**
 	 * Invoke this operation if you want to clear out all alignments stored.
 	 * This method is required when one wants to start working on a new
 	 * alignment.
