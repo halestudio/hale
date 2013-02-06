@@ -44,7 +44,16 @@
 		</xs:sequence>
 		<xs:attribute name="relation" type="xs:string" use="required" />
 		<xs:attribute name="id" type="xs:ID" use="required" />
+		<xs:attribute name="priority" type="PriorityType" use="optional" default="normal" />
 	</xs:complexType>
+	
+	<xs:simpleType name="PriorityType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="high"></xs:enumeration>
+			<xs:enumeration value="normal"></xs:enumeration>
+			<xs:enumeration value="low"></xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
 	
 	<!-- Modifier -->
 	<xs:element name="modifier" type="ModifierType" />
@@ -200,5 +209,4 @@
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
-	
 </xs:schema>
