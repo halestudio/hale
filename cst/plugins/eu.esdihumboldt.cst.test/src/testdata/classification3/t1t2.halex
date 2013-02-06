@@ -3,7 +3,7 @@
     <name>Simple rename</name>
     <author>sitemple</author>
     <created>2011-11-03T09:48:59.658+01:00</created>
-    <modified>2013-02-05T19:25:47.026+01:00</modified>
+    <modified>2013-02-06T09:37:40.357+01:00</modified>
     <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
         <setting name="projectFiles.separate">false</setting>
         <setting name="target">file:/home/hydrologis/development/hale-git/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/classification3/t1t2.halex</setting>
