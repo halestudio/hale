@@ -41,6 +41,8 @@ public interface MathematicalExpressionFunction {
 	/**
 	 * A regular expression of the set of special characters used to split an
 	 * expression.
+	 * 
+	 * <b>NOTE: add special characters here if necessary or missing.</b>
 	 */
 	public static final String MATH_SPECIALS = "\\[|\\(|\\)|\\]|\\+|\\-|\\*|\\^|\\/|%";
 
