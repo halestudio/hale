@@ -44,6 +44,13 @@ import eu.esdihumboldt.hale.ui.util.graph.shapes.StretchedHexagon;
  */
 public class FunctionFigure extends CustomShapeFigure {
 
+	/**
+	 * @param painter the shape painter to use.
+	 */
+	public FunctionFigure(ShapePainter painter) {
+		super(painter);
+	}
+
 	private static final Resource<Font> SMALL_ITALIC_FONT_RESOURCE = new Resource<Font>() {
 
 		@Override
