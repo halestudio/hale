@@ -36,6 +36,10 @@ public class BaseAlignmentCell implements Cell {
 	private final URI baseAlignment;
 	private final String prefix;
 	private final Set<Cell> disabledFor = new HashSet<Cell>();
+	/**
+	 * The {@link Cell}'s {@link Priority}. Defaults to {@link Priority#NORMAL}.
+	 */
+	private final Priority priority = Priority.NORMAL;
 
 	/**
 	 * Constructor.
@@ -189,5 +193,13 @@ public class BaseAlignmentCell implements Cell {
 	public ListMultimap<String, String> getDocumentation() {
 		// TODO allow editing of documentation?
 		return Multimaps.unmodifiableListMultimap(base.getDocumentation());
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.Cell#getPriority()
+	 */
+	@Override
+	public Priority getPriority() {
+		return priority;
 	}
 }
