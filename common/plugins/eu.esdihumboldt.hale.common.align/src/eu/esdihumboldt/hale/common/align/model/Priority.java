@@ -35,10 +35,10 @@ public enum Priority {
 	 */
 	LOW("low");
 
-	private final String _label;
+	private final String _value;
 
-	private Priority(String label) {
-		_label = label;
+	private Priority(String value) {
+		_value = value;
 	}
 
 	/**
@@ -46,8 +46,23 @@ public enum Priority {
 	 * 
 	 * @return the label string.
 	 */
-	public String getLabel() {
-		return _label;
+	public String value() {
+		return _value;
+	}
+
+	/**
+	 * Get {@link Priority} from string value.
+	 * 
+	 * @param v the string value.
+	 * @return the {@link Priority}.
+	 */
+	public static Priority fromValue(String v) {
+		for (Priority c : Priority.values()) {
+			if (c.value().equals(v)) {
+				return c;
+			}
+		}
+		throw new IllegalArgumentException(v);
 	}
 
 	/**

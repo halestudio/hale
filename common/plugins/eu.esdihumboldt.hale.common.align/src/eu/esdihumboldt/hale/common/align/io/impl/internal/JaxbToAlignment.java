@@ -226,7 +226,7 @@ public class JaxbToAlignment extends
 
 		// a default value is assured for priority
 		String priorityStr = cell.getPriority().value();
-		Priority priority = Priority.valueOf(priorityStr);
+		Priority priority = Priority.fromValue(priorityStr);
 		if (priority != null) {
 			result.setPriority(priority);
 		}
