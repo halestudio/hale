@@ -63,6 +63,7 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
+import eu.esdihumboldt.hale.common.align.model.Priority;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
@@ -223,6 +224,17 @@ public class JaxbToAlignment extends
 
 		result.setId(cell.getId());
 
+		// a default value is assured for priority
+		String priorityStr = cell.getPriority().value();
+		Priority priority = Priority.valueOf(priorityStr);
+		if (priority != null) {
+			result.setPriority(priority);
+		}
+		else {
+			// TODO check if it makes sense to do something. Default value is
+			// used.
+			throw new IllegalArgumentException();
+		}
 		return result;
 	}
 
