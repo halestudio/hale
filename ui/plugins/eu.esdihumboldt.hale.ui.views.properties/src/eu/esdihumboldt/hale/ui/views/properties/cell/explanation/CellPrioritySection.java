@@ -67,8 +67,6 @@ public class CellPrioritySection extends AbstractCellSection {
 			 */
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-//				AlignmentService alignmentService = (AlignmentService) PlatformUI.getWorkbench()
-//						.getService(AlignmentService.class);
 				String priorityText = combo.getText();
 				Priority priority = Priority.fromValue(priorityText);
 				Cell cell = getCell();
