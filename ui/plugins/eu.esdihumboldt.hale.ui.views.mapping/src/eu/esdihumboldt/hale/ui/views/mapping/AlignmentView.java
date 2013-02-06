@@ -172,11 +172,6 @@ public class AlignmentView extends AbstractMappingView {
 				update();
 			}
 
-			@Override
-			public void cellsUpdated(Iterable<Cell> cells) {
-				// TODO Auto-generated method stub
-
-			}
 		});
 
 		// listen on SchemaSelections

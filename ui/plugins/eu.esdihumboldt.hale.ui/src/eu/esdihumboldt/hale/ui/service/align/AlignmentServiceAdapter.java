@@ -59,10 +59,11 @@ public abstract class AlignmentServiceAdapter implements AlignmentServiceListene
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener#cellsUpdated(java.lang.Iterable)
+	 * @see eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener#cellsPropertyChanged(java.lang.Iterable,
+	 *      java.lang.String)
 	 */
 	@Override
-	public void cellsUpdated(Iterable<Cell> cells) {
+	public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
 		// override me
 	}
 

@@ -199,7 +199,7 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 						throw new IllegalArgumentException();
 					}
 				}
-				notifyCellsUpdated(Arrays.asList(cell));
+				notifyCellsPropertyChanged(Arrays.asList(cell), propertyName);
 			}
 		}
 		else {
