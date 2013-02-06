@@ -51,4 +51,9 @@ public interface MutableCell extends Cell {
 	 * @param id the id to set
 	 */
 	public void setId(String id);
+
+	/**
+	 * @param priority the {@link Priority priority} to set
+	 */
+	public void setPriority(Priority priority);
 }
