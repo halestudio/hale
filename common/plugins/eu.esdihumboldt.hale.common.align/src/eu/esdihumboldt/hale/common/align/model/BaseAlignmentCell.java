@@ -190,4 +190,12 @@ public class BaseAlignmentCell implements Cell {
 		// TODO allow editing of documentation?
 		return Multimaps.unmodifiableListMultimap(base.getDocumentation());
 	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.Cell#getPriority()
+	 */
+	@Override
+	public Priority getPriority() {
+		return base.getPriority();
+	}
 }
