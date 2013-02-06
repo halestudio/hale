@@ -387,8 +387,10 @@ public class ClassificationMappingParameterPage extends
 	private void createFixedValueInputButton(final String initialValue) {
 		if (fixedValueInputButton != null) {
 			fixedValueInputButton.dispose();
-			fixedValueText.dispose();
-			fixedValueText = null;
+			if (fixedValueText != null) {
+				fixedValueText.dispose();
+				fixedValueText = null;
+			}
 		}
 
 		setPageComplete(false);
