@@ -343,6 +343,15 @@
                   type="eu.esdihumboldt.hale.common.align.model.Cell">
             </input>
          </propertySection>
+         <propertySection
+               class="eu.esdihumboldt.hale.ui.views.properties.cell.explanation.CellPrioritySection"
+               enablesFor="1"
+               id="eu.esdihumboldt.hale.ui.views.properties.cell.properties"
+               tab="eu.esdihumboldt.hale.ui.views.properties.properties">
+            <input
+                  type="eu.esdihumboldt.hale.common.align.model.Cell">
+            </input>
+         </propertySection>
       </propertySections>
    </extension>
    <extension
@@ -401,6 +410,12 @@
                category="eu.esdihumboldt.hale.ui.views.properties.definition"
                id="eu.esdihumboldt.hale.ui.views.properties.notes"
                label="Notes">
+         </propertyTab>
+         <propertyTab
+               afterTab="eu.esdihumboldt.hale.ui.views.properties.explanation"
+               category="eu.esdihumboldt.hale.ui.views.properties.definition"
+               id="eu.esdihumboldt.hale.ui.views.properties.properties"
+               label="Properties">
          </propertyTab>
       </propertyTabs>
    </extension>
