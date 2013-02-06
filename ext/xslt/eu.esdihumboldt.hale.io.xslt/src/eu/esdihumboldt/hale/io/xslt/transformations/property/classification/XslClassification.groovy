@@ -22,11 +22,16 @@ import com.google.common.base.Joiner
 import com.google.common.collect.ListMultimap
 
 import eu.esdihumboldt.hale.common.align.model.Cell
+import eu.esdihumboldt.hale.common.align.model.CellUtil
 import eu.esdihumboldt.hale.common.align.model.ChildContext
 import eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingFunction
 import eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingUtil
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition
 import eu.esdihumboldt.hale.common.core.io.HaleIO
+import eu.esdihumboldt.hale.common.core.io.Value
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
+import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag
 import eu.esdihumboldt.hale.io.xslt.XsltGenerationContext
 import eu.esdihumboldt.hale.io.xslt.functions.XslVariable
 import eu.esdihumboldt.hale.io.xslt.transformations.base.AbstractFunctionTransformation
@@ -47,6 +52,62 @@ class XslClassification extends AbstractFunctionTransformation implements Classi
 		println "************************"
 		println "************************"
 
+		def target = cell.getTarget().get(null)[0];
+		PropertyEntityDefinition d = target.getDefinition();
+
+		// get the property definition
+		PropertyDefinition propertyDefinition = d.getDefinition()
+
+		def var = variables.get(null)[0].XPath
+		def setVar = """"""
+
+		String notClassifiedAction = CellUtil.getOptionalParameter(cell,
+				PARAMETER_NOT_CLASSIFIED_ACTION, Value.of(USE_NULL_ACTION)).as(String.class);
+
+		if (USE_SOURCE_ACTION.equals(notClassifiedAction))
+			setVar = """
+				<xsl:variable name="endVar" >
+					<xsl:value-of select="$var"/>
+				</xsl:variable>
+			"""
+		else if (notClassifiedAction.startsWith(USE_FIXED_VALUE_ACTION_PREFIX)){
+			def fixedValue = notClassifiedAction.substring(notClassifiedAction.indexOf(':') + 1);
+			setVar = """
+				<xsl:variable name="endVar" >
+					<xsl:value-of select="$fixedValue"/>
+				</xsl:variable>
+				"""
+		} else {
+			if (propertyDefinition.asProperty().getConstraint(XmlAttributeFlag).enabled) {
+				// TODO handling of nullability of attributes might be discussed in future
+				setVar = """
+						<xsl:variable name="endVar" >
+						<xsl:text/>
+						</xsl:variable>
+						"""
+			}
+			else {
+				// a mandatory element
+				if (propertyDefinition.asProperty().getConstraint(NillableFlag).enabled) {
+					// a nillable mandatory element
+					setVar = """
+						<xsl:variable name="endVar" >
+							<xsl:attribute name="xsi:nil">true</xsl:attribute>
+							<xsl:text/>
+						</xsl:variable>
+						"""
+				}else{
+					// not nillable element, then leave it empty
+					setVar = """
+						<xsl:variable name="endVar" >
+						<xsl:text/>
+						</xsl:variable>
+						"""
+				}
+			}
+		}
+
+
 		def transformationParameters = cell.getTransformationParameters()
 		// TODO doc
 		def lookup = ClassificationMappingUtil.getClassificationLookup(transformationParameters,null);
@@ -62,11 +123,12 @@ class XslClassification extends AbstractFunctionTransformation implements Classi
 			"""
 		println lookupVar
 
-		def var = variables.get(null)[0].XPath
+
 		println "VARIABLE: "+var
 		def check = """
+				$setVar
 				<xsl:variable name="checkVar" >
-					<xsl:value-of select="$var"/>
+					<xsl:value-of select="."/>
 				</xsl:variable>
                 <xsl:variable name="testVar" select="\$lookup/lookup-table/entry[key/@value = \$checkVar]/value/@value"/>
                 
@@ -74,7 +136,7 @@ class XslClassification extends AbstractFunctionTransformation implements Classi
                     <xsl:value-of select="\$testVar"/>
                 </xsl:if>
                 <xsl:if test="not(\$testVar)">
-                    <xsl:value-of select="\$checkVar"/>
+                    <xsl:value-of select="\$endVar"/>
                 </xsl:if>
 			"""
 		println check

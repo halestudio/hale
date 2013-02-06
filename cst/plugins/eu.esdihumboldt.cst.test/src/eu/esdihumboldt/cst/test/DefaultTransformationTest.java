@@ -253,6 +253,26 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 	}
 
 	/**
+	 * Test for the classification with not matching values and use source.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testClassification2() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.CLASSIFICATION_2));
+	}
+
+	/**
+	 * Test for the classification with not matching values and use null.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testClassification3() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.CLASSIFICATION_3));
+	}
+
+	/**
 	 * Transformation test for the context matching example
 	 * {@link TransformationExamples#CM_MULTI_1}.
 	 * 
