@@ -184,7 +184,7 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 		Cell cell = getAlignment().getCell(cellId);
 		if (cell instanceof MutableCell) {
 			MutableCell mutableCell = (MutableCell) cell;
-			if (Priority.getPriorityKey().equals(propertyName)) {
+			if (Cell.PROPERTY_PRIORITY.equals(propertyName)) {
 				if (property instanceof Priority) {
 					Priority priority = (Priority) property;
 					mutableCell.setPriority(priority);

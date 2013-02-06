@@ -56,6 +56,6 @@ public class SetPriorityAction extends Action {
 	 */
 	@Override
 	public void run() {
-		_alignmentService.setCellProperty(_cellID, Priority.getPriorityKey(), _priority);
+		_alignmentService.setCellProperty(_cellID, Cell.PROPERTY_PRIORITY, _priority);
 	}
 }

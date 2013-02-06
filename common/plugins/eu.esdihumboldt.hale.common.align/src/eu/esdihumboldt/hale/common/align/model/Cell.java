@@ -29,6 +29,11 @@ import com.google.common.collect.ListMultimap;
 public interface Cell {
 
 	/**
+	 * Property name for {@link Priority}.
+	 */
+	public static final String PROPERTY_PRIORITY = "priority";
+
+	/**
 	 * Get the source entities. For each the name is mapped to the entity.
 	 * Multiple entities may share the same name. The map may not be modified.
 	 * 
