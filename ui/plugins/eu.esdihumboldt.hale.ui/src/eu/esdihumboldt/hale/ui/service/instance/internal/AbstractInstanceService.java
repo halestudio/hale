@@ -104,11 +104,6 @@ public abstract class AbstractInstanceService implements InstanceService {
 				retransform();
 			}
 
-			@Override
-			public void cellsUpdated(Iterable<Cell> cells) {
-				// TODO Auto-generated method stub
-
-			}
 		});
 	}
 
