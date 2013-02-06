@@ -42,7 +42,7 @@
         </target>
         <parameter value="false" name="structuralRename"/>
     </cell>
-    <cell relation="eu.esdihumboldt.hale.align.classification" id="C2dd34e3d-105a-4a14-a839-ece9abd15f61">
+    <cell relation="eu.esdihumboldt.hale.align.classification" id="Cfa13582d-7b53-48ae-adb4-a31c6062c4a6">
         <source>
             <property>
                 <type name="T1" ns="http://www.example.org/t1/"/>
@@ -55,11 +55,11 @@
                 <child name="c2"/>
             </property>
         </target>
-        <parameter value="null" name="notClassifiedAction"/>
+        <parameter value="fixed:9999" name="notClassifiedAction"/>
         <parameter value="2 1 2 3" name="classificationMapping"/>
         <parameter value="5 4 5 6" name="classificationMapping"/>
     </cell>
-    <cell relation="eu.esdihumboldt.hale.align.classification" id="Ce62f3946-226c-4798-bb95-7a4e1e1c36c3">
+    <cell relation="eu.esdihumboldt.hale.align.classification" id="Cefd43c8e-79b5-4770-8567-64119a863f45">
         <source>
             <property>
                 <type name="T1" ns="http://www.example.org/t1/"/>
@@ -72,7 +72,7 @@
                 <child name="a2"/>
             </property>
         </target>
-        <parameter value="null" name="notClassifiedAction"/>
+        <parameter value="fixed:9999" name="notClassifiedAction"/>
         <parameter value="1 1 2 3" name="classificationMapping"/>
         <parameter value="4 4 5 6" name="classificationMapping"/>
     </cell>

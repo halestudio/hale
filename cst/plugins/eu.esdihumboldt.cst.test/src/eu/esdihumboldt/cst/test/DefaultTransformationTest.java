@@ -253,7 +253,7 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 	}
 
 	/**
-	 * Test for the classification with not matching values and use source.
+	 * Test for the classification with non matching values and use source.
 	 * 
 	 * @throws Exception if an error occurs executing the test
 	 */
@@ -263,7 +263,8 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 	}
 
 	/**
-	 * Test for the classification with not matching values and use null.
+	 * Test for the classification with non matching values and use a fixed
+	 * value.
 	 * 
 	 * @throws Exception if an error occurs executing the test
 	 */
