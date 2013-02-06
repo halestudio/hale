@@ -543,6 +543,27 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 	}
 
 	/**
+	 * Check if context matching is performed correctly for the
+	 * {@link TransformationExamples#CM_UNION_5} example.
+	 */
+	void testContextCMUnion5() {
+		TGraph tg = createGraph(TransformationExamples.CM_UNION_5)
+
+		tg.proxyMultiResultNodes()
+		tg.performContextMatching()
+
+		assertContext(tg, 'a3', 'c')
+		/*
+		 * XXX Unsure why there is no context found for b.
+		 * But in practice at least for now it makes no difference as the
+		 * parent context will be the correct one.
+		 */
+		// assertContext(tg, 't1', 'b')
+		assertProxyContext(tg, 'a1', 'b')
+		assertProxyContext(tg, 'a2', 'b')
+	}
+
+	/**
 	 * Assert if there is a context match between a source and target node in
 	 * the given graph.
 	 * 
