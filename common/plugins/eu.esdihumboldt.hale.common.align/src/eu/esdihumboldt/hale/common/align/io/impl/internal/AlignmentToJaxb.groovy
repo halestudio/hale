@@ -120,7 +120,7 @@ class AlignmentToJaxb {
 		result.id = cell.id;
 
 		// the cell priority
-		def priorityType = PriorityType.fromValue(cell.priority.label);
+		def priorityType = PriorityType.fromValue(cell.priority.value);
 		result.priority = priorityType;
 
 		// the transformation parameters
