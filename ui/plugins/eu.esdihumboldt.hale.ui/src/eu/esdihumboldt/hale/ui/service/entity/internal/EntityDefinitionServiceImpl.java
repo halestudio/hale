@@ -113,6 +113,12 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 			public void alignmentCleared() {
 				// XXX remove all created contexts?
 			}
+
+			@Override
+			public void cellsUpdated(Iterable<Cell> cells) {
+				// TODO Auto-generated method stub
+
+			}
 		});
 
 		// in case alignment was loaded before service was created -> add
