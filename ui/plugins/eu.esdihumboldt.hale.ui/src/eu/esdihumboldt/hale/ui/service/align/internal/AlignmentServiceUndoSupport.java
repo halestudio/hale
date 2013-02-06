@@ -99,6 +99,62 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 	}
 
 	/**
+	 * Operation that sets the priority of a cell.
+	 */
+	public class SetCellProperyOperation extends AbstractOperation {
+
+		private final Object oldProperty;
+		private final Object newProperty;
+		private final String mutableCellId;
+		private final String propertyName;
+
+		/**
+		 * Create an operation that sets the priority of a cell.
+		 * 
+		 * @param mutableCellId the cell to set the priority.
+		 * @param propertyName the name of the property to set.
+		 * @param oldProperty the old property value.
+		 * @param newProperty the new property value.
+		 * 
+		 */
+		public SetCellProperyOperation(String mutableCellId, String propertyName,
+				Object oldProperty, Object newProperty) {
+			super("Set the priority.");
+			this.mutableCellId = mutableCellId;
+			this.propertyName = propertyName;
+			this.oldProperty = oldProperty;
+			this.newProperty = newProperty;
+		}
+
+		/**
+		 * @see AbstractOperation#execute(IProgressMonitor, IAdaptable)
+		 */
+		@Override
+		public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
+			alignmentService.setCellProperty(mutableCellId, propertyName, newProperty);
+			return Status.OK_STATUS;
+		}
+
+		/**
+		 * @see AbstractOperation#redo(IProgressMonitor, IAdaptable)
+		 */
+		@Override
+		public IStatus redo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
+			return execute(monitor, info);
+		}
+
+		/**
+		 * @see AbstractOperation#undo(IProgressMonitor, IAdaptable)
+		 */
+		@Override
+		public IStatus undo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
+			alignmentService.setCellProperty(mutableCellId, propertyName, oldProperty);
+			return Status.OK_STATUS;
+		}
+
+	}
+
+	/**
 	 * Operation that cleans the alignment.
 	 */
 	public class CleanOperation extends AbstractOperation {
@@ -402,34 +458,16 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 	 */
 	@Override
 	public void setCellProperty(String cellId, String propertyName, Object property) {
-		// FIXME check how to solve this
-
-		if (propertyName == null || property == null) {
-			throw new IllegalArgumentException("Mandatory parameter is null");
-		}
-		Cell cell = getAlignment().getCell(cellId);
-		if (cell instanceof MutableCell) {
-			MutableCell mutableCell = (MutableCell) cell;
-			if (Priority.getPriorityKey().equals(propertyName)) {
-				if (property instanceof Priority) {
-					Priority priority = (Priority) property;
-					mutableCell.setPriority(priority);
-				}
-				if (property instanceof String) {
-					String priorityStr = (String) property;
-					Priority priority = Priority.valueOf(priorityStr);
-					if (priority != null) {
-						mutableCell.setPriority(priority);
-					}
-					else {
-						throw new IllegalArgumentException();
-					}
-				}
-//				notifyCellsUpdated(Arrays.asList(cell));
+		if (propertyName.equals(Cell.PROPERTY_PRIORITY)) {
+			if (property instanceof Priority) {
+				Priority newPriority = (Priority) property;
+				Cell cell = getAlignment().getCell(cellId);
+				Priority oldPriority = cell.getPriority();
+				IUndoableOperation operation = new SetCellProperyOperation(cellId, propertyName,
+						oldPriority, newPriority);
+				executeOperation(operation);
 			}
-		}
-		else {
-			throw new IllegalArgumentException("No mutable cell by the given id found: " + cellId);
+
 		}
 	}
 
