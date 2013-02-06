@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="C7d40b712-235b-433c-9594-e4cae21a23e8">
+        <source>
+            <class>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="T2" ns="http://www.example.org/t2/"/>
+            </class>
+        </target>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.formattedstring" id="C999a63c9-b84f-4b89-aa7f-aaac3e7ec4f4">
+        <source name="var">
+            <property>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+                <child name="a1"/>
+            </property>
+        </source>
+        <source name="var">
+            <property>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+                <child name="c1"/>
+            </property>
+        </source>
+        <source name="var">
+            <property>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+                <child name="b1"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="T2" ns="http://www.example.org/t2/"/>
+                <child name="a2"/>
+            </property>
+        </target>
+        <parameter value="{a1} {c1} {b1}" name="pattern"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.formattedstring" id="Cd490e093-4e1e-401d-9fba-34b3dbd9ec42">
+        <source name="var">
+            <property>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+                <child name="a1"/>
+            </property>
+        </source>
+        <source name="var">
+            <property>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+                <child name="c1"/>
+            </property>
+        </source>
+        <source name="var">
+            <property>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+                <child name="b1"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="T2" ns="http://www.example.org/t2/"/>
+                <child name="b2"/>
+            </property>
+        </target>
+        <parameter value="{a1} {b1} {c1}" name="pattern"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.formattedstring" id="Ce6812941-e20d-4dd7-a354-982dafb933bc">
+        <source name="var">
+            <property>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+                <child name="id"/>
+            </property>
+        </source>
+        <source name="var">
+            <property>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+                <child name="a1"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="T2" ns="http://www.example.org/t2/"/>
+                <child name="c2"/>
+            </property>
+        </target>
+        <parameter value="{a1} {id}" name="pattern"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C73e19a96-35d2-44a9-91f8-f633f5cee718">
+        <source>
+            <property>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+                <child name="id"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="T2" ns="http://www.example.org/t2/"/>
+                <child name="id"/>
+            </property>
+        </target>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+</alignment>
