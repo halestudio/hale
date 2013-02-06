@@ -100,10 +100,11 @@ public abstract class AbstractAlignmentService implements AlignmentService {
 	 * Call when cells are modified.
 	 * 
 	 * @param cells the cells that have been modified.
+	 * @param propertyName the name of the property that changed.
 	 */
-	protected void notifyCellsUpdated(Iterable<Cell> cells) {
+	protected void notifyCellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
 		for (AlignmentServiceListener listener : listeners) {
-			listener.cellsUpdated(cells);
+			listener.cellsPropertyChanged(cells, propertyName);
 		}
 	}
 
