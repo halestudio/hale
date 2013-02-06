@@ -59,6 +59,7 @@ import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
+import eu.esdihumboldt.hale.ui.common.Editor;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeInputDialog;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
@@ -404,8 +405,12 @@ public class ClassificationMappingParameterPage extends
 				AttributeInputDialog dialog = new AttributeInputDialog(targetProperty, Display
 						.getCurrent().getActiveShell(), "Set default value",
 						"This value will be assigned to targets when the source value is not mapped");
-				if (initialValue != null)
-					dialog.getEditor().setAsText(initialValue);
+				if (initialValue != null) {
+					Editor<?> editor = dialog.getEditor();
+					if (editor != null) {
+						editor.setAsText(initialValue);
+					}
+				}
 
 				if (dialog.open() == Dialog.OK) {
 					if (fixedValueText == null) {
