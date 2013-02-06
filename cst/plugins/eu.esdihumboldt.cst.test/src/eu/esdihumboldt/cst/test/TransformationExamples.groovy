@@ -42,6 +42,9 @@ abstract class TransformationExamples {
 	public static final String MATH_EXPRESSION = 'mathexpression'
 	public static final String GENERATEUID = 'generateuid'
 	public static final String CLASSIFICATION_1 = 'classification1'
+	public static final String CLASSIFICATION_2 = 'classification2'
+	public static final String CLASSIFICATION_3 = 'classification3'
+	public static final String CLASSIFICATION_4 = 'classification4'
 
 	public static final String CM_UNION_1 = 'cm_union_1'
 	public static final String CM_UNION_2 = 'cm_union_2'
@@ -121,6 +124,9 @@ abstract class TransformationExamples {
 		(MATH_EXPRESSION): defaultExample(MATH_EXPRESSION),
 		(GENERATEUID): defaultExample(GENERATEUID),
 		(CLASSIFICATION_1): defaultExample(CLASSIFICATION_1),
+		(CLASSIFICATION_2): defaultExample(CLASSIFICATION_2),
+		(CLASSIFICATION_3): defaultExample(CLASSIFICATION_3),
+		(CLASSIFICATION_4): defaultExample(CLASSIFICATION_4),
 		// context matching examples
 		(CM_UNION_1): defaultExample(CM_UNION_1),
 		(CM_UNION_2): defaultExample(CM_UNION_2),
