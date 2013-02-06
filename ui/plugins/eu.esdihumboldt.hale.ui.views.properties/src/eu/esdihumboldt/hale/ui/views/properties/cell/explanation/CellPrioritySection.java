@@ -18,20 +18,23 @@ package eu.esdihumboldt.hale.ui.views.properties.cell.explanation;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.Priority;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
+import eu.esdihumboldt.hale.ui.util.viewer.EnumContentProvider;
 import eu.esdihumboldt.hale.ui.views.properties.cell.AbstractCellSection;
 
 /**
@@ -39,9 +42,9 @@ import eu.esdihumboldt.hale.ui.views.properties.cell.AbstractCellSection;
  * 
  * @author Andrea Antonello
  */
-public class CellPrioritySection extends AbstractCellSection {
+public class CellPrioritySection extends AbstractCellSection implements ISelectionChangedListener {
 
-	private CCombo combo;
+	private ComboViewer comboViewer;
 
 	@Override
 	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
@@ -53,47 +56,19 @@ public class CellPrioritySection extends AbstractCellSection {
 		CLabel namespaceLabel = getWidgetFactory().createCLabel(page, Cell.PROPERTY_PRIORITY);
 		namespaceLabel.setLayoutData(GridDataFactory.fillDefaults().create());
 
-		combo = new CCombo(page, SWT.READ_ONLY | SWT.FLAT | SWT.BORDER);
-		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		comboViewer = new ComboViewer(page, SWT.READ_ONLY | SWT.FLAT | SWT.BORDER);
+		comboViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
-		for (Priority priority : Priority.values()) {
-			String priorityValue = priority.value();
-			combo.add(priorityValue);
-		}
-		combo.addSelectionListener(new SelectionAdapter() {
-
-			/**
-			 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-			 */
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				AlignmentService alignmentService = (AlignmentService) PlatformUI.getWorkbench()
-						.getService(AlignmentService.class);
-				String priorityText = combo.getText();
-				Priority priority = Priority.fromValue(priorityText);
-				Cell cell = getCell();
-
-				if (cell instanceof MutableCell) {
-					alignmentService.setCellProperty(cell.getId(), Cell.PROPERTY_PRIORITY, priority);
-				}
-			}
-		});
+		comboViewer.setContentProvider(EnumContentProvider.getInstance());
+		comboViewer.setInput(Priority.class);
+		comboViewer.addSelectionChangedListener(this);
 
 	}
 
 	private void setFromCell() {
 		Cell cell = getCell();
 		Priority currentPriority = cell.getPriority();
-		int i = 0;
-		int selectedIndex = 0;
-		for (Priority priority : Priority.values()) {
-			String priorityValue = priority.value();
-			if (priorityValue.equals(currentPriority.value())) {
-				selectedIndex = i;
-			}
-			i++;
-		}
-		combo.select(selectedIndex);
+		comboViewer.setSelection(new StructuredSelection(currentPriority));
 	}
 
 	@Override
@@ -107,11 +82,30 @@ public class CellPrioritySection extends AbstractCellSection {
 
 		Cell cell = getCell();
 		if (cell != null) {
-			combo.setEnabled(true);
+			comboViewer.getControl().setEnabled(true);
 			setFromCell();
 		}
 		else {
-			combo.setEnabled(false);
+			comboViewer.getControl().setEnabled(false);
+		}
+	}
+
+	/**
+	 * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
+	 */
+	@Override
+	public void selectionChanged(SelectionChangedEvent event) {
+		ISelection selection = event.getSelection();
+		if (selection instanceof IStructuredSelection) {
+			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+			Object firstElement = structuredSelection.getFirstElement();
+			if (firstElement instanceof Priority) {
+				Priority priority = (Priority) firstElement;
+				AlignmentService alignmentService = (AlignmentService) PlatformUI.getWorkbench()
+						.getService(AlignmentService.class);
+				Cell cell = getCell();
+				alignmentService.setCellProperty(cell.getId(), Cell.PROPERTY_PRIORITY, priority);
+			}
 		}
 	}
 
