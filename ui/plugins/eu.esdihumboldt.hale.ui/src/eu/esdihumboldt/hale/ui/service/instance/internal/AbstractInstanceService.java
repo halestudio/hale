@@ -104,6 +104,15 @@ public abstract class AbstractInstanceService implements InstanceService {
 				retransform();
 			}
 
+			@Override
+			public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
+				/*
+				 * TODO only retransform with relevant cells (i.e. create a view
+				 * on the alignment)
+				 */
+				retransform();
+			}
+
 		});
 	}
 
