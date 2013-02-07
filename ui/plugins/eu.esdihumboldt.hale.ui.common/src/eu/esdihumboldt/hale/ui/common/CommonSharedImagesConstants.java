@@ -101,4 +101,19 @@ public interface CommonSharedImagesConstants {
 	 */
 	public static final String IMG_META = "IMG_META";
 
+	/**
+	 * Key for high priority image
+	 */
+	public static final String IMG_PRIORITY_HIGH = "IMG_PRIORITY_HIGH";
+
+	/**
+	 * Key for normal priority image
+	 */
+	public static final String IMG_PRIORITY_NORMAL = "IMG_PRIORITY_NORMAL";
+
+	/**
+	 * Key for low priority image
+	 */
+	public static final String IMG_PRIORITY_LOW = "IMG_PRIORITY_LOW";
+
 }
