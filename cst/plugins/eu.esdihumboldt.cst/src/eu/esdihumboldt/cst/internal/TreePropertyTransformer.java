@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.cst.internal;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -30,6 +31,7 @@ import eu.esdihumboldt.cst.extension.hooks.TransformationTreeHook.TreeState;
 import eu.esdihumboldt.cst.extension.hooks.TransformationTreeHooks;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.Priority;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.ContextMatcher;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.impl.matcher.AsDeepAsPossible;
@@ -59,7 +61,7 @@ public class TreePropertyTransformer implements PropertyTransformer {
 
 	private final TransformationTreePool treePool;
 
-	private final FunctionExecutor executor;
+	private final List<FunctionExecutor> executors;
 
 	private final InstanceBuilder builder;
 
@@ -94,7 +96,16 @@ public class TreePropertyTransformer implements PropertyTransformer {
 		ContextMatcher matcher = new AsDeepAsPossible(); // XXX how to determine
 															// matcher?
 		treePool = new TransformationTreePool(alignment, matcher);
-		executor = new FunctionExecutor(reporter, engines, context);
+
+		/*
+		 * create executors in order of priority, highest first.
+		 */
+		executors = new ArrayList<FunctionExecutor>();
+		Priority[] priorityValuesDescending = Priority.values();
+		for (Priority priority : priorityValuesDescending) {
+			FunctionExecutor executor = new FunctionExecutor(reporter, engines, context, priority);
+			executors.add(executor);
+		}
 		builder = new InstanceBuilder();
 
 		treeHooks = OsgiUtils.getService(TransformationTreeHooks.class);
@@ -154,7 +165,9 @@ public class TreePropertyTransformer implements PropertyTransformer {
 					HooksUtil.executeTreeHooks(treeHooks, TreeState.SOURCE_POPULATED, tree, target);
 
 					// apply functions
-					tree.accept(executor);
+					for (FunctionExecutor functionExecutor : executors) {
+						tree.accept(functionExecutor);
+					}
 
 					// State: full tree (target populated)
 					HooksUtil.executeTreeHooks(treeHooks, TreeState.FULL, tree, target);

@@ -33,6 +33,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.Priority;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
@@ -66,6 +67,7 @@ public class FunctionExecutor extends CellNodeValidator {
 	private final EngineManager engines;
 	private final PropertyTransformationExtension transformations;
 	private final TransformationContext context;
+	private final Priority functionPriority;
 
 	/**
 	 * Create a function executor.
@@ -73,12 +75,14 @@ public class FunctionExecutor extends CellNodeValidator {
 	 * @param reporter the transformation reporter
 	 * @param engines the transformation engine manager
 	 * @param context the transformation execution context
+	 * @param functionPriority the prioritylevel of the function
 	 */
 	public FunctionExecutor(TransformationReporter reporter, EngineManager engines,
-			TransformationContext context) {
+			TransformationContext context, Priority functionPriority) {
 		super(reporter);
 		this.engines = engines;
 		this.context = context;
+		this.functionPriority = functionPriority;
 
 		this.transformations = PropertyTransformationExtension.getInstance();
 	}
@@ -89,6 +93,25 @@ public class FunctionExecutor extends CellNodeValidator {
 	@Override
 	protected void processValid(Cell cell, ListMultimap<String, Pair<SourceNode, Entity>> sources,
 			ListMultimap<String, Pair<TargetNode, Entity>> targets) {
+		if (cell.getPriority() != functionPriority) {
+			// ignore the priorities that do not match
+			return;
+		}
+		/*
+		 * if the result node is only one and its value had already been set, it
+		 * is not necessary to execute this function of a lower priority. (if
+		 * there are more than one target node we will need to execute them all
+		 * and check at the end of the transformation.
+		 */
+		if (targets.size() == 1) {
+			TargetNode targetNode = targets.values().iterator().next().getFirst();
+			if (targetNode.isDefined()) {
+				// a result has been set already, being in lower priority we now
+				// pass
+				return;
+			}
+		}
+
 		String functionId = cell.getTransformationIdentifier();
 
 		List<PropertyTransformationFactory> transformations = this.transformations
@@ -249,8 +272,16 @@ public class FunctionExecutor extends CellNodeValidator {
 						value = instance;
 					}
 
-					// set node value
-					node.setResult(value);
+					/*
+					 * TODO
+					 * 
+					 * set node value only if no result has already been set. If
+					 * a value is already there and we are in a lower priority
+					 * executor, we do not overwrite.
+					 */
+					if (!node.isDefined()) {
+						node.setResult(value);
+					}
 				}
 			}
 		}
