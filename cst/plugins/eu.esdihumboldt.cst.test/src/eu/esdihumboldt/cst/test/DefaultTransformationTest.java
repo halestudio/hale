@@ -226,6 +226,16 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 	}
 
 	/**
+	 * A transformation test to consider function priority.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testPriority() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.PRIORITY));
+	}
+
+	/**
 	 * Test for the generateduid. Since the uid is always different, just test
 	 * for them being unique.
 	 * 

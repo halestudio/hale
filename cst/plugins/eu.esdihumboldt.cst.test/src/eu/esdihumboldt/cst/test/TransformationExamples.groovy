@@ -46,6 +46,7 @@ abstract class TransformationExamples {
 	public static final String CLASSIFICATION_3 = 'classification3'
 	public static final String CLASSIFICATION_4 = 'classification4'
 	public static final String FORMATSTRING = 'formatstring'
+	public static final String PRIORITY = 'priority'
 
 	public static final String CM_UNION_1 = 'cm_union_1'
 	public static final String CM_UNION_2 = 'cm_union_2'
@@ -129,6 +130,7 @@ abstract class TransformationExamples {
 		(CLASSIFICATION_3): defaultExample(CLASSIFICATION_3),
 		(CLASSIFICATION_4): defaultExample(CLASSIFICATION_4),
 		(FORMATSTRING): defaultExample(FORMATSTRING),
+		(PRIORITY): defaultExample(PRIORITY),
 		// context matching examples
 		(CM_UNION_1): defaultExample(CM_UNION_1),
 		(CM_UNION_2): defaultExample(CM_UNION_2),
@@ -166,14 +168,14 @@ abstract class TransformationExamples {
 
 	static def defaultExample(String folder) {
 		[
-					sourceSchema: "/testdata/${folder}/t1.xsd",
-					targetSchema: "/testdata/${folder}/t2.xsd",
-					alignment: "/testdata/${folder}/t1t2.halex.alignment.xml",
-					sourceData: "/testdata/${folder}/instance1.xml",
-					transformedData: "/testdata/${folder}/instance2.xml",
-					containerNamespace: null,
-					containerName: 'collection'
-				]
+			sourceSchema: "/testdata/${folder}/t1.xsd",
+			targetSchema: "/testdata/${folder}/t2.xsd",
+			alignment: "/testdata/${folder}/t1t2.halex.alignment.xml",
+			sourceData: "/testdata/${folder}/instance1.xml",
+			transformedData: "/testdata/${folder}/instance2.xml",
+			containerNamespace: null,
+			containerName: 'collection'
+		]
 	}
 
 	/**

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="C187de7f1-6d04-4b1f-a7a4-ef84dc09f84f" priority="normal">
+        <source>
+            <class>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="T2" ns="http://www.example.org/t2/"/>
+            </class>
+        </target>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C873fbba3-b689-4bfc-95f9-1f0052f98f2b" priority="high">
+        <source>
+            <property>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+                <child name="a"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="T2" ns="http://www.example.org/t2/"/>
+                <child name="b"/>
+            </property>
+        </target>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.assign" id="Ce130b339-c6cd-4ca0-97e7-a63f4fcb572b" priority="low">
+        <target>
+            <property>
+                <type name="T2" ns="http://www.example.org/t2/"/>
+                <child name="b"/>
+            </property>
+        </target>
+        <parameter value="default" name="value"/>
+    </cell>
+</alignment>
