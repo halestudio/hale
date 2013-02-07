@@ -175,32 +175,12 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 
 		// retrieve cell
 		def cells = node.in(EDGE_RESULT).toList()
-		// there may only be one cell coming in (if any)
-		assert cells.size() <= 1
 		if (cells) {
-			Vertex cellNode = cells[0]
-			Cell cell = cellNode.cell()
-
-			// get associated property transformation
-			XslPropertyTransformation xpt = xsltContext.getPropertyTransformation(
-					cell.transformationIdentifier)
-
-			// ...and the function to apply
-			XslFunction function = xpt.selectFunction(cell)
-			def variables = ArrayListMultimap.create()
-			def varPaths = cellNode.inE(EDGE_VARIABLE).outV.path.toList()
-			for (varPath in varPaths) {
-				assert varPath.size() == 3
-				def names = varPath[1].getProperty(P_VAR_NAMES)
-				def sourceNode = varPath[2]
-
-				def sourceXPath = selectNode(sourceNode, context)
-				for (name in names) {
-					variables.put(name, new XslVariableImpl(sourceNode.entity(), sourceXPath))
-				}
+			if (cells.size() == 1) {
+				// write the content directly to the element
+				Vertex cellNode = cells[0]
+				writer << createResultFragment(cellNode, context)
 			}
-			String fragment = function.getSequence(cell, variables, xsltContext)
-			writer << fragment
 
 			//XXX what about proxies? not handled yet anywhere in traverser
 		}
@@ -210,6 +190,31 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 
 		String closeTags = tagsToClose.pop()
 		writer << closeTags
+	}
+
+	private String createResultFragment(Vertex cellNode, Vertex context) {
+		Cell cell = cellNode.cell()
+
+		// get associated property transformation
+		XslPropertyTransformation xpt = xsltContext.getPropertyTransformation(
+				cell.transformationIdentifier)
+
+		// ...and the function to apply
+		XslFunction function = xpt.selectFunction(cell)
+		def variables = ArrayListMultimap.create()
+		def varPaths = cellNode.inE(EDGE_VARIABLE).outV.path.toList()
+		for (varPath in varPaths) {
+			assert varPath.size() == 3
+			def names = varPath[1].getProperty(P_VAR_NAMES)
+			def sourceNode = varPath[2]
+
+			def sourceXPath = selectNode(sourceNode, context)
+			for (name in names) {
+				variables.put(name, new XslVariableImpl(sourceNode.entity(), sourceXPath))
+			}
+		}
+
+		return function.getSequence(cell, variables, xsltContext)
 	}
 
 	/**

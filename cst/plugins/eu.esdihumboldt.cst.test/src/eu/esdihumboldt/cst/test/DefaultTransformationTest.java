@@ -294,4 +294,39 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 		testTransform(TransformationExamples.getExample(TransformationExamples.CM_UNION_2));
 	}
 
+	/**
+	 * Transformation test for the context matching example
+	 * {@link TransformationExamples#CM_UNION_3}.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testCMUnion3() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.CM_UNION_3));
+	}
+
+	/**
+	 * Transformation test for the context matching example
+	 * {@link TransformationExamples#CM_UNION_4}.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Ignore
+	// FIXME no default values yet, so the result is non-deterministic
+	@Test
+	public void testCMUnion4() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.CM_UNION_4));
+	}
+
+	/**
+	 * Transformation test for the context matching example
+	 * {@link TransformationExamples#CM_UNION_5}.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testCMUnion5() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.CM_UNION_5));
+	}
+
 }

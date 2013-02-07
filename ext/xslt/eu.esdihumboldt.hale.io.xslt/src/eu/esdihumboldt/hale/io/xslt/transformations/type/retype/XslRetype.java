@@ -73,7 +73,12 @@ public class XslRetype extends AbstractVelocityXslTypeTransformation implements
 		 * Create the transformation graph derived from the transformation tree
 		 * and perform context matching.
 		 */
-		final TGraph graph = new TGraphImpl(tree).proxyMultiResultNodes().performContextMatching();
+		/*
+		 * XXX proxying multi-result nodes omitted for now, see
+		 * proxyMultiResultNodes imlementation
+		 */
+//		final TGraph graph = new TGraphImpl(tree).proxyMultiResultNodes().performContextMatching();
+		final TGraph graph = new TGraphImpl(tree).performContextMatching();
 
 		// TODO tree as GraphML as informative annotation into XSLT?
 		try {
