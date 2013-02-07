@@ -94,14 +94,37 @@ public abstract class AbstractTransformationTest {
 						found = true;
 					}
 				}
-				assertTrue(
-						"Could not find matching instance for: \n"
-								+ InstanceUtil.instanceToString(targetInstance), found);
+				if (!found) {
+					StringBuilder sb = new StringBuilder();
+					sb.append("Could not find matching instance for: \n");
+					sb.append(InstanceUtil.instanceToString(targetInstance));
+					sb.append("\n inside the available ones: \n");
+					for (Instance transformedInstance : transformedData) {
+						sb.append(InstanceUtil.instanceToString(transformedInstance));
+					}
+					String message = sb.toString();
+					assertTrue(message, found);
+				}
 			}
 		} finally {
 			targetIter.close();
 		}
-		assertEquals("Instance count does not match", targetInstanceCount, transformedInstanceCount);
+		if (targetInstanceCount != transformedInstanceCount) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("Instance count does not match between target instances: \n");
+			ResourceIterator<Instance> targetIterator = targetData.iterator();
+			while (targetIterator.hasNext()) {
+				Instance targetInstance = targetIterator.next();
+				sb.append(InstanceUtil.instanceToString(targetInstance));
+			}
+			sb.append("\n and transformed: \n");
+			for (Instance transformedInstance : transformedData) {
+				sb.append(InstanceUtil.instanceToString(transformedInstance));
+			}
+			String message = sb.toString();
+			assertEquals(message, targetInstanceCount, transformedInstanceCount);
+		}
+
 	}
 
 	/**
