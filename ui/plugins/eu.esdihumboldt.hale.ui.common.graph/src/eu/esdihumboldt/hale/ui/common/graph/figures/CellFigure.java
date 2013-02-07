@@ -16,21 +16,72 @@
 
 package eu.esdihumboldt.hale.ui.common.graph.figures;
 
-import eu.esdihumboldt.hale.ui.util.graph.CustomShapeLabel;
+import org.eclipse.draw2d.GridData;
+import org.eclipse.draw2d.GridLayout;
+import org.eclipse.draw2d.Label;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+
+import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
+import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure;
 import eu.esdihumboldt.hale.ui.util.graph.shapes.StretchedHexagon;
 
 /**
  * Figure representing a cell.
  * 
  * @author Simon Templer
+ * @author Andrea Antonello
  */
-public class CellFigure extends CustomShapeLabel {
+public class CellFigure extends CustomShapeFigure {
 
 	/**
 	 * Default constructor
+	 * 
+	 * @param cell the cell from which to take info from.
 	 */
-	public CellFigure() {
+	public CellFigure(Cell cell) {
 		super(new StretchedHexagon(10));
+
+		setAntialias(SWT.ON);
+
+		GridLayout gridLayout = new GridLayout();
+		gridLayout.numColumns = 2;
+		gridLayout.makeColumnsEqualWidth = false;
+		gridLayout.marginHeight = 3;
+		gridLayout.marginWidth = 3;
+		setLayoutManager(gridLayout);
+
+		addLabels(cell);
+
+	}
+
+	private void addLabels(Cell cell) {
+		Label mainLabel = new Label();
+		GridData mainLabelGD = new GridData(GridData.FILL, GridData.FILL, true, true);
+		add(mainLabel, mainLabelGD);
+
+		setTextLabel(mainLabel);
+		setIconLabel(mainLabel);
+
+		Label priorityLabel = new Label();
+		Image priorityImage = null;
+		switch (cell.getPriority()) {
+		case HIGH:
+			priorityImage = CommonSharedImages.getImageRegistry().get(
+					CommonSharedImages.IMG_PRIORITY_HIGH);
+			break;
+		case LOW:
+			priorityImage = CommonSharedImages.getImageRegistry().get(
+					CommonSharedImages.IMG_PRIORITY_LOW);
+			break;
+		case NORMAL:
+		default:
+			return;
+		}
+		priorityLabel.setIcon(priorityImage);
+		GridData priorityLabelGD = new GridData(GridData.CENTER, GridData.FILL, false, true);
+		add(priorityLabel, priorityLabelGD);
 	}
 
 }
