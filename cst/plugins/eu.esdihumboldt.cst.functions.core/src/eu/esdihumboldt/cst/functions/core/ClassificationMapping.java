@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEng
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation;
+import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.lookup.LookupTable;
@@ -45,7 +46,7 @@ public class ClassificationMapping extends
 	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,
 			ListMultimap<String, PropertyValue> variables, String resultName,
 			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
-			TransformationLog log) throws TransformationException {
+			TransformationLog log) throws TransformationException, NoResultException {
 		try {
 			checkParameter(PARAMETER_CLASSIFICATIONS, 1);
 		} catch (TransformationException e) {
@@ -70,6 +71,6 @@ public class ClassificationMapping extends
 			return notClassifiedAction.substring(notClassifiedAction.indexOf(':') + 1);
 		else
 			// USE_NULL_ACTION or null or something unknown
-			return null;
+			throw new NoResultException(); // return null;
 	}
 }
