@@ -479,4 +479,12 @@ public class JaxbToAlignment extends
 		});
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.io.impl.internal.AbstractBaseAlignmentLoader#getCellId(java.lang.Object)
+	 */
+	@Override
+	protected String getCellId(CellType cell) {
+		return cell.getId();
+	}
+
 }
