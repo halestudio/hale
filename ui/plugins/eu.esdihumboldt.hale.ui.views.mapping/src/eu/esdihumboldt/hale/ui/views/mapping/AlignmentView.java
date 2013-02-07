@@ -172,6 +172,16 @@ public class AlignmentView extends AbstractMappingView {
 				update();
 			}
 
+			/**
+			 * @see eu.esdihumboldt.hale.ui.service.align.AlignmentServiceAdapter#cellsPropertyChanged(java.lang.Iterable,
+			 *      java.lang.String)
+			 */
+			@Override
+			public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
+//				update();
+				getViewer().refresh();
+			}
+
 		});
 
 		// listen on SchemaSelections
