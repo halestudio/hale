@@ -55,6 +55,13 @@ import eu.esdihumboldt.hale.common.test.TestUtil;
 public class XsltTransformationTest extends DefaultTransformationTest {
 
 	@Ignore
+	@Override
+	@Test
+	public void testPriority() throws Exception {
+		super.testPriority();
+	}
+
+	@Ignore
 	// XXX XSLT not yet in a state for this to work
 	@Override
 	@Test
