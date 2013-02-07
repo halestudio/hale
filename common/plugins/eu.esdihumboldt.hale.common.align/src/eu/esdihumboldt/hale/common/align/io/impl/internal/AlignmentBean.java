@@ -288,4 +288,12 @@ public class AlignmentBean extends
 		return modifier.getDisableForRelation();
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.io.impl.internal.AbstractBaseAlignmentLoader#getCellId(java.lang.Object)
+	 */
+	@Override
+	protected String getCellId(CellBean cell) {
+		return cell.getId();
+	}
+
 }

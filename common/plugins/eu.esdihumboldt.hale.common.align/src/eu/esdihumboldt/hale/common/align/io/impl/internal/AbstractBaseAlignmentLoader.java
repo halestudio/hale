@@ -27,6 +27,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.google.common.base.Strings;
+
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell;
@@ -80,6 +82,14 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 	 * @return cell representations
 	 */
 	protected abstract Collection<C> getCells(A alignment);
+
+	/**
+	 * Returns the cell id of the given cell.
+	 * 
+	 * @param cell the cell in question
+	 * @return the cell id of the given cell
+	 */
+	protected abstract String getCellId(C cell);
 
 	/**
 	 * Create a cell from the given cell representation
@@ -140,28 +150,68 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 
 		if (generatePrefixMapping(newBase, alignment.getBaseAlignments(), prefixMapping,
 				alignmentToInfo, reporter)) {
-			// add cells of base alignments
-			// XXX check whether they got cell ids already? add them otherwise?
-			for (Entry<A, Pair<String, URI>> base : alignmentToInfo.entrySet()) {
-				Collection<C> baseCells = getCells(base.getKey());
-				Collection<BaseAlignmentCell> createdCells = new ArrayList<BaseAlignmentCell>(
-						baseCells.size());
-				for (C baseCell : baseCells) {
-					MutableCell cell = createCell(baseCell, sourceTypes, targetTypes, reporter);
-					if (cell != null)
-						createdCells.add(new BaseAlignmentCell(cell, base.getValue().getSecond(),
-								base.getValue().getFirst()));
-				}
-				alignment.addBaseAlignment(base.getValue().getFirst(), base.getValue().getSecond(),
-						createdCells);
-			}
-
-			// add modifiers of base alignments
-			for (Entry<A, Pair<String, URI>> base : alignmentToInfo.entrySet())
-				applyModifiers(alignment, getModifiers(base.getKey()),
-						prefixMapping.get(base.getKey()), base.getValue().getFirst(), true,
-						reporter);
+			processBaseAlignments(alignment, sourceTypes, targetTypes, prefixMapping,
+					alignmentToInfo, reporter);
 		}
+	}
+
+	/**
+	 * Creates and adds cells and modifiers of the base alignments to the main
+	 * alignment.
+	 * 
+	 * @param alignment the alignment to add base alignments to
+	 * @param sourceTypes the source types to use for resolving definition
+	 *            references
+	 * @param targetTypes the target types to use for resolving definition
+	 *            references
+	 * @param prefixMapping gets filled with a mapping from local to global
+	 *            prefixes
+	 * @param alignmentToInfo gets filled with a mapping from base alignment
+	 *            representations to prefixes and URIs
+	 * @param reporter the I/O reporter to report any errors to, may be
+	 *            <code>null</code>
+	 * @return false, if one of the base alignments does not have cell ids, true
+	 *         otherwise.
+	 */
+	private boolean processBaseAlignments(MutableAlignment alignment, TypeIndex sourceTypes,
+			TypeIndex targetTypes, Map<A, Map<String, String>> prefixMapping,
+			Map<A, Pair<String, URI>> alignmentToInfo, IOReporter reporter) {
+		for (Entry<A, Pair<String, URI>> base : alignmentToInfo.entrySet()) {
+			Collection<C> baseCells = getCells(base.getKey());
+			boolean hasIds = true;
+			for (C baseCell : baseCells)
+				if (Strings.isNullOrEmpty(getCellId(baseCell))) {
+					hasIds = false;
+					break;
+				}
+			if (!hasIds) {
+				reporter.error(new IOMessageImpl("At least one base alignment ("
+						+ base.getValue().getSecond()
+						+ ") has no cell ids. Please load and save it to generate them.", null));
+				return false;
+			}
+		}
+
+		for (Entry<A, Pair<String, URI>> base : alignmentToInfo.entrySet()) {
+			Collection<C> baseCells = getCells(base.getKey());
+			Collection<BaseAlignmentCell> createdCells = new ArrayList<BaseAlignmentCell>(
+					baseCells.size());
+			for (C baseCell : baseCells) {
+				// add cells of base alignments
+				MutableCell cell = createCell(baseCell, sourceTypes, targetTypes, reporter);
+				if (cell != null)
+					createdCells.add(new BaseAlignmentCell(cell, base.getValue().getSecond(), base
+							.getValue().getFirst()));
+			}
+			alignment.addBaseAlignment(base.getValue().getFirst(), base.getValue().getSecond(),
+					createdCells);
+		}
+
+		// add modifiers of base alignments
+		for (Entry<A, Pair<String, URI>> base : alignmentToInfo.entrySet())
+			applyModifiers(alignment, getModifiers(base.getKey()),
+					prefixMapping.get(base.getKey()), base.getValue().getFirst(), true, reporter);
+		return true;
 	}
 
 	/**
@@ -193,7 +243,8 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 		}
 
 		if (uriToPrefix.containsKey(newBase)) {
-			reporter.info(new IOMessageImpl("The base alignment is already included.", null));
+			reporter.info(new IOMessageImpl("The base alignment (" + newBase
+					+ ") is already included.", null));
 			return false;
 		}
 
@@ -211,7 +262,8 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 				// XXX update path according to path change of main alignment?
 				baseA = loadAlignment(new DefaultInputSupplier(baseURI).getInput(), reporter);
 			} catch (IOException e) {
-				reporter.warn(new IOMessageImpl("Couldn't load a base alignment.", e));
+				reporter.warn(new IOMessageImpl(
+						"Couldn't load a base alignment (" + baseURI + ").", e));
 				continue;
 			}
 
@@ -225,8 +277,8 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 				// check whether this base alignment is missing
 				if (!knownURIs.contains(uri)) {
 					reporter.info(new IOMessageImpl(
-							"A base alignment referenced another base alignment that was not yet known. It is now included, too.",
-							null));
+							"A base alignment referenced another base alignment (" + uri
+									+ ") that was not yet known. It is now included, too.", null));
 					queue.add(uri);
 					knownURIs.add(uri);
 					String prefix = generatePrefix(existingPrefixes);
@@ -265,20 +317,9 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 		DefaultAlignment alignment = new DefaultAlignment();
 
 		// add cells of base alignments
-		// XXX check whether they got cell ids already? add them otherwise?
-		for (Entry<A, Pair<String, URI>> base : alignmentToInfo.entrySet()) {
-			Collection<C> baseCells = getCells(base.getKey());
-			Collection<BaseAlignmentCell> createdCells = new ArrayList<BaseAlignmentCell>(
-					baseCells.size());
-			for (C baseCell : baseCells) {
-				MutableCell cell = createCell(baseCell, sourceTypes, targetTypes, reporter);
-				if (cell != null)
-					createdCells.add(new BaseAlignmentCell(cell, base.getValue().getSecond(), base
-							.getValue().getFirst()));
-			}
-			alignment.addBaseAlignment(base.getValue().getFirst(), base.getValue().getSecond(),
-					createdCells);
-		}
+		if (!processBaseAlignments(alignment, sourceTypes, targetTypes, prefixMapping,
+				alignmentToInfo, reporter))
+			return null;
 
 		// add cells of main alignment
 		for (C mainCell : getCells(start)) {
@@ -286,11 +327,6 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 			if (cell != null)
 				alignment.addCell(cell);
 		}
-
-		// add modifiers of base alignments
-		for (Entry<A, Pair<String, URI>> base : alignmentToInfo.entrySet())
-			applyModifiers(alignment, getModifiers(base.getKey()),
-					prefixMapping.get(base.getKey()), base.getValue().getFirst(), true, reporter);
 
 		// add modifiers of main alignment
 		applyModifiers(alignment, getModifiers(start), prefixMapping.get(start), null, false,
@@ -326,7 +362,8 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 		// check base for doubles, and invert it for later
 		for (Entry<String, URI> baseEntry : base.entrySet()) {
 			if (knownURIs.contains(baseEntry.getValue())) {
-				reporter.warn(new IOMessageImpl("The same base alignment was included twice.", null));
+				reporter.warn(new IOMessageImpl("The same base alignment (" + baseEntry.getValue()
+						+ ") was included twice.", null));
 				prefixMapping.get(start).put(baseEntry.getKey(),
 						uriToPrefix.get(baseEntry.getValue()));
 			}
@@ -346,7 +383,8 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 				// XXX update path according to path change of main alignment?
 				baseA = loadAlignment(new DefaultInputSupplier(baseURI).getInput(), reporter);
 			} catch (IOException e) {
-				reporter.warn(new IOMessageImpl("Couldn't load a base alignment.", e));
+				reporter.warn(new IOMessageImpl(
+						"Couldn't load a base alignment (" + baseURI + ").", e));
 				continue;
 			}
 
@@ -360,8 +398,8 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 				// check whether this base alignment is missing
 				if (!knownURIs.contains(uri)) {
 					reporter.info(new IOMessageImpl(
-							"A base alignment referenced another base alignment that was not yet known. It is now included, too.",
-							null));
+							"A base alignment referenced another base alignment (" + uri
+									+ ") that was not yet known. It is now included, too.", null));
 					queue.add(uri);
 					knownURIs.add(uri);
 					String prefix = generatePrefix(base.keySet());
@@ -405,12 +443,12 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 					continue;
 				else if (!AlignmentUtil.isTypeCell(other)) {
 					reporter.warn(new IOMessageImpl(
-							"The cell referenced in disable-for is not a type cell.", null));
+							"A cell referenced in disable-for is not a type cell.", null));
 					continue;
 				}
 				else if (!alignment.getPropertyCells(other).contains(cell)) {
 					reporter.warn(new IOMessageImpl(
-							"The cell referenced in disable-for does not contain the cell that gets modified.",
+							"A cell referenced in disable-for does not contain the cell that gets modified.",
 							null));
 					continue;
 				}
