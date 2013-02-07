@@ -488,8 +488,7 @@ public class SchemasView extends PropertiesViewPart {
 
 			@Override
 			public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
-				// TODO Auto-generated method stub
-
+				// currently no cell property that affects the schema view
 			}
 		});
 

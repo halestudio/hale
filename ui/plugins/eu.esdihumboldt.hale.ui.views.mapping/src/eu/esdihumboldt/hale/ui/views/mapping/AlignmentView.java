@@ -172,6 +172,18 @@ public class AlignmentView extends AbstractMappingView {
 				update();
 			}
 
+			@Override
+			public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
+				final Display display = PlatformUI.getWorkbench().getDisplay();
+				display.syncExec(new Runnable() {
+
+					@Override
+					public void run() {
+						getViewer().refresh();
+					}
+				});
+			}
+
 		});
 
 		// listen on SchemaSelections

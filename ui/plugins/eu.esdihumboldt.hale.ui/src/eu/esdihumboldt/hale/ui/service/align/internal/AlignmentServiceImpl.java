@@ -87,6 +87,11 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 				projectService.setChanged();
 			}
 
+			@Override
+			public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
+				projectService.setChanged();
+			}
+
 		});
 	}
 

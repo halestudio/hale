@@ -75,6 +75,11 @@ public class AlignmentServiceSource extends AbstractSourceProvider {
 				fireSourceChanged(ISources.WORKBENCH, HAS_CELLS, true);
 			}
 
+			@Override
+			public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
+				// no properties that affect source
+			}
+
 		});
 	}
 
