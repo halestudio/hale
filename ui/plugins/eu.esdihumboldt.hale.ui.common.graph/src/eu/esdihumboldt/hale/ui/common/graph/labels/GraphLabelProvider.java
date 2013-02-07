@@ -412,7 +412,8 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	public IFigure getFigure(Object element) {
 		CustomShapeFigure figure = null;
 		if (element instanceof Cell) {
-			figure = new CellFigure();
+			Cell cell = (Cell) element;
+			figure = new CellFigure(cell);
 		}
 		if (element instanceof Function) {
 			figure = new FunctionFigure(new StretchedHexagon(10));
