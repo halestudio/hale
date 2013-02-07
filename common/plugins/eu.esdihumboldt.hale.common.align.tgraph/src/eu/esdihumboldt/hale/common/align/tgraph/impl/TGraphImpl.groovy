@@ -77,6 +77,14 @@ class TGraphImpl implements TGraph {
 
 	@Override
 	TGraph proxyMultiResultNodes() {
+		/*
+		 * XXX Creating proxies for multi result nodes makes no sense if they
+		 * can only share the same context.
+		 * TODO Creating proxies could therefore be restricted to nodes that
+		 * have no children where the cardinality can be moved to the proxy
+		 * nodes.  
+		 */
+		
 		graph.V(P_TYPE, NodeType.Target) // find target nodes
 				.filter{
 					it.inE(EDGE_RESULT).count() > 1} // with more than one cell attached
