@@ -29,6 +29,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import net.sf.saxon.TransformerFactoryImpl;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -198,7 +200,7 @@ public class XsltTransformationTest extends DefaultTransformationTest {
 		StreamSource transformation = new StreamSource(xsltFile);
 		StreamResult out = new StreamResult(targetFile);
 
-		TransformerFactory factory = TransformerFactory.newInstance();
+		TransformerFactory factory = new TransformerFactoryImpl(); // TransformerFactory.newInstance();
 		Transformer t = factory.newTransformer(transformation);
 		t.transform(source, out);
 	}
