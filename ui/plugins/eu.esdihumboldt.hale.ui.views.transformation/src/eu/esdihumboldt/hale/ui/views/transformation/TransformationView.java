@@ -134,6 +134,20 @@ public class TransformationView extends AbstractMappingView {
 			public void cellsAdded(Iterable<Cell> cells) {
 				update();
 			}
+
+			@Override
+			public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
+				final Display display = PlatformUI.getWorkbench().getDisplay();
+				display.syncExec(new Runnable() {
+
+					@Override
+					public void run() {
+						// refresh view
+						getViewer().refresh();
+					}
+				});
+			}
+
 		});
 
 		final InstanceSampleService iss = (InstanceSampleService) PlatformUI.getWorkbench()

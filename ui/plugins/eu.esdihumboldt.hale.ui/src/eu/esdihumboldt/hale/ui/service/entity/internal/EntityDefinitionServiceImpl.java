@@ -116,8 +116,8 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 
 			@Override
 			public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
-				// TODO Auto-generated method stub
-
+				// currently no cell property that affects entity definition
+				// contexts
 			}
 		});
 
