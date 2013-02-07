@@ -301,7 +301,7 @@
             file-extensions="align,xml"
             id="eu.esdihumboldt.hale.io.align.default"
             name="HALE alignment (2.5)"
-            priority="low">
+            priority="normal">
          <describer
                class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
             <parameter

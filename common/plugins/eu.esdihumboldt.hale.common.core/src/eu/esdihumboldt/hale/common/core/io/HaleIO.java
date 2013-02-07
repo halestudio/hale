@@ -122,6 +122,9 @@ public abstract class HaleIO {
 		}
 
 		if ((results.isEmpty() || results.size() > 1) && in != null) {
+			// clear results because only an ambiguous result was found
+			results.clear();
+			// use input stream to make a better test
 			IContentTypeManager ctm = Platform.getContentTypeManager();
 			try {
 				InputStream is = in.getInput();

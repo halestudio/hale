@@ -123,7 +123,8 @@ public class FileSource<P extends ImportProvider> extends AbstractProviderSource
 		if (sourceFile.isValid()) {
 			// determine content type
 			Collection<IContentType> filteredTypes = HaleIO.findContentTypesFor(supportedTypes,
-					null, sourceFile.getStringValue());
+					new FileIOSupplier(new File(sourceFile.getStringValue())),
+					sourceFile.getStringValue());
 			if (!filteredTypes.isEmpty()) {
 				contentType = filteredTypes.iterator().next();
 			}
