@@ -398,8 +398,6 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 	 * 
 	 * @throws Exception if an error occurs executing the test
 	 */
-	@Ignore
-	// FIXME no default values yet, so the result is non-deterministic
 	@Test
 	public void testCMUnion4() throws Exception {
 		testTransform(TransformationExamples.getExample(TransformationExamples.CM_UNION_4));
