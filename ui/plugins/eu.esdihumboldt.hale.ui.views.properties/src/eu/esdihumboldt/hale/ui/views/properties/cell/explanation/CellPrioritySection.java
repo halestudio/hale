@@ -101,10 +101,13 @@ public class CellPrioritySection extends AbstractCellSection implements ISelecti
 			Object firstElement = structuredSelection.getFirstElement();
 			if (firstElement instanceof Priority) {
 				Priority priority = (Priority) firstElement;
-				AlignmentService alignmentService = (AlignmentService) PlatformUI.getWorkbench()
-						.getService(AlignmentService.class);
 				Cell cell = getCell();
-				alignmentService.setCellProperty(cell.getId(), Cell.PROPERTY_PRIORITY, priority);
+				if (cell.getPriority() != priority) {
+					AlignmentService alignmentService = (AlignmentService) PlatformUI
+							.getWorkbench().getService(AlignmentService.class);
+					alignmentService
+							.setCellProperty(cell.getId(), Cell.PROPERTY_PRIORITY, priority);
+				}
 			}
 		}
 	}
