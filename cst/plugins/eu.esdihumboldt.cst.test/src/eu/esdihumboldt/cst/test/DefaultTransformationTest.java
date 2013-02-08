@@ -414,4 +414,16 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 		testTransform(TransformationExamples.getExample(TransformationExamples.CM_UNION_5));
 	}
 
+	/**
+	 * Transformation test for the context matching example
+	 * {@link TransformationExamples#CM_UNION_6}.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Ignore
+	@Test
+	public void testCMUnion6() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.CM_UNION_6));
+	}
+
 }

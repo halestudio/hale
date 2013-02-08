@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<hale-project version="2.5.0.qualifier">
+    <name>Simple structural rename</name>
+    <author>Simon Templer</author>
+    <created>2013-01-18T16:56:46.443+01:00</created>
+    <modified>2013-02-08T13:22:36.320+01:00</modified>
+    <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
+        <setting name="projectFiles.separate">false</setting>
+        <setting name="target">file:/home/hydrologis/development/hale-git/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cm_union_6/t1t2.halex</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
+    </save-config>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.source" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="resourceId">942ab465-a98b-4004-9663-29e1d27dc383</setting>
+        <setting name="source">file:/home/hydrologis/development/hale-git/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cm_union_6/t1.xsd</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.target" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="resourceId">c1f476e8-f2bf-4d83-b07a-2e0388447a83</setting>
+        <setting name="source">file:/home/hydrologis/development/hale-git/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cm_union_6/t2.xsd</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.instance.read.source" provider-id="eu.esdihumboldt.hale.io.xml.reader">
+        <setting name="resourceId">eab3c616-6b86-4acb-a477-1ce5f8f380bb</setting>
+        <setting name="source">file:/home/hydrologis/development/hale-git/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cm_union_6/instance1.xml</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.gml</setting>
+    </resource>
+    <file name="styles.sld" location="file:/home/hydrologis/development/hale-git/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cm_union_6/t1t2.halex.styles.sld"/>
+    <file name="alignment.xml" location="file:/home/hydrologis/development/hale-git/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cm_union_6/t1t2.halex.alignment.xml"/>
+</hale-project>
