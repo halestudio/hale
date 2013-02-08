@@ -24,6 +24,21 @@ package eu.esdihumboldt.hale.io.csv.reader.internal;
 public interface CSVConstants {
 
 	/**
+	 * Name of the parameter specifying the reader setting
+	 */
+	public static final String PARAM_SKIP_FIRST_LINE = "skip";
+
+	/**
+	 * Name of the parameter specifiying the columns to match
+	 */
+	public static final String FIRST_COLUMN = "First Column";
+
+	/**
+	 * Name of the parameter specifiying the columns to match
+	 */
+	public static final String SECOND_COLUMN = "Second Column";
+
+	/**
 	 * Name of the parameter specifying the separating sign
 	 */
 	public static final String PARAM_SEPARATOR = "separator";
