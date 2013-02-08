@@ -19,12 +19,22 @@
          <provider
                ref="eu.esdihumboldt.hale.io.csv.reader.instance">
          </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.csv.reader.lookup">
+         </provider>
       </configPage>
       <configPage
             class="eu.esdihumboldt.hale.io.csv.ui.TypeSelectionPage"
             order="-20">
          <provider
                ref="eu.esdihumboldt.hale.io.csv.reader.instance">
+         </provider>
+      </configPage>
+      <configPage
+            class="eu.esdihumboldt.hale.io.csv.ui.LookupTablePage"
+            order="-4">
+         <provider
+               ref="eu.esdihumboldt.hale.io.csv.reader.lookup">
          </provider>
       </configPage>
    </extension>
