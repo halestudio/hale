@@ -48,6 +48,14 @@
                ref="eu.esdihumboldt.hale.io.csv">
          </contentType>
       </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.csv.reader.internal.CSVLookupReader"
+            id="eu.esdihumboldt.hale.io.csv.reader.lookup"
+            name="CSV LookupTable">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.csv">
+         </contentType>
+      </provider>
    </extension>
 
 </plugin>
