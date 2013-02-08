@@ -53,6 +53,7 @@ abstract class TransformationExamples {
 	public static final String CM_UNION_3 = 'cm_union_3'
 	public static final String CM_UNION_4 = 'cm_union_4'
 	public static final String CM_UNION_5 = 'cm_union_5'
+	public static final String CM_UNION_6 = 'cm_union_6'
 
 	public static final String CM_CCROSSOVER_1 = 'cm_ccrossover_1'
 
@@ -137,6 +138,7 @@ abstract class TransformationExamples {
 		(CM_UNION_3): defaultExample(CM_UNION_3),
 		(CM_UNION_4): defaultExample(CM_UNION_4),
 		(CM_UNION_5): defaultExample(CM_UNION_5),
+		(CM_UNION_6): defaultExample(CM_UNION_6),
 
 		(CM_CCROSSOVER_1): defaultExample(CM_CCROSSOVER_1),
 
