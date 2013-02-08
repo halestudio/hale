@@ -23,6 +23,7 @@ import com.tinkerpop.blueprints.Vertex
 import de.cs3d.util.logging.ALogger
 import de.cs3d.util.logging.ALoggerFactory
 import eu.esdihumboldt.hale.common.align.model.Cell
+import eu.esdihumboldt.hale.common.align.model.Priority
 import eu.esdihumboldt.hale.common.align.tgraph.TGraph
 import eu.esdihumboldt.hale.common.align.tgraph.TGraphConstants.NodeType
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition
@@ -185,8 +186,14 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 				// create variable with different results
 				writer << '<xsl:variable name="results">'
 
-				//TODO order by priority?
-
+				// order by priority
+				Collections.sort(cells, new Comparator<Vertex>() {
+							public int compare(Vertex o1, Vertex o2) {
+								Cell c1 = o1.cell()
+								Cell c2 = o2.cell()
+								return Priority.compare(c1.getPriority(), c2.getPriority());
+							}
+						})
 				for (Vertex cellNode in cells) {
 					// create result tag for each cell
 					writer << '<result>'

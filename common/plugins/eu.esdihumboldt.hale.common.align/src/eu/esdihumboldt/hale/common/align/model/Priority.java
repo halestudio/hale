@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.common.align.model;
 
+import java.util.Comparator;
+
 /**
  * Represents a available priority levels for {@link Cell}s.
  * 
@@ -25,20 +27,22 @@ public enum Priority {
 	/**
 	 * High priority.
 	 */
-	HIGH("high"), //
+	HIGH("high", 1), //
 	/**
 	 * Normal priority.
 	 */
-	NORMAL("normal"), //
+	NORMAL("normal", 0), //
 	/**
 	 * Low priority
 	 */
-	LOW("low");
+	LOW("low", -1);
 
 	private final String _value;
+	private final int _numericPriority;
 
-	private Priority(String value) {
+	private Priority(String value, int numericPriority) {
 		_value = value;
+		_numericPriority = numericPriority;
 	}
 
 	/**
@@ -51,11 +55,48 @@ public enum Priority {
 	}
 
 	/**
+	 * Priority expressed as number for simple comparison.
+	 * 
+	 * <p>
+	 * Bigger number means higher priority.
+	 * </p>
+	 * 
+	 * @return the priority expressed in number.
+	 */
+	public int getPriorityNumber() {
+		return _numericPriority;
+	}
+
+	/**
 	 * @see java.lang.Enum#toString()
 	 */
 	@Override
 	public String toString() {
 		return value();
+	}
+
+	/**
+	 * Compare two priorities.
+	 * 
+	 * <p>
+	 * Return the values ready to be used in a {@link Comparator} interface.
+	 * </p>
+	 * 
+	 * @param priority1 the first priority.
+	 * @param priority2 the second priority.
+	 * @return a negative integer, zero, or a positive integer as p1 is less
+	 *         than, equal to, or greater than p2.
+	 */
+	public static int compare(Priority priority1, Priority priority2) {
+		if (priority1.getPriorityNumber() > priority2.getPriorityNumber()) {
+			return 1;
+		}
+		else if (priority1.getPriorityNumber() < priority2.getPriorityNumber()) {
+			return -1;
+		}
+		else {
+			return 0;
+		}
 	}
 
 	/**
