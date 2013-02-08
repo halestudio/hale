@@ -19,6 +19,9 @@
          <provider
                ref="eu.esdihumboldt.hale.io.csv.reader.instance">
          </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.csv.reader.lookup">
+         </provider>
       </configPage>
       <configPage
             class="eu.esdihumboldt.hale.io.csv.ui.TypeSelectionPage"
@@ -35,6 +38,15 @@
          </provider>
          <provider
                ref="eu.esdihumboldt.hale.io.csv.reader.schema">
+         </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.csv.reader.lookup">
+         </provider>
+      <configPage
+            class="eu.esdihumboldt.hale.io.csv.ui.LookupTablePage"
+            order="-4">
+         <provider
+               ref="eu.esdihumboldt.hale.io.csv.reader.lookup">
          </provider>
       </configPage>
    </extension>
