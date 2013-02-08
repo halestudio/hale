@@ -23,6 +23,7 @@ import com.tinkerpop.blueprints.Vertex
 import de.cs3d.util.logging.ALogger
 import de.cs3d.util.logging.ALoggerFactory
 import eu.esdihumboldt.hale.common.align.model.Cell
+import eu.esdihumboldt.hale.common.align.model.Priority
 import eu.esdihumboldt.hale.common.align.tgraph.TGraph
 import eu.esdihumboldt.hale.common.align.tgraph.TGraphConstants.NodeType
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition
@@ -175,32 +176,48 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 
 		// retrieve cell
 		def cells = node.in(EDGE_RESULT).toList()
-		// there may only be one cell coming in (if any)
-		assert cells.size() <= 1
 		if (cells) {
-			Vertex cellNode = cells[0]
-			Cell cell = cellNode.cell()
-
-			// get associated property transformation
-			XslPropertyTransformation xpt = xsltContext.getPropertyTransformation(
-					cell.transformationIdentifier)
-
-			// ...and the function to apply
-			XslFunction function = xpt.selectFunction(cell)
-			def variables = ArrayListMultimap.create()
-			def varPaths = cellNode.inE(EDGE_VARIABLE).outV.path.toList()
-			for (varPath in varPaths) {
-				assert varPath.size() == 3
-				def names = varPath[1].getProperty(P_VAR_NAMES)
-				def sourceNode = varPath[2]
-
-				def sourceXPath = selectNode(sourceNode, context)
-				for (name in names) {
-					variables.put(name, new XslVariableImpl(sourceNode.entity(), sourceXPath))
-				}
+			if (cells.size() == 1) {
+				// write the content directly to the element
+				Vertex cellNode = cells[0]
+				writer << createResultFragment(cellNode, context)
 			}
-			String fragment = function.getSequence(cell, variables, xsltContext)
-			writer << fragment
+			else {
+				// create variable with different results
+				writer << '<xsl:variable name="results">'
+
+				// order by priority
+				Collections.sort(cells, Collections.reverseOrder(new Comparator<Vertex>() {
+							public int compare(Vertex o1, Vertex o2) {
+								Cell c1 = o1.cell()
+								Cell c2 = o2.cell()
+								return Priority.compare(c1.getPriority(), c2.getPriority());
+							}
+						}))
+				for (Vertex cellNode in cells) {
+					// create result tag for each cell
+					writer << '<result>'
+					writer << createResultFragment(cellNode, context)
+					writer << '</result>'
+				}
+
+				writer << '</xsl:variable>'
+
+				// select non-empty result
+				/*
+				 * XXX how to know if to use value-of or copy-of? from schema?
+				 * No - we could e.g. have a structural rename and a rename. Do both?
+				 */
+				/*
+				 * TODO create example where a structural rename and a rename
+				 * or assign compete 
+				 */
+				// copy all child elements of the first non-empty result node
+				//TODO verify if this actually works
+				writer << '<xsl:copy-of select="$results/result[node()][1]/*" />'
+				// copy value of the first non-empty result node
+				writer << '<xsl:value-of select="$results/result[node()][1]" />'
+			}
 
 			//XXX what about proxies? not handled yet anywhere in traverser
 		}
@@ -210,6 +227,31 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 
 		String closeTags = tagsToClose.pop()
 		writer << closeTags
+	}
+
+	private String createResultFragment(Vertex cellNode, Vertex context) {
+		Cell cell = cellNode.cell()
+
+		// get associated property transformation
+		XslPropertyTransformation xpt = xsltContext.getPropertyTransformation(
+				cell.transformationIdentifier)
+
+		// ...and the function to apply
+		XslFunction function = xpt.selectFunction(cell)
+		def variables = ArrayListMultimap.create()
+		def varPaths = cellNode.inE(EDGE_VARIABLE).outV.path.toList()
+		for (varPath in varPaths) {
+			assert varPath.size() == 3
+			def names = varPath[1].getProperty(P_VAR_NAMES)
+			def sourceNode = varPath[2]
+
+			def sourceXPath = selectNode(sourceNode, context)
+			for (name in names) {
+				variables.put(name, new XslVariableImpl(sourceNode.entity(), sourceXPath))
+			}
+		}
+
+		return function.getSequence(cell, variables, xsltContext)
 	}
 
 	/**

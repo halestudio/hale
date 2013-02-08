@@ -45,9 +45,11 @@ import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.graph.figures.CellFigure;
 import eu.esdihumboldt.hale.ui.common.graph.figures.EntityFigure;
+import eu.esdihumboldt.hale.ui.common.graph.figures.FunctionFigure;
 import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure;
 import eu.esdihumboldt.hale.ui.util.graph.WrappedText;
 import eu.esdihumboldt.hale.ui.util.graph.shapes.FingerPost;
+import eu.esdihumboldt.hale.ui.util.graph.shapes.StretchedHexagon;
 
 /**
  * Label provider for mapping graphs.
@@ -409,8 +411,12 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	@Override
 	public IFigure getFigure(Object element) {
 		CustomShapeFigure figure = null;
-		if (element instanceof Cell || element instanceof Function) {
-			figure = new CellFigure();
+		if (element instanceof Cell) {
+			Cell cell = (Cell) element;
+			figure = new CellFigure(cell);
+		}
+		if (element instanceof Function) {
+			figure = new FunctionFigure(new StretchedHexagon(10));
 		}
 
 		if (element instanceof Entity) {

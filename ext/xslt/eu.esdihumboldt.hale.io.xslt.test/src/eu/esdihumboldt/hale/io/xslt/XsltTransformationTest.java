@@ -29,6 +29,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import net.sf.saxon.TransformerFactoryImpl;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -51,6 +53,13 @@ import eu.esdihumboldt.hale.common.test.TestUtil;
  * @author Simon Templer
  */
 public class XsltTransformationTest extends DefaultTransformationTest {
+
+	@Ignore
+	@Override
+	@Test
+	public void testPriority() throws Exception {
+		super.testPriority();
+	}
 
 	@Ignore
 	// XXX XSLT not yet in a state for this to work
@@ -198,7 +207,7 @@ public class XsltTransformationTest extends DefaultTransformationTest {
 		StreamSource transformation = new StreamSource(xsltFile);
 		StreamResult out = new StreamResult(targetFile);
 
-		TransformerFactory factory = TransformerFactory.newInstance();
+		TransformerFactory factory = new TransformerFactoryImpl(); // TransformerFactory.newInstance();
 		Transformer t = factory.newTransformer(transformation);
 		t.transform(source, out);
 	}

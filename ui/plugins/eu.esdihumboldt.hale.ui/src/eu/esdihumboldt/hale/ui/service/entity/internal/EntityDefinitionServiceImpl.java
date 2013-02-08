@@ -113,6 +113,12 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 			public void alignmentCleared() {
 				// XXX remove all created contexts?
 			}
+
+			@Override
+			public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
+				// currently no cell property that affects entity definition
+				// contexts
+			}
 		});
 
 		// in case alignment was loaded before service was created -> add

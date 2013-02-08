@@ -38,6 +38,7 @@ import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.align.model.Priority;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 
@@ -92,6 +93,62 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 		@Override
 		public IStatus undo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
 			alignmentService.replaceCell(newCell, oldCell);
+			return Status.OK_STATUS;
+		}
+
+	}
+
+	/**
+	 * Operation that sets the priority of a cell.
+	 */
+	public class SetCellProperyOperation extends AbstractOperation {
+
+		private final Object oldProperty;
+		private final Object newProperty;
+		private final String mutableCellId;
+		private final String propertyName;
+
+		/**
+		 * Create an operation that sets the priority of a cell.
+		 * 
+		 * @param mutableCellId the cell to set the priority.
+		 * @param propertyName the name of the property to set.
+		 * @param oldProperty the old property value.
+		 * @param newProperty the new property value.
+		 * 
+		 */
+		public SetCellProperyOperation(String mutableCellId, String propertyName,
+				Object oldProperty, Object newProperty) {
+			super("Set the priority.");
+			this.mutableCellId = mutableCellId;
+			this.propertyName = propertyName;
+			this.oldProperty = oldProperty;
+			this.newProperty = newProperty;
+		}
+
+		/**
+		 * @see AbstractOperation#execute(IProgressMonitor, IAdaptable)
+		 */
+		@Override
+		public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
+			alignmentService.setCellProperty(mutableCellId, propertyName, newProperty);
+			return Status.OK_STATUS;
+		}
+
+		/**
+		 * @see AbstractOperation#redo(IProgressMonitor, IAdaptable)
+		 */
+		@Override
+		public IStatus redo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
+			return execute(monitor, info);
+		}
+
+		/**
+		 * @see AbstractOperation#undo(IProgressMonitor, IAdaptable)
+		 */
+		@Override
+		public IStatus undo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
+			alignmentService.setCellProperty(mutableCellId, propertyName, oldProperty);
 			return Status.OK_STATUS;
 		}
 
@@ -392,6 +449,25 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 		}
 		else if (oldCell != null) {
 			removeCells(oldCell);
+		}
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.align.AlignmentService#setCellProperty(java.lang.String,
+	 *      java.lang.String, java.lang.Object)
+	 */
+	@Override
+	public void setCellProperty(String cellId, String propertyName, Object property) {
+		if (propertyName.equals(Cell.PROPERTY_PRIORITY)) {
+			if (property instanceof Priority) {
+				Priority newPriority = (Priority) property;
+				Cell cell = getAlignment().getCell(cellId);
+				Priority oldPriority = cell.getPriority();
+				IUndoableOperation operation = new SetCellProperyOperation(cellId, propertyName,
+						oldPriority, newPriority);
+				executeOperation(operation);
+			}
+
 		}
 	}
 

@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>What is a Mapping Cell?</title>
+</head>
+
+<body>
+	<h1>What is a Mapping Cell?</h1>
+
+	<p>
+		A Mapping Cell is the smallest relation contained in an <a
+			href="what_is_alignment.html">Alignment.</a>
+	</p>
+
+	<p>
+		A <i>cell</i> specifies source and target entities, a relation
+		function and possibly parameters for the function.
+	</p>
+
+	In the image below a mapping cell is represented as it would be
+	displayed in the
+	<a href="../views/alignment.html">Alignment view</a>. In the example
+	the type
+	<i>t1</i> from the source schema is mapped to the type
+	<i>person</i> in the target schema, the relation is represented by the
+	<i>Retype</i> function.
+
+	<div style="text-align: center;">
+		<img class="fit" src="images/type_cell.png">
+		<p style="font-size: 0.8em;">
+			<i>Creates a person instance for each t1 instance in the source
+				data set.</i>
+		</p>
+	</div>
+
+	<p>
+		In certain cases, as shown in the image below, it is necessary to map
+		two different relations to a target entity. In that case it is
+		important to understand the concept of <a href="cell_priority.html">cell
+			priority</a>.
+	</p>
+
+	<div style="text-align: center;">
+		<img class="fit" src="images/priority_mapping_unset.png">
+		<p style="font-size: 0.8em;">
+			<i>The case of two relations mapped to a target entity. <a
+				href="cell_priority.html">Cell priority</a>  is mandatory.</i>
+		</p>
+	</div>
+
+	<!-- related tasks: create/edit/remove relation -->
+	<div>
+		<br> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelt.png">
+		<p>
+			<a
+				href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/alignment/mapping_schema_elem.html">Mapping
+				schema elements</a>
+		</p>
+		<p>
+			<a
+				href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/alignment/edit_cell.html">Editing
+				a Mapping Cell</a>
+		</p>
+		<p>
+			<a
+				href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/alignment/remove_cell.html">Deleting
+				a relation</a>
+		</p>
+	</div>
+
+</body>
+</html>

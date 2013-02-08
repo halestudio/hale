@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<tns:collection xmlns:tns="http://www.example.org/t2/" xmlns:ns1="http://www.w3.org/1999/xhtml" xmlns:hfp="http://www.w3.org/2001/XMLSchema-hasFacetAndProperty" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/t2/ file:/home/hydrologis/development/hale-git/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/formatstring/t2.xsd">
+  <tns:t2 id="id0">
+    <a2>Hello World Hale</a2>
+    <b2>Hello Hale World</b2>
+    <c2>Hello id0</c2>
+  </tns:t2>
+  <tns:t2 id="id1">
+    <a2>World Hale Hello</a2>
+    <b2>World Hello Hale</b2>
+    <c2>World id1</c2>
+  </tns:t2>
+</tns:collection>

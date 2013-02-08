@@ -53,4 +53,12 @@ public interface AlignmentServiceListener {
 	 */
 	public void cellsRemoved(Iterable<Cell> cells);
 
+	/**
+	 * Called when existing cells have been modified
+	 * 
+	 * @param cells the cells that have been modified
+	 * @param propertyName the name of the property that changed
+	 */
+	public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName);
+
 }

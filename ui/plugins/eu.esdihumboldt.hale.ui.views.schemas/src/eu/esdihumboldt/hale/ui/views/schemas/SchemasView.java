@@ -485,6 +485,11 @@ public class SchemasView extends PropertiesViewPart {
 			public void alignmentCleared() {
 				refreshInDisplayThread();
 			}
+
+			@Override
+			public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
+				// currently no cell property that affects the schema view
+			}
 		});
 
 		PopulationService ps = (PopulationService) PlatformUI.getWorkbench().getService(

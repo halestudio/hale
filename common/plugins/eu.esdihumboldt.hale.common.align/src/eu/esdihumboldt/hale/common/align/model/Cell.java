@@ -29,6 +29,11 @@ import com.google.common.collect.ListMultimap;
 public interface Cell {
 
 	/**
+	 * Property name for {@link Priority}.
+	 */
+	public static final String PROPERTY_PRIORITY = "priority";
+
+	/**
 	 * Get the source entities. For each the name is mapped to the entity.
 	 * Multiple entities may share the same name. The map may not be modified.
 	 * 
@@ -128,4 +133,11 @@ public interface Cell {
 	 * @param disabled whether the cell should be disabled or not
 	 */
 	public void setDisabledFor(Cell cell, boolean disabled);
+
+	/**
+	 * Returns the priority for the cell.
+	 * 
+	 * @return the {@link Priority priority}.
+	 */
+	public Priority getPriority();
 }

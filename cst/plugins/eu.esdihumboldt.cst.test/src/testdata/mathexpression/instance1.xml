@@ -2,14 +2,9 @@
 <tns:collection xmlns:tns="http://www.example.org/t1/"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:schemaLocation="http://www.example.org/t1/ t1.xsd">
-    <tns:t1 id="id0">
-        <a1>1.0</a1>
-        <b1>4.0</b1>
+    <tns:t1 divider="4.0">
+        <a1>1</a1>
+        <b1>4</b1>
         <c1>2</c1>
-    </tns:t1>
-    <tns:t1 id="id1">
-        <a1>1.0</a1>
-        <b1>2</b1>
-        <c1>4</c1>
     </tns:t1>
 </tns:collection>

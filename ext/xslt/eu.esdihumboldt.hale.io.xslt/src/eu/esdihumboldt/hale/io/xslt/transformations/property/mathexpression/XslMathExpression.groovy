@@ -56,8 +56,6 @@ class XslMathExpression extends AbstractFunctionTransformation implements Mathem
 			addValue(varNames, xpath, entity)
 		}
 
-		// replace markers in expression
-
 		/*
 		 * split the expression around special characters and
 		 * make sure the variables are substituted.
@@ -66,7 +64,7 @@ class XslMathExpression extends AbstractFunctionTransformation implements Mathem
 		StringBuilder sb = new StringBuilder();
 		for (String item : splitExpression) {
 			item = checkXsltOwn(item)
-			def xpath = varNames.get(item)
+			def xpath = varNames.get(item.trim())
 			if (xpath) {
 				sb.append("$xpath");
 			}else{

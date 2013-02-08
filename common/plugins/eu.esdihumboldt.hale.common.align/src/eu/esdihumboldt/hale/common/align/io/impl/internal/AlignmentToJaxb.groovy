@@ -33,6 +33,7 @@ import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ModifierType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.NamedEntityType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ObjectFactory
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ParameterType
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.PriorityType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.PropertyType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AlignmentType.Base
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType.Type
@@ -117,6 +118,10 @@ class AlignmentToJaxb {
 
 		// the cell id
 		result.id = cell.id;
+
+		// the cell priority
+		def priorityType = PriorityType.fromValue(cell.priority.value());
+		result.priority = priorityType;
 
 		// the transformation parameters
 		cell.transformationParameters?.entries()?.each { Entry<String, ParameterValue> param ->

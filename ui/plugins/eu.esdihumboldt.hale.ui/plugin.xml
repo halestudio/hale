@@ -644,6 +644,31 @@
             </visibleWhen>
          </command>
          <menu
+               label="Set Priority Level">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <and>
+                     <count
+                           value="1">
+                     </count>
+                     <iterate
+                           ifEmpty="false"
+                           operator="and">
+                        <instanceof
+                              value="eu.esdihumboldt.hale.common.align.model.Cell">
+                        </instanceof>
+                     </iterate>
+                  </and>
+               </with>
+            </visibleWhen>
+            <dynamic
+                  class="eu.esdihumboldt.hale.ui.function.contribution.SetPriorityContribution"
+                  id="eu.esdihumboldt.hale.ui.cell.setpriority">
+            </dynamic>
+         </menu>
+         <menu
                label="Replace with">
             <visibleWhen
                   checkEnabled="false">

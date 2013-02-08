@@ -105,6 +105,22 @@
       </propertyFunction>
       <propertyFunction
             category="eu.esdihumboldt.hale.align.general"
+            cellExplanation="eu.esdihumboldt.hale.common.align.model.functions.explanations.GenerateUIDExplanation"
+            description="Assigns a generated unique id to a target property"
+            identifier="eu.esdihumboldt.hale.align.generateuid"
+            name="Generate Unique Id">
+         <targetProperties>
+            <property
+                  description="The property the unique id shall be generated for"
+                  maxOccurrence="1"
+                  minOccurrence="1">
+               <valueCondition
+                     allowAugmented="false" />
+            </property>
+         </targetProperties>
+      </propertyFunction>
+      <propertyFunction
+            category="eu.esdihumboldt.hale.align.general"
             cellExplanation="eu.esdihumboldt.hale.common.align.model.functions.explanations.ClassificationMappingExplanation"
             description="Map classifications"
             identifier="eu.esdihumboldt.hale.align.classification"

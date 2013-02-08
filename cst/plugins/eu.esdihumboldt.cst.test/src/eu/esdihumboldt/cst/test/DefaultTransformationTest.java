@@ -16,10 +16,18 @@
 
 package eu.esdihumboldt.cst.test;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.util.List;
+import java.util.TreeSet;
+
+import javax.xml.namespace.QName;
 
 import org.junit.Ignore;
 import org.junit.Test;
+
+import eu.esdihumboldt.hale.common.instance.model.Instance;
 
 /**
  * Tests for the CST's alignment processor implementation
@@ -218,6 +226,85 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 	}
 
 	/**
+	 * A transformation test to consider function priority.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testPriority() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.PRIORITY));
+	}
+
+	/**
+	 * Test for the generateduid. Since the uid is always different, just test
+	 * for them being unique.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testGenerateUID() throws Exception {
+		TransformationExample example = TransformationExamples
+				.getExample(TransformationExamples.GENERATEUID);
+		List<Instance> transformedData = transformData(example);
+		TreeSet<String> uniqueIdSet = new TreeSet<String>();
+		for (Instance instance : transformedData) {
+			Iterable<QName> propertyNames = instance.getPropertyNames();
+			for (QName propertyName : propertyNames) {
+				Object[] property = instance.getProperty(propertyName);
+				for (Object object : property) {
+					boolean added = uniqueIdSet.add(object.toString());
+					if (!added) {
+						assertTrue(
+								"Found duplicated id when should be unique: " + object.toString(),
+								added);
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Test for the classification.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testClassification1() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.CLASSIFICATION_1));
+	}
+
+	/**
+	 * Test for the classification with non matching values and use source.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testClassification2() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.CLASSIFICATION_2));
+	}
+
+	/**
+	 * Test for the classification with non matching values and use a fixed
+	 * value.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testClassification3() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.CLASSIFICATION_3));
+	}
+
+	/**
+	 * Test for the formatstring function
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testFormatstring() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.FORMATSTRING));
+	}
+
+	/**
 	 * Transformation test for the context matching example
 	 * {@link TransformationExamples#CM_MULTI_1}.
 	 * 
@@ -292,6 +379,51 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 	@Test
 	public void testCMUnion2() throws Exception {
 		testTransform(TransformationExamples.getExample(TransformationExamples.CM_UNION_2));
+	}
+
+	/**
+	 * Transformation test for the context matching example
+	 * {@link TransformationExamples#CM_UNION_3}.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testCMUnion3() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.CM_UNION_3));
+	}
+
+	/**
+	 * Transformation test for the context matching example
+	 * {@link TransformationExamples#CM_UNION_4}.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testCMUnion4() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.CM_UNION_4));
+	}
+
+	/**
+	 * Transformation test for the context matching example
+	 * {@link TransformationExamples#CM_UNION_5}.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testCMUnion5() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.CM_UNION_5));
+	}
+
+	/**
+	 * Transformation test for the context matching example
+	 * {@link TransformationExamples#CM_UNION_6}.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Ignore
+	@Test
+	public void testCMUnion6() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.CM_UNION_6));
 	}
 
 }

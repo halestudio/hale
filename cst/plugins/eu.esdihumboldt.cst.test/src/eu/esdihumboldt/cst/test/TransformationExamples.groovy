@@ -40,12 +40,20 @@ abstract class TransformationExamples {
 	public static final String STRUCTURAL_RENAME_2 = 'structuralrename_2'
 	public static final String STRUCTURAL_RENAME_3 = 'structuralrename_3'
 	public static final String MATH_EXPRESSION = 'mathexpression'
+	public static final String GENERATEUID = 'generateuid'
+	public static final String CLASSIFICATION_1 = 'classification1'
+	public static final String CLASSIFICATION_2 = 'classification2'
+	public static final String CLASSIFICATION_3 = 'classification3'
+	public static final String CLASSIFICATION_4 = 'classification4'
+	public static final String FORMATSTRING = 'formatstring'
+	public static final String PRIORITY = 'priority'
 
 	public static final String CM_UNION_1 = 'cm_union_1'
 	public static final String CM_UNION_2 = 'cm_union_2'
 	public static final String CM_UNION_3 = 'cm_union_3'
 	public static final String CM_UNION_4 = 'cm_union_4'
 	public static final String CM_UNION_5 = 'cm_union_5'
+	public static final String CM_UNION_6 = 'cm_union_6'
 
 	public static final String CM_CCROSSOVER_1 = 'cm_ccrossover_1'
 
@@ -117,12 +125,20 @@ abstract class TransformationExamples {
 		(STRUCTURAL_RENAME_2): defaultExample(STRUCTURAL_RENAME_2),
 		(STRUCTURAL_RENAME_3): defaultExample(STRUCTURAL_RENAME_3),
 		(MATH_EXPRESSION): defaultExample(MATH_EXPRESSION),
+		(GENERATEUID): defaultExample(GENERATEUID),
+		(CLASSIFICATION_1): defaultExample(CLASSIFICATION_1),
+		(CLASSIFICATION_2): defaultExample(CLASSIFICATION_2),
+		(CLASSIFICATION_3): defaultExample(CLASSIFICATION_3),
+		(CLASSIFICATION_4): defaultExample(CLASSIFICATION_4),
+		(FORMATSTRING): defaultExample(FORMATSTRING),
+		(PRIORITY): defaultExample(PRIORITY),
 		// context matching examples
 		(CM_UNION_1): defaultExample(CM_UNION_1),
 		(CM_UNION_2): defaultExample(CM_UNION_2),
 		(CM_UNION_3): defaultExample(CM_UNION_3),
 		(CM_UNION_4): defaultExample(CM_UNION_4),
 		(CM_UNION_5): defaultExample(CM_UNION_5),
+		(CM_UNION_6): defaultExample(CM_UNION_6),
 
 		(CM_CCROSSOVER_1): defaultExample(CM_CCROSSOVER_1),
 
@@ -154,14 +170,14 @@ abstract class TransformationExamples {
 
 	static def defaultExample(String folder) {
 		[
-					sourceSchema: "/testdata/${folder}/t1.xsd",
-					targetSchema: "/testdata/${folder}/t2.xsd",
-					alignment: "/testdata/${folder}/t1t2.halex.alignment.xml",
-					sourceData: "/testdata/${folder}/instance1.xml",
-					transformedData: "/testdata/${folder}/instance2.xml",
-					containerNamespace: null,
-					containerName: 'collection'
-				]
+			sourceSchema: "/testdata/${folder}/t1.xsd",
+			targetSchema: "/testdata/${folder}/t2.xsd",
+			alignment: "/testdata/${folder}/t1t2.halex.alignment.xml",
+			sourceData: "/testdata/${folder}/instance1.xml",
+			transformedData: "/testdata/${folder}/instance2.xml",
+			containerNamespace: null,
+			containerName: 'collection'
+		]
 	}
 
 	/**
