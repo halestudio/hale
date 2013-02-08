@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Cell priority</title>
+</head>
+
+<body>
+	<h1>Cell priority</h1>
+
+	<p>There are several situations in which, as shown in the image
+		below, it is necessary to map two different relations to a target
+		entity. A simple example is the one in which a default value needs to
+		be assigned to the target entity for the case in which another
+		relation doesn't return a value.</p>
+	<div style="text-align: center;">
+		<img class="fit" src="images/priority_mapping_unset.png">
+		<p style="font-size: 0.8em;">
+			<i>The case of two relations mapped to a target entity. </i>
+		</p>
+	</div>
+	<p>In these cases cell priority supplies a minimal degree of
+		control over the execution of the functions.</p>
+	<p>
+		In the example image above what wants to be achieved is that the <i>Rename</i>
+		cell is executed and if no value is generated as function output, a
+		default value should be assigned using the <i>Assign</i> cell.
+	</p>
+	<p>
+		All that needs to be done, is to give the <i>Rename</i> cell a higher
+		priority than the <i>Assign</i> cell. As long as <i>Rename</i> returns
+		a value, <i>Assign</i> will not be considered. If instead <i>Rename</i>
+		doesn't return a value <b>and</b> a lower priority cell is available,
+		that one is executed and its result is applied to the target entity.
+	</p>
+
+	<h2>Set the Cell's priority</h2>
+
+	<p>
+		To set a cell's priority right-click on the cell in the <a
+			href="../views/alignment.html">Alignment view</a>. In the context
+		menu select <b>Set Priority Level</b>. The available priority levels
+		appear. In the below image only <b>high</b> and <b>low</b> are listed,
+		since all the mapping cells are set to <b>normal</b> priority by
+		default.
+	</p>
+	<div style="text-align: center;">
+		<img class="fit" src="images/priority_mapping_setting.png">
+		<p style="font-size: 0.8em;">
+			<i>The context menu while setting the Mapping Cell's priority. </i>
+		</p>
+	</div>
+
+	<h2>Results based on priority</h2>
+
+	<p>
+		Once the priority of a cell is set to a different priority than <i>normal</i>,
+		a small icon at the right of the cell name shows the current
+		priority. In the below image the icon represents a vertical upwards
+		looking arrowhead, which stands for high priority. The low priority is
+		instead represented by the same arrowhead looking downwards.
+	</p>
+
+	<div style="text-align: center;">
+		<img class="fit" src="images/priority_mapping_set.png">
+		<p style="font-size: 0.8em;">
+			<i>The Rename mapping cell with its priority set to high. </i>
+		</p>
+	</div>
+
+	<p>Once the alignment is processed, the transformation engine takes
+		care of ordering the cells mapped to the same target entity in order
+		of priority.</p>
+
+</body>
+</html>

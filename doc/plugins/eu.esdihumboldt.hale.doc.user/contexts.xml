@@ -46,6 +46,8 @@
       <description>The Alignment view displays the current alignment per type relation and allows editing or removing mapping cells.</description>
       <topic href="html/concepts/what_is_alignment.html" label="What is an Alignment?"/>
       <topic href="html/tasks/alignment/mapping_schema_elem.html" label="Mapping schema elements"/>
+      <topic href="html/concepts/what_is_a_mapping_cell.html" label="What is a Mapping Cell?"/>
+      <topic href="html/concepts/cell_priority.html" label="Cell priority"/>
       <topic href="html/tasks/alignment/edit_cell.html" label="Editing a Mapping Cell"/>
       <topic href="html/tasks/alignment/remove_cell.html" label="Deleting a relation"/>
       <topic href="html/views/alignment.html" label="Alignment view"/>
