@@ -107,6 +107,23 @@
         </xsl:element>
     </xsl:template>
     
+    <!-- XXX copy resources w/o type -->
+    
+    <!-- xsl:template match="wadl:resource[not(@type)]" mode="expand">
+    	<xsl:param name="base"></xsl:param>
+		<xsl:element name="resource" namespace="{$wadl-ns}">
+			<xsl:apply-templates select="node()" mode="copy" />
+		</xsl:element>    
+    </xsl:template>
+     
+    <xsl:template match="node() | @*" mode="copy">
+		<xsl:copy>
+			<xsl:apply-templates select="node() | @*" mode="copy" />
+		</xsl:copy>
+	</xsl:template-->
+	
+	<!-- XXX end -->
+    
     <xsl:template match="wadl:*[@href]" mode="expand">
         <xsl:param name="base"></xsl:param>
         <xsl:variable name="uri" select="substring-before(@href, '#')"/>
@@ -157,7 +174,7 @@
         </xsl:copy>
     </xsl:template>
 
-<!-- debug $resources
+<!-- debug resources 
     <xsl:template match="/">
     <xsl:copy-of select="$resources"/>
     </xsl:template>

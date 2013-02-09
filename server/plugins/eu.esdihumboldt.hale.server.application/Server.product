@@ -121,6 +121,7 @@
       <plugin id="log4j.over.slf4j"/>
       <plugin id="net.sf.ehcache"/>
       <plugin id="org.apache.commons.codec"/>
+      <plugin id="org.apache.commons.fileupload"/>
       <plugin id="org.apache.commons.httpclient"/>
       <plugin id="org.apache.commons.io"/>
       <plugin id="org.apache.commons.lang"/>

@@ -13,6 +13,15 @@
 	<bean class="eu.esdihumboldt.hale.server.api.controller.Main" />
 
 	<bean class="eu.esdihumboldt.hale.server.api.controller.WADL" />
+	
+	<bean class="eu.esdihumboldt.hale.server.api.controller.Projects" />
+
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+
+		<!-- one of the properties available; the maximum file size in bytes -->
+		<property name="maxUploadSize" value="10000000" />
+	</bean>
 
 	<bean class="org.springframework.web.servlet.view.ResourceBundleViewResolver">
 		<property name="basename" value="spring-views" />

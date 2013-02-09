@@ -7,4 +7,7 @@
 		http://www.eclipse.org/gemini/blueprint/schema/blueprint http://www.eclipse.org/gemini/blueprint/schema/blueprint/gemini-blueprint.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
+	<!-- service references -->
+	<osgi:reference id="scavenger" availability="mandatory" interface="eu.esdihumboldt.hale.server.projects.ProjectScavenger" />
+
 </beans>

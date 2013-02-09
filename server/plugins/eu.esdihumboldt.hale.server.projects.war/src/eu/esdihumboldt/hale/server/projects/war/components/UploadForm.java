@@ -17,14 +17,10 @@ package eu.esdihumboldt.hale.server.projects.war.components;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -42,9 +38,6 @@ import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
 import org.apache.wicket.validation.validator.PatternValidator;
 
-import com.google.common.io.ByteStreams;
-import com.google.common.io.Files;
-
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.server.projects.ProjectScavenger;
@@ -52,6 +45,7 @@ import eu.esdihumboldt.hale.server.projects.ScavengerException;
 import eu.esdihumboldt.hale.server.projects.war.pages.ProjectsPage;
 import eu.esdihumboldt.hale.server.webapp.components.FieldMessage;
 import eu.esdihumboldt.hale.server.webapp.components.FieldValidatingBehavior;
+import eu.esdihumboldt.util.io.IOUtils;
 
 /**
  * Upload form for new projects.
@@ -175,7 +169,7 @@ public class UploadForm extends Form<Void> {
 //					IOUtils.copy(upload.getInputStream(), new FileOutputStream(target));
 
 					// try extracting the archive
-					extract(dir, new BufferedInputStream(upload.getInputStream()));
+					IOUtils.extract(dir, new BufferedInputStream(upload.getInputStream()));
 
 					// trigger scan after upload
 					projects.triggerScan();
@@ -284,30 +278,6 @@ public class UploadForm extends Form<Void> {
 
 	private static String unitString(final double value, final String units, final Locale locale) {
 		return StringValue.valueOf(value, locale) + " " + units;
-	}
-
-	/**
-	 * Extract a ZIP archive.
-	 * 
-	 * @param baseDir the base directory to extract to
-	 * @param in the input stream of the ZIP archive, which is closed after
-	 *            extraction
-	 * @throws IOException if an error occurs
-	 */
-	public static void extract(File baseDir, InputStream in) throws IOException {
-		final ZipInputStream zis = new ZipInputStream(in);
-		try {
-			ZipEntry entry;
-			while ((entry = zis.getNextEntry()) != null) {
-				if (!entry.isDirectory()) {
-					final File file = new File(baseDir, entry.getName());
-					Files.createParentDirs(file);
-					Files.write(ByteStreams.toByteArray(zis), file);
-				}
-			}
-		} finally {
-			zis.close();
-		}
 	}
 
 }

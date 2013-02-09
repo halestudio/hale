@@ -84,7 +84,7 @@ public class WADL {
 	 * @return the documentation view and XML to transform using XSLT
 	 * @throws Exception if generating the documentation fails
 	 */
-	@RequestMapping(value = "/doc", method = RequestMethod.GET, produces = { "application/xhtml+xml" })
+	@RequestMapping(value = "/", method = RequestMethod.GET, produces = { "application/xhtml+xml" })
 	public ModelAndView getDocumentation(HttpServletRequest request) throws Exception {
 		WadlApplication wadl = generateWadl(request);
 
