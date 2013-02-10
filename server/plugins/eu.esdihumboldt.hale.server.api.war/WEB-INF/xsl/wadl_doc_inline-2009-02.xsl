@@ -159,11 +159,11 @@
                 </ul>
                 <h2 id="resources">Resources</h2>
                 <xsl:apply-templates select="wadl:resources" mode="list"/>
-                <h2 id="representations">Representations</h2>
+                <!-- h2 id="representations">Representations</h2>
                 <xsl:apply-templates select="wadl:resources/descendant::wadl:representation" mode="list"/>
                 <xsl:if test="wadl:resources/descendant::wadl:fault"><h2 id="faults">Faults</h2>
                     <xsl:apply-templates select="wadl:resources/descendant::wadl:fault" mode="list"/>
-                </xsl:if>
+                </xsl:if-->
             </body>
         </html>
     </xsl:template>
@@ -306,39 +306,51 @@
     </xsl:template>
 
     <xsl:template match="wadl:request">
-        <xsl:apply-templates select="." mode="param-group">
-            <xsl:with-param name="prefix">request</xsl:with-param>
-            <xsl:with-param name="style">query</xsl:with-param>
-        </xsl:apply-templates>
-        <xsl:apply-templates select="." mode="param-group">
-            <xsl:with-param name="prefix">request</xsl:with-param>
-            <xsl:with-param name="style">header</xsl:with-param>
-        </xsl:apply-templates> 
-        <xsl:if test="wadl:representation">
-            <p><em>acceptable request representations:</em></p>
-            <ul>
-                <xsl:apply-templates select="wadl:representation"/>
-            </ul>
-        </xsl:if>
+    	<div>
+    		<xsl:if test="wadl:doc">
+    			<h5>Request</h5>
+    		</xsl:if>
+    		<xsl:apply-templates select="wadl:doc"/>
+	        <xsl:apply-templates select="." mode="param-group">
+	            <xsl:with-param name="prefix">request</xsl:with-param>
+	            <xsl:with-param name="style">query</xsl:with-param>
+	        </xsl:apply-templates>
+	        <xsl:apply-templates select="." mode="param-group">
+	            <xsl:with-param name="prefix">request</xsl:with-param>
+	            <xsl:with-param name="style">header</xsl:with-param>
+	        </xsl:apply-templates> 
+	        <xsl:if test="wadl:representation">
+	            <p><em>acceptable request representations:</em></p>
+	            <ul>
+	                <xsl:apply-templates select="wadl:representation"/>
+	            </ul>
+	        </xsl:if>
+        </div>
     </xsl:template>
 
     <xsl:template match="wadl:response">
-        <xsl:apply-templates select="." mode="param-group">
-            <xsl:with-param name="prefix">response</xsl:with-param>
-            <xsl:with-param name="style">header</xsl:with-param>
-        </xsl:apply-templates> 
-        <xsl:if test="wadl:representation">
-            <p><em>available response representations:</em></p>
-            <ul>
-                <xsl:apply-templates select="wadl:representation"/>
-            </ul>
-        </xsl:if>
-        <xsl:if test="wadl:fault">
-            <p><em>potential faults:</em></p>
-            <ul>
-                <xsl:apply-templates select="wadl:fault"/>
-            </ul>
-        </xsl:if>
+    	<div>
+    		<xsl:if test="wadl:doc">
+    			<h5>Response</h5>
+    		</xsl:if>
+    		<xsl:apply-templates select="wadl:doc"/>
+	        <xsl:apply-templates select="." mode="param-group">
+	            <xsl:with-param name="prefix">response</xsl:with-param>
+	            <xsl:with-param name="style">header</xsl:with-param>
+	        </xsl:apply-templates> 
+	        <xsl:if test="wadl:representation">
+	            <p><em>available response representations:</em></p>
+	            <ul>
+	                <xsl:apply-templates select="wadl:representation"/>
+	            </ul>
+	        </xsl:if>
+	        <xsl:if test="wadl:fault">
+	            <p><em>potential faults:</em></p>
+	            <ul>
+	                <xsl:apply-templates select="wadl:fault"/>
+	            </ul>
+	        </xsl:if>
+    	</div>
     </xsl:template>
 
     <xsl:template match="wadl:representation|wadl:fault">

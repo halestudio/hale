@@ -46,6 +46,7 @@ import com.google.common.collect.Multimap
 import de.cs3d.util.logging.ALogger
 import de.cs3d.util.logging.ALoggerFactory
 import eu.esdihumboldt.hale.server.api.internal.wadl.doc.DocScope
+import eu.esdihumboldt.hale.server.api.internal.wadl.doc.WDoc
 import eu.esdihumboldt.hale.server.api.internal.wadl.doc.WDocUtil
 import eu.esdihumboldt.hale.server.api.internal.wadl.generated.WadlApplication
 import eu.esdihumboldt.hale.server.api.internal.wadl.generated.WadlDoc
@@ -72,6 +73,8 @@ class WADL {
 	// autowired
 	private final RequestMappingHandlerMapping handlerMapping
 
+	private String baseURI;
+
 	/**
 	 * Constructor for initializing the WADL Controller.
 	 * 
@@ -89,7 +92,12 @@ class WADL {
 	 * @return the documentation view and XML to transform using XSLT
 	 * @throws Exception if generating the documentation fails
 	 */
-	@RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/xhtml+xml")
+	@WDoc(
+	title = 'API documentation',
+	content = { 'The API documentation as HTML, specifying resources, methods and representations.' },
+	scope = DocScope.RESOURCE
+	)
+	@RequestMapping(value = '/', method = RequestMethod.GET, produces = 'application/xhtml+xml')
 	public ModelAndView getDocumentation(HttpServletRequest request) throws Exception {
 		WadlApplication wadl = generateWadl(request)
 
@@ -98,11 +106,11 @@ class WADL {
 		final Document doc = builder.getDOMImplementation().createDocument(null, null, null)
 
 		JAXBContext jaxbContext = JAXBContext
-				.newInstance("eu.esdihumboldt.hale.server.api.internal.wadl.generated")
+				.newInstance('eu.esdihumboldt.hale.server.api.internal.wadl.generated')
 		final Binder<Node> binder = jaxbContext.createBinder()
 		binder.marshal(wadl, doc)
 
-		new ModelAndView("doc", "xml", doc)
+		new ModelAndView('doc', 'xml', doc)
 	}
 
 	/**
@@ -111,13 +119,29 @@ class WADL {
 	 * @param request the HTTP servlet request
 	 * @return the WADL object representation that will be converted to XML
 	 */
-	@RequestMapping(value = "/application.wadl", method = RequestMethod.GET, produces = "application/xml")
+	@WDoc(
+	title = 'WADL API specification',
+	content = { baseURI -> WDocUtil.xhtml('''
+		Specification of the service API through a
+		<a href="http://www.w3.org/Submission/wadl/" target="_blank">WADL</a> document.
+		''') },
+	scope = DocScope.RESOURCE
+	)
+	// 'application/vnd.sun.wadl+xml'
+	@RequestMapping(value = '/application.wadl', method = RequestMethod.GET, produces = 'application/xml')
 	public @ResponseBody
 	WadlApplication generateWadl(HttpServletRequest request) {
+		// initialize baseURI
+		synchronized (this) {
+			if (baseURI == null) {
+				baseURI = Main.getBaseUrl(request)
+			}
+		}
+
 		// build the WADL application
 		WadlApplication result = new WadlApplication();
 		WadlDoc doc = new WadlDoc();
-		doc.title = "REST Service WADL"
+		doc.title = 'REST Service API'
 		result.doc << doc
 		WadlResources wadResources = new WadlResources();
 		wadResources.base = Main.getBaseUrl(request) + '/';
@@ -143,7 +167,7 @@ class WADL {
 			def resourceMethods = resourceHandlers.get(pattern).collect{ it.value.method }
 
 			// resource documentation
-			wadlResource.doc.addAll(WDocUtil.getWadlDocs(resourceMethods, DocScope.RESOURCE))
+			wadlResource.doc.addAll(WDocUtil.getWadlDocs(resourceMethods, DocScope.RESOURCE, baseURI))
 
 			//TODO template parameters (PathVariable)
 
@@ -165,7 +189,7 @@ class WADL {
 				def methodMethods = mappedMethods.collect { it.value.method }
 
 				// method documentation
-				wadlMethod.doc.addAll(WDocUtil.getWadlDocs(methodMethods, DocScope.METHOD))
+				wadlMethod.doc.addAll(WDocUtil.getWadlDocs(methodMethods, DocScope.METHOD, baseURI))
 
 				//TODO method request
 				WadlRequest wr = generateRequest(mappedMethods)
@@ -203,7 +227,7 @@ class WADL {
 		Method javaMethod = handlerMethod.method
 
 		// request documentation
-		wadlRequest.doc.addAll(WDocUtil.getWadlDocs([javaMethod], DocScope.REQUEST))
+		wadlRequest.doc.addAll(WDocUtil.getWadlDocs([javaMethod], DocScope.REQUEST, baseURI))
 
 		Annotation[][] annotations = javaMethod.parameterAnnotations
 		Class<?>[] paramTypes = javaMethod.parameterTypes
@@ -293,7 +317,7 @@ class WADL {
 			wadlResponse.status << 200l;
 
 			// response documentation from handlerMethod
-			wadlResponse.doc.addAll(WDocUtil.getWadlDocs([method.method], DocScope.RESPONSE))
+			wadlResponse.doc.addAll(WDocUtil.getWadlDocs([method.method], DocScope.RESPONSE, baseURI))
 
 			for (MediaType mediaType in mediaTypes) {
 				WadlRepresentation wadlRepresentation = new WadlRepresentation()

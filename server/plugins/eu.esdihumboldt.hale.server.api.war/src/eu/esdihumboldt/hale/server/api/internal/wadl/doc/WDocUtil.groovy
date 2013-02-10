@@ -17,6 +17,10 @@ package eu.esdihumboldt.hale.server.api.internal.wadl.doc
 
 import java.lang.reflect.Method
 
+import javax.xml.parsers.DocumentBuilderFactory
+
+import org.w3c.dom.Element
+
 import eu.esdihumboldt.hale.server.api.internal.wadl.generated.WadlDoc
 
 
@@ -85,8 +89,9 @@ class WDocUtil {
 	 * @param scope the documentation scope
 	 * @return the documentation objects or an empty list
 	 */
-	static final List<WadlDoc> getWadlDocs(Collection<Method> methods, DocScope scope) {
-		getDocs(methods, scope).collect { toWadlDoc(it) }
+	static final List<WadlDoc> getWadlDocs(Collection<Method> methods, DocScope scope,
+			String baseURI) {
+		getDocs(methods, scope).collect { toWadlDoc(it, baseURI) }
 	}
 
 	/**
@@ -95,7 +100,7 @@ class WDocUtil {
 	 * @param wdoc the annotation
 	 * @return the JAXB WADL documentation object 
 	 */
-	static final WadlDoc toWadlDoc(WDoc wdoc) {
+	static final WadlDoc toWadlDoc(WDoc wdoc, String baseURI) {
 		WadlDoc doc = new WadlDoc()
 
 		doc.title = wdoc.title()
@@ -105,11 +110,27 @@ class WDocUtil {
 
 		def closure = wdoc.content().newInstance(null, null)
 		//TODO what parameters should be passed in here?
-		def content = closure.call()
+		def content = closure.call(baseURI)
 
 		//TODO support HTML and stuff
 		doc.content << content
 
 		return doc
+	}
+
+	/**
+	 * Interpret a string as XHTML for use in {@link WDoc} content.
+	 * The supplied XHTML will be wrapped in a <code>div</code>.
+	 * 
+	 * @param html the XHTML fragment
+	 * @return the XHTML div element wrapping the XHTML string
+	 */
+	static final Element xhtml(String html) {
+		// wrap html string in div
+		html = "<div xmlns=\"http://www.w3.org/1999/xhtml\">${html}</div>"
+
+		def builder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+		def input = new ByteArrayInputStream(html.getBytes('UTF-8'))
+		return builder.parse(input).documentElement
 	}
 }

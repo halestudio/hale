@@ -31,11 +31,13 @@ import de.cs3d.util.logging.ALogger
 import de.cs3d.util.logging.ALoggerFactory
 import eu.esdihumboldt.hale.server.api.internal.wadl.doc.DocScope
 import eu.esdihumboldt.hale.server.api.internal.wadl.doc.WDoc
+import eu.esdihumboldt.hale.server.api.internal.wadl.doc.WDocUtil
 import eu.esdihumboldt.hale.server.api.internal.wadl.doc.WDocs
 import eu.esdihumboldt.hale.server.projects.ProjectScavenger
 import eu.esdihumboldt.hale.server.projects.ScavengerException
 import eu.esdihumboldt.hale.server.projects.ProjectScavenger.Status
 import eu.esdihumboldt.util.io.IOUtils
+import groovy.xml.DOMBuilder
 
 /**
  * Project management controller.
@@ -88,11 +90,22 @@ class Projects {
 			status. 
 			''' },
 		scope = DocScope.METHOD
+		),
+		@WDoc(
+		title = "Upload project archive",
+		content = { baseURI ->
+			def builder = DOMBuilder.newInstance()
+			builder.div(xmlns : 'http://www.w3.org/1999/xhtml') {
+				p 'Example API call with curl:'
+				code "curl -i -F \"archive=@test.zip\" ${baseURI}/project/test"
+			}
+		},
+		scope = DocScope.REQUEST
 		)
 	])
 	@RequestMapping(value = '/project/{id}', method = RequestMethod.POST,
 	consumes = 'multipart/form-data', produces = 'application/json')
-	Map createProject(@PathVariable String id, @RequestPart MultipartFile archive,
+	Map createProject(@PathVariable('id') String id, @RequestPart('archive') MultipartFile archive,
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
 			if (id && archive) {
@@ -121,7 +134,7 @@ class Projects {
 			}
 		} catch (Exception e) {
 			projects.releaseProjectId(id)
-			log.error("Error while uploading project file", e)
+			log.error('Error while uploading project file', e)
 			try {
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage())
 			} catch (IOException e1) {
@@ -142,8 +155,27 @@ class Projects {
 	 * @param request the servlet request
 	 * @return the information in a map to be converted to JSON
 	 */
-	@RequestMapping(value = "/project/{id}", method = RequestMethod.GET, produces = "application/json")
-	Map getProjectInfo(@PathVariable String id, HttpServletRequest request,
+	@WDocs([
+		@WDoc(
+		title = 'Get project information',
+		content = { '''
+			Retrieves the status, meta information and associated resources
+			of an alignment project installed on the server. 
+			''' },
+		scope = DocScope.METHOD
+		),
+		@WDoc(
+		title = '',
+		content = { baseURI ->
+			WDocUtil.xhtml("""
+			<p>Example API call with <i>curl</i>:</p>
+			<code>curl -i -G ${baseURI}/project/test</code>
+			""")},
+		scope = DocScope.REQUEST
+		)
+	])
+	@RequestMapping(value = '/project/{id}', method = RequestMethod.GET, produces = 'application/json')
+	Map getProjectInfo(@PathVariable('id') String id, HttpServletRequest request,
 			HttpServletResponse response) {
 		def info = buildProjectInfo(id, request)
 		if (info) {
@@ -206,7 +238,17 @@ class Projects {
 	 * @param request the servlet request
 	 * @return the projects map to be converted to JSON
 	 */
-	@RequestMapping(value = "/projects", method = RequestMethod.GET, produces = "application/json")
+	@WDocs([
+		@WDoc(
+		title = 'Available alignment projects',
+		content = { '''
+			All alignment projects available on the server listed together
+			with their status, meta information and associated resources.  
+			''' },
+		scope = DocScope.RESOURCE
+		)
+	])
+	@RequestMapping(value = '/projects', method = RequestMethod.GET, produces = 'application/json')
 	ModelMap listProjects(HttpServletRequest request) {
 		def projectList = []
 

@@ -15,16 +15,15 @@
 
 package eu.esdihumboldt.hale.server.api.controller;
 
-import java.io.IOException;
-import java.io.Writer;
+import javax.servlet.http.HttpServletRequest
 
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestMethod
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-
-import eu.esdihumboldt.hale.server.api.RestAPI;
+import eu.esdihumboldt.hale.server.api.RestAPI
+import eu.esdihumboldt.hale.server.api.internal.wadl.doc.DocScope
+import eu.esdihumboldt.hale.server.api.internal.wadl.doc.WDoc
 
 /**
  * Basic controller for static information.
@@ -32,7 +31,7 @@ import eu.esdihumboldt.hale.server.api.RestAPI;
  * @author Simon Templer
  */
 @Controller
-public class Main implements RestAPI {
+class Main implements RestAPI {
 
 	/**
 	 * Get the REST API version.
@@ -40,7 +39,12 @@ public class Main implements RestAPI {
 	 * @param writer the response writer
 	 * @throws IOException if writing to the response fails
 	 */
-	@RequestMapping(value = "/version", method = RequestMethod.GET, produces = "text/plain")
+	@WDoc(
+	title = 'API version',
+	content = { 'Plain text representation of the sequential API version number.' },
+	scope = DocScope.RESOURCE
+	)
+	@RequestMapping(value = '/version', method = RequestMethod.GET, produces = 'text/plain')
 	public void getVersion(Writer writer) throws IOException {
 		writer.write(String.valueOf(VERSION));
 	}
@@ -51,19 +55,18 @@ public class Main implements RestAPI {
 	 * @param request the HTTP servlet request
 	 * @return the base URL w/o trailing slash
 	 */
-	public static String getBaseUrl(HttpServletRequest request) {
-		StringBuilder builder = new StringBuilder();
-		builder.append(request.getScheme());
-		builder.append("://");
-		builder.append(request.getServerName());
-		builder.append(':');
-		builder.append(request.getServerPort());
-		builder.append(request.getContextPath());
-		String servPath = request.getServletPath();
-		if (servPath != null && !servPath.isEmpty()) {
-			builder.append(servPath);
+	static String getBaseUrl(HttpServletRequest request) {
+		StringBuilder builder = new StringBuilder()
+		builder << request.scheme
+		builder << '://'
+		builder << request.serverName
+		builder << ':'
+		builder << request.serverPort
+		builder << request.contextPath
+		String servPath = request.servletPath
+		if (servPath) {
+			builder << servPath
 		}
-		return builder.toString();
+		builder.toString();
 	}
-
 }
