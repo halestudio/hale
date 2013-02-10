@@ -18,6 +18,8 @@ package eu.esdihumboldt.hale.server.api.controller;
 import java.io.IOException;
 import java.io.Writer;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -41,6 +43,27 @@ public class Main implements RestAPI {
 	@RequestMapping(value = "/version", method = RequestMethod.GET)
 	public void getVersion(Writer writer) throws IOException {
 		writer.write(String.valueOf(VERSION));
+	}
+
+	/**
+	 * Get the API base URL.
+	 * 
+	 * @param request the HTTP servlet request
+	 * @return the base URL w/o trailing slash
+	 */
+	public static String getBaseUrl(HttpServletRequest request) {
+		StringBuilder builder = new StringBuilder();
+		builder.append(request.getScheme());
+		builder.append("://");
+		builder.append(request.getServerName());
+		builder.append(':');
+		builder.append(request.getServerPort());
+		builder.append(request.getContextPath());
+		String servPath = request.getServletPath();
+		if (servPath != null && !servPath.isEmpty()) {
+			builder.append(servPath);
+		}
+		return builder.toString();
 	}
 
 }

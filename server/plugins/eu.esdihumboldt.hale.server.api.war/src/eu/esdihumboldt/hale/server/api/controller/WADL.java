@@ -114,7 +114,7 @@ public class WADL {
 		doc.setTitle("REST Service WADL");
 		result.getDoc().add(doc);
 		WadlResources wadResources = new WadlResources();
-		wadResources.setBase(getBaseUrl(request));
+		wadResources.setBase(Main.getBaseUrl(request));
 
 		Map<RequestMappingInfo, HandlerMethod> handlerMethods = handlerMapping.getHandlerMethods();
 		for (Entry<RequestMappingInfo, HandlerMethod> entry : handlerMethods.entrySet()) {
@@ -239,27 +239,6 @@ public class WADL {
 		result.getResources().add(wadResources);
 
 		return result;
-	}
-
-	/**
-	 * Get the API base URL.
-	 * 
-	 * @param request the HTTP servlet request
-	 * @return the base URL
-	 */
-	private String getBaseUrl(HttpServletRequest request) {
-		StringBuilder builder = new StringBuilder();
-		builder.append(request.getScheme());
-		builder.append("://");
-		builder.append(request.getServerName());
-		builder.append(':');
-		builder.append(request.getServerPort());
-		builder.append(request.getContextPath());
-		String servPath = request.getServletPath();
-		if (servPath != null && !servPath.isEmpty()) {
-			builder.append(servPath);
-		}
-		return builder.toString();
 	}
 
 	private String cleanDefault(String value) {
