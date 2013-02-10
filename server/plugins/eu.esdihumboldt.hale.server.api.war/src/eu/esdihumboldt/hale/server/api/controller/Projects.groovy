@@ -29,6 +29,9 @@ import org.springframework.web.multipart.MultipartFile
 
 import de.cs3d.util.logging.ALogger
 import de.cs3d.util.logging.ALoggerFactory
+import eu.esdihumboldt.hale.server.api.internal.wadl.doc.DocScope
+import eu.esdihumboldt.hale.server.api.internal.wadl.doc.WDoc
+import eu.esdihumboldt.hale.server.api.internal.wadl.doc.WDocs
 import eu.esdihumboldt.hale.server.projects.ProjectScavenger
 import eu.esdihumboldt.hale.server.projects.ScavengerException
 import eu.esdihumboldt.hale.server.projects.ProjectScavenger.Status
@@ -68,6 +71,25 @@ class Projects {
 	 * @param request the servlet request
 	 * @param response the request response
 	 */
+	@WDocs([
+		@WDoc(
+		title = 'Alignment project',
+		content = { '''
+			An alignment project that is installed on the server and may be
+			used for performing data transformations.
+			''' },
+		scope = DocScope.RESOURCE
+		),
+		@WDoc(
+		title = 'Publish a project archive',
+		content = { '''
+			Upload a project archive exported from HALE. The service will
+			attempt to install it and return information about the project
+			status. 
+			''' },
+		scope = DocScope.METHOD
+		)
+	])
 	@RequestMapping(value = '/project/{id}', method = RequestMethod.POST,
 	consumes = 'multipart/form-data', produces = 'application/json')
 	Map createProject(@PathVariable String id, @RequestPart MultipartFile archive,

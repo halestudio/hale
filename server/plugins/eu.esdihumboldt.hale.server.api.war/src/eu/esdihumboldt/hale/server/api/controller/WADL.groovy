@@ -39,13 +39,14 @@ import org.springframework.web.servlet.ModelAndView
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping
 import org.w3c.dom.Document
-import org.w3c.dom.Node
 
 import com.google.common.collect.HashMultimap
 import com.google.common.collect.Multimap
 
 import de.cs3d.util.logging.ALogger
 import de.cs3d.util.logging.ALoggerFactory
+import eu.esdihumboldt.hale.server.api.internal.wadl.doc.DocScope
+import eu.esdihumboldt.hale.server.api.internal.wadl.doc.WDocUtil
 import eu.esdihumboldt.hale.server.api.internal.wadl.generated.WadlApplication
 import eu.esdihumboldt.hale.server.api.internal.wadl.generated.WadlDoc
 import eu.esdihumboldt.hale.server.api.internal.wadl.generated.WadlMethod
@@ -138,6 +139,12 @@ class WADL {
 			// resource path
 			wadlResource.path = pattern.substring(1)
 
+			// all handler java methods
+			def resourceMethods = resourceHandlers.get(pattern).collect{ it.value.method }
+
+			// resource documentation
+			wadlResource.doc.addAll(WDocUtil.getWadlDocs(resourceMethods, DocScope.RESOURCE))
+
 			//TODO template parameters (PathVariable)
 
 			// organize handler methods by HTTP method
@@ -154,13 +161,17 @@ class WADL {
 
 				Collection<Entry<RequestMappingInfo, HandlerMethod>> mappedMethods = methods.get(httpMethod)
 
-				// collect handler methods
-				//def methodHandlers = mappedMethods.collect { it.value }
+				// collect handler java methods
+				def methodMethods = mappedMethods.collect { it.value.method }
 
-				//TODO method documentation
+				// method documentation
+				wadlMethod.doc.addAll(WDocUtil.getWadlDocs(methodMethods, DocScope.METHOD))
 
 				//TODO method request
-				wadlMethod.request = generateRequest(mappedMethods) ?: null
+				WadlRequest wr = generateRequest(mappedMethods)
+				if (wr) {
+					wadlMethod.request = wr
+				}
 
 				//TODO method responses
 				for (Entry<RequestMappingInfo, HandlerMethod> entry in mappedMethods) {
@@ -190,6 +201,9 @@ class WADL {
 		HandlerMethod handlerMethod = firstEntry.value
 
 		Method javaMethod = handlerMethod.method
+
+		// request documentation
+		wadlRequest.doc.addAll(WDocUtil.getWadlDocs([javaMethod], DocScope.REQUEST))
 
 		Annotation[][] annotations = javaMethod.parameterAnnotations
 		Class<?>[] paramTypes = javaMethod.parameterTypes
@@ -278,7 +292,8 @@ class WADL {
 			//TODO response status codes
 			wadlResponse.status << 200l;
 
-			//TODO response documentation from handlerMethod
+			// response documentation from handlerMethod
+			wadlResponse.doc.addAll(WDocUtil.getWadlDocs([method.method], DocScope.RESPONSE))
 
 			for (MediaType mediaType in mediaTypes) {
 				WadlRepresentation wadlRepresentation = new WadlRepresentation()
