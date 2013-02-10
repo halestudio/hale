@@ -13,7 +13,7 @@
 	<bean class="eu.esdihumboldt.hale.server.api.controller.Main" />
 
 	<bean class="eu.esdihumboldt.hale.server.api.controller.WADL" />
-	
+
 	<bean class="eu.esdihumboldt.hale.server.api.controller.Projects" />
 
 	<bean id="multipartResolver"
@@ -23,7 +23,29 @@
 		<property name="maxUploadSize" value="10000000" />
 	</bean>
 
-	<bean class="org.springframework.web.servlet.view.ResourceBundleViewResolver">
+	<bean
+		class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<property name="mediaTypes">
+			<map>
+				<entry key="xml" value="application/xml" />
+				<entry key="json" value="application/json" />
+			</map>
+		</property>
+		<property name="viewResolvers">
+			<list>
+				<bean class="org.springframework.web.servlet.view.BeanNameViewResolver" />
+			</list>
+		</property>
+		<property name="defaultViews">
+			<list>
+				<bean
+					class="org.springframework.web.servlet.view.json.MappingJacksonJsonView" />
+			</list>
+		</property>
+	</bean>
+
+	<bean
+		class="org.springframework.web.servlet.view.ResourceBundleViewResolver">
 		<property name="basename" value="spring-views" />
 	</bean>
 

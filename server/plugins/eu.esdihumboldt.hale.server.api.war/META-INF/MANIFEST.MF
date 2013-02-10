@@ -6,11 +6,15 @@ Bundle-Version: 2.5.0.qualifier
 Web-ContextPath: /api
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: de.cs3d.util.logging,
+ eu.esdihumboldt.hale.common.core.io.project,
+ eu.esdihumboldt.hale.common.core.io.project.model,
  eu.esdihumboldt.hale.server.webapp.filter,
  eu.esdihumboldt.util.io,
  javax.servlet;version="2.5.0",
  javax.servlet.http;version="2.5.0",
  org.apache.commons.fileupload;version="1.2.0",
+ org.codehaus.jackson;version="1.8.5",
+ org.codehaus.jackson.map;version="1.8.5",
  org.slf4j;version="1.5.11",
  org.springframework.beans.factory;version="3.1.1.RELEASE",
  org.springframework.beans.factory.annotation;version="3.1.1.RELEASE",
@@ -21,4 +25,5 @@ Import-Package: de.cs3d.util.logging,
 Require-Bundle: org.springframework.web.servlet;bundle-version="3.1.1",
  org.springframework.context;bundle-version="3.1.1",
  eu.esdihumboldt.hale.server.projects;bundle-version="2.5.0",
- org.springframework.web;bundle-version="3.1.1"
+ org.springframework.web;bundle-version="3.1.1",
+ groovy;bundle-version="1.8.6"

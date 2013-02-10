@@ -139,6 +139,8 @@
       <plugin id="org.apache.xml.serializer"/>
       <plugin id="org.castor.core"/>
       <plugin id="org.castor.xml"/>
+      <plugin id="org.codehaus.jackson"/>
+      <plugin id="org.codehaus.jackson.mapper"/>
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.runtime"/>
