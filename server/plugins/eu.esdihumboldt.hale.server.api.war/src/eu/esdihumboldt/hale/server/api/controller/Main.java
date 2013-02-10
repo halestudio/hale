@@ -40,7 +40,7 @@ public class Main implements RestAPI {
 	 * @param writer the response writer
 	 * @throws IOException if writing to the response fails
 	 */
-	@RequestMapping(value = "/version", method = RequestMethod.GET)
+	@RequestMapping(value = "/version", method = RequestMethod.GET, produces = "text/plain")
 	public void getVersion(Writer writer) throws IOException {
 		writer.write(String.valueOf(VERSION));
 	}
