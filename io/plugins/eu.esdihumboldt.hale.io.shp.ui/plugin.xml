@@ -10,6 +10,13 @@
                ref="eu.esdihumboldt.hale.io.shape.reader.instance">
          </provider>
       </configPage>
+      <configPage
+            class="eu.esdihumboldt.hale.ui.io.config.CharsetConfigurationPage"
+            order="1">
+         <provider
+               ref="eu.esdihumboldt.hale.io.shape.reader.instance">
+         </provider>
+      </configPage>
    </extension>
 
 </plugin>
