@@ -26,7 +26,6 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -163,46 +162,50 @@ public class ReadConfigurationPage extends
 	@Override
 	protected void createContent(Composite page) {
 		page.setLayout(new GridLayout(2, true));
-		GridData layoutData = new GridData();
-		layoutData.widthHint = 30;
-
 		String[] separatorSelection = new String[] { "TAB", ",", "|", ".", ";" };
+
+		GridDataFactory labelLayout = GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER)
+				.grab(false, false);
+		GridDataFactory comboLayout = GridDataFactory.swtDefaults()
+				.align(SWT.BEGINNING, SWT.CENTER).grab(false, false);
 
 		// column 1, row 1
 		Label separatorLabel = new Label(page, SWT.NONE);
 		separatorLabel.setText("Select Separating Sign");
+		labelLayout.applyTo(separatorLabel);
 		// column 2, row 1
 		separator = new Combo(page, SWT.NONE);
-		separator.setLayoutData(GridDataFactory.copyData(layoutData));
 		separator.setItems(separatorSelection);
 		separator.addModifyListener(this);
+		comboLayout.applyTo(separator);
 
 		// column 1, row 2
 		Label quoteLabel = new Label(page, SWT.NONE);
 		quoteLabel.setText("Select Quote Sign");
+		labelLayout.applyTo(quoteLabel);
 
 		// column 2, row 2
 		quote = new Combo(page, SWT.NONE);
-		quote.setLayoutData(GridDataFactory.copyData(layoutData));
 		quote.setItems(new String[] { "\"", "\'", ",", "-" });
 		quote.select(0);
 		quote.addModifyListener(this);
+		comboLayout.applyTo(quote);
 
 		// column 1, row 3
 		Label escapeLabel = new Label(page, SWT.NONE);
 		escapeLabel.setText("Select Escape Sign");
+		labelLayout.applyTo(escapeLabel);
 
 		// column 2, row 3
 		escape = new Combo(page, SWT.NONE);
-		escape.setLayoutData(GridDataFactory.copyData(layoutData));
 		escape.setItems(new String[] { "\\", "." });
 		escape.select(0);
 		escape.addModifyListener(this);
+		comboLayout.applyTo(escape);
 
 		page.pack();
 
 		setPageComplete(true);
-
 	}
 
 	/**
@@ -274,8 +277,8 @@ public class ReadConfigurationPage extends
 		}
 
 		if (p instanceof InstanceReader) {
-			QName name = QName.valueOf(p.getParameter(CSVConstants.PARAM_TYPENAME).as(
-					String.class));
+			QName name = QName
+					.valueOf(p.getParameter(CSVConstants.PARAM_TYPENAME).as(String.class));
 
 			if (last_name == null || !(last_name.equals(name))) {
 				TypeDefinition type = ((InstanceReader) p).getSourceSchema().getType(name);
