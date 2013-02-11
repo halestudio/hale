@@ -290,7 +290,8 @@ public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriter
 				Boolean.valueOf(true));
 		// create XML stream writer with UTF-8 encoding
 		OutputStream outStream = getTarget().getOutput();
-		XMLStreamWriter tmpWriter = outputFactory.createXMLStreamWriter(outStream, "UTF-8"); //$NON-NLS-1$
+		XMLStreamWriter tmpWriter = outputFactory.createXMLStreamWriter(outStream, getCharset()
+				.name()); //$NON-NLS-1$
 
 		String defNamespace = null;
 
@@ -977,8 +978,8 @@ public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriter
 	protected StreamGeometryWriter getGeometryWriter() {
 		if (geometryWriter == null) {
 			// default to true
-			boolean simplifyGeometry = getParameter(PARAM_SIMPLIFY_GEOMETRY).as(Boolean.class,
-					true);
+			boolean simplifyGeometry = getParameter(PARAM_SIMPLIFY_GEOMETRY)
+					.as(Boolean.class, true);
 
 			geometryWriter = StreamGeometryWriter.getDefaultInstance(gmlNs, simplifyGeometry);
 		}
