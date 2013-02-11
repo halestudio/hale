@@ -236,7 +236,7 @@ public class ReadConfigurationPage extends
 
 		try {
 			BufferedReader streamReader = new BufferedReader(new InputStreamReader(getWizard()
-					.getProvider().getSource().getInput()));
+					.getProvider().getSource().getInput(), p.getCharset()));
 			String line = streamReader.readLine();
 			int tab = countChar(line, '\t');
 			int comma = countChar(line, ',');

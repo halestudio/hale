@@ -39,9 +39,8 @@ public class CSVUtil implements CSVConstants {
 	 * @throws IOException if an I/O operation fails
 	 */
 	public static CSVReader readFirst(ImportProvider provider) throws IOException {
-
 		Reader streamReader = new BufferedReader(new InputStreamReader(provider.getSource()
-				.getInput()));
+				.getInput(), provider.getCharset()));
 		CSVReader reader = new CSVReader(streamReader, getSep(provider), getQuote(provider),
 				getEscape(provider));
 

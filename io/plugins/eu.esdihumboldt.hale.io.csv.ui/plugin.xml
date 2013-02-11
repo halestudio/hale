@@ -27,6 +27,16 @@
                ref="eu.esdihumboldt.hale.io.csv.reader.instance">
          </provider>
       </configPage>
+      <configPage
+            class="eu.esdihumboldt.hale.ui.io.config.CharsetConfigurationPage"
+            order="-15">
+         <provider
+               ref="eu.esdihumboldt.hale.io.csv.reader.instance">
+         </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.csv.reader.schema">
+         </provider>
+      </configPage>
    </extension>
 
 </plugin>
