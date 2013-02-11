@@ -17,13 +17,13 @@ package eu.esdihumboldt.hale.io.shp.reader.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
-import org.geotools.data.DataStore;
-import org.geotools.data.FileDataStoreFinder;
+import org.geotools.data.shapefile.ShapefileDataStore;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.AttributeType;
@@ -92,7 +92,10 @@ public class ShapeSchemaReader extends AbstractSchemaReader {
 		progress.begin(Messages.getString("ShapeSchemaProvider.1"), ProgressIndicator.UNKNOWN); //$NON-NLS-1$
 
 //		DataStore store = new ShapefileDataStoreFactory().createDataStore(location.toURL());
-		DataStore store = FileDataStoreFinder.getDataStore(getSource().getLocation().toURL());
+//		DataStore store = FileDataStoreFinder.getDataStore(getSource().getLocation().toURL());
+
+		ShapefileDataStore store = new ShapefileDataStore(getSource().getLocation().toURL(), false,
+				getCharset());
 
 		// TODO namespace from configuration parameter?!
 		String namespace = ShapefileConstants.SHAPEFILE_NS;
@@ -139,6 +142,12 @@ public class ShapeSchemaReader extends AbstractSchemaReader {
 
 		reporter.setSuccess(true);
 		return reporter;
+	}
+
+	@Override
+	protected Charset getDefaultCharset() {
+		// default charset: ISO-8859-1
+		return Charset.forName("ISO-8859-1");
 	}
 
 	/**

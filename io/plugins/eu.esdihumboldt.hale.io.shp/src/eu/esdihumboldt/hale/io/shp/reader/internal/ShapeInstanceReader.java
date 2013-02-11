@@ -16,13 +16,13 @@
 package eu.esdihumboldt.hale.io.shp.reader.internal;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
-import org.geotools.data.DataStore;
-import org.geotools.data.FileDataStoreFinder;
+import org.geotools.data.shapefile.ShapefileDataStore;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
@@ -79,7 +79,10 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 		progress.begin(Messages.getString("ShapeSchemaProvider.1"), ProgressIndicator.UNKNOWN); //$NON-NLS-1$
 
 //		DataStore store = new ShapefileDataStoreFactory().createDataStore(location.toURL());
-		DataStore store = FileDataStoreFinder.getDataStore(getSource().getLocation().toURL());
+//		DataStore store = FileDataStoreFinder.getDataStore(getSource().getLocation().toURL());
+
+		ShapefileDataStore store = new ShapefileDataStore(getSource().getLocation().toURL(), false,
+				getCharset());
 
 		progress.setCurrentTask("Extracting shape instances");
 
@@ -127,6 +130,12 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 
 		reporter.setSuccess(true);
 		return reporter;
+	}
+
+	@Override
+	protected Charset getDefaultCharset() {
+		// default charset: ISO-8859-1
+		return Charset.forName("ISO-8859-1");
 	}
 
 	/**
