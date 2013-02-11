@@ -15,9 +15,12 @@
 
 package eu.esdihumboldt.hale.ui.io.config;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
+import java.text.MessageFormat;
 
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
@@ -25,28 +28,75 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
+import com.ibm.icu.text.CharsetDetector;
+import com.ibm.icu.text.CharsetMatch;
+
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 
 /**
  * Configuration page for the character encoding.
  * 
+ * @param <W> the concrete I/O wizard type
+ * @param <P> the {@link IOProvider} type used in the wizard
+ * 
  * @author Simon Templer
  */
-public class CharsetConfigurationPage extends
-		AbstractConfigurationPage<IOProvider, IOWizard<IOProvider>> {
+public class CharsetConfigurationPage<P extends IOProvider, W extends IOWizard<P>> extends
+		AbstractConfigurationPage<P, W> {
+
+	/**
+	 * Configuration pages modes.
+	 */
+	public enum Mode {
+		/**
+		 * User must specify character set manually.
+		 */
+		manual,
+		/**
+		 * User can trigger detection of encoding on the stream through a
+		 * button. Only valid for import providers.
+		 */
+		manualAllowDetect,
+		/**
+		 * Detection of encoding is triggered automatically. Only valid for
+		 * import providers.
+		 */
+		autoDetect
+	}
+
+	private static final ALogger log = ALoggerFactory.getLogger(CharsetConfigurationPage.class);
 
 	private Combo charsetCombo;
+
+	private Button detectButton;
+
+	private final Mode mode;
 
 	/**
 	 * Default constructor.
 	 */
 	public CharsetConfigurationPage() {
+		this(Mode.manual);
+	}
+
+	/**
+	 * Create a character set configuration page with a specific mode.
+	 * 
+	 * @param mode the mode
+	 */
+	protected CharsetConfigurationPage(Mode mode) {
 		super("charset");
+
+		this.mode = mode;
 
 		setTitle("Character encoding");
 		setDescription("Select a character encoding.");
@@ -62,12 +112,33 @@ public class CharsetConfigurationPage extends
 				charsetCombo.setText(cs.name());
 				update();
 			}
+
+			if (detectButton != null) {
+				detectButton.setEnabled(pro instanceof ImportProvider);
+			}
 		}
 	}
 
 	@Override
 	public void disable() {
 		// nothing to do
+	}
+
+	@Override
+	protected void onShowPage(boolean firstShow) {
+		super.onShowPage(firstShow);
+
+		if (firstShow && mode == Mode.autoDetect) {
+			// try to auto detect encoding
+			ImportProvider pro = (ImportProvider) getWizard().getProvider();
+			if (pro.getSource() != null) {
+				try {
+					detectCharset(pro.getSource().getInput());
+				} catch (IOException e) {
+					log.error("Character encoding detection failed.", e);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -87,7 +158,9 @@ public class CharsetConfigurationPage extends
 
 	@Override
 	protected void createContent(Composite page) {
-		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(page);
+		boolean showDetectButton = mode == Mode.manualAllowDetect || mode == Mode.autoDetect;
+
+		GridLayoutFactory.swtDefaults().numColumns((showDetectButton) ? (3) : (2)).applyTo(page);
 
 		Label clabel = new Label(page, SWT.NONE);
 		clabel.setText("Charset: ");
@@ -111,7 +184,53 @@ public class CharsetConfigurationPage extends
 			}
 		});
 
+		if (showDetectButton) {
+			detectButton = new Button(page, SWT.NONE);
+			detectButton.setText("Detect");
+			detectButton.addSelectionListener(new SelectionAdapter() {
+
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					ImportProvider pro = (ImportProvider) getWizard().getProvider();
+					if (pro.getSource() != null) {
+						try {
+							detectCharset(pro.getSource().getInput());
+						} catch (IOException e1) {
+							log.userError("Character encoding detection failed.", e1);
+						}
+					}
+					else {
+						log.userError("Source on import provider not set, cannot detect encoding.");
+					}
+				}
+			});
+		}
+
 		update();
+	}
+
+	/**
+	 * Try to detect the character encoding.
+	 * 
+	 * @param input the input stream
+	 * @throws IOException if the resource cannot be read
+	 */
+	protected void detectCharset(InputStream input) throws IOException {
+		// detect character set
+		CharsetDetector cd = new CharsetDetector();
+		cd.setText(input);
+		CharsetMatch cm = cd.detect();
+
+		if (cm != null) {
+			charsetCombo.setText(cm.getName());
+			update();
+			setMessage(MessageFormat.format(
+					"Character encoding {0} detected with {1}% confidence.", cm.getName(),
+					cm.getConfidence()), INFORMATION);
+		}
+		else {
+			setMessage("Character encoding detection yielded no result.", WARNING);
+		}
 	}
 
 	/**
