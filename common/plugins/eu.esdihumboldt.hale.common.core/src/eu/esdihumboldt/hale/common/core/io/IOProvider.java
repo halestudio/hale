@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.common.core.io;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,6 +40,11 @@ public interface IOProvider {
 	 * The configuration parameter name for the content type
 	 */
 	public static final String PARAM_CONTENT_TYPE = "contentType";
+
+	/**
+	 * The configuration parameter name for the character set
+	 */
+	public static final String PARAM_CHARSET = "charset";
 
 	/**
 	 * Execute the I/O provider.
@@ -92,6 +98,22 @@ public interface IOProvider {
 	 * @return the content type, may be <code>null</code>
 	 */
 	public IContentType getContentType();
+
+	/**
+	 * Set the character set that should be used for encoding/decoding. There
+	 * might be I/O providers thought, that don't respect this setting.
+	 * 
+	 * @param charset the character set
+	 */
+	public void setCharset(Charset charset);
+
+	/**
+	 * Get the configured character set. Implementations may fall back to a
+	 * default character set if none is configured.
+	 * 
+	 * @return the character set or <code>null</code>
+	 */
+	public Charset getCharset();
 
 	/**
 	 * Get the supported configuration parameters.

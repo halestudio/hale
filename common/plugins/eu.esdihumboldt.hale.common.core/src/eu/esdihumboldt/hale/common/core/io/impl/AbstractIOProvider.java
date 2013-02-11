@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.common.core.io.impl;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -59,12 +60,30 @@ public abstract class AbstractIOProvider implements IOProvider {
 	private IContentType contentType = null;
 
 	/**
+	 * The character set
+	 */
+	private Charset charset = null;
+
+	/**
 	 * Default constructor
 	 */
 	protected AbstractIOProvider() {
 		super();
 
 		addSupportedParameter(PARAM_CONTENT_TYPE);
+		// TODO add charset as supported parameter?!
+
+		charset = getDefaultCharset();
+	}
+
+	/**
+	 * Get the default character set.<br>
+	 * This implementation returns UTF-8, may be overridden.
+	 * 
+	 * @return the default character set
+	 */
+	protected Charset getDefaultCharset() {
+		return Charset.forName("UTF-8");
 	}
 
 	/**
@@ -147,6 +166,10 @@ public abstract class AbstractIOProvider implements IOProvider {
 		if (contentType != null) {
 			configuration.put(PARAM_CONTENT_TYPE, Value.of(contentType.getId()));
 		}
+		// store charset (if set)
+		if (charset != null) {
+			configuration.put(PARAM_CHARSET, Value.of(charset.name()));
+		}
 
 		// store generic parameters
 		configuration.putAll(parameters);
@@ -195,8 +218,11 @@ public abstract class AbstractIOProvider implements IOProvider {
 	public void setParameter(String name, Value value) {
 		if (name.equals(PARAM_CONTENT_TYPE)) {
 			// configure content type
-			setContentType(Platform.getContentTypeManager().getContentType(
-					value.as(String.class)));
+			setContentType(Platform.getContentTypeManager().getContentType(value.as(String.class)));
+		}
+		if (name.equals(PARAM_CHARSET)) {
+			// configure character set
+			setCharset(Charset.forName(value.as(String.class)));
 		}
 		else {
 			// load generic parameter
@@ -218,6 +244,16 @@ public abstract class AbstractIOProvider implements IOProvider {
 	@Override
 	public void setContentType(IContentType contentType) {
 		this.contentType = contentType;
+	}
+
+	@Override
+	public void setCharset(Charset charset) {
+		this.charset = charset;
+	}
+
+	@Override
+	public Charset getCharset() {
+		return charset;
 	}
 
 }
