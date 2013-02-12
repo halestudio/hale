@@ -36,13 +36,18 @@ class WDocUtil {
 	 * 
 	 * @param method the method declaration
 	 * @param scope the documentation scope
+	 * @param context the scope context, may be <code>null</code>
 	 * @return the annotations or an empty list
 	 */
-	static final def getDocs(Method method, DocScope scope) {
+	static final def getDocs(Method method, DocScope scope, String context) {
 		// try directly getting the WadlDoc
 		WDoc doc = method.getAnnotation(WDoc)
 		if (doc && doc.scope() == scope) {
-			return [doc]
+			// scope must match
+			if (!context || doc.context() == context) {
+				// and context if given
+				return [doc]
+			}
 		}
 
 		// try WadlDocs
@@ -51,7 +56,11 @@ class WDocUtil {
 		if (docs) {
 			for (WDoc edoc in docs.value()) {
 				if (edoc.scope() == scope) {
-					result << edoc
+					// scope must match
+					if (!context || edoc.context() == context) {
+						// and context if given
+						result << edoc
+					}
 				}
 			}
 		}
@@ -65,12 +74,13 @@ class WDocUtil {
 	 *
 	 * @param methods the method declarations
 	 * @param scope the documentation scope
+	 * @param context the scope context, may be <code>null</code>
 	 * @return the annotations or an empty list
 	 */
-	static final def getDocs(Collection<Method> methods, DocScope scope) {
+	static final def getDocs(Collection<Method> methods, DocScope scope, String context) {
 		// collect docs
 		def docs = []
-		methods.each { docs.addAll(getDocs(it, scope)) }
+		methods.each { docs.addAll(getDocs(it, scope, context)) }
 
 		/*
 		 * TODO organize by language and don't pass through all?
@@ -87,11 +97,13 @@ class WDocUtil {
 	 *
 	 * @param methods the method declarations
 	 * @param scope the documentation scope
+	 * @param context the scope context, may be <code>null</code>
+	 * @param baseURI the baseURI representing the webapp context
 	 * @return the documentation objects or an empty list
 	 */
 	static final List<WadlDoc> getWadlDocs(Collection<Method> methods, DocScope scope,
-			String baseURI) {
-		getDocs(methods, scope).collect { toWadlDoc(it, baseURI) }
+			String context, String baseURI) {
+		getDocs(methods, scope, context).collect { toWadlDoc(it, baseURI) }
 	}
 
 	/**
