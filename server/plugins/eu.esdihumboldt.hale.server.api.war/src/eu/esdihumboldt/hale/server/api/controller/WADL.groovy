@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.ModelAndView
@@ -237,10 +238,11 @@ class WADL {
 				if (annotation instanceof PathVariable) {
 					PathVariable param = (PathVariable) annotation;
 
-					WadlParam waldParam = new WadlParam();
-					waldParam.name = param.value()
-					waldParam.style = WadlParamStyle.TEMPLATE
-					waldParam.required = true
+					WadlParam wadlParam = new WadlParam();
+
+					wadlParam.name = param.value()
+					wadlParam.style = WadlParamStyle.TEMPLATE
+					wadlParam.required = true
 
 					parameterCounter = skipDefaultParams(paramTypes, parameterCounter)
 					if (paramTypes.length > parameterCounter) {
@@ -248,7 +250,11 @@ class WADL {
 						//XXX do something with param type?
 					}
 
-					result << waldParam
+					if (wadlParam.name) {
+						wadlParam.doc.addAll(WDocUtil.getWadlDocs([method], DocScope.PARAM, wadlParam.name, baseURI))
+					}
+
+					result << wadlParam
 				}
 
 				parameterCounter++;
@@ -281,23 +287,49 @@ class WADL {
 					// translate request parameter to WADL query parameter
 					RequestParam param = (RequestParam) annotation;
 
-					WadlParam waldParam = new WadlParam();
+					WadlParam wadlParam = new WadlParam();
 
-					waldParam.name = param.value()
-					waldParam.style = WadlParamStyle.QUERY
-					waldParam.required = param.required()
+					wadlParam.name = param.value()
+					wadlParam.style = WadlParamStyle.QUERY
+					wadlParam.required = param.required()
 
-					parameterCounter = skipDefaultParams(paramTypes, parameterCount)
+					parameterCounter = skipDefaultParams(paramTypes, parameterCounter)
 					if (paramTypes.length > parameterCounter) {
 						Class paramType = paramTypes[parameterCounter]
 						//XXX do something with param type?
 					}
 
+					if (wadlParam.name) {
+						wadlParam.doc.addAll(WDocUtil.getWadlDocs([javaMethod], DocScope.PARAM, wadlParam.name, baseURI))
+					}
+
 					String defaultValue = cleanDefault(param.defaultValue())
 					if (defaultValue) {
-						waldParam.setDefault(defaultValue)
+						wadlParam.setDefault(defaultValue)
 					}
-					wadlRequest.param << waldParam
+					wadlRequest.param << wadlParam
+				}
+				else if (annotation instanceof RequestPart) {
+					// translate request part to WADL query parameter
+					RequestPart param = (RequestPart) annotation;
+
+					WadlParam wadlParam = new WadlParam();
+
+					wadlParam.name = param.value()
+					wadlParam.style = WadlParamStyle.QUERY
+					wadlParam.required = param.required()
+
+					parameterCounter = skipDefaultParams(paramTypes, parameterCounter)
+					if (paramTypes.length > parameterCounter) {
+						Class paramType = paramTypes[parameterCounter]
+						//XXX do something with param type?
+					}
+
+					if (wadlParam.name) {
+						wadlParam.doc.addAll(WDocUtil.getWadlDocs([javaMethod], DocScope.PARAM, wadlParam.name, baseURI))
+					}
+
+					wadlRequest.param << wadlParam
 				}
 
 				parameterCounter++;

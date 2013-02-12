@@ -101,6 +101,20 @@ class Projects {
 			}
 		},
 		scope = DocScope.REQUEST
+		),
+		@WDoc(
+		content = { 'Identifier associated to an alignment project on the server.' },
+		scope = DocScope.PARAM,
+		context = 'id'
+		),
+		@WDoc(
+		content = { '''
+			A HALE project archive. This is a ZIP archive containing the
+			project file and needed resources. It can be easily created by
+			saving a project in HALE as a project archive.
+			''' },
+		scope = DocScope.PARAM,
+		context = 'archive'
 		)
 	])
 	@RequestMapping(value = '/project/{id}', method = RequestMethod.POST,
