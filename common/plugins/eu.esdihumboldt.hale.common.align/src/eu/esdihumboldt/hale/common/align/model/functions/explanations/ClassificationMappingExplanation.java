@@ -45,6 +45,7 @@ public class ClassificationMappingExplanation extends AbstractCellExplanation im
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
 		// FIXME provide service provider!
+		// Cant use this HaleUI.getServiceProvider() to fix it, cycle problems
 		LookupTable lookup = ClassificationMappingUtil.getClassificationLookup(
 				cell.getTransformationParameters(), null);
 		ListMultimap<Value, Value> revLookup = lookup.reverse();
