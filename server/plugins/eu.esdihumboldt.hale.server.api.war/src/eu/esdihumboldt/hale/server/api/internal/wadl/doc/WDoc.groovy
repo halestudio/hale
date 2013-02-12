@@ -45,4 +45,8 @@ import java.lang.annotation.Target
 	 * The associated documentation scope.
 	 */
 	DocScope scope() default DocScope.METHOD
+	/**
+	 * The scope context, e.g. a parameter name or representation type
+	 */
+	String context() default ''
 }
