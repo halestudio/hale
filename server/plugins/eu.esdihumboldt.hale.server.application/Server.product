@@ -84,6 +84,7 @@
       <plugin id="eu.esdihumboldt.hale.io.xml"/>
       <plugin id="eu.esdihumboldt.hale.io.xsd"/>
       <plugin id="eu.esdihumboldt.hale.platform.extension" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.server.api.war"/>
       <plugin id="eu.esdihumboldt.hale.server.application"/>
       <plugin id="eu.esdihumboldt.hale.server.console.war"/>
       <plugin id="eu.esdihumboldt.hale.server.logback.config" fragment="true"/>
@@ -120,6 +121,7 @@
       <plugin id="log4j.over.slf4j"/>
       <plugin id="net.sf.ehcache"/>
       <plugin id="org.apache.commons.codec"/>
+      <plugin id="org.apache.commons.fileupload"/>
       <plugin id="org.apache.commons.httpclient"/>
       <plugin id="org.apache.commons.io"/>
       <plugin id="org.apache.commons.lang"/>
@@ -137,6 +139,8 @@
       <plugin id="org.apache.xml.serializer"/>
       <plugin id="org.castor.core"/>
       <plugin id="org.castor.xml"/>
+      <plugin id="org.codehaus.jackson"/>
+      <plugin id="org.codehaus.jackson.mapper"/>
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.runtime"/>
@@ -196,6 +200,7 @@
       <plugin id="eu.esdihumboldt.hale.common.convert.core" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.common.convert.wkt" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.common.instance" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.server.api.war" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.console.war" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.progress" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.projects" autoStart="true" startLevel="0" />
@@ -209,14 +214,15 @@
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.registry" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.gemini.blueprint.core" autoStart="true" startLevel="2" />
-      <plugin id="org.eclipse.gemini.blueprint.extender" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.gemini.blueprint.extender" autoStart="true" startLevel="3" />
       <plugin id="org.eclipse.gemini.blueprint.io" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.jetty.osgi.boot" autoStart="true" startLevel="0" />
-      <plugin id="org.springframework.beans" autoStart="true" startLevel="0" />
-      <plugin id="org.springframework.context" autoStart="true" startLevel="0" />
-      <plugin id="org.springframework.core" autoStart="true" startLevel="0" />
+      <plugin id="org.springframework.beans" autoStart="true" startLevel="2" />
+      <plugin id="org.springframework.context" autoStart="true" startLevel="2" />
+      <plugin id="org.springframework.core" autoStart="true" startLevel="2" />
       <plugin id="org.springframework.security.config" autoStart="true" startLevel="2" />
-      <plugin id="org.springframework.web" autoStart="true" startLevel="0" />
+      <plugin id="org.springframework.web" autoStart="true" startLevel="2" />
+      <plugin id="org.springframework.web.servlet" autoStart="true" startLevel="2" />
    </configurations>
 
 </product>

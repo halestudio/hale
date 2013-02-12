@@ -17,7 +17,14 @@
 package eu.esdihumboldt.util.io;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
+import com.google.common.io.ByteStreams;
+import com.google.common.io.Files;
 
 import eu.esdihumboldt.util.resource.Resources;
 
@@ -64,5 +71,29 @@ public final class IOUtils {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Extract a ZIP archive.
+	 * 
+	 * @param baseDir the base directory to extract to
+	 * @param in the input stream of the ZIP archive, which is closed after
+	 *            extraction
+	 * @throws IOException if an error occurs
+	 */
+	public static void extract(File baseDir, InputStream in) throws IOException {
+		final ZipInputStream zis = new ZipInputStream(in);
+		try {
+			ZipEntry entry;
+			while ((entry = zis.getNextEntry()) != null) {
+				if (!entry.isDirectory()) {
+					final File file = new File(baseDir, entry.getName());
+					Files.createParentDirs(file);
+					Files.write(ByteStreams.toByteArray(zis), file);
+				}
+			}
+		} finally {
+			zis.close();
+		}
 	}
 }
