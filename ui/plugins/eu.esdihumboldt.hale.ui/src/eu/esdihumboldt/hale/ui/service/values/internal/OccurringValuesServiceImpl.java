@@ -239,7 +239,7 @@ public class OccurringValuesServiceImpl extends AbstractOccurringValuesService {
 					schemaSpace = SchemaSpaceID.SOURCE;
 				}
 
-				invalidateValues(schemaSpace);
+				invalidateValues(schemaSpace, type);
 			}
 
 		});
@@ -251,13 +251,23 @@ public class OccurringValuesServiceImpl extends AbstractOccurringValuesService {
 	 * Invalidate occurring values in the given schema space.
 	 * 
 	 * @param schemaSpace the schema space
+	 * @param dataSet the data set
 	 */
-	protected void invalidateValues(SchemaSpaceID schemaSpace) {
+	protected void invalidateValues(SchemaSpaceID schemaSpace, DataSet dataSet) {
 		Map<PropertyEntityDefinition, OccurringValuesImpl> values = selectValues(schemaSpace);
 
+		boolean empty = instances.getInstances(dataSet).isEmpty();
+
 		synchronized (values) {
-			for (OccurringValuesImpl ov : values.values()) {
-				ov.invalidate();
+			if (empty) {
+				// remove all values
+				values.clear();
+			}
+			else {
+				// invalidate all values
+				for (OccurringValuesImpl ov : values.values()) {
+					ov.invalidate();
+				}
 			}
 		}
 
