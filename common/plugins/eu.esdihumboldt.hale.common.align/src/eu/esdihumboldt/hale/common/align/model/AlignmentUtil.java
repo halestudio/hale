@@ -29,6 +29,8 @@ import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
+import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
+import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
@@ -503,6 +505,28 @@ public abstract class AlignmentUtil {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Match a property condition against a property value.
+	 * 
+	 * @param condition the property condition
+	 * @param value the property value
+	 * @param parent the parent of the property value, may be <code>null</code>
+	 *            if there is none
+	 * @return if the value matched the property condition
+	 */
+	public static boolean matchCondition(Condition condition, Object value, Object parent) {
+		// create dummy instance
+		MutableInstance dummy = new DefaultInstance(null, null);
+		// add value as property
+		dummy.addProperty(new QName("value"), value);
+		// add parent value as property
+		if (parent != null) {
+			dummy.addProperty(new QName("parent"), parent);
+		}
+
+		return condition.getFilter().match(dummy);
 	}
 
 }
