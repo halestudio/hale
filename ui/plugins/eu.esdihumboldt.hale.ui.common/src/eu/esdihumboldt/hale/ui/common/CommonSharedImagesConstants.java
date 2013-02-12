@@ -116,4 +116,9 @@ public interface CommonSharedImagesConstants {
 	 */
 	public static final String IMG_PRIORITY_LOW = "IMG_PRIORITY_LOW";
 
+	/**
+	 * Key for refresh image
+	 */
+	public static final String IMG_REFRESH = "IMG_REFRESH";
+
 }
