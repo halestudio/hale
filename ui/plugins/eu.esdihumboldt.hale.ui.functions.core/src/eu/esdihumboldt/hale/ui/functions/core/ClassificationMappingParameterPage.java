@@ -30,17 +30,21 @@ import java.util.TreeSet;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -48,6 +52,8 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -56,28 +62,40 @@ import com.google.common.collect.ListMultimap;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
+import eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingFunction;
+import eu.esdihumboldt.hale.common.lookup.LookupService;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeInputDialog;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
+import eu.esdihumboldt.hale.ui.io.action.IOWizardAction;
 
 /**
  * Parameter page for classification mapping function.
  * 
- * @author Kai Schwierczek
+ * @author Kai Schwierczek, Dominik Reuter
  */
 public class ClassificationMappingParameterPage extends
-		HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements ParameterPage {
+		HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements ParameterPage,
+		ClassificationMappingFunction {
 
 	private final Map<String, Set<String>> classifications = new TreeMap<String, Set<String>>();
-
+	private String selectedLookupTableID = null;
 	private Composite notClassifiedActionComposite;
 	private ComboViewer notClassifiedActionViewer;
 	private String notClassifiedAction;
 	private Text fixedValueText;
 	private Button fixedValueInputButton;
+	private TabFolder tabs;
+	private TabItem manuelItem;
+	private TabItem fromFileItem;
+	private ComboViewer lookupTableComboViewer;
+	private Label description;
+	private LookupService lookupServiceImpl;
+	private IOWizardAction action;
 
 	private static final List<String> notClassifiedActionOptions = new ArrayList<String>(3);
 	static {
@@ -93,9 +111,6 @@ public class ClassificationMappingParameterPage extends
 
 	// TODO allowedValues bei enum source
 	// TODO fixedClassifications bei enum target
-
-	private static final String PARAMETER_CLASSIFICATIONS = "classificationMapping";
-	private static final String PARAMETER_NOT_CLASSIFIED_ACTION = "notClassifiedAction";
 
 	/**
 	 * Default constructor.
@@ -131,6 +146,12 @@ public class ClassificationMappingParameterPage extends
 		if (initialValues == null)
 			return;
 
+		// Load the lookupTableConfiguration
+		List<ParameterValue> lookupTables = initialValues.get(PARAMETER_LOOKUPTABLE_ID);
+		if (!lookupTables.isEmpty()) {
+			selectedLookupTableID = lookupTables.get(0).as(String.class);
+		}
+
 		List<ParameterValue> mappings = initialValues.get(PARAMETER_CLASSIFICATIONS);
 		for (ParameterValue value : mappings) {
 			String s = value.as(String.class);
@@ -159,18 +180,34 @@ public class ClassificationMappingParameterPage extends
 	@Override
 	public ListMultimap<String, ParameterValue> getConfiguration() {
 		ListMultimap<String, ParameterValue> configuration = ArrayListMultimap.create();
-		for (Map.Entry<String, Set<String>> mapping : classifications.entrySet()) {
-			StringBuffer buffer = new StringBuffer();
-			try {
-				buffer.append(URLEncoder.encode(mapping.getKey(), "UTF-8"));
-				for (String s : mapping.getValue())
-					buffer.append(' ').append(URLEncoder.encode(s, "UTF-8"));
-			} catch (UnsupportedEncodingException e) {
-				// UTF-8 should be everywhere
-			}
-			configuration.put(PARAMETER_CLASSIFICATIONS, new ParameterValue(buffer.toString()));
-		}
 
+		for (TabItem tabItem : tabs.getSelection()) {
+			if (tabItem.equals(fromFileItem)) {
+				// Set the selected lookupTable
+				if (lookupServiceImpl != null) {
+					IStructuredSelection selection = (IStructuredSelection) lookupTableComboViewer
+							.getSelection();
+					configuration.put(PARAMETER_LOOKUPTABLE_ID, new ParameterValue(selection
+							.getFirstElement().toString()));
+				}
+			}
+			else {
+				if (tabItem.equals(manuelItem)) {
+					for (Map.Entry<String, Set<String>> mapping : classifications.entrySet()) {
+						StringBuffer buffer = new StringBuffer();
+						try {
+							buffer.append(URLEncoder.encode(mapping.getKey(), "UTF-8"));
+							for (String s : mapping.getValue())
+								buffer.append(' ').append(URLEncoder.encode(s, "UTF-8"));
+						} catch (UnsupportedEncodingException e) {
+							// UTF-8 should be everywhere
+						}
+						configuration.put(PARAMETER_CLASSIFICATIONS,
+								new ParameterValue(buffer.toString()));
+					}
+				}
+			}
+		}
 		switch (notClassifiedActionOptions
 				.indexOf(((IStructuredSelection) notClassifiedActionViewer.getSelection())
 						.getFirstElement())) {
@@ -194,7 +231,7 @@ public class ClassificationMappingParameterPage extends
 	 */
 	@Override
 	protected void createContent(Composite page) {
-		page.setLayout(GridLayoutFactory.swtDefaults().numColumns(4).create());
+		page.setLayout(new GridLayout());
 
 		// not classified action
 		notClassifiedActionComposite = new Composite(page, SWT.NONE);
@@ -239,20 +276,32 @@ public class ClassificationMappingParameterPage extends
 			}
 		}
 
+		// Tabs
+		tabs = new TabFolder(page, SWT.NONE);
+		tabs.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		// The manuelTab for the manuel way to specify something like a
+		// lookupTable
+		manuelItem = new TabItem(tabs, SWT.NONE);
+		manuelItem.setText("Manuel");
+
+		Composite item1Content = new Composite(tabs, SWT.NONE);
+		item1Content.setLayout(GridLayoutFactory.swtDefaults().numColumns(4).create());
+
 		// target label
-		Label targetLabel = new Label(page, SWT.NONE);
+		Label targetLabel = new Label(item1Content, SWT.NONE);
 		targetLabel.setText("Target value: ");
 		targetLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 
 		// target value selection
-		Combo combo = new Combo(page, SWT.DROP_DOWN | SWT.READ_ONLY);
+		Combo combo = new Combo(item1Content, SWT.DROP_DOWN | SWT.READ_ONLY);
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		classes = new ComboViewer(combo);
 		classes.setContentProvider(new ArrayContentProvider());
 		classes.setInput(classifications.keySet());
 
 		// add target value
-		Button addButton = new Button(page, SWT.PUSH);
+		Button addButton = new Button(item1Content, SWT.PUSH);
 		addButton.setImage(CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_ADD));
 		addButton.setToolTipText("Add classification value");
 		addButton.setEnabled(true);
@@ -273,7 +322,7 @@ public class ClassificationMappingParameterPage extends
 		});
 
 		// remove target value
-		final Button removeButton = new Button(page, SWT.PUSH);
+		final Button removeButton = new Button(item1Content, SWT.PUSH);
 		removeButton.setImage(CommonSharedImages.getImageRegistry().get(
 				CommonSharedImages.IMG_REMOVE));
 		removeButton.setEnabled(false);
@@ -295,19 +344,19 @@ public class ClassificationMappingParameterPage extends
 		});
 
 		// source label
-		Label sourceLabel = new Label(page, SWT.NONE);
+		Label sourceLabel = new Label(item1Content, SWT.NONE);
 		sourceLabel.setText("Source values: ");
 		sourceLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false, 1, 2));
 
 		// list
-		org.eclipse.swt.widgets.List list = new org.eclipse.swt.widgets.List(page, SWT.MULTI
-				| SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
+		org.eclipse.swt.widgets.List list = new org.eclipse.swt.widgets.List(item1Content,
+				SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
 		list.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
 		values = new ListViewer(list);
 		values.setContentProvider(new ArrayContentProvider());
 
 		// value list controls
-		Composite listControls = new Composite(page, SWT.NONE);
+		Composite listControls = new Composite(item1Content, SWT.NONE);
 		listControls.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3, 1));
 		listControls.setLayout(new GridLayout(2, true));
 
@@ -377,6 +426,113 @@ public class ClassificationMappingParameterPage extends
 				valueRemove.setEnabled(!empty);
 			}
 		});
+		manuelItem.setControl(item1Content);
+
+		// FromFileTabe to load lookupTable from file
+		fromFileItem = new TabItem(tabs, SWT.NONE);
+		fromFileItem.setText("From File");
+
+		// Parent composite for fromFileTab
+		Composite item2Content = new Composite(tabs, SWT.NONE);
+		item2Content.setLayout(new GridLayout());
+
+		// Label to descripe what the user should do
+		Label l = new Label(item2Content, SWT.NONE);
+		l.setText("Select the LookupTable you want to use");
+
+		// Get the Lookuptable Service
+		lookupServiceImpl = HaleUI.getServiceProvider().getService(LookupService.class);
+
+		// Composite for comboViewerComposite and Button
+		Composite parent = new Composite(item2Content, SWT.NONE);
+		parent.setLayout(new GridLayout(2, false));
+		parent.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
+
+		// Description Label
+		description = new Label(item2Content, SWT.NONE);
+		description.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
+		description.setText("Description: ");
+		description.setVisible(false);
+
+		// Composite for ComboViewer
+		Composite viewerComposite = new Composite(parent, SWT.NONE);
+		viewerComposite.setLayout(new FillLayout());
+		GridData layoutData = new GridData(SWT.FILL, SWT.NONE, true, false);
+		viewerComposite.setLayoutData(GridDataFactory.copyData(layoutData));
+
+		// ComboViewer
+		lookupTableComboViewer = new ComboViewer(viewerComposite, SWT.READ_ONLY);
+		lookupTableComboViewer.setContentProvider(ArrayContentProvider.getInstance());
+		lookupTableComboViewer.setLabelProvider(new LabelProvider() {
+
+			@Override
+			public String getText(Object element) {
+				if (element instanceof String) {
+					return lookupServiceImpl.getTable((String) element).getName();
+				}
+				return null;
+			}
+		});
+		lookupTableComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				// Show the description for the selected lookupTable
+				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+				description.setText("Description: "
+						+ lookupServiceImpl.getTable(selection.getFirstElement().toString())
+								.getDescription());
+
+				if (!description.isVisible()) {
+					description.setVisible(true);
+				}
+			}
+		});
+		lookupTableComboViewer.setInput(lookupServiceImpl.getTableIDs());
+		if (selectedLookupTableID != null) {
+			lookupTableComboViewer.setSelection(new StructuredSelection(selectedLookupTableID),
+					true);
+		}
+
+		// Button to load a lookupTable if no one is loaded
+		final Button browseButton = new Button(parent, SWT.PUSH);
+		browseButton.setText("Browse ...");
+		browseButton.addSelectionListener(new SelectionListener() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				action = new IOWizardAction("eu.esdihumboldt.hale.lookup.import");
+				// Dispose the action which is used to load a lookuptable if
+				// none was loaded
+				if (action != null) {
+					action.run();
+					action.dispose();
+				}
+
+				if (lookupServiceImpl.getTableIDs().isEmpty()) {
+					browseButton.setVisible(true);
+				}
+				else {
+					browseButton.setVisible(false);
+				}
+				// Refresh the Service and Viewer
+				lookupServiceImpl = HaleUI.getServiceProvider().getService(LookupService.class);
+				lookupTableComboViewer.setInput(lookupServiceImpl.getTableIDs());
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// nothing to do here
+			}
+		});
+		if (lookupServiceImpl.getTableIDs().isEmpty()) {
+			browseButton.setVisible(true);
+		}
+		else {
+			browseButton.setVisible(false);
+		}
+
+		fromFileItem.setControl(item2Content);
 	}
 
 	/**
