@@ -684,13 +684,6 @@
                   id="eu.esdihumboldt.hale.ui.cell.setpriority">
             </dynamic>
          </menu>
-         <command
-               commandId="eu.esdihumboldt.hale.ui.values.update_occuring"
-               style="push">
-            <visibleWhen
-                  checkEnabled="true">
-            </visibleWhen>
-         </command>
          <menu
                label="Replace with">
             <visibleWhen
