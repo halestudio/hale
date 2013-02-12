@@ -47,4 +47,18 @@ public interface OccurringValuesService {
 	public boolean updateOccuringValues(PropertyEntityDefinition property)
 			throws IllegalArgumentException;
 
+	/**
+	 * Add a listener to the service.
+	 * 
+	 * @param listener the listener to add
+	 */
+	public void addListener(OccurringValuesListener listener);
+
+	/**
+	 * Remove a listener from the service.
+	 * 
+	 * @param listener the listener to remove
+	 */
+	public void removeListener(OccurringValuesListener listener);
+
 }
