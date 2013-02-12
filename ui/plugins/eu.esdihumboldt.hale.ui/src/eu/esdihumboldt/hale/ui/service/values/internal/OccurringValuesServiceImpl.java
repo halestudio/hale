@@ -37,10 +37,11 @@ import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
+import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.values.OccurringValues;
-import eu.esdihumboldt.hale.ui.service.values.OccurringValuesService;
 import eu.esdihumboldt.hale.ui.service.values.OccurringValuesUtil;
 
 /**
@@ -49,7 +50,7 @@ import eu.esdihumboldt.hale.ui.service.values.OccurringValuesUtil;
  * 
  * @author Simon Templer
  */
-public class OccurringValuesServiceImpl implements OccurringValuesService {
+public class OccurringValuesServiceImpl extends AbstractOccurringValuesService {
 
 	/**
 	 * Job determining the occurring values for a specific property entity.
@@ -57,7 +58,7 @@ public class OccurringValuesServiceImpl implements OccurringValuesService {
 	public class OccuringValuesJob extends Job {
 
 		private final PropertyEntityDefinition property;
-		private final Map<PropertyEntityDefinition, OccurringValues> values;
+		private final Map<PropertyEntityDefinition, OccurringValuesImpl> values;
 		private final InstanceCollection instances;
 
 		/**
@@ -69,7 +70,8 @@ public class OccurringValuesServiceImpl implements OccurringValuesService {
 		 * @param instances the instances to test
 		 */
 		public OccuringValuesJob(PropertyEntityDefinition property,
-				Map<PropertyEntityDefinition, OccurringValues> values, InstanceCollection instances) {
+				Map<PropertyEntityDefinition, OccurringValuesImpl> values,
+				InstanceCollection instances) {
 			super("Determine occurring values");
 			this.property = property;
 			this.values = values;
@@ -125,11 +127,11 @@ public class OccurringValuesServiceImpl implements OccurringValuesService {
 			}
 
 			synchronized (values) {
-				OccurringValues ov = new OccurringValuesImpl(collectedValues, property);
+				OccurringValuesImpl ov = new OccurringValuesImpl(collectedValues, property);
 				values.put(property, ov);
 			}
 
-			// TODO trigger event notification
+			notifyOccurringValuesUpdated(property);
 
 			monitor.done();
 
@@ -203,12 +205,12 @@ public class OccurringValuesServiceImpl implements OccurringValuesService {
 	/**
 	 * Values that occur in the source data.
 	 */
-	private final Map<PropertyEntityDefinition, OccurringValues> sourceValues = new HashMap<PropertyEntityDefinition, OccurringValues>();
+	private final Map<PropertyEntityDefinition, OccurringValuesImpl> sourceValues = new HashMap<PropertyEntityDefinition, OccurringValuesImpl>();
 
 	/**
 	 * Values that occur in the transformed data.
 	 */
-	private final Map<PropertyEntityDefinition, OccurringValues> transformedValues = new HashMap<PropertyEntityDefinition, OccurringValues>();
+	private final Map<PropertyEntityDefinition, OccurringValuesImpl> transformedValues = new HashMap<PropertyEntityDefinition, OccurringValuesImpl>();
 
 	/**
 	 * The service for accessing instances.
@@ -223,26 +225,60 @@ public class OccurringValuesServiceImpl implements OccurringValuesService {
 	public OccurringValuesServiceImpl(InstanceService instances) {
 		super();
 
-		// TODO add instance service listener
+		// add instance service listener
+		instances.addListener(new InstanceServiceAdapter() {
+
+			@Override
+			public void datasetChanged(DataSet type) {
+				SchemaSpaceID schemaSpace;
+				switch (type) {
+				case TRANSFORMED:
+					schemaSpace = SchemaSpaceID.TARGET;
+					break;
+				default:
+					schemaSpace = SchemaSpaceID.SOURCE;
+				}
+
+				invalidateValues(schemaSpace);
+			}
+
+		});
 
 		this.instances = instances;
 	}
 
+	/**
+	 * Invalidate occurring values in the given schema space.
+	 * 
+	 * @param schemaSpace the schema space
+	 */
+	protected void invalidateValues(SchemaSpaceID schemaSpace) {
+		Map<PropertyEntityDefinition, OccurringValuesImpl> values = selectValues(schemaSpace);
+
+		synchronized (values) {
+			for (OccurringValuesImpl ov : values.values()) {
+				ov.invalidate();
+			}
+		}
+
+		notifyOccurringValuesInvalidated(schemaSpace);
+	}
+
 	@Override
 	public OccurringValues getOccurringValues(PropertyEntityDefinition property) {
-		Map<PropertyEntityDefinition, OccurringValues> values;
-		switch (property.getSchemaSpace()) {
+		return getOccurringValues(property, selectValues(property.getSchemaSpace()));
+	}
+
+	private Map<PropertyEntityDefinition, OccurringValuesImpl> selectValues(
+			SchemaSpaceID schemaSpace) {
+		switch (schemaSpace) {
 		case SOURCE:
-			values = sourceValues;
-			break;
+			return sourceValues;
 		case TARGET:
-			values = transformedValues;
-			break;
+			return transformedValues;
 		default:
 			throw new IllegalArgumentException("Illegal schema space specified");
 		}
-
-		return getOccurringValues(property, values);
 	}
 
 	/**
@@ -253,7 +289,7 @@ public class OccurringValuesServiceImpl implements OccurringValuesService {
 	 * @return the occurring values for the property or <code>null</code>
 	 */
 	private OccurringValues getOccurringValues(PropertyEntityDefinition property,
-			Map<PropertyEntityDefinition, OccurringValues> values) {
+			Map<PropertyEntityDefinition, ? extends OccurringValues> values) {
 		synchronized (values) {
 			OccurringValues ov = values.get(property);
 			return ov;
@@ -268,19 +304,7 @@ public class OccurringValuesServiceImpl implements OccurringValuesService {
 					"Determinining occurring values not supported for given property");
 		}
 
-		Map<PropertyEntityDefinition, OccurringValues> values;
-		switch (property.getSchemaSpace()) {
-		case SOURCE:
-			values = sourceValues;
-			break;
-		case TARGET:
-			values = transformedValues;
-			break;
-		default:
-			throw new IllegalArgumentException("Illegal schema space specified");
-		}
-
-		return updateOccuringValues(property, values);
+		return updateOccuringValues(property, selectValues(property.getSchemaSpace()));
 	}
 
 	/**
@@ -292,7 +316,7 @@ public class OccurringValuesServiceImpl implements OccurringValuesService {
 	 *         started, <code>false</code> if the information was up-to-date
 	 */
 	private boolean updateOccuringValues(PropertyEntityDefinition property,
-			Map<PropertyEntityDefinition, OccurringValues> values) {
+			Map<PropertyEntityDefinition, OccurringValuesImpl> values) {
 		synchronized (values) {
 			OccurringValues ov = values.get(property);
 			if (ov != null && ov.isUpToDate()) {
