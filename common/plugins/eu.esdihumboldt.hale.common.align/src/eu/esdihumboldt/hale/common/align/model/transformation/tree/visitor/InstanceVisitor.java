@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import javax.xml.namespace.QName;
-
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Condition;
@@ -35,8 +33,6 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.SourceNo
 import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Group;
-import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
-import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
@@ -51,7 +47,7 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 	// private static final ALogger log =
 	// ALoggerFactory.getLogger(InstanceVisitor.class);
 
-	private FamilyInstance instance;
+	private final FamilyInstance instance;
 	private final TransformationTree tree;
 
 	/**
@@ -190,17 +186,15 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 					// those values
 					Collection<Object> matchedValues = new ArrayList<Object>();
 					for (Object value : values) {
-						// create dummy instance
-						MutableInstance dummy = new DefaultInstance(null, null);
-						// add value as property
-						dummy.addProperty(new QName("value"), value);
-						// add parent value as property
+						// determine parent
+						Object parent = null;
 						SourceNode parentNode = source.getParent();
 						if (parentNode != null && parentNode.isDefined()) {
-							dummy.addProperty(new QName("parent"), parentNode.getValue());
+							parent = parentNode.getValue();
 						}
 
-						if (condition.getFilter().match(dummy)) {
+						// test the condition
+						if (AlignmentUtil.matchCondition(condition, value, parent)) {
 							matchedValues.add(value);
 						}
 					}
