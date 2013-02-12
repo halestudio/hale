@@ -43,6 +43,8 @@ import eu.esdihumboldt.hale.ui.service.report.ReportService;
 import eu.esdihumboldt.hale.ui.service.report.internal.ReportServiceImpl;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.service.schema.internal.SchemaServiceImpl;
+import eu.esdihumboldt.hale.ui.service.values.OccurringValuesService;
+import eu.esdihumboldt.hale.ui.service.values.internal.OccurringValuesServiceImpl;
 
 /**
  * Factory for HALE services
@@ -68,6 +70,11 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 					(SchemaService) locator.getService(SchemaService.class),
 					(ProjectService) locator.getService(ProjectService.class),
 					(AlignmentService) locator.getService(AlignmentService.class));
+		}
+
+		if (OccurringValuesService.class.equals(serviceInterface)) {
+			return new OccurringValuesServiceImpl(
+					(InstanceService) locator.getService(InstanceService.class));
 		}
 
 		if (AlignmentService.class.equals(serviceInterface)) {

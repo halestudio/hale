@@ -96,6 +96,10 @@
             id="eu.esdihumboldt.hale.ui.transformation"
             name="Transform external data">
       </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.values.update_occuring"
+            name="Update occurring values">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -355,6 +359,15 @@
             </reference>
          </activeWhen>
       </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.service.values.internal.handler.UpdateOccurringValues"
+            commandId="eu.esdihumboldt.hale.ui.values.update_occuring">
+         <activeWhen>
+            <reference
+                  definitionId="eu.esdihumboldt.hale.ui.selection.entity.allow_update_occurring_values">
+            </reference>
+         </activeWhen>
+      </handler>
    </extension>
    <extension
          point="org.eclipse.ui.services">
@@ -403,6 +416,9 @@
          </service>
          <service
                serviceClass="eu.esdihumboldt.hale.ui.common.service.population.PopulationService">
+         </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.ui.service.values.OccurringValuesService">
          </service>
       </serviceFactory>
       <sourceProvider
@@ -668,6 +684,13 @@
                   id="eu.esdihumboldt.hale.ui.cell.setpriority">
             </dynamic>
          </menu>
+         <command
+               commandId="eu.esdihumboldt.hale.ui.values.update_occuring"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
+         </command>
          <menu
                label="Replace with">
             <visibleWhen
@@ -743,6 +766,13 @@
             properties="allow_mark_unmappable"
             type="eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition">
       </propertyTester>
+      <propertyTester
+            class="eu.esdihumboldt.hale.ui.service.values.internal.tester.OccurringValuesTester"
+            id="eu.esdihumboldt.hale.ui.service.values"
+            namespace="eu.esdihumboldt.hale.ui.service.values"
+            properties="allow_update"
+            type="eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition">
+      </propertyTester>
    </extension>
    <extension
          point="org.eclipse.core.expressions.definitions">
@@ -811,6 +841,29 @@
                   <test
                         property="eu.esdihumboldt.hale.ui.service.entity.allow_add_condition">
                   </test>
+               </iterate>
+            </and>
+         </with>
+      </definition>
+      <definition
+            id="eu.esdihumboldt.hale.ui.selection.entity.allow_update_occurring_values">
+         <with
+               variable="selection">
+            <and>
+               <count
+                     value="1">
+               </count>
+               <iterate
+                     ifEmpty="false"
+                     operator="and">
+                  <and>
+                     <instanceof
+                           value="eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition">
+                     </instanceof>
+                     <test
+                           property="eu.esdihumboldt.hale.ui.service.values.allow_update">
+                     </test>
+                  </and>
                </iterate>
             </and>
          </with>

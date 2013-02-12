@@ -40,7 +40,11 @@ public interface OccurringValuesService {
 	 * @return <code>true</code> if the task to update the information has been
 	 *         started, <code>false</code> if the information was up-to-date or
 	 *         cannot be determined for the given property
+	 * @throws IllegalArgumentException if determining the occurring values is
+	 *             not supported for the given property, i.e. if it passes
+	 *             {@link OccurringValuesUtil#supportsOccurringValues(PropertyEntityDefinition)}
 	 */
-	public boolean updateOccuringValues(PropertyEntityDefinition property);
+	public boolean updateOccuringValues(PropertyEntityDefinition property)
+			throws IllegalArgumentException;
 
 }
