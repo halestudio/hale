@@ -61,25 +61,39 @@
                 <style type="text/css">
                     body {
                         font-family: sans-serif;
-                        font-size: 0.85em;
-                        margin: 2em 8em;
+                        font-size: 1.1em;
+                        margin: 2em auto;
+                        text-align: center;
+                    }
+                    #main {
+                    	text-align: left;
+                    	margin: auto;
+                    	width: 90%;
+                    	max-width: 800px;
+                    }
+                    .resource-sub {
+                    	color: #77b;
+                    	font-weight: bold;
+                    	margin-top: 4px;
+                    	font-family: monospace;
+                    	margin-bottom: 1.6em;
                     }
                     .methods {
                         background-color: #eef;
                         padding: 1em;
                     }
                     h1 {
-                        font-size: 2.5em;
+                        font-size: 2.0em;
                     }
                     h2 {
                         border-bottom: 1px solid black;
                         margin-top: 1em;
                         margin-bottom: 0.5em;
-                        font-size: 2em;
+                        font-size: 1.85em;
                        }
                     h3 {
                         color: orange;
-                        font-size: 1.75em;
+                        font-size: 1.7em;
                         margin-top: 1.25em;
                         margin-bottom: 0em;
                     }
@@ -88,10 +102,17 @@
                         padding: 0em;
                         border-bottom: 2px solid white;
                     }
+                    h5 {
+                    	margin: 1em 0em 0.25em 0em;
+                    }
                     h6 {
                         font-size: 1.1em;
                         color: #99a;
                         margin: 0.5em 0em 0.25em 0em;
+                    }
+                    p {
+                    	margin-top: 1.0em;
+                    	margin-bottom: 0.5em;
                     }
                     dd {
                         margin-left: 1em;
@@ -131,6 +152,7 @@
                 </style>
             </head>
             <body>
+            	<div id="main">
                 <h1>
                     <xsl:choose>
                         <xsl:when test="wadl:doc[@title]">
@@ -144,11 +166,11 @@
                     <li><a href="#resources">Resources</a>
                         <xsl:apply-templates select="wadl:resources" mode="toc"/>
                     </li>
-                    <li><a href="#representations">Representations</a>
+                    <!-- li><a href="#representations">Representations</a>
                         <ul>
                             <xsl:apply-templates select="wadl:resources/descendant::wadl:representation" mode="toc"/>
                         </ul>
-                    </li>
+                    </li-->
                     <xsl:if test="descendant::wadl:fault">
                         <li><a href="#faults">Faults</a>
                             <ul>
@@ -164,6 +186,7 @@
                 <xsl:if test="wadl:resources/descendant::wadl:fault"><h2 id="faults">Faults</h2>
                     <xsl:apply-templates select="wadl:resources/descendant::wadl:fault" mode="list"/>
                 </xsl:if-->
+                </div>
             </body>
         </html>
     </xsl:template>
@@ -227,7 +250,9 @@
                 <xsl:otherwise><xsl:value-of select="@base"/></xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
-        <xsl:apply-templates select="wadl:resource" mode="list"/>
+        <xsl:apply-templates select="wadl:resource" mode="list">
+        	<xsl:with-param name="context"><xsl:value-of select="$base"/></xsl:with-param>
+        </xsl:apply-templates>
                 
     </xsl:template>
     
@@ -272,8 +297,10 @@
                                 </xsl:for-each>
                             </xsl:otherwise>
                         </xsl:choose>
-                        
                     </h3>
+                    <xsl:if test="wadl:doc[@title]">
+                    	<p class="resource-sub"><xsl:copy-of select="$name"/></p>
+                    </xsl:if>
                     <xsl:apply-templates select="wadl:doc"/>
                     <xsl:apply-templates select="." mode="param-group">
                         <xsl:with-param name="prefix">resource-wide</xsl:with-param>
@@ -356,9 +383,9 @@
     <xsl:template match="wadl:representation|wadl:fault">
         <xsl:variable name="id"><xsl:call-template name="get-id"/></xsl:variable>
         <li>
-            <a href="#{$id}">
+            <!-- a href="#{$id}"-->
                 <xsl:call-template name="representation-name"/>
-            </a>
+            <!-- /a -->
         </li>
     </xsl:template>    
     
