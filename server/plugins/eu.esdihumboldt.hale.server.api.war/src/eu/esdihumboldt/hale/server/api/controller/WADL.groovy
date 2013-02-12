@@ -272,6 +272,15 @@ class WADL {
 		RequestMappingInfo mappingInfo = firstEntry.key
 		HandlerMethod handlerMethod = firstEntry.value
 
+		Set<MediaType> mediaTypes = mappingInfo.consumesCondition.consumableMediaTypes
+		// request representations
+		for (MediaType mediaType in mediaTypes) {
+			WadlRepresentation wadlRepresentation = new WadlRepresentation()
+			wadlRepresentation.mediaType = mediaType.toString()
+
+			wadlRequest.representation << wadlRepresentation
+		}
+
 		Method javaMethod = handlerMethod.method
 
 		// request documentation
@@ -370,7 +379,7 @@ class WADL {
 			WadlResponse wadlResponse = new WadlResponse()
 
 			//TODO response status codes
-			wadlResponse.status << 200l;
+			// wadlResponse.status << 200l;
 
 			// response documentation from handlerMethod
 			wadlResponse.doc.addAll(WDocUtil.getWadlDocs([method.method], DocScope.RESPONSE, null, baseURI))
