@@ -37,13 +37,11 @@ import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.AugmentedValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.values.OccurringValues;
 import eu.esdihumboldt.hale.ui.service.values.OccurringValuesService;
+import eu.esdihumboldt.hale.ui.service.values.OccurringValuesUtil;
 
 /**
  * Service that determines what different values occur for specific
@@ -265,18 +263,9 @@ public class OccurringValuesServiceImpl implements OccurringValuesService {
 	@Override
 	public boolean updateOccuringValues(PropertyEntityDefinition property) {
 		// sanity check on property
-
-		// must have a value
-		boolean value = property.getDefinition().getPropertyType()
-				.getConstraint(HasValueFlag.class).isEnabled()
-				|| property.getDefinition().getPropertyType()
-						.getConstraint(AugmentedValueFlag.class).isEnabled();
-		if (!value)
-			return false;
-		// mustn't be a geometry
-		if (property.getDefinition().getPropertyType().getConstraint(GeometryType.class)
-				.isGeometry()) {
-			return false;
+		if (!OccurringValuesUtil.supportsOccurringValues(property)) {
+			throw new IllegalArgumentException(
+					"Determinining occurring values not supported for given property");
 		}
 
 		Map<PropertyEntityDefinition, OccurringValues> values;
