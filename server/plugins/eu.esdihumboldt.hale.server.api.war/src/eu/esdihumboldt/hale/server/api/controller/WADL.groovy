@@ -169,7 +169,9 @@ class WADL {
 			// resource documentation
 			wadlResource.doc.addAll(WDocUtil.getWadlDocs(resourceMethods, DocScope.RESOURCE, baseURI))
 
-			//TODO template parameters (PathVariable)
+			// template parameters (PathVariable)
+			// must be the same for all handler methods for that resource
+			wadlResource.param.addAll(generateTemplateParams(resourceMethods.find()))
 
 			// organize handler methods by HTTP method
 			Multimap methods = HashMultimap.create()
@@ -191,13 +193,13 @@ class WADL {
 				// method documentation
 				wadlMethod.doc.addAll(WDocUtil.getWadlDocs(methodMethods, DocScope.METHOD, baseURI))
 
-				//TODO method request
+				// method request
 				WadlRequest wr = generateRequest(mappedMethods)
 				if (wr) {
 					wadlMethod.request = wr
 				}
 
-				//TODO method responses
+				// method responses
 				for (Entry<RequestMappingInfo, HandlerMethod> entry in mappedMethods) {
 					/*
 					 * XXX what about if there are multiple handler methods w/
@@ -214,6 +216,46 @@ class WADL {
 
 		result.resources << wadResources
 		return result;
+	}
+
+	/**
+	 * Generate the template parameters from an annotated method.
+	 * 
+	 * @param method the java handler method
+	 * @return the template parameters or an empty list
+	 */
+	private def generateTemplateParams(Method method) {
+		def result = []
+
+		Annotation[][] annotations = method.parameterAnnotations
+		Class<?>[] paramTypes = method.parameterTypes
+		int parameterCounter = 0;
+
+		// final all PathVariable annotations
+		for (Annotation[] annotationArr in annotations) {
+			for (Annotation annotation : annotationArr) {
+				if (annotation instanceof PathVariable) {
+					PathVariable param = (PathVariable) annotation;
+
+					WadlParam waldParam = new WadlParam();
+					waldParam.name = param.value()
+					waldParam.style = WadlParamStyle.TEMPLATE
+					waldParam.required = true
+
+					parameterCounter = skipDefaultParams(paramTypes, parameterCounter)
+					if (paramTypes.length > parameterCounter) {
+						Class paramType = paramTypes[parameterCounter]
+						//XXX do something with param type?
+					}
+
+					result << waldParam
+				}
+
+				parameterCounter++;
+			}
+		}
+
+		result
 	}
 
 	private WadlRequest generateRequest(Collection<Entry<RequestMappingInfo, HandlerMethod>> methods) {
@@ -255,24 +297,6 @@ class WADL {
 					if (defaultValue) {
 						waldParam.setDefault(defaultValue)
 					}
-					wadlRequest.param << waldParam
-				}
-				else if (annotation instanceof PathVariable) {
-					//FIXME path variables should instead be treated in resource
-
-					PathVariable param = (PathVariable) annotation;
-
-					WadlParam waldParam = new WadlParam();
-					waldParam.name = param.value()
-					waldParam.style = WadlParamStyle.TEMPLATE
-					waldParam.required = true
-
-					parameterCounter = skipDefaultParams(paramTypes, parameterCounter)
-					if (paramTypes.length > parameterCounter) {
-						Class paramType = paramTypes[parameterCounter]
-						//XXX do something with param type?
-					}
-
 					wadlRequest.param << waldParam
 				}
 
