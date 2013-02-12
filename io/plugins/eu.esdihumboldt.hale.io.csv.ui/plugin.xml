@@ -42,6 +42,7 @@
          <provider
                ref="eu.esdihumboldt.hale.io.csv.reader.lookup">
          </provider>
+      </configPage>
       <configPage
             class="eu.esdihumboldt.hale.io.csv.ui.LookupTablePage"
             order="-4">
