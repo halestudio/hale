@@ -40,6 +40,16 @@ public enum DocScope {
 	/**
 	 * Response documentation scope.
 	 */
-	RESPONSE
+	RESPONSE,
+
+	/**
+	 * Representation documentation scope.
+	 */
+//	REPRESENTATION,
+
+	/**
+	 * Parameter documentation scope.
+	 */
+	PARAM
 
 }
