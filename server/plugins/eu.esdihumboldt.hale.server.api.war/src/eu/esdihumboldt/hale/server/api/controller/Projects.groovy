@@ -179,13 +179,24 @@ class Projects {
 		scope = DocScope.METHOD
 		),
 		@WDoc(
-		title = '',
 		content = { baseURI ->
 			WDocUtil.xhtml("""
 			<p>Example API call with <i>curl</i>:</p>
 			<code>curl -i -G ${baseURI}/project/test</code>
 			""")},
 		scope = DocScope.REQUEST
+		),
+		@WDoc(
+		content = { WDocUtil.xhtml('''
+<p>Response example:</p>
+<pre><code>{
+  "id":"test",
+  "active":true,
+  "status":"ACTIVE",
+  "location":"http://localhost:8080/api/project/test"
+}</code></pre>
+				''')	 },
+		scope = DocScope.RESPONSE
 		)
 	])
 	@RequestMapping(value = '/project/{id}', method = RequestMethod.GET, produces = 'application/json')
@@ -210,8 +221,8 @@ class Projects {
 	 *   does not exist
 	 */
 	protected def buildProjectInfo(String id, HttpServletRequest request) {
-		def status = projects.getStatus(id)
-		if (status) {
+		if (projects.projects.contains(id)) {
+			def status = projects.getStatus(id)
 			def info = [id: id, active: status == Status.ACTIVE, status: status]
 
 			// resource location
