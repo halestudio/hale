@@ -31,7 +31,7 @@ import java.lang.annotation.Target
 	/**
 	 * The documentation title.
 	 */
-	String title()
+	String title() default ''
 	/**
 	 * The closure describing the documentation content.
 	 * XXX
