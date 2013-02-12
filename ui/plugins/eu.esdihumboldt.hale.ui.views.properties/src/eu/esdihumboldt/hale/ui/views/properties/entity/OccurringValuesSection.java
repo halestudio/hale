@@ -21,11 +21,17 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
@@ -48,6 +54,8 @@ public class OccurringValuesSection extends AbstractEntityDefSection {
 	private TableViewer values;
 
 	private Button refresh;
+
+	private Button copy;
 
 	private OccurringValuesListener ovlistener;
 
@@ -84,7 +92,7 @@ public class OccurringValuesSection extends AbstractEntityDefSection {
 
 		// values table
 		values = new TableViewer(getWidgetFactory().createTable(page, SWT.MULTI | SWT.BORDER));
-		GridDataFactory.fillDefaults().grab(true, true).applyTo(values.getControl());
+		GridDataFactory.fillDefaults().grab(true, true).span(1, 2).applyTo(values.getControl());
 		values.setContentProvider(new ArrayContentProvider() {
 
 			@Override
@@ -99,6 +107,22 @@ public class OccurringValuesSection extends AbstractEntityDefSection {
 		});
 		values.setLabelProvider(new LabelProvider());
 		values.setInput(null);
+
+		// copy button
+		copy = getWidgetFactory().createButton(page, null, SWT.PUSH);
+		copy.setImage(PlatformUI.getWorkbench().getSharedImages()
+				.getImage(ISharedImages.IMG_TOOL_COPY));
+		copy.setToolTipText("Copy values to the clipboard");
+		copy.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				copyToClipboard();
+			}
+
+		});
+		GridDataFactory.swtDefaults().align(SWT.END, SWT.BEGINNING).grab(false, false)
+				.applyTo(copy);
 
 		// add listener to service
 		service.addListener(ovlistener = new OccurringValuesListener() {
@@ -122,6 +146,38 @@ public class OccurringValuesSection extends AbstractEntityDefSection {
 	}
 
 	/**
+	 * Copy the values table to the clipboard.
+	 */
+	private void copyToClipboard() {
+		if (values != null) {
+			Table table = values.getTable();
+			if (table.getSelectionCount() > 0) {
+				TableItem rows[] = table.getItems(); // getSelection();
+				StringBuilder sb = new StringBuilder();
+				int cc = table.getColumnCount();
+				if (cc == 0) {
+					// there is a column even if used like a list
+					cc = 1;
+				}
+				for (int row = 0; row < rows.length; row++) {
+					if (row > 0)
+						sb.append("\n");
+					TableItem item = rows[row];
+					for (int column = 0; column < cc; column++) {
+						if (column > 0)
+							sb.append(SWT.TAB);
+						sb.append(item.getText(column));
+					}
+				}
+				Clipboard clipBoard = new Clipboard(Display.getCurrent());
+				clipBoard.setContents(new Object[] { sb.toString() },
+						new Transfer[] { TextTransfer.getInstance() });
+				clipBoard.dispose();
+			}
+		}
+	}
+
+	/**
 	 * Update the section state.
 	 */
 	private void update() {
@@ -139,6 +195,7 @@ public class OccurringValuesSection extends AbstractEntityDefSection {
 					values.setInput(ov);
 					values.getControl().setEnabled(ov != null);
 					refresh.setEnabled(ov == null || !ov.isUpToDate());
+					copy.setEnabled(ov != null);
 
 					// TODO some icon to state that information is not
 					// up-to-date?
