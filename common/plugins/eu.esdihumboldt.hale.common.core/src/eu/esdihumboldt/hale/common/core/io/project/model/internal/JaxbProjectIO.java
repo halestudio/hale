@@ -50,7 +50,7 @@ public class JaxbProjectIO {
 	public static Project load(InputStream in) throws JAXBException {
 		JAXBContext jc;
 		JAXBElement<ProjectType> root = null;
-		jc = JAXBContext.newInstance(PROJECT_CONTEXT);
+		jc = JAXBContext.newInstance(PROJECT_CONTEXT, ProjectType.class.getClassLoader());
 		Unmarshaller u = jc.createUnmarshaller();
 
 		// it will debug problems while unmarshalling

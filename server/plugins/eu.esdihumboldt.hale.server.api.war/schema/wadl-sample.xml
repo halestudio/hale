@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<application xmlns="http://wadl.dev.java.net/2009/02" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://wadl.dev.java.net/2009/02 wadl.xsd">
+	<doc title="REST Service WADL" />
+	<resources base="http://localhost:8080/api/">
+		<resource path="application.wadl">
+			<method name="GET">
+				<request />
+				<response status="200">
+					<representation mediaType="application/xml" />
+				</response>
+			</method>
+		</resource>
+		<resource path="version">
+			<method name="GET">
+				<request />
+				<response status="200">
+					<representation mediaType="text/plain" />
+				</response>
+			</method>
+		</resource>
+		<resource path="project/{id}">
+			<doc title="Alignment project">
+				An alignment project that is installed on the server and may be
+				used for performing data transformations.
+			</doc>
+			<method name="POST">
+				<doc title="Publish a project archive">
+					Upload a project archive exported from HALE. The service will
+					attempt to install it and return information about the project
+					status.
+				</doc>
+				<request>
+					<doc title="Upload project archive">
+						<div:div xmlns:div="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/xhtml">
+							<p>Example API call with curl:</p>
+							<code>curl -i -F &quot;archive=@test.zip&quot;
+								http://localhost:8080/api/project/test</code>
+						</div:div>
+					</doc>
+					<param name="x" style="template" required="true" />
+				</request>
+				<response status="200">
+					<representation mediaType="application/json" />
+				</response>
+			</method>
+			<method name="GET">
+				<request>
+					<param name="y" style="template" required="true" />
+				</request>
+				<response status="200">
+					<representation mediaType="application/json" />
+				</response>
+			</method>
+		</resource>
+		<resource path="projects">
+			<method name="GET">
+				<request />
+				<response status="200">
+					<representation mediaType="application/json" />
+				</response>
+			</method>
+		</resource>
+		<resource path="">
+			<method name="GET">
+				<request />
+				<response status="200">
+					<representation mediaType="application/xhtml+xml" />
+				</response>
+			</method>
+		</resource>
+	</resources>
+</application>

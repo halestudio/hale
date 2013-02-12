@@ -134,7 +134,8 @@ public class JaxbToAlignment extends
 	public static AlignmentType load(InputStream in, IOReporter reporter) throws JAXBException {
 		JAXBContext jc;
 		JAXBElement<AlignmentType> root = null;
-		jc = JAXBContext.newInstance(JaxbAlignmentIO.ALIGNMENT_CONTEXT);
+		jc = JAXBContext.newInstance(JaxbAlignmentIO.ALIGNMENT_CONTEXT,
+				AlignmentType.class.getClassLoader());
 		Unmarshaller u = jc.createUnmarshaller();
 
 		// it will debug problems while unmarshalling
