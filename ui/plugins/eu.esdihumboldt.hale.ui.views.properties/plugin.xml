@@ -352,6 +352,16 @@
                   type="eu.esdihumboldt.hale.common.align.model.Cell">
             </input>
          </propertySection>
+         <propertySection
+               class="eu.esdihumboldt.hale.ui.views.properties.entity.OccurringValuesSection"
+               enablesFor="1"
+               filter="eu.esdihumboldt.hale.ui.views.properties.entity.OccurringValuesFilter"
+               id="eu.esdihumboldt.hale.ui.views.properties.occurring_values.section"
+               tab="eu.esdihumboldt.hale.ui.views.properties.occurring_values">
+            <input
+                  type="eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition">
+            </input>
+         </propertySection>
       </propertySections>
    </extension>
    <extension
@@ -416,6 +426,12 @@
                category="eu.esdihumboldt.hale.ui.views.properties.definition"
                id="eu.esdihumboldt.hale.ui.views.properties.properties"
                label="Properties">
+         </propertyTab>
+         <propertyTab
+               afterTab="eu.esdihumboldt.hale.ui.views.properties.definition.propertytype"
+               category="eu.esdihumboldt.hale.ui.views.properties.definition"
+               id="eu.esdihumboldt.hale.ui.views.properties.occurring_values"
+               label="Occurring values">
          </propertyTab>
       </propertyTabs>
    </extension>
