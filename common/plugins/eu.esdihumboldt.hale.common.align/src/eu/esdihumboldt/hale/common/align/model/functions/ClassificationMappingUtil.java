@@ -25,7 +25,9 @@ import com.google.common.collect.Multimap;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
+import eu.esdihumboldt.hale.common.lookup.LookupService;
 import eu.esdihumboldt.hale.common.lookup.LookupTable;
+import eu.esdihumboldt.hale.common.lookup.LookupTableInfo;
 import eu.esdihumboldt.hale.common.lookup.impl.LookupTableImpl;
 
 /**
@@ -47,7 +49,18 @@ public class ClassificationMappingUtil implements ClassificationMappingFunction 
 			ServiceProvider serviceProvider) {
 		// TODO new method: complex param
 
-		// TODO retrieve from service if applicable
+		try {
+			if (!(parameters.get(PARAMETER_LOOKUPTABLE_ID).isEmpty())) {
+				LookupService lookupServiceImpl = serviceProvider.getService(LookupService.class);
+				Collection<? extends Value> trashMap = parameters.get(PARAMETER_LOOKUPTABLE_ID);
+				LookupTableInfo lookupTableInfo = lookupServiceImpl.getTable(trashMap.iterator()
+						.next().as(String.class));
+				return lookupTableInfo.getTable();
+			}
+		} catch (NullPointerException e) {
+			System.out
+					.println("The serviceprovider isnt set in ClassificationMappingExplanation.getExplanation()");
+		}
 
 		// lookup table in strangely encoded string parameter
 		Collection<? extends Value> mappings = parameters.get(PARAMETER_CLASSIFICATIONS);
@@ -67,5 +80,4 @@ public class ClassificationMappingUtil implements ClassificationMappingFunction 
 			throw new IllegalStateException("Failed to decode classification mapping.");
 		}
 	}
-
 }

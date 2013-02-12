@@ -19,9 +19,14 @@ package eu.esdihumboldt.hale.common.align.model.functions;
 /**
  * ClassificationMapping function constants.
  * 
- * @author Kai Schwierczek
+ * @author Kai Schwierczek, Dominik Reuter
  */
 public interface ClassificationMappingFunction {
+
+	/**
+	 * Name of the parameter specifying the lookupTable.
+	 */
+	public static final String PARAMETER_LOOKUPTABLE_ID = "lookupTableID";
 
 	/**
 	 * the classification mapping Id
