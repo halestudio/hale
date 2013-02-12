@@ -167,7 +167,7 @@ class WADL {
 			def resourceMethods = resourceHandlers.get(pattern).collect{ it.value.method }
 
 			// resource documentation
-			wadlResource.doc.addAll(WDocUtil.getWadlDocs(resourceMethods, DocScope.RESOURCE, baseURI))
+			wadlResource.doc.addAll(WDocUtil.getWadlDocs(resourceMethods, DocScope.RESOURCE, null, baseURI))
 
 			// template parameters (PathVariable)
 			// must be the same for all handler methods for that resource
@@ -191,7 +191,7 @@ class WADL {
 				def methodMethods = mappedMethods.collect { it.value.method }
 
 				// method documentation
-				wadlMethod.doc.addAll(WDocUtil.getWadlDocs(methodMethods, DocScope.METHOD, baseURI))
+				wadlMethod.doc.addAll(WDocUtil.getWadlDocs(methodMethods, DocScope.METHOD, null, baseURI))
 
 				// method request
 				WadlRequest wr = generateRequest(mappedMethods)
@@ -269,7 +269,7 @@ class WADL {
 		Method javaMethod = handlerMethod.method
 
 		// request documentation
-		wadlRequest.doc.addAll(WDocUtil.getWadlDocs([javaMethod], DocScope.REQUEST, baseURI))
+		wadlRequest.doc.addAll(WDocUtil.getWadlDocs([javaMethod], DocScope.REQUEST, null, baseURI))
 
 		Annotation[][] annotations = javaMethod.parameterAnnotations
 		Class<?>[] paramTypes = javaMethod.parameterTypes
@@ -341,7 +341,7 @@ class WADL {
 			wadlResponse.status << 200l;
 
 			// response documentation from handlerMethod
-			wadlResponse.doc.addAll(WDocUtil.getWadlDocs([method.method], DocScope.RESPONSE, baseURI))
+			wadlResponse.doc.addAll(WDocUtil.getWadlDocs([method.method], DocScope.RESPONSE, null, baseURI))
 
 			for (MediaType mediaType in mediaTypes) {
 				WadlRepresentation wadlRepresentation = new WadlRepresentation()
