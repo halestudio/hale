@@ -75,6 +75,11 @@ public class ProjectToJaxb {
 			result.getResource().add(toIOConfigurationType(resource));
 		}
 
+		// export configs
+		for (IOConfiguration exportConf : project.getExportConfigurations()) {
+			result.getExportConfig().add(toIOConfigurationType(exportConf));
+		}
+
 		// project files
 		for (ProjectFileInfo file : project.getProjectFiles()) {
 			result.getFile().add(toProjectFileType(file));

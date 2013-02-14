@@ -64,6 +64,10 @@ public class JaxbToProject {
 			result.getResources().add(toIOConfiguration(resource));
 		}
 
+		for (IOConfigurationType exportConfig : project.getExportConfig()) {
+			result.getExportConfigurations().add(toIOConfiguration(exportConfig));
+		}
+
 		for (ProjectFileType file : project.getFile()) {
 			result.getProjectFiles().add(
 					new ProjectFileInfo(file.getName(), URI.create(file.getLocation())));
