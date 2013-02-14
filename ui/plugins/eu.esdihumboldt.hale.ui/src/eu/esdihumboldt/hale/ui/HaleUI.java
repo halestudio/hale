@@ -28,6 +28,8 @@ import org.eclipse.ui.operations.UndoRedoActionGroup;
 import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.core.service.ServiceManager;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
+import eu.esdihumboldt.hale.ui.service.project.ProjectService;
+import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
 
 /**
  * Hale UI utility methods.
@@ -38,15 +40,32 @@ public abstract class HaleUI {
 
 	private static final ServiceProvider uiServiceProvider = new ServiceProvider() {
 
+		private boolean initialized = false;
+
 		/**
 		 * Project scope services
 		 */
-		private final ServiceProvider projectScope = new ServiceManager(
-				ServiceManager.SCOPE_PROJECT);
+		private final ServiceManager projectScope = new ServiceManager(ServiceManager.SCOPE_PROJECT);
 
 		@SuppressWarnings("unchecked")
 		@Override
 		public <T> T getService(Class<T> serviceInterface) {
+			synchronized (this) {
+				if (!initialized) {
+					ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
+							ProjectService.class);
+					ps.addListener(new ProjectServiceAdapter() {
+
+						@Override
+						public void onClean() {
+							projectScope.clear();
+						}
+
+					});
+				}
+				initialized = true;
+			}
+
 			// first try project scope
 			T service = projectScope.getService(serviceInterface);
 

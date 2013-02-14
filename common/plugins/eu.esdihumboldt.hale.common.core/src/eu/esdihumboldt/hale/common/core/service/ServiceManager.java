@@ -109,4 +109,13 @@ public class ServiceManager implements ServiceProvider, ServiceConstants {
 		return serviceScope;
 	}
 
+	/**
+	 * Remove all service instances.
+	 */
+	public void clear() {
+		synchronized (services) {
+			services.clear();
+		}
+	}
+
 }
