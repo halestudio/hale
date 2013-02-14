@@ -222,21 +222,11 @@ public class Project implements ProjectInfo {
 	}
 
 	/**
-	 * TODO
-	 * 
-	 * @return the configurations
+	 * @return the exportConfigurations
 	 */
 	public List<IOConfiguration> getExportConfigurations() {
 		return exportConfigurations;
 	}
-
-//	public void addExportConfiguration(IOConfiguration exportConfiguration) {
-//		exportConfigurations.add(exportConfiguration);
-//	}
-//
-//	public boolean removeExportConfiguration(IOConfiguration exportConfiguration) {
-//		return exportConfigurations.remove(exportConfiguration);
-//	}
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.core.io.project.ProjectInfo#getDescription()
