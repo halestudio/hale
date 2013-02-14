@@ -40,7 +40,7 @@ public class CastorAlignmentIOTest extends DefaultAlignmentIOTest {
 
 	@Override
 	protected void addBaseAlignment(MutableAlignment align, final URI newBase, TypeIndex source,
-			TypeIndex target) {
+			TypeIndex target) throws Exception {
 		CastorAlignmentIO.addBaseAlignment(align, newBase, source, target, new DefaultIOReporter(
 				new Locatable() {
 

@@ -101,13 +101,17 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	 */
 	@Override
 	public void addCell(Cell cell) {
-		// XXX a way around the MutableCell? Move setId to Cell?
 		if (cell.getId() == null) {
+			// the cell has to be a newly created cell
 			String id;
 			do {
 				id = "C" + UUID.randomUUID().toString();
 			} while (idToCell.containsKey(id));
-			((MutableCell) cell).setId(id);
+			if (cell instanceof MutableCell)
+				((MutableCell) cell).setId(id);
+			else
+				throw new IllegalStateException(
+						"Non-Mutable cell without a cell id at the wrong place!");
 		}
 		internalAdd(cell);
 	}

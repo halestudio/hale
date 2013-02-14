@@ -67,4 +67,12 @@ public abstract class AlignmentServiceAdapter implements AlignmentServiceListene
 		// override me
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener#alignmentChanged()
+	 */
+	@Override
+	public void alignmentChanged() {
+		// override me
+	}
+
 }

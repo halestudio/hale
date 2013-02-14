@@ -41,6 +41,7 @@ import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.Priority;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
+import eu.esdihumboldt.hale.ui.service.align.BaseAlignmentLoader;
 
 /**
  * Decorator that adds undo/redo support to an alignment service.
@@ -458,6 +459,7 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 	 */
 	@Override
 	public void setCellProperty(String cellId, String propertyName, Object property) {
+		// TODO
 		if (propertyName.equals(Cell.PROPERTY_PRIORITY)) {
 			if (property instanceof Priority) {
 				Priority newPriority = (Priority) property;
@@ -471,4 +473,12 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 		}
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.align.internal.AlignmentServiceDecorator#addBaseAlignment(eu.esdihumboldt.hale.ui.service.align.BaseAlignmentLoader)
+	 */
+	@Override
+	public boolean addBaseAlignment(BaseAlignmentLoader loader) {
+		// TODO implement undo support?
+		return alignmentService.addBaseAlignment(loader);
+	}
 }

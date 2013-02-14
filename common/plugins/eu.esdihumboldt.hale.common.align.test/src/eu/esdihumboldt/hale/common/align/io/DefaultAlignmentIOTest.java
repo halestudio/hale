@@ -552,9 +552,10 @@ public abstract class DefaultAlignmentIOTest {
 	 * @param newBase the base alignment to add
 	 * @param source the source types for resolving source entities
 	 * @param target the target types for resolving target entities
+	 * @throws Exception if an error occurs adding the alignment
 	 */
 	protected abstract void addBaseAlignment(MutableAlignment align, URI newBase, TypeIndex source,
-			TypeIndex target);
+			TypeIndex target) throws Exception;
 
 	/**
 	 * Determine if the alignment I/O supports annotations.
