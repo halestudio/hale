@@ -47,19 +47,19 @@ public class ClassificationMapping extends
 			ListMultimap<String, PropertyValue> variables, String resultName,
 			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
 			TransformationLog log) throws TransformationException, NoResultException {
-		try {
-			checkParameter(PARAMETER_CLASSIFICATIONS, 1);
-		} catch (TransformationException e) {
-			log.warn(log.createMessage("No classification specified", e));
-		}
-
 		String source = variables.values().iterator().next().getValueAs(String.class);
 
 		LookupTable lookup = ClassificationMappingUtil.getClassificationLookup(getParameters(),
 				getExecutionContext());
-		Value target = lookup.lookup(Value.of(source));
-		if (target != null) {
-			return target.getValue();
+		if (lookup == null) {
+//			throw new TransformationException("No classification specified");
+			log.warn(log.createMessage("No classification specified", null));
+		}
+		else {
+			Value target = lookup.lookup(Value.of(source));
+			if (target != null) {
+				return target.getValue();
+			}
 		}
 
 		String notClassifiedAction = getOptionalParameter(PARAMETER_NOT_CLASSIFIED_ACTION,
