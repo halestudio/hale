@@ -28,6 +28,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerFilter;
@@ -41,6 +42,7 @@ import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.io.gml.writer.XmlWriterBase;
@@ -224,7 +226,7 @@ public class RootElementPage extends
 	private void updateList() {
 		if (list != null // during enable if content not yet created
 				&& getWizard().getProvider() != null) {
-			// TODO instead of showing all elemets allow filtering for elements
+			// TODO instead of showing all elements allow filtering for elements
 			// that can hold the type in some form?
 			SchemaSpace schemas = getWizard().getProvider().getTargetSchema();
 			XmlIndex index = StreamGmlWriter.getXMLIndex(schemas);
@@ -234,4 +236,25 @@ public class RootElementPage extends
 		}
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.ui.io.IOWizardPage#loadPreSelection(eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration)
+	 */
+	@Override
+	public void loadPreSelection(IOConfiguration conf) {
+
+		String name = conf.getProviderConfiguration().get(StreamGmlWriter.PARAM_ROOT_ELEMENT_NAME)
+				.getStringRepresentation();
+		String namespace = conf.getProviderConfiguration()
+				.get(StreamGmlWriter.PARAM_ROOT_ELEMENT_NAMESPACE).getStringRepresentation();
+		String elementName = namespace + "/" + name;
+
+		SchemaSpace schemas = getWizard().getProvider().getTargetSchema();
+		XmlIndex index = StreamGmlWriter.getXMLIndex(schemas);
+
+		for (XmlElement element : index.getElements().values()) {
+			if (element.getIdentifier().equals(elementName)) {
+				list.setSelection(new StructuredSelection(element), true);
+			}
+		}
+	}
 }
