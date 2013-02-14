@@ -134,4 +134,11 @@ public interface ProjectService {
 	 */
 	public LocationUpdater getLocationUpdater();
 
+	/**
+	 * Get all the names of the saved export configurations
+	 * 
+	 * @return the export configuration names
+	 */
+	public List<String> getExportConfigurationNames();
+
 }
