@@ -29,6 +29,7 @@ import org.eclipse.zest.core.viewers.ZoomContributionViewItem;
 import org.eclipse.zest.layouts.LayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.graph.content.CellGraphContentProvider;
 import eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider;
 import eu.esdihumboldt.hale.ui.util.graph.ExportGraphAction;
@@ -77,7 +78,7 @@ public abstract class AbstractMappingView extends PropertiesViewPart implements
 	 * @return the label provider
 	 */
 	protected IBaseLabelProvider createLabelProvider() {
-		return new GraphLabelProvider();
+		return new GraphLabelProvider(HaleUI.getServiceProvider());
 	}
 
 	/**

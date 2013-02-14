@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.Function;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.ui.common.graph.figures.FunctionFigure;
 import eu.esdihumboldt.hale.ui.common.graph.figures.ParameterFigure;
 import eu.esdihumboldt.hale.ui.util.ResourceManager;
@@ -47,15 +48,18 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 
 	private final ResourceManager resourceManager = new ResourceManager();
 
-	private boolean showAll;
+	private final boolean showAll;
 
 	/**
 	 * Default constructor
 	 * 
+	 * @param provider the service provider that may be needed to obtain cell
+	 *            explanations, may be <code>null</code>
 	 * @param showAll true if additional information (tooltips, etc.) should be
 	 *            shown
 	 */
-	public FunctionGraphLabelProvider(boolean showAll) {
+	public FunctionGraphLabelProvider(ServiceProvider provider, boolean showAll) {
+		super(provider);
 		final Display display = Display.getCurrent();
 
 		this.showAll = showAll;

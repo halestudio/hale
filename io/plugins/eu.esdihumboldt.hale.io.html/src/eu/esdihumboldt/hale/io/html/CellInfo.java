@@ -22,6 +22,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellExplanation;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.util.Identifiers;
 
 /**
@@ -75,7 +76,7 @@ public class CellInfo implements ICellInfo {
 			}
 		}
 
-		return cellExpl.getExplanation(cell);
+		return cellExpl.getExplanation(cell, HaleUI.getServiceProvider());
 	}
 
 	/**
@@ -95,7 +96,7 @@ public class CellInfo implements ICellInfo {
 			}
 		}
 
-		return cellExpl.getExplanationAsHtml(cell);
+		return cellExpl.getExplanationAsHtml(cell, HaleUI.getServiceProvider());
 	}
 
 	/**

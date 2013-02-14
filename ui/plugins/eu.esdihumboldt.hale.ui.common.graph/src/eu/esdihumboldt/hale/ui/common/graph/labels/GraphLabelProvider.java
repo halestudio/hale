@@ -39,6 +39,7 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
@@ -83,14 +84,20 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 
 	private final FunctionLabelProvider functionLabels = new FunctionLabelProvider();
 
+	private final ServiceProvider serviceProvider;
+
 	// TODO set colors for function in graph?
 
 	/**
 	 * Default constructor
+	 * 
+	 * @param provider the service provider that may be needed to obtain cell
+	 *            explanations, may be <code>null</code>
 	 */
-	public GraphLabelProvider() {
+	public GraphLabelProvider(ServiceProvider provider) {
 		super();
 
+		serviceProvider = provider;
 		definitionLabels = createDefinitionLabels();
 
 		final Display display = Display.getCurrent();
@@ -330,7 +337,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			if (function != null) {
 				CellExplanation explanation = function.getExplanation();
 				if (explanation != null) {
-					String text = explanation.getExplanation(cell);
+					String text = explanation.getExplanation(cell, serviceProvider);
 					if (text != null) {
 						return new WrappedText(text, 400);
 					}
