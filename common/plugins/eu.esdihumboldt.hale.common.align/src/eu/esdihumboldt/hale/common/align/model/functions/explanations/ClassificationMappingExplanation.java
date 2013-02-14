@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingFu
 import eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingUtil;
 import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.lookup.LookupTable;
 
 /**
@@ -41,13 +42,12 @@ public class ClassificationMappingExplanation extends AbstractCellExplanation im
 			+ "{2}\nNot mapped source values will result in the following target value: {3}.";
 
 	@Override
-	public String getExplanation(Cell cell) {
+	public String getExplanation(Cell cell, ServiceProvider provider) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
-		// FIXME provide service provider!
-		// Cant use this HaleUI.getServiceProvider() to fix it, cycle problems
+
 		LookupTable lookup = ClassificationMappingUtil.getClassificationLookup(
-				cell.getTransformationParameters(), null);
+				cell.getTransformationParameters(), provider);
 		ListMultimap<Value, Value> revLookup = lookup.reverse();
 		String notClassifiedAction = CellUtil.getFirstParameter(cell,
 				PARAMETER_NOT_CLASSIFIED_ACTION).as(String.class);
@@ -86,13 +86,12 @@ public class ClassificationMappingExplanation extends AbstractCellExplanation im
 	}
 
 	@Override
-	public String getExplanationAsHtml(Cell cell) {
+	public String getExplanationAsHtml(Cell cell, ServiceProvider provider) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
 
-		// FIXME provide service provider!
 		LookupTable lookup = ClassificationMappingUtil.getClassificationLookup(
-				cell.getTransformationParameters(), null);
+				cell.getTransformationParameters(), provider);
 		ListMultimap<Value, Value> revLookup = lookup.reverse();
 		String notClassifiedAction = CellUtil.getFirstParameter(cell,
 				PARAMETER_NOT_CLASSIFIED_ACTION).as(String.class);
@@ -136,9 +135,7 @@ public class ClassificationMappingExplanation extends AbstractCellExplanation im
 
 	@Override
 	protected String getExplanation(Cell cell, boolean html) {
-		if (html)
-			return getExplanationAsHtml(cell);
-		else
-			return getExplanation(cell);
+		// will not be called
+		return null;
 	}
 }

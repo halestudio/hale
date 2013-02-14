@@ -42,6 +42,7 @@ import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.graph.content.TransformationTreeContentProvider;
 import eu.esdihumboldt.hale.ui.common.graph.labels.TransformationTreeLabelProvider;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
@@ -255,7 +256,7 @@ public class TransformationView extends AbstractMappingView {
 	 */
 	@Override
 	protected IBaseLabelProvider createLabelProvider() {
-		return new TransformationTreeLabelProvider();
+		return new TransformationTreeLabelProvider(HaleUI.getServiceProvider());
 	}
 
 	/**

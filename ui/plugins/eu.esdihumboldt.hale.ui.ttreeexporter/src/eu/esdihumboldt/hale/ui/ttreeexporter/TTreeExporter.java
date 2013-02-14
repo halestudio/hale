@@ -23,6 +23,7 @@ import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 import eu.esdihumboldt.cst.extension.hooks.TransformationTreeHook;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.graph.content.TransformationTreeContentProvider;
 import eu.esdihumboldt.hale.ui.common.graph.labels.TransformationTreeLabelProvider;
 import eu.esdihumboldt.hale.ui.util.graph.ExportGraphAction;
@@ -48,7 +49,8 @@ public class TTreeExporter implements TransformationTreeHook {
 			@Override
 			public void run() {
 				final TransformationTreeContentProvider contentProvider = new TransformationTreeContentProvider();
-				final TransformationTreeLabelProvider labelProvider = new TransformationTreeLabelProvider();
+				final TransformationTreeLabelProvider labelProvider = new TransformationTreeLabelProvider(
+						HaleUI.getServiceProvider());
 				final TreeLayoutAlgorithm layoutAlgorithm = new TreeLayoutAlgorithm(
 						TreeLayoutAlgorithm.RIGHT_LEFT);
 				OffscreenGraph offscreenGraph = new OffscreenGraph(1024, 768) {

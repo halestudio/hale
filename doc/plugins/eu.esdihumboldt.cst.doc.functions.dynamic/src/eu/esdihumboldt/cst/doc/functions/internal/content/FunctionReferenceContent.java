@@ -223,7 +223,9 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 							LayoutAlgorithm algo = new FunctionTreeLayoutAlgorithm();
 
 							FunctionGraphContentProvider stcp = new FunctionGraphContentProvider();
-							FunctionGraphLabelProvider fglp = new FunctionGraphLabelProvider(false);
+							// XXX no service provider given
+							FunctionGraphLabelProvider fglp = new FunctionGraphLabelProvider(null,
+									false);
 							viewer.setContentProvider(stcp);
 							viewer.setLabelProvider(fglp);
 							viewer.setInput(function);

@@ -37,6 +37,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTreeUtil;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
@@ -64,9 +65,12 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 
 	/**
 	 * Default constructor
+	 * 
+	 * @param provider the service provider that may be needed to obtain cell
+	 *            explanations, may be <code>null</code>
 	 */
-	public TransformationTreeLabelProvider() {
-		super();
+	public TransformationTreeLabelProvider(ServiceProvider provider) {
+		super(provider);
 
 		Display display = PlatformUI.getWorkbench().getDisplay();
 		disabledBackgroundColor = new Color(display, 240, 240, 240);

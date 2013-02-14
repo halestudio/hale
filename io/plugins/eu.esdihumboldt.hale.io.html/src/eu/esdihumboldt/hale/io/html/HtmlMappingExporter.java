@@ -60,6 +60,7 @@ import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfoAware;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.graph.content.CellGraphContentProvider;
 import eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider;
 import eu.esdihumboldt.hale.ui.util.DisplayThread;
@@ -345,7 +346,7 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements Proj
 					@Override
 					protected void configureViewer(GraphViewer viewer) {
 						IContentProvider cgcp = new CellGraphContentProvider();
-						GraphLabelProvider glp = new GraphLabelProvider();
+						GraphLabelProvider glp = new GraphLabelProvider(HaleUI.getServiceProvider());
 						viewer.setContentProvider(cgcp);
 						viewer.setLabelProvider(glp);
 						viewer.setInput(cell);
