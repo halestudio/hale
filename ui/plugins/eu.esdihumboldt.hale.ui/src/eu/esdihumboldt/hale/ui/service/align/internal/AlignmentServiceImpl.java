@@ -15,13 +15,17 @@
  */
 package eu.esdihumboldt.hale.ui.service.align.internal;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map.Entry;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
+import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
@@ -29,6 +33,7 @@ import eu.esdihumboldt.hale.common.align.model.Priority;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceAdapter;
+import eu.esdihumboldt.hale.ui.service.align.BaseAlignmentLoader;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
 
@@ -84,6 +89,11 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 
 			@Override
 			public void cellsAdded(Iterable<Cell> cells) {
+				projectService.setChanged();
+			}
+
+			@Override
+			public void alignmentChanged() {
 				projectService.setChanged();
 			}
 
@@ -144,6 +154,14 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 			}
 		}
 
+		// add base alignment info
+		synchronized (this) {
+			// TODO this needs more complicated merging
+			for (Entry<String, URI> baseAlignment : alignment.getBaseAlignments().entrySet())
+				this.alignment.addBaseAlignment(baseAlignment.getKey(), baseAlignment.getValue(),
+						Collections.<BaseAlignmentCell> emptyList());
+		}
+
 		if (!added.isEmpty()) {
 			notifyCellsAdded(added);
 		}
@@ -187,7 +205,20 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 			throw new IllegalArgumentException("Mandatory parameter is null");
 		}
 		Cell cell = getAlignment().getCell(cellId);
-		if (cell instanceof MutableCell) {
+		if (cell != null && Cell.PROPERTY_DISABLED_FOR.equals(propertyName)) {
+			if (property instanceof Cell) {
+				Cell other = (Cell) property;
+				if (!AlignmentUtil.isTypeCell(other))
+					throw new IllegalArgumentException();
+				// how to enable again? Check whether other is disabled in the
+				// main cell and not in the base cell, in which case it is
+				// enabled?
+				cell.setDisabledFor(other, true);
+			}
+			else
+				throw new IllegalArgumentException();
+		}
+		else if (cell instanceof MutableCell) {
 			MutableCell mutableCell = (MutableCell) cell;
 			if (Cell.PROPERTY_PRIORITY.equals(propertyName)) {
 				if (property instanceof Priority) {
@@ -212,4 +243,18 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 		}
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.align.AlignmentService#addBaseAlignment(eu.esdihumboldt.hale.ui.service.align.BaseAlignmentLoader)
+	 *      )
+	 */
+	@Override
+	public boolean addBaseAlignment(BaseAlignmentLoader loader) {
+		boolean success;
+		synchronized (this) {
+			success = loader.load(alignment);
+		}
+		if (success)
+			notifyAlignmentChanged();
+		return success;
+	}
 }

@@ -40,7 +40,7 @@ public class JaxbAlignmentIOTest extends DefaultAlignmentIOTest {
 
 	@Override
 	protected void addBaseAlignment(MutableAlignment align, final URI newBase, TypeIndex source,
-			TypeIndex target) {
+			TypeIndex target) throws Exception {
 		JaxbAlignmentIO.addBaseAlignment(align, newBase, source, target, new DefaultIOReporter(
 				new Locatable() {
 

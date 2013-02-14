@@ -165,9 +165,10 @@ public class JaxbToAlignment extends
 	 *            references
 	 * @param reporter the I/O reporter to report any errors to, may be
 	 *            <code>null</code>
+	 * @throws IOException if adding the base alignment fails
 	 */
 	public static void addBaseAlignment(MutableAlignment alignment, URI newBase,
-			TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter) {
+			TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter) throws IOException {
 		new JaxbToAlignment().internalAddBaseAlignment(alignment, newBase, sourceTypes,
 				targetTypes, reporter);
 	}
@@ -176,8 +177,9 @@ public class JaxbToAlignment extends
 	 * Create the converted alignment.
 	 * 
 	 * @return the resolved alignment
+	 * @throws IOException if a base alignment couldn't be loaded
 	 */
-	public MutableAlignment convert() {
+	public MutableAlignment convert() throws IOException {
 		return super.createAlignment(alignment, sourceTypes, targetTypes, reporter);
 	}
 

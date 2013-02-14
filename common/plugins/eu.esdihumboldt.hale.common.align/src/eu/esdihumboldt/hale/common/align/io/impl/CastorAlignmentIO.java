@@ -60,9 +60,11 @@ public class CastorAlignmentIO {
 	 * @throws MappingException if the mapping could not be loaded
 	 * @throws MarshalException if the alignment could not be read
 	 * @throws ValidationException if the input stream did not provide valid XML
+	 * @throws IOException if loading of base alignments failed
 	 */
 	public static MutableAlignment load(InputStream in, IOReporter reporter, TypeIndex sourceTypes,
-			TypeIndex targetTypes) throws MappingException, MarshalException, ValidationException {
+			TypeIndex targetTypes) throws MappingException, MarshalException, ValidationException,
+			IOException {
 		AlignmentBean bean = AlignmentBean.load(in, reporter);
 		return bean.createAlignment(reporter, sourceTypes, targetTypes);
 	}
@@ -78,9 +80,10 @@ public class CastorAlignmentIO {
 	 *            references
 	 * @param reporter the I/O reporter to report any errors to, may be
 	 *            <code>null</code>
+	 * @throws IOException if adding the base alignment fails
 	 */
 	public static void addBaseAlignment(MutableAlignment alignment, URI newBase,
-			TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter) {
+			TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter) throws IOException {
 		AlignmentBean.addBaseAlignment(alignment, newBase, sourceTypes, targetTypes, reporter);
 	}
 

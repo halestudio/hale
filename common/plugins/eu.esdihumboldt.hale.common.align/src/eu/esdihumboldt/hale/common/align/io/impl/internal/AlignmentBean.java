@@ -125,9 +125,10 @@ public class AlignmentBean extends
 	 *            references
 	 * @param reporter the I/O reporter to report any errors to, may be
 	 *            <code>null</code>
+	 * @throws IOException if adding the base alignment fails
 	 */
 	public static void addBaseAlignment(MutableAlignment alignment, URI newBase,
-			TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter) {
+			TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter) throws IOException {
 		new AlignmentBean().internalAddBaseAlignment(alignment, newBase, sourceTypes, targetTypes,
 				reporter);
 	}
@@ -163,9 +164,10 @@ public class AlignmentBean extends
 	 * @param targetTypes the target types to use for resolving definition
 	 *            references
 	 * @return the alignment
+	 * @throws IOException if creating the alignment fails
 	 */
 	public MutableAlignment createAlignment(IOReporter reporter, TypeIndex sourceTypes,
-			TypeIndex targetTypes) {
+			TypeIndex targetTypes) throws IOException {
 		return super.createAlignment(this, sourceTypes, targetTypes, reporter);
 	}
 

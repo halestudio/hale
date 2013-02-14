@@ -136,6 +136,11 @@ public class TransformationView extends AbstractMappingView {
 			}
 
 			@Override
+			public void alignmentChanged() {
+				update();
+			}
+
+			@Override
 			public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
 				final Display display = PlatformUI.getWorkbench().getDisplay();
 				display.syncExec(new Runnable() {
