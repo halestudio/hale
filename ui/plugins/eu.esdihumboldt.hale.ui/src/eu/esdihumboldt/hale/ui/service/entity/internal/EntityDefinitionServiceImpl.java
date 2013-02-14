@@ -88,7 +88,7 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 	 * @param alignmentService the alignment service
 	 * @param projectService the project service
 	 */
-	public EntityDefinitionServiceImpl(AlignmentService alignmentService,
+	public EntityDefinitionServiceImpl(final AlignmentService alignmentService,
 			ProjectService projectService) {
 		super();
 
@@ -118,6 +118,12 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 			public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
 				// currently no cell property that affects entity definition
 				// contexts
+			}
+
+			@Override
+			public void alignmentChanged() {
+				// XXX clear first?
+				addMissingContexts(alignmentService.getAlignment().getCells());
 			}
 		});
 

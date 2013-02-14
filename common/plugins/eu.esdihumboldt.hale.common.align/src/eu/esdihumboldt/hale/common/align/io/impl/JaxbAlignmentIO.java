@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.hale.common.align.io.impl;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
@@ -57,9 +58,10 @@ public class JaxbAlignmentIO {
 	 *            references
 	 * @return the alignment
 	 * @throws JAXBException if reading the alignment failed
+	 * @throws IOException if loading of base alignments failed
 	 */
 	public static MutableAlignment load(InputStream in, IOReporter reporter, TypeIndex sourceTypes,
-			TypeIndex targetTypes) throws JAXBException {
+			TypeIndex targetTypes) throws JAXBException, IOException {
 		AlignmentType genAlignment = JaxbToAlignment.load(in, reporter);
 		// convert to alignment
 		return new JaxbToAlignment(genAlignment, reporter, sourceTypes, targetTypes).convert();
@@ -76,9 +78,10 @@ public class JaxbAlignmentIO {
 	 *            references
 	 * @param reporter the I/O reporter to report any errors to, may be
 	 *            <code>null</code>
+	 * @throws IOException if adding the base alignment failed
 	 */
 	public static void addBaseAlignment(MutableAlignment alignment, URI newBase,
-			TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter) {
+			TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter) throws IOException {
 		JaxbToAlignment.addBaseAlignment(alignment, newBase, sourceTypes, targetTypes, reporter);
 	}
 

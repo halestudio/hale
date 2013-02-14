@@ -487,6 +487,32 @@
          </enabledWhen>
       </action-ui>
       <action-ui
+            action="eu.esdihumboldt.hale.io.align.addbase"
+            customTitle="Add Base alignment"
+            id="eu.esdihumboldt.hale.io.align.addbase.ui"
+            label="Base alignment..."
+            priority="-1"
+            projectResource="false"
+            wizard="eu.esdihumboldt.hale.ui.io.align.BaseAlignmentImportWizard">
+         <enabledWhen
+               disabledReason="Load source and target schemas first">
+            <and>
+               <with
+                     variable="hale.schemas.has_mappable_source">
+                  <equals
+                        value="true">
+                  </equals>
+               </with>
+               <with
+                     variable="hale.schemas.has_mappable_target">
+                  <equals
+                        value="true">
+                  </equals>
+               </with>
+            </and>
+         </enabledWhen>
+      </action-ui>
+      <action-ui
             action="eu.esdihumboldt.hale.io.align.read"
             customTitle="Import alignment"
             id="eu.esdihumboldt.hale.io.align.read.ui"
@@ -591,6 +617,11 @@
             action="eu.esdihumboldt.hale.io.instance.read.source"
             class="eu.esdihumboldt.hale.ui.io.instance.InstanceImportAdvisor"
             id="eu.esdihumboldt.hale.ui.io.instance.read.source">
+      </advisor>
+      <advisor
+            action="eu.esdihumboldt.hale.io.align.addbase"
+            class="eu.esdihumboldt.hale.ui.io.align.BaseAlignmentImportAdvisor"
+            id="eu.esdihumboldt.hale.ui.io.align.addbase">
       </advisor>
       <advisor
             action="eu.esdihumboldt.hale.io.align.read"

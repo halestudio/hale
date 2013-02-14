@@ -142,17 +142,17 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 	 *            references
 	 * @param reporter the I/O reporter to report any errors to, may be
 	 *            <code>null</code>
+	 * @throws IOException if adding the base alignment fails
 	 */
 	protected final void internalAddBaseAlignment(MutableAlignment alignment, URI newBase,
-			TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter) {
+			TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter) throws IOException {
 		Map<A, Map<String, String>> prefixMapping = new HashMap<A, Map<String, String>>();
 		Map<A, Pair<String, URI>> alignmentToInfo = new HashMap<A, Pair<String, URI>>();
 
-		if (generatePrefixMapping(newBase, alignment.getBaseAlignments(), prefixMapping,
-				alignmentToInfo, reporter)) {
-			processBaseAlignments(alignment, sourceTypes, targetTypes, prefixMapping,
-					alignmentToInfo, reporter);
-		}
+		generatePrefixMapping(newBase, alignment.getBaseAlignments(), prefixMapping,
+				alignmentToInfo, reporter);
+		processBaseAlignments(alignment, sourceTypes, targetTypes, prefixMapping, alignmentToInfo,
+				reporter);
 	}
 
 	/**
@@ -170,12 +170,11 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 	 *            representations to prefixes and URIs
 	 * @param reporter the I/O reporter to report any errors to, may be
 	 *            <code>null</code>
-	 * @return false, if one of the base alignments does not have cell ids, true
-	 *         otherwise.
+	 * @throws IOException if one of the base alignments does not have cell ids
 	 */
-	private boolean processBaseAlignments(MutableAlignment alignment, TypeIndex sourceTypes,
+	private void processBaseAlignments(MutableAlignment alignment, TypeIndex sourceTypes,
 			TypeIndex targetTypes, Map<A, Map<String, String>> prefixMapping,
-			Map<A, Pair<String, URI>> alignmentToInfo, IOReporter reporter) {
+			Map<A, Pair<String, URI>> alignmentToInfo, IOReporter reporter) throws IOException {
 		for (Entry<A, Pair<String, URI>> base : alignmentToInfo.entrySet()) {
 			Collection<C> baseCells = getCells(base.getKey());
 			boolean hasIds = true;
@@ -185,10 +184,8 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 					break;
 				}
 			if (!hasIds) {
-				reporter.error(new IOMessageImpl("At least one base alignment ("
-						+ base.getValue().getSecond()
-						+ ") has no cell ids. Please load and save it to generate them.", null));
-				return false;
+				throw new IOException("At least one base alignment (" + base.getValue().getSecond()
+						+ ") has no cell ids. Please load and save it to generate them.");
 			}
 		}
 
@@ -211,7 +208,6 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 		for (Entry<A, Pair<String, URI>> base : alignmentToInfo.entrySet())
 			applyModifiers(alignment, getModifiers(base.getKey()),
 					prefixMapping.get(base.getKey()), base.getValue().getFirst(), true, reporter);
-		return true;
 	}
 
 	/**
@@ -250,6 +246,7 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 
 		Set<String> existingPrefixes = new HashSet<String>(existingBases.keySet());
 		String newPrefix = generatePrefix(existingPrefixes);
+		existingPrefixes.add(newPrefix);
 		uriToPrefix.put(newBase, newPrefix);
 
 		// find all alignments to load (also missing ones) and load the beans
@@ -262,9 +259,10 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 				// XXX update path according to path change of main alignment?
 				baseA = loadAlignment(new DefaultInputSupplier(baseURI).getInput(), reporter);
 			} catch (IOException e) {
-				reporter.warn(new IOMessageImpl(
-						"Couldn't load a base alignment (" + baseURI + ").", e));
-				continue;
+				reporter.error(new IOMessageImpl("Couldn't load a included base alignment ("
+						+ baseURI + ").", e));
+				reporter.setSuccess(false);
+				return false;
 			}
 
 			// add to alignment info map
@@ -304,9 +302,10 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 	 * @param reporter the I/O reporter to report any errors to, may be
 	 *            <code>null</code>
 	 * @return the alignment for the given alignment representation
+	 * @throws IOException if a base alignment couldn't be loaded
 	 */
 	protected final MutableAlignment createAlignment(A start, TypeIndex sourceTypes,
-			TypeIndex targetTypes, IOReporter reporter) {
+			TypeIndex targetTypes, IOReporter reporter) throws IOException {
 		Map<A, Map<String, String>> prefixMapping = new HashMap<A, Map<String, String>>();
 		Map<A, Pair<String, URI>> alignmentToInfo = new HashMap<A, Pair<String, URI>>();
 
@@ -317,9 +316,8 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 		DefaultAlignment alignment = new DefaultAlignment();
 
 		// add cells of base alignments
-		if (!processBaseAlignments(alignment, sourceTypes, targetTypes, prefixMapping,
-				alignmentToInfo, reporter))
-			return null;
+		processBaseAlignments(alignment, sourceTypes, targetTypes, prefixMapping, alignmentToInfo,
+				reporter);
 
 		// add cells of main alignment
 		for (C mainCell : getCells(start)) {
@@ -344,9 +342,10 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 	 * @param alignmentToInfo gets filled with a mapping from base alignment
 	 *            representations to prefixes and URIs
 	 * @param reporter the reporter
+	 * @throws IOException if a base alignment couldn't be loaded
 	 */
 	private void generatePrefixMapping(A start, Map<A, Map<String, String>> prefixMapping,
-			Map<A, Pair<String, URI>> alignmentToInfo, IOReporter reporter) {
+			Map<A, Pair<String, URI>> alignmentToInfo, IOReporter reporter) throws IOException {
 		Map<String, URI> base = getBases(start);
 
 		// also a mapping for this alignment itself in case the same URI is
@@ -383,9 +382,7 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 				// XXX update path according to path change of main alignment?
 				baseA = loadAlignment(new DefaultInputSupplier(baseURI).getInput(), reporter);
 			} catch (IOException e) {
-				reporter.warn(new IOMessageImpl(
-						"Couldn't load a base alignment (" + baseURI + ").", e));
-				continue;
+				throw new IOException("Couldn't load a included alignment (" + baseURI + ").", e);
 			}
 
 			// add to alignment info map

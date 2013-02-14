@@ -28,7 +28,7 @@ import eu.esdihumboldt.hale.ui.io.ExportWizard;
 public class AlignmentExportWizard extends ExportWizard<AlignmentWriter> {
 
 	/**
-	 * Create a schema export wizard
+	 * Create a alignment export wizard
 	 */
 	public AlignmentExportWizard() {
 		super(AlignmentWriter.class);

@@ -28,7 +28,7 @@ import eu.esdihumboldt.hale.ui.io.ImportWizard;
 public class AlignmentImportWizard extends ImportWizard<AlignmentReader> {
 
 	/**
-	 * Create a schema import wizard
+	 * Create a alignment import wizard
 	 */
 	public AlignmentImportWizard() {
 		super(AlignmentReader.class);

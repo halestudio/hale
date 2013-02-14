@@ -99,4 +99,11 @@ public interface AlignmentService {
 	 */
 	public void removeListener(AlignmentServiceListener listener);
 
+	/**
+	 * Adds a base alignment.
+	 * 
+	 * @param loader the loader of the base alignment
+	 * @return whether a base alignment was successfully added
+	 */
+	public boolean addBaseAlignment(BaseAlignmentLoader loader);
 }

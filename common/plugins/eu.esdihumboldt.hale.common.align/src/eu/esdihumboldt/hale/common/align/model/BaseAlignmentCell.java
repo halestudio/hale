@@ -41,7 +41,7 @@ public class BaseAlignmentCell implements Cell {
 	 * Constructor.
 	 * 
 	 * @param base the base cell
-	 * @param baseAlignment the uri of the alignment the cell is from
+	 * @param baseAlignment the URI of the alignment the cell is from
 	 * @param prefix the alignment's prefix
 	 */
 	public BaseAlignmentCell(Cell base, URI baseAlignment, String prefix) {

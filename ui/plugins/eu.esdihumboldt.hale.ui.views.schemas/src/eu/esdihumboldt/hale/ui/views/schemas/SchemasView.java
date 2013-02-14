@@ -487,6 +487,11 @@ public class SchemasView extends PropertiesViewPart {
 			}
 
 			@Override
+			public void alignmentChanged() {
+				refreshInDisplayThread();
+			}
+
+			@Override
 			public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
 				// currently no cell property that affects the schema view
 			}
