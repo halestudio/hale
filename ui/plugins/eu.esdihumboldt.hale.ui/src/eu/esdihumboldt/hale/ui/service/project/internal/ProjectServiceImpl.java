@@ -782,4 +782,19 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		}
 		setChanged();
 	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#getExportConfigurationNames()
+	 */
+	@Override
+	public List<String> getExportConfigurationNames() {
+		List<String> names = new ArrayList<String>();
+		for (IOConfiguration conf : main.getExportConfigurations()) {
+			String name = conf.getProviderConfiguration().get("configurationName")
+					.getStringRepresentation();
+			if (name != null)
+				names.add(name);
+		}
+		return names;
+	}
 }

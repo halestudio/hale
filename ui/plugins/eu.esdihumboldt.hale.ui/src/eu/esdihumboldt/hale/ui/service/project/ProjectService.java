@@ -126,4 +126,11 @@ public interface ProjectService {
 	 */
 	public void saveAs();
 
+	/**
+	 * Get all the names of the saved export configurations
+	 * 
+	 * @return the export configuration names
+	 */
+	public List<String> getExportConfigurationNames();
+
 }
