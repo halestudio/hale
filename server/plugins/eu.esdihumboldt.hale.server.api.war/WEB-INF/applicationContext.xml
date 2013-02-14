@@ -9,5 +9,8 @@
 
 	<!-- service references -->
 	<osgi:reference id="scavenger" availability="mandatory" interface="eu.esdihumboldt.hale.server.projects.ProjectScavenger" />
+	
+	<!-- service references -->
+	<osgi:reference id="environments" availability="mandatory" interface="eu.esdihumboldt.hale.common.headless.EnvironmentService" />
 
 </beans>

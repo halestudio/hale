@@ -15,6 +15,8 @@
 	<bean class="eu.esdihumboldt.hale.server.api.controller.WADL" />
 
 	<bean class="eu.esdihumboldt.hale.server.api.controller.Projects" />
+	
+	<bean class="eu.esdihumboldt.hale.server.api.controller.Transformation" />
 
 	<bean id="multipartResolver"
 		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
