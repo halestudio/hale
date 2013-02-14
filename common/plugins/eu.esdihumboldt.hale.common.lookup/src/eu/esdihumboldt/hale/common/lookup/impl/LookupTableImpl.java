@@ -16,7 +16,7 @@
 package eu.esdihumboldt.hale.common.lookup.impl;
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -46,7 +46,7 @@ public class LookupTableImpl implements LookupTable {
 	 */
 	public LookupTableImpl(Map<Value, Value> table) {
 		super();
-		this.table = new HashMap<Value, Value>(table);
+		this.table = new LinkedHashMap<Value, Value>(table);
 	}
 
 	@Override
