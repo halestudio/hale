@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.io.jdbc.ui;
 
+import java.util.Map;
+
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
@@ -25,6 +27,7 @@ import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.io.jdbc.JDBCConstants;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.IOWizardPage;
@@ -117,4 +120,13 @@ public class UserPasswordPage extends AbstractConfigurationPage<IOProvider, IOWi
 		}
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.ui.io.IOWizardPage#loadPreSelection(eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration)
+	 */
+	@Override
+	public void loadPreSelection(IOConfiguration conf) {
+		Map<String, Value> configs = conf.getProviderConfiguration();
+		user.setText(configs.get(PARAM_USER).getStringRepresentation());
+		password.setText(configs.get(PARAM_PASSWORD).getStringRepresentation());
+	}
 }
