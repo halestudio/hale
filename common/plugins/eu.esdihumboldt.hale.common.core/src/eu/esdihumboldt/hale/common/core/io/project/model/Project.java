@@ -112,6 +112,11 @@ public class Project implements ProjectInfo {
 	private final List<ProjectFileInfo> projectFiles = new ArrayList<ProjectFileInfo>();
 
 	/**
+	 * The saved export configurations
+	 */
+	private final List<IOConfiguration> exportConfigurations = new ArrayList<IOConfiguration>();
+
+	/**
 	 * @return the configurations
 	 */
 	public List<IOConfiguration> getResources() {
@@ -214,6 +219,13 @@ public class Project implements ProjectInfo {
 	 */
 	public void setSaveConfiguration(IOConfiguration saveConfiguration) {
 		this.saveConfiguration = saveConfiguration;
+	}
+
+	/**
+	 * @return the exportConfigurations
+	 */
+	public List<IOConfiguration> getExportConfigurations() {
+		return exportConfigurations;
 	}
 
 	/**
