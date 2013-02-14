@@ -13,6 +13,7 @@
 			<xs:element name="modified" type="xs:dateTime" minOccurs="0" />
 			<xs:element name="save-config" type="IOConfigurationType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="resource" type="IOConfigurationType" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="export-config" type="IOConfigurationType" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="file" type="ProjectFileType" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element ref="AbstractProperty" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
