@@ -41,6 +41,7 @@ import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.graph.figures.CellFigure;
@@ -330,7 +331,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			if (function != null) {
 				CellExplanation explanation = function.getExplanation();
 				if (explanation != null) {
-					String text = explanation.getExplanation(cell);
+					String text = explanation.getExplanation(cell, HaleUI.getServiceProvider());
 					if (text != null) {
 						return new WrappedText(text, 400);
 					}

@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.common.align.model;
 
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
+
 /**
  * Provides a human readable explanation for a cell.
  * 
@@ -27,17 +29,21 @@ public interface CellExplanation {
 	 * Get the explanation for the given cell.
 	 * 
 	 * @param cell the cell
+	 * @param provider provider for eventual services needed to create the
+	 *            explanation, e.g. a project scoped service
 	 * @return the cell explanation, <code>null</code> if none is available
 	 */
-	public String getExplanation(Cell cell);
+	public String getExplanation(Cell cell, ServiceProvider provider);
 
 	/**
 	 * Get the explanation in html format for the given cell
 	 * 
 	 * @param cell the cell
+	 * @param provider provider for eventual services needed to create the
+	 *            explanation, e.g. a project scoped service
 	 * @return the cell explanation in html format, <code>null</code> if none is
 	 *         available
 	 */
-	public String getExplanationAsHtml(Cell cell);
+	public String getExplanationAsHtml(Cell cell, ServiceProvider provider);
 
 }
