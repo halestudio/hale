@@ -309,6 +309,17 @@
             name="Save alignment"
             type="eu.esdihumboldt.hale.common.align.io.AlignmentWriter">
       </action>
+      <action
+            id="eu.esdihumboldt.hale.io.align.addbase"
+            name="Load alignment"
+            type="eu.esdihumboldt.hale.common.align.io.BaseAlignmentReader">
+         <dependsOn
+               action="eu.esdihumboldt.hale.io.schema.read.source">
+         </dependsOn>
+         <dependsOn
+               action="eu.esdihumboldt.hale.io.schema.read.target">
+         </dependsOn>
+      </action>
    </extension>
    <extension
          point="org.eclipse.core.contenttype.contentTypes">
@@ -362,6 +373,14 @@
       <provider
             class="eu.esdihumboldt.hale.common.align.io.impl.JaxbAlignmentReader"
             id="eu.esdihumboldt.hale.io.align.26.reader"
+            name="HALE alignment (2.6)">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.align.26">
+         </contentType>
+      </provider>
+      <provider
+            class="eu.esdihumboldt.hale.common.align.io.impl.JaxbBaseAlignmentReader"
+            id="eu.esdihumboldt.hale.io.align.26.basereader"
             name="HALE alignment (2.6)">
          <contentType
                ref="eu.esdihumboldt.hale.io.align.26">

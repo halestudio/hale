@@ -108,4 +108,13 @@ public abstract class AbstractAlignmentService implements AlignmentService {
 		}
 	}
 
+	/**
+	 * Call when the alignment had some unspecified update.
+	 */
+	protected void notifyAlignmentChanged() {
+		for (AlignmentServiceListener listener : listeners) {
+			listener.alignmentChanged();
+		}
+	}
+
 }

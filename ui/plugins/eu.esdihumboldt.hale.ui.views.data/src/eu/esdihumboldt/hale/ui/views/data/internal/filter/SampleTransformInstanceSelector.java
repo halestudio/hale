@@ -151,6 +151,11 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 				}
 
 				@Override
+				public void alignmentChanged() {
+					updateInDisplayThread();
+				}
+
+				@Override
 				public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
 					// property changes may affect transformation result
 					updateInDisplayThread();

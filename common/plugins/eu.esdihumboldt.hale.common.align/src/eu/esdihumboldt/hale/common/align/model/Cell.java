@@ -34,6 +34,11 @@ public interface Cell {
 	public static final String PROPERTY_PRIORITY = "priority";
 
 	/**
+	 * Property name for disabled for.
+	 */
+	public static final String PROPERTY_DISABLED_FOR = "disabled_for";
+
+	/**
 	 * Get the source entities. For each the name is mapped to the entity.
 	 * Multiple entities may share the same name. The map may not be modified.
 	 * 

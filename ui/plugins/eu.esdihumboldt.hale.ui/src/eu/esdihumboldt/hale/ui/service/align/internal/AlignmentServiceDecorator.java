@@ -22,6 +22,7 @@ import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener;
+import eu.esdihumboldt.hale.ui.service.align.BaseAlignmentLoader;
 
 /**
  * Alignment service decorator
@@ -109,4 +110,11 @@ public abstract class AlignmentServiceDecorator implements AlignmentService {
 		alignmentService.replaceCell(oldCell, newCell);
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.align.AlignmentService#addBaseAlignment(eu.esdihumboldt.hale.ui.service.align.BaseAlignmentLoader)
+	 */
+	@Override
+	public boolean addBaseAlignment(BaseAlignmentLoader loader) {
+		return alignmentService.addBaseAlignment(loader);
+	}
 }
