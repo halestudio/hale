@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.align.model.CellExplanation;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
  * Abstract cell explanation implementation.
@@ -36,18 +37,18 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 public abstract class AbstractCellExplanation implements CellExplanation {
 
 	/**
-	 * @see CellExplanation#getExplanation(Cell)
+	 * @see CellExplanation#getExplanation(Cell, ServiceProvider)
 	 */
 	@Override
-	public String getExplanation(Cell cell) {
+	public String getExplanation(Cell cell, ServiceProvider provider) {
 		return getExplanation(cell, false);
 	}
 
 	/**
-	 * @see CellExplanation#getExplanationAsHtml(Cell)
+	 * @see CellExplanation#getExplanationAsHtml(Cell, ServiceProvider)
 	 */
 	@Override
-	public String getExplanationAsHtml(Cell cell) {
+	public String getExplanationAsHtml(Cell cell, ServiceProvider provider) {
 		return getExplanation(cell, true);
 	}
 

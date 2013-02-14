@@ -29,6 +29,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellExplanation;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.views.properties.cell.AbstractCellSection;
 
 /**
@@ -76,9 +77,10 @@ public class HtmlExplanationCellSection extends AbstractCellSection {
 				CellExplanation explanation = function.getExplanation();
 				if (explanation != null) {
 					if (browser != null) {
-						String text = explanation.getExplanationAsHtml(cell);
+						String text = explanation.getExplanationAsHtml(cell,
+								HaleUI.getServiceProvider());
 						if (text == null) {
-							text = explanation.getExplanation(cell);
+							text = explanation.getExplanation(cell, HaleUI.getServiceProvider());
 						}
 						if (text != null) {
 							browser.setText(text);
@@ -86,7 +88,7 @@ public class HtmlExplanationCellSection extends AbstractCellSection {
 						}
 					}
 					else if (textField != null) {
-						String text = explanation.getExplanation(cell);
+						String text = explanation.getExplanation(cell, HaleUI.getServiceProvider());
 						if (text != null) {
 							textField.setText(text);
 						}

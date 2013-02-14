@@ -27,6 +27,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.eclipse.zest.core.viewers.GraphViewer;
 
 import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.graph.content.FunctionGraphContentProvider;
 import eu.esdihumboldt.hale.ui.common.graph.labels.FunctionGraphLabelProvider;
 import eu.esdihumboldt.hale.ui.common.graph.layout.FunctionTreeLayoutAlgorithm;
@@ -41,7 +42,7 @@ public class FunctionGraphSection<F extends Function> extends DefaultFunctionSec
 
 	private GraphViewer viewer;
 
-	private FunctionTreeLayoutAlgorithm treeAlgorithm = new FunctionTreeLayoutAlgorithm();
+	private final FunctionTreeLayoutAlgorithm treeAlgorithm = new FunctionTreeLayoutAlgorithm();
 
 	/**
 	 * @see org.eclipse.ui.views.properties.tabbed.AbstractPropertySection#createControls(org.eclipse.swt.widgets.Composite,
@@ -66,7 +67,7 @@ public class FunctionGraphSection<F extends Function> extends DefaultFunctionSec
 		viewer = new GraphViewer(composite, SWT.NONE);
 		viewer.setLayoutAlgorithm(treeAlgorithm, true);
 		viewer.setContentProvider(new FunctionGraphContentProvider());
-		viewer.setLabelProvider(new FunctionGraphLabelProvider(true));
+		viewer.setLabelProvider(new FunctionGraphLabelProvider(HaleUI.getServiceProvider(), true));
 	}
 
 	/**

@@ -20,6 +20,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellExplanation;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.views.properties.cell.AbstractCellFilter;
 
 /**
@@ -35,11 +36,11 @@ public class HtmlExplanationCellFilter extends AbstractCellFilter {
 		if (function != null) {
 			CellExplanation explanation = function.getExplanation();
 			if (explanation != null) {
-				String text = explanation.getExplanationAsHtml(cell);
+				String text = explanation.getExplanationAsHtml(cell, HaleUI.getServiceProvider());
 				if (text != null) {
 					return false;
 				}
-				text = explanation.getExplanation(cell);
+				text = explanation.getExplanation(cell, HaleUI.getServiceProvider());
 				if (text != null) {
 					return false;
 				}
