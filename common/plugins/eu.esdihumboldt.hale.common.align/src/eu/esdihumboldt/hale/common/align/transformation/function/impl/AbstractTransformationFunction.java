@@ -130,7 +130,8 @@ public abstract class AbstractTransformationFunction<E extends TransformationEng
 	 */
 	protected ParameterValue getOptionalParameter(String parameterName, Value defaultValue) {
 		if (getParameters() == null || getParameters().get(parameterName) == null
-				|| getParameters().get(parameterName).isEmpty()) {
+				|| getParameters().get(parameterName).isEmpty()
+				|| getParameters().get(parameterName).get(0).isEmpty()) {
 			return new ParameterValue(defaultValue);
 		}
 
