@@ -23,6 +23,8 @@ import java.util.Map;
 
 import com.google.common.collect.Multimap;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.lookup.LookupService;
@@ -37,6 +39,8 @@ import eu.esdihumboldt.hale.common.lookup.impl.LookupTableImpl;
  */
 public class ClassificationMappingUtil implements ClassificationMappingFunction {
 
+	private static final ALogger log = ALoggerFactory.getLogger(ClassificationMappingUtil.class);
+
 	/**
 	 * Get the classification lookup table from the transformation parameters.
 	 * 
@@ -49,6 +53,7 @@ public class ClassificationMappingUtil implements ClassificationMappingFunction 
 			ServiceProvider serviceProvider) {
 		// TODO new method: complex param
 
+		// lookup table loaded from service
 		try {
 			if (!(parameters.get(PARAMETER_LOOKUPTABLE_ID).isEmpty())) {
 				LookupService lookupServiceImpl = serviceProvider.getService(LookupService.class);
@@ -58,8 +63,7 @@ public class ClassificationMappingUtil implements ClassificationMappingFunction 
 				return lookupTableInfo.getTable();
 			}
 		} catch (NullPointerException e) {
-			System.out
-					.println("The serviceprovider isnt set in ClassificationMappingExplanation.getExplanation()");
+			log.error("Service provider not accessible for retrieving lookup table", e);
 		}
 
 		// lookup table in strangely encoded string parameter
