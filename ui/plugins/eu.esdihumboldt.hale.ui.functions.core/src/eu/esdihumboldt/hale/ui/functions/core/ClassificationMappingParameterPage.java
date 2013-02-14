@@ -518,6 +518,10 @@ public class ClassificationMappingParameterPage extends
 				// nothing to do here
 			}
 		});
+
+		if (selectedLookupTableID != null) {
+			tabs.setSelection(fromFileItem);
+		}
 		fromFileItem.setControl(item2Content);
 	}
 
@@ -539,6 +543,15 @@ public class ClassificationMappingParameterPage extends
 		fixedValueInputButton = new Button(notClassifiedActionComposite, SWT.PUSH);
 		fixedValueInputButton.setText("Select");
 		fixedValueInputButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+
+		// Set the text for the label
+		if (fixedValueText == null && initialValue != null) {
+			fixedValueText = new Text(notClassifiedActionComposite, SWT.READ_ONLY | SWT.BORDER);
+			fixedValueText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+			notClassifiedActionComposite.layout();
+			fixedValueText.setText(initialValue);
+		}
+
 		fixedValueInputButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override

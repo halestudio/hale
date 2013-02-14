@@ -41,6 +41,7 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -263,8 +264,9 @@ public class DefaultPropertyEditor extends AbstractBindingValidatingEditor<Objec
 		}
 
 		if (infoText.length() > 0) {
-			Label inputInfo = new Label(composite, SWT.NONE);
-			inputInfo.setLayoutData(GridDataFactory.fillDefaults().span(2, 1).create());
+			Label inputInfo = new Label(composite, SWT.WRAP);
+//			inputInfo.setLayoutData(GridDataFactory.fillDefaults().span(2, 1).create());
+			inputInfo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 			inputInfo.setText(infoText.toString());
 		}
 	}
