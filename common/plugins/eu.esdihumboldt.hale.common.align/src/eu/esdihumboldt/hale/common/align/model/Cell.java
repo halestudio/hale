@@ -36,7 +36,14 @@ public interface Cell {
 	/**
 	 * Property name for disabled for.
 	 */
-	public static final String PROPERTY_DISABLED_FOR = "disabled_for";
+	public static final String PROPERTY_DISABLE_FOR = "disabled_for";
+
+	/**
+	 * Property name for enabling a disabled cell again. Trying to enable a
+	 * cell, which was disabled in a base alignment will fail and result in an
+	 * exception.
+	 */
+	public static final String PROPERTY_ENABLE_FOR = "enable_for";
 
 	/**
 	 * Get the source entities. For each the name is mapped to the entity.
