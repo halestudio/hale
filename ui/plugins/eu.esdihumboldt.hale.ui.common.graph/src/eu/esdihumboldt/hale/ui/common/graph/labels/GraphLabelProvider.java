@@ -122,6 +122,13 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	}
 
 	/**
+	 * @return the cellHighlightColor
+	 */
+	protected Color getCellHighlightColor() {
+		return cellHighlightColor;
+	}
+
+	/**
 	 * Create the label provider for {@link Definition}s and
 	 * {@link EntityDefinition}s.
 	 * 
@@ -211,7 +218,6 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 		// dispose created colors
 		typeBackgroundColor.dispose();
 		propertyBackgroundColor.dispose();
-		entityHighlightColor.dispose();
 		entityHighlightColor.dispose();
 
 //		cellBorderHighlightColor.dispose();
