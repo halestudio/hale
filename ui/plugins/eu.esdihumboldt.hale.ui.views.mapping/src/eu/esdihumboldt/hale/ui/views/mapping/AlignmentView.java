@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -47,6 +49,8 @@ import com.google.common.collect.ListMultimap;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
+import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -207,6 +211,77 @@ public class AlignmentView extends AbstractMappingView {
 						}
 					}
 				});
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.views.mapping.AbstractMappingView#menuAboutToShow(org.eclipse.jface.action.IMenuManager)
+	 */
+	@Override
+	protected void menuAboutToShow(IMenuManager manager) {
+		ISelection typeSelection = typeRelations.getSelection();
+		ISelection cellSelection = getViewer().getSelection();
+
+		// is a type relation selected
+		if (typeSelection.isEmpty() || !(typeSelection instanceof IStructuredSelection))
+			return;
+
+		final Cell typeCell = (Cell) ((IStructuredSelection) typeSelection).getFirstElement();
+
+		// is a cell selected?
+		if (!(cellSelection instanceof IStructuredSelection)
+				|| ((IStructuredSelection) cellSelection).size() != 1
+				|| !(((IStructuredSelection) cellSelection).getFirstElement() instanceof Cell))
+			return;
+
+		final Cell selectedCell = (Cell) ((IStructuredSelection) cellSelection).getFirstElement();
+
+		// ignore type cell
+		if (AlignmentUtil.isTypeCell(selectedCell))
+			return;
+
+		// check current disable status
+		if (!selectedCell.getDisabledFor().contains(typeCell)) {
+			manager.add(new Action("Disable") {
+
+				/**
+				 * @see org.eclipse.jface.action.Action#run()
+				 */
+				@Override
+				public void run() {
+					AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+							AlignmentService.class);
+					as.setCellProperty(selectedCell.getId(), Cell.PROPERTY_DISABLE_FOR, typeCell);
+				}
+			});
+		}
+		else {
+			manager.add(new Action("Enable") {
+
+				/**
+				 * @see org.eclipse.jface.action.Action#run()
+				 */
+				@Override
+				public void run() {
+					AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+							AlignmentService.class);
+					as.setCellProperty(selectedCell.getId(), Cell.PROPERTY_ENABLE_FOR, typeCell);
+				}
+
+				/**
+				 * @see org.eclipse.jface.action.Action#isEnabled()
+				 */
+				@Override
+				public boolean isEnabled() {
+					// Not enabled, if the cell was disabled in a base
+					// alignment.
+					// Still show the action for clarity.
+					if (selectedCell instanceof BaseAlignmentCell)
+						return !((BaseAlignmentCell) selectedCell).getBaseDisabledFor().contains(
+								typeCell);
+					return true;
+				}
+			});
+		}
 	}
 
 	/**

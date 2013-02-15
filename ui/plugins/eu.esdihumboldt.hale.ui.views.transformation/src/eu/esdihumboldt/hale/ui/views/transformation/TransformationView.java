@@ -143,15 +143,20 @@ public class TransformationView extends AbstractMappingView {
 
 			@Override
 			public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
-				final Display display = PlatformUI.getWorkbench().getDisplay();
-				display.syncExec(new Runnable() {
+				if (Cell.PROPERTY_DISABLE_FOR.equals(propertyName)
+						|| Cell.PROPERTY_ENABLE_FOR.equals(propertyName))
+					update(); // Could add/remove cells from transformation tree
+				else {
+					final Display display = PlatformUI.getWorkbench().getDisplay();
+					display.syncExec(new Runnable() {
 
-					@Override
-					public void run() {
-						// refresh view
-						getViewer().refresh();
-					}
-				});
+						@Override
+						public void run() {
+							// refresh view
+							getViewer().refresh();
+						}
+					});
+				}
 			}
 
 		});

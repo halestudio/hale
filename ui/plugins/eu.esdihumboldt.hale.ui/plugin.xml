@@ -330,9 +330,14 @@
                   <iterate
                         ifEmpty="false"
                         operator="and">
-                     <instanceof
-                           value="eu.esdihumboldt.hale.common.align.model.Cell">
-                     </instanceof>
+                     <and>
+                        <instanceof
+                              value="eu.esdihumboldt.hale.common.align.model.Cell">
+                        </instanceof>
+	                    <test
+	                          property="eu.esdihumboldt.hale.ui.service.align.cell.allow_edit">
+	                    </test>
+                     </and>
                   </iterate>
                   <count
                         value="1">
@@ -703,9 +708,14 @@
                      <iterate
                            ifEmpty="false"
                            operator="and">
-                        <instanceof
-                              value="eu.esdihumboldt.hale.common.align.model.Cell">
-                        </instanceof>
+                        <and>
+                           <instanceof
+                                 value="eu.esdihumboldt.hale.common.align.model.Cell">
+                           </instanceof>
+                           <test
+                                 property="eu.esdihumboldt.hale.ui.service.align.cell.allow_edit">
+                           </test>
+                        </and>
                      </iterate>
                   </and>
                </with>
@@ -780,7 +790,7 @@
             class="eu.esdihumboldt.hale.ui.service.align.internal.tester.CellTester"
             id="eu.esdihumboldt.hale.ui.service.align.cell"
             namespace="eu.esdihumboldt.hale.ui.service.align.cell"
-            properties="allow_remove"
+            properties="allow_remove,allow_edit"
             type="eu.esdihumboldt.hale.common.align.model.Cell">
       </propertyTester>
       <propertyTester

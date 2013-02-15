@@ -41,6 +41,11 @@ public class CellTester extends PropertyTester {
 	public static final String PROPERTY_CELL_ALLOW_REMOVE = "allow_remove";
 
 	/**
+	 * The property that specifies if a cell may be edited.
+	 */
+	public static final String PROPERTY_CELL_ALLOW_EDIT = "allow_edit";
+
+	/**
 	 * @see org.eclipse.core.expressions.IPropertyTester#test(java.lang.Object,
 	 *      java.lang.String, java.lang.Object[], java.lang.Object)
 	 */
@@ -54,6 +59,10 @@ public class CellTester extends PropertyTester {
 			return testAllowRemove((Cell) receiver);
 		}
 
+		if (property.equals(PROPERTY_CELL_ALLOW_EDIT) && receiver instanceof Cell) {
+			return !((Cell) receiver).isBaseCell();
+		}
+
 		return false;
 	}
 
@@ -64,6 +73,10 @@ public class CellTester extends PropertyTester {
 	 * @return if removing the cell is allowed
 	 */
 	private boolean testAllowRemove(Cell cell) {
+		if (cell.isBaseCell()) {
+			// never allow removing base alignment cells
+			return false;
+		}
 		if (!AlignmentUtil.isTypeCell(cell)) {
 			// always allow removing property cells
 			return true;

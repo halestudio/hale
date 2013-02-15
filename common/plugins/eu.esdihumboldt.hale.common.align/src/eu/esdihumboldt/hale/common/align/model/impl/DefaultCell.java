@@ -234,4 +234,11 @@ public class DefaultCell implements Cell, MutableCell {
 		return priority;
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.Cell#isBaseCell()
+	 */
+	@Override
+	public boolean isBaseCell() {
+		return false;
+	}
 }
