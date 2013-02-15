@@ -219,6 +219,8 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 			}
 			else
 				throw new IllegalArgumentException();
+
+			notifyCellsPropertyChanged(Arrays.asList(cell), propertyName);
 		}
 		else if (cell instanceof MutableCell) {
 			MutableCell mutableCell = (MutableCell) cell;

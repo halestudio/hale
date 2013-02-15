@@ -140,9 +140,14 @@ public class BaseAlignmentCell implements Cell {
 	public void setDisabledFor(Cell cell, boolean disabled) {
 		if (disabled && !base.getDisabledFor().contains(cell))
 			disabledFor.add(cell);
-		if (!disabled && base.getDisabledFor().contains(cell))
-			throw new IllegalArgumentException(
-					"Can not re-enable a cell disabled in the base alignment.");
+		if (!disabled) {
+			if (base.getDisabledFor().contains(cell))
+				throw new IllegalArgumentException(
+						"Can not re-enable a cell disabled in the base alignment.");
+			else
+				disabledFor.remove(cell);
+		}
+
 	}
 
 	/**
@@ -197,5 +202,13 @@ public class BaseAlignmentCell implements Cell {
 	@Override
 	public Priority getPriority() {
 		return base.getPriority();
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.Cell#isBaseCell()
+	 */
+	@Override
+	public boolean isBaseCell() {
+		return true;
 	}
 }

@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.ui.views.mapping;
 
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.swt.SWT;
@@ -69,7 +71,27 @@ public abstract class AbstractMappingView extends PropertiesViewPart implements
 		getSite().setSelectionProvider(new PostSelectionSupport(getViewer()));
 
 		// create context menu
-		new ViewerMenu(getSite(), getViewer());
+		new ViewerMenu(getSite(), getViewer()) {
+
+			/**
+			 * @see eu.esdihumboldt.hale.ui.util.ViewContextMenu#menuAboutToShow(org.eclipse.jface.action.IMenuManager)
+			 */
+			@Override
+			public void menuAboutToShow(IMenuManager manager) {
+				super.menuAboutToShow(manager);
+				AbstractMappingView.this.menuAboutToShow(manager);
+			}
+		};
+	}
+
+	/**
+	 * Override to change menu contents.
+	 * 
+	 * @param manager the menu manager
+	 * @see IMenuListener#menuAboutToShow(IMenuManager)
+	 */
+	protected void menuAboutToShow(IMenuManager manager) {
+		// By default do nothing.
 	}
 
 	/**
