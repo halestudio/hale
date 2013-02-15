@@ -112,7 +112,7 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 		/**
 		 * Create an operation that sets the priority of a cell.
 		 * 
-		 * @param mutableCellId the cell to set the priority.
+		 * @param mutableCellId the cell to set the property.
 		 * @param propertyName the name of the property to set.
 		 * @param oldProperty the old property value.
 		 * @param newProperty the new property value.
@@ -120,7 +120,7 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 		 */
 		public SetCellProperyOperation(String mutableCellId, String propertyName,
 				Object oldProperty, Object newProperty) {
-			super("Set the priority.");
+			super("Set a cell property.");
 			this.mutableCellId = mutableCellId;
 			this.propertyName = propertyName;
 			this.oldProperty = oldProperty;
@@ -150,6 +150,60 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 		@Override
 		public IStatus undo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
 			alignmentService.setCellProperty(mutableCellId, propertyName, oldProperty);
+			return Status.OK_STATUS;
+		}
+
+	}
+
+	/**
+	 * Operation that enables / disables a cell for a specific cell.
+	 */
+	public class DisableCellOperation extends AbstractOperation {
+
+		private final boolean disable;
+		private final String mutableCellId;
+		private final Cell typeCell;
+
+		/**
+		 * Create an operation that disables a cell.
+		 * 
+		 * @param disable whether to disable or enable the cell
+		 * @param mutableCellId the cell to set the priority
+		 * @param typeCell the type cell for which to disable/enable the given
+		 *            cell
+		 */
+		public DisableCellOperation(boolean disable, String mutableCellId, Cell typeCell) {
+			super((disable ? "Disable" : "Enable") + " a cell");
+			this.disable = disable;
+			this.mutableCellId = mutableCellId;
+			this.typeCell = typeCell;
+		}
+
+		/**
+		 * @see AbstractOperation#execute(IProgressMonitor, IAdaptable)
+		 */
+		@Override
+		public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
+			alignmentService.setCellProperty(mutableCellId, disable ? Cell.PROPERTY_DISABLE_FOR
+					: Cell.PROPERTY_ENABLE_FOR, typeCell);
+			return Status.OK_STATUS;
+		}
+
+		/**
+		 * @see AbstractOperation#redo(IProgressMonitor, IAdaptable)
+		 */
+		@Override
+		public IStatus redo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
+			return execute(monitor, info);
+		}
+
+		/**
+		 * @see AbstractOperation#undo(IProgressMonitor, IAdaptable)
+		 */
+		@Override
+		public IStatus undo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
+			alignmentService.setCellProperty(mutableCellId, disable ? Cell.PROPERTY_ENABLE_FOR
+					: Cell.PROPERTY_DISABLE_FOR, typeCell);
 			return Status.OK_STATUS;
 		}
 
@@ -459,8 +513,13 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 	 */
 	@Override
 	public void setCellProperty(String cellId, String propertyName, Object property) {
-		// TODO
-		if (propertyName.equals(Cell.PROPERTY_PRIORITY)) {
+		if (Cell.PROPERTY_DISABLE_FOR.equals(propertyName)
+				|| Cell.PROPERTY_ENABLE_FOR.equals(propertyName)) {
+			IUndoableOperation operation = new DisableCellOperation(
+					Cell.PROPERTY_DISABLE_FOR.equals(propertyName), cellId, (Cell) property);
+			executeOperation(operation);
+		}
+		else if (Cell.PROPERTY_PRIORITY.equals(propertyName)) {
 			if (property instanceof Priority) {
 				Priority newPriority = (Priority) property;
 				Cell cell = getAlignment().getCell(cellId);
@@ -469,7 +528,10 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 						oldPriority, newPriority);
 				executeOperation(operation);
 			}
-
+		}
+		else {
+			log.warn("An unknown cell property is set. No undo support.");
+			alignmentService.setCellProperty(cellId, propertyName, property);
 		}
 	}
 

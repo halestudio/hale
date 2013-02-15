@@ -205,15 +205,17 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 			throw new IllegalArgumentException("Mandatory parameter is null");
 		}
 		Cell cell = getAlignment().getCell(cellId);
-		if (cell != null && Cell.PROPERTY_DISABLED_FOR.equals(propertyName)) {
+		if (cell != null
+				&& (Cell.PROPERTY_DISABLE_FOR.equals(propertyName) || Cell.PROPERTY_ENABLE_FOR
+						.equals(propertyName))) {
+			boolean disable = Cell.PROPERTY_DISABLE_FOR.equals(propertyName);
 			if (property instanceof Cell) {
 				Cell other = (Cell) property;
 				if (!AlignmentUtil.isTypeCell(other))
 					throw new IllegalArgumentException();
-				// how to enable again? Check whether other is disabled in the
-				// main cell and not in the base cell, in which case it is
-				// enabled?
-				cell.setDisabledFor(other, true);
+				// This call may fail, if the cell was disabled in a base
+				// alignment and someone tries to enable it again.
+				cell.setDisabledFor(other, disable);
 			}
 			else
 				throw new IllegalArgumentException();
@@ -245,7 +247,6 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 
 	/**
 	 * @see eu.esdihumboldt.hale.ui.service.align.AlignmentService#addBaseAlignment(eu.esdihumboldt.hale.ui.service.align.BaseAlignmentLoader)
-	 *      )
 	 */
 	@Override
 	public boolean addBaseAlignment(BaseAlignmentLoader loader) {
