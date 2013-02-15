@@ -51,14 +51,16 @@ public class ClassificationMappingUtil implements ClassificationMappingFunction 
 	 */
 	public static LookupTable getClassificationLookup(Multimap<String, ? extends Value> parameters,
 			ServiceProvider serviceProvider) {
-		// TODO new method: complex param
 
-		// lookup table loaded from service
 		try {
+			if (!(parameters.get(PARAMETER_LOOKUPTABLE).isEmpty())) {
+				Collection<? extends Value> tmpMap = parameters.get(PARAMETER_LOOKUPTABLE);
+				return tmpMap.iterator().next().as(LookupTable.class);
+			}
 			if (!(parameters.get(PARAMETER_LOOKUPTABLE_ID).isEmpty())) {
 				LookupService lookupServiceImpl = serviceProvider.getService(LookupService.class);
-				Collection<? extends Value> trashMap = parameters.get(PARAMETER_LOOKUPTABLE_ID);
-				LookupTableInfo lookupTableInfo = lookupServiceImpl.getTable(trashMap.iterator()
+				Collection<? extends Value> tmpMap = parameters.get(PARAMETER_LOOKUPTABLE_ID);
+				LookupTableInfo lookupTableInfo = lookupServiceImpl.getTable(tmpMap.iterator()
 						.next().as(String.class));
 				return lookupTableInfo.getTable();
 			}
@@ -66,6 +68,7 @@ public class ClassificationMappingUtil implements ClassificationMappingFunction 
 			log.error("Service provider not accessible for retrieving lookup table", e);
 		}
 
+		// For reason of comatibility we need the following code
 		// lookup table in strangely encoded string parameter
 		Collection<? extends Value> mappings = parameters.get(PARAMETER_CLASSIFICATIONS);
 		try {
