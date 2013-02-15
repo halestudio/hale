@@ -80,6 +80,16 @@ public interface Alignment {
 	public Collection<? extends Cell> getPropertyCells(Cell typeCell);
 
 	/**
+	 * Get the cells representing a mapping between properties that are
+	 * associated with the given cell.
+	 * 
+	 * @param typeCell the cell in question, has to be a type cell
+	 * @param includeDisabled also get cells that are disabled
+	 * @return the property cells associated with the given type cell.
+	 */
+	public Collection<? extends Cell> getPropertyCells(Cell typeCell, boolean includeDisabled);
+
+	/**
 	 * Returns the cell referenced by the given id string or <code>null</code>
 	 * if it cannot be found.
 	 * 

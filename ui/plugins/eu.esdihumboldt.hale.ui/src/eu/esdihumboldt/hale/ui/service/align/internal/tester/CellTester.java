@@ -94,7 +94,7 @@ public class CellTester extends PropertyTester {
 		 */
 		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
 				AlignmentService.class);
-		return as.getAlignment().getPropertyCells(cell).isEmpty();
+		return as.getAlignment().getPropertyCells(cell, true).isEmpty();
 	}
 
 }
