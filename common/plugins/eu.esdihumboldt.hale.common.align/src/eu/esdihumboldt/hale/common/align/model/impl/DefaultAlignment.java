@@ -193,6 +193,14 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	 */
 	@Override
 	public Collection<? extends Cell> getPropertyCells(Cell typeCell) {
+		return getPropertyCells(typeCell, false);
+	}
+
+	/**
+	 * @see Alignment#getPropertyCells(Cell, boolean)
+	 */
+	@Override
+	public Collection<? extends Cell> getPropertyCells(Cell typeCell, boolean includeDisabled) {
 		if (!AlignmentUtil.isTypeCell(typeCell))
 			throw new IllegalArgumentException("Given cell is not a type cell.");
 
@@ -210,7 +218,8 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 
 		for (Cell cell : cellsPerTargetType.get(targetType)) {
 			// check all cells associated to the target type
-			if (!AlignmentUtil.isTypeCell(cell) && !cell.getDisabledFor().contains(typeCell)) {
+			if (!AlignmentUtil.isTypeCell(cell)
+					&& (includeDisabled || !cell.getDisabledFor().contains(typeCell))) {
 				// cell is a property cell that isn't disabled
 				TypeDefinition otherTargetType = cell.getTarget().values().iterator().next()
 						.getDefinition().getType();

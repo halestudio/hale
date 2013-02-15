@@ -28,6 +28,7 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -35,6 +36,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -56,7 +58,9 @@ import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
+import eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceAdapter;
@@ -285,6 +289,76 @@ public class AlignmentView extends AbstractMappingView {
 	}
 
 	/**
+	 * @see AbstractMappingView#createLabelProvider()
+	 */
+	@Override
+	protected IBaseLabelProvider createLabelProvider() {
+		return new GraphLabelProvider(HaleUI.getServiceProvider()) {
+
+			private final Color cellDisabledBackgroundColor = new Color(Display.getCurrent(), 240,
+					240, 240);
+			private final Color cellDisabledForegroundColor = new Color(Display.getCurrent(), 109,
+					109, 132);
+			private final Color cellDisabledHighlightColor = new Color(Display.getCurrent(),
+					(int) (getCellHighlightColor().getRed() * 0.7), (int) (getCellHighlightColor()
+							.getGreen() * 0.7), (int) (getCellHighlightColor().getBlue() * 0.7));
+
+			/**
+			 * @see eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider#getNodeHighlightColor(java.lang.Object)
+			 */
+			@Override
+			public Color getNodeHighlightColor(Object entity) {
+				if (entity instanceof Cell && isDisabledForCurrentType((Cell) entity))
+					return cellDisabledHighlightColor;
+
+				return super.getNodeHighlightColor(entity);
+			}
+
+			/**
+			 * @see eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider#getBackgroundColour(java.lang.Object)
+			 */
+			@Override
+			public Color getBackgroundColour(Object entity) {
+				if (entity instanceof Cell && isDisabledForCurrentType((Cell) entity))
+					return cellDisabledBackgroundColor;
+				return super.getBackgroundColour(entity);
+			}
+
+			/**
+			 * @see eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider#getForegroundColour(java.lang.Object)
+			 */
+			@Override
+			public Color getForegroundColour(Object entity) {
+				if (entity instanceof Cell && isDisabledForCurrentType((Cell) entity))
+					return cellDisabledForegroundColor;
+				return super.getForegroundColour(entity);
+			}
+
+			/**
+			 * @see eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider#dispose()
+			 */
+			@Override
+			public void dispose() {
+				cellDisabledBackgroundColor.dispose();
+				cellDisabledForegroundColor.dispose();
+				cellDisabledHighlightColor.dispose();
+				super.dispose();
+			}
+
+			private boolean isDisabledForCurrentType(Cell cell) {
+				ISelection typeSelection = typeRelations.getSelection();
+
+				if (!typeSelection.isEmpty() && typeSelection instanceof IStructuredSelection) {
+					Cell typeCell = (Cell) ((IStructuredSelection) typeSelection).getFirstElement();
+					if (cell.getDisabledFor().contains(typeCell))
+						return true;
+				}
+				return false;
+			}
+		};
+	}
+
+	/**
 	 * Update the selected type relation to a cell that is related to the given
 	 * schema selection.
 	 * 
@@ -409,7 +483,7 @@ public class AlignmentView extends AbstractMappingView {
 					AlignmentService.class);
 			Collection<Cell> cells = new ArrayList<Cell>();
 			cells.add(typeCell);
-			cells.addAll(as.getAlignment().getPropertyCells(typeCell));
+			cells.addAll(as.getAlignment().getPropertyCells(typeCell, true));
 			getViewer().setInput(cells);
 		}
 		else {

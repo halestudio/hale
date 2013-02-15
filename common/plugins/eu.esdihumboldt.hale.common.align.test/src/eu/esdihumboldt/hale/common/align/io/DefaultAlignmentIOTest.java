@@ -490,7 +490,8 @@ public abstract class DefaultAlignmentIOTest {
 		assertEquals(3, alignment.getCells().size());
 		assertEquals(1, alignment.getPropertyCells(typeCell).size());
 		// disable remaining cell
-		alignment.getPropertyCells(typeCell).iterator().next().setDisabledFor(typeCell, true);
+		alignment.getPropertyCells(typeCell, false).iterator().next()
+				.setDisabledFor(typeCell, true);
 		assertEquals(0, alignment.getPropertyCells(typeCell).size());
 
 		// save / load extended alignment
