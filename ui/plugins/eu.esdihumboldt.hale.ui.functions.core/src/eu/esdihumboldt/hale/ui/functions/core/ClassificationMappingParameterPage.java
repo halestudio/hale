@@ -18,9 +18,9 @@ package eu.esdihumboldt.hale.ui.functions.core;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -63,7 +63,10 @@ import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingFunction;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.lookup.LookupService;
+import eu.esdihumboldt.hale.common.lookup.LookupTable;
+import eu.esdihumboldt.hale.common.lookup.impl.LookupTableImpl;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
@@ -148,11 +151,26 @@ public class ClassificationMappingParameterPage extends
 			return;
 
 		// Load the lookupTableConfiguration
-		List<ParameterValue> lookupTables = initialValues.get(PARAMETER_LOOKUPTABLE_ID);
-		if (!lookupTables.isEmpty()) {
-			selectedLookupTableID = lookupTables.get(0).as(String.class);
+		List<ParameterValue> lookupTable = initialValues.get(PARAMETER_LOOKUPTABLE_ID);
+		if (!lookupTable.isEmpty()) {
+			selectedLookupTableID = lookupTable.get(0).as(String.class);
 		}
 
+		// Load the complex value configuration
+		List<ParameterValue> lookupTableComplex = initialValues.get(PARAMETER_LOOKUPTABLE);
+		if (!lookupTableComplex.isEmpty()) {
+			LookupTableImpl table = (LookupTableImpl) lookupTableComplex.get(0).getValue();
+			ListMultimap<Value, Value> tableReverse = table.reverse();
+			for (Value key : tableReverse.keySet()) {
+				TreeSet<String> valueSet = new TreeSet<String>();
+				for (Value value : tableReverse.get(key)) {
+					valueSet.add(value.as(String.class));
+				}
+				classifications.put(key.as(String.class), valueSet);
+			}
+		}
+
+		// For reason of comatibility we need the following code
 		List<ParameterValue> mappings = initialValues.get(PARAMETER_CLASSIFICATIONS);
 		for (ParameterValue value : mappings) {
 			String s = value.as(String.class);
@@ -194,19 +212,29 @@ public class ClassificationMappingParameterPage extends
 			}
 			else {
 				if (tabItem.equals(manuelItem)) {
+					Map<Value, Value> values = new HashMap<Value, Value>();
 					for (Map.Entry<String, Set<String>> mapping : classifications.entrySet()) {
-						StringBuffer buffer = new StringBuffer();
-						try {
-							buffer.append(URLEncoder.encode(mapping.getKey(), "UTF-8"));
-							for (String s : mapping.getValue())
-								buffer.append(' ').append(URLEncoder.encode(s, "UTF-8"));
-						} catch (UnsupportedEncodingException e) {
-							// UTF-8 should be everywhere
+						for (String s : mapping.getValue()) {
+							values.put(Value.of(s), Value.of(mapping.getKey()));
 						}
-						configuration.put(PARAMETER_CLASSIFICATIONS,
-								new ParameterValue(buffer.toString()));
 					}
+					LookupTable lookupTable = new LookupTableImpl(values);
+					configuration.put(PARAMETER_LOOKUPTABLE,
+							new ParameterValue(Value.complex(lookupTable)));
 				}
+				// TODO
+//				for (Map.Entry<String, Set<String>> mapping : classifications.entrySet()) {
+//					StringBuffer buffer = new StringBuffer();
+//					try {
+//						buffer.append(URLEncoder.encode(mapping.getKey(), "UTF-8"));
+//						for (String s : mapping.getValue())
+//							buffer.append(' ').append(URLEncoder.encode(s, "UTF-8"));
+//					} catch (UnsupportedEncodingException e) {
+//						// UTF-8 should be everywhere
+//					}
+//					configuration.put(PARAMETER_CLASSIFICATIONS,
+//							new ParameterValue(buffer.toString()));
+//				}
 			}
 		}
 		switch (notClassifiedActionOptions

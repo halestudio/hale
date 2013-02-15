@@ -47,6 +47,7 @@ public class ClassificationMapping extends
 			ListMultimap<String, PropertyValue> variables, String resultName,
 			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
 			TransformationLog log) throws TransformationException, NoResultException {
+
 		String source = variables.values().iterator().next().getValueAs(String.class);
 
 		LookupTable lookup = ClassificationMappingUtil.getClassificationLookup(getParameters(),
