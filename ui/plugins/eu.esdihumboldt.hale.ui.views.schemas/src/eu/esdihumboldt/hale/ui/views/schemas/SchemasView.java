@@ -493,7 +493,11 @@ public class SchemasView extends PropertiesViewPart {
 
 			@Override
 			public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
-				// currently no cell property that affects the schema view
+				// Cell disabling/enabling can affect schema view
+				if (Cell.PROPERTY_DISABLE_FOR.equals(propertyName)
+						|| Cell.PROPERTY_ENABLE_FOR.equals(propertyName))
+					refreshInDisplayThread();
+				// currently no other cell property that affects the schema view
 			}
 		});
 

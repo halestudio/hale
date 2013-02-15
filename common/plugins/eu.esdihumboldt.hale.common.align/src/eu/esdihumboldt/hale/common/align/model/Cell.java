@@ -152,4 +152,11 @@ public interface Cell {
 	 * @return the {@link Priority priority}.
 	 */
 	public Priority getPriority();
+
+	/**
+	 * Returns whether the cell is included from a base alignment or not.
+	 * 
+	 * @return whether the cell is included from a base alignment or not
+	 */
+	public boolean isBaseCell();
 }
