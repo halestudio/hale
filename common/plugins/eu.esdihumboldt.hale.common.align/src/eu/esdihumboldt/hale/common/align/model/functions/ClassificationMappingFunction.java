@@ -24,6 +24,11 @@ package eu.esdihumboldt.hale.common.align.model.functions;
 public interface ClassificationMappingFunction {
 
 	/**
+	 * Name of the parameter specifying a complex lookupTable
+	 */
+	public static final String PARAMETER_LOOKUPTABLE = "lookupTable";
+
+	/**
 	 * Name of the parameter specifying the lookupTable.
 	 */
 	public static final String PARAMETER_LOOKUPTABLE_ID = "lookupTableID";
