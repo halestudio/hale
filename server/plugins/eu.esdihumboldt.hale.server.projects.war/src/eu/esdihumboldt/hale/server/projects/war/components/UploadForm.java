@@ -116,6 +116,7 @@ public class UploadForm extends Form<Void> {
 		addAllowedContentType("application/zip");
 		addAllowedContentType("application/x-zip");
 		addAllowedContentType("application/x-zip-compressed");
+		addAllowedContentType("application/octet-stream");
 
 //		setCustomTypeErrorMessage("Only ZIP archives are supported for upload");
 
