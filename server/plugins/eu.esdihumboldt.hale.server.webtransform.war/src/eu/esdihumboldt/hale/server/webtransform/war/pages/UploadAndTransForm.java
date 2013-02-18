@@ -106,7 +106,12 @@ public class UploadAndTransForm extends Form<Void> {
 
 		@Override
 		public String getObject() {
-			return getTarget().getProviderConfiguration().get(param).as(String.class);
+			Value value = getTarget().getProviderConfiguration().get(param);
+			if (value != null) {
+				return value.as(String.class);
+			}
+
+			return null;
 		}
 
 		@Override
