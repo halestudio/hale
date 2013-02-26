@@ -28,6 +28,7 @@ import eu.esdihumboldt.hale.common.align.tgraph.TGraph
 import eu.esdihumboldt.hale.common.align.tgraph.TGraphConstants.NodeType
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
+import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag
 import eu.esdihumboldt.hale.io.xslt.XslPropertyTransformation
@@ -145,21 +146,25 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 		}
 
 		// start the element/attribute
-		def local = node.definition().name.localPart
-		def namespace = node.definition().name.namespaceURI
-		if (namespace) {
-			def prefix = xsltContext.namespaceContext.getPrefix(namespace)
-			if (prefix) {
-				// add prefix
-				local = "${prefix}:${local}"
+		boolean isGroup = node.definition().asGroup()
+
+		if (!isGroup) {
+			def local = node.definition().name.localPart
+			def namespace = node.definition().name.namespaceURI
+			if (namespace) {
+				def prefix = xsltContext.namespaceContext.getPrefix(namespace)
+				if (prefix) {
+					// add prefix
+					local = "${prefix}:${local}"
+				}
 			}
+			writer << "<xsl:${attribute ? 'attribute' : 'element'} name=\"$local\""
+			if (namespace)
+				writer << " namespace=\"$namespace\""
+			writer << '>'
+			closeTags.insert(0, "</xsl:${attribute ? 'attribute' : 'element'}>")
+			//XXX do this always? For now assumption is this is needed further down
 		}
-		writer << "<xsl:${attribute ? 'attribute' : 'element'} name=\"$local\""
-		if (namespace)
-			writer << " namespace=\"$namespace\""
-		writer << '>'
-		closeTags.insert(0, "</xsl:${attribute ? 'attribute' : 'element'}>")
-		//XXX do this always? For now assumption is this is needed further down
 
 		// push information for leaveProperty
 		tagsToClose.push(closeTags.toString())
@@ -286,6 +291,12 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 			// build XPath expression from path
 			StringBuilder xpath = new StringBuilder()
 			for (Vertex element in path) {
+				// skip groups
+				if (element.definition().asGroup()) {
+					// groups are not represented physically
+					continue;
+				}
+
 				if (xpath.length() > 0) {
 					// separator
 					xpath.append('/')
