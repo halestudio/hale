@@ -26,6 +26,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -87,8 +88,7 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		ZipOutputStream zip = new ZipOutputStream(getTarget().getOutput());
 
 		// false is correct if getParameter is null because false is default
-		boolean includeWebresources = getParameter(INCLUDE_WEB_RESOURCES).as(Boolean.class,
-				false);
+		boolean includeWebresources = getParameter(INCLUDE_WEB_RESOURCES).as(Boolean.class, false);
 		SubtaskProgressIndicator subtask = new SubtaskProgressIndicator(progress);
 
 		// save old IO configurations
@@ -143,7 +143,9 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 			int count = 1;
 			// true if excluded files should be skipped; false is default
 			boolean excludeDataFiles = getParameter(EXLUDE_DATA_FILES).as(Boolean.class, false);
-			for (IOConfiguration resource : resources) {
+			Iterator<IOConfiguration> iter = resources.iterator();
+			while (iter.hasNext()) {
+				IOConfiguration resource = iter.next();
 				// check if ActionId is equal to
 				// eu.esdihumboldt.hale.common.instance.io.InstanceIO.ACTION_LOAD_SOURCE_DATA
 				// import not possible due to cycle errors
@@ -151,7 +153,7 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 						&& resource.getActionId().equals(
 								"eu.esdihumboldt.hale.io.instance.read.source")) {
 					// delete reference in project file
-					resources.remove(resource);
+					iter.remove();
 					continue;
 				}
 
