@@ -19,9 +19,6 @@ import com.google.common.collect.ListMultimap
 
 import eu.esdihumboldt.hale.common.align.model.Cell
 import eu.esdihumboldt.hale.common.align.model.functions.GenerateUIDFunction
-import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition
-import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import eu.esdihumboldt.hale.io.xslt.XsltGenerationContext
 import eu.esdihumboldt.hale.io.xslt.functions.XslVariable
 import eu.esdihumboldt.hale.io.xslt.transformations.base.AbstractFunctionTransformation
@@ -36,22 +33,25 @@ class XslGenerateUID extends AbstractFunctionTransformation implements GenerateU
 
 	@Override
 	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables,
-			XsltGenerationContext context) {
-		def target = cell.getTarget().get(null)[0];
-		PropertyEntityDefinition d = target.getDefinition();
+	XsltGenerationContext context) {
+		//		def target = cell.getTarget().get(null)[0];
+		//		PropertyEntityDefinition d = target.getDefinition();
+		//
+		//		// get the property definition
+		//		PropertyDefinition propertyDefinition = d.getDefinition()
+		//		def localName = propertyDefinition.getName().getLocalPart();
+		//
+		//		// get the type definition
+		//		TypeDefinition typeDefinition = d.getType()
+		//		def typeName = typeDefinition.getName().getLocalPart();
+		//
+		//		def prefix = typeName + "_"+ localName
 
-		// get the property definition
-		PropertyDefinition propertyDefinition = d.getDefinition()
-		def localName = propertyDefinition.getName().getLocalPart();
-
-		// get the type definition
-		TypeDefinition typeDefinition = d.getType()
-		def typeName = typeDefinition.getName().getLocalPart();
-
-		def prefix = typeName + "_"+ localName
+		// UUID as property identifier
+		String uid = UUID.randomUUID().toString();
 
 		"""
-			$prefix<xsl:value-of select="position()" />_<xsl:value-of select="generate-id()" />
+			<xsl:value-of select="concat(generate-id(), '_', '${uid}')" />
 		"""
 	}
 }
