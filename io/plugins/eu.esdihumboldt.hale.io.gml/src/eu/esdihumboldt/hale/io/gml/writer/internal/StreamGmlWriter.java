@@ -61,11 +61,13 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
+import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
@@ -757,6 +759,10 @@ public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriter
 			return;
 		}
 
+		boolean parentIsChoice = parent.getDefinition() instanceof GroupPropertyDefinition
+				&& ((GroupPropertyDefinition) parent.getDefinition()).getConstraint(
+						ChoiceFlag.class).isEnabled();
+
 		for (ChildDefinition<?> child : children) {
 			Object[] values = parent.getProperty(child.getName());
 
@@ -784,19 +790,28 @@ public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriter
 						numValues = values.length;
 					}
 
-					// write additional elements to
-					// satisfy minOccurrs (for nillable elements)
-					Cardinality cardinality = propDef.getConstraint(Cardinality.class);
-					if (cardinality.getMinOccurs() > numValues) {
-						if (propDef.getConstraint(NillableFlag.class).isEnabled()) {
-							for (int i = numValues; i < cardinality.getMinOccurs(); i++) {
-								writeElement(null, propDef); // write nil
-																// element
+					// write additional elements to satisfy minOccurrs
+					// only if parent is not a choice
+					if (!parentIsChoice) {
+						Cardinality cardinality = propDef.getConstraint(Cardinality.class);
+						if (cardinality.getMinOccurs() > numValues) {
+							if (propDef.getConstraint(NillableFlag.class).isEnabled()) {
+								// nillable element
+								for (int i = numValues; i < cardinality.getMinOccurs(); i++) {
+									// write nil element
+									writeElement(null, propDef);
+								}
 							}
-						}
-						else {
-							// no value for non-nillable element
-							// TODO add warning to report
+							else {
+								// no value for non-nillable element
+
+								for (int i = numValues; i < cardinality.getMinOccurs(); i++) {
+									// write empty element
+									GmlWriterUtil.writeEmptyElement(writer, propDef.getName());
+								}
+
+								// TODO add warning to report
+							}
 						}
 					}
 				}
