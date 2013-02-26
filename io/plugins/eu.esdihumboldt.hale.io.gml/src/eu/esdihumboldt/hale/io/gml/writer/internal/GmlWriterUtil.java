@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -114,7 +115,7 @@ public abstract class GmlWriterUtil {
 	 * @return if the type represents an ID
 	 */
 	public static boolean isID(TypeDefinition type) {
-		if (type.getName().equals(new QName("http://www.w3.org/2001/XMLSchema", "ID"))) { //$NON-NLS-1$ //$NON-NLS-2$
+		if (type.getName().equals(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "ID"))) { //$NON-NLS-1$ //$NON-NLS-2$
 			return true;
 		}
 
