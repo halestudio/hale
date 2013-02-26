@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.io.xslt.transformations.type.retype
 
+import javax.xml.namespace.QName
 import javax.xml.stream.XMLStreamException
 
 import com.google.common.collect.ArrayListMultimap
@@ -28,8 +29,8 @@ import eu.esdihumboldt.hale.common.align.tgraph.TGraph
 import eu.esdihumboldt.hale.common.align.tgraph.TGraphConstants.NodeType
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
-import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
+import eu.esdihumboldt.hale.io.gml.writer.internal.GmlWriterUtil
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag
 import eu.esdihumboldt.hale.io.xslt.XslPropertyTransformation
 import eu.esdihumboldt.hale.io.xslt.XsltConstants
@@ -44,6 +45,7 @@ import eu.esdihumboldt.hale.io.xslt.transformations.base.AbstractTransformationT
  * 
  * @author Simon Templer
  */
+@SuppressWarnings("restriction")
 class RetypeTraverser extends AbstractTransformationTraverser implements XsltConstants {
 
 	private static final ALogger log = ALoggerFactory.getLogger(RetypeTraverser);
@@ -63,7 +65,7 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 	 */
 	RetypeTraverser(XsltGenerationContext xsltContext, Writer writer) {
 		/*
-		 * NOTE: Uses to be a XMLStreamWriter, but it didn't support writing
+		 * NOTE: Used to be a XMLStreamWriter, but it didn't support writing
 		 * unescaped XML fragments which is needed to include the function
 		 * sequences.
 		 */
@@ -149,19 +151,7 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 		boolean isGroup = node.definition().asGroup()
 
 		if (!isGroup) {
-			def local = node.definition().name.localPart
-			def namespace = node.definition().name.namespaceURI
-			if (namespace) {
-				def prefix = xsltContext.namespaceContext.getPrefix(namespace)
-				if (prefix) {
-					// add prefix
-					local = "${prefix}:${local}"
-				}
-			}
-			writer << "<xsl:${attribute ? 'attribute' : 'element'} name=\"$local\""
-			if (namespace)
-				writer << " namespace=\"$namespace\""
-			writer << '>'
+			writeXslAttElStart(node.definition().name, attribute)
 			closeTags.insert(0, "</xsl:${attribute ? 'attribute' : 'element'}>")
 			//XXX do this always? For now assumption is this is needed further down
 		}
@@ -169,6 +159,29 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 		// push information for leaveProperty
 		tagsToClose.push(closeTags.toString())
 		contexts.push(context)
+	}
+
+	/**
+	 * Write the start tag of a XSL attribute or element for the given
+	 * qualified name.
+	 * 
+	 * @param name the element or attribute name
+	 * @param attribute if an attribute should be created
+	 */
+	private void writeXslAttElStart(QName name, boolean attribute) {
+		def local = name.localPart
+		def namespace = name.namespaceURI
+		if (namespace) {
+			def prefix = xsltContext.namespaceContext.getPrefix(namespace)
+			if (prefix) {
+				// add prefix
+				local = "${prefix}:${local}"
+			}
+		}
+		writer << "<xsl:${attribute ? 'attribute' : 'element'} name=\"$local\""
+		if (namespace)
+			writer << " namespace=\"$namespace\""
+		writer << '>'
 	}
 
 	@Override
@@ -326,10 +339,26 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 	@Override
 	protected void handleUnmappedProperty(ChildDefinition<?> child) {
 		if (DefinitionUtil.getCardinality(child).minOccurs > 0) {
-			if (child.asProperty() != null) {
+			if (child.asProperty()) {
 				if (child.asProperty().getConstraint(XmlAttributeFlag).enabled) {
 					// a mandatory attribute
 					log.warn("No mapping for a mandatory attribute");
+
+					/*
+					 * Special treatment for ID attributes:
+					 * Generate a unique identifier
+					 */
+					boolean isID = GmlWriterUtil.isID(child.asProperty().propertyType)
+					if (isID) {
+						writeXslAttElStart(child.name, true) // start attribute
+
+						// combine UUID and context ID
+						String uid = UUID.randomUUID().toString()
+						writer << "<xsl:value-of select=\"concat(generate-id(), '_${uid}')\" />"
+						//XXX possible collisions with parent being mapped with structural rename?
+
+						writer << '</xsl:attribute>' // end attribute
+					}
 				}
 				else {
 					// a mandatory element
