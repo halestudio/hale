@@ -52,7 +52,7 @@ public class GenerateUID extends
 		String typeName = type.getDisplayName();
 		String localName = resultProperty.getDefinition().getName().getLocalPart();
 
-		String name = typeName + "_" + localName + "_" + UUID.randomUUID().getMostSignificantBits();
+		String name = typeName + "_" + localName + "_" + UUID.randomUUID().toString();
 
 		return name;
 	}
