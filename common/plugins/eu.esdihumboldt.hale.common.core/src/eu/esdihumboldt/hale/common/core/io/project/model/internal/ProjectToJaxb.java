@@ -154,6 +154,8 @@ public class ProjectToJaxb {
 	}
 
 	private static XMLGregorianCalendar toXMLCalendar(Date date) {
+		if (date == null)
+			return null;
 		GregorianCalendar gc = new GregorianCalendar();
 		gc.setTimeInMillis(date.getTime());
 		return df.newXMLGregorianCalendar(gc);
