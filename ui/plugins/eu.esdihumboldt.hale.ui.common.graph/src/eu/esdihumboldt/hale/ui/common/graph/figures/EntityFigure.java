@@ -57,7 +57,7 @@ public class EntityFigure extends CustomShapeFigure {
 		setLayoutManager(gridLayout);
 
 		// the label for the label provider text and image
-		Label label = new Label();
+		Label label = new EndSubTextLabel();
 		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
 		add(label, gridData);
 
