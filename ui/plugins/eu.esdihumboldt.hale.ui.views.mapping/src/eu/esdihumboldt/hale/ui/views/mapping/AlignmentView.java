@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -36,6 +37,8 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
@@ -45,6 +48,8 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.WorkbenchPart;
+import org.eclipse.zest.layouts.LayoutAlgorithm;
+import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
 import com.google.common.collect.ListMultimap;
 
@@ -86,6 +91,8 @@ public class AlignmentView extends AbstractMappingView {
 	private final FunctionLabelProvider functionLabels = new FunctionLabelProvider();
 
 	private ISelectionListener selectionListener;
+
+	private TreeLayoutAlgorithm treeLayout;
 
 	/**
 	 * @see PropertiesViewPart#getViewContext()
@@ -152,6 +159,7 @@ public class AlignmentView extends AbstractMappingView {
 		viewerContainer.setLayout(new FillLayout());
 		viewerContainer.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
 		super.createViewControl(viewerContainer);
+		updateLayout(false);
 
 		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
 				AlignmentService.class);
@@ -215,6 +223,15 @@ public class AlignmentView extends AbstractMappingView {
 						}
 					}
 				});
+
+		// listen on size changes
+		getViewer().getControl().addControlListener(new ControlAdapter() {
+
+			@Override
+			public void controlResized(ControlEvent e) {
+				updateLayout(true);
+			}
+		});
 	}
 
 	/**
@@ -358,6 +375,27 @@ public class AlignmentView extends AbstractMappingView {
 		};
 	}
 
+	@Override
+	protected LayoutAlgorithm createLayout() {
+		treeLayout = new TreeLayoutAlgorithm(TreeLayoutAlgorithm.RIGHT_LEFT);
+		return treeLayout;
+	}
+
+	/**
+	 * Update the layout to the view size.
+	 * 
+	 * @param triggerLayout if the layout should be applied directly
+	 */
+	private void updateLayout(boolean triggerLayout) {
+		int width = getViewer().getControl().getSize().x;
+
+		treeLayout.setNodeSpace(new Dimension((width - 10) / 3, 30));
+
+		if (triggerLayout) {
+			getViewer().applyLayout();
+		}
+	}
+
 	/**
 	 * Update the selected type relation to a cell that is related to the given
 	 * schema selection.
@@ -489,7 +527,7 @@ public class AlignmentView extends AbstractMappingView {
 		else {
 			getViewer().setInput(Collections.EMPTY_LIST);
 		}
-		getViewer().applyLayout();
+		updateLayout(true);
 	}
 
 	/**
