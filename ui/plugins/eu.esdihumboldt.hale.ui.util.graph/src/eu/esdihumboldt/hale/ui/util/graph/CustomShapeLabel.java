@@ -19,6 +19,7 @@ import org.eclipse.draw2d.GridData;
 import org.eclipse.draw2d.GridLayout;
 import org.eclipse.draw2d.Label;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
 
 /**
  * Custom shaped label figure for use in graphs.
@@ -33,7 +34,18 @@ public class CustomShapeLabel extends CustomShapeFigure {
 	 * @param painter the painter drawing the figure shape
 	 */
 	public CustomShapeLabel(ShapePainter painter) {
-		super(painter);
+		this(painter, null);
+	}
+
+	/**
+	 * Create a custom shaped label.
+	 * 
+	 * @param painter the painter drawing the figure shape
+	 * @param customFont a custom font to use for the text label, may be
+	 *            <code>null</code>
+	 */
+	public CustomShapeLabel(ShapePainter painter, final Font customFont) {
+		super(painter, customFont);
 
 		setAntialias(SWT.ON);
 

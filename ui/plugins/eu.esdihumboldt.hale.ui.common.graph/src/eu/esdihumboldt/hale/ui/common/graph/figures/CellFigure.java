@@ -20,6 +20,7 @@ import org.eclipse.draw2d.GridData;
 import org.eclipse.draw2d.GridLayout;
 import org.eclipse.draw2d.Label;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
@@ -39,9 +40,11 @@ public class CellFigure extends CustomShapeFigure {
 	 * Default constructor
 	 * 
 	 * @param cell the cell from which to take info from.
+	 * @param customFont a custom font to use for the text label, may be
+	 *            <code>null</code>
 	 */
-	public CellFigure(Cell cell) {
-		super(new StretchedHexagon(10));
+	public CellFigure(Cell cell, final Font customFont) {
+		super(new StretchedHexagon(10), customFont);
 
 		setAntialias(SWT.ON);
 
@@ -53,7 +56,6 @@ public class CellFigure extends CustomShapeFigure {
 		setLayoutManager(gridLayout);
 
 		addLabels(cell);
-
 	}
 
 	private void addLabels(Cell cell) {

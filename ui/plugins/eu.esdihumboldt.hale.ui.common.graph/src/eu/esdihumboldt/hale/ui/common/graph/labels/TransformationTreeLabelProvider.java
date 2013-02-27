@@ -337,10 +337,10 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 		if (shape != null) {
 			CustomShapeFigure figure;
 			if (contextText != null || cardText != null) {
-				figure = new EntityFigure(shape, contextText, cardText);
+				figure = new EntityFigure(shape, contextText, cardText, getCustomFigureFont());
 			}
 			else {
-				figure = new CustomShapeLabel(shape);
+				figure = new CustomShapeLabel(shape, getCustomFigureFont());
 			}
 			figure.setMaximumWidth(MAX_FIGURE_WIDTH);
 			return figure;
