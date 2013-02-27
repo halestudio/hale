@@ -23,6 +23,7 @@ import org.eclipse.jface.preference.JFacePreferences;
 import org.eclipse.jface.resource.ColorRegistry;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
 
 import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure;
 
@@ -40,9 +41,11 @@ public class EntityFigure extends CustomShapeFigure {
 	 * @param painter the shape
 	 * @param contextText the context text, may be <code>null</code>
 	 * @param cardinalityText the cardinality text, may be <code>null</code>
+	 * @param customFont a custom font to use, may be <code>null</code>
 	 */
-	public EntityFigure(ShapePainter painter, final String contextText, final String cardinalityText) {
-		super(painter);
+	public EntityFigure(ShapePainter painter, final String contextText,
+			final String cardinalityText, final Font customFont) {
+		super(painter, customFont);
 
 		setAntialias(SWT.ON);
 
@@ -68,6 +71,9 @@ public class EntityFigure extends CustomShapeFigure {
 			// XXX uses the same color as in schema explorer label provider -
 			// centralize this?
 			cardLabel.setForegroundColor(colorRegistry.get(JFacePreferences.COUNTER_COLOR));
+			if (customFont != null) {
+				cardLabel.setFont(customFont);
+			}
 			cardLabel.setText(cardinalityText);
 			GridData cardGridData = new GridData(GridData.END, GridData.CENTER, false, true);
 			add(cardLabel, cardGridData);
@@ -80,6 +86,9 @@ public class EntityFigure extends CustomShapeFigure {
 			// XXX uses the same color as in schema explorer label provider -
 			// centralize this?
 			contextLabel.setForegroundColor(colorRegistry.get(JFacePreferences.DECORATIONS_COLOR));
+			if (customFont != null) {
+				contextLabel.setFont(customFont);
+			}
 			contextLabel.setText(contextText);
 			GridData contextGridData = new GridData(GridData.END, GridData.CENTER, false, true);
 			add(contextLabel, contextGridData);

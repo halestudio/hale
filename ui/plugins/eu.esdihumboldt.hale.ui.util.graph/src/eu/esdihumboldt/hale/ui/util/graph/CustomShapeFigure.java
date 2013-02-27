@@ -23,6 +23,7 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.zest.core.widgets.ILabeledFigure;
 import org.eclipse.zest.core.widgets.IStyleableFigure;
@@ -88,8 +89,10 @@ public class CustomShapeFigure extends Shape implements IStyleableFigure, ILabel
 	 * Create a custom shaped figure.
 	 * 
 	 * @param painter the painter drawing the figure shape
+	 * @param customFont a custom font to use for the text label, may be
+	 *            <code>null</code>
 	 */
-	public CustomShapeFigure(ShapePainter painter) {
+	public CustomShapeFigure(ShapePainter painter, final Font customFont) {
 		super();
 
 		if (painter == null) {
@@ -97,6 +100,19 @@ public class CustomShapeFigure extends Shape implements IStyleableFigure, ILabel
 		}
 
 		this.painter = painter;
+
+		if (customFont != null) {
+			setFont(customFont);
+		}
+	}
+
+	/**
+	 * Create a custom shaped figure.
+	 * 
+	 * @param painter the painter drawing the figure shape
+	 */
+	public CustomShapeFigure(ShapePainter painter) {
+		this(painter, null);
 	}
 
 	/**
@@ -142,6 +158,8 @@ public class CustomShapeFigure extends Shape implements IStyleableFigure, ILabel
 	 */
 	public void setTextLabel(Label textLabel) {
 		this.textLabel = textLabel;
+
+		textLabel.setFont(getFont());
 
 		if (text != null) {
 			textLabel.setText(text);

@@ -18,9 +18,14 @@ package eu.esdihumboldt.hale.ui.common.graph.labels;
 
 import org.eclipse.draw2d.ConnectionRouter;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.jface.resource.FontDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.services.IDisposable;
@@ -50,7 +55,6 @@ import eu.esdihumboldt.hale.ui.common.graph.figures.FunctionFigure;
 import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure;
 import eu.esdihumboldt.hale.ui.util.graph.WrappedText;
 import eu.esdihumboldt.hale.ui.util.graph.shapes.FingerPost;
-import eu.esdihumboldt.hale.ui.util.graph.shapes.StretchedHexagon;
 
 /**
  * Label provider for mapping graphs.
@@ -86,6 +90,16 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 
 	private final ServiceProvider serviceProvider;
 
+	/**
+	 * Local resource manager.
+	 * 
+	 * TODO use for other resources than font?
+	 */
+	protected final LocalResourceManager resources = new LocalResourceManager(
+			JFaceResources.getResources());
+
+	private final Font customFigureFont;
+
 	// TODO set colors for function in graph?
 
 	/**
@@ -119,6 +133,8 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 		cellBackgroundColor = null;
 		cellForegroundColor = null;
 		cellHighlightColor = entityHighlightColor;
+
+		customFigureFont = createFigureFont();
 	}
 
 	/**
@@ -136,6 +152,17 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	 */
 	protected LabelProvider createDefinitionLabels() {
 		return new DefinitionLabelProvider(true);
+	}
+
+	/**
+	 * Create the font to use for the figures.
+	 * 
+	 * @return the figure font or <code>null</code>
+	 */
+	protected Font createFigureFont() {
+		FontData[] defFontData = JFaceResources.getDefaultFont().getFontData();
+		return resources.createFont(FontDescriptor.createFrom(defFontData[0].getName(), 9,
+				SWT.NORMAL));
 	}
 
 	/**
@@ -221,6 +248,8 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 		entityHighlightColor.dispose();
 
 //		cellBorderHighlightColor.dispose();
+
+		resources.dispose();
 
 		super.dispose();
 	}
@@ -426,10 +455,10 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 		CustomShapeFigure figure = null;
 		if (element instanceof Cell) {
 			Cell cell = (Cell) element;
-			figure = new CellFigure(cell);
+			figure = new CellFigure(cell, customFigureFont);
 		}
 		if (element instanceof Function) {
-			figure = new FunctionFigure(new StretchedHexagon(10));
+			figure = new FunctionFigure(getCustomFigureFont());
 		}
 
 		if (element instanceof Entity) {
@@ -440,10 +469,12 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			String contextText = AlignmentUtil.getContextText((EntityDefinition) element);
 			switch (((EntityDefinition) element).getSchemaSpace()) {
 			case SOURCE:
-				figure = new EntityFigure(new FingerPost(10, SWT.RIGHT), contextText, null);
+				figure = new EntityFigure(new FingerPost(10, SWT.RIGHT), contextText, null,
+						getCustomFigureFont());
 				break;
 			case TARGET:
-				figure = new EntityFigure(new FingerPost(10, SWT.LEFT), contextText, null);
+				figure = new EntityFigure(new FingerPost(10, SWT.LEFT), contextText, null,
+						getCustomFigureFont());
 				break;
 			}
 		}
@@ -453,6 +484,13 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 		}
 
 		return figure;
+	}
+
+	/**
+	 * @return the custom figure font
+	 */
+	public Font getCustomFigureFont() {
+		return customFigureFont;
 	}
 
 }
