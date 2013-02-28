@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.ui.compatibility.extension.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -52,6 +53,8 @@ public class CompatibilityServiceImpl extends
 
 	// stored listeners of the service
 	private final CopyOnWriteArraySet<CompatibilityServiceListener> listeners = new CopyOnWriteArraySet<CompatibilityServiceListener>();
+
+	CompatibilityAlignmentListener cal;
 
 	/**
 	 * Default factory based on a configuration element.
@@ -150,8 +153,9 @@ public class CompatibilityServiceImpl extends
 	public CompatibilityServiceImpl() {
 		super(new CompatibilityModeExtension(), HALEUIPlugin.getDefault().getPreferenceStore(),
 				"compatibilityMode");
+		cal = new CompatibilityAlignmentListener();
 		((AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class))
-				.addListener(new CompatibilityAlignmentListener());
+				.addListener(cal);
 	}
 
 	/**
@@ -304,7 +308,21 @@ public class CompatibilityServiceImpl extends
 		 */
 		@Override
 		public void alignmentChanged() {
-			// TODO Auto-generated method stub
+			incompatibleCells.clear();
+			Collection<? extends Cell> cells = ((AlignmentService) PlatformUI.getWorkbench()
+					.getService(AlignmentService.class)).getAlignment().getCells();
+			Iterator<? extends Cell> cit = cells.iterator();
+			while (cit.hasNext()) {
+				Cell cell = cit.next();
+				boolean isCompatibleNow = getCurrent().supportsFunction(
+						cell.getTransformationIdentifier());
+
+				if (!isCompatibleNow) {
+					incompatibleCells.add(cell);
+				}
+
+			}
+			finish();
 
 		}
 
@@ -328,4 +346,13 @@ public class CompatibilityServiceImpl extends
 		listeners.remove(listener);
 
 	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.compatibility.extension.CompatibilityService#compatibilityModeChanged()
+	 */
+	@Override
+	public void compatibilityModeChanged() {
+		cal.alignmentChanged();
+	}
+
 }
