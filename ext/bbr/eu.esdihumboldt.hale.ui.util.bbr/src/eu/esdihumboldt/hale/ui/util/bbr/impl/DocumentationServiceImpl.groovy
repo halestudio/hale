@@ -144,7 +144,16 @@ class DocumentationServiceImpl implements DocumentationService {
 					cache.put(definition, doc)
 					return doc
 				}
-				//TODO also cache nulls?
+				else if (definition instanceof PropertyDefinition) {
+					// if there is no documentation on the property, try the type
+					Documentation doc = getDocumentation(definition.propertyType)
+					if (doc) {
+						cache.put(definition, doc)
+						return doc
+					}
+				}
+
+				//XXX also cache nulls? supported by cache?
 			}
 		}
 
