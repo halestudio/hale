@@ -18,7 +18,7 @@
                afterTab="eu.esdihumboldt.hale.ui.views.properties.definition.general"
                category="eu.esdihumboldt.hale.ui.views.properties.definition"
                id="eu.esdihumboldt.hale.ui.util.bbr.propertyTab"
-               label="BBR">
+               label="GeoInfoBBR">
          </propertyTab>
       </propertyTabs>
    </extension>
@@ -49,6 +49,17 @@
             <input
                   type="eu.esdihumboldt.hale.common.schema.model.TypeDefinition">
             </input>
+            <input
+                  type="eu.esdihumboldt.hale.common.schema.model.PropertyDefinition">
+            </input>
+         </propertySection>
+         <propertySection
+               afterSection="eu.esdihumboldt.hale.ui.util.bbr.description"
+               class="eu.esdihumboldt.hale.ui.util.bbr.properties.ValuesSection"
+               enablesFor="1"
+               filter="eu.esdihumboldt.hale.ui.util.bbr.properties.ValuesFilter"
+               id="eu.esdihumboldt.hale.ui.util.bbr.values"
+               tab="eu.esdihumboldt.hale.ui.util.bbr.propertyTab">
             <input
                   type="eu.esdihumboldt.hale.common.schema.model.PropertyDefinition">
             </input>

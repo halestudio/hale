@@ -152,7 +152,8 @@ class DocumentationServiceImpl implements DocumentationService {
 	}
 
 	private Documentation createDoc(def row) {
-		new Documentation(name: row.AlphaCode,
+		new Documentation(name: row.Name,
+				code: row.AlphaCode,
 				definition: row.Definition,
 				description: row.Description)
 	}
