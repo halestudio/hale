@@ -115,6 +115,7 @@ public class CompatibilityModeComposite extends WorkbenchWindowControlContributi
 								combo.select(i);
 							}
 						}
+						cs.compatibilityModeChanged();
 					}
 				});
 			}
