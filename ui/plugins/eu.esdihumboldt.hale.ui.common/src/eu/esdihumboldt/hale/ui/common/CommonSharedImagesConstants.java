@@ -121,4 +121,14 @@ public interface CommonSharedImagesConstants {
 	 */
 	public static final String IMG_REFRESH = "IMG_REFRESH";
 
+	/**
+	 * Key for signed yes image
+	 */
+	public static final String IMG_SIGNED_YES = "IMG_SIGNED_YES";
+
+	/**
+	 * Key for signed no image
+	 */
+	public static final String IMG_SIGNED_NO = "IMG_SIGNED_NO";
+
 }
