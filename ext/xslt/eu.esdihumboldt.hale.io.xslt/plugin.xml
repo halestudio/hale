@@ -61,5 +61,14 @@
             id="eu.esdihumboldt.hale.align.classification.xslt">
       </propertyTransformation>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.align.compatibility">
+      <compatibility
+            class="eu.esdihumboldt.hale.io.xslt.compatibility.XsltCompatibilityMode"
+            id="eu.esdihumboldt.hale.io.xslt.compatibility"
+            key="eu.esdihumboldt.hale.io.xslt.compatibility.xslt"
+            name="Xslt">
+      </compatibility>
+   </extension>
 
 </plugin>
