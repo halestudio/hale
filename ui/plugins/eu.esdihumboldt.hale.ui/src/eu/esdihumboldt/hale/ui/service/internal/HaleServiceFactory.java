@@ -20,6 +20,8 @@ import org.eclipse.ui.services.AbstractServiceFactory;
 import org.eclipse.ui.services.IServiceLocator;
 
 import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
+import eu.esdihumboldt.hale.ui.compatibility.extension.CompatibilityService;
+import eu.esdihumboldt.hale.ui.compatibility.extension.impl.CompatibilityServiceImpl;
 import eu.esdihumboldt.hale.ui.geometry.service.GeometrySchemaService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.internal.AlignmentServiceImpl;
@@ -75,6 +77,11 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 		if (OccurringValuesService.class.equals(serviceInterface)) {
 			return new OccurringValuesServiceImpl(
 					(InstanceService) locator.getService(InstanceService.class));
+		}
+
+		if (CompatibilityService.class.equals(serviceInterface)) {
+			return new CompatibilityServiceImpl();
+
 		}
 
 		if (AlignmentService.class.equals(serviceInterface)) {

@@ -425,6 +425,9 @@
          <service
                serviceClass="eu.esdihumboldt.hale.ui.service.values.OccurringValuesService">
          </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.ui.compatibility.extension.CompatibilityService">
+         </service>
       </serviceFactory>
       <sourceProvider
             provider="eu.esdihumboldt.hale.ui.service.schema.internal.SchemaServiceSource">
@@ -775,6 +778,16 @@
                name="eu.esdihumboldt.hale.ui.popup.end"
                visible="true">
          </separator>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.trim.status?after=additions">
+         <toolbar
+               id="eu.esdihumboldt.hale.ui.compatibility">
+            <control
+                  class="eu.esdihumboldt.hale.ui.compatibility.CompatibilityModeComposite">
+            </control>
+         </toolbar>
       </menuContribution>
    </extension>
    <extension
