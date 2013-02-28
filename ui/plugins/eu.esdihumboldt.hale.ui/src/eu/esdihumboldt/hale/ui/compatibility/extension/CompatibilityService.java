@@ -40,4 +40,9 @@ public interface CompatibilityService extends
 	 * @param listener the listener to remove
 	 */
 	public void removeCompatibilityListener(CompatibilityServiceListener listener);
+
+	/**
+	 * called when the mode is changed (externally, e.g. through user at the ui)
+	 */
+	public void compatibilityModeChanged();
 }
