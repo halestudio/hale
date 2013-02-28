@@ -2,5 +2,14 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="eu.esdihumboldt.cst.instancetransformation" name="Instance transformation" schema="schema/eu.esdihumboldt.cst.instancetransformation.exsd"/>
+   <extension
+         point="eu.esdihumboldt.hale.align.compatibility">
+      <compatibility
+            class="eu.esdihumboldt.cst.internal.CSTCompatibilityMode"
+            id="eu.esdihumboldt.cst.compatibility"
+            key="eu.esdihumboldt.cst.compatibility.cst"
+            name="CST">
+      </compatibility>
+   </extension>
 
 </plugin>
