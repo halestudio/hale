@@ -13,23 +13,19 @@
  *     Fraunhofer IGD
  */
 
-package eu.esdihumboldt.hale.ui.util.bbr
+package eu.esdihumboldt.hale.ui.util.bbr.properties;
 
+import eu.esdihumboldt.hale.ui.util.bbr.Documentation
 
 /**
- * Bean holding BBR documentation on a type, attribute or value.
+ * Accepts documentations with value documentations.
  * 
  * @author Simon Templer
  */
-class Documentation {
+class ValuesFilter extends AbstractDocumentationFilter {
 
-	String code
-	
-	String name
-
-	String description
-
-	String definition
-	
-	List<Documentation> values = []
+	@Override
+	protected boolean accept(Documentation doc) {
+		doc?.values
+	}
 }
