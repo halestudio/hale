@@ -6,6 +6,7 @@
    <extension-point id="eu.esdihumboldt.hale.align.engine" name="Transformation engine definitions" schema="schema/eu.esdihumboldt.hale.align.engine.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.align.category" name="Transformation function categories" schema="schema/eu.esdihumboldt.hale.align.category.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.align.annotation" name="Alignment cell annotations" schema="schema/eu.esdihumboldt.hale.align.annotation.exsd"/>
+   <extension-point id="eu.esdihumboldt.hale.align.compatibility" name="Compatibility mode controlling" schema="schema/eu.esdihumboldt.hale.align.compatibility.exsd"/>
    <extension
          point="eu.esdihumboldt.hale.align.category">
       <category
