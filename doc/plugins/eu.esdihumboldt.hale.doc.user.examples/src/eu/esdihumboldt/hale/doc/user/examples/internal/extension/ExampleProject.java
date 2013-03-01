@@ -65,6 +65,8 @@ public class ExampleProject implements Identifiable, Comparable<ExampleProject> 
 
 	private final File alignmentFile = File.createTempFile("example_alignment", ".xml");
 
+	private final LocationUpdater updater;
+
 	/**
 	 * Create an example project from a configuration element.
 	 * 
@@ -127,8 +129,8 @@ public class ExampleProject implements Identifiable, Comparable<ExampleProject> 
 		Project project = reader.getProject();
 
 		// update paths in project
-		LocationUpdater updater = new LocationUpdater();
-		updater.updateProject(project, url.toURI());
+		updater = new LocationUpdater(project, url.toURI());
+		updater.updateProject();
 
 		this.info = project;
 	}
@@ -211,6 +213,15 @@ public class ExampleProject implements Identifiable, Comparable<ExampleProject> 
 			return alignmentFile.toURI();
 		}
 		return null;
+	}
+
+	/**
+	 * Get the used location updater.
+	 * 
+	 * @return the updater
+	 */
+	public LocationUpdater getUpdater() {
+		return updater;
 	}
 
 }

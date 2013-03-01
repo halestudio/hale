@@ -41,6 +41,7 @@ import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.util.Pair;
+import eu.esdihumboldt.util.io.PathUpdate;
 
 /**
  * Base class for converting alignment representations to alignments.
@@ -233,6 +234,7 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 		Map<URI, String> uriToPrefix = new HashMap<URI, String>();
 
 		// create URI to prefix map and known URIs
+		// URIs come from alignment, so they are absolute
 		for (Entry<String, URI> baseEntry : existingBases.entrySet()) {
 			knownURIs.add(baseEntry.getValue());
 			uriToPrefix.put(baseEntry.getValue(), baseEntry.getKey());
@@ -249,6 +251,12 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 		existingPrefixes.add(newPrefix);
 		uriToPrefix.put(newBase, newPrefix);
 
+		/*
+		 * XXX Adding a base alignment could only use a PathUpdate for the
+		 * movement of the base alignment which is not known in the current
+		 * project. Maybe could try the one of the current project either way?
+		 */
+
 		// find all alignments to load (also missing ones) and load the beans
 		LinkedList<URI> queue = new LinkedList<URI>();
 		queue.add(newBase);
@@ -256,10 +264,9 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 			URI baseURI = queue.pollFirst();
 			A baseA;
 			try {
-				// XXX update path according to path change of main alignment?
 				baseA = loadAlignment(new DefaultInputSupplier(baseURI).getInput(), reporter);
 			} catch (IOException e) {
-				reporter.error(new IOMessageImpl("Couldn't load a included base alignment ("
+				reporter.error(new IOMessageImpl("Couldn't load an included base alignment ("
 						+ baseURI + ").", e));
 				reporter.setSuccess(false);
 				return false;
@@ -271,7 +278,9 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 
 			// load "missing" base alignments, too, add prefix mapping
 			for (Entry<String, URI> baseEntry : getBases(baseA).entrySet()) {
-				URI uri = baseEntry.getValue();
+				// rawUri may be relative
+				URI rawUri = baseEntry.getValue();
+				URI uri = newBase.resolve(rawUri);
 				// check whether this base alignment is missing
 				if (!knownURIs.contains(uri)) {
 					reporter.info(new IOMessageImpl(
@@ -299,18 +308,19 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 	 *            references
 	 * @param targetTypes the target types to use for resolving definition
 	 *            references
+	 * @param updater the path updater to use for base alignments
 	 * @param reporter the I/O reporter to report any errors to, may be
 	 *            <code>null</code>
 	 * @return the alignment for the given alignment representation
 	 * @throws IOException if a base alignment couldn't be loaded
 	 */
 	protected final MutableAlignment createAlignment(A start, TypeIndex sourceTypes,
-			TypeIndex targetTypes, IOReporter reporter) throws IOException {
+			TypeIndex targetTypes, PathUpdate updater, IOReporter reporter) throws IOException {
 		Map<A, Map<String, String>> prefixMapping = new HashMap<A, Map<String, String>>();
 		Map<A, Pair<String, URI>> alignmentToInfo = new HashMap<A, Pair<String, URI>>();
 
 		// fill needed maps
-		generatePrefixMapping(start, prefixMapping, alignmentToInfo, reporter);
+		generatePrefixMapping(start, prefixMapping, alignmentToInfo, updater, reporter);
 
 		// create alignment
 		DefaultAlignment alignment = new DefaultAlignment();
@@ -341,11 +351,13 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 	 *            prefixes
 	 * @param alignmentToInfo gets filled with a mapping from base alignment
 	 *            representations to prefixes and URIs
+	 * @param updater the location updater to use for base alignments
 	 * @param reporter the reporter
 	 * @throws IOException if a base alignment couldn't be loaded
 	 */
 	private void generatePrefixMapping(A start, Map<A, Map<String, String>> prefixMapping,
-			Map<A, Pair<String, URI>> alignmentToInfo, IOReporter reporter) throws IOException {
+			Map<A, Pair<String, URI>> alignmentToInfo, PathUpdate updater, IOReporter reporter)
+			throws IOException {
 		Map<String, URI> base = getBases(start);
 
 		// also a mapping for this alignment itself in case the same URI is
@@ -360,16 +372,23 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 
 		// check base for doubles, and invert it for later
 		for (Entry<String, URI> baseEntry : base.entrySet()) {
-			if (knownURIs.contains(baseEntry.getValue())) {
-				reporter.warn(new IOMessageImpl("The same base alignment (" + baseEntry.getValue()
+			URI rawBaseURI = baseEntry.getValue();
+			// resolve here, to not include the same file through different
+			// relative paths...
+			URI baseURI = updater.findLocation(rawBaseURI, true, false);
+			if (baseURI == null) {
+				throw new IOException("Couldn't load an included alignment (" + rawBaseURI
+						+ "). File not found.", null);
+			}
+			if (knownURIs.contains(baseURI)) {
+				reporter.warn(new IOMessageImpl("The same base alignment (" + rawBaseURI
 						+ ") was included twice.", null));
-				prefixMapping.get(start).put(baseEntry.getKey(),
-						uriToPrefix.get(baseEntry.getValue()));
+				prefixMapping.get(start).put(baseEntry.getKey(), uriToPrefix.get(baseURI));
 			}
 			else {
-				knownURIs.add(baseEntry.getValue());
+				knownURIs.add(baseURI);
 				prefixMapping.get(start).put(baseEntry.getKey(), baseEntry.getKey());
-				uriToPrefix.put(baseEntry.getValue(), baseEntry.getKey());
+				uriToPrefix.put(baseURI, baseEntry.getKey());
 			}
 		}
 
@@ -379,10 +398,9 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 			URI baseURI = queue.pollFirst();
 			A baseA;
 			try {
-				// XXX update path according to path change of main alignment?
 				baseA = loadAlignment(new DefaultInputSupplier(baseURI).getInput(), reporter);
 			} catch (IOException e) {
-				throw new IOException("Couldn't load a included alignment (" + baseURI + ").", e);
+				throw new IOException("Couldn't load an included alignment (" + baseURI + ").", e);
 			}
 
 			// add to alignment info map
@@ -391,8 +409,17 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 
 			// load "missing" base alignments, too, add prefix mapping
 			for (Entry<String, URI> baseEntry : getBases(baseA).entrySet()) {
-				URI uri = baseEntry.getValue();
-				// check whether this base alignment is missing
+				// rawUri may be relative
+				URI rawUri = baseEntry.getValue();
+				// First resolve relative (if needed) to the current alignment.
+				URI uri = baseURI.resolve(rawUri);
+				// Then try path update in case several alignments that
+				// reference each other were moved in the same way as the
+				// project.
+				uri = updater.findLocation(uri, true, false);
+				if (uri == null)
+					throw new IOException("Couldn't load an included alignment (" + rawUri
+							+ "). File not found.");
 				if (!knownURIs.contains(uri)) {
 					reporter.info(new IOMessageImpl(
 							"A base alignment referenced another base alignment (" + uri

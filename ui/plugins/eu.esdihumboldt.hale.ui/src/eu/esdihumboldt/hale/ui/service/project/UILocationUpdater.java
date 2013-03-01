@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.util.LocationUpdater;
 
 /**
@@ -34,6 +35,16 @@ import eu.esdihumboldt.hale.common.core.io.project.util.LocationUpdater;
  * @author Simon Templer
  */
 public class UILocationUpdater extends LocationUpdater {
+
+	/**
+	 * Default constructor.
+	 * 
+	 * @param project the project to update
+	 * @param newLocation the new location of the project file
+	 */
+	public UILocationUpdater(Project project, URI newLocation) {
+		super(project, newLocation);
+	}
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.core.io.project.util.LocationUpdater#updatePathFallback(java.net.URI)

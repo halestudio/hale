@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +44,8 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.impl.SubtaskProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
+import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFileInfo;
+import eu.esdihumboldt.hale.common.core.io.project.util.XMLAlignmentUpdater;
 import eu.esdihumboldt.hale.common.core.io.project.util.XMLSchemaUpdater;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
@@ -97,15 +98,13 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 			// clone all IO configurations to work on different objects
 			oldResources.add(getProject().getResources().get(i).clone());
 		IOConfiguration config = getProject().getSaveConfiguration();
-		IOConfiguration oldSaveConfig = config;
+		IOConfiguration oldSaveConfig = config.clone();
 
 		// copy resources to the temp directory and update xml schemas
 		updateResources(tempDir, includeWebresources, subtask, reporter);
 
 		// update target save configuration of the project
-		config.getProviderConfiguration().remove(PARAM_TARGET);
 		config.getProviderConfiguration().put(PARAM_TARGET, Value.of(baseFile.toURI().toString()));
-		getProject().setSaveConfiguration(config);
 
 		// write project file via XMLProjectWriter
 		XMLProjectWriter writer = new XMLProjectWriter();
@@ -113,6 +112,19 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		writer.setProject(getProject());
 		writer.setProjectFiles(getProjectFiles());
 		IOReport report = writer.execute(progress, reporter);
+
+		// now after the project with its project files is written, look for the
+		// alignment file and update it
+		for (ProjectFileInfo pfi : getProject().getProjectFiles())
+			if (pfi.getName().equals("alignment.xml")) {
+				// Use the project file as oldFile - assumes they are in the
+				// same directory.
+				XMLAlignmentUpdater.update(
+						new File(pfi.getLocation()),
+						URI.create(oldSaveConfig.getProviderConfiguration().get(PARAM_TARGET)
+								.toString()), includeWebresources, reporter);
+				break;
+			}
 
 		// put the complete temp directory into a zip file
 		zipDirectory(tempDir, zip, "");
@@ -158,7 +170,6 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 				}
 
 				Map<String, Value> providerConfig = resource.getProviderConfiguration();
-				Map<String, Value> newProvConf = new HashMap<String, Value>();
 				String path = providerConfig.get(ImportProvider.PARAM_SOURCE).toString();
 				URI pathUri;
 				try {
@@ -220,15 +231,9 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 					XMLSchemaUpdater.update(newFile, pathUri, includeWebResources, reporter);
 				}
 
-				newProvConf.put(ImportProvider.PARAM_SOURCE, Value.of(new File(new File(
+				providerConfig.put(ImportProvider.PARAM_SOURCE, Value.of(new File(new File(
 						targetDirectory, "resource" + count), name).toURI().toString()));
 				count++;
-
-				// update provider configuration
-				for (String key : newProvConf.keySet()) {
-					resource.getProviderConfiguration().remove(key);
-					resource.getProviderConfiguration().put(key, newProvConf.get(key));
-				}
 			}
 		} finally {
 			progress.end();

@@ -183,7 +183,6 @@ public class XMLPathUpdater {
 				continue;
 			}
 
-			// TODO do a path update?
 			if (!locationUri.isAbsolute())
 				locationUri = oldPath.resolve(locationUri);
 
@@ -245,6 +244,8 @@ public class XMLPathUpdater {
 
 				update(includednewFile, locationUri, locationXPath, includeWebResources, reporter,
 						updates);
+
+				count++;
 			}
 
 			// write new XML-File
@@ -264,8 +265,6 @@ public class XMLPathUpdater {
 				log.debug("Cannot create new XML file", e);
 				return;
 			}
-
-			count += 1;
 		}
 	}
 

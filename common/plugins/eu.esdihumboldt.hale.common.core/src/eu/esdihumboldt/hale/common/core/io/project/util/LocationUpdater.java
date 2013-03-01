@@ -26,7 +26,6 @@ import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFileInfo;
-import eu.esdihumboldt.util.io.IOUtils;
 import eu.esdihumboldt.util.io.PathUpdate;
 
 /**
@@ -36,79 +35,67 @@ import eu.esdihumboldt.util.io.PathUpdate;
  * 
  * @author Simon Templer
  */
-public class LocationUpdater {
+public class LocationUpdater extends PathUpdate {
+
+	private final Project project;
+
+	/**
+	 * Default constructor.<br>
+	 * If either project, the save configuration of project or newLocation is
+	 * null all calls on this object will have no effect.
+	 * 
+	 * @param project the project to update
+	 * @param newLocation the new location of the project file
+	 */
+	public LocationUpdater(Project project, URI newLocation) {
+		// sorry about that...
+		super(project == null ? null : ((project.getSaveConfiguration() == null) ? null : URI
+				.create(project.getSaveConfiguration().getProviderConfiguration()
+						.get(ExportProvider.PARAM_TARGET).toString())), newLocation);
+
+		this.project = project;
+	}
 
 	/**
 	 * Update locations in the given project.
-	 * 
-	 * @param project the project object
-	 * @param newProjectLoc the new project location
 	 */
-	public void updateProject(Project project, URI newProjectLoc) {
-		// uses paths based on "/" in FilePathUpdate
+	public void updateProject() {
+		if (project == null || getOldLocation() == null || getNewLocation() == null)
+			return;
+
 		IOConfiguration saveconfig = project.getSaveConfiguration();
+		// actually cannot be null here because then old location would be null
 		if (saveconfig == null)
 			return;
 
-		// old project location
-		URI targetLoc = URI.create(saveconfig.getProviderConfiguration()
-				.get(ExportProvider.PARAM_TARGET).toString());
-
-		if (!targetLoc.equals(newProjectLoc)) {
+		if (!getOldLocation().equals(getNewLocation())) {
 			// update save configuration
 			saveconfig.getProviderConfiguration().put(ExportProvider.PARAM_TARGET,
-					Value.of(newProjectLoc.toString()));
-
-			PathUpdate update = new PathUpdate(targetLoc, newProjectLoc);
+					Value.of(getNewLocation().toString()));
 
 			// update I/O configurations
 			List<IOConfiguration> configuration = project.getResources();
 			for (IOConfiguration providerconf : configuration) {
 				final Map<String, Value> conf = providerconf.getProviderConfiguration();
-				final URI uri = URI.create(conf.get(ImportProvider.PARAM_SOURCE)
-						.as(String.class));
-				if (!IOUtils.testStream(uri, true)) {
-					URI newUri = update.changePath(uri);
-					if (IOUtils.testStream(newUri, true))
-						conf.put(ImportProvider.PARAM_SOURCE, Value.of(newUri.toString()));
-					else {
-						// not found
-						URI replacement = updatePathFallback(uri);
-						if (replacement != null) {
-							conf.put(ImportProvider.PARAM_SOURCE,
-									Value.of(replacement.toString()));
-						}
-					}
-				}
+				final URI uri = URI.create(conf.get(ImportProvider.PARAM_SOURCE).as(String.class));
+				URI resolved = findLocation(uri, true, true);
+				if (resolved != null)
+					conf.put(ImportProvider.PARAM_SOURCE, Value.of(resolved.toString()));
 			}
 
 			// update project file infos
 			for (ProjectFileInfo fileInfo : project.getProjectFiles()) {
 				URI location = fileInfo.getLocation();
-				if (!IOUtils.testStream(fileInfo.getLocation(), false)) {
-					location = update.changePath(location);
-					fileInfo.setLocation(location);
-					/*
-					 * For this the fallback method is not called intentionally,
-					 * as in the project service, this update has no effect, as
-					 * the project files are already loaded in the
-					 * DefaultProjectReader.
-					 */
-				}
+				/*
+				 * For this the fallback method is not called intentionally, as
+				 * in the project service, this update has no effect, as the
+				 * project files are already loaded in the DefaultProjectReader.
+				 */
+				URI resolved = findLocation(location, false, false);
+				if (resolved != null)
+					fileInfo.setLocation(resolved);
 			}
 		}
-	}
-
-	/**
-	 * Update the path to a resource if automatic update fails. The default
-	 * implementation returns <code>null</code>, which means the location is not
-	 * updated.
-	 * 
-	 * @param oldLocation the old resource location
-	 * @return the replacement resource location or <code>null</code>
-	 */
-	protected URI updatePathFallback(URI oldLocation) {
-		return null;
 	}
 
 }

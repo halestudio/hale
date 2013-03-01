@@ -62,6 +62,7 @@ public class HeadlessProjectAdvisor extends AbstractIOAdvisor<ProjectReader> {
 		public void prepareProvider(AlignmentReader provider) {
 			super.prepareProvider(provider);
 
+			provider.setPathUpdater(updater);
 			provider.setSourceSchema(sourceSchemaAdvisor.getSchema());
 			provider.setTargetSchema(targetSchemaAdvisor.getSchema());
 		}
@@ -86,9 +87,9 @@ public class HeadlessProjectAdvisor extends AbstractIOAdvisor<ProjectReader> {
 	}
 
 	/**
-	 * Updated singleton instance (holds no state).
+	 * Updater for project paths.
 	 */
-	private static final LocationUpdater UPDATER = new LocationUpdater();
+	private LocationUpdater updater;
 
 	/**
 	 * Action IDs mapped to responsible advisors.
@@ -171,7 +172,8 @@ public class HeadlessProjectAdvisor extends AbstractIOAdvisor<ProjectReader> {
 	@Override
 	public void handleResults(ProjectReader provider) {
 		project = provider.getProject();
-		UPDATER.updateProject(project, provider.getSource().getLocation());
+		updater = new LocationUpdater(project, provider.getSource().getLocation());
+		updater.updateProject();
 
 		// inject project into advisors (mappable types)
 		sourceSchemaAdvisor.setProject(project);

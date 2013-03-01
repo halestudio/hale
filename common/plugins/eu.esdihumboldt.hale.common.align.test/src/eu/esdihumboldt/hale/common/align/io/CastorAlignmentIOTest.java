@@ -24,6 +24,7 @@ import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.core.io.report.impl.DefaultIOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
+import eu.esdihumboldt.util.io.PathUpdate;
 
 /**
  * Alignment I/O tests based on {@link CastorAlignmentIO}.
@@ -35,7 +36,8 @@ public class CastorAlignmentIOTest extends DefaultAlignmentIOTest {
 	@Override
 	protected MutableAlignment loadAlignment(InputStream input, TypeIndex source, TypeIndex target)
 			throws Exception {
-		return CastorAlignmentIO.load(input, null, source, target);
+		// assume no location update needed
+		return CastorAlignmentIO.load(input, null, source, target, new PathUpdate(null, null));
 	}
 
 	@Override
