@@ -191,7 +191,9 @@ public class FilterToXPath implements ExpressionVisitor, FilterVisitor {
 		System.out.println("Not");
 		StringBuffer output = asStringBuffer(buffer);
 
-		output.append("not(").append(filter.accept(this, output)).append(')');
+		output.append("not(");
+		filter.getFilter().accept(this, output);
+		output.append(')');
 
 		return output;
 	}
