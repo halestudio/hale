@@ -20,6 +20,7 @@ import eu.esdihumboldt.hale.common.align.io.AlignmentReader;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractImportProvider;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
+import eu.esdihumboldt.util.io.PathUpdate;
 
 /**
  * Abstract alignment reader implementation
@@ -31,6 +32,7 @@ public abstract class AbstractAlignmentReader extends AbstractImportProvider imp
 
 	private TypeIndex sourceSchema;
 	private TypeIndex targetSchema;
+	private PathUpdate updater;
 
 	/**
 	 * @see AlignmentReader#setSourceSchema(TypeIndex)
@@ -64,6 +66,23 @@ public abstract class AbstractAlignmentReader extends AbstractImportProvider imp
 	 */
 	public TypeIndex getTargetSchema() {
 		return targetSchema;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.io.AlignmentReader#setPathUpdater(eu.esdihumboldt.util.io.PathUpdate)
+	 */
+	@Override
+	public void setPathUpdater(PathUpdate updater) {
+		this.updater = updater;
+	}
+
+	/**
+	 * Get the location updater
+	 * 
+	 * @return the location updater
+	 */
+	public PathUpdate getPathUpdater() {
+		return updater;
 	}
 
 	/**

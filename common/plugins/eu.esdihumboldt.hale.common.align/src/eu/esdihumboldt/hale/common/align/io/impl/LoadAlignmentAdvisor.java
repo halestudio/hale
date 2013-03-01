@@ -23,6 +23,7 @@ import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.impl.ConfigurationIOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
+import eu.esdihumboldt.util.io.PathUpdate;
 
 /**
  * Advisor for loading an alignment using an existing {@link IOConfiguration}.
@@ -33,6 +34,7 @@ public class LoadAlignmentAdvisor extends ConfigurationIOAdvisor<AlignmentReader
 
 	private final TypeIndex sourceSchema;
 	private final TypeIndex targetSchema;
+	private final PathUpdate updater;
 
 	/**
 	 * The resulting alignment
@@ -46,12 +48,15 @@ public class LoadAlignmentAdvisor extends ConfigurationIOAdvisor<AlignmentReader
 	 * @param conf the I/O configuration
 	 * @param sourceSchema the source schema
 	 * @param targetSchema the target schema
+	 * @param updater the path updater
 	 */
-	public LoadAlignmentAdvisor(IOConfiguration conf, TypeIndex sourceSchema, TypeIndex targetSchema) {
+	public LoadAlignmentAdvisor(IOConfiguration conf, TypeIndex sourceSchema,
+			TypeIndex targetSchema, PathUpdate updater) {
 		super(conf);
 
 		this.sourceSchema = sourceSchema;
 		this.targetSchema = targetSchema;
+		this.updater = updater;
 	}
 
 	/**
@@ -63,6 +68,7 @@ public class LoadAlignmentAdvisor extends ConfigurationIOAdvisor<AlignmentReader
 
 		provider.setSourceSchema(sourceSchema);
 		provider.setTargetSchema(targetSchema);
+		provider.setPathUpdater(updater);
 	}
 
 	/**

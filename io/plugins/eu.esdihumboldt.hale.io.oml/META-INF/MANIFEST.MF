@@ -26,6 +26,7 @@ Import-Package: com.google.common.base;version="9.0.0",
  eu.esdihumboldt.hale.io.xsd.constraint,
  eu.esdihumboldt.hale.io.xsd.model,
  eu.esdihumboldt.hale.prefixmapper,
+ eu.esdihumboldt.util.io,
  org.apache.log4j,
  org.opengis.feature;version="8.0.0.M1",
  org.slf4j;version="1.5.11"

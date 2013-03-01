@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.common.align.io;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
+import eu.esdihumboldt.util.io.PathUpdate;
 
 /**
  * Provides support for reading an alignment
@@ -40,6 +41,13 @@ public interface AlignmentReader extends ImportProvider {
 	 * @param targetSchema the source schema
 	 */
 	public void setTargetSchema(TypeIndex targetSchema);
+
+	/**
+	 * Set the path updater
+	 * 
+	 * @param updater the path updater
+	 */
+	public void setPathUpdater(PathUpdate updater);
 
 	/**
 	 * Get the loaded alignment

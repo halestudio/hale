@@ -20,8 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectWriter;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 
@@ -34,8 +32,6 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
  * @author Patrick Lieb
  */
 public class XMLSchemaUpdater {
-
-	private static final ALogger log = ALoggerFactory.getLogger(XMLSchemaUpdater.class);
 
 	private final static String IMPORT = "schema/import/@schemaLocation";
 	private final static String INCLUDE = "schema/include/@schemaLocation";
@@ -62,6 +58,7 @@ public class XMLSchemaUpdater {
 	 * Resources only will be copied once. In this case the schema location is
 	 * solved relative to the originally schema.
 	 * 
+	 * @see XMLPathUpdater#update(File, URI, String, boolean, IOReporter)
 	 * @param resource the file of the new resource (will be adapted)
 	 * @param oldFile the file of the old resource (will be untouched)
 	 * @param includeWebResources true if web resources should be copied and

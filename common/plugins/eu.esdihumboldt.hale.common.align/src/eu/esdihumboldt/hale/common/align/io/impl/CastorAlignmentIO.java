@@ -37,6 +37,7 @@ import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
+import eu.esdihumboldt.util.io.PathUpdate;
 
 /**
  * Save or load an alignment
@@ -55,6 +56,7 @@ public class CastorAlignmentIO {
 	 *            references
 	 * @param targetTypes the target types to use for resolving definition
 	 *            references
+	 * @param updater the path updater to use for base alignments
 	 * @return the alignment
 	 * 
 	 * @throws MappingException if the mapping could not be loaded
@@ -63,10 +65,10 @@ public class CastorAlignmentIO {
 	 * @throws IOException if loading of base alignments failed
 	 */
 	public static MutableAlignment load(InputStream in, IOReporter reporter, TypeIndex sourceTypes,
-			TypeIndex targetTypes) throws MappingException, MarshalException, ValidationException,
-			IOException {
+			TypeIndex targetTypes, PathUpdate updater) throws MappingException, MarshalException,
+			ValidationException, IOException {
 		AlignmentBean bean = AlignmentBean.load(in, reporter);
-		return bean.createAlignment(reporter, sourceTypes, targetTypes);
+		return bean.createAlignment(reporter, sourceTypes, targetTypes, updater);
 	}
 
 	/**

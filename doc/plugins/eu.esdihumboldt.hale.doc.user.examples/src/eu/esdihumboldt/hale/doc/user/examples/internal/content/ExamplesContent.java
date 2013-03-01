@@ -302,7 +302,8 @@ public class ExamplesContent extends AbstractVelocityContent implements Examples
 				AlignmentReader reader = HaleIO.findIOProvider(AlignmentReader.class, alignmentIn,
 						alignmentLoc.getPath());
 				LoadAlignmentAdvisor alignmentAdvisor = new LoadAlignmentAdvisor(null,
-						source.getSchemaSpace(), target.getSchemaSpace());
+						source.getSchemaSpace(), target.getSchemaSpace(),
+						exampleProject.getUpdater());
 				reader.setSource(alignmentIn);
 				executeProvider(alignmentAdvisor, null, reader);
 				Alignment alignment = alignmentAdvisor.getAlignment();
