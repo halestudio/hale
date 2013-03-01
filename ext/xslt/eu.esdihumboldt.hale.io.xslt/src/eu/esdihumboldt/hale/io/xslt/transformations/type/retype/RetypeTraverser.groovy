@@ -24,9 +24,11 @@ import com.tinkerpop.blueprints.Vertex
 import de.cs3d.util.logging.ALogger
 import de.cs3d.util.logging.ALoggerFactory
 import eu.esdihumboldt.hale.common.align.model.Cell
+import eu.esdihumboldt.hale.common.align.model.ChildContext
 import eu.esdihumboldt.hale.common.align.model.Priority
 import eu.esdihumboldt.hale.common.align.tgraph.TGraph
-import eu.esdihumboldt.hale.common.align.tgraph.TGraphConstants.NodeType
+import eu.esdihumboldt.hale.common.align.tgraph.TGraphConstants
+import eu.esdihumboldt.hale.common.filter.AbstractGeotoolsFilter
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
@@ -38,6 +40,7 @@ import eu.esdihumboldt.hale.io.xslt.XsltGenerationContext
 import eu.esdihumboldt.hale.io.xslt.functions.XslFunction
 import eu.esdihumboldt.hale.io.xslt.functions.impl.XslVariableImpl
 import eu.esdihumboldt.hale.io.xslt.transformations.base.AbstractTransformationTraverser
+import eu.esdihumboldt.hale.io.xslt.xpath.FilterToXPath
 
 /**
  * Traverses the transformation graph to create a XSL fragment to populate the
@@ -85,7 +88,7 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 		 * XXX this only is valid for Retype!
 		 */
 		// select any source node from the graph
-		def node = graph.graph.V(P_TYPE, NodeType.Source).next()
+		def node = graph.graph.V(P_TYPE, TGraphConstants.NodeType.Source).next()
 		// find the source root
 		def ctxs = node.in(EDGE_CHILD).loop(1){it.object.inE(EDGE_CHILD).hasNext()}.toList()
 		assert ctxs.size() <= 1
@@ -330,10 +333,39 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 				}
 				xpath.append(element.definition().name.localPart);
 
-				//XXX what about contexts? conditions, index etc
+				// get child context XPath string
+				ChildContext childctx = element.entity().propertyPath.last()
+				xpath << childContextXPath(childctx)
 			}
 			xpath.toString()
 		}
+	}
+
+	private String childContextXPath(ChildContext ctx) {
+		if (ctx.index != null) {
+			// index context
+			return "[${ctx.index + 1}]"
+		}
+
+		if (ctx.condition) {
+			// condition context
+			def filter = ctx.condition.filter
+			switch (filter) {
+				case AbstractGeotoolsFilter:
+					def geoFilter = filter.internFilter
+					assert ctx.child.asProperty() // only working on properties
+					String xpathFilter = FilterToXPath.toXPath(
+							ctx.child.asProperty(),
+							xsltContext.namespaceContext,
+							geoFilter)
+					return "[$xpathFilter]"
+				default:
+					throw new IllegalStateException('Filter type not supported')
+			}
+
+		}
+
+		''
 	}
 
 	@Override

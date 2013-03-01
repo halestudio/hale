@@ -79,6 +79,7 @@ import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 
@@ -91,16 +92,44 @@ public class FilterToXPath implements ExpressionVisitor, FilterVisitor {
 
 	private static ALogger log = ALoggerFactory.getLogger(FilterToXPath.class);
 
-	private final TypeDefinition definition;
-	private final NamespaceContext namespaceContext;
+	/**
+	 * The main type definition.
+	 */
+	private final TypeDefinition typeDef;
 
 	/**
+	 * The parent type definition for property filters.
+	 */
+	private final TypeDefinition parentType;
+
+	private final NamespaceContext namespaceContext;
+
+	private final boolean propertyFilter;
+
+	/**
+	 * Converts type filters to XPath.
+	 * 
 	 * @param definition the base type
 	 * @param namespaceContext the namespace context
 	 */
 	private FilterToXPath(TypeDefinition definition, NamespaceContext namespaceContext) {
-		this.definition = definition;
+		this.typeDef = definition;
 		this.namespaceContext = namespaceContext;
+		propertyFilter = false;
+		parentType = null;
+	}
+
+	/**
+	 * Converts property filters to XPath.
+	 * 
+	 * @param definition the base type
+	 * @param namespaceContext the namespace context
+	 */
+	private FilterToXPath(PropertyDefinition definition, NamespaceContext namespaceContext) {
+		this.typeDef = definition.getPropertyType();
+		this.namespaceContext = namespaceContext;
+		propertyFilter = true;
+		parentType = definition.getParentType();
 	}
 
 	/**
@@ -120,6 +149,21 @@ public class FilterToXPath implements ExpressionVisitor, FilterVisitor {
 				+ '['
 				+ ((StringBuffer) filter.accept(new FilterToXPath(definition, namespaceContext),
 						null)).toString() + ']';
+	}
+
+	/**
+	 * Transforms the given filter of the given type to a XPath query.
+	 * Namespaces are transformed with the given mapping.
+	 * 
+	 * @param definition the property definition
+	 * @param namespaceContext the namespace context
+	 * @param filter the property filter to transform
+	 * @return the XPath query representing the given filter
+	 */
+	public static String toXPath(PropertyDefinition definition, NamespaceContext namespaceContext,
+			Filter filter) {
+		return ((StringBuffer) filter.accept(new FilterToXPath(definition, namespaceContext), null))
+				.toString();
 	}
 
 	/**
@@ -795,18 +839,50 @@ public class FilterToXPath implements ExpressionVisitor, FilterVisitor {
 	public Object visit(PropertyName expression, Object buffer) {
 		StringBuffer result = asStringBuffer(buffer);
 
+		TypeDefinition rootType = typeDef;
 		String path = expression.getPropertyName();
-		List<List<QName>> paths = PropertyResolver.getQueryPaths(definition, DataSet.SOURCE, path);
+
+		boolean propertyModeValue = true;
+		if (propertyFilter) {
+			/*
+			 * If we are processing property filters, expressions either start
+			 * with value or test.
+			 */
+
+			// value directly referenced
+			if ("value".equals(path)) {
+				// means we reference the current context
+				result.append('.'); // XXX is this correct?
+				return result;
+			}
+			else if (path.startsWith("parent.")) {
+				rootType = parentType;
+				propertyModeValue = false;
+				// remove prefix from path
+				path = path.substring(7);
+			}
+			else if (path.startsWith("value.")) {
+				// remove prefix from path
+				path = path.substring(6);
+			}
+		}
+
+		List<List<QName>> paths = PropertyResolver.getQueryPaths(rootType, DataSet.SOURCE, path);
 
 		// TODO what about no / multiple paths
 
 		List<QName> qnames = paths.get(0);
 
+		if (propertyFilter && !propertyModeValue) {
+			// parent mode, we have to prepend the reference to the parent
+			result.append("../");
+		}
+
 		for (int i = 0; i < qnames.size() - 1; i++) {
 			QName segment = qnames.get(i);
 			result.append(qNameToXPathSegment(segment)).append('/');
 		}
-		if (isAttribute(definition, qnames))
+		if (isAttribute(rootType, qnames))
 			result.append('@');
 		result.append(qNameToXPathSegment(qnames.get(qnames.size() - 1)));
 

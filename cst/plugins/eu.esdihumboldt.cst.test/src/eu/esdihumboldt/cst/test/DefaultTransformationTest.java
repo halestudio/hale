@@ -295,6 +295,26 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 	}
 
 	/**
+	 * Test with simple property conditions.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testPropertyCondition1() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.PROPCONDITION1));
+	}
+
+	/**
+	 * Test with simple property conditions.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testPropertyCondition2() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.PROPCONDITION2));
+	}
+
+	/**
 	 * Test for the formatstring function
 	 * 
 	 * @throws Exception if an error occurs executing the test

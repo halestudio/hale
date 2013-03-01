@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell priority="normal" id="C6982f55b-a6f3-4011-8daa-74b63a9a77c1" relation="eu.esdihumboldt.hale.align.retype">
+        <source>
+            <class>
+                <type ns="http://www.example.org/t1/" name="T1"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type ns="http://www.example.org/t2/" name="T2"/>
+            </class>
+        </target>
+    </cell>
+    <cell priority="normal" id="C35be00d4-87ab-43e0-a29e-f91106146bb4" relation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type ns="http://www.example.org/t1/" name="T1"/>
+                <child name="a">
+                    <condition lang="CQL">value like 'x%'</condition>
+                </child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type ns="http://www.example.org/t2/" name="T2"/>
+                <child name="x"/>
+            </property>
+        </target>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell priority="normal" id="Cc3eaae5c-82e4-429e-a69e-08e2a6954bb8" relation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type ns="http://www.example.org/t1/" name="T1"/>
+                <child name="a">
+                    <condition lang="CQL">value like 'y%'</condition>
+                </child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type ns="http://www.example.org/t2/" name="T2"/>
+                <child name="y"/>
+            </property>
+        </target>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+</alignment>
