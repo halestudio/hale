@@ -42,7 +42,7 @@ class XslClassification extends AbstractFunctionTransformation implements Classi
 
 	@Override
 	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables,
-			XsltGenerationContext context) {
+	XsltGenerationContext context) {
 
 		def target = cell.getTarget().get(null)[0];
 		PropertyEntityDefinition d = target.getDefinition();
@@ -73,7 +73,7 @@ class XslClassification extends AbstractFunctionTransformation implements Classi
 			def fixedValue = notClassifiedAction.substring(notClassifiedAction.indexOf(':') + 1);
 			setVar = """
 				<xsl:variable name="endVar" >
-					<xsl:value-of select="$fixedValue"/>
+					<xsl:text>$fixedValue</xsl:text>
 				</xsl:variable>
 				"""
 		} else
