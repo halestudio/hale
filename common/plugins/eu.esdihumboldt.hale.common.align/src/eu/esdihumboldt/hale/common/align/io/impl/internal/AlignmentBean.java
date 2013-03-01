@@ -40,6 +40,7 @@ import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
+import eu.esdihumboldt.util.io.PathUpdate;
 
 /**
  * Alignment bean serving as model for alignment I/O
@@ -163,12 +164,13 @@ public class AlignmentBean extends
 	 *            references
 	 * @param targetTypes the target types to use for resolving definition
 	 *            references
+	 * @param updater the path updater to use for base alignments
 	 * @return the alignment
 	 * @throws IOException if creating the alignment fails
 	 */
 	public MutableAlignment createAlignment(IOReporter reporter, TypeIndex sourceTypes,
-			TypeIndex targetTypes) throws IOException {
-		return super.createAlignment(this, sourceTypes, targetTypes, reporter);
+			TypeIndex targetTypes, PathUpdate updater) throws IOException {
+		return super.createAlignment(this, sourceTypes, targetTypes, updater, reporter);
 	}
 
 	/**

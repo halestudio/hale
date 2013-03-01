@@ -33,6 +33,7 @@ import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
+import eu.esdihumboldt.util.io.PathUpdate;
 
 /**
  * Save or load an alignment
@@ -56,15 +57,17 @@ public class JaxbAlignmentIO {
 	 *            references
 	 * @param targetTypes the target types to use for resolving definition
 	 *            references
+	 * @param updater the path updater to use for base alignments
 	 * @return the alignment
 	 * @throws JAXBException if reading the alignment failed
 	 * @throws IOException if loading of base alignments failed
 	 */
 	public static MutableAlignment load(InputStream in, IOReporter reporter, TypeIndex sourceTypes,
-			TypeIndex targetTypes) throws JAXBException, IOException {
+			TypeIndex targetTypes, PathUpdate updater) throws JAXBException, IOException {
 		AlignmentType genAlignment = JaxbToAlignment.load(in, reporter);
 		// convert to alignment
-		return new JaxbToAlignment(genAlignment, reporter, sourceTypes, targetTypes).convert();
+		return new JaxbToAlignment(genAlignment, reporter, sourceTypes, targetTypes, updater)
+				.convert();
 	}
 
 	/**

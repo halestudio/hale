@@ -82,6 +82,7 @@ import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.util.Pair;
+import eu.esdihumboldt.util.io.PathUpdate;
 
 /**
  * Converts an {@link AlignmentType} loaded with JAXB to a
@@ -96,6 +97,7 @@ public class JaxbToAlignment extends
 	private final TypeIndex sourceTypes;
 	private final IOReporter reporter;
 	private final AlignmentType alignment;
+	private final PathUpdate updater;
 
 	/**
 	 * Private constructor for internal use.
@@ -105,6 +107,7 @@ public class JaxbToAlignment extends
 		this.reporter = null;
 		this.sourceTypes = null;
 		this.targetTypes = null;
+		this.updater = null;
 	}
 
 	/**
@@ -112,13 +115,15 @@ public class JaxbToAlignment extends
 	 * @param reporter where to report problems to, may be <code>null</code>
 	 * @param sourceTypes the source types for resolving source entities
 	 * @param targetTypes the target types for resolving target entities
+	 * @param updater the path updater to use for base alignments
 	 */
 	public JaxbToAlignment(AlignmentType alignment, IOReporter reporter, TypeIndex sourceTypes,
-			TypeIndex targetTypes) {
+			TypeIndex targetTypes, PathUpdate updater) {
 		this.alignment = alignment;
 		this.reporter = reporter;
 		this.sourceTypes = sourceTypes;
 		this.targetTypes = targetTypes;
+		this.updater = updater;
 	}
 
 	/**
@@ -180,7 +185,7 @@ public class JaxbToAlignment extends
 	 * @throws IOException if a base alignment couldn't be loaded
 	 */
 	public MutableAlignment convert() throws IOException {
-		return super.createAlignment(alignment, sourceTypes, targetTypes, reporter);
+		return super.createAlignment(alignment, sourceTypes, targetTypes, updater, reporter);
 	}
 
 	private MutableCell convert(CellType cell, TypeIndex sourceTypes, TypeIndex targetTypes,

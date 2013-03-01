@@ -64,7 +64,8 @@ public class CastorAlignmentReader extends AbstractAlignmentReader {
 
 		InputStream in = getSource().getInput();
 		try {
-			alignment = CastorAlignmentIO.load(in, reporter, getSourceSchema(), getTargetSchema());
+			alignment = CastorAlignmentIO.load(in, reporter, getSourceSchema(), getTargetSchema(),
+					getPathUpdater());
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl(e.getMessage(), e));
 			reporter.setSuccess(false);

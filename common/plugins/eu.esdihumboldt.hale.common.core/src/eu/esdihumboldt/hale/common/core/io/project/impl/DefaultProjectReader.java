@@ -36,7 +36,6 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.util.InputStreamDecorator;
-import eu.esdihumboldt.util.io.IOUtils;
 import eu.esdihumboldt.util.io.PathUpdate;
 
 /**
@@ -160,26 +159,22 @@ public class DefaultProjectReader extends AbstractProjectReader {
 				ProjectFile projectFile = getProjectFiles().get(fileInfo.getName());
 				if (projectFile != null) {
 					URI location = fileInfo.getLocation();
-					if (!IOUtils.testStream(location, false))
-						location = update.changePath(location);
-					if (!IOUtils.testStream(location, false)) {
-						// fall-back to location relative to project file
-						location = URI.create(getSource().getLocation().toString() + "."
-								+ fileInfo.getName());
-					}
+					location = update.findLocation(location, false, false);
 					boolean fileSuccess = false;
-					try {
-						InputStream input = location.toURL().openStream();
+					if (location != null) {
 						try {
-							projectFile.load(input);
-							fileSuccess = true;
+							InputStream input = location.toURL().openStream();
+							try {
+								projectFile.load(input);
+								fileSuccess = true;
+							} catch (Exception e) {
+								throw e; // hand down
+							} finally {
+								input.close();
+							}
 						} catch (Exception e) {
-							throw e; // hand down
-						} finally {
-							input.close();
+							reporter.error(new IOMessageImpl("Loading project file failed", e));
 						}
-					} catch (Exception e) {
-						reporter.error(new IOMessageImpl("Loading project file failed", e));
 					}
 
 					if (!fileSuccess) {

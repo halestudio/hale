@@ -23,6 +23,7 @@ import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
+import eu.esdihumboldt.hale.common.core.io.project.util.LocationUpdater;
 
 /**
  * The {@link ProjectService} manages information on a HALE project, such as the
@@ -125,5 +126,12 @@ public interface ProjectService {
 	 * Save the project to the given file
 	 */
 	public void saveAs();
+
+	/**
+	 * Returns the location updater for the current project.
+	 * 
+	 * @return the location updater for the current project
+	 */
+	public LocationUpdater getLocationUpdater();
 
 }

@@ -75,6 +75,7 @@ import eu.esdihumboldt.hale.io.oml.internal.model.align.ext.IParameter;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
+import eu.esdihumboldt.util.io.PathUpdate;
 
 /**
  * This class reads the OML Document into Java Object.
@@ -203,8 +204,8 @@ public class OmlReader extends AbstractAlignmentReader implements AlignmentReade
 			// set the cells for the alignment after the all iterations
 			align.setCells(cells);
 
-			mutableAlignment = align
-					.createAlignment(reporter, getSourceSchema(), getTargetSchema());
+			mutableAlignment = align.createAlignment(reporter, getSourceSchema(),
+					getTargetSchema(), new PathUpdate(null, null));
 
 			reporter.setSuccess(true);
 

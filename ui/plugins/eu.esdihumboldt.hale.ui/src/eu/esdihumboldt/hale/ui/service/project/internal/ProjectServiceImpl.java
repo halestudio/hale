@@ -66,6 +66,7 @@ import eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectReader;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
+import eu.esdihumboldt.hale.common.core.io.project.util.LocationUpdater;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
@@ -158,7 +159,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 	private boolean changed = false;
 
-	private final UILocationUpdater updater = new UILocationUpdater();
+	private UILocationUpdater updater = new UILocationUpdater(null, null);
 
 	/**
 	 * Default constructor
@@ -189,7 +190,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 				synchronized (ProjectServiceImpl.this) {
 					main = provider.getProject();
-					updater.updateProject(main, provider.getSource().getLocation());
+					updater = new UILocationUpdater(main, provider.getSource().getLocation());
+					updater.updateProject();
 					if ("file".equalsIgnoreCase(provider.getSource().getLocation().getScheme())) {
 						// the source of ArchiveProjectReader is a temporary
 						// directory. need the originally source to show the
@@ -781,5 +783,13 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			main.getResources().add(conf);
 		}
 		setChanged();
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#getLocationUpdater()
+	 */
+	@Override
+	public LocationUpdater getLocationUpdater() {
+		return updater;
 	}
 }

@@ -50,6 +50,7 @@ import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeIndex;
 import eu.esdihumboldt.hale.io.gml.reader.internal.XmlInstanceReader;
 import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
+import eu.esdihumboldt.util.io.PathUpdate;
 
 /**
  * Some static helper methods for tests.
@@ -86,7 +87,8 @@ public class TestUtil {
 	}
 
 	/**
-	 * Loads the specified alignment.
+	 * Loads the specified alignment. Assumes that its base alignments don't
+	 * need a location update.
 	 * 
 	 * @param location the URI specifying the location of the alignment
 	 * @param sourceTypes the source type index
@@ -107,9 +109,11 @@ public class TestUtil {
 		}, "Load alignment", true);
 		Alignment alignment;
 		try {
-			alignment = CastorAlignmentIO.load(input.getInput(), report, sourceTypes, targetTypes);
+			alignment = CastorAlignmentIO.load(input.getInput(), report, sourceTypes, targetTypes,
+					new PathUpdate(null, null));
 		} catch (Exception e) {
-			alignment = JaxbAlignmentIO.load(input.getInput(), report, sourceTypes, targetTypes);
+			alignment = JaxbAlignmentIO.load(input.getInput(), report, sourceTypes, targetTypes,
+					new PathUpdate(null, null));
 		}
 
 		assertTrue("Errors are contained in the report", report.getErrors().isEmpty());
