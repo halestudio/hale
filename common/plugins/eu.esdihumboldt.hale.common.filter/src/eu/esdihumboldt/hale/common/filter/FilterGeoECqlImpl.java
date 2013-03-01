@@ -20,7 +20,6 @@ import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.filter.text.ecql.ECQL;
 import org.opengis.filter.Filter;
 
-import eu.esdihumboldt.hale.common.filter.internal.AbstractGeotoolsFilter;
 
 /**
  * Extended CQL Filter. Two ECQL filters are seen as equal if they are based on

@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.filter.internal;
+package eu.esdihumboldt.hale.common.filter;
 
 import org.geotools.filter.text.cql2.CQLException;
 import org.opengis.filter.Filter;
