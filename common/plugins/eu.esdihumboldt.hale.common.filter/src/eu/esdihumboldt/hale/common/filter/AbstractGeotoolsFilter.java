@@ -86,6 +86,13 @@ public abstract class AbstractGeotoolsFilter implements
 	}
 
 	/**
+	 * @return the internal filter
+	 */
+	public Filter getInternFilter() {
+		return internFilter;
+	}
+
+	/**
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
