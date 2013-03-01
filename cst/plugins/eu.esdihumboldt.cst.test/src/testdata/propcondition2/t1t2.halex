@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<hale-project version="2.5.0.qualifier">
+    <name>Simple property condition example w/ like</name>
+    <author>Simon Templer</author>
+    <created>2013-03-01T14:30:46.996+01:00</created>
+    <modified>2013-03-01T14:53:49.556+01:00</modified>
+    <save-config provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer" action-id="project.save">
+        <setting name="projectFiles.separate">false</setting>
+        <setting name="target">file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propcondition2/t1t2.halex</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
+    </save-config>
+    <resource provider-id="eu.esdihumboldt.hale.io.xsd.reader" action-id="eu.esdihumboldt.hale.io.schema.read.source">
+        <setting name="resourceId">e8308f2c-d1f4-41a6-b658-9d0b242af849</setting>
+        <setting name="source">file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propcondition2/t1.xsd</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource provider-id="eu.esdihumboldt.hale.io.xsd.reader" action-id="eu.esdihumboldt.hale.io.schema.read.target">
+        <setting name="resourceId">b4bf2520-cd90-47f3-81eb-baa5c47e1cbf</setting>
+        <setting name="source">file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propcondition2/t2.xsd</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource provider-id="eu.esdihumboldt.hale.io.xml.reader" action-id="eu.esdihumboldt.hale.io.instance.read.source">
+        <setting name="resourceId">497e31dd-df38-49f4-9e73-f8fb144a6a8c</setting>
+        <setting name="source">file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propcondition2/instance1.xml</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">org.eclipse.core.runtime.xml</setting>
+    </resource>
+    <file location="file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propcondition2/t1t2.halex.styles.sld" name="styles.sld"/>
+    <file location="file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propcondition2/t1t2.halex.alignment.xml" name="alignment.xml"/>
+    <property name="mappableSourceType/1">{http://www.example.org/t1/}T1</property>
+    <property name="mappableSourceType/count">1</property>
+    <property name="mappableTargetType/1">{http://www.example.org/t2/}T2</property>
+    <property name="mappableTargetType/count">1</property>
+</hale-project>

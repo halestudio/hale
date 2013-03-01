@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<tns:collection xmlns:tns="http://www.example.org/t2/" xmlns:ns1="http://www.w3.org/1999/xhtml" xmlns:hfp="http://www.w3.org/2001/XMLSchema-hasFacetAndProperty" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/t2/ file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propcondition1/t2.xsd">
+  <tns:t1>
+    <y>y1</y>
+  </tns:t1>
+  <tns:t1>
+    <y>y2</y>
+  </tns:t1>
+  <tns:t1>
+    <x>x1</x>
+  </tns:t1>
+</tns:collection>

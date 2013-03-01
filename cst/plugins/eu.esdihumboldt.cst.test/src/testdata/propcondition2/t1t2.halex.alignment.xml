@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell priority="normal" id="C6982f55b-a6f3-4011-8daa-74b63a9a77c1" relation="eu.esdihumboldt.hale.align.retype">
+        <source>
+            <class>
+                <type ns="http://www.example.org/t1/" name="T1"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type ns="http://www.example.org/t2/" name="T2"/>
+            </class>
+        </target>
+    </cell>
+    <cell priority="normal" id="C4b73d4fb-c9cb-48f1-a1c3-89abf87e5d42" relation="eu.esdihumboldt.cst.functions.numeric.mathexpression">
+        <source name="var">
+            <property>
+                <type ns="http://www.example.org/t1/" name="T1"/>
+                <child name="a">
+                    <condition lang="CQL">value &lt;&gt; 'none'</condition>
+                </child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type ns="http://www.example.org/t2/" name="T2"/>
+                <child name="x"/>
+            </property>
+        </target>
+        <parameter value="a + 1.1" name="expression"/>
+    </cell>
+    <cell priority="normal" id="Cec019336-599a-48cb-aaf2-f3aec9f3e6b3" relation="eu.esdihumboldt.hale.align.classification">
+        <source>
+            <property>
+                <type ns="http://www.example.org/t1/" name="T1"/>
+                <child name="a">
+                    <condition lang="CQL">value = 'none'</condition>
+                </child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type ns="http://www.example.org/t2/" name="T2"/>
+                <child name="y"/>
+            </property>
+        </target>
+        <parameter value="fixed:notknown" name="notClassifiedAction"/>
+        <complexParameter name="lookupTable">
+            <lookup-table xmlns:ns2="http://www.esdi-humboldt.eu/hale/alignment" xmlns=""/>
+        </complexParameter>
+    </cell>
+</alignment>
