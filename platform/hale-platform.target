@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="72">
+<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="77">
 <locations>
 <location path="${project_loc}/target/plugins/org.apache.xml.serializer" type="Directory"/>
 <location path="${project_loc}/target/plugins/javax.media.jai" type="Directory"/>
@@ -98,14 +98,14 @@
 <location path="${project_loc}/target/plugins/org.apache.commons.httpclient.contrib.ssl" type="Directory"/>
 <location path="${project_loc}/target/plugins/com.google.guava" type="Directory"/>
 <location path="${project_loc}/target/plugins/org.apache.httpcomponents" type="Directory"/>
-<location path="${project_loc}/target/plugins/com.vaadin.addons.jpacontainer" type="Directory"/>
 <location path="${project_loc}/target/plugins/javax.el" type="Directory"/>
 <location path="${project_loc}/target/plugins/org.w3c.dom.mathml" type="Directory"/>
 <location path="${project_loc}/target/plugins/gnu.trove" type="Directory"/>
 <location path="${project_loc}/target/plugins/cern.colt" type="Directory"/>
-<location path="${project_loc}/target/plugins/com.vaadin.addons.beanvalidation" type="Directory"/>
 <location path="${project_loc}/target/plugins/javax.validation" type="Directory"/>
 <location path="${project_loc}/target/plugins/org.apache.servicemix.bundles.hibernate-validator" type="Directory"/>
 <location path="${project_loc}/target/plugins/org.vaadin.addon.customfield" type="Directory"/>
+<location path="${project_loc}/target/plugins/com.vaadin.addons.jpacontainer" type="Directory"/>
+<location path="${project_loc}/target/plugins/com.vaadin.addons.beanvalidation" type="Directory"/>
 </locations>
 </target>
