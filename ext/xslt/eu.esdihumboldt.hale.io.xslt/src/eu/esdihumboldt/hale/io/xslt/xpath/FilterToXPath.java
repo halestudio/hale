@@ -143,12 +143,8 @@ public class FilterToXPath implements ExpressionVisitor, FilterVisitor {
 	 */
 	public static String toXPath(TypeDefinition definition, NamespaceContext namespaceContext,
 			Filter filter) {
-		String type = namespaceContext.getPrefix(definition.getName().getNamespaceURI()) + ':'
-				+ definition.getDisplayName();
-		return type
-				+ '['
-				+ ((StringBuffer) filter.accept(new FilterToXPath(definition, namespaceContext),
-						null)).toString() + ']';
+		return ((StringBuffer) filter.accept(new FilterToXPath(definition, namespaceContext), null))
+				.toString();
 	}
 
 	/**

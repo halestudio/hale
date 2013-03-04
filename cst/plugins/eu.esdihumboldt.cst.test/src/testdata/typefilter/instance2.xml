@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<tns:collection xmlns:tns="http://www.example.org/t2/" xmlns:ns1="http://www.w3.org/1999/xhtml" xmlns:hfp="http://www.w3.org/2001/XMLSchema-hasFacetAndProperty" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/t2/ file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/typefilter/t2.xsd">
+  <tns:shirt id="1">
+    <name>Polo shirt green</name>
+    <price>9.99</price>
+  </tns:shirt>
+  <tns:hat id="2">
+    <name>Top hat</name>
+    <price>29.99</price>
+  </tns:hat>
+</tns:collection>
