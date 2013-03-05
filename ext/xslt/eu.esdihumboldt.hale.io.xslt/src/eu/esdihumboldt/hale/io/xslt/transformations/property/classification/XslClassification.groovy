@@ -131,7 +131,7 @@ class XslClassification extends AbstractFunctionTransformation implements Classi
 		def check = """
 				$setVar
 				<xsl:variable name="checkVar" >
-					<xsl:value-of select="."/>
+					<xsl:value-of select="$var"/>
 				</xsl:variable>
                 <xsl:variable name="testVar" select="\$lookup/lookup-table/entry[key/@value = \$checkVar]/value/@value"/>
                 
