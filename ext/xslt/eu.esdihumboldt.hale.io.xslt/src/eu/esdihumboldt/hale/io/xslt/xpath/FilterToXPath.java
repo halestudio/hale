@@ -851,13 +851,13 @@ public class FilterToXPath implements ExpressionVisitor, FilterVisitor {
 				result.append('.'); // XXX is this correct?
 				return result;
 			}
-			else if (path.startsWith("parent.")) {
+			else if (path.startsWith("parent/")) {
 				rootType = parentType;
 				propertyModeValue = false;
 				// remove prefix from path
 				path = path.substring(7);
 			}
-			else if (path.startsWith("value.")) {
+			else if (path.startsWith("value/")) {
 				// remove prefix from path
 				path = path.substring(6);
 			}
