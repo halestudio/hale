@@ -40,7 +40,7 @@ class XslMathExpression extends AbstractFunctionTransformation implements Mathem
 
 	@Override
 	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables,
-			XsltGenerationContext context) {
+	XsltGenerationContext context) {
 		// get the expression parameter
 		def expression = CellUtil.getFirstParameter(cell, PARAMETER_EXPRESSION).as(String)
 		if (!expression) {
@@ -73,6 +73,8 @@ class XslMathExpression extends AbstractFunctionTransformation implements Mathem
 		}
 		def finalExpression = sb.toString();
 
+		//TODO check if all variables are actually there and provide def:null otherwise?
+
 		"""
 		<xsl:value-of select="$finalExpression" />
 		"""
@@ -99,7 +101,7 @@ class XslMathExpression extends AbstractFunctionTransformation implements Mathem
 	 * @param property the associated property
 	 */
 	public static void addValue(Map<String, Object> values, Object value,
-			PropertyEntityDefinition property) {
+	PropertyEntityDefinition property) {
 		// determine the variable name
 		String name = property.getDefinition().getName().getLocalPart();
 

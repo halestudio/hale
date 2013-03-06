@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<tns:collection xmlns:tns="http://www.example.org/t2/" xmlns:ns1="http://www.w3.org/1999/xhtml" xmlns:hfp="http://www.w3.org/2001/XMLSchema-hasFacetAndProperty" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/t2/ file:/C:/Users/sitemple/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/nullvalue/t2.xsd">
+  <tns:t2 id="id0">
+    <a2>1</a2>
+    <b2>b10</b2>
+    <c2>5</c2>
+  </tns:t2>
+  <tns:t2 id="id1">
+    <b2>b10</b2>
+    <c2></c2>
+  </tns:t2>
+</tns:collection>
