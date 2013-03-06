@@ -25,17 +25,21 @@ import java.util.Set;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
+import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
@@ -70,6 +74,7 @@ import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener;
+import eu.esdihumboldt.hale.ui.views.mapping.internal.MappingViewPlugin;
 import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
 
 /**
@@ -93,6 +98,42 @@ public class AlignmentView extends AbstractMappingView {
 	private ISelectionListener selectionListener;
 
 	private TreeLayoutAlgorithm treeLayout;
+
+	private FilteredReverseCellGraphContentProvider contentProvider;
+
+	private final ViewerFilter baseAlignmentCellFilter = new ViewerFilter() {
+
+		@Override
+		public boolean select(Viewer viewer, Object parentElement, Object element) {
+			if (element instanceof Cell)
+				return !((Cell) element).isBaseCell();
+			else
+				return false;
+		}
+	};
+
+	private final ViewerFilter deactivatedCellFilter = new ViewerFilter() {
+
+		@Override
+		public boolean select(Viewer viewer, Object parentElement, Object element) {
+			if (element instanceof Cell)
+				return !isDisabledForCurrentType((Cell) element);
+			else
+				return false;
+		}
+	};
+
+	private final ViewerFilter inheritedCellFilter = new ViewerFilter() {
+
+		@Override
+		public boolean select(Viewer viewer, Object parentElement, Object element) {
+			// TODO filter inherited cells!
+			if (element instanceof Cell)
+				return true;
+			else
+				return false;
+		}
+	};
 
 	/**
 	 * @see PropertiesViewPart#getViewContext()
@@ -239,14 +280,13 @@ public class AlignmentView extends AbstractMappingView {
 	 */
 	@Override
 	protected void menuAboutToShow(IMenuManager manager) {
-		ISelection typeSelection = typeRelations.getSelection();
 		ISelection cellSelection = getViewer().getSelection();
 
-		// is a type relation selected
-		if (typeSelection.isEmpty() || !(typeSelection instanceof IStructuredSelection))
-			return;
+		final Cell typeCell = getSelectedTypeCell();
 
-		final Cell typeCell = (Cell) ((IStructuredSelection) typeSelection).getFirstElement();
+		// is a type relation selected
+		if (typeCell == null)
+			return;
 
 		// is a cell selected?
 		if (!(cellSelection instanceof IStructuredSelection)
@@ -306,6 +346,15 @@ public class AlignmentView extends AbstractMappingView {
 	}
 
 	/**
+	 * @see AbstractMappingView#createContentProvider()
+	 */
+	@Override
+	protected IContentProvider createContentProvider() {
+		contentProvider = new FilteredReverseCellGraphContentProvider();
+		return contentProvider;
+	}
+
+	/**
 	 * @see AbstractMappingView#createLabelProvider()
 	 */
 	@Override
@@ -361,18 +410,27 @@ public class AlignmentView extends AbstractMappingView {
 				cellDisabledHighlightColor.dispose();
 				super.dispose();
 			}
-
-			private boolean isDisabledForCurrentType(Cell cell) {
-				ISelection typeSelection = typeRelations.getSelection();
-
-				if (!typeSelection.isEmpty() && typeSelection instanceof IStructuredSelection) {
-					Cell typeCell = (Cell) ((IStructuredSelection) typeSelection).getFirstElement();
-					if (cell.getDisabledFor().contains(typeCell))
-						return true;
-				}
-				return false;
-			}
 		};
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.views.mapping.AbstractMappingView#fillToolBar()
+	 */
+	@Override
+	protected void fillToolBar() {
+		super.fillToolBar();
+		IToolBarManager manager = getViewSite().getActionBars().getToolBarManager();
+
+		manager.add(new FilterCellAction("Hide base alignment cells", "Show base alignment cells",
+				MappingViewPlugin.getImageDescriptor("icons/base_alignment.gif"), getViewer(),
+				contentProvider, baseAlignmentCellFilter, true, true));
+		manager.add(new FilterCellAction("Hide deactivated cells", "Show deactivated cells",
+				MappingViewPlugin.getImageDescriptor("icons/progress_rem.gif"), getViewer(),
+				contentProvider, deactivatedCellFilter, true, true));
+		// XXX inherited cells filter
+//		manager.add(new FilterCellAction("Hide inherited cells", "Show inherited cells",
+//				MappingViewPlugin.getImageDescriptor("icons/inherited.gif"), getViewer(),
+//				contentProvider, inheritedCellFilter, true, true));
 	}
 
 	@Override
@@ -403,12 +461,7 @@ public class AlignmentView extends AbstractMappingView {
 	 * @param selection the schema selection
 	 */
 	private void updateRelation(SchemaSelection selection) {
-		ISelection typeSelection = typeRelations.getSelection();
-
-		Cell typeCell = null;
-		if (!typeSelection.isEmpty() && typeSelection instanceof IStructuredSelection) {
-			typeCell = (Cell) ((IStructuredSelection) typeSelection).getFirstElement();
-		}
+		Cell typeCell = getSelectedTypeCell();
 
 		if (typeCell != null
 				&& (associatedWithType(typeCell.getSource(), selection.getSourceItems()) && associatedWithType(
@@ -467,6 +520,23 @@ public class AlignmentView extends AbstractMappingView {
 		}
 
 		return false;
+	}
+
+	private Cell getSelectedTypeCell() {
+		ISelection typeSelection = typeRelations.getSelection();
+		if (!typeSelection.isEmpty() && typeSelection instanceof IStructuredSelection)
+			return (Cell) ((IStructuredSelection) typeSelection).getFirstElement();
+		else
+			return null;
+	}
+
+	private boolean isDisabledForCurrentType(Cell cell) {
+		Cell typeCell = getSelectedTypeCell();
+
+		if (typeCell != null)
+			return cell.getDisabledFor().contains(typeCell);
+		else
+			return false;
 	}
 
 	/**
