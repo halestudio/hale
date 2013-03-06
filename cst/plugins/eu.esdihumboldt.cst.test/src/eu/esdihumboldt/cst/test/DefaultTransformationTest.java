@@ -236,6 +236,16 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 	}
 
 	/**
+	 * A transformation test to where null values occur as result.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testNullValue() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.NULLVALUE));
+	}
+
+	/**
 	 * Test for the generateduid. Since the uid is always different, just test
 	 * for them being unique.
 	 * 
