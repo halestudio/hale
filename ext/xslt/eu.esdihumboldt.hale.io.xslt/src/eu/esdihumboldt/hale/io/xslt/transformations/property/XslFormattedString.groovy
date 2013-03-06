@@ -65,6 +65,8 @@ class XslFormattedString extends AbstractFunctionTransformation implements Forma
 			pattern = pattern.replaceAll(Pattern.quote("{$name}"), "', $xpath, '");
 		}
 
+		//TODO check if all variables are actually there and provide def:null otherwise?
+
 		"""
 		<xsl:value-of select="concat('$pattern')" />
 		"""

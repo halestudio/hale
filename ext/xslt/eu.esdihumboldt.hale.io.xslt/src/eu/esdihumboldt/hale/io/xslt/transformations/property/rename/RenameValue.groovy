@@ -34,10 +34,17 @@ class RenameValue implements XslFunction {
 	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables,
 	XsltGenerationContext context) {
 		def select = variables.get(null)[0].XPath
-		"""<xsl:value-of select="$select" />""";
-
-		//def sw = new StringWriter()
-		//new MarkupBuilder(sw).'xsl:value'(select: variables.get(null).get(0))
-		//sw.toString()
+		"""
+			<xsl:choose>
+				<xsl:when test="$select">
+					<!-- If the source exists, copy its value -->
+					<xsl:value-of select="$select" />
+				</xsl:when>
+				<xsl:otherwise>
+					<!-- Otherwise there is no value to copy -->
+					<def:null />
+				</xsl:otherwise>
+			</xsl:choose>
+		""";
 	}
 }
