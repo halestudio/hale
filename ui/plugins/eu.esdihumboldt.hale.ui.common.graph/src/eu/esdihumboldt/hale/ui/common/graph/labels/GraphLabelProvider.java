@@ -16,6 +16,9 @@
 
 package eu.esdihumboldt.hale.ui.common.graph.labels;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.draw2d.ConnectionRouter;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.jface.resource.FontDescriptor;
@@ -26,6 +29,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.services.IDisposable;
@@ -52,6 +56,7 @@ import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.graph.figures.CellFigure;
 import eu.esdihumboldt.hale.ui.common.graph.figures.EntityFigure;
 import eu.esdihumboldt.hale.ui.common.graph.figures.FunctionFigure;
+import eu.esdihumboldt.hale.ui.common.graph.internal.GraphUIPlugin;
 import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure;
 import eu.esdihumboldt.hale.ui.util.graph.WrappedText;
 import eu.esdihumboldt.hale.ui.util.graph.shapes.FingerPost;
@@ -89,6 +94,14 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	private final FunctionLabelProvider functionLabels = new FunctionLabelProvider();
 
 	private final ServiceProvider serviceProvider;
+
+	/**
+	 * Map with images of cell function images with base alignment overlay
+	 */
+	private final Map<String, Image> baseAlignmentFunctionImages = new HashMap<String, Image>();
+
+	private final Image baseAlignmentFunctionOverlay = GraphUIPlugin.getImageDescriptor(
+			"icons/base_align_cell_overlay.gif").createImage(); //$NON-NLS-1$
 
 	/**
 	 * Local resource manager.
@@ -185,7 +198,23 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			String functionId = cell.getTransformationIdentifier();
 			AbstractFunction<?> function = FunctionUtil.getFunction(functionId);
 			if (function != null) {
-				return functionLabels.getImage(function);
+				Image image = functionLabels.getImage(function);
+				if (cell.isBaseCell()) {
+					Image baseAlignmentImage = baseAlignmentFunctionImages.get(functionId);
+					if (baseAlignmentImage == null) {
+						baseAlignmentImage = new Image(image.getDevice(), image.getBounds());
+						GC gc = new GC(baseAlignmentImage);
+						try {
+							gc.drawImage(image, 0, 0);
+							gc.drawImage(baseAlignmentFunctionOverlay, 0, 0);
+						} finally {
+							gc.dispose();
+						}
+						baseAlignmentFunctionImages.put(functionId, baseAlignmentImage);
+					}
+					image = baseAlignmentImage;
+				}
+				return image;
 			}
 			return null;
 		}
@@ -239,6 +268,11 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	 */
 	@Override
 	public void dispose() {
+		for (Image image : baseAlignmentFunctionImages.values())
+			image.dispose();
+
+		baseAlignmentFunctionOverlay.dispose();
+
 		definitionLabels.dispose();
 		functionLabels.dispose();
 
