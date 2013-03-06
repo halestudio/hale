@@ -208,7 +208,8 @@ public class XsltGenerator implements XsltConstants {
 			NS_PREFIX_XSI, XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, //
 			NS_PREFIX_XS, XMLConstants.W3C_XML_SCHEMA_NS_URI, //
 			NS_PREFIX_XSL, NS_URI_XSL, //
-			NS_PREFIX_CUSTOM_XSL, NS_CUSTOM_XSL);
+			NS_PREFIX_CUSTOM_XSL, NS_CUSTOM_XSL, //
+			NS_PREFIX_XSL_DEFINITIONS, NS_XSL_DEFINITIONS);
 
 	/**
 	 * The template engine.
