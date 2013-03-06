@@ -30,6 +30,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.Transformatio
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.LeftoversImpl;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.SourceNodeImpl;
+import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Group;
@@ -44,22 +45,22 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  */
 public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 
-	// private static final ALogger log =
-	// ALoggerFactory.getLogger(InstanceVisitor.class);
-
 	private final FamilyInstance instance;
 	private final TransformationTree tree;
+	private final TransformationLog log;
 
 	/**
 	 * Creates an instance visitor.
 	 * 
 	 * @param instance the instance, may be null
 	 * @param tree the transformation tree, may be null if instance is null
+	 * @param log the transformation log
 	 */
-	public InstanceVisitor(FamilyInstance instance, TransformationTree tree) {
+	public InstanceVisitor(FamilyInstance instance, TransformationTree tree, TransformationLog log) {
 		super();
 		this.instance = instance;
 		this.tree = tree;
+		this.log = log;
 
 		// TODO support multiple instances with a instance per type basis or
 		// even duplication of type source nodes?
@@ -121,12 +122,12 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 									source.addAnnotatedChild(duplicateNode);
 									duplicateNode.setContext(candidateNode.getContext());
 									candidateNode.getContext().duplicateContext(candidateNode,
-											duplicateNode, Collections.<Cell> emptySet());
+											duplicateNode, Collections.<Cell> emptySet(), log);
 									candidateNode = duplicateNode;
 								}
 
 								// run instance visitor on that annotated child
-								InstanceVisitor visitor = new InstanceVisitor(child, tree);
+								InstanceVisitor visitor = new InstanceVisitor(child, tree, log);
 								candidateNode.accept(visitor);
 							}
 						}

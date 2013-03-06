@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -48,6 +47,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.SourceNo
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.TargetNodeImpl;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.AbstractSourceToTargetVisitor;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.AbstractTargetToSourceVisitor;
+import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.util.Pair;
 
 /**
@@ -416,11 +416,12 @@ public class TargetContext implements TransformationContext {
 //	}
 
 	/**
-	 * @see TransformationContext#duplicateContext(SourceNode, SourceNode, Set)
+	 * @see TransformationContext#duplicateContext(SourceNode, SourceNode, Set,
+	 *      TransformationLog)
 	 */
 	@Override
 	public void duplicateContext(SourceNode originalSource, final SourceNode duplicate,
-			Set<Cell> ignoreCells) {
+			Set<Cell> ignoreCells, TransformationLog log) {
 		DuplicationInformation info = new DuplicationInformation(duplicate, ignoreCells,
 				contextTargets);
 
@@ -448,7 +449,7 @@ public class TargetContext implements TransformationContext {
 			collectExistingNodes(originalSource,
 					Collections.<EntityDefinition, SourceNode> emptyMap(), info, true);
 
-			duplicateTree(originalSource, duplicate, info);
+			duplicateTree(originalSource, duplicate, info, log);
 		}
 		else
 			throw new IllegalStateException(
@@ -487,9 +488,10 @@ public class TargetContext implements TransformationContext {
 	 * @param source the original source node
 	 * @param duplicate the duplication target
 	 * @param info the duplication info object
+	 * @param log the transformation log
 	 */
 	private static void duplicateTree(SourceNode source, SourceNode duplicate,
-			DuplicationInformation info) {
+			DuplicationInformation info, TransformationLog log) {
 		// Duplicate relations.
 		for (CellNode cell : source.getRelations(false)) {
 			// Check whether the cell is ignored.
@@ -527,7 +529,7 @@ public class TargetContext implements TransformationContext {
 					duplicatedCell = new CellNodeImpl(cell.getCell());
 					augmentCell(cell, duplicatedCell, info);
 					info.addNewCellNode(cell.getCell(), duplicatedCell);
-					duplicateTree(cell, duplicatedCell, info);
+					duplicateTree(cell, duplicatedCell, info, log);
 				}
 				// Add as relation/source.
 				duplicate.addRelation(duplicatedCell);
@@ -540,7 +542,7 @@ public class TargetContext implements TransformationContext {
 			SourceNode duplicatedChild = new SourceNodeImpl(child.getEntityDefinition(), duplicate,
 					true);
 			duplicatedChild.setContext(child.getContext());
-			duplicateTree(child, duplicatedChild, info);
+			duplicateTree(child, duplicatedChild, info, log);
 		}
 	}
 
@@ -595,18 +597,18 @@ public class TargetContext implements TransformationContext {
 	 * @param cell the original cell node
 	 * @param duplicateCell the duplication target
 	 * @param info the duplication info object
-	 * @return a collection of newly created target nodes
+	 * @param log the transformation log
 	 */
-	private static Collection<TargetNode> duplicateTree(CellNode cell, CellNode duplicateCell,
-			DuplicationInformation info) {
+	private static void duplicateTree(CellNode cell, CellNode duplicateCell,
+			DuplicationInformation info, TransformationLog log) {
 		// Duplicate targets.
-		List<TargetNode> createdTargets = new LinkedList<TargetNode>();
 		for (TargetNode target : cell.getTargets()) {
-			TargetNodeImpl duplicatedTarget = duplicateTree(target, info);
-			duplicateCell.addTarget(duplicatedTarget);
-			duplicatedTarget.addAssignment(target.getAssignmentNames(cell), duplicateCell);
+			TargetNodeImpl duplicatedTarget = duplicateTree(target, info, log);
+			if (duplicatedTarget != null) {
+				duplicateCell.addTarget(duplicatedTarget);
+				duplicatedTarget.addAssignment(target.getAssignmentNames(cell), duplicateCell);
+			}
 		}
-		return createdTargets;
 	}
 
 	/**
@@ -615,9 +617,11 @@ public class TargetContext implements TransformationContext {
 	 * 
 	 * @param target the original target node
 	 * @param info the duplication info object
+	 * @param log the transformation log
 	 * @return a collection of newly created target nodes
 	 */
-	private static TargetNodeImpl duplicateTree(TargetNode target, DuplicationInformation info) {
+	private static TargetNodeImpl duplicateTree(TargetNode target, DuplicationInformation info,
+			TransformationLog log) {
 		GroupNode parent = null;
 		// Check if the parent node exists in the given context already.
 		if (target.getParent() instanceof TargetNode) {
@@ -643,8 +647,11 @@ public class TargetContext implements TransformationContext {
 			// null!
 			// XXX instead log and return null or not connected TargetNode? See
 			// T O D O below
-			throw new IllegalStateException(
-					"DuplicationContext present, but no matching target found.");
+			log.error(log.createMessage(
+					"DuplicationContext present, but no matching target found.", null));
+			return null;
+//			throw new IllegalStateException(
+//					"DuplicationContext present, but no matching target found.");
 		}
 
 		// TODO What about cases where contextTargets parent doesn't exist yet,
@@ -659,7 +666,11 @@ public class TargetContext implements TransformationContext {
 
 		if (parent == null) {
 			// Does not exist: recursion.
-			TargetNodeImpl duplicatedTarget = duplicateTree((TargetNode) target.getParent(), info);
+			TargetNodeImpl duplicatedTarget = duplicateTree((TargetNode) target.getParent(), info,
+					log);
+			if (duplicatedTarget == null) {
+				return null;
+			}
 			TargetNodeImpl newTarget = new TargetNodeImpl(target.getEntityDefinition(),
 					duplicatedTarget);
 			info.addNewTargetNode(newTarget.getEntityDefinition(), newTarget);

@@ -20,6 +20,7 @@ import java.util.Set;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
+import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 
 /**
  * Duplicates a context sub-tree in a transformation tree.
@@ -34,8 +35,9 @@ public interface TransformationContext {
 	 * @param originalSource the original context source
 	 * @param duplicate the duplicate source node
 	 * @param ignoreCells the cells to be ignored for the duplication
+	 * @param log the transformation log
 	 */
 	public void duplicateContext(SourceNode originalSource, SourceNode duplicate,
-			Set<Cell> ignoreCells);
+			Set<Cell> ignoreCells, TransformationLog log);
 
 }
