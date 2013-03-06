@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,6 +33,8 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
@@ -373,6 +374,8 @@ public class TargetContext implements TransformationContext {
 		}
 	}
 
+	private static final ALogger log = ALoggerFactory.getLogger(TargetContext.class);
+
 	private final Set<TargetNode> contextTargets;
 
 	/**
@@ -595,18 +598,17 @@ public class TargetContext implements TransformationContext {
 	 * @param cell the original cell node
 	 * @param duplicateCell the duplication target
 	 * @param info the duplication info object
-	 * @return a collection of newly created target nodes
 	 */
-	private static Collection<TargetNode> duplicateTree(CellNode cell, CellNode duplicateCell,
+	private static void duplicateTree(CellNode cell, CellNode duplicateCell,
 			DuplicationInformation info) {
 		// Duplicate targets.
-		List<TargetNode> createdTargets = new LinkedList<TargetNode>();
 		for (TargetNode target : cell.getTargets()) {
 			TargetNodeImpl duplicatedTarget = duplicateTree(target, info);
-			duplicateCell.addTarget(duplicatedTarget);
-			duplicatedTarget.addAssignment(target.getAssignmentNames(cell), duplicateCell);
+			if (duplicatedTarget != null) {
+				duplicateCell.addTarget(duplicatedTarget);
+				duplicatedTarget.addAssignment(target.getAssignmentNames(cell), duplicateCell);
+			}
 		}
-		return createdTargets;
 	}
 
 	/**
@@ -643,8 +645,10 @@ public class TargetContext implements TransformationContext {
 			// null!
 			// XXX instead log and return null or not connected TargetNode? See
 			// T O D O below
-			throw new IllegalStateException(
-					"DuplicationContext present, but no matching target found.");
+			log.error("DuplicationContext present, but no matching target found.");
+			return null;
+//			throw new IllegalStateException(
+//					"DuplicationContext present, but no matching target found.");
 		}
 
 		// TODO What about cases where contextTargets parent doesn't exist yet,
@@ -660,6 +664,9 @@ public class TargetContext implements TransformationContext {
 		if (parent == null) {
 			// Does not exist: recursion.
 			TargetNodeImpl duplicatedTarget = duplicateTree((TargetNode) target.getParent(), info);
+			if (duplicatedTarget == null) {
+				return null;
+			}
 			TargetNodeImpl newTarget = new TargetNodeImpl(target.getEntityDefinition(),
 					duplicatedTarget);
 			info.addNewTargetNode(newTarget.getEntityDefinition(), newTarget);
