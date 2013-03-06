@@ -33,6 +33,11 @@ public interface XsltConstants {
 	public static final String NS_CUSTOM_XSL = "http://www.esdi-humboldt.eu/hale/xsl";
 
 	/**
+	 * Namespace URI for definitions used by HALE in XSLT.
+	 */
+	public static final String NS_XSL_DEFINITIONS = "http://www.esdi-humboldt.eu/hale/xslt/definitions";
+
+	/**
 	 * Fixed prefix for the XSLT namespace.
 	 */
 	public static final String NS_PREFIX_XSL = "xsl";
@@ -51,5 +56,10 @@ public interface XsltConstants {
 	 * Fixed prefix for the HALE XSL namespace.
 	 */
 	public static final String NS_PREFIX_CUSTOM_XSL = "hx";
+
+	/**
+	 * Fixed prefix for the HALE XSL definitions namespace.
+	 */
+	public static final String NS_PREFIX_XSL_DEFINITIONS = "def";
 
 }
