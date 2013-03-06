@@ -17,6 +17,8 @@ package eu.esdihumboldt.hale.io.xslt.transformations.base;
 
 import javax.xml.namespace.QName
 
+import com.google.common.collect.ArrayListMultimap
+import com.google.common.collect.Multimap
 import com.tinkerpop.blueprints.Vertex
 
 import eu.esdihumboldt.hale.common.align.tgraph.TGraph
@@ -58,7 +60,7 @@ abstract class AbstractTransformationTraverser implements TGraphConstants {
 	 */
 	protected void traverseTargets(Vertex parentNode, DefinitionGroup parent) {
 		// organize child nodes by name
-		Map<QName, Vertex> namedNodes = new HashMap<QName, Vertex>();
+		Multimap<QName, Vertex> namedNodes = ArrayListMultimap.create()
 		for (Vertex child : parentNode.in(EDGE_PARENT)) {
 			namedNodes.put(child.entity.definition.name, child);
 		}
@@ -82,20 +84,26 @@ abstract class AbstractTransformationTraverser implements TGraphConstants {
 
 		// handle target nodes in order
 		for (QName childName : childNames) {
-			Vertex node = namedNodes[childName];
-			if (node != null) {
-				visitProperty(node);
+			def nodes = namedNodes.get(childName)
+			// there may be multiple nodes of the same name, e.g. instance contexts
+			if (nodes) {
+				for (Vertex node in nodes) {
+					visitProperty(node);
 
-				// traverse children
-				ChildDefinition<?> nd = node.entity().definition
-				DefinitionGroup group = (nd.asGroup() == null) ?
-						(nd.asProperty().getPropertyType()) :
-						(nd.asGroup());
-				traverseTargets(node, group);
+					// traverse children
+					ChildDefinition<?> nd = node.entity().definition
+					DefinitionGroup group = (nd.asGroup() == null) ?
+							(nd.asProperty().getPropertyType()) :
+							(nd.asGroup());
+					traverseTargets(node, group);
 
-				leaveProperty(node);
+					leaveProperty(node);
+				}
 			}
 			else {
+				//FIXME do this also after treating all nodes?!
+				//XXX there must be a possibility to detect whether there were results
+
 				ChildDefinition<?> child = parent.getChild(childName);
 				if (DefinitionUtil.getCardinality(child).getMinOccurs() > 0) {
 					/*
