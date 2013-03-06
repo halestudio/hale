@@ -32,7 +32,6 @@ import org.eclipse.zest.layouts.LayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
 import eu.esdihumboldt.hale.ui.HaleUI;
-import eu.esdihumboldt.hale.ui.common.graph.content.CellGraphContentProvider;
 import eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider;
 import eu.esdihumboldt.hale.ui.util.graph.ExportGraphAction;
 import eu.esdihumboldt.hale.ui.util.graph.LayoutAction;
@@ -109,19 +108,7 @@ public abstract class AbstractMappingView extends PropertiesViewPart implements
 	 * @return the content provider
 	 */
 	protected IContentProvider createContentProvider() {
-		return new CellGraphContentProvider() {
-
-			@Override
-			public Object getSource(Object rel) {
-				return super.getDestination(rel);
-			}
-
-			@Override
-			public Object getDestination(Object rel) {
-				return super.getSource(rel);
-			}
-
-		};
+		return new ReverseCellGraphContentProvider();
 	}
 
 	/**
@@ -135,7 +122,10 @@ public abstract class AbstractMappingView extends PropertiesViewPart implements
 		return layout;
 	}
 
-	private void fillToolBar() {
+	/**
+	 * Fill the view toolbar.
+	 */
+	protected void fillToolBar() {
 		ZoomContributionViewItem toolbarZoomContributionViewItem = new ZoomContributionViewItem(
 				this);
 		IActionBars bars = getViewSite().getActionBars();
