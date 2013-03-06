@@ -25,8 +25,6 @@ import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition
 import eu.esdihumboldt.hale.common.core.io.HaleIO
 import eu.esdihumboldt.hale.common.core.io.Value
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
-import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
-import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag
 import eu.esdihumboldt.hale.io.xslt.XsltGenerationContext
 import eu.esdihumboldt.hale.io.xslt.functions.XslVariable
 import eu.esdihumboldt.hale.io.xslt.transformations.base.AbstractFunctionTransformation
@@ -42,7 +40,7 @@ class XslClassification extends AbstractFunctionTransformation implements Classi
 
 	@Override
 	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables,
-	XsltGenerationContext context) {
+			XsltGenerationContext context) {
 
 		def target = cell.getTarget().get(null)[0];
 		PropertyEntityDefinition d = target.getDefinition();
@@ -79,33 +77,12 @@ class XslClassification extends AbstractFunctionTransformation implements Classi
 		} else
 		// return null
 		{
-			if (propertyDefinition.asProperty().getConstraint(XmlAttributeFlag).enabled) {
-				// TODO handling of nullability of attributes might be discussed in future
-				setVar = """
-						<xsl:variable name="endVar" >
-						<xsl:text/>
-						</xsl:variable>
-						"""
-			}
-			else {
-				// a mandatory element
-				if (propertyDefinition.asProperty().getConstraint(NillableFlag).enabled) {
-					// a nillable mandatory element
-					setVar = """
-						<xsl:variable name="endVar" >
-							<xsl:attribute name="xsi:nil">true</xsl:attribute>
-							<xsl:text/>
-						</xsl:variable>
-						"""
-				}else{
-					// not nillable element, then leave it empty
-					setVar = """
-						<xsl:variable name="endVar" >
-						<xsl:text/>
-						</xsl:variable>
-						"""
-				}
-			}
+			// use def:null element to mark as no result
+			setVar = """
+				<xsl:variable name="endVar" >
+					<def:null />
+				</xsl:variable>
+				"""
 		}
 
 
@@ -139,7 +116,7 @@ class XslClassification extends AbstractFunctionTransformation implements Classi
                     <xsl:value-of select="\$testVar"/>
                 </xsl:if>
                 <xsl:if test="not(\$testVar)">
-                    <xsl:value-of select="\$endVar"/>
+                    <xsl:copy-of select="\$endVar"/>
                 </xsl:if>
 			"""
 
