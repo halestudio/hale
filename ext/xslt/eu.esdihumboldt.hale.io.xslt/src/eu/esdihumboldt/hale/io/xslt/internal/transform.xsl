@@ -3,6 +3,7 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:def="http://www.esdi-humboldt.eu/hale/xslt/definitions"
 #foreach ($prefix_ns in $additionalNamespaces.entrySet())
 	xmlns:${prefix_ns.Key}="${prefix_ns.Value}"
 #end

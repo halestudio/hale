@@ -154,8 +154,12 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 		boolean isGroup = node.definition().asGroup()
 
 		if (!isGroup) {
-			writeXslAttElStart(node.definition().name, attribute)
-			closeTags.insert(0, "</xsl:${attribute ? 'attribute' : 'element'}>")
+			// begin variable to store children and value in
+			// the variable is used to allow null values
+			writer << '<xsl:variable name="children"><children>'
+
+			//			writeXslAttElStart(node.definition().name, attribute)
+			//			closeTags.insert(0, "</xsl:${attribute ? 'attribute' : 'element'}>")
 			//XXX do this always? For now assumption is this is needed further down
 		}
 
@@ -195,15 +199,19 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 		 */
 		Vertex context = contexts.pop()
 
-		// retrieve cell
-		def cells = node.in(EDGE_RESULT).toList()
-		if (cells) {
-			if (cells.size() == 1) {
-				// write the content directly to the element
-				Vertex cellNode = cells[0]
-				writer << createResultFragment(cellNode, context)
-			}
-			else {
+		boolean isGroup = node.definition().asGroup()
+		boolean isAttribute = node.definition().asProperty() &&
+				node.definition().asProperty().getConstraint(XmlAttributeFlag).enabled
+
+		if (!isGroup) {
+			// a variable was created to store the children
+
+			// close the variable
+			writer << '</children></xsl:variable>'
+
+			// retrieve cell
+			def cells = node.in(EDGE_RESULT).toList()
+			if (cells) {
 				// create variable with different results
 				writer << '<xsl:variable name="results">'
 
@@ -235,15 +243,47 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 				 */
 				// copy all child elements of the first non-empty result node
 				//TODO verify if this actually works
-				writer << '<xsl:copy-of select="$results/result[node()][1]/*" />'
+				//				writer << '<xsl:copy-of select="$results/result[node()][1]/*" />'
 				// copy value of the first non-empty result node
-				writer << '<xsl:value-of select="$results/result[node()][1]" />'
+				//				writer << '<xsl:value-of select="$results/result[node()][1]" />'
+
+				//XXX what about proxies? not handled yet anywhere in traverser
 			}
 
-			//XXX what about proxies? not handled yet anywhere in traverser
-		}
-		else {
-			// XXX what can be done if there is no context?
+			/*
+			 * The element or attribute may only be written if there are
+			 * children and/or a value. 
+			 */
+			String childrenTest = '$children/children[node()]'
+			String resultTest = '$results/result[not(def:null) and node()]'
+			String test = cells ? "$childrenTest or $resultTest" : childrenTest
+
+			writer << "<xsl:if test=\"$test\">"
+
+			// start element/attribute
+			writeXslAttElStart(node.definition().name, isAttribute)
+
+			// copy children
+			writer << """
+				<xsl:if test="$childrenTest">
+					<xsl:copy-of select="\$children/children/*" />
+				</xsl:if>
+				"""
+
+			// copy results (only available if there were cells)
+			if (cells) {
+				writer << """
+				<xsl:if test="$resultTest">
+					<xsl:copy-of select="\$results/result[node()][1]/*" />
+					<xsl:value-of select="\$results/result[node()][1]" />
+				</xsl:if>
+				"""
+			}
+
+			// end element/attribute
+			writer << "</xsl:${isAttribute ? 'attribute' : 'element'}>"
+
+			writer << '</xsl:if>'
 		}
 
 		String closeTags = tagsToClose.pop()

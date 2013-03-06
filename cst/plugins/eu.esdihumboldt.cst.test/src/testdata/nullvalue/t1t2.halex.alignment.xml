@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell priority="normal" id="C85f6599b-37b8-40dc-b810-96176109c5cf" relation="eu.esdihumboldt.hale.align.retype">
+        <source>
+            <class>
+                <type ns="http://www.example.org/t1/" name="T1"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type ns="http://www.example.org/t2/" name="T2"/>
+            </class>
+        </target>
+    </cell>
+    <cell priority="normal" id="C9725f9c8-ccb1-4ef0-ad27-76e52cca8e1f" relation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type ns="http://www.example.org/t1/" name="T1"/>
+                <child name="b1"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type ns="http://www.example.org/t2/" name="T2"/>
+                <child name="b2"/>
+            </property>
+        </target>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell priority="normal" id="C2b968832-95f0-4475-9df9-e574a73ec3ef" relation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type ns="http://www.example.org/t1/" name="T1"/>
+                <child name="id"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type ns="http://www.example.org/t2/" name="T2"/>
+                <child name="id"/>
+            </property>
+        </target>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell priority="normal" id="C5dc10807-6a36-421b-b9c6-fc0c9bbb2403" relation="eu.esdihumboldt.hale.align.classification">
+        <source>
+            <property>
+                <type ns="http://www.example.org/t1/" name="T1"/>
+                <child name="c1"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type ns="http://www.example.org/t2/" name="T2"/>
+                <child name="c2"/>
+            </property>
+        </target>
+        <parameter value="null" name="notClassifiedAction"/>
+        <parameter value="2 1 2 3" name="classificationMapping"/>
+        <parameter value="5 4 5 6" name="classificationMapping"/>
+    </cell>
+    <cell priority="normal" id="Cbdeeba20-da3a-4798-9793-f2f72084d4f4" relation="eu.esdihumboldt.hale.align.classification">
+        <source>
+            <property>
+                <type ns="http://www.example.org/t1/" name="T1"/>
+                <child name="a1"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type ns="http://www.example.org/t2/" name="T2"/>
+                <child name="a2"/>
+            </property>
+        </target>
+        <parameter value="null" name="notClassifiedAction"/>
+        <complexParameter name="lookupTable">
+            <lookup-table xmlns:ns2="http://www.esdi-humboldt.eu/hale/alignment" xmlns="">
+                <entry>
+                    <key value="2"/>
+                    <value value="1"/>
+                </entry>
+                <entry>
+                    <key value="1"/>
+                    <value value="1"/>
+                </entry>
+                <entry>
+                    <key value="3"/>
+                    <value value="1"/>
+                </entry>
+            </lookup-table>
+        </complexParameter>
+    </cell>
+</alignment>

@@ -47,6 +47,7 @@ abstract class TransformationExamples {
 	public static final String CLASSIFICATION_4 = 'classification4'
 	public static final String FORMATSTRING = 'formatstring'
 	public static final String PRIORITY = 'priority'
+	public static final String NULLVALUE = 'nullvalue'
 
 	public static final String PROPCONDITION1 = 'propcondition1'
 	public static final String PROPCONDITION2 = 'propcondition2'
@@ -136,6 +137,7 @@ abstract class TransformationExamples {
 		(CLASSIFICATION_4): defaultExample(CLASSIFICATION_4),
 		(FORMATSTRING): defaultExample(FORMATSTRING),
 		(PRIORITY): defaultExample(PRIORITY),
+		(NULLVALUE): defaultExample(NULLVALUE),
 		(PROPCONDITION1): defaultExample(PROPCONDITION1),
 		(PROPCONDITION2): defaultExample(PROPCONDITION2),
 		(TYPEFILTER): defaultExample(TYPEFILTER),
@@ -177,14 +179,14 @@ abstract class TransformationExamples {
 
 	static def defaultExample(String folder) {
 		[
-					sourceSchema: "/testdata/${folder}/t1.xsd",
-					targetSchema: "/testdata/${folder}/t2.xsd",
-					alignment: "/testdata/${folder}/t1t2.halex.alignment.xml",
-					sourceData: "/testdata/${folder}/instance1.xml",
-					transformedData: "/testdata/${folder}/instance2.xml",
-					containerNamespace: null,
-					containerName: 'collection'
-				]
+			sourceSchema: "/testdata/${folder}/t1.xsd",
+			targetSchema: "/testdata/${folder}/t2.xsd",
+			alignment: "/testdata/${folder}/t1t2.halex.alignment.xml",
+			sourceData: "/testdata/${folder}/instance1.xml",
+			transformedData: "/testdata/${folder}/instance2.xml",
+			containerNamespace: null,
+			containerName: 'collection'
+		]
 	}
 
 	/**
