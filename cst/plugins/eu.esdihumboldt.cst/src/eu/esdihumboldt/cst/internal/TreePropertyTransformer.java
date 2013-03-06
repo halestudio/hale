@@ -151,13 +151,13 @@ public class TreePropertyTransformer implements PropertyTransformer {
 					HooksUtil.executeTreeHooks(treeHooks, TreeState.MINIMAL, tree, target);
 
 					// apply instance value to transformation tree
-					InstanceVisitor instanceVisitor = new InstanceVisitor(source, tree);
+					InstanceVisitor instanceVisitor = new InstanceVisitor(source, tree, typeLog);
 					tree.accept(instanceVisitor);
 
 					// State: basic source populated tree
 
 					// duplicate subtree as necessary
-					DuplicationVisitor duplicationVisitor = new DuplicationVisitor(tree);
+					DuplicationVisitor duplicationVisitor = new DuplicationVisitor(tree, typeLog);
 					tree.accept(duplicationVisitor);
 					duplicationVisitor.doAugmentationTrackback();
 

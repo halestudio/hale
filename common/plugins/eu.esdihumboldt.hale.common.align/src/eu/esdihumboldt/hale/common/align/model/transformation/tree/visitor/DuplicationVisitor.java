@@ -18,8 +18,6 @@ package eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor;
 
 import java.util.Set;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.Leftovers;
@@ -28,6 +26,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.Transformatio
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.TransformationContext;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.impl.TargetContext;
+import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.util.Pair;
 
@@ -39,16 +38,18 @@ import eu.esdihumboldt.util.Pair;
  */
 public class DuplicationVisitor extends AbstractSourceToTargetVisitor {
 
-	private static final ALogger log = ALoggerFactory.getLogger(DuplicationVisitor.class);
 	private final TransformationTree tree;
+	private final TransformationLog log;
 
 	/**
 	 * Creates a duplication visitor.
 	 * 
 	 * @param tree the transformation tree
+	 * @param log the transformation log
 	 */
-	public DuplicationVisitor(TransformationTree tree) {
+	public DuplicationVisitor(TransformationTree tree, TransformationLog log) {
 		this.tree = tree;
+		this.log = log;
 	}
 
 	/**
@@ -73,21 +74,21 @@ public class DuplicationVisitor extends AbstractSourceToTargetVisitor {
 
 			if (context == null) {
 				// no transformation context match defined
-				// XXX warn instead? XXX transformation log instead?
-				log.error("Multiple values for source node w/o transformation context match");
+				log.warn(log.createMessage(
+						"Multiple values for source node w/o transformation context match", null));
 			}
 			else {
 				Pair<SourceNode, Set<Cell>> leftover;
 				// completely consume leftovers
 				while ((leftover = leftovers.consumeValue()) != null) {
-					context.duplicateContext(source, leftover.getFirst(), leftover.getSecond());
+					context.duplicateContext(source, leftover.getFirst(), leftover.getSecond(), log);
 					// XXX is this the place where this should be propagated to
 					// the duplicated source children?
 					// XXX trying it out
 					SourceNode node = leftover.getFirst();
 					Object value = node.getValue();
 					if (value instanceof Group) {
-						InstanceVisitor instanceVisitor = new InstanceVisitor(null, null);
+						InstanceVisitor instanceVisitor = new InstanceVisitor(null, null, log);
 						for (SourceNode child : node.getChildren(instanceVisitor
 								.includeAnnotatedNodes())) {
 							// annotate children with leftovers

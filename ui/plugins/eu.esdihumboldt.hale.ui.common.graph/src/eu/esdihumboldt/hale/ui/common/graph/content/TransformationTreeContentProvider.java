@@ -42,6 +42,11 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.Transfor
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.DuplicationVisitor;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.InstanceVisitor;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.FamilyInstanceImpl;
+import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
+import eu.esdihumboldt.hale.common.align.transformation.report.TransformationMessage;
+import eu.esdihumboldt.hale.common.align.transformation.report.impl.CellLog;
+import eu.esdihumboldt.hale.common.align.transformation.report.impl.DefaultTransformationReporter;
+import eu.esdihumboldt.hale.common.core.report.ReportLog;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.util.IdentityWrapper;
 import eu.esdihumboldt.util.Pair;
@@ -132,6 +137,10 @@ public class TransformationTreeContentProvider extends ArrayContentProvider impl
 			Alignment alignment) {
 		TransformationTree tree = new TransformationTreeImpl(alignment, typeCell);
 
+		ReportLog<TransformationMessage> reporter = new DefaultTransformationReporter(
+				"Transformation tree", true);
+		TransformationLog log = new CellLog(reporter, typeCell);
+
 		// context matching
 		ContextMatcher matcher = new AsDeepAsPossible(); // XXX instead through
 															// service/extension
@@ -139,11 +148,11 @@ public class TransformationTreeContentProvider extends ArrayContentProvider impl
 		matcher.findMatches(tree);
 
 		// process and annotate the tree
-		InstanceVisitor visitor = new InstanceVisitor(new FamilyInstanceImpl(instance), tree);
+		InstanceVisitor visitor = new InstanceVisitor(new FamilyInstanceImpl(instance), tree, log);
 		tree.accept(visitor);
 
 		// duplicate subtree as necessary
-		DuplicationVisitor duplicationVisitor = new DuplicationVisitor(tree);
+		DuplicationVisitor duplicationVisitor = new DuplicationVisitor(tree, log);
 		tree.accept(duplicationVisitor);
 
 		duplicationVisitor.doAugmentationTrackback();
