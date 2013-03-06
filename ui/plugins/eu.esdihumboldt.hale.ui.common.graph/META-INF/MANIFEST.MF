@@ -42,3 +42,4 @@ Import-Package: com.google.common.base;version="9.0.0",
  eu.esdihumboldt.hale.ui.util.graph.shapes,
  eu.esdihumboldt.util,
  net.jcip.annotations
+Bundle-Activator: eu.esdihumboldt.hale.ui.common.graph.internal.GraphUIPlugin
