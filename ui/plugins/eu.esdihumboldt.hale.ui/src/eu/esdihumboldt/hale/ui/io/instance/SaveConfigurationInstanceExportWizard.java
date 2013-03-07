@@ -24,10 +24,15 @@ import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.instance.model.Filter;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
+import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 
 /**
- * Save instance export configuration in project file
+ * Save instance export configuration in the {@link Project}
  * 
  * @author Patrick Lieb
  */
@@ -41,7 +46,7 @@ public class SaveConfigurationInstanceExportWizard extends InstanceExportWizard 
 	protected IOReport execute(IOProvider provider, IOReporter defaultReporter) {
 
 		IOConfiguration configuration = new IOConfiguration();
-		// store the (export) configuration of the provider in the new io
+		// store the (export) configuration of the provider in the new IO
 		// configuration
 		configuration.setActionId(getActionId());
 		configuration.setProviderId(getProviderFactory().getIdentifier());
@@ -52,7 +57,7 @@ public class SaveConfigurationInstanceExportWizard extends InstanceExportWizard 
 		Project project = (Project) ps.getProjectInfo();
 		// target is not set here and also not needed for the configuration
 		configuration.getProviderConfiguration().remove(ExportProvider.PARAM_TARGET);
-		// add the configuration to the export configurations of the project
+		// add the new configuration to the export configurations of the project
 		project.getExportConfigurations().add(configuration);
 
 		// no provider is executed so we return the default reporter
@@ -82,11 +87,58 @@ public class SaveConfigurationInstanceExportWizard extends InstanceExportWizard 
 			}
 			else {
 				// no selection of the export file is desired, so we skip the
-				// select export select target page
+				// export select target page
 				getSelectTargetPage().setPageComplete(true);
 				return super.getNextPage(getSelectTargetPage());
 			}
 		}
 		return nextPage;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.io.instance.InstanceExportWizard#performFinish()
+	 */
+	@Override
+	public boolean performFinish() {
+		// set a dummy instance collection to pass provider validation
+		getProvider().setInstances(new InstanceCollection() {
+
+			@Override
+			public InstanceReference getReference(Instance instance) {
+				return null;
+			}
+
+			@Override
+			public Instance getInstance(InstanceReference reference) {
+				return null;
+			}
+
+			@Override
+			public int size() {
+				return 0;
+			}
+
+			@Override
+			public InstanceCollection select(Filter filter) {
+				return null;
+			}
+
+			@Override
+			public ResourceIterator<Instance> iterator() {
+				return null;
+			}
+
+			@Override
+			public boolean isEmpty() {
+				// collection must not be empty to pass validation
+				return false;
+			}
+
+			@Override
+			public boolean hasSize() {
+				return false;
+			}
+		});
+		return super.performFinish();
 	}
 }
