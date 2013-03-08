@@ -67,14 +67,13 @@ public class PropertyEntitySelector extends EntitySelector<PropertyParameter> {
 	 * @param parentType the parentType to set
 	 */
 	public void setParentType(TypeEntityDefinition parentType) {
-		boolean forceUpdate = this.parentType != null
-				&& !Objects.equal(this.parentType, parentType);
-
-		this.parentType = parentType;
 		// reset candidates?? refresh viewer?
-		if (forceUpdate) {
-			// reset selection
-			setSelection(new StructuredSelection());
+		if (!Objects.equal(this.parentType, parentType)) {
+			this.parentType = parentType;
+			// reset selection if necessary
+			// TODO check whether the selection is also valid for the new type
+			if (parentType != null)
+				setSelection(new StructuredSelection());
 		}
 	}
 
@@ -113,14 +112,22 @@ public class PropertyEntitySelector extends EntitySelector<PropertyParameter> {
 	}
 
 	private static ViewerFilter[] createFilters(PropertyParameter field) {
+		// if no condition is present add a filter that allows all properties
+		ViewerFilter propertyFilter = new ViewerFilter() {
+
+			@Override
+			public boolean select(Viewer viewer, Object parentElement, Object element) {
+				return element instanceof PropertyEntityDefinition;
+			}
+		};
 		if (field == null) {
-			return new ViewerFilter[0];
+			return new ViewerFilter[] { propertyFilter };
 		}
 
 		List<PropertyCondition> conditions = field.getConditions();
 
-		if (conditions == null)
-			return new ViewerFilter[0];
+		if (conditions == null || conditions.isEmpty())
+			return new ViewerFilter[] { propertyFilter };
 
 		ViewerFilter[] filters = new ViewerFilter[conditions.size()];
 		int i = 0;

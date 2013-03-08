@@ -39,6 +39,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.StyledDefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 import eu.esdihumboldt.hale.ui.service.entity.util.EntityTypePropertyContentProvider;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
 
 /**
@@ -78,7 +79,13 @@ public class PropertyEntityDialog extends EntityDialog {
 		viewer.setContentProvider(new TreePathProviderAdapter(
 				new EntityTypePropertyContentProvider(viewer, entityDefinitionService, ssid)));
 
-		viewer.setInput(parentType);
+		if (parentType != null)
+			viewer.setInput(parentType);
+		else {
+			SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(
+					SchemaService.class);
+			viewer.setInput(ss.getSchemas(ssid));
+		}
 
 		if (initialSelection != null) {
 			viewer.setSelection(new StructuredSelection(initialSelection));
