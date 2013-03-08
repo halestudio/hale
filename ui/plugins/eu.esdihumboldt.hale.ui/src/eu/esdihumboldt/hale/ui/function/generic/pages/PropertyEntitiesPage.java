@@ -16,38 +16,30 @@
 
 package eu.esdihumboldt.hale.ui.function.generic.pages;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.swt.widgets.Group;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
-import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
-import eu.esdihumboldt.hale.common.align.model.Type;
-import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.ui.function.common.TypeEntitySelector;
 import eu.esdihumboldt.hale.ui.function.generic.pages.internal.PropertyField;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
-import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
-import eu.esdihumboldt.util.Pair;
 
 /**
  * Entity page for properties
@@ -57,7 +49,9 @@ import eu.esdihumboldt.util.Pair;
 public class PropertyEntitiesPage extends
 		EntitiesPage<PropertyFunction, PropertyParameter, PropertyField> {
 
-	private ComboViewer typeRelation;
+//	private ComboViewer typeRelation;
+	private TypeEntitySelector targetTypeSelector;
+	private TypeEntitySelector sourceTypeSelector;
 
 	/**
 	 * @see EntitiesPage#EntitiesPage(SchemaSelection, Cell)
@@ -71,131 +65,173 @@ public class PropertyEntitiesPage extends
 	 */
 	@Override
 	protected Control createHeader(Composite parent) {
-		// XXX what about augmentations?!
+		Group typeSelectionGroup = new Group(parent, SWT.NONE);
+		typeSelectionGroup.setText("Type");
+		typeSelectionGroup.setLayout(new GridLayout(3, false));
 
-		Set<Pair<Type, Type>> relations = new HashSet<Pair<Type, Type>>();
-
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-				AlignmentService.class);
-		Collection<? extends Cell> typeCells = as.getAlignment().getTypeCells();
-
-		for (Cell cell : typeCells) {
-			for (Entity source : cell.getSource().values()) {
-				if (source instanceof Type) {
-					for (Entity target : cell.getTarget().values()) {
-						if (target instanceof Type) {
-							relations.add(new Pair<Type, Type>((Type) source, (Type) target));
-						}
-					}
-				}
-			}
-		}
-
-		if (relations.isEmpty()) {
-			// XXX this may not happen, i.e. the wizard being created in the
-			// first place should be prevented
-			throw new IllegalStateException("No compatible type relations defined");
-		}
-
-		typeRelation = new ComboViewer(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
-		typeRelation.setContentProvider(ArrayContentProvider.getInstance());
-		typeRelation.setLabelProvider(new LabelProvider() {
-
-			@Override
-			public String getText(Object element) {
-				@SuppressWarnings("unchecked")
-				Pair<Type, Type> types = (Pair<Type, Type>) element;
-
-				return types.getFirst().getDefinition().getDefinition().getDisplayName() + " - "
-						+ types.getSecond().getDefinition().getDefinition().getDisplayName();
-			}
-		});
-		typeRelation.setInput(relations);
-
-		// set initial selection for relation
-		Pair<Type, Type> selection = determineDefaultRelation(relations);
-		typeRelation.setSelection(new StructuredSelection(selection));
-
-		typeRelation.addSelectionChangedListener(new ISelectionChangedListener() {
+		sourceTypeSelector = new TypeEntitySelector(SchemaSpaceID.SOURCE, null, typeSelectionGroup);
+		sourceTypeSelector.getControl().setLayoutData(
+				new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		sourceTypeSelector.addSelectionChangedListener(new ISelectionChangedListener() {
 
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
-				for (PropertyField field : getFunctionFields()) {
-					field.setParentType(getParentType(field.getSchemaSpace()));
-				}
+				TypeEntityDefinition selectedType = (TypeEntityDefinition) sourceTypeSelector
+						.getSelectedObject();
+				for (PropertyField field : getFunctionFields())
+					if (field.getSchemaSpace() == SchemaSpaceID.SOURCE)
+						field.setParentType(selectedType);
 			}
 		});
 
-		return typeRelation.getControl();
+		Button preselectTypeRelation = new Button(typeSelectionGroup, SWT.PUSH);
+		preselectTypeRelation.setText("...");
+		preselectTypeRelation.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// TODO show type cell selection dialog
+			}
+		});
+
+		targetTypeSelector = new TypeEntitySelector(SchemaSpaceID.TARGET, null, typeSelectionGroup);
+		targetTypeSelector.getControl().setLayoutData(
+				new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		targetTypeSelector.addSelectionChangedListener(new ISelectionChangedListener() {
+
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				TypeEntityDefinition selectedType = (TypeEntityDefinition) targetTypeSelector
+						.getSelectedObject();
+				for (PropertyField field : getFunctionFields())
+					if (field.getSchemaSpace() == SchemaSpaceID.TARGET)
+						field.setParentType(selectedType);
+			}
+		});
+
+//		Set<Pair<Type, Type>> relations = new HashSet<Pair<Type, Type>>();
+//
+//		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+//				AlignmentService.class);
+//		Collection<? extends Cell> typeCells = as.getAlignment().getTypeCells();
+//
+//		for (Cell cell : typeCells) {
+//			for (Entity source : cell.getSource().values()) {
+//				if (source instanceof Type) {
+//					for (Entity target : cell.getTarget().values()) {
+//						if (target instanceof Type) {
+//							relations.add(new Pair<Type, Type>((Type) source, (Type) target));
+//						}
+//					}
+//				}
+//			}
+//		}
+//
+//		if (relations.isEmpty()) {
+//			// XXX this may not happen, i.e. the wizard being created in the
+//			// first place should be prevented
+//			throw new IllegalStateException("No compatible type relations defined");
+//		}
+//
+//		typeRelation = new ComboViewer(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
+//		typeRelation.setContentProvider(ArrayContentProvider.getInstance());
+//		typeRelation.setLabelProvider(new LabelProvider() {
+//
+//			@Override
+//			public String getText(Object element) {
+//				@SuppressWarnings("unchecked")
+//				Pair<Type, Type> types = (Pair<Type, Type>) element;
+//
+//				return types.getFirst().getDefinition().getDefinition().getDisplayName() + " - "
+//						+ types.getSecond().getDefinition().getDefinition().getDisplayName();
+//			}
+//		});
+//		typeRelation.setInput(relations);
+//
+//		// set initial selection for relation
+//		Pair<Type, Type> selection = determineDefaultRelation(relations);
+//		typeRelation.setSelection(new StructuredSelection(selection));
+//
+//		typeRelation.addSelectionChangedListener(new ISelectionChangedListener() {
+//
+//			@Override
+//			public void selectionChanged(SelectionChangedEvent event) {
+//				for (PropertyField field : getFunctionFields()) {
+//					field.setParentType(getParentType(field.getSchemaSpace()));
+//				}
+//			}
+//		});
+
+		return typeSelectionGroup;
 	}
 
-	/**
-	 * Determine the relation to be selected by default.
-	 * 
-	 * @param relations the available relations
-	 * @return the relation to be selected
-	 */
-	private Pair<Type, Type> determineDefaultRelation(Set<Pair<Type, Type>> relations) {
-		Pair<Type, Type> relation = null;
-		// based on initial cell/selection if possible
-		if (getInitialCell() != null) {
-			Type target = new DefaultType(AlignmentUtil.getTypeEntity(getInitialCell().getTarget()
-					.values().iterator().next().getDefinition()));
+//	/**
+//	 * Determine the relation to be selected by default.
+//	 * 
+//	 * @param relations the available relations
+//	 * @return the relation to be selected
+//	 */
+//	private Pair<Type, Type> determineDefaultRelation(Set<Pair<Type, Type>> relations) {
+//		Pair<Type, Type> relation = null;
+//		// based on initial cell/selection if possible
+//		if (getInitialCell() != null) {
+//			Type target = new DefaultType(AlignmentUtil.getTypeEntity(getInitialCell().getTarget()
+//					.values().iterator().next().getDefinition()));
+//
+//			if (getInitialCell().getSource() != null && !getInitialCell().getSource().isEmpty()) {
+//				Type source = new DefaultType(AlignmentUtil.getTypeEntity(getInitialCell()
+//						.getSource().values().iterator().next().getDefinition()));
+//				relation = new Pair<Type, Type>(source, target);
+//			}
+//			else {
+//				// augmentation, find any relation to target type
+//				relation = findFirstRelation(relations, null, target);
+//			}
+//		}
+//		else if (getInitialSelection() != null) {
+//			SchemaSelection sel = getInitialSelection();
+//			if (sel.getFirstSourceItem() != null && sel.getFirstTargetItem() != null) {
+//				Type source = new DefaultType(AlignmentUtil.getTypeEntity(sel.getFirstSourceItem()));
+//				Type target = new DefaultType(AlignmentUtil.getTypeEntity(sel.getFirstTargetItem()));
+//				relation = new Pair<Type, Type>(source, target);
+//			}
+//			else if (sel.getFirstSourceItem() != null) {
+//				Type source = new DefaultType(AlignmentUtil.getTypeEntity(sel.getFirstSourceItem()));
+//				relation = findFirstRelation(relations, source, null);
+//			}
+//			else if (sel.getFirstTargetItem() != null) {
+//				Type target = new DefaultType(AlignmentUtil.getTypeEntity(sel.getFirstTargetItem()));
+//				relation = findFirstRelation(relations, null, target);
+//			}
+//		}
+//
+//		if (relation == null) {
+//			return relations.iterator().next();
+//		}
+//		else {
+//			return relation;
+//		}
+//	}
 
-			if (getInitialCell().getSource() != null && !getInitialCell().getSource().isEmpty()) {
-				Type source = new DefaultType(AlignmentUtil.getTypeEntity(getInitialCell()
-						.getSource().values().iterator().next().getDefinition()));
-				relation = new Pair<Type, Type>(source, target);
-			}
-			else {
-				// augmentation, find any relation to target type
-				relation = findFirstRelation(relations, null, target);
-			}
-		}
-		else if (getInitialSelection() != null) {
-			SchemaSelection sel = getInitialSelection();
-			if (sel.getFirstSourceItem() != null && sel.getFirstTargetItem() != null) {
-				Type source = new DefaultType(AlignmentUtil.getTypeEntity(sel.getFirstSourceItem()));
-				Type target = new DefaultType(AlignmentUtil.getTypeEntity(sel.getFirstTargetItem()));
-				relation = new Pair<Type, Type>(source, target);
-			}
-			else if (sel.getFirstSourceItem() != null) {
-				Type source = new DefaultType(AlignmentUtil.getTypeEntity(sel.getFirstSourceItem()));
-				relation = findFirstRelation(relations, source, null);
-			}
-			else if (sel.getFirstTargetItem() != null) {
-				Type target = new DefaultType(AlignmentUtil.getTypeEntity(sel.getFirstTargetItem()));
-				relation = findFirstRelation(relations, null, target);
-			}
-		}
-
-		if (relation == null) {
-			return relations.iterator().next();
-		}
-		else {
-			return relation;
-		}
-	}
-
-	/**
-	 * Find the first relation matching the given source and target type.
-	 * 
-	 * @param relations the relations to test
-	 * @param source the source type, <code>null</code> for matching any type
-	 * @param target the target type, <code>null</code> for matching any type
-	 * @return the relation found or <code>null</code> if there is none
-	 */
-	private Pair<Type, Type> findFirstRelation(Set<Pair<Type, Type>> relations, Type source,
-			Type target) {
-		for (Pair<Type, Type> relation : relations) {
-			if ((source == null || source.equals(relation.getFirst()))
-					&& (target == null || target.equals(relation.getSecond()))) {
-				return relation;
-			}
-		}
-
-		return null;
-	}
+//	/**
+//	 * Find the first relation matching the given source and target type.
+//	 * 
+//	 * @param relations the relations to test
+//	 * @param source the source type, <code>null</code> for matching any type
+//	 * @param target the target type, <code>null</code> for matching any type
+//	 * @return the relation found or <code>null</code> if there is none
+//	 */
+//	private Pair<Type, Type> findFirstRelation(Set<Pair<Type, Type>> relations, Type source,
+//			Type target) {
+//		for (Pair<Type, Type> relation : relations) {
+//			if ((source == null || source.equals(relation.getFirst()))
+//					&& (target == null || target.equals(relation.getSecond()))) {
+//				return relation;
+//			}
+//		}
+//
+//		return null;
+//	}
 
 	/**
 	 * @see EntitiesPage#createField(AbstractParameter, SchemaSpaceID,
@@ -214,22 +250,14 @@ public class PropertyEntitiesPage extends
 	 * @return the parent type
 	 */
 	private TypeEntityDefinition getParentType(SchemaSpaceID ssid) {
-		ISelection selection = typeRelation.getSelection();
-		if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
-			@SuppressWarnings("unchecked")
-			Pair<Type, Type> relation = (Pair<Type, Type>) ((IStructuredSelection) selection)
-					.getFirstElement();
-			switch (ssid) {
-			case SOURCE:
-				return relation.getFirst().getDefinition();
-			case TARGET:
-				return relation.getSecond().getDefinition();
-			default:
-				throw new IllegalArgumentException("Illegal schema space");
-			}
+		switch (ssid) {
+		case SOURCE:
+			return (TypeEntityDefinition) sourceTypeSelector.getSelectedObject();
+		case TARGET:
+			return (TypeEntityDefinition) targetTypeSelector.getSelectedObject();
+		default:
+			throw new IllegalArgumentException("Illegal schema space");
 		}
-
-		return null;
 	}
 
 }
