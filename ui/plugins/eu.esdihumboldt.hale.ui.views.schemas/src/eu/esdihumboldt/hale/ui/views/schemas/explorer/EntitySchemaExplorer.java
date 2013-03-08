@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.ui.views.schemas.explorer;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.viewers.IContentProvider;
+import org.eclipse.jface.viewers.ITreePathContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Composite;
@@ -44,9 +45,9 @@ import eu.esdihumboldt.hale.ui.views.schemas.internal.SchemasViewPlugin;
  */
 public class EntitySchemaExplorer extends SchemaExplorer {
 
-	private EntityTypeIndexContentProvider listProvider;
+	private ITreePathContentProvider listProvider;
 
-	private EntityTypeIndexHierarchy hierarchyProvider;
+	private ITreePathContentProvider hierarchyProvider;
 
 	/**
 	 * Create an {@link EntityDefinition} based schema explorer
@@ -67,10 +68,12 @@ public class EntitySchemaExplorer extends SchemaExplorer {
 		EntityDefinitionService service = (EntityDefinitionService) PlatformUI.getWorkbench()
 				.getService(EntityDefinitionService.class);
 
-		hierarchyProvider = new EntityTypeIndexHierarchy(getTreeViewer(), service, getSchemaSpace());
-		listProvider = new EntityTypeIndexContentProvider(tree, service, getSchemaSpace());
+		hierarchyProvider = new TreePathProviderAdapter(new EntityTypeIndexHierarchy(
+				getTreeViewer(), service, getSchemaSpace()));
+		listProvider = new TreePathProviderAdapter(new EntityTypeIndexContentProvider(tree,
+				service, getSchemaSpace()));
 
-		return new TreePathProviderAdapter(listProvider);
+		return listProvider;
 	}
 
 	/**
