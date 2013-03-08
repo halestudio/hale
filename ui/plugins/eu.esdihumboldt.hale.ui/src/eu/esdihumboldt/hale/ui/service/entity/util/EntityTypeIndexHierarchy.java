@@ -101,14 +101,16 @@ public class EntityTypeIndexHierarchy implements ITreeContentProvider {
 			// collect types and super types in valid types set
 			while (!types.isEmpty()) {
 				TypeDefinition type = types.poll();
-				validTypes.add(type);
-				TypeDefinition superType = type.getSuperType();
-				if (superType != null && !validTypes.contains(superType)) {
-					types.add(superType);
-				}
-				if (superType == null) {
-					// add default type as root
-					roots.add(new TypeEntityDefinition(type, schemaSpace, null));
+				if (!validTypes.contains(type)) {
+					validTypes.add(type);
+					TypeDefinition superType = type.getSuperType();
+					if (superType != null && !validTypes.contains(superType)) {
+						types.add(superType);
+					}
+					if (superType == null) {
+						// add default type as root
+						roots.add(new TypeEntityDefinition(type, schemaSpace, null));
+					}
 				}
 			}
 
