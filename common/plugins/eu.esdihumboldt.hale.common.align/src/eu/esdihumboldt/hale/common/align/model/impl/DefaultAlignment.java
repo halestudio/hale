@@ -37,7 +37,9 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
@@ -206,9 +208,8 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 
 		List<Cell> result = new ArrayList<Cell>();
 
-		// get target type definition
-		TypeDefinition targetType = ((TypeEntityDefinition) typeCell.getTarget().values()
-				.iterator().next().getDefinition()).getDefinition();
+		TypeDefinition typeCellType = typeCell.getTarget().values().iterator().next()
+				.getDefinition().getType();
 
 		// collect source entity definitions
 		Iterator<? extends Entity> it = typeCell.getSource().values().iterator();
@@ -216,15 +217,15 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 		while (it.hasNext())
 			sourceTypes.add((TypeEntityDefinition) it.next().getDefinition());
 
-		for (Cell cell : cellsPerTargetType.get(targetType)) {
-			// check all cells associated to the target type
-			if (!AlignmentUtil.isTypeCell(cell)
-					&& (includeDisabled || !cell.getDisabledFor().contains(typeCell))) {
-				// cell is a property cell that isn't disabled
-				TypeDefinition otherTargetType = cell.getTarget().values().iterator().next()
-						.getDefinition().getType();
-				if (otherTargetType.equals(targetType)) {
-					// cell is associated to the target entity
+		while (typeCellType != null) {
+			// include cells for the general type definition and for the
+			// specific type entity definition
+			for (Cell cell : cellsPerTargetType.get(typeCellType)) {
+				// check all cells associated to the target type
+				if (!AlignmentUtil.isTypeCell(cell)
+						&& (includeDisabled || !cell.getDisabledFor().contains(typeCell))) {
+					// cell is a property cell that isn't disabled
+					// the target type matches, too
 					if (AlignmentUtil.isAugmentation(cell)) {
 						// cell is an augmentation
 						result.add(cell);
@@ -232,44 +233,56 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 					else {
 						// cell is a property mapping
 						if (matchesSources(cell.getSource(), sourceTypes)) {
-							// cell is associated to a relation between a source
-							// type and the target type
+							// cell is associated to the type cell
 							result.add(cell);
 						}
 					}
 				}
 			}
+
+			// continue with super type for inheritance
+			typeCellType = typeCellType.getSuperType();
 		}
 
 		return result;
 	}
 
 	/**
+	 * Determines if the given type entity definition of a property cell is
+	 * associated to at least one of the given type entity definitions of a type
+	 * cell.
+	 * 
+	 * @param propertyCellType type entity definition of a property cell
+	 * @param typeCellTypes type entity definitions of a type cell
+	 * @return whether the entity definition is associated to at least one of
+	 *         the others
+	 */
+	private boolean matchesSources(TypeEntityDefinition propertyCellType,
+			Iterable<TypeEntityDefinition> typeCellTypes) {
+		TypeDefinition def = propertyCellType.getDefinition();
+		Filter filter = propertyCellType.getFilter();
+		for (TypeEntityDefinition typeCellType : typeCellTypes) {
+			if (DefinitionUtil.isSuperType(typeCellType.getDefinition(), def)
+					&& (filter == null || filter.equals(typeCellType.getFilter())))
+				return true;
+		}
+		return false;
+	}
+
+	/**
 	 * Determines if all of the given entities are associated to at least one of
 	 * the given type entity definitions.
 	 * 
-	 * @param propertyCellSources the entities
-	 * @param typeCellSources the type entity definitions
-	 * @return if all entities are associated to at least one of the types
+	 * @param propertyCellTypes the entities
+	 * @param typeCellTypes the type entity definitions
+	 * @return whether all entities are associated to at least one of the types
 	 */
-	private boolean matchesSources(ListMultimap<String, ? extends Entity> propertyCellSources,
-			Iterable<TypeEntityDefinition> typeCellSources) {
-		for (Entity entity : propertyCellSources.values()) {
-			TypeEntityDefinition propertyCellSource = AlignmentUtil.getTypeEntity(entity
-					.getDefinition());
-			// filtered type cells also include property cells from unfiltered
-			// ones
-			boolean found = false;
-			for (TypeEntityDefinition typeCellSource : typeCellSources)
-				if (propertyCellSource.getDefinition().equals(typeCellSource.getDefinition())
-						&& (propertyCellSource.getFilter() == null || propertyCellSource
-								.getFilter().equals(typeCellSource.getFilter()))) {
-					found = true;
-					break;
-				}
+	private boolean matchesSources(ListMultimap<String, ? extends Entity> propertyCellTypes,
+			Iterable<TypeEntityDefinition> typeCellTypes) {
+		for (Entity entity : propertyCellTypes.values()) {
 			// if one of the property cell's sources is not part of the type
 			// cell it should not be included
-			if (!found)
+			if (!matchesSources(AlignmentUtil.getTypeEntity(entity.getDefinition()), typeCellTypes))
 				return false;
 		}
 
