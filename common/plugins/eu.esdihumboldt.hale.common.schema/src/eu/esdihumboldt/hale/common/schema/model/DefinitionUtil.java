@@ -257,4 +257,22 @@ public abstract class DefinitionUtil {
 	public static boolean hasChildren(Definition<?> def) {
 		return !getAllChildren(getDefinitionGroup(def)).isEmpty();
 	}
+
+	/**
+	 * Checks whether <code>superType</code> is a super type of
+	 * <code>subType</code> or if they are the same.
+	 * 
+	 * @param subType the type in question
+	 * @param superType the super type
+	 * @return whether superType is a super type of subType or they are the same
+	 *         type
+	 */
+	public static boolean isSuperType(TypeDefinition subType, TypeDefinition superType) {
+		do {
+			if (subType.equals(superType))
+				return true;
+			subType = subType.getSuperType();
+		} while (subType != null);
+		return false;
+	}
 }

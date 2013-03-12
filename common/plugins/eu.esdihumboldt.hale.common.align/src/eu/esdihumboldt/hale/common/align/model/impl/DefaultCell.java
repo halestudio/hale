@@ -51,9 +51,38 @@ public class DefaultCell implements Cell, MutableCell {
 	 */
 	private Priority priority = Priority.NORMAL;
 	private final Set<Cell> disabledFor = new HashSet<Cell>();
+	private boolean baseCell = false;
 
 	private final ListMultimap<String, String> documentation = ArrayListMultimap.create();
 	private final ListMultimap<String, Object> annotations = ArrayListMultimap.create();
+
+	/**
+	 * Default constructor.
+	 */
+	public DefaultCell() {
+		// do nothing
+	}
+
+	/**
+	 * Copy constructor.
+	 * 
+	 * @param copy the cell to copy
+	 */
+	public DefaultCell(Cell copy) {
+		for (String annotationType : copy.getAnnotationTypes())
+			annotations.putAll(annotationType, copy.getAnnotations(annotationType));
+		disabledFor.addAll(copy.getDisabledFor());
+		documentation.putAll(copy.getDocumentation());
+		id = copy.getId();
+		priority = copy.getPriority();
+		// since source, target and parameter maps may not be modified
+		// assignment is okay
+		source = copy.getSource();
+		target = copy.getTarget();
+		parameters = copy.getTransformationParameters();
+		transformation = copy.getTransformationIdentifier();
+		baseCell = copy.isBaseCell();
+	}
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.align.model.MutableCell#setTransformationIdentifier(java.lang.String)
@@ -239,6 +268,6 @@ public class DefaultCell implements Cell, MutableCell {
 	 */
 	@Override
 	public boolean isBaseCell() {
-		return false;
+		return baseCell;
 	}
 }

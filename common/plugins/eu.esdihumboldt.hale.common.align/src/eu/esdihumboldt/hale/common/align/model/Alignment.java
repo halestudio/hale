@@ -72,8 +72,9 @@ public interface Alignment {
 
 	/**
 	 * Get the cells representing a mapping between properties that are
-	 * associated with the given cell.
+	 * associated with the given cell, not including disabled cells.
 	 * 
+	 * @see #getPropertyCells(Cell, boolean)
 	 * @param typeCell the cell in question, has to be a type cell
 	 * @return the property cells associated with the given type cell.
 	 */
