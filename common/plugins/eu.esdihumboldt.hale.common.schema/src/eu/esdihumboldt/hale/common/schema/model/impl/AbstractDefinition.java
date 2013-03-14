@@ -24,6 +24,7 @@ import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
+import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.constraint.ConstraintUtil;
 import eu.esdihumboldt.hale.common.schema.model.constraint.DisplayName;
 
@@ -225,10 +226,7 @@ public abstract class AbstractDefinition<C> implements Definition<C> {
 	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		return result;
+		return name.hashCode();
 	}
 
 	/**
@@ -239,22 +237,10 @@ public abstract class AbstractDefinition<C> implements Definition<C> {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
+		if (obj instanceof Definition)
+			return DefinitionUtil.equal(this, (Definition<?>) obj);
+		else
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		AbstractDefinition<?> other = (AbstractDefinition<?>) obj;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		}
-		else if (!name.getNamespaceURI().equals(other.name.getNamespaceURI()))
-			return false;
-		else if (!name.getLocalPart().equals(other.name.getLocalPart()))
-			return false;
-		return true;
 	}
 
 	/**

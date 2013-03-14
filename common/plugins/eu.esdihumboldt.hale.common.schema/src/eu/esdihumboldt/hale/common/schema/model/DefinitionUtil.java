@@ -275,4 +275,34 @@ public abstract class DefinitionUtil {
 		} while (subType != null);
 		return false;
 	}
+
+	/**
+	 * Checks whether two definitions are equal.<br>
+	 * <br>
+	 * The result is
+	 * <ul>
+	 * <li>{@code true} if {@code a} and {@code b} are both null.
+	 * <li>{@code true} if {@code a} and {@code b} are both non-null, their
+	 * names are equal and both are of the same: {@link TypeDefinition},
+	 * {@link PropertyDefinition}, {@link GroupPropertyDefinition} or exactly
+	 * the same class.
+	 * <li>{@code false} in all other situations.
+	 * </ul>
+	 * 
+	 * @param a the first definition
+	 * @param b the second definition
+	 * @return whether the definitions equal each other
+	 */
+	public static boolean equal(Definition<?> a, Definition<?> b) {
+		if (a == null || b == null)
+			return a == b;
+
+		if (!a.getName().equals(b.getName()))
+			return false;
+
+		return (a instanceof TypeDefinition && b instanceof TypeDefinition)
+				|| (a instanceof PropertyDefinition && b instanceof PropertyDefinition)
+				|| (a instanceof GroupPropertyDefinition && b instanceof GroupPropertyDefinition)
+				|| a.getClass().equals(b.getClass());
+	}
 }
