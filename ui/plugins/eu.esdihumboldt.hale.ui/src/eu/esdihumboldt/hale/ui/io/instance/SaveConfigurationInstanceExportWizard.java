@@ -49,16 +49,17 @@ public class SaveConfigurationInstanceExportWizard extends InstanceExportWizard 
 		// store the (export) configuration of the provider in the new IO
 		// configuration
 		configuration.setActionId(getActionId());
-		configuration.setProviderId(getProviderFactory().getIdentifier());
+		configuration.setProviderId(getProvider().getContentType().getId());
 		provider.storeConfiguration(configuration.getProviderConfiguration());
 
 		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
 				ProjectService.class);
-		Project project = (Project) ps.getProjectInfo();
+//		Project project = (Project) ps.getProjectInfo();
 		// target is not set here and also not needed for the configuration
 		configuration.getProviderConfiguration().remove(ExportProvider.PARAM_TARGET);
 		// add the new configuration to the export configurations of the project
-		project.getExportConfigurations().add(configuration);
+//		project.getExportConfigurations().add(configuration);
+		ps.addExportConfiguration(configuration);
 
 		// no provider is executed so we return the default reporter
 		defaultReporter.setSuccess(true);

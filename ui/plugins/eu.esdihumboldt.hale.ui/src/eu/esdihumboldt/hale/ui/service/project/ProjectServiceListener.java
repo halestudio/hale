@@ -51,4 +51,9 @@ public interface ProjectServiceListener {
 	 */
 	public void onClean();
 
+	/**
+	 * Called after project has changed
+	 */
+	public void onExportConfigurationChange();
+
 }
