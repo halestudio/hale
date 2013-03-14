@@ -455,6 +455,13 @@
                priorityLevel="workbench">
          </variable>
       </sourceProvider>
+      <sourceProvider
+            provider="eu.esdihumboldt.hale.ui.service.instance.internal.ExportConfigurationServiceSource">
+         <variable
+               name="hale.project.has_export_configurations"
+               priorityLevel="workbench">
+         </variable>
+      </sourceProvider>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.ui.io.action">
@@ -607,6 +614,15 @@
             priority="10"
             projectResource="false"
             wizard="eu.esdihumboldt.hale.ui.io.instance.LoadConfigurationInstanceExportWizard">
+         <enabledWhen
+               disabledReason="No instance export configurations available">
+            <with
+                  variable="hale.project.has_export_configurations">
+               <equals
+                     value="true">
+               </equals>
+            </with>
+         </enabledWhen>
       </action-ui>
       <action-ui
             action="eu.esdihumboldt.hale.io.instance.write.transformed"
@@ -615,6 +631,15 @@
             priority="11"
             projectResource="false"
             wizard="eu.esdihumboldt.hale.ui.io.instance.DeleteInstanceExportConfigurationWizard">
+         <enabledWhen
+               disabledReason="No instance export configurations available">
+            <with
+                  variable="hale.project.has_export_configurations">
+               <equals
+                     value="true">
+               </equals>
+            </with>
+         </enabledWhen>
       </action-ui>
    </extension>
    <extension
