@@ -16,14 +16,10 @@
 package eu.esdihumboldt.hale.ui.io.instance;
 
 import org.eclipse.jface.wizard.IWizardPage;
-import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
-import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.ui.io.IOWizardPage;
-import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 
 /**
  * Configuration page for loading export configurations of instances
@@ -46,22 +42,12 @@ public class LoadConfigurationInstanceExportWizard extends InstanceExportWizard 
 	}
 
 	/**
-	 * Set the instance export configuration with the saved name to be loaded in
-	 * the wizard
+	 * Set the instance export configuration in the wizard
 	 * 
-	 * @param name the name of the export configuration
+	 * @param conf the export configuration
 	 */
-	public void setConfiguration(String name) {
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
-		Project p = (Project) ps.getProjectInfo();
-		// get all export configurations and select the one with given name
-		for (IOConfiguration conf : p.getExportConfigurations()) {
-			if (conf.getProviderConfiguration().containsValue(Value.of(name))) {
-				configuration = conf;
-				break;
-			}
-		}
+	public void setConfiguration(IOConfiguration conf) {
+		configuration = conf;
 	}
 
 	/**

@@ -17,12 +17,6 @@ package eu.esdihumboldt.hale.ui.io.instance;
 
 import java.util.List;
 
-import org.eclipse.ui.PlatformUI;
-
-import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
-import eu.esdihumboldt.hale.common.core.io.project.model.Project;
-import eu.esdihumboldt.hale.ui.service.project.ProjectService;
-
 /**
  * Wizard for deletion of saved export configurations
  * 
@@ -58,18 +52,6 @@ public class DeleteInstanceExportConfigurationWizard extends InstanceExportWizar
 		for (Object config : selectedConfigs)
 			getExportConfigurations().remove(config);
 		return true;
-	}
-
-	/**
-	 * Get all export configuration saved in the current project
-	 * 
-	 * @return the exportConfigs
-	 */
-	public List<IOConfiguration> getExportConfigurations() {
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
-		Project p = (Project) ps.getProjectInfo();
-		return p.getExportConfigurations();
 	}
 
 	/**
