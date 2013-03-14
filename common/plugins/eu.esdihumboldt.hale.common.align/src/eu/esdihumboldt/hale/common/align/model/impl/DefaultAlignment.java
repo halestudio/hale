@@ -218,24 +218,17 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 			sourceTypes.add((TypeEntityDefinition) it.next().getDefinition());
 
 		while (typeCellType != null) {
-			// include cells for the general type definition and for the
-			// specific type entity definition
+			// select all cells of the target type
 			for (Cell cell : cellsPerTargetType.get(typeCellType)) {
 				// check all cells associated to the target type
 				if (!AlignmentUtil.isTypeCell(cell)
 						&& (includeDisabled || !cell.getDisabledFor().contains(typeCell))) {
 					// cell is a property cell that isn't disabled
 					// the target type matches, too
-					if (AlignmentUtil.isAugmentation(cell)) {
-						// cell is an augmentation
+					if (AlignmentUtil.isAugmentation(cell)
+							|| matchesSources(cell.getSource(), sourceTypes)) {
+						// cell matches on the source side, too
 						result.add(cell);
-					}
-					else {
-						// cell is a property mapping
-						if (matchesSources(cell.getSource(), sourceTypes)) {
-							// cell is associated to the type cell
-							result.add(cell);
-						}
 					}
 				}
 			}

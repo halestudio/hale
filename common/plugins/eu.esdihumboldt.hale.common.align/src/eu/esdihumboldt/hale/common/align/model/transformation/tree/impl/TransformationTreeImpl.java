@@ -27,6 +27,8 @@ import net.jcip.annotations.Immutable;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
@@ -57,6 +59,8 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  */
 @Immutable
 public class TransformationTreeImpl extends AbstractGroupNode implements TransformationTree {
+
+	private static final ALogger log = ALoggerFactory.getLogger(TransformationTreeImpl.class);
 
 	private final Cell typeCell;
 	private final TypeDefinition type;
@@ -168,6 +172,8 @@ public class TransformationTreeImpl extends AbstractGroupNode implements Transfo
 								propertyCellSourceType.getDefinition())
 								&& (propertyCellSourceType.getFilter() == null || propertyCellSourceType
 										.getFilter().equals(typeCellSourceType.getFilter()))) {
+							if (matchFound)
+								log.warn("Inherited property cell source matches multiple sources of type cell.");
 							matchFound = true;
 							PropertyEntityDefinition oldDef = (PropertyEntityDefinition) source
 									.getValue().getDefinition();
