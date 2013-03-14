@@ -107,7 +107,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
 				ProjectService.class);
 		if (ps.isChanged()) {
-			Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+			Shell shell = PlatformUI.getWorkbench().getWorkbenchWindows()[0].getShell();
 			MessageBox mb = new MessageBox(shell, SWT.YES | SWT.NO | SWT.CANCEL | SWT.ICON_QUESTION);
 			mb.setMessage(Messages.ApplicationWorkbenchAdvisor_1); //$NON-NLS-1$
 			mb.setText(Messages.ApplicationWorkbenchAdvisor_2); //$NON-NLS-1$
