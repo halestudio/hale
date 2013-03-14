@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.ui.io.instance;
 
+import java.util.Map;
+
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -27,6 +29,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
+import eu.esdihumboldt.hale.common.core.io.ExportProvider;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
@@ -38,7 +42,8 @@ import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
  * @author Patrick Lieb
  */
 public class DeleteInstanceExportConfigurationPage extends
-		AbstractConfigurationPage<InstanceWriter, DeleteInstanceExportConfigurationWizard> {
+		AbstractConfigurationPage<InstanceWriter, DeleteInstanceExportConfigurationWizard>
+		implements InstanceExportConfigurations {
 
 	private ListViewer configurations;
 
@@ -67,13 +72,16 @@ public class DeleteInstanceExportConfigurationPage extends
 			@Override
 			public String getText(Object element) {
 				if (element instanceof IOConfiguration) {
-					String name = ((IOConfiguration) element).getProviderConfiguration()
-							.get("configurationName").getStringRepresentation();
-					return name;
+					Map<String, Value> providerConf = ((IOConfiguration) element)
+							.getProviderConfiguration();
+					String name = providerConf.get(param_configurationName)
+							.getStringRepresentation();
+					String contentType = providerConf.get(ExportProvider.PARAM_CONTENT_TYPE)
+							.getStringRepresentation();
+					return name + "  (" + contentType + ")";
 				}
 				return super.getText(element);
 			}
-
 		});
 		configurations.setContentProvider(ArrayContentProvider.getInstance());
 

@@ -15,12 +15,12 @@
 
 package eu.esdihumboldt.hale.ui.io.instance;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
-import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 
 /**
@@ -30,7 +30,7 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectService;
  */
 public class DeleteInstanceExportConfigurationWizard extends InstanceExportWizard {
 
-	private List<Object> selectedConfigs;
+	private List<IOConfiguration> selectedConfigs;
 
 	/**
 	 * @see org.eclipse.jface.wizard.Wizard#addPages()
@@ -55,29 +55,21 @@ public class DeleteInstanceExportConfigurationWizard extends InstanceExportWizar
 	@Override
 	public boolean performFinish() {
 		// remove all selected export configurations from the project
-		for (Object config : selectedConfigs)
-			getExportConfigurations().remove(config);
-		return true;
-	}
-
-	/**
-	 * Get all export configuration saved in the current project
-	 * 
-	 * @return the exportConfigs
-	 */
-	public List<IOConfiguration> getExportConfigurations() {
 		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
 				ProjectService.class);
-		Project p = (Project) ps.getProjectInfo();
-		return p.getExportConfigurations();
+		ps.removeExportConfiguration(selectedConfigs);
+		return true;
 	}
 
 	/**
 	 * Set the export configurations to be deleted by the wizard
 	 * 
-	 * @param selectedConfigs the selected export configurations
+	 * @param selConfigs the selected export configurations
 	 */
-	public void setSelection(List<Object> selectedConfigs) {
-		this.selectedConfigs = selectedConfigs;
+	public void setSelection(List<Object> selConfigs) {
+		selectedConfigs = new ArrayList<IOConfiguration>();
+		for (Object conf : selConfigs)
+			if (conf instanceof IOConfiguration)
+				selectedConfigs.add((IOConfiguration) conf);
 	}
 }

@@ -135,6 +135,21 @@ public interface ProjectService {
 	public LocationUpdater getLocationUpdater();
 
 	/**
+	 * Add the given configuration to the export configurations of the project
+	 * 
+	 * @param conf the configuration which should be added
+	 */
+	public void addExportConfiguration(IOConfiguration conf);
+
+	/**
+	 * Remove the given configurations from the export configurations of the
+	 * project
+	 * 
+	 * @param confs the list of configurations which should be removed
+	 */
+	public void removeExportConfiguration(List<IOConfiguration> confs);
+
+	/**
 	 * Get all the names of the saved export configurations
 	 * 
 	 * @return the export configuration names
