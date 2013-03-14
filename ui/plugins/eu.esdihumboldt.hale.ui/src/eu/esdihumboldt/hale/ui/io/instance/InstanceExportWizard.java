@@ -28,6 +28,8 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
+import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
+import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
@@ -38,6 +40,7 @@ import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.ui.io.ExportSelectTargetPage;
 import eu.esdihumboldt.hale.ui.io.ExportWizard;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
+import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
 
 /**
@@ -131,7 +134,12 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 			// configure validator
 			List<? extends Locatable> schemas = getProvider().getValidationSchemas();
 			validator.setSchemas(schemas.toArray(new Locatable[schemas.size()]));
-			String fileName = getSelectTargetPage().getTargetFileName(); //XXX will only work for files!
+			String fileName = getSelectTargetPage().getTargetFileName(); // XXX
+																			// will
+																			// only
+																			// work
+																			// for
+																			// files!
 			LocatableInputSupplier<? extends InputStream> source = new FileIOSupplier(new File(
 					fileName));
 			validator.setSource(source);
@@ -192,6 +200,18 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 	 */
 	public void setValidatorFactory(IOProviderDescriptor validatorFactory) {
 		this.validatorFactory = validatorFactory;
+	}
+
+	/**
+	 * Get all export configuration saved in the current project
+	 * 
+	 * @return the exportConfigs
+	 */
+	public List<IOConfiguration> getExportConfigurations() {
+		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
+				ProjectService.class);
+		Project p = (Project) ps.getProjectInfo();
+		return p.getExportConfigurations();
 	}
 
 }

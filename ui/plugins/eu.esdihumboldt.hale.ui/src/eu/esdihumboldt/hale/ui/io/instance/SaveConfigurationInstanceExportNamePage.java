@@ -49,18 +49,8 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectService;
  * @author Patrick Lieb
  */
 public class SaveConfigurationInstanceExportNamePage extends
-		AbstractConfigurationPage<InstanceWriter, SaveConfigurationInstanceExportWizard> {
-
-	/**
-	 * Name of the export configuration stored as a parameter in the provider
-	 */
-	private final String param_configurationName = "configurationName";
-
-	/**
-	 * Description of the export configuration stored as a parameter in the
-	 * provider
-	 */
-	private final String param_configurationDescription = "description";
+		AbstractConfigurationPage<InstanceWriter, SaveConfigurationInstanceExportWizard> implements
+		InstanceExportConfigurations {
 
 	private Text name;
 	private Text description;
@@ -143,7 +133,7 @@ public class SaveConfigurationInstanceExportNamePage extends
 		Label labelConf = new Label(page, SWT.NONE);
 		labelConf.setText("File format:");
 		labelConf.setLayoutData(GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER).create());
-		configurations = new ListViewer(page, SWT.BORDER);
+		configurations = new ListViewer(page, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.BORDER);
 		data = GridDataFactory.swtDefaults().align(SWT.FILL, SWT.BEGINNING).grab(true, false)
 				.create();
 		configurations.getControl().setLayoutData(data);

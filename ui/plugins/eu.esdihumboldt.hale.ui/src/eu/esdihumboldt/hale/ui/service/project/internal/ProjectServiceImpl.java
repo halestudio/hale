@@ -229,6 +229,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				// notify listeners
 				Map<String, ProjectFile> projectFiles = provider.getProjectFiles();
 				notifyAfterLoad(projectFiles);
+				notifyExportConfigurationChanged();
 				// apply remaining project files
 				for (ProjectFile file : projectFiles.values()) {
 					// XXX do this in a Job or something?
@@ -791,6 +792,25 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	@Override
 	public LocationUpdater getLocationUpdater() {
 		return updater;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#addExportConfiguration(eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration)
+	 */
+	@Override
+	public void addExportConfiguration(IOConfiguration conf) {
+		main.getExportConfigurations().add(conf);
+		notifyExportConfigurationChanged();
+
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#removeExportConfiguration(java.util.List)
+	 */
+	@Override
+	public void removeExportConfiguration(List<IOConfiguration> confs) {
+		main.getExportConfigurations().removeAll(confs);
+		notifyExportConfigurationChanged();
 	}
 
 	/**
