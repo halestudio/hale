@@ -25,13 +25,14 @@ import org.eclipse.jface.viewers.Viewer;
 /**
  * Adapter for using an {@link ITreeContentProvider} as an
  * {@link ITreePathContentProvider}. Does not support providing parent tree
- * paths.
+ * paths. It however also implements {@link ITreeContentProvider} and calls the
+ * adaptees {@link #getParent(Object)} method.
  * 
  * @see #getParents(Object)
  * 
  * @author Simon Templer
  */
-public class TreePathProviderAdapter implements ITreePathContentProvider {
+public class TreePathProviderAdapter implements ITreePathContentProvider, ITreeContentProvider {
 
 	private static final TreePath[] EMPTY_PATHS = new TreePath[] {};
 
@@ -105,6 +106,30 @@ public class TreePathProviderAdapter implements ITreePathContentProvider {
 	 */
 	public ITreeContentProvider getTreeContentProvider() {
 		return contentProvider;
+	}
+
+	/**
+	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
+	 */
+	@Override
+	public Object[] getChildren(Object parentElement) {
+		return contentProvider.getChildren(parentElement);
+	}
+
+	/**
+	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
+	 */
+	@Override
+	public Object getParent(Object element) {
+		return contentProvider.getParent(element);
+	}
+
+	/**
+	 * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
+	 */
+	@Override
+	public boolean hasChildren(Object element) {
+		return contentProvider.hasChildren(element);
 	}
 
 }
