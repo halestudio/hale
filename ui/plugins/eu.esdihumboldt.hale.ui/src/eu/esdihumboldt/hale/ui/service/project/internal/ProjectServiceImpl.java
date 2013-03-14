@@ -296,6 +296,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		synchronized (this) {
 			changed = true;
 		}
+		notifyChanged();
 		updateWindowTitle();
 	}
 

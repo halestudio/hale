@@ -51,4 +51,12 @@ public class ProjectServiceAdapter implements ProjectServiceListener {
 		// override me
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectServiceListener#afterChange()
+	 */
+	@Override
+	public void afterChange() {
+		// override me
+	}
+
 }

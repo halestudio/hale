@@ -81,4 +81,13 @@ public abstract class AbstractProjectService implements ProjectService {
 		}
 	}
 
+	/**
+	 * Called when the project has changed
+	 */
+	protected void notifyChanged() {
+		for (ProjectServiceListener listener : listeners) {
+			listener.afterChange();
+		}
+	}
+
 }
