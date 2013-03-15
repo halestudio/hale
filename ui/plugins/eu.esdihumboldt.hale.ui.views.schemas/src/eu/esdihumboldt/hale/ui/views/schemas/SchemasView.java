@@ -346,6 +346,8 @@ public class SchemasView extends PropertiesViewPart {
 
 	private PopulationListener populationListener;
 
+	private CellSyncAction cellSyncAction;
+
 //
 //	private StyleServiceListener styleListener;
 
@@ -612,6 +614,13 @@ public class SchemasView extends PropertiesViewPart {
 			}
 
 		});
+
+		// view toolbar
+		getViewSite()
+				.getActionBars()
+				.getToolBarManager()
+				.add(cellSyncAction = new CellSyncAction(getSite().getPage().getWorkbenchWindow()
+						.getSelectionService(), sourceExplorer, targetExplorer));
 	}
 
 	/**
@@ -698,6 +707,10 @@ public class SchemasView extends PropertiesViewPart {
 	 */
 	@Override
 	public void dispose() {
+		if (cellSyncAction != null) {
+			cellSyncAction.dispose();
+		}
+
 		if (schemaListener != null) {
 			schemaService.removeSchemaServiceListener(schemaListener);
 		}
