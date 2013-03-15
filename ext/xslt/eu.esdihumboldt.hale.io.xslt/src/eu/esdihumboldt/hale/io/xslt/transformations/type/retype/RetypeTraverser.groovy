@@ -136,7 +136,7 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 			targetMaxNum = node.cardinality().maxOccurs
 		}
 
-		if (context != parentContext) {
+		if (selectContext && context != parentContext) {
 			// restrict selection according to targetMaxNum
 			//XXX for now only if target may occur only once
 			//TODO compare with source cardinality
