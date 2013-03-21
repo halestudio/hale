@@ -16,9 +16,9 @@
 package eu.esdihumboldt.hale.ui.io.instance;
 
 /**
- * TODO Type description
+ * Interface to define parameters for the export configurations
  * 
- * @author Patrick
+ * @author Patrick Lieb
  */
 public interface InstanceExportConfigurations {
 

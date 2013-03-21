@@ -139,7 +139,7 @@ public interface ProjectService {
 	 * 
 	 * @param conf the configuration which should be added
 	 */
-	public void addExportConfiguration(IOConfiguration conf);
+	public void addExportConfigurations(List<IOConfiguration> confs);
 
 	/**
 	 * Remove the given configurations from the export configurations of the
@@ -147,7 +147,7 @@ public interface ProjectService {
 	 * 
 	 * @param confs the list of configurations which should be removed
 	 */
-	public void removeExportConfiguration(List<IOConfiguration> confs);
+	public void removeExportConfigurations(List<IOConfiguration> confs);
 
 	/**
 	 * Get all the names of the saved export configurations
