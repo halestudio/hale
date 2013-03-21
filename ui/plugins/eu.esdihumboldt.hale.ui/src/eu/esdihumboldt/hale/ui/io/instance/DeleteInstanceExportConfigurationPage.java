@@ -74,7 +74,7 @@ public class DeleteInstanceExportConfigurationPage extends
 				if (element instanceof IOConfiguration) {
 					Map<String, Value> providerConf = ((IOConfiguration) element)
 							.getProviderConfiguration();
-					String name = providerConf.get(param_configurationName)
+					String name = providerConf.get(PARAM_CONFIGURATION_NAME)
 							.getStringRepresentation();
 					String contentType = providerConf.get(ExportProvider.PARAM_CONTENT_TYPE)
 							.getStringRepresentation();
