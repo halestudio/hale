@@ -35,6 +35,7 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.MissingPropertyException;
+import groovy.lang.Script;
 
 /**
  * Property transformation based on a Groovy script.
@@ -44,25 +45,57 @@ import groovy.lang.MissingPropertyException;
 public class GroovyTransformation extends
 		AbstractSingleTargetPropertyTransformation<TransformationEngine> implements GroovyConstants {
 
+	private static final String CONTEXT_SCRIPT = "script";
+
 	/**
 	 * @see AbstractSingleTargetPropertyTransformation#evaluate(String,
 	 *      TransformationEngine, ListMultimap, String,
 	 *      PropertyEntityDefinition, Map, TransformationLog)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,
 			ListMultimap<String, PropertyValue> variables, String resultName,
 			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
 			TransformationLog log) throws TransformationException, NoResultException {
-		// get the mathematical expression
-		String script = getParameterChecked(PARAMETER_SCRIPT).as(String.class);
-
 		Binding binding = createGroovyBinding(variables.get(ENTITY_VARIABLE), true);
 
 		Object result;
 		try {
-			GroovyShell shell = new GroovyShell(binding);
-			result = shell.evaluate(script);
+			/*
+			 * The compiled script is stored in a ThreadLocal variable in the
+			 * execution context, so it needs only to be created once per
+			 * transformation thread.
+			 */
+			ThreadLocal<Script> localScript;
+			Map<Object, Object> context = getExecutionContext().getCellContext();
+			synchronized (context) {
+				Object tmp = context.get(CONTEXT_SCRIPT);
+
+				if (tmp instanceof ThreadLocal<?>) {
+					localScript = (ThreadLocal<Script>) tmp;
+				}
+				else {
+					localScript = new ThreadLocal<Script>();
+					context.put(CONTEXT_SCRIPT, localScript);
+				}
+			}
+
+			Script groovyScript = localScript.get();
+			if (groovyScript == null) {
+				// create the script
+				// TODO use a specific classloader?
+				GroovyShell shell = new GroovyShell();
+				String script = getParameterChecked(PARAMETER_SCRIPT).as(String.class);
+				groovyScript = shell.parse(script);
+				localScript.set(groovyScript);
+			}
+
+			// set the binding
+			groovyScript.setBinding(binding);
+
+			// run the script
+			result = groovyScript.run();
 		} catch (Throwable e) {
 			throw new TransformationException("Error evaluating the cell script", e);
 		}
