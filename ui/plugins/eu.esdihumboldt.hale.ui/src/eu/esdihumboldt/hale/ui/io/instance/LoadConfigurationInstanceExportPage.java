@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.ui.io.instance;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -30,6 +31,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.common.core.io.ExportProvider;
 import eu.esdihumboldt.hale.common.core.io.Value;
@@ -44,14 +46,16 @@ import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
  * 
  * @author Patrick Lieb
  */
-public class SelectLoadConfigurationInstanceExportPage extends
+public class LoadConfigurationInstanceExportPage extends
 		AbstractConfigurationPage<InstanceWriter, LoadConfigurationInstanceExportWizard> implements
 		InstanceExportConfigurations {
+
+	private Text description;
 
 	/**
 	 * Default Constructor
 	 */
-	public SelectLoadConfigurationInstanceExportPage() {
+	public LoadConfigurationInstanceExportPage() {
 		super("sel.InstanceExportConf");
 		setTitle("Select Configuration");
 		setDescription("Select the configuration for the export");
@@ -95,10 +99,17 @@ public class SelectLoadConfigurationInstanceExportPage extends
 		});
 		configurations.setSelection(new StructuredSelection(confs.iterator().next()), true);
 
+		description = new Text(page, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
+		// add listener to set page complete if description is inserted
+		GridData data = GridDataFactory.swtDefaults().align(SWT.FILL, SWT.BEGINNING)
+				.grab(true, false).create();
+		data.heightHint = 75;
+		description.setLayoutData(data);
+
 		// process current selection
 		ISelection selection = configurations.getSelection();
 		setPageComplete(!selection.isEmpty());
-		updateWizard(selection);
+		update(selection);
 
 		// process selection changes
 		configurations.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -107,7 +118,7 @@ public class SelectLoadConfigurationInstanceExportPage extends
 			public void selectionChanged(SelectionChangedEvent event) {
 				ISelection selection = event.getSelection();
 				setPageComplete(!selection.isEmpty());
-				updateWizard(selection);
+				update(selection);
 			}
 		});
 	}
@@ -118,18 +129,28 @@ public class SelectLoadConfigurationInstanceExportPage extends
 	 * 
 	 * @param selection the current selection in the list viewer
 	 */
-	private void updateWizard(ISelection selection) {
+	private void update(ISelection selection) {
 		if (selection instanceof IStructuredSelection) {
 			IStructuredSelection sel = (IStructuredSelection) selection;
 			Object element = sel.getFirstElement();
-			// set the selected configuration in the wizard
-			getWizard().setConfiguration((IOConfiguration) element);
-			List<IOProviderDescriptor> factories = getWizard().getFactories();
-			for (IOProviderDescriptor factory : factories) {
-				// provider factory is already defined, so we have to set it
-				if (getWizard().getConfiguration().getProviderId().equals(factory.getIdentifier())) {
-					getWizard().setProviderFactory(factory);
-					break;
+			if (element instanceof IOConfiguration) {
+				IOConfiguration configuration = (IOConfiguration) element;
+				// set the selected configuration in the wizard
+				getWizard().setConfiguration(configuration);
+
+				// update the description text
+				description.setText(configuration.getProviderConfiguration()
+						.get(param_configurationDescription).getStringRepresentation());
+
+				List<IOProviderDescriptor> factories = getWizard().getFactories();
+				for (IOProviderDescriptor factory : factories) {
+					// provider factory is already defined by the export
+					// configuration, so we have to set it
+					if (getWizard().getConfiguration().getProviderId()
+							.equals(factory.getIdentifier())) {
+						getWizard().setProviderFactory(factory);
+						break;
+					}
 				}
 			}
 		}

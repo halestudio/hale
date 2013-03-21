@@ -48,7 +48,7 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectService;
  * 
  * @author Patrick Lieb
  */
-public class SaveConfigurationInstanceExportNamePage extends
+public class SaveConfigurationInstanceExportPage extends
 		AbstractConfigurationPage<InstanceWriter, SaveConfigurationInstanceExportWizard> implements
 		InstanceExportConfigurations {
 
@@ -59,7 +59,7 @@ public class SaveConfigurationInstanceExportNamePage extends
 	/**
 	 * Default Constructor
 	 */
-	public SaveConfigurationInstanceExportNamePage() {
+	public SaveConfigurationInstanceExportPage() {
 		super("instancExport.Namepage");
 
 		setTitle("Name of the export configuration");

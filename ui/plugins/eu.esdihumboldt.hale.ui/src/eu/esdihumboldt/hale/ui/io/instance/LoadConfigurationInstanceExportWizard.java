@@ -37,7 +37,7 @@ public class LoadConfigurationInstanceExportWizard extends InstanceExportWizard 
 	public void addPages() {
 		// only the pages to select the configuration
 		// which should be loaded and and the target file are needed
-		addPage(new SelectLoadConfigurationInstanceExportPage());
+		addPage(new LoadConfigurationInstanceExportPage());
 		addPage(new SelectTargetExportConfigurationPage());
 	}
 
