@@ -54,7 +54,8 @@ public class SaveConfigurationInstanceExportPage extends
 
 	private Text name;
 	private Text description;
-	private ListViewer configurations;
+	private ListViewer fileFormats;
+	private String fileFormat;
 
 	/**
 	 * Default Constructor
@@ -80,8 +81,9 @@ public class SaveConfigurationInstanceExportPage extends
 				|| description.getText().isEmpty())
 			return false;
 		// set additional information to the provider
-		provider.setParameter(param_configurationName, Value.of(name.getText()));
-		provider.setParameter(param_configurationDescription, Value.of(description.getText()));
+		provider.setParameter(PARAM_CONFIGURATION_NAME, Value.of(name.getText()));
+		provider.setParameter(PARAM_CONFIGURATION_DESCRIPTION, Value.of(description.getText()));
+		provider.setParameter(PARAM_FILE_FORMAT, Value.of(fileFormat));
 		return true;
 	}
 
@@ -103,7 +105,7 @@ public class SaveConfigurationInstanceExportPage extends
 
 			@Override
 			public void modifyText(ModifyEvent e) {
-				setPageComplete(!configurations.getSelection().isEmpty()
+				setPageComplete(!fileFormats.getSelection().isEmpty()
 						&& isNameAndDescriptionValid());
 			}
 		});
@@ -120,7 +122,7 @@ public class SaveConfigurationInstanceExportPage extends
 
 			@Override
 			public void modifyText(ModifyEvent e) {
-				setPageComplete(!configurations.getSelection().isEmpty()
+				setPageComplete(!fileFormats.getSelection().isEmpty()
 						&& isNameAndDescriptionValid());
 			}
 		});
@@ -133,31 +135,33 @@ public class SaveConfigurationInstanceExportPage extends
 		Label labelConf = new Label(page, SWT.NONE);
 		labelConf.setText("File format:");
 		labelConf.setLayoutData(GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER).create());
-		configurations = new ListViewer(page, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.BORDER);
+		fileFormats = new ListViewer(page, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.BORDER);
 		data = GridDataFactory.swtDefaults().align(SWT.FILL, SWT.BEGINNING).grab(true, false)
 				.create();
-		configurations.getControl().setLayoutData(data);
-		configurations.setContentProvider(ArrayContentProvider.getInstance());
-		configurations.setLabelProvider(new LabelProvider() {
+		fileFormats.getControl().setLayoutData(data);
+		fileFormats.setContentProvider(ArrayContentProvider.getInstance());
+		fileFormats.setLabelProvider(new LabelProvider() {
 
 			/**
 			 * @see org.eclipse.jface.viewers.LabelProvider#getText(java.lang.Object)
 			 */
 			@Override
 			public String getText(Object element) {
-				if (element instanceof IContentType)
-					return ((IContentType) element).getName();
+				if (element instanceof IContentType) {
+					fileFormat = ((IContentType) element).getName();
+					return fileFormat;
+				}
 				else
 					return super.getText(element);
 			}
 		});
 
 		// process current selection
-		ISelection selection = configurations.getSelection();
+		ISelection selection = fileFormats.getSelection();
 		setPageComplete(!selection.isEmpty());
 
 		// process selection changes
-		configurations.addSelectionChangedListener(new ISelectionChangedListener() {
+		fileFormats.addSelectionChangedListener(new ISelectionChangedListener() {
 
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
@@ -194,9 +198,9 @@ public class SaveConfigurationInstanceExportPage extends
 		Set<IContentType> contentTypes = getWizard().getProviderFactory().getSupportedTypes();
 		// content types are not available when the page is created, so it has
 		// to be setted here
-		configurations.setInput(contentTypes);
-		configurations.setSelection(new StructuredSelection(contentTypes.iterator().next()), true);
-		updateContentType(configurations.getSelection());
+		fileFormats.setInput(contentTypes);
+		fileFormats.setSelection(new StructuredSelection(contentTypes.iterator().next()), true);
+		updateContentType(fileFormats.getSelection());
 	}
 
 	// set content type selected in configuration list viewer to the wizard

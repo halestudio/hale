@@ -25,12 +25,18 @@ public interface InstanceExportConfigurations {
 	/**
 	 * Name of the export configuration stored as a parameter in the provider
 	 */
-	public final String param_configurationName = "configurationName";
+	public final String PARAM_CONFIGURATION_NAME = "configurationName";
 
 	/**
 	 * Description of the export configuration stored as a parameter in the
 	 * provider
 	 */
-	public final String param_configurationDescription = "description";
+	public final String PARAM_CONFIGURATION_DESCRIPTION = "description";
+
+	/**
+	 * Format of the file that should be export in the export configuration
+	 * stored as a parameter in the provider
+	 */
+	public final String PARAM_FILE_FORMAT = "fileFormat";
 
 }

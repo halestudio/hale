@@ -33,7 +33,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
-import eu.esdihumboldt.hale.common.core.io.ExportProvider;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
@@ -88,11 +87,11 @@ public class LoadConfigurationInstanceExportPage extends
 				if (element instanceof IOConfiguration) {
 					Map<String, Value> providerConf = ((IOConfiguration) element)
 							.getProviderConfiguration();
-					String name = providerConf.get(param_configurationName)
+					String name = providerConf.get(PARAM_CONFIGURATION_NAME)
 							.getStringRepresentation();
-					String contentType = providerConf.get(ExportProvider.PARAM_CONTENT_TYPE)
+					String fileFormat = providerConf.get(PARAM_FILE_FORMAT)
 							.getStringRepresentation();
-					return name + "  (" + contentType + ")";
+					return name + "  (" + fileFormat + ")";
 				}
 				return super.getText(element);
 			}
@@ -140,7 +139,7 @@ public class LoadConfigurationInstanceExportPage extends
 
 				// update the description text
 				description.setText(configuration.getProviderConfiguration()
-						.get(param_configurationDescription).getStringRepresentation());
+						.get(PARAM_CONFIGURATION_DESCRIPTION).getStringRepresentation());
 
 				List<IOProviderDescriptor> factories = getWizard().getFactories();
 				for (IOProviderDescriptor factory : factories) {
