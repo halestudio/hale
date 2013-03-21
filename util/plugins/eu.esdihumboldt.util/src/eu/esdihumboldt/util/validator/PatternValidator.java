@@ -26,7 +26,7 @@ import org.apache.xmlbeans.impl.regex.RegularExpression;
  */
 public class PatternValidator extends AbstractValidator {
 
-	private String pattern;
+	private final String pattern;
 	private RegularExpression regEx;
 
 	/**
@@ -43,6 +43,9 @@ public class PatternValidator extends AbstractValidator {
 	 */
 	@Override
 	public String validate(Object value) {
+		if (value == null)
+			return null;
+
 		String s = getObjectAs(value, String.class);
 		if (regEx == null)
 			regEx = new RegularExpression(pattern, "X");
