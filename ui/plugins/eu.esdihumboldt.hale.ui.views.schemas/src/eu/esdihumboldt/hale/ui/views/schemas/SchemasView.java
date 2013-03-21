@@ -42,12 +42,10 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.WorkbenchPart;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
@@ -56,26 +54,16 @@ import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
-import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.ui.common.service.population.PopulationListener;
-import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
 import eu.esdihumboldt.hale.ui.function.contribution.SchemaSelectionFunctionContribution;
-import eu.esdihumboldt.hale.ui.geometry.service.GeometrySchemaService;
-import eu.esdihumboldt.hale.ui.geometry.service.GeometrySchemaServiceListener;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.selection.impl.DefaultSchemaSelection;
 import eu.esdihumboldt.hale.ui.selection.impl.DefaultSchemaSelection.SchemaStructuredMode;
-import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
-import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener;
-import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
-import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionServiceListener;
-import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
-import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;
 import eu.esdihumboldt.hale.ui.util.viewer.ViewerMenu;
 import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
 import eu.esdihumboldt.hale.ui.views.schemas.explorer.EntitySchemaExplorer;
 import eu.esdihumboldt.hale.ui.views.schemas.explorer.SchemaExplorer;
+import eu.esdihumboldt.hale.ui.views.schemas.explorer.ServiceSchemaExplorer;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.Messages;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.SchemasViewPlugin;
 
@@ -324,98 +312,22 @@ public class SchemasView extends PropertiesViewPart {
 	 */
 	private SchemaExplorer targetExplorer;
 
-	/**
-	 * A reference to the {@link SchemaService} which serves the model for this
-	 * view.
-	 */
-	private SchemaService schemaService;
+	private ServiceSchemaExplorer sourceExplorerManager;
+	private ServiceSchemaExplorer targetExplorerManager;
 
 	private Image functionImage;
 
 	private Image augmentImage;
 
-	private SchemaServiceListener schemaListener;
-
 	private SchemasSelectionProvider selectionProvider;
 
-	private EntityDefinitionServiceListener entityListener;
-
-	private AlignmentServiceListener alignmentListener;
-
-	private GeometrySchemaServiceListener geometryListener;
-
-	private PopulationListener populationListener;
-
 	private CellSyncAction cellSyncAction;
-
-//
-//	private StyleServiceListener styleListener;
 
 	/**
 	 * @see eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart#createViewControl(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
 	public void createViewControl(Composite _parent) {
-		// get schema service
-		schemaService = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
-		schemaService.addSchemaServiceListener(schemaListener = new SchemaServiceListener() {
-
-			@Override
-			public void schemasCleared(final SchemaSpaceID spaceID) {
-				final Display display = PlatformUI.getWorkbench().getDisplay();
-				display.syncExec(new Runnable() {
-
-					@Override
-					public void run() {
-						switch (spaceID) {
-						case SOURCE:
-							sourceExplorer.setSchema(null);
-							break;
-						case TARGET:
-							targetExplorer.setSchema(null);
-						}
-					}
-				});
-			}
-
-			@Override
-			public void schemaAdded(final SchemaSpaceID spaceID, Schema schema) {
-				final Display display = PlatformUI.getWorkbench().getDisplay();
-				display.syncExec(new Runnable() {
-
-					@Override
-					public void run() {
-						switch (spaceID) {
-						case SOURCE:
-							sourceExplorer.setSchema(schemaService.getSchemas(spaceID));
-							break;
-						case TARGET:
-							targetExplorer.setSchema(schemaService.getSchemas(spaceID));
-						}
-					}
-				});
-			}
-
-			@Override
-			public void mappableTypesChanged(final SchemaSpaceID spaceID,
-					Collection<? extends TypeDefinition> types) {
-				final Display display = PlatformUI.getWorkbench().getDisplay();
-				display.syncExec(new Runnable() {
-
-					@Override
-					public void run() {
-						switch (spaceID) {
-						case SOURCE:
-							sourceExplorer.setSchema(schemaService.getSchemas(spaceID));
-							break;
-						case TARGET:
-							targetExplorer.setSchema(schemaService.getSchemas(spaceID));
-						}
-					}
-				});
-			}
-		});
-
 		Composite modelComposite = new Composite(_parent, SWT.BEGINNING);
 		GridLayout layout = new GridLayout(3, false);
 		layout.verticalSpacing = 3;
@@ -426,6 +338,7 @@ public class SchemasView extends PropertiesViewPart {
 //		sourceExplorer = new SchemaExplorer(modelComposite, "Source");
 		sourceExplorer = new EntitySchemaExplorer(modelComposite, "Source", SchemaSpaceID.SOURCE);
 		sourceExplorer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		sourceExplorerManager = new ServiceSchemaExplorer(sourceExplorer, SchemaSpaceID.SOURCE);
 
 		// function button
 		final Button functionButton = new Button(modelComposite, SWT.PUSH | SWT.FLAT);
@@ -462,133 +375,12 @@ public class SchemasView extends PropertiesViewPart {
 		// target schema toolbar, filter and explorer
 		targetExplorer = new EntitySchemaExplorer(modelComposite, "Target", SchemaSpaceID.TARGET);
 		targetExplorer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-		// redraw on alignment change
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-				AlignmentService.class);
-		as.addListener(alignmentListener = new AlignmentServiceListener() {
-
-			@Override
-			public void cellReplaced(Cell oldCell, Cell newCell) {
-				refreshInDisplayThread();
-			}
-
-			@Override
-			public void cellsAdded(Iterable<Cell> cells) {
-				refreshInDisplayThread();
-			}
-
-			@Override
-			public void cellsRemoved(Iterable<Cell> cells) {
-				refreshInDisplayThread();
-			}
-
-			@Override
-			public void alignmentCleared() {
-				refreshInDisplayThread();
-			}
-
-			@Override
-			public void alignmentChanged() {
-				refreshInDisplayThread();
-			}
-
-			@Override
-			public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
-				// Cell disabling/enabling can affect schema view
-				if (Cell.PROPERTY_DISABLE_FOR.equals(propertyName)
-						|| Cell.PROPERTY_ENABLE_FOR.equals(propertyName))
-					refreshInDisplayThread();
-				// currently no other cell property that affects the schema view
-			}
-		});
-
-		PopulationService ps = (PopulationService) PlatformUI.getWorkbench().getService(
-				PopulationService.class);
-		ps.addListener(populationListener = new PopulationListener() {
-
-			@Override
-			public void populationChanged(SchemaSpaceID ssid) {
-				refreshInDisplayThread();
-			}
-
-		});
-
-		// also add the alignment listener to the style service (for refreshing
-		// icons when style changes)
-//		StyleService styleService = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
-//		styleService.addListener(styleListener = new StyleServiceListener() {
-//			
-//			@Override
-//			public void stylesRemoved(StyleService styleService) {
-//				// refresh to update legend images
-//				refreshInDisplayThread();
-//			}
-//			
-//			@Override
-//			public void stylesAdded(StyleService styleService) {
-//				// refresh to update legend images
-//				refreshInDisplayThread();
-//			}
-//			
-//			@Override
-//			public void backgroundChanged(StyleService styleService, RGB background) {
-//				// refresh to update legend images
-//				refreshInDisplayThread();
-//			}
-//
-//			@Override
-//			public void styleSettingsChanged(StyleService styleService) {
-//				// refresh to update legend images
-//				refreshInDisplayThread();
-//			}
-//		});
-
-		// listen on default geometry changes
-		GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench().getService(
-				GeometrySchemaService.class);
-		gss.addListener(geometryListener = new GeometrySchemaServiceListener() {
-
-			@Override
-			public void defaultGeometryChanged(TypeDefinition type) {
-				refreshInDisplayThread();
-			}
-		});
-
-		// listen on entity context changes
-		EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench()
-				.getService(EntityDefinitionService.class);
-		eds.addListener(entityListener = new EntityDefinitionServiceListener() {
-
-			@Override
-			public void contextsAdded(Iterable<EntityDefinition> contextEntities) {
-				// XXX improve?
-				refreshInDisplayThread();
-			}
-
-			@Override
-			public void contextRemoved(EntityDefinition contextEntity) {
-				// FIXME if the entity is a type the explorer doesn't get
-				// updated correctly -> reset input?
-				// XXX improve?
-				refreshInDisplayThread();
-			}
-
-			@Override
-			public void contextAdded(EntityDefinition contextEntity) {
-				// XXX improve?
-				refreshInDisplayThread();
-			}
-		});
+		targetExplorerManager = new ServiceSchemaExplorer(targetExplorer, SchemaSpaceID.TARGET);
 
 		// source context menu
 		new ViewerMenu(getSite(), sourceExplorer.getTreeViewer());
 		// target context menu
 		new ViewerMenu(getSite(), targetExplorer.getTreeViewer());
-
-		// initialization of explorers
-		sourceExplorer.setSchema(schemaService.getSchemas(SchemaSpaceID.SOURCE));
-		targetExplorer.setSchema(schemaService.getSchemas(SchemaSpaceID.TARGET));
 
 		// register selection provider
 		getSite().setSelectionProvider(selectionProvider = new SchemasSelectionProvider());
@@ -624,25 +416,6 @@ public class SchemasView extends PropertiesViewPart {
 	}
 
 	/**
-	 * Refresh map in the display thread
-	 */
-	protected void refreshInDisplayThread() {
-		if (Display.getCurrent() != null) {
-			refresh();
-		}
-		else {
-			final Display display = PlatformUI.getWorkbench().getDisplay();
-			display.syncExec(new Runnable() {
-
-				@Override
-				public void run() {
-					refresh();
-				}
-			});
-		}
-	}
-
-	/**
 	 * @see PropertiesViewPart#getViewContext()
 	 */
 	@Override
@@ -663,45 +436,6 @@ public class SchemasView extends PropertiesViewPart {
 		}
 	}
 
-//	/**
-//	 * Update the viewers on changes to a schema
-//	 * 
-//	 * @param schema the schema that changed
-//	 */
-//	protected void update(SchemaSpaceID schema) {
-//		switch (schema) {
-//		case SOURCE:
-//			sourceSchemaViewer.setInput(schemaItemService.getRoot(schema));
-//			sourceSchemaViewer.refresh();
-//			break;
-//		case TARGET:
-//			targetSchemaViewer.setInput(schemaItemService.getRoot(schema));
-//			targetSchemaViewer.refresh();
-//			break;
-//		}
-//	}
-
-//	/**
-//	 * Select the item with representing the given identifier
-//	 * 
-//	 * @param identifier the identifier
-//	 */
-//	public void selectItem(String identifier) {
-//		TreeViewer tree;
-//		SchemaItem item = schemaItemService.getSchemaItem(identifier, SchemaSpaceID.SOURCE);
-//		if (item == null) {
-//			item = schemaItemService.getSchemaItem(identifier, SchemaSpaceID.TARGET);
-//			tree = targetSchemaViewer;
-//		}
-//		else {
-//			tree = sourceSchemaViewer;
-//		}
-//		
-//		if (item != null) {
-//			tree.setSelection(new StructuredSelection(item), true);
-//		}
-//	}
-
 	/**
 	 * @see WorkbenchPart#dispose()
 	 */
@@ -711,34 +445,12 @@ public class SchemasView extends PropertiesViewPart {
 			cellSyncAction.dispose();
 		}
 
-		if (schemaListener != null) {
-			schemaService.removeSchemaServiceListener(schemaListener);
+		if (sourceExplorerManager != null) {
+			sourceExplorerManager.dispose();
 		}
 
-		if (alignmentListener != null) {
-			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-					AlignmentService.class);
-			as.removeListener(alignmentListener);
-//			StyleService styleService = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
-//			styleService.removeListener(styleListener);
-		}
-
-		if (entityListener != null) {
-			EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench()
-					.getService(EntityDefinitionService.class);
-			eds.removeListener(entityListener);
-		}
-
-		if (geometryListener != null) {
-			GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench()
-					.getService(GeometrySchemaService.class);
-			gss.removeListener(geometryListener);
-		}
-
-		if (populationListener != null) {
-			PopulationService ps = (PopulationService) PlatformUI.getWorkbench().getService(
-					PopulationService.class);
-			ps.removeListener(populationListener);
+		if (targetExplorerManager != null) {
+			targetExplorerManager.dispose();
 		}
 
 		if (functionImage != null) {
@@ -749,14 +461,6 @@ public class SchemasView extends PropertiesViewPart {
 		}
 
 		super.dispose();
-	}
-
-	/**
-	 * Refresh both tree viewers
-	 */
-	public void refresh() {
-		sourceExplorer.getTreeViewer().refresh(true);
-		targetExplorer.getTreeViewer().refresh(true);
 	}
 
 }
