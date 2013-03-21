@@ -82,7 +82,7 @@ public abstract class AbstractProjectService implements ProjectService {
 	}
 
 	/**
-	 * Called when the project has changed
+	 * Called when the export configurations have changed
 	 */
 	protected void notifyExportConfigurationChanged() {
 		for (ProjectServiceListener listener : listeners) {

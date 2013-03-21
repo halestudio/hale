@@ -795,20 +795,22 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#addExportConfiguration(eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration)
+	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#addExportConfigurations(java.util.List)
 	 */
 	@Override
-	public void addExportConfiguration(IOConfiguration conf) {
-		main.getExportConfigurations().add(conf);
+	public void addExportConfigurations(List<IOConfiguration> confs) {
+		for (IOConfiguration conf : confs) {
+			main.getExportConfigurations().add(conf);
+		}
 		notifyExportConfigurationChanged();
 
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#removeExportConfiguration(java.util.List)
+	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#removeExportConfigurations(java.util.List)
 	 */
 	@Override
-	public void removeExportConfiguration(List<IOConfiguration> confs) {
+	public void removeExportConfigurations(List<IOConfiguration> confs) {
 		main.getExportConfigurations().removeAll(confs);
 		notifyExportConfigurationChanged();
 	}
