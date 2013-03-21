@@ -10,6 +10,20 @@
             id="eu.esdihumboldt.hale.ui.views.schemas"
             name="%view.schemaExplorer.name">
       </view>
+      <view
+            category="eu.esdihumboldt.hale.ui"
+            class="eu.esdihumboldt.hale.ui.views.schemas.SourceSchemaView"
+            icon="icons/schema.gif"
+            id="eu.esdihumboldt.hale.ui.views.schema.source"
+            name="Source Schema">
+      </view>
+      <view
+            category="eu.esdihumboldt.hale.ui"
+            class="eu.esdihumboldt.hale.ui.views.schemas.TargetSchemaView"
+            icon="icons/schema.gif"
+            id="eu.esdihumboldt.hale.ui.views.schema.target"
+            name="Target Schema">
+      </view>
    </extension>
 
 </plugin>
