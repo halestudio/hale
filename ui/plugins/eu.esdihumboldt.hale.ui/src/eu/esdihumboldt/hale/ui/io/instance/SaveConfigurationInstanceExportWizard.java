@@ -15,6 +15,9 @@
 
 package eu.esdihumboldt.hale.ui.io.instance;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.ui.PlatformUI;
 
@@ -54,12 +57,12 @@ public class SaveConfigurationInstanceExportWizard extends InstanceExportWizard 
 
 		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
 				ProjectService.class);
-//		Project project = (Project) ps.getProjectInfo();
 		// target is not set here and also not needed for the configuration
 		configuration.getProviderConfiguration().remove(ExportProvider.PARAM_TARGET);
 		// add the new configuration to the export configurations of the project
-//		project.getExportConfigurations().add(configuration);
-		ps.addExportConfiguration(configuration);
+		List<IOConfiguration> configList = new ArrayList<IOConfiguration>();
+		configList.add(configuration);
+		ps.addExportConfigurations(configList);
 
 		// no provider is executed so we return the default reporter
 		defaultReporter.setSuccess(true);
@@ -73,7 +76,7 @@ public class SaveConfigurationInstanceExportWizard extends InstanceExportWizard 
 	public void addPages() {
 		super.addPages();
 		// add page to save current export configuration
-		addPage(new SaveConfigurationInstanceExportNamePage());
+		addPage(new SaveConfigurationInstanceExportPage());
 	}
 
 	/**

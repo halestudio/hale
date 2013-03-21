@@ -57,7 +57,7 @@ public class DeleteInstanceExportConfigurationWizard extends InstanceExportWizar
 		// remove all selected export configurations from the project
 		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
 				ProjectService.class);
-		ps.removeExportConfiguration(selectedConfigs);
+		ps.removeExportConfigurations(selectedConfigs);
 		return true;
 	}
 
