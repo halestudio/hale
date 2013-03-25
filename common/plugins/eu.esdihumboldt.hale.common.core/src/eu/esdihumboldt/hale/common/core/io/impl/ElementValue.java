@@ -54,6 +54,11 @@ public class ElementValue extends Value {
 			return (T) element;
 		}
 
+		if (expectedType.isAssignableFrom(value.getClass())) {
+			// return element as-is
+			return (T) value;
+		}
+
 		return HaleIO.getComplexValue(element, expectedType);
 	}
 
