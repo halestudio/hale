@@ -15,8 +15,8 @@
 
 package eu.esdihumboldt.hale.ui.service.values.internal;
 
-import java.util.Collections;
-import java.util.Set;
+import com.google.common.collect.Multiset;
+import com.google.common.collect.Multisets;
 
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.ui.service.values.OccurringValues;
@@ -31,7 +31,7 @@ public class OccurringValuesImpl implements OccurringValues {
 
 	private volatile boolean upToDate;
 
-	private final Set<Object> values;
+	private final Multiset<Object> values;
 
 	private final PropertyEntityDefinition property;
 
@@ -42,15 +42,15 @@ public class OccurringValuesImpl implements OccurringValues {
 	 * @param values the occurring values
 	 * @param property the property
 	 */
-	public OccurringValuesImpl(Set<Object> values, PropertyEntityDefinition property) {
+	public OccurringValuesImpl(Multiset<Object> values, PropertyEntityDefinition property) {
 		super();
 		this.upToDate = true;
-		this.values = Collections.unmodifiableSet(values);
+		this.values = Multisets.unmodifiableMultiset(values);
 		this.property = property;
 	}
 
 	@Override
-	public Set<Object> getValues() {
+	public Multiset<Object> getValues() {
 		return values;
 	}
 

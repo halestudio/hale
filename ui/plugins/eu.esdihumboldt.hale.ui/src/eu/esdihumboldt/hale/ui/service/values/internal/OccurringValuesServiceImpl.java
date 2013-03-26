@@ -17,16 +17,17 @@ package eu.esdihumboldt.hale.ui.service.values.internal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Multiset;
+import com.google.common.collect.TreeMultiset;
 
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
@@ -80,6 +81,7 @@ public class OccurringValuesServiceImpl extends AbstractOccurringValuesService {
 			setUser(true);
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		protected IStatus run(IProgressMonitor monitor) {
 			// only select instances of the correct type
@@ -100,16 +102,17 @@ public class OccurringValuesServiceImpl extends AbstractOccurringValuesService {
 			}
 
 			// create set to store values
-			Set<Object> collectedValues;
+			@SuppressWarnings("rawtypes")
+			Multiset collectedValues;
 			Class<?> binding = property.getDefinition().getPropertyType()
 					.getConstraint(Binding.class).getBinding();
 			if (Comparable.class.isAssignableFrom(binding)) {
 				// tree set for sorted values
-				collectedValues = new TreeSet<Object>();
+				collectedValues = TreeMultiset.create();
 			}
 			else {
 				// unsorted values
-				collectedValues = new HashSet<Object>();
+				collectedValues = HashMultiset.create();
 			}
 
 			ResourceIterator<Instance> it = instances.iterator();
@@ -145,7 +148,8 @@ public class OccurringValuesServiceImpl extends AbstractOccurringValuesService {
 		 * @param path the path on the group
 		 * @param collectedValues the set to add the values to
 		 */
-		private void addValues(Group group, List<ChildContext> path, Set<Object> collectedValues) {
+		private void addValues(Group group, List<ChildContext> path,
+				Multiset<Object> collectedValues) {
 			if (path == null || path.isEmpty()) {
 				// empty path - retrieve value from instance
 				if (group instanceof Instance) {
