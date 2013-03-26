@@ -35,6 +35,8 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
+import com.google.common.collect.Multiset.Entry;
+
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
@@ -98,14 +100,32 @@ public class OccurringValuesSection extends AbstractEntityDefSection {
 			@Override
 			public Object[] getElements(Object inputElement) {
 				if (inputElement instanceof OccurringValues) {
-					return ((OccurringValues) inputElement).getValues().toArray();
+					return ((OccurringValues) inputElement).getValues().entrySet().toArray();
 				}
 
 				return new Object[] {};
 			}
 
 		});
-		values.setLabelProvider(new LabelProvider());
+		values.setLabelProvider(new LabelProvider() {
+
+			@Override
+			public String getText(Object element) {
+				if (element instanceof Entry) {
+					// XXX use styled label provider instead?
+					Entry<?> entry = (Entry<?>) element;
+					if (entry.getCount() > 1) {
+						return super.getText(entry.getElement()) + "\t(\u00d7" + entry.getCount()
+								+ ")";
+					}
+					else
+						return super.getText(entry.getElement());
+				}
+
+				return super.getText(element);
+			}
+
+		});
 		values.setInput(null);
 
 		// copy button
