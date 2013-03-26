@@ -22,6 +22,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -255,6 +256,13 @@ public abstract class GMLGeometryUtil {
 		if (value != null) {
 			try {
 				List<Double> values = ConversionUtil.getAsList(value, Double.class, true);
+
+				/*
+				 * Filter null values that may have been created because of
+				 * whitespace, e.g. at the end or beginning of the list.
+				 */
+				values.removeAll(Collections.singleton(null));
+
 				List<Coordinate> cs = new ArrayList<Coordinate>();
 
 				// validate dimension
