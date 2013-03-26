@@ -60,6 +60,11 @@
             function="eu.esdihumboldt.hale.align.classification"
             id="eu.esdihumboldt.hale.align.classification.xslt">
       </propertyTransformation>
+      <propertyTransformation
+            class="eu.esdihumboldt.hale.io.xslt.transformations.property.GenericXPath"
+            function="eu.esdihumboldt.hale.align.generic.xpath"
+            id="eu.esdihumboldt.hale.io.xslt.generic.xpath">
+      </propertyTransformation>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.align.compatibility">
@@ -69,6 +74,56 @@
             key="eu.esdihumboldt.hale.io.xslt.compatibility.xslt"
             name="Xslt">
       </compatibility>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.align.function">
+      <propertyFunction
+            category="eu.esdihumboldt.hale.io.xslt"
+            description="Function for using a custom XPath expression for property transformation"
+            icon="icons/xsl.png"
+            identifier="eu.esdihumboldt.hale.align.generic.xpath"
+            name="XPath expression">
+         <targetProperties>
+            <property
+                  description="Target property where the XPath expression&apos;s result it stored"
+                  label="Result"
+                  maxOccurrence="1"
+                  minOccurrence="1"
+                  name="result">
+               <valueCondition
+                     allowAugmented="false">
+               </valueCondition>
+            </property>
+         </targetProperties>
+         <functionParameter
+               description="The custom XPath expression"
+               label="XPath expression"
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="select"
+               scriptable="false">
+            <functionParameterBinding
+                  class="java.lang.String">
+            </functionParameterBinding>
+         </functionParameter>
+         <sourceProperties>
+            <property
+                  description="Source properties available as variables in the custom XPath expression"
+                  label="Variables"
+                  maxOccurrence="n"
+                  minOccurrence="0"
+                  name="var">
+            </property>
+         </sourceProperties>
+      </propertyFunction>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.align.category">
+      <category
+            description="XSL specific functions"
+            id="eu.esdihumboldt.hale.io.xslt"
+            name="XSLT">
+      </category>
    </extension>
 
 </plugin>

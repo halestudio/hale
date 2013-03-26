@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell priority="normal" id="Cc462665b-b1d7-489d-a591-263c067aaee9" relation="eu.esdihumboldt.hale.align.retype">
+        <source>
+            <class>
+                <type ns="http://www.example.org/t1/" name="T1"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type ns="http://www.example.org/t2/" name="T2"/>
+            </class>
+        </target>
+    </cell>
+    <cell priority="normal" id="Ccf5ce769-f3ec-4aeb-89ab-adc54a5bf80c" relation="eu.esdihumboldt.hale.align.generic.xpath">
+        <source name="var">
+            <property>
+                <type ns="http://www.example.org/t1/" name="T1"/>
+                <child name="id"/>
+            </property>
+        </source>
+        <target name="result">
+            <property>
+                <type ns="http://www.example.org/t2/" name="T2"/>
+                <child name="id"/>
+            </property>
+        </target>
+        <parameter value="$var1" name="select"/>
+    </cell>
+    <cell priority="normal" id="C8aff8186-a702-4762-aab6-dee916249816" relation="eu.esdihumboldt.hale.align.generic.xpath">
+        <source name="var">
+            <property>
+                <type ns="http://www.example.org/t1/" name="T1"/>
+                <child name="a1"/>
+            </property>
+        </source>
+        <target name="result">
+            <property>
+                <type ns="http://www.example.org/t2/" name="T2"/>
+                <child name="a2"/>
+            </property>
+        </target>
+        <parameter value="concat($var1,'xxx')" name="select"/>
+    </cell>
+    <cell priority="normal" id="Cae70ba26-413b-4270-888a-3dd837b8da74" relation="eu.esdihumboldt.hale.align.generic.xpath">
+        <target name="result">
+            <property>
+                <type ns="http://www.example.org/t2/" name="T2"/>
+                <child name="b2"/>
+            </property>
+        </target>
+        <parameter value="'test'" name="select"/>
+    </cell>
+</alignment>
