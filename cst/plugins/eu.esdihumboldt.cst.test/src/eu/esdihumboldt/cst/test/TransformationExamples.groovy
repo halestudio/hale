@@ -87,6 +87,8 @@ abstract class TransformationExamples {
 	public static final String CM_NESTED_5 = 'cm_nested_5'
 	public static final String CM_NESTED_6 = 'cm_nested_6'
 
+	public static final String XSL_XPATH_1 = 'xpath1'
+
 	/**
 	 * Internal example map.
 	 */
@@ -141,6 +143,7 @@ abstract class TransformationExamples {
 		(PROPCONDITION1): defaultExample(PROPCONDITION1),
 		(PROPCONDITION2): defaultExample(PROPCONDITION2),
 		(TYPEFILTER): defaultExample(TYPEFILTER),
+
 		// context matching examples
 		(CM_UNION_1): defaultExample(CM_UNION_1),
 		(CM_UNION_2): defaultExample(CM_UNION_2),
@@ -174,19 +177,22 @@ abstract class TransformationExamples {
 		(CM_NESTED_3B): defaultExample(CM_NESTED_3B),
 		(CM_NESTED_4): defaultExample(CM_NESTED_4),
 		(CM_NESTED_5): defaultExample(CM_NESTED_5),
-		(CM_NESTED_6): defaultExample(CM_NESTED_6)
+		(CM_NESTED_6): defaultExample(CM_NESTED_6),
+
+		// XSL only examples
+		(XSL_XPATH_1): defaultExample(XSL_XPATH_1)
 	];
 
 	static def defaultExample(String folder) {
 		[
-			sourceSchema: "/testdata/${folder}/t1.xsd",
-			targetSchema: "/testdata/${folder}/t2.xsd",
-			alignment: "/testdata/${folder}/t1t2.halex.alignment.xml",
-			sourceData: "/testdata/${folder}/instance1.xml",
-			transformedData: "/testdata/${folder}/instance2.xml",
-			containerNamespace: null,
-			containerName: 'collection'
-		]
+					sourceSchema: "/testdata/${folder}/t1.xsd",
+					targetSchema: "/testdata/${folder}/t2.xsd",
+					alignment: "/testdata/${folder}/t1t2.halex.alignment.xml",
+					sourceData: "/testdata/${folder}/instance1.xml",
+					transformedData: "/testdata/${folder}/instance2.xml",
+					containerNamespace: null,
+					containerName: 'collection'
+				]
 	}
 
 	/**

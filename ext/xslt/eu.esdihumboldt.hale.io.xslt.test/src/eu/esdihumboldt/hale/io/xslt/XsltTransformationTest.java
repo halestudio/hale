@@ -36,6 +36,7 @@ import org.junit.Test;
 
 import eu.esdihumboldt.cst.test.DefaultTransformationTest;
 import eu.esdihumboldt.cst.test.TransformationExample;
+import eu.esdihumboldt.cst.test.TransformationExamples;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.impl.LogProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -53,6 +54,17 @@ import eu.esdihumboldt.hale.common.test.TestUtil;
  * @author Simon Templer
  */
 public class XsltTransformationTest extends DefaultTransformationTest {
+
+	/**
+	 * Test an XSL transformation using custom XPath expressions for property
+	 * transformation.
+	 * 
+	 * @throws Exception if an error occurs during the transformation
+	 */
+	@Test
+	public void testXPath1() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.XSL_XPATH_1));
+	}
 
 	@Ignore
 	@Override
