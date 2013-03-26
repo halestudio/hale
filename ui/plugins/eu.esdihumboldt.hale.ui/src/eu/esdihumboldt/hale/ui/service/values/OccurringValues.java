@@ -15,7 +15,7 @@
 
 package eu.esdihumboldt.hale.ui.service.values;
 
-import java.util.Set;
+import com.google.common.collect.Multiset;
 
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 
@@ -32,7 +32,7 @@ public interface OccurringValues {
 	 * 
 	 * @return the set of different values
 	 */
-	public Set<Object> getValues();
+	public Multiset<Object> getValues();
 
 	/**
 	 * Get the associated property entity.
