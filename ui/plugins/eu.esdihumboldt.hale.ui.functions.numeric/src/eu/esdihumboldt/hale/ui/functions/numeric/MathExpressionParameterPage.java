@@ -95,10 +95,10 @@ public class MathExpressionParameterPage extends TextSourceListParameterPage imp
 	}
 
 	/**
-	 * @see TextSourceListParameterPage#sourcePropertiesChanged(EntityDefinition[])
+	 * @see TextSourceListParameterPage#sourcePropertiesChanged(Iterable)
 	 */
 	@Override
-	protected void sourcePropertiesChanged(EntityDefinition[] variables) {
+	protected void sourcePropertiesChanged(Iterable<EntityDefinition> variables) {
 		super.sourcePropertiesChanged(variables);
 
 		// update environment

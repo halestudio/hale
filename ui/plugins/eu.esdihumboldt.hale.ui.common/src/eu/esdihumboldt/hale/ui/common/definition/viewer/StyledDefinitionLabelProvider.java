@@ -88,6 +88,8 @@ public class StyledDefinitionLabelProvider extends StyledCellLabelProvider imple
 	public void update(ViewerCell cell) {
 		Object element = cell.getElement();
 
+		element = extractElement(element);
+
 		StyledString text = new StyledString(defaultLabels.getText(element));
 
 		cell.setImage(defaultLabels.getImage(element));
@@ -170,6 +172,18 @@ public class StyledDefinitionLabelProvider extends StyledCellLabelProvider imple
 	}
 
 	/**
+	 * Extract the cell definition or entity definition.<br>
+	 * <br>
+	 * This default implementation just returns the element.
+	 * 
+	 * @param element the element associated to a cell
+	 * @return the extracted definition or entity definition
+	 */
+	protected Object extractElement(Object element) {
+		return element;
+	}
+
+	/**
 	 * Only implemented because of use with {@link PatternFilter} and
 	 * {@link ViewerComparator}
 	 * 
@@ -188,6 +202,8 @@ public class StyledDefinitionLabelProvider extends StyledCellLabelProvider imple
 	 */
 	@Override
 	public String getText(Object element) {
+		element = extractElement(element);
+
 		if (element instanceof EntityDefinition) {
 			element = ((EntityDefinition) element).getDefinition();
 		}

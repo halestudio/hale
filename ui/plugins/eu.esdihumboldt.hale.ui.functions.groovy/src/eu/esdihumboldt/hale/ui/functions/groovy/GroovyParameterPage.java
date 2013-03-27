@@ -40,7 +40,7 @@ import groovy.lang.Script;
  */
 public class GroovyParameterPage extends SourceViewerParameterPage implements GroovyConstants {
 
-	private EntityDefinition[] variables;
+	private Iterable<EntityDefinition> variables;
 	private final TestValues testValues;
 
 	/**
@@ -113,10 +113,10 @@ public class GroovyParameterPage extends SourceViewerParameterPage implements Gr
 	}
 
 	/**
-	 * @see SourceListParameterPage#sourcePropertiesChanged(EntityDefinition[])
+	 * @see SourceListParameterPage#sourcePropertiesChanged(Iterable)
 	 */
 	@Override
-	protected void sourcePropertiesChanged(EntityDefinition[] variables) {
+	protected void sourcePropertiesChanged(Iterable<EntityDefinition> variables) {
 		this.variables = variables;
 	}
 
