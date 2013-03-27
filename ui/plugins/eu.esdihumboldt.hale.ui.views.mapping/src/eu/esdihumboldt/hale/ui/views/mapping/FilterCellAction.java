@@ -28,7 +28,7 @@ import org.eclipse.zest.core.viewers.GraphViewer;
 public class FilterCellAction extends Action {
 
 	private final GraphViewer viewer;
-	private final FilteredReverseCellGraphContentProvider contentProvider;
+	private final AlignmentViewContentProvider contentProvider;
 	private final ViewerFilter filter;
 	private final String activateMessage;
 	private final String deactivateMessage;
@@ -49,7 +49,7 @@ public class FilterCellAction extends Action {
 	 */
 	public FilterCellAction(String activateMessage, String deactivateMessage,
 			ImageDescriptor imageDesc, GraphViewer viewer,
-			FilteredReverseCellGraphContentProvider contentProvider, ViewerFilter filter,
+			AlignmentViewContentProvider contentProvider, ViewerFilter filter,
 			boolean initiallyChecked, boolean inverse) {
 		super(activateMessage, AS_CHECK_BOX);
 		this.viewer = viewer;

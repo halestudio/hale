@@ -16,7 +16,6 @@
 
 package eu.esdihumboldt.hale.ui.views.mapping;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -99,7 +98,7 @@ public class AlignmentView extends AbstractMappingView {
 
 	private TreeLayoutAlgorithm treeLayout;
 
-	private FilteredReverseCellGraphContentProvider contentProvider;
+	private AlignmentViewContentProvider contentProvider;
 
 	private final ViewerFilter baseAlignmentCellFilter = new ViewerFilter() {
 
@@ -127,9 +126,14 @@ public class AlignmentView extends AbstractMappingView {
 
 		@Override
 		public boolean select(Viewer viewer, Object parentElement, Object element) {
-			// TODO filter inherited cells!
-			if (element instanceof Cell)
-				return true;
+			if (element instanceof Cell) {
+				Cell cell = (Cell) element;
+				if (AlignmentUtil.isTypeCell(cell))
+					return true;
+				// if reparentCell returns the original cell no change was
+				// necessary so it isn't inherited
+				return AlignmentUtil.reparentCell(cell, getSelectedTypeCell()) == cell;
+			}
 			else
 				return false;
 		}
@@ -350,7 +354,7 @@ public class AlignmentView extends AbstractMappingView {
 	 */
 	@Override
 	protected IContentProvider createContentProvider() {
-		contentProvider = new FilteredReverseCellGraphContentProvider();
+		contentProvider = new AlignmentViewContentProvider();
 		return contentProvider;
 	}
 
@@ -427,10 +431,9 @@ public class AlignmentView extends AbstractMappingView {
 		manager.add(new FilterCellAction("Hide deactivated cells", "Show deactivated cells",
 				MappingViewPlugin.getImageDescriptor("icons/progress_rem.gif"), getViewer(),
 				contentProvider, deactivatedCellFilter, true, true));
-		// XXX inherited cells filter
-//		manager.add(new FilterCellAction("Hide inherited cells", "Show inherited cells",
-//				MappingViewPlugin.getImageDescriptor("icons/inherited.gif"), getViewer(),
-//				contentProvider, inheritedCellFilter, true, true));
+		manager.add(new FilterCellAction("Hide inherited cells", "Show inherited cells",
+				MappingViewPlugin.getImageDescriptor("icons/inherited.gif"), getViewer(),
+				contentProvider, inheritedCellFilter, true, true));
 	}
 
 	@Override
@@ -587,12 +590,7 @@ public class AlignmentView extends AbstractMappingView {
 		}
 
 		if (typeCell != null) {
-			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-					AlignmentService.class);
-			Collection<Cell> cells = new ArrayList<Cell>();
-			cells.add(typeCell);
-			cells.addAll(as.getAlignment().getPropertyCells(typeCell, true));
-			getViewer().setInput(cells);
+			getViewer().setInput(typeCell);
 		}
 		else {
 			getViewer().setInput(Collections.EMPTY_LIST);

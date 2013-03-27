@@ -13,9 +13,8 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.views.mapping;
+package eu.esdihumboldt.hale.ui.common.graph.content;
 
-import eu.esdihumboldt.hale.ui.common.graph.content.CellGraphContentProvider;
 
 /**
  * {@link CellGraphContentProvider} with reversed edges.
