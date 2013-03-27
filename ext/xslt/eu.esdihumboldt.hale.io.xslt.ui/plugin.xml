@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.ui.function">
+      <propertyParameterPage
+            class="eu.esdihumboldt.hale.io.xslt.ui.XPathParameterPage"
+            function="eu.esdihumboldt.hale.align.generic.xpath"
+            id="eu.esdihumboldt.hale.io.xslt.ui.xpath"
+            order="0">
+         <parameter
+               name="select">
+         </parameter>
+      </propertyParameterPage>
+   </extension>
+
+</plugin>
