@@ -18,7 +18,10 @@ package eu.esdihumboldt.hale.ui.functions.core;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.eclipse.jface.layout.GridDataFactory;
@@ -26,13 +29,16 @@ import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
@@ -47,7 +53,7 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
-import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
+import eu.esdihumboldt.hale.ui.common.definition.viewer.StyledDefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
 
@@ -65,7 +71,8 @@ public abstract class SourceListParameterPage<T> extends
 	private String initialValue = "";
 	private T textField;
 	private TableViewer varTable;
-	private EntityDefinition[] variables = new EntityDefinition[0];
+
+//	private EntityDefinition[] variables = new EntityDefinition[0];
 
 	/**
 	 * @see HaleWizardPage#HaleWizardPage(String, String, ImageDescriptor)
@@ -132,7 +139,7 @@ public abstract class SourceListParameterPage<T> extends
 	 * 
 	 * @param variables the new source properties
 	 */
-	protected void sourcePropertiesChanged(EntityDefinition[] variables) {
+	protected void sourcePropertiesChanged(Iterable<EntityDefinition> variables) {
 		// do nothing by default
 	}
 
@@ -182,17 +189,40 @@ public abstract class SourceListParameterPage<T> extends
 
 		// update variables as they could have changed
 		List<? extends Entity> sourceEntities = cell.getSource().get(getSourcePropertyName());
-		variables = new EntityDefinition[sourceEntities.size()];
+		List<EntityDefinition> variables = new ArrayList<EntityDefinition>();
 		Iterator<? extends Entity> iter = sourceEntities.iterator();
-		for (int i = 0; i < variables.length; i++)
-			variables[i] = iter.next().getDefinition();
+		while (iter.hasNext())
+			variables.add(iter.next().getDefinition());
 
-		varTable.setInput(variables);
+		Map<EntityDefinition, String> varsAndNames = determineDefaultVariableNames(variables);
+
+		varTable.setInput(varsAndNames.entrySet());
 
 		// inform subclasses
-		sourcePropertiesChanged(variables);
+		sourcePropertiesChanged(varsAndNames.keySet());
 
 		((Composite) getControl()).layout();
+	}
+
+	/**
+	 * Determine the variable names from the corresponding entity definitions.<br>
+	 * <br>
+	 * The default implementation uses
+	 * {@link #getVariableName(EntityDefinition)} to determine the name for each
+	 * variable independently.
+	 * 
+	 * @param variables the variables
+	 * @return the variables associated to the variable names to use
+	 */
+	protected Map<EntityDefinition, String> determineDefaultVariableNames(
+			List<EntityDefinition> variables) {
+		Map<EntityDefinition, String> result = new LinkedHashMap<EntityDefinition, String>();
+
+		for (EntityDefinition var : variables) {
+			result.put(var, getVariableName(var));
+		}
+
+		return result;
 	}
 
 	/**
@@ -213,7 +243,8 @@ public abstract class SourceListParameterPage<T> extends
 		// variables
 		Label label = new Label(page, SWT.NONE);
 		label.setText("Available variables (double click to insert)");
-		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+		label.setLayoutData(GridDataFactory.swtDefaults().align(SWT.BEGINNING, SWT.CENTER)
+				.indent(4, 12).create());
 
 		// variables table
 		Composite tableComposite = new Composite(page, SWT.NONE);
@@ -221,18 +252,22 @@ public abstract class SourceListParameterPage<T> extends
 		TableColumnLayout columnLayout = new TableColumnLayout();
 		tableComposite.setLayout(columnLayout);
 		varTable = new TableViewer(tableComposite, SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION);
-		TableViewerColumn column = new TableViewerColumn(varTable, SWT.NONE);
-		columnLayout.setColumnData(column.getColumn(), new ColumnWeightData(1, false));
+		varTable.getTable().setHeaderVisible(true);
+		TableViewerColumn entityColumn = new TableViewerColumn(varTable, SWT.NONE);
+		columnLayout.setColumnData(entityColumn.getColumn(), new ColumnWeightData(2, true));
+		entityColumn.getColumn().setText("Entity");
 		varTable.setContentProvider(ArrayContentProvider.getInstance());
-		varTable.setLabelProvider(new DefinitionLabelProvider(true, true) {
+		varTable.setLabelProvider(new StyledDefinitionLabelProvider() {
 
-			/**
-			 * @see eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider#getText(java.lang.Object)
-			 */
 			@Override
-			public String getText(Object element) {
-				return getVariableName((EntityDefinition) element);
+			protected Object extractElement(Object element) {
+				if (element instanceof Entry) {
+					return ((Entry<?, ?>) element).getKey();
+				}
+
+				return super.extractElement(element);
 			}
+
 		});
 		varTable.getTable().addMouseListener(new MouseAdapter() {
 
@@ -241,14 +276,33 @@ public abstract class SourceListParameterPage<T> extends
 			 */
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
-				int index = varTable.getTable().getSelectionIndex();
-				if (index >= 0) {
-					String var = varTable.getTable().getItem(index).getText();
-					// let subclass modify variable
-					insertTextAtCurrentPos(textField, var);
-//					textField.insert(var);
-//					textField.setFocus();
+				ISelection sel = varTable.getSelection();
+				if (!sel.isEmpty() && sel instanceof IStructuredSelection) {
+					Object selected = ((IStructuredSelection) sel).getFirstElement();
+					if (selected instanceof Entry) {
+						selected = ((Entry<?, ?>) selected).getValue();
+					}
+
+					insertTextAtCurrentPos(textField, selected.toString());
 				}
+			}
+		});
+
+		// variable name column
+		TableViewerColumn varColumn = new TableViewerColumn(varTable, SWT.NONE);
+		columnLayout.setColumnData(varColumn.getColumn(), new ColumnWeightData(1, true));
+		varColumn.getColumn().setText("Variable");
+		varColumn.setLabelProvider(new CellLabelProvider() {
+
+			@Override
+			public void update(ViewerCell cell) {
+				Object element = cell.getElement();
+
+				if (element instanceof Entry) {
+					element = ((Entry<?, ?>) element).getValue();
+				}
+
+				cell.setText(element.toString());
 			}
 		});
 	}
