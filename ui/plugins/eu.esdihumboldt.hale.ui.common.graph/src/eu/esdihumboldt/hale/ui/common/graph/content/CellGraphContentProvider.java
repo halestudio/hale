@@ -95,22 +95,31 @@ public class CellGraphContentProvider extends ArrayContentProvider implements IG
 		for (Object object : cells) {
 			if (object instanceof Cell) {
 				Cell cell = (Cell) object;
-
-				// add edges leading to the cell for each source entity
-				if (cell.getSource() != null) {
-					for (Entry<String, ? extends Entity> entry : cell.getSource().entries()) {
-						edges.add(new Edge(entry.getValue(), cell, entry.getKey()));
-					}
-				}
-
-				// add edges leading to the target entities from the cell
-				for (Entry<String, ? extends Entity> entry : cell.getTarget().entries()) {
-					edges.add(new Edge(cell, entry.getValue(), entry.getKey()));
-				}
+				addEdges(cell, edges);
 			}
 		}
 
 		return edges.toArray();
+	}
+
+	/**
+	 * Adds the edges for the given cell to the given list.
+	 * 
+	 * @param cell the cell to add
+	 * @param edges the list to add the edges to
+	 */
+	protected void addEdges(Cell cell, List<Edge> edges) {
+		// add edges leading to the cell for each source entity
+		if (cell.getSource() != null) {
+			for (Entry<String, ? extends Entity> entry : cell.getSource().entries()) {
+				edges.add(new Edge(entry.getValue(), cell, entry.getKey()));
+			}
+		}
+
+		// add edges leading to the target entities from the cell
+		for (Entry<String, ? extends Entity> entry : cell.getTarget().entries()) {
+			edges.add(new Edge(cell, entry.getValue(), entry.getKey()));
+		}
 	}
 
 }

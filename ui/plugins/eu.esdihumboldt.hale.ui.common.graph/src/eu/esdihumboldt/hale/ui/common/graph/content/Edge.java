@@ -23,7 +23,7 @@ import eu.esdihumboldt.util.Pair;
  * Represents an edge in a cell/entity graph.
  */
 @Immutable
-class Edge extends Pair<Object, Object> {
+public class Edge extends Pair<Object, Object> {
 
 	private final String name;
 

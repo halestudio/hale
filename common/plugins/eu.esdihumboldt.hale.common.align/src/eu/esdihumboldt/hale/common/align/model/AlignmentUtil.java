@@ -19,12 +19,19 @@ package eu.esdihumboldt.hale.common.align.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map.Entry;
 
 import javax.xml.namespace.QName;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.impl.ChildEntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
+import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager;
@@ -43,6 +50,8 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * @author Simon Templer
  */
 public abstract class AlignmentUtil {
+
+	private static final ALogger log = ALoggerFactory.getLogger(AlignmentUtil.class);
 
 	/**
 	 * Determines if the given cell is a type cell.
@@ -527,6 +536,102 @@ public abstract class AlignmentUtil {
 		}
 
 		return condition.getFilter().match(dummy);
+	}
+
+	/**
+	 * Returns a cell like the given property cell with all source and target
+	 * types matching those off the given type cell.<br>
+	 * If the types already match they are unchanged. If the types are sub types
+	 * of the types of the type cell they are changed. If no change is necessary
+	 * the cell itself is returned.
+	 * 
+	 * @param propertyCell the property cell to update
+	 * @param typeCell the type cell with the target types
+	 * @return the updated cell or <code>null</code> if an update isn't possible
+	 */
+	public static Cell reparentCell(Cell propertyCell, Cell typeCell) {
+		ListMultimap<String, Entity> sources = propertyCell.getSource() == null ? null
+				: ArrayListMultimap.<String, Entity> create();
+		ListMultimap<String, Entity> targets = ArrayListMultimap.create();
+		boolean updateNecessary = false;
+
+		// XXX are updates to the property path needed?
+
+		TypeDefinition typeCellTargetType = ((Type) CellUtil.getFirstEntity(typeCell.getTarget()))
+				.getDefinition().getDefinition();
+		for (Entry<String, ? extends Entity> target : propertyCell.getTarget().entries()) {
+			TypeDefinition propertyCellTargetType = target.getValue().getDefinition().getType();
+			if (propertyCellTargetType.equals(typeCellTargetType))
+				targets.put(target.getKey(), target.getValue());
+			else if (DefinitionUtil.isSuperType(typeCellTargetType, propertyCellTargetType)) {
+				PropertyEntityDefinition oldDef = (PropertyEntityDefinition) target.getValue()
+						.getDefinition();
+				targets.put(target.getKey(), new DefaultProperty(new PropertyEntityDefinition(
+						typeCellTargetType, oldDef.getPropertyPath(), SchemaSpaceID.TARGET, null)));
+				updateNecessary = true;
+			}
+			else {
+				// a cell with targets in more than one type
+				return null;
+			}
+		}
+
+		if (sources != null) {
+			// collect source entity definitions
+			Collection<TypeEntityDefinition> typeCellSourceTypes = new ArrayList<TypeEntityDefinition>();
+			for (Entity entity : typeCell.getSource().values())
+				typeCellSourceTypes.add((TypeEntityDefinition) entity.getDefinition());
+			for (Entry<String, ? extends Entity> source : propertyCell.getSource().entries()) {
+				TypeEntityDefinition propertyCellSourceType = getTypeEntity(source.getValue()
+						.getDefinition());
+				if (typeCellSourceTypes.contains(propertyCellSourceType))
+					sources.put(source.getKey(), source.getValue());
+				else {
+					boolean matchFound = false;
+					// try to find a matching source
+					// XXX what if multiple sources match?
+					// currently all are added
+					// other choices: first match
+					// or maybe prioritize matching filter and closest super
+					// type
+					// maybe the whole cell should be duplicated?
+					for (TypeEntityDefinition typeCellSourceType : typeCellSourceTypes) {
+						if (DefinitionUtil.isSuperType(typeCellSourceType.getDefinition(),
+								propertyCellSourceType.getDefinition())
+								&& (propertyCellSourceType.getFilter() == null || propertyCellSourceType
+										.getFilter().equals(typeCellSourceType.getFilter()))) {
+							if (matchFound)
+								log.warn("Inherited property cell source matches multiple sources of type cell.");
+							matchFound = true;
+							PropertyEntityDefinition oldDef = (PropertyEntityDefinition) source
+									.getValue().getDefinition();
+							sources.put(
+									source.getKey(),
+									new DefaultProperty(new PropertyEntityDefinition(
+											typeCellSourceType.getDefinition(), oldDef
+													.getPropertyPath(), SchemaSpaceID.SOURCE,
+											typeCellSourceType.getFilter())));
+							updateNecessary = true;
+							// XXX break; if only one match should be added
+						}
+					}
+					if (!matchFound) {
+						// a cell with a source that does not match the type
+						// cell
+						return null;
+					}
+				}
+			}
+		}
+
+		if (updateNecessary) {
+			MutableCell copy = new DefaultCell(propertyCell);
+			copy.setSource(sources);
+			copy.setTarget(targets);
+			propertyCell = copy;
+		}
+
+		return propertyCell;
 	}
 
 }
