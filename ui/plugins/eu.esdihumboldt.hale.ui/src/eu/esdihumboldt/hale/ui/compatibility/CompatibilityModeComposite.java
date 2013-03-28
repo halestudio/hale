@@ -15,10 +15,13 @@
 
 package eu.esdihumboldt.hale.ui.compatibility;
 
+import java.util.List;
+
+import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CCombo;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -28,6 +31,7 @@ import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
 
 import de.cs3d.util.eclipse.extension.exclusive.ExclusiveExtension.ExclusiveExtensionListener;
 import eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode;
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.compatibility.extension.CompatibilityModeFactory;
 import eu.esdihumboldt.hale.ui.compatibility.extension.CompatibilityService;
@@ -54,7 +58,7 @@ public class CompatibilityModeComposite extends WorkbenchWindowControlContributi
 	}
 
 	/**
-	 * standart constructor with id
+	 * standard constructor with id
 	 * 
 	 * @param id the id
 	 */
@@ -77,30 +81,38 @@ public class CompatibilityModeComposite extends WorkbenchWindowControlContributi
 		statusLabel.setImage(CommonSharedImages.getImageRegistry().get(
 				CommonSharedImages.IMG_SIGNED_YES));
 
-		// combo for selecting/changing compatibility modes
-		final CCombo combo = new CCombo(comp, SWT.READ_ONLY);
-		for (CompatibilityModeFactory fac : cs.getFactories()) {
-			combo.add(fac.getDisplayName());
-		}
+		// label for displaying the mode itself
+		final Label modeLabel = new Label(comp, SWT.NONE);
 
-		combo.addSelectionListener(new SelectionListener() {
+		// Menu for mode selection on left click
+		IContributionItem popupMenu = new CompatibilityMenu();
+		final MenuManager mmanager = new MenuManager();
+		mmanager.add(popupMenu);
+		modeLabel.setMenu(mmanager.createContextMenu(modeLabel));
+
+		modeLabel.addMouseListener(new MouseListener() {
 
 			@Override
-			public void widgetSelected(SelectionEvent e) {
-				for (CompatibilityModeFactory fac : cs.getFactories()) {
-					if (fac.getDisplayName().equals(combo.getItem(combo.getSelectionIndex()))) {
-						cs.setCurrent(fac);
-					}
-				}
+			public void mouseDoubleClick(MouseEvent e) {
+				// TODO Auto-generated method stub
 
 			}
 
 			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// do nothing
+			public void mouseDown(MouseEvent e) {
+				// TODO Auto-generated method stub
+
 			}
+
+			@Override
+			public void mouseUp(MouseEvent e) {
+				modeLabel.getMenu().setVisible(true);
+
+			}
+
 		});
 
+		// listener to update the mode label
 		modeListener = new ExclusiveExtensionListener<CompatibilityMode, CompatibilityModeFactory>() {
 
 			@Override
@@ -110,23 +122,21 @@ public class CompatibilityModeComposite extends WorkbenchWindowControlContributi
 
 					@Override
 					public void run() {
-						for (int i = 0; i < combo.getItems().length; i++) {
-							if (combo.getItems()[i].equals(arg1.getDisplayName())) {
-								combo.select(i);
-							}
-						}
-						cs.compatibilityModeChanged();
+						modeLabel.setText(cs.getCurrentDefinition().getDisplayName());
 					}
 				});
 			}
 
 		};
+
 		cs.addListener(modeListener);
 
+		// listener for updating the mode status label
 		compListener = new CompatibilityServiceListener() {
 
 			@Override
-			public void compatibilityChanged(final boolean isCompatible, final String notification) {
+			public void compatibilityChanged(final boolean isCompatible,
+					List<Cell> incompatibleCells) {
 				PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 
 					@Override
@@ -134,21 +144,20 @@ public class CompatibilityModeComposite extends WorkbenchWindowControlContributi
 						if (isCompatible) {
 							statusLabel.setImage(CommonSharedImages.getImageRegistry().get(
 									CommonSharedImages.IMG_SIGNED_YES));
-							statusLabel.setToolTipText(notification);
+							statusLabel.setToolTipText("No incompatibility detected!");
 						}
 						if (!isCompatible) {
 							statusLabel.setImage(CommonSharedImages.getImageRegistry().get(
 									CommonSharedImages.IMG_SIGNED_NO));
-							statusLabel.setToolTipText(notification);
+							statusLabel.setToolTipText("Incompatibility detected!");
 						}
 					}
 				});
 			}
 		};
 		cs.addCompatibilityListener(compListener);
-		if (combo.getItems().length != 0) {
-			combo.select(0);
-		}
+		modeLabel.setText(cs.getCurrentDefinition().getDisplayName());
+		statusLabel.setToolTipText("No incompatibility detected!");
 		return comp;
 	}
 

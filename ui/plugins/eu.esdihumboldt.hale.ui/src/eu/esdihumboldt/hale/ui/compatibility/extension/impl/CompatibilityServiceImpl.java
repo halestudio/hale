@@ -293,13 +293,13 @@ public class CompatibilityServiceImpl extends
 		public void finish() {
 			if (!incompatibleCells.isEmpty()) {
 				for (CompatibilityServiceListener listener : listeners) {
-					listener.compatibilityChanged(false, "Incompatibility detected!");
+					listener.compatibilityChanged(false, incompatibleCells);
 				}
 			}
 
 			if (incompatibleCells.isEmpty())
 				for (CompatibilityServiceListener listener : listeners) {
-					listener.compatibilityChanged(true, "No compatibility problems detected!");
+					listener.compatibilityChanged(true, null);
 				}
 		}
 

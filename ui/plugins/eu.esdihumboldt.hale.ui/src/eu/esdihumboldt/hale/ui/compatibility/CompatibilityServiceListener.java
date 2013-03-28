@@ -15,6 +15,10 @@
 
 package eu.esdihumboldt.hale.ui.compatibility;
 
+import java.util.List;
+
+import eu.esdihumboldt.hale.common.align.model.Cell;
+
 /**
  * Listener for compatibility services
  * 
@@ -25,9 +29,10 @@ public interface CompatibilityServiceListener {
 	/**
 	 * processes the changes if the compatibility mode changed
 	 * 
-	 * @param correctness states if the compatibility is still fully given
-	 * @param notification notification to be presented to the user
+	 * @param isCompatible states if the compatibility is still fully given
+	 * @param incompatibleCells the incompatible cells, null if all cells are
+	 *            compatible
 	 */
-	public void compatibilityChanged(boolean correctness, String notification);
+	public void compatibilityChanged(boolean isCompatible, List<Cell> incompatibleCells);
 
 }
