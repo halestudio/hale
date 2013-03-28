@@ -15,6 +15,7 @@
  */
 package eu.esdihumboldt.hale.ui.util.selector;
 
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -35,6 +36,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.ToolBar;
 
 /**
  * Abstract selection dialog based on a structured viewer.
@@ -68,7 +70,6 @@ public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewe
 	 */
 	public AbstractViewerSelectionDialog(Shell parentShell, String title, T initialSelection) {
 		super(parentShell);
-
 		this.title = title;
 		this.initialSelection = initialSelection;
 	}
@@ -114,8 +115,21 @@ public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewe
 		pageLayout.marginBottom = 0;
 		page.setLayout(pageLayout);
 
+		// create tool bar first so that it is on top
+		ToolBarManager manager = new ToolBarManager(SWT.FLAT | SWT.WRAP);
+		ToolBar toolbar = manager.createControl(page);
+		toolbar.setLayoutData(new GridData(SWT.END, SWT.BEGINNING, false, false));
+
 		viewer = createViewer(page);
 		setupViewer(viewer, initialSelection);
+
+		// fill it after viewer creation, so that the viewer can be referenced
+		// in there
+		addToolBarActions(manager);
+		manager.update(false);
+		// dispose the tool bar again, if it is empty
+		if (manager.getSize() == 0)
+			toolbar.dispose();
 
 		viewer.getControl().setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
 
@@ -148,6 +162,15 @@ public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewe
 	 * @return the tree viewer
 	 */
 	protected abstract V createViewer(Composite parent);
+
+	/**
+	 * Add tool bar actions to the entity dialog tool bar.
+	 * 
+	 * @param manager the tool bar manager
+	 */
+	protected void addToolBarActions(ToolBarManager manager) {
+		// add nothing
+	}
 
 	/**
 	 * @see Dialog#createButtonsForButtonBar(Composite)
@@ -275,6 +298,13 @@ public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewe
 	 */
 	public ViewerFilter[] getFilters() {
 		return filters;
+	}
+
+	/**
+	 * @return the viewer
+	 */
+	protected V getViewer() {
+		return viewer;
 	}
 
 }

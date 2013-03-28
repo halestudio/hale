@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.hale.ui.function.common;
 
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -28,8 +29,11 @@ import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.StyledDefinitionLabelProvider;
+import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
-import eu.esdihumboldt.hale.ui.service.entity.util.EntityTypesContentProvider;
+import eu.esdihumboldt.hale.ui.service.entity.util.ContentProviderAction;
+import eu.esdihumboldt.hale.ui.service.entity.util.EntityTypeIndexContentProvider;
+import eu.esdihumboldt.hale.ui.service.entity.util.EntityTypeIndexHierarchy;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
 
@@ -40,13 +44,26 @@ import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
  */
 public class TypeEntityDialog extends EntityDialog {
 
+	private final boolean onlyMappingRelevant;
+	private TreePathProviderAdapter flatRelevantProvider;
+	private TreePathProviderAdapter hierarchicalRelevantProvider;
+	private TreePathProviderAdapter flatAllProvider;
+	private TreePathProviderAdapter hierarchicalAllProvider;
+
 	/**
-	 * @see EntityDialog#EntityDialog(Shell, SchemaSpaceID, String,
-	 *      EntityDefinition)
+	 * Constructor.
+	 * 
+	 * @param parentShell the parent shell
+	 * @param ssid the schema space
+	 * @param title the dialog title
+	 * @param initialSelection the entity definition to select initially (if
+	 *            possible), may be <code>null</code>
+	 * @param onlyMappingRelevant whether to only show mapping relevant types
 	 */
 	public TypeEntityDialog(Shell parentShell, SchemaSpaceID ssid, String title,
-			EntityDefinition initialSelection) {
+			EntityDefinition initialSelection, boolean onlyMappingRelevant) {
 		super(parentShell, ssid, title, initialSelection);
+		this.onlyMappingRelevant = onlyMappingRelevant;
 	}
 
 	/**
@@ -57,8 +74,19 @@ public class TypeEntityDialog extends EntityDialog {
 		viewer.setLabelProvider(new StyledDefinitionLabelProvider());
 		EntityDefinitionService entityDefinitionService = (EntityDefinitionService) PlatformUI
 				.getWorkbench().getService(EntityDefinitionService.class);
-		viewer.setContentProvider(new TreePathProviderAdapter(new EntityTypesContentProvider(
-				viewer, entityDefinitionService, ssid)));
+
+		flatRelevantProvider = new TreePathProviderAdapter(new EntityTypeIndexContentProvider(
+				entityDefinitionService, ssid, true, true));
+		if (!onlyMappingRelevant) {
+			hierarchicalRelevantProvider = new TreePathProviderAdapter(
+					new EntityTypeIndexHierarchy(entityDefinitionService, ssid, true, true));
+			flatAllProvider = new TreePathProviderAdapter(new EntityTypeIndexContentProvider(
+					entityDefinitionService, ssid, false, true));
+			hierarchicalAllProvider = new TreePathProviderAdapter(new EntityTypeIndexHierarchy(
+					entityDefinitionService, ssid, false, true));
+		}
+
+		viewer.setContentProvider(flatRelevantProvider);
 
 		SchemaService ss = (SchemaService) PlatformUI.getWorkbench()
 				.getService(SchemaService.class);
@@ -94,6 +122,32 @@ public class TypeEntityDialog extends EntityDialog {
 	@Override
 	public TypeEntityDefinition getObject() {
 		return (TypeEntityDefinition) super.getObject();
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.function.common.EntityDialog#addToolBarActions(org.eclipse.jface.action.ToolBarManager)
+	 */
+	@Override
+	protected void addToolBarActions(ToolBarManager manager) {
+		// do not add choice if only mapping relevant types should be selected
+		if (onlyMappingRelevant)
+			return;
+
+		// MappingRelevant types only, flat
+		manager.add(new ContentProviderAction("Mapping relevant types as list", HALEUIPlugin
+				.getImageDescriptor("icons/flat_relevant.png"), getViewer(), flatRelevantProvider,
+				true));
+		// MappingRelevant types only, hierarchical
+		manager.add(new ContentProviderAction("Mapping relevant types hierarchical", HALEUIPlugin
+				.getImageDescriptor("icons/hierarchical_relevant.png"), getViewer(),
+				hierarchicalRelevantProvider, false));
+		// Mappable types, flat
+		manager.add(new ContentProviderAction("All types as list", HALEUIPlugin
+				.getImageDescriptor("icons/flat_all.png"), getViewer(), flatAllProvider, false));
+		// Mappable types, hierarchical
+		manager.add(new ContentProviderAction("All types hierarchical", HALEUIPlugin
+				.getImageDescriptor("icons/hierarchical_all.png"), getViewer(),
+				hierarchicalAllProvider, false));
 	}
 
 }

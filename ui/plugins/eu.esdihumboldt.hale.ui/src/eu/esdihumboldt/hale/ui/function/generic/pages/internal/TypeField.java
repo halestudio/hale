@@ -49,7 +49,7 @@ public class TypeField extends Field<TypeParameter, TypeEntitySelector> {
 	@Override
 	protected TypeEntitySelector createEntitySelector(SchemaSpaceID ssid, TypeParameter field,
 			Composite parent) {
-		return new TypeEntitySelector(ssid, field, parent);
+		return new TypeEntitySelector(ssid, field, parent, true);
 	}
 
 }

@@ -40,15 +40,20 @@ import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
  */
 public class TypeEntitySelector extends EntitySelector<TypeParameter> {
 
+	private final boolean onlyMappingRelevant;
+
 	/**
 	 * Create an entity selector for {@link Type} entities
 	 * 
 	 * @param ssid the schema space
 	 * @param field the field definition, may be <code>null</code>
 	 * @param parent the parent composite
+	 * @param onlyMappingRelevant whether to only show mapping relevant types
 	 */
-	public TypeEntitySelector(SchemaSpaceID ssid, TypeParameter field, Composite parent) {
+	public TypeEntitySelector(SchemaSpaceID ssid, TypeParameter field, Composite parent,
+			boolean onlyMappingRelevant) {
 		super(ssid, field, parent, createFilters(field));
+		this.onlyMappingRelevant = onlyMappingRelevant;
 	}
 
 	/**
@@ -68,7 +73,8 @@ public class TypeEntitySelector extends EntitySelector<TypeParameter> {
 			title = "Select target type";
 			break;
 		}
-		return new TypeEntityDialog(parentShell, ssid, title, getSelectedObject());
+		return new TypeEntityDialog(parentShell, ssid, title, getSelectedObject(),
+				onlyMappingRelevant);
 	}
 
 	/**

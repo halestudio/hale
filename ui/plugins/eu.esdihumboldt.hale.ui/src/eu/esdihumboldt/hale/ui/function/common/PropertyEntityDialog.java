@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.ui.function.common;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeSelection;
@@ -37,7 +38,11 @@ import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.StyledDefinitionLabelProvider;
+import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
+import eu.esdihumboldt.hale.ui.service.entity.util.ContentProviderAction;
+import eu.esdihumboldt.hale.ui.service.entity.util.EntityTypeIndexContentProvider;
+import eu.esdihumboldt.hale.ui.service.entity.util.EntityTypeIndexHierarchy;
 import eu.esdihumboldt.hale.ui.service.entity.util.EntityTypePropertyContentProvider;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
@@ -50,6 +55,10 @@ import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
 public class PropertyEntityDialog extends EntityDialog {
 
 	private final TypeEntityDefinition parentType;
+	private TreePathProviderAdapter flatRelevantProvider;
+	private TreePathProviderAdapter hierarchicalRelevantProvider;
+	private TreePathProviderAdapter flatAllProvider;
+	private TreePathProviderAdapter hierarchicalAllProvider;
 
 	/**
 	 * Create a property entity dialog
@@ -76,12 +85,23 @@ public class PropertyEntityDialog extends EntityDialog {
 		viewer.setLabelProvider(new StyledDefinitionLabelProvider());
 		EntityDefinitionService entityDefinitionService = (EntityDefinitionService) PlatformUI
 				.getWorkbench().getService(EntityDefinitionService.class);
-		viewer.setContentProvider(new TreePathProviderAdapter(
-				new EntityTypePropertyContentProvider(viewer, entityDefinitionService, ssid)));
 
-		if (parentType != null)
+		if (parentType != null) {
+			viewer.setContentProvider(new TreePathProviderAdapter(
+					new EntityTypePropertyContentProvider(entityDefinitionService, ssid)));
 			viewer.setInput(parentType);
+		}
 		else {
+			flatRelevantProvider = new TreePathProviderAdapter(new EntityTypeIndexContentProvider(
+					entityDefinitionService, ssid, true, false));
+			hierarchicalRelevantProvider = new TreePathProviderAdapter(
+					new EntityTypeIndexHierarchy(entityDefinitionService, ssid, true, false));
+			flatAllProvider = new TreePathProviderAdapter(new EntityTypeIndexContentProvider(
+					entityDefinitionService, ssid, false, false));
+			hierarchicalAllProvider = new TreePathProviderAdapter(new EntityTypeIndexHierarchy(
+					entityDefinitionService, ssid, false, false));
+			viewer.setContentProvider(flatRelevantProvider);
+
 			SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(
 					SchemaService.class);
 			viewer.setInput(ss.getSchemas(ssid));
@@ -120,6 +140,32 @@ public class PropertyEntityDialog extends EntityDialog {
 		}
 
 		return null;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.function.common.EntityDialog#addToolBarActions(org.eclipse.jface.action.ToolBarManager)
+	 */
+	@Override
+	protected void addToolBarActions(ToolBarManager manager) {
+		// parent type is set, so do not offer other content providers
+		if (parentType != null)
+			return;
+
+		// MappingRelevant types only, flat
+		manager.add(new ContentProviderAction("Mapping relevant types as list", HALEUIPlugin
+				.getImageDescriptor("icons/flat_relevant.png"), getViewer(), flatRelevantProvider,
+				true));
+		// MappingRelevant types only, hierarchical
+		manager.add(new ContentProviderAction("Mapping relevant types hierarchical", HALEUIPlugin
+				.getImageDescriptor("icons/hierarchical_relevant.png"), getViewer(),
+				hierarchicalRelevantProvider, false));
+		// Mappable types, flat
+		manager.add(new ContentProviderAction("All types as list", HALEUIPlugin
+				.getImageDescriptor("icons/flat_all.png"), getViewer(), flatAllProvider, false));
+		// Mappable types, hierarchical
+		manager.add(new ContentProviderAction("All types hierarchical", HALEUIPlugin
+				.getImageDescriptor("icons/hierarchical_all.png"), getViewer(),
+				hierarchicalAllProvider, false));
 	}
 
 }
