@@ -329,6 +329,13 @@
                   </dynamic>
                </menu>
             </menu>
+            <menu
+                  label="Compatibility Mode">
+               <dynamic
+                     class="eu.esdihumboldt.hale.ui.compatibility.CompatibilityMenu"
+                     id="eu.esdihumboldt.hale.ui.application.dynamic1">
+               </dynamic>
+            </menu>
          </menu>
          <menu
                id="window"

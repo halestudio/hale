@@ -104,6 +104,8 @@ Import-Package: com.google.common.base;version="1.6.0",
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.hale.ui.internal.HALEUIPlugin
 Export-Package: eu.esdihumboldt.hale.ui,
+ eu.esdihumboldt.hale.ui.compatibility,
+ eu.esdihumboldt.hale.ui.compatibility.extension,
  eu.esdihumboldt.hale.ui.function,
  eu.esdihumboldt.hale.ui.function.common,
  eu.esdihumboldt.hale.ui.function.contribution,
