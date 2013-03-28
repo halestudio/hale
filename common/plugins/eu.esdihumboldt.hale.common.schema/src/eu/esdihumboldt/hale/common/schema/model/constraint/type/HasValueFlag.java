@@ -84,7 +84,7 @@ public class HasValueFlag extends AbstractFlagConstraint implements TypeConstrai
 	/**
 	 * @see AbstractFlagConstraint#AbstractFlagConstraint(boolean)
 	 */
-	private HasValueFlag(boolean enabled) {
+	protected HasValueFlag(boolean enabled) {
 		super(enabled);
 	}
 
