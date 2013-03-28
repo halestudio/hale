@@ -80,6 +80,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
 import eu.esdihumboldt.hale.common.schema.model.impl.AbstractDefinition;
@@ -90,6 +91,7 @@ import eu.esdihumboldt.hale.io.xsd.constraint.RestrictionFlag;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlIdUnique;
+import eu.esdihumboldt.hale.io.xsd.constraint.XmlMixedFlag;
 import eu.esdihumboldt.hale.io.xsd.internal.Messages;
 import eu.esdihumboldt.hale.io.xsd.model.XmlAttribute;
 import eu.esdihumboldt.hale.io.xsd.model.XmlAttributeGroup;
@@ -1068,13 +1070,36 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 	 */
 	private void setMetadataAndConstraints(XmlTypeDefinition type,
 			XmlSchemaComplexType complexType, String schemaLocation) {
-		// TODO type constraints!
 		type.setConstraint(AbstractFlag.get(complexType.isAbstract()));
 
-		// hasValue and binding and all other inheritable constrains from super
-		// type
-		// override constraints for special types
+		/*
+		 * HasValue and Binding and all other inheritable constraints from super
+		 * type, override constraints for special types
+		 */
+
+		// special bindings (geometries)
 		XmlTypeUtil.setSpecialBinding(type);
+
+		// mixed types
+		if (complexType.isMixed()) {
+			// XXX how to treat mixed type?
+			// XXX for now represent as a string value
+			type.setConstraint(new HasValueFlag(true) {
+
+				@Override
+				public boolean isInheritable() {
+					/*
+					 * Types inheriting from a mixed don't necessarily are mixed
+					 * themselves.
+					 */
+					return false;
+				}
+
+			});
+			type.setConstraint(Binding.get(String.class));
+			// mark as mixed type
+			type.setConstraint(XmlMixedFlag.ENABLED);
+		}
 
 		// set metadata
 		setMetadata(type, complexType, schemaLocation);
