@@ -26,7 +26,6 @@ import java.util.Set;
 
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
@@ -34,6 +33,8 @@ import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 
 /**
@@ -44,7 +45,18 @@ import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
  */
 public class EntityTypeIndexHierarchy implements ITreeContentProvider {
 
-	private final TreeViewer tree;
+	/**
+	 * Whether to only show mapping relevant types, or all mappable types.
+	 * 
+	 * @see MappingRelevantFlag
+	 * @see MappableFlag
+	 */
+	private final boolean onlyMappingRelevant;
+
+	/**
+	 * Whether to only show types, or also their properties.
+	 */
+	private final boolean onlyTypes;
 
 	/**
 	 * The entity definition service instance
@@ -62,28 +74,44 @@ public class EntityTypeIndexHierarchy implements ITreeContentProvider {
 	private Set<TypeDefinition> validTypes;
 
 	/**
-	 * Create a content provider based on a {@link TypeIndex} as input.
+	 * Create a content provider based on a {@link TypeIndex} as input. It will
+	 * only show mapping relevant types and their properties.
 	 * 
-	 * @param tree the associated tree viewer
 	 * @param entityDefinitionService the entity definition service
 	 * @param schemaSpace the associated schema space
 	 */
-	public EntityTypeIndexHierarchy(TreeViewer tree,
-			EntityDefinitionService entityDefinitionService, SchemaSpaceID schemaSpace) {
-		super();
-
-		this.tree = tree;
-		this.entityDefinitionService = entityDefinitionService;
-		this.schemaSpace = schemaSpace;
+	public EntityTypeIndexHierarchy(EntityDefinitionService entityDefinitionService,
+			SchemaSpaceID schemaSpace) {
+		this(entityDefinitionService, schemaSpace, true, false);
 	}
 
 	/**
-	 * Get the associated tree viewer
+	 * Create a content provider based on a {@link TypeIndex} as input. It will
+	 * show the given choice of types and their properties.
 	 * 
-	 * @return the associated tree viewer
+	 * @param entityDefinitionService the entity definition service
+	 * @param schemaSpace the associated schema space
+	 * @param onlyMappingRelevant whether to only show mapping relevant types
 	 */
-	protected TreeViewer getTree() {
-		return tree;
+	public EntityTypeIndexHierarchy(EntityDefinitionService entityDefinitionService,
+			SchemaSpaceID schemaSpace, boolean onlyMappingRelevant) {
+		this(entityDefinitionService, schemaSpace, onlyMappingRelevant, false);
+	}
+
+	/**
+	 * Create a content provider based on a {@link TypeIndex} as input.
+	 * 
+	 * @param entityDefinitionService the entity definition service
+	 * @param schemaSpace the associated schema space
+	 * @param onlyMappingRelevant whether to only show mapping relevant types
+	 * @param onlyTypes whether to only show types, or also their properties
+	 */
+	public EntityTypeIndexHierarchy(EntityDefinitionService entityDefinitionService,
+			SchemaSpaceID schemaSpace, boolean onlyMappingRelevant, boolean onlyTypes) {
+		this.entityDefinitionService = entityDefinitionService;
+		this.schemaSpace = schemaSpace;
+		this.onlyMappingRelevant = onlyMappingRelevant;
+		this.onlyTypes = onlyTypes;
 	}
 
 	/**
@@ -96,7 +124,13 @@ public class EntityTypeIndexHierarchy implements ITreeContentProvider {
 			List<TypeEntityDefinition> roots = new ArrayList<TypeEntityDefinition>();
 
 			Queue<TypeDefinition> types = new LinkedList<TypeDefinition>();
-			types.addAll(((TypeIndex) inputElement).getMappingRelevantTypes());
+			if (onlyMappingRelevant)
+				types.addAll(((TypeIndex) inputElement).getMappingRelevantTypes());
+			else {
+				for (TypeDefinition type : ((TypeIndex) inputElement).getTypes())
+					if (type.getConstraint(MappableFlag.class).isEnabled())
+						types.add(type);
+			}
 
 			// collect types and super types in valid types set
 			while (!types.isEmpty()) {
@@ -155,8 +189,10 @@ public class EntityTypeIndexHierarchy implements ITreeContentProvider {
 				}
 			}
 
-			// add regular children
-			children.addAll(entityDefinitionService.getChildren(parent));
+			if (!onlyTypes) {
+				// add regular children
+				children.addAll(entityDefinitionService.getChildren(parent));
+			}
 
 			return children.toArray();
 		}
@@ -172,11 +208,13 @@ public class EntityTypeIndexHierarchy implements ITreeContentProvider {
 	@Override
 	public boolean hasChildren(Object parentElement) {
 		if (parentElement instanceof EntityDefinition) {
-			// check regular children
-			Collection<? extends EntityDefinition> children = entityDefinitionService
-					.getChildren((EntityDefinition) parentElement);
-			if (!children.isEmpty()) {
-				return true;
+			if (!onlyTypes) {
+				// check regular children
+				Collection<? extends EntityDefinition> children = entityDefinitionService
+						.getChildren((EntityDefinition) parentElement);
+				if (!children.isEmpty()) {
+					return true;
+				}
 			}
 
 			// for sub types and alternative type entities check getChildren

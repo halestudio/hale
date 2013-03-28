@@ -83,5 +83,4 @@ public abstract class EntityDialog extends
 		tree.getViewer().setComparator(new DefinitionComparator());
 		return tree.getViewer();
 	}
-
 }

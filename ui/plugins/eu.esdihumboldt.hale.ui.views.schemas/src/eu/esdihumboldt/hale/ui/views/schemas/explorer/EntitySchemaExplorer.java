@@ -30,6 +30,7 @@ import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.InheritedPropertiesFilter;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
+import eu.esdihumboldt.hale.ui.service.entity.util.ContentProviderAction;
 import eu.esdihumboldt.hale.ui.service.entity.util.EntityTypeIndexContentProvider;
 import eu.esdihumboldt.hale.ui.service.entity.util.EntityTypeIndexHierarchy;
 import eu.esdihumboldt.hale.ui.service.population.UnpopulatedPropertiesFilter;
@@ -69,9 +70,9 @@ public class EntitySchemaExplorer extends SchemaExplorer {
 				.getService(EntityDefinitionService.class);
 
 		hierarchyProvider = new TreePathProviderAdapter(new EntityTypeIndexHierarchy(
-				getTreeViewer(), service, getSchemaSpace()));
-		listProvider = new TreePathProviderAdapter(new EntityTypeIndexContentProvider(tree,
 				service, getSchemaSpace()));
+		listProvider = new TreePathProviderAdapter(new EntityTypeIndexContentProvider(service,
+				getSchemaSpace()));
 
 		return listProvider;
 	}

@@ -69,7 +69,8 @@ public class PropertyEntitiesPage extends
 		typeSelectionGroup.setText("Type");
 		typeSelectionGroup.setLayout(new GridLayout(3, false));
 
-		sourceTypeSelector = new TypeEntitySelector(SchemaSpaceID.SOURCE, null, typeSelectionGroup);
+		sourceTypeSelector = new TypeEntitySelector(SchemaSpaceID.SOURCE, null, typeSelectionGroup,
+				false);
 		sourceTypeSelector.getControl().setLayoutData(
 				new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		sourceTypeSelector.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -94,7 +95,8 @@ public class PropertyEntitiesPage extends
 			}
 		});
 
-		targetTypeSelector = new TypeEntitySelector(SchemaSpaceID.TARGET, null, typeSelectionGroup);
+		targetTypeSelector = new TypeEntitySelector(SchemaSpaceID.TARGET, null, typeSelectionGroup,
+				false);
 		targetTypeSelector.getControl().setLayoutData(
 				new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		targetTypeSelector.addSelectionChangedListener(new ISelectionChangedListener() {

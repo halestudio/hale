@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
@@ -30,6 +29,8 @@ import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 
 /**
@@ -39,7 +40,20 @@ import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
  */
 public class EntityTypeIndexContentProvider implements ITreeContentProvider {
 
-	private final TreeViewer tree;
+	private static final Object[] EMPTY = new Object[] {};
+
+	/**
+	 * Whether to only show mapping relevant types, or all mappable types.
+	 * 
+	 * @see MappingRelevantFlag
+	 * @see MappableFlag
+	 */
+	private final boolean onlyMappingRelevant;
+
+	/**
+	 * Whether to only show types, or also their properties.
+	 */
+	private final boolean onlyTypes;
 
 	/**
 	 * The entity definition service instance
@@ -52,28 +66,44 @@ public class EntityTypeIndexContentProvider implements ITreeContentProvider {
 	protected final SchemaSpaceID schemaSpace;
 
 	/**
-	 * Create a content provider based on a {@link TypeIndex} as input.
+	 * Create a content provider based on a {@link TypeIndex} as input. It will
+	 * only show mapping relevant types and their properties.
 	 * 
-	 * @param tree the associated tree viewer
 	 * @param entityDefinitionService the entity definition service
 	 * @param schemaSpace the associated schema space
 	 */
-	public EntityTypeIndexContentProvider(TreeViewer tree,
-			EntityDefinitionService entityDefinitionService, SchemaSpaceID schemaSpace) {
-		super();
-
-		this.tree = tree;
-		this.entityDefinitionService = entityDefinitionService;
-		this.schemaSpace = schemaSpace;
+	public EntityTypeIndexContentProvider(EntityDefinitionService entityDefinitionService,
+			SchemaSpaceID schemaSpace) {
+		this(entityDefinitionService, schemaSpace, true, false);
 	}
 
 	/**
-	 * Get the associated tree viewer
+	 * Create a content provider based on a {@link TypeIndex} as input. It will
+	 * show the given choice of types and their properties.
 	 * 
-	 * @return the associated tree viewer
+	 * @param entityDefinitionService the entity definition service
+	 * @param schemaSpace the associated schema space
+	 * @param onlyMappingRelevant whether to only show mapping relevant types
 	 */
-	protected TreeViewer getTree() {
-		return tree;
+	public EntityTypeIndexContentProvider(EntityDefinitionService entityDefinitionService,
+			SchemaSpaceID schemaSpace, boolean onlyMappingRelevant) {
+		this(entityDefinitionService, schemaSpace, onlyMappingRelevant, false);
+	}
+
+	/**
+	 * Create a content provider based on a {@link TypeIndex} as input.
+	 * 
+	 * @param entityDefinitionService the entity definition service
+	 * @param schemaSpace the associated schema space
+	 * @param onlyMappingRelevant whether to only show mapping relevant types
+	 * @param onlyTypes whether to only show types, or also their properties
+	 */
+	public EntityTypeIndexContentProvider(EntityDefinitionService entityDefinitionService,
+			SchemaSpaceID schemaSpace, boolean onlyMappingRelevant, boolean onlyTypes) {
+		this.entityDefinitionService = entityDefinitionService;
+		this.schemaSpace = schemaSpace;
+		this.onlyMappingRelevant = onlyMappingRelevant;
+		this.onlyTypes = onlyTypes;
 	}
 
 	/**
@@ -83,8 +113,14 @@ public class EntityTypeIndexContentProvider implements ITreeContentProvider {
 	public Object[] getElements(Object inputElement) {
 		if (inputElement instanceof TypeIndex) {
 			List<TypeEntityDefinition> types = new ArrayList<TypeEntityDefinition>();
-			for (TypeDefinition type : ((TypeIndex) inputElement).getMappingRelevantTypes()) {
-				types.addAll(entityDefinitionService.getTypeEntities(type, schemaSpace));
+			if (onlyMappingRelevant) {
+				for (TypeDefinition type : ((TypeIndex) inputElement).getMappingRelevantTypes())
+					types.addAll(entityDefinitionService.getTypeEntities(type, schemaSpace));
+			}
+			else {
+				for (TypeDefinition type : ((TypeIndex) inputElement).getTypes())
+					if (type.getConstraint(MappableFlag.class).isEnabled())
+						types.addAll(entityDefinitionService.getTypeEntities(type, schemaSpace));
 			}
 			return types.toArray();
 		}
@@ -99,9 +135,13 @@ public class EntityTypeIndexContentProvider implements ITreeContentProvider {
 	@Override
 	public Object[] getChildren(Object parentElement) {
 		if (parentElement instanceof EntityDefinition) {
-			Collection<? extends EntityDefinition> children = entityDefinitionService
-					.getChildren((EntityDefinition) parentElement);
-			return children.toArray();
+			if (onlyTypes)
+				return EMPTY;
+			else {
+				Collection<? extends EntityDefinition> children = entityDefinitionService
+						.getChildren((EntityDefinition) parentElement);
+				return children.toArray();
+			}
 		}
 		else {
 			throw new IllegalArgumentException(
@@ -115,9 +155,13 @@ public class EntityTypeIndexContentProvider implements ITreeContentProvider {
 	@Override
 	public boolean hasChildren(Object parentElement) {
 		if (parentElement instanceof EntityDefinition) {
-			Collection<? extends EntityDefinition> children = entityDefinitionService
-					.getChildren((EntityDefinition) parentElement);
-			return !children.isEmpty();
+			if (onlyTypes)
+				return false;
+			else {
+				Collection<? extends EntityDefinition> children = entityDefinitionService
+						.getChildren((EntityDefinition) parentElement);
+				return !children.isEmpty();
+			}
 		}
 		else {
 			throw new IllegalArgumentException(
