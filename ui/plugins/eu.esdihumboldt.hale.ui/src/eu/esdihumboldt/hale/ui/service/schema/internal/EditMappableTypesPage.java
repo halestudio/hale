@@ -45,6 +45,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
+import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.schema.util.NSTypeTreeContentProvider;
 
@@ -63,9 +64,27 @@ public class EditMappableTypesPage extends WizardPage {
 	private NSTypeTreeContentProvider contentProvider;
 	private ICheckStateProvider checkStateProvider;
 
+	private final ViewerFilter mappedTypeFilter = new ViewerFilter() {
+
+		@Override
+		public boolean select(Viewer viewer, Object parentElement, Object element) {
+			if (element instanceof String)
+				return true;
+			TypeDefinition type = (TypeDefinition) element;
+			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+					AlignmentService.class);
+			if (as.getAlignment().getCells(type, spaceID).size() > 0)
+				return false;
+			return true;
+		}
+	};
+
 	private final DefinitionLabelProvider definitionLabels = new DefinitionLabelProvider() {
 
-//		@Override
+		private final Image lockImg = HALEUIPlugin.getImageDescriptor("icons/lock.gif")
+				.createImage();
+
+		// @Override
 //		public String getText(Object element) {
 //			if (element instanceof Definition<?>) {
 //				// force displaying the local part as types are shown according to namespace
@@ -79,9 +98,17 @@ public class EditMappableTypesPage extends WizardPage {
 			if (element instanceof String)
 				return PlatformUI.getWorkbench().getSharedImages()
 						.getImage(ISharedImages.IMG_OBJ_FOLDER);
-			return super.getImage(element);
+			else if (!mappedTypeFilter.select(viewer, null, element))
+				return lockImg;
+			else
+				return super.getImage(element);
 		}
 
+		@Override
+		public void dispose() {
+			super.dispose();
+			lockImg.dispose();
+		}
 	};
 
 	/**
@@ -173,6 +200,7 @@ public class EditMappableTypesPage extends WizardPage {
 			}
 		};
 		viewer.setCheckStateProvider(checkStateProvider);
+
 		viewer.addCheckStateListener(new ICheckStateListener() {
 
 			@Override
@@ -181,33 +209,29 @@ public class EditMappableTypesPage extends WizardPage {
 					// update children
 					viewer.setGrayed(event.getElement(), false);
 					for (Object child : contentProvider.getChildren(event.getElement()))
-						if (checkStateProvider.isChecked(child) != event.getChecked()) {
-							viewer.setChecked(child, event.getChecked());
-							checkStateOfTypeChanged((TypeDefinition) child, event.getChecked());
+						if (mappedTypeFilter.select(viewer, event.getElement(), child)) {
+							if (checkStateProvider.isChecked(child) != event.getChecked()) {
+								viewer.setChecked(child, event.getChecked());
+								checkStateOfTypeChanged((TypeDefinition) child, event.getChecked());
+							}
 						}
+					viewer.setGrayed(event.getElement(),
+							checkStateProvider.isGrayed(event.getElement()));
 					// only two levels, no need to update any parents or
 					// children's children
 				}
-				else
-					checkStateOfTypeChanged((TypeDefinition) event.getElement(), event.getChecked());
+				else {
+					if (mappedTypeFilter.select(viewer, null, event.getElement()))
+						checkStateOfTypeChanged((TypeDefinition) event.getElement(),
+								event.getChecked());
+					else if (!event.getChecked())
+						viewer.setChecked(event.getElement(), true);
+				}
 			}
 		});
 
-		// filter types which are used in the current alignment
-		viewer.addFilter(new ViewerFilter() {
-
-			@Override
-			public boolean select(Viewer viewer, Object parentElement, Object element) {
-				if (element instanceof String)
-					return true;
-				TypeDefinition type = (TypeDefinition) element;
-				AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-						AlignmentService.class);
-				if (as.getAlignment().getCells(type, spaceID).size() > 0)
-					return false;
-				return true;
-			}
-		});
+//		// filter types which are used in the current alignment
+//		viewer.addFilter(mappedTypeFilter);
 
 		// set input to all types in the given index
 		viewer.setInput(typeIndex.getTypes());
@@ -221,13 +245,17 @@ public class EditMappableTypesPage extends WizardPage {
 	}
 
 	private void checkStateOfTypeChanged(TypeDefinition type, boolean checked) {
-		if (checked == type.getConstraint(MappingRelevantFlag.class).isEnabled())
-			changedTypes.remove(type);
-		else
-			changedTypes.add(type);
-		Object parent = contentProvider.getParent(type);
-		viewer.setGrayed(parent, checkStateProvider.isGrayed(parent));
-		viewer.setChecked(parent, checkStateProvider.isChecked(parent));
+		if (mappedTypeFilter.select(viewer, null, type)) {
+			if (checked == type.getConstraint(MappingRelevantFlag.class).isEnabled())
+				changedTypes.remove(type);
+			else
+				changedTypes.add(type);
+			Object parent = contentProvider.getParent(type);
+			viewer.setGrayed(parent, checkStateProvider.isGrayed(parent));
+			viewer.setChecked(parent, checkStateProvider.isChecked(parent));
+		}
+		else if (!checked)
+			viewer.setChecked(type, true);
 	}
 
 	/**
