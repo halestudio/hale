@@ -82,7 +82,13 @@ public abstract class AbstractSelector<T> implements ISelectionProvider {
 		main.setLayout(columnLayout);
 
 		// entity selection combo
-		viewer = new TableViewer(main, SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION | SWT.NO_SCROLL);
+		/*
+		 * Use MULTI selection so having an empty selection is possible on
+		 * Linux/GTK. Otherwise when the control gets the focus it will
+		 * automatically select the entry and launch the selection dialog. This
+		 * especially is a problem when a selector gets the focus automatically.
+		 */
+		viewer = new TableViewer(main, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION | SWT.NO_SCROLL);
 
 		TableViewerColumn column = new TableViewerColumn(viewer, SWT.NONE);
 		columnLayout.setColumnData(column.getColumn(), new ColumnWeightData(1, false));
