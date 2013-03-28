@@ -1385,6 +1385,22 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 			// set metadata and constraints
 			setMetadataAndConstraints(property, attribute, schemaLocation);
 		}
+		else {
+			/*
+			 * Attribute with no type given has anySimpleType, see
+			 * "http://www.w3.org/TR/2001/REC-xmlschema-1-20010502/#cAttribute_Declarations"
+			 */
+			// resolve type by name
+			XmlTypeDefinition type = index.getOrCreateType(new QName(
+					XMLConstants.W3C_XML_SCHEMA_NS_URI, "anySimpleType"));
+
+			// create property
+			DefaultPropertyDefinition property = new DefaultPropertyDefinition(
+					determineAttributeName(attribute, schemaNamespace), declaringGroup, type);
+
+			// set metadata and constraints
+			setMetadataAndConstraints(property, attribute, schemaLocation);
+		}
 
 	}
 
