@@ -72,7 +72,7 @@ public class AugmentedValueFlag extends AbstractFlagConstraint implements TypeCo
 	/**
 	 * @see AbstractFlagConstraint#AbstractFlagConstraint(boolean)
 	 */
-	private AugmentedValueFlag(boolean enabled) {
+	protected AugmentedValueFlag(boolean enabled) {
 		super(enabled);
 	}
 
