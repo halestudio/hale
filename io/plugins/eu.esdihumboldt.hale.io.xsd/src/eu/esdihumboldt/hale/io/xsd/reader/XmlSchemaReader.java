@@ -858,7 +858,6 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 				// <complexType>
 				XmlSchemaComplexType complexType = (XmlSchemaComplexType) element.getSchemaType();
 				XmlSchemaContentModel model = complexType.getContentModel();
-				XmlSchemaParticle particle = complexType.getParticle();
 				if (model != null) {
 					XmlSchemaContent content = model.getContent();
 
@@ -969,7 +968,7 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 						// </simpleContent>
 					}
 				}
-				else if (particle != null) {
+				else {
 					// this where we get when there is an anonymous complex type
 					// as property type
 					// create an anonymous type
