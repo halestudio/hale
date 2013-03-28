@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+
+<shiporder orderid="889923" xmlns="http://www.example.com"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.example.com shiporder.xsd">
+  <orderperson>John Smith</orderperson>
+  <shipto>
+    <name>Ola Nordmann</name>
+    <address>Langgt 23</address>
+    <city>4000 Stavanger</city>
+    <country>Norway</country>
+  </shipto>
+  <item>
+    <title>Empire Burlesque</title>
+    <note>Special Edition</note>
+    <quantity>1</quantity>
+    <price>10.90</price>
+  </item>
+  <item>
+    <title>Hide your heart</title>
+    <note>Save <b>10%</b></note>
+    <quantity>1</quantity>
+    <price>9.90</price>
+  </item>
+  <item>
+  	<title>Stickers</title>
+  	<note><span style="font-color:red;">Nearly <b>sold out</b></span></note>
+  	<quantity>2</quantity>
+  	<price>1.20</price>
+  </item>
+</shiporder>
