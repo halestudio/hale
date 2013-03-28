@@ -136,8 +136,12 @@ public class SaveConfigurationInstanceExportPage extends
 		labelConf.setText("File format:");
 		labelConf.setLayoutData(GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER).create());
 		fileFormats = new ListViewer(page, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.BORDER);
-		data = GridDataFactory.swtDefaults().align(SWT.FILL, SWT.BEGINNING).grab(true, false)
-				.create();
+		data = GridDataFactory.fillDefaults().grab(true, false).create();
+		// adapt viewer to size of current font
+		float height = fileFormats.getControl().getFont().getFontData()[0].getHeight();
+		// XXX only space for two items requested:
+		// height * space around * item count : height * 1.7 * 2
+		data.heightHint = (int) (height * 3.4);
 		fileFormats.getControl().setLayoutData(data);
 		fileFormats.setContentProvider(ArrayContentProvider.getInstance());
 		fileFormats.setLabelProvider(new LabelProvider() {
