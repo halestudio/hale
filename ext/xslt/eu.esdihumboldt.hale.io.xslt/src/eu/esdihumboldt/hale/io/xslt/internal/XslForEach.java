@@ -77,8 +77,21 @@ public class XslForEach implements PathElement {
 
 	@Override
 	public boolean isUnique() {
-		// by default may not be repeated
-		return true;
+		// may be repeated as it is independent of the target structure
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return 0;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		/*
+		 * This is kind of dirty but needed for correct handling in Descent.
+		 */
+		return obj instanceof XslForEach;
 	}
 
 }
