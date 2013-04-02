@@ -17,7 +17,6 @@
 package eu.esdihumboldt.hale.common.align.transformation.report.impl;
 
 import net.jcip.annotations.Immutable;
-import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationMessage;
 import eu.esdihumboldt.hale.common.core.report.impl.MessageImpl;
@@ -30,7 +29,7 @@ import eu.esdihumboldt.hale.common.core.report.impl.MessageImpl;
 @Immutable
 public class TransformationMessageImpl extends MessageImpl implements TransformationMessage {
 
-	private final CellBean cell;
+	private final String cellId;
 
 	/**
 	 * Create a new transformation message.
@@ -43,7 +42,7 @@ public class TransformationMessageImpl extends MessageImpl implements Transforma
 	public TransformationMessageImpl(Cell cell, String message, Throwable throwable) {
 		super(message, throwable);
 
-		this.cell = new CellBean(cell);
+		this.cellId = cell.getId();
 	}
 
 	/**
@@ -59,31 +58,31 @@ public class TransformationMessageImpl extends MessageImpl implements Transforma
 			String stackTrace) {
 		super(message, throwable, stackTrace);
 
-		this.cell = new CellBean(cell);
+		this.cellId = cell.getId();
 	}
 
 	/**
 	 * Create a new transformation message.
 	 * 
-	 * @param cell the cell the message is associated to
+	 * @param cellId the identifier of the cell the message is associated to
 	 * @param message the message
 	 * @param throwable the throwable associated to the message, may be
 	 *            <code>null</code>
 	 * @param stackTrace the associated stack trace, or <code>null</code>
 	 */
-	public TransformationMessageImpl(CellBean cell, String message, Throwable throwable,
+	public TransformationMessageImpl(String cellId, String message, Throwable throwable,
 			String stackTrace) {
 		super(message, throwable, stackTrace);
 
-		this.cell = cell;
+		this.cellId = cellId;
 	}
 
 	/**
-	 * @see TransformationMessage#getCell()
+	 * @see TransformationMessage#getCellId()
 	 */
 	@Override
-	public CellBean getCell() {
-		return cell;
+	public String getCellId() {
+		return cellId;
 	}
 
 }

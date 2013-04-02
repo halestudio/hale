@@ -16,7 +16,6 @@
 
 package eu.esdihumboldt.hale.common.align.transformation.report;
 
-import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
 import eu.esdihumboldt.hale.common.core.report.Message;
 
 /**
@@ -27,10 +26,10 @@ import eu.esdihumboldt.hale.common.core.report.Message;
 public interface TransformationMessage extends Message {
 
 	/**
-	 * Get the transformation cell
+	 * Get the transformation cell identifier.
 	 * 
-	 * @return the cell
+	 * @return the identifier of the cell the message is associated to
 	 */
-	public CellBean getCell();
+	public String getCellId();
 
 }
