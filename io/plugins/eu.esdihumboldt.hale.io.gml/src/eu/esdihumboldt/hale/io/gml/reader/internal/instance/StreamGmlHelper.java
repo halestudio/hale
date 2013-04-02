@@ -54,6 +54,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
 import eu.esdihumboldt.hale.io.gml.internal.simpletype.SimpleTypeUtil;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
+import eu.esdihumboldt.hale.io.xsd.constraint.XmlMixedFlag;
 
 /**
  * Utility methods for instances from {@link XMLStreamReader}s
@@ -108,17 +109,43 @@ public abstract class StreamGmlHelper {
 			instance = new StreamGmlInstance(type, indexInStream);
 		}
 
-		// instance properties
-		parseProperties(reader, instance, strict, srsDimension, crsProvider, parentType,
-				propertyPath);
+		boolean mixed = type.getConstraint(XmlMixedFlag.class).isEnabled();
 
-		// instance value
-		if (type.getConstraint(HasValueFlag.class).isEnabled()) {
-			// FIXME check for xsi:nil!
-			// XXX or use reader.hasText()?
+		if (!mixed) {
+			// mixed types are treated special (see else)
 
-			// try to get text value
-			String value = reader.getElementText();
+			// instance properties
+			parseProperties(reader, instance, strict, srsDimension, crsProvider, parentType,
+					propertyPath, false);
+
+			// instance value
+			if (!hasElements(type)) {
+				/*
+				 * Value can only be determined if there are no documents,
+				 * because otherwise elements have already been processed in
+				 * parseProperties and we are already past END_ELEMENT.
+				 */
+				if (type.getConstraint(HasValueFlag.class).isEnabled()) {
+					// try to get text value
+					String value = reader.getElementText();
+					if (value != null) {
+						instance.setValue(convertSimple(type, value));
+					}
+				}
+			}
+		}
+		else {
+			/*
+			 * XXX For a mixed type currently ignore elements and parse only
+			 * attributes and text.
+			 */
+
+			// instance properties (attributes only)
+			parseProperties(reader, instance, strict, srsDimension, crsProvider, parentType,
+					propertyPath, true);
+
+			// combined text
+			String value = readText(reader);
 			if (value != null) {
 				instance.setValue(convertSimple(type, value));
 			}
@@ -186,6 +213,58 @@ public abstract class StreamGmlHelper {
 	}
 
 	/**
+	 * Read the text value of the current element from the stream. The stream is
+	 * expected to be at {@link XMLStreamConstants#START_ELEMENT}. For mixed
+	 * content elements the text content is concatenated and the elements
+	 * ignored.
+	 * 
+	 * FIXME different handling for mixed types?
+	 * 
+	 * @param reader the XML stream reader
+	 * @return the element text
+	 * @throws XMLStreamException if an error occurs reading from the stream or
+	 *             the element ends prematurely
+	 */
+	private static String readText(XMLStreamReader reader) throws XMLStreamException {
+		checkState(reader.getEventType() == XMLStreamConstants.START_ELEMENT);
+
+		int eventType = reader.next();
+		StringBuilder content = new StringBuilder();
+		int openElements = 0;
+
+		while (openElements > 0 || eventType != XMLStreamConstants.END_ELEMENT) {
+			if (eventType == XMLStreamConstants.CHARACTERS || eventType == XMLStreamConstants.CDATA
+					|| eventType == XMLStreamConstants.SPACE
+					|| eventType == XMLStreamConstants.ENTITY_REFERENCE) {
+				content.append(reader.getText());
+			}
+			else if (eventType == XMLStreamConstants.PROCESSING_INSTRUCTION
+					|| eventType == XMLStreamConstants.COMMENT) {
+				// skipping
+			}
+			else if (eventType == XMLStreamConstants.END_DOCUMENT) {
+				throw new XMLStreamException(
+						"unexpected end of document when reading element text content");
+			}
+			else if (eventType == XMLStreamConstants.START_ELEMENT) {
+				openElements++;
+			}
+			else if (eventType == XMLStreamConstants.END_ELEMENT) {
+				openElements--;
+			}
+			else {
+				// ignore
+//				throw new XMLStreamException("Unexpected event type " + eventType, reader.getLocation());
+			}
+			eventType = reader.next();
+		}
+
+		checkState(reader.getEventType() == XMLStreamConstants.END_ELEMENT);
+
+		return content.toString();
+	}
+
+	/**
 	 * Populates an instance or group with its properties based on the given XML
 	 * stream reader.
 	 * 
@@ -199,11 +278,12 @@ public abstract class StreamGmlHelper {
 	 *            <code>null</code>
 	 * @param parentType the type of the topmost instance
 	 * @param propertyPath the property path down from the topmost instance
+	 * @param onlyAttributes if only attributes should be parsed
 	 * @throws XMLStreamException if parsing the properties failed
 	 */
 	private static void parseProperties(XMLStreamReader reader, MutableGroup group, boolean strict,
 			Integer srsDimension, CRSProvider crsProvider, TypeDefinition parentType,
-			List<QName> propertyPath) throws XMLStreamException {
+			List<QName> propertyPath, boolean onlyAttributes) throws XMLStreamException {
 		final MutableGroup topGroup = group;
 
 		// attributes (usually only present in Instances)
@@ -230,7 +310,7 @@ public abstract class StreamGmlHelper {
 		groups.push(topGroup);
 
 		// elements
-		if (hasElements(group.getDefinition())) {
+		if (!onlyAttributes && hasElements(group.getDefinition())) {
 			int open = 1;
 			while (open > 0 && reader.hasNext()) {
 				int event = reader.next();
@@ -270,7 +350,7 @@ public abstract class StreamGmlHelper {
 							else {
 								// no elements and no attributes
 								// use simple value
-								String value = reader.getElementText();
+								String value = readText(reader);
 								if (value != null) {
 									addSimpleProperty(group, property, value);
 								}
