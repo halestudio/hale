@@ -88,7 +88,13 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 		 * XXX this only is valid for Retype!
 		 */
 		// select any source node from the graph
-		def node = graph.graph.V(P_TYPE, TGraphConstants.NodeType.Source).next()
+		def node
+		try {
+			node = graph.graph.V(P_TYPE, TGraphConstants.NodeType.Source).next()
+		} catch (NoSuchElementException e) {
+			log.warn('Empty transformation graph, skipping type transformation')
+			return
+		}
 		// find the source root
 		def ctxs = node.in(EDGE_CHILD).loop(1){it.object.inE(EDGE_CHILD).hasNext()}.toList()
 		assert ctxs.size() <= 1
