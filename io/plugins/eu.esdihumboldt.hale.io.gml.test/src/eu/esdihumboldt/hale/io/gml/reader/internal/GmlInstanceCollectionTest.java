@@ -70,6 +70,84 @@ public class GmlInstanceCollectionTest {
 	}
 
 	/**
+	 * Test loading a simple XML file with one instance, containing mixed
+	 * content elements.
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testLoadMixed() throws Exception {
+		GmlInstanceCollection instances = loadInstances(
+				getClass().getResource("/data/mixed/shiporder.xsd").toURI(), getClass()
+						.getResource("/data/mixed/shiporder.xml").toURI(), false);
+
+		String ns = "http://www.example.com";
+
+		ResourceIterator<Instance> it = instances.iterator();
+		try {
+			assertTrue(it.hasNext());
+
+			Instance instance = it.next();
+			assertNotNull(instance);
+
+			// items
+			Object[] items = instance.getProperty(new QName(ns, "item"));
+			assertNotNull(items);
+			assertEquals(3, items.length);
+
+			// item 1
+			Object item1 = items[0];
+			assertTrue(item1 instanceof Instance);
+
+			/*
+			 * XXX mixed content properties currently are treated rather
+			 * special, currently ignoring elements and attributes(!) and only
+			 * using the text.
+			 */
+
+			Object[] note1 = ((Instance) item1).getProperty(new QName(ns, "note"));
+			assertNotNull(note1);
+			assertEquals(1, note1.length);
+			// expected to be an instance
+//			assertTrue("Mixed content expected to be an Instance", note1[0] instanceof Instance);
+//			Instance note1Inst = (Instance) note1[0];
+//			assertEquals("Special Edition", note1Inst.getValue());
+			// expected to be a value
+			assertEquals("Special Edition", note1[0]);
+
+			// item 2
+			Object item2 = items[1];
+			assertTrue(item2 instanceof Instance);
+
+			Object[] note2 = ((Instance) item2).getProperty(new QName(ns, "note"));
+			assertNotNull(note2);
+			assertEquals(1, note2.length);
+			// expected to be an instance
+//			assertTrue("Mixed content expected to be an Instance", note2[0] instanceof Instance);
+//			Instance note2Inst = (Instance) note2[0];
+//			assertEquals("Save 10%", note2Inst.getValue());
+			// expected to be a value
+			assertEquals("Save 10%", note2[0]);
+
+			// item 3
+			Object item3 = items[2];
+			assertTrue(item3 instanceof Instance);
+
+			Object[] note3 = ((Instance) item3).getProperty(new QName(ns, "note"));
+			assertNotNull(note3);
+			assertEquals(1, note3.length);
+			// expected to be an instance
+//			assertTrue("Mixed content expected to be an Instance", note3[0] instanceof Instance);
+//			Instance note3Inst = (Instance) note3[0];
+//			assertEquals("Nearly sold out", note3Inst.getValue());
+			// expected to be a value
+			assertEquals("Nearly sold out", note3[0]);
+		} finally {
+			it.close();
+		}
+	}
+
+	/**
 	 * Test loading a simple XML file with one instance
 	 * 
 	 * @throws Exception if an error occurs
