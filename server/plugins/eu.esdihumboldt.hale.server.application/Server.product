@@ -200,6 +200,7 @@
       <plugin id="eu.esdihumboldt.hale.common.convert.core" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.common.convert.wkt" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.common.instance" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.io.gml" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.api.war" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.console.war" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.progress" autoStart="true" startLevel="0" />
