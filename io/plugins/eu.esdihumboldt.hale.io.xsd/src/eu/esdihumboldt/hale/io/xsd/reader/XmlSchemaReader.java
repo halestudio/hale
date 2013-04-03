@@ -80,7 +80,6 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
 import eu.esdihumboldt.hale.common.schema.model.impl.AbstractDefinition;
@@ -1096,7 +1095,11 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 				}
 
 			});
-			type.setConstraint(Binding.get(String.class));
+			/*
+			 * XXX String binding is a problem as it is inherited to non-mixed
+			 * types
+			 */
+//			type.setConstraint(Binding.get(String.class));
 			// mark as mixed type
 			type.setConstraint(XmlMixedFlag.ENABLED);
 		}
