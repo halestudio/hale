@@ -71,7 +71,7 @@ public class PropertyEntitySelector extends EntitySelector<PropertyParameter> {
 		if (!Objects.equal(this.parentType, parentType)) {
 			this.parentType = parentType;
 			// reset selection if necessary
-			// TODO check whether the selection is also valid for the new type
+			// TODO check whether the selection is also valid for the new type?
 			if (parentType != null)
 				setSelection(new StructuredSelection());
 		}
