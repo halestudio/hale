@@ -63,7 +63,7 @@ public class PropertyEntityDialog extends EntityDialog {
 	/**
 	 * Create a property entity dialog
 	 * 
-	 * @param parentShell the parent shall
+	 * @param parentShell the parent shell
 	 * @param ssid the schema space
 	 * @param parentType the parent type for the property to be selected
 	 * @param title the dialog title

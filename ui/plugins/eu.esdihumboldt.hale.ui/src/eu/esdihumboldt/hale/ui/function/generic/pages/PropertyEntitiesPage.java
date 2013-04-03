@@ -20,6 +20,7 @@ import java.util.Set;
 
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -35,10 +36,12 @@ import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.function.common.TypeEntitySelector;
 import eu.esdihumboldt.hale.ui.function.generic.pages.internal.PropertyField;
+import eu.esdihumboldt.hale.ui.function.generic.pages.internal.TypeCellSelectionDialog;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 
 /**
@@ -69,6 +72,7 @@ public class PropertyEntitiesPage extends
 		typeSelectionGroup.setText("Type");
 		typeSelectionGroup.setLayout(new GridLayout(3, false));
 
+		// XXX what about multiple source types?
 		sourceTypeSelector = new TypeEntitySelector(SchemaSpaceID.SOURCE, null, typeSelectionGroup,
 				false);
 		sourceTypeSelector.getControl().setLayoutData(
@@ -87,11 +91,24 @@ public class PropertyEntitiesPage extends
 
 		Button preselectTypeRelation = new Button(typeSelectionGroup, SWT.PUSH);
 		preselectTypeRelation.setText("...");
+		preselectTypeRelation.setToolTipText("Select a type cell");
 		preselectTypeRelation.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				// TODO show type cell selection dialog
+				TypeCellSelectionDialog dialog = new TypeCellSelectionDialog(
+						PropertyEntitiesPage.this.getShell(), "Select a type cell", null);
+				if (dialog.open() == TypeCellSelectionDialog.OK) {
+					Cell selected = dialog.getObject();
+					if (selected == null)
+						return;
+					TypeEntityDefinition sourceType = ((Type) selected.getSource().values()
+							.iterator().next()).getDefinition();
+					TypeEntityDefinition targetType = ((Type) selected.getTarget().values()
+							.iterator().next()).getDefinition();
+					sourceTypeSelector.setSelection(new StructuredSelection(sourceType));
+					targetTypeSelector.setSelection(new StructuredSelection(targetType));
+				}
 			}
 		});
 
