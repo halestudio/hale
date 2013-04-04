@@ -155,7 +155,8 @@ class DocumentationServiceImpl implements DocumentationService {
 		new Documentation(name: row.Name,
 				code: row.AlphaCode,
 				definition: row.Definition,
-				description: row.Description)
+				description: row.Description,
+				inUse: row.InUse == 'YES' ? true : false)
 	}
 
 }

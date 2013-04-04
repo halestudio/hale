@@ -31,5 +31,7 @@ class Documentation {
 
 	String definition
 	
+	boolean inUse
+	
 	List<Documentation> values = []
 }
