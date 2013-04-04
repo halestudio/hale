@@ -83,7 +83,14 @@ public class ValuesSection extends DefaultDefinitionSection<Definition<?>> {
 			@Override
 			public String getText(Object element) {
 				if (element instanceof Documentation) {
-					return ((Documentation) element).getCode();
+					Documentation doc = (Documentation) element;
+					if (doc.isInUse()) {
+						return doc.getCode();
+					}
+					else {
+						// display values that are not in use in brackets
+						return '(' + doc.getCode() + ')';
+					}
 				}
 
 				return super.getText(element);
