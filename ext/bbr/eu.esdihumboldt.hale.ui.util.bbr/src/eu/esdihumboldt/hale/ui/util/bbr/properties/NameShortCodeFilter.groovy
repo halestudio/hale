@@ -13,36 +13,19 @@
  *     Fraunhofer IGD
  */
 
-package eu.esdihumboldt.hale.ui.util.bbr
+package eu.esdihumboldt.hale.ui.util.bbr.properties;
 
+import eu.esdihumboldt.hale.ui.util.bbr.Documentation
 
 /**
- * Bean holding BBR documentation on a type, attribute or value.
+ * Accepts documentations with a name and/or short code.
  * 
  * @author Simon Templer
  */
-class Documentation {
+class NameShortCodeFilter extends AbstractDocumentationFilter {
 
-	/**
-	 * Alpha numerical code.
-	 */
-	String code
-	
-	/**
-	 * Three letter short code.
-	 */
-	String shortCode
-	
-	/**
-	 * Human readable name.
-	 */
-	String name
-
-	String description
-
-	String definition
-	
-	boolean inUse
-	
-	List<Documentation> values = []
+	@Override
+	protected boolean accept(Documentation doc) {
+		doc?.name || doc?.shortCode
+	}
 }

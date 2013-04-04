@@ -116,12 +116,15 @@ class DocumentationServiceImpl implements DocumentationService {
 
 		def sql = null;
 
+		String shortCodeField;
 		switch (definition) {
 			case TypeDefinition:
 				sql = "SELECT * FROM bbr WHERE Type = 'Feat' AND FAlpha = ${definition.displayName}"
+				shortCodeField = 'F531'
 				break;
 			case PropertyDefinition:
 				sql = "SELECT * FROM bbr WHERE Type = 'Att' AND AAlpha = ${definition.name.localPart}"
+				shortCodeField = 'A531'
 				break;
 		}
 
@@ -132,12 +135,12 @@ class DocumentationServiceImpl implements DocumentationService {
 
 				def result = db.firstRow(sql)
 				if (result) {
-					Documentation doc = createDoc(result)
+					Documentation doc = createDoc(result, shortCodeField)
 
 					if (definition instanceof PropertyDefinition) {
 						// there may also be value documentation
 						db.eachRow("SELECT * FROM bbr WHERE Type = 'Value' AND AAlpha = ${definition.name.localPart}") {
-							doc.values << createDoc(it)
+							doc.values << createDoc(it, 'V531')
 						}
 					}
 
@@ -151,12 +154,21 @@ class DocumentationServiceImpl implements DocumentationService {
 		return null;
 	}
 
-	private Documentation createDoc(def row) {
-		new Documentation(name: row.Name,
+	private Documentation createDoc(def row, String shortCodeField = null) {
+		Documentation result = new Documentation(name: row.Name,
 				code: row.AlphaCode,
 				definition: row.Definition,
 				description: row.Description,
 				inUse: row.InUse == 'YES' ? true : false)
+
+		if (shortCodeField) {
+			String shortCode = row."$shortCodeField"
+			if (shortCode) {
+				result.shortCode = shortCode
+			}
+		}
+
+		result
 	}
 
 }

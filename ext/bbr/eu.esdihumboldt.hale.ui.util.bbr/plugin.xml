@@ -27,6 +27,7 @@
       <propertySections
             contributorId="eu.esdihumboldt.hale.ui.views.properties">
          <propertySection
+               afterSection="eu.esdihumboldt.hale.ui.util.bbr.name"
                class="eu.esdihumboldt.hale.ui.util.bbr.properties.DefinitionTextSection"
                enablesFor="1"
                filter="eu.esdihumboldt.hale.ui.util.bbr.properties.DefinitionFilter"
@@ -60,6 +61,19 @@
                filter="eu.esdihumboldt.hale.ui.util.bbr.properties.ValuesFilter"
                id="eu.esdihumboldt.hale.ui.util.bbr.values"
                tab="eu.esdihumboldt.hale.ui.util.bbr.propertyTab">
+            <input
+                  type="eu.esdihumboldt.hale.common.schema.model.PropertyDefinition">
+            </input>
+         </propertySection>
+         <propertySection
+               class="eu.esdihumboldt.hale.ui.util.bbr.properties.NameShortCodeTextSection"
+               enablesFor="1"
+               filter="eu.esdihumboldt.hale.ui.util.bbr.properties.NameShortCodeFilter"
+               id="eu.esdihumboldt.hale.ui.util.bbr.name"
+               tab="eu.esdihumboldt.hale.ui.util.bbr.propertyTab">
+            <input
+                  type="eu.esdihumboldt.hale.common.schema.model.TypeDefinition">
+            </input>
             <input
                   type="eu.esdihumboldt.hale.common.schema.model.PropertyDefinition">
             </input>
