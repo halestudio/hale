@@ -50,13 +50,21 @@ public abstract class AbstractDocumentationTextSection extends
 		Composite composite = getWidgetFactory().createFlatFormComposite(parent);
 		FormData data;
 
-		descriptionText = getWidgetFactory().createText(composite, "", //$NON-NLS-1$ 
-				SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER);
+		if (useMultilineText()) {
+			descriptionText = getWidgetFactory().createText(composite, "", //$NON-NLS-1$ 
+					SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER);
+		}
+		else {
+			descriptionText = getWidgetFactory().createText(composite, "", //$NON-NLS-1$ 
+					SWT.SINGLE | SWT.BORDER);
+		}
 		descriptionText.setEditable(false);
 		// TODO improve layout
 		data = new FormData();
 		data.width = 100;
-		data.height = 85;
+		if (useMultilineText()) {
+			data.height = 85;
+		}
 		data.left = new FormAttachment(0, 100); // STANDARD_LABEL_WIDTH);
 		data.right = new FormAttachment(100, 0);
 		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
@@ -77,6 +85,16 @@ public abstract class AbstractDocumentationTextSection extends
 	@Override
 	public boolean shouldUseExtraSpace() {
 		return false;
+	}
+
+	/**
+	 * States if a multi-line text field should be used. This implementation
+	 * returns <code>true</code>. Override to change behavior.
+	 * 
+	 * @return if a multi-line text field should be used
+	 */
+	protected boolean useMultilineText() {
+		return true;
 	}
 
 	/**
