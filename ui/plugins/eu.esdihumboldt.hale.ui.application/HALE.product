@@ -172,7 +172,6 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.io.xslt"/>
       <plugin id="eu.esdihumboldt.hale.io.xslt.test"/>
       <plugin id="eu.esdihumboldt.hale.io.xslt.ui"/>
-      <plugin id="eu.esdihumboldt.hale.platform.extension" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.prefixmapper"/>
       <plugin id="eu.esdihumboldt.hale.ui"/>
       <plugin id="eu.esdihumboldt.hale.ui.application"/>
