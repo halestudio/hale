@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: BGIS ADE applications
+Bundle-SymbolicName: eu.esdihumboldt.hale.app.bgis.ade;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: eu.esdihumboldt.hale.app.bgisade.internal.Activator
+Bundle-Vendor: Fraunhofer IGD
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: eu.esdihumboldt.hale.common.app,
+ org.osgi.framework;version="1.3.0"
+Bundle-ActivationPolicy: lazy
+Require-Bundle: groovy;bundle-version="1.8.6",
+ org.eclipse.core.runtime;bundle-version="3.7.0"
