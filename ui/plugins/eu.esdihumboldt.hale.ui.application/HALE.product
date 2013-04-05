@@ -259,6 +259,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.apache.lucene"/>
       <plugin id="org.apache.lucene.analysis"/>
       <plugin id="org.apache.lucene.core"/>
+      <plugin id="org.apache.poi"/>
       <plugin id="org.apache.ws.commons.schema"/>
       <plugin id="org.castor.core"/>
       <plugin id="org.castor.xml"/>
@@ -404,6 +405,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.io.xml" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.xsd" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.ui.cst" autoStart="true" startLevel="0" />
+      <plugin id="org.apache.poi" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.gemini.blueprint.core" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.gemini.blueprint.extender" autoStart="true" startLevel="5" />

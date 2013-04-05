@@ -23,6 +23,8 @@ import java.util.List;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 
+import eu.esdihumboldt.hale.app.bgis.ade.defaults.config.DefaultValues;
+import eu.esdihumboldt.hale.app.bgis.ade.defaults.config.ExcelDefaultValues;
 import eu.esdihumboldt.hale.common.align.io.AlignmentWriter;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
@@ -64,6 +66,8 @@ public class GenerateDefaults {
 
 	private Alignment alignment;
 
+	private DefaultValues defaultValues;
+
 	private GenerateDefaultsContext context;
 
 	/**
@@ -78,7 +82,8 @@ public class GenerateDefaults {
 		// load schema
 		loadSchema();
 
-		// TODO load config
+		// load configuration
+		loadConfig();
 
 		// generate mapping
 		generateMapping();
@@ -102,6 +107,22 @@ public class GenerateDefaults {
 		schema = schemaReader.getSchema();
 	}
 
+	private void loadConfig() {
+		if (context.getConfig() != null) {
+			System.out.println("Reading default value configuration...");
+
+			try {
+				defaultValues = new ExcelDefaultValues().loadDefaultValues(context.getConfig());
+			} catch (Exception e) {
+				throw new IllegalStateException("Loading the default value configuration failed.",
+						e);
+			}
+		}
+		else {
+			System.out.println("WARNING: no custom configuration provided");
+		}
+	}
+
 	private void generateMapping() {
 		System.out.println("Generating default value mapping cells for");
 
@@ -114,7 +135,7 @@ public class GenerateDefaults {
 		}
 
 		// visit ADE properties and create cells
-		DefaultsVisitor defs = new DefaultsVisitor();
+		DefaultsVisitor defs = new DefaultsVisitor(defaultValues);
 		for (TypeDefinition type : featureTypes) {
 			System.out.println(type.getDisplayName() + "...");
 			defs.accept(new TypeEntityDefinition(type, SchemaSpaceID.TARGET, null));

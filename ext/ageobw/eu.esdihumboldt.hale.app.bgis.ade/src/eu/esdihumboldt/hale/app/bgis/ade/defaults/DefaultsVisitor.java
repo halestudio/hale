@@ -21,6 +21,7 @@ import java.util.List;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
+import eu.esdihumboldt.hale.app.bgis.ade.defaults.config.DefaultValues;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
@@ -63,6 +64,18 @@ public class DefaultsVisitor extends EntityVisitor {
 	 */
 	private final List<Cell> cells = new ArrayList<Cell>();
 
+	private final DefaultValues defaultValues;
+
+	/**
+	 * Create a default value visitor creating assignment cells.
+	 * 
+	 * @param defaultValues the custom default value configuration, may be
+	 *            <code>null</code>
+	 */
+	public DefaultsVisitor(DefaultValues defaultValues) {
+		this.defaultValues = defaultValues;
+	}
+
 	@Override
 	protected boolean visit(PropertyEntityDefinition ped) {
 		if (GenerateDefaults.ADE_NS.equals(ped.getDefinition().getName().getNamespaceURI())) {
@@ -73,10 +86,16 @@ public class DefaultsVisitor extends EntityVisitor {
 				 * Property is represented by a simple type (only there it makes
 				 * sense to assign defaults)
 				 */
-				// TODO check config for default value
-				// assign generic default for mandatory property
-				if (ped.getDefinition().getConstraint(Cardinality.class).getMinOccurs() > 0) {
-					addDefaultCell(ped, null);
+				String value = null;
+				// check config for default value
+				value = defaultValues.getDefaultValue(ped);
+				/*
+				 * Assign custom default value for any property or generic
+				 * default value for mandatory property
+				 */
+				if (value != null
+						|| ped.getDefinition().getConstraint(Cardinality.class).getMinOccurs() > 0) {
+					addDefaultCell(ped, value);
 				}
 			}
 
