@@ -37,8 +37,6 @@
       <plugin id="com.springsource.javax.media.jai.core"/>
       <plugin id="com.springsource.javax.persistence"/>
       <plugin id="com.springsource.javax.servlet.jsp"/>
-      <plugin id="com.springsource.javax.xml.bind"/>
-      <plugin id="com.springsource.javax.xml.stream"/>
       <plugin id="com.springsource.org.aopalliance"/>
       <plugin id="com.springsource.org.jvnet.staxex"/>
       <plugin id="com.vividsolutions.jts"/>
