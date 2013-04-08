@@ -91,6 +91,27 @@ public class Descent {
 	 */
 	public static Descent descend(XMLStreamWriter writer, DefinitionPath descendPath,
 			Descent previousDescent, boolean generateRequiredIDs) throws XMLStreamException {
+		return descend(writer, descendPath, previousDescent, generateRequiredIDs, false);
+	}
+
+	/**
+	 * Descend the given path
+	 * 
+	 * @param writer the XML stream writer
+	 * @param descendPath the path to descend
+	 * @param previousDescent the previous descent, that will be closed or
+	 *            partially closed as needed, may be <code>null</code>
+	 * @param generateRequiredIDs if required IDs shall be generated for the
+	 *            path elements
+	 * @param allowFullClose if it is allowed to fully close the previous
+	 *            descent regardless of element uniqueness
+	 * @return the descent that was opened, it must be closed to close the
+	 *         opened elements
+	 * @throws XMLStreamException if an error occurs writing the coordinates
+	 */
+	public static Descent descend(XMLStreamWriter writer, DefinitionPath descendPath,
+			Descent previousDescent, boolean generateRequiredIDs, boolean allowFullClose)
+			throws XMLStreamException {
 		if (descendPath.isEmpty()) {
 			if (previousDescent != null) {
 				// close previous descent
@@ -127,7 +148,7 @@ public class Descent {
 
 			// close previous descent as needed
 			ListIterator<PathElement> itPrev = previousSteps.listIterator(previousSteps.size());
-			if (firstNonUniqueMatch == null) {
+			if (!allowFullClose && firstNonUniqueMatch == null) {
 				boolean endedSomething = false;
 				while (itPrev.hasPrevious()) {
 					PathElement step = itPrev.previous();
@@ -167,7 +188,7 @@ public class Descent {
 						writer.writeEndElement();
 					}
 
-					if (firstNonUniqueMatch.equals(step)) {
+					if (firstNonUniqueMatch != null && firstNonUniqueMatch.equals(step)) {
 						// step after this may not be closed, as the next path
 						// also wants to enter
 						// from the next path all steps before this step must be

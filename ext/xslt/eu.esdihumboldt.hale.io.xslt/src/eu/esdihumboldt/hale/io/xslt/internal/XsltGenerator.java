@@ -514,7 +514,7 @@ public class XsltGenerator implements XsltConstants {
 					paths.put(type, defPath);
 				}
 				if (defPath != null) {
-					lastDescent = Descent.descend(writer, defPath, lastDescent, false);
+					lastDescent = Descent.descend(writer, defPath, lastDescent, false, true);
 
 					// write single target instance from variable
 					GmlWriterUtil.writeEmptyElement(writer, new QName(NS_URI_XSL, "copy-of"));
