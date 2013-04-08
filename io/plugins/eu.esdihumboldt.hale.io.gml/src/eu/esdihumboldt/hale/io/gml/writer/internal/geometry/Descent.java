@@ -108,9 +108,10 @@ public class Descent {
 
 			// find the first non-unique match in both paths
 			PathElement firstNonUniqueMatch = null;
-			// XXX should we check from the beginning how far the paths match?
+			int index = 0;
 			for (PathElement step : previousSteps) {
-				if (stepDown.contains(step)) {
+				// check from the beginning how far the paths match
+				if (stepDown.size() > index && stepDown.get(index).equals(step)) {
 					if (!step.isUnique()) {
 						firstNonUniqueMatch = step;
 						// found the first non-unique match
@@ -121,6 +122,7 @@ public class Descent {
 					// after the first miss no more valid matches can be found
 					break;
 				}
+				index++;
 			}
 
 			// close previous descent as needed
