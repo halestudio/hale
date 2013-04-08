@@ -20,6 +20,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
+
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 
@@ -187,7 +190,7 @@ public class GenerateDefaults {
 	 * @param type the type definition
 	 * @return if the type represents a feature type
 	 */
-	private boolean isFeatureType(TypeDefinition type) {
+	public static boolean isFeatureType(TypeDefinition type) {
 		if ("AbstractFeatureType".equals(type.getName().getLocalPart())
 				&& type.getName().getNamespaceURI().startsWith("http://www.opengis.net/gml")) {
 			return true;
@@ -195,6 +198,24 @@ public class GenerateDefaults {
 
 		if (type.getSuperType() != null) {
 			return isFeatureType(type.getSuperType());
+		}
+
+		return false;
+	}
+
+	/**
+	 * Determines if the given type represents a XML ID.
+	 * 
+	 * @param type the type definition
+	 * @return if the type represents an ID
+	 */
+	public static boolean isID(TypeDefinition type) {
+		if (type.getName().equals(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "ID"))) {
+			return true;
+		}
+
+		if (type.getSuperType() != null) {
+			return isID(type.getSuperType());
 		}
 
 		return false;

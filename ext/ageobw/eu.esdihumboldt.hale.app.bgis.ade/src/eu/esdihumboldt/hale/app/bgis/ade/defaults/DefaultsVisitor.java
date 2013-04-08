@@ -28,6 +28,7 @@ import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.Priority;
 import eu.esdihumboldt.hale.common.align.model.functions.AssignFunction;
+import eu.esdihumboldt.hale.common.align.model.functions.GenerateUIDFunction;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
@@ -101,6 +102,17 @@ public class DefaultsVisitor extends EntityVisitor {
 
 			return true;
 		}
+		else {
+			// property not from ADE
+
+			// handle mandatory XML IDs in complex properties
+			if (ped.getPropertyPath().size() > 1 // ignore feature ID
+					&& ped.getDefinition().getConstraint(Cardinality.class).getMinOccurs() > 0
+					&& GenerateDefaults.isID(ped.getDefinition().getPropertyType())) {
+				// TODO also check the wrapping property actually is mandatory?
+				addGenerateIdCell(ped);
+			}
+		}
 
 		return false;
 	}
@@ -135,6 +147,26 @@ public class DefaultsVisitor extends EntityVisitor {
 		target.put(null, new DefaultProperty(ped));
 		// set cell parameters (Value)
 		parameters.put(AssignFunction.PARAMETER_VALUE, new ParameterValue(value));
+
+		cells.add(cell);
+	}
+
+	/**
+	 * Add a cell assigning a generated identifier to the given entity.
+	 * 
+	 * @param ped the property entity definition
+	 */
+	private void addGenerateIdCell(PropertyEntityDefinition ped) {
+		// create cell template
+		MutableCell cell = new DefaultCell();
+		cell.setPriority(Priority.LOW);
+		ListMultimap<String, Entity> target = ArrayListMultimap.create();
+		cell.setTarget(target);
+
+		// set transformation identifier (Unique ID)
+		cell.setTransformationIdentifier(GenerateUIDFunction.ID);
+		// set cell target (Property)
+		target.put(null, new DefaultProperty(ped));
 
 		cells.add(cell);
 	}
