@@ -56,6 +56,14 @@
                ref="eu.esdihumboldt.hale.io.csv">
          </contentType>
       </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.csv.writer.internal.CSVAlignmentWriter"
+            id="eu.esdihumboldt.hale.io.csv.writer.align"
+            name="CSV HALE Alignment">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.csv">
+         </contentType>
+      </provider>
    </extension>
 
 </plugin>
