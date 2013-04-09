@@ -63,7 +63,7 @@ class StructuralRename implements XslFunction, RenameFunction {
 
 	@Override
 	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables,
-			XsltGenerationContext xsltContext) {
+			XsltGenerationContext xsltContext, Cell typeCell) {
 		this.xsltContext = xsltContext;
 
 		use (CellUtil, DefinitionUtil) {

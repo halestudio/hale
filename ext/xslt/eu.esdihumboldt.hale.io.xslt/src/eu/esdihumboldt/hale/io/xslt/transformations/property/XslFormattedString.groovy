@@ -37,7 +37,7 @@ class XslFormattedString extends AbstractFunctionTransformation implements Forma
 
 	@Override
 	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables,
-	XsltGenerationContext context) {
+	XsltGenerationContext context, Cell typeCell) {
 		// get the pattern parameter
 		def pattern = CellUtil.getFirstParameter(cell, PARAMETER_PATTERN).as(String)
 		if (!pattern) {

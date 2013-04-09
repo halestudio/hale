@@ -84,7 +84,8 @@ public class XslRetype extends AbstractVelocityXslTypeTransformation implements
 		try {
 			StringWriter propsOut = new StringWriter();
 			try {
-				AbstractTransformationTraverser trav = new RetypeTraverser(context(), propsOut);
+				AbstractTransformationTraverser trav = new RetypeTraverser(context(), propsOut,
+						typeCell);
 				trav.traverse(graph);
 			} finally {
 				propsOut.close();

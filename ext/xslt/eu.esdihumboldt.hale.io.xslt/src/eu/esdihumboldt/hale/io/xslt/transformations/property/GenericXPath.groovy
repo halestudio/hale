@@ -48,7 +48,7 @@ public class GenericXPath extends AbstractFunctionTransformation {
 
 	@Override
 	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables,
-	XsltGenerationContext xsltContext) {
+	XsltGenerationContext xsltContext, Cell typeCell) {
 		StringBuilder builder = new StringBuilder()
 
 		// define source variables

@@ -63,10 +63,12 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 
 	private Vertex rootContext
 
+	private final Cell typeCell
+
 	/**
 	 * @param writer
 	 */
-	RetypeTraverser(XsltGenerationContext xsltContext, Writer writer) {
+	RetypeTraverser(XsltGenerationContext xsltContext, Writer writer, Cell typeCell) {
 		/*
 		 * NOTE: Used to be a XMLStreamWriter, but it didn't support writing
 		 * unescaped XML fragments which is needed to include the function
@@ -74,6 +76,7 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 		 */
 		this.writer = writer
 		this.xsltContext = xsltContext
+		this.typeCell = typeCell
 	}
 
 	@Override
@@ -333,7 +336,7 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 			}
 		}
 
-		return function.getSequence(cell, variables, xsltContext)
+		return function.getSequence(cell, variables, xsltContext, typeCell)
 	}
 
 	/**

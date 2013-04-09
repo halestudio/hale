@@ -35,7 +35,7 @@ class XslAssign extends AbstractFunctionTransformation implements AssignFunction
 
 	@Override
 	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables,
-	XsltGenerationContext context) {
+	XsltGenerationContext context, Cell typeCell) {
 		//XXX correct to directly return value?
 		use(CellUtil) { "<xsl:text>${cell.getFirstParameter(PARAMETER_VALUE).as(String)}</xsl:text>" }
 	}
