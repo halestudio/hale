@@ -50,6 +50,11 @@ class StructuralRename implements XslFunction, RenameFunction {
 	 * and target.
 	 */
 	boolean ignoreNamespaces
+	
+	/**
+	 * States if using xsl:copy-of is allowed.
+	 */
+	final boolean allowCopyOf = true;
 
 	/**
 	 * The XSLT generation context needed for adding XSL templates.
@@ -75,15 +80,21 @@ class StructuralRename implements XslFunction, RenameFunction {
 			def source = sourceVar.entity.definition.getDefinitionGroup()
 			def target = cell.target.get(null)[0].definition.definition.getDefinitionGroup()
 
-			// generate copy templates recursively
-			String template = generateTemplate(source, target)
-
-			// call the base template
-			"""
-			<xsl:call-template name="$template">
-				<xsl:with-param name="$T_PARAM_SOURCE" select="${sourceVar.XPath}" />
-			</xsl:call-template>
-			"""
+			if (useCopyOf(source, target)) {
+				// copy attributes, elements and text (order matters)
+				"""<xsl:copy-of select="${sourceVar.XPath}/@*, ${sourceVar.XPath}/child::node()"/>"""
+			}
+			else {
+				// generate copy templates recursively
+				String template = generateTemplate(source, target)
+	
+				// call the base template
+				"""
+				<xsl:call-template name="$template">
+					<xsl:with-param name="$T_PARAM_SOURCE" select="${sourceVar.XPath}" />
+				</xsl:call-template>
+				"""
+			}
 		}
 	}
 
@@ -129,28 +140,35 @@ class StructuralRename implements XslFunction, RenameFunction {
 						 */
 						PropertyDefinition sourceMatch = findMatch(child, source, ignoreNamespaces)
 						if (sourceMatch) {
-							//TODO determine source XPath
+							// determine source XPath
 							String selectSource = '$' + T_PARAM_SOURCE + '/' + sourceMatch.asXPath(xsltContext);
-							//TODO restrict selection cardinality?
-							// copy using template
-							'xsl:for-each'(select: selectSource) {
-								// target is an element
-								'xsl:element'(child.name.asMap(xsltContext)) {
-									if (child.hasChildren()) {
-										// only use the template if the element has children of its own
-										String subTemplate = generateTemplate(
-												sourceMatch.getDefinitionGroup(), child.getDefinitionGroup())
-
-										'xsl:call-template'(name: subTemplate) {
-											'xsl:with-param'(name: T_PARAM_SOURCE, select: '.')
+							
+							if (sourceMatch == child && useCopyOf(sourceMatch.propertyType, child.propertyType)) {
+								// do a deep copy
+								'xsl:copy-of'(select: selectSource)
+							}
+							else {
+								//TODO restrict selection cardinality?
+								// copy using template
+								'xsl:for-each'(select: selectSource) {
+									// target is an element
+									'xsl:element'(child.name.asMap(xsltContext)) {
+										if (child.hasChildren()) {
+											// only use the template if the element has children of its own
+											String subTemplate = generateTemplate(
+													sourceMatch.getDefinitionGroup(), child.getDefinitionGroup())
+	
+											'xsl:call-template'(name: subTemplate) {
+												'xsl:with-param'(name: T_PARAM_SOURCE, select: '.')
+											}
 										}
-									}
-									else if (child.hasValue() && sourceMatch.hasValue()) {
-										// value copy is possible
-										'xsl:value-of'(select: '.')
-									}
-									else {
-										//TODO warn?
+										else if (child.hasValue() && sourceMatch.hasValue()) {
+											// value copy is possible
+											'xsl:value-of'(select: '.')
+										}
+										else {
+											//TODO warn?
+										}
 									}
 								}
 							}
@@ -167,6 +185,11 @@ class StructuralRename implements XslFunction, RenameFunction {
 		}
 
 		return templateName
+	}
+	
+	private boolean useCopyOf(DefinitionGroup source, DefinitionGroup target) {
+		//XXX use copy-of if allowed and types match
+		return allowCopyOf && source == target
 	}
 
 	/**
