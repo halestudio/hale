@@ -144,6 +144,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.doc.user.examples.meridian2"/>
       <plugin id="eu.esdihumboldt.hale.doc.user.views.styledmap"/>
       <plugin id="eu.esdihumboldt.hale.doc.util"/>
+      <plugin id="eu.esdihumboldt.hale.functions.bgis"/>
       <plugin id="eu.esdihumboldt.hale.instance.test"/>
       <plugin id="eu.esdihumboldt.hale.io.codelist.xml"/>
       <plugin id="eu.esdihumboldt.hale.io.csv"/>
