@@ -281,8 +281,7 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 					writer << """
 					<xsl:if test="$childrenTest">
 						<!-- Copy children -->
-						<xsl:copy-of select="\$children/children/@*" />
-						<xsl:copy-of select="\$children/children/*" />
+						<xsl:copy-of select="\$children/children/@*, \$children/children/*" />
 					</xsl:if>
 					"""
 				}
@@ -293,9 +292,7 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 					<xsl:if test="$resultTest">
 						<!-- Copy cell result with highest priority -->
 						<xsl:variable name="firstNonNullResult" select="${resultTest}[1]" />
-						<xsl:copy-of select="\$firstNonNullResult/@*" />
-						<xsl:copy-of select="\$firstNonNullResult/*" />
-						<xsl:value-of select="\$firstNonNullResult/text()" />
+						<xsl:copy-of select="\$firstNonNullResult/@*, \$firstNonNullResult/child::node()" />
 					</xsl:if>
 					"""
 				}
