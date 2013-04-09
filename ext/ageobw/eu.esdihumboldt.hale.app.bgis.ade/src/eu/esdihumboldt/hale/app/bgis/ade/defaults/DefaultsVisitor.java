@@ -37,6 +37,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Enumeration;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
+import eu.esdihumboldt.hale.functions.bgis.sourcedesc.SourceDescriptionFunction;
 
 /**
  * Entity visitor that creates cells assigning default values.
@@ -87,16 +88,24 @@ public class DefaultsVisitor extends EntityVisitor {
 				 * Property is represented by a simple type (only there it makes
 				 * sense to assign defaults)
 				 */
-				String value = null;
-				// check config for default value
-				value = defaultValues.getDefaultValue(ped);
-				/*
-				 * Assign custom default value for any property or generic
-				 * default value for mandatory property
-				 */
-				if (value != null
-						|| ped.getDefinition().getConstraint(Cardinality.class).getMinOccurs() > 0) {
-					addDefaultCell(ped, value);
+
+				// special handling
+				if ("sourceDescription".equals(ped.getDefinition().getName().getLocalPart())) {
+					addAugmentationCell(ped, SourceDescriptionFunction.ID);
+				}
+				// default values
+				else {
+					String value = null;
+					// check config for default value
+					value = defaultValues.getDefaultValue(ped);
+					/*
+					 * Assign custom default value for any property or generic
+					 * default value for mandatory property
+					 */
+					if (value != null
+							|| ped.getDefinition().getConstraint(Cardinality.class).getMinOccurs() > 0) {
+						addDefaultCell(ped, value);
+					}
 				}
 			}
 
@@ -110,7 +119,7 @@ public class DefaultsVisitor extends EntityVisitor {
 					&& ped.getDefinition().getConstraint(Cardinality.class).getMinOccurs() > 0
 					&& GenerateDefaults.isID(ped.getDefinition().getPropertyType())) {
 				// TODO also check the wrapping property actually is mandatory?
-				addGenerateIdCell(ped);
+				addAugmentationCell(ped, GenerateUIDFunction.ID);
 			}
 		}
 
@@ -152,19 +161,20 @@ public class DefaultsVisitor extends EntityVisitor {
 	}
 
 	/**
-	 * Add a cell assigning a generated identifier to the given entity.
+	 * Add a simple cell using an augmentation w/o parameters.
 	 * 
 	 * @param ped the property entity definition
+	 * @param functionId the function identifier
 	 */
-	private void addGenerateIdCell(PropertyEntityDefinition ped) {
+	private void addAugmentationCell(PropertyEntityDefinition ped, String functionId) {
 		// create cell template
 		MutableCell cell = new DefaultCell();
 		cell.setPriority(Priority.LOW);
 		ListMultimap<String, Entity> target = ArrayListMultimap.create();
 		cell.setTarget(target);
 
-		// set transformation identifier (Unique ID)
-		cell.setTransformationIdentifier(GenerateUIDFunction.ID);
+		// set transformation identifier (Function ID)
+		cell.setTransformationIdentifier(functionId);
 		// set cell target (Property)
 		target.put(null, new DefaultProperty(ped));
 
