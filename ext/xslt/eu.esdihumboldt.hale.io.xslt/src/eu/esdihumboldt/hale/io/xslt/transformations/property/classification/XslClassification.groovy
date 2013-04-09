@@ -40,7 +40,7 @@ class XslClassification extends AbstractFunctionTransformation implements Classi
 
 	@Override
 	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables,
-			XsltGenerationContext context) {
+	XsltGenerationContext context, Cell typeCell) {
 
 		def target = cell.getTarget().get(null)[0];
 		PropertyEntityDefinition d = target.getDefinition();

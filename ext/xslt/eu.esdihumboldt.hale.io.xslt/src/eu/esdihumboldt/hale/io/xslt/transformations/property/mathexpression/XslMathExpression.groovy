@@ -40,7 +40,7 @@ class XslMathExpression extends AbstractFunctionTransformation implements Mathem
 
 	@Override
 	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables,
-	XsltGenerationContext context) {
+	XsltGenerationContext context, Cell typeCell) {
 		// get the expression parameter
 		def expression = CellUtil.getFirstParameter(cell, PARAMETER_EXPRESSION).as(String)
 		if (!expression) {

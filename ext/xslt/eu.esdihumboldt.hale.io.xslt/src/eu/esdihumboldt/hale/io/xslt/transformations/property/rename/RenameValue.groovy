@@ -32,7 +32,7 @@ class RenameValue implements XslFunction {
 
 	@Override
 	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables,
-	XsltGenerationContext context) {
+	XsltGenerationContext context, Cell typeCell) {
 		def select = variables.get(null)[0].XPath
 		"""
 			<xsl:choose>

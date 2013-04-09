@@ -38,10 +38,11 @@ public interface XslFunction {
 	 *            but not guaranteed to be in the same order as
 	 *            {@link Cell#getSource()}
 	 * @param xsltContext the XSLT generation context
+	 * @param typeCell the type cell in which context the function is executed
 	 * @return the XML fragment to be used as part of the attribute or element
 	 *         sequence constructor
 	 */
 	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables,
-			XsltGenerationContext xsltContext);
+			XsltGenerationContext xsltContext, Cell typeCell);
 
 }
