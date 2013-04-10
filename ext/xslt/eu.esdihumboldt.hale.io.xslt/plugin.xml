@@ -125,5 +125,12 @@
             name="XSLT">
       </category>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.instance.filter">
+      <filterDefinition
+            class="eu.esdihumboldt.hale.io.xslt.xpath.XPathFilterDefinition"
+            id="eu.esdihumboldt.hale.filter.xpath">
+      </filterDefinition>
+   </extension>
 
 </plugin>
