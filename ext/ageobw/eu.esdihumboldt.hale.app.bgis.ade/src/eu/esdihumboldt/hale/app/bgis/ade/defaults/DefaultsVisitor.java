@@ -144,7 +144,7 @@ public class DefaultsVisitor extends EntityVisitor {
 
 		// create cell template
 		MutableCell cell = new DefaultCell();
-		cell.setPriority(Priority.LOW);
+		cell.setPriority(Priority.LOWEST);
 		ListMultimap<String, Entity> target = ArrayListMultimap.create();
 		cell.setTarget(target);
 		ListMultimap<String, ParameterValue> parameters = ArrayListMultimap.create();
@@ -169,7 +169,7 @@ public class DefaultsVisitor extends EntityVisitor {
 	private void addAugmentationCell(PropertyEntityDefinition ped, String functionId) {
 		// create cell template
 		MutableCell cell = new DefaultCell();
-		cell.setPriority(Priority.LOW);
+		cell.setPriority(Priority.LOWEST);
 		ListMultimap<String, Entity> target = ArrayListMultimap.create();
 		cell.setTarget(target);
 
