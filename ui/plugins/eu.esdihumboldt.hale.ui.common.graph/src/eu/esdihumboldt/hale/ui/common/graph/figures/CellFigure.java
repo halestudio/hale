@@ -77,6 +77,10 @@ public class CellFigure extends CustomShapeFigure {
 			priorityImage = CommonSharedImages.getImageRegistry().get(
 					CommonSharedImages.IMG_PRIORITY_LOW);
 			break;
+		case LOWEST:
+			priorityImage = CommonSharedImages.getImageRegistry().get(
+					CommonSharedImages.IMG_PRIORITY_LOWEST);
+			break;
 		case NORMAL:
 		default:
 			return;
