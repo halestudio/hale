@@ -62,7 +62,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.instance.extension.FilterDefinition"/>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinition"/>
                </appinfo>
             </annotation>
          </attribute>
