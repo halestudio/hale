@@ -78,7 +78,7 @@ public class TransformationTreeImpl extends AbstractGroupNode implements Transfo
 		// partition cells by child
 		ListMultimap<EntityDefinition, CellNode> childCells = ArrayListMultimap.create();
 		for (Cell cell : cells) {
-			cell = AlignmentUtil.reparentCell(cell, typeCell);
+			cell = AlignmentUtil.reparentCell(cell, typeCell, true);
 			if (cell == null)
 				throw new IllegalStateException("Illegal cell found.");
 			CellNode node = new CellNodeImpl(cell, sourceNodes);

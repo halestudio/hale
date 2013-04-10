@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.function.generic.pages.internal;
+package eu.esdihumboldt.hale.ui.function.common;
 
 import org.eclipse.draw2d.SWTEventDispatcher;
 import org.eclipse.draw2d.geometry.Dimension;
