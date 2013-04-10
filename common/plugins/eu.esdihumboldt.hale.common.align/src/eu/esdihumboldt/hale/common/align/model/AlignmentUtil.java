@@ -547,81 +547,103 @@ public abstract class AlignmentUtil {
 	 * 
 	 * @param propertyCell the property cell to update
 	 * @param typeCell the type cell with the target types
+	 * @param strict If false and the target type cell has no sources or target,
+	 *            the property cell is updated to have the sources/target in
+	 *            their declaring type. If true, said properties are left
+	 *            unchanged. Does not matter for complete type cells, since they
+	 *            have sources and a target.
 	 * @return the updated cell or <code>null</code> if an update isn't possible
 	 */
-	public static Cell reparentCell(Cell propertyCell, Cell typeCell) {
-		ListMultimap<String, Entity> sources = propertyCell.getSource() == null ? null
-				: ArrayListMultimap.<String, Entity> create();
+	public static Cell reparentCell(Cell propertyCell, Cell typeCell, boolean strict) {
+		ListMultimap<String, Entity> sources = ArrayListMultimap.create();
 		ListMultimap<String, Entity> targets = ArrayListMultimap.create();
 		boolean updateNecessary = false;
 
 		// XXX are updates to the property path needed?
+		// Currently not, since ChildDefinitions are compared by their names
+		// only.
 
-		TypeDefinition typeCellTargetType = ((Type) CellUtil.getFirstEntity(typeCell.getTarget()))
-				.getDefinition().getDefinition();
-		for (Entry<String, ? extends Entity> target : propertyCell.getTarget().entries()) {
-			TypeDefinition propertyCellTargetType = target.getValue().getDefinition().getType();
-			if (propertyCellTargetType.equals(typeCellTargetType))
-				targets.put(target.getKey(), target.getValue());
-			else if (DefinitionUtil.isSuperType(typeCellTargetType, propertyCellTargetType)) {
-				PropertyEntityDefinition oldDef = (PropertyEntityDefinition) target.getValue()
-						.getDefinition();
-				targets.put(target.getKey(), new DefaultProperty(new PropertyEntityDefinition(
-						typeCellTargetType, oldDef.getPropertyPath(), SchemaSpaceID.TARGET, null)));
-				updateNecessary = true;
-			}
-			else {
-				// a cell with targets in more than one type
-				return null;
+		// TARGETS
+
+		Entity targetEntity = CellUtil.getFirstEntity(typeCell.getTarget());
+		if (targetEntity != null) {
+			TypeDefinition typeCellTargetType = ((Type) targetEntity).getDefinition()
+					.getDefinition();
+			for (Entry<String, ? extends Entity> target : propertyCell.getTarget().entries()) {
+				TypeDefinition propertyCellTargetType = target.getValue().getDefinition().getType();
+				if (propertyCellTargetType.equals(typeCellTargetType))
+					targets.put(target.getKey(), target.getValue());
+				else if (DefinitionUtil.isSuperType(typeCellTargetType, propertyCellTargetType)) {
+					PropertyEntityDefinition oldDef = (PropertyEntityDefinition) target.getValue()
+							.getDefinition();
+					targets.put(target.getKey(), new DefaultProperty(new PropertyEntityDefinition(
+							typeCellTargetType, oldDef.getPropertyPath(), SchemaSpaceID.TARGET,
+							null)));
+					updateNecessary = true;
+				}
+				else {
+					// a cell with targets in more than one type
+					return null;
+				}
 			}
 		}
+		else if (!strict)
+			updateNecessary |= reparentToDeclaring(propertyCell.getTarget(), targets);
+		else
+			targets.putAll(propertyCell.getTarget());
 
-		if (sources != null) {
-			// collect source entity definitions
-			Collection<TypeEntityDefinition> typeCellSourceTypes = new ArrayList<TypeEntityDefinition>();
-			for (Entity entity : typeCell.getSource().values())
-				typeCellSourceTypes.add((TypeEntityDefinition) entity.getDefinition());
-			for (Entry<String, ? extends Entity> source : propertyCell.getSource().entries()) {
-				TypeEntityDefinition propertyCellSourceType = getTypeEntity(source.getValue()
-						.getDefinition());
-				if (typeCellSourceTypes.contains(propertyCellSourceType))
-					sources.put(source.getKey(), source.getValue());
-				else {
-					boolean matchFound = false;
-					// try to find a matching source
-					// XXX what if multiple sources match?
-					// currently all are added
-					// other choices: first match
-					// or maybe prioritize matching filter and closest super
-					// type
-					// maybe the whole cell should be duplicated?
-					for (TypeEntityDefinition typeCellSourceType : typeCellSourceTypes) {
-						if (DefinitionUtil.isSuperType(typeCellSourceType.getDefinition(),
-								propertyCellSourceType.getDefinition())
-								&& (propertyCellSourceType.getFilter() == null || propertyCellSourceType
-										.getFilter().equals(typeCellSourceType.getFilter()))) {
-							if (matchFound)
-								log.warn("Inherited property cell source matches multiple sources of type cell.");
-							matchFound = true;
-							PropertyEntityDefinition oldDef = (PropertyEntityDefinition) source
-									.getValue().getDefinition();
-							sources.put(
-									source.getKey(),
-									new DefaultProperty(new PropertyEntityDefinition(
-											typeCellSourceType.getDefinition(), oldDef
-													.getPropertyPath(), SchemaSpaceID.SOURCE,
-											typeCellSourceType.getFilter())));
-							updateNecessary = true;
-							// XXX break; if only one match should be added
+		// SOURCES
+
+		if (propertyCell.getSource() != null && !propertyCell.getSource().isEmpty()) {
+			if (typeCell.getSource() != null && !typeCell.getSource().isEmpty()) {
+				// collect source entity definitions
+				Collection<TypeEntityDefinition> typeCellSourceTypes = new ArrayList<TypeEntityDefinition>();
+				for (Entity entity : typeCell.getSource().values())
+					typeCellSourceTypes.add((TypeEntityDefinition) entity.getDefinition());
+
+				for (Entry<String, ? extends Entity> source : propertyCell.getSource().entries()) {
+					TypeEntityDefinition propertyCellSourceType = getTypeEntity(source.getValue()
+							.getDefinition());
+					if (typeCellSourceTypes.contains(propertyCellSourceType))
+						sources.put(source.getKey(), source.getValue());
+					else {
+						boolean matchFound = false;
+						// try to find a matching source
+						// XXX what if multiple sources match?
+						// currently all are added
+						// maybe the whole cell should be duplicated?
+						for (TypeEntityDefinition typeCellSourceType : typeCellSourceTypes) {
+							if (DefinitionUtil.isSuperType(typeCellSourceType.getDefinition(),
+									propertyCellSourceType.getDefinition())
+									&& (propertyCellSourceType.getFilter() == null || propertyCellSourceType
+											.getFilter().equals(typeCellSourceType.getFilter()))) {
+								if (matchFound)
+									log.warn("Inherited property cell source matches multiple sources of type cell.");
+								matchFound = true;
+								PropertyEntityDefinition oldDef = (PropertyEntityDefinition) source
+										.getValue().getDefinition();
+								sources.put(
+										source.getKey(),
+										new DefaultProperty(new PropertyEntityDefinition(
+												typeCellSourceType.getDefinition(), oldDef
+														.getPropertyPath(), SchemaSpaceID.SOURCE,
+												typeCellSourceType.getFilter())));
+								updateNecessary = true;
+								// XXX break; if only one match should be added
+							}
 						}
-					}
-					if (!matchFound) {
-						// a cell with a source that does not match the type
-						// cell
-						return null;
+						if (!matchFound) {
+							// a cell with a source that does not match the type
+							// cell
+							return null;
+						}
 					}
 				}
 			}
+			else if (!strict)
+				updateNecessary |= reparentToDeclaring(propertyCell.getSource(), sources);
+			else
+				targets.putAll(propertyCell.getTarget());
 		}
 
 		if (updateNecessary) {
@@ -632,6 +654,40 @@ public abstract class AlignmentUtil {
 		}
 
 		return propertyCell;
+	}
+
+	/**
+	 * Copies the properties from original to modified, modifying properties to
+	 * their declaring type, if the type has no filter set.
+	 * 
+	 * @param original the original Multimap of properties
+	 * @param modified the target Multimap
+	 * @return true, if a property was changed, false otherwise
+	 */
+	private static boolean reparentToDeclaring(ListMultimap<String, ? extends Entity> original,
+			ListMultimap<String, Entity> modified) {
+		boolean changed = false;
+		for (Entry<String, ? extends Entity> oEntity : original.entries()) {
+			PropertyEntityDefinition property = (PropertyEntityDefinition) oEntity.getValue()
+					.getDefinition();
+			ChildDefinition<?> childDef = property.getPropertyPath().get(0).getChild();
+			if (Objects.equal(childDef.getDeclaringGroup(), childDef.getParentType())
+					|| property.getFilter() != null)
+				modified.put(oEntity.getKey(), oEntity.getValue());
+			else if (childDef.getDeclaringGroup() instanceof TypeDefinition) {
+				modified.put(oEntity.getKey(), new DefaultProperty(new PropertyEntityDefinition(
+						(TypeDefinition) childDef.getDeclaringGroup(), property.getPropertyPath(),
+						property.getSchemaSpace(), null)));
+				changed = true;
+			}
+			else {
+				// declaring group of first level property no type
+				// definition?
+				// simply add it without change, shouldn't happen
+				modified.put(oEntity.getKey(), oEntity.getValue());
+			}
+		}
+		return changed;
 	}
 
 }

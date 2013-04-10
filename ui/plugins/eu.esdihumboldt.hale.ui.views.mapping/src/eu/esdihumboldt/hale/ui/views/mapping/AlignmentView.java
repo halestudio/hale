@@ -16,8 +16,6 @@
 
 package eu.esdihumboldt.hale.ui.views.mapping;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,14 +25,11 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
-import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
@@ -43,7 +38,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -56,19 +50,18 @@ import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
 import com.google.common.collect.ListMultimap;
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell;
 import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider;
+import eu.esdihumboldt.hale.ui.function.common.SourceTargetTypeSelector;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceAdapter;
@@ -90,7 +83,8 @@ public class AlignmentView extends AbstractMappingView {
 
 	private AlignmentServiceListener alignmentListener;
 
-	private ComboViewer typeRelations;
+	private SourceTargetTypeSelector sourceTargetSelector;
+//	private ComboViewer typeRelations;
 
 	private final FunctionLabelProvider functionLabels = new FunctionLabelProvider();
 
@@ -121,6 +115,7 @@ public class AlignmentView extends AbstractMappingView {
 				return false;
 		}
 	};
+	private FilterCellAction deactivatedCellFilterAction;
 
 	private final ViewerFilter inheritedCellFilter = new ViewerFilter() {
 
@@ -130,9 +125,13 @@ public class AlignmentView extends AbstractMappingView {
 				Cell cell = (Cell) element;
 				if (AlignmentUtil.isTypeCell(cell))
 					return true;
-				// if reparentCell returns the original cell no change was
-				// necessary so it isn't inherited
-				return AlignmentUtil.reparentCell(cell, getSelectedTypeCell()) == cell;
+				// If reparentCell returns the original cell no change was
+				// necessary so it isn't inherited.
+				// If strict is set to false, the filter would for example also
+				// filter out cells with sources, if the selected cell does not
+				// contain any sources.
+				return AlignmentUtil.reparentCell(cell, sourceTargetSelector.getSelectedCell(),
+						true) == cell;
 			}
 			else
 				return false;
@@ -156,48 +155,65 @@ public class AlignmentView extends AbstractMappingView {
 		page.setLayout(GridLayoutFactory.fillDefaults().create());
 
 		// create type relation selection control
-		typeRelations = new ComboViewer(page, SWT.DROP_DOWN | SWT.READ_ONLY);
-		typeRelations.setContentProvider(ArrayContentProvider.getInstance());
-		typeRelations.setLabelProvider(new LabelProvider() {
-
-			@Override
-			public Image getImage(Object element) {
-				if (element instanceof Cell) {
-					// use function image if possible
-					Cell cell = (Cell) element;
-					String functionId = cell.getTransformationIdentifier();
-					AbstractFunction<?> function = FunctionUtil.getFunction(functionId);
-					if (function != null) {
-						return functionLabels.getImage(function);
-					}
-					return null;
-				}
-
-				return super.getImage(element);
-			}
-
-			@Override
-			public String getText(Object element) {
-				if (element instanceof Cell) {
-					Cell cell = (Cell) element;
-
-					return CellUtil.getCellDescription(cell);
-				}
-
-				return super.getText(element);
-			}
-
-		});
-		typeRelations.addSelectionChangedListener(new ISelectionChangedListener() {
+		sourceTargetSelector = new SourceTargetTypeSelector(page);
+		sourceTargetSelector.getControl().setLayoutData(
+				GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
+						.create());
+		sourceTargetSelector.addSelectionChangedListener(new ISelectionChangedListener() {
 
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
-				updateGraph();
+				getViewer().setInput(sourceTargetSelector.getSelectedCell());
+				if (deactivatedCellFilterAction != null) {
+					deactivatedCellFilterAction.setEnabled(sourceTargetSelector.isCellSelected());
+					if (!sourceTargetSelector.isCellSelected())
+						deactivatedCellFilterAction.setChecked(true);
+				}
+				refreshGraph();
 			}
 		});
-		typeRelations.getControl().setLayoutData(
-				GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
-						.create());
+//		typeRelations = new ComboViewer(page, SWT.DROP_DOWN | SWT.READ_ONLY);
+//		typeRelations.setContentProvider(ArrayContentProvider.getInstance());
+//		typeRelations.setLabelProvider(new LabelProvider() {
+//
+//			@Override
+//			public Image getImage(Object element) {
+//				if (element instanceof Cell) {
+//					// use function image if possible
+//					Cell cell = (Cell) element;
+//					String functionId = cell.getTransformationIdentifier();
+//					AbstractFunction<?> function = FunctionUtil.getFunction(functionId);
+//					if (function != null) {
+//						return functionLabels.getImage(function);
+//					}
+//					return null;
+//				}
+//
+//				return super.getImage(element);
+//			}
+//
+//			@Override
+//			public String getText(Object element) {
+//				if (element instanceof Cell) {
+//					Cell cell = (Cell) element;
+//
+//					return CellUtil.getCellDescription(cell);
+//				}
+//
+//				return super.getText(element);
+//			}
+//
+//		});
+//		typeRelations.addSelectionChangedListener(new ISelectionChangedListener() {
+//
+//			@Override
+//			public void selectionChanged(SelectionChangedEvent event) {
+//				updateGraph();
+//			}
+//		});
+//		typeRelations.getControl().setLayoutData(
+//				GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
+//						.create());
 
 		// create viewer
 		Composite viewerContainer = new Composite(page, SWT.NONE);
@@ -209,45 +225,38 @@ public class AlignmentView extends AbstractMappingView {
 		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
 				AlignmentService.class);
 
-		update();
+//		update();
 
 		as.addListener(alignmentListener = new AlignmentServiceAdapter() {
 
 			@Override
 			public void alignmentCleared() {
-				update();
+				refreshGraph();
 			}
 
 			@Override
 			public void cellsRemoved(Iterable<Cell> cells) {
-				update();
+				refreshGraph();
 			}
 
 			@Override
 			public void cellReplaced(Cell oldCell, Cell newCell) {
-				update();
+				refreshGraph();
 			}
 
 			@Override
 			public void cellsAdded(Iterable<Cell> cells) {
-				update();
+				refreshGraph();
 			}
 
 			@Override
 			public void alignmentChanged() {
-				update();
+				refreshGraph();
 			}
 
 			@Override
 			public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
-				final Display display = PlatformUI.getWorkbench().getDisplay();
-				display.syncExec(new Runnable() {
-
-					@Override
-					public void run() {
-						getViewer().refresh();
-					}
-				});
+				refreshGraph();
 			}
 
 		});
@@ -277,6 +286,7 @@ public class AlignmentView extends AbstractMappingView {
 				updateLayout(true);
 			}
 		});
+		getViewer().setInput(new DefaultCell());
 	}
 
 	/**
@@ -286,10 +296,10 @@ public class AlignmentView extends AbstractMappingView {
 	protected void menuAboutToShow(IMenuManager manager) {
 		ISelection cellSelection = getViewer().getSelection();
 
-		final Cell typeCell = getSelectedTypeCell();
+		final Cell typeCell = sourceTargetSelector.getSelectedCell();
 
 		// is a type relation selected
-		if (typeCell == null)
+		if (!sourceTargetSelector.isCellSelected())
 			return;
 
 		// is a cell selected?
@@ -428,9 +438,16 @@ public class AlignmentView extends AbstractMappingView {
 		manager.add(new FilterCellAction("Hide base alignment cells", "Show base alignment cells",
 				MappingViewPlugin.getImageDescriptor("icons/base_alignment.gif"), getViewer(),
 				contentProvider, baseAlignmentCellFilter, true, true));
-		manager.add(new FilterCellAction("Hide deactivated cells", "Show deactivated cells",
+		deactivatedCellFilterAction = new FilterCellAction("Hide deactivated cells",
+				"Show deactivated cells",
 				MappingViewPlugin.getImageDescriptor("icons/progress_rem.gif"), getViewer(),
-				contentProvider, deactivatedCellFilter, true, true));
+				contentProvider, deactivatedCellFilter, true, true);
+		if (sourceTargetSelector != null) {
+			deactivatedCellFilterAction.setEnabled(sourceTargetSelector.isCellSelected());
+			if (!sourceTargetSelector.isCellSelected())
+				deactivatedCellFilterAction.setChecked(true);
+		}
+		manager.add(deactivatedCellFilterAction);
 		manager.add(new FilterCellAction("Hide inherited cells", "Show inherited cells",
 				MappingViewPlugin.getImageDescriptor("icons/inherited.gif"), getViewer(),
 				contentProvider, inheritedCellFilter, true, true));
@@ -464,7 +481,7 @@ public class AlignmentView extends AbstractMappingView {
 	 * @param selection the schema selection
 	 */
 	private void updateRelation(SchemaSelection selection) {
-		Cell typeCell = getSelectedTypeCell();
+		Cell typeCell = sourceTargetSelector.getSelectedCell();
 
 		if (typeCell != null
 				&& (associatedWithType(typeCell.getSource(), selection.getSourceItems()) && associatedWithType(
@@ -481,7 +498,8 @@ public class AlignmentView extends AbstractMappingView {
 		for (Cell cell : alignment.getTypeCells()) {
 			if ((associatedWithType(cell.getSource(), selection.getSourceItems()))
 					&& associatedWithType(cell.getTarget(), selection.getTargetItems())) {
-				typeRelations.setSelection(new StructuredSelection(cell));
+//				typeRelations.setSelection(new StructuredSelection(cell));
+				sourceTargetSelector.setSelection(new StructuredSelection(cell));
 				return;
 			}
 		}
@@ -497,7 +515,8 @@ public class AlignmentView extends AbstractMappingView {
 		for (Cell cell : alignment.getTypeCells()) {
 			if ((associatedWithType(cell.getSource(), selection.getSourceItems()))
 					|| associatedWithType(cell.getTarget(), selection.getTargetItems())) {
-				typeRelations.setSelection(new StructuredSelection(cell));
+				sourceTargetSelector.setSelection(new StructuredSelection(cell));
+//				typeRelations.setSelection(new StructuredSelection(cell));
 				return;
 			}
 		}
@@ -505,6 +524,9 @@ public class AlignmentView extends AbstractMappingView {
 
 	private boolean associatedWithType(ListMultimap<String, ? extends Entity> entities,
 			Set<EntityDefinition> entityDefs) {
+		if (entities == null)
+			return false;
+
 		Set<TypeDefinition> types = new HashSet<TypeDefinition>(); // XXX must
 																	// be
 																	// TypeEntityDefintions
@@ -525,77 +547,76 @@ public class AlignmentView extends AbstractMappingView {
 		return false;
 	}
 
-	private Cell getSelectedTypeCell() {
-		ISelection typeSelection = typeRelations.getSelection();
-		if (!typeSelection.isEmpty() && typeSelection instanceof IStructuredSelection)
-			return (Cell) ((IStructuredSelection) typeSelection).getFirstElement();
-		else
-			return null;
-	}
-
 	private boolean isDisabledForCurrentType(Cell cell) {
-		Cell typeCell = getSelectedTypeCell();
-
-		if (typeCell != null)
-			return cell.getDisabledFor().contains(typeCell);
+		if (sourceTargetSelector.isCellSelected())
+			return cell.getDisabledFor().contains(sourceTargetSelector.getSelectedCell());
 		else
 			return false;
 	}
 
-	/**
-	 * Set the current alignment
-	 */
-	private void update() {
+//	/**
+//	 * Set the current alignment
+//	 */
+//	private void update() {
+//		final Display display = PlatformUI.getWorkbench().getDisplay();
+//		display.syncExec(new Runnable() {
+//
+//			@Override
+//			public void run() {
+//				ISelection selection = typeRelations.getSelection();
+//				Cell lastSelected = null;
+//				if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
+//					lastSelected = (Cell) ((IStructuredSelection) selection).getFirstElement();
+//				}
+//
+//				// update type relations
+//				AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+//						AlignmentService.class);
+//				Collection<? extends Cell> typeCells = as.getAlignment().getTypeCells();
+//				typeRelations.setInput(typeCells);
+//
+//				ISelection newSelection;
+//				if (lastSelected != null && typeCells.contains(lastSelected)) {
+//					newSelection = new StructuredSelection(lastSelected);
+//				}
+//				else if (typeCells.isEmpty()) {
+//					newSelection = new StructuredSelection();
+//				}
+//				else {
+//					newSelection = new StructuredSelection(typeCells.iterator().next());
+//				}
+//				typeRelations.setSelection(newSelection);
+//
+//				// call to updateGraph is done implicitly through selection
+//				// change
+//			}
+//		});
+//	}
+
+	private void refreshGraph() {
+
 		final Display display = PlatformUI.getWorkbench().getDisplay();
 		display.syncExec(new Runnable() {
 
 			@Override
 			public void run() {
-				ISelection selection = typeRelations.getSelection();
-				Cell lastSelected = null;
-				if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
-					lastSelected = (Cell) ((IStructuredSelection) selection).getFirstElement();
-				}
-
-				// update type relations
-				AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-						AlignmentService.class);
-				Collection<? extends Cell> typeCells = as.getAlignment().getTypeCells();
-				typeRelations.setInput(typeCells);
-
-				ISelection newSelection;
-				if (lastSelected != null && typeCells.contains(lastSelected)) {
-					newSelection = new StructuredSelection(lastSelected);
-				}
-				else if (typeCells.isEmpty()) {
-					newSelection = new StructuredSelection();
-				}
-				else {
-					newSelection = new StructuredSelection(typeCells.iterator().next());
-				}
-				typeRelations.setSelection(newSelection);
-
-				// call to updateGraph is done implicitly through selection
-				// change
+				getViewer().refresh();
+				updateLayout(true);
 			}
 		});
-	}
-
-	private void updateGraph() {
-		ISelection selection = typeRelations.getSelection();
-
-		Cell typeCell = null;
-		if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
-			typeCell = (Cell) ((IStructuredSelection) selection).getFirstElement();
-		}
-
-		if (typeCell != null) {
-			getViewer().setInput(typeCell);
-		}
-		else {
-			getViewer().setInput(Collections.EMPTY_LIST);
-		}
-		updateLayout(true);
+//		ISelection selection = typeRelations.getSelection();
+//
+//		Cell typeCell = null;
+//		if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
+//			typeCell = (Cell) ((IStructuredSelection) selection).getFirstElement();
+//		}
+//
+//		if (typeCell != null) {
+//			getViewer().setInput(typeCell);
+//		}
+//		else {
+//			getViewer().setInput(Collections.EMPTY_LIST);
+//		}
 	}
 
 	/**
