@@ -33,9 +33,13 @@ public enum Priority {
 	 */
 	NORMAL("normal", 0), //
 	/**
-	 * Low priority
+	 * Low priority.
 	 */
-	LOW("low", -1);
+	LOW("low", -1),
+	/**
+	 * Lowest priority.
+	 */
+	LOWEST("lowest", Integer.MIN_VALUE);
 
 	private final String _value;
 	private final int _numericPriority;
