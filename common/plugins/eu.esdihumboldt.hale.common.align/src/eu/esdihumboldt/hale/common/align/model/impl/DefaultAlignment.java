@@ -21,9 +21,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -33,10 +35,12 @@ import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
@@ -203,6 +207,26 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	 */
 	@Override
 	public Collection<? extends Cell> getPropertyCells(Cell typeCell, boolean includeDisabled) {
+		if (CellUtil.getFirstEntity(typeCell.getTarget()) == null) {
+			if (CellUtil.getFirstEntity(typeCell.getSource()) == null)
+				return Collections.emptySet();
+			else if (!(typeCell.getSource().values().iterator().next() instanceof Type))
+				throw new IllegalArgumentException("Given cell is not a type cell.");
+
+			// query with sources only
+			Collection<TypeEntityDefinition> sourceTypes = new ArrayList<TypeEntityDefinition>();
+			Iterator<? extends Entity> it = typeCell.getSource().values().iterator();
+			while (it.hasNext())
+				sourceTypes.add((TypeEntityDefinition) it.next().getDefinition());
+
+			List<Cell> result = new ArrayList<Cell>();
+			for (Cell cell : cells)
+				if (!AlignmentUtil.isTypeCell(cell)
+						&& matchesSources(cell.getSource(), sourceTypes))
+					result.add(cell);
+			return result;
+		}
+
 		if (!AlignmentUtil.isTypeCell(typeCell))
 			throw new IllegalArgumentException("Given cell is not a type cell.");
 
@@ -212,10 +236,13 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 				.getDefinition().getType();
 
 		// collect source entity definitions
-		Iterator<? extends Entity> it = typeCell.getSource().values().iterator();
 		Collection<TypeEntityDefinition> sourceTypes = new ArrayList<TypeEntityDefinition>();
-		while (it.hasNext())
-			sourceTypes.add((TypeEntityDefinition) it.next().getDefinition());
+		// null check in case only target type is in question
+		if (typeCell.getSource() != null) {
+			Iterator<? extends Entity> it = typeCell.getSource().values().iterator();
+			while (it.hasNext())
+				sourceTypes.add((TypeEntityDefinition) it.next().getDefinition());
+		}
 
 		while (typeCellType != null) {
 			// select all cells of the target type
@@ -225,7 +252,7 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 						&& (includeDisabled || !cell.getDisabledFor().contains(typeCell))) {
 					// cell is a property cell that isn't disabled
 					// the target type matches, too
-					if (AlignmentUtil.isAugmentation(cell)
+					if (AlignmentUtil.isAugmentation(cell) || sourceTypes.isEmpty()
 							|| matchesSources(cell.getSource(), sourceTypes)) {
 						// cell matches on the source side, too
 						result.add(cell);
@@ -241,19 +268,19 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	}
 
 	/**
-	 * Determines if the given type entity definition of a property cell is
+	 * Determines if the given type entity definition of the test cell is
 	 * associated to at least one of the given type entity definitions of a type
 	 * cell.
 	 * 
-	 * @param propertyCellType type entity definition of a property cell
+	 * @param testCellType type entity definition of the test cell
 	 * @param typeCellTypes type entity definitions of a type cell
 	 * @return whether the entity definition is associated to at least one of
 	 *         the others
 	 */
-	private boolean matchesSources(TypeEntityDefinition propertyCellType,
+	private boolean matchesSources(TypeEntityDefinition testCellType,
 			Iterable<TypeEntityDefinition> typeCellTypes) {
-		TypeDefinition def = propertyCellType.getDefinition();
-		Filter filter = propertyCellType.getFilter();
+		TypeDefinition def = testCellType.getDefinition();
+		Filter filter = testCellType.getFilter();
 		for (TypeEntityDefinition typeCellType : typeCellTypes) {
 			if (DefinitionUtil.isSuperType(typeCellType.getDefinition(), def)
 					&& (filter == null || filter.equals(typeCellType.getFilter())))
@@ -266,20 +293,59 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	 * Determines if all of the given entities are associated to at least one of
 	 * the given type entity definitions.
 	 * 
-	 * @param propertyCellTypes the entities
+	 * @param testCellSources the entities
 	 * @param typeCellTypes the type entity definitions
 	 * @return whether all entities are associated to at least one of the types
 	 */
-	private boolean matchesSources(ListMultimap<String, ? extends Entity> propertyCellTypes,
+	private boolean matchesSources(ListMultimap<String, ? extends Entity> testCellSources,
 			Iterable<TypeEntityDefinition> typeCellTypes) {
-		for (Entity entity : propertyCellTypes.values()) {
+		if (testCellSources == null)
+			return true;
+		for (Entity entity : testCellSources.values()) {
 			// if one of the property cell's sources is not part of the type
 			// cell it should not be included
+			// XXX this is only true for the transformation?
 			if (!matchesSources(AlignmentUtil.getTypeEntity(entity.getDefinition()), typeCellTypes))
 				return false;
 		}
 
 		return true;
+	}
+
+	/**
+	 * @see Alignment#getTypeCells(Cell)
+	 */
+	@Override
+	public Collection<? extends Cell> getTypeCells(Cell queryCell) {
+		Set<TypeEntityDefinition> sources = new HashSet<TypeEntityDefinition>();
+		if (queryCell.getSource() != null) {
+			Iterator<? extends Entity> it = queryCell.getSource().values().iterator();
+			while (it.hasNext())
+				sources.add(AlignmentUtil.getTypeEntity(it.next().getDefinition()));
+		}
+
+		Entity targetEntity = CellUtil.getFirstEntity(queryCell.getTarget());
+		TypeDefinition target = targetEntity == null ? null : targetEntity.getDefinition()
+				.getType();
+
+		if (sources.isEmpty() && target == null)
+			return getTypeCells();
+
+		List<Cell> result = new ArrayList<Cell>();
+
+		for (Cell typeCell : typeCells) {
+			TypeDefinition typeCellTarget = CellUtil.getFirstEntity(typeCell.getTarget())
+					.getDefinition().getType();
+			if (target == null || DefinitionUtil.isSuperType(target, typeCellTarget)) {
+				// target matches
+				if (sources.isEmpty() || matchesSources(typeCell.getSource(), sources)) {
+					// source matches, too
+					result.add(typeCell);
+				}
+			}
+		}
+
+		return result;
 	}
 
 	/**

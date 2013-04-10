@@ -20,13 +20,9 @@ import java.util.Set;
 
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
@@ -36,12 +32,10 @@ import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
-import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
-import eu.esdihumboldt.hale.ui.function.common.TypeEntitySelector;
+import eu.esdihumboldt.hale.ui.function.common.SourceTargetTypeSelector;
 import eu.esdihumboldt.hale.ui.function.generic.pages.internal.PropertyField;
-import eu.esdihumboldt.hale.ui.function.generic.pages.internal.TypeCellSelectionDialog;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 
 /**
@@ -53,8 +47,7 @@ public class PropertyEntitiesPage extends
 		EntitiesPage<PropertyFunction, PropertyParameter, PropertyField> {
 
 //	private ComboViewer typeRelation;
-	private TypeEntitySelector targetTypeSelector;
-	private TypeEntitySelector sourceTypeSelector;
+	private SourceTargetTypeSelector sourceTargetSelector;
 
 	/**
 	 * @see EntitiesPage#EntitiesPage(SchemaSelection, Cell)
@@ -70,63 +63,35 @@ public class PropertyEntitiesPage extends
 	protected Control createHeader(Composite parent) {
 		Group typeSelectionGroup = new Group(parent, SWT.NONE);
 		typeSelectionGroup.setText("Type");
-		typeSelectionGroup.setLayout(new GridLayout(3, false));
+		typeSelectionGroup.setLayout(new GridLayout());
 
-		// XXX what about multiple source types?
-		sourceTypeSelector = new TypeEntitySelector(SchemaSpaceID.SOURCE, null, typeSelectionGroup,
-				false);
-		sourceTypeSelector.getControl().setLayoutData(
+		sourceTargetSelector = new SourceTargetTypeSelector(typeSelectionGroup);
+		sourceTargetSelector.getControl().setLayoutData(
 				new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-		sourceTypeSelector.addSelectionChangedListener(new ISelectionChangedListener() {
+
+		sourceTargetSelector.addSelectionChangedListener(new ISelectionChangedListener() {
 
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
-				TypeEntityDefinition selectedType = (TypeEntityDefinition) sourceTypeSelector
-						.getSelectedObject();
+				TypeEntityDefinition selectedType = sourceTargetSelector
+						.getSelection(SchemaSpaceID.SOURCE);
 				for (PropertyField field : getFunctionFields())
 					if (field.getSchemaSpace() == SchemaSpaceID.SOURCE)
 						field.setParentType(selectedType);
 			}
-		});
+		}, SchemaSpaceID.SOURCE);
 
-		Button preselectTypeRelation = new Button(typeSelectionGroup, SWT.PUSH);
-		preselectTypeRelation.setText("...");
-		preselectTypeRelation.setToolTipText("Select a type cell");
-		preselectTypeRelation.addSelectionListener(new SelectionAdapter() {
-
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				TypeCellSelectionDialog dialog = new TypeCellSelectionDialog(
-						PropertyEntitiesPage.this.getShell(), "Select a type cell", null);
-				if (dialog.open() == TypeCellSelectionDialog.OK) {
-					Cell selected = dialog.getObject();
-					if (selected == null)
-						return;
-					TypeEntityDefinition sourceType = ((Type) selected.getSource().values()
-							.iterator().next()).getDefinition();
-					TypeEntityDefinition targetType = ((Type) selected.getTarget().values()
-							.iterator().next()).getDefinition();
-					sourceTypeSelector.setSelection(new StructuredSelection(sourceType));
-					targetTypeSelector.setSelection(new StructuredSelection(targetType));
-				}
-			}
-		});
-
-		targetTypeSelector = new TypeEntitySelector(SchemaSpaceID.TARGET, null, typeSelectionGroup,
-				false);
-		targetTypeSelector.getControl().setLayoutData(
-				new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-		targetTypeSelector.addSelectionChangedListener(new ISelectionChangedListener() {
+		sourceTargetSelector.addSelectionChangedListener(new ISelectionChangedListener() {
 
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
-				TypeEntityDefinition selectedType = (TypeEntityDefinition) targetTypeSelector
-						.getSelectedObject();
+				TypeEntityDefinition selectedType = sourceTargetSelector
+						.getSelection(SchemaSpaceID.TARGET);
 				for (PropertyField field : getFunctionFields())
 					if (field.getSchemaSpace() == SchemaSpaceID.TARGET)
 						field.setParentType(selectedType);
 			}
-		});
+		}, SchemaSpaceID.TARGET);
 
 //		Set<Pair<Type, Type>> relations = new HashSet<Pair<Type, Type>>();
 //
@@ -271,9 +236,9 @@ public class PropertyEntitiesPage extends
 	private TypeEntityDefinition getParentType(SchemaSpaceID ssid) {
 		switch (ssid) {
 		case SOURCE:
-			return (TypeEntityDefinition) sourceTypeSelector.getSelectedObject();
+			return sourceTargetSelector.getSelection(SchemaSpaceID.SOURCE);
 		case TARGET:
-			return (TypeEntityDefinition) targetTypeSelector.getSelectedObject();
+			return sourceTargetSelector.getSelection(SchemaSpaceID.TARGET);
 		default:
 			throw new IllegalArgumentException("Illegal schema space");
 		}

@@ -25,18 +25,21 @@ import org.eclipse.ui.PlatformUI;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
+import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.ui.common.graph.content.Edge;
 import eu.esdihumboldt.hale.ui.common.graph.content.ReverseCellGraphContentProvider;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 
 /**
  * A {@link ReverseCellGraphContentProvider} with the option to add
- * {@link ViewerFilter}s to filter cells. Also if the input is a type cell all
- * its property cells will be shown, and inherited property cells will connect
- * to the correct properties.
+ * {@link ViewerFilter}s to filter cells. Also if the input is a (incomplete)
+ * type cell all its property cells and matching type cells will be shown, and
+ * inherited property cells will connect to the correct properties.
  * 
  * @author Kai Schwierczek
  */
@@ -68,10 +71,17 @@ public class AlignmentViewContentProvider extends ReverseCellGraphContentProvide
 	 */
 	@Override
 	public Object[] getElements(Object input) {
-		if (input instanceof Cell && AlignmentUtil.isTypeCell((Cell) input))
-			return getEdges((Cell) input);
-		else
-			return super.getElements(input);
+		// check if the input is a (incomplete) type cell
+		if (input instanceof Cell) {
+			Cell cell = (Cell) input;
+			Entity source = CellUtil.getFirstEntity(cell.getSource());
+			Entity target = CellUtil.getFirstEntity(cell.getTarget());
+			if ((source == null || source instanceof Type)
+					&& (target == null || target instanceof Type))
+				return getEdges((Cell) input);
+		}
+
+		return super.getElements(input);
 	}
 
 	/**
@@ -83,37 +93,43 @@ public class AlignmentViewContentProvider extends ReverseCellGraphContentProvide
 	private Object[] getEdges(Cell typeCell) {
 		List<Edge> edges = new ArrayList<Edge>();
 
-		// XXX really filter type cell out?
-		if (select(typeCell))
-			addEdges(typeCell, edges);
-
 		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
 				AlignmentService.class);
-		for (Object object : as.getAlignment().getPropertyCells(typeCell, true)) {
-			if (object instanceof Cell) {
-				Cell cell = (Cell) object;
-				if (!select(cell))
-					continue;
+		Alignment alignment = as.getAlignment();
 
-				Cell reparentCell = AlignmentUtil.reparentCell(cell, typeCell);
-
-				// if the cell got changed connect the changed cell's entities
-				// to the original cell
-				if (reparentCell == cell)
+		if (typeCell.getId() != null) {
+			// XXX really filter type cell out?
+			if (select(typeCell))
+				addEdges(typeCell, edges);
+		}
+		else {
+			// dummy cell, look for matching type cells
+			for (Cell cell : alignment.getTypeCells(typeCell))
+				if (select(cell))
 					addEdges(cell, edges);
-				else {
-					// add edges leading to the cell for each source entity
-					if (reparentCell.getSource() != null) {
-						for (Entry<String, ? extends Entity> entry : reparentCell.getSource()
-								.entries()) {
-							edges.add(new Edge(entry.getValue(), cell, entry.getKey()));
-						}
-					}
+		}
 
-					// add edges leading to the target entities from the cell
-					for (Entry<String, ? extends Entity> entry : reparentCell.getTarget().entries()) {
-						edges.add(new Edge(cell, entry.getValue(), entry.getKey()));
+		for (Cell cell : as.getAlignment().getPropertyCells(typeCell, true)) {
+			if (!select(cell))
+				continue;
+
+			Cell reparentCell = AlignmentUtil.reparentCell(cell, typeCell, false);
+
+			// if the cell got changed connect the changed cell's entities
+			// to the original cell
+			if (reparentCell == cell)
+				addEdges(cell, edges);
+			else {
+				// add edges leading to the cell for each source entity
+				if (reparentCell.getSource() != null) {
+					for (Entry<String, ? extends Entity> entry : reparentCell.getSource().entries()) {
+						edges.add(new Edge(entry.getValue(), cell, entry.getKey()));
 					}
+				}
+
+				// add edges leading to the target entities from the cell
+				for (Entry<String, ? extends Entity> entry : reparentCell.getTarget().entries()) {
+					edges.add(new Edge(cell, entry.getValue(), entry.getKey()));
 				}
 			}
 		}

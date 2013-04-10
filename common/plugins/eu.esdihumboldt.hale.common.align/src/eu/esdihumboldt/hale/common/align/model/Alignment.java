@@ -72,7 +72,9 @@ public interface Alignment {
 
 	/**
 	 * Get the cells representing a mapping between properties that are
-	 * associated with the given cell, not including disabled cells.
+	 * associated with the given cell, not including disabled cells.<br>
+	 * The type cell needs to have at least a source or a target set for this
+	 * method to return anything.
 	 * 
 	 * @see #getPropertyCells(Cell, boolean)
 	 * @param typeCell the cell in question, has to be a type cell
@@ -82,13 +84,26 @@ public interface Alignment {
 
 	/**
 	 * Get the cells representing a mapping between properties that are
-	 * associated with the given cell.
+	 * associated with the given cell.<br>
+	 * The type cell needs to have at least a source or a target set for this
+	 * method to return anything.
 	 * 
 	 * @param typeCell the cell in question, has to be a type cell
 	 * @param includeDisabled also get cells that are disabled
 	 * @return the property cells associated with the given type cell.
 	 */
 	public Collection<? extends Cell> getPropertyCells(Cell typeCell, boolean includeDisabled);
+
+	/**
+	 * Get all type cells that match the given query cell's sources and targets.<br>
+	 * If the query cell has neither sources nor a target, all type cells are
+	 * returned. Otherwise matching means, that the type cell's sources and
+	 * target have to be the same or super types of the query cell's.
+	 * 
+	 * @param queryCell the query cell
+	 * @return matching type cells
+	 */
+	public Collection<? extends Cell> getTypeCells(Cell queryCell);
 
 	/**
 	 * Returns the cell referenced by the given id string or <code>null</code>
