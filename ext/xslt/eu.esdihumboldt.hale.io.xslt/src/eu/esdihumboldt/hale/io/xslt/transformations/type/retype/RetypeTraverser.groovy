@@ -28,7 +28,6 @@ import eu.esdihumboldt.hale.common.align.model.ChildContext
 import eu.esdihumboldt.hale.common.align.model.Priority
 import eu.esdihumboldt.hale.common.align.tgraph.TGraph
 import eu.esdihumboldt.hale.common.align.tgraph.TGraphConstants
-import eu.esdihumboldt.hale.common.filter.AbstractGeotoolsFilter
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
@@ -411,19 +410,12 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 		if (ctx.condition) {
 			// condition context
 			def filter = ctx.condition.filter
-			switch (filter) {
-				case AbstractGeotoolsFilter:
-					def geoFilter = filter.internFilter
-					assert ctx.child.asProperty() // only working on properties
-					String xpathFilter = FilterToXPath.toXPath(
-							ctx.child.asProperty(),
-							xsltContext.namespaceContext,
-							geoFilter)
-					return "[$xpathFilter]"
-				default:
-					throw new IllegalStateException('Filter type not supported')
-			}
-
+			assert ctx.child.asProperty() // only working on properties
+			String xpathFilter = FilterToXPath.toXPath(
+					ctx.child.asProperty(),
+					xsltContext.namespaceContext,
+					filter)
+			return "[$xpathFilter]"
 		}
 
 		''

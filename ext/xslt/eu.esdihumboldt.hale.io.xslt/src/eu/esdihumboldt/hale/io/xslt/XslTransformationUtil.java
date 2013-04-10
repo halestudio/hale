@@ -26,7 +26,6 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.event.EventCartridge;
 
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
-import eu.esdihumboldt.hale.common.filter.AbstractGeotoolsFilter;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.gml.writer.internal.IndentingXMLStreamWriter;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
@@ -91,9 +90,9 @@ public abstract class XslTransformationUtil {
 		}
 
 		// filter
-		if (ted.getFilter() != null && ted.getFilter() instanceof AbstractGeotoolsFilter) {
+		if (ted.getFilter() != null) {
 			String filterxpath = FilterToXPath.toXPath(ted.getDefinition(), namespaces,
-					((AbstractGeotoolsFilter) ted.getFilter()).getInternFilter());
+					ted.getFilter());
 
 			if (filterxpath != null && !filterxpath.isEmpty()) {
 				select.insert(0, '(');
