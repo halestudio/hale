@@ -155,17 +155,29 @@ public abstract class StreamGmlHelper {
 		if (type.getConstraint(AugmentedValueFlag.class).isEnabled()) {
 			// add geometry as a GeometryProperty value where applicable
 			GeometryFactory geomFactory = type.getConstraint(GeometryFactory.class);
-			Object geomValue;
+			Object geomValue = null;
 
 			// the default value for the srsDimension
 			int defaultValue = 2;
 
-			if (srsDimension != null) {
-				geomValue = geomFactory.createGeometry(instance, srsDimension);
-			}
-			else {
-				// srsDimension is not set
-				geomValue = geomFactory.createGeometry(instance, defaultValue);
+			try {
+				if (srsDimension != null) {
+					geomValue = geomFactory.createGeometry(instance, srsDimension);
+				}
+				else {
+					// srsDimension is not set
+					geomValue = geomFactory.createGeometry(instance, defaultValue);
+				}
+			} catch (Exception e) {
+				/*
+				 * Catch IllegalArgumentException that e.g. occurs if a linear
+				 * ring has to few points. NullPointerExceptions may occur
+				 * because an internal geometry could not be created.
+				 * 
+				 * XXX a problem is that these messages will not appear in the
+				 * report
+				 */
+				log.error("Error creating geometry", e);
 			}
 
 			if (geomValue != null && crsProvider != null && propertyPath != null) {
