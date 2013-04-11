@@ -51,8 +51,8 @@ public class XslRetype extends AbstractVelocityXslTypeTransformation implements
 		Type source = (Type) CellUtil.getFirstEntity(typeCell.getSource());
 
 		TypeEntityDefinition ted = source.getDefinition();
-		context.put(CONTEXT_PARAM_SELECT_INSTANCES,
-				XslTransformationUtil.selectInstances(ted, "/", context().getNamespaceContext()));
+		context.put(CONTEXT_PARAM_SELECT_INSTANCES, XslTransformationUtil.selectInstances(ted,
+				context().getSourceContext(ted.getDefinition()), context().getNamespaceContext()));
 
 		String properties = createPropertiesFragment(typeCell);
 		context.put(CONTEXT_PARAM_PROPERTIES, properties);

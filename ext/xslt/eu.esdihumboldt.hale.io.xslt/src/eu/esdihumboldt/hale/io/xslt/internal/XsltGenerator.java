@@ -74,6 +74,7 @@ import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.Descent;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.PathElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
+import eu.esdihumboldt.hale.io.xslt.SourceContextProvider;
 import eu.esdihumboldt.hale.io.xslt.XslPropertyTransformation;
 import eu.esdihumboldt.hale.io.xslt.XslTransformationUtil;
 import eu.esdihumboldt.hale.io.xslt.XslTypeTransformation;
@@ -199,6 +200,23 @@ public class XsltGenerator implements XsltConstants {
 			return !templateNames.contains(id);
 		}
 
+		@Override
+		public String getSourceContext(TypeDefinition type) {
+			String result = null;
+
+			if (sourceContext != null) {
+				result = sourceContext.getSourceContext(type, getNamespaceContext());
+			}
+
+			if (result == null) {
+				// default is anywhere in the document
+				return "/";
+			}
+			else {
+				return result;
+			}
+		}
+
 	};
 
 	/**
@@ -283,6 +301,11 @@ public class XsltGenerator implements XsltConstants {
 	private final XmlElement targetContainer;
 
 	/**
+	 * An optional custom source context provider.
+	 */
+	private final SourceContextProvider sourceContext;
+
+	/**
 	 * Create a XSLT generator.
 	 * 
 	 * @param workDir the working directory where the generator may store
@@ -297,11 +320,12 @@ public class XsltGenerator implements XsltConstants {
 	 *            progress
 	 * @param containerElement the name of the element to serve as document root
 	 *            in the target XML file
+	 * @param sourceContext an optional custom source context provider
 	 * @throws Exception if an error occurs initializing the generator
 	 */
 	public XsltGenerator(File workDir, Alignment alignment, XmlIndex sourceSchema,
 			XmlIndex targetSchema, IOReporter reporter, ProgressIndicator progress,
-			XmlElement containerElement) throws Exception {
+			XmlElement containerElement, SourceContextProvider sourceContext) throws Exception {
 		this.reporter = reporter;
 		this.progress = progress;
 		this.alignment = alignment;
@@ -309,6 +333,7 @@ public class XsltGenerator implements XsltConstants {
 		this.targetContainer = containerElement;
 		this.targetSchema = targetSchema;
 		this.sourceSchema = sourceSchema;
+		this.sourceContext = sourceContext;
 
 		// initialize the velocity template engine
 		Templates.copyTemplates(workDir);
