@@ -90,6 +90,8 @@ public class XsltExport extends AbstractAlignmentWriter implements XmlWriterBase
 				throw new IllegalStateException("Source schema contains no XML schema");
 			}
 
+			init(sourceIndex, targetIndex);
+
 			XmlElement containerElement = StreamGmlWriter.getConfiguredContainerElement(this,
 					targetIndex);
 			if (containerElement == null) {
@@ -112,6 +114,20 @@ public class XsltExport extends AbstractAlignmentWriter implements XmlWriterBase
 				log.warn("Failed to delete temporary directory", e);
 			}
 		}
+	}
+
+	/**
+	 * Initialize the provider before execution.
+	 * 
+	 * @param sourceIndex the source schema
+	 * @param targetIndex the target schema
+	 * @throws IOProviderConfigurationException if the initialization was not
+	 *             successful and the execution should not proceed
+	 */
+	@SuppressWarnings("unused")
+	protected void init(XmlIndex sourceIndex, XmlIndex targetIndex)
+			throws IOProviderConfigurationException {
+		// override me
 	}
 
 	@Override
