@@ -26,6 +26,7 @@ import com.google.common.io.InputSupplier;
 import com.google.common.io.OutputSupplier;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Context for a XSLT generation process.
@@ -41,6 +42,16 @@ public interface XsltGenerationContext extends XsltConstants {
 	 *         namespaces
 	 */
 	public NamespaceContext getNamespaceContext();
+
+	/**
+	 * Get the context from which source instances of the given type should be
+	 * retrieved.
+	 * 
+	 * @param type the type definition
+	 * @return the source context XPath expression, e.g. &quot;/&quot; for the
+	 *         whole document
+	 */
+	public String getSourceContext(TypeDefinition type);
 
 	/**
 	 * Get the alignment the XSLT is generated from.

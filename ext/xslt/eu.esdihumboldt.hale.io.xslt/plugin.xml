@@ -13,7 +13,7 @@
          </contentType>
       </provider>
       <provider
-            class="eu.esdihumboldt.hale.io.xslt.CityGMLXsltExport"
+            class="eu.esdihumboldt.hale.io.xslt.citygml.CityGMLXsltExport"
             id="eu.esdihumboldt.hale.io.xslt.citygml"
             name="XSLT transformation (CityGML)">
          <contentType

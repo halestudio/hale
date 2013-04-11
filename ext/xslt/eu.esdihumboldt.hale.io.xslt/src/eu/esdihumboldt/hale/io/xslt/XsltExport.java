@@ -99,7 +99,7 @@ public class XsltExport extends AbstractAlignmentWriter implements XmlWriterBase
 			}
 
 			XsltGenerator generator = new XsltGenerator(templateDir, getAlignment(), sourceIndex,
-					targetIndex, reporter, progress, containerElement);
+					targetIndex, reporter, progress, containerElement, getSourceContext());
 			return generator.write(getTarget());
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl("XSLT generation failed", e));
@@ -114,6 +114,15 @@ public class XsltExport extends AbstractAlignmentWriter implements XmlWriterBase
 				log.warn("Failed to delete temporary directory", e);
 			}
 		}
+	}
+
+	/**
+	 * Get the custom source context provider to use during the export.
+	 * 
+	 * @return the source context provider
+	 */
+	protected SourceContextProvider getSourceContext() {
+		return null;
 	}
 
 	/**

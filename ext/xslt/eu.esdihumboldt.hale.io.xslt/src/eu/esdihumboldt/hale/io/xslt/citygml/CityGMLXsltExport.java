@@ -13,7 +13,7 @@
  *     Fraunhofer IGD
  */
 
-package eu.esdihumboldt.hale.io.xslt;
+package eu.esdihumboldt.hale.io.xslt.citygml;
 
 import java.text.MessageFormat;
 
@@ -24,6 +24,8 @@ import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.io.gml.CityGMLConstants;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
+import eu.esdihumboldt.hale.io.xslt.SourceContextProvider;
+import eu.esdihumboldt.hale.io.xslt.XsltExport;
 
 /**
  * Specific XSLT export for mappings with a CityGML based schema as target
@@ -33,28 +35,51 @@ import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
  */
 public class CityGMLXsltExport extends XsltExport implements CityGMLConstants {
 
+	private SourceContextProvider sourceContext;
+
 	@Override
 	protected void init(XmlIndex sourceIndex, XmlIndex targetIndex)
 			throws IOProviderConfigurationException {
 		super.init(sourceIndex, targetIndex);
 
-		boolean found = false;
-		for (XmlElement element : targetIndex.getElements().values()) {
+		// scan target schema for CityModel
+		XmlElement targetCityModel = findCityModel(targetIndex);
+		if (targetCityModel != null) {
+			QName name = targetCityModel.getName();
+			setParameter(PARAM_ROOT_ELEMENT_NAMESPACE, new ParameterValue(name.getNamespaceURI()));
+			setParameter(PARAM_ROOT_ELEMENT_NAME, new ParameterValue(name.getLocalPart()));
+		}
+		else {
+			throw new IOProviderConfigurationException(MessageFormat.format(
+					"Element {0} not found in the target schema.", CITY_MODEL_ELEMENT));
+		}
+
+		// scan source schema for CityModel
+		XmlElement sourceCityModel = findCityModel(sourceIndex);
+		if (sourceCityModel != null) {
+			// create a custom source context
+			sourceContext = new CityGMLSourceContext(sourceCityModel);
+
+			// TODO copy envelope?
+		}
+	}
+
+	private XmlElement findCityModel(XmlIndex schema) {
+		for (XmlElement element : schema.getElements().values()) {
 			QName name = element.getName();
 
 			if (CITY_MODEL_ELEMENT.equals(name.getLocalPart())
 					&& name.getNamespaceURI().startsWith(CITYGML_NAMESPACE_CORE)) {
-				setParameter(PARAM_ROOT_ELEMENT_NAMESPACE,
-						new ParameterValue(name.getNamespaceURI()));
-				setParameter(PARAM_ROOT_ELEMENT_NAME, new ParameterValue(name.getLocalPart()));
-				found = true;
+				return element;
 			}
 		}
 
-		if (!found) {
-			throw new IOProviderConfigurationException(MessageFormat.format(
-					"Element {0} not found in the target schema.", CITY_MODEL_ELEMENT));
-		}
+		return null;
+	}
+
+	@Override
+	protected SourceContextProvider getSourceContext() {
+		return sourceContext;
 	}
 
 }
