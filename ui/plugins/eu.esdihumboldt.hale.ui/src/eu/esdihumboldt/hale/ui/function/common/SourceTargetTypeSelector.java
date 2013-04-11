@@ -79,8 +79,8 @@ public class SourceTargetTypeSelector {
 		main.setLayout(new GridLayout(3, false));
 
 		sourceTypeSelector = new TypeEntitySelector(SchemaSpaceID.SOURCE, null, main, false);
-		sourceTypeSelector.getControl().setLayoutData(
-				new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		sourceTypeSelector.getControl()
+				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
 		selectCellButton = new Button(main, SWT.PUSH);
 		selectCellButton.setText("Select cell");
@@ -99,8 +99,8 @@ public class SourceTargetTypeSelector {
 		});
 
 		targetTypeSelector = new TypeEntitySelector(SchemaSpaceID.TARGET, null, main, false);
-		targetTypeSelector.getControl().setLayoutData(
-				new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		targetTypeSelector.getControl()
+				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 	}
 
 	/**
