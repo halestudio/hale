@@ -23,6 +23,7 @@ import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.io.gml.CityGMLConstants;
 import eu.esdihumboldt.hale.io.gml.writer.internal.StreamGmlWriter;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.AbstractTypeMatcher;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.DefinitionPath;
@@ -36,16 +37,7 @@ import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
  * 
  * @author Simon Templer
  */
-public class CityGMLInstanceWriter extends GmlInstanceWriter {
-
-	/**
-	 * 
-	 */
-	private static final String CITY_OBJECT_MEMBER_ELEMENT = "cityObjectMember";
-
-	private static final String CITY_MODEL_ELEMENT = "CityModel";
-
-	private static final String CITYGML_NAMESPACE_CORE = "http://www.opengis.net/citygml";
+public class CityGMLInstanceWriter extends GmlInstanceWriter implements CityGMLConstants {
 
 	/**
 	 * @see StreamGmlWriter#findDefaultContainter(XmlIndex, IOReporter)
