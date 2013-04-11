@@ -12,6 +12,14 @@
                ref="eu.esdihumboldt.hale.io.xslt">
          </contentType>
       </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.xslt.CityGMLXsltExport"
+            id="eu.esdihumboldt.hale.io.xslt.citygml"
+            name="XSLT transformation (CityGML)">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.xslt">
+         </contentType>
+      </provider>
    </extension>
    <extension
          point="org.eclipse.core.contenttype.contentTypes">
