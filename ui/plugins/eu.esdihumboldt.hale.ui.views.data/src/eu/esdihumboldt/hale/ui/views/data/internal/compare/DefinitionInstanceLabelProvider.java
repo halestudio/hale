@@ -223,7 +223,6 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 	 * @param choice the made choice
 	 */
 	public void selectPath(TreePath path, int choice) {
-
 		LinkedList<Object> segmentList = new LinkedList<Object>();
 		for (int i = 0; i < path.getSegmentCount(); i++) {
 			Object element = path.getSegment(i);
@@ -232,7 +231,7 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 			}
 			segmentList.add(element);
 		}
-		if (path.getFirstSegment() instanceof TypeDefinition) {
+		if (path.getFirstSegment() instanceof EntityDefinition) {
 			if (choice == 1)
 				chosenPaths.remove(segmentList);
 			else
