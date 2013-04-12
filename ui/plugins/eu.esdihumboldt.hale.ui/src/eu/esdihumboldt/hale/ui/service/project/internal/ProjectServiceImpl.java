@@ -186,7 +186,9 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			@Override
 			public void handleResults(ProjectReader provider) {
 				// no change check as this is performed by clean
-				clean();
+				if (!internalClean()) {
+					return;
+				}
 
 				synchronized (ProjectServiceImpl.this) {
 					main = provider.getProject();
@@ -425,13 +427,9 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		}
 	}
 
-	/**
-	 * @see ProjectService#clean()
-	 */
-	@Override
-	public void clean() {
+	private boolean internalClean() {
 		if (!changeCheck()) {
-			return;
+			return false;
 		}
 
 		// reset current session descriptor
@@ -483,6 +481,15 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		} catch (Exception e) {
 			log.error("Error cleaning the project.", e);
 		}
+		return true;
+	}
+
+	/**
+	 * @see ProjectService#clean()
+	 */
+	@Override
+	public void clean() {
+		internalClean();
 	}
 
 	/**
