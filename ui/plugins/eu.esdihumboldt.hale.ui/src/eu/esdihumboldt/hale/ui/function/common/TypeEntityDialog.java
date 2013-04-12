@@ -140,7 +140,7 @@ public class TypeEntityDialog extends EntityDialog {
 	protected void addToolBarActions(ToolBarManager manager) {
 		// filter to only show mapped types
 		manager.add(new FilterAction("Hide unmapped types", "Show unmapped types", HALEUIPlugin
-				.getImageDescriptor("icons/flat_relevant.png"), getViewer(), new ViewerFilter() {
+				.getImageDescriptor("icons/empty.gif"), getViewer(), new ViewerFilter() {
 
 			@Override
 			public boolean select(Viewer viewer, Object parentElement, Object element) {
