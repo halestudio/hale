@@ -52,6 +52,7 @@
 			<xs:enumeration value="high"></xs:enumeration>
 			<xs:enumeration value="normal"></xs:enumeration>
 			<xs:enumeration value="low"></xs:enumeration>
+			<xs:enumeration value="lowest"></xs:enumeration>
 		</xs:restriction>
 	</xs:simpleType>
 	
