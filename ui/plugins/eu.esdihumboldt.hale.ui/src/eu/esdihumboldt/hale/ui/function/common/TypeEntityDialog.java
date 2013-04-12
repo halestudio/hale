@@ -16,25 +16,34 @@
 
 package eu.esdihumboldt.hale.ui.function.common;
 
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.StyledDefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
+import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 import eu.esdihumboldt.hale.ui.service.entity.util.ContentProviderAction;
 import eu.esdihumboldt.hale.ui.service.entity.util.EntityTypeIndexContentProvider;
 import eu.esdihumboldt.hale.ui.service.entity.util.EntityTypeIndexHierarchy;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
+import eu.esdihumboldt.hale.ui.util.viewer.FilterAction;
 import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
 
 /**
@@ -129,9 +138,43 @@ public class TypeEntityDialog extends EntityDialog {
 	 */
 	@Override
 	protected void addToolBarActions(ToolBarManager manager) {
+		// filter to only show mapped types
+		manager.add(new FilterAction("Hide unmapped types", "Show unmapped types", HALEUIPlugin
+				.getImageDescriptor("icons/flat_relevant.png"), getViewer(), new ViewerFilter() {
+
+			@Override
+			public boolean select(Viewer viewer, Object parentElement, Object element) {
+				AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+						AlignmentService.class);
+				Alignment alignment = as.getAlignment();
+				if (element instanceof TreePath)
+					element = ((TreePath) element).getLastSegment();
+				return isMapped((ITreeContentProvider) ((TreeViewer) viewer).getContentProvider(),
+						element, alignment);
+			}
+
+			private boolean isMapped(ITreeContentProvider cp, Object element, Alignment align) {
+				if (element instanceof EntityDefinition) {
+					boolean mapped = AlignmentUtil.entityOrChildMapped((EntityDefinition) element,
+							align);
+					if (mapped)
+						return true;
+				}
+				// recursively check children
+				Object[] children = cp.getChildren(element);
+				if (children != null)
+					for (Object child : children)
+						if (isMapped(cp, child, align))
+							return true;
+				return false;
+			}
+		}, true, true));
+
 		// do not add choice if only mapping relevant types should be selected
 		if (onlyMappingRelevant)
 			return;
+
+		manager.add(new Separator());
 
 		// MappingRelevant types only, flat
 		manager.add(new ContentProviderAction("Mapping relevant types as list", HALEUIPlugin
@@ -149,5 +192,4 @@ public class TypeEntityDialog extends EntityDialog {
 				.getImageDescriptor("icons/hierarchical_all.png"), getViewer(),
 				hierarchicalAllProvider, false));
 	}
-
 }
