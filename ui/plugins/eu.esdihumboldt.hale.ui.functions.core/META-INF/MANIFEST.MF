@@ -9,6 +9,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text;bundle-version="3.7.1"
 Import-Package: com.google.common.base;version="9.0.0",
  com.google.common.collect,
+ eu.esdihumboldt.cst.functions.string,
  eu.esdihumboldt.hale.common.align.extension.function,
  eu.esdihumboldt.hale.common.align.model,
  eu.esdihumboldt.hale.common.align.model.functions,
