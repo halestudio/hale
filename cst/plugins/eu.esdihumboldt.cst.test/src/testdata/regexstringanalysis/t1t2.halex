@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<hale-project version="2.5.0.qualifier">
+    <name>regex test</name>
+    <author>moovida</author>
+    <created>2013-04-12T08:52:29.876+02:00</created>
+    <modified>2013-04-12T09:02:42.992+02:00</modified>
+    <save-config provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer" action-id="project.save">
+        <setting name="projectFiles.separate">false</setting>
+        <setting name="target">file:/home/moovida/development/hale-git/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/regexstringanalysis/t1t2.halex</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
+    </save-config>
+    <resource provider-id="eu.esdihumboldt.hale.io.xsd.reader" action-id="eu.esdihumboldt.hale.io.schema.read.target">
+        <setting name="resourceId">cbc72467-6b0e-4667-a8ed-1a620e98ff96</setting>
+        <setting name="source">file:/home/moovida/development/hale-git/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/regexstringanalysis/t2.xsd</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource provider-id="eu.esdihumboldt.hale.io.xsd.reader" action-id="eu.esdihumboldt.hale.io.schema.read.source">
+        <setting name="resourceId">c6bbbecf-6ec3-4047-b00c-68c7ed90dffe</setting>
+        <setting name="source">file:/home/moovida/development/hale-git/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/regexstringanalysis/t1.xsd</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource provider-id="eu.esdihumboldt.hale.io.xml.reader" action-id="eu.esdihumboldt.hale.io.instance.read.source">
+        <setting name="resourceId">e173a9bc-5f65-4ff0-9c63-7237123bdb26</setting>
+        <setting name="source">file:/home/moovida/development/hale-git/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/regexstringanalysis/instance1.xml</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">org.eclipse.core.runtime.xml</setting>
+    </resource>
+    <file location="file:/home/moovida/development/hale-git/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/regexstringanalysis/t1t2.halex.styles.sld" name="styles.sld"/>
+    <file location="file:/home/moovida/development/hale-git/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/regexstringanalysis/t1t2.halex.alignment.xml" name="alignment.xml"/>
+</hale-project>
