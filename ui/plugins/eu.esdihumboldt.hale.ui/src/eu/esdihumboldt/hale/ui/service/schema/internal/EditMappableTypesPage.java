@@ -208,24 +208,24 @@ public class EditMappableTypesPage extends WizardPage {
 				if (event.getElement() instanceof String) {
 					// update children
 					viewer.setGrayed(event.getElement(), false);
-					for (Object child : contentProvider.getChildren(event.getElement()))
-						if (mappedTypeFilter.select(viewer, event.getElement(), child)) {
-							if (checkStateProvider.isChecked(child) != event.getChecked()) {
-								viewer.setChecked(child, event.getChecked());
-								checkStateOfTypeChanged((TypeDefinition) child, event.getChecked());
-							}
+					for (Object child : contentProvider.getChildren(event.getElement())) {
+//						if (mappedTypeFilter.select(viewer, event.getElement(), child)) {
+						if (checkStateProvider.isChecked(child) != event.getChecked()) {
+							viewer.setChecked(child, event.getChecked());
+							checkStateOfTypeChanged((TypeDefinition) child, event.getChecked());
 						}
+//						}
+					}
 					viewer.setGrayed(event.getElement(),
 							checkStateProvider.isGrayed(event.getElement()));
 					// only two levels, no need to update any parents or
 					// children's children
 				}
 				else {
-					if (mappedTypeFilter.select(viewer, null, event.getElement()))
-						checkStateOfTypeChanged((TypeDefinition) event.getElement(),
-								event.getChecked());
-					else if (!event.getChecked())
-						viewer.setChecked(event.getElement(), true);
+//					if (mappedTypeFilter.select(viewer, null, event.getElement()))
+					checkStateOfTypeChanged((TypeDefinition) event.getElement(), event.getChecked());
+//					else if (!event.getChecked())
+//						viewer.setChecked(event.getElement(), true);
 				}
 			}
 		});
@@ -245,17 +245,17 @@ public class EditMappableTypesPage extends WizardPage {
 	}
 
 	private void checkStateOfTypeChanged(TypeDefinition type, boolean checked) {
-		if (mappedTypeFilter.select(viewer, null, type)) {
-			if (checked == type.getConstraint(MappingRelevantFlag.class).isEnabled())
-				changedTypes.remove(type);
-			else
-				changedTypes.add(type);
-			Object parent = contentProvider.getParent(type);
-			viewer.setGrayed(parent, checkStateProvider.isGrayed(parent));
-			viewer.setChecked(parent, checkStateProvider.isChecked(parent));
-		}
-		else if (!checked)
-			viewer.setChecked(type, true);
+//		if (mappedTypeFilter.select(viewer, null, type)) {
+		if (checked == type.getConstraint(MappingRelevantFlag.class).isEnabled())
+			changedTypes.remove(type);
+		else
+			changedTypes.add(type);
+		Object parent = contentProvider.getParent(type);
+		viewer.setGrayed(parent, checkStateProvider.isGrayed(parent));
+		viewer.setChecked(parent, checkStateProvider.isChecked(parent));
+//		}
+//		else if (!checked)
+//			viewer.setChecked(type, true);
 	}
 
 	/**
