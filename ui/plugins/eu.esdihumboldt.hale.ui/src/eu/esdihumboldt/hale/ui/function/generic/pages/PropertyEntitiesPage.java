@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Group;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
@@ -69,6 +70,13 @@ public class PropertyEntitiesPage extends
 		sourceTargetSelector.getControl().setLayoutData(
 				new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 
+		// set initial selection
+		sourceTargetSelector.setSelection(getInitialTypeSelection(SchemaSpaceID.SOURCE),
+				SchemaSpaceID.SOURCE);
+		sourceTargetSelector.setSelection(getInitialTypeSelection(SchemaSpaceID.TARGET),
+				SchemaSpaceID.TARGET);
+
+		// add selection listener
 		sourceTargetSelector.addSelectionChangedListener(new ISelectionChangedListener() {
 
 			@Override
@@ -147,6 +155,27 @@ public class PropertyEntitiesPage extends
 //		});
 
 		return typeSelectionGroup;
+	}
+
+	/**
+	 * Returns the initial selection for the type selection based on the initial
+	 * property selection.
+	 * 
+	 * @param ssid the schema space to get the initial selection for
+	 * @return the initial selection
+	 */
+	private TypeEntityDefinition getInitialTypeSelection(SchemaSpaceID ssid) {
+		Set<EntityDefinition> candidates = getCandidates(ssid);
+		if (!candidates.isEmpty()) {
+			TypeEntityDefinition initialSelection = AlignmentUtil.getTypeEntity(candidates
+					.iterator().next());
+			for (EntityDefinition def : candidates)
+				if (!AlignmentUtil.getTypeEntity(def).equals(initialSelection))
+					return null;
+			return initialSelection;
+		}
+		else
+			return null;
 	}
 
 //	/**
