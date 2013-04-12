@@ -112,7 +112,9 @@ public class SourceTargetTypeSelector implements ISelectionProvider {
 						.getShell(), "Select a type cell", selectedCell);
 				if (dialog.open() == TypeCellSelectionDialog.OK) {
 					Cell selected = dialog.getObject();
+					inUpdate = true;
 					setSelection(selected);
+					inUpdate = false;
 					fireSelectionChanged();
 				}
 			}
