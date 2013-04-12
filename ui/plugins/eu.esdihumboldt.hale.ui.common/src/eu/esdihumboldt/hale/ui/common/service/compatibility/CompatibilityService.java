@@ -13,11 +13,10 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.compatibility.extension;
+package eu.esdihumboldt.hale.ui.common.service.compatibility;
 
 import de.cs3d.util.eclipse.extension.exclusive.ExclusiveExtension;
 import eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode;
-import eu.esdihumboldt.hale.ui.compatibility.CompatibilityServiceListener;
 
 /**
  * The Compatibility Service interface

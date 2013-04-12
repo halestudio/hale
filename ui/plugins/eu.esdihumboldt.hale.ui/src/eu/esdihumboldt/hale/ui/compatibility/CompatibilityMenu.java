@@ -20,8 +20,8 @@ import org.eclipse.ui.PlatformUI;
 import de.cs3d.ui.util.eclipse.extension.exclusive.ExclusiveExtensionContribution;
 import de.cs3d.util.eclipse.extension.exclusive.ExclusiveExtension;
 import eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode;
-import eu.esdihumboldt.hale.ui.compatibility.extension.CompatibilityModeFactory;
-import eu.esdihumboldt.hale.ui.compatibility.extension.CompatibilityService;
+import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityModeFactory;
+import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityService;
 
 /**
  * Contribution Item for displaying a compatibility mode selection menu

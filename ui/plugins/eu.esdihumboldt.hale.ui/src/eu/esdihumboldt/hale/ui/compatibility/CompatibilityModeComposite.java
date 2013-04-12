@@ -33,8 +33,9 @@ import de.cs3d.util.eclipse.extension.exclusive.ExclusiveExtension.ExclusiveExte
 import eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
-import eu.esdihumboldt.hale.ui.compatibility.extension.CompatibilityModeFactory;
-import eu.esdihumboldt.hale.ui.compatibility.extension.CompatibilityService;
+import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityModeFactory;
+import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityService;
+import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityServiceListener;
 
 /**
  * UI Composite containing elements displaying the current compatibility mode

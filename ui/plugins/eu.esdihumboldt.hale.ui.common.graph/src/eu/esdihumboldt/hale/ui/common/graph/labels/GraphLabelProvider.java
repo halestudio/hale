@@ -16,7 +16,9 @@
 
 package eu.esdihumboldt.hale.ui.common.graph.labels;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.draw2d.ConnectionRouter;
@@ -32,6 +34,7 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.services.IDisposable;
 import org.eclipse.zest.core.viewers.IEntityConnectionStyleProvider;
 import org.eclipse.zest.core.viewers.IEntityStyleProvider;
@@ -57,6 +60,8 @@ import eu.esdihumboldt.hale.ui.common.graph.figures.CellFigure;
 import eu.esdihumboldt.hale.ui.common.graph.figures.EntityFigure;
 import eu.esdihumboldt.hale.ui.common.graph.figures.FunctionFigure;
 import eu.esdihumboldt.hale.ui.common.graph.internal.GraphUIPlugin;
+import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityService;
+import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityServiceListener;
 import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure;
 import eu.esdihumboldt.hale.ui.util.graph.WrappedText;
 import eu.esdihumboldt.hale.ui.util.graph.shapes.FingerPost;
@@ -113,6 +118,10 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 
 	private final Font customFigureFont;
 
+	private final CompatibilityServiceListener csl;
+	private final List<Cell> incompatibleCells;
+	private String lastCompatibilityMode;
+
 	// TODO set colors for function in graph?
 
 	/**
@@ -148,6 +157,27 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 		cellHighlightColor = entityHighlightColor;
 
 		customFigureFont = createFigureFont();
+		incompatibleCells = new ArrayList<Cell>();
+
+		// initiate compatibility mode checkups and changes
+		final CompatibilityService cs = ((CompatibilityService) PlatformUI.getWorkbench()
+				.getService(CompatibilityService.class));
+
+		lastCompatibilityMode = cs.getCurrentDefinition().getDisplayName();
+
+		csl = new CompatibilityServiceListener() {
+
+			@Override
+			public void compatibilityChanged(boolean isCompatible, List<Cell> incompatibleCells) {
+				GraphLabelProvider.this.incompatibleCells.clear();
+				if (!isCompatible) {
+					GraphLabelProvider.this.incompatibleCells.addAll(incompatibleCells);
+					lastCompatibilityMode = cs.getCurrentDefinition().getDisplayName();
+				}
+			}
+
+		};
+		cs.addCompatibilityListener(csl);
 	}
 
 	/**
@@ -284,6 +314,8 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 //		cellBorderHighlightColor.dispose();
 
 		resources.dispose();
+		((CompatibilityService) PlatformUI.getWorkbench().getService(CompatibilityService.class))
+				.removeCompatibilityListener(csl);
 
 		super.dispose();
 	}
@@ -486,10 +518,17 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	 */
 	@Override
 	public IFigure getFigure(Object element) {
+
 		CustomShapeFigure figure = null;
 		if (element instanceof Cell) {
 			Cell cell = (Cell) element;
-			figure = new CellFigure(cell, customFigureFont);
+			if (incompatibleCells.contains(cell)) {
+				figure = new CellFigure(cell, customFigureFont, false, lastCompatibilityMode);
+			}
+			else {
+				figure = new CellFigure(cell, customFigureFont, true, lastCompatibilityMode);
+			}
+
 		}
 		if (element instanceof Function) {
 			figure = new FunctionFigure(getCustomFigureFont());

@@ -22,6 +22,8 @@ import org.eclipse.draw2d.Label;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
@@ -36,20 +38,34 @@ import eu.esdihumboldt.hale.ui.util.graph.shapes.StretchedHexagon;
  */
 public class CellFigure extends CustomShapeFigure {
 
+	final private boolean isCompatible;
+	final private String lastCompatiblityMode;
+
 	/**
 	 * Default constructor
 	 * 
 	 * @param cell the cell from which to take info from.
 	 * @param customFont a custom font to use for the text label, may be
 	 *            <code>null</code>
+	 * @param isCompatible a boolean to determine the compatibility of the cell
+	 *            to the current active mode
+	 * @param lastCompatibilityMode name of the last active compatibility mode
 	 */
-	public CellFigure(Cell cell, final Font customFont) {
+	public CellFigure(Cell cell, final Font customFont, boolean isCompatible,
+			String lastCompatibilityMode) {
 		super(new StretchedHexagon(10), customFont);
+		this.isCompatible = isCompatible;
+		this.lastCompatiblityMode = lastCompatibilityMode;
 
 		setAntialias(SWT.ON);
 
 		GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = 2;
+		if (isCompatible) {
+			gridLayout.numColumns = 2;
+		}
+		else {
+			gridLayout.numColumns = 3;
+		}
 		gridLayout.makeColumnsEqualWidth = false;
 		gridLayout.marginHeight = 3;
 		gridLayout.marginWidth = 3;
@@ -59,6 +75,19 @@ public class CellFigure extends CustomShapeFigure {
 	}
 
 	private void addLabels(Cell cell) {
+
+		if (!isCompatible) {
+			Label compatibilityLabel = new Label();
+			Image compatibilityImage = PlatformUI.getWorkbench().getSharedImages()
+					.getImage(ISharedImages.IMG_OBJS_WARN_TSK);
+			GridData compLabelGD = new GridData(GridData.BEGINNING, GridData.FILL, false, true);
+			compatibilityLabel.setIcon(compatibilityImage);
+			Label toolTipLabel = new Label();
+			toolTipLabel.setText("Not compatible with " + lastCompatiblityMode + " transformation");
+			compatibilityLabel.setToolTip(toolTipLabel);
+			add(compatibilityLabel, compLabelGD);
+		}
+
 		Label mainLabel = new Label();
 		GridData mainLabelGD = new GridData(GridData.FILL, GridData.FILL, true, true);
 		add(mainLabel, mainLabelGD);
