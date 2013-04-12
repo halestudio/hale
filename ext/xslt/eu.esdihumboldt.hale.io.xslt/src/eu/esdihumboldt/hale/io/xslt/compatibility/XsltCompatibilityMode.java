@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.io.xslt.compatibility;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.io.xslt.extension.XslPropertyTransformationExtension;
@@ -26,6 +28,8 @@ import eu.esdihumboldt.hale.io.xslt.extension.XslTypeTransformationExtension;
  * @author Sebastian Reinhardt
  */
 public class XsltCompatibilityMode implements CompatibilityMode {
+
+	private static ALogger _log = ALoggerFactory.getLogger(XsltCompatibilityMode.class);
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode#supportsFunction(java.lang.String)
@@ -44,7 +48,10 @@ public class XsltCompatibilityMode implements CompatibilityMode {
 	private boolean checkPropertyFunc(String id) {
 		try {
 			XslPropertyTransformationExtension.getInstance().getTransformation(id);
+		} catch (IllegalStateException e) {
+			return false;
 		} catch (Exception e) {
+			_log.error(e.getMessage());
 			return false;
 		}
 		return true;
@@ -59,8 +66,10 @@ public class XsltCompatibilityMode implements CompatibilityMode {
 	private boolean checkTypeFunc(String id) {
 		try {
 			XslTypeTransformationExtension.getInstance().getTransformation(id);
-
+		} catch (IllegalStateException e) {
+			return false;
 		} catch (Exception e) {
+			_log.error(e.getMessage());
 			return false;
 		}
 		return true;
