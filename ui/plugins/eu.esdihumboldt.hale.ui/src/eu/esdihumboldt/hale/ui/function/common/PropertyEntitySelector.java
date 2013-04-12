@@ -28,6 +28,7 @@ import com.google.common.base.Objects;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.Property;
@@ -71,9 +72,14 @@ public class PropertyEntitySelector extends EntitySelector<PropertyParameter> {
 		if (!Objects.equal(this.parentType, parentType)) {
 			this.parentType = parentType;
 			// reset selection if necessary
-			// TODO check whether the selection is also valid for the new type?
-			if (parentType != null)
-				setSelection(new StructuredSelection());
+			EntityDefinition selection = getSelectedObject();
+			if (selection != null && parentType != null) {
+				// maybe also keep selection, if it is a super/sub type of
+				// parentType, which also got the selected property?
+				if (!AlignmentUtil.getTypeEntity(selection).equals(parentType)) {
+					setSelection(StructuredSelection.EMPTY);
+				}
+			}
 		}
 	}
 
