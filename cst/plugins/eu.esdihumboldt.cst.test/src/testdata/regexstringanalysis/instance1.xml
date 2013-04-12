@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:collection xmlns:tns="http://www.example.org/t1/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.example.org/t1/ t1.xsd">
+    <tns:t1 >
+        <a1>2007.03,22</a1>
+        <b1>200703.22</b1>
+        <c1>12,345</c1>
+    </tns:t1>
+</tns:collection>

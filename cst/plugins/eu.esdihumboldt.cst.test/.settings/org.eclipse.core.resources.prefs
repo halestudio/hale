@@ -1,4 +1,6 @@
-#Created from default preferences 18.10.2011 11:15:02
-#Tue Oct 18 11:15:02 CEST 2011
 eclipse.preferences.version=1
+encoding//src/testdata/mathexpression/t1.xsd=UTF8
+encoding//src/testdata/mathexpression/t2.xsd=UTF8
+encoding//src/testdata/regexstringanalysis/t1.xsd=UTF8
+encoding//src/testdata/regexstringanalysis/t2.xsd=UTF8
 encoding/<project>=UTF-8

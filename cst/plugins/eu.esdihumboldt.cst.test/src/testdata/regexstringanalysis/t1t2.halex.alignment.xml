@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell priority="normal" id="C18328aa8-dcdd-43be-bc66-e160865235f9" relation="eu.esdihumboldt.hale.align.retype">
+        <source>
+            <class>
+                <type ns="http://www.example.org/t1/" name="T1"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type ns="http://www.example.org/t2/" name="T2"/>
+            </class>
+        </target>
+    </cell>
+    <cell priority="normal" id="Ca48652c8-8d22-4f0d-a538-4b1d679cf6b4" relation="eu.esdihumboldt.cst.functions.string.regexanalysisfunction">
+        <source>
+            <property>
+                <type ns="http://www.example.org/t1/" name="T1"/>
+                <child name="a1"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type ns="http://www.example.org/t2/" name="T2"/>
+                <child name="a1"/>
+            </property>
+        </target>
+        <parameter value="{1}-{3}-{5} 00:00:00" name="outputFormat"/>
+        <parameter value="^([0-9]{4})(\.|,?)([0-9]{2})(\.|,?)([0-9]{2})$" name="regexPattern"/>
+    </cell>
+    <cell priority="normal" id="C663f22d6-bd9f-42d4-9131-1ffe46387dbe" relation="eu.esdihumboldt.cst.functions.string.regexanalysisfunction">
+        <source>
+            <property>
+                <type ns="http://www.example.org/t1/" name="T1"/>
+                <child name="b1"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type ns="http://www.example.org/t2/" name="T2"/>
+                <child name="b1"/>
+            </property>
+        </target>
+        <parameter value="{1}-{3}-{5} 00:00:00" name="outputFormat"/>
+        <parameter value="^([0-9]{4})(\.|,?)([0-9]{2})(\.|,?)([0-9]{2})$" name="regexPattern"/>
+    </cell>
+    <cell priority="normal" id="C2a3e0ced-0c2a-4fa8-a57e-eb995a895823" relation="eu.esdihumboldt.cst.functions.string.regexanalysisfunction">
+        <source>
+            <property>
+                <type ns="http://www.example.org/t1/" name="T1"/>
+                <child name="c1"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type ns="http://www.example.org/t2/" name="T2"/>
+                <child name="c1"/>
+            </property>
+        </target>
+        <parameter value="{1}.{3}" name="outputFormat"/>
+        <parameter value="^([0-9]*)(\.|,)([0-9]*)" name="regexPattern"/>
+    </cell>
+</alignment>

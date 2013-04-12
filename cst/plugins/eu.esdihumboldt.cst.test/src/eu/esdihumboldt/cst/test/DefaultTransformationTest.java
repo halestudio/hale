@@ -226,6 +226,16 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 	}
 
 	/**
+	 * A Regex String Analysis transformation test.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testRegexAnalysis() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.REGEX_ANALYSIS));
+	}
+
+	/**
 	 * A transformation test to consider function priority.
 	 * 
 	 * @throws Exception if an error occurs executing the test
