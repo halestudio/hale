@@ -25,8 +25,10 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.IContentProvider;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -277,6 +279,20 @@ public class AlignmentView extends AbstractMappingView {
 						}
 					}
 				});
+
+		// select type cell, if it is double clicked
+		getViewer().addDoubleClickListener(new IDoubleClickListener() {
+
+			@Override
+			public void doubleClick(DoubleClickEvent event) {
+				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+				if (selection.size() == 1) {
+					Object selected = selection.getFirstElement();
+					if (selected instanceof Cell && AlignmentUtil.isTypeCell((Cell) selected))
+						sourceTargetSelector.setSelection(selection);
+				}
+			}
+		});
 
 		// listen on size changes
 		getViewer().getControl().addControlListener(new ControlAdapter() {
