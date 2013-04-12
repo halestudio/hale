@@ -233,11 +233,18 @@ public class AlignmentView extends AbstractMappingView {
 
 			@Override
 			public void alignmentCleared() {
-				refreshGraph();
+				PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+
+					@Override
+					public void run() {
+						sourceTargetSelector.setSelection(StructuredSelection.EMPTY);
+					}
+				});
 			}
 
 			@Override
 			public void cellsRemoved(Iterable<Cell> cells) {
+				// XXX check if the selected type cell was removed
 				refreshGraph();
 			}
 
@@ -253,7 +260,13 @@ public class AlignmentView extends AbstractMappingView {
 
 			@Override
 			public void alignmentChanged() {
-				refreshGraph();
+				PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+
+					@Override
+					public void run() {
+						sourceTargetSelector.setSelection(StructuredSelection.EMPTY);
+					}
+				});
 			}
 
 			@Override

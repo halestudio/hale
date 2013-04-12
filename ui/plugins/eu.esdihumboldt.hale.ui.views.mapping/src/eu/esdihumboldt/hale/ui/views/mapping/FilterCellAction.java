@@ -21,9 +21,9 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.zest.core.viewers.GraphViewer;
 
 /**
- * TODO Type description
+ * Action to add a filter to the alignment view content provider.
  * 
- * @author Kai
+ * @author Kai Schwierczek
  */
 public class FilterCellAction extends Action {
 
