@@ -55,6 +55,12 @@ import eu.esdihumboldt.hale.common.test.TestUtil;
  */
 public class XsltTransformationTest extends DefaultTransformationTest {
 
+	@Override
+	@Test
+	public void testRegexAnalysis() throws Exception {
+		super.testRegexAnalysis();
+	}
+
 	/**
 	 * Test an XSL transformation using custom XPath expressions for property
 	 * transformation.

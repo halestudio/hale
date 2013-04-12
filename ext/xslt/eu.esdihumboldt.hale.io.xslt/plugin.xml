@@ -73,6 +73,11 @@
             function="eu.esdihumboldt.hale.align.generic.xpath"
             id="eu.esdihumboldt.hale.io.xslt.generic.xpath">
       </propertyTransformation>
+      <propertyTransformation
+            class="eu.esdihumboldt.hale.io.xslt.transformations.property.regexanalysis.XslRegexAnalysis"
+            function="eu.esdihumboldt.cst.functions.string.regexanalysisfunction"
+            id="eu.esdihumboldt.hale.align.regexanalysisfunction.xslt">
+      </propertyTransformation>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.align.compatibility">
