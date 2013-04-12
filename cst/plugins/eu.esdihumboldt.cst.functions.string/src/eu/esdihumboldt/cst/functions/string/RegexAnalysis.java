@@ -70,26 +70,45 @@ public class RegexAnalysis extends AbstractSingleTargetPropertyTransformation<Tr
 
 		String sourceString = variables.values().iterator().next().getValueAs(String.class);
 
-		Pattern pattern = Pattern.compile(regexPattern);
-		Matcher matcher = pattern.matcher(sourceString);
-
-		HashMap<Integer, String> groupsMap = new HashMap<Integer, String>();
-		int index = 1;
-		if (matcher.find()) {
-			for (int i = 1; i <= matcher.groupCount(); i++) {
-				String substring = sourceString.substring(matcher.start(i), matcher.end(i));
-				groupsMap.put(index, substring);
-				index++;
-			}
-		}
-
-		Collection<Entry<Integer, String>> entries = groupsMap.entrySet();
-		for (Entry<Integer, String> entry : entries) {
-			Integer key = entry.getKey();
-			String value = entry.getValue();
-			outputFormat = outputFormat.replaceAll("\\{" + key + "\\}", value);
-		}
+		outputFormat = analize(regexPattern, outputFormat, sourceString);
 
 		return outputFormat;
+	}
+
+	/**
+	 * Performs regex analysis.
+	 * 
+	 * @param regexPattern the regular expression.
+	 * @param outputFormat the output format to gain.
+	 * @param sourceString the text to convert.
+	 * @return the converted text.
+	 */
+	public static String analize(String regexPattern, String outputFormat, String sourceString) {
+		try {
+			Pattern pattern = Pattern.compile(regexPattern);
+			Matcher matcher = pattern.matcher(sourceString);
+
+			HashMap<Integer, String> groupsMap = new HashMap<Integer, String>();
+			int index = 1;
+			if (matcher.find()) {
+				for (int i = 1; i <= matcher.groupCount(); i++) {
+					String substring = sourceString.substring(matcher.start(i), matcher.end(i));
+					groupsMap.put(index, substring);
+					index++;
+				}
+			}
+
+			Collection<Entry<Integer, String>> entries = groupsMap.entrySet();
+			for (Entry<Integer, String> entry : entries) {
+				Integer key = entry.getKey();
+				String value = entry.getValue();
+				outputFormat = outputFormat.replaceAll("\\{" + key + "\\}", value);
+			}
+			return outputFormat;
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return "Unable to convert";
+		}
 	}
 }

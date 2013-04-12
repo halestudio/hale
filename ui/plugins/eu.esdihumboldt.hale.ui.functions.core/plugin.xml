@@ -42,6 +42,17 @@
                name="pattern">
          </parameter>
       </propertyParameterPage>
+      <propertyParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.core.RegexAnalysisParameterPage"
+            function="eu.esdihumboldt.cst.functions.string.regexanalysisfunction"
+            id="eu.esdihumboldt.cst.functions.string.regexanalysisfunction">
+         <parameter
+               name="regexPattern">
+         </parameter>
+         <parameter
+               name="outputFormat">
+         </parameter>
+      </propertyParameterPage>
       <typeParameterPage
             class="eu.esdihumboldt.hale.ui.functions.core.MergeParameterPage"
             function="eu.esdihumboldt.hale.align.merge"
