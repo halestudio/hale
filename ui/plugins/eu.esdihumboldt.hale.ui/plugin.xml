@@ -426,7 +426,7 @@
                serviceClass="eu.esdihumboldt.hale.ui.service.values.OccurringValuesService">
          </service>
          <service
-               serviceClass="eu.esdihumboldt.hale.ui.compatibility.extension.CompatibilityService">
+               serviceClass="eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityService">
          </service>
       </serviceFactory>
       <sourceProvider

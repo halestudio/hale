@@ -56,6 +56,8 @@ import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
 import com.google.common.collect.ListMultimap;
 
+import de.cs3d.util.eclipse.extension.exclusive.ExclusiveExtension.ExclusiveExtensionListener;
+import eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
@@ -69,6 +71,8 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider;
+import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityModeFactory;
+import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityService;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceAdapter;
@@ -250,6 +254,27 @@ public class AlignmentView extends AbstractMappingView {
 				});
 			}
 
+		});
+
+		// initialize compatibility checkup and display
+		CompatibilityService cs = (CompatibilityService) PlatformUI.getWorkbench().getService(
+				CompatibilityService.class);
+
+		cs.addListener(new ExclusiveExtensionListener<CompatibilityMode, CompatibilityModeFactory>() {
+
+			@Override
+			public void currentObjectChanged(final CompatibilityMode arg0,
+					final CompatibilityModeFactory arg1) {
+				final Display display = PlatformUI.getWorkbench().getDisplay();
+				display.syncExec(new Runnable() {
+
+					@Override
+					public void run() {
+						getViewer().refresh();
+					}
+				});
+
+			}
 		});
 
 		// listen on SchemaSelections
