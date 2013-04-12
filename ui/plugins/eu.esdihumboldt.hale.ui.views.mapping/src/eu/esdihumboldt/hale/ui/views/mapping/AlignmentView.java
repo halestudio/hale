@@ -52,6 +52,8 @@ import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
 import com.google.common.collect.ListMultimap;
 
+import de.cs3d.util.eclipse.extension.exclusive.ExclusiveExtension.ExclusiveExtensionListener;
+import eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell;
@@ -63,6 +65,8 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider;
+import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityModeFactory;
+import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityService;
 import eu.esdihumboldt.hale.ui.function.common.SourceTargetTypeSelector;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
@@ -139,6 +143,8 @@ public class AlignmentView extends AbstractMappingView {
 				return false;
 		}
 	};
+
+	private ExclusiveExtensionListener<CompatibilityMode, CompatibilityModeFactory> compListener;
 
 	/**
 	 * @see PropertiesViewPart#getViewContext()
@@ -274,6 +280,19 @@ public class AlignmentView extends AbstractMappingView {
 				refreshGraph();
 			}
 
+		});
+
+		// initialize compatibility checkup and display
+		CompatibilityService cs = (CompatibilityService) PlatformUI.getWorkbench().getService(
+				CompatibilityService.class);
+
+		cs.addListener(compListener = new ExclusiveExtensionListener<CompatibilityMode, CompatibilityModeFactory>() {
+
+			@Override
+			public void currentObjectChanged(final CompatibilityMode arg0,
+					final CompatibilityModeFactory arg1) {
+				refreshGraph();
+			}
 		});
 
 		// listen on SchemaSelections
@@ -657,6 +676,12 @@ public class AlignmentView extends AbstractMappingView {
 			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
 					AlignmentService.class);
 			as.removeListener(alignmentListener);
+		}
+
+		if (compListener != null) {
+			CompatibilityService cs = (CompatibilityService) PlatformUI.getWorkbench().getService(
+					CompatibilityService.class);
+			cs.removeListener(compListener);
 		}
 
 		if (selectionListener != null) {

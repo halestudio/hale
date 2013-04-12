@@ -34,9 +34,9 @@ import de.cs3d.util.eclipse.extension.ObjectExtension;
 import eu.esdihumboldt.cst.internal.CSTCompatibilityMode;
 import eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode;
 import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.ui.compatibility.CompatibilityServiceListener;
-import eu.esdihumboldt.hale.ui.compatibility.extension.CompatibilityModeFactory;
-import eu.esdihumboldt.hale.ui.compatibility.extension.CompatibilityService;
+import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityModeFactory;
+import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityService;
+import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityServiceListener;
 import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener;
@@ -156,6 +156,16 @@ public class CompatibilityServiceImpl extends
 		cal = new CompatibilityAlignmentListener();
 		((AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class))
 				.addListener(cal);
+
+		this.addListener(new ExclusiveExtensionListener<CompatibilityMode, CompatibilityModeFactory>() {
+
+			@Override
+			public void currentObjectChanged(final CompatibilityMode arg0,
+					final CompatibilityModeFactory arg1) {
+				compatibilityModeChanged();
+			}
+
+		});
 	}
 
 	/**
@@ -329,7 +339,7 @@ public class CompatibilityServiceImpl extends
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.compatibility.extension.CompatibilityService#addCompatibilityListener(eu.esdihumboldt.hale.ui.compatibility.CompatibilityServiceListener)
+	 * @see eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityService#addCompatibilityListener(eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityServiceListener)
 	 */
 	@Override
 	public void addCompatibilityListener(CompatibilityServiceListener listener) {
@@ -338,7 +348,7 @@ public class CompatibilityServiceImpl extends
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.compatibility.extension.CompatibilityService#removeCompatibilityListener(CompatibilityServiceListener
+	 * @see eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityService#removeCompatibilityListener(CompatibilityServiceListener
 	 *      listener)
 	 */
 	@Override
@@ -348,11 +358,12 @@ public class CompatibilityServiceImpl extends
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.compatibility.extension.CompatibilityService#compatibilityModeChanged()
+	 * @see eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityService#compatibilityModeChanged()
 	 */
 	@Override
 	public void compatibilityModeChanged() {
 		cal.alignmentChanged();
+
 	}
 
 }
