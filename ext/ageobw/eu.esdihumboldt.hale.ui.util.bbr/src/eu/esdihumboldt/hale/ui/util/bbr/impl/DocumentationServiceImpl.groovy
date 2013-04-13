@@ -185,11 +185,11 @@ class DocumentationServiceImpl implements DocumentationService {
 
 			if (doc.inUse && !enumeration.isAllowOthers()) {
 				// test if a value that should be there actually is there
-				doc.useConflict = !enumeration.values.contains(doc.code)
+				doc.useDiffers = !enumeration.values.contains(doc.code)
 			}
 			else if (!doc.inUse) {
 				// test if a value that should not be there is there
-				doc.useConflict = enumeration.values.contains(doc.code)
+				doc.useDiffers = enumeration.values.contains(doc.code)
 			}
 		}
 	}

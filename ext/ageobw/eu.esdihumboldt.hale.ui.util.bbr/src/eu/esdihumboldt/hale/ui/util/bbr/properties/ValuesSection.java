@@ -86,7 +86,10 @@ public class ValuesSection extends DefaultDefinitionSection<Definition<?>> {
 					Documentation doc = (Documentation) element;
 					StringBuilder result = new StringBuilder();
 
-					if (doc.isInUse()) {
+					boolean usable = (doc.isInUse() && !doc.getUseDiffers())
+							|| (!doc.isInUse() && doc.getUseDiffers());
+
+					if (usable) {
 						result.append(doc.getCode());
 					}
 					else {
@@ -96,8 +99,11 @@ public class ValuesSection extends DefaultDefinitionSection<Definition<?>> {
 						result.append(')');
 					}
 
-					// mark use conflict with an asterisk
-					if (doc.isUseConflict()) {
+					/*
+					 * Mark use conflict with an asterisk. Only a conflict if
+					 * something is wrongly classified as not in use.
+					 */
+					if (!doc.isInUse() && doc.getUseDiffers()) {
 						result.append('*');
 					}
 

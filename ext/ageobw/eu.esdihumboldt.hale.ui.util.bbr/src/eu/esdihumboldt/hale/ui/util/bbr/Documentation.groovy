@@ -54,11 +54,11 @@ class Documentation {
 	boolean inUse
 	
 	/**
-	 * States if there is a conflict between the actual use and {@link #inUse},
+	 * States if there is a difference between the actual use and {@link #inUse},
 	 * e.g. a value that is marked as in use but does not appear in the
 	 * property type enumeration. 
 	 */
-	boolean useConflict = false
+	boolean useDiffers = false
 	
 	/**
 	 * List of value documentations (optional)
