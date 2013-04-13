@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.ui.views.properties.definition.typedefinition;
 
 import eu.esdihumboldt.hale.common.schema.model.Definition;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Enumeration;
 import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionFilter;
@@ -34,6 +35,10 @@ public class TypeDefinitionEnumerationFilter extends DefaultDefinitionFilter {
 	 */
 	@Override
 	public boolean isFiltered(Definition<?> input) {
+		if (input instanceof PropertyDefinition) {
+			input = ((PropertyDefinition) input).getPropertyType();
+		}
+
 		if (input instanceof TypeDefinition) {
 			TypeDefinition type = ((TypeDefinition) input);
 			return type.getConstraint(Enumeration.class).getValues() == null;

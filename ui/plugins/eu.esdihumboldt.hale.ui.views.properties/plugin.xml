@@ -145,7 +145,7 @@
             </input>
          </propertySection>
          <propertySection
-               afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.popertytypecardinality"
+               afterSection="eu.esdihumboldt.hale.ui.views.typehierarchy.propertytype.link"
                class="eu.esdihumboldt.hale.ui.views.properties.definition.typedefinition.TypeDefinitionElementTypeBindingSection"
                enablesFor="1"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.elementtype"
@@ -360,6 +360,33 @@
                tab="eu.esdihumboldt.hale.ui.views.properties.occurring_values">
             <input
                   type="eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition">
+            </input>
+         </propertySection>
+         <propertySection
+               afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.elementtype.propertytype"
+               class="eu.esdihumboldt.hale.ui.views.properties.definition.typedefinition.TypeDefinitionEnumeration"
+               enablesFor="1"
+               filter="eu.esdihumboldt.hale.ui.views.properties.definition.typedefinition.TypeDefinitionEnumerationFilter"
+               id="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.enumeration.propertytype"
+               tab="eu.esdihumboldt.hale.ui.views.properties.definition.propertytype">
+            <input
+                  type="eu.esdihumboldt.hale.common.schema.model.PropertyDefinition">
+            </input>
+            <input
+                  type="eu.esdihumboldt.hale.common.align.model.Property">
+            </input>
+         </propertySection>
+         <propertySection
+               afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.elementtype.propertytype"
+               class="eu.esdihumboldt.hale.ui.views.properties.definition.typedefinition.TypeDefinitionElementTypeBindingSection"
+               enablesFor="1"
+               id="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.elementtype.propertytype"
+               tab="eu.esdihumboldt.hale.ui.views.properties.definition.propertytype">
+            <input
+                  type="eu.esdihumboldt.hale.common.schema.model.PropertyDefinition">
+            </input>
+            <input
+                  type="eu.esdihumboldt.hale.common.align.model.Property">
             </input>
          </propertySection>
       </propertySections>
