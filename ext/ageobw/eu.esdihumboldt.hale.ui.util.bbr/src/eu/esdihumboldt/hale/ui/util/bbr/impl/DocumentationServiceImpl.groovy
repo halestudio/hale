@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.ui.util.bbr.impl
 
+import java.util.concurrent.TimeUnit
+
 import org.eclipse.core.runtime.Platform
 
 import com.google.common.cache.Cache
@@ -81,10 +83,12 @@ class DocumentationServiceImpl implements DocumentationService {
 
 	private Sql db
 
-	private final Cache<Definition<?>, Documentation> cache
+	private final Cache<Object, Documentation> cache
 
 	DocumentationServiceImpl() {
-		cache = CacheBuilder.newBuilder().weakKeys().build()
+		cache = CacheBuilder.newBuilder() //
+				.maximumSize(100) //
+				.expireAfterAccess(1, TimeUnit.HOURS).build()
 
 		init()
 	}
@@ -115,6 +119,7 @@ class DocumentationServiceImpl implements DocumentationService {
 			return null
 
 		def sql = null;
+		def cacheKey = definition;
 
 		String shortCodeField;
 		switch (definition) {
@@ -125,12 +130,13 @@ class DocumentationServiceImpl implements DocumentationService {
 			case PropertyDefinition:
 				sql = "SELECT * FROM bbr WHERE Type = 'Att' AND AAlpha = ${definition.name.localPart}"
 				shortCodeField = 'A531'
+				cacheKey = new PropertyCacheKey(definition);
 				break;
 		}
 
 		if (sql != null) {
 			synchronized (cache) {
-				Documentation cached = cache.getIfPresent(definition);
+				Documentation cached = cache.getIfPresent(cacheKey);
 				if (cached) return cached
 
 				def result = db.firstRow(sql)
@@ -149,10 +155,10 @@ class DocumentationServiceImpl implements DocumentationService {
 						}
 					}
 
-					cache.put(definition, doc)
+					cache.put(cacheKey, doc)
 					return doc
 				}
-				//TODO also cache nulls?
+				// cache cannot cache nulls
 			}
 		}
 
