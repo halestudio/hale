@@ -140,7 +140,12 @@ class DocumentationServiceImpl implements DocumentationService {
 					if (definition instanceof PropertyDefinition) {
 						// there may also be value documentation
 						db.eachRow("SELECT * FROM bbr WHERE Type = 'Value' AND AAlpha = ${definition.name.localPart}") {
-							doc.values << createDoc(it, 'V531')
+							Documentation valueDoc = createDoc(it, 'V531')
+
+							// test value doc against property type enum
+							checkForUseConflict(valueDoc, definition.propertyType)
+
+							doc.values << valueDoc
 						}
 					}
 
@@ -169,6 +174,24 @@ class DocumentationServiceImpl implements DocumentationService {
 		}
 
 		result
+	}
+
+	private void checkForUseConflict(Documentation doc, TypeDefinition type) {
+		def enumeration = type.getConstraint(eu.esdihumboldt.hale.common.schema.model.constraint.type.Enumeration);
+
+		if (enumeration.values) {
+			// only do a check for actual enumerations
+			//XXX try validation for other types?
+
+			if (doc.inUse && !enumeration.isAllowOthers()) {
+				// test if a value that should be there actually is there
+				doc.useConflict = !enumeration.values.contains(doc.code)
+			}
+			else if (!doc.inUse) {
+				// test if a value that should not be there is there
+				doc.useConflict = enumeration.values.contains(doc.code)
+			}
+		}
 	}
 
 }

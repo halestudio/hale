@@ -84,13 +84,24 @@ public class ValuesSection extends DefaultDefinitionSection<Definition<?>> {
 			public String getText(Object element) {
 				if (element instanceof Documentation) {
 					Documentation doc = (Documentation) element;
+					StringBuilder result = new StringBuilder();
+
 					if (doc.isInUse()) {
-						return doc.getCode();
+						result.append(doc.getCode());
 					}
 					else {
 						// display values that are not in use in brackets
-						return '(' + doc.getCode() + ')';
+						result.append('(');
+						result.append(doc.getCode());
+						result.append(')');
 					}
+
+					// mark use conflict with an asterisk
+					if (doc.isUseConflict()) {
+						result.append('*');
+					}
+
+					return result.toString();
 				}
 
 				return super.getText(element);

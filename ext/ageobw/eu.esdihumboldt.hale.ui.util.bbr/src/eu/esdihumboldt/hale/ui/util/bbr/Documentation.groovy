@@ -38,11 +38,30 @@ class Documentation {
 	 */
 	String name
 
+	/**
+	 * The description retrieved from the BBR.
+	 */
 	String description
 
+	/**
+	 * The definition retrieved from the BBR.
+	 */
 	String definition
 	
+	/**
+	 * States if the type, attribute or value is marked as in use in the BBR.
+	 */
 	boolean inUse
 	
+	/**
+	 * States if there is a conflict between the actual use and {@link #inUse},
+	 * e.g. a value that is marked as in use but does not appear in the
+	 * property type enumeration. 
+	 */
+	boolean useConflict = false
+	
+	/**
+	 * List of value documentations (optional)
+	 */
 	List<Documentation> values = []
 }
