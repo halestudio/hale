@@ -34,7 +34,6 @@ public abstract class DefaultDefinitionSection<T extends Definition<?>> extends
 	/**
 	 * @see AbstractTextSection#setInput(Object)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void setInput(Object input) {
 		input = TransformationTreeUtil.extractObject(input);
@@ -47,7 +46,19 @@ public abstract class DefaultDefinitionSection<T extends Definition<?>> extends
 			input = ((EntityDefinition) input).getDefinition();
 		}
 
-		setDefinition((T) input);
+		setDefinition(extract(input));
+	}
+
+	/**
+	 * Extract the definition. The default implementation just does a
+	 * corresponding cast.
+	 * 
+	 * @param input the input object
+	 * @return the definition
+	 */
+	@SuppressWarnings("unchecked")
+	protected T extract(Object input) {
+		return (T) input;
 	}
 
 }
