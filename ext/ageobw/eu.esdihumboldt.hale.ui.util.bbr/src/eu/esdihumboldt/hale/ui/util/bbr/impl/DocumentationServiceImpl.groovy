@@ -144,14 +144,26 @@ class DocumentationServiceImpl implements DocumentationService {
 					Documentation doc = createDoc(result, shortCodeField)
 
 					if (definition instanceof PropertyDefinition) {
+						Set<String> valueCodes = new HashSet<String>()
 						// there may also be value documentation
 						db.eachRow("SELECT * FROM bbr WHERE Type = 'Value' AND AAlpha = ${definition.name.localPart}") {
 							Documentation valueDoc = createDoc(it, 'V531')
+							valueCodes << valueDoc.code
 
 							// test value doc against property type enum
 							checkForUseConflict(valueDoc, definition.propertyType)
 
 							doc.values << valueDoc
+						}
+
+						/*
+						 * There may be values not defined in the BBR but
+						 * appearing in the enumeration.
+						 */
+						def enumeration = definition.propertyType.getConstraint(eu.esdihumboldt.hale.common.schema.model.constraint.type.Enumeration);
+						if (enumeration.values) {
+							def additionals = enumeration.values.toSet() - valueCodes
+							additionals.each { doc.values << createDummyDoc(it) }
 						}
 					}
 
@@ -180,6 +192,14 @@ class DocumentationServiceImpl implements DocumentationService {
 		}
 
 		result
+	}
+
+	private Documentation createDummyDoc(String code) {
+		new Documentation(name: code,
+				code: code,
+				definition: 'Not defined in BBR',
+				inUse: false,
+				useDiffers: true)
 	}
 
 	private void checkForUseConflict(Documentation doc, TypeDefinition type) {
