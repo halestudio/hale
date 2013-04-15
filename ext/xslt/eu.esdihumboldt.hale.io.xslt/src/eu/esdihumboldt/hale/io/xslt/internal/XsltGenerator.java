@@ -201,6 +201,11 @@ public class XsltGenerator implements XsltConstants {
 		}
 
 		@Override
+		public String getInlineTemplateName(Cell typeCell) {
+			return cellIdentifiers.getId(typeCell) + "_inline";
+		}
+
+		@Override
 		public String getSourceContext(TypeDefinition type) {
 			String result = null;
 

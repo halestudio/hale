@@ -26,6 +26,7 @@ import com.google.common.io.InputSupplier;
 import com.google.common.io.OutputSupplier;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
@@ -117,5 +118,15 @@ public interface XsltGenerationContext extends XsltConstants {
 	 * @return the property transformation instance or <code>null</code>
 	 */
 	public XslPropertyTransformation getPropertyTransformation(String functionId);
+
+	/**
+	 * Get the name of the inline template for a type cell.
+	 * 
+	 * XXX experimental
+	 * 
+	 * @param typeCell the type cell
+	 * @return the name of the inline template
+	 */
+	public String getInlineTemplateName(Cell typeCell);
 
 }

@@ -56,9 +56,7 @@ public class XslRetype extends AbstractVelocityXslTypeTransformation implements
 		context.put(CONTEXT_PARAM_SELECT_INSTANCES, XslTransformationUtil.selectInstances(ted,
 				context().getSourceContext(ted.getDefinition()), context().getNamespaceContext()));
 
-		String inlineTemplate = context().reserveTemplateName(
-				context.get(CONTEXT_PARAM_TEMPLATE_NAME) + "_inline");
-		context.put(CONTEXT_PARAM_INLINE_TEMPLATE, inlineTemplate);
+		context.put(CONTEXT_PARAM_INLINE_TEMPLATE, context().getInlineTemplateName(typeCell));
 
 		String properties = createPropertiesFragment(typeCell);
 		context.put(CONTEXT_PARAM_PROPERTIES, properties);
