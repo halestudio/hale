@@ -45,6 +45,8 @@ public class XslRetype extends AbstractVelocityXslTypeTransformation implements
 
 	private static final String CONTEXT_PARAM_PROPERTIES = "properties";
 
+	private static final String CONTEXT_PARAM_INLINE_TEMPLATE = "inline_name";
+
 	@Override
 	protected void configureTemplate(final VelocityContext context, final Cell typeCell)
 			throws TransformationException {
@@ -53,6 +55,10 @@ public class XslRetype extends AbstractVelocityXslTypeTransformation implements
 		TypeEntityDefinition ted = source.getDefinition();
 		context.put(CONTEXT_PARAM_SELECT_INSTANCES, XslTransformationUtil.selectInstances(ted,
 				context().getSourceContext(ted.getDefinition()), context().getNamespaceContext()));
+
+		String inlineTemplate = context().reserveTemplateName(
+				context.get(CONTEXT_PARAM_TEMPLATE_NAME) + "_inline");
+		context.put(CONTEXT_PARAM_INLINE_TEMPLATE, inlineTemplate);
 
 		String properties = createPropertiesFragment(typeCell);
 		context.put(CONTEXT_PARAM_PROPERTIES, properties);
