@@ -282,6 +282,30 @@
             </functionParameterBinding>
          </functionParameter>
       </typeFunction>
+      <propertyFunction
+            category="eu.esdihumboldt.hale.align.general"
+            description="Inline transformation of property types."
+            identifier="eu.esdihumboldt.hale.align.inline"
+            name="Inline transformation">
+         <targetProperties>
+            <property
+                  maxOccurrence="1"
+                  minOccurrence="1">
+               <propertyCondition
+                     class="eu.esdihumboldt.hale.common.align.conditions.ComplexPropertyTypeCondition">
+               </propertyCondition>
+            </property>
+         </targetProperties>
+         <sourceProperties>
+            <property
+                  maxOccurrence="1"
+                  minOccurrence="1">
+               <propertyCondition
+                     class="eu.esdihumboldt.hale.common.align.conditions.ComplexPropertyTypeCondition">
+               </propertyCondition>
+            </property>
+         </sourceProperties>
+      </propertyFunction>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.align.engine">
