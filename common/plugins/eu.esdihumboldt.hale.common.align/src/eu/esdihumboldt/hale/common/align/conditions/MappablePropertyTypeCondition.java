@@ -15,31 +15,21 @@
 
 package eu.esdihumboldt.hale.common.align.conditions;
 
-import eu.esdihumboldt.hale.common.align.model.Type;
-import eu.esdihumboldt.hale.common.align.model.condition.TypeCondition;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
+import eu.esdihumboldt.hale.common.align.model.condition.PropertyTypeCondition;
 
 /**
- * Accepts complex types with no direct value.
+ * Matches properties with a mappable property type.
  * 
+ * @see MappableTypeCondition
  * @author Simon Templer
  */
-public class ComplexTypeCondition implements TypeCondition {
+public class MappablePropertyTypeCondition extends PropertyTypeCondition {
 
-	@Override
-	public boolean accept(Type entity) {
-		TypeDefinition type = entity.getDefinition().getDefinition();
-
-		if (type.getConstraint(HasValueFlag.class).isEnabled()) {
-			return false;
-		}
-
-		if (type.getChildren().isEmpty()) {
-			return false;
-		}
-
-		return true;
+	/**
+	 * Default constructor.
+	 */
+	public MappablePropertyTypeCondition() {
+		super(new MappableTypeCondition());
 	}
 
 }
