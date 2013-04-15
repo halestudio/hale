@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell priority="normal" id="C5c107c79-8415-4c85-8c26-1553e630a077" relation="eu.esdihumboldt.hale.align.retype">
+        <source>
+            <class>
+                <type ns="http://www.example.org/t1/" name="T1"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type ns="http://www.example.org/t2/" name="T2"/>
+            </class>
+        </target>
+    </cell>
+    <cell priority="normal" id="Cddaf9b4c-04cf-4ee0-b09a-964547b24160" relation="eu.esdihumboldt.hale.align.inline">
+        <source>
+            <property>
+                <type ns="http://www.example.org/t1/" name="T1"/>
+                <child name="item"/>
+                <child ns="http://www.example.org/t1/" name="a"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type ns="http://www.example.org/t2/" name="T2"/>
+                <child name="item"/>
+                <child ns="http://www.example.org/t2/" name="b"/>
+            </property>
+        </target>
+    </cell>
+    <cell priority="normal" id="Cb62caa9e-d2fd-4d54-bf79-b80b54d3e1b1" relation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type ns="http://www.example.org/t1/" name="AType"/>
+                <child name="a1"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type ns="http://www.example.org/t2/" name="BType"/>
+                <child name="b1"/>
+            </property>
+        </target>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell priority="normal" id="C09725505-cf1f-41a5-9049-a5aa88240852" relation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type ns="http://www.example.org/t1/" name="AType"/>
+                <child name="a2"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type ns="http://www.example.org/t2/" name="BType"/>
+                <child name="b2"/>
+            </property>
+        </target>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell priority="normal" id="C9b00814f-4eb6-40bb-a559-7915828a62fb" relation="eu.esdihumboldt.hale.align.retype">
+        <source>
+            <class>
+                <type ns="http://www.example.org/t1/" name="AType"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type ns="http://www.example.org/t2/" name="BType"/>
+            </class>
+        </target>
+    </cell>
+    <modifier cell="C9b00814f-4eb6-40bb-a559-7915828a62fb">
+        <transformation mode="passive"/>
+    </modifier>
+</alignment>

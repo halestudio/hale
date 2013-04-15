@@ -39,6 +39,8 @@ abstract class TransformationExamples {
 	public static final String STRUCTURAL_RENAME_1 = 'structuralrename_1'
 	public static final String STRUCTURAL_RENAME_2 = 'structuralrename_2'
 	public static final String STRUCTURAL_RENAME_3 = 'structuralrename_3'
+	public static final String INLINE_2 = 'inline_2'
+	public static final String INLINE_3 = 'inline_3'
 	public static final String MATH_EXPRESSION = 'mathexpression'
 	public static final String REGEX_ANALYSIS = 'regexstringanalysis'
 	public static final String GENERATEUID = 'generateuid'
@@ -132,6 +134,8 @@ abstract class TransformationExamples {
 		(STRUCTURAL_RENAME_1): defaultExample(STRUCTURAL_RENAME_1),
 		(STRUCTURAL_RENAME_2): defaultExample(STRUCTURAL_RENAME_2),
 		(STRUCTURAL_RENAME_3): defaultExample(STRUCTURAL_RENAME_3),
+		(INLINE_2): defaultExample(INLINE_2),
+		(INLINE_3): defaultExample(INLINE_3),
 		(MATH_EXPRESSION): defaultExample(MATH_EXPRESSION),
 		(REGEX_ANALYSIS): defaultExample(REGEX_ANALYSIS),
 		(GENERATEUID): defaultExample(GENERATEUID),
@@ -187,14 +191,14 @@ abstract class TransformationExamples {
 
 	static def defaultExample(String folder) {
 		[
-			sourceSchema: "/testdata/${folder}/t1.xsd",
-			targetSchema: "/testdata/${folder}/t2.xsd",
-			alignment: "/testdata/${folder}/t1t2.halex.alignment.xml",
-			sourceData: "/testdata/${folder}/instance1.xml",
-			transformedData: "/testdata/${folder}/instance2.xml",
-			containerNamespace: null,
-			containerName: 'collection'
-		]
+					sourceSchema: "/testdata/${folder}/t1.xsd",
+					targetSchema: "/testdata/${folder}/t2.xsd",
+					alignment: "/testdata/${folder}/t1t2.halex.alignment.xml",
+					sourceData: "/testdata/${folder}/instance1.xml",
+					transformedData: "/testdata/${folder}/instance2.xml",
+					containerNamespace: null,
+					containerName: 'collection'
+				]
 	}
 
 	/**
