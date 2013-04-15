@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.example.org/t1/"
+	targetNamespace="http://www.example.org/t1/">
+	<complexType name="T1">
+		<sequence>
+			<element name="item" maxOccurs="1" minOccurs="0">
+				<complexType>
+					<sequence>
+						<element ref="tns:a" minOccurs="1" maxOccurs="unbounded" />
+					</sequence>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+	
+	<element name="a" type="tns:AType" />
+	
+	<complexType name="AType">
+		<sequence>
+			<element name="a1" type="string" maxOccurs="unbounded"
+				minOccurs="0"></element>
+			<element name="a2" type="string" maxOccurs="unbounded"
+				minOccurs="0"></element>
+		</sequence>
+	</complexType>
+	
+	<element name="t1" type="tns:T1"></element>
+
+	<element name="collection" type="tns:CollectionType"></element>
+
+	<complexType name="CollectionType">
+		<sequence>
+			<element ref="tns:t1" maxOccurs="unbounded" minOccurs="0"></element>
+		</sequence>
+	</complexType>
+</schema>
