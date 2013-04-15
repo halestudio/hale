@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<hale-project version="2.5.0.qualifier">
+    <name>Inline transformation</name>
+    <author>Simon Templer</author>
+    <created>2013-01-18T16:56:46.443+01:00</created>
+    <modified>2013-04-16T15:11:15.141+02:00</modified>
+    <save-config provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer" action-id="project.save">
+        <setting name="projectFiles.separate">false</setting>
+        <setting name="target">file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/inline_2/t1t2.halex</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
+    </save-config>
+    <resource provider-id="eu.esdihumboldt.hale.io.xsd.reader" action-id="eu.esdihumboldt.hale.io.schema.read.source">
+        <setting name="resourceId">c52ba90d-8a2e-4ec2-b2ba-1f4dc08cfeae</setting>
+        <setting name="source">file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/inline_2/t1.xsd</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource provider-id="eu.esdihumboldt.hale.io.xsd.reader" action-id="eu.esdihumboldt.hale.io.schema.read.target">
+        <setting name="resourceId">046d191a-d5ec-46f9-b3ce-4465cfad0713</setting>
+        <setting name="source">file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/inline_2/t2.xsd</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource provider-id="eu.esdihumboldt.hale.io.xml.reader" action-id="eu.esdihumboldt.hale.io.instance.read.source">
+        <setting name="resourceId">35061890-5bb8-476e-bc86-2cf9e6aa59f5</setting>
+        <setting name="source">file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/inline_2/instance1.xml</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.gml</setting>
+    </resource>
+    <file location="file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/inline_2/t1t2.halex.styles.sld" name="styles.sld"/>
+    <file location="file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/inline_2/t1t2.halex.alignment.xml" name="alignment.xml"/>
+</hale-project>
