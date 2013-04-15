@@ -130,7 +130,7 @@ public class PropertyDefinitionDialog extends
 			TreePath path = ((ITreeSelection) selection).getPaths()[0];
 
 			// get parent type
-			TypeDefinition type = ((PropertyDefinition) path.getFirstSegment()).getParentType();
+			TypeDefinition type = ((ChildDefinition<?>) path.getFirstSegment()).getParentType();
 			// determine definition path
 			List<ChildContext> defPath = new ArrayList<ChildContext>();
 			for (int i = 0; i < path.getSegmentCount(); i++) {
