@@ -292,7 +292,7 @@
                   maxOccurrence="1"
                   minOccurrence="1">
                <propertyCondition
-                     class="eu.esdihumboldt.hale.common.align.conditions.ComplexPropertyTypeCondition">
+                     class="eu.esdihumboldt.hale.common.align.conditions.MappablePropertyTypeCondition">
                </propertyCondition>
             </property>
          </targetProperties>
@@ -301,7 +301,7 @@
                   maxOccurrence="1"
                   minOccurrence="1">
                <propertyCondition
-                     class="eu.esdihumboldt.hale.common.align.conditions.ComplexPropertyTypeCondition">
+                     class="eu.esdihumboldt.hale.common.align.conditions.MappablePropertyTypeCondition">
                </propertyCondition>
             </property>
          </sourceProperties>
