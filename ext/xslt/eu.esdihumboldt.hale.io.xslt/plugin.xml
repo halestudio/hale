@@ -78,6 +78,11 @@
             function="eu.esdihumboldt.cst.functions.string.regexanalysisfunction"
             id="eu.esdihumboldt.hale.align.regexanalysisfunction.xslt">
       </propertyTransformation>
+      <propertyTransformation
+            class="eu.esdihumboldt.hale.io.xslt.transformations.property.inline.XslInline"
+            function="eu.esdihumboldt.hale.align.inline"
+            id="eu.esdihumboldt.hale.io.xslt.inline">
+      </propertyTransformation>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.align.compatibility">
