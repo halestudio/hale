@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:collection xmlns:tns="http://www.example.org/t1/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.example.org/t1/ t1.xsd">
+    <tns:t1>
+        <item>
+            <tns:a>
+                <a1>a10</a1>
+                <a1>a11</a1>
+                <a1>a12</a1>
+                <a2>a20</a2>
+                <a2>a21</a2>
+                <a2>a22</a2>
+            </tns:a>
+            <tns:a>
+                <a1>a13</a1>
+                <a1>a14</a1>
+                <a1>a15</a1>
+                <a2>a23</a2>
+                <a2>a24</a2>
+                <a2>a25</a2>
+            </tns:a>
+        </item>
+    </tns:t1>
+</tns:collection>

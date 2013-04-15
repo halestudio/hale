@@ -55,10 +55,24 @@ import eu.esdihumboldt.hale.common.test.TestUtil;
  */
 public class XsltTransformationTest extends DefaultTransformationTest {
 
-	@Override
+	/**
+	 * Simple test case with inline transformation of property types.
+	 * 
+	 * @throws Exception if an error occurs during the transformation
+	 */
 	@Test
-	public void testRegexAnalysis() throws Exception {
-		super.testRegexAnalysis();
+	public void testInline2() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.INLINE_2));
+	}
+
+	/**
+	 * Simple test case with inline transformation of property types.
+	 * 
+	 * @throws Exception if an error occurs during the transformation
+	 */
+	@Test
+	public void testInline3() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.INLINE_3));
 	}
 
 	/**
