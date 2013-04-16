@@ -114,4 +114,12 @@ public interface Alignment {
 	 */
 	public Cell getCell(String cellId);
 
+	/**
+	 * Get type cells that are configured as being active.
+	 * 
+	 * @see TransformationMode
+	 * @return the active type cells or an empty collection
+	 */
+	public Collection<? extends Cell> getActiveTypeCells();
+
 }

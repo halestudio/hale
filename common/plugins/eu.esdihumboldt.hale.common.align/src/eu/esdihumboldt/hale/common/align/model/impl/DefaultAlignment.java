@@ -40,6 +40,7 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.align.model.TransformationMode;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
@@ -409,6 +410,17 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	@Override
 	public Collection<Cell> getTypeCells() {
 		return Collections.unmodifiableCollection(typeCells);
+	}
+
+	@Override
+	public Collection<? extends Cell> getActiveTypeCells() {
+		List<Cell> result = new ArrayList<Cell>();
+		for (Cell cell : getTypeCells()) {
+			if (cell.getTransformatioMode() == TransformationMode.active) {
+				result.add(cell);
+			}
+		}
+		return result;
 	}
 
 	/**

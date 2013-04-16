@@ -88,7 +88,7 @@ public class TransformationTreeContentProvider extends ArrayContentProvider impl
 				// create transformation trees for each instance
 				for (Instance instance : instances) {
 					// find type cells matching the instance
-					Collection<? extends Cell> typeCells = alignment.getTypeCells();
+					Collection<? extends Cell> typeCells = alignment.getActiveTypeCells();
 					Collection<Cell> associatedTypeCells = new LinkedList<Cell>();
 					for (Cell typeCell : typeCells)
 						for (Entity entity : typeCell.getSource().values()) {
@@ -113,7 +113,7 @@ public class TransformationTreeContentProvider extends ArrayContentProvider impl
 			}
 
 			// input was alignment only, show trees for all type cells
-			Collection<? extends Cell> typeCells = alignment.getTypeCells();
+			Collection<? extends Cell> typeCells = alignment.getActiveTypeCells();
 			Collection<Object> result = new ArrayList<Object>(typeCells.size());
 			for (Cell typeCell : typeCells) {
 				// create tree and add nodes for each cell
