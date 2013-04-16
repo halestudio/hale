@@ -137,6 +137,21 @@ public interface CommonSharedImagesConstants {
 	public static final String IMG_TRAFFICLIGHT_GREEN = "IMG_TRAFFICLIGHT_GREEN";
 
 	/**
+	 * Green marker image key.
+	 */
+	public static final String IMG_MARKER_GREEN = "IMG_MARKER_GREEN";
+
+	/**
+	 * Yellow marker image key.
+	 */
+	public static final String IMG_MARKER_YELLOW = "IMG_MARKER_YELLOW";
+
+	/**
+	 * Red marker image key.
+	 */
+	public static final String IMG_MARKER_RED = "IMG_MARKER_RED";
+
+	/**
 	 * Key for refresh image
 	 */
 	public static final String IMG_REFRESH = "IMG_REFRESH";
