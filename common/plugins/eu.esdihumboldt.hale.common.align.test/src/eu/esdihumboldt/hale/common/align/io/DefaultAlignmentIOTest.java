@@ -48,6 +48,7 @@ import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.ModifiableCell;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
@@ -490,7 +491,7 @@ public abstract class DefaultAlignmentIOTest {
 		assertEquals(3, alignment.getCells().size());
 		assertEquals(1, alignment.getPropertyCells(typeCell).size());
 		// disable remaining cell
-		alignment.getPropertyCells(typeCell, false).iterator().next()
+		((ModifiableCell) alignment.getPropertyCells(typeCell, false).iterator().next())
 				.setDisabledFor(typeCell, true);
 		assertEquals(0, alignment.getPropertyCells(typeCell).size());
 

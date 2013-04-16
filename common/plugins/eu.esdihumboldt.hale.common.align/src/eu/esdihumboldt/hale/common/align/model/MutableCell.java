@@ -23,7 +23,7 @@ import com.google.common.collect.ListMultimap;
  * 
  * @author Simon Templer
  */
-public interface MutableCell extends Cell {
+public interface MutableCell extends ModifiableCell {
 
 	/**
 	 * Set the identifier for the transformation referenced by the cell.

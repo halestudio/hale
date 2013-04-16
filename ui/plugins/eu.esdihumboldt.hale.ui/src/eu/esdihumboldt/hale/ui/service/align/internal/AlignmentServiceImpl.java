@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.ModifiableCell;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.Priority;
@@ -205,7 +206,7 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 			throw new IllegalArgumentException("Mandatory parameter is null");
 		}
 		Cell cell = getAlignment().getCell(cellId);
-		if (cell != null
+		if (cell instanceof ModifiableCell
 				&& (Cell.PROPERTY_DISABLE_FOR.equals(propertyName) || Cell.PROPERTY_ENABLE_FOR
 						.equals(propertyName))) {
 			boolean disable = Cell.PROPERTY_DISABLE_FOR.equals(propertyName);
@@ -215,7 +216,7 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 					throw new IllegalArgumentException();
 				// This call may fail, if the cell was disabled in a base
 				// alignment and someone tries to enable it again.
-				cell.setDisabledFor(other, disable);
+				((ModifiableCell) cell).setDisabledFor(other, disable);
 			}
 			else
 				throw new IllegalArgumentException();
