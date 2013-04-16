@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.io.xslt;
 import java.io.OutputStream;
 
 import javax.xml.namespace.NamespaceContext;
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -61,7 +62,26 @@ public abstract class XslTransformationUtil {
 		XmlElements elements = type.getConstraint(XmlElements.class);
 
 		if (elements.getElements().isEmpty()) {
-			return null;
+			/*
+			 * XXX dirty hack
+			 * 
+			 * In CityGML 1.0 no element for AppearanceType is defined, only a
+			 * property that is not detected in this way. The source route
+			 * element is not known here, so we also cannot do a search based on
+			 * the type. Thus for now we handle it as a special case.
+			 */
+			QName typeName = ted.getDefinition().getName();
+			if ("http://www.opengis.net/citygml/appearance/1.0".equals(typeName.getNamespaceURI())
+					&& "AppearanceType".equals(typeName.getLocalPart())) {
+				// create a dummy XML element
+				elements = new XmlElements();
+				elements.addElement(new XmlElement(new QName(
+						"http://www.opengis.net/citygml/appearance/1.0", "Appearance"), ted
+						.getDefinition(), null));
+			}
+			else
+				// XXX dirty hack end
+				return null;
 		}
 
 		// XXX which elements should be used?
