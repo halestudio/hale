@@ -56,4 +56,5 @@ public interface MutableCell extends ModifiableCell {
 	 * @param priority the {@link Priority priority} to set
 	 */
 	public void setPriority(Priority priority);
+
 }

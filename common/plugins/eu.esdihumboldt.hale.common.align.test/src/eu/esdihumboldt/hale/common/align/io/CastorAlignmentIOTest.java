@@ -73,4 +73,9 @@ public class CastorAlignmentIOTest extends DefaultAlignmentIOTest {
 		return false;
 	}
 
+	@Override
+	protected boolean supportsTransformationModes() {
+		return false;
+	}
+
 }

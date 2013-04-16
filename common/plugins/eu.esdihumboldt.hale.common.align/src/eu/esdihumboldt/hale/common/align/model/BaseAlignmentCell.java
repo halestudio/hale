@@ -36,6 +36,7 @@ public class BaseAlignmentCell implements ModifiableCell {
 	private final URI baseAlignment;
 	private final String prefix;
 	private final Set<Cell> disabledFor = new HashSet<Cell>();
+	private TransformationMode mode;
 
 	/**
 	 * Constructor.
@@ -148,6 +149,36 @@ public class BaseAlignmentCell implements ModifiableCell {
 				disabledFor.remove(cell);
 		}
 
+	}
+
+	@Override
+	public TransformationMode getTransformatioMode() {
+		if (mode != null)
+			return mode;
+		return base.getTransformatioMode();
+	}
+
+	/**
+	 * States if the cell overrides the transformation mode.
+	 * 
+	 * @return if the cell overrides the base cell's transformation mode
+	 */
+	public boolean overridesTransformationMode() {
+		return mode != null && !mode.equals(base.getTransformatioMode());
+	}
+
+	@Override
+	public void setTransformationMode(TransformationMode mode) {
+		this.mode = mode;
+	}
+
+	/**
+	 * Set the transformation mode of the base cell.
+	 * 
+	 * @param mode the cell transformation mode
+	 */
+	public void setBaseTransformationMode(TransformationMode mode) {
+		base.setTransformationMode(mode);
 	}
 
 	/**

@@ -73,4 +73,9 @@ public class JaxbAlignmentIOTest extends DefaultAlignmentIOTest {
 		return true;
 	}
 
+	@Override
+	protected boolean supportsTransformationModes() {
+		return true;
+	}
+
 }
