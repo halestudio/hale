@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.common.align.model.ModifiableCell;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.Priority;
+import eu.esdihumboldt.hale.common.align.model.TransformationMode;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceAdapter;
@@ -222,6 +223,14 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 				throw new IllegalArgumentException();
 
 			notifyCellsPropertyChanged(Arrays.asList(cell), propertyName);
+		}
+		else if (Cell.PROPERTY_TRANSFORMATION_MODE.equals(propertyName)) {
+			// set the transformation mode
+			if (cell instanceof ModifiableCell && property instanceof TransformationMode) {
+				ModifiableCell modCell = (ModifiableCell) cell;
+				modCell.setTransformationMode((TransformationMode) property);
+				notifyCellsPropertyChanged(Arrays.asList(cell), propertyName);
+			}
 		}
 		else if (cell instanceof MutableCell) {
 			MutableCell mutableCell = (MutableCell) cell;
