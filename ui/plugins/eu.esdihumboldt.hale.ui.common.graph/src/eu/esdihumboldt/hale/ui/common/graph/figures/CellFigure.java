@@ -25,6 +25,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure;
@@ -75,7 +76,6 @@ public class CellFigure extends CustomShapeFigure {
 	}
 
 	private void addLabels(Cell cell) {
-
 		if (!isCompatible) {
 			Label compatibilityLabel = new Label();
 			Image compatibilityImage = PlatformUI.getWorkbench().getSharedImages()
@@ -86,6 +86,32 @@ public class CellFigure extends CustomShapeFigure {
 			toolTipLabel.setText("Not compatible with " + lastCompatiblityMode + " transformation");
 			compatibilityLabel.setToolTip(toolTipLabel);
 			add(compatibilityLabel, compLabelGD);
+		}
+
+		if (AlignmentUtil.isTypeCell(cell)) {
+			// label for displaying the transformation mode
+			Image modeImage;
+			switch (cell.getTransformatioMode()) {
+			case active:
+				modeImage = CommonSharedImages.getImageRegistry().get(
+						CommonSharedImages.IMG_TRAFFICLIGHT_GREEN);
+				break;
+			case passive:
+				modeImage = CommonSharedImages.getImageRegistry().get(
+						CommonSharedImages.IMG_TRAFFICLIGHT_YELLOW);
+				break;
+			case disabled:
+			default:
+				modeImage = CommonSharedImages.getImageRegistry().get(
+						CommonSharedImages.IMG_TRAFFICLIGHT_RED);
+			}
+
+			Label modeLabel = new Label(modeImage);
+			Label modeToolTip = new Label(cell.getTransformatioMode().displayName());
+			modeLabel.setToolTip(modeToolTip);
+
+			GridData modeGD = new GridData(GridData.CENTER, GridData.CENTER, false, false);
+			add(modeLabel, modeGD);
 		}
 
 		Label mainLabel = new Label();
