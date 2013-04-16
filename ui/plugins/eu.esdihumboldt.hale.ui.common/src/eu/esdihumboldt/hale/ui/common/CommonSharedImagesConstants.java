@@ -122,6 +122,21 @@ public interface CommonSharedImagesConstants {
 	public static final String IMG_PRIORITY_LOWEST = "IMG_PRIORITY_LOWEST";
 
 	/**
+	 * Red traffic light image key.
+	 */
+	public static final String IMG_TRAFFICLIGHT_RED = "IMG_TRAFFICLIGHT_RED";
+
+	/**
+	 * Yellow traffic light image key.
+	 */
+	public static final String IMG_TRAFFICLIGHT_YELLOW = "IMG_TRAFFICLIGHT_YELLOW";
+
+	/**
+	 * Green traffic light image key.
+	 */
+	public static final String IMG_TRAFFICLIGHT_GREEN = "IMG_TRAFFICLIGHT_GREEN";
+
+	/**
 	 * Key for refresh image
 	 */
 	public static final String IMG_REFRESH = "IMG_REFRESH";
