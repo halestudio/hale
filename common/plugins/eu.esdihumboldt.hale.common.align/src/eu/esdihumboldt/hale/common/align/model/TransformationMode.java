@@ -24,14 +24,27 @@ public enum TransformationMode {
 	/**
 	 * The cell is active and will initiate transformations.
 	 */
-	active,
+	active("Active"),
 	/**
 	 * The cell will not initiate any transformations, but may be used in the
 	 * context of others.
 	 */
-	passive,
+	passive("Passive"),
 	/**
 	 * The cell is completely disabled.
 	 */
-	disabled
+	disabled("Disabled");
+
+	private final String displayName;
+
+	private TransformationMode(String displayName) {
+		this.displayName = displayName;
+	}
+
+	/**
+	 * @return the mode's display name
+	 */
+	public String displayName() {
+		return displayName;
+	}
 }
