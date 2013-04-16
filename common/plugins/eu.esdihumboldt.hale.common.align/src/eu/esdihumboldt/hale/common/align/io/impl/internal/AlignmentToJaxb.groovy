@@ -35,9 +35,11 @@ import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ObjectFactor
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ParameterType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.PriorityType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.PropertyType
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.TransformationModeType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AlignmentType.Base
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType.Type
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ModifierType.DisableFor
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ModifierType.Transformation
 import eu.esdihumboldt.hale.common.align.model.Alignment
 import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell
 import eu.esdihumboldt.hale.common.align.model.Cell
@@ -45,6 +47,7 @@ import eu.esdihumboldt.hale.common.align.model.ChildContext
 import eu.esdihumboldt.hale.common.align.model.Entity
 import eu.esdihumboldt.hale.common.align.model.ParameterValue
 import eu.esdihumboldt.hale.common.align.model.Property
+import eu.esdihumboldt.hale.common.align.model.TransformationMode
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter
 import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager
 import eu.esdihumboldt.hale.common.instance.model.Filter
@@ -97,14 +100,33 @@ class AlignmentToJaxb {
 
 	protected void addModifier(Cell cell, AlignmentType align) {
 		Set<Cell> disabledFor = cell.disabledFor
+		TransformationMode mode = cell.transformatioMode
 		if (cell instanceof BaseAlignmentCell) {
 			disabledFor = ((BaseAlignmentCell) cell).additionalDisabledFor
+			if (!cell.overridesTransformationMode()) {
+				// only store if the original value actually is overridden
+				mode = null
+			}
 		}
-		if (!disabledFor.empty) {
+		else {
+			// only store mode if it is not the default
+			if (mode == Cell.DEFAULT_TRANSFORMATION_MODE) {
+				mode = null
+			}
+		}
+		
+		if (mode || disabledFor) {
 			ModifierType modifier = new ModifierType()
 			modifier.cell = cell.id
-			disabledFor.collect(modifier.disableFor) {
-				new DisableFor(parent: it.id)
+			if (disabledFor) {
+				disabledFor.collect(modifier.disableFor) {
+					new DisableFor(parent: it.id)
+				}
+			}
+			if (mode) {
+				String name = mode.name()
+				TransformationModeType tmt = TransformationModeType.fromValue(name)
+				modifier.transformation = new Transformation(mode: tmt)
 			}
 			align.cellOrModifier << modifier;
 		}

@@ -60,15 +60,30 @@
 	<xs:element name="modifier" type="ModifierType" />
 	
 	<xs:complexType name="ModifierType">
-		<xs:choice minOccurs="0" maxOccurs="unbounded">
-			<xs:element name="disable-for" minOccurs="1">
+		<xs:sequence>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="disable-for" minOccurs="1">
+					<xs:complexType>
+						<xs:attribute name="parent" type="xs:string" use="required" />
+					</xs:complexType>
+				</xs:element>
+			</xs:choice>
+			<xs:element name="transformation" minOccurs="0">
 				<xs:complexType>
-					<xs:attribute name="parent" type="xs:string" use="required" />
+					<xs:attribute name="mode" type="TransformationModeType" use="required" />
 				</xs:complexType>
 			</xs:element>
-		</xs:choice>
+		</xs:sequence>
 		<xs:attribute name="cell" type="xs:string" use="required" />
 	</xs:complexType>
+	
+	<xs:simpleType name="TransformationModeType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="active"></xs:enumeration>
+			<xs:enumeration value="passive"></xs:enumeration>
+			<xs:enumeration value="disabled"></xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
 	
 	<!-- Annotations -->
 	<xs:simpleType name="preserveWhitespaceString">

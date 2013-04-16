@@ -14,37 +14,34 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for PriorityType.
+ * <p>Java class for TransformationModeType.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * <p>
  * <pre>
- * &lt;simpleType name="PriorityType">
+ * &lt;simpleType name="TransformationModeType">
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
- *     &lt;enumeration value="high"/>
- *     &lt;enumeration value="normal"/>
- *     &lt;enumeration value="low"/>
- *     &lt;enumeration value="lowest"/>
+ *     &lt;enumeration value="active"/>
+ *     &lt;enumeration value="passive"/>
+ *     &lt;enumeration value="disabled"/>
  *   &lt;/restriction>
  * &lt;/simpleType>
  * </pre>
  * 
  */
-@XmlType(name = "PriorityType")
+@XmlType(name = "TransformationModeType")
 @XmlEnum
-public enum PriorityType {
+public enum TransformationModeType {
 
-    @XmlEnumValue("high")
-    HIGH("high"),
-    @XmlEnumValue("normal")
-    NORMAL("normal"),
-    @XmlEnumValue("low")
-    LOW("low"),
-    @XmlEnumValue("lowest")
-    LOWEST("lowest");
+    @XmlEnumValue("active")
+    ACTIVE("active"),
+    @XmlEnumValue("passive")
+    PASSIVE("passive"),
+    @XmlEnumValue("disabled")
+    DISABLED("disabled");
     private final String value;
 
-    PriorityType(String v) {
+    TransformationModeType(String v) {
         value = v;
     }
 
@@ -52,8 +49,8 @@ public enum PriorityType {
         return value;
     }
 
-    public static PriorityType fromValue(String v) {
-        for (PriorityType c: PriorityType.values()) {
+    public static TransformationModeType fromValue(String v) {
+        for (TransformationModeType c: TransformationModeType.values()) {
             if (c.value.equals(v)) {
                 return c;
             }

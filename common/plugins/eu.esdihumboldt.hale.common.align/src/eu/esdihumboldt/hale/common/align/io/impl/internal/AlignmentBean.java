@@ -38,6 +38,7 @@ import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.align.model.TransformationMode;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.util.io.PathUpdate;
@@ -290,6 +291,12 @@ public class AlignmentBean extends
 	@Override
 	protected Collection<String> getDisabledForList(ModifierBean modifier) {
 		return modifier.getDisableForRelation();
+	}
+
+	@Override
+	protected TransformationMode getTransformationMode(ModifierBean modifier) {
+		// not supported
+		return null;
 	}
 
 	/**

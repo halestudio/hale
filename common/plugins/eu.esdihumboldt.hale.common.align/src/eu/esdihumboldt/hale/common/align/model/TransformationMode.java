@@ -16,23 +16,22 @@
 package eu.esdihumboldt.hale.common.align.model;
 
 /**
- * Interface for cell that may be adapted through cell modifiers.
+ * Different transformation modes for type cells.
  * 
  * @author Simon Templer
  */
-public interface ModifiableCell extends Cell {
-
+public enum TransformationMode {
 	/**
-	 * @param cell the cell to disable/enable this cell for
-	 * @param disabled whether the cell should be disabled or not
+	 * The cell is active and will initiate transformations.
 	 */
-	public void setDisabledFor(Cell cell, boolean disabled);
-
+	active,
 	/**
-	 * Set the cell transformation mode. Only applicable for type cells.
-	 * 
-	 * @param mode the transformation mode to set
+	 * The cell will not initiate any transformations, but may be used in the
+	 * context of others.
 	 */
-	public void setTransformationMode(TransformationMode mode);
-
+	passive,
+	/**
+	 * The cell is completely disabled.
+	 */
+	disabled
 }

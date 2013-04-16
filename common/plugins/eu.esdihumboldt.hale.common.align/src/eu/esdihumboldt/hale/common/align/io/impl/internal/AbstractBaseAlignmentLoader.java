@@ -36,6 +36,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ModifiableCell;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.align.model.TransformationMode;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
@@ -132,6 +133,14 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 	 * @return the disabled for list
 	 */
 	protected abstract Collection<String> getDisabledForList(M modifier);
+
+	/**
+	 * Get the transformation mode specified in a modifier.
+	 * 
+	 * @param modifier the modifier
+	 * @return the transformation mode or <code>null</code> if none is specified
+	 */
+	protected abstract TransformationMode getTransformationMode(M modifier);
 
 	/**
 	 * Adds the given base alignment to the given alignment.
@@ -461,6 +470,7 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 			if (cell == null)
 				continue;
 
+			// disabledFor
 			for (String disabledForId : getDisabledForList(modifier)) {
 				Cell other = getCell(alignment, disabledForId, defaultPrefix, prefixMapping,
 						reporter);
@@ -485,6 +495,16 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 				else
 					((ModifiableCell) cell).setDisabledFor(other, true);
 			}
+
+			// transformation mode
+			TransformationMode mode = getTransformationMode(modifier);
+			if (mode != null) {
+				if (base)
+					((BaseAlignmentCell) cell).setBaseTransformationMode(mode);
+				else
+					((ModifiableCell) cell).setTransformationMode(mode);
+			}
+
 			// XXX handle additional properties
 		}
 	}

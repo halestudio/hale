@@ -53,6 +53,7 @@ import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.Property;
+import eu.esdihumboldt.hale.common.align.model.TransformationMode;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
@@ -109,6 +110,10 @@ public abstract class DefaultAlignmentIOTest {
 		parameters1.put("test", new ParameterValue("2"));
 		parameters1.put("t", new ParameterValue("3"));
 		cell1.setTransformationParameters(parameters1);
+
+		if (supportsTransformationModes()) {
+			cell1.setTransformationMode(TransformationMode.passive);
+		}
 
 		ListMultimap<String, Type> source1 = ArrayListMultimap.create();
 		QName source1TypeName;
@@ -213,6 +218,10 @@ public abstract class DefaultAlignmentIOTest {
 			assertEquals(doc1, ncell1.getDocumentation().get(null).get(0));
 			assertEquals(tag1, ncell1.getDocumentation().get("tag").get(0));
 			assertEquals(tag2, ncell1.getDocumentation().get("tag").get(1));
+		}
+
+		if (supportsTransformationModes()) {
+			assertEquals(TransformationMode.passive, ncell1.getTransformatioMode());
 		}
 
 		// source 1
@@ -579,5 +588,12 @@ public abstract class DefaultAlignmentIOTest {
 	 * @return if complex parameter values are supported
 	 */
 	protected abstract boolean supportsComplexParameters();
+
+	/**
+	 * Determine if the alignment I/O supports transformation modes.
+	 * 
+	 * @return if cell transformation modes are supported
+	 */
+	protected abstract boolean supportsTransformationModes();
 
 }

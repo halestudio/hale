@@ -33,6 +33,7 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.Priority;
+import eu.esdihumboldt.hale.common.align.model.TransformationMode;
 
 /**
  * Default implementation of an alignment cell
@@ -46,6 +47,12 @@ public class DefaultCell implements Cell, MutableCell {
 	private ListMultimap<String, ParameterValue> parameters;
 	private String transformation;
 	private String id;
+
+	/**
+	 * The cell's transformation mode, defaults to active.
+	 */
+	private TransformationMode mode = DEFAULT_TRANSFORMATION_MODE;
+
 	/**
 	 * The {@link Cell}'s {@link Priority}. Defaults to {@link Priority#NORMAL}.
 	 */
@@ -261,6 +268,16 @@ public class DefaultCell implements Cell, MutableCell {
 	@Override
 	public Priority getPriority() {
 		return priority;
+	}
+
+	@Override
+	public void setTransformationMode(TransformationMode mode) {
+		this.mode = mode;
+	}
+
+	@Override
+	public TransformationMode getTransformatioMode() {
+		return mode;
 	}
 
 	/**

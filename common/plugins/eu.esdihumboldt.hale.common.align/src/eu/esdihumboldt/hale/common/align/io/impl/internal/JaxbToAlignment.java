@@ -64,6 +64,7 @@ import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.Priority;
+import eu.esdihumboldt.hale.common.align.model.TransformationMode;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
@@ -497,6 +498,15 @@ public class JaxbToAlignment extends
 				return input.getParent();
 			}
 		});
+	}
+
+	@Override
+	protected TransformationMode getTransformationMode(ModifierType modifier) {
+		if (modifier.getTransformation() != null) {
+			String name = modifier.getTransformation().getMode().value();
+			return TransformationMode.valueOf(name);
+		}
+		return null;
 	}
 
 	/**
