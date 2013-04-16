@@ -56,4 +56,11 @@ public interface MutableCell extends Cell {
 	 * @param priority the {@link Priority priority} to set
 	 */
 	public void setPriority(Priority priority);
+
+	/**
+	 * Set the cell transformation mode. Only applicable for type cells.
+	 * 
+	 * @param mode the transformation mode to set
+	 */
+	public void setTransformatioMode(TransformationMode mode);
 }

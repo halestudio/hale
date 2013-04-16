@@ -34,6 +34,11 @@ public interface Cell {
 	public static final String PROPERTY_PRIORITY = "priority";
 
 	/**
+	 * Property name for the {@link TransformationMode}.
+	 */
+	public static final String PROPERTY_TRANSFORMATION_MODE = "transformationMode";
+
+	/**
 	 * Property name for disabled for.
 	 */
 	public static final String PROPERTY_DISABLE_FOR = "disabled_for";
@@ -140,6 +145,10 @@ public interface Cell {
 	 */
 	public Set<Cell> getDisabledFor();
 
+	/*
+	 * XXX necessary to have this in the interface? any change should happen
+	 * through the alignment service - possible to move to mutable cell?
+	 */
 	/**
 	 * @param cell the cell to disable/enable this cell for
 	 * @param disabled whether the cell should be disabled or not
@@ -152,6 +161,13 @@ public interface Cell {
 	 * @return the {@link Priority priority}.
 	 */
 	public Priority getPriority();
+
+	/**
+	 * Get the cell transformation mode. Only applicable for type cells.
+	 * 
+	 * @return the cell transformation mode
+	 */
+	public TransformationMode getTransformatioMode();
 
 	/**
 	 * Returns whether the cell is included from a base alignment or not.
