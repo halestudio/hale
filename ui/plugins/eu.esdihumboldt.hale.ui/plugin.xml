@@ -788,6 +788,36 @@
             </dynamic>
          </menu>
          <menu
+               label="Transformation">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <and>
+                     <count
+                           value="1">
+                     </count>
+                     <iterate
+                           ifEmpty="false"
+                           operator="and">
+                        <and>
+                           <instanceof
+                                 value="eu.esdihumboldt.hale.common.align.model.Cell">
+                           </instanceof>
+                           <test
+                                 property="eu.esdihumboldt.hale.ui.service.align.cell.type_cell">
+                           </test>
+                        </and>
+                     </iterate>
+                  </and>
+               </with>
+            </visibleWhen>
+            <dynamic
+                  class="eu.esdihumboldt.hale.ui.function.contribution.SetTransformationModeContribution"
+                  id="eu.esdihumboldt.hale.ui.dynamic2">
+            </dynamic>
+         </menu>
+         <menu
                label="Replace with">
             <visibleWhen
                   checkEnabled="false">
@@ -862,7 +892,7 @@
             class="eu.esdihumboldt.hale.ui.service.align.internal.tester.CellTester"
             id="eu.esdihumboldt.hale.ui.service.align.cell"
             namespace="eu.esdihumboldt.hale.ui.service.align.cell"
-            properties="allow_remove,allow_edit"
+            properties="allow_remove,allow_edit,type_cell"
             type="eu.esdihumboldt.hale.common.align.model.Cell">
       </propertyTester>
       <propertyTester

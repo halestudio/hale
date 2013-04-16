@@ -46,6 +46,11 @@ public class CellTester extends PropertyTester {
 	public static final String PROPERTY_CELL_ALLOW_EDIT = "allow_edit";
 
 	/**
+	 * The property that specifies if a cell is a type cell.
+	 */
+	public static final String PROPERTY_CELL_IS_TYPE_CELL = "type_cell";
+
+	/**
 	 * @see org.eclipse.core.expressions.IPropertyTester#test(java.lang.Object,
 	 *      java.lang.String, java.lang.Object[], java.lang.Object)
 	 */
@@ -61,6 +66,10 @@ public class CellTester extends PropertyTester {
 
 		if (property.equals(PROPERTY_CELL_ALLOW_EDIT) && receiver instanceof Cell) {
 			return !((Cell) receiver).isBaseCell();
+		}
+
+		if (property.equals(PROPERTY_CELL_IS_TYPE_CELL) && receiver instanceof Cell) {
+			return AlignmentUtil.isTypeCell((Cell) receiver);
 		}
 
 		return false;
