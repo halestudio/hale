@@ -165,9 +165,10 @@ public class ProjectHandler {
 								throw new IllegalStateException(
 										"Alignment missing or failed to load");
 							}
-							if (transformationEnvironment.getAlignment().getTypeCells().isEmpty()) {
+							if (transformationEnvironment.getAlignment().getActiveTypeCells()
+									.isEmpty()) {
 								throw new IllegalStateException(
-										"Alignment contains no type relations");
+										"Alignment contains no active type relations");
 							}
 						} catch (Exception e) {
 							log.error("Could not load transformation environment for project "

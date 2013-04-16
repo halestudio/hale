@@ -59,6 +59,7 @@ import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.TransformationMode;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -388,16 +389,21 @@ public class XsltGenerator implements XsltConstants {
 
 		// type cells
 		for (Cell typeCell : alignment.getTypeCells()) {
-			Entity targetEntity = CellUtil.getFirstEntity(typeCell.getTarget());
-			if (targetEntity != null) {
-				// assign identifiers for type transformations
-				String targetName = targetEntity.getDefinition().getDefinition().getName()
-						.getLocalPart();
-				String id = cellIdentifiers.getId(typeCell, targetName);
-				typeIds.add(id);
-			}
-			else {
-				reporter.warn(new IOMessageImpl("Ignoring type relation without target type", null));
+			if (typeCell.getTransformatioMode() != TransformationMode.disabled) {
+				// ignore disabled cells
+
+				Entity targetEntity = CellUtil.getFirstEntity(typeCell.getTarget());
+				if (targetEntity != null) {
+					// assign identifiers for type transformations
+					String targetName = targetEntity.getDefinition().getDefinition().getName()
+							.getLocalPart();
+					String id = cellIdentifiers.getId(typeCell, targetName);
+					typeIds.add(id);
+				}
+				else {
+					reporter.warn(new IOMessageImpl("Ignoring type relation without target type",
+							null));
+				}
 			}
 		}
 
@@ -409,12 +415,17 @@ public class XsltGenerator implements XsltConstants {
 		progress.setCurrentTask("Generating container");
 		generateContainer(typeIds, container, targetElements);
 
+		Set<String> passiveCellIds = new HashSet<String>(typeIds);
 		progress.setCurrentTask("Generate type transformations");
+		// all active cells templates
 		for (Entry<String, QName> entry : targetElements.entrySet()) {
 			// generate XSL fragments for type transformations
 			String id = entry.getKey();
 			QName elementName = entry.getValue();
 			Cell typeCell = cellIdentifiers.getObject(id);
+
+			// this is not a passive cell
+			passiveCellIds.remove(id);
 
 			XmlElement targetElement = targetSchema.getElements().get(elementName);
 
@@ -423,6 +434,23 @@ public class XsltGenerator implements XsltConstants {
 			includes.add(filename);
 
 			generateTypeTransformation(id, targetElement, typeCell, file);
+		}
+		// all passive cell templates
+		for (String passiveId : passiveCellIds) {
+			Cell typeCell = cellIdentifiers.getObject(passiveId);
+
+			String filename = "_" + passiveId + ".xsl";
+			File file = new File(workDir, filename);
+			includes.add(filename);
+
+			// XXX dummy target element
+			XmlElement targetElement = new XmlElement(new QName(NS_XSL_DEFINITIONS, "dummy"), null,
+					null);
+
+			generateTypeTransformation(passiveId, targetElement, typeCell, file);
+
+			// for passive cells no variables should be created
+			typeIds.remove(passiveId);
 		}
 
 		// namespaces that occur additionally to the fixed namespaces
@@ -480,13 +508,18 @@ public class XsltGenerator implements XsltConstants {
 		Multimap<TypeDefinition, String> groupedResults = HashMultimap.create();
 		for (String typeId : typeIds) {
 			Cell cell = cellIdentifiers.getObject(typeId);
-			Collection<? extends Entity> targetEntities = cell.getTarget().values();
-			if (targetEntities.size() == 1) {
-				TypeDefinition type = targetEntities.iterator().next().getDefinition().getType();
-				groupedResults.put(type, typeId);
-			}
-			else {
-				throw new IllegalStateException("Type cell may only have exactly one target type");
+			if (cell.getTransformatioMode() == TransformationMode.active) {
+				// only active cells get placed in the container
+				Collection<? extends Entity> targetEntities = cell.getTarget().values();
+				if (targetEntities.size() == 1) {
+					TypeDefinition type = targetEntities.iterator().next().getDefinition()
+							.getType();
+					groupedResults.put(type, typeId);
+				}
+				else {
+					throw new IllegalStateException(
+							"Type cell may only have exactly one target type");
+				}
 			}
 		}
 

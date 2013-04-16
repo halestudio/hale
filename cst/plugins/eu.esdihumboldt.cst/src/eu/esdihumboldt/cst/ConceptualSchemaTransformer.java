@@ -123,7 +123,7 @@ public class ConceptualSchemaTransformer implements TransformationService {
 			TypeTransformationExtension typesTransformations = TypeTransformationExtension
 					.getInstance();
 
-			Collection<? extends Cell> typeCells = alignment.getTypeCells();
+			Collection<? extends Cell> typeCells = alignment.getActiveTypeCells();
 			for (Cell typeCell : typeCells) {
 				if (progressIndicator.isCanceled()) {
 					break;

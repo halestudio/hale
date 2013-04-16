@@ -402,7 +402,7 @@ public class OrientInstanceService extends AbstractInstanceService {
 						return;
 					}
 					Alignment alignment = getAlignmentService().getAlignment();
-					if (alignment.getTypeCells().isEmpty()) {
+					if (alignment.getActiveTypeCells().isEmpty()) {
 						// early exit if there are no type relations
 						return;
 					}

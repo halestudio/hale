@@ -688,7 +688,7 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 		Alignment alignment = sample.getAlignment()
 
 		// get the type cell
-		def typeCell = alignment.typeCells.asList()[0] // first type cell
+		def typeCell = alignment.activeTypeCells.asList()[0] // first active type cell
 
 		// create the transformation tree
 		TransformationTree tree = new TransformationTreeImpl(alignment, typeCell)

@@ -195,7 +195,7 @@ public class Transformation {
 		// Currently do not create a temporary DB is there are Retypes only.
 		boolean useTempDatabase = false;
 		final LocalOrientDB db;
-		for (Cell cell : alignment.getTypeCells())
+		for (Cell cell : alignment.getActiveTypeCells())
 			if (!RetypeFunction.ID.equals(cell.getTransformationIdentifier())) {
 				useTempDatabase = true;
 				break;
