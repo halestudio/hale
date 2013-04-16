@@ -33,6 +33,7 @@ import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.ModifiableCell;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
@@ -482,7 +483,7 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 				if (base)
 					((BaseAlignmentCell) cell).setBaseDisabledFor(other, true);
 				else
-					cell.setDisabledFor(other, true);
+					((ModifiableCell) cell).setDisabledFor(other, true);
 			}
 			// XXX handle additional properties
 		}

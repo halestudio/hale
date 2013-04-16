@@ -141,12 +141,6 @@ public interface Cell {
 	public Set<Cell> getDisabledFor();
 
 	/**
-	 * @param cell the cell to disable/enable this cell for
-	 * @param disabled whether the cell should be disabled or not
-	 */
-	public void setDisabledFor(Cell cell, boolean disabled);
-
-	/**
 	 * Returns the priority for the cell.
 	 * 
 	 * @return the {@link Priority priority}.

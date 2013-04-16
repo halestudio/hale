@@ -30,9 +30,9 @@ import com.google.common.collect.Sets;
  * 
  * @author Kai Schwierczek
  */
-public class BaseAlignmentCell implements Cell {
+public class BaseAlignmentCell implements ModifiableCell {
 
-	private final Cell base;
+	private final ModifiableCell base;
 	private final URI baseAlignment;
 	private final String prefix;
 	private final Set<Cell> disabledFor = new HashSet<Cell>();
@@ -44,7 +44,7 @@ public class BaseAlignmentCell implements Cell {
 	 * @param baseAlignment the URI of the alignment the cell is from
 	 * @param prefix the alignment's prefix
 	 */
-	public BaseAlignmentCell(Cell base, URI baseAlignment, String prefix) {
+	public BaseAlignmentCell(ModifiableCell base, URI baseAlignment, String prefix) {
 		this.base = base;
 		this.baseAlignment = baseAlignment;
 		this.prefix = prefix;
