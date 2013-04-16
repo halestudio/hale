@@ -94,16 +94,16 @@ public class CellFigure extends CustomShapeFigure {
 			switch (cell.getTransformatioMode()) {
 			case active:
 				modeImage = CommonSharedImages.getImageRegistry().get(
-						CommonSharedImages.IMG_TRAFFICLIGHT_GREEN);
+						CommonSharedImages.IMG_MARKER_GREEN);
 				break;
 			case passive:
 				modeImage = CommonSharedImages.getImageRegistry().get(
-						CommonSharedImages.IMG_TRAFFICLIGHT_YELLOW);
+						CommonSharedImages.IMG_MARKER_YELLOW);
 				break;
 			case disabled:
 			default:
 				modeImage = CommonSharedImages.getImageRegistry().get(
-						CommonSharedImages.IMG_TRAFFICLIGHT_RED);
+						CommonSharedImages.IMG_MARKER_RED);
 			}
 
 			Label modeLabel = new Label(modeImage);
