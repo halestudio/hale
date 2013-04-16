@@ -102,7 +102,7 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 	/**
 	 * Operation that sets the priority of a cell.
 	 */
-	public class SetCellProperyOperation extends AbstractOperation {
+	public class SetCellPropertyOperation extends AbstractOperation {
 
 		private final Object oldProperty;
 		private final Object newProperty;
@@ -118,7 +118,7 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 		 * @param newProperty the new property value.
 		 * 
 		 */
-		public SetCellProperyOperation(String mutableCellId, String propertyName,
+		public SetCellPropertyOperation(String mutableCellId, String propertyName,
 				Object oldProperty, Object newProperty) {
 			super("Set a cell property.");
 			this.mutableCellId = mutableCellId;
@@ -524,10 +524,17 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 				Priority newPriority = (Priority) property;
 				Cell cell = getAlignment().getCell(cellId);
 				Priority oldPriority = cell.getPriority();
-				IUndoableOperation operation = new SetCellProperyOperation(cellId, propertyName,
+				IUndoableOperation operation = new SetCellPropertyOperation(cellId, propertyName,
 						oldPriority, newPriority);
 				executeOperation(operation);
 			}
+		}
+		else if (Cell.PROPERTY_TRANSFORMATION_MODE.equals(propertyName)) {
+			Cell cell = getAlignment().getCell(cellId);
+			Object oldValue = cell.getTransformatioMode();
+			IUndoableOperation operation = new SetCellPropertyOperation(cellId, propertyName,
+					oldValue, property);
+			executeOperation(operation);
 		}
 		else {
 			log.warn("An unknown cell property is set. No undo support.");
