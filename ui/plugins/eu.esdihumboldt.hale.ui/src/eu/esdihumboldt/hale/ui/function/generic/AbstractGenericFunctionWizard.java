@@ -133,9 +133,11 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 	@Override
 	protected void init(Cell cell) {
 		// create a new cell even if a cell is already present
-		resultCell = new DefaultCell();
-		resultCell.setTransformationIdentifier(getFunctionId());
-		resultCell.setPriority(cell.getPriority());
+		resultCell = new DefaultCell(cell);
+		// XXX necessary to reset those?
+		resultCell.setSource(null);
+		resultCell.setTarget(null);
+		resultCell.setTransformationParameters(null);
 		// the cell configuration will be duplicated or changed by the wizard
 		// afterwards the old cell is replaced by the new cell in the alignment
 	}
