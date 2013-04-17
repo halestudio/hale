@@ -37,6 +37,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Enumeration;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
+import eu.esdihumboldt.hale.functions.bgis.capturespec.DataCaptureSpecFunction;
 import eu.esdihumboldt.hale.functions.bgis.sourcedesc.SourceDescriptionFunction;
 
 /**
@@ -89,9 +90,14 @@ public class DefaultsVisitor extends EntityVisitor {
 				 * sense to assign defaults)
 				 */
 
-				// special handling
+				// special handling allowing defaults
+				if ("dataCaptureSpec".equals(ped.getDefinition().getName().getLocalPart())) {
+					addAugmentationCell(ped, DataCaptureSpecFunction.ID, Priority.LOW);
+				}
+
+				// special handling allowing no defaults
 				if ("sourceDescription".equals(ped.getDefinition().getName().getLocalPart())) {
-					addAugmentationCell(ped, SourceDescriptionFunction.ID);
+					addAugmentationCell(ped, SourceDescriptionFunction.ID, Priority.LOWEST);
 				}
 				// default values
 				else {
@@ -119,7 +125,7 @@ public class DefaultsVisitor extends EntityVisitor {
 					&& ped.getDefinition().getConstraint(Cardinality.class).getMinOccurs() > 0
 					&& GenerateDefaults.isID(ped.getDefinition().getPropertyType())) {
 				// TODO also check the wrapping property actually is mandatory?
-				addAugmentationCell(ped, GenerateUIDFunction.ID);
+				addAugmentationCell(ped, GenerateUIDFunction.ID, Priority.LOWEST);
 			}
 		}
 
@@ -165,11 +171,13 @@ public class DefaultsVisitor extends EntityVisitor {
 	 * 
 	 * @param ped the property entity definition
 	 * @param functionId the function identifier
+	 * @param priority the cell priority
 	 */
-	private void addAugmentationCell(PropertyEntityDefinition ped, String functionId) {
+	private void addAugmentationCell(PropertyEntityDefinition ped, String functionId,
+			Priority priority) {
 		// create cell template
 		MutableCell cell = new DefaultCell();
-		cell.setPriority(Priority.LOWEST);
+		cell.setPriority(priority);
 		ListMultimap<String, Entity> target = ArrayListMultimap.create();
 		cell.setTarget(target);
 
