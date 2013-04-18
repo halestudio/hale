@@ -80,8 +80,12 @@
             name="Add index context">
       </command>
       <command
-            id="eu.esdihumboldt.hale.ui.entity.addconditioncontext"
-            name="Add condition context">
+            id="eu.esdihumboldt.hale.ui.entity.addcqlcontext"
+            name="Add CQL context">
+      </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.entity.addxpathcontext"
+            name="Add XPath context">
       </command>
       <command
             defaultHandler="eu.esdihumboldt.hale.ui.service.instance.internal.handler.ToggleTransformationHandler"
@@ -357,7 +361,16 @@
       </handler>
       <handler
             class="eu.esdihumboldt.hale.ui.service.entity.internal.handler.AddConditionContextHandler"
-            commandId="eu.esdihumboldt.hale.ui.entity.addconditioncontext">
+            commandId="eu.esdihumboldt.hale.ui.entity.addcqlcontext">
+         <activeWhen>
+            <reference
+                  definitionId="eu.esdihumboldt.hale.ui.selection.entity.allow_contextadd_condition">
+            </reference>
+         </activeWhen>
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.service.entity.internal.handler.AddXPathConditionContextHandler"
+            commandId="eu.esdihumboldt.hale.ui.entity.addxpathcontext">
          <activeWhen>
             <reference
                   definitionId="eu.esdihumboldt.hale.ui.selection.entity.allow_contextadd_condition">
@@ -725,13 +738,23 @@
                   checkEnabled="true">
             </visibleWhen>
          </command>
-         <command
-               commandId="eu.esdihumboldt.hale.ui.entity.addconditioncontext"
-               style="push">
-            <visibleWhen
-                  checkEnabled="true">
-            </visibleWhen>
-         </command>
+         <menu
+               label="Add condition context">
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.entity.addcqlcontext"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="true">
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.entity.addxpathcontext"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="true">
+               </visibleWhen>
+            </command>
+         </menu>
          <command
                commandId="eu.esdihumboldt.hale.ui.entity.removecontext"
                style="push">
@@ -1055,7 +1078,11 @@
             icon="icons/add.gif">
       </image>
       <image
-            commandId="eu.esdihumboldt.hale.ui.entity.addconditioncontext"
+            commandId="eu.esdihumboldt.hale.ui.entity.addcqlcontext"
+            icon="icons/filter.gif">
+      </image>
+      <image
+            commandId="eu.esdihumboldt.hale.ui.entity.addxpathcontext"
             icon="icons/filter.gif">
       </image>
       <image

@@ -18,87 +18,52 @@ package eu.esdihumboldt.hale.ui.service.entity.internal.handler;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.IHandler;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.swt.widgets.Shell;
 
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
-import eu.esdihumboldt.hale.common.instance.model.Filter;
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
+import eu.esdihumboldt.hale.ui.filter.CQLFilterDialog;
 import eu.esdihumboldt.hale.ui.filter.TypeFilterDialog;
-import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 
 /**
  * Adds a new condition context for a selected {@link EntityDefinition}.
  * 
  * @author Simon Templer
  */
-public class AddConditionContextHandler extends AbstractHandler {
+public class AddConditionContextHandler extends AbstractAddConditionContextHandler {
 
 	/**
-	 * @see IHandler#execute(ExecutionEvent)
+	 * @see eu.esdihumboldt.hale.ui.service.entity.internal.handler.AbstractAddConditionContextHandler#createDialog(org.eclipse.swt.widgets.Shell,
+	 *      eu.esdihumboldt.hale.common.align.model.EntityDefinition,
+	 *      java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		ISelection selection = HandlerUtil.getCurrentSelection(event);
-
-		if (selection != null && !selection.isEmpty() && selection instanceof IStructuredSelection) {
-			Object element = ((IStructuredSelection) selection).getFirstElement();
-
-			if (element instanceof EntityDefinition) {
-				EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench()
-						.getService(EntityDefinitionService.class);
-				EntityDefinition entityDef = (EntityDefinition) element;
-				Filter filter = null;
-				if (entityDef.getPropertyPath().isEmpty()) {
-					// type filter
-					TypeFilterDialog tfd = new TypeFilterDialog(HandlerUtil.getActiveShell(event),
-							entityDef.getType(), "Type condition",
-							"Define the condition for the new context");
-					if (tfd.open() == TypeFilterDialog.OK) {
-						filter = tfd.getFilter();
-					}
-				}
-				else {
-					// value filter
-					Definition<?> def = entityDef.getDefinition();
-					if (def instanceof PropertyDefinition) {
-						TypeDefinition propertyType = ((PropertyDefinition) def).getPropertyType();
-						// create a dummy type for the filter
-						TypeDefinition dummyType = new DefaultTypeDefinition(new QName(
-								"ValueFilterDummy"));
-						// with the property type being contained as value
-						// property
-						new DefaultPropertyDefinition(new QName("value"), dummyType, propertyType);
-						// and the parent type as parent property
-						new DefaultPropertyDefinition(new QName("parent"), dummyType,
-								((PropertyDefinition) def).getParentType());
-
-						// open the filter dialog
-						TypeFilterDialog tfd = new TypeFilterDialog(
-								HandlerUtil.getActiveShell(event), dummyType, "Property condition",
-								"Define the condition for the new context");
-						if (tfd.open() == TypeFilterDialog.OK) {
-							filter = tfd.getFilter();
-						}
-					}
-				}
-				if (filter != null) {
-					eds.addConditionContext((EntityDefinition) element, filter);
-				}
-			}
+	protected TypeFilterDialog createDialog(Shell shell, EntityDefinition entityDef, String title,
+			String message) {
+		TypeEntityDefinition parentType;
+		if (entityDef.getPropertyPath().isEmpty())
+			parentType = AlignmentUtil.getTypeEntity(entityDef);
+		else {
+			Definition<?> def = entityDef.getDefinition();
+			TypeDefinition propertyType = ((PropertyDefinition) def).getPropertyType();
+			// create a dummy type for the filter
+			TypeDefinition dummyType = new DefaultTypeDefinition(new QName("ValueFilterDummy"));
+			parentType = new TypeEntityDefinition(dummyType, entityDef.getSchemaSpace(), null);
+			// with the property type being contained as value
+			// property
+			new DefaultPropertyDefinition(new QName("value"), dummyType, propertyType);
+			// and the parent type as parent property
+			new DefaultPropertyDefinition(new QName("parent"), dummyType,
+					((PropertyDefinition) def).getParentType());
 		}
 
-		return null;
+		return new CQLFilterDialog(shell, parentType, title, message);
 	}
 
 }

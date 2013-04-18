@@ -35,18 +35,12 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.common.filter.FilterGeoCqlImpl;
-import eu.esdihumboldt.hale.common.filter.FilterGeoECqlImpl;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
-import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
-import eu.esdihumboldt.hale.ui.common.definition.selector.PropertyDefinitionDialog;
 import eu.esdihumboldt.hale.ui.filter.internal.FilterUIPlugin;
 import eu.esdihumboldt.hale.ui.filter.internal.Messages;
 
@@ -57,7 +51,7 @@ import eu.esdihumboldt.hale.ui.filter.internal.Messages;
  * @author Sebastian Reinhardt
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class TypeFilterField extends Composite {
+public abstract class TypeFilterField extends Composite {
 
 	/**
 	 * Property name of the filter property (as used in
@@ -87,11 +81,6 @@ public class TypeFilterField extends Composite {
 	private final Button clearFilter;
 	private final ControlDecoration decoration;
 
-	private TypeDefinition type;
-	private final SchemaSpaceID ssid;
-
-	private final FilterType filterType;
-
 	private boolean valid = false;
 	private Filter filter;
 
@@ -104,19 +93,11 @@ public class TypeFilterField extends Composite {
 	/**
 	 * Create a new filter field for a given type.
 	 * 
-	 * @param type the type definition
 	 * @param parent the parent composite
 	 * @param style the composite style
-	 * @param ssid the schema space, may be <code>null</code>
-	 * @param filterType the filter type
 	 */
-	public TypeFilterField(TypeDefinition type, Composite parent, int style, SchemaSpaceID ssid,
-			FilterType filterType) {
+	public TypeFilterField(Composite parent, int style) {
 		super(parent, style);
-
-		this.type = type;
-		this.ssid = ssid;
-		this.filterType = filterType;
 
 		GridLayout layout = new GridLayout(4, false);
 		layout.horizontalSpacing = 2;
@@ -182,22 +163,8 @@ public class TypeFilterField extends Composite {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				PropertyDefinitionDialog dialog = new PropertyDefinitionDialog(Display.getCurrent()
-						.getActiveShell(), TypeFilterField.this.ssid, TypeFilterField.this.type,
-						Messages.FeatureFilterField_7, null);
-
-				if (dialog.open() == PropertyDefinitionDialog.OK && dialog.getObject() != null
-						&& dialog.getObject().getType().getName().toString().length() >= 1) {
-					String var = "";
-					for (int i = 0; i < dialog.getObject().getPropertyPath().size(); i++) {
-						if (i == 0)
-							var = var.concat(dialog.getObject().getPropertyPath().get(i).getChild()
-									.getName().getLocalPart().toString());
-						else
-							var = var.concat("."
-									+ dialog.getObject().getPropertyPath().get(i).getChild()
-											.getName().getLocalPart().toString());
-					}
+				String var = selectVariable();
+				if (var != null) {
 					filterText.insert(var);
 					filterText.setFocus();
 				}
@@ -231,6 +198,23 @@ public class TypeFilterField extends Composite {
 	}
 
 	/**
+	 * Returns a string to insert to the filter that the user selected.
+	 * 
+	 * @return a string to insert to the filter or <code>null</code>
+	 */
+	protected abstract String selectVariable();
+
+	/**
+	 * Creates a {@link Filter} from the given filter string.<br>
+	 * If the string is no valid input, any exception may be thrown.
+	 * 
+	 * @param filterString the filter string
+	 * @return a filter representation of the filter string
+	 * @throws Exception if creation of the filter fails
+	 */
+	protected abstract Filter createFilter(String filterString) throws Exception;
+
+	/**
 	 * Update the filter and valid properties.
 	 */
 	protected void updateFilter() {
@@ -242,25 +226,18 @@ public class TypeFilterField extends Composite {
 		if (filterPresent) {
 			clearFilter.setEnabled(true);
 			try {
-				switch (filterType) {
-				case CQL:
-					filter = new FilterGeoCqlImpl(filterString);
-					break;
-				case ECQL:
-					filter = new FilterGeoECqlImpl(filterString);
-					break;
-				default:
-					filter = null;
-				}
-				valid = filter != null;
+				filter = createFilter(filterString);
+				valid = true;
 				showDefaultDecoration();
 			} catch (Throwable e) {
+				e.printStackTrace();
 				// show error decoration
 				decoration.setImage(FieldDecorationRegistry.getDefault()
 						.getFieldDecoration(FieldDecorationRegistry.DEC_ERROR).getImage());
 				decoration.setDescriptionText(e.getMessage());
 				decoration.show();
 				// mark as invalid
+				filter = null;
 				valid = false;
 			}
 		}
@@ -279,15 +256,12 @@ public class TypeFilterField extends Composite {
 	}
 
 	/**
-	 * Set the feature type
+	 * Enables/Disables the button for variable selection.
 	 * 
-	 * @param type the feature type
+	 * @param enabled the enable status
 	 */
-	public void setType(TypeDefinition type) {
-		this.type = type;
-
-		// openForm.setEnabled(type != null);
-		insertVar.setEnabled(type != null);
+	protected final void setVariableSelectEnabled(boolean enabled) {
+		insertVar.setEnabled(enabled);
 	}
 
 	/**
@@ -367,33 +341,6 @@ public class TypeFilterField extends Composite {
 			listener.propertyChange(evt);
 		}
 	}
-
-//	/**
-//	 * Set the field decoration.
-//	 * FIXME not very nice, why exposed at all? 
-//	 * @param type the message type, either WARNING, ERROR or DEFAULT
-//	 * @param message the decoration message
-//	 */
-//	public void setDecoration(String type, String message) {
-//		if (type.equals("ERROR")) {
-//			decoration.setImage(FieldDecorationRegistry.getDefault()
-//					.getFieldDecoration(FieldDecorationRegistry.DEC_ERROR)
-//					.getImage());
-//			decoration.setDescriptionText(message);
-//			decoration.show();
-//		}
-//
-//		if (type.equals("DEFAULT")) {
-//			showDefaultDecoration();
-//		}
-//		if (type.equals("WARNING")) {
-//			decoration.setImage(FieldDecorationRegistry.getDefault()
-//					.getFieldDecoration(FieldDecorationRegistry.DEC_WARNING)
-//					.getImage());
-//			decoration.setDescriptionText(message);
-//			decoration.show();
-//		}
-//	}
 
 	private void showDefaultDecoration() {
 		decoration.setImage(FieldDecorationRegistry.getDefault()
