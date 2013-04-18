@@ -57,6 +57,7 @@ public class EntityFigure extends CustomShapeFigure {
 			gridLayout.numColumns++;
 		gridLayout.marginHeight = 3;
 		gridLayout.marginWidth = 3;
+		gridLayout.makeColumnsEqualWidth = true;
 		setLayoutManager(gridLayout);
 
 		// the label for the label provider text and image
@@ -90,7 +91,8 @@ public class EntityFigure extends CustomShapeFigure {
 				contextLabel.setFont(customFont);
 			}
 			contextLabel.setText(contextText);
-			GridData contextGridData = new GridData(GridData.END, GridData.CENTER, false, true);
+			contextLabel.setToolTip(new Label(contextText));
+			GridData contextGridData = new GridData(GridData.END, GridData.CENTER, true, true);
 			add(contextLabel, contextGridData);
 		}
 
