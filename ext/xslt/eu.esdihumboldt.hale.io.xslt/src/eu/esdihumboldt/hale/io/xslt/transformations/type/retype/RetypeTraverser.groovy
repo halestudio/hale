@@ -18,6 +18,8 @@ package eu.esdihumboldt.hale.io.xslt.transformations.type.retype
 import javax.xml.namespace.QName
 import javax.xml.stream.XMLStreamException
 
+import org.apache.commons.lang.StringEscapeUtils
+
 import com.google.common.collect.ArrayListMultimap
 import com.tinkerpop.blueprints.Vertex
 
@@ -415,6 +417,7 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 					ctx.child.asProperty(),
 					xsltContext.namespaceContext,
 					filter)
+			xpathFilter = StringEscapeUtils.escapeXml(xpathFilter)
 			return "[$xpathFilter]"
 		}
 
