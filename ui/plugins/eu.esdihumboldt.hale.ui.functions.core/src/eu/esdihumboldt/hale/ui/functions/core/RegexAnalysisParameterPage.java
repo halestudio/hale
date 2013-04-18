@@ -189,9 +189,14 @@ public class RegexAnalysisParameterPage extends HaleWizardPage<AbstractGenericFu
 
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-						String convertedString = RegexAnalysis.analize(_regexText.getText(),
-								_outformatText.getText(), inputText.getText());
-						outputText.setText(convertedString);
+						String convertedString = "No match found.";
+						try {
+							convertedString = RegexAnalysis.analize(_regexText.getText(),
+									_outformatText.getText(), inputText.getText());
+							outputText.setText(convertedString);
+						} catch (Exception e1) {
+							outputText.setText(e1.getLocalizedMessage());
+						}
 					}
 				});
 			}

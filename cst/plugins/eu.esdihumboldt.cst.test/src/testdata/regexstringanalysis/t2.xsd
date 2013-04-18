@@ -5,6 +5,9 @@
     		<element maxOccurs="1" minOccurs="1" name="a1" type="string"/>
     		<element maxOccurs="1" minOccurs="1" name="b1" type="string"/>
     		<element maxOccurs="1" minOccurs="1" name="c1" type="string"/>
+    		<element maxOccurs="1" minOccurs="1" name="d1" type="string"/>
+    		<element maxOccurs="1" minOccurs="0" name="e1" type="string"/>
+    		<element maxOccurs="1" minOccurs="1" name="f1" type="string"/>
     	</sequence>
     </complexType>
 
