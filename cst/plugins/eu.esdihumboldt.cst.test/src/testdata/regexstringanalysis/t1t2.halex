@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<hale-project version="2.5.0.qualifier">
+<hale-project version="3.7.0.I20110602-0100">
     <name>regex test</name>
     <author>moovida</author>
     <created>2013-04-12T08:52:29.876+02:00</created>
-    <modified>2013-04-12T09:02:42.992+02:00</modified>
+    <modified>2013-04-18T13:00:38.406+02:00</modified>
     <save-config provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer" action-id="project.save">
         <setting name="projectFiles.separate">false</setting>
         <setting name="target">file:/home/moovida/development/hale-git/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/regexstringanalysis/t1t2.halex</setting>
