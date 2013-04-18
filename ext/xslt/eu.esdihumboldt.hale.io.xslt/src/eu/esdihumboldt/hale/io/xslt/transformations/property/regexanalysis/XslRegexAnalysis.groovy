@@ -1,6 +1,3 @@
-
-
-
 /*
  * Copyright (c) 2013 Fraunhofer IGD
  * 
@@ -86,12 +83,11 @@ class XslRegexAnalysis extends AbstractFunctionTransformation implements RegexAn
 		 * XSLT 2.0 processor not to treat the curly braces as attribute value 
 		 * template expression delimiters.
 		 */
+		def regexPattern4Match = regexPattern;
 		regexPattern = regexPattern.replaceAll("\\{", "{{");
 		regexPattern = regexPattern.replaceAll("\\}", "}}");
 
 		StringBuilder sb = new StringBuilder();
-		sb.append("<xsl:analyze-string select='").append(sourceString).append("' regex=\"").append(regexPattern).append("\">\n");
-		sb.append("\t<xsl:matching-substring>\n");
 		for( String piece : pieces ) {
 			if (piece.startsWith("{")) {
 				sb.append("\t\t<xsl:value-of select=\"regex-group(");
@@ -104,9 +100,20 @@ class XslRegexAnalysis extends AbstractFunctionTransformation implements RegexAn
 				sb.append("</xsl:text>\n");
 			}
 		}
-		sb.append("\t</xsl:matching-substring>\n");
-		sb.append("</xsl:analyze-string>\n");
-
-		def finalExpression = sb.toString();
+		def groupsString = sb.toString();
+		def result = """ 
+			<xsl:choose>
+			  <xsl:when test="matches(${sourceString}, '${regexPattern4Match}')">
+					<xsl:analyze-string select="." regex="${regexPattern}">
+						<xsl:matching-substring>
+							${groupsString}
+						</xsl:matching-substring>
+					</xsl:analyze-string>
+			  </xsl:when>
+			  <xsl:otherwise>
+				 <def:null />
+			  </xsl:otherwise>
+			</xsl:choose>
+		"""
 	}
 }

@@ -17,10 +17,7 @@
 package eu.esdihumboldt.cst.functions.string;
 
 import java.text.MessageFormat;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,6 +28,7 @@ import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEng
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation;
+import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 
 /**
@@ -82,33 +80,48 @@ public class RegexAnalysis extends AbstractSingleTargetPropertyTransformation<Tr
 	 * @param outputFormat the output format to gain.
 	 * @param sourceString the text to convert.
 	 * @return the converted text.
+	 * @throws TransformationException in case of missing pattern matching or
+	 *             errors.
 	 */
-	public static String analize(String regexPattern, String outputFormat, String sourceString) {
+	public static String analize(String regexPattern, String outputFormat, String sourceString)
+			throws TransformationException {
 		try {
+			boolean isConfined = regexPattern.startsWith("^") && regexPattern.endsWith("$");
 			Pattern pattern = Pattern.compile(regexPattern);
 			Matcher matcher = pattern.matcher(sourceString);
 
-			HashMap<Integer, String> groupsMap = new HashMap<Integer, String>();
+			StringBuilder result = new StringBuilder();
+			StringBuilder allGroups = new StringBuilder();
 			int index = 1;
-			if (matcher.find()) {
-				for (int i = 1; i <= matcher.groupCount(); i++) {
+			boolean didMatch = false;
+			while (matcher.find()) {
+				didMatch = true;
+				String tmpOutput = outputFormat;
+				int groupCount = matcher.groupCount();
+				for (int i = 1; i <= groupCount; i++) {
 					String substring = sourceString.substring(matcher.start(i), matcher.end(i));
-					groupsMap.put(index, substring);
+					allGroups.append(substring);
+					tmpOutput = tmpOutput.replaceAll("\\{" + index + "\\}", substring);
 					index++;
 				}
+				result.append(tmpOutput);
+
+				if (isConfined) {
+					break;
+				}
+				index = 1;
 			}
 
-			Collection<Entry<Integer, String>> entries = groupsMap.entrySet();
-			for (Entry<Integer, String> entry : entries) {
-				Integer key = entry.getKey();
-				String value = entry.getValue();
-				outputFormat = outputFormat.replaceAll("\\{" + key + "\\}", value);
+			if (!didMatch) {
+				throw new NoResultException("Could not match the pattern.");
 			}
-			return outputFormat;
+
+			String resultString = result.toString();
+			// check for zero group
+			resultString = resultString.replaceAll("\\{0\\}", allGroups.toString());
+			return resultString;
 		} catch (Exception e) {
-			e.printStackTrace();
-
-			return "Unable to convert";
+			throw new TransformationException(e);
 		}
 	}
 }
