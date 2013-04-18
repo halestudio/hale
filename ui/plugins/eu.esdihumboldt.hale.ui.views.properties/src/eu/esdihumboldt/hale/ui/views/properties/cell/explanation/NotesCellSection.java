@@ -16,8 +16,6 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.cell.explanation;
 
-import java.util.List;
-
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
@@ -29,6 +27,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.views.properties.cell.AbstractCellSection;
 
@@ -56,7 +55,10 @@ public class NotesCellSection extends AbstractCellSection {
 			public void modifyText(ModifyEvent e) {
 				Cell cell = getCell();
 				if (cell != null) {
-					String cellNotes = getNotes(cell);
+					String cellNotes = CellUtil.getNotes(cell);
+					if (cellNotes == null) {
+						cellNotes = "";
+					}
 					String notes = textField.getText();
 					if (!notes.equals(cellNotes)) {
 						cell.getDocumentation().removeAll(null);
@@ -85,7 +87,10 @@ public class NotesCellSection extends AbstractCellSection {
 
 		Cell cell = getCell();
 		if (cell != null) {
-			String notes = getNotes(cell);
+			String notes = CellUtil.getNotes(cell);
+			if (notes == null) {
+				notes = "";
+			}
 
 			textField.setText(notes);
 			textField.setEnabled(true);
@@ -93,16 +98,6 @@ public class NotesCellSection extends AbstractCellSection {
 		else {
 			textField.setText("");
 			textField.setEnabled(false);
-		}
-	}
-
-	private String getNotes(Cell cell) {
-		List<String> docs = cell.getDocumentation().get(null);
-		if (docs.isEmpty() || docs.get(0) == null) {
-			return "";
-		}
-		else {
-			return docs.get(0);
 		}
 	}
 

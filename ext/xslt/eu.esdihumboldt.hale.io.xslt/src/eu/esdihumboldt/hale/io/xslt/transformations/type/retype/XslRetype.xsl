@@ -1,4 +1,5 @@
 ## Template for XslRetype
+$comment
 <xsl:template name="$name">
 	## For each relevant source instance
 	<xsl:for-each select="$select_instances">
