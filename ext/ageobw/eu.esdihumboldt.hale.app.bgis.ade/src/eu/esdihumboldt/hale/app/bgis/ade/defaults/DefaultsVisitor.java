@@ -21,6 +21,9 @@ import java.util.List;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
+import eu.esdihumboldt.hale.app.bgis.ade.common.BGISAppConstants;
+import eu.esdihumboldt.hale.app.bgis.ade.common.BGISAppUtil;
+import eu.esdihumboldt.hale.app.bgis.ade.common.EntityVisitor;
 import eu.esdihumboldt.hale.app.bgis.ade.defaults.config.DefaultValues;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -45,22 +48,7 @@ import eu.esdihumboldt.hale.functions.bgis.sourcedesc.SourceDescriptionFunction;
  * 
  * @author Simon Templer
  */
-public class DefaultsVisitor extends EntityVisitor {
-
-	/**
-	 * Default value for enumerations.
-	 */
-	private static final String ENUMERATION_DEFAULT = "noInformation";
-
-	/**
-	 * Default value for numbers.
-	 */
-	private static final String NUMBER_DEFAULT = "-999999";
-
-	/**
-	 * Default value for strings and anything else (e.g. dates)
-	 */
-	private static final String DEFAULT = "No Information";
+public class DefaultsVisitor extends EntityVisitor implements BGISAppConstants {
 
 	/**
 	 * The created cells.
@@ -81,7 +69,7 @@ public class DefaultsVisitor extends EntityVisitor {
 
 	@Override
 	protected boolean visit(PropertyEntityDefinition ped) {
-		if (GenerateDefaults.ADE_NS.equals(ped.getDefinition().getName().getNamespaceURI())) {
+		if (ADE_NS.equals(ped.getDefinition().getName().getNamespaceURI())) {
 			// property is from ADE
 
 			if (ped.getDefinition().getPropertyType().getConstraint(HasValueFlag.class).isEnabled()) {
@@ -123,7 +111,7 @@ public class DefaultsVisitor extends EntityVisitor {
 			// handle mandatory XML IDs in complex properties
 			if (ped.getPropertyPath().size() > 1 // ignore feature ID
 					&& ped.getDefinition().getConstraint(Cardinality.class).getMinOccurs() > 0
-					&& GenerateDefaults.isID(ped.getDefinition().getPropertyType())) {
+					&& BGISAppUtil.isID(ped.getDefinition().getPropertyType())) {
 				// TODO also check the wrapping property actually is mandatory?
 				addAugmentationCell(ped, GenerateUIDFunction.ID, Priority.LOWEST);
 			}
