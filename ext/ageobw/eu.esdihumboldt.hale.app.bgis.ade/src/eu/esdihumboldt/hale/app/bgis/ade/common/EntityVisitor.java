@@ -13,7 +13,7 @@
  *     Fraunhofer IGD
  */
 
-package eu.esdihumboldt.hale.app.bgis.ade.defaults;
+package eu.esdihumboldt.hale.app.bgis.ade.common;
 
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;

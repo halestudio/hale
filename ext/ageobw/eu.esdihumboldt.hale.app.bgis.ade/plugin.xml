@@ -14,5 +14,18 @@
          </run>
       </application>
    </extension>
+   <extension
+         id="bgis.ade.fromexamples"
+         name="Generate mapping based on example mappings"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="any"
+            visible="true">
+         <run
+               class="eu.esdihumboldt.hale.app.bgis.ade.exemplary.GenerateFromExamplesApplication">
+         </run>
+      </application>
+   </extension>
 
 </plugin>

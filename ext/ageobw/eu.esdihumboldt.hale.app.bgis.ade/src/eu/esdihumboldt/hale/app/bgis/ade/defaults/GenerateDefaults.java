@@ -17,15 +17,13 @@ package eu.esdihumboldt.hale.app.bgis.ade.defaults;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.XMLConstants;
-import javax.xml.namespace.QName;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 
+import eu.esdihumboldt.hale.app.bgis.ade.common.BGISAppConstants;
+import eu.esdihumboldt.hale.app.bgis.ade.common.BGISAppUtil;
 import eu.esdihumboldt.hale.app.bgis.ade.defaults.config.DefaultValues;
 import eu.esdihumboldt.hale.app.bgis.ade.defaults.config.ExcelDefaultValues;
 import eu.esdihumboldt.hale.common.align.io.AlignmentWriter;
@@ -53,17 +51,7 @@ import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace;
  * 
  * @author Simon Templer
  */
-public class GenerateDefaults {
-
-	/**
-	 * ADE namespace.
-	 */
-	public static final String ADE_NS = "http://www.bund.de/AGeoBw";
-
-	/**
-	 * Identifier of the alignment content type.
-	 */
-	public static final String ALIGNMENT_CONTENT_TYPE = "eu.esdihumboldt.hale.io.align.26";
+public class GenerateDefaults implements BGISAppConstants {
 
 	private Schema schema;
 
@@ -130,12 +118,7 @@ public class GenerateDefaults {
 		System.out.println("Generating default value mapping cells for");
 
 		// collect all ADE feature types
-		List<TypeDefinition> featureTypes = new ArrayList<TypeDefinition>();
-		for (TypeDefinition type : schema.getTypes()) {
-			if (ADE_NS.equals(type.getName().getNamespaceURI()) && isFeatureType(type)) {
-				featureTypes.add(type);
-			}
-		}
+		List<TypeDefinition> featureTypes = BGISAppUtil.getADEFeatureTypes(schema);
 
 		// visit ADE properties and create cells
 		DefaultsVisitor defs = new DefaultsVisitor(defaultValues);
@@ -184,40 +167,4 @@ public class GenerateDefaults {
 		}
 	}
 
-	/**
-	 * Determine if a given type is a feature type.
-	 * 
-	 * @param type the type definition
-	 * @return if the type represents a feature type
-	 */
-	public static boolean isFeatureType(TypeDefinition type) {
-		if ("AbstractFeatureType".equals(type.getName().getLocalPart())
-				&& type.getName().getNamespaceURI().startsWith("http://www.opengis.net/gml")) {
-			return true;
-		}
-
-		if (type.getSuperType() != null) {
-			return isFeatureType(type.getSuperType());
-		}
-
-		return false;
-	}
-
-	/**
-	 * Determines if the given type represents a XML ID.
-	 * 
-	 * @param type the type definition
-	 * @return if the type represents an ID
-	 */
-	public static boolean isID(TypeDefinition type) {
-		if (type.getName().equals(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "ID"))) {
-			return true;
-		}
-
-		if (type.getSuperType() != null) {
-			return isID(type.getSuperType());
-		}
-
-		return false;
-	}
 }
