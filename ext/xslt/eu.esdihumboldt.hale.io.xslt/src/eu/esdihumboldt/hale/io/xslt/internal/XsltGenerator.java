@@ -567,16 +567,14 @@ public class XsltGenerator implements XsltConstants {
 					// determine a valid definition path in the container
 					defPath = findMemberAttribute(targetContainer, type);
 
-					if (defPath != null) {
-						// insert xsl:for-each at the appropriate position in
-						// the path
-						defPath = pathInsertForEach(defPath, entry.getValue(), targetElements);
-					}
-
 					// store path (may be null)
 					paths.put(type, defPath);
 				}
 				if (defPath != null) {
+					// insert xsl:for-each at the appropriate position in
+					// the path
+					defPath = pathInsertForEach(defPath, entry.getValue(), targetElements);
+
 					lastDescent = Descent.descend(writer, defPath, lastDescent, false, true);
 
 					// write single target instance from variable
