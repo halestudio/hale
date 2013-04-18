@@ -39,12 +39,18 @@ import com.google.common.collect.ListMultimap;
 import eu.esdihumboldt.cst.functions.string.RegexAnalysis;
 import eu.esdihumboldt.cst.functions.string.RegexAnalysisFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.CellUtil;
+import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
+import eu.esdihumboldt.hale.ui.scripting.groovy.InstanceTestValues;
 
 /**
  * Parameter page for Regex Analysis function.
@@ -60,6 +66,7 @@ public class RegexAnalysisParameterPage extends HaleWizardPage<AbstractGenericFu
 	private PropertyDefinition target = null;
 	private Text _regexText;
 	private Text _outformatText;
+	private Text _inputText;
 
 	/**
 	 * Constructor.
@@ -77,14 +84,33 @@ public class RegexAnalysisParameterPage extends HaleWizardPage<AbstractGenericFu
 		super.onShowPage(firstShow);
 
 		// should never be null here, but better be safe than sorry
-		if (getWizard().getUnfinishedCell().getTarget() != null) {
-			PropertyDefinition propDef = (PropertyDefinition) getWizard().getUnfinishedCell()
-					.getTarget().values().iterator().next().getDefinition().getDefinition();
+		Cell unfinishedCell = getWizard().getUnfinishedCell();
+		if (unfinishedCell.getTarget() != null) {
+			PropertyDefinition propDef = (PropertyDefinition) unfinishedCell.getTarget().values()
+					.iterator().next().getDefinition().getDefinition();
 			if (!propDef.equals(target)) {
 				// target property definition changed, rebuild editor
 				target = propDef;
 				createContent(page);
 				page.layout();
+				setDefaultData(unfinishedCell);
+			}
+
+		}
+	}
+
+	private void setDefaultData(Cell unfinishedCell) {
+		InstanceTestValues instanceTestValues = new InstanceTestValues();
+		Entity entity = CellUtil.getFirstEntity(unfinishedCell.getSource());
+		if (entity != null) {
+			EntityDefinition edef = entity.getDefinition();
+			if (edef instanceof PropertyEntityDefinition) {
+				PropertyEntityDefinition property = (PropertyEntityDefinition) edef;
+				Object object = instanceTestValues.get(property);
+				if (object != null) {
+					String sampleData = object.toString();
+					_inputText.setText(sampleData);
+				}
 			}
 		}
 	}
@@ -168,9 +194,9 @@ public class RegexAnalysisParameterPage extends HaleWizardPage<AbstractGenericFu
 				Label inputLabel = new Label(exampleGroup, SWT.NONE);
 				inputLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
 				inputLabel.setText("Sample text");
-				final Text inputText = new Text(exampleGroup, SWT.SINGLE | SWT.LEAD | SWT.BORDER);
-				inputText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-				inputText.setText("");
+				_inputText = new Text(exampleGroup, SWT.SINGLE | SWT.LEAD | SWT.BORDER);
+				_inputText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+				_inputText.setText("");
 
 				Button testButton = new Button(exampleGroup, SWT.PUSH);
 				GridData testButtonGD = new GridData(SWT.FILL, SWT.FILL, false, false);
@@ -192,10 +218,10 @@ public class RegexAnalysisParameterPage extends HaleWizardPage<AbstractGenericFu
 						String convertedString = "No match found.";
 						try {
 							convertedString = RegexAnalysis.analize(_regexText.getText(),
-									_outformatText.getText(), inputText.getText());
+									_outformatText.getText(), _inputText.getText());
 							outputText.setText(convertedString);
 						} catch (Exception e1) {
-							outputText.setText(e1.getLocalizedMessage());
+							outputText.setText(e1.getCause().getLocalizedMessage());
 						}
 					}
 				});
