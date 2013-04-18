@@ -57,8 +57,8 @@ import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
+import eu.esdihumboldt.hale.ui.filter.CQLFilterField;
 import eu.esdihumboldt.hale.ui.filter.TypeFilterField;
-import eu.esdihumboldt.hale.ui.filter.TypeFilterField.FilterType;
 import eu.esdihumboldt.hale.ui.selection.InstanceSelection;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.util.selection.SelectionTrackerUtil;
@@ -80,7 +80,7 @@ public class WindowSelectionSelector implements AdvancedInstanceSelector {
 		private final ComboViewer instanceTypes;
 		private final Map<TypeDefinition, List<Instance>> instanceMap = new HashMap<TypeDefinition, List<Instance>>();
 		private TypeDefinition selectedType;
-		private final TypeFilterField filterField;
+		private final CQLFilterField filterField;
 		private final ComboViewer count;
 
 		/**
@@ -111,8 +111,8 @@ public class WindowSelectionSelector implements AdvancedInstanceSelector {
 					new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
 
 			// filter field
-			filterField = new TypeFilterField((selectedType == null) ? (null) : (selectedType),
-					this, SWT.NONE, SchemaSpaceID.TARGET, FilterType.CQL);
+			filterField = new CQLFilterField((selectedType == null) ? (null) : (selectedType),
+					this, SWT.NONE, SchemaSpaceID.TARGET);
 			filterField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 			filterField.addListener(new PropertyChangeListener() {
 
