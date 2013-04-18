@@ -38,6 +38,9 @@ RenameFunction {
 	 */
 	private final RenameValue value = new RenameValue()
 
+	private final StructuralRename structural = new StructuralRename(ignoreNamespaces: false)
+
+	private final StructuralRename structuralIgnore = new StructuralRename(ignoreNamespaces: true)
 
 	@Override
 	public XslFunction selectFunction(Cell cell) {
@@ -51,7 +54,13 @@ RenameFunction {
 			}
 			else {
 				// copy structure
-				new StructuralRename()
+				def ignoreNamespaces = cell.getOptionalParameter(
+						PARAMETER_IGNORE_NAMESPACES, Value.of(false)).as(Boolean);
+
+				if (ignoreNamespaces)
+					structuralIgnore
+				else
+					structural
 			}
 		}
 	}
