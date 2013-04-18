@@ -133,4 +133,20 @@ public abstract class CellUtil {
 				}));
 	}
 
+	/**
+	 * Get the default documentation entry of a cell.
+	 * 
+	 * @param cell the cell
+	 * @return the cell notes or <code>null</code>
+	 */
+	public static String getNotes(Cell cell) {
+		List<String> docs = cell.getDocumentation().get(null);
+		if (docs.isEmpty() || docs.get(0) == null) {
+			return null;
+		}
+		else {
+			return docs.get(0);
+		}
+	}
+
 }

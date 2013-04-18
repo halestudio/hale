@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xslt.XslTransformationUtil;
 import eu.esdihumboldt.hale.io.xslt.XslTypeTransformation;
+import eu.esdihumboldt.hale.io.xslt.internal.CellXslInfo;
 
 /**
  * {@link XslTypeTransformation} based on a velocity template.
@@ -34,6 +35,12 @@ import eu.esdihumboldt.hale.io.xslt.XslTypeTransformation;
  */
 public abstract class AbstractVelocityXslTypeTransformation extends
 		AbstractVelocityXslTransformation implements XslTypeTransformation {
+
+	/**
+	 * The name of the velocity context parameter that is populated with the
+	 * cell information.
+	 */
+	public static final String CONTEXT_PARAM_COMMENT = "comment";
 
 	/**
 	 * The name of the velocity context parameter that is populated with the XSL
@@ -63,6 +70,7 @@ public abstract class AbstractVelocityXslTypeTransformation extends
 						.getPrefix(targetElement.getName().getNamespaceURI())
 						+ ":"
 						+ targetElement.getName().getLocalPart());
+		context.put(CONTEXT_PARAM_COMMENT, CellXslInfo.getInfo(typeCell));
 
 		// custom context configuration
 		configureTemplate(context, typeCell);
