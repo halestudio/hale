@@ -50,19 +50,33 @@ public class GenericXPath extends AbstractFunctionTransformation {
 	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables,
 	XsltGenerationContext xsltContext, Cell typeCell) {
 		StringBuilder builder = new StringBuilder()
+		StringBuilder test = new StringBuilder()
 
 		// define source variables
 		int number = 1;
 		for (XslVariable var : variables.get(ENTITY_VAR)) {
 			builder << """
-					<xsl:variable name="var${number++}" select="${var.getXPath()}" />
+					<xsl:variable name="var${number}" select="${var.getXPath()}" />
 				"""
+
+			// build test expression
+			if (number > 1) test << ' and '
+			test << "\$var${number}"
+
+			number++
 		}
 
 		// add XPath expression
 		ParameterValue val = CellUtil.getFirstParameter(cell, PARAM_XPATH)
 		builder << """
-				<xsl:value-of select="${val.as(String)}" />
+				<xsl:choose>
+					<xsl:when test="${test}">
+						<xsl:value-of select="${val.as(String)}" />
+					</xsl:when>
+					<xsl:otherwise>
+						<def:null />
+					</xsl:otherwise>
+				</xsl:choose>
 			"""
 
 		return builder.toString()
