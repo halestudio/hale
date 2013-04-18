@@ -23,6 +23,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.event.EventCartridge;
 
@@ -117,7 +118,7 @@ public abstract class XslTransformationUtil {
 			if (filterxpath != null && !filterxpath.isEmpty()) {
 				select.insert(0, '(');
 				select.append(")[");
-				select.append(filterxpath);
+				select.append(StringEscapeUtils.escapeXml(filterxpath));
 				select.append(']');
 			}
 		}
