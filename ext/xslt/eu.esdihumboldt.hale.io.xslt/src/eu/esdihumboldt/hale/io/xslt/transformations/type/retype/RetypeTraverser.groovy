@@ -40,6 +40,7 @@ import eu.esdihumboldt.hale.io.xslt.XsltConstants
 import eu.esdihumboldt.hale.io.xslt.XsltGenerationContext
 import eu.esdihumboldt.hale.io.xslt.functions.XslFunction
 import eu.esdihumboldt.hale.io.xslt.functions.impl.XslVariableImpl
+import eu.esdihumboldt.hale.io.xslt.internal.CellXslInfo
 import eu.esdihumboldt.hale.io.xslt.transformations.base.AbstractTransformationTraverser
 import eu.esdihumboldt.hale.io.xslt.xpath.FilterToXPath
 
@@ -235,7 +236,7 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 				for (Vertex cellNode in cells) {
 					// create result tag for each cell
 					writer << '<result>'
-					writer << "<!-- Cell ${cellNode.cell().id} -->"
+					writer << CellXslInfo.getInfo(cellNode.cell())
 					writer << createResultFragment(cellNode, context)
 					writer << '</result>'
 				}
