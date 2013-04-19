@@ -196,8 +196,12 @@ class StructuralRename implements XslFunction, RenameFunction {
 	 * @param sourceParent the source parent definition
 	 */
 	private void generateAttribute(def xsl, PropertyDefinition target, DefinitionGroup sourceParent) {
+		// determine if this is a required attribute
+		def required = target.getCardinality().minOccurs > 0
+		
 		// find match for target in source
 		PropertyDefinition sourceMatch = findMatch(target, sourceParent, ignoreNamespaces)
+		
 		if (sourceMatch) {
 			// a match exists
 			
@@ -205,9 +209,6 @@ class StructuralRename implements XslFunction, RenameFunction {
 			String selectSource = '$' + T_PARAM_SOURCE + '/' + sourceMatch.asXPath(xsltContext);
 			
 			//TODO restrict selection cardinality?
-			
-			// determine if this is a required attribute
-			def required = target.getCardinality().minOccurs > 0
 			
 			if (target.hasValue() && sourceMatch.hasValue()) {
 				// value copy is possible
@@ -224,20 +225,7 @@ class StructuralRename implements XslFunction, RenameFunction {
 					// if the source is not there, warn or use default
 					xsl.'xsl:if'(test: "not($testSource)") {
 						// try to determine default value
-						def defaultValue = generateDefaultValue(target)
-						if (defaultValue) {
-							if (defaultValue instanceof Closure) {
-								'xsl:attribute'(target.name.asMap(xsltContext)) {
-									defaultValue(xsl)
-								}
-							}
-							else {
-								'xsl:attribute'(target.name.asMap(xsltContext), defaultValue)
-							}
-						}
-						else {
-							xsl.'xsl:message'("Could not provide a value for required attribute $target.name.localPart")
-						}
+						addDefault(xsl, target)
 					}
 				}
 				
@@ -245,6 +233,29 @@ class StructuralRename implements XslFunction, RenameFunction {
 			else {
 				//TODO warn through reporter?
 			}
+		}
+		else {
+			if (required && target.hasValue()) {
+				addDefault(xsl, target)
+			}
+		}
+	}
+	
+	private void addDefault(def xsl, PropertyDefinition target) {
+		def defaultValue = generateDefaultValue(target)
+		if (defaultValue) {
+			xsl.mkp.comment('Generated default value for mandatory attribute')
+			if (defaultValue instanceof Closure) {
+				xsl.'xsl:attribute'(target.name.asMap(xsltContext)) {
+					defaultValue(xsl)
+				}
+			}
+			else {
+				xsl.'xsl:attribute'(target.name.asMap(xsltContext), defaultValue)
+			}
+		}
+		else {
+			xsl.'xsl:message'("Could not provide a value for required attribute $target.name.localPart")
 		}
 	}
 	
@@ -260,7 +271,8 @@ class StructuralRename implements XslFunction, RenameFunction {
 		if (target.isAttribute() && GmlWriterUtil.isID(target.getPropertyType())) {
 			return {
 				xsl ->
-				xsl.'xsl:value-of'(select: 'generate-id()')
+				String uid = UUID.randomUUID().toString()
+				xsl.'xsl:value-of'(select: "concat(generate-id(), '_', '$uid')")
 			}
 		}
 		
