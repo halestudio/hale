@@ -24,7 +24,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.ui.PlatformUI;
 
-import de.cs3d.ui.util.eclipse.extension.exclusive.PreferencesExclusiveExtension;
 import de.cs3d.util.eclipse.extension.AbstractConfigurationFactory;
 import de.cs3d.util.eclipse.extension.AbstractExtension;
 import de.cs3d.util.eclipse.extension.AbstractObjectFactory;
@@ -37,7 +36,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityModeFactory;
 import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityService;
 import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityServiceListener;
-import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
+import eu.esdihumboldt.hale.ui.compatibility.ProjectExclusiveExtension;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener;
 
@@ -48,7 +47,7 @@ import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener;
  * @author Sebastian Reinhardt
  */
 public class CompatibilityServiceImpl extends
-		PreferencesExclusiveExtension<CompatibilityMode, CompatibilityModeFactory> implements
+		ProjectExclusiveExtension<CompatibilityMode, CompatibilityModeFactory> implements
 		CompatibilityService {
 
 	// stored listeners of the service
@@ -151,8 +150,7 @@ public class CompatibilityServiceImpl extends
 	 * service
 	 */
 	public CompatibilityServiceImpl() {
-		super(new CompatibilityModeExtension(), HALEUIPlugin.getDefault().getPreferenceStore(),
-				"compatibilityMode");
+		super(new CompatibilityModeExtension(), "compatibilityMode");
 		cal = new CompatibilityAlignmentListener();
 		((AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class))
 				.addListener(cal);
