@@ -1081,20 +1081,26 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 
 		// mixed types
 		if (complexType.isMixed()) {
-			// XXX how to treat mixed type?
-			// XXX for now represent as a string value
-			type.setConstraint(new HasValueFlag(true) {
+			if (type.getName().equals(XmlTypeUtil.NAME_ANY_TYPE)) {
+				// prevent enabling HasValueFlag on anyType
+				type.setConstraint(HasValueFlag.DISABLED);
+			}
+			else {
+				// XXX how to treat mixed type?
+				// XXX for now represent as a string value
+				type.setConstraint(new HasValueFlag(true) {
 
-				@Override
-				public boolean isInheritable() {
-					/*
-					 * Types inheriting from a mixed don't necessarily are mixed
-					 * themselves.
-					 */
-					return false;
-				}
+					@Override
+					public boolean isInheritable() {
+						/*
+						 * Types inheriting from a mixed don't necessarily are
+						 * mixed themselves.
+						 */
+						return false;
+					}
 
-			});
+				});
+			}
 			/*
 			 * XXX String binding is a problem as it is inherited to non-mixed
 			 * types
