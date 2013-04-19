@@ -19,6 +19,8 @@ package eu.esdihumboldt.hale.ui.function.contribution;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.ui.PlatformUI;
+
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
@@ -37,6 +39,7 @@ import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityService;
 import eu.esdihumboldt.hale.ui.function.contribution.internal.AbstractWizardAction;
 import eu.esdihumboldt.hale.ui.function.contribution.internal.SchemaSelectionWizardAction;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardDescriptor;
@@ -70,20 +73,27 @@ public class SchemaSelectionFunctionContribution extends AbstractFunctionWizardC
 	@Override
 	public boolean isActive(FunctionWizardDescriptor<?> descriptor) {
 		AbstractFunction<?> function = descriptor.getFunction();
-		if (function instanceof TypeFunction) {
-			TypeFunction tf = (TypeFunction) function;
-			// match selection against function definition
-			return matchTypeFunction(tf, getSelection());
+		// rule out functions not supported by the compatibility mode
+		if (((CompatibilityService) PlatformUI.getWorkbench()
+				.getService(CompatibilityService.class)).getCurrent().supportsFunction(
+				function.getId())) {
+			if (function instanceof TypeFunction) {
+				TypeFunction tf = (TypeFunction) function;
+				// match selection against function definition
+				return matchTypeFunction(tf, getSelection());
+			}
+			else if (function instanceof PropertyFunction) {
+				PropertyFunction pf = (PropertyFunction) function;
+				// match selection against function definition
+				return matchPropertyFunction(pf, getSelection());
+			}
+			else {
+				log.error("Unsupported function deactivated");
+				return false;
+			}
 		}
-		else if (function instanceof PropertyFunction) {
-			PropertyFunction pf = (PropertyFunction) function;
-			// match selection against function definition
-			return matchPropertyFunction(pf, getSelection());
-		}
-		else {
-			log.error("Unsupported function deactivated");
+		else
 			return false;
-		}
 	}
 
 	/**
