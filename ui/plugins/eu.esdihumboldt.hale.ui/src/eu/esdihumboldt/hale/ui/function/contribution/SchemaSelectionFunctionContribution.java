@@ -19,6 +19,8 @@ package eu.esdihumboldt.hale.ui.function.contribution;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.ui.PlatformUI;
+
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
@@ -37,6 +39,7 @@ import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityService;
 import eu.esdihumboldt.hale.ui.function.contribution.internal.AbstractWizardAction;
 import eu.esdihumboldt.hale.ui.function.contribution.internal.SchemaSelectionWizardAction;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardDescriptor;
@@ -70,6 +73,16 @@ public class SchemaSelectionFunctionContribution extends AbstractFunctionWizardC
 	@Override
 	public boolean isActive(FunctionWizardDescriptor<?> descriptor) {
 		AbstractFunction<?> function = descriptor.getFunction();
+		// rule out functions not supported by the compatibility mode
+		try {
+			if (!((CompatibilityService) PlatformUI.getWorkbench().getService(
+					CompatibilityService.class)).getCurrent().supportsFunction(function.getId())) {
+				return false;
+			}
+		} catch (NullPointerException npe) {
+			// ignore any NPEs in this nicely phrased condition
+		}
+
 		if (function instanceof TypeFunction) {
 			TypeFunction tf = (TypeFunction) function;
 			// match selection against function definition
