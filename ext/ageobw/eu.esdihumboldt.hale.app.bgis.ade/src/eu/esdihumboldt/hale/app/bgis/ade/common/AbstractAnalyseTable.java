@@ -36,8 +36,6 @@ public abstract class AbstractAnalyseTable {
 
 	private FormulaEvaluator evaluator;
 
-	private Sheet sheet;
-
 	/**
 	 * Load table to analyse from an Excel file.
 	 * 
@@ -49,15 +47,18 @@ public abstract class AbstractAnalyseTable {
 
 		try {
 			Workbook wb = WorkbookFactory.create(inp);
-			sheet = wb.getSheetAt(0);
+			Sheet sheet = wb.getSheetAt(0);
 			evaluator = wb.getCreationHelper().createFormulaEvaluator();
 
 			// the first row represents the header
-			analyseHeader();
+			analyseHeader(sheet);
 
 			// load configuration entries
 			analyseContent(sheet);
 		} finally {
+			// reset evaluator reference
+			evaluator = null;
+
 			// unclear whether the POI API closes the stream
 			inp.close();
 		}
@@ -65,8 +66,10 @@ public abstract class AbstractAnalyseTable {
 
 	/**
 	 * Analyzes the table header.
+	 * 
+	 * @param sheet the table sheet
 	 */
-	protected void analyseHeader() {
+	protected void analyseHeader(Sheet sheet) {
 		Row header = sheet.getRow(0);
 
 		// identify columns
