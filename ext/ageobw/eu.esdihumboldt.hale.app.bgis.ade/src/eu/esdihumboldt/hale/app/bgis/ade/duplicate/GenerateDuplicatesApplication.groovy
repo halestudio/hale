@@ -13,7 +13,7 @@
  *     Fraunhofer IGD
  */
 
-package eu.esdihumboldt.hale.app.bgis.ade.exemplary;
+package eu.esdihumboldt.hale.app.bgis.ade.duplicate;
 
 import org.eclipse.equinox.app.IApplicationContext
 
@@ -25,18 +25,18 @@ import eu.esdihumboldt.hale.common.app.AbstractApplication
  * 
  * @author Simon Templer
  */
-class GenerateFromExamplesApplication extends AbstractApplication<GenerateFromExamplesContext> {
+class GenerateDuplicatesApplication extends AbstractApplication<GenerateDuplicatesContext> {
 
 	@Override
-	protected Object run(GenerateFromExamplesContext executionContext, IApplicationContext appContext) {
-		new GenerateFromExamples().generate(executionContext)
+	protected Object run(GenerateDuplicatesContext executionContext, IApplicationContext appContext) {
+		new GenerateDuplicates().generate(executionContext)
 
 		EXIT_OK
 	}
 
 	@Override
 	protected void processParameter(String param, String value,
-	GenerateFromExamplesContext executionContext) throws Exception {
+	GenerateDuplicatesContext executionContext) throws Exception {
 		switch (param) {
 			case '-project':
 				executionContext.project = URI.create(value)
@@ -48,7 +48,7 @@ class GenerateFromExamplesApplication extends AbstractApplication<GenerateFromEx
 	}
 
 	@Override
-	protected GenerateFromExamplesContext createExecutionContext() {
-		new GenerateFromExamplesContext()
+	protected GenerateDuplicatesContext createExecutionContext() {
+		new GenerateDuplicatesContext()
 	}
 }

@@ -13,7 +13,7 @@
  *     Fraunhofer IGD
  */
 
-package eu.esdihumboldt.hale.app.bgis.ade.exemplary;
+package eu.esdihumboldt.hale.app.bgis.ade.duplicate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
  * 
  * @author Simon Templer
  */
-public class ExamplesVisitor extends EntityVisitor implements BGISAppConstants {
+public class DuplicateVisitor extends EntityVisitor implements BGISAppConstants {
 
 	/**
 	 * The created cells.
@@ -50,7 +50,7 @@ public class ExamplesVisitor extends EntityVisitor implements BGISAppConstants {
 	 * @param exampleCells the example cells, with the target ADE property name
 	 *            as key
 	 */
-	public ExamplesVisitor(Multimap<String, Cell> exampleCells) {
+	public DuplicateVisitor(Multimap<String, Cell> exampleCells) {
 		this.exampleCells = exampleCells;
 	}
 

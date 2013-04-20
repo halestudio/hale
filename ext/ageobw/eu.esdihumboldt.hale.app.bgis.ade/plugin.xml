@@ -15,7 +15,7 @@
       </application>
    </extension>
    <extension
-         id="bgis.ade.fromexamples"
+         id="bgis.ade.duplicate"
          name="Generate mapping based on example mappings"
          point="org.eclipse.core.runtime.applications">
       <application
@@ -23,7 +23,7 @@
             thread="any"
             visible="true">
          <run
-               class="eu.esdihumboldt.hale.app.bgis.ade.exemplary.GenerateFromExamplesApplication">
+               class="eu.esdihumboldt.hale.app.bgis.ade.duplicate.GenerateDuplicatesApplication">
          </run>
       </application>
    </extension>

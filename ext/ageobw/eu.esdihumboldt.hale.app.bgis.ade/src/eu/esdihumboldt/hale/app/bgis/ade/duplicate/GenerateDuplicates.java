@@ -13,7 +13,7 @@
  *     Fraunhofer IGD
  */
 
-package eu.esdihumboldt.hale.app.bgis.ade.exemplary;
+package eu.esdihumboldt.hale.app.bgis.ade.duplicate;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,7 +57,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * 
  * @author Simon Templer
  */
-public class GenerateFromExamples implements BGISAppConstants {
+public class GenerateDuplicates implements BGISAppConstants {
 
 	private SchemaSpace sourceSchema;
 
@@ -67,7 +67,7 @@ public class GenerateFromExamples implements BGISAppConstants {
 
 	private Alignment alignment;
 
-	private GenerateFromExamplesContext context;
+	private GenerateDuplicatesContext context;
 
 	/**
 	 * Generate the default value mapping based on the given configuration.
@@ -75,7 +75,7 @@ public class GenerateFromExamples implements BGISAppConstants {
 	 * @param context the configuration for the mapping generation
 	 * @throws Exception if an unrecoverable error occurs during the generation
 	 */
-	public void generate(GenerateFromExamplesContext context) throws Exception {
+	public void generate(GenerateDuplicatesContext context) throws Exception {
 		this.context = context;
 
 		// load project
@@ -150,7 +150,7 @@ public class GenerateFromExamples implements BGISAppConstants {
 
 		// visit ADE properties and create cells
 		System.out.println("Generating mapping from example cells for");
-		ExamplesVisitor visitor = new ExamplesVisitor(exampleCells);
+		DuplicateVisitor visitor = new DuplicateVisitor(exampleCells);
 		for (TypeDefinition type : featureTypes) {
 			System.out.println(type.getDisplayName() + "...");
 			visitor.accept(new TypeEntityDefinition(type, SchemaSpaceID.TARGET, null));
