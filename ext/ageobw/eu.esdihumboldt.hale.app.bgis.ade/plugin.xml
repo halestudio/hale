@@ -27,5 +27,17 @@
          </run>
       </application>
    </extension>
+   <extension
+         id="bgis.ade.propagate"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="any"
+            visible="true">
+         <run
+               class="eu.esdihumboldt.hale.app.bgis.ade.propagate.CityGMLPropagateApplication">
+         </run>
+      </application>
+   </extension>
 
 </plugin>
