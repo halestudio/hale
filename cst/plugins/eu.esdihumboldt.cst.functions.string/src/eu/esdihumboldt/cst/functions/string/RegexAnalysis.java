@@ -51,7 +51,7 @@ public class RegexAnalysis extends AbstractSingleTargetPropertyTransformation<Tr
 	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,
 			ListMultimap<String, PropertyValue> variables, String resultName,
 			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
-			TransformationLog log) throws TransformationException {
+			TransformationLog log) throws TransformationException, NoResultException {
 		if (getParameters() == null || getParameters().get(PARAMETER_REGEX_PATTERN) == null
 				|| getParameters().get(PARAMETER_REGEX_PATTERN).isEmpty()) {
 			throw new TransformationException(MessageFormat.format(
@@ -80,39 +80,34 @@ public class RegexAnalysis extends AbstractSingleTargetPropertyTransformation<Tr
 	 * @param outputFormat the output format to gain.
 	 * @param sourceString the text to convert.
 	 * @return the converted text.
-	 * @throws TransformationException in case of missing pattern matching or
-	 *             errors.
+	 * @throws NoResultException in case of missing pattern matching or errors.
 	 */
 	public static String analize(String regexPattern, String outputFormat, String sourceString)
-			throws TransformationException {
-		try {
-			Pattern pattern = Pattern.compile(regexPattern);
-			Matcher matcher = pattern.matcher(sourceString);
+			throws NoResultException {
+		Pattern pattern = Pattern.compile(regexPattern);
+		Matcher matcher = pattern.matcher(sourceString);
 
-			StringBuilder result = new StringBuilder();
-			int index = 0;
-			boolean didMatch = false;
-			while (matcher.find()) {
-				didMatch = true;
-				String tmpOutput = outputFormat;
-				int groupCount = matcher.groupCount();
-				for (int i = 0; i <= groupCount; i++) {
-					String substring = sourceString.substring(matcher.start(i), matcher.end(i));
-					tmpOutput = tmpOutput.replaceAll("\\{" + index + "\\}", substring);
-					index++;
-				}
-				result.append(tmpOutput);
-				index = 0;
+		StringBuilder result = new StringBuilder();
+		int index = 0;
+		boolean didMatch = false;
+		while (matcher.find()) {
+			didMatch = true;
+			String tmpOutput = outputFormat;
+			int groupCount = matcher.groupCount();
+			for (int i = 0; i <= groupCount; i++) {
+				String substring = sourceString.substring(matcher.start(i), matcher.end(i));
+				tmpOutput = tmpOutput.replaceAll("\\{" + index + "\\}", substring);
+				index++;
 			}
-
-			if (!didMatch) {
-				throw new NoResultException("Could not match the pattern.");
-			}
-
-			String resultString = result.toString();
-			return resultString;
-		} catch (Exception e) {
-			throw new TransformationException(e);
+			result.append(tmpOutput);
+			index = 0;
 		}
+
+		if (!didMatch) {
+			throw new NoResultException("Could not match the pattern.");
+		}
+
+		String resultString = result.toString();
+		return resultString;
 	}
 }
