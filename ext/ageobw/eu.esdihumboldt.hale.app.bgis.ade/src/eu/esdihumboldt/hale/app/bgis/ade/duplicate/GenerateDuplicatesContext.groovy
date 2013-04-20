@@ -13,7 +13,7 @@
  *     Fraunhofer IGD
  */
 
-package eu.esdihumboldt.hale.app.bgis.ade.exemplary
+package eu.esdihumboldt.hale.app.bgis.ade.duplicate
 
 
 /**
@@ -21,7 +21,7 @@ package eu.esdihumboldt.hale.app.bgis.ade.exemplary
  * 
  * @author Simon Templer
  */
-class GenerateFromExamplesContext {
+class GenerateDuplicatesContext {
 
 	/**
 	 * URI pointing to the mapping project containing the example mappings.

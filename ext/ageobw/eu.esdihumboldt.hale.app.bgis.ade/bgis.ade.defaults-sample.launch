@@ -16,7 +16,7 @@
 <booleanAttribute key="includeOptional" value="true"/>
 <stringAttribute key="location" value="${workspace_loc}/../runtime-bgis.ade.defaults"/>
 <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl en_GB -consoleLog  -clean -name HUMBOLDT Alignment Editor --launcher.defaultAction openFile -schema file:///home/simon-local/repos/uhd/schemas/BGIS/GeoInfoADE.xsd -config file:///home/simon-local/repos/uhd/dokumentation/Feature_MD.xlsx -out &quot;/home/simon-local/repos/uhd/mapping/defaults/bgis-defaults.halex.alignment.xml&quot;"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl en_GB -consoleLog  -clean -name HUMBOLDT Alignment Editor --launcher.defaultAction openFile -schema file:///home/simon-local/repos/uhd/schemas/BGIS/GeoInfoADE.xsd -config file:///home/simon-local/repos/uhd/mapping/Feature_MD.xlsx -out &quot;/home/simon-local/repos/uhd/mapping/defaults/bgis-defaults.halex.alignment.xml&quot;"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx800m -XX:MaxPermSize=128m -Dcache.level1.enabled=false -Dcache.level1.size=0 -Dcache.level2.enabled=false -Dcache.level2.size=0"/>
 <stringAttribute key="pde.version" value="3.3"/>
