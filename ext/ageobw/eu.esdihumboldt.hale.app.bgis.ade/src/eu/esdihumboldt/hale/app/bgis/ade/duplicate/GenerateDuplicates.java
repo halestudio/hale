@@ -17,6 +17,8 @@ package eu.esdihumboldt.hale.app.bgis.ade.duplicate;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.MessageFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -148,7 +150,10 @@ public class GenerateDuplicates implements BGISAppConstants {
 
 		// visit ADE properties and create cells
 		System.out.println("Generating mapping from example cells for");
-		DuplicateVisitor visitor = new DuplicateVisitor(exampleCells);
+		String cellNote = MessageFormat.format(
+				"Generated through duplication of example cells on BGIS ADE feature types.\n"
+						+ "{0,date,medium}", new Date());
+		DuplicateVisitor visitor = new DuplicateVisitor(exampleCells, cellNote);
 		for (TypeDefinition type : featureTypes) {
 			System.out.println(type.getDisplayName() + "...");
 			visitor.accept(new TypeEntityDefinition(type, SchemaSpaceID.TARGET, null));

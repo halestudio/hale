@@ -23,6 +23,7 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 
 import eu.esdihumboldt.hale.app.bgis.ade.common.BGISAppConstants;
+import eu.esdihumboldt.hale.app.bgis.ade.common.BGISAppUtil;
 import eu.esdihumboldt.hale.app.bgis.ade.common.EntityVisitor;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -44,14 +45,18 @@ public class DuplicateVisitor extends EntityVisitor implements BGISAppConstants 
 
 	private final Multimap<String, Cell> exampleCells;
 
+	private final String cellNote;
+
 	/**
 	 * Create an example cell visitor creating derived cells.
 	 * 
 	 * @param exampleCells the example cells, with the target ADE property name
 	 *            as key
+	 * @param cellNote note to append to generated cell's notes
 	 */
-	public DuplicateVisitor(Multimap<String, Cell> exampleCells) {
+	public DuplicateVisitor(Multimap<String, Cell> exampleCells, String cellNote) {
 		this.exampleCells = exampleCells;
+		this.cellNote = cellNote;
 	}
 
 	@Override
@@ -70,6 +75,8 @@ public class DuplicateVisitor extends EntityVisitor implements BGISAppConstants 
 				ListMultimap<String, Entity> target = ArrayListMultimap.create();
 				target.put(cell.getTarget().keys().iterator().next(), new DefaultProperty(ped));
 				cell.setTarget(target);
+
+				BGISAppUtil.appendNote(cell, cellNote);
 
 				cells.add(cell);
 			}

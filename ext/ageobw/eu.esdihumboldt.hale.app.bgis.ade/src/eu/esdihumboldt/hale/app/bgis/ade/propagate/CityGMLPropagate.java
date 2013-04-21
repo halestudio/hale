@@ -17,6 +17,8 @@ package eu.esdihumboldt.hale.app.bgis.ade.propagate;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.MessageFormat;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -224,8 +226,11 @@ public class CityGMLPropagate implements BGISAppConstants, CityGMLConstants {
 
 		// visit ADE properties and create cells
 		System.out.println("Generating mapping from example cells for");
+		String cellNote = MessageFormat.format(
+				"Generated through propagation of example cells on CityGML and BGIS ADE feature types.\n"
+						+ "{0,date,medium}", new Date());
 		CityGMLPropagateVisitor visitor = new CityGMLPropagateVisitor(cityGMLSource, bgisExamples,
-				cityGMLExamples, config);
+				cityGMLExamples, config, cellNote);
 		for (TypeDefinition type : featureTypes) {
 			System.out.println(type.getDisplayName() + "...");
 			visitor.accept(new TypeEntityDefinition(type, SchemaSpaceID.TARGET, null));
