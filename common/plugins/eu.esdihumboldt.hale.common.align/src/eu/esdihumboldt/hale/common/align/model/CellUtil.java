@@ -149,4 +149,17 @@ public abstract class CellUtil {
 		}
 	}
 
+	/**
+	 * Set the default documentation entry of a cell.
+	 * 
+	 * @param cell the cell
+	 * @param notes the cell notes
+	 */
+	public static void setNotes(Cell cell, String notes) {
+		cell.getDocumentation().removeAll(null);
+		if (!notes.isEmpty()) {
+			cell.getDocumentation().put(null, notes);
+		}
+	}
+
 }

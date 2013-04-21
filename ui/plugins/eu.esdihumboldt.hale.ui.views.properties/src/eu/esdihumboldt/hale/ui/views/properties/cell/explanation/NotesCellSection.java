@@ -61,10 +61,7 @@ public class NotesCellSection extends AbstractCellSection {
 					}
 					String notes = textField.getText();
 					if (!notes.equals(cellNotes)) {
-						cell.getDocumentation().removeAll(null);
-						if (!notes.isEmpty()) {
-							cell.getDocumentation().put(null, notes);
-						}
+						CellUtil.setNotes(cell, notes);
 						ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
 								ProjectService.class);
 						if (ps != null) {
