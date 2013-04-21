@@ -45,7 +45,7 @@ public class RegexAnalysisExplanation extends AbstractCellExplanation {
 
 		if (source != null && target != null && outFormat != null && regex != null) {
 			return MessageFormat
-					.format("Populates the {1} property with regex-analysing the {0} property using the regular expression {2} and applying teh output format {3} to the contained regex groups.",
+					.format("Populates the {1} property with regex-analysing the {0} property using the regular expression {2} and applying the output format {3} to the contained regex groups.",
 							formatEntity(source, html, true), formatEntity(target, html, true),
 							quoteText(regex, html), quoteText(outFormat, html));
 		}
