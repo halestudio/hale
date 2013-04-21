@@ -17,18 +17,23 @@ package eu.esdihumboldt.hale.app.bgis.ade.propagate;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Queue;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.namespace.QName;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.SetMultimap;
 
 import eu.esdihumboldt.hale.app.bgis.ade.common.BGISAppConstants;
 import eu.esdihumboldt.hale.app.bgis.ade.common.BGISAppUtil;
@@ -43,7 +48,6 @@ import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
-import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
@@ -73,7 +77,7 @@ public class CityGMLPropagateVisitor extends EntityVisitor implements BGISAppCon
 
 	private final FeatureMap featureMap;
 
-	private Set<TypeDefinition> sourceTypes;
+	private final SetMultimap<Cell, TypeDefinition> handledTargets = HashMultimap.create();
 
 	/**
 	 * Create an example cell visitor creating derived cells.
@@ -95,80 +99,176 @@ public class CityGMLPropagateVisitor extends EntityVisitor implements BGISAppCon
 	}
 
 	@Override
-	public void accept(TypeEntityDefinition ted) {
-		// find possible source types
-		Set<String> sourceTypeNames = featureMap.getPossibleSourceTypes(ted.getType()
-				.getDisplayName());
-
-		System.out.println("Possible source types for target type "
-				+ ted.getType().getDisplayName() + "...");
-
-		Set<TypeDefinition> types = new HashSet<TypeDefinition>();
-		for (TypeDefinition type : cityGMLSource.getTypes()) {
-			if (type.getName().getNamespaceURI().startsWith(CITYGML_NAMESPACE_CORE)
-					&& sourceTypeNames.contains(type.getDisplayName())
-					&& BGISAppUtil.isFeatureType(type)) {
-				/*
-				 * Type is a feature type from CityGML and is one of the
-				 * possible source types
-				 */
-				types.add(type);
-
-				System.out.println(type.getName());
-			}
-		}
-		sourceTypes = Collections.unmodifiableSet(types);
-
-		super.accept(ted);
-	}
-
-	@Override
 	protected boolean visit(PropertyEntityDefinition ped) {
 		if (ADE_NS.equals(ped.getDefinition().getName().getNamespaceURI())) {
 			// property is from ADE
 
 			for (Cell exampleCell : bgisExamples.get(ped.getDefinition().getName().getLocalPart())) {
 				// handle each example cell
-
-				TypeEntityIndex<List<ChildContext>> index = new TypeEntityIndex<List<ChildContext>>();
-				Collection<TypeDefinition> sourceTypes = findSourceTypes(exampleCell, index);
-				if (sourceTypes != null) {
-					for (TypeDefinition sourceType : sourceTypes) {
-						// copy cell
-						DefaultCell cell = new DefaultCell(exampleCell);
-						// reset ID
-						cell.setId(null);
-						// assign new target
-						ListMultimap<String, Entity> target = ArrayListMultimap.create();
-						target.put(cell.getTarget().keys().iterator().next(), new DefaultProperty(
-								ped));
-						cell.setTarget(target);
-						// assign new source(s)
-						ListMultimap<String, Entity> source = ArrayListMultimap.create();
-						for (Entry<String, ? extends Entity> entry : cell.getSource().entries()) {
-							// create new source entity
-							List<ChildContext> path = index.get(sourceType, entry.getValue());
-							if (path == null) {
-								throw new IllegalStateException(
-										"No replacement property path computed");
-							}
-							Property newSource = new DefaultProperty(new PropertyEntityDefinition(
-									sourceType, path, SchemaSpaceID.SOURCE, null));
-							source.put(entry.getKey(), newSource);
-						}
-						cell.setSource(source);
-
-						cells.add(cell);
-					}
-				}
+				propagateCell(exampleCell, ped);
 			}
 
 			return true;
 		}
+		else if (ped.getDefinition().getName().getNamespaceURI().startsWith(CITYGML_NAMESPACE_CORE)) {
+			// is a CityGML property
 
-		// FIXME handle CityGML target properties
+			/*
+			 * FIXME do only for certain types, namely those the target property
+			 * is defined in, to prevent duplicated cells. But those will not be
+			 * supplied! XXX think about it
+			 */
+
+			Pattern nsPattern = Pattern.compile("^" + Pattern.quote(CITYGML_NAMESPACE_CORE)
+					+ "(/[^/]+)?/([^/]+)$");
+			Matcher matcher = nsPattern.matcher(ped.getDefinition().getName().getNamespaceURI());
+			if (matcher.find()) {
+				// name of the CityGML module expected
+//				String module = matcher.group(1);
+
+				for (Entry<QName, Cell> example : cityGMLExamples.entries()) {
+					// check each example cell
+
+					if (example.getKey().getLocalPart()
+							.equals(ped.getDefinition().getName().getLocalPart())) {
+						// local name matches
+						Matcher exMatcher = nsPattern.matcher(example.getKey().getNamespaceURI());
+						if (exMatcher.find()) {
+							/*
+							 * The module is not compared after all, as they may
+							 * be different and still propagation is desired.
+							 * This is the case for instance for
+							 * lod1MultiSurface, which may occur with building,
+							 * vegetation and other module namespaces.
+							 */
+//							String exampleModule = exMatcher.group(1);
+//							if (Objects.equals(module, exampleModule)) {
+							// CityGML module matches
+							propagateCell(example.getValue(), ped);
+//							}
+						}
+					}
+				}
+			}
+			else {
+				System.err.println("ERROR: Failure analysing CityGML namespace");
+			}
+
+			// XXX only level one CityGML target properties supported!
+			return false;
+		}
 
 		return false;
+	}
+
+	/**
+	 * Propagate a given cell to the given target property and possible source
+	 * types.
+	 * 
+	 * @param exampleCell the example cell
+	 * @param ped the target property
+	 */
+	private void propagateCell(Cell exampleCell, PropertyEntityDefinition ped) {
+		/*
+		 * Find the type where the property actually is defined, as if possible
+		 * a super type mapping should be used.
+		 */
+		TypeDefinition targetType = findTypeDefining(ped);
+		if (!targetType.equals(ped.getType())) {
+			ped = new PropertyEntityDefinition(targetType, ped.getPropertyPath(),
+					ped.getSchemaSpace(), ped.getFilter());
+		}
+
+		// check if the cell was already handled for the type
+		if (handledTargets.get(exampleCell).contains(targetType)) {
+			// don't produce any duplicates
+			return;
+		}
+		handledTargets.put(exampleCell, targetType);
+
+		TypeEntityIndex<List<ChildContext>> index = new TypeEntityIndex<List<ChildContext>>();
+		Collection<TypeDefinition> sourceTypes = findSourceTypes(exampleCell, targetType, index);
+		if (sourceTypes != null) {
+			for (TypeDefinition sourceType : sourceTypes) {
+				// copy cell
+				DefaultCell cell = new DefaultCell(exampleCell);
+				// reset ID
+				cell.setId(null);
+				// assign new target
+				ListMultimap<String, Entity> target = ArrayListMultimap.create();
+				target.put(cell.getTarget().keys().iterator().next(), new DefaultProperty(ped));
+				cell.setTarget(target);
+				// assign new source(s)
+				ListMultimap<String, Entity> source = ArrayListMultimap.create();
+				for (Entry<String, ? extends Entity> entry : cell.getSource().entries()) {
+					// create new source entity
+					List<ChildContext> path = index.get(sourceType, entry.getValue());
+					if (path == null) {
+						throw new IllegalStateException("No replacement property path computed");
+					}
+					Property newSource = new DefaultProperty(new PropertyEntityDefinition(
+							sourceType, path, SchemaSpaceID.SOURCE, null));
+					source.put(entry.getKey(), newSource);
+				}
+				cell.setSource(source);
+
+				cells.add(cell);
+			}
+		}
+	}
+
+	/**
+	 * Find the type that actually defines the property referenced in the given
+	 * property entity definition.
+	 * 
+	 * @param ped the property entity definition
+	 * @return the type defining the referenced property
+	 */
+	private TypeDefinition findTypeDefining(PropertyEntityDefinition ped) {
+		/*
+		 * The type we look for is either the one given in the entity
+		 * definition, or a super type.
+		 */
+		TypeDefinition parent = ped.getType();
+		TypeDefinition superType = parent.getSuperType();
+		while (superType != null) {
+			if (!hasProperty(superType, ped.getPropertyPath())) {
+				return parent;
+			}
+			parent = superType;
+			superType = parent.getSuperType();
+		}
+
+		return parent;
+	}
+
+	/**
+	 * Tests the given type if it has the properties defined in the given
+	 * property path.
+	 * 
+	 * @param type the type definition or definition group
+	 * @param propertyPath the property path to test
+	 * @return if the property path is valid for the given type
+	 */
+	private boolean hasProperty(DefinitionGroup type, List<ChildContext> propertyPath) {
+		if (propertyPath == null || propertyPath.isEmpty()) {
+			return true;
+		}
+		else {
+			ChildDefinition<?> child = type.getChild(propertyPath.get(0).getChild().getName());
+			if (child != null) {
+				if (propertyPath.size() == 1) {
+					return true;
+				}
+				else {
+					return hasProperty(DefinitionUtil.getDefinitionGroup(child),
+							propertyPath.subList(1, propertyPath.size()));
+				}
+			}
+			else {
+				return false;
+			}
+		}
 	}
 
 	/**
@@ -176,12 +276,13 @@ public class CityGMLPropagateVisitor extends EntityVisitor implements BGISAppCon
 	 * possible, common super types will be returned.
 	 * 
 	 * @param exampleCell the example cell
+	 * @param targetType the target type
 	 * @param index the index to store the replacement property paths in
 	 * @return the source types to propagate the cell to
 	 */
-	private Collection<TypeDefinition> findSourceTypes(Cell exampleCell,
+	private Collection<TypeDefinition> findSourceTypes(Cell exampleCell, TypeDefinition targetType,
 			TypeEntityIndex<List<ChildContext>> index) {
-		Set<TypeDefinition> possibleSources = new HashSet<TypeDefinition>(sourceTypes);
+		Set<TypeDefinition> possibleSources = findAllPossibleSources(targetType);
 
 		/*
 		 * Add all super types, because if possible, we want to do the mapping
@@ -257,6 +358,41 @@ public class CityGMLPropagateVisitor extends EntityVisitor implements BGISAppCon
 		}
 
 		return possibleSources;
+	}
+
+	/**
+	 * Find all possible CityGML source types for the given target type based on
+	 * the feature map configuration. Also takes into account the possible
+	 * sources for sub-types of the given target type.
+	 * 
+	 * @param targetType the target type definition
+	 * @return the set of possible source type definitions
+	 */
+	private Set<TypeDefinition> findAllPossibleSources(TypeDefinition targetType) {
+		// find all possible source types, taking into account also sub-types
+		Queue<TypeDefinition> toTest = new LinkedList<TypeDefinition>();
+		Set<String> sourceTypeNames = new HashSet<String>();
+		toTest.add(targetType);
+		while (!toTest.isEmpty()) {
+			TypeDefinition type = toTest.poll();
+			sourceTypeNames.addAll(featureMap.getPossibleSourceTypes(type.getDisplayName()));
+			toTest.addAll(type.getSubTypes());
+		}
+
+		Set<TypeDefinition> types = new HashSet<TypeDefinition>();
+		for (TypeDefinition type : cityGMLSource.getTypes()) {
+			if (type.getName().getNamespaceURI().startsWith(CITYGML_NAMESPACE_CORE)
+					&& sourceTypeNames.contains(type.getDisplayName())
+					&& BGISAppUtil.isFeatureType(type)) {
+				/*
+				 * Type is a feature type from CityGML and is one of the
+				 * possible source types
+				 */
+				types.add(type);
+			}
+		}
+
+		return types;
 	}
 
 	private List<ChildContext> hasCompatibleProperty(DefinitionGroup type,
