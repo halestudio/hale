@@ -21,6 +21,8 @@ import java.util.List;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
+import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
@@ -83,6 +85,20 @@ public class BGISAppUtil implements BGISAppConstants {
 		}
 
 		return featureTypes;
+	}
+
+	/**
+	 * Append a note to the given cell.
+	 * 
+	 * @param cell the cell
+	 * @param note the note
+	 */
+	public static void appendNote(Cell cell, String note) {
+		String org = CellUtil.getNotes(cell);
+		if (org != null) {
+			note = org + "\n\n--\n" + note;
+		}
+		CellUtil.setNotes(cell, note);
 	}
 
 }

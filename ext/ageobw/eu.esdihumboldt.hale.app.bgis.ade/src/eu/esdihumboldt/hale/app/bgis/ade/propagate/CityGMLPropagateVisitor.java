@@ -79,6 +79,8 @@ public class CityGMLPropagateVisitor extends EntityVisitor implements BGISAppCon
 
 	private final SetMultimap<Cell, TypeDefinition> handledTargets = HashMultimap.create();
 
+	private final String cellNote;
+
 	/**
 	 * Create an example cell visitor creating derived cells.
 	 * 
@@ -89,13 +91,15 @@ public class CityGMLPropagateVisitor extends EntityVisitor implements BGISAppCon
 	 * @param cityGMLExamples example cells, with the target CityGML property
 	 *            name as key
 	 * @param featureMap the feature map
+	 * @param cellNote note to append to generated cell's notes
 	 */
 	public CityGMLPropagateVisitor(Schema cityGMLSource, Multimap<String, Cell> bgisExamples,
-			Multimap<QName, Cell> cityGMLExamples, FeatureMap featureMap) {
+			Multimap<QName, Cell> cityGMLExamples, FeatureMap featureMap, String cellNote) {
 		this.bgisExamples = bgisExamples;
 		this.cityGMLExamples = cityGMLExamples;
 		this.cityGMLSource = cityGMLSource;
 		this.featureMap = featureMap;
+		this.cellNote = cellNote;
 	}
 
 	@Override
@@ -211,6 +215,8 @@ public class CityGMLPropagateVisitor extends EntityVisitor implements BGISAppCon
 					source.put(entry.getKey(), newSource);
 				}
 				cell.setSource(source);
+
+				BGISAppUtil.appendNote(cell, cellNote);
 
 				cells.add(cell);
 			}

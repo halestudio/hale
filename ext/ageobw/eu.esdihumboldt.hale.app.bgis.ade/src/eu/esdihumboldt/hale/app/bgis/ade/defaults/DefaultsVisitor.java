@@ -128,9 +128,15 @@ public class DefaultsVisitor extends EntityVisitor implements BGISAppConstants {
 	 *            auto-detected
 	 */
 	private void addDefaultCell(PropertyEntityDefinition ped, String value) {
+		String note;
+
 		// determine value to assign
 		if (value == null) {
 			value = determineDefaultValue(ped.getDefinition().getPropertyType());
+			note = "Generated default value based on property type.";
+		}
+		else {
+			note = "Generated cell with specified default value.";
 		}
 		if (value == null) {
 			return;
@@ -150,6 +156,8 @@ public class DefaultsVisitor extends EntityVisitor implements BGISAppConstants {
 		target.put(null, new DefaultProperty(ped));
 		// set cell parameters (Value)
 		parameters.put(AssignFunction.PARAMETER_VALUE, new ParameterValue(value));
+
+		BGISAppUtil.appendNote(cell, note);
 
 		cells.add(cell);
 	}
@@ -173,6 +181,8 @@ public class DefaultsVisitor extends EntityVisitor implements BGISAppConstants {
 		cell.setTransformationIdentifier(functionId);
 		// set cell target (Property)
 		target.put(null, new DefaultProperty(ped));
+
+		BGISAppUtil.appendNote(cell, "Generated default mapping.");
 
 		cells.add(cell);
 	}
