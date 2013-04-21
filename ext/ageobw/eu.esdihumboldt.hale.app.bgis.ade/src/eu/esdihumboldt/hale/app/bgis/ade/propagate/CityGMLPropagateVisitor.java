@@ -23,6 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.namespace.QName;
 
@@ -129,46 +131,99 @@ public class CityGMLPropagateVisitor extends EntityVisitor implements BGISAppCon
 
 			for (Cell exampleCell : bgisExamples.get(ped.getDefinition().getName().getLocalPart())) {
 				// handle each example cell
-
-				TypeEntityIndex<List<ChildContext>> index = new TypeEntityIndex<List<ChildContext>>();
-				Collection<TypeDefinition> sourceTypes = findSourceTypes(exampleCell, index);
-				if (sourceTypes != null) {
-					for (TypeDefinition sourceType : sourceTypes) {
-						// copy cell
-						DefaultCell cell = new DefaultCell(exampleCell);
-						// reset ID
-						cell.setId(null);
-						// assign new target
-						ListMultimap<String, Entity> target = ArrayListMultimap.create();
-						target.put(cell.getTarget().keys().iterator().next(), new DefaultProperty(
-								ped));
-						cell.setTarget(target);
-						// assign new source(s)
-						ListMultimap<String, Entity> source = ArrayListMultimap.create();
-						for (Entry<String, ? extends Entity> entry : cell.getSource().entries()) {
-							// create new source entity
-							List<ChildContext> path = index.get(sourceType, entry.getValue());
-							if (path == null) {
-								throw new IllegalStateException(
-										"No replacement property path computed");
-							}
-							Property newSource = new DefaultProperty(new PropertyEntityDefinition(
-									sourceType, path, SchemaSpaceID.SOURCE, null));
-							source.put(entry.getKey(), newSource);
-						}
-						cell.setSource(source);
-
-						cells.add(cell);
-					}
-				}
+				propagateCell(exampleCell, ped);
 			}
 
 			return true;
 		}
+		else if (ped.getDefinition().getName().getNamespaceURI().startsWith(CITYGML_NAMESPACE_CORE)) {
+			// is a CityGML property
 
-		// FIXME handle CityGML target properties
+			/*
+			 * FIXME do only for certain types, namely those the target property
+			 * is defined in, to prevent duplicated cells. But those will not be
+			 * supplied! XXX think about it
+			 */
+
+			Pattern nsPattern = Pattern.compile("^" + Pattern.quote(CITYGML_NAMESPACE_CORE)
+					+ "(/[^/]+)?/([^/]+)$");
+			Matcher matcher = nsPattern.matcher(ped.getDefinition().getName().getNamespaceURI());
+			if (matcher.find()) {
+				// name of the CityGML module expected
+//				String module = matcher.group(1);
+
+				for (Entry<QName, Cell> example : cityGMLExamples.entries()) {
+					// check each example cell
+
+					if (example.getKey().getLocalPart()
+							.equals(ped.getDefinition().getName().getLocalPart())) {
+						// local name matches
+						Matcher exMatcher = nsPattern.matcher(example.getKey().getNamespaceURI());
+						if (exMatcher.find()) {
+							/*
+							 * The module is not compared after all, as they may
+							 * be different and still propagation is desired.
+							 * This is the case for instance for
+							 * lod1MultiSurface, which may occur with building,
+							 * vegetation and other module namespaces.
+							 */
+//							String exampleModule = exMatcher.group(1);
+//							if (Objects.equals(module, exampleModule)) {
+							// CityGML module matches
+							propagateCell(example.getValue(), ped);
+//							}
+						}
+					}
+				}
+			}
+			else {
+				System.err.println("ERROR: Failure analysing CityGML namespace");
+			}
+
+			// XXX only level one CityGML target properties supported!
+			return false;
+		}
 
 		return false;
+	}
+
+	/**
+	 * Propagate a given cell to the given target property and possible source
+	 * types.
+	 * 
+	 * @param exampleCell the example cell
+	 * @param ped the target property
+	 */
+	private void propagateCell(Cell exampleCell, PropertyEntityDefinition ped) {
+		TypeEntityIndex<List<ChildContext>> index = new TypeEntityIndex<List<ChildContext>>();
+		Collection<TypeDefinition> sourceTypes = findSourceTypes(exampleCell, index);
+		if (sourceTypes != null) {
+			for (TypeDefinition sourceType : sourceTypes) {
+				// copy cell
+				DefaultCell cell = new DefaultCell(exampleCell);
+				// reset ID
+				cell.setId(null);
+				// assign new target
+				ListMultimap<String, Entity> target = ArrayListMultimap.create();
+				target.put(cell.getTarget().keys().iterator().next(), new DefaultProperty(ped));
+				cell.setTarget(target);
+				// assign new source(s)
+				ListMultimap<String, Entity> source = ArrayListMultimap.create();
+				for (Entry<String, ? extends Entity> entry : cell.getSource().entries()) {
+					// create new source entity
+					List<ChildContext> path = index.get(sourceType, entry.getValue());
+					if (path == null) {
+						throw new IllegalStateException("No replacement property path computed");
+					}
+					Property newSource = new DefaultProperty(new PropertyEntityDefinition(
+							sourceType, path, SchemaSpaceID.SOURCE, null));
+					source.put(entry.getKey(), newSource);
+				}
+				cell.setSource(source);
+
+				cells.add(cell);
+			}
+		}
 	}
 
 	/**
