@@ -62,8 +62,6 @@ public class DuplicateVisitor extends EntityVisitor implements BGISAppConstants 
 			for (Cell exampleCell : exampleCells.get(ped.getDefinition().getName().getLocalPart())) {
 				// handle each example cell
 
-				// simplest case: just apply to target
-
 				// copy cell
 				DefaultCell cell = new DefaultCell(exampleCell);
 				// reset ID
