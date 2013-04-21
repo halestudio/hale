@@ -11,12 +11,12 @@
 <booleanAttribute key="clearConfig" value="true"/>
 <booleanAttribute key="clearws" value="true"/>
 <booleanAttribute key="clearwslog" value="false"/>
-<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/bgis.ade.propagate-sample1"/>
+<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/bgis.ade.propagate-sample2"/>
 <booleanAttribute key="default" value="false"/>
 <booleanAttribute key="includeOptional" value="true"/>
 <stringAttribute key="location" value="${workspace_loc}/../runtime-bgis.ade.defaults"/>
 <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl en_GB -consoleLog  -clean -name HUMBOLDT Alignment Editor --launcher.defaultAction openFile -project file:///home/simon/repos/uhd/mapping/citygml-gen/exemplary/citygml-gen-exemplary.halex -citygml-source  file:///home/simon/repos/uhd/schemas/CityGML_080815_1.0.0/CityGML.xsd -feature-map file:///home/simon/repos/uhd/mapping/Features_Generic.xlsx  -out &quot;/home/simon/repos/uhd/mapping/citygml1/citygml1_ade-generated.alignment.xml&quot;"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl en_GB -consoleLog  -clean -name HUMBOLDT Alignment Editor --launcher.defaultAction openFile -project file:///home/simon/repos/uhd/mapping/citygml-gen/exemplary/citygml-gen-exemplary.halex -citygml-source  file:///home/simon/repos/uhd/schemas/CityGML_120314_2.0.0/CityGML.xsd -feature-map file:///home/simon/repos/uhd/mapping/Features_Generic.xlsx  -out &quot;/home/simon/repos/uhd/mapping/citygml2/citygml2_ade-generated.alignment.xml&quot;"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx800m -XX:MaxPermSize=128m -Dcache.level1.enabled=false -Dcache.level1.size=0 -Dcache.level2.enabled=false -Dcache.level2.size=0"/>
 <stringAttribute key="pde.version" value="3.3"/>

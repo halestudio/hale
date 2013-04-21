@@ -17,7 +17,9 @@ package eu.esdihumboldt.hale.app.bgis.ade.propagate;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.xml.namespace.QName;
@@ -198,11 +200,27 @@ public class CityGMLPropagate implements BGISAppConstants, CityGMLConstants {
 		// collect all ADE feature types
 		List<TypeDefinition> featureTypes = BGISAppUtil.getADEFeatureTypes(targetSchema);
 
-		// TODO collect all source CityGML feature types
-		/*
-		 * XXX ensure to remove all those that share a local name with an ADE
-		 * type
-		 */
+		// collect ADE display names
+		Set<String> adeTypeNames = new HashSet<String>();
+		for (TypeDefinition type : featureTypes) {
+			adeTypeNames.add(type.getDisplayName());
+		}
+
+		// collect possibly relevant target CityGML feature types
+		for (TypeDefinition type : targetSchema.getTypes()) {
+			if (type.getName().getNamespaceURI().startsWith(CITYGML_NAMESPACE_CORE)
+					&& BGISAppUtil.isFeatureType(type)) {
+				if (!adeTypeNames.contains(type.getDisplayName())) {
+					/*
+					 * But ensure to only add those that do not share the
+					 * display name with an ADE type, as in the feature map the
+					 * type identification is only done on based on the display
+					 * name, and ADE types take precedent.
+					 */
+					featureTypes.add(type);
+				}
+			}
+		}
 
 		// visit ADE properties and create cells
 		System.out.println("Generating mapping from example cells for");
