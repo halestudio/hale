@@ -34,7 +34,7 @@ class XslRegexAnalysis extends AbstractFunctionTransformation implements RegexAn
 
 	@Override
 	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables,
-			XsltGenerationContext context, Cell typeCell) {
+	XsltGenerationContext context, Cell typeCell) {
 
 		def sourceString = variables.get(null)[0].XPath
 
@@ -104,7 +104,7 @@ class XslRegexAnalysis extends AbstractFunctionTransformation implements RegexAn
 		def result = """ 
 			<xsl:choose>
 			  <xsl:when test="matches(${sourceString}, '${regexPattern4Match}')">
-					<xsl:analyze-string select="." regex="${regexPattern}">
+					<xsl:analyze-string select="${sourceString}" regex="${regexPattern}">
 						<xsl:matching-substring>
 							${groupsString}
 						</xsl:matching-substring>
