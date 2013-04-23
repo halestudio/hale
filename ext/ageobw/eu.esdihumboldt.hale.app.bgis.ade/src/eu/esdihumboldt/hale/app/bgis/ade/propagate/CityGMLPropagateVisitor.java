@@ -144,6 +144,8 @@ public class CityGMLPropagateVisitor extends EntityVisitor implements BGISAppCon
 							 * This is the case for instance for
 							 * lod1MultiSurface, which may occur with building,
 							 * vegetation and other module namespaces.
+							 * 
+							 * FIXME check module name for class/function/usage?
 							 */
 //							String exampleModule = exMatcher.group(1);
 //							if (Objects.equals(module, exampleModule)) {
@@ -406,7 +408,7 @@ public class CityGMLPropagateVisitor extends EntityVisitor implements BGISAppCon
 		int propIndex = -1;
 		// find index of first property (ignoring groups)
 		for (int i = 0; i < propertyPath.size() && propIndex < 0; i++) {
-			if (propertyPath.get(0).getChild().asProperty() != null) {
+			if (propertyPath.get(i).getChild().asProperty() != null) {
 				propIndex = i;
 			}
 		}
