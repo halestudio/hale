@@ -45,7 +45,7 @@ class XslMathExpression extends AbstractFunctionTransformation implements Mathem
 		def expression = CellUtil.getFirstParameter(cell, PARAMETER_EXPRESSION).as(String)
 		if (!expression) {
 			// empty text if no expression
-			return "<xsl:text />"
+			return "<def:null />"
 		}
 
 		// map variable names to XPath expressions
@@ -75,8 +75,21 @@ class XslMathExpression extends AbstractFunctionTransformation implements Mathem
 
 		//TODO check if all variables are actually there and provide def:null otherwise?
 
+		//		"""
+		//		<xsl:value-of select="$finalExpression" />
+		//		"""
+
 		"""
-		<xsl:value-of select="$finalExpression" />
+		<xsl:variable name="evaluated" select="$finalExpression" />
+		<xsl:choose>
+			<!-- This test seems to be needed with Saxon, else empty results may be produced -->
+			<xsl:when test="\$evaluated">
+				<xsl:value-of select="\$evaluated" />
+			</xsl:when>
+			<xsl:otherwise>
+				<def:null />
+			</xsl:otherwise>
+		</xsl:choose>
 		"""
 	}
 
