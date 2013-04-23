@@ -21,8 +21,10 @@ import javax.xml.namespace.QName;
 import org.eclipse.swt.widgets.Shell;
 
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
+import eu.esdihumboldt.hale.common.align.model.Condition;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -52,9 +54,15 @@ public class AddConditionContextHandler extends AbstractAddConditionContextHandl
 		else {
 			Definition<?> def = entityDef.getDefinition();
 			TypeDefinition propertyType = ((PropertyDefinition) def).getPropertyType();
+
 			// create a dummy type for the filter
 			TypeDefinition dummyType = new DefaultTypeDefinition(new QName("ValueFilterDummy"));
-			parentType = new TypeEntityDefinition(dummyType, entityDef.getSchemaSpace(), null);
+
+			// create dummy type entity
+			Condition condition = AlignmentUtil.getContextCondition(entityDef);
+			Filter filter = condition == null ? null : condition.getFilter();
+			parentType = new TypeEntityDefinition(dummyType, entityDef.getSchemaSpace(), filter);
+
 			// with the property type being contained as value
 			// property
 			new DefaultPropertyDefinition(new QName("value"), dummyType, propertyType);

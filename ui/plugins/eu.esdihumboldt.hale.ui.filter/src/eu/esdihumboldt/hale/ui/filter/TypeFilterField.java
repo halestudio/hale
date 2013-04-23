@@ -230,7 +230,6 @@ public abstract class TypeFilterField extends Composite {
 				valid = true;
 				showDefaultDecoration();
 			} catch (Throwable e) {
-				e.printStackTrace();
 				// show error decoration
 				decoration.setImage(FieldDecorationRegistry.getDefault()
 						.getFieldDecoration(FieldDecorationRegistry.DEC_ERROR).getImage());

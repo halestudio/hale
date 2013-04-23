@@ -64,7 +64,7 @@ public class CQLFilterField extends TypeFilterField {
 		this(type.getDefinition(), parent, style, type.getSchemaSpace());
 		// XXX check filter type for CQL?
 		if (type.getFilter() != null)
-			setFilterExpression(AlignmentUtil.getContextText(type));
+			setFilterExpression(AlignmentUtil.getFilterText(type.getFilter()));
 	}
 
 	/**

@@ -15,17 +15,21 @@
 
 package eu.esdihumboldt.hale.ui.filter;
 
-import java.util.List;
-
+import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
-import eu.esdihumboldt.hale.common.align.model.ChildContext;
+import eu.esdihumboldt.hale.common.align.model.Condition;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 import eu.esdihumboldt.hale.io.xslt.xpath.XPathFilter;
+import eu.esdihumboldt.hale.ui.filter.internal.Messages;
 
 /**
  * Field for editing a XPath filter.
@@ -47,18 +51,10 @@ public class XPathFilterField extends TypeFilterField {
 		super(parent, style);
 		this.entity = entity;
 		// XXX check filter type?
-		List<ChildContext> path = entity.getPropertyPath();
-		if (path == null || path.isEmpty()) {
-			if (entity.getFilter() != null)
-				setFilterExpression(AlignmentUtil.getContextText(entity));
-		}
-		else {
-			ChildContext last = path.get(path.size() - 1);
-			if (last.getCondition() != null && last.getCondition().getFilter() != null)
-				setFilterExpression(AlignmentUtil.getContextText(entity));
-		}
-
-		setVariableSelectEnabled(false);
+		Condition condition = AlignmentUtil.getContextCondition(entity);
+		String text = condition == null ? null : AlignmentUtil.getFilterText(condition.getFilter());
+		if (text != null)
+			setFilterExpression(text);
 	}
 
 	/**
@@ -66,8 +62,43 @@ public class XPathFilterField extends TypeFilterField {
 	 */
 	@Override
 	protected String selectVariable() {
-		// TODO Auto-generated method stub
-		return null;
+		XPathPropertyDefinitionDialog dialog = new XPathPropertyDefinitionDialog(Display
+				.getCurrent().getActiveShell(), entity, Messages.FeatureFilterField_7, null);
+
+		if (dialog.open() == XPathPropertyDefinitionDialog.OK && dialog.getObject() != null) {
+			EntityDefinition entityDef = dialog.getObject();
+			StringBuilder var = new StringBuilder();
+			for (int i = 0; i < dialog.getParentCount(); i++)
+				var.append("../");
+
+			// skip the first path element if we didn't start at top level
+			int start = dialog.atTopLevel() ? 0 : 1;
+
+			// if the element itself was selected simply use a single dot
+			if (dialog.getParentCount() == 0 && entityDef.getPropertyPath().size() == start)
+				var.append(".");
+
+			boolean first = true;
+			for (int i = start; i < entityDef.getPropertyPath().size(); i++) {
+				PropertyDefinition propDef = entityDef.getPropertyPath().get(i).getChild()
+						.asProperty();
+				if (propDef != null) {
+					if (first)
+						first = false;
+					else
+						var.append("/");
+					if (propDef.getConstraint(XmlAttributeFlag.class).isEnabled())
+						var.append('@');
+					QName name = entityDef.getPropertyPath().get(i).getChild().getName();
+					if (!XMLConstants.NULL_NS_URI.equals(name.getNamespaceURI()))
+						var.append("\"").append(name.getNamespaceURI()).append("\":");
+					var.append(name.getLocalPart());
+				}
+			}
+			return var.toString();
+		}
+		else
+			return null;
 	}
 
 	/**

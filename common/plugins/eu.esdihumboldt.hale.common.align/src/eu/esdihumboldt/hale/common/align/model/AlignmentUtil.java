@@ -484,7 +484,7 @@ public abstract class AlignmentUtil {
 	 * @param filter the filter, may be <code>null</code>
 	 * @return the filter text or <code>null</code>
 	 */
-	private static String getFilterText(Filter filter) {
+	public static String getFilterText(Filter filter) {
 		String filterString = FilterDefinitionManager.getInstance().asString(filter);
 		if (filterString != null) {
 			int pos = filterString.indexOf(':');
