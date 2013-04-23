@@ -70,6 +70,8 @@ public class CellXslInfo {
 		// notes
 		def notes = CellUtil.getNotes(cell)
 		if (notes) {
+			// replace all double dashes in notes
+			notes = notes.replaceAll(/\-\-+/, '-')
 			result << "<!-- Notes: -->"
 			result << "<!-- $notes -->"
 		}
