@@ -76,21 +76,35 @@ class StructuralRename implements XslFunction, RenameFunction {
 			def source = sourceVar.entity.definition.getDefinitionGroup()
 			def target = cell.target.get(null)[0].definition.definition.getDefinitionGroup()
 
+			StringWriter result = new StringWriter();
+			result << """
+			<xsl:choose>
+				<xsl:when test="${sourceVar.XPath}">
+			"""
 			if (useCopyOf(source, target)) {
 				// copy attributes, elements and text (order matters)
-				"""<xsl:copy-of select="${sourceVar.XPath}/@*, ${sourceVar.XPath}/child::node()"/>"""
+				result << """<xsl:copy-of select="${sourceVar.XPath}/@*, ${sourceVar.XPath}/child::node()"/>"""
 			}
 			else {
 				// generate copy templates recursively
 				String template = generateTemplate(source, target)
 	
 				// call the base template
-				"""
+				result << """
 				<xsl:call-template name="$template">
 					<xsl:with-param name="$T_PARAM_SOURCE" select="${sourceVar.XPath}" />
 				</xsl:call-template>
 				"""
 			}
+			result << """
+				</xsl:when>
+				<xsl:otherwise>
+					<def:null />
+				</xsl:otherwise>
+			</xsl:choose>
+			"""
+			
+			result.toString()
 		}
 	}
 
