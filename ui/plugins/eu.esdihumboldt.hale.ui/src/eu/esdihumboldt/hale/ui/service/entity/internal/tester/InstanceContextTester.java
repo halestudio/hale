@@ -242,6 +242,12 @@ public class InstanceContextTester extends PropertyTester {
 			return false;
 		}
 
+		List<ChildContext> propertyPath = entityDef.getPropertyPath();
+		if (!propertyPath.isEmpty()
+				&& propertyPath.get(propertyPath.size() - 1).getChild().asProperty() == null) {
+			return false;
+		}
+
 		// FIXME do a test through the entity definition service instead
 
 		return true;
