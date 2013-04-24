@@ -560,6 +560,8 @@ public class XsltGenerator implements XsltConstants {
 			// generate an eventual required identifier on the container
 			GmlWriterUtil.writeRequiredID(writer, targetContainer.getType(), null, false);
 
+			writeContainerIntro(writer, context);
+
 			// cache definition paths
 			Map<TypeDefinition, DefinitionPath> paths = new HashMap<TypeDefinition, DefinitionPath>();
 
@@ -608,6 +610,22 @@ public class XsltGenerator implements XsltConstants {
 		} finally {
 			writer.close();
 		}
+	}
+
+	/**
+	 * Write additional content into the container before it is populated by the
+	 * type relations.
+	 * 
+	 * @param writer the XML stream writer
+	 * @param context the XSLT generation context
+	 * @throws XMLStreamException if an error occurs while writing to the
+	 *             container
+	 * @throws IOException if an error occurs writing to the file
+	 */
+	@SuppressWarnings("unused")
+	protected void writeContainerIntro(XMLStreamWriter writer, XsltGenerationContext context)
+			throws XMLStreamException, IOException {
+		// override me
 	}
 
 	/**
