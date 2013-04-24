@@ -28,6 +28,7 @@ import com.google.common.io.OutputSupplier;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 
 /**
  * Context for a XSLT generation process.
@@ -60,6 +61,20 @@ public interface XsltGenerationContext extends XsltConstants {
 	 * @return the alignment
 	 */
 	public Alignment getAlignment();
+
+	/**
+	 * Get the source schema.
+	 * 
+	 * @return the source schema
+	 */
+	public XmlIndex getSourceSchema();
+
+	/**
+	 * Get the target schema.
+	 * 
+	 * @return the target schema
+	 */
+	public XmlIndex getTargetSchema();
 
 	/**
 	 * Load a velocity template associated to a XSL transformation or function.
