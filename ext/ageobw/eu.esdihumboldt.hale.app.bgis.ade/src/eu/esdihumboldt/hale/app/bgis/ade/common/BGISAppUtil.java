@@ -25,13 +25,14 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
+import eu.esdihumboldt.hale.io.gml.geometry.GMLConstants;
 
 /**
  * Common utility methods.
  * 
  * @author Simon Templer
  */
-public class BGISAppUtil implements BGISAppConstants {
+public class BGISAppUtil implements BGISAppConstants, GMLConstants {
 
 	/**
 	 * Determine if a given type is a feature type.
@@ -41,7 +42,7 @@ public class BGISAppUtil implements BGISAppConstants {
 	 */
 	public static boolean isFeatureType(TypeDefinition type) {
 		if ("AbstractFeatureType".equals(type.getName().getLocalPart())
-				&& type.getName().getNamespaceURI().startsWith("http://www.opengis.net/gml")) {
+				&& type.getName().getNamespaceURI().startsWith(GML_NAMESPACE_CORE)) {
 			return true;
 		}
 

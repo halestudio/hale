@@ -71,6 +71,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
+import eu.esdihumboldt.hale.io.gml.geometry.GMLConstants;
 import eu.esdihumboldt.hale.io.gml.internal.simpletype.SimpleTypeUtil;
 import eu.esdihumboldt.hale.io.gml.writer.XmlWriterBase;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.AbstractTypeMatcher;
@@ -90,7 +91,7 @@ import eu.esdihumboldt.util.Pair;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriterBase {
+public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriterBase, GMLConstants {
 
 	/**
 	 * Schema instance namespace (for specifying schema locations)
@@ -331,7 +332,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriter
 		String gml = null;
 		if (index.getPrefixes() != null) {
 			for (String ns : index.getPrefixes().keySet()) {
-				if (ns.startsWith("http://www.opengis.net/gml")) { //$NON-NLS-1$
+				if (ns.startsWith(GML_NAMESPACE_CORE)) { //$NON-NLS-1$
 					gml = ns;
 					break;
 				}
@@ -551,7 +552,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriter
 				}
 			}
 
-			if (fcElements.isEmpty() && gmlNs != null && gmlNs.equals("http://www.opengis.net/gml")) { //$NON-NLS-1$
+			if (fcElements.isEmpty() && gmlNs != null && gmlNs.equals(NS_GML)) { //$NON-NLS-1$
 				// no FeatureCollection defined and "old" namespace -> GML 2
 				// include WFS 1.0.0 for the FeatureCollection element
 				try {
