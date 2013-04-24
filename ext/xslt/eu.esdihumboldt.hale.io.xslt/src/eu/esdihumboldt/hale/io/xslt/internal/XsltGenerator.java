@@ -111,6 +111,16 @@ public class XsltGenerator implements XsltConstants {
 		}
 
 		@Override
+		public XmlIndex getSourceSchema() {
+			return sourceSchema;
+		}
+
+		@Override
+		public XmlIndex getTargetSchema() {
+			return targetSchema;
+		}
+
+		@Override
 		public XslPropertyTransformation getPropertyTransformation(String functionId) {
 			XslPropertyTransformation result = cachedTransformations.get(functionId);
 			if (result == null) {
