@@ -15,14 +15,21 @@
 
 package eu.esdihumboldt.hale.io.xslt.transformations.property.rename
 
+import javax.xml.namespace.QName
+
 import com.google.common.collect.ListMultimap
 
+import de.cs3d.util.logging.ALogger
+import de.cs3d.util.logging.ALoggerFactory
 import eu.esdihumboldt.hale.common.align.model.Cell
 import eu.esdihumboldt.hale.common.align.model.CellUtil
 import eu.esdihumboldt.hale.common.align.model.functions.RenameFunction
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
+import eu.esdihumboldt.hale.io.gml.CityGMLConstants
+import eu.esdihumboldt.hale.io.gml.geometry.GMLConstants
 import eu.esdihumboldt.hale.io.gml.writer.internal.GmlWriterUtil
 import eu.esdihumboldt.hale.io.xslt.GroovyXslHelpers
 import eu.esdihumboldt.hale.io.xslt.XsltGenerationContext
@@ -43,6 +50,8 @@ class StructuralRename implements XslFunction, RenameFunction {
 	 * The parameter source for a structural rename template.
 	 */
 	private static final String T_PARAM_SOURCE = 'source'
+	
+	private static final ALogger log = ALoggerFactory.getLogger(StructuralRename)
 
 	/**
 	 * If namespaces should be ignored when checking for similarity of source
@@ -64,6 +73,10 @@ class StructuralRename implements XslFunction, RenameFunction {
 	 * Associates source and target with the corresponding template name.
 	 */
 	final templates = [:]
+	
+	private boolean idLinearRingChecked = false;
+	
+	private TypeDefinition idLinearRingType
 
 	@Override
 	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables,
@@ -135,6 +148,9 @@ class StructuralRename implements XslFunction, RenameFunction {
 				def xsl = new MarkupBuilder(w)
 				xsl.'xsl:template'(name: templateName) {
 					'xsl:param'(name: T_PARAM_SOURCE)
+					// hack to deal with GML 3.2 CityGML incompatibility
+					linearRingHack(xsl, source, target)
+					
 					// go through target children
 					// first all attributes
 					for (PropertyDefinition child in target.getAllProperties().findAll{it.isAttribute()}) {
@@ -200,6 +216,82 @@ class StructuralRename implements XslFunction, RenameFunction {
 	private boolean useCopyOf(DefinitionGroup source, DefinitionGroup target) {
 		//XXX use copy-of if allowed and types match
 		return allowCopyOf && source == target
+	}
+	
+	/**
+	 * Dirty hack to retain LinearRing identifiers in GML 3.2.1.
+	 * 
+	 * @param xsl the XSL builder
+	 * @param source the source type or group
+	 * @param target the target type or group
+	 */
+	private void linearRingHack(def xsl, DefinitionGroup source, DefinitionGroup target) {
+		if (!(target instanceof TypeDefinition)) return
+		
+		// find LinearRing replacement type in target schema
+		if (!idLinearRingChecked) {
+			for (TypeDefinition type : xsltContext.targetSchema.types) {
+				if (type.name.localPart == 'IdentifiableLinearRing' &&
+					type.name.namespaceURI.startsWith(CityGMLConstants.CITYGML_NAMESPACE_CORE)) {
+					
+					idLinearRingType = type
+					log.info("Found linear ring type with identifier: ${type.name}")
+					break
+				}
+			}
+			idLinearRingChecked = true
+		}
+		
+		if (idLinearRingType && target.name.localPart == 'LinearRingType' &&
+			target.name.namespaceURI.startsWith(GMLConstants.GML_NAMESPACE_CORE) &&
+			DefinitionUtil.isSuperType(idLinearRingType, target)) {
+			// the target is LinearRing and it is a super type of idLinearRingType
+			
+			String targetGmlNs = target.name.namespaceURI
+			if (!target.getChild(new QName(targetGmlNs, 'id'))) {
+				// no GML id in target
+				
+				// identify GML ID in source
+				def sourceId;
+				for (PropertyDefinition child in source.getAllProperties().findAll{it.isAttribute()}) {
+					if (child.name.localPart == 'id' && child.name.namespaceURI.startsWith(GMLConstants.GML_NAMESPACE_CORE)) {
+						sourceId = child
+						break
+					}
+				}
+				
+				// identify target GML ID
+				def targetId = idLinearRingType.getChild(new QName(targetGmlNs, 'id'))
+				if (!targetId || !targetId.isAttribute()) {
+					// invalid!
+					log.error('Linear ring type with identifier not valid')
+					idLinearRingType = null
+					return
+				}
+				
+				if (sourceId) {
+					// the source actually has a GML id
+					
+					String selectId = '$' + T_PARAM_SOURCE + '/' + sourceId.asXPath(xsltContext);
+					def testId = sourceId.isAttribute() ? selectId : "${selectSource}/text()"
+					
+					xsl.'xsl:if'(test: testId) {
+						// there is a value present in the source id
+						
+						// xsi:type attribute
+						'xsl:attribute'(name: 'xsi:type') {
+							'xsl:text'(xsltContext.namespaceContext.getPrefix(idLinearRingType.name.namespaceURI) +
+								':' + idLinearRingType.name.localPart)
+						}
+						
+						// target attribute
+						'xsl:attribute'(targetId.name.asMap(xsltContext)) {
+							'xsl:value-of'(select: selectId)
+						}
+					}
+				}
+			}
+		}
 	}
 
 	/**
