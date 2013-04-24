@@ -28,7 +28,7 @@ import com.vividsolutions.jts.geom.GeometryFactory;
  * 
  * @author Simon Templer
  */
-public abstract class AbstractGeometryHandler implements GeometryHandler, GeometryConstants {
+public abstract class AbstractGeometryHandler implements GeometryHandler, GMLConstants {
 
 	private Set<QName> supportedTypes;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Data Harmonisation Panel
+ * Copyright (c) 2013 Data Harmonisation Panel
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -10,18 +10,23 @@
  * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
  * 
  * Contributors:
- *     HUMBOLDT EU Integrated Project #030962
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.gml.geometry;
 
 /**
- * GML and geometry related constants.
+ * Common constants on GML.
  * 
  * @author Simon Templer
  */
-public interface GeometryConstants {
+public interface GMLConstants {
+
+	/**
+	 * The core part of the GML namespace that is independent of the version
+	 * number (and is the namespace of GML versions up to 3.1.1).
+	 */
+	public static final String GML_NAMESPACE_CORE = "http://www.opengis.net/gml";
 
 	/**
 	 * The GML namespace
