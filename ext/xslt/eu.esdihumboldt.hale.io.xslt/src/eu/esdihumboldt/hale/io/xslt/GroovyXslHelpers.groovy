@@ -68,6 +68,24 @@ class GroovyXslHelpers {
 	}
 
 	/**
+	 * Convert the given QName to the notation with prefix.
+	 * 
+	 * @param name the name
+	 * @param xsltContext the XSLT generation context for looking up the prefixes
+	 * @return prefix if applicable and local name separated by a colon
+	 */
+	static String asPrefixedName(QName name, XsltGenerationContext xsltContext) {
+		if (name.namespaceURI) {
+			def prefix = xsltContext.namespaceContext.getPrefix(name.namespaceURI)
+			if (prefix) {
+				return "${prefix}:${name.localPart}"
+			}
+		}
+
+		name.localPart
+	}
+
+	/**
 	 * Create a XPath fragment for selecting the given child definition.
 	 * 
 	 * @param child the child definition

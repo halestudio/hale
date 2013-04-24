@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.swing.GroupLayout.Alignment;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.io.FileUtils;
 
@@ -99,7 +101,15 @@ public class XsltExport extends AbstractAlignmentWriter implements XmlWriterBase
 			}
 
 			XsltGenerator generator = new XsltGenerator(templateDir, getAlignment(), sourceIndex,
-					targetIndex, reporter, progress, containerElement, getSourceContext());
+					targetIndex, reporter, progress, containerElement, getSourceContext()) {
+
+				@Override
+				protected void writeContainerIntro(XMLStreamWriter writer,
+						XsltGenerationContext context) throws XMLStreamException, IOException {
+					XsltExport.this.writeContainerIntro(writer, context);
+				}
+
+			};
 			return generator.write(getTarget());
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl("XSLT generation failed", e));
@@ -136,6 +146,22 @@ public class XsltExport extends AbstractAlignmentWriter implements XmlWriterBase
 	@SuppressWarnings("unused")
 	protected void init(XmlIndex sourceIndex, XmlIndex targetIndex)
 			throws IOProviderConfigurationException {
+		// override me
+	}
+
+	/**
+	 * Write additional content into the container before it is populated by the
+	 * type relations.
+	 * 
+	 * @param writer the XML stream writer
+	 * @param context the XSLT generation context
+	 * @throws XMLStreamException if an error occurs while writing to the
+	 *             container
+	 * @throws IOException if an error occurs writing to the file
+	 */
+	@SuppressWarnings("unused")
+	protected void writeContainerIntro(XMLStreamWriter writer, XsltGenerationContext context)
+			throws XMLStreamException, IOException {
 		// override me
 	}
 
