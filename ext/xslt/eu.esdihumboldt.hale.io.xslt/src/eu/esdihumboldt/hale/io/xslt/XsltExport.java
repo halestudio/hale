@@ -31,6 +31,8 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.io.impl.AbstractAlignmentWriter;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfoAware;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
@@ -47,9 +49,10 @@ import eu.esdihumboldt.hale.io.xslt.internal.XsltGenerator;
  * @author Simon Templer
  */
 @SuppressWarnings("restriction")
-public class XsltExport extends AbstractAlignmentWriter implements XmlWriterBase {
+public class XsltExport extends AbstractAlignmentWriter implements XmlWriterBase, ProjectInfoAware {
 
 	private static final ALogger log = ALoggerFactory.getLogger(XsltExport.class);
+	private ProjectInfo projectInfo;
 
 	/**
 	 * Default constructor
@@ -73,6 +76,11 @@ public class XsltExport extends AbstractAlignmentWriter implements XmlWriterBase
 		if (getTargetSchema() == null) {
 			fail("Target schema not supplied");
 		}
+	}
+
+	@Override
+	public void setProjectInfo(ProjectInfo projectInfo) {
+		this.projectInfo = projectInfo;
 	}
 
 	@Override
@@ -101,7 +109,8 @@ public class XsltExport extends AbstractAlignmentWriter implements XmlWriterBase
 			}
 
 			XsltGenerator generator = new XsltGenerator(templateDir, getAlignment(), sourceIndex,
-					targetIndex, reporter, progress, containerElement, getSourceContext()) {
+					targetIndex, reporter, progress, containerElement, getSourceContext(),
+					projectInfo) {
 
 				@Override
 				protected void writeContainerIntro(XMLStreamWriter writer,
