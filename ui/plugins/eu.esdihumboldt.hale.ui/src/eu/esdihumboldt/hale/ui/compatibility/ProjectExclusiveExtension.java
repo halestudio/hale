@@ -24,6 +24,7 @@ import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
 import de.cs3d.util.eclipse.extension.ObjectExtension;
 import de.cs3d.util.eclipse.extension.exclusive.AbstractExclusiveExtension;
 import de.cs3d.util.eclipse.extension.exclusive.ExclusiveExtension;
+import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
@@ -64,7 +65,24 @@ public abstract class ProjectExclusiveExtension<T, F extends ExtensionObjectFact
 			@Override
 			public void currentObjectChanged(T current, F definition) {
 				if (isSaveAllowed(current, definition)) {
-					ps.getConfigurationService().set(preferenceKey, definition.getIdentifier());
+					IConfigurationService conf = ps.getConfigurationService();
+
+					// get the current setting
+					String currentValue = conf.get(preferenceKey);
+					if (currentValue == null && definition.getIdentifier().equals(getDefaultId())) {
+						/*
+						 * No setting present and the default is used. Then
+						 * don't save the setting, as it may otherwise mark a
+						 * project changed that doesn't have any real changes.
+						 */
+						return;
+					}
+					if (currentValue != null && currentValue.equals(definition.getIdentifier())) {
+						// not a change
+						return;
+					}
+
+					conf.set(preferenceKey, definition.getIdentifier());
 				}
 			}
 		});
@@ -113,7 +131,17 @@ public abstract class ProjectExclusiveExtension<T, F extends ExtensionObjectFact
 
 		List<F> factories = getFactories();
 
-		// find preferred factory to load
+		if (identifier != null) {
+			// find factory to load
+			for (F factory : factories) {
+				if (isLoadAllowed(factory) && factory.getIdentifier().equals(identifier)) {
+					return factory;
+				}
+			}
+		}
+
+		identifier = getDefaultId();
+		// find default factory
 		for (F factory : factories) {
 			if (isLoadAllowed(factory) && factory.getIdentifier().equals(identifier)) {
 				return factory;
@@ -128,6 +156,14 @@ public abstract class ProjectExclusiveExtension<T, F extends ExtensionObjectFact
 			return getFallbackFactory();
 		}
 	}
+
+	/**
+	 * Get the identifier of the default factory to select, if no configuration
+	 * is present.
+	 * 
+	 * @return the identifier of the default factory
+	 */
+	protected abstract String getDefaultId();
 
 	/**
 	 * Get the default factory to use
