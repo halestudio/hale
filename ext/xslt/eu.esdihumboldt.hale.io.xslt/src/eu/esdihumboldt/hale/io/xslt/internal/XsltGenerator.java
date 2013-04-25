@@ -62,6 +62,7 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.TransformationMode;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
@@ -321,6 +322,8 @@ public class XsltGenerator implements XsltConstants {
 	 */
 	private final SourceContextProvider sourceContext;
 
+	private final ProjectInfo projectInfo;
+
 	/**
 	 * Create a XSLT generator.
 	 * 
@@ -337,11 +340,14 @@ public class XsltGenerator implements XsltConstants {
 	 * @param containerElement the name of the element to serve as document root
 	 *            in the target XML file
 	 * @param sourceContext an optional custom source context provider
+	 * @param projectInfo the project info, if available, may be
+	 *            <code>null</code>
 	 * @throws Exception if an error occurs initializing the generator
 	 */
 	public XsltGenerator(File workDir, Alignment alignment, XmlIndex sourceSchema,
 			XmlIndex targetSchema, IOReporter reporter, ProgressIndicator progress,
-			XmlElement containerElement, SourceContextProvider sourceContext) throws Exception {
+			XmlElement containerElement, SourceContextProvider sourceContext,
+			ProjectInfo projectInfo) throws Exception {
 		this.reporter = reporter;
 		this.progress = progress;
 		this.alignment = alignment;
@@ -350,6 +356,7 @@ public class XsltGenerator implements XsltConstants {
 		this.targetSchema = targetSchema;
 		this.sourceSchema = sourceSchema;
 		this.sourceContext = sourceContext;
+		this.projectInfo = projectInfo;
 
 		// initialize the velocity template engine
 		Templates.copyTemplates(workDir);
@@ -394,6 +401,10 @@ public class XsltGenerator implements XsltConstants {
 		Template root = ve.getTemplate(Templates.ROOT, "UTF-8");
 
 		VelocityContext context = XslTransformationUtil.createStrictVelocityContext();
+
+		// project info
+		context.put("info", ProjectXslInfo.getInfo(projectInfo));
+
 		// collects IDs of type cells
 		Set<String> typeIds = new HashSet<String>();
 
