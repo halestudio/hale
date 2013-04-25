@@ -46,6 +46,7 @@ import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener;
  * 
  * @author Sebastian Reinhardt
  */
+@SuppressWarnings("restriction")
 public class CompatibilityServiceImpl extends
 		ProjectExclusiveExtension<CompatibilityMode, CompatibilityModeFactory> implements
 		CompatibilityService {
@@ -123,7 +124,7 @@ public class CompatibilityServiceImpl extends
 		 */
 		@Override
 		public String getIdentifier() {
-			return "eu.esdihumboldt.hale.ui.compatibility";
+			return CSTCompatibilityMode.ID;
 		}
 
 		/**
@@ -137,7 +138,6 @@ public class CompatibilityServiceImpl extends
 		/**
 		 * @see de.cs3d.util.eclipse.extension.ExtensionObjectDefinition#getTypeName()
 		 */
-		@SuppressWarnings("restriction")
 		@Override
 		public String getTypeName() {
 			return CSTCompatibilityMode.class.getName();
@@ -200,9 +200,11 @@ public class CompatibilityServiceImpl extends
 
 	}
 
-	/**
-	 * @see de.cs3d.ui.util.eclipse.extension.exclusive.PreferencesExclusiveExtension#getFallbackFactory()
-	 */
+	@Override
+	protected String getDefaultId() {
+		return CSTCompatibilityMode.ID;
+	}
+
 	@Override
 	protected CompatibilityModeFactory getFallbackFactory() {
 		return new CompatibilityDefaultFactory();

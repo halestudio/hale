@@ -33,6 +33,11 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 public class CSTCompatibilityMode implements CompatibilityMode {
 
 	/**
+	 * The identifier of the mode in the extension.
+	 */
+	public static final String ID = "eu.esdihumboldt.cst.compatibility";
+
+	/**
 	 * @see eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode#supportsFunction(java.lang.String)
 	 */
 	@Override
