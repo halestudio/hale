@@ -136,7 +136,7 @@ public abstract class DefinitionUtil {
 	 * @return the child with the given name of the given definition, or
 	 *         <code>null</code> if it doesn't exist
 	 * @throws IllegalStateException if the given definition isn't group nor
-	 *             property definition
+	 *             property nor type definition
 	 */
 	public static ChildDefinition<?> getChild(Definition<?> definition, QName name) {
 		if (definition instanceof DefinitionGroup) {
@@ -144,6 +144,9 @@ public abstract class DefinitionUtil {
 		}
 		if (definition instanceof ChildDefinition<?>) {
 			return getChild((ChildDefinition<?>) definition, name);
+		}
+		if (definition instanceof DefinitionGroup) {
+			return ((DefinitionGroup) definition).getChild(name);
 		}
 
 		throw new IllegalStateException("Illegal definition.");

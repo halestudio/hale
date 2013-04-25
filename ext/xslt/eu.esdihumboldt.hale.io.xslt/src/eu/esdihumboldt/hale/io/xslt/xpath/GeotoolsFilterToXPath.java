@@ -78,6 +78,7 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -143,8 +144,8 @@ public class GeotoolsFilterToXPath implements ExpressionVisitor, FilterVisitor {
 	 */
 	public static String toXPath(TypeDefinition definition, NamespaceContext namespaceContext,
 			Filter filter) {
-		return ((StringBuffer) filter.accept(new GeotoolsFilterToXPath(definition, namespaceContext), null))
-				.toString();
+		return ((StringBuffer) filter.accept(
+				new GeotoolsFilterToXPath(definition, namespaceContext), null)).toString();
 	}
 
 	/**
@@ -158,8 +159,8 @@ public class GeotoolsFilterToXPath implements ExpressionVisitor, FilterVisitor {
 	 */
 	public static String toXPath(PropertyDefinition definition, NamespaceContext namespaceContext,
 			Filter filter) {
-		return ((StringBuffer) filter.accept(new GeotoolsFilterToXPath(definition, namespaceContext), null))
-				.toString();
+		return ((StringBuffer) filter.accept(
+				new GeotoolsFilterToXPath(definition, namespaceContext), null)).toString();
 	}
 
 	/**
@@ -874,36 +875,34 @@ public class GeotoolsFilterToXPath implements ExpressionVisitor, FilterVisitor {
 			result.append("../");
 		}
 
-		for (int i = 0; i < qnames.size() - 1; i++) {
+		Definition<?> parent = rootType;
+		boolean first = true;
+		for (int i = 0; i < qnames.size(); i++) {
+			// get the element qualified name
 			QName segment = qnames.get(i);
-			result.append(qNameToXPathSegment(segment)).append('/');
+			// get the associated definition
+			ChildDefinition<?> def = DefinitionUtil.getChild(parent, segment);
+			if (def.asProperty() != null) {
+				// groups are ignored
+
+				if (first) {
+					first = false;
+				}
+				else {
+					result.append('/');
+				}
+				if (def.asProperty().getConstraint(XmlAttributeFlag.class).isEnabled()) {
+					// attributes need to be marked w/ @
+					result.append('@');
+				}
+				// add the qualified name
+				result.append(qNameToXPathSegment(segment));
+			}
+
+			parent = def;
 		}
-		if (isAttribute(rootType, qnames))
-			result.append('@');
-		result.append(qNameToXPathSegment(qnames.get(qnames.size() - 1)));
 
 		return result;
-	}
-
-	/**
-	 * Checks whether the property specified by the given path in the given
-	 * definition is a XML attribute or not.
-	 * 
-	 * @param definition the definition
-	 * @param path the path within the definition
-	 * @return true, if the property is a XML attribute, false otherwise
-	 */
-	private boolean isAttribute(TypeDefinition definition, List<QName> path) {
-		Iterator<QName> iter = path.iterator();
-		ChildDefinition<?> child = definition.getChild(iter.next());
-		while (iter.hasNext()) {
-			child = DefinitionUtil.getChild(child, iter.next());
-		}
-
-		if (child.asGroup() != null)
-			return false; // a group?
-		else
-			return child.asProperty().getConstraint(XmlAttributeFlag.class).isEnabled();
 	}
 
 	/**
