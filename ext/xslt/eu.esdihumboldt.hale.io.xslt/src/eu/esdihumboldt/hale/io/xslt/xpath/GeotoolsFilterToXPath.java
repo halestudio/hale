@@ -169,7 +169,7 @@ public class GeotoolsFilterToXPath implements ExpressionVisitor, FilterVisitor {
 	 */
 	@Override
 	public Object visit(ExcludeFilter filter, Object buffer) {
-		System.out.println("ExcludeFilter");
+//		System.out.println("ExcludeFilter");
 		StringBuffer output = asStringBuffer(buffer);
 
 		output.append("false()");
@@ -183,7 +183,7 @@ public class GeotoolsFilterToXPath implements ExpressionVisitor, FilterVisitor {
 	 */
 	@Override
 	public Object visit(IncludeFilter arg0, Object buffer) {
-		System.out.println("IncludeFilter");
+//		System.out.println("IncludeFilter");
 		StringBuffer output = asStringBuffer(buffer);
 
 		output.append("true()");
@@ -197,7 +197,7 @@ public class GeotoolsFilterToXPath implements ExpressionVisitor, FilterVisitor {
 	 */
 	@Override
 	public Object visit(And filter, Object buffer) {
-		System.out.println("And");
+//		System.out.println("And");
 		StringBuffer output = asStringBuffer(buffer);
 
 		output.append("(");
@@ -229,7 +229,7 @@ public class GeotoolsFilterToXPath implements ExpressionVisitor, FilterVisitor {
 	 */
 	@Override
 	public Object visit(Not filter, Object buffer) {
-		System.out.println("Not");
+//		System.out.println("Not");
 		StringBuffer output = asStringBuffer(buffer);
 
 		output.append("not(");
@@ -245,7 +245,7 @@ public class GeotoolsFilterToXPath implements ExpressionVisitor, FilterVisitor {
 	 */
 	@Override
 	public Object visit(Or filter, Object buffer) {
-		System.out.println("Or");
+//		System.out.println("Or");
 		StringBuffer output = asStringBuffer(buffer);
 
 		output.append("(");
@@ -266,7 +266,7 @@ public class GeotoolsFilterToXPath implements ExpressionVisitor, FilterVisitor {
 	 */
 	@Override
 	public Object visit(PropertyIsBetween filter, Object buffer) {
-		System.out.println("PropertyIsBetween");
+//		System.out.println("PropertyIsBetween");
 
 		StringBuffer output = asStringBuffer(buffer);
 
@@ -285,7 +285,7 @@ public class GeotoolsFilterToXPath implements ExpressionVisitor, FilterVisitor {
 	 */
 	@Override
 	public Object visit(PropertyIsEqualTo filter, Object buffer) {
-		System.out.println("PropertyIsEqualTo");
+//		System.out.println("PropertyIsEqualTo");
 
 		// XXX isMatchingCase is currently ignored.
 		// Would somehow need to determine whether a number or string is
@@ -304,7 +304,7 @@ public class GeotoolsFilterToXPath implements ExpressionVisitor, FilterVisitor {
 	 */
 	@Override
 	public Object visit(PropertyIsNotEqualTo filter, Object buffer) {
-		System.out.println("PropertyIsNotEqualTo");
+//		System.out.println("PropertyIsNotEqualTo");
 
 		// XXX isMatchingCase is currently ignored. See IsEqual.
 		StringBuffer result = asStringBuffer(buffer);
@@ -321,7 +321,7 @@ public class GeotoolsFilterToXPath implements ExpressionVisitor, FilterVisitor {
 	 */
 	@Override
 	public Object visit(PropertyIsGreaterThan filter, Object buffer) {
-		System.out.println("PropertyIsGreaterThan");
+//		System.out.println("PropertyIsGreaterThan");
 
 		StringBuffer result = asStringBuffer(buffer);
 		filter.getExpression1().accept(this, result);
@@ -337,7 +337,7 @@ public class GeotoolsFilterToXPath implements ExpressionVisitor, FilterVisitor {
 	 */
 	@Override
 	public Object visit(PropertyIsGreaterThanOrEqualTo filter, Object buffer) {
-		System.out.println("PropertyIsGreaterThanOrEqualTo");
+//		System.out.println("PropertyIsGreaterThanOrEqualTo");
 
 		StringBuffer result = asStringBuffer(buffer);
 		filter.getExpression1().accept(this, result);
@@ -353,7 +353,7 @@ public class GeotoolsFilterToXPath implements ExpressionVisitor, FilterVisitor {
 	 */
 	@Override
 	public Object visit(PropertyIsLessThan filter, Object buffer) {
-		System.out.println("PropertyIsLessThan");
+//		System.out.println("PropertyIsLessThan");
 
 		StringBuffer result = asStringBuffer(buffer);
 		filter.getExpression1().accept(this, result);
@@ -369,7 +369,7 @@ public class GeotoolsFilterToXPath implements ExpressionVisitor, FilterVisitor {
 	 */
 	@Override
 	public Object visit(PropertyIsLessThanOrEqualTo filter, Object buffer) {
-		System.out.println("PropertyIsLessThanOrEqualTo");
+//		System.out.println("PropertyIsLessThanOrEqualTo");
 
 		StringBuffer result = asStringBuffer(buffer);
 		filter.getExpression1().accept(this, result);
