@@ -27,6 +27,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -48,6 +49,7 @@ import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
+import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
 
 /**
  * Creates a control for selection of source and target type entity definitions.
@@ -85,7 +87,7 @@ public class SourceTargetTypeSelector implements ISelectionProvider {
 				functionLabels.dispose();
 			}
 		});
-		main.setLayout(new GridLayout(3, false));
+		main.setLayout(new GridLayout(4, false));
 
 		ISelectionChangedListener listener = new ISelectionChangedListener() {
 
@@ -119,6 +121,26 @@ public class SourceTargetTypeSelector implements ISelectionProvider {
 				}
 			}
 		});
+
+		Button resetSelectionButton = new Button(main, SWT.PUSH);
+		resetSelectionButton.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				setSelection(StructuredSelection.EMPTY);
+			}
+		});
+		final Image resetSelectionImage = HALEUIPlugin.getImageDescriptor("icons/remove.gif")
+				.createImage();
+		resetSelectionButton.setImage(resetSelectionImage);
+		resetSelectionButton.addDisposeListener(new DisposeListener() {
+
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				resetSelectionImage.dispose();
+			}
+		});
+		resetSelectionButton.setToolTipText("Reset selection");
 
 		targetTypeSelector = new TypeEntitySelector(SchemaSpaceID.TARGET, null, main, false);
 		targetTypeSelector.getControl()
