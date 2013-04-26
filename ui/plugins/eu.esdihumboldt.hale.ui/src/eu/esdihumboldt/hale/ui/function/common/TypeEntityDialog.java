@@ -93,9 +93,12 @@ public class TypeEntityDialog extends EntityDialog {
 					entityDefinitionService, ssid, false, true));
 			hierarchicalAllProvider = new TreePathProviderAdapter(new EntityTypeIndexHierarchy(
 					entityDefinitionService, ssid, false, true));
-		}
 
-		viewer.setContentProvider(flatRelevantProvider);
+			viewer.setContentProvider(flatAllProvider);
+		}
+		else {
+			viewer.setContentProvider(flatRelevantProvider);
+		}
 
 		SchemaService ss = (SchemaService) PlatformUI.getWorkbench()
 				.getService(SchemaService.class);
@@ -168,7 +171,7 @@ public class TypeEntityDialog extends EntityDialog {
 							return true;
 				return false;
 			}
-		}, true, true));
+		}, onlyMappingRelevant, true));
 
 		// do not add choice if only mapping relevant types should be selected
 		if (onlyMappingRelevant)
@@ -179,14 +182,14 @@ public class TypeEntityDialog extends EntityDialog {
 		// MappingRelevant types only, flat
 		manager.add(new ContentProviderAction("Mapping relevant types as list", HALEUIPlugin
 				.getImageDescriptor("icons/flat_relevant.png"), getViewer(), flatRelevantProvider,
-				true));
+				false));
 		// MappingRelevant types only, hierarchical
 		manager.add(new ContentProviderAction("Mapping relevant types hierarchical", HALEUIPlugin
 				.getImageDescriptor("icons/hierarchical_relevant.png"), getViewer(),
 				hierarchicalRelevantProvider, false));
 		// Mappable types, flat
 		manager.add(new ContentProviderAction("All types as list", HALEUIPlugin
-				.getImageDescriptor("icons/flat_all.png"), getViewer(), flatAllProvider, false));
+				.getImageDescriptor("icons/flat_all.png"), getViewer(), flatAllProvider, true));
 		// Mappable types, hierarchical
 		manager.add(new ContentProviderAction("All types hierarchical", HALEUIPlugin
 				.getImageDescriptor("icons/hierarchical_all.png"), getViewer(),
