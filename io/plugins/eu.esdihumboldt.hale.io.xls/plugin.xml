@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            file-extensions="xls"
+            id="eu.esdihumboldt.hale.io.xls.xls"
+            name="XLS File"
+            priority="normal">
+      </content-type>
+      <content-type
+            file-extensions="xlsx"
+            id="eu.esdihumboldt.hale.io.xls.xlsx"
+            name="XLSX File"
+            priority="normal">
+      </content-type>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.provider">
+      <provider
+            class="eu.esdihumboldt.hale.io.xls.writer.XLSAlignmentWriter"
+            id="eu.esdihumboldt.hale.io.xls.writer.align"
+            name="XLS HALE Alignment">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.xls.xls">
+         </contentType>
+         <contentType
+               ref="eu.esdihumboldt.hale.io.xls.xlsx">
+         </contentType>
+      </provider>
+   </extension>
+
+</plugin>
