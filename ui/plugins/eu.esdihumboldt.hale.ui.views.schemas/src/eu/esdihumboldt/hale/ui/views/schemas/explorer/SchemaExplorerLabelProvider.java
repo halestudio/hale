@@ -48,6 +48,9 @@ public class SchemaExplorerLabelProvider extends StyledDefinitionLabelProvider i
 	private final Color propertyCellColor;
 	private final Color augmentedColor;
 	private final Color indirectMappingColor;
+	private final Color inheritedPropertyCellColor;
+	private final Color inheritedAugmentedColor;
+	private final Color inheritedIndirectMappingColor;
 
 	/**
 	 * Default constructor
@@ -57,10 +60,18 @@ public class SchemaExplorerLabelProvider extends StyledDefinitionLabelProvider i
 
 		final Display display = PlatformUI.getWorkbench().getDisplay();
 
-		typeCellColor = new Color(display, 150, 190, 120);
-		propertyCellColor = new Color(display, 190, 220, 170);
-		augmentedColor = new Color(display, 184, 181, 220);
-		indirectMappingColor = new Color(display, 245, 245, 145);
+//		typeCellColor = new Color(display, 150, 190, 120);
+//		propertyCellColor = new Color(display, 190, 220, 170);
+//		augmentedColor = new Color(display, 184, 181, 220);
+//		indirectMappingColor = new Color(display, 245, 245, 145);
+		typeCellColor = new Color(display, 130, 175, 93);
+		propertyCellColor = new Color(display, 155, 194, 130);
+		augmentedColor = new Color(display, 153, 147, 219);
+		indirectMappingColor = new Color(display, 224, 224, 83);
+
+		inheritedPropertyCellColor = new Color(display, 182, 219, 158);
+		inheritedAugmentedColor = new Color(display, 183, 180, 219);
+		inheritedIndirectMappingColor = new Color(display, 245, 245, 145);
 	}
 
 	/**
@@ -91,6 +102,9 @@ public class SchemaExplorerLabelProvider extends StyledDefinitionLabelProvider i
 		propertyCellColor.dispose();
 		augmentedColor.dispose();
 		indirectMappingColor.dispose();
+		inheritedPropertyCellColor.dispose();
+		inheritedAugmentedColor.dispose();
+		inheritedIndirectMappingColor.dispose();
 
 		super.dispose();
 	}
@@ -166,8 +180,30 @@ public class SchemaExplorerLabelProvider extends StyledDefinitionLabelProvider i
 			}
 		}
 
+		if (!isType) {
+			// check for direct inherited property cells
+			cells = alignment.getCells(entityDef, true);
+			if (!cells.isEmpty()) {
+				for (Cell cell : cells) {
+					if (!AlignmentUtil.isAugmentation(cell)) {
+						return inheritedPropertyCellColor;
+					}
+				}
+
+				return inheritedAugmentedColor;
+			}
+		}
+		// check for inherited child property cells
+
+		// walk over all cells, alternatively could query for matching property
+		// cells, don't know which would be faster
+		cells = alignment.getCells();
+		for (Cell cell : cells)
+			if (!AlignmentUtil.isTypeCell(cell)
+					&& AlignmentUtil.associatedWith(entityDef, cell, true, true))
+				return inheritedIndirectMappingColor;
+
 		// default color
 		return null;
 	}
-
 }

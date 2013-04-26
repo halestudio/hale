@@ -177,7 +177,34 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	 */
 	@Override
 	public Collection<? extends Cell> getCells(EntityDefinition entityDefinition) {
-		return Collections.unmodifiableCollection(cellsPerEntity.get(entityDefinition));
+		return getCells(entityDefinition, false);
+	}
+
+	/**
+	 * @see Alignment#getCells(EntityDefinition, boolean)
+	 */
+	@Override
+	public Collection<? extends Cell> getCells(EntityDefinition entityDefinition,
+			boolean includeInherited) {
+		if (!includeInherited)
+			return Collections.unmodifiableCollection(cellsPerEntity.get(entityDefinition));
+		else {
+			// Set for safety to return each cell only once.
+			// Duplicates shouldn't happen in usual cases, though.
+			Collection<Cell> cells = new HashSet<Cell>();
+			EntityDefinition e = entityDefinition;
+			do {
+				cells.addAll(cellsPerEntity.get(e));
+				if (e.getFilter() != null) {
+					cells.addAll(cellsPerEntity.get(AlignmentUtil.createEntity(e.getType(),
+							e.getPropertyPath(), e.getSchemaSpace(), null)));
+				}
+				TypeDefinition superType = e.getType().getSuperType();
+				e = superType == null ? null : AlignmentUtil.createEntity(superType,
+						e.getPropertyPath(), e.getSchemaSpace(), e.getFilter());
+			} while (e != null);
+			return cells;
+		}
 	}
 
 	/**
@@ -450,4 +477,5 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	public Cell getCell(String cellId) {
 		return idToCell.get(cellId);
 	}
+
 }
