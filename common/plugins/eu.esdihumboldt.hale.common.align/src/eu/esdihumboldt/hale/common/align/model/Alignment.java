@@ -52,13 +52,23 @@ public interface Alignment {
 	public Collection<? extends Cell> getTypeCells();
 
 	/**
-	 * Get the cells associated w/ the given entity definition.
+	 * Get the cells associated directly with the given entity definition.
 	 * 
 	 * @param entityDefinition the entity definition
-	 * @return the associated cells or an empty collection FIXME what about
-	 *         cells defined on super types?
+	 * @return the associated cells or an empty collection
 	 */
 	public Collection<? extends Cell> getCells(EntityDefinition entityDefinition);
+
+	/**
+	 * Get the cells associated with the given entity definition.<br>
+	 * 
+	 * @param entityDefinition the entity definition
+	 * @param includeInherited if set, it will also include cells that are
+	 *            mapped to the given entity definition on super types
+	 * @return the associated cells or an empty collection
+	 */
+	public Collection<? extends Cell> getCells(EntityDefinition entityDefinition,
+			boolean includeInherited);
 
 	/**
 	 * Get the cells associated with the given type. These may be cells

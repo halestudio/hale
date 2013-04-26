@@ -690,4 +690,49 @@ public abstract class AlignmentUtil {
 		return changed;
 	}
 
+	/**
+	 * Checks whether the given entity (or one of its children) is associated
+	 * with the given cell (considering inheritance).
+	 * 
+	 * @param entity the entity to check
+	 * @param cell the cell to check the entity against
+	 * @param allowInheritance whether inheritance is allowed
+	 * @param orChildren will also check against the entities children
+	 * @return whether the entity is associated with the cell
+	 */
+	public static boolean associatedWith(EntityDefinition entity, Cell cell,
+			boolean allowInheritance, boolean orChildren) {
+		ListMultimap<String, ? extends Entity> entities;
+		switch (entity.getSchemaSpace()) {
+		case SOURCE:
+			entities = cell.getSource();
+			break;
+		case TARGET:
+			entities = cell.getTarget();
+			break;
+		default:
+			throw new IllegalStateException(
+					"Entity definition with illegal schema space encountered");
+		}
+
+		if (entities == null)
+			return false;
+
+		for (Entity e : entities.values()) {
+			EntityDefinition def = e.getDefinition();
+			if (allowInheritance) {
+				if (DefinitionUtil.isSuperType(entity.getType(), def.getType())
+						&& (def.getFilter() == null || def.getFilter().equals(entity.getFilter()))) {
+					// type is a match according to inheritance, make sure to
+					// have common type
+					def = createEntity(entity.getType(), def.getPropertyPath(),
+							def.getSchemaSpace(), entity.getFilter());
+				}
+			}
+			if ((orChildren && isParent(entity, def)) || entity.equals(def))
+				return true;
+		}
+
+		return false;
+	}
 }
