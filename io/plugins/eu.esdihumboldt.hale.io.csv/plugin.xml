@@ -59,7 +59,7 @@
       <provider
             class="eu.esdihumboldt.hale.io.csv.writer.internal.CSVAlignmentWriter"
             id="eu.esdihumboldt.hale.io.csv.writer.align"
-            name="CSV HALE Alignment">
+            name="Mapping table (CSV)">
          <contentType
                ref="eu.esdihumboldt.hale.io.csv">
          </contentType>

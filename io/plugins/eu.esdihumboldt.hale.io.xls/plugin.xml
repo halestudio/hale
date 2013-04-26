@@ -6,13 +6,13 @@
       <content-type
             file-extensions="xls"
             id="eu.esdihumboldt.hale.io.xls.xls"
-            name="XLS File"
+            name="Excel Spreadsheet (XLS)"
             priority="normal">
       </content-type>
       <content-type
             file-extensions="xlsx"
             id="eu.esdihumboldt.hale.io.xls.xlsx"
-            name="XLSX File"
+            name="MS OOXML Format Spreadsheet (XLSX)"
             priority="normal">
       </content-type>
    </extension>
@@ -21,7 +21,7 @@
       <provider
             class="eu.esdihumboldt.hale.io.xls.writer.XLSAlignmentWriter"
             id="eu.esdihumboldt.hale.io.xls.writer.align"
-            name="XLS HALE Alignment">
+            name="Mapping table (XLS/XLSX)">
          <contentType
                ref="eu.esdihumboldt.hale.io.xls.xls">
          </contentType>
