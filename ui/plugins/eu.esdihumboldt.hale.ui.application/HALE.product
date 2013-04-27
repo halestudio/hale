@@ -113,7 +113,6 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.cst.functions.numeric"/>
       <plugin id="eu.esdihumboldt.cst.functions.string"/>
       <plugin id="eu.esdihumboldt.cst.test"/>
-      <plugin id="eu.esdihumboldt.hale.app.bgis.ade"/>
       <plugin id="eu.esdihumboldt.hale.common.align"/>
       <plugin id="eu.esdihumboldt.hale.common.align.test"/>
       <plugin id="eu.esdihumboldt.hale.common.align.tgraph"/>
@@ -144,7 +143,6 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.doc.user.examples.meridian2"/>
       <plugin id="eu.esdihumboldt.hale.doc.user.views.styledmap"/>
       <plugin id="eu.esdihumboldt.hale.doc.util"/>
-      <plugin id="eu.esdihumboldt.hale.functions.bgis"/>
       <plugin id="eu.esdihumboldt.hale.instance.test"/>
       <plugin id="eu.esdihumboldt.hale.io.codelist.xml"/>
       <plugin id="eu.esdihumboldt.hale.io.csv"/>
@@ -199,7 +197,6 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.ui.scripting"/>
       <plugin id="eu.esdihumboldt.hale.ui.style"/>
       <plugin id="eu.esdihumboldt.hale.ui.util"/>
-      <plugin id="eu.esdihumboldt.hale.ui.util.bbr"/>
       <plugin id="eu.esdihumboldt.hale.ui.util.graph"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.data"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.functions"/>
