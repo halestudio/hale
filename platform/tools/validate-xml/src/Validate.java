@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URI;
+import java.text.MessageFormat;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.xml.XMLConstants;
@@ -40,6 +41,7 @@ import org.xml.sax.SAXParseException;
  */
 public class Validate {
 
+	private static final String MESSAGE_PATTERN = "{0} at line {1}:{2}";
 	private final URI[] schemaLocations;
 
 	/**
@@ -88,19 +90,22 @@ public class Validate {
 			
 			@Override
 			public void warning(SAXParseException exception) throws SAXException {
-				System.out.println(exception.getLocalizedMessage());
+				System.out.println(MessageFormat.format(MESSAGE_PATTERN, 
+						exception.getLocalizedMessage(), exception.getLineNumber(), exception.getColumnNumber()));
 				warnings.incrementAndGet();
 			}
 			
 			@Override
 			public void fatalError(SAXParseException exception) throws SAXException {
-				System.err.println(exception.getLocalizedMessage());
+				System.err.println(MessageFormat.format(MESSAGE_PATTERN, 
+						exception.getLocalizedMessage(), exception.getLineNumber(), exception.getColumnNumber()));
 				errors.incrementAndGet();
 			}
 			
 			@Override
 			public void error(SAXParseException exception) throws SAXException {
-				System.err.println(exception.getLocalizedMessage());
+				System.err.println(MessageFormat.format(MESSAGE_PATTERN, 
+						exception.getLocalizedMessage(), exception.getLineNumber(), exception.getColumnNumber()));
 				errors.incrementAndGet();
 			}
 		});
