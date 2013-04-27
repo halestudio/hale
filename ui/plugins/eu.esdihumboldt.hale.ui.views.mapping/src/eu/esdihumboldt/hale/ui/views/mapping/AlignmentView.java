@@ -111,6 +111,19 @@ public class AlignmentView extends AbstractMappingView {
 		}
 	};
 
+	private final ViewerFilter augmentationFilter = new ViewerFilter() {
+
+		@Override
+		public boolean select(Viewer viewer, Object parentElement, Object element) {
+			if (element instanceof Cell) {
+				Cell cell = (Cell) element;
+				return !AlignmentUtil.isAugmentation(cell);
+			}
+			else
+				return false;
+		}
+	};
+
 	private final ViewerFilter deactivatedCellFilter = new ViewerFilter() {
 
 		@Override
@@ -483,6 +496,9 @@ public class AlignmentView extends AbstractMappingView {
 		super.fillToolBar();
 		IToolBarManager manager = getViewSite().getActionBars().getToolBarManager();
 
+		manager.add(new FilterCellAction("Hide augmentation cells", "Show augmentation cells",
+				MappingViewPlugin.getImageDescriptor("icons/augmentation.gif"), getViewer(),
+				contentProvider, augmentationFilter, true, true));
 		manager.add(new FilterCellAction("Hide base alignment cells", "Show base alignment cells",
 				MappingViewPlugin.getImageDescriptor("icons/base_alignment.gif"), getViewer(),
 				contentProvider, baseAlignmentCellFilter, true, true));
