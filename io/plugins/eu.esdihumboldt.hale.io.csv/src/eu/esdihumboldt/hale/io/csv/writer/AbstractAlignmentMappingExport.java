@@ -38,7 +38,7 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
  * 
  * @author Patrick Lieb
  */
-public abstract class AbstractExportAlignment extends AbstractAlignmentWriter {
+public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWriter {
 
 	/**
 	 * the default line break in a cell
@@ -88,16 +88,39 @@ public abstract class AbstractExportAlignment extends AbstractAlignmentWriter {
 
 	private List<Map<CellType, CellInfo>> allRelations;
 
+	private final String mappingMode = "alignmentMappingExportMode";
+	private final String noBaseAlignmentsParam = "noBaseAlignments";
+	private final String propertyCellsParam = "propertyCells";
+
 	/**
 	 * Get all mappings. Each list entry represents one mapping.
 	 * 
 	 * @return list of all mappings
 	 */
 	public List<Map<CellType, CellInfo>> getMappingList() {
+
 		allRelations = new ArrayList<Map<CellType, CellInfo>>();
-		for (Cell cell : getAlignment().getCells()) {
-			addCellData(cell);
+
+		String mapping = getParameter(mappingMode).getStringRepresentation();
+		boolean noBaseAlignments = mapping.equals(noBaseAlignmentsParam);
+		boolean propertyCells = mapping.equals(propertyCellsParam);
+
+		if (propertyCells) {
+			for (Cell typeCell : getAlignment().getTypeCells()) {
+				addCellData(typeCell);
+				for (Cell propertyCell : getAlignment().getPropertyCells(typeCell)) {
+					addCellData(propertyCell);
+				}
+			}
 		}
+		else {
+			for (Cell cell : getAlignment().getCells()) {
+				if (!noBaseAlignments || !cell.isBaseCell()) {
+					addCellData(cell);
+				}
+			}
+		}
+
 		return allRelations;
 	}
 
