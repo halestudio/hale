@@ -25,7 +25,7 @@ import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
-import eu.esdihumboldt.hale.io.csv.writer.AbstractExportAlignment;
+import eu.esdihumboldt.hale.io.csv.writer.AbstractAlignmentMappingExport;
 import eu.esdihumboldt.hale.io.csv.writer.CellInfo;
 
 /**
@@ -33,7 +33,7 @@ import eu.esdihumboldt.hale.io.csv.writer.CellInfo;
  * 
  * @author Patrick Lieb
  */
-public class CSVAlignmentWriter extends AbstractExportAlignment {
+public class CSVAlignmentMappingWriter extends AbstractAlignmentMappingExport {
 
 	private List<Map<CellType, CellInfo>> mapping;
 

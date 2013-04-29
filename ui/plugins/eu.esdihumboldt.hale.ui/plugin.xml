@@ -1044,6 +1044,20 @@
                ref="eu.esdihumboldt.hale.io.project.hale25.zip.writer">
          </provider>
       </configPage>
+      <configPage
+            class="eu.esdihumboldt.hale.ui.io.align.AlignmentMappingExportConfigurationPage"
+            order="0">
+         <provider
+               ref="eu.esdihumboldt.hale.io.xls.writer.align">
+         </provider>
+      </configPage>
+      <configPage
+            class="eu.esdihumboldt.hale.ui.io.align.AlignmentMappingExportConfigurationPage"
+            order="0">
+         <provider
+               ref="eu.esdihumboldt.hale.io.csv.writer.align">
+         </provider>
+      </configPage>
    </extension>
    <extension
          point="org.eclipse.ui.commandImages">
