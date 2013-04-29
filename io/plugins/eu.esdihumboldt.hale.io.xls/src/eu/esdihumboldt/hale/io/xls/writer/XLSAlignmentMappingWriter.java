@@ -35,7 +35,7 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
-import eu.esdihumboldt.hale.io.csv.writer.AbstractExportAlignment;
+import eu.esdihumboldt.hale.io.csv.writer.AbstractAlignmentMappingExport;
 import eu.esdihumboldt.hale.io.csv.writer.CellInfo;
 
 /**
@@ -43,7 +43,7 @@ import eu.esdihumboldt.hale.io.csv.writer.CellInfo;
  * 
  * @author Patrick Lieb
  */
-public class XLSAlignmentWriter extends AbstractExportAlignment {
+public class XLSAlignmentMappingWriter extends AbstractAlignmentMappingExport {
 
 	@Override
 	public boolean isCancelable() {
