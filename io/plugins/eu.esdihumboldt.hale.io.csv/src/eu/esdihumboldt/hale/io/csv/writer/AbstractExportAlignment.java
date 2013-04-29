@@ -217,24 +217,26 @@ public abstract class AbstractExportAlignment extends AbstractAlignmentWriter {
 				for (ChildContext childContext : entity.getDefinition().getPropertyPath()) {
 					PropertyDefinition child = childContext.getChild().asProperty();
 					if (child != null) {
+
 						// column source properties
 						sourceProperties.addText(child.getDisplayName(), position);
 
-						// column source property conditions
 						Filter contextFilter;
 						if (childContext.getCondition() != null) {
 							contextFilter = childContext.getCondition().getFilter();
+							// column source property conditions
 							// XXX more info! index, name, ...
 							sourcePropertyConditions.addText(FilterDefinitionManager.getInstance()
 									.asString(contextFilter), position);
 						}
-					}
-					// add dummy to adapt position of source type and source
-					// type conditions
-					sourceType.addText("", position);
-					sourceTypeConditions.addText("", position);
 
-					position++;
+						// add dummy to adapt position of source type and source
+						// type conditions
+						sourceType.addText("", position);
+						sourceTypeConditions.addText("", position);
+
+						position++;
+					}
 				}
 
 				// next entries must have higher position
@@ -247,16 +249,17 @@ public abstract class AbstractExportAlignment extends AbstractAlignmentWriter {
 				// column target type
 				targetType.addText(entity.getDefinition().getType().getDisplayName(), position);
 
-				// column target properties
 				for (ChildContext childContext : entity.getDefinition().getPropertyPath()) {
 					PropertyDefinition child = childContext.getChild().asProperty();
 					if (child != null) {
+						// column target properties
 						targetProperties.addText(child.getDisplayName(), position);
-					}
-					// add dummy to adapt position of target type
-					targetType.addText("", position);
 
-					position++;
+						// add dummy to adapt position of target type
+						targetType.addText("", position);
+
+						position++;
+					}
 				}
 				position++;
 			}
