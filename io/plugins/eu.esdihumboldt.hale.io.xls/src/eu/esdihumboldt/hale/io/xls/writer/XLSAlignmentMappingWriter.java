@@ -192,7 +192,7 @@ public class XLSAlignmentMappingWriter extends AbstractAlignmentMappingExport {
 
 		}
 		// autosize all columns
-		for (int i = 0; i < 9; i++) {
+		for (int i = 0; i < MAPPING_HEADER.size(); i++) {
 			sheet.autoSizeColumn(i);
 		}
 
