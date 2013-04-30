@@ -25,7 +25,7 @@ import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
-import eu.esdihumboldt.hale.io.csv.writer.AbstractExportAlignment;
+import eu.esdihumboldt.hale.io.csv.writer.AbstractAlignmentMappingExport;
 import eu.esdihumboldt.hale.io.csv.writer.CellInfo;
 
 /**
@@ -33,7 +33,7 @@ import eu.esdihumboldt.hale.io.csv.writer.CellInfo;
  * 
  * @author Patrick Lieb
  */
-public class CSVAlignmentWriter extends AbstractExportAlignment {
+public class CSVAlignmentMappingWriter extends AbstractAlignmentMappingExport {
 
 	private List<Map<CellType, CellInfo>> mapping;
 
@@ -68,8 +68,10 @@ public class CSVAlignmentWriter extends AbstractExportAlignment {
 			row[4] = getCellValue(entry, CellType.TARGET_TYPE);
 			row[5] = getCellValue(entry, CellType.TARGET_PROPERTIES);
 			row[6] = getCellValue(entry, CellType.RELATION_NAME);
-			row[7] = getCellValue(entry, CellType.CELL_EXPLANATION);
-			row[8] = getCellValue(entry, CellType.CELL_NOTES);
+			row[7] = getCellValue(entry, CellType.PRIORITY);
+			row[8] = getCellValue(entry, CellType.CELL_EXPLANATION);
+			row[9] = getCellValue(entry, CellType.CELL_NOTES);
+			row[10] = getCellValue(entry, CellType.BASE_CELL);
 			writer.writeNext(row);
 		}
 

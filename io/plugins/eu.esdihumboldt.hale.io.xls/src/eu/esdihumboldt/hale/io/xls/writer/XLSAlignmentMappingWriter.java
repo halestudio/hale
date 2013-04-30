@@ -25,6 +25,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataFormat;
 import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -35,7 +36,7 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
-import eu.esdihumboldt.hale.io.csv.writer.AbstractExportAlignment;
+import eu.esdihumboldt.hale.io.csv.writer.AbstractAlignmentMappingExport;
 import eu.esdihumboldt.hale.io.csv.writer.CellInfo;
 
 /**
@@ -43,7 +44,7 @@ import eu.esdihumboldt.hale.io.csv.writer.CellInfo;
  * 
  * @author Patrick Lieb
  */
-public class XLSAlignmentWriter extends AbstractExportAlignment {
+public class XLSAlignmentMappingWriter extends AbstractAlignmentMappingExport {
 
 	@Override
 	public boolean isCancelable() {
@@ -69,7 +70,7 @@ public class XLSAlignmentWriter extends AbstractExportAlignment {
 		}
 
 		Sheet sheet = workbook.createSheet();
-		workbook.setSheetName(0, "XLS HALE Alignment");
+		workbook.setSheetName(0, "Mapping table");
 		Row row = null;
 		Cell cell = null;
 		DataFormat df = workbook.createDataFormat();
@@ -96,7 +97,28 @@ public class XLSAlignmentWriter extends AbstractExportAlignment {
 		// display multiple lines
 		cellStyle.setWrapText(true);
 
+		// create highlight style
+		CellStyle highlightStyle = workbook.createCellStyle();
+		// set thin border around the cell
+		highlightStyle.setBorderBottom(CellStyle.BORDER_THIN);
+		highlightStyle.setBorderLeft(CellStyle.BORDER_THIN);
+		highlightStyle.setBorderRight(CellStyle.BORDER_THIN);
+		// set cell data format to text
+		highlightStyle.setDataFormat(df.getFormat("@"));
+		// display multiple lines
+		highlightStyle.setWrapText(true);
+		// font
+//		f = workbook.createFont();
+//		f.setColor(IndexedColors.BLUE.getIndex());
+//		highlightStyle.setFont(f);
+		highlightStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+		highlightStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+
 		List<Map<CellType, CellInfo>> mapping = getMappingList();
+
+		// determine if cells are organized by type cell
+		String mode = getParameter(PARAMETER_MODE).as(String.class);
+		boolean byTypeCell = mode.equals(MODE_BY_TYPE_CELLS);
 
 		int rownum = 0;
 
@@ -113,41 +135,58 @@ public class XLSAlignmentWriter extends AbstractExportAlignment {
 			// create a row
 			row = sheet.createRow(rownum);
 
+			CellStyle rowStyle = cellStyle;
+			if (byTypeCell) {
+				// check if the current cell is a type cell
+				String targetProp = getCellValue(entry, CellType.TARGET_PROPERTIES);
+				if (targetProp == null || targetProp.isEmpty()) {
+					rowStyle = highlightStyle;
+				}
+			}
+
 			cell = row.createCell(0);
 			cell.setCellValue(getCellValue(entry, CellType.SOURCE_TYPE));
-			cell.setCellStyle(cellStyle);
+			cell.setCellStyle(rowStyle);
 
 			cell = row.createCell(1);
 			cell.setCellValue(getCellValue(entry, CellType.SOURCE_TYPE_CONDITIONS));
-			cell.setCellStyle(cellStyle);
+			cell.setCellStyle(rowStyle);
 
 			cell = row.createCell(2);
 			cell.setCellValue(getCellValue(entry, CellType.SOURCE_PROPERTIES));
-			cell.setCellStyle(cellStyle);
+			cell.setCellStyle(rowStyle);
 
 			cell = row.createCell(3);
 			cell.setCellValue(getCellValue(entry, CellType.SOURCE_PROPERTY_CONDITIONS));
-			cell.setCellStyle(cellStyle);
+			cell.setCellStyle(rowStyle);
 
 			cell = row.createCell(4);
 			cell.setCellValue(getCellValue(entry, CellType.TARGET_TYPE));
-			cell.setCellStyle(cellStyle);
+			cell.setCellStyle(rowStyle);
 
 			cell = row.createCell(5);
 			cell.setCellValue(getCellValue(entry, CellType.TARGET_PROPERTIES));
-			cell.setCellStyle(cellStyle);
+			cell.setCellStyle(rowStyle);
 
 			cell = row.createCell(6);
 			cell.setCellValue(getCellValue(entry, CellType.RELATION_NAME));
-			cell.setCellStyle(cellStyle);
+			cell.setCellStyle(rowStyle);
 
 			cell = row.createCell(7);
-			cell.setCellValue(getCellValue(entry, CellType.CELL_EXPLANATION));
-			cell.setCellStyle(cellStyle);
+			cell.setCellValue(getCellValue(entry, CellType.PRIORITY));
+			cell.setCellStyle(rowStyle);
 
 			cell = row.createCell(8);
+			cell.setCellValue(getCellValue(entry, CellType.CELL_EXPLANATION));
+			cell.setCellStyle(rowStyle);
+
+			cell = row.createCell(9);
 			cell.setCellValue(getCellValue(entry, CellType.CELL_NOTES));
-			cell.setCellStyle(cellStyle);
+			cell.setCellStyle(rowStyle);
+
+			cell = row.createCell(10);
+			cell.setCellValue(getCellValue(entry, CellType.BASE_CELL));
+			cell.setCellStyle(rowStyle);
 
 			rownum++;
 

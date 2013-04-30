@@ -19,7 +19,7 @@
    <extension
          point="eu.esdihumboldt.hale.io.provider">
       <provider
-            class="eu.esdihumboldt.hale.io.xls.writer.XLSAlignmentWriter"
+            class="eu.esdihumboldt.hale.io.xls.writer.XLSAlignmentMappingWriter"
             id="eu.esdihumboldt.hale.io.xls.writer.align"
             name="Mapping table (XLS/XLSX)">
          <contentType

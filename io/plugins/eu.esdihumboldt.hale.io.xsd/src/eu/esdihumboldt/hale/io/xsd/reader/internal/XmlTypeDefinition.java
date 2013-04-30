@@ -18,7 +18,10 @@ package eu.esdihumboldt.hale.io.xsd.reader.internal;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.xml.namespace.QName;
 
@@ -26,6 +29,7 @@ import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 import eu.esdihumboldt.hale.io.xsd.constraint.RestrictionFlag;
+import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 
@@ -50,14 +54,43 @@ public class XmlTypeDefinition extends DefaultTypeDefinition {
 	public Collection<? extends ChildDefinition<?>> getChildren() {
 		if (getConstraint(RestrictionFlag.class).isEnabled()) {
 			if (!getConstraint(HasValueFlag.class).isEnabled()) {
-				/*
-				 * XXX For restrictions (on complex types) assume that all
-				 * properties are redefined if needed. FIXME is this correct?
-				 */
-				// only return declared properties
-				// FIXME should here also the technique below be used? (maybe
-				// improved/adapted as order matters for elements)
-				return getDeclaredChildren();
+				// restriction on complex type
+
+				// declared children
+				Map<QName, ChildDefinition<?>> declaredChildren = new LinkedHashMap<QName, ChildDefinition<?>>();
+				for (ChildDefinition<?> def : getDeclaredChildren()) {
+					declaredChildren.put(def.getName(), def);
+				}
+
+				// inherited children
+				Map<QName, ChildDefinition<?>> inheritedChildren = new LinkedHashMap<QName, ChildDefinition<?>>(
+						getInheritedChildren());
+				Iterator<Entry<QName, ChildDefinition<?>>> it = inheritedChildren.entrySet()
+						.iterator();
+				while (it.hasNext()) {
+					Entry<QName, ChildDefinition<?>> entry = it.next();
+
+					boolean isAttribute = entry.getValue().asProperty() != null
+							&& entry.getValue().asProperty().getConstraint(XmlAttributeFlag.class)
+									.isEnabled();
+
+					if (!isAttribute) {
+						/*
+						 * XXX For restrictions (on complex types) assume that
+						 * all elements are redefined if needed.
+						 * 
+						 * For attributes though, it seems that they don't have
+						 * to be redefined. (Or is this only for mandatory
+						 * attributes?)
+						 */
+						// remove element
+						it.remove();
+					}
+				}
+
+				// build result
+				inheritedChildren.putAll(declaredChildren);
+				return inheritedChildren.values();
 			}
 			else {
 				// restriction on simple type
@@ -74,6 +107,7 @@ public class XmlTypeDefinition extends DefaultTypeDefinition {
 					children.put(child.getName(), child);
 				}
 
+				// order doesn't matter as children may only be attributes
 				return children.values();
 			}
 		}

@@ -57,7 +57,7 @@
          </contentType>
       </provider>
       <provider
-            class="eu.esdihumboldt.hale.io.csv.writer.internal.CSVAlignmentWriter"
+            class="eu.esdihumboldt.hale.io.csv.writer.internal.CSVAlignmentMappingWriter"
             id="eu.esdihumboldt.hale.io.csv.writer.align"
             name="Mapping table (CSV)">
          <contentType

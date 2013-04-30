@@ -38,7 +38,8 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
  * 
  * @author Patrick Lieb
  */
-public abstract class AbstractExportAlignment extends AbstractAlignmentWriter {
+public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWriter implements
+		MappingTableConstants {
 
 	/**
 	 * the default line break in a cell
@@ -72,11 +73,17 @@ public abstract class AbstractExportAlignment extends AbstractAlignmentWriter {
 		/** relation name key */
 		RELATION_NAME,
 
+		/** cell priority */
+		PRIORITY,
+
 		/** cell explanation key */
 		CELL_EXPLANATION,
 
 		/** cell notes key */
-		CELL_NOTES
+		CELL_NOTES,
+
+		/** if cell is from base alignment */
+		BASE_CELL
 	}
 
 	/**
@@ -84,7 +91,8 @@ public abstract class AbstractExportAlignment extends AbstractAlignmentWriter {
 	 */
 	public final List<String> MAPPING_HEADER = Arrays.asList("Source type",
 			"Source type conditions", "Source properties", "Source property conditions",
-			"Target type", "Target properties", "Relation name", "Cell explanation", "Cell notes");
+			"Target type", "Target properties", "Relation name", "Priority", "Cell explanation",
+			"Cell notes", "Base alignment");
 
 	private List<Map<CellType, CellInfo>> allRelations;
 
@@ -94,10 +102,29 @@ public abstract class AbstractExportAlignment extends AbstractAlignmentWriter {
 	 * @return list of all mappings
 	 */
 	public List<Map<CellType, CellInfo>> getMappingList() {
+
 		allRelations = new ArrayList<Map<CellType, CellInfo>>();
-		for (Cell cell : getAlignment().getCells()) {
-			addCellData(cell);
+
+		String mapping = getParameter(PARAMETER_MODE).as(String.class);
+		boolean noBaseAlignments = mapping.equals(MODE_EXCLUDE_BASE);
+		boolean propertyCells = mapping.equals(MODE_BY_TYPE_CELLS);
+
+		if (propertyCells) {
+			for (Cell typeCell : getAlignment().getTypeCells()) {
+				addCellData(typeCell);
+				for (Cell propertyCell : getAlignment().getPropertyCells(typeCell)) {
+					addCellData(propertyCell);
+				}
+			}
 		}
+		else {
+			for (Cell cell : getAlignment().getCells()) {
+				if (!noBaseAlignments || !cell.isBaseCell()) {
+					addCellData(cell);
+				}
+			}
+		}
+
 		return allRelations;
 	}
 
@@ -167,6 +194,8 @@ public abstract class AbstractExportAlignment extends AbstractAlignmentWriter {
 		case RELATION_NAME:
 		case CELL_EXPLANATION:
 		case CELL_NOTES:
+		case BASE_CELL:
+		case PRIORITY:
 			// append all info to one string divided by line breaks
 			for (int i = 0; i < text.size(); i++) {
 				if (positions.get(i) == 0) {
@@ -196,6 +225,8 @@ public abstract class AbstractExportAlignment extends AbstractAlignmentWriter {
 		CellInfo relationName = new CellInfo();
 		CellInfo cellExplanation = new CellInfo();
 		CellInfo cellNotes = new CellInfo();
+		CellInfo priority = new CellInfo();
+		CellInfo baseCell = new CellInfo();
 
 		if (cell.getSource() != null) {
 			// save the hierarchy of the properties
@@ -217,24 +248,26 @@ public abstract class AbstractExportAlignment extends AbstractAlignmentWriter {
 				for (ChildContext childContext : entity.getDefinition().getPropertyPath()) {
 					PropertyDefinition child = childContext.getChild().asProperty();
 					if (child != null) {
+
 						// column source properties
 						sourceProperties.addText(child.getDisplayName(), position);
 
-						// column source property conditions
 						Filter contextFilter;
 						if (childContext.getCondition() != null) {
 							contextFilter = childContext.getCondition().getFilter();
+							// column source property conditions
 							// XXX more info! index, name, ...
 							sourcePropertyConditions.addText(FilterDefinitionManager.getInstance()
 									.asString(contextFilter), position);
 						}
-					}
-					// add dummy to adapt position of source type and source
-					// type conditions
-					sourceType.addText("", position);
-					sourceTypeConditions.addText("", position);
 
-					position++;
+						// add dummy to adapt position of source type and source
+						// type conditions
+						sourceType.addText("", position);
+						sourceTypeConditions.addText("", position);
+
+						position++;
+					}
 				}
 
 				// next entries must have higher position
@@ -247,16 +280,17 @@ public abstract class AbstractExportAlignment extends AbstractAlignmentWriter {
 				// column target type
 				targetType.addText(entity.getDefinition().getType().getDisplayName(), position);
 
-				// column target properties
 				for (ChildContext childContext : entity.getDefinition().getPropertyPath()) {
 					PropertyDefinition child = childContext.getChild().asProperty();
 					if (child != null) {
+						// column target properties
 						targetProperties.addText(child.getDisplayName(), position);
-					}
-					// add dummy to adapt position of target type
-					targetType.addText("", position);
 
-					position++;
+						// add dummy to adapt position of target type
+						targetType.addText("", position);
+
+						position++;
+					}
 				}
 				position++;
 			}
@@ -280,6 +314,18 @@ public abstract class AbstractExportAlignment extends AbstractAlignmentWriter {
 				cellNotes.addText(notes, 0);
 			}
 		}
+
+		// cell priority
+		priority.addText(cell.getPriority().value(), 0);
+
+		// base cell
+		if (cell.isBaseCell()) {
+			baseCell.addText("yes", 0);
+		}
+		else {
+			baseCell.addText("no", 0);
+		}
+
 		// the entry represents one mapping with all given information
 		entry.put(CellType.SOURCE_TYPE, sourceType);
 		entry.put(CellType.SOURCE_TYPE_CONDITIONS, sourceTypeConditions);
@@ -290,6 +336,8 @@ public abstract class AbstractExportAlignment extends AbstractAlignmentWriter {
 		entry.put(CellType.RELATION_NAME, relationName);
 		entry.put(CellType.CELL_EXPLANATION, cellExplanation);
 		entry.put(CellType.CELL_NOTES, cellNotes);
+		entry.put(CellType.PRIORITY, priority);
+		entry.put(CellType.BASE_CELL, baseCell);
 
 		// add the row to the map
 		allRelations.add(entry);
