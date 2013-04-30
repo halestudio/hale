@@ -98,7 +98,7 @@ public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWr
 
 		allRelations = new ArrayList<Map<CellType, CellInfo>>();
 
-		String mapping = getParameter(PARAMETER_MODE).getStringRepresentation();
+		String mapping = getParameter(PARAMETER_MODE).as(String.class);
 		boolean noBaseAlignments = mapping.equals(MODE_EXCLUDE_BASE);
 		boolean propertyCells = mapping.equals(MODE_BY_TYPE_CELLS);
 
