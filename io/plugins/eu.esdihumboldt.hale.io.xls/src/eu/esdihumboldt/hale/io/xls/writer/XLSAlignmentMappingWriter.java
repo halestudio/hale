@@ -173,11 +173,19 @@ public class XLSAlignmentMappingWriter extends AbstractAlignmentMappingExport {
 			cell.setCellStyle(rowStyle);
 
 			cell = row.createCell(7);
-			cell.setCellValue(getCellValue(entry, CellType.CELL_EXPLANATION));
+			cell.setCellValue(getCellValue(entry, CellType.PRIORITY));
 			cell.setCellStyle(rowStyle);
 
 			cell = row.createCell(8);
+			cell.setCellValue(getCellValue(entry, CellType.CELL_EXPLANATION));
+			cell.setCellStyle(rowStyle);
+
+			cell = row.createCell(9);
 			cell.setCellValue(getCellValue(entry, CellType.CELL_NOTES));
+			cell.setCellStyle(rowStyle);
+
+			cell = row.createCell(10);
+			cell.setCellValue(getCellValue(entry, CellType.BASE_CELL));
 			cell.setCellStyle(rowStyle);
 
 			rownum++;

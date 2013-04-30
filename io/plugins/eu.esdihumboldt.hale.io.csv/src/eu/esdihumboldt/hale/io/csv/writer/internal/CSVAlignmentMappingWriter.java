@@ -68,8 +68,10 @@ public class CSVAlignmentMappingWriter extends AbstractAlignmentMappingExport {
 			row[4] = getCellValue(entry, CellType.TARGET_TYPE);
 			row[5] = getCellValue(entry, CellType.TARGET_PROPERTIES);
 			row[6] = getCellValue(entry, CellType.RELATION_NAME);
-			row[7] = getCellValue(entry, CellType.CELL_EXPLANATION);
-			row[8] = getCellValue(entry, CellType.CELL_NOTES);
+			row[7] = getCellValue(entry, CellType.PRIORITY);
+			row[8] = getCellValue(entry, CellType.CELL_EXPLANATION);
+			row[9] = getCellValue(entry, CellType.CELL_NOTES);
+			row[10] = getCellValue(entry, CellType.BASE_CELL);
 			writer.writeNext(row);
 		}
 
