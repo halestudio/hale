@@ -73,11 +73,17 @@ public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWr
 		/** relation name key */
 		RELATION_NAME,
 
+		/** cell priority */
+		PRIORITY,
+
 		/** cell explanation key */
 		CELL_EXPLANATION,
 
 		/** cell notes key */
-		CELL_NOTES
+		CELL_NOTES,
+
+		/** if cell is from base alignment */
+		BASE_CELL
 	}
 
 	/**
@@ -85,7 +91,8 @@ public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWr
 	 */
 	public final List<String> MAPPING_HEADER = Arrays.asList("Source type",
 			"Source type conditions", "Source properties", "Source property conditions",
-			"Target type", "Target properties", "Relation name", "Cell explanation", "Cell notes");
+			"Target type", "Target properties", "Relation name", "Priority", "Cell explanation",
+			"Cell notes", "Base alignment");
 
 	private List<Map<CellType, CellInfo>> allRelations;
 
@@ -187,6 +194,8 @@ public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWr
 		case RELATION_NAME:
 		case CELL_EXPLANATION:
 		case CELL_NOTES:
+		case BASE_CELL:
+		case PRIORITY:
 			// append all info to one string divided by line breaks
 			for (int i = 0; i < text.size(); i++) {
 				if (positions.get(i) == 0) {
@@ -216,6 +225,8 @@ public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWr
 		CellInfo relationName = new CellInfo();
 		CellInfo cellExplanation = new CellInfo();
 		CellInfo cellNotes = new CellInfo();
+		CellInfo priority = new CellInfo();
+		CellInfo baseCell = new CellInfo();
 
 		if (cell.getSource() != null) {
 			// save the hierarchy of the properties
@@ -303,6 +314,18 @@ public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWr
 				cellNotes.addText(notes, 0);
 			}
 		}
+
+		// cell priority
+		priority.addText(cell.getPriority().value(), 0);
+
+		// base cell
+		if (cell.isBaseCell()) {
+			baseCell.addText("yes", 0);
+		}
+		else {
+			baseCell.addText("no", 0);
+		}
+
 		// the entry represents one mapping with all given information
 		entry.put(CellType.SOURCE_TYPE, sourceType);
 		entry.put(CellType.SOURCE_TYPE_CONDITIONS, sourceTypeConditions);
@@ -313,6 +336,8 @@ public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWr
 		entry.put(CellType.RELATION_NAME, relationName);
 		entry.put(CellType.CELL_EXPLANATION, cellExplanation);
 		entry.put(CellType.CELL_NOTES, cellNotes);
+		entry.put(CellType.PRIORITY, priority);
+		entry.put(CellType.BASE_CELL, baseCell);
 
 		// add the row to the map
 		allRelations.add(entry);
