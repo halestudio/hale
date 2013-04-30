@@ -38,7 +38,8 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
  * 
  * @author Patrick Lieb
  */
-public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWriter {
+public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWriter implements
+		MappingTableConstants {
 
 	/**
 	 * the default line break in a cell
@@ -88,10 +89,6 @@ public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWr
 
 	private List<Map<CellType, CellInfo>> allRelations;
 
-	private final String mappingMode = "alignmentMappingExportMode";
-	private final String noBaseAlignmentsParam = "noBaseAlignments";
-	private final String propertyCellsParam = "propertyCells";
-
 	/**
 	 * Get all mappings. Each list entry represents one mapping.
 	 * 
@@ -101,9 +98,9 @@ public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWr
 
 		allRelations = new ArrayList<Map<CellType, CellInfo>>();
 
-		String mapping = getParameter(mappingMode).getStringRepresentation();
-		boolean noBaseAlignments = mapping.equals(noBaseAlignmentsParam);
-		boolean propertyCells = mapping.equals(propertyCellsParam);
+		String mapping = getParameter(PARAMETER_MODE).getStringRepresentation();
+		boolean noBaseAlignments = mapping.equals(MODE_EXCLUDE_BASE);
+		boolean propertyCells = mapping.equals(MODE_BY_TYPE_CELLS);
 
 		if (propertyCells) {
 			for (Cell typeCell : getAlignment().getTypeCells()) {

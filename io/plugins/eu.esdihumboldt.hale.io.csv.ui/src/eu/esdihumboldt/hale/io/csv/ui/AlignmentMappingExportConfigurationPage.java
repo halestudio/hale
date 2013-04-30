@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.io.csv.writer.AbstractAlignmentMappingExport;
+import eu.esdihumboldt.hale.io.csv.writer.MappingTableConstants;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 
 /**
@@ -30,13 +31,8 @@ import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
  * @author Patrick Lieb
  */
 public class AlignmentMappingExportConfigurationPage extends
-		AbstractConfigurationPage<AbstractAlignmentMappingExport, AlignmentMappingExportWizard> {
-
-	private final String mappingMode = "alignmentMappingExportMode";
-
-	private final String defaultExportParam = "defaultExport";
-	private final String noBaseAlignmentsParam = "noBaseAlignments";
-	private final String propertyCellsParam = "propertyCells";
+		AbstractConfigurationPage<AbstractAlignmentMappingExport, AlignmentMappingExportWizard>
+		implements MappingTableConstants {
 
 	private Button defaultExport;
 	private Button noBaseAlignments;
@@ -47,8 +43,8 @@ public class AlignmentMappingExportConfigurationPage extends
 	 */
 	public AlignmentMappingExportConfigurationPage() {
 		super("sel.mappingExportCells");
-		setTitle("Please select export mode");
-		setDescription("Choose the cells which should be exported into the mapping");
+		setTitle("Mapping table");
+		setDescription("Please specify which mapping cells should be part of the mapping table.");
 	}
 
 	/**
@@ -74,13 +70,13 @@ public class AlignmentMappingExportConfigurationPage extends
 	public boolean updateConfiguration(AbstractAlignmentMappingExport provider) {
 		// set export mode in provider
 		if (defaultExport.getSelection()) {
-			provider.setParameter(mappingMode, Value.of(defaultExportParam));
+			provider.setParameter(PARAMETER_MODE, Value.of(MODE_ALL));
 		}
 		else if (noBaseAlignments.getSelection()) {
-			provider.setParameter(mappingMode, Value.of(noBaseAlignmentsParam));
+			provider.setParameter(PARAMETER_MODE, Value.of(MODE_EXCLUDE_BASE));
 		}
 		else if (propertyCells.getSelection()) {
-			provider.setParameter(mappingMode, Value.of(propertyCellsParam));
+			provider.setParameter(PARAMETER_MODE, Value.of(MODE_BY_TYPE_CELLS));
 		}
 		else
 			return false;
@@ -98,13 +94,14 @@ public class AlignmentMappingExportConfigurationPage extends
 
 		defaultExport = new Button(page, SWT.RADIO);
 		defaultExport.setSelection(true);
-		defaultExport.setText("Default Export - all Alignment Cells");
+		defaultExport.setText("All mapping cells");
 
 		noBaseAlignments = new Button(page, SWT.RADIO);
-		noBaseAlignments.setText("No export of Base Alignments");
+		noBaseAlignments
+				.setText("Only mapping cells defined in this alignment (exclude base alignments)");
 
 		propertyCells = new Button(page, SWT.RADIO);
-		propertyCells.setText("Export Type Cells with associated Property Cells");
+		propertyCells.setText("Type cells with associated property cells");
 	}
 
 }
