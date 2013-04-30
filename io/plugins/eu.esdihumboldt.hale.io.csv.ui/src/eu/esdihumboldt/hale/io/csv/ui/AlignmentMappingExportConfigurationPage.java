@@ -92,16 +92,16 @@ public class AlignmentMappingExportConfigurationPage extends
 		// layout of the page is a grid layout with one column
 		page.setLayout(new GridLayout(1, false));
 
+		propertyCells = new Button(page, SWT.RADIO);
+		propertyCells.setText("Type cells with associated property cells");
+		propertyCells.setSelection(true);
+
 		defaultExport = new Button(page, SWT.RADIO);
-		defaultExport.setSelection(true);
-		defaultExport.setText("All mapping cells");
+		defaultExport.setText("All mapping cells (unordered)");
 
 		noBaseAlignments = new Button(page, SWT.RADIO);
 		noBaseAlignments
 				.setText("Only mapping cells defined in this alignment (exclude base alignments)");
-
-		propertyCells = new Button(page, SWT.RADIO);
-		propertyCells.setText("Type cells with associated property cells");
 	}
 
 }
