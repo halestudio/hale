@@ -27,6 +27,7 @@ import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.Priority;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure;
 import eu.esdihumboldt.hale.ui.util.graph.shapes.StretchedHexagon;
@@ -39,9 +40,6 @@ import eu.esdihumboldt.hale.ui.util.graph.shapes.StretchedHexagon;
  */
 public class CellFigure extends CustomShapeFigure {
 
-	final private boolean isCompatible;
-	final private String lastCompatiblityMode;
-
 	/**
 	 * Default constructor
 	 * 
@@ -51,31 +49,41 @@ public class CellFigure extends CustomShapeFigure {
 	 * @param isCompatible a boolean to determine the compatibility of the cell
 	 *            to the current active mode
 	 * @param lastCompatibilityMode name of the last active compatibility mode
+	 * @param isInherited whether the cell is an inherited cell
 	 */
 	public CellFigure(Cell cell, final Font customFont, boolean isCompatible,
-			String lastCompatibilityMode) {
+			String lastCompatibilityMode, boolean isInherited) {
 		super(new StretchedHexagon(10), customFont);
-		this.isCompatible = isCompatible;
-		this.lastCompatiblityMode = lastCompatibilityMode;
 
 		setAntialias(SWT.ON);
 
 		GridLayout gridLayout = new GridLayout();
-		if (isCompatible) {
-			gridLayout.numColumns = 2;
-		}
-		else {
-			gridLayout.numColumns = 3;
-		}
+		gridLayout.numColumns = getNumColumns(cell, isCompatible, isInherited);
 		gridLayout.makeColumnsEqualWidth = false;
 		gridLayout.marginHeight = 3;
 		gridLayout.marginWidth = 3;
 		setLayoutManager(gridLayout);
 
-		addLabels(cell);
+		addLabels(cell, isCompatible, lastCompatibilityMode, isInherited);
 	}
 
-	private void addLabels(Cell cell) {
+	private int getNumColumns(Cell cell, boolean isCompatible, boolean isInherited) {
+		int numColumns = 1; // main label
+
+		if (!isCompatible)
+			numColumns++;
+		if (isInherited)
+			numColumns++;
+		if (AlignmentUtil.isTypeCell(cell))
+			numColumns++;
+		if (cell.getPriority() != Priority.NORMAL)
+			numColumns++;
+
+		return numColumns;
+	}
+
+	private void addLabels(Cell cell, boolean isCompatible, String lastCompatibilityMode,
+			boolean isInherited) {
 		if (!isCompatible) {
 			Label compatibilityLabel = new Label();
 			Image compatibilityImage = PlatformUI.getWorkbench().getSharedImages()
@@ -83,7 +91,8 @@ public class CellFigure extends CustomShapeFigure {
 			GridData compLabelGD = new GridData(GridData.BEGINNING, GridData.FILL, false, true);
 			compatibilityLabel.setIcon(compatibilityImage);
 			Label toolTipLabel = new Label();
-			toolTipLabel.setText("Not compatible with " + lastCompatiblityMode + " transformation");
+			toolTipLabel
+					.setText("Not compatible with " + lastCompatibilityMode + " transformation");
 			compatibilityLabel.setToolTip(toolTipLabel);
 			add(compatibilityLabel, compLabelGD);
 		}
@@ -121,6 +130,13 @@ public class CellFigure extends CustomShapeFigure {
 		setTextLabel(mainLabel);
 		setIconLabel(mainLabel);
 
+		if (isInherited) {
+			Label inheritedLabel = new Label(CommonSharedImages.getImageRegistry().get(
+					CommonSharedImages.IMG_INHERITED_ARROW));
+			GridData inheritedGD = new GridData(GridData.CENTER, GridData.CENTER, false, false);
+			add(inheritedLabel, inheritedGD);
+		}
+
 		Label priorityLabel = new Label();
 		Image priorityImage = null;
 		switch (cell.getPriority()) {
@@ -144,5 +160,4 @@ public class CellFigure extends CustomShapeFigure {
 		GridData priorityLabelGD = new GridData(GridData.CENTER, GridData.FILL, false, true);
 		add(priorityLabel, priorityLabelGD);
 	}
-
 }

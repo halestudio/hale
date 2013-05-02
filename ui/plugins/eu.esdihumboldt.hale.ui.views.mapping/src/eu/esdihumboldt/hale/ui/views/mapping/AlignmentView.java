@@ -436,6 +436,19 @@ public class AlignmentView extends AbstractMappingView {
 	protected IBaseLabelProvider createLabelProvider() {
 		return new GraphLabelProvider(HaleUI.getServiceProvider()) {
 
+			/**
+			 * @see eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider#isInherited(eu.esdihumboldt.hale.common.align.model.Cell)
+			 */
+			@Override
+			protected boolean isInherited(Cell cell) {
+				// cannot inherit type cells
+				if (AlignmentUtil.isTypeCell(cell))
+					return false;
+
+				return AlignmentUtil.reparentCell(cell, sourceTargetSelector.getSelectedCell(),
+						true) != cell;
+			}
+
 			private final Color cellDisabledBackgroundColor = new Color(Display.getCurrent(), 240,
 					240, 240);
 			private final Color cellDisabledForegroundColor = new Color(Display.getCurrent(), 109,

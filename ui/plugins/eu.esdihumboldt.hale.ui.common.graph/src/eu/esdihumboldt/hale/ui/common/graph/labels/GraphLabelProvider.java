@@ -181,6 +181,18 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	}
 
 	/**
+	 * Returns whether the given cell is an inherited cell.<br>
+	 * The default implementation returns <code>false</code>, since the label
+	 * provider got no information about any selected type cell.
+	 * 
+	 * @param cell the cell to check
+	 * @return true, if the cell is inherited, false otherwise.
+	 */
+	protected boolean isInherited(Cell cell) {
+		return false;
+	}
+
+	/**
 	 * @return the cellHighlightColor
 	 */
 	protected Color getCellHighlightColor() {
@@ -280,6 +292,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			Cell cell = (Cell) element;
 			String functionId = cell.getTransformationIdentifier();
 			AbstractFunction<?> function = FunctionUtil.getFunction(functionId);
+
 			if (function != null) {
 				return functionLabels.getText(function);
 			}
@@ -523,10 +536,12 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 		if (element instanceof Cell) {
 			Cell cell = (Cell) element;
 			if (incompatibleCells.contains(cell)) {
-				figure = new CellFigure(cell, customFigureFont, false, lastCompatibilityMode);
+				figure = new CellFigure(cell, customFigureFont, false, lastCompatibilityMode,
+						isInherited(cell));
 			}
 			else {
-				figure = new CellFigure(cell, customFigureFont, true, lastCompatibilityMode);
+				figure = new CellFigure(cell, customFigureFont, true, lastCompatibilityMode,
+						isInherited(cell));
 			}
 
 		}
