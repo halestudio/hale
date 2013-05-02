@@ -132,6 +132,11 @@ public interface CommonSharedImagesConstants {
 	public static final String IMG_TRAFFICLIGHT_YELLOW = "IMG_TRAFFICLIGHT_YELLOW";
 
 	/**
+	 * Inherited arrow image key.
+	 */
+	public static final String IMG_INHERITED_ARROW = "IMG_INHERITED_ARROW";
+
+	/**
 	 * Green traffic light image key.
 	 */
 	public static final String IMG_TRAFFICLIGHT_GREEN = "IMG_TRAFFICLIGHT_GREEN";

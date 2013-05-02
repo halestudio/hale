@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
@@ -32,14 +33,23 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.WorkbenchPart;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
+
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.Type;
+import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
+import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
+import eu.esdihumboldt.hale.ui.HaleUI;
+import eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelectionHelper;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.views.mapping.internal.MappingViewPlugin;
+import eu.esdihumboldt.util.Pair;
 
 /**
  * Mapping view.
@@ -115,6 +125,46 @@ public class MappingView extends AbstractMappingView {
 	}
 
 	/**
+	 * @see eu.esdihumboldt.hale.ui.views.mapping.AbstractMappingView#createLabelProvider()
+	 */
+	@Override
+	protected IBaseLabelProvider createLabelProvider() {
+		return new GraphLabelProvider(HaleUI.getServiceProvider()) {
+
+			/**
+			 * @see eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider#isInherited(eu.esdihumboldt.hale.common.align.model.Cell)
+			 */
+			@Override
+			protected boolean isInherited(Cell cell) {
+				// cannot inherit type cells
+				if (AlignmentUtil.isTypeCell(cell))
+					return false;
+
+				SchemaSelection selection = SchemaSelectionHelper.getSchemaSelection();
+
+				if (selection != null && !selection.isEmpty()) {
+					DefaultCell dummyTypeCell = new DefaultCell();
+					ListMultimap<String, Type> sources = ArrayListMultimap.create();
+					ListMultimap<String, Type> targets = ArrayListMultimap.create();
+
+					Pair<Set<EntityDefinition>, Set<EntityDefinition>> items = getDefinitionsFromSelection(selection);
+					for (EntityDefinition def : items.getFirst())
+						sources.put(null, new DefaultType(AlignmentUtil.getTypeEntity(def)));
+					for (EntityDefinition def : items.getSecond())
+						targets.put(null, new DefaultType(AlignmentUtil.getTypeEntity(def)));
+
+					dummyTypeCell.setSource(sources);
+					dummyTypeCell.setTarget(targets);
+
+					return AlignmentUtil.reparentCell(cell, dummyTypeCell, true) != cell;
+				}
+				else
+					return false;
+			}
+		};
+	}
+
+	/**
 	 * @see eu.esdihumboldt.hale.ui.views.mapping.AbstractMappingView#fillToolBar()
 	 */
 	@Override
@@ -136,6 +186,21 @@ public class MappingView extends AbstractMappingView {
 
 		List<Cell> cells = new ArrayList<Cell>();
 
+		Pair<Set<EntityDefinition>, Set<EntityDefinition>> items = getDefinitionsFromSelection(selection);
+
+		// find cells associated with the selection
+		for (Cell cell : alignment.getCells()) {
+			if ((cell.getSource() != null && associatedWith(items.getFirst(), cell))
+					|| associatedWith(items.getSecond(), cell)) {
+				cells.add(cell);
+			}
+		}
+
+		getViewer().setInput(cells);
+	}
+
+	private Pair<Set<EntityDefinition>, Set<EntityDefinition>> getDefinitionsFromSelection(
+			SchemaSelection selection) {
 		Set<EntityDefinition> sourceItems;
 		Set<EntityDefinition> targetItems;
 
@@ -165,15 +230,7 @@ public class MappingView extends AbstractMappingView {
 			targetItems = selection.getTargetItems();
 		}
 
-		// find cells associated with the selection
-		for (Cell cell : alignment.getCells()) {
-			if ((cell.getSource() != null && associatedWith(sourceItems, cell))
-					|| associatedWith(targetItems, cell)) {
-				cells.add(cell);
-			}
-		}
-
-		getViewer().setInput(cells);
+		return new Pair<Set<EntityDefinition>, Set<EntityDefinition>>(sourceItems, targetItems);
 	}
 
 	private boolean associatedWith(Collection<EntityDefinition> entityDefs, Cell cell) {
