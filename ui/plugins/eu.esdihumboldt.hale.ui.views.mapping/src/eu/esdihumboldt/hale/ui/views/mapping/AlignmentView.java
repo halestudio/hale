@@ -63,6 +63,7 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.HaleUI;
+import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider;
 import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityModeFactory;
@@ -526,8 +527,9 @@ public class AlignmentView extends AbstractMappingView {
 		}
 		manager.add(deactivatedCellFilterAction);
 		manager.add(new FilterCellAction("Hide inherited cells", "Show inherited cells",
-				MappingViewPlugin.getImageDescriptor("icons/inherited.gif"), getViewer(),
-				contentProvider, inheritedCellFilter, true, true));
+				CommonSharedImages.getImageRegistry().getDescriptor(
+						CommonSharedImages.IMG_INHERITED_ARROW), getViewer(), contentProvider,
+				inheritedCellFilter, true, true));
 	}
 
 	@Override

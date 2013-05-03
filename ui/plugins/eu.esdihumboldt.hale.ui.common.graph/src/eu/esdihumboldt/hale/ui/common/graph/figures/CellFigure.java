@@ -132,7 +132,7 @@ public class CellFigure extends CustomShapeFigure {
 
 		if (isInherited) {
 			Label inheritedLabel = new Label(CommonSharedImages.getImageRegistry().get(
-					CommonSharedImages.IMG_INHERITED_ARROW));
+					CommonSharedImages.IMG_INHERITED_ARROW_SMALL));
 			GridData inheritedGD = new GridData(GridData.CENTER, GridData.CENTER, false, false);
 			add(inheritedLabel, inheritedGD);
 		}
