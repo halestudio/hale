@@ -54,7 +54,7 @@ public class NotesCellSection extends AbstractCellSection {
 			@Override
 			public void modifyText(ModifyEvent e) {
 				Cell cell = getCell();
-				if (cell != null) {
+				if (cell != null && !cell.isBaseCell()) {
 					String cellNotes = CellUtil.getNotes(cell);
 					if (cellNotes == null) {
 						cellNotes = "";
@@ -90,7 +90,7 @@ public class NotesCellSection extends AbstractCellSection {
 			}
 
 			textField.setText(notes);
-			textField.setEnabled(true);
+			textField.setEnabled(!cell.isBaseCell());
 		}
 		else {
 			textField.setText("");
