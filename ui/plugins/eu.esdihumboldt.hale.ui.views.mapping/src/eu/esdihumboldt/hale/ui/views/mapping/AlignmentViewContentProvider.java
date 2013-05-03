@@ -16,6 +16,9 @@
 package eu.esdihumboldt.hale.ui.views.mapping;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -29,8 +32,10 @@ import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
+import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.Type;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.common.graph.content.Edge;
 import eu.esdihumboldt.hale.ui.common.graph.content.ReverseCellGraphContentProvider;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
@@ -109,7 +114,7 @@ public class AlignmentViewContentProvider extends ReverseCellGraphContentProvide
 					addEdges(cell, edges);
 		}
 
-		for (Cell cell : as.getAlignment().getPropertyCells(typeCell, true)) {
+		for (Cell cell : sortCells(as.getAlignment().getPropertyCells(typeCell, true))) {
 			if (!select(cell))
 				continue;
 
@@ -135,6 +140,66 @@ public class AlignmentViewContentProvider extends ReverseCellGraphContentProvide
 		}
 
 		return edges.toArray();
+	}
+
+	/**
+	 * sorts Cells alphabetically using the names of their PropertyDefinitions
+	 * along the property path
+	 * 
+	 * @param cells the Cells to sort
+	 * @return returns the Collection of sorted Cells
+	 */
+	private Collection<? extends Cell> sortCells(Collection<? extends Cell> cells) {
+		Cell[] cellArr = cells.toArray(new Cell[cells.size()]);
+
+		for (int i = cellArr.length; i > 1; i--) {
+			for (int j = 0; j < i - 1; j++) {
+
+				if (cellArr[j].getSource() == null) {
+					Cell temp = cellArr[j + 1];
+					cellArr[j + 1] = cellArr[j];
+					cellArr[j] = temp;
+				}
+
+				if (cellArr[j + 1].getSource() == null) {
+					continue;
+				}
+
+				else {
+
+					Iterator<ChildContext> pathJiterator = cellArr[j].getSource().values()
+							.iterator().next().getDefinition().getPropertyPath().iterator();
+					Iterator<ChildContext> pathJ1iterator = cellArr[j + 1].getSource().values()
+							.iterator().next().getDefinition().getPropertyPath().iterator();
+
+					while (pathJiterator.hasNext() && pathJ1iterator.hasNext()) {
+
+						PropertyDefinition defJ = pathJiterator.next().getChild().asProperty();
+						PropertyDefinition defJ1 = pathJ1iterator.next().getChild().asProperty();
+
+						if (defJ != null && defJ1 != null) {
+							if (defJ.getName().getLocalPart()
+									.compareToIgnoreCase(defJ1.getName().getLocalPart()) > 0) {
+								Cell temp = cellArr[j + 1];
+								cellArr[j + 1] = cellArr[j];
+								cellArr[j] = temp;
+								break;
+							}
+						}
+						else if (defJ != null && defJ1 == null) {
+							break;
+						}
+						else if (defJ == null && defJ1 != null) {
+							Cell temp = cellArr[j + 1];
+							cellArr[j + 1] = cellArr[j];
+							cellArr[j] = temp;
+							break;
+						}
+					}
+				}
+			}
+		}
+		return Arrays.asList(cellArr);
 	}
 
 	/**
