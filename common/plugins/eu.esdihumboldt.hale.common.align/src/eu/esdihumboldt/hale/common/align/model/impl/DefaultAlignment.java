@@ -478,4 +478,22 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 		return idToCell.get(cellId);
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.Alignment#getBaseAlignmentCells(java.net.URI)
+	 */
+	@Override
+	public Iterable<BaseAlignmentCell> getBaseAlignmentCells(URI baseAlignment) {
+		// expect this operation to not be needed regularly and thus do not
+		// optimize it
+		Collection<BaseAlignmentCell> baseCells = new ArrayList<BaseAlignmentCell>();
+		for (Cell cell : cells) {
+			if (cell instanceof BaseAlignmentCell) {
+				BaseAlignmentCell bac = (BaseAlignmentCell) cell;
+				if (bac.getBaseAlignment().equals(baseAlignment))
+					baseCells.add(bac);
+			}
+		}
+		return baseCells;
+	}
+
 }
