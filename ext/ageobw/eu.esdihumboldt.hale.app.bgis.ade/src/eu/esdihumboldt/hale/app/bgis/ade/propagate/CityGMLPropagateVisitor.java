@@ -44,6 +44,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
@@ -67,7 +68,7 @@ public class CityGMLPropagateVisitor extends EntityVisitor implements BGISAppCon
 	/**
 	 * The created cells.
 	 */
-	private final List<Cell> cells = new ArrayList<Cell>();
+	private final List<MutableCell> cells = new ArrayList<MutableCell>();
 
 	private final Multimap<String, Cell> bgisExamples;
 
@@ -482,7 +483,7 @@ public class CityGMLPropagateVisitor extends EntityVisitor implements BGISAppCon
 	 * 
 	 * @return the cells assigning default values
 	 */
-	public List<Cell> getCells() {
+	public List<MutableCell> getCells() {
 		return cells;
 	}
 
