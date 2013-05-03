@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.ui.service.align;
 
+import java.util.Map;
+
 import eu.esdihumboldt.hale.common.align.model.Cell;
 
 /**
@@ -41,10 +43,9 @@ public interface AlignmentServiceListener {
 	/**
 	 * Called when an existing cell has been replaced by another.
 	 * 
-	 * @param oldCell the old cell that has been replaced
-	 * @param newCell the new cell that has replaced the other
+	 * @param cells a mapping from replaced cell to new cell
 	 */
-	public void cellReplaced(Cell oldCell, Cell newCell);
+	public void cellsReplaced(Map<? extends Cell, ? extends Cell> cells);
 
 	/**
 	 * Called when existing cells have been removed
