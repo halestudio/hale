@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.ui.views.mapping;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.draw2d.geometry.Dimension;
@@ -272,9 +273,9 @@ public class AlignmentView extends AbstractMappingView {
 			}
 
 			@Override
-			public void cellReplaced(Cell oldCell, Cell newCell) {
+			public void cellsReplaced(Map<? extends Cell, ? extends Cell> cells) {
 				if (sourceTargetSelector.isCellSelected()
-						&& oldCell.equals(sourceTargetSelector.getSelectedCell()))
+						&& cells.keySet().contains(sourceTargetSelector.getSelectedCell()))
 					sourceTargetSelector.setSelection(StructuredSelection.EMPTY);
 				refreshGraph();
 			}

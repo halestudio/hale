@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -95,8 +96,9 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 		alignmentService.addListener(new AlignmentServiceListener() {
 
 			@Override
-			public void cellReplaced(Cell oldCell, Cell newCell) {
-				addMissingContexts(Collections.singleton(newCell));
+			public void cellsReplaced(Map<? extends Cell, ? extends Cell> cells) {
+				addMissingContexts(cells.values());
+				// XXX do anything about replaced cells?
 			}
 
 			@Override

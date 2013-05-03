@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.ui.views.data.internal.filter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
@@ -141,7 +142,7 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 				}
 
 				@Override
-				public void cellReplaced(Cell oldCell, Cell newCell) {
+				public void cellsReplaced(Map<? extends Cell, ? extends Cell> cells) {
 					updateInDisplayThread();
 				}
 
