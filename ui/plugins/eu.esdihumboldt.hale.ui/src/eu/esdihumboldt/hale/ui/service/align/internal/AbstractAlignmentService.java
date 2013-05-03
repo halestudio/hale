@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.ui.service.align.internal;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
@@ -80,8 +82,22 @@ public abstract class AbstractAlignmentService implements AlignmentService {
 	 * @param newCell the new cell that has replaced the other
 	 */
 	protected void notifyCellReplaced(Cell oldCell, Cell newCell) {
+		Map<Cell, Cell> cells = Collections.singletonMap(oldCell, newCell);
 		for (AlignmentServiceListener listener : listeners) {
-			listener.cellReplaced(oldCell, newCell);
+			listener.cellsReplaced(cells);
+		}
+	}
+
+	/**
+	 * Call when several existing cell has been replaced by others.<br>
+	 * This method will take care of the map so that listeners cannot change it.
+	 * 
+	 * @param cells a mapping from replaced cell to new cell
+	 */
+	protected void notifyCellsReplaced(Map<? extends Cell, ? extends Cell> cells) {
+		cells = Collections.unmodifiableMap(cells);
+		for (AlignmentServiceListener listener : listeners) {
+			listener.cellsReplaced(cells);
 		}
 	}
 
