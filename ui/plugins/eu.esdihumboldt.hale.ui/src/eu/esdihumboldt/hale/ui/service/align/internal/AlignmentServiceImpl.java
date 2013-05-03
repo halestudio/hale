@@ -15,14 +15,14 @@
  */
 package eu.esdihumboldt.hale.ui.service.align.internal;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map.Entry;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell;
@@ -48,7 +48,7 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
  */
 public class AlignmentServiceImpl extends AbstractAlignmentService {
 
-//	private static ALogger _log = ALoggerFactory.getLogger(AlignmentServiceImpl.class);
+	private static ALogger _log = ALoggerFactory.getLogger(AlignmentServiceImpl.class);
 
 	private MutableAlignment alignment;
 
@@ -148,20 +148,48 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 	public void addOrUpdateAlignment(MutableAlignment alignment) {
 		Collection<Cell> added = new ArrayList<Cell>();
 
-		// add cells
-		synchronized (this) {
-			for (Cell cell : alignment.getCells()) {
-				this.alignment.addCell(cell);
-				added.add(cell);
-			}
+		/*
+		 * XXX Updates for disables not supported
+		 * 
+		 * One problem is, that base alignments shouldn't be added twice, so if
+		 * the given alignment contains a base alignment that is also contained
+		 * in the current alignment it won't be added.
+		 * 
+		 * Now what about cells in the given alignment, that reference those
+		 * base alignments (-> disabled for)? They need to be changed to the
+		 * base alignment cells of the current alignment.
+		 * 
+		 * Those cells can be obtained by replacing the prefix part of the cell
+		 * and using getCell(String).
+		 * 
+		 * XXX Addition of base alignments not supported
+		 * 
+		 * Here the problem is, that it is not enough to gather the base
+		 * alignment cells and change their prefix to a new one, since the base
+		 * cell could be another base alignment cell, which would need to
+		 * change, too. They would have to be added in order. An option would be
+		 * to load them with the base alignment loading mechanism, which would
+		 * result in a loss of additional disables.
+		 * 
+		 * XXX Changes of conflicting base alignment cells not handled
+		 */
+
+		if (!alignment.getBaseAlignments().isEmpty()) {
+			_log.warn("Adding alignments currently does not support merging of base alignments. Import base alignments independently.");
 		}
 
-		// add base alignment info
+		// add cells
 		synchronized (this) {
-			// TODO this needs more complicated merging
-			for (Entry<String, URI> baseAlignment : alignment.getBaseAlignments().entrySet())
-				this.alignment.addBaseAlignment(baseAlignment.getKey(), baseAlignment.getValue(),
-						Collections.<BaseAlignmentCell> emptyList());
+
+			for (Cell cell : alignment.getCells()) {
+				if (cell instanceof MutableCell) {
+					this.alignment.addCell((MutableCell) cell);
+					added.add(cell);
+				}
+				else if (!(cell instanceof BaseAlignmentCell))
+					throw new IllegalStateException(
+							"The given alignment contained a cell which is neither mutable nor from a base alignment.");
+			}
 		}
 
 		if (!added.isEmpty()) {
