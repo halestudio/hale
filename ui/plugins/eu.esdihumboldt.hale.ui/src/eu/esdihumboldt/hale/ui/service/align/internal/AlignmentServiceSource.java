@@ -66,7 +66,7 @@ public class AlignmentServiceSource extends AbstractSourceProvider {
 			}
 
 			@Override
-			public void cellReplaced(Cell oldCell, Cell newCell) {
+			public void cellsReplaced(Map<? extends Cell, ? extends Cell> cells) {
 				// no change to has_cells
 			}
 

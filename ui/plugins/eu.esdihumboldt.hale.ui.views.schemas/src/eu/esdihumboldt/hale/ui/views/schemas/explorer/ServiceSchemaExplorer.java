@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.ui.views.schemas.explorer;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -127,7 +128,7 @@ public class ServiceSchemaExplorer {
 		as.addListener(alignmentListener = new AlignmentServiceListener() {
 
 			@Override
-			public void cellReplaced(Cell oldCell, Cell newCell) {
+			public void cellsReplaced(Map<? extends Cell, ? extends Cell> cells) {
 				refreshInDisplayThread();
 			}
 

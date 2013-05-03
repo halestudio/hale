@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.hale.ui.service.instance.internal;
 
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
@@ -87,7 +88,7 @@ public abstract class AbstractInstanceService implements InstanceService {
 			}
 
 			@Override
-			public void cellReplaced(Cell oldCell, Cell newCell) {
+			public void cellsReplaced(Map<? extends Cell, ? extends Cell> cells) {
 				/*
 				 * TODO only retransform with relevant cells (i.e. create a view
 				 * on the alignment)

@@ -21,6 +21,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
@@ -86,7 +88,7 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 			}
 
 			@Override
-			public void cellReplaced(Cell oldCell, Cell newCell) {
+			public void cellsReplaced(Map<? extends Cell, ? extends Cell> cells) {
 				projectService.setChanged();
 			}
 
@@ -129,6 +131,20 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 			alignment.addCell(newCell);
 		}
 		notifyCellReplaced(oldCell, newCell);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.align.AlignmentService#replaceCells(java.util.Map)
+	 */
+	@Override
+	public void replaceCells(Map<? extends Cell, MutableCell> cells) {
+		synchronized (this) {
+			for (Entry<? extends Cell, MutableCell> e : cells.entrySet()) {
+				alignment.removeCell(e.getKey());
+				alignment.addCell(e.getValue());
+			}
+		}
+		notifyCellsReplaced(cells);
 	}
 
 	/**
@@ -306,4 +322,5 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 			notifyAlignmentChanged();
 		return success;
 	}
+
 }
