@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -255,17 +257,18 @@ public class CompatibilityServiceImpl extends
 		}
 
 		/**
-		 * @see eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener#cellReplaced(eu.esdihumboldt.hale.common.align.model.Cell,
-		 *      eu.esdihumboldt.hale.common.align.model.Cell)
+		 * @see eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener#cellsReplaced(Map)
 		 */
 		@Override
-		public void cellReplaced(Cell oldCell, Cell newCell) {
-			if (incompatibleCells.contains(oldCell)) {
-				incompatibleCells.remove(oldCell);
-			}
+		public void cellsReplaced(Map<? extends Cell, ? extends Cell> cells) {
+			for (Entry<? extends Cell, ? extends Cell> e : cells.entrySet()) {
+				if (incompatibleCells.contains(e.getKey())) {
+					incompatibleCells.remove(e.getKey());
+				}
 
-			if (!getCurrent().supportsFunction(newCell.getTransformationIdentifier())) {
-				incompatibleCells.add(newCell);
+				if (!getCurrent().supportsFunction(e.getValue().getTransformationIdentifier())) {
+					incompatibleCells.add(e.getValue());
+				}
 			}
 
 			finish();
