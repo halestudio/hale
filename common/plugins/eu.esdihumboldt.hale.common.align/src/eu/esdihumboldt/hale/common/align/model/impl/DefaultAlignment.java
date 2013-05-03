@@ -99,26 +99,24 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	 * @param alignment the alignment to copy
 	 */
 	public DefaultAlignment(Alignment alignment) {
+		// Since the cells came out of another alignment just pass addCell
 		for (Cell cell : alignment.getCells())
-			addCell(cell);
+			internalAdd(cell);
+		baseAlignments.putAll(alignment.getBaseAlignments());
 	}
 
 	/**
-	 * @see MutableAlignment#addCell(Cell)
+	 * @see MutableAlignment#addCell(MutableCell)
 	 */
 	@Override
-	public void addCell(Cell cell) {
+	public void addCell(MutableCell cell) {
 		if (cell.getId() == null) {
 			// the cell has to be a newly created cell
 			String id;
 			do {
 				id = "C" + UUID.randomUUID().toString();
 			} while (idToCell.containsKey(id));
-			if (cell instanceof MutableCell)
-				((MutableCell) cell).setId(id);
-			else
-				throw new IllegalStateException(
-						"Non-Mutable cell without a cell id at the wrong place!");
+			cell.setId(id);
 		}
 		internalAdd(cell);
 	}
@@ -451,15 +449,17 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.MutableAlignment#addBaseAlignment(java.lang.String,java.net.URI,java.util.Collection)
+	 * @see eu.esdihumboldt.hale.common.align.model.MutableAlignment#addBaseAlignment(java.lang.String,java.net.URI,java.lang.Iterable)
 	 */
 	@Override
-	public void addBaseAlignment(String prefix, URI uri, Collection<BaseAlignmentCell> cells) {
+	public void addBaseAlignment(String prefix, URI alignment, Iterable<BaseAlignmentCell> cells) {
+		if (baseAlignments.containsValue(alignment))
+			throw new IllegalArgumentException("base alignment " + alignment + " already included");
 		if (baseAlignments.containsKey(prefix))
 			throw new IllegalArgumentException("prefix " + prefix + " already in use.");
-		baseAlignments.put(prefix, uri);
+		baseAlignments.put(prefix, alignment);
 		for (BaseAlignmentCell cell : cells)
-			addCell(cell);
+			internalAdd(cell);
 	}
 
 	/**
@@ -476,6 +476,24 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	@Override
 	public Cell getCell(String cellId) {
 		return idToCell.get(cellId);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.Alignment#getBaseAlignmentCells(java.net.URI)
+	 */
+	@Override
+	public Iterable<BaseAlignmentCell> getBaseAlignmentCells(URI baseAlignment) {
+		// expect this operation to not be needed regularly and thus do not
+		// optimize it
+		Collection<BaseAlignmentCell> baseCells = new ArrayList<BaseAlignmentCell>();
+		for (Cell cell : cells) {
+			if (cell instanceof BaseAlignmentCell) {
+				BaseAlignmentCell bac = (BaseAlignmentCell) cell;
+				if (bac.getBaseAlignment().equals(baseAlignment))
+					baseCells.add(bac);
+			}
+		}
+		return baseCells;
 	}
 
 }

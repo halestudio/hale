@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.app.bgis.ade.common.BGISAppUtil;
 import eu.esdihumboldt.hale.app.bgis.ade.common.EntityVisitor;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
@@ -41,7 +42,7 @@ public class DuplicateVisitor extends EntityVisitor implements BGISAppConstants 
 	/**
 	 * The created cells.
 	 */
-	private final List<Cell> cells = new ArrayList<Cell>();
+	private final List<MutableCell> cells = new ArrayList<MutableCell>();
 
 	private final Multimap<String, Cell> exampleCells;
 
@@ -92,7 +93,7 @@ public class DuplicateVisitor extends EntityVisitor implements BGISAppConstants 
 	 * 
 	 * @return the cells assigning default values
 	 */
-	public List<Cell> getCells() {
+	public List<MutableCell> getCells() {
 		return cells;
 	}
 

@@ -25,7 +25,6 @@ import eu.esdihumboldt.hale.app.bgis.ade.common.BGISAppConstants;
 import eu.esdihumboldt.hale.app.bgis.ade.common.BGISAppUtil;
 import eu.esdihumboldt.hale.app.bgis.ade.common.EntityVisitor;
 import eu.esdihumboldt.hale.app.bgis.ade.defaults.config.DefaultValues;
-import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
@@ -53,7 +52,7 @@ public class DefaultsVisitor extends EntityVisitor implements BGISAppConstants {
 	/**
 	 * The created cells.
 	 */
-	private final List<Cell> cells = new ArrayList<Cell>();
+	private final List<MutableCell> cells = new ArrayList<MutableCell>();
 
 	private final DefaultValues defaultValues;
 
@@ -218,7 +217,7 @@ public class DefaultsVisitor extends EntityVisitor implements BGISAppConstants {
 	 * 
 	 * @return the cells assigning default values
 	 */
-	public List<Cell> getCells() {
+	public List<MutableCell> getCells() {
 		return cells;
 	}
 

@@ -38,6 +38,14 @@ public interface Alignment {
 	public Map<String, URI> getBaseAlignments();
 
 	/**
+	 * Get all cells belonging to the given base alignment.
+	 * 
+	 * @param baseAlignment the base alignment URI
+	 * @return all cells belonging to the given base alignment
+	 */
+	public Iterable<BaseAlignmentCell> getBaseAlignmentCells(URI baseAlignment);
+
+	/**
 	 * Get the collection of cells contained in the alignment.
 	 * 
 	 * @return the alignment cells
