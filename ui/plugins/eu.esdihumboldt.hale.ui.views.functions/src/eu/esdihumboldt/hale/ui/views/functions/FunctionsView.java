@@ -27,10 +27,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.WorkbenchPart;
 
+import de.cs3d.util.eclipse.extension.exclusive.ExclusiveExtension.ExclusiveExtensionListener;
+import eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionContentProvider;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
+import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityModeFactory;
 import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityService;
 import eu.esdihumboldt.hale.ui.util.viewer.ViewerMenu;
 import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
@@ -106,6 +109,8 @@ public class FunctionsView extends PropertiesViewPart {
 
 	private TreeViewer viewer;
 
+	private ExclusiveExtensionListener<CompatibilityMode, CompatibilityModeFactory> compListener;
+
 	/**
 	 * @see eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart#createViewControl(org.eclipse.swt.widgets.Composite)
 	 */
@@ -115,12 +120,6 @@ public class FunctionsView extends PropertiesViewPart {
 		viewer.setLabelProvider(new FunctionLabelProvider());
 		viewer.setContentProvider(new FunctionContentProvider());
 
-		// no input needed, but we have to set something
-		viewer.setInput(Boolean.TRUE);
-
-		new ViewerMenu(getSite(), viewer);
-		getSite().setSelectionProvider(viewer);
-
 		IToolBarManager manager = getViewSite().getActionBars().getToolBarManager();
 		IAction filterAction = new FilterAction("Filter incompatible functions",
 				Action.AS_CHECK_BOX, CommonSharedImages.getImageRegistry().getDescriptor(
@@ -128,6 +127,24 @@ public class FunctionsView extends PropertiesViewPart {
 		manager.add(filterAction);
 		filterAction.setChecked(true);
 		filterAction.run();
+
+		CompatibilityService cs = (CompatibilityService) PlatformUI.getWorkbench().getService(
+				CompatibilityService.class);
+		cs.addListener(compListener = new ExclusiveExtensionListener<CompatibilityMode, CompatibilityModeFactory>() {
+
+			@Override
+			public void currentObjectChanged(CompatibilityMode current,
+					CompatibilityModeFactory definition) {
+				// refresh the viewer when the compatibility mode is changed
+				viewer.refresh();
+			}
+		});
+
+		// no input needed, but we have to set something
+		viewer.setInput(Boolean.TRUE);
+
+		new ViewerMenu(getSite(), viewer);
+		getSite().setSelectionProvider(viewer);
 	}
 
 	/**
@@ -144,6 +161,17 @@ public class FunctionsView extends PropertiesViewPart {
 	@Override
 	public void setFocus() {
 		viewer.getControl().setFocus();
+	}
+
+	@Override
+	public void dispose() {
+		if (compListener != null) {
+			CompatibilityService cs = (CompatibilityService) PlatformUI.getWorkbench().getService(
+					CompatibilityService.class);
+			cs.removeListener(compListener);
+		}
+
+		super.dispose();
 	}
 
 }
