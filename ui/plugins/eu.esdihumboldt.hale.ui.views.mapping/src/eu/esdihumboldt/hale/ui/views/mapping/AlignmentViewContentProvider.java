@@ -16,6 +16,8 @@
 package eu.esdihumboldt.hale.ui.views.mapping;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -109,7 +111,7 @@ public class AlignmentViewContentProvider extends ReverseCellGraphContentProvide
 					addEdges(cell, edges);
 		}
 
-		for (Cell cell : as.getAlignment().getPropertyCells(typeCell, true)) {
+		for (Cell cell : sortCells(as.getAlignment().getPropertyCells(typeCell, true))) {
 			if (!select(cell))
 				continue;
 
@@ -135,6 +137,19 @@ public class AlignmentViewContentProvider extends ReverseCellGraphContentProvide
 		}
 
 		return edges.toArray();
+	}
+
+	/**
+	 * sorts Cells alphabetically using the names of their PropertyDefinitions
+	 * along the property path
+	 * 
+	 * @param cells the Cells to sort
+	 * @return returns the Collection of sorted Cells
+	 */
+	private Collection<? extends Cell> sortCells(Collection<? extends Cell> cells) {
+		Cell[] cellArr = cells.toArray(new Cell[cells.size()]);
+		Arrays.sort(cellArr, new CellComparator());
+		return Arrays.asList(cellArr);
 	}
 
 	/**

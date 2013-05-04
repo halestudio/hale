@@ -133,6 +133,9 @@ public class CellFigure extends CustomShapeFigure {
 		if (isInherited) {
 			Label inheritedLabel = new Label(CommonSharedImages.getImageRegistry().get(
 					CommonSharedImages.IMG_INHERITED_ARROW_SMALL));
+			Label ineritedToolTip = new Label("Relation by inheritance");
+			inheritedLabel.setToolTip(ineritedToolTip);
+
 			GridData inheritedGD = new GridData(GridData.CENTER, GridData.CENTER, false, false);
 			add(inheritedLabel, inheritedGD);
 		}
@@ -157,6 +160,10 @@ public class CellFigure extends CustomShapeFigure {
 			return;
 		}
 		priorityLabel.setIcon(priorityImage);
+		if (priorityImage != null) {
+			Label priorityTip = new Label("Priority: " + cell.getPriority().value());
+			priorityLabel.setToolTip(priorityTip);
+		}
 		GridData priorityLabelGD = new GridData(GridData.CENTER, GridData.FILL, false, true);
 		add(priorityLabel, priorityLabelGD);
 	}

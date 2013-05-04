@@ -176,4 +176,14 @@ public interface CommonSharedImagesConstants {
 	 */
 	public static final String IMG_SIGNED_NO = "IMG_SIGNED_NO";
 
+	/**
+	 * key for active filter image
+	 */
+	public static final String IMG_FILTER_CLEAR = "IMG_FILTER_CLEAR";
+
+	/**
+	 * key for inactive filter image
+	 */
+	public static final String IMG_FILTER_GREY = "IMG_FILTER_GREY";
+
 }

@@ -50,6 +50,7 @@ import org.eclipse.ui.part.WorkbenchPart;
 import org.eclipse.zest.layouts.LayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
+import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
 
 import de.cs3d.util.eclipse.extension.exclusive.ExclusiveExtension.ExclusiveExtensionListener;
@@ -264,12 +265,17 @@ public class AlignmentView extends AbstractMappingView {
 
 			@Override
 			public void cellsRemoved(Iterable<Cell> cells) {
-				// XXX check if the selected type cell was removed
+				if (sourceTargetSelector.isCellSelected()
+						&& Iterables.contains(cells, sourceTargetSelector.getSelectedCell()))
+					sourceTargetSelector.setSelection(StructuredSelection.EMPTY);
 				refreshGraph();
 			}
 
 			@Override
 			public void cellReplaced(Cell oldCell, Cell newCell) {
+				if (sourceTargetSelector.isCellSelected()
+						&& oldCell.equals(sourceTargetSelector.getSelectedCell()))
+					sourceTargetSelector.setSelection(StructuredSelection.EMPTY);
 				refreshGraph();
 			}
 
