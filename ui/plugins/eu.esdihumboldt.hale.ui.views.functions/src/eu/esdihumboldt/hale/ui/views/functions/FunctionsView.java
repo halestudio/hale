@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.ui.views.functions;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -82,7 +83,7 @@ public class FunctionsView extends PropertiesViewPart {
 		@Override
 		public void run() {
 			// enable or disable the filter, change the action text
-			active = isChecked();
+			boolean active = isChecked();
 
 			String text = (active) ? ("Show all functions") : ("Filter incompatible functions");
 			setToolTipText(text);
@@ -105,8 +106,6 @@ public class FunctionsView extends PropertiesViewPart {
 
 	private TreeViewer viewer;
 
-	private boolean active;
-
 	/**
 	 * @see eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart#createViewControl(org.eclipse.swt.widgets.Composite)
 	 */
@@ -123,8 +122,12 @@ public class FunctionsView extends PropertiesViewPart {
 		getSite().setSelectionProvider(viewer);
 
 		IToolBarManager manager = getViewSite().getActionBars().getToolBarManager();
-		manager.add(new FilterAction("Filter incompatible functions", Action.AS_CHECK_BOX,
-				CommonSharedImages.getImageRegistry().getDescriptor("IMG_FILTER_CLEAR")));
+		IAction filterAction = new FilterAction("Filter incompatible functions",
+				Action.AS_CHECK_BOX, CommonSharedImages.getImageRegistry().getDescriptor(
+						"IMG_FILTER_CLEAR"));
+		manager.add(filterAction);
+		filterAction.setChecked(true);
+		filterAction.run();
 	}
 
 	/**
