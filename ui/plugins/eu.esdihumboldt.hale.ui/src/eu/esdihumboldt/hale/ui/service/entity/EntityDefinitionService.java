@@ -89,9 +89,24 @@ public interface EntityDefinitionService {
 	 * @param sibling the entity definition which is a sibling of the entity
 	 *            definition to create
 	 * @param filter the condition filter
-	 * @return the entity definition associated to the index context
+	 * @return the entity definition associated to the condition context
 	 */
 	public EntityDefinition addConditionContext(EntityDefinition sibling, Filter filter);
+
+	/**
+	 * Creates a new sibling for the given entity definition with a new
+	 * condition context using the given filter.<br>
+	 * All cells using the given entity definition are changed to use the new
+	 * one. If the given entity definition had a condition context itself, this
+	 * context is removed.
+	 * 
+	 * @param sibling the entity definition which is a sibling of the entity
+	 *            definition to create
+	 * @param filter the condition filter
+	 * @return the entity definition associated to the condition context, or
+	 *         <code>null</code> if the operation failed
+	 */
+	public EntityDefinition editConditionContext(EntityDefinition sibling, Filter filter);
 
 	/**
 	 * Remove the instance context associated with the given entity definition
