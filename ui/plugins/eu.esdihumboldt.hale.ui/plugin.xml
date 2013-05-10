@@ -28,6 +28,10 @@
             name="Add instance context">
       </command>
       <command
+            id="eu.esdihumboldt.hale.ui.entity.editconditioncontext"
+            name="Edit condition context">
+      </command>
+      <command
             id="eu.esdihumboldt.hale.ui.entity.removecontext"
             name="Remove instance context">
       </command>
@@ -129,6 +133,15 @@
          <activeWhen>
             <reference
                   definitionId="eu.esdihumboldt.hale.ui.selection.entity.allow_contextadd_named">
+            </reference>
+         </activeWhen>
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.service.entity.internal.handler.EditConditionContextHandler"
+            commandId="eu.esdihumboldt.hale.ui.entity.editconditioncontext">
+         <activeWhen>
+            <reference
+                  definitionId="eu.esdihumboldt.hale.ui.selection.entity.allow_contextedit">
             </reference>
          </activeWhen>
       </handler>
@@ -981,6 +994,24 @@
                      operator="and">
                   <test
                         property="eu.esdihumboldt.hale.ui.service.entity.allow_add_index">
+                  </test>
+               </iterate>
+            </and>
+         </with>
+      </definition>
+      <definition
+            id="eu.esdihumboldt.hale.ui.selection.entity.allow_contextedit">
+         <with
+               variable="selection">
+            <and>
+               <count
+                     value="1">
+               </count>
+               <iterate
+                     ifEmpty="false"
+                     operator="and">
+                  <test
+                        property="eu.esdihumboldt.hale.ui.service.entity.allow_edit_condition">
                   </test>
                </iterate>
             </and>

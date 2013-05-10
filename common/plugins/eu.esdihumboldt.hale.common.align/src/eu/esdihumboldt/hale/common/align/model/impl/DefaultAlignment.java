@@ -449,10 +449,10 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.MutableAlignment#addBaseAlignment(java.lang.String,java.net.URI,java.util.Collection)
+	 * @see eu.esdihumboldt.hale.common.align.model.MutableAlignment#addBaseAlignment(java.lang.String,java.net.URI,java.lang.Iterable)
 	 */
 	@Override
-	public void addBaseAlignment(String prefix, URI uri, Collection<BaseAlignmentCell> cells) {
+	public void addBaseAlignment(String prefix, URI uri, Iterable<BaseAlignmentCell> cells) {
 		if (baseAlignments.containsValue(uri))
 			throw new IllegalArgumentException("base alignment " + uri + " already included");
 		if (baseAlignments.containsKey(prefix))
