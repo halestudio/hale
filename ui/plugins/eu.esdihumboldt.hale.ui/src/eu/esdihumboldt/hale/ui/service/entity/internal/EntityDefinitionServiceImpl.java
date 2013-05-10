@@ -19,15 +19,30 @@ package eu.esdihumboldt.hale.ui.service.entity.internal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.ui.PlatformUI;
+
+import com.google.common.base.Objects;
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.ListMultimap;
 import com.google.common.collect.SetMultimap;
 
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
@@ -36,6 +51,11 @@ import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Condition;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
+import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
+import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
@@ -315,28 +335,165 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 			}
 		}
 
-		EntityDefinition result;
-
-		if (path.isEmpty()) {
-			// create type entity definition with filter
-			result = createEntity(def.getType(), def.getPropertyPath(), def.getSchemaSpace(),
-					condition.getFilter());
-		}
-		else {
-			List<ChildContext> newPath = new ArrayList<ChildContext>(path);
-			ChildDefinition<?> lastChild = newPath.get(newPath.size() - 1).getChild();
-			newPath.remove(path.size() - 1);
-			// new condition context, w/o name or index context
-			newPath.add(new ChildContext(null, null, condition, lastChild));
-			result = createEntity(def.getType(), newPath, sibling.getSchemaSpace(),
-					sibling.getFilter());
-		}
+		EntityDefinition result = createWithCondition(sibling, condition);
 
 		if (doAdd) {
 			notifyContextAdded(result);
 		}
 
 		return result;
+	}
+
+	/**
+	 * Creates a new entity definition.
+	 * 
+	 * @param sibling the entity definition to use as base
+	 * @param condition the new condition, not <code>null</code>
+	 * @return a new entity definition
+	 */
+	private EntityDefinition createWithCondition(EntityDefinition sibling, Condition condition) {
+		EntityDefinition result;
+
+		List<ChildContext> path = sibling.getPropertyPath();
+		if (path.isEmpty()) {
+			// create type entity definition with filter
+			result = createEntity(sibling.getType(), path, sibling.getSchemaSpace(),
+					condition.getFilter());
+		}
+		else {
+			List<ChildContext> newPath = new ArrayList<ChildContext>(path);
+			ChildContext last = newPath.remove(path.size() - 1);
+			// new condition context, w/o name or index context
+			newPath.add(new ChildContext(null, null, condition, last.getChild()));
+			result = createEntity(sibling.getType(), newPath, sibling.getSchemaSpace(),
+					sibling.getFilter());
+		}
+
+		return result;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService#editConditionContext(eu.esdihumboldt.hale.common.align.model.EntityDefinition,
+	 *      eu.esdihumboldt.hale.common.instance.model.Filter)
+	 */
+	@Override
+	public EntityDefinition editConditionContext(EntityDefinition sibling, Filter filter) {
+		List<ChildContext> path = sibling.getPropertyPath();
+		if (sibling.getSchemaSpace() == SchemaSpaceID.TARGET && path.isEmpty()) {
+			// not supported for target type entities
+			// XXX throw exception instead?
+			return null;
+		}
+
+		// Check whether there actually is a change. If not, we are done.
+		Condition oldCondition = AlignmentUtil.getContextCondition(sibling);
+		if (Objects.equal(filter, oldCondition == null ? null : oldCondition.getFilter()))
+			return sibling;
+
+		// Create the new entity. Do not add context yet, since the user could
+		// still abort the process (see below).
+		EntityDefinition newDef = AlignmentUtil.getDefaultEntity(sibling);
+		if (filter != null)
+			newDef = createWithCondition(sibling, new Condition(filter));
+
+		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+				AlignmentService.class);
+
+		// Collect cells to replace.
+		Collection<? extends Cell> affected = as.getAlignment().getCells(sibling);
+
+		// Check whether base alignment cells are affected.
+		boolean baseCellsAffected = false;
+		Predicate<Cell> baseCellPredicate = new Predicate<Cell>() {
+
+			/**
+			 * @see com.google.common.base.Predicate#apply(java.lang.Object)
+			 */
+			@Override
+			public boolean apply(Cell input) {
+				return input != null && input.isBaseCell();
+			}
+		};
+		if (Iterables.find(affected, baseCellPredicate, null) != null) {
+			// Check whether the user wants to continue.
+			final Display display = PlatformUI.getWorkbench().getDisplay();
+			final AtomicBoolean abort = new AtomicBoolean();
+
+			display.syncExec(new Runnable() {
+
+				@Override
+				public void run() {
+					MessageBox mb = new MessageBox(display.getActiveShell(), SWT.YES | SWT.NO
+							| SWT.ICON_QUESTION);
+					mb.setMessage("Some base alignment cells reference the entity definition you wish to change.\n"
+							+ "The change will only affect cells which aren't from any base alignment.\n\n"
+							+ "Do you still wish to continue?");
+					mb.setText("Continue?");
+					abort.set(mb.open() != SWT.YES);
+				}
+			});
+
+			if (abort.get())
+				return null;
+
+			// Filter base alignment cells out.
+			baseCellsAffected = true;
+			affected = Collections2.filter(affected, Predicates.not(baseCellPredicate));
+		}
+
+		// No more obstacles. Finish!
+
+		// Add condition context if necessary
+		if (filter != null)
+			addConditionContext(sibling, filter);
+
+		// Replace affected (filtered) cells.
+		Map<Cell, MutableCell> replaceMap = new HashMap<Cell, MutableCell>();
+		for (Cell cell : affected) {
+			DefaultCell newCell = new DefaultCell(cell);
+			if (newDef.getSchemaSpace() == SchemaSpaceID.SOURCE)
+				newCell.setSource(replace(newCell.getSource(), sibling, newDef));
+			else
+				newCell.setTarget(replace(newCell.getTarget(), sibling, newDef));
+			replaceMap.put(cell, newCell);
+		}
+		as.replaceCells(replaceMap);
+
+		// Remove old condition context, if it was neither the default context,
+		// nor do any base alignment cells still use it.
+		if (oldCondition != null && !baseCellsAffected)
+			removeContext(sibling);
+
+		return newDef;
+	}
+
+	/**
+	 * Creates a new ListMultimap with all occurrences of originalDef replaced
+	 * by newDef.
+	 * 
+	 * @param entities the original list
+	 * @param originalDef the entity definition to be replaced
+	 * @param newDef the entity definition to use
+	 * @return a new list
+	 */
+	private ListMultimap<String, ? extends Entity> replace(
+			ListMultimap<String, ? extends Entity> entities, EntityDefinition originalDef,
+			EntityDefinition newDef) {
+		Entity newEntity;
+		if (newDef instanceof TypeEntityDefinition)
+			newEntity = new DefaultType((TypeEntityDefinition) newDef);
+		else if (newDef instanceof PropertyEntityDefinition)
+			newEntity = new DefaultProperty((PropertyEntityDefinition) newDef);
+		else
+			throw new IllegalArgumentException("type or property entity definition expected.");
+		ListMultimap<String, Entity> newList = ArrayListMultimap.create();
+		for (Entry<String, ? extends Entity> entry : entities.entries()) {
+			if (entry.getValue().getDefinition().equals(originalDef))
+				newList.put(entry.getKey(), newEntity);
+			else
+				newList.put(entry.getKey(), entry.getValue());
+		}
+		return newList;
 	}
 
 	/**

@@ -17,7 +17,6 @@
 package eu.esdihumboldt.hale.common.align.model;
 
 import java.net.URI;
-import java.util.Collection;
 
 /**
  * Mutable {@link Alignment} which is used where changes to the alignment are
@@ -50,6 +49,6 @@ public interface MutableAlignment extends Alignment {
 	 * @param alignment the new base alignment
 	 * @param cells the cells to be added from the alignment
 	 */
-	public void addBaseAlignment(String prefix, URI alignment, Collection<BaseAlignmentCell> cells);
+	public void addBaseAlignment(String prefix, URI alignment, Iterable<BaseAlignmentCell> cells);
 
 }
