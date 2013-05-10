@@ -122,4 +122,13 @@ public class EntityDefinitionServiceDecorator implements EntityDefinitionService
 	public void removeListener(EntityDefinitionServiceListener listener) {
 		entityDefinitionService.removeListener(listener);
 	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService#editConditionContext(eu.esdihumboldt.hale.common.align.model.EntityDefinition,
+	 *      eu.esdihumboldt.hale.common.instance.model.Filter)
+	 */
+	@Override
+	public EntityDefinition editConditionContext(EntityDefinition sibling, Filter filter) {
+		return entityDefinitionService.editConditionContext(sibling, filter);
+	}
 }
