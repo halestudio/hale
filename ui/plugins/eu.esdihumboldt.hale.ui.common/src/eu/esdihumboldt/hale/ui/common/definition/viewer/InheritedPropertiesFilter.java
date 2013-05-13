@@ -49,7 +49,7 @@ public class InheritedPropertiesFilter extends ViewerFilter {
 			if (entityDef.getPropertyPath().size() == 1) {
 				ChildDefinition<?> child = entityDef.getPropertyPath().get(0).getChild();
 				// if declaring group and parent type are the same, show it
-				return Objects.equal(child.getDeclaringGroup(), child.getParentType());
+				return Objects.equal(child.getDeclaringGroup(), entityDef.getType());
 			}
 		}
 
