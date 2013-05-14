@@ -95,7 +95,12 @@ class DocumentationServiceImpl implements DocumentationService {
 
 	void init() {
 		URL instanceLoc = Platform.instanceLocation.getURL()
-		File instanceDir = new File(instanceLoc.toURI())
+		/*
+		 * instanceLoc cannot be converted to an URI in some cases
+		 * (using toURI()), as spaces are not encoded.
+		 */
+		URI instanceURI = new URI(instanceLoc.toString().replaceAll(' ', '%20'))
+		File instanceDir = new File(instanceURI)
 		// File instanceDir = new File('/home/simon-local/workspaces/runtime-HALE.product')
 
 		//create a new file database and a table corresponding to the csv file
