@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Data Harmonisation Panel
+ * Copyright (c) 2013 Data Harmonisation Panel
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -10,7 +10,6 @@
  * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
  * 
  * Contributors:
- *     HUMBOLDT EU Integrated Project #030962
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
@@ -22,15 +21,15 @@ import java.util.Iterator;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.util.Identifiers;
 
 /**
  * The type cell info for a type cell
  * 
  * @author Kevin Mais
+ * @author Patrick Lieb
  */
-public class TypeCellInfo extends CellInfo implements ICellInfo {
+public class TypeCellInfo extends BasicCellInfo implements ICellInfo {
 
 	private final Alignment align;
 
@@ -60,47 +59,9 @@ public class TypeCellInfo extends CellInfo implements ICellInfo {
 
 		while (it.hasNext()) {
 			Cell propCell = it.next();
-			propCellInfo.add(new CellInfo(propCell, cellIds, subDir));
+			propCellInfo.add(new BasicCellInfo(propCell, cellIds, subDir));
 		}
 
 		return propCellInfo;
-
 	}
-
-	/**
-	 * Returns the displayed name of the source cell(s)
-	 * 
-	 * @return the name of the source cell(s)
-	 */
-	public String getSourceName() {
-		Iterator<? extends Entity> it = getCell().getSource().values().iterator();
-		StringBuffer sb = new StringBuffer();
-		while (it.hasNext()) {
-			Entity entity = it.next();
-			sb.append(entity.getDefinition().getDefinition().getDisplayName());
-			sb.append(", ");
-		}
-		String result = sb.toString();
-
-		return result.substring(0, result.lastIndexOf(","));
-	}
-
-	/**
-	 * Returns the displayed name of the target cell(s)
-	 * 
-	 * @return the name of the target cell(s)
-	 */
-	public String getTargetName() {
-		Iterator<? extends Entity> it = getCell().getTarget().values().iterator();
-		StringBuffer sb = new StringBuffer();
-		while (it.hasNext()) {
-			Entity entity = it.next();
-			sb.append(entity.getDefinition().getDefinition().getDisplayName());
-			sb.append(", ");
-		}
-		String result = sb.toString();
-
-		return result.substring(0, result.lastIndexOf(","));
-	}
-
 }
