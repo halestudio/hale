@@ -15,6 +15,29 @@
 #macro(cell_info $cell)
 <div class="cell">
 	<img src='$cell.getImageLocation()' />
+	#if($tooltip)
+		<table width="95%">
+		<tr>
+			<th width="50%">
+			#if($cell.getSourceName())
+				<div align="left" class="sourceName">
+					$cell.getSourceName()
+					<img src='$filesDir/tooltip.png' title="$cell.getCompleteSourceName()"/>
+				</div>
+				
+			#end
+			</th>
+			<th width="50%">
+			#if($cell.getTargetName())
+				<div align="right" class="targetName">
+					$cell.getTargetName()
+					<img src='$filesDir/tooltip.png' title="$cell.getCompleteTargetName()"/>
+				</div>
+			#end
+			</th>
+		</tr>
+		</table>
+	#end
 	<br />
 	#if ($cell.explanationAsHtml)
 		<div class="explanation">$cell.explanationAsHtml</div>
@@ -36,49 +59,55 @@
 <h1>Mapping Documentation</h1>
 <p>
 <table cellpadding="3" class="intro">
-#if ($pi.author)
-<tr>
-	<th>Project Author: </th>	<td>$pi.getAuthor()</td>
-</tr>
+#if ($projectInfo.author)
+	<tr>
+		<th>Project Author: </th>
+		<td>$projectInfo.getAuthor()</td>
+	</tr>
 #end
-#if ($pi.name)
-<tr>
-	<th>Project Name: </th>	<td>$pi.getName()</td>
-</tr>
+#if ($projectInfo.name)
+	<tr>
+		<th>Project Name: </th>
+		<td>$projectInfo.getName()</td>
+	</tr>
 #end
 #if ($exportDate)
-<tr>
-	<th>Export Date: </th>	<td>$exportDate</td>
-</tr>
+	<tr>
+		<th>Export Date: </th>
+		<td>$exportDate</td>
+	</tr>
 #end
 #if ($createdDate)
-<tr>
-	<th>Creation Date: </th>	<td>$createdDate</td>
-</tr>
+	<tr>
+		<th>Creation Date: </th>
+		<td>$createdDate</td>
+	</tr>
 #end
-#if ($pi.haleVersion)
-<tr>
-	<th>Hale Version: </th>	<td>$pi.getHaleVersion()</td>
-</tr>
+#if ($projectInfo.haleVersion)
+	<tr>
+		<th>Hale Version: </th>
+		<td>$projectInfo.getHaleVersion()</td>
+	</tr>
 #end
-#if($pi.getDescription())
-<tr>
-	<th>Description: </th> <td style="white-space: pre-wrap;">$pi.getDescription()</td>
-</tr>
+#if($projectInfo.getDescription())
+	<tr>
+		<th>Description: </th>
+		<td style="white-space: pre-wrap;">$projectInfo.getDescription()</td>
+	</tr>
 #end
 </table>
 </p>
 <br />
 <h4>Type relation overview:</h4>
 #foreach ($typeCell in $typeCellInfos)
-<div>
-  <a href='#link_$typeCell.getId()'>
-	  <span class="cell">
-	      <!-- img src='$filesDir/int_link.png' alt='linkpicture' -->
-	      <img src='$typeCell.getImageLocation()' />
-	  </span>
-  </a>
-</div>
+	<div>
+	  <a href='#link_$typeCell.getId()'>
+		  <span class="cell">
+			  <!-- img src='$filesDir/int_link.png' alt='linkpicture' -->
+			  <img src='$typeCell.getImageLocation()' />
+		  </span>
+	  </a>
+	</div>
 #end
 <br />
 #foreach ($typeCell in $typeCellInfos)

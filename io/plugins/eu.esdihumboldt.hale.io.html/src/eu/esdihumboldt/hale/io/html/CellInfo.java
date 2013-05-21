@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Data Harmonisation Panel
+ * Copyright (c) 2013 Data Harmonisation Panel
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -10,27 +10,45 @@
  * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
  * 
  * Contributors:
- *     HUMBOLDT EU Integrated Project #030962
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.html;
 
+import java.util.Iterator;
 import java.util.List;
+
+import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellExplanation;
+import eu.esdihumboldt.hale.common.align.model.ChildContext;
+import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.util.Identifiers;
 
 /**
- * Basic class for all cell infos
+ * Basic class for all cell information
  * 
  * @author Kevin Mais
+ * @author Patrick Lieb
  */
 public class CellInfo implements ICellInfo {
+
+	/**
+	 * Identify the cell as source or target
+	 * 
+	 * @author Patrick Lieb
+	 */
+	private enum CellType {
+		/**  */
+		SOURCE,
+		/**  */
+		TARGET
+	}
 
 	private final Cell cell;
 
@@ -64,26 +82,18 @@ public class CellInfo implements ICellInfo {
 	 */
 	@Override
 	public String getExplanation() {
-		if (cellExpl == null) {
-			// determine cell explanation
-			AbstractFunction<?> function = FunctionUtil.getFunction(cell
-					.getTransformationIdentifier());
-			if (function != null) {
-				cellExpl = function.getExplanation();
-				if (cellExpl == null) {
-					return null;
-				}
-			}
-		}
-
-		return cellExpl.getExplanation(cell, HaleUI.getServiceProvider());
+		return getExplanationInternal(false);
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.html.ICellInfo#getExplanationAsHtml
+	 * @see ICellInfo#getExplanationAsHtml
 	 */
 	@Override
 	public String getExplanationAsHtml() {
+		return getExplanationInternal(true);
+	}
+
+	private String getExplanationInternal(boolean asHtml) {
 		if (cellExpl == null) {
 			// determine cell explanation
 			AbstractFunction<?> function = FunctionUtil.getFunction(cell
@@ -95,8 +105,12 @@ public class CellInfo implements ICellInfo {
 				}
 			}
 		}
-
-		return cellExpl.getExplanationAsHtml(cell, HaleUI.getServiceProvider());
+		if (asHtml) {
+			return cellExpl.getExplanationAsHtml(cell, HaleUI.getServiceProvider());
+		}
+		else {
+			return cellExpl.getExplanation(cell, HaleUI.getServiceProvider());
+		}
 	}
 
 	/**
@@ -108,8 +122,6 @@ public class CellInfo implements ICellInfo {
 	}
 
 	/**
-	 * Returns the unique id for a cell
-	 * 
 	 * @return the unique id for the cell
 	 */
 	public String getId() {
@@ -121,8 +133,6 @@ public class CellInfo implements ICellInfo {
 	}
 
 	/**
-	 * Getter for the cell
-	 * 
 	 * @return the cell
 	 */
 	public Cell getCell() {
@@ -138,8 +148,85 @@ public class CellInfo implements ICellInfo {
 				return notes;
 			}
 		}
-
 		return null;
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.io.html.ICellInfo#getCompleteSourceName()
+	 */
+	@Override
+	public String getCompleteSourceName() {
+		// TODO Auto-generated method stub
+		return getName(CellType.SOURCE, true);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.io.html.ICellInfo#getCompleteTargetName()
+	 */
+	@Override
+	public String getCompleteTargetName() {
+		// TODO Auto-generated method stub
+		return getName(CellType.TARGET, true);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.io.html.ICellInfo#getSourceName()
+	 */
+	@Override
+	public String getSourceName() {
+		return getName(CellType.SOURCE, false);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.io.html.ICellInfo#getTargetName()
+	 */
+	@Override
+	public String getTargetName() {
+		return getName(CellType.TARGET, false);
+	}
+
+	private String getName(CellType cellType, boolean fullName) {
+		Iterator<? extends Entity> iterator;
+		ListMultimap<String, ? extends Entity> entities;
+		PropertyDefinition child = null;
+		switch (cellType) {
+		case SOURCE:
+			if ((entities = getCell().getSource()) == null)
+				return null;
+			iterator = entities.values().iterator();
+			break;
+		case TARGET:
+			if ((entities = getCell().getTarget()) == null)
+				return null;
+			iterator = entities.values().iterator();
+			break;
+		default:
+			return null;
+		}
+		StringBuffer sb = new StringBuffer();
+		while (iterator.hasNext()) {
+			Entity entity = iterator.next();
+			if (fullName) {
+				for (ChildContext childContext : entity.getDefinition().getPropertyPath()) {
+					child = childContext.getChild().asProperty();
+					if (child != null) {
+						sb.append(child.getDisplayName());
+						sb.append(".");
+					}
+				}
+				sb.append(entity.getDefinition().getDefinition().getDisplayName());
+				sb.append(",\n");
+			}
+			else {
+				sb.append(entity.getDefinition().getDefinition().getDisplayName());
+				sb.append(", ");
+			}
+		}
+		String result = sb.toString();
+
+		if (fullName)
+			return result.substring(0, result.lastIndexOf(",\n"));
+		else
+			return result.substring(0, result.lastIndexOf(","));
+	}
 }
