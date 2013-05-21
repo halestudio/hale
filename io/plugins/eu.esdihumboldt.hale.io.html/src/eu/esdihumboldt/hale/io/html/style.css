@@ -42,7 +42,7 @@ img {
 	border-style: none;
 }
 
-/** link defintions **/
+/** link definitions **/
 
 a:link, a:visited
 {
@@ -56,7 +56,7 @@ a:active, a:hover
 	text-decoration: underline;
 }
 
-/** heading defintions **/
+/** heading definitions **/
 
 h1, h2, h3, h4, h5
 {
@@ -116,7 +116,7 @@ p.dl_link {
 	background-position: left;
 }
 
-/** list defintions **/
+/** list definitions **/
 
 ol
 {
@@ -138,7 +138,7 @@ li
 	text-align: left;
 }
 
-/** table defintions **/
+/** table definitions **/
 
 table { 
 	padding: 3px;
@@ -160,7 +160,7 @@ td.rightcol,
 th.rightcol { padding-left: 10px; }
 
 
-/** global defintions **/
+/** global definitions **/
 
 .light { font-weight: 200; font-size: 80% }
 .small { font-size: 0.9em; }
