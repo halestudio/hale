@@ -63,8 +63,9 @@
       </propertyFunction>
       <propertyFunction
             category="eu.esdihumboldt.hale.align.general"
-            description="Analyzes and string given a regular expression"
             cellExplanation="eu.esdihumboldt.cst.functions.string.RegexAnalysisExplanation"
+            description="Analyzes a string given a regular expression"
+            help="help/regexanalysis/help.xhtml"
             identifier="eu.esdihumboldt.cst.functions.string.regexanalysisfunction"
             name="Regex Analysis">
          <sourceProperties>
