@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -312,9 +313,15 @@ public abstract class StreamGmlHelper {
 				addSimpleProperty(group, child.asProperty(), reader.getAttributeValue(i));
 			}
 			else {
-				log.warn(MessageFormat.format(
-						"No property ''{0}'' found in type ''{1}'', value is ignored",
-						propertyName, group.getDefinition().getIdentifier()));
+				// suppress warnings for xsi attributes (e.g. xsi:nil)
+				boolean suppress = XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI.equals(propertyName
+						.getNamespaceURI());
+
+				if (!suppress) {
+					log.warn(MessageFormat.format(
+							"No property ''{0}'' found in type ''{1}'', value is ignored",
+							propertyName, group.getDefinition().getIdentifier()));
+				}
 			}
 		}
 
