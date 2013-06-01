@@ -28,6 +28,7 @@ import org.eclipse.ui.internal.util.PrefUtil;
 import org.osgi.framework.Version;
 
 import eu.esdihumboldt.hale.ui.application.internal.Messages;
+import eu.esdihumboldt.hale.ui.launchaction.LaunchAction;
 import eu.esdihumboldt.hale.ui.service.instance.validation.InstanceValidationService;
 import eu.esdihumboldt.hale.ui.util.selection.SelectionTracker;
 import eu.esdihumboldt.hale.ui.util.selection.SelectionTrackerImpl;
@@ -43,11 +44,20 @@ import eu.esdihumboldt.hale.ui.util.selection.SelectionTrackerUtil;
 @SuppressWarnings("restriction")
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
+	private final LaunchAction action;
+
 	/**
-	 * @see WorkbenchWindowAdvisor#WorkbenchWindowAdvisor(IWorkbenchWindowConfigurer)
+	 * Creates a new workbench window advisor for configuring a workbench window
+	 * via the given workbench window configurer.
+	 * 
+	 * @param configurer an object for configuring the workbench window
+	 * @param action the application launch action, may be <code>null</code>
 	 */
-	public ApplicationWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
+	public ApplicationWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer,
+			LaunchAction action) {
 		super(configurer);
+
+		this.action = action;
 	}
 
 	/**
@@ -97,6 +107,10 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		// XXX do the following somewhere else:
 		// start instance validation service
 		PlatformUI.getWorkbench().getService(InstanceValidationService.class);
+
+		if (action != null) {
+			action.onOpenWorkbenchWindow();
+		}
 	}
 
 	/**

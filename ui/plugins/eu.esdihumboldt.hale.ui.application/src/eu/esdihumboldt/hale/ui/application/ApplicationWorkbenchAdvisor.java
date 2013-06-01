@@ -30,6 +30,7 @@ import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 
 import eu.esdihumboldt.hale.ui.application.internal.Messages;
+import eu.esdihumboldt.hale.ui.launchaction.LaunchAction;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.RecentFilesService;
 
@@ -52,15 +53,20 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
 	private final OpenDocumentEventProcessor openDocProcessor;
 
+	private final LaunchAction action;
+
 	/**
 	 * Create the application workbench advisor
 	 * 
 	 * @param openDocProcessor the processor for {@link SWT#OpenDocument} events
+	 * @param action the application launch action, may be <code>null</code>
 	 */
-	public ApplicationWorkbenchAdvisor(OpenDocumentEventProcessor openDocProcessor) {
+	public ApplicationWorkbenchAdvisor(OpenDocumentEventProcessor openDocProcessor,
+			LaunchAction action) {
 		super();
 
 		this.openDocProcessor = openDocProcessor;
+		this.action = action;
 	}
 
 	/**
@@ -68,7 +74,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	 */
 	@Override
 	public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
-		return new ApplicationWorkbenchWindowAdvisor(configurer);
+		return new ApplicationWorkbenchWindowAdvisor(configurer, action);
 	}
 
 	/**
