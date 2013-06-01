@@ -190,6 +190,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.ui.functions.numeric"/>
       <plugin id="eu.esdihumboldt.hale.ui.geometry"/>
       <plugin id="eu.esdihumboldt.hale.ui.instancevalidation"/>
+      <plugin id="eu.esdihumboldt.hale.ui.launchaction"/>
       <plugin id="eu.esdihumboldt.hale.ui.logback.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.ui.lookup"/>
       <plugin id="eu.esdihumboldt.hale.ui.schema.presets"/>

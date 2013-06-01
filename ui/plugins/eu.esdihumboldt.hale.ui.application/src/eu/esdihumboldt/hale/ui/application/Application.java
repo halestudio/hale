@@ -26,7 +26,11 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.common.app.AbstractApplication;
 import eu.esdihumboldt.hale.ui.common.crs.WKTPreferencesCRSFactory;
+import eu.esdihumboldt.hale.ui.launchaction.LaunchAction;
+import eu.esdihumboldt.hale.ui.launchaction.extension.LaunchActionExtension;
+import eu.esdihumboldt.hale.ui.launchaction.extension.LaunchActionFactory;
 import eu.esdihumboldt.hale.ui.util.proxy.ProxySettings;
 
 /**
@@ -35,15 +39,12 @@ import eu.esdihumboldt.hale.ui.util.proxy.ProxySettings;
  * @author Thorsten Reitz
  * @author Simon Templer
  */
-public class Application implements IApplication {
+public class Application extends AbstractApplication<ApplicationContext> implements IApplication {
 
 	private static ALogger _log = ALoggerFactory.getLogger(Application.class);
 
-	/**
-	 * @see IApplication#start(IApplicationContext)
-	 */
 	@Override
-	public Object start(IApplicationContext context) {
+	protected Object run(ApplicationContext executionContext, IApplicationContext appContext) {
 		// install SLF4J JUL bridge
 		SLF4JBridgeHandler.install();
 
@@ -57,17 +58,40 @@ public class Application implements IApplication {
 		}
 
 		// find base path of the application.
-//		URL location = this.getClass().getProtectionDomain().getCodeSource().getLocation();
-//		String location_path = location.getPath().replace(" ", "+"); //$NON-NLS-1$ //$NON-NLS-2$
-//		location_path = location_path.replace("bin/", ""); //$NON-NLS-1$ //$NON-NLS-2$
-//		_log.debug(location_path);
-//		Application.basepath = location_path;
+//				URL location = this.getClass().getProtectionDomain().getCodeSource().getLocation();
+//				String location_path = location.getPath().replace(" ", "+"); //$NON-NLS-1$ //$NON-NLS-2$
+//				location_path = location_path.replace("bin/", ""); //$NON-NLS-1$ //$NON-NLS-2$
+//				_log.debug(location_path);
+//				Application.basepath = location_path;
 
 		// read and set proxy settings
 		try {
 			ProxySettings.install();
 		} catch (Exception ex) {
 			_log.warn("Setting the Proxy configuration failed: " + ex.getMessage()); //$NON-NLS-1$
+		}
+
+		// launch action
+		LaunchAction action = null;
+		if (executionContext.getLaunchAction() != null) {
+			LaunchActionFactory factory = LaunchActionExtension.getInstance().getFactory(
+					executionContext.getLaunchAction());
+			if (factory != null) {
+				try {
+					action = factory.createExtensionObject();
+				} catch (Exception e) {
+					_log.error(
+							"Could not create requested launch action "
+									+ executionContext.getLaunchAction(), e);
+				}
+				if (action != null) {
+					// initialize action
+					action.init(appContext);
+				}
+			}
+			else
+				_log.error("Could not find launch action with ID "
+						+ executionContext.getLaunchAction());
 		}
 
 		// initialize UI
@@ -80,7 +104,7 @@ public class Application implements IApplication {
 		// run application
 		try {
 			int returnCode = PlatformUI.createAndRunWorkbench(display,
-					new ApplicationWorkbenchAdvisor(openDocProcessor));
+					new ApplicationWorkbenchAdvisor(openDocProcessor, action));
 			if (returnCode == PlatformUI.RETURN_RESTART) {
 				return IApplication.EXIT_RESTART;
 			}
@@ -88,7 +112,20 @@ public class Application implements IApplication {
 		} finally {
 			display.dispose();
 		}
+	}
 
+	@Override
+	protected void processParameter(String param, String value, ApplicationContext executionContext)
+			throws Exception {
+		// launch action ID
+		if ("-action".equals(param)) {
+			executionContext.setLaunchAction(value);
+		}
+	}
+
+	@Override
+	protected ApplicationContext createExecutionContext() {
+		return new ApplicationContext();
 	}
 
 	/**
@@ -96,6 +133,8 @@ public class Application implements IApplication {
 	 */
 	@Override
 	public void stop() {
+		super.stop();
+
 		final IWorkbench workbench = PlatformUI.getWorkbench();
 		if (workbench == null)
 			return;
