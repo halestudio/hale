@@ -312,15 +312,35 @@ public class Transformation {
 					failure(result, event);
 				}
 				else {
-					// success
-					result.set(true);
-
-					if (validationJob != null) {
+					if (validationJob == null) {
+						// success
+						result.set(true);
+					}
+					else {
+						// schedule the validation job
 						validationJob.schedule();
 					}
 				}
 			}
 		});
+		// validation ends the process
+		if (validationJob != null) {
+			validationJob.addJobChangeListener(new JobChangeAdapter() {
+
+				@Override
+				public void done(IJobChangeEvent event) {
+					if (!event.getResult().isOK()) {
+						// failure
+						failure(result, event);
+					}
+					else {
+						// success
+						result.set(true);
+					}
+				}
+
+			});
+		}
 
 		if (useTempDatabase) {
 			// run store instance job first...
