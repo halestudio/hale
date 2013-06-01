@@ -142,7 +142,11 @@ public abstract class AbstractMessageDefinition<T extends Message> implements Me
 	protected Properties asProperties(T message) {
 		Properties props = new Properties();
 
-		props.setProperty(KEY_MESSAGE, message.getMessage());
+		String msg = message.getMessage();
+		if (msg == null) {
+			msg = "null";
+		}
+		props.setProperty(KEY_MESSAGE, msg);
 
 		if (message.getStackTrace() != null) {
 			props.setProperty(KEY_STACK_TRACE, message.getStackTrace());
