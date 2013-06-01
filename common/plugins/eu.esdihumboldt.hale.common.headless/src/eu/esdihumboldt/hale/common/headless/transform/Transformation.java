@@ -381,6 +381,8 @@ public class Transformation {
 		// failed - try setting exception
 		if (event.getResult() != null && event.getResult().getException() != null) {
 			result.setException(event.getResult().getException());
+
+			event.getResult().getException().printStackTrace();
 		}
 
 		// in case there was no exception or setting it failed, just state that
