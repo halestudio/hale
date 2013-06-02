@@ -2,5 +2,12 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="eu.esdihumboldt.hale.ui.launchaction" name="UI Launch Actions" schema="schema/eu.esdihumboldt.hale.ui.launchaction.exsd"/>
+   <extension
+         point="eu.esdihumboldt.hale.ui.launchaction">
+      <launchaction
+            class="eu.esdihumboldt.hale.ui.launchaction.impl.MessageAction"
+            id="msg">
+      </launchaction>
+   </extension>
 
 </plugin>
