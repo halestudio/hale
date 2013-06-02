@@ -44,7 +44,7 @@ import eu.esdihumboldt.hale.ui.util.selection.SelectionTrackerUtil;
 @SuppressWarnings("restriction")
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
-	private final LaunchAction action;
+	private LaunchAction action;
 
 	/**
 	 * Creates a new workbench window advisor for configuring a workbench window
@@ -110,6 +110,8 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
 		if (action != null) {
 			action.onOpenWorkbenchWindow();
+			// only do this once
+			action = null;
 		}
 	}
 
