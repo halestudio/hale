@@ -37,6 +37,13 @@ public abstract class AbstractLaunchAction<C> implements LaunchAction {
 	protected abstract C createLaunchContext();
 
 	/**
+	 * @return the launch context
+	 */
+	protected C getLaunchContext() {
+		return launchContext;
+	}
+
+	/**
 	 * Process the command line arguments.
 	 * 
 	 * @param args the command line arguments
