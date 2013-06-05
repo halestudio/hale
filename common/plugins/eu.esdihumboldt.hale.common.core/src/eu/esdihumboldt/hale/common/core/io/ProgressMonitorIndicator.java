@@ -18,7 +18,6 @@ package eu.esdihumboldt.hale.common.core.io;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
-
 /**
  * Progress indicator using an {@link IProgressMonitor}
  * 
@@ -69,7 +68,25 @@ public class ProgressMonitorIndicator implements ProgressIndicator {
 	 */
 	@Override
 	public void setCurrentTask(String taskName) {
-		monitor.subTask(taskName);
+		try {
+			monitor.subTask(taskName);
+		} catch (Error e) {
+			/*
+			 * Catch SWTErrors that may occur because an update on the monitor
+			 * is not triggered from the same thread as it was created in. This
+			 * may happen in conjunction with ThreadProgressMonitor, where a
+			 * progress dialog may be shared between different tasks. In that
+			 * case the offending call is in Dialog.shortenText (JFace).
+			 */
+			if (!"org.eclipse.swt.SWTError".equals(e.getClass().getName())) {
+				throw e;
+			}
+		} catch (RuntimeException e) {
+			// see above
+			if (!"org.eclipse.swt.SWTException".equals(e.getClass().getName())) {
+				throw e;
+			}
+		}
 	}
 
 	/**
