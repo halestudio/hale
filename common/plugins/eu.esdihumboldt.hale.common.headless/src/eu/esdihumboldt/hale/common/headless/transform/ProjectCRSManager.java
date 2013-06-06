@@ -57,7 +57,11 @@ public class ProjectCRSManager extends AbstractCRSManager {
 	 */
 	@Override
 	protected String loadValue(String key) {
-		return project.getProperties().get(key).as(String.class);
+		Value value = project.getProperties().get(key);
+		if (value != null) {
+			return value.as(String.class);
+		}
+		return null;
 	}
 
 }
