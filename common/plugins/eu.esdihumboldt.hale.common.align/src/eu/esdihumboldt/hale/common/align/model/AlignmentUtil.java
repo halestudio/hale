@@ -281,7 +281,7 @@ public abstract class AlignmentUtil {
 
 	/**
 	 * Determines if a given entity definition is a parent of another entity
-	 * definition.
+	 * definition or if both are equal.
 	 * 
 	 * @param parent the parent
 	 * @param child the potential child
@@ -304,9 +304,8 @@ public abstract class AlignmentUtil {
 		List<ChildContext> parentPath = parent.getPropertyPath();
 		List<ChildContext> childPath = child.getPropertyPath();
 
-		if (parentPath.size() >= childPath.size()) {
-			// property path for parent is longer or equal, can't be parent of
-			// child
+		if (parentPath.size() > childPath.size()) {
+			// property path for parent is longer, can't be parent of child
 			return false;
 		}
 

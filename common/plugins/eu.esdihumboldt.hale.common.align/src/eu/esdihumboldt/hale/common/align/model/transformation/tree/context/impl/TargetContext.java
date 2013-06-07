@@ -559,10 +559,8 @@ public class TargetContext implements TransformationContext {
 		// multiple "b"s and there is a
 		// cell using an "a" and a "b" the a is used multiple times.
 		for (SourceNode source : cell.getSources()) {
-			if (!source.getEntityDefinition()
-					.equals(info.getDuplicatedNode().getEntityDefinition())
-					&& !AlignmentUtil.isParent(info.getDuplicatedNode().getEntityDefinition(),
-							source.getEntityDefinition())) {
+			if (!AlignmentUtil.isParent(info.getDuplicatedNode().getEntityDefinition(),
+					source.getEntityDefinition())) {
 				// This source node does not belong to the duplicated tree, add
 				// an existing fitting source node!
 				Collection<SourceNode> possibleSources = info.getOldSourceNodes(source
