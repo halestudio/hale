@@ -28,10 +28,7 @@ http://www.esdi-community.eu/projects/show/hale
    <windowImages i32="/eu.esdihumboldt.hale.ui.application/images/hale_icon.png"/>
 
    <splash
-      location="eu.esdihumboldt.hale.ui.application"
-      startupProgressRect="4,281,472,15"
-      startupMessageRect="7,262,445,18"
-      startupForegroundColor="000000" />
+      location="eu.esdihumboldt.hale.ui.application" />
    <launcher name="HALE">
       <solaris/>
       <win useIco="true">
