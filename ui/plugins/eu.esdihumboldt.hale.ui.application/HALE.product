@@ -94,6 +94,8 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="de.cs3d.util.logging.logback.appender" fragment="true"/>
       <plugin id="de.cs3d.util.logging.logback.observer"/>
       <plugin id="de.fhg.igd.concurrency"/>
+      <plugin id="de.fhg.igd.hale.fme"/>
+      <plugin id="de.fhg.igd.hale.fme.ui"/>
       <plugin id="de.fhg.igd.mapviewer"/>
       <plugin id="de.fhg.igd.mapviewer.server.openstreetmap"/>
       <plugin id="de.fhg.igd.mapviewer.tools.boxzoom"/>
