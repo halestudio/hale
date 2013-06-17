@@ -94,20 +94,8 @@
                value="images/hale_icon.png">
          </property>
          <property
-               name="startupProgressRect"
-               value="4,281,472,15">
-         </property>
-         <property
                name="preferenceCustomization"
                value="plugin_customization.ini">
-         </property>
-         <property
-               name="startupForegroundColor"
-               value="000000">
-         </property>
-         <property
-               name="startupMessageRect"
-               value="7,262,445,18">
          </property>
       </product>
    </extension>
