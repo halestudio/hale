@@ -192,7 +192,7 @@
             commandId="eu.esdihumboldt.hale.ui.instance.clear">
          <enabledWhen>
             <with
-                  variable="hale.instances.has_source">
+                  variable="hale.instances.has_source_resource">
                <equals
                      value="true">
                </equals>
