@@ -131,7 +131,13 @@ public abstract class StreamGmlHelper {
 			// nil instance w/o properties
 			if (allowNull && isNil && Iterables.isEmpty(instance.getPropertyNames())) {
 				// no value should be created
-				return null;
+				/*
+				 * XXX returning null here then results in problems during
+				 * adding other properties to the parent group, as mandatory
+				 * elements are expected to appear, and it will warn about
+				 * possible invalid data loaded
+				 */
+//				return null;
 			}
 
 			// instance value
