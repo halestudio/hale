@@ -36,6 +36,7 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
+import eu.esdihumboldt.hale.io.gml.geometry.GMLConstants;
 import eu.esdihumboldt.hale.io.gml.internal.simpletype.SimpleTypeUtil;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.DefinitionPath;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.PathElement;
@@ -49,7 +50,7 @@ import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public abstract class GmlWriterUtil {
+public abstract class GmlWriterUtil implements GMLConstants {
 
 	private static final ALogger log = ALoggerFactory.getLogger(GmlWriterUtil.class);
 
@@ -125,6 +126,25 @@ public abstract class GmlWriterUtil {
 		else {
 			return false;
 		}
+	}
+
+	/**
+	 * Determine if a given type is a feature type.
+	 * 
+	 * @param type the type definition
+	 * @return if the type represents a feature type
+	 */
+	public static boolean isFeatureType(TypeDefinition type) {
+		if ("AbstractFeatureType".equals(type.getName().getLocalPart())
+				&& type.getName().getNamespaceURI().startsWith(GML_NAMESPACE_CORE)) {
+			return true;
+		}
+
+		if (type.getSuperType() != null) {
+			return isFeatureType(type.getSuperType());
+		}
+
+		return false;
 	}
 
 	/**
