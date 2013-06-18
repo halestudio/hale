@@ -16,10 +16,18 @@
 
 package eu.esdihumboldt.hale.ui.io.instance;
 
+import java.net.URI;
+import java.text.MessageFormat;
+
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.io.DefaultIOAdvisor;
 import eu.esdihumboldt.hale.ui.io.instance.crs.DefaultCRSManager;
@@ -33,6 +41,8 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
  * @author Simon Templer
  */
 public class InstanceImportAdvisor extends DefaultIOAdvisor<InstanceReader> {
+
+	private static final ALogger log = ALoggerFactory.getLogger(InstanceImportAdvisor.class);
 
 	/**
 	 * @see IOAdvisor#prepareProvider(IOProvider)
@@ -62,7 +72,27 @@ public class InstanceImportAdvisor extends DefaultIOAdvisor<InstanceReader> {
 	public void handleResults(InstanceReader provider) {
 		// add instances to instance service
 		InstanceService is = getService(InstanceService.class);
-		is.addSourceInstances(provider.getInstances());
+
+		InstanceCollection instances = provider.getInstances();
+
+		ResourceIterator<Instance> it = instances.iterator();
+		try {
+			if (!it.hasNext()) {
+				URI loc = provider.getSource().getLocation();
+				if (loc != null) {
+					log.warn(MessageFormat.format(
+							"No instances could be imported with the given configuration from {0}",
+							loc.toString()));
+				}
+				else {
+					log.warn("No instances could be imported with the given configuration.");
+				}
+			}
+		} finally {
+			it.close();
+		}
+
+		is.addSourceInstances(instances);
 
 		super.handleResults(provider);
 	}
