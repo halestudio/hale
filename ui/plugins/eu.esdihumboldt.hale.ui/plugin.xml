@@ -412,6 +412,10 @@
                name="hale.instances.has_source"
                priorityLevel="workbench">
          </variable>
+         <variable
+               name="hale.instances.has_source_resource"
+               priorityLevel="workbench">
+         </variable>
       </sourceProvider>
       <serviceFactory
             factoryClass="eu.esdihumboldt.hale.ui.service.internal.HaleServiceFactory">
