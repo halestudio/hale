@@ -27,7 +27,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
@@ -246,14 +245,16 @@ public class PropertyEntitiesPage extends
 //		return null;
 //	}
 
-	/**
-	 * @see EntitiesPage#createField(AbstractParameter, SchemaSpaceID,
-	 *      Composite, Set, Cell)
-	 */
 	@Override
 	protected PropertyField createField(PropertyParameter field, SchemaSpaceID ssid,
 			Composite parent, Set<EntityDefinition> candidates, Cell initialCell) {
 		return new PropertyField(field, ssid, parent, candidates, initialCell, getParentType(ssid));
+	}
+
+	@Override
+	protected boolean acceptCandidate(EntityDefinition candidate) {
+		// don't accept types as candidates
+		return !candidate.getPropertyPath().isEmpty();
 	}
 
 	/**
