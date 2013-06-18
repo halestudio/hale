@@ -450,11 +450,21 @@ public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriter
 
 				TypeDefinition type = instance.getDefinition();
 
+				/*
+				 * Skip all objects that are no features when writing to a GML
+				 * feature collection.
+				 */
+				boolean skip = useFeatureCollection && !GmlWriterUtil.isFeatureType(type);
+				if (skip) {
+					progress.advance(1);
+					continue;
+				}
+
 				// get stored definition path for the type
 				DefinitionPath defPath;
 				if (paths.containsKey(type)) {
-					defPath = paths.get(type); // get the stored path, may be
-												// null
+					// get the stored path, may be null
+					defPath = paths.get(type);
 				}
 				else {
 					// determine a valid definition path in the container
