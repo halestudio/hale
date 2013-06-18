@@ -781,6 +781,21 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		return removedResources;
 	}
 
+	@Override
+	public boolean hasResources(String actionId) {
+		synchronized (this) {
+			Iterator<IOConfiguration> iter = main.getResources().iterator();
+			while (iter.hasNext()) {
+				IOConfiguration conf = iter.next();
+				if (conf.getActionId().equals(actionId)) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
 	/**
 	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#executeAndRemember(eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration)
 	 */

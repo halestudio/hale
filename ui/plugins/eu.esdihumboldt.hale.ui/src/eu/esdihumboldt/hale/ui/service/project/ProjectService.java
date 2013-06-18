@@ -75,6 +75,14 @@ public interface ProjectService {
 	public List<IOConfiguration> removeResources(String actionId);
 
 	/**
+	 * Determines if there are any resources loaded for a given action.
+	 * 
+	 * @param actionId the action identifier
+	 * @return if there are resources present for the action
+	 */
+	public boolean hasResources(String actionId);
+
+	/**
 	 * Get a project scoped configuration service
 	 * 
 	 * @return the configuration service
