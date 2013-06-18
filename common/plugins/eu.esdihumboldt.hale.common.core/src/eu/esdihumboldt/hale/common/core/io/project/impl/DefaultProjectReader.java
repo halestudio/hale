@@ -159,7 +159,7 @@ public class DefaultProjectReader extends AbstractProjectReader {
 				ProjectFile projectFile = getProjectFiles().get(fileInfo.getName());
 				if (projectFile != null) {
 					URI location = fileInfo.getLocation();
-					location = update.findLocation(location, false, false);
+					location = update.findLocation(location, false, false, false);
 					boolean fileSuccess = false;
 					if (location != null) {
 						try {
