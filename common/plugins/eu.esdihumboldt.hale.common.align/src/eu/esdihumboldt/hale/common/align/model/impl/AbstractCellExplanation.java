@@ -19,6 +19,8 @@ package eu.esdihumboldt.hale.common.align.model.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import com.google.common.base.Joiner;
 
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
@@ -93,7 +95,8 @@ public abstract class AbstractCellExplanation implements CellExplanation {
 						+ " value)";
 		}
 		else {
-			String filterString = AlignmentUtil.getContextText(entity.getDefinition());
+			String filterString = StringEscapeUtils.escapeHtml(AlignmentUtil.getContextText(entity
+					.getDefinition()));
 			if (filterString != null)
 				text += " (matching " + quoteText(filterString, html) + ")";
 		}

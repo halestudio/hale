@@ -44,6 +44,7 @@ Import-Package: com.google.common.base;version="1.6.0",
  eu.esdihumboldt.util.io,
  javax.annotation,
  net.jcip.annotations,
+ org.apache.commons.lang;version="2.4.0",
  org.exolab.castor.core.exceptions,
  org.slf4j;version="1.5.11",
  org.springframework.core.convert;version="3.0.0.RELEASE"
