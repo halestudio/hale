@@ -242,11 +242,13 @@ public class CompatibilityServiceImpl extends
 		 */
 		@Override
 		public void cellsAdded(Iterable<Cell> cells) {
+			CompatibilityMode mode = getCurrent();
+
 			Iterator<Cell> cit = cells.iterator();
 			while (cit.hasNext()) {
 				Cell cell = cit.next();
-				boolean isCompatibleNow = getCurrent().supportsFunction(
-						cell.getTransformationIdentifier());
+				boolean isCompatibleNow = mode.supportsFunction(cell.getTransformationIdentifier())
+						&& mode.supportsCell(cell);
 
 				if (!isCompatibleNow) {
 					incompatibleCells.add(cell);
@@ -261,12 +263,15 @@ public class CompatibilityServiceImpl extends
 		 */
 		@Override
 		public void cellsReplaced(Map<? extends Cell, ? extends Cell> cells) {
+			CompatibilityMode mode = getCurrent();
+
 			for (Entry<? extends Cell, ? extends Cell> e : cells.entrySet()) {
 				if (incompatibleCells.contains(e.getKey())) {
 					incompatibleCells.remove(e.getKey());
 				}
 
-				if (!getCurrent().supportsFunction(e.getValue().getTransformationIdentifier())) {
+				if (!mode.supportsFunction(e.getValue().getTransformationIdentifier())
+						|| !mode.supportsCell(e.getValue())) {
 					incompatibleCells.add(e.getValue());
 				}
 			}
@@ -325,10 +330,11 @@ public class CompatibilityServiceImpl extends
 			Collection<? extends Cell> cells = ((AlignmentService) PlatformUI.getWorkbench()
 					.getService(AlignmentService.class)).getAlignment().getCells();
 			Iterator<? extends Cell> cit = cells.iterator();
+			CompatibilityMode mode = getCurrent();
 			while (cit.hasNext()) {
 				Cell cell = cit.next();
-				boolean isCompatibleNow = getCurrent().supportsFunction(
-						cell.getTransformationIdentifier());
+				boolean isCompatibleNow = mode.supportsFunction(cell.getTransformationIdentifier())
+						&& mode.supportsCell(cell);
 
 				if (!isCompatibleNow) {
 					incompatibleCells.add(cell);
