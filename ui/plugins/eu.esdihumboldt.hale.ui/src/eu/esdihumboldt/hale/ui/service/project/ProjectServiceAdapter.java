@@ -59,4 +59,14 @@ public class ProjectServiceAdapter implements ProjectServiceListener {
 		// override me
 	}
 
+	@Override
+	public void resourceAdded(String actionId) {
+		// override me
+	}
+
+	@Override
+	public void resourcesRemoved(String actionId) {
+		// override me
+	}
+
 }

@@ -73,6 +73,28 @@ public abstract class AbstractProjectService implements ProjectService {
 	}
 
 	/**
+	 * Call after a new resource was added.
+	 * 
+	 * @param actionId the action the resource is associated to
+	 */
+	protected void notifyResourceAdded(String actionId) {
+		for (ProjectServiceListener listener : listeners) {
+			listener.resourceAdded(actionId);
+		}
+	}
+
+	/**
+	 * Call when resources for an action have been removed.
+	 * 
+	 * @param actionId the action identifier
+	 */
+	protected void notifyResourcesRemoved(String actionId) {
+		for (ProjectServiceListener listener : listeners) {
+			listener.resourcesRemoved(actionId);
+		}
+	}
+
+	/**
 	 * Call when the project is cleaned.
 	 */
 	protected void notifyClean() {

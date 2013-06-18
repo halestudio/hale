@@ -758,6 +758,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			main.getResources().add(conf);
 		}
 		setChanged();
+
+		notifyResourceAdded(actionId);
 	}
 
 	/**
@@ -777,6 +779,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			}
 		}
 		setChanged();
+
+		notifyResourcesRemoved(actionId);
 
 		return removedResources;
 	}
