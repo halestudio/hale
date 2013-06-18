@@ -75,11 +75,11 @@ public class XsltCompatibilityMode implements CompatibilityMode {
 		return true;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode#supportsCell(eu.esdihumboldt.hale.common.align.model.Cell)
-	 */
 	@Override
 	public boolean supportsCell(Cell cell) {
+		// only accept cells with supported filters
+		// XXX currently all filters supported for XSLT
+
 		// contexts not supported yet
 		return true;
 	}
