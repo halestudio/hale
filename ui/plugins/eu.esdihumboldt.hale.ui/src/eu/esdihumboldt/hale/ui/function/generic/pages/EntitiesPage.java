@@ -96,8 +96,16 @@ public abstract class EntitiesPage<T extends AbstractFunction<D>, D extends Abst
 
 		// fill candidates
 		if (initialSelection != null) {
-			sourceCandidates.addAll(initialSelection.getSourceItems());
-			targetCandidates.addAll(initialSelection.getTargetItems());
+			for (EntityDefinition candidate : initialSelection.getSourceItems()) {
+				if (acceptCandidate(candidate)) {
+					sourceCandidates.add(candidate);
+				}
+			}
+			for (EntityDefinition candidate : initialSelection.getTargetItems()) {
+				if (acceptCandidate(candidate)) {
+					targetCandidates.add(candidate);
+				}
+			}
 		}
 		if (initialCell != null) {
 			if (initialCell.getSource() != null) {
@@ -109,6 +117,18 @@ public abstract class EntitiesPage<T extends AbstractFunction<D>, D extends Abst
 				targetCandidates.add(entity.getDefinition());
 			}
 		}
+	}
+
+	/**
+	 * Determines if a candidate from a selection should be accepted. This
+	 * implementation returns <code>true</code> and therefore accepts any
+	 * {@link EntityDefinition}, override to change behavior.
+	 * 
+	 * @param candidate the candidate
+	 * @return if the candidate should be accepted
+	 */
+	protected boolean acceptCandidate(EntityDefinition candidate) {
+		return true;
 	}
 
 	/**

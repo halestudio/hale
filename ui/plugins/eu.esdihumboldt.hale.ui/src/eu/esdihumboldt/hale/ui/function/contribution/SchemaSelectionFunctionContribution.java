@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.hale.ui.function.contribution;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -130,7 +131,15 @@ public class SchemaSelectionFunctionContribution extends AbstractFunctionWizardC
 		// check types
 		Set<EntityDefinition> sourceItems = selection.getSourceItems();
 		if (!checkType(sourceItems, PropertyEntityDefinition.class)) {
-			return false;
+			if (checkType(sourceItems, TypeEntityDefinition.class)) {
+				/*
+				 * Allow types selected as source, handle as if no source is
+				 * selected
+				 */
+				sourceItems = new HashSet<EntityDefinition>();
+			}
+			else
+				return false;
 		}
 		Set<EntityDefinition> targetItems = selection.getTargetItems();
 		if (!checkType(targetItems, PropertyEntityDefinition.class)) {
