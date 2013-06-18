@@ -24,11 +24,14 @@ import org.eclipse.ui.ISourceProvider;
 import org.eclipse.ui.ISources;
 import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceListener;
+import eu.esdihumboldt.hale.ui.service.project.ProjectService;
+import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
 
 /**
  * Provides UI variables related to the {@link InstanceService}
@@ -44,13 +47,23 @@ public class InstanceServiceSource extends AbstractSourceProvider {
 	 * transformed instances present in the {@link InstanceService}.
 	 */
 	public static final String HAS_TRANSFORMED_INSTANCES = "hale.instances.has_transformed";
+
 	/**
 	 * The name of the variable which value is <code>true</code> if there are
 	 * instances present in the {@link InstanceService}.
 	 */
 	public static final String HAS_SOURCE_INSTANCES = "hale.instances.has_source";
 
+	/**
+	 * The name of the variable which value is <code>true</code> if there are
+	 * any resources for source instances present, even if there are no actual
+	 * instances available.
+	 */
+	public static final String HAS_SOURCE_RESOURCES = "hale.instances.has_source_resource";
+
 	private InstanceServiceListener instanceListener;
+
+	private ProjectServiceAdapter projectServiceListener;
 
 	/**
 	 * Default constructor
@@ -72,8 +85,28 @@ public class InstanceServiceSource extends AbstractSourceProvider {
 				case SOURCE:
 					fireSourceChanged(ISources.WORKBENCH, HAS_SOURCE_INSTANCES,
 							hasSourceInstances(is));
+
 					break;
 				}
+			}
+
+		});
+
+		final ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
+				ProjectService.class);
+		ps.addListener(projectServiceListener = new ProjectServiceAdapter() {
+
+			@Override
+			public void resourceAdded(String actionId) {
+				if (InstanceIO.ACTION_LOAD_SOURCE_DATA.equals(actionId)) {
+					fireSourceChanged(ISources.WORKBENCH, HAS_SOURCE_RESOURCES,
+							hasSourceResources(ps));
+				}
+			}
+
+			@Override
+			public void resourcesRemoved(String actionId) {
+				resourceAdded(actionId);
 			}
 
 		});
@@ -87,6 +120,10 @@ public class InstanceServiceSource extends AbstractSourceProvider {
 		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
 				InstanceService.class);
 		is.removeListener(instanceListener);
+
+		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
+				ProjectService.class);
+		ps.removeListener(projectServiceListener);
 	}
 
 	/**
@@ -96,9 +133,13 @@ public class InstanceServiceSource extends AbstractSourceProvider {
 	public Map<String, Object> getCurrentState() {
 		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
 				InstanceService.class);
+		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
+				ProjectService.class);
 
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(HAS_TRANSFORMED_INSTANCES, hasTransformedInstances(is));
+		result.put(HAS_SOURCE_INSTANCES, hasSourceInstances(is));
+		result.put(HAS_SOURCE_RESOURCES, hasSourceResources(ps));
 
 		return result;
 	}
@@ -113,12 +154,18 @@ public class InstanceServiceSource extends AbstractSourceProvider {
 		return instances != null && !instances.isEmpty();
 	}
 
+	private static boolean hasSourceResources(ProjectService ps) {
+		boolean hasResource = ps.hasResources(InstanceIO.ACTION_LOAD_SOURCE_DATA);
+//		System.err.println(hasResource);
+		return hasResource;
+	}
+
 	/**
 	 * @see ISourceProvider#getProvidedSourceNames()
 	 */
 	@Override
 	public String[] getProvidedSourceNames() {
-		return new String[] { HAS_TRANSFORMED_INSTANCES, HAS_SOURCE_INSTANCES };
+		return new String[] { HAS_TRANSFORMED_INSTANCES, HAS_SOURCE_INSTANCES, HAS_SOURCE_RESOURCES };
 	}
 
 }
