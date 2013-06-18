@@ -16,7 +16,6 @@
 
 package eu.esdihumboldt.hale.common.align.model.transformation.tree.context.impl.matcher;
 
-import java.util.HashSet;
 import java.util.Stack;
 
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
@@ -24,6 +23,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.ContextMatcher;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.TransformationContext;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.impl.TargetContext;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.AbstractTargetToSourceVisitor;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
@@ -64,11 +64,21 @@ public class AsDeepAsPossible implements ContextMatcher {
 		@Override
 		public boolean visit(SourceNode source) {
 			if (!candidates.isEmpty()) {
-				// TODO do not always override the context information!
+				// Do not always override the context information!
 				// Each path leading to this source can have different
 				// candidates.
-				// A per cell or per target of cell basis is needed?
-				source.setContext(new TargetContext(new HashSet<TargetNode>(candidates)));
+				TransformationContext context = source.getContext();
+				if (context == null) {
+					TargetContext newContext = new TargetContext();
+					source.setContext(newContext);
+					newContext.addContextTargets(candidates);
+				}
+				else if (context instanceof TargetContext) {
+					((TargetContext) context).addContextTargets(candidates);
+				}
+				else {
+					throw new IllegalStateException("Unknown TransformationContext present.");
+				}
 			}
 			return true;
 		}

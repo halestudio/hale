@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -376,14 +377,21 @@ public class TargetContext implements TransformationContext {
 	private final Set<TargetNode> contextTargets;
 
 	/**
-	 * Create a transformation context that duplicates subgraphs leading to the
+	 * Create a transformation context that duplicates subgraphs leading to
 	 * given target nodes.
-	 * 
-	 * @param contextTargets the target nodes to use as subgraph end-points
 	 */
-	public TargetContext(Set<TargetNode> contextTargets) {
+	public TargetContext() {
 		super();
-		this.contextTargets = contextTargets;
+		this.contextTargets = new HashSet<TargetNode>();
+	}
+
+	/**
+	 * Adds the given target nodes as duplication targets.
+	 * 
+	 * @param targets the target nodes to use as subgraph end-points
+	 */
+	public void addContextTargets(Collection<TargetNode> targets) {
+		contextTargets.addAll(targets);
 	}
 
 //	/**
