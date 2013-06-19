@@ -67,5 +67,13 @@
             name="Show mapping">
       </command>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.ui.views.report.detailpage">
+      <detailpage
+            class="eu.esdihumboldt.hale.ui.views.mapping.report.TransformationReportPage"
+            id="eu.esdihumboldt.hale.ui.views.mapping.transreportpage"
+            reportType="eu.esdihumboldt.hale.common.align.transformation.report.TransformationReport">
+      </detailpage>
+   </extension>
 
 </plugin>
