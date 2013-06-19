@@ -73,11 +73,17 @@ public final class PropertyParameter extends AbstractParameter {
 
 	private final List<PropertyCondition> conditions;
 
+	private final boolean eager;
+
 	/**
 	 * @see AbstractParameter#AbstractParameter(IConfigurationElement)
 	 */
 	public PropertyParameter(IConfigurationElement conf) {
 		super(conf);
+
+		String eagerFlag = conf.getAttribute("eager");
+		// defaults to false
+		eager = Boolean.parseBoolean(eagerFlag);
 
 		conditions = createConditions(conf);
 	}
@@ -187,6 +193,16 @@ public final class PropertyParameter extends AbstractParameter {
 	 */
 	public List<PropertyCondition> getConditions() {
 		return Collections.unmodifiableList(conditions);
+	}
+
+	/**
+	 * Get if the property is eager, i.e. if it wants to consume all property
+	 * values instead of one at a time.
+	 * 
+	 * @return if the property is eager
+	 */
+	public boolean isEager() {
+		return eager;
 	}
 
 }
