@@ -80,10 +80,6 @@ public class Identifier extends AbstractSingleTargetPropertyTransformation<Trans
 
 		TypeDefinition versionType = identChildVersion.getPropertyType();
 
-		DefaultInstance versionInstance = new DefaultInstance(versionType, null);
-
-		PropertyDefinition versionIdChildVersion = Util.getChild("nilReason", versionType);
-
 		// 1.)
 		// add the "localId" and "namespace" properties to the identifier
 		// instance
@@ -91,18 +87,26 @@ public class Identifier extends AbstractSingleTargetPropertyTransformation<Trans
 		identInstance.addProperty(identChildNamespace.getName(),
 				getNamespace(countryName, providerName, productName, getTargetType()));
 
+		DefaultInstance versionInstance = null;
 		// 2.)
 		// add the "nilReason" property to the version instance
 		if (version == null || version.isEmpty()) {
-			versionInstance.addProperty(versionIdChildVersion.getName(), versionNilReason);
+			if (!versionNilReason.isEmpty()) {
+				versionInstance = new DefaultInstance(versionType, null);
+				PropertyDefinition versionIdChildVersion = Util.getChild("nilReason", versionType);
+				versionInstance.addProperty(versionIdChildVersion.getName(), versionNilReason);
+			}
 		}
 		else {
+			versionInstance = new DefaultInstance(versionType, null);
 			versionInstance.setValue(version);
 		}
 
 		// 3.)
 		// add the "versionId" instance to the identifier instance
-		identInstance.addProperty(identChildVersion.getName(), versionInstance);
+		if (versionInstance != null) {
+			identInstance.addProperty(identChildVersion.getName(), versionInstance);
+		}
 
 		// 4.)
 		// add the "identifier" instance to the inspireId instance
