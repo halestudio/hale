@@ -202,6 +202,32 @@
             </property>
          </sourceProperties>
       </propertyFunction>
+      <propertyFunction
+            category="eu.esdihumboldt.cst.functions.geometric"
+            description="Compute geometric extent based on all input geometries."
+            icon="icons/geometry.png"
+            identifier="eu.esdihumboldt.cst.functions.geometric.extent"
+            name="Compute Extent">
+         <targetProperties>
+            <property
+                  description="Computed extent"
+                  eager="false"
+                  label="Extent"
+                  maxOccurrence="1"
+                  minOccurrence="1">
+            </property>
+         </targetProperties>
+         <sourceProperties>
+            <property
+                  description="Source geometries (eager)"
+                  eager="true"
+                  label="Geometries"
+                  maxOccurrence="n"
+                  minOccurrence="0">
+               <geometryCondition></geometryCondition>
+            </property>
+         </sourceProperties>
+      </propertyFunction>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.align.transformation">
@@ -234,6 +260,12 @@
             engine="eu.esdihumboldt.align.java"
             function="eu.esdihumboldt.cst.functions.geometric.centroid"
             id="eu.esdihumboldt.cst.functions.geometric.centroid">
+      </propertyTransformation>
+      <propertyTransformation
+            class="eu.esdihumboldt.cst.functions.geometric.extent.ExtentTransformation"
+            engine="eu.esdihumboldt.align.java"
+            function="eu.esdihumboldt.cst.functions.geometric.extent"
+            id="eu.esdihumboldt.cst.functions.geometric.extent">
       </propertyTransformation>
    </extension>
 
