@@ -42,6 +42,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.GroupNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTreeUtil;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.TransformationContext;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.CellNodeImpl;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.SourceNodeImpl;
@@ -502,6 +503,11 @@ public class TargetContext implements TransformationContext {
 			DuplicationInformation info, TransformationLog log) {
 		// Duplicate relations.
 		for (CellNode cell : source.getRelations(false)) {
+
+			// check whether the cell is eager for the source node
+			if (TransformationTreeUtil.isEager(cell, source, log))
+				continue;
+
 			// Check whether the cell is ignored.
 			if (info.isIgnoreCell(cell.getCell()))
 				continue;
