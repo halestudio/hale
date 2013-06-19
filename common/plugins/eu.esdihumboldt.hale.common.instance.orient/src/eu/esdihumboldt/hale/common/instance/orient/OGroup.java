@@ -42,6 +42,7 @@ import eu.esdihumboldt.hale.common.instance.model.MutableGroup;
 import eu.esdihumboldt.hale.common.instance.orient.internal.ONamespaceMap;
 import eu.esdihumboldt.hale.common.instance.orient.internal.OSerializationHelper;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
@@ -128,6 +129,10 @@ public class OGroup implements MutableGroup {
 		if (document instanceof ODocument) {
 			// reset class name
 			ODocument doc = (ODocument) document;
+			/*
+			 * Attention: Two long class names cause problems as file names will
+			 * be based on them.
+			 */
 			String className = null;
 			if (definition != null) {
 				className = ONamespaceMap.encode(determineName(definition));
@@ -203,8 +208,8 @@ public class OGroup implements MutableGroup {
 	 * @return the name to encode as class name
 	 */
 	private static QName determineName(DefinitionGroup definition) {
-		if (definition instanceof TypeDefinition) {
-			return ((TypeDefinition) definition).getName();
+		if (definition instanceof Definition) {
+			return ((Definition<?>) definition).getName();
 		}
 		return new QName(definition.getIdentifier());
 	}
