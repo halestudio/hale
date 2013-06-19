@@ -108,4 +108,11 @@ public class GeometryFinder implements InstanceTraversalCallback {
 		return geometries;
 	}
 
+	/**
+	 * Reset the found geometries.
+	 */
+	public void reset() {
+		geometries = new ArrayList<GeometryProperty<?>>();
+	}
+
 }
