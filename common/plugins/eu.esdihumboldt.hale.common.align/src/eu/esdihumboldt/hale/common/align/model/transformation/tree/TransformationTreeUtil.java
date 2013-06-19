@@ -16,6 +16,16 @@
 
 package eu.esdihumboldt.hale.common.align.model.transformation.tree;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExtension;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
+import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
+import eu.esdihumboldt.hale.common.align.transformation.report.impl.TransformationMessageImpl;
 import eu.esdihumboldt.util.IdentityWrapper;
 
 /**
@@ -50,6 +60,72 @@ public abstract class TransformationTreeUtil {
 		}
 
 		return node;
+	}
+
+	/**
+	 * Determines if a cell is connected to a source node with eager source
+	 * parameters.
+	 * 
+	 * @param cell the cell
+	 * @param source the source node
+	 * @param log the transformation log, may be <code>null</code>
+	 * @return if the cell has eager source parameters connected to the source
+	 *         node
+	 */
+	public static boolean isEager(Cell cell, SourceNode source, TransformationLog log) {
+		// find the corresponding cell node
+		Collection<CellNode> cells = source.getRelations(true);
+		for (CellNode cellNode : cells) {
+			if (cell.equals(cellNode.getCell())) {
+				return isEager(cellNode, source, log);
+			}
+		}
+
+		throw new IllegalStateException(
+				"Eager check: Could not find cell node connected to source node.");
+	}
+
+	/**
+	 * Determines if a cell is connected to a source node with eager source
+	 * parameters.
+	 * 
+	 * @param cell the cell node
+	 * @param source the source node
+	 * @param log the transformation log, may be <code>null</code>
+	 * @return if the cell contained in the cell node has eager source
+	 *         parameters connected to the source node
+	 */
+	public static boolean isEager(CellNode cell, SourceNode source, TransformationLog log) {
+		// get all entity names the cell is associated to the source node with
+		Set<String> names = cell.getSourceNames(source);
+
+		PropertyFunction function = PropertyFunctionExtension.getInstance().get(
+				cell.getCell().getTransformationIdentifier());
+		if (function != null) {
+			Set<PropertyParameter> defSources = function.getSource();
+			Set<String> eager = new HashSet<String>();
+			for (PropertyParameter sourceDef : defSources) {
+				String name = sourceDef.getName();
+				if (sourceDef.isEager() && names.contains(name)) {
+					eager.add(name);
+				}
+			}
+
+			if (!eager.isEmpty()) {
+				// if any connection is eager we cannot duplicate the cell
+
+				if (log != null && eager.size() != names.size()) {
+					log.warn(new TransformationMessageImpl(
+							cell.getCell(),
+							"Source node with a mix of eager and non-eager connections to a cell, treating as eager.",
+							null));
+				}
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 }

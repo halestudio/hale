@@ -210,6 +210,7 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 					// annotate with the first value
 					Object value = values[0];
 					source.setValue(value);
+					source.setAllValues(values);
 				}
 				else {
 					source.setDefined(false);
