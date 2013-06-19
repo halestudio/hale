@@ -55,6 +55,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -478,10 +480,25 @@ public class ClassificationMappingParameterPage extends
 		parent.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 
 		// Description Label
-		description = new Label(item2Content, SWT.NONE);
-		description.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
-		description.setText("Description: ");
+		description = new Label(item2Content, SWT.WRAP);
+		description.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		description.setText("");
 		description.setVisible(false);
+
+		// label with warning message
+		Composite warnComp = new Composite(item2Content, SWT.NONE);
+		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(warnComp);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(warnComp);
+
+		Label warnImage = new Label(warnComp, SWT.NONE);
+		warnImage.setImage(PlatformUI.getWorkbench().getSharedImages()
+				.getImage(ISharedImages.IMG_OBJS_WARN_TSK));
+		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.BEGINNING).applyTo(warnImage);
+
+		Label warn = new Label(warnComp, SWT.WRAP);
+		warn.setText("Classifications from a file resource will not function in another project where the alignment with the classification is used as a base alignment.");
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.BEGINNING).grab(true, false)
+				.hint(300, SWT.DEFAULT).applyTo(warn);
 
 		// Composite for ComboViewer
 		Composite viewerComposite = new Composite(parent, SWT.NONE);
@@ -508,9 +525,14 @@ public class ClassificationMappingParameterPage extends
 			public void selectionChanged(SelectionChangedEvent event) {
 				// Show the description for the selected lookupTable
 				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-				description.setText("Description: "
-						+ lookupServiceImpl.getTable(selection.getFirstElement().toString())
-								.getDescription());
+				String desc = lookupServiceImpl.getTable(selection.getFirstElement().toString())
+						.getDescription();
+				if (desc != null) {
+					description.setText("Description: " + desc);
+				}
+				else {
+					description.setText("");
+				}
 
 				if (!description.isVisible()) {
 					description.setVisible(true);
