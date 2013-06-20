@@ -27,4 +27,20 @@ public interface ExtentFunction {
 	 */
 	public static final String ID = "eu.esdihumboldt.cst.functions.geometric.extent";
 
+	/**
+	 * The type of the parameter
+	 */
+	public static final String PARAM_TYPE = "type";
+
+	/**
+	 * Convex Hull choice for extent functionality
+	 */
+	public static final String PARAM_CONVEX_HULL = "convexhull";
+
+	/**
+	 * Bounding Box choice for extent functionality
+	 */
+
+	public static final String PARAM_BOUNDING_BOX = "boundingbox";
+
 }
