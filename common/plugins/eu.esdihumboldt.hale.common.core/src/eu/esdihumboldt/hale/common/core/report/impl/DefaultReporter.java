@@ -19,14 +19,12 @@ package eu.esdihumboldt.hale.common.core.report.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.report.Message;
 import eu.esdihumboldt.hale.common.core.report.Report;
-import eu.esdihumboldt.hale.common.core.report.Reporter;
 
 /**
  * Default report implementation
@@ -37,16 +35,12 @@ import eu.esdihumboldt.hale.common.core.report.Reporter;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.5
  */
-public class DefaultReporter<T extends Message> implements Reporter<T> {
+public class DefaultReporter<T extends Message> extends AbstractReporter<T> {
 
 	/**
 	 * The logger
 	 */
 	public static final ALogger log = ALoggerFactory.getMaskingLogger(DefaultReporter.class, null);
-
-	private boolean success = false;
-
-	private final Class<T> messageType;
 
 	private final List<T> errors = new ArrayList<T>();
 
@@ -54,15 +48,7 @@ public class DefaultReporter<T extends Message> implements Reporter<T> {
 
 	private final List<T> infos = new ArrayList<T>();
 
-	private Date startTime;
-
-	private Date timestamp;
-
 	private final boolean doLog;
-
-	private final String taskName;
-
-	private String summary;
 
 	/**
 	 * Create an empty report. It is set to not successful by default. But you
@@ -74,12 +60,8 @@ public class DefaultReporter<T extends Message> implements Reporter<T> {
 	 * @param doLog if added messages shall also be logged using {@link ALogger}
 	 */
 	public DefaultReporter(String taskName, Class<T> messageType, boolean doLog) {
-		super();
-		this.messageType = messageType;
+		super(taskName, messageType);
 		this.doLog = doLog;
-		this.taskName = taskName;
-
-		timestamp = new Date();
 	}
 
 	/**
@@ -125,91 +107,11 @@ public class DefaultReporter<T extends Message> implements Reporter<T> {
 	}
 
 	/**
-	 * Set the summary message of the report.
-	 * 
-	 * @param summary the summary to set, if <code>null</code> the report will
-	 *            revert to the default summary.
-	 */
-	@Override
-	public void setSummary(String summary) {
-		this.summary = summary;
-	}
-
-	/**
-	 * @see Report#getTaskName()
-	 */
-	@Override
-	public String getTaskName() {
-		return taskName;
-	}
-
-	/**
 	 * @see Report#getErrors()
 	 */
 	@Override
 	public Collection<T> getErrors() {
 		return Collections.unmodifiableList(errors);
-	}
-
-	/**
-	 * @see Report#getMessageType()
-	 */
-	@Override
-	public Class<T> getMessageType() {
-		return messageType;
-	}
-
-	/**
-	 * @see Report#getSummary()
-	 */
-	@Override
-	public String getSummary() {
-		if (summary != null) {
-			return summary;
-		}
-
-		if (success) {
-			return getSuccessSummary();
-		}
-		else {
-			return getFailSummary();
-		}
-	}
-
-	/**
-	 * Get the default report summary if it was not successful.
-	 * 
-	 * @return the report summary
-	 */
-	protected String getFailSummary() {
-		return "Failed";
-	}
-
-	/**
-	 * Get the default report summary if it was successful.
-	 * 
-	 * @return the report summary
-	 */
-	protected String getSuccessSummary() {
-		if (errors.isEmpty()) {
-			if (warnings.isEmpty()) {
-				return "Finished successfully";
-			}
-			else {
-				return "Finished successfully, but with warnings";
-			}
-		}
-		else {
-			return "Completed, but with errors";
-		}
-	}
-
-	/**
-	 * @see Report#getTimestamp()
-	 */
-	@Override
-	public Date getTimestamp() {
-		return timestamp;
 	}
 
 	/**
@@ -228,60 +130,4 @@ public class DefaultReporter<T extends Message> implements Reporter<T> {
 		return Collections.unmodifiableList(infos);
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.report.Reporter#setSuccess(boolean)
-	 */
-	@Override
-	public void setSuccess(boolean success) {
-		this.success = success;
-
-		if (startTime == null) {
-			startTime = timestamp;
-		}
-		timestamp = new Date();
-	}
-
-	/**
-	 * @see Report#isSuccess()
-	 */
-	@Override
-	public boolean isSuccess() {
-		return success;
-	}
-
-	/**
-	 * @see Report#getStartTime()
-	 */
-	@Override
-	public Date getStartTime() {
-		return startTime;
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder result = new StringBuilder();
-		String NL = System.getProperty("line.separator");
-
-		result.append("taskname = " + this.getTaskName() + NL);
-		result.append("success = " + this.isSuccess() + NL);
-		result.append("summary = " + this.getSummary() + NL);
-
-		return result.toString();
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.report.Reporter#setTimestamp(java.util.Date)
-	 */
-	@Override
-	public void setTimestamp(Date timestamp) {
-		this.timestamp = timestamp;
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.report.Reporter#setStartTime(java.util.Date)
-	 */
-	@Override
-	public void setStartTime(Date starttime) {
-		this.startTime = starttime;
-	}
 }
