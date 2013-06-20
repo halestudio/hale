@@ -22,6 +22,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
@@ -58,6 +59,12 @@ public class ExtentTransformation extends
 		Geometry extent = null;
 
 		int count = 0;
+
+		String paramType = getOptionalParameter(PARAM_TYPE, new ParameterValue(PARAM_BOUNDING_BOX))
+				.as(String.class);
+
+		boolean convexHull = PARAM_CONVEX_HULL.equalsIgnoreCase(paramType);
+
 		for (PropertyValue pv : variables.get(null)) {
 			// find contained geometries
 			Object value = pv.getValue();
@@ -79,20 +86,38 @@ public class ExtentTransformation extends
 					}
 				}
 
-				// compute Envelope
-				Geometry g = geom.getGeometry();
-				if (extent == null) {
-					extent = g.getEnvelope();
+				if (convexHull) {
+
+					// compute Convex Hull
+					Geometry g = geom.getGeometry();
+					if (extent == null) {
+						extent = g.convexHull();
+					}
+					else {
+						GeometryCollection gc = new GeometryCollection(
+								new Geometry[] { extent, g }, fact);
+						extent = gc.convexHull();
+					}
 				}
+
 				else {
-					GeometryCollection gc = new GeometryCollection(new Geometry[] { extent, g },
-							fact);
-					extent = gc.getEnvelope();
+
+					// compute Envelope
+					Geometry g = geom.getGeometry();
+					if (extent == null) {
+						extent = g.getEnvelope();
+					}
+					else {
+
+						GeometryCollection gc = new GeometryCollection(
+								new Geometry[] { extent, g }, fact);
+						extent = gc.getEnvelope();
+					}
 				}
 
 				/*
 				 * TODO alternatives for computing the extent through
-				 * parameters? e.g. convex hull, union
+				 * parameters? e.g. union
 				 */
 			}
 

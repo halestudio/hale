@@ -227,6 +227,21 @@
                <geometryCondition></geometryCondition>
             </property>
          </sourceProperties>
+         <functionParameter
+               label="Extent Type"
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="type"
+               scriptable="false">
+            <functionParameterEnumeration>
+               <enumerationValue
+                     value="convexhull">
+               </enumerationValue>
+               <enumerationValue
+                     value="boundingbox">
+               </enumerationValue>
+            </functionParameterEnumeration>
+         </functionParameter>
       </propertyFunction>
    </extension>
    <extension
