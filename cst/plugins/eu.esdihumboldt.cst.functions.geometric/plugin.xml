@@ -223,7 +223,7 @@
                   eager="true"
                   label="Geometries"
                   maxOccurrence="n"
-                  minOccurrence="0">
+                  minOccurrence="1">
                <geometryCondition></geometryCondition>
             </property>
          </sourceProperties>
