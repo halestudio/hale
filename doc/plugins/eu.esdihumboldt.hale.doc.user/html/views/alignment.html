@@ -8,25 +8,63 @@
 	<h1>Alignment view</h1>
 	<p>
 		The <i>Alignment view</i> displays the current alignment in a graph
-		representation. At the top of the view is a combo box, where your can
-		select a defined type relation. The mapping cells displayed are those
-		that are associated with the selected relation. This is always the
-		corresponding cell, defining the type relation, but also the mappings
-		on properties that are applicable in the context of the mapped types.
-		The image below shows the mapping of the example project provided in
-		the <a class="command-link"
-			href='javascript:executeCommand("org.eclipse.ui.cheatsheets.openCheatSheet(cheatSheetId=eu.esdihumboldt.hale.ui.firststeps.firststepsCS)")'>
-			<img src="PLUGINS_ROOT/org.eclipse.help/command_link.png"
-			alt="command link">Get started with HALE</a> guide.
+		representation. By default the existing type relations are displayed
+		(see image below), the selectors at the top of the view can be used to
+		show relations associated to specific source or target types, or to a
+		specific type relation.
 	</p>
 	<div>
-		<img src="images/alignment_view.png" title="Alignment view" class="fit">
+		<img src="images/alignment_type_relations.png" title="Alignment view with type relations" class="fit">
 	</div>
+	<p>
+		To select a type relation either double click on the cell of the type
+		relation displayed in the view or use the <i>Select cell</i> button in
+		the middle. If a cell is already selected, the button will state the
+		name of the selected relation. Pressing the button will launch a
+		dialog where you can select a type relation. The image below shows the
+		mapping of the example project provided in the <a class="command-link"
+			href='javascript:executeCommand("org.eclipse.ui.cheatsheets.openCheatSheet(cheatSheetId=eu.esdihumboldt.hale.ui.firststeps.firststepsCS)")'>
+			<img src="PLUGINS_ROOT/org.eclipse.help/command_link.png"
+			alt="command link">Get started with HALE</a>
+		guide. The mapping cells displayed are those that are associated with
+		the selected relation. This is always the corresponding cell, defining
+		the type relation, but also the mappings on properties that are
+		applicable in the context of the mapped types.
+	</p>
+	<div>
+		<img src="images/alignment_cell_relations.png" title="Relations applicable in the context of a selected type relation" class="fit">
+	</div>
+	<p>Using the filter buttons in the view bar, you can show or hide certain relations:</p>
+	<table>
+		<tr>
+			<td><img src="images/augmentation.gif"></td>
+			<td>Cells that are not linked to source schema elements, so called <i>Augmentations</i></td>
+		</tr>
+		<tr>
+			<td><img src="images/base_alignment.gif"></td>
+			<td>Cells from base alignments</td>
+		</tr>
+		<tr>
+			<td><img src="images/disabled.gif"></td>
+			<td>Cells that are disabled in context of the current type relation</td>
+		</tr>
+		<tr>
+			<td><img src="images/inherited.png"></td>
+			<td>Cells that are applicable in the current context only through inheritance</td>
+		</tr>
+	</table>
+	<p>
+		To show relations based on source or target types, independently of
+		defined type relations, make sure there is no type relation selected,
+		then select a type in the field to the left or right of the <i>Select
+			cell</i> button.
+	</p>
 	<p>
 		You can select a schema element or <i>cell</i> by clicking on the
 		respective graph node. The selected node is highlighted with a yellow
 		background. The image below shows the explanation of a selected <i>cell</i>
-		in the <a href="../properties.html">Properties view</a>.
+		in the <a href="../properties.html">Properties view</a>. In the <i>Notes</i>
+		section you can associate comments to the cell.
 	</p>
 	<div>
 		<img src="images/alignment_properties.png" title="Cell properties" class="fit">
@@ -34,7 +72,10 @@
 	<p>
 		The <i>Alignment view</i> also offers the possibility to manipulate
 		the mapping. A selected cell may be edited or removed, using either
-		the context menu or the <i>Edit</i> menu in the main menu bar.
+		the context menu or the <i>Edit</i> menu in the main menu bar. Also,
+		an existing cell can be replaced with another function, the cell
+		priority can be set and the cell can be enabled or disabled in the
+		context of the current type relation.
 	</p>
 	<div>
 		<img src="images/alignment_actions.png" title="Cell context menu" class="fit">
@@ -47,6 +88,9 @@
 			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelc.png">
 		<p>
 			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/what_is_alignment.html">What is an Alignment?</a>
+		</p>
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/what_is_a_mapping_cell.html">What is a mapping cell?</a>
 		</p>
 	</div>
 	

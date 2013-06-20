@@ -87,6 +87,10 @@
 			<td>Value assignment independent of the source schema</td>
 		</tr>
 	</table>
+	<p>There are light and dark variants of the background colors for
+		properties. The darker background stands for a direct mapping of the
+		property, while properties with the light background color are mapped
+		indirectly through inheritance.</p>
 	<p>The tool bar atop each schema viewer allows to filter the schema
 		elements according to their classification. You can also enter a
 		filter string, to search for types or properties with certain names.</p>
@@ -94,6 +98,38 @@
 		schema elements using a filter string is restricted to eight levels
 		deep, to maintain an acceptable feedback time. If the schema contains
 		cycles, the search result may still go deeper than eight levels.</p>
+		
+	<h2>Display modes</h2>
+	<p>
+		In the <i>Schema Explorer</i> you can choose between two different
+		modes for displaying the types contained in the schemas:
+	</p>
+	<table>
+		<tr>
+			<td><img src="images/flat_hierarchy.gif"></td>
+			<td>All types are displayed in a flat list, children of types are properties of the type.</td>
+		</tr>
+		<tr>
+			<td><img src="images/inheritance_hierarchy.gif"></td>
+			<td>Types are displayed by the inheritance hierarchy. Sub-types
+				are children of their super-types, in addition to the super-types'
+				properties.</td>
+		</tr>
+	</table>
+	<p>Using the filter buttons in the view bar, you can show or hide
+		certain properties in the schema types:</p>
+	<table>
+		<tr>
+			<td><img src="images/empty.gif"></td>
+			<td>Properties that have values in the currently loaded data</td>
+		</tr>
+		<tr>
+			<td><img src="images/inherited.gif"></td>
+			<td>Properties that are inherited from a super type.</td>
+		</tr>
+	</table>
+	<p>Hiding the inherited properties, in combination with displaying
+		the types according to their hierarchy, is very useful for analyzing the type hierarchy.</p>
 
 	<br>
 	<!-- related concepts: schema stuff, contexts! -->
