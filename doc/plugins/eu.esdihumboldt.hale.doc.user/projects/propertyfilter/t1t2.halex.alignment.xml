@@ -1,114 +1,142 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<hale-alignment>
-    <cell transformation="eu.esdihumboldt.hale.align.retype">
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="C2cf5bf0d-9f4f-4191-9cc0-8b589c7655fc" priority="normal">
         <source>
             <class>
-                <type>{http://www.example.org/t1/}SoilProfileType</type>
+                <type name="SoilProfileType" ns="http://www.example.org/t1/"/>
             </class>
         </source>
         <target>
             <class>
-                <type>{http://www.example.org/t2/}SoilObjectType</type>
+                <type name="SoilObjectType" ns="http://www.example.org/t2/"/>
             </class>
         </target>
     </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.rename">
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C41072c9c-c71b-4cdb-a237-fab86caa3591" priority="normal">
         <source>
             <property>
-                <type>{http://www.example.org/t1/}SoilProfileType</type>
-                <child>id</child>
+                <type name="SoilProfileType" ns="http://www.example.org/t1/"/>
+                <child name="id"/>
             </property>
         </source>
         <target>
             <property>
-                <type>{http://www.example.org/t2/}SoilObjectType</type>
-                <child>id</child>
+                <type name="SoilObjectType" ns="http://www.example.org/t2/"/>
+                <child name="id"/>
             </property>
         </target>
     </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.assign">
+    <cell relation="eu.esdihumboldt.hale.align.assign" id="C283dcaaf-1c09-49c0-b4db-09c20f70a417" priority="normal">
         <target>
             <property>
-                <type>{http://www.example.org/t2/}SoilObjectType</type>
-                <child>attribute</child>
-                <child>name</child>
+                <type name="SoilObjectType" ns="http://www.example.org/t2/"/>
+                <child name="attribute"/>
+                <child name="name"/>
             </property>
         </target>
-        <parameter name="value" value="carbonateContent"/>
+        <parameter value="carbonateContent" name="value"/>
     </cell>
-    <cell transformation="eu.esdihumboldt.cst.functions.numeric.mathexpression">
+    <cell relation="eu.esdihumboldt.cst.functions.numeric.mathexpression" id="C6c592086-e9a5-4f86-9659-50928270ab10" priority="normal">
         <source name="var">
             <property>
-                <type>{http://www.example.org/t1/}SoilProfileType</type>
-                <child>carbon</child>
+                <type name="SoilProfileType" ns="http://www.example.org/t1/"/>
+                <child name="carbon"/>
             </property>
         </source>
         <target>
             <property>
-                <type>{http://www.example.org/t2/}SoilObjectType</type>
-                <child>attribute</child>
-                <child>value</child>
+                <type name="SoilObjectType" ns="http://www.example.org/t2/"/>
+                <child name="attribute"/>
+                <child name="value"/>
             </property>
         </target>
-        <parameter name="expression" value="carbon * 100"/>
+        <parameter value="carbon * 100" name="expression"/>
     </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.rename">
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="Caea25322-9fd6-43fd-943c-8f8b36a1e5c2" priority="normal">
         <source>
             <property>
-                <type>{http://www.example.org/t1/}SoilProfileType</type>
-                <child condition="CQL:value like 'Bd%'">bulkDensityOrSolidVolume</child>
+                <type name="SoilProfileType" ns="http://www.example.org/t1/"/>
+                <child name="bulkDensityOrSolidVolume">
+                    <condition lang="CQL">value like 'Bd%'</condition>
+                </child>
             </property>
         </source>
         <target>
             <property>
-                <type>{http://www.example.org/t2/}SoilObjectType</type>
-                <child context="0">attribute</child>
-                <child>value</child>
+                <type name="SoilObjectType" ns="http://www.example.org/t2/"/>
+                <child name="attribute">
+                    <context>0</context>
+                </child>
+                <child name="value"/>
             </property>
         </target>
     </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.assign">
-        <target>
-            <property>
-                <type>{http://www.example.org/t2/}SoilObjectType</type>
-                <child context="0">attribute</child>
-                <child>name</child>
-            </property>
-        </target>
-        <parameter name="value" value="bulkDensity"/>
-    </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.rename">
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C28fc8e6d-0a21-43bc-89fd-393ca8484418" priority="normal">
         <source>
             <property>
-                <type>{http://www.example.org/t1/}SoilProfileType</type>
-                <child condition="CQL:value like 'SV%'">bulkDensityOrSolidVolume</child>
+                <type name="SoilProfileType" ns="http://www.example.org/t1/"/>
+                <child name="bulkDensityOrSolidVolume">
+                    <condition lang="CQL">value like 'SV%'</condition>
+                </child>
             </property>
         </source>
         <target>
             <property>
-                <type>{http://www.example.org/t2/}SoilObjectType</type>
-                <child context="1">attribute</child>
-                <child>value</child>
+                <type name="SoilObjectType" ns="http://www.example.org/t2/"/>
+                <child name="attribute">
+                    <context>1</context>
+                </child>
+                <child name="value"/>
             </property>
         </target>
     </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.assign">
+    <cell relation="eu.esdihumboldt.hale.align.assign" id="C4cee5b70-704c-4409-902a-33786c927023" priority="normal">
         <target>
             <property>
-                <type>{http://www.example.org/t2/}SoilObjectType</type>
-                <child context="1">attribute</child>
-                <child>name</child>
+                <type name="SoilObjectType" ns="http://www.example.org/t2/"/>
+                <child name="type"/>
             </property>
         </target>
-        <parameter name="value" value="solidVolume"/>
+        <parameter value="profile" name="value"/>
     </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.assign">
+    <cell relation="eu.esdihumboldt.hale.align.assign" id="Cb19850c5-1c2a-4556-b3cf-ee1d7124d0ce" priority="normal">
+        <source name="anchor">
+            <property>
+                <type name="SoilProfileType" ns="http://www.example.org/t1/"/>
+                <child name="bulkDensityOrSolidVolume">
+                    <condition lang="CQL">value like 'Bd%'</condition>
+                </child>
+            </property>
+        </source>
         <target>
             <property>
-                <type>{http://www.example.org/t2/}SoilObjectType</type>
-                <child>type</child>
+                <type name="SoilObjectType" ns="http://www.example.org/t2/"/>
+                <child name="attribute">
+                    <context>0</context>
+                </child>
+                <child name="name"/>
             </property>
         </target>
-        <parameter name="value" value="profile"/>
+        <parameter value="bulkDensity" name="value"/>
     </cell>
-</hale-alignment>
+    <cell relation="eu.esdihumboldt.hale.align.assign" id="C21fda951-4df7-44a2-afa5-31337bb4630a" priority="normal">
+        <source name="anchor">
+            <property>
+                <type name="SoilProfileType" ns="http://www.example.org/t1/"/>
+                <child name="bulkDensityOrSolidVolume">
+                    <condition lang="CQL">value like 'SV%'</condition>
+                </child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="SoilObjectType" ns="http://www.example.org/t2/"/>
+                <child name="attribute">
+                    <context>1</context>
+                </child>
+                <child name="name"/>
+            </property>
+        </target>
+        <parameter value="solidVolume" name="value"/>
+    </cell>
+</alignment>
