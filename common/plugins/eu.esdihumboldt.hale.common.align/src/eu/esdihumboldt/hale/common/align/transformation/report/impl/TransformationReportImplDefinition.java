@@ -48,7 +48,7 @@ public class TransformationReportImplDefinition extends
 	 */
 	@Override
 	protected TransformationReporter createReport(Properties props) {
-		return new DefaultTransformationReporter(props.getProperty(KEY_REPORT_TASKNAME), false);
+		return new PreparedTransformationReporter(props.getProperty(KEY_REPORT_TASKNAME), false);
 	}
 
 	/**
