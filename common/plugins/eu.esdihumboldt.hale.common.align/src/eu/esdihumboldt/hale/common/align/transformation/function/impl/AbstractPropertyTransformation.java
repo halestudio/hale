@@ -45,6 +45,7 @@ public abstract class AbstractPropertyTransformation<E extends TransformationEng
 	private ListMultimap<String, PropertyValue> variables;
 	private ListMultimap<String, PropertyEntityDefinition> resultNames;
 	private TypeDefinition targetType;
+	private Cell cell;
 
 	/**
 	 * @see PropertyTransformation#setTargetType(TypeDefinition)
@@ -94,10 +95,20 @@ public abstract class AbstractPropertyTransformation<E extends TransformationEng
 	 */
 	@Override
 	public void execute(String transformationIdentifier, E engine,
-			Map<String, String> executionParameters, TransformationLog log, Cell typeCell)
+			Map<String, String> executionParameters, TransformationLog log, Cell cell)
 			throws TransformationException {
+		this.cell = cell;
 		results = evaluate(transformationIdentifier, engine, variables, resultNames,
 				executionParameters, log);
+	}
+
+	/**
+	 * Get the cell used to configure this function evaluation.
+	 * 
+	 * @return the cell
+	 */
+	protected Cell getCell() {
+		return cell;
 	}
 
 	/**
