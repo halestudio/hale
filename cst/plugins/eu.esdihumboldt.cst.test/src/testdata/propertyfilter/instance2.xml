@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<tns:collection xmlns:tns="http://www.example.org/t2/" xmlns:ns1="http://www.w3.org/1999/xhtml" xmlns:hfp="http://www.w3.org/2001/XMLSchema-hasFacetAndProperty" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/t2/ file:/home/simon/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propertyfilter/t2.xsd">
+  <tns:soilObject>
+    <type>profile</type>
+    <attribute>
+      <name>bulkDensity</name>
+      <value>Bd0</value>
+    </attribute>
+    <attribute>
+      <name>carbonateContent</name>
+      <value>0.37</value>
+    </attribute>
+  </tns:soilObject>
+  <tns:soilObject>
+    <type>profile</type>
+    <attribute>
+      <name>bulkDensity</name>
+      <value>Bd4</value>
+    </attribute>
+    <attribute>
+      <name>carbonateContent</name>
+      <value>0.91</value>
+    </attribute>
+  </tns:soilObject>
+  <tns:soilObject>
+    <type>profile</type>
+    <attribute>
+      <name>solidVolume</name>
+      <value>SV0</value>
+    </attribute>
+    <attribute>
+      <name>carbonateContent</name>
+      <value>0.1</value>
+    </attribute>
+  </tns:soilObject>
+  <tns:soilObject>
+    <type>profile</type>
+    <attribute>
+      <name>solidVolume</name>
+      <value>SV1</value>
+    </attribute>
+    <attribute>
+      <name>carbonateContent</name>
+      <value>0.51</value>
+    </attribute>
+  </tns:soilObject>
+</tns:collection>
