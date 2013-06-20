@@ -1,29 +1,29 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<hale-project version="2.5.0.alpha">
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<hale-project version="2.6.0.qualifier">
     <name>Source property condition example</name>
     <author>Simon Templer</author>
-    <description xml:space="preserve">Simple example project that demonstrates how a condition on a source property can be used to map a source property to different target properties depending on its value.</description>
+    <description>Simple example project that demonstrates how a condition on a source property can be used to map a source property to different target properties depending on its value.</description>
     <created>2012-03-05T15:00:15.994+01:00</created>
-    <modified>2012-03-05T15:33:06.002+01:00</modified>
+    <modified>2013-06-20T05:11:33.165+02:00</modified>
     <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
         <setting name="projectFiles.separate">false</setting>
-        <setting name="target">file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propertyfilter/t1t2.halex</setting>
+        <setting name="target">file:/home/simon/repos/hale/doc/plugins/eu.esdihumboldt.hale.doc.user/projects/propertyfilter/t1t2.halex</setting>
         <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
     </save-config>
     <resource action-id="eu.esdihumboldt.hale.io.schema.read.source" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
-        <setting name="source">file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propertyfilter/t1.xsd</setting>
+        <setting name="source">file:/home/simon/repos/hale/doc/plugins/eu.esdihumboldt.hale.doc.user/projects/propertyfilter/t1.xsd</setting>
         <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
     </resource>
     <resource action-id="eu.esdihumboldt.hale.io.schema.read.target" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
-        <setting name="source">file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propertyfilter/t2.xsd</setting>
+        <setting name="source">file:/home/simon/repos/hale/doc/plugins/eu.esdihumboldt.hale.doc.user/projects/propertyfilter/t2.xsd</setting>
         <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
     </resource>
     <resource action-id="eu.esdihumboldt.hale.io.instance.read.source" provider-id="eu.esdihumboldt.hale.io.xml.reader">
-        <setting name="source">file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propertyfilter/instance1.xml</setting>
+        <setting name="source">file:/home/simon/repos/hale/doc/plugins/eu.esdihumboldt.hale.doc.user/projects/propertyfilter/instance1.xml</setting>
         <setting name="contentType">eu.esdihumboldt.hale.io.gml</setting>
     </resource>
-    <file name="styles.sld" location="file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propertyfilter/t1t2.halex.styles.sld"/>
-    <file name="alignment.xml" location="file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propertyfilter/t1t2.halex.alignment.xml"/>
+    <file name="styles.sld" location="t1t2.halex.styles.sld"/>
+    <file name="alignment.xml" location="t1t2.halex.alignment.xml"/>
     <property name="mappableSourceType/1">{http://www.example.org/t1/}SoilProfileType</property>
     <property name="mappableSourceType/count">1</property>
     <property name="mappableTargetType/1">{http://www.example.org/t2/}SoilObjectType</property>
