@@ -369,6 +369,12 @@
                relative="org.eclipse.ui.views.PropertySheet">
          </view>
       </perspectiveExtension>
+      <perspectiveExtension
+            targetID="*">
+         <viewShortcut
+               id="eu.esdihumboldt.hale.ui.views.styledmap">
+         </viewShortcut>
+      </perspectiveExtension>
    </extension>
 
 </plugin>
