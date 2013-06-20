@@ -56,6 +56,7 @@ abstract class TransformationExamples {
 	public static final String PROPCONDITION2 = 'propcondition2'
 	public static final String TYPEFILTER = 'typefilter'
 	public static final String PROPERTYFILTER = 'propertyfilter'
+	public static final String IMPASSIGN = 'impassign'
 
 	public static final String CM_UNION_1 = 'cm_union_1'
 	public static final String CM_UNION_2 = 'cm_union_2'
@@ -151,6 +152,7 @@ abstract class TransformationExamples {
 		(PROPCONDITION2): defaultExample(PROPCONDITION2),
 		(TYPEFILTER): defaultExample(TYPEFILTER),
 		(PROPERTYFILTER): defaultExample(PROPERTYFILTER),
+		(IMPASSIGN): defaultExample(IMPASSIGN),
 
 		// context matching examples
 		(CM_UNION_1): defaultExample(CM_UNION_1),

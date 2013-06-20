@@ -175,34 +175,6 @@ public class ConceptualSchemaTransformerTest extends DefaultTransformationTest {
 	}
 
 	/**
-	 * Test where properties from a simple source type are mapped to to complex
-	 * properties in that target type, with some of the needed information being
-	 * given only implicit through the corresponding source property.
-	 * 
-	 * @throws Exception if an error occurs executing the test
-	 */
-	@Ignore
-	@Test
-	public void testImplicitAssign() throws Exception {
-//		Alignment alignment = loadAlignment(getClass().getResource("/testdata/impassign/t1.xsd")
-//				.toURI(), getClass().getResource("/testdata/impassign/t2.xsd").toURI(), getClass()
-//				.getResource("/testdata/impassign/t1t2.halex.alignment.xml").toURI());
-//
-//		assertNotNull(alignment);
-		/*
-		 * FIXME the alignment is still missing the assignments for the language
-		 * values, which must be in correspondence with the related source
-		 * property
-		 */
-//		assertEquals(5, alignment.getCells().size());
-
-//		Transformation transformation = processor.process(alignment);
-//		assertNotNull(transformation);
-
-		// TODO check transformation instructions
-	}
-
-	/**
 	 * Test where properties from a simple source type are mapped to to a
 	 * complex property with simple content and attributes.
 	 * 
