@@ -385,7 +385,7 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 			URI rawBaseURI = baseEntry.getValue();
 			// resolve here, to not include the same file through different
 			// relative paths...
-			URI baseURI = updater.findLocation(rawBaseURI, true, false, false);
+			URI baseURI = updater.findLocation(rawBaseURI, true, false);
 			if (baseURI == null) {
 				throw new IOException("Couldn't load an included alignment (" + rawBaseURI
 						+ "). File not found.", null);
@@ -426,7 +426,7 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 				// Then try path update in case several alignments that
 				// reference each other were moved in the same way as the
 				// project.
-				uri = updater.findLocation(uri, true, false, false);
+				uri = updater.findLocation(uri, true, false);
 				if (uri == null)
 					throw new IOException("Couldn't load an included alignment (" + rawUri
 							+ "). File not found.");
