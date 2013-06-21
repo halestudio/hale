@@ -179,7 +179,7 @@ public abstract class AbstractGeometryWriter<T extends Geometry> extends Abstrac
 			}
 		}
 
-		if (writePos(writer, coordinates, elementType, gmlNs)) {
+		if (writePos(writer, coordinates, elementType, gmlNs, null)) {
 			return;
 		}
 
@@ -200,26 +200,24 @@ public abstract class AbstractGeometryWriter<T extends Geometry> extends Abstrac
 	 * @param coordinates the coordinates to write
 	 * @param elementType the type of the encompassing element
 	 * @param gmlNs the GML namespace
+	 * @param posName the name of the desired DirectPositionType property, or
+	 *            <code>null</code> if any
 	 * @return if writing the coordinates was successful
 	 * @throws XMLStreamException if an error occurs writing the coordinates
 	 */
-	private static boolean writePos(XMLStreamWriter writer, Coordinate[] coordinates,
-			TypeDefinition elementType, String gmlNs) throws XMLStreamException {
+	protected static boolean writePos(XMLStreamWriter writer, Coordinate[] coordinates,
+			TypeDefinition elementType, String gmlNs, String posName) throws XMLStreamException {
 		PropertyDefinition posAttribute = null;
 
 		// check for DirectPositionType
-		for (PropertyDefinition att : DefinitionUtil.getAllProperties(elementType)) { // XXX
-																						// is
-																						// this
-																						// enough?
-																						// or
-																						// must
-																						// groups
-																						// be
-																						// handled?
+		// XXX is this enough? or must groups be handled?
+		for (PropertyDefinition att : DefinitionUtil.getAllProperties(elementType)) {
 			if (att.getPropertyType().getName().equals(new QName(gmlNs, "DirectPositionType"))) { //$NON-NLS-1$
-				posAttribute = att;
-				break;
+				// found a property with DirectPositionType
+				if (posName == null || posName.equals(att.getName().getLocalPart())) {
+					posAttribute = att;
+					break;
+				}
 			}
 		}
 
