@@ -42,6 +42,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 import eu.esdihumboldt.hale.io.gml.writer.internal.GmlWriterUtil;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryConverterRegistry.ConversionLadder;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.CurveWriter;
+import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.EnvelopeWriter;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.LegacyMultiPolygonWriter;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.LegacyPolygonWriter;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.LineStringWriter;
@@ -85,6 +86,7 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 		sgm.registerGeometryWriter(new MultiLineStringWriter());
 		sgm.registerGeometryWriter(new LegacyPolygonWriter());
 		sgm.registerGeometryWriter(new LegacyMultiPolygonWriter());
+		sgm.registerGeometryWriter(new EnvelopeWriter());
 
 		return sgm;
 	}
