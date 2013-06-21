@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="stylesheet" type="text/css" href="new.css" />
+<title>What's new in HALE 2.6</title>
+</head>
+<body>
+	<h1>What's new in HALE 2.6</h1>
+	<p>These are the descriptions of some of the more interesting or
+		significant changes made to HALE for the 2.6.0 release since the last
+		stable release 2.5.0.</p>
+		
+	<ul>
+		<li><a href="#2_6_0_UI" shape="rect">User Interface</a></li>
+		<li><a href="#2_6_0_Core" shape="rect">Transformation, formats and other functionalities</a></li>
+	</ul>
+
+	<!-- 2.6.0 -->
+	<table border="0" cellpadding="15" cellspacing="0" class="news" id="2_6_0">
+		<tbody>
+
+			<!-- User Interface -->
+			<tr>
+				<td class="section" colspan="2" id="2_6_0_UI" rowspan="1"><h2>User
+						Interface</h2></td>
+			</tr>
+			
+			<tr id="occurring_values">
+				<td class="title" colspan="1" rowspan="1">Occurring values for a property</td>
+				<td class="content" colspan="1" rowspan="1">For the mapping not
+					only the schema is relevant, but what data it actually is populated
+					with. Analyse the loaded source data using the new <i>Occurring
+						values</i> section in the <i>Properties</i> view. It will appear for
+					any selected schema property (even with a context defined) that
+					holds simple values like strings, dates or numbers. Retrieving the
+					occurring values has to be triggered manually, but you will get a
+					list of all values together with the respective number of occurrence.
+					<p>
+						<img src="2_6_0_images/occurring_values.png" />
+					</p> <!-- TODO p>
+						For more information, see the <a
+							href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/views/schema_explorer.html">Schema
+							Explorer</a> documentation.
+					</p-->
+				</td>
+			</tr>
+
+			<tr id="schema_hierarchy">
+				<td class="title" colspan="1" rowspan="1">Schema by hierarchy</td>
+				<td class="content" colspan="1" rowspan="1">In the <i>Schema
+						Explorer</i> it is now possible to arrange the types in a schema by
+					their hierarchy. This is especially handy for defining relations on
+					super types. Furthermore, there is a new option to hide all
+					properties that are introduced by inheritance. Thus you can easily
+					analyze the schema and its type hierarchy.
+					<p>
+						<img src="2_6_0_images/schema_hierarchy.png" />
+					</p>
+					<p>
+						For more information, see the <a
+							href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/views/schema_explorer.html">Schema
+							Explorer</a> documentation.
+					</p>
+				</td>
+			</tr>
+			
+			<tr id="show_mapping">
+				<td class="title" colspan="1" rowspan="1">Show mapping for schema elements</td>
+				<td class="content" colspan="1" rowspan="1">It can be tedious
+					in a large mapping to look for a specific relation you want to
+					inspect or edit. Now you can use the <i>Mapping</i> view to show
+					mappings related to specific schema elements - just select the
+					element in the <i>Schema Explorer</i> and open the mapping view.
+					Mappings on sub-properties of the element will be shown as well, if
+					you enable it in the <i>mapping</i> view.
+					<p>
+						<img src="2_6_0_images/show_mapping.png" />
+					</p> <!-- TODO relate to Mapping View p>
+						For more information, see the <a
+							href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/views/schema_explorer.html">Schema
+							Explorer</a> documentation.
+					</p-->
+				</td>
+			</tr>
+			
+			<tr id="cell_notes">
+				<td class="title" colspan="1" rowspan="1">Comment on mappings</td>
+				<td class="content" colspan="1" rowspan="1">Annotate mapping
+					cells with your comments, using the new <i>Notes</i> section in the
+					<i>Properties</i> view. These notes will for instance also be
+					included in a mapping table exported to an Excel spreadsheet.
+					<p>
+						<img src="2_6_0_images/cell_notes.png" />
+					</p>
+				</td>
+			</tr>
+			
+			<tr id="alignment_view">
+				<td class="title" colspan="1" rowspan="1">Changes to Alignment view</td>
+				<td class="content" colspan="1" rowspan="1">Due to the extended
+					mapping functionalities that have been added in this version, a few aspects of how you work with mappings in the <i>Alignment</i>
+					view have changed. Most important is the selection of the context
+					of the mapping cells that are actually displayed. By default (no
+					selection) the type relations will be displayed, but you can also
+					focus on relations applicable in context of specific type relations
+					or certain source or target types.
+					<p>
+						<img src="2_6_0_images/alignment_header.png" />
+					</p>
+					<p>
+						For more information, see the <a
+							href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/views/alignment.html">Alignment view</a> documentation.
+					</p>
+				</td>
+			</tr>
+
+			<!-- Transformation and other functionalities -->
+			<tr>
+				<td class="section" colspan="2" id="2_6_0_Core" rowspan="1"><h2>Transformation, formats
+						and other functionalities</h2></td>
+			</tr>
+			
+			<tr id="priority">
+				<td class="title" colspan="1" rowspan="1">Relation priority</td>
+				<td class="content" colspan="1" rowspan="1">If you create
+					multiple relations with the same target, those relations will
+					concur. Now you can assign specific priorities to relations - if
+					the relation with the highest priority does not apply or does not
+					yield a result, the relation with the next-highest priority will be
+					evaluated, and so on.
+					<p>
+						<img src="2_6_0_images/priority_mapping_set.png" />
+					</p>
+					<p>
+						For more information, see <a
+							href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/cell_priority.html">Cell priority</a>.
+					</p>
+				</td>
+			</tr>
+
+			<tr id="inheritance">
+				<td class="title" colspan="1" rowspan="1">Inherited property relations</td>
+				<td class="content" colspan="1" rowspan="1">The type hierarchy in
+					source and target schema can be exploited to create mappings faster
+					and with minimal redundancy. Relations you create between
+					properties of specific types apply as well for their sub-types -
+					and even for conditions applied to the type. The image below shows an example type hierarchy displayed in the <i>Schema
+						Explorer</i>.
+					<p>
+						<img src="2_6_0_images/inherit.png" />
+					</p>
+					<p>
+						In the example, relations defined on properties of
+						<code>River</code>
+						will also be applied for the two type condition contexts of
+						<code>River</code>,
+						relations on properties of <code>_Feature</code> will be applied to
+						the corresponding properties of <code>River</code>
+						and the two contexts as well. In the <i>Alignment</i> view, inherited relations are marked with an upward arrow (<img src="2_6_0_images/inherited.png" />).
+					</p>
+				</td>
+			</tr>
+			
+			<tr id="base_mappings">
+				<td class="title" colspan="1" rowspan="1">Mapping modules</td>
+				<td class="content" colspan="1" rowspan="1">Created mappings can now
+					be reused in other projects. An existing HALE alignment file can be
+					imported as base alignment into the current project. The mappings defined in
+					the base alignment will appear as part of the project's alignment
+					in addition to the mappings defined therein. Base alignment
+					mappings cannot be edited or deleted, but you can disable them if needed.
+					<p>
+						<img src="2_6_0_images/base_alignment.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="fme_integration">
+				<td class="title" colspan="1" rowspan="1">FME integration support</td>
+				<td class="content" colspan="1" rowspan="1">HALE now includes a
+					command line interface for interaction with FME (Feature
+					Manipulation Engine), FME will include support for HALE starting
+					with FME 2014.</td>
+			</tr>
+			
+			<tr id="xslt">
+				<td class="title" colspan="1" rowspan="1">Create XSLT from Alignment</td>
+				<td class="content" colspan="1" rowspan="1">New in this release
+					is the ability to export XML to XML mappings to XSLT 2.0 scripts.
+					The exported scripts can be used to transform data independently of
+					HALE. The XSLT export supports a different set of functions than
+					the built-in HALE transformation. When targeting XSLT for the
+					transformation, use the corresponding compatibility mode. Change to
+					the compatibility mode any time to see if your mapping is
+					compatible with the XSLT export.
+					<p>
+						<img src="2_6_0_images/comp_xslt.png" />
+					</p>
+				</td>
+			</tr>
+			
+			<tr id="mapping_table">
+				<td class="title" colspan="1" rowspan="1">Alignment as mapping table</td>
+				<td class="content" colspan="1" rowspan="1">Export your
+					alignment as a mapping table. Supported formats are Excel
+					spreadsheets (.xls and .xslx) and CSV files with multi-line values
+					(e.g. as supported in LibreOffice).
+					<p>
+						<!-- img src="2_6_0_images/table_part.png" /-->
+						<img src="2_6_0_images/table_complete.png" />
+					</p>
+				</td>
+			</tr>
+
+		</tbody>
+	</table>
+
+</body>
+</html>
