@@ -196,6 +196,24 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 				}
 			}
 
+			if (candidates.isEmpty()) {
+				// also try the generic geometry type
+				geometry = originalGeometry;
+				geomType = Geometry.class;
+
+				log.info("Possible structure for writing " + originalType.getSimpleName() + //$NON-NLS-1$
+						" not found, trying the generic geometry type instead"); //$NON-NLS-1$ //$NON-NLS-2$
+
+				DefinitionPath candPath = restoreCandidate(property.getPropertyType(), geomType);
+				if (candPath != null) {
+					// use stored candidate
+					candidates = Collections.singletonList(candPath);
+				}
+				else {
+					candidates = findCandidates(property, geomType);
+				}
+			}
+
 			for (DefinitionPath candidate : candidates) {
 				log.info("Geometry structure match: " + geomType.getSimpleName() + " - " + candidate); //$NON-NLS-1$ //$NON-NLS-2$
 			}
