@@ -95,8 +95,10 @@ public abstract class AbstractCellExplanation implements CellExplanation {
 						+ " value)";
 		}
 		else {
-			String filterString = StringEscapeUtils.escapeHtml(AlignmentUtil.getContextText(entity
-					.getDefinition()));
+			String filterString = AlignmentUtil.getContextText(entity.getDefinition());
+			if (html) {
+				filterString = StringEscapeUtils.escapeHtml(filterString);
+			}
 			if (filterString != null)
 				text += " (matching " + quoteText(filterString, html) + ")";
 		}
