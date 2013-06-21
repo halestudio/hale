@@ -212,6 +212,9 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 				else {
 					candidates = findCandidates(property, geomType);
 				}
+
+				// remember generic match for later
+				storeCandidate(property.getPropertyType(), originalType, candidates.get(0));
 			}
 
 			for (DefinitionPath candidate : candidates) {
