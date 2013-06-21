@@ -57,12 +57,12 @@ public class ExtentTransformation extends
 		CRSDefinition commonCrs = null;
 		Geometry extent = null;
 
-		int count = 0;
+//		int count = 0;
 		for (PropertyValue pv : variables.get(null)) {
 			// find contained geometries
 			Object value = pv.getValue();
 			traverser.traverse(value, geoFind);
-			count += geoFind.getGeometries().size();
+//			count += geoFind.getGeometries().size();
 
 			for (GeometryProperty<?> geom : geoFind.getGeometries()) {
 				// check CRS
@@ -99,7 +99,7 @@ public class ExtentTransformation extends
 			geoFind.reset();
 		}
 
-		System.err.println(count);
+//		System.err.println(count);
 
 		if (extent != null) {
 			return new DefaultGeometryProperty<Geometry>(commonCrs, extent);
