@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.common.core.io;
 
+import java.io.Serializable;
+
 import org.w3c.dom.Element;
 
 import com.google.common.base.Objects;
@@ -33,12 +35,16 @@ import eu.esdihumboldt.hale.common.core.io.impl.StringValue;
  * 
  * @author Simon Templer
  */
-public abstract class Value {
+public abstract class Value implements Serializable {
+
+	private static final long serialVersionUID = 1628156172357895991L;
 
 	/**
 	 * Null value.
 	 */
 	public static final Value NULL = new Value() {
+
+		private static final long serialVersionUID = -1264492211623753778L;
 
 		@Override
 		public <T> T as(Class<T> expectedType) {

@@ -29,6 +29,8 @@ import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueExtension;
  */
 public class ComplexValue extends Value {
 
+	private static final long serialVersionUID = -8570342467474565043L;
+
 	private final Object value;
 
 	/**
