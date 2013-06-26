@@ -204,7 +204,7 @@
       </propertyFunction>
       <propertyFunction
             category="eu.esdihumboldt.cst.functions.geometric"
-            description="Compute geometric extent based on all input geometries."
+            description="Compute geometric extent based on all input geometries. The options Bounding Box, Convex Hull and Union are possible."
             icon="icons/geometry.png"
             identifier="eu.esdihumboldt.cst.functions.geometric.extent"
             name="Compute Extent">
@@ -239,6 +239,9 @@
                </enumerationValue>
                <enumerationValue
                      value="boundingbox">
+               </enumerationValue>
+               <enumerationValue
+                     value="union">
                </enumerationValue>
             </functionParameterEnumeration>
          </functionParameter>
