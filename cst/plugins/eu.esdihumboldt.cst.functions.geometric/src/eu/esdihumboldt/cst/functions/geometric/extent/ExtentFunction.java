@@ -40,7 +40,11 @@ public interface ExtentFunction {
 	/**
 	 * Bounding Box choice for extent functionality
 	 */
-
 	public static final String PARAM_BOUNDING_BOX = "boundingbox";
+
+	/**
+	 * Union choice for extent functionality
+	 */
+	public static final String PARAM_UNION = "union";
 
 }
