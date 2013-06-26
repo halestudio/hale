@@ -176,10 +176,12 @@ public class DefaultProjectWriter extends AbstractProjectWriter {
 				String name = entry.getKey();
 
 				// determine target file for project file
-				File pfile = new File(targetFile.getParentFile(), targetFile.getName() + "." + name);
+				String projectFileName = targetFile.getName() + "." + name;
+				URI relativeProjectFile = URI.create(projectFileName);
+				File pfile = new File(targetFile.getParentFile(), projectFileName);
 
 				// add project file information to project
-				getProject().getProjectFiles().add(new ProjectFileInfo(name, pfile.toURI()));
+				getProject().getProjectFiles().add(new ProjectFileInfo(name, relativeProjectFile));
 
 				// write entry
 				ProjectFile file = entry.getValue();
