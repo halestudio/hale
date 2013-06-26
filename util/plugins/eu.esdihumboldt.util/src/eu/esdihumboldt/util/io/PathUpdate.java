@@ -57,15 +57,23 @@ public class PathUpdate {
 	/**
 	 * Tries to find an existing readable URI.<br>
 	 * <ul>
-	 * <li>Tries the given URI directly</li>
-	 * <li>If the URI isn't absolute and an old location is available it is
-	 * resolved against that</li>
-	 * <li>If a old and new location is given the URI is transformed in the same
-	 * way</li>
+	 * <li>if the URI isn't absolute:
+	 * <ul>
+	 * <li>if a new location is available it is resolved against that</li>
+	 * <li>if an old location is available it is resolved against that</li>
 	 * </ul>
-	 * If none of that results in a valid, existing URI and tryFallback is true
-	 * {@link #updatePathFallback(URI)} is returned, otherwise <code>null</code>
-	 * is returned.
+	 * </li>
+	 * <li>if the URI is absolute:
+	 * <ul>
+	 * <li>if an old and a new location is available it is transformed in the
+	 * same way</li>
+	 * <li>the URI is used as is</li>
+	 * </ul>
+	 * </li>
+	 * </ul>
+	 * If none of the applicable cases results in a valid, existing URI and
+	 * tryFallback is true {@link #updatePathFallback(URI)} is returned,
+	 * otherwise <code>null</code> is returned.
 	 * 
 	 * @param uri the URI in question
 	 * @param tryFallback whether to use {@link #updatePathFallback(URI)} in the
@@ -74,14 +82,65 @@ public class PathUpdate {
 	 * @return a valid, existing URI or <code>null</code>
 	 */
 	public URI findLocation(URI uri, boolean tryFallback, boolean allowResource) {
-		if (IOUtils.testStream(uri, allowResource))
-			return uri;
-		URI absolute = resolveRelative(uri);
-		if (!absolute.equals(uri) && IOUtils.testStream(absolute, allowResource))
-			return absolute;
-		URI changed = changePath(absolute);
-		if (!changed.equals(absolute) && IOUtils.testStream(changed, allowResource))
-			return changed;
+		return findLocation(uri, tryFallback, allowResource, false);
+	}
+
+	/**
+	 * Tries to find an existing readable URI.<br>
+	 * <ul>
+	 * <li>if the URI isn't absolute:
+	 * <ul>
+	 * <li>if a new location is available it is resolved against that</li>
+	 * <li>if an old location is available it is resolved against that</li>
+	 * </ul>
+	 * </li>
+	 * <li>if the URI is absolute:
+	 * <ul>
+	 * <li>if an old and a new location is available it is transformed in the
+	 * same way</li>
+	 * <li>the URI is used as is</li>
+	 * </ul>
+	 * </li>
+	 * </ul>
+	 * If none of the applicable cases results in a valid, existing URI and
+	 * tryFallback is true {@link #updatePathFallback(URI)} is returned,
+	 * otherwise <code>null</code> is returned.
+	 * 
+	 * @param uri the URI in question
+	 * @param tryFallback whether to use {@link #updatePathFallback(URI)} in the
+	 *            end or not
+	 * @param allowResource whether to allow resolving through {@link Resources}
+	 * @param keepRelative if the URI is relative to the new location and
+	 *            keepRelative is set, the URI is returned as is
+	 * @return a valid, existing URI or <code>null</code>
+	 */
+	public URI findLocation(URI uri, boolean tryFallback, boolean allowResource,
+			boolean keepRelative) {
+		if (!uri.isAbsolute()) {
+			if (newLocation != null) {
+				URI newAbsolute = newLocation.resolve(uri);
+				if (IOUtils.testStream(newAbsolute, allowResource)) {
+					if (keepRelative)
+						return uri;
+					else
+						return newAbsolute;
+				}
+			}
+			if (oldLocation != null) {
+				URI oldAbsolute = oldLocation.resolve(uri);
+				if (IOUtils.testStream(oldAbsolute, allowResource))
+					return oldAbsolute;
+			}
+		}
+		else {
+			if (oldLocation != null && newLocation != null) {
+				URI changed = changePath(uri);
+				if (IOUtils.testStream(changed, allowResource))
+					return changed;
+			}
+			else if (IOUtils.testStream(uri, allowResource))
+				return uri;
+		}
 		if (tryFallback)
 			return updatePathFallback(uri);
 		else
@@ -121,22 +180,6 @@ public class PathUpdate {
 		}
 		oldRaw = o.substring(0, o.length() - commonEndLength);
 		newRaw = n.substring(0, n.length() - commonEndLength);
-	}
-
-	/**
-	 * If the given URI isn't absolute and an old location is available, it is
-	 * resolved against the old location. If the result cannot be found it
-	 * afterwards can be used with {@link #changePath(URI)}.
-	 * 
-	 * @param uri the URI to resolve
-	 * @return the resolved URI or the original URI, if it was absolute already
-	 *         or no location is available to resolve the URI against
-	 */
-	public URI resolveRelative(URI uri) {
-		if (!uri.isAbsolute() && oldLocation != null)
-			return oldLocation.resolve(uri);
-		else
-			return uri;
 	}
 
 	/**
