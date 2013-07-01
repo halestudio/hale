@@ -1,0 +1,610 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<xsd:schema xmlns="http://www.springframework.org/schema/osgi"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:beans="http://www.springframework.org/schema/beans"
+        xmlns:tool="http://www.springframework.org/schema/tool"
+        targetNamespace="http://www.springframework.org/schema/osgi"
+        elementFormDefault="qualified"
+        attributeFormDefault="unqualified"
+        version="1.2">
+
+	<xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:import namespace="http://www.springframework.org/schema/beans"/>
+    <xsd:import namespace="http://www.springframework.org/schema/tool"/>
+
+    <xsd:annotation>
+        <xsd:documentation><![CDATA[
+    Namespace support for the core services provided by Spring Dynamic Modules.
+        ]]></xsd:documentation>
+    </xsd:annotation>
+    
+    <xsd:attributeGroup name="defaults">
+    	<xsd:annotation>
+    		<xsd:documentation><![CDATA[Defaults for Spring-DM OSGi declarations.]]>
+    		</xsd:documentation>
+    	</xsd:annotation>
+    	<!-- attributes -->
+    	<xsd:attribute name="default-timeout" type="xsd:long" default="30000">
+    		<xsd:annotation>
+    			<xsd:documentation><![CDATA[
+    Default timeout (in milliseconds) for all reference (service importers) elements that do not explicitly specify one.
+    Default value is 300000 ms (5 minutes).
+    			]]></xsd:documentation>
+    		</xsd:annotation>
+    	</xsd:attribute>
+    	<xsd:attribute name="default-cardinality" type="TdefaultCardinalityOptions" default="1..X">
+    		<xsd:annotation>
+    			<xsd:documentation><![CDATA[
+    Default cardinality (of the relationship to the backing service(s)) for all OSGi references (singular or collections) 
+    elements that do not explicitly specify one.
+    Default value is '1..X' (resolved to '1..1' for osgi:reference and '1..N' for osgi:list/set) which means that a backing 
+    service must exist (this is a mandatory service reference). A value of '0..X' (resolved to '0..1' for osgi:reference 
+    and '0..N' for osgi:list/set) indicates that it is acceptable to be no backing service (an optional service reference).
+        		]]></xsd:documentation>
+        	</xsd:annotation>
+        </xsd:attribute>
+    </xsd:attributeGroup>
+    
+    <xsd:simpleType name="TdefaultCardinalityOptions">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="1..X">
+            	<xsd:annotation>
+            		<xsd:documentation><![CDATA[
+    A backing service must exist (this is a mandatory service reference).
+            		]]></xsd:documentation>
+            	</xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="0..X">
+            	<xsd:annotation>
+            		<xsd:documentation><![CDATA[
+    A backing service can be missing (this is an optional service reference).
+            		]]></xsd:documentation>
+            	</xsd:annotation>
+            </xsd:enumeration>
+        </xsd:restriction>
+    </xsd:simpleType>
+	
+    <!-- reference -->
+    <xsd:element name="reference" type="TsingleReference">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+    Defines a reference to a service obtained via the OSGi service registry.
+            ]]></xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+
+    <xsd:complexType name="Treference">
+        <xsd:complexContent>
+            <xsd:extension base="beans:identifiedType">
+                <xsd:sequence minOccurs="0" maxOccurs="1">
+                	<xsd:element name="interfaces" type="beans:listOrSetType" minOccurs="0" maxOccurs="1">
+                    	<xsd:annotation>
+                    		<xsd:documentation><![CDATA[
+	The set of service interfaces that the services obtained via the registry are required to support.
+    By convention, the interface attribute is a Java interface type, but may also be a (non-final)
+    class type.
+                    		]]></xsd:documentation>
+                    	</xsd:annotation>
+                    </xsd:element>                
+                    <xsd:element name="listener" type="Tlistener" minOccurs="0" maxOccurs="unbounded">
+                      <xsd:annotation>
+                      	<xsd:documentation><![CDATA[
+    Defines a listener that will receive notification when a service backing this reference is 
+    bound or unbound. 
+                      	]]></xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="interface" use="optional" type="xsd:token">
+                	<xsd:annotation>
+                		<xsd:documentation><![CDATA[
+    The service interface that the services obtained via the registry are required to support.
+    By convention this is a Java interface type, but may also be a (non-final) class type.
+                		]]></xsd:documentation>
+                		<xsd:appinfo>
+                			<tool:annotation>
+                				<tool:expected-type type="java.lang.Class" />
+                			</tool:annotation>
+                		</xsd:appinfo>
+                	</xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="filter" use="optional" type="xsd:string">
+                      <xsd:annotation>
+                      	<xsd:documentation><![CDATA[
+    Defines an OSGi filter expression that is used to constrain the set of matching services
+    in the service registry. 
+                      	]]></xsd:documentation>
+                      </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="depends-on" type="xsd:string" use="optional">
+					<xsd:annotation>
+						<xsd:documentation><![CDATA[
+	Used to refer to the name of another bean that this bean depends on. Ensures that the
+	service registry look-up does not happen until after the dependent bean has been created 
+	(most commonly used to refer to a bundle bean).
+						]]></xsd:documentation>
+					</xsd:annotation>                
+                </xsd:attribute>
+                <xsd:attribute name="bean-name" type="xsd:string" use="optional">
+                	<xsd:annotation>
+                		<xsd:documentation><![CDATA[
+    Convenient shortcut for specifying a filter expression that matches on the bean-name property
+    that is automatically advertised for beans published using the service element.
+                		]]></xsd:documentation>
+                	</xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="context-class-loader" type="TreferenceClassLoaderOptions" default="client">
+                	<xsd:annotation>
+                		<xsd:documentation><![CDATA[
+    Defines how the context class loader is managed when invoking operations on a service
+    backing this service reference. The default value is 'client' which means that the context
+    class loader has visibility of the resources on this bundle's classpath. Alternate
+    options are 'service-provider' which means that the context class loader has visibility of 
+    resources on the bundle classpath of the bundle that exported the service, and 'unmanaged'
+    which does not do any management of the context class loader.
+                		]]></xsd:documentation>
+                	</xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    
+    <xsd:simpleType name="TreferenceClassLoaderOptions">
+        <xsd:restriction base="xsd:NMTOKEN">
+            <xsd:enumeration value="client"/>
+            <xsd:enumeration value="service-provider"/>
+            <xsd:enumeration value="unmanaged"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="Tlistener">
+    	<xsd:annotation>
+    		<xsd:documentation><![CDATA[
+    Defines a listener that will be notified when the service backing the enclosing service reference element is bound or 
+    unbound. Use either the 'ref' attribute or a nested bean declaration for the listener bean.
+    		]]></xsd:documentation>
+    	</xsd:annotation>
+        <xsd:sequence minOccurs="0" maxOccurs="1">
+            <!-- nested bean declaration -->
+            <xsd:any namespace="##other" minOccurs="1" maxOccurs="1" processContents="skip"/>
+        </xsd:sequence>
+
+        <!-- shortcut for bean references -->
+        <xsd:attribute name="ref" type="xsd:string" use="optional">
+        	<xsd:annotation>
+        		<xsd:documentation><![CDATA[
+    Refers by name to the bean that will receive bind and unbind events
+        		]]></xsd:documentation>
+        	</xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="bind-method" type="xsd:token" use="optional">
+        	<xsd:annotation>
+        		<xsd:documentation><![CDATA[
+    The name of the method to be invoked when a backing service is bound.
+        		]]></xsd:documentation>
+        	</xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="unbind-method" type="xsd:token" use="optional">
+        	<xsd:annotation>
+        		<xsd:documentation><![CDATA[
+    The name of the method to be invoked when a backing service is unbound.
+        		]]></xsd:documentation>
+        	</xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    
+    <!-- single reference -->
+    <xsd:complexType name="TsingleReference">
+        <xsd:complexContent>
+            <xsd:extension base="Treference">
+                 <xsd:attribute name="cardinality" use="optional" type="TsingleReferenceCardinality">
+                	<xsd:annotation>
+                      	<xsd:documentation><![CDATA[
+    Defines the required cardinality of the relationship to the backing service. If not specified, 
+    the default-cardinality attribute will apply. A value is '1..1' means that a backing service 
+    must exist (this is a mandatory service reference). A value of '0..1' indicates that it is 
+    acceptable to be no backing service (an optional service reference).
+                      	]]></xsd:documentation>
+                      </xsd:annotation>
+                </xsd:attribute>
+				<xsd:attribute name="timeout" use="optional" type="xsd:long">
+                    <xsd:annotation>
+                      	<xsd:documentation><![CDATA[
+    For a 'reference' element, the amount of time (in milliseconds) to wait for a backing service to be 
+    available when an operation is invoked. If not specified, the default-timeout attribute will apply.
+    See also the default-timeout attribute of the osgi element.
+                      	]]></xsd:documentation>
+                      </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+   </xsd:complexType>
+   
+   <xsd:simpleType name="TsingleReferenceCardinality">
+        <xsd:restriction base="xsd:token">
+            <xsd:enumeration value="1..1"/>
+            <xsd:enumeration value="0..1"/>
+        </xsd:restriction>
+   </xsd:simpleType>
+
+	<!-- reference collections (set, list) -->
+	<xsd:element name="list" type="TreferenceCollection">
+		<xsd:annotation>
+			<xsd:documentation source="java:org.springframework.osgi.service.importer.support.OsgiServiceCollectionProxyFactoryBean"><![CDATA[
+	Defines a bean of type 'List' that contains all of the services matching the given criteria.
+	The list members are managed dynamically as matching backing services come and go.
+			]]></xsd:documentation>
+			<xsd:appinfo>
+				<tool:annotation>
+					<tool:exports type="java.util.List"/>
+				</tool:annotation>
+			</xsd:appinfo>			
+		</xsd:annotation>
+	</xsd:element>
+
+	<xsd:element name="set" type="TreferenceCollection">
+		<xsd:annotation>
+			<xsd:documentation source="java:org.springframework.osgi.service.importer.support.OsgiServiceCollectionProxyFactoryBean"><![CDATA[
+	Defines a bean of type 'Set' that contains all of the services matching the given criteria.
+	The set members are managed dynamically as matching backing services come and go.
+			]]></xsd:documentation>
+			<xsd:appinfo>
+				<tool:annotation>
+					<tool:exports type="java.util.Set"/>
+				</tool:annotation>
+			</xsd:appinfo>			
+		</xsd:annotation>
+	</xsd:element>
+
+	<xsd:complexType name="TreferenceCollection">
+		<xsd:complexContent>
+			<xsd:extension base="Treference">
+				<xsd:sequence minOccurs="0" maxOccurs="1">
+					<xsd:element name="comparator" type="Tcomparator">
+						<xsd:annotation>
+							<xsd:documentation source="java:java.util.Comparator"><![CDATA[
+	Used to define an inline bean of type Comparator that will be used to sort the matching services.
+							]]></xsd:documentation>
+							<xsd:appinfo>
+								<tool:annotation>
+									<tool:expected-type type="java.util.Comparator" />
+  								</tool:annotation>
+							</xsd:appinfo>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+				<xsd:attribute name="comparator-ref" type="xsd:string" use="optional">
+					<xsd:annotation>
+						<xsd:documentation><![CDATA[
+	Used to refer to a named bean implementing the Comparator interface that will be used to 
+	sort the matching services.
+						]]></xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+			
+			    <xsd:attribute name="cardinality" use="optional" type="TcollectionCardinality">
+                	<xsd:annotation>
+                      	<xsd:documentation><![CDATA[
+    Defines the required cardinality of the relationship to the backing services. If not specified, 
+    the default-cardinality attribute will apply. A value of '1..N' means that at least one backing 
+    service must exist (this is a mandatory service reference. A value of '0..N' indicates that it 
+    is acceptable for there to be no backing service (an optional service reference).
+                      	]]></xsd:documentation>
+                      </xsd:annotation>
+                </xsd:attribute>
+
+			    <xsd:attribute name="greedy-proxying" use="optional" type="xsd:boolean" default="false">
+                	<xsd:annotation>
+                      	<xsd:documentation><![CDATA[
+    Indicates whether the proxies created for the imported OSGi services will be generated using 
+    just the classes specified (false) or all the classes exported by the service and visible to
+    the importing bundle (true). The default value is false.
+                      	]]></xsd:documentation>
+                      </xsd:annotation>
+                </xsd:attribute>				
+                				
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	<xsd:complexType name="Tcomparator">
+		<xsd:annotation>
+			<xsd:documentation source="java:java.util.Comparator"><![CDATA[
+	Used to define an inline bean of type Comparator that will be used to sort the matching services.
+			]]></xsd:documentation>
+			<xsd:appinfo>
+				<tool:annotation>
+					<tool:exports type="java.util.Comparator" />
+  				</tool:annotation>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:choice>
+		   <xsd:element name="natural" type="TnaturalOrdering"/>
+     	   <xsd:sequence minOccurs="1" maxOccurs="1">
+        	    <!-- nested bean declaration -->
+           		<xsd:any namespace="##other" minOccurs="1" maxOccurs="1" processContents="skip"/>
+        	</xsd:sequence>
+        </xsd:choice>
+	</xsd:complexType>
+	
+	<xsd:complexType name="TnaturalOrdering">
+		<xsd:attribute name="basis" type="TorderingBasis" use="required"/>
+	</xsd:complexType>
+	
+	<xsd:simpleType name="TorderingBasis">
+		<xsd:restriction base="xsd:token">
+            <xsd:enumeration value="service"/>
+            <xsd:enumeration value="service-reference"/>
+        </xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="TcollectionCardinality">
+        <xsd:restriction base="xsd:token">
+            <xsd:enumeration value="1..N"/>
+            <xsd:enumeration value="0..N"/>
+        </xsd:restriction>
+   </xsd:simpleType>
+	
+    <!-- service -->
+    
+    <xsd:element name="service" type="Tservice"/>
+
+    <xsd:complexType name="TbaseService">
+        <xsd:complexContent>
+           <xsd:extension base="beans:identifiedType">
+                <xsd:attribute name="interface" type="xsd:token" use="optional">
+                	<xsd:annotation>
+                		<xsd:documentation><![CDATA[
+    Defines the interface to advertise for this service in the service registry.
+                		]]></xsd:documentation>
+						<xsd:appinfo>
+							<tool:annotation>
+  								<tool:expected-type type="java.lang.Class" />
+  							</tool:annotation>
+						</xsd:appinfo>  							
+                	</xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="depends-on" type="xsd:string" use="optional">
+                	<xsd:annotation>
+                		<xsd:documentation><![CDATA[
+    Used to ensure that the service is not exported to the registry before the named bean
+    has been created. 
+                		]]></xsd:documentation>
+                	</xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="context-class-loader" type="TserviceClassLoaderOptions" default="unmanaged">
+                	<xsd:annotation>
+                		<xsd:documentation><![CDATA[
+    Defines how the context class loader will be managed when an operation is invoked on the 
+    exported service. The default value is 'unmanaged' which means that no management of 
+    the context class loader is attempted. A value of 'service-provider' guarantees that
+    the context class loader will have visibility of all the resources on the class path of 
+    bundle exporting the service.
+                		]]></xsd:documentation>
+                	</xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="auto-export" type="TautoExportModes" default="disabled">
+                	<xsd:annotation>
+                		<xsd:documentation><![CDATA[
+    Enables Spring to automatically manage the set of service interfaces advertised for the
+    service. By default this facility is disabled. A value of 'interfaces' advertises all 
+    of the Java interfaces supported by the exported service. A value of 'class-hierarchy' 
+    advertises all the Java classes in the hierarchy of the exported service. A value of 
+    'all-classes' advertises all Java interfaces and classes. 
+                		]]></xsd:documentation>
+                	</xsd:annotation>
+                </xsd:attribute>
+        	</xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    
+    <xsd:complexType name="Tservice">
+    	<xsd:annotation>
+    		<xsd:documentation source="java:org.springframework.osgi.service.exporter.support.OsgiServiceFactoryBean"><![CDATA[
+    Exports the reference bean as a service in the OSGi service registry. The bean defined by this element is of 
+    type org.osgi.framework.ServiceRegistration.
+    		]]></xsd:documentation>
+			<xsd:appinfo>
+				<tool:annotation>
+					<tool:exports type="org.osgi.framework.ServiceRegistration"/>
+				</tool:annotation>
+			</xsd:appinfo>			
+    	</xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="TbaseService">
+            	<xsd:sequence minOccurs="0" maxOccurs="1">
+                    <xsd:element name="interfaces" type="beans:listOrSetType" minOccurs="0" maxOccurs="1">
+                    	<xsd:annotation>
+                    		<xsd:documentation><![CDATA[
+    The set of service interfaces to advertise in the service registry.
+                    		]]></xsd:documentation>
+                    	</xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="registration-listener" type="TserviceRegistrationListener" minOccurs="0" maxOccurs="unbounded">
+                    	<xsd:annotation>
+                    		<xsd:documentation><![CDATA[
+    Defines a listener that will be notified when this service is registered or unregistered in the
+    OSGi service registry.
+                    		]]></xsd:documentation>
+                    	</xsd:annotation>
+                	</xsd:element>
+                    <xsd:element name="service-properties" type="beans:mapType" minOccurs="0" maxOccurs="1">
+                       	<xsd:annotation>
+                    		<xsd:documentation><![CDATA[
+    Defines the service properties.
+                    		]]></xsd:documentation>
+                    	</xsd:annotation>
+                    </xsd:element>
+                    <!-- nested bean declaration -->
+                	<xsd:any namespace="##other" minOccurs="0" maxOccurs="1" processContents="skip"/>
+                </xsd:sequence>
+                <xsd:attribute name="ref" type="xsd:string" use="optional">
+                	<xsd:annotation>
+                		<xsd:documentation><![CDATA[
+    Refers to the named bean to be exported as a service in the service registry.
+                		]]></xsd:documentation>
+                	</xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="ranking" type="xsd:int" default="0">
+                	<xsd:annotation>
+                		<xsd:documentation><![CDATA[
+    Specify the service ranking to be used when advertising the service.
+                		]]></xsd:documentation>
+                	</xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="TserviceRegistrationListener">
+    	<xsd:annotation>
+    		<xsd:documentation><![CDATA[
+    Defines a listener that will be notified when the bean is registered or unregistered in the OSGi Service Registry. 
+    Use either the 'ref' attribute or a nested bean declaration for the listener bean.
+    		]]></xsd:documentation>
+    	</xsd:annotation>
+        <xsd:sequence minOccurs="0" maxOccurs="1">
+            <!-- nested bean declaration -->
+            <xsd:any namespace="##other" minOccurs="1" maxOccurs="1" processContents="skip"/>
+        </xsd:sequence>
+
+        <!-- shortcut for bean references -->
+        <xsd:attribute name="ref" type="xsd:string" use="optional">
+        	<xsd:annotation>
+        		<xsd:documentation><![CDATA[
+    Refers by name to the bean that will receive register and unregister events.
+        		]]></xsd:documentation>
+        	</xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="registration-method" type="xsd:token" use="optional">
+        	<xsd:annotation>
+        		<xsd:documentation><![CDATA[
+    The name of the method to be invoked when the service is registered.
+        		]]></xsd:documentation>
+        	</xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="unregistration-method" type="xsd:token" use="optional">
+        	<xsd:annotation>
+        		<xsd:documentation><![CDATA[
+    The name of the method to be invoked when the service is unregistered.
+        		]]></xsd:documentation>
+        	</xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:simpleType name="TserviceClassLoaderOptions">
+        <xsd:restriction base="xsd:token">
+            <xsd:enumeration value="service-provider"/>
+            <xsd:enumeration value="unmanaged"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="TautoExportModes">
+        <xsd:restriction base="xsd:token">
+            <xsd:enumeration value="disabled"/>
+            <xsd:enumeration value="interfaces"/>
+            <xsd:enumeration value="class-hierarchy"/>
+            <xsd:enumeration value="all-classes"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <!-- bundle -->
+
+    <xsd:element name="bundle" type="Tbundle">
+    	<xsd:annotation>
+    		<xsd:documentation source="java:org.springframework.osgi.bundle.BundleFactoryBean"><![CDATA[
+    Defines a bean representing a Bundle object. May be used to drive bean lifecycle transitions.
+    		]]></xsd:documentation>
+			<xsd:appinfo>
+				<tool:annotation>
+					<tool:exports type="org.osgi.framework.Bundle"/>
+				</tool:annotation>
+			</xsd:appinfo>    		
+    	</xsd:annotation>
+    </xsd:element>
+
+    <xsd:complexType name="Tbundle">
+        <xsd:complexContent>
+            <xsd:extension base="beans:identifiedType">
+              	<!-- optional nested bean declaration -->
+                <xsd:sequence minOccurs="0" maxOccurs="1">
+		    		<xsd:any namespace="##other" minOccurs="1" maxOccurs="1" processContents="lax">
+            		   	<xsd:annotation>
+                    		<xsd:documentation><![CDATA[
+    OSGi bundle to work with.
+                    		]]></xsd:documentation>
+							<xsd:appinfo>
+								<tool:annotation>
+  									<tool:expected-type type="org.osgi.framework.Bundle" />
+  								</tool:annotation>
+							</xsd:appinfo>  							
+                    	</xsd:annotation>
+            		</xsd:any>
+        		</xsd:sequence>
+        		
+                <xsd:attribute name="symbolic-name" type="xsd:string" use="optional">
+                	<xsd:annotation>
+                		<xsd:documentation><![CDATA[
+    The bundle symbolic name of the bundle object. Normally used when interacting with an already
+    installed bundle.
+                		]]></xsd:documentation>
+                	</xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="depends-on" type="xsd:string" use="optional">
+                	<xsd:annotation>
+                		<xsd:documentation><![CDATA[
+    Indicates that this bundle object should not be created until the named bean has been created.
+                		]]></xsd:documentation>
+                	</xsd:annotation>
+                </xsd:attribute>
+               
+                <xsd:attribute name="location" type="xsd:string" use="optional">
+                	<xsd:annotation>
+                		<xsd:documentation><![CDATA[
+    Location used to install, update or/and identify a bundle.
+                		]]></xsd:documentation>
+                	</xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="action" type="TbundleAction" use="optional">
+                	<xsd:annotation>
+                		<xsd:documentation><![CDATA[
+    Lifecyle action to drive on the bundle. 'start' starts the bundle, installing if necessary.
+    'stop' stops the bundle if it is currently ACTIVE. 'install' installs the bundle if it is 
+    currently uninstalled. 'uninstall' stops the bundle if needed, and then uninstalls it.
+    'update' installs the bundle if needed, and then invokes the Bundle.update() operation.
+                		]]></xsd:documentation>
+                	</xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="destroy-action" type="TbundleAction" use="optional">
+                	<xsd:annotation>
+                		<xsd:documentation><![CDATA[
+    Lifecyle action to drive on the bundle. 'start' starts the bundle, installing if necessary.
+    'stop' stops the bundle if it is currently ACTIVE. 'install' installs the bundle if it is 
+    currently uninstalled. 'uninstall' stops the bundle if needed, and then uninstalls it.
+    'update' installs the bundle if needed, and then invokes the Bundle.update() operation.
+                		]]></xsd:documentation>
+                	</xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="start-level" type="xsd:int" use="optional" default="0">
+                	<xsd:annotation>
+                		<xsd:documentation><![CDATA[
+    Start level to set for the bundle.
+                		]]></xsd:documentation>
+                	</xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:simpleType name="TbundleAction">
+        <xsd:restriction base="xsd:token">
+            <xsd:enumeration value="start"/>
+            <xsd:enumeration value="stop"/>
+            <xsd:enumeration value="install"/>
+            <xsd:enumeration value="uninstall"/>
+            <xsd:enumeration value="update"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+</xsd:schema>
