@@ -67,7 +67,7 @@ public class MessageImpl implements Message {
 	 * @param throwable the associated throwable, may be <code>null</code>
 	 */
 	public MessageImpl(String message, Throwable throwable) {
-		this(message, throwable, getStackTrace(throwable));
+		this(message, throwable, null);
 	}
 
 	/**
@@ -97,6 +97,10 @@ public class MessageImpl implements Message {
 	 */
 	@Override
 	public String getStackTrace() {
+		if (stackTrace == null && throwable != null) {
+			return getStackTrace(throwable);
+		}
+
 		return stackTrace;
 	}
 

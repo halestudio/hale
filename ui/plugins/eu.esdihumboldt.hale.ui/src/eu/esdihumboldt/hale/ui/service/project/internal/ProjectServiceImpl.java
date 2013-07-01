@@ -758,6 +758,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			main.getResources().add(conf);
 		}
 		setChanged();
+
+		notifyResourceAdded(actionId);
 	}
 
 	/**
@@ -778,7 +780,24 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		}
 		setChanged();
 
+		notifyResourcesRemoved(actionId);
+
 		return removedResources;
+	}
+
+	@Override
+	public boolean hasResources(String actionId) {
+		synchronized (this) {
+			Iterator<IOConfiguration> iter = main.getResources().iterator();
+			while (iter.hasNext()) {
+				IOConfiguration conf = iter.next();
+				if (conf.getActionId().equals(actionId)) {
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	/**

@@ -202,6 +202,50 @@
             </property>
          </sourceProperties>
       </propertyFunction>
+      <propertyFunction
+            category="eu.esdihumboldt.cst.functions.geometric"
+            description="Compute geometric extent based on all input geometries. The options Bounding Box, Convex Hull and Union are possible."
+            icon="icons/geometry.png"
+            identifier="eu.esdihumboldt.cst.functions.geometric.extent"
+            name="Compute Extent">
+         <targetProperties>
+            <property
+                  description="Computed extent"
+                  eager="false"
+                  label="Extent"
+                  maxOccurrence="1"
+                  minOccurrence="1">
+            </property>
+         </targetProperties>
+         <sourceProperties>
+            <property
+                  description="Source geometries (eager)"
+                  eager="true"
+                  label="Geometries"
+                  maxOccurrence="n"
+                  minOccurrence="1">
+               <geometryCondition></geometryCondition>
+            </property>
+         </sourceProperties>
+         <functionParameter
+               label="Extent Type"
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="type"
+               scriptable="false">
+            <functionParameterEnumeration>
+               <enumerationValue
+                     value="convexhull">
+               </enumerationValue>
+               <enumerationValue
+                     value="boundingbox">
+               </enumerationValue>
+               <enumerationValue
+                     value="union">
+               </enumerationValue>
+            </functionParameterEnumeration>
+         </functionParameter>
+      </propertyFunction>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.align.transformation">
@@ -234,6 +278,12 @@
             engine="eu.esdihumboldt.align.java"
             function="eu.esdihumboldt.cst.functions.geometric.centroid"
             id="eu.esdihumboldt.cst.functions.geometric.centroid">
+      </propertyTransformation>
+      <propertyTransformation
+            class="eu.esdihumboldt.cst.functions.geometric.extent.ExtentTransformation"
+            engine="eu.esdihumboldt.align.java"
+            function="eu.esdihumboldt.cst.functions.geometric.extent"
+            id="eu.esdihumboldt.cst.functions.geometric.extent">
       </propertyTransformation>
    </extension>
 

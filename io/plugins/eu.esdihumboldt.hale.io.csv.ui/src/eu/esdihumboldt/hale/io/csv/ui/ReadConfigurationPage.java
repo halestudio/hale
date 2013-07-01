@@ -73,7 +73,6 @@ public class ReadConfigurationPage extends
 
 		bmap = HashBiMap.create();
 		bmap.put("TAB", "\t");
-
 	}
 
 	/**
@@ -112,8 +111,13 @@ public class ReadConfigurationPage extends
 	 */
 	@Override
 	public void enable() {
-		// TODO Auto-generated method stub
-
+		/*
+		 * Set page to incomplete by default, as only when the page is shown
+		 * automated detection takes place. Thus finishing an import with the
+		 * page not having been shown may differ from loading the same file with
+		 * the page shown.
+		 */
+		setPageComplete(false);
 	}
 
 	/**

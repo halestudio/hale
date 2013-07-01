@@ -105,7 +105,13 @@ public class DefaultPropertyEditor extends AbstractBindingValidatingEditor<Objec
 		Enumeration<?> enumeration = type.getConstraint(Enumeration.class);
 		otherValuesAllowed = enumeration.isAllowOthers();
 
-		codeListNamespace = property.getParentType().getName().getNamespaceURI();
+		String codeListNamespace = null;
+		try {
+			codeListNamespace = property.getParentType().getName().getNamespaceURI();
+		} catch (Exception e) {
+			// ignore any case where parent type may be null
+		}
+		this.codeListNamespace = codeListNamespace;
 		String propertyName = property.getName().getLocalPart();
 		codeListName = Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1)
 				+ "Value"; //$NON-NLS-1$	

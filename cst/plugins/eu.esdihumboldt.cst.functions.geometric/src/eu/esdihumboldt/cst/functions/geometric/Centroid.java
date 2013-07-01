@@ -16,12 +16,12 @@
 
 package eu.esdihumboldt.cst.functions.geometric;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.ListMultimap;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
@@ -31,27 +31,23 @@ import eu.esdihumboldt.hale.common.align.transformation.function.TransformationE
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
+import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.geometry.GeometryFinder;
 import eu.esdihumboldt.hale.common.instance.helper.DepthFirstInstanceTraverser;
 import eu.esdihumboldt.hale.common.instance.helper.InstanceTraverser;
+import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 
 /**
- * Centroid function
+ * Centroid function.
  * 
  * @author Kevin Mais
  */
 public class Centroid extends AbstractSingleTargetPropertyTransformation<TransformationEngine>
 		implements CentroidFunction {
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation#evaluate(java.lang.String,
-	 *      eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine,
-	 *      com.google.common.collect.ListMultimap, java.lang.String,
-	 *      eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition,
-	 *      java.util.Map,
-	 *      eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog)
-	 */
 	@Override
 	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,
 			ListMultimap<String, PropertyValue> variables, String resultName,
@@ -71,33 +67,44 @@ public class Centroid extends AbstractSingleTargetPropertyTransformation<Transfo
 
 		List<GeometryProperty<?>> geoms = geoFind.getGeometries();
 
-		Geometry geom = null;
+		Geometry result;
+		CRSDefinition oldCRS = null;
 
 		if (geoms.size() > 1) {
+			// multiple geometries -> create a multi point
+			Point[] centroids = new Point[geoms.size()];
 
-			List<Point> centroids = new ArrayList<Point>();
-
-			for (GeometryProperty<?> geoProp : geoms) {
-				centroids.add(geoProp.getGeometry().getCentroid());
+			GeometryFactory geomFactory = new GeometryFactory();
+			for (int i = 0; i < geoms.size(); i++) {
+				GeometryProperty<?> prop = geoms.get(i);
+				centroids[i] = prop.getGeometry().getCentroid();
+				if (oldCRS == null) {
+					// assume the same CRS for all points
+					oldCRS = prop.getCRSDefinition();
+				}
 			}
 
-			// TODO: warn ?!
-
-			// FIXME: list can only have one point so we don't need this case ?
-			return centroids;
-
+			result = geomFactory.createMultiPoint(centroids);
 		}
 		else {
-			geom = geoms.get(0).getGeometry();
+			Geometry geom = geoms.get(0).getGeometry();
+			oldCRS = geoms.get(0).getCRSDefinition();
+			if (geom != null) {
+				result = geom.getCentroid();
+			}
+			else {
+				throw new TransformationException("Geometry for centroid could not be retrieved.");
+			}
 		}
 
-		if (geom != null) {
-			return geom.getCentroid();
+		// try to yield a result compatible to the target
+		TypeDefinition targetType = resultProperty.getDefinition().getPropertyType();
+		// TODO check element type?
+		Class<?> binding = targetType.getConstraint(Binding.class).getBinding();
+		if (Geometry.class.isAssignableFrom(binding) && binding.isAssignableFrom(result.getClass())) {
+			return result;
 		}
-		else {
-			throw new TransformationException("Geometry for centroid could not be retrieved.");
-		}
-
+		return new DefaultGeometryProperty<Geometry>(oldCRS, result);
 	}
 
 }

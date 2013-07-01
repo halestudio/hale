@@ -289,6 +289,13 @@ For references, e.g. to images, use absolute references to plugin and path, led 
                </appinfo>
             </annotation>
          </attribute>
+         <attribute name="eager" type="boolean" use="default" value="false">
+            <annotation>
+               <documentation>
+                  Specifies if a source property is eager, i.e. it will consume all values of an associated instance instead of one at a time.
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 

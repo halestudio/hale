@@ -225,6 +225,19 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 	public void setValue(Object value) {
 		setAnnotation(ANNOTATION_VALUE, value);
 		setDefined(true);
+		if (getAllValues() == null || getAllValues().length == 0) {
+			setAllValues(value);
+		}
+	}
+
+	@Override
+	public void setAllValues(Object... values) {
+		setAnnotation(ANNOTATION_ALL_VALUES, values);
+	}
+
+	@Override
+	public Object[] getAllValues() {
+		return (Object[]) getAnnotation(ANNOTATION_ALL_VALUES);
 	}
 
 	/**

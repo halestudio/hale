@@ -1,113 +1,133 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<hale-alignment>
-    <cell transformation="eu.esdihumboldt.hale.align.retype">
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="C58a849d9-ab91-44ee-aa5e-2c9dd60a27ee" priority="normal">
         <source>
             <class>
-                <type>{http://www.example.org/t1/}T1</type>
+                <type name="T1" ns="http://www.example.org/t1/"/>
             </class>
         </source>
         <target>
             <class>
-                <type>{http://www.example.org/t2/}T2</type>
+                <type name="T2" ns="http://www.example.org/t2/"/>
             </class>
         </target>
     </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.rename">
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="Cb5a0a917-5fdd-4d7c-89e5-5288aa08623d" priority="normal">
         <source>
             <property>
-                <type>{http://www.example.org/t1/}T1</type>
-                <child>id</child>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+                <child name="id"/>
             </property>
         </source>
         <target>
             <property>
-                <type>{http://www.example.org/t2/}T2</type>
-                <child>id</child>
+                <type name="T2" ns="http://www.example.org/t2/"/>
+                <child name="id"/>
             </property>
         </target>
     </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.rename">
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C2b120b21-db94-430c-aa83-35149c4fc5c8" priority="normal">
         <source>
             <property>
-                <type>{http://www.example.org/t1/}T1</type>
-                <child>name_en</child>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+                <child name="name_en"/>
             </property>
         </source>
         <target>
             <property>
-                <type>{http://www.example.org/t2/}T2</type>
-                <child>name</child>
-                <child>Name</child>
-                <child>spelling</child>
-                <child>text</child>
+                <type name="T2" ns="http://www.example.org/t2/"/>
+                <child name="name"/>
+                <child name="Name"/>
+                <child name="spelling"/>
+                <child name="text"/>
             </property>
         </target>
     </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.rename">
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C96d4d2f9-62f7-4a34-bd7b-2416c56d38b2" priority="normal">
         <source>
             <property>
-                <type>{http://www.example.org/t1/}T1</type>
-                <child>name_de</child>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+                <child name="name_de"/>
             </property>
         </source>
         <target>
             <property>
-                <type>{http://www.example.org/t2/}T2</type>
-                <child context="0">name</child>
-                <child>Name</child>
-                <child>spelling</child>
-                <child>text</child>
+                <type name="T2" ns="http://www.example.org/t2/"/>
+                <child name="name">
+                    <context>0</context>
+                </child>
+                <child name="Name"/>
+                <child name="spelling"/>
+                <child name="text"/>
             </property>
         </target>
     </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.rename">
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C8464f5b3-f759-4c0f-af58-5e6946d2d166" priority="normal">
         <source>
             <property>
-                <type>{http://www.example.org/t1/}T1</type>
-                <child>name_fr</child>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+                <child name="name_fr"/>
             </property>
         </source>
         <target>
             <property>
-                <type>{http://www.example.org/t2/}T2</type>
-                <child context="1">name</child>
-                <child>Name</child>
-                <child>spelling</child>
-                <child>text</child>
+                <type name="T2" ns="http://www.example.org/t2/"/>
+                <child name="name">
+                    <context>1</context>
+                </child>
+                <child name="Name"/>
+                <child name="spelling"/>
+                <child name="text"/>
             </property>
         </target>
     </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.assign">
+    <cell relation="eu.esdihumboldt.hale.align.assign" id="C11e3ec9d-7406-4614-80c6-e88ce67ce078" priority="normal">
         <target>
             <property>
-                <type>{http://www.example.org/t2/}T2</type>
-                <child>name</child>
-                <child>Name</child>
-                <child>language</child>
+                <type name="T2" ns="http://www.example.org/t2/"/>
+                <child name="name"/>
+                <child name="Name"/>
+                <child name="language"/>
             </property>
         </target>
-        <parameter name="value" value="en"/>
+        <parameter value="en" name="value"/>
     </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.assign">
+    <cell relation="eu.esdihumboldt.hale.align.assign" id="C450de319-8db5-4e36-aae1-987c095112d9" priority="normal">
+        <source name="anchor">
+            <property>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+                <child name="name_de"/>
+            </property>
+        </source>
         <target>
             <property>
-                <type>{http://www.example.org/t2/}T2</type>
-                <child context="0">name</child>
-                <child>Name</child>
-                <child>language</child>
+                <type name="T2" ns="http://www.example.org/t2/"/>
+                <child name="name">
+                    <context>0</context>
+                </child>
+                <child name="Name"/>
+                <child name="language"/>
             </property>
         </target>
-        <parameter name="value" value="de"/>
+        <parameter value="de" name="value"/>
     </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.assign">
+    <cell relation="eu.esdihumboldt.hale.align.assign" id="Cf904bef5-99ed-4c7e-b8fc-5e949a59a4a2" priority="normal">
+        <source name="anchor">
+            <property>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+                <child name="name_fr"/>
+            </property>
+        </source>
         <target>
             <property>
-                <type>{http://www.example.org/t2/}T2</type>
-                <child context="1">name</child>
-                <child>Name</child>
-                <child>language</child>
+                <type name="T2" ns="http://www.example.org/t2/"/>
+                <child name="name">
+                    <context>1</context>
+                </child>
+                <child name="Name"/>
+                <child name="language"/>
             </property>
         </target>
-        <parameter name="value" value="fr"/>
+        <parameter value="fr" name="value"/>
     </cell>
-</hale-alignment>
+</alignment>

@@ -63,6 +63,12 @@ public class InstanceContextTester extends PropertyTester {
 	public static final String PROPERTY_ALLOW_ADD_CONDITION = "allow_add_condition";
 
 	/**
+	 * The property that specifies if editing a condition context index is
+	 * allowed.
+	 */
+	public static final String PROPERTY_ALLOW_EDIT_CONDITION = "allow_edit_condition";
+
+	/**
 	 * The property that specifies if removing the instance context is allowed.
 	 */
 	public static final String PROPERTY_ALLOW_REMOVE = "allow_remove";
@@ -103,6 +109,10 @@ public class InstanceContextTester extends PropertyTester {
 
 		if (property.equals(PROPERTY_ALLOW_ADD_CONDITION) && receiver instanceof EntityDefinition) {
 			return testAllowAddCondition((EntityDefinition) receiver);
+		}
+
+		if (property.equals(PROPERTY_ALLOW_EDIT_CONDITION) && receiver instanceof EntityDefinition) {
+			return testAllowEditCondition((EntityDefinition) receiver);
 		}
 
 		if (property.equals(PROPERTY_NAMED_CONTEXT) && receiver instanceof EntityDefinition) {
@@ -251,6 +261,18 @@ public class InstanceContextTester extends PropertyTester {
 		// FIXME do a test through the entity definition service instead
 
 		return true;
+	}
+
+	/**
+	 * Tests if the condition context of the given entity definition may be
+	 * edited.
+	 * 
+	 * @param entityDef the entity definition
+	 * @return if adding a condition context is allowed
+	 */
+	private boolean testAllowEditCondition(EntityDefinition entityDef) {
+		return testAllowAddCondition(entityDef)
+				&& AlignmentUtil.getContextCondition(entityDef) != null;
 	}
 
 	/**

@@ -83,7 +83,7 @@
          </property>
          <property
                name="aboutText"
-               value="HUMBOLDT Alignment Editor (HALE)&#x0A;&#x0A;Version 2.5.0&#x0A;&#x0A;Build ___build___&#x0A;Revision ___revision___&#x0A;&#x0A;http://www.esdi-community.eu/projects/show/hale">
+               value="HUMBOLDT Alignment Editor (HALE)&#x0A;&#x0A;Version 2.6.0&#x0A;&#x0A;Build ___build___&#x0A;Revision ___revision___&#x0A;&#x0A;http://www.esdi-community.eu/projects/show/hale">
          </property>
          <property
                name="introTitle"
@@ -94,20 +94,8 @@
                value="images/hale_icon.png">
          </property>
          <property
-               name="startupProgressRect"
-               value="4,281,472,15">
-         </property>
-         <property
                name="preferenceCustomization"
                value="plugin_customization.ini">
-         </property>
-         <property
-               name="startupForegroundColor"
-               value="000000">
-         </property>
-         <property
-               name="startupMessageRect"
-               value="7,262,445,18">
          </property>
       </product>
    </extension>

@@ -115,6 +115,20 @@ public abstract class AbstractGroupPropertyDecorator implements GroupPropertyDef
 	 */
 	@Override
 	public TypeDefinition getParentType() {
+		/*
+		 * For cases in which getDeclaringGroup() is overridden, but not
+		 * getParentType(), return result according to getDeclaringGroup()
+		 */
+		DefinitionGroup parent = getDeclaringGroup();
+
+		if (parent instanceof TypeDefinition) {
+			return (TypeDefinition) parent;
+		}
+		else if (parent instanceof ChildDefinition<?>) {
+			return ((ChildDefinition<?>) parent).getParentType();
+		}
+
+		// fall back to decoratee
 		return propertyGroup.getParentType();
 	}
 

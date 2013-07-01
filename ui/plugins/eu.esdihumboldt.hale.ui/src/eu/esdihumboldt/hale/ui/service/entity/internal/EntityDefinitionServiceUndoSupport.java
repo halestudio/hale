@@ -16,12 +16,19 @@
 
 package eu.esdihumboldt.hale.ui.service.entity.internal;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Iterator;
+
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.AbstractOperation;
+import org.eclipse.core.commands.operations.ICompositeOperation;
+import org.eclipse.core.commands.operations.IOperationHistory;
 import org.eclipse.core.commands.operations.IUndoableOperation;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.operations.IWorkbenchOperationSupport;
@@ -32,6 +39,7 @@ import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Condition;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
+import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 
 /**
@@ -98,6 +106,25 @@ public class EntityDefinitionServiceUndoSupport extends EntityDefinitionServiceD
 	}
 
 	/**
+	 * @see eu.esdihumboldt.hale.ui.service.entity.internal.EntityDefinitionServiceDecorator#editConditionContext(eu.esdihumboldt.hale.common.align.model.EntityDefinition,
+	 *      eu.esdihumboldt.hale.common.instance.model.Filter)
+	 */
+	@Override
+	public EntityDefinition editConditionContext(EntityDefinition sibling, Filter filter) {
+		ICompositeOperation operation = new CompositeOperation("Edit condition context");
+		IWorkbenchOperationSupport operationSupport = PlatformUI.getWorkbench()
+				.getOperationSupport();
+		operation.addContext(operationSupport.getUndoContext());
+		operationSupport.getOperationHistory().openOperation(operation, IOperationHistory.EXECUTE);
+
+		EntityDefinition result = super.editConditionContext(sibling, filter);
+
+		operationSupport.getOperationHistory().closeOperation(result != null, true,
+				IOperationHistory.EXECUTE);
+		return result;
+	}
+
+	/**
 	 * Execute an operation.
 	 * 
 	 * @param operation the operation to execute
@@ -113,6 +140,124 @@ public class EntityDefinitionServiceUndoSupport extends EntityDefinitionServiceD
 		} catch (ExecutionException e) {
 			log.error("Error executing operation on entity definition service", e);
 		}
+	}
+
+	/**
+	 * A simple composite operation which gathers operations and
+	 * execute/undos/redos them in order.
+	 */
+	private static class CompositeOperation extends AbstractOperation implements
+			ICompositeOperation {
+
+		// XXX also rewrite add/has/remove/get-Context(s)?
+		// In our case it currently is not necessary!?
+
+		private final Deque<IUndoableOperation> operations = new ArrayDeque<IUndoableOperation>();
+
+		/**
+		 * Construct an operation that has the specified label.
+		 * 
+		 * @param label the label to be used for the operation. Should never be
+		 *            <code>null</code>.
+		 */
+		public CompositeOperation(String label) {
+			super(label);
+		}
+
+		/**
+		 * @see org.eclipse.core.commands.operations.AbstractOperation#canExecute()
+		 */
+		@Override
+		public boolean canExecute() {
+			for (IUndoableOperation operation : operations)
+				if (!operation.canExecute())
+					return false;
+			return true;
+		}
+
+		/**
+		 * @see org.eclipse.core.commands.operations.AbstractOperation#canRedo()
+		 */
+		@Override
+		public boolean canRedo() {
+			for (IUndoableOperation operation : operations)
+				if (!operation.canRedo())
+					return false;
+			return true;
+		}
+
+		/**
+		 * @see org.eclipse.core.commands.operations.AbstractOperation#canUndo()
+		 */
+		@Override
+		public boolean canUndo() {
+			for (IUndoableOperation operation : operations)
+				if (!operation.canUndo())
+					return false;
+			return true;
+		}
+
+		/**
+		 * @see org.eclipse.core.commands.operations.ICompositeOperation#add(org.eclipse.core.commands.operations.IUndoableOperation)
+		 */
+		@Override
+		public void add(IUndoableOperation operation) {
+			// "If the operation instance has already been added, this method will have no effect."
+			if (!operations.contains(operation))
+				operations.add(operation);
+		}
+
+		/**
+		 * @see org.eclipse.core.commands.operations.ICompositeOperation#remove(org.eclipse.core.commands.operations.IUndoableOperation)
+		 */
+		@Override
+		public void remove(IUndoableOperation operation) {
+			operations.remove(operation);
+			operation.dispose();
+		}
+
+		/**
+		 * @see org.eclipse.core.commands.operations.AbstractOperation#execute(org.eclipse.core.runtime.IProgressMonitor,
+		 *      org.eclipse.core.runtime.IAdaptable)
+		 */
+		@Override
+		public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
+			IStatus[] children = new IStatus[operations.size()];
+			Iterator<IUndoableOperation> iter = operations.iterator();
+			int i = 0;
+			while (iter.hasNext())
+				children[i++] = iter.next().execute(monitor, info);
+			return new MultiStatus(HALEUIPlugin.PLUGIN_ID, 1, children, "", null);
+		}
+
+		/**
+		 * @see org.eclipse.core.commands.operations.AbstractOperation#redo(org.eclipse.core.runtime.IProgressMonitor,
+		 *      org.eclipse.core.runtime.IAdaptable)
+		 */
+		@Override
+		public IStatus redo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
+			IStatus[] children = new IStatus[operations.size()];
+			Iterator<IUndoableOperation> iter = operations.iterator();
+			int i = 0;
+			while (iter.hasNext())
+				children[i++] = iter.next().redo(monitor, info);
+			return new MultiStatus(HALEUIPlugin.PLUGIN_ID, 1, children, "", null);
+		}
+
+		/**
+		 * @see org.eclipse.core.commands.operations.AbstractOperation#undo(org.eclipse.core.runtime.IProgressMonitor,
+		 *      org.eclipse.core.runtime.IAdaptable)
+		 */
+		@Override
+		public IStatus undo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
+			IStatus[] children = new IStatus[operations.size()];
+			Iterator<IUndoableOperation> iter = operations.descendingIterator();
+			int i = 0;
+			while (iter.hasNext())
+				children[i++] = iter.next().undo(monitor, info);
+			return new MultiStatus(HALEUIPlugin.PLUGIN_ID, 1, children, "", null);
+		}
+
 	}
 
 	/**

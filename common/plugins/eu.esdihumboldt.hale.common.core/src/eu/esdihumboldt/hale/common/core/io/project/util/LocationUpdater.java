@@ -78,7 +78,7 @@ public class LocationUpdater extends PathUpdate {
 			for (IOConfiguration providerconf : configuration) {
 				final Map<String, Value> conf = providerconf.getProviderConfiguration();
 				final URI uri = URI.create(conf.get(ImportProvider.PARAM_SOURCE).as(String.class));
-				URI resolved = findLocation(uri, true, true);
+				URI resolved = findLocation(uri, true, true, false);
 				if (resolved != null)
 					conf.put(ImportProvider.PARAM_SOURCE, Value.of(resolved.toString()));
 			}
@@ -91,7 +91,7 @@ public class LocationUpdater extends PathUpdate {
 				 * in the project service, this update has no effect, as the
 				 * project files are already loaded in the DefaultProjectReader.
 				 */
-				URI resolved = findLocation(location, false, false);
+				URI resolved = findLocation(location, false, false, false);
 				if (resolved != null)
 					fileInfo.setLocation(resolved);
 			}

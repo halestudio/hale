@@ -28,6 +28,10 @@
             name="Add instance context">
       </command>
       <command
+            id="eu.esdihumboldt.hale.ui.entity.editconditioncontext"
+            name="Edit condition context">
+      </command>
+      <command
             id="eu.esdihumboldt.hale.ui.entity.removecontext"
             name="Remove instance context">
       </command>
@@ -133,6 +137,15 @@
          </activeWhen>
       </handler>
       <handler
+            class="eu.esdihumboldt.hale.ui.service.entity.internal.handler.EditConditionContextHandler"
+            commandId="eu.esdihumboldt.hale.ui.entity.editconditioncontext">
+         <activeWhen>
+            <reference
+                  definitionId="eu.esdihumboldt.hale.ui.selection.entity.allow_contextedit">
+            </reference>
+         </activeWhen>
+      </handler>
+      <handler
             class="eu.esdihumboldt.hale.ui.service.entity.internal.handler.RemoveContextHandler"
             commandId="eu.esdihumboldt.hale.ui.entity.removecontext">
          <activeWhen>
@@ -179,7 +192,7 @@
             commandId="eu.esdihumboldt.hale.ui.instance.clear">
          <enabledWhen>
             <with
-                  variable="hale.instances.has_source">
+                  variable="hale.instances.has_source_resource">
                <equals
                      value="true">
                </equals>
@@ -397,6 +410,10 @@
          </variable>
          <variable
                name="hale.instances.has_source"
+               priorityLevel="workbench">
+         </variable>
+         <variable
+               name="hale.instances.has_source_resource"
                priorityLevel="workbench">
          </variable>
       </sourceProvider>
@@ -756,6 +773,13 @@
             </command>
          </menu>
          <command
+               commandId="eu.esdihumboldt.hale.ui.entity.editconditioncontext"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
+         </command>
+         <command
                commandId="eu.esdihumboldt.hale.ui.entity.removecontext"
                style="push">
             <visibleWhen
@@ -908,7 +932,7 @@
             class="eu.esdihumboldt.hale.ui.service.entity.internal.tester.InstanceContextTester"
             id="eu.esdihumboldt.hale.ui.service.entity"
             namespace="eu.esdihumboldt.hale.ui.service.entity"
-            properties="allow_add_named,allow_add_index,allow_add_condition,has_named_context,has_index_context,has_condition_context,allow_remove"
+            properties="allow_add_named,allow_add_index,allow_add_condition,allow_edit_condition,has_named_context,has_index_context,has_condition_context,allow_remove"
             type="eu.esdihumboldt.hale.common.align.model.EntityDefinition">
       </propertyTester>
       <propertyTester
@@ -981,6 +1005,24 @@
                      operator="and">
                   <test
                         property="eu.esdihumboldt.hale.ui.service.entity.allow_add_index">
+                  </test>
+               </iterate>
+            </and>
+         </with>
+      </definition>
+      <definition
+            id="eu.esdihumboldt.hale.ui.selection.entity.allow_contextedit">
+         <with
+               variable="selection">
+            <and>
+               <count
+                     value="1">
+               </count>
+               <iterate
+                     ifEmpty="false"
+                     operator="and">
+                  <test
+                        property="eu.esdihumboldt.hale.ui.service.entity.allow_edit_condition">
                   </test>
                </iterate>
             </and>

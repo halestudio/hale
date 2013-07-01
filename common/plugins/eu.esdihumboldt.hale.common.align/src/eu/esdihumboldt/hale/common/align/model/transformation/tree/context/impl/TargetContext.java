@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.GroupNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTreeUtil;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.TransformationContext;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.CellNodeImpl;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.SourceNodeImpl;
@@ -376,14 +378,21 @@ public class TargetContext implements TransformationContext {
 	private final Set<TargetNode> contextTargets;
 
 	/**
-	 * Create a transformation context that duplicates subgraphs leading to the
+	 * Create a transformation context that duplicates subgraphs leading to
 	 * given target nodes.
-	 * 
-	 * @param contextTargets the target nodes to use as subgraph end-points
 	 */
-	public TargetContext(Set<TargetNode> contextTargets) {
+	public TargetContext() {
 		super();
-		this.contextTargets = contextTargets;
+		this.contextTargets = new HashSet<TargetNode>();
+	}
+
+	/**
+	 * Adds the given target nodes as duplication targets.
+	 * 
+	 * @param targets the target nodes to use as subgraph end-points
+	 */
+	public void addContextTargets(Collection<TargetNode> targets) {
+		contextTargets.addAll(targets);
 	}
 
 //	/**
@@ -494,6 +503,11 @@ public class TargetContext implements TransformationContext {
 			DuplicationInformation info, TransformationLog log) {
 		// Duplicate relations.
 		for (CellNode cell : source.getRelations(false)) {
+
+			// check whether the cell is eager for the source node
+			if (TransformationTreeUtil.isEager(cell, source, log))
+				continue;
+
 			// Check whether the cell is ignored.
 			if (info.isIgnoreCell(cell.getCell()))
 				continue;
@@ -559,10 +573,8 @@ public class TargetContext implements TransformationContext {
 		// multiple "b"s and there is a
 		// cell using an "a" and a "b" the a is used multiple times.
 		for (SourceNode source : cell.getSources()) {
-			if (!source.getEntityDefinition()
-					.equals(info.getDuplicatedNode().getEntityDefinition())
-					&& !AlignmentUtil.isParent(info.getDuplicatedNode().getEntityDefinition(),
-							source.getEntityDefinition())) {
+			if (!AlignmentUtil.isParent(info.getDuplicatedNode().getEntityDefinition(),
+					source.getEntityDefinition())) {
 				// This source node does not belong to the duplicated tree, add
 				// an existing fitting source node!
 				Collection<SourceNode> possibleSources = info.getOldSourceNodes(source

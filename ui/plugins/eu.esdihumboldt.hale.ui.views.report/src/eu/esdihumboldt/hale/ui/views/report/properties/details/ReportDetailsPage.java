@@ -79,6 +79,7 @@ public abstract class ReportDetailsPage extends AbstractPropertySection {
 					}
 					page = customPage;
 					control = page.createControls(parent);
+					parent.layout(true);
 				}
 			}
 			this.report = report;

@@ -47,6 +47,20 @@ public interface ProjectServiceListener {
 	public void afterLoad(ProjectService projectService, Map<String, ProjectFile> projectFiles);
 
 	/**
+	 * Called after a new resource was added.
+	 * 
+	 * @param actionId the action the resource is associated to
+	 */
+	public void resourceAdded(String actionId);
+
+	/**
+	 * Called when resources for an action have been removed.
+	 * 
+	 * @param actionId the action identifier
+	 */
+	public void resourcesRemoved(String actionId);
+
+	/**
 	 * Called when the project is cleaned.
 	 */
 	public void onClean();

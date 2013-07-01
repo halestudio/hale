@@ -10,6 +10,8 @@
       <anchor id="introduction"/>
    </topic>
    <topic label="What&apos;s new?">
+      <topic href="html/new/2_6_0.xhtml" label="New in 2.6">
+      </topic>
       <topic href="html/new/2_5_0.xhtml" label="New in 2.5">
          <topic href="html/new/2_5_0_RC1.xhtml" label="2.5.0.RC1">
          </topic>
@@ -41,18 +43,16 @@
          <topic href="html/concepts/contexts.html" label="Contexts">
          </topic>
       </topic>
-      <topic label="Mapping Cell">
-         <topic href="html/concepts/what_is_a_mapping_cell.html" label="What is a Mapping Cell?">
-         </topic>
-         <topic href="html/concepts/cell_priority.html" label="Cell Priority">
-         </topic>
-      </topic>
       <topic href="html/concepts/what_is_instance.html" label="What is an Instance?">
       </topic>
       <topic label="Alignment">
          <topic href="html/concepts/what_is_alignment.html" label="What is an Alignment?">
          </topic>
+         <topic href="html/concepts/what_is_a_mapping_cell.html" label="What is a mapping cell?">
+         </topic>
          <topic href="html/concepts/functions.html" label="Functions">
+         </topic>
+         <topic href="html/concepts/cell_priority.html" label="Cell priority">
          </topic>
       </topic>
       <anchor id="concepts"/>

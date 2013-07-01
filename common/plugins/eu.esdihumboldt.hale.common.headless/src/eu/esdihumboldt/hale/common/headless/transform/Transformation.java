@@ -50,6 +50,7 @@ import eu.esdihumboldt.hale.common.headless.HeadlessIO;
 import eu.esdihumboldt.hale.common.headless.TransformationEnvironment;
 import eu.esdihumboldt.hale.common.headless.impl.ProjectTransformationEnvironment;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
+import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -86,6 +87,28 @@ public class Transformation {
 	public static ListenableFuture<Boolean> transform(List<InstanceReader> sources,
 			InstanceWriter target, final TransformationEnvironment environment,
 			final ReportHandler reportHandler, Object processId) {
+		return transform(sources, target, environment, reportHandler, processId, null);
+	}
+
+	/**
+	 * Transform the instances provided through the given instance readers and
+	 * supply the result to the given instance writer.
+	 * 
+	 * @param sources the instance readers
+	 * @param target the target instance writer
+	 * @param environment the transformation environment
+	 * @param reportHandler the report handler
+	 * @param processId the identifier for the transformation process, may be
+	 *            <code>null</code> if grouping the jobs to a job family is not
+	 *            necessary
+	 * @param validator the instance validator, may be <code>null</code>
+	 * @return the future representing the successful completion of the
+	 *         transformation (note that a successful completion doesn't
+	 *         necessary mean there weren't any internal transformation errors)
+	 */
+	public static ListenableFuture<Boolean> transform(List<InstanceReader> sources,
+			InstanceWriter target, final TransformationEnvironment environment,
+			final ReportHandler reportHandler, Object processId, InstanceValidator validator) {
 		final IOAdvisor<InstanceReader> loadDataAdvisor = new AbstractIOAdvisor<InstanceReader>() {
 
 			/**
@@ -159,6 +182,9 @@ public class Transformation {
 
 		ExportJob exportJob = new ExportJob(targetSink, target, saveDataAdvisor, reportHandler);
 		ValidationJob validationJob = null; // no validation
+		if (validator != null) {
+			validationJob = new ValidationJob(validator, reportHandler);
+		}
 		return transform(sourceCollection, targetSink, exportJob, validationJob,
 				environment.getAlignment(), environment.getSourceSchema(), reportHandler,
 				environment, processId);
@@ -286,15 +312,35 @@ public class Transformation {
 					failure(result, event);
 				}
 				else {
-					// success
-					result.set(true);
-
-					if (validationJob != null) {
+					if (validationJob == null) {
+						// success
+						result.set(true);
+					}
+					else {
+						// schedule the validation job
 						validationJob.schedule();
 					}
 				}
 			}
 		});
+		// validation ends the process
+		if (validationJob != null) {
+			validationJob.addJobChangeListener(new JobChangeAdapter() {
+
+				@Override
+				public void done(IJobChangeEvent event) {
+					if (!event.getResult().isOK()) {
+						// failure
+						failure(result, event);
+					}
+					else {
+						// success
+						result.set(true);
+					}
+				}
+
+			});
+		}
 
 		if (useTempDatabase) {
 			// run store instance job first...
@@ -355,6 +401,8 @@ public class Transformation {
 		// failed - try setting exception
 		if (event.getResult() != null && event.getResult().getException() != null) {
 			result.setException(event.getResult().getException());
+
+			event.getResult().getException().printStackTrace();
 		}
 
 		// in case there was no exception or setting it failed, just state that

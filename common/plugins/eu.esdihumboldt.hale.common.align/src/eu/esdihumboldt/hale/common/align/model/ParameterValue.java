@@ -29,6 +29,8 @@ import eu.esdihumboldt.hale.common.core.io.Value;
 @Immutable
 public class ParameterValue extends Value {
 
+	private static final long serialVersionUID = -6828899280515228306L;
+
 	/**
 	 * The <code>null</code> parameter value.
 	 */

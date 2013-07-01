@@ -17,12 +17,17 @@ package eu.esdihumboldt.cst.internal;
 
 import java.util.List;
 
+import com.google.common.base.Predicate;
+
 import eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode;
+import eu.esdihumboldt.hale.common.align.compatibility.CompatibilityModeUtil;
 import eu.esdihumboldt.hale.common.align.extension.transformation.PropertyTransformationExtension;
 import eu.esdihumboldt.hale.common.align.extension.transformation.PropertyTransformationFactory;
 import eu.esdihumboldt.hale.common.align.extension.transformation.TypeTransformationExtension;
 import eu.esdihumboldt.hale.common.align.extension.transformation.TypeTransformationFactory;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.filter.AbstractGeotoolsFilter;
+import eu.esdihumboldt.hale.common.instance.model.Filter;
 
 /**
  * Control class for checkups of transformation functions compatibility with the
@@ -61,11 +66,22 @@ public class CSTCompatibilityMode implements CompatibilityMode {
 			return true;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode#supportsCell(eu.esdihumboldt.hale.common.align.model.Cell)
-	 */
 	@Override
 	public boolean supportsCell(Cell cell) {
+		// only accept cells with supported filters
+		if (!CompatibilityModeUtil.checkFilters(cell, new Predicate<Filter>() {
+
+			@Override
+			public boolean apply(Filter filter) {
+				/*
+				 * XXX not nice to check it like this, but will do for now
+				 */
+				return filter instanceof AbstractGeotoolsFilter;
+			}
+		})) {
+			return false;
+		}
+
 		// true for now on CST
 		return true;
 	}

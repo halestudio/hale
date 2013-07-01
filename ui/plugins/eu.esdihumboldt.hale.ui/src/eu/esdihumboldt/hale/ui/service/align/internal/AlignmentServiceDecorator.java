@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.ui.service.align.internal;
 
+import java.util.Map;
+
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
@@ -108,6 +110,14 @@ public abstract class AlignmentServiceDecorator implements AlignmentService {
 	@Override
 	public void replaceCell(Cell oldCell, MutableCell newCell) {
 		alignmentService.replaceCell(oldCell, newCell);
+	}
+
+	/**
+	 * @see AlignmentService#replaceCells(Map)
+	 */
+	@Override
+	public void replaceCells(Map<? extends Cell, MutableCell> cells) {
+		alignmentService.replaceCells(cells);
 	}
 
 	/**

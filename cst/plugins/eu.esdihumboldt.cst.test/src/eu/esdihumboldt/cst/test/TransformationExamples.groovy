@@ -55,6 +55,8 @@ abstract class TransformationExamples {
 	public static final String PROPCONDITION1 = 'propcondition1'
 	public static final String PROPCONDITION2 = 'propcondition2'
 	public static final String TYPEFILTER = 'typefilter'
+	public static final String PROPERTYFILTER = 'propertyfilter'
+	public static final String IMPASSIGN = 'impassign'
 
 	public static final String CM_UNION_1 = 'cm_union_1'
 	public static final String CM_UNION_2 = 'cm_union_2'
@@ -149,6 +151,8 @@ abstract class TransformationExamples {
 		(PROPCONDITION1): defaultExample(PROPCONDITION1),
 		(PROPCONDITION2): defaultExample(PROPCONDITION2),
 		(TYPEFILTER): defaultExample(TYPEFILTER),
+		(PROPERTYFILTER): defaultExample(PROPERTYFILTER),
+		(IMPASSIGN): defaultExample(IMPASSIGN),
 
 		// context matching examples
 		(CM_UNION_1): defaultExample(CM_UNION_1),
@@ -191,14 +195,14 @@ abstract class TransformationExamples {
 
 	static def defaultExample(String folder) {
 		[
-					sourceSchema: "/testdata/${folder}/t1.xsd",
-					targetSchema: "/testdata/${folder}/t2.xsd",
-					alignment: "/testdata/${folder}/t1t2.halex.alignment.xml",
-					sourceData: "/testdata/${folder}/instance1.xml",
-					transformedData: "/testdata/${folder}/instance2.xml",
-					containerNamespace: null,
-					containerName: 'collection'
-				]
+			sourceSchema: "/testdata/${folder}/t1.xsd",
+			targetSchema: "/testdata/${folder}/t2.xsd",
+			alignment: "/testdata/${folder}/t1t2.halex.alignment.xml",
+			sourceData: "/testdata/${folder}/instance1.xml",
+			transformedData: "/testdata/${folder}/instance2.xml",
+			containerNamespace: null,
+			containerName: 'collection'
+		]
 	}
 
 	/**

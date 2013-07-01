@@ -27,11 +27,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import com.google.common.collect.Iterables;
 import com.vividsolutions.jts.geom.Geometry;
 
 import de.cs3d.util.logging.ALogger;
@@ -83,12 +85,15 @@ public abstract class StreamGmlHelper {
 	 * @param parentType the type of the topmost instance
 	 * @param propertyPath the property path down from the topmost instance, may
 	 *            be <code>null</code>
-	 * @return the parsed instance
+	 * @param allowNull if a <code>null</code> result is allowed
+	 * @return the parsed instance, may be <code>null</code> if allowNull is
+	 *         <code>true</code>
 	 * @throws XMLStreamException if parsing the instance failed
 	 */
 	public static Instance parseInstance(XMLStreamReader reader, TypeDefinition type,
 			Integer indexInStream, boolean strict, Integer srsDimension, CRSProvider crsProvider,
-			TypeDefinition parentType, List<QName> propertyPath) throws XMLStreamException {
+			TypeDefinition parentType, List<QName> propertyPath, boolean allowNull)
+			throws XMLStreamException {
 		checkState(reader.getEventType() == XMLStreamConstants.START_ELEMENT);
 		if (propertyPath == null) {
 			propertyPath = Collections.emptyList();
@@ -114,9 +119,26 @@ public abstract class StreamGmlHelper {
 		if (!mixed) {
 			// mixed types are treated special (see else)
 
+			// check if xsi:nil attribute is there and set to true
+			String nilString = reader.getAttributeValue(
+					XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "nil");
+			boolean isNil = nilString != null && "true".equalsIgnoreCase(nilString);
+
 			// instance properties
 			parseProperties(reader, instance, strict, srsDimension, crsProvider, parentType,
 					propertyPath, false);
+
+			// nil instance w/o properties
+			if (allowNull && isNil && Iterables.isEmpty(instance.getPropertyNames())) {
+				// no value should be created
+				/*
+				 * XXX returning null here then results in problems during
+				 * adding other properties to the parent group, as mandatory
+				 * elements are expected to appear, and it will warn about
+				 * possible invalid data loaded
+				 */
+//				return null;
+			}
 
 			// instance value
 			if (!hasElements(type)) {
@@ -128,7 +150,7 @@ public abstract class StreamGmlHelper {
 				if (type.getConstraint(HasValueFlag.class).isEnabled()) {
 					// try to get text value
 					String value = reader.getElementText();
-					if (value != null) {
+					if (!isNil && value != null) {
 						instance.setValue(convertSimple(type, value));
 					}
 				}
@@ -312,9 +334,15 @@ public abstract class StreamGmlHelper {
 				addSimpleProperty(group, child.asProperty(), reader.getAttributeValue(i));
 			}
 			else {
-				log.warn(MessageFormat.format(
-						"No property ''{0}'' found in type ''{1}'', value is ignored",
-						propertyName, group.getDefinition().getIdentifier()));
+				// suppress warnings for xsi attributes (e.g. xsi:nil)
+				boolean suppress = XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI.equals(propertyName
+						.getNamespaceURI());
+
+				if (!suppress) {
+					log.warn(MessageFormat.format(
+							"No property ''{0}'' found in type ''{1}'', value is ignored",
+							propertyName, group.getDefinition().getIdentifier()));
+				}
 			}
 		}
 
@@ -344,20 +372,23 @@ public abstract class StreamGmlHelper {
 
 						if (hasElements(property.getPropertyType())) {
 							// use an instance as value
-							group.addProperty(
-									property.getName(),
-									parseInstance(reader, property.getPropertyType(), null, strict,
-											srsDimension, crsProvider, parentType, path));
+							Instance inst = parseInstance(reader, property.getPropertyType(), null,
+									strict, srsDimension, crsProvider, parentType, path, true);
+							if (inst != null) {
+								group.addProperty(property.getName(), inst);
+							}
 						}
 						else {
 							if (hasAttributes(property.getPropertyType())) {
 								// no elements but attributes
 								// use an instance as value, it will be assigned
 								// an instance value if possible
-								group.addProperty(
-										property.getName(),
-										parseInstance(reader, property.getPropertyType(), null,
-												strict, srsDimension, crsProvider, parentType, path));
+								Instance inst = parseInstance(reader, property.getPropertyType(),
+										null, strict, srsDimension, crsProvider, parentType, path,
+										true);
+								if (inst != null) {
+									group.addProperty(property.getName(), inst);
+								}
 							}
 							else {
 								// no elements and no attributes

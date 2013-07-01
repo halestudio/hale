@@ -16,8 +16,6 @@
 
 package eu.esdihumboldt.cst.functions.string;
 
-import java.text.MessageFormat;
-
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -44,10 +42,43 @@ public class RegexAnalysisExplanation extends AbstractCellExplanation {
 				.as(String.class);
 
 		if (source != null && target != null && outFormat != null && regex != null) {
-			return MessageFormat
-					.format("Populates the {1} property with regex-analysing the {0} property using the regular expression {2} and applying the output format {3} to the contained regex groups.",
-							formatEntity(source, html, true), formatEntity(target, html, true),
-							quoteText(regex, html), quoteText(outFormat, html));
+			String formatEntity_0 = formatEntity(source, html, true);
+			String formatEntity_1 = formatEntity(target, html, true);
+			String quoteText_2 = quoteText(regex, html);
+			String quoteText_3 = quoteText(outFormat, html);
+			StringBuilder sb = new StringBuilder();
+			if (!html) {
+				sb.append("Populates the target property\n");
+				sb.append(formatEntity_1);
+				sb.append("\nwith the groups captured from the regular expression analysis on the source property\n");
+				sb.append(formatEntity_0);
+				sb.append("\nThe regular expression analysis is carried out basing on the pattern\n");
+				sb.append(quoteText_2);
+				sb.append("\nand applying an output format\n");
+				sb.append(quoteText_3);
+				sb.append("\nto the extracted regular expression groups.");
+				sb.append("\n");
+				sb.append("\nAn explained example of regular expression groups can be found in the help of Hale.");
+				sb.append("\nGeneral information about regular expression groups can be found at: http://www.regular-expressions.info/brackets.html");
+			}
+			else {
+				sb.append("Populates the target property:<br>");
+				sb.append("<p><b>" + formatEntity_1 + "</b></p>");
+				sb.append("with the groups captured from the regular expression analysis on the source property:<br>");
+				sb.append("<p><b>" + formatEntity_0 + "</b></p>");
+				sb.append("The regular expression analysis is carried out basing on the pattern:");
+				sb.append("<br>");
+				sb.append("<p><b>" + quoteText_2 + "</b></p>");
+				sb.append("and applying an output format:<br>");
+				sb.append("<p><b>" + quoteText_3 + "</b></p>");
+				sb.append("to the extracted regular expression groups. <br>");
+				sb.append("<br>");
+				sb.append("<p>An explained example of regular expression groups can be found in the help of Hale.</p>");
+				sb.append("<p>General information about regular expression groups can be found at the url: ");
+				sb.append("http://www.regular-expressions.info/brackets.html<br>");
+				sb.append("</p>");
+			}
+			return sb.toString();
 		}
 
 		return null;

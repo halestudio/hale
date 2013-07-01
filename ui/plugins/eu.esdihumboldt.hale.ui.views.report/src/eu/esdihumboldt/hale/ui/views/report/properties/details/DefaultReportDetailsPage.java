@@ -119,16 +119,26 @@ public class DefaultReportDetailsPage implements CustomReportDetailsPage {
 
 				if (o.getFirstElement() instanceof Message) {
 					Message m = (Message) o.getFirstElement();
-					// check if a stacktrace exists
-					if (m.getStackTrace() != null && !m.getStackTrace().equals("")) {
-						// create action and run it
-						(new ShowStackTraceAction("Show Stack Trace", null, m)).run();
-					}
+					DefaultReportDetailsPage.this.onDoubleClick(m);
 				}
 			}
 		});
 
 		return filteredTree;
+	}
+
+	/**
+	 * Called when a double click on a message occurred. By default shows a
+	 * stack trace if available.
+	 * 
+	 * @param m the selected message
+	 */
+	protected void onDoubleClick(Message m) {
+		// check if a stacktrace exists
+		if (m.getStackTrace() != null && !m.getStackTrace().equals("")) {
+			// create action and run it
+			(new ShowStackTraceAction("Show Stack Trace", null, m)).run();
+		}
 	}
 
 	/**

@@ -22,7 +22,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
@@ -110,7 +111,34 @@ public class TreePropertyTransformer implements PropertyTransformer {
 
 		treeHooks = OsgiUtils.getService(TransformationTreeHooks.class);
 
-		executorService = Executors.newFixedThreadPool(4);
+		executorService = new ThreadPoolExecutor(4, 4, // 4 threads
+				0L, TimeUnit.MILLISECONDS,
+				// maximum queue size 1000 (keep 1000 instances/workers in
+				// memory
+				// simultaneously at max)
+				new LinkedBlockingQueue<Runnable>(1000) {
+
+					private static final long serialVersionUID = 1L;
+
+					@Override
+					public boolean offer(Runnable e) {
+						// wait for space to be free in the queue
+						try {
+							super.put(e);
+						} catch (InterruptedException e1) {
+							// XXX correct to return false?
+							return false;
+						}
+						// then accept
+						return true;
+
+						/*
+						 * Alternative could be calling offer in a loop with a
+						 * wait until it returns true.
+						 */
+					}
+
+				});
 	}
 
 	/**

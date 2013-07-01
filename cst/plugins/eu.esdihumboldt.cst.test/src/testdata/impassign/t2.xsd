@@ -5,7 +5,7 @@
     		<element name="name" maxOccurs="unbounded" minOccurs="0">
     			<complexType>
     				<sequence>
-    					<element name="nilReason" type="string"></element>
+    					<element name="nilReason" type="string" minOccurs="0"></element>
     					<element name="Name" type="tns:NameType"></element>
     				</sequence>
     			</complexType>

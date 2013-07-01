@@ -42,6 +42,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 import eu.esdihumboldt.hale.io.gml.writer.internal.GmlWriterUtil;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryConverterRegistry.ConversionLadder;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.CurveWriter;
+import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.EnvelopeWriter;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.LegacyMultiPolygonWriter;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.LegacyPolygonWriter;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.LineStringWriter;
@@ -85,6 +86,7 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 		sgm.registerGeometryWriter(new MultiLineStringWriter());
 		sgm.registerGeometryWriter(new LegacyPolygonWriter());
 		sgm.registerGeometryWriter(new LegacyMultiPolygonWriter());
+		sgm.registerGeometryWriter(new EnvelopeWriter());
 
 		return sgm;
 	}
@@ -194,6 +196,27 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 				else {
 					candidates = findCandidates(property, geomType);
 				}
+			}
+
+			if (candidates.isEmpty()) {
+				// also try the generic geometry type
+				geometry = originalGeometry;
+				geomType = Geometry.class;
+
+				log.info("Possible structure for writing " + originalType.getSimpleName() + //$NON-NLS-1$
+						" not found, trying the generic geometry type instead"); //$NON-NLS-1$ //$NON-NLS-2$
+
+				DefinitionPath candPath = restoreCandidate(property.getPropertyType(), geomType);
+				if (candPath != null) {
+					// use stored candidate
+					candidates = Collections.singletonList(candPath);
+				}
+				else {
+					candidates = findCandidates(property, geomType);
+				}
+
+				// remember generic match for later
+				storeCandidate(property.getPropertyType(), originalType, candidates.get(0));
 			}
 
 			for (DefinitionPath candidate : candidates) {

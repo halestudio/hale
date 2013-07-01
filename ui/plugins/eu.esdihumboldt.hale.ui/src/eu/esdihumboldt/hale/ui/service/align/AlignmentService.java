@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.ui.service.align;
 
+import java.util.Map;
+
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
@@ -39,9 +41,10 @@ public interface AlignmentService {
 	public Alignment getAlignment();
 
 	/**
-	 * Adds the cells contained in the given alignment to the current alignment.
+	 * Adds the cells contained in the given alignment to the current alignment.<br>
+	 * <br>
 	 * If cells with the same entities and transformations already exist they
-	 * will be replaced.
+	 * will be replaced. THIS IS NOT TRUE, yet at least.
 	 * 
 	 * @param alignment the alignment to add
 	 */
@@ -61,6 +64,14 @@ public interface AlignmentService {
 	 * @param newCell the new cell that should be added to the alignment
 	 */
 	public void replaceCell(Cell oldCell, MutableCell newCell);
+
+	/**
+	 * Replace cells with a new cells.
+	 * 
+	 * @param cells a mapping from old cells that should be removed from the
+	 *            alignment to new cells that should be added to the alignment
+	 */
+	public void replaceCells(Map<? extends Cell, MutableCell> cells);
 
 	/**
 	 * Removes the given cells

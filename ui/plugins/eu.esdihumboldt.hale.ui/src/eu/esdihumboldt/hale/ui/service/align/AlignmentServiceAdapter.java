@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.ui.service.align;
 
+import java.util.Map;
+
 import eu.esdihumboldt.hale.common.align.model.Cell;
 
 /**
@@ -43,10 +45,10 @@ public abstract class AlignmentServiceAdapter implements AlignmentServiceListene
 	}
 
 	/**
-	 * @see AlignmentServiceListener#cellReplaced(Cell, Cell)
+	 * @see AlignmentServiceListener#cellsReplaced(Map)
 	 */
 	@Override
-	public void cellReplaced(Cell oldCell, Cell newCell) {
+	public void cellsReplaced(Map<? extends Cell, ? extends Cell> cells) {
 		// override me
 	}
 

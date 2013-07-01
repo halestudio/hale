@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.ui.views.mapping;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -254,6 +255,27 @@ public class MappingView extends AbstractMappingView {
 		}
 
 		super.dispose();
+	}
+
+	/**
+	 * Show the cell with the given ID if found.
+	 * 
+	 * @param cellId the cell identifier
+	 * @return if the cell was found
+	 */
+	public boolean selectCell(String cellId) {
+		// try to retrieve cell
+		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+				AlignmentService.class);
+		if (as != null) {
+			Cell cell = as.getAlignment().getCell(cellId);
+			if (cell != null) {
+				getViewer().setInput(Collections.singletonList(cell));
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 }

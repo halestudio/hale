@@ -27,6 +27,8 @@ import eu.esdihumboldt.hale.common.core.io.Value;
  */
 public class ElementValue extends Value {
 
+	private static final long serialVersionUID = -3825405149652373752L;
+
 	private final Element element;
 
 	private final Object value;

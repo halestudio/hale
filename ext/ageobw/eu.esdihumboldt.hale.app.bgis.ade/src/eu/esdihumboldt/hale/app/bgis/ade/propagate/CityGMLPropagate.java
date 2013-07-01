@@ -42,6 +42,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
+import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
@@ -245,7 +246,7 @@ public class CityGMLPropagate implements BGISAppConstants, CityGMLConstants {
 
 		// create alignment
 		MutableAlignment align = new DefaultAlignment();
-		for (Cell cell : visitor.getCells()) {
+		for (MutableCell cell : visitor.getCells()) {
 			align.addCell(cell);
 		}
 

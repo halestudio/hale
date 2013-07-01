@@ -20,6 +20,7 @@ import java.net.URI;
 
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.io.instance.InstanceImportAdvisor;
 
 /**
@@ -30,6 +31,15 @@ import eu.esdihumboldt.hale.ui.io.instance.InstanceImportAdvisor;
 public class TransformDataImportAdvisor extends InstanceImportAdvisor {
 
 	private InstanceReader provider;
+
+	/**
+	 * Default constructor.
+	 */
+	public TransformDataImportAdvisor() {
+		super();
+
+		setServiceProvider(HaleUI.getServiceProvider());
+	}
 
 	/**
 	 * @see InstanceImportAdvisor#handleResults(InstanceReader)

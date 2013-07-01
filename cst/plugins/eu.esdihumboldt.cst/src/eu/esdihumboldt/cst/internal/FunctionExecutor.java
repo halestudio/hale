@@ -37,6 +37,7 @@ import eu.esdihumboldt.hale.common.align.model.Priority;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTreeUtil;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.CellNodeValidator;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyTransformation;
@@ -178,10 +179,25 @@ public class FunctionExecutor extends CellNodeValidator {
 		ListMultimap<String, PropertyValue> variables = ArrayListMultimap.create();
 		for (Entry<String, Pair<SourceNode, Entity>> sourceEntry : sources.entries()) {
 			EntityDefinition def = sourceEntry.getValue().getSecond().getDefinition();
-			Object value = sourceEntry.getValue().getFirst().getValue();
-			PropertyValue propertyValue = new PropertyValueImpl(value,
-					toPropertyEntityDefinition(def));
-			variables.put(sourceEntry.getKey(), propertyValue);
+			SourceNode sourceNode = sourceEntry.getValue().getFirst();
+			if (TransformationTreeUtil.isEager(cell, sourceNode, cellLog)) {
+				// eager source - all values
+				Object[] values = sourceNode.getAllValues();
+				if (values != null) {
+					for (int i = 0; i < values.length; i++) {
+						PropertyValue propertyValue = new PropertyValueImpl(values[i],
+								toPropertyEntityDefinition(def));
+						variables.put(sourceEntry.getKey(), propertyValue);
+					}
+				}
+			}
+			else {
+				// non-eager source - one value
+				Object value = sourceNode.getValue();
+				PropertyValue propertyValue = new PropertyValueImpl(value,
+						toPropertyEntityDefinition(def));
+				variables.put(sourceEntry.getKey(), propertyValue);
+			}
 		}
 		function.setVariables(variables);
 

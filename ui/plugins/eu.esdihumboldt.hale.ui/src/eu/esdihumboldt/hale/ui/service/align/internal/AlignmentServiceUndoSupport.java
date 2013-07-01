@@ -19,6 +19,8 @@ package eu.esdihumboldt.hale.ui.service.align.internal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import net.jcip.annotations.Immutable;
 
@@ -31,6 +33,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.operations.IWorkbenchOperationSupport;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
@@ -55,8 +60,7 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 	 */
 	public class ReplaceOperation extends AbstractOperation {
 
-		private final MutableCell oldCell;
-		private final MutableCell newCell;
+		private final BiMap<MutableCell, MutableCell> cells;
 
 		/**
 		 * Create an operation that replaces a cell in the alignment.
@@ -67,8 +71,19 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 		public ReplaceOperation(MutableCell oldCell, MutableCell newCell) {
 			super("Replace an alignment cell");
 
-			this.oldCell = oldCell;
-			this.newCell = newCell;
+			cells = HashBiMap.create(1);
+			cells.put(oldCell, newCell);
+		}
+
+		/**
+		 * Create an operation that replaces a cell in the alignment.
+		 * 
+		 * @param cells mapping from replaced cells to new cells
+		 */
+		public ReplaceOperation(BiMap<MutableCell, MutableCell> cells) {
+			super("Replace alignment cells");
+
+			this.cells = cells;
 		}
 
 		/**
@@ -76,7 +91,7 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 		 */
 		@Override
 		public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
-			alignmentService.replaceCell(oldCell, newCell);
+			alignmentService.replaceCells(cells);
 			return Status.OK_STATUS;
 		}
 
@@ -93,7 +108,7 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 		 */
 		@Override
 		public IStatus undo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
-			alignmentService.replaceCell(newCell, oldCell);
+			alignmentService.replaceCells(cells.inverse());
 			return Status.OK_STATUS;
 		}
 
@@ -477,7 +492,7 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 				if (!contains) {
 					/*
 					 * Cell must be contained in the current alignment, else the
-					 * redo would do something unexpected (readding a cell that
+					 * redo would do something unexpected (reading a cell that
 					 * was not previously there).
 					 */
 					addCell(newCell);
@@ -505,6 +520,30 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 		else if (oldCell != null) {
 			removeCells(oldCell);
 		}
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.align.AlignmentService#replaceCells(java.util.Map)
+	 */
+	@Override
+	public void replaceCells(Map<? extends Cell, MutableCell> cells) {
+		BiMap<MutableCell, MutableCell> map = HashBiMap.create(cells.size());
+		for (Entry<? extends Cell, MutableCell> e : cells.entrySet()) {
+			if (e.getKey() instanceof MutableCell && e.getValue() != null
+					&& getAlignment().getCells().contains(e.getKey()))
+				map.put((MutableCell) e.getKey(), e.getValue());
+			else {
+				log.warn("Replaced cells contains at least one cell which "
+						+ "is either not mutable or not in the alignment. "
+						+ "No undo/redo possible.");
+
+				super.replaceCells(cells);
+				return;
+			}
+		}
+
+		IUndoableOperation operation = new ReplaceOperation(map);
+		executeOperation(operation);
 	}
 
 	/**
@@ -550,4 +589,5 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 		// TODO implement undo support?
 		return alignmentService.addBaseAlignment(loader);
 	}
+
 }

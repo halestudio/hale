@@ -42,6 +42,12 @@ public interface SourceNode extends TransformationNode {
 	public static final String ANNOTATION_VALUE = "value";
 
 	/**
+	 * Name of the all values annotation. It holds all original values for the
+	 * node from an instance.
+	 */
+	public static final String ANNOTATION_ALL_VALUES = "all-values";
+
+	/**
 	 * Name of the children annotation. It represents a list of additional
 	 * children.
 	 */
@@ -167,14 +173,34 @@ public interface SourceNode extends TransformationNode {
 
 	/**
 	 * Set the value of the value annotation. When setting a value the value of
-	 * the defined annotation is set to <code>true</code>.
+	 * the defined annotation is set to <code>true</code>. Will also set the all
+	 * values annotation if it is not set yet.
 	 * 
 	 * @see #ANNOTATION_VALUE
 	 * @see #ANNOTATION_VALUE_DEFINED
+	 * @see #ANNOTATION_ALL_VALUES
 	 * @param value the value of the node in the context of a specific source
 	 *            instance
 	 */
 	public void setValue(Object value);
+
+	/**
+	 * Set all original values associated to that node.
+	 * 
+	 * @see #ANNOTATION_ALL_VALUES
+	 * @param values all values of the node in the context of a specific source
+	 *            instance
+	 */
+	public void setAllValues(Object... values);
+
+	/**
+	 * Get all values of the node in the context of a specific source instance.
+	 * 
+	 * @see #ANNOTATION_ALL_VALUES
+	 * @return the property values associated to the node, may be
+	 *         <code>null</code>
+	 */
+	public Object[] getAllValues();
 
 	/**
 	 * Add a relation.

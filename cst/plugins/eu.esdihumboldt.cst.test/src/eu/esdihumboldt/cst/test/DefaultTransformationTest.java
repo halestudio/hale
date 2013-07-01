@@ -345,6 +345,28 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 	}
 
 	/**
+	 * Test with simple property filters.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testPropertyFilter() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.PROPERTYFILTER));
+	}
+
+	/**
+	 * Test where properties from a simple source type are mapped to to complex
+	 * properties in that target type, with some of the needed information being
+	 * given only implicit through the corresponding source property.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testImplicitAssign() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.IMPASSIGN));
+	}
+
+	/**
 	 * Test for the formatstring function
 	 * 
 	 * @throws Exception if an error occurs executing the test

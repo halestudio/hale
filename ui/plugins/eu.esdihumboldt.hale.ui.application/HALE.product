@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="HUMBOLDT Alignment Editor" uid="eu.esdihumboldt.hale" id="eu.esdihumboldt.hale.ui.application.HALE" application="eu.esdihumboldt.hale.ui.application" version="2.5.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="HUMBOLDT Alignment Editor" uid="eu.esdihumboldt.hale" id="eu.esdihumboldt.hale.ui.application.HALE" application="eu.esdihumboldt.hale.ui.application" version="2.6.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
       <text>
          HUMBOLDT Alignment Editor (HALE)
 
-Version 2.5.0
+Version 2.6.0
 
 Build ___build___
 Revision ___revision___
@@ -28,10 +28,7 @@ http://www.esdi-community.eu/projects/show/hale
    <windowImages i32="/eu.esdihumboldt.hale.ui.application/images/hale_icon.png"/>
 
    <splash
-      location="eu.esdihumboldt.hale.ui.application"
-      startupProgressRect="4,281,472,15"
-      startupMessageRect="7,262,445,18"
-      startupForegroundColor="000000" />
+      location="eu.esdihumboldt.hale.ui.application" />
    <launcher name="HALE">
       <solaris/>
       <win useIco="true">
@@ -97,6 +94,8 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="de.cs3d.util.logging.logback.appender" fragment="true"/>
       <plugin id="de.cs3d.util.logging.logback.observer"/>
       <plugin id="de.fhg.igd.concurrency"/>
+      <plugin id="de.fhg.igd.hale.fme"/>
+      <plugin id="de.fhg.igd.hale.fme.ui"/>
       <plugin id="de.fhg.igd.mapviewer"/>
       <plugin id="de.fhg.igd.mapviewer.server.openstreetmap"/>
       <plugin id="de.fhg.igd.mapviewer.tools.boxzoom"/>
@@ -192,6 +191,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.ui.functions.numeric"/>
       <plugin id="eu.esdihumboldt.hale.ui.geometry"/>
       <plugin id="eu.esdihumboldt.hale.ui.instancevalidation"/>
+      <plugin id="eu.esdihumboldt.hale.ui.launchaction"/>
       <plugin id="eu.esdihumboldt.hale.ui.logback.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.ui.lookup"/>
       <plugin id="eu.esdihumboldt.hale.ui.schema.presets"/>
