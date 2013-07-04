@@ -97,6 +97,22 @@
                name="preferenceCustomization"
                value="plugin_customization.ini">
          </property>
+         <property
+               name="startupForegroundColor"
+               value="dddddd">
+         </property>
+         <property
+               name="splashCopyrightNotice"
+               value="© 2013 data harmonisation panel www.dhpanel.eu">
+         </property>
+         <property
+               name="build"
+               value="___build___">
+         </property>
+         <property
+               name="revision"
+               value="___revision___">
+         </property>
       </product>
    </extension>
    <extension
@@ -574,5 +590,16 @@
             class="org.eclipse.ui.ExtensionFactory:progressView"
             id="org.eclipse.ui.views.ProgressView">
       </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.splashHandlers">
+      <splashHandler
+            class="eu.esdihumboldt.hale.ui.application.splash.HaleSplash"
+            id="eu.esdihumboldt.hale.ui.application.splash">
+      </splashHandler>
+      <splashHandlerProductBinding
+            productId="eu.esdihumboldt.hale.ui.application.HALE"
+            splashId="eu.esdihumboldt.hale.ui.application.splash">
+      </splashHandlerProductBinding>
    </extension>
 </plugin>
