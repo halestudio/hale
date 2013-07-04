@@ -113,6 +113,10 @@
                name="revision"
                value="___revision___">
          </property>
+         <property
+               name="versionTag"
+               value="ageobw">
+         </property>
       </product>
    </extension>
    <extension
