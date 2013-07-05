@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.net.URI;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -79,6 +80,7 @@ import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionMan
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
@@ -339,13 +341,23 @@ public class JaxbToAlignment extends
 			Pair<ChildDefinition<?>, List<ChildDefinition<?>>> childs = PropertyBean.findChild(
 					parent, asName(childContext));
 
-			ChildDefinition<?> child = childs.getFirst();
-
 			// if the child is still null throw an exception
-			if (child == null) {
+			if (childs == null || childs.getFirst() == null) {
+				String childName = asName(childContext).getLocalPart();
+				String parentName;
+				if (parent instanceof Definition<?>) {
+					parentName = ((Definition<?>) parent).getName().getLocalPart();
+				}
+				else {
+					parentName = parent.getIdentifier();
+				}
 				throw new IllegalStateException(
-						"Could not resolve property entity definition: child not found");
+						MessageFormat
+								.format("Could not resolve property entity definition: child {0} not found in parent {1}",
+										childName, parentName));
 			}
+
+			ChildDefinition<?> child = childs.getFirst();
 
 			if (childs.getSecond() != null) {
 				for (ChildDefinition<?> pathElems : childs.getSecond()) {
