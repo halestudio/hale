@@ -117,13 +117,10 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		// alignment file and update it
 		for (ProjectFileInfo pfi : getProject().getProjectFiles())
 			if (pfi.getName().equals("alignment.xml")) {
-				URI newAlignment = pfi.getLocation();
-				// URI probably is relative
-				newAlignment = tempDir.toURI().resolve(newAlignment);
 				// Use the project file as oldFile - assumes they are in the
 				// same directory.
 				XMLAlignmentUpdater.update(
-						new File(newAlignment),
+						new File(pfi.getLocation()),
 						URI.create(oldSaveConfig.getProviderConfiguration().get(PARAM_TARGET)
 								.toString()), includeWebresources, reporter);
 				break;
@@ -227,8 +224,9 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 				// update schema files
 
 				// only xml schemas have to be updated
-				Value contentType = providerConfig.get(ImportProvider.PARAM_CONTENT_TYPE);
-				if (contentType != null && contentType.as(String.class).equals(XSD_CONTENT_TYPE)) {
+				String contentType = providerConfig.get(ImportProvider.PARAM_CONTENT_TYPE).as(
+						String.class);
+				if (contentType.equals(XSD_CONTENT_TYPE)) {
 					progress.setCurrentTask("Reorganizing XML schema at " + path);
 					XMLSchemaUpdater.update(newFile, pathUri, includeWebResources, reporter);
 				}
