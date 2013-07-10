@@ -16,8 +16,8 @@
 package eu.esdihumboldt.hale.common.align.io.impl;
 
 import java.io.IOException;
+import java.net.URI;
 
-import eu.esdihumboldt.hale.common.align.io.AlignmentReader;
 import eu.esdihumboldt.hale.common.align.io.BaseAlignmentReader;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
@@ -38,6 +38,7 @@ public class JaxbBaseAlignmentReader extends AbstractImportProvider implements B
 	private TypeIndex sourceSchema;
 	private TypeIndex targetSchema;
 	private MutableAlignment alignment;
+	private URI projectLocation;
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.core.io.IOProvider#isCancelable()
@@ -58,7 +59,7 @@ public class JaxbBaseAlignmentReader extends AbstractImportProvider implements B
 
 		try {
 			JaxbAlignmentIO.addBaseAlignment(getAlignment(), getSource().getLocation(),
-					getSourceSchema(), getTargetSchema(), reporter);
+					projectLocation, getSourceSchema(), getTargetSchema(), reporter);
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl(e.getMessage(), e));
 			reporter.setSuccess(false);
@@ -79,7 +80,7 @@ public class JaxbBaseAlignmentReader extends AbstractImportProvider implements B
 	}
 
 	/**
-	 * @see AlignmentReader#setSourceSchema(TypeIndex)
+	 * @see BaseAlignmentReader#setSourceSchema(TypeIndex)
 	 */
 	@Override
 	public void setSourceSchema(TypeIndex sourceSchema) {
@@ -96,7 +97,7 @@ public class JaxbBaseAlignmentReader extends AbstractImportProvider implements B
 	}
 
 	/**
-	 * @see AlignmentReader#setTargetSchema(TypeIndex)
+	 * @see BaseAlignmentReader#setTargetSchema(TypeIndex)
 	 */
 	@Override
 	public void setTargetSchema(TypeIndex targetSchema) {
@@ -147,6 +148,14 @@ public class JaxbBaseAlignmentReader extends AbstractImportProvider implements B
 		if (alignment == null) {
 			fail("Alignment not set");
 		}
+	}
+
+	/**
+	 * @see BaseAlignmentReader#setProjectLocation(URI)
+	 */
+	@Override
+	public void setProjectLocation(URI projectLocation) {
+		this.projectLocation = projectLocation;
 	}
 
 }

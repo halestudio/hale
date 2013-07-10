@@ -33,6 +33,9 @@ import org.exolab.castor.xml.ValidationException;
 import org.exolab.castor.xml.XMLContext;
 import org.xml.sax.InputSource;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
+
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell;
 import eu.esdihumboldt.hale.common.align.model.Cell;
@@ -66,11 +69,19 @@ public class AlignmentBean extends
 	 * Create a bean for the given alignment
 	 * 
 	 * @param alignment the alignment
+	 * @param pathUpdate to update relative paths in case of a path change
 	 */
-	public AlignmentBean(Alignment alignment) {
+	public AlignmentBean(Alignment alignment, final PathUpdate pathUpdate) {
 		super();
 
-		base = alignment.getBaseAlignments();
+		base = new HashMap<String, URI>(Maps.transformValues(alignment.getBaseAlignments(),
+				new Function<URI, URI>() {
+
+					@Override
+					public URI apply(URI input) {
+						return pathUpdate.findLocation(input, true, false, true);
+					}
+				}));
 
 		// populate bean from alignment
 		for (Cell cell : alignment.getCells()) {
@@ -121,6 +132,7 @@ public class AlignmentBean extends
 	 * 
 	 * @param alignment the alignment to add a base alignment to
 	 * @param newBase URI of the new base alignment
+	 * @param projectLocation the project location or <code>null</code>
 	 * @param sourceTypes the source types to use for resolving definition
 	 *            references
 	 * @param targetTypes the target types to use for resolving definition
@@ -130,9 +142,10 @@ public class AlignmentBean extends
 	 * @throws IOException if adding the base alignment fails
 	 */
 	public static void addBaseAlignment(MutableAlignment alignment, URI newBase,
-			TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter) throws IOException {
-		new AlignmentBean().internalAddBaseAlignment(alignment, newBase, sourceTypes, targetTypes,
-				reporter);
+			URI projectLocation, TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter)
+			throws IOException {
+		new AlignmentBean().internalAddBaseAlignment(alignment, newBase, projectLocation,
+				sourceTypes, targetTypes, reporter);
 	}
 
 	/**
