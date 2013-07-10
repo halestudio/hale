@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.common.align.io.impl;
 
+import java.net.URI;
+
 import eu.esdihumboldt.hale.common.align.io.AlignmentWriter;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
@@ -33,6 +35,7 @@ public abstract class AbstractAlignmentWriter extends AbstractExportProvider imp
 	private Alignment alignment;
 	private SchemaSpace sourceSchema;
 	private SchemaSpace targetSchema;
+	private URI previousTarget;
 
 	/**
 	 * @see AlignmentWriter#setAlignment(Alignment)
@@ -97,6 +100,23 @@ public abstract class AbstractAlignmentWriter extends AbstractExportProvider imp
 		if (alignment == null) {
 			fail("Alignment to write not set");
 		}
+	}
+
+	/**
+	 * @see AlignmentWriter#setPreviousTarget(URI)
+	 */
+	@Override
+	public void setPreviousTarget(URI previousTarget) {
+		this.previousTarget = previousTarget;
+	}
+
+	/**
+	 * Returns the previous target of the project. May be <code>null</code>.
+	 * 
+	 * @return the previous target of the project. May be <code>null</code>
+	 */
+	protected URI getPreviousTarget() {
+		return previousTarget;
 	}
 
 }

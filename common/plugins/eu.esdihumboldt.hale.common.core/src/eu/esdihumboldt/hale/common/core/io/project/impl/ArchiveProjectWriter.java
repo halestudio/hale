@@ -44,6 +44,7 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.impl.SubtaskProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
+import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFileInfo;
 import eu.esdihumboldt.hale.common.core.io.project.util.XMLAlignmentUpdater;
 import eu.esdihumboldt.hale.common.core.io.project.util.XMLSchemaUpdater;
@@ -115,19 +116,12 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 
 		// now after the project with its project files is written, look for the
 		// alignment file and update it
-		for (ProjectFileInfo pfi : getProject().getProjectFiles())
-			if (pfi.getName().equals("alignment.xml")) {
-				URI newAlignment = pfi.getLocation();
-				// URI probably is relative
-				newAlignment = tempDir.toURI().resolve(newAlignment);
-				// Use the project file as oldFile - assumes they are in the
-				// same directory.
-				XMLAlignmentUpdater.update(
-						new File(newAlignment),
-						URI.create(oldSaveConfig.getProviderConfiguration().get(PARAM_TARGET)
-								.toString()), includeWebresources, reporter);
-				break;
-			}
+		ProjectFileInfo newAlignmentInfo = getAlignmentFile(getProject());
+		if (newAlignmentInfo != null) {
+			URI newAlignment = tempDir.toURI().resolve(newAlignmentInfo.getLocation());
+			XMLAlignmentUpdater.update(new File(newAlignment), newAlignment, includeWebresources,
+					reporter);
+		}
 
 		// put the complete temp directory into a zip file
 		zipDirectory(tempDir, zip, "");
@@ -146,6 +140,14 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		resources.clear();
 		resources.addAll(oldResources);
 		return report;
+	}
+
+	private ProjectFileInfo getAlignmentFile(Project project) {
+		for (ProjectFileInfo pfi : project.getProjectFiles())
+			if (pfi.getName().equals("alignment.xml")) {
+				return pfi;
+			}
+		return null;
 	}
 
 	// update the resources and copy them into target directory
@@ -182,6 +184,9 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 							+ path, e1));
 					continue;
 				}
+				if (!pathUri.isAbsolute())
+					pathUri = getPreviousTarget().resolve(pathUri);
+
 				String scheme = pathUri.getScheme();
 				InputStream input = null;
 				if (scheme != null) {
@@ -209,7 +214,8 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 
 				// every resource file is copied into an own resource
 				// directory in the target directory
-				File newDirectory = new File(targetDirectory, "resource" + count);
+				String resourceFolder = "resource" + count;
+				File newDirectory = new File(targetDirectory, resourceFolder);
 				try {
 					newDirectory.mkdir();
 				} catch (SecurityException e) {
@@ -217,7 +223,7 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 				}
 
 				// the filename
-				String name = path.toString().substring(path.lastIndexOf("/"), path.length());
+				String name = path.toString().substring(path.lastIndexOf("/") + 1, path.length());
 
 				File newFile = new File(newDirectory, name);
 				OutputStream output = new FileOutputStream(newFile);
@@ -233,8 +239,8 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 					XMLSchemaUpdater.update(newFile, pathUri, includeWebResources, reporter);
 				}
 
-				providerConfig.put(ImportProvider.PARAM_SOURCE, Value.of(new File(new File(
-						targetDirectory, "resource" + count), name).toURI().toString()));
+				providerConfig.put(ImportProvider.PARAM_SOURCE,
+						Value.of(resourceFolder + "/" + name));
 				count++;
 			}
 		} finally {

@@ -167,6 +167,7 @@ public class JaxbToAlignment extends
 	 * 
 	 * @param alignment the alignment to add a base alignment to
 	 * @param newBase URI of the new base alignment
+	 * @param projectLocation the project location or <code>null</code>
 	 * @param sourceTypes the source types to use for resolving definition
 	 *            references
 	 * @param targetTypes the target types to use for resolving definition
@@ -176,9 +177,10 @@ public class JaxbToAlignment extends
 	 * @throws IOException if adding the base alignment fails
 	 */
 	public static void addBaseAlignment(MutableAlignment alignment, URI newBase,
-			TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter) throws IOException {
-		new JaxbToAlignment().internalAddBaseAlignment(alignment, newBase, sourceTypes,
-				targetTypes, reporter);
+			URI projectLocation, TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter)
+			throws IOException {
+		new JaxbToAlignment().internalAddBaseAlignment(alignment, newBase, projectLocation,
+				sourceTypes, targetTypes, reporter);
 	}
 
 	/**
