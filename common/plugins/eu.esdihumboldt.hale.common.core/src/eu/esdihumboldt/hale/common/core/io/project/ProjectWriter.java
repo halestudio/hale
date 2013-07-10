@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.hale.common.core.io.project;
 
+import java.net.URI;
 import java.util.Map;
 
 import eu.esdihumboldt.hale.common.core.io.ExportProvider;
@@ -50,5 +51,12 @@ public interface ProjectWriter extends ExportProvider {
 	 * @return the main project file that is to be written
 	 */
 	public Project getProject();
+
+	/**
+	 * Sets the previous target if the project was saved before.
+	 * 
+	 * @param previousTarget the previous target
+	 */
+	public void setPreviousTarget(URI previousTarget);
 
 }

@@ -21,10 +21,8 @@ import static com.google.common.base.Preconditions.checkState;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URI;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -235,11 +233,11 @@ public class ActionProjectFile implements ProjectFile {
 	}
 
 	/**
-	 * @see ProjectFile#store(OutputStream)
+	 * @see ProjectFile#store(LocatableOutputSupplier)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void store(final OutputStream out) throws Exception {
+	public void store(final LocatableOutputSupplier<OutputStream> target) throws Exception {
 		// get the action
 		IOAction action = IOActionExtension.getInstance().get(saveActionId);
 		checkState(ExportProvider.class.isAssignableFrom(action.getProviderType()),
@@ -262,24 +260,7 @@ public class ActionProjectFile implements ProjectFile {
 		// set given parameters
 		setParameters(provider, saveParameters);
 		// set target
-		provider.setTarget(new LocatableOutputSupplier<OutputStream>() {
-
-			private boolean first = true;
-
-			@Override
-			public OutputStream getOutput() throws IOException {
-				if (first) {
-					first = false;
-					return out;
-				}
-				throw new IllegalStateException("Output stream only available once");
-			}
-
-			@Override
-			public URI getLocation() {
-				return null;
-			}
-		});
+		provider.setTarget(target);
 
 		// execute the provider
 		executeProvider(provider, advisor);

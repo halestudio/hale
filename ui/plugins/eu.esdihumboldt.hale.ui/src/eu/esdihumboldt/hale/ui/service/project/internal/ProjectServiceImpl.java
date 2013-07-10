@@ -193,7 +193,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				synchronized (ProjectServiceImpl.this) {
 					main = provider.getProject();
 					updater = new UILocationUpdater(main, provider.getSource().getLocation());
-					updater.updateProject();
+					updater.updateProject(true);
 					if ("file".equalsIgnoreCase(provider.getSource().getLocation().getScheme())) {
 						// the source of ArchiveProjectReader is a temporary
 						// directory. need the originally source to show the
@@ -266,6 +266,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				notifyBeforeSave(projectFiles); // get additional files from
 												// listeners
 				provider.setProjectFiles(projectFiles);
+				provider.setPreviousTarget(projectFile.toURI());
 			}
 
 			@Override
@@ -320,6 +321,11 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	 * @param conf the I/O configuration
 	 */
 	private void executeConfiguration(IOConfiguration conf) {
+		// work with a cloned configuration for the case that we make a relative
+		// URI absolute
+		conf = conf.clone();
+		updater.updateIOConfiguration(conf, false);
+
 		// get provider ...
 		IOProvider provider = null;
 		IOProviderDescriptor descriptor = IOProviderExtension.getInstance().getFactory(
@@ -854,5 +860,13 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				names.add(name);
 		}
 		return names;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#getLoadLocation()
+	 */
+	@Override
+	public File getLoadLocation() {
+		return projectFile;
 	}
 }

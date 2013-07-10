@@ -42,7 +42,7 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
-import eu.esdihumboldt.util.Pair;
+import eu.esdihumboldt.util.io.IOUtils;
 import eu.esdihumboldt.util.io.PathUpdate;
 
 /**
@@ -143,10 +143,60 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 	protected abstract TransformationMode getTransformationMode(M modifier);
 
 	/**
+	 * Private class to save alignment information.
+	 */
+	private class AlignmentInfo {
+
+		AlignmentInfo(String prefix, URIPair uri) {
+			this.prefix = prefix;
+			this.uri = uri;
+		}
+
+		final String prefix;
+		final URIPair uri;
+	}
+
+	/**
+	 * Private class for a pair of URIs. The used URI and the absolute URI.
+	 * 
+	 * {@link #equals(Object)} and {@link #hashCode()} only use the absolute
+	 * URI.
+	 */
+	private class URIPair {
+
+		URIPair(URI absoluteURI, URI usedURI) {
+			this.absoluteURI = absoluteURI;
+			this.usedURI = usedURI;
+		}
+
+		final URI absoluteURI;
+		final URI usedURI;
+
+		/**
+		 * @see java.lang.Object#hashCode()
+		 */
+		@Override
+		public int hashCode() {
+			return 31 + ((absoluteURI == null) ? 0 : absoluteURI.hashCode());
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof AbstractBaseAlignmentLoader.URIPair)
+				return absoluteURI.equals(((URIPair) obj).absoluteURI);
+			else
+				return false;
+		}
+
+	}
+
+	/**
 	 * Adds the given base alignment to the given alignment.
 	 * 
 	 * @param alignment the alignment to add a base alignment to
 	 * @param newBase URI of the new base alignment
+	 * @param projectLocation the project location or <code>null</code>
 	 * @param sourceTypes the source types to use for resolving definition
 	 *            references
 	 * @param targetTypes the target types to use for resolving definition
@@ -156,12 +206,13 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 	 * @throws IOException if adding the base alignment fails
 	 */
 	protected final void internalAddBaseAlignment(MutableAlignment alignment, URI newBase,
-			TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter) throws IOException {
+			URI projectLocation, TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter)
+			throws IOException {
 		Map<A, Map<String, String>> prefixMapping = new HashMap<A, Map<String, String>>();
-		Map<A, Pair<String, URI>> alignmentToInfo = new HashMap<A, Pair<String, URI>>();
+		Map<A, AlignmentInfo> alignmentToInfo = new HashMap<A, AlignmentInfo>();
 
-		generatePrefixMapping(newBase, alignment.getBaseAlignments(), prefixMapping,
-				alignmentToInfo, reporter);
+		generatePrefixMapping(newBase, projectLocation, alignment.getBaseAlignments(),
+				prefixMapping, alignmentToInfo, reporter);
 		processBaseAlignments(alignment, sourceTypes, targetTypes, prefixMapping, alignmentToInfo,
 				reporter);
 	}
@@ -185,8 +236,8 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 	 */
 	private void processBaseAlignments(MutableAlignment alignment, TypeIndex sourceTypes,
 			TypeIndex targetTypes, Map<A, Map<String, String>> prefixMapping,
-			Map<A, Pair<String, URI>> alignmentToInfo, IOReporter reporter) throws IOException {
-		for (Entry<A, Pair<String, URI>> base : alignmentToInfo.entrySet()) {
+			Map<A, AlignmentInfo> alignmentToInfo, IOReporter reporter) throws IOException {
+		for (Entry<A, AlignmentInfo> base : alignmentToInfo.entrySet()) {
 			Collection<C> baseCells = getCells(base.getKey());
 			boolean hasIds = true;
 			for (C baseCell : baseCells)
@@ -195,12 +246,13 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 					break;
 				}
 			if (!hasIds) {
-				throw new IOException("At least one base alignment (" + base.getValue().getSecond()
+				throw new IOException("At least one base alignment ("
+						+ base.getValue().uri.absoluteURI
 						+ ") has no cell ids. Please load and save it to generate them.");
 			}
 		}
 
-		for (Entry<A, Pair<String, URI>> base : alignmentToInfo.entrySet()) {
+		for (Entry<A, AlignmentInfo> base : alignmentToInfo.entrySet()) {
 			Collection<C> baseCells = getCells(base.getKey());
 			Collection<BaseAlignmentCell> createdCells = new ArrayList<BaseAlignmentCell>(
 					baseCells.size());
@@ -208,23 +260,24 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 				// add cells of base alignments
 				MutableCell cell = createCell(baseCell, sourceTypes, targetTypes, reporter);
 				if (cell != null)
-					createdCells.add(new BaseAlignmentCell(cell, base.getValue().getSecond(), base
-							.getValue().getFirst()));
+					createdCells.add(new BaseAlignmentCell(cell, base.getValue().uri.usedURI, base
+							.getValue().prefix));
 			}
-			alignment.addBaseAlignment(base.getValue().getFirst(), base.getValue().getSecond(),
+			alignment.addBaseAlignment(base.getValue().prefix, base.getValue().uri.usedURI,
 					createdCells);
 		}
 
 		// add modifiers of base alignments
-		for (Entry<A, Pair<String, URI>> base : alignmentToInfo.entrySet())
+		for (Entry<A, AlignmentInfo> base : alignmentToInfo.entrySet())
 			applyModifiers(alignment, getModifiers(base.getKey()),
-					prefixMapping.get(base.getKey()), base.getValue().getFirst(), true, reporter);
+					prefixMapping.get(base.getKey()), base.getValue().prefix, true, reporter);
 	}
 
 	/**
 	 * Function to fill the prefixMapping and alignmentToInfo maps.
 	 * 
-	 * @param newBase the URI of the new base alignment to add
+	 * @param addBase the URI of the new base alignment to add
+	 * @param projectLocation the project location or <code>null</code>
 	 * @param existingBases the map of existing bases
 	 * @param prefixMapping gets filled with a mapping from local to global
 	 *            prefixes
@@ -234,9 +287,15 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 	 * @return whether newBase actually is a new base and the add process should
 	 *         continue
 	 */
-	private boolean generatePrefixMapping(URI newBase, Map<String, URI> existingBases,
-			Map<A, Map<String, String>> prefixMapping, Map<A, Pair<String, URI>> alignmentToInfo,
-			IOReporter reporter) {
+	private boolean generatePrefixMapping(URI addBase, URI projectLocation,
+			Map<String, URI> existingBases, Map<A, Map<String, String>> prefixMapping,
+			Map<A, AlignmentInfo> alignmentToInfo, IOReporter reporter) {
+		// Project location may be null if the project wasn't saved yet
+		// Then, it still is okay, if all bases are absolute.
+		URI currentAbsolute = projectLocation;
+		URI usedAddBaseURI = addBase;
+		URI absoluteAddBaseURI = resolve(currentAbsolute, usedAddBaseURI);
+
 		// set of already seen URIs
 		Set<URI> knownURIs = new HashSet<URI>();
 
@@ -244,14 +303,15 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 		Map<URI, String> uriToPrefix = new HashMap<URI, String>();
 
 		// create URI to prefix map and known URIs
-		// URIs come from alignment, so they are absolute
 		for (Entry<String, URI> baseEntry : existingBases.entrySet()) {
-			knownURIs.add(baseEntry.getValue());
-			uriToPrefix.put(baseEntry.getValue(), baseEntry.getKey());
+			// make sure to use absolute URIs here for comparison
+			URI absoluteBase = resolve(currentAbsolute, baseEntry.getValue());
+			knownURIs.add(absoluteBase);
+			uriToPrefix.put(absoluteBase, baseEntry.getKey());
 		}
 
-		if (uriToPrefix.containsKey(newBase)) {
-			reporter.info(new IOMessageImpl("The base alignment (" + newBase
+		if (uriToPrefix.containsKey(absoluteAddBaseURI)) {
+			reporter.info(new IOMessageImpl("The base alignment (" + addBase
 					+ ") is already included.", null));
 			return false;
 		}
@@ -259,7 +319,7 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 		Set<String> existingPrefixes = new HashSet<String>(existingBases.keySet());
 		String newPrefix = generatePrefix(existingPrefixes);
 		existingPrefixes.add(newPrefix);
-		uriToPrefix.put(newBase, newPrefix);
+		uriToPrefix.put(absoluteAddBaseURI, newPrefix);
 
 		/*
 		 * XXX Adding a base alignment could only use a PathUpdate for the
@@ -268,46 +328,62 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 		 */
 
 		// find all alignments to load (also missing ones) and load the beans
-		LinkedList<URI> queue = new LinkedList<URI>();
-		queue.add(newBase);
+		LinkedList<URIPair> queue = new LinkedList<URIPair>();
+		queue.add(new URIPair(absoluteAddBaseURI, usedAddBaseURI));
 		while (!queue.isEmpty()) {
-			URI baseURI = queue.pollFirst();
+			URIPair baseURI = queue.pollFirst();
 			A baseA;
 			try {
-				baseA = loadAlignment(new DefaultInputSupplier(baseURI).getInput(), reporter);
+				baseA = loadAlignment(new DefaultInputSupplier(baseURI.absoluteURI).getInput(),
+						reporter);
 			} catch (IOException e) {
 				reporter.error(new IOMessageImpl("Couldn't load an included base alignment ("
-						+ baseURI + ").", e));
+						+ baseURI.absoluteURI + ").", e));
 				reporter.setSuccess(false);
 				return false;
 			}
 
 			// add to alignment info map
-			alignmentToInfo.put(baseA, new Pair<String, URI>(uriToPrefix.get(baseURI), baseURI));
+			alignmentToInfo.put(baseA, new AlignmentInfo(uriToPrefix.get(baseURI.absoluteURI),
+					baseURI));
 			prefixMapping.put(baseA, new HashMap<String, String>());
 
 			// load "missing" base alignments, too, add prefix mapping
 			for (Entry<String, URI> baseEntry : getBases(baseA).entrySet()) {
-				// rawUri may be relative
-				URI rawUri = baseEntry.getValue();
-				URI uri = newBase.resolve(rawUri);
+				// rawURI may be relative
+				URI rawURI = baseEntry.getValue();
+				URI absoluteURI = baseURI.absoluteURI.resolve(rawURI);
+				URI usedURI = absoluteURI;
+				// If the added base alignment URI, the used URI for A
+				// and rawURI are relative, continue using a relative URI.
+				if (!usedAddBaseURI.isAbsolute() && !baseURI.usedURI.isAbsolute()
+						&& !rawURI.isAbsolute()) {
+					usedURI = IOUtils.getRelativePath(absoluteURI, currentAbsolute);
+				}
 				// check whether this base alignment is missing
-				if (!knownURIs.contains(uri)) {
+				if (!knownURIs.contains(absoluteURI)) {
 					reporter.info(new IOMessageImpl(
-							"A base alignment referenced another base alignment (" + uri
+							"A base alignment referenced another base alignment (" + absoluteURI
 									+ ") that was not yet known. It is now included, too.", null));
-					queue.add(uri);
-					knownURIs.add(uri);
+					queue.add(new URIPair(absoluteURI, usedURI));
+					knownURIs.add(absoluteURI);
 					String prefix = generatePrefix(existingPrefixes);
 					existingPrefixes.add(prefix);
-					uriToPrefix.put(uri, prefix);
+					uriToPrefix.put(absoluteURI, prefix);
 				}
 				// add prefix mapping
-				prefixMapping.get(baseA).put(baseEntry.getKey(), uriToPrefix.get(uri));
+				prefixMapping.get(baseA).put(baseEntry.getKey(), uriToPrefix.get(absoluteURI));
 			}
 		}
 
 		return true;
+	}
+
+	private URI resolve(URI base, URI relative) {
+		if (relative.isAbsolute())
+			return relative;
+		else
+			return base.resolve(relative);
 	}
 
 	/**
@@ -327,7 +403,7 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 	protected final MutableAlignment createAlignment(A start, TypeIndex sourceTypes,
 			TypeIndex targetTypes, PathUpdate updater, IOReporter reporter) throws IOException {
 		Map<A, Map<String, String>> prefixMapping = new HashMap<A, Map<String, String>>();
-		Map<A, Pair<String, URI>> alignmentToInfo = new HashMap<A, Pair<String, URI>>();
+		Map<A, AlignmentInfo> alignmentToInfo = new HashMap<A, AlignmentInfo>();
 
 		// fill needed maps
 		generatePrefixMapping(start, prefixMapping, alignmentToInfo, updater, reporter);
@@ -366,8 +442,12 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 	 * @throws IOException if a base alignment couldn't be loaded
 	 */
 	private void generatePrefixMapping(A start, Map<A, Map<String, String>> prefixMapping,
-			Map<A, Pair<String, URI>> alignmentToInfo, PathUpdate updater, IOReporter reporter)
+			Map<A, AlignmentInfo> alignmentToInfo, PathUpdate updater, IOReporter reporter)
 			throws IOException {
+		// XXX What if the project file path would change?
+		// Alignment is a project file, so it is in the same directory.
+		URI currentAbsolute = updater.getNewLocation();
+
 		Map<String, URI> base = getBases(start);
 
 		// also a mapping for this alignment itself in case the same URI is
@@ -380,69 +460,78 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 		// reverse map of base
 		Map<URI, String> uriToPrefix = new HashMap<URI, String>();
 
+		// queue of base alignments to process
+		LinkedList<URIPair> queue = new LinkedList<URIPair>();
+
 		// check base for doubles, and invert it for later
 		for (Entry<String, URI> baseEntry : base.entrySet()) {
 			URI rawBaseURI = baseEntry.getValue();
-			// resolve here, to not include the same file through different
-			// relative paths...
-			URI baseURI = updater.findLocation(rawBaseURI, true, false, false);
-			if (baseURI == null) {
+			URI usedBaseURI = updater.findLocation(rawBaseURI, true, false, true);
+			if (usedBaseURI == null) {
 				throw new IOException("Couldn't load an included alignment (" + rawBaseURI
 						+ "). File not found.", null);
 			}
-			if (knownURIs.contains(baseURI)) {
+			URI absoluteBaseURI = currentAbsolute.resolve(usedBaseURI);
+
+			if (knownURIs.contains(absoluteBaseURI)) {
 				reporter.warn(new IOMessageImpl("The same base alignment (" + rawBaseURI
 						+ ") was included twice.", null));
-				prefixMapping.get(start).put(baseEntry.getKey(), uriToPrefix.get(baseURI));
+				prefixMapping.get(start).put(baseEntry.getKey(), uriToPrefix.get(absoluteBaseURI));
 			}
 			else {
-				knownURIs.add(baseURI);
+				knownURIs.add(absoluteBaseURI);
 				prefixMapping.get(start).put(baseEntry.getKey(), baseEntry.getKey());
-				uriToPrefix.put(baseURI, baseEntry.getKey());
+				uriToPrefix.put(absoluteBaseURI, baseEntry.getKey());
+				queue.add(new URIPair(absoluteBaseURI, usedBaseURI));
 			}
 		}
 
 		// find all alignments to load (also missing ones) and load the beans
-		LinkedList<URI> queue = new LinkedList<URI>(knownURIs);
 		while (!queue.isEmpty()) {
-			URI baseURI = queue.pollFirst();
+			URIPair baseURI = queue.pollFirst();
 			A baseA;
 			try {
-				baseA = loadAlignment(new DefaultInputSupplier(baseURI).getInput(), reporter);
+				baseA = loadAlignment(new DefaultInputSupplier(baseURI.absoluteURI).getInput(),
+						reporter);
 			} catch (IOException e) {
 				throw new IOException("Couldn't load an included alignment (" + baseURI + ").", e);
 			}
 
 			// add to alignment info map
-			alignmentToInfo.put(baseA, new Pair<String, URI>(uriToPrefix.get(baseURI), baseURI));
+			alignmentToInfo.put(baseA, new AlignmentInfo(uriToPrefix.get(baseURI.absoluteURI),
+					baseURI));
 			prefixMapping.put(baseA, new HashMap<String, String>());
 
 			// load "missing" base alignments, too, add prefix mapping
 			for (Entry<String, URI> baseEntry : getBases(baseA).entrySet()) {
-				// rawUri may be relative
-				URI rawUri = baseEntry.getValue();
-				// First resolve relative (if needed) to the current alignment.
-				URI uri = baseURI.resolve(rawUri);
-				// Then try path update in case several alignments that
-				// reference each other were moved in the same way as the
-				// project.
-				uri = updater.findLocation(uri, true, false, false);
-				if (uri == null)
-					throw new IOException("Couldn't load an included alignment (" + rawUri
-							+ "). File not found.");
-				if (!knownURIs.contains(uri)) {
+				// rawURI may be relative
+				URI rawURI = baseEntry.getValue();
+				URI absoluteURI = baseURI.absoluteURI.resolve(rawURI);
+				// try updater again, it might help, and it shows whether the
+				// file is readable
+				absoluteURI = updater.findLocation(absoluteURI, true, false, false);
+				if (absoluteURI == null)
+					throw new IOException("Couldn't find an included alignment (" + rawURI + ").");
+				URI usedURI = absoluteURI;
+				// If the used URI for A and rawURI are relative, continue using
+				// a relative URI.
+				if (!baseURI.usedURI.isAbsolute() && !rawURI.isAbsolute()) {
+					usedURI = IOUtils.getRelativePath(absoluteURI, currentAbsolute);
+				}
+
+				if (!knownURIs.contains(absoluteURI)) {
 					reporter.info(new IOMessageImpl(
-							"A base alignment referenced another base alignment (" + uri
+							"A base alignment referenced another base alignment (" + absoluteURI
 									+ ") that was not yet known. It is now included, too.", null));
-					queue.add(uri);
-					knownURIs.add(uri);
+					queue.add(new URIPair(absoluteURI, usedURI));
+					knownURIs.add(absoluteURI);
 					String prefix = generatePrefix(base.keySet());
-					base.put(prefix, uri);
-					uriToPrefix.put(uri, prefix);
+					base.put(prefix, usedURI);
+					uriToPrefix.put(absoluteURI, prefix);
 					prefixMapping.get(start).put(prefix, prefix);
 				}
 				// add prefix mapping
-				prefixMapping.get(baseA).put(baseEntry.getKey(), uriToPrefix.get(uri));
+				prefixMapping.get(baseA).put(baseEntry.getKey(), uriToPrefix.get(absoluteURI));
 			}
 		}
 	}
