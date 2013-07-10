@@ -175,7 +175,8 @@ public class HeadlessProjectAdvisor extends AbstractIOAdvisor<ProjectReader> {
 	public void handleResults(ProjectReader provider) {
 		project = provider.getProject();
 		updater = new LocationUpdater(project, provider.getSource().getLocation());
-		updater.updateProject();
+		// no need to keep relative paths in the headless environment
+		updater.updateProject(false);
 
 		// inject project into advisors (mappable types)
 		sourceSchemaAdvisor.setProject(project);

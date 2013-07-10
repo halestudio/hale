@@ -26,7 +26,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -56,6 +55,7 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
+import eu.esdihumboldt.util.io.IOUtils;
 
 /**
  * Class for updating location values in XML files.<br>
@@ -95,7 +95,8 @@ public class XMLPathUpdater {
 	 * import location in wfs_va.xsd will be adapted.
 	 * 
 	 * @param xmlResource the XML resource file that gets updated
-	 * @param oldPath its original location
+	 * @param oldPath its original location, may be <code>null</code> in case it
+	 *            didn't exist before
 	 * @param locationXPath a XPath expression to find nodes that should be
 	 *            processed
 	 * @param includeWebResources whether web resources should be copied and
@@ -216,9 +217,9 @@ public class XMLPathUpdater {
 			if (updates.containsKey(locationUri)) {
 				// if the current XML schema is already updated we have to
 				// find the relative path to this resource
-				String relative = getRelativePath(updates.get(locationUri).toURI().toString(),
-						xmlResource.toURI().toString(), "/");
-				locationNode.setNodeValue(relative);
+				URI relative = IOUtils.getRelativePath(updates.get(locationUri).toURI(),
+						xmlResource.toURI());
+				locationNode.setNodeValue(relative.toString());
 			}
 			else if (input != null) {
 				// we need the directory of the file
@@ -266,63 +267,6 @@ public class XMLPathUpdater {
 				return;
 			}
 		}
-	}
-
-	// this solution is copied from stackoverflow
-	// (http://stackoverflow.com/a/1288584) to get a relative path based on two
-	// paths
-	private static String getRelativePath(String targetPath, String basePath, String pathSeparator) {
-
-		// We need the -1 argument to split to make sure we get a trailing
-		// "" token if the base ends in the path separator and is therefore
-		// a directory. We require directory paths to end in the path
-		// separator -- otherwise they are indistinguishable from files.
-		String[] base = basePath.split(Pattern.quote(pathSeparator), -1);
-		String[] target = targetPath.split(Pattern.quote(pathSeparator), 0);
-
-		// First get all the common elements. Store them as a string,
-		// and also count how many of them there are.
-		StringBuffer buf = new StringBuffer();
-		int commonIndex = 0;
-		for (int i = 0; i < target.length && i < base.length; i++) {
-
-			if (target[i].equals(base[i])) {
-				buf.append(target[i]).append(pathSeparator);
-				commonIndex++;
-			}
-			else
-				break;
-		}
-
-		String common = buf.toString();
-
-		if (commonIndex == 0) {
-			// Whoops -- not even a single common path element. This most
-			// likely indicates differing drive letters, like C: and D:.
-			// These paths cannot be relativized. Return the target path.
-			return targetPath;
-			// This should never happen when all absolute paths
-			// begin with / as in *nix.
-		}
-
-		String relative = "";
-		if (base.length == commonIndex) {
-			// Comment this out if you prefer that a relative path not start
-			// with ./
-			relative = "." + pathSeparator;
-		}
-		else {
-			int numDirsUp = base.length - commonIndex - 1;
-			// The number of directories we have to backtrack is the length of
-			// the base path MINUS the number of common path elements, minus
-			// one because the last element in the path isn't a directory.
-			for (int i = 1; i <= (numDirsUp); i++) {
-				relative += ".." + pathSeparator;
-			}
-		}
-		relative += targetPath.substring(common.length());
-
-		return relative;
 	}
 
 }

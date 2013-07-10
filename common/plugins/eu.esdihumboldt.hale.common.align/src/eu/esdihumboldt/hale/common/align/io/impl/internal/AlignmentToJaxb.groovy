@@ -51,6 +51,7 @@ import eu.esdihumboldt.hale.common.align.model.TransformationMode
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter
 import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager
 import eu.esdihumboldt.hale.common.instance.model.Filter
+import eu.esdihumboldt.util.io.PathUpdate
 
 
 
@@ -65,16 +66,19 @@ class AlignmentToJaxb {
 	private final Alignment alignment
 	private final IOReporter reporter
 	private final ObjectFactory of = new ObjectFactory()
+	private final PathUpdate pathUpdate
 
 	/**
 	 * Create a new converter.
 	 * 
 	 * @param alignment the alignment to convert
 	 * @param reporter the reporter to use for reporting problems, may be <code>null</code>
+	 * @param pathUpdate to update relative paths in case of a path change
 	 */
-	AlignmentToJaxb(Alignment alignment, IOReporter reporter) {
+	AlignmentToJaxb(Alignment alignment, IOReporter reporter, PathUpdate pathUpdate) {
 		this.alignment = alignment
 		this.reporter = reporter
+		this.pathUpdate = pathUpdate
 	}
 
 	/**
@@ -84,7 +88,7 @@ class AlignmentToJaxb {
 		AlignmentType align = new AlignmentType()
 
 		alignment.baseAlignments.collect(align.base) {
-			new Base(prefix: it.key, location: it.value);
+			new Base(prefix: it.key, location: pathUpdate.findLocation(it.value, true, false, true))
 		}
 
 		// convert cells
