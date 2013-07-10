@@ -43,8 +43,8 @@ public class CastorAlignmentIOTest extends DefaultAlignmentIOTest {
 	@Override
 	protected void addBaseAlignment(MutableAlignment align, final URI newBase, TypeIndex source,
 			TypeIndex target) throws Exception {
-		CastorAlignmentIO.addBaseAlignment(align, newBase, source, target, new DefaultIOReporter(
-				new Locatable() {
+		CastorAlignmentIO.addBaseAlignment(align, newBase, null, source, target,
+				new DefaultIOReporter(new Locatable() {
 
 					@Override
 					public URI getLocation() {
@@ -55,7 +55,7 @@ public class CastorAlignmentIOTest extends DefaultAlignmentIOTest {
 
 	@Override
 	protected void saveAlignment(MutableAlignment align, OutputStream output) throws Exception {
-		CastorAlignmentIO.save(align, output);
+		CastorAlignmentIO.save(align, output, new PathUpdate(null, null));
 	}
 
 	@Override

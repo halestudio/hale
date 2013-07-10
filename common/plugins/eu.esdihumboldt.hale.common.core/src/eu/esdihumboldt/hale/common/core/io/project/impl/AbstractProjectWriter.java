@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.hale.common.core.io.project.impl;
 
+import java.net.URI;
 import java.util.Map;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
@@ -43,6 +44,8 @@ public abstract class AbstractProjectWriter extends AbstractExportProvider imple
 	 * The main project file
 	 */
 	private Project project;
+
+	private URI previousTarget;
 
 	/**
 	 * @see ProjectWriter#setProjectFiles(Map)
@@ -89,6 +92,23 @@ public abstract class AbstractProjectWriter extends AbstractExportProvider imple
 	@Override
 	public boolean isCancelable() {
 		return false;
+	}
+
+	/**
+	 * @see ProjectWriter#setPreviousTarget(URI)
+	 */
+	@Override
+	public void setPreviousTarget(URI previousTarget) {
+		this.previousTarget = previousTarget;
+	}
+
+	/**
+	 * Returns the previous target of the project. May be <code>null</code>.
+	 * 
+	 * @return the previous target of the project. May be <code>null</code>
+	 */
+	protected URI getPreviousTarget() {
+		return previousTarget;
 	}
 
 }

@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -94,6 +95,82 @@ public final class IOUtils {
 			}
 		} finally {
 			zis.close();
+		}
+	}
+
+	/**
+	 * Returns a relative path between basePath and targetPath if possible.
+	 * 
+	 * Source: http://stackoverflow.com/a/1288584
+	 * 
+	 * @param targetPath the target path
+	 * @param basePath the base path
+	 * @return a relative path from basePath to targetPath or the targetPath if
+	 *         a relative path is not possible
+	 */
+	public static URI getRelativePath(URI targetPath, URI basePath) {
+		// nothing to do if one path is opaque or not absolute
+		if (!targetPath.isAbsolute() || !basePath.isAbsolute() || targetPath.isOpaque()
+				|| basePath.isOpaque())
+			return targetPath;
+		// check scheme
+		// XXX also check the other stuff (authority, host, port)?
+		if (!targetPath.getScheme().equals(basePath.getScheme()))
+			return targetPath;
+
+		// We need the -1 argument to split to make sure we get a trailing
+		// "" token if the base ends in the path separator and is therefore
+		// a directory. We require directory paths to end in the path
+		// separator -- otherwise they are indistinguishable from files.
+		String[] base = basePath.getPath().split("/", -1);
+		String[] target = targetPath.getPath().split("/", 0);
+
+		// First get all the common elements. Store them as a string,
+		// and also count how many of them there are.
+		StringBuffer buf = new StringBuffer();
+		int commonIndex = 0;
+		for (int i = 0; i < target.length && i < base.length; i++) {
+
+			if (target[i].equals(base[i])) {
+				buf.append(target[i]).append("/");
+				commonIndex++;
+			}
+			else
+				break;
+		}
+
+		String common = buf.toString();
+
+		if (commonIndex == 0) {
+			// Whoops -- not even a single common path element. This most
+			// likely indicates differing drive letters, like C: and D:.
+			// These paths cannot be relativized. Return the target path.
+			return targetPath;
+			// This should never happen when all absolute paths
+			// begin with / as in *nix.
+		}
+
+		String relative = "";
+		if (base.length == commonIndex) {
+			// Comment this out if you prefer that a relative path not start
+			// with ./
+//			relative = "./";
+		}
+		else {
+			int numDirsUp = base.length - commonIndex - 1;
+			// The number of directories we have to backtrack is the length of
+			// the base path MINUS the number of common path elements, minus
+			// one because the last element in the path isn't a directory.
+			for (int i = 1; i <= (numDirsUp); i++) {
+				relative += "../";
+			}
+		}
+		relative += targetPath.getPath().substring(common.length());
+
+		try {
+			return new URI(null, null, relative, targetPath.getQuery(), targetPath.getFragment());
+		} catch (URISyntaxException e) {
+			return targetPath;
 		}
 	}
 }
