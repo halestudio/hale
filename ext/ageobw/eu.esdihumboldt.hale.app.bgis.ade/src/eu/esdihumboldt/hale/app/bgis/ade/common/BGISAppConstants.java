@@ -25,7 +25,8 @@ public interface BGISAppConstants {
 	/**
 	 * ADE namespace.
 	 */
-	public static final String ADE_NS = "http://www.bund.de/AGeoBw";
+//	public static final String ADE_NS = "http://www.bund.de/AGeoBw";
+	public static final String ADE_NS = "http://www.datenbasisDokumente.geoinfo.svc/schemata/";
 
 	/**
 	 * Default value for enumerations.
