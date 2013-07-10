@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.util.io.PathUpdate;
 
 /**
  * HALE alignment writer
@@ -50,9 +51,10 @@ public class JaxbAlignmentWriter extends AbstractAlignmentWriter {
 			throws IOProviderConfigurationException, IOException {
 		progress.begin("Save HALE alignment", ProgressIndicator.UNKNOWN);
 
+		PathUpdate pathUpdate = new PathUpdate(getPreviousTarget(), getTarget().getLocation());
 		OutputStream out = getTarget().getOutput();
 		try {
-			JaxbAlignmentIO.save(getAlignment(), reporter, out);
+			JaxbAlignmentIO.save(getAlignment(), reporter, out, pathUpdate);
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl(e.getMessage(), e));
 			reporter.setSuccess(false);
