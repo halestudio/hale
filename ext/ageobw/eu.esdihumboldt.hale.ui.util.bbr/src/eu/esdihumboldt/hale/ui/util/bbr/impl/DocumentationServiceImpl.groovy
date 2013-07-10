@@ -40,7 +40,7 @@ class DocumentationServiceImpl implements DocumentationService {
 	/**
 	 * Namespace URI expected for BBR types and attributes.
 	 */
-	public static final String NS_URI_AGEOBW = 'http://www.bund.de/AGeoBw'
+	public static final String NS_URI_AGEOBW = 'http://www.datenbasisDokumente.geoinfo.svc/schemata/'
 
 	public static final String BBR_FILE_NAME = 'bbr.csv'
 
