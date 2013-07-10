@@ -110,8 +110,11 @@ public class PathUpdate {
 	 * @param tryFallback whether to use {@link #updatePathFallback(URI)} in the
 	 *            end or not
 	 * @param allowResource whether to allow resolving through {@link Resources}
-	 * @param keepRelative if the URI is relative to the new location and
-	 *            keepRelative is set, the URI is returned as is
+	 * @param keepRelative If the URI is relative to the new location and
+	 *            keepRelative is set, the URI is returned as is.<br>
+	 *            Also, if the URI is relative to the old location and it is
+	 *            possible to construct a relative path to the new location,
+	 *            that is returned
 	 * @return a valid, existing URI or <code>null</code>
 	 */
 	public URI findLocation(URI uri, boolean tryFallback, boolean allowResource,
@@ -128,8 +131,12 @@ public class PathUpdate {
 			}
 			if (oldLocation != null) {
 				URI oldAbsolute = oldLocation.resolve(uri);
-				if (IOUtils.testStream(oldAbsolute, allowResource))
-					return oldAbsolute;
+				if (IOUtils.testStream(oldAbsolute, allowResource)) {
+					if (keepRelative)
+						return IOUtils.getRelativePath(oldAbsolute, newLocation);
+					else
+						return oldAbsolute;
+				}
 			}
 		}
 		else {
@@ -138,7 +145,7 @@ public class PathUpdate {
 				if (IOUtils.testStream(changed, allowResource))
 					return changed;
 			}
-			else if (IOUtils.testStream(uri, allowResource))
+			if (IOUtils.testStream(uri, allowResource))
 				return uri;
 		}
 		if (tryFallback)
@@ -185,14 +192,14 @@ public class PathUpdate {
 	/**
 	 * @return the oldLocation, may be null
 	 */
-	protected URI getOldLocation() {
+	public URI getOldLocation() {
 		return oldLocation;
 	}
 
 	/**
 	 * @return the newLocation, may be null
 	 */
-	protected URI getNewLocation() {
+	public URI getNewLocation() {
 		return newLocation;
 	}
 

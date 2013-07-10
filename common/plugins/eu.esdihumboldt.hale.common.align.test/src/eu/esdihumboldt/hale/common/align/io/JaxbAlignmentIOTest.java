@@ -43,8 +43,8 @@ public class JaxbAlignmentIOTest extends DefaultAlignmentIOTest {
 	@Override
 	protected void addBaseAlignment(MutableAlignment align, final URI newBase, TypeIndex source,
 			TypeIndex target) throws Exception {
-		JaxbAlignmentIO.addBaseAlignment(align, newBase, source, target, new DefaultIOReporter(
-				new Locatable() {
+		JaxbAlignmentIO.addBaseAlignment(align, newBase, null, source, target,
+				new DefaultIOReporter(new Locatable() {
 
 					@Override
 					public URI getLocation() {
@@ -55,7 +55,7 @@ public class JaxbAlignmentIOTest extends DefaultAlignmentIOTest {
 
 	@Override
 	protected void saveAlignment(MutableAlignment align, OutputStream output) throws Exception {
-		JaxbAlignmentIO.save(align, null, output);
+		JaxbAlignmentIO.save(align, null, output, new PathUpdate(null, null));
 	}
 
 	@Override

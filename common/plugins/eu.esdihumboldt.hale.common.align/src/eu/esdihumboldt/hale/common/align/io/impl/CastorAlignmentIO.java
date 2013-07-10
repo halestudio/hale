@@ -76,6 +76,7 @@ public class CastorAlignmentIO {
 	 * 
 	 * @param alignment the alignment to add a base alignment to
 	 * @param newBase URI of the new base alignment
+	 * @param projectLocation the project location or <code>null</code>
 	 * @param sourceTypes the source types to use for resolving definition
 	 *            references
 	 * @param targetTypes the target types to use for resolving definition
@@ -85,8 +86,10 @@ public class CastorAlignmentIO {
 	 * @throws IOException if adding the base alignment fails
 	 */
 	public static void addBaseAlignment(MutableAlignment alignment, URI newBase,
-			TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter) throws IOException {
-		AlignmentBean.addBaseAlignment(alignment, newBase, sourceTypes, targetTypes, reporter);
+			URI projectLocation, TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter)
+			throws IOException {
+		AlignmentBean.addBaseAlignment(alignment, newBase, projectLocation, sourceTypes,
+				targetTypes, reporter);
 	}
 
 	/**
@@ -94,14 +97,15 @@ public class CastorAlignmentIO {
 	 * 
 	 * @param alignment the alignment to save
 	 * @param out the output stream
+	 * @param pathUpdate to update relative paths in case of a path change
 	 * @throws MappingException if the mapping could not be loaded
 	 * @throws ValidationException if the mapping is no valid XML
 	 * @throws MarshalException if the alignment could not be marshaled
 	 * @throws IOException if the output could not be written
 	 */
-	public static void save(Alignment alignment, OutputStream out) throws MappingException,
-			MarshalException, ValidationException, IOException {
-		AlignmentBean bean = new AlignmentBean(alignment);
+	public static void save(Alignment alignment, OutputStream out, PathUpdate pathUpdate)
+			throws MappingException, MarshalException, ValidationException, IOException {
+		AlignmentBean bean = new AlignmentBean(alignment, pathUpdate);
 
 		Mapping mapping = new Mapping(AlignmentBean.class.getClassLoader());
 		mapping.loadMapping(new InputSource(AlignmentBean.class

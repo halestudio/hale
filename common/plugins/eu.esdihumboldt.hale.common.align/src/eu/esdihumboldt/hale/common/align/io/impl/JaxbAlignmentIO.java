@@ -75,6 +75,7 @@ public class JaxbAlignmentIO {
 	 * 
 	 * @param alignment the alignment to add a base alignment to
 	 * @param newBase URI of the new base alignment
+	 * @param projectLocation the project location or <code>null</code>
 	 * @param sourceTypes the source types to use for resolving definition
 	 *            references
 	 * @param targetTypes the target types to use for resolving definition
@@ -84,8 +85,10 @@ public class JaxbAlignmentIO {
 	 * @throws IOException if adding the base alignment failed
 	 */
 	public static void addBaseAlignment(MutableAlignment alignment, URI newBase,
-			TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter) throws IOException {
-		JaxbToAlignment.addBaseAlignment(alignment, newBase, sourceTypes, targetTypes, reporter);
+			URI projectLocation, TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter)
+			throws IOException {
+		JaxbToAlignment.addBaseAlignment(alignment, newBase, projectLocation, sourceTypes,
+				targetTypes, reporter);
 	}
 
 	/**
@@ -95,11 +98,12 @@ public class JaxbAlignmentIO {
 	 * @param reporter the I/O reporter to report any errors to, may be
 	 *            <code>null</code>
 	 * @param out the output stream
+	 * @param pathUpdate to update relative paths in case of a path change
 	 * @throws Exception if converting or writing the alignment fails
 	 */
-	public static void save(Alignment alignment, IOReporter reporter, OutputStream out)
-			throws Exception {
-		AlignmentType align = new AlignmentToJaxb(alignment, reporter).convert();
+	public static void save(Alignment alignment, IOReporter reporter, OutputStream out,
+			PathUpdate pathUpdate) throws Exception {
+		AlignmentType align = new AlignmentToJaxb(alignment, reporter, pathUpdate).convert();
 
 		JAXBContext jc = JAXBContext.newInstance(ALIGNMENT_CONTEXT);
 		Marshaller m = jc.createMarshaller();

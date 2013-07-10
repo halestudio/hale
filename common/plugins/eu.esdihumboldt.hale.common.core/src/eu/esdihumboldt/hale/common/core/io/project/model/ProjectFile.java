@@ -19,6 +19,8 @@ package eu.esdihumboldt.hale.common.core.io.project.model;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
+
 /**
  * File associated/stored with a project. Implementations must have a default
  * constructor if they shall be used in a project.
@@ -54,9 +56,9 @@ public interface ProjectFile {
 	/**
 	 * Store the file to an output stream when saving a project.
 	 * 
-	 * @param out the output stream
+	 * @param target the target
 	 * @throws Exception if an error occurs saving the file
 	 */
-	public void store(OutputStream out) throws Exception;
+	public void store(LocatableOutputSupplier<OutputStream> target) throws Exception;
 
 }
