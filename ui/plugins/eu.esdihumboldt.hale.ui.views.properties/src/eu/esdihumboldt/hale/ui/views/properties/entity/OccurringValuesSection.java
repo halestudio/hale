@@ -15,9 +15,17 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -29,6 +37,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.ISharedImages;
@@ -127,6 +136,37 @@ public class OccurringValuesSection extends AbstractEntityDefSection {
 
 		});
 		values.setInput(null);
+
+		// values context menu
+		MenuManager manager = new MenuManager();
+		manager.setRemoveAllWhenShown(true);
+		manager.addMenuListener(new IMenuListener() {
+
+			@Override
+			public void menuAboutToShow(IMenuManager manager) {
+				// populate context menu
+
+				// get selection
+				ISelection selection = values.getSelection();
+				if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
+					Object[] sels = ((IStructuredSelection) selection).toArray();
+					List<String> values = new ArrayList<String>();
+					for (Object sel : sels) {
+						if (sel instanceof Entry<?>) {
+							values.add(((Entry<?>) sel).getElement().toString());
+						}
+					}
+
+					if (!values.isEmpty()) {
+						manager.add(new AddConditionAction(getEntity(), values));
+					}
+				}
+			}
+
+		});
+		manager.setRemoveAllWhenShown(true);
+		final Menu valuesMenu = manager.createContextMenu(values.getControl());
+		values.getControl().setMenu(valuesMenu);
 
 		// copy button
 		copy = getWidgetFactory().createButton(page, null, SWT.PUSH);
