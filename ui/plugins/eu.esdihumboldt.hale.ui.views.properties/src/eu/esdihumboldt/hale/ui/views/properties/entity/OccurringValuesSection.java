@@ -159,6 +159,7 @@ public class OccurringValuesSection extends AbstractEntityDefSection {
 
 					if (!values.isEmpty()) {
 						manager.add(new AddConditionAction(getEntity(), values));
+						manager.add(new AddParentConditionAction(getEntity(), values));
 					}
 				}
 			}
