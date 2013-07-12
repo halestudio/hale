@@ -29,7 +29,7 @@ import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 
 /**
- * Add a condition context on an entity based on a value list.
+ * Add condition contexts on an entity based on a value list.
  * 
  * @author Simon Templer
  */
@@ -39,18 +39,22 @@ public class AddConditionAction extends Action {
 
 	private final List<String> values;
 	private final EntityDefinition entity;
+	private final boolean combine;
 
 	/**
-	 * Create an action for creating a condition context.
+	 * Create an action for creating condition contexts
 	 * 
-	 * @param entity the entity to create a context for
+	 * @param entity the entity to create contexts for
 	 * @param values the values the condition should match
+	 * @param combine if the values should be combined to one condition
 	 */
-	public AddConditionAction(EntityDefinition entity, List<String> values) {
-		super("Create condition context", AS_PUSH_BUTTON);
+	public AddConditionAction(EntityDefinition entity, List<String> values, boolean combine) {
+		super("Create condition context"
+				+ (combine ? " (combined)" : (values.size() > 1 ? "s" : "")), AS_PUSH_BUTTON);
 
 		this.entity = entity;
 		this.values = values;
+		this.combine = combine;
 	}
 
 	/**
@@ -62,30 +66,81 @@ public class AddConditionAction extends Action {
 				.getService(EntityDefinitionService.class);
 
 		// create filter
-		StringBuilder filterTerm = new StringBuilder();
-		boolean first = true;
-		for (String value : values) {
-			if (first) {
-				first = false;
+		if (combine) {
+			StringBuilder filterTerm = new StringBuilder();
+			boolean first = true;
+			for (String value : values) {
+				if (first) {
+					first = false;
+				}
+				else {
+					filterTerm.append(" or ");
+				}
+				addSingleValueExpression(filterTerm, value);
 			}
-			else {
-				filterTerm.append(" or ");
+
+			Filter filter;
+			try {
+				filter = new FilterGeoCqlImpl(filterTerm.toString());
+			} catch (CQLException e) {
+				log.userError("Error creating condition", e);
+				return;
 			}
-			filterTerm.append("value = '");
-			filterTerm.append(value);
-			filterTerm.append('\'');
-		}
 
-		Filter filter;
-		try {
-			filter = new FilterGeoCqlImpl(filterTerm.toString());
-		} catch (CQLException e) {
-			log.userError("Error creating condition", e);
-			return;
+			// add condition context
+			eds.addConditionContext(getContextEntity(), filter);
 		}
+		else {
+			for (String value : values) {
+				StringBuilder filterTerm = new StringBuilder();
+				addSingleValueExpression(filterTerm, value);
 
-		// add condition context
-		eds.addConditionContext(entity, filter);
+				Filter filter;
+				try {
+					filter = new FilterGeoCqlImpl(filterTerm.toString());
+				} catch (CQLException e) {
+					log.userError("Error creating condition", e);
+					return;
+				}
+
+				// add condition context
+				eds.addConditionContext(getContextEntity(), filter);
+			}
+		}
+	}
+
+	/**
+	 * @return the entity
+	 */
+	public EntityDefinition getEntity() {
+		return entity;
+	}
+
+	/**
+	 * Add the filter expression for checking a single value to the filter term
+	 * 
+	 * @param filterTerm the filter term to add the expression to
+	 * @param value the value on which should be checked
+	 */
+	protected void addSingleValueExpression(StringBuilder filterTerm, String value) {
+		filterTerm.append(getPropertyReference());
+		filterTerm.append(" = '");
+		filterTerm.append(value);
+		filterTerm.append('\'');
+	}
+
+	/**
+	 * @return the name by which to reference the entity in the condition
+	 */
+	protected String getPropertyReference() {
+		return "value";
+	}
+
+	/**
+	 * @return the entity to attach the condition to
+	 */
+	protected EntityDefinition getContextEntity() {
+		return entity;
 	}
 
 }

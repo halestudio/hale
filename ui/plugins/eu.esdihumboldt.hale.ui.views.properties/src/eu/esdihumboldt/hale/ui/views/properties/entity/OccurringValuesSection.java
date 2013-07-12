@@ -21,6 +21,7 @@ import java.util.List;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -158,8 +159,13 @@ public class OccurringValuesSection extends AbstractEntityDefSection {
 					}
 
 					if (!values.isEmpty()) {
-						manager.add(new AddConditionAction(getEntity(), values));
-						manager.add(new AddParentConditionAction(getEntity(), values));
+						manager.add(new AddConditionAction(getEntity(), values, false));
+						manager.add(new AddParentConditionAction(getEntity(), values, false));
+						if (values.size() > 1) {
+							manager.add(new Separator());
+							manager.add(new AddConditionAction(getEntity(), values, true));
+							manager.add(new AddParentConditionAction(getEntity(), values, true));
+						}
 					}
 				}
 			}
