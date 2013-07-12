@@ -33,9 +33,8 @@ import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathPatternFilter;
  */
 public class SchemaPatternFilter extends TreePathPatternFilter {
 
-	private static final int MAX_LEVELS = 8;
-
-	private Set<Object> memory = new HashSet<Object>();
+	private final Set<Object> memoryAccepted = new HashSet<Object>();
+	private final Set<Object> memoryRejected = new HashSet<Object>();
 
 	/**
 	 * @see eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathPatternFilter#setPattern(java.lang.String)
@@ -43,7 +42,8 @@ public class SchemaPatternFilter extends TreePathPatternFilter {
 	@Override
 	public void setPattern(String patternString) {
 		super.setPattern(patternString);
-		memory.clear();
+		memoryAccepted.clear();
+		memoryRejected.clear();
 	}
 
 	/**
@@ -52,16 +52,6 @@ public class SchemaPatternFilter extends TreePathPatternFilter {
 	@Override
 	protected boolean allowDescend(TreePath elementPath) {
 		if (elementPath != null) {
-			// don't descend below a max depth
-			/*
-			 * XXX Reintroduced this as we get into trouble with large schemas,
-			 * searching the whole tree (even though cycles are skipped) just
-			 * takes to long. FIXME any ideas on a better solution?
-			 */
-			if (elementPath.getSegmentCount() > MAX_LEVELS) {
-				return false;
-			}
-
 			Set<Object> segments = new HashSet<Object>();
 			for (int i = 0; i < elementPath.getSegmentCount(); i++) {
 				Object segment = elementPath.getSegment(i);
@@ -113,7 +103,7 @@ public class SchemaPatternFilter extends TreePathPatternFilter {
 		if (segment instanceof EntityDefinition) {
 			segment = ((EntityDefinition) segment).getDefinition();
 		}
-		return memory.contains(segment);
+		return memoryAccepted.contains(segment);
 	}
 
 	/**
@@ -122,14 +112,28 @@ public class SchemaPatternFilter extends TreePathPatternFilter {
 	 */
 	@Override
 	public boolean isElementVisible(Viewer viewer, Object element) {
-		boolean match = isLeafMatch(viewer, element) || isParentMatch(viewer, element);
-		if (match) {
-			TreePath elementPath = (TreePath) element;
-			Object segment = elementPath.getLastSegment();
-			if (segment instanceof EntityDefinition) {
-				segment = ((EntityDefinition) segment).getDefinition();
+		TreePath elementPath = (TreePath) element;
+		Object segment = elementPath.getLastSegment();
+		if (segment instanceof EntityDefinition) {
+			segment = ((EntityDefinition) segment).getDefinition();
+		}
+
+		if (memoryAccepted.contains(segment))
+			return true;
+		if (memoryRejected.contains(segment))
+			return false;
+
+		boolean match = isLeafMatch(viewer, element);
+
+		if (!match) {
+			match = isParentMatch(viewer, element);
+
+			if (!match) {
+				memoryRejected.add(segment);
 			}
-			memory.add(segment);
+		}
+		if (match) {
+			memoryAccepted.add(segment);
 		}
 		return match;
 	}
