@@ -103,27 +103,31 @@ public final class IOUtils {
 	 * 
 	 * Source: http://stackoverflow.com/a/1288584
 	 * 
-	 * @param targetPath the target path
-	 * @param basePath the base path
+	 * @param targetURI the target path
+	 * @param baseURI the base path
 	 * @return a relative path from basePath to targetPath or the targetPath if
 	 *         a relative path is not possible
 	 */
-	public static URI getRelativePath(URI targetPath, URI basePath) {
+	public static URI getRelativePath(URI targetURI, URI baseURI) {
 		// nothing to do if one path is opaque or not absolute
-		if (!targetPath.isAbsolute() || !basePath.isAbsolute() || targetPath.isOpaque()
-				|| basePath.isOpaque())
-			return targetPath;
+		if (!targetURI.isAbsolute() || !baseURI.isAbsolute() || targetURI.isOpaque()
+				|| baseURI.isOpaque())
+			return targetURI;
 		// check scheme
 		// XXX also check the other stuff (authority, host, port)?
-		if (!targetPath.getScheme().equals(basePath.getScheme()))
-			return targetPath;
+		if (!targetURI.getScheme().equals(baseURI.getScheme()))
+			return targetURI;
+
+		// Only use path, strip leading '/'
+		String basePath = baseURI.getPath().substring(1);
+		String targetPath = targetURI.getPath().substring(1);
 
 		// We need the -1 argument to split to make sure we get a trailing
 		// "" token if the base ends in the path separator and is therefore
 		// a directory. We require directory paths to end in the path
 		// separator -- otherwise they are indistinguishable from files.
-		String[] base = basePath.getPath().split("/", -1);
-		String[] target = targetPath.getPath().split("/", 0);
+		String[] base = basePath.split("/", -1);
+		String[] target = targetPath.split("/", 0);
 
 		// First get all the common elements. Store them as a string,
 		// and also count how many of them there are.
@@ -145,7 +149,7 @@ public final class IOUtils {
 			// Whoops -- not even a single common path element. This most
 			// likely indicates differing drive letters, like C: and D:.
 			// These paths cannot be relativized. Return the target path.
-			return targetPath;
+			return targetURI;
 			// This should never happen when all absolute paths
 			// begin with / as in *nix.
 		}
@@ -165,12 +169,12 @@ public final class IOUtils {
 				relative += "../";
 			}
 		}
-		relative += targetPath.getPath().substring(common.length());
+		relative += targetURI.getPath().substring(common.length());
 
 		try {
-			return new URI(null, null, relative, targetPath.getQuery(), targetPath.getFragment());
+			return new URI(null, null, relative, targetURI.getQuery(), targetURI.getFragment());
 		} catch (URISyntaxException e) {
-			return targetPath;
+			return targetURI;
 		}
 	}
 }
