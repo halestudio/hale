@@ -169,12 +169,32 @@ public final class IOUtils {
 				relative += "../";
 			}
 		}
-		relative += targetURI.getPath().substring(common.length());
+		relative += targetPath.substring(common.length());
 
 		try {
 			return new URI(null, null, relative, targetURI.getQuery(), targetURI.getFragment());
 		} catch (URISyntaxException e) {
 			return targetURI;
+		}
+	}
+
+	/**
+	 * Returns a URI for the given file.
+	 * 
+	 * In contrast to {@link File#toURI()} it does not resolve a relative file,
+	 * but instead returns a relative URI.
+	 * 
+	 * @param file the file to transform
+	 * @return a (relative) URI for the given file
+	 */
+	public static URI relativeFileToURI(File file) {
+		if (file.isAbsolute())
+			return file.toURI();
+		else {
+			String path = file.getPath();
+			if (File.separatorChar != '/')
+				path = path.replace(File.separatorChar, '/');
+			return URI.create(path);
 		}
 	}
 }

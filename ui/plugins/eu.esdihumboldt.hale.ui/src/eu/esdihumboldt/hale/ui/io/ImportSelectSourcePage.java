@@ -51,7 +51,7 @@ import eu.esdihumboldt.hale.ui.io.source.internal.ImportSourceExtension;
 import eu.esdihumboldt.hale.ui.io.source.internal.ImportSourceFactory;
 
 /**
- * Wizard page that allows selecting a source file or provider
+ * Wizard page that allows selecting a source file or provider.
  * 
  * @param <W> the concrete I/O wizard type
  * @param <P> the {@link IOProvider} type used in the wizard

@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.ui.io.source;
 
 import java.io.File;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,10 +31,14 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
@@ -42,7 +47,8 @@ import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.ui.io.ImportSource;
-import eu.esdihumboldt.hale.ui.io.util.OpenFileFieldEditor;
+import eu.esdihumboldt.hale.ui.service.project.ProjectService;
+import eu.esdihumboldt.util.io.IOUtils;
 
 /**
  * File import source
@@ -57,12 +63,14 @@ public class FileSource<P extends ImportProvider> extends AbstractProviderSource
 	/**
 	 * The file field editor for the source file
 	 */
-	private OpenFileFieldEditor sourceFile;
+	private FileSourceFileFieldEditor sourceFile;
 
 	/**
 	 * The set of supported content types
 	 */
 	private Set<IContentType> supportedTypes;
+
+	private URI projectLocation;
 
 	/**
 	 * @see ImportSource#createControls(Composite)
@@ -71,9 +79,14 @@ public class FileSource<P extends ImportProvider> extends AbstractProviderSource
 	public void createControls(Composite parent) {
 		parent.setLayout(new GridLayout(3, false));
 
+		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
+				ProjectService.class);
+		projectLocation = ps.getLoadLocation() == null ? null : ps.getLoadLocation().toURI();
+		boolean projectLocAvailable = projectLocation != null;
+
 		// source file
-		sourceFile = new OpenFileFieldEditor("sourceFile", "Source file:", true,
-				FileFieldEditor.VALIDATE_ON_KEY_STROKE, parent);
+		sourceFile = new FileSourceFileFieldEditor("sourceFile", "Source file:",
+				FileFieldEditor.VALIDATE_ON_KEY_STROKE, parent, projectLocation);
 		sourceFile.setEmptyStringAllowed(false);
 		sourceFile.setPage(getPage());
 
@@ -108,6 +121,23 @@ public class FileSource<P extends ImportProvider> extends AbstractProviderSource
 		ComboViewer providers = createProviders(parent);
 		providers.getControl().setLayoutData(
 				new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
+
+		final Button relativeCheck = new Button(parent, SWT.CHECK);
+		String text = "Use relative paths if possible.";
+		relativeCheck.setText("Use relative paths if possible.");
+		relativeCheck.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				sourceFile.setUseRelativeIfPossible(relativeCheck.getSelection());
+			}
+		});
+		if (!projectLocAvailable) {
+			relativeCheck.setEnabled(false);
+			text += " Only available once the project is saved.";
+		}
+		relativeCheck.setText(text);
+		relativeCheck.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 3, 1));
 
 		// initial state update
 		updateState(true);
@@ -155,7 +185,13 @@ public class FileSource<P extends ImportProvider> extends AbstractProviderSource
 	@Override
 	protected LocatableInputSupplier<? extends InputStream> getSource() {
 		File file = new File(sourceFile.getStringValue());
-		return new FileIOSupplier(file);
+		if (file.isAbsolute())
+			return new FileIOSupplier(file);
+		else {
+			URI relativeURI = IOUtils.relativeFileToURI(file);
+			File absoluteFile = new File(projectLocation.resolve(relativeURI));
+			return new FileIOSupplier(absoluteFile, relativeURI);
+		}
 	}
 
 	/**
