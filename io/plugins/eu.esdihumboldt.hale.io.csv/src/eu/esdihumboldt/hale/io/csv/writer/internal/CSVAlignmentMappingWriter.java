@@ -26,7 +26,8 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.io.csv.writer.AbstractAlignmentMappingExport;
-import eu.esdihumboldt.hale.io.csv.writer.CellInfo;
+import eu.esdihumboldt.hale.io.csv.writer.CellInformation;
+import eu.esdihumboldt.hale.io.csv.writer.CellType;
 
 /**
  * Provider to write the alignment to a csv file
@@ -35,7 +36,7 @@ import eu.esdihumboldt.hale.io.csv.writer.CellInfo;
  */
 public class CSVAlignmentMappingWriter extends AbstractAlignmentMappingExport {
 
-	private List<Map<CellType, CellInfo>> mapping;
+	private List<Map<CellType, CellInformation>> mapping;
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.core.io.IOProvider#isCancelable()
@@ -53,25 +54,21 @@ public class CSVAlignmentMappingWriter extends AbstractAlignmentMappingExport {
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 
+		// do initialization
+		super.execute(progress, reporter);
+
 		CSVWriter writer = new CSVWriter(new OutputStreamWriter(getTarget().getOutput()));
 
-		writer.writeNext(MAPPING_HEADER.toArray(new String[] {}));
+		writer.writeNext(getMappingHeader().toArray(new String[] {}));
 
 		mapping = getMappingList();
-		for (Map<CellType, CellInfo> entry : mapping) {
+		for (Map<CellType, CellInformation> entry : mapping) {
 			// write each mapping to a row
 			String[] row = new String[entry.size()];
-			row[0] = getCellValue(entry, CellType.SOURCE_TYPE);
-			row[1] = getCellValue(entry, CellType.SOURCE_TYPE_CONDITIONS);
-			row[2] = getCellValue(entry, CellType.SOURCE_PROPERTIES);
-			row[3] = getCellValue(entry, CellType.SOURCE_PROPERTY_CONDITIONS);
-			row[4] = getCellValue(entry, CellType.TARGET_TYPE);
-			row[5] = getCellValue(entry, CellType.TARGET_PROPERTIES);
-			row[6] = getCellValue(entry, CellType.RELATION_NAME);
-			row[7] = getCellValue(entry, CellType.PRIORITY);
-			row[8] = getCellValue(entry, CellType.CELL_EXPLANATION);
-			row[9] = getCellValue(entry, CellType.CELL_NOTES);
-			row[10] = getCellValue(entry, CellType.BASE_CELL);
+			List<CellType> celltypes = getCellTypes();
+			for (int i = 0; i < entry.size(); i++) {
+				row[i] = getCellValue(entry, celltypes.get(i));
+			}
 			writer.writeNext(row);
 		}
 
