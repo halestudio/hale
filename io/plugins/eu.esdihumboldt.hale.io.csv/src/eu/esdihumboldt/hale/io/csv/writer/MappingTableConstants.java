@@ -22,24 +22,25 @@ package eu.esdihumboldt.hale.io.csv.writer;
  */
 public interface MappingTableConstants {
 
-	/**
-	 * Name of the parameter specifying the export mode.
-	 */
+	/** Name of the parameter specifying the export mode. */
 	public final String PARAMETER_MODE = "mode";
 
-	/**
-	 * Mode for exporting all cells.
-	 */
+	/** Mode for exporting all cells. */
 	public final String MODE_ALL = "all";
 
-	/**
-	 * Mode for exporting all cells except base alignment cells.
-	 */
+	/** Mode for exporting all cells except base alignment cells. */
 	public final String MODE_EXCLUDE_BASE = "excludeBase";
 
-	/**
-	 * Mode for exporting cells organized by type cells.
-	 */
+	/** Mode for exporting cells organized by type cells. */
 	public final String MODE_BY_TYPE_CELLS = "byTypeCells";
+
+	/** Mode for including namespaces */
+	public final String INCLUDE_NAMESPACES = "includeNamespaces";
+
+	/** Mode for including the transformation and disabled for column */
+	public final String TRANSFORMATION_AND_DISABLED_FOR = "transformationAndDisabled";
+
+	/** Maximum width of a column */
+	public final String MAX_COLUMN_WIDTH = "maxColumnWidth";
 
 }
