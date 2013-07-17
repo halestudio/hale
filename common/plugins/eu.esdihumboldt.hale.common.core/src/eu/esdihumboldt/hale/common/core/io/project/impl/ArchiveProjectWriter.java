@@ -87,7 +87,7 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 		// all files related to the project are copied into a temporary
-		// directory first and the packed into a zip file
+		// directory first and then packed into a zip file
 
 		// create temporary directory and project file
 		File tempDir = Files.createTempDir();
@@ -102,9 +102,10 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 
 		// save old IO configurations
 		List<IOConfiguration> oldResources = new ArrayList<IOConfiguration>();
-		for (int i = 0; i < getProject().getResources().size(); i++)
+		for (int i = 0; i < getProject().getResources().size(); i++) {
 			// clone all IO configurations to work on different objects
 			oldResources.add(getProject().getResources().get(i).clone());
+		}
 		IOConfiguration config = getProject().getSaveConfiguration();
 		IOConfiguration oldSaveConfig = config.clone();
 
