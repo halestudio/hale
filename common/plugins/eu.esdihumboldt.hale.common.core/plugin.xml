@@ -81,7 +81,7 @@
          </contentType>
       </provider>
       <provider
-            class="eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectWriter"
+            class="eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectExport"
             id="eu.esdihumboldt.hale.io.project.hale25.zip.writer"
             name="HALE project archive">
          <contentType
@@ -89,7 +89,7 @@
          </contentType>
       </provider>
       <provider
-            class="eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectReader"
+            class="eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectImport"
             id="eu.esdihumboldt.hale.io.project.hale25.zip.reader"
             name="HALE project archive">
          <contentType
@@ -115,6 +115,19 @@
             class="eu.esdihumboldt.hale.common.core.io.report.impl.IOReportImplDefinition"
             id="eu.esdihumboldt.hale.common.core.io">
       </reportDefinition>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.action">
+      <action
+            id="eu.esdihumboldt.hale.io.archive.write"
+            name="Export project archive"
+            type="eu.esdihumboldt.hale.common.core.io.project.ProjectWriter">
+      </action>
+      <action
+            id="eu.esdihumboldt.hale.io.archive.read"
+            name="Import project archive"
+            type="eu.esdihumboldt.hale.common.core.io.project.ProjectReader">
+      </action>
    </extension>
 
 </plugin>
