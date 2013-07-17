@@ -21,18 +21,18 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
-import eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectWriter;
+import eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectExport;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 
 /**
- * Archive Project Writer Configuration Page for additional project resources
+ * Archive project export configuration page for additional project resources
  * 
  * @author Patrick Lieb
  */
-public class ArchiveProjectWriterConfigurationPage extends
-		AbstractConfigurationPage<ArchiveProjectWriter, IOWizard<ArchiveProjectWriter>> {
+public class ArchiveProjectExportConfigurationPage extends
+		AbstractConfigurationPage<ArchiveProjectExport, IOWizard<ArchiveProjectExport>> {
 
 	private Button includeWebResources;
 
@@ -41,8 +41,8 @@ public class ArchiveProjectWriterConfigurationPage extends
 	/**
 	 * Default Constuctor
 	 */
-	public ArchiveProjectWriterConfigurationPage() {
-		super("archiveWriter");
+	public ArchiveProjectExportConfigurationPage() {
+		super("archiveExport");
 
 		setTitle("Additonal Export Options");
 		setDescription("Adapt options to include or exclude resources to the archive");
@@ -83,10 +83,10 @@ public class ArchiveProjectWriterConfigurationPage extends
 	}
 
 	@Override
-	public boolean updateConfiguration(ArchiveProjectWriter provider) {
-		provider.setParameter(ArchiveProjectWriter.EXLUDE_DATA_FILES,
+	public boolean updateConfiguration(ArchiveProjectExport provider) {
+		provider.setParameter(ArchiveProjectExport.EXLUDE_DATA_FILES,
 				Value.of(excludeDataFiles.getSelection()));
-		provider.setParameter(ArchiveProjectWriter.INCLUDE_WEB_RESOURCES,
+		provider.setParameter(ArchiveProjectExport.INCLUDE_WEB_RESOURCES,
 				Value.of(includeWebResources.getSelection()));
 		return true;
 	}
