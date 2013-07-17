@@ -29,7 +29,7 @@ import eu.esdihumboldt.util.Identifiers;
  * @author Kevin Mais
  * @author Patrick Lieb
  */
-public class TypeCellInfo extends CellInfo implements ICellInfo {
+public class TypeCellInfo extends BasicCellInfo implements ICellInfo {
 
 	private final Alignment align;
 
@@ -59,7 +59,7 @@ public class TypeCellInfo extends CellInfo implements ICellInfo {
 
 		while (it.hasNext()) {
 			Cell propCell = it.next();
-			propCellInfo.add(new CellInfo(propCell, cellIds, subDir));
+			propCellInfo.add(new BasicCellInfo(propCell, cellIds, subDir));
 		}
 
 		return propCellInfo;

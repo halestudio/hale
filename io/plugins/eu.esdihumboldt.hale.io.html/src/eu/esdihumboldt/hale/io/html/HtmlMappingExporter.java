@@ -176,6 +176,8 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements Proj
 			createImages(filesDir);
 		}
 
+		context.put(TOOLTIP, getParameter("htmlMappingTooltip"));
+
 		Template template;
 		try {
 			template = velocityEngine.getTemplate(templateFile.getName(), "UTF-8");
@@ -183,7 +185,8 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements Proj
 			return reportError(reporter, "Could not load template", e);
 		}
 
-		context.put(TOOLTIP, getParameter("htmlMappingTooltip"));
+		// delete template file for cleanup
+		templateFile.delete();
 
 		FileWriter fileWriter = new FileWriter(htmlExportFile);
 		template.merge(context, fileWriter);
@@ -205,6 +208,7 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements Proj
 		synchronized (this) {
 			if (velocityEngine == null) {
 				velocityEngine = new VelocityEngine();
+
 				// create a temporary directory
 				tempDir = Files.createTempDir();
 
@@ -359,24 +363,11 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements Proj
 		return dimension;
 	}
 
-	private File getInputFile(URL url) {
+	private File getInputFile(URL url) throws IOException, FileNotFoundException {
 		File file = new File(tempDir.toString() + FilenameUtils.getName(url.toString()));
-		OutputStream outputStream;
-		try {
-			outputStream = new FileOutputStream(file);
-			try {
-				IOUtils.copy(url.openStream(), outputStream);
-				outputStream.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		OutputStream outputStream = new FileOutputStream(file);
+		IOUtils.copy(url.openStream(), outputStream);
+		outputStream.close();
 		return file;
 	}
 

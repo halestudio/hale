@@ -36,7 +36,7 @@ import eu.esdihumboldt.util.Identifiers;
  * @author Kevin Mais
  * @author Patrick Lieb
  */
-public class CellInfo implements ICellInfo {
+public class BasicCellInfo implements ICellInfo {
 
 	/**
 	 * Identify the cell as source or target
@@ -71,7 +71,7 @@ public class CellInfo implements ICellInfo {
 	 * @param cellIds the cell identifier
 	 * @param subDir the sub directory where files will be created
 	 */
-	public CellInfo(Cell cell, Identifiers<Cell> cellIds, String subDir) {
+	public BasicCellInfo(Cell cell, Identifiers<Cell> cellIds, String subDir) {
 		this.cell = cell;
 		this.cellIds = cellIds;
 		this.subDir = subDir;
