@@ -27,7 +27,7 @@ import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 
 /**
- * Archive Project Writer Configuration Page for additional project resources
+ * Archive project export configuration page for additional project resources
  * 
  * @author Patrick Lieb
  */
@@ -42,7 +42,7 @@ public class ArchiveProjectWriterConfigurationPage extends
 	 * Default Constuctor
 	 */
 	public ArchiveProjectWriterConfigurationPage() {
-		super("archiveWriter");
+		super("archiveExport");
 
 		setTitle("Additonal Export Options");
 		setDescription("Adapt options to include or exclude resources to the archive");

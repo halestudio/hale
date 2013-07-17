@@ -10,5 +10,18 @@
          </service>
       </serviceFactory>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.action">
+      <action
+            id="eu.esdihumboldt.hale.io.archive.export"
+            name="Export project archive"
+            type="eu.esdihumboldt.hale.common.core.io.project.ProjectWriter">
+      </action>
+      <action
+            id="eu.esdihumboldt.hale.io.archive.import"
+            name="Import project archive"
+            type="eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectImport">
+      </action>
+   </extension>
 
 </plugin>

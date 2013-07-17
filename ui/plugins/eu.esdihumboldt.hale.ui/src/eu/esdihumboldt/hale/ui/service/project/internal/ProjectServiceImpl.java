@@ -197,6 +197,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 				synchronized (ProjectServiceImpl.this) {
 					main = provider.getProject();
+<<<<<<< HEAD
 					if (provider.getSource() != null) {
 						// loaded project
 						updater = new UILocationUpdater(main, provider.getSource().getLocation());
@@ -211,6 +212,12 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					else {
 						// project template
 						projectFile = null;
+=======
+					updater = new UILocationUpdater(main, provider.getSource().getLocation());
+					updater.updateProject(true);
+					if ("file".equalsIgnoreCase(provider.getSource().getLocation().getScheme())) {
+						projectFile = new File(provider.getSource().getLocation());
+>>>>>>> archive project as import and export
 					}
 
 					changed = false;
