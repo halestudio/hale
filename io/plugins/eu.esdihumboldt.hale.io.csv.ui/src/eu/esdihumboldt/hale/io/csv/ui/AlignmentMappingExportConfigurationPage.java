@@ -16,9 +16,16 @@
 package eu.esdihumboldt.hale.io.csv.ui;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.events.VerifyListener;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.io.csv.writer.AbstractAlignmentMappingExport;
@@ -37,6 +44,9 @@ public class AlignmentMappingExportConfigurationPage extends
 	private Button defaultExport;
 	private Button noBaseAlignments;
 	private Button propertyCells;
+	private Button namespaces;
+	private Button transformationAndDisabled;
+	private Text maxColumnWidth;
 
 	/**
 	 * Create a mapping export configuration page for alignments
@@ -68,6 +78,11 @@ public class AlignmentMappingExportConfigurationPage extends
 	 */
 	@Override
 	public boolean updateConfiguration(AbstractAlignmentMappingExport provider) {
+
+		provider.setParameter(INCLUDE_NAMESPACES, Value.of(namespaces.getSelection()));
+		provider.setParameter(TRANSFORMATION_AND_DISABLED_FOR,
+				Value.of(transformationAndDisabled.getSelection()));
+		provider.setParameter(MAX_COLUMN_WIDTH, Value.of(maxColumnWidth.getText()));
 		// set export mode in provider
 		if (defaultExport.getSelection()) {
 			provider.setParameter(PARAMETER_MODE, Value.of(MODE_ALL));
@@ -95,6 +110,25 @@ public class AlignmentMappingExportConfigurationPage extends
 		propertyCells = new Button(page, SWT.RADIO);
 		propertyCells.setText("Type cells with associated property cells");
 		propertyCells.setSelection(true);
+		propertyCells.addSelectionListener(new SelectionListener() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (propertyCells.getSelection()) {
+					transformationAndDisabled.setEnabled(true);
+				}
+				else {
+					transformationAndDisabled.setSelection(false);
+					transformationAndDisabled.setEnabled(false);
+				}
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// same behavior as widgetselected
+				widgetSelected(e);
+			}
+		});
 
 		defaultExport = new Button(page, SWT.RADIO);
 		defaultExport.setText("All mapping cells (unordered)");
@@ -102,6 +136,35 @@ public class AlignmentMappingExportConfigurationPage extends
 		noBaseAlignments = new Button(page, SWT.RADIO);
 		noBaseAlignments
 				.setText("Only mapping cells defined in this alignment (exclude base alignments)");
-	}
 
+		transformationAndDisabled = new Button(page, SWT.CHECK);
+		transformationAndDisabled.setText("Show disabled cells");
+		transformationAndDisabled.setSelection(false);
+
+		namespaces = new Button(page, SWT.CHECK);
+		namespaces.setText("Include namespaces");
+		namespaces.setSelection(false);
+
+		Composite comp = new Composite(page, NONE);
+		comp.setLayout(new GridLayout(4, false));
+
+		final Label maxColLabel = new Label(comp, NONE);
+		maxColLabel.setText("Set maximum size of column width:");
+
+		maxColumnWidth = new Text(comp, SWT.SINGLE);
+		maxColumnWidth.setText(String.valueOf(500));
+		maxColumnWidth.setLayoutData(new GridData(40, SWT.DEFAULT));
+		// only digits are allowed to enter
+		maxColumnWidth.addVerifyListener(new VerifyListener() {
+
+			@Override
+			public void verifyText(final VerifyEvent event) {
+				if (!Character.isDigit(event.character)) {
+					event.doit = false;
+				}
+			}
+		});
+		Label pixels = new Label(comp, NONE);
+		pixels.setText("Pixels");
+	}
 }

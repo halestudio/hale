@@ -654,6 +654,22 @@
             </with>
          </enabledWhen>
       </action-ui>
+      <action-ui
+            action="eu.esdihumboldt.hale.io.archive.write"
+            id="eu.esdihumboldt.hale.io.archive.write.export"
+            label="Export project archive..."
+            priority="0"
+            projectResource="false"
+            wizard="eu.esdihumboldt.hale.ui.io.project.ArchiveProjectExportWizard">
+      </action-ui>
+      <action-ui
+            action="eu.esdihumboldt.hale.io.archive.read"
+            id="eu.esdihumboldt.hale.io.archive.read.import"
+            label="Import project archive..."
+            priority="0"
+            projectResource="false"
+            wizard="eu.esdihumboldt.hale.ui.io.project.ArchiveProjectImportWizard">
+      </action-ui>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.ui.io.source">
@@ -717,6 +733,16 @@
             action="eu.esdihumboldt.hale.io.instance.write.transformed"
             class="eu.esdihumboldt.hale.ui.io.instance.InstanceExportAdvisor"
             id="eu.esdihumboldt.hale.ui.io.instance.write.transformed">
+      </advisor>
+      <advisor
+            action="eu.esdihumboldt.hale.io.archive.write"
+            class="eu.esdihumboldt.hale.ui.io.project.ArchiveProjectIOAdvisor"
+            id="eu.esdihumboldt.hale.io.archive.write">
+      </advisor>
+      <advisor
+            action="eu.esdihumboldt.hale.io.archive.read"
+            class="eu.esdihumboldt.hale.ui.io.project.ArchiveProjectIOAdvisor"
+            id="eu.esdihumboldt.hale.io.archive.read">
       </advisor>
    </extension>
    <extension
@@ -1038,7 +1064,7 @@
          </provider>
       </configPage>
       <configPage
-            class="eu.esdihumboldt.hale.ui.io.project.pages.ArchiveProjectWriterConfigurationPage"
+            class="eu.esdihumboldt.hale.ui.io.project.pages.ArchiveProjectExportConfigurationPage"
             order="0">
          <provider
                ref="eu.esdihumboldt.hale.io.project.hale25.zip.writer">

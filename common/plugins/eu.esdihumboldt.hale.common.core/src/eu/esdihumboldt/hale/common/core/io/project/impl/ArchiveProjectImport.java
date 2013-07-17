@@ -24,8 +24,6 @@ import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import com.google.common.io.Files;
-
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
@@ -36,13 +34,13 @@ import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 
 /**
- * Load project from a zip-archive (created by {@link ArchiveProjectWriter})
+ * Load project from a zip-archive (created by {@link ArchiveProjectExport})
  * 
  * @author Patrick Lieb
  */
-public class ArchiveProjectReader extends AbstractProjectReader {
+public class ArchiveProjectImport extends AbstractProjectReader {
 
-	private static final ALogger log = ALoggerFactory.getLogger(ArchiveProjectReader.class);
+	private static final ALogger log = ALoggerFactory.getLogger(ArchiveProjectImport.class);
 
 	// The reader saves the temporary directory as 'source' to load all
 	// resources, but sometimes you need the old originally source (the archive)
@@ -58,12 +56,13 @@ public class ArchiveProjectReader extends AbstractProjectReader {
 
 		XMLProjectReader reader = new XMLProjectReader();
 
-		// copy resources to a temporary directory
-		File tempDir = Files.createTempDir();
-		getZipFiles(getSource().getInput(), tempDir);
+		// user selected directory
+		File importLocation = new File(getParameter("PARAM_IMPORT_LOCATION").toString());
+
+		getZipFiles(getSource().getInput(), importLocation);
 
 		// create the project file via XMLProjectReader
-		File baseFile = new File(tempDir, "project.halex");
+		File baseFile = new File(importLocation, "project.halex");
 		LocatableInputSupplier<InputStream> source = new FileIOSupplier(baseFile);
 
 		// save old save configuration
@@ -74,9 +73,6 @@ public class ArchiveProjectReader extends AbstractProjectReader {
 		reader.setProjectFiles(getProjectFiles());
 		IOReport report = reader.execute(progress, reporter);
 		setProject(reader.getProject());
-
-		// delete the temporary directory
-		deleteDirectoryOnExit(tempDir);
 
 		return report;
 	}
@@ -122,23 +118,6 @@ public class ArchiveProjectReader extends AbstractProjectReader {
 		}
 
 		zipinputstream.close();
-	}
-
-	private void deleteDirectoryOnExit(File directory) {
-		if (directory.exists()) {
-			directory.deleteOnExit();
-			File[] files = directory.listFiles();
-			if (files != null) {
-				for (File f : files) {
-					if (f.isDirectory()) {
-						deleteDirectoryOnExit(f);
-					}
-					else {
-						f.deleteOnExit();
-					}
-				}
-			}
-		}
 	}
 
 	/**
