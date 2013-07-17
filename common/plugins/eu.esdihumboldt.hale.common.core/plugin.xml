@@ -89,6 +89,14 @@
          </contentType>
       </provider>
       <provider
+            class="eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectImport"
+            id="eu.esdihumboldt.hale.io.project.hale25.zip.import"
+            name="HALE project archive (import)">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.project.hale25.zip">
+         </contentType>
+      </provider>
+      <provider
             class="eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectReader"
             id="eu.esdihumboldt.hale.io.project.hale25.zip.reader"
             name="HALE project archive">
@@ -116,5 +124,4 @@
             id="eu.esdihumboldt.hale.common.core.io">
       </reportDefinition>
    </extension>
-
 </plugin>

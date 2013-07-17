@@ -671,6 +671,22 @@
             </with>
          </enabledWhen>
       </action-ui>
+      <action-ui
+			action="eu.esdihumboldt.hale.io.archive.export"
+			id="eu.esdihumboldt.hale.io.archive.export"
+			label="Project archive..."
+			priority="0"
+			projectResource="false"
+			wizard="eu.esdihumboldt.hale.ui.io.project.ArchiveProjectExportWizard">
+		</action-ui>
+		<action-ui
+			action="eu.esdihumboldt.hale.io.archive.import"
+			id="eu.esdihumboldt.hale.io.archive.import"
+			label="Project archive..."
+			priority="0"
+			projectResource="false"
+			wizard="eu.esdihumboldt.hale.ui.io.project.ArchiveProjectImportWizard">
+		</action-ui>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.ui.io.source">
@@ -735,6 +751,16 @@
             class="eu.esdihumboldt.hale.ui.io.instance.InstanceExportAdvisor"
             id="eu.esdihumboldt.hale.ui.io.instance.write.transformed">
       </advisor>
+      <advisor
+			action="eu.esdihumboldt.hale.io.archive.export"
+			class="eu.esdihumboldt.hale.ui.io.project.ArchiveProjectExportAdvisor"
+			id="eu.esdihumboldt.hale.io.archive.export">
+	  </advisor>
+	  <advisor
+			action="eu.esdihumboldt.hale.io.archive.import"
+			class="eu.esdihumboldt.hale.ui.io.project.ArchiveProjectImportAdvisor"
+			id="eu.esdihumboldt.hale.io.archive.import">
+	  </advisor>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
