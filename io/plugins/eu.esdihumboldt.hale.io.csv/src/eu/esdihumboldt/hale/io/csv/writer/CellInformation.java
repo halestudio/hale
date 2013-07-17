@@ -23,7 +23,7 @@ import java.util.List;
  * 
  * @author Patrick Lieb
  */
-public class CellInfo {
+public class CellInformation {
 
 	// the entries of the same position in hierarchy and text belong together
 	private final List<Integer> position = new ArrayList<Integer>();
@@ -31,11 +31,11 @@ public class CellInfo {
 
 	/**
 	 * @param info the text to show in the cell
-	 * @param pos the position of the text in the cell
+	 * @param position the position of the text in the cell
 	 */
-	public void addText(String info, int pos) {
+	public void addText(String info, int position) {
 		text.add(info);
-		position.add(pos);
+		this.position.add(position);
 	}
 
 	/**
