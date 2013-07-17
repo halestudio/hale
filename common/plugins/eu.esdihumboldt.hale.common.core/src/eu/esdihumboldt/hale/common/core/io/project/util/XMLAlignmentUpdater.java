@@ -19,11 +19,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
-import eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectWriter;
+import eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectExport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 
 /**
- * Class for updating alignment in the {@link ArchiveProjectWriter}.<br>
+ * Class for updating alignment in the {@link ArchiveProjectExport}.<br>
  * Resolves the included base alignments, copies them next to the given
  * alignment (or a subdirectory) and adapts the include location in the
  * alignment.
