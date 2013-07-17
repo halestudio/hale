@@ -37,6 +37,8 @@ public class AlignmentMappingExportConfigurationPage extends
 	private Button defaultExport;
 	private Button noBaseAlignments;
 	private Button propertyCells;
+	private Button includeNamespaces;
+	private Button transformationDisabledFor;
 
 	/**
 	 * Create a mapping export configuration page for alignments
@@ -68,6 +70,11 @@ public class AlignmentMappingExportConfigurationPage extends
 	 */
 	@Override
 	public boolean updateConfiguration(AbstractAlignmentMappingExport provider) {
+
+		provider.setParameter(INCLUDE_NAMESPACES, Value.of(includeNamespaces.getSelection()));
+		provider.setParameter(TRANSFORMATION_AND_DISABLED_FOR,
+				Value.of(transformationDisabledFor.getSelection()));
+
 		// set export mode in provider
 		if (defaultExport.getSelection()) {
 			provider.setParameter(PARAMETER_MODE, Value.of(MODE_ALL));
@@ -102,6 +109,13 @@ public class AlignmentMappingExportConfigurationPage extends
 		noBaseAlignments = new Button(page, SWT.RADIO);
 		noBaseAlignments
 				.setText("Only mapping cells defined in this alignment (exclude base alignments)");
+
+		includeNamespaces = new Button(page, SWT.CHECK);
+		includeNamespaces.setText("Include additional namespace information");
+
+		transformationDisabledFor = new Button(page, SWT.CHECK);
+		transformationDisabledFor
+				.setText("Include information about the transformation mode and the disabled cells");
 	}
 
 }
