@@ -20,11 +20,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
-import eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectWriter;
+import eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectExport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 
 /**
- * Class for updating XML schemas in the {@link ArchiveProjectWriter}.<br>
+ * Class for updating XML schemas in the {@link ArchiveProjectExport}.<br>
  * Resolves the imported/included xml schemas, copies them next to the given
  * schema (or a subdirectory) and adapts the import/include location in the
  * schema.
