@@ -107,5 +107,8 @@
 <location path="${project_loc}/target/plugins/org.apache.httpcomponents" type="Directory"/>
 <location path="${project_loc}/target/plugins/javax.activation" type="Directory"/>
 <location path="${project_loc}/target/plugins/org.aopalliance" type="Directory"/>
+<location path="${project_loc}/target/plugins/org.jasig.cas" type="Directory"/>
+<location path="${project_loc}/target/plugins/org.opensaml" type="Directory"/>
+<location path="${project_loc}/target/plugins/javax.xml.crypto" type="Directory"/>
 </locations>
 </target>
