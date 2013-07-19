@@ -182,7 +182,7 @@ public class TestUtil {
 	 * @param bundlesToStart the bundles to start
 	 * @param serviceToCheck the service to check
 	 */
-	private static void startService(List<String> bundlesToStart, final Class<?> serviceToCheck) {
+	public static void startService(List<String> bundlesToStart, final Class<?> serviceToCheck) {
 		Map<String, Bundle> bundles = new HashMap<String, Bundle>();
 		BundleContext context = OsgiUtilsActivator.getInstance().getContext();
 		for (Bundle bundle : context.getBundles()) {
