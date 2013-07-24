@@ -22,6 +22,8 @@ import eu.esdihumboldt.hale.common.align.io.AlignmentWriter;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractExportProvider;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfoAware;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 
 /**
@@ -30,12 +32,13 @@ import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
  * @author Simon Templer
  */
 public abstract class AbstractAlignmentWriter extends AbstractExportProvider implements
-		AlignmentWriter {
+		AlignmentWriter, ProjectInfoAware {
 
 	private Alignment alignment;
 	private SchemaSpace sourceSchema;
 	private SchemaSpace targetSchema;
-	private URI previousTarget;
+	private URI projectLocation;
+	private ProjectInfo projectInfo;
 
 	/**
 	 * @see AlignmentWriter#setAlignment(Alignment)
@@ -102,21 +105,28 @@ public abstract class AbstractAlignmentWriter extends AbstractExportProvider imp
 		}
 	}
 
-	/**
-	 * @see AlignmentWriter#setPreviousTarget(URI)
-	 */
 	@Override
-	public void setPreviousTarget(URI previousTarget) {
-		this.previousTarget = previousTarget;
+	public void setProjectInfo(ProjectInfo projectInfo) {
+		this.projectInfo = projectInfo;
+	}
+
+	@Override
+	public void setProjectLocation(URI location) {
+		this.projectLocation = location;
 	}
 
 	/**
-	 * Returns the previous target of the project. May be <code>null</code>.
-	 * 
 	 * @return the previous target of the project. May be <code>null</code>
 	 */
-	protected URI getPreviousTarget() {
-		return previousTarget;
+	public URI getProjectLocation() {
+		return projectLocation;
+	}
+
+	/**
+	 * @return the project information
+	 */
+	public ProjectInfo getProjectInfo() {
+		return projectInfo;
 	}
 
 }

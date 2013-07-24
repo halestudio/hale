@@ -51,7 +51,7 @@ public class JaxbAlignmentWriter extends AbstractAlignmentWriter {
 			throws IOProviderConfigurationException, IOException {
 		progress.begin("Save HALE alignment", ProgressIndicator.UNKNOWN);
 
-		PathUpdate pathUpdate = new PathUpdate(getPreviousTarget(), getTarget().getLocation());
+		PathUpdate pathUpdate = new PathUpdate(getProjectLocation(), getTarget().getLocation());
 		OutputStream out = getTarget().getOutput();
 		try {
 			JaxbAlignmentIO.save(getAlignment(), reporter, out, pathUpdate);

@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.ui.io;
 
+import java.io.File;
+
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
@@ -40,9 +42,16 @@ public abstract class DefaultIOAdvisor<T extends IOProvider> extends AbstractIOA
 		if (provider instanceof ProjectInfoAware) {
 			ProjectService ps = getService(ProjectService.class);
 			if (ps != null) {
-				((ProjectInfoAware) provider).setProjectInfo(ps.getProjectInfo());
+				ProjectInfoAware pia = (ProjectInfoAware) provider;
+				pia.setProjectInfo(ps.getProjectInfo());
+				File projectFile = ps.getLoadLocation();
+				if (projectFile == null) {
+					pia.setProjectLocation(null);
+				}
+				else {
+					pia.setProjectLocation(projectFile.toURI());
+				}
 			}
 		}
 	}
-
 }
