@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: WKT Geometry Converters
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.convert.wkt
 Bundle-Version: 2.6.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.vividsolutions.jts,
  com.vividsolutions.jts.geom,
  com.vividsolutions.jts.io

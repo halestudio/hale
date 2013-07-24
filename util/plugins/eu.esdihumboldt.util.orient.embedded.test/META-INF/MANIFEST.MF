@@ -3,6 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Embedded OrientDB Test Bundle
 Bundle-SymbolicName: eu.esdihumboldt.util.orient.embedded.test
 Bundle-Version: 2.6.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: eu.esdihumboldt.util.orient.embedded;bundle-version="1.0.0"
 Import-Package: org.junit;version="4.5.0"
