@@ -43,9 +43,11 @@ public class DisplayThread extends Thread {
 	 * @return the display thread
 	 */
 	public static DisplayThread getInstance() {
-		if (instance == null) {
-			instance = new DisplayThread();
-			instance.start();
+		synchronized (DisplayThread.class) {
+			if (instance == null) {
+				instance = new DisplayThread();
+				instance.start();
+			}
 		}
 		return instance;
 	}
