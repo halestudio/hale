@@ -4,5 +4,5 @@ Bundle-Name: CSV Schema/Instance I/O Tests
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.csv.test
 Bundle-Version: 2.6.0.qualifier
 Fragment-Host: eu.esdihumboldt.hale.io.csv;bundle-version="2.5.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.junit;version="4.8.1"
