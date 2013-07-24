@@ -5,7 +5,7 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.common.core;singleton:=true
 Bundle-Version: 2.6.0.qualifier
 Bundle-Activator: eu.esdihumboldt.hale.common.core.internal.CoreBundle
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.base;version="1.6.0",
  com.google.common.collect,
  com.google.common.io;version="1.6.0",

@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: HALE Properties View Contributions
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.views.properties;singleton:=true
 Bundle-Version: 2.6.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.ui;bundle-version="3.6.2",
  org.eclipse.ui.views.properties.tabbed;bundle-version="3.5.100",
  org.eclipse.core.runtime;bundle-version="3.6.0",
