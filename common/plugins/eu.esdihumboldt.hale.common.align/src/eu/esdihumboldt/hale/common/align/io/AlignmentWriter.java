@@ -16,8 +16,6 @@
 
 package eu.esdihumboldt.hale.common.align.io;
 
-import java.net.URI;
-
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.core.io.ExportProvider;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
@@ -49,13 +47,5 @@ public interface AlignmentWriter extends ExportProvider {
 	 * @param target the target schema
 	 */
 	public void setTargetSchema(SchemaSpace target);
-
-	/**
-	 * Sets the previous target if the project was saved before. May be the
-	 * project file or the alignment file.
-	 * 
-	 * @param previousTarget the previous target
-	 */
-	public void setPreviousTarget(URI previousTarget);
 
 }

@@ -22,7 +22,6 @@ import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.io.DefaultIOAdvisor;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
-import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
 /**
@@ -45,10 +44,6 @@ public class AlignmentExportAdvisor extends DefaultIOAdvisor<AlignmentWriter> {
 		SchemaService ss = getService(SchemaService.class);
 		provider.setSourceSchema(ss.getSchemas(SchemaSpaceID.SOURCE));
 		provider.setTargetSchema(ss.getSchemas(SchemaSpaceID.TARGET));
-
-		ProjectService ps = getService(ProjectService.class);
-		if (ps.getLoadLocation() != null)
-			provider.setPreviousTarget(ps.getLoadLocation().toURI());
 	}
 
 }
