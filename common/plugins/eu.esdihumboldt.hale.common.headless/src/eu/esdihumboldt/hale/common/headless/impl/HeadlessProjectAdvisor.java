@@ -182,7 +182,7 @@ public class HeadlessProjectAdvisor extends AbstractIOAdvisor<ProjectReader> {
 		// execute loaded I/O configurations
 		List<IOConfiguration> confs = new ArrayList<IOConfiguration>(project.getResources());
 		try {
-			HeadlessIO.executeConfigurations(confs, advisors, reportHandler);
+			HeadlessIO.executeConfigurations(confs, advisors, reportHandler, this);
 		} catch (IOException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
