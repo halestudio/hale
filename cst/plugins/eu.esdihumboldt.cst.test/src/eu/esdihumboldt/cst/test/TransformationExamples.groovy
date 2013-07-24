@@ -23,6 +23,7 @@ import eu.esdihumboldt.cst.test.internal.InternalExample
  * 
  * @author Simon Templer
  */
+@SuppressWarnings('javadoc')
 abstract class TransformationExamples {
 
 	public static final String SIMPLE_RENAME = 'simplerename'
@@ -195,14 +196,14 @@ abstract class TransformationExamples {
 
 	static def defaultExample(String folder) {
 		[
-			sourceSchema: "/testdata/${folder}/t1.xsd",
-			targetSchema: "/testdata/${folder}/t2.xsd",
-			alignment: "/testdata/${folder}/t1t2.halex.alignment.xml",
-			sourceData: "/testdata/${folder}/instance1.xml",
-			transformedData: "/testdata/${folder}/instance2.xml",
-			containerNamespace: null,
-			containerName: 'collection'
-		]
+					sourceSchema: "/testdata/${folder}/t1.xsd",
+					targetSchema: "/testdata/${folder}/t2.xsd",
+					alignment: "/testdata/${folder}/t1t2.halex.alignment.xml",
+					sourceData: "/testdata/${folder}/instance1.xml",
+					transformedData: "/testdata/${folder}/instance2.xml",
+					containerNamespace: null,
+					containerName: 'collection'
+				]
 	}
 
 	/**

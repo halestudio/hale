@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Instancevalidator
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.instancevalidator;singleton:=true
 Bundle-Version: 2.6.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: de.cs3d.util.logging,
  eu.esdihumboldt.hale.common.core.report,
  eu.esdihumboldt.hale.common.core.report.impl,
