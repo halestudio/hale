@@ -494,6 +494,7 @@ public class ReflectionHelper {
 	public static synchronized File[] getFilesFromPackage(String pkg) throws IOException {
 
 		File[] files;
+		JarFile jarFile = null;
 		try {
 			URL u = _packageResolver.resolve(pkg);
 			if (u != null && !u.toString().startsWith("jar:")) { //$NON-NLS-1$
@@ -517,8 +518,6 @@ public class ReflectionHelper {
 				}
 			}
 			else {
-				JarFile jarFile;
-
 				// the package may be in a jar file
 				// get the current jar file and search it
 				if (u != null && u.toString().startsWith("jar:file:")) { //$NON-NLS-1$
@@ -583,6 +582,10 @@ public class ReflectionHelper {
 			}
 		} catch (Throwable e) {
 			throw new IOException("Could not find package: " + pkg, e); //$NON-NLS-1$
+		} finally {
+			if (jarFile != null) {
+				jarFile.close();
+			}
 		}
 
 		if (files != null && files.length == 0)
