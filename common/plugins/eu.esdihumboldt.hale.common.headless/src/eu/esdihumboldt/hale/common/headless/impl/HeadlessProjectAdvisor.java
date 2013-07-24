@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.common.headless.impl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +38,7 @@ import eu.esdihumboldt.hale.common.core.io.project.util.LocationUpdater;
 import eu.esdihumboldt.hale.common.core.report.ReportHandler;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.headless.HeadlessIO;
+import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.io.SchemaIO;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
@@ -181,8 +183,17 @@ public class HeadlessProjectAdvisor extends AbstractIOAdvisor<ProjectReader> {
 
 		// execute loaded I/O configurations
 		List<IOConfiguration> confs = new ArrayList<IOConfiguration>(project.getResources());
+
+		// but remove source data actions first
+		Iterator<IOConfiguration> it = confs.iterator();
+		while (it.hasNext()) {
+			if (InstanceIO.ACTION_LOAD_SOURCE_DATA.equals(it.next().getActionId())) {
+				it.remove();
+			}
+		}
+
 		try {
-			HeadlessIO.executeConfigurations(confs, advisors, reportHandler);
+			HeadlessIO.executeConfigurations(confs, advisors, reportHandler, this);
 		} catch (IOException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
