@@ -66,7 +66,7 @@ public class GroovyEditor extends AbstractEditor<String> {
 
 	private final Composite composite;
 	private final Script script;
-	private final Class<?> binding;
+//	private final Class<?> binding;
 	private final SourceViewer viewer;
 	private TableViewer varTable;
 	private Collection<PropertyEntityDefinition> variables = Collections.emptySet();
@@ -84,7 +84,7 @@ public class GroovyEditor extends AbstractEditor<String> {
 	 */
 	public GroovyEditor(Composite parent, Script script, Class<?> binding) {
 		this.script = script;
-		this.binding = binding;
+//		this.binding = binding;
 		testValues = new InstanceTestValues();
 
 		composite = new Composite(parent, SWT.NONE);

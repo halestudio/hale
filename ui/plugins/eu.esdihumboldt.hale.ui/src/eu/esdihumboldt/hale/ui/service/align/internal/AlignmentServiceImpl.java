@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell;
@@ -50,8 +48,6 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class AlignmentServiceImpl extends AbstractAlignmentService {
-
-	private static ALogger _log = ALoggerFactory.getLogger(AlignmentServiceImpl.class);
 
 	private MutableAlignment alignment;
 

@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.ui.io.instance;
 
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.content.IContentType;
@@ -38,6 +39,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
@@ -77,7 +79,7 @@ public class SaveConfigurationInstanceExportPage extends
 		Project p = (Project) ps.getProjectInfo();
 		// prevent saving with an empty name or description or a name which is
 		// already used
-		if (name.getText().isEmpty() || p.getExportConfigurations().contains(name.getText())
+		if (name.getText().isEmpty() || hasName(p.getExportConfigurations(), name.getText())
 				|| description.getText().isEmpty())
 			return false;
 		// set additional information to the provider
@@ -85,6 +87,21 @@ public class SaveConfigurationInstanceExportPage extends
 		provider.setParameter(PARAM_CONFIGURATION_DESCRIPTION, Value.of(description.getText()));
 		provider.setParameter(PARAM_FILE_FORMAT, Value.of(fileFormat));
 		return true;
+	}
+
+	/**
+	 * Determines if any of the given I/O configurations has the given name.
+	 * 
+	 * @param configs the I/O configurations
+	 * @param name the name
+	 * @return if a configuration with the given name was found
+	 */
+	private boolean hasName(List<IOConfiguration> configs, String name) {
+		for (IOConfiguration config : configs) {
+			if (config.getName().equals(name)) // ignore case?
+				return true;
+		}
+		return false;
 	}
 
 	/**
@@ -221,7 +238,7 @@ public class SaveConfigurationInstanceExportPage extends
 		Project p = (Project) ps.getProjectInfo();
 		// prevent saving with an empty name or description or a name which is
 		// already used
-		return !(name.getText().isEmpty() || p.getExportConfigurations().contains(name.getText()) || description
+		return !(name.getText().isEmpty() || hasName(p.getExportConfigurations(), name.getText()) || description
 				.getText().isEmpty());
 	}
 }
