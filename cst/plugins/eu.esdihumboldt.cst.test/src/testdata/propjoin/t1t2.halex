@@ -1,12 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<hale-project version="2.5.0.M1">
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<hale-project version="2.6.0.qualifier">
     <name>Simple Join Test</name>
     <author>Kai Schwierczek</author>
     <created>2012-04-12T13:12:59.160+02:00</created>
-    <modified>2012-04-19T19:14:38.126+02:00</modified>
+    <modified>2013-08-27T15:10:41.542+02:00</modified>
     <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
         <setting name="projectFiles.separate">false</setting>
         <setting name="target">file:/D:/Fraunhofer%20IGD/hale-git/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propjoin/t1t2.halex</setting>
+        <setting name="charset">UTF-8</setting>
         <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
     </save-config>
     <resource action-id="eu.esdihumboldt.hale.io.schema.read.target" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
@@ -21,6 +22,6 @@
         <setting name="source">file:/D:/Fraunhofer%20IGD/hale-git/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propjoin/instance1.xml</setting>
         <setting name="contentType">eu.esdihumboldt.hale.io.gml</setting>
     </resource>
-    <file name="styles.sld" location="file:/D:/Fraunhofer%20IGD/hale-git/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propjoin/t1t2.halex.styles.sld"/>
-    <file name="alignment.xml" location="file:/D:/Fraunhofer%20IGD/hale-git/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propjoin/t1t2.halex.alignment.xml"/>
+    <file name="styles.sld" location="t1t2.halex.styles.sld"/>
+    <file name="alignment.xml" location="t1t2.halex.alignment.xml"/>
 </hale-project>

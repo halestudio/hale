@@ -15,9 +15,7 @@
 
 package eu.esdihumboldt.hale.ui.service.values.internal;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -30,11 +28,9 @@ import com.google.common.collect.Multiset;
 import com.google.common.collect.TreeMultiset;
 
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
-import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.filter.TypeFilter;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
-import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
@@ -119,7 +115,7 @@ public class OccurringValuesServiceImpl extends AbstractOccurringValuesService {
 			try {
 				while (it.hasNext()) {
 					Instance instance = it.next();
-					addValues(instance, property.getPropertyPath(), collectedValues);
+					AlignmentUtil.addValues(instance, property.getPropertyPath(), collectedValues);
 					if (instanceProgress) {
 						// TODO improved monitor update?!
 						monitor.worked(1);
@@ -139,70 +135,6 @@ public class OccurringValuesServiceImpl extends AbstractOccurringValuesService {
 			monitor.done();
 
 			return Status.OK_STATUS;
-		}
-
-		/**
-		 * Add the values found on the given path to the given set.
-		 * 
-		 * @param group the parent group
-		 * @param path the path on the group
-		 * @param collectedValues the set to add the values to
-		 */
-		private void addValues(Group group, List<ChildContext> path,
-				Multiset<Object> collectedValues) {
-			if (path == null || path.isEmpty()) {
-				// empty path - retrieve value from instance
-				if (group instanceof Instance) {
-					Object value = ((Instance) group).getValue();
-					if (value != null) {
-						collectedValues.add(value);
-					}
-				}
-			}
-			else {
-				// go down the path
-				ChildContext context = path.get(0);
-				List<ChildContext> subPath = path.subList(1, path.size());
-
-				Object[] values = group.getProperty(context.getChild().getName());
-
-				if (values != null) {
-					// apply the possible source contexts
-					if (context.getIndex() != null) {
-						// select only the item at the index
-						int index = context.getIndex();
-						if (index < values.length) {
-							values = new Object[] { values[index] };
-						}
-						else {
-							values = new Object[] {};
-						}
-					}
-					if (context.getCondition() != null) {
-						// select only values that match the condition
-						List<Object> matchedValues = new ArrayList<Object>();
-						for (Object value : values) {
-							if (AlignmentUtil.matchCondition(context.getCondition(), value, group)) {
-								matchedValues.add(value);
-							}
-						}
-						values = matchedValues.toArray();
-					}
-
-					// check all values
-					for (Object value : values) {
-						if (value instanceof Group) {
-							addValues((Group) value, subPath, collectedValues);
-						}
-						else if (subPath.isEmpty()) {
-							// normal value and at the end of the path
-							if (value != null) {
-								collectedValues.add(value);
-							}
-						}
-					}
-				}
-			}
 		}
 	}
 

@@ -24,33 +24,26 @@ import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AbstractPara
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AlignmentType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AnnotationType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.CellType
-import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ChildContextType
-import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ComplexParameterType
-import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ConditionType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.DocumentationType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ModifierType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.NamedEntityType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ObjectFactory
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ParameterType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.PriorityType
-import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.PropertyType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.TransformationModeType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AlignmentType.Base
-import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType.Type
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ModifierType.DisableFor
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ModifierType.Transformation
 import eu.esdihumboldt.hale.common.align.model.Alignment
 import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell
 import eu.esdihumboldt.hale.common.align.model.Cell
-import eu.esdihumboldt.hale.common.align.model.ChildContext
 import eu.esdihumboldt.hale.common.align.model.Entity
 import eu.esdihumboldt.hale.common.align.model.ParameterValue
 import eu.esdihumboldt.hale.common.align.model.Property
 import eu.esdihumboldt.hale.common.align.model.TransformationMode
+import eu.esdihumboldt.hale.common.align.model.Type
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter
-import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager
-import eu.esdihumboldt.hale.common.instance.model.Filter
 import eu.esdihumboldt.util.io.PathUpdate
 
 
@@ -212,52 +205,17 @@ class AlignmentToJaxb {
 
 		// create the entity object
 		switch (entity) {
-			case eu.esdihumboldt.hale.common.align.model.Type:
-			result.abstractEntity = of.createClass(new ClassType())
+			case Type:
+			result.abstractEntity = EntityDefinitionToJaxb.convert(((Type)entity).definition);
 			break
 			case Property:
-			result.abstractEntity = of.createProperty(new PropertyType())
+			result.abstractEntity = EntityDefinitionToJaxb.convert(((Property)entity).definition);
 			break
 			default:
 			throw new IllegalArgumentException("Illegal entity ${entity.class}")
 		}
 
-		// set the type
-		result.abstractEntity.value.type = new Type(
-		name: entity.definition.type.name.localPart,
-		ns: entity.definition.type.name.namespaceURI ?: null)
-		result.abstractEntity.value.type.condition = entity.definition.filter ?
-		convert(entity.definition.filter) : null
-
-		// add children
-		if (entity instanceof Property) {
-			for (ChildContext child in entity.definition.propertyPath) {
-				result.abstractEntity.value.child << convert(child)
-			}
-		}
-
 		return result
-	}
-
-	protected ChildContextType convert(ChildContext context) {
-		ChildContextType result = new ChildContextType()
-
-		result.name = context.child.name.localPart
-		result.ns = context.child.name.namespaceURI ?: null
-
-		result.context = context.contextName
-		result.index = context.index
-		result.condition = context.condition ? convert(context.condition.filter) : null
-
-		return result
-	}
-
-	protected ConditionType convert(Filter filter) {
-		if (!filter) return null
-
-		def rep = FilterDefinitionManager.getInstance().asPair(filter)
-
-		new ConditionType(lang: rep.first, value: rep.second)
 	}
 
 }
