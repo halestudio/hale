@@ -46,8 +46,9 @@ public class EntityTypePropertyContentProvider extends EntityTypeIndexContentPro
 			return getChildren(inputElement);
 		}
 		else {
-			throw new IllegalArgumentException(
-					"Content provider only applicable for type definitions.");
+			// If someone checks for a EntityTypeIndexContentProvider he expects
+			// TypeIndex to work.
+			return super.getChildren(inputElement);
 		}
 	}
 
