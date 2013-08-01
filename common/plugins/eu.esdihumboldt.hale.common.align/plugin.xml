@@ -273,7 +273,8 @@
             <type
                   description="The source types that are to be joined based on their properties."
                   maxOccurrence="n"
-                  minOccurrence="2">
+                  minOccurrence="2"
+                  name="types">
             </type>
          </sourceTypes>
          <targetTypes>
