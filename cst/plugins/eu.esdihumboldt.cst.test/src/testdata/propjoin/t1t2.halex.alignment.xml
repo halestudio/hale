@@ -1,141 +1,174 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<hale-alignment>
-    <cell transformation="eu.esdihumboldt.hale.align.rename">
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C1cd5041e-f4ca-4f25-8a4e-21d0ee8d1dde" priority="normal">
         <source>
             <property>
-                <type>{http://www.example.org/t1/}PersonType</type>
-                <child>id</child>
+                <type name="PersonType" ns="http://www.example.org/t1/"/>
+                <child name="id"/>
             </property>
         </source>
         <target>
             <property>
-                <type>{http://www.example.org/t2/}PersonType</type>
-                <child>id</child>
+                <type name="PersonType" ns="http://www.example.org/t2/"/>
+                <child name="id"/>
             </property>
         </target>
-        <parameter name="structuralRename" value="false"/>
+        <parameter value="false" name="structuralRename"/>
     </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.rename">
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C3a807cb3-bc2e-4cf4-83b3-e56b9ea99fa5" priority="normal">
         <source>
             <property>
-                <type>{http://www.example.org/t1/}PersonType</type>
-                <child>name</child>
+                <type name="PersonType" ns="http://www.example.org/t1/"/>
+                <child name="name"/>
             </property>
         </source>
         <target>
             <property>
-                <type>{http://www.example.org/t2/}PersonType</type>
-                <child>name</child>
+                <type name="PersonType" ns="http://www.example.org/t2/"/>
+                <child name="name"/>
             </property>
         </target>
-        <parameter name="structuralRename" value="false"/>
+        <parameter value="false" name="structuralRename"/>
     </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.rename">
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C0999b56a-9dac-4c71-ae12-cf6c3ac27395" priority="normal">
         <source>
             <property>
-                <type>{http://www.example.org/t1/}PersonType</type>
-                <child>details</child>
-                <child>age</child>
+                <type name="PersonType" ns="http://www.example.org/t1/"/>
+                <child name="details"/>
+                <child name="age"/>
             </property>
         </source>
         <target>
             <property>
-                <type>{http://www.example.org/t2/}PersonType</type>
-                <child>details</child>
-                <child>age</child>
+                <type name="PersonType" ns="http://www.example.org/t2/"/>
+                <child name="details"/>
+                <child name="age"/>
             </property>
         </target>
-        <parameter name="structuralRename" value="false"/>
+        <parameter value="false" name="structuralRename"/>
     </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.rename">
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C26bca44a-6ffe-4160-8528-6f863d644a51" priority="normal">
         <source>
             <property>
-                <type>{http://www.example.org/t1/}PersonType</type>
-                <child>details</child>
-                <child>income</child>
+                <type name="PersonType" ns="http://www.example.org/t1/"/>
+                <child name="details"/>
+                <child name="income"/>
             </property>
         </source>
         <target>
             <property>
-                <type>{http://www.example.org/t2/}PersonType</type>
-                <child>details</child>
-                <child>income</child>
+                <type name="PersonType" ns="http://www.example.org/t2/"/>
+                <child name="details"/>
+                <child name="income"/>
             </property>
         </target>
-        <parameter name="structuralRename" value="false"/>
+        <parameter value="false" name="structuralRename"/>
     </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.rename">
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C64aaeb7e-09c9-48db-88cd-acc73c8fd600" priority="normal">
         <source>
             <property>
-                <type>{http://www.example.org/t1/}CityType</type>
-                <child>zip</child>
+                <type name="CityType" ns="http://www.example.org/t1/"/>
+                <child name="zip"/>
             </property>
         </source>
         <target>
             <property>
-                <type>{http://www.example.org/t2/}PersonType</type>
-                <child>details</child>
-                <child>address</child>
-                <child>zip</child>
+                <type name="PersonType" ns="http://www.example.org/t2/"/>
+                <child name="details"/>
+                <child name="address"/>
+                <child name="zip"/>
             </property>
         </target>
-        <parameter name="structuralRename" value="false"/>
+        <parameter value="false" name="structuralRename"/>
     </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.rename">
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C67dab3ed-ac22-45de-a4d7-cdf0e3490d16" priority="normal">
         <source>
             <property>
-                <type>{http://www.example.org/t1/}CityType</type>
-                <child>name</child>
+                <type name="CityType" ns="http://www.example.org/t1/"/>
+                <child name="name"/>
             </property>
         </source>
         <target>
             <property>
-                <type>{http://www.example.org/t2/}PersonType</type>
-                <child>details</child>
-                <child>address</child>
-                <child>city</child>
+                <type name="PersonType" ns="http://www.example.org/t2/"/>
+                <child name="details"/>
+                <child name="address"/>
+                <child name="city"/>
             </property>
         </target>
-        <parameter name="structuralRename" value="false"/>
+        <parameter value="false" name="structuralRename"/>
     </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.rename">
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="Cbdf3c532-e145-46a2-a789-4dc9e07c765d" priority="normal">
         <source>
             <property>
-                <type>{http://www.example.org/t1/}AddressType</type>
-                <child>street</child>
+                <type name="AddressType" ns="http://www.example.org/t1/"/>
+                <child name="street"/>
             </property>
         </source>
         <target>
             <property>
-                <type>{http://www.example.org/t2/}PersonType</type>
-                <child>details</child>
-                <child>address</child>
-                <child>street</child>
+                <type name="PersonType" ns="http://www.example.org/t2/"/>
+                <child name="details"/>
+                <child name="address"/>
+                <child name="street"/>
             </property>
         </target>
-        <parameter name="structuralRename" value="false"/>
+        <parameter value="false" name="structuralRename"/>
     </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.join">
-        <source>
+    <cell relation="eu.esdihumboldt.hale.align.join" id="C8d35c1f3-2245-4efe-858e-4925f1c2a183" priority="normal">
+        <source name="types">
             <class>
-                <type>{http://www.example.org/t1/}PersonType</type>
+                <type name="PersonType" ns="http://www.example.org/t1/"/>
             </class>
         </source>
-        <source>
+        <source name="types">
             <class>
-                <type>{http://www.example.org/t1/}AddressType</type>
+                <type name="AddressType" ns="http://www.example.org/t1/"/>
             </class>
         </source>
-        <source>
+        <source name="types">
             <class>
-                <type>{http://www.example.org/t1/}CityType</type>
+                <type name="CityType" ns="http://www.example.org/t1/"/>
             </class>
         </source>
         <target>
             <class>
-                <type>{http://www.example.org/t2/}PersonType</type>
+                <type name="PersonType" ns="http://www.example.org/t2/"/>
             </class>
         </target>
-        <parameter name="join" value="{http://www.example.org/t1/}PersonType {http://www.example.org/t1/}AddressType {http://www.example.org/t1/}CityType::{http://www.example.org/t1/}PersonType,details.addressId={http://www.example.org/t1/}AddressType,id {http://www.example.org/t1/}AddressType,zip={http://www.example.org/t1/}CityType,zip"/>
+        <complexParameter name="join">
+            <jp:join-parameter xmlns:jp="http://www.esdi-humboldt.eu/hale/join">
+                <class>
+                    <type name="PersonType" ns="http://www.example.org/t1/"/>
+                </class>
+                <class>
+                    <type name="AddressType" ns="http://www.example.org/t1/"/>
+                </class>
+                <class>
+                    <type name="CityType" ns="http://www.example.org/t1/"/>
+                </class>
+                <jp:condition>
+                    <property>
+                        <type name="PersonType" ns="http://www.example.org/t1/"/>
+                        <child name="details"/>
+                        <child name="addressId"/>
+                    </property>
+                    <property>
+                        <type name="AddressType" ns="http://www.example.org/t1/"/>
+                        <child name="id"/>
+                    </property>
+                </jp:condition>
+                <jp:condition>
+                    <property>
+                        <type name="AddressType" ns="http://www.example.org/t1/"/>
+                        <child name="zip"/>
+                    </property>
+                    <property>
+                        <type name="CityType" ns="http://www.example.org/t1/"/>
+                        <child name="zip"/>
+                    </property>
+                </jp:condition>
+            </jp:join-parameter>
+        </complexParameter>
     </cell>
-</hale-alignment>
+</alignment>
