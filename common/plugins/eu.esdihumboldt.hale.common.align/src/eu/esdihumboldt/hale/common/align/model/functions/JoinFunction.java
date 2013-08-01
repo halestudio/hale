@@ -32,4 +32,9 @@ public interface JoinFunction {
 	 * the join function Id
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.align.join";
+
+	/**
+	 * Entity name for the source types to join.
+	 */
+	public static final String JOIN_TYPES = "types";
 }
