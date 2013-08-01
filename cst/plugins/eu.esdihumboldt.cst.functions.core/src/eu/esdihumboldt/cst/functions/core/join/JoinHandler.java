@@ -97,7 +97,7 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 		// List of types with their QNames, and the highest type they depend on.
 		List<Pair<QName, Integer>> types = new ArrayList<Pair<QName, Integer>>(typesRaw.length);
 		for (String name : typesAndProps[0].split(" "))
-			types.add(new Pair<QName, Integer>(PropertyResolver.getQNamesFromPath(name).get(0), 0));
+			types.add(new Pair<QName, Integer>(QName.valueOf(name), 0));
 
 		// join with less than two types is senseless
 		if (types.size() < 2)
@@ -248,23 +248,21 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 		@Override
 		protected FamilyInstance convert(InstanceReference next) {
 			FamilyInstance base = new FamilyInstanceImpl(instances.getInstance(next));
-			HashMap<Integer, FamilyInstance> currentInstances = new HashMap<Integer, FamilyInstance>(
-					types.size() * 2);
-			currentInstances.put(0, base);
+			FamilyInstance[] currentInstances = new FamilyInstance[types.size()];
+			currentInstances[0] = base;
 
 			join(currentInstances, 0);
 
 			return base;
 		}
 
-		// Joins to the currentInstances HashMap all direct children of the
-		// given type.
-		private void join(HashMap<Integer, FamilyInstance> currentInstances, int currentType) {
+		// Joins all direct children of the given type to currentInstances.
+		private void join(FamilyInstance[] currentInstances, int currentType) {
 			// Join all types that are direct children of the last type.
 			for (int i = currentType + 1; i < types.size(); i++) {
 				if (types.get(i).getSecond() == currentType) {
 					// Get join condition for the direct child type.
-					// Type1 Prop1 Prop2 Type2
+					// Type1 Prop1 Prop2 of Type2
 					Multimap<Integer, Pair<String, String>> joinConditions = joinTable.get(i);
 					// Collect intersection of conditions. null marks beginning
 					// in contrast to an empty set.
@@ -273,8 +271,8 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 					for (Map.Entry<Integer, Pair<String, String>> joinCondition : joinConditions
 							.entries()) {
 						Collection<Object> currentValues = PropertyResolver.getValues(
-								currentInstances.get(joinCondition.getKey()), joinCondition
-										.getValue().getFirst());
+								currentInstances[joinCondition.getKey()], joinCondition.getValue()
+										.getFirst());
 
 						if (currentValues == null) {
 							possibleInstances = Collections.emptySet();
@@ -308,15 +306,15 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 					}
 
 					if (possibleInstances != null && !possibleInstances.isEmpty()) {
-						FamilyInstance parent = currentInstances.get(currentType);
+						FamilyInstance parent = currentInstances[currentType];
 						for (InstanceReference ref : possibleInstances) {
 							FamilyInstance child = new FamilyInstanceImpl(
 									instances.getInstance(ref));
 							parent.addChild(child);
-							currentInstances.put(i, child);
+							currentInstances[i] = child;
 							join(currentInstances, i);
 						}
-						currentInstances.put(i, null);
+						currentInstances[i] = null;
 					}
 				}
 			}

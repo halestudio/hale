@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Data Harmonisation Panel
+ * Copyright (c) 2013 Data Harmonisation Panel
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -10,31 +10,18 @@
  * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
  * 
  * Contributors:
- *     HUMBOLDT EU Integrated Project #030962
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.align.model.functions;
+package eu.esdihumboldt.hale.common.align.model.functions.join;
 
 /**
- * Join function constants.
+ * Information for a Join transformation.
  * 
  * @author Kai Schwierczek
  */
-public interface JoinFunction {
+public class JoinParameter {
 
-	/**
-	 * Name of the parameter specifying the join function.
-	 */
-	public static final String PARAMETER_JOIN = "join";
+	// TODO
 
-	/**
-	 * the join function Id
-	 */
-	public static final String ID = "eu.esdihumboldt.hale.align.join";
-
-	/**
-	 * Entity name for the source types to join.
-	 */
-	public static final String JOIN_TYPES = "types";
 }
