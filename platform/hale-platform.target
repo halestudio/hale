@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="76">
+<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="82">
 <locations>
 <location path="${project_loc}/target/plugins/fr.inrialpes.exmo" type="Directory"/>
 <location path="${project_loc}/target/plugins/org.wicketstuff" type="Directory"/>
@@ -110,5 +110,11 @@
 <location path="${project_loc}/target/plugins/org.jasig.cas" type="Directory"/>
 <location path="${project_loc}/target/plugins/org.opensaml" type="Directory"/>
 <location path="${project_loc}/target/plugins/javax.xml.crypto" type="Directory"/>
+<location path="${project_loc}/target/plugins/groovyx.net.http" type="Directory"/>
+<location path="${project_loc}/target/plugins/net.sf.json" type="Directory"/>
+<location path="${project_loc}/target/plugins/net.sf.ezmorph" type="Directory"/>
+<location path="${project_loc}/target/plugins/com.google.appengine" type="Directory"/>
+<location path="${project_loc}/target/plugins/oauth.signpost" type="Directory"/>
+<location path="${project_loc}/target/plugins/org.cyberneko.html" type="Directory"/>
 </locations>
 </target>
