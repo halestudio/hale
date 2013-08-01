@@ -17,9 +17,7 @@ package eu.esdihumboldt.hale.common.align.io.impl.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigInteger;
 import java.net.URI;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,7 +28,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 
 import com.google.common.base.Function;
@@ -46,45 +43,30 @@ import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AlignmentTyp
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AlignmentType.Base;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AnnotationType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.CellType;
-import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ChildContextType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ComplexParameterType;
-import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ConditionType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.DocumentationType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ModifierType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ModifierType.DisableFor;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.NamedEntityType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ParameterType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.PropertyType;
-import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.QNameType;
 import eu.esdihumboldt.hale.common.align.model.AnnotationDescriptor;
-import eu.esdihumboldt.hale.common.align.model.ChildContext;
-import eu.esdihumboldt.hale.common.align.model.Condition;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.Priority;
 import eu.esdihumboldt.hale.common.align.model.TransformationMode;
-import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
-import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
-import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.impl.ElementValue;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
-import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager;
-import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
-import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
-import eu.esdihumboldt.hale.common.schema.model.Definition;
-import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
-import eu.esdihumboldt.util.Pair;
 import eu.esdihumboldt.util.io.PathUpdate;
 
 /**
@@ -299,134 +281,14 @@ public class JaxbToAlignment extends
 	private Entity convert(AbstractEntityType entity, TypeIndex types, SchemaSpaceID schemaSpace) {
 		// must first check for PropertyType as it inherits from ClassType
 		if (entity instanceof PropertyType) {
-			return convert((PropertyType) entity, types, schemaSpace);
+			return new DefaultProperty(JaxbToEntityDefinition.convert((PropertyType) entity, types,
+					schemaSpace));
 		}
 		if (entity instanceof ClassType) {
-			return convert((ClassType) entity, types, schemaSpace);
+			return new DefaultType(JaxbToEntityDefinition.convert((ClassType) entity, types,
+					schemaSpace));
 		}
 		throw new IllegalArgumentException("Illegal type of entity");
-	}
-
-	private Type convert(ClassType classType, TypeIndex types, SchemaSpaceID schemaSpace) {
-		TypeDefinition typeDef = types.getType(asName(classType.getType()));
-
-		Filter filter = getTypeFilter(classType);
-
-		TypeEntityDefinition tef = new TypeEntityDefinition(typeDef, schemaSpace, filter);
-
-		return new DefaultType(tef);
-	}
-
-	private Filter getTypeFilter(ClassType classType) {
-		if (classType.getType() != null && classType.getType().getCondition() != null) {
-			return FilterDefinitionManager.getInstance().from(
-					classType.getType().getCondition().getLang(),
-					classType.getType().getCondition().getValue());
-		}
-		return null;
-	}
-
-	private Entity convert(PropertyType property, TypeIndex types, SchemaSpaceID schemaSpace) {
-		TypeDefinition typeDef = types.getType(asName(property.getType()));
-
-		Filter filter = getTypeFilter(property);
-
-		List<ChildContext> path = new ArrayList<ChildContext>();
-
-		DefinitionGroup parent = typeDef;
-		for (ChildContextType childContext : property.getChild()) {
-			if (parent == null) {
-				throw new IllegalStateException(
-						"Could not resolve property entity definition: child not present");
-			}
-
-			Pair<ChildDefinition<?>, List<ChildDefinition<?>>> childs = PropertyBean.findChild(
-					parent, asName(childContext));
-
-			// if the child is still null throw an exception
-			if (childs == null || childs.getFirst() == null) {
-				String childName = asName(childContext).getLocalPart();
-				String parentName;
-				if (parent instanceof Definition<?>) {
-					parentName = ((Definition<?>) parent).getName().getLocalPart();
-				}
-				else {
-					parentName = parent.getIdentifier();
-				}
-				throw new IllegalStateException(
-						MessageFormat
-								.format("Could not resolve property entity definition: child {0} not found in parent {1}",
-										childName, parentName));
-			}
-
-			ChildDefinition<?> child = childs.getFirst();
-
-			if (childs.getSecond() != null) {
-				for (ChildDefinition<?> pathElems : childs.getSecond()) {
-					path.add(new ChildContext(contextName(childContext.getContext()),
-							contextIndex(childContext.getIndex()), createCondition(childContext
-									.getCondition()), pathElems));
-				}
-			}
-
-			path.add(new ChildContext(contextName(childContext.getContext()),
-					contextIndex(childContext.getIndex()), createCondition(childContext
-							.getCondition()), child));
-
-			if (child instanceof DefinitionGroup) {
-				parent = (DefinitionGroup) child;
-			}
-			else if (child.asProperty() != null) {
-				parent = child.asProperty().getPropertyType();
-			}
-			else {
-				parent = null;
-			}
-		}
-
-		PropertyEntityDefinition ped = new PropertyEntityDefinition(typeDef, path, schemaSpace,
-				filter);
-		return new DefaultProperty(ped);
-	}
-
-	/**
-	 * Create a condition.
-	 * 
-	 * @param conditionFilter the condition filter
-	 * @return the condition or <code>null</code>
-	 */
-	private Condition createCondition(ConditionType conditionFilter) {
-		if (conditionFilter == null)
-			return null;
-
-		Filter filter = FilterDefinitionManager.getInstance().from(conditionFilter.getLang(),
-				conditionFilter.getValue());
-		if (filter != null) {
-			return new Condition(filter);
-		}
-		return null;
-	}
-
-	private Integer contextName(BigInteger name) {
-		if (name == null)
-			return null;
-
-//		return Integer.valueOf(name);
-		return name.intValue();
-	}
-
-	private Integer contextIndex(BigInteger index) {
-		if (index == null)
-			return null;
-
-		return index.intValue();
-	}
-
-	private QName asName(QNameType qname) {
-		if (qname.getNs() == null || qname.getNs().isEmpty()) {
-			return new QName(qname.getName());
-		}
-		return new QName(qname.getNs(), qname.getName());
 	}
 
 	/**
