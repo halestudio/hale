@@ -25,7 +25,9 @@ import javax.xml.namespace.QName;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashMultiset;
 import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multiset;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
@@ -36,6 +38,8 @@ import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
+import eu.esdihumboldt.hale.common.instance.model.Group;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
@@ -733,5 +737,83 @@ public abstract class AlignmentUtil {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Returns the values of the given instance which match the given property
+	 * entity definition.
+	 * 
+	 * @param instance the instance to collect values from
+	 * @param definition the property
+	 * @return all values of the given property
+	 */
+	public static Multiset<Object> getValues(Instance instance, PropertyEntityDefinition definition) {
+		Multiset<Object> result = HashMultiset.create();
+		addValues(instance, definition.getPropertyPath(), result);
+		return result;
+	}
+
+	/**
+	 * Add the values found on the given path to the given set.
+	 * 
+	 * @param group the parent group
+	 * @param path the path on the group
+	 * @param collectedValues the set to add the values to
+	 */
+	public static void addValues(Group group, List<ChildContext> path,
+			Multiset<Object> collectedValues) {
+		if (path == null || path.isEmpty()) {
+			// empty path - retrieve value from instance
+			if (group instanceof Instance) {
+				Object value = ((Instance) group).getValue();
+				if (value != null) {
+					collectedValues.add(value);
+				}
+			}
+		}
+		else {
+			// go down the path
+			ChildContext context = path.get(0);
+			List<ChildContext> subPath = path.subList(1, path.size());
+
+			Object[] values = group.getProperty(context.getChild().getName());
+
+			if (values != null) {
+				// apply the possible source contexts
+				if (context.getIndex() != null) {
+					// select only the item at the index
+					int index = context.getIndex();
+					if (index < values.length) {
+						values = new Object[] { values[index] };
+					}
+					else {
+						values = new Object[] {};
+					}
+				}
+				if (context.getCondition() != null) {
+					// select only values that match the condition
+					List<Object> matchedValues = new ArrayList<Object>();
+					for (Object value : values) {
+						if (AlignmentUtil.matchCondition(context.getCondition(), value, group)) {
+							matchedValues.add(value);
+						}
+					}
+					values = matchedValues.toArray();
+				}
+
+				// check all values
+				for (Object value : values) {
+					if (value instanceof Group) {
+						addValues((Group) value, subPath, collectedValues);
+					}
+					else if (subPath.isEmpty()) {
+						// normal value and at the end of the path
+						if (value != null) {
+							collectedValues.add(value);
+						}
+					}
+				}
+			}
+		}
 	}
 }

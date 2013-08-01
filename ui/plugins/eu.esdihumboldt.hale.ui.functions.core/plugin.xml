@@ -80,6 +80,14 @@
                name="additional_property">
          </parameter>
       </typeParameterPage>
+      <typeParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.core.JoinParameterPage"
+            function="eu.esdihumboldt.hale.align.join"
+            id="eu.esdihumboldt.hale.ui.functions.core.join">
+         <parameter
+               name="join">
+         </parameter>
+      </typeParameterPage>
       <propertyParameterEditor
             class="eu.esdihumboldt.hale.ui.common.editors.BooleanEditorFactory"
             function="eu.esdihumboldt.hale.align.rename"
@@ -94,5 +102,15 @@
             parameter="structuralRename"
             priority="0">
       </propertyParameterEditor>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.complexvalue">
+      <complexValue
+            descriptor="eu.esdihumboldt.hale.ui.functions.core.join.JoinParameterType"
+            id="eu.esdihumboldt.hale.common.align.join.parameter"
+            name="join-parameter"
+            namespace="http://www.esdi-humboldt.eu/hale/join"
+            type="eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter">
+      </complexValue>
    </extension>
 </plugin>
