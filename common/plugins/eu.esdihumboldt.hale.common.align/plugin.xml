@@ -273,7 +273,8 @@
             <type
                   description="The source types that are to be joined based on their properties."
                   maxOccurrence="n"
-                  minOccurrence="2">
+                  minOccurrence="2"
+                  name="types">
             </type>
          </sourceTypes>
          <targetTypes>
@@ -445,6 +446,16 @@
             class="eu.esdihumboldt.hale.common.align.transformation.report.impl.TransformationReportImplDefinition"
             id="eu.esdihumboldt.hale.common.core.transformation">
       </reportDefinition>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.complexvalue">
+      <complexValue
+            descriptor="eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameterType"
+            id="eu.esdihumboldt.hale.common.align.join.parameter"
+            name="join-parameter"
+            namespace="http://www.esdi-humboldt.eu/hale/join"
+            type="eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter">
+      </complexValue>
    </extension>
 
 </plugin>
