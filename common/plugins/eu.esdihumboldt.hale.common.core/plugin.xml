@@ -7,6 +7,7 @@
    <extension-point id="eu.esdihumboldt.hale.report" name="Report" schema="schema/eu.esdihumboldt.hale.report.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.io.complexvalue" name="Complex Values" schema="schema/eu.esdihumboldt.hale.io.complexvalue.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.service" name="Scoped services in HALE" schema="schema/eu.esdihumboldt.hale.service.exsd"/>
+   <extension-point id="eu.esdihumboldt.hale.io.resource" name="Resource Advisors" schema="schema/eu.esdihumboldt.hale.io.resource.exsd"/>
    <extension
          point="org.eclipse.core.contenttype.contentTypes">
       <content-type
