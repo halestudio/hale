@@ -25,6 +25,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -161,9 +162,14 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 			int count = 1;
 			// true if excluded files should be skipped; false is default
 			boolean excludeDataFiles = getParameter(EXLUDE_DATA_FILES).as(Boolean.class, false);
+
+			// resource locations mapped to new resource path
+			Map<URI, String> handledResources = new HashMap<>();
+
 			Iterator<IOConfiguration> iter = resources.iterator();
 			while (iter.hasNext()) {
 				IOConfiguration resource = iter.next();
+
 				// check if ActionId is equal to
 				// eu.esdihumboldt.hale.common.instance.io.InstanceIO.ACTION_LOAD_SOURCE_DATA
 				// import not possible due to cycle errors
@@ -175,8 +181,10 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 					continue;
 				}
 
+				// get resource path
 				Map<String, Value> providerConfig = resource.getProviderConfiguration();
 				String path = providerConfig.get(ImportProvider.PARAM_SOURCE).toString();
+
 				URI pathUri;
 				try {
 					pathUri = new URI(path);
@@ -187,6 +195,14 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 				}
 				if (!pathUri.isAbsolute())
 					pathUri = getPreviousTarget().resolve(pathUri);
+
+				// check if path was already handled
+				if (handledResources.containsKey(pathUri)) {
+					providerConfig.put(ImportProvider.PARAM_SOURCE,
+							Value.of(handledResources.get(pathUri)));
+					// skip copying the resource
+					continue;
+				}
 
 				String scheme = pathUri.getScheme();
 				LocatableInputSupplier<? extends InputStream> input = null;
@@ -241,9 +257,11 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 				progress.setCurrentTask("Copying resource at " + path);
 				ra.copyResource(input, target, contentType, includeWebResources, reporter);
 
+				// store new path for resource
+				String newPath = resourceFolder + "/" + name;
+				handledResources.put(pathUri, newPath);
 				// update the provider configuration
-				providerConfig.put(ImportProvider.PARAM_SOURCE,
-						Value.of(resourceFolder + "/" + name));
+				providerConfig.put(ImportProvider.PARAM_SOURCE, Value.of(newPath));
 				count++;
 			}
 		} finally {
