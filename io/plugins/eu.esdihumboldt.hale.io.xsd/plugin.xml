@@ -29,5 +29,15 @@
          </contentType>
       </provider>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.resource">
+      <advisor
+            class="eu.esdihumboldt.hale.io.xsd.XMLSchemaResourceAdvisor"
+            id="eu.esdihumboldt.hale.io.xsd">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.xsd">
+         </contentType>
+      </advisor>
+   </extension>
 
 </plugin>

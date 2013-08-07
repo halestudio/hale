@@ -18,12 +18,12 @@ package eu.esdihumboldt.hale.common.core.io.project.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -32,8 +32,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FileUtils;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.content.IContentType;
 
-import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
 
 import de.cs3d.util.logging.ALogger;
@@ -41,18 +42,20 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.ResourceAdvisor;
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.io.extension.ResourceAdvisorExtension;
 import eu.esdihumboldt.hale.common.core.io.impl.SubtaskProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFileInfo;
 import eu.esdihumboldt.hale.common.core.io.project.util.XMLAlignmentUpdater;
-import eu.esdihumboldt.hale.common.core.io.project.util.XMLSchemaUpdater;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
+import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 
 /**
@@ -63,8 +66,6 @@ import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 public class ArchiveProjectWriter extends AbstractProjectWriter {
 
 	private static final ALogger log = ALoggerFactory.getLogger(ArchiveProjectWriter.class);
-
-	private static final String XSD_CONTENT_TYPE = "eu.esdihumboldt.hale.io.xsd";
 
 	/**
 	 * Parameter for including or excluding web resources
@@ -188,14 +189,13 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 					pathUri = getPreviousTarget().resolve(pathUri);
 
 				String scheme = pathUri.getScheme();
-				InputStream input = null;
+				LocatableInputSupplier<? extends InputStream> input = null;
 				if (scheme != null) {
 					if (includeWebResources || // web resources are OK
 							!(scheme.equals("http") || scheme.equals("https"))
 					// or not a web resource
 					) {
-						DefaultInputSupplier supplier = new DefaultInputSupplier(pathUri);
-						input = supplier.getInput();
+						input = new DefaultInputSupplier(pathUri);
 					}
 					else {
 						// web resource that should not be included this time
@@ -226,19 +226,22 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 				String name = path.toString().substring(path.lastIndexOf("/") + 1, path.length());
 
 				File newFile = new File(newDirectory, name);
-				OutputStream output = new FileOutputStream(newFile);
-				ByteStreams.copy(input, output);
-				output.close();
+				Path target = newFile.toPath();
 
-				// update schema files
-
-				// only xml schemas have to be updated
-				Value contentType = providerConfig.get(ImportProvider.PARAM_CONTENT_TYPE);
-				if (contentType != null && contentType.as(String.class).equals(XSD_CONTENT_TYPE)) {
-					progress.setCurrentTask("Reorganizing XML schema at " + path);
-					XMLSchemaUpdater.update(newFile, pathUri, includeWebResources, reporter);
+				// retrieve the resource advisor
+				Value ct = providerConfig.get(ImportProvider.PARAM_CONTENT_TYPE);
+				IContentType contentType = null;
+				if (ct != null) {
+					contentType = Platform.getContentTypeManager().getContentType(
+							ct.as(String.class));
 				}
+				ResourceAdvisor ra = ResourceAdvisorExtension.getInstance().getAdvisor(contentType);
 
+				// copy the resource
+				progress.setCurrentTask("Copying resource at " + path);
+				ra.copyResource(input, target, contentType, includeWebResources, reporter);
+
+				// update the provider configuration
 				providerConfig.put(ImportProvider.PARAM_SOURCE,
 						Value.of(resourceFolder + "/" + name));
 				count++;
