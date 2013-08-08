@@ -82,7 +82,7 @@ public class DefaultCell implements Cell, MutableCell {
 		documentation.putAll(copy.getDocumentation());
 		id = copy.getId();
 		priority = copy.getPriority();
-		mode = copy.getTransformatioMode();
+		mode = copy.getTransformationMode();
 		// since source, target and parameter maps may not be modified
 		// assignment is okay
 		source = copy.getSource();
@@ -277,7 +277,7 @@ public class DefaultCell implements Cell, MutableCell {
 	}
 
 	@Override
-	public TransformationMode getTransformatioMode() {
+	public TransformationMode getTransformationMode() {
 		return mode;
 	}
 
