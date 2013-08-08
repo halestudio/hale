@@ -221,7 +221,7 @@ public abstract class DefaultAlignmentIOTest {
 		}
 
 		if (supportsTransformationModes()) {
-			assertEquals(TransformationMode.passive, ncell1.getTransformatioMode());
+			assertEquals(TransformationMode.passive, ncell1.getTransformationMode());
 		}
 
 		// source 1
