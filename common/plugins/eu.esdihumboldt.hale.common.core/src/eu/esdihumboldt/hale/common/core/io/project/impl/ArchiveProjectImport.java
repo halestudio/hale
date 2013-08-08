@@ -42,10 +42,6 @@ public class ArchiveProjectImport extends AbstractProjectReader {
 
 	private static final ALogger log = ALoggerFactory.getLogger(ArchiveProjectImport.class);
 
-	// The reader saves the temporary directory as 'source' to load all
-	// resources, but sometimes you need the old originally source (the archive)
-	private LocatableInputSupplier<? extends InputStream> oldSource;
-
 	/**
 	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#execute(eu.esdihumboldt.hale.common.core.io.ProgressIndicator,
 	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
@@ -64,9 +60,6 @@ public class ArchiveProjectImport extends AbstractProjectReader {
 		// create the project file via XMLProjectReader
 		File baseFile = new File(importLocation, "project.halex");
 		LocatableInputSupplier<InputStream> source = new FileIOSupplier(baseFile);
-
-		// save old save configuration
-		oldSource = getSource();
 
 		setSource(source);
 		reader.setSource(source);
@@ -119,12 +112,4 @@ public class ArchiveProjectImport extends AbstractProjectReader {
 
 		zipinputstream.close();
 	}
-
-	/**
-	 * @return the originally source of the archive
-	 */
-	public LocatableInputSupplier<? extends InputStream> getOriginallySource() {
-		return oldSource;
-	}
-
 }
