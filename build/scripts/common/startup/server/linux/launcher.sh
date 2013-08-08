@@ -13,9 +13,24 @@ shutdown_server() {
     rm $PIDFILE
     return
   fi
+
+  # find child java process
+  local CPID=`ps --ppid $PID -o pid h`
+
+  shutdown_process "$PID" "$FORCE"
+  shutdown_process "$CPID" "$FORCE"
   
+  # remove PID file
+  rm $PIDFILE
+}
+
+shutdown_process() {
+  local PID=$1
+  local FORCE=$2
+  local PCMD=`ps -p $PID -o comm h`
+
   # shutdown process with this PID
-  echo "Shutting down @LAUNCHER: $PID"
+  echo "Shutting down $PCMD: $PID"
   if [ "$FORCE" = "--force" -o "$FORCE" = "-force" ] ; then
     echo "Forced shutdown!"
     kill -9 $PID
@@ -36,7 +51,7 @@ shutdown_server() {
     echo -n "."
     if [ $SECONDS = $TIMEOUT ] ; then
       echo ""
-      echo "@LAUNCHER did not exit after $TIMEOUT seconds. Forcing shutdown!"
+      echo "$PCMD did not exit after $TIMEOUT seconds. Forcing shutdown!"
       kill -9 $PID
       break
     fi
@@ -44,9 +59,6 @@ shutdown_server() {
   if ([ ! $SECONDS = 0 ] && [ ! $SECONDS = $TIMEOUT ]) ; then
     echo ""
   fi
-  
-  # remove PID file
-  rm $PIDFILE
 }
 
 if [ "$1" = "start" ] ; then
