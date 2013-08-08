@@ -100,7 +100,7 @@ public class CellFigure extends CustomShapeFigure {
 		if (AlignmentUtil.isTypeCell(cell)) {
 			// label for displaying the transformation mode
 			Image modeImage;
-			switch (cell.getTransformatioMode()) {
+			switch (cell.getTransformationMode()) {
 			case active:
 				modeImage = CommonSharedImages.getImageRegistry().get(
 						CommonSharedImages.IMG_MARKER_GREEN);
@@ -116,7 +116,7 @@ public class CellFigure extends CustomShapeFigure {
 			}
 
 			Label modeLabel = new Label(modeImage);
-			Label modeToolTip = new Label(cell.getTransformatioMode().displayName());
+			Label modeToolTip = new Label(cell.getTransformationMode().displayName());
 			modeLabel.setToolTip(modeToolTip);
 
 			GridData modeGD = new GridData(GridData.CENTER, GridData.CENTER, false, false);
