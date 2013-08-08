@@ -100,7 +100,7 @@ public class SetTransformationModeContribution extends ContributionItem {
 			return;
 
 		Cell cell = getOriginalCell();
-		TransformationMode currentmode = cell.getTransformatioMode();
+		TransformationMode currentmode = cell.getTransformationMode();
 		for (TransformationMode mode : TransformationMode.values()) {
 			if (mode != currentmode) {
 				IAction action = new SetModeAction(mode, cell.getId());

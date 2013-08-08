@@ -365,7 +365,7 @@ public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWr
 			if (AlignmentUtil.isTypeCell(cell)) {
 				currentTypeCell = cell;
 				cellInfos.get(CellType.TRANSFORMATION_AND_DISABLED).addText(
-						cell.getTransformatioMode().displayName(), 0);
+						cell.getTransformationMode().displayName(), 0);
 			}
 			else {
 				String disabled = "";
