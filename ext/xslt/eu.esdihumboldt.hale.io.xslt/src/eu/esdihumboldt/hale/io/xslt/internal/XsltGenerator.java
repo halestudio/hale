@@ -410,7 +410,7 @@ public class XsltGenerator implements XsltConstants {
 
 		// type cells
 		for (Cell typeCell : alignment.getTypeCells()) {
-			if (typeCell.getTransformatioMode() != TransformationMode.disabled) {
+			if (typeCell.getTransformationMode() != TransformationMode.disabled) {
 				// ignore disabled cells
 
 				Entity targetEntity = CellUtil.getFirstEntity(typeCell.getTarget());
@@ -529,7 +529,7 @@ public class XsltGenerator implements XsltConstants {
 		Multimap<TypeDefinition, String> groupedResults = HashMultimap.create();
 		for (String typeId : typeIds) {
 			Cell cell = cellIdentifiers.getObject(typeId);
-			if (cell.getTransformatioMode() == TransformationMode.active) {
+			if (cell.getTransformationMode() == TransformationMode.active) {
 				// only active cells get placed in the container
 				Collection<? extends Entity> targetEntities = cell.getTarget().values();
 				if (targetEntities.size() == 1) {
