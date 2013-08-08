@@ -522,10 +522,18 @@ public class PropertyResolver {
 
 					ChildDefinition<?> tempdef = tempit.next();
 
-					if (currentItem.getLoopQNames().contains(tempdef.getName())) {
-						continue;
+					// check if loop allready exsists
+					List<List<QName>> looppaths = currentItem.getLoopQNames();
+					boolean loopExists = false;
+					for (List<QName> loop : looppaths) {
+						if (loop.get(0).equals(tempdef.getName())) {
+							loopExists = true;
+						}
 					}
+					if (loopExists)
+						continue;
 
+					// if new loop was found, note it at the item
 					if (currentItem.getQnames().contains(tempdef.getName())) {
 
 						if (!compareQName(current, tempdef.getName())) {
@@ -621,9 +629,15 @@ public class PropertyResolver {
 
 					ChildDefinition<?> tempdef = tempit.next();
 
-					if (currentItem.getLoopQNames().contains(tempdef.getName())) {
-						continue;
+					List<List<QName>> looppaths = currentItem.getLoopQNames();
+					boolean loopExists = false;
+					for (List<QName> loop : looppaths) {
+						if (loop.get(0).equals(tempdef.getName())) {
+							loopExists = true;
+						}
 					}
+					if (loopExists)
+						continue;
 
 					if (currentItem.getQnames().contains(tempdef.getName())) {
 						ArrayList<QName> loops = new ArrayList<QName>();
