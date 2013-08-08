@@ -104,7 +104,7 @@ class AlignmentToJaxb {
 
 	protected void addModifier(Cell cell, AlignmentType align) {
 		Set<Cell> disabledFor = cell.disabledFor
-		TransformationMode mode = cell.transformatioMode
+		TransformationMode mode = cell.transformationMode
 		if (cell instanceof BaseAlignmentCell) {
 			disabledFor = ((BaseAlignmentCell) cell).additionalDisabledFor
 			if (!cell.overridesTransformationMode()) {

@@ -152,10 +152,10 @@ public class BaseAlignmentCell implements ModifiableCell {
 	}
 
 	@Override
-	public TransformationMode getTransformatioMode() {
+	public TransformationMode getTransformationMode() {
 		if (mode != null)
 			return mode;
-		return base.getTransformatioMode();
+		return base.getTransformationMode();
 	}
 
 	/**
@@ -164,7 +164,7 @@ public class BaseAlignmentCell implements ModifiableCell {
 	 * @return if the cell overrides the base cell's transformation mode
 	 */
 	public boolean overridesTransformationMode() {
-		return mode != null && !mode.equals(base.getTransformatioMode());
+		return mode != null && !mode.equals(base.getTransformationMode());
 	}
 
 	@Override

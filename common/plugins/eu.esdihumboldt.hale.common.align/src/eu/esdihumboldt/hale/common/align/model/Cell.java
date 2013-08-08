@@ -162,7 +162,7 @@ public interface Cell {
 	 * 
 	 * @return the cell transformation mode
 	 */
-	public TransformationMode getTransformatioMode();
+	public TransformationMode getTransformationMode();
 
 	/**
 	 * Returns whether the cell is included from a base alignment or not.
