@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -80,9 +82,11 @@ public final class IOUtils {
 	 * @param baseDir the base directory to extract to
 	 * @param in the input stream of the ZIP archive, which is closed after
 	 *            extraction
+	 * @return the collection of extracted files
 	 * @throws IOException if an error occurs
 	 */
-	public static void extract(File baseDir, InputStream in) throws IOException {
+	public static Collection<File> extract(File baseDir, InputStream in) throws IOException {
+		Collection<File> collect = new ArrayList<>();
 		final ZipInputStream zis = new ZipInputStream(in);
 		try {
 			ZipEntry entry;
@@ -91,11 +95,13 @@ public final class IOUtils {
 					final File file = new File(baseDir, entry.getName());
 					Files.createParentDirs(file);
 					Files.write(ByteStreams.toByteArray(zis), file);
+					collect.add(file);
 				}
 			}
 		} finally {
 			zis.close();
 		}
+		return collect;
 	}
 
 	/**
