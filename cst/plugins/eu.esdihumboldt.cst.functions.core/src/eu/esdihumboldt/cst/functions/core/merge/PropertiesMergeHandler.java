@@ -71,15 +71,16 @@ public class PropertiesMergeHandler extends
 			ListMultimap<String, ParameterValue> transformationParameters,
 			Map<String, String> executionParameters, TransformationLog log)
 			throws TransformationException {
-		if (transformationParameters == null
-				|| !transformationParameters.containsKey(PARAMETER_PROPERTY)
-				|| transformationParameters.get(PARAMETER_PROPERTY).isEmpty()) {
-			throw new TransformationException("No merge property defined");
+		if (transformationParameters == null) {
+			throw new TransformationException("Transformation parameters invalid");
 		}
 
 		List<List<QName>> properties = new ArrayList<List<QName>>();
-		for (ParameterValue property : transformationParameters.get(PARAMETER_PROPERTY)) {
-			properties.add(PropertyResolver.getQNamesFromPath(property.as(String.class)));
+		if (transformationParameters.containsKey(PARAMETER_PROPERTY)
+				&& !transformationParameters.get(PARAMETER_PROPERTY).isEmpty()) {
+			for (ParameterValue property : transformationParameters.get(PARAMETER_PROPERTY)) {
+				properties.add(PropertyResolver.getQNamesFromPath(property.as(String.class)));
+			}
 		}
 
 		List<List<QName>> additionalProperties = new ArrayList<List<QName>>();
@@ -106,6 +107,11 @@ public class PropertiesMergeHandler extends
 
 	@Override
 	protected DeepIterableKey getMergeKey(Instance instance, PropertiesMergeConfig mergeConfig) {
+		if (mergeConfig.keyProperties.isEmpty()) {
+			// merge all instances
+			return new DeepIterableKey(Long.valueOf(1)); // XXX Hack Any value.
+		}
+
 		List<Object> valueList = new ArrayList<Object>(mergeConfig.keyProperties.size());
 
 		for (List<QName> propertyPath : mergeConfig.keyProperties) {
