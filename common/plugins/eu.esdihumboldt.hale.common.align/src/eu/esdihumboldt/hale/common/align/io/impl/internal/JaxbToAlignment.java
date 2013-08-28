@@ -39,6 +39,7 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.extension.annotation.AnnotationExtension;
+import eu.esdihumboldt.hale.common.align.io.LoadAlignmentContext;
 import eu.esdihumboldt.hale.common.align.io.impl.JaxbAlignmentIO;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AbstractEntityType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AbstractParameterType;
@@ -193,7 +194,7 @@ public class JaxbToAlignment extends
 		return super.createAlignment(alignment, sourceTypes, targetTypes, updater, reporter);
 	}
 
-	private MutableCell convert(CellType cell, TypeIndex sourceTypes, TypeIndex targetTypes,
+	private static MutableCell convert(CellType cell, LoadAlignmentContext context,
 			IOReporter reporter) {
 		DefaultCell result = new DefaultCell();
 
@@ -212,8 +213,8 @@ public class JaxbToAlignment extends
 				else if (apt instanceof ComplexParameterType) {
 					// complex parameters
 					ComplexParameterType cpt = (ComplexParameterType) apt;
-					parameters.put(cpt.getName(),
-							new ParameterValue(new ElementValue(cpt.getAny())));
+					parameters.put(cpt.getName(), new ParameterValue(new ElementValue(cpt.getAny(),
+							context)));
 				}
 				else
 					throw new IllegalStateException("Illegal parameter type");
@@ -222,8 +223,10 @@ public class JaxbToAlignment extends
 		}
 
 		try {
-			result.setSource(convertEntities(cell.getSource(), sourceTypes, SchemaSpaceID.SOURCE));
-			result.setTarget(convertEntities(cell.getTarget(), targetTypes, SchemaSpaceID.TARGET));
+			result.setSource(convertEntities(cell.getSource(), context.getSourceTypes(),
+					SchemaSpaceID.SOURCE));
+			result.setTarget(convertEntities(cell.getTarget(), context.getTargetTypes(),
+					SchemaSpaceID.TARGET));
 		} catch (Exception e) {
 			if (reporter != null) {
 				reporter.error(new IOMessageImpl("Could not create cell", e));
@@ -242,7 +245,7 @@ public class JaxbToAlignment extends
 						annot.getType());
 				if (desc != null) {
 					try {
-						Object value = desc.fromDOM(annot.getAny());
+						Object value = desc.fromDOM(annot.getAny(), null);
 						result.addAnnotation(annot.getType(), value);
 					} catch (Exception e) {
 						if (reporter != null) {
@@ -280,7 +283,7 @@ public class JaxbToAlignment extends
 		return result;
 	}
 
-	private ListMultimap<String, ? extends Entity> convertEntities(
+	private static ListMultimap<String, ? extends Entity> convertEntities(
 			List<NamedEntityType> namedEntities, TypeIndex types, SchemaSpaceID schemaSpace) {
 		if (namedEntities == null || namedEntities.isEmpty()) {
 			return null;
@@ -296,7 +299,8 @@ public class JaxbToAlignment extends
 		return result;
 	}
 
-	private Entity convert(AbstractEntityType entity, TypeIndex types, SchemaSpaceID schemaSpace) {
+	private static Entity convert(AbstractEntityType entity, TypeIndex types,
+			SchemaSpaceID schemaSpace) {
 		// must first check for PropertyType as it inherits from ClassType
 		if (entity instanceof PropertyType) {
 			return convert((PropertyType) entity, types, schemaSpace);
@@ -307,7 +311,7 @@ public class JaxbToAlignment extends
 		throw new IllegalArgumentException("Illegal type of entity");
 	}
 
-	private Type convert(ClassType classType, TypeIndex types, SchemaSpaceID schemaSpace) {
+	private static Type convert(ClassType classType, TypeIndex types, SchemaSpaceID schemaSpace) {
 		TypeDefinition typeDef = types.getType(asName(classType.getType()));
 
 		Filter filter = getTypeFilter(classType);
@@ -317,7 +321,7 @@ public class JaxbToAlignment extends
 		return new DefaultType(tef);
 	}
 
-	private Filter getTypeFilter(ClassType classType) {
+	private static Filter getTypeFilter(ClassType classType) {
 		if (classType.getType() != null && classType.getType().getCondition() != null) {
 			return FilterDefinitionManager.getInstance().from(
 					classType.getType().getCondition().getLang(),
@@ -326,7 +330,7 @@ public class JaxbToAlignment extends
 		return null;
 	}
 
-	private Entity convert(PropertyType property, TypeIndex types, SchemaSpaceID schemaSpace) {
+	private static Entity convert(PropertyType property, TypeIndex types, SchemaSpaceID schemaSpace) {
 		TypeDefinition typeDef = types.getType(asName(property.getType()));
 
 		Filter filter = getTypeFilter(property);
@@ -395,7 +399,7 @@ public class JaxbToAlignment extends
 	 * @param conditionFilter the condition filter
 	 * @return the condition or <code>null</code>
 	 */
-	private Condition createCondition(ConditionType conditionFilter) {
+	private static Condition createCondition(ConditionType conditionFilter) {
 		if (conditionFilter == null)
 			return null;
 
@@ -407,7 +411,7 @@ public class JaxbToAlignment extends
 		return null;
 	}
 
-	private Integer contextName(BigInteger name) {
+	private static Integer contextName(BigInteger name) {
 		if (name == null)
 			return null;
 
@@ -415,14 +419,14 @@ public class JaxbToAlignment extends
 		return name.intValue();
 	}
 
-	private Integer contextIndex(BigInteger index) {
+	private static Integer contextIndex(BigInteger index) {
 		if (index == null)
 			return null;
 
 		return index.intValue();
 	}
 
-	private QName asName(QNameType qname) {
+	private static QName asName(QNameType qname) {
 		if (qname.getNs() == null || qname.getNs().isEmpty()) {
 			return new QName(qname.getName());
 		}
@@ -474,7 +478,10 @@ public class JaxbToAlignment extends
 	@Override
 	protected MutableCell createCell(CellType cell, TypeIndex sourceTypes, TypeIndex targetTypes,
 			IOReporter reporter) {
-		return convert(cell, sourceTypes, targetTypes, reporter);
+		LoadAlignmentContextImpl context = new LoadAlignmentContextImpl();
+		context.setSourceTypes(sourceTypes);
+		context.setTargetTypes(targetTypes);
+		return convert(cell, context, reporter);
 	}
 
 	/**

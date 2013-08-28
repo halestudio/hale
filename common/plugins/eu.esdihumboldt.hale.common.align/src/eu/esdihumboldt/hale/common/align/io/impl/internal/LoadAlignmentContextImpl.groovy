@@ -13,26 +13,26 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.align.model;
+package eu.esdihumboldt.hale.common.align.io.impl.internal
 
-import eu.esdihumboldt.hale.common.core.io.ComplexValueType;
+import eu.esdihumboldt.hale.common.align.io.LoadAlignmentContext;
+import eu.esdihumboldt.hale.common.schema.model.TypeIndex
+
 
 /**
- * Descriptor for cell annotations.
+ * Default implementation of {@link LoadAlignmentContext}.
  * 
- * The interface provides methods for serialization and deserialization to/from
- * DOM (and therefore XML), as the annotations are stored in the alignment file.
- * 
- * @param <T> the type of the annotation object
  * @author Simon Templer
  */
-public interface AnnotationDescriptor<T> extends ComplexValueType<T, Void> {
+class LoadAlignmentContextImpl implements LoadAlignmentContext {
 
 	/**
-	 * Create a new annotation object.
-	 * 
-	 * @return the new annotation object
+	 * The source schema type index.
 	 */
-	public T create();
+	TypeIndex sourceTypes
 
+	/**
+	 * The target schema type index.
+	 */
+	TypeIndex targetTypes
 }
