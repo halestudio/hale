@@ -54,8 +54,8 @@ public class DefinedAnnotation implements Identifiable, AnnotationDescriptor<Obj
 	}
 
 	@Override
-	public Object fromDOM(Element fragment) {
-		return descriptor.fromDOM(fragment);
+	public Object fromDOM(Element fragment, Void context) {
+		return descriptor.fromDOM(fragment, context);
 	}
 
 	@Override
@@ -66,6 +66,11 @@ public class DefinedAnnotation implements Identifiable, AnnotationDescriptor<Obj
 	@Override
 	public String getId() {
 		return id;
+	}
+
+	@Override
+	public Class<Void> getContextType() {
+		return descriptor.getContextType();
 	}
 
 }

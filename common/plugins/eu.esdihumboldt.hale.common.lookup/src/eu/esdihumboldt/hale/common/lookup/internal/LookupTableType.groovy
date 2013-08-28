@@ -31,7 +31,7 @@ import groovy.xml.dom.DOMCategory
  * 
  * @author Simon Templer
  */
-class LookupTableType implements ComplexValueType<LookupTable> {
+class LookupTableType implements ComplexValueType<LookupTable, Void> {
 
 	private static Value fromTag(def element) {
 		if (element.'@value') {
@@ -45,7 +45,7 @@ class LookupTableType implements ComplexValueType<LookupTable> {
 	}
 
 	@Override
-	public LookupTable fromDOM(Element fragment) {
+	public LookupTable fromDOM(Element fragment, Void context) {
 		Map<Value, Value> values = new HashMap<Value, Value>();
 
 		use (DOMCategory) {
@@ -85,5 +85,10 @@ class LookupTableType implements ComplexValueType<LookupTable> {
 		}
 
 		return fragment;
+	}
+
+	@Override
+	public Class<Void> getContextType() {
+		Void.class
 	}
 }

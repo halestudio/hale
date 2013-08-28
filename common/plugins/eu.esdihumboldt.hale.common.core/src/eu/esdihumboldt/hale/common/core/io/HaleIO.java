@@ -389,10 +389,11 @@ public abstract class HaleIO {
 	 * Get the value of a complex property represented as a DOM element.
 	 * 
 	 * @param element the DOM element
+	 * @param context the context object, may be <code>null</code>
 	 * @return the complex value converted through the
 	 *         {@link ComplexValueExtension}, or the original element
 	 */
-	public static Object getComplexValue(Element element) {
+	public static Object getComplexValue(Element element, Object context) {
 		QName name;
 		if (element.getNamespaceURI() != null && !element.getNamespaceURI().isEmpty()) {
 			name = new QName(element.getNamespaceURI(), element.getLocalName());
@@ -403,7 +404,7 @@ public abstract class HaleIO {
 		ComplexValueDefinition cvt = ComplexValueExtension.getInstance().getDefinition(name);
 		if (cvt != null) {
 			// create and return the complex parameter value
-			return cvt.fromDOM(element);
+			return cvt.fromDOM(element, context);
 		}
 
 		// the element itself is the complex value
@@ -417,11 +418,12 @@ public abstract class HaleIO {
 	 * @param expectedType the expected parameter type, this must be either
 	 *            {@link String}, DOM {@link Element} or a complex value type
 	 *            defined in the {@link ComplexValueExtension}
+	 * @param context the context object, may be <code>null</code>
 	 * @return the complex value or <code>null</code> if it could not be created
 	 *         from the element
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T getComplexValue(Element element, Class<T> expectedType) {
+	public static <T> T getComplexValue(Element element, Class<T> expectedType, Object context) {
 		if (element == null) {
 			return null;
 		}
@@ -438,7 +440,7 @@ public abstract class HaleIO {
 		Object value = null;
 		if (cvt != null) {
 			try {
-				value = cvt.fromDOM(element);
+				value = cvt.fromDOM(element, context);
 			} catch (Exception e) {
 				throw new IllegalStateException("Failed to load complex value from DOM", e);
 			}
