@@ -21,17 +21,20 @@ import org.w3c.dom.Element;
  * Handles storing a complex value to a DOM or loading it from a DOM.
  * 
  * @param <T> the type of the complex value
+ * @param <C> the type of the context that should be supplied
  * @author Simon Templer
  */
-public interface ComplexValueType<T> {
+public interface ComplexValueType<T, C> {
 
 	/**
 	 * Load the complex value from a document object model.
 	 * 
 	 * @param fragment the complex value fragment root element
+	 * @param context the complex value context, may be <code>null</code> if
+	 *            unavailable
 	 * @return the loaded complex value
 	 */
-	public T fromDOM(Element fragment);
+	public T fromDOM(Element fragment, C context);
 
 	/**
 	 * Store the complex value to a document object model.
@@ -40,5 +43,10 @@ public interface ComplexValueType<T> {
 	 * @return the complex value fragment root element
 	 */
 	public Element toDOM(T value);
+
+	/**
+	 * @return the type of the complex value context
+	 */
+	public Class<C> getContextType();
 
 }
