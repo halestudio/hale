@@ -42,18 +42,22 @@ public class HooksUtil {
 	public static void executeTreeHooks(TransformationTreeHooks hooks, TreeState state,
 			TransformationTree tree, MutableInstance target) {
 		if (hooks != null) {
-			for (TransformationTreeHook hook : hooks.getActiveObjects()) {
-				TransformationTreeHookFactory def = hooks.getDefinition(hook);
+			try {
+				for (TransformationTreeHook hook : hooks.getActiveObjects()) {
+					TransformationTreeHookFactory def = hooks.getDefinition(hook);
 
-				if (state == def.getTreeState()) {
-					try {
-						hook.processTransformationTree(tree, state, target);
-					} catch (Exception e) {
-						log.error(
-								"Error processing transformation tree hook " + def.getDisplayName(),
-								e);
+					if (state == def.getTreeState()) {
+						try {
+							hook.processTransformationTree(tree, state, target);
+						} catch (Exception e) {
+							log.error(
+									"Error processing transformation tree hook "
+											+ def.getDisplayName(), e);
+						}
 					}
 				}
+			} catch (Exception e) {
+				log.error("Error trying to execute transformation tree hooks", e);
 			}
 		}
 	}
