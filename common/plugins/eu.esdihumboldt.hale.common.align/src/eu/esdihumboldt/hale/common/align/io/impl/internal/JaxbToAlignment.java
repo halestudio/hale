@@ -39,6 +39,7 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.extension.annotation.AnnotationExtension;
+import eu.esdihumboldt.hale.common.align.io.LoadAlignmentContext;
 import eu.esdihumboldt.hale.common.align.io.impl.JaxbAlignmentIO;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AbstractEntityType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AbstractParameterType;
@@ -193,8 +194,7 @@ public class JaxbToAlignment extends
 		return super.createAlignment(alignment, sourceTypes, targetTypes, updater, reporter);
 	}
 
-	private MutableCell convert(CellType cell, TypeIndex sourceTypes, TypeIndex targetTypes,
-			IOReporter reporter) {
+	private MutableCell convert(CellType cell, LoadAlignmentContext context, IOReporter reporter) {
 		DefaultCell result = new DefaultCell();
 
 		result.setTransformationIdentifier(cell.getRelation());
@@ -212,8 +212,8 @@ public class JaxbToAlignment extends
 				else if (apt instanceof ComplexParameterType) {
 					// complex parameters
 					ComplexParameterType cpt = (ComplexParameterType) apt;
-					parameters.put(cpt.getName(),
-							new ParameterValue(new ElementValue(cpt.getAny())));
+					parameters.put(cpt.getName(), new ParameterValue(new ElementValue(cpt.getAny(),
+							context)));
 				}
 				else
 					throw new IllegalStateException("Illegal parameter type");
@@ -242,7 +242,7 @@ public class JaxbToAlignment extends
 						annot.getType());
 				if (desc != null) {
 					try {
-						Object value = desc.fromDOM(annot.getAny());
+						Object value = desc.fromDOM(annot.getAny(), null);
 						result.addAnnotation(annot.getType(), value);
 					} catch (Exception e) {
 						if (reporter != null) {
@@ -474,7 +474,10 @@ public class JaxbToAlignment extends
 	@Override
 	protected MutableCell createCell(CellType cell, TypeIndex sourceTypes, TypeIndex targetTypes,
 			IOReporter reporter) {
-		return convert(cell, sourceTypes, targetTypes, reporter);
+		LoadAlignmentContextImpl context = new LoadAlignmentContextImpl();
+		context.setSourceTypes(sourceTypes);
+		context.setTargetTypes(targetTypes);
+		return convert(cell, context, reporter);
 	}
 
 	/**

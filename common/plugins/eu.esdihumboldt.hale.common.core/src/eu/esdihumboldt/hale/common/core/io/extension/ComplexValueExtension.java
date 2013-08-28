@@ -82,7 +82,7 @@ public class ComplexValueExtension extends IdentifiableExtension<ComplexValueDef
 				name = new QName(ns, localPart);
 			}
 			ComplexValueDefinition cvd = new ComplexValueDefinition(id, name,
-					(Class<ComplexValueType<?>>) ExtensionUtil.loadClass(conf, "descriptor"),
+					(Class<ComplexValueType<?, ?>>) ExtensionUtil.loadClass(conf, "descriptor"),
 					(Class<?>) ExtensionUtil.loadClass(conf, "type"));
 			synchronized (definitions) {
 				definitions.put(name, cvd);
