@@ -78,12 +78,14 @@ public class ArchiveProjectImportSelectLocationPage extends
 	protected void createContent(Composite page) {
 		final DirectoryFieldEditor dialog = new DirectoryFieldEditor("Import location",
 				"Select directory", page);
+		setPageComplete(false);
 		dialog.getTextControl(page).addModifyListener(new ModifyListener() {
 
 			@Override
 			public void modifyText(ModifyEvent e) {
 				location = dialog.getStringValue();
-				setPageComplete(true);
+				if (!location.isEmpty())
+					setPageComplete(true);
 			}
 		});
 	}
