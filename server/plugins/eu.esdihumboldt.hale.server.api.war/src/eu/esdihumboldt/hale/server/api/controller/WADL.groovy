@@ -107,7 +107,7 @@ class WADL {
 		final Document doc = builder.getDOMImplementation().createDocument(null, null, null)
 
 		JAXBContext jaxbContext = JAXBContext
-				.newInstance('eu.esdihumboldt.hale.server.api.internal.wadl.generated')
+				.newInstance('eu.esdihumboldt.hale.server.api.internal.wadl.generated', WadlDoc.class.classLoader)
 		final Binder<Node> binder = jaxbContext.createBinder()
 		binder.marshal(wadl, doc)
 
