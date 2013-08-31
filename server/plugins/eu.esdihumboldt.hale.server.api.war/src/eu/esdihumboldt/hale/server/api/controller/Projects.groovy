@@ -29,10 +29,11 @@ import org.springframework.web.multipart.MultipartFile
 
 import de.cs3d.util.logging.ALogger
 import de.cs3d.util.logging.ALoggerFactory
-import eu.esdihumboldt.hale.server.api.internal.wadl.doc.DocScope
-import eu.esdihumboldt.hale.server.api.internal.wadl.doc.WDoc
-import eu.esdihumboldt.hale.server.api.internal.wadl.doc.WDocUtil
-import eu.esdihumboldt.hale.server.api.internal.wadl.doc.WDocs
+import eu.esdihumboldt.hale.server.api.base.APIUtil;
+import eu.esdihumboldt.hale.server.api.wadl.doc.DocScope
+import eu.esdihumboldt.hale.server.api.wadl.doc.WDoc
+import eu.esdihumboldt.hale.server.api.wadl.doc.WDocUtil
+import eu.esdihumboldt.hale.server.api.wadl.doc.WDocs
 import eu.esdihumboldt.hale.server.projects.ProjectScavenger
 import eu.esdihumboldt.hale.server.projects.ScavengerException
 import eu.esdihumboldt.hale.server.projects.ProjectScavenger.Status
@@ -226,7 +227,7 @@ class Projects {
 			def info = [id: id, active: status == Status.ACTIVE, status: status]
 
 			// resource location
-			info.location = Main.getBaseUrl(request) + "/project/$id"
+			info.location = APIUtil.getBaseUrl(request) + "/project/$id"
 
 			info
 		}

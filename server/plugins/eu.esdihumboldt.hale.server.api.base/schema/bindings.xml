@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jaxb:bindings xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" jaxb:version="2.0">
+	<jaxb:bindings schemaLocation="wadl.xsd" node="/xsd:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package
+				name="eu.esdihumboldt.hale.server.api.wadl.internal.generated" />
+			<jaxb:nameXmlTransform>
+				<jaxb:typeName prefix="Wadl" />
+				<jaxb:anonymousTypeName prefix="Wadl" />
+				<jaxb:elementName prefix="Wadl" />
+			</jaxb:nameXmlTransform>
+		</jaxb:schemaBindings>
+	</jaxb:bindings>
+</jaxb:bindings>
