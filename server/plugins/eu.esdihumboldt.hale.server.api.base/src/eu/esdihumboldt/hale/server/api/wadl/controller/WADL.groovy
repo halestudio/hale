@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.ResponseBody
+import org.springframework.web.bind.annotation.ValueConstants
 import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.ModelAndView
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo
@@ -46,7 +47,7 @@ import com.google.common.collect.Multimap
 
 import de.cs3d.util.logging.ALogger
 import de.cs3d.util.logging.ALoggerFactory
-import eu.esdihumboldt.hale.server.api.base.APIUtil;
+import eu.esdihumboldt.hale.server.api.base.APIUtil
 import eu.esdihumboldt.hale.server.api.wadl.doc.DocScope
 import eu.esdihumboldt.hale.server.api.wadl.doc.WDoc
 import eu.esdihumboldt.hale.server.api.wadl.doc.WDocUtil
@@ -399,11 +400,13 @@ class WADL {
 	}
 
 	private String cleanDefault(String value) {
+		if (value == ValueConstants.DEFAULT_NONE) return null
+
 		value = value.replaceAll("\t", "");
 		value = value.replaceAll("\n", "");
-		value = value.replaceAll("?", "");
-		value = value.replaceAll("?", "");
-		value = value.replaceAll("?", "");
+		//		value = value.replaceAll("?", "");
+		//		value = value.replaceAll("?", "");
+		//		value = value.replaceAll("?", "");
 		return value;
 	}
 
