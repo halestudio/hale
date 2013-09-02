@@ -12,6 +12,12 @@
                ref="eu.esdihumboldt.hale.io.xslt">
          </provider>
       </configPage>
+      <configPage
+            class="eu.esdihumboldt.hale.io.gml.ui.SpatialDataSetConfigurationPage">
+         <provider
+               ref="eu.esdihumboldt.hale.io.inspiregml.writer">
+         </provider>
+      </configPage>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.ui.io.source">
