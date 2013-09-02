@@ -424,18 +424,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriter
 		}
 		writer.writeAttribute(SCHEMA_INSTANCE_NS, "schemaLocation", locations.toString()); //$NON-NLS-1$
 
-		// boundedBy is needed for GML 2 FeatureCollections
-		// XXX working like this - getting the child with only a local name?
-		ChildDefinition<?> boundedBy = containerDefinition.getChild(new QName("boundedBy")); //$NON-NLS-1$
-		if (boundedBy != null && boundedBy.asProperty() != null
-				&& boundedBy.asProperty().getConstraint(Cardinality.class).getMinOccurs() > 0) {
-			writer.writeStartElement(boundedBy.getName().getNamespaceURI(), boundedBy.getName()
-					.getLocalPart());
-			writer.writeStartElement(gmlNs, "null"); //$NON-NLS-1$
-			writer.writeCharacters("missing"); //$NON-NLS-1$
-			writer.writeEndElement();
-			writer.writeEndElement();
-		}
+		writeAdditionalElements(writer, containerDefinition, reporter);
 
 		// write the instances
 		ResourceIterator<Instance> itInstance = instances.iterator();
@@ -512,6 +501,32 @@ public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriter
 		writer.writeEndDocument();
 
 		writer.close();
+	}
+
+	/**
+	 * This method is called after the container element is started and filled
+	 * with needed attributes. The default implementation ensures that a
+	 * mandatory boundedBy of GML 2 FeatureCollection is written.
+	 * 
+	 * @param writer the XML stream writer
+	 * @param containerDefinition the container type definition
+	 * @param reporter the reporter
+	 * @throws XMLStreamException if writing anything fails
+	 */
+	protected void writeAdditionalElements(XMLStreamWriter writer,
+			TypeDefinition containerDefinition, IOReporter reporter) throws XMLStreamException {
+		// boundedBy is needed for GML 2 FeatureCollections
+		// XXX working like this - getting the child with only a local name?
+		ChildDefinition<?> boundedBy = containerDefinition.getChild(new QName("boundedBy")); //$NON-NLS-1$
+		if (boundedBy != null && boundedBy.asProperty() != null
+				&& boundedBy.asProperty().getConstraint(Cardinality.class).getMinOccurs() > 0) {
+			writer.writeStartElement(boundedBy.getName().getNamespaceURI(), boundedBy.getName()
+					.getLocalPart());
+			writer.writeStartElement(gmlNs, "null"); //$NON-NLS-1$
+			writer.writeCharacters("missing"); //$NON-NLS-1$
+			writer.writeEndElement();
+			writer.writeEndElement();
+		}
 	}
 
 	/**

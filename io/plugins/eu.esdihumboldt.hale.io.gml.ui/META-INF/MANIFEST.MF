@@ -17,10 +17,14 @@ Import-Package: com.google.common.io;version="1.6.0",
  com.vividsolutions.jts,
  com.vividsolutions.jts.geom,
  de.cs3d.util.logging,
+ eu.esdihumboldt.hale.common.align.model,
+ eu.esdihumboldt.hale.common.schema,
  eu.esdihumboldt.hale.common.schema.model,
  eu.esdihumboldt.hale.common.schema.model.impl,
  eu.esdihumboldt.hale.io.gml.geometry,
  eu.esdihumboldt.hale.io.xsd.model,
+ eu.esdihumboldt.hale.ui.common,
+ eu.esdihumboldt.hale.ui.common.definition,
  org.slf4j;version="1.5.11"
 Export-Package: eu.esdihumboldt.hale.io.gml.ui.wfs
 Bundle-ActivationPolicy: lazy
