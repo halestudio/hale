@@ -48,6 +48,9 @@ import eu.esdihumboldt.hale.io.csv.writer.CellType;
  */
 public class XLSAlignmentMappingWriter extends AbstractAlignmentMappingExport {
 
+	// in pixels
+	private final int maxWidth = 500;
+
 	@Override
 	public boolean isCancelable() {
 		return false;
@@ -183,7 +186,9 @@ public class XLSAlignmentMappingWriter extends AbstractAlignmentMappingExport {
 			rownum++;
 		}
 
-		int maxColWidth = calculateWidth(getParameter(MAX_COLUMN_WIDTH).as(Integer.class));
+		// could be integrated in configuration page
+//		int maxColWidth = calculateWidth(getParameter(MAX_COLUMN_WIDTH).as(Integer.class));
+		int maxColWidth = calculateWidth(maxWidth);
 		// autosize all columns
 		for (int i = 0; i < getMappingHeader().size(); i++) {
 			sheet.autoSizeColumn(i);
