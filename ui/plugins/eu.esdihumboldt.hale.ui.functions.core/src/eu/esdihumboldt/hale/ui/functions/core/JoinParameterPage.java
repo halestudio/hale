@@ -447,11 +447,6 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 			Composite main = new Composite(parent, SWT.NONE);
 			main.setLayout(new GridLayout(3, false));
 
-			// This is the page to select Join conditions for the "index"' type.
-//			Label intro = new Label(main, SWT.NONE);
-//			intro.setText("Add Join condition(s) for type " + null);
-//			intro.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
-
 			joinViewer = createTypeViewer(main, Collections.singleton(types.get(typeIndex)));
 
 			addButton = new Button(main, SWT.PUSH);
