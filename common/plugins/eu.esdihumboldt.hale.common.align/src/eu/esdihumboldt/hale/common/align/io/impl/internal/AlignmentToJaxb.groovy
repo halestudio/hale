@@ -45,6 +45,8 @@ import eu.esdihumboldt.hale.common.align.model.TransformationMode
 import eu.esdihumboldt.hale.common.align.model.Type
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter
 import eu.esdihumboldt.util.io.PathUpdate
+import groovy.transform.CompileStatic
+import groovy.transform.TypeCheckingMode
 
 
 
@@ -54,6 +56,7 @@ import eu.esdihumboldt.util.io.PathUpdate
  * 
  * @author Simon Templer
  */
+@CompileStatic
 class AlignmentToJaxb {
 
 	private final Alignment alignment
@@ -77,6 +80,7 @@ class AlignmentToJaxb {
 	/**
 	 * @return
 	 */
+	@CompileStatic(TypeCheckingMode.SKIP)
 	AlignmentType convert() throws Exception {
 		AlignmentType align = new AlignmentType()
 
@@ -116,7 +120,7 @@ class AlignmentToJaxb {
 			ModifierType modifier = new ModifierType()
 			modifier.cell = cell.id
 			if (disabledFor) {
-				disabledFor.collect(modifier.disableFor) {
+				disabledFor.collect(modifier.disableFor) { Cell it ->
 					new DisableFor(parent: it.id)
 				}
 			}
@@ -159,7 +163,7 @@ class AlignmentToJaxb {
 		}
 
 		// documentations
-		cell.documentation.entries().each {
+		cell.documentation.entries().each { Entry<String, String> it ->
 			// create documentation element from each multimap entry
 			result.documentationOrAnnotation << new DocumentationType(type: it.key, value: it.value)
 		}
