@@ -20,8 +20,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.fhg.igd.osgi.util.configuration.AbstractConfigurationService;
+import de.fhg.igd.osgi.util.configuration.IConfigurationService;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.extension.ProjectFileExtension;
 import eu.esdihumboldt.hale.common.core.io.project.extension.ProjectFileFactory;
+import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
@@ -60,6 +64,33 @@ public abstract class ProjectIO {
 		}
 
 		return result;
+	}
+
+	/**
+	 * Create an {@link IConfigurationService} from a given project.
+	 * 
+	 * @param project the project
+	 * @return the configuration service to access the project's properties
+	 */
+	public static IConfigurationService createProjectConfigService(final Project project) {
+		return new AbstractConfigurationService() {
+
+			@Override
+			protected void setValue(String key, String value) {
+				project.getProperties().put(key, Value.of(value));
+			}
+
+			@Override
+			protected void removeValue(String key) {
+				project.getProperties().remove(key);
+			}
+
+			@Override
+			protected String getValue(String key) {
+				Value value = project.getProperties().get(key);
+				return (value != null) ? (value.as(String.class)) : (null);
+			}
+		};
 	}
 
 }
