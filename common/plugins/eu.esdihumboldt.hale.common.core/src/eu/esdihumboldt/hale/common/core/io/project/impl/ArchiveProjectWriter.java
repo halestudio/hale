@@ -69,6 +69,11 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 	private static final ALogger log = ALoggerFactory.getLogger(ArchiveProjectWriter.class);
 
 	/**
+	 * The provider ID as registered in the extension point.
+	 */
+	public static final String ID = "eu.esdihumboldt.hale.io.project.hale25.zip.writer";
+
+	/**
 	 * Parameter for including or excluding web resources
 	 */
 	public static final String INCLUDE_WEB_RESOURCES = "includeweb";
