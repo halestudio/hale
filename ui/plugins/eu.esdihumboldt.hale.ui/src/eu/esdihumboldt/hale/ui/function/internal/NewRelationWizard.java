@@ -16,12 +16,14 @@
 
 package eu.esdihumboldt.hale.ui.function.internal;
 
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
+import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 import eu.esdihumboldt.hale.ui.util.wizard.MultiWizard;
 
 /**
@@ -36,8 +38,19 @@ public class NewRelationWizard extends MultiWizard<NewRelationPage> {
 	 */
 	public NewRelationWizard() {
 		super();
+		setHelpAvailable(true);
 
 		setWindowTitle("New relation");
+	}
+
+	@Override
+	public void createPageControls(Composite pageContainer) {
+		super.createPageControls(pageContainer);
+
+		// disable help button, let function wizards do their work afterwards
+		// At all other points the buttons aren't created yet.
+		if (getContainer() instanceof HaleWizardDialog)
+			((HaleWizardDialog) getContainer()).setHelpButtonEnabled(false);
 	}
 
 	/**

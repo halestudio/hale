@@ -15,9 +15,11 @@
 
 package eu.esdihumboldt.hale.ui.util.wizard;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -33,6 +35,28 @@ public class HaleWizardDialog extends WizardDialog {
 	 */
 	public HaleWizardDialog(Shell parentShell, IWizard newWizard) {
 		super(parentShell, newWizard);
+	}
+
+	/**
+	 * Enables or disabled the help button.
+	 * 
+	 * @param enabled the new help button status
+	 */
+	public void setHelpButtonEnabled(boolean enabled) {
+		Button helpButton = getButton(IDialogConstants.HELP_ID);
+		if (helpButton != null)
+			helpButton.setEnabled(enabled);
+	}
+
+	/**
+	 * @see org.eclipse.jface.wizard.WizardDialog#close()
+	 */
+	@Override
+	public boolean close() {
+		// Bug in WizardDialog: close tray first!
+		if (getTray() != null)
+			closeTray();
+		return super.close();
 	}
 
 	/**
