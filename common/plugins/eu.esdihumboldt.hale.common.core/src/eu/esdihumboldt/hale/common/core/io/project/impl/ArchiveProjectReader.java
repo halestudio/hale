@@ -30,6 +30,8 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.project.model.Project;
+import eu.esdihumboldt.hale.common.core.io.project.util.LocationUpdater;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
@@ -44,14 +46,6 @@ public class ArchiveProjectReader extends AbstractProjectReader {
 
 	private static final ALogger log = ALoggerFactory.getLogger(ArchiveProjectReader.class);
 
-	// The reader saves the temporary directory as 'source' to load all
-	// resources, but sometimes you need the old originally source (the archive)
-	private LocatableInputSupplier<? extends InputStream> oldSource;
-
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#execute(eu.esdihumboldt.hale.common.core.io.ProgressIndicator,
-	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
-	 */
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
@@ -64,16 +58,34 @@ public class ArchiveProjectReader extends AbstractProjectReader {
 
 		// create the project file via XMLProjectReader
 		File baseFile = new File(tempDir, "project.halex");
-		LocatableInputSupplier<InputStream> source = new FileIOSupplier(baseFile);
+		LocatableInputSupplier<InputStream> tempSource = new FileIOSupplier(baseFile);
 
 		// save old save configuration
-		oldSource = getSource();
+		LocatableInputSupplier<? extends InputStream> oldSource = getSource();
 
-		setSource(source);
-		reader.setSource(source);
+		setSource(tempSource);
+		reader.setSource(tempSource);
 		reader.setProjectFiles(getProjectFiles());
 		IOReport report = reader.execute(progress, reporter);
-		setProject(reader.getProject());
+		Project readProject = reader.getProject();
+
+		if (readProject != null) {
+			/*
+			 * Because the original source is only available here, update the
+			 * project's resource paths here.
+			 * 
+			 * The only drawback is that the UILocationUpdater cannot be used.
+			 */
+			LocationUpdater updater = new LocationUpdater(readProject, tempSource.getLocation());
+			// update resources
+			// resources are made absolute (else they can't be found afterwards)
+			updater.updateProject(false);
+		}
+
+		// set the real source
+		setSource(oldSource);
+		// set the read project
+		setProject(readProject);
 
 		// delete the temporary directory
 		deleteDirectoryOnExit(tempDir);
@@ -139,13 +151,6 @@ public class ArchiveProjectReader extends AbstractProjectReader {
 				}
 			}
 		}
-	}
-
-	/**
-	 * @return the originally source of the archive
-	 */
-	public LocatableInputSupplier<? extends InputStream> getOriginallySource() {
-		return oldSource;
 	}
 
 }
