@@ -20,6 +20,7 @@ import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.dialogs.IPageChangeProvider;
 import org.eclipse.jface.dialogs.IPageChangedListener;
 import org.eclipse.jface.dialogs.PageChangedEvent;
+import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardContainer;
 import org.eclipse.jface.wizard.Wizard;
@@ -27,6 +28,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * Abstract wizard page type with some basic functionality added, can only be
@@ -99,6 +101,31 @@ public abstract class HaleWizardPage<W extends Wizard> extends WizardPage {
 		createContent(page);
 
 		setControl(page);
+	}
+
+	/**
+	 * @see DialogPage#performHelp()
+	 */
+	@Override
+	public void performHelp() {
+		boolean closed = false;
+		if (getContainer() instanceof TrayDialog) {
+			if (((TrayDialog) getContainer()).getTray() != null) {
+				((TrayDialog) getContainer()).closeTray();
+				closed = true;
+			}
+		}
+		if (!closed && getHelpContext() != null)
+			PlatformUI.getWorkbench().getHelpSystem().displayHelp(getHelpContext());
+	}
+
+	/**
+	 * Returns the help context for this page. Default is <code>null</code>.
+	 * 
+	 * @return the help context for this page or <code>null</code>
+	 */
+	public String getHelpContext() {
+		return null;
 	}
 
 	/**
