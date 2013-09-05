@@ -21,8 +21,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.wizard.IWizardNode;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -34,10 +32,7 @@ import org.eclipse.ui.dialogs.PatternFilter;
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
-import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;
-import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.util.wizard.ViewerWizardSelectionPage;
 import eu.esdihumboldt.util.Pair;
@@ -81,28 +76,28 @@ public class NewRelationPage extends ViewerWizardSelectionPage {
 		// no input needed, but we have to set something
 		viewer.setInput(Boolean.TRUE);
 
-		// set viewer filter
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-				AlignmentService.class);
-		if (!AlignmentUtil.hasTypeRelation(as.getAlignment())) {
-			// if there are no type relations, don't allow creating a property
-			// relation
-			viewer.addFilter(new ViewerFilter() {
-
-				@Override
-				public boolean select(Viewer viewer, Object parentElement, Object element) {
-					if (element instanceof FunctionWizardNode) {
-						AbstractFunction<?> function = ((FunctionWizardNode) element).getFunction();
-						if (function instanceof PropertyFunction) {
-							// hide any property function nodes
-							return false;
-						}
-					}
-
-					return true;
-				}
-			});
-		}
+		// set viewer filter; Not needed anymore
+//		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+//				AlignmentService.class);
+//		if (!AlignmentUtil.hasTypeRelation(as.getAlignment())) {
+//			// if there are no type relations, don't allow creating a property
+//			// relation
+//			viewer.addFilter(new ViewerFilter() {
+//
+//				@Override
+//				public boolean select(Viewer viewer, Object parentElement, Object element) {
+//					if (element instanceof FunctionWizardNode) {
+//						AbstractFunction<?> function = ((FunctionWizardNode) element).getFunction();
+//						if (function instanceof PropertyFunction) {
+//							// hide any property function nodes
+//							return false;
+//						}
+//					}
+//
+//					return true;
+//				}
+//			});
+//		}
 
 		// set focus on viewer control to prevent odd behavior
 		viewer.getControl().setFocus();
