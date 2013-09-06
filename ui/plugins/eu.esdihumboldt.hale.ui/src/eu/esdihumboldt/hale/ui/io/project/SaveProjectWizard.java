@@ -16,9 +16,19 @@
 
 package eu.esdihumboldt.hale.ui.io.project;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import org.eclipse.core.runtime.content.IContentType;
+
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectWriter;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
+import eu.esdihumboldt.hale.ui.io.ExportSelectTargetPage;
 import eu.esdihumboldt.hale.ui.io.ExportWizard;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 
@@ -34,11 +44,17 @@ public class SaveProjectWizard extends ExportWizard<ProjectWriter> {
 	 */
 	public static final String ADVISOR_PROJECT_SAVE = "project.save";
 
+	private final IContentType restrictToContentType;
+
 	/**
 	 * Create a wizard that saves a project
+	 * 
+	 * @param restrictToContentType the content type the save should be
+	 *            restricted to, or <code>null</code>
 	 */
-	public SaveProjectWizard() {
+	public SaveProjectWizard(IContentType restrictToContentType) {
 		super(ProjectWriter.class);
+		this.restrictToContentType = restrictToContentType;
 	}
 
 	/**
@@ -49,6 +65,46 @@ public class SaveProjectWizard extends ExportWizard<ProjectWriter> {
 		super.addPages();
 
 		addPage(new SaveProjectDetailsPage());
+	}
+
+	@Override
+	public List<IOProviderDescriptor> getFactories() {
+		if (restrictToContentType == null) {
+			return super.getFactories();
+		}
+
+		/*
+		 * Remove all providers that do not support the content type the export
+		 * is restricted to.
+		 */
+		List<IOProviderDescriptor> factories = new ArrayList<>(super.getFactories());
+		Iterator<IOProviderDescriptor> it = factories.iterator();
+		while (it.hasNext()) {
+			IOProviderDescriptor pd = it.next();
+			if (pd.getSupportedTypes() == null
+					|| !pd.getSupportedTypes().contains(restrictToContentType)) {
+				it.remove();
+			}
+		}
+
+		return factories;
+	}
+
+	@Override
+	protected ExportSelectTargetPage<ProjectWriter, ? extends ExportWizard<ProjectWriter>> createSelectTargetPage() {
+		return new ExportSelectTargetPage<ProjectWriter, SaveProjectWizard>() {
+
+			@Override
+			protected Set<IContentType> getAllowedContentTypes() {
+				if (restrictToContentType == null) {
+					return super.getAllowedContentTypes();
+				}
+				else {
+					return Collections.singleton(restrictToContentType);
+				}
+			}
+
+		};
 	}
 
 	/**

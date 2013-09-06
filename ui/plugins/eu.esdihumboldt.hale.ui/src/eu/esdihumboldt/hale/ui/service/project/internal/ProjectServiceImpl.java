@@ -31,6 +31,7 @@ import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
@@ -161,6 +162,11 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	private UILocationUpdater updater = new UILocationUpdater(null, null);
 
 	/**
+	 * Stores the content type of the loaded project.
+	 */
+	private IContentType projectLoadContentType;
+
+	/**
 	 * Default constructor
 	 */
 	public ProjectServiceImpl() {
@@ -208,6 +214,27 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					// else
 					// rfs.add(provider.getSource().getLocation().getRawPath(),
 					// main.getName());
+
+					// store the content type the project was loaded with
+					IContentType ct = provider.getContentType();
+					if (ct == null) {
+						log.warn("Project content type was not determined during load, trying auto-detection");
+						try {
+							URI loc = provider.getSource().getLocation();
+							String filename = null;
+							if (loc != null) {
+								filename = loc.getPath();
+							}
+							ct = HaleIO.findContentType(ProjectReader.class, provider.getSource(),
+									filename);
+						} catch (Exception e) {
+							// ignore
+						}
+						if (ct == null) {
+							log.error("Could not determine content type of loaded project");
+						}
+					}
+					projectLoadContentType = ct;
 				}
 
 				updateWindowTitle();
@@ -638,7 +665,20 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 			@Override
 			public void run() {
-				SaveProjectWizard wizard = new SaveProjectWizard();
+				SaveProjectWizard wizard;
+				if (projectLoadContentType != null
+						&& projectLoadContentType.getId().equals(
+								ProjectIO.PROJECT_ARCHIVE_CONTENT_TYPE_ID)) {
+					/*
+					 * For project archives, saving the project has to be
+					 * restricted to project archives again, as the files only
+					 * reside in a temporary location.
+					 */
+					wizard = new SaveProjectWizard(projectLoadContentType);
+				}
+				else {
+					wizard = new SaveProjectWizard(null);
+				}
 				wizard.setAdvisor(saveProjectAdvisor, null);
 
 				Shell shell = Display.getCurrent().getActiveShell();

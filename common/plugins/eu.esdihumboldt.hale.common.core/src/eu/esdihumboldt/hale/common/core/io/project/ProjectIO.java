@@ -47,6 +47,11 @@ public abstract class ProjectIO {
 	public static final String PROJECT_FILE = "project.xml";
 
 	/**
+	 * Identifier of the HALE project archive content type
+	 */
+	public static final String PROJECT_ARCHIVE_CONTENT_TYPE_ID = "eu.esdihumboldt.hale.io.project.hale25.zip";
+
+	/**
 	 * Create a set of default project files for use with {@link ProjectReader}
 	 * and {@link ProjectWriter}
 	 * 
