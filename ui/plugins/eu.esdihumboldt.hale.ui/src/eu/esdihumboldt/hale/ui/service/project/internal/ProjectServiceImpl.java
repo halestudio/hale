@@ -605,6 +605,25 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				ProjectWriter writer = null;
 				for (IOProviderDescriptor factory : providers) {
 					if (factory.getIdentifier().equals(saveConfig.getProviderId())) {
+						// found the matching factory
+
+						/*
+						 * Check if the content type the project was loaded with
+						 * is supported for saving.
+						 * 
+						 * Example for a changed content type: A saved project
+						 * archive may have been extracted and the internal XML
+						 * project file loaded.
+						 */
+						if (projectLoadContentType != null) {
+							if (factory.getSupportedTypes() == null
+									|| !factory.getSupportedTypes()
+											.contains(projectLoadContentType)) {
+								log.warn("Project cannot be saved with the same settings it was originally saved with, as the content type has changed.");
+								break;
+							}
+						}
+
 						try {
 							writer = (ProjectWriter) factory.createExtensionObject();
 						} catch (Exception e) {
@@ -623,7 +642,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					executeProvider(writer, saveProjectAdvisor);
 				}
 				else {
-					log.error("The project cannot be saved because the format is not available.");
+					log.info("The project cannot be saved because the format the project was saved with is not available or has changed.");
 					// use save as instead
 					saveAs();
 				}
