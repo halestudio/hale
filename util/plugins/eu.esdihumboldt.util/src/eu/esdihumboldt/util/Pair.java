@@ -61,6 +61,18 @@ public class Pair<F, S> {
 	public S getSecond() {
 		return second;
 	}
+	
+	/**
+	 * Pair creation helper.
+	 * @param <F> the type of the first element in the pair
+	 * @param <S> the type of the second element
+	 * @param first the first object
+	 * @param second the second object
+	 * @return a new pair
+	 */
+	public static <F, S> Pair<F, S> make(F first, S second) {
+		return new Pair<F, S>(first, second);
+	}
 
 	/**
 	 * @see Object#hashCode()
