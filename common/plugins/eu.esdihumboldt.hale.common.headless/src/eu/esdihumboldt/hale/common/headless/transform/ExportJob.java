@@ -40,10 +40,10 @@ public class ExportJob extends AbstractTransformationJob {
 
 	private static final ALogger log = ALoggerFactory.getLogger(ExportJob.class);
 
-	private final LimboInstanceSink targetSink;
-	private final InstanceWriter writer;
-	private final IOAdvisor<InstanceWriter> advisor;
-	private final ReportHandler reportHandler;
+	private LimboInstanceSink targetSink;
+	private InstanceWriter writer;
+	private IOAdvisor<InstanceWriter> advisor;
+	private ReportHandler reportHandler;
 
 	/**
 	 * Create a job for exporting transformed data supplied in the given target
@@ -100,8 +100,10 @@ public class ExportJob extends AbstractTransformationJob {
 			defaultReporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
 		}
 
-		if (monitor.isCanceled())
+		if (monitor.isCanceled()) {
+			reset();
 			return Status.CANCEL_STATUS;
+		}
 
 		// add report to report service
 		reportHandler.publishReport(report);
@@ -113,12 +115,28 @@ public class ExportJob extends AbstractTransformationJob {
 
 			// let advisor handle results
 			advisor.handleResults(writer);
+
+			reset();
+
 			return Status.OK_STATUS;
 		}
 		else {
+			reset();
 			log.userError(report.getSummary());
 			return ERROR_STATUS;
 		}
+	}
+
+	/**
+	 * Reset the Job so no references to other objects reside.
+	 * 
+	 * Necessary as jobs are referenced by the job manager even after execution.
+	 */
+	private void reset() {
+		writer = null;
+		targetSink = null;
+		advisor = null;
+		reportHandler = null;
 	}
 
 }
