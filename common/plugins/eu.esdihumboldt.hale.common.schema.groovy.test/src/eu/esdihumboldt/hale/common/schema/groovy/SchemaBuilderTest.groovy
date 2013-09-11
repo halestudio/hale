@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.common.schema.groovy
 
+import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
@@ -196,6 +197,58 @@ class SchemaBuilderTest extends GroovyTestCase {
 		PropertyDefinition childItem = orderType.children[0]
 		assertEquals 'item', childItem.name.localPart
 		assertTrue itemType == childItem.propertyType
+	}
+
+	/**
+	 * Test creating a group property definition.
+	 */
+	void testGroup() {
+		// create the schema
+		Schema schema = new SchemaBuilder().schema {
+			def itemType = ItemType {
+				id(Long)
+				name(String)
+				price(Double)
+				description(String)
+			}
+
+			OrderType {
+				_{
+					item(itemType)
+					quantity(Integer)
+				}
+			}
+		}
+
+		assertEquals "Number of types is incorrect", 2, schema.types.size()
+
+		// item type
+		TypeDefinition itemType = schema.types.find {
+			it.name.localPart == 'ItemType'
+		}
+		assertNotNull itemType
+
+		// order type
+		TypeDefinition orderType = schema.types.find {
+			it.name.localPart == 'OrderType'
+		}
+		assertNotNull orderType
+
+		assertEquals 1, orderType.children.size()
+
+		// group
+		GroupPropertyDefinition group = orderType.children[0]
+		assertNotNull group
+
+		assertEquals 2, group.declaredChildren.size()
+
+		// children
+		PropertyDefinition childItem = group.declaredChildren[0]
+		assertEquals 'item', childItem.name.localPart
+		assertTrue itemType == childItem.propertyType
+
+		PropertyDefinition childQuantity = group.declaredChildren[1]
+		assertEquals 'quantity', childQuantity.name.localPart
 	}
 
 }

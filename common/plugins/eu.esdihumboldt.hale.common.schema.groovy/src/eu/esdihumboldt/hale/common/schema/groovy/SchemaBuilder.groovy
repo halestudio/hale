@@ -20,11 +20,13 @@ import javax.xml.namespace.QName
 import org.codehaus.groovy.runtime.InvokerHelper
 
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup
+import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag
+import eu.esdihumboldt.hale.common.schema.model.impl.DefaultGroupPropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition
@@ -161,25 +163,28 @@ class SchemaBuilder {
 	 */
 	def createNode(String name, Map attributes, List params, def parent, boolean subClosure) {
 		def node
-		switch (parent) {
-			case DefaultTypeIndex:
+		if (parent instanceof DefaultTypeIndex) {
 			// create a type as child
-				TypeDefinition type = createType(name, attributes, params)
-				((DefaultTypeIndex) parent).addType(type)
-				node = type
-				break
-			case TypeDefinition:
+			TypeDefinition type = createType(name, attributes, params)
+			((DefaultTypeIndex) parent).addType(type)
+			node = type
+		}
+		else if (parent instanceof DefinitionGroup) {
 			// create property or group as child
-				if (name == '_') {
-					// TODO group
-				}
-				else {
-					// create a property
-					PropertyDefinition property = createProperty(name, attributes, params,
-							(DefinitionGroup) parent, subClosure)
-					node = property
-				}
-				break
+			if (name == '_') {
+				// create a group
+				GroupPropertyDefinition group = createGroup(attributes, params, (DefinitionGroup) parent)
+				node = group
+			}
+			else {
+				// create a property
+				PropertyDefinition property = createProperty(name, attributes, params,
+						(DefinitionGroup) parent, subClosure)
+				node = property
+			}
+		}
+		else {
+			//TODO
 		}
 
 		node
@@ -210,6 +215,16 @@ class SchemaBuilder {
 		DefaultTypeDefinition type = new DefaultTypeDefinition(typeName)
 
 		type
+	}
+
+	GroupPropertyDefinition createGroup(Map attributes, List params,
+			DefinitionGroup parent) {
+		QName name = new QName(defaultPropertyTypeNamespace,
+				newDefaultPropertyTypeName('group'))
+		DefaultGroupPropertyDefinition group = new DefaultGroupPropertyDefinition(
+				name, parent, false)
+
+		group
 	}
 
 	PropertyDefinition createProperty(String name, Map attributes, List params,
@@ -300,7 +315,7 @@ class SchemaBuilder {
 	 */
 	protected String newDefaultPropertyTypeName(String preferred) {
 		String name = preferred
-		int count = 0
+		int count = 1
 		while (defaultTypeNames.contains(name)) {
 			count++
 			name = preferred + count
