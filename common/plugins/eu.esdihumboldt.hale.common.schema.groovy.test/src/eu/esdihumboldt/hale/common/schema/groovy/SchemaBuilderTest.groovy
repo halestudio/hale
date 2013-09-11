@@ -15,8 +15,11 @@
 
 package eu.esdihumboldt.hale.common.schema.groovy
 
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag
 
 
 /**
@@ -36,6 +39,7 @@ class SchemaBuilderTest extends GroovyTestCase {
 		def ns2 = 'org:standardout:test'
 		def empty = ''
 
+		// create the schema
 		Schema schema = new SchemaBuilder().schema(defaultNamespace) {
 			T1 {
 				a()
@@ -104,5 +108,52 @@ class SchemaBuilderTest extends GroovyTestCase {
 		assertNotNull type3e
 		assertEquals 'e', type3e.name.localPart
 		assertEquals ns2, type3e.name.namespaceURI
+	}
+
+	void testDefaultPropertyTypes() {
+		String dptns = 'xs'
+
+		SchemaBuilder builder = new SchemaBuilder()
+		builder.defaultPropertyTypeNamespace = dptns
+
+		// create the schema
+		Schema schema = builder.schema {
+			ItemType {
+				id(Long)
+				name(String)
+				price(Double)
+				description(String)
+			}
+		}
+
+		assertEquals "Number of types is incorrect", 1, schema.types.size()
+
+		// retrieve type
+		TypeDefinition type = schema.types.find {
+			it.name.localPart == 'ItemType' && it.name.namespaceURI == ''
+		}
+		assertNotNull type
+
+		assertEquals 4, type.children.size()
+
+		// check each property binding
+		PropertyDefinition childId = type.children[0]
+		assertEquals Long, childId.propertyType.getConstraint(Binding).binding
+		assertTrue childId.propertyType.getConstraint(HasValueFlag).enabled
+
+		PropertyDefinition childName = type.children[1]
+		assertEquals String, childName.propertyType.getConstraint(Binding).binding
+		assertTrue childName.propertyType.getConstraint(HasValueFlag).enabled
+
+		PropertyDefinition childPrice = type.children[2]
+		assertEquals Double, childPrice.propertyType.getConstraint(Binding).binding
+		assertTrue childPrice.propertyType.getConstraint(HasValueFlag).enabled
+
+		PropertyDefinition childDesc = type.children[3]
+		assertEquals String, childDesc.propertyType.getConstraint(Binding).binding
+		assertTrue childDesc.propertyType.getConstraint(HasValueFlag).enabled
+
+		// check if name and description types are the same
+		assertTrue childName.propertyType == childDesc.propertyType
 	}
 }

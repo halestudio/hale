@@ -23,6 +23,8 @@ import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition
@@ -47,19 +49,43 @@ class SchemaBuilder {
 	def current
 
 	/**
-	 * The default namespace
+	 * The default namespace.
 	 */
 	String defaultNamespace
 
 	/**
-	 * Build a schema.
+	 * The default namespace for default property types.
+	 */
+	String defaultPropertyTypeNamespace = ''
+
+	/**
+	 * The created default property types.
+	 */
+	private Map<Class, TypeDefinition> defaultTypes = [:]
+
+	/**
+	 * Set containing all used default property type names.
+	 */
+	private Set<String> defaultTypeNames = new HashSet<>()
+
+	/**
+	 * Reset the builder
+	 */
+	void reset() {
+		current = null
+		defaultTypes = [:]
+		defaultTypeNames.clear()
+	}
+
+	/**
+	 * Build a schema, then resets the builder.
 	 * 
 	 * @param namespace the schema namespace and default namespace of added
 	 *   types and properties
 	 * @param location the schema location or <code>null</code>
 	 * @return
 	 */
-	Schema schema(String namespace, URI location = null, Closure closure) {
+	Schema schema(String namespace = '', URI location = null, Closure closure) {
 		def root = new DefaultSchema(namespace, location);
 		defaultNamespace = namespace
 		def parent = current
@@ -68,6 +94,7 @@ class SchemaBuilder {
 		closure.delegate = this
 		closure.call()
 		current = parent
+		reset()
 		return root
 	}
 
@@ -111,7 +138,7 @@ class SchemaBuilder {
 		}
 
 		def parent = current
-		def node = createNode(name, attributes, params, parent)
+		def node = createNode(name, attributes, params, parent, closure != null)
 		current = node
 
 		closure?.call()
@@ -129,9 +156,10 @@ class SchemaBuilder {
 	 * @param attributes the named parameters, may be <code>null</code>
 	 * @param params other parameters, may be <code>null</code>
 	 * @param parent the parent node, may be <code>null</code>
+	 * @param subClosure states if there is a sub-closure for this node
 	 * @return the created node
 	 */
-	def createNode(String name, Map attributes, List params, def parent) {
+	def createNode(String name, Map attributes, List params, def parent, boolean subClosure) {
 		def node
 		switch (parent) {
 			case DefaultTypeIndex:
@@ -148,7 +176,7 @@ class SchemaBuilder {
 				else {
 					// create a property
 					PropertyDefinition property = createProperty(name, attributes, params,
-							(DefinitionGroup) parent)
+							(DefinitionGroup) parent, subClosure)
 					node = property
 				}
 				break
@@ -185,17 +213,100 @@ class SchemaBuilder {
 	}
 
 	PropertyDefinition createProperty(String name, Map attributes, List params,
-			DefinitionGroup parent) {
+			DefinitionGroup parent, boolean subClosure) {
 
 		// create property type
-		//TODO possibly a reference
-		//FIXME
-		TypeDefinition propertyType = createType(name + 'Type', null, null)
+		TypeDefinition propertyType
+
+		if (subClosure) {
+			// the sub-closure defines an anonymous property type
+			//TODO
+		}
+		else {
+			/*
+			 * The first parameter must be either
+			 * - a class specifying the type of a simple default property
+			 * - a TypeDefinition instance
+			 * - a QName or string specifying the name of a type that may not be yet defined
+			 */
+			def type = String // default if nothing given
+			if (params) {
+				type = params[0]
+			}
+
+			if (type instanceof Class) {
+				propertyType = getOrCreateDefaultPropertyType((Class) type)
+			}
+			else if (type instanceof TypeDefinition) {
+				propertyType = (TypeDefinition) type
+			}
+			else if (type instanceof QName) {
+				//TODO
+			}
+			else {
+				String typeRef = type.toString()
+				//TODO
+			}
+		}
 
 		// create property
 		QName propertyName = createName(name, attributes)
 		DefaultPropertyDefinition property = new DefaultPropertyDefinition(propertyName, parent,
 				propertyType);
+	}
+
+	/**
+	 * Get the existing or create a new default property type for the given
+	 * class.
+	 * 	
+	 * @param type the binding for the default property type
+	 * @return the default property type definition
+	 */
+	protected TypeDefinition getOrCreateDefaultPropertyType(Class type) {
+		TypeDefinition typeDef = defaultTypes.get(type)
+		if (!typeDef) {
+			typeDef = createDefaultPropertyType(type)
+			defaultTypes.put(type, typeDef)
+		}
+
+		typeDef
+	}
+
+	/**
+	 * Create a new default property type for the given class.
+	 *
+	 * @param type the binding for the default property type
+	 * @return the default property type definition
+	 */
+	protected TypeDefinition createDefaultPropertyType(Class type) {
+		QName name = new QName(defaultPropertyTypeNamespace,
+				newDefaultPropertyTypeName(type.name.toLowerCase()))
+		DefaultTypeDefinition typeDef = new DefaultTypeDefinition(name)
+
+		// set binding & hasValue
+		typeDef.setConstraint(Binding.get(type))
+		typeDef.setConstraint(HasValueFlag.ENABLED)
+
+		//TODO any others?
+
+		typeDef
+	}
+
+	/**
+	 * Determine an unused local name for a default property type.
+	 * 
+	 * @param preferred the preferred name
+	 * @return the local name to use
+	 */
+	protected String newDefaultPropertyTypeName(String preferred) {
+		String name = preferred
+		int count = 0
+		while (defaultTypeNames.contains(name)) {
+			count++
+			name = preferred + count
+		}
+
+		name
 	}
 
 }
