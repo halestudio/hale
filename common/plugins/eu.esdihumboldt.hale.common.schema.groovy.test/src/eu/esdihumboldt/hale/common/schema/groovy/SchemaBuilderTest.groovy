@@ -110,6 +110,9 @@ class SchemaBuilderTest extends GroovyTestCase {
 		assertEquals ns2, type3e.name.namespaceURI
 	}
 
+	/**
+	 * Tests if default property types are created correctly.
+	 */
 	void testDefaultPropertyTypes() {
 		String dptns = 'xs'
 
@@ -156,4 +159,43 @@ class SchemaBuilderTest extends GroovyTestCase {
 		// check if name and description types are the same
 		assertTrue childName.propertyType == childDesc.propertyType
 	}
+
+	/**
+	 * Tests if declared types can be referenced as property types in other types.
+	 */
+	void testDefinedTypeReference() {
+		// create the schema
+		Schema schema = new SchemaBuilder().schema {
+			def itemType = ItemType {
+				id(Long)
+				name(String)
+				price(Double)
+				description(String)
+			}
+
+			OrderType {
+				item(itemType)
+				quantity(Integer)
+			}
+		}
+
+		assertEquals "Number of types is incorrect", 2, schema.types.size()
+
+		// item type
+		TypeDefinition itemType = schema.types.find {
+			it.name.localPart == 'ItemType'
+		}
+		assertNotNull itemType
+
+		// order type
+		TypeDefinition orderType = schema.types.find {
+			it.name.localPart == 'OrderType'
+		}
+		assertNotNull orderType
+
+		PropertyDefinition childItem = orderType.children[0]
+		assertEquals 'item', childItem.name.localPart
+		assertTrue itemType == childItem.propertyType
+	}
+
 }
