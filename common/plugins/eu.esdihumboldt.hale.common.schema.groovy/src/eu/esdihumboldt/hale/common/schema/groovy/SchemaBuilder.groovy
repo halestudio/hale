@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
+import eu.esdihumboldt.hale.common.schema.model.TypeIndex
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultGroupPropertyDefinition
@@ -82,12 +83,12 @@ class SchemaBuilder {
 	}
 
 	/**
-	 * Build a schema, then resets the builder.
+	 * Build a schema, then reset the builder.
 	 * 
 	 * @param namespace the schema namespace and default namespace of added
 	 *   types and properties
 	 * @param location the schema location or <code>null</code>
-	 * @return
+	 * @return the created schema
 	 */
 	Schema schema(String namespace = '', URI location = null, Closure closure) {
 		def root = new DefaultSchema(namespace, location);
@@ -102,9 +103,22 @@ class SchemaBuilder {
 		return root
 	}
 
-	// def types
-
-	// def type
+	/**
+	 * Build a type index, then reset the builder.
+	 * 
+	 * @return the created type index
+	 */
+	TypeIndex types(Closure closure) {
+		def root = new DefaultTypeIndex();
+		def parent = current
+		current = root
+		closure = (Closure) closure.clone()
+		closure.delegate = this
+		closure.call()
+		current = parent
+		reset()
+		return root
+	}
 
 	/**
 	 * Called on for any missing method.
@@ -165,7 +179,12 @@ class SchemaBuilder {
 	 */
 	def createNode(String name, Map attributes, List params, def parent, boolean subClosure) {
 		def node
-		if (parent instanceof DefaultTypeIndex) {
+		if (parent == null) {
+			// create stand-alone type
+			TypeDefinition type = createType(name, attributes, params)
+			node = type
+		}
+		else if (parent instanceof DefaultTypeIndex) {
 			// create a type as child
 			TypeDefinition type = createType(name, attributes, params)
 			((DefaultTypeIndex) parent).addType(type)

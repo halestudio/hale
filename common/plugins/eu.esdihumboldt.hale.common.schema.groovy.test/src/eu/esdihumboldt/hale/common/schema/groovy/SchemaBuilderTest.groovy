@@ -19,6 +19,7 @@ import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
+import eu.esdihumboldt.hale.common.schema.model.TypeIndex
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag
 
@@ -291,6 +292,45 @@ class SchemaBuilderTest extends GroovyTestCase {
 		// has a Long value
 		assertEquals Long, item.propertyType.getConstraint(Binding).binding
 		assertTrue item.propertyType.getConstraint(HasValueFlag).enabled
+	}
+
+	/**
+	 * Tests creating a type index (instead of a schema).
+	 */
+	void testCreateTypeIndex() {
+		// create the type index
+		TypeIndex typeIndex = new SchemaBuilder().types {
+			def itemType = ItemType {
+				id(Long)
+				name(String)
+				price(Double)
+				description(String)
+			}
+
+			OrderType {
+				item(itemType)
+				quantity(Integer)
+			}
+		}
+
+		assertNotNull typeIndex
+		assertEquals 2, typeIndex.types.size()
+	}
+
+	/**
+	 * Tests creating a single type definition.
+	 */
+	void testCreateType() {
+		// create the type
+		TypeDefinition itemType = new SchemaBuilder().ItemType {
+			id(Long)
+			name(String)
+			price(Double)
+			description(String)
+		}
+
+		assertNotNull itemType
+		assertEquals 4, itemType.children.size()
 	}
 
 }
