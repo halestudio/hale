@@ -251,4 +251,46 @@ class SchemaBuilderTest extends GroovyTestCase {
 		assertEquals 'quantity', childQuantity.name.localPart
 	}
 
+	/**
+	 * Test creating nested default properties.
+	 */
+	void testNestedDefaultProperties() {
+		// create the schema
+		Schema schema = new SchemaBuilder().schema {
+			OrderType {
+				entry {
+					item(Long) {
+						name()
+						price(Double)
+						description(String)
+					}
+					quantity(Integer)
+				}
+			}
+		}
+
+		assertEquals "Number of types is incorrect", 1, schema.types.size()
+
+		// order type
+		TypeDefinition orderType = schema.types.find {
+			it.name.localPart == 'OrderType'
+		}
+		assertNotNull orderType
+
+		// entry
+		PropertyDefinition entry = orderType.children[0]
+		assertNotNull entry
+		assertEquals 2, entry.propertyType.children.size()
+		// may not have a direct value
+		assertFalse entry.propertyType.getConstraint(HasValueFlag).enabled
+
+		// item
+		PropertyDefinition item = entry.propertyType.children[0]
+		assertNotNull item
+		assertEquals 3, item.propertyType.children.size()
+		// has a Long value
+		assertEquals Long, item.propertyType.getConstraint(Binding).binding
+		assertTrue item.propertyType.getConstraint(HasValueFlag).enabled
+	}
+
 }

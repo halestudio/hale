@@ -19,7 +19,9 @@ import javax.xml.namespace.QName
 
 import org.codehaus.groovy.runtime.InvokerHelper
 
+import eu.esdihumboldt.hale.common.schema.model.Definition
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup
+import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.Schema
@@ -169,17 +171,19 @@ class SchemaBuilder {
 			((DefaultTypeIndex) parent).addType(type)
 			node = type
 		}
-		else if (parent instanceof DefinitionGroup) {
+		else if (parent instanceof Definition) {
+			DefinitionGroup parentGroup = DefinitionUtil.getDefinitionGroup(parent)
+
 			// create property or group as child
 			if (name == '_') {
 				// create a group
-				GroupPropertyDefinition group = createGroup(attributes, params, (DefinitionGroup) parent)
+				GroupPropertyDefinition group = createGroup(attributes, params, parentGroup)
 				node = group
 			}
 			else {
 				// create a property
 				PropertyDefinition property = createProperty(name, attributes, params,
-						(DefinitionGroup) parent, subClosure)
+						parentGroup, subClosure)
 				node = property
 			}
 		}
@@ -235,7 +239,18 @@ class SchemaBuilder {
 
 		if (subClosure) {
 			// the sub-closure defines an anonymous property type
-			//TODO
+
+			// a class specifying the value type may be given as parameter
+			Class type = null
+			if (params) {
+				if (params[0] instanceof Class) {
+					type = params[0]
+				}
+				else {
+					//TODO error?
+				}
+			}
+			propertyType = createDefaultNestingPropertyType(type, name)
 		}
 		else {
 			/*
@@ -301,6 +316,28 @@ class SchemaBuilder {
 		// set binding & hasValue
 		typeDef.setConstraint(Binding.get(type))
 		typeDef.setConstraint(HasValueFlag.ENABLED)
+
+		//TODO any others?
+
+		typeDef
+	}
+
+	/**
+	 * Create a new default property type for a nested property.
+	 *
+	 * @param type the binding for the property value or <code>null</code>
+	 * @return the type definition
+	 */
+	protected TypeDefinition createDefaultNestingPropertyType(Class type, String propertyName) {
+		QName name = new QName(defaultPropertyTypeNamespace,
+				newDefaultPropertyTypeName(propertyName))
+		DefaultTypeDefinition typeDef = new DefaultTypeDefinition(name)
+
+		// set binding & hasValue
+		if (type) {
+			typeDef.setConstraint(Binding.get(type))
+			typeDef.setConstraint(HasValueFlag.ENABLED)
+		}
 
 		//TODO any others?
 
