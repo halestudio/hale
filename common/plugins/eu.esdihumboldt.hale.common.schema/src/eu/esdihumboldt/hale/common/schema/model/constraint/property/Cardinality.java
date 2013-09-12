@@ -151,4 +151,29 @@ public class Cardinality implements GroupPropertyConstraint, PropertyConstraint 
 		return getMinOccurs() + ".." + ((getMaxOccurs() == UNBOUNDED) ? ('n') : (getMaxOccurs()));
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (maxOccurs ^ (maxOccurs >>> 32));
+		result = prime * result + (int) (minOccurs ^ (minOccurs >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Cardinality other = (Cardinality) obj;
+		if (maxOccurs != other.maxOccurs)
+			return false;
+		if (minOccurs != other.minOccurs)
+			return false;
+		return true;
+	}
+
 }
