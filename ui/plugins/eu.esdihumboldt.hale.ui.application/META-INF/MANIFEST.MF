@@ -40,3 +40,7 @@ Import-Package: de.cs3d.util.eclipse.extension,
  org.slf4j.bridge
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.hale.ui.application.internal.HALEApplicationPlugin
+Export-Package: eu.esdihumboldt.hale.ui.application,
+ eu.esdihumboldt.hale.ui.application.handler,
+ eu.esdihumboldt.hale.ui.application.internal;x-internal:=true,
+ eu.esdihumboldt.hale.ui.application.splash
