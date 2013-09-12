@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.common.schema.groovy.constraints
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
+import eu.esdihumboldt.hale.common.schema.model.Definition
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
@@ -41,7 +42,7 @@ class CardinalityFactory implements ConstraintFactory<Cardinality> {
 	private static final Pattern pattern = ~/^(\d+)[\.\-]{1,3}(\w+|\*)$/
 
 	@Override
-	Cardinality createConstraint(Object arg) {
+	Cardinality createConstraint(Object arg, Definition context = null) {
 		if (arg instanceof Range) {
 			// defined as a Range
 			return createFromRange((Range) arg)

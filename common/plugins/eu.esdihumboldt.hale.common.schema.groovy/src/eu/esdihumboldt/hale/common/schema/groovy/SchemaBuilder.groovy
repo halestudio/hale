@@ -19,6 +19,9 @@ import javax.xml.namespace.QName
 
 import org.codehaus.groovy.runtime.InvokerHelper
 
+import eu.esdihumboldt.hale.common.schema.groovy.constraints.CardinalityFactory
+import eu.esdihumboldt.hale.common.schema.groovy.constraints.ConstraintFactory
+import eu.esdihumboldt.hale.common.schema.groovy.constraints.NillableFactory
 import eu.esdihumboldt.hale.common.schema.model.Definition
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
@@ -29,6 +32,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag
+import eu.esdihumboldt.hale.common.schema.model.impl.AbstractDefinition
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultGroupPropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema
@@ -54,6 +58,12 @@ class SchemaBuilder {
 	def current
 
 	/**
+	 * Maps attribute names to constraint factories.
+	 * Initialized with default factories.
+	 */
+	Map<String, ConstraintFactory> constraints = new HashMap<>()
+
+	/**
 	 * The default namespace.
 	 */
 	String defaultNamespace
@@ -72,6 +82,16 @@ class SchemaBuilder {
 	 * Set containing all used default property type names.
 	 */
 	private Set<String> defaultTypeNames = new HashSet<>()
+
+	/**
+	 * Default constructor registering default constraint factories.
+	 */
+	SchemaBuilder() {
+		super()
+
+		constraints.cardinality = new CardinalityFactory()
+		constraints.nillable = new NillableFactory()
+	}
 
 	/**
 	 * Reset the builder
@@ -237,6 +257,8 @@ class SchemaBuilder {
 		QName typeName = createName(name, attributes)
 		DefaultTypeDefinition type = new DefaultTypeDefinition(typeName)
 
+		addConstraints(type, attributes, params)
+
 		type
 	}
 
@@ -246,6 +268,8 @@ class SchemaBuilder {
 				newDefaultPropertyTypeName('group'))
 		DefaultGroupPropertyDefinition group = new DefaultGroupPropertyDefinition(
 				name, parent, false)
+
+		addConstraints(group, attributes, params)
 
 		group
 	}
@@ -302,6 +326,48 @@ class SchemaBuilder {
 		QName propertyName = createName(name, attributes)
 		DefaultPropertyDefinition property = new DefaultPropertyDefinition(propertyName, parent,
 				propertyType);
+
+		addConstraints(property, attributes, params)
+
+		property
+	}
+
+	/**
+	 * Add constraints based on the given attributes and parameters.
+	 * 
+	 * @param definition the definition to add constraints to 
+	 * @param attributes the map that will be checked for keys matching entries
+	 *   of the {@link #constraints} map to create constraints with the
+	 *   associated factories
+	 * @param params the additional parameters
+	 */
+	protected void addConstraints(AbstractDefinition definition, Map attributes, List params) {
+		// add constraints from attributes
+		attributes?.each { key, value ->
+			ConstraintFactory fact = (ConstraintFactory) constraints[key]
+			if (fact) {
+				definition.setConstraint(fact.createConstraint(value, definition))
+			}
+		}
+
+		// add additional custom attributes
+		// last param must be a list
+		if (params && params.last() instanceof List) {
+			List constraintList = (List) params.last()
+			constraintList.each {
+				if (it instanceof Closure) {
+					// closure creating a constraint
+					def constraint = it.call(definition)
+					if (constraint) {
+						definition.setConstraint(constraint)
+					}
+				}
+				else {
+					// else assume the parameter is the constraint
+					definition.setConstraint(it)
+				}
+			}
+		}
 	}
 
 	/**

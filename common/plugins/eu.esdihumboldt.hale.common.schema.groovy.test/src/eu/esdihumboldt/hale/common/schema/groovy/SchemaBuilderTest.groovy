@@ -20,6 +20,10 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex
+import eu.esdihumboldt.hale.common.schema.model.constraint.DisplayName
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag
 
@@ -331,6 +335,78 @@ class SchemaBuilderTest extends GroovyTestCase {
 
 		assertNotNull itemType
 		assertEquals 4, itemType.children.size()
+	}
+
+	/**
+	 * Test assigning named and custom constraints.
+	 */
+	void testConstraints() {
+		// create the schema
+		Schema schema = new SchemaBuilder().schema {
+			def itemType = ItemType([
+				AbstractFlag.ENABLED,
+				new DisplayName('Item')
+			]) {
+				id(Long, nillable: false, [Cardinality.CC_EXACTLY_ONCE])
+				name(String)
+				price(Double, [NillableFlag.ENABLED])
+				description(String, nillable: true)
+			}
+
+			OrderType {
+				_ (cardinality: '1..n') {
+					item(itemType, cardinality: 1)
+					quantity(Integer, cardinality: 1..1)
+				}
+			}
+		}
+
+		assertEquals "Number of types is incorrect", 2, schema.types.size()
+
+		// order type
+		TypeDefinition orderType = schema.types.find {
+			it.name.localPart == 'OrderType'
+		}
+		assertNotNull orderType
+
+		assertEquals 1, orderType.children.size()
+
+		// group
+		GroupPropertyDefinition group = orderType.children[0]
+		assertNotNull group
+
+		assertEquals 2, group.declaredChildren.size()
+		assertEquals Cardinality.get(1, Cardinality.UNBOUNDED), group.getConstraint(Cardinality)
+
+		// children
+		PropertyDefinition childItem = group.declaredChildren[0]
+		assertEquals 'item', childItem.name.localPart
+		assertEquals Cardinality.CC_EXACTLY_ONCE, childItem.getConstraint(Cardinality)
+
+		PropertyDefinition childQuantity = group.declaredChildren[1]
+		assertEquals 'quantity', childQuantity.name.localPart
+		assertEquals Cardinality.CC_EXACTLY_ONCE, childQuantity.getConstraint(Cardinality)
+
+		// item
+		TypeDefinition itemType = childItem.propertyType
+		assertEquals AbstractFlag.ENABLED, itemType.getConstraint(AbstractFlag)
+		assertEquals 'Item', itemType.getConstraint(DisplayName).customName
+
+		assertEquals 4, itemType.children.size()
+
+		// item children
+		PropertyDefinition id = itemType.children[0]
+		assertEquals 'id', id.name.localPart
+		assertEquals NillableFlag.DISABLED, id.getConstraint(NillableFlag)
+		assertEquals Cardinality.CC_EXACTLY_ONCE, id.getConstraint(Cardinality)
+
+		PropertyDefinition price = itemType.children[2]
+		assertEquals 'price', price.name.localPart
+		assertEquals NillableFlag.ENABLED, price.getConstraint(NillableFlag)
+
+		PropertyDefinition desc = itemType.children[3]
+		assertEquals 'description', desc.name.localPart
+		assertEquals NillableFlag.ENABLED, desc.getConstraint(NillableFlag)
 	}
 
 }

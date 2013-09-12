@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.common.schema.groovy.constraints;
 
 import eu.esdihumboldt.hale.common.schema.groovy.SchemaBuilder;
 import eu.esdihumboldt.hale.common.schema.model.Constraint;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
 
 /**
  * Interface for constraint factories for registration with the schema builder.
@@ -33,8 +34,8 @@ public interface ConstraintFactory<T> {
 	 * Create a constraint from the given argument.
 	 * 
 	 * @param arg the argument describing the constraint
+	 * @param context the constraint context it is added to
 	 * @return the constraint
 	 */
-	public T createConstraint(Object arg);
-
+	public T createConstraint(Object arg, Definition<?> context);
 }
