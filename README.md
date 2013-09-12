@@ -15,7 +15,7 @@ The HUMBOLDT Alignment Editor (HALE) enables you to transform and harmonise spat
 
 ## Instructions
 
-1. To contribute: Fork and then clone the repository. Send us pull requests with your contributions.
+1. To contribute: Fork and then clone the repository. Send us pull requests with your contributions. [Read here how to set up the development environment](http://www.esdi-community.eu/projects/hale/wiki/Set_up_your_development_environment)
 2. To download: Clone or Download the .zip file to build HALE. To get the last release + nightly builds, visit the [HALE Community Website](http://community.esdi-humboldt.eu/projects/hale/files)
 
 ## System Requirements
