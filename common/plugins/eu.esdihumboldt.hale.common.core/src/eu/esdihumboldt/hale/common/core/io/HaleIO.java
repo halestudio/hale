@@ -44,6 +44,7 @@ import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueExtension;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderExtension;
 import eu.esdihumboldt.hale.common.core.io.supplier.LookupStreamResource;
+import eu.esdihumboldt.util.Pair;
 
 /**
  * Hale I/O utilities
@@ -352,6 +353,42 @@ public abstract class HaleIO {
 		}
 
 		return HaleIO.createIOProvider(providerType, contentType, null);
+	}
+
+	/**
+	 * Find an I/O provider instance for the given input
+	 * 
+	 * @param <T> the provider interface type
+	 * 
+	 * @param providerType the provider type, usually an interface
+	 * @param in the input supplier to use for testing, may be <code>null</code>
+	 *            if the file name is not <code>null</code>
+	 * @param filename the file name, may be <code>null</code> if the input
+	 *            supplier is not <code>null</code>
+	 * @return a pair with the I/O provider and the corresponding identifier,
+	 *         both are <code>null</code> if no matching I/O provider was found
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T extends IOProvider> Pair<T, String> findIOProviderAndId(Class<T> providerType,
+			InputSupplier<? extends InputStream> in, String filename) {
+		T reader = null;
+		String providerId = null;
+		IContentType contentType = HaleIO.findContentType(providerType, in, filename);
+		if (contentType != null) {
+			IOProviderDescriptor factory = HaleIO.findIOProviderFactory(providerType, contentType,
+					null);
+			try {
+				reader = (T) factory.createExtensionObject();
+				providerId = factory.getIdentifier();
+			} catch (Exception e) {
+				throw new RuntimeException("Could not create I/O provider", e);
+			}
+
+			if (reader != null) {
+				reader.setContentType(contentType);
+			}
+		}
+		return new Pair<T, String>(reader, providerId);
 	}
 
 	/**
