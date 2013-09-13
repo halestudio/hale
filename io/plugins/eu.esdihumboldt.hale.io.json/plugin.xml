@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            file-extensions="json"
+            id="eu.esdihumboldt.hale.io.json"
+            name="JSON File"
+            priority="normal">
+      </content-type>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.provider">
+      <provider
+            class="eu.esdihumboldt.hale.io.json.JsonInstanceWriter"
+            id="eu.esdihumboldt.hale.io.json.writer"
+            name="JSON">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.json">
+         </contentType>
+      </provider>
+   </extension>
+
+</plugin>
