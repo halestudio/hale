@@ -24,6 +24,7 @@ import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
+import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.util.LocationUpdater;
 
 /**
@@ -120,6 +121,13 @@ public interface ProjectService {
 	 * @param uri the project file
 	 */
 	public void load(URI uri);
+
+	/**
+	 * Load a template project.
+	 * 
+	 * @param project the project template
+	 */
+	public void loadTemplate(Project project);
 
 	/**
 	 * Open a project.

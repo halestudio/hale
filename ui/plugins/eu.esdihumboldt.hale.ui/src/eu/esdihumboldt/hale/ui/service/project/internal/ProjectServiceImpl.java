@@ -197,17 +197,28 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 				synchronized (ProjectServiceImpl.this) {
 					main = provider.getProject();
-					updater = new UILocationUpdater(main, provider.getSource().getLocation());
-					updater.updateProject(true);
-					if ("file".equalsIgnoreCase(provider.getSource().getLocation().getScheme())) {
-						projectFile = new File(provider.getSource().getLocation());
+					if (provider.getSource() != null) {
+						// loaded project
+						updater = new UILocationUpdater(main, provider.getSource().getLocation());
+						updater.updateProject(true);
+						if ("file".equalsIgnoreCase(provider.getSource().getLocation().getScheme())) {
+							projectFile = new File(provider.getSource().getLocation());
+						}
+						else {
+							projectFile = null;
+						}
+					}
+					else {
+						// project template
+						projectFile = null;
 					}
 
 					changed = false;
 					RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench()
 							.getService(RecentFilesService.class);
-					if (projectFile != null)
+					if (projectFile != null) {
 						rfs.add(projectFile.getAbsolutePath(), main.getName());
+					}
 					// XXX safe history in case of non-file loaded projects?
 					// possibly always safe URI raw paths (and show the history
 					// with decoded paths and removed file:/ in case of files)?
@@ -217,7 +228,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 					// store the content type the project was loaded with
 					IContentType ct = provider.getContentType();
-					if (ct == null) {
+					if (ct == null && provider.getSource() != null) {
 						log.warn("Project content type was not determined during load, trying auto-detection");
 						try {
 							URI loc = provider.getSource().getLocation();
@@ -538,6 +549,15 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		else {
 			log.userError("The project format is not supported.");
 		}
+	}
+
+	@Override
+	public void loadTemplate(Project project) {
+		// no change check as this is done by clean before a new project is
+		// loaded
+
+		ProjectReader reader = new DummyProjectReader(project);
+		executeProvider(reader, openProjectAdvisor);
 	}
 
 	/**
