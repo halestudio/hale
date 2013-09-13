@@ -15,11 +15,8 @@
 
 package eu.esdihumboldt.hale.io.json;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-
-import org.codehaus.jackson.map.ObjectMapper;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -53,8 +50,6 @@ public class JsonInstanceWriter extends AbstractInstanceWriter {
 
 		URI target = getTarget().getLocation();
 		JacksonMapper mapper = new JacksonMapper(target);
-		ObjectMapper mapper1 = new ObjectMapper();
-		mapper1.writeValue(new File("tests.json"), getInstances());
 		mapper.streamWriteCollection(getInstances());
 		return null;
 	}

@@ -16,30 +16,37 @@
 package eu.esdihumboldt.hale.io.json;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URI;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.Iterator;
 
 import javax.xml.namespace.QName;
 
-import org.codehaus.jackson.JsonEncoding;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.geotools.geojson.geom.GeometryJSON;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 
 /**
- * Transform Instances into JSON using the Jackson-API
+ * Transform Instances into JSON/GeoJSON using the Jackson-API and the Geotools
+ * GeoJSON-API
  * 
  * @author Sebastian Reinhardt
  */
@@ -47,6 +54,7 @@ public class JacksonMapper {
 
 	File file;
 	JsonGenerator g;
+	GeometryJSON gj;
 
 	/**
 	 * @param target the target file to write to
@@ -54,15 +62,6 @@ public class JacksonMapper {
 	public JacksonMapper(URI target) {
 		file = new File(target);
 
-		// initialise Jackson Json Streaming Api
-		JsonFactory f = new JsonFactory();
-		try {
-			g = f.createJsonGenerator(file, JsonEncoding.UTF8);
-			g.useDefaultPrettyPrinter();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -73,16 +72,32 @@ public class JacksonMapper {
 	 */
 	public void streamWriteCollection(InstanceCollection instances) throws IOException {
 
-		g.writeStartObject();
+		try (BufferedWriter writer = Files.newBufferedWriter(file.toPath(),
+				Charset.forName("UTF-8"))) {
 
-		// iterate through Instances
-		ResourceIterator<Instance> itInstance = instances.iterator();
-		while (itInstance.hasNext()) {
-			Instance instance = itInstance.next();
-			streamWriteInstance(instance, null);
+			// initialize Jackson Json Streaming Api
+			JsonFactory f = new JsonFactory();
+			// initialize GeoJSON Api
+			gj = new GeometryJSON();
+
+			g = f.createJsonGenerator(writer);
+			g.useDefaultPrettyPrinter();
+			g.writeStartObject();
+
+			// iterate through Instances
+			ResourceIterator<Instance> itInstance = instances.iterator();
+			while (itInstance.hasNext()) {
+				Instance instance = itInstance.next();
+				streamWriteInstance(instance, null, writer);
+			}
+			g.writeEndObject();
+			g.flush();
+			g.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		g.writeEndObject();
-		g.close();
+
 		isValidJSON(readFile(file));
 	}
 
@@ -91,10 +106,11 @@ public class JacksonMapper {
 	 * 
 	 * @param instance the instance to write
 	 * @param instanceName the QName of the instance
+	 * @param writer the writer used
 	 * @throws JsonGenerationException
 	 * @throws IOException
 	 */
-	private void streamWriteInstance(Instance instance, QName instanceName)
+	private void streamWriteInstance(Instance instance, QName instanceName, BufferedWriter writer)
 			throws JsonGenerationException, IOException {
 		// write the Instance and name
 		if (instanceName == null) {
@@ -105,12 +121,12 @@ public class JacksonMapper {
 
 		// check if the instance contains a value and write it down
 		if (instance.getValue() != null) {
-			// if (instance.getValue() instanceof Geometry
-			// || instance.getValue() instanceof GeometryProperty<?>) {
-			// streamWriteGeometry("_value", instance.getValue());
-			// g.writeEndObject();
-			// return;
-			// }
+			if (instance.getValue() instanceof Geometry
+					|| instance.getValue() instanceof GeometryProperty<?>) {
+				streamWriteGeometry("_value", instance.getValue());
+				g.writeEndObject();
+				return;
+			}
 			if (instance.getValue() instanceof Number) {
 				streamWriteNumeric("_value", instance.getValue());
 			}
@@ -128,15 +144,14 @@ public class JacksonMapper {
 			if (values != null) {
 				for (Object obj : values) {
 					if (obj instanceof Instance) {
-						streamWriteInstance((Instance) obj, name);
+						streamWriteInstance((Instance) obj, name, writer);
 					}
 					else if (obj instanceof Group) {
-						streamWriteGroup((Group) obj);
+						streamWriteGroup((Group) obj, writer);
 					}
-					// else if (obj instanceof Geometry || obj instanceof
-					// GeometryProperty<?>) {
-					// streamWriteGeometry(name.getLocalPart(), obj);
-					// }
+					else if (obj instanceof Geometry || obj instanceof GeometryProperty<?>) {
+						streamWriteGeometry(name.getLocalPart(), obj);
+					}
 					else if (obj instanceof Number) {
 						streamWriteNumeric(name.getLocalPart(), obj);
 					}
@@ -152,10 +167,12 @@ public class JacksonMapper {
 	 * writes a group into JSON
 	 * 
 	 * @param group the group to write
+	 * @param writer the writer used
 	 * @throws JsonGenerationException
 	 * @throws IOException
 	 */
-	private void streamWriteGroup(Group group) throws JsonGenerationException, IOException {
+	private void streamWriteGroup(Group group, BufferedWriter writer)
+			throws JsonGenerationException, IOException {
 		// write the Instance and name
 		g.writeObjectFieldStart("Group");
 
@@ -169,15 +186,14 @@ public class JacksonMapper {
 			if (values != null) {
 				for (Object obj : values) {
 					if (obj instanceof Instance) {
-						streamWriteInstance((Instance) obj, name);
+						streamWriteInstance((Instance) obj, name, writer);
 					}
 					else if (obj instanceof Group) {
-						streamWriteGroup((Group) obj);
+						streamWriteGroup((Group) obj, writer);
 					}
-					// else if (obj instanceof Geometry || obj instanceof
-					// GeometryProperty<?>) {
-					// streamWriteGeometry(name.getLocalPart(), obj);
-					// }
+					else if (obj instanceof Geometry || obj instanceof GeometryProperty<?>) {
+						streamWriteGeometry(name.getLocalPart(), obj);
+					}
 
 					else if (obj instanceof Number) {
 						streamWriteNumeric(name.getLocalPart(), obj);
@@ -221,6 +237,18 @@ public class JacksonMapper {
 			g.writeNumberField(name, (Double) obj);
 	}
 
+	private void streamWriteGeometry(String name, Object obj) throws IOException {
+
+		g.writeFieldName(name);
+
+		if (obj instanceof Geometry) {
+			g.writeRawValue(gj.toString((Geometry) obj));
+		}
+		else if (obj instanceof GeometryProperty<?>) {
+			g.writeRawValue(gj.toString(((GeometryProperty<?>) obj).getGeometry()));
+		}
+	}
+
 	/**
 	 * validates a json string
 	 * 
@@ -232,6 +260,7 @@ public class JacksonMapper {
 		try {
 			final JsonParser parser = new ObjectMapper().getJsonFactory().createJsonParser(json);
 			while (parser.nextToken() != null) {
+				//
 			}
 			valid = true;
 		} catch (JsonParseException jpe) {
