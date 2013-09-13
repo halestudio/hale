@@ -1,0 +1,69 @@
+/*
+ * Copyright (c) 2013 Data Harmonisation Panel
+ * 
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
+ */
+
+package eu.esdihumboldt.hale.ui.function;
+
+import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
+
+import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardDescriptor;
+import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardExtension;
+import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
+import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
+import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
+
+/**
+ * Function wizard utilities.
+ * 
+ * @author Simon Templer
+ */
+public class FunctionWizardUtil {
+
+	/**
+	 * Open a wizard that creates a new relation with the given ID and adds the
+	 * result to the alignment.
+	 * 
+	 * @param functionId the function identifier
+	 * @param elements the schema selection defining the initial selection
+	 * @return the created cell or <code>null</code>
+	 */
+	public static Cell createNewWizard(String functionId, SchemaSelection elements) {
+		FunctionWizardDescriptor<?> desc = FunctionWizardExtension.getInstance()
+				.getWizardDescriptor(functionId);
+		FunctionWizard wizard = desc.createNewWizard(elements);
+
+		if (wizard != null) {
+			// initialize the wizard
+			wizard.init();
+
+			HaleWizardDialog dialog = new HaleWizardDialog(Display.getCurrent().getActiveShell(),
+					wizard);
+
+			if (dialog.open() == WizardDialog.OK) {
+				MutableCell cell = wizard.getResult();
+				AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+						AlignmentService.class);
+				as.addCell(cell);
+				return cell;
+			}
+		}
+
+		return null;
+	}
+
+}
