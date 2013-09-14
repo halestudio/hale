@@ -34,6 +34,8 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag
 import eu.esdihumboldt.hale.common.schema.model.impl.AbstractDefinition
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultGroupPropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition
@@ -267,6 +269,11 @@ class SchemaBuilder {
 		DefaultTypeDefinition type = new DefaultTypeDefinition(typeName)
 
 		addConstraints(type, attributes, params)
+
+		// named types are by default mappable
+		type.setConstraintIfNotSet(MappableFlag.ENABLED)
+		// and mapping relevant TODO configure?
+		type.setConstraintIfNotSet(MappingRelevantFlag.ENABLED);
 
 		type
 	}
