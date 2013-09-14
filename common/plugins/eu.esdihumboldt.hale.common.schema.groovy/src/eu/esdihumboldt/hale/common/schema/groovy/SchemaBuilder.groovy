@@ -24,6 +24,7 @@ import eu.esdihumboldt.hale.common.schema.groovy.constraints.ChoiceFactory
 import eu.esdihumboldt.hale.common.schema.groovy.constraints.ConstraintFactory
 import eu.esdihumboldt.hale.common.schema.groovy.constraints.DisplayNameFactory
 import eu.esdihumboldt.hale.common.schema.groovy.constraints.NillableFactory
+import eu.esdihumboldt.hale.common.schema.groovy.constraints.TypeAbstractFactory
 import eu.esdihumboldt.hale.common.schema.model.Definition
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
@@ -102,6 +103,7 @@ class SchemaBuilder {
 		constraints.nillable = NillableFactory.instance
 		constraints.display = DisplayNameFactory.instance
 		constraints.choice = ChoiceFactory.instance
+		constraints.abstract = TypeAbstractFactory.instance
 	}
 
 	/**
