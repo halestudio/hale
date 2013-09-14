@@ -98,7 +98,7 @@
                value="plugin_customization.ini">
          </property>
          <property
-               name="startupForegroundColor"
+               name="splashFontColor"
                value="dddddd">
          </property>
          <property
