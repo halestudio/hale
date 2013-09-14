@@ -25,6 +25,7 @@ import eu.esdihumboldt.hale.common.schema.groovy.constraints.CardinalityFactory
 import eu.esdihumboldt.hale.common.schema.groovy.constraints.ChoiceFactory
 import eu.esdihumboldt.hale.common.schema.groovy.constraints.ConstraintFactory
 import eu.esdihumboldt.hale.common.schema.groovy.constraints.DisplayNameFactory
+import eu.esdihumboldt.hale.common.schema.groovy.constraints.EnumerationFactory
 import eu.esdihumboldt.hale.common.schema.groovy.constraints.NillableFactory
 import eu.esdihumboldt.hale.common.schema.groovy.constraints.TypeAbstractFactory
 import eu.esdihumboldt.hale.common.schema.model.Definition
@@ -108,6 +109,8 @@ class SchemaBuilder {
 		constraints.abstract = TypeAbstractFactory.instance
 		constraints.augmented = AugmentedValueFactory.instance
 		constraints.binding = BindingFactory.instance
+		constraints.enum = EnumerationFactory.instance
+		constraints.enumeration = EnumerationFactory.instance
 	}
 
 	/**
