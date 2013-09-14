@@ -23,10 +23,12 @@ import java.util.Map.Entry;
 
 import javax.xml.namespace.QName;
 
+import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Multiset;
 
 import de.cs3d.util.logging.ALogger;
@@ -43,7 +45,9 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.schema.groovy.DefinitionAccessor;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -195,6 +199,49 @@ public abstract class AlignmentUtil {
 			// last element is a child but no property
 			return new ChildEntityDefinition(type, path, schemaSpace, filter);
 		}
+	}
+
+	/**
+	 * Create an entity definition from a definition accessor. Child contexts
+	 * will all be defaults contexts.
+	 * 
+	 * @param accessor the definition accessor, the topmost parent has to
+	 *            represent a {@link TypeDefinition}, all other accessors may
+	 *            only contain {@link ChildDefinition}s
+	 * @param schemaSpace the associated schema space
+	 * @param filter the entity filter on the type, may be <code>null</code>
+	 * @return the created entity definition
+	 */
+	public static EntityDefinition createEntity(DefinitionAccessor accessor,
+			SchemaSpaceID schemaSpace, Filter filter) {
+		// collect definitions
+		List<Definition<?>> defs = new ArrayList<>();
+
+		DefinitionAccessor parent = accessor;
+		while (parent != null) {
+			defs.addAll(0, parent.getAccessorPath().getPath());
+			parent = parent.getParentAccessor();
+		}
+
+		// create entity definition
+		Definition<?> top = defs.remove(0);
+		if (!(top instanceof TypeDefinition)) {
+			throw new IllegalArgumentException("Topmost accessor must represent a type definition");
+		}
+
+		List<ChildContext> path = Lists.transform(defs,
+				new Function<Definition<?>, ChildContext>() {
+
+					@Override
+					public ChildContext apply(Definition<?> input) {
+						if (input instanceof ChildDefinition<?>) {
+							return new ChildContext((ChildDefinition<?>) input);
+						}
+						throw new IllegalArgumentException(
+								"All definitions in child accessors must be ChildDefinitions");
+					}
+				});
+		return createEntity((TypeDefinition) top, path, schemaSpace, filter);
 	}
 
 	/**
