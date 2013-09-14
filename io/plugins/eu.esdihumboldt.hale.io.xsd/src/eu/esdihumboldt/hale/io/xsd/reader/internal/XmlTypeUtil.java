@@ -408,7 +408,7 @@ public abstract class XmlTypeUtil {
 						Integer.parseInt(facet.getValue().toString())));
 			}
 			else if (facet instanceof XmlSchemaWhiteSpaceFacet) {
-				reporter.warn(new IOMessageImpl("White space facet not supported", null, facet
+				reporter.info(new IOMessageImpl("White space facet not supported", null, facet
 						.getLineNumber(), facet.getLinePosition()));
 				// Nothing to validate according to w3.
 				// Values should be processed according to rule?
