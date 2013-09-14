@@ -19,6 +19,8 @@ import javax.xml.namespace.QName
 
 import org.codehaus.groovy.runtime.InvokerHelper
 
+import eu.esdihumboldt.hale.common.schema.groovy.constraints.AugmentedValueFactory
+import eu.esdihumboldt.hale.common.schema.groovy.constraints.BindingFactory
 import eu.esdihumboldt.hale.common.schema.groovy.constraints.CardinalityFactory
 import eu.esdihumboldt.hale.common.schema.groovy.constraints.ChoiceFactory
 import eu.esdihumboldt.hale.common.schema.groovy.constraints.ConstraintFactory
@@ -104,6 +106,8 @@ class SchemaBuilder {
 		constraints.display = DisplayNameFactory.instance
 		constraints.choice = ChoiceFactory.instance
 		constraints.abstract = TypeAbstractFactory.instance
+		constraints.augmented = AugmentedValueFactory.instance
+		constraints.binding = BindingFactory.instance
 	}
 
 	/**
