@@ -27,7 +27,6 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import org.eclipse.ui.internal.util.PrefUtil;
 import org.osgi.framework.Version;
 
-import eu.esdihumboldt.hale.ui.application.internal.Messages;
 import eu.esdihumboldt.hale.ui.launchaction.LaunchAction;
 import eu.esdihumboldt.hale.ui.service.instance.validation.InstanceValidationService;
 import eu.esdihumboldt.hale.ui.util.selection.SelectionTracker;
@@ -67,8 +66,8 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 	public void preWindowOpen() {
 		IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
 		configurer.setInitialSize(new Point(1280, 1024));
-		configurer.setTitle(Messages.ApplicationWorkbenchWindowAdvisor_0 + //$NON-NLS-1$
-				Version.parseVersion(Display.getAppVersion()));
+		configurer.setTitle(Display.getAppName() + " "
+				+ Version.parseVersion(Display.getAppVersion()));
 		configurer.setShowCoolBar(true); // this reserves space for action bars
 											// on top.
 		configurer.setShowPerspectiveBar(true); // this reserves space for the
