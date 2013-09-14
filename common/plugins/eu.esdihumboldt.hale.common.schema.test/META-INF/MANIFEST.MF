@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Schema API Tests
+Bundle-SymbolicName: eu.esdihumboldt.hale.common.schema.test
+Bundle-Version: 2.6.0.qualifier
+Bundle-Vendor: Data Harmonisation Panel
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: eu.esdihumboldt.hale.common.schema;bundle-version="2.6.0",
+ eu.esdihumboldt.hale.common.schema.groovy;bundle-version="2.6.0",
+ groovy;bundle-version="2.1.6"
+Import-Package: junit.framework;version="4.8.2"
