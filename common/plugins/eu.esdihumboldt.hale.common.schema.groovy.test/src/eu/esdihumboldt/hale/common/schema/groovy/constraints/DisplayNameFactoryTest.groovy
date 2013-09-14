@@ -26,16 +26,12 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class DisplayNameFactoryTest extends GroovyTestCase {
 
-	private DisplayNameFactory dnf
-
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp()
-
-		dnf = new DisplayNameFactory()
-	}
+	/*
+	 * NOTE: In Eclipse in the editor there might be errors shown here,
+	 * even if the code actually compiles.
+	 */
 
 	void testName() {
-		assertEquals 'test', dnf.createConstraint('test').customName
+		assertEquals 'test', DisplayNameFactory.instance.createConstraint('test').customName
 	}
 }

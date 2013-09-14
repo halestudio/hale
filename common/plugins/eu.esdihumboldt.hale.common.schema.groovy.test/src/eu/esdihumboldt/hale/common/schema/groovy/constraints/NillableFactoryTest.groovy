@@ -27,17 +27,13 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class NillableFactoryTest extends GroovyTestCase {
 
-	private NillableFactory nf
-
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp()
-
-		nf = new NillableFactory()
-	}
+	/*
+	 * NOTE: In Eclipse in the editor there might be errors shown here,
+	 * even if the code actually compiles.
+	 */
 
 	void testTrueFalse() {
-		assertEquals NillableFlag.ENABLED, nf.createConstraint(true)
-		assertEquals NillableFlag.DISABLED, nf.createConstraint(false)
+		assertEquals NillableFlag.ENABLED, NillableFactory.instance.createConstraint(true)
+		assertEquals NillableFlag.DISABLED, NillableFactory.instance.createConstraint(false)
 	}
 }

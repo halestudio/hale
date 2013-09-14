@@ -20,6 +20,7 @@ import javax.xml.namespace.QName
 import org.codehaus.groovy.runtime.InvokerHelper
 
 import eu.esdihumboldt.hale.common.schema.groovy.constraints.CardinalityFactory
+import eu.esdihumboldt.hale.common.schema.groovy.constraints.ChoiceFactory
 import eu.esdihumboldt.hale.common.schema.groovy.constraints.ConstraintFactory
 import eu.esdihumboldt.hale.common.schema.groovy.constraints.DisplayNameFactory
 import eu.esdihumboldt.hale.common.schema.groovy.constraints.NillableFactory
@@ -90,9 +91,15 @@ class SchemaBuilder {
 	SchemaBuilder() {
 		super()
 
-		constraints.cardinality = new CardinalityFactory()
-		constraints.nillable = new NillableFactory()
-		constraints.display = new DisplayNameFactory()
+		/*
+		 * NOTE: In Eclipse in the editor there might be errors shown here,
+		 * even if the code actually compiles. 
+		 */
+
+		constraints.cardinality = CardinalityFactory.instance
+		constraints.nillable = NillableFactory.instance
+		constraints.display = DisplayNameFactory.instance
+		constraints.choice = ChoiceFactory.instance
 	}
 
 	/**

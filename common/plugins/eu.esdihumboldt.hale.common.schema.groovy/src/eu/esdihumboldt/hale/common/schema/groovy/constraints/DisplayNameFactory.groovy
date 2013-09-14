@@ -25,6 +25,7 @@ import groovy.transform.CompileStatic
  * 
  * @author Simon Templer
  */
+@Singleton
 @CompileStatic
 class DisplayNameFactory implements ConstraintFactory<DisplayName> {
 
