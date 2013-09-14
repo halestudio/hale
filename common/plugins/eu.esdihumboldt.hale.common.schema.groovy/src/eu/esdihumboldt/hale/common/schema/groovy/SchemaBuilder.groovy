@@ -21,6 +21,7 @@ import org.codehaus.groovy.runtime.InvokerHelper
 
 import eu.esdihumboldt.hale.common.schema.groovy.constraints.CardinalityFactory
 import eu.esdihumboldt.hale.common.schema.groovy.constraints.ConstraintFactory
+import eu.esdihumboldt.hale.common.schema.groovy.constraints.DisplayNameFactory
 import eu.esdihumboldt.hale.common.schema.groovy.constraints.NillableFactory
 import eu.esdihumboldt.hale.common.schema.model.Definition
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup
@@ -91,6 +92,7 @@ class SchemaBuilder {
 
 		constraints.cardinality = new CardinalityFactory()
 		constraints.nillable = new NillableFactory()
+		constraints.display = new DisplayNameFactory()
 	}
 
 	/**
@@ -346,7 +348,10 @@ class SchemaBuilder {
 		attributes?.each { key, value ->
 			ConstraintFactory fact = (ConstraintFactory) constraints[key]
 			if (fact) {
-				definition.setConstraint(fact.createConstraint(value, definition))
+				def constraint = fact.createConstraint(value, definition)
+				if (constraint != null) {
+					definition.setConstraint(constraint)
+				}
 			}
 		}
 
