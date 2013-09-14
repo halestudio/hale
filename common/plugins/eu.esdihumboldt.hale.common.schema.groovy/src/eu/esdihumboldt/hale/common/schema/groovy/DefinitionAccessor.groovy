@@ -117,6 +117,21 @@ class DefinitionAccessor {
 	}
 
 	/**
+	 * Find the property with the given name and namespace.
+	 * 
+	 * Convenience method for Java access, only usable with
+	 * {@link Mode#SINGLE_LAX} or {@link Mode#SINGLE_STRICT}. 
+	 *
+	 * @param name the property name
+	 * @param namespace the namespace, if <code>null</code> the property
+	 *   namespace is ignored
+	 * @return a {@link DefinitionAccessor}
+	 */
+	DefinitionAccessor findProperty(String name, String namespace = null) {
+		(DefinitionAccessor) findProperties(name, namespace)
+	}
+
+	/**
 	 * Find properties with the given name and namespace.
 	 *  
 	 * @param name the property name
