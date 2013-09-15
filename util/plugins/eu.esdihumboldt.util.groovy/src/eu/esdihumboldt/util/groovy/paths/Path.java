@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Data Harmonisation Panel
+ * Copyright (c) 2013 Simon Templer
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -10,30 +10,29 @@
  * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
  * 
  * Contributors:
- *     Data Harmonisation Panel <http://www.dhpanel.eu>
+ *     Simon Templer - initial version
  */
 
-package eu.esdihumboldt.hale.common.schema.helper;
+package eu.esdihumboldt.util.groovy.paths;
 
 import java.util.List;
 
-import eu.esdihumboldt.hale.common.schema.model.Definition;
-
 /**
- * Represents a path of definitions.
+ * Represents a path.
  * 
  * FIXME might have to be adapted to represent possible loops
  * 
+ * @param <C> the element type
  * @author Simon Templer
  */
-public interface DefinitionPath {
+public interface Path<C> {
 
 	/**
-	 * Get the path of definitions.
+	 * Get the path elements.
 	 * 
-	 * @return the list of definitions on the path
+	 * @return the list of elements on the path
 	 */
-	public List<Definition<?>> getPath();
+	public List<C> getElements();
 
 	/**
 	 * Create a sub path.
@@ -41,7 +40,7 @@ public interface DefinitionPath {
 	 * @param child the child to add at the end of the path
 	 * @return the child path
 	 */
-	public DefinitionPath subPath(Definition<?> child);
+	public Path<C> subPath(C child);
 
 	/**
 	 * Create a sub path.
@@ -49,6 +48,6 @@ public interface DefinitionPath {
 	 * @param append the path to append
 	 * @return the child path
 	 */
-	public DefinitionPath subPath(DefinitionPath append);
+	public Path<C> subPath(Path<C> append);
 
 }
