@@ -60,6 +60,14 @@ class DefinitionAccessorTest extends GroovyTestCase {
 	}
 
 	/**
+	 * Tests invoking the accessor through the meta class.
+	 */
+	void testMetaClass() {
+		Definition definition = itemType.accessor().price as Definition
+		assertNotNull definition
+	}
+
+	/**
 	 * Simple test w/ all found paths.
 	 */
 	void testSimpleAll() {
