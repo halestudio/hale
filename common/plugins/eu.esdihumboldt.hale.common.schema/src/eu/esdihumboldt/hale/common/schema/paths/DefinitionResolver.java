@@ -13,21 +13,23 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.schema.helper;
+package eu.esdihumboldt.hale.common.schema.paths;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import eu.esdihumboldt.hale.common.schema.helper.internal.CachedResolver;
-import eu.esdihumboldt.hale.common.schema.helper.internal.DefinitionPathImpl;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.paths.internal.CachedResolver;
+import eu.esdihumboldt.util.groovy.paths.Path;
+import eu.esdihumboldt.util.groovy.paths.PathImpl;
 
 /**
  * Resolves property names on {@link DefinitionGroup}s.
@@ -47,7 +49,7 @@ public class DefinitionResolver {
 	 *            namespace should be ignored
 	 * @return the list of found definition paths
 	 */
-	public static List<DefinitionPath> findPropertyCached(DefinitionGroup parent, String name,
+	public static List<Path<Definition<?>>> findPropertyCached(DefinitionGroup parent, String name,
 			String namespace) {
 		if (parent instanceof TypeDefinition) {
 			return ((TypeDefinition) parent).getConstraint(CachedResolver.class).getResolvedPaths(
@@ -75,9 +77,9 @@ public class DefinitionResolver {
 	 *            namespace should be ignored
 	 * @return the list of found definition paths
 	 */
-	public static List<DefinitionPath> findProperty(DefinitionGroup parent, String name,
+	public static List<Path<Definition<?>>> findProperty(DefinitionGroup parent, String name,
 			String namespace) {
-		return findProperty(parent, name, namespace, new DefinitionPathImpl(), false);
+		return findProperty(parent, name, namespace, new PathImpl<Definition<?>>(), false);
 	}
 
 	/**
@@ -98,9 +100,9 @@ public class DefinitionResolver {
 	 *            used
 	 * @return the list of found definition paths
 	 */
-	public static List<DefinitionPath> findProperty(DefinitionGroup parent, String name,
-			String namespace, DefinitionPath basePath, boolean useCachedResolver) {
-		List<DefinitionPath> results = new ArrayList<>();
+	public static List<Path<Definition<?>>> findProperty(DefinitionGroup parent, String name,
+			String namespace, Path<Definition<?>> basePath, boolean useCachedResolver) {
+		List<Path<Definition<?>>> results = new ArrayList<>();
 		for (ChildDefinition<?> child : DefinitionUtil.getAllChildren(parent)) {
 			if (child.asProperty() != null) {
 				// properties may only be direct matches
@@ -111,7 +113,7 @@ public class DefinitionResolver {
 			}
 			else if (child.asGroup() != null) {
 				GroupPropertyDefinition group = child.asGroup();
-				DefinitionPath groupPath = basePath.subPath(group);
+				Path<Definition<?>> groupPath = basePath.subPath(group);
 
 				/*
 				 * If the name is a match, we take the reference to the group as
@@ -124,14 +126,14 @@ public class DefinitionResolver {
 				// FIXME what about group cycles?
 
 				// check the group children
-				List<DefinitionPath> childResults;
+				List<Path<Definition<?>>> childResults;
 				if (useCachedResolver) {
 					childResults = findPropertyCached(group, name, namespace);
 				}
 				else {
 					childResults = findProperty(group, name, namespace);
 				}
-				for (DefinitionPath path : childResults) {
+				for (Path<Definition<?>> path : childResults) {
 					results.add(groupPath.subPath(path));
 				}
 			}

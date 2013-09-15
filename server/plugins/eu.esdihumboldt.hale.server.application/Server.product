@@ -105,6 +105,9 @@
       <plugin id="eu.esdihumboldt.hale.server.webapp.war"/>
       <plugin id="eu.esdihumboldt.hale.server.webtransform.war"/>
       <plugin id="eu.esdihumboldt.util"/>
+      <plugin id="eu.esdihumboldt.util.groovy"/>
+      <plugin id="eu.esdihumboldt.util.groovy.meta.extension"/>
+      <plugin id="eu.esdihumboldt.util.groovy.meta.fragment" fragment="true"/>
       <plugin id="eu.esdihumboldt.util.resource"/>
       <plugin id="eu.esdihumboldt.util.resource.schemas.citygml"/>
       <plugin id="eu.esdihumboldt.util.resource.schemas.inspire"/>

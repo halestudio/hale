@@ -76,12 +76,12 @@ class DefinitionAccessorTest extends GroovyTestCase {
 		assertNotNull names
 		assertEquals 2, names.size()
 
-		assertEquals 2, names[0].path.size()
-		Definition directName = names[0].path.last()
+		assertEquals 2, names[0].elements.size()
+		Definition directName = names[0].elements.last()
 		assertNotNull directName
 
-		assertEquals 3, names[1].path.size()
-		Definition groupName = names[1].path.last()
+		assertEquals 3, names[1].elements.size()
+		Definition groupName = names[1].elements.last()
 		assertNotNull groupName
 	}
 
@@ -94,8 +94,8 @@ class DefinitionAccessorTest extends GroovyTestCase {
 		assertNotNull itemPrices
 		assertEquals 1, itemPrices.size()
 
-		assertEquals 4, itemPrices[0].path.size()
-		Definition price = itemPrices[0].path.last()
+		assertEquals 4, itemPrices[0].elements.size()
+		Definition price = itemPrices[0].elements.last()
 		assertNotNull price
 	}
 
@@ -125,7 +125,7 @@ class DefinitionAccessorTest extends GroovyTestCase {
 	 * Simple test w/ getting a single result from a non-unique result.
 	 */
 	void testSimpleSingleLax() {
-		Definition name = new DefinitionAccessor(itemType).name.eval(false).path.last()
+		Definition name = new DefinitionAccessor(itemType).name.eval(false).elements.last()
 		assertNotNull name
 	}
 }
