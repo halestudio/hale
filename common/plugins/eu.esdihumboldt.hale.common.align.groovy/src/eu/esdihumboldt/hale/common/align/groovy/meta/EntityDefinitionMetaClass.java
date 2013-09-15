@@ -13,24 +13,25 @@
  *     Simon Templer - initial version
  */
 
-package eu.esdihumboldt.hale.common.schema.groovy.meta;
+package eu.esdihumboldt.hale.common.align.groovy.meta;
 
-import eu.esdihumboldt.hale.common.schema.groovy.DefinitionAccessor;
-import eu.esdihumboldt.hale.common.schema.model.Definition;
+import eu.esdihumboldt.hale.common.align.groovy.accessor.EntityAccessor;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import groovy.lang.DelegatingMetaClass;
 import groovy.lang.MetaClass;
 
 /**
- * Meta class adding the <code>accessor()</code> method to {@link Definition}.
+ * Meta class adding the <code>accessor()</code> method to
+ * {@link EntityDefinition}.
  * 
  * @author Simon Templer
  */
-public class DefinitionAccessorMetaClass extends DelegatingMetaClass {
+public class EntityDefinitionMetaClass extends DelegatingMetaClass {
 
 	/**
 	 * @see DelegatingMetaClass#DelegatingMetaClass(Class)
 	 */
-	public DefinitionAccessorMetaClass(@SuppressWarnings("rawtypes") Class theClass) {
+	public EntityDefinitionMetaClass(@SuppressWarnings("rawtypes") Class theClass) {
 		super(theClass);
 
 		initialize();
@@ -39,7 +40,7 @@ public class DefinitionAccessorMetaClass extends DelegatingMetaClass {
 	/**
 	 * @see DelegatingMetaClass#DelegatingMetaClass(MetaClass)
 	 */
-	public DefinitionAccessorMetaClass(MetaClass delegate) {
+	public EntityDefinitionMetaClass(MetaClass delegate) {
 		super(delegate);
 
 		initialize();
@@ -48,8 +49,8 @@ public class DefinitionAccessorMetaClass extends DelegatingMetaClass {
 	@Override
 	public Object invokeMethod(Object object, String methodName, Object[] arguments) {
 		if ((arguments == null || arguments.length == 0) && "accessor".equals(methodName)
-				&& object instanceof Definition<?>) {
-			return new DefinitionAccessor((Definition<?>) object);
+				&& object instanceof EntityDefinition) {
+			return new EntityAccessor((EntityDefinition) object);
 		}
 		return super.invokeMethod(object, methodName, arguments);
 	}

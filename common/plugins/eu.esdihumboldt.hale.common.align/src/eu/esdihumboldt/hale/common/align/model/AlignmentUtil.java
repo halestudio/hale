@@ -214,7 +214,7 @@ public abstract class AlignmentUtil {
 	 */
 	public static EntityDefinition createEntity(Path<Definition<?>> path,
 			SchemaSpaceID schemaSpace, Filter filter) {
-		List<Definition<?>> defs = path.getElements();
+		List<Definition<?>> defs = new ArrayList<>(path.getElements());
 
 		// create entity definition
 		Definition<?> top = defs.remove(0);

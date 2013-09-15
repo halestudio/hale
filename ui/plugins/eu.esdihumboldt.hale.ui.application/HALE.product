@@ -113,6 +113,8 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.cst.functions.string"/>
       <plugin id="eu.esdihumboldt.cst.test"/>
       <plugin id="eu.esdihumboldt.hale.common.align"/>
+      <plugin id="eu.esdihumboldt.hale.common.align.groovy"/>
+      <plugin id="eu.esdihumboldt.hale.common.align.groovy.test"/>
       <plugin id="eu.esdihumboldt.hale.common.align.test"/>
       <plugin id="eu.esdihumboldt.hale.common.align.tgraph"/>
       <plugin id="eu.esdihumboldt.hale.common.align.tgraph.test"/>

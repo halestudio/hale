@@ -17,11 +17,14 @@ package eu.esdihumboldt.util.groovy.paths;
 
 import groovy.lang.GroovyObjectSupport;
 import groovy.lang.MissingMethodException;
+import groovy.lang.MissingPropertyException;
 
 import java.util.Collections;
 import java.util.List;
 
 import org.codehaus.groovy.runtime.InvokerHelper;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Base class for path accessors.
@@ -41,6 +44,16 @@ public abstract class AbstractAccessor<C> extends GroovyObjectSupport {
 	/**
 	 * Creates a new accessor.
 	 * 
+	 * @param parentPath the root path, usually containing only one path with
+	 *            the parent element
+	 */
+	public AbstractAccessor(Path<C> parentPath) {
+		this(ImmutableList.of(parentPath));
+	}
+
+	/**
+	 * Creates a new accessor.
+	 * 
 	 * @param initialPaths the initial paths, usually containing only one path
 	 *            with the parent element
 	 */
@@ -50,7 +63,12 @@ public abstract class AbstractAccessor<C> extends GroovyObjectSupport {
 
 	@Override
 	public Object getProperty(String property) {
-		return findChildren(property, Collections.EMPTY_LIST);
+		try {
+			return super.getProperty(property);
+		} catch (MissingPropertyException e) {
+			// missing property
+			return findChildren(property, Collections.EMPTY_LIST);
+		}
 	}
 
 	@Override
