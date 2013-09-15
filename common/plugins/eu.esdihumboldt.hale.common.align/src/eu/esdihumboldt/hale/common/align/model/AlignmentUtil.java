@@ -45,12 +45,12 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
-import eu.esdihumboldt.hale.common.schema.helper.DefinitionPath;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.util.groovy.paths.Path;
 
 /**
  * Alignment model utility methods.
@@ -212,9 +212,9 @@ public abstract class AlignmentUtil {
 	 * @param filter the entity filter on the type, may be <code>null</code>
 	 * @return the created entity definition
 	 */
-	public static EntityDefinition createEntity(DefinitionPath path, SchemaSpaceID schemaSpace,
-			Filter filter) {
-		List<Definition<?>> defs = path.getPath();
+	public static EntityDefinition createEntity(Path<Definition<?>> path,
+			SchemaSpaceID schemaSpace, Filter filter) {
+		List<Definition<?>> defs = path.getElements();
 
 		// create entity definition
 		Definition<?> top = defs.remove(0);

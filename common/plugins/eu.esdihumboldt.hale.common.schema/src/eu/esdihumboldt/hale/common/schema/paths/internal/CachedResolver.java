@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.schema.helper.internal;
+package eu.esdihumboldt.hale.common.schema.paths.internal;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,8 +22,6 @@ import java.util.Map;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
-import eu.esdihumboldt.hale.common.schema.helper.DefinitionPath;
-import eu.esdihumboldt.hale.common.schema.helper.DefinitionResolver;
 import eu.esdihumboldt.hale.common.schema.model.Constraint;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
@@ -31,7 +29,10 @@ import eu.esdihumboldt.hale.common.schema.model.GroupPropertyConstraint;
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.paths.DefinitionResolver;
 import eu.esdihumboldt.util.Pair;
+import eu.esdihumboldt.util.groovy.paths.Path;
+import eu.esdihumboldt.util.groovy.paths.PathImpl;
 
 /**
  * Constraint that caches paths found by the {@link DefinitionResolver}.
@@ -41,7 +42,7 @@ import eu.esdihumboldt.util.Pair;
 @Constraint(mutable = true)
 public class CachedResolver implements TypeConstraint, GroupPropertyConstraint {
 
-	private final Map<Pair<String, String>, List<DefinitionPath>> resolvedPaths = new HashMap<>();
+	private final Map<Pair<String, String>, List<Path<Definition<?>>>> resolvedPaths = new HashMap<>();
 
 	private final Definition<?> def;
 
@@ -67,13 +68,13 @@ public class CachedResolver implements TypeConstraint, GroupPropertyConstraint {
 	 *            namespace should be ignored
 	 * @return the resolved paths
 	 */
-	public List<DefinitionPath> getResolvedPaths(String name, String namespace) {
+	public List<Path<Definition<?>>> getResolvedPaths(String name, String namespace) {
 		synchronized (resolvedPaths) {
 			Pair<String, String> key = new Pair<>(namespace, name);
-			List<DefinitionPath> paths = resolvedPaths.get(key);
+			List<Path<Definition<?>>> paths = resolvedPaths.get(key);
 			if (paths == null) {
 				paths = ImmutableList.copyOf(DefinitionResolver.findProperty((DefinitionGroup) def,
-						name, namespace, new DefinitionPathImpl(), true));
+						name, namespace, new PathImpl<Definition<?>>(), true));
 				resolvedPaths.put(key, paths);
 			}
 			return paths;

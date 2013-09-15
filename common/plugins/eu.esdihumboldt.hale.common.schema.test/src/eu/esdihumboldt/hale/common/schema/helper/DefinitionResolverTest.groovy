@@ -16,16 +16,20 @@
 package eu.esdihumboldt.hale.common.schema.helper
 
 import eu.esdihumboldt.hale.common.schema.groovy.SchemaBuilder
+import eu.esdihumboldt.hale.common.schema.model.Definition
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
+import eu.esdihumboldt.hale.common.schema.paths.DefinitionResolver
+import eu.esdihumboldt.util.groovy.paths.Path
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
 
 
 
 /**
- * TODO Type description
- * @author simon
+ * Definition resolver tests.
+ * 
+ * @author Simon Templer
  */
 @CompileStatic
 class DefinitionResolverTest extends GroovyTestCase {
@@ -68,17 +72,17 @@ class DefinitionResolverTest extends GroovyTestCase {
 	 */
 	void testFindPropertyIgnoreNamespace() {
 		// item.name
-		List<DefinitionPath> paths = DefinitionResolver.findProperty(itemType, 'name', null);
+		List<Path<Definition<?>>> paths = DefinitionResolver.findProperty(itemType, 'name', null);
 		assertEquals 2, paths.size()
 
 		// direct property
-		DefinitionPath path1 = paths[0]
-		assertEquals 1, path1.path.size()
+		Path<Definition<?>> path1 = paths[0]
+		assertEquals 1, path1.elements.size()
 
 		// inside group
-		DefinitionPath path2 = paths[1]
-		assertEquals 2, path2.path.size()
-		assertTrue path2.path[0] instanceof GroupPropertyDefinition
+		Path<Definition<?>> path2 = paths[1]
+		assertEquals 2, path2.elements.size()
+		assertTrue path2.elements[0] instanceof GroupPropertyDefinition
 
 		// order.name
 		paths = DefinitionResolver.findProperty(orderType, 'name', null);
@@ -94,17 +98,17 @@ class DefinitionResolverTest extends GroovyTestCase {
 	 */
 	void testFindPropertyCached() {
 		// item.name
-		List<DefinitionPath> paths = DefinitionResolver.findPropertyCached(itemType, 'name', null);
+		List<Path<Definition<?>>> paths = DefinitionResolver.findPropertyCached(itemType, 'name', null);
 		assertEquals 2, paths.size()
 
 		// direct property
-		DefinitionPath path1 = paths[0]
-		assertEquals 1, path1.path.size()
+		Path<Definition<?>> path1 = paths[0]
+		assertEquals 1, path1.elements.size()
 
 		// inside group
-		DefinitionPath path2 = paths[1]
-		assertEquals 2, path2.path.size()
-		assertTrue path2.path[0] instanceof GroupPropertyDefinition
+		Path<Definition<?>> path2 = paths[1]
+		assertEquals 2, path2.elements.size()
+		assertTrue path2.elements[0] instanceof GroupPropertyDefinition
 	}
 
 	/**
@@ -112,12 +116,12 @@ class DefinitionResolverTest extends GroovyTestCase {
 	 */
 	void testFindPropertyNamespace() {
 		// item.name
-		List<DefinitionPath> paths = DefinitionResolver.findProperty(itemType, 'name', SPECIAL_NS);
+		List<Path<Definition<?>>> paths = DefinitionResolver.findProperty(itemType, 'name', SPECIAL_NS);
 		assertEquals 1, paths.size()
 
 		// inside group
-		DefinitionPath path1 = paths[0]
-		assertEquals 2, path1.path.size()
-		assertTrue path1.path[0] instanceof GroupPropertyDefinition
+		Path<Definition<?>> path1 = paths[0]
+		assertEquals 2, path1.elements.size()
+		assertTrue path1.elements[0] instanceof GroupPropertyDefinition
 	}
 }

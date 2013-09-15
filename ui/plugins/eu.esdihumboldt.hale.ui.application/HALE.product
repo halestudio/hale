@@ -213,6 +213,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.ui.views.typehierarchy"/>
       <plugin id="eu.esdihumboldt.hale.userstatus.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.util"/>
+      <plugin id="eu.esdihumboldt.util.groovy"/>
       <plugin id="eu.esdihumboldt.util.groovy.meta.extension"/>
       <plugin id="eu.esdihumboldt.util.groovy.meta.fragment" fragment="true"/>
       <plugin id="eu.esdihumboldt.util.orient.embedded"/>
