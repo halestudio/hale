@@ -24,6 +24,7 @@ import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
+import groovy.transform.TypeCheckingMode
 
 
 
@@ -57,14 +58,23 @@ class DefinitionAccessorBase<T extends DefinitionPath> {
 	}
 
 	def methodMissing(String name, args) {
-		List list = InvokerHelper.asList(args)
+		List list = new ArrayList(InvokerHelper.asList(args))
 
 		String namespace = null
 		if (list) {
-			namespace = list[0] as String
+			int index = 0;
+			if (list[0] instanceof Map) {
+				// first argument may be a named parameter map
+				index = 1
+			}
+			if (index < list.size()) {
+				// namespace must be first argument (after map)
+				namespace = list[index] as String
+				list.remove(index)
+			}
 		}
 
-		findProperties(name, namespace)
+		findProperties(name, namespace, list)
 	}
 
 	/**
@@ -73,26 +83,42 @@ class DefinitionAccessorBase<T extends DefinitionPath> {
 	 * @param name the property name
 	 * @param namespace the namespace, if <code>null</code> the property
 	 *   namespace is ignored
+	 * @param moreArgs the list of additional arguments apart from the
+	 *   namespace
 	 * @return this {@link DefinitionAccessor}
 	 */
-	DefinitionAccessorBase findProperties(String name, String namespace = null) {
-		accessorPaths = accessorPaths.collectMany { DefinitionPath parentPath ->
+	@CompileStatic(TypeCheckingMode.SKIP) // doesn't recognize createSubPath
+	@TypeChecked
+	DefinitionAccessorBase findProperties(String name, String namespace = null, List<?> moreArgs = []) {
+		accessorPaths = accessorPaths.collectMany { T parentPath ->
 			// search for possible property paths and
 			// create sub-paths for found properties
 
 			DefinitionGroup group = DefinitionUtil.getDefinitionGroup(parentPath.path.last())
-			List<DefinitionPath> result = []
+			List<T> result = []
 
-			List<DefinitionPath> paths = DefinitionResolver.findPropertyCached(group, name, namespace)
-			paths?.each { DefinitionPath propertyPath ->
+			List<T> paths = DefinitionResolver.findPropertyCached(group, name, namespace)
+			paths?.each { T propertyPath ->
 				// create a sub-path for each
-				result << parentPath.subPath(propertyPath)
+				result << createSubPath(parentPath, propertyPath, moreArgs)
 			}
 
 			result
 		}
 
 		this
+	}
+
+	/**
+	 * Create a sub path for the given parent path.
+	 * 
+	 * @param parentPath the parent path
+	 * @param propertyPath the property path to add in the sub path
+	 * @param moreArgs list of additional arguments
+	 * @return the sub path
+	 */
+	protected T createSubPath(T parentPath, T propertyPath, List moreArgs) {
+		parentPath.subPath(propertyPath)
 	}
 
 	/**
