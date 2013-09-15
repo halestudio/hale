@@ -16,21 +16,25 @@
 package eu.esdihumboldt.hale.common.schema.groovy.constraints
 
 import eu.esdihumboldt.hale.common.schema.model.Definition
-import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.Enumeration
 import groovy.transform.CompileStatic
 
 
 /**
- * Factory for {@link NillableFlag} constraint.
+ * Factory for {@link Enumeration} constraint.
  * 
  * @author Simon Templer
  */
 @Singleton
 @CompileStatic
-class NillableFactory implements ConstraintFactory<NillableFlag> {
+class EnumerationFactory implements ConstraintFactory<Enumeration> {
 
 	@Override
-	public NillableFlag createConstraint(Object arg, Definition<?> context = null) {
-		arg ? NillableFlag.ENABLED : NillableFlag.DISABLED
+	public Enumeration createConstraint(Object arg, Definition<?> context = null) {
+		/*
+		 * XXX always creates fixed enumerations allowing no other values
+		 * XXX maybe add an additional factory for lax enums?
+		 */
+		new Enumeration(arg as Collection, false)
 	}
 }

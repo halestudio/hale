@@ -16,21 +16,21 @@
 package eu.esdihumboldt.hale.common.schema.groovy.constraints
 
 import eu.esdihumboldt.hale.common.schema.model.Definition
-import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag
 import groovy.transform.CompileStatic
 
 
 /**
- * Factory for {@link NillableFlag} constraint.
+ * Factory for {@link AbstractFlag} constraint.
  * 
  * @author Simon Templer
  */
 @Singleton
 @CompileStatic
-class NillableFactory implements ConstraintFactory<NillableFlag> {
+class TypeAbstractFactory implements ConstraintFactory<AbstractFlag> {
 
 	@Override
-	public NillableFlag createConstraint(Object arg, Definition<?> context = null) {
-		arg ? NillableFlag.ENABLED : NillableFlag.DISABLED
+	public AbstractFlag createConstraint(Object arg, Definition<?> context = null) {
+		arg ? AbstractFlag.ENABLED : AbstractFlag.DISABLED
 	}
 }

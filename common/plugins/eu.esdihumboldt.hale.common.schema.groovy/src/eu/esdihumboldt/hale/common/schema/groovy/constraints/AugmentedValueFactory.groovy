@@ -16,21 +16,21 @@
 package eu.esdihumboldt.hale.common.schema.groovy.constraints
 
 import eu.esdihumboldt.hale.common.schema.model.Definition
-import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.AugmentedValueFlag
 import groovy.transform.CompileStatic
 
 
 /**
- * Factory for {@link NillableFlag} constraint.
+ * Factory for {@link AugmentedValueFlag} constraint.
  * 
  * @author Simon Templer
  */
 @Singleton
 @CompileStatic
-class NillableFactory implements ConstraintFactory<NillableFlag> {
+class AugmentedValueFactory implements ConstraintFactory<AugmentedValueFlag> {
 
 	@Override
-	public NillableFlag createConstraint(Object arg, Definition<?> context = null) {
-		arg ? NillableFlag.ENABLED : NillableFlag.DISABLED
+	public AugmentedValueFlag createConstraint(Object arg, Definition<?> context = null) {
+		arg ? AugmentedValueFlag.ENABLED : AugmentedValueFlag.DISABLED
 	}
 }

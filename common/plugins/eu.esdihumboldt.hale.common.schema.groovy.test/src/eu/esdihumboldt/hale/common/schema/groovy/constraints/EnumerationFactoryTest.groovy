@@ -15,25 +15,42 @@
 
 package eu.esdihumboldt.hale.common.schema.groovy.constraints
 
-import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.Enumeration
 import groovy.transform.CompileStatic
 
 
 /**
- * Tests creation of {@link NillableFlag} constraints w/ {@link NillableFactory}.
+ * Tests creation of {@link Enumeration} constraints w/ {@link EnumerationFactory}.
  * 
  * @author Simon Templer
  */
 @CompileStatic
-class NillableFactoryTest extends GroovyTestCase {
+class EnumerationFactoryTest extends GroovyTestCase {
 
 	/*
 	 * NOTE: In Eclipse in the editor there might be errors shown here,
 	 * even if the code actually compiles.
 	 */
 
-	void testTrueFalse() {
-		assertEquals NillableFlag.ENABLED, NillableFactory.instance.createConstraint(true)
-		assertEquals NillableFlag.DISABLED, NillableFactory.instance.createConstraint(false)
+	void testRange() {
+		def range = ['a'..'z']
+		Enumeration en = EnumerationFactory.instance.createConstraint(range)
+
+		assertEquals range.size(), en.values.size()
+		assertEquals range as Collection, en.values
+	}
+
+	void testList() {
+		def list = [
+			'Munich',
+			'Darmstadt',
+			'Arendal',
+			'Florence',
+			'Vancouver'
+		]
+		Enumeration en = EnumerationFactory.instance.createConstraint(list)
+
+		assertEquals list.size(), en.values.size()
+		assertEquals list as Collection, en.values
 	}
 }

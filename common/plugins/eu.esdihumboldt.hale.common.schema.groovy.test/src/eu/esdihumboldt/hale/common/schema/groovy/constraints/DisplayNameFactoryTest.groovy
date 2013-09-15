@@ -15,22 +15,23 @@
 
 package eu.esdihumboldt.hale.common.schema.groovy.constraints
 
-import eu.esdihumboldt.hale.common.schema.model.Definition
-import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
 import groovy.transform.CompileStatic
 
 
 /**
- * Factory for {@link NillableFlag} constraint.
+ * Tests creation of {@link DisplayName} constraints w/ {@link DisplayNameFactory}.
  * 
  * @author Simon Templer
  */
-@Singleton
 @CompileStatic
-class NillableFactory implements ConstraintFactory<NillableFlag> {
+class DisplayNameFactoryTest extends GroovyTestCase {
 
-	@Override
-	public NillableFlag createConstraint(Object arg, Definition<?> context = null) {
-		arg ? NillableFlag.ENABLED : NillableFlag.DISABLED
+	/*
+	 * NOTE: In Eclipse in the editor there might be errors shown here,
+	 * even if the code actually compiles.
+	 */
+
+	void testName() {
+		assertEquals 'test', DisplayNameFactory.instance.createConstraint('test').customName
 	}
 }

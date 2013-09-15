@@ -19,9 +19,16 @@ import javax.xml.namespace.QName
 
 import org.codehaus.groovy.runtime.InvokerHelper
 
+import eu.esdihumboldt.hale.common.schema.groovy.constraints.AugmentedValueFactory
+import eu.esdihumboldt.hale.common.schema.groovy.constraints.BindingFactory
 import eu.esdihumboldt.hale.common.schema.groovy.constraints.CardinalityFactory
+import eu.esdihumboldt.hale.common.schema.groovy.constraints.ChoiceFactory
 import eu.esdihumboldt.hale.common.schema.groovy.constraints.ConstraintFactory
+import eu.esdihumboldt.hale.common.schema.groovy.constraints.DisplayNameFactory
+import eu.esdihumboldt.hale.common.schema.groovy.constraints.EnumerationFactory
+import eu.esdihumboldt.hale.common.schema.groovy.constraints.GeometryFactory
 import eu.esdihumboldt.hale.common.schema.groovy.constraints.NillableFactory
+import eu.esdihumboldt.hale.common.schema.groovy.constraints.TypeAbstractFactory
 import eu.esdihumboldt.hale.common.schema.model.Definition
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
@@ -32,6 +39,8 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag
 import eu.esdihumboldt.hale.common.schema.model.impl.AbstractDefinition
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultGroupPropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition
@@ -89,8 +98,21 @@ class SchemaBuilder {
 	SchemaBuilder() {
 		super()
 
-		constraints.cardinality = new CardinalityFactory()
-		constraints.nillable = new NillableFactory()
+		/*
+		 * NOTE: In Eclipse in the editor there might be errors shown here,
+		 * even if the code actually compiles. 
+		 */
+
+		constraints.cardinality = CardinalityFactory.instance
+		constraints.nillable = NillableFactory.instance
+		constraints.display = DisplayNameFactory.instance
+		constraints.choice = ChoiceFactory.instance
+		constraints.abstract = TypeAbstractFactory.instance
+		constraints.augmented = AugmentedValueFactory.instance
+		constraints.binding = BindingFactory.instance
+		constraints.enum = EnumerationFactory.instance
+		constraints.enumeration = EnumerationFactory.instance
+		constraints.geometry = GeometryFactory.instance
 	}
 
 	/**
@@ -259,6 +281,11 @@ class SchemaBuilder {
 
 		addConstraints(type, attributes, params)
 
+		// named types are by default mappable
+		type.setConstraintIfNotSet(MappableFlag.ENABLED)
+		// and mapping relevant TODO configure?
+		type.setConstraintIfNotSet(MappingRelevantFlag.ENABLED);
+
 		type
 	}
 
@@ -346,7 +373,10 @@ class SchemaBuilder {
 		attributes?.each { key, value ->
 			ConstraintFactory fact = (ConstraintFactory) constraints[key]
 			if (fact) {
-				definition.setConstraint(fact.createConstraint(value, definition))
+				def constraint = fact.createConstraint(value, definition)
+				if (constraint != null) {
+					definition.setConstraint(constraint)
+				}
 			}
 		}
 

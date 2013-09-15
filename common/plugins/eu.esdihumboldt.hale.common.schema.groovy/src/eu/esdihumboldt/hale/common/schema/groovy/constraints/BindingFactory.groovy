@@ -16,21 +16,22 @@
 package eu.esdihumboldt.hale.common.schema.groovy.constraints
 
 import eu.esdihumboldt.hale.common.schema.model.Definition
-import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding
 import groovy.transform.CompileStatic
 
 
 /**
- * Factory for {@link NillableFlag} constraint.
+ * Factory for binding constraints. Expects a class or something that can be
+ * converted to a class as argument.
  * 
  * @author Simon Templer
  */
 @Singleton
 @CompileStatic
-class NillableFactory implements ConstraintFactory<NillableFlag> {
+class BindingFactory implements ConstraintFactory<Binding> {
 
 	@Override
-	public NillableFlag createConstraint(Object arg, Definition<?> context = null) {
-		arg ? NillableFlag.ENABLED : NillableFlag.DISABLED
+	Binding createConstraint(Object arg, Definition context = null) {
+		Binding.get(arg as Class)
 	}
 }

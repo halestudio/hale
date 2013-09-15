@@ -16,21 +16,21 @@
 package eu.esdihumboldt.hale.common.schema.groovy.constraints
 
 import eu.esdihumboldt.hale.common.schema.model.Definition
-import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag
 import groovy.transform.CompileStatic
 
 
 /**
- * Factory for {@link NillableFlag} constraint.
+ * Factory for {@link ChoiceFlag} constraint.
  * 
  * @author Simon Templer
  */
 @Singleton
 @CompileStatic
-class NillableFactory implements ConstraintFactory<NillableFlag> {
+class ChoiceFactory implements ConstraintFactory<ChoiceFlag> {
 
 	@Override
-	public NillableFlag createConstraint(Object arg, Definition<?> context = null) {
-		arg ? NillableFlag.ENABLED : NillableFlag.DISABLED
+	public ChoiceFlag createConstraint(Object arg, Definition<?> context = null) {
+		arg ? ChoiceFlag.ENABLED : ChoiceFlag.DISABLED
 	}
 }

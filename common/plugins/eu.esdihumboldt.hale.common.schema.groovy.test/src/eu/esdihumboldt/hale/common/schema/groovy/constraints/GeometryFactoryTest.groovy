@@ -15,25 +15,37 @@
 
 package eu.esdihumboldt.hale.common.schema.groovy.constraints
 
-import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
+import javax.xml.namespace.QName
+
+import com.vividsolutions.jts.geom.Polygon
+
+import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType
+import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition
 import groovy.transform.CompileStatic
 
 
 /**
- * Tests creation of {@link NillableFlag} constraints w/ {@link NillableFactory}.
+ * Tests creation of {@link GeometryType} constraints w/ {@link GeometryFactory}.
  * 
  * @author Simon Templer
  */
 @CompileStatic
-class NillableFactoryTest extends GroovyTestCase {
+class GeometryFactoryTest extends GroovyTestCase {
 
 	/*
 	 * NOTE: In Eclipse in the editor there might be errors shown here,
 	 * even if the code actually compiles.
 	 */
 
-	void testTrueFalse() {
-		assertEquals NillableFlag.ENABLED, NillableFactory.instance.createConstraint(true)
-		assertEquals NillableFlag.DISABLED, NillableFactory.instance.createConstraint(false)
+	void testPolygon() {
+		DefaultTypeDefinition testType = new DefaultTypeDefinition(new QName('test'));
+
+		GeometryType gt = GeometryFactory.instance.createConstraint(Polygon, testType)
+
+		assertEquals Polygon, gt.binding
+		assertTrue gt.geometry
+		assertEquals GeometryProperty,
+				testType.getConstraint(eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding).binding
 	}
 }

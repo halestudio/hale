@@ -27,16 +27,13 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class CardinalityFactoryTest extends GroovyTestCase {
 
-	private CardinalityFactory cf
-
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp()
-
-		cf = new CardinalityFactory()
-	}
+	/*
+	 * NOTE: In Eclipse in the editor there might be errors shown here,
+	 * even if the code actually compiles.
+	 */
 
 	void testRange() {
+		CardinalityFactory cf = CardinalityFactory.instance
 		assertEquals Cardinality.CC_OPTIONAL, cf.createConstraint(0..1)
 		assertEquals Cardinality.CC_EXACTLY_ONCE, cf.createConstraint(1..1)
 		assertEquals Cardinality.get(0, 5), cf.createConstraint(0..5)
@@ -44,12 +41,15 @@ class CardinalityFactoryTest extends GroovyTestCase {
 	}
 
 	void testFixed() {
+		CardinalityFactory cf = CardinalityFactory.instance
 		assertEquals Cardinality.CC_EXACTLY_ONCE, cf.createConstraint(1)
 		assertEquals Cardinality.get(8, 8), cf.createConstraint(8)
 		assertEquals Cardinality.get(2, 2), cf.createConstraint(2)
 	}
 
 	void testText() {
+		CardinalityFactory cf = CardinalityFactory.instance
+
 		assertEquals Cardinality.CC_OPTIONAL, cf.createConstraint('?')
 		assertEquals Cardinality.CC_AT_LEAST_ONCE, cf.createConstraint('+')
 		assertEquals Cardinality.CC_ANY_NUMBER, cf.createConstraint('*')

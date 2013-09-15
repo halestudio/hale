@@ -33,6 +33,7 @@ import groovy.transform.TypeCheckingMode
  * 
  * @author Simon Templer
  */
+@Singleton
 @CompileStatic
 class CardinalityFactory implements ConstraintFactory<Cardinality> {
 
