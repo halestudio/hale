@@ -45,7 +45,7 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
-import eu.esdihumboldt.hale.common.schema.groovy.DefinitionAccessor;
+import eu.esdihumboldt.hale.common.schema.helper.DefinitionPath;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
@@ -202,26 +202,19 @@ public abstract class AlignmentUtil {
 	}
 
 	/**
-	 * Create an entity definition from a definition accessor. Child contexts
-	 * will all be defaults contexts.
+	 * Create an entity definition from a definition path. Child contexts will
+	 * all be defaults contexts.
 	 * 
-	 * @param accessor the definition accessor, the topmost parent has to
-	 *            represent a {@link TypeDefinition}, all other accessors may
-	 *            only contain {@link ChildDefinition}s
+	 * @param path the definition path, the topmost element has to represent a
+	 *            {@link TypeDefinition}, all other elements must be
+	 *            {@link ChildDefinition}s
 	 * @param schemaSpace the associated schema space
 	 * @param filter the entity filter on the type, may be <code>null</code>
 	 * @return the created entity definition
 	 */
-	public static EntityDefinition createEntity(DefinitionAccessor accessor,
-			SchemaSpaceID schemaSpace, Filter filter) {
-		// collect definitions
-		List<Definition<?>> defs = new ArrayList<>();
-
-		DefinitionAccessor parent = accessor;
-		while (parent != null) {
-			defs.addAll(0, parent.getAccessorPath().getPath());
-			parent = parent.getParentAccessor();
-		}
+	public static EntityDefinition createEntity(DefinitionPath path, SchemaSpaceID schemaSpace,
+			Filter filter) {
+		List<Definition<?>> defs = path.getPath();
 
 		// create entity definition
 		Definition<?> top = defs.remove(0);
@@ -229,7 +222,7 @@ public abstract class AlignmentUtil {
 			throw new IllegalArgumentException("Topmost accessor must represent a type definition");
 		}
 
-		List<ChildContext> path = Lists.transform(defs,
+		List<ChildContext> contextPath = Lists.transform(defs,
 				new Function<Definition<?>, ChildContext>() {
 
 					@Override
@@ -241,7 +234,7 @@ public abstract class AlignmentUtil {
 								"All definitions in child accessors must be ChildDefinitions");
 					}
 				});
-		return createEntity((TypeDefinition) top, path, schemaSpace, filter);
+		return createEntity((TypeDefinition) top, contextPath, schemaSpace, filter);
 	}
 
 	/**

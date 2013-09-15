@@ -31,51 +31,18 @@ import groovy.transform.TypeChecked
 /**
  * Property accessor for {@link Definition}s.
  * 
+ * It mutates, so it is only usable once.
+ * 
  * @author Simon Templer
  */
 @SuppressWarnings("restriction")
 @CompileStatic
 class DefinitionAccessor {
 
-	enum Mode {
-		/**
-		 * All possible properties will be returned, there is always a list
-		 * returned.
-		 */
-		ALL,
-		/**
-		 * Only one property is returned, if there are multiple the first is
-		 * returned.
-		 */
-		SINGLE_LAX,
-		/**
-		 * Only one property is returned, if there are multiple an exception is
-		 * thrown.
-		 */
-		SINGLE_STRICT
-	}
-
 	/**
-	 * The definition path in relation to the parent.
+	 * The definition paths
 	 */
-	DefinitionPath accessorPath
-
-	/**
-	 * The parent accessor, may be <code>null</code>.
-	 */
-	DefinitionAccessor parentAccessor
-
-	/**
-	 * The accessor mode.
-	 */
-	Mode accessorMode = Mode.SINGLE_STRICT
-
-	/**
-	 * Default constructor. 
-	 */
-	DefinitionAccessor() {
-		super();
-	}
+	private List<DefinitionPath> accessorPaths
 
 	/**
 	 * Create an accessor for a given definition.
@@ -85,18 +52,13 @@ class DefinitionAccessor {
 	DefinitionAccessor(Definition<?> definition) {
 		super();
 
-		accessorPath = new DefinitionPathImpl([definition])
-		parentAccessor = null
+		accessorPaths = [
+			(DefinitionPath) new DefinitionPathImpl([definition])
+		]
 	}
 
 	def propertyMissing(String name) {
-		def result = findProperties(name)
-		if (result) {
-			return result
-		}
-		else {
-			throw new MissingPropertyException(name, getClass())
-		}
+		findProperties(name)
 	}
 
 	def methodMissing(String name, args) {
@@ -107,28 +69,7 @@ class DefinitionAccessor {
 			namespace = list[0] as String
 		}
 
-		def result = findProperties(name, namespace)
-		if (result) {
-			return result
-		}
-		else {
-			throw new MissingMethodException(name, getClass(), args)
-		}
-	}
-
-	/**
-	 * Find the property with the given name and namespace.
-	 * 
-	 * Convenience method for Java access, only usable with
-	 * {@link Mode#SINGLE_LAX} or {@link Mode#SINGLE_STRICT}. 
-	 *
-	 * @param name the property name
-	 * @param namespace the namespace, if <code>null</code> the property
-	 *   namespace is ignored
-	 * @return a {@link DefinitionAccessor}
-	 */
-	DefinitionAccessor findProperty(String name, String namespace = null) {
-		(DefinitionAccessor) findProperties(name, namespace)
+		findProperties(name, namespace)
 	}
 
 	/**
@@ -137,50 +78,60 @@ class DefinitionAccessor {
 	 * @param name the property name
 	 * @param namespace the namespace, if <code>null</code> the property
 	 *   namespace is ignored
-	 * @return a {@link DefinitionAccessor} or a list of them, depending on
-	 *   the accessor mode
+	 * @return this {@link DefinitionAccessor}
 	 */
-	def findProperties(String name, String namespace = null) {
-		DefinitionGroup group = DefinitionUtil.getDefinitionGroup(accessorPath.path.last())
+	DefinitionAccessor findProperties(String name, String namespace = null) {
+		accessorPaths = accessorPaths.collectMany { DefinitionPath parentPath ->
+			// search for possible property paths and
+			// create sub-paths for found properties
 
-		List<DefinitionPath> paths = DefinitionResolver.findPropertyCached(group, name, namespace)
-		if (!paths) {
-			// missing property/method
-			return null;
+			DefinitionGroup group = DefinitionUtil.getDefinitionGroup(parentPath.path.last())
+			List<DefinitionPath> result = []
+
+			List<DefinitionPath> paths = DefinitionResolver.findPropertyCached(group, name, namespace)
+			paths?.each { DefinitionPath propertyPath ->
+				// create a sub-path for each
+				result << parentPath.subPath(propertyPath)
+			}
+
+			result
 		}
 
-		switch (accessorMode) {
-			case Mode.ALL:
-			// return all properties
-				def result = []
-				paths.each { DefinitionPath path ->
-					DefinitionAccessor child = createChild(this, path)
-					child.accessorMode = accessorMode
-					result << child
-				}
-				return result
-			case Mode.SINGLE_LAX: // fall through
-			case Mode.SINGLE_STRICT: // fall through
-			default:
-				if (accessorMode == Mode.SINGLE_LAX || paths.size() == 1) {
-					// return a single property
-					DefinitionPath path = paths[0]
-					DefinitionAccessor child = createChild(this, path)
-					child.accessorMode = accessorMode
-					return child
-				}
-				else {
-					throw new IllegalStateException("Multiple properties '$name' found")
-				}
-		}
+		this
 	}
 
-	protected DefinitionAccessor createChild(DefinitionAccessor parent, DefinitionPath childPath) {
-		new DefinitionAccessor(parentAccessor: parent, accessorPath: childPath)
+	/**
+	 * Get all found definition paths.
+	 * 
+	 * @return the list of definition paths
+	 */
+	List<DefinitionPath> all() {
+		accessorPaths
+	}
+
+	/**
+	 * Get a single found property path.
+	 * 
+	 * @param unique if the path must be unique 
+	 * @return a property path or <code>null</code> if none was found
+	 * @throws IllegalStateException if there are multiple paths but a unique
+	 *   path was requested 
+	 */
+	DefinitionPath eval(boolean unique = true) {
+		if (!accessorPaths) {
+			return null
+		}
+		else if (!unique || accessorPaths.size() == 1) {
+			// return a single property
+			return accessorPaths[0]
+		}
+		else {
+			throw new IllegalStateException('Multiple possible property paths found')
+		}
 	}
 
 	Definition toDefinition() {
-		accessorPath.path.last()
+		eval().path.last()
 	}
 
 	Object asType(Class clazz) {

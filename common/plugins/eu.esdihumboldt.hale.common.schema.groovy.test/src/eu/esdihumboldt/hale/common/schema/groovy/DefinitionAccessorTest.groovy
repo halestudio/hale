@@ -15,7 +15,6 @@
 
 package eu.esdihumboldt.hale.common.schema.groovy
 
-import eu.esdihumboldt.hale.common.schema.groovy.DefinitionAccessor.Mode
 import eu.esdihumboldt.hale.common.schema.model.Definition
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 
@@ -61,58 +60,52 @@ class DefinitionAccessorTest extends GroovyTestCase {
 	}
 
 	/**
-	 * Simple test w/ {@link Mode#ALL}.
+	 * Simple test w/ all found paths.
 	 */
 	void testSimpleAll() {
-		DefinitionAccessor type = new DefinitionAccessor(itemType)
-		type.accessorMode = Mode.ALL
-
-		def names = type.name
+		def names = new DefinitionAccessor(itemType).name.all()
 
 		assertNotNull names
 		assertEquals 2, names.size()
 
-		Definition directName = names[0] as Definition
+		assertEquals 2, names[0].path.size()
+		Definition directName = names[0].path.last()
 		assertNotNull directName
 
-		Definition groupName = names[1] as Definition
+		assertEquals 3, names[1].path.size()
+		Definition groupName = names[1].path.last()
 		assertNotNull groupName
 	}
 
 	/**
-	 * Simple test w/ {@link Mode#ALL}.
+	 * Simple test w/ all found paths.
 	 */
 	void testNestingAll() {
-		DefinitionAccessor order = new DefinitionAccessor(orderType)
-		order.accessorMode = Mode.ALL
-
-		def itemPrices = order.item[0].price
+		def itemPrices = new DefinitionAccessor(orderType).item.price.all()
 
 		assertNotNull itemPrices
 		assertEquals 1, itemPrices.size()
 
-		Definition price = itemPrices[0] as Definition
+		assertEquals 4, itemPrices[0].path.size()
+		Definition price = itemPrices[0].path.last()
 		assertNotNull price
 	}
 
 	/**
-	 * Test w/ a fixed namespace in {@link Mode#SINGLE_STRICT}.
+	 * Test w/ a fixed namespace when expecting a unique result.
 	 */
 	void testNamespace() {
-		DefinitionAccessor type = new DefinitionAccessor(itemType)
-
-		Definition name = type.name(SPECIAL_NS) as Definition
+		Definition name = new DefinitionAccessor(itemType).name(SPECIAL_NS) as Definition
 		assertNotNull name
 	}
 
 	/**
-	 * Simple test where property access should result in an exception w/
-	 * {@link Mode#SINGLE_STRICT}.
+	 * Simple test where property access should result in an exception when
+	 * expecting a unique result.
 	 */
 	void testSimpleSingleStrictFail() {
-		DefinitionAccessor type = new DefinitionAccessor(itemType)
 		try {
-			def names = type.name
+			def name = new DefinitionAccessor(itemType).name.eval()
 		} catch (IllegalStateException e) {
 			return
 		}
@@ -121,13 +114,10 @@ class DefinitionAccessorTest extends GroovyTestCase {
 	}
 
 	/**
-	 * Simple test w/ {@link Mode#SINGLE_LAX}
+	 * Simple test w/ getting a single result from a non-unique result.
 	 */
 	void testSimpleSingleLax() {
-		DefinitionAccessor type = new DefinitionAccessor(itemType)
-		type.accessorMode = Mode.SINGLE_LAX
-
-		Definition name = type.name.toDefinition()
+		Definition name = new DefinitionAccessor(itemType).name.eval(false).path.last()
 		assertNotNull name
 	}
 }
