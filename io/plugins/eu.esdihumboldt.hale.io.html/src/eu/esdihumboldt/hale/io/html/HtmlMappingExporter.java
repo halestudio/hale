@@ -116,7 +116,7 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements Proj
 		URL headlinePath = this.getClass().getResource("bg-headline.png"); //$NON-NLS-1$
 		URL cssPath = this.getClass().getResource("style.css"); //$NON-NLS-1$
 		URL linkPath = this.getClass().getResource("int_link.png"); //$NON-NLS-1$
-		URL tooltipIcon = this.getClass().getResource("tooltip.png"); //$NON-NLS-1$
+		URL tooltipIcon = this.getClass().getResource("tooltip.gif"); //$NON-NLS-1$
 		final String filesSubDir = FilenameUtils.removeExtension(FilenameUtils.getName(getTarget()
 				.getLocation().getPath())) + "_files"; //$NON-NLS-1$
 		final File filesDir = new File(FilenameUtils.getFullPath(getTarget().getLocation()
