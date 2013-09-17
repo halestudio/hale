@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="AdministrativeHierarchyLevel" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+Levels of administration in the national administrative hierarchy. This code list reflects the level in the hierarchical pyramid of the administrative structures, which is based on geometric aggregation of territories and does not necessarily describe the subordination between the related administrative authorities.&#13;
+</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0">AdministrativeHierarchyLevel</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_25289_44036">
+      <description>-- Definition --&#13;
+Highest level in the national administrative hierarchy (country level).&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0/AdministrativeHierarchyLevel">1stOrder</identifier>
+      <name>1stOrder</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_25289_44037">
+      <description>-- Definition --&#13;
+2&lt;sup&gt;nd&lt;/sup&gt; level in the national administrative hierarchy.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0/AdministrativeHierarchyLevel">2ndOrder</identifier>
+      <name>2ndOrder</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_25289_44038">
+      <description>-- Definition --&#13;
+3&lt;sup&gt;rd&lt;/sup&gt; level in the national administrative hierarchy.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0/AdministrativeHierarchyLevel">3rdOrder</identifier>
+      <name>3rdOrder</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_25289_44039">
+      <description>-- Definition --&#13;
+4&lt;sup&gt;th&lt;/sup&gt; level in the national administrative hierarchy.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0/AdministrativeHierarchyLevel">4thOrder</identifier>
+      <name>4thOrder</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_25289_44040">
+      <description>-- Definition --&#13;
+5&lt;sup&gt;th&lt;/sup&gt; level in the national administrative hierarchy.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0/AdministrativeHierarchyLevel">5thOrder</identifier>
+      <name>5thOrder</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_25289_44041">
+      <description>-- Definition --&#13;
+6&lt;sup&gt;th&lt;/sup&gt; level in the national administrative hierarchy.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0/AdministrativeHierarchyLevel">6thOrder</identifier>
+      <name>6thOrder</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

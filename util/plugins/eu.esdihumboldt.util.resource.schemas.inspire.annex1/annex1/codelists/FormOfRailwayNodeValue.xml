@@ -1,0 +1,45 @@
+<?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="FormOfRailwayNodeValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+The possible functions of a railway node within the railway network.</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:RailwayTransportNetwork:3.0">FormOfRailwayNodeValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_23045_40654">
+      <description>-- Definition --&#13;
+A railway node where the railway network have a mechanism consisting on a railroad track with two movable rails and the necessary connections, which let vehicles turn from one track to another.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RailwayTransportNetwork:3.0/FormOfRailwayNodeValue">junction</identifier>
+      <name>junction</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_23045_40655">
+      <description>-- Definition --&#13;
+A railway node where the railway network is a crossed by a road at the same level.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RailwayTransportNetwork:3.0/FormOfRailwayNodeValue">levelCrossing</identifier>
+      <name>levelCrossing</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_23045_40656">
+      <description>-- Definition --&#13;
+A railway node which represents a point where one or more attributes of the railway links connected to it change their value, or a point necessary to describe the geometry of the network.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RailwayTransportNetwork:3.0/FormOfRailwayNodeValue">pseudoNode</identifier>
+      <name>pseudoNode</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_23045_40657">
+      <description>-- Definition --&#13;
+A railway node where the railway starts or ends. The railway network is interrupted at this point.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RailwayTransportNetwork:3.0/FormOfRailwayNodeValue">railwayEnd</identifier>
+      <name>railwayEnd</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_23045_40658">
+      <description>-- Definition --&#13;
+A place in the railway network where trains stop to load/unload cargo or to let passengers get on and off the train.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RailwayTransportNetwork:3.0/FormOfRailwayNodeValue">railwayStop</identifier>
+      <name>railwayStop</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

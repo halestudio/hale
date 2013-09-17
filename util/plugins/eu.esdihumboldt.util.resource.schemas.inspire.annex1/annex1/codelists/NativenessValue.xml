@@ -1,0 +1,30 @@
+<?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="NativenessValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+The nativeness of a geographical name. &#13;
+</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">NativenessValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_21626_36905">
+      <description>-- Definition --&#13;
+Name for a geographical feature in an official or well-established language occurring in that area where the feature is situated.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [UNGEGN Glossary 2007].&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:GeographicalNames:3.0/NativenessValue">endonym</identifier>
+      <name>endonym</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21626_36906">
+      <description>-- Definition --&#13;
+Name used in a specific language for a geographical feature situated outside the area where that language is widely spoken, and differing in form from the respective endonym(s) in the area where the geographical feature is situated.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [UNGEGN Glossary 2007].&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:GeographicalNames:3.0/NativenessValue">exonym</identifier>
+      <name>exonym</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

@@ -1,0 +1,32 @@
+<?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="AerodromeCategoryValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+Aerodrome possible categories concerning the scope and importance of the air traffic services offered from and to it.</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:AirTransportNetwork:3.0">AerodromeCategoryValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_21873_37525">
+      <description>-- Definition --&#13;
+Aerodrome serving domestic national air traffic services.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:AirTransportNetwork:3.0/AerodromeCategoryValue">domesticNational</identifier>
+      <name>domesticNational</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21873_37526">
+      <description>-- Definition --&#13;
+Aerodrome serving domestic regional air traffic services.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:AirTransportNetwork:3.0/AerodromeCategoryValue">domesticRegional</identifier>
+      <name>domesticRegional</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21873_37527">
+      <description>-- Definition --&#13;
+Aerodrome serving international air traffic services.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:AirTransportNetwork:3.0/AerodromeCategoryValue">international</identifier>
+      <name>international</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

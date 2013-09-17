@@ -1,0 +1,31 @@
+<?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="AirRouteTypeValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+The route classification as ATS route or North Atlantic Tracks.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [CodeRouteType - AIXM5.0].&#13;
+</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:AirTransportNetwork:3.0">AirRouteTypeValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_21855_37500">
+      <description>-- Definition --&#13;
+ATS Route as described in ICAO Annex 11.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [AIXM5.0].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:AirTransportNetwork:3.0/AirRouteTypeValue">ATS</identifier>
+      <name>ATS</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21855_37501">
+      <description>-- Definition --&#13;
+North Atlantic Track (part of Organized Track System).&#13;
+&#13;
+-- Description --&#13;
+SOURCE [AIXM5.0].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:AirTransportNetwork:3.0/AirRouteTypeValue">NAT</identifier>
+      <name>NAT</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

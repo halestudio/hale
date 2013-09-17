@@ -1,0 +1,75 @@
+<?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="AreaConditionValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+Speed limit restriction depending on the area.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].&#13;
+</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0">AreaConditionValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_21934_37603">
+      <description>-- Definition --&#13;
+Speed limit restriction inside national park.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/AreaConditionValue">inNationalPark</identifier>
+      <name>inNationalPark</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21934_37604">
+      <description>-- Definition --&#13;
+Speed limit restriction inside cities.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/AreaConditionValue">insideCities</identifier>
+      <name>insideCities</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21934_37605">
+      <description>-- Definition --&#13;
+Speed limit restriction near rail road crossing.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/AreaConditionValue">nearRailroadCrossing</identifier>
+      <name>nearRailroadCrossing</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21934_37606">
+      <description>-- Definition --&#13;
+Speed limit restriction near school.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/AreaConditionValue">nearSchool</identifier>
+      <name>nearSchool</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21934_37607">
+      <description>-- Definition --&#13;
+Speed limit restriction outside cities.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/AreaConditionValue">outsideCities</identifier>
+      <name>outsideCities</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21934_37608">
+      <description>-- Definition --&#13;
+Speed limit restriction in traffic calming area.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/AreaConditionValue">trafficCalmingArea</identifier>
+      <name>trafficCalmingArea</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>
