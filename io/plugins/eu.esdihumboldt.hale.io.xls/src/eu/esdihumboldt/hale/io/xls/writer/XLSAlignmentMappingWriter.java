@@ -105,7 +105,7 @@ public class XLSAlignmentMappingWriter extends AbstractAlignmentMappingExport {
 		// display multiple lines
 		cellStyle.setWrapText(true);
 
-		// create highlight style
+		// create highlight style for type cells
 		CellStyle highlightStyle = workbook.createCellStyle();
 		// set thin border around the cell
 		highlightStyle.setBorderBottom(CellStyle.BORDER_THIN);
@@ -128,17 +128,35 @@ public class XLSAlignmentMappingWriter extends AbstractAlignmentMappingExport {
 		disabledStyle.setDataFormat(df.getFormat("@"));
 		// display multiple lines
 		disabledStyle.setWrapText(true);
+		// strike out font
 		Font disabledFont = workbook.createFont();
-		// use bold font
 		disabledFont.setStrikeout(true);
 		disabledFont.setColor(IndexedColors.GREY_40_PERCENT.getIndex());
 		disabledStyle.setFont(disabledFont);
 
+		// create disabled highlight style
+		CellStyle disabledTypeStyle = workbook.createCellStyle();
+		// set thin border around the cell
+		disabledTypeStyle.setBorderBottom(CellStyle.BORDER_THIN);
+		disabledTypeStyle.setBorderLeft(CellStyle.BORDER_THIN);
+		disabledTypeStyle.setBorderRight(CellStyle.BORDER_THIN);
+		// set cell data format to text
+		disabledTypeStyle.setDataFormat(df.getFormat("@"));
+		// display multiple lines
+		disabledTypeStyle.setWrapText(true);
+		disabledTypeStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+		disabledTypeStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		// strike out font
+		Font disabledTypeFont = workbook.createFont();
+		disabledTypeFont.setStrikeout(true);
+		disabledTypeFont.setColor(IndexedColors.BLACK.getIndex());
+		disabledStyle.setFont(disabledTypeFont);
+		disabledTypeStyle.setFont(disabledTypeFont);
+
 		List<Map<CellType, CellInformation>> mapping = getMappingList();
 
 		// determine if cells are organized by type cell
-		String mode = getParameter(PARAMETER_MODE).as(String.class);
-		boolean byTypeCell = mode.equals(MODE_BY_TYPE_CELLS);
+		boolean byTypeCell = isByTypeCell();
 
 		int rownum = 0;
 
@@ -157,7 +175,7 @@ public class XLSAlignmentMappingWriter extends AbstractAlignmentMappingExport {
 			if (getParameter(TRANSFORMATION_AND_DISABLED_FOR).as(Boolean.class)) {
 				List<String> transformationDisabled = entry.get(
 						CellType.TRANSFORMATION_AND_DISABLED).getText();
-				disabled = !transformationDisabled.contains("")
+				disabled = !transformationDisabled.isEmpty()
 						&& !transformationDisabled
 								.contains(TransformationMode.active.displayName());
 			}
@@ -166,15 +184,25 @@ public class XLSAlignmentMappingWriter extends AbstractAlignmentMappingExport {
 			row = sheet.createRow(rownum);
 
 			CellStyle rowStyle = cellStyle;
-			// XXX
-			if (disabled)
-				rowStyle = disabledStyle;
-			else if (byTypeCell) {
-				// check if the current cell is a type cell
-				String targetProp = getCellValue(entry, CellType.TARGET_PROPERTIES);
-				if (targetProp == null || targetProp.isEmpty()) {
+
+			String targetProp = getCellValue(entry, CellType.TARGET_PROPERTIES);
+			boolean isTypeCell = targetProp == null || targetProp.isEmpty();
+
+			if (isTypeCell && byTypeCell) {
+				// organized by type cells and this is a type cell
+
+				if (disabled) {
+					// disabled type cell
+					rowStyle = disabledTypeStyle;
+				}
+				else {
+					// normal type cell
 					rowStyle = highlightStyle;
 				}
+			}
+			else if (disabled) {
+				// disabled property cell
+				rowStyle = disabledStyle;
 			}
 
 			List<CellType> celltypes = getCellTypes();

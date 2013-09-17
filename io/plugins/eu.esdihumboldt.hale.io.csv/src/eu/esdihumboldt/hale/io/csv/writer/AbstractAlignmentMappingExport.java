@@ -202,6 +202,7 @@ public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWr
 
 		// same behavior of RELATION_NAME, CELL_EXPLANATION and CELL_NOTES
 		case RELATION_NAME:
+		case ID:
 		case CELL_EXPLANATION:
 		case CELL_NOTES:
 		case BASE_CELL:
@@ -232,6 +233,8 @@ public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWr
 		for (int i = 0; i < cellTypes.size(); i++) {
 			cellInfos.put(cellTypes.get(i), new CellInformation());
 		}
+
+		cellInfos.get(CellType.ID).addText(cell.getId(), 0);
 
 		if (cell.getSource() != null) {
 			// save the hierarchy of the properties
@@ -368,17 +371,26 @@ public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWr
 						cell.getTransformatioMode().displayName(), 0);
 			}
 			else {
-				String disabled = "";
 				Set<Cell> disabledCells = cell.getDisabledFor();
 				if (disabledCells.contains(currentTypeCell)) {
-					disabled = currentTypeCell.getSource().values().iterator().next()
-							.getDefinition().getType().getName().getLocalPart();
+					for (Cell disCell : disabledCells) {
+						cellInfos.get(CellType.TRANSFORMATION_AND_DISABLED).addText(
+								disCell.getId(), 0);
+					}
 				}
-				cellInfos.get(CellType.TRANSFORMATION_AND_DISABLED).addText(disabled, 0);
 			}
 		}
 
 		// add the row to the map
 		allRelations.add(cellInfos);
+	}
+
+	/**
+	 * @return if the writer mode is configured to display the cells per type
+	 *         cell
+	 */
+	protected boolean isByTypeCell() {
+		String mode = getParameter(PARAMETER_MODE).as(String.class);
+		return mode.equals(MODE_BY_TYPE_CELLS);
 	}
 }

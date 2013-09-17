@@ -22,6 +22,9 @@ package eu.esdihumboldt.hale.io.csv.writer;
  */
 public enum CellType {
 
+	/** Cell identifier */
+	ID("ID"),
+
 	/** source type namespace */
 	SOURCE_TYPE_NAMESPACE("Namespace"),
 
