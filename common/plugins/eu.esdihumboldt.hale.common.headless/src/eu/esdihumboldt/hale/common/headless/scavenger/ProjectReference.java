@@ -13,13 +13,14 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.server.projects.impl.internal;
+package eu.esdihumboldt.hale.common.headless.scavenger;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
 
 import org.eclipse.core.runtime.content.IContentType;
@@ -32,26 +33,19 @@ import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
-import eu.esdihumboldt.hale.common.core.report.Message;
 import eu.esdihumboldt.hale.common.core.report.ReportHandler;
-import eu.esdihumboldt.hale.common.core.report.Reporter;
-import eu.esdihumboldt.hale.common.core.report.impl.DefaultReporter;
-import eu.esdihumboldt.hale.common.core.report.impl.MessageImpl;
-import eu.esdihumboldt.hale.common.headless.EnvironmentManager;
-import eu.esdihumboldt.hale.common.headless.TransformationEnvironment;
-import eu.esdihumboldt.hale.common.headless.impl.ProjectTransformationEnvironment;
 import eu.esdihumboldt.hale.common.headless.report.ReportFile;
-import eu.esdihumboldt.hale.server.projects.ProjectScavenger.Status;
 
 /**
  * Represents a project residing in a specific folder and its configuration. The
  * configuration is stored in a file in the project folder.
  * 
+ * @param <C> the update context type
  * @author Simon Templer
  */
-public class ProjectHandler {
+public class ProjectReference<C> {
 
-	private static final ALogger log = ALoggerFactory.getLogger(ProjectHandler.class);
+	private static final ALogger log = ALoggerFactory.getLogger(ProjectReference.class);
 
 	/**
 	 * The name of the project configuration file in the project folder.
@@ -70,11 +64,6 @@ public class ProjectHandler {
 	private final ProjectProperties config;
 
 	/**
-	 * The transformation environment, if the project is active.
-	 */
-	private TransformationEnvironment transformationEnvironment;
-
-	/**
 	 * The project information, if the project was loaded.
 	 */
 	private ProjectInfo projectInfo;
@@ -83,11 +72,6 @@ public class ProjectHandler {
 	 * The project folder
 	 */
 	private final File projectFolder;
-
-	/**
-	 * The current project status.
-	 */
-	private Status status = Status.NOT_AVAILABLE;
 
 	/**
 	 * The project identifier.
@@ -99,13 +83,15 @@ public class ProjectHandler {
 	 * @param overrideProjectFile the name of the project file if it should
 	 *            override the configuration, otherwise <code>null</code>
 	 * @param projectId the project identifier
+	 * @param defaultSettings the properties with default project settings, may
+	 *            be <code>null</code>
 	 * @throws IOException if accessing the project configuration file failed
 	 */
-	public ProjectHandler(final File projectFolder, final String overrideProjectFile,
-			final String projectId) throws IOException {
+	public ProjectReference(final File projectFolder, final String overrideProjectFile,
+			final String projectId, Properties defaultSettings) throws IOException {
 		this.projectFolder = projectFolder;
 		this.projectId = projectId;
-		config = new ProjectProperties(new File(projectFolder, CONFIG_FILE_NAME));
+		config = new ProjectProperties(new File(projectFolder, CONFIG_FILE_NAME), defaultSettings);
 
 		// override project file name
 		if (overrideProjectFile != null) {
@@ -118,23 +104,22 @@ public class ProjectHandler {
 	 * project and transformation environment and adds or removes the
 	 * transformation environment.
 	 * 
-	 * @param envManager the environment manager
+	 * @param context the update context
 	 */
-	public void update(EnvironmentManager envManager) {
+	public void update(C context) {
 		File projectFile = getProjectFile();
 		if (projectFile == null || !projectFile.exists()) {
 			// no project file
-			status = Status.NOT_AVAILABLE;
+
 			// reset any runtime information
 			projectInfo = null;
-			transformationEnvironment = null;
-			envManager.removeEnvironment(projectId);
+
+			onNotAvailable(context, projectId);
 		}
 		else {
 			File reportFile = getLoadReportFile();
 
-			if ((transformationEnvironment == null && config.isEnabled() || projectInfo == null)
-					&& reportFile.exists()) {
+			if ((projectInfo == null || isForceClearReports()) && reportFile.exists()) {
 				// delete old reports
 				reportFile.delete();
 			}
@@ -149,67 +134,56 @@ public class ProjectHandler {
 
 			if (projectInfo == null) {
 				// can't load project
-				status = Status.BROKEN;
-				transformationEnvironment = null;
-				envManager.removeEnvironment(projectId);
+				onFailure(context, projectId);
 			}
 			else {
-				if (config.isEnabled()) {
-					// load transformation environment if not yet done
-					if (transformationEnvironment == null) {
-						try {
-							transformationEnvironment = new ProjectTransformationEnvironment(
-									projectId, new FileIOSupplier(projectFile), rf);
-							// check alignment
-							if (transformationEnvironment.getAlignment() == null) {
-								throw new IllegalStateException(
-										"Alignment missing or failed to load");
-							}
-							if (transformationEnvironment.getAlignment().getActiveTypeCells()
-									.isEmpty()) {
-								throw new IllegalStateException(
-										"Alignment contains no active type relations");
-							}
-						} catch (Exception e) {
-							log.error("Could not load transformation environment for project "
-									+ projectId, e);
-							status = Status.BROKEN;
-							transformationEnvironment = null;
-							envManager.removeEnvironment(projectId);
-
-							// log the exception as report
-							Reporter<Message> report = new DefaultReporter<Message>(
-									"Load project transformation environment", Message.class, false);
-							report.error(new MessageImpl(e.getMessage(), e));
-							rf.publishReport(report);
-						}
-					}
-					else {
-						// XXX somehow check if project was changed?
-					}
-
-					if (transformationEnvironment != null) {
-						envManager.addEnvironment(transformationEnvironment);
-						status = Status.ACTIVE;
-					}
-				}
-				else {
-					// clear transformation environment
-					status = Status.INACTIVE;
-					transformationEnvironment = null;
-					envManager.removeEnvironment(projectId);
-				}
+				onSuccess(context, projectId, projectFile, rf);
 			}
 		}
 	}
 
 	/**
-	 * Get the transformation environment if available.
+	 * States if the report file should be deleted in {@link #update(Object)}
+	 * even if the project info is already loaded.
 	 * 
-	 * @return the transformationEnvironment
+	 * @return if the report file should be deleted for an already loaded
+	 *         project
 	 */
-	public TransformationEnvironment getTransformationEnvironment() {
-		return transformationEnvironment;
+	protected boolean isForceClearReports() {
+		return false;
+	}
+
+	/**
+	 * Called when the project was successfully loaded in
+	 * {@link #update(Object)}.
+	 * 
+	 * @param context the update context
+	 * @param projectId the project identifier
+	 * @param projectFile the project file
+	 * @param reportFile the report file to publish any additional reports to
+	 */
+	protected void onSuccess(C context, String projectId, File projectFile, ReportFile reportFile) {
+		// do nothing
+	}
+
+	/**
+	 * Called when the project failed to load in {@link #update(Object)}.
+	 * 
+	 * @param context the update context
+	 * @param projectId the project identifier
+	 */
+	protected void onFailure(C context, String projectId) {
+		// do nothing
+	}
+
+	/**
+	 * Called when the project file is not available in {@link #update(Object)}.
+	 * 
+	 * @param context the update context
+	 * @param projectId the project identifier
+	 */
+	protected void onNotAvailable(C context, String projectId) {
+		// do nothing
 	}
 
 	/**
@@ -222,12 +196,12 @@ public class ProjectHandler {
 	}
 
 	/**
-	 * Get the project status.
+	 * Set the internal project info.
 	 * 
-	 * @return the status
+	 * @param projectInfo the project info to set
 	 */
-	public Status getStatus() {
-		return status;
+	protected void setProjectInfo(ProjectInfo projectInfo) {
+		this.projectInfo = projectInfo;
 	}
 
 	/**
@@ -247,7 +221,7 @@ public class ProjectHandler {
 	 * @return the project info or <code>null</code> if the project file could
 	 *         not be loaded
 	 */
-	private ProjectInfo loadProjectInfo(File projectFile, ReportHandler reportHandler) {
+	protected ProjectInfo loadProjectInfo(File projectFile, ReportHandler reportHandler) {
 		FileIOSupplier in = new FileIOSupplier(projectFile);
 		ProjectReader reader = HaleIO
 				.findIOProvider(ProjectReader.class, in, projectFile.getName());
@@ -280,6 +254,13 @@ public class ProjectHandler {
 			return null;
 		}
 		return new File(projectFolder, projectFile);
+	}
+
+	/**
+	 * @return the project settings
+	 */
+	protected ProjectProperties getConfig() {
+		return config;
 	}
 
 	/**
@@ -370,28 +351,6 @@ public class ProjectHandler {
 		}
 
 		return supportedExtensions;
-	}
-
-	/**
-	 * Activate the project.
-	 * 
-	 * @param environments the environment manager to publish the transformation
-	 *            environment to
-	 */
-	public void activate(EnvironmentManager environments) {
-		config.setEnabled(true);
-		update(environments);
-	}
-
-	/**
-	 * Deactivate the project.
-	 * 
-	 * @param environments the environment manager to remove the transformation
-	 *            environment from if applicable
-	 */
-	public void deactivate(EnvironmentManager environments) {
-		config.setEnabled(false);
-		update(environments);
 	}
 
 }
