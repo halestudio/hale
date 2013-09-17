@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Project Templates Repository
+Bundle-SymbolicName: eu.esdihumboldt.hale.server.templates
+Bundle-Version: 2.6.0.qualifier
+Bundle-Vendor: Data Harmonisation Panel
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: eu.esdihumboldt.hale.common.core.io.project

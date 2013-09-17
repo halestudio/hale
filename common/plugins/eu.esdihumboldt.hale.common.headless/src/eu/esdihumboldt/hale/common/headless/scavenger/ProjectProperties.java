@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.server.projects.impl.internal;
+package eu.esdihumboldt.hale.common.headless.scavenger;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,16 +22,11 @@ import java.util.Properties;
 import eu.esdihumboldt.util.SyncedPropertiesFile;
 
 /**
- * Project configuration properties.
+ * Basic project configuration properties.
  * 
  * @author Simon Templer
  */
 public class ProjectProperties extends SyncedPropertiesFile {
-
-	/**
-	 * Name of the property specifying if a project is enabled
-	 */
-	public static final String PROPERTY_ENABLED = "enabled";
 
 	/**
 	 * Name of the property specifying the project file name
@@ -39,41 +34,17 @@ public class ProjectProperties extends SyncedPropertiesFile {
 	public static final String PROPERTY_PROJECT_FILE = "project";
 
 	/**
-	 * Default properties
-	 */
-	private static final Properties DEFAULT_PROPERTIES = new Properties();
-	static {
-		// configure properties defaults
-		DEFAULT_PROPERTIES.setProperty(PROPERTY_ENABLED, "true");
-	}
-
-	/**
 	 * Create project properties.
 	 * 
 	 * @param projectPropertiesFile the project properties file
+	 * @param defaultProperties the properties with default settings, may be
+	 *            <code>null</code>
 	 * 
 	 * @throws IOException if reading the properties file fails
 	 */
-	public ProjectProperties(File projectPropertiesFile) throws IOException {
-		super(projectPropertiesFile, DEFAULT_PROPERTIES);
-	}
-
-	/**
-	 * Specifies if the project is enabled.
-	 * 
-	 * @return if the project is enabled
-	 */
-	public boolean isEnabled() {
-		return Boolean.parseBoolean(getPropertyQuiet(PROPERTY_ENABLED));
-	}
-
-	/**
-	 * Set if the project is enabled.
-	 * 
-	 * @param enabled if the project is enabled
-	 */
-	public void setEnabled(boolean enabled) {
-		setPropertyQuiet(PROPERTY_ENABLED, String.valueOf(enabled));
+	public ProjectProperties(File projectPropertiesFile, Properties defaultProperties)
+			throws IOException {
+		super(projectPropertiesFile, defaultProperties);
 	}
 
 	/**

@@ -16,11 +16,12 @@
 package eu.esdihumboldt.hale.server.projects;
 
 import java.io.File;
-import java.util.Set;
 
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.headless.EnvironmentManager;
 import eu.esdihumboldt.hale.common.headless.TransformationEnvironment;
+import eu.esdihumboldt.hale.server.projects.impl.ProjectHandler;
+import eu.esdihumboldt.util.resource.scavenger.ResourceScavenger;
 
 /**
  * Service that scans for projects in a directory. Manages if projects are
@@ -29,7 +30,7 @@ import eu.esdihumboldt.hale.common.headless.TransformationEnvironment;
  * 
  * @author Simon Templer
  */
-public interface ProjectScavenger {
+public interface ProjectScavenger extends ResourceScavenger<ProjectHandler> {
 
 	/**
 	 * Project states
@@ -44,43 +45,6 @@ public interface ProjectScavenger {
 		/** The project is loaded and enabled */
 		ACTIVE
 	}
-
-	/**
-	 * Check if there are any new projects available.
-	 */
-	public void triggerScan();
-
-	/**
-	 * Get the identifiers of the available projects.
-	 * 
-	 * @return the set of identifiers of all available projects
-	 */
-	public Set<String> getProjects();
-
-	/**
-	 * Reserve a project identifier, e.g. if a new project should be uploaded
-	 * 
-	 * @param projectId the project identifier
-	 * @return the project directory
-	 * @throws ScavengerException if the projectId is already taken/reserved or
-	 *             adding new projects is not possible
-	 */
-	public File reserveProjectId(String projectId) throws ScavengerException;
-
-	/**
-	 * Release a previously reserved project identifier. Also removes the
-	 * project folder.
-	 * 
-	 * @param projectId the project idnetifier
-	 */
-	public void releaseProjectId(String projectId);
-
-	/**
-	 * Determines if adding a project generally is allowed/possible.
-	 * 
-	 * @return if adding new projects is allowed
-	 */
-	public boolean allowAddProject();
 
 	/**
 	 * Get the status of the project with the given identifier.
