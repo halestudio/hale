@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="HydroNodeCategoryValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+Defines categories for different types of hydrographic network nodes.</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:HydroNetwork:3.0">HydroNodeCategoryValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_22223_38973">
+      <description>-- Definition --&#13;
+Node used to connect different networks.&#13;
+&#13;
+-- Description --&#13;
+NOTE Can be used to connect cross border networks or adjacent networks together. Differs from source / outlet in that in the real world there is an adjacent link that is not present in the dataset supplied.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HydroNetwork:3.0/HydroNodeCategoryValue">boundary</identifier>
+      <name>boundary</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22223_38974">
+      <description>-- Definition --&#13;
+A network node unrelated to the network topology per se, but associated with a hydrographic point of interest or facility, or a man-made object, that affects the network flow.&#13;
+&#13;
+-- Description --&#13;
+NOTE May include dams, widenings and other obstructions in the watercourse.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HydroNetwork:3.0/HydroNodeCategoryValue">flowConstriction</identifier>
+      <name>flowConstriction</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22223_38975">
+      <description>-- Definition --&#13;
+A network node unrelated to the network topology per se, but associated with a hydrographic point of interest or facility, or a man-made object, that regulates the network flow.&#13;
+&#13;
+-- Description --&#13;
+NOTE May include weirs, pumping stations and hydro power plants as well as abstraction and discharge into / from the watercourse.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HydroNetwork:3.0/HydroNodeCategoryValue">flowRegulation</identifier>
+      <name>flowRegulation</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22223_38976">
+      <description>-- Definition --&#13;
+Node where three or more links are coincident.&#13;
+&#13;
+-- Description --&#13;
+NOTE Includes all nodes at which different watercourses or watercourse branches merge into one (confluence) and where watercourses fork and divide (bifurcations).</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HydroNetwork:3.0/HydroNodeCategoryValue">junction</identifier>
+      <name>junction</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22223_38977">
+      <description>-- Definition --&#13;
+Ending node of a series of interconnected links.&#13;
+&#13;
+-- Description --&#13;
+NOTE Does not have an downstream output link. Includes sinks and watercourse mouths.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HydroNetwork:3.0/HydroNodeCategoryValue">outlet</identifier>
+      <name>outlet</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22223_38978">
+      <description>-- Definition --&#13;
+Starting node of a series of interconnected links.&#13;
+&#13;
+-- Description --&#13;
+NOTE Does not have an upstream input link. Includes springs and seeps.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HydroNetwork:3.0/HydroNodeCategoryValue">source</identifier>
+      <name>source</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

@@ -1,0 +1,134 @@
+<?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="GeometrySpecificationValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+Information defining the specification used to create or derive this geographic position of the address.&#13;
+&#13;
+-- Description --&#13;
+NOTE 1 Multiple address points can be derived from one polygon spatial object. &#13;
+&#13;
+NOTE 2 If the position of an address is derived from a polygon spatial object a number of different approaches is used.&#13;
+&#13;
+EXAMPLE 1 The same point (e.g., centre point of the polygon) is used for each address, thus, multiple address points will be overlapping.&#13;
+&#13;
+EXAMPLE 2 Each point position is unique within the polygon to be able to visually distinguish the representation of each address. </description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0">GeometrySpecificationValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_27575_47222">
+      <description>-- Definition --&#13;
+Position aims at identifying a postal delivery point.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/GeometrySpecificationValue">postalDelivery</identifier>
+      <name>postalDelivery</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27575_47223">
+      <description>-- Definition --&#13;
+Position aims at identifying a point of utility service.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/GeometrySpecificationValue">utilityService</identifier>
+      <name>utilityService</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27575_47224">
+      <description>-- Definition --&#13;
+Position aims at identifying the access point from the thoroughfare.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/GeometrySpecificationValue">thoroughfareAccess</identifier>
+      <name>thoroughfareAccess</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27575_47225">
+      <description>-- Definition --&#13;
+Position aims at identifying the entrance door or gate.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/GeometrySpecificationValue">entrance</identifier>
+      <name>entrance</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27575_47226">
+      <description>-- Definition --&#13;
+Position aims at identifying the related building.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/GeometrySpecificationValue">building</identifier>
+      <name>building</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27575_47227">
+      <description>-- Definition --&#13;
+Position aims at identifying the related land parcel.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/GeometrySpecificationValue">parcel</identifier>
+      <name>parcel</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27575_47228">
+      <description>-- Definition --&#13;
+Position derived from the related segment of a thoroughfare.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/GeometrySpecificationValue">segment</identifier>
+      <name>segment</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27575_47229">
+      <description>-- Definition --&#13;
+Position derived from the related postcode area.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/GeometrySpecificationValue">postalDescriptor</identifier>
+      <name>postalDescriptor</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27575_47230">
+      <description>-- Definition --&#13;
+Position derived from the related address area.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/GeometrySpecificationValue">addressArea</identifier>
+      <name>addressArea</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27575_47231">
+      <description>-- Definition --&#13;
+Position derived from the related administrative unit of 1st order.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/GeometrySpecificationValue">adminUnit1stOrder</identifier>
+      <name>adminUnit1stOrder</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27575_47232">
+      <description>-- Definition --&#13;
+Position derived from the related administrative unit of 2nd order.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/GeometrySpecificationValue">adminUnit2ndOrder</identifier>
+      <name>adminUnit2ndOrder</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27575_47233">
+      <description>-- Definition --&#13;
+Position derived from the related administrative unit of 3rd order.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/GeometrySpecificationValue">adminUnit3rdOrder</identifier>
+      <name>adminUnit3rdOrder</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27575_47234">
+      <description>-- Definition --&#13;
+Position derived from the related administrative unit of 4th order.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/GeometrySpecificationValue">adminUnit4thOrder</identifier>
+      <name>adminUnit4thOrder</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27575_47235">
+      <description>-- Definition --&#13;
+Position derived from the related administrative unit of 5th order.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/GeometrySpecificationValue">adminUnit5thOrder</identifier>
+      <name>adminUnit5thOrder</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27575_47236">
+      <description>-- Definition --&#13;
+Position derived from the related administrative unit of 6th order.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/GeometrySpecificationValue">adminUnit6thOrder</identifier>
+      <name>adminUnit6thOrder</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

@@ -1,0 +1,45 @@
+<?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="FerryUseValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+Types of transport carried out by a ferry.</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:WaterTransportNetwork:3.0">FerryUseValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_21905_37578">
+      <description>-- Definition --&#13;
+Ferry carries cars.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:WaterTransportNetwork:3.0/FerryUseValue">cars</identifier>
+      <name>cars</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21905_37579">
+      <description>-- Definition --&#13;
+Ferry carries others forms of transport than passengers, cars, trucks or trains.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:WaterTransportNetwork:3.0/FerryUseValue">other</identifier>
+      <name>other</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21905_37580">
+      <description>-- Definition --&#13;
+Ferry carries passengers.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:WaterTransportNetwork:3.0/FerryUseValue">passengers</identifier>
+      <name>passengers</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21905_37581">
+      <description>-- Definition --&#13;
+Ferry carries trains.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:WaterTransportNetwork:3.0/FerryUseValue">train</identifier>
+      <name>train</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21905_37582">
+      <description>-- Definition --&#13;
+Ferry carries trucks.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:WaterTransportNetwork:3.0/FerryUseValue">trucks</identifier>
+      <name>trucks</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

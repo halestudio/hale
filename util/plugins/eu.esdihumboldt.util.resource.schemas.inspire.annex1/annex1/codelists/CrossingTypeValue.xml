@@ -1,0 +1,57 @@
+<?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="CrossingTypeValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+Man-made physical watercourse crossing types.</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0">CrossingTypeValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_22242_39023">
+      <description>-- Definition --&#13;
+A pipe or artificial channel that is designed to transport water from a remote source, usually by gravity, for freshwater supply, agricultural, and/or industrial use.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [DFDD].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0/CrossingTypeValue">aqueduct</identifier>
+      <name>aqueduct</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22242_39024">
+      <description>-- Definition --&#13;
+A structure that connects two locations and provides for the passage of a transportation route over a terrain obstacle.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Based on DFDD].&#13;
+&#13;
+EXAMPLE 1 (Transportation route) A road or a railway.&#13;
+&#13;
+EXAMPLE 2 (Terrain obstacle) A waterbody, a gully, and/or a road.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0/CrossingTypeValue">bridge</identifier>
+      <name>bridge</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22242_39025">
+      <description>-- Definition --&#13;
+An enclosed channel for carrying a watercourse under a route.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Based on DFDD].&#13;
+&#13;
+EXAMPLE 1 (Watercourse carried in an enclosed channel) A stream, a sewer, or a drain.&#13;
+&#13;
+EXAMPLE 2 (Route over a culvert) A road, a railway, or an embankment.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0/CrossingTypeValue">culvert</identifier>
+      <name>culvert</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22242_39026">
+      <description>-- Definition --&#13;
+A pipe used for conveying liquid from one level to a lower level, using the liquid pressure differential to force a column of the liquid up to a higher level before it falls to the outlet.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [DFDD].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0/CrossingTypeValue">siphon</identifier>
+      <name>siphon</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

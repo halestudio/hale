@@ -1,0 +1,62 @@
+<?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="IUCNDesignationValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+A code list for the International Union for the Conservation of Nature classification scheme.</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0">IUCNDesignationValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_22323_39344">
+      <description>-- Definition --&#13;
+The Protected Site is classified as a strict nature reserve under the IUCN classification scheme.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/IUCNDesignationValue">strictNatureReserve</identifier>
+      <name>strictNatureReserve</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22323_39345">
+      <description>-- Definition --&#13;
+The Protected Site is classified as a wilderness area under the IUCN classification scheme.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/IUCNDesignationValue">wildernessArea</identifier>
+      <name>wildernessArea</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22323_39341">
+      <description>-- Definition --&#13;
+The Protected Site is classified as a national park under the IUCN classification scheme.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/IUCNDesignationValue">nationalPark</identifier>
+      <name>nationalPark</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22323_39339">
+      <description>-- Definition --&#13;
+The Protected Site is classified as a habitat species management area under the IUCN classification scheme.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/IUCNDesignationValue">habitatSpeciesManagementArea</identifier>
+      <name>habitatSpeciesManagementArea</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22323_39342">
+      <description>-- Definition --&#13;
+The Protected Site is classified as a natural monument under the IUCN classification scheme.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/IUCNDesignationValue">naturalMonument</identifier>
+      <name>naturalMonument</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22323_39340">
+      <description>-- Definition --&#13;
+The Protected Site is classified as a managed resource protected area under the IUCN classification scheme.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/IUCNDesignationValue">managedResourceProtectedArea</identifier>
+      <name>managedResourceProtectedArea</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22323_39343">
+      <description>-- Definition --&#13;
+The Protected Site is classified as a protected landscape or seascape under the IUCN classification scheme.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/IUCNDesignationValue">protectedLandscapeOrSeascape</identifier>
+      <name>protectedLandscapeOrSeascape</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

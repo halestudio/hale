@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<hale-project version="2.6.0.qualifier">
+    <name>Map to INSPIRE HydroPhysicalWaters</name>
+    <author>Simon Templer</author>
+    <created>2013-09-17T06:58:04.022+02:00</created>
+    <modified>2013-09-17T06:59:59.602+02:00</modified>
+    <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
+        <setting name="projectFiles.separate">false</setting>
+        <setting name="target">file:/home/simon/repos/hale/util/plugins/eu.esdihumboldt.util.resource.schemas.inspire.annex1/annex1/projects/HydroPhysicalWaters.halex</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
+    </save-config>
+    <file name="styles.sld" location="HydroPhysicalWaters.halex.styles.sld"/>
+    <file name="alignment.xml" location="HydroPhysicalWaters.halex.alignment.xml"/>
+</hale-project>
