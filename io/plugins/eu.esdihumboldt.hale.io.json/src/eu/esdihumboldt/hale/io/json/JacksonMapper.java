@@ -15,15 +15,14 @@
 
 package eu.esdihumboldt.hale.io.json;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
-import java.net.URI;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
+import java.util.Collection;
 import java.util.Iterator;
 
 import javax.xml.namespace.QName;
@@ -31,13 +30,15 @@ import javax.xml.namespace.QName;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.geotools.geojson.geom.GeometryJSON;
 
 import com.vividsolutions.jts.geom.Geometry;
 
+import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -52,53 +53,56 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
  */
 public class JacksonMapper {
 
-	File file;
-	JsonGenerator g;
-	GeometryJSON gj;
+	private JsonGenerator jsonGen;
+	private GeometryJSON geometryJson;
 
 	/**
-	 * @param target the target file to write to
-	 */
-	public JacksonMapper(URI target) {
-		file = new File(target);
-
-	}
-
-	/**
-	 * writes a collection of instances into JSON
+	 * Writes a collection of instances into JSON
 	 * 
+	 * @param out the output supplier
 	 * @param instances the collection of instances
-	 * @throws IOException
+	 * @param reporter the reporter
+	 * @throws IOException if writing
 	 */
-	public void streamWriteCollection(InstanceCollection instances) throws IOException {
+	public void streamWriteCollection(LocatableOutputSupplier<? extends OutputStream> out,
+			InstanceCollection instances, IOReporter reporter) throws IOException {
 
-		try (BufferedWriter writer = Files.newBufferedWriter(file.toPath(),
-				Charset.forName("UTF-8"))) {
+		try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out.getOutput(),
+				Charset.forName("UTF-8")))) {
 
 			// initialize Jackson Json Streaming Api
-			JsonFactory f = new JsonFactory();
+			JsonFactory jsonFactory = new JsonFactory();
 			// initialize GeoJSON Api
-			gj = new GeometryJSON();
+			geometryJson = new GeometryJSON();
 
-			g = f.createJsonGenerator(writer);
-			g.useDefaultPrettyPrinter();
-			g.writeStartObject();
+			jsonGen = jsonFactory.createJsonGenerator(writer);
+			jsonGen.useDefaultPrettyPrinter();
+			jsonGen.writeStartObject();
 
 			// iterate through Instances
-			ResourceIterator<Instance> itInstance = instances.iterator();
-			while (itInstance.hasNext()) {
-				Instance instance = itInstance.next();
-				streamWriteInstance(instance, null, writer);
+			try (ResourceIterator<Instance> itInstance = instances.iterator()) {
+				while (itInstance.hasNext()) {
+					Instance instance = itInstance.next();
+					streamWriteInstance(instance, null, writer, reporter);
+				}
 			}
-			g.writeEndObject();
-			g.flush();
-			g.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			jsonGen.writeEndObject();
+			jsonGen.flush();
+		} finally {
+			if (jsonGen != null) {
+				jsonGen.close();
+			}
 		}
 
-		isValidJSON(readFile(file));
+		// FIXME - rather move to a validator?!
+		// XXX cannot cope with GZiped file
+//		URI targetLoc = out.getLocation();
+//		if (targetLoc != null) {
+//			File file = new File(targetLoc);
+//			try (InputStream in = Files.newInputStream(file.toPath())) {
+//				isValidJSON(in, reporter);
+//			}
+//		}
 	}
 
 	/**
@@ -107,31 +111,53 @@ public class JacksonMapper {
 	 * @param instance the instance to write
 	 * @param instanceName the QName of the instance
 	 * @param writer the writer used
-	 * @throws JsonGenerationException
-	 * @throws IOException
+	 * @param reporter the reporter
+	 * @throws JsonGenerationException if there was a problem generating the
+	 *             JSON
+	 * @throws IOException if writing the file failed
 	 */
-	private void streamWriteInstance(Instance instance, QName instanceName, BufferedWriter writer)
-			throws JsonGenerationException, IOException {
+	private void streamWriteInstance(Instance instance, QName instanceName, BufferedWriter writer,
+			IOReporter reporter) throws JsonGenerationException, IOException {
 		// write the Instance and name
 		if (instanceName == null) {
-			g.writeObjectFieldStart(instance.getDefinition().getName().getLocalPart());
+			jsonGen.writeObjectFieldStart(instance.getDefinition().getName().getLocalPart());
 		}
 		else
-			g.writeObjectFieldStart(instanceName.getLocalPart());
+			jsonGen.writeObjectFieldStart(instanceName.getLocalPart());
 
 		// check if the instance contains a value and write it down
-		if (instance.getValue() != null) {
-			if (instance.getValue() instanceof Geometry
-					|| instance.getValue() instanceof GeometryProperty<?>) {
-				streamWriteGeometry("_value", instance.getValue());
-				g.writeEndObject();
+		Object value = instance.getValue();
+		if (value != null) {
+			// detect geometry collections (as occurring in XML schemas)
+			if (value instanceof Collection) {
+				Collection<?> col = (Collection<?>) value;
+				if (!col.isEmpty()) {
+					Object element = col.iterator().next();
+					if (element instanceof GeometryProperty<?> || element instanceof Geometry) {
+						// extract geometry
+						value = element;
+
+						if (col.size() > 1) {
+							// there are more geometry values
+							// XXX can we handle multiple here?
+							// XXX for now warn
+							reporter.warn(new IOMessageImpl(
+									"Ignoring multiple geometries in instance value", null));
+						}
+					}
+				}
+			}
+
+			if (value instanceof Geometry || value instanceof GeometryProperty<?>) {
+				streamWriteGeometry("_value", value);
+				jsonGen.writeEndObject();
 				return;
 			}
 			if (instance.getValue() instanceof Number) {
-				streamWriteNumeric("_value", instance.getValue());
+				streamWriteNumeric("_value", value);
 			}
 			else
-				g.writeStringField("_value", instance.getValue().toString());
+				jsonGen.writeStringField("_value", value.toString());
 		}
 
 		Iterator<QName> nameIt = instance.getPropertyNames().iterator();
@@ -144,10 +170,10 @@ public class JacksonMapper {
 			if (values != null) {
 				for (Object obj : values) {
 					if (obj instanceof Instance) {
-						streamWriteInstance((Instance) obj, name, writer);
+						streamWriteInstance((Instance) obj, name, writer, reporter);
 					}
 					else if (obj instanceof Group) {
-						streamWriteGroup((Group) obj, writer);
+						streamWriteGroup((Group) obj, writer, reporter);
 					}
 					else if (obj instanceof Geometry || obj instanceof GeometryProperty<?>) {
 						streamWriteGeometry(name.getLocalPart(), obj);
@@ -156,25 +182,27 @@ public class JacksonMapper {
 						streamWriteNumeric(name.getLocalPart(), obj);
 					}
 					else
-						g.writeStringField(name.getLocalPart(), obj.toString());
+						jsonGen.writeStringField(name.getLocalPart(), obj.toString());
 				}
 			}
 		}
-		g.writeEndObject();
+		jsonGen.writeEndObject();
 	}
 
 	/**
-	 * writes a group into JSON
+	 * Writes a group into JSON
 	 * 
 	 * @param group the group to write
 	 * @param writer the writer used
-	 * @throws JsonGenerationException
-	 * @throws IOException
+	 * @param reporter the reporter
+	 * @throws JsonGenerationException if there was a problem generating the
+	 *             JSON
+	 * @throws IOException if writing the file failed
 	 */
-	private void streamWriteGroup(Group group, BufferedWriter writer)
+	private void streamWriteGroup(Group group, BufferedWriter writer, IOReporter reporter)
 			throws JsonGenerationException, IOException {
 		// write the Instance and name
-		g.writeObjectFieldStart("Group");
+		jsonGen.writeObjectFieldStart("Group");
 
 		Iterator<QName> nameIt = group.getPropertyNames().iterator();
 		while (nameIt.hasNext()) {
@@ -186,10 +214,10 @@ public class JacksonMapper {
 			if (values != null) {
 				for (Object obj : values) {
 					if (obj instanceof Instance) {
-						streamWriteInstance((Instance) obj, name, writer);
+						streamWriteInstance((Instance) obj, name, writer, reporter);
 					}
 					else if (obj instanceof Group) {
-						streamWriteGroup((Group) obj, writer);
+						streamWriteGroup((Group) obj, writer, reporter);
 					}
 					else if (obj instanceof Geometry || obj instanceof GeometryProperty<?>) {
 						streamWriteGeometry(name.getLocalPart(), obj);
@@ -199,13 +227,13 @@ public class JacksonMapper {
 						streamWriteNumeric(name.getLocalPart(), obj);
 					}
 					else {
-						g.writeStringField(name.getLocalPart(), obj.toString());
+						jsonGen.writeStringField(name.getLocalPart(), obj.toString());
 					}
 
 				}
 			}
 		}
-		g.writeEndObject();
+		jsonGen.writeEndObject();
 	}
 
 	/**
@@ -213,84 +241,63 @@ public class JacksonMapper {
 	 * 
 	 * @param name the property name
 	 * @param obj the numeric
-	 * @throws IOException
-	 * @throws JsonGenerationException
+	 * @throws JsonGenerationException if there was a problem generating the
+	 *             JSON
+	 * @throws IOException if writing the file failed
 	 */
 	private void streamWriteNumeric(String name, Object obj) throws JsonGenerationException,
 			IOException {
 		if (obj instanceof Integer) {
-			g.writeNumberField(name, (Integer) obj);
+			jsonGen.writeNumberField(name, (Integer) obj);
 		}
 		else if (obj instanceof Float) {
-			g.writeNumberField(name, (Float) obj);
+			jsonGen.writeNumberField(name, (Float) obj);
 		}
 		else if (obj instanceof Double) {
-			g.writeNumberField(name, (Double) obj);
+			jsonGen.writeNumberField(name, (Double) obj);
 		}
 		else if (obj instanceof Long) {
-			g.writeNumberField(name, (Long) obj);
+			jsonGen.writeNumberField(name, (Long) obj);
 		}
 		else if (obj instanceof BigDecimal) {
-			g.writeNumberField(name, (BigDecimal) obj);
+			jsonGen.writeNumberField(name, (BigDecimal) obj);
 		}
 		else
-			g.writeNumberField(name, (Double) obj);
+			jsonGen.writeNumberField(name, (Double) obj);
 	}
 
 	private void streamWriteGeometry(String name, Object obj) throws IOException {
 
-		g.writeFieldName(name);
+		jsonGen.writeFieldName(name);
 
 		if (obj instanceof Geometry) {
-			g.writeRawValue(gj.toString((Geometry) obj));
+			jsonGen.writeRawValue(geometryJson.toString((Geometry) obj));
 		}
 		else if (obj instanceof GeometryProperty<?>) {
-			g.writeRawValue(gj.toString(((GeometryProperty<?>) obj).getGeometry()));
+			jsonGen.writeRawValue(geometryJson.toString(((GeometryProperty<?>) obj).getGeometry()));
 		}
 	}
 
 	/**
-	 * validates a json string
+	 * Validates a JSON stream
 	 * 
-	 * @param json the json string
+	 * @param in the JSON stream
+	 * @param reporter the reporter
 	 * @return true if valid, else false
 	 */
-	public boolean isValidJSON(final String json) {
+	public boolean isValidJSON(final InputStream in, IOReporter reporter) {
 		boolean valid = false;
 		try {
-			final JsonParser parser = new ObjectMapper().getJsonFactory().createJsonParser(json);
+			final JsonParser parser = new ObjectMapper().getJsonFactory().createJsonParser(in);
 			while (parser.nextToken() != null) {
 				//
 			}
 			valid = true;
-		} catch (JsonParseException jpe) {
-			jpe.printStackTrace();
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
+		} catch (Exception e) {
+			reporter.error(new IOMessageImpl("Produced invalid JSON output", e));
 		}
 
 		return valid;
-	}
-
-	/**
-	 * file reader method used for json validation
-	 * 
-	 * @param file the file to read
-	 * @return string representation of the file
-	 * @throws IOException
-	 */
-	private String readFile(File file) throws IOException {
-		BufferedReader reader = new BufferedReader(new FileReader(file));
-		String line = null;
-		StringBuilder stringBuilder = new StringBuilder();
-		String ls = System.getProperty("line.separator");
-
-		while ((line = reader.readLine()) != null) {
-			stringBuilder.append(line);
-			stringBuilder.append(ls);
-		}
-		reader.close();
-		return stringBuilder.toString();
 	}
 
 }

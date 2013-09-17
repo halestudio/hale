@@ -16,12 +16,12 @@
 package eu.esdihumboldt.hale.io.json;
 
 import java.io.IOException;
-import java.net.URI;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceWriter;
 
 /**
@@ -31,36 +31,33 @@ import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceWriter;
  */
 public class JsonInstanceWriter extends AbstractInstanceWriter {
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.IOProvider#isCancelable()
-	 */
 	@Override
 	public boolean isCancelable() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#execute(eu.esdihumboldt.hale.common.core.io.ProgressIndicator,
-	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
-	 */
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
+		progress.begin("Generating JSON", ProgressIndicator.UNKNOWN);
+		try {
+			JacksonMapper mapper = new JacksonMapper();
+			mapper.streamWriteCollection(getTarget(), getInstances(), reporter);
 
-		URI target = getTarget().getLocation();
-		JacksonMapper mapper = new JacksonMapper(target);
-		mapper.streamWriteCollection(getInstances());
-		return null;
+			reporter.setSuccess(true);
+		} catch (Exception e) {
+			reporter.error(new IOMessageImpl("Error generating JSON file", e));
+			reporter.setSuccess(false);
+		} finally {
+			progress.end();
+		}
+
+		return reporter;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#getDefaultTypeName()
-	 */
 	@Override
 	protected String getDefaultTypeName() {
-		// TODO Auto-generated method stub
-		return null;
+		return "JSON";
 	}
 
 }
