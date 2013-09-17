@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="ShoreTypeValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+Categories of shore area composition.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Codelist items based on DFDD].</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:LandCover:0.0">ShoreTypeValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_21407_36600">
+      <description>-- Definition --&#13;
+Large water- or weather-worn stones.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [DFDD].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:LandCover:0.0/ShoreTypeValue">boulders</identifier>
+      <name>boulders</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21407_36601">
+      <description>-- Definition --&#13;
+A stiff tenacious fine-grained earth consisting mainly of hydrated aluminosilicates, which become more plastic when water is added and can be moulded and dried.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [DFDD].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:LandCover:0.0/ShoreTypeValue">clay</identifier>
+      <name>clay</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21407_36602">
+      <description>-- Definition --&#13;
+Small water-worn or pounded stones.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [DFDD].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:LandCover:0.0/ShoreTypeValue">gravel</identifier>
+      <name>gravel</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21407_36603">
+      <description>-- Definition --&#13;
+Soft wet soil, sand, dust, and/or other earthy matter.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [DFDD].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:LandCover:0.0/ShoreTypeValue">mud</identifier>
+      <name>mud</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21407_36604">
+      <description>-- Definition --&#13;
+Stones of any size.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [DFDD].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:LandCover:0.0/ShoreTypeValue">rock</identifier>
+      <name>rock</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21407_36605">
+      <description>-- Definition --&#13;
+Granular material consisting of small eroded fragments of (mainly siliceous) rocks, finer than gravel and larger than a coarse silt grain.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [DFDD].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:LandCover:0.0/ShoreTypeValue">sand</identifier>
+      <name>sand</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21407_36606">
+      <description>-- Definition --&#13;
+Small, loose, rounded waterworn pebbles, especially as accumulated on a seashore.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [DFDD].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:LandCover:0.0/ShoreTypeValue">shingle</identifier>
+      <name>shingle</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21407_36607">
+      <description>-- Definition --&#13;
+Pieces of rock or mineral substance (other than metal) of definite form and size, usually artificially shaped, and used for some special purpose.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [DFDD].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:LandCover:0.0/ShoreTypeValue">stone</identifier>
+      <name>stone</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

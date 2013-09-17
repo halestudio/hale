@@ -1,0 +1,1755 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="HabitatTypeValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+A set of codes to indicate the habitat type using the Natura 2000 habitat types under Annex 1 of the Habitat Directive 92/43/EEC.  &#13;
+&#13;
+-- Description --&#13;
+NOTE The code values may be found at:&#13;
+&lt;u&gt;http://converters.eionet.europa.eu/xmlfile/habitats.xml&lt;/u&gt; and&#13;
+&lt;u&gt;http://converters.eionet.europa.eu/xmlfile/habitats_per_ms_and_bg.xml&lt;/u&gt;&#13;
+</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0">HabitatTypeValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47273">
+      <description>-- Definition --&#13;
+"Aapa mires" (Code: 7310) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">aapaMires</identifier>
+      <name>aapaMires</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47274">
+      <description>-- Definition --&#13;
+"Abies pinsapo forests" (Code: 9520) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">abiesPinsapoForests</identifier>
+      <name>abiesPinsapoForests</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47275">
+      <description>-- Definition --&#13;
+"Acidophilous Picea forests of the montane to alpine levels (Vaccinio-Piceetea)" (Code: 9410) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">acidophilousPiceaForestsOfTheMontaneToAlpineLevelsVaccinioPiceetea</identifier>
+      <name>acidophilousPiceaForestsOfTheMontaneToAlpineLevelsVaccinioPiceetea</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47276">
+      <description>-- Definition --&#13;
+"Active raised bogs" (Code: 7110) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">activeRaisedBogs</identifier>
+      <name>activeRaisedBogs</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47277">
+      <description>-- Definition --&#13;
+"Aegean Quercus brachyphylla woods" (Code: 9310) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">aegeanQuercusBrachyphyllaWoods</identifier>
+      <name>aegeanQuercusBrachyphyllaWoods</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47278">
+      <description>-- Definition --&#13;
+"Alkaline fens" (Code: 7230) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">alkalineFens</identifier>
+      <name>alkalineFens</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47279">
+      <description>-- Definition --&#13;
+"Alluvial forests with Alnus glutinosa and Fraxinus excelsior (Alno-Padion, Alnion incanae, Salicion albae)" (Code: 91E0) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">alluvialForestsWithAlnusGlutinosaAndFraxinusExcelsiorAlnoPadionAlnionIncanaeSalicionAlbae</identifier>
+      <name>alluvialForestsWithAlnusGlutinosaAndFraxinusExcelsiorAlnoPadionAlnionIncanaeSalicionAlbae</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47280">
+      <description>-- Definition --&#13;
+"Alluvial meadows of river valleys of the Cnidion dubii" (Code: 6440) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">alluvialMeadowsOfRiverValleysOfTheCnidionDubii</identifier>
+      <name>alluvialMeadowsOfRiverValleysOfTheCnidionDubii</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47281">
+      <description>-- Definition --&#13;
+"Alpine and Boreal heaths" (Code: 4060) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">alpineAndBorealHeaths</identifier>
+      <name>alpineAndBorealHeaths</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47282">
+      <description>-- Definition --&#13;
+"Alpine and subalpine calcareous grasslands" (Code: 6170) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">alpineAndSubalpineCalcareousGrasslands</identifier>
+      <name>alpineAndSubalpineCalcareousGrasslands</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47283">
+      <description>-- Definition --&#13;
+"Alpine Larix decidua and/or Pinus cembra forests" (Code: 9420) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">alpineLarixDeciduaAndOrPinusCembraForests</identifier>
+      <name>alpineLarixDeciduaAndOrPinusCembraForests</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47284">
+      <description>-- Definition --&#13;
+"Alpine pioneer formations of the Caricion bicoloris-atrofuscae" (Code: 7240) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">alpinePioneerFormationsOfTheCaricionBicolorisAtrofuscae</identifier>
+      <name>alpinePioneerFormationsOfTheCaricionBicolorisAtrofuscae</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47285">
+      <description>-- Definition --&#13;
+"Alpine rivers and the herbaceous vegetation along their banks" (Code: 3220) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">alpineRiversAndTheHerbaceousVegetationAlongTheirBanks</identifier>
+      <name>alpineRiversAndTheHerbaceousVegetationAlongTheirBanks</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47286">
+      <description>-- Definition --&#13;
+"Alpine rivers and their ligneous vegetation with Myricaria germanica" (Code: 3230) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">alpineRiversAndTheirLigneousVegetationWithMyricariaGermanica</identifier>
+      <name>alpineRiversAndTheirLigneousVegetationWithMyricariaGermanica</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47287">
+      <description>-- Definition --&#13;
+"Alpine rivers and their ligneous vegetation with Salix elaeagnos" (Code: 3240) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">alpineRiversAndTheirLigneousVegetationWithSalixElaeagnos</identifier>
+      <name>alpineRiversAndTheirLigneousVegetationWithSalixElaeagnos</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47288">
+      <description>-- Definition --&#13;
+"Annual vegetation of drift lines" (Code: 1210) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">annualVegetationOfDriftLines</identifier>
+      <name>annualVegetationOfDriftLines</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47289">
+      <description>-- Definition --&#13;
+"Apeninne beech forests with Taxus and Ilex" (Code: 9210) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">apeninneBeechForestsWithTaxusAndIlex</identifier>
+      <name>apeninneBeechForestsWithTaxusAndIlex</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47290">
+      <description>-- Definition --&#13;
+"Apennine beech forests with Abies alba and beech forests with Abies nebrodensis" (Code: 9220) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">apennineBeechForestsWithAbiesAlbaAndBeechForestsWithAbiesNebrodensis</identifier>
+      <name>apennineBeechForestsWithAbiesAlbaAndBeechForestsWithAbiesNebrodensis</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47291">
+      <description>-- Definition --&#13;
+"Arborescent matorral with Juniperus spp" (Code: 5210) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">arborescentMatorralWithJuniperusSpp</identifier>
+      <name>arborescentMatorralWithJuniperusSpp</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47292">
+      <description>-- Definition --&#13;
+"Arborescent matorral with Laurus nobilis" (Code: 5230) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">arborescentMatorralWithLaurusNobilis</identifier>
+      <name>arborescentMatorralWithLaurusNobilis</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47293">
+      <description>-- Definition --&#13;
+"Arborescent matorral with Zyziphus" (Code: 5220) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">arborescentMatorralWithZyziphus</identifier>
+      <name>arborescentMatorralWithZyziphus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47294">
+      <description>-- Definition --&#13;
+"Asperulo-Fagetum beech forests" (Code: 9130) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">asperuloFagetumBeechForests</identifier>
+      <name>asperuloFagetumBeechForests</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47295">
+      <description>-- Definition --&#13;
+"Atlantic acidophilous beech forests with Ilex and sometimes also Taxus in the shrublayer (Quercion robori-petraeae or Ilici-Fagenion)" (Code: 9120) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">atlanticAcidophilousBeechForestsWithIlexAndSometimesAlsoTaxusInTheShrublayerQuercionRoboriPetraeaeOrIliciFagenion</identifier>
+      <name>atlanticAcidophilousBeechForestsWithIlexAndSometimesAlsoTaxusInTheShrublayerQuercionRoboriPetraeaeOrIliciFagenion</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47296">
+      <description>-- Definition --&#13;
+"Atlantic decalcified fixed dunes (Calluno-Ulicetea)" (Code: 2150) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">atlanticDecalcifiedFixedDunesCallunoUlicetea</identifier>
+      <name>atlanticDecalcifiedFixedDunesCallunoUlicetea</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47297">
+      <description>-- Definition --&#13;
+"Atlantic salt meadows (Glauco-Puccinellietalia maritimae)" (Code: 1330) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">atlanticSaltMeadowsGlaucoPuccinellietaliaMaritimae</identifier>
+      <name>atlanticSaltMeadowsGlaucoPuccinellietaliaMaritimae</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47298">
+      <description>-- Definition --&#13;
+"Baltic esker islands with sandy, rocky and shingle beach vegetation and sublittoral vegetation" (Code: 1610) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">balticEskerIslandsWithSandyRockyAndShingleBeachVegetationAndSublittoralVegetation</identifier>
+      <name>balticEskerIslandsWithSandyRockyAndShingleBeachVegetationAndSublittoralVegetation</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47299">
+      <description>-- Definition --&#13;
+"Blanket bogs (if active bog)" (Code: 7130) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">blanketBogsIfActiveBog</identifier>
+      <name>blanketBogsIfActiveBog</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47300">
+      <description>-- Definition --&#13;
+"Bog woodland" (Code: 91D0) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">bogWoodland</identifier>
+      <name>bogWoodland</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47301">
+      <description>-- Definition --&#13;
+"Boreal Baltic coastal meadows" (Code: 1630) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">borealBalticCoastalMeadows</identifier>
+      <name>borealBalticCoastalMeadows</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47302">
+      <description>-- Definition --&#13;
+"Boreal Baltic islets and small islands" (Code: 1620) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">borealBalticIsletsAndSmallIslands</identifier>
+      <name>borealBalticIsletsAndSmallIslands</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47303">
+      <description>-- Definition --&#13;
+"Boreal Baltic narrow inlets" (Code: 1650) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">borealBalticNarrowInlets</identifier>
+      <name>borealBalticNarrowInlets</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47304">
+      <description>-- Definition --&#13;
+"Boreal Baltic sandy beaches with perennial vegetation" (Code: 1640) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">borealBalticSandyBeachesWithPerennialVegetation</identifier>
+      <name>borealBalticSandyBeachesWithPerennialVegetation</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47305">
+      <description>-- Definition --&#13;
+"Brachypodietalia dune grasslands with annuals" (Code: 2240) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">brachypodietaliaDuneGrasslandsWithAnnuals</identifier>
+      <name>brachypodietaliaDuneGrasslandsWithAnnuals</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47306">
+      <description>-- Definition --&#13;
+"Bushes with Pinus mugo and Rhododendron hirsutum (Mugo-Rhododendretum hir-suti)" (Code: 4070) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">bushesWithPinusMugoAndRhododendronHirsutumMugoRhododendretumHirSuti</identifier>
+      <name>bushesWithPinusMugoAndRhododendronHirsutumMugoRhododendretumHirSuti</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47307">
+      <description>-- Definition --&#13;
+"Calaminarian grasslands of the Violetalia calaminariae" (Code: 6130) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">calaminarianGrasslandsOfTheVioletaliaCalaminariae</identifier>
+      <name>calaminarianGrasslandsOfTheVioletaliaCalaminariae</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47308">
+      <description>-- Definition --&#13;
+"Calcareous and calcshist screes of the montane to alpine levels (Thlaspietea rotundifolii)" (Code: 8120) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">calcareousAndCalcshistScreesOfTheMontaneToAlpineLevelsThlaspieteaRotundifolii</identifier>
+      <name>calcareousAndCalcshistScreesOfTheMontaneToAlpineLevelsThlaspieteaRotundifolii</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47309">
+      <description>-- Definition --&#13;
+"Calcareous fens with Cladium mariscus and species of the Caricion davallianae" (Code: 7210) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">calcareousFensWithCladiumMariscusAndSpeciesOfTheCaricionDavallianae</identifier>
+      <name>calcareousFensWithCladiumMariscusAndSpeciesOfTheCaricionDavallianae</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47310">
+      <description>-- Definition --&#13;
+"Calcareous rocky slopes with chasmophytic vegetation" (Code: 8210) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">calcareousRockySlopesWithChasmophyticVegetation</identifier>
+      <name>calcareousRockySlopesWithChasmophyticVegetation</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47311">
+      <description>-- Definition --&#13;
+"Caledonian forest" (Code: 91C0) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">caledonianForest</identifier>
+      <name>caledonianForest</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47312">
+      <description>-- Definition --&#13;
+"Canarian endemic pine forests" (Code: 9550) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">canarianEndemicPineForests</identifier>
+      <name>canarianEndemicPineForests</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47313">
+      <description>-- Definition --&#13;
+"Castanea sativa woods" (Code: 9260) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">castaneaSativaWoods</identifier>
+      <name>castaneaSativaWoods</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47314">
+      <description>-- Definition --&#13;
+"Caves not open to the public" (Code: 8310) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">cavesNotOpenToThePublic</identifier>
+      <name>cavesNotOpenToThePublic</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47315">
+      <description>-- Definition --&#13;
+"Cedrus brevifolia forests (Cedrosetum brevifoliae)" (Code: 9590) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">cedrusBrevifoliaForestsCedrosetumBrevifoliae</identifier>
+      <name>cedrusBrevifoliaForestsCedrosetumBrevifoliae</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47316">
+      <description>-- Definition --&#13;
+"Central European lichen scots pine forests" (Code: 91T0) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">centralEuropeanLichenScotsPineForests</identifier>
+      <name>centralEuropeanLichenScotsPineForests</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47317">
+      <description>-- Definition --&#13;
+"Cisto-Lavenduletalia dune sclerophyllous scrubs" (Code: 2260) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">cistoLavenduletaliaDuneSclerophyllousScrubs</identifier>
+      <name>cistoLavenduletaliaDuneSclerophyllousScrubs</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47318">
+      <description>-- Definition --&#13;
+"Cistus palhinhae formations on maritime wet heaths" (Code: 5140) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">cistusPalhinhaeFormationsOnMaritimeWetHeaths</identifier>
+      <name>cistusPalhinhaeFormationsOnMaritimeWetHeaths</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47319">
+      <description>-- Definition --&#13;
+"Coastal dunes with Juniperus spp" (Code: 2250) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">coastalDunesWithJuniperusSpp</identifier>
+      <name>coastalDunesWithJuniperusSpp</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47320">
+      <description>-- Definition --&#13;
+"Coastal lagoons" (Code: 1150) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">coastalLagoons</identifier>
+      <name>coastalLagoons</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47321">
+      <description>-- Definition --&#13;
+"Coniferous forest on, or connected to, glaciofluvial eskers" (Code: 9060) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">coniferousForestOnOrConnectedToGlaciofluvialEskers</identifier>
+      <name>coniferousForestOnOrConnectedToGlaciofluvialEskers</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47322">
+      <description>-- Definition --&#13;
+"Constantly flowing Mediterranean rivers with Glaucium flavum" (Code: 3250) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">constantlyFlowingMediterraneanRiversWithGlauciumFlavum</identifier>
+      <name>constantlyFlowingMediterraneanRiversWithGlauciumFlavum</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47323">
+      <description>-- Definition --&#13;
+"Constantly flowing Mediterranean rivers with Paspalo-Agrostidion species and hanging curtains of Salix and Populus alba" (Code: 3280) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">constantlyFlowingMediterraneanRiversWithPaspaloAgrostidionSpeciesAndHangingCurtainsOfSalixAndPopulusAlba</identifier>
+      <name>constantlyFlowingMediterraneanRiversWithPaspaloAgrostidionSpeciesAndHangingCurtainsOfSalixAndPopulusAlba</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47324">
+      <description>-- Definition --&#13;
+"Crucianellion maritimae fixed beach dunes" (Code: 2210) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">crucianellionMaritimaeFixedBeachDunes</identifier>
+      <name>crucianellionMaritimaeFixedBeachDunes</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47325">
+      <description>-- Definition --&#13;
+"Cupressus forests (Acero-Cupression)" (Code: 9290) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">cupressusForestsAceroCupression</identifier>
+      <name>cupressusForestsAceroCupression</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47326">
+      <description>-- Definition --&#13;
+"Dacian Beech forests (Symphyto-Fagion)" (Code: 91V0) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">dacianBeechForestsSymphytoFagion</identifier>
+      <name>dacianBeechForestsSymphytoFagion</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47327">
+      <description>-- Definition --&#13;
+"Decalcified fixed dunes with Empetrum nigrum" (Code: 2140) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">decalcifiedFixedDunesWithEmpetrumNigrum</identifier>
+      <name>decalcifiedFixedDunesWithEmpetrumNigrum</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47328">
+      <description>-- Definition --&#13;
+"Degraded raised bogs still capable of natural regeneration" (Code: 7120) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">degradedRaisedBogsStillCapableOfNaturalRegeneration</identifier>
+      <name>degradedRaisedBogsStillCapableOfNaturalRegeneration</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47329">
+      <description>-- Definition --&#13;
+"Dehesas with evergreen Quercus spp" (Code: 6310) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">dehesasWithEvergreenQuercusSpp</identifier>
+      <name>dehesasWithEvergreenQuercusSpp</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47330">
+      <description>-- Definition --&#13;
+"Depressions on peat substrates of the Rhynchosporion" (Code: 7150) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">depressionsOnPeatSubstratesOfTheRhynchosporion</identifier>
+      <name>depressionsOnPeatSubstratesOfTheRhynchosporion</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47331">
+      <description>-- Definition --&#13;
+"Dinaric dolomite Scots pine forests (Genisto januensis-Pinetum)" (Code: 91R0) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">dinaricDolomiteScotsPineForestsGenistoJanuensisPinetum</identifier>
+      <name>dinaricDolomiteScotsPineForestsGenistoJanuensisPinetum</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47332">
+      <description>-- Definition --&#13;
+"Dry Atlantic coastal heaths with Erica vagans" (Code: 4040) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">dryAtlanticCoastalHeathsWithEricaVagans</identifier>
+      <name>dryAtlanticCoastalHeathsWithEricaVagans</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47333">
+      <description>-- Definition --&#13;
+"Dry sand heaths with Calluna and Empetrum nigrum" (Code: 2320) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">drySandHeathsWithCallunaAndEmpetrumNigrum</identifier>
+      <name>drySandHeathsWithCallunaAndEmpetrumNigrum</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47334">
+      <description>-- Definition --&#13;
+"Dry sand heaths with Calluna and Genista" (Code: 2310) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">drySandHeathsWithCallunaAndGenista</identifier>
+      <name>drySandHeathsWithCallunaAndGenista</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47335">
+      <description>-- Definition --&#13;
+"Dunes with Euphorbia terracina" (Code: 2220) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">dunesWithEuphorbiaTerracina</identifier>
+      <name>dunesWithEuphorbiaTerracina</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47336">
+      <description>-- Definition --&#13;
+"Dunes with Hippophaë rhamnoides" (Code: 2160) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">dunesWithHippophaëRhamnoides</identifier>
+      <name>dunesWithHippophaëRhamnoides</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47337">
+      <description>-- Definition --&#13;
+"Dunes with Salix repens ssp argentea (Salicion arenariae)" (Code: 2170) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">dunesWithSalixRepensSspArgenteaSalicionArenariae</identifier>
+      <name>dunesWithSalixRepensSspArgenteaSalicionArenariae</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47338">
+      <description>-- Definition --&#13;
+"Eastern Mediterranean screes" (Code: 8140) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">easternMediterraneanScrees</identifier>
+      <name>easternMediterraneanScrees</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47339">
+      <description>-- Definition --&#13;
+"Eastern sub-mediteranean dry grasslands (Scorzoneratalia villosae)" (Code: 62A0) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">easternSubMediteraneanDryGrasslandsScorzonerataliaVillosae</identifier>
+      <name>easternSubMediteraneanDryGrasslandsScorzonerataliaVillosae</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47340">
+      <description>-- Definition --&#13;
+"Embryonic shifting dunes" (Code: 2110) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">embryonicShiftingDunes</identifier>
+      <name>embryonicShiftingDunes</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47341">
+      <description>-- Definition --&#13;
+"Endemic forests with Juniperus spp" (Code: 9560) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">endemicForestsWithJuniperusSpp</identifier>
+      <name>endemicForestsWithJuniperusSpp</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47342">
+      <description>-- Definition --&#13;
+"Endemic macaronesian heaths" (Code: 4050) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">endemicMacaronesianHeaths</identifier>
+      <name>endemicMacaronesianHeaths</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47343">
+      <description>-- Definition --&#13;
+"Endemic oro-Mediterranean heaths with gorse" (Code: 4090) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">endemicOroMediterraneanHeathsWithGorse</identifier>
+      <name>endemicOroMediterraneanHeathsWithGorse</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47344">
+      <description>-- Definition --&#13;
+"Endemic phryganas of the Euphorbio-Verbascion" (Code: 5430) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">endemicPhryganasOfTheEuphorbioVerbascion</identifier>
+      <name>endemicPhryganasOfTheEuphorbioVerbascion</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47345">
+      <description>-- Definition --&#13;
+"Estuaries" (Code: 1130) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">estuaries</identifier>
+      <name>estuaries</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47346">
+      <description>-- Definition --&#13;
+"European dry heaths" (Code: 4030) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">europeanDryHeaths</identifier>
+      <name>europeanDryHeaths</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47347">
+      <description>-- Definition --&#13;
+"Euro-Siberian steppic woods with Quercus spp" (Code: 91I0) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">euroSiberianSteppicWoodsWithQuercusSpp</identifier>
+      <name>euroSiberianSteppicWoodsWithQuercusSpp</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47348">
+      <description>-- Definition --&#13;
+"Fennoscandian deciduous swamp woods" (Code: 9080) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">fennoscandianDeciduousSwampWoods</identifier>
+      <name>fennoscandianDeciduousSwampWoods</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47349">
+      <description>-- Definition --&#13;
+"Fennoscandian hemiboreal natural old broad-leaved deciduous forests (Quercus, Tilia, Acer, Fraxinus or Ulmus) rich in epiphytes" (Code: 9020) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">fennoscandianHemiborealNaturalOldBroadLeavedDeciduousForestsQuercusTiliaAcerFraxinusOrUlmusRichInEpiphytes</identifier>
+      <name>fennoscandianHemiborealNaturalOldBroadLeavedDeciduousForestsQuercusTiliaAcerFraxinusOrUlmusRichInEpiphytes</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47350">
+      <description>-- Definition --&#13;
+"Fennoscandian herb-rich forests with Picea abies" (Code: 9050) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">fennoscandianHerbRichForestsWithPiceaAbies</identifier>
+      <name>fennoscandianHerbRichForestsWithPiceaAbies</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47351">
+      <description>-- Definition --&#13;
+"Fennoscandian lowland species-rich dry to mesic grasslands" (Code: 6270) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">fennoscandianLowlandSpeciesRichDryToMesicGrasslands</identifier>
+      <name>fennoscandianLowlandSpeciesRichDryToMesicGrasslands</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47352">
+      <description>-- Definition --&#13;
+"Fennoscandian mineral-rich springs and springfens" (Code: 7160) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">fennoscandianMineralRichSpringsAndSpringfens</identifier>
+      <name>fennoscandianMineralRichSpringsAndSpringfens</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47353">
+      <description>-- Definition --&#13;
+"Fennoscandian natural rivers" (Code: 3210) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">fennoscandianNaturalRivers</identifier>
+      <name>fennoscandianNaturalRivers</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47354">
+      <description>-- Definition --&#13;
+"Fennoscandian wooded meadows" (Code: 6530) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">fennoscandianWoodedMeadows</identifier>
+      <name>fennoscandianWoodedMeadows</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47355">
+      <description>-- Definition --&#13;
+"Fennoscandian wooded pastures" (Code: 9070) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">fennoscandianWoodedPastures</identifier>
+      <name>fennoscandianWoodedPastures</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47356">
+      <description>-- Definition --&#13;
+"Fields of lava and natural excavations" (Code: 8320) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">fieldsOfLavaAndNaturalExcavations</identifier>
+      <name>fieldsOfLavaAndNaturalExcavations</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47357">
+      <description>-- Definition --&#13;
+"Fixed coastal dunes with herbaceous vegetation (''grey dunes'')" (Code: 2130) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">fixedCoastalDunesWithHerbaceousVegetationGreyDunes</identifier>
+      <name>fixedCoastalDunesWithHerbaceousVegetationGreyDunes</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47358">
+      <description>-- Definition --&#13;
+"Forests of Ilex aquifolium" (Code: 9380) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">forestsOfIlexAquifolium</identifier>
+      <name>forestsOfIlexAquifolium</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47359">
+      <description>-- Definition --&#13;
+"Galicio-Portuguese oak woods with Quercus robur and Quercus pyrenaica" (Code: 9230) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">galicioPortugueseOakWoodsWithQuercusRoburAndQuercusPyrenaica</identifier>
+      <name>galicioPortugueseOakWoodsWithQuercusRoburAndQuercusPyrenaica</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47360">
+      <description>-- Definition --&#13;
+"Galio-Carpinetum oak-hornbeam forests" (Code: 9170) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">galioCarpinetumOakHornbeamForests</identifier>
+      <name>galioCarpinetumOakHornbeamForests</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47361">
+      <description>-- Definition --&#13;
+"Halo-nitrophilous scrubs (Pegano-Salsoletea)" (Code: 1430) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">haloNitrophilousScrubsPeganoSalsoletea</identifier>
+      <name>haloNitrophilousScrubsPeganoSalsoletea</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47362">
+      <description>-- Definition --&#13;
+"Hard oligo-mesotrophic waters with benthic vegetation of Chara spp" (Code: 3140) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">hardOligoMesotrophicWatersWithBenthicVegetationOfCharaSpp</identifier>
+      <name>hardOligoMesotrophicWatersWithBenthicVegetationOfCharaSpp</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47363">
+      <description>-- Definition --&#13;
+"Hellenic beech forests with Abies borisii-regis" (Code: 9270) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">hellenicBeechForestsWithAbiesBorisiiRegis</identifier>
+      <name>hellenicBeechForestsWithAbiesBorisiiRegis</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47364">
+      <description>-- Definition --&#13;
+"Holy Cross fir forest (Abietetum polonicum)" (Code: 91P0) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">holyCrossFirForestAbietetumPolonicum</identifier>
+      <name>holyCrossFirForestAbietetumPolonicum</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47365">
+      <description>-- Definition --&#13;
+"Humid dune slacks" (Code: 2190) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">humidDuneSlacks</identifier>
+      <name>humidDuneSlacks</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47366">
+      <description>-- Definition --&#13;
+"Hydrophilous tall herb fringe communities of plains and of the montane to alpine levels" (Code: 6430) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">hydrophilousTallHerbFringeCommunitiesOfPlainsAndOfTheMontaneToAlpineLevels</identifier>
+      <name>hydrophilousTallHerbFringeCommunitiesOfPlainsAndOfTheMontaneToAlpineLevels</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47367">
+      <description>-- Definition --&#13;
+"Iberian gypsum vegetation (Gypsophiletalia)" (Code: 1520) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">iberianGypsumVegetationGypsophiletalia</identifier>
+      <name>iberianGypsumVegetationGypsophiletalia</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47368">
+      <description>-- Definition --&#13;
+"Illyrian Fagus sylvatica forests (Aremonio-Fagion)" (Code: 91K0) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">illyrianFagusSylvaticaForestsAremonioFagion</identifier>
+      <name>illyrianFagusSylvaticaForestsAremonioFagion</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47369">
+      <description>-- Definition --&#13;
+"Illyrian oak-hornbeam forests (Erythronio-carpinion)" (Code: 91L0) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">illyrianOakHornbeamForestsErythronioCarpinion</identifier>
+      <name>illyrianOakHornbeamForestsErythronioCarpinion</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47370">
+      <description>-- Definition --&#13;
+"Inland dunes with open Corynephorus and Agrostis grasslands" (Code: 2330) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">inlandDunesWithOpenCorynephorusAndAgrostisGrasslands</identifier>
+      <name>inlandDunesWithOpenCorynephorusAndAgrostisGrasslands</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47371">
+      <description>-- Definition --&#13;
+"Inland salt meadows" (Code: 1340) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">inlandSaltMeadows</identifier>
+      <name>inlandSaltMeadows</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47372">
+      <description>-- Definition --&#13;
+"Intermittently flowing Mediterranean rivers of the Paspalo-Agrostidion" (Code: 3290) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">intermittentlyFlowingMediterraneanRiversOfThePaspaloAgrostidion</identifier>
+      <name>intermittentlyFlowingMediterraneanRiversOfThePaspaloAgrostidion</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47373">
+      <description>-- Definition --&#13;
+"Juniperus communis formations on heaths or calcareous grasslands" (Code: 5130) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">juniperusCommunisFormationsOnHeathsOrCalcareousGrasslands</identifier>
+      <name>juniperusCommunisFormationsOnHeathsOrCalcareousGrasslands</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47374">
+      <description>-- Definition --&#13;
+"Lakes of gypsum karst" (Code: 3190) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">lakesOfGypsumKarst</identifier>
+      <name>lakesOfGypsumKarst</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47375">
+      <description>-- Definition --&#13;
+"Large shallow inlets and bays" (Code: 1160) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">largeShallowInletsAndBays</identifier>
+      <name>largeShallowInletsAndBays</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47376">
+      <description>-- Definition --&#13;
+"Laurus nobilis thickets" (Code: 5310) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">laurusNobilisThickets</identifier>
+      <name>laurusNobilisThickets</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47377">
+      <description>-- Definition --&#13;
+"Limestone pavements" (Code: 8240) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">limestonePavements</identifier>
+      <name>limestonePavements</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47378">
+      <description>-- Definition --&#13;
+"Low formations of Euphorbia close to cliffs" (Code: 5320) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">lowFormationsOfEuphorbiaCloseToCliffs</identifier>
+      <name>lowFormationsOfEuphorbiaCloseToCliffs</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47379">
+      <description>-- Definition --&#13;
+"Lowland hay meadows (Alopecurus pratensis, Sanguisorba officinalis)" (Code: 6510) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">lowlandHayMeadowsAlopecurusPratensisSanguisorbaOfficinalis</identifier>
+      <name>lowlandHayMeadowsAlopecurusPratensisSanguisorbaOfficinalis</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47380">
+      <description>-- Definition --&#13;
+"Luzulo-Fagetum beech forests" (Code: 9110) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">luzuloFagetumBeechForests</identifier>
+      <name>luzuloFagetumBeechForests</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47381">
+      <description>-- Definition --&#13;
+"Macaronesian laurel forests (Laurus, Ocotea)" (Code: 9360) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">macaronesianLaurelForestsLaurusOcotea</identifier>
+      <name>macaronesianLaurelForestsLaurusOcotea</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47382">
+      <description>-- Definition --&#13;
+"Macaronesian mesophile grasslands" (Code: 6180) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">macaronesianMesophileGrasslands</identifier>
+      <name>macaronesianMesophileGrasslands</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47383">
+      <description>-- Definition --&#13;
+"Machairs (in Ireland)" (Code: 21A0) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">machairsInIreland</identifier>
+      <name>machairsInIreland</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47384">
+      <description>-- Definition --&#13;
+"Malcolmietalia dune grasslands" (Code: 2230) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">malcolmietaliaDuneGrasslands</identifier>
+      <name>malcolmietaliaDuneGrasslands</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47385">
+      <description>-- Definition --&#13;
+"Medio-European calcareous scree of hill and montane levels" (Code: 8160) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">medioEuropeanCalcareousScreeOfHillAndMontaneLevels</identifier>
+      <name>medioEuropeanCalcareousScreeOfHillAndMontaneLevels</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47386">
+      <description>-- Definition --&#13;
+"Medio-European limestone beech forests of the Cephalanthero-Fagion" (Code: 9150) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">medioEuropeanLimestoneBeechForestsOfTheCephalantheroFagion</identifier>
+      <name>medioEuropeanLimestoneBeechForestsOfTheCephalantheroFagion</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47387">
+      <description>-- Definition --&#13;
+"Medio-European subalpine beech woods with Acer and Rumex arifolius" (Code: 9140) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">medioEuropeanSubalpineBeechWoodsWithAcerAndRumexArifolius</identifier>
+      <name>medioEuropeanSubalpineBeechWoodsWithAcerAndRumexArifolius</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47388">
+      <description>-- Definition --&#13;
+"Medio-European upland siliceous screes" (Code: 8150) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">medioEuropeanUplandSiliceousScrees</identifier>
+      <name>medioEuropeanUplandSiliceousScrees</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47389">
+      <description>-- Definition --&#13;
+"Mediterranean and thermo-Atlantic halophilous scrubs (Sarcocornetea fruticosi)" (Code: 1420) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">mediterraneanAndThermoAtlanticHalophilousScrubsSarcocorneteaFruticosi</identifier>
+      <name>mediterraneanAndThermoAtlanticHalophilousScrubsSarcocorneteaFruticosi</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47390">
+      <description>-- Definition --&#13;
+"Mediterranean pine forests with endemic Mesogean pines" (Code: 9540) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">mediterraneanPineForestsWithEndemicMesogeanPines</identifier>
+      <name>mediterraneanPineForestsWithEndemicMesogeanPines</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47391">
+      <description>-- Definition --&#13;
+"Mediterranean salt meadows (Juncetalia maritimi)" (Code: 1410) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">mediterraneanSaltMeadowsJuncetaliaMaritimi</identifier>
+      <name>mediterraneanSaltMeadowsJuncetaliaMaritimi</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47392">
+      <description>-- Definition --&#13;
+"Mediterranean salt steppes (Limonietalia)" (Code: 1510) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">mediterraneanSaltSteppesLimonietalia</identifier>
+      <name>mediterraneanSaltSteppesLimonietalia</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47393">
+      <description>-- Definition --&#13;
+"Mediterranean tall humid grasslands of the Molinio-Holoschoenion" (Code: 6420) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">mediterraneanTallHumidGrasslandsOfTheMolinioHoloschoenion</identifier>
+      <name>mediterraneanTallHumidGrasslandsOfTheMolinioHoloschoenion</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47394">
+      <description>-- Definition --&#13;
+"Mediterranean Taxus baccata woods" (Code: 9580) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">mediterraneanTaxusBaccataWoods</identifier>
+      <name>mediterraneanTaxusBaccataWoods</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47395">
+      <description>-- Definition --&#13;
+"Mediterranean temporary ponds" (Code: 3170) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">mediterraneanTemporaryPonds</identifier>
+      <name>mediterraneanTemporaryPonds</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47396">
+      <description>-- Definition --&#13;
+"Molinia meadows on calcareous, peaty or clayey-silt-laden soils (Molinion caeruleae)" (Code: 6410) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">moliniaMeadowsOnCalcareousPeatyOrClayeySiltLadenSoilsMolinionCaeruleae</identifier>
+      <name>moliniaMeadowsOnCalcareousPeatyOrClayeySiltLadenSoilsMolinionCaeruleae</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47397">
+      <description>-- Definition --&#13;
+"Mountain Cytisus purgans formations" (Code: 5120) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">mountainCytisusPurgansFormations</identifier>
+      <name>mountainCytisusPurgansFormations</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47398">
+      <description>-- Definition --&#13;
+"Mountain hay meadows" (Code: 6520) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">mountainHayMeadows</identifier>
+      <name>mountainHayMeadows</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47399">
+      <description>-- Definition --&#13;
+"Mudflats and sandflats not covered by seawater at low tide" (Code: 1140) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">mudflatsAndSandflatsNotCoveredBySeawaterAtLowTide</identifier>
+      <name>mudflatsAndSandflatsNotCoveredBySeawaterAtLowTide</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47400">
+      <description>-- Definition --&#13;
+"Natural dystrophic lakes and ponds" (Code: 3160) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">naturalDystrophicLakesAndPonds</identifier>
+      <name>naturalDystrophicLakesAndPonds</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47401">
+      <description>-- Definition --&#13;
+"Natural eutrophic lakes with Magnopotamion or Hydrocharition -type vegetation" (Code: 3150) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">naturalEutrophicLakesWithMagnopotamionOrHydrocharitionTypeVegetation</identifier>
+      <name>naturalEutrophicLakesWithMagnopotamionOrHydrocharitionTypeVegetation</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47402">
+      <description>-- Definition --&#13;
+"Natural forests of primary succession stages of landupheaval coast" (Code: 9030) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">naturalForestsOfPrimarySuccessionStagesOfLandupheavalCoast</identifier>
+      <name>naturalForestsOfPrimarySuccessionStagesOfLandupheavalCoast</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47403">
+      <description>-- Definition --&#13;
+"Nordic alvar and precambrian calcareous flatrocks" (Code: 6280) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">nordicAlvarAndPrecambrianCalcareousFlatrocks</identifier>
+      <name>nordicAlvarAndPrecambrianCalcareousFlatrocks</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47404">
+      <description>-- Definition --&#13;
+"Nordic subalpine/subarctic forests with Betula pubescens ssp czerepanovii" (Code: 9040) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">nordicSubalpineSubarcticForestsWithBetulaPubescensSspCzerepanovii</identifier>
+      <name>nordicSubalpineSubarcticForestsWithBetulaPubescensSspCzerepanovii</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47405">
+      <description>-- Definition --&#13;
+"Northern Atlantic wet heaths with Erica tetralix" (Code: 4010) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">northernAtlanticWetHeathsWithEricaTetralix</identifier>
+      <name>northernAtlanticWetHeathsWithEricaTetralix</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47406">
+      <description>-- Definition --&#13;
+"Northern boreal alluvial meadows" (Code: 6450) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">northernBorealAlluvialMeadows</identifier>
+      <name>northernBorealAlluvialMeadows</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47407">
+      <description>-- Definition --&#13;
+"Old acidophilous oak woods with Quercus robur on sandy plains" (Code: 9190) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">oldAcidophilousOakWoodsWithQuercusRoburOnSandyPlains</identifier>
+      <name>oldAcidophilousOakWoodsWithQuercusRoburOnSandyPlains</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47408">
+      <description>-- Definition --&#13;
+"Old sessile oak woods with Ilex and Blechnum in the British Isles" (Code: 91A0) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">oldSessileOakWoodsWithIlexAndBlechnumInTheBritishIsles</identifier>
+      <name>oldSessileOakWoodsWithIlexAndBlechnumInTheBritishIsles</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47409">
+      <description>-- Definition --&#13;
+"Olea and Ceratonia forests" (Code: 9320) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">oleaAndCeratoniaForests</identifier>
+      <name>oleaAndCeratoniaForests</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47410">
+      <description>-- Definition --&#13;
+"Oligothrophic waters containing very few minerals generally on sandy soils of the West Mediterranean, with Isoetes spp" (Code: 3120) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">oligothrophicWatersContainingVeryFewMineralsGenerallyOnSandySoilsOfTheWestMediterraneanWithIsoetesSpp</identifier>
+      <name>oligothrophicWatersContainingVeryFewMineralsGenerallyOnSandySoilsOfTheWestMediterraneanWithIsoetesSpp</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47411">
+      <description>-- Definition --&#13;
+"Oligotrophic to mesotrophic standing waters with vegetation of the Littorelletea uniflorae and/or of the Isoëto-Nanojuncetea" (Code: 3130) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">oligotrophicToMesotrophicStandingWatersWithVegetationOfTheLittorelleteaUnifloraeAndOrOfTheIsoëtoNanojuncetea</identifier>
+      <name>oligotrophicToMesotrophicStandingWatersWithVegetationOfTheLittorelleteaUnifloraeAndOrOfTheIsoëtoNanojuncetea</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47412">
+      <description>-- Definition --&#13;
+"Oligotrophic waters containing very few minerals of sandy plains (Littorelletalia uniflorae)" (Code: 3110) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">oligotrophicWatersContainingVeryFewMineralsOfSandyPlainsLittorelletaliaUniflorae</identifier>
+      <name>oligotrophicWatersContainingVeryFewMineralsOfSandyPlainsLittorelletaliaUniflorae</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47413">
+      <description>-- Definition --&#13;
+"Oro-Iberian Festuca indigesta grasslands" (Code: 6160) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">oroIberianFestucaIndigestaGrasslands</identifier>
+      <name>oroIberianFestucaIndigestaGrasslands</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47414">
+      <description>-- Definition --&#13;
+"Palm groves of Phoenix" (Code: 9370) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">palmGrovesOfPhoenix</identifier>
+      <name>palmGrovesOfPhoenix</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47415">
+      <description>-- Definition --&#13;
+"Palsa mires" (Code: 7320) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">palsaMires</identifier>
+      <name>palsaMires</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47416">
+      <description>-- Definition --&#13;
+"Pannonian-Balkanic turkey oak –sessile oak forests" (Code: 91M0) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">pannonianBalkanicTurkeyOak–sessileOakForests</identifier>
+      <name>pannonianBalkanicTurkeyOak–sessileOakForests</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47417">
+      <description>-- Definition --&#13;
+"Pannonian woods with Quercus pubescens" (Code: 91H0) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">pannonianWoodsWithQuercusPubescens</identifier>
+      <name>pannonianWoodsWithQuercusPubescens</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47418">
+      <description>-- Definition --&#13;
+"Pannonic inland dunes" (Code: 2340) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">pannonicInlandDunes</identifier>
+      <name>pannonicInlandDunes</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47419">
+      <description>-- Definition --&#13;
+"Pannonic inland sand dune thicket (Junipero-Populetum albae)" (Code: 91N0) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">pannonicInlandSandDuneThicketJuniperoPopuletumAlbae</identifier>
+      <name>pannonicInlandSandDuneThicketJuniperoPopuletumAlbae</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47420">
+      <description>-- Definition --&#13;
+"Pannonic loess steppic grasslands" (Code: 6250) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">pannonicLoessSteppicGrasslands</identifier>
+      <name>pannonicLoessSteppicGrasslands</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47421">
+      <description>-- Definition --&#13;
+"Pannonic salt steppes and salt marshes" (Code: 1530) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">pannonicSaltSteppesAndSaltMarshes</identifier>
+      <name>pannonicSaltSteppesAndSaltMarshes</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47422">
+      <description>-- Definition --&#13;
+"Pannonic sand steppes" (Code: 6260) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">pannonicSandSteppes</identifier>
+      <name>pannonicSandSteppes</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47423">
+      <description>-- Definition --&#13;
+"Pannonic woods with Quercus petraea and Carpinus betulus" (Code: 91G0) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">pannonicWoodsWithQuercusPetraeaAndCarpinusBetulus</identifier>
+      <name>pannonicWoodsWithQuercusPetraeaAndCarpinusBetulus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47424">
+      <description>-- Definition --&#13;
+"Peat grasslands of Troodos" (Code: 6460) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">peatGrasslandsOfTroodos</identifier>
+      <name>peatGrasslandsOfTroodos</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47425">
+      <description>-- Definition --&#13;
+"Perennial vegetation of stony banks" (Code: 1220) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">perennialVegetationOfStonyBanks</identifier>
+      <name>perennialVegetationOfStonyBanks</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47426">
+      <description>-- Definition --&#13;
+"Permanent glaciers" (Code: 8340) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">permanentGlaciers</identifier>
+      <name>permanentGlaciers</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47427">
+      <description>-- Definition --&#13;
+"Petrifying springs with tufa formation (Cratoneurion)" (Code: 7220) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">petrifyingSpringsWithTufaFormationCratoneurion</identifier>
+      <name>petrifyingSpringsWithTufaFormationCratoneurion</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47428">
+      <description>-- Definition --&#13;
+"Platanus orientalis and Liquidambar orientalis woods (Platanion orientalis)" (Code: 92C0) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">platanusOrientalisAndLiquidambarOrientalisWoodsPlatanionOrientalis</identifier>
+      <name>platanusOrientalisAndLiquidambarOrientalisWoodsPlatanionOrientalis</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47429">
+      <description>-- Definition --&#13;
+"Posidonia beds (Posidonion oceanicae)" (Code: 1120) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">posidoniaBedsPosidonionOceanicae</identifier>
+      <name>posidoniaBedsPosidonionOceanicae</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47430">
+      <description>-- Definition --&#13;
+"Pseudo-steppe with grasses and annuals of the Thero-Brachypodietea" (Code: 6220) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">pseudoSteppeWithGrassesAndAnnualsOfTheTheroBrachypodietea</identifier>
+      <name>pseudoSteppeWithGrassesAndAnnualsOfTheTheroBrachypodietea</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47431">
+      <description>-- Definition --&#13;
+"Quercus faginea and Quercus canariensis Iberian woods" (Code: 9240) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">quercusFagineaAndQuercusCanariensisIberianWoods</identifier>
+      <name>quercusFagineaAndQuercusCanariensisIberianWoods</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47432">
+      <description>-- Definition --&#13;
+"Quercus frainetto woods" (Code: 9280) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">quercusFrainettoWoods</identifier>
+      <name>quercusFrainettoWoods</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47433">
+      <description>-- Definition --&#13;
+"Quercus ilex and Quercus rotundifolia forests" (Code: 9340) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">quercusIlexAndQuercusRotundifoliaForests</identifier>
+      <name>quercusIlexAndQuercusRotundifoliaForests</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47434">
+      <description>-- Definition --&#13;
+"Quercus macrolepis forests" (Code: 9350) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">quercusMacrolepisForests</identifier>
+      <name>quercusMacrolepisForests</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47435">
+      <description>-- Definition --&#13;
+"Quercus suber forests" (Code: 9330) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">quercusSuberForests</identifier>
+      <name>quercusSuberForests</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47436">
+      <description>-- Definition --&#13;
+"Quercus trojana woods" (Code: 9250) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">quercusTrojanaWoods</identifier>
+      <name>quercusTrojanaWoods</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47437">
+      <description>-- Definition --&#13;
+"Reefs" (Code: 1170) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">reefs</identifier>
+      <name>reefs</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47438">
+      <description>-- Definition --&#13;
+"Riparian formations on intermittent Mediterranean water courses with Rhododendron ponticum, Salix and others" (Code: 92B0) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">riparianFormationsOnIntermittentMediterraneanWaterCoursesWithRhododendronPonticumSalixAndOthers</identifier>
+      <name>riparianFormationsOnIntermittentMediterraneanWaterCoursesWithRhododendronPonticumSalixAndOthers</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47439">
+      <description>-- Definition --&#13;
+"Riparian mixed forests of Quercus robur, Ulmus laevis and Ulmus minor, Fraxinus excelsior or Fraxinus angustifolia, along the great rivers (Ulmenion minoris)" (Code: 91F0) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">riparianMixedForestsOfQuercusRoburUlmusLaevisAndUlmusMinorFraxinusExcelsiorOrFraxinusAngustifoliaAlongTheGreatRiversUlmenionMinoris</identifier>
+      <name>riparianMixedForestsOfQuercusRoburUlmusLaevisAndUlmusMinorFraxinusExcelsiorOrFraxinusAngustifoliaAlongTheGreatRiversUlmenionMinoris</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47440">
+      <description>-- Definition --&#13;
+"Rivers with muddy banks with Chenopodion rubri pp and Bidention pp vegetation" (Code: 3270) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">riversWithMuddyBanksWithChenopodionRubriPpAndBidentionPpVegetation</identifier>
+      <name>riversWithMuddyBanksWithChenopodionRubriPpAndBidentionPpVegetation</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47441">
+      <description>-- Definition --&#13;
+"Rupicolous calcareous or basophilic grasslands of the Alysso-Sedion albi" (Code: 6110) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">rupicolousCalcareousOrBasophilicGrasslandsOfTheAlyssoSedionAlbi</identifier>
+      <name>rupicolousCalcareousOrBasophilicGrasslandsOfTheAlyssoSedionAlbi</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47442">
+      <description>-- Definition --&#13;
+"Rupicolous pannonic grasslands (Stipo-Festucetalia pallentis)" (Code: 6190) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">rupicolousPannonicGrasslandsStipoFestucetaliaPallentis</identifier>
+      <name>rupicolousPannonicGrasslandsStipoFestucetaliaPallentis</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47443">
+      <description>-- Definition --&#13;
+"Salicornia and other annuals colonizing mud and sand" (Code: 1310) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">salicorniaAndOtherAnnualsColonizingMudAndSand</identifier>
+      <name>salicorniaAndOtherAnnualsColonizingMudAndSand</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47444">
+      <description>-- Definition --&#13;
+"Salix alba and Populus alba galleries" (Code: 92A0) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">salixAlbaAndPopulusAlbaGalleries</identifier>
+      <name>salixAlbaAndPopulusAlbaGalleries</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47445">
+      <description>-- Definition --&#13;
+"Sandbanks which are slightly covered by sea water all the time" (Code: 1110) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">sandbanksWhichAreSlightlyCoveredBySeaWaterAllTheTime</identifier>
+      <name>sandbanksWhichAreSlightlyCoveredBySeaWaterAllTheTime</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47446">
+      <description>-- Definition --&#13;
+"Sarcopoterium spinosum phryganas" (Code: 5420) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">sarcopoteriumSpinosumPhryganas</identifier>
+      <name>sarcopoteriumSpinosumPhryganas</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47447">
+      <description>-- Definition --&#13;
+"Sarmatic steppe pine forest" (Code: 91U0) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">sarmaticSteppePineForest</identifier>
+      <name>sarmaticSteppePineForest</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47448">
+      <description>-- Definition --&#13;
+"Scrub and low forest vegetation with Quercus alnifolia" (Code: 9390) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">scrubAndLowForestVegetationWithQuercusAlnifolia</identifier>
+      <name>scrubAndLowForestVegetationWithQuercusAlnifolia</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47449">
+      <description>-- Definition --&#13;
+"Semi-natural dry grasslands and scrubland facies on calcareous substrates (Festuco-Brometalia) (* important orchid sites)" (Code: 6210) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">semiNaturalDryGrasslandsAndScrublandFaciesOnCalcareousSubstratesFestucoBrometalia*ImportantOrchidSites</identifier>
+      <name>semiNaturalDryGrasslandsAndScrublandFaciesOnCalcareousSubstratesFestucoBrometalia*ImportantOrchidSites</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47450">
+      <description>-- Definition --&#13;
+"Serpentinophilous grassland of Cyprus" (Code: 62B0) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">serpentinophilousGrasslandOfCyprus</identifier>
+      <name>serpentinophilousGrasslandOfCyprus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47451">
+      <description>-- Definition --&#13;
+"Shifting dunes along the shoreline with Ammophila arenaria (''white dunes'')" (Code: 2120) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">shiftingDunesAlongTheShorelineWithAmmophilaArenariaWhiteDunes</identifier>
+      <name>shiftingDunesAlongTheShorelineWithAmmophilaArenariaWhiteDunes</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47452">
+      <description>-- Definition --&#13;
+"Siliceous alpine and boreal grasslands" (Code: 6150) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">siliceousAlpineAndBorealGrasslands</identifier>
+      <name>siliceousAlpineAndBorealGrasslands</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47453">
+      <description>-- Definition --&#13;
+"Siliceous Pyrenean Festuca eskia grasslands" (Code: 6140) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">siliceousPyreneanFestucaEskiaGrasslands</identifier>
+      <name>siliceousPyreneanFestucaEskiaGrasslands</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47454">
+      <description>-- Definition --&#13;
+"Siliceous rock with pioneer vegetation of the Sedo-Scleranthion or of the Sedo albi-Veronicion dillenii" (Code: 8230) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">siliceousRockWithPioneerVegetationOfTheSedoScleranthionOrOfTheSedoAlbiVeronicionDillenii</identifier>
+      <name>siliceousRockWithPioneerVegetationOfTheSedoScleranthionOrOfTheSedoAlbiVeronicionDillenii</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47455">
+      <description>-- Definition --&#13;
+"Siliceous rocky slopes with chasmophytic vegetation" (Code: 8220) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">siliceousRockySlopesWithChasmophyticVegetation</identifier>
+      <name>siliceousRockySlopesWithChasmophyticVegetation</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47456">
+      <description>-- Definition --&#13;
+"Siliceous scree of the montane to snow levels (Androsacetalia alpinae and Galeopsietalia ladani)" (Code: 8110) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">siliceousScreeOfTheMontaneToSnowLevelsAndrosacetaliaAlpinaeAndGaleopsietaliaLadani</identifier>
+      <name>siliceousScreeOfTheMontaneToSnowLevelsAndrosacetaliaAlpinaeAndGaleopsietaliaLadani</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47457">
+      <description>-- Definition --&#13;
+"Southern Apennine Abies alba forests" (Code: 9510) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">southernApennineAbiesAlbaForests</identifier>
+      <name>southernApennineAbiesAlbaForests</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47458">
+      <description>-- Definition --&#13;
+"Southern riparian galleries and thickets (Nerio-Tamaricetea and Securinegion tinctoriae)" (Code: 92D0) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">southernRiparianGalleriesAndThicketsNerioTamariceteaAndSecurinegionTinctoriae</identifier>
+      <name>southernRiparianGalleriesAndThicketsNerioTamariceteaAndSecurinegionTinctoriae</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47459">
+      <description>-- Definition --&#13;
+"Spartina swards (Spartinion maritimae)" (Code: 1320) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">spartinaSwardsSpartinionMaritimae</identifier>
+      <name>spartinaSwardsSpartinionMaritimae</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47460">
+      <description>-- Definition --&#13;
+"Species-rich Nardus grasslands, on silicious substrates in mountain areas (and sub-mountain areas in Continental Europe)" (Code: 6230) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">speciesRichNardusGrasslandsOnSiliciousSubstratesInMountainAreasAndSubMountainAreasInContinentalEurope</identifier>
+      <name>speciesRichNardusGrasslandsOnSiliciousSubstratesInMountainAreasAndSubMountainAreasInContinentalEurope</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47461">
+      <description>-- Definition --&#13;
+"Stable xerothermophilous formations with Buxus sempervirens on rock slopes (Berberidion pp)" (Code: 5110) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">stableXerothermophilousFormationsWithBuxusSempervirensOnRockSlopesBerberidionPp</identifier>
+      <name>stableXerothermophilousFormationsWithBuxusSempervirensOnRockSlopesBerberidionPp</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47462">
+      <description>-- Definition --&#13;
+"Subalpine and montane Pinus uncinata forests (if on gypsum or limestone)" (Code: 9430) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">subalpineAndMontanePinusUncinataForestsIfOnGypsumOrLimestone</identifier>
+      <name>subalpineAndMontanePinusUncinataForestsIfOnGypsumOrLimestone</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47463">
+      <description>-- Definition --&#13;
+"Sub-Arctic Salix spp scrub" (Code: 4080) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">subArcticSalixSppScrub</identifier>
+      <name>subArcticSalixSppScrub</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47464">
+      <description>-- Definition --&#13;
+"Sub-Atlantic and medio-European oak or oak-hornbeam forests of the Carpinion betuli" (Code: 9160) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">subAtlanticAndMedioEuropeanOakOrOakHornbeamForestsOfTheCarpinionBetuli</identifier>
+      <name>subAtlanticAndMedioEuropeanOakOrOakHornbeamForestsOfTheCarpinionBetuli</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47465">
+      <description>-- Definition --&#13;
+"Subcontinental peri-Pannonic scrub" (Code: 40A0) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">subcontinentalPeriPannonicScrub</identifier>
+      <name>subcontinentalPeriPannonicScrub</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47466">
+      <description>-- Definition --&#13;
+"Submarine structures made by leaking gases" (Code: 1180) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">submarineStructuresMadeByLeakingGases</identifier>
+      <name>submarineStructuresMadeByLeakingGases</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47467">
+      <description>-- Definition --&#13;
+"(Sub-) Mediterranean pine forests with endemic black pines" (Code: 9530) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">subMediterraneanPineForestsWithEndemicBlackPines</identifier>
+      <name>subMediterraneanPineForestsWithEndemicBlackPines</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47468">
+      <description>-- Definition --&#13;
+"Submerged or partially submerged sea caves" (Code: 8330) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">submergedOrPartiallySubmergedSeaCaves</identifier>
+      <name>submergedOrPartiallySubmergedSeaCaves</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47469">
+      <description>-- Definition --&#13;
+"Sub-Pannonic steppic grasslands" (Code: 6240) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">subPannonicSteppicGrasslands</identifier>
+      <name>subPannonicSteppicGrasslands</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47470">
+      <description>-- Definition --&#13;
+"Taxus baccata woods of the British Isles" (Code: 91J0) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">taxusBaccataWoodsOfTheBritishIsles</identifier>
+      <name>taxusBaccataWoodsOfTheBritishIsles</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47471">
+      <description>-- Definition --&#13;
+"Temperate Atlantic wet heaths with Erica ciliaris and Erica tetralix" (Code: 4020) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">temperateAtlanticWetHeathsWithEricaCiliarisAndEricaTetralix</identifier>
+      <name>temperateAtlanticWetHeathsWithEricaCiliarisAndEricaTetralix</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47472">
+      <description>-- Definition --&#13;
+"Tetraclinis articulata forests" (Code: 9570) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">tetraclinisArticulataForests</identifier>
+      <name>tetraclinisArticulataForests</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47473">
+      <description>-- Definition --&#13;
+"Thermo-Mediterranean and pre-desert scrub" (Code: 5330) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">thermoMediterraneanAndPreDesertScrub</identifier>
+      <name>thermoMediterraneanAndPreDesertScrub</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47474">
+      <description>-- Definition --&#13;
+"Thermophilous Fraxinus angustifolia woods" (Code: 91B0) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">thermophilousFraxinusAngustifoliaWoods</identifier>
+      <name>thermophilousFraxinusAngustifoliaWoods</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47475">
+      <description>-- Definition --&#13;
+"Tilio-Acerion forests of slopes, screes and ravines" (Code: 9180) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">tilioAcerionForestsOfSlopesScreesAndRavines</identifier>
+      <name>tilioAcerionForestsOfSlopesScreesAndRavines</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47476">
+      <description>-- Definition --&#13;
+"Transition mires and quaking bogs" (Code: 7140) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">transitionMiresAndQuakingBogs</identifier>
+      <name>transitionMiresAndQuakingBogs</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47477">
+      <description>-- Definition --&#13;
+"Transylvanian hot-spring lotus beds" (Code: 31A0) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">transylvanianHotSpringLotusBeds</identifier>
+      <name>transylvanianHotSpringLotusBeds</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47478">
+      <description>-- Definition --&#13;
+"Turloughs" (Code: 3180) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">turloughs</identifier>
+      <name>turloughs</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47479">
+      <description>-- Definition --&#13;
+"Vegetated sea cliffs of the Atlantic and Baltic Coasts" (Code: 1230) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">vegetatedSeaCliffsOfTheAtlanticAndBalticCoasts</identifier>
+      <name>vegetatedSeaCliffsOfTheAtlanticAndBalticCoasts</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47480">
+      <description>-- Definition --&#13;
+"Vegetated sea cliffs of the Mediterranean coasts with endemic Limonium spp" (Code: 1240) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">vegetatedSeaCliffsOfTheMediterraneanCoastsWithEndemicLimoniumSpp</identifier>
+      <name>vegetatedSeaCliffsOfTheMediterraneanCoastsWithEndemicLimoniumSpp</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47481">
+      <description>-- Definition --&#13;
+"Vegetated sea cliffs with endemic flora of the Macaronesian coasts" (Code: 1250) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">vegetatedSeaCliffsWithEndemicFloraOfTheMacaronesianCoasts</identifier>
+      <name>vegetatedSeaCliffsWithEndemicFloraOfTheMacaronesianCoasts</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47482">
+      <description>-- Definition --&#13;
+"Water courses of plain to montane levels with the Ranunculion fluitantis and Callitricho-Batrachion vegetation" (Code: 3260) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">waterCoursesOfPlainToMontaneLevelsWithTheRanunculionFluitantisAndCallitrichoBatrachionVegetation</identifier>
+      <name>waterCoursesOfPlainToMontaneLevelsWithTheRanunculionFluitantisAndCallitrichoBatrachionVegetation</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47483">
+      <description>-- Definition --&#13;
+"Western Carpathian calcicolous Pinus sylvestris forests" (Code: 91Q0) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">westernCarpathianCalcicolousPinusSylvestrisForests</identifier>
+      <name>westernCarpathianCalcicolousPinusSylvestrisForests</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47484">
+      <description>-- Definition --&#13;
+"Western Mediterranean and thermophilous scree" (Code: 8130) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">westernMediterraneanAndThermophilousScree</identifier>
+      <name>westernMediterraneanAndThermophilousScree</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47485">
+      <description>-- Definition --&#13;
+"Western Taïga" (Code: 9010) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">westernTaïga</identifier>
+      <name>westernTaïga</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47486">
+      <description>-- Definition --&#13;
+"West Mediterranean clifftop phryganas (Astragalo-Plantaginetum subulatae)" (Code: 5410) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">westMediterraneanClifftopPhryganasAstragaloPlantaginetumSubulatae</identifier>
+      <name>westMediterraneanClifftopPhryganasAstragaloPlantaginetumSubulatae</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47487">
+      <description>-- Definition --&#13;
+"Wooded dunes of the Atlantic, Continental and Boreal region" (Code: 2180) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">woodedDunesOfTheAtlanticContinentalAndBorealRegion</identifier>
+      <name>woodedDunesOfTheAtlanticContinentalAndBorealRegion</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47488">
+      <description>-- Definition --&#13;
+"Wooded dunes with Pinus pinea and/or Pinus pinaster" (Code: 2270) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">woodedDunesWithPinusPineaAndOrPinusPinaster</identifier>
+      <name>woodedDunesWithPinusPineaAndOrPinusPinaster</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47489">
+      <description>-- Definition --&#13;
+"Woodlands with Quercus infectoria (Anagyro foetidae-Quercetum infectoriae)" (Code: 93A0) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">woodlandsWithQuercusInfectoriaAnagyroFoetidaeQuercetumInfectoriae</identifier>
+      <name>woodlandsWithQuercusInfectoriaAnagyroFoetidaeQuercetumInfectoriae</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27595_47490">
+      <description>-- Definition --&#13;
+"Xeric sand calcareous grasslands" (Code: 6120) in Annex I of Council Directive 92/43/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:HabitatsAndBiotopes:0.0/HabitatTypeValue">xericSandCalcareousGrasslands</identifier>
+      <name>xericSandCalcareousGrasslands</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

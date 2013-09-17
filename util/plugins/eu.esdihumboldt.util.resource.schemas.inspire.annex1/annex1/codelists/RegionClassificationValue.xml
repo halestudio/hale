@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="RegionClassificationValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+A set of codes to be used for the bio-geographic region classification.</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:BiogeographicalRegions:0.0">RegionClassificationValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_21423_36624">
+      <description>-- Definition --&#13;
+The biogeographical region is alpine.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:BiogeographicalRegions:0.0/RegionClassificationValue">alpine</identifier>
+      <name>alpine</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21423_36625">
+      <description>-- Definition --&#13;
+The biogeographical region is atlantic.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:BiogeographicalRegions:0.0/RegionClassificationValue">atlantic</identifier>
+      <name>atlantic</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21423_36626">
+      <description>-- Definition --&#13;
+The biogeographical region is boreal.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:BiogeographicalRegions:0.0/RegionClassificationValue">boreal</identifier>
+      <name>boreal</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21423_36627">
+      <description>-- Definition --&#13;
+The biogeographical region is continental.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:BiogeographicalRegions:0.0/RegionClassificationValue">continental</identifier>
+      <name>continental</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21423_36628">
+      <description>-- Definition --&#13;
+The biogeographical region is macoronesia.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:BiogeographicalRegions:0.0/RegionClassificationValue">macoronesia</identifier>
+      <name>macoronesia</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21423_36629">
+      <description>-- Definition --&#13;
+The biogeographical region is mediterranean.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:BiogeographicalRegions:0.0/RegionClassificationValue">mediterranean</identifier>
+      <name>mediterranean</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21423_36630">
+      <description>-- Definition --&#13;
+The biogeographical region is arctic.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:BiogeographicalRegions:0.0/RegionClassificationValue">arctic</identifier>
+      <name>arctic</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21423_36631">
+      <description>-- Definition --&#13;
+The biogeographical region is pannonian.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:BiogeographicalRegions:0.0/RegionClassificationValue">pannonian</identifier>
+      <name>pannonian</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21423_36632">
+      <description>-- Definition --&#13;
+The biogeographical region is steppic.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:BiogeographicalRegions:0.0/RegionClassificationValue">steppic</identifier>
+      <name>steppic</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21423_36633">
+      <description>-- Definition --&#13;
+The biogeographical region is the Black Sea.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:BiogeographicalRegions:0.0/RegionClassificationValue">blackSea</identifier>
+      <name>blackSea</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21423_36634">
+      <description>-- Definition --&#13;
+The biogeographical region is anatolian.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:BiogeographicalRegions:0.0/RegionClassificationValue">anatolian</identifier>
+      <name>anatolian</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

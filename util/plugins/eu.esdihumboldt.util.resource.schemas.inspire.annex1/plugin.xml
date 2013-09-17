@@ -180,5 +180,14 @@
          </uri>
       </schema>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.ui.templates">
+      <project
+            location="resource://inspire.hale-schemas/annex1/projects/HydroPhysicalWaters.halex"
+            icon="icons/inspire.gif"
+            id="eu.esdihumboldt.hale.ui.templates.inspire.hy-p"
+            name="INSPIRE HydroPhysicalWaters">
+      </project>
+   </extension>
 
 </plugin>

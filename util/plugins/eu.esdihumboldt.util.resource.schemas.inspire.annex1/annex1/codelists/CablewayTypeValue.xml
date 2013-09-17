@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="CablewayTypeValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+The possible types of cableway transport.&#13;
+</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:CableTransportNetwork:3.0">CablewayTypeValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_25038_43566">
+      <description>-- Definition --&#13;
+A cableway transport whose vehicles consist on a suspended cabin to carry groups of people and/or goods inside it from one destination to another.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:CableTransportNetwork:3.0/CablewayTypeValue">cabinCableCar</identifier>
+      <name>cabinCableCar</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_25038_43567">
+      <description>-- Definition --&#13;
+A cableway transport whose vehicles consist on suspended chairs to carry individuals or groups of people from one destination to another via a steel cable or rope which is looped around two points.&#13;
+&#13;
+-- Description --&#13;
+It Is traditionally found on mountains or steep hills but is being used more and more in amusement parks.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:CableTransportNetwork:3.0/CablewayTypeValue">chairLift</identifier>
+      <name>chairLift</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_25038_43568">
+      <description>-- Definition --&#13;
+A cableway transport is a mechanised system for pulling skiers and snowboarders uphill.&#13;
+&#13;
+-- Description --&#13;
+Passengers grab hold of the rope and are pulled along while standing on their skis or snowboards and sliding up the hill. Synonyms: rope tow, handle tow.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:CableTransportNetwork:3.0/CablewayTypeValue">skiTow</identifier>
+      <name>skiTow</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="CadastralZoningLevelValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+Levels of hierarchy of the cadastral zonings.&#13;
+&#13;
+-- Description --&#13;
+NOTE The higher levels in the administrative units theme (province, state) are not repeated in this code list.</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:CadastralParcels:3.0">CadastralZoningLevelValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_22835_40498">
+      <description>-- Definition --&#13;
+Uppermost level (largest areas) in the hierarchy of cadastral zonings, equal or equivalent to municipalities.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:CadastralParcels:3.0/CadastralZoningLevelValue">1stOrder</identifier>
+      <name>1stOrder</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22835_40499">
+      <description>-- Definition --&#13;
+Second level in the hierarchy of cadastral zonings.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:CadastralParcels:3.0/CadastralZoningLevelValue">2ndOrder</identifier>
+      <name>2ndOrder</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22835_40500">
+      <description>-- Definition --&#13;
+Third level in the hierarchy of cadastral zonings.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:CadastralParcels:3.0/CadastralZoningLevelValue">3rdOrder</identifier>
+      <name>3rdOrder</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>
