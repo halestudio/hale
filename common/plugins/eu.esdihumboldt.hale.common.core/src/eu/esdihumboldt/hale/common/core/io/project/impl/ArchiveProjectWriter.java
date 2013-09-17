@@ -199,8 +199,14 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 							+ path, e1));
 					continue;
 				}
-				if (!pathUri.isAbsolute())
-					pathUri = getPreviousTarget().resolve(pathUri);
+				if (!pathUri.isAbsolute()) {
+					if (getPreviousTarget() != null) {
+						pathUri = getPreviousTarget().resolve(pathUri);
+					}
+					else {
+						log.warn("Could not resolve relative path " + pathUri.toString());
+					}
+				}
 
 				// check if path was already handled
 				if (handledResources.containsKey(pathUri)) {

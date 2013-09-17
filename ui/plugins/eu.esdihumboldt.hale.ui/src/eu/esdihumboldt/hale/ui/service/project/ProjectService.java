@@ -16,7 +16,6 @@
 
 package eu.esdihumboldt.hale.ui.service.project;
 
-import java.io.File;
 import java.net.URI;
 import java.util.List;
 
@@ -179,6 +178,6 @@ public interface ProjectService {
 	 * 
 	 * @return the location the current project was loaded from
 	 */
-	public File getLoadLocation();
+	public URI getLoadLocation();
 
 }

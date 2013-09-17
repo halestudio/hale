@@ -147,7 +147,15 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 	private final Version haleVersion;
 
+	/**
+	 * The project file the project was loaded from.
+	 */
 	private File projectFile;
+
+	/**
+	 * Location the project was loaded from, even if it was not a file.
+	 */
+	private URI projectLocation;
 
 	private String appTitle;
 
@@ -207,10 +215,12 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 						else {
 							projectFile = null;
 						}
+						projectLocation = provider.getSource().getLocation();
 					}
 					else {
-						// project template
+						// project template (from object)
 						projectFile = null;
+						projectLocation = null;
 					}
 
 					changed = false;
@@ -295,14 +305,16 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				notifyBeforeSave(projectFiles); // get additional files from
 												// listeners
 				provider.setProjectFiles(projectFiles);
-				if (projectFile != null)
-					provider.setPreviousTarget(projectFile.toURI());
+				if (projectLocation != null) {
+					provider.setPreviousTarget(projectLocation);
+				}
 			}
 
 			@Override
 			public void handleResults(ProjectWriter provider) {
 				synchronized (ProjectServiceImpl.this) {
 					projectFile = new File(provider.getTarget().getLocation());
+					projectLocation = provider.getTarget().getLocation();
 					changed = false;
 					RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench()
 							.getService(RecentFilesService.class);
@@ -486,6 +498,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					synchronized (this) {
 						main = createDefaultProject();
 						projectFile = null;
+						projectLocation = null;
 						changed = false;
 					}
 					updateWindowTitle();
@@ -933,11 +946,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		return names;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#getLoadLocation()
-	 */
 	@Override
-	public File getLoadLocation() {
-		return projectFile;
+	public URI getLoadLocation() {
+		return projectLocation;
 	}
 }

@@ -511,7 +511,7 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 
 			ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
 					ProjectService.class);
-			URI projectLoc = ps.getLoadLocation() == null ? null : ps.getLoadLocation().toURI();
+			URI projectLoc = ps.getLoadLocation() == null ? null : ps.getLoadLocation();
 			boolean isProjectResource = false;
 			if (actionId != null) {
 				// XXX instead move project resource to action?

@@ -81,7 +81,7 @@ public class FileSource<P extends ImportProvider> extends AbstractProviderSource
 
 		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
 				ProjectService.class);
-		projectLocation = ps.getLoadLocation() == null ? null : ps.getLoadLocation().toURI();
+		projectLocation = ps.getLoadLocation() == null ? null : ps.getLoadLocation();
 		boolean projectLocAvailable = projectLocation != null;
 
 		// source file

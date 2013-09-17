@@ -21,26 +21,19 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Map;
+import java.net.URI;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
-import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractImportProvider;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectIO;
-import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
-import eu.esdihumboldt.hale.common.core.io.project.model.Project;
-import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
-import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
-import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 
 /**
  * Load project from a zip-archive (created by {@link ArchiveProjectWriter})
@@ -52,20 +45,10 @@ public class ArchiveProjectImport extends AbstractImportProvider implements Impo
 	private static final ALogger log = ALoggerFactory.getLogger(ArchiveProjectImport.class);
 
 	/**
-	 * The additional project files, file names are mapped to project file
-	 * objects
+	 * The location of the extracted project file.
 	 */
-	private Map<String, ProjectFile> projectFiles;
+	private URI projectLocation;
 
-	/**
-	 * The main project file, <code>null</code> if not yet loaded
-	 */
-	private Project project = null;
-
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#execute(eu.esdihumboldt.hale.common.core.io.ProgressIndicator,
-	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
-	 */
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
@@ -75,12 +58,28 @@ public class ArchiveProjectImport extends AbstractImportProvider implements Impo
 		getZipFiles(getSource().getInput(), importLocation);
 
 		File baseFile = new File(importLocation, "project.halex");
-		LocatableInputSupplier<InputStream> source = new FileIOSupplier(baseFile);
 
-		setSource(source);
+		if (!baseFile.exists()) {
+			/*
+			 * If the archive was not saved as project archive but manually
+			 * created, the file name may not be correct.
+			 */
+
+			// TODO detect project file location?!
+		}
+
+		projectLocation = baseFile.toURI();
+
 		reporter.setSuccess(true);
 
 		return reporter;
+	}
+
+	/**
+	 * @return the location of the extracted project.
+	 */
+	public URI getProjectLocation() {
+		return projectLocation;
 	}
 
 	// extract all files from the InputStream to the destination
@@ -126,46 +125,11 @@ public class ArchiveProjectImport extends AbstractImportProvider implements Impo
 		zipinputstream.close();
 	}
 
-	/**
-	 * @see ProjectReader#setProjectFiles(Map)
-	 */
-	public void setProjectFiles(Map<String, ProjectFile> projectFiles) {
-		this.projectFiles = projectFiles;
-	}
-
-	/**
-	 * @see ProjectReader#getProjectFiles()
-	 */
-	public Map<String, ProjectFile> getProjectFiles() {
-		return projectFiles;
-	}
-
-	/**
-	 * @see ProjectReader#getProject()
-	 */
-	public Project getProject() {
-		return project;
-	}
-
-	/**
-	 * @param project set the current project
-	 */
-	public void setProject(Project project) {
-		this.project = project;
-	}
-
-	/**
-	 * @see IOProvider#isCancelable()
-	 */
 	@Override
 	public boolean isCancelable() {
-		// TODO change?
 		return false;
 	}
 
-	/**
-	 * @see AbstractIOProvider#getDefaultTypeName()
-	 */
 	@Override
 	protected String getDefaultTypeName() {
 		return ProjectIO.PROJECT_TYPE_NAME;
