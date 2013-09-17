@@ -1,0 +1,33 @@
+<?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="RoadSurfaceCategoryValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+Values to indicate whether a road is paved or not paved.</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0">RoadSurfaceCategoryValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_21959_37710">
+      <description>-- Definition --&#13;
+Road with a hard paved surface.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].&#13;
+&#13;
+EXAMPLES Asphalt or concrete.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/RoadSurfaceCategoryValue">paved</identifier>
+      <name>paved</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21959_37711">
+      <description>-- Definition --&#13;
+Road not paved.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].&#13;
+&#13;
+EXAMPLE Gravelled road.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/RoadSurfaceCategoryValue">unpaved</identifier>
+      <name>unpaved</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

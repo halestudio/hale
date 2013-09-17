@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="StatusValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+Current validity of the real world address or address component. &#13;
+&#13;
+-- Description --&#13;
+NOTE 1 This element enables the application schema to represent a full life-cycle of an address and address component, from proposed to reserved, current and retired, or even alternative. &#13;
+&#13;
+NOTE 2 The status value relates to the real world address or address component and not to the property to which the address or address component is assigned (the addressable object).</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0">StatusValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_27574_47217">
+      <description>-- Definition --&#13;
+Current and valid address according to official body responsible for address allocation or deemed, by the dataset custodian, to be the most appropriate, commonly used address.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/StatusValue">current</identifier>
+      <name>current</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27574_47218">
+      <description>-- Definition --&#13;
+An address no longer in every day use or abolished by the official body responsible for address allocation or by the dataset custodian.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/StatusValue">retired</identifier>
+      <name>retired</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27574_47219">
+      <description>-- Definition --&#13;
+An address awaiting approval by the dataset custodian or official body responsible for address allocation.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/StatusValue">proposed</identifier>
+      <name>proposed</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27574_47220">
+      <description>-- Definition --&#13;
+An address approved by the by the official body responsible for address allocation or by the dataset custodian, but yet to be implemented.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/StatusValue">reserved</identifier>
+      <name>reserved</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27574_47221">
+      <description>-- Definition --&#13;
+An address in common use but different from the master address as determined by the official body responsible for address allocation or by the dataset custodian.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/StatusValue">alternative</identifier>
+      <name>alternative</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

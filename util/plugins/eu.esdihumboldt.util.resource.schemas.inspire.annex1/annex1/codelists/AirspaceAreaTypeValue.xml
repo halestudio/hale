@@ -1,0 +1,157 @@
+<?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="AirspaceAreaTypeValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+Recognised types of Airspace.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [CodeAirspaceType - AIXM5.0].&#13;
+</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:AirTransportNetwork:3.0">AirspaceAreaTypeValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_21878_37531">
+      <description>-- Definition --&#13;
+Airport Traffic Zone. Airspace of defined dimensions established around an airport for the protection of airport traffic.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [AIXM5.0].&#13;
+&#13;
+NOTE 1 ICAO Recognized.&#13;
+&#13;
+NOTE 2 An ATZ usually is set up from the lower limit of a Control Zone (CTR) to the surface.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:AirTransportNetwork:3.0/AirspaceAreaTypeValue">ATZ</identifier>
+      <name>ATZ</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21878_37532">
+      <description>-- Definition --&#13;
+Control area. A controlled airspace extending upwards from a specified limit above the earth.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [AIXM5.0].&#13;
+&#13;
+NOTE 1 ICAO Recognized.&#13;
+&#13;
+NOTE 2 A CTA could exist in the vicinity of a single airport to manage a busy air traffic area in order to provide protection to aircraft climbing out from the airport. As such it is a smaller version of a Terminal Maneuvering Area or Terminal Control Area (TMA), equivalent to it but serving only to one airport.&#13;
+&#13;
+NOTE 2 Standard Intrument Departure (SID) routes usually ends at the upper limit of a TMA or CTA, where the air route phase starts.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:AirTransportNetwork:3.0/AirspaceAreaTypeValue">CTA</identifier>
+      <name>CTA</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21878_37533">
+      <description>-- Definition --&#13;
+Control zone. A controlled airspace extending upwards from the surface of the earth to a specified upper limit.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [AIXM5.0].&#13;
+&#13;
+NOTE 1 ICAO Recognized.&#13;
+&#13;
+NOTE 2 It is normally extended from the surface to a specified upper limit, set up to protect air traffic operating to and from that airport. A CTR usually is set up from the upper limit of an Aerodrome Traffic Zone (ATZ).&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:AirTransportNetwork:3.0/AirspaceAreaTypeValue">CTR</identifier>
+      <name>CTR</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21878_37534">
+      <description>-- Definition --&#13;
+Danger area. Airspace of defined dimensions within which activities dangerous to the flight of aircraft may exist at specified times.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [AIXM5.0].&#13;
+&#13;
+NOTE 1 ICAO Recognized.&#13;
+&#13;
+NOTE 2 It is defined as a constraint airspace area to be avoided if possible, which could be dangerous for navigation of air traffic services and could be crossed only by specific routes and specific flight levels defined by the Defence Authority.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:AirTransportNetwork:3.0/AirspaceAreaTypeValue">D</identifier>
+      <name>D</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21878_37535">
+      <description>-- Definition --&#13;
+Flight information region. Airspace of defined dimensions within which flight information service and alerting service are provided.  Might, for example, be used if service provided by more than one unit.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [AIXM5.0].&#13;
+&#13;
+NOTE 1 ICAO Recognized.&#13;
+&#13;
+NOTE 2 A FIR is an airspace region in which information, management and search-and-rescue services are provided by an air navigation service provider.&#13;
+&#13;
+NOTE 2 Any portion of the atmosphere belongs to some specific FIR, except from some cases. Small countries could have only a single FIR; bigger ones could have some regional FIRs. The division among different countries is done by international agreement through ICAO.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:AirTransportNetwork:3.0/AirspaceAreaTypeValue">FIR</identifier>
+      <name>FIR</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21878_37536">
+      <description>-- Definition --&#13;
+Prohibited area. Airspace of defined dimensions, above the land areas or territorial waters of a State, within which the flight of aircraft is prohibited.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [AIXM5.0].&#13;
+&#13;
+NOTE 1 ICAO Recognized.&#13;
+&#13;
+NOTE 2 It is defined as a constraint airspace area to be avoided, in which navigation of air traffic services is forbidden for high security reasons.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:AirTransportNetwork:3.0/AirspaceAreaTypeValue">P</identifier>
+      <name>P</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21878_37537">
+      <description>-- Definition --&#13;
+Restricted area. Airspace of defined dimensions, above the land areas or territorial waters of a State, within which the flight of aircraft is restricted in accordance with certain specified conditions.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [AIXM5.0].&#13;
+&#13;
+NOTE 1 ICAO Recognized.&#13;
+&#13;
+NOTE 2 It is defined as a constraint airspace area in which navigation of air traffic services is restricted and could only be crossed temporarily with authorisation and at specific flight levels.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:AirTransportNetwork:3.0/AirspaceAreaTypeValue">R</identifier>
+      <name>R</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21878_37538">
+      <description>-- Definition --&#13;
+Terminal control area. Control area normally established at the confluence of ATS routes in the vicinity of one or more major aerodromes. Mainly used in Europe under the Flexible Use of Airspace concept.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [AIXM5.0].&#13;
+&#13;
+NOTE 1 Not ICAO Recognized.&#13;
+&#13;
+NOTE 2 It is normally extended from a lower to an upper limit, set up at an area of confluence of busy airways in the vicinity of one or more major airports to protect traffic climbing out from and descending into the airports.&#13;
+&#13;
+NOTE 2 As such it is a larger version of a Control Area (CTA). Standard Intrument Departure (SID) routes usually ends at the upper limit of a TMA or CTA, where the air route phase starts.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:AirTransportNetwork:3.0/AirspaceAreaTypeValue">TMA</identifier>
+      <name>TMA</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21878_37539">
+      <description>-- Definition --&#13;
+Upper flight information region (UIR). An upper airspace of defined dimensions within which flight information service and alerting service are provided. Each state determines its definition for upper airspace.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [AIXM5.0]. &#13;
+&#13;
+NOTE Not ICAO Recognized.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:AirTransportNetwork:3.0/AirspaceAreaTypeValue">UIR</identifier>
+      <name>UIR</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>
