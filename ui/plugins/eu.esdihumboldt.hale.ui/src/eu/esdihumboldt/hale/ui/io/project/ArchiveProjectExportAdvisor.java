@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.ui.io.project;
 
+import java.net.URI;
 import java.util.Map;
 
 import eu.esdihumboldt.hale.common.core.io.project.ProjectIO;
@@ -32,9 +33,6 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectService;
  */
 public class ArchiveProjectExportAdvisor extends DefaultIOAdvisor<ArchiveProjectWriter> {
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.io.DefaultIOAdvisor#prepareProvider(eu.esdihumboldt.hale.common.core.io.IOProvider)
-	 */
 	@Override
 	public void prepareProvider(ArchiveProjectWriter provider) {
 		super.prepareProvider(provider);
@@ -42,8 +40,19 @@ public class ArchiveProjectExportAdvisor extends DefaultIOAdvisor<ArchiveProject
 		ProjectService projectService = getService(ProjectService.class);
 		Project project = (Project) projectService.getProjectInfo();
 		provider.setProject(project);
+	}
+
+	@Override
+	public void updateConfiguration(ArchiveProjectWriter provider) {
+		super.updateConfiguration(provider);
+
 		Map<String, ProjectFile> files = ProjectIO.createDefaultProjectFiles(HaleUI
 				.getServiceProvider());
 		provider.setProjectFiles(files);
+
+		URI projectLocation = getService(ProjectService.class).getLoadLocation();
+		if (projectLocation != null) {
+			provider.setPreviousTarget(projectLocation);
+		}
 	}
 }

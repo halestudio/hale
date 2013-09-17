@@ -29,6 +29,6 @@ public class ArchiveProjectImportAdvisor extends DefaultIOAdvisor<ArchiveProject
 	@Override
 	public void handleResults(ArchiveProjectImport provider) {
 		ProjectService projectService = getService(ProjectService.class);
-		projectService.load(provider.getSource().getLocation());
+		projectService.load(provider.getProjectLocation());
 	}
 }
