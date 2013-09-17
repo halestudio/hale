@@ -1,0 +1,30 @@
+<?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="ConnectionTypeValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+Types of connections between different networks.</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:Network:3.2">ConnectionTypeValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_25867_44568">
+      <description>-- Definition --&#13;
+Connection between two network elements in different networks of the same type, but in adjacent areas. The referenced network elements represent the same real-world phenomena.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Network:3.2/ConnectionTypeValue">crossBorderIdentical</identifier>
+      <name>crossBorderIdentical</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_25867_44569">
+      <description>-- Definition --&#13;
+Connection between two network elements in different networks of the same type, but in adjacent areas. The referenced network elements represent the different, but spatially connected real-world phenomena.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Network:3.2/ConnectionTypeValue">crossBorderConnected</identifier>
+      <name>crossBorderConnected</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_25867_44570">
+      <description>-- Definition --&#13;
+Connection between two network elements in different transport networks that use a different transport mode. The connection represents a possibility for the transported media (people, goods, etc) to change from one transport mode to another.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Network:3.2/ConnectionTypeValue">intermodal</identifier>
+      <name>intermodal</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

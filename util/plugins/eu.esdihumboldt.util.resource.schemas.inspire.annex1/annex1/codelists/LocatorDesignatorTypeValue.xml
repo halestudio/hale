@@ -1,0 +1,132 @@
+<?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="LocatorDesignatorTypeValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+Description of the semantics of the locator designator.</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0">LocatorDesignatorTypeValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_27570_47197">
+      <description>-- Definition --&#13;
+Address identifier composed by numbers and/or characters.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorDesignatorTypeValue">addressIdentifierGeneral</identifier>
+      <name>addressIdentifierGeneral</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27570_47198">
+      <description>-- Definition --&#13;
+Address identifier composed only by numbers.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorDesignatorTypeValue">addressNumber</identifier>
+      <name>addressNumber</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27570_47199">
+      <description>-- Definition --&#13;
+Extension to the address number.&#13;
+&#13;
+-- Description --&#13;
+EXAMPLE E.g., in the Czech Republic a new address situated between two old addresses with numbers "2" and "3" receives a number "2" with an extension "a" so the full address number becomes "2a".</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorDesignatorTypeValue">addressNumberExtension</identifier>
+      <name>addressNumberExtension</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27570_47200">
+      <description>-- Definition --&#13;
+Second extension to the address number.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorDesignatorTypeValue">addressNumber2ndExtension</identifier>
+      <name>addressNumber2ndExtension</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27570_47201">
+      <description>-- Definition --&#13;
+Building identifier composed by numbers and/or characters.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorDesignatorTypeValue">buildingIdentifier</identifier>
+      <name>buildingIdentifier</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27570_47202">
+      <description>-- Definition --&#13;
+Prefix to the building number.&#13;
+&#13;
+-- Description --&#13;
+EXAMPLE In the Czech Republic the building numbers can have prefix to distinguish between two types of buildings: "c. p." (descriptive number) for buildings of permanent character and "c. evid." (registration number) for temporary dwelling (e.g. holiday cottagesand garages).</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorDesignatorTypeValue">buildingIdentifierPrefix</identifier>
+      <name>buildingIdentifierPrefix</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27570_47203">
+      <description>-- Definition --&#13;
+Identifier for an entrance door, gate, or port. </description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorDesignatorTypeValue">entranceDoorIdentifier</identifier>
+      <name>entranceDoorIdentifier</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27570_47204">
+      <description>-- Definition --&#13;
+Identifier for a staircase, normally inside a building.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorDesignatorTypeValue">staircaseIdentifier</identifier>
+      <name>staircaseIdentifier</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27570_47205">
+      <description>-- Definition --&#13;
+Identifier of a floor or level inside a building.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorDesignatorTypeValue">floorIdentifier</identifier>
+      <name>floorIdentifier</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27570_47206">
+      <description>-- Definition --&#13;
+Identifier of a door, dwelling, suite or room inside a building.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorDesignatorTypeValue">unitIdentifier</identifier>
+      <name>unitIdentifier</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27570_47207">
+      <description>-- Definition --&#13;
+Identifier of a postal delivery point.&#13;
+&#13;
+-- Description --&#13;
+EXAMPLE A Post office box (P.O. box).</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorDesignatorTypeValue">postalDeliveryIdentifier</identifier>
+      <name>postalDeliveryIdentifier</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27570_47208">
+      <description>-- Definition --&#13;
+A mark on a road whose number identifies the existing distance between the origin point of the road and that mark, measured along the road.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorDesignatorTypeValue">kilometrePoint</identifier>
+      <name>kilometrePoint</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27570_47209">
+      <description>-- Definition --&#13;
+Address identifier related to the primary thoroughfare name in a corner address.&#13;
+&#13;
+-- Description --&#13;
+NOTE The concept of corner addresses with a primary and secondary thoroughfare name, each with an address identifier. Is used, e.g. in Lithuania and Estonia.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorDesignatorTypeValue">cornerAddress1stIdentifier</identifier>
+      <name>cornerAddress1stIdentifier</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27570_47210">
+      <description>-- Definition --&#13;
+Address identifier related to the secondary thoroughfare name in a corner address.&#13;
+&#13;
+-- Description --&#13;
+NOTE The concept of corner addresses with a primary and secondary thoroughfare name, each with an address identifier. Is used, e.g. in Lithuania and Estonia.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorDesignatorTypeValue">cornerAddress2ndIdentifier</identifier>
+      <name>cornerAddress2ndIdentifier</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="LinkDirectionValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+List of values for directions relative to a link</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:Network:3.2">LinkDirectionValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_25866_44565">
+      <description>-- Definition --&#13;
+In both directions.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Network:3.2/LinkDirectionValue">bothDirections</identifier>
+      <name>bothDirections</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_25866_44566">
+      <description>-- Definition --&#13;
+In direction of the link.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Network:3.2/LinkDirectionValue">inDirection</identifier>
+      <name>inDirection</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_25866_44567">
+      <description>-- Definition --&#13;
+In the opposite direction of the link.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Network:3.2/LinkDirectionValue">inOppositeDirection</identifier>
+      <name>inOppositeDirection</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>
