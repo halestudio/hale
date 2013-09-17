@@ -111,11 +111,13 @@ public class AlignmentMappingExportConfigurationPage extends
 				.setText("Only mapping cells defined in this alignment (exclude base alignments)");
 
 		includeNamespaces = new Button(page, SWT.CHECK);
-		includeNamespaces.setText("Include additional namespace information");
+		includeNamespaces.setText("Include namespace information");
 
 		transformationDisabledFor = new Button(page, SWT.CHECK);
 		transformationDisabledFor
 				.setText("Include information about the transformation mode and the disabled cells");
+		// enable by default
+		transformationDisabledFor.setSelection(true);
 	}
 
 }
