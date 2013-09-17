@@ -66,7 +66,7 @@ public class ProjectList extends Panel {
 
 			@Override
 			protected List<String> load() {
-				return new ArrayList<String>(projects.getProjects());
+				return new ArrayList<String>(projects.getResources());
 			}
 
 		};

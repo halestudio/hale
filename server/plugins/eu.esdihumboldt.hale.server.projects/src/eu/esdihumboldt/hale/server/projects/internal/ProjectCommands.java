@@ -66,12 +66,12 @@ public class ProjectCommands implements CommandProvider {
 	 */
 	public synchronized void _plist(CommandInterpreter ci) {
 		if (projects != null) {
-			if (projects.getProjects().isEmpty()) {
+			if (projects.getResources().isEmpty()) {
 				ci.println(" No projects available");
 			}
 			else {
 				ci.println(" Id\tState\t\tProject");
-				for (String project : projects.getProjects()) {
+				for (String project : projects.getResources()) {
 					StringBuilder builder = new StringBuilder();
 
 					builder.append(' ');
@@ -189,11 +189,11 @@ public class ProjectCommands implements CommandProvider {
 		}
 
 		String project = args.toString();
-		if (!projects.getProjects().contains(project)) {
+		if (!projects.getResources().contains(project)) {
 			// assume it's an ID
 			return identifiers.getObject(project);
 		}
-		if (!projects.getProjects().contains(project)) {
+		if (!projects.getResources().contains(project)) {
 			ci.println("Project does not exist");
 			return null;
 		}

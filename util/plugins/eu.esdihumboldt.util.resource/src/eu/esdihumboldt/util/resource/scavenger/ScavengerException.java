@@ -13,10 +13,10 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.server.projects;
+package eu.esdihumboldt.util.resource.scavenger;
 
 /**
- * {@link ProjectScavenger} exception.
+ * {@link ResourceScavenger} exception.
  * 
  * @author Simon Templer
  */
