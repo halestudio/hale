@@ -39,7 +39,6 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.wizard.IWizardPage;
-import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.DisposeEvent;
@@ -75,11 +74,13 @@ import eu.esdihumboldt.hale.common.core.io.impl.ComplexValue;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
+import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.SchemaPatternFilter;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.StyledDefinitionLabelProvider;
+import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.AbstractParameterPage;
 import eu.esdihumboldt.hale.ui.functions.core.internal.CoreFunctionsUIPlugin;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
@@ -100,6 +101,7 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 
 	private Image upIcon;
 	private Image downIcon;
+	private Image equalsIcon;
 
 	/**
 	 * Constructor.
@@ -405,9 +407,6 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 		return super.isPageComplete() && getNextPage() != null;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.HaleWizardPage#dispose()
-	 */
 	@Override
 	public void dispose() {
 		super.dispose();
@@ -415,12 +414,19 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 			upIcon.dispose();
 		if (downIcon != null)
 			downIcon.dispose();
+		if (equalsIcon != null)
+			equalsIcon.dispose();
+	}
+
+	@Override
+	public String getHelpContext() {
+		return "eu.esdihumboldt.hale.doc.user.join_order";
 	}
 
 	/**
 	 * Page for specifying the join conditions of a type
 	 */
-	private class ConditionPage extends WizardPage {
+	private class ConditionPage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> {
 
 		private int typeIndex;
 		private final Set<JoinCondition> conditions = new HashSet<>();
@@ -443,14 +449,23 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 		}
 
 		@Override
-		public void createControl(Composite parent) {
-			Composite main = new Composite(parent, SWT.NONE);
+		public String getHelpContext() {
+			return "eu.esdihumboldt.hale.doc.user.join_condition";
+		}
+
+		@Override
+		protected void createContent(Composite page) {
+			Composite main = new Composite(page, SWT.NONE);
 			main.setLayout(new GridLayout(3, false));
 
 			joinViewer = createTypeViewer(main, Collections.singleton(types.get(typeIndex)));
 
+			if (equalsIcon == null)
+				equalsIcon = CoreFunctionsUIPlugin.getImageDescriptor("icons/equals.gif")
+						.createImage();
+
 			addButton = new Button(main, SWT.PUSH);
-			addButton.setText("=");
+			addButton.setImage(equalsIcon);
 			addButton.setEnabled(false);
 			addButton.addSelectionListener(new SelectionAdapter() {
 
@@ -469,8 +484,6 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 			joinText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 
 			conditionViewer = createConditionViewer(main, conditions);
-
-			setControl(main);
 		}
 
 		private TableViewer createConditionViewer(Composite parent, Collection<JoinCondition> input) {

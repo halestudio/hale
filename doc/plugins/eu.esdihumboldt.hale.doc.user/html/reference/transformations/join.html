@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Join transformation</title>
+</head>
+<body>
+	<h1>Join transformation</h1>
+	<p>The join transformation can be used to map multiple source types
+		to one target type.</p>
+
+	<h2>
+		<a name="order">Join order</a>
+	</h2>
+	<p>
+		The first step for creating a join transformation is to select the
+		order of the source types. For each instance of the topmost type a
+		target instance will be created. The following types will be joined in
+		order to fill the result with additional information. This can also
+		result in several instances of the second type for one particular
+		instance of the first type. The third type then can have several
+		instances matching one of those instances of the second type (or the
+		first type again depending on the <a href="#condition">conditions</a>)
+		and so on.
+	</p>
+	<div>
+		<img src="images/join_order.png" class="fit">
+	</div>
+
+	<h2>
+		<a name="condition">Conditions</a>
+	</h2>
+	<p>Each type after the first needs at least one join condition on
+		the previous types. It can have conditions on only one of the previous
+		types but it may also have conditions on several of them. Conditions
+		are simple equalities. A property of the joined type is compared to
+		the selected property of a base type. If all these conditions are
+		equal the instance is used. A particular instance may match more than
+		one instance of the previous types and will then be used each time.</p>
+	<div>
+		<img src="images/join_condition.png" class="fit">
+	</div>
+
+	<br>
+	<!-- related concepts: instance, contexts -->
+	<div>
+		<br> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelc.png">
+		<p>
+			<a
+				href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/what_is_instance.html">What
+				is an Instance?</a>
+		</p>
+	</div>
+
+	<!-- related reference: schema elements
+	<div>
+		<br> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelr.png">
+		<p>
+			<a
+				href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/reference/schema_elements.html">Schema
+				elements</a>
+		</p>
+	</div> -->
+</body>
+</html>
