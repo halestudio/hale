@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OrientDB Entities
+Bundle-SymbolicName: eu.esdihumboldt.util.orient.entities
+Bundle-Version: 2.6.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: groovy;bundle-version="2.1.6"
+Import-Package: com.orientechnologies.orient.core.record.impl;version="1.0.0.RC8"
+Export-Package: eu.esdihumboldt.util.orient.entities
