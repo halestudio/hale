@@ -118,7 +118,7 @@ public abstract class AbstractImportProvider extends AbstractIOProvider implemen
 	public void storeConfiguration(Map<String, Value> configuration) {
 		// store source if possible
 		if (source != null) {
-			URI location = source.getLocation();
+			URI location = source.getUsedLocation();
 			if (location != null) {
 				configuration.put(PARAM_SOURCE, Value.of(location.toString()));
 			}

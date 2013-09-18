@@ -146,4 +146,9 @@ public class DefaultInputSupplier implements LocatableInputSupplier<InputStream>
 		return true;
 	}
 
+	@Override
+	public URI getUsedLocation() {
+		return getLocation();
+	}
+
 }

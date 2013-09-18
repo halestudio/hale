@@ -131,6 +131,11 @@ public class LookupStreamResource {
 			public URI getLocation() {
 				return location;
 			}
+
+			@Override
+			public URI getUsedLocation() {
+				return getLocation();
+			}
 		};
 	}
 
@@ -181,6 +186,11 @@ public class LookupStreamResource {
 			@Override
 			public URI getLocation() {
 				return location;
+			}
+
+			@Override
+			public URI getUsedLocation() {
+				return getLocation();
 			}
 		};
 	}

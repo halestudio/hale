@@ -58,7 +58,7 @@ public class JaxbBaseAlignmentReader extends AbstractImportProvider implements B
 		progress.begin("Load HALE alignment", ProgressIndicator.UNKNOWN);
 
 		try {
-			JaxbAlignmentIO.addBaseAlignment(getAlignment(), getSource().getLocation(),
+			JaxbAlignmentIO.addBaseAlignment(getAlignment(), getSource().getUsedLocation(),
 					projectLocation, getSourceSchema(), getTargetSchema(), reporter);
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl(e.getMessage(), e));

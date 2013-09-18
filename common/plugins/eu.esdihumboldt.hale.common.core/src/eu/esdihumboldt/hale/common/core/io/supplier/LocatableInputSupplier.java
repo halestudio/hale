@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.common.core.io.supplier;
 
+import java.net.URI;
+
 import com.google.common.io.InputSupplier;
 
 /**
@@ -30,5 +32,13 @@ import com.google.common.io.InputSupplier;
 public interface LocatableInputSupplier<T> extends InputSupplier<T>, Locatable {
 
 	// combines interfaces InputSupplier and Locatable
+
+	/**
+	 * Returns the used location, which may be relative.
+	 * 
+	 * @return the used location; either the same as {@link #getLocation()}, or
+	 *         a relative URI
+	 */
+	public URI getUsedLocation();
 
 }
