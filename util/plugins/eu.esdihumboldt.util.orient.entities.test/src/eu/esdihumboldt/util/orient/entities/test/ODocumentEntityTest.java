@@ -1,0 +1,57 @@
+/*
+ * Copyright (c) 2013 Data Harmonisation Panel
+ * 
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
+ */
+
+package eu.esdihumboldt.util.orient.entities.test;
+
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+
+import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
+import com.orientechnologies.orient.core.record.impl.ODocument;
+
+import eu.esdihumboldt.util.orient.entities.ODocumentEntity;
+import eu.esdihumboldt.util.orient.entities.ODocumentEntityTransformation;
+
+/**
+ * Tests for the {@link ODocumentEntity}/{@link ODocumentEntityTransformation}.
+ * 
+ * @author Simon Templer
+ */
+public class ODocumentEntityTest {
+
+	/**
+	 * Test accessing the category class.
+	 */
+	@Test
+	public void testCategory() {
+		ODatabaseDocumentTx db = new ODatabaseDocumentTx("memory:Test").create();
+
+		Category cat = new Category();
+		ODocument doc = cat.getODocument();
+		assertEquals("category", doc.getClassName());
+
+		cat.setName("Test");
+		assertEquals("Test", cat.getName());
+		assertEquals("Test", cat.getODocument().field("name"));
+
+		cat.getODocument().field("description", "Blub");
+		assertEquals("Blub", cat.getDescription());
+		assertEquals("Blub", cat.getODocument().field("description"));
+
+		db.close();
+	}
+
+}
