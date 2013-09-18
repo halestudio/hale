@@ -59,6 +59,11 @@ public abstract class GZipEnabledImport extends AbstractImportProvider {
 			return source.getLocation();
 		}
 
+		@Override
+		public URI getUsedLocation() {
+			return getLocation();
+		}
+
 	}
 
 	/**

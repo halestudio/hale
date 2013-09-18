@@ -85,7 +85,7 @@ public class FileIOSupplier implements LocatableInputSupplier<InputStream>,
 	 */
 	@Override
 	public URI getLocation() {
-		return usedURI;
+		return file.toURI();
 	}
 
 	/**
@@ -118,6 +118,11 @@ public class FileIOSupplier implements LocatableInputSupplier<InputStream>,
 		else if (!file.equals(other.file))
 			return false;
 		return true;
+	}
+
+	@Override
+	public URI getUsedLocation() {
+		return usedURI;
 	}
 
 }
