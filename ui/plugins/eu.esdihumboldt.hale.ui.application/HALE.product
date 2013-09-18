@@ -221,6 +221,8 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.util.groovy.meta.fragment" fragment="true"/>
       <plugin id="eu.esdihumboldt.util.orient.embedded"/>
       <plugin id="eu.esdihumboldt.util.orient.embedded.test"/>
+      <plugin id="eu.esdihumboldt.util.orient.entities"/>
+      <plugin id="eu.esdihumboldt.util.orient.entities.test"/>
       <plugin id="eu.esdihumboldt.util.resource"/>
       <plugin id="eu.esdihumboldt.util.resource.schemas.citygml"/>
       <plugin id="eu.esdihumboldt.util.resource.schemas.inspire"/>
