@@ -47,15 +47,6 @@ public class ReportIOSummary extends AbstractReportSummary {
 	private Link displayLink;
 	private Text linktext;
 
-	/**
-	 * Text for the link
-	 */
-	public Text linkText;
-
-	/**
-	 * @see AbstractPropertySection#createControls(Composite,
-	 *      TabbedPropertySheetPage)
-	 */
 	@Override
 	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
@@ -114,8 +105,26 @@ public class ReportIOSummary extends AbstractReportSummary {
 	public void refresh() {
 		super.refresh();
 
-		this.link.refresh(((IOReport) report).getTarget().getLocation());
-		this.linktext.setText(((IOReport) report).getTarget().getLocation().toASCIIString());
-		this.displayLink = link.getLink();
+		if (linktext == null || link == null) {
+			// not yet initialized
+			return;
+		}
+
+		if (report != null && report instanceof IOReport) {
+			IOReport ioReport = (IOReport) report;
+
+			if (ioReport.getTarget() != null && ioReport.getTarget().getLocation() != null) {
+				this.link.refresh(ioReport.getTarget().getLocation());
+				this.linktext.setText(ioReport.getTarget().getLocation().toString());
+				this.displayLink = link.getLink();
+
+				displayLink.setEnabled(true);
+
+				return;
+			}
+		}
+
+		displayLink.setEnabled(false);
+		linktext.setText("");
 	}
 }
