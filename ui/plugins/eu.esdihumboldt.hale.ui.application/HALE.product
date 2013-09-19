@@ -85,6 +85,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="com.sun.jna"/>
       <plugin id="com.sun.xsom"/>
       <plugin id="com.tinkerpop.blueprints"/>
+      <plugin id="com.tinkerpop.blueprints.orient"/>
       <plugin id="com.tinkerpop.gremlin.groovy"/>
       <plugin id="com.tinkerpop.gremlin.java"/>
       <plugin id="com.tinkerpop.pipes"/>
@@ -223,6 +224,8 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.ui.views.typehierarchy"/>
       <plugin id="eu.esdihumboldt.hale.userstatus.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.util"/>
+      <plugin id="eu.esdihumboldt.util.blueprints.entities"/>
+      <plugin id="eu.esdihumboldt.util.blueprints.entities.test"/>
       <plugin id="eu.esdihumboldt.util.groovy"/>
       <plugin id="eu.esdihumboldt.util.groovy.meta.extension"/>
       <plugin id="eu.esdihumboldt.util.groovy.meta.fragment" fragment="true"/>
