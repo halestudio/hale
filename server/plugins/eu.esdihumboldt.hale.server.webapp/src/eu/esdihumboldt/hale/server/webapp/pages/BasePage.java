@@ -123,7 +123,7 @@ public abstract class BasePage extends WebPage {
 		if (app instanceof BaseWebApplication) {
 			BaseWebApplication bwa = (BaseWebApplication) app;
 			applicationTitle = bwa.getMainTitle();
-			loginEnabled = bwa.isLoginPageEnabled();
+			loginEnabled = bwa.getLoginPageClass() != null;
 		}
 		String pageTitle = applicationTitle.replace("-", "&raquo;");
 		Label applicatonTitleLabel = new Label("base-application-title", applicationTitle);
@@ -145,7 +145,7 @@ public abstract class BasePage extends WebPage {
 			// login link
 			BookmarkablePageLink<Void> link;
 			loginLogoutPanel.add(link = new BookmarkablePageLink<Void>("loginLogout",
-					LoginPage.class));
+					((BaseWebApplication) app).getLoginPageClass()));
 			link.add(new Label("label", "Login"));
 		}
 		else {

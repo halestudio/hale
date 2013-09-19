@@ -9,7 +9,11 @@ Import-Package: de.cs3d.util.logging,
  eu.esdihumboldt.hale.common.core.io.project,
  eu.esdihumboldt.hale.common.headless.scavenger,
  eu.esdihumboldt.util.resource.scavenger,
- org.slf4j;version="1.5.11",
+ org.junit;version="4.8.2",
  org.quartz.simpl;version="1.6.2",
+ org.slf4j;version="1.5.11",
  org.springframework.beans.factory.config;version="3.1.1.RELEASE",
  org.springframework.scheduling.quartz;version="3.1.1.RELEASE"
+Export-Package: eu.esdihumboldt.hale.server.templates,
+ eu.esdihumboldt.hale.server.templates.impl
+Require-Bundle: groovy;bundle-version="2.1.6"
