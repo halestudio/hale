@@ -30,8 +30,10 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import eu.esdihumboldt.hale.server.security.UserConstants;
+import eu.esdihumboldt.hale.server.webapp.pages.BasePage;
 import eu.esdihumboldt.hale.server.webapp.pages.ExceptionPage;
 import eu.esdihumboldt.hale.server.webapp.pages.LoginPage;
+import eu.esdihumboldt.hale.server.webapp.pages.OpenIdLoginPage;
 import eu.esdihumboldt.hale.server.webapp.pages.SecuredPage;
 
 /**
@@ -76,14 +78,24 @@ public abstract class BaseWebApplication extends WebApplication {
 	}
 
 	/**
-	 * States if the login page is enabled for this application. The default
+	 * Determines the login page type for this application. The default
 	 * implementation looks at the {@value #SYSTEM_PROPERTY_LOGIN_PAGE} system
-	 * property for this, if not specified the default is <code>false</code>.
+	 * property for this, if not specified the default is no login page.
 	 * 
-	 * @return if the login page is enabled
+	 * @return a page class or <code>null</code>
 	 */
-	public boolean isLoginPageEnabled() {
-		return Boolean.parseBoolean(System.getProperty(SYSTEM_PROPERTY_LOGIN_PAGE, "false"));
+	public Class<? extends BasePage> getLoginPageClass() {
+		String loginPage = System.getProperty(SYSTEM_PROPERTY_LOGIN_PAGE, "false");
+
+		switch (loginPage.toLowerCase()) {
+		case "true": // fall through
+		case "form":
+			return LoginPage.class;
+		case "openid":
+			return OpenIdLoginPage.class;
+		default:
+			return null;
+		}
 	}
 
 	@Override
@@ -130,9 +142,10 @@ public abstract class BaseWebApplication extends WebApplication {
 		});
 
 		// add login page to every application based on this one (if enabled)
-		if (isLoginPageEnabled()) {
+		Class<? extends BasePage> loginClass = getLoginPageClass();
+		if (loginClass != null) {
 			// login page
-			mountPage("/login", LoginPage.class);
+			mountPage("/login", loginClass);
 		}
 	}
 

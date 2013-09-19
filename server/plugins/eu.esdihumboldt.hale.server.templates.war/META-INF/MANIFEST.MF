@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Templates Repository Webapp
+Web-ContextPath: /templates
+Bundle-SymbolicName: eu.esdihumboldt.hale.server.templates.war
+Bundle-Version: 2.6.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Vendor: Data Harmonisation Panel
+Require-Bundle: org.apache.wicket.core;bundle-version="6.2.0",
+ org.apache.wicket.extensions;bundle-version="6.2.0",
+ org.apache.wicket.spring;bundle-version="6.2.0",
+ org.apache.wicket.request;bundle-version="6.2.0",
+ org.apache.wicket.util;bundle-version="6.2.0"
+Import-Package: eu.esdihumboldt.hale.server.security.util,
+ eu.esdihumboldt.hale.server.templates,
+ eu.esdihumboldt.hale.server.webapp,
+ eu.esdihumboldt.hale.server.webapp.filter,
+ eu.esdihumboldt.hale.server.webapp.pages,
+ eu.esdihumboldt.hale.server.webapp.util,
+ javax.servlet;version="2.5.0",
+ javax.servlet.http;version="2.5.0",
+ org.eclipse.jetty.servlet;version="7.6.0",
+ org.springframework.web.context;version="3.1.1.RELEASE",
+ org.springframework.web.filter;version="3.1.1.RELEASE"
