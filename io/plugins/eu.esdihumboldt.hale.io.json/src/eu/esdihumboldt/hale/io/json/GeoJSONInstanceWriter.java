@@ -25,11 +25,11 @@ import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceWriter;
 
 /**
- * Writes instances as JSON.
+ * Writes instances as GeoJSON.
  * 
- * @author Sebastian Reinhardt
+ * @author Kai Schwierczek
  */
-public class JsonInstanceWriter extends AbstractInstanceWriter {
+public class GeoJSONInstanceWriter extends AbstractInstanceWriter {
 
 	@Override
 	public boolean isCancelable() {
@@ -39,14 +39,14 @@ public class JsonInstanceWriter extends AbstractInstanceWriter {
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
-		progress.begin("Generating JSON", ProgressIndicator.UNKNOWN);
+		progress.begin("Generating GeoJSON", ProgressIndicator.UNKNOWN);
 		try {
 			JacksonMapper mapper = new JacksonMapper();
-			mapper.streamWriteCollection(getTarget(), getInstances(), reporter);
+			mapper.streamWriteGeoJSONCollection(getTarget(), getInstances(), reporter);
 
 			reporter.setSuccess(true);
 		} catch (Exception e) {
-			reporter.error(new IOMessageImpl("Error generating JSON file", e));
+			reporter.error(new IOMessageImpl("Error generating GeoJSON file", e));
 			reporter.setSuccess(false);
 		} finally {
 			progress.end();
@@ -57,7 +57,7 @@ public class JsonInstanceWriter extends AbstractInstanceWriter {
 
 	@Override
 	protected String getDefaultTypeName() {
-		return "JSON";
+		return "GeoJSON";
 	}
 
 }
