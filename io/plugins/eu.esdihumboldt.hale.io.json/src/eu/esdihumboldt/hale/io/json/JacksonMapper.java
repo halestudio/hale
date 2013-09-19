@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Iterator;
@@ -32,6 +33,7 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.geotools.geojson.feature.FeatureJSON;
 import org.geotools.geojson.geom.GeometryJSON;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -39,11 +41,16 @@ import com.vividsolutions.jts.geom.Geometry;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
+import eu.esdihumboldt.hale.common.instance.geometry.GeometryFinder;
+import eu.esdihumboldt.hale.common.instance.helper.DepthFirstInstanceTraverser;
+import eu.esdihumboldt.hale.common.instance.helper.InstanceTraverser;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
+import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
 
 /**
  * Transform Instances into JSON/GeoJSON using the Jackson-API and the Geotools
@@ -64,7 +71,7 @@ public class JacksonMapper {
 	 * @param reporter the reporter
 	 * @throws IOException if writing
 	 */
-	public void streamWriteCollection(LocatableOutputSupplier<? extends OutputStream> out,
+	public void streamWriteCollectionBlafoo(LocatableOutputSupplier<? extends OutputStream> out,
 			InstanceCollection instances, IOReporter reporter) throws IOException {
 
 		try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out.getOutput(),
@@ -83,14 +90,18 @@ public class JacksonMapper {
 			try (ResourceIterator<Instance> itInstance = instances.iterator()) {
 				while (itInstance.hasNext()) {
 					Instance instance = itInstance.next();
-					streamWriteInstance(instance, null, writer, reporter);
+					streamWriteInstance(instance, null, reporter);
 				}
 			}
 			jsonGen.writeEndObject();
 			jsonGen.flush();
 		} finally {
 			if (jsonGen != null) {
-				jsonGen.close();
+				try {
+					jsonGen.close();
+				} catch (IOException ioe) {
+					// ignore
+				}
 			}
 		}
 
@@ -105,25 +116,98 @@ public class JacksonMapper {
 //		}
 	}
 
+	public void streamWriteCollection(LocatableOutputSupplier<? extends OutputStream> out,
+			InstanceCollection instances, IOReporter reporter) throws IOException {
+
+		// TODO What about bbox & crs?
+//		final Set<CRSAuthorityFactory> factories = ReferencingFactoryFinder
+//				.getCRSAuthorityFactories(null);
+//		for (CRSAuthorityFactory factory : factories) {
+//			if (factory.getClass().getSimpleName().equals("CartesianAuthorityFactory"))
+//				ReferencingFactoryFinder.removeAuthorityFactory(factory);
+//		}
+
+		try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out.getOutput(),
+				Charset.forName("UTF-8")))) {
+
+			JsonFactory jsonFactory = new JsonFactory();
+			geometryJson = new GeometryJSON();
+
+			jsonGen = jsonFactory.createJsonGenerator(writer);
+			jsonGen.useDefaultPrettyPrinter();
+			jsonGen.writeStartObject();
+
+			jsonGen.writeStringField("type", "FeatureCollection");
+			jsonGen.writeArrayFieldStart("features");
+			// iterate through Instances
+			try (ResourceIterator<Instance> itInstance = instances.iterator()) {
+				while (itInstance.hasNext()) {
+					Instance instance = itInstance.next();
+					streamWriteGeoJSONInstance(instance, reporter);
+				}
+			}
+			jsonGen.writeEndArray();
+			jsonGen.writeEndObject();
+			jsonGen.flush();
+		}
+	}
+
+	private void streamWriteGeoJSONInstance(Instance instance, IOReporter reporter)
+			throws JsonGenerationException, IOException {
+		jsonGen.writeStartObject();
+		jsonGen.writeStringField("type", "Feature");
+		// TODO let user configure default geometry
+		GeometryFinder geomFinder = new GeometryFinder(null);
+		InstanceTraverser traverser = new DepthFirstInstanceTraverser(true);
+		traverser.traverse(instance, geomFinder);
+		Collection<GeometryProperty<?>> geometries = geomFinder.getGeometries();
+		if (!geometries.isEmpty()) {
+			jsonGen.writeFieldName("crs");
+			jsonGen.writeRawValue(new FeatureJSON().toString(geometries.iterator().next()
+					.getCRSDefinition().getCRS()));
+		}
+
+		jsonGen.writeFieldName("geometry");
+		if (geometries.isEmpty())
+			jsonGen.writeNull();
+		else if (geometries.size() == 1)
+			streamWriteGeometryValue(geometries.iterator().next().getGeometry());
+		else {
+			jsonGen.writeStartObject();
+			jsonGen.writeStringField("type", "GeometryCollection");
+			jsonGen.writeArrayFieldStart("geometries");
+			for (GeometryProperty<?> geom : geometries)
+				streamWriteGeometryValue(geom.getGeometry());
+			jsonGen.writeEndArray();
+			jsonGen.writeEndObject();
+		}
+
+		jsonGen.writeFieldName("properties");
+		jsonGen.writeStartObject();
+		jsonGen.writeStringField("_type", instance.getDefinition().getName().getLocalPart());
+		streamWriteProperties(instance, reporter);
+		jsonGen.writeEndObject();
+		jsonGen.writeEndObject();
+	}
+
 	/**
-	 * writes a single instance into JSON
+	 * Writes a single instance into JSON
 	 * 
 	 * @param instance the instance to write
-	 * @param instanceName the QName of the instance
-	 * @param writer the writer used
+	 * @param propertyName the property name this instance is in (may be null
+	 *            for top level instance)
 	 * @param reporter the reporter
 	 * @throws JsonGenerationException if there was a problem generating the
 	 *             JSON
 	 * @throws IOException if writing the file failed
 	 */
-	private void streamWriteInstance(Instance instance, QName instanceName, BufferedWriter writer,
-			IOReporter reporter) throws JsonGenerationException, IOException {
+	private void streamWriteInstance(Instance instance, String propertyName, IOReporter reporter)
+			throws JsonGenerationException, IOException {
 		// write the Instance and name
-		if (instanceName == null) {
+		if (propertyName == null)
 			jsonGen.writeObjectFieldStart(instance.getDefinition().getName().getLocalPart());
-		}
 		else
-			jsonGen.writeObjectFieldStart(instanceName.getLocalPart());
+			jsonGen.writeObjectFieldStart(propertyName);
 
 		// check if the instance contains a value and write it down
 		Object value = instance.getValue();
@@ -148,44 +232,11 @@ public class JacksonMapper {
 				}
 			}
 
-			if (value instanceof Geometry || value instanceof GeometryProperty<?>) {
-				streamWriteGeometry("_value", value);
-				jsonGen.writeEndObject();
-				return;
-			}
-			if (instance.getValue() instanceof Number) {
-				streamWriteNumeric("_value", value);
-			}
-			else
-				jsonGen.writeStringField("_value", value.toString());
+			streamWriteValue("_value", value);
 		}
 
-		Iterator<QName> nameIt = instance.getPropertyNames().iterator();
-		while (nameIt.hasNext()) {
+		streamWriteProperties(instance, reporter);
 
-			QName name = nameIt.next();
-			Object[] values = instance.getProperty(name);
-			// iterate through the children of the definition
-
-			if (values != null) {
-				for (Object obj : values) {
-					if (obj instanceof Instance) {
-						streamWriteInstance((Instance) obj, name, writer, reporter);
-					}
-					else if (obj instanceof Group) {
-						streamWriteGroup((Group) obj, writer, reporter);
-					}
-					else if (obj instanceof Geometry || obj instanceof GeometryProperty<?>) {
-						streamWriteGeometry(name.getLocalPart(), obj);
-					}
-					else if (obj instanceof Number) {
-						streamWriteNumeric(name.getLocalPart(), obj);
-					}
-					else
-						jsonGen.writeStringField(name.getLocalPart(), obj.toString());
-				}
-			}
-		}
 		jsonGen.writeEndObject();
 	}
 
@@ -193,89 +244,140 @@ public class JacksonMapper {
 	 * Writes a group into JSON
 	 * 
 	 * @param group the group to write
-	 * @param writer the writer used
+	 * @param propertyName the property name this group is in
 	 * @param reporter the reporter
 	 * @throws JsonGenerationException if there was a problem generating the
 	 *             JSON
 	 * @throws IOException if writing the file failed
 	 */
-	private void streamWriteGroup(Group group, BufferedWriter writer, IOReporter reporter)
+	private void streamWriteGroup(Group group, String propertyName, IOReporter reporter)
 			throws JsonGenerationException, IOException {
-		// write the Instance and name
-		jsonGen.writeObjectFieldStart("Group");
+		// For choices search for the (only!) child and skip the choice.
+		if (group.getDefinition() instanceof GroupPropertyDefinition) {
+			if (((GroupPropertyDefinition) group.getDefinition()).getConstraint(ChoiceFlag.class)
+					.isEnabled()) {
+				Iterator<QName> childPropertyNames = group.getPropertyNames().iterator();
 
-		Iterator<QName> nameIt = group.getPropertyNames().iterator();
-		while (nameIt.hasNext()) {
-
-			QName name = nameIt.next();
-			Object[] values = group.getProperty(name);
-			// iterate through the children of the definition
-
-			if (values != null) {
-				for (Object obj : values) {
-					if (obj instanceof Instance) {
-						streamWriteInstance((Instance) obj, name, writer, reporter);
-					}
-					else if (obj instanceof Group) {
-						streamWriteGroup((Group) obj, writer, reporter);
-					}
-					else if (obj instanceof Geometry || obj instanceof GeometryProperty<?>) {
-						streamWriteGeometry(name.getLocalPart(), obj);
-					}
-
-					else if (obj instanceof Number) {
-						streamWriteNumeric(name.getLocalPart(), obj);
-					}
-					else {
-						jsonGen.writeStringField(name.getLocalPart(), obj.toString());
-					}
-
+				if (!childPropertyNames.hasNext()) {
+					reporter.warn(new IOMessageImpl("Found an empty choice.", null));
+					jsonGen.writeNull();
+					return;
 				}
+
+				QName childPropertyName = childPropertyNames.next();
+				Object[] values = group.getProperty(childPropertyName);
+				Object value = values[0];
+				if (childPropertyNames.hasNext() || values.length > 1)
+					reporter.warn(new IOMessageImpl(
+							"Found a choice with multiple children. Using first.", null));
+
+				// delegate to only value
+				streamWriteProperty(childPropertyName.getLocalPart(), value, reporter);
+				return;
 			}
 		}
+		// write the Instance and name
+		jsonGen.writeObjectFieldStart(propertyName);
+		streamWriteProperties(group, reporter);
 		jsonGen.writeEndObject();
 	}
 
 	/**
-	 * writes a property numeric into json
+	 * Writes the properties of a group into JSON
+	 * 
+	 * @param group the group to write
+	 * @param reporter the reporter
+	 * @throws IOException if writing the file failed
+	 */
+	private void streamWriteProperties(Group group, IOReporter reporter) throws IOException {
+		// iterate over all properties
+		Iterator<QName> nameIt = group.getPropertyNames().iterator();
+		while (nameIt.hasNext()) {
+			QName name = nameIt.next();
+			Object[] values = group.getProperty(name);
+
+			// ... and over all values of each property
+			if (values != null)
+				for (Object obj : values)
+					streamWriteProperty(name.getLocalPart(), obj, reporter);
+		}
+	}
+
+	/**
+	 * Writes a single property of a group into JSON
 	 * 
 	 * @param name the property name
-	 * @param obj the numeric
+	 * @param value the value
+	 * @param reporter the reporter
+	 * @throws IOException if writing the file failed
+	 */
+	private void streamWriteProperty(String name, Object value, IOReporter reporter)
+			throws IOException {
+		if (value instanceof Instance)
+			streamWriteInstance((Instance) value, name, reporter);
+		else if (value instanceof Group)
+			streamWriteGroup((Group) value, name, reporter);
+		else
+			streamWriteValue(name, value);
+	}
+
+	/**
+	 * Writes a flat value (no instance or group).
+	 * 
+	 * @param name the property name
+	 * @param value the value
+	 * @throws IOException if writing the field fails
+	 */
+	private void streamWriteValue(String name, Object value) throws IOException {
+		if (value instanceof Geometry)
+			streamWriteGeometry(name, (Geometry) value);
+		else if (value instanceof GeometryProperty<?>)
+			streamWriteGeometry(name, ((GeometryProperty<?>) value).getGeometry());
+		else if (value instanceof Number)
+			streamWriteNumeric(name, (Number) value);
+		else {
+			// XXX use conversion service or something?
+			jsonGen.writeStringField(name, value.toString());
+		}
+	}
+
+	/**
+	 * Writes a property numeric into json
+	 * 
+	 * @param name the property name
+	 * @param num the numeric
 	 * @throws JsonGenerationException if there was a problem generating the
 	 *             JSON
 	 * @throws IOException if writing the file failed
 	 */
-	private void streamWriteNumeric(String name, Object obj) throws JsonGenerationException,
+	private void streamWriteNumeric(String name, Number num) throws JsonGenerationException,
 			IOException {
-		if (obj instanceof Integer) {
-			jsonGen.writeNumberField(name, (Integer) obj);
+		if (num instanceof Integer)
+			jsonGen.writeNumberField(name, (Integer) num);
+		else if (num instanceof Float)
+			jsonGen.writeNumberField(name, (Float) num);
+		else if (num instanceof Double)
+			jsonGen.writeNumberField(name, (Double) num);
+		else if (num instanceof Long)
+			jsonGen.writeNumberField(name, (Long) num);
+		else if (num instanceof BigDecimal)
+			jsonGen.writeNumberField(name, (BigDecimal) num);
+		else if (num instanceof BigInteger)
+			jsonGen.writeNumberField(name, new BigDecimal((BigInteger) num));
+		else {
+			// XXX this case is not particularly good ...
+			jsonGen.writeFieldName(name);
+			jsonGen.writeNumber(String.valueOf(num));
 		}
-		else if (obj instanceof Float) {
-			jsonGen.writeNumberField(name, (Float) obj);
-		}
-		else if (obj instanceof Double) {
-			jsonGen.writeNumberField(name, (Double) obj);
-		}
-		else if (obj instanceof Long) {
-			jsonGen.writeNumberField(name, (Long) obj);
-		}
-		else if (obj instanceof BigDecimal) {
-			jsonGen.writeNumberField(name, (BigDecimal) obj);
-		}
-		else
-			jsonGen.writeNumberField(name, (Double) obj);
 	}
 
-	private void streamWriteGeometry(String name, Object obj) throws IOException {
-
+	private void streamWriteGeometry(String name, Geometry geom) throws IOException {
 		jsonGen.writeFieldName(name);
+		streamWriteGeometryValue(geom);
+	}
 
-		if (obj instanceof Geometry) {
-			jsonGen.writeRawValue(geometryJson.toString((Geometry) obj));
-		}
-		else if (obj instanceof GeometryProperty<?>) {
-			jsonGen.writeRawValue(geometryJson.toString(((GeometryProperty<?>) obj).getGeometry()));
-		}
+	private void streamWriteGeometryValue(Geometry geom) throws IOException {
+		jsonGen.writeRawValue(geometryJson.toString(geom));
 	}
 
 	/**
