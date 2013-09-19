@@ -122,7 +122,7 @@ public class LocalOrientDB {
 
 	}
 
-	private ReadWriteLock dbLock = new ReentrantReadWriteLock();
+	private final ReadWriteLock dbLock = new ReentrantReadWriteLock();
 
 	private final String dbURI;
 
@@ -146,7 +146,7 @@ public class LocalOrientDB {
 		ODatabaseDocumentTx db = new ODatabaseDocumentTx(dbURI);
 		try {
 			// delete the database if it already exists
-			db.delete();
+			db.drop();
 		} catch (Throwable e) {
 			// ignore
 		}
@@ -187,9 +187,9 @@ public class LocalOrientDB {
 	public void clear() {
 		dbLock.writeLock().lock();
 		try {
-			ODatabaseDocumentTx db = new ODatabaseDocumentTx(dbURI);
+			ODatabaseDocumentTx db = new ODatabaseDocumentTx(dbURI).open("admin", "admin");
 			// delete the database if it already exists
-			db.delete();
+			db.drop();
 			// create the database
 			db.create();
 			db.close();
@@ -204,9 +204,9 @@ public class LocalOrientDB {
 	public void delete() {
 		dbLock.writeLock().lock();
 		try {
-			ODatabaseDocumentTx db = new ODatabaseDocumentTx(dbURI);
+			ODatabaseDocumentTx db = new ODatabaseDocumentTx(dbURI).open("admin", "admin");
 			// delete the database if it already exists
-			db.delete();
+			db.drop();
 			db.close();
 		} finally {
 			dbLock.writeLock().unlock();

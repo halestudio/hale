@@ -58,7 +58,7 @@ public class LocalDocumentTest extends AbstractDocumentTest {
 	 */
 	@Override
 	public void dispose() {
-		db.delete();
+		db.drop();
 		db.close();
 	}
 
