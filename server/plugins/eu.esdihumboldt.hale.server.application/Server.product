@@ -32,7 +32,8 @@
       <plugin id="ch.qos.logback.slf4j" fragment="true"/>
       <plugin id="com.google.guava"/>
       <plugin id="com.iabcinc.jmep"/>
-      <plugin id="com.orientechnologies.orient"/>
+      <plugin id="com.orientechnologies.common"/>
+      <plugin id="com.orientechnologies.orient.core"/>
       <plugin id="com.springsource.antlr"/>
       <plugin id="com.springsource.javax.el"/>
       <plugin id="com.springsource.javax.media.jai.codec"/>
@@ -49,6 +50,7 @@
       <plugin id="com.springsource.org.castor"/>
       <plugin id="com.springsource.org.picocontainer"/>
       <plugin id="com.springsource.org.quartz"/>
+      <plugin id="com.sun.jna"/>
       <plugin id="com.vividsolutions.jts"/>
       <plugin id="de.cs3d.util.eclipse"/>
       <plugin id="de.cs3d.util.logging"/>
@@ -179,6 +181,7 @@
       <plugin id="org.eclipse.osgi.services"/>
       <plugin id="org.eclipse.xsd"/>
       <plugin id="org.geotools"/>
+      <plugin id="org.iq80.snappy"/>
       <plugin id="org.jdom"/>
       <plugin id="org.objectweb.asm"/>
       <plugin id="org.opengis"/>
