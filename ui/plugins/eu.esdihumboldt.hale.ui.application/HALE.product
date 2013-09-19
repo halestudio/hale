@@ -51,7 +51,8 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="com.google.guava"/>
       <plugin id="com.iabcinc.jmep"/>
       <plugin id="com.ibm.icu"/>
-      <plugin id="com.orientechnologies.orient"/>
+      <plugin id="com.orientechnologies.common"/>
+      <plugin id="com.orientechnologies.orient.core"/>
       <plugin id="com.springsource.antlr"/>
       <plugin id="com.springsource.com.sun.xml.bind"/>
       <plugin id="com.springsource.com.sun.xml.fastinfoset"/>
@@ -65,6 +66,8 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="com.springsource.org.aopalliance"/>
       <plugin id="com.springsource.org.apache.commons.beanutils"/>
       <plugin id="com.springsource.org.apache.commons.collections"/>
+      <plugin id="com.springsource.org.apache.commons.configuration"/>
+      <plugin id="com.springsource.org.apache.commons.digester"/>
       <plugin id="com.springsource.org.apache.commons.jxpath"/>
       <plugin id="com.springsource.org.apache.commons.lang"/>
       <plugin id="com.springsource.org.apache.commons.pool"/>
@@ -79,8 +82,12 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="com.springsource.org.jvnet.staxex"/>
       <plugin id="com.springsource.org.picocontainer"/>
       <plugin id="com.springsource.org.xmlpull"/>
+      <plugin id="com.sun.jna"/>
       <plugin id="com.sun.xsom"/>
       <plugin id="com.tinkerpop.blueprints"/>
+      <plugin id="com.tinkerpop.gremlin.groovy"/>
+      <plugin id="com.tinkerpop.gremlin.java"/>
+      <plugin id="com.tinkerpop.pipes"/>
       <plugin id="com.vividsolutions.jts"/>
       <plugin id="de.cs3d.common.metamodel"/>
       <plugin id="de.cs3d.ui.bookmarks"/>
@@ -219,8 +226,6 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.util.groovy"/>
       <plugin id="eu.esdihumboldt.util.groovy.meta.extension"/>
       <plugin id="eu.esdihumboldt.util.groovy.meta.fragment" fragment="true"/>
-      <plugin id="eu.esdihumboldt.util.orient.embedded"/>
-      <plugin id="eu.esdihumboldt.util.orient.embedded.test"/>
       <plugin id="eu.esdihumboldt.util.resource"/>
       <plugin id="eu.esdihumboldt.util.resource.schemas.citygml"/>
       <plugin id="eu.esdihumboldt.util.resource.schemas.inspire"/>
@@ -229,13 +234,12 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.util.resource.schemas.test"/>
       <plugin id="eu.esdihumboldt.util.test" fragment="true"/>
       <plugin id="gnu.trove"/>
-      <plugin id="gremlin-groovy"/>
-      <plugin id="gremlin-java"/>
       <plugin id="groovy"/>
       <plugin id="javax.measure"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.servlet.jsp"/>
       <plugin id="jcl.over.slf4j"/>
+      <plugin id="jline"/>
       <plugin id="joda-time"/>
       <plugin id="jsr305"/>
       <plugin id="jul.to.slf4j"/>
@@ -362,6 +366,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.geotiff"/>
       <plugin id="org.geotools"/>
       <plugin id="org.hamcrest.core"/>
+      <plugin id="org.iq80.snappy"/>
       <plugin id="org.javolution"/>
       <plugin id="org.jdesktop.swingx"/>
       <plugin id="org.jdesktop.swingx.mapviewer"/>
@@ -387,7 +392,6 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.w3c.dom.events"/>
       <plugin id="org.w3c.dom.smil"/>
       <plugin id="org.w3c.dom.svg"/>
-      <plugin id="pipes"/>
       <plugin id="relaxngDatatype"/>
       <plugin id="schemacrawler.core"/>
       <plugin id="slf4j.ext"/>

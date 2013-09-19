@@ -157,6 +157,7 @@ public abstract class AbstractDocumentTest {
 		createMiaAndTim();
 
 		// query
+		@SuppressWarnings("unchecked")
 		List<ODocument> result = getDb().query(
 				new ONativeSynchQuery<OQueryContextNative>(getDb(), "Person",
 						new OQueryContextNative()) {
@@ -166,6 +167,11 @@ public abstract class AbstractDocumentTest {
 					@Override
 					public boolean filter(OQueryContextNative iRecord) {
 						return iRecord.field("city").field("name").eq("Tokio").go();
+					}
+
+					@Override
+					public void end() {
+						// XXX wat?
 					}
 				});
 

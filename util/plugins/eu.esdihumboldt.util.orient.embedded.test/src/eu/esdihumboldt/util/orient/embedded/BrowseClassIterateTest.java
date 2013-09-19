@@ -198,7 +198,7 @@ public class BrowseClassIterateTest {
 	 */
 	@After
 	public void dispose() {
-		db.delete();
+		db.drop();
 		db.close();
 	}
 
