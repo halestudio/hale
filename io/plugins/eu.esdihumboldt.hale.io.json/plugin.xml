@@ -31,6 +31,17 @@
                ref="eu.esdihumboldt.hale.io.json.gzip">
          </contentType>
       </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.json.GeoJSONInstanceWriter"
+            id="eu.esdihumboldt.hale.io.geojson.writer"
+            name="GeoJSON">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.json">
+         </contentType>
+         <contentType
+               ref="eu.esdihumboldt.hale.io.json.gzip">
+         </contentType>
+      </provider>
    </extension>
 
 </plugin>

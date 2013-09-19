@@ -25,9 +25,9 @@ import java.util.Set;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import org.geotools.factory.AbstractFactory;
 import org.geotools.metadata.iso.citation.Citations;
 import org.geotools.referencing.ReferencingFactoryFinder;
+import org.geotools.referencing.factory.AbstractAuthorityFactory;
 import org.opengis.metadata.citation.Citation;
 import org.opengis.referencing.AuthorityFactory;
 import org.opengis.referencing.Factory;
@@ -50,7 +50,8 @@ import de.cs3d.util.logging.ALoggerFactory;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class WKTPreferencesCRSFactory extends AbstractFactory implements CRSAuthorityFactory {
+public class WKTPreferencesCRSFactory extends AbstractAuthorityFactory implements
+		CRSAuthorityFactory {
 
 	private static final ALogger _log = ALoggerFactory.getLogger(WKTPreferencesCRSFactory.class);
 
@@ -72,8 +73,8 @@ public class WKTPreferencesCRSFactory extends AbstractFactory implements CRSAuth
 	/**
 	 * Preferences node
 	 */
-	private Preferences node = Preferences.userNodeForPackage(WKTPreferencesCRSFactory.class).node(
-			AUTHORITY);
+	private final Preferences node = Preferences.userNodeForPackage(WKTPreferencesCRSFactory.class)
+			.node(AUTHORITY);
 
 	/**
 	 * CRS factory
@@ -83,7 +84,7 @@ public class WKTPreferencesCRSFactory extends AbstractFactory implements CRSAuth
 	/**
 	 * Cache of parsed {@link CoordinateReferenceSystem}s
 	 */
-	private Map<String, CoordinateReferenceSystem> cache = new HashMap<String, CoordinateReferenceSystem>();
+	private final Map<String, CoordinateReferenceSystem> cache = new HashMap<String, CoordinateReferenceSystem>();
 
 	/**
 	 * Creates a new instance
