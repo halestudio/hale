@@ -15,6 +15,9 @@
 
 package eu.esdihumboldt.util.blueprints.entities;
 
+import java.util.NoSuchElementException;
+
+import com.google.common.collect.Iterables;
 import com.orientechnologies.orient.core.sql.OCommandSQL;
 import com.tinkerpop.blueprints.Graph;
 import com.tinkerpop.blueprints.Vertex;
@@ -37,6 +40,11 @@ public class VertexEntityDelegates {
 	 * Name of findBy delegate method.
 	 */
 	public static final String METHOD_FIND_BY = "findByDelegate";
+
+	/**
+	 * Name of findBy delegate method returning a single result.
+	 */
+	public static final String METHOD_GET_BY = "getByDelegate";
 
 	/**
 	 * Find all vertices of a specific class.
@@ -89,6 +97,33 @@ public class VertexEntityDelegates {
 		}
 		else {
 			return graph.query().has(typeProperty, className).has(propertyName, value).vertices();
+		}
+	}
+
+	/**
+	 * Find a vertex of a specific class with a specific value for a given
+	 * attribute.
+	 * 
+	 * @param graph the graph to search
+	 * @param className the entity name
+	 * @param typeProperty the name of the property holding the entity class
+	 *            information
+	 * @param propertyName the name of the property to check for the given value
+	 * @param value the value that vertices should have for the given property
+	 * @return the found vertex or <code>null</code> if it does not exist
+	 * @throws NonUniqueResultException if there are multiple vertices matching
+	 *             the criteria
+	 */
+	public static Vertex getByDelegate(Graph graph, String className, String typeProperty,
+			String propertyName, Object value) throws NonUniqueResultException {
+		Iterable<Vertex> vertices = findByDelegate(graph, className, typeProperty, propertyName,
+				value);
+		try {
+			return Iterables.getOnlyElement(vertices);
+		} catch (NoSuchElementException e) {
+			return null;
+		} catch (IllegalArgumentException e) {
+			throw new NonUniqueResultException(e);
 		}
 	}
 
