@@ -127,5 +127,12 @@ class VertexEntityTransformationTest extends GroovyTestCase {
 		} catch (NonUniqueResultException e) {
 			// should get here
 		}
+
+		// get by id
+		assertNull Category.getById(graph, 'are-IDs-even-strings?')
+
+		Category sameCat = Category.getById(graph, cat4.getId())
+		assertNotNull sameCat
+		assertEquals cat4.id, sameCat.id
 	}
 }

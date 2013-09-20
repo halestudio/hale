@@ -114,7 +114,7 @@ public class VertexEntityTransformation implements ASTTransformation {
 				List<PropertyNode> newProperties = new ArrayList<>();
 				for (PropertyNode property : properties) {
 					// TODO check for "transient" properties?
-
+					// TODO check not allowed property names, e.g. id, v, g
 					// TODO decide on kind of property
 
 					// add static findByX method
@@ -160,6 +160,9 @@ public class VertexEntityTransformation implements ASTTransformation {
 
 				// add static findAll method
 				clazz.addMethod(buildFindAllMethod(clazz, entityName, typeProperty));
+
+				// add static getById method
+				clazz.addMethod(buildGetByIdMethod(clazz));
 			}
 		}
 	}
@@ -334,6 +337,42 @@ public class VertexEntityTransformation implements ASTTransformation {
 		return new MethodNode(methodName, Modifier.STATIC | Modifier.PUBLIC, returnType,
 				new Parameter[] { new Parameter(GRAPH_CLASS, "graph"),
 						new Parameter(propertyType, "value") }, new ClassNode[0], code);
+	}
+
+	/**
+	 * Create a static method to get an entity by its ID.
+	 * 
+	 * @param clazz the entity class node
+	 * @return the method
+	 */
+	private MethodNode buildGetByIdMethod(ClassNode clazz) {
+		clazz = ClassHelper.make(clazz.getName());
+
+		BlockStatement code = new BlockStatement();
+
+		// def vertex = graph.getVertex(id)
+		VariableExpression vertex = new VariableExpression("vertex");
+		code.addStatement(AbstractASTTransformUtil.declStatement(vertex, new MethodCallExpression(
+				new VariableExpression("graph"), "getVertex", new ArgumentListExpression(
+						new VariableExpression("id")))));
+
+		/*
+		 * return new EntityClass(vertex, graph)
+		 */
+		Statement returnEntity = new ReturnStatement(new ConstructorCallExpression(clazz,
+				new ArgumentListExpression(vertex, new VariableExpression("graph"))));
+
+		// return null
+		Statement returnNull = new ReturnStatement(new ConstantExpression(null));
+
+		// if (vertex == null) ... else ...
+		code.addStatement(new IfStatement(AbstractASTTransformUtil.equalsNullExpr(vertex),
+				returnNull, returnEntity));
+
+		return new MethodNode("getById", Modifier.STATIC | Modifier.PUBLIC, clazz,
+				new Parameter[] { new Parameter(GRAPH_CLASS, "graph"),
+						new Parameter(ClassHelper.OBJECT_TYPE, "id") },
+				new ClassNode[] { VE_NON_UNIQUE_EXCEPTION }, code);
 	}
 
 	/**
