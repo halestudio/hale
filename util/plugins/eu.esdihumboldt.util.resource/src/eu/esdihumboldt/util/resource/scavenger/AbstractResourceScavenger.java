@@ -18,6 +18,7 @@ package eu.esdihumboldt.util.resource.scavenger;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -71,7 +72,8 @@ public abstract class AbstractResourceScavenger<T> implements ResourceScavenger<
 			Location location = Platform.getInstanceLocation();
 			if (location != null) {
 				try {
-					File instanceLoc = new File(location.getURL().toURI());
+					File instanceLoc = new File(URI.create(location.getURL().toString()
+							.replaceAll(" ", "%20")));
 					scavengeLocation = new File(instanceLoc, instanceLocPath);
 					if (!scavengeLocation.exists()) {
 						scavengeLocation.mkdirs();
