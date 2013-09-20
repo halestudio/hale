@@ -163,8 +163,46 @@ public class VertexEntityTransformation implements ASTTransformation {
 
 				// add static getById method
 				clazz.addMethod(buildGetByIdMethod(clazz));
+
+				// add static initGraph method
+				clazz.addMethod(buildInitGraphMethod(entityName));
 			}
 		}
+	}
+
+	/**
+	 * Create a static method that initializes a graph. For an
+	 * {@link OrientGraph} it registers the entity class as a schema type.
+	 * 
+	 * @param entityName the entity name
+	 * @return the method
+	 */
+	private MethodNode buildInitGraphMethod(Expression entityName) {
+		// graph (parameter)
+		VariableExpression graph = new VariableExpression("graph");
+
+		BlockStatement code = new BlockStatement();
+
+		// register class
+		code.addStatement(new ExpressionStatement(new StaticMethodCallExpression(
+				VE_DELEGATES_CLASS, VertexEntityDelegates.METHOD_REGISTER_CLASS,
+				new ArgumentListExpression(graph, entityName))));
+
+		return new MethodNode("initGraph", Modifier.PUBLIC | Modifier.STATIC,
+				ClassHelper.VOID_TYPE, new Parameter[] { new Parameter(GRAPH_CLASS, "graph") },
+				new ClassNode[0], code);
+	}
+
+	/**
+	 * Create a call to initGraph(Graph).
+	 * 
+	 * @param clazz the entity class
+	 * @param graph the graph to initialize
+	 * @return the method call statement
+	 */
+	private Statement callInitGraph(ClassNode clazz, Expression graph) {
+		return new ExpressionStatement(new StaticMethodCallExpression(clazz, "initGraph",
+				new ArgumentListExpression(graph)));
 	}
 
 	/**
@@ -206,6 +244,9 @@ public class VertexEntityTransformation implements ASTTransformation {
 
 		// graph (parameter)
 		VariableExpression graph = new VariableExpression("graph");
+		// initialize graph
+		code.addStatement(callInitGraph(clazz, graph));
+
 		// vertex (local variable)
 		VariableExpression vertex = new VariableExpression("vertex");
 		// id (local variable)
@@ -253,6 +294,8 @@ public class VertexEntityTransformation implements ASTTransformation {
 		returnType.setGenericsTypes(new GenericsType[] { new GenericsType(clazz) });
 
 		BlockStatement code = new BlockStatement();
+		// initialize graph
+		code.addStatement(callInitGraph(clazz, new VariableExpression("graph")));
 
 		/*
 		 * def vertices = VertexEntityDelegates.findAllDelegate(graph,
@@ -307,6 +350,8 @@ public class VertexEntityTransformation implements ASTTransformation {
 				+ propertyName.substring(1);
 
 		BlockStatement code = new BlockStatement();
+		// initialize graph
+		code.addStatement(callInitGraph(clazz, new VariableExpression("graph")));
 
 		/*
 		 * def vertices = VertexEntityDelegates.findByDelegate(graph,
@@ -349,6 +394,8 @@ public class VertexEntityTransformation implements ASTTransformation {
 		clazz = ClassHelper.make(clazz.getName());
 
 		BlockStatement code = new BlockStatement();
+		// initialize graph
+		code.addStatement(callInitGraph(clazz, new VariableExpression("graph")));
 
 		// def vertex = graph.getVertex(id)
 		VariableExpression vertex = new VariableExpression("vertex");
@@ -395,6 +442,8 @@ public class VertexEntityTransformation implements ASTTransformation {
 				+ propertyName.substring(1);
 
 		BlockStatement code = new BlockStatement();
+		// initialize graph
+		code.addStatement(callInitGraph(clazz, new VariableExpression("graph")));
 
 		/*
 		 * def vertex = VertexEntityDelegates.findUniqueByDelegate(graph,

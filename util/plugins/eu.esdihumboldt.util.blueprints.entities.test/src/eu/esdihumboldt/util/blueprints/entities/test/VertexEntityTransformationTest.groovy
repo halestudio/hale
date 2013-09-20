@@ -22,6 +22,7 @@ import com.tinkerpop.blueprints.Graph
 import com.tinkerpop.blueprints.Vertex
 import com.tinkerpop.blueprints.impls.orient.OrientGraph
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph
+import com.tinkerpop.blueprints.impls.tg.TinkerGraphFactory
 
 import eu.esdihumboldt.util.blueprints.entities.NonUniqueResultException
 
@@ -38,6 +39,35 @@ class VertexEntityTransformationTest extends GroovyTestCase {
 			Iterable<Category> cat = new ArrayList<Category>()
 		}
 		println ast
+	}
+
+	/**
+	 * Test querying before creating a node to test graph setup.
+	 */
+	public void testQueryBeforeCreateTinker() {
+		// create predefined graph
+		TinkerGraph graph = TinkerGraphFactory.createTinkerGraph()
+
+		assertNull Category.getByName(graph, 'Test')
+
+		// XXX should getById verify if the node is a Category?!!
+		// assertNull Category.getById(graph, 1)
+
+		graph.shutdown();
+	}
+
+	/**
+	 * Test querying before creating a node to test graph setup.
+	 */
+	public void testQueryBeforeCreateOrient() {
+		// create predefined graph
+		Graph graph = new OrientGraph("memory:queryBeforeCreate");
+
+		assertNull Category.getByName(graph, 'Test')
+
+		assertNull Category.getById(graph, 1)
+
+		graph.shutdown();
 	}
 
 	/**
@@ -70,6 +100,7 @@ class VertexEntityTransformationTest extends GroovyTestCase {
 		commonCategoryTest(graph, cat)
 
 		graph.rollback()
+		graph.shutdown();
 	}
 
 	private void commonCategoryTest(Graph graph, Category cat) {
