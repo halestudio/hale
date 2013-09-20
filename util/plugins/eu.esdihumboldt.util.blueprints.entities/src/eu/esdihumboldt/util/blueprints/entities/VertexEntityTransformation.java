@@ -116,7 +116,8 @@ public class VertexEntityTransformation implements ASTTransformation {
 					// TODO decide on kind of property
 
 					// add static findByX method
-//					clazz.addMethod(buildFindByMethod(clazz, property.getName(), property.getType()));
+					clazz.addMethod(buildFindByMethod(clazz, entityName, typeProperty,
+							property.getName(), property.getType()));
 
 					// update property
 					property.setGetterBlock(createGetter(property.getName(), vertexField));
@@ -274,33 +275,60 @@ public class VertexEntityTransformation implements ASTTransformation {
 	}
 
 	/**
-	 * Create a static method to retrieve objects
+	 * Create a static method to retrieve objects by property value.
 	 * 
-	 * @param clazz
-	 * @param name
-	 * @param type
-	 * @return
+	 * @param clazz the entity class node
+	 * @param entityName the entity name
+	 * @param typeProperty the name of the property holding the entity name in a
+	 *            vertex
+	 * @param propertyName the property name
+	 * @param propertyType the property type
+	 * @return the method
 	 */
-//	private MethodNode buildFindByMethod(ClassNode clazz, String name, ClassNode type) {
-//		clazz = ClassHelper.make(clazz.getName());
-//		type = ClassHelper.make(type.getName());
-//
-//		ClassNode returnType = ClassHelper.make(Iterable.class);
-//		// add generic type argument
-//		returnType.setGenericsTypes(new GenericsType[] { new GenericsType(clazz) });
-//
-//		String methodName = "findBy" + Character.toUpperCase(name.charAt(0)) + name.substring(1);
-//
-//		BlockStatement code = new BlockStatement();
-//		// FIXME
-//
-//		return new MethodNode(
-//				methodName,
-//				Modifier.STATIC | Modifier.PUBLIC,
-//				clazz,
-//				new Parameter[] { new Parameter(GRAPH_CLASS, "graph"), new Parameter(type, "value") },
-//				new ClassNode[0], code);
-//	}
+	private MethodNode buildFindByMethod(ClassNode clazz, Expression entityName,
+			Expression typeProperty, String propertyName, ClassNode propertyType) {
+		clazz = ClassHelper.make(clazz.getName());
+		propertyType = ClassHelper.make(propertyType.getName());
+
+		ClassNode returnType = ITERABLE_CLASS.getPlainNodeReference();
+		// add generic type argument
+		returnType.setGenericsTypes(new GenericsType[] { new GenericsType(clazz) });
+
+		String methodName = "findBy" + Character.toUpperCase(propertyName.charAt(0))
+				+ propertyName.substring(1);
+
+		BlockStatement code = new BlockStatement();
+
+		/*
+		 * def vertices = VertexEntityDelegates.findByDelegate(graph,
+		 * entityName, typeProperty, propertyName, value)
+		 */
+
+		VariableExpression vertices = new VariableExpression("vertices");
+		ArgumentListExpression args = new ArgumentListExpression();
+		args.addExpression(new VariableExpression("graph"));
+		args.addExpression(entityName);
+		args.addExpression(typeProperty);
+		args.addExpression(new ConstantExpression(propertyName));
+		args.addExpression(new VariableExpression("value"));
+		code.addStatement(AbstractASTTransformUtil.declStatement(vertices,
+				new StaticMethodCallExpression(VE_DELEGATES_CLASS,
+						VertexEntityDelegates.METHOD_FIND_BY, args)));
+		/*
+		 * return new IterableDelegate(vertices, EntityClass, graph)
+		 */
+
+		ArgumentListExpression createDelegateArgs = new ArgumentListExpression();
+		createDelegateArgs.addExpression(vertices);
+		createDelegateArgs.addExpression(new ClassExpression(clazz));
+		createDelegateArgs.addExpression(new VariableExpression("graph"));
+		code.addStatement(new ReturnStatement(new ConstructorCallExpression(
+				VE_ITERABLE_DELEGATE_CLASS, createDelegateArgs)));
+
+		return new MethodNode(methodName, Modifier.STATIC | Modifier.PUBLIC, returnType,
+				new Parameter[] { new Parameter(GRAPH_CLASS, "graph"),
+						new Parameter(propertyType, "value") }, new ClassNode[0], code);
+	}
 
 	/**
 	 * Create a constructor taking a Vertex and a Graph as an argument,

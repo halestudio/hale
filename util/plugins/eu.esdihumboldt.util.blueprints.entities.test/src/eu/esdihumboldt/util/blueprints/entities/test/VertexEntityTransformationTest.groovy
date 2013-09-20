@@ -105,5 +105,12 @@ class VertexEntityTransformationTest extends GroovyTestCase {
 		Iterable<Category> cats = Category.findAll(graph)
 		assertNotNull cats
 		assertEquals 2, Iterables.size(cats)
+
+		// find by name
+		cats = Category.findByName(graph, 'Foo')
+		assertEquals 1, Iterables.size(cats)
+
+		cats = Category.findByName(graph, 'xxxxxx')
+		assertEquals 0, Iterables.size(cats)
 	}
 }
