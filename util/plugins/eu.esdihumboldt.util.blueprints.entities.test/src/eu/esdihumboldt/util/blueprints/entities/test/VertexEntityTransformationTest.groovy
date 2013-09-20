@@ -15,6 +15,9 @@
 
 package eu.esdihumboldt.util.blueprints.entities.test;
 
+import org.codehaus.groovy.ast.builder.AstBuilder
+
+import com.google.common.collect.Iterables
 import com.tinkerpop.blueprints.Graph
 import com.tinkerpop.blueprints.Vertex
 import com.tinkerpop.blueprints.impls.orient.OrientGraph
@@ -28,13 +31,12 @@ import com.tinkerpop.blueprints.impls.tg.TinkerGraph
  */
 class VertexEntityTransformationTest extends GroovyTestCase {
 
-	//	public static void main(args) {
-	//		def ast = new AstBuilder().buildFromCode {
-	//			def test = null
-	//			def id = 'test'
-	//		}
-	//		println ast
-	//	}
+	public static void main(args) {
+		def ast = new AstBuilder().buildFromCode {
+			Iterable<Category> cat = new ArrayList<Category>()
+		}
+		println ast
+	}
 
 	/**
 	 * Test category entity w/ {@link TinkerGraph}.
@@ -100,5 +102,8 @@ class VertexEntityTransformationTest extends GroovyTestCase {
 		cat3.setName('Bar')
 
 		// find all
+		Iterable<Category> cats = Category.findAll(graph)
+		assertNotNull cats
+		assertEquals 2, Iterables.size(cats)
 	}
 }

@@ -6,5 +6,6 @@ Bundle-Version: 0.0.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: groovy;bundle-version="2.1.6";visibility:=reexport,
  com.tinkerpop.blueprints;bundle-version="2.4.0";visibility:=reexport,
- com.tinkerpop.blueprints.orient;bundle-version="2.5.0";visibility:=reexport
+ com.tinkerpop.blueprints.orient;bundle-version="2.5.0";visibility:=reexport,
+ com.orientechnologies.orient.core;bundle-version="1.5.1"
 Export-Package: eu.esdihumboldt.util.blueprints.entities
