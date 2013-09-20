@@ -25,17 +25,20 @@ import org.codehaus.groovy.ast.ClassHelper;
 import org.codehaus.groovy.ast.ClassNode;
 import org.codehaus.groovy.ast.ConstructorNode;
 import org.codehaus.groovy.ast.FieldNode;
+import org.codehaus.groovy.ast.GenericsType;
 import org.codehaus.groovy.ast.MethodNode;
 import org.codehaus.groovy.ast.Parameter;
 import org.codehaus.groovy.ast.PropertyNode;
 import org.codehaus.groovy.ast.expr.ArgumentListExpression;
 import org.codehaus.groovy.ast.expr.BinaryExpression;
+import org.codehaus.groovy.ast.expr.ClassExpression;
 import org.codehaus.groovy.ast.expr.ConstantExpression;
 import org.codehaus.groovy.ast.expr.ConstructorCallExpression;
 import org.codehaus.groovy.ast.expr.Expression;
 import org.codehaus.groovy.ast.expr.FieldExpression;
 import org.codehaus.groovy.ast.expr.MethodCallExpression;
 import org.codehaus.groovy.ast.expr.NotExpression;
+import org.codehaus.groovy.ast.expr.StaticMethodCallExpression;
 import org.codehaus.groovy.ast.expr.VariableExpression;
 import org.codehaus.groovy.ast.stmt.BlockStatement;
 import org.codehaus.groovy.ast.stmt.EmptyStatement;
@@ -67,6 +70,12 @@ public class VertexEntityTransformation implements ASTTransformation {
 	private static final ClassNode GRAPH_CLASS = ClassHelper.make(Graph.class);
 	private static final ClassNode ORIENT_GRAPH_CLASS = ClassHelper.make(OrientGraph.class);
 	private static final ClassNode VERTEX_ENTITY_CLASS = ClassHelper.make(VertexEntity.class);
+	private static final ClassNode ITERABLE_CLASS = ClassHelper.make(Iterable.class);
+
+	private static final ClassNode VE_DELEGATES_CLASS = ClassHelper
+			.make(VertexEntityDelegates.class);
+	private static final ClassNode VE_ITERABLE_DELEGATE_CLASS = ClassHelper
+			.make(IterableDelegate.class);
 
 	private static final Token TOKEN_PLUS = Token.newSymbol(Types.PLUS, -1, -1);
 
@@ -104,6 +113,12 @@ public class VertexEntityTransformation implements ASTTransformation {
 				for (PropertyNode property : properties) {
 					// TODO check for "transient" properties?
 
+					// TODO decide on kind of property
+
+					// add static findByX method
+//					clazz.addMethod(buildFindByMethod(clazz, property.getName(), property.getType()));
+
+					// update property
 					property.setGetterBlock(createGetter(property.getName(), vertexField));
 					property.setSetterBlock(createSetter(property.getName(), vertexField));
 					newProperties.add(property);
@@ -135,6 +150,9 @@ public class VertexEntityTransformation implements ASTTransformation {
 
 				// add static create method
 				clazz.addMethod(buildCreateMethod(clazz, entityName));
+
+				// add static findAll method
+				clazz.addMethod(buildFindAllMethod(clazz, entityName, typeProperty));
 			}
 		}
 	}
@@ -206,6 +224,83 @@ public class VertexEntityTransformation implements ASTTransformation {
 		return new MethodNode("create", Modifier.STATIC | Modifier.PUBLIC, clazz,
 				new Parameter[] { new Parameter(GRAPH_CLASS, "graph") }, new ClassNode[0], code);
 	}
+
+	/**
+	 * Create a static method to retrieve all objects in a graph.
+	 * 
+	 * @param clazz the entity class node
+	 * @param entityName the entity name
+	 * @param typeProperty the name of the property holding the entity name in a
+	 *            vertex
+	 * @return the method
+	 */
+	private MethodNode buildFindAllMethod(ClassNode clazz, Expression entityName,
+			Expression typeProperty) {
+		clazz = ClassHelper.make(clazz.getName());
+
+		ClassNode returnType = ITERABLE_CLASS.getPlainNodeReference();
+		// add generic type argument
+		returnType.setGenericsTypes(new GenericsType[] { new GenericsType(clazz) });
+
+		BlockStatement code = new BlockStatement();
+
+		/*
+		 * def vertices = VertexEntityDelegates.findAllDelegate(graph,
+		 * entityName, typeProperty)
+		 */
+
+		VariableExpression vertices = new VariableExpression("vertices");
+		ArgumentListExpression args = new ArgumentListExpression();
+		args.addExpression(new VariableExpression("graph"));
+		args.addExpression(entityName);
+		args.addExpression(typeProperty);
+		code.addStatement(AbstractASTTransformUtil.declStatement(vertices,
+				new StaticMethodCallExpression(VE_DELEGATES_CLASS,
+						VertexEntityDelegates.METHOD_FIND_ALL, args)));
+
+		/*
+		 * return new IterableDelegate(vertices, EntityClass, graph)
+		 */
+
+		ArgumentListExpression createDelegateArgs = new ArgumentListExpression();
+		createDelegateArgs.addExpression(vertices);
+		createDelegateArgs.addExpression(new ClassExpression(clazz));
+		createDelegateArgs.addExpression(new VariableExpression("graph"));
+		code.addStatement(new ReturnStatement(new ConstructorCallExpression(
+				VE_ITERABLE_DELEGATE_CLASS, createDelegateArgs)));
+
+		return new MethodNode("findAll", Modifier.STATIC | Modifier.PUBLIC, returnType,
+				new Parameter[] { new Parameter(GRAPH_CLASS, "graph") }, new ClassNode[0], code);
+	}
+
+	/**
+	 * Create a static method to retrieve objects
+	 * 
+	 * @param clazz
+	 * @param name
+	 * @param type
+	 * @return
+	 */
+//	private MethodNode buildFindByMethod(ClassNode clazz, String name, ClassNode type) {
+//		clazz = ClassHelper.make(clazz.getName());
+//		type = ClassHelper.make(type.getName());
+//
+//		ClassNode returnType = ClassHelper.make(Iterable.class);
+//		// add generic type argument
+//		returnType.setGenericsTypes(new GenericsType[] { new GenericsType(clazz) });
+//
+//		String methodName = "findBy" + Character.toUpperCase(name.charAt(0)) + name.substring(1);
+//
+//		BlockStatement code = new BlockStatement();
+//		// FIXME
+//
+//		return new MethodNode(
+//				methodName,
+//				Modifier.STATIC | Modifier.PUBLIC,
+//				clazz,
+//				new Parameter[] { new Parameter(GRAPH_CLASS, "graph"), new Parameter(type, "value") },
+//				new ClassNode[0], code);
+//	}
 
 	/**
 	 * Create a constructor taking a Vertex and a Graph as an argument,
