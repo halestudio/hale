@@ -18,6 +18,7 @@ package eu.esdihumboldt.util.blueprints.entities;
 import java.util.NoSuchElementException;
 
 import com.google.common.collect.Iterables;
+import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.sql.OCommandSQL;
 import com.tinkerpop.blueprints.Graph;
 import com.tinkerpop.blueprints.Vertex;
@@ -45,6 +46,11 @@ public class VertexEntityDelegates {
 	 * Name of findBy delegate method returning a single result.
 	 */
 	public static final String METHOD_GET_BY = "getByDelegate";
+
+	/**
+	 * Name of registerClass delegate method.
+	 */
+	public static final String METHOD_REGISTER_CLASS = "registerClass";
 
 	/**
 	 * Find all vertices of a specific class.
@@ -124,6 +130,22 @@ public class VertexEntityDelegates {
 			return null;
 		} catch (IllegalArgumentException e) {
 			throw new NonUniqueResultException(e);
+		}
+	}
+
+	/**
+	 * Registers an entity class in the schema of a graph, if applicable.
+	 * 
+	 * @param graph the graph
+	 * @param className the entity class name
+	 */
+	public static void registerClass(Graph graph, String className) {
+		if (graph instanceof OrientGraph) {
+			OrientGraph og = (OrientGraph) graph;
+			OClass oclass = og.getVertexType(className);
+			if (oclass == null) {
+				og.createVertexType(className);
+			}
 		}
 	}
 
