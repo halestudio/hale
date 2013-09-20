@@ -23,6 +23,8 @@ import com.tinkerpop.blueprints.Vertex
 import com.tinkerpop.blueprints.impls.orient.OrientGraph
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph
 
+import eu.esdihumboldt.util.blueprints.entities.NonUniqueResultException
+
 
 /**
  * VertexEntityTransformation tests on sample entities.
@@ -112,5 +114,18 @@ class VertexEntityTransformationTest extends GroovyTestCase {
 
 		cats = Category.findByName(graph, 'xxxxxx')
 		assertEquals 0, Iterables.size(cats)
+
+		// get by name
+		assertNotNull Category.getByName(graph, 'Bar')
+		assertNull Category.getByName(graph, 'yyyyyy')
+
+		Category cat4 = Category.create(graph)
+		cat4.name = 'Bar'
+		try {
+			Category.getByName(graph, 'Bar')
+			fail()
+		} catch (NonUniqueResultException e) {
+			// should get here
+		}
 	}
 }

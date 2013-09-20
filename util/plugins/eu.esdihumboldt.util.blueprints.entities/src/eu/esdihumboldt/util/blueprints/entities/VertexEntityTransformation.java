@@ -76,6 +76,8 @@ public class VertexEntityTransformation implements ASTTransformation {
 			.make(VertexEntityDelegates.class);
 	private static final ClassNode VE_ITERABLE_DELEGATE_CLASS = ClassHelper
 			.make(IterableDelegate.class);
+	private static final ClassNode VE_NON_UNIQUE_EXCEPTION = ClassHelper
+			.make(NonUniqueResultException.class);
 
 	private static final Token TOKEN_PLUS = Token.newSymbol(Types.PLUS, -1, -1);
 
@@ -117,6 +119,10 @@ public class VertexEntityTransformation implements ASTTransformation {
 
 					// add static findByX method
 					clazz.addMethod(buildFindByMethod(clazz, entityName, typeProperty,
+							property.getName(), property.getType()));
+
+					// add static findUniqueByX method
+					clazz.addMethod(buildGetByMethod(clazz, entityName, typeProperty,
 							property.getName(), property.getType()));
 
 					// update property
@@ -328,6 +334,61 @@ public class VertexEntityTransformation implements ASTTransformation {
 		return new MethodNode(methodName, Modifier.STATIC | Modifier.PUBLIC, returnType,
 				new Parameter[] { new Parameter(GRAPH_CLASS, "graph"),
 						new Parameter(propertyType, "value") }, new ClassNode[0], code);
+	}
+
+	/**
+	 * Create a static method to retrieve an object by property value.
+	 * 
+	 * @param clazz the entity class node
+	 * @param entityName the entity name
+	 * @param typeProperty the name of the property holding the entity name in a
+	 *            vertex
+	 * @param propertyName the property name
+	 * @param propertyType the property type
+	 * @return the method
+	 */
+	private MethodNode buildGetByMethod(ClassNode clazz, Expression entityName,
+			Expression typeProperty, String propertyName, ClassNode propertyType) {
+		clazz = ClassHelper.make(clazz.getName());
+		propertyType = ClassHelper.make(propertyType.getName());
+
+		String methodName = "getBy" + Character.toUpperCase(propertyName.charAt(0))
+				+ propertyName.substring(1);
+
+		BlockStatement code = new BlockStatement();
+
+		/*
+		 * def vertex = VertexEntityDelegates.findUniqueByDelegate(graph,
+		 * entityName, typeProperty, propertyName, value)
+		 */
+
+		VariableExpression vertex = new VariableExpression("vertex");
+		ArgumentListExpression args = new ArgumentListExpression();
+		args.addExpression(new VariableExpression("graph"));
+		args.addExpression(entityName);
+		args.addExpression(typeProperty);
+		args.addExpression(new ConstantExpression(propertyName));
+		args.addExpression(new VariableExpression("value"));
+		code.addStatement(AbstractASTTransformUtil.declStatement(vertex,
+				new StaticMethodCallExpression(VE_DELEGATES_CLASS,
+						VertexEntityDelegates.METHOD_GET_BY, args)));
+		/*
+		 * return new EntityClass(vertex, graph)
+		 */
+		Statement returnEntity = new ReturnStatement(new ConstructorCallExpression(clazz,
+				new ArgumentListExpression(vertex, new VariableExpression("graph"))));
+
+		// return null
+		Statement returnNull = new ReturnStatement(new ConstantExpression(null));
+
+		// if (vertex == null) ... else ...
+		code.addStatement(new IfStatement(AbstractASTTransformUtil.equalsNullExpr(vertex),
+				returnNull, returnEntity));
+
+		return new MethodNode(methodName, Modifier.STATIC | Modifier.PUBLIC, clazz,
+				new Parameter[] { new Parameter(GRAPH_CLASS, "graph"),
+						new Parameter(propertyType, "value") },
+				new ClassNode[] { VE_NON_UNIQUE_EXCEPTION }, code);
 	}
 
 	/**
