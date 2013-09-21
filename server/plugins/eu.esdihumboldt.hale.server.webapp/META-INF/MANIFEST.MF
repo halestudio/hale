@@ -43,4 +43,6 @@ Require-Bundle: org.apache.wicket.core;bundle-version="6.2.0",
  wicket-bootstrap-core;bundle-version="0.8.4";visibility:=reexport,
  de.agilecoders.wicket.webjars;bundle-version="0.2.1";visibility:=reexport,
  org.webjars.locator;bundle-version="0.1.0",
- wicket-bootstrap-themes;bundle-version="0.8.4";visibility:=reexport
+ wicket-bootstrap-themes;bundle-version="0.8.4";visibility:=reexport,
+ wicket-bootstrap-extensions;bundle-version="0.8.4";visibility:=reexport,
+ wicket-bootstrap-less;bundle-version="0.8.4";visibility:=reexport

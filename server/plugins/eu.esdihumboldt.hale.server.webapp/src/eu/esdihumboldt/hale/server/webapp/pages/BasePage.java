@@ -21,16 +21,16 @@ import java.util.List;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.Page;
+import org.apache.wicket.markup.head.CssReferenceHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.AbstractLink;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.request.flow.RedirectToUrlException;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.request.resource.CssResourceReference;
 import org.apache.wicket.util.string.StringValue;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -39,21 +39,27 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import de.agilecoders.wicket.core.Bootstrap;
 import de.agilecoders.wicket.core.markup.html.bootstrap.behavior.BootstrapBaseBehavior;
+import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapLink;
+import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons.Type;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.dropdown.DropDownButton;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.dropdown.MenuBookmarkablePageLink;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.dropdown.MenuDivider;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.dropdown.MenuHeader;
+import de.agilecoders.wicket.core.markup.html.bootstrap.html.ChromeFrameMetaTag;
+import de.agilecoders.wicket.core.markup.html.bootstrap.html.HtmlTag;
+import de.agilecoders.wicket.core.markup.html.bootstrap.html.OptimizedMobileViewportMetaTag;
 import de.agilecoders.wicket.core.markup.html.bootstrap.image.IconType;
 import de.agilecoders.wicket.core.markup.html.bootstrap.navbar.Navbar;
 import de.agilecoders.wicket.core.markup.html.bootstrap.navbar.Navbar.ComponentPosition;
+import de.agilecoders.wicket.core.markup.html.bootstrap.navbar.Navbar.Position;
 import de.agilecoders.wicket.core.markup.html.bootstrap.navbar.NavbarButton;
 import de.agilecoders.wicket.core.markup.html.bootstrap.navbar.NavbarComponents;
 import de.agilecoders.wicket.core.markup.html.bootstrap.navbar.NavbarDropDownButton;
 import de.agilecoders.wicket.core.settings.IBootstrapSettings;
 import de.agilecoders.wicket.core.settings.ITheme;
+import de.agilecoders.wicket.extensions.markup.html.bootstrap.button.DropDownAutoOpen;
 import eu.esdihumboldt.hale.server.security.UserConstants;
 import eu.esdihumboldt.hale.server.webapp.BaseWebApplication;
-import eu.esdihumboldt.hale.server.webapp.components.SimpleBreadcrumbPanel;
 import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
 
 /**
@@ -148,8 +154,8 @@ public abstract class BasePage extends WebPage {
 		Bootstrap.renderHead(response);
 
 		// add base css to page
-//		response.render(CssReferenceHeaderItem.forReference(new CssResourceReference(
-//				BasePage.class, BasePage.class.getSimpleName() + ".css")));
+		response.render(CssReferenceHeaderItem.forReference(new CssResourceReference(
+				BasePage.class, BasePage.class.getSimpleName() + ".css")));
 	}
 
 	/**
@@ -158,6 +164,14 @@ public abstract class BasePage extends WebPage {
 	 * @param loggedIn if a user is logged in
 	 */
 	protected void addControls(boolean loggedIn) {
+		add(new HtmlTag("html"));
+
+		add(new OptimizedMobileViewportMetaTag("viewport"));
+		add(new ChromeFrameMetaTag("chrome-frame"));
+
+		// enable theme switching
+		add(new BootstrapBaseBehavior());
+
 		// set link to home page
 		WebApplication app = (WebApplication) this.getApplication();
 
@@ -171,9 +185,9 @@ public abstract class BasePage extends WebPage {
 		}
 
 		String pageTitle = applicationTitle.replace("-", "&raquo;");
-		Label applicatonTitleLabel = new Label("base-application-title", applicationTitle);
-		applicatonTitleLabel.setEscapeModelStrings(false);
-		add(applicatonTitleLabel);
+//		Label applicatonTitleLabel = new Label("base-application-title", applicationTitle);
+//		applicatonTitleLabel.setEscapeModelStrings(false);
+//		add(applicatonTitleLabel);
 
 		// get specific page title
 		PageDescription anno = getClass().getAnnotation(PageDescription.class);
@@ -184,17 +198,49 @@ public abstract class BasePage extends WebPage {
 		pageTitleLabel.setEscapeModelStrings(false);
 		add(pageTitleLabel);
 
-		// enable theme switching
-		add(new BootstrapBaseBehavior());
-
+		// create navigation bar
 		this.navbar = new Navbar("navbar");
 		add(navbar);
 
+		navbar.setPosition(Position.TOP);
 		navbar.brandName(Model.of(applicationTitle));
 
-		NavbarButton testButton = new NavbarButton<>(OpenIdLoginPage.class, Model.of("Login"));
+		if (loginEnabled) {
+			if (!loggedIn) {
+				// login link
+				NavbarButton<Void> loginButton = new NavbarButton<>(
+						((BaseWebApplication) app).getLoginPageClass(), Model.of("Login"));
+				navbar.addComponents(NavbarComponents.transform(ComponentPosition.RIGHT,
+						loginButton));
+			}
+			else {
+				// logout link
+				@SuppressWarnings("serial")
+				BootstrapLink<String> logoutLink = new BootstrapLink<String>(Navbar.componentId(),
+						Model.of("Logout"), Type.Link) {
 
+					@Override
+					public void onClick() {
+						String logout = ((WebApplication) getApplication()).getServletContext()
+								.getContextPath() + "/j_spring_security_logout";
+//						getRequestCycle().scheduleRequestHandlerAfterCurrent(new RedirectRequestHandler(redirectUrl));
+						throw new RedirectToUrlException(logout);
+					}
+				};
+
+				// determine user name
+				String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+				Label userLabel = new Label(Navbar.componentId(), "(" + userName + ")");
+
+				navbar.addComponents(NavbarComponents.transform(ComponentPosition.RIGHT, userLabel,
+						logoutLink));
+			}
+		}
+
+		// Theme selector drop-down
 		DropDownButton dropdown = new NavbarDropDownButton(Model.of("Themes")) {
+
+			private static final long serialVersionUID = -7119419621661580297L;
 
 			@Override
 			public boolean isActive(Component item) {
@@ -221,34 +267,11 @@ public abstract class BasePage extends WebPage {
 				return subMenu;
 			}
 		}.setIconType(IconType.book);
-//	        dropdown.add(new DropDownAutoOpen());
+		dropdown.add(new DropDownAutoOpen());
 
-		navbar.addComponents(NavbarComponents.transform(ComponentPosition.RIGHT, testButton,
-				dropdown));
+		navbar.addComponents(NavbarComponents.transform(ComponentPosition.RIGHT, dropdown));
 
-		WebMarkupContainer loginLogoutPanel = new WebMarkupContainer("loginLogoutPanel");
-		loginLogoutPanel.setVisible(loginEnabled);
-		if (!loggedIn) {
-			// login link
-			BookmarkablePageLink<Void> link;
-			loginLogoutPanel.add(link = new BookmarkablePageLink<Void>("loginLogout",
-					((BaseWebApplication) app).getLoginPageClass()));
-			link.add(new Label("label", "Login"));
-		}
-		else {
-			// logout link
-			ExternalLink link;
-			loginLogoutPanel.add(link = new ExternalLink("loginLogout",
-					((WebApplication) getApplication()).getServletContext().getContextPath()
-							+ "/j_spring_security_logout"));
-
-			// determine user name
-			String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-			link.add(new Label("label", "Logout (" + userName + ")"));
-		}
-		add(loginLogoutPanel);
-
-		add(new SimpleBreadcrumbPanel("breadcrumb", this.getClass(), "Home", "/"));
+		// XXX
+//		add(new SimpleBreadcrumbPanel("breadcrumb", this.getClass(), "Home", "/"));
 	}
-
 }

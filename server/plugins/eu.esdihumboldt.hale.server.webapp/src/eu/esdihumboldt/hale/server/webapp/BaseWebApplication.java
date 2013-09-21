@@ -32,6 +32,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import de.agilecoders.wicket.core.Bootstrap;
 import de.agilecoders.wicket.core.settings.BootstrapSettings;
 import de.agilecoders.wicket.core.settings.ThemeProvider;
+import de.agilecoders.wicket.less.BootstrapLess;
 import de.agilecoders.wicket.themes.markup.html.bootstrap3.Bootstrap3Theme;
 import de.agilecoders.wicket.themes.markup.html.google.GoogleTheme;
 import de.agilecoders.wicket.themes.markup.html.metro.MetroTheme;
@@ -111,9 +112,6 @@ public abstract class BaseWebApplication extends WebApplication {
 		super.init();
 
 		BootstrapSettings settings = new BootstrapSettings();
-		// the same version as contained in the webjars fragment
-//		settings.setVersion("2.3.1");
-
 		final ThemeProvider themeProvider = new BootswatchThemeProvider() {
 
 			{
@@ -121,12 +119,13 @@ public abstract class BaseWebApplication extends WebApplication {
 				add(new GoogleTheme());
 				add(new WicketTheme());
 				add(new Bootstrap3Theme());
-				defaultTheme("wicket");
+				defaultTheme("bootstrap-responsive");
 			}
 		};
 		settings.setThemeProvider(themeProvider);
 
 		Bootstrap.install(this, settings);
+		BootstrapLess.install(this);
 
 		// enforce mounts so security interceptors based on URLs can't be fooled
 		getSecuritySettings().setEnforceMounts(true);

@@ -47,8 +47,11 @@
       <plugin id="com.fasterxml.jackson.core.jackson-annotations"/>
       <plugin id="com.fasterxml.jackson.core.jackson-core"/>
       <plugin id="com.fasterxml.jackson.databind"/>
+      <plugin id="com.github.sommeri.less4j"/>
       <plugin id="com.google.gson"/>
       <plugin id="com.google.guava"/>
+      <plugin id="com.google.javascript.jscomp"/>
+      <plugin id="com.google.protobuf"/>
       <plugin id="com.iabcinc.jmep"/>
       <plugin id="com.jcraft.jsch"/>
       <plugin id="com.orientechnologies.common"/>
@@ -160,6 +163,7 @@
       <plugin id="jul.to.slf4j"/>
       <plugin id="log4j.over.slf4j"/>
       <plugin id="net.sf.ehcache"/>
+      <plugin id="org.antlr.runtime"/>
       <plugin id="org.apache.ant"/>
       <plugin id="org.apache.commons.codec"/>
       <plugin id="org.apache.commons.fileupload"/>
@@ -218,6 +222,7 @@
       <plugin id="org.geotools"/>
       <plugin id="org.iq80.snappy"/>
       <plugin id="org.jdom"/>
+      <plugin id="org.json"/>
       <plugin id="org.objectweb.asm"/>
       <plugin id="org.opengis"/>
       <plugin id="org.reflections"/>
@@ -241,6 +246,8 @@
       <plugin id="slf4j.ext"/>
       <plugin id="webjar-container-fragment" fragment="true"/>
       <plugin id="wicket-bootstrap-core"/>
+      <plugin id="wicket-bootstrap-extensions"/>
+      <plugin id="wicket-bootstrap-less"/>
       <plugin id="wicket-bootstrap-themes"/>
       <plugin id="wicketstuff-html5"/>
    </plugins>
