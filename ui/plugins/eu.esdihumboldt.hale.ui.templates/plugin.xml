@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="eu.esdihumboldt.hale.ui.templates" name="Project templates" schema="schema/eu.esdihumboldt.hale.ui.templates.exsd"/>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:file?after=newProject">
+         <menu
+               icon="icons/newproject.gif"
+               id="fromTemplate"
+               label="New project from template...">
+            <dynamic
+                  class="eu.esdihumboldt.hale.ui.templates.contribution.TemplatesContribution"
+                  id="templates">
+            </dynamic>
+         </menu>
+      </menuContribution>
+   </extension>
+
+</plugin>
