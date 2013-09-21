@@ -7,7 +7,7 @@
             base-type="org.eclipse.core.runtime.xml"
             file-extensions="xml"
             id="eu.esdihumboldt.hale.io.codelist.xml"
-            name="XML code list"
+            name="Dictionary XML code list"
             priority="normal">
          <describer
                class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
@@ -37,7 +37,7 @@
       <provider
             class="eu.esdihumboldt.hale.io.codelist.xml.reader.XmlCodeListReader"
             id="eu.esdihumboldt.hale.io.codelist.xml.reader"
-            name="XML code list">
+            name="Dictionary XML code list">
          <contentType
                ref="eu.esdihumboldt.hale.io.codelist.xml">
          </contentType>
