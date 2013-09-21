@@ -16,21 +16,41 @@
 
 package eu.esdihumboldt.hale.server.webapp.pages;
 
-import org.apache.wicket.markup.head.CssReferenceHeaderItem;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.wicket.Component;
+import org.apache.wicket.Page;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.AbstractLink;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.ExternalLink;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.apache.wicket.request.resource.CssResourceReference;
+import org.apache.wicket.util.string.StringValue;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import de.agilecoders.wicket.core.Bootstrap;
+import de.agilecoders.wicket.core.markup.html.bootstrap.behavior.BootstrapBaseBehavior;
+import de.agilecoders.wicket.core.markup.html.bootstrap.button.dropdown.DropDownButton;
+import de.agilecoders.wicket.core.markup.html.bootstrap.button.dropdown.MenuBookmarkablePageLink;
+import de.agilecoders.wicket.core.markup.html.bootstrap.button.dropdown.MenuDivider;
+import de.agilecoders.wicket.core.markup.html.bootstrap.button.dropdown.MenuHeader;
+import de.agilecoders.wicket.core.markup.html.bootstrap.image.IconType;
+import de.agilecoders.wicket.core.markup.html.bootstrap.navbar.Navbar;
+import de.agilecoders.wicket.core.markup.html.bootstrap.navbar.Navbar.ComponentPosition;
+import de.agilecoders.wicket.core.markup.html.bootstrap.navbar.NavbarButton;
+import de.agilecoders.wicket.core.markup.html.bootstrap.navbar.NavbarComponents;
+import de.agilecoders.wicket.core.markup.html.bootstrap.navbar.NavbarDropDownButton;
+import de.agilecoders.wicket.core.settings.IBootstrapSettings;
+import de.agilecoders.wicket.core.settings.ITheme;
 import eu.esdihumboldt.hale.server.security.UserConstants;
 import eu.esdihumboldt.hale.server.webapp.BaseWebApplication;
 import eu.esdihumboldt.hale.server.webapp.components.SimpleBreadcrumbPanel;
@@ -46,6 +66,7 @@ import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
 public abstract class BasePage extends WebPage {
 
 	private static final long serialVersionUID = 8363436886319254849L;
+	private Navbar navbar;
 
 	/**
 	 * Default constructor
@@ -97,15 +118,38 @@ public abstract class BasePage extends WebPage {
 	}
 
 	/**
+	 * sets the theme for the current user.
+	 * 
+	 * @param pageParameters current page parameters
+	 */
+	private void configureTheme(PageParameters pageParameters) {
+		StringValue theme = pageParameters.get("theme");
+
+		if (!theme.isEmpty()) {
+			IBootstrapSettings settings = Bootstrap.getSettings(getApplication());
+			settings.getActiveThemeProvider().setActiveTheme(theme.toString(""));
+		}
+	}
+
+	@Override
+	protected void onConfigure() {
+		super.onConfigure();
+
+		configureTheme(getPageParameters());
+	}
+
+	/**
 	 * @see org.apache.wicket.Component#renderHead(IHeaderResponse)
 	 */
 	@Override
 	public void renderHead(IHeaderResponse response) {
 		super.renderHead(response);
 
+		Bootstrap.renderHead(response);
+
 		// add base css to page
-		response.render(CssReferenceHeaderItem.forReference(new CssResourceReference(
-				BasePage.class, BasePage.class.getSimpleName() + ".css")));
+//		response.render(CssReferenceHeaderItem.forReference(new CssResourceReference(
+//				BasePage.class, BasePage.class.getSimpleName() + ".css")));
 	}
 
 	/**
@@ -125,6 +169,7 @@ public abstract class BasePage extends WebPage {
 			applicationTitle = bwa.getMainTitle();
 			loginEnabled = bwa.getLoginPageClass() != null;
 		}
+
 		String pageTitle = applicationTitle.replace("-", "&raquo;");
 		Label applicatonTitleLabel = new Label("base-application-title", applicationTitle);
 		applicatonTitleLabel.setEscapeModelStrings(false);
@@ -138,6 +183,48 @@ public abstract class BasePage extends WebPage {
 		Label pageTitleLabel = new Label("base-page-title", pageTitle);
 		pageTitleLabel.setEscapeModelStrings(false);
 		add(pageTitleLabel);
+
+		// enable theme switching
+		add(new BootstrapBaseBehavior());
+
+		this.navbar = new Navbar("navbar");
+		add(navbar);
+
+		navbar.brandName(Model.of(applicationTitle));
+
+		NavbarButton testButton = new NavbarButton<>(OpenIdLoginPage.class, Model.of("Login"));
+
+		DropDownButton dropdown = new NavbarDropDownButton(Model.of("Themes")) {
+
+			@Override
+			public boolean isActive(Component item) {
+				return false;
+			}
+
+			@Override
+			protected List<AbstractLink> newSubMenuButtons(final String buttonMarkupId) {
+				final List<AbstractLink> subMenu = new ArrayList<AbstractLink>();
+				subMenu.add(new MenuHeader(Model.of("all available themes:")));
+				subMenu.add(new MenuDivider());
+
+				final IBootstrapSettings settings = Bootstrap.getSettings(getApplication());
+				final List<ITheme> themes = settings.getThemeProvider().available();
+
+				for (final ITheme theme : themes) {
+					PageParameters params = new PageParameters();
+					params.set("theme", theme.name());
+
+					subMenu.add(new MenuBookmarkablePageLink<Page>(getPageClass(), params, Model
+							.of(theme.name())));
+				}
+
+				return subMenu;
+			}
+		}.setIconType(IconType.book);
+//	        dropdown.add(new DropDownAutoOpen());
+
+		navbar.addComponents(NavbarComponents.transform(ComponentPosition.RIGHT, testButton,
+				dropdown));
 
 		WebMarkupContainer loginLogoutPanel = new WebMarkupContainer("loginLogoutPanel");
 		loginLogoutPanel.setVisible(loginEnabled);

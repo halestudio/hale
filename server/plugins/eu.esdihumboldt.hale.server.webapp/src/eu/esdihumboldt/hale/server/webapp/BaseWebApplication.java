@@ -29,6 +29,14 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import de.agilecoders.wicket.core.Bootstrap;
+import de.agilecoders.wicket.core.settings.BootstrapSettings;
+import de.agilecoders.wicket.core.settings.ThemeProvider;
+import de.agilecoders.wicket.themes.markup.html.bootstrap3.Bootstrap3Theme;
+import de.agilecoders.wicket.themes.markup.html.google.GoogleTheme;
+import de.agilecoders.wicket.themes.markup.html.metro.MetroTheme;
+import de.agilecoders.wicket.themes.markup.html.wicket.WicketTheme;
+import de.agilecoders.wicket.themes.settings.BootswatchThemeProvider;
 import eu.esdihumboldt.hale.server.security.UserConstants;
 import eu.esdihumboldt.hale.server.webapp.pages.BasePage;
 import eu.esdihumboldt.hale.server.webapp.pages.ExceptionPage;
@@ -101,6 +109,24 @@ public abstract class BaseWebApplication extends WebApplication {
 	@Override
 	public void init() {
 		super.init();
+
+		BootstrapSettings settings = new BootstrapSettings();
+		// the same version as contained in the webjars fragment
+//		settings.setVersion("2.3.1");
+
+		final ThemeProvider themeProvider = new BootswatchThemeProvider() {
+
+			{
+				add(new MetroTheme());
+				add(new GoogleTheme());
+				add(new WicketTheme());
+				add(new Bootstrap3Theme());
+				defaultTheme("wicket");
+			}
+		};
+		settings.setThemeProvider(themeProvider);
+
+		Bootstrap.install(this, settings);
 
 		// enforce mounts so security interceptors based on URLs can't be fooled
 		getSecuritySettings().setEnforceMounts(true);

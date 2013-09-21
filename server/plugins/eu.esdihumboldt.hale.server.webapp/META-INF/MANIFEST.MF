@@ -39,4 +39,8 @@ Require-Bundle: org.apache.wicket.core;bundle-version="6.2.0",
  org.apache.wicket.request;bundle-version="6.2.0",
  org.apache.wicket.spring;bundle-version="6.2.0",
  org.apache.wicket.util;bundle-version="6.2.0",
- org.eclipse.core.runtime;bundle-version="3.7.0"
+ org.eclipse.core.runtime;bundle-version="3.7.0",
+ wicket-bootstrap-core;bundle-version="0.8.4";visibility:=reexport,
+ de.agilecoders.wicket.webjars;bundle-version="0.2.1";visibility:=reexport,
+ org.webjars.locator;bundle-version="0.1.0",
+ wicket-bootstrap-themes;bundle-version="0.8.4";visibility:=reexport

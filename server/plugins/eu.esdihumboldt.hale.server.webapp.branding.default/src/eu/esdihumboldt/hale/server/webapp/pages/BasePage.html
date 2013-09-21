@@ -1,9 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
-	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:wicket="http://wicket.sourceforge.net/"
-	xml:lang="en">
+<!DOCTYPE html>
+<html>
 <head>
 	<title wicket:id="base-page-title">HALE Web</title>
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
@@ -20,14 +16,15 @@
 	<div id="breadcrumb">
 		<span wicket:id="breadcrumb" title="Home page">Home</span>
 	</div>
-	<div id="main">
+	<div wicket:id="navbar"></div>
+	<div class="container" id="main">
 		<wicket:child />
-		<p>&nbsp;</p>
-	</div>
-	<div id="footer">
-		<p id="footer-copyright">Copyright &copy; 2013 <a href="http://www.dhpanel.eu">data harmonisation panel</a></p>
-		<p id="footer-website"><a href="http://www.esdi-community.eu">www.esdi-community.eu</a></p>
-		<p>&nbsp;</p>
+		<hr>
+	    <footer>
+	      <p id="footer-copyright">Copyright &copy; 2013 <a href="http://www.dhpanel.eu">data harmonisation panel</a></p>
+		  <p id="footer-website"><a href="http://www.esdi-community.eu">www.esdi-community.eu</a></p>
+		  <p>&nbsp;</p>
+	    </footer>
 	</div>
 </body>
 </html>
