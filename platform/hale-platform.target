@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="95">
+<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="99">
 <locations>
 <location path="${project_loc}/target/plugins/org.w3c.css.sac" type="Directory"/>
 <location path="${project_loc}/target/plugins/org.dom4j" type="Directory"/>
@@ -127,5 +127,9 @@
 <location path="${project_loc}/target/plugins/org.jboss.javassist" type="Directory"/>
 <location path="${project_loc}/target/plugins/com.google.gson" type="Directory"/>
 <location path="${project_loc}/target/plugins/org.apache.commons.vfs2" type="Directory"/>
+<location path="${project_loc}/target/plugins/com.github.sommeri.less4j" type="Directory"/>
+<location path="${project_loc}/target/plugins/com.google.javascript" type="Directory"/>
+<location path="${project_loc}/target/plugins/com.google.protobuf" type="Directory"/>
+<location path="${project_loc}/target/plugins/org.json" type="Directory"/>
 </locations>
 </target>
