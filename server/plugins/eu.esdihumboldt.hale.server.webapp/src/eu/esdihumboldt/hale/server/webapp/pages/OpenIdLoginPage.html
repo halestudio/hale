@@ -1,34 +1,30 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
-	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en">
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
 <head>
-<title>Login Page</title>
-<meta http-equiv="content-type" content="text/html;charset=utf-8" />
-<meta http-equiv="Content-Style-Type" content="text/css" />
+	<title>Login Page</title>
+	<meta charset="utf-8">
 </head>
 <body>
 	<wicket:extend>
-		<h2>OpenID Login</h2>
-		<div>
-			<form action="j_spring_openid_security_check" method="post">
-				<div>
-					<label for="openid_identifier">OpenID Login</label>:
-	 				<input id="openid_identifier" name="openid_identifier" type="text"/>
-	 				<input  type="submit" value="Login"/>
- 				</div>  
-			</form>
+		<div class="container">
+			<div class="form-signin">
+				<form name="f" action="j_spring_openid_security_check" method="post">
+					<div>
+				        <h2 class="form-signin-heading">Please sign in</h2>
+				        <input name="openid_identifier" type="text" class="input-block-level" placeholder="Open ID">
+				        <button class="btn btn-large btn-primary" type="submit">Sign in</button>
+			        </div>
+		      	</form>
+		      	<form action="j_spring_openid_security_check" method="post" style="margin-bottom: 0px;">
+					<div>
+				   		<input name="openid_identifier" type="hidden" value="https://www.google.com/accounts/o8/id"/>
+				   		<button class="btn btn-link" type="submit">Sign in with Google</button>
+				   	</div>
+				</form>
+			</div>
+			
+			<div wicket:id="feedback"></div>
 		</div>
-		<div>
-			<form action="j_spring_openid_security_check" method="post">
-				<div>For Google users:
-			   		<input name="openid_identifier" type="hidden" value="https://www.google.com/accounts/o8/id"/>
-			   		<input type="submit" value="Sign in with Google"/>
-			   	</div>
-			</form>
-		</div>
-		<div wicket:id="feedback"></div>
 	</wicket:extend>
 </body>
 </html>

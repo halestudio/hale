@@ -53,7 +53,7 @@ html,body {
 
 /* Custom page CSS
       -------------------------------------------------- */
-/* Not required for template or sticky footer method. */
+/* Navbar should not be displayed over content. */
 #wrap>.container {
 	padding-top: 60px;
 }
