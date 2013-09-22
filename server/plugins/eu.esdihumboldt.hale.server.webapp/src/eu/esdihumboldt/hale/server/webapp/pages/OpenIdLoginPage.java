@@ -17,10 +17,12 @@ package eu.esdihumboldt.hale.server.webapp.pages;
 
 import org.apache.wicket.markup.head.CssReferenceHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
-import org.apache.wicket.markup.head.OnLoadHeaderItem;
+import org.apache.wicket.markup.head.JavaScriptHeaderItem;
+import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.request.resource.CssResourceReference;
 
+import eu.esdihumboldt.hale.server.webapp.components.openidselector.OpenIdSelectorJsReference;
 import eu.esdihumboldt.hale.server.webapp.pages.LoginPage.Failure;
 
 /**
@@ -78,11 +80,17 @@ public class OpenIdLoginPage extends BasePage {
 		super.renderHead(response);
 
 		// set focus to username field
-		response.render(OnLoadHeaderItem.forScript("document.f.openid_identifier.focus();"));
+//		response.render(OnLoadHeaderItem.forScript("document.f.openid_identifier.focus();"));
 
 		// add login css to page
 		response.render(CssReferenceHeaderItem.forReference(new CssResourceReference(
 				LoginPage.class, LoginPage.class.getSimpleName() + ".css")));
+
+		// add Open ID selector js/css
+		response.render(JavaScriptHeaderItem.forReference(OpenIdSelectorJsReference.INSTANCE));
+
+		// init Open ID selector
+		response.render(OnDomReadyHeaderItem.forScript("openid.init('openid_identifier');"));
 	}
 
 }

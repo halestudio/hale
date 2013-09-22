@@ -8,6 +8,9 @@ body {
 
 .form-signin {
 	max-width: 300px;
+}
+
+.form-signin-wide, .form-signin {
 	padding: 19px 29px 29px;
 	margin: 0 auto 20px;
 	background-color: #fff;

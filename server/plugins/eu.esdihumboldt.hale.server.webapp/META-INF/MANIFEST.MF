@@ -31,6 +31,11 @@ Import-Package: de.cs3d.util.logging,
  org.wicketstuff.html5.markup.html
 Export-Package: eu.esdihumboldt.hale.server.webapp,
  eu.esdihumboldt.hale.server.webapp.components,
+ eu.esdihumboldt.hale.server.webapp.components.bootstrap,
+ eu.esdihumboldt.hale.server.webapp.components.openidselector,
+ eu.esdihumboldt.hale.server.webapp.components.openidselector.css,
+ eu.esdihumboldt.hale.server.webapp.components.openidselector.images,
+ eu.esdihumboldt.hale.server.webapp.components.openidselector.js,
  eu.esdihumboldt.hale.server.webapp.filter,
  eu.esdihumboldt.hale.server.webapp.pages,
  eu.esdihumboldt.hale.server.webapp.util
