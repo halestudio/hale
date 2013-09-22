@@ -8,8 +8,12 @@
 	<!-- UserDetailsService instance -->
 	<osgi:service
 		id="userDetailsService"
-		interface="org.springframework.security.core.userdetails.UserDetailsService"
 		ref="userDetails"
-		ranking="10" />
+		ranking="10">
+		<osgi:interfaces>
+			<value>org.springframework.security.core.userdetails.UserDetailsService</value>
+			<value>org.springframework.security.core.userdetails.AuthenticationUserDetailsService</value>
+		</osgi:interfaces>
+	</osgi:service>
 
 </beans>

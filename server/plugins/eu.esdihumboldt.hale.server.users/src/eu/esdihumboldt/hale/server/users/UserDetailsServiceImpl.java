@@ -20,9 +20,11 @@ import java.util.HashSet;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.openid.OpenIDAuthenticationToken;
 
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 
@@ -31,7 +33,6 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.server.db.orient.DatabaseHelper;
 import eu.esdihumboldt.hale.server.model.User;
 import eu.esdihumboldt.hale.server.security.UserConstants;
-import eu.esdihumboldt.hale.server.webapp.BaseWebApplication;
 import eu.esdihumboldt.util.blueprints.entities.NonUniqueResultException;
 
 /**
@@ -39,7 +40,8 @@ import eu.esdihumboldt.util.blueprints.entities.NonUniqueResultException;
  * 
  * @author Simon Templer
  */
-public class UserDetailsServiceImpl implements UserDetailsService, UserConstants {
+public class UserDetailsServiceImpl implements UserDetailsService, UserConstants,
+		AuthenticationUserDetailsService<OpenIDAuthenticationToken> {
 
 	private static final ALogger log = ALoggerFactory.getLogger(UserDetailsServiceImpl.class);
 
@@ -60,37 +62,67 @@ public class UserDetailsServiceImpl implements UserDetailsService, UserConstants
 			}
 
 			if (user == null) {
-				if (usingOpenID()) {
-					// if using OpenID every user is automatically registered
-
-					// create a default user
-					user = User.create(graph);
-					user.setLogin(username);
-					user.setName("Unknown");
-					user.setSurname("(OpenID)");
-					user.setPassword("");
-
-					log.info("Create default user for Open ID " + username);
-				}
-				else {
-					throw new UsernameNotFoundException("User " + username + " not found.");
-				}
+				throw new UsernameNotFoundException("User " + username + " not found.");
 			}
 
-			Collection<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
-
-			// every user has the user role
-			authorities.add(new SimpleGrantedAuthority(ROLE_USER));
-
-			return new org.springframework.security.core.userdetails.User(user.getLogin(),
-					user.getPassword(), true, true, true, true, authorities);
+			return createUserDetails(user);
 		} finally {
 			graph.shutdown();
 		}
 	}
 
-	private boolean usingOpenID() {
-		return System.getProperty(BaseWebApplication.SYSTEM_PROPERTY_LOGIN_PAGE, "false")
-				.toLowerCase().equals("openid");
+//	private boolean usingOpenID() {
+//		return System.getProperty(BaseWebApplication.SYSTEM_PROPERTY_LOGIN_PAGE, "false")
+//				.toLowerCase().equals("openid");
+//	}
+
+	/**
+	 * Create user details for a given user.
+	 * 
+	 * @param user the user
+	 * @return the user details
+	 */
+	private UserDetails createUserDetails(User user) {
+		Collection<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
+
+		// every user has the user role
+		authorities.add(new SimpleGrantedAuthority(ROLE_USER));
+
+		return new org.springframework.security.core.userdetails.User(user.getLogin(),
+				user.getPassword(), true, true, true, true, authorities);
+	}
+
+	@Override
+	public UserDetails loadUserDetails(OpenIDAuthenticationToken token)
+			throws UsernameNotFoundException {
+		OrientGraph graph = DatabaseHelper.getGraph();
+		try {
+			User user;
+			try {
+				user = User.getByLogin(graph, token.getIdentityUrl());
+			} catch (NonUniqueResultException e) {
+				// multiple users w/ same login?!
+				log.error("Found multiple user with same identity URL: " + token.getIdentityUrl(),
+						e);
+				throw new IllegalStateException("Multiple users found for login");
+			}
+
+			if (user == null) {
+				// if using OpenID every user is automatically registered
+
+				// create a default user
+				user = User.create(graph);
+				user.setLogin(token.getIdentityUrl());
+				user.setName("Unknown");
+				user.setSurname("(OpenID)");
+				user.setPassword("");
+
+				log.info("Create default user for Open ID " + token.getIdentityUrl());
+			}
+
+			return createUserDetails(user);
+		} finally {
+			graph.shutdown();
+		}
 	}
 }

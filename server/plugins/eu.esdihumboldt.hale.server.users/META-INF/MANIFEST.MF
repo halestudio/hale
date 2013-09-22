@@ -7,10 +7,10 @@ Bundle-Vendor: Data Harmonisation Panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: de.cs3d.util.logging,
  eu.esdihumboldt.hale.server.security,
- eu.esdihumboldt.hale.server.webapp,
  org.slf4j;version="1.5.11",
  org.springframework.security.core,
  org.springframework.security.core.authority;version="3.1.0.RELEASE",
- org.springframework.security.core.userdetails;version="3.1.0.RELEASE"
+ org.springframework.security.core.userdetails;version="3.1.0.RELEASE",
+ org.springframework.security.openid;version="3.1.0.RELEASE"
 Require-Bundle: eu.esdihumboldt.hale.server.model;bundle-version="2.6.0",
  eu.esdihumboldt.hale.server.db;bundle-version="2.6.0"

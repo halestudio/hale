@@ -36,7 +36,8 @@
 		<!-- everything else -->
 		<intercept-url pattern="/**" access="ROLE_ANONYMOUS,ROLE_USER,ROLE_ADMIN" requires-channel="any" />
 		
-		<openid-login login-page="/login" authentication-failure-handler-ref="failureHandler" />
+		<openid-login login-page="/login" authentication-failure-handler-ref="failureHandler"
+			user-service-ref="authUserDetails" />
 		
 		<anonymous /> <!-- is needed for login page -->
 		<logout/>
@@ -91,6 +92,10 @@
 	<!-- retrieve users through OSGi user details service -->
 	<osgi:reference id="userDetails"
 		interface="org.springframework.security.core.userdetails.UserDetailsService"
+		availability="mandatory" cardinality="1..1" />
+		
+	<osgi:reference id="authUserDetails"
+		interface="org.springframework.security.core.userdetails.AuthenticationUserDetailsService"
 		availability="mandatory" cardinality="1..1" />
 
 	<!-- add a bean post-processor which replaces the request matcher of all 
