@@ -37,11 +37,22 @@
 		<intercept-url pattern="/**" access="ROLE_ANONYMOUS,ROLE_USER,ROLE_ADMIN" requires-channel="any" />
 		
 		<openid-login login-page="/login" authentication-failure-handler-ref="failureHandler"
-			user-service-ref="authUserDetails" />
+			user-service-ref="authUserDetails" authentication-success-handler-ref="openIdSuccessHandler">
+			<attribute-exchange>
+	            <openid-attribute name="email" type="http://axschema.org/contact/email" required="false"/>
+	            <openid-attribute name="emailAlt" type="http://schema.openid.net/contact/email" required="false"/>
+	            <openid-attribute name="firstName" type="http://axschema.org/namePerson/first" required="false"/>
+	            <openid-attribute name="lastName" type="http://axschema.org/namePerson/last" required="false"/>
+        	</attribute-exchange>
+		</openid-login>
 		
 		<anonymous /> <!-- is needed for login page -->
 		<logout/>
 	</http>
+	
+	<beans:bean id="openIdSuccessHandler" class="eu.esdihumboldt.hale.server.security.util.NewUserAuthenticationSuccessHandler">
+		<beans:property name="newUserRedirectUrl" value="/new" />
+	</beans:bean>
 	
 	<beans:bean id="session-auth" class="eu.esdihumboldt.hale.server.security.util.MultiWarSessionAuthenticationStrategy">
 		<beans:property name="logoutService" ref="logoutService" />

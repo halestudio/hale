@@ -7,6 +7,7 @@ Bundle-Vendor: Data Harmonisation Panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: de.cs3d.util.logging,
  de.fhg.igd.osgi.util;version="1.0.0",
+ eu.esdihumboldt.hale.server.db.orient,
  eu.esdihumboldt.hale.server.progress,
  eu.esdihumboldt.hale.server.security,
  eu.esdihumboldt.util,
@@ -50,4 +51,5 @@ Require-Bundle: org.apache.wicket.core;bundle-version="6.2.0",
  org.webjars.locator;bundle-version="0.1.0",
  wicket-bootstrap-themes;bundle-version="0.8.4";visibility:=reexport,
  wicket-bootstrap-extensions;bundle-version="0.8.4";visibility:=reexport,
- wicket-bootstrap-less;bundle-version="0.8.4";visibility:=reexport
+ wicket-bootstrap-less;bundle-version="0.8.4";visibility:=reexport,
+ eu.esdihumboldt.hale.server.model;bundle-version="2.6.0"

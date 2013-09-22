@@ -24,6 +24,7 @@ import org.springframework.security.core.userdetails.AuthenticationUserDetailsSe
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.openid.OpenIDAttribute;
 import org.springframework.security.openid.OpenIDAuthenticationToken;
 
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
@@ -33,6 +34,7 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.server.db.orient.DatabaseHelper;
 import eu.esdihumboldt.hale.server.model.User;
 import eu.esdihumboldt.hale.server.security.UserConstants;
+import eu.esdihumboldt.hale.server.security.util.impl.ExtendedUser;
 import eu.esdihumboldt.util.blueprints.entities.NonUniqueResultException;
 
 /**
@@ -65,7 +67,7 @@ public class UserDetailsServiceImpl implements UserDetailsService, UserConstants
 				throw new UsernameNotFoundException("User " + username + " not found.");
 			}
 
-			return createUserDetails(user);
+			return createUserDetails(user, false);
 		} finally {
 			graph.shutdown();
 		}
@@ -80,16 +82,19 @@ public class UserDetailsServiceImpl implements UserDetailsService, UserConstants
 	 * Create user details for a given user.
 	 * 
 	 * @param user the user
+	 * @param newUser if the user is a newly created user
 	 * @return the user details
 	 */
-	private UserDetails createUserDetails(User user) {
+	private UserDetails createUserDetails(User user, boolean newUser) {
 		Collection<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
 
 		// every user has the user role
 		authorities.add(new SimpleGrantedAuthority(ROLE_USER));
 
-		return new org.springframework.security.core.userdetails.User(user.getLogin(),
-				user.getPassword(), true, true, true, true, authorities);
+		ExtendedUser userDetails = new ExtendedUser(user.getLogin(), user.getPassword(), true,
+				true, true, true, authorities);
+		userDetails.setNewUser(newUser);
+		return userDetails;
 	}
 
 	@Override
@@ -107,20 +112,38 @@ public class UserDetailsServiceImpl implements UserDetailsService, UserConstants
 				throw new IllegalStateException("Multiple users found for login");
 			}
 
+			boolean newUser = false;
 			if (user == null) {
 				// if using OpenID every user is automatically registered
 
 				// create a default user
 				user = User.create(graph);
 				user.setLogin(token.getIdentityUrl());
-				user.setName("Unknown");
-				user.setSurname("(OpenID)");
 				user.setPassword("");
+				newUser = true;
+
+				// try to retrieve info from attribute exchange
+				for (OpenIDAttribute attribute : token.getAttributes()) {
+					if (attribute.getCount() >= 0) {
+						switch (attribute.getName()) {
+						case "email": // fall through
+						case "emailAlt":
+							user.setEmail(attribute.getValues().get(0));
+							break;
+						case "firstName":
+							user.setName(attribute.getValues().get(0));
+							break;
+						case "lastName":
+							user.setSurname(attribute.getValues().get(0));
+							break;
+						}
+					}
+				}
 
 				log.info("Create default user for Open ID " + token.getIdentityUrl());
 			}
 
-			return createUserDetails(user);
+			return createUserDetails(user, newUser);
 		} finally {
 			graph.shutdown();
 		}

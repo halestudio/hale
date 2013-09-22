@@ -42,6 +42,7 @@ import eu.esdihumboldt.hale.server.security.UserConstants;
 import eu.esdihumboldt.hale.server.webapp.pages.BasePage;
 import eu.esdihumboldt.hale.server.webapp.pages.ExceptionPage;
 import eu.esdihumboldt.hale.server.webapp.pages.LoginPage;
+import eu.esdihumboldt.hale.server.webapp.pages.NewUserPage;
 import eu.esdihumboldt.hale.server.webapp.pages.OpenIdLoginPage;
 import eu.esdihumboldt.hale.server.webapp.pages.SecuredPage;
 
@@ -131,7 +132,7 @@ public abstract class BaseWebApplication extends WebApplication {
 		getSecuritySettings().setEnforceMounts(true);
 
 		getSecuritySettings().setAuthorizationStrategy(
-				new SimplePageAuthorizationStrategy(SecuredPage.class, LoginPage.class) {
+				new SimplePageAuthorizationStrategy(SecuredPage.class, getLoginPageClass()) {
 
 					@Override
 					protected boolean isAuthorized() {
@@ -171,6 +172,11 @@ public abstract class BaseWebApplication extends WebApplication {
 		if (loginClass != null) {
 			// login page
 			mountPage("/login", loginClass);
+
+			if (OpenIdLoginPage.class.equals(loginClass)) {
+				// for OpenID auth also add page for new users
+				mountPage("/new", NewUserPage.class);
+			}
 		}
 	}
 
