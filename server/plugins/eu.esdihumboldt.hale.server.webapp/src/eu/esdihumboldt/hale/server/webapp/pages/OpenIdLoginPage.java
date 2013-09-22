@@ -19,9 +19,9 @@ import org.apache.wicket.markup.head.CssReferenceHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.request.resource.CssResourceReference;
 
+import eu.esdihumboldt.hale.server.webapp.components.bootstrap.BootstrapFeedbackPanel;
 import eu.esdihumboldt.hale.server.webapp.components.openidselector.OpenIdSelectorJsReference;
 import eu.esdihumboldt.hale.server.webapp.pages.LoginPage.Failure;
 
@@ -72,7 +72,7 @@ public class OpenIdLoginPage extends BasePage {
 			}
 		}
 
-		add(new FeedbackPanel("feedback"));
+		add(new BootstrapFeedbackPanel("feedback"));
 	}
 
 	@Override

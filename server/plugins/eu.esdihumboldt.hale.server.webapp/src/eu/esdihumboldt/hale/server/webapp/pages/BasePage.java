@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.Page;
+import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.CssReferenceHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebPage;
@@ -56,6 +57,7 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.navbar.NavbarDropDownBut
 import de.agilecoders.wicket.core.settings.IBootstrapSettings;
 import de.agilecoders.wicket.core.settings.ITheme;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.button.DropDownAutoOpen;
+import de.agilecoders.wicket.less.LessResourceReference;
 import eu.esdihumboldt.hale.server.security.UserConstants;
 import eu.esdihumboldt.hale.server.webapp.BaseWebApplication;
 import eu.esdihumboldt.hale.server.webapp.components.bootstrap.NavbarExternalLink;
@@ -155,6 +157,9 @@ public abstract class BasePage extends WebPage {
 		// add base css to page
 		response.render(CssReferenceHeaderItem.forReference(new CssResourceReference(
 				BasePage.class, BasePage.class.getSimpleName() + ".css")));
+
+		response.render(CssHeaderItem.forReference(new LessResourceReference(BasePage.class,
+				BasePage.class.getSimpleName() + ".less")));
 	}
 
 	/**

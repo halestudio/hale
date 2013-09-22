@@ -18,9 +18,9 @@ package eu.esdihumboldt.hale.server.webapp.pages;
 import org.apache.wicket.markup.head.CssReferenceHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.OnLoadHeaderItem;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.request.resource.CssResourceReference;
 
+import eu.esdihumboldt.hale.server.webapp.components.bootstrap.BootstrapFeedbackPanel;
 import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
 
 /**
@@ -90,7 +90,7 @@ public class LoginPage extends BasePage {
 			}
 		}
 
-		add(new FeedbackPanel("feedback"));
+		add(new BootstrapFeedbackPanel("feedback"));
 	}
 
 	@Override
