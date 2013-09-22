@@ -45,6 +45,7 @@ import eu.esdihumboldt.hale.server.webapp.pages.LoginPage;
 import eu.esdihumboldt.hale.server.webapp.pages.NewUserPage;
 import eu.esdihumboldt.hale.server.webapp.pages.OpenIdLoginPage;
 import eu.esdihumboldt.hale.server.webapp.pages.SecuredPage;
+import eu.esdihumboldt.hale.server.webapp.pages.UserSettingsPage;
 
 /**
  * A basic class for web applications
@@ -172,6 +173,9 @@ public abstract class BaseWebApplication extends WebApplication {
 		if (loginClass != null) {
 			// login page
 			mountPage("/login", loginClass);
+
+			// user settings
+			mountPage("/settings", UserSettingsPage.class);
 
 			if (OpenIdLoginPage.class.equals(loginClass)) {
 				// for OpenID auth also add page for new users

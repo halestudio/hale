@@ -43,7 +43,6 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.button.dropdown.DropDown
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.dropdown.MenuBookmarkablePageLink;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.dropdown.MenuDivider;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.dropdown.MenuHeader;
-import de.agilecoders.wicket.core.markup.html.bootstrap.components.TooltipBehavior;
 import de.agilecoders.wicket.core.markup.html.bootstrap.html.ChromeFrameMetaTag;
 import de.agilecoders.wicket.core.markup.html.bootstrap.html.HtmlTag;
 import de.agilecoders.wicket.core.markup.html.bootstrap.html.OptimizedMobileViewportMetaTag;
@@ -56,12 +55,12 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.navbar.NavbarComponents;
 import de.agilecoders.wicket.core.markup.html.bootstrap.navbar.NavbarDropDownButton;
 import de.agilecoders.wicket.core.settings.IBootstrapSettings;
 import de.agilecoders.wicket.core.settings.ITheme;
-import de.agilecoders.wicket.extensions.markup.html.bootstrap.button.DropDownAutoOpen;
 import de.agilecoders.wicket.less.LessResourceReference;
 import eu.esdihumboldt.hale.server.security.UserConstants;
 import eu.esdihumboldt.hale.server.webapp.BaseWebApplication;
 import eu.esdihumboldt.hale.server.webapp.components.bootstrap.NavbarExternalLink;
 import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
+import eu.esdihumboldt.hale.server.webapp.util.UserUtil;
 
 /**
  * The base page for all web applications. It contains definitions for all
@@ -224,32 +223,28 @@ public abstract class BasePage extends WebPage {
 				String logoutUrl = ((WebApplication) getApplication()).getServletContext()
 						.getContextPath() + "/j_spring_security_logout";
 				NavbarExternalLink logoutLink = new NavbarExternalLink(logoutUrl, "Logout");
+				logoutLink.setIconType(IconType.off);
+				logoutLink.setInverted(true);
 
-//				BootstrapLink<String> logoutLink = new BootstrapLink<String>(Navbar.componentId(),
-//						Model.of("Logout"), Type.Link) {
-//
-//					@Override
-//					public void onClick() {
-//						String logout = ((WebApplication) getApplication()).getServletContext()
-//								.getContextPath() + "/j_spring_security_logout";
-////						getRequestCycle().scheduleRequestHandlerAfterCurrent(new RedirectRequestHandler(redirectUrl));
-//						throw new RedirectToUrlException(logout);
-//					}
-//				};
-				// determine user name
-				String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-				logoutLink.add(new TooltipBehavior(Model.of(userName)));
+				// user settings
+				NavbarButton<Void> userButton = new NavbarButton<Void>(UserSettingsPage.class,
+						Model.of(UserUtil.getUserName(null)));
+				userButton.setIconType(IconType.user);
+				/*
+				 * XXX instead of getting the user name each time from DB, store
+				 * it somewhere?
+				 */
 
-				navbar.addComponents(NavbarComponents
-						.transform(ComponentPosition.RIGHT, logoutLink));
+				navbar.addComponents(NavbarComponents.transform(ComponentPosition.RIGHT,
+						userButton, logoutLink));
 			}
 		}
 
 		// Theme selector drop-down
-		DropDownButton dropdown = createThemeDropdownButton();
-		dropdown.add(new DropDownAutoOpen());
-
-		navbar.addComponents(NavbarComponents.transform(ComponentPosition.RIGHT, dropdown));
+//		DropDownButton dropdown = createThemeDropdownButton();
+//		dropdown.add(new DropDownAutoOpen());
+//
+//		navbar.addComponents(NavbarComponents.transform(ComponentPosition.RIGHT, dropdown));
 
 		// XXX
 //		add(new SimpleBreadcrumbPanel("breadcrumb", this.getClass(), "Home", "/"));
@@ -260,7 +255,7 @@ public abstract class BasePage extends WebPage {
 	 * 
 	 * @return the drop down button to add to a navbar
 	 */
-	private DropDownButton createThemeDropdownButton() {
+	protected DropDownButton createThemeDropdownButton() {
 		return new NavbarDropDownButton(Model.of("Themes")) {
 
 			private static final long serialVersionUID = -7119419621661580297L;

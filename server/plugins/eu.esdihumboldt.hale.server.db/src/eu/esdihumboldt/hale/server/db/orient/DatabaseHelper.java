@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osgi.service.datalocation.Location;
 
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
-import com.tinkerpop.blueprints.impls.orient.OrientGraphNoTx;
 
 /**
  * Database helpers for working with an OrientDB based server database.
@@ -48,18 +47,19 @@ public class DatabaseHelper {
 		return new OrientGraph("local:" + dbLoc.toAbsolutePath().toString());
 	}
 
-	/**
-	 * Get a graph instance for use in the current thread.
-	 * 
-	 * @return an orient graph instance
-	 */
-	public static OrientGraphNoTx getNonTransactionalGraph() {
-		Location loc = Platform.getInstanceLocation();
-		Path instancePath = Paths.get(URI.create(loc.getURL().toString().replaceAll(" ", "%20")));
-
-		Path dbLoc = instancePath.resolve(DB_NAME);
-
-		return new OrientGraphNoTx("local:" + dbLoc.toAbsolutePath().toString());
-	}
+	// using the non-transactional graph does not yield the same results!!!
+//	/**
+//	 * Get a graph instance for use in the current thread.
+//	 * 
+//	 * @return an orient graph instance
+//	 */
+//	public static OrientGraphNoTx getNonTransactionalGraph() {
+//		Location loc = Platform.getInstanceLocation();
+//		Path instancePath = Paths.get(URI.create(loc.getURL().toString().replaceAll(" ", "%20")));
+//
+//		Path dbLoc = instancePath.resolve(DB_NAME);
+//
+//		return new OrientGraphNoTx("local:" + dbLoc.toAbsolutePath().toString());
+//	}
 
 }

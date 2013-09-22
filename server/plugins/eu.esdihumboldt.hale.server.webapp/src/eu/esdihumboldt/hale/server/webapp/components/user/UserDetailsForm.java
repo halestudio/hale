@@ -89,12 +89,14 @@ public class UserDetailsForm extends Panel {
 					user.setName(getName());
 					user.setSurname(getSurname());
 					user.setEmail(getEmail());
-				} catch (Exception e) {
+				} catch (NonUniqueResultException e) {
 					error("Internal error");
 					log.error("Duplicate user");
 				} finally {
 					graph.shutdown();
 				}
+
+				success("Your user details were successfully updated.");
 
 				if (UserDetailsForm.this.newUser) {
 					// forward to home page

@@ -54,7 +54,7 @@ html,body {
 /* Custom page CSS
       -------------------------------------------------- */
 /* Navbar should not be displayed over content. */
-#wrap>.container {
+#wrap>.container, #wrap>.container-fluid {
 	padding-top: 60px;
 }
 

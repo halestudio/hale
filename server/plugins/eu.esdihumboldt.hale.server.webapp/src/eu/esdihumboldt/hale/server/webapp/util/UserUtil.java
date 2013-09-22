@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.server.webapp.util;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.tinkerpop.blueprints.impls.orient.OrientGraphNoTx;
+import com.tinkerpop.blueprints.Graph;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
@@ -50,24 +50,57 @@ public class UserUtil {
 	}
 
 	/**
-	 * Get the current user.
+	 * Get the current user's display name.
 	 * 
-	 * @return the current user
+	 * @param graph a graph to retrieve the user from, or <code>null</code>
+	 * @return the current user's display name
 	 */
-	public static User getUser() {
+	public static String getUserName(Graph graph) {
 		String login = getLogin();
 		if (login == null)
 			return null;
 
-		OrientGraphNoTx graph = DatabaseHelper.getNonTransactionalGraph();
+		boolean cleanup = false;
+		if (graph == null) {
+			graph = DatabaseHelper.getGraph();
+			cleanup = true;
+		}
 		try {
-			return User.getByLogin(graph, login);
+			User user = User.getByLogin(graph, login);
+
+			return getDisplayName(user);
 		} catch (NonUniqueResultException e) {
 			log.error("Duplicate login in user database: " + login);
 		} finally {
-			graph.shutdown();
+			if (cleanup) {
+				graph.shutdown();
+			}
 		}
 
-		return null;
+		return getDisplayName(null);
+	}
+
+	/**
+	 * Get the display name for a given user.
+	 * 
+	 * @param user the user
+	 * @return the user's display name
+	 */
+	public static String getDisplayName(User user) {
+		if (user != null) {
+			String name = user.getName();
+			String surname = user.getSurname();
+			if (name != null && !name.isEmpty()) {
+				if (surname != null && !surname.isEmpty()) {
+					return name + " " + surname;
+				}
+				return name;
+			}
+			if (surname != null && !surname.isEmpty()) {
+				return surname;
+			}
+		}
+
+		return "Anonymous";
 	}
 }
