@@ -317,6 +317,30 @@
             </property>
          </sourceProperties>
       </propertyFunction>
+      <typeFunction
+            category="eu.esdihumboldt.hale.align.general"
+            description="Create instances of a specific schema type."
+            identifier="eu.esdihumboldt.hale.align.create"
+            name="Create">
+         <targetTypes>
+            <type
+                  description="Target type to create instances of"
+                  maxOccurrence="1"
+                  minOccurrence="1">
+            </type>
+         </targetTypes>
+         <functionParameter
+               description="Number of instances to create"
+               label="Number of instances"
+               maxOccurrence="1"
+               minOccurrence="0"
+               name="number"
+               scriptable="false">
+            <functionParameterBinding
+                  class="java.lang.Integer">
+            </functionParameterBinding>
+         </functionParameter>
+      </typeFunction>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.align.engine">

@@ -48,6 +48,7 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReport;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
 import eu.esdihumboldt.hale.common.core.io.ProgressMonitorIndicator;
@@ -397,13 +398,23 @@ public class OrientInstanceService extends AbstractInstanceService {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException,
 					InterruptedException {
 				try {
-					InstanceCollection sources = getInstances(DataSet.SOURCE);
-					if (sources.isEmpty()) {
-						return;
-					}
 					Alignment alignment = getAlignmentService().getAlignment();
 					if (alignment.getActiveTypeCells().isEmpty()) {
 						// early exit if there are no type relations
+						return;
+					}
+
+					// determine if there are any active type cells w/o source
+					boolean transformEmpty = false;
+					for (Cell cell : alignment.getActiveTypeCells()) {
+						if (cell.getSource() == null || cell.getSource().isEmpty()) {
+							transformEmpty = true;
+							break;
+						}
+					}
+
+					InstanceCollection sources = getInstances(DataSet.SOURCE);
+					if (!transformEmpty && sources.isEmpty()) {
 						return;
 					}
 

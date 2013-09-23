@@ -18,6 +18,7 @@ package eu.esdihumboldt.cst;
 
 import java.text.MessageFormat;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -228,38 +229,51 @@ public class ConceptualSchemaTransformer implements TransformationService {
 			return;
 		}
 
-		// Step 1: selection
-		// Select only instances that are relevant for the transformation.
-		source = source.select(new TypeCellFilter(typeCell));
-
-		// Step 2: partition
 		ResourceIterator<FamilyInstance> iterator;
-		// use InstanceHandler if available - for example merge or join
-		InstanceHandler instanceHandler = function.getInstanceHandler();
-		if (instanceHandler != null) {
-			progressIndicator.setCurrentTask("Perform instance partitioning");
-			try {
-				iterator = instanceHandler.partitionInstances(source,
-						transformation.getFunctionId(), engine, parameters, executionParameters,
-						cellLog);
-			} catch (TransformationException e) {
-				cellLog.error(cellLog.createMessage("Type transformation: partitioning failed", e));
-				return;
-			}
-		}
-		else {
-			// else just use every instance as is
-			iterator = new GenericResourceIteratorAdapter<Instance, FamilyInstance>(
-					source.iterator()) {
+		if (typeCell.getSource() == null || typeCell.getSource().isEmpty()) {
+			// type cell w/o source
+			// -> execute exactly once w/ null source
+			source = null;
+			iterator = new GenericResourceIteratorAdapter<Object, FamilyInstance>(Collections
+					.singleton(null).iterator()) {
 
-				/**
-				 * @see eu.esdihumboldt.hale.common.instance.model.impl.GenericResourceIteratorAdapter#convert(java.lang.Object)
-				 */
 				@Override
-				protected FamilyInstance convert(Instance next) {
-					return new FamilyInstanceImpl(next);
+				protected FamilyInstance convert(Object next) {
+					return null;
 				}
 			};
+		}
+		else {
+			// Step 1: selection
+			// Select only instances that are relevant for the transformation.
+			source = source.select(new TypeCellFilter(typeCell));
+
+			// Step 2: partition
+			// use InstanceHandler if available - for example merge or join
+			InstanceHandler instanceHandler = function.getInstanceHandler();
+			if (instanceHandler != null) {
+				progressIndicator.setCurrentTask("Perform instance partitioning");
+				try {
+					iterator = instanceHandler.partitionInstances(source,
+							transformation.getFunctionId(), engine, parameters,
+							executionParameters, cellLog);
+				} catch (TransformationException e) {
+					cellLog.error(cellLog.createMessage("Type transformation: partitioning failed",
+							e));
+					return;
+				}
+			}
+			else {
+				// else just use every instance as is
+				iterator = new GenericResourceIteratorAdapter<Instance, FamilyInstance>(
+						source.iterator()) {
+
+					@Override
+					protected FamilyInstance convert(Instance next) {
+						return new FamilyInstanceImpl(next);
+					}
+				};
+			}
 		}
 
 		progressIndicator.setCurrentTask("Execute type transformations");
