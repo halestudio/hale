@@ -51,7 +51,7 @@
    <element name="typeFunction">
       <complexType>
          <sequence>
-            <element ref="sourceTypes"/>
+            <element ref="sourceTypes" minOccurs="0" maxOccurs="1"/>
             <element ref="targetTypes"/>
             <choice minOccurs="0" maxOccurs="unbounded">
                <element ref="functionParameter"/>

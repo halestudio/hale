@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.align.functions;
+package eu.esdihumboldt.hale.common.align.model.functions;
 
 /**
  * Inline transformation function constants.

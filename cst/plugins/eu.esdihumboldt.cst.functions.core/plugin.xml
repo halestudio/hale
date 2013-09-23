@@ -51,6 +51,12 @@
             function="eu.esdihumboldt.hale.align.join"
             id="eu.esdihumboldt.cst.functions.core.join">
       </typeTransformation>
+      <typeTransformation
+            class="eu.esdihumboldt.cst.functions.core.Create"
+            engine="eu.esdihumboldt.align.java"
+            function="eu.esdihumboldt.hale.align.create"
+            id="eu.esdihumboldt.cst.functions.core.create">
+      </typeTransformation>
    </extension>
 
 </plugin>
