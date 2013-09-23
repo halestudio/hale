@@ -571,7 +571,7 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 							"A cell referenced in disable-for is not a type cell.", null));
 					continue;
 				}
-				else if (!alignment.getPropertyCells(other, true).contains(cell)) {
+				else if (!alignment.getPropertyCells(other, true, false).contains(cell)) {
 					reporter.warn(new IOMessageImpl(
 							"A cell referenced in disable-for does not contain the cell that gets modified.",
 							null));
