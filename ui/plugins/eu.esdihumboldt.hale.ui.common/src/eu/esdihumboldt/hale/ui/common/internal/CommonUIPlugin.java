@@ -123,6 +123,8 @@ public class CommonUIPlugin extends AbstractUIPlugin implements CommonSharedImag
 		reg.put(IMG_INHERITED_ARROW, getImageDescriptor("icons/arrow_inh_blue_wide.png"));
 		reg.put(IMG_FILTER_CLEAR, getImageDescriptor("icons/filter_clear.gif"));
 		reg.put(IMG_FILTER_GREY, getImageDescriptor("icons/filter_grey.gif"));
+		reg.put(IMG_OPEN, getImageDescriptor("icons/open.gif"));
+		reg.put(IMG_TRASH, getImageDescriptor("icons/trash.gif"));
 	}
 
 }

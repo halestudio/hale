@@ -52,6 +52,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
@@ -69,6 +70,7 @@ import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.lookup.LookupService;
 import eu.esdihumboldt.hale.common.lookup.LookupTable;
 import eu.esdihumboldt.hale.common.lookup.impl.LookupTableImpl;
+import eu.esdihumboldt.hale.common.lookup.internal.LookupLoadAdvisor;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
@@ -78,6 +80,8 @@ import eu.esdihumboldt.hale.ui.common.definition.AttributeInputDialog;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
 import eu.esdihumboldt.hale.ui.io.action.IOWizardAction;
+import eu.esdihumboldt.hale.ui.lookup.LookupTableImportWizard;
+import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 
 /**
  * Parameter page for classification mapping function.
@@ -317,7 +321,7 @@ public class ClassificationMappingParameterPage extends
 		manuelItem.setText("Manual");
 
 		Composite item1Content = new Composite(tabs, SWT.NONE);
-		item1Content.setLayout(GridLayoutFactory.swtDefaults().numColumns(4).create());
+		item1Content.setLayout(GridLayoutFactory.swtDefaults().numColumns(6).create());
 
 		// target label
 		Label targetLabel = new Label(item1Content, SWT.NONE);
@@ -371,6 +375,55 @@ public class ClassificationMappingParameterPage extends
 								selectedClass))) {
 					removeClassification(selectedClass);
 				}
+			}
+		});
+
+		final Button loadButton = new Button(item1Content, SWT.PUSH);
+		loadButton.setImage(CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_OPEN));
+		loadButton.setToolTipText("Load classification from csv file");
+		final Button removeAllButton = new Button(item1Content, SWT.PUSH);
+
+		loadButton.addSelectionListener(new SelectionAdapter() {
+
+			@SuppressWarnings("restriction")
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				LookupTableImportWizard wizard = new LookupTableImportWizard();
+				LookupLoadAdvisor advisor = new LookupLoadAdvisor();
+				wizard.setAdvisor(advisor, null);
+				Shell shell = Display.getCurrent().getActiveShell();
+				HaleWizardDialog dialog = new HaleWizardDialog(shell, wizard);
+				dialog.open();
+
+				if (advisor.getLookupTable() != null) {
+					ListMultimap<Value, Value> tableReverse = advisor.getLookupTable().getTable()
+							.reverse();
+					for (Value key : tableReverse.keySet()) {
+						TreeSet<String> valueSet = new TreeSet<String>();
+						for (Value value : tableReverse.get(key)) {
+							valueSet.add(value.as(String.class));
+						}
+						classifications.put(key.as(String.class), valueSet);
+					}
+					classes.refresh();
+					classes.setSelection(new StructuredSelection(classes.getElementAt(0)));
+					removeAllButton.setEnabled(!classes.getSelection().isEmpty());
+				}
+			}
+		});
+
+		removeAllButton.setImage(CommonSharedImages.getImageRegistry().get(
+				CommonSharedImages.IMG_TRASH));
+		removeAllButton.setEnabled(false);
+		removeAllButton.setToolTipText("Remove complete classification");
+		removeAllButton.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				classifications.clear();
+				classes.refresh();
+				values.setInput(null);
+				removeAllButton.setEnabled(false);
 			}
 		});
 
@@ -438,6 +491,7 @@ public class ClassificationMappingParameterPage extends
 				boolean empty = event.getSelection().isEmpty();
 				removeButton.setEnabled(!empty); // !fixedClassifications &&
 				valueAdd.setEnabled(!empty);
+				removeAllButton.setEnabled(!empty);
 				if (!empty) {
 					String className = ((IStructuredSelection) event.getSelection())
 							.getFirstElement().toString();
