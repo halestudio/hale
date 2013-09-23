@@ -186,4 +186,14 @@ public interface CommonSharedImagesConstants {
 	 */
 	public static final String IMG_FILTER_GREY = "IMG_FILTER_GREY";
 
+	/**
+	 * key for open image
+	 */
+	public static final String IMG_OPEN = "IMG_OPEN";
+
+	/**
+	 * key for trash image
+	 */
+	public static final String IMG_TRASH = "IMG_TRASH";
+
 }
