@@ -93,6 +93,7 @@
                   description="The property that shall hold the created point"
                   maxOccurrence="1"
                   minOccurrence="1">
+               <geometryOrParentCondition></geometryOrParentCondition>
             </property>
          </targetProperties>
          <sourceProperties>
@@ -101,7 +102,7 @@
                   label="Geometry"
                   maxOccurrence="1"
                   minOccurrence="1">
-               <geometryCondition></geometryCondition>
+               <geometryOrParentCondition></geometryOrParentCondition>
             </property>
             <property
                   description="Variable that can be used in the buffer width expression"
@@ -147,7 +148,7 @@
                   description="The geometry used to calculate the length"
                   maxOccurrence="1"
                   minOccurrence="1">
-               <geometryCondition></geometryCondition>
+               <geometryOrParentCondition></geometryOrParentCondition>
             </property>
          </sourceProperties>
       </propertyFunction>
@@ -175,7 +176,7 @@
                   description="The geometry to calculate the area from"
                   maxOccurrence="1"
                   minOccurrence="1">
-               <geometryCondition></geometryCondition>
+               <geometryOrParentCondition></geometryOrParentCondition>
             </property>
          </sourceProperties>
       </propertyFunction>
@@ -191,6 +192,7 @@
                   description="The property the centroid is assigned to"
                   maxOccurrence="1"
                   minOccurrence="1">
+               <geometryOrParentCondition></geometryOrParentCondition>
             </property>
          </targetProperties>
          <sourceProperties>
@@ -198,7 +200,7 @@
                   description="The geometry used to calculate the centroid"
                   maxOccurrence="1"
                   minOccurrence="1">
-               <geometryCondition></geometryCondition>
+               <geometryOrParentCondition></geometryOrParentCondition>
             </property>
          </sourceProperties>
       </propertyFunction>
@@ -215,6 +217,7 @@
                   label="Extent"
                   maxOccurrence="1"
                   minOccurrence="1">
+               <geometryOrParentCondition></geometryOrParentCondition>
             </property>
          </targetProperties>
          <sourceProperties>
@@ -224,7 +227,7 @@
                   label="Geometries"
                   maxOccurrence="n"
                   minOccurrence="1">
-               <geometryCondition></geometryCondition>
+               <geometryOrParentCondition></geometryOrParentCondition>
             </property>
          </sourceProperties>
          <functionParameter
