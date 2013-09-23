@@ -64,7 +64,7 @@ public class ArchiveProjectImportSelectLocationPage extends
 
 	@Override
 	public boolean updateConfiguration(ArchiveProjectImport provider) {
-		provider.setParameter("PARAM_IMPORT_LOCATION", Value.of(location));
+		provider.setParameter("PARAM_IMPORT_LOCATION", Value.of(directoryField.getStringValue()));
 		return true;
 	}
 
@@ -101,12 +101,5 @@ public class ArchiveProjectImportSelectLocationPage extends
 			setErrorMessage(null);
 			setPageComplete(true);
 		}
-	}
-
-	/**
-	 * @return the location of the directory
-	 */
-	protected String getLocation() {
-		return directoryField.getStringValue();
 	}
 }
