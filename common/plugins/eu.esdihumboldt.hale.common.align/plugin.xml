@@ -319,6 +319,7 @@
       </propertyFunction>
       <typeFunction
             category="eu.esdihumboldt.hale.align.general"
+            cellExplanation="eu.esdihumboldt.hale.common.align.model.functions.explanations.CreateExplanation"
             description="Create instances of a specific schema type."
             identifier="eu.esdihumboldt.hale.align.create"
             name="Create">
