@@ -49,6 +49,9 @@
 
    <element name="compatibility">
       <complexType>
+         <choice minOccurs="0" maxOccurs="unbounded">
+            <element ref="supportsFilter"/>
+         </choice>
          <attribute name="key" type="string" use="required">
             <annotation>
                <documentation>
@@ -80,6 +83,21 @@
                </documentation>
                <appinfo>
                   <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="supportsFilter">
+      <complexType>
+         <attribute name="ref" type="string">
+            <annotation>
+               <documentation>
+                  The reference to a supported filter definition.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.instance.filter/filterDefinition/@id"/>
                </appinfo>
             </annotation>
          </attribute>
