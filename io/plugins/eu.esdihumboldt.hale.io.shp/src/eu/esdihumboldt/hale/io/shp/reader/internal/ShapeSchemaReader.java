@@ -63,7 +63,7 @@ import eu.esdihumboldt.hale.io.shp.internal.Messages;
  * @author Thorsten Reitz
  * @author Simon Templer
  */
-public class ShapeSchemaReader extends AbstractSchemaReader {
+public class ShapeSchemaReader extends AbstractSchemaReader implements ShapefileConstants {
 
 	private DefaultSchema schema;
 
@@ -103,6 +103,23 @@ public class ShapeSchemaReader extends AbstractSchemaReader {
 
 		progress.setCurrentTask(Messages.getString("ShapeSchemaProvider.2")); //$NON-NLS-1$
 
+		// create type for augmented filename property
+		QName filenameTypeName = new QName(SHAPEFILE_AUGMENT_NS, "filenameType");
+		TypeDefinition filenameType = null;
+		if (getSharedTypes() != null) {
+			filenameType = getSharedTypes().getType(filenameTypeName);
+		}
+		if (filenameType == null) {
+			DefaultTypeDefinition fnt = new DefaultTypeDefinition(filenameTypeName);
+
+			fnt.setConstraint(MappableFlag.DISABLED);
+			fnt.setConstraint(MappingRelevantFlag.DISABLED);
+			fnt.setConstraint(Binding.get(String.class));
+			fnt.setConstraint(HasValueFlag.ENABLED);
+
+			filenameType = fnt;
+		}
+
 		// build type definitions based on Schema extracted by geotools
 		for (Name name : store.getNames()) {
 			SimpleFeatureType sft = store.getSchema(name);
@@ -130,6 +147,13 @@ public class ShapeSchemaReader extends AbstractSchemaReader {
 					// set metadata
 					property.setLocation(getSource().getLocation());
 				}
+
+				// add additional filename property
+//				String filename = sft.getName().getLocalPart();
+				DefaultPropertyDefinition property = new DefaultPropertyDefinition(new QName(
+						SHAPEFILE_AUGMENT_NS, AUGMENTED_PROPERTY_FILENAME), type, filenameType);
+				property.setConstraint(Cardinality.CC_EXACTLY_ONCE);
+				property.setConstraint(NillableFlag.ENABLED);
 
 				schema.addType(type);
 			} catch (Exception ex) {
