@@ -82,7 +82,8 @@ public class FileSource<P extends ImportProvider> extends AbstractProviderSource
 		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
 				ProjectService.class);
 		projectLocation = ps.getLoadLocation() == null ? null : ps.getLoadLocation();
-		boolean projectLocAvailable = projectLocation != null;
+		boolean projectLocAvailable = projectLocation != null
+				&& "file".equals(projectLocation.getScheme());
 
 		// source file
 		sourceFile = new FileSourceFileFieldEditor("sourceFile", "Source file:",
@@ -134,7 +135,7 @@ public class FileSource<P extends ImportProvider> extends AbstractProviderSource
 		});
 		if (!projectLocAvailable) {
 			relativeCheck.setEnabled(false);
-			text += " Only available once the project is saved.";
+			text += " Only available once the project is saved to a file.";
 		}
 		relativeCheck.setText(text);
 		relativeCheck.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 3, 1));
