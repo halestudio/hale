@@ -13,44 +13,46 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.filter;
+package eu.esdihumboldt.hale.io.xslt.ui.filter;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
-import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.ui.filter.AbstractTypeFilterDialog;
+import eu.esdihumboldt.hale.ui.filter.TypeFilterField;
 
 /**
- * Dialog for configuring a CQL type filter.
+ * Dialog for configuring a XPath entity filter.
  * 
  * @author Kai Schwierczek
  */
-public class CQLFilterDialog extends TypeFilterDialog {
+public class XPathFilterDialog extends AbstractTypeFilterDialog {
 
-	private final TypeEntityDefinition type;
+	private final EntityDefinition entity;
 
 	/**
 	 * Constructor.
 	 * 
 	 * @param parentShell the parent shell
-	 * @param type the type definition
+	 * @param entity the entity
 	 * @param title the dialog title, <code>null</code> for a default title
 	 * @param message the dialog message, <code>null</code> for a default
 	 *            message
 	 */
-	public CQLFilterDialog(Shell parentShell, TypeEntityDefinition type, String title,
+	public XPathFilterDialog(Shell parentShell, EntityDefinition entity, String title,
 			String message) {
 		super(parentShell, title, message);
-		this.type = type;
+		this.entity = entity;
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.filter.TypeFilterDialog#createFilterField(Composite)
+	 * @see eu.esdihumboldt.hale.ui.filter.AbstractTypeFilterDialog#createFilterField(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
-	protected CQLFilterField createFilterField(Composite parent) {
-		return new CQLFilterField(type, parent, SWT.NONE);
+	protected TypeFilterField createFilterField(Composite parent) {
+		return new XPathFilterField(entity, parent, SWT.NONE);
 	}
 
 }

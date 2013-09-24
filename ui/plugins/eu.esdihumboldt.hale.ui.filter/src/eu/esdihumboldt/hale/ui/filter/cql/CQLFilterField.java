@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.filter;
+package eu.esdihumboldt.hale.ui.filter.cql;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.selector.PropertyDefinitionDialog;
+import eu.esdihumboldt.hale.ui.filter.TypeFilterField;
 import eu.esdihumboldt.hale.ui.filter.internal.Messages;
 
 /**

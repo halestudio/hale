@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.filter;
+package eu.esdihumboldt.hale.io.xslt.ui.filter;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -29,7 +29,7 @@ import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 import eu.esdihumboldt.hale.io.xslt.xpath.XPathFilter;
-import eu.esdihumboldt.hale.ui.filter.internal.Messages;
+import eu.esdihumboldt.hale.ui.filter.TypeFilterField;
 
 /**
  * Field for editing a XPath filter.
@@ -63,7 +63,7 @@ public class XPathFilterField extends TypeFilterField {
 	@Override
 	protected String selectVariable() {
 		XPathPropertyDefinitionDialog dialog = new XPathPropertyDefinitionDialog(Display
-				.getCurrent().getActiveShell(), entity, Messages.FeatureFilterField_7, null);
+				.getCurrent().getActiveShell(), entity, "Insert attribute name", null);
 
 		if (dialog.open() == XPathPropertyDefinitionDialog.OK && dialog.getObject() != null) {
 			EntityDefinition entityDef = dialog.getObject();

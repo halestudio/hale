@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Data Harmonisation Panel
+ * Copyright (c) 2013 Data Harmonisation Panel
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -10,11 +10,10 @@
  * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
  * 
  * Contributors:
- *     HUMBOLDT EU Integrated Project #030962
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.service.entity.internal.handler;
+package eu.esdihumboldt.hale.ui.filter.cql;
 
 import javax.xml.namespace.QName;
 
@@ -30,24 +29,17 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
-import eu.esdihumboldt.hale.ui.filter.CQLFilterDialog;
-import eu.esdihumboldt.hale.ui.filter.TypeFilterDialog;
+import eu.esdihumboldt.hale.ui.filter.FilterDialogFactory;
 
 /**
- * Adds a new condition context for a selected {@link EntityDefinition}.
+ * Factory for {@link CQLFilterDialog}.
  * 
  * @author Simon Templer
  */
-public class AddConditionContextHandler extends AbstractAddConditionContextHandler {
+public class CQLFilterDialogFactory implements FilterDialogFactory {
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.service.entity.internal.handler.AbstractAddConditionContextHandler#createDialog(org.eclipse.swt.widgets.Shell,
-	 *      eu.esdihumboldt.hale.common.align.model.EntityDefinition,
-	 *      java.lang.String, java.lang.String)
-	 */
 	@Override
-	protected TypeFilterDialog createDialog(Shell shell, EntityDefinition entityDef, String title,
-			String message) {
+	public Filter openDialog(Shell shell, EntityDefinition entityDef, String title, String message) {
 		TypeEntityDefinition parentType;
 		if (entityDef.getPropertyPath().isEmpty())
 			parentType = AlignmentUtil.getTypeEntity(entityDef);
@@ -71,7 +63,11 @@ public class AddConditionContextHandler extends AbstractAddConditionContextHandl
 					((PropertyDefinition) def).getParentType());
 		}
 
-		return new CQLFilterDialog(shell, parentType, title, message);
+		CQLFilterDialog dialog = new CQLFilterDialog(shell, parentType, title, message);
+		if (dialog.open() == CQLFilterDialog.OK) {
+			return dialog.getFilter();
+		}
+		return null;
 	}
 
 }
