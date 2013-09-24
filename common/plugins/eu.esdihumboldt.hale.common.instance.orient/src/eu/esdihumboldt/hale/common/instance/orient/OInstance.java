@@ -54,6 +54,12 @@ public class OInstance extends OGroup implements MutableInstance {
 	public static final String FIELD_METADATA = "___metadata___";
 
 	/**
+	 * Name for the special field indicating if the instance was inserted
+	 * directly.
+	 */
+	public static final String FIELD_INSERTED = "___insert___";
+
+	/**
 	 * The data set the instance is associated to. This value is not persisted.
 	 */
 	private DataSet dataSet;
@@ -65,6 +71,7 @@ public class OInstance extends OGroup implements MutableInstance {
 	static {
 		SPECIAL_FIELDS.add(FIELD_VALUE);
 		SPECIAL_FIELDS.add(FIELD_METADATA);
+		SPECIAL_FIELDS.add(FIELD_INSERTED);
 	}
 
 	/**
@@ -126,6 +133,32 @@ public class OInstance extends OGroup implements MutableInstance {
 		associatedDbWithThread();
 
 		return convertDocument(document.field(FIELD_VALUE), null);
+	}
+
+	/**
+	 * Set if the instance is inserted directly.
+	 * 
+	 * @param inserted if the instance is inserted directly.
+	 */
+	public void setInserted(boolean inserted) {
+		document.field(FIELD_INSERTED, inserted);
+	}
+
+	/**
+	 * States if the instance was inserted directly.
+	 * 
+	 * @return if the instance was inserted directly
+	 */
+	public boolean isInserted() {
+		associatedDbWithThread();
+
+		Object value = document.field(FIELD_INSERTED);
+		if (value != null && value instanceof Boolean) {
+			return ((Boolean) value).booleanValue();
+		}
+
+		// default if not set
+		return false;
 	}
 
 	/**
