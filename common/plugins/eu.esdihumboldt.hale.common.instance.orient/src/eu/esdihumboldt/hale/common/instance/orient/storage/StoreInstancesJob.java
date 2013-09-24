@@ -130,6 +130,8 @@ public abstract class StoreInstancesJob extends Job {
 					OInstance conv = ((instance instanceof OInstance) ? ((OInstance) instance)
 							: (new OInstance(instance)));
 
+					conv.setInserted(true);
+
 					// update the instance to store, e.g. generating metadata
 					updateInstance(conv);
 

@@ -53,9 +53,12 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationRep
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
 import eu.esdihumboldt.hale.common.core.io.ProgressMonitorIndicator;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
+import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
+import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
+import eu.esdihumboldt.hale.common.instance.orient.OInstance;
 import eu.esdihumboldt.hale.common.instance.orient.internal.ONamespaceMap;
 import eu.esdihumboldt.hale.common.instance.orient.internal.OSerializationHelper;
 import eu.esdihumboldt.hale.common.instance.orient.storage.BrowseOrientInstanceCollection;
@@ -159,16 +162,48 @@ public class OrientInstanceService extends AbstractInstanceService {
 	 */
 	@Override
 	public InstanceCollection getInstances(DataSet dataset) {
+		InstanceCollection result = null;
 		switch (dataset) {
 		case SOURCE:
-			return new BrowseOrientInstanceCollection(source,
+			result = new BrowseOrientInstanceCollection(source,
 					schemaService.getSchemas(SchemaSpaceID.SOURCE), DataSet.SOURCE);
+			break;
 		case TRANSFORMED:
-			return new BrowseOrientInstanceCollection(transformed,
+			result = new BrowseOrientInstanceCollection(transformed,
 					schemaService.getSchemas(SchemaSpaceID.TARGET), DataSet.TRANSFORMED);
+			break;
 		}
 
-		throw new IllegalArgumentException("Illegal data set requested: " + dataset);
+		if (result == null) {
+			throw new IllegalArgumentException("Illegal data set requested: " + dataset);
+		}
+
+		/*
+		 * Only return instances that actually were inserted, not those that
+		 * were only created because they are substructures of the inserted
+		 * instances.
+		 */
+		if (dataset.equals(DataSet.TRANSFORMED)) {
+			/*
+			 * XXX for now do it only for the transformed data, we have to see
+			 * if it is necessary for the source data as well. If so, the
+			 * headless transformation must be updated accordingly as well.
+			 */
+
+			return new FilteredInstanceCollection(result, new Filter() {
+
+				@Override
+				public boolean match(Instance instance) {
+					if (instance instanceof OInstance) {
+						return ((OInstance) instance).isInserted();
+					}
+					return true;
+				}
+
+			});
+		}
+
+		return result;
 	}
 
 	/**
