@@ -373,24 +373,6 @@
          </activeWhen>
       </handler>
       <handler
-            class="eu.esdihumboldt.hale.ui.service.entity.internal.handler.AddConditionContextHandler"
-            commandId="eu.esdihumboldt.hale.ui.entity.addcqlcontext">
-         <activeWhen>
-            <reference
-                  definitionId="eu.esdihumboldt.hale.ui.selection.entity.allow_contextadd_condition">
-            </reference>
-         </activeWhen>
-      </handler>
-      <handler
-            class="eu.esdihumboldt.hale.ui.service.entity.internal.handler.AddXPathConditionContextHandler"
-            commandId="eu.esdihumboldt.hale.ui.entity.addxpathcontext">
-         <activeWhen>
-            <reference
-                  definitionId="eu.esdihumboldt.hale.ui.selection.entity.allow_contextadd_condition">
-            </reference>
-         </activeWhen>
-      </handler>
-      <handler
             class="eu.esdihumboldt.hale.ui.service.values.internal.handler.UpdateOccurringValues"
             commandId="eu.esdihumboldt.hale.ui.values.update_occuring">
          <activeWhen>
@@ -781,23 +763,16 @@
                   checkEnabled="true">
             </visibleWhen>
          </command>
-         <menu
-               label="Add condition context">
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.entity.addcqlcontext"
-                  style="push">
-               <visibleWhen
-                     checkEnabled="true">
-               </visibleWhen>
-            </command>
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.entity.addxpathcontext"
-                  style="push">
-               <visibleWhen
-                     checkEnabled="true">
-               </visibleWhen>
-            </command>
-         </menu>
+         <dynamic
+               class="eu.esdihumboldt.hale.ui.service.entity.internal.handler.AddConditionContextContribution"
+               id="eu.esdihumboldt.hale.ui.popup.addcondition">
+            <visibleWhen
+                  checkEnabled="false">
+               <reference
+                     definitionId="eu.esdihumboldt.hale.ui.selection.entity.allow_contextadd_condition">
+               </reference>
+            </visibleWhen>
+         </dynamic>
          <command
                commandId="eu.esdihumboldt.hale.ui.entity.editconditioncontext"
                style="push">

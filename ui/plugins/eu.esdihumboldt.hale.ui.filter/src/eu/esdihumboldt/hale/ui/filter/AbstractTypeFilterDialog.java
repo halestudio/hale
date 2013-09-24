@@ -38,7 +38,7 @@ import eu.esdihumboldt.hale.common.instance.model.Filter;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public abstract class TypeFilterDialog extends TitleAreaDialog {
+public abstract class AbstractTypeFilterDialog extends TitleAreaDialog {
 
 	private TypeFilterField filterField;
 
@@ -56,7 +56,7 @@ public abstract class TypeFilterDialog extends TitleAreaDialog {
 	 * @param message the dialog message, <code>null</code> for a default
 	 *            message
 	 */
-	public TypeFilterDialog(Shell parentShell, String title, String message) {
+	public AbstractTypeFilterDialog(Shell parentShell, String title, String message) {
 		super(parentShell);
 
 		this.title = (title == null) ? ("Type filter") : (title);

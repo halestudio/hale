@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="eu.esdihumboldt.hale.common.align" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="eu.esdihumboldt.hale.ui.filter" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="eu.esdihumboldt.hale.common.align" id="eu.esdihumboldt.hale.align.compatibility" name="Compatibility mode controlling"/>
+         <meta.schema plugin="eu.esdihumboldt.hale.ui.filter" id="eu.esdihumboldt.ui.filter" name="Filter UI"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
@@ -17,8 +17,8 @@
          </appinfo>
       </annotation>
       <complexType>
-         <choice>
-            <element ref="compatibility"/>
+         <choice minOccurs="1" maxOccurs="unbounded">
+            <element ref="filter-ui"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,57 +47,25 @@
       </complexType>
    </element>
 
-   <element name="compatibility">
+   <element name="filter-ui">
       <complexType>
-         <choice minOccurs="0" maxOccurs="unbounded">
-            <element ref="supportsFilter"/>
-         </choice>
-         <attribute name="key" type="string" use="required">
+         <attribute name="filter" type="string" use="required">
             <annotation>
                <documentation>
-                  
-               </documentation>
-               <appinfo>
-                  <meta.attribute kind="identifier"/>
-               </appinfo>
-            </annotation>
-         </attribute>
-         <attribute name="id" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="name" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="class" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-               <appinfo>
-                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode"/>
-               </appinfo>
-            </annotation>
-         </attribute>
-      </complexType>
-   </element>
-
-   <element name="supportsFilter">
-      <complexType>
-         <attribute name="ref" type="string" use="required">
-            <annotation>
-               <documentation>
-                  The reference to a supported filter definition.
+                  Reference to the registered filter definition.
                </documentation>
                <appinfo>
                   <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.instance.filter/filterDefinition/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="dialogFactory" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Implementation of the dialog factory that creates a dialog for editing or adding a filter/condition.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.ui.filter.FilterDialogFactory"/>
                </appinfo>
             </annotation>
          </attribute>
