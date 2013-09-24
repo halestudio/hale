@@ -77,6 +77,8 @@ public class ShapesInstanceCollection implements InstanceCollection {
 
 		private final Set<QName> missingProperties = new HashSet<QName>();
 
+		private String currentName;
+
 		/**
 		 * Create a new iterator on the data store.
 		 * 
@@ -113,6 +115,7 @@ public class ShapesInstanceCollection implements InstanceCollection {
 				Name name = nameIterator.next();
 				try {
 					currentIterator = store.getFeatureSource(name).getFeatures().features();
+					currentName = name.getLocalPart();
 
 					if (defaultType != null) {
 						currentType = defaultType;
@@ -221,6 +224,12 @@ public class ShapesInstanceCollection implements InstanceCollection {
 
 				// TODO safe add? in respect to binding, existence of property
 				instance.addProperty(propertyName, value);
+			}
+
+			// add filename augmented property
+			if (currentName != null) {
+				instance.addProperty(new QName(ShapefileConstants.SHAPEFILE_AUGMENT_NS,
+						ShapefileConstants.AUGMENTED_PROPERTY_FILENAME), currentName);
 			}
 
 			return instance;
