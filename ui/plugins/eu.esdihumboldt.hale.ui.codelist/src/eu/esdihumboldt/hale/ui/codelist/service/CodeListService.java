@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.ui.codelist.service;
 
 import java.util.List;
 
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.codelist.CodeList;
 
 /**
@@ -37,28 +38,22 @@ public interface CodeListService {
 	public CodeList findCodeListByIdentifier(String namespace, String identifier);
 
 	/**
-	 * Tries to find a code list associated to the attribute referenced by the
-	 * given identifier.
+	 * Tries to find a code list associated to the property referenced by the
+	 * given entity definition.
 	 * 
-	 * @param attributeIdentifier the attribute identifier
+	 * @param entity the entity definition
 	 * @return the code list or <code>null</code>
 	 */
-	public CodeList findCodeListByAttribute(String attributeIdentifier);
+	public CodeList findCodeListByEntity(EntityDefinition entity);
 
 	/**
-	 * Assign a code list for an attribute.
+	 * Assign a code list for a property entity definition.
 	 * 
-	 * @param attributeIdentifier the attribute identifier
+	 * @param entity the entity definition
 	 * @param code the code list to assign or <code>null</code> if the
 	 *            assignment shall be deleted
 	 */
-	public void assignAttributeCodeList(String attributeIdentifier, CodeList code);
-
-//	
-//	/**
-//	 * Inform the service that the search path has changed
-//	 */
-//	public void searchPathChanged();
+	public void assignEntityCodeList(EntityDefinition entity, CodeList code);
 
 	/**
 	 * Get the code lists.

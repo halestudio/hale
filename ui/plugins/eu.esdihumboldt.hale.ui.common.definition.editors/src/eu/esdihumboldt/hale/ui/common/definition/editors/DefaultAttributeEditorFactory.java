@@ -54,7 +54,7 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 		else {
 			if (allowScripts) {
 				EditorChooserEditor<Object> result = new PropertyEditorChooserEditor(parent,
-						property);
+						property, entityDef);
 				result.selectDefaultEditor();
 				return result;
 			}
@@ -63,7 +63,7 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 				if (Boolean.class.equals(binding))
 					return new BooleanEditor(parent);
 				else
-					return new DefaultPropertyEditor(parent, property);
+					return new DefaultPropertyEditor(parent, property, entityDef);
 			}
 		}
 	}
