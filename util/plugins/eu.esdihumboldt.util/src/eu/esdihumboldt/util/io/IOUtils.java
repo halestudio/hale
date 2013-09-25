@@ -29,6 +29,8 @@ import java.util.zip.ZipInputStream;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.util.resource.Resources;
 
 /**
@@ -37,6 +39,8 @@ import eu.esdihumboldt.util.resource.Resources;
  * @author Kai Schwierczek
  */
 public final class IOUtils {
+
+	private static final ALogger log = ALoggerFactory.getLogger(IOUtils.class);
 
 	/**
 	 * Static class, constructor private.
@@ -86,6 +90,7 @@ public final class IOUtils {
 	 * @throws IOException if an error occurs
 	 */
 	public static Collection<File> extract(File baseDir, InputStream in) throws IOException {
+		final String basePath = baseDir.getAbsolutePath();
 		Collection<File> collect = new ArrayList<>();
 		final ZipInputStream zis = new ZipInputStream(in);
 		try {
@@ -93,6 +98,15 @@ public final class IOUtils {
 			while ((entry = zis.getNextEntry()) != null) {
 				if (!entry.isDirectory()) {
 					final File file = new File(baseDir, entry.getName());
+
+					if (!file.getAbsolutePath().startsWith(basePath)) {
+						// not inside target directory
+						log.warn(
+								"Skipped extraction of file {} as it is not in the target directory",
+								file);
+						continue;
+					}
+
 					Files.createParentDirs(file);
 					Files.write(ByteStreams.toByteArray(zis), file);
 					collect.add(file);
