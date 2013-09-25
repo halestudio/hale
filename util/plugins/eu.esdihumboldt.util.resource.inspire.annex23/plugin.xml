@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.ui.schema.presets">
+      <schema
+            icon="icons/inspire.gif"
+            id="eu.esdihumboldt.util.resource.inspire.annex2.plu"
+            name="INSPIRE Planned Land Use"
+            tag="Draft"
+            version="3.0rc3">
+         <uri
+               value="http://inspire.ec.europa.eu/draft-schemas/plu/3.0rc3/PlannedLandUse.xsd">
+         </uri>
+      </schema>
+   </extension>
+
+</plugin>

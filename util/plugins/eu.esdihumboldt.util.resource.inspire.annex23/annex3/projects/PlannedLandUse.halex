@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<hale-project version="2.6.0.qualifier">
+    <name>Map to INSPIRE Planned Land Use</name>
+    <author>Simon Templer</author>
+    <created>2013-09-25T09:01:03.018+02:00</created>
+    <modified>2013-09-25T09:06:21.753+02:00</modified>
+    <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
+        <setting name="projectFiles.separate">false</setting>
+        <setting name="target">file:/home/simon-local/repos/hale/util/plugins/eu.esdihumboldt.util.resource.inspire.annex2/annex2/projects/PlannedLandUse.halex</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
+    </save-config>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.target" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="resourceId">1654c869-8d4b-4c7c-ae61-766653fbfe41</setting>
+        <setting name="source">http://inspire.ec.europa.eu/draft-schemas/plu/3.0rc3/PlannedLandUse.xsd</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.codelist.read" provider-id="eu.esdihumboldt.hale.io.codelist.inspire.reader">
+        <setting name="resourceId">8af23489-ba57-4d76-b941-8c2b95366a3b</setting>
+        <setting name="source">http://inspire.ec.europa.eu/codelist/HILUCSValue/HILUCSValue.en.xml</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.codelist.inspire</setting>
+    </resource>
+    <file name="styles.sld" location="PlannedLandUse.halex.styles.sld"/>
+    <file name="alignment.xml" location="PlannedLandUse.halex.alignment.xml"/>
+    <property name="codelist:http://www.w3.org/1999/xlink/href">http://inspire.ec.europa.eu/codelist/HILUCSValue/HILUCS</property>
+    <property name="defaultGeometry:{http://inspire.ec.europa.eu/schemas/plu/3.0rc3}OfficialDocumentationType/1">{http://www.opengis.net/gml/3.2}boundedBy</property>
+    <property name="defaultGeometry:{http://inspire.ec.europa.eu/schemas/plu/3.0rc3}OfficialDocumentationType/2">{http://www.opengis.net/gml/3.2/BoundingShapeType}choice_1</property>
+    <property name="defaultGeometry:{http://inspire.ec.europa.eu/schemas/plu/3.0rc3}OfficialDocumentationType/count">2</property>
+    <property name="defaultGeometry:{http://inspire.ec.europa.eu/schemas/plu/3.0rc3}SpatialPlanType/1">{http://inspire.ec.europa.eu/schemas/plu/3.0rc3}extent</property>
+    <property name="defaultGeometry:{http://inspire.ec.europa.eu/schemas/plu/3.0rc3}SpatialPlanType/2">{http://www.opengis.net/gml/3.2}MultiSurface</property>
+    <property name="defaultGeometry:{http://inspire.ec.europa.eu/schemas/plu/3.0rc3}SpatialPlanType/count">2</property>
+    <property name="defaultGeometry:{http://inspire.ec.europa.eu/schemas/plu/3.0rc3}SupplementaryRegulationType/1">{http://inspire.ec.europa.eu/schemas/plu/3.0rc3}geometry</property>
+    <property name="defaultGeometry:{http://inspire.ec.europa.eu/schemas/plu/3.0rc3}SupplementaryRegulationType/2">{http://www.opengis.net/gml/3.2/AbstractGeometry}choice</property>
+    <property name="defaultGeometry:{http://inspire.ec.europa.eu/schemas/plu/3.0rc3}SupplementaryRegulationType/count">2</property>
+    <property name="defaultGeometry:{http://inspire.ec.europa.eu/schemas/plu/3.0rc3}ZoningElementType/1">{http://inspire.ec.europa.eu/schemas/plu/3.0rc3}geometry</property>
+    <property name="defaultGeometry:{http://inspire.ec.europa.eu/schemas/plu/3.0rc3}ZoningElementType/2">{http://www.opengis.net/gml/3.2}MultiSurface</property>
+    <property name="defaultGeometry:{http://inspire.ec.europa.eu/schemas/plu/3.0rc3}ZoningElementType/count">2</property>
+    <property name="mappableTargetType/1">{http://inspire.ec.europa.eu/schemas/plu/3.0rc3}SpatialPlanType</property>
+    <property name="mappableTargetType/2">{http://inspire.ec.europa.eu/schemas/plu/3.0rc3}OfficialDocumentationType</property>
+    <property name="mappableTargetType/3">{http://inspire.ec.europa.eu/schemas/plu/3.0rc3}SupplementaryRegulationType</property>
+    <property name="mappableTargetType/4">{http://inspire.ec.europa.eu/schemas/plu/3.0rc3}ZoningElementType</property>
+    <property name="mappableTargetType/count">4</property>
+</hale-project>
