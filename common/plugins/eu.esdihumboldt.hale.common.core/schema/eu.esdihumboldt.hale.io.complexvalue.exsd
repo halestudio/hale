@@ -76,7 +76,7 @@
                   The complex value implementation handling (de)serialization to/from a DOM.
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.align.model.ComplexValue"/>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.core.io.ComplexValueType"/>
                </appinfo>
             </annotation>
          </attribute>
