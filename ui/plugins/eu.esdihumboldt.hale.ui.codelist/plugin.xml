@@ -29,5 +29,14 @@
             id="eu.esdihumboldt.hale.ui.codelist.service">
       </advisor>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.complexvalue">
+      <complexValue
+            descriptor="eu.esdihumboldt.hale.ui.codelist.service.internal.config.CodeListAssociationsType"
+            id="eu.esdihumboldt.hale.ui.codelist.config"
+            name="associations"
+            type="eu.esdihumboldt.hale.ui.codelist.service.internal.config.CodeListAssociations">
+      </complexValue>
+   </extension>
 
 </plugin>

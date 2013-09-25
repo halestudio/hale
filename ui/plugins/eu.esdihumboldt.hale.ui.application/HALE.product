@@ -191,6 +191,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.ui.application.help.internal" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.ui.cache"/>
       <plugin id="eu.esdihumboldt.hale.ui.codelist"/>
+      <plugin id="eu.esdihumboldt.hale.ui.codelist.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.ui.common"/>
       <plugin id="eu.esdihumboldt.hale.ui.common.definition.editors"/>
       <plugin id="eu.esdihumboldt.hale.ui.common.graph"/>

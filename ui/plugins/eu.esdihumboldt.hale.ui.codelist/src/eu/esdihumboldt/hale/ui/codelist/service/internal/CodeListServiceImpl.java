@@ -23,8 +23,14 @@ import java.util.Map;
 
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import de.fhg.igd.osgi.util.configuration.NamespaceConfigurationServiceDecorator;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.codelist.CodeList;
+import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.io.project.ComplexConfigurationService;
+import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.ui.codelist.service.CodeListService;
+import eu.esdihumboldt.hale.ui.codelist.service.internal.config.CodeListAssociations;
+import eu.esdihumboldt.hale.ui.codelist.service.internal.config.CodeListReference;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
 
@@ -38,13 +44,30 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
 public class CodeListServiceImpl implements CodeListService {
 
 	/**
+	 * Name of the property key in the project configuration holding the code
+	 * list association configuration.
+	 */
+	private static final String KEY_ASSOCIATIONS = "codelists";
+
+	/**
 	 * The associated project service.
 	 */
 	protected final ProjectService projectService;
+
 	/**
 	 * The configuration service to use for storing/loading assignments.
 	 */
 	protected final IConfigurationService configurationService;
+
+	/**
+	 * The configuration service to use for storing/loading assignments.
+	 */
+	protected final ComplexConfigurationService complexConfigService;
+
+	/**
+	 * The code list association configuration.
+	 */
+	protected volatile CodeListAssociations associations = new CodeListAssociations();
 
 	/**
 	 * Constructs this code list service with the given project service. It will
@@ -55,6 +78,7 @@ public class CodeListServiceImpl implements CodeListService {
 	 */
 	public CodeListServiceImpl(ProjectService projectService) {
 		this.projectService = projectService;
+		complexConfigService = projectService.getConfigurationService();
 		configurationService = new NamespaceConfigurationServiceDecorator(
 				projectService.getConfigurationService(), "codelist", ":");
 		projectService.addListener(new ProjectServiceAdapter() {
@@ -63,20 +87,34 @@ public class CodeListServiceImpl implements CodeListService {
 			public void onClean() {
 				codelists.clear();
 			}
+
+			@Override
+			public void afterLoad(ProjectService projectService,
+					Map<String, ProjectFile> projectFiles) {
+				// update associations from configuration
+				CodeListAssociations projectAssociations = complexConfigService.getProperty(
+						KEY_ASSOCIATIONS).as(CodeListAssociations.class);
+				if (projectAssociations != null) {
+					associations = projectAssociations;
+				}
+				else {
+					associations = new CodeListAssociations();
+				}
+			}
 		});
 	}
 
 	/**
 	 * Maps code list identifiers to code lists.
 	 */
-	private final Map<String, CodeList> codelists = new HashMap<String, CodeList>();
+	private final Map<CodeListReference, CodeList> codelists = new HashMap<>();
 
 	/**
 	 * @see CodeListService#findCodeListByIdentifier(String, String)
 	 */
 	@Override
 	public CodeList findCodeListByIdentifier(String namespace, String identifier) {
-		String key = namespace + "/" + identifier; //$NON-NLS-1$
+		CodeListReference key = new CodeListReference(namespace, identifier);
 		return codelists.get(key);
 	}
 
@@ -88,28 +126,57 @@ public class CodeListServiceImpl implements CodeListService {
 		return new ArrayList<CodeList>(codelists.values());
 	}
 
-	/**
-	 * @see CodeListService#assignAttributeCodeList(String, CodeList)
-	 */
 	@Override
-	public void assignAttributeCodeList(String attributeIdentifier, CodeList code) {
-		if (code == null)
-			configurationService.set(attributeIdentifier, null);
-		else
-			configurationService.set(attributeIdentifier,
-					code.getNamespace() + "/" + code.getIdentifier());
+	public CodeList findCodeListByEntity(EntityDefinition entity) {
+		CodeList result = null;
+		CodeListReference ref = associations.getCodeList(entity);
+		if (ref != null) {
+			result = findCodeListByIdentifier(ref.getNamespace(), ref.getIdentifier());
+		}
+
+		if (result == null) {
+			// fall-back to legacy mechanism
+			String ident = entity.getDefinition().getIdentifier();
+			result = findCodeListByAttribute(ident);
+		}
+
+		return result;
 	}
 
-	/**
-	 * @see CodeListService#findCodeListByAttribute(String)
-	 */
 	@Override
+	public void assignEntityCodeList(EntityDefinition entity, CodeList code) {
+		associations.assignCodeList(entity, code);
+
+		// update the project configuration
+		complexConfigService.setProperty(KEY_ASSOCIATIONS, Value.complex(associations));
+	}
+
+//	public void assignAttributeCodeList(String attributeIdentifier, CodeList code) {
+//		if (code == null)
+//			configurationService.set(attributeIdentifier, null);
+//		else
+//			configurationService.set(attributeIdentifier,
+//					code.getNamespace() + "/" + code.getIdentifier());
+//	}
+
+	/**
+	 * Find a code list by attribute identifier.
+	 * 
+	 * @param attributeIdentifier the attribute identifier
+	 * @return the code list or <code>null</code>
+	 */
 	public CodeList findCodeListByAttribute(String attributeIdentifier) {
 		String key = configurationService.get(attributeIdentifier);
-		if (key == null)
-			return null;
-		else
-			return codelists.get(key);
+		if (key != null) {
+			int index = key.lastIndexOf('/');
+			if (index >= 0) {
+				String namespace = key.substring(0, index);
+				String identifier = key.substring(index + 1);
+				CodeListReference ref = new CodeListReference(namespace, identifier);
+				return codelists.get(ref);
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -117,7 +184,7 @@ public class CodeListServiceImpl implements CodeListService {
 	 */
 	@Override
 	public void addCodeList(CodeList code) {
-		String key = code.getNamespace() + "/" + code.getIdentifier(); //$NON-NLS-1$
+		CodeListReference key = new CodeListReference(code.getNamespace(), code.getIdentifier());
 		codelists.put(key, code);
 	}
 

@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.ui.common.definition.editors;
 
 import org.eclipse.swt.widgets.Composite;
 
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.ui.common.Editor;
@@ -29,23 +30,25 @@ import eu.esdihumboldt.hale.ui.common.Editor;
 public class PropertyEditorChooserEditor extends EditorChooserEditor<Object> {
 
 	private final PropertyDefinition property;
+	private final EntityDefinition entityDef;
 
 	/**
 	 * Default constructor.
 	 * 
 	 * @param parent the parent composite
 	 * @param property the property definition
+	 * @param entityDef the property entity definition representing the
+	 *            property, may be <code>null</code> if unknown or unavailable
 	 */
-	public PropertyEditorChooserEditor(Composite parent, PropertyDefinition property) {
+	public PropertyEditorChooserEditor(Composite parent, PropertyDefinition property,
+			EntityDefinition entityDef) {
 		super(parent, property.getPropertyType().getConstraint(Binding.class).getBinding());
 		this.property = property;
+		this.entityDef = entityDef;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.common.definition.editors.EditorChooserEditor#createDefaultEditor(org.eclipse.swt.widgets.Composite)
-	 */
 	@Override
 	protected Editor<Object> createDefaultEditor(Composite parent) {
-		return new DefaultPropertyEditor(parent, property);
+		return new DefaultPropertyEditor(parent, property, entityDef);
 	}
 }
