@@ -364,7 +364,7 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 				nilLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 
 				// editor
-				nilEditor = aef.createEditor(versGroup, propDef, false);
+				nilEditor = aef.createEditor(versGroup, propDef, null, false);
 				nilEditor.getControl().setLayoutData(
 						new GridData(SWT.FILL, SWT.CENTER, true, false));
 				nilEditor.setAsText(initialVersionNil); // default to unknown //$NON-NLS-1$

@@ -32,6 +32,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.AssignFunction;
 import eu.esdihumboldt.hale.common.core.io.Value;
@@ -130,8 +131,9 @@ public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionW
 		// check whether a target was chosen (can be null the moment a new cell
 		// is created)
 		if (getWizard().getUnfinishedCell().getTarget() != null) {
-			PropertyDefinition propDef = (PropertyDefinition) getWizard().getUnfinishedCell()
-					.getTarget().values().iterator().next().getDefinition().getDefinition();
+			EntityDefinition entityDef = getWizard().getUnfinishedCell().getTarget().values()
+					.iterator().next().getDefinition();
+			PropertyDefinition propDef = (PropertyDefinition) entityDef.getDefinition();
 
 			title = new Composite(page, SWT.NONE);
 			title.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).margins(0, 0).create());
@@ -143,7 +145,7 @@ public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionW
 			label.setText(" = ");
 
 			editor = ((AttributeEditorFactory) PlatformUI.getWorkbench().getService(
-					AttributeEditorFactory.class)).createEditor(page, propDef, false);
+					AttributeEditorFactory.class)).createEditor(page, propDef, entityDef, false);
 			editor.getControl().setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 			editor.setPropertyChangeListener(new IPropertyChangeListener() {
 
