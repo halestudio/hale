@@ -20,6 +20,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -36,6 +37,7 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.util.InputStreamDecorator;
+import eu.esdihumboldt.util.io.IOUtils;
 import eu.esdihumboldt.util.io.PathUpdate;
 
 /**
@@ -160,6 +162,37 @@ public class DefaultProjectReader extends AbstractProjectReader {
 				if (projectFile != null) {
 					URI location = fileInfo.getLocation();
 					location = update.findLocation(location, false, false, false);
+					if (location == null && getSource().getLocation() != null) {
+						// not able to resolve location, try defaults instead
+
+						// 1st try: appending file name to project location
+						try {
+							URI candidate = new URI(getSource().getLocation().toString() + "."
+									+ fileInfo.getName());
+							if (IOUtils.testStream(candidate, true)) {
+								location = candidate;
+							}
+						} catch (URISyntaxException e) {
+							// ignore
+						}
+
+						// 2nd try: file name next to project
+						if (location != null) {
+							try {
+								String projectLoc = getSource().getLocation().toString();
+								int index = projectLoc.lastIndexOf('/');
+								if (index > 0) {
+									URI candidate = new URI(projectLoc.substring(0, index + 1)
+											+ fileInfo.getName());
+									if (IOUtils.testStream(candidate, true)) {
+										location = candidate;
+									}
+								}
+							} catch (URISyntaxException e) {
+								// ignore
+							}
+						}
+					}
 					boolean fileSuccess = false;
 					if (location != null) {
 						try {
