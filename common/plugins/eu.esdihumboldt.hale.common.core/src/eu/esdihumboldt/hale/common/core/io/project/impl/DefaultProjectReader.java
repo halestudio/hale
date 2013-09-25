@@ -36,6 +36,7 @@ import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFileInfo;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.util.InputStreamDecorator;
 import eu.esdihumboldt.util.io.IOUtils;
 import eu.esdihumboldt.util.io.PathUpdate;
@@ -196,14 +197,12 @@ public class DefaultProjectReader extends AbstractProjectReader {
 					boolean fileSuccess = false;
 					if (location != null) {
 						try {
-							InputStream input = location.toURL().openStream();
-							try {
+							DefaultInputSupplier dis = new DefaultInputSupplier(location);
+							try (InputStream input = dis.getInput()) {
 								projectFile.load(input);
 								fileSuccess = true;
 							} catch (Exception e) {
 								throw e; // hand down
-							} finally {
-								input.close();
 							}
 						} catch (Exception e) {
 							reporter.error(new IOMessageImpl("Loading project file failed", e));
