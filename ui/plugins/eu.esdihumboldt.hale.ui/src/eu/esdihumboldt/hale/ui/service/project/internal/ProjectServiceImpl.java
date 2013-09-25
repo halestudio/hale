@@ -46,9 +46,7 @@ import de.cs3d.util.eclipse.extension.FactoryFilter;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
-import de.fhg.igd.osgi.util.configuration.AbstractConfigurationService;
 import de.fhg.igd.osgi.util.configuration.AbstractDefaultConfigurationService;
-import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
@@ -59,6 +57,7 @@ import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorFactory;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderExtension;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
+import eu.esdihumboldt.hale.common.core.io.project.ComplexConfigurationService;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectIO;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
@@ -94,7 +93,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	 * Configuration service backed by the internal {@link Project}
 	 */
 	private class ProjectConfigurationService extends AbstractDefaultConfigurationService implements
-			IConfigurationService {
+			ComplexConfigurationService {
 
 		/**
 		 * Default constructor
@@ -103,9 +102,6 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			super(new Properties());
 		}
 
-		/**
-		 * @see AbstractConfigurationService#getValue(String)
-		 */
 		@Override
 		protected String getValue(String key) {
 			synchronized (ProjectServiceImpl.this) {
@@ -117,9 +113,6 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			}
 		}
 
-		/**
-		 * @see AbstractConfigurationService#removeValue(String)
-		 */
 		@Override
 		protected void removeValue(String key) {
 			synchronized (ProjectServiceImpl.this) {
@@ -128,15 +121,33 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			setChanged();
 		}
 
-		/**
-		 * @see AbstractConfigurationService#setValue(String, String)
-		 */
 		@Override
 		protected void setValue(String key, String value) {
 			synchronized (ProjectServiceImpl.this) {
 				main.getProperties().put(key, Value.of(value));
 			}
 			setChanged();
+		}
+
+		@Override
+		public void setProperty(String name, Value value) {
+			synchronized (ProjectServiceImpl.this) {
+				if (value == null || value.getValue() == null) {
+					main.getProperties().remove(name);
+				}
+				else {
+					main.getProperties().put(name, value);
+				}
+			}
+			setChanged();
+		}
+
+		@Override
+		public Value getProperty(String name) {
+			synchronized (ProjectServiceImpl.this) {
+				Value value = main.getProperties().get(name);
+				return (value != null) ? (value) : (Value.NULL);
+			}
 		}
 
 	}
@@ -704,7 +715,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	 * @see ProjectService#getConfigurationService()
 	 */
 	@Override
-	public IConfigurationService getConfigurationService() {
+	public ComplexConfigurationService getConfigurationService() {
 		return configurationService;
 	}
 

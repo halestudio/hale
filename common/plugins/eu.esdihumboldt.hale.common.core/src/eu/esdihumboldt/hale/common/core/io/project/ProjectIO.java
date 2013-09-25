@@ -46,6 +46,56 @@ import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 public abstract class ProjectIO {
 
 	/**
+	 * Configuration service wrapper for a project.
+	 */
+	private static class ProjectConfigServiceWrapper extends AbstractConfigurationService implements
+			ComplexConfigurationService {
+
+		private final Project _project;
+
+		/**
+		 * Create a configuration service based on the given project.
+		 * 
+		 * @param project the project
+		 */
+		public ProjectConfigServiceWrapper(Project project) {
+			_project = project;
+		}
+
+		@Override
+		protected void setValue(String key, String value) {
+			_project.getProperties().put(key, Value.of(value));
+		}
+
+		@Override
+		protected void removeValue(String key) {
+			_project.getProperties().remove(key);
+		}
+
+		@Override
+		protected String getValue(String key) {
+			Value value = _project.getProperties().get(key);
+			return (value != null) ? (value.as(String.class)) : (null);
+		}
+
+		@Override
+		public void setProperty(String name, Value value) {
+			if (value == null || value.getValue() == null) {
+				_project.getProperties().remove(name);
+			}
+			else {
+				_project.getProperties().put(name, value);
+			}
+		}
+
+		@Override
+		public Value getProperty(String name) {
+			Value value = _project.getProperties().get(name);
+			return (value != null) ? (value) : (Value.NULL);
+		}
+	}
+
+	/**
 	 * Project file default type name
 	 */
 	public static final String PROJECT_TYPE_NAME = "HALE project";
@@ -86,25 +136,8 @@ public abstract class ProjectIO {
 	 * @param project the project
 	 * @return the configuration service to access the project's properties
 	 */
-	public static IConfigurationService createProjectConfigService(final Project project) {
-		return new AbstractConfigurationService() {
-
-			@Override
-			protected void setValue(String key, String value) {
-				project.getProperties().put(key, Value.of(value));
-			}
-
-			@Override
-			protected void removeValue(String key) {
-				project.getProperties().remove(key);
-			}
-
-			@Override
-			protected String getValue(String key) {
-				Value value = project.getProperties().get(key);
-				return (value != null) ? (value.as(String.class)) : (null);
-			}
-		};
+	public static ComplexConfigurationService createProjectConfigService(final Project project) {
+		return new ProjectConfigServiceWrapper(project);
 	}
 
 	/**
