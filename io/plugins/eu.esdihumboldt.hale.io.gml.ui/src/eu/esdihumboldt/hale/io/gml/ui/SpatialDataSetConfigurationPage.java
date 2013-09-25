@@ -155,7 +155,7 @@ public class SpatialDataSetConfigurationPage extends
 		Label label = new Label(localIdtitle, SWT.NONE);
 		label.setText(" = ");
 
-		localIdEditor = aef.createEditor(page, localIdDef, false);
+		localIdEditor = aef.createEditor(page, localIdDef, null, false);
 		localIdEditor.getControl()
 				.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		localIdEditor.setPropertyChangeListener(changeListener);
@@ -167,7 +167,7 @@ public class SpatialDataSetConfigurationPage extends
 		label = new Label(namespacetitle, SWT.NONE);
 		label.setText(" = ");
 
-		namespaceEditor = aef.createEditor(page, nsDef, false);
+		namespaceEditor = aef.createEditor(page, nsDef, null, false);
 		namespaceEditor.getControl().setLayoutData(
 				new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		namespaceEditor.setPropertyChangeListener(changeListener);

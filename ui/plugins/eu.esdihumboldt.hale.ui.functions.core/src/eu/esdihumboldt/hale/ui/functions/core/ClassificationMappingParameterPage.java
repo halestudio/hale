@@ -63,6 +63,7 @@ import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingFunction;
 import eu.esdihumboldt.hale.common.core.io.Value;
@@ -114,6 +115,8 @@ public class ClassificationMappingParameterPage extends
 	private ListViewer values;
 	private PropertyDefinition sourceProperty;
 	private PropertyDefinition targetProperty;
+	private EntityDefinition sourceEntity;
+	private EntityDefinition targetEntity;
 
 	// TODO allowedValues bei enum source
 	// TODO fixedClassifications bei enum target
@@ -126,25 +129,18 @@ public class ClassificationMappingParameterPage extends
 		setPageComplete(false);
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.HaleWizardPage#onShowPage(boolean)
-	 */
 	@Override
 	protected void onShowPage(boolean firstShow) {
 		super.onShowPage(firstShow);
 		Cell unfinishedCell = getWizard().getUnfinishedCell();
-		sourceProperty = (PropertyDefinition) unfinishedCell.getSource().values().iterator().next()
-				.getDefinition().getDefinition();
-		targetProperty = (PropertyDefinition) unfinishedCell.getTarget().values().iterator().next()
-				.getDefinition().getDefinition();
+		sourceEntity = unfinishedCell.getSource().values().iterator().next().getDefinition();
+		sourceProperty = (PropertyDefinition) sourceEntity.getDefinition();
+		targetEntity = unfinishedCell.getTarget().values().iterator().next().getDefinition();
+		targetProperty = (PropertyDefinition) targetEntity.getDefinition();
 		if (fixedValueText == null || fixedValueText.getText() != null)
 			setPageComplete(true);
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage#setParameter(java.util.Set,
-	 *      com.google.common.collect.ListMultimap)
-	 */
 	@Override
 	public void setParameter(Set<FunctionParameter> params,
 			ListMultimap<String, ParameterValue> initialValues) {
@@ -340,8 +336,8 @@ public class ClassificationMappingParameterPage extends
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				AttributeInputDialog dialog = new AttributeInputDialog(targetProperty, Display
-						.getCurrent().getActiveShell(), "Add classification",
+				AttributeInputDialog dialog = new AttributeInputDialog(targetProperty,
+						targetEntity, Display.getCurrent().getActiveShell(), "Add classification",
 						"Enter new classification value");
 				if (dialog.open() == AttributeInputDialog.OK) {
 					String newClass = dialog.getValueAsText();
@@ -403,9 +399,10 @@ public class ClassificationMappingParameterPage extends
 				String selectedClass = ((IStructuredSelection) classes.getSelection())
 						.getFirstElement().toString();
 
-				AttributeInputDialog dialog = new AttributeInputDialog(sourceProperty, Display
-						.getCurrent().getActiveShell(), "Add value", MessageFormat.format(
-						"Enter a new value that is classified as \"{0}\"", selectedClass));
+				AttributeInputDialog dialog = new AttributeInputDialog(sourceProperty,
+						sourceEntity, Display.getCurrent().getActiveShell(), "Add value",
+						MessageFormat.format("Enter a new value that is classified as \"{0}\"",
+								selectedClass));
 
 				if (dialog.open() == Dialog.OK) {
 					String newValue = dialog.getValueAsText();
@@ -607,8 +604,8 @@ public class ClassificationMappingParameterPage extends
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				AttributeInputDialog dialog = new AttributeInputDialog(targetProperty, Display
-						.getCurrent().getActiveShell(), "Set default value",
+				AttributeInputDialog dialog = new AttributeInputDialog(targetProperty,
+						targetEntity, Display.getCurrent().getActiveShell(), "Set default value",
 						"This value will be assigned to targets when the source value is not mapped");
 				if (initialValue != null) {
 					Editor<?> editor = dialog.getEditor();
