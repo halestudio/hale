@@ -19,8 +19,8 @@ package eu.esdihumboldt.hale.ui.service.project;
 import java.net.URI;
 import java.util.List;
 
-import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.project.ComplexConfigurationService;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
@@ -88,7 +88,7 @@ public interface ProjectService {
 	 * 
 	 * @return the configuration service
 	 */
-	public IConfigurationService getConfigurationService();
+	public ComplexConfigurationService getConfigurationService();
 
 	/**
 	 * Get general information about the current project
