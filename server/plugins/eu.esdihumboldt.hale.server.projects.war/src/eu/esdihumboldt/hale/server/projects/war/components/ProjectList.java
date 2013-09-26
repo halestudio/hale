@@ -80,7 +80,7 @@ public class ProjectList extends Panel {
 			 */
 			@Override
 			protected void populateItem(ListItem<String> item) {
-				final boolean odd = item.getIndex() % 2 == 1;
+				final boolean odd = item.getIndex() % 2 != 0;
 				if (odd) {
 					item.add(AttributeModifier.replace("class", "odd"));
 				}
