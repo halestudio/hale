@@ -78,7 +78,7 @@ public class DefaultPropertyEditor extends AbstractBindingValidatingEditor<Objec
 	private final EntityDefinition entity;
 
 	private final Collection<String> enumerationValues;
-	private ArrayList<Object> values;
+	private ArrayList<Object> values = null;
 	private final boolean otherValuesAllowed;
 	private final Validator validator;
 
