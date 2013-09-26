@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
+import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 
 /**
@@ -37,7 +37,7 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 public abstract class AbstractRemoveResourcesOperation extends AbstractOperation {
 
 	private final String actionId;
-	private List<IOConfiguration> removedResources;
+	private List<? extends Resource> removedResources;
 
 	/**
 	 * Create an operation removing all the resources of the specified actionId
@@ -50,10 +50,6 @@ public abstract class AbstractRemoveResourcesOperation extends AbstractOperation
 		this.actionId = actionId;
 	}
 
-	/**
-	 * @see org.eclipse.core.commands.operations.AbstractOperation#execute(org.eclipse.core.runtime.IProgressMonitor,
-	 *      org.eclipse.core.runtime.IAdaptable)
-	 */
 	@Override
 	public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
 		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
@@ -73,16 +69,12 @@ public abstract class AbstractRemoveResourcesOperation extends AbstractOperation
 		return execute(monitor, info);
 	}
 
-	/**
-	 * @see org.eclipse.core.commands.operations.AbstractOperation#undo(org.eclipse.core.runtime.IProgressMonitor,
-	 *      org.eclipse.core.runtime.IAdaptable)
-	 */
 	@Override
 	public IStatus undo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
 		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
 				ProjectService.class);
-		for (IOConfiguration conf : removedResources) {
-			ps.executeAndRemember(conf);
+		for (Resource res : removedResources) {
+			ps.executeAndRemember(res.copyConfiguration());
 		}
 		return Status.OK_STATUS;
 	}

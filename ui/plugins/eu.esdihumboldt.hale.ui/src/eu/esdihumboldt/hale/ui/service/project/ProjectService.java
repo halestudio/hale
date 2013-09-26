@@ -24,6 +24,7 @@ import eu.esdihumboldt.hale.common.core.io.project.ComplexConfigurationService;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
+import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 import eu.esdihumboldt.hale.common.core.io.project.util.LocationUpdater;
 
 /**
@@ -73,7 +74,21 @@ public interface ProjectService {
 	 * @param actionId the I/O action identifier
 	 * @return a list of removed io configurations
 	 */
-	public List<IOConfiguration> removeResources(String actionId);
+	public List<? extends Resource> removeResources(String actionId);
+
+//	/**
+//	 * Remove a specific resource.
+//	 * 
+//	 * @param resourceId the resource identifier
+//	 */
+//	public void removeResource(String resourceId);
+
+	/**
+	 * Get the resources associated with the current project.
+	 * 
+	 * @return the resources
+	 */
+	public Iterable<? extends Resource> getResources();
 
 	/**
 	 * Determines if there are any resources loaded for a given action.
