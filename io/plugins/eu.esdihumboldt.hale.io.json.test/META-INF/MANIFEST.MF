@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: HALE JSON I/O tests
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.json.test
+Bundle-Version: 2.7.0.qualifier
+Bundle-Vendor: Data Harmonisation Panel
+Fragment-Host: eu.esdihumboldt.hale.io.json;bundle-version="2.6.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: junit.framework;version="4.8.2"
+Require-Bundle: groovy;bundle-version="2.1.6",
+ eu.esdihumboldt.hale.common.schema.groovy;bundle-version="2.6.0"
