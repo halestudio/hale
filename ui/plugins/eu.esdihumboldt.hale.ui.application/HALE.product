@@ -220,6 +220,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.ui.views.mapping"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.properties"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.report"/>
+      <plugin id="eu.esdihumboldt.hale.ui.views.resources"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.schemas"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.styledmap"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.transformation"/>
