@@ -608,7 +608,7 @@
             label="Save instance export configuration..."
             priority="9"
             projectResource="false"
-            wizard="eu.esdihumboldt.hale.ui.io.instance.SaveConfigurationInstanceExportWizard">
+            wizard="eu.esdihumboldt.hale.ui.io.instance.exportconfig.SaveConfigurationInstanceExportWizard">
          <enabledWhen
                disabledReason="No target schema available">
             <with
@@ -625,7 +625,7 @@
             label="Load instance export configuration ..."
             priority="10"
             projectResource="false"
-            wizard="eu.esdihumboldt.hale.ui.io.instance.LoadConfigurationInstanceExportWizard">
+            wizard="eu.esdihumboldt.hale.ui.io.instance.exportconfig.LoadConfigurationInstanceExportWizard">
          <enabledWhen
                disabledReason="No instance export configurations available">
             <with
@@ -642,7 +642,7 @@
             label="Delete instance export configuration..."
             priority="11"
             projectResource="false"
-            wizard="eu.esdihumboldt.hale.ui.io.instance.DeleteInstanceExportConfigurationWizard">
+            wizard="eu.esdihumboldt.hale.ui.io.instance.exportconfig.DeleteInstanceExportConfigurationWizard">
          <enabledWhen
                disabledReason="No instance export configurations available">
             <with

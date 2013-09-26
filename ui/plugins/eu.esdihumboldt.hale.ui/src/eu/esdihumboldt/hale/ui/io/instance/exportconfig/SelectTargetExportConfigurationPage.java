@@ -13,12 +13,14 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.io.instance;
+package eu.esdihumboldt.hale.ui.io.instance.exportconfig;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.runtime.content.IContentType;
+
+import eu.esdihumboldt.hale.ui.io.instance.InstanceSelectTargetPage;
 
 /**
  * Wizard page that allows selecting a target instance file with the saved

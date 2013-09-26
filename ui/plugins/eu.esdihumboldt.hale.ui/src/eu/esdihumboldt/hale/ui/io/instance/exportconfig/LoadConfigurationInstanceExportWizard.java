@@ -13,13 +13,14 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.io.instance;
+package eu.esdihumboldt.hale.ui.io.instance.exportconfig;
 
 import org.eclipse.jface.wizard.IWizardPage;
 
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.ui.io.IOWizardPage;
+import eu.esdihumboldt.hale.ui.io.instance.InstanceExportWizard;
 
 /**
  * Configuration page for loading export configurations of instances
