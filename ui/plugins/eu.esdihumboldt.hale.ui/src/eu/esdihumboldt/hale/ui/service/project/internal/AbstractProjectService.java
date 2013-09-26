@@ -16,10 +16,12 @@
 
 package eu.esdihumboldt.hale.ui.service.project.internal;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
+import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectServiceListener;
 
@@ -76,10 +78,11 @@ public abstract class AbstractProjectService implements ProjectService {
 	 * Call after a new resource was added.
 	 * 
 	 * @param actionId the action the resource is associated to
+	 * @param resource the added resource
 	 */
-	protected void notifyResourceAdded(String actionId) {
+	protected void notifyResourceAdded(String actionId, Resource resource) {
 		for (ProjectServiceListener listener : listeners) {
-			listener.resourceAdded(actionId);
+			listener.resourceAdded(actionId, resource);
 		}
 	}
 
@@ -87,10 +90,11 @@ public abstract class AbstractProjectService implements ProjectService {
 	 * Call when resources for an action have been removed.
 	 * 
 	 * @param actionId the action identifier
+	 * @param resources the removed resources
 	 */
-	protected void notifyResourcesRemoved(String actionId) {
+	protected void notifyResourcesRemoved(String actionId, List<Resource> resources) {
 		for (ProjectServiceListener listener : listeners) {
-			listener.resourcesRemoved(actionId);
+			listener.resourcesRemoved(actionId, resources);
 		}
 	}
 

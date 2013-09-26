@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.ui.service.instance.internal;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.ui.AbstractSourceProvider;
@@ -25,6 +26,7 @@ import org.eclipse.ui.ISources;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
+import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -98,7 +100,7 @@ public class InstanceServiceSource extends AbstractSourceProvider {
 		ps.addListener(projectServiceListener = new ProjectServiceAdapter() {
 
 			@Override
-			public void resourceAdded(String actionId) {
+			public void resourceAdded(String actionId, Resource resource) {
 				if (InstanceIO.ACTION_LOAD_SOURCE_DATA.equals(actionId)) {
 					fireSourceChanged(ISources.WORKBENCH, HAS_SOURCE_RESOURCES,
 							hasSourceResources(ps));
@@ -106,8 +108,8 @@ public class InstanceServiceSource extends AbstractSourceProvider {
 			}
 
 			@Override
-			public void resourcesRemoved(String actionId) {
-				resourceAdded(actionId);
+			public void resourcesRemoved(String actionId, List<Resource> resources) {
+				resourceAdded(actionId, null);
 			}
 
 			@Override

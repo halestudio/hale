@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -40,6 +39,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.operations.IWorkbenchOperationSupport;
 import org.osgi.framework.Version;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
 
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
 import de.cs3d.util.eclipse.extension.FactoryFilter;
@@ -63,8 +67,10 @@ import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectWriter;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
+import eu.esdihumboldt.hale.common.core.io.project.model.IOConfigurationResource;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
+import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 import eu.esdihumboldt.hale.common.core.io.project.util.LocationUpdater;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
@@ -860,28 +866,27 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		}
 		setChanged();
 
-		notifyResourceAdded(actionId);
+		notifyResourceAdded(actionId, new IOConfigurationResource(conf));
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#removeResources(java.lang.String)
-	 */
 	@Override
-	public List<IOConfiguration> removeResources(String actionId) {
-		List<IOConfiguration> removedResources = new LinkedList<IOConfiguration>();
+	public List<? extends Resource> removeResources(String actionId) {
+		Builder<Resource> removedBuilder = ImmutableList.builder();
 		synchronized (this) {
 			Iterator<IOConfiguration> iter = main.getResources().iterator();
 			while (iter.hasNext()) {
 				IOConfiguration conf = iter.next();
 				if (conf.getActionId().equals(actionId)) {
 					iter.remove();
-					removedResources.add(conf);
+					removedBuilder.add(new IOConfigurationResource(conf));
 				}
 			}
 		}
 		setChanged();
 
-		notifyResourcesRemoved(actionId);
+		List<Resource> removedResources = removedBuilder.build();
+
+		notifyResourcesRemoved(actionId, removedResources);
 
 		return removedResources;
 	}
@@ -901,9 +906,6 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		return false;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#executeAndRemember(eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration)
-	 */
 	@Override
 	public void executeAndRemember(IOConfiguration conf) {
 		executeConfiguration(conf);
@@ -911,6 +913,22 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			main.getResources().add(conf);
 		}
 		setChanged();
+
+		notifyResourceAdded(conf.getActionId(), new IOConfigurationResource(conf));
+	}
+
+	@Override
+	public Iterable<? extends Resource> getResources() {
+		synchronized (this) {
+			return Collections2.transform(main.getResources(),
+					new Function<IOConfiguration, Resource>() {
+
+						@Override
+						public Resource apply(IOConfiguration conf) {
+							return new IOConfigurationResource(conf);
+						}
+					});
+		}
 	}
 
 	/**
