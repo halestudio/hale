@@ -35,7 +35,7 @@
             base-type="eu.esdihumboldt.hale.io.gml"
             file-extensions="gml,xml"
             id="eu.esdihumboldt.hale.io.inspiregml"
-            name="Inspire Spatial Data Set file"
+            name="GML (INSPIRE SpatialDataSet)"
             priority="normal">
          <describer
                class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
@@ -77,7 +77,7 @@
             base-type="eu.esdihumboldt.hale.io.xml.gzip"
             file-extensions="gml.gz,xml.gz,gz"
             id="eu.esdihumboldt.hale.io.inspiregml.gzip"
-            name="GZiped Inspire Spatial Data Set file"
+            name="GZiped GML (INSPIRE SpatialDataSet)"
             priority="normal">
          <describer
                class="eu.esdihumboldt.hale.common.core.io.util.GZipXMLRootElementContentDescriber">
@@ -148,12 +148,12 @@
       <provider
             class="eu.esdihumboldt.hale.io.gml.writer.InspireInstanceWriter"
             id="eu.esdihumboldt.hale.io.inspiregml.writer"
-            name="Inspire (SpatialDataSet)">
+            name="GML (INSPIRE SpatialDataSet)">
          <contentType
-               ref="eu.esdihumboldt.hale.io.inspiregml">
+               ref="eu.esdihumboldt.hale.io.gml">
          </contentType>
          <contentType
-               ref="eu.esdihumboldt.hale.io.inspiregml.gzip">
+               ref="eu.esdihumboldt.hale.io.gml.gzip">
          </contentType>
       </provider>
    </extension>
