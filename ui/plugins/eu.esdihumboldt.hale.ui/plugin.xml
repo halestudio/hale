@@ -602,58 +602,6 @@
          </enabledWhen>
       </action-ui>
       <action-ui
-            action="eu.esdihumboldt.hale.io.instance.write.transformed"
-            customTitle="Save export transformed data"
-            id="eu.esdihumboldt.hale.io.instance.write.transformed.save.ui"
-            label="Save instance export configuration..."
-            priority="9"
-            projectResource="false"
-            wizard="eu.esdihumboldt.hale.ui.io.instance.exportconfig.SaveConfigurationInstanceExportWizard">
-         <enabledWhen
-               disabledReason="No target schema available">
-            <with
-                  variable="hale.schemas.has_mappable_target">
-               <equals
-                     value="true">
-               </equals>
-            </with>
-         </enabledWhen>
-      </action-ui>
-      <action-ui
-            action="eu.esdihumboldt.hale.io.instance.write.transformed"
-            id="eu.esdihumboldt.hale.io.instance.write.transformed.load.ui"
-            label="Load instance export configuration ..."
-            priority="10"
-            projectResource="false"
-            wizard="eu.esdihumboldt.hale.ui.io.instance.exportconfig.LoadConfigurationInstanceExportWizard">
-         <enabledWhen
-               disabledReason="No instance export configurations available">
-            <with
-                  variable="hale.project.has_export_configurations">
-               <equals
-                     value="true">
-               </equals>
-            </with>
-         </enabledWhen>
-      </action-ui>
-      <action-ui
-            action="eu.esdihumboldt.hale.io.instance.write.transformed"
-            id="eu.esdihumboldt.hale.io.instance.write.transformed.delete.ui"
-            label="Delete instance export configuration..."
-            priority="11"
-            projectResource="false"
-            wizard="eu.esdihumboldt.hale.ui.io.instance.exportconfig.DeleteInstanceExportConfigurationWizard">
-         <enabledWhen
-               disabledReason="No instance export configurations available">
-            <with
-                  variable="hale.project.has_export_configurations">
-               <equals
-                     value="true">
-               </equals>
-            </with>
-         </enabledWhen>
-      </action-ui>
-      <action-ui
 			action="eu.esdihumboldt.hale.io.archive.export"
 			id="eu.esdihumboldt.hale.io.archive.export"
 			label="Project archive..."
