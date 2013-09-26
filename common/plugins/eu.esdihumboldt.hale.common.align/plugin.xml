@@ -266,6 +266,7 @@
             category="eu.esdihumboldt.hale.align.general"
             cellExplanation="eu.esdihumboldt.hale.common.align.model.functions.explanations.JoinExplanation"
             description="Joins multiple instances of different source types into one instance of the target type, based on one or more matching properties."
+            help="help/join.xhtml"
             icon="icons/merge.gif"
             identifier="eu.esdihumboldt.hale.align.join"
             name="Join">
@@ -481,6 +482,12 @@
             namespace="http://www.esdi-humboldt.eu/hale/join"
             type="eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter">
       </complexValue>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="help/contexts.xml">
+      </contexts>
    </extension>
 
 </plugin>
