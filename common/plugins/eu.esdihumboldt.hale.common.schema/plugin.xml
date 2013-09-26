@@ -13,6 +13,16 @@
             name="Load target schema"
             type="eu.esdihumboldt.hale.common.schema.io.SchemaReader">
       </action>
+      <action
+            id="eu.esdihumboldt.hale.io.schema.export.target"
+            name="Export target schemas"
+            type="eu.esdihumboldt.hale.common.schema.io.SchemaWriter">
+      </action>
+      <action
+            id="eu.esdihumboldt.hale.io.schema.export.source"
+            name="Export source schemas"
+            type="eu.esdihumboldt.hale.common.schema.io.SchemaWriter">
+      </action>
    </extension>
 
 </plugin>

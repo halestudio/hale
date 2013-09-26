@@ -617,6 +617,42 @@
 			projectResource="false"
 			wizard="eu.esdihumboldt.hale.ui.io.project.ArchiveProjectImportWizard">
 		</action-ui>
+  <action-ui
+        action="eu.esdihumboldt.hale.io.schema.export.source"
+        customTitle="Export source schema"
+        id="eu.esdihumboldt.hale.io.schema.export.source.ui"
+        label="Source schema..."
+        priority="10"
+        projectResource="false"
+        wizard="eu.esdihumboldt.hale.ui.io.schema.SchemaExportWizard">
+     <enabledWhen
+           disabledReason="Load a source schema first">
+        <with
+              variable="hale.schemas.has_mappable_source">
+           <equals
+                 value="true">
+           </equals>
+        </with>
+     </enabledWhen>
+  </action-ui>
+  <action-ui
+        action="eu.esdihumboldt.hale.io.schema.export.target"
+        customTitle="Export target schema"
+        id="eu.esdihumboldt.hale.io.schema.export.target.ui"
+        label="Target schema..."
+        priority="10"
+        projectResource="false"
+        wizard="eu.esdihumboldt.hale.ui.io.schema.SchemaExportWizard">
+     <enabledWhen
+           disabledReason="Load a target schema first">
+        <with
+              variable="hale.schemas.has_mappable_target">
+           <equals
+                 value="true">
+           </equals>
+        </with>
+     </enabledWhen>
+  </action-ui>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.ui.io.source">
@@ -691,6 +727,16 @@
 			class="eu.esdihumboldt.hale.ui.io.project.ArchiveProjectImportAdvisor"
 			id="eu.esdihumboldt.hale.io.archive.import">
 	  </advisor>
+   <advisor
+         action="eu.esdihumboldt.hale.io.schema.export.source"
+         class="eu.esdihumboldt.hale.ui.io.schema.SourceSchemaExportAdvisor"
+         id="eu.esdihumboldt.hale.io.schema.export.source">
+   </advisor>
+   <advisor
+         action="eu.esdihumboldt.hale.io.schema.export.target"
+         class="eu.esdihumboldt.hale.ui.io.schema.TargetSchemaExportAdvisor"
+         id="eu.esdihumboldt.hale.io.schema.export.target">
+   </advisor>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
