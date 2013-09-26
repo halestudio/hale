@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.io.instance;
+package eu.esdihumboldt.hale.ui.io.instance.exportconfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +21,7 @@ import java.util.List;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
+import eu.esdihumboldt.hale.ui.io.instance.InstanceExportWizard;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 
 /**

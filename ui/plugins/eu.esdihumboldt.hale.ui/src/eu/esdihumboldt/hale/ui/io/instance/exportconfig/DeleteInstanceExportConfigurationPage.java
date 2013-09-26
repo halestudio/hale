@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.io.instance;
+package eu.esdihumboldt.hale.ui.io.instance.exportconfig;
 
 import java.util.Map;
 
