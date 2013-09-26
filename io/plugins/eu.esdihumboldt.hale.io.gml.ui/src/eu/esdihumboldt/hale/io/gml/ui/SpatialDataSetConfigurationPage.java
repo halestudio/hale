@@ -19,13 +19,13 @@ package eu.esdihumboldt.hale.io.gml.ui;
 import javax.xml.namespace.QName;
 
 import org.eclipse.jface.dialogs.DialogPage;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
@@ -73,7 +73,7 @@ public class SpatialDataSetConfigurationPage extends
 		super("inspire.sds");
 
 		setTitle("SpatialDataSet configuration");
-		setDescription("Please select the localId and namespace to use for the SpatialDataSet");
+		setDescription("Please configure the data set INSPIRE identifier and optionally included metadata");
 		setPageComplete(false);
 	}
 
@@ -104,7 +104,8 @@ public class SpatialDataSetConfigurationPage extends
 	 */
 	@Override
 	protected void createContent(Composite page) {
-		page.setLayout(new GridLayout(2, false));
+		GridLayoutFactory.swtDefaults().numColumns(2).equalWidth(false).spacing(6, 12)
+				.applyTo(page);
 
 		QName sdsQName = new QName(InspireConstants.INSPIRE_NAMESPACE_BASETYPES, "SpatialDataSet");
 		QName identifierQName = new QName(InspireConstants.INSPIRE_NAMESPACE_BASETYPES,
@@ -143,6 +144,12 @@ public class SpatialDataSetConfigurationPage extends
 			}
 		};
 
+		// inspire identifier
+		Label inspireId = new Label(page, SWT.NONE);
+		inspireId
+				.setText("Please specify the local ID and the namespace as part of the INSPIRE identifier of the Spatial Data Set:");
+		GridDataFactory.fillDefaults().span(2, 1).applyTo(inspireId);
+
 		AttributeEditorFactory aef = (AttributeEditorFactory) PlatformUI.getWorkbench().getService(
 				AttributeEditorFactory.class);
 
@@ -171,6 +178,16 @@ public class SpatialDataSetConfigurationPage extends
 		namespaceEditor.getControl().setLayoutData(
 				new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		namespaceEditor.setPropertyChangeListener(changeListener);
+
+		// spacer
+		Composite spacer = new Composite(page, SWT.NONE);
+		GridDataFactory.fillDefaults().hint(0, 8).applyTo(spacer);
+
+		// metadata file
+		Label metadataLabel = new Label(page, SWT.NONE);
+		metadataLabel
+				.setText("You can include metadata in the Spatial Data Set from a XML file with a MD_Metadata element:");
+		GridDataFactory.fillDefaults().span(2, 1).applyTo(metadataLabel);
 
 		// source file
 		Composite fileFieldComposite = new Composite(page, SWT.NONE);
