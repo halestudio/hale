@@ -420,7 +420,7 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 
 	@Override
 	public String getHelpContext() {
-		return "eu.esdihumboldt.hale.doc.user.join_order";
+		return "eu.esdihumboldt.hale.common.align.join_order";
 	}
 
 	/**
@@ -450,7 +450,7 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 
 		@Override
 		public String getHelpContext() {
-			return "eu.esdihumboldt.hale.doc.user.join_condition";
+			return "eu.esdihumboldt.hale.common.align.join_condition";
 		}
 
 		@Override
