@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="eu.esdihumboldt.hale.ui"
+            class="eu.esdihumboldt.hale.ui.views.resources.ResourcesView"
+            icon="icons/resources.gif"
+            id="eu.esdihumboldt.hale.ui.views.resources"
+            name="Resources"
+            restorable="true">
+      </view>
+   </extension>
+
+</plugin>
