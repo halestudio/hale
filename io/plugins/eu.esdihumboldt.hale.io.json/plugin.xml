@@ -17,6 +17,13 @@
             name="GZiped JSON File"
             priority="normal">
       </content-type>
+      <content-type
+            base-type="eu.esdihumboldt.hale.io.json"
+            file-extensions="json"
+            id="eu.esdihumboldt.hale.io.jsonschema"
+            name="JSON schema"
+            priority="normal">
+      </content-type>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.io.provider">
@@ -40,6 +47,14 @@
          </contentType>
          <contentType
                ref="eu.esdihumboldt.hale.io.json.gzip">
+         </contentType>
+      </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.json.JsonSchemaWriter"
+            id="eu.esdihumboldt.hale.io.jsonschema.writer"
+            name="JSON schema">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.jsonschema">
          </contentType>
       </provider>
    </extension>
