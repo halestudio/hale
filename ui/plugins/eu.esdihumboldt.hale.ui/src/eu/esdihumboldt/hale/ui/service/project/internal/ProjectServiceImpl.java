@@ -64,6 +64,7 @@ import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderExtension;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.project.ComplexConfigurationService;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectDescription;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectIO;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
@@ -849,6 +850,19 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		synchronized (this) {
 			return main;
 		}
+	}
+
+	@Override
+	public void updateProjectInfo(ProjectDescription info) {
+		synchronized (this) {
+			if (main != null) {
+				main.setAuthor(info.getAuthor());
+				main.setDescription(info.getDescription());
+				main.setName(info.getName());
+			}
+		}
+
+		notifyProjectInfoChanged(getProjectInfo());
 	}
 
 	/**

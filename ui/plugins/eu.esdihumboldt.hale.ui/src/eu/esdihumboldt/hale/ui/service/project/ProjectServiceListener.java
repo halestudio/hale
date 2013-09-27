@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.ui.service.project;
 import java.util.List;
 import java.util.Map;
 
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 
@@ -63,6 +64,13 @@ public interface ProjectServiceListener {
 	 * @param resources the removed resources
 	 */
 	public void resourcesRemoved(String actionId, List<Resource> resources);
+
+	/**
+	 * Called when the project information has been changed.
+	 * 
+	 * @param info the updated project information
+	 */
+	public void projectInfoChanged(ProjectInfo info);
 
 	/**
 	 * Called when the project is cleaned.
