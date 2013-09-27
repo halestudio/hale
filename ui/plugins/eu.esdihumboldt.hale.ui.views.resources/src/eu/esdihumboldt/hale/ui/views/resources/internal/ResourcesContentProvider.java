@@ -97,6 +97,11 @@ public class ResourcesContentProvider implements ITreeContentProvider {
 
 	@Override
 	public Object getParent(Object element) {
+		if (element instanceof Resource) {
+			Resource resource = (Resource) element;
+			return IOActionExtension.getInstance().get(resource.getActionId());
+		}
+
 		return null;
 	}
 
