@@ -125,6 +125,16 @@
                </appinfo>
             </annotation>
          </attribute>
+         <attribute name="ui-advisor" type="string">
+            <annotation>
+               <documentation>
+                  ActionUIAdvisor for the associated action. Implementation must have a default constructor.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.ui.io.action.ActionUIAdvisor"/>
+               </appinfo>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
