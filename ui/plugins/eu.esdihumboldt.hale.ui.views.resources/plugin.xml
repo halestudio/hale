@@ -6,11 +6,20 @@
       <view
             category="eu.esdihumboldt.hale.ui"
             class="eu.esdihumboldt.hale.ui.views.resources.ResourcesView"
-            icon="icons/resources.gif"
+            icon="icons/project.gif"
             id="eu.esdihumboldt.hale.ui.views.resources"
-            name="Resources"
+            name="Project"
             restorable="true">
       </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="*">
+         <viewShortcut
+               id="eu.esdihumboldt.hale.ui.views.resources">
+         </viewShortcut>
+      </perspectiveExtension>
    </extension>
 
 </plugin>
