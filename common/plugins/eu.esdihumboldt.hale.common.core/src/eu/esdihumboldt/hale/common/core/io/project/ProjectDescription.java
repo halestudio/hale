@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Data Harmonisation Panel
+ * Copyright (c) 2013 Data Harmonisation Panel
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -10,37 +10,34 @@
  * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
  * 
  * Contributors:
- *     HUMBOLDT EU Integrated Project #030962
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.core.io.project;
 
-import java.util.Date;
-
-import org.osgi.framework.Version;
-
 /**
- * General information on a project
+ * Basic project description that may be edited by the user.
  * 
  * @author Simon Templer
- * @since 2.5
+ * @since 2.7
  */
-public interface ProjectInfo extends ProjectDescription {
+public interface ProjectDescription {
 
 	/**
-	 * @return the haleVersion
+	 * Get the project name
+	 * 
+	 * @return the project name, may be <code>null</code> if not set
 	 */
-	public Version getHaleVersion();
+	public String getName();
 
 	/**
-	 * @return the created
+	 * @return the author
 	 */
-	public Date getCreated();
+	public String getAuthor();
 
 	/**
-	 * @return the modified
+	 * @return the description
 	 */
-	public Date getModified();
+	public String getDescription();
 
 }

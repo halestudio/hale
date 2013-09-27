@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
@@ -113,6 +114,17 @@ public abstract class AbstractProjectService implements ProjectService {
 	protected void notifyExportConfigurationChanged() {
 		for (ProjectServiceListener listener : listeners) {
 			listener.onExportConfigurationChange();
+		}
+	}
+
+	/**
+	 * Called when the project information has been changed.
+	 * 
+	 * @param info the updated project information
+	 */
+	public void notifyProjectInfoChanged(ProjectInfo info) {
+		for (ProjectServiceListener listener : listeners) {
+			listener.projectInfoChanged(info);
 		}
 	}
 

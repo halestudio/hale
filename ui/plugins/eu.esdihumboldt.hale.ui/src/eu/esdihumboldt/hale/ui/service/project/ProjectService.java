@@ -21,6 +21,7 @@ import java.util.List;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.project.ComplexConfigurationService;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectDescription;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
@@ -111,6 +112,13 @@ public interface ProjectService {
 	 * @return the project info
 	 */
 	public ProjectInfo getProjectInfo();
+
+	/**
+	 * Update the project information with the given description.
+	 * 
+	 * @param info the project information to merge with the project
+	 */
+	public void updateProjectInfo(ProjectDescription info);
 
 	/**
 	 * Get if the project content is changed
