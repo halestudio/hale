@@ -11,6 +11,7 @@
             priority="10"
             projectResource="true"
             resourceName="lookup table"
+            ui-advisor="eu.esdihumboldt.hale.ui.lookup.LookupTableUIAdvisor"
             wizard="eu.esdihumboldt.hale.ui.lookup.LookupTableImportWizard">
       </action-ui>
    </extension>
