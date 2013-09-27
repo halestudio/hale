@@ -84,4 +84,30 @@ public class IOConfigurationResource implements Resource {
 		return config.clone();
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((getResourceId() == null) ? 0 : getResourceId().hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		IOConfigurationResource other = (IOConfigurationResource) obj;
+		if (getResourceId() == null) {
+			if (other.getResourceId() != null)
+				return false;
+		}
+		else if (!getResourceId().equals(other.getResourceId()))
+			return false;
+		return true;
+	}
+
 }
