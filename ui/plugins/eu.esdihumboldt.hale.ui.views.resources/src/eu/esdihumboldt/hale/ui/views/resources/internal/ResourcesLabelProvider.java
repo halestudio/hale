@@ -97,9 +97,21 @@ public class ResourcesLabelProvider extends StyledCellLabelProvider implements I
 	public String getText(Object element) {
 		if (element instanceof IOAction) {
 			IOAction action = (IOAction) element;
+
+			// try names in order of preference
+
+			// action UI resource category name
+			ActionUI actionUI = ActionUIExtension.getInstance().findActionUI(action.getId());
+			if (actionUI != null && actionUI.getResourceCategoryName() != null) {
+				return actionUI.getResourceCategoryName();
+			}
+
+			// action name
 			if (action.getName() != null) {
 				return action.getName();
 			}
+
+			// action ID
 			return action.getId();
 		}
 		if (element instanceof Resource) {

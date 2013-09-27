@@ -5,10 +5,12 @@
          point="eu.esdihumboldt.hale.ui.io.action">
       <action-ui
             action="eu.esdihumboldt.hale.lookup.import"
+            categoryName="Lookup tables"
             id="eu.esdihumboldt.hale.lookup.import.ui"
             label="Lookup table..."
             priority="10"
             projectResource="true"
+            resourceName="lookup table"
             wizard="eu.esdihumboldt.hale.ui.lookup.LookupTableImportWizard">
       </action-ui>
    </extension>
