@@ -381,6 +381,30 @@
             </reference>
          </activeWhen>
       </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.io.action.handler.RemoveResourceHandler"
+            commandId="org.eclipse.ui.edit.delete">
+         <activeWhen>
+            <with
+                  variable="selection">
+               <and>
+                  <count
+                        value="1">
+                  </count>
+                  <iterate>
+                     <and>
+                        <instanceof
+                              value="eu.esdihumboldt.hale.common.core.io.project.model.Resource">
+                        </instanceof>
+                        <test
+                              property="eu.esdihumboldt.hale.ui.resource.allow_remove">
+                        </test>
+                     </and>
+                  </iterate>
+               </and>
+            </with>
+         </activeWhen>
+      </handler>
    </extension>
    <extension
          point="org.eclipse.ui.services">
@@ -904,6 +928,13 @@
             namespace="eu.esdihumboldt.hale.ui.service.values"
             properties="allow_update"
             type="eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition">
+      </propertyTester>
+      <propertyTester
+            class="eu.esdihumboldt.hale.ui.io.action.tester.ResourceTester"
+            id="eu.esdihumboldt.hale.ui.resource"
+            namespace="eu.esdihumboldt.hale.ui.resource"
+            properties="allow_remove"
+            type="eu.esdihumboldt.hale.common.core.io.project.model.Resource">
       </propertyTester>
    </extension>
    <extension

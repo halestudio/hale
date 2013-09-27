@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
+import eu.esdihumboldt.hale.ui.util.viewer.ViewerMenu;
 import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
 import eu.esdihumboldt.hale.ui.views.resources.internal.ResourcesContentProvider;
 import eu.esdihumboldt.hale.ui.views.resources.internal.ResourcesLabelProvider;
@@ -70,7 +71,13 @@ public class ResourcesView extends PropertiesViewPart {
 
 		});
 
+		viewer.setUseHashlookup(true);
+		viewer.setAutoExpandLevel(2);
+
 		update();
+
+		new ViewerMenu(getSite(), viewer);
+		getSite().setSelectionProvider(viewer);
 	}
 
 	/**

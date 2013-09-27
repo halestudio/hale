@@ -93,8 +93,10 @@ public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> 
 		public ActionUIAdvisor<?> getUIAdvisor() {
 			if (!advisorInitialized) {
 				try {
-					Class<?> advisorClass = ExtensionUtil.loadClass(conf, "ui-advisor");
-					actionAdvisor = (ActionUIAdvisor<?>) advisorClass.newInstance();
+					if (conf.getAttribute("ui-advisor") != null) {
+						Class<?> advisorClass = ExtensionUtil.loadClass(conf, "ui-advisor");
+						actionAdvisor = (ActionUIAdvisor<?>) advisorClass.newInstance();
+					}
 				} catch (Exception e) {
 					log.error("Failed to created action UI advisor instance", e);
 				}

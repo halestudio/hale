@@ -22,6 +22,7 @@ import java.net.URI;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -54,6 +55,7 @@ import de.fhg.igd.osgi.util.configuration.AbstractDefaultConfigurationService;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.ProgressMonitorIndicator;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorExtension;
@@ -889,6 +891,34 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		notifyResourcesRemoved(actionId, removedResources);
 
 		return removedResources;
+	}
+
+	@Override
+	public void removeResource(String resourceId) {
+		Resource removedResource = null;
+		synchronized (this) {
+			Iterator<IOConfiguration> iter = main.getResources().iterator();
+			while (iter.hasNext()) {
+				IOConfiguration conf = iter.next();
+				Value idValue = conf.getProviderConfiguration().get(
+						ImportProvider.PARAM_RESOURCE_ID);
+				if (idValue != null) {
+					String id = idValue.as(String.class);
+					if (resourceId.equals(id)) {
+						// match found, remove
+						iter.remove();
+						removedResource = new IOConfigurationResource(conf);
+						break;
+					}
+				}
+			}
+		}
+
+		if (removedResource != null) {
+			setChanged();
+			notifyResourcesRemoved(removedResource.getActionId(),
+					Collections.singletonList(removedResource));
+		}
 	}
 
 	@Override

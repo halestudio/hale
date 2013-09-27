@@ -72,16 +72,16 @@ public interface ProjectService {
 	 * 
 	 * @see #rememberIO(String, String, IOProvider)
 	 * @param actionId the I/O action identifier
-	 * @return a list of removed io configurations
+	 * @return a list of removed I/O configurations
 	 */
 	public List<? extends Resource> removeResources(String actionId);
 
-//	/**
-//	 * Remove a specific resource.
-//	 * 
-//	 * @param resourceId the resource identifier
-//	 */
-//	public void removeResource(String resourceId);
+	/**
+	 * Remove a specific resource.
+	 * 
+	 * @param resourceId the resource identifier
+	 */
+	public void removeResource(String resourceId);
 
 	/**
 	 * Get the resources associated with the current project.
