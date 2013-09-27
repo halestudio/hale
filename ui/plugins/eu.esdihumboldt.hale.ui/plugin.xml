@@ -503,29 +503,35 @@
          point="eu.esdihumboldt.hale.ui.io.action">
       <action-ui
             action="eu.esdihumboldt.hale.io.schema.read.source"
+            categoryName="Source schemas"
             customTitle="Import source schema"
             id="eu.esdihumboldt.hale.io.schema.read.source.ui"
             label="Source schema..."
             priority="-10"
             projectResource="true"
+            resourceName="source schema"
             wizard="eu.esdihumboldt.hale.ui.io.schema.SchemaImportWizard">
       </action-ui>
       <action-ui
             action="eu.esdihumboldt.hale.io.schema.read.target"
+            categoryName="Target schemas"
             customTitle="Import target schema"
             id="eu.esdihumboldt.hale.io.schema.read.target.ui"
             label="Target schema..."
             priority="-9"
             projectResource="true"
+            resourceName="target schema"
             wizard="eu.esdihumboldt.hale.ui.io.schema.SchemaImportWizard">
       </action-ui>
       <action-ui
             action="eu.esdihumboldt.hale.io.instance.read.source"
+            categoryName="Source data"
             customTitle="Import source data"
             id="eu.esdihumboldt.hale.io.instance.read.source.ui"
             label="Source data..."
             priority="-6"
             projectResource="true"
+            resourceName="source data"
             wizard="eu.esdihumboldt.hale.ui.io.instance.InstanceImportWizard">
          <enabledWhen
                disabledReason="Load a source schema first">
