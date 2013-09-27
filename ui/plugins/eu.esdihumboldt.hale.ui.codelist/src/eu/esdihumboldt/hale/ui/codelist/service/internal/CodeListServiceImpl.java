@@ -110,6 +110,11 @@ public class CodeListServiceImpl implements CodeListService {
 	private final Map<CodeListReference, CodeList> codelists = new HashMap<>();
 
 	/**
+	 * Maps resource identifiers to code list identifiers.
+	 */
+	private final Map<String, CodeListReference> resourceAssociations = new HashMap<>();
+
+	/**
 	 * @see CodeListService#findCodeListByIdentifier(String, String)
 	 */
 	@Override
@@ -179,13 +184,33 @@ public class CodeListServiceImpl implements CodeListService {
 		return null;
 	}
 
-	/**
-	 * @see CodeListService#addCodeList(CodeList)
-	 */
 	@Override
-	public void addCodeList(CodeList code) {
+	public void addCodeList(String resourceId, CodeList code) {
 		CodeListReference key = new CodeListReference(code.getNamespace(), code.getIdentifier());
+		resourceAssociations.put(resourceId, key);
+		// TODO deal with possible replacements?!
 		codelists.put(key, code);
+	}
+
+	@Override
+	public CodeList getCodeList(String resourceId) {
+		CodeListReference ref = resourceAssociations.get(resourceId);
+		if (ref != null) {
+			return codelists.get(ref);
+		}
+		return null;
+	}
+
+	@Override
+	public boolean removeCodeList(String resourceId) {
+		CodeListReference ref = resourceAssociations.get(resourceId);
+		if (ref != null) {
+			if (codelists.remove(ref) != null) {
+				resourceAssociations.remove(resourceId);
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

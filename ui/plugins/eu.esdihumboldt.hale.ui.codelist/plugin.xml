@@ -18,6 +18,7 @@
             label="Code list..."
             priority="0"
             projectResource="true"
+            ui-advisor="eu.esdihumboldt.hale.ui.codelist.io.CodeListUIAdvisor"
             wizard="eu.esdihumboldt.hale.ui.codelist.io.CodeListImportWizard">
       </action-ui>
    </extension>
