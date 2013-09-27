@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.ui.views.resources.internal;
 
+
 /**
  * Token that represents the current project.
  * 
@@ -23,6 +24,21 @@ package eu.esdihumboldt.hale.ui.views.resources.internal;
 public enum ProjectToken {
 
 	/** The token instance */
-	TOKEN
+	TOKEN;
+
+	@Override
+	public String toString() {
+		return "Current project";
+
+//		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
+//				ProjectService.class);
+//		if (ps != null) {
+//			String name = ps.getProjectInfo().getName();
+//			if (name != null) {
+//				return name;
+//			}
+//		}
+//		return "<Unnamed project>";
+	}
 
 }
