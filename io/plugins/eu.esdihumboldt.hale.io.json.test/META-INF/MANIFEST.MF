@@ -8,9 +8,8 @@ Fragment-Host: eu.esdihumboldt.hale.io.json;bundle-version="2.6.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: eu.esdihumboldt.hale.common.core.io.report,
  eu.esdihumboldt.hale.common.schema.model,
- junit.framework;version="4.8.2"
+ junit.framework;version="4.8.2",
+ org.junit;version="4.8.2"
 Require-Bundle: groovy;bundle-version="2.1.6",
  eu.esdihumboldt.hale.common.schema.groovy;bundle-version="2.6.0",
- eu.esdihumboldt.hale.common.test,
- org.junit4;bundle-version="4.8.1",
- org.junit.source;bundle-version="4.8.2"
+ eu.esdihumboldt.hale.common.test

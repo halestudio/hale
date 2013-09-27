@@ -16,7 +16,6 @@
 package eu.esdihumboldt.hale.io.json;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.net.URI;
@@ -44,7 +43,7 @@ public class JsonSchemafromXsdTest {
 	@Test
 	public void testFeatureData() {
 		try {
-			Schema schema = TestUtil.loadSchema(new URI(this.getClass().getClassLoader()
+			Schema schema = TestUtil.loadSchema(new URI(this.getClass()
 					.getResource("xsd/FeatureData.xsd").toString()));
 
 			assertNotNull(schema);
@@ -56,7 +55,7 @@ public class JsonSchemafromXsdTest {
 			IOReport report = writer.execute(null);
 
 		} catch (IOProviderConfigurationException | IOException | URISyntaxException e) {
-			fail(e.getMessage());
+			throw new RuntimeException(e);
 		}
 	}
 
