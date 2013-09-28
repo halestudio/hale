@@ -92,6 +92,9 @@ public class TemplateList extends Panel {
 				try {
 					Template template = Template.getById(graph, id);
 
+					// id
+					item.add(new Label("id", id));
+
 					// name
 					item.add(new Label("name", template.getName()));
 
