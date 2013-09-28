@@ -134,6 +134,8 @@
       <plugin id="eu.esdihumboldt.hale.server.security.extender"/>
       <plugin id="eu.esdihumboldt.hale.server.security.openid" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.server.status.war"/>
+      <plugin id="eu.esdihumboldt.hale.server.templates"/>
+      <plugin id="eu.esdihumboldt.hale.server.templates.war"/>
       <plugin id="eu.esdihumboldt.hale.server.users"/>
       <plugin id="eu.esdihumboldt.hale.server.war"/>
       <plugin id="eu.esdihumboldt.hale.server.webapp"/>
@@ -266,6 +268,7 @@
       <plugin id="eu.esdihumboldt.hale.server.projects.war" autoStart="false" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.security" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.status.war" autoStart="false" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.server.templates.war" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.users" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.war" autoStart="false" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.webapp.war" autoStart="true" startLevel="0" />

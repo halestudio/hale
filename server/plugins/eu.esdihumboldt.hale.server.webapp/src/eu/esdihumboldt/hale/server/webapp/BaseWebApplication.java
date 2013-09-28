@@ -19,6 +19,8 @@ package eu.esdihumboldt.hale.server.webapp;
 import org.apache.wicket.authorization.strategies.page.SimplePageAuthorizationStrategy;
 import org.apache.wicket.core.request.handler.PageProvider;
 import org.apache.wicket.core.request.handler.RenderPageRequestHandler;
+import org.apache.wicket.markup.html.IPackageResourceGuard;
+import org.apache.wicket.markup.html.SecurePackageResourceGuard;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.IRequestHandler;
 import org.apache.wicket.request.cycle.AbstractRequestCycleListener;
@@ -128,6 +130,14 @@ public abstract class BaseWebApplication extends WebApplication {
 
 		Bootstrap.install(this, settings);
 		BootstrapLess.install(this);
+		configureResourceBundles();
+
+		IPackageResourceGuard packageResourceGuard = getResourceSettings()
+				.getPackageResourceGuard();
+		if (packageResourceGuard instanceof SecurePackageResourceGuard) {
+			SecurePackageResourceGuard guard = (SecurePackageResourceGuard) packageResourceGuard;
+			guard.addPattern("+org/apache/wicket/resource/jquery/*.map");
+		}
 
 		// enforce mounts so security interceptors based on URLs can't be fooled
 		getSecuritySettings().setEnforceMounts(true);
@@ -184,4 +194,36 @@ public abstract class BaseWebApplication extends WebApplication {
 		}
 	}
 
+	/**
+	 * Configure all resource bundles (CSS and JS)
+	 */
+	private void configureResourceBundles() {
+		/*
+		 * XXX Somehow wrecks JQuery needed in OpenID login page, also, some
+		 * resources of the given are not found.
+		 */
+//		getResourceBundles().addJavaScriptBundle(
+//				BaseWebApplication.class,
+//				"core.js",
+//				(JavaScriptResourceReference) getJavaScriptLibrarySettings().getJQueryReference(),
+//				(JavaScriptResourceReference) getJavaScriptLibrarySettings()
+//						.getWicketEventReference(),
+//				(JavaScriptResourceReference) getJavaScriptLibrarySettings()
+//						.getWicketAjaxReference(),
+//				(JavaScriptResourceReference) ModernizrJavaScriptReference.INSTANCE);
+//
+//		getResourceBundles().addJavaScriptBundle(BaseWebApplication.class, "bootstrap.js",
+//				(JavaScriptResourceReference) Bootstrap.getSettings().getJsResourceReference(),
+//				(JavaScriptResourceReference) BootstrapPrettifyJavaScriptReference.INSTANCE);
+//
+//		getResourceBundles().addJavaScriptBundle(BaseWebApplication.class,
+//				"bootstrap-extensions.js", JQueryUIJavaScriptReference.instance(),
+//				Html5PlayerJavaScriptReference.instance());
+//
+//		getResourceBundles().addCssBundle(BaseWebApplication.class, "bootstrap-extensions.css",
+//				Html5PlayerCssReference.instance(), OpenWebIconsCssReference.instance());
+//
+//		getResourceBundles().addCssBundle(BaseWebApplication.class, "application.css",
+//				(CssResourceReference) BootstrapPrettifyCssReference.INSTANCE);
+	}
 }

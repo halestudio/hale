@@ -6,7 +6,7 @@
 		http://www.eclipse.org/gemini/blueprint/schema/blueprint http://www.eclipse.org/gemini/blueprint/schema/blueprint/gemini-blueprint.xsd">
 	
 	<!-- beans -->
-	<bean id="wicketApplication" class="eu.esdihumboldt.hale.server.projects.war.ProjectsApplication" />
+	<bean id="wicketApplication" class="eu.esdihumboldt.hale.server.templates.war.TemplatesApplication" />
 	
 	<!-- service references -->
 	<osgi:reference id="scavenger" availability="mandatory" interface="eu.esdihumboldt.hale.server.templates.TemplateScavenger" />
