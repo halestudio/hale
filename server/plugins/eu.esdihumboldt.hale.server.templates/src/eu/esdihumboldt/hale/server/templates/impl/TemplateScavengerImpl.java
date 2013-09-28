@@ -137,6 +137,7 @@ public class TemplateScavengerImpl extends AbstractResourceScavenger<ProjectRefe
 				template.setName(info.getName());
 				template.setAuthor(info.getAuthor());
 				template.setDescription(info.getDescription());
+				template.setValid(true);
 
 				log.info("Creating database representation for template {}", resourceId);
 			}
