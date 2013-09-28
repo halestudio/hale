@@ -74,7 +74,6 @@ public class TemplateScavengerImpl extends AbstractResourceScavenger<ProjectRefe
 			String resourceId) throws IOException {
 		ProjectReference<Void> ref = new ProjectReference<>(resourceFolder, resourceFileName,
 				resourceId, null);
-		ref.update(null);
 		return ref;
 	}
 
@@ -88,6 +87,11 @@ public class TemplateScavengerImpl extends AbstractResourceScavenger<ProjectRefe
 			graph.get().shutdown();
 			graph.set(null);
 		}
+	}
+
+	@Override
+	protected void onAdd(ProjectReference<Void> reference, String resourceId) {
+		updateResource(reference, resourceId);
 	}
 
 	@Override

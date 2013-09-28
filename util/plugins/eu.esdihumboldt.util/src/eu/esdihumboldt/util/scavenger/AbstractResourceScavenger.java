@@ -127,10 +127,11 @@ public abstract class AbstractResourceScavenger<T> implements ResourceScavenger<
 						foundIds.add(resourceId);
 						if (!resources.containsKey(resourceId)) {
 							// resource reference not loaded yet
-							T handler;
+							T reference;
 							try {
-								handler = loadReference(resourceDir, null, resourceId);
-								resources.put(resourceId, handler);
+								reference = loadReference(resourceDir, null, resourceId);
+								resources.put(resourceId, reference);
+								onAdd(reference, resourceId);
 							} catch (IOException e) {
 								log.error("Error creating resource reference", e);
 							}
@@ -157,11 +158,12 @@ public abstract class AbstractResourceScavenger<T> implements ResourceScavenger<
 					// one project mode
 					if (!resources.containsKey(DEFAULT_RESOURCE_ID)) {
 						// project configuration not loaded yet
-						T handler;
+						T reference;
 						try {
-							handler = loadReference(huntingGrounds.getParentFile(),
+							reference = loadReference(huntingGrounds.getParentFile(),
 									huntingGrounds.getName(), DEFAULT_RESOURCE_ID);
-							resources.put(DEFAULT_RESOURCE_ID, handler);
+							resources.put(DEFAULT_RESOURCE_ID, reference);
+							onAdd(reference, DEFAULT_RESOURCE_ID);
 						} catch (IOException e) {
 							log.error("Error creating project handler", e);
 						}
@@ -176,6 +178,15 @@ public abstract class AbstractResourceScavenger<T> implements ResourceScavenger<
 	}
 
 	/**
+	 * Called when a resource has been added, either when adding the resource on
+	 * the first scan or if it was added afterwards.
+	 * 
+	 * @param reference the resource reference
+	 * @param resourceId the resource identifier
+	 */
+	protected abstract void onAdd(T reference, String resourceId);
+
+	/**
 	 * Called when a resource has been removed.
 	 * 
 	 * @param reference the resource reference
@@ -184,7 +195,7 @@ public abstract class AbstractResourceScavenger<T> implements ResourceScavenger<
 	protected abstract void onRemove(T reference, String resourceId);
 
 	/**
-	 * Called when a resource has been added or changed.
+	 * Called when an existing resource is visited during a scan.
 	 * 
 	 * @param reference the resource reference to update
 	 * @param resourceId the resource identifier
