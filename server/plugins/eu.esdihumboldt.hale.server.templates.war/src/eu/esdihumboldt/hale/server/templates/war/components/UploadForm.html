@@ -9,8 +9,15 @@
 		<form wicket:id="upload">
 			<fieldset>
 				<legend>Upload template project</legend>
-				<span class="help-block">Upload a HALE project and associated files, or a project archive.</span>
-				<input wicket:id="file" type="file" multiple="multiple">
+				<span class="help-block">Upload a HALE project or a project archive.</span>
+				<div class="fileupload fileupload-new" data-provides="fileupload">
+  					<span class="btn btn-file"><span class="fileupload-new">Select file</span>
+  					<span class="fileupload-exists">Change</span>
+  						<input wicket:id="file" type="file" />
+  					</span>
+  					<span class="fileupload-preview"></span>
+  					<a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none">×</a>
+				</div>
 				<button type="submit" class="btn btn-primary">Upload</button>
 				<div wicket:id="feedback"></div>
 			</fieldset>

@@ -24,7 +24,6 @@ import java.util.Map;
 
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
-import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.lang.Bytes;
@@ -37,6 +36,7 @@ import org.apache.wicket.validation.ValidationError;
 
 import com.google.common.io.ByteStreams;
 
+import de.agilecoders.wicket.extensions.javascript.jasny.FileUploadField;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
