@@ -5,6 +5,19 @@
 </head>
 <body>
 <wicket:panel>
+	<div class="btn-toolbar">
+		<div class="btn-group">
+			<form wicket:id="search" class="form-search" style="margin: 0px;">
+				<div class="input-append">
+				  <input wicket:id="searchText" type="text" class="span2 search-query">
+				  <button type="submit" class="btn">Search</button>
+				</div>
+	  		</form>
+  		</div>
+  		<div class="btn-group pull-right">
+			<a class="btn btn-success" wicket:id="upload">New template</a>
+		</div>
+  	</div>
 	<table class="table table-striped" style="width: 100%;">
 		<thead wicket:id="caption">
 			<tr>
@@ -21,8 +34,8 @@
 			</tr>
 		</tbody>
 	</table>
+	<p wicket:id="notemplates" class="text-info">No templates found</p>
 	<div id="pager" wicket:id="pager"></div>
-	<p wicket:id="notemplates">No templates available</p>
 </wicket:panel>
 </body>
 </html>

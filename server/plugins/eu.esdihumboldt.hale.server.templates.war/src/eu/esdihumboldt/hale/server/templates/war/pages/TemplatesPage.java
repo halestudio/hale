@@ -15,8 +15,6 @@
 
 package eu.esdihumboldt.hale.server.templates.war.pages;
 
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-
 import eu.esdihumboldt.hale.server.templates.war.components.TemplateList;
 import eu.esdihumboldt.hale.server.webapp.pages.BasePage;
 import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
@@ -38,8 +36,7 @@ public class TemplatesPage extends BasePage {
 	protected void addControls(boolean loggedIn) {
 		super.addControls(loggedIn);
 
-		add(new BookmarkablePageLink<Void>("upload", UploadPage.class));
-		add(new TemplateList("templates", true));
+		add(new TemplateList("templates"));
 	}
 
 }

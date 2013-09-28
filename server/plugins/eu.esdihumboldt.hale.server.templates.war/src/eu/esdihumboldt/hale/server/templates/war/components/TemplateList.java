@@ -20,9 +20,13 @@ import java.util.List;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 
@@ -35,6 +39,7 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagi
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.ajax.BootstrapAjaxPagingNavigator;
 import eu.esdihumboldt.hale.server.db.orient.DatabaseHelper;
 import eu.esdihumboldt.hale.server.model.Template;
+import eu.esdihumboldt.hale.server.templates.war.pages.UploadPage;
 import eu.esdihumboldt.util.blueprints.entities.NonUniqueResultException;
 
 /**
@@ -48,13 +53,14 @@ public class TemplateList extends Panel {
 
 //	private static final ALogger log = ALoggerFactory.getLogger(ProjectList.class);
 
+	private String searchText;
+
 	/**
 	 * Constructor
 	 * 
 	 * @param id the panel id
-	 * @param showCaption if the caption shall be shown
 	 */
-	public TemplateList(String id, boolean showCaption) {
+	public TemplateList(String id) {
 		super(id);
 
 		setOutputMarkupId(true);
@@ -68,9 +74,20 @@ public class TemplateList extends Panel {
 			protected List<ORID> load() {
 				OrientGraph graph = DatabaseHelper.getGraph();
 				try {
-					Iterable<ODocument> docs = graph.command(
-							new OCommandSQL("select @rid from template where valid = true"))
-							.execute();
+					String searchText = getSearchText();
+					OCommandSQL sql;
+					if (searchText == null || searchText.isEmpty()) {
+						sql = new OCommandSQL("select @rid from template where valid = true");
+					}
+					else {
+						searchText = "%" + searchText.toLowerCase() + "%";
+						sql = new OCommandSQL(
+								"select @rid from template where valid = true"
+										+ " and (name.toLowerCase() like $searchtext or author.toLowerCase() like $searchtext)");
+						sql.getContext().setVariable("searchtext", searchText);
+					}
+
+					Iterable<ODocument> docs = graph.command(sql).execute();
 
 					List<ORID> result = new ArrayList<>();
 					for (ODocument doc : docs) {
@@ -115,18 +132,67 @@ public class TemplateList extends Panel {
 		};
 		add(templateList);
 
-		BootstrapAjaxPagingNavigator pager = new BootstrapAjaxPagingNavigator("pager", templateList);
+		BootstrapAjaxPagingNavigator pager = new BootstrapAjaxPagingNavigator("pager", templateList) {
+
+			private static final long serialVersionUID = -9058994579222245191L;
+
+			@Override
+			public boolean isVisible() {
+				return !templatesModel.getObject().isEmpty();
+			}
+
+		};
 		pager.setPosition(Position.Centered);
 		add(pager);
 
-		boolean noTemplates = templatesModel.getObject().isEmpty();
-
 		// caption
-		WebMarkupContainer caption = new WebMarkupContainer("caption");
-		caption.setVisible(showCaption && !noTemplates);
+		WebMarkupContainer caption = new WebMarkupContainer("caption") {
+
+			private static final long serialVersionUID = 3631062343612621123L;
+
+			@Override
+			public boolean isVisible() {
+				return !templatesModel.getObject().isEmpty();
+			}
+
+		};
 		add(caption);
 
-		add(new WebMarkupContainer("notemplates").setVisible(noTemplates));
+		add(new WebMarkupContainer("notemplates") {
+
+			private static final long serialVersionUID = 8802435323301967389L;
+
+			@Override
+			public boolean isVisible() {
+				return templatesModel.getObject().isEmpty();
+			}
+
+		});
+
+		// search form
+		Form<TemplateList> searchForm = new Form<TemplateList>("search",
+				new CompoundPropertyModel<>(this));
+		add(searchForm);
+
+		TextField<String> searchText = new TextField<String>("searchText");
+		searchForm.add(searchText);
+
+		// new template link
+		add(new BookmarkablePageLink<Void>("upload", UploadPage.class));
+	}
+
+	/**
+	 * @return the searchText
+	 */
+	public String getSearchText() {
+		return searchText;
+	}
+
+	/**
+	 * @param searchText the searchText to set
+	 */
+	public void setSearchText(String searchText) {
+		this.searchText = searchText;
 	}
 
 }
