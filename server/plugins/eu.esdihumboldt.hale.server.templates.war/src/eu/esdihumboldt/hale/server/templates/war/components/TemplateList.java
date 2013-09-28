@@ -21,7 +21,7 @@ import java.util.List;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
@@ -31,6 +31,8 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.OCommandSQL;
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 
+import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator.Position;
+import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.ajax.BootstrapAjaxPagingNavigator;
 import eu.esdihumboldt.hale.server.db.orient.DatabaseHelper;
 import eu.esdihumboldt.hale.server.model.Template;
 import eu.esdihumboldt.util.blueprints.entities.NonUniqueResultException;
@@ -54,6 +56,8 @@ public class TemplateList extends Panel {
 	 */
 	public TemplateList(String id, boolean showCaption) {
 		super(id);
+
+		setOutputMarkupId(true);
 
 		// templates list
 		final IModel<? extends List<ORID>> templatesModel = new LoadableDetachableModel<List<ORID>>() {
@@ -80,7 +84,8 @@ public class TemplateList extends Panel {
 
 		};
 
-		final ListView<ORID> templateList = new ListView<ORID>("templates", templatesModel) {
+		PageableListView<ORID> templateList = new PageableListView<ORID>("templates",
+				templatesModel, 10) {
 
 			private static final long serialVersionUID = -6740090246572869212L;
 
@@ -109,6 +114,10 @@ public class TemplateList extends Panel {
 
 		};
 		add(templateList);
+
+		BootstrapAjaxPagingNavigator pager = new BootstrapAjaxPagingNavigator("pager", templateList);
+		pager.setPosition(Position.Centered);
+		add(pager);
 
 		boolean noTemplates = templatesModel.getObject().isEmpty();
 
