@@ -78,11 +78,24 @@ public class TemplateScavengerImpl extends AbstractResourceScavenger<ProjectRefe
 	}
 
 	@Override
-	public void triggerScan() {
+	public synchronized void triggerScan() {
 		// provide a graph for use in updateResource and onRemove
 		graph.set(DatabaseHelper.getGraph());
 		try {
 			super.triggerScan();
+
+			/*
+			 * Check if there are templates in the database that no longer have
+			 * an associated template in the file system.
+			 */
+			for (Template template : Template.findAll(graph.get())) {
+				if (template.isValid() && getReference(template.getTemplateId()) == null) {
+					// invalidate template w/ missing resource
+					template.setValid(false);
+					log.warn("Invalidated template {}, the resource folder is missing",
+							template.getTemplateId());
+				}
+			}
 		} finally {
 			graph.get().shutdown();
 			graph.set(null);
@@ -91,11 +104,6 @@ public class TemplateScavengerImpl extends AbstractResourceScavenger<ProjectRefe
 
 	@Override
 	protected void onAdd(ProjectReference<Void> reference, String resourceId) {
-		updateResource(reference, resourceId);
-	}
-
-	@Override
-	protected void updateResource(ProjectReference<Void> reference, String resourceId) {
 		reference.update(null);
 
 		Template template;
@@ -133,6 +141,11 @@ public class TemplateScavengerImpl extends AbstractResourceScavenger<ProjectRefe
 				log.info("Creating database representation for template {}", resourceId);
 			}
 		}
+	}
+
+	@Override
+	protected void updateResource(ProjectReference<Void> reference, String resourceId) {
+		// nothing to do
 	}
 
 }
