@@ -352,4 +352,9 @@ public abstract class AbstractResourceScavenger<T> implements ResourceScavenger<
 		return resources.get(resourceId);
 	}
 
+	@Override
+	public File getHuntingGrounds() {
+		return huntingGrounds;
+	}
+
 }

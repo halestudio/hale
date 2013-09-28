@@ -86,4 +86,11 @@ public interface ResourceScavenger<R> {
 	 */
 	public R getReference(String resourceId);
 
+	/**
+	 * Get the scavenger's hunting grounds.
+	 * 
+	 * @return the scavenge location
+	 */
+	public File getHuntingGrounds();
+
 }
