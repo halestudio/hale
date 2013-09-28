@@ -89,7 +89,7 @@ public abstract class UploadForm extends Panel {
 
 				try {
 					List<FileUpload> uploads = file.getFileUploads();
-					if (!uploads.isEmpty()) {
+					if (uploads != null && !uploads.isEmpty()) {
 						for (FileUpload upload : uploads) {
 							if (isZipFile(upload)) {
 								// extract uploaded file
