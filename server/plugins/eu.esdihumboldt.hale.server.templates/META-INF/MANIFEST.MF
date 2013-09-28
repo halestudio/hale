@@ -8,7 +8,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: de.cs3d.util.logging,
  eu.esdihumboldt.hale.common.core.io.project,
  eu.esdihumboldt.hale.common.headless.scavenger,
- eu.esdihumboldt.util.resource.scavenger,
+ eu.esdihumboldt.util.scavenger,
  org.quartz.simpl;version="1.6.2",
  org.slf4j;version="1.5.11",
  org.springframework.beans.factory.config;version="3.1.1.RELEASE",

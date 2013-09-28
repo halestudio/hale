@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<head>
+<title>Upload form</title>
+<meta charset="utf-8">
+</head>
+<body>
+	<wicket:panel>
+		<form wicket:id="upload">
+			<fieldset>
+				<legend>Upload template project</legend>
+				<span class="help-block">Upload a HALE project and associated files, or a project archive.</span>
+				<input wicket:id="file" type="file" multiple="multiple">
+				<button type="submit" class="btn btn-primary">Upload</button>
+				<div wicket:id="feedback"></div>
+			</fieldset>
+		</form>
+	</wicket:panel>
+</body>
+</html>

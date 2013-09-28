@@ -17,7 +17,7 @@ package eu.esdihumboldt.hale.common.headless.scavenger;
 
 import java.io.File;
 
-import eu.esdihumboldt.util.resource.scavenger.AbstractResourceScavenger;
+import eu.esdihumboldt.util.scavenger.AbstractResourceScavenger;
 
 /**
  * Base class for project scavengers.

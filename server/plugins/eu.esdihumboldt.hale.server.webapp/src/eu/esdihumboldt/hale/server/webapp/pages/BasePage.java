@@ -209,6 +209,7 @@ public abstract class BasePage extends WebPage {
 //		navbar.setBrandImage(new PackageResourceReference(BasePage.class, "graphics/logo.png"),
 //				Model.<String> of());
 		navbar.brandName(Model.of(applicationTitle));
+		navbar.setInverted(true);
 
 		if (loginEnabled) {
 			if (!loggedIn) {

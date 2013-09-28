@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.util.resource.scavenger;
+package eu.esdihumboldt.util.scavenger;
 
 /**
  * {@link ResourceScavenger} exception.

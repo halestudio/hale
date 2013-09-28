@@ -13,10 +13,12 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.util.resource.scavenger;
+package eu.esdihumboldt.util.scavenger;
 
 import java.io.File;
 import java.util.Set;
+
+import eu.esdihumboldt.util.Pair;
 
 /**
  * Service that scans for specific resources in a location and keeps references
@@ -50,6 +52,16 @@ public interface ResourceScavenger<R> {
 	 *             adding new resources is not possible
 	 */
 	public File reserveResourceId(String resourceId) throws ScavengerException;
+
+	/**
+	 * Reserve a resource identifier, if the desired identifier is already
+	 * taken, an identifier will be generated.
+	 * 
+	 * @param desiredId the desired identifier, may be <code>null</code>
+	 * @return a pair of identifier and resource directory
+	 * @throws ScavengerException if adding a new resource is not possible
+	 */
+	public Pair<String, File> reserveResource(String desiredId) throws ScavengerException;
 
 	/**
 	 * Release a previously reserved resource identifier. Also removes the

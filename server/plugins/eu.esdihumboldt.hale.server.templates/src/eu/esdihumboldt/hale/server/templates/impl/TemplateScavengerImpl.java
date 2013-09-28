@@ -20,7 +20,7 @@ import java.io.IOException;
 
 import eu.esdihumboldt.hale.common.headless.scavenger.ProjectReference;
 import eu.esdihumboldt.hale.server.templates.TemplateScavenger;
-import eu.esdihumboldt.util.resource.scavenger.AbstractResourceScavenger;
+import eu.esdihumboldt.util.scavenger.AbstractResourceScavenger;
 
 /**
  * Scavenger for (template) projects.

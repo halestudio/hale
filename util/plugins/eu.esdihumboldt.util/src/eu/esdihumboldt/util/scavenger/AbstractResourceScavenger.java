@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.util.resource.scavenger;
+package eu.esdihumboldt.util.scavenger;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -31,6 +31,7 @@ import org.eclipse.osgi.service.datalocation.Location;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.util.Pair;
 
 /**
  * Scans for folder resources in a specific location or references a single
@@ -237,6 +238,66 @@ public abstract class AbstractResourceScavenger<T> implements ResourceScavenger<
 				throw new ScavengerException("Could not create project directory");
 			}
 			return projectFolder;
+		}
+	}
+
+	@Override
+	public Pair<String, File> reserveResource(String desiredId) throws ScavengerException {
+		if (!allowAddResource()) {
+			throw new ScavengerException("Adding a resource not allowed.");
+		}
+
+		// trigger a scan to be up-to-date
+		triggerScan();
+
+		synchronized (resources) {
+			// normalize desired identifier
+			// remove all non-word characters
+			if (desiredId != null) {
+				desiredId = desiredId.replaceAll("\\W", "");
+			}
+
+			String id;
+			if (desiredId != null && !resources.containsKey(desiredId)
+					&& !reserved.contains(desiredId)) {
+				// desired ID is OK
+				id = desiredId;
+			}
+			else {
+				if (desiredId != null) {
+					// try postfix
+					int num = 2;
+					String testId = desiredId + num;
+					while (resources.containsKey(testId) || reserved.contains(testId)) {
+						testId = desiredId + (++num);
+					}
+					id = testId;
+				}
+				else {
+					// try numeric identifiers
+					int num = 1;
+					String testId = String.valueOf(num);
+					while (resources.containsKey(testId) || reserved.contains(testId)) {
+						testId = String.valueOf(++num);
+					}
+					id = testId;
+				}
+			}
+
+			reserved.add(id);
+			File projectFolder = new File(huntingGrounds, id);
+			if (!projectFolder.exists()) {
+				// try creating the directory
+				try {
+					projectFolder.mkdir();
+				} catch (Exception e) {
+					throw new ScavengerException("Could not create project directory", e);
+				}
+			}
+			if (!projectFolder.exists()) {
+				throw new ScavengerException("Could not create project directory");
+			}
+			return new Pair<String, File>(id, projectFolder);
 		}
 	}
 

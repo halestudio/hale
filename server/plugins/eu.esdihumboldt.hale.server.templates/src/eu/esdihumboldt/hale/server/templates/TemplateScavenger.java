@@ -16,7 +16,7 @@
 package eu.esdihumboldt.hale.server.templates;
 
 import eu.esdihumboldt.hale.common.headless.scavenger.ProjectReference;
-import eu.esdihumboldt.util.resource.scavenger.ResourceScavenger;
+import eu.esdihumboldt.util.scavenger.ResourceScavenger;
 
 /**
  * Service that scans for (template) projects in a directory.
