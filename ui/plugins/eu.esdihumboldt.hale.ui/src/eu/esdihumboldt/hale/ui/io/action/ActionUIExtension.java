@@ -32,6 +32,7 @@ import de.cs3d.util.eclipse.extension.AbstractObjectFactory;
 import de.cs3d.util.eclipse.extension.ExtensionObjectDefinition;
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
+import de.cs3d.util.eclipse.extension.ExtensionUtil;
 import de.cs3d.util.eclipse.extension.FactoryFilter;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
@@ -52,6 +53,9 @@ public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> 
 	 */
 	private static class ConfigurationFactory extends AbstractConfigurationFactory<IOWizard<?>>
 			implements ActionUI {
+
+		private boolean advisorInitialized = false;
+		private ActionUIAdvisor<?> actionAdvisor;
 
 		/**
 		 * Create a factory based on the given configuration element
@@ -85,6 +89,23 @@ public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> 
 			return null;
 		}
 
+		@Override
+		public ActionUIAdvisor<?> getUIAdvisor() {
+			if (!advisorInitialized) {
+				try {
+					if (conf.getAttribute("ui-advisor") != null) {
+						Class<?> advisorClass = ExtensionUtil.loadClass(conf, "ui-advisor");
+						actionAdvisor = (ActionUIAdvisor<?>) advisorClass.newInstance();
+					}
+				} catch (Exception e) {
+					log.error("Failed to created action UI advisor instance", e);
+				}
+
+				advisorInitialized = true;
+			}
+			return actionAdvisor;
+		}
+
 		/**
 		 * @see ExtensionObjectFactory#dispose(Object)
 		 */
@@ -107,6 +128,16 @@ public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> 
 		@Override
 		public String getIdentifier() {
 			return conf.getAttribute("id");
+		}
+
+		@Override
+		public String getResourceName() {
+			return conf.getAttribute("resourceName");
+		}
+
+		@Override
+		public String getResourceCategoryName() {
+			return conf.getAttribute("categoryName");
 		}
 
 		/**

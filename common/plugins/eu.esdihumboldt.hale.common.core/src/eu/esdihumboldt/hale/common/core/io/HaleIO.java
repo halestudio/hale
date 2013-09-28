@@ -129,73 +129,34 @@ public abstract class HaleIO {
 			IContentTypeManager ctm = Platform.getContentTypeManager();
 			try {
 				InputStream is = in.getInput();
-				IContentType[] candidates = ctm.findContentTypesFor(is, filename);
 
-				for (IContentType candidate : candidates) {
-					if (types.contains(candidate)) {
-						results.add(candidate);
-					}
+				/*
+				 * XXX IContentTypeManager.findContentTypes seems to return all
+				 * kind of content types that match in any way, but ordered by
+				 * relevance - so if all but the allowed types are removed, the
+				 * remaining types may be very irrelevant and not a match that
+				 * actually was determined based on the input stream.
+				 * 
+				 * XXX thus findContentTypesFor should not be used or only
+				 * relied upon the single best match that is returned
+				 */
+//				IContentType[] candidates = ctm.findContentTypesFor(is, filename);
+//
+//				for (IContentType candidate : candidates) {
+//					if (types.contains(candidate)) {
+//						results.add(candidate);
+//					}
+//				}
+				// instead use findContentTypeFor
+				IContentType candidate = ctm.findContentTypeFor(is, null);
+				if (types.contains(candidate)) {
+					results.add(candidate);
 				}
 
 				is.close();
 			} catch (IOException e) {
 				log.warn("Could not read input to determine content type", e);
 			}
-
-			// only use the testers if
-			// - we have no results from the filename match
-			// - we have more than one result from the filename match (as we
-			// might have to restrict the result)
-			// - the input supplier is set
-
-			// build a map to commit to DependencyOrderedList
-//			Map<ContentType, Set<ContentType>> map = new HashMap<ContentType, Set<ContentType>>();
-//			
-//			for (ContentType type : types){
-//				BundleContentType bct = getBundleContentType(type);
-//				if (bct != null){
-//					Set<ContentType> set = new HashSet<ContentType>();
-//					String father = bct.getContentType().getParent();
-//					if (father != null){
-//						set.add(ContentType.getContentType(father));
-//						map.put(type, set);
-//					}
-//					else {
-//						map.put(type, null);
-//					}
-//				}
-//			}
-//			
-//			// order the given content types
-//			DependencyOrderedList<ContentType> orderedlist = new DependencyOrderedList<ContentType>(map);
-//			List<ContentType> list = orderedlist.getInternalList();
-//			
-//			// last content type has to check first (has the most dependencies)
-//			for (int i = list.size() - 1; i >= 0; i--){
-//				ContentType cont = list.get(i);
-//				BundleContentType bct = getBundleContentType(cont);
-//				ContentTypeTester tester = bct.getTester();
-//				if (tester != null) {
-//					try {
-//						InputStream is = in.getInput();
-//						try {
-//							if (tester.matchesContentType(is)) {
-//								results.add(cont);
-//								return results;
-//							}
-//
-//						} finally {
-//							try {
-//								is.close();
-//							} catch (IOException e) {
-//								// ignore
-//							}
-//						}
-//					} catch (IOException e) {
-//						log.warn("Could not open input stream for testing the content type, tester for content type {0} is ignored", cont);
-//					}
-//				}
-//			}
 		}
 
 		return results;

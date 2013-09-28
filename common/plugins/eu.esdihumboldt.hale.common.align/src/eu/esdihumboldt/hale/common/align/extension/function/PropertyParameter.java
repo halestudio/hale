@@ -32,6 +32,7 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.condition.PropertyCondition;
+import eu.esdihumboldt.hale.common.align.model.condition.PropertyOrChildrenTypeCondition;
 import eu.esdihumboldt.hale.common.align.model.condition.PropertyTypeCondition;
 import eu.esdihumboldt.hale.common.align.model.condition.TypeCondition;
 import eu.esdihumboldt.hale.common.align.model.condition.impl.BindingCondition;
@@ -116,6 +117,12 @@ public final class PropertyParameter extends AbstractParameter {
 						result.add(new PropertyTypeCondition(gc));
 					}
 				}
+				else if (name.equals("geometryOrParentCondition")) {
+					GeometryCondition gc = createGeometryCondition(child);
+					if (gc != null) {
+						result.add(new PropertyOrChildrenTypeCondition(gc));
+					}
+				}
 				else if (name.equals("valueCondition")) {
 					String attr = child.getAttribute("allowAugmented");
 					boolean allowAugmented;
@@ -134,7 +141,7 @@ public final class PropertyParameter extends AbstractParameter {
 				}
 				else {
 					// ignore
-//					log.error("Unrecognized property condition");
+					log.warn("Unrecognized property condition");
 				}
 			}
 		}

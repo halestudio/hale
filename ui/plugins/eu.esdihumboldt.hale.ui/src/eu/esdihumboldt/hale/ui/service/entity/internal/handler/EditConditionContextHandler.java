@@ -23,12 +23,17 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Condition;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
-import eu.esdihumboldt.hale.io.xslt.xpath.XPathFilter;
-import eu.esdihumboldt.hale.ui.filter.TypeFilterDialog;
+import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager;
+import eu.esdihumboldt.hale.common.instance.model.Filter;
+import eu.esdihumboldt.hale.ui.filter.extension.FilterDialogDefinition;
+import eu.esdihumboldt.hale.ui.filter.extension.FilterUIExtension;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
+import eu.esdihumboldt.util.Pair;
 
 /**
  * Handler for editing conditions to selected {@link EntityDefinition}.
@@ -37,9 +42,8 @@ import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
  */
 public class EditConditionContextHandler extends AbstractHandler {
 
-	/**
-	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-	 */
+	private static final ALogger log = ALoggerFactory.getLogger(EditConditionContextHandler.class);
+
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
@@ -55,24 +59,43 @@ public class EditConditionContextHandler extends AbstractHandler {
 					title = "Edit type condition";
 				else
 					title = "Edit property condition";
-				AbstractAddConditionContextHandler addHandler;
-				Condition condition = AlignmentUtil.getContextCondition(entityDef);
-				if (condition != null && condition.getFilter() instanceof XPathFilter)
-					addHandler = new AddXPathConditionContextHandler();
-				else
-					addHandler = new AddConditionContextHandler();
 
-				TypeFilterDialog tfd = addHandler.createDialog(HandlerUtil.getActiveShell(event),
-						entityDef, title, "Define the condition for the new context");
-				if (tfd.open() == TypeFilterDialog.OK) {
-					EntityDefinitionService eds = (EntityDefinitionService) PlatformUI
-							.getWorkbench().getService(EntityDefinitionService.class);
-					eds.editConditionContext((EntityDefinition) element, tfd.getFilter());
+				Condition condition = AlignmentUtil.getContextCondition(entityDef);
+				if (condition != null && condition.getFilter() != null) {
+					Pair<String, String> filterDef = FilterDefinitionManager.getInstance().asPair(
+							condition.getFilter());
+					if (filterDef != null && filterDef.getFirst() != null) {
+						String filterId = filterDef.getFirst();
+
+						// retrieve filter UI from extension point
+						FilterDialogDefinition def = FilterUIExtension.getInstance().getFactory(
+								filterId);
+						if (def != null) {
+							Filter filter = null;
+							try {
+								filter = def.createExtensionObject().openDialog(
+										HandlerUtil.getActiveShell(event), entityDef, title,
+										"Define the condition for the new context");
+							} catch (Exception e) {
+								log.userError("Failed to create editor for filter", e);
+							}
+							if (filter != null) {
+								EntityDefinitionService eds = (EntityDefinitionService) PlatformUI
+										.getWorkbench().getService(EntityDefinitionService.class);
+								eds.editConditionContext((EntityDefinition) element, filter);
+							}
+						}
+						else {
+							log.userError("No editor for this kind of filter available");
+						}
+					}
+					else {
+						log.error("No filter definition for filter found, definition ID could not be determined");
+					}
 				}
 			}
 		}
 
 		return null;
 	}
-
 }

@@ -266,6 +266,7 @@
             category="eu.esdihumboldt.hale.align.general"
             cellExplanation="eu.esdihumboldt.hale.common.align.model.functions.explanations.JoinExplanation"
             description="Joins multiple instances of different source types into one instance of the target type, based on one or more matching properties."
+            help="help/join.xhtml"
             icon="icons/merge.gif"
             identifier="eu.esdihumboldt.hale.align.join"
             name="Join">
@@ -317,6 +318,31 @@
             </property>
          </sourceProperties>
       </propertyFunction>
+      <typeFunction
+            category="eu.esdihumboldt.hale.align.general"
+            cellExplanation="eu.esdihumboldt.hale.common.align.model.functions.explanations.CreateExplanation"
+            description="Create instances of a specific schema type."
+            identifier="eu.esdihumboldt.hale.align.create"
+            name="Create">
+         <targetTypes>
+            <type
+                  description="Target type to create instances of"
+                  maxOccurrence="1"
+                  minOccurrence="1">
+            </type>
+         </targetTypes>
+         <functionParameter
+               description="Number of instances to create"
+               label="Number of instances"
+               maxOccurrence="1"
+               minOccurrence="0"
+               name="number"
+               scriptable="false">
+            <functionParameterBinding
+                  class="java.lang.Integer">
+            </functionParameterBinding>
+         </functionParameter>
+      </typeFunction>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.align.engine">
@@ -456,6 +482,12 @@
             namespace="http://www.esdi-humboldt.eu/hale/join"
             type="eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter">
       </complexValue>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="help/contexts.xml">
+      </contexts>
    </extension>
 
 </plugin>

@@ -16,9 +16,12 @@
 
 package eu.esdihumboldt.hale.ui.service.project;
 
+import java.util.List;
 import java.util.Map;
 
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
+import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 
 /**
  * Adapter for {@link ProjectServiceListener}s
@@ -60,12 +63,17 @@ public class ProjectServiceAdapter implements ProjectServiceListener {
 	}
 
 	@Override
-	public void resourceAdded(String actionId) {
+	public void resourceAdded(String actionId, Resource resource) {
 		// override me
 	}
 
 	@Override
-	public void resourcesRemoved(String actionId) {
+	public void resourcesRemoved(String actionId, List<Resource> resources) {
+		// override me
+	}
+
+	@Override
+	public void projectInfoChanged(ProjectInfo info) {
 		// override me
 	}
 

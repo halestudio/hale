@@ -119,7 +119,7 @@ public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWr
 		if (propertyCells) {
 			for (Cell typeCell : getAlignment().getTypeCells()) {
 				addCellData(typeCell);
-				for (Cell propertyCell : getAlignment().getPropertyCells(typeCell, true)) {
+				for (Cell propertyCell : getAlignment().getPropertyCells(typeCell, true, false)) {
 					addCellData(propertyCell);
 				}
 			}

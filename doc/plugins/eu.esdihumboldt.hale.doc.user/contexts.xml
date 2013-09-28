@@ -8,14 +8,6 @@
       <description>Enter a CQL filter to be applied on instances.</description>
       <topic href="html/reference/cql_filter.html" label="Define a CQL Filter"/>
    </context>
-   <context id="join_order" title="Join order">
-      <description>Select the join order. For each instance of the topmost type a target instance will be created. The following types will be joined in order to fill the result with additional information.</description>
-      <topic href="html/reference/transformations/join.html#order" label="Using the join transformation"/>
-   </context>
-   <context id="join_condition">
-      <description>Select at least one join condition.</description>
-      <topic href="html/reference/transformations/join.html#condition" label="Using the join transformation"/>
-   </context>
    <context id="source_data">
       <description>The Source Data view allows inspecting the loaded source instances.</description>
       <topic href="html/concepts/what_is_instance.html" label="What is an Instance?"/>

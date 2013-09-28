@@ -56,7 +56,12 @@ public class AddParentConditionAction extends AddConditionAction {
 	@Override
 	protected String getPropertyReference() {
 		// XXX include namespace?
-		return "value." + getEntity().getDefinition().getName().getLocalPart();
+		String property = getEntity().getDefinition().getName().getLocalPart();
+		if (!getContextEntity().getPropertyPath().isEmpty()) {
+			// parent is not a type
+			property = "value." + property;
+		}
+		return property;
 	}
 
 	@Override

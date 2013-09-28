@@ -138,7 +138,7 @@ public class FileSourceFileFieldEditor extends OpenFileFieldEditor {
 		}
 		else {
 			File file = resolve(new File(path));
-			if (!file.isFile()) {
+			if (file == null || !file.isFile()) {
 				msg = getErrorMessage();
 			}
 		}

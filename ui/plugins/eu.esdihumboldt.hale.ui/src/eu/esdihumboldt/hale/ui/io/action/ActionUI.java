@@ -38,6 +38,13 @@ public interface ActionUI extends ExtensionObjectFactory<IOWizard<?>> {
 	public String getActionID();
 
 	/**
+	 * Get the UI action advisor.
+	 * 
+	 * @return the action advisor or <code>null</code> if none is available
+	 */
+	public ActionUIAdvisor<?> getUIAdvisor();
+
+	/**
 	 * States if I/O operations based on this advisor represent project
 	 * resources and thus shall be remembered, i.e. the configuration stored in
 	 * the project. If stored in a project the resource will be loaded again
@@ -46,6 +53,20 @@ public interface ActionUI extends ExtensionObjectFactory<IOWizard<?>> {
 	 * @return if operations based on this advisor shall be remembered
 	 */
 	public boolean isProjectResource();
+
+	/**
+	 * Get the name for this kind of resource.
+	 * 
+	 * @return the resource name
+	 */
+	public String getResourceName();
+
+	/**
+	 * Get the category name for this kind of resource.
+	 * 
+	 * @return the resource category name
+	 */
+	public String getResourceCategoryName();
 
 	/**
 	 * Get the expression that specifies whether the command to show the I/O

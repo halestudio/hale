@@ -99,19 +99,23 @@ public class AlignmentViewContentProvider extends ReverseCellGraphContentProvide
 				AlignmentService.class);
 		Alignment alignment = as.getAlignment();
 
+		boolean dummyCell;
 		if (typeCell.getId() != null) {
 			// XXX really filter type cell out?
-			if (select(typeCell))
+			if (select(typeCell)) {
 				addEdges(typeCell, edges);
+			}
+			dummyCell = false;
 		}
 		else {
 			// dummy cell, look for matching type cells
 			for (Cell cell : alignment.getTypeCells(typeCell))
 				if (select(cell))
 					addEdges(cell, edges);
+			dummyCell = true;
 		}
 
-		for (Cell cell : sortCells(as.getAlignment().getPropertyCells(typeCell, true))) {
+		for (Cell cell : sortCells(as.getAlignment().getPropertyCells(typeCell, true, dummyCell))) {
 			if (!select(cell))
 				continue;
 

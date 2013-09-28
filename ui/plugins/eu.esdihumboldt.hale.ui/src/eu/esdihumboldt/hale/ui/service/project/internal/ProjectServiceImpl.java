@@ -22,9 +22,9 @@ import java.net.URI;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -41,17 +41,21 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.operations.IWorkbenchOperationSupport;
 import org.osgi.framework.Version;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
+
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
 import de.cs3d.util.eclipse.extension.FactoryFilter;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
-import de.fhg.igd.osgi.util.configuration.AbstractConfigurationService;
 import de.fhg.igd.osgi.util.configuration.AbstractDefaultConfigurationService;
-import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.ProgressMonitorIndicator;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorExtension;
@@ -59,13 +63,17 @@ import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorFactory;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderExtension;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
+import eu.esdihumboldt.hale.common.core.io.project.ComplexConfigurationService;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectDescription;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectIO;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectWriter;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
+import eu.esdihumboldt.hale.common.core.io.project.model.IOConfigurationResource;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
+import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 import eu.esdihumboldt.hale.common.core.io.project.util.LocationUpdater;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
@@ -94,7 +102,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	 * Configuration service backed by the internal {@link Project}
 	 */
 	private class ProjectConfigurationService extends AbstractDefaultConfigurationService implements
-			IConfigurationService {
+			ComplexConfigurationService {
 
 		/**
 		 * Default constructor
@@ -103,9 +111,6 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			super(new Properties());
 		}
 
-		/**
-		 * @see AbstractConfigurationService#getValue(String)
-		 */
 		@Override
 		protected String getValue(String key) {
 			synchronized (ProjectServiceImpl.this) {
@@ -117,9 +122,6 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			}
 		}
 
-		/**
-		 * @see AbstractConfigurationService#removeValue(String)
-		 */
 		@Override
 		protected void removeValue(String key) {
 			synchronized (ProjectServiceImpl.this) {
@@ -128,15 +130,33 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			setChanged();
 		}
 
-		/**
-		 * @see AbstractConfigurationService#setValue(String, String)
-		 */
 		@Override
 		protected void setValue(String key, String value) {
 			synchronized (ProjectServiceImpl.this) {
 				main.getProperties().put(key, Value.of(value));
 			}
 			setChanged();
+		}
+
+		@Override
+		public void setProperty(String name, Value value) {
+			synchronized (ProjectServiceImpl.this) {
+				if (value == null || value.getValue() == null) {
+					main.getProperties().remove(name);
+				}
+				else {
+					main.getProperties().put(name, value);
+				}
+			}
+			setChanged();
+		}
+
+		@Override
+		public Value getProperty(String name) {
+			synchronized (ProjectServiceImpl.this) {
+				Value value = main.getProperties().get(name);
+				return (value != null) ? (value) : (Value.NULL);
+			}
 		}
 
 	}
@@ -704,7 +724,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	 * @see ProjectService#getConfigurationService()
 	 */
 	@Override
-	public IConfigurationService getConfigurationService() {
+	public ComplexConfigurationService getConfigurationService() {
 		return configurationService;
 	}
 
@@ -832,6 +852,19 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		}
 	}
 
+	@Override
+	public void updateProjectInfo(ProjectDescription info) {
+		synchronized (this) {
+			if (main != null) {
+				main.setAuthor(info.getAuthor());
+				main.setDescription(info.getDescription());
+				main.setName(info.getName());
+			}
+		}
+
+		notifyProjectInfoChanged(getProjectInfo());
+	}
+
 	/**
 	 * @see ProjectService#rememberIO(String, String, IOProvider)
 	 */
@@ -849,30 +882,57 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		}
 		setChanged();
 
-		notifyResourceAdded(actionId);
+		notifyResourceAdded(actionId, new IOConfigurationResource(conf));
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#removeResources(java.lang.String)
-	 */
 	@Override
-	public List<IOConfiguration> removeResources(String actionId) {
-		List<IOConfiguration> removedResources = new LinkedList<IOConfiguration>();
+	public List<? extends Resource> removeResources(String actionId) {
+		Builder<Resource> removedBuilder = ImmutableList.builder();
 		synchronized (this) {
 			Iterator<IOConfiguration> iter = main.getResources().iterator();
 			while (iter.hasNext()) {
 				IOConfiguration conf = iter.next();
 				if (conf.getActionId().equals(actionId)) {
 					iter.remove();
-					removedResources.add(conf);
+					removedBuilder.add(new IOConfigurationResource(conf));
 				}
 			}
 		}
 		setChanged();
 
-		notifyResourcesRemoved(actionId);
+		List<Resource> removedResources = removedBuilder.build();
+
+		notifyResourcesRemoved(actionId, removedResources);
 
 		return removedResources;
+	}
+
+	@Override
+	public void removeResource(String resourceId) {
+		Resource removedResource = null;
+		synchronized (this) {
+			Iterator<IOConfiguration> iter = main.getResources().iterator();
+			while (iter.hasNext()) {
+				IOConfiguration conf = iter.next();
+				Value idValue = conf.getProviderConfiguration().get(
+						ImportProvider.PARAM_RESOURCE_ID);
+				if (idValue != null) {
+					String id = idValue.as(String.class);
+					if (resourceId.equals(id)) {
+						// match found, remove
+						iter.remove();
+						removedResource = new IOConfigurationResource(conf);
+						break;
+					}
+				}
+			}
+		}
+
+		if (removedResource != null) {
+			setChanged();
+			notifyResourcesRemoved(removedResource.getActionId(),
+					Collections.singletonList(removedResource));
+		}
 	}
 
 	@Override
@@ -890,9 +950,6 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		return false;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#executeAndRemember(eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration)
-	 */
 	@Override
 	public void executeAndRemember(IOConfiguration conf) {
 		executeConfiguration(conf);
@@ -900,6 +957,22 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			main.getResources().add(conf);
 		}
 		setChanged();
+
+		notifyResourceAdded(conf.getActionId(), new IOConfigurationResource(conf));
+	}
+
+	@Override
+	public Iterable<? extends Resource> getResources() {
+		synchronized (this) {
+			return Collections2.transform(main.getResources(),
+					new Function<IOConfiguration, Resource>() {
+
+						@Override
+						public Resource apply(IOConfiguration conf) {
+							return new IOConfigurationResource(conf);
+						}
+					});
+		}
 	}
 
 	/**

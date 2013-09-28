@@ -14,10 +14,13 @@
          point="eu.esdihumboldt.hale.ui.io.action">
       <action-ui
             action="eu.esdihumboldt.hale.codelist.read"
+            categoryName="Code lists"
             id="eu.esdihumboldt.hale.codelist.ui"
             label="Code list..."
             priority="0"
             projectResource="true"
+            resourceName="code list"
+            ui-advisor="eu.esdihumboldt.hale.ui.codelist.io.CodeListUIAdvisor"
             wizard="eu.esdihumboldt.hale.ui.codelist.io.CodeListImportWizard">
       </action-ui>
    </extension>
@@ -28,6 +31,15 @@
             class="eu.esdihumboldt.hale.ui.codelist.io.CodeListImportAdvisor"
             id="eu.esdihumboldt.hale.ui.codelist.service">
       </advisor>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.complexvalue">
+      <complexValue
+            descriptor="eu.esdihumboldt.hale.ui.codelist.service.internal.config.CodeListAssociationsType"
+            id="eu.esdihumboldt.hale.ui.codelist.config"
+            name="associations"
+            type="eu.esdihumboldt.hale.ui.codelist.service.internal.config.CodeListAssociations">
+      </complexValue>
    </extension>
 
 </plugin>

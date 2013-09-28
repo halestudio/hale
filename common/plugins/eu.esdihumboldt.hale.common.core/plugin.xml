@@ -31,7 +31,7 @@
          </describer>
       </content-type>
       <content-type
-            file-extensions="zip"
+            file-extensions="halez,zip"
             id="eu.esdihumboldt.hale.io.project.hale25.zip"
             name="HALE project archive"
             priority="normal">

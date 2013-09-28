@@ -9,6 +9,12 @@
             id="eu.esdihumboldt.cst.compatibility"
             key="eu.esdihumboldt.cst.compatibility.cst"
             name="CST">
+         <supportsFilter
+               ref="CQL">
+         </supportsFilter>
+         <supportsFilter
+               ref="ECQL">
+         </supportsFilter>
       </compatibility>
    </extension>
 

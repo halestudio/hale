@@ -17,25 +17,27 @@
 package eu.esdihumboldt.hale.common.core.io.project.impl;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.text.MessageFormat;
 
 import com.google.common.io.Files;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectIO;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.util.LocationUpdater;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
+import eu.esdihumboldt.util.io.IOUtils;
 
 /**
  * Load project from a zip-archive (created by {@link ArchiveProjectWriter})
@@ -49,15 +51,36 @@ public class ArchiveProjectReader extends AbstractProjectReader {
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
-
-		XMLProjectReader reader = new XMLProjectReader();
-
 		// copy resources to a temporary directory
 		File tempDir = Files.createTempDir();
-		getZipFiles(getSource().getInput(), tempDir);
+		IOUtils.extract(tempDir, getSource().getInput());
 
 		// create the project file via XMLProjectReader
 		File baseFile = new File(tempDir, "project.halex");
+		ProjectReader reader;
+		if (!baseFile.exists()) {
+			// look for project file
+			log.debug("Default project file not found, looking for other candidates.");
+			String candidate = ProjectIO.findProjectFile(tempDir);
+			if (candidate != null) {
+				log.info(MessageFormat
+						.format("Loading {0} as project file from archive", candidate));
+				baseFile = new File(tempDir, candidate);
+			}
+			reader = HaleIO.findIOProvider(ProjectReader.class, new FileIOSupplier(baseFile),
+					candidate);
+			if (reader == null) {
+				reporter.error(new IOMessageImpl("Could not find reader for project file "
+						+ candidate, null));
+				reporter.setSuccess(false);
+				return reporter;
+			}
+		}
+		else {
+			// default project file
+			reader = new XMLProjectReader();
+		}
+
 		LocatableInputSupplier<InputStream> tempSource = new FileIOSupplier(baseFile);
 
 		// save old save configuration
@@ -66,7 +89,7 @@ public class ArchiveProjectReader extends AbstractProjectReader {
 		setSource(tempSource);
 		reader.setSource(tempSource);
 		reader.setProjectFiles(getProjectFiles());
-		IOReport report = reader.execute(progress, reporter);
+		IOReport report = reader.execute(progress);
 		Project readProject = reader.getProject();
 
 		if (readProject != null) {
@@ -91,49 +114,6 @@ public class ArchiveProjectReader extends AbstractProjectReader {
 		deleteDirectoryOnExit(tempDir);
 
 		return report;
-	}
-
-	// extract all files from the InputStream to the destination
-	// InputStream must be based on a zip file
-	// destination file has to be a directory
-	private void getZipFiles(InputStream file, File destination) throws IOException {
-		byte[] buf = new byte[1024];
-		ZipInputStream zipinputstream = null;
-		ZipEntry zipentry;
-		zipinputstream = new ZipInputStream(file);
-
-		try {
-			while ((zipentry = zipinputstream.getNextEntry()) != null) {
-				String entryName = zipentry.getName();
-				int n;
-				FileOutputStream fileoutputstream;
-				File newFile = new File(entryName);
-				String directory = newFile.getParent();
-
-				if (directory != null) {
-					File newF = new File(destination, directory);
-					try {
-						newF.mkdirs();
-					} catch (SecurityException e) {
-						log.debug("Can not create directories because of SecurityManager", e);
-					}
-				}
-
-				File nf = new File(destination, entryName);
-				fileoutputstream = new FileOutputStream(nf);
-
-				while ((n = zipinputstream.read(buf, 0, 1024)) > -1)
-					fileoutputstream.write(buf, 0, n);
-
-				fileoutputstream.close();
-				zipinputstream.closeEntry();
-
-			}
-		} catch (FileNotFoundException e) {
-			throw new IOException("Destination directory not found", e);
-		}
-
-		zipinputstream.close();
 	}
 
 	private void deleteDirectoryOnExit(File directory) {

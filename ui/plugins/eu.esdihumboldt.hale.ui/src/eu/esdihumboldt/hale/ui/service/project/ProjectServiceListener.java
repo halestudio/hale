@@ -16,9 +16,12 @@
 
 package eu.esdihumboldt.hale.ui.service.project;
 
+import java.util.List;
 import java.util.Map;
 
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
+import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 
 /**
  * Listens for {@link ProjectService} events, e.g. the loading and saving of a
@@ -50,15 +53,24 @@ public interface ProjectServiceListener {
 	 * Called after a new resource was added.
 	 * 
 	 * @param actionId the action the resource is associated to
+	 * @param resource the added resource
 	 */
-	public void resourceAdded(String actionId);
+	public void resourceAdded(String actionId, Resource resource);
 
 	/**
 	 * Called when resources for an action have been removed.
 	 * 
 	 * @param actionId the action identifier
+	 * @param resources the removed resources
 	 */
-	public void resourcesRemoved(String actionId);
+	public void resourcesRemoved(String actionId, List<Resource> resources);
+
+	/**
+	 * Called when the project information has been changed.
+	 * 
+	 * @param info the updated project information
+	 */
+	public void projectInfoChanged(ProjectInfo info);
 
 	/**
 	 * Called when the project is cleaned.

@@ -16,7 +16,6 @@
 package eu.esdihumboldt.hale.common.headless.scavenger;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
@@ -29,6 +28,7 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectIO;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -247,7 +247,7 @@ public class ProjectReference<C> {
 		String projectFile = config.getProjectFileName();
 		if (projectFile == null) {
 			// determine the project file automatically
-			projectFile = findProjectFile(projectFolder);
+			projectFile = ProjectIO.findProjectFile(projectFolder, getSupportedExtensions());
 			config.setProjectFileName(projectFile);
 		}
 		if (projectFile == null) {
@@ -261,71 +261,6 @@ public class ProjectReference<C> {
 	 */
 	protected ProjectProperties getConfig() {
 		return config;
-	}
-
-	/**
-	 * Find a candidate for the project file to load.
-	 * 
-	 * @param projectDir the project directory
-	 * @return the name of the project file candidate in that directory,
-	 *         <code>null</code> if none was found
-	 */
-	protected String findProjectFile(File projectDir) {
-		final Set<String> extensions = getSupportedExtensions();
-
-		File[] candidates = projectDir.listFiles(new FileFilter() {
-
-			@Override
-			public boolean accept(File file) {
-				if (file.isFile() && !file.isHidden()) {
-					String lowerName = file.getName().toLowerCase();
-					for (String extension : extensions) {
-						if (lowerName.endsWith(extension.toLowerCase())) {
-							return true;
-						}
-					}
-				}
-				return false;
-			}
-
-		});
-
-		if (candidates != null) {
-			if (candidates.length == 1) {
-				return candidates[0].getName();
-			}
-
-			// more than one candidate, do a more thorough check
-			// TODO warn that there are multiple?
-			for (File candidate : candidates) {
-				FileIOSupplier supplier = new FileIOSupplier(candidate);
-				// find content type against stream
-				IContentType contentType = HaleIO.findContentType(ProjectReader.class, supplier,
-						null);
-				if (contentType != null) {
-					return candidate.getName();
-				}
-			}
-		}
-
-		// none found? check in subdirectories
-		File[] subdirs = projectDir.listFiles(new FileFilter() {
-
-			@Override
-			public boolean accept(File pathname) {
-				return pathname.isDirectory() && !pathname.isHidden();
-			}
-		});
-		if (subdirs != null) {
-			for (File subdir : subdirs) {
-				String name = findProjectFile(subdir);
-				if (name != null) {
-					return subdir.getName() + "/" + name;
-				}
-			}
-		}
-
-		return null;
 	}
 
 	/**

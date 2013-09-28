@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.ui.common.definition;
 import org.eclipse.swt.widgets.Composite;
 
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.common.Editor;
@@ -37,13 +38,15 @@ public interface AttributeEditorFactory {
 	 * 
 	 * @param parent the parent composite of the editor control
 	 * @param property the property definition
+	 * @param entityDef the property entity definition representing the
+	 *            property, may be <code>null</code> if unknown or unavailable
 	 * @param allowScripts whether the property may be edited with a script
 	 *            editor
 	 * @return the attribute editor or <code>null</code> if no editor could be
 	 *         created for the property
 	 */
 	public Editor<?> createEditor(Composite parent, PropertyDefinition property,
-			boolean allowScripts);
+			EntityDefinition entityDef, boolean allowScripts);
 
 	/**
 	 * Create an attribute editor for the given function parameter.

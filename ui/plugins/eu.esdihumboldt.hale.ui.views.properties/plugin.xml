@@ -483,6 +483,9 @@
          <propertyCategory
                category="eu.esdihumboldt.hale.ui.views.properties.childdefinition">
          </propertyCategory>
+         <propertyCategory
+               category="eu.esdihumboldt.hale.ui.views.properties.other">
+         </propertyCategory>
       </propertyContributor>
    </extension>
    <extension

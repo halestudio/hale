@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Main UI
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui;singleton:=true
-Bundle-Version: 2.6.0.qualifier
+Bundle-Version: 2.7.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.5.0",
  org.eclipse.ui;bundle-version="3.5.1",
@@ -51,6 +51,7 @@ Import-Package: com.google.common.base;version="1.6.0",
  eu.esdihumboldt.hale.common.core.report.writer,
  eu.esdihumboldt.hale.common.core.service,
  eu.esdihumboldt.hale.common.filter,
+ eu.esdihumboldt.hale.common.filter.definition,
  eu.esdihumboldt.hale.common.headless.transform,
  eu.esdihumboldt.hale.common.instance.geometry,
  eu.esdihumboldt.hale.common.instance.geometry.impl,
@@ -73,7 +74,6 @@ Import-Package: com.google.common.base;version="1.6.0",
  eu.esdihumboldt.hale.common.schema.model.constraint.type,
  eu.esdihumboldt.hale.common.schema.model.impl,
  eu.esdihumboldt.hale.io.xsd.constraint,
- eu.esdihumboldt.hale.io.xslt.xpath,
  eu.esdihumboldt.hale.prefixmapper,
  eu.esdihumboldt.hale.ui.common,
  eu.esdihumboldt.hale.ui.common.definition,
@@ -87,6 +87,7 @@ Import-Package: com.google.common.base;version="1.6.0",
  eu.esdihumboldt.hale.ui.common.service.population,
  eu.esdihumboldt.hale.ui.common.service.population.impl,
  eu.esdihumboldt.hale.ui.filter,
+ eu.esdihumboldt.hale.ui.filter.extension,
  eu.esdihumboldt.hale.ui.geometry.service,
  eu.esdihumboldt.hale.ui.geometry.service.impl,
  eu.esdihumboldt.hale.ui.util,

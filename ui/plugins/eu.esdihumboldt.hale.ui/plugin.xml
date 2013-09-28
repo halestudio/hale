@@ -373,30 +373,36 @@
          </activeWhen>
       </handler>
       <handler
-            class="eu.esdihumboldt.hale.ui.service.entity.internal.handler.AddConditionContextHandler"
-            commandId="eu.esdihumboldt.hale.ui.entity.addcqlcontext">
-         <activeWhen>
-            <reference
-                  definitionId="eu.esdihumboldt.hale.ui.selection.entity.allow_contextadd_condition">
-            </reference>
-         </activeWhen>
-      </handler>
-      <handler
-            class="eu.esdihumboldt.hale.ui.service.entity.internal.handler.AddXPathConditionContextHandler"
-            commandId="eu.esdihumboldt.hale.ui.entity.addxpathcontext">
-         <activeWhen>
-            <reference
-                  definitionId="eu.esdihumboldt.hale.ui.selection.entity.allow_contextadd_condition">
-            </reference>
-         </activeWhen>
-      </handler>
-      <handler
             class="eu.esdihumboldt.hale.ui.service.values.internal.handler.UpdateOccurringValues"
             commandId="eu.esdihumboldt.hale.ui.values.update_occuring">
          <activeWhen>
             <reference
                   definitionId="eu.esdihumboldt.hale.ui.selection.entity.allow_update_occurring_values">
             </reference>
+         </activeWhen>
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.io.action.handler.RemoveResourceHandler"
+            commandId="org.eclipse.ui.edit.delete">
+         <activeWhen>
+            <with
+                  variable="selection">
+               <and>
+                  <count
+                        value="1">
+                  </count>
+                  <iterate>
+                     <and>
+                        <instanceof
+                              value="eu.esdihumboldt.hale.common.core.io.project.model.Resource">
+                        </instanceof>
+                        <test
+                              property="eu.esdihumboldt.hale.ui.resource.allow_remove">
+                        </test>
+                     </and>
+                  </iterate>
+               </and>
+            </with>
          </activeWhen>
       </handler>
    </extension>
@@ -497,29 +503,35 @@
          point="eu.esdihumboldt.hale.ui.io.action">
       <action-ui
             action="eu.esdihumboldt.hale.io.schema.read.source"
+            categoryName="Source schemas"
             customTitle="Import source schema"
             id="eu.esdihumboldt.hale.io.schema.read.source.ui"
             label="Source schema..."
             priority="-10"
             projectResource="true"
+            resourceName="source schema"
             wizard="eu.esdihumboldt.hale.ui.io.schema.SchemaImportWizard">
       </action-ui>
       <action-ui
             action="eu.esdihumboldt.hale.io.schema.read.target"
+            categoryName="Target schemas"
             customTitle="Import target schema"
             id="eu.esdihumboldt.hale.io.schema.read.target.ui"
             label="Target schema..."
             priority="-9"
             projectResource="true"
+            resourceName="target schema"
             wizard="eu.esdihumboldt.hale.ui.io.schema.SchemaImportWizard">
       </action-ui>
       <action-ui
             action="eu.esdihumboldt.hale.io.instance.read.source"
+            categoryName="Source data"
             customTitle="Import source data"
             id="eu.esdihumboldt.hale.io.instance.read.source.ui"
             label="Source data..."
             priority="-6"
             projectResource="true"
+            resourceName="source data"
             wizard="eu.esdihumboldt.hale.ui.io.instance.InstanceImportWizard">
          <enabledWhen
                disabledReason="Load a source schema first">
@@ -613,58 +625,6 @@
                disabledReason="No transformed instances available">
             <with
                   variable="hale.instances.has_transformed">
-               <equals
-                     value="true">
-               </equals>
-            </with>
-         </enabledWhen>
-      </action-ui>
-      <action-ui
-            action="eu.esdihumboldt.hale.io.instance.write.transformed"
-            customTitle="Save export transformed data"
-            id="eu.esdihumboldt.hale.io.instance.write.transformed.save.ui"
-            label="Save instance export configuration..."
-            priority="9"
-            projectResource="false"
-            wizard="eu.esdihumboldt.hale.ui.io.instance.SaveConfigurationInstanceExportWizard">
-         <enabledWhen
-               disabledReason="No target schema available">
-            <with
-                  variable="hale.schemas.has_mappable_target">
-               <equals
-                     value="true">
-               </equals>
-            </with>
-         </enabledWhen>
-      </action-ui>
-      <action-ui
-            action="eu.esdihumboldt.hale.io.instance.write.transformed"
-            id="eu.esdihumboldt.hale.io.instance.write.transformed.load.ui"
-            label="Load instance export configuration ..."
-            priority="10"
-            projectResource="false"
-            wizard="eu.esdihumboldt.hale.ui.io.instance.LoadConfigurationInstanceExportWizard">
-         <enabledWhen
-               disabledReason="No instance export configurations available">
-            <with
-                  variable="hale.project.has_export_configurations">
-               <equals
-                     value="true">
-               </equals>
-            </with>
-         </enabledWhen>
-      </action-ui>
-      <action-ui
-            action="eu.esdihumboldt.hale.io.instance.write.transformed"
-            id="eu.esdihumboldt.hale.io.instance.write.transformed.delete.ui"
-            label="Delete instance export configuration..."
-            priority="11"
-            projectResource="false"
-            wizard="eu.esdihumboldt.hale.ui.io.instance.DeleteInstanceExportConfigurationWizard">
-         <enabledWhen
-               disabledReason="No instance export configurations available">
-            <with
-                  variable="hale.project.has_export_configurations">
                <equals
                      value="true">
                </equals>
@@ -781,23 +741,16 @@
                   checkEnabled="true">
             </visibleWhen>
          </command>
-         <menu
-               label="Add condition context">
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.entity.addcqlcontext"
-                  style="push">
-               <visibleWhen
-                     checkEnabled="true">
-               </visibleWhen>
-            </command>
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.entity.addxpathcontext"
-                  style="push">
-               <visibleWhen
-                     checkEnabled="true">
-               </visibleWhen>
-            </command>
-         </menu>
+         <dynamic
+               class="eu.esdihumboldt.hale.ui.service.entity.internal.handler.AddConditionContextContribution"
+               id="eu.esdihumboldt.hale.ui.popup.addcondition">
+            <visibleWhen
+                  checkEnabled="false">
+               <reference
+                     definitionId="eu.esdihumboldt.hale.ui.selection.entity.allow_contextadd_condition">
+               </reference>
+            </visibleWhen>
+         </dynamic>
          <command
                commandId="eu.esdihumboldt.hale.ui.entity.editconditioncontext"
                style="push">
@@ -981,6 +934,13 @@
             namespace="eu.esdihumboldt.hale.ui.service.values"
             properties="allow_update"
             type="eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition">
+      </propertyTester>
+      <propertyTester
+            class="eu.esdihumboldt.hale.ui.io.action.tester.ResourceTester"
+            id="eu.esdihumboldt.hale.ui.resource"
+            namespace="eu.esdihumboldt.hale.ui.resource"
+            properties="allow_remove"
+            type="eu.esdihumboldt.hale.common.core.io.project.model.Resource">
       </propertyTester>
    </extension>
    <extension

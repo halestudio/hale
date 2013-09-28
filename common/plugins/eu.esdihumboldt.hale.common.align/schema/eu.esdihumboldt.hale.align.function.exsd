@@ -51,7 +51,7 @@
    <element name="typeFunction">
       <complexType>
          <sequence>
-            <element ref="sourceTypes"/>
+            <element ref="sourceTypes" minOccurs="0" maxOccurs="1"/>
             <element ref="targetTypes"/>
             <choice minOccurs="0" maxOccurs="unbounded">
                <element ref="functionParameter"/>
@@ -247,6 +247,7 @@ For references, e.g. to images, use absolute references to plugin and path, led 
             <element ref="propertyCondition"/>
             <element ref="geometryCondition"/>
             <element ref="valueCondition"/>
+            <element ref="geometryOrParentCondition"/>
          </choice>
          <attribute name="name" type="string">
             <annotation>
@@ -547,6 +548,19 @@ Defaults to false.
       <annotation>
          <documentation>
             Condition that matches geometry properties. Add subconditions to only match specific types of geometries.
+         </documentation>
+      </annotation>
+      <complexType>
+         <choice minOccurs="0" maxOccurs="unbounded">
+            <element ref="geometryType"/>
+         </choice>
+      </complexType>
+   </element>
+
+   <element name="geometryOrParentCondition">
+      <annotation>
+         <documentation>
+            Condition that matches geometry properties and properties that have geometry properties as their children. Add subconditions to only match specific types of geometries.
          </documentation>
       </annotation>
       <complexType>
