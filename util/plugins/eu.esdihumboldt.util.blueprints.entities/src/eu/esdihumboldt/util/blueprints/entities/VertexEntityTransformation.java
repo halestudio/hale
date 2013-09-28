@@ -93,7 +93,9 @@ public class VertexEntityTransformation implements ASTTransformation {
 	}
 
 	/**
-	 * @param clazz
+	 * Process a class and make it a vertex entity class.
+	 * 
+	 * @param clazz the class node
 	 */
 	private void processClass(ClassNode clazz) {
 		// check if class already was processed (has field v)
@@ -120,7 +122,7 @@ public class VertexEntityTransformation implements ASTTransformation {
 						.getAnnotations(VERTEX_ENTITY_CLASS);
 				if (superAnnotations != null && !superAnnotations.isEmpty()) {
 					// super class is also a vertex entity
-					superEntityName = entityAnnotations.get(0).getMember("value");
+					superEntityName = superAnnotations.get(0).getMember("value");
 
 					// super class must be processed first
 					processClass(superClass);
@@ -204,7 +206,7 @@ public class VertexEntityTransformation implements ASTTransformation {
 			clazz.addMethod(buildGetByIdMethod(clazz));
 
 			// add static initGraph method
-			clazz.addMethod(buildInitGraphMethod(entityName));
+			clazz.addMethod(buildInitGraphMethod(entityName, superEntityName));
 		}
 	}
 
@@ -213,18 +215,23 @@ public class VertexEntityTransformation implements ASTTransformation {
 	 * {@link OrientGraph} it registers the entity class as a schema type.
 	 * 
 	 * @param entityName the entity name
+	 * @param superEntityName the super entity name, may be <code>null</code>
 	 * @return the method
 	 */
-	private MethodNode buildInitGraphMethod(Expression entityName) {
+	private MethodNode buildInitGraphMethod(Expression entityName, Expression superEntityName) {
 		// graph (parameter)
 		VariableExpression graph = new VariableExpression("graph");
+
+		if (superEntityName == null) {
+			superEntityName = new ConstantExpression(null);
+		}
 
 		BlockStatement code = new BlockStatement();
 
 		// register class
 		code.addStatement(new ExpressionStatement(new StaticMethodCallExpression(
 				VE_DELEGATES_CLASS, VertexEntityDelegates.METHOD_REGISTER_CLASS,
-				new ArgumentListExpression(graph, entityName))));
+				new ArgumentListExpression(graph, entityName, superEntityName))));
 
 		return new MethodNode("initGraph", Modifier.PUBLIC | Modifier.STATIC,
 				ClassHelper.VOID_TYPE, new Parameter[] { new Parameter(GRAPH_CLASS, "graph") },

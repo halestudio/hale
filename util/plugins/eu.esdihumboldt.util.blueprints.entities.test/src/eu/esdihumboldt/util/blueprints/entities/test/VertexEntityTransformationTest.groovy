@@ -143,6 +143,11 @@ class VertexEntityTransformationTest extends GroovyTestCase {
 		cat.v.setProperty('description', 'Test')
 		assertEquals 'Test', cat.getDescription()
 
+		// find all
+		Iterable<Category> cats = Category.findAll(graph)
+		assertNotNull cats
+		assertEquals 1, Iterables.size(cats)
+
 		// deletion
 		assertEquals 1, graph.vertices.toList().size()
 		cat.delete()
@@ -156,7 +161,7 @@ class VertexEntityTransformationTest extends GroovyTestCase {
 		cat3.setName('Bar')
 
 		// find all
-		Iterable<Category> cats = Category.findAll(graph)
+		cats = Category.findAll(graph)
 		assertNotNull cats
 		assertEquals 2, Iterables.size(cats)
 
