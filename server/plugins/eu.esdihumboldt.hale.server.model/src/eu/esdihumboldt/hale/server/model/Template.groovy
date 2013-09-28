@@ -19,7 +19,8 @@ import eu.esdihumboldt.util.blueprints.entities.VertexEntity
 
 
 /**
- * TODO Type description
+ * Represents a project template.
+ * 
  * @author Simon Templer
  */
 @VertexEntity('template')
@@ -28,4 +29,9 @@ class Template extends Project {
 	 * Reference to the template as present in the file system.
 	 */
 	String templateId
+
+	/**
+	 * States if the template is valid an thus can be offered for download. 
+	 */
+	boolean valid
 }

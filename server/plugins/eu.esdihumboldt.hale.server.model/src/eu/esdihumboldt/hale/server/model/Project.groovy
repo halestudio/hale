@@ -31,6 +31,11 @@ class Project {
 	String name
 
 	/**
+	 * The project author.
+	 */
+	String author;
+
+	/**
 	 * The project description.
 	 */
 	String description

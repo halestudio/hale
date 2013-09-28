@@ -15,4 +15,6 @@ Import-Package: de.cs3d.util.logging,
  org.springframework.scheduling.quartz;version="3.1.1.RELEASE"
 Export-Package: eu.esdihumboldt.hale.server.templates,
  eu.esdihumboldt.hale.server.templates.impl
-Require-Bundle: groovy;bundle-version="2.1.6"
+Require-Bundle: groovy;bundle-version="2.1.6",
+ eu.esdihumboldt.hale.server.model;bundle-version="2.7.0",
+ eu.esdihumboldt.hale.server.db;bundle-version="2.7.0"
