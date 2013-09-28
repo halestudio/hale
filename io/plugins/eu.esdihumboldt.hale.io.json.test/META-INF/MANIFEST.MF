@@ -12,4 +12,9 @@ Import-Package: eu.esdihumboldt.hale.common.core.io.report,
  org.junit;version="4.8.2"
 Require-Bundle: groovy;bundle-version="2.1.6",
  eu.esdihumboldt.hale.common.schema.groovy;bundle-version="2.6.0",
- eu.esdihumboldt.hale.common.test
+ eu.esdihumboldt.hale.common.test,
+ com.fasterxml.jackson.databind;bundle-version="2.2.3",
+ com.github.fge.jackson-coreutils-1.4.0.jar;bundle-version="1.4.0",
+ com.github.fge.msg-simple-0.9.0.jar;bundle-version="0.9.0",
+ com.github.fge.uri-template-0.7.0.jar;bundle-version="0.7.0",
+ com.github.fge.json-schema-validator-2.1.7.jar;bundle-version="2.1.7"

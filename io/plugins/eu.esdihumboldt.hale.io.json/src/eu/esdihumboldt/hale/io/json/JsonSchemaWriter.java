@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonGenerator;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
@@ -37,9 +38,9 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 
 /**
- * JSON schema writer. Conforms to http://json-schema.org/draft-04/schema#
+ * JSON schema writer. Conforms to http://json-schema.org/draft-04/schema#.
  * 
- * @author Simon Templer
+ * @author Thorsten Reitz
  */
 public class JsonSchemaWriter extends AbstractSchemaWriter {
 
@@ -64,116 +65,132 @@ public class JsonSchemaWriter extends AbstractSchemaWriter {
 			jsonGen = jsonFactory.createJsonGenerator(out);
 			jsonGen.useDefaultPrettyPrinter();
 
-			jsonGen.writeStartObject();
+			// get the name for this schema from the original filename
+			String schemaName = getSchemas().getSchemas().iterator().next().getLocation().getPath();
+			schemaName = schemaName.substring(schemaName.lastIndexOf('/'),
+					schemaName.lastIndexOf('.'));
+
+			jsonGen.writeStartObject(); // 1
 			jsonGen.writeStringField("$schema", "http://json-schema.org/draft-04/schema#");
-			jsonGen.writeStringField("title", "SchemaSpace");
-			jsonGen.writeStringField("type", "array");
-			jsonGen.writeFieldName("items");
-			jsonGen.writeStartArray();
+			jsonGen.writeStringField("title", schemaName);
+			jsonGen.writeStringField("type", "object");
+			jsonGen.writeFieldName("properties");
+			jsonGen.writeStartObject(); // 2
 
 			// create general schema type declarations
 			for (Schema schema : getSchemas().getSchemas()) {
 
+				// create an ID for the schema
 				String id = schema.getNamespace();
 				if (id == null || id.equals("")) {
-					id = "generated-id-" + UUID.randomUUID().toString();
+					id = schema.getLocation().toString();
+					if (id == null || id.equals("")) {
+						id = "//generated-ns/" + UUID.randomUUID().toString();
+					}
 				}
-
-				jsonGen.writeStartObject(); // Start for a Schema object
-				jsonGen.writeStringField("title", schema.getLocation().toString());
-				jsonGen.writeStringField("id", id);
-				jsonGen.writeStringField("type", "object");
-				jsonGen.writeFieldName("properties");
-				jsonGen.writeStartObject(); // Start for types
 
 				// iterate over the schema types classified as mapping relevant
 				for (TypeDefinition type : getSchemas().getMappingRelevantTypes()) {
 					// Create type declaration
-					jsonGen.writeStringField("title", type.getName().toString());
-					jsonGen.writeStringField("type", "object");
-					jsonGen.writeFieldName("properties");
-					jsonGen.writeStartObject(); // Start for type properties
-
-					// determine cardinality of the property
-
-					// determine if a property is simple or an object itself
-
-					// add simple properties to type declaration
-					Set<String> requiredFields = new HashSet<String>();
-					for (ChildDefinition child : type.getChildren()) {
-
-						jsonGen.writeFieldName(child.getDisplayName());
-						jsonGen.writeStartObject(); // Start for attributes of a
-													// property
-
-						if (child.getDescription() != null) {
-							jsonGen.writeStringField("description", child.getDescription());
-						}
-
-						if (child.asProperty() != null) {
-							TypeDefinition td = child.asProperty().getPropertyType();
-							Binding binding = td.getConstraint(Binding.class);
-							if (binding != null) {
-								jsonGen.writeStringField("type", getType(binding));
-							}
-						}
-
-						// register cardinalities
-						Cardinality card = (Cardinality) child.getConstraint(Cardinality.class);
-						if (card != null) {
-							if (card.getMinOccurs() != Cardinality.UNBOUNDED) {
-								jsonGen.writeNumberField("minItems", card.getMinOccurs());
-								if (card.getMinOccurs() > 0) {
-									requiredFields.add(child.getDisplayName());
-								}
-							}
-							if (card.getMaxOccurs() != Cardinality.UNBOUNDED) {
-								jsonGen.writeNumberField("maxItems", card.getMaxOccurs());
-							}
-
-						}
-
-						// make field optional if it has minOccurs > 0 but
-						// Nillable = true
-						NillableFlag nf = (NillableFlag) child.getConstraint(NillableFlag.class);
-						if (nf != null) {
-							if (nf.isEnabled()) {
-								requiredFields.add(child.getDisplayName());
-							}
-						}
-
-						jsonGen.writeEndObject();
-
-					}
-
-					// write Array of required fields for this type
-					if (requiredFields.size() > 0) {
-						jsonGen.writeArrayFieldStart("required");
-						for (String requiredFieldName : requiredFields) {
-							jsonGen.writeString(requiredFieldName);
-						}
-						jsonGen.writeEndArray();
-					}
-
-					jsonGen.writeEndObject();
+					encodeTypeDefinition(id, type);
 
 				}
 
-				jsonGen.writeEndObject();
-				jsonGen.writeEndObject(); // End for getMappingRelevantTypes()
-
 			}
 
-			jsonGen.writeEndArray();
-			jsonGen.writeEndObject();
+			jsonGen.writeEndObject(); // 2
+			jsonGen.writeEndObject(); // 1
+
+			jsonGen.flush();
 
 			reporter.setSuccess(true);
 
 		} finally {
-			jsonGen.close();
+//			jsonGen.close();
 			progress.end();
 		}
 		return reporter;
+	}
+
+	private void encodeTypeDefinition(String schemaID, TypeDefinition type)
+			throws JsonGenerationException, IOException {
+
+		jsonGen.writeFieldName(type.getDisplayName());
+		jsonGen.writeStartObject(); // 1
+
+		jsonGen.writeStringField("title", type.getName().toString());
+		jsonGen.writeStringField("id", schemaID + "/" + type.getName().toString());
+		jsonGen.writeStringField("type", "object");
+		jsonGen.writeFieldName("properties");
+		jsonGen.writeStartObject(); // 2
+
+		// determine cardinality of the property
+
+		// determine if a property is simple or an object itself
+
+		// add simple properties to type declaration
+		Set<String> requiredFields = new HashSet<String>();
+		for (ChildDefinition child : type.getChildren()) {
+
+			jsonGen.writeFieldName(child.getDisplayName());
+			jsonGen.writeStartObject(); // 3
+
+			if (child.getDescription() != null) {
+				jsonGen.writeStringField("description", child.getDescription());
+			}
+
+			if (child.asProperty() != null) {
+				TypeDefinition td = child.asProperty().getPropertyType();
+				Binding binding = td.getConstraint(Binding.class);
+				if (binding != null) {
+					jsonGen.writeStringField("type", getType(binding));
+				}
+			}
+
+			// register cardinalities
+			Cardinality card = (Cardinality) child.getConstraint(Cardinality.class);
+			if (card != null) {
+				if (card.getMinOccurs() != Cardinality.UNBOUNDED) {
+					jsonGen.writeNumberField("minItems", card.getMinOccurs());
+					if (card.getMinOccurs() > 0) {
+						requiredFields.add(child.getDisplayName());
+					}
+				}
+				if (card.getMaxOccurs() != Cardinality.UNBOUNDED) {
+					jsonGen.writeNumberField("maxItems", card.getMaxOccurs());
+				}
+
+			}
+
+			// make field optional if it has minOccurs > 0 but
+			// Nillable = true
+			NillableFlag nf = (NillableFlag) child.getConstraint(NillableFlag.class);
+			if (nf != null) {
+				if (nf.isEnabled()) {
+					requiredFields.add(child.getDisplayName());
+				}
+			}
+
+			jsonGen.writeEndObject(); // 3
+
+		}
+
+		// write Array of required fields for this type
+		if (requiredFields.size() > 0) {
+			jsonGen.writeArrayFieldStart("required"); // A1
+			for (String requiredFieldName : requiredFields) {
+				jsonGen.writeString(requiredFieldName);
+			}
+			jsonGen.writeEndArray(); // A1
+		}
+
+		jsonGen.writeEndObject(); // 2
+		jsonGen.writeEndObject(); // 1
+
+	}
+
+	private void encodePropertyDefinition() {
+
 	}
 
 	@Override
@@ -195,8 +212,21 @@ public class JsonSchemaWriter extends AbstractSchemaWriter {
 			return "number";
 		case "java.lang.Boolean":
 			return "boolean";
+		case "java.util.Date":
+			return "string";
 		default:
 			return "object";
+		}
+	}
+
+	private String getFormat(Binding binding) {
+		switch (binding.getBinding().getName()) {
+		case "java.util.Date":
+			return "date-time";
+		case "java.util.Calendar":
+			return "date-time";
+		default:
+			return null;
 		}
 	}
 
