@@ -21,7 +21,7 @@ import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.headless.EnvironmentManager;
 import eu.esdihumboldt.hale.common.headless.TransformationEnvironment;
 import eu.esdihumboldt.hale.server.projects.impl.ProjectHandler;
-import eu.esdihumboldt.util.resource.scavenger.ResourceScavenger;
+import eu.esdihumboldt.util.scavenger.ResourceScavenger;
 
 /**
  * Service that scans for projects in a directory. Manages if projects are

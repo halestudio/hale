@@ -14,5 +14,4 @@ Require-Bundle: de.cs3d.util.eclipse;bundle-version="2.5.1",
 Bundle-Activator: eu.esdihumboldt.util.resource.internal.ResourceBundle
 Bundle-ActivationPolicy: lazy
 Export-Package: eu.esdihumboldt.util.resource,
- eu.esdihumboldt.util.resource.internal;x-internal:=true,
- eu.esdihumboldt.util.resource.scavenger
+ eu.esdihumboldt.util.resource.internal;x-internal:=true
