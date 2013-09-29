@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: HALE Server Database Tools
+Bundle-SymbolicName: eu.esdihumboldt.hale.server.db
+Bundle-Version: 2.7.0.qualifier
+Bundle-Vendor: Data Harmonisation Panel
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
+ eu.esdihumboldt.hale.server.model;bundle-version="2.6.0",
+ com.orientechnologies.orient.core;bundle-version="1.5.1"
+Import-Package: org.apache.commons.configuration;version="1.5.0"
+Export-Package: eu.esdihumboldt.hale.server.db.orient

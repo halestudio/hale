@@ -17,14 +17,17 @@
 package eu.esdihumboldt.util.io;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
@@ -90,16 +93,16 @@ public final class IOUtils {
 	 * @throws IOException if an error occurs
 	 */
 	public static Collection<File> extract(File baseDir, InputStream in) throws IOException {
-		final String basePath = baseDir.getAbsolutePath();
+		final Path basePath = baseDir.getAbsoluteFile().toPath();
 		Collection<File> collect = new ArrayList<>();
 		final ZipInputStream zis = new ZipInputStream(in);
 		try {
 			ZipEntry entry;
 			while ((entry = zis.getNextEntry()) != null) {
 				if (!entry.isDirectory()) {
-					final File file = new File(baseDir, entry.getName());
+					final Path file = basePath.resolve(entry.getName()).normalize();
 
-					if (!file.getAbsolutePath().startsWith(basePath)) {
+					if (!file.startsWith(basePath)) {
 						// not inside target directory
 						log.warn(
 								"Skipped extraction of file {} as it is not in the target directory",
@@ -107,15 +110,59 @@ public final class IOUtils {
 						continue;
 					}
 
-					Files.createParentDirs(file);
-					Files.write(ByteStreams.toByteArray(zis), file);
-					collect.add(file);
+					File fileObj = file.toFile();
+					Files.createParentDirs(fileObj);
+					Files.write(ByteStreams.toByteArray(zis), fileObj);
+					collect.add(fileObj);
 				}
 			}
 		} finally {
 			zis.close();
 		}
 		return collect;
+	}
+
+	/**
+	 * ZIP a directory with sub-folders and write it to the given output stream.
+	 * 
+	 * @param zipDir the directory to ZIP
+	 * @param zos the ZIP output stream
+	 * @throws IOException if reading the directory or writing the ZIP stream
+	 *             fails
+	 */
+	public static void zipDirectory(File zipDir, ZipOutputStream zos) throws IOException {
+		zipDirectory(zipDir, zos, "");
+	}
+
+	private static void zipDirectory(File zipDir, ZipOutputStream zos, String parentFolder)
+			throws IOException {
+		String[] dirList = zipDir.list();
+		byte[] readBuffer = new byte[2156];
+		int bytesIn = 0;
+
+		for (int i = 0; i < dirList.length; i++) {
+
+			File f = new File(zipDir, dirList[i]);
+			if (f.isDirectory()) {
+				if (parentFolder.isEmpty())
+					zipDirectory(f, zos, f.getName());
+				else
+					zipDirectory(f, zos, parentFolder + "/" + f.getName());
+				continue;
+			}
+			FileInputStream fis = new FileInputStream(f);
+			ZipEntry anEntry;
+			if (parentFolder.isEmpty())
+				anEntry = new ZipEntry(f.getName());
+			else
+				anEntry = new ZipEntry(parentFolder + "/" + f.getName());
+			zos.putNextEntry(anEntry);
+
+			while ((bytesIn = fis.read(readBuffer)) != -1) {
+				zos.write(readBuffer, 0, bytesIn);
+			}
+			fis.close();
+		}
 	}
 
 	/**

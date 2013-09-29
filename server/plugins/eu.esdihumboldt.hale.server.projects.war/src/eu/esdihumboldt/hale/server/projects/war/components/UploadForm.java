@@ -45,7 +45,7 @@ import eu.esdihumboldt.hale.server.projects.war.pages.ProjectsPage;
 import eu.esdihumboldt.hale.server.webapp.components.FieldMessage;
 import eu.esdihumboldt.hale.server.webapp.components.FieldValidatingBehavior;
 import eu.esdihumboldt.util.io.IOUtils;
-import eu.esdihumboldt.util.resource.scavenger.ScavengerException;
+import eu.esdihumboldt.util.scavenger.ScavengerException;
 
 /**
  * Upload form for new projects.

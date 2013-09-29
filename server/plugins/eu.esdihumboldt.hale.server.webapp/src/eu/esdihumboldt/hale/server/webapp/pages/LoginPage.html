@@ -1,41 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
-	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en">
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
 <head>
 <title>Login Page</title>
-<meta http-equiv="content-type" content="text/html;charset=utf-8" />
-<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta charset="utf-8">
 </head>
 <body>
 	<wicket:extend>
-		<h2>Login</h2>
-		<div>
-			<form name='f' action='j_spring_security_check' method='post'>
-				<table class="no-stretch">
-					<tr>
-						<td style="text-align: right">User:</td>
-						<td><input type='text' name='j_username' value=''
-							style="width: 150px;" /></td>
-					</tr>
-					<tr>
-						<td style="text-align: right">Password:</td>
-						<td><input type='password' name='j_password'
-							style="width: 150px;" /></td>
-					</tr>
-					<!-- tr>
-						<td><input type="checkbox" name="_spring_security_remember_me"></input></td>
-						<td>Remember me</td>
-					</tr-->
-					<tr>
-						<td colspan='2' align="right"><input name="submit"
-							type="submit" value="Login" /></td>
-					</tr>
-				</table>
+		<div class="container">
+			<form name="f" class="form-signin" action="j_spring_security_check"
+				method="post">
+				<div>
+					<h2 class="form-signin-heading">Please sign in</h2>
+					<input type="text" class="input-block-level" name='j_username'
+						placeholder="Username">
+					<input type="password" class="input-block-level" name='j_password' placeholder="Password">
+					<label class="checkbox">
+						<input type="checkbox"name="_spring_security_remember_me"> Remember me </label>
+					<button class="btn btn-large btn-primary" type="submit">Sign in</button>
+				</div>
 			</form>
+
+			<div wicket:id="feedback"></div>
 		</div>
-		<div wicket:id="feedback"></div>
 	</wicket:extend>
 </body>
 </html>
