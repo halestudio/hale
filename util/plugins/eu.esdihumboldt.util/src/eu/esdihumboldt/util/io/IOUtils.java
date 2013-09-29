@@ -17,6 +17,7 @@
 package eu.esdihumboldt.util.io;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
@@ -118,6 +120,49 @@ public final class IOUtils {
 			zis.close();
 		}
 		return collect;
+	}
+
+	/**
+	 * ZIP a directory with sub-folders and write it to the given output stream.
+	 * 
+	 * @param zipDir the directory to ZIP
+	 * @param zos the ZIP output stream
+	 * @throws IOException if reading the directory or writing the ZIP stream
+	 *             fails
+	 */
+	public static void zipDirectory(File zipDir, ZipOutputStream zos) throws IOException {
+		zipDirectory(zipDir, zos, "");
+	}
+
+	private static void zipDirectory(File zipDir, ZipOutputStream zos, String parentFolder)
+			throws IOException {
+		String[] dirList = zipDir.list();
+		byte[] readBuffer = new byte[2156];
+		int bytesIn = 0;
+
+		for (int i = 0; i < dirList.length; i++) {
+
+			File f = new File(zipDir, dirList[i]);
+			if (f.isDirectory()) {
+				if (parentFolder.isEmpty())
+					zipDirectory(f, zos, f.getName());
+				else
+					zipDirectory(f, zos, parentFolder + "/" + f.getName());
+				continue;
+			}
+			FileInputStream fis = new FileInputStream(f);
+			ZipEntry anEntry;
+			if (parentFolder.isEmpty())
+				anEntry = new ZipEntry(f.getName());
+			else
+				anEntry = new ZipEntry(parentFolder + "/" + f.getName());
+			zos.putNextEntry(anEntry);
+
+			while ((bytesIn = fis.read(readBuffer)) != -1) {
+				zos.write(readBuffer, 0, bytesIn);
+			}
+			fis.close();
+		}
 	}
 
 	/**
