@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.server.templates.war.resources
 
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.zip.ZipOutputStream
 
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -35,6 +36,7 @@ import eu.esdihumboldt.hale.common.headless.scavenger.ProjectReference
 import eu.esdihumboldt.hale.server.db.orient.DatabaseHelper
 import eu.esdihumboldt.hale.server.model.Template
 import eu.esdihumboldt.hale.server.templates.TemplateScavenger
+import eu.esdihumboldt.util.io.IOUtils
 import groovy.transform.CompileStatic
 
 
@@ -63,7 +65,7 @@ class TemplatesResources {
 	 * Retrieve mapping files. 
 	 */
 	@RequestMapping(value = '/files/{id}/**', method = RequestMethod.GET)
-	void createProject(@PathVariable('id') String id,
+	void getFile(@PathVariable('id') String id,
 			HttpServletRequest request, HttpServletResponse response) {
 		ProjectReference<?> ref = (ProjectReference) scavenger.getReference(id);
 		if (ref == null) {
@@ -79,6 +81,7 @@ class TemplatesResources {
 		if (requested.startsWith(baseDir)) {
 			// path lies in templates directory
 			if (Files.exists(requested)) {
+				response.status = HttpServletResponse.SC_OK
 				response.outputStream.withStream { OutputStream out ->
 					Files.copy(requested, out)
 				}
@@ -101,6 +104,48 @@ class TemplatesResources {
 
 				return
 			}
+		}
+
+		// send 404
+		response.sendError HttpServletResponse.SC_NOT_FOUND
+	}
+
+	/**
+	 * Retrieve ZIP archive of template.
+	 */
+	@RequestMapping(value = '/archive/{id}', method = RequestMethod.GET, produces = 'application/zip')
+	void getArchive(@PathVariable('id') String id,
+			HttpServletRequest request, HttpServletResponse response) {
+		ProjectReference<?> ref = (ProjectReference) scavenger.getReference(id);
+		if (ref == null) {
+			response.sendError HttpServletResponse.SC_NOT_FOUND, "Template with ID $id does not exist."
+			return
+		}
+
+		Path templatePath = scavenger.huntingGrounds.toPath().resolve(id);
+		if (Files.exists(templatePath)) {
+			response.status = HttpServletResponse.SC_OK
+			response.contentType = 'application/zip'
+			response.addHeader('Content-Disposition', "attachment; filename=\"template-${id}.zip\"")
+
+			new ZipOutputStream(response.outputStream).withStream{ ZipOutputStream zos ->
+				IOUtils.zipDirectory(templatePath.toFile(), zos)
+			}
+
+			// count download
+			OrientGraph graph = DatabaseHelper.getGraph()
+			try {
+				Template template = Template.getByTemplateId(graph, id)
+				if (template != null) {
+					template.setDownloads(template.getDownloads() + 1)
+				}
+			} catch (Exception e) {
+				log.error("Error counting donwload on template $id", e);
+			} finally {
+				graph.shutdown()
+			}
+
+			return
 		}
 
 		// send 404
