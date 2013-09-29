@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<head>
+	<title>Template Page</title>
+	<meta charset="utf-8">
+</head>
+<body>
+	<wicket:extend>
+		<div class="container">
+			<div class="page-header">
+                <h2><span wicket:id="name">Name</span> <small>HALE project template</small></h2>
+        	</div>
+        	<div class="btn-toolbar clearfix">
+        		<div class="btn-group pull-right">
+        			<a wicket:id="download" class="btn btn-primary"><i class="icon-download icon-white"></i> Download ZIP</a>
+        		</div>
+        	</div>
+			<div>
+				<pre wicket:id="description" style="word-break: break-word;">Text</pre>
+			</div>
+		</div>
+	</wicket:extend>
+</body>
+</html>

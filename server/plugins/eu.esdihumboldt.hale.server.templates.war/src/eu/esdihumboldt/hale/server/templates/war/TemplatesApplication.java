@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.server.templates.war;
 
 import org.apache.wicket.Page;
 
+import eu.esdihumboldt.hale.server.templates.war.pages.TemplatePage;
 import eu.esdihumboldt.hale.server.templates.war.pages.TemplatesPage;
 import eu.esdihumboldt.hale.server.templates.war.pages.UploadPage;
 import eu.esdihumboldt.hale.server.webapp.BaseWebApplication;
@@ -38,6 +39,13 @@ public class TemplatesApplication extends BaseWebApplication {
 		super.init();
 
 		mountPage("/upload", UploadPage.class);
+
+		mountPage("/show", TemplatePage.class);
+	}
+
+	@Override
+	public String getMainTitle() {
+		return super.getMainTitle() + " Templates";
 	}
 
 }

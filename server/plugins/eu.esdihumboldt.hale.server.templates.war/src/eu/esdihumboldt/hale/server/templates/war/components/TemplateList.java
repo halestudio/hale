@@ -30,6 +30,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.record.impl.ODocument;
@@ -40,6 +41,7 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagi
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.ajax.BootstrapAjaxPagingNavigator;
 import eu.esdihumboldt.hale.server.db.orient.DatabaseHelper;
 import eu.esdihumboldt.hale.server.model.Template;
+import eu.esdihumboldt.hale.server.templates.war.pages.TemplatePage;
 import eu.esdihumboldt.hale.server.templates.war.pages.UploadPage;
 import eu.esdihumboldt.util.blueprints.entities.NonUniqueResultException;
 
@@ -123,7 +125,14 @@ public class TemplateList extends Panel {
 //					item.add(new Label("id", id));
 
 					// name
-					item.add(new Label("name", template.getName()));
+					WebMarkupContainer nameContainer = new WebMarkupContainer("name");
+					item.add(nameContainer);
+					PageParameters params = new PageParameters();
+					params.set(0, template.getTemplateId());
+					BookmarkablePageLink<String> link = new BookmarkablePageLink<>("details",
+							TemplatePage.class, params);
+					nameContainer.add(link);
+					link.add(new Label("name", template.getName()));
 
 					// author
 					item.add(new Label("author", template.getAuthor()));
