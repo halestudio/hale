@@ -77,13 +77,15 @@ public class TemplateList extends Panel {
 					String searchText = getSearchText();
 					OCommandSQL sql;
 					if (searchText == null || searchText.isEmpty()) {
-						sql = new OCommandSQL("select @rid from template where valid = true");
+						sql = new OCommandSQL(
+								"SELECT @rid,name FROM template WHERE valid = true ORDER BY name");
 					}
 					else {
 						searchText = "%" + searchText.toLowerCase() + "%";
 						sql = new OCommandSQL(
-								"select @rid from template where valid = true"
-										+ " and (name.toLowerCase() like $searchtext or author.toLowerCase() like $searchtext)");
+								"SELECT @rid,name FROM template WHERE valid = true"
+										+ " AND (name.toLowerCase() like $searchtext OR author.toLowerCase() like $searchtext)"
+										+ " ORDER BY name");
 						sql.getContext().setVariable("searchtext", searchText);
 					}
 
