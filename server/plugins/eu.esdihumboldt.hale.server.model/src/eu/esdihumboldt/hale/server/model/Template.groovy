@@ -44,4 +44,14 @@ class Template extends Project {
 	 * The data of the initial creation of database representation.
 	 */
 	Date created
+
+	/**
+	 * Number of hits on the project file.
+	 */
+	int hits = 0
+
+	/**
+	 * Number of archive downloads.
+	 */
+	int downloads = 0
 }

@@ -27,6 +27,13 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 
+import com.tinkerpop.blueprints.impls.orient.OrientGraph
+
+import de.cs3d.util.logging.ALogger
+import de.cs3d.util.logging.ALoggerFactory
+import eu.esdihumboldt.hale.common.headless.scavenger.ProjectReference
+import eu.esdihumboldt.hale.server.db.orient.DatabaseHelper
+import eu.esdihumboldt.hale.server.model.Template
 import eu.esdihumboldt.hale.server.templates.TemplateScavenger
 import groovy.transform.CompileStatic
 
@@ -40,16 +47,30 @@ import groovy.transform.CompileStatic
 @Controller
 class TemplatesResources {
 
+	private static final ALogger log = ALoggerFactory.getLogger(TemplatesResources)
+
 	private final Path baseDir
+
+	private final TemplateScavenger scavenger
 
 	@Autowired
 	public TemplatesResources(TemplateScavenger scavenger) {
-		this.baseDir = scavenger.huntingGrounds.toPath();
+		this.scavenger = scavenger
+		this.baseDir = scavenger.huntingGrounds.toPath()
 	}
 
+	/**
+	 * Retrieve mapping files. 
+	 */
 	@RequestMapping(value = '/files/{id}/**', method = RequestMethod.GET)
 	void createProject(@PathVariable('id') String id,
 			HttpServletRequest request, HttpServletResponse response) {
+		ProjectReference<?> ref = (ProjectReference) scavenger.getReference(id);
+		if (ref == null) {
+			response.sendError HttpServletResponse.SC_NOT_FOUND, "Template with ID $id does not exist."
+			return
+		}
+
 		// try to resolve the servlet path against the base path
 		String path = request.pathInfo
 		int index = path.indexOf('/', 1)
@@ -61,6 +82,23 @@ class TemplatesResources {
 				response.outputStream.withStream { OutputStream out ->
 					Files.copy(requested, out)
 				}
+
+				// check if accessed file was the project file and count hit
+				File projectFile = ref.getProjectFile();
+				if (projectFile != null && projectFile.toPath() == requested) {
+					OrientGraph graph = DatabaseHelper.getGraph()
+					try {
+						Template template = Template.getByTemplateId(graph, id)
+						if (template != null) {
+							template.setHits(template.getHits() + 1)
+						}
+					} catch (Exception e) {
+						log.error("Error counting hit on template $id", e);
+					} finally {
+						graph.shutdown()
+					}
+				}
+
 				return
 			}
 		}

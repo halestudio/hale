@@ -130,6 +130,14 @@ public class TemplateList extends Panel {
 
 					// last update
 					item.add(new Label("update", dateFormat.format(template.getLastUpdate())));
+
+					// popularity
+					WebMarkupContainer popularity = new WebMarkupContainer("popularity");
+					item.add(popularity);
+					int pop = template.getHits() + template.getDownloads();
+					Label popValue = new Label("value", String.valueOf(pop));
+					popValue.setVisible(pop > 0);
+					popularity.add(popValue);
 				} catch (NonUniqueResultException e) {
 					// ignore
 				} finally {
