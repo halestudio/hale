@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.server.templates.war.pages;
 
+import java.util.Iterator;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.wicket.AttributeModifier;
@@ -26,15 +28,19 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.string.StringValue;
 
+import com.tinkerpop.blueprints.Direction;
+import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.server.db.orient.DatabaseHelper;
 import eu.esdihumboldt.hale.server.model.Template;
+import eu.esdihumboldt.hale.server.model.User;
 import eu.esdihumboldt.hale.server.templates.TemplateScavenger;
 import eu.esdihumboldt.hale.server.templates.war.TemplateLocations;
 import eu.esdihumboldt.hale.server.webapp.pages.BasePage;
+import eu.esdihumboldt.hale.server.webapp.util.UserUtil;
 import eu.esdihumboldt.util.blueprints.entities.NonUniqueResultException;
 
 /**
@@ -99,10 +105,30 @@ public class TemplatePage extends BasePage {
 							TemplateLocations.getTemplateProjectUrl(scavenger, templateId)));
 					add(project);
 
+					// author
+					Label author = new Label("author", template.getAuthor());
+					add(author);
+
+					// user
+					String userName;
+					Vertex v = template.getV();
+					Iterator<Vertex> owners = v.getVertices(Direction.OUT, "owner").iterator();
+					if (owners.hasNext()) {
+						User user = new User(owners.next(), graph);
+						userName = UserUtil.getDisplayName(user);
+					}
+					else {
+						userName = "Unregistered user";
+					}
+					Label user = new Label("user", userName);
+					add(user);
+
 					// description
 					String descr = template.getDescription();
+					if (descr == null || descr.isEmpty()) {
+						descr = "No description for the project template available.";
+					}
 					Label description = new Label("description", descr);
-					description.setVisible(descr != null && !descr.isEmpty());
 					add(description);
 				}
 				else {

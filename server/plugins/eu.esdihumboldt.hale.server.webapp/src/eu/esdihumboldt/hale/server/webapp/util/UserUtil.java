@@ -83,7 +83,7 @@ public class UserUtil {
 	/**
 	 * Get the display name for a given user.
 	 * 
-	 * @param user the user
+	 * @param user the user, may be <code>null</code>
 	 * @return the user's display name
 	 */
 	public static String getDisplayName(User user) {

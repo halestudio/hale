@@ -17,12 +17,20 @@
         				<input wicket:id="project" class="input-xxlarge" style="background-color: #fff; cursor: text;" type="text" readonly="readonly" value="Project location">
         			</div>
         		</div>
-        		<div class="btn-group pull-right">
+        		<div class="btn-group">
         			<a wicket:id="download" class="btn btn-primary"><i class="icon-download icon-white"></i> Download ZIP</a>
         		</div>
         	</div>
-			<div>
-				<pre wicket:id="description" style="word-break: break-word;">Text</pre>
+        	<div class="row-fluid">
+				<div class="span8">
+					<pre wicket:id="description" class="text">Text</pre>
+				</div>
+				<div class="span4">
+					<h5>Author</h5>
+					<p wicket:id="author">Author name</p>
+					<h5>Uploaded by</h5>
+					<p wicket:id="user">User name</p>
+				</div>
 			</div>
 		</div>
 	</wicket:extend>
