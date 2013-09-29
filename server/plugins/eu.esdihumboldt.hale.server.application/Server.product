@@ -271,11 +271,11 @@
       <plugin id="eu.esdihumboldt.hale.server.projects.war" autoStart="false" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.security" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.status.war" autoStart="false" startLevel="0" />
-      <plugin id="eu.esdihumboldt.hale.server.templates" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.server.templates" autoStart="true" startLevel="3" />
       <plugin id="eu.esdihumboldt.hale.server.templates.war" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.users" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.war" autoStart="false" startLevel="0" />
-      <plugin id="eu.esdihumboldt.hale.server.webapp.war" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.server.webapp.war" autoStart="false" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.webtransform.war" autoStart="false" startLevel="0" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.registry" autoStart="true" startLevel="0" />
