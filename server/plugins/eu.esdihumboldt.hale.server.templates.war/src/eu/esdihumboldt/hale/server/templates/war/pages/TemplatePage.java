@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.request.http.flow.AbortWithHttpErrorCodeException;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -39,6 +40,7 @@ import eu.esdihumboldt.hale.server.model.Template;
 import eu.esdihumboldt.hale.server.model.User;
 import eu.esdihumboldt.hale.server.templates.TemplateScavenger;
 import eu.esdihumboldt.hale.server.templates.war.TemplateLocations;
+import eu.esdihumboldt.hale.server.templates.war.components.DeleteTemplateLink;
 import eu.esdihumboldt.hale.server.webapp.util.UserUtil;
 import eu.esdihumboldt.util.blueprints.entities.NonUniqueResultException;
 
@@ -108,6 +110,11 @@ public class TemplatePage extends TemplatesBasePage {
 					Label author = new Label("author", template.getAuthor());
 					add(author);
 
+					// edit-buttons container
+					WebMarkupContainer editButtons = new WebMarkupContainer("edit-buttons");
+					editButtons.setVisible(false);
+					add(editButtons);
+
 					// user
 					String userName;
 					Vertex v = template.getV();
@@ -115,6 +122,19 @@ public class TemplatePage extends TemplatesBasePage {
 					if (owners.hasNext()) {
 						User user = new User(owners.next(), graph);
 						userName = UserUtil.getDisplayName(user);
+
+						// edit buttons
+						if (loggedIn && UserUtil.getLogin().equals(user.getLogin())) {
+							editButtons.setVisible(true);
+
+							// edit
+							editButtons
+									.add(new BookmarkablePageLink<>("edit", EditTemplatePage.class,
+											new PageParameters().set(0, templateId)));
+
+							// delete
+							editButtons.add(new DeleteTemplateLink("delete", templateId));
+						}
 					}
 					else {
 						userName = "Unregistered user";

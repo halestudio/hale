@@ -30,7 +30,6 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.server.db.orient.DatabaseHelper;
 import eu.esdihumboldt.hale.server.model.Template;
 import eu.esdihumboldt.hale.server.templates.war.pages.TemplatePage;
-import eu.esdihumboldt.hale.server.templates.war.pages.TemplatesPage;
 import eu.esdihumboldt.hale.server.webapp.components.bootstrap.BootstrapFeedbackPanel;
 import eu.esdihumboldt.util.blueprints.entities.NonUniqueResultException;
 
@@ -44,7 +43,7 @@ public class TemplateForm extends Panel {
 
 	private static final ALogger log = ALoggerFactory.getLogger(TemplateForm.class);
 
-	private final boolean newTemplate;
+//	private final boolean newTemplate;
 
 	private String name;
 
@@ -63,7 +62,7 @@ public class TemplateForm extends Panel {
 	 */
 	public TemplateForm(String componentId, boolean newTemplate, String templateId) {
 		super(componentId);
-		this.newTemplate = newTemplate;
+//		this.newTemplate = newTemplate;
 		this.templateId = templateId;
 
 		OrientGraph graph = DatabaseHelper.getGraph();
@@ -105,11 +104,11 @@ public class TemplateForm extends Panel {
 
 				success("The template information was successfully updated.");
 
-				if (TemplateForm.this.newTemplate) {
-					// forward to template page
-					setResponsePage(TemplatePage.class,
-							new PageParameters().set(0, TemplateForm.this.templateId));
-				}
+//				if (TemplateForm.this.newTemplate) {
+				// forward to template page
+				setResponsePage(TemplatePage.class,
+						new PageParameters().set(0, TemplateForm.this.templateId));
+//				}
 			}
 
 		};
@@ -121,30 +120,7 @@ public class TemplateForm extends Panel {
 		form.add(new TextArea<>("description"));
 
 		// delete link
-		Link<?> deleteLink = new Link<Object>("delete") {
-
-			@Override
-			public void onClick() {
-				OrientGraph graph = DatabaseHelper.getGraph();
-				try {
-					Template template = Template.getByTemplateId(graph,
-							TemplateForm.this.templateId);
-					if (template == null) {
-						error("Template not found");
-						return;
-					}
-
-					template.delete();
-				} catch (NonUniqueResultException e) {
-					error("Internal error");
-					log.error("Duplicate template");
-				} finally {
-					graph.shutdown();
-				}
-
-				setResponsePage(TemplatesPage.class);
-			}
-		};
+		Link<?> deleteLink = new DeleteTemplateLink("delete", templateId);
 		deleteLink.setVisible(newTemplate);
 		form.add(deleteLink);
 

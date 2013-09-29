@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.server.templates.war;
 
 import org.apache.wicket.Page;
 
+import eu.esdihumboldt.hale.server.templates.war.pages.EditTemplatePage;
 import eu.esdihumboldt.hale.server.templates.war.pages.TemplatePage;
 import eu.esdihumboldt.hale.server.templates.war.pages.TemplatesPage;
 import eu.esdihumboldt.hale.server.templates.war.pages.UploadPage;
@@ -41,6 +42,8 @@ public class TemplatesApplication extends BaseWebApplication {
 		mountPage("/share", UploadPage.class);
 
 		mountPage("/show", TemplatePage.class);
+
+		mountPage("/edit", EditTemplatePage.class);
 	}
 
 	@Override

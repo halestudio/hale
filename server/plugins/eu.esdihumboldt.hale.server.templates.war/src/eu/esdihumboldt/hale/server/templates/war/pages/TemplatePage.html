@@ -7,9 +7,14 @@
 <body>
 	<wicket:extend>
 		<div class="container">
-			<div class="page-header">
-                <h2><span wicket:id="name">Name</span> <small>HALE project template</small></h2>
+			<div class="page-header clearfix">
+                <h2 class="pull-left"><span wicket:id="name">Name</span> <small>HALE project template</small></h2>
+                <div wicket:id="edit-buttons" class="btn-group pull-right">
+					<a wicket:id="edit" class="btn">Edit</a>
+					<a wicket:id="delete" class="btn">Delete</a>
+				</div>
         	</div>
+        		
         	<div class="btn-toolbar clearfix">
         		<div class="btn-group pull-left">
         			<div class="input-prepend">
