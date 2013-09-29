@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.server.templates.war.components;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +55,8 @@ public class TemplateList extends Panel {
 //	private static final ALogger log = ALoggerFactory.getLogger(ProjectList.class);
 
 	private String searchText;
+
+	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
 	/**
 	 * Constructor
@@ -117,13 +120,16 @@ public class TemplateList extends Panel {
 					Template template = Template.getById(graph, id);
 
 					// id
-					item.add(new Label("id", id));
+//					item.add(new Label("id", id));
 
 					// name
 					item.add(new Label("name", template.getName()));
 
 					// author
 					item.add(new Label("author", template.getAuthor()));
+
+					// last update
+					item.add(new Label("update", dateFormat.format(template.getLastUpdate())));
 				} catch (NonUniqueResultException e) {
 					// ignore
 				} finally {

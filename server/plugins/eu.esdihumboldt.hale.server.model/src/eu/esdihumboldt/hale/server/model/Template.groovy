@@ -34,4 +34,14 @@ class Template extends Project {
 	 * States if the template is valid an thus can be offered for download. 
 	 */
 	boolean valid
+
+	/**
+	 * The last update of the template.
+	 */
+	Date lastUpdate
+
+	/**
+	 * The data of the initial creation of database representation.
+	 */
+	Date created
 }

@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.server.templates.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 
@@ -138,6 +139,9 @@ public class TemplateScavengerImpl extends AbstractResourceScavenger<ProjectRefe
 				template.setAuthor(info.getAuthor());
 				template.setDescription(info.getDescription());
 				template.setValid(true);
+				Date now = new Date();
+				template.setCreated(now);
+				template.setLastUpdate(now);
 
 				log.info("Creating database representation for template {}", resourceId);
 			}
