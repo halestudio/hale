@@ -17,7 +17,10 @@ package eu.esdihumboldt.util.blueprints.entities;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.codehaus.groovy.ast.ASTNode;
 import org.codehaus.groovy.ast.AnnotationNode;
@@ -150,6 +153,8 @@ public class VertexEntityTransformation implements ASTTransformation {
 			clazz.addConstructor(buildVertexGraphConstructor(vertexField, graphField, superClass,
 					typeProperty, entityName));
 
+			Map<String, Expression> initialExpressions = new HashMap<>();
+
 			// get all non-static properties
 			List<PropertyNode> properties = AbstractASTTransformUtil.getInstanceProperties(clazz);
 			List<PropertyNode> newProperties = new ArrayList<>();
@@ -157,6 +162,11 @@ public class VertexEntityTransformation implements ASTTransformation {
 				// TODO check for "transient" properties?
 				// TODO check not allowed property names, e.g. id, v, g
 				// TODO decide on kind of property
+
+				// collect initial expressions for create function
+				if (property.getField().getInitialExpression() != null) {
+					initialExpressions.put(property.getName(), property.getInitialExpression());
+				}
 
 				// add static findByX method
 				clazz.addMethod(buildFindByMethod(clazz, entityName, typeProperty,
@@ -167,7 +177,8 @@ public class VertexEntityTransformation implements ASTTransformation {
 						property.getName(), property.getType()));
 
 				// update property
-				property.setGetterBlock(createGetter(property.getName(), vertexField));
+				property.setGetterBlock(createGetter(property.getName(), vertexField,
+						property.getType(), property.getField().getInitialExpression()));
 				property.setSetterBlock(createSetter(property.getName(), vertexField));
 				newProperties.add(property);
 
@@ -197,7 +208,7 @@ public class VertexEntityTransformation implements ASTTransformation {
 			clazz.addMethod(buildDeleteMethod(vertexField, graphField));
 
 			// add static create method
-			clazz.addMethod(buildCreateMethod(clazz, entityName));
+			clazz.addMethod(buildCreateMethod(clazz, entityName, initialExpressions));
 
 			// add static findAll method
 			clazz.addMethod(buildFindAllMethod(clazz, entityName, typeProperty));
@@ -280,9 +291,11 @@ public class VertexEntityTransformation implements ASTTransformation {
 	 * 
 	 * @param clazz the entity class
 	 * @param entityName the entity name
+	 * @param initialExpressions the initial expressions per property
 	 * @return the static create method taking a graph as an argument
 	 */
-	private MethodNode buildCreateMethod(ClassNode clazz, Expression entityName) {
+	private MethodNode buildCreateMethod(ClassNode clazz, Expression entityName,
+			Map<String, Expression> initialExpressions) {
 		clazz = ClassHelper.make(clazz.getName());
 
 		BlockStatement code = new BlockStatement();
@@ -312,6 +325,14 @@ public class VertexEntityTransformation implements ASTTransformation {
 				new MethodCallExpression(graph, new ConstantExpression("addVertex"),
 						new ArgumentListExpression(id)));
 		code.addStatement(assignVertex);
+
+		// set initial values on vertex
+		for (Entry<String, Expression> propertyInitial : initialExpressions.entrySet()) {
+			// > vertex.setProperty(name, initialValue)
+			code.addStatement(new ExpressionStatement(new MethodCallExpression(vertex,
+					"setProperty", new ArgumentListExpression(new ConstantExpression(
+							propertyInitial.getKey()), propertyInitial.getValue()))));
+		}
 
 		// > return new Entity(vertex, graph)
 		code.addStatement(new ReturnStatement(new ConstructorCallExpression(clazz,
@@ -610,16 +631,30 @@ public class VertexEntityTransformation implements ASTTransformation {
 		return block;
 	}
 
-	private Statement createGetter(String name, FieldNode vertexField) {
+	private Statement createGetter(String name, FieldNode vertexField, ClassNode propertyType,
+			Expression initialExpression) {
 		BlockStatement block = new BlockStatement();
 
+		// def tmp
+		VariableExpression tmpValue = new VariableExpression("tmp");
+
 		/*
-		 * > v.getProperty(name)
+		 * > tmp = v.getProperty(name)
 		 */
 		ArgumentListExpression args = new ArgumentListExpression();
 		args.addExpression(new ConstantExpression(name));
-		block.addStatement(new ExpressionStatement(new MethodCallExpression(new FieldExpression(
-				vertexField), "getProperty", args)));
+		block.addStatement(AbstractASTTransformUtil.declStatement(tmpValue,
+				new MethodCallExpression(new FieldExpression(vertexField), "getProperty", args)));
+
+		if (ClassHelper.isPrimitiveType(propertyType) && initialExpression != null) {
+			// if the class is a primitive, we must do a null check here
+
+			// if (tmp == null) return <initial-value>
+			block.addStatement(new IfStatement(AbstractASTTransformUtil.equalsNullExpr(tmpValue),
+					new ReturnStatement(initialExpression), new EmptyStatement()));
+		}
+
+		block.addStatement(new ReturnStatement(tmpValue));
 
 		return block;
 	}

@@ -41,6 +41,19 @@ class VertexEntityTransformationTest extends GroovyTestCase {
 		println ast
 	}
 
+	public void testDefaultValueOrient() {
+		Graph graph = new OrientGraph("memory:defValue");
+
+		DefaultValue val = DefaultValue.create(graph)
+		assertNotNull val
+		assertEquals 2, val.value
+		assertEquals 2, val.v.getProperty('value')
+
+		assertEquals 'somethin\'', val.name
+
+		graph.shutdown();
+	}
+
 	/**
 	 * Test querying before creating a node to test graph setup.
 	 */
