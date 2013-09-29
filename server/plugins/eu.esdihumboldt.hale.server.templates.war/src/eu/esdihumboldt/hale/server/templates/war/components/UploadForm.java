@@ -22,8 +22,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.lang.Bytes;
@@ -42,7 +44,9 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.headless.scavenger.ProjectReference;
 import eu.esdihumboldt.hale.server.templates.TemplateScavenger;
+import eu.esdihumboldt.hale.server.webapp.BaseWebApplication;
 import eu.esdihumboldt.hale.server.webapp.components.bootstrap.BootstrapFeedbackPanel;
+import eu.esdihumboldt.hale.server.webapp.util.UserUtil;
 import eu.esdihumboldt.util.Pair;
 import eu.esdihumboldt.util.io.IOUtils;
 import eu.esdihumboldt.util.scavenger.ScavengerException;
@@ -167,6 +171,24 @@ public abstract class UploadForm extends Panel {
 
 		});
 
+		// add anonym/recaptcha panel
+		boolean loggedIn = UserUtil.getLogin() != null;
+		WebMarkupContainer anonym = new WebMarkupContainer("anonym");
+
+		if (loggedIn) {
+			anonym.add(new WebMarkupContainer("recaptcha"));
+		}
+		else {
+			anonym.add(new RecaptchaPanel("recaptcha"));
+		}
+
+		anonym.add(new BookmarkablePageLink<>("login", ((BaseWebApplication) getApplication())
+				.getLoginPageClass()));
+
+		anonym.setVisible(!loggedIn);
+		form.add(anonym);
+
+		// feedback panel
 		form.add(new BootstrapFeedbackPanel("feedback"));
 	}
 

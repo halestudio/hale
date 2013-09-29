@@ -9,9 +9,16 @@
 		<form wicket:id="upload">
 			<fieldset>
 				<h3>Upload the template project</h3>
-				<span class="help-block">Select the project file for upload:</span>
+				<div wicket:id="anonym">
+					<p>
+						Please <a wicket:id="login">log in</a> or enter the Captcha
+						below to upload a project. If you log in you will be able to
+						manage your template after the initial creation.
+					</p>
+					<div style="margin-top: 10px; margin-bottom: 14px;" wicket:id="recaptcha"></div>
+				</div>
 				<div class="fileupload fileupload-new" data-provides="fileupload">
-					<p><span class="fileupload-preview"></span></p>
+					<p><strong>Select the project file to upload:</strong> <span class="fileupload-preview"></span></p>
 					<span class="btn btn-file"><span class="fileupload-new">Select file</span>
   					<span class="fileupload-exists">Change</span>
   						<input wicket:id="file" type="file" />

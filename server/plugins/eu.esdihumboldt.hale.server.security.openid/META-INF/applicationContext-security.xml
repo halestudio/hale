@@ -51,7 +51,7 @@
 	</http>
 	
 	<beans:bean id="openIdSuccessHandler" class="eu.esdihumboldt.hale.server.security.util.NewUserAuthenticationSuccessHandler">
-		<beans:property name="newUserRedirectUrl" value="/new" />
+		<beans:property name="newUserRedirectUrl" value="./new" />
 	</beans:bean>
 	
 	<beans:bean id="session-auth" class="eu.esdihumboldt.hale.server.security.util.MultiWarSessionAuthenticationStrategy">

@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.server.webapp.util;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.tinkerpop.blueprints.Graph;
@@ -24,6 +25,7 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.server.db.orient.DatabaseHelper;
 import eu.esdihumboldt.hale.server.model.User;
+import eu.esdihumboldt.hale.server.security.UserConstants;
 import eu.esdihumboldt.util.blueprints.entities.NonUniqueResultException;
 
 /**
@@ -43,7 +45,13 @@ public class UserUtil {
 	public static String getLogin() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth != null && auth.isAuthenticated()) {
-			return auth.getName();
+			for (GrantedAuthority authority : auth.getAuthorities()) {
+				if (authority.getAuthority().equals(UserConstants.ROLE_USER)
+						|| authority.getAuthority().equals(UserConstants.ROLE_ADMIN)) {
+					// only return the login for an actual user
+					return auth.getName();
+				}
+			}
 		}
 
 		return null;

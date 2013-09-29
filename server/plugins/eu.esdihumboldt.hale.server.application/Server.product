@@ -20,7 +20,9 @@
 -Dcache.level2.enabled=false
 -Dcache.level2.size=0
 -Djetty.port=8080
--Dhale.webapp.loginpage=openid</vmArgs>
+-Dhale.webapp.loginpage=openid
+-Drecaptcha.private=
+-Drecaptcha.public=</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
@@ -165,6 +167,7 @@
       <plugin id="jul.to.slf4j"/>
       <plugin id="log4j.over.slf4j"/>
       <plugin id="net.sf.ehcache"/>
+      <plugin id="net.tanesha.recaptcha"/>
       <plugin id="org.antlr.runtime"/>
       <plugin id="org.apache.ant"/>
       <plugin id="org.apache.commons.codec"/>
