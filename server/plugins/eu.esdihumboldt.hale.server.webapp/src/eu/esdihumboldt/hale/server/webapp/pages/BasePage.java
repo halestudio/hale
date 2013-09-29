@@ -252,6 +252,13 @@ public abstract class BasePage extends WebPage {
 	}
 
 	/**
+	 * @return the navbar
+	 */
+	public Navbar getNavbar() {
+		return navbar;
+	}
+
+	/**
 	 * Create a dropdown button for selecting the theme.
 	 * 
 	 * @return the drop down button to add to a navbar

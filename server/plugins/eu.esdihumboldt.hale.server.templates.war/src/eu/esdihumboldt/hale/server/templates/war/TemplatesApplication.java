@@ -38,7 +38,7 @@ public class TemplatesApplication extends BaseWebApplication {
 	public void init() {
 		super.init();
 
-		mountPage("/upload", UploadPage.class);
+		mountPage("/share", UploadPage.class);
 
 		mountPage("/show", TemplatePage.class);
 	}

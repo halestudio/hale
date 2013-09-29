@@ -19,7 +19,6 @@ import org.apache.wicket.markup.html.form.Form;
 
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.server.templates.war.components.UploadForm;
-import eu.esdihumboldt.hale.server.webapp.pages.BasePage;
 import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
 
 /**
@@ -27,8 +26,8 @@ import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
  * 
  * @author Simon Templer
  */
-@PageDescription(title = "New template")
-public class UploadPage extends BasePage {
+@PageDescription(title = "Share template")
+public class UploadPage extends TemplatesBasePage {
 
 	private static final long serialVersionUID = -8268659882000252602L;
 

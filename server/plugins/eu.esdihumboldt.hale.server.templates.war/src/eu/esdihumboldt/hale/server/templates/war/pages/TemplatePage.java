@@ -39,7 +39,6 @@ import eu.esdihumboldt.hale.server.model.Template;
 import eu.esdihumboldt.hale.server.model.User;
 import eu.esdihumboldt.hale.server.templates.TemplateScavenger;
 import eu.esdihumboldt.hale.server.templates.war.TemplateLocations;
-import eu.esdihumboldt.hale.server.webapp.pages.BasePage;
 import eu.esdihumboldt.hale.server.webapp.util.UserUtil;
 import eu.esdihumboldt.util.blueprints.entities.NonUniqueResultException;
 
@@ -48,7 +47,7 @@ import eu.esdihumboldt.util.blueprints.entities.NonUniqueResultException;
  * 
  * @author Simon Templer
  */
-public class TemplatePage extends BasePage {
+public class TemplatePage extends TemplatesBasePage {
 
 	private static final long serialVersionUID = 596965328223399419L;
 
