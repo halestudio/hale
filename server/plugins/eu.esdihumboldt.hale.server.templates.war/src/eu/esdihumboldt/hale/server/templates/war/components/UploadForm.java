@@ -178,6 +178,13 @@ public abstract class UploadForm extends Panel {
 	 *         target directory
 	 */
 	protected boolean isZipFile(FileUpload upload) {
+		String lowerFileName = upload.getClientFileName().toLowerCase();
+
+		if (lowerFileName.endsWith(".hale")) {
+			// do not extract .hale files
+			return false;
+		}
+
 		switch (upload.getContentType()) {
 		case "application/zip":
 		case "application/x-zip":
@@ -185,7 +192,8 @@ public abstract class UploadForm extends Panel {
 			return true;
 		}
 
-		return upload.getClientFileName().toLowerCase().endsWith(".zip");
+		// by default extract .zip and .halez files
+		return lowerFileName.endsWith(".zip") || lowerFileName.endsWith(".halez");
 	}
 
 	/**
