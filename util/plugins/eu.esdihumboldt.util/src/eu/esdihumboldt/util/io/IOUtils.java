@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.zip.ZipEntry;
@@ -90,16 +91,16 @@ public final class IOUtils {
 	 * @throws IOException if an error occurs
 	 */
 	public static Collection<File> extract(File baseDir, InputStream in) throws IOException {
-		final String basePath = baseDir.getAbsolutePath();
+		final Path basePath = baseDir.getAbsoluteFile().toPath();
 		Collection<File> collect = new ArrayList<>();
 		final ZipInputStream zis = new ZipInputStream(in);
 		try {
 			ZipEntry entry;
 			while ((entry = zis.getNextEntry()) != null) {
 				if (!entry.isDirectory()) {
-					final File file = new File(baseDir, entry.getName());
+					final Path file = basePath.resolve(entry.getName()).normalize();
 
-					if (!file.getAbsolutePath().startsWith(basePath)) {
+					if (!file.startsWith(basePath)) {
 						// not inside target directory
 						log.warn(
 								"Skipped extraction of file {} as it is not in the target directory",
@@ -107,9 +108,10 @@ public final class IOUtils {
 						continue;
 					}
 
-					Files.createParentDirs(file);
-					Files.write(ByteStreams.toByteArray(zis), file);
-					collect.add(file);
+					File fileObj = file.toFile();
+					Files.createParentDirs(fileObj);
+					Files.write(ByteStreams.toByteArray(zis), fileObj);
+					collect.add(fileObj);
 				}
 			}
 		} finally {
