@@ -19,6 +19,8 @@ package eu.esdihumboldt.hale.server.webapp;
 import org.apache.wicket.authorization.strategies.page.SimplePageAuthorizationStrategy;
 import org.apache.wicket.core.request.handler.PageProvider;
 import org.apache.wicket.core.request.handler.RenderPageRequestHandler;
+import org.apache.wicket.markup.html.IPackageResourceGuard;
+import org.apache.wicket.markup.html.SecurePackageResourceGuard;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.IRequestHandler;
 import org.apache.wicket.request.cycle.AbstractRequestCycleListener;
@@ -29,10 +31,23 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import de.agilecoders.wicket.core.Bootstrap;
+import de.agilecoders.wicket.core.settings.BootstrapSettings;
+import de.agilecoders.wicket.core.settings.ThemeProvider;
+import de.agilecoders.wicket.less.BootstrapLess;
+import de.agilecoders.wicket.themes.markup.html.bootstrap3.Bootstrap3Theme;
+import de.agilecoders.wicket.themes.markup.html.google.GoogleTheme;
+import de.agilecoders.wicket.themes.markup.html.metro.MetroTheme;
+import de.agilecoders.wicket.themes.markup.html.wicket.WicketTheme;
+import de.agilecoders.wicket.themes.settings.BootswatchThemeProvider;
 import eu.esdihumboldt.hale.server.security.UserConstants;
+import eu.esdihumboldt.hale.server.webapp.pages.BasePage;
 import eu.esdihumboldt.hale.server.webapp.pages.ExceptionPage;
 import eu.esdihumboldt.hale.server.webapp.pages.LoginPage;
+import eu.esdihumboldt.hale.server.webapp.pages.NewUserPage;
+import eu.esdihumboldt.hale.server.webapp.pages.OpenIdLoginPage;
 import eu.esdihumboldt.hale.server.webapp.pages.SecuredPage;
+import eu.esdihumboldt.hale.server.webapp.pages.UserSettingsPage;
 
 /**
  * A basic class for web applications
@@ -76,25 +91,61 @@ public abstract class BaseWebApplication extends WebApplication {
 	}
 
 	/**
-	 * States if the login page is enabled for this application. The default
+	 * Determines the login page type for this application. The default
 	 * implementation looks at the {@value #SYSTEM_PROPERTY_LOGIN_PAGE} system
-	 * property for this, if not specified the default is <code>false</code>.
+	 * property for this, if not specified the default is no login page.
 	 * 
-	 * @return if the login page is enabled
+	 * @return a page class or <code>null</code>
 	 */
-	public boolean isLoginPageEnabled() {
-		return Boolean.parseBoolean(System.getProperty(SYSTEM_PROPERTY_LOGIN_PAGE, "false"));
+	public Class<? extends BasePage> getLoginPageClass() {
+		String loginPage = System.getProperty(SYSTEM_PROPERTY_LOGIN_PAGE, "false");
+
+		switch (loginPage.toLowerCase()) {
+		case "true": // fall through
+		case "form":
+			return LoginPage.class;
+		case "openid":
+			return OpenIdLoginPage.class;
+		default:
+			return null;
+		}
 	}
 
 	@Override
 	public void init() {
 		super.init();
 
+		BootstrapSettings settings = new BootstrapSettings();
+		final ThemeProvider themeProvider = new BootswatchThemeProvider() {
+
+			{
+				add(new MetroTheme());
+				add(new GoogleTheme());
+				add(new WicketTheme());
+				add(new Bootstrap3Theme());
+//				defaultTheme("bootstrap-responsive");
+				// XXX CSS for bootstrap responsive has some issues
+				defaultTheme("bootstrap");
+			}
+		};
+		settings.setThemeProvider(themeProvider);
+
+		Bootstrap.install(this, settings);
+		BootstrapLess.install(this);
+		configureResourceBundles();
+
+		IPackageResourceGuard packageResourceGuard = getResourceSettings()
+				.getPackageResourceGuard();
+		if (packageResourceGuard instanceof SecurePackageResourceGuard) {
+			SecurePackageResourceGuard guard = (SecurePackageResourceGuard) packageResourceGuard;
+			guard.addPattern("+org/apache/wicket/resource/jquery/*.map");
+		}
+
 		// enforce mounts so security interceptors based on URLs can't be fooled
 		getSecuritySettings().setEnforceMounts(true);
 
 		getSecuritySettings().setAuthorizationStrategy(
-				new SimplePageAuthorizationStrategy(SecuredPage.class, LoginPage.class) {
+				new SimplePageAuthorizationStrategy(SecuredPage.class, getLoginPageClass()) {
 
 					@Override
 					protected boolean isAuthorized() {
@@ -130,10 +181,51 @@ public abstract class BaseWebApplication extends WebApplication {
 		});
 
 		// add login page to every application based on this one (if enabled)
-		if (isLoginPageEnabled()) {
+		Class<? extends BasePage> loginClass = getLoginPageClass();
+		if (loginClass != null) {
 			// login page
-			mountPage("/login", LoginPage.class);
+			mountPage("/login", loginClass);
+
+			// user settings
+			mountPage("/settings", UserSettingsPage.class);
+
+			if (OpenIdLoginPage.class.equals(loginClass)) {
+				// for OpenID auth also add page for new users
+				mountPage("/new", NewUserPage.class);
+			}
 		}
 	}
 
+	/**
+	 * Configure all resource bundles (CSS and JS)
+	 */
+	private void configureResourceBundles() {
+		/*
+		 * XXX Somehow wrecks JQuery needed in OpenID login page, also, some
+		 * resources of the given are not found.
+		 */
+//		getResourceBundles().addJavaScriptBundle(
+//				BaseWebApplication.class,
+//				"core.js",
+//				(JavaScriptResourceReference) getJavaScriptLibrarySettings().getJQueryReference(),
+//				(JavaScriptResourceReference) getJavaScriptLibrarySettings()
+//						.getWicketEventReference(),
+//				(JavaScriptResourceReference) getJavaScriptLibrarySettings()
+//						.getWicketAjaxReference(),
+//				(JavaScriptResourceReference) ModernizrJavaScriptReference.INSTANCE);
+//
+//		getResourceBundles().addJavaScriptBundle(BaseWebApplication.class, "bootstrap.js",
+//				(JavaScriptResourceReference) Bootstrap.getSettings().getJsResourceReference(),
+//				(JavaScriptResourceReference) BootstrapPrettifyJavaScriptReference.INSTANCE);
+//
+//		getResourceBundles().addJavaScriptBundle(BaseWebApplication.class,
+//				"bootstrap-extensions.js", JQueryUIJavaScriptReference.instance(),
+//				Html5PlayerJavaScriptReference.instance());
+//
+//		getResourceBundles().addCssBundle(BaseWebApplication.class, "bootstrap-extensions.css",
+//				Html5PlayerCssReference.instance(), OpenWebIconsCssReference.instance());
+//
+//		getResourceBundles().addCssBundle(BaseWebApplication.class, "application.css",
+//				(CssResourceReference) BootstrapPrettifyCssReference.INSTANCE);
+	}
 }

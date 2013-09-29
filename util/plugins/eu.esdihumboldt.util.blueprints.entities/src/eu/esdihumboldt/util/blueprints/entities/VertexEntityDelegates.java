@@ -138,13 +138,23 @@ public class VertexEntityDelegates {
 	 * 
 	 * @param graph the graph
 	 * @param className the entity class name
+	 * @param superClassName the super entity class name or <code>null</code>
 	 */
-	public static void registerClass(Graph graph, String className) {
+	public static void registerClass(Graph graph, String className, String superClassName) {
 		if (graph instanceof OrientGraph) {
 			OrientGraph og = (OrientGraph) graph;
 			OClass oclass = og.getVertexType(className);
 			if (oclass == null) {
-				og.createVertexType(className);
+				if (superClassName == null) {
+					og.createVertexType(className);
+				}
+				else {
+					OClass superclass = og.getVertexType(superClassName);
+					if (superclass == null) {
+						superclass = og.createVertexType(superClassName);
+					}
+					og.createVertexType(className, superclass);
+				}
 			}
 		}
 	}

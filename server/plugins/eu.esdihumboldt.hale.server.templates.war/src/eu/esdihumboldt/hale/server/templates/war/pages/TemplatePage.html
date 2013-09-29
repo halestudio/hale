@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<head>
+	<title>Template Page</title>
+	<meta charset="utf-8">
+</head>
+<body>
+	<wicket:extend>
+		<div class="container">
+			<div class="page-header clearfix">
+                <h2 class="pull-left"><span wicket:id="name">Name</span> <small>HALE project template</small></h2>
+                <div wicket:id="edit-buttons" class="btn-group pull-right">
+					<a wicket:id="edit" class="btn">Edit</a>
+					<a wicket:id="delete" class="btn">Delete</a>
+				</div>
+        	</div>
+        		
+        	<div class="btn-toolbar clearfix">
+        		<div class="btn-group pull-left">
+        			<div class="input-prepend">
+  						<span class="add-on">Project URL</span>
+        				<input wicket:id="project" class="input-xxlarge" style="background-color: #fff; cursor: text;" type="text" readonly="readonly" value="Project location">
+        			</div>
+        		</div>
+        		<div class="btn-group">
+        			<a wicket:id="download" class="btn btn-primary"><i class="icon-download icon-white"></i> Download ZIP</a>
+        		</div>
+        	</div>
+        	<div class="row-fluid">
+				<div class="span8">
+					<pre wicket:id="description" class="text">Text</pre>
+				</div>
+				<div class="span4">
+					<h5>Author</h5>
+					<p wicket:id="author">Author name</p>
+					<h5>Uploaded by</h5>
+					<p wicket:id="user">User name</p>
+				</div>
+			</div>
+		</div>
+	</wicket:extend>
+</body>
+</html>
