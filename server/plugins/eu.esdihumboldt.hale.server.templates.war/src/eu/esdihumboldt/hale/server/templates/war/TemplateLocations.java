@@ -15,7 +15,10 @@
 
 package eu.esdihumboldt.hale.server.templates.war;
 
+import java.nio.file.Path;
+
 import eu.esdihumboldt.hale.server.api.base.APIUtil;
+import eu.esdihumboldt.hale.server.templates.TemplateScavenger;
 import eu.esdihumboldt.hale.server.templates.war.resources.TemplatesResources;
 
 /**
@@ -47,5 +50,20 @@ public class TemplateLocations {
 	 */
 	public static String getTemplateDownloadUrl(String templateId) {
 		return getServerBaseUrl() + getContextPath() + "/resources/archive/" + templateId;
+	}
+
+	/**
+	 * Get the URL to the project file of a template.
+	 * 
+	 * @param scavenger the template scavenger
+	 * @param templateId the template ID
+	 * @return the URL to the project file
+	 * @see TemplatesResources
+	 */
+	public static String getTemplateProjectUrl(TemplateScavenger scavenger, String templateId) {
+		Path base = scavenger.getHuntingGrounds().toPath();
+		Path projectFilePath = scavenger.getReference(templateId).getProjectFile().toPath();
+		String relativePath = base.relativize(projectFilePath).toString();
+		return getServerBaseUrl() + getContextPath() + "/resources/files/" + relativePath;
 	}
 }

@@ -17,10 +17,13 @@ package eu.esdihumboldt.hale.server.templates.war.pages;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.request.http.flow.AbortWithHttpErrorCodeException;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.string.StringValue;
 
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
@@ -29,6 +32,7 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.server.db.orient.DatabaseHelper;
 import eu.esdihumboldt.hale.server.model.Template;
+import eu.esdihumboldt.hale.server.templates.TemplateScavenger;
 import eu.esdihumboldt.hale.server.templates.war.TemplateLocations;
 import eu.esdihumboldt.hale.server.webapp.pages.BasePage;
 import eu.esdihumboldt.util.blueprints.entities.NonUniqueResultException;
@@ -43,6 +47,9 @@ public class TemplatePage extends BasePage {
 	private static final long serialVersionUID = 596965328223399419L;
 
 	private static final ALogger log = ALoggerFactory.getLogger(TemplatePage.class);
+
+	@SpringBean
+	private TemplateScavenger scavenger;
 
 	/**
 	 * Default constructor.
@@ -85,6 +92,12 @@ public class TemplatePage extends BasePage {
 					String href = TemplateLocations.getTemplateDownloadUrl(templateId);
 					ExternalLink download = new ExternalLink("download", href);
 					add(download);
+
+					// project location
+					WebMarkupContainer project = new WebMarkupContainer("project");
+					project.add(AttributeModifier.replace("value",
+							TemplateLocations.getTemplateProjectUrl(scavenger, templateId)));
+					add(project);
 
 					// description
 					String descr = template.getDescription();
