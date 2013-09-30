@@ -52,37 +52,57 @@ public class ProxyOpenIDAuthenticationFilter extends OpenIDAuthenticationFilter 
 		if (forwardedFor != null) {
 			log.warn("Proxy detected - X-Forwarded-For: " + forwardedFor);
 
-			Iterable<String> parts = Splitter.on(',').trimResults().split(forwardedFor);
-			String outwardProxy = null;
-			try {
-				outwardProxy = Iterables.get(parts, 1);
-
-				// original returnTo
-				URI org = URI.create(returnTo);
-				// build proxy URL, assuming http as scheme
-				URI uri = new URI("http", outwardProxy, org.getPath(), org.getQuery(),
-						org.getFragment());
-				returnTo = uri.toString();
-			} catch (Exception e) {
-				log.warn("Error building proxy return URL from X-Forwarded-For", e);
-
-				// try HALE base URL system property as fall-back
-				String baseUrl = System.getProperty(SYSTEM_PROPERTY_SERVER_URL);
-				if (baseUrl != null) {
-					try {
-						// original returnTo
-						URI org = URI.create(returnTo);
-						// build proxy URL
-						URI uri = new URI(baseUrl + org.getRawPath());
-						returnTo = uri.toString();
-					} catch (Exception e1) {
-						log.warn("Error building proxy return URL from "
-								+ SYSTEM_PROPERTY_SERVER_URL + " system property", e1);
-					}
-				}
+			String proxyReturnTo = buildReturnToForProxy(returnTo, forwardedFor);
+			if (proxyReturnTo != null) {
+				returnTo = proxyReturnTo;
+			}
+			else {
+				log.error("Could not determine proxy returnTo URL");
 			}
 		}
 
 		return returnTo;
+	}
+
+	/**
+	 * Build a returnTo URL if behind a proxy.
+	 * 
+	 * @param returnTo the original returnTo URL
+	 * @param forwardedFor the X-Forwarded-For header
+	 * @return the proxy returnTo URL or <code>null</code> if it could not be
+	 *         determined
+	 */
+	public static String buildReturnToForProxy(String returnTo, String forwardedFor) {
+		Iterable<String> parts = Splitter.on(',').trimResults().split(forwardedFor);
+		String outwardProxy = null;
+		try {
+			outwardProxy = Iterables.get(parts, 1);
+
+			// original returnTo
+			URI org = URI.create(returnTo);
+			// build proxy URL, assuming http as scheme
+			URI uri = new URI("http", outwardProxy, org.getPath(), org.getQuery(),
+					org.getFragment());
+			return uri.toString();
+		} catch (Exception e) {
+			log.warn("Error building proxy return URL from X-Forwarded-For");
+
+			// try HALE base URL system property as fall-back
+			String baseUrl = System.getProperty(SYSTEM_PROPERTY_SERVER_URL);
+			if (baseUrl != null) {
+				try {
+					// original returnTo
+					URI org = URI.create(returnTo);
+					// build proxy URL
+					URI uri = new URI(baseUrl + org.getRawPath());
+					return uri.toString();
+				} catch (Exception e1) {
+					log.warn("Error building proxy return URL from " + SYSTEM_PROPERTY_SERVER_URL
+							+ " system property", e1);
+				}
+			}
+		}
+
+		return null;
 	}
 }
