@@ -60,6 +60,10 @@
 		<beans:property name="authenticationSuccessHandler" ref="openIdSuccessHandler" />
 		<beans:property name="authenticationFailureHandler" ref="failureHandler" />
 		<beans:property name="authenticationManager" ref="org.springframework.security.authenticationManager" />
+		<beans:property name="consumer" ref="openIdConsumer" />
+	</beans:bean>
+	
+	<beans:bean id="openIdConsumer" class="eu.esdihumboldt.hale.server.security.util.ProxyOpenIDConsumer">
 	</beans:bean>
 	
 	<beans:bean id="openIdAuthProvider" class="org.springframework.security.openid.OpenIDAuthenticationProvider">
