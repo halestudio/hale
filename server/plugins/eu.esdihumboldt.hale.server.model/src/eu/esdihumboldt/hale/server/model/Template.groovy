@@ -24,7 +24,39 @@ import eu.esdihumboldt.util.blueprints.entities.VertexEntity
  * @author Simon Templer
  */
 @VertexEntity('template')
-class Template extends Project {
+class Template /*extends Project*/ {
+
+	/*
+	 * XXX The inheritance of VertexEntities is not working correctly,
+	 * as there are conflicts w/ duplicated static methods.
+	 * 
+	 * XXX So for now no inheritance is used here.
+	 */
+
+	// project properties
+
+	/**
+	 * The project name.
+	 */
+	String name
+
+	/**
+	 * The project author.
+	 */
+	String author;
+
+	/**
+	 * The project description.
+	 */
+	String description
+
+	/**
+	 * The project's owner.
+	 */
+	User owner
+
+	// template properties
+
 	/**
 	 * Reference to the template as present in the file system.
 	 */
