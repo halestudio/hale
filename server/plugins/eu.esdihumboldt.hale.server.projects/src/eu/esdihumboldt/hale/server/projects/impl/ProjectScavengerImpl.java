@@ -53,6 +53,11 @@ public class ProjectScavengerImpl extends
 	}
 
 	@Override
+	protected void onAdd(ProjectHandler reference, String resourceId) {
+		// everything that is needed is already handled in loadReference
+	}
+
+	@Override
 	protected ProjectHandler loadReference(File resourceFolder, String resourceFileName,
 			String resourceId) throws IOException {
 		// create a new project handler

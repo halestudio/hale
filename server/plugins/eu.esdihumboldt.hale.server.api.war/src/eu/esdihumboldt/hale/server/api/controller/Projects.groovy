@@ -37,7 +37,7 @@ import eu.esdihumboldt.hale.server.api.wadl.doc.WDocs
 import eu.esdihumboldt.hale.server.projects.ProjectScavenger
 import eu.esdihumboldt.hale.server.projects.ProjectScavenger.Status
 import eu.esdihumboldt.util.io.IOUtils
-import eu.esdihumboldt.util.resource.scavenger.ScavengerException
+import eu.esdihumboldt.util.scavenger.ScavengerException;
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
 import groovy.xml.DOMBuilder

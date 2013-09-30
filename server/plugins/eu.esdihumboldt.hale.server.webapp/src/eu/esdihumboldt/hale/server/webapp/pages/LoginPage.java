@@ -17,8 +17,8 @@ package eu.esdihumboldt.hale.server.webapp.pages;
 
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.OnLoadHeaderItem;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 
+import eu.esdihumboldt.hale.server.webapp.components.bootstrap.BootstrapFeedbackPanel;
 import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
 
 /**
@@ -88,7 +88,7 @@ public class LoginPage extends BasePage {
 			}
 		}
 
-		add(new FeedbackPanel("feedback"));
+		add(new BootstrapFeedbackPanel("feedback"));
 	}
 
 	@Override
@@ -97,6 +97,9 @@ public class LoginPage extends BasePage {
 
 		// set focus to username field
 		response.render(OnLoadHeaderItem.forScript("document.f.j_username.focus();"));
+
+		// add boxes css to page
+		response.render(PagesCSS.boxesPage());
 	}
 
 }

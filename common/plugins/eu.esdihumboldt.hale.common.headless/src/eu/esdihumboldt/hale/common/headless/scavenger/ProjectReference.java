@@ -243,7 +243,7 @@ public class ProjectReference<C> {
 	 * 
 	 * @return the project file or <code>null</code>
 	 */
-	protected File getProjectFile() {
+	public File getProjectFile() {
 		String projectFile = config.getProjectFileName();
 		if (projectFile == null) {
 			// determine the project file automatically
