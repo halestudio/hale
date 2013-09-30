@@ -86,23 +86,23 @@ class VertexEntityTransformationTest extends GroovyTestCase {
 	/**
 	 * Test category entity w/ {@link TinkerGraph}.
 	 */
-	public void testExtendedCategoryOrient() {
-		OrientGraph graph = new OrientGraph('memory:ext')
-
-		// create Category
-		ExtendedCategory extCat = ExtendedCategory.create(graph)
-		assertNotNull extCat
-
-		extCat.extra = 'Extra!'
-		assertEquals 'Extra!', extCat.v.getProperty('extra')
-
-		assertEquals 'Extra!', extCat.extra
-
-		commonCategoryTest(graph, extCat)
-
-		graph.rollback()
-		graph.shutdown();
-	}
+	//	public void testExtendedCategoryOrient() {
+	//		OrientGraph graph = new OrientGraph('memory:ext')
+	//
+	//		// create Category
+	//		ExtendedCategory extCat = ExtendedCategory.create(graph)
+	//		assertNotNull extCat
+	//
+	//		extCat.extra = 'Extra!'
+	//		assertEquals 'Extra!', extCat.v.getProperty('extra')
+	//
+	//		assertEquals 'Extra!', extCat.extra
+	//
+	//		commonCategoryTest(graph, extCat)
+	//
+	//		graph.rollback()
+	//		graph.shutdown();
+	//	}
 
 	/**
 	 * Test category entity w/ {@link TinkerGraph}.
