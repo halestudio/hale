@@ -35,6 +35,12 @@ import de.cs3d.util.logging.ALoggerFactory;
  */
 public class ProxyOpenIDAuthenticationFilter extends OpenIDAuthenticationFilter {
 
+	/**
+	 * Redeclared constant from APIUtil (which is not used here not to introduce
+	 * the dependency)
+	 */
+	public static final String SYSTEM_PROPERTY_SERVER_URL = "hale.api.base-url";
+
 	private static final ALogger log = ALoggerFactory
 			.getLogger(ProxyOpenIDAuthenticationFilter.class);
 
@@ -47,8 +53,9 @@ public class ProxyOpenIDAuthenticationFilter extends OpenIDAuthenticationFilter 
 			log.warn("Proxy detected - X-Forwarded-For: " + forwardedFor);
 
 			Iterable<String> parts = Splitter.on(',').trimResults().split(forwardedFor);
+			String outwardProxy = null;
 			try {
-				String outwardProxy = Iterables.get(parts, 1);
+				outwardProxy = Iterables.get(parts, 1);
 
 				// original returnTo
 				URI org = URI.create(returnTo);
@@ -57,7 +64,22 @@ public class ProxyOpenIDAuthenticationFilter extends OpenIDAuthenticationFilter 
 						org.getFragment());
 				returnTo = uri.toString();
 			} catch (Exception e) {
-				log.error("Error building proxy return URL", e);
+				log.warn("Error building proxy return URL from X-Forwarded-For", e);
+
+				// try HALE base URL system property as fall-back
+				String baseUrl = System.getProperty(SYSTEM_PROPERTY_SERVER_URL);
+				if (baseUrl != null) {
+					try {
+						// original returnTo
+						URI org = URI.create(returnTo);
+						// build proxy URL
+						URI uri = new URI(baseUrl + org.getRawPath());
+						returnTo = uri.toString();
+					} catch (Exception e1) {
+						log.warn("Error building proxy return URL from "
+								+ SYSTEM_PROPERTY_SERVER_URL + " system property", e1);
+					}
+				}
 			}
 		}
 
