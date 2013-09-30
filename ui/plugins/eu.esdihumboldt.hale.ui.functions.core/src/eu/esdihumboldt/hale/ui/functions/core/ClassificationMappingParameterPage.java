@@ -82,6 +82,7 @@ import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
 import eu.esdihumboldt.hale.ui.io.action.IOWizardAction;
 import eu.esdihumboldt.hale.ui.lookup.LookupTableImportWizard;
+import eu.esdihumboldt.hale.ui.lookup.LookupTableLoadWizard;
 import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 
 /**
@@ -376,7 +377,7 @@ public class ClassificationMappingParameterPage extends
 
 		final Button loadButton = new Button(item1Content, SWT.PUSH);
 		loadButton.setImage(CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_OPEN));
-		loadButton.setToolTipText("Load classification from csv file");
+		loadButton.setToolTipText("Load classification from file");
 		final Button removeAllButton = new Button(item1Content, SWT.PUSH);
 
 		loadButton.addSelectionListener(new SelectionAdapter() {
@@ -384,7 +385,7 @@ public class ClassificationMappingParameterPage extends
 			@SuppressWarnings("restriction")
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				LookupTableImportWizard wizard = new LookupTableImportWizard();
+				LookupTableImportWizard wizard = new LookupTableLoadWizard();
 				LookupLoadAdvisor advisor = new LookupLoadAdvisor();
 				wizard.setAdvisor(advisor, null);
 				Shell shell = Display.getCurrent().getActiveShell();
@@ -431,13 +432,13 @@ public class ClassificationMappingParameterPage extends
 		// list
 		org.eclipse.swt.widgets.List list = new org.eclipse.swt.widgets.List(item1Content,
 				SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
-		list.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
+		list.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 5, 1));
 		values = new ListViewer(list);
 		values.setContentProvider(new ArrayContentProvider());
 
 		// value list controls
 		Composite listControls = new Composite(item1Content, SWT.NONE);
-		listControls.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3, 1));
+		listControls.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 5, 1));
 		listControls.setLayout(new GridLayout(2, true));
 
 		final Button valueAdd = new Button(listControls, SWT.PUSH);
