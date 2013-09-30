@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.server.templates.war.components;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -138,7 +139,9 @@ public class TemplateList extends Panel {
 					item.add(new Label("author", template.getAuthor()));
 
 					// last update
-					item.add(new Label("update", dateFormat.format(template.getLastUpdate())));
+					Date lastUpdate = template.getLastUpdate();
+					item.add(new Label("update", (lastUpdate != null) ? (dateFormat
+							.format(lastUpdate)) : ("")));
 
 					// popularity
 					WebMarkupContainer popularity = new WebMarkupContainer("popularity");
