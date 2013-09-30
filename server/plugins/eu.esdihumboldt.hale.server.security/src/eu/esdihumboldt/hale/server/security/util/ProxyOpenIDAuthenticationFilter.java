@@ -64,7 +64,7 @@ public class ProxyOpenIDAuthenticationFilter extends OpenIDAuthenticationFilter 
 						org.getFragment());
 				returnTo = uri.toString();
 			} catch (Exception e) {
-				log.warn("Error building proxy return URL from X-Forwarded-For", e);
+				log.warn("Error building proxy return URL from X-Forwarded-For");
 
 				// try HALE base URL system property as fall-back
 				String baseUrl = System.getProperty(SYSTEM_PROPERTY_SERVER_URL);
