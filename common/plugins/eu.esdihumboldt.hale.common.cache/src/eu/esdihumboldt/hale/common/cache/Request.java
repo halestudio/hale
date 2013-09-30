@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.common.cache;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Proxy;
@@ -36,6 +37,8 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreConnectionPNames;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.osgi.service.datalocation.Location;
 
 import com.google.common.io.ByteStreams;
 
@@ -52,6 +55,8 @@ import eu.esdihumboldt.util.http.ProxyUtil;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class Request {
+
+	private static final String SYSTEM_PROPERTY_CACHE_DIR = "hale.cache.dir";
 
 	private static final String CACHE_NAME = "haleResourceCache";
 
@@ -98,15 +103,23 @@ public class Request {
 	 */
 	private void init() {
 		if (cacheEnabled) {
-//			String tmpDir = System.getProperty("java.io.tmpdir"); //$NON-NLS-1$
+			File cacheDir = new File(System.getProperty("java.io.tmpdir"));
+			Location location = Platform.getInstanceLocation();
+			if (location != null) {
+				try {
+					File instanceLoc = new File(URI.create(location.getURL().toString()
+							.replaceAll(" ", "%20")));
+					cacheDir = instanceLoc;
+				} catch (Exception e) {
+					// ignore
+				}
+			}
+			System.setProperty(SYSTEM_PROPERTY_CACHE_DIR, cacheDir.getAbsolutePath());
 
 			// this cache has already been initialized
-			if (CacheManager.getInstance().getCache(CACHE_NAME) != null) {
+			if (CacheManager.create(Request.class.getResource("ehcache.xml")).getCache(CACHE_NAME) != null) {
 				return;
 			}
-
-			// initialize CacheManager
-			CacheManager.create();
 
 			// create a Cache instance - providing cachePath has no effect
 			Cache cache = new Cache(CACHE_NAME, 300, MemoryStoreEvictionPolicy.LRU, true, null,
