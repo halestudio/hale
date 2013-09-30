@@ -15,7 +15,7 @@
 		class="eu.esdihumboldt.hale.server.security.util.Token" />
 
 	<!-- allow HTTP security -->
-	<http realm="HALE Web">
+	<http realm="HALE Web" entry-point-ref="loginPage">
 		<remember-me services-ref="rememberMeServices" key="#{ tokens.runtimeToken }" />
 		
 		<session-management session-authentication-strategy-ref="session-auth" />
@@ -36,7 +36,9 @@
 		<!-- everything else -->
 		<intercept-url pattern="/**" access="ROLE_ANONYMOUS,ROLE_USER,ROLE_ADMIN" requires-channel="any" />
 		
-		<openid-login login-page="/login" authentication-failure-handler-ref="failureHandler"
+		<custom-filter position="OPENID_FILTER" ref="openIdFilter" />
+		
+		<!-- openid-login login-page="/login" authentication-failure-handler-ref="failureHandler"
 			user-service-ref="authUserDetails" authentication-success-handler-ref="openIdSuccessHandler">
 			<attribute-exchange>
 	            <openid-attribute name="email" type="http://axschema.org/contact/email" required="false"/>
@@ -44,11 +46,25 @@
 	            <openid-attribute name="firstName" type="http://axschema.org/namePerson/first" required="false"/>
 	            <openid-attribute name="lastName" type="http://axschema.org/namePerson/last" required="false"/>
         	</attribute-exchange>
-		</openid-login>
+		</openid-login-->
 		
 		<anonymous /> <!-- is needed for login page -->
 		<logout/>
 	</http>
+	
+	<beans:bean id="loginPage" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+		<beans:constructor-arg value="/login" />
+	</beans:bean>
+	
+	<beans:bean id="openIdFilter" class="eu.esdihumboldt.hale.server.security.util.ProxyOpenIDAuthenticationFilter">
+		<beans:property name="authenticationSuccessHandler" ref="openIdSuccessHandler" />
+		<beans:property name="authenticationFailureHandler" ref="failureHandler" />
+		<beans:property name="authenticationManager" ref="org.springframework.security.authenticationManager" />
+	</beans:bean>
+	
+	<beans:bean id="openIdAuthProvider" class="org.springframework.security.openid.OpenIDAuthenticationProvider">
+		<beans:property name="authenticationUserDetailsService" ref="authUserDetails" />
+	</beans:bean>
 	
 	<beans:bean id="openIdSuccessHandler" class="eu.esdihumboldt.hale.server.security.util.NewUserAuthenticationSuccessHandler">
 		<beans:property name="newUserRedirectUrl" value="./new" />
@@ -97,7 +113,8 @@
 		configured below -->
 	<authentication-manager>
 		<!-- authenticate against default data source -->
-		<authentication-provider user-service-ref="userDetails" />
+		<!-- authentication-provider user-service-ref="userDetails" /-->
+		<authentication-provider ref="openIdAuthProvider" />
 	</authentication-manager>
 
 	<!-- retrieve users through OSGi user details service -->
