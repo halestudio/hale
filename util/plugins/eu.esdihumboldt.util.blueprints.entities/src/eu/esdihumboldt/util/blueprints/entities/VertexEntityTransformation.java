@@ -617,16 +617,26 @@ public class VertexEntityTransformation implements ASTTransformation {
 	private Statement createSetter(String name, FieldNode vertexField) {
 		BlockStatement block = new BlockStatement();
 
+		VariableExpression value = new VariableExpression("value");
+
 		/*
-		 * > v.setProperty(name, value)
+		 * v.setProperty(name, value)
 		 */
 		ArgumentListExpression args = new ArgumentListExpression();
-
 		args.addExpression(new ConstantExpression(name));
-		args.addExpression(new VariableExpression("value"));
+		args.addExpression(value);
+		Statement ifNotNull = new ExpressionStatement(new MethodCallExpression(new FieldExpression(
+				vertexField), "setProperty", args));
 
-		block.addStatement(new ExpressionStatement(new MethodCallExpression(new FieldExpression(
-				vertexField), "setProperty", args)));
+		/*
+		 * v.removeProperty(name)
+		 */
+		Statement ifNull = new ExpressionStatement(new MethodCallExpression(new FieldExpression(
+				vertexField), "removeProperty", new ArgumentListExpression(new ConstantExpression(
+				name))));
+
+		block.addStatement(new IfStatement(AbstractASTTransformUtil.equalsNullExpr(value), ifNull,
+				ifNotNull));
 
 		return block;
 	}
