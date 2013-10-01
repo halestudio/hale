@@ -188,6 +188,12 @@
             id="eu.esdihumboldt.hale.ui.templates.inspire.hy-p"
             name="INSPIRE HydroPhysicalWaters">
       </project>
+      <project
+            icon="icons/inspire.gif"
+            id="eu.esdihumboldt.hale.ui.templates.inspire.ad"
+            location="resource://inspire.hale-schemas/annex1/projects/Addresses.halex"
+            name="INSPIRE Addresses">
+      </project>
    </extension>
 
 </plugin>

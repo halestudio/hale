@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="Feature" type="Feature"/>
+	<xs:complexType name="Feature">
+		<xs:sequence>
+			<xs:element name="id" type="xs:long" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="position" type="xs:double" minOccurs="2" maxOccurs="2"/>
+			<xs:element name="pivotOffset" type="xs:double" minOccurs="3" maxOccurs="3"/>
+			<xs:element name="mbb" type="xs:double" minOccurs="6" maxOccurs="6"/>
+			<xs:element name="layer" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="geometries" type="Geometry" minOccurs="1" maxOccurs="unbounded"/>
+			<xs:element name="attributes" type="FeatureAttribute" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="Geometry" type="Geometry"/>
+	<xs:complexType name="Geometry">
+		<xs:sequence>
+			<xs:element name="type" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="transformation" type="xs:double" minOccurs="16" maxOccurs="16"/>
+			<xs:element name="faces" type="FaceAttribute" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="components" type="Component" minOccurs="1" maxOccurs="unbounded"/>
+			<xs:element name="vertexAttributes" type="VertexAttribute" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="GeometryAttribute" type="GeometryAttribute"/>
+	<xs:complexType name="GeometryAttribute">
+		<xs:sequence>
+			<xs:element name="byteOffset" type="xs:int" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="count" type="xs:int" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="valueType" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="valuesPerElement" type="xs:int" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="componentIndices" type="xs:int" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="FeatureAttribute" type="FeatureAttribute"/>
+	<xs:complexType name="FeatureAttribute">
+		<xs:sequence>
+			<xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="value" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="FeatureAttribute" type="FeatureAttribute" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="Component" type="Component"/>
+	<xs:complexType name="Component">
+		<xs:sequence>
+			<xs:element name="id" type="xs:long" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="materialID" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="textureID" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="regionID" type="xs:int" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="VertexAttribute" type="VertexAttribute"/>
+	<xs:complexType name="VertexAttribute">
+		<xs:sequence>
+			<xs:element name="position" type="GeometryAttribute" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="normal" type="GeometryAttribute" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="uv" type="GeometryAttribute" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="FaceAttribute" type="FaceAttribute"/>
+	<xs:complexType name="FaceAttribute">
+		<xs:sequence>
+			<xs:element name="position" type="GeometryAttribute" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="normal" type="GeometryAttribute" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="uv" type="GeometryAttribute" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>
