@@ -40,6 +40,8 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.vividsolutions.jts.geom.Geometry;
 
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
@@ -119,11 +121,13 @@ public class JacksonMapper {
 	 * 
 	 * @param out the output supplier
 	 * @param instances the collection of instances
+	 * @param config the default geometry configuration
 	 * @param reporter the reporter
 	 * @throws IOException if writing the instances fails
 	 */
 	public void streamWriteGeoJSONCollection(LocatableOutputSupplier<? extends OutputStream> out,
-			InstanceCollection instances, IOReporter reporter) throws IOException {
+			InstanceCollection instances, GeoJSONConfig config, IOReporter reporter)
+			throws IOException {
 
 		// TODO What about bbox & crs?
 
@@ -143,7 +147,7 @@ public class JacksonMapper {
 			try (ResourceIterator<Instance> itInstance = instances.iterator()) {
 				while (itInstance.hasNext()) {
 					Instance instance = itInstance.next();
-					streamWriteGeoJSONInstance(instance, reporter);
+					streamWriteGeoJSONInstance(instance, config, reporter);
 				}
 			}
 			jsonGen.writeEndArray();
@@ -156,21 +160,31 @@ public class JacksonMapper {
 	 * Writes a single instance as GeoJSON.
 	 * 
 	 * @param instance the instance to write
+	 * @param config the default geometry config
 	 * @param reporter the reporter
 	 * @throws IOException if writing the instance fails
 	 */
-	private void streamWriteGeoJSONInstance(Instance instance, IOReporter reporter)
-			throws IOException {
+	private void streamWriteGeoJSONInstance(Instance instance, GeoJSONConfig config,
+			IOReporter reporter) throws IOException {
 		jsonGen.writeStartObject();
 		jsonGen.writeStringField("type", "Feature");
 
-		// TODO let user configure default geometry
+		PropertyEntityDefinition geomProperty = config.getDefaultGeometry(instance.getDefinition());
 		GeometryFinder geomFinder = new GeometryFinder(null);
-		InstanceTraverser traverser = new DepthFirstInstanceTraverser(true);
-		traverser.traverse(instance, geomFinder);
+		// check whether a geometry property is set
+		if (geomProperty != null) {
+			// find all occurrences of the property
+			Collection<Object> values = AlignmentUtil.getValues(instance, geomProperty, false);
+			// find all geometries below any value (the values themselves might
+			// be geometries)
+			InstanceTraverser traverser = new DepthFirstInstanceTraverser(true);
+			for (Object value : values)
+				traverser.traverse(value, geomFinder);
+		}
+
 		Collection<GeometryProperty<?>> geometries = geomFinder.getGeometries();
 		if (!geometries.isEmpty()) {
-			// XXX It would probably be better to put CRS to each geometry.
+			// XXX It would be better to put CRS to each geometry.
 			// This is currently not possible because geotools doesn't support
 			// this.
 			GeometryProperty<?> geomProp = geometries.iterator().next();

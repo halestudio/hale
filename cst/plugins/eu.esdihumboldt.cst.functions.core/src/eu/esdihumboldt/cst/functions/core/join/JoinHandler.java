@@ -134,7 +134,7 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 					// XXX what about null? for now ignore null values
 					// XXX how to treat multiple values? must all be equal (in
 					// order?) or only one?
-					Collection<Object> values = AlignmentUtil.getValues(next, property);
+					Collection<Object> values = AlignmentUtil.getValues(next, property, true);
 					if (values != null && !values.isEmpty()) {
 						// XXX take only first value for now
 						index.get(property).put(values.iterator().next(),
@@ -199,7 +199,7 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 					for (Map.Entry<Integer, JoinCondition> joinCondition : joinConditions.entries()) {
 						Collection<Object> currentValues = AlignmentUtil.getValues(
 								currentInstances[joinCondition.getKey()],
-								joinCondition.getValue().baseProperty);
+								joinCondition.getValue().baseProperty, true);
 
 						if (currentValues == null) {
 							possibleInstances = Collections.emptySet();
