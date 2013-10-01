@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<hale-project version="2.7.0.201310010427">
+    <name>Map to INSPIRE Addresses 3.0</name>
+    <author>Thorsten Reitz</author>
+    <description>Preconfigured with INSPIRE Addresses as target schema and associated code lists.</description>
+    <created>2013-10-01T22:47:48.151+02:00</created>
+    <modified>2013-10-01T23:13:05.655+02:00</modified>
+    <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
+        <setting name="projectFiles.separate">false</setting>
+        <setting name="target">file:/C:/Projekte/thorsten/hale-src/hale/util/plugins/eu.esdihumboldt.util.resource.schemas.inspire.annex1/annex1/projects/Addresses.halex</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
+    </save-config>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.target" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="resourceId">301ef1b5-f7d4-4071-8df6-cc914c8b4f8a</setting>
+        <setting name="source">../3.0/Addresses.xsd</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.codelist.read" provider-id="eu.esdihumboldt.hale.io.codelist.xml.reader">
+        <setting name="resourceId">4439abf4-5771-4d76-a812-cd0b4b26c7cf</setting>
+        <setting name="source">../codelists/StatusValue.xml</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.codelist.xml</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.codelist.read" provider-id="eu.esdihumboldt.hale.io.codelist.xml.reader">
+        <setting name="resourceId">5189b123-2f21-4788-9995-cb9b6a608741</setting>
+        <setting name="source">../codelists/LocatorLevelValue.xml</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.codelist.xml</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.codelist.read" provider-id="eu.esdihumboldt.hale.io.codelist.xml.reader">
+        <setting name="resourceId">b2b5944e-7250-4072-a9dd-567a3f39b760</setting>
+        <setting name="source">../codelists/LocatorDesignatorTypeValue.xml</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.codelist.xml</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.codelist.read" provider-id="eu.esdihumboldt.hale.io.codelist.xml.reader">
+        <setting name="resourceId">0ee89ed2-2837-47fc-b4c9-289a2951a95d</setting>
+        <setting name="source">../codelists/GeometryMethodValue.xml</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.codelist.xml</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.codelist.read" provider-id="eu.esdihumboldt.hale.io.codelist.xml.reader">
+        <setting name="resourceId">ff744619-4a01-4b50-b64c-1937bde9f4d7</setting>
+        <setting name="source">../codelists/GeometrySpecificationValue.xml</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.codelist.xml</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.codelist.read" provider-id="eu.esdihumboldt.hale.io.codelist.xml.reader">
+        <setting name="resourceId">80ea892a-4ccc-48f6-9014-11fb374c091b</setting>
+        <setting name="source">../codelists/AdministrativeHierarchyLevel.xml</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.codelist.xml</setting>
+    </resource>
+    <file name="styles.sld" location="Addresses.halex.styles.sld"/>
+    <file name="alignment.xml" location="Addresses.halex.alignment.xml"/>
+    <complex-property name="codelists">
+        <associations>
+            <codeList identifier="GeometryMethodValue" namespace="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                <entity>
+                    <type name="AddressType" namespace="urn:x-inspire:specification:gmlas:Addresses:3.0"/>
+                    <property name="position" namespace="urn:x-inspire:specification:gmlas:Addresses:3.0"/>
+                    <property name="GeographicPosition" namespace="urn:x-inspire:specification:gmlas:Addresses:3.0"/>
+                    <property name="method" namespace="urn:x-inspire:specification:gmlas:Addresses:3.0"/>
+                </entity>
+            </codeList>
+            <codeList identifier="GeometrySpecificationValue" namespace="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                <entity>
+                    <type name="AddressType" namespace="urn:x-inspire:specification:gmlas:Addresses:3.0"/>
+                    <property name="position" namespace="urn:x-inspire:specification:gmlas:Addresses:3.0"/>
+                    <property name="GeographicPosition" namespace="urn:x-inspire:specification:gmlas:Addresses:3.0"/>
+                    <property name="specification" namespace="urn:x-inspire:specification:gmlas:Addresses:3.0"/>
+                </entity>
+            </codeList>
+            <codeList identifier="StatusValue" namespace="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                <entity>
+                    <type name="AddressType" namespace="urn:x-inspire:specification:gmlas:Addresses:3.0"/>
+                    <property name="status" namespace="urn:x-inspire:specification:gmlas:Addresses:3.0"/>
+                </entity>
+            </codeList>
+            <codeList identifier="LocatorLevelValue" namespace="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                <entity>
+                    <type name="AddressType" namespace="urn:x-inspire:specification:gmlas:Addresses:3.0"/>
+                    <property name="locator" namespace="urn:x-inspire:specification:gmlas:Addresses:3.0"/>
+                    <property name="AddressLocator" namespace="urn:x-inspire:specification:gmlas:Addresses:3.0"/>
+                    <property name="level" namespace="urn:x-inspire:specification:gmlas:Addresses:3.0"/>
+                </entity>
+            </codeList>
+            <codeList identifier="AdministrativeHierarchyLevel" namespace="urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0">
+                <entity>
+                    <type name="AdminUnitNameType" namespace="urn:x-inspire:specification:gmlas:Addresses:3.0"/>
+                    <property name="level" namespace="urn:x-inspire:specification:gmlas:Addresses:3.0"/>
+                </entity>
+            </codeList>
+            <codeList identifier="LocatorDesignatorTypeValue" namespace="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                <entity>
+                    <type name="AddressType" namespace="urn:x-inspire:specification:gmlas:Addresses:3.0"/>
+                    <property name="locator" namespace="urn:x-inspire:specification:gmlas:Addresses:3.0"/>
+                    <property name="AddressLocator" namespace="urn:x-inspire:specification:gmlas:Addresses:3.0"/>
+                    <property name="designator" namespace="urn:x-inspire:specification:gmlas:Addresses:3.0"/>
+                    <property name="LocatorDesignator" namespace="urn:x-inspire:specification:gmlas:Addresses:3.0"/>
+                    <property name="type" namespace="urn:x-inspire:specification:gmlas:Addresses:3.0"/>
+                </entity>
+            </codeList>
+        </associations>
+    </complex-property>
+    <property name="defaultGeometry:{http://www.opengis.net/gml/3.2}AbstractFeatureType/1">{http://www.opengis.net/gml/3.2}boundedBy</property>
+    <property name="defaultGeometry:{http://www.opengis.net/gml/3.2}AbstractFeatureType/2">{http://www.opengis.net/gml/3.2/BoundingShapeType}choice_1</property>
+    <property name="defaultGeometry:{http://www.opengis.net/gml/3.2}AbstractFeatureType/count">2</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:Addresses:3.0}AddressAreaNameType/1">{http://www.opengis.net/gml/3.2}boundedBy</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:Addresses:3.0}AddressAreaNameType/2">{http://www.opengis.net/gml/3.2/BoundingShapeType}choice_1</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:Addresses:3.0}AddressAreaNameType/count">2</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:Addresses:3.0}AddressComponentType/1">{http://www.opengis.net/gml/3.2}boundedBy</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:Addresses:3.0}AddressComponentType/2">{http://www.opengis.net/gml/3.2/BoundingShapeType}choice_1</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:Addresses:3.0}AddressComponentType/count">2</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:Addresses:3.0}AddressType/1">{urn:x-inspire:specification:gmlas:Addresses:3.0}position</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:Addresses:3.0}AddressType/2">{urn:x-inspire:specification:gmlas:Addresses:3.0}GeographicPosition</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:Addresses:3.0}AddressType/3">{urn:x-inspire:specification:gmlas:Addresses:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:Addresses:3.0}AddressType/count">3</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:Addresses:3.0}AdminUnitNameType/1">{http://www.opengis.net/gml/3.2}boundedBy</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:Addresses:3.0}AdminUnitNameType/2">{http://www.opengis.net/gml/3.2/BoundingShapeType}choice_1</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:Addresses:3.0}AdminUnitNameType/count">2</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:Addresses:3.0}GeographicPositionType/1">{urn:x-inspire:specification:gmlas:Addresses:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:Addresses:3.0}GeographicPositionType/2">{http://www.opengis.net/gml/3.2}Point</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:Addresses:3.0}GeographicPositionType/count">2</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:Addresses:3.0}PostalDescriptorType/1">{http://www.opengis.net/gml/3.2}boundedBy</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:Addresses:3.0}PostalDescriptorType/2">{http://www.opengis.net/gml/3.2/BoundingShapeType}choice_1</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:Addresses:3.0}PostalDescriptorType/count">2</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:Addresses:3.0}ThoroughfareNameType/1">{http://www.opengis.net/gml/3.2}boundedBy</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:Addresses:3.0}ThoroughfareNameType/2">{http://www.opengis.net/gml/3.2/BoundingShapeType}choice_1</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:Addresses:3.0}ThoroughfareNameType/count">2</property>
+    <property name="mappableTargetType/1">{urn:x-inspire:specification:gmlas:Addresses:3.0}AdminUnitNameType</property>
+    <property name="mappableTargetType/2">{urn:x-inspire:specification:gmlas:Addresses:3.0}AddressAreaNameType</property>
+    <property name="mappableTargetType/3">{urn:x-inspire:specification:gmlas:Addresses:3.0}PostalDescriptorType</property>
+    <property name="mappableTargetType/4">{urn:x-inspire:specification:gmlas:Addresses:3.0}AddressType</property>
+    <property name="mappableTargetType/5">{urn:x-inspire:specification:gmlas:Addresses:3.0}ThoroughfareNameType</property>
+    <property name="mappableTargetType/6">{urn:x-inspire:specification:gmlas:Addresses:3.0}AddressComponentType</property>
+    <property name="mappableTargetType/7">{urn:x-inspire:specification:gmlas:Addresses:3.0}AddressRepresentationType</property>
+    <property name="mappableTargetType/count">7</property>
+</hale-project>
