@@ -31,6 +31,8 @@ import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceWriter;
  */
 public class GeoJSONInstanceWriter extends AbstractInstanceWriter {
 
+	public static final String PARAM_GEOMETRY_CONFIG = "geojson.geometry.config";
+
 	@Override
 	public boolean isCancelable() {
 		return false;
@@ -42,7 +44,9 @@ public class GeoJSONInstanceWriter extends AbstractInstanceWriter {
 		progress.begin("Generating GeoJSON", ProgressIndicator.UNKNOWN);
 		try {
 			JacksonMapper mapper = new JacksonMapper();
-			mapper.streamWriteGeoJSONCollection(getTarget(), getInstances(), reporter);
+			GeoJSONConfig config = getParameter(PARAM_GEOMETRY_CONFIG).as(GeoJSONConfig.class,
+					new GeoJSONConfig());
+			mapper.streamWriteGeoJSONCollection(getTarget(), getInstances(), config, reporter);
 
 			reporter.setSuccess(true);
 		} catch (Exception e) {

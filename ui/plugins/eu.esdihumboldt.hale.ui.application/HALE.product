@@ -171,6 +171,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.io.jdbc.postgresql"/>
       <plugin id="eu.esdihumboldt.hale.io.jdbc.ui"/>
       <plugin id="eu.esdihumboldt.hale.io.json"/>
+      <plugin id="eu.esdihumboldt.hale.io.json.ui"/>
       <plugin id="eu.esdihumboldt.hale.io.oml"/>
       <plugin id="eu.esdihumboldt.hale.io.oml.test"/>
       <plugin id="eu.esdihumboldt.hale.io.project.jaxb"/>

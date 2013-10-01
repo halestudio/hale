@@ -115,7 +115,7 @@ public class OccurringValuesServiceImpl extends AbstractOccurringValuesService {
 			try {
 				while (it.hasNext()) {
 					Instance instance = it.next();
-					AlignmentUtil.addValues(instance, property.getPropertyPath(), collectedValues);
+					AlignmentUtil.addValues(instance, property.getPropertyPath(), collectedValues, true);
 					if (instanceProgress) {
 						// TODO improved monitor update?!
 						monitor.worked(1);

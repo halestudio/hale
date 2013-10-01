@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.ui.io.config">
+      <configPage
+            class="eu.esdihumboldt.hale.io.json.ui.GeoJSONConfigurationPage">
+         <provider
+               ref="eu.esdihumboldt.hale.io.geojson.writer">
+         </provider>
+      </configPage>
+   </extension>
+
+</plugin>
