@@ -785,11 +785,14 @@ public abstract class AlignmentUtil {
 	 * 
 	 * @param instance the instance to collect values from
 	 * @param definition the property
+	 * @param onlyValues whether to only return values, or to return whatever
+	 *            can be found (including groups/instances)
 	 * @return all values of the given property
 	 */
-	public static Multiset<Object> getValues(Instance instance, PropertyEntityDefinition definition) {
+	public static Multiset<Object> getValues(Instance instance,
+			PropertyEntityDefinition definition, boolean onlyValues) {
 		Multiset<Object> result = HashMultiset.create();
-		addValues(instance, definition.getPropertyPath(), result);
+		addValues(instance, definition.getPropertyPath(), result, onlyValues);
 		return result;
 	}
 
@@ -799,17 +802,27 @@ public abstract class AlignmentUtil {
 	 * @param group the parent group
 	 * @param path the path on the group
 	 * @param collectedValues the set to add the values to
+	 * @param onlyValues whether to only return values, or to return whatever
+	 *            can be found (including groups/instances)
 	 */
 	public static void addValues(Group group, List<ChildContext> path,
-			Multiset<Object> collectedValues) {
+			Multiset<Object> collectedValues, boolean onlyValues) {
 		if (path == null || path.isEmpty()) {
-			// empty path - retrieve value from instance
-			if (group instanceof Instance) {
-				Object value = ((Instance) group).getValue();
-				if (value != null) {
-					collectedValues.add(value);
+			// group/instance at end of path
+			if (onlyValues) {
+				// only include instance values
+				if (group instanceof Instance) {
+					Object value = ((Instance) group).getValue();
+					if (value != null) {
+						collectedValues.add(value);
+					}
 				}
 			}
+			else {
+				// include the group/instance as is
+				collectedValues.add(group);
+			}
+			// empty path - retrieve value from instance
 		}
 		else {
 			// go down the path
@@ -844,7 +857,7 @@ public abstract class AlignmentUtil {
 				// check all values
 				for (Object value : values) {
 					if (value instanceof Group) {
-						addValues((Group) value, subPath, collectedValues);
+						addValues((Group) value, subPath, collectedValues, onlyValues);
 					}
 					else if (subPath.isEmpty()) {
 						// normal value and at the end of the path

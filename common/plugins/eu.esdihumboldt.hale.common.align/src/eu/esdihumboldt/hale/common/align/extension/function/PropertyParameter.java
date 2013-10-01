@@ -89,6 +89,24 @@ public final class PropertyParameter extends AbstractParameter {
 		conditions = createConditions(conf);
 	}
 
+	/**
+	 * Create a parameter definition.
+	 * 
+	 * @param name the parameter name
+	 * @param minOccurrence min occurrences
+	 * @param maxOccurrence max occurrences
+	 * @param label human readable label
+	 * @param description human readable description
+	 * @param conditions a list of property conditions
+	 * @param eager {@link #isEager()}
+	 */
+	public PropertyParameter(String name, int minOccurrence, int maxOccurrence, String label,
+			String description, List<PropertyCondition> conditions, boolean eager) {
+		super(name, minOccurrence, maxOccurrence, label, description);
+		this.conditions = conditions;
+		this.eager = eager;
+	}
+
 	private static List<PropertyCondition> createConditions(IConfigurationElement conf) {
 		List<PropertyCondition> result = new ArrayList<PropertyCondition>();
 
