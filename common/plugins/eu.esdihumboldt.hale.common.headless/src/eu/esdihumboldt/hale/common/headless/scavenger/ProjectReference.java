@@ -100,6 +100,16 @@ public class ProjectReference<C> {
 	}
 
 	/**
+	 * Force an update by resetting the loaded project information.
+	 * 
+	 * @param context the update context
+	 */
+	public void forceUpdate(C context) {
+		projectInfo = null;
+		update(context);
+	}
+
+	/**
 	 * Updates the project status from the configuration and if needed loads the
 	 * project and transformation environment and adds or removes the
 	 * transformation environment.
@@ -245,6 +255,15 @@ public class ProjectReference<C> {
 	 */
 	public File getProjectFile() {
 		String projectFile = config.getProjectFileName();
+		if (projectFile != null) {
+			// check if the file actually exists
+			File file = new File(projectFolder, projectFile);
+			if (!file.exists()) {
+				log.info("Project file no longer exists, scanning for new project file.");
+				projectFile = null;
+				projectInfo = null;
+			}
+		}
 		if (projectFile == null) {
 			// determine the project file automatically
 			projectFile = ProjectIO.findProjectFile(projectFolder, getSupportedExtensions());
