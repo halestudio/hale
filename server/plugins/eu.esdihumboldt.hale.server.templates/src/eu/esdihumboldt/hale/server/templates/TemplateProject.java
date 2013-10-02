@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Properties;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
@@ -55,6 +56,13 @@ public class TemplateProject extends ProjectReference<Void> {
 	public TemplateProject(File projectFolder, String overrideProjectFile, String projectId,
 			Properties defaultSettings) throws IOException {
 		super(projectFolder, overrideProjectFile, projectId, defaultSettings);
+	}
+
+	/**
+	 * @return the resources
+	 */
+	public Multimap<String, Resource> getResources() {
+		return ImmutableMultimap.copyOf(resources);
 	}
 
 	/**

@@ -41,6 +41,7 @@ import eu.esdihumboldt.hale.server.model.User;
 import eu.esdihumboldt.hale.server.templates.TemplateScavenger;
 import eu.esdihumboldt.hale.server.templates.war.TemplateLocations;
 import eu.esdihumboldt.hale.server.templates.war.components.DeleteTemplateLink;
+import eu.esdihumboldt.hale.server.templates.war.components.ResourcesPanel;
 import eu.esdihumboldt.hale.server.webapp.util.UserUtil;
 import eu.esdihumboldt.util.blueprints.entities.NonUniqueResultException;
 
@@ -159,6 +160,10 @@ public class TemplatePage extends TemplatesBasePage {
 					WebMarkupContainer statusInvalid = new WebMarkupContainer("invalid");
 					statusInvalid.setVisible(!template.isValid());
 					add(statusInvalid);
+
+					// resources
+					ResourcesPanel resources = new ResourcesPanel("resources", templateId);
+					add(resources);
 				}
 				else {
 					throw new AbortWithHttpErrorCodeException(HttpServletResponse.SC_NOT_FOUND,
