@@ -16,27 +16,24 @@
 package eu.esdihumboldt.hale.server.templates.war.pages;
 
 import eu.esdihumboldt.hale.server.templates.war.components.TemplateList;
-import eu.esdihumboldt.hale.server.webapp.pages.BasePage;
 import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
+import eu.esdihumboldt.hale.server.webapp.util.UserUtil;
 
 /**
- * Page displaying all valid templates.
+ * Page displaying a user's templates.
  * 
  * @author Simon Templer
  */
 @PageDescription(title = "Templates")
-public class TemplatesPage extends TemplatesBasePage {
+public class MyTemplatesPage extends TemplatesSecuredPage {
 
 	private static final long serialVersionUID = 221216335635652135L;
 
-	/**
-	 * @see BasePage#addControls(boolean)
-	 */
 	@Override
-	protected void addControls(boolean loggedIn) {
-		super.addControls(loggedIn);
+	protected void addControls() {
+		super.addControls();
 
-		add(new TemplateList("templates"));
+		add(new TemplateList("templates", UserUtil.getLogin()));
 	}
 
 }

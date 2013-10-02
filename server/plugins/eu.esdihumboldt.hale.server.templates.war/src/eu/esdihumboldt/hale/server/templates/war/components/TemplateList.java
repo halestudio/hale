@@ -62,11 +62,21 @@ public class TemplateList extends Panel {
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
 	/**
-	 * Constructor
+	 * Create a template list displaying all valid templates.
 	 * 
 	 * @param id the panel id
 	 */
 	public TemplateList(String id) {
+		this(id, null);
+	}
+
+	/**
+	 * Create a template list displaying only user templates.
+	 * 
+	 * @param id the panel id
+	 * @param login the login of the user to restrict the templates to
+	 */
+	public TemplateList(String id, final String login) {
 		super(id);
 
 		setOutputMarkupId(true);
@@ -80,19 +90,32 @@ public class TemplateList extends Panel {
 			protected List<ORID> load() {
 				OrientGraph graph = DatabaseHelper.getGraph();
 				try {
+					String baseSql;
+					if (login == null) {
+						// all valid templates
+						baseSql = "SELECT @rid,name FROM template WHERE valid = true";
+					}
+					else {
+						// all user templates
+						baseSql = "SELECT @rid,name FROM template WHERE out_owner.login = $login";
+					}
+
 					String searchText = getSearchText();
 					OCommandSQL sql;
 					if (searchText == null || searchText.isEmpty()) {
-						sql = new OCommandSQL(
-								"SELECT @rid,name FROM template WHERE valid = true ORDER BY name");
+						sql = new OCommandSQL(baseSql + " ORDER BY name");
 					}
 					else {
 						searchText = "%" + searchText.toLowerCase() + "%";
 						sql = new OCommandSQL(
-								"SELECT @rid,name FROM template WHERE valid = true"
+								baseSql
 										+ " AND (name.toLowerCase() like $searchtext OR author.toLowerCase() like $searchtext)"
 										+ " ORDER BY name");
 						sql.getContext().setVariable("searchtext", searchText);
+					}
+					if (login != null) {
+						// login as context variable
+						sql.getContext().setVariable("login", login);
 					}
 
 					Iterable<ODocument> docs = graph.command(sql).execute();

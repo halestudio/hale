@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.server.templates.war;
 import org.apache.wicket.Page;
 
 import eu.esdihumboldt.hale.server.templates.war.pages.EditTemplatePage;
+import eu.esdihumboldt.hale.server.templates.war.pages.MyTemplatesPage;
 import eu.esdihumboldt.hale.server.templates.war.pages.TemplatePage;
 import eu.esdihumboldt.hale.server.templates.war.pages.TemplatesPage;
 import eu.esdihumboldt.hale.server.templates.war.pages.UpdateTemplatePage;
@@ -47,6 +48,8 @@ public class TemplatesApplication extends BaseWebApplication {
 		mountPage("/edit", EditTemplatePage.class);
 
 		mountPage("/update", UpdateTemplatePage.class);
+
+		mountPage("/my", MyTemplatesPage.class);
 	}
 
 	@Override
