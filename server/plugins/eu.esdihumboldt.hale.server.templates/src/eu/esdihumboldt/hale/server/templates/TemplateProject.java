@@ -15,8 +15,11 @@
 
 package eu.esdihumboldt.hale.server.templates;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -29,6 +32,10 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 
+import eu.esdihumboldt.hale.common.align.io.AlignmentIO;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.JaxbToAlignment;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AlignmentType;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.CellType;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfigurationResource;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
@@ -42,11 +49,14 @@ import eu.esdihumboldt.hale.common.headless.scavenger.ProjectReference;
  * 
  * @author Simon Templer
  */
+@SuppressWarnings("restriction")
 public class TemplateProject extends ProjectReference<Void> {
 
 	private boolean valid;
 
 	private String notValidMessage;
+
+	private int definedRelations = 0;
 
 	private final Multimap<String, Resource> resources = ArrayListMultimap.create();
 
@@ -80,6 +90,14 @@ public class TemplateProject extends ProjectReference<Void> {
 	 */
 	public String getNotValidMessage() {
 		return notValidMessage;
+	}
+
+	/**
+	 * @return the number defined relations, not necessarily exact, zero may
+	 *         mean unknown
+	 */
+	public int getDefinedRelations() {
+		return definedRelations;
 	}
 
 	@Override
@@ -130,6 +148,40 @@ public class TemplateProject extends ProjectReference<Void> {
 		else {
 			notValidMessage = "";
 		}
+
+		// additionally, try to find out cell count
+		definedRelations = 0;
+
+		// check if default alignment file exists
+		try {
+			File defAlignmentFile = new File(URI.create(projectFile.toURI().toASCIIString() + "."
+					+ AlignmentIO.PROJECT_FILE_ALIGNMENT));
+			if (defAlignmentFile.exists()) {
+				// check alignment size
+
+				try (InputStream in = new BufferedInputStream(new FileInputStream(defAlignmentFile))) {
+					/*
+					 * Try loading the file with JAXB - only supports 2.6+
+					 * projects.
+					 */
+					AlignmentType alignment = JaxbToAlignment.load(in, null);
+
+					// XXX ignoring base alignments
+
+					int count = 0;
+					for (Object element : alignment.getCellOrModifier()) {
+						if (element instanceof CellType) {
+							count++;
+						}
+					}
+					definedRelations = count;
+				} catch (Exception e) {
+					// ignore
+				}
+			}
+		} catch (Exception e) {
+			// ignore
+		}
 	}
 
 	@Override
@@ -138,6 +190,7 @@ public class TemplateProject extends ProjectReference<Void> {
 
 		valid = false;
 		notValidMessage = "Project could not be loaded";
+		definedRelations = 0;
 		resources.clear();
 	}
 
@@ -147,6 +200,7 @@ public class TemplateProject extends ProjectReference<Void> {
 
 		valid = false;
 		notValidMessage = "No project file found";
+		definedRelations = 0;
 		resources.clear();
 	}
 

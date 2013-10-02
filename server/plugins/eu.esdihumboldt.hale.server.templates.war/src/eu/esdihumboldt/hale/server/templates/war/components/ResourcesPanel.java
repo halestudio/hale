@@ -163,5 +163,18 @@ public class ResourcesPanel extends Panel {
 			}
 		};
 		add(actions);
+
+		// mapping
+		TemplateProject ref = templates.getReference(templateId);
+
+		WebMarkupContainer mapping = new WebMarkupContainer("mapping");
+		mapping.setVisible(ref.getDefinedRelations() > 0);
+
+		String text = ref.getDefinedRelations()
+				+ ((ref.getDefinedRelations() == 1) ? (" pre-defined relation")
+						: (" pre-defined relations"));
+		mapping.add(new Label("text", text));
+
+		add(mapping);
 	}
 }
