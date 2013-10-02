@@ -24,9 +24,9 @@ import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
-import eu.esdihumboldt.hale.common.headless.scavenger.ProjectReference;
 import eu.esdihumboldt.hale.server.db.orient.DatabaseHelper;
 import eu.esdihumboldt.hale.server.model.Template;
+import eu.esdihumboldt.hale.server.templates.TemplateProject;
 import eu.esdihumboldt.hale.server.templates.TemplateScavenger;
 import eu.esdihumboldt.util.blueprints.entities.NonUniqueResultException;
 import eu.esdihumboldt.util.scavenger.AbstractResourceScavenger;
@@ -36,8 +36,8 @@ import eu.esdihumboldt.util.scavenger.AbstractResourceScavenger;
  * 
  * @author Simon Templer
  */
-public class TemplateScavengerImpl extends AbstractResourceScavenger<ProjectReference<Void>>
-		implements TemplateScavenger {
+public class TemplateScavengerImpl extends AbstractResourceScavenger<TemplateProject> implements
+		TemplateScavenger {
 
 	private static final ALogger log = ALoggerFactory.getLogger(TemplateScavengerImpl.class);
 
@@ -57,7 +57,7 @@ public class TemplateScavengerImpl extends AbstractResourceScavenger<ProjectRefe
 	}
 
 	@Override
-	protected void onRemove(ProjectReference<Void> reference, String resourceId) {
+	protected void onRemove(TemplateProject reference, String resourceId) {
 		// invalidate database reference (if it exists)
 		try {
 			Template template = Template.getByTemplateId(graph.get(), resourceId);
@@ -71,10 +71,10 @@ public class TemplateScavengerImpl extends AbstractResourceScavenger<ProjectRefe
 	}
 
 	@Override
-	protected ProjectReference<Void> loadReference(File resourceFolder, String resourceFileName,
+	protected TemplateProject loadReference(File resourceFolder, String resourceFileName,
 			String resourceId) throws IOException {
-		ProjectReference<Void> ref = new ProjectReference<>(resourceFolder, resourceFileName,
-				resourceId, null);
+		TemplateProject ref = new TemplateProject(resourceFolder, resourceFileName, resourceId,
+				null);
 		return ref;
 	}
 
@@ -104,7 +104,7 @@ public class TemplateScavengerImpl extends AbstractResourceScavenger<ProjectRefe
 	}
 
 	@Override
-	protected void onAdd(ProjectReference<Void> reference, String resourceId) {
+	protected void onAdd(TemplateProject reference, String resourceId) {
 		reference.update(null);
 
 		Template template;
@@ -118,7 +118,7 @@ public class TemplateScavengerImpl extends AbstractResourceScavenger<ProjectRefe
 
 		if (template != null) {
 			// update valid status
-			boolean valid = reference.getProjectInfo() != null;
+			boolean valid = reference.isValid();
 			template.setValid(valid);
 			log.info("Updating template {} - {}", resourceId, (valid) ? ("valid") : ("invalid"));
 		}
@@ -127,7 +127,7 @@ public class TemplateScavengerImpl extends AbstractResourceScavenger<ProjectRefe
 			 * Only create a new database reference if the project actually is
 			 * valid
 			 */
-			if (reference.getProjectInfo() != null) {
+			if (reference.isValid()) {
 				ProjectInfo info = reference.getProjectInfo();
 
 				// create new template representation in DB
@@ -150,7 +150,7 @@ public class TemplateScavengerImpl extends AbstractResourceScavenger<ProjectRefe
 
 	@Override
 	public void forceUpdate(String templateId) {
-		ProjectReference<Void> ref = getReference(templateId);
+		TemplateProject ref = getReference(templateId);
 		ref.forceUpdate(null);
 		graph.set(DatabaseHelper.getGraph());
 		try {
@@ -162,7 +162,7 @@ public class TemplateScavengerImpl extends AbstractResourceScavenger<ProjectRefe
 	}
 
 	@Override
-	protected void updateResource(ProjectReference<Void> reference, String resourceId) {
+	protected void updateResource(TemplateProject reference, String resourceId) {
 		/*
 		 * nothing to do
 		 * 
