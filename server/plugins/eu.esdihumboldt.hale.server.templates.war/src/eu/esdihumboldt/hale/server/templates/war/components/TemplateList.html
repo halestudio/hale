@@ -24,7 +24,7 @@
 				<th>Name</th>
 				<th>Author</th>
 				<th>Last Update</th>
-				<th style="text-align: center;">Popularity</th>
+				<th wicket:id="status" style="text-align: center;">Status</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -32,7 +32,10 @@
 				<td wicket:id="name"><a wicket:id="details"><span wicket:id="name">Project name</span></a></td>
 				<td wicket:id="author">Project author</td>
 				<td wicket:id="update">Last Update</td>
-				<td wicket:id="popularity" style="text-align: center;"><span wicket:id="value" class="badge badge-info">8</span></td>
+				<td wicket:id="status" style="text-align: center;">
+					<span wicket:id="ok" class="label label-info">OK</span>
+					<span wicket:id="invalid" class="label label-important">Invalid</span>
+				</td>
 			</tr>
 		</tbody>
 	</table>

@@ -154,6 +154,11 @@ public class TemplatePage extends TemplatesBasePage {
 					}
 					Label description = new Label("description", descr);
 					add(description);
+
+					// invalid
+					WebMarkupContainer statusInvalid = new WebMarkupContainer("invalid");
+					statusInvalid.setVisible(!template.isValid());
+					add(statusInvalid);
 				}
 				else {
 					throw new AbortWithHttpErrorCodeException(HttpServletResponse.SC_NOT_FOUND,
