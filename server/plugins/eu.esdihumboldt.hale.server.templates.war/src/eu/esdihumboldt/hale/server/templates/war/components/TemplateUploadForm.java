@@ -55,10 +55,10 @@ import de.agilecoders.wicket.extensions.javascript.jasny.FileUploadField;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
-import eu.esdihumboldt.hale.common.headless.scavenger.ProjectReference;
 import eu.esdihumboldt.hale.server.db.orient.DatabaseHelper;
 import eu.esdihumboldt.hale.server.model.Template;
 import eu.esdihumboldt.hale.server.model.User;
+import eu.esdihumboldt.hale.server.templates.TemplateProject;
 import eu.esdihumboldt.hale.server.templates.TemplateScavenger;
 import eu.esdihumboldt.hale.server.templates.war.pages.NewTemplatePage;
 import eu.esdihumboldt.hale.server.templates.war.pages.TemplatePage;
@@ -172,8 +172,8 @@ public class TemplateUploadForm extends Panel {
 							templates.forceUpdate(templateId);
 						}
 
-						ProjectReference<Void> ref = templates.getReference(templateId);
-						if (ref != null && ref.getProjectInfo() != null) {
+						TemplateProject ref = templates.getReference(templateId);
+						if (ref != null && ref.isValid()) {
 							info("Successfully uploaded project");
 							boolean infoUpdate = (updateInfo != null) ? (updateInfo
 									.getModelObject()) : (false);
@@ -186,7 +186,8 @@ public class TemplateUploadForm extends Panel {
 							else {
 								restoreContent(dir, oldContent);
 							}
-							error("Uploaded files could not be loaded as HALE project");
+							error((ref != null) ? (ref.getNotValidMessage())
+									: ("Uploaded files could not be loaded as HALE project"));
 						}
 
 					} catch (Exception e) {

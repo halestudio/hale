@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.report.Message;
 import eu.esdihumboldt.hale.common.core.report.Reporter;
@@ -108,8 +109,8 @@ public class ProjectHandler extends ProjectReference<EnvironmentManager> {
 
 	@Override
 	protected void onSuccess(EnvironmentManager context, String projectId, File projectFile,
-			ReportFile reportFile) {
-		super.onSuccess(context, projectId, projectFile, reportFile);
+			Project project, ReportFile reportFile) {
+		super.onSuccess(context, projectId, projectFile, project, reportFile);
 
 		if (isEnabled()) {
 			// load transformation environment if not yet done

@@ -15,7 +15,6 @@
 
 package eu.esdihumboldt.hale.server.templates;
 
-import eu.esdihumboldt.hale.common.headless.scavenger.ProjectReference;
 import eu.esdihumboldt.util.scavenger.ResourceScavenger;
 
 /**
@@ -23,7 +22,7 @@ import eu.esdihumboldt.util.scavenger.ResourceScavenger;
  * 
  * @author Simon Templer
  */
-public interface TemplateScavenger extends ResourceScavenger<ProjectReference<Void>> {
+public interface TemplateScavenger extends ResourceScavenger<TemplateProject> {
 
 	/**
 	 * Force an update of the template with the given ID, resetting already
