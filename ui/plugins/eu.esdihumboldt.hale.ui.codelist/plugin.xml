@@ -14,12 +14,10 @@
          point="eu.esdihumboldt.hale.ui.io.action">
       <action-ui
             action="eu.esdihumboldt.hale.codelist.read"
-            categoryName="Code lists"
             id="eu.esdihumboldt.hale.codelist.ui"
             label="Code list..."
             priority="0"
             projectResource="true"
-            resourceName="code list"
             ui-advisor="eu.esdihumboldt.hale.ui.codelist.io.CodeListUIAdvisor"
             wizard="eu.esdihumboldt.hale.ui.codelist.io.CodeListImportWizard">
       </action-ui>

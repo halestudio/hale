@@ -130,16 +130,6 @@ public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> 
 			return conf.getAttribute("id");
 		}
 
-		@Override
-		public String getResourceName() {
-			return conf.getAttribute("resourceName");
-		}
-
-		@Override
-		public String getResourceCategoryName() {
-			return conf.getAttribute("categoryName");
-		}
-
 		/**
 		 * @see ActionUI#getDisabledReason()
 		 */

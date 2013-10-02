@@ -4,8 +4,10 @@
    <extension
          point="eu.esdihumboldt.hale.io.action">
       <action
+            categoryName="Code lists"
             id="eu.esdihumboldt.hale.codelist.read"
             name="Load code lists"
+            resourceName="code list"
             type="eu.esdihumboldt.hale.common.codelist.io.CodeListReader">
       </action>
    </extension>

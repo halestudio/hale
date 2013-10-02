@@ -55,20 +55,6 @@ public interface ActionUI extends ExtensionObjectFactory<IOWizard<?>> {
 	public boolean isProjectResource();
 
 	/**
-	 * Get the name for this kind of resource.
-	 * 
-	 * @return the resource name
-	 */
-	public String getResourceName();
-
-	/**
-	 * Get the category name for this kind of resource.
-	 * 
-	 * @return the resource category name
-	 */
-	public String getResourceCategoryName();
-
-	/**
 	 * Get the expression that specifies whether the command to show the I/O
 	 * wizard for the advisor should be enabled.
 	 * 

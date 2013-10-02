@@ -100,6 +100,16 @@ public class IOActionExtension extends IdentifiableExtension<IOAction> {
 		}
 
 		@Override
+		public String getResourceName() {
+			return conf.getAttribute("resourceName");
+		}
+
+		@Override
+		public String getResourceCategoryName() {
+			return conf.getAttribute("categoryName");
+		}
+
+		@Override
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;

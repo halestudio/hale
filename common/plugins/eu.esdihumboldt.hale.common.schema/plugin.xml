@@ -4,13 +4,17 @@
    <extension
          point="eu.esdihumboldt.hale.io.action">
       <action
+            categoryName="Source schemas"
             id="eu.esdihumboldt.hale.io.schema.read.source"
             name="Load source schema"
+            resourceName="source schema"
             type="eu.esdihumboldt.hale.common.schema.io.SchemaReader">
       </action>
       <action
+            categoryName="Target schemas"
             id="eu.esdihumboldt.hale.io.schema.read.target"
             name="Load target schema"
+            resourceName="target schema"
             type="eu.esdihumboldt.hale.common.schema.io.SchemaReader">
       </action>
    </extension>

@@ -24,8 +24,10 @@
    <extension
          point="eu.esdihumboldt.hale.io.action">
       <action
+            categoryName="Lookup tables"
             id="eu.esdihumboldt.hale.lookup.import"
             name="Lookup Table"
+            resourceName="lookup table"
             type="eu.esdihumboldt.hale.common.lookup.LookupTableImport">
       </action>
       <advisor

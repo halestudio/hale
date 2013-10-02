@@ -28,6 +28,8 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.io.IOAction;
+import eu.esdihumboldt.hale.common.core.io.extension.IOActionExtension;
 import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 import eu.esdihumboldt.hale.ui.io.action.ActionUI;
 import eu.esdihumboldt.hale.ui.io.action.ActionUIAdvisor;
@@ -57,6 +59,7 @@ public class RemoveResourceHandler extends AbstractHandler {
 				ActionUI actionUI = ActionUIExtension.getInstance().findActionUI(
 						resource.getActionId());
 				if (actionUI != null) {
+					IOAction action = IOActionExtension.getInstance().get(resource.getActionId());
 					ActionUIAdvisor<?> advisor = actionUI.getUIAdvisor();
 					if (advisor != null && advisor.supportsRemoval()) {
 						String name = null;
@@ -68,7 +71,10 @@ public class RemoveResourceHandler extends AbstractHandler {
 							}
 						}
 
-						String resourceType = actionUI.getResourceName();
+						String resourceType = null;
+						if (action != null) {
+							resourceType = action.getResourceName();
+						}
 						if (resourceType == null) {
 							resourceType = "resource";
 						}
