@@ -117,10 +117,9 @@ public class ResourcesLabelProvider extends StyledCellLabelProvider implements I
 
 			// try names in order of preference
 
-			// action UI resource category name
-			ActionUI actionUI = ActionUIExtension.getInstance().findActionUI(action.getId());
-			if (actionUI != null && actionUI.getResourceCategoryName() != null) {
-				return actionUI.getResourceCategoryName();
+			// resource category name
+			if (action.getResourceCategoryName() != null) {
+				return action.getResourceCategoryName();
 			}
 
 			// action name

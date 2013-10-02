@@ -135,26 +135,6 @@
                </appinfo>
             </annotation>
          </attribute>
-         <attribute name="resourceName" type="string">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-               <appinfo>
-                  <meta.attribute translatable="true"/>
-               </appinfo>
-            </annotation>
-         </attribute>
-         <attribute name="categoryName" type="string">
-            <annotation>
-               <documentation>
-                  The resource category name.
-               </documentation>
-               <appinfo>
-                  <meta.attribute translatable="true"/>
-               </appinfo>
-            </annotation>
-         </attribute>
       </complexType>
    </element>
 
