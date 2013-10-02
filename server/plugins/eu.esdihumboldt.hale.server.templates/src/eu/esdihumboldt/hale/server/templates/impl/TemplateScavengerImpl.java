@@ -149,7 +149,7 @@ public class TemplateScavengerImpl extends AbstractResourceScavenger<TemplatePro
 	}
 
 	@Override
-	public void forceUpdate(String templateId) {
+	public synchronized void forceUpdate(String templateId) {
 		TemplateProject ref = getReference(templateId);
 		ref.forceUpdate(null);
 		graph.set(DatabaseHelper.getGraph());

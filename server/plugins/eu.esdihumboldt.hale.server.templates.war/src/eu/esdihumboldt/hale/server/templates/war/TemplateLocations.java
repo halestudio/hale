@@ -66,4 +66,19 @@ public class TemplateLocations {
 		String relativePath = base.relativize(projectFilePath).toString();
 		return getServerBaseUrl() + getContextPath() + "/resources/files/" + relativePath;
 	}
+
+	/**
+	 * Get the URL to a file of a template.
+	 * 
+	 * @param scavenger the template scavenger
+	 * @param templateId the template ID
+	 * @param templateRelativePath the relative path in the template to the file
+	 * @return the URL to the project file
+	 * @see TemplatesResources
+	 */
+	public static String getTemplateFileUrl(TemplateScavenger scavenger, String templateId,
+			String templateRelativePath) {
+		return getServerBaseUrl() + getContextPath() + "/resources/files/" + templateId + "/"
+				+ templateRelativePath;
+	}
 }
