@@ -52,7 +52,10 @@ public class TemplatesSecuredPage extends SecuredPage {
 		super.addControls();
 
 		NavbarButton<Void> share = new NavbarButton<>(UploadTemplatePage.class, Model.of("Share"));
-		getNavbar().addComponents(NavbarComponents.transform(ComponentPosition.LEFT, share));
+
+		NavbarButton<Void> my = new NavbarButton<>(MyTemplatesPage.class, Model.of("My Templates"));
+
+		getNavbar().addComponents(NavbarComponents.transform(ComponentPosition.LEFT, share, my));
 	}
 
 }

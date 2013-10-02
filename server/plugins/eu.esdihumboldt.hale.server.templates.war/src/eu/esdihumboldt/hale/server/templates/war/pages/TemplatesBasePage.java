@@ -52,6 +52,12 @@ public class TemplatesBasePage extends BasePage {
 
 		NavbarButton<Void> share = new NavbarButton<>(UploadTemplatePage.class, Model.of("Share"));
 		getNavbar().addComponents(NavbarComponents.transform(ComponentPosition.LEFT, share));
+
+		if (loggedIn) {
+			NavbarButton<Void> my = new NavbarButton<>(MyTemplatesPage.class,
+					Model.of("My Templates"));
+			getNavbar().addComponents(NavbarComponents.transform(ComponentPosition.LEFT, my));
+		}
 	}
 
 }
