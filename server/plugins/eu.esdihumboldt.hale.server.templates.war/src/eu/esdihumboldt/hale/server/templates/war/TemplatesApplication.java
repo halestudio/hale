@@ -20,7 +20,8 @@ import org.apache.wicket.Page;
 import eu.esdihumboldt.hale.server.templates.war.pages.EditTemplatePage;
 import eu.esdihumboldt.hale.server.templates.war.pages.TemplatePage;
 import eu.esdihumboldt.hale.server.templates.war.pages.TemplatesPage;
-import eu.esdihumboldt.hale.server.templates.war.pages.UploadPage;
+import eu.esdihumboldt.hale.server.templates.war.pages.UpdateTemplatePage;
+import eu.esdihumboldt.hale.server.templates.war.pages.UploadTemplatePage;
 import eu.esdihumboldt.hale.server.webapp.BaseWebApplication;
 
 /**
@@ -39,11 +40,13 @@ public class TemplatesApplication extends BaseWebApplication {
 	public void init() {
 		super.init();
 
-		mountPage("/share", UploadPage.class);
+		mountPage("/share", UploadTemplatePage.class);
 
 		mountPage("/show", TemplatePage.class);
 
 		mountPage("/edit", EditTemplatePage.class);
+
+		mountPage("/update", UpdateTemplatePage.class);
 	}
 
 	@Override

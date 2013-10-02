@@ -17,16 +17,28 @@ package eu.esdihumboldt.hale.server.templates.war.components;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.util.string.StringValue;
@@ -37,42 +49,57 @@ import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
 
 import com.google.common.io.ByteStreams;
+import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 
 import de.agilecoders.wicket.extensions.javascript.jasny.FileUploadField;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.headless.scavenger.ProjectReference;
+import eu.esdihumboldt.hale.server.db.orient.DatabaseHelper;
+import eu.esdihumboldt.hale.server.model.Template;
+import eu.esdihumboldt.hale.server.model.User;
 import eu.esdihumboldt.hale.server.templates.TemplateScavenger;
+import eu.esdihumboldt.hale.server.templates.war.pages.NewTemplatePage;
+import eu.esdihumboldt.hale.server.templates.war.pages.TemplatePage;
 import eu.esdihumboldt.hale.server.webapp.BaseWebApplication;
 import eu.esdihumboldt.hale.server.webapp.components.bootstrap.BootstrapFeedbackPanel;
 import eu.esdihumboldt.hale.server.webapp.util.UserUtil;
 import eu.esdihumboldt.util.Pair;
+import eu.esdihumboldt.util.blueprints.entities.NonUniqueResultException;
 import eu.esdihumboldt.util.io.IOUtils;
 import eu.esdihumboldt.util.scavenger.ScavengerException;
 
 /**
- * Upload form for new templates.
+ * Upload form for new templates or updating templates.
  * 
  * @author Simon Templer
  */
-public abstract class UploadForm extends Panel {
+public class TemplateUploadForm extends Panel {
 
 	private static final long serialVersionUID = -8077630706189091706L;
 
-	private static final ALogger log = ALoggerFactory.getLogger(UploadForm.class);
+	private static final ALogger log = ALoggerFactory.getLogger(TemplateUploadForm.class);
 
 	private final FileUploadField file;
 
 	@SpringBean
-	private TemplateScavenger templates; // =
-											// OsgiUtils.getService(TemplateScavenger.class);
+	private TemplateScavenger templates;
+
+	private final String templateId;
+
+	private CheckBox updateInfo;
 
 	/**
-	 * @see Panel#Panel(String)
+	 * Constructor
+	 * 
+	 * @param id the component ID
+	 * @param templateId the identifier of the template to update, or
+	 *            <code>null</code> to create a new template
 	 */
-	public UploadForm(String id) {
+	public TemplateUploadForm(String id, String templateId) {
 		super(id);
+		this.templateId = templateId;
 
 		Form<Void> form = new Form<Void>("upload") {
 
@@ -80,20 +107,49 @@ public abstract class UploadForm extends Panel {
 
 			@Override
 			protected void onSubmit() {
-				// attempt to reserve template ID
-				Pair<String, File> template;
-				try {
-					template = templates.reserveResource(null);
-				} catch (ScavengerException e) {
-					error(e.getMessage());
-					return;
-				}
-				final String templateId = template.getFirst();
-				final File dir = template.getSecond();
+				List<FileUpload> uploads = file.getFileUploads();
+				if (uploads != null && !uploads.isEmpty()) {
+					final boolean newTemplate = TemplateUploadForm.this.templateId == null;
+					final String templateId;
+					final File dir;
+					File oldContent = null;
+					if (newTemplate) {
+						// attempt to reserve template ID
+						Pair<String, File> template;
+						try {
+							template = templates.reserveResource(null);
+						} catch (ScavengerException e) {
+							error(e.getMessage());
+							return;
+						}
+						templateId = template.getFirst();
+						dir = template.getSecond();
+					}
+					else {
+						templateId = TemplateUploadForm.this.templateId;
+						dir = new File(templates.getHuntingGrounds(), templateId);
 
-				try {
-					List<FileUpload> uploads = file.getFileUploads();
-					if (uploads != null && !uploads.isEmpty()) {
+						// archive old content
+						try {
+							Path tmpFile = Files.createTempFile("hale-template", ".zip");
+							try (OutputStream out = Files.newOutputStream(tmpFile);
+									ZipOutputStream zos = new ZipOutputStream(out)) {
+								IOUtils.zipDirectory(dir, zos);
+							}
+							oldContent = tmpFile.toFile();
+						} catch (IOException e) {
+							log.error("Error saving old template content to archive", e);
+						}
+
+						// delete old content
+						try {
+							FileUtils.cleanDirectory(dir);
+						} catch (IOException e) {
+							log.error("Error deleting old template content", e);
+						}
+					}
+
+					try {
 						for (FileUpload upload : uploads) {
 							if (isZipFile(upload)) {
 								// extract uploaded file
@@ -109,26 +165,43 @@ public abstract class UploadForm extends Panel {
 						}
 
 						// trigger scan after upload
-						templates.triggerScan();
+						if (newTemplate) {
+							templates.triggerScan();
+						}
+						else {
+							templates.forceUpdate(templateId);
+						}
 
 						ProjectReference<Void> ref = templates.getReference(templateId);
 						if (ref != null && ref.getProjectInfo() != null) {
 							info("Successfully uploaded project");
-							onUploadSuccess(this, templateId, ref.getProjectInfo());
+							boolean infoUpdate = (updateInfo != null) ? (updateInfo
+									.getModelObject()) : (false);
+							onUploadSuccess(this, templateId, ref.getProjectInfo(), infoUpdate);
 						}
 						else {
-							templates.releaseResourceId(templateId);
+							if (newTemplate) {
+								templates.releaseResourceId(templateId);
+							}
+							else {
+								restoreContent(dir, oldContent);
+							}
 							error("Uploaded files could not be loaded as HALE project");
 						}
+
+					} catch (Exception e) {
+						if (newTemplate) {
+							templates.releaseResourceId(templateId);
+						}
+						else {
+							restoreContent(dir, oldContent);
+						}
+						log.error("Error while uploading file", e);
+						error("Error saving the file");
 					}
-					else {
-						templates.releaseResourceId(templateId);
-						warn("Please provide a file for upload");
-					}
-				} catch (Exception e) {
-					templates.releaseResourceId(templateId);
-					log.error("Error while uploading file", e);
-					error("Error saving the file");
+				}
+				else {
+					warn("Please provide a file for upload");
 				}
 			}
 
@@ -188,8 +261,42 @@ public abstract class UploadForm extends Panel {
 		anonym.setVisible(!loggedIn);
 		form.add(anonym);
 
+		// update panel
+		WebMarkupContainer update = new WebMarkupContainer("update");
+		update.setVisible(templateId != null);
+
+		updateInfo = new CheckBox("updateInfo", Model.of(true));
+		update.add(updateInfo);
+
+		form.add(update);
+
 		// feedback panel
 		form.add(new BootstrapFeedbackPanel("feedback"));
+	}
+
+	/**
+	 * Restore the old content of a template from an archive.
+	 * 
+	 * @param dir the template directory
+	 * @param oldContent the archive with the old content
+	 */
+	protected void restoreContent(File dir, File oldContent) {
+		try {
+			FileUtils.cleanDirectory(dir);
+		} catch (IOException e) {
+			log.error("Error deleting new invalid template content", e);
+		}
+		if (oldContent != null) {
+			// try to restore old content
+			try (InputStream in = new BufferedInputStream(new FileInputStream(oldContent))) {
+				IOUtils.extract(dir, in);
+			} catch (IOException e) {
+				log.error("Error restoring old template content", e);
+			}
+			oldContent.delete();
+			oldContent = null;
+			templates.forceUpdate(templateId);
+		}
 	}
 
 	/**
@@ -224,8 +331,57 @@ public abstract class UploadForm extends Panel {
 	 * @param form the form
 	 * @param templateId the template identifier
 	 * @param projectInfo the project info
+	 * @param updateInfo if for an updated template, the template information
+	 *            should be updated from the project
 	 */
-	protected abstract void onUploadSuccess(Form<?> form, String templateId, ProjectInfo projectInfo);
+	protected void onUploadSuccess(Form<?> form, String templateId, ProjectInfo projectInfo,
+			boolean updateInfo) {
+		boolean newTemplate = TemplateUploadForm.this.templateId == null;
+
+		OrientGraph graph = DatabaseHelper.getGraph();
+		try {
+			Template template = Template.getByTemplateId(graph, templateId);
+			if (template == null) {
+				form.error("Template could not be created");
+				return;
+			}
+
+			if (newTemplate) {
+				// created template was a new template
+
+				// associate user as owner to template
+				String login = UserUtil.getLogin();
+				if (login != null) {
+					User user = User.getByLogin(graph, login);
+					graph.addEdge(null, template.getV(), user.getV(), "owner");
+				}
+
+				// forward to page to fill in template information
+				setResponsePage(new NewTemplatePage(templateId));
+			}
+			else {
+				// created template already existed
+
+				// set last updated
+				template.setLastUpdate(new Date());
+
+				// update template info from project info
+				if (updateInfo) {
+					template.setName(projectInfo.getName());
+					template.setAuthor(projectInfo.getAuthor());
+					template.setDescription(projectInfo.getDescription());
+				}
+
+				// forward to template page
+				setResponsePage(TemplatePage.class, new PageParameters().set(0, templateId));
+			}
+		} catch (NonUniqueResultException e) {
+			form.error("Internal error");
+			log.error("Duplicate template or user");
+		} finally {
+			graph.shutdown();
+		}
+	}
 
 	/**
 	 * Convert {@link Bytes} to a string, produces a prettier output than

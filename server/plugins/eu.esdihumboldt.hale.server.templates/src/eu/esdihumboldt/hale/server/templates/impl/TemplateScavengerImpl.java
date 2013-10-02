@@ -149,8 +149,26 @@ public class TemplateScavengerImpl extends AbstractResourceScavenger<ProjectRefe
 	}
 
 	@Override
+	public void forceUpdate(String templateId) {
+		ProjectReference<Void> ref = getReference(templateId);
+		ref.forceUpdate(null);
+		graph.set(DatabaseHelper.getGraph());
+		try {
+			onAdd(ref, templateId);
+		} finally {
+			graph.get().shutdown();
+			graph.set(null);
+		}
+	}
+
+	@Override
 	protected void updateResource(ProjectReference<Void> reference, String resourceId) {
-		// nothing to do
+		/*
+		 * nothing to do
+		 * 
+		 * Updates on existing templates must be triggered explicitly through
+		 * forceUpdate(...)
+		 */
 	}
 
 }

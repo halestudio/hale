@@ -43,7 +43,7 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.ajax.Bootstra
 import eu.esdihumboldt.hale.server.db.orient.DatabaseHelper;
 import eu.esdihumboldt.hale.server.model.Template;
 import eu.esdihumboldt.hale.server.templates.war.pages.TemplatePage;
-import eu.esdihumboldt.hale.server.templates.war.pages.UploadPage;
+import eu.esdihumboldt.hale.server.templates.war.pages.UploadTemplatePage;
 import eu.esdihumboldt.util.blueprints.entities.NonUniqueResultException;
 
 /**
@@ -206,7 +206,7 @@ public class TemplateList extends Panel {
 		searchForm.add(searchText);
 
 		// new template link
-		add(new BookmarkablePageLink<Void>("upload", UploadPage.class));
+		add(new BookmarkablePageLink<Void>("upload", UploadTemplatePage.class));
 	}
 
 	/**

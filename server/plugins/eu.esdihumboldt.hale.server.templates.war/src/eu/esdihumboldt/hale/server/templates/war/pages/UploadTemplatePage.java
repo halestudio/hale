@@ -13,24 +13,26 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.server.templates;
+package eu.esdihumboldt.hale.server.templates.war.pages;
 
-import eu.esdihumboldt.hale.common.headless.scavenger.ProjectReference;
-import eu.esdihumboldt.util.scavenger.ResourceScavenger;
+import eu.esdihumboldt.hale.server.templates.war.components.TemplateUploadForm;
+import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
 
 /**
- * Service that scans for (template) projects in a directory.
+ * Page for uploading new project templates.
  * 
  * @author Simon Templer
  */
-public interface TemplateScavenger extends ResourceScavenger<ProjectReference<Void>> {
+@PageDescription(title = "Share template")
+public class UploadTemplatePage extends TemplatesBasePage {
 
-	/**
-	 * Force an update of the template with the given ID, resetting already
-	 * loaded information.
-	 * 
-	 * @param templateId the template identifier
-	 */
-	public void forceUpdate(String templateId);
+	private static final long serialVersionUID = -8268659882000252602L;
+
+	@Override
+	protected void addControls(boolean loggedIn) {
+		super.addControls(loggedIn);
+
+		add(new TemplateUploadForm("upload", null));
+	}
 
 }

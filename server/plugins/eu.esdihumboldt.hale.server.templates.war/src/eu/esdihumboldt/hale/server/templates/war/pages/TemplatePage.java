@@ -132,6 +132,11 @@ public class TemplatePage extends TemplatesBasePage {
 									.add(new BookmarkablePageLink<>("edit", EditTemplatePage.class,
 											new PageParameters().set(0, templateId)));
 
+							// update
+							editButtons.add(new BookmarkablePageLink<>("update",
+									UpdateTemplatePage.class, new PageParameters().set(0,
+											templateId)));
+
 							// delete
 							editButtons.add(new DeleteTemplateLink("delete", templateId));
 						}
