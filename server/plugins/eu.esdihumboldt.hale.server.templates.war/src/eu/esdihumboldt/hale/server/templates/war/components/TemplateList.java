@@ -61,6 +61,8 @@ public class TemplateList extends Panel {
 
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
+	private final boolean showStatus;
+
 	/**
 	 * Create a template list displaying all valid templates.
 	 * 
@@ -78,6 +80,7 @@ public class TemplateList extends Panel {
 	 */
 	public TemplateList(String id, final String login) {
 		super(id);
+		this.showStatus = login != null;
 
 		setOutputMarkupId(true);
 
@@ -167,12 +170,23 @@ public class TemplateList extends Panel {
 							.format(lastUpdate)) : ("")));
 
 					// popularity
-					WebMarkupContainer popularity = new WebMarkupContainer("popularity");
-					item.add(popularity);
-					int pop = template.getHits() + template.getDownloads();
-					Label popValue = new Label("value", String.valueOf(pop));
-					popValue.setVisible(pop > 0);
-					popularity.add(popValue);
+//					WebMarkupContainer popularity = new WebMarkupContainer("popularity");
+//					item.add(popularity);
+//					int pop = template.getHits() + template.getDownloads();
+//					Label popValue = new Label("value", String.valueOf(pop));
+//					popValue.setVisible(pop > 0);
+//					popularity.add(popValue);
+
+					// status
+					WebMarkupContainer status = new WebMarkupContainer("status");
+					status.setVisible(showStatus);
+					item.add(status);
+					WebMarkupContainer statusOk = new WebMarkupContainer("ok");
+					statusOk.setVisible(template.isValid());
+					status.add(statusOk);
+					WebMarkupContainer statusInvalid = new WebMarkupContainer("invalid");
+					statusInvalid.setVisible(!template.isValid());
+					status.add(statusInvalid);
 				} catch (NonUniqueResultException e) {
 					// ignore
 				} finally {
@@ -208,6 +222,11 @@ public class TemplateList extends Panel {
 
 		};
 		add(caption);
+
+		// headers
+		WebMarkupContainer statusHeader = new WebMarkupContainer("status");
+		statusHeader.setVisible(showStatus);
+		caption.add(statusHeader);
 
 		add(new WebMarkupContainer("notemplates") {
 
