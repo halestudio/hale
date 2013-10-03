@@ -48,6 +48,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="ch.qos.logback.classic"/>
       <plugin id="ch.qos.logback.core"/>
       <plugin id="ch.qos.logback.slf4j" fragment="true"/>
+      <plugin id="com.google.appengine"/>
       <plugin id="com.google.guava"/>
       <plugin id="com.iabcinc.jmep"/>
       <plugin id="com.ibm.icu"/>
@@ -241,6 +242,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.util.test" fragment="true"/>
       <plugin id="gnu.trove"/>
       <plugin id="groovy"/>
+      <plugin id="groovyx.net.http"/>
       <plugin id="javax.measure"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.servlet.jsp"/>
@@ -251,6 +253,9 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="jul.to.slf4j"/>
       <plugin id="log4j.over.slf4j"/>
       <plugin id="net.sf.ehcache"/>
+      <plugin id="net.sf.ezmorph"/>
+      <plugin id="net.sf.json"/>
+      <plugin id="oauth.signpost"/>
       <plugin id="org.apache.batik.bridge"/>
       <plugin id="org.apache.batik.css"/>
       <plugin id="org.apache.batik.dom"/>
@@ -282,6 +287,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.codehaus.jackson"/>
       <plugin id="org.codehaus.jackson.mapper"/>
       <plugin id="org.codehaus.jettison"/>
+      <plugin id="org.cyberneko.html"/>
       <plugin id="org.eclipse.compare.core"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>

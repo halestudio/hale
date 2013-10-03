@@ -15,8 +15,44 @@
                   class="eu.esdihumboldt.hale.ui.templates.contribution.TemplatesContribution"
                   id="templates">
             </dynamic>
+            <separator
+                  name="eu.esdihumboldt.hale.ui.templates.separator1">
+            </separator>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.templates.openwebtemplate"
+                  label="More..."
+                  style="push">
+            </command>
          </menu>
       </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="eu.esdihumboldt.hale.ui.templates.preferences.WebTemplatesPreferencePage"
+            id="eu.esdihumboldt.hale.ui.templates.webtemplates"
+            name="Web Templates">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="eu.esdihumboldt.hale.ui.templates.openwebtemplate"
+            name="Open web template">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="eu.esdihumboldt.hale.ui.templates.handler.OpenWebTemplate"
+            commandId="eu.esdihumboldt.hale.ui.templates.openwebtemplate">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="eu.esdihumboldt.hale.ui.templates.preferences.WebTemplatesPreferencesInitializer">
+      </initializer>
    </extension>
 
 </plugin>
