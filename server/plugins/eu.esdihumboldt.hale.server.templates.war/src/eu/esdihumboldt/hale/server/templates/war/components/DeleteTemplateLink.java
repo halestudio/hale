@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.server.templates.war.components;
 
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 
@@ -23,6 +24,7 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.server.db.orient.DatabaseHelper;
 import eu.esdihumboldt.hale.server.model.Template;
+import eu.esdihumboldt.hale.server.templates.TemplateScavenger;
 import eu.esdihumboldt.hale.server.templates.war.pages.TemplatesPage;
 import eu.esdihumboldt.util.blueprints.entities.NonUniqueResultException;
 
@@ -39,6 +41,9 @@ public class DeleteTemplateLink extends Link<Object> {
 
 	private final String templateId;
 
+	@SpringBean
+	private TemplateScavenger scavenger;
+
 	/**
 	 * Constructor.
 	 * 
@@ -52,6 +57,10 @@ public class DeleteTemplateLink extends Link<Object> {
 
 	@Override
 	public void onClick() {
+		// delete from file system
+		scavenger.deleteResource(templateId);
+
+		// afterwards trigger the database deletion
 		OrientGraph graph = DatabaseHelper.getGraph();
 		try {
 			Template template = Template.getByTemplateId(graph, templateId);
@@ -60,6 +69,7 @@ public class DeleteTemplateLink extends Link<Object> {
 				return;
 			}
 
+			// delete from database
 			template.delete();
 		} catch (NonUniqueResultException e) {
 			error("Internal error");
