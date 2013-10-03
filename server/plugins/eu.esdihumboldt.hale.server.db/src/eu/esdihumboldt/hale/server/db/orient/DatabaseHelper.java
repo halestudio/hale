@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.server.db.orient;
 
 import java.net.URI;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -24,12 +25,23 @@ import org.eclipse.osgi.service.datalocation.Location;
 
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
+
 /**
  * Database helpers for working with an OrientDB based server database.
  * 
  * @author Simon Templer
  */
 public class DatabaseHelper {
+
+	private static final ALogger log = ALoggerFactory.getLogger(DatabaseHelper.class);
+
+	/**
+	 * Name of the system property pointing to an existing folder where the
+	 * server database should be created or loaded from.
+	 */
+	public static final String SYSTEM_PROPERTY_DB_FOLDER = "hale.server.db";
 
 	private static final String DB_NAME = "server.db";
 
@@ -39,6 +51,17 @@ public class DatabaseHelper {
 	 * @return an orient graph instance
 	 */
 	public static OrientGraph getGraph() {
+		String path = System.getProperty(SYSTEM_PROPERTY_DB_FOLDER);
+		if (path != null && !path.isEmpty()) {
+			Path dbLoc = Paths.get(path);
+			if (Files.exists(dbLoc) && Files.isDirectory(dbLoc)) {
+				return new OrientGraph("local:" + dbLoc.toAbsolutePath().toString());
+			}
+			else {
+				log.warn("Ignoring server database path specified through system property as it does not exists or is not a directory");
+			}
+		}
+
 		Location loc = Platform.getInstanceLocation();
 		Path instancePath = Paths.get(URI.create(loc.getURL().toString().replaceAll(" ", "%20")));
 
