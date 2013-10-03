@@ -72,6 +72,13 @@ public interface ResourceScavenger<R> {
 	public void releaseResourceId(String resourceId);
 
 	/**
+	 * Delete the resource with the given identifier.
+	 * 
+	 * @param resourceId the resource identifier
+	 */
+	public void deleteResource(String resourceId);
+
+	/**
 	 * Determines if adding a resource generally is allowed/possible.
 	 * 
 	 * @return if adding new resources is allowed

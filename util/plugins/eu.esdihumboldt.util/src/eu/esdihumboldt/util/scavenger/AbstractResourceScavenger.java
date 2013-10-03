@@ -325,13 +325,36 @@ public abstract class AbstractResourceScavenger<T> implements ResourceScavenger<
 			if (reserved.contains(resourceId)) {
 				reserved.remove(resourceId);
 
-				// delete directoy
+				deleteResource(resourceId);
+			}
+		}
+	}
+
+	@Override
+	public void deleteResource(String resourceId) {
+		if (!allowAddResource()) {
+			return;
+		}
+
+		T removed = null;
+		synchronized (resources) {
+			// delete directory
+			File dir = new File(huntingGrounds, resourceId);
+			if (dir.exists()) {
 				try {
 					FileUtils.deleteDirectory(new File(huntingGrounds, resourceId));
 				} catch (IOException e) {
 					log.error("Error deleting resource directory content", e);
 				}
 			}
+
+			// removed resource ref
+			if (resources.containsKey(resourceId)) {
+				removed = resources.remove(resourceId);
+			}
+		}
+		if (removed != null) {
+			onRemove(removed, resourceId);
 		}
 	}
 

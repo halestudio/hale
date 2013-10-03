@@ -59,14 +59,23 @@ public class TemplateScavengerImpl extends AbstractResourceScavenger<TemplatePro
 	@Override
 	protected void onRemove(TemplateProject reference, String resourceId) {
 		// invalidate database reference (if it exists)
+		OrientGraph g = graph.get();
+		boolean cleanUp = g == null;
+		if (g == null) {
+			g = DatabaseHelper.getGraph();
+		}
 		try {
-			Template template = Template.getByTemplateId(graph.get(), resourceId);
+			Template template = Template.getByTemplateId(g, resourceId);
 			if (template != null) {
 				template.setValid(false);
 				log.info("Template {} was removed - updating status to invalid", resourceId);
 			}
 		} catch (NonUniqueResultException e) {
 			log.error("Duplicate template representation in database");
+		} finally {
+			if (cleanUp) {
+				g.shutdown();
+			}
 		}
 	}
 
