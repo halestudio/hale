@@ -81,4 +81,14 @@ public class TemplateLocations {
 		return getServerBaseUrl() + getContextPath() + "/resources/files/" + templateId + "/"
 				+ templateRelativePath;
 	}
+
+	/**
+	 * Get the URL to the web page for the template with the given identifier.
+	 * 
+	 * @param templateId the template identifier
+	 * @return the template page URL
+	 */
+	public static String getTemplatePageUrl(String templateId) {
+		return getServerBaseUrl() + getContextPath() + "/show/" + templateId;
+	}
 }
