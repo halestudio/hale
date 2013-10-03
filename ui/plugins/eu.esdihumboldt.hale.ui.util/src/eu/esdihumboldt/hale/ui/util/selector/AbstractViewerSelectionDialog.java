@@ -62,6 +62,10 @@ public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewe
 
 	private final boolean allowNone;
 
+	private int widthHint;
+
+	private int heightHint;
+
 	/**
 	 * Constructor.
 	 * 
@@ -71,7 +75,7 @@ public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewe
 	 *            possible), may be <code>null</code>
 	 */
 	public AbstractViewerSelectionDialog(Shell parentShell, String title, T initialSelection) {
-		this(parentShell, title, initialSelection, true);
+		this(parentShell, title, initialSelection, true, 400, 400);
 	}
 
 	/**
@@ -82,13 +86,17 @@ public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewe
 	 * @param initialSelection the entity definition to select initially (if
 	 *            possible), may be <code>null</code>
 	 * @param allowNone if selecting the None button is allowed
+	 * @param widthHint the width hint for the dialog
+	 * @param heightHint the height hint for the dialog
 	 */
 	public AbstractViewerSelectionDialog(Shell parentShell, String title, T initialSelection,
-			boolean allowNone) {
+			boolean allowNone, int widthHint, int heightHint) {
 		super(parentShell);
 		this.title = title;
 		this.initialSelection = initialSelection;
 		this.allowNone = allowNone;
+		this.widthHint = widthHint;
+		this.heightHint = heightHint;
 	}
 
 	/**
@@ -120,9 +128,9 @@ public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewe
 	protected Control createDialogArea(Composite parent) {
 		Composite page = new Composite(parent, SWT.NONE);
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
-		data.widthHint = 400;
+		data.widthHint = widthHint;
 //		data.minimumHeight = 200;
-		data.heightHint = 400;
+		data.heightHint = heightHint;
 		page.setLayoutData(data);
 
 		GridLayout pageLayout = new GridLayout(1, false);
@@ -148,7 +156,10 @@ public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewe
 		if (manager.getSize() == 0)
 			toolbar.dispose();
 
-		viewer.getControl().setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
+		if (!(viewer.getControl().getLayoutData() instanceof GridData)) {
+			viewer.getControl().setLayoutData(
+					GridDataFactory.fillDefaults().grab(true, true).create());
+		}
 
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
