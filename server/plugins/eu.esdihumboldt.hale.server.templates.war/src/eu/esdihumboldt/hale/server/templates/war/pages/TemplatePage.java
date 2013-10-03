@@ -116,6 +116,11 @@ public class TemplatePage extends TemplatesBasePage {
 					editButtons.setVisible(false);
 					add(editButtons);
 
+					// deleteDialog container
+					WebMarkupContainer deleteDialog = new WebMarkupContainer("deleteDialog");
+					deleteDialog.setVisible(false);
+					add(deleteDialog);
+
 					// user
 					String userName;
 					Vertex v = template.getV();
@@ -127,6 +132,7 @@ public class TemplatePage extends TemplatesBasePage {
 						// edit buttons
 						if (loggedIn && UserUtil.getLogin().equals(user.getLogin())) {
 							editButtons.setVisible(true);
+							deleteDialog.setVisible(true);
 
 							// edit
 							editButtons
@@ -139,7 +145,7 @@ public class TemplatePage extends TemplatesBasePage {
 											templateId)));
 
 							// delete
-							editButtons.add(new DeleteTemplateLink("delete", templateId));
+							deleteDialog.add(new DeleteTemplateLink("delete", templateId));
 						}
 					}
 					else {
