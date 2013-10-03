@@ -60,6 +60,8 @@ public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewe
 
 	private final T initialSelection;
 
+	private final boolean allowNone;
+
 	/**
 	 * Constructor.
 	 * 
@@ -69,9 +71,24 @@ public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewe
 	 *            possible), may be <code>null</code>
 	 */
 	public AbstractViewerSelectionDialog(Shell parentShell, String title, T initialSelection) {
+		this(parentShell, title, initialSelection, true);
+	}
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param parentShell the parent shell
+	 * @param title the dialog title
+	 * @param initialSelection the entity definition to select initially (if
+	 *            possible), may be <code>null</code>
+	 * @param allowNone if selecting the None button is allowed
+	 */
+	public AbstractViewerSelectionDialog(Shell parentShell, String title, T initialSelection,
+			boolean allowNone) {
 		super(parentShell);
 		this.title = title;
 		this.initialSelection = initialSelection;
+		this.allowNone = allowNone;
 	}
 
 	/**
@@ -179,8 +196,9 @@ public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewe
 	protected void createButtonsForButtonBar(Composite parent) {
 		super.createButtonsForButtonBar(parent);
 
-		createButton(parent, NONE_ID, "None", //$NON-NLS-1$
-				false);
+		if (allowNone) {
+			createButton(parent, NONE_ID, "None", false);
+		}
 	}
 
 	/**
