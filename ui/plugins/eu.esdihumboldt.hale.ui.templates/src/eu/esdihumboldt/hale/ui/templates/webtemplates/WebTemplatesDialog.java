@@ -17,7 +17,6 @@ package eu.esdihumboldt.hale.ui.templates.webtemplates;
 
 import java.awt.Desktop;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.jface.layout.TreeColumnLayout;
@@ -30,6 +29,7 @@ import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -53,14 +53,17 @@ public class WebTemplatesDialog extends AbstractViewerSelectionDialog<WebTemplat
 
 	private static final ALogger log = ALoggerFactory.getLogger(WebTemplatesDialog.class);
 	private TreeColumnLayout layout;
+	private final List<WebTemplate> templates;
 
 	/**
 	 * Create a dialog to select a web template to load.
 	 * 
 	 * @param parentShell the parent shell
+	 * @param templates the templates to display
 	 */
-	public WebTemplatesDialog(Shell parentShell) {
+	public WebTemplatesDialog(Shell parentShell, List<WebTemplate> templates) {
 		super(parentShell, "Select a project template to load", null, false, 600, 400);
+		this.templates = templates;
 	}
 
 	@Override
@@ -157,14 +160,10 @@ public class WebTemplatesDialog extends AbstractViewerSelectionDialog<WebTemplat
 			layout.setColumnData(linkColumn.getColumn(), new ColumnWeightData(1));
 		}
 
+		viewer.setComparator(new ViewerComparator());
+
 		viewer.setContentProvider(new WebTemplatesContentProvider());
-		try {
-			List<WebTemplate> templates = WebTemplateLoader.load();
-			viewer.setInput(templates);
-		} catch (Exception e) {
-			log.error("Failed to connect to template server", e);
-			viewer.setInput(Collections.singletonList("Could not connect to template server"));
-		}
+		viewer.setInput(templates);
 	}
 
 	@Override
