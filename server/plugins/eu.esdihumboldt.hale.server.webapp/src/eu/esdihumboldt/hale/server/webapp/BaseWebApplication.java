@@ -123,9 +123,8 @@ public abstract class BaseWebApplication extends WebApplication {
 				add(new GoogleTheme());
 				add(new WicketTheme());
 				add(new Bootstrap3Theme());
-//				defaultTheme("bootstrap-responsive");
-				// XXX CSS for bootstrap responsive has some issues
-				defaultTheme("bootstrap");
+				defaultTheme("bootstrap-responsive");
+//				defaultTheme("bootstrap");
 			}
 		};
 		settings.setThemeProvider(themeProvider);

@@ -93,3 +93,47 @@ pre.text {
 	margin-bottom: 15px;
 	padding: 7px 9px;
 }
+
+/* Responsive
+-------------------------------------------------- */
+
+/* Tablet to desktop
+------------------------- */
+@media (min-width: 768px) and (max-width: 980px) {
+    /* Remove any padding from the body */
+    body {
+        padding-top: 0;
+    }
+    /* Widen masthead and social buttons to fill body padding */
+    .jumbotron {
+        margin-top: -20px; /* Offset bottom margin on .navbar */
+    }
+}
+
+/* Tablet
+------------------------- */
+@media (max-width: 768px) {
+    /* Remove any padding from the body */
+    body {
+        padding-top: 0;
+    }
+
+    /* Widen masthead and social buttons to fill body padding */
+    .jumbotron {
+        padding: 40px 20px;
+        margin-top:   -20px; /* Offset bottom margin on .navbar */
+        margin-right: -20px;
+        margin-left:  -20px;
+    }
+
+    /* Unfloat the back to top link in footer */
+    .footer {
+        margin-left: -20px;
+        margin-right: -20px;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    .footer p {
+        margin-bottom: 9px;
+    }
+}
