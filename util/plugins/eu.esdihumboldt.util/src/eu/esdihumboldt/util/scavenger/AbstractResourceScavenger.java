@@ -263,9 +263,18 @@ public abstract class AbstractResourceScavenger<T> implements ResourceScavenger<
 
 		synchronized (resources) {
 			// normalize desired identifier
-			// remove all non-word characters
 			if (desiredId != null) {
-				desiredId = desiredId.replaceAll("\\W", "");
+				// replace spaces by -
+				desiredId = desiredId.replaceAll("\\s+", "-");
+				// remove all non-word characters (except -)
+				desiredId = desiredId.replaceAll("[^a-zA-Z0-9_\\-]", "");
+				// might be run on windows
+				desiredId = desiredId.toLowerCase();
+
+				if (desiredId.isEmpty()) {
+					// empty string not allowed
+					desiredId = null;
+				}
 			}
 
 			String id;

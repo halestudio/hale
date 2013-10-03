@@ -117,7 +117,7 @@ public class TemplateUploadForm extends Panel {
 						// attempt to reserve template ID
 						Pair<String, File> template;
 						try {
-							template = templates.reserveResource(null);
+							template = templates.reserveResource(determinePreferredId(uploads));
 						} catch (ScavengerException e) {
 							error(e.getMessage());
 							return;
@@ -273,6 +273,28 @@ public class TemplateUploadForm extends Panel {
 
 		// feedback panel
 		form.add(new BootstrapFeedbackPanel("feedback"));
+	}
+
+	/**
+	 * Determine the preferred resource identifier based on the uploaded files.
+	 * 
+	 * @param uploads the uploaded files
+	 * @return the preferred identifier or <code>null</code>
+	 */
+	protected String determinePreferredId(List<FileUpload> uploads) {
+		if (uploads != null && !uploads.isEmpty()) {
+			String filename = uploads.iterator().next().getClientFileName();
+
+			// strip extension
+			int i = filename.lastIndexOf('.');
+			if (i > 0) {
+				filename = filename.substring(0, i);
+			}
+
+			return filename;
+		}
+
+		return null;
 	}
 
 	/**
