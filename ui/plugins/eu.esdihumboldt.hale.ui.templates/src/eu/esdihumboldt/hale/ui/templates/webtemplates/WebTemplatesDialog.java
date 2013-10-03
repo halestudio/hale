@@ -15,15 +15,27 @@
 
 package eu.esdihumboldt.hale.ui.templates.webtemplates;
 
+import java.awt.Desktop;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.jface.layout.TreeColumnLayout;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.StyledCellLabelProvider;
+import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.TreeViewerColumn;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
@@ -40,6 +52,7 @@ import eu.esdihumboldt.hale.ui.util.selector.AbstractViewerSelectionDialog;
 public class WebTemplatesDialog extends AbstractViewerSelectionDialog<WebTemplate, TreeViewer> {
 
 	private static final ALogger log = ALoggerFactory.getLogger(WebTemplatesDialog.class);
+	private TreeColumnLayout layout;
 
 	/**
 	 * Create a dialog to select a web template to load.
@@ -47,20 +60,31 @@ public class WebTemplatesDialog extends AbstractViewerSelectionDialog<WebTemplat
 	 * @param parentShell the parent shell
 	 */
 	public WebTemplatesDialog(Shell parentShell) {
-		super(parentShell, "Select a project template to load", null, false);
+		super(parentShell, "Select a project template to load", null, false, 600, 400);
 	}
 
 	@Override
 	protected TreeViewer createViewer(Composite parent) {
+		layout = new TreeColumnLayout();
 		PatternFilter patternFilter = new PatternFilter();
 		patternFilter.setIncludeLeadingWildcard(true);
 		FilteredTree tree = new FilteredTree(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL
-				| SWT.BORDER, patternFilter, true);
+				| SWT.BORDER, patternFilter, true) {
+
+			@Override
+			protected Control createTreeControl(Composite parent, int style) {
+				Control c = super.createTreeControl(parent, style);
+				c.setLayoutData(null);
+				c.getParent().setLayout(layout);
+				return c;
+			}
+		};
 		return tree.getViewer();
 	}
 
 	@Override
-	protected void setupViewer(TreeViewer viewer, WebTemplate initialSelection) {
+	protected void setupViewer(final TreeViewer viewer, WebTemplate initialSelection) {
+		// this label provider is used for filtering (I guess)
 		viewer.setLabelProvider(new LabelProvider() {
 
 			@Override
@@ -72,6 +96,67 @@ public class WebTemplatesDialog extends AbstractViewerSelectionDialog<WebTemplat
 			}
 
 		});
+
+		viewer.getTree().setHeaderVisible(true);
+//		viewer.getTree().setLinesVisible(true);
+
+		// main column
+		TreeViewerColumn mainColumn = new TreeViewerColumn(viewer, SWT.NONE);
+		mainColumn.setLabelProvider(new StyledCellLabelProvider() {
+
+			@Override
+			public void update(ViewerCell cell) {
+				Object element = cell.getElement();
+
+				StyledString text = new StyledString();
+				if (element instanceof WebTemplate) {
+					WebTemplate template = (WebTemplate) element;
+
+					text.append(template.getName());
+				}
+				else {
+					text.append(element.toString());
+				}
+
+				cell.setText(text.getString());
+				cell.setStyleRanges(text.getStyleRanges());
+
+				super.update(cell);
+			}
+		});
+		mainColumn.getColumn().setText("Template");
+		layout.setColumnData(mainColumn.getColumn(), new ColumnWeightData(7));
+
+		// link column
+		if (Desktop.isDesktopSupported()) {
+			TreeViewerColumn linkColumn = new TreeViewerColumn(viewer, SWT.CENTER);
+			linkColumn.setLabelProvider(new LinkLabels());
+
+			// listener that reacts on link cell clicks
+			viewer.getTree().addMouseListener(new MouseAdapter() {
+
+				@Override
+				public void mouseDown(MouseEvent e) {
+					if (e.button == 1) {
+						ViewerCell cell = viewer.getCell(new Point(e.x, e.y));
+						if (cell != null && cell.getColumnIndex() == 1
+								&& cell.getTextBounds().contains(e.x, e.y)) {
+							Object element = cell.getElement();
+							if (element instanceof WebTemplate) {
+								try {
+									Desktop.getDesktop().browse(((WebTemplate) element).getSite());
+								} catch (IOException e1) {
+									log.error("Could not launch browser", e1);
+								}
+							}
+						}
+					}
+				}
+			});
+
+			layout.setColumnData(linkColumn.getColumn(), new ColumnWeightData(1));
+		}
+
 		viewer.setContentProvider(new WebTemplatesContentProvider());
 		try {
 			List<WebTemplate> templates = WebTemplateLoader.load();
