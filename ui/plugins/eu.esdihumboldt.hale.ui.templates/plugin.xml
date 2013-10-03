@@ -7,23 +7,20 @@
       <menuContribution
             allPopups="false"
             locationURI="menu:file?after=newProject">
-         <menu
-               icon="icons/newproject.gif"
-               id="fromTemplate"
-               label="New project from template...">
-            <dynamic
-                  class="eu.esdihumboldt.hale.ui.templates.contribution.TemplatesContribution"
-                  id="templates">
-            </dynamic>
-            <separator
-                  name="eu.esdihumboldt.hale.ui.templates.separator1">
-            </separator>
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.templates.openwebtemplate"
-                  label="More..."
-                  style="push">
-            </command>
-         </menu>
+         <command
+               commandId="eu.esdihumboldt.hale.ui.templates.openwebtemplate"
+               label="New project from template..."
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:eu.esdihumboldt.hale.ui.file?before=openProject">
+         <command
+               commandId="eu.esdihumboldt.hale.ui.templates.openwebtemplate"
+               label="New project from template..."
+               style="push">
+         </command>
       </menuContribution>
    </extension>
    <extension
@@ -53,6 +50,13 @@
       <initializer
             class="eu.esdihumboldt.hale.ui.templates.preferences.WebTemplatesPreferencesInitializer">
       </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commandImages">
+      <image
+            commandId="eu.esdihumboldt.hale.ui.templates.openwebtemplate"
+            icon="icons/newproject.gif">
+      </image>
    </extension>
 
 </plugin>
