@@ -148,11 +148,12 @@ public class PropertiesMergeHandler extends
 		 * need more advanced test cases.
 		 */
 		Set<QName> rootNames = new HashSet<QName>();
+		Set<QName> nonKeyRootNames = new HashSet<QName>();
 		// collect path roots
 		for (List<QName> path : mergeConfig.keyProperties)
 			rootNames.add(path.get(0));
 		for (List<QName> path : mergeConfig.additionalProperties)
-			rootNames.add(path.get(0));
+			nonKeyRootNames.add(path.get(0));
 
 		ArrayListMultimap<QName, Object[]> properties = ArrayListMultimap.create();
 		for (Instance instance : instances)
@@ -160,15 +161,7 @@ public class PropertiesMergeHandler extends
 				properties.put(name, instance.getProperty(name));
 
 		for (QName name : properties.keySet()) {
-			if (rootNames.contains(name)) {
-				// property is to be merged
-//				if (false) {
-//					// use only the values of the first occurrence
-//					Object[] values = properties.get(name).get(0);
-//					for (Object value : values)
-//						result.addProperty(name, value);
-//				}
-//				else {
+			if (nonKeyRootNames.contains(name)) {
 				// only keep unique values
 				Set<DeepIterableKey> uniqueValues = new HashSet<>();
 				for (Object[] values : properties.get(name)) {
@@ -179,10 +172,11 @@ public class PropertiesMergeHandler extends
 				for (DeepIterableKey key : uniqueValues) {
 					result.addProperty(name, key.getObject());
 				}
-//				}
 			}
-			else if (mergeConfig.autoDetect && allEqual(properties.get(name))) {
+			else if (rootNames.contains(name)
+					|| (mergeConfig.autoDetect && allEqual(properties.get(name)))) {
 				// property is to be merged
+				// property is either a merge key or all values are equal
 				// use only the values of the first occurrence
 				Object[] values = properties.get(name).get(0);
 				for (Object value : values)
