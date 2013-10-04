@@ -68,7 +68,7 @@ public class ClassificationMappingUtil implements ClassificationMappingFunction 
 			log.error("Service provider not accessible for retrieving lookup table", e);
 		}
 
-		// For reason of comatibility we need the following code
+		// For reason of compatibility we need the following code
 		// lookup table in strangely encoded string parameter
 		Collection<? extends Value> mappings = parameters.get(PARAMETER_CLASSIFICATIONS);
 		try {
