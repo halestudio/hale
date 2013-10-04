@@ -25,7 +25,7 @@ import net.sf.ehcache.Cache;
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class CacheManager extends net.sf.ehcache.CacheManager {
+public class HaleCacheManager extends net.sf.ehcache.CacheManager {
 
 	/**
 	 * @see Object#finalize()
