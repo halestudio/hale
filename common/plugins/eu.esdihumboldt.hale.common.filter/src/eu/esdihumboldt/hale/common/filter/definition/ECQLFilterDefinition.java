@@ -30,11 +30,16 @@ import eu.esdihumboldt.util.definition.ObjectDefinition;
 public class ECQLFilterDefinition implements FilterDefinition<FilterGeoECqlImpl> {
 
 	/**
+	 * The filter definition ID.
+	 */
+	public static final String ID = "ECQL";
+
+	/**
 	 * @see ObjectDefinition#getIdentifier()
 	 */
 	@Override
 	public String getIdentifier() {
-		return "ECQL";
+		return ID;
 	}
 
 	/**

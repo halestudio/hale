@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.ui.schema.presets.internal;
 
+import java.util.Objects;
+
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 
@@ -42,7 +44,7 @@ public class SchemaPresetComparator extends ViewerComparator {
 
 		if (result == 0) {
 			// then the version
-			if (o1.getVersion() == o2.getVersion()) {
+			if (Objects.equals(o1.getVersion(), o2.getVersion())) {
 				result = 0;
 			}
 			else if (o1.getVersion() == null) {
@@ -58,7 +60,7 @@ public class SchemaPresetComparator extends ViewerComparator {
 
 		if (result == 0) {
 			// then the tag
-			if (o1.getTag() == o2.getTag()) {
+			if (Objects.equals(o1.getTag(), o2.getTag())) {
 				result = 0;
 			}
 			else if (o1.getTag() == null) {

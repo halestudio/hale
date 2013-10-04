@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Support for legacy HALE projects based on JAXB
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.project.jaxb;singleton:=true
-Bundle-Version: 2.6.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Version: 2.7.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.io;version="1.6.0",
  de.cs3d.util.eclipse.extension,
  de.cs3d.util.logging,

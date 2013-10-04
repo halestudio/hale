@@ -52,7 +52,7 @@ public class MemoryDocumentTest extends AbstractDocumentTest {
 	 */
 	@Override
 	public void dispose() {
-		db.delete();
+		db.drop();
 		db.close();
 	}
 

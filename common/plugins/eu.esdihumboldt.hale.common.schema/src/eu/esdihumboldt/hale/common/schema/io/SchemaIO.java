@@ -20,10 +20,9 @@ import java.util.List;
 
 import org.eclipse.core.runtime.content.IContentType;
 
-import de.fhg.igd.osgi.util.configuration.AbstractConfigurationService;
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
-import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectIO;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
@@ -77,8 +76,7 @@ public abstract class SchemaIO {
 	 */
 	public static void loadMappingRelevantTypesConfig(TypeIndex types, SchemaSpaceID spaceID,
 			IConfigurationService configurationService) {
-		String paramName = "mappable" + (spaceID == SchemaSpaceID.SOURCE ? "Source" : "Target")
-				+ "Type";
+		String paramName = getMappingRelevantTypesParameterName(spaceID);
 		List<String> mappableConfig = configurationService.getList(paramName);
 		if (mappableConfig != null) {
 			for (TypeDefinition type : types.getTypes()) {
@@ -96,6 +94,17 @@ public abstract class SchemaIO {
 	}
 
 	/**
+	 * Get the name of the project settings parameter specifying the mappable
+	 * types.
+	 * 
+	 * @param spaceID the schemas space
+	 * @return the parameter name
+	 */
+	public static String getMappingRelevantTypesParameterName(SchemaSpaceID spaceID) {
+		return "mappable" + (spaceID == SchemaSpaceID.SOURCE ? "Source" : "Target") + "Type";
+	}
+
+	/**
 	 * Load the configuration of mapping relevant types.
 	 * 
 	 * @param types the types
@@ -104,24 +113,8 @@ public abstract class SchemaIO {
 	 */
 	public static void loadMappingRelevantTypesConfig(TypeIndex types, SchemaSpaceID spaceID,
 			final Project project) {
-		loadMappingRelevantTypesConfig(types, spaceID, new AbstractConfigurationService() {
-
-			@Override
-			protected void setValue(String key, String value) {
-				project.getProperties().put(key, Value.of(value));
-			}
-
-			@Override
-			protected void removeValue(String key) {
-				project.getProperties().remove(key);
-			}
-
-			@Override
-			protected String getValue(String key) {
-				Value value = project.getProperties().get(key);
-				return (value != null) ? (value.as(String.class)) : (null);
-			}
-		});
+		loadMappingRelevantTypesConfig(types, spaceID,
+				ProjectIO.createProjectConfigService(project));
 	}
 
 }

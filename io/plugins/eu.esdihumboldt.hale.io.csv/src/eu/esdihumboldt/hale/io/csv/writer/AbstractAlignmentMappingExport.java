@@ -15,95 +15,102 @@
 
 package eu.esdihumboldt.hale.io.csv.writer;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.io.impl.AbstractAlignmentWriter;
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellExplanation;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.report.IOReport;
+import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 
 /**
  * Wrapper for all information of the alignment (mapping) saved in a list of
- * maps
+ * maps <br>
  * 
  * @author Patrick Lieb
  */
 public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWriter implements
 		MappingTableConstants {
 
+	private Cell currentTypeCell;
+	private boolean includeNamespaces = false;
+	private boolean transformationAndDisabledMode = false;
+	private List<CellType> cellTypes;
+
 	/**
 	 * the default line break in a cell
 	 */
 	public final String DEFAULT_LINE_END = "\n";
 
+	private List<Map<CellType, CellInformation>> allRelations;
+
 	/**
-	 * The cell types of the map
-	 * 
-	 * @author Patrick Lieb
+	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#execute(eu.esdihumboldt.hale.common.core.io.ProgressIndicator,
+	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
 	 */
-	public static enum CellType {
-		/** source type key */
-		SOURCE_TYPE,
+	@Override
+	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
+			throws IOProviderConfigurationException, IOException {
 
-		/** source type conditions key */
-		SOURCE_TYPE_CONDITIONS,
+		cellTypes = new ArrayList<CellType>();
+		includeNamespaces = getParameter(INCLUDE_NAMESPACES).as(Boolean.class);
+		transformationAndDisabledMode = getParameter(TRANSFORMATION_AND_DISABLED_FOR).as(
+				Boolean.class);
+		// disable namespace and transformationAndDisable columns if necessary
+		for (CellType type : CellType.values()) {
+			if (includeNamespaces
+					|| !type.getName().equals(CellType.SOURCE_PROPERTIES_NAMESPACE.getName()))
+				if (transformationAndDisabledMode
+						|| !type.getName().equals(CellType.TRANSFORMATION_AND_DISABLED.getName()))
+					cellTypes.add(type);
+		}
 
-		/** source properties key */
-		SOURCE_PROPERTIES,
+		return reporter;
+	}
 
-		/** source property conditions key */
-		SOURCE_PROPERTY_CONDITIONS,
-
-		/** target type key */
-		TARGET_TYPE,
-
-		/** target properties key */
-		TARGET_PROPERTIES,
-
-		/** relation name key */
-		RELATION_NAME,
-
-		/** cell priority */
-		PRIORITY,
-
-		/** cell explanation key */
-		CELL_EXPLANATION,
-
-		/** cell notes key */
-		CELL_NOTES,
-
-		/** if cell is from base alignment */
-		BASE_CELL
+	/**
+	 * @return all available cell types
+	 */
+	public List<CellType> getCellTypes() {
+		return cellTypes;
 	}
 
 	/**
 	 * Header for all columns in the Mapping file
+	 * 
+	 * @return list with strings of header for all columns
 	 */
-	public final List<String> MAPPING_HEADER = Arrays.asList("Source type",
-			"Source type conditions", "Source properties", "Source property conditions",
-			"Target type", "Target properties", "Relation name", "Priority", "Cell explanation",
-			"Cell notes", "Base alignment");
-
-	private List<Map<CellType, CellInfo>> allRelations;
+	public List<String> getMappingHeader() {
+		List<String> list = new ArrayList<String>();
+		for (CellType type : cellTypes) {
+			list.add(type.getName());
+		}
+		return list;
+	}
 
 	/**
 	 * Get all mappings. Each list entry represents one mapping.
 	 * 
 	 * @return list of all mappings
 	 */
-	public List<Map<CellType, CellInfo>> getMappingList() {
+	public List<Map<CellType, CellInformation>> getMappingList() {
 
-		allRelations = new ArrayList<Map<CellType, CellInfo>>();
+		allRelations = new ArrayList<Map<CellType, CellInformation>>();
 
 		String mapping = getParameter(PARAMETER_MODE).as(String.class);
 		boolean noBaseAlignments = mapping.equals(MODE_EXCLUDE_BASE);
@@ -112,7 +119,7 @@ public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWr
 		if (propertyCells) {
 			for (Cell typeCell : getAlignment().getTypeCells()) {
 				addCellData(typeCell);
-				for (Cell propertyCell : getAlignment().getPropertyCells(typeCell)) {
+				for (Cell propertyCell : getAlignment().getPropertyCells(typeCell, true, false)) {
 					addCellData(propertyCell);
 				}
 			}
@@ -124,7 +131,6 @@ public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWr
 				}
 			}
 		}
-
 		return allRelations;
 	}
 
@@ -133,17 +139,21 @@ public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWr
 	 * @param cellType the cell type
 	 * @return the string representation of the given mapping and cell type
 	 */
-	public String getCellValue(Map<CellType, CellInfo> mapping, CellType cellType) {
+	public String getCellValue(Map<CellType, CellInformation> mapping, CellType cellType) {
 		StringBuilder result = new StringBuilder();
-		CellInfo cellInfo = mapping.get(cellType);
+		CellInformation cellInfo = mapping.get(cellType);
 		List<String> text = cellInfo.getText();
 		List<Integer> positions = cellInfo.getPositions();
 		switch (cellType) {
 		// same behavior of SOURCE_TYPE, SORUCE_PROPERTY_CONDITIONS and
 		// TARGET_PROPERTIES
 		case SOURCE_TYPE:
+		case SOURCE_TYPE_NAMESPACE:
 		case SOURCE_PROPERTY_CONDITIONS:
 		case TARGET_TYPE:
+		case TARGET_TYPE_NAMESPACE:
+		case SOURCE_PROPERTIES_NAMESPACE:
+		case TARGET_PROPERTIES_NAMESPACE:
 			if (text.size() == 1) {
 				result.append(text.get(0));
 				for (int position = 0; position < positions.get(0); position++) {
@@ -192,10 +202,12 @@ public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWr
 
 		// same behavior of RELATION_NAME, CELL_EXPLANATION and CELL_NOTES
 		case RELATION_NAME:
+		case ID:
 		case CELL_EXPLANATION:
 		case CELL_NOTES:
 		case BASE_CELL:
 		case PRIORITY:
+		case TRANSFORMATION_AND_DISABLED:
 			// append all info to one string divided by line breaks
 			for (int i = 0; i < text.size(); i++) {
 				if (positions.get(i) == 0) {
@@ -213,36 +225,39 @@ public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWr
 
 	// get the information of the cell and add them to the map
 	private void addCellData(Cell cell) {
-		Map<CellType, CellInfo> entry = new HashMap<CellType, CellInfo>();
 
-		// reset all entries
-		CellInfo sourceType = new CellInfo();
-		CellInfo sourceTypeConditions = new CellInfo();
-		CellInfo sourceProperties = new CellInfo();
-		CellInfo sourcePropertyConditions = new CellInfo();
-		CellInfo targetType = new CellInfo();
-		CellInfo targetProperties = new CellInfo();
-		CellInfo relationName = new CellInfo();
-		CellInfo cellExplanation = new CellInfo();
-		CellInfo cellNotes = new CellInfo();
-		CellInfo priority = new CellInfo();
-		CellInfo baseCell = new CellInfo();
+		Map<CellType, CellInformation> cellInfos = new HashMap<CellType, CellInformation>();
+		// create all entries
+		List<CellType> cellTypes = getCellTypes();
+
+		for (int i = 0; i < cellTypes.size(); i++) {
+			cellInfos.put(cellTypes.get(i), new CellInformation());
+		}
+
+		cellInfos.get(CellType.ID).addText(cell.getId(), 0);
 
 		if (cell.getSource() != null) {
 			// save the hierarchy of the properties
 			// all entries (in the same CellInfo) with the same hierarchy level
-			// have to be shown together
+			// have to be shown on the same height
 			int position = 0;
 			for (Entity entity : cell.getSource().values()) {
 
 				// column source type
-				sourceType.addText(entity.getDefinition().getType().getDisplayName(), position);
+				cellInfos.get(CellType.SOURCE_TYPE).addText(
+						entity.getDefinition().getType().getName().getLocalPart(), position);
+
+				if (includeNamespaces)
+					// column source type namespace
+					cellInfos.get(CellType.SOURCE_TYPE_NAMESPACE).addText(
+							entity.getDefinition().getType().getName().getNamespaceURI(), position);
 
 				// column source type conditions
 				Filter entityFilter;
 				if ((entityFilter = entity.getDefinition().getFilter()) != null) {
-					sourceTypeConditions.addText(
+					cellInfos.get(CellType.SOURCE_TYPE_CONDITIONS).addText(
 							FilterDefinitionManager.getInstance().asString(entityFilter), position);
+					entity.getDefinition().getType().getName().getLocalPart();
 				}
 
 				for (ChildContext childContext : entity.getDefinition().getPropertyPath()) {
@@ -250,21 +265,27 @@ public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWr
 					if (child != null) {
 
 						// column source properties
-						sourceProperties.addText(child.getDisplayName(), position);
+						cellInfos.get(CellType.SOURCE_PROPERTIES).addText(
+								child.getName().getLocalPart(), position);
+
+						if (includeNamespaces)
+							// column source properties namespace
+							cellInfos.get(CellType.SOURCE_PROPERTIES_NAMESPACE).addText(
+									child.getName().getNamespaceURI(), position);
 
 						Filter contextFilter;
 						if (childContext.getCondition() != null) {
 							contextFilter = childContext.getCondition().getFilter();
 							// column source property conditions
-							// XXX more info! index, name, ...
-							sourcePropertyConditions.addText(FilterDefinitionManager.getInstance()
-									.asString(contextFilter), position);
+							cellInfos.get(CellType.SOURCE_PROPERTY_CONDITIONS).addText(
+									FilterDefinitionManager.getInstance().asString(contextFilter),
+									position);
 						}
 
 						// add dummy to adapt position of source type and source
 						// type conditions
-						sourceType.addText("", position);
-						sourceTypeConditions.addText("", position);
+						cellInfos.get(CellType.SOURCE_TYPE).addText("", position);
+						cellInfos.get(CellType.SOURCE_TYPE_CONDITIONS).addText("", position);
 
 						position++;
 					}
@@ -278,16 +299,28 @@ public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWr
 			int position = 0;
 			for (Entity entity : cell.getTarget().values()) {
 				// column target type
-				targetType.addText(entity.getDefinition().getType().getDisplayName(), position);
+				cellInfos.get(CellType.TARGET_TYPE).addText(
+						entity.getDefinition().getType().getDisplayName(), position);
+
+				if (includeNamespaces)
+					// column target type namespace
+					cellInfos.get(CellType.TARGET_TYPE_NAMESPACE).addText(
+							entity.getDefinition().getType().getName().getNamespaceURI(), position);
 
 				for (ChildContext childContext : entity.getDefinition().getPropertyPath()) {
 					PropertyDefinition child = childContext.getChild().asProperty();
 					if (child != null) {
 						// column target properties
-						targetProperties.addText(child.getDisplayName(), position);
+						cellInfos.get(CellType.TARGET_PROPERTIES).addText(
+								child.getName().getLocalPart(), position);
+
+						if (includeNamespaces)
+							// column target properties namespace
+							cellInfos.get(CellType.TARGET_PROPERTIES_NAMESPACE).addText(
+									child.getName().getNamespaceURI(), position);
 
 						// add dummy to adapt position of target type
-						targetType.addText("", position);
+						cellInfos.get(CellType.TARGET_TYPE).addText("", position);
 
 						position++;
 					}
@@ -297,13 +330,17 @@ public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWr
 		}
 
 		AbstractFunction<?> function = FunctionUtil.getFunction(cell.getTransformationIdentifier());
-		// column relation name
-		relationName.addText(function.getDisplayName(), 0);
 
-		// column cell explanation
-		CellExplanation cellExpl = function.getExplanation();
-		if (cellExpl != null) {
-			cellExplanation.addText(function.getExplanation().getExplanation(cell, null), 0);
+		if (function != null) {
+			// column relation name
+			cellInfos.get(CellType.RELATION_NAME).addText(function.getDisplayName(), 0);
+
+			// column cell explanation
+			CellExplanation cellExpl = function.getExplanation();
+			if (cellExpl != null) {
+				cellInfos.get(CellType.CELL_EXPLANATION).addText(
+						function.getExplanation().getExplanation(cell, null), 0);
+			}
 		}
 
 		// column cell notes
@@ -311,35 +348,49 @@ public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWr
 		if (!docs.isEmpty()) {
 			String notes = docs.get(0);
 			if (notes != null && !notes.isEmpty()) {
-				cellNotes.addText(notes, 0);
+				cellInfos.get(CellType.CELL_NOTES).addText(notes, 0);
 			}
 		}
 
 		// cell priority
-		priority.addText(cell.getPriority().value(), 0);
+		cellInfos.get(CellType.PRIORITY).addText(cell.getPriority().value(), 0);
 
 		// base cell
 		if (cell.isBaseCell()) {
-			baseCell.addText("yes", 0);
+			cellInfos.get(CellType.BASE_CELL).addText("yes", 0);
 		}
 		else {
-			baseCell.addText("no", 0);
+			cellInfos.get(CellType.BASE_CELL).addText("no", 0);
 		}
 
-		// the entry represents one mapping with all given information
-		entry.put(CellType.SOURCE_TYPE, sourceType);
-		entry.put(CellType.SOURCE_TYPE_CONDITIONS, sourceTypeConditions);
-		entry.put(CellType.SOURCE_PROPERTIES, sourceProperties);
-		entry.put(CellType.SOURCE_PROPERTY_CONDITIONS, sourcePropertyConditions);
-		entry.put(CellType.TARGET_TYPE, targetType);
-		entry.put(CellType.TARGET_PROPERTIES, targetProperties);
-		entry.put(CellType.RELATION_NAME, relationName);
-		entry.put(CellType.CELL_EXPLANATION, cellExplanation);
-		entry.put(CellType.CELL_NOTES, cellNotes);
-		entry.put(CellType.PRIORITY, priority);
-		entry.put(CellType.BASE_CELL, baseCell);
+		// column transformation/disabled
+		if (transformationAndDisabledMode) {
+			if (AlignmentUtil.isTypeCell(cell)) {
+				currentTypeCell = cell;
+				cellInfos.get(CellType.TRANSFORMATION_AND_DISABLED).addText(
+						cell.getTransformationMode().displayName(), 0);
+			}
+			else {
+				Set<Cell> disabledCells = cell.getDisabledFor();
+				if (disabledCells.contains(currentTypeCell)) {
+					for (Cell disCell : disabledCells) {
+						cellInfos.get(CellType.TRANSFORMATION_AND_DISABLED).addText(
+								disCell.getId(), 0);
+					}
+				}
+			}
+		}
 
 		// add the row to the map
-		allRelations.add(entry);
+		allRelations.add(cellInfos);
+	}
+
+	/**
+	 * @return if the writer mode is configured to display the cells per type
+	 *         cell
+	 */
+	protected boolean isByTypeCell() {
+		String mode = getParameter(PARAMETER_MODE).as(String.class);
+		return mode.equals(MODE_BY_TYPE_CELLS);
 	}
 }

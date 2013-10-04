@@ -33,4 +33,20 @@ public interface ProgressService {
 	 */
 	public Progress getJobProgress(Job job);
 
+	/**
+	 * Add a progress listener for the given job.
+	 * 
+	 * @param job the job
+	 * @param listener the listener to add
+	 */
+	public void addProgressListener(Job job, JobProgressListener listener);
+
+	/**
+	 * Remove a progress listener for the given job.
+	 * 
+	 * @param job the job
+	 * @param listener the listener to remove
+	 */
+	public void removeProgressListener(Job job, JobProgressListener listener);
+
 }

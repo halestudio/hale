@@ -48,7 +48,8 @@ public class XMLAlignmentUpdater {
 	 * @see XMLSchemaUpdater#update(File, URI, boolean, IOReporter)
 	 * @see XMLPathUpdater#update(File, URI, String, boolean, IOReporter)
 	 * @param resource the file of the new resource (will be adapted)
-	 * @param oldFile the file of the old resource (will be untouched)
+	 * @param oldFile the file of the old resource (will be untouched), may be
+	 *            <code>null</code> in case it didn't exist before
 	 * @param includeWebResources true if web resources should be copied and
 	 *            updated too otherwise false
 	 * @param reporter the reporter of the current I/O process where errors

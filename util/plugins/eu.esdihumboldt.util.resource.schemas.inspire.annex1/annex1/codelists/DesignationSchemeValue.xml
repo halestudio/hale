@@ -1,0 +1,72 @@
+<?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="DesignationSchemeValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+The scheme used to assign a designation to the Protected Sites.&#13;
+&#13;
+-- Description --&#13;
+NOTE 1 Schemes may be internationally recognised (for example, Natura2000 or the Emerald Network schemes), or may be national schemes (for example, the designations used for nature conservation in a particular Member State).&#13;
+&#13;
+NOTE 2 Typically, this code list will be extended with code schemes used within Member States.</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0">DesignationSchemeValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_22327_39353">
+      <description>-- Definition --&#13;
+The Protected Site has a designation under either the Habitat Directive (92/43/EEC) or the Birds Directive (79/409/EEC).</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/DesignationSchemeValue">natura2000</identifier>
+      <name>natura2000</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22327_39350">
+      <description>-- Definition --&#13;
+The Protected Site has a designation under the Emerald Network.&#13;
+&#13;
+-- Description --&#13;
+The Emerald Network is an ecological network to conserve wild flora and fauna and their natural habitats in Europe.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/DesignationSchemeValue">emeraldNetwork</identifier>
+      <name>emeraldNetwork</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22327_39354">
+      <description>-- Definition --&#13;
+The Protected Site has a designation under the Ramsar Convention.&#13;
+&#13;
+-- Description --&#13;
+The Ramsar Convention provides the framework for national action and international cooperation for the conservation and wise use of wetlands and their resources.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/DesignationSchemeValue">ramsar</identifier>
+      <name>ramsar</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22327_39356">
+      <description>-- Definition --&#13;
+The Protected Site has a designation under UNESCO World Heritage Convention.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/DesignationSchemeValue">UNESCOWorldHeritage</identifier>
+      <name>UNESCOWorldHeritage</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22327_39351">
+      <description>-- Definition --&#13;
+The Protected Site has a classification using the International Union for Conservation of Nature classification scheme.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/DesignationSchemeValue">IUCN</identifier>
+      <name>IUCN</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22327_39355">
+      <description>-- Definition --&#13;
+The Protected Site has a designation under UNESCO Man and Biosphere programme.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/DesignationSchemeValue">UNESCOManAndBiosphereProgramme</identifier>
+      <name>UNESCOManAndBiosphereProgramme</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22327_39352">
+      <description>-- Definition --&#13;
+The Protected Site has a classification using the National Monuments Record classification scheme.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/DesignationSchemeValue">nationalMonumentsRecord</identifier>
+      <name>nationalMonumentsRecord</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

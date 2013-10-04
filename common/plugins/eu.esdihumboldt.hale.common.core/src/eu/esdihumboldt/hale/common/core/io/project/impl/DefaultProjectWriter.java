@@ -28,18 +28,22 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractExportProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectIO;
+import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFileInfo;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 import eu.esdihumboldt.hale.common.core.io.util.OutputStreamDecorator;
+import eu.esdihumboldt.util.io.IOUtils;
 
 /**
  * Writes a project file
@@ -176,31 +180,44 @@ public class DefaultProjectWriter extends AbstractProjectWriter {
 				String name = entry.getKey();
 
 				// determine target file for project file
-				File pfile = new File(targetFile.getParentFile(), targetFile.getName() + "." + name);
+				String projectFileName = targetFile.getName() + "." + name;
+				URI relativeProjectFile = URI.create(projectFileName);
+				final File pfile = new File(targetFile.getParentFile(), projectFileName);
 
 				// add project file information to project
-				getProject().getProjectFiles().add(new ProjectFileInfo(name, pfile.toURI()));
+				getProject().getProjectFiles().add(new ProjectFileInfo(name, relativeProjectFile));
 
 				// write entry
 				ProjectFile file = entry.getValue();
-				OutputStream out = new BufferedOutputStream(new FileOutputStream(pfile));
 				try {
-					file.store(out);
+					LocatableOutputSupplier<OutputStream> target = new LocatableOutputSupplier<OutputStream>() {
+
+						@Override
+						public OutputStream getOutput() throws IOException {
+							return new BufferedOutputStream(new FileOutputStream(pfile));
+						}
+
+						@Override
+						public URI getLocation() {
+							return pfile.toURI();
+						}
+					};
+					file.store(target);
 				} catch (Exception e) {
 					reporter.error(new IOMessageImpl("Error saving a project file.", e));
 					reporter.setSuccess(false);
 					return reporter;
-				} finally {
-					out.close();
 				}
-
 				progress.advance(1);
 			}
 		}
 
+		updateRelativeResourcePaths(getProject().getResources(), getPreviousTarget(),
+				targetLocation);
+
 		if (archive) {
 			// save to archive
-			ZipOutputStream zip = new ZipOutputStream(new BufferedOutputStream(getTarget()
+			final ZipOutputStream zip = new ZipOutputStream(new BufferedOutputStream(getTarget()
 					.getOutput()));
 			try {
 				// write main entry
@@ -230,7 +247,26 @@ public class DefaultProjectWriter extends AbstractProjectWriter {
 							zip.putNextEntry(new ZipEntry(name));
 							ProjectFile file = entry.getValue();
 							try {
-								file.store(new EntryOutputStream(zip));
+								LocatableOutputSupplier<OutputStream> target = new LocatableOutputSupplier<OutputStream>() {
+
+									private boolean first = true;
+
+									@Override
+									public OutputStream getOutput() throws IOException {
+										if (first) {
+											first = false;
+											return new EntryOutputStream(zip);
+										}
+										throw new IllegalStateException(
+												"Output stream only available once");
+									}
+
+									@Override
+									public URI getLocation() {
+										return getTarget().getLocation();
+									}
+								};
+								file.store(target);
 							} catch (Exception e) {
 								reporter.error(new IOMessageImpl("Error saving a project file.", e));
 								reporter.setSuccess(false);
@@ -278,6 +314,27 @@ public class DefaultProjectWriter extends AbstractProjectWriter {
 	 */
 	public void setUseSeparateFiles(boolean useSeparateFiles) {
 		this.useSeparateFiles = useSeparateFiles;
+	}
+
+	private void updateRelativeResourcePaths(Iterable<IOConfiguration> resources,
+			URI previousTarget, URI newTarget) {
+		// if the previous target is null, there cannot be relative paths
+		if (previousTarget == null)
+			return;
+		for (IOConfiguration resource : resources) {
+			Map<String, Value> providerConfig = resource.getProviderConfiguration();
+			URI pathUri = URI.create(providerConfig.get(ImportProvider.PARAM_SOURCE).as(
+					String.class));
+			// update relative URIs
+			if (!pathUri.isAbsolute()) {
+				// resolve the resource's URI
+				pathUri = previousTarget.resolve(pathUri);
+				// try to get a relative path from the new project to the
+				// resource
+				URI relative = IOUtils.getRelativePath(pathUri, newTarget);
+				providerConfig.put(ImportProvider.PARAM_SOURCE, Value.of(relative.toString()));
+			}
+		}
 	}
 
 }

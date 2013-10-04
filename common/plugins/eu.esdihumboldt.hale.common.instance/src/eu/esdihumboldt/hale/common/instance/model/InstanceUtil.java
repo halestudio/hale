@@ -197,20 +197,22 @@ public final class InstanceUtil {
 	/**
 	 * Creates a list of instances out of a FamilyInstance
 	 * 
-	 * @param fi the FamilyInstance
-	 * @return a collection of instances
+	 * @param fi the FamilyInstance, may be <code>null</code>
+	 * @return a collection of instances or an empty list
 	 */
 	public static Collection<Instance> getInstanceOutOfFamily(FamilyInstance fi) {
 		Collection<Instance> result = new ArrayList<Instance>();
-		result.add(fi);
+		if (fi != null) {
+			result.add(fi);
 
-		if (!fi.getChildren().isEmpty()) {
-			for (FamilyInstance inst : fi.getChildren()) {
-				if (!inst.getChildren().isEmpty()) {
-					result.addAll(getInstanceOutOfFamily(inst));
+			if (!fi.getChildren().isEmpty()) {
+				for (FamilyInstance inst : fi.getChildren()) {
+					if (!inst.getChildren().isEmpty()) {
+						result.addAll(getInstanceOutOfFamily(inst));
+					}
+					else
+						result.add(inst);
 				}
-				else
-					result.add(inst);
 			}
 		}
 		return result;

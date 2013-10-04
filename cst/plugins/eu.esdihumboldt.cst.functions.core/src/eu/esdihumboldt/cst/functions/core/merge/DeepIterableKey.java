@@ -88,6 +88,13 @@ public class DeepIterableKey {
 		return false;
 	}
 
+	/**
+	 * @return the internal object represented by the key
+	 */
+	public Object getObject() {
+		return key;
+	}
+
 	@Override
 	public int hashCode() {
 		return se.deepIterableHashCode(key);

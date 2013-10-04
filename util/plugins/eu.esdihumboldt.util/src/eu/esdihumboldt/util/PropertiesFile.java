@@ -116,6 +116,10 @@ public class PropertiesFile extends Properties {
 	 * @throws IOException if loading or saving the file fails
 	 */
 	public void sync(boolean preferRuntime) throws IOException {
+		if (!file.exists()) {
+			file.createNewFile();
+		}
+
 		if (!preferRuntime) {
 			// just load
 			load();

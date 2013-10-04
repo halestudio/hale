@@ -22,10 +22,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.jface.dialogs.IPageChangingListener;
+import org.eclipse.jface.dialogs.PageChangingEvent;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.wizard.IWizardContainer;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Composite;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -42,6 +46,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
+import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.function.AbstractFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;
 import eu.esdihumboldt.hale.ui.function.extension.ParameterPageExtension;
@@ -51,6 +56,7 @@ import eu.esdihumboldt.hale.ui.function.generic.pages.FunctionWizardPage;
 import eu.esdihumboldt.hale.ui.function.generic.pages.GenericParameterPage;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
+import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 import eu.esdihumboldt.hale.ui.util.wizard.TitleImageWizard;
 
 /**
@@ -85,6 +91,7 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 	public AbstractGenericFunctionWizard(SchemaSelection selection, String functionId) {
 		super(selection);
 
+		setHelpAvailable(true);
 		this.functionId = functionId;
 	}
 
@@ -94,6 +101,7 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 	public AbstractGenericFunctionWizard(Cell cell) {
 		super(cell);
 
+		setHelpAvailable(true);
 		this.functionId = cell.getTransformationIdentifier();
 	}
 
@@ -213,6 +221,47 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 		}
 
 		return parameterPages;
+	}
+
+	@Override
+	public void createPageControls(Composite pageContainer) {
+		super.createPageControls(pageContainer);
+
+		// disable help button, let function wizards do their work afterwards
+		// At all other points the buttons aren't created yet.
+		if (getContainer() instanceof HaleWizardDialog)
+			((HaleWizardDialog) getContainer()).setHelpButtonEnabled(false);
+	}
+
+	/**
+	 * @see Wizard#setContainer(IWizardContainer)
+	 */
+	@Override
+	public void setContainer(IWizardContainer wizardContainer) {
+		super.setContainer(wizardContainer);
+
+		if (wizardContainer instanceof HaleWizardDialog) {
+			final HaleWizardDialog container = (HaleWizardDialog) wizardContainer;
+			// has to be pageChanging, because closing the tray in page changed
+			// leads to an exception
+			((HaleWizardDialog) wizardContainer)
+					.addPageChangingListener(new IPageChangingListener() {
+
+						@Override
+						public void handlePageChanging(PageChangingEvent event) {
+							boolean helpAvailable = false;
+							if (event.getTargetPage() instanceof HaleWizardPage<?>) {
+								HaleWizardPage<?> page = (HaleWizardPage<?>) event.getTargetPage();
+								helpAvailable = page.getHelpContext() != null;
+							}
+
+							container.setHelpButtonEnabled(helpAvailable);
+
+							if (container.getTray() != null)
+								container.closeTray();
+						}
+					});
+		}
 	}
 
 	/**

@@ -2,14 +2,15 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Project Upload to Server
 Bundle-SymbolicName: eu.esdihumboldt.hale.server.projects.war
-Bundle-Version: 2.6.0.qualifier
+Bundle-Version: 2.7.0.qualifier
 Web-ContextPath: /projects
 Webapp-Name: Manage projects
 Bundle-Vendor: Data Harmonisation Panel
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.io;version="11.0.1",
  de.cs3d.util.logging,
  eu.esdihumboldt.hale.common.core.io.project,
+ eu.esdihumboldt.hale.common.headless.scavenger,
  eu.esdihumboldt.hale.server.projects,
  eu.esdihumboldt.hale.server.security.extender,
  eu.esdihumboldt.hale.server.security.util,
@@ -19,6 +20,7 @@ Import-Package: com.google.common.io;version="11.0.1",
  eu.esdihumboldt.hale.server.webapp.pages,
  eu.esdihumboldt.hale.server.webapp.util,
  eu.esdihumboldt.util.io,
+ eu.esdihumboldt.util.scavenger,
  javax.servlet;version="2.5.0",
  javax.servlet.http;version="2.5.0",
  net.sf.cglib.proxy;version="2.2.0",

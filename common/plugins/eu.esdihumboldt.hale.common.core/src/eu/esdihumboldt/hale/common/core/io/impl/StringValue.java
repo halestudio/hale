@@ -28,6 +28,8 @@ import eu.esdihumboldt.hale.common.core.io.Value;
  */
 public class StringValue extends Value {
 
+	private static final long serialVersionUID = 6992194329380349404L;
+
 	private final String value;
 
 	/**

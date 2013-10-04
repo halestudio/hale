@@ -751,19 +751,12 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 					: (groupRef.getMaxOccurs());
 			long min = groupRef.getMinOccurs();
 
+			/*
+			 * Only allow flatten if group is not forced and appears exactly
+			 * once
+			 */
 			XmlGroupReferenceProperty property = new XmlGroupReferenceProperty(groupName,
-					declaringGroup, index, groupName, !forceGroup && min == 1 && max == 1); // only
-																							// allow
-																							// flatten
-																							// if
-																							// group
-																							// is
-																							// not
-																							// forced
-																							// and
-																							// appears
-																							// exactly
-																							// once
+					declaringGroup, index, groupName, !forceGroup && min == 1 && max == 1);
 
 			// set cardinality constraint
 			property.setConstraint(Cardinality.get(min, max));
@@ -773,7 +766,7 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 		}
 		else if (particle instanceof XmlSchemaAny) {
 			// XXX ignore for now
-			reporter.warn(new IOMessageImpl("Particle that allows any element is not supported.",
+			reporter.info(new IOMessageImpl("Particle that allows any element is not supported.",
 					null, particle.getLineNumber(), particle.getLinePosition()));
 		}
 		else {

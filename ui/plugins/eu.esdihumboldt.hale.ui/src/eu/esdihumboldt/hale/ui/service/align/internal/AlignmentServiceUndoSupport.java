@@ -570,7 +570,7 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 		}
 		else if (Cell.PROPERTY_TRANSFORMATION_MODE.equals(propertyName)) {
 			Cell cell = getAlignment().getCell(cellId);
-			Object oldValue = cell.getTransformatioMode();
+			Object oldValue = cell.getTransformationMode();
 			IUndoableOperation operation = new SetCellPropertyOperation(cellId, propertyName,
 					oldValue, property);
 			executeOperation(operation);

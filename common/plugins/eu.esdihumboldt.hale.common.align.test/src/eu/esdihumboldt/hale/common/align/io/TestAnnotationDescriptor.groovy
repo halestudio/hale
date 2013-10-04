@@ -40,7 +40,7 @@ class TestAnnotationDescriptor implements AnnotationDescriptor<TestAnnotation> {
 	}
 
 	@Override
-	TestAnnotation fromDOM(Element fragment) {
+	TestAnnotation fromDOM(Element fragment, Void context) {
 		// retrieve values using DOMCategory
 		use (DOMCategory) {
 			return new TestAnnotation(author: fragment.'@author', comment: fragment.text())
@@ -57,5 +57,10 @@ class TestAnnotationDescriptor implements AnnotationDescriptor<TestAnnotation> {
 		def fragment = builder.'test:comment'('xmlns:test': NS, author: annotation.author, annotation.comment)
 
 		return fragment;
+	}
+
+	@Override
+	public Class<Void> getContextType() {
+		Void.class
 	}
 }

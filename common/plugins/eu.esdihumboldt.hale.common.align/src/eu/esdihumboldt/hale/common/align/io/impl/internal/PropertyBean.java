@@ -147,7 +147,7 @@ public class PropertyBean extends EntityBean<PropertyEntityDefinition> {
 	 * @param parent the starting point to traverse from
 	 * @param childName the name of the parent's child
 	 * @return a pair of child and a list with the full path from parent to the
-	 *         child
+	 *         child or <code>null</code> if no such child was found
 	 */
 	public static Pair<ChildDefinition<?>, List<ChildDefinition<?>>> findChild(
 			DefinitionGroup parent, QName childName) {

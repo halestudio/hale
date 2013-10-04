@@ -21,8 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
+import com.google.common.io.ByteStreams;
 import com.google.common.io.CountingInputStream;
-import com.google.common.io.LimitInputStream;
 
 /**
  * Provides input supplier based on a single input stream, that allow to consume
@@ -111,25 +111,29 @@ public class LookupStreamResource {
 	public LocatableInputSupplier<? extends InputStream> getLookupSupplier() {
 		return new LocatableInputSupplier<InputStream>() {
 
-			@SuppressWarnings("resource")
 			@Override
 			public InputStream getInput() throws IOException {
 				input.reset();
-				return new PreventMark(new FilterInputStream(new LimitInputStream(input,
-						lookupLimit)) {
+				return new PreventMark(
+						new FilterInputStream(ByteStreams.limit(input, lookupLimit)) {
 
-					@Override
-					public void close() throws IOException {
-						// don't close stream, reset instead
-						input.reset();
-					}
+							@Override
+							public void close() throws IOException {
+								// don't close stream, reset instead
+								input.reset();
+							}
 
-				});
+						});
 			}
 
 			@Override
 			public URI getLocation() {
 				return location;
+			}
+
+			@Override
+			public URI getUsedLocation() {
+				return getLocation();
 			}
 		};
 	}
@@ -181,6 +185,11 @@ public class LookupStreamResource {
 			@Override
 			public URI getLocation() {
 				return location;
+			}
+
+			@Override
+			public URI getUsedLocation() {
+				return getLocation();
 			}
 		};
 	}

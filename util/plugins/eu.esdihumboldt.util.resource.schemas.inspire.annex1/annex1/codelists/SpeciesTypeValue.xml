@@ -1,0 +1,1555 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="SpeciesTypeValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+The species type using species from Article 4.1 and 4.2 of the Birds Directive (Council Directive 79/409/EEC) and Annex II of the Habitats Directive (Council Directive 92/43/EEC). &#13;
+&#13;
+-- Description --&#13;
+NOTE 1 The code list now only contains the values of Annex I of the Birds Directive.&#13;
+&#13;
+NOTE 2 The values of Annex II of the Habitats Directive are listed at http://converters.eionet.europa.eu/xmlfile/taxonomy.xml.&#13;
+</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0">SpeciesTypeValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_37985">
+      <description>-- Definition --
+"Podiceps auritus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">podicepsAuritus</identifier>
+      <name>podicepsAuritus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_37986">
+      <description>-- Definition --
+"Pterodroma madeira" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">pterodromaMadeira</identifier>
+      <name>pterodromaMadeira</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_37987">
+      <description>-- Definition --
+"Pterodroma feae" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">pterodromaFeae</identifier>
+      <name>pterodromaFeae</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_37988">
+      <description>-- Definition --
+"Bulweria bulwerii" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">bulweriaBulwerii</identifier>
+      <name>bulweriaBulwerii</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_37989">
+      <description>-- Definition --
+"Calonectris diomedea" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">calonectrisDiomedea</identifier>
+      <name>calonectrisDiomedea</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_37990">
+      <description>-- Definition --
+"Puffinus puffinus mauretanicus (Puffinus mauretanicus)" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">puffinusPuffinusMauretanicusPuffinusMauretanicus</identifier>
+      <name>puffinusPuffinusMauretanicusPuffinusMauretanicus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_37991">
+      <description>-- Definition --
+"Puffinus yelkouan" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">puffinusYelkouan</identifier>
+      <name>puffinusYelkouan</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_37992">
+      <description>-- Definition --
+"Puffinus assimilis" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">puffinusAssimilis</identifier>
+      <name>puffinusAssimilis</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_37993">
+      <description>-- Definition --
+"Pelagodroma marina" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">pelagodromaMarina</identifier>
+      <name>pelagodromaMarina</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_37994">
+      <description>-- Definition --
+"Hydrobates pelagicus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">hydrobatesPelagicus</identifier>
+      <name>hydrobatesPelagicus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_37995">
+      <description>-- Definition --
+"Oceanodroma leucorhoa" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">oceanodromaLeucorhoa</identifier>
+      <name>oceanodromaLeucorhoa</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_37996">
+      <description>-- Definition --
+"Oceanodroma castro" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">oceanodromaCastro</identifier>
+      <name>oceanodromaCastro</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38118">
+      <description>-- Definition --
+"Surnia ulula" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">surniaUlula</identifier>
+      <name>surniaUlula</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38119">
+      <description>-- Definition --
+"Glaucidium passerinum" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">glaucidiumPasserinum</identifier>
+      <name>glaucidiumPasserinum</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38120">
+      <description>-- Definition --
+"Strix nebulosa" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">strixNebulosa</identifier>
+      <name>strixNebulosa</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38121">
+      <description>-- Definition --
+"Strix uralensis" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">strixUralensis</identifier>
+      <name>strixUralensis</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38122">
+      <description>-- Definition --
+"Asio flammeus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">asioFlammeus</identifier>
+      <name>asioFlammeus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38123">
+      <description>-- Definition --
+"Aegolius funereus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">aegoliusFunereus</identifier>
+      <name>aegoliusFunereus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38124">
+      <description>-- Definition --
+"Caprimulgus europaeus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">caprimulgusEuropaeus</identifier>
+      <name>caprimulgusEuropaeus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38125">
+      <description>-- Definition --
+"Apus caffer" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">apusCaffer</identifier>
+      <name>apusCaffer</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38126">
+      <description>-- Definition --
+"Alcedo atthis" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">alcedoAtthis</identifier>
+      <name>alcedoAtthis</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38127">
+      <description>-- Definition --
+"Coracias garrulus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">coraciasGarrulus</identifier>
+      <name>coraciasGarrulus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38128">
+      <description>-- Definition --
+"Picus canus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">picusCanus</identifier>
+      <name>picusCanus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38129">
+      <description>-- Definition --
+"Dryocopus martius" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">dryocopusMartius</identifier>
+      <name>dryocopusMartius</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38130">
+      <description>-- Definition --
+"Dendrocopos major canariensis" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">dendrocoposMajorCanariensis</identifier>
+      <name>dendrocoposMajorCanariensis</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38131">
+      <description>-- Definition --
+"Dendrocopos major thanneri" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">dendrocoposMajorThanneri</identifier>
+      <name>dendrocoposMajorThanneri</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38132">
+      <description>-- Definition --
+"Dendrocopos syriacus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">dendrocoposSyriacus</identifier>
+      <name>dendrocoposSyriacus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38133">
+      <description>-- Definition --
+"Dendrocopos medius" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">dendrocoposMedius</identifier>
+      <name>dendrocoposMedius</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38134">
+      <description>-- Definition --
+"Dendrocopos leucotos" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">dendrocoposLeucotos</identifier>
+      <name>dendrocoposLeucotos</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38135">
+      <description>-- Definition --
+"Picoides tridactylus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">picoidesTridactylus</identifier>
+      <name>picoidesTridactylus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38136">
+      <description>-- Definition --
+"Chersophilus duponti" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">chersophilusDuponti</identifier>
+      <name>chersophilusDuponti</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38137">
+      <description>-- Definition --
+"Melanocorypha calandra" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">melanocoryphaCalandra</identifier>
+      <name>melanocoryphaCalandra</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38138">
+      <description>-- Definition --
+"Calandrella brachydactyla" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">calandrellaBrachydactyla</identifier>
+      <name>calandrellaBrachydactyla</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38139">
+      <description>-- Definition --
+"Galerida theklae" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">galeridaTheklae</identifier>
+      <name>galeridaTheklae</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38140">
+      <description>-- Definition --
+"Lullula arborea" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">lullulaArborea</identifier>
+      <name>lullulaArborea</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38141">
+      <description>-- Definition --
+"Anthus campestris" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">anthusCampestris</identifier>
+      <name>anthusCampestris</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38142">
+      <description>-- Definition --
+"Troglodytes troglodytes fridariensis" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">troglodytesTroglodytesFridariensis</identifier>
+      <name>troglodytesTroglodytesFridariensis</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38143">
+      <description>-- Definition --
+"Luscinia svecica" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">lusciniaSvecica</identifier>
+      <name>lusciniaSvecica</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38144">
+      <description>-- Definition --
+"Saxicola dacotiae" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">saxicolaDacotiae</identifier>
+      <name>saxicolaDacotiae</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38145">
+      <description>-- Definition --
+"Oenanthe leucura" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">oenantheLeucura</identifier>
+      <name>oenantheLeucura</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38146">
+      <description>-- Definition --
+"Oenanthe cypriaca" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">oenantheCypriaca</identifier>
+      <name>oenantheCypriaca</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38147">
+      <description>-- Definition --
+"Oenanthe pleschanka" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">oenanthePleschanka</identifier>
+      <name>oenanthePleschanka</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38148">
+      <description>-- Definition --
+"Acrocephalus melanopogon" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">acrocephalusMelanopogon</identifier>
+      <name>acrocephalusMelanopogon</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38149">
+      <description>-- Definition --
+"Acrocephalus paludicola" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">acrocephalusPaludicola</identifier>
+      <name>acrocephalusPaludicola</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38150">
+      <description>-- Definition --
+"Hippolais olivetorum" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">hippolaisOlivetorum</identifier>
+      <name>hippolaisOlivetorum</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38151">
+      <description>-- Definition --
+"Sylvia sarda" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">sylviaSarda</identifier>
+      <name>sylviaSarda</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38152">
+      <description>-- Definition --
+"Sylvia undata" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">sylviaUndata</identifier>
+      <name>sylviaUndata</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38153">
+      <description>-- Definition --
+"Sylvia melanothorax" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">sylviaMelanothorax</identifier>
+      <name>sylviaMelanothorax</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_37982">
+      <description>-- Definition --
+"Gavia stellata" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">gaviaStellata</identifier>
+      <name>gaviaStellata</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_37983">
+      <description>-- Definition --
+"Gavia arctica" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">gaviaArctica</identifier>
+      <name>gaviaArctica</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_37984">
+      <description>-- Definition --
+"Gavia immer" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">gaviaImmer</identifier>
+      <name>gaviaImmer</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38154">
+      <description>-- Definition --
+"Sylvia rueppelli" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">sylviaRueppelli</identifier>
+      <name>sylviaRueppelli</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38155">
+      <description>-- Definition --
+"Sylvia nisoria" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">sylviaNisoria</identifier>
+      <name>sylviaNisoria</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38156">
+      <description>-- Definition --
+"Ficedula parva" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">ficedulaParva</identifier>
+      <name>ficedulaParva</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38157">
+      <description>-- Definition --
+"Ficedula semitorquata" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">ficedulaSemitorquata</identifier>
+      <name>ficedulaSemitorquata</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38158">
+      <description>-- Definition --
+"Ficedula albicollis" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">ficedulaAlbicollis</identifier>
+      <name>ficedulaAlbicollis</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38159">
+      <description>-- Definition --
+"Parus ater cypriotes" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">parusAterCypriotes</identifier>
+      <name>parusAterCypriotes</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38160">
+      <description>-- Definition --
+"Sitta krueperi" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">sittaKrueperi</identifier>
+      <name>sittaKrueperi</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38161">
+      <description>-- Definition --
+"Sitta whiteheadi" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">sittaWhiteheadi</identifier>
+      <name>sittaWhiteheadi</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38162">
+      <description>-- Definition --
+"Certhia brachydactyla dorotheae" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">certhiaBrachydactylaDorotheae</identifier>
+      <name>certhiaBrachydactylaDorotheae</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38163">
+      <description>-- Definition --
+"Lanius collurio" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">laniusCollurio</identifier>
+      <name>laniusCollurio</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38164">
+      <description>-- Definition --
+"Lanius minor" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">laniusMinor</identifier>
+      <name>laniusMinor</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38165">
+      <description>-- Definition --
+"Lanius nubicus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">laniusNubicus</identifier>
+      <name>laniusNubicus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38166">
+      <description>-- Definition --
+"Pyrrhocorax pyrrhocorax" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">pyrrhocoraxPyrrhocorax</identifier>
+      <name>pyrrhocoraxPyrrhocorax</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38167">
+      <description>-- Definition --
+"Fringilla coelebs ombriosa" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">fringillaCoelebsOmbriosa</identifier>
+      <name>fringillaCoelebsOmbriosa</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38168">
+      <description>-- Definition --
+"Fringilla teydea" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">fringillaTeydea</identifier>
+      <name>fringillaTeydea</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38169">
+      <description>-- Definition --
+"Loxia scotica" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">loxiaScotica</identifier>
+      <name>loxiaScotica</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38170">
+      <description>-- Definition --
+"Bucanetes githagineus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">bucanetesGithagineus</identifier>
+      <name>bucanetesGithagineus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38171">
+      <description>-- Definition --
+"Pyrrhula murina (Pyrrhula pyrrhula murina)" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">pyrrhulaMurinaPyrrhulaPyrrhulaMurina</identifier>
+      <name>pyrrhulaMurinaPyrrhulaPyrrhulaMurina</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38172">
+      <description>-- Definition --
+"Emberiza cineracea" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">emberizaCineracea</identifier>
+      <name>emberizaCineracea</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38173">
+      <description>-- Definition --
+"Emberiza hortulana" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">emberizaHortulana</identifier>
+      <name>emberizaHortulana</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38174">
+      <description>-- Definition --
+"Emberiza caesia" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">emberizaCaesia</identifier>
+      <name>emberizaCaesia</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_37997">
+      <description>-- Definition --
+"Pelecanus onocrotalus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">pelecanusOnocrotalus</identifier>
+      <name>pelecanusOnocrotalus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_37998">
+      <description>-- Definition --
+"Pelecanus crispus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">pelecanusCrispus</identifier>
+      <name>pelecanusCrispus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_37999">
+      <description>-- Definition --
+"Phalacrocorax aristotelis desmarestii" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">phalacrocoraxAristotelisDesmarestii</identifier>
+      <name>phalacrocoraxAristotelisDesmarestii</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38000">
+      <description>-- Definition --
+"Phalacrocorax pygmeus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">phalacrocoraxPygmeus</identifier>
+      <name>phalacrocoraxPygmeus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38001">
+      <description>-- Definition --
+"Botaurus stellaris" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">botaurusStellaris</identifier>
+      <name>botaurusStellaris</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38002">
+      <description>-- Definition --
+"Ixobrychus minutus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">ixobrychusMinutus</identifier>
+      <name>ixobrychusMinutus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38003">
+      <description>-- Definition --
+"Nycticorax nycticorax" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">nycticoraxNycticorax</identifier>
+      <name>nycticoraxNycticorax</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38004">
+      <description>-- Definition --
+"Ardeola ralloides" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">ardeolaRalloides</identifier>
+      <name>ardeolaRalloides</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38005">
+      <description>-- Definition --
+"Egretta garzetta" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">egrettaGarzetta</identifier>
+      <name>egrettaGarzetta</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38006">
+      <description>-- Definition --
+"Egretta alba (Ardea alba)" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">egrettaAlbaArdeaAlba</identifier>
+      <name>egrettaAlbaArdeaAlba</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38007">
+      <description>-- Definition --
+"Ardea purpurea" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">ardeaPurpurea</identifier>
+      <name>ardeaPurpurea</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38008">
+      <description>-- Definition --
+"Ciconia nigra" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">ciconiaNigra</identifier>
+      <name>ciconiaNigra</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38009">
+      <description>-- Definition --
+"Ciconia ciconia" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">ciconiaCiconia</identifier>
+      <name>ciconiaCiconia</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38010">
+      <description>-- Definition --
+"Plegadis falcinellus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">plegadisFalcinellus</identifier>
+      <name>plegadisFalcinellus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38011">
+      <description>-- Definition --
+"Platalea leucorodia" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">plataleaLeucorodia</identifier>
+      <name>plataleaLeucorodia</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38012">
+      <description>-- Definition --
+"Phoenicopterus ruber" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">phoenicopterusRuber</identifier>
+      <name>phoenicopterusRuber</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38013">
+      <description>-- Definition --
+"Cygnus bewickii (Cygnus columbianus bewickii)" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">cygnusBewickiiCygnusColumbianusBewickii</identifier>
+      <name>cygnusBewickiiCygnusColumbianusBewickii</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38014">
+      <description>-- Definition --
+"Cygnus cygnus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">cygnusCygnus</identifier>
+      <name>cygnusCygnus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38015">
+      <description>-- Definition --
+"Anser albifrons flavirostris" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">anserAlbifronsFlavirostris</identifier>
+      <name>anserAlbifronsFlavirostris</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38016">
+      <description>-- Definition --
+"Anser erythropus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">anserErythropus</identifier>
+      <name>anserErythropus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38017">
+      <description>-- Definition --
+"Branta leucopsis" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">brantaLeucopsis</identifier>
+      <name>brantaLeucopsis</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38018">
+      <description>-- Definition --
+"Branta ruficollis" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">brantaRuficollis</identifier>
+      <name>brantaRuficollis</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38019">
+      <description>-- Definition --
+"Tadorna ferruginea" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">tadornaFerruginea</identifier>
+      <name>tadornaFerruginea</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38020">
+      <description>-- Definition --
+"Marmaronetta angustirostris" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">marmaronettaAngustirostris</identifier>
+      <name>marmaronettaAngustirostris</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38021">
+      <description>-- Definition --
+"Aythya nyroca" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">aythyaNyroca</identifier>
+      <name>aythyaNyroca</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38022">
+      <description>-- Definition --
+"Polysticta stelleri" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">polystictaStelleri</identifier>
+      <name>polystictaStelleri</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38023">
+      <description>-- Definition --
+"Mergus albellus (Mergellus albellus)" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">mergusAlbellusMergellusAlbellus</identifier>
+      <name>mergusAlbellusMergellusAlbellus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38024">
+      <description>-- Definition --
+"Oxyura leucocephala" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">oxyuraLeucocephala</identifier>
+      <name>oxyuraLeucocephala</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38025">
+      <description>-- Definition --
+"Pandion haliaetus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">pandionHaliaetus</identifier>
+      <name>pandionHaliaetus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38026">
+      <description>-- Definition --
+"Pernis apivorus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">pernisApivorus</identifier>
+      <name>pernisApivorus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38027">
+      <description>-- Definition --
+"Elanus caeruleus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">elanusCaeruleus</identifier>
+      <name>elanusCaeruleus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38028">
+      <description>-- Definition --
+"Milvus migrans" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">milvusMigrans</identifier>
+      <name>milvusMigrans</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38029">
+      <description>-- Definition --
+"Milvus milvus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">milvusMilvus</identifier>
+      <name>milvusMilvus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38030">
+      <description>-- Definition --
+"Haliaeetus albicilla" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">haliaeetusAlbicilla</identifier>
+      <name>haliaeetusAlbicilla</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38031">
+      <description>-- Definition --
+"Gypaetus barbatus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">gypaetusBarbatus</identifier>
+      <name>gypaetusBarbatus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38032">
+      <description>-- Definition --
+"Neophron percnopterus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">neophronPercnopterus</identifier>
+      <name>neophronPercnopterus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38033">
+      <description>-- Definition --
+"Gyps fulvus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">gypsFulvus</identifier>
+      <name>gypsFulvus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38034">
+      <description>-- Definition --
+"Aegypius monachus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">aegypiusMonachus</identifier>
+      <name>aegypiusMonachus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38035">
+      <description>-- Definition --
+"Circaetus gallicus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">circaetusGallicus</identifier>
+      <name>circaetusGallicus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38036">
+      <description>-- Definition --
+"Circus aeruginosus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">circusAeruginosus</identifier>
+      <name>circusAeruginosus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38037">
+      <description>-- Definition --
+"Circus cyaneus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">circusCyaneus</identifier>
+      <name>circusCyaneus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38038">
+      <description>-- Definition --
+"Circus macrourus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">circusMacrourus</identifier>
+      <name>circusMacrourus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38039">
+      <description>-- Definition --
+"Circus pygargus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">circusPygargus</identifier>
+      <name>circusPygargus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38040">
+      <description>-- Definition --
+"Accipiter gentilis arrigonii" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">accipiterGentilisArrigonii</identifier>
+      <name>accipiterGentilisArrigonii</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38041">
+      <description>-- Definition --
+"Accipiter nisus granti" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">accipiterNisusGranti</identifier>
+      <name>accipiterNisusGranti</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38042">
+      <description>-- Definition --
+"Accipiter brevipes" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">accipiterBrevipes</identifier>
+      <name>accipiterBrevipes</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38043">
+      <description>-- Definition --
+"Buteo rufinus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">buteoRufinus</identifier>
+      <name>buteoRufinus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38044">
+      <description>-- Definition --
+"Aquila pomarina" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">aquilaPomarina</identifier>
+      <name>aquilaPomarina</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38045">
+      <description>-- Definition --
+"Aquila clanga" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">aquilaClanga</identifier>
+      <name>aquilaClanga</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38046">
+      <description>-- Definition --
+"Aquila heliaca" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">aquilaHeliaca</identifier>
+      <name>aquilaHeliaca</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38047">
+      <description>-- Definition --
+"Aquila adalberti" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">aquilaAdalberti</identifier>
+      <name>aquilaAdalberti</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38048">
+      <description>-- Definition --
+"Aquila chrysaetos" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">aquilaChrysaetos</identifier>
+      <name>aquilaChrysaetos</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38049">
+      <description>-- Definition --
+"Hieraaetus pennatus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">hieraaetusPennatus</identifier>
+      <name>hieraaetusPennatus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38050">
+      <description>-- Definition --
+"Hieraaetus fasciatus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">hieraaetusFasciatus</identifier>
+      <name>hieraaetusFasciatus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38051">
+      <description>-- Definition --
+"Falco naumanni" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">falcoNaumanni</identifier>
+      <name>falcoNaumanni</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38052">
+      <description>-- Definition --
+"Falco vespertinus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">falcoVespertinus</identifier>
+      <name>falcoVespertinus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38053">
+      <description>-- Definition --
+"Falco columbarius" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">falcoColumbarius</identifier>
+      <name>falcoColumbarius</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38054">
+      <description>-- Definition --
+"Falco eleonorae" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">falcoEleonorae</identifier>
+      <name>falcoEleonorae</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38055">
+      <description>-- Definition --
+"Falco biarmicus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">falcoBiarmicus</identifier>
+      <name>falcoBiarmicus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38056">
+      <description>-- Definition --
+"Falco cherrug" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">falcoCherrug</identifier>
+      <name>falcoCherrug</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38057">
+      <description>-- Definition --
+"Falco rusticolus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">falcoRusticolus</identifier>
+      <name>falcoRusticolus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38058">
+      <description>-- Definition --
+"Falco peregrinus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">falcoPeregrinus</identifier>
+      <name>falcoPeregrinus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38059">
+      <description>-- Definition --
+"Bonasa bonasia" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">bonasaBonasia</identifier>
+      <name>bonasaBonasia</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38060">
+      <description>-- Definition --
+"Lagopus mutus pyrenaicus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">lagopusMutusPyrenaicus</identifier>
+      <name>lagopusMutusPyrenaicus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38061">
+      <description>-- Definition --
+"Lagopus mutus helveticus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">lagopusMutusHelveticus</identifier>
+      <name>lagopusMutusHelveticus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38062">
+      <description>-- Definition --
+"Tetrao tetrix tetrix" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">tetraoTetrixTetrix</identifier>
+      <name>tetraoTetrixTetrix</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38063">
+      <description>-- Definition --
+"Tetrao urogallus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">tetraoUrogallus</identifier>
+      <name>tetraoUrogallus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38064">
+      <description>-- Definition --
+"Alectoris graeca" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">alectorisGraeca</identifier>
+      <name>alectorisGraeca</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38065">
+      <description>-- Definition --
+"Alectoris barbara" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">alectorisBarbara</identifier>
+      <name>alectorisBarbara</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38066">
+      <description>-- Definition --
+"Perdix perdix italica" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">perdixPerdixItalica</identifier>
+      <name>perdixPerdixItalica</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38067">
+      <description>-- Definition --
+"Perdix perdix hispaniensis" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">perdixPerdixHispaniensis</identifier>
+      <name>perdixPerdixHispaniensis</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38068">
+      <description>-- Definition --
+"Turnix sylvatica" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">turnixSylvatica</identifier>
+      <name>turnixSylvatica</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38069">
+      <description>-- Definition --
+"Grus grus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">grusGrus</identifier>
+      <name>grusGrus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38070">
+      <description>-- Definition --
+"Porzana porzana" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">porzanaPorzana</identifier>
+      <name>porzanaPorzana</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38071">
+      <description>-- Definition --
+"Porzana parva" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">porzanaParva</identifier>
+      <name>porzanaParva</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38072">
+      <description>-- Definition --
+"Porzana pusilla" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">porzanaPusilla</identifier>
+      <name>porzanaPusilla</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38073">
+      <description>-- Definition --
+"Crex crex" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">crexCrex</identifier>
+      <name>crexCrex</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38074">
+      <description>-- Definition --
+"Porphyrio porphyrio" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">porphyrioPorphyrio</identifier>
+      <name>porphyrioPorphyrio</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38075">
+      <description>-- Definition --
+"Fulica cristata" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">fulicaCristata</identifier>
+      <name>fulicaCristata</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38076">
+      <description>-- Definition --
+"Tetrax tetrax" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">tetraxTetrax</identifier>
+      <name>tetraxTetrax</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38077">
+      <description>-- Definition --
+"Chlamydotis undulata" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">chlamydotisUndulata</identifier>
+      <name>chlamydotisUndulata</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38078">
+      <description>-- Definition --
+"Otis tarda" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">otisTarda</identifier>
+      <name>otisTarda</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38079">
+      <description>-- Definition --
+"Himantopus himantopus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">himantopusHimantopus</identifier>
+      <name>himantopusHimantopus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38080">
+      <description>-- Definition --
+"Recurvirostra avosetta" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">recurvirostraAvosetta</identifier>
+      <name>recurvirostraAvosetta</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38081">
+      <description>-- Definition --
+"Burhinus oedicnemus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">burhinusOedicnemus</identifier>
+      <name>burhinusOedicnemus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38082">
+      <description>-- Definition --
+"Cursorius cursor" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">cursoriusCursor</identifier>
+      <name>cursoriusCursor</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38083">
+      <description>-- Definition --
+"Glareola pratincola" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">glareolaPratincola</identifier>
+      <name>glareolaPratincola</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38084">
+      <description>-- Definition --
+"Charadrius alexandrinus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">charadriusAlexandrinus</identifier>
+      <name>charadriusAlexandrinus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38085">
+      <description>-- Definition --
+"Charadrius morinellus (Eudromias morinellus)" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">charadriusMorinellusEudromiasMorinellus</identifier>
+      <name>charadriusMorinellusEudromiasMorinellus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38086">
+      <description>-- Definition --
+"Pluvialis apricaria" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">pluvialisApricaria</identifier>
+      <name>pluvialisApricaria</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38087">
+      <description>-- Definition --
+"Hoplopterus spinosus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">hoplopterusSpinosus</identifier>
+      <name>hoplopterusSpinosus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38088">
+      <description>-- Definition --
+"Calidris alpina schinzii" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">calidrisAlpinaSchinzii</identifier>
+      <name>calidrisAlpinaSchinzii</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38089">
+      <description>-- Definition --
+"Philomachus pugnax" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">philomachusPugnax</identifier>
+      <name>philomachusPugnax</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38090">
+      <description>-- Definition --
+"Gallinago media" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">gallinagoMedia</identifier>
+      <name>gallinagoMedia</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38091">
+      <description>-- Definition --
+"Limosa lapponica" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">limosaLapponica</identifier>
+      <name>limosaLapponica</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38092">
+      <description>-- Definition --
+"Numenius tenuirostris" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">numeniusTenuirostris</identifier>
+      <name>numeniusTenuirostris</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38093">
+      <description>-- Definition --
+"Tringa glareola" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">tringaGlareola</identifier>
+      <name>tringaGlareola</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38094">
+      <description>-- Definition --
+"Xenus cinereus (Tringa cinerea)" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">xenusCinereusTringaCinerea</identifier>
+      <name>xenusCinereusTringaCinerea</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38095">
+      <description>-- Definition --
+"Phalaropus lobatus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">phalaropusLobatus</identifier>
+      <name>phalaropusLobatus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38096">
+      <description>-- Definition --
+"Larus melanocephalus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">larusMelanocephalus</identifier>
+      <name>larusMelanocephalus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38097">
+      <description>-- Definition --
+"Larus genei" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">larusGenei</identifier>
+      <name>larusGenei</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38098">
+      <description>-- Definition --
+"Larus audouinii" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">larusAudouinii</identifier>
+      <name>larusAudouinii</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38099">
+      <description>-- Definition --
+"Larus minutus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">larusMinutus</identifier>
+      <name>larusMinutus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38100">
+      <description>-- Definition --
+"Gelochelidon nilotica (Sterna nilotica)" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">gelochelidonNiloticaSternaNilotica</identifier>
+      <name>gelochelidonNiloticaSternaNilotica</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38101">
+      <description>-- Definition --
+"Sterna caspia" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">sternaCaspia</identifier>
+      <name>sternaCaspia</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38102">
+      <description>-- Definition --
+"Sterna sandvicensis" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">sternaSandvicensis</identifier>
+      <name>sternaSandvicensis</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38103">
+      <description>-- Definition --
+"Sterna dougallii" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">sternaDougallii</identifier>
+      <name>sternaDougallii</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38104">
+      <description>-- Definition --
+"Sterna hirundo" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">sternaHirundo</identifier>
+      <name>sternaHirundo</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38105">
+      <description>-- Definition --
+"Sterna paradisaea" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">sternaParadisaea</identifier>
+      <name>sternaParadisaea</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38106">
+      <description>-- Definition --
+"Sterna albifrons" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">sternaAlbifrons</identifier>
+      <name>sternaAlbifrons</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38107">
+      <description>-- Definition --
+"Chlidonias hybridus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">chlidoniasHybridus</identifier>
+      <name>chlidoniasHybridus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38108">
+      <description>-- Definition --
+"Chlidonias niger" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">chlidoniasNiger</identifier>
+      <name>chlidoniasNiger</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38109">
+      <description>-- Definition --
+"Uria aalge ibericus" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">uriaAalgeIbericus</identifier>
+      <name>uriaAalgeIbericus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38110">
+      <description>-- Definition --
+"Pterocles orientalis" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">pteroclesOrientalis</identifier>
+      <name>pteroclesOrientalis</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38111">
+      <description>-- Definition --
+"Pterocles alchata" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">pteroclesAlchata</identifier>
+      <name>pteroclesAlchata</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38112">
+      <description>-- Definition --
+"Columba palumbus azorica" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">columbaPalumbusAzorica</identifier>
+      <name>columbaPalumbusAzorica</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38113">
+      <description>-- Definition --
+"Columba trocaz" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">columbaTrocaz</identifier>
+      <name>columbaTrocaz</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38114">
+      <description>-- Definition --
+"Columba bollii" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">columbaBollii</identifier>
+      <name>columbaBollii</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38115">
+      <description>-- Definition --
+"Columba junoniae" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">columbaJunoniae</identifier>
+      <name>columbaJunoniae</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38116">
+      <description>-- Definition --
+"Bubo bubo" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">buboBubo</identifier>
+      <name>buboBubo</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21994_38117">
+      <description>-- Definition --
+"Nyctea scandiaca" in Appendix I of Council Directive 79/409/EEC.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:SpeciesDistribution:0.0/SpeciesTypeValue">nycteaScandiaca</identifier>
+      <name>nycteaScandiaca</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

@@ -1,0 +1,149 @@
+<?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="NationalMonumentsRecordDesignationValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+A code list for the National Monuments Record classification scheme.</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0">NationalMonumentsRecordDesignationValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_22333_39367">
+      <description>-- Definition --&#13;
+The Protected Site is classified as an agricultural or subsistence monument under the National Monuments Record classification scheme.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/NationalMonumentsRecordDesignationValue">agricultureAndSubsistence</identifier>
+      <name>agricultureAndSubsistence</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22333_39368">
+      <description>-- Definition --&#13;
+The Protected Site is classified as a civil monument under the National Monuments Record classification scheme.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/NationalMonumentsRecordDesignationValue">civil</identifier>
+      <name>civil</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22333_39369">
+      <description>-- Definition --&#13;
+The Protected Site is classified as a commemorative monument under the National Monuments Record classification scheme.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/NationalMonumentsRecordDesignationValue">commemorative</identifier>
+      <name>commemorative</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22333_39370">
+      <description>-- Definition --&#13;
+The Protected Site is classified as a commercial monument under the National Monuments Record classification scheme.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/NationalMonumentsRecordDesignationValue">commercial</identifier>
+      <name>commercial</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22333_39371">
+      <description>-- Definition --&#13;
+The Protected Site is classified as a communications monument under the National Monuments Record classification scheme.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/NationalMonumentsRecordDesignationValue">communications</identifier>
+      <name>communications</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22333_39372">
+      <description>-- Definition --&#13;
+The Protected Site is classified as a defence monument under the National Monuments Record classification scheme.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/NationalMonumentsRecordDesignationValue">defence</identifier>
+      <name>defence</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22333_39373">
+      <description>-- Definition --&#13;
+The Protected Site is classified as a domestic monument under the National Monuments Record classification scheme.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/NationalMonumentsRecordDesignationValue">domestic</identifier>
+      <name>domestic</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22333_39374">
+      <description>-- Definition --&#13;
+The Protected Site is classified as a education monument under the National Monuments Record classification scheme.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/NationalMonumentsRecordDesignationValue">education</identifier>
+      <name>education</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22333_39375">
+      <description>-- Definition --&#13;
+The Protected Site is classified as a garden, park or urban space monument under the National Monuments Record classification scheme.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/NationalMonumentsRecordDesignationValue">gardensParksAndUrbanSpaces</identifier>
+      <name>gardensParksAndUrbanSpaces</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22333_39376">
+      <description>-- Definition --&#13;
+The Protected Site is classified as a health and welfare monument under the National Monuments Record classification scheme.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/NationalMonumentsRecordDesignationValue">healthAndWelfare</identifier>
+      <name>healthAndWelfare</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22333_39377">
+      <description>-- Definition --&#13;
+The Protected Site is classified as a industrial monument under the National Monuments Record classification scheme.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/NationalMonumentsRecordDesignationValue">industrial</identifier>
+      <name>industrial</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22333_39378">
+      <description>-- Definition --&#13;
+The Protected Site is classified as a maritime monument under the National Monuments Record classification scheme.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/NationalMonumentsRecordDesignationValue">maritime</identifier>
+      <name>maritime</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22333_39379">
+      <description>-- Definition --&#13;
+The Protected Site is classified as a monument with some unclassified form under the National Monuments Record classification scheme.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/NationalMonumentsRecordDesignationValue">monument</identifier>
+      <name>monument</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22333_39380">
+      <description>-- Definition --&#13;
+The Protected Site is classified as a recreational monument under the National Monuments Record classification scheme.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/NationalMonumentsRecordDesignationValue">recreational</identifier>
+      <name>recreational</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22333_39381">
+      <description>-- Definition --&#13;
+The Protected Site is classified as a religious, ritual or funerary monument under the National Monuments Record classification scheme.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/NationalMonumentsRecordDesignationValue">religiousRitualAndFunerary</identifier>
+      <name>religiousRitualAndFunerary</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22333_39382">
+      <description>-- Definition --&#13;
+The Protected Site is classified as a settlement under the National Monuments Record classification scheme.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/NationalMonumentsRecordDesignationValue">settlement</identifier>
+      <name>settlement</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22333_39383">
+      <description>-- Definition --&#13;
+The Protected Site is classified as a transport monument under the National Monuments Record classification scheme.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/NationalMonumentsRecordDesignationValue">transport</identifier>
+      <name>transport</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22333_39384">
+      <description>-- Definition --&#13;
+The Protected Site is classified as a water supply and drainage monument under the National Monuments Record classification scheme.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/NationalMonumentsRecordDesignationValue">waterSupplyAndDrainage</identifier>
+      <name>waterSupplyAndDrainage</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

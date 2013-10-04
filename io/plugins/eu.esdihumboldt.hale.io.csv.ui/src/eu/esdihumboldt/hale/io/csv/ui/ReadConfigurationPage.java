@@ -73,7 +73,6 @@ public class ReadConfigurationPage extends
 
 		bmap = HashBiMap.create();
 		bmap.put("TAB", "\t");
-
 	}
 
 	/**
@@ -112,8 +111,13 @@ public class ReadConfigurationPage extends
 	 */
 	@Override
 	public void enable() {
-		// TODO Auto-generated method stub
-
+		/*
+		 * Set page to incomplete by default, as only when the page is shown
+		 * automated detection takes place. Thus finishing an import with the
+		 * page not having been shown may differ from loading the same file with
+		 * the page shown.
+		 */
+		setPageComplete(false);
 	}
 
 	/**
@@ -238,10 +242,13 @@ public class ReadConfigurationPage extends
 			BufferedReader streamReader = new BufferedReader(new InputStreamReader(getWizard()
 					.getProvider().getSource().getInput(), p.getCharset()));
 			String line = streamReader.readLine();
-			int tab = countChar(line, '\t');
-			int comma = countChar(line, ',');
-			int pipe = countChar(line, '|');
-			int semicolon = countChar(line, ';');
+			int tab = 0, comma = 0, pipe = 0, semicolon = 0;
+			if (line != null) {
+				tab = countChar(line, '\t');
+				comma = countChar(line, ',');
+				pipe = countChar(line, '|');
+				semicolon = countChar(line, ';');
+			}
 
 			if (Math.max(tab, comma) == tab && Math.max(tab, pipe) == tab
 					&& Math.max(tab, semicolon) == tab) {
@@ -267,7 +274,7 @@ public class ReadConfigurationPage extends
 		String selection = getWizard().getProvider().getParameter(CSVConstants.PARAM_SEPARATOR)
 				.as(String.class);
 		for (int i = 0; i < separatorSelection.length; i++) {
-			if (separatorSelection[i] == selection) {
+			if (separatorSelection[i].equals(selection)) {
 				separator.select(i);
 				break;
 			}

@@ -91,6 +91,15 @@
             id="eu.esdihumboldt.hale.io.xslt.compatibility"
             key="eu.esdihumboldt.hale.io.xslt.compatibility.xslt"
             name="Xslt">
+         <supportsFilter
+               ref="CQL">
+         </supportsFilter>
+         <supportsFilter
+               ref="ECQL">
+         </supportsFilter>
+         <supportsFilter
+               ref="XPath">
+         </supportsFilter>
       </compatibility>
    </extension>
    <extension
@@ -147,7 +156,7 @@
          point="eu.esdihumboldt.hale.instance.filter">
       <filterDefinition
             class="eu.esdihumboldt.hale.io.xslt.xpath.XPathFilterDefinition"
-            id="eu.esdihumboldt.hale.filter.xpath">
+            id="XPath">
       </filterDefinition>
    </extension>
 

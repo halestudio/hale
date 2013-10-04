@@ -2,10 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Core API
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.core;singleton:=true
-Bundle-Version: 2.6.0.qualifier
+Bundle-Version: 2.7.0.qualifier
 Bundle-Activator: eu.esdihumboldt.hale.common.core.internal.CoreBundle
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.base;version="1.6.0",
  com.google.common.collect,
  com.google.common.io;version="1.6.0",
@@ -13,6 +13,7 @@ Import-Package: com.google.common.base;version="1.6.0",
  de.cs3d.util.eclipse.extension.simple,
  de.cs3d.util.logging,
  de.fhg.igd.osgi.util;version="1.0.0",
+ de.fhg.igd.osgi.util.configuration;version="1.0.0",
  de.fhg.igd.osgi.util.extender;version="1.0.0",
  edu.umd.cs.findbugs.annotations,
  eu.esdihumboldt.hale.common.cache,
@@ -42,6 +43,7 @@ Export-Package: eu.esdihumboldt.hale.common.core.internal;x-internal:=true,
  eu.esdihumboldt.hale.common.core.io.project.impl,
  eu.esdihumboldt.hale.common.core.io.project.model,
  eu.esdihumboldt.hale.common.core.io.project.model.internal;x-internal:=true,
+ eu.esdihumboldt.hale.common.core.io.project.model.internal.generated;x-internal:=true,
  eu.esdihumboldt.hale.common.core.io.project.util,
  eu.esdihumboldt.hale.common.core.io.report,
  eu.esdihumboldt.hale.common.core.io.report.impl,
@@ -50,6 +52,7 @@ Export-Package: eu.esdihumboldt.hale.common.core.internal;x-internal:=true,
  eu.esdihumboldt.hale.common.core.report,
  eu.esdihumboldt.hale.common.core.report.impl,
  eu.esdihumboldt.hale.common.core.report.writer,
- eu.esdihumboldt.hale.common.core.service
+ eu.esdihumboldt.hale.common.core.service,
+ eu.esdihumboldt.hale.common.core.service.internal;x-internal:=true
 Require-Bundle: org.castor.xml;bundle-version="1.3.0",
  org.eclipse.core.runtime;bundle-version="3.6.0"

@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.ui.common.definition.editors;
 import org.eclipse.swt.widgets.Composite;
 
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -36,13 +37,9 @@ import eu.esdihumboldt.hale.ui.common.editors.BooleanEditor;
  */
 public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 
-	/**
-	 * @see AttributeEditorFactory#createEditor(Composite, PropertyDefinition,
-	 *      boolean)
-	 */
 	@Override
 	public Editor<?> createEditor(Composite parent, PropertyDefinition property,
-			boolean allowScripts) {
+			EntityDefinition entityDef, boolean allowScripts) {
 		TypeDefinition type = property.getPropertyType();
 
 //		if (attributeType.isComplexType()) {
@@ -57,7 +54,7 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 		else {
 			if (allowScripts) {
 				EditorChooserEditor<Object> result = new PropertyEditorChooserEditor(parent,
-						property);
+						property, entityDef);
 				result.selectDefaultEditor();
 				return result;
 			}
@@ -66,7 +63,7 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 				if (Boolean.class.equals(binding))
 					return new BooleanEditor(parent);
 				else
-					return new DefaultPropertyEditor(parent, property);
+					return new DefaultPropertyEditor(parent, property, entityDef);
 			}
 		}
 	}

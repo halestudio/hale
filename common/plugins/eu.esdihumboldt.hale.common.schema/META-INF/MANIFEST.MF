@@ -2,16 +2,20 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Schema API
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.schema;singleton:=true
-Bundle-Version: 2.6.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Version: 2.7.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.base,
+ com.google.common.collect;version="11.0.1",
  com.vividsolutions.jts.geom,
  de.cs3d.util.logging,
  de.fhg.igd.osgi.util.configuration;version="1.0.0",
  eu.esdihumboldt.hale.common.core.io,
  eu.esdihumboldt.hale.common.core.io.impl,
+ eu.esdihumboldt.hale.common.core.io.project,
  eu.esdihumboldt.hale.common.core.io.project.model,
  eu.esdihumboldt.hale.common.core.io.supplier,
+ eu.esdihumboldt.util,
+ eu.esdihumboldt.util.groovy.paths,
  eu.esdihumboldt.util.validator,
  net.jcip.annotations,
  org.opengis.referencing.crs;version="8.0.0.M1",
@@ -25,5 +29,7 @@ Export-Package: eu.esdihumboldt.hale.common.schema,
  eu.esdihumboldt.hale.common.schema.model.constraint.property,
  eu.esdihumboldt.hale.common.schema.model.constraint.type,
  eu.esdihumboldt.hale.common.schema.model.impl,
- eu.esdihumboldt.hale.common.schema.model.impl.internal;x-internal:=true
+ eu.esdihumboldt.hale.common.schema.model.impl.internal;x-internal:=true,
+ eu.esdihumboldt.hale.common.schema.paths,
+ eu.esdihumboldt.hale.common.schema.paths.internal;x-internal:=true
 Require-Bundle: org.eclipse.core.contenttype;bundle-version="3.4.100"

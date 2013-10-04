@@ -30,11 +30,16 @@ import eu.esdihumboldt.util.definition.ObjectDefinition;
 public class CQLFilterDefinition implements FilterDefinition<FilterGeoCqlImpl> {
 
 	/**
+	 * The filter definition ID.
+	 */
+	public static final String ID = "CQL";
+
+	/**
 	 * @see ObjectDefinition#getIdentifier()
 	 */
 	@Override
 	public String getIdentifier() {
-		return "CQL";
+		return ID;
 	}
 
 	/**

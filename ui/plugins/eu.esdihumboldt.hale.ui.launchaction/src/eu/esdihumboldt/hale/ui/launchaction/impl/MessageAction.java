@@ -43,8 +43,10 @@ public class MessageAction extends AbstractLaunchAction<AtomicReference<String>>
 	@Override
 	protected void processParameter(String param, String value,
 			AtomicReference<String> launchContext) {
-		if ("-msg".equals(param)) {
+		switch (param) {
+		case "-msg":
 			launchContext.set(value);
+			break;
 		}
 	}
 

@@ -17,7 +17,6 @@ package eu.esdihumboldt.hale.common.align.io.impl.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigInteger;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,7 +28,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 
 import com.google.common.base.Function;
@@ -38,6 +36,7 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.extension.annotation.AnnotationExtension;
+import eu.esdihumboldt.hale.common.align.io.LoadAlignmentContext;
 import eu.esdihumboldt.hale.common.align.io.impl.JaxbAlignmentIO;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AbstractEntityType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AbstractParameterType;
@@ -45,44 +44,30 @@ import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AlignmentTyp
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AlignmentType.Base;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AnnotationType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.CellType;
-import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ChildContextType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ComplexParameterType;
-import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ConditionType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.DocumentationType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ModifierType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ModifierType.DisableFor;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.NamedEntityType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ParameterType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.PropertyType;
-import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.QNameType;
 import eu.esdihumboldt.hale.common.align.model.AnnotationDescriptor;
-import eu.esdihumboldt.hale.common.align.model.ChildContext;
-import eu.esdihumboldt.hale.common.align.model.Condition;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.Priority;
 import eu.esdihumboldt.hale.common.align.model.TransformationMode;
-import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
-import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
-import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.impl.ElementValue;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
-import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager;
-import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
-import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
-import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
-import eu.esdihumboldt.util.Pair;
 import eu.esdihumboldt.util.io.PathUpdate;
 
 /**
@@ -165,6 +150,7 @@ public class JaxbToAlignment extends
 	 * 
 	 * @param alignment the alignment to add a base alignment to
 	 * @param newBase URI of the new base alignment
+	 * @param projectLocation the project location or <code>null</code>
 	 * @param sourceTypes the source types to use for resolving definition
 	 *            references
 	 * @param targetTypes the target types to use for resolving definition
@@ -174,9 +160,10 @@ public class JaxbToAlignment extends
 	 * @throws IOException if adding the base alignment fails
 	 */
 	public static void addBaseAlignment(MutableAlignment alignment, URI newBase,
-			TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter) throws IOException {
-		new JaxbToAlignment().internalAddBaseAlignment(alignment, newBase, sourceTypes,
-				targetTypes, reporter);
+			URI projectLocation, TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter)
+			throws IOException {
+		new JaxbToAlignment().internalAddBaseAlignment(alignment, newBase, projectLocation,
+				sourceTypes, targetTypes, reporter);
 	}
 
 	/**
@@ -189,7 +176,7 @@ public class JaxbToAlignment extends
 		return super.createAlignment(alignment, sourceTypes, targetTypes, updater, reporter);
 	}
 
-	private MutableCell convert(CellType cell, TypeIndex sourceTypes, TypeIndex targetTypes,
+	private static MutableCell convert(CellType cell, LoadAlignmentContext context,
 			IOReporter reporter) {
 		DefaultCell result = new DefaultCell();
 
@@ -208,8 +195,8 @@ public class JaxbToAlignment extends
 				else if (apt instanceof ComplexParameterType) {
 					// complex parameters
 					ComplexParameterType cpt = (ComplexParameterType) apt;
-					parameters.put(cpt.getName(),
-							new ParameterValue(new ElementValue(cpt.getAny())));
+					parameters.put(cpt.getName(), new ParameterValue(new ElementValue(cpt.getAny(),
+							context)));
 				}
 				else
 					throw new IllegalStateException("Illegal parameter type");
@@ -218,8 +205,10 @@ public class JaxbToAlignment extends
 		}
 
 		try {
-			result.setSource(convertEntities(cell.getSource(), sourceTypes, SchemaSpaceID.SOURCE));
-			result.setTarget(convertEntities(cell.getTarget(), targetTypes, SchemaSpaceID.TARGET));
+			result.setSource(convertEntities(cell.getSource(), context.getSourceTypes(),
+					SchemaSpaceID.SOURCE));
+			result.setTarget(convertEntities(cell.getTarget(), context.getTargetTypes(),
+					SchemaSpaceID.TARGET));
 		} catch (Exception e) {
 			if (reporter != null) {
 				reporter.error(new IOMessageImpl("Could not create cell", e));
@@ -238,7 +227,7 @@ public class JaxbToAlignment extends
 						annot.getType());
 				if (desc != null) {
 					try {
-						Object value = desc.fromDOM(annot.getAny());
+						Object value = desc.fromDOM(annot.getAny(), null);
 						result.addAnnotation(annot.getType(), value);
 					} catch (Exception e) {
 						if (reporter != null) {
@@ -276,7 +265,7 @@ public class JaxbToAlignment extends
 		return result;
 	}
 
-	private ListMultimap<String, ? extends Entity> convertEntities(
+	private static ListMultimap<String, ? extends Entity> convertEntities(
 			List<NamedEntityType> namedEntities, TypeIndex types, SchemaSpaceID schemaSpace) {
 		if (namedEntities == null || namedEntities.isEmpty()) {
 			return null;
@@ -292,127 +281,18 @@ public class JaxbToAlignment extends
 		return result;
 	}
 
-	private Entity convert(AbstractEntityType entity, TypeIndex types, SchemaSpaceID schemaSpace) {
+	private static Entity convert(AbstractEntityType entity, TypeIndex types,
+			SchemaSpaceID schemaSpace) {
 		// must first check for PropertyType as it inherits from ClassType
 		if (entity instanceof PropertyType) {
-			return convert((PropertyType) entity, types, schemaSpace);
+			return new DefaultProperty(JaxbToEntityDefinition.convert((PropertyType) entity, types,
+					schemaSpace));
 		}
 		if (entity instanceof ClassType) {
-			return convert((ClassType) entity, types, schemaSpace);
+			return new DefaultType(JaxbToEntityDefinition.convert((ClassType) entity, types,
+					schemaSpace));
 		}
 		throw new IllegalArgumentException("Illegal type of entity");
-	}
-
-	private Type convert(ClassType classType, TypeIndex types, SchemaSpaceID schemaSpace) {
-		TypeDefinition typeDef = types.getType(asName(classType.getType()));
-
-		Filter filter = getTypeFilter(classType);
-
-		TypeEntityDefinition tef = new TypeEntityDefinition(typeDef, schemaSpace, filter);
-
-		return new DefaultType(tef);
-	}
-
-	private Filter getTypeFilter(ClassType classType) {
-		if (classType.getType() != null && classType.getType().getCondition() != null) {
-			return FilterDefinitionManager.getInstance().from(
-					classType.getType().getCondition().getLang(),
-					classType.getType().getCondition().getValue());
-		}
-		return null;
-	}
-
-	private Entity convert(PropertyType property, TypeIndex types, SchemaSpaceID schemaSpace) {
-		TypeDefinition typeDef = types.getType(asName(property.getType()));
-
-		Filter filter = getTypeFilter(property);
-
-		List<ChildContext> path = new ArrayList<ChildContext>();
-
-		DefinitionGroup parent = typeDef;
-		for (ChildContextType childContext : property.getChild()) {
-			if (parent == null) {
-				throw new IllegalStateException(
-						"Could not resolve property entity definition: child not present");
-			}
-
-			Pair<ChildDefinition<?>, List<ChildDefinition<?>>> childs = PropertyBean.findChild(
-					parent, asName(childContext));
-
-			ChildDefinition<?> child = childs.getFirst();
-
-			// if the child is still null throw an exception
-			if (child == null) {
-				throw new IllegalStateException(
-						"Could not resolve property entity definition: child not found");
-			}
-
-			if (childs.getSecond() != null) {
-				for (ChildDefinition<?> pathElems : childs.getSecond()) {
-					path.add(new ChildContext(contextName(childContext.getContext()),
-							contextIndex(childContext.getIndex()), createCondition(childContext
-									.getCondition()), pathElems));
-				}
-			}
-
-			path.add(new ChildContext(contextName(childContext.getContext()),
-					contextIndex(childContext.getIndex()), createCondition(childContext
-							.getCondition()), child));
-
-			if (child instanceof DefinitionGroup) {
-				parent = (DefinitionGroup) child;
-			}
-			else if (child.asProperty() != null) {
-				parent = child.asProperty().getPropertyType();
-			}
-			else {
-				parent = null;
-			}
-		}
-
-		PropertyEntityDefinition ped = new PropertyEntityDefinition(typeDef, path, schemaSpace,
-				filter);
-		return new DefaultProperty(ped);
-	}
-
-	/**
-	 * Create a condition.
-	 * 
-	 * @param conditionFilter the condition filter
-	 * @return the condition or <code>null</code>
-	 */
-	private Condition createCondition(ConditionType conditionFilter) {
-		if (conditionFilter == null)
-			return null;
-
-		Filter filter = FilterDefinitionManager.getInstance().from(conditionFilter.getLang(),
-				conditionFilter.getValue());
-		if (filter != null) {
-			return new Condition(filter);
-		}
-		return null;
-	}
-
-	private Integer contextName(BigInteger name) {
-		if (name == null)
-			return null;
-
-//		return Integer.valueOf(name);
-		return name.intValue();
-	}
-
-	private Integer contextIndex(BigInteger index) {
-		if (index == null)
-			return null;
-
-		return index.intValue();
-	}
-
-	private QName asName(QNameType qname) {
-		if (qname.getNs() == null || qname.getNs().isEmpty()) {
-			return new QName(qname.getName());
-		}
-		return new QName(qname.getNs(), qname.getName());
 	}
 
 	/**
@@ -460,7 +340,10 @@ public class JaxbToAlignment extends
 	@Override
 	protected MutableCell createCell(CellType cell, TypeIndex sourceTypes, TypeIndex targetTypes,
 			IOReporter reporter) {
-		return convert(cell, sourceTypes, targetTypes, reporter);
+		LoadAlignmentContextImpl context = new LoadAlignmentContextImpl();
+		context.setSourceTypes(sourceTypes);
+		context.setTargetTypes(targetTypes);
+		return convert(cell, context, reporter);
 	}
 
 	/**

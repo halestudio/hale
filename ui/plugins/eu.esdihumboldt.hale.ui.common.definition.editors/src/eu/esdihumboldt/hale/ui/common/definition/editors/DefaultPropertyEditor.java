@@ -51,6 +51,7 @@ import org.springframework.core.convert.ConversionException;
 import org.springframework.core.convert.ConversionService;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.codelist.CodeList;
 import eu.esdihumboldt.hale.common.codelist.CodeList.CodeEntry;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
@@ -74,8 +75,10 @@ public class DefaultPropertyEditor extends AbstractBindingValidatingEditor<Objec
 	// XXX generic version instead?
 
 	private final PropertyDefinition property;
+	private final EntityDefinition entity;
+
 	private final Collection<String> enumerationValues;
-	private ArrayList<Object> values;
+	private ArrayList<Object> values = null;
 	private final boolean otherValuesAllowed;
 	private final Validator validator;
 
@@ -95,10 +98,15 @@ public class DefaultPropertyEditor extends AbstractBindingValidatingEditor<Objec
 	 * 
 	 * @param parent the parent composite
 	 * @param property the property
+	 * @param entity the property entity definition representing the property,
+	 *            may be <code>null</code> if unknown or unavailable, needed for
+	 *            code list assignment support
 	 */
-	public DefaultPropertyEditor(Composite parent, PropertyDefinition property) {
+	public DefaultPropertyEditor(Composite parent, PropertyDefinition property,
+			EntityDefinition entity) {
 		super(property.getPropertyType().getConstraint(Binding.class).getBinding());
 		this.property = property;
+		this.entity = entity;
 		TypeDefinition type = property.getPropertyType();
 		binding = type.getConstraint(Binding.class).getBinding();
 		validator = type.getConstraint(ValidationConstraint.class).getValidator();
@@ -137,7 +145,9 @@ public class DefaultPropertyEditor extends AbstractBindingValidatingEditor<Objec
 			enumerationValues = null;
 
 		composite = new Composite(parent, SWT.NONE);
-		composite.setLayout(GridLayoutFactory.swtDefaults().margins(0, 0).numColumns(2).create());
+		int numColumns = (entity == null) ? (1) : (2);
+		composite.setLayout(GridLayoutFactory.swtDefaults().margins(0, 0).numColumns(numColumns)
+				.create());
 
 		viewer = new ComboViewer(composite, (otherValuesAllowed ? SWT.NONE : SWT.READ_ONLY)
 				| SWT.BORDER);
@@ -220,30 +230,32 @@ public class DefaultPropertyEditor extends AbstractBindingValidatingEditor<Objec
 		final Image assignImage = CodeListUIPlugin
 				.getImageDescriptor("icons/assign_codelist.gif").createImage(); //$NON-NLS-1$
 
-		Button assign = new Button(composite, SWT.PUSH);
-		assign.setImage(assignImage);
-		assign.setToolTipText("Assign a code list"); //$NON-NLS-1$
-		assign.addSelectionListener(new SelectionAdapter() {
+		if (entity != null) {
+			Button assign = new Button(composite, SWT.PUSH);
+			assign.setImage(assignImage);
+			assign.setToolTipText("Assign a code list"); //$NON-NLS-1$
+			assign.addSelectionListener(new SelectionAdapter() {
 
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				final Display display = Display.getCurrent();
-				CodeListSelectionDialog dialog = new CodeListSelectionDialog(display
-						.getActiveShell(), codeList, MessageFormat.format(
-						"Please select a code list to assign to {0}",
-						DefaultPropertyEditor.this.property.getDisplayName()));
-				if (dialog.open() == CodeListSelectionDialog.OK) {
-					CodeList newCodeList = dialog.getCodeList();
-					CodeListService codeListService = (CodeListService) PlatformUI.getWorkbench()
-							.getService(CodeListService.class);
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					final Display display = Display.getCurrent();
+					CodeListSelectionDialog dialog = new CodeListSelectionDialog(display
+							.getActiveShell(), codeList, MessageFormat.format(
+							"Please select a code list to assign to {0}",
+							DefaultPropertyEditor.this.property.getDisplayName()));
+					if (dialog.open() == CodeListSelectionDialog.OK) {
+						CodeList newCodeList = dialog.getCodeList();
+						CodeListService codeListService = (CodeListService) PlatformUI
+								.getWorkbench().getService(CodeListService.class);
 
-					codeListService.assignAttributeCodeList(
-							DefaultPropertyEditor.this.property.getIdentifier(), newCodeList);
+						codeListService.assignEntityCodeList(DefaultPropertyEditor.this.entity,
+								newCodeList);
 
-					updateCodeList();
+						updateCodeList();
+					}
 				}
-			}
-		});
+			});
+		}
 
 		composite.addDisposeListener(new DisposeListener() {
 
@@ -283,7 +295,9 @@ public class DefaultPropertyEditor extends AbstractBindingValidatingEditor<Objec
 
 		CodeListService clService = (CodeListService) PlatformUI.getWorkbench().getService(
 				CodeListService.class);
-		codeList = clService.findCodeListByAttribute(property.getIdentifier());
+		if (entity != null) {
+			codeList = clService.findCodeListByEntity(entity);
+		}
 		if (codeList == null)
 			codeList = clService.findCodeListByIdentifier(codeListNamespace, codeListName);
 		if (codeList != null) {

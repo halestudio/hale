@@ -225,14 +225,15 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	 */
 	@Override
 	public Collection<? extends Cell> getPropertyCells(Cell typeCell) {
-		return getPropertyCells(typeCell, false);
+		return getPropertyCells(typeCell, false, false);
 	}
 
 	/**
-	 * @see Alignment#getPropertyCells(Cell, boolean)
+	 * @see Alignment#getPropertyCells(Cell, boolean, boolean)
 	 */
 	@Override
-	public Collection<? extends Cell> getPropertyCells(Cell typeCell, boolean includeDisabled) {
+	public Collection<? extends Cell> getPropertyCells(Cell typeCell, boolean includeDisabled,
+			boolean ignoreEmptySource) {
 		if (CellUtil.getFirstEntity(typeCell.getTarget()) == null) {
 			if (CellUtil.getFirstEntity(typeCell.getSource()) == null)
 				return Collections.emptySet();
@@ -278,7 +279,8 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 						&& (includeDisabled || !cell.getDisabledFor().contains(typeCell))) {
 					// cell is a property cell that isn't disabled
 					// the target type matches, too
-					if (AlignmentUtil.isAugmentation(cell) || sourceTypes.isEmpty()
+					if (AlignmentUtil.isAugmentation(cell)
+							|| (ignoreEmptySource && sourceTypes.isEmpty())
 							|| matchesSources(cell.getSource(), sourceTypes)) {
 						// cell matches on the source side, too
 						result.add(cell);
@@ -441,7 +443,7 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	public Collection<? extends Cell> getActiveTypeCells() {
 		List<Cell> result = new ArrayList<Cell>();
 		for (Cell cell : getTypeCells()) {
-			if (cell.getTransformatioMode() == TransformationMode.active) {
+			if (cell.getTransformationMode() == TransformationMode.active) {
 				result.add(cell);
 			}
 		}

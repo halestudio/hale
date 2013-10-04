@@ -1,0 +1,13 @@
+<?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="SiteIdentifierSchemeValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+The scheme within which the Site identifier was assigned.</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0">SiteIdentifierSchemeValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_22296_39129">
+      <description>-- Definition --&#13;
+The identifier for the Site was assigned under the Natura2000 identification scheme.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/SiteIdentifierSchemeValue">natura2000</identifier>
+      <name>natura2000</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

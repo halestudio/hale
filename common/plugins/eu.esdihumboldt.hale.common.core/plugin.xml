@@ -7,6 +7,7 @@
    <extension-point id="eu.esdihumboldt.hale.report" name="Report" schema="schema/eu.esdihumboldt.hale.report.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.io.complexvalue" name="Complex Values" schema="schema/eu.esdihumboldt.hale.io.complexvalue.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.service" name="Scoped services in HALE" schema="schema/eu.esdihumboldt.hale.service.exsd"/>
+   <extension-point id="eu.esdihumboldt.hale.io.resource" name="Resource Advisors" schema="schema/eu.esdihumboldt.hale.io.resource.exsd"/>
    <extension
          point="org.eclipse.core.contenttype.contentTypes">
       <content-type
@@ -30,7 +31,7 @@
          </describer>
       </content-type>
       <content-type
-            file-extensions="zip"
+            file-extensions="halez,zip"
             id="eu.esdihumboldt.hale.io.project.hale25.zip"
             name="HALE project archive"
             priority="normal">
@@ -88,6 +89,14 @@
          </contentType>
       </provider>
       <provider
+            class="eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectImport"
+            id="eu.esdihumboldt.hale.io.project.hale25.zip.import"
+            name="HALE project archive (import)">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.project.hale25.zip">
+         </contentType>
+      </provider>
+      <provider
             class="eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectReader"
             id="eu.esdihumboldt.hale.io.project.hale25.zip.reader"
             name="HALE project archive">
@@ -115,5 +124,4 @@
             id="eu.esdihumboldt.hale.common.core.io">
       </reportDefinition>
    </extension>
-
 </plugin>

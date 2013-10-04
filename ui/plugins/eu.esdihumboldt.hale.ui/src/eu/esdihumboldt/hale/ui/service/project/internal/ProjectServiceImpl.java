@@ -22,15 +22,16 @@ import java.net.URI;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
@@ -40,17 +41,21 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.operations.IWorkbenchOperationSupport;
 import org.osgi.framework.Version;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
+
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
 import de.cs3d.util.eclipse.extension.FactoryFilter;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
-import de.fhg.igd.osgi.util.configuration.AbstractConfigurationService;
 import de.fhg.igd.osgi.util.configuration.AbstractDefaultConfigurationService;
-import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.ProgressMonitorIndicator;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorExtension;
@@ -58,14 +63,17 @@ import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorFactory;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderExtension;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
+import eu.esdihumboldt.hale.common.core.io.project.ComplexConfigurationService;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectDescription;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectIO;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectWriter;
-import eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectReader;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
+import eu.esdihumboldt.hale.common.core.io.project.model.IOConfigurationResource;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
+import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 import eu.esdihumboldt.hale.common.core.io.project.util.LocationUpdater;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
@@ -94,7 +102,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	 * Configuration service backed by the internal {@link Project}
 	 */
 	private class ProjectConfigurationService extends AbstractDefaultConfigurationService implements
-			IConfigurationService {
+			ComplexConfigurationService {
 
 		/**
 		 * Default constructor
@@ -103,9 +111,6 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			super(new Properties());
 		}
 
-		/**
-		 * @see AbstractConfigurationService#getValue(String)
-		 */
 		@Override
 		protected String getValue(String key) {
 			synchronized (ProjectServiceImpl.this) {
@@ -117,9 +122,6 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			}
 		}
 
-		/**
-		 * @see AbstractConfigurationService#removeValue(String)
-		 */
 		@Override
 		protected void removeValue(String key) {
 			synchronized (ProjectServiceImpl.this) {
@@ -128,15 +130,33 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			setChanged();
 		}
 
-		/**
-		 * @see AbstractConfigurationService#setValue(String, String)
-		 */
 		@Override
 		protected void setValue(String key, String value) {
 			synchronized (ProjectServiceImpl.this) {
 				main.getProperties().put(key, Value.of(value));
 			}
 			setChanged();
+		}
+
+		@Override
+		public void setProperty(String name, Value value) {
+			synchronized (ProjectServiceImpl.this) {
+				if (value == null || value.getValue() == null) {
+					main.getProperties().remove(name);
+				}
+				else {
+					main.getProperties().put(name, value);
+				}
+			}
+			setChanged();
+		}
+
+		@Override
+		public Value getProperty(String name) {
+			synchronized (ProjectServiceImpl.this) {
+				Value value = main.getProperties().get(name);
+				return (value != null) ? (value) : (Value.NULL);
+			}
 		}
 
 	}
@@ -147,7 +167,15 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 	private final Version haleVersion;
 
+	/**
+	 * The project file the project was loaded from.
+	 */
 	private File projectFile;
+
+	/**
+	 * Location the project was loaded from, even if it was not a file.
+	 */
+	private URI projectLocation;
 
 	private String appTitle;
 
@@ -160,6 +188,11 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	private boolean changed = false;
 
 	private UILocationUpdater updater = new UILocationUpdater(null, null);
+
+	/**
+	 * Stores the content type of the loaded project.
+	 */
+	private IContentType projectLoadContentType;
 
 	/**
 	 * Default constructor
@@ -192,31 +225,57 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 				synchronized (ProjectServiceImpl.this) {
 					main = provider.getProject();
-					updater = new UILocationUpdater(main, provider.getSource().getLocation());
-					updater.updateProject();
-					if ("file".equalsIgnoreCase(provider.getSource().getLocation().getScheme())) {
-						// the source of ArchiveProjectReader is a temporary
-						// directory. need the originally source to show the
-						// correct archive file in the RecentFilesService.
-						// otherwise complications with UILocationUpdater above
-						if (provider instanceof ArchiveProjectReader)
-							projectFile = new File(((ArchiveProjectReader) provider)
-									.getOriginallySource().getLocation());
-						else
+					if (provider.getSource() != null) {
+						// loaded project
+						updater = new UILocationUpdater(main, provider.getSource().getLocation());
+						updater.updateProject(true);
+						if ("file".equalsIgnoreCase(provider.getSource().getLocation().getScheme())) {
 							projectFile = new File(provider.getSource().getLocation());
+						}
+						else {
+							projectFile = null;
+						}
+						projectLocation = provider.getSource().getLocation();
+					}
+					else {
+						// project template (from object)
+						projectFile = null;
+						projectLocation = null;
 					}
 
 					changed = false;
 					RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench()
 							.getService(RecentFilesService.class);
-					if (projectFile != null)
+					if (projectFile != null) {
 						rfs.add(projectFile.getAbsolutePath(), main.getName());
+					}
 					// XXX safe history in case of non-file loaded projects?
 					// possibly always safe URI raw paths (and show the history
 					// with decoded paths and removed file:/ in case of files)?
 					// else
 					// rfs.add(provider.getSource().getLocation().getRawPath(),
 					// main.getName());
+
+					// store the content type the project was loaded with
+					IContentType ct = provider.getContentType();
+					if (ct == null && provider.getSource() != null) {
+						log.warn("Project content type was not determined during load, trying auto-detection");
+						try {
+							URI loc = provider.getSource().getLocation();
+							String filename = null;
+							if (loc != null) {
+								filename = loc.getPath();
+							}
+							ct = HaleIO.findContentType(ProjectReader.class, provider.getSource(),
+									filename);
+						} catch (Exception e) {
+							// ignore
+						}
+						if (ct == null) {
+							log.error("Could not determine content type of loaded project");
+						}
+					}
+					projectLoadContentType = ct;
 				}
 
 				updateWindowTitle();
@@ -266,12 +325,16 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				notifyBeforeSave(projectFiles); // get additional files from
 												// listeners
 				provider.setProjectFiles(projectFiles);
+				if (projectLocation != null) {
+					provider.setPreviousTarget(projectLocation);
+				}
 			}
 
 			@Override
 			public void handleResults(ProjectWriter provider) {
 				synchronized (ProjectServiceImpl.this) {
 					projectFile = new File(provider.getTarget().getLocation());
+					projectLocation = provider.getTarget().getLocation();
 					changed = false;
 					RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench()
 							.getService(RecentFilesService.class);
@@ -320,6 +383,11 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	 * @param conf the I/O configuration
 	 */
 	private void executeConfiguration(IOConfiguration conf) {
+		// work with a cloned configuration for the case that we make a relative
+		// URI absolute
+		conf = conf.clone();
+		updater.updateIOConfiguration(conf, false);
+
 		// get provider ...
 		IOProvider provider = null;
 		IOProviderDescriptor descriptor = IOProviderExtension.getInstance().getFactory(
@@ -450,6 +518,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					synchronized (this) {
 						main = createDefaultProject();
 						projectFile = null;
+						projectLocation = null;
 						changed = false;
 					}
 					updateWindowTitle();
@@ -513,6 +582,15 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		else {
 			log.userError("The project format is not supported.");
 		}
+	}
+
+	@Override
+	public void loadTemplate(Project project) {
+		// no change check as this is done by clean before a new project is
+		// loaded
+
+		ProjectReader reader = new DummyProjectReader(project);
+		executeProvider(reader, openProjectAdvisor);
 	}
 
 	/**
@@ -580,6 +658,25 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				ProjectWriter writer = null;
 				for (IOProviderDescriptor factory : providers) {
 					if (factory.getIdentifier().equals(saveConfig.getProviderId())) {
+						// found the matching factory
+
+						/*
+						 * Check if the content type the project was loaded with
+						 * is supported for saving.
+						 * 
+						 * Example for a changed content type: A saved project
+						 * archive may have been extracted and the internal XML
+						 * project file loaded.
+						 */
+						if (projectLoadContentType != null) {
+							if (factory.getSupportedTypes() == null
+									|| !factory.getSupportedTypes()
+											.contains(projectLoadContentType)) {
+								log.warn("Project cannot be saved with the same settings it was originally saved with, as the content type has changed.");
+								break;
+							}
+						}
+
 						try {
 							writer = (ProjectWriter) factory.createExtensionObject();
 						} catch (Exception e) {
@@ -598,7 +695,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					executeProvider(writer, saveProjectAdvisor);
 				}
 				else {
-					log.error("The project cannot be saved because the format is not available.");
+					log.info("The project cannot be saved because the format the project was saved with is not available or has changed.");
 					// use save as instead
 					saveAs();
 				}
@@ -627,7 +724,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	 * @see ProjectService#getConfigurationService()
 	 */
 	@Override
-	public IConfigurationService getConfigurationService() {
+	public ComplexConfigurationService getConfigurationService() {
 		return configurationService;
 	}
 
@@ -640,7 +737,20 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 			@Override
 			public void run() {
-				SaveProjectWizard wizard = new SaveProjectWizard();
+				SaveProjectWizard wizard;
+				if (projectLoadContentType != null
+						&& projectLoadContentType.getId().equals(
+								ProjectIO.PROJECT_ARCHIVE_CONTENT_TYPE_ID)) {
+					/*
+					 * For project archives, saving the project has to be
+					 * restricted to project archives again, as the files only
+					 * reside in a temporary location.
+					 */
+					wizard = new SaveProjectWizard(projectLoadContentType);
+				}
+				else {
+					wizard = new SaveProjectWizard(null);
+				}
 				wizard.setAdvisor(saveProjectAdvisor, null);
 
 				Shell shell = Display.getCurrent().getActiveShell();
@@ -742,6 +852,19 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		}
 	}
 
+	@Override
+	public void updateProjectInfo(ProjectDescription info) {
+		synchronized (this) {
+			if (main != null) {
+				main.setAuthor(info.getAuthor());
+				main.setDescription(info.getDescription());
+				main.setName(info.getName());
+			}
+		}
+
+		notifyProjectInfoChanged(getProjectInfo());
+	}
+
 	/**
 	 * @see ProjectService#rememberIO(String, String, IOProvider)
 	 */
@@ -759,30 +882,57 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		}
 		setChanged();
 
-		notifyResourceAdded(actionId);
+		notifyResourceAdded(actionId, new IOConfigurationResource(conf));
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#removeResources(java.lang.String)
-	 */
 	@Override
-	public List<IOConfiguration> removeResources(String actionId) {
-		List<IOConfiguration> removedResources = new LinkedList<IOConfiguration>();
+	public List<? extends Resource> removeResources(String actionId) {
+		Builder<Resource> removedBuilder = ImmutableList.builder();
 		synchronized (this) {
 			Iterator<IOConfiguration> iter = main.getResources().iterator();
 			while (iter.hasNext()) {
 				IOConfiguration conf = iter.next();
 				if (conf.getActionId().equals(actionId)) {
 					iter.remove();
-					removedResources.add(conf);
+					removedBuilder.add(new IOConfigurationResource(conf));
 				}
 			}
 		}
 		setChanged();
 
-		notifyResourcesRemoved(actionId);
+		List<Resource> removedResources = removedBuilder.build();
+
+		notifyResourcesRemoved(actionId, removedResources);
 
 		return removedResources;
+	}
+
+	@Override
+	public void removeResource(String resourceId) {
+		Resource removedResource = null;
+		synchronized (this) {
+			Iterator<IOConfiguration> iter = main.getResources().iterator();
+			while (iter.hasNext()) {
+				IOConfiguration conf = iter.next();
+				Value idValue = conf.getProviderConfiguration().get(
+						ImportProvider.PARAM_RESOURCE_ID);
+				if (idValue != null) {
+					String id = idValue.as(String.class);
+					if (resourceId.equals(id)) {
+						// match found, remove
+						iter.remove();
+						removedResource = new IOConfigurationResource(conf);
+						break;
+					}
+				}
+			}
+		}
+
+		if (removedResource != null) {
+			setChanged();
+			notifyResourcesRemoved(removedResource.getActionId(),
+					Collections.singletonList(removedResource));
+		}
 	}
 
 	@Override
@@ -800,9 +950,6 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		return false;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#executeAndRemember(eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration)
-	 */
 	@Override
 	public void executeAndRemember(IOConfiguration conf) {
 		executeConfiguration(conf);
@@ -810,6 +957,22 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			main.getResources().add(conf);
 		}
 		setChanged();
+
+		notifyResourceAdded(conf.getActionId(), new IOConfigurationResource(conf));
+	}
+
+	@Override
+	public Iterable<? extends Resource> getResources() {
+		synchronized (this) {
+			return Collections2.transform(main.getResources(),
+					new Function<IOConfiguration, Resource>() {
+
+						@Override
+						public Resource apply(IOConfiguration conf) {
+							return new IOConfigurationResource(conf);
+						}
+					});
+		}
 	}
 
 	/**
@@ -854,5 +1017,10 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				names.add(name);
 		}
 		return names;
+	}
+
+	@Override
+	public URI getLoadLocation() {
+		return projectLocation;
 	}
 }

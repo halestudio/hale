@@ -23,9 +23,13 @@ import java.util.Map.Entry;
 
 import javax.xml.namespace.QName;
 
+import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashMultiset;
 import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Multiset;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
@@ -36,13 +40,17 @@ import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
+import eu.esdihumboldt.hale.common.instance.model.Group;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.util.groovy.paths.Path;
 
 /**
  * Alignment model utility methods.
@@ -191,6 +199,42 @@ public abstract class AlignmentUtil {
 			// last element is a child but no property
 			return new ChildEntityDefinition(type, path, schemaSpace, filter);
 		}
+	}
+
+	/**
+	 * Create an entity definition from a definition path. Child contexts will
+	 * all be defaults contexts.
+	 * 
+	 * @param path the definition path, the topmost element has to represent a
+	 *            {@link TypeDefinition}, all other elements must be
+	 *            {@link ChildDefinition}s
+	 * @param schemaSpace the associated schema space
+	 * @param filter the entity filter on the type, may be <code>null</code>
+	 * @return the created entity definition
+	 */
+	public static EntityDefinition createEntity(Path<Definition<?>> path,
+			SchemaSpaceID schemaSpace, Filter filter) {
+		List<Definition<?>> defs = new ArrayList<>(path.getElements());
+
+		// create entity definition
+		Definition<?> top = defs.remove(0);
+		if (!(top instanceof TypeDefinition)) {
+			throw new IllegalArgumentException("Topmost accessor must represent a type definition");
+		}
+
+		List<ChildContext> contextPath = Lists.transform(defs,
+				new Function<Definition<?>, ChildContext>() {
+
+					@Override
+					public ChildContext apply(Definition<?> input) {
+						if (input instanceof ChildDefinition<?>) {
+							return new ChildContext((ChildDefinition<?>) input);
+						}
+						throw new IllegalArgumentException(
+								"All definitions in child accessors must be ChildDefinitions");
+					}
+				});
+		return createEntity((TypeDefinition) top, contextPath, schemaSpace, filter);
 	}
 
 	/**
@@ -733,5 +777,96 @@ public abstract class AlignmentUtil {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Returns the values of the given instance which match the given property
+	 * entity definition.
+	 * 
+	 * @param instance the instance to collect values from
+	 * @param definition the property
+	 * @param onlyValues whether to only return values, or to return whatever
+	 *            can be found (including groups/instances)
+	 * @return all values of the given property
+	 */
+	public static Multiset<Object> getValues(Instance instance,
+			PropertyEntityDefinition definition, boolean onlyValues) {
+		Multiset<Object> result = HashMultiset.create();
+		addValues(instance, definition.getPropertyPath(), result, onlyValues);
+		return result;
+	}
+
+	/**
+	 * Add the values found on the given path to the given set.
+	 * 
+	 * @param group the parent group
+	 * @param path the path on the group
+	 * @param collectedValues the set to add the values to
+	 * @param onlyValues whether to only return values, or to return whatever
+	 *            can be found (including groups/instances)
+	 */
+	public static void addValues(Group group, List<ChildContext> path,
+			Multiset<Object> collectedValues, boolean onlyValues) {
+		if (path == null || path.isEmpty()) {
+			// group/instance at end of path
+			if (onlyValues) {
+				// only include instance values
+				if (group instanceof Instance) {
+					Object value = ((Instance) group).getValue();
+					if (value != null) {
+						collectedValues.add(value);
+					}
+				}
+			}
+			else {
+				// include the group/instance as is
+				collectedValues.add(group);
+			}
+			// empty path - retrieve value from instance
+		}
+		else {
+			// go down the path
+			ChildContext context = path.get(0);
+			List<ChildContext> subPath = path.subList(1, path.size());
+
+			Object[] values = group.getProperty(context.getChild().getName());
+
+			if (values != null) {
+				// apply the possible source contexts
+				if (context.getIndex() != null) {
+					// select only the item at the index
+					int index = context.getIndex();
+					if (index < values.length) {
+						values = new Object[] { values[index] };
+					}
+					else {
+						values = new Object[] {};
+					}
+				}
+				if (context.getCondition() != null) {
+					// select only values that match the condition
+					List<Object> matchedValues = new ArrayList<Object>();
+					for (Object value : values) {
+						if (AlignmentUtil.matchCondition(context.getCondition(), value, group)) {
+							matchedValues.add(value);
+						}
+					}
+					values = matchedValues.toArray();
+				}
+
+				// check all values
+				for (Object value : values) {
+					if (value instanceof Group) {
+						addValues((Group) value, subPath, collectedValues, onlyValues);
+					}
+					else if (subPath.isEmpty()) {
+						// normal value and at the end of the path
+						if (value != null) {
+							collectedValues.add(value);
+						}
+					}
+				}
+			}
+		}
 	}
 }

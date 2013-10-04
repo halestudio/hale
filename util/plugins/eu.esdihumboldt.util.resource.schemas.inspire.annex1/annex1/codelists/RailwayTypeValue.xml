@@ -1,0 +1,79 @@
+<?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="RailwayTypeValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+The possible types of railway transport.</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:RailwayTransportNetwork:3.0">RailwayTypeValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_23061_40679">
+      <description>-- Definition --&#13;
+A railway transport which allows the vehicles to operate on steep gradients, consisting on a railway provided with a toothed rack rail (usually between the running rails) where vehicles are fitted with one or more cog wheels or pinions that mesh with this rack rail. &#13;
+&#13;
+-- Description --&#13;
+Synonyms: cog railway, pens and rails railway, rack-and-pinion railway or rack railway.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RailwayTransportNetwork:3.0/RailwayTypeValue">cogRailway</identifier>
+      <name>cogRailway</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_23061_40680">
+      <description>-- Definition --&#13;
+A railway transport consisting on a cable attached to a vehicle on rails which moves them up and down a very steep slope, where it is possible the ascending and descending vehicles counterbalancing each other.&#13;
+&#13;
+-- Description --&#13;
+Synonyms: funicular railway, incline, inclined railway, inclined plane or cliff railway.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RailwayTransportNetwork:3.0/RailwayTypeValue">funicular</identifier>
+      <name>funicular</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_23061_40681">
+      <description>-- Definition --&#13;
+A railway transport based on a single rail which acts as guideway of a vehicle and support it by means of a magnetic levitation mechanism.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RailwayTransportNetwork:3.0/RailwayTypeValue">magneticLevitation</identifier>
+      <name>magneticLevitation</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_23061_40682">
+      <description>-- Definition --&#13;
+An urban railway transport system used in large urban areas, which runs on a separate track from other transport systems, is usually electrically powered and in some cases runs under ground. .&#13;
+&#13;
+-- Description --&#13;
+Synonyms: metro, subway, tube, underground.  </description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RailwayTransportNetwork:3.0/RailwayTypeValue">metro</identifier>
+      <name>metro</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_23061_40683">
+      <description>-- Definition --&#13;
+A railway transport based on a single rail which acts either as its only support and guideway.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RailwayTransportNetwork:3.0/RailwayTypeValue">monorail</identifier>
+      <name>monorail</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_23061_40684">
+      <description>-- Definition --&#13;
+A railway transport based on a single rail, acting either as support and guideway, from which a vehicle is suspended to move along the railway.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RailwayTransportNetwork:3.0/RailwayTypeValue">suspendedRail</identifier>
+      <name>suspendedRail</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_23061_40685">
+      <description>-- Definition --&#13;
+A railway transport usually consisting on two parallel rails on which a  powered-vehicle or train machine pulls a connected series of vehicles to  move them along the railway in order to transport freight or passengers from one destination to another.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RailwayTransportNetwork:3.0/RailwayTypeValue">train</identifier>
+      <name>train</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_23061_40686">
+      <description>-- Definition --&#13;
+A railway transport system used in urban areas, which often runs at street level, sharing road space with motor traffic and pedestrians. Tramways are usually electrically powered.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RailwayTransportNetwork:3.0/RailwayTypeValue">tramway</identifier>
+      <name>tramway</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

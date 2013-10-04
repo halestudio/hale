@@ -64,9 +64,14 @@ public class DigitCountValidator extends AbstractValidator {
 			try {
 				// try lowering the scale if it is too large without rounding
 				// -> cut off ending zeros if possible
-				if (decimal.scale() > length)
-					decimal.setScale(length); // throws exception if scaling is
-												// not possible
+				if (decimal.scale() > length) {
+					// throws exception if scaling is not possible
+					/*
+					 * FIXME this does not change the original value, so what
+					 * does this achieve?
+					 */
+					decimal.setScale(length);
+				}
 			} catch (ArithmeticException ae) {
 				ok = false; // scaling failed
 			}

@@ -58,8 +58,11 @@ public class LocationUpdater extends PathUpdate {
 
 	/**
 	 * Update locations in the given project.
+	 * 
+	 * @param keepRelative whether to keep working relative URIs as is or make
+	 *            them absolute
 	 */
-	public void updateProject() {
+	public void updateProject(boolean keepRelative) {
 		if (project == null || getOldLocation() == null || getNewLocation() == null)
 			return;
 
@@ -78,7 +81,7 @@ public class LocationUpdater extends PathUpdate {
 			for (IOConfiguration providerconf : configuration) {
 				final Map<String, Value> conf = providerconf.getProviderConfiguration();
 				final URI uri = URI.create(conf.get(ImportProvider.PARAM_SOURCE).as(String.class));
-				URI resolved = findLocation(uri, true, true);
+				URI resolved = findLocation(uri, true, true, keepRelative);
 				if (resolved != null)
 					conf.put(ImportProvider.PARAM_SOURCE, Value.of(resolved.toString()));
 			}
@@ -87,15 +90,32 @@ public class LocationUpdater extends PathUpdate {
 			for (ProjectFileInfo fileInfo : project.getProjectFiles()) {
 				URI location = fileInfo.getLocation();
 				/*
-				 * For this the fallback method is not called intentionally, as
-				 * in the project service, this update has no effect, as the
-				 * project files are already loaded in the DefaultProjectReader.
+				 * Project files should always be next to the project file.
+				 * 
+				 * Fallback wouldn't have an effect here because as it is used
+				 * currently in the project service, project files are already
+				 * loaded in the DefaultProjectReader.
 				 */
-				URI resolved = findLocation(location, false, false);
+				URI resolved = findLocation(location, false, false, keepRelative);
 				if (resolved != null)
 					fileInfo.setLocation(resolved);
 			}
 		}
+	}
+
+	/**
+	 * Updates the source location of the given configuration.
+	 * 
+	 * @param configuration the configuration to update
+	 * @param keepRelative whether to keep working relative URI as is or make it
+	 *            absolute
+	 */
+	public void updateIOConfiguration(IOConfiguration configuration, boolean keepRelative) {
+		final Map<String, Value> conf = configuration.getProviderConfiguration();
+		final URI uri = URI.create(conf.get(ImportProvider.PARAM_SOURCE).as(String.class));
+		URI resolved = findLocation(uri, true, true, keepRelative);
+		if (resolved != null)
+			conf.put(ImportProvider.PARAM_SOURCE, Value.of(resolved.toString()));
 	}
 
 }

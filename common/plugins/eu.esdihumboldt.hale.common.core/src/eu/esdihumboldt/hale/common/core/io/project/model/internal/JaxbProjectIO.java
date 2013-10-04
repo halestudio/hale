@@ -82,7 +82,8 @@ public class JaxbProjectIO {
 	public static void save(Project project, OutputStream out) throws Exception {
 		ProjectType projType = ProjectToJaxb.convert(project);
 
-		JAXBContext jc = JAXBContext.newInstance(PROJECT_CONTEXT);
+		JAXBContext jc = JAXBContext.newInstance(PROJECT_CONTEXT,
+				ObjectFactory.class.getClassLoader());
 		Marshaller m = jc.createMarshaller();
 
 		// Indent output

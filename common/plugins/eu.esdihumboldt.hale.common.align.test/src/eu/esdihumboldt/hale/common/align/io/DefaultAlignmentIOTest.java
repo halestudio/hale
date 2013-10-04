@@ -221,7 +221,7 @@ public abstract class DefaultAlignmentIOTest {
 		}
 
 		if (supportsTransformationModes()) {
-			assertEquals(TransformationMode.passive, ncell1.getTransformatioMode());
+			assertEquals(TransformationMode.passive, ncell1.getTransformationMode());
 		}
 
 		// source 1
@@ -500,7 +500,7 @@ public abstract class DefaultAlignmentIOTest {
 		assertEquals(3, alignment.getCells().size());
 		assertEquals(1, alignment.getPropertyCells(typeCell).size());
 		// disable remaining cell
-		((ModifiableCell) alignment.getPropertyCells(typeCell, false).iterator().next())
+		((ModifiableCell) alignment.getPropertyCells(typeCell, false, false).iterator().next())
 				.setDisabledFor(typeCell, true);
 		assertEquals(0, alignment.getPropertyCells(typeCell).size());
 

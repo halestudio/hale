@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.cst.functions.geometric.extent;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import com.google.common.collect.ListMultimap;
@@ -45,27 +46,39 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 public class ExtentTransformation extends
 		AbstractSingleTargetPropertyTransformation<TransformationEngine> implements ExtentFunction {
 
+	/**
+	 * Number of Geometries to be processed at once by either extent option.
+	 * Especially the "union" process run time depends on this value. A too
+	 * large value causes a @code{java.lang.OutOfMemoryError}. The chosen value
+	 * results in fairly good processing time of 30-60 seconds per 10,000
+	 * geometries.
+	 */
+	private static final short SIMULTAN_PROCESS_GEOMS = 768;
+
 	@Override
 	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,
 			ListMultimap<String, PropertyValue> variables, String resultName,
 			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
 			TransformationLog log) throws TransformationException, NoResultException {
+
 		InstanceTraverser traverser = new DepthFirstInstanceTraverser(true);
 		GeometryFinder geoFind = new GeometryFinder(null);
 
 		GeometryFactory fact = new GeometryFactory();
 
 		CRSDefinition commonCrs = null;
-		Geometry extent = null;
+		Geometry[] geomsCollectingArray = new Geometry[SIMULTAN_PROCESS_GEOMS];
+		short geomsCollectedIdx = 0;
 
 //		int count = 0;
 
 		String paramType = getOptionalParameter(PARAM_TYPE, new ParameterValue(PARAM_BOUNDING_BOX))
 				.as(String.class);
 
-		boolean convexHull = PARAM_CONVEX_HULL.equalsIgnoreCase(paramType);
+		// System.err.println("Geoms Currently Processed;TotalMem;FreeMem");
 
 		for (PropertyValue pv : variables.get(null)) {
+
 			// find contained geometries
 			Object value = pv.getValue();
 			traverser.traverse(value, geoFind);
@@ -86,49 +99,76 @@ public class ExtentTransformation extends
 					}
 				}
 
-				if (convexHull) {
+				Geometry g = geom.getGeometry();
 
-					// compute Convex Hull
-					Geometry g = geom.getGeometry();
-					if (extent == null) {
-						extent = g.convexHull();
-					}
-					else {
-						GeometryCollection gc = new GeometryCollection(
-								new Geometry[] { extent, g }, fact);
-						extent = gc.convexHull();
-					}
+				// If geometry collecting array not filled.
+				if (geomsCollectedIdx < SIMULTAN_PROCESS_GEOMS - 1) {
+					geomsCollectingArray[geomsCollectedIdx++] = g;
 				}
 
+				// Geometry collecting array filled.
 				else {
+					geomsCollectingArray[geomsCollectedIdx] = g; // add last
+																	// geometry
+					GeometryCollection gc = new GeometryCollection(geomsCollectingArray, fact);
+					geomsCollectingArray[0] = resolveParam(gc, paramType);
+					geomsCollectedIdx = 1;
 
-					// compute Envelope
-					Geometry g = geom.getGeometry();
-					if (extent == null) {
-						extent = g.getEnvelope();
-					}
-					else {
-
-						GeometryCollection gc = new GeometryCollection(
-								new Geometry[] { extent, g }, fact);
-						extent = gc.getEnvelope();
-					}
 				}
 
-				/*
-				 * TODO alternatives for computing the extent through
-				 * parameters? e.g. union
-				 */
 			}
 
 			geoFind.reset();
 		}
 
-//		System.err.println(count);
+		Geometry extent = resolveParam(
+				new GeometryCollection(Arrays.copyOfRange(geomsCollectingArray, 0,
+						geomsCollectedIdx), fact), paramType);
 
 		if (extent != null) {
 			return new DefaultGeometryProperty<Geometry>(commonCrs, extent);
 		}
 		throw new NoResultException();
 	}
+
+	/**
+	 * Function resolves the extent option parameter and computes the specified
+	 * extent type.
+	 * 
+	 * @param gc GeometryCollection, the extent function is processed on
+	 * @param paramType extent option parameter
+	 * @return Geometry representing extent of input geometries
+	 */
+	private Geometry resolveParam(GeometryCollection gc, String paramType) {
+
+		Geometry extent = null;
+
+		// Compute bounding box.
+		if (paramType.equalsIgnoreCase(PARAM_BOUNDING_BOX)) {
+			extent = gc.getEnvelope();
+		}
+
+		// Compute convex hull.
+		else if (paramType.equalsIgnoreCase(PARAM_CONVEX_HULL)) {
+			extent = gc.convexHull();
+		}
+
+		// Compute union.
+		else if (paramType.equalsIgnoreCase(PARAM_UNION)) {
+
+			// Alternative function <extent.union()> is slower and results in
+			// inconsistent topology errors within the jts-lib.
+			// lib-intern errors due to topology inconsistency errros.
+			extent = gc.buffer(0);
+
+		}
+
+		// Ensure extent is not null. Default case is bounding box.
+		if (extent == null) {
+			extent = gc.getEnvelope();
+		}
+
+		return extent;
+	}
+
 }

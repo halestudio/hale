@@ -15,7 +15,9 @@
 
 package eu.esdihumboldt.hale.server.progress.impl;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -24,6 +26,10 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.core.runtime.jobs.ProgressProvider;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
+import eu.esdihumboldt.hale.server.progress.JobProgressListener;
 import eu.esdihumboldt.hale.server.progress.Progress;
 import eu.esdihumboldt.hale.server.progress.ProgressService;
 
@@ -36,6 +42,8 @@ import eu.esdihumboldt.hale.server.progress.ProgressService;
 public class ProgressManager extends ProgressProvider implements ProgressService {
 
 	private final Map<Job, ProgressMonitor> monitors = new HashMap<Job, ProgressMonitor>();
+
+	private final Multimap<Job, JobProgressListener> listeners = HashMultimap.create();
 
 	/**
 	 * Default constructor
@@ -51,6 +59,17 @@ public class ProgressManager extends ProgressProvider implements ProgressService
 				synchronized (monitors) {
 					monitors.remove(event.getJob());
 				}
+				synchronized (listeners) {
+					Collection<JobProgressListener> jobListeners = listeners.get(event.getJob());
+					Iterator<JobProgressListener> it = jobListeners.iterator();
+					while (it.hasNext()) {
+						// inform about completed job
+						it.next().jobCompleted(event.getJob());
+
+						// also remove listener
+						it.remove();
+					}
+				}
 			}
 
 		});
@@ -63,12 +82,64 @@ public class ProgressManager extends ProgressProvider implements ProgressService
 	 * @see ProgressProvider#createMonitor(Job)
 	 */
 	@Override
-	public IProgressMonitor createMonitor(Job job) {
-		ProgressMonitor monitor = new ProgressMonitor();
+	public IProgressMonitor createMonitor(final Job job) {
+		ProgressMonitor monitor = new ProgressMonitor() {
+
+			@Override
+			public void beginTask(String name, int totalWork) {
+				super.beginTask(name, totalWork);
+				notifyProgressChanged(job, this);
+			}
+
+			@Override
+			public void setCanceled(boolean value) {
+				super.setCanceled(value);
+				notifyProgressChanged(job, this);
+			}
+
+			@Override
+			public void setTaskName(String name) {
+				super.setTaskName(name);
+				notifyProgressChanged(job, this);
+			}
+
+			@Override
+			public void subTask(String name) {
+				super.subTask(name);
+				notifyProgressChanged(job, this);
+			}
+
+			@Override
+			public void worked(int work) {
+				super.worked(work);
+				notifyProgressChanged(job, this);
+			}
+
+			@Override
+			public void cancel() {
+				super.cancel();
+				notifyProgressChanged(job, this);
+			}
+
+		};
 		synchronized (monitors) {
 			monitors.put(job, monitor);
 		}
 		return monitor;
+	}
+
+	/**
+	 * Notify on a job progress change.
+	 * 
+	 * @param job the job
+	 * @param progress the progress
+	 */
+	protected void notifyProgressChanged(Job job, Progress progress) {
+		synchronized (listeners) {
+			for (JobProgressListener listener : listeners.get(job)) {
+				listener.progressChanged(job, progress);
+			}
+		}
 	}
 
 	/**
@@ -81,6 +152,20 @@ public class ProgressManager extends ProgressProvider implements ProgressService
 			monitor = monitors.get(job);
 		}
 		return monitor;
+	}
+
+	@Override
+	public void addProgressListener(Job job, JobProgressListener listener) {
+		synchronized (listeners) {
+			listeners.put(job, listener);
+		}
+	}
+
+	@Override
+	public void removeProgressListener(Job job, JobProgressListener listener) {
+		synchronized (listeners) {
+			listeners.remove(job, listener);
+		}
 	}
 
 }

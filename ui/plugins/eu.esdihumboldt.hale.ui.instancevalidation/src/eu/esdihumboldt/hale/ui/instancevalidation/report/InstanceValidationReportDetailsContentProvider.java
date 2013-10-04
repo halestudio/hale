@@ -53,9 +53,10 @@ public class InstanceValidationReportDetailsContentProvider implements ITreePath
 	 */
 	public static final int LIMIT = 5;
 
-	private Map<TreePath, Set<Object>> childCache = new HashMap<TreePath, Set<Object>>();
-	private Multimap<TreePath, InstanceValidationMessage> messages = ArrayListMultimap.create();
-	private Set<TreePath> limitedPaths = new HashSet<TreePath>();
+	private final Map<TreePath, Set<Object>> childCache = new HashMap<TreePath, Set<Object>>();
+	private final Multimap<TreePath, InstanceValidationMessage> messages = ArrayListMultimap
+			.create();
+	private final Set<TreePath> limitedPaths = new HashSet<TreePath>();
 
 	/**
 	 * @see ITreePathContentProvider#dispose()
@@ -82,7 +83,7 @@ public class InstanceValidationReportDetailsContentProvider implements ITreePath
 			for (Object o : (Collection<?>) newInput) {
 				if (o instanceof InstanceValidationMessage) {
 					InstanceValidationMessage message = ((InstanceValidationMessage) o);
-					Set<Object> baseTypes = childCache.get(Collections.emptyList());
+					Set<Object> baseTypes = childCache.get(emptyPath);
 					if (baseTypes == null) {
 						baseTypes = new HashSet<Object>();
 						childCache.put(emptyPath, baseTypes);

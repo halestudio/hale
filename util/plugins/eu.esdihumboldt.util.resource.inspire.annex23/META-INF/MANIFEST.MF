@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: INSPIRE Annex II Schemas and Templates
+Bundle-SymbolicName: eu.esdihumboldt.util.resource.inspire.annex23;singleton:=true
+Bundle-Version: 3.0.0.RC3

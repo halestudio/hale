@@ -27,20 +27,26 @@ import eu.esdihumboldt.hale.common.core.io.Value;
  */
 public class ElementValue extends Value {
 
+	private static final long serialVersionUID = -3825405149652373752L;
+
 	private final Element element;
 
 	private final Object value;
+
+	private final Object context;
 
 	/**
 	 * Create a value based on a DOM element.
 	 * 
 	 * @param element the element
+	 * @param context the context object, may be <code>null</code>
 	 */
-	public ElementValue(Element element) {
+	public ElementValue(Element element, Object context) {
 		super();
 		this.element = element;
+		this.context = context;
 		// create the default value
-		this.value = HaleIO.getComplexValue(element);
+		this.value = HaleIO.getComplexValue(element, context);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -59,7 +65,7 @@ public class ElementValue extends Value {
 			return (T) value;
 		}
 
-		return HaleIO.getComplexValue(element, expectedType);
+		return HaleIO.getComplexValue(element, expectedType, context);
 	}
 
 	@Override

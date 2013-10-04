@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: GML/XML Instance I/O UI
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.gml.ui;singleton:=true
-Bundle-Version: 2.6.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Version: 2.7.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: eu.esdihumboldt.hale.ui;bundle-version="2.2.0",
  eu.esdihumboldt.hale.io.gml;bundle-version="2.2.0",
  eu.esdihumboldt.hale.common.instance;bundle-version="2.2.0",
@@ -17,10 +17,14 @@ Import-Package: com.google.common.io;version="1.6.0",
  com.vividsolutions.jts,
  com.vividsolutions.jts.geom,
  de.cs3d.util.logging,
+ eu.esdihumboldt.hale.common.align.model,
+ eu.esdihumboldt.hale.common.schema,
  eu.esdihumboldt.hale.common.schema.model,
  eu.esdihumboldt.hale.common.schema.model.impl,
  eu.esdihumboldt.hale.io.gml.geometry,
  eu.esdihumboldt.hale.io.xsd.model,
+ eu.esdihumboldt.hale.ui.common,
+ eu.esdihumboldt.hale.ui.common.definition,
  org.slf4j;version="1.5.11"
 Export-Package: eu.esdihumboldt.hale.io.gml.ui.wfs
 Bundle-ActivationPolicy: lazy

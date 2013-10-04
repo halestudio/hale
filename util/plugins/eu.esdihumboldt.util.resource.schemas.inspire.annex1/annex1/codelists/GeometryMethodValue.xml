@@ -1,0 +1,37 @@
+<?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="GeometryMethodValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+Description of how and by whom this geographic position of the address was created or derived.&#13;
+&#13;
+-- Description --&#13;
+NOTE Information on what type of spatial feature the geographic position of the address was created or derived from, is represented by the GeometrySpecificationValue.</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0">GeometryMethodValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_27565_47180">
+      <description>-- Definition --&#13;
+Derived automatically from another INSPIRE spatial object which is related to the address or address component.&#13;
+&#13;
+-- Description --&#13;
+NOTE This method implies that the position is calculated automatically e.g. as a centre point of the polygon or linestring that describes the feature in question.&#13;
+&#13;
+EXAMPLE Geometries can be derived from a building, cadastral parcel, thoroughfare link, address area (named place) or administrative unit.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/GeometryMethodValue">fromFeature</identifier>
+      <name>fromFeature</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27565_47181">
+      <description>-- Definition --&#13;
+Decided and recorded manually by the official body responsible for address allocation or by the dataset custodian.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/GeometryMethodValue">byAdministrator</identifier>
+      <name>byAdministrator</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_27565_47182">
+      <description>-- Definition --&#13;
+Decided and recorded manually by other party.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/GeometryMethodValue">byOtherParty</identifier>
+      <name>byOtherParty</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

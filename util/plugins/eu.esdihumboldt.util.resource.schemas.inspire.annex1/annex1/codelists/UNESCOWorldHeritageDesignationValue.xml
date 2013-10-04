@@ -1,0 +1,29 @@
+<?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="UNESCOWorldHeritageDesignationValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+A code list for the World Heritage designation scheme.</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0">UNESCOWorldHeritageDesignationValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_22326_39349">
+      <description>-- Definition --&#13;
+The Protected Site is designated as a natural World Heritage site.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/UNESCOWorldHeritageDesignationValue">natural</identifier>
+      <name>natural</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22326_39347">
+      <description>-- Definition --&#13;
+The Protected Site is designated as a cultural World Heritage site.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/UNESCOWorldHeritageDesignationValue">cultural</identifier>
+      <name>cultural</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22326_39348">
+      <description>-- Definition --&#13;
+The Protected Site is designated as a mixed World Heritage site.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSites:3.0/UNESCOWorldHeritageDesignationValue">mixed</identifier>
+      <name>mixed</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

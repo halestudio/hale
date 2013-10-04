@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Conversion Service
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.convert
-Bundle-Version: 2.6.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Version: 2.7.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.springframework.context;bundle-version="3.0.0",
  org.springframework.core;bundle-version="3.0.0";visibility:=reexport,
  org.eclipse.gemini.blueprint.core;bundle-version="1.0.0"

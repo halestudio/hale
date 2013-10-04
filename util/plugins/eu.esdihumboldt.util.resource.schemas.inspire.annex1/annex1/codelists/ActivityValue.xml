@@ -1,0 +1,1344 @@
+<?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="ActivityValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+The codes of the activities and impacts that occur on and around the site. In the case of the Natura2000 application schema, the values must come from the Natura2000 activity types from Appendix E in the Natura 2000 explanatory notes (Standard Data Form Item 6.1). In the case of the Full application schema, values may also come from Water Framework Directive.&#13;
+</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0">ActivityValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39137">
+      <description>-- Definition --&#13;
+"141 Abandonment of pastoral systems" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">abandonmentOfPastoralSystems</identifier>
+      <name>abandonmentOfPastoralSystems</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39189">
+      <description>-- Definition --&#13;
+"971 competition" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">floralCompetition</identifier>
+      <name>floralCompetition</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39138">
+      <description>-- Definition --&#13;
+"953 acidification" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">acidification</identifier>
+      <name>acidification</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39139">
+      <description>-- Definition --&#13;
+"506 aerodrome, heliport" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">aerodromeHeliport</identifier>
+      <name>aerodromeHeliport</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39140">
+      <description>-- Definition --&#13;
+"430 Agricultural structures" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">agriculturalStructures</identifier>
+      <name>agriculturalStructures</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39231">
+      <description>-- Definition --&#13;
+"190 Agriculture and forestry activities not referred to above" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">otherAgricultureAndForestryActivities</identifier>
+      <name>otherAgricultureAndForestryActivities</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39141">
+      <description>-- Definition --&#13;
+"702 air pollution" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">airPollution</identifier>
+      <name>airPollution</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39142">
+      <description>-- Definition --&#13;
+"505 airport" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">airport</identifier>
+      <name>airport</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39143">
+      <description>-- Definition --&#13;
+"170 Animal breeding" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">animalBreeding</identifier>
+      <name>animalBreeding</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39144">
+      <description>-- Definition --&#13;
+"966 antagonism arising from introduction of species" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">antagonismArisingFromIntroductionOfSpecies</identifier>
+      <name>antagonismArisingFromIntroductionOfSpecies</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39145">
+      <description>-- Definition --&#13;
+"967 antagonism with domestic animals" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">antagonismWithDomesticAnimals</identifier>
+      <name>antagonismWithDomesticAnimals</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39146">
+      <description>-- Definition --&#13;
+"162 Artificial planting" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">artificialPlanting</identifier>
+      <name>artificialPlanting</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39147">
+      <description>-- Definition --&#13;
+"606 attraction park" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">attractionPark</identifier>
+      <name>attractionPark</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39148">
+      <description>-- Definition --&#13;
+"942 avalanche" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">avalanche</identifier>
+      <name>avalanche</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39149">
+      <description>-- Definition --&#13;
+"221 bait digging" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">baitDigging</identifier>
+      <name>baitDigging</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39150">
+      <description>-- Definition --&#13;
+"950 Biocenotic evolution" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">biocenoticEvolution</identifier>
+      <name>biocenoticEvolution</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39151">
+      <description>-- Definition --&#13;
+"507 bridge, viaduct" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">bridgeViaduct</identifier>
+      <name>bridgeViaduct</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39152">
+      <description>-- Definition --&#13;
+"180 Burning" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">burning</identifier>
+      <name>burning</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39153">
+      <description>-- Definition --&#13;
+"608 camping and caravans" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">campingAndCaravans</identifier>
+      <name>campingAndCaravans</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39154">
+      <description>-- Definition --&#13;
+"830 Canalisation" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">canalisation</identifier>
+      <name>canalisation</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39155">
+      <description>-- Definition --&#13;
+"604 circuit, track" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">circuitTrack</identifier>
+      <name>circuitTrack</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39156">
+      <description>-- Definition --&#13;
+"943 collapse of terrain, landslide" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">collapseOfTerrainLandslide</identifier>
+      <name>collapseOfTerrainLandslide</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39157">
+      <description>-- Definition --&#13;
+"241 collection (insects, reptiles, amphibians.....)" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">collectionInsectsReptilesAmphibians</identifier>
+      <name>collectionInsectsReptilesAmphibians</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39158">
+      <description>-- Definition --&#13;
+"500 Communication networks" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">communicationNetworks</identifier>
+      <name>communicationNetworks</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39159">
+      <description>-- Definition --&#13;
+"401 continuous urbanisation" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">continuousUrbanisation</identifier>
+      <name>continuousUrbanisation</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39160">
+      <description>-- Definition --&#13;
+"976 damage by game species" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">damageByGameSpecies</identifier>
+      <name>damageByGameSpecies</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39161">
+      <description>-- Definition --&#13;
+"420 Discharges" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">discharges</identifier>
+      <name>discharges</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39162">
+      <description>-- Definition --&#13;
+"402 discontinuous urbanisation" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">discontinuousUrbanisation</identifier>
+      <name>discontinuousUrbanisation</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39163">
+      <description>-- Definition --&#13;
+"403 dispersed habitation" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">dispersedHabitation</identifier>
+      <name>dispersedHabitation</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39164">
+      <description>-- Definition --&#13;
+"421 disposal of household waste" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">disposalOfHouseholdWaste</identifier>
+      <name>disposalOfHouseholdWaste</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39165">
+      <description>-- Definition --&#13;
+"422 disposal of industrial waste" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">disposalOfIndustrialWaste</identifier>
+      <name>disposalOfIndustrialWaste</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39166">
+      <description>-- Definition --&#13;
+"423 disposal of inert materials" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">disposalOfInertMaterials</identifier>
+      <name>disposalOfInertMaterials</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39167">
+      <description>-- Definition --&#13;
+"810 Drainage" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">drainage</identifier>
+      <name>drainage</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39168">
+      <description>-- Definition --&#13;
+"213 drift-net fishing" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">drift-netFishing</identifier>
+      <name>drift-netFishing</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39169">
+      <description>-- Definition --&#13;
+"920 Drying out" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">dryingOut</identifier>
+      <name>dryingOut</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39170">
+      <description>-- Definition --&#13;
+"951 drying out / accumulation of organic material" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">dryingOutAccumulationOfOrganicMaterial</identifier>
+      <name>dryingOutAccumulationOfOrganicMaterial</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39171">
+      <description>-- Definition --&#13;
+"860 Dumping, depositing of dredged deposits" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">dumpingDepositingOfDredgedDeposits</identifier>
+      <name>dumpingDepositingOfDredgedDeposits</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39172">
+      <description>-- Definition --&#13;
+"870 Dykes, embankments, artificial beaches, general" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">dykesEmbankmentsArtificialBeachesGeneral</identifier>
+      <name>dykesEmbankmentsArtificialBeachesGeneral</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39173">
+      <description>-- Definition --&#13;
+"946 earthquake" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">earthquake</identifier>
+      <name>earthquake</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39174">
+      <description>-- Definition --&#13;
+"511 electricity lines" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">electricityLines</identifier>
+      <name>electricityLines</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39175">
+      <description>-- Definition --&#13;
+"510 Energy transport" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">energyTransport</identifier>
+      <name>energyTransport</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39176">
+      <description>-- Definition --&#13;
+"900 Erosion" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">erosion</identifier>
+      <name>erosion</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39177">
+      <description>-- Definition --&#13;
+"952 eutrophication" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">eutrophication</identifier>
+      <name>eutrophication</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39178">
+      <description>-- Definition --&#13;
+"167 Exploitation without replanting" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">exploitationWithoutReplanting</identifier>
+      <name>exploitationWithoutReplanting</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39179">
+      <description>-- Definition --&#13;
+"313 Exploration and extraction of oil or gas" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">explorationAndExtractionOfOilOrGas</identifier>
+      <name>explorationAndExtractionOfOilOrGas</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39180">
+      <description>-- Definition --&#13;
+"411 factory" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">factory</identifier>
+      <name>factory</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39181">
+      <description>-- Definition -- &#13;
+"961 competition (example: gull/tern)" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">faunalCompetition</identifier>
+      <name>faunalCompetition</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39184">
+      <description>-- Definition --&#13;
+"120 Fertilisation" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">fertilisation</identifier>
+      <name>fertilisation</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39185">
+      <description>-- Definition --&#13;
+"948 fire" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">fire</identifier>
+      <name>fire</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39186">
+      <description>-- Definition --&#13;
+"200 Fish and Shellfish Aquaculture" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">fishAndShellfishAquaculture</identifier>
+      <name>fishAndShellfishAquaculture</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39187">
+      <description>-- Definition --&#13;
+"211 fixed location fishing" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">fixedLocationFishing</identifier>
+      <name>fixedLocationFishing</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39188">
+      <description>-- Definition --&#13;
+"840 Flooding" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">flooding</identifier>
+      <name>flooding</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39192">
+      <description>-- Definition --&#13;
+"164 Forestry clearance" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">forestryClearance</identifier>
+      <name>forestryClearance</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39193">
+      <description>-- Definition --&#13;
+"160 General Forestry management" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">generalForestryManagement</identifier>
+      <name>generalForestryManagement</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39190">
+      <description>-- Definition --&#13;
+"974 genetic pollution" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">floralGeneticPollution</identifier>
+      <name>floralGeneticPollution</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39182">
+      <description>-- Definition --&#13;
+"964 genetic pollution" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">faunalGeneticPollution</identifier>
+      <name>faunalGeneticPollution</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39194">
+      <description>-- Definition --&#13;
+"625 gliding, delta plane, paragliding, balooning" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">glidingDeltaPlaneParaglidingBalooning</identifier>
+      <name>glidingDeltaPlaneParaglidingBalooning</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39195">
+      <description>-- Definition --&#13;
+"601 golf course" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">golfCourse</identifier>
+      <name>golfCourse</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39196">
+      <description>-- Definition --&#13;
+"140 Grazing" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">grazing</identifier>
+      <name>grazing</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39197">
+      <description>-- Definition --&#13;
+"311 hand cutting of peat" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">handCuttingOfPeat</identifier>
+      <name>handCuttingOfPeat</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39198">
+      <description>-- Definition --&#13;
+"605 hippodrome" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">hippodrome</identifier>
+      <name>hippodrome</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39199">
+      <description>-- Definition --&#13;
+"230 Hunting" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">hunting</identifier>
+      <name>hunting</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39241">
+      <description>-- Definition --&#13;
+"290 Hunting, fishing or collecting activities not referred to above" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">otherHuntingFishingOrCollectingActivities</identifier>
+      <name>otherHuntingFishingOrCollectingActivities</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39200">
+      <description>-- Definition --&#13;
+"530 Improved access to site" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">improvedAccessToSite</identifier>
+      <name>improvedAccessToSite</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39201">
+      <description>-- Definition --&#13;
+"410 Industrial or commercial areas" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">industrialOrCommercialAreas</identifier>
+      <name>industrialOrCommercialAreas</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39202">
+      <description>-- Definition --&#13;
+"412 industrial stockage" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">industrialStockage</identifier>
+      <name>industrialStockage</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39203">
+      <description>-- Definition --&#13;
+"803 infilling of ditches, dykes, ponds, pools, marshes or pits" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">infillingOfDitchesDykesPondsPoolsMarshesOrPits</identifier>
+      <name>infillingOfDitchesDykesPondsPoolsMarshesOrPits</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39204">
+      <description>-- Definition --&#13;
+"610 Interpretative centres" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">interpretativeCentres</identifier>
+      <name>interpretativeCentres</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39205">
+      <description>-- Definition --&#13;
+"960 Interspecific faunal relations" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">interspecificFaunalRelations</identifier>
+      <name>interspecificFaunalRelations</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39206">
+      <description>-- Definition --&#13;
+"970 Interspecific floral relations" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">interspecificFloralRelations</identifier>
+      <name>interspecificFloralRelations</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39208">
+      <description>-- Definition --&#13;
+"963 introduction of disease" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">introductionOfDisease</identifier>
+      <name>introductionOfDisease</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39207">
+      <description>-- Definition --&#13;
+"973 introduction of disease" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">introductionOfDisease</identifier>
+      <name>introductionOfDisease</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39209">
+      <description>-- Definition --&#13;
+"941 inundation" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">inundation</identifier>
+      <name>inundation</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39210">
+      <description>-- Definition --&#13;
+"954 invasion by a species" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">invasionByASpecies</identifier>
+      <name>invasionByASpecies</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39211">
+      <description>-- Definition --&#13;
+"130 Irrigation" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">irrigation</identifier>
+      <name>irrigation</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39212">
+      <description>-- Definition --&#13;
+"975 lack of pollinating agents" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">lackOfPollinatingAgents</identifier>
+      <name>lackOfPollinatingAgents</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39213">
+      <description>-- Definition --&#13;
+"800 Landfill, land reclamation and drying out, general" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">landfillLandReclamationAndDryingOutGeneral</identifier>
+      <name>landfillLandReclamationAndDryingOutGeneral</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39214">
+      <description>-- Definition --&#13;
+"220 Leisure fishing" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">leisureFishing</identifier>
+      <name>leisureFishing</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39215">
+      <description>-- Definition --&#13;
+"811 management of aquatic and bank vegetation for drainage purposes" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">managementOfAquaticAndBankVegetationForDrainagePurposes</identifier>
+      <name>managementOfAquaticAndBankVegetationForDrainagePurposes</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39216">
+      <description>-- Definition --&#13;
+"853 management of water levels" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">managementOfWaterLevels</identifier>
+      <name>managementOfWaterLevels</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39217">
+      <description>-- Definition --&#13;
+"312 mechanical removal of peat" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">mechanicalRemovalOfPeat</identifier>
+      <name>mechanicalRemovalOfPeat</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39218">
+      <description>-- Definition --&#13;
+"730 Military manouvres" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">militaryManouvres</identifier>
+      <name>militaryManouvres</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39219">
+      <description>-- Definition --&#13;
+"320 Mines" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">mines</identifier>
+      <name>mines</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39244">
+      <description>-- Definition --&#13;
+"390 Mining and extraction activities not referred to above" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">otherMiningAndExtractionActivities</identifier>
+      <name>otherMiningAndExtractionActivities</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39220">
+      <description>-- Definition --&#13;
+"101 Modification of cultivation practices" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">modificationOfCultivationPractices</identifier>
+      <name>modificationOfCultivationPractices</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39221">
+      <description>-- Definition --&#13;
+"850 Modification of hydrographic functioning, general" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">modificationOfHydrographicFunctioningGeneral</identifier>
+      <name>modificationOfHydrographicFunctioningGeneral</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39222">
+      <description>-- Definition --&#13;
+"851 modification of marine currents" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">modificationOfMarineCurrents</identifier>
+      <name>modificationOfMarineCurrents</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39223">
+      <description>-- Definition --&#13;
+"852 modifying structures of inland water courses" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">modifyingStructuresOfInlandWaterCourses</identifier>
+      <name>modifyingStructuresOfInlandWaterCourses</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39224">
+      <description>-- Definition --&#13;
+"623 motorised vehicles" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">motorisedVehicles</identifier>
+      <name>motorisedVehicles</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39225">
+      <description>-- Definition --&#13;
+"624 mountaineering, rock climbing, speliology" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">mountaineeringRockClimbingSpeliology</identifier>
+      <name>mountaineeringRockClimbingSpeliology</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39226">
+      <description>-- Definition --&#13;
+"102 Mowing / Cutting" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">mowingCutting</identifier>
+      <name>mowingCutting</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39227">
+      <description>-- Definition --&#13;
+"940 Natural catastrophes" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">naturalCatastrophes</identifier>
+      <name>naturalCatastrophes</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39228">
+      <description>-- Definition --&#13;
+"621 nautical sports" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">nauticalSports</identifier>
+      <name>nauticalSports</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39229">
+      <description>-- Definition --&#13;
+"710 Noise nuisance" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">noiseNuisance</identifier>
+      <name>noiseNuisance</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39230">
+      <description>-- Definition --&#13;
+"321 open cast mining" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">openCastMining</identifier>
+      <name>openCastMining</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39232">
+      <description>-- Definition --&#13;
+"509 other communication networks" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">otherCommunicationNetworks</identifier>
+      <name>otherCommunicationNetworks</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39233">
+      <description>-- Definition --&#13;
+"424 other discharges" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">otherDischarges</identifier>
+      <name>otherDischarges</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39234">
+      <description>-- Definition --&#13;
+"513 other forms of energy transport" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">otherFormsOfEnergyTransport</identifier>
+      <name>otherFormsOfEnergyTransport</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39235">
+      <description>-- Definition --&#13;
+"244 other forms of taking fauna" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">otherFormsOfTakingFauna</identifier>
+      <name>otherFormsOfTakingFauna</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39236">
+      <description>-- Definition --&#13;
+"590 Other forms of transportation and communication" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">otherFormsOfTransportationAndCommunication</identifier>
+      <name>otherFormsOfTransportationAndCommunication</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39237">
+      <description>-- Definition --&#13;
+"969 other forms or mixed formsof interspecific faunal competition" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">otherFormsOrMixedFormsofInterspecificFaunalCompetition</identifier>
+      <name>otherFormsOrMixedFormsofInterspecificFaunalCompetition</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39238">
+      <description>-- Definition --&#13;
+"979 other forms or mixed formsof interspecific floral competition" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">otherFormsOrMixedFormsofInterspecificFloralCompetition</identifier>
+      <name>otherFormsOrMixedFormsofInterspecificFloralCompetition</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39239">
+      <description>-- Definition --&#13;
+"709 other forms or mixed forms of pollution" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">otherFormsOrMixedFormsOfPollution</identifier>
+      <name>otherFormsOrMixedFormsOfPollution</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39240">
+      <description>-- Definition --&#13;
+"890 Other human induced changes in hydraulic conditions" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">otherHumanInducedChangesInHydraulicConditions</identifier>
+      <name>otherHumanInducedChangesInHydraulicConditions</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39242">
+      <description>-- Definition --&#13;
+"419 other industrial / commercial areas" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">otherIndustrialCommercialAreas</identifier>
+      <name>otherIndustrialCommercialAreas</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39243">
+      <description>-- Definition --&#13;
+"690 Other leisure and tourism impacts not referred to above" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">otherLeisureAndTourismImpacts</identifier>
+      <name>otherLeisureAndTourismImpacts</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39245">
+      <description>-- Definition --&#13;
+"949 other natural catastrophes" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">otherNaturalCatastrophes</identifier>
+      <name>otherNaturalCatastrophes</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39246">
+      <description>-- Definition --&#13;
+"990 Other natural processes" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">otherNaturalProcesses</identifier>
+      <name>otherNaturalProcesses</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39247">
+      <description>-- Definition --&#13;
+"629 other outdoor sports and leisure activities" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">otherOutdoorSportsAndLeisureActivities</identifier>
+      <name>otherOutdoorSportsAndLeisureActivities</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39248">
+      <description>-- Definition --&#13;
+"409 other patterns of habitation" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">otherPatternsOfHabitation</identifier>
+      <name>otherPatternsOfHabitation</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39249">
+      <description>-- Definition --&#13;
+"750 Other pollution or human impacts/activities" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">otherPollutionOrHumanImpactsActivities</identifier>
+      <name>otherPollutionOrHumanImpactsActivities</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39250">
+      <description>-- Definition --&#13;
+"609 other sport / leisure complexes" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">otherSportLeisureComplexes</identifier>
+      <name>otherSportLeisureComplexes</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39251">
+      <description>-- Definition --&#13;
+"490 Other urbanisation, industrial and similar activities" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">otherUrbanisationIndustrialAndSimilarActivities</identifier>
+      <name>otherUrbanisationIndustrialAndSimilarActivities</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39252">
+      <description>-- Definition --&#13;
+"620 Outdoor sports and leisure activities" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">outdoorSportsAndLeisureActivities</identifier>
+      <name>outdoorSportsAndLeisureActivities</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39183">
+      <description>-- Definition --&#13;
+"962 parasitism" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">faunalParasitism</identifier>
+      <name>faunalParasitism</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39191">
+      <description>-- Definition --&#13;
+"972 parasitism" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">floralParasitism</identifier>
+      <name>floralParasitism</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39253">
+      <description>-- Definition --&#13;
+"501 paths, tracks, cycling tracks" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">pathsTracksCyclingTracks</identifier>
+      <name>pathsTracksCyclingTracks</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39254">
+      <description>-- Definition --&#13;
+"310 Peat extraction" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">peatExtraction</identifier>
+      <name>peatExtraction</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39255">
+      <description>-- Definition --&#13;
+"251 pillaging of floristic stations" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">pillagingOfFloristicStations</identifier>
+      <name>pillagingOfFloristicStations</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39256">
+      <description>-- Definition --&#13;
+"512 pipe lines" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">pipeLines</identifier>
+      <name>pipeLines</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39257">
+      <description>-- Definition --&#13;
+"161 Planting" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">planting</identifier>
+      <name>planting</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39258">
+      <description>-- Definition --&#13;
+"801 polderisation" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">polderisation</identifier>
+      <name>polderisation</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39259">
+      <description>-- Definition --&#13;
+"700 Pollution" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">pollution</identifier>
+      <name>pollution</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39260">
+      <description>-- Definition --&#13;
+"504 port areas" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">portAreas</identifier>
+      <name>portAreas</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39261">
+      <description>-- Definition --&#13;
+"965 predation" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">predation</identifier>
+      <name>predation</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39262">
+      <description>-- Definition --&#13;
+"210 Professional fishing" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">professionalFishing</identifier>
+      <name>professionalFishing</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39263">
+      <description>-- Definition --&#13;
+"301 quarries" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">quarries</identifier>
+      <name>quarries</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39264">
+      <description>-- Definition --&#13;
+"503 railway lines, TGV" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">railwayLinesTGV</identifier>
+      <name>railwayLinesTGV</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39265">
+      <description>-- Definition --&#13;
+"802 reclamation of land from sea, estuary or marsh" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">reclamationOfLandFromSeaEstuaryOrMarsh</identifier>
+      <name>reclamationOfLandFromSeaEstuaryOrMarsh</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39266">
+      <description>-- Definition --&#13;
+"302 removal of beach materials" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">removalOfBeachMaterials</identifier>
+      <name>removalOfBeachMaterials</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39267">
+      <description>-- Definition --&#13;
+"166 Removal of dead and dying trees" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">removalOfDeadAndDyingTrees</identifier>
+      <name>removalOfDeadAndDyingTrees</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39268">
+      <description>-- Definition --&#13;
+"151 Removal of hedges and copses" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">removalOfHedgesAndCopses</identifier>
+      <name>removalOfHedgesAndCopses</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39269">
+      <description>-- Definition --&#13;
+"820 Removal of sediments (mud...)" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">removalOfSedimentsMud</identifier>
+      <name>removalOfSedimentsMud</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39270">
+      <description>-- Definition --&#13;
+"165 Removal of undergrowth" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">removalOfUndergrowth</identifier>
+      <name>removalOfUndergrowth</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39271">
+      <description>-- Definition --&#13;
+"163 Replanting" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">replanting</identifier>
+      <name>replanting</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39272">
+      <description>-- Definition --&#13;
+"150 Restructuring agricultural land holding" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">restructuringAgriculturalLandHolding</identifier>
+      <name>restructuringAgriculturalLandHolding</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39273">
+      <description>-- Definition --&#13;
+"502 routes, autoroutes" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">routesAutoroutes</identifier>
+      <name>routesAutoroutes</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39274">
+      <description>-- Definition --&#13;
+"330 Salt works" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">saltWorks</identifier>
+      <name>saltWorks</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39275">
+      <description>-- Definition --&#13;
+"300 Sand and gravel extraction" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">sandAndGravelExtraction</identifier>
+      <name>sandAndGravelExtraction</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39276">
+      <description>-- Definition --&#13;
+"871 sea defense or coast protection works" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">seaDefenseOrCoastProtectionWorks</identifier>
+      <name>seaDefenseOrCoastProtectionWorks</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39277">
+      <description>-- Definition --&#13;
+"520 Shipping" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">shipping</identifier>
+      <name>shipping</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39278">
+      <description>-- Definition --&#13;
+"910 Silting up" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">siltingUp</identifier>
+      <name>siltingUp</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39279">
+      <description>-- Definition --&#13;
+"602 skiing complex" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">skiingComplex</identifier>
+      <name>skiingComplex</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39280">
+      <description>-- Definition --&#13;
+"626 skiing, off-piste" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">skiingOff-piste</identifier>
+      <name>skiingOff-piste</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39281">
+      <description>-- Definition --&#13;
+"703 soil pollution" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">soilPollution</identifier>
+      <name>soilPollution</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39282">
+      <description>-- Definition --&#13;
+"600 Sport and leisure structures" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">sportAndLeisureStructures</identifier>
+      <name>sportAndLeisureStructures</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39283">
+      <description>-- Definition --&#13;
+"607 sports pitch" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">sportsPitch</identifier>
+      <name>sportsPitch</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39284">
+      <description>-- Definition --&#13;
+"603 stadium" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">stadium</identifier>
+      <name>stadium</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39285">
+      <description>-- Definition --&#13;
+"171 stock feeding" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">stockFeeding</identifier>
+      <name>stockFeeding</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39286">
+      <description>-- Definition --&#13;
+"440 Storage of materials" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">storageOfMaterials</identifier>
+      <name>storageOfMaterials</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39287">
+      <description>-- Definition --&#13;
+"944 storm, cyclone" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">stormCyclone</identifier>
+      <name>stormCyclone</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39288">
+      <description>-- Definition --&#13;
+"930 Submersion" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">submersion</identifier>
+      <name>submersion</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39289">
+      <description>-- Definition --&#13;
+"242 taking from nest (falcons)" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">takingFromNestFalcons</identifier>
+      <name>takingFromNestFalcons</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39290">
+      <description>-- Definition --&#13;
+"240 Taking / Removal of fauna, general" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">takingRemovalOfFaunaGeneral</identifier>
+      <name>takingRemovalOfFaunaGeneral</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39291">
+      <description>-- Definition --&#13;
+"250 Taking / Removal of flora, general" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">takingRemovalOfFloraGeneral</identifier>
+      <name>takingRemovalOfFloraGeneral</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39292">
+      <description>-- Definition --&#13;
+"947 tidal wave" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">tidalWave</identifier>
+      <name>tidalWave</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39293">
+      <description>-- Definition --&#13;
+"720 Trampling, overuse" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">tramplingOveruse</identifier>
+      <name>tramplingOveruse</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39294">
+      <description>-- Definition --&#13;
+"243 trapping, poisoning, poaching" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">trappingPoisoningPoaching</identifier>
+      <name>trappingPoisoningPoaching</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39295">
+      <description>-- Definition --&#13;
+"212 trawling" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">trawling</identifier>
+      <name>trawling</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39296">
+      <description>-- Definition --&#13;
+"508 tunnel" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">tunnel</identifier>
+      <name>tunnel</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39297">
+      <description>-- Definition --&#13;
+"400 Urbanised areas, human habitation" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">urbanisedAreasHumanHabitation</identifier>
+      <name>urbanisedAreasHumanHabitation</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39298">
+      <description>-- Definition --&#13;
+"110 Use of pesticides" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">useOfPesticides</identifier>
+      <name>useOfPesticides</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39299">
+      <description>-- Definition --&#13;
+"740 Vandalism" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">vandalism</identifier>
+      <name>vandalism</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39300">
+      <description>-- Definition --&#13;
+"945 volcanic activity" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">volcanicActivity</identifier>
+      <name>volcanicActivity</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39301">
+      <description>-- Definition --&#13;
+"622 walking, horseriding and non-motorised vehicles" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">walkingHorseridingAndNon-motorisedVehicles</identifier>
+      <name>walkingHorseridingAndNon-motorisedVehicles</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22300_39302">
+      <description>-- Definition --&#13;
+"701 water pollution" in Appendix E of the Explanatory Notes to the Natura2000 Standard Data form.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/ActivityValue">waterPollution</identifier>
+      <name>waterPollution</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

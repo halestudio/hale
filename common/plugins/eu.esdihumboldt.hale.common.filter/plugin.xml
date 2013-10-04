@@ -5,11 +5,11 @@
          point="eu.esdihumboldt.hale.instance.filter">
       <filterDefinition
             class="eu.esdihumboldt.hale.common.filter.definition.CQLFilterDefinition"
-            id="eu.esdihumboldt.hale.common.filter.cql">
+            id="CQL">
       </filterDefinition>
       <filterDefinition
             class="eu.esdihumboldt.hale.common.filter.definition.ECQLFilterDefinition"
-            id="eu.esdihumboldt.hale.common.filter.ecql">
+            id="ECQL">
       </filterDefinition>
    </extension>
 

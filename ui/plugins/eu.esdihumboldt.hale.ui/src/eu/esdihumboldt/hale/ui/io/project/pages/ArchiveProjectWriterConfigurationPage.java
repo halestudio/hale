@@ -27,7 +27,7 @@ import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 
 /**
- * Archive Project Writer Configuration Page for additional project resources
+ * Archive project writer configuration page for additional project resources.
  * 
  * @author Patrick Lieb
  */

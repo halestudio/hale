@@ -2,12 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE UI Geometry Support
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.geometry;singleton:=true
-Bundle-Version: 2.6.0.qualifier
+Bundle-Version: 2.7.0.qualifier
 Bundle-Activator: eu.esdihumboldt.hale.ui.geometry.internal.GeometryUIBundle
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.base;version="9.0.0",
  com.vividsolutions.jts.geom,
  de.cs3d.util.eclipse,
