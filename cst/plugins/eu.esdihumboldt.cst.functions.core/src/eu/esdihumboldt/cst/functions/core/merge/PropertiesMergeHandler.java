@@ -160,16 +160,44 @@ public class PropertiesMergeHandler extends
 				properties.put(name, instance.getProperty(name));
 
 		for (QName name : properties.keySet()) {
-			if (rootNames.contains(name)
-					|| (mergeConfig.autoDetect && allEqual(properties.get(name)))) {
+			if (rootNames.contains(name)) {
+				// property is to be merged
+//				if (false) {
+//					// use only the values of the first occurrence
+//					Object[] values = properties.get(name).get(0);
+//					for (Object value : values)
+//						result.addProperty(name, value);
+//				}
+//				else {
+				// only keep unique values
+				Set<DeepIterableKey> uniqueValues = new HashSet<>();
+				for (Object[] values : properties.get(name)) {
+					for (Object value : values) {
+						uniqueValues.add(new DeepIterableKey(value));
+					}
+				}
+				for (DeepIterableKey key : uniqueValues) {
+					result.addProperty(name, key.getObject());
+				}
+//				}
+			}
+			else if (mergeConfig.autoDetect && allEqual(properties.get(name))) {
+				// property is to be merged
+				// use only the values of the first occurrence
 				Object[] values = properties.get(name).get(0);
 				for (Object value : values)
 					result.addProperty(name, value);
 			}
 			else {
-				for (Object[] values : properties.get(name))
-					for (Object value : values)
+				// property is not to be merged
+				// XXX but we could do some kind of aggregation
+
+				// XXX for now just add all values
+				for (Object[] values : properties.get(name)) {
+					for (Object value : values) {
 						result.addProperty(name, value);
+					}
+				}
 			}
 		}
 
