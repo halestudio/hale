@@ -16,12 +16,14 @@
 package eu.esdihumboldt.hale.server.webapp.pages;
 
 import eu.esdihumboldt.hale.server.webapp.components.user.UserDetailsForm;
+import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
 
 /**
  * User settings page.
  * 
  * @author Simon Templer
  */
+@PageDescription(title = "User settings")
 public class UserSettingsPage extends SecuredPage {
 
 	private static final long serialVersionUID = -8821612341650112316L;

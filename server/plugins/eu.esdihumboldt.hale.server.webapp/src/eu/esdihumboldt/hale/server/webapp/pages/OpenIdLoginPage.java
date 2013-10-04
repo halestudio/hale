@@ -22,12 +22,14 @@ import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
 import eu.esdihumboldt.hale.server.webapp.components.bootstrap.BootstrapFeedbackPanel;
 import eu.esdihumboldt.hale.server.webapp.components.openidselector.OpenIdSelectorJsReference;
 import eu.esdihumboldt.hale.server.webapp.pages.LoginPage.Failure;
+import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
 
 /**
  * Page for logging in with OpenID.
  * 
  * @author Simon Templer
  */
+@PageDescription(title = "Login")
 public class OpenIdLoginPage extends BasePage {
 
 	private static final long serialVersionUID = 8764228585413860290L;

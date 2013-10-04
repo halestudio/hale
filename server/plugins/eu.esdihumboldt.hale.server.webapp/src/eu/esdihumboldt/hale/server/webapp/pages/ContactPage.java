@@ -15,11 +15,14 @@
 
 package eu.esdihumboldt.hale.server.webapp.pages;
 
+import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
+
 /**
  * Static page stating contact information.
  * 
  * @author Simon Templer
  */
+@PageDescription(title = "Contact")
 public class ContactPage extends BasePage {
 
 	private static final long serialVersionUID = 3948943449175813561L;
