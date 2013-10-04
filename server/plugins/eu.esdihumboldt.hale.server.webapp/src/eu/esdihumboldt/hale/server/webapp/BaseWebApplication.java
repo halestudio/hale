@@ -32,6 +32,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import de.agilecoders.wicket.core.Bootstrap;
+import de.agilecoders.wicket.core.markup.html.bootstrap.navbar.Navbar;
 import de.agilecoders.wicket.core.settings.BootstrapSettings;
 import de.agilecoders.wicket.core.settings.ThemeProvider;
 import de.agilecoders.wicket.less.BootstrapLess;
@@ -234,5 +235,15 @@ public abstract class BaseWebApplication extends WebApplication {
 //
 //		getResourceBundles().addCssBundle(BaseWebApplication.class, "application.css",
 //				(CssResourceReference) BootstrapPrettifyCssReference.INSTANCE);
+	}
+
+	/**
+	 * Add application specific extras to the navigation bar.
+	 * 
+	 * @param navbar the navigation bar
+	 * @param loggedIn if the user is logged in
+	 */
+	public void addNavBarExtras(Navbar navbar, boolean loggedIn) {
+		// override me
 	}
 }

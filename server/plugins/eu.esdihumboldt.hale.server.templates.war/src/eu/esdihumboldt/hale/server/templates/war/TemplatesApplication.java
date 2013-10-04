@@ -16,7 +16,12 @@
 package eu.esdihumboldt.hale.server.templates.war;
 
 import org.apache.wicket.Page;
+import org.apache.wicket.model.Model;
 
+import de.agilecoders.wicket.core.markup.html.bootstrap.navbar.Navbar;
+import de.agilecoders.wicket.core.markup.html.bootstrap.navbar.Navbar.ComponentPosition;
+import de.agilecoders.wicket.core.markup.html.bootstrap.navbar.NavbarButton;
+import de.agilecoders.wicket.core.markup.html.bootstrap.navbar.NavbarComponents;
 import eu.esdihumboldt.hale.server.templates.war.pages.EditTemplatePage;
 import eu.esdihumboldt.hale.server.templates.war.pages.MyTemplatesPage;
 import eu.esdihumboldt.hale.server.templates.war.pages.TemplatePage;
@@ -55,6 +60,20 @@ public class TemplatesApplication extends BaseWebApplication {
 	@Override
 	public String getMainTitle() {
 		return super.getMainTitle() + " Templates";
+	}
+
+	@Override
+	public void addNavBarExtras(Navbar navbar, boolean loggedIn) {
+		super.addNavBarExtras(navbar, loggedIn);
+
+		if (loggedIn) {
+			NavbarButton<Void> my = new NavbarButton<>(MyTemplatesPage.class,
+					Model.of("My Templates"));
+			navbar.addComponents(NavbarComponents.transform(ComponentPosition.LEFT, my));
+		}
+
+		NavbarButton<Void> share = new NavbarButton<>(UploadTemplatePage.class, Model.of("Share"));
+		navbar.addComponents(NavbarComponents.transform(ComponentPosition.LEFT, share));
 	}
 
 }

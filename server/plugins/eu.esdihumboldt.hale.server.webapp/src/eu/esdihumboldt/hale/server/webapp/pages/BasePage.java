@@ -256,6 +256,11 @@ public abstract class BasePage extends WebPage {
 
 		// contact
 		add(new BookmarkablePageLink<>("contact", ContactPage.class));
+
+		if (app instanceof BaseWebApplication) {
+			BaseWebApplication bwa = (BaseWebApplication) app;
+			bwa.addNavBarExtras(navbar, loggedIn);
+		}
 	}
 
 	/**
