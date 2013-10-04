@@ -34,6 +34,7 @@ import eu.esdihumboldt.hale.server.db.orient.DatabaseHelper;
 import eu.esdihumboldt.hale.server.model.Template;
 import eu.esdihumboldt.hale.server.model.User;
 import eu.esdihumboldt.hale.server.templates.war.components.TemplateUploadForm;
+import eu.esdihumboldt.hale.server.webapp.pages.SecuredPage;
 import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
 import eu.esdihumboldt.hale.server.webapp.util.UserUtil;
 import eu.esdihumboldt.util.blueprints.entities.NonUniqueResultException;
@@ -44,14 +45,14 @@ import eu.esdihumboldt.util.blueprints.entities.NonUniqueResultException;
  * @author Simon Templer
  */
 @PageDescription(title = "Update Template")
-public class UpdateTemplatePage extends TemplatesSecuredPage {
+public class UpdateTemplatePage extends SecuredPage {
 
 	private static final long serialVersionUID = 5042784175750862684L;
 
 	private static final ALogger log = ALoggerFactory.getLogger(UpdateTemplatePage.class);
 
 	/**
-	 * @see TemplatesSecuredPage#TemplatesSecuredPage(PageParameters)
+	 * @see SecuredPage#SecuredPage(PageParameters)
 	 */
 	public UpdateTemplatePage(PageParameters parameters) {
 		super(parameters);

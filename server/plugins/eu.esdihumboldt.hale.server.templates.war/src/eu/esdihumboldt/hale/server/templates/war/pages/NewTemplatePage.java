@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.server.templates.war.pages;
 
 import eu.esdihumboldt.hale.server.templates.war.components.TemplateForm;
+import eu.esdihumboldt.hale.server.webapp.pages.BasePage;
 import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
 
 /**
@@ -24,7 +25,7 @@ import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
  * @author Simon Templer
  */
 @PageDescription(title = "New Template")
-public class NewTemplatePage extends TemplatesBasePage {
+public class NewTemplatePage extends BasePage {
 
 	private static final long serialVersionUID = 1062587755750029869L;
 

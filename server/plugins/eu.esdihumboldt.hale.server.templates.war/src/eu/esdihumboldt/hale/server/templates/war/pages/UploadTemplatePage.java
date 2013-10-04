@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.server.templates.war.pages;
 
 import eu.esdihumboldt.hale.server.templates.war.components.TemplateUploadForm;
+import eu.esdihumboldt.hale.server.webapp.pages.BasePage;
 import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
 
 /**
@@ -24,7 +25,7 @@ import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
  * @author Simon Templer
  */
 @PageDescription(title = "Share template")
-public class UploadTemplatePage extends TemplatesBasePage {
+public class UploadTemplatePage extends BasePage {
 
 	private static final long serialVersionUID = -8268659882000252602L;
 

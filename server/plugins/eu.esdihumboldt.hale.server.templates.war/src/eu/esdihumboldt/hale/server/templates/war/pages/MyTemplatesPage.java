@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.server.templates.war.pages;
 
 import eu.esdihumboldt.hale.server.templates.war.components.TemplateList;
+import eu.esdihumboldt.hale.server.webapp.pages.SecuredPage;
 import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
 import eu.esdihumboldt.hale.server.webapp.util.UserUtil;
 
@@ -25,7 +26,7 @@ import eu.esdihumboldt.hale.server.webapp.util.UserUtil;
  * @author Simon Templer
  */
 @PageDescription(title = "My Templates")
-public class MyTemplatesPage extends TemplatesSecuredPage {
+public class MyTemplatesPage extends SecuredPage {
 
 	private static final long serialVersionUID = 221216335635652135L;
 

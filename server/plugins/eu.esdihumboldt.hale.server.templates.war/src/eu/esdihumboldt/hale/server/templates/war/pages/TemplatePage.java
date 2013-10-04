@@ -42,6 +42,7 @@ import eu.esdihumboldt.hale.server.templates.TemplateScavenger;
 import eu.esdihumboldt.hale.server.templates.war.TemplateLocations;
 import eu.esdihumboldt.hale.server.templates.war.components.DeleteTemplateLink;
 import eu.esdihumboldt.hale.server.templates.war.components.ResourcesPanel;
+import eu.esdihumboldt.hale.server.webapp.pages.BasePage;
 import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
 import eu.esdihumboldt.hale.server.webapp.util.UserUtil;
 import eu.esdihumboldt.util.blueprints.entities.NonUniqueResultException;
@@ -52,7 +53,7 @@ import eu.esdihumboldt.util.blueprints.entities.NonUniqueResultException;
  * @author Simon Templer
  */
 @PageDescription(title = "Template Details")
-public class TemplatePage extends TemplatesBasePage {
+public class TemplatePage extends BasePage {
 
 	private static final long serialVersionUID = 596965328223399419L;
 

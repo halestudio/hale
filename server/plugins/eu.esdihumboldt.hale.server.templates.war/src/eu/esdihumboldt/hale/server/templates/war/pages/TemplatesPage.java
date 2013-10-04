@@ -25,7 +25,7 @@ import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
  * @author Simon Templer
  */
 @PageDescription(title = "Templates")
-public class TemplatesPage extends TemplatesBasePage {
+public class TemplatesPage extends BasePage {
 
 	private static final long serialVersionUID = 221216335635652135L;
 
