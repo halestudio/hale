@@ -27,6 +27,7 @@ import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.AbstractLink;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -249,6 +250,12 @@ public abstract class BasePage extends WebPage {
 
 		// XXX
 //		add(new SimpleBreadcrumbPanel("breadcrumb", this.getClass(), "Home", "/"));
+
+		// about
+		add(new BookmarkablePageLink<>("about", AboutPage.class));
+
+		// contact
+		add(new BookmarkablePageLink<>("contact", ContactPage.class));
 	}
 
 	/**

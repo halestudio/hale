@@ -41,7 +41,9 @@ import de.agilecoders.wicket.themes.markup.html.metro.MetroTheme;
 import de.agilecoders.wicket.themes.markup.html.wicket.WicketTheme;
 import de.agilecoders.wicket.themes.settings.BootswatchThemeProvider;
 import eu.esdihumboldt.hale.server.security.UserConstants;
+import eu.esdihumboldt.hale.server.webapp.pages.AboutPage;
 import eu.esdihumboldt.hale.server.webapp.pages.BasePage;
+import eu.esdihumboldt.hale.server.webapp.pages.ContactPage;
 import eu.esdihumboldt.hale.server.webapp.pages.ExceptionPage;
 import eu.esdihumboldt.hale.server.webapp.pages.LoginPage;
 import eu.esdihumboldt.hale.server.webapp.pages.NewUserPage;
@@ -187,6 +189,12 @@ public abstract class BaseWebApplication extends WebApplication {
 
 			// user settings
 			mountPage("/settings", UserSettingsPage.class);
+
+			// about
+			mountPage("/about", AboutPage.class);
+
+			// contact
+			mountPage("/contact", ContactPage.class);
 
 			if (OpenIdLoginPage.class.equals(loginClass)) {
 				// for OpenID auth also add page for new users
