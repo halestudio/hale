@@ -1,4 +1,4 @@
-<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../config/ehcache.xsd">
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
     <!--
     The ehcache-failsafe.xml is a default configuration for ehcache, if an ehcache.xml is not configured.
@@ -21,7 +21,7 @@
     Subdirectories can be specified below the property e.g. java.io.tmpdir/one
 
     -->
-    <diskStore path="hale.cache.dir"/>
+    <diskStore path="$cache_dir"/>
 
     <!--
     Specifies a CacheManagerEventListenerFactory, be used to create a CacheManagerPeerProvider,

@@ -16,10 +16,16 @@
 
 package eu.esdihumboldt.hale.common.cache;
 
+import groovy.text.SimpleTemplateEngine;
+import groovy.text.Template;
+
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.Proxy;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -42,6 +48,8 @@ import org.eclipse.osgi.service.datalocation.Location;
 
 import com.google.common.io.ByteStreams;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import de.fhg.igd.osgi.util.OsgiUtils;
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import de.fhg.igd.osgi.util.configuration.JavaPreferencesConfigurationService;
@@ -56,7 +64,7 @@ import eu.esdihumboldt.util.http.ProxyUtil;
  */
 public class Request {
 
-	private static final String SYSTEM_PROPERTY_CACHE_DIR = "hale.cache.dir";
+	private static final ALogger log = ALoggerFactory.getLogger(Request.class);
 
 	private static final String CACHE_NAME = "haleResourceCache";
 
@@ -114,19 +122,38 @@ public class Request {
 					// ignore
 				}
 			}
-			System.setProperty(SYSTEM_PROPERTY_CACHE_DIR, cacheDir.getAbsolutePath());
 
-			// this cache has already been initialized
-			if (CacheManager.create(Request.class.getResource("ehcache.xml")).getCache(CACHE_NAME) != null) {
-				return;
+			try {
+				// create the configuration from the template
+				SimpleTemplateEngine engine = new SimpleTemplateEngine(
+						Request.class.getClassLoader());
+				Template template = engine.createTemplate(Request.class.getResource("ehcache.xml"));
+
+				Map<String, Object> binding = new HashMap<>();
+				// replace the cache directory
+				binding.put("cache_dir", cacheDir.getAbsolutePath());
+
+				ByteArrayOutputStream data = new ByteArrayOutputStream();
+				try (Writer writer = new OutputStreamWriter(data, "UTF-8")) {
+					template.make(binding).writeTo(writer);
+				}
+
+				// initialize the cache manager
+				if (HaleCacheManager.create(new ByteArrayInputStream(data.toByteArray())).getCache(
+						CACHE_NAME) != null) {
+					return;
+				}
+
+				// create a Cache instance - providing cachePath has no effect
+				Cache cache = new Cache(CACHE_NAME, 300, MemoryStoreEvictionPolicy.LRU, true, null,
+						true, 0, 0, true, 0, null);
+
+				// add it to CacheManger
+				HaleCacheManager.getInstance().addCache(cache);
+			} catch (Exception e) {
+				log.error("Cache initialization failed", e);
 			}
 
-			// create a Cache instance - providing cachePath has no effect
-			Cache cache = new Cache(CACHE_NAME, 300, MemoryStoreEvictionPolicy.LRU, true, null,
-					true, 0, 0, true, 0, null);
-
-			// add it to CacheManger
-			CacheManager.getInstance().addCache(cache);
 		}
 	}
 
@@ -179,7 +206,7 @@ public class Request {
 		}
 
 		// get the current cache for web requests
-		Cache cache = CacheManager.getInstance().getCache(CACHE_NAME);
+		Cache cache = HaleCacheManager.getInstance().getCache(CACHE_NAME);
 		String key = uri.toString(); // removeSpecialChars(uri.toString());
 
 		Element element = cache.get(key);
@@ -273,25 +300,25 @@ public class Request {
 	}
 
 	/**
-	 * @see CacheManager#flush(String)
+	 * @see HaleCacheManager#flush(String)
 	 */
 	public void flush() {
 		if (cacheEnabled)
-			CacheManager.flush(CACHE_NAME);
+			HaleCacheManager.flush(CACHE_NAME);
 	}
 
 	/**
-	 * @see CacheManager#shutdown()
+	 * @see HaleCacheManager#shutdown()
 	 */
 	public void shutdown() {
-		CacheManager.getInstance().shutdown();
+		HaleCacheManager.getInstance().shutdown();
 	}
 
 	/**
-	 * @see CacheManager#removalAll()
+	 * @see HaleCacheManager#removalAll()
 	 */
 	public void clear() {
-		CacheManager.getInstance().getCache(CACHE_NAME).removeAll();
+		HaleCacheManager.getInstance().getCache(CACHE_NAME).removeAll();
 	}
 
 	/**

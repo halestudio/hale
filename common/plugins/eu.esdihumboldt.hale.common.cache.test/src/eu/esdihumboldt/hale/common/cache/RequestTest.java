@@ -75,6 +75,6 @@ public class RequestTest {
 	 */
 	@AfterClass
 	public static void shutdownCache() {
-		CacheManager.getInstance().shutdown();
+		HaleCacheManager.getInstance().shutdown();
 	}
 }
