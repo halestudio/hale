@@ -12,6 +12,7 @@ Require-Bundle: org.eclipse.ui,
 Import-Package: com.google.common.base;version="9.0.0",
  com.google.common.collect,
  de.cs3d.util.eclipse.extension.simple,
+ de.fhg.igd.osgi.util;version="1.0.0",
  eu.esdihumboldt.cst.functions.string,
  eu.esdihumboldt.hale.common.align.extension.function,
  eu.esdihumboldt.hale.common.align.io,
@@ -49,7 +50,9 @@ Import-Package: com.google.common.base;version="9.0.0",
  eu.esdihumboldt.hale.ui.service.entity,
  eu.esdihumboldt.hale.ui.service.entity.util,
  eu.esdihumboldt.hale.ui.service.schema,
+ eu.esdihumboldt.hale.ui.service.values,
  eu.esdihumboldt.hale.ui.util.viewer.tree,
  eu.esdihumboldt.hale.ui.util.wizard,
- eu.esdihumboldt.util.groovy.paths
+ eu.esdihumboldt.util.groovy.paths,
+ org.springframework.core.convert
 Export-Package: eu.esdihumboldt.hale.ui.functions.core

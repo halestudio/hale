@@ -96,7 +96,7 @@ public class OccurringValuesSection extends AbstractEntityDefSection {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				service.updateOccuringValues((PropertyEntityDefinition) getEntity());
+				service.updateOccurringValues((PropertyEntityDefinition) getEntity());
 			}
 		});
 		GridDataFactory.swtDefaults().align(SWT.END, SWT.BEGINNING).grab(false, false)

@@ -52,7 +52,7 @@ public class OccurringValuesServiceImpl extends AbstractOccurringValuesService {
 	/**
 	 * Job determining the occurring values for a specific property entity.
 	 */
-	public class OccuringValuesJob extends Job {
+	public class OccurringValuesJob extends Job {
 
 		private final PropertyEntityDefinition property;
 		private final Map<PropertyEntityDefinition, OccurringValuesImpl> values;
@@ -66,7 +66,7 @@ public class OccurringValuesServiceImpl extends AbstractOccurringValuesService {
 		 * @param values the map to store the updated information in
 		 * @param instances the instances to test
 		 */
-		public OccuringValuesJob(PropertyEntityDefinition property,
+		public OccurringValuesJob(PropertyEntityDefinition property,
 				Map<PropertyEntityDefinition, OccurringValuesImpl> values,
 				InstanceCollection instances) {
 			super("Determine occurring values");
@@ -243,7 +243,7 @@ public class OccurringValuesServiceImpl extends AbstractOccurringValuesService {
 	}
 
 	@Override
-	public boolean updateOccuringValues(PropertyEntityDefinition property) {
+	public boolean updateOccurringValues(PropertyEntityDefinition property) {
 		// sanity check on property
 		if (!OccurringValuesUtil.supportsOccurringValues(property)) {
 			throw new IllegalArgumentException(
@@ -283,7 +283,7 @@ public class OccurringValuesServiceImpl extends AbstractOccurringValuesService {
 		}
 
 		// go through instances to determine occurring values
-		Job job = new OccuringValuesJob(property, values, instances.getInstances(dataSet));
+		Job job = new OccurringValuesJob(property, values, instances.getInstances(dataSet));
 		job.schedule();
 
 		return true;
