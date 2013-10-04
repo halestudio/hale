@@ -16,12 +16,14 @@
 package eu.esdihumboldt.hale.server.templates.war.pages;
 
 import eu.esdihumboldt.hale.server.templates.war.components.TemplateForm;
+import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
 
 /**
  * Page that is shown to the user after a template has initially been created.
  * 
  * @author Simon Templer
  */
+@PageDescription(title = "New Template")
 public class NewTemplatePage extends TemplatesBasePage {
 
 	private static final long serialVersionUID = 1062587755750029869L;

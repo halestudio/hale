@@ -15,11 +15,14 @@
 
 package eu.esdihumboldt.hale.server.webapp.pages;
 
+import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
+
 /**
  * Static page stating about/imprint information.
  * 
  * @author Simon Templer
  */
+@PageDescription(title = "About")
 public class AboutPage extends BasePage {
 
 	private static final long serialVersionUID = 3948943449175813561L;

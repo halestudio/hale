@@ -33,6 +33,7 @@ import eu.esdihumboldt.hale.server.db.orient.DatabaseHelper;
 import eu.esdihumboldt.hale.server.model.Template;
 import eu.esdihumboldt.hale.server.model.User;
 import eu.esdihumboldt.hale.server.templates.war.components.TemplateForm;
+import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
 import eu.esdihumboldt.hale.server.webapp.util.UserUtil;
 import eu.esdihumboldt.util.blueprints.entities.NonUniqueResultException;
 
@@ -41,6 +42,7 @@ import eu.esdihumboldt.util.blueprints.entities.NonUniqueResultException;
  * 
  * @author Simon Templer
  */
+@PageDescription(title = "Edit Template")
 public class EditTemplatePage extends TemplatesSecuredPage {
 
 	private static final long serialVersionUID = 5042784175750862684L;
