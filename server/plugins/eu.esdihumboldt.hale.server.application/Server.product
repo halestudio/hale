@@ -126,6 +126,7 @@
       <plugin id="eu.esdihumboldt.hale.server.api.base"/>
       <plugin id="eu.esdihumboldt.hale.server.api.war"/>
       <plugin id="eu.esdihumboldt.hale.server.application"/>
+      <plugin id="eu.esdihumboldt.hale.server.config"/>
       <plugin id="eu.esdihumboldt.hale.server.console.war"/>
       <plugin id="eu.esdihumboldt.hale.server.db"/>
       <plugin id="eu.esdihumboldt.hale.server.logback.config" fragment="true"/>
@@ -266,6 +267,7 @@
       <plugin id="eu.esdihumboldt.hale.common.instance" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.gml" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.api.war" autoStart="false" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.server.config" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.console.war" autoStart="false" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.progress" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.projects" autoStart="true" startLevel="0" />
