@@ -127,33 +127,35 @@ public class TemplatePage extends BasePage {
 					// user
 					String userName;
 					Vertex v = template.getV();
+					boolean showEditPart = UserUtil.isAdmin();
 					Iterator<Vertex> owners = v.getVertices(Direction.OUT, "owner").iterator();
 					if (owners.hasNext()) {
 						User user = new User(owners.next(), graph);
 						userName = UserUtil.getDisplayName(user);
 
-						// edit buttons
-						if (loggedIn && UserUtil.getLogin().equals(user.getLogin())) {
-							editButtons.setVisible(true);
-							deleteDialog.setVisible(true);
-
-							// edit
-							editButtons
-									.add(new BookmarkablePageLink<>("edit", EditTemplatePage.class,
-											new PageParameters().set(0, templateId)));
-
-							// update
-							editButtons.add(new BookmarkablePageLink<>("update",
-									UpdateTemplatePage.class, new PageParameters().set(0,
-											templateId)));
-
-							// delete
-							deleteDialog.add(new DeleteTemplateLink("delete", templateId));
-						}
+						showEditPart = loggedIn && UserUtil.getLogin().equals(user.getLogin());
 					}
 					else {
 						userName = "Unregistered user";
 					}
+
+					// edit buttons
+					if (showEditPart) {
+						editButtons.setVisible(true);
+						deleteDialog.setVisible(true);
+
+						// edit
+						editButtons.add(new BookmarkablePageLink<>("edit", EditTemplatePage.class,
+								new PageParameters().set(0, templateId)));
+
+						// update
+						editButtons.add(new BookmarkablePageLink<>("update",
+								UpdateTemplatePage.class, new PageParameters().set(0, templateId)));
+
+						// delete
+						deleteDialog.add(new DeleteTemplateLink("delete", templateId));
+					}
+
 					Label user = new Label("user", userName);
 					add(user);
 
