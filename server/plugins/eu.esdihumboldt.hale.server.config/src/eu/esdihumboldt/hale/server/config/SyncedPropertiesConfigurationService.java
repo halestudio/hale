@@ -125,7 +125,8 @@ public class SyncedPropertiesConfigurationService extends AbstractConfigurationS
 
 	@Override
 	protected String getValue(String key) {
-		return properties.getPropertyQuiet(key);
+		// don't sync on get
+		return properties.getProperties().getProperty(key);
 	}
 
 	@Override
@@ -138,4 +139,14 @@ public class SyncedPropertiesConfigurationService extends AbstractConfigurationS
 		properties.setPropertyQuiet(key, value);
 	}
 
+	/**
+	 * Trigger synchronisation of properties file.
+	 */
+	public void sync() {
+		try {
+			properties.sync();
+		} catch (IOException e) {
+			log.error("Synchronising server configuration file failed", e);
+		}
+	}
 }

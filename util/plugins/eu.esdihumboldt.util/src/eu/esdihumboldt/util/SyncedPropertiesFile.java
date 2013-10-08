@@ -50,6 +50,24 @@ public class SyncedPropertiesFile {
 	}
 
 	/**
+	 * Manually sync.
+	 * 
+	 * @throws IOException if the synchronisation fails
+	 */
+	public void sync() throws IOException {
+		properties.sync(false);
+	}
+
+	/**
+	 * Get the internal properties.
+	 * 
+	 * @return the properties
+	 */
+	public PropertiesFile getProperties() {
+		return properties;
+	}
+
+	/**
 	 * Get the property value for the given key. Before retrieving the property
 	 * value, the properties are synced with the file.
 	 * 
