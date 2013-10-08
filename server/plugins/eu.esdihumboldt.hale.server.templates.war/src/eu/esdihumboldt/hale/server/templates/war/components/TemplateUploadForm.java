@@ -228,7 +228,12 @@ public class TemplateUploadForm extends Panel {
 		form.setMultiPart(true);
 
 		// max size for upload
-		form.setMaxSize(Bytes.megabytes(1));
+		if (UserUtil.isAdmin()) {
+			form.setMaxSize(Bytes.megabytes(100));
+		}
+		else {
+			form.setMaxSize(Bytes.megabytes(1));
+		}
 
 		// Add file input field for multiple files
 		form.add(file = new FileUploadField("file"));
