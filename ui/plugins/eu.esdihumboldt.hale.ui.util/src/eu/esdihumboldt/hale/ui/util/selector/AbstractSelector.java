@@ -207,7 +207,21 @@ public abstract class AbstractSelector<T> implements ISelectionProvider {
 
 		currentInput = NoObject.NONE;
 		viewer.setInput(NoObject.NONE);
-		viewer.setSelection(new StructuredSelection());
+		viewer.setSelection(StructuredSelection.EMPTY);
+
+		fireSelectionChange();
+	}
+
+	/**
+	 * Resets the current selection, but shows the given text instead of the
+	 * default.
+	 * 
+	 * @param text the text to show
+	 */
+	public void showText(String text) {
+		currentInput = NoObject.NONE;
+		viewer.setInput(text);
+		viewer.setSelection(StructuredSelection.EMPTY);
 
 		fireSelectionChange();
 	}
