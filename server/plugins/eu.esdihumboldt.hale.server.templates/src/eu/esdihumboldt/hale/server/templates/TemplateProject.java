@@ -111,7 +111,7 @@ public class TemplateProject extends ProjectReference<Void> {
 
 		resources.clear();
 
-		List<URI> invalidSources = new ArrayList<>();
+		List<Path> invalidSources = new ArrayList<>();
 		Path projectFolder = getProjectFolder().toPath();
 		// validate resources
 		for (IOConfiguration config : project.getResources()) {
@@ -119,12 +119,25 @@ public class TemplateProject extends ProjectReference<Void> {
 
 			// check if file URIs are valid and inside project folder
 			URI source = resource.getSource();
-			if (source != null && "file".equals(source.getScheme())) {
-				// is a file URI
-				Path path = Paths.get(source).normalize();
-				if (!path.startsWith(projectFolder) || !Files.exists(path)) {
-					// invalid source
-					invalidSources.add(source);
+			if (source != null) {
+				Path path = null;
+
+				if (source.getScheme() == null) {
+					// is a relative URI
+					path = projectFile.toPath().resolve(source.toString()).normalize();
+				}
+				else if ("file".equals(source.getScheme())) {
+					// is a file URI
+					path = Paths.get(source).normalize();
+				}
+
+				if (path != null) {
+					// only file references are validated
+
+					if (!path.startsWith(projectFolder) || !Files.exists(path)) {
+						// invalid source
+						invalidSources.add(path);
+					}
 				}
 			}
 
@@ -139,7 +152,7 @@ public class TemplateProject extends ProjectReference<Void> {
 			for (int i = 0; i < invalidSources.size(); i++) {
 				if (i > 0)
 					builder.append(", ");
-				Path path = Paths.get(invalidSources.get(i));
+				Path path = invalidSources.get(i);
 				builder.append(path.getFileName().toString());
 			}
 
