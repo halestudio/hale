@@ -15,5 +15,10 @@
 			<value>org.springframework.security.core.userdetails.AuthenticationUserDetailsService</value>
 		</osgi:interfaces>
 	</osgi:service>
+	
+	<osgi:reference
+		id="configService"
+		interface="de.fhg.igd.osgi.util.configuration.IConfigurationService"
+		availability="optional" />
 
 </beans>

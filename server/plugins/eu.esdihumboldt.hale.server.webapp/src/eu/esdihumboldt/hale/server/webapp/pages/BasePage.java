@@ -231,7 +231,12 @@ public abstract class BasePage extends WebPage {
 				// user settings
 				NavbarButton<Void> userButton = new NavbarButton<Void>(UserSettingsPage.class,
 						Model.of(UserUtil.getUserName(null)));
-				userButton.setIconType(IconType.user);
+				if (UserUtil.isAdmin()) {
+					userButton.setIconType(IconType.star);
+				}
+				else {
+					userButton.setIconType(IconType.user);
+				}
 				/*
 				 * XXX instead of getting the user name each time from DB, store
 				 * it somewhere?
