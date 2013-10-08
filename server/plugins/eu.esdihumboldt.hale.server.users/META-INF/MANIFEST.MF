@@ -6,6 +6,7 @@ Bundle-Version: 2.7.0.qualifier
 Bundle-Vendor: Data Harmonisation Panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: de.cs3d.util.logging,
+ de.fhg.igd.osgi.util.configuration;version="1.0.0",
  eu.esdihumboldt.hale.server.security,
  eu.esdihumboldt.hale.server.security.util.impl,
  org.slf4j;version="1.5.11",
