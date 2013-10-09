@@ -20,10 +20,13 @@ import java.util.Iterator;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
+import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.ExternalLink;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.request.http.flow.AbortWithHttpErrorCodeException;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -35,6 +38,8 @@ import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 
+import de.agilecoders.wicket.core.markup.html.bootstrap.components.PopoverConfig;
+import de.agilecoders.wicket.core.markup.html.bootstrap.components.TooltipConfig.Placement;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.server.db.orient.DatabaseHelper;
@@ -43,7 +48,9 @@ import eu.esdihumboldt.hale.server.model.User;
 import eu.esdihumboldt.hale.server.templates.TemplateScavenger;
 import eu.esdihumboldt.hale.server.templates.war.TemplateLocations;
 import eu.esdihumboldt.hale.server.templates.war.components.DeleteTemplateLink;
+import eu.esdihumboldt.hale.server.templates.war.components.ProjectURLPopover;
 import eu.esdihumboldt.hale.server.templates.war.components.ResourcesPanel;
+import eu.esdihumboldt.hale.server.webapp.components.bootstrap.HTMLPopoverBehavior;
 import eu.esdihumboldt.hale.server.webapp.pages.BasePage;
 import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
 import eu.esdihumboldt.hale.server.webapp.util.UserUtil;
@@ -80,6 +87,7 @@ public class TemplatePage extends BasePage {
 		super(parameters);
 	}
 
+	@SuppressWarnings("serial")
 	@Override
 	protected void addControls(boolean loggedIn) {
 		super.addControls(loggedIn);
@@ -191,6 +199,19 @@ public class TemplatePage extends BasePage {
 					// resources
 					ResourcesPanel resources = new ResourcesPanel("resources", templateId);
 					add(resources);
+
+					// project popover
+					WebMarkupContainer projectPopover = new WebMarkupContainer("project-popover");
+					projectPopover.add(new HTMLPopoverBehavior(Model.of("Load template in HALE"),
+							new PopoverConfig().withPlacement(Placement.bottom)) {
+
+						@Override
+						public Component newBodyComponent(String markupId) {
+							return new ProjectURLPopover(markupId);
+						}
+
+					});
+					add(projectPopover);
 				}
 				else {
 					throw new AbortWithHttpErrorCodeException(HttpServletResponse.SC_NOT_FOUND,
@@ -203,6 +224,15 @@ public class TemplatePage extends BasePage {
 		else
 			throw new AbortWithHttpErrorCodeException(HttpServletResponse.SC_BAD_REQUEST,
 					"Template identifier must be specified.");
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.server.webapp.pages.BasePage#renderHead(org.apache.wicket.markup.head.IHeaderResponse)
+	 */
+	@Override
+	public void renderHead(IHeaderResponse response) {
+		super.renderHead(response);
+
 	}
 
 }
