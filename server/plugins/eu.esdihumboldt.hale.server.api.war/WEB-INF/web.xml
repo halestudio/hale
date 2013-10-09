@@ -17,7 +17,7 @@
 		after spring security -->
 	<!-- filter>
 		<filter-name>loggingFilter</filter-name>
-		<filter-class>eu.esdihumboldt.hale.server.webapp.filter.RequestLoggingFilter</filter-class>
+		<filter-classeu.esdihumboldt.hale.server.security.util.RequestLoggingFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>loggingFilter</filter-name>

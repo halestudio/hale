@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.server.webapp.filter;
+package eu.esdihumboldt.hale.server.security.util;
 
 import java.io.IOException;
 
