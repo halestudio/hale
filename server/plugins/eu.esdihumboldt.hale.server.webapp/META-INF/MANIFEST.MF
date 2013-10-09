@@ -39,7 +39,6 @@ Export-Package: eu.esdihumboldt.hale.server.webapp,
  eu.esdihumboldt.hale.server.webapp.components.openidselector.images,
  eu.esdihumboldt.hale.server.webapp.components.openidselector.js,
  eu.esdihumboldt.hale.server.webapp.components.user,
- eu.esdihumboldt.hale.server.webapp.filter,
  eu.esdihumboldt.hale.server.webapp.pages,
  eu.esdihumboldt.hale.server.webapp.pages.css,
  eu.esdihumboldt.hale.server.webapp.util
