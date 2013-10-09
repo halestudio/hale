@@ -40,6 +40,10 @@
 
    <plugins>
       <plugin id="EDU.oswego.cs.dl.util.concurrent"/>
+      <plugin id="asm"/>
+      <plugin id="asm-analysis"/>
+      <plugin id="asm-tree"/>
+      <plugin id="asm-util"/>
       <plugin id="au.com.bytecode.opencsv"/>
       <plugin id="cal10n.api"/>
       <plugin id="cern.colt"/>
@@ -230,8 +234,9 @@
       <plugin id="org.iq80.snappy"/>
       <plugin id="org.jdom"/>
       <plugin id="org.json"/>
-      <plugin id="org.objectweb.asm"/>
       <plugin id="org.opengis"/>
+      <plugin id="org.parboiled.core"/>
+      <plugin id="org.parboiled.java" fragment="true"/>
       <plugin id="org.reflections"/>
       <plugin id="org.slf4j.api"/>
       <plugin id="org.springframework.aop"/>
@@ -250,6 +255,7 @@
       <plugin id="org.springframework.web"/>
       <plugin id="org.springframework.web.servlet"/>
       <plugin id="org.webjars.locator"/>
+      <plugin id="pegdown"/>
       <plugin id="slf4j.ext"/>
       <plugin id="webjar-container-fragment" fragment="true"/>
       <plugin id="wicket-bootstrap-core"/>

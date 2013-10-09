@@ -28,6 +28,8 @@ import org.apache.wicket.request.http.flow.AbortWithHttpErrorCodeException;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.string.StringValue;
+import org.pegdown.Extensions;
+import org.pegdown.PegDownProcessor;
 
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Vertex;
@@ -161,11 +163,25 @@ public class TemplatePage extends BasePage {
 
 					// description
 					String descr = template.getDescription();
+					String htmlDescr = null;
 					if (descr == null || descr.isEmpty()) {
 						descr = "No description for the project template available.";
 					}
+					else {
+						// convert markdown to
+						htmlDescr = new PegDownProcessor(Extensions.AUTOLINKS
+								| Extensions.SUPPRESS_ALL_HTML | Extensions.HARDWRAPS
+								| Extensions.SMARTYPANTS).markdownToHtml(descr);
+					}
+					// description in pre
 					Label description = new Label("description", descr);
+					description.setVisible(htmlDescr == null);
 					add(description);
+					// description in div
+					Label htmlDescription = new Label("html-description", htmlDescr);
+					htmlDescription.setVisible(htmlDescr != null);
+					htmlDescription.setEscapeModelStrings(false);
+					add(htmlDescription);
 
 					// invalid
 					WebMarkupContainer statusInvalid = new WebMarkupContainer("invalid");
