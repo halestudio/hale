@@ -47,6 +47,7 @@ import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeIndex
+import eu.esdihumboldt.util.groovy.builder.BuilderBase
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import groovy.transform.TypeCheckingMode
@@ -59,12 +60,7 @@ import groovy.transform.TypeCheckingMode
  * @author Simon Templer
  */
 @CompileStatic
-class SchemaBuilder {
-
-	/**
-	 * The current node.
-	 */
-	def current
+class SchemaBuilder extends BuilderBase {
 
 	/**
 	 * Maps attribute names to constraint factories.
@@ -119,7 +115,7 @@ class SchemaBuilder {
 	 * Reset the builder
 	 */
 	void reset() {
-		current = null
+		super.reset()
 		defaultTypes = [:]
 		defaultTypeNames.clear()
 	}
