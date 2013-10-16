@@ -5,4 +5,5 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.common.convert.core
 Bundle-Version: 2.7.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: eu.esdihumboldt.hale.common.convert;bundle-version="2.5.0"
-Import-Package: org.joda.time
+Import-Package: org.joda.time,
+ org.joda.time.base;version="2.1.0"
