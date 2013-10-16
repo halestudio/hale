@@ -140,6 +140,8 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.common.filter.test"/>
       <plugin id="eu.esdihumboldt.hale.common.headless"/>
       <plugin id="eu.esdihumboldt.hale.common.instance"/>
+      <plugin id="eu.esdihumboldt.hale.common.instance.groovy"/>
+      <plugin id="eu.esdihumboldt.hale.common.instance.groovy.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.instance.orient"/>
       <plugin id="eu.esdihumboldt.hale.common.instancevalidator"/>
       <plugin id="eu.esdihumboldt.hale.common.lookup"/>
