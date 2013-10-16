@@ -23,6 +23,7 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceCollection
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator
 import eu.esdihumboldt.hale.common.schema.groovy.SchemaBuilder
 import eu.esdihumboldt.hale.common.schema.model.Schema
+import eu.esdihumboldt.hale.common.test.TestUtil
 
 
 /**
@@ -31,6 +32,13 @@ import eu.esdihumboldt.hale.common.schema.model.Schema
  * @author Simon Templer
  */
 class InstanceBuilderTest extends GroovyTestCase {
+
+	@Override
+	protected void setUp() throws Exception {
+		super.setUp()
+
+		TestUtil.startConversionService()
+	}
 
 	/**
 	 * Test creating a single instance w/o associated schema.
@@ -104,7 +112,7 @@ class InstanceBuilderTest extends GroovyTestCase {
 
 			OrderType {
 				item {
-					id(42)
+					id('42') // auto-convert to Long
 					name('item42')
 					price(4.2)
 					description('Item number 42')
@@ -140,6 +148,7 @@ class InstanceBuilderTest extends GroovyTestCase {
 
 					// id
 					assertEquals 1, item.getProperty(idName).size()
+					assertTrue item.getProperty(idName)[0] instanceof Long
 					assertEquals 42, item.getProperty(idName)[0]
 
 					// quantity

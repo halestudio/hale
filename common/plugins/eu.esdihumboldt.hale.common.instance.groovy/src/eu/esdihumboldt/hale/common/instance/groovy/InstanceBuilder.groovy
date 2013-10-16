@@ -17,6 +17,11 @@ package eu.esdihumboldt.hale.common.instance.groovy
 
 import javax.xml.namespace.QName
 
+import org.springframework.core.convert.ConversionException
+
+import de.cs3d.util.logging.ALogger
+import de.cs3d.util.logging.ALoggerFactory
+import eu.esdihumboldt.hale.common.convert.ConversionUtil
 import eu.esdihumboldt.hale.common.instance.model.DataSet
 import eu.esdihumboldt.hale.common.instance.model.Instance
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection
@@ -32,6 +37,9 @@ import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.AugmentedValueFlag
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag
 import eu.esdihumboldt.util.groovy.builder.BuilderBase
 import eu.esdihumboldt.util.groovy.paths.Path
 import groovy.transform.CompileStatic
@@ -46,10 +54,31 @@ import groovy.transform.TypeCheckingMode
 @CompileStatic
 class InstanceBuilder extends BuilderBase {
 
+	private static final ALogger log = ALoggerFactory.getLogger(InstanceBuilder)
+
 	/**
 	 * Specifies if namespace may be ignored.
 	 */
 	boolean ignoreNamespace = true
+
+	/**
+	 * If in schema bound mode the builder should fail if it detects violated
+	 * {@link HasValueFlag} or {@link AugmentedValueFlag} constraints.
+	 */
+	boolean strictValueFlags = true
+
+	/**
+	 * If in schema bound mode the builder should fail if it detects a violated
+	 * {@link Binding} constraint. If {@link #autoConvert} is set to
+	 * <code>true</code> the builder may try to perform a conversion first.
+	 */
+	boolean strictBinding = true
+
+	/**
+	 * If in schema bound mode the builder should try to automatically convert
+	 * property and instance values. 
+	 */
+	boolean autoConvert = true
 
 	/**
 	 * Specifies the data set to associated with the create instances.
@@ -305,8 +334,7 @@ class InstanceBuilder extends BuilderBase {
 				if (params) {
 					// only one value supported at once
 					//TODO warn if more than one param?
-					//TODO validate/convert/sanity check?
-					return params[0]
+					return processValue(params[0], property.propertyType)
 				}
 				else {
 					/*
@@ -318,6 +346,55 @@ class InstanceBuilder extends BuilderBase {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Process a value that is to be used either as an instance value or a 
+	 * direct property value. If a type definition is given the value may
+	 * be checked and converted accordingly.
+	 * 
+	 * @param value the value
+	 * @param type the type of the property/instance, may be <code>null</code>
+	 * @return the value to use
+	 */
+	private def processValue(def value, TypeDefinition type) {
+		if (value == null) {
+			// can't do anything with null values
+			return null
+		}
+
+		if (type != null) {
+			// check value flag constraints
+			if (strictValueFlags) {
+				if (!type.getConstraint(HasValueFlag).enabled && !type.getConstraint(AugmentedValueFlag).enabled) {
+					throw new IllegalStateException("No value allowed for type $type.name")
+				}
+			}
+
+			// auto conversion and binding check
+			if (type.getConstraint(HasValueFlag).enabled) {
+				// binding only relevant with HasValue
+				Class binding = type.getConstraint(Binding).binding
+
+				if (autoConvert) {
+					// auto-conversion
+					try {
+						value = ConversionUtil.getAs(value, binding)
+					} catch (ConversionException e) {
+						log.warn('Failed to auto-convert property or instance value', e)
+					}
+				}
+
+				// binding check
+				if (strictBinding && value != null) {
+					if (!binding.isAssignableFrom(value.class)) {
+						throw new IllegalStateException("Value of type ${value.class} not compatible to binding for type $type.name")
+					}
+				}
+			}
+		}
+
+		value
 	}
 
 	private Instance createInstance(String name, Map attributes, List params) {
@@ -377,8 +454,7 @@ class InstanceBuilder extends BuilderBase {
 		/*
 		 * 2. set instance value
 		 */
-		//TODO do validation/conversion/sanity check?
-		instance.setValue(value)
+		instance.setValue(processValue(value, type))
 
 		instance
 	}
