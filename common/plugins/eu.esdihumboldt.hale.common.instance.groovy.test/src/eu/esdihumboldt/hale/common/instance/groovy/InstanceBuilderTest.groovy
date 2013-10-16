@@ -19,6 +19,10 @@ import javax.xml.namespace.QName
 
 import eu.esdihumboldt.hale.common.instance.model.Group
 import eu.esdihumboldt.hale.common.instance.model.Instance
+import eu.esdihumboldt.hale.common.instance.model.InstanceCollection
+import eu.esdihumboldt.hale.common.instance.model.ResourceIterator
+import eu.esdihumboldt.hale.common.schema.groovy.SchemaBuilder
+import eu.esdihumboldt.hale.common.schema.model.Schema
 
 
 /**
@@ -63,5 +67,90 @@ class InstanceBuilderTest extends GroovyTestCase {
 		QName hrefName = new QName('href')
 		assertEquals 1, type.getProperty(hrefName).size()
 		assertEquals 'http://example.com/some-location', type.getProperty(hrefName)[0]
+	}
+
+	/**
+	 * Test creating a collection of instances bound to a schema.
+	 */
+	void testSchemaCollection() {
+		// create the schema
+		Schema schema = new SchemaBuilder().schema {
+			def itemType = ItemType {
+				id(Long)
+				name(String)
+				price(Double)
+				description(String)
+			}
+
+			OrderType {
+				item(itemType)
+				quantity(Integer)
+			}
+		}
+
+		QName orderTypeName = new QName('OrderType')
+
+		// create the instance collection
+		InstanceCollection instances = new InstanceBuilder().collection(schema) {
+			OrderType {
+				item {
+					id(12)
+					name('item12')
+					price(1.2)
+					description('Item number 12')
+				}
+				quantity(1)
+			}
+
+			OrderType {
+				item {
+					id(42)
+					name('item42')
+					price(4.2)
+					description('Item number 42')
+				}
+				quantity(3)
+			}
+		}
+
+		QName itemName = new QName('item')
+		QName idName = new QName('id')
+		QName quantityName = new QName('quantity')
+
+		assertNotNull instances
+		assertFalse instances.empty
+		assertEquals 2, instances.size()
+
+		ResourceIterator<Instance> it = instances.iterator()
+		int index = 0;
+		try {
+			while (it.hasNext()) {
+				Instance instance = it.next()
+
+				assertNotNull instance.definition
+				assertEquals schema.getType(orderTypeName), instance.definition
+
+				if (index == 1) {
+					// check second instance
+
+					// item
+					assertEquals 1, instance.getProperty(itemName).size()
+					assertTrue instance.getProperty(itemName)[0] instanceof Instance
+					Instance item = instance.getProperty(itemName)[0]
+
+					// id
+					assertEquals 1, item.getProperty(idName).size()
+					assertEquals 42, item.getProperty(idName)[0]
+
+					// quantity
+					assertEquals 1, instance.getProperty(quantityName).size()
+					assertEquals 3, instance.getProperty(quantityName)[0]
+				}
+
+				index++
+			}
+		} finally {
+			it.close()
+		}
 	}
 }

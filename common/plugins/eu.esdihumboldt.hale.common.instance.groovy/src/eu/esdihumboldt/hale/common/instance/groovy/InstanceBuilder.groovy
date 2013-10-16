@@ -26,12 +26,16 @@ import eu.esdihumboldt.hale.common.instance.model.MutableInstance
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultGroup
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstanceCollection
+import eu.esdihumboldt.hale.common.schema.model.Definition
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup
+import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex
 import eu.esdihumboldt.util.groovy.builder.BuilderBase
+import eu.esdihumboldt.util.groovy.paths.Path
 import groovy.transform.CompileStatic
+import groovy.transform.TypeCheckingMode
 
 
 /**
@@ -117,6 +121,16 @@ class InstanceBuilder extends BuilderBase {
 		node
 	}
 
+	/**
+	 * Add a property to the given parent group.
+	 * 
+	 * @param parent the parent group or instance
+	 * @param name the local name of the property
+	 * @param attributes the supplied named parameters
+	 * @param params the supplied unnamed parameters
+	 * @param subClosure if the property has a closure defining sub-properties
+	 * @return the property value, may be a {@link MutableGroup}, {@link MutableInstance} or other object
+	 */
 	private def addProperty(MutableGroup parent, String name, Map attributes, List params, boolean subClosure) {
 		QName propertyName = createName(name, attributes)
 
@@ -127,10 +141,96 @@ class InstanceBuilder extends BuilderBase {
 			return value
 		}
 		else {
-			//TODO find the property path
+			// find the property path
+			if (!(parent.definition instanceof Definition)) {
+				throw new IllegalStateException('Unsupported definition in parent group/instance')
+			}
+			Definition parentDef = (Definition) parent.definition
+			Path<Definition> defs = findPath(parentDef, propertyName)
+
+			// create group/property structure
+			MutableGroup parentGroup = parent
+			def result = null
+			boolean resultSet = false
+			defs.elements.eachWithIndex { Definition element, int index ->
+				if (index > 0 && element instanceof GroupPropertyDefinition) {
+					// add group to parent
+					MutableGroup childGroup = new DefaultGroup(element)
+					parentGroup.addProperty(element.getName(), childGroup);
+					parentGroup = childGroup
+
+					if (index == defs.elements.size() - 1) {
+						// group is last element in path
+						result = childGroup
+						resultSet = true
+					}
+				}
+				else if (element instanceof PropertyDefinition) {
+					// check position - must be last
+					if (index != defs.elements.size() - 1) {
+						throw new IllegalStateException('Property definitions may only be present at the end of the definition path')
+					}
+
+					// add property value to parent group
+					def value = createPropertyValue(element, attributes, params, subClosure)
+					parentGroup.addProperty(element.getName(), value)
+					result = value
+					resultSet = true
+				}
+				else {
+					if (index != 0) {
+						throw new IllegalStateException('Illegal element encountered in definition path')
+					}
+					// parent type/group at first index is ignored
+				}
+			}
+
+			if (!resultSet) {
+				throw new IllegalStateException("Property could not be added: $propertyName")
+			}
+
+			return result
 		}
 	}
 
+	/**
+	 * Try to find the unique path to a given property.
+	 * 
+	 * @param parentDef the parent definition
+	 * @param propertyName the qualified name of the property 
+	 * @return the definition path
+	 * @throws IllegalStateException if the path cannot be found or if it is not unique
+	 */
+	@CompileStatic(TypeCheckingMode.SKIP)
+	private Path<Definition> findPath(Definition parentDef, QName propertyName) {
+		/*
+		 * 1. try to find exact match (including namespace)
+		 */
+		Path<Definition> result = parentDef.accessor()."$propertyName.localPart"(propertyName.namespaceURI).eval()
+
+		if (ignoreNamespace && result == null) {
+			/*
+			 * 2. try w/o namespace
+			 */
+			result = parentDef.accessor()."$propertyName.localPart".eval()
+		}
+
+		if (result == null) {
+			throw new IllegalStateException("Property $propertyName not found in $parentDef.name")
+		}
+
+		result
+	}
+
+	/**
+	 * Create a property value.
+	 * 
+	 * @param property the property definition or <code>null</code> if schema less
+	 * @param attributes the supplied named parameters
+	 * @param params the supplied unnamed parameters
+	 * @param subClosure if the property has a closure defining sub-properties
+	 * @return the property value
+	 */
 	private def createPropertyValue(PropertyDefinition property, Map attributes, List params, boolean subClosure) {
 		if (property == null) {
 			// schemaless mode
@@ -187,7 +287,36 @@ class InstanceBuilder extends BuilderBase {
 		else {
 			// schema mode
 
-			//TODO
+			if (subClosure || property.propertyType.children) {
+				// force instance if there is a sub-closure
+				// must be an instance if the property type defines children
+
+				// determine instance value (if any)
+				def value = null
+				if (params) {
+					value = params[0]
+				}
+
+				// create instance
+				return createInstance(property.propertyType, value)
+			}
+			else {
+				// normal property value
+				if (params) {
+					// only one value supported at once
+					//TODO warn if more than one param?
+					//TODO validate/convert/sanity check?
+					return params[0]
+				}
+				else {
+					/*
+					 * XXX what is the best behavior here?
+					 * Use a null value or fail?
+					 * For now use a null value
+					 */
+					return null
+				}
+			}
 		}
 	}
 
@@ -256,6 +385,7 @@ class InstanceBuilder extends BuilderBase {
 
 	/**
 	 * Create a qualified name from a given name and attribute map.
+	 * 
 	 * @param name the local name
 	 * @param attributes the map that may contain a namespace, string keys
 	 *   <code>namespace</code> and <code>ns</code> are supported for providing
