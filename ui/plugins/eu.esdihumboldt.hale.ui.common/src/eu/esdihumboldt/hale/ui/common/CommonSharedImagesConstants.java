@@ -196,4 +196,9 @@ public interface CommonSharedImagesConstants {
 	 */
 	public static final String IMG_TRASH = "IMG_TRASH";
 
+	/**
+	 * key for trash image
+	 */
+	public static final String IMG_SAVE = "IMG_SAVE";
+
 }

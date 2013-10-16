@@ -64,6 +64,14 @@
                ref="eu.esdihumboldt.hale.io.csv">
          </contentType>
       </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.csv.writer.internal.CSVLookupWriter"
+            id="eu.esdihumboldt.hale.io.csv.writer.lookup"
+            name="CSV LookupTable">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.csv">
+         </contentType>
+      </provider>
    </extension>
 
 </plugin>

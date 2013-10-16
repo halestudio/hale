@@ -84,10 +84,13 @@ import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.lookup.LookupService;
 import eu.esdihumboldt.hale.common.lookup.LookupTable;
 import eu.esdihumboldt.hale.common.lookup.impl.LookupTableImpl;
+import eu.esdihumboldt.hale.common.lookup.impl.LookupTableInfoImpl;
+import eu.esdihumboldt.hale.common.lookup.internal.LookupExportAdvisor;
 import eu.esdihumboldt.hale.common.lookup.internal.LookupLoadAdvisor;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Enumeration;
+import eu.esdihumboldt.hale.io.csv.ui.LookupTableExportWizard;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
@@ -109,6 +112,7 @@ import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
  * 
  * @author Kai Schwierczek, Dominik Reuter
  */
+@SuppressWarnings("restriction")
 public class ClassificationMappingParameterPage extends
 		HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements ParameterPage,
 		ClassificationMappingFunction {
@@ -441,6 +445,8 @@ public class ClassificationMappingParameterPage extends
 		final ToolItem loadButton = new ToolItem(toolBar, SWT.PUSH);
 		final ToolItem fillValues = new ToolItem(toolBar, SWT.PUSH);
 		new ToolItem(toolBar, SWT.SEPARATOR);
+		final ToolItem saveButton = new ToolItem(toolBar, SWT.PUSH);
+		new ToolItem(toolBar, SWT.SEPARATOR);
 		final ToolItem valueRemove = new ToolItem(toolBar, SWT.PUSH);
 		final ToolItem removeAllButton = new ToolItem(toolBar, SWT.PUSH);
 
@@ -458,6 +464,7 @@ public class ClassificationMappingParameterPage extends
 					else {
 						lookupTable.put(newSource, null);
 						removeAllButton.setEnabled(true);
+						saveButton.setEnabled(true);
 						tableViewer.refresh();
 					}
 				}
@@ -468,7 +475,6 @@ public class ClassificationMappingParameterPage extends
 		loadButton.setToolTipText("Load classification from file");
 		loadButton.addSelectionListener(new SelectionAdapter() {
 
-			@SuppressWarnings("restriction")
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				LookupTableImportWizard wizard = new LookupTableLoadWizard();
@@ -511,6 +517,23 @@ public class ClassificationMappingParameterPage extends
 			}
 		});
 
+		saveButton.setImage(CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_SAVE));
+		saveButton.setToolTipText("Save classification to file");
+		saveButton.setEnabled(false);
+		saveButton.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				LookupTableExportWizard wizard = new LookupTableExportWizard();
+				LookupExportAdvisor advisor = new LookupExportAdvisor(new LookupTableInfoImpl(
+						new LookupTableImpl(lookupTable), "current", "not set"));
+				wizard.setAdvisor(advisor, null);
+				Shell shell = Display.getCurrent().getActiveShell();
+				HaleWizardDialog dialog = new HaleWizardDialog(shell, wizard);
+				dialog.open();
+			}
+		});
+
 		valueRemove.setImage(CommonSharedImages.getImageRegistry().get(
 				CommonSharedImages.IMG_REMOVE));
 		valueRemove.setToolTipText("Remove classification entry");
@@ -520,6 +543,7 @@ public class ClassificationMappingParameterPage extends
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				valueRemove.setEnabled(!event.getSelection().isEmpty());
+				saveButton.setEnabled(!event.getSelection().isEmpty());
 			}
 		});
 		valueRemove.addSelectionListener(new SelectionAdapter() {
@@ -550,6 +574,7 @@ public class ClassificationMappingParameterPage extends
 				lookupTable.clear();
 				tableViewer.refresh();
 				removeAllButton.setEnabled(false);
+				saveButton.setEnabled(false);
 			}
 		});
 
