@@ -158,6 +158,8 @@ public class TestUtil {
 		bundlesToStart.add("org.eclipse.gemini.blueprint.extender");
 		// activate the conversion service
 		bundlesToStart.add("eu.esdihumboldt.hale.common.convert");
+		// add core converters
+		bundlesToStart.add("eu.esdihumboldt.hale.common.convert.core");
 
 		startService(bundlesToStart, ConversionService.class);
 	}
