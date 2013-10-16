@@ -94,21 +94,18 @@ public class InspireInstanceWriter extends GmlInstanceWriter {
 		writer.writeStartElement(InspireConstants.INSPIRE_NAMESPACE_BASETYPES, "identifier");
 		writer.writeStartElement(InspireConstants.INSPIRE_NAMESPACE_BASETYPES, "Identifier");
 		writer.writeStartElement(InspireConstants.INSPIRE_NAMESPACE_BASETYPES, "localId");
-		writer.writeCharacters(getParameter(PARAM_SPATIAL_DATA_SET_LOCALID)
-				.getStringRepresentation());
+		writer.writeCharacters(getParameter(PARAM_SPATIAL_DATA_SET_LOCALID).as(String.class, ""));
 		writer.writeEndElement();
 		writer.writeStartElement(InspireConstants.INSPIRE_NAMESPACE_BASETYPES, "namespace");
-		writer.writeCharacters(getParameter(PARAM_SPATIAL_DATA_SET_NAMESPACE)
-				.getStringRepresentation());
+		writer.writeCharacters(getParameter(PARAM_SPATIAL_DATA_SET_NAMESPACE).as(String.class, ""));
 		writer.writeEndElement();
 		writer.writeEndElement();
 		writer.writeEndElement();
 
 		writer.writeStartElement(InspireConstants.INSPIRE_NAMESPACE_BASETYPES, "metadata");
 
-		String metadataFile = getParameter(PARAM_SPATIAL_DATA_SET_METADATA)
-				.getStringRepresentation();
-		if (metadataFile.isEmpty())
+		String metadataFile = getParameter(PARAM_SPATIAL_DATA_SET_METADATA).as(String.class);
+		if (metadataFile == null || metadataFile.isEmpty())
 			writer.writeAttribute(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "nil", "true");
 		else {
 			try {
