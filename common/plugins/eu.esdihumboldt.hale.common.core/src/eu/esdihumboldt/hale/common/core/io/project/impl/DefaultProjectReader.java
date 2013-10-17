@@ -162,7 +162,9 @@ public class DefaultProjectReader extends AbstractProjectReader {
 				ProjectFile projectFile = getProjectFiles().get(fileInfo.getName());
 				if (projectFile != null) {
 					URI location = fileInfo.getLocation();
-					location = update.findLocation(location, false, false, false);
+					location = update.findLocation(location, false,
+							DefaultInputSupplier.SCHEME_LOCAL.equals(getSource().getLocation()
+									.getScheme()), false);
 					if (location == null && getSource().getLocation() != null) {
 						// not able to resolve location, try defaults instead
 
