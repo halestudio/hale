@@ -17,7 +17,7 @@
 package eu.esdihumboldt.hale.io.xsd.reader.internal.constraint;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -30,7 +30,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.Enumeration;
  */
 public class UnionEnumeration extends Enumeration<Object> {
 
-	private Collection<? extends TypeDefinition> unionTypes;
+	private final Collection<? extends TypeDefinition> unionTypes;
 
 	private boolean initialized = false;
 
@@ -61,7 +61,7 @@ public class UnionEnumeration extends Enumeration<Object> {
 				if (enumeration.getValues() != null) {
 					// collect allowed values
 					if (values == null) {
-						values = new HashSet<Object>();
+						values = new LinkedHashSet<Object>();
 					}
 					values.addAll(enumeration.getValues());
 				}
