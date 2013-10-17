@@ -16,7 +16,7 @@
 
 package eu.esdihumboldt.hale.io.gml.ui;
 
-import javax.xml.namespace.QName;
+import java.util.List;
 
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -34,14 +34,15 @@ import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
-import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
-import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
+import eu.esdihumboldt.hale.common.schema.groovy.DefinitionAccessor;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.io.gml.InspireConstants;
+import eu.esdihumboldt.hale.io.gml.InspireUtil;
 import eu.esdihumboldt.hale.io.gml.writer.InspireInstanceWriter;
 import eu.esdihumboldt.hale.io.gml.writer.internal.StreamGmlWriter;
+import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.common.Editor;
@@ -52,11 +53,13 @@ import eu.esdihumboldt.hale.ui.io.IOWizardPage;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 import eu.esdihumboldt.hale.ui.io.util.OpenFileFieldEditor;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
+import eu.esdihumboldt.util.groovy.paths.Path;
 
 /**
  * Configuration page for configuring a SpatialDataSet.
  * 
  * @author Kai Schwierczek
+ * @author Simon Templer
  */
 @SuppressWarnings("restriction")
 public class SpatialDataSetConfigurationPage extends
@@ -107,32 +110,35 @@ public class SpatialDataSetConfigurationPage extends
 		GridLayoutFactory.swtDefaults().numColumns(2).equalWidth(false).spacing(6, 12)
 				.applyTo(page);
 
-		QName sdsQName = new QName(InspireConstants.INSPIRE_NAMESPACE_BASETYPES, "SpatialDataSet");
-		QName identifierQName = new QName(InspireConstants.INSPIRE_NAMESPACE_BASETYPES,
-				"identifier");
-		QName innerIdentifierQName = new QName(InspireConstants.INSPIRE_NAMESPACE_BASETYPES,
-				"Identifier");
-		QName localIdQName = new QName(InspireConstants.INSPIRE_NAMESPACE_BASETYPES, "localId");
-		QName nsQName = new QName(InspireConstants.INSPIRE_NAMESPACE_BASETYPES, "namespace");
-
 		// Get the property definitions of localId and namespace.
 		SchemaService ss = (SchemaService) PlatformUI.getWorkbench()
 				.getService(SchemaService.class);
 		SchemaSpace target = ss.getSchemas(SchemaSpaceID.TARGET);
 		XmlIndex index = StreamGmlWriter.getXMLIndex(target);
-		TypeDefinition sdsType = index.getElements().get(sdsQName).getType();
+		XmlElement sdsElement = InspireUtil.findSpatialDataSet(index);
+		TypeDefinition sdsType = null;
+		if (sdsElement != null) {
+			sdsType = sdsElement.getType();
+		}
 		// If the type was not found, simply return and do not throw an
 		// exception. Currently all pages are created, even if they aren't
 		// applicable.
 		if (sdsType == null)
 			return;
 
-		// SpatialDataSet/identifier.Identifier.
-		ChildDefinition<?> identifier = sdsType.getChild(identifierQName);
-		identifier = DefinitionUtil.getChild(identifier, innerIdentifierQName);
-		PropertyDefinition localIdDef = DefinitionUtil.getChild(identifier, localIdQName)
-				.asProperty();
-		PropertyDefinition nsDef = DefinitionUtil.getChild(identifier, nsQName).asProperty();
+		// find localId and namespace definitions
+		Path<Definition<?>> localIdPath = new DefinitionAccessor(sdsType)
+				.findChildren("identifier").findChildren("Identifier").findChildren("localId")
+				.eval(false);
+		List<Definition<?>> localIdDefs = localIdPath.getElements();
+		PropertyDefinition localIdDef = (PropertyDefinition) localIdDefs
+				.get(localIdDefs.size() - 1);
+
+		Path<Definition<?>> namespacePath = new DefinitionAccessor(sdsType)
+				.findChildren("identifier").findChildren("Identifier").findChildren("namespace")
+				.eval(false);
+		List<Definition<?>> namespaceDefs = namespacePath.getElements();
+		PropertyDefinition nsDef = (PropertyDefinition) namespaceDefs.get(namespaceDefs.size() - 1);
 
 		IPropertyChangeListener changeListener = new IPropertyChangeListener() {
 

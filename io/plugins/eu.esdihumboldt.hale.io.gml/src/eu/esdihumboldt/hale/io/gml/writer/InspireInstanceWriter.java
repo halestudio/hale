@@ -39,17 +39,21 @@ import org.xml.sax.SAXException;
 
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.schema.groovy.DefinitionAccessor;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.io.gml.InspireConstants;
+import eu.esdihumboldt.hale.io.gml.InspireUtil;
 import eu.esdihumboldt.hale.io.gml.writer.internal.AbstractXMLStreamWriterDecorator;
 import eu.esdihumboldt.hale.io.gml.writer.internal.StreamGmlWriter;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
+import eu.esdihumboldt.util.groovy.paths.Path;
 
 /**
  * Instance writer for Inspire schemas, using SpatialDataSet as container.
  * 
  * @author Kai Schwierczek
+ * @author Simon Templer
  */
 public class InspireInstanceWriter extends GmlInstanceWriter {
 
@@ -73,8 +77,7 @@ public class InspireInstanceWriter extends GmlInstanceWriter {
 	 */
 	@Override
 	protected XmlElement findDefaultContainter(XmlIndex targetIndex, IOReporter reporter) {
-		XmlElement result = targetIndex.getElements().get(
-				new QName(InspireConstants.INSPIRE_NAMESPACE_BASETYPES, "SpatialDataSet"));
+		XmlElement result = InspireUtil.findSpatialDataSet(targetIndex);
 		if (result != null)
 			return result;
 
@@ -91,18 +94,39 @@ public class InspireInstanceWriter extends GmlInstanceWriter {
 			TypeDefinition containerDefinition, IOReporter reporter) throws XMLStreamException {
 		super.writeAdditionalElements(writer, containerDefinition, reporter);
 
-		writer.writeStartElement(InspireConstants.INSPIRE_NAMESPACE_BASETYPES, "identifier");
-		writer.writeStartElement(InspireConstants.INSPIRE_NAMESPACE_BASETYPES, "Identifier");
-		writer.writeStartElement(InspireConstants.INSPIRE_NAMESPACE_BASETYPES, "localId");
+		// determine INSPIRE identifier and metadata names
+		Path<Definition<?>> localIdPath = new DefinitionAccessor(containerDefinition)
+				.findChildren("identifier").findChildren("Identifier").findChildren("localId")
+				.eval(false);
+
+		QName identifierName = localIdPath.getElements().get(1).getName();
+		Definition<?> internalIdentifierDef = localIdPath.getElements().get(2);
+		QName internalIdentifierName = internalIdentifierDef.getName();
+		QName localIdName = localIdPath.getElements().get(3).getName();
+
+		Path<Definition<?>> namespacePath = new DefinitionAccessor(internalIdentifierDef)
+				.findChildren("namespace").eval(false);
+		QName namespaceName = namespacePath.getElements().get(1).getName();
+
+		Path<Definition<?>> metadataPath = new DefinitionAccessor(containerDefinition)
+				.findChildren("metadata").eval(false);
+		QName metadataName = metadataPath.getElements().get(1).getName();
+
+		// write INSPIRE identifier
+		writer.writeStartElement(identifierName.getNamespaceURI(), identifierName.getLocalPart());
+		writer.writeStartElement(internalIdentifierName.getNamespaceURI(),
+				internalIdentifierName.getLocalPart());
+		writer.writeStartElement(localIdName.getNamespaceURI(), localIdName.getLocalPart());
 		writer.writeCharacters(getParameter(PARAM_SPATIAL_DATA_SET_LOCALID).as(String.class, ""));
 		writer.writeEndElement();
-		writer.writeStartElement(InspireConstants.INSPIRE_NAMESPACE_BASETYPES, "namespace");
+		writer.writeStartElement(namespaceName.getNamespaceURI(), namespaceName.getLocalPart());
 		writer.writeCharacters(getParameter(PARAM_SPATIAL_DATA_SET_NAMESPACE).as(String.class, ""));
 		writer.writeEndElement();
 		writer.writeEndElement();
 		writer.writeEndElement();
 
-		writer.writeStartElement(InspireConstants.INSPIRE_NAMESPACE_BASETYPES, "metadata");
+		// write metadata
+		writer.writeStartElement(metadataName.getNamespaceURI(), metadataName.getLocalPart());
 
 		String metadataFile = getParameter(PARAM_SPATIAL_DATA_SET_METADATA).as(String.class);
 		if (metadataFile == null || metadataFile.isEmpty())
