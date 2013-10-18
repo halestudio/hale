@@ -79,7 +79,7 @@ abstract class BuilderBase {
 		}
 
 		def parent = current
-		def node = createNode(name, attributes, params, parent, closure != null)
+		def node = internalCreateNode(name, attributes, params, parent, closure != null)
 		current = node
 
 		closure?.call()
@@ -92,6 +92,16 @@ abstract class BuilderBase {
 
 	/**
 	 * Create a new node.
+	 * @param name the new node name
+	 * @param args the arguments
+	 * @return the created node
+	 */
+	def createNode(String name, def args) {
+		methodMissing(name, args)
+	}
+
+	/**
+	 * Create a new node.
 	 * 
 	 * @param name the node name
 	 * @param attributes the named parameters, may be <code>null</code>
@@ -100,6 +110,6 @@ abstract class BuilderBase {
 	 * @param subClosure states if there is a sub-closure for this node
 	 * @return the created node
 	 */
-	def abstract createNode(String name, Map attributes, List params, def parent, boolean subClosure);
+	protected def abstract internalCreateNode(String name, Map attributes, List params, def parent, boolean subClosure);
 
 }
