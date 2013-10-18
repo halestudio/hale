@@ -121,7 +121,7 @@ class InstanceBuilder extends BuilderBase {
 	}
 
 	@Override
-	def createNode(String name, Map attributes, List params, Object parent,
+	protected def internalCreateNode(String name, Map attributes, List params, Object parent,
 			boolean subClosure) {
 		Object node = null
 

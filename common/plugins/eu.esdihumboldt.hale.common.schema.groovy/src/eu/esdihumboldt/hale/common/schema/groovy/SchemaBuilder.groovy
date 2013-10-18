@@ -215,7 +215,7 @@ class SchemaBuilder extends BuilderBase {
 	 * @param subClosure states if there is a sub-closure for this node
 	 * @return the created node
 	 */
-	def createNode(String name, Map attributes, List params, def parent, boolean subClosure) {
+	protected def internalCreateNode(String name, Map attributes, List params, def parent, boolean subClosure) {
 		def node
 		if (parent == null) {
 			// create stand-alone type
