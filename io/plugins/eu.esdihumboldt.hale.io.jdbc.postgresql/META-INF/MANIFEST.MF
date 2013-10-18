@@ -9,6 +9,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.vividsolutions.jts,
  com.vividsolutions.jts.geom,
  de.cs3d.util.logging,
+ eu.esdihumboldt.hale.common.instance.geometry,
+ eu.esdihumboldt.hale.common.instance.geometry.impl,
  org.geotools.geometry.jts;version="8.0.0.M1",
  org.geotools.referencing;version="8.0.0.M1",
  org.opengis.geometry;version="8.0.0.M1",

@@ -25,6 +25,7 @@ import eu.esdihumboldt.hale.common.instance.model.Instance
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
+import eu.esdihumboldt.hale.io.jdbc.constraints.internal.GeometryAdvisorConstraint
 import groovy.transform.CompileStatic
 
 
@@ -39,8 +40,16 @@ class TableInstanceBuilder {
 
 	private static final ALogger log = ALoggerFactory.getLogger(TableInstanceBuilder)
 
-	private final InstanceBuilder builder = new InstanceBuilder()
+	private final InstanceBuilder builder;
 
+	/**
+	 * Default constructor. 
+	 */
+	public TableInstanceBuilder() {
+		super();
+
+		builder = new InstanceBuilder(strictBinding: false)
+	}
 	/**
 	 * Create an instance with the given type from a row in a SQL result set.
 	 * 
@@ -57,6 +66,12 @@ class TableInstanceBuilder {
 				// get property value
 				try {
 					Object value = row.getObject(property.name.localPart)
+
+					// geometry conversion
+					GeometryAdvisorConstraint gac = property.propertyType.getConstraint(GeometryAdvisorConstraint)
+					if (value != null && gac.advisor != null) {
+						value = gac.advisor.convertToInstanceGeometry(value, property.propertyType)
+					}
 
 					// create property
 					if (value != null) {
