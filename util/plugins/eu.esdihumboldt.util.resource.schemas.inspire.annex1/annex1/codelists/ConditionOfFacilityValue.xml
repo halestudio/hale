@@ -1,0 +1,41 @@
+<?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="ConditionOfFacilityValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+The status of a facility with regards to its completion and use.&#13;
+&#13;
+</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">ConditionOfFacilityValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_25932_44665">
+      <description>-- Definition --&#13;
+The facility is not used.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2/ConditionOfFacilityValue">disused</identifier>
+      <name>disused</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_25932_44666">
+      <description>-- Definition --&#13;
+The facility is functional.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2/ConditionOfFacilityValue">functional</identifier>
+      <name>functional</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_25932_44667">
+      <description>-- Definition --&#13;
+The facility is being designed. Construction has not yet started.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2/ConditionOfFacilityValue">projected</identifier>
+      <name>projected</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_25932_44668">
+      <description>-- Definition --&#13;
+The facility is under construction and not yet functional. This applies only to the initial construction of the facility and not to maintenance work.&#13;
+&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2/ConditionOfFacilityValue">underConstruction</identifier>
+      <name>underConstruction</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

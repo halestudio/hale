@@ -52,7 +52,7 @@
          <attribute name="id" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  The unique identifier of the filter definition. Should be the same as returned by FilterDefinition.getIdentifier().
                </documentation>
             </annotation>
          </attribute>

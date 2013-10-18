@@ -2,14 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Styled Map View
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.views.styledmap;singleton:=true
-Bundle-Version: 2.6.0.qualifier
+Bundle-Version: 2.7.0.qualifier
 Bundle-Activator: eu.esdihumboldt.hale.ui.views.styledmap.internal.StyledMapBundle
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.opengis,
  org.eclipse.help;bundle-version="3.5.100"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.vividsolutions.jts.geom,
  de.cs3d.common.metamodel,
  de.cs3d.common.metamodel.helperGeometry,

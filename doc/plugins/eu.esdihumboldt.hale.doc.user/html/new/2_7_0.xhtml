@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="stylesheet" type="text/css" href="new.css" />
+<title>What's new in HALE 2.7</title>
+</head>
+<body>
+	<h1>What's new in HALE 2.7</h1>
+	<p>These are the descriptions of some of the more interesting or
+		significant changes made to HALE for the 2.7.0 release since the last
+		stable release 2.6.0.</p>
+
+	<ul>
+		<li><a href="#2_7_0_UI" shape="rect">User Interface</a></li>
+		<li><a href="#2_7_0_Core" shape="rect">Transformation and formats</a></li>
+	</ul>
+
+	<!-- 2.7.0 -->
+	<table border="0" cellpadding="15" cellspacing="0" class="news"
+		id="2_7_0">
+		<tbody>
+		
+			<!-- User Interface -->
+			<tr>
+				<td class="section" colspan="2" id="2_7_0_UI" rowspan="1"><h2>User
+						Interface</h2></td>
+			</tr>
+
+			<tr id="join">
+				<td class="title" colspan="1" rowspan="1">Join features</td>
+				<td class="content" colspan="1" rowspan="1">HALE now supports
+					attribute based joins of different feature classes - and the user
+					interface to easily configure these joins. To create a <i>Join</i>
+					select multiple source types and one target type and choose the <i>Join</i>
+					function. In the function wizard use the <i>Help</i> button to get
+					detailed information on the configuration steps.
+					<p>
+						<img src="2_7_0_images/join_condition.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="templates">
+				<td class="title" colspan="1" rowspan="1">Project templates</td>
+				<td class="content" colspan="1" rowspan="1">To make your start
+					with HALE easier, HALE now offers the possibility to use
+					pre-configured project templates, e.g. for mapping to the INSPIRE
+					Application Schemas. Also, you can share your own projects as
+					templates online, to make them available to others:
+					<p>
+						<a target="_blank" href="http://hale.igd.fraunhofer.de/templates/">http://hale.igd.fraunhofer.de/templates/</a>
+					</p>
+					<p>
+						To select a template and to load it in HALE, use the <i>New
+							project from template</i> option in the <i>File</i> menu or use the
+						Project URL copied from the template website and use <i>Open
+							Alignment project</i> and <i>From URL</i>.
+					</p>
+					<p>
+						<img src="2_7_0_images/template_web.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="occ_conditions">
+				<td class="title" colspan="1" rowspan="1">Conditions from occurring values</td>
+				<td class="content" colspan="1" rowspan="1">Easily create
+					conditions on types or properties based on the values found in the
+					loaded source data.<br />When doing data analysis based on the <i>Occurring
+						values</i> in the <i>Properties</i> view, you can now create
+					conditions on the corresponding schema elements with just one
+					click.
+					<p>
+						<img src="2_7_0_images/occurring_values_condition.png" />
+					</p>
+				</td>
+			</tr>
+			
+			<tr id="project_view">
+				<td class="title" colspan="1" rowspan="1">Project and resources view</td>
+				<td class="content" colspan="1" rowspan="1">The new <i>Project</i>
+					view lists all resources like source schemas, target schemas or
+					code lists that are associated to the project. Also, you can edit
+					basic project information in combination with the <i>Properties</i>
+					view. Some types of resources, like code lists and lookup tables,
+					can be removed here from the project using the context menu.
+					<p>
+						<img src="2_7_0_images/project_view.png" />
+					</p>
+				</td>
+			</tr>
+
+			<!-- Transformation and other functionalities -->
+			<tr>
+				<td class="section" colspan="2" id="2_7_0_Core" rowspan="1"><h2>Transformation
+						and formats</h2></td>
+			</tr>
+
+			<tr id="inspire_improved">
+				<td class="title" colspan="1" rowspan="1">Improved support for INSPIRE</td>
+				<td class="content" colspan="1" rowspan="1">HALE now supports
+					the new code list XML format introduced recently by the <a
+					href="http://inspire.ec.europa.eu/registry/" target="_blank">INSPIRE
+						registry</a>. These code lists are relevant for the latest versions of
+					the Annex II and III Application Schemas.<br /> In addition,
+					transformed INSPIRE compliant features can now be saved to GML
+					directly as an INSPIRE <i>SpatialDataSet</i> instead of the
+					deprecated GML FeatureCollection.
+				</td>
+			</tr>
+
+			<tr id="json">
+				<td class="title" colspan="1" rowspan="1">Export to
+					JSON/GeoJSON</td>
+				<td class="content" colspan="1" rowspan="1">Transformed data
+					can now be exported to JSON or GeoJSON, independently of what kind
+					of schema the data is associated to. Objects are generically
+					encoded as JSON/GeoJSON according to their structure.</td>
+			</tr>
+			
+			<tr id="shapefile_filename">
+				<td class="title" colspan="1" rowspan="1">File name attribute for Shapefiles</td>
+				<td class="content" colspan="1" rowspan="1">In cases where
+					there are multiple Shapefiles with the same structure but each
+					representing a different kind of object, the mapping can now be
+					done based on a newly introduced attribute that represents the file
+					name of the Shapefiles and can be used to express conditions.</td>
+			</tr>
+
+			<tr id="create_function">
+				<td class="title" colspan="1" rowspan="1">Create function</td>
+				<td class="content" colspan="1" rowspan="1">HALE can not only
+					be used for transforming objects, it now also supports creating
+					objects independently of a source schema or data using the <i>Create</i>
+					function. This can be helpful to create objects with static
+					information only.
+				</td>
+			</tr>
+
+		</tbody>
+	</table>
+
+</body>
+</html>

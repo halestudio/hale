@@ -15,15 +15,13 @@
 
 package eu.esdihumboldt.hale.server.api.controller;
 
-import javax.servlet.http.HttpServletRequest
-
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 
 import eu.esdihumboldt.hale.server.api.RestAPI
-import eu.esdihumboldt.hale.server.api.internal.wadl.doc.DocScope
-import eu.esdihumboldt.hale.server.api.internal.wadl.doc.WDoc
+import eu.esdihumboldt.hale.server.api.wadl.doc.DocScope
+import eu.esdihumboldt.hale.server.api.wadl.doc.WDoc
 
 /**
  * Basic controller for static information.
@@ -47,26 +45,5 @@ class Main implements RestAPI {
 	@RequestMapping(value = '/version', method = RequestMethod.GET, produces = 'text/plain')
 	public void getVersion(Writer writer) throws IOException {
 		writer.write(String.valueOf(VERSION));
-	}
-
-	/**
-	 * Get the API base URL.
-	 * 
-	 * @param request the HTTP servlet request
-	 * @return the base URL w/o trailing slash
-	 */
-	static String getBaseUrl(HttpServletRequest request) {
-		StringBuilder builder = new StringBuilder()
-		builder << request.scheme
-		builder << '://'
-		builder << request.serverName
-		builder << ':'
-		builder << request.serverPort
-		builder << request.contextPath
-		String servPath = request.servletPath
-		if (servPath) {
-			builder << servPath
-		}
-		builder.toString();
 	}
 }

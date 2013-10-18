@@ -39,8 +39,8 @@ public class ValidationJob extends AbstractTransformationJob {
 
 	private static final ALogger log = ALoggerFactory.getLogger(ValidationJob.class);
 
-	private final ReportHandler reportHandler;
-	private final InstanceValidator validator;
+	private ReportHandler reportHandler;
+	private InstanceValidator validator;
 
 	/**
 	 * Create a job for validating transformed instances.
@@ -82,8 +82,10 @@ public class ValidationJob extends AbstractTransformationJob {
 			defaultReporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
 		}
 
-		if (monitor.isCanceled())
+		if (monitor.isCanceled()) {
+			reset();
 			return Status.CANCEL_STATUS;
+		}
 
 		// add report to report service
 		reportHandler.publishReport(report);
@@ -91,14 +93,26 @@ public class ValidationJob extends AbstractTransformationJob {
 		// show message to user
 		if (report.isSuccess()) {
 			// info message
+			reset();
 			log.userInfo(report.getSummary());
 			return Status.OK_STATUS;
 		}
 		else {
 			// error message
+			reset();
 			log.userError(report.getSummary());
 			return ERROR_STATUS;
 		}
+	}
+
+	/**
+	 * Reset the Job so no references to other objects reside.
+	 * 
+	 * Necessary as jobs are referenced by the job manager even after execution.
+	 */
+	private void reset() {
+		validator = null;
+		reportHandler = null;
 	}
 
 }

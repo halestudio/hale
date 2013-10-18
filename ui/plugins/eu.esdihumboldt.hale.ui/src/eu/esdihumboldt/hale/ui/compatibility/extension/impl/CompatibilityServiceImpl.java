@@ -17,10 +17,12 @@ package eu.esdihumboldt.hale.ui.compatibility.extension.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -29,12 +31,12 @@ import org.eclipse.ui.PlatformUI;
 import de.cs3d.util.eclipse.extension.AbstractConfigurationFactory;
 import de.cs3d.util.eclipse.extension.AbstractExtension;
 import de.cs3d.util.eclipse.extension.AbstractObjectFactory;
-import de.cs3d.util.eclipse.extension.ExtensionObjectDefinition;
-import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
 import de.cs3d.util.eclipse.extension.ObjectExtension;
 import eu.esdihumboldt.cst.internal.CSTCompatibilityMode;
 import eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.filter.definition.CQLFilterDefinition;
+import eu.esdihumboldt.hale.common.filter.definition.ECQLFilterDefinition;
 import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityModeFactory;
 import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityService;
 import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityServiceListener;
@@ -56,7 +58,7 @@ public class CompatibilityServiceImpl extends
 	// stored listeners of the service
 	private final CopyOnWriteArraySet<CompatibilityServiceListener> listeners = new CopyOnWriteArraySet<CompatibilityServiceListener>();
 
-	CompatibilityAlignmentListener cal;
+	private final CompatibilityAlignmentListener cal;
 
 	/**
 	 * Default factory based on a configuration element.
@@ -73,28 +75,33 @@ public class CompatibilityServiceImpl extends
 			super(conf, "class");
 		}
 
-		/**
-		 * @see ExtensionObjectFactory#dispose(java.lang.Object)
-		 */
 		@Override
 		public void dispose(CompatibilityMode instance) {
 			// dispose is handled externally
 		}
 
-		/**
-		 * @see ExtensionObjectDefinition#getIdentifier()
-		 */
 		@Override
 		public String getIdentifier() {
 			return conf.getAttribute("id");
 		}
 
-		/**
-		 * @see ExtensionObjectDefinition#getDisplayName()
-		 */
 		@Override
 		public String getDisplayName() {
 			return conf.getAttribute("name");
+		}
+
+		@Override
+		public Set<String> getSupportedFilters() {
+			Set<String> result = new HashSet<>();
+
+			for (IConfigurationElement filter : conf.getChildren("supportsFilter")) {
+				String id = filter.getAttribute("ref");
+				if (id != null) {
+					result.add(id);
+				}
+			}
+
+			return result;
 		}
 
 	}
@@ -105,44 +112,39 @@ public class CompatibilityServiceImpl extends
 	private static class CompatibilityDefaultFactory extends
 			AbstractObjectFactory<CompatibilityMode> implements CompatibilityModeFactory {
 
-		/**
-		 * @see ExtensionObjectFactory#createExtensionObject()
-		 */
 		@Override
 		public CompatibilityMode createExtensionObject() throws Exception {
 			return new CSTCompatibilityMode();
 		}
 
-		/**
-		 * @see ExtensionObjectFactory#dispose(java.lang.Object)
-		 */
 		@Override
 		public void dispose(CompatibilityMode instance) {
 			// dispose is handled externally
 		}
 
-		/**
-		 * @see ExtensionObjectDefinition#getIdentifier()
-		 */
 		@Override
 		public String getIdentifier() {
 			return CSTCompatibilityMode.ID;
 		}
 
-		/**
-		 * @see ExtensionObjectDefinition#getDisplayName()
-		 */
 		@Override
 		public String getDisplayName() {
 			return ("CST Compatibility");
 		}
 
-		/**
-		 * @see de.cs3d.util.eclipse.extension.ExtensionObjectDefinition#getTypeName()
-		 */
 		@Override
 		public String getTypeName() {
 			return CSTCompatibilityMode.class.getName();
+		}
+
+		@Override
+		public Set<String> getSupportedFilters() {
+			Set<String> result = new HashSet<>();
+
+			result.add(CQLFilterDefinition.ID);
+			result.add(ECQLFilterDefinition.ID);
+
+			return result;
 		}
 
 	}
@@ -367,12 +369,10 @@ public class CompatibilityServiceImpl extends
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityService#compatibilityModeChanged()
+	 * called when the mode is changed (externally, e.g. through user at the ui)
 	 */
-	@Override
 	public void compatibilityModeChanged() {
 		cal.alignmentChanged();
-
 	}
 
 }

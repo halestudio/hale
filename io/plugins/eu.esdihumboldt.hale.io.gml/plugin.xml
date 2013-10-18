@@ -32,6 +32,20 @@
          </describer>
       </content-type>
       <content-type
+            base-type="eu.esdihumboldt.hale.io.gml"
+            file-extensions="gml,xml"
+            id="eu.esdihumboldt.hale.io.inspiregml"
+            name="GML (INSPIRE SpatialDataSet)"
+            priority="normal">
+         <describer
+               class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+            <parameter
+                  name="element"
+                  value="SpatialDataSet">
+            </parameter>
+         </describer>
+      </content-type>
+      <content-type
             base-type="eu.esdihumboldt.hale.io.xml.gzip"
             file-extensions="gml.gz,xml.gz,gz"
             id="eu.esdihumboldt.hale.io.gml.gzip"
@@ -56,6 +70,20 @@
             <parameter
                   name="element"
                   value="CityModel">
+            </parameter>
+         </describer>
+      </content-type>
+      <content-type
+            base-type="eu.esdihumboldt.hale.io.xml.gzip"
+            file-extensions="gml.gz,xml.gz,gz"
+            id="eu.esdihumboldt.hale.io.inspiregml.gzip"
+            name="GZiped GML (INSPIRE SpatialDataSet)"
+            priority="normal">
+         <describer
+               class="eu.esdihumboldt.hale.common.core.io.util.GZipXMLRootElementContentDescriber">
+            <parameter
+                  name="element"
+                  value="SpatialDataSet">
             </parameter>
          </describer>
       </content-type>
@@ -115,6 +143,17 @@
          </contentType>
          <contentType
                ref="eu.esdihumboldt.hale.io.citygml.gzip">
+         </contentType>
+      </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.gml.writer.InspireInstanceWriter"
+            id="eu.esdihumboldt.hale.io.inspiregml.writer"
+            name="GML (INSPIRE SpatialDataSet)">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.gml">
+         </contentType>
+         <contentType
+               ref="eu.esdihumboldt.hale.io.gml.gzip">
          </contentType>
       </provider>
    </extension>

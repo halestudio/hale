@@ -1,5 +1,5 @@
-#Created from default preferences Apr 5, 2013 10:44:43 AM
-#Fri Apr 05 10:44:43 CEST 2013
+#Updated from default preferences Sep 26, 2013 4:32:40 PM
+#Thu Sep 26 16:32:40 CEST 2013
 cloud_id=edu.umd.cs.findbugs.cloud.doNothingCloud
 detectorAppendingToAnObjectOutputStream=AppendingToAnObjectOutputStream|true
 detectorAtomicityProblem=AtomicityProblem|true
@@ -9,7 +9,7 @@ detectorBadSyntaxForRegularExpression=BadSyntaxForRegularExpression|true
 detectorBadUseOfReturnValue=BadUseOfReturnValue|true
 detectorBadlyOverriddenAdapter=BadlyOverriddenAdapter|true
 detectorBooleanReturnNull=BooleanReturnNull|true
-detectorCallToUnsupportedMethod=CallToUnsupportedMethod|false
+detectorCallToUnsupportedMethod=CallToUnsupportedMethod|true
 detectorCheckExpectedWarnings=CheckExpectedWarnings|false
 detectorCheckImmutableAnnotation=CheckImmutableAnnotation|true
 detectorCheckTypeQualifiers=CheckTypeQualifiers|true
@@ -98,7 +98,7 @@ detectorNoteUnconditionalParamDerefs=NoteUnconditionalParamDerefs|true
 detectorNumberConstructor=NumberConstructor|true
 detectorOverridingEqualsNotSymmetrical=OverridingEqualsNotSymmetrical|true
 detectorPreferZeroLengthArrays=PreferZeroLengthArrays|true
-detectorPublicSemaphores=PublicSemaphores|false
+detectorPublicSemaphores=PublicSemaphores|true
 detectorQuestionableBooleanAssignment=QuestionableBooleanAssignment|true
 detectorReadOfInstanceFieldInMethodInvokedByConstructorInSuperclass=ReadOfInstanceFieldInMethodInvokedByConstructorInSuperclass|true
 detectorReadReturnShouldBeChecked=ReadReturnShouldBeChecked|true
@@ -119,7 +119,7 @@ detectorURLProblems=URLProblems|true
 detectorUncallableMethodOfAnonymousClass=UncallableMethodOfAnonymousClass|true
 detectorUnnecessaryMath=UnnecessaryMath|true
 detectorUnreadFields=UnreadFields|true
-detectorUselessSubclassMethod=UselessSubclassMethod|false
+detectorUselessSubclassMethod=UselessSubclassMethod|true
 detectorVarArgsProblems=VarArgsProblems|true
 detectorVolatileUsage=VolatileUsage|true
 detectorWaitInLoop=WaitInLoop|true
@@ -127,6 +127,6 @@ detectorWrongMapIterator=WrongMapIterator|true
 detectorXMLFactoryBypass=XMLFactoryBypass|true
 detector_threshold=2
 effort=default
-filter_settings=Medium|BAD_PRACTICE,CORRECTNESS,MT_CORRECTNESS,PERFORMANCE,STYLE|false|15
-filter_settings_neg=MALICIOUS_CODE,NOISE,I18N,SECURITY,EXPERIMENTAL|
+filter_settings=Medium|BAD_PRACTICE,CORRECTNESS,I18N,MALICIOUS_CODE,MT_CORRECTNESS,PERFORMANCE,SECURITY,STYLE|false|15
+filter_settings_neg=NOISE,EXPERIMENTAL|
 run_at_full_build=true

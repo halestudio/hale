@@ -54,4 +54,11 @@ public class LookupServiceImpl implements LookupService {
 			return new HashSet<String>(tables.keySet());
 		}
 	}
+
+	@Override
+	public boolean removeTable(String id) {
+		synchronized (tables) {
+			return tables.remove(id) != null;
+		}
+	}
 }

@@ -44,6 +44,7 @@ import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueExtension;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderExtension;
 import eu.esdihumboldt.hale.common.core.io.supplier.LookupStreamResource;
+import eu.esdihumboldt.util.Pair;
 
 /**
  * Hale I/O utilities
@@ -128,73 +129,34 @@ public abstract class HaleIO {
 			IContentTypeManager ctm = Platform.getContentTypeManager();
 			try {
 				InputStream is = in.getInput();
-				IContentType[] candidates = ctm.findContentTypesFor(is, filename);
 
-				for (IContentType candidate : candidates) {
-					if (types.contains(candidate)) {
-						results.add(candidate);
-					}
+				/*
+				 * XXX IContentTypeManager.findContentTypes seems to return all
+				 * kind of content types that match in any way, but ordered by
+				 * relevance - so if all but the allowed types are removed, the
+				 * remaining types may be very irrelevant and not a match that
+				 * actually was determined based on the input stream.
+				 * 
+				 * XXX thus findContentTypesFor should not be used or only
+				 * relied upon the single best match that is returned
+				 */
+//				IContentType[] candidates = ctm.findContentTypesFor(is, filename);
+//
+//				for (IContentType candidate : candidates) {
+//					if (types.contains(candidate)) {
+//						results.add(candidate);
+//					}
+//				}
+				// instead use findContentTypeFor
+				IContentType candidate = ctm.findContentTypeFor(is, null);
+				if (types.contains(candidate)) {
+					results.add(candidate);
 				}
 
 				is.close();
 			} catch (IOException e) {
 				log.warn("Could not read input to determine content type", e);
 			}
-
-			// only use the testers if
-			// - we have no results from the filename match
-			// - we have more than one result from the filename match (as we
-			// might have to restrict the result)
-			// - the input supplier is set
-
-			// build a map to commit to DependencyOrderedList
-//			Map<ContentType, Set<ContentType>> map = new HashMap<ContentType, Set<ContentType>>();
-//			
-//			for (ContentType type : types){
-//				BundleContentType bct = getBundleContentType(type);
-//				if (bct != null){
-//					Set<ContentType> set = new HashSet<ContentType>();
-//					String father = bct.getContentType().getParent();
-//					if (father != null){
-//						set.add(ContentType.getContentType(father));
-//						map.put(type, set);
-//					}
-//					else {
-//						map.put(type, null);
-//					}
-//				}
-//			}
-//			
-//			// order the given content types
-//			DependencyOrderedList<ContentType> orderedlist = new DependencyOrderedList<ContentType>(map);
-//			List<ContentType> list = orderedlist.getInternalList();
-//			
-//			// last content type has to check first (has the most dependencies)
-//			for (int i = list.size() - 1; i >= 0; i--){
-//				ContentType cont = list.get(i);
-//				BundleContentType bct = getBundleContentType(cont);
-//				ContentTypeTester tester = bct.getTester();
-//				if (tester != null) {
-//					try {
-//						InputStream is = in.getInput();
-//						try {
-//							if (tester.matchesContentType(is)) {
-//								results.add(cont);
-//								return results;
-//							}
-//
-//						} finally {
-//							try {
-//								is.close();
-//							} catch (IOException e) {
-//								// ignore
-//							}
-//						}
-//					} catch (IOException e) {
-//						log.warn("Could not open input stream for testing the content type, tester for content type {0} is ignored", cont);
-//					}
-//				}
-//			}
 		}
 
 		return results;
@@ -355,6 +317,42 @@ public abstract class HaleIO {
 	}
 
 	/**
+	 * Find an I/O provider instance for the given input
+	 * 
+	 * @param <T> the provider interface type
+	 * 
+	 * @param providerType the provider type, usually an interface
+	 * @param in the input supplier to use for testing, may be <code>null</code>
+	 *            if the file name is not <code>null</code>
+	 * @param filename the file name, may be <code>null</code> if the input
+	 *            supplier is not <code>null</code>
+	 * @return a pair with the I/O provider and the corresponding identifier,
+	 *         both are <code>null</code> if no matching I/O provider was found
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T extends IOProvider> Pair<T, String> findIOProviderAndId(Class<T> providerType,
+			InputSupplier<? extends InputStream> in, String filename) {
+		T reader = null;
+		String providerId = null;
+		IContentType contentType = HaleIO.findContentType(providerType, in, filename);
+		if (contentType != null) {
+			IOProviderDescriptor factory = HaleIO.findIOProviderFactory(providerType, contentType,
+					null);
+			try {
+				reader = (T) factory.createExtensionObject();
+				providerId = factory.getIdentifier();
+			} catch (Exception e) {
+				throw new RuntimeException("Could not create I/O provider", e);
+			}
+
+			if (reader != null) {
+				reader.setContentType(contentType);
+			}
+		}
+		return new Pair<T, String>(reader, providerId);
+	}
+
+	/**
 	 * Automatically find an import provider to load a resource that is
 	 * available through an input stream that can only be read once.
 	 * 
@@ -389,10 +387,11 @@ public abstract class HaleIO {
 	 * Get the value of a complex property represented as a DOM element.
 	 * 
 	 * @param element the DOM element
+	 * @param context the context object, may be <code>null</code>
 	 * @return the complex value converted through the
 	 *         {@link ComplexValueExtension}, or the original element
 	 */
-	public static Object getComplexValue(Element element) {
+	public static Object getComplexValue(Element element, Object context) {
 		QName name;
 		if (element.getNamespaceURI() != null && !element.getNamespaceURI().isEmpty()) {
 			name = new QName(element.getNamespaceURI(), element.getLocalName());
@@ -403,7 +402,7 @@ public abstract class HaleIO {
 		ComplexValueDefinition cvt = ComplexValueExtension.getInstance().getDefinition(name);
 		if (cvt != null) {
 			// create and return the complex parameter value
-			return cvt.fromDOM(element);
+			return cvt.fromDOM(element, context);
 		}
 
 		// the element itself is the complex value
@@ -417,11 +416,12 @@ public abstract class HaleIO {
 	 * @param expectedType the expected parameter type, this must be either
 	 *            {@link String}, DOM {@link Element} or a complex value type
 	 *            defined in the {@link ComplexValueExtension}
+	 * @param context the context object, may be <code>null</code>
 	 * @return the complex value or <code>null</code> if it could not be created
 	 *         from the element
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T getComplexValue(Element element, Class<T> expectedType) {
+	public static <T> T getComplexValue(Element element, Class<T> expectedType, Object context) {
 		if (element == null) {
 			return null;
 		}
@@ -438,7 +438,7 @@ public abstract class HaleIO {
 		Object value = null;
 		if (cvt != null) {
 			try {
-				value = cvt.fromDOM(element);
+				value = cvt.fromDOM(element, context);
 			} catch (Exception e) {
 				throw new IllegalStateException("Failed to load complex value from DOM", e);
 			}

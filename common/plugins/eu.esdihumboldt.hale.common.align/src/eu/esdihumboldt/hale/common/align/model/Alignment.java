@@ -110,7 +110,22 @@ public interface Alignment {
 	 * @param includeDisabled also get cells that are disabled
 	 * @return the property cells associated with the given type cell.
 	 */
-	public Collection<? extends Cell> getPropertyCells(Cell typeCell, boolean includeDisabled);
+//	public Collection<? extends Cell> getPropertyCells(Cell typeCell, boolean includeDisabled);
+
+	/**
+	 * Get the cells representing a mapping between properties that are
+	 * associated with the given cell.<br>
+	 * The type cell needs to have at least a source or a target set for this
+	 * method to return anything.
+	 * 
+	 * @param typeCell the cell in question, has to be a type cell
+	 * @param includeDisabled also get cells that are disabled
+	 * @param ignoreEmptySource if an empty source in the type cell should be
+	 *            ignored and any source accepted instead
+	 * @return the property cells associated with the given type cell.
+	 */
+	Collection<? extends Cell> getPropertyCells(Cell typeCell, boolean includeDisabled,
+			boolean ignoreEmptySource);
 
 	/**
 	 * Get all type cells that match the given query cell's sources and targets.<br>

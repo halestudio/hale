@@ -17,17 +17,16 @@ package eu.esdihumboldt.hale.common.align.model;
 
 import eu.esdihumboldt.hale.common.core.io.ComplexValueType;
 
-
 /**
  * Descriptor for cell annotations.
  * 
  * The interface provides methods for serialization and deserialization to/from
  * DOM (and therefore XML), as the annotations are stored in the alignment file.
  * 
- * @param <T> the type of the annoation object
+ * @param <T> the type of the annotation object
  * @author Simon Templer
  */
-public interface AnnotationDescriptor<T> extends ComplexValueType<T> {
+public interface AnnotationDescriptor<T> extends ComplexValueType<T, Void> {
 
 	/**
 	 * Create a new annotation object.

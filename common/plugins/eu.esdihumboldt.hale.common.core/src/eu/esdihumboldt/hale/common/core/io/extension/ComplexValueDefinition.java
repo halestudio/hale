@@ -27,13 +27,14 @@ import eu.esdihumboldt.hale.common.core.io.ComplexValueType;
  * 
  * @author Simon Templer
  */
-public class ComplexValueDefinition implements Identifiable, ComplexValueType<Object> {
+public class ComplexValueDefinition implements Identifiable, ComplexValueType<Object, Object> {
 
 	private final String id;
 
 	private final QName elementName;
 
-	private final ComplexValueType<Object> descriptor;
+	@SuppressWarnings("rawtypes")
+	private final ComplexValueType descriptor;
 
 	private final Class<?> valueType;
 
@@ -49,22 +50,26 @@ public class ComplexValueDefinition implements Identifiable, ComplexValueType<Ob
 	 *             the descriptor class is not allowed
 	 * @throws InstantiationException if the descriptor object cannot be created
 	 */
-	@SuppressWarnings("unchecked")
 	public ComplexValueDefinition(String id, QName elementName,
-			Class<ComplexValueType<?>> descriptor, Class<?> valueType)
+			Class<ComplexValueType<?, ?>> descriptor, Class<?> valueType)
 			throws InstantiationException, IllegalAccessException {
 		super();
 		this.id = id;
 		this.elementName = elementName;
 		this.valueType = valueType;
-		this.descriptor = (ComplexValueType<Object>) descriptor.newInstance();
+		this.descriptor = descriptor.newInstance();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object fromDOM(Element fragment) {
-		return descriptor.fromDOM(fragment);
+	public Object fromDOM(Element fragment, Object context) {
+		if (context != null && descriptor.getContextType().isAssignableFrom(context.getClass())) {
+			return descriptor.fromDOM(fragment, context);
+		}
+		return descriptor.fromDOM(fragment, null);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Element toDOM(Object annotation) {
 		return descriptor.toDOM(annotation);
@@ -91,6 +96,11 @@ public class ComplexValueDefinition implements Identifiable, ComplexValueType<Ob
 	 */
 	public Class<?> getValueType() {
 		return valueType;
+	}
+
+	@Override
+	public Class<Object> getContextType() {
+		return Object.class;
 	}
 
 }

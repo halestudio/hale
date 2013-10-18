@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.util.resource">
+      <resolver
+            id="eu.esdihumboldt.util.resource.schemas.inspire.annex1"
+            resourceType="xmlSchema">
+         <bundleResolver></bundleResolver>
+         <host
+               name="inspire.hale-schemas">
+         </host>
+      </resolver>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.ui.schema.presets">
+      <schema
+            description="GML Application Schema from the INSPIRE Data Specification on Hydrography (Revision 937)."
+            icon="icons/inspire.gif"
+            id="eu.esdihumboldt.hale.ui.schema.presets.inspire.hy-p"
+            name="INSPIRE HydroPhysicalWaters"
+            tag="Bundled"
+            version="3.0">
+         <uri
+               value="resource://inspire.hale-schemas/annex1/3.0/HydroPhysicalWaters.xsd">
+         </uri>
+      </schema>
+      <schema
+            description="INSPIRE GML Application Schema for Addresses (Revision 937)."
+            icon="icons/inspire.gif"
+            id="eu.esdihumboldt.hale.ui.schema.presets.inspire.ad"
+            name="INSPIRE Addresses"
+            tag="Bundled"
+            version="3.0">
+         <uri
+               value="resource://inspire.hale-schemas/annex1/3.0/Addresses.xsd">
+         </uri>
+      </schema>
+      <schema
+            description="INSPIRE GML Application Schema for Administrative Units (Revision 937)."
+            icon="icons/inspire.gif"
+            id="eu.esdihumboldt.hale.ui.schema.presets.inspire.au"
+            name="INSPIRE AdministrativeUnits"
+            tag="Bundled"
+            version="3.0">
+         <uri
+               value="resource://inspire.hale-schemas/annex1/3.0/AdministrativeUnits.xsd">
+         </uri>
+      </schema>
+      <schema
+            description="INSPIRE GML Application Schema for Cadastral Parcels (Revision 937)."
+            icon="icons/inspire.gif"
+            id="eu.esdihumboldt.hale.ui.schema.presets.inspire.cp"
+            name="INSPIRE CadastralParcels"
+            tag="Bundled"
+            version="3.0">
+         <uri
+               value="resource://inspire.hale-schemas/annex1/3.0/CadastralParcels.xsd">
+         </uri>
+      </schema>
+      <schema
+            description="INSPIRE GML Application Schema for Gazetteers (Revision 937)."
+            icon="icons/inspire.gif"
+            id="eu.esdihumboldt.hale.ui.schema.presets.inspire.gaz"
+            name="INSPIRE Gazetteer"
+            tag="Bundled"
+            version="3.2">
+         <uri
+               value="resource://inspire.hale-schemas/annex1/3.0/Gazetteer.xsd">
+         </uri>
+      </schema>
+      <schema
+            description="INSPIRE GML Application Schema for Geographical Names (Revision 937)."
+            icon="icons/inspire.gif"
+            id="eu.esdihumboldt.hale.ui.schema.presets.inspire.gn"
+            name="INSPIRE GeographicalNames"
+            tag="Bundled"
+            version="3.0">
+         <uri
+               value="resource://inspire.hale-schemas/annex1/3.0/GeographicalNames.xsd">
+         </uri>
+      </schema>
+      <schema
+            description="GML Application Schema from the INSPIRE Data Specification on Hydrography (Revision 937)."
+            icon="icons/inspire.gif"
+            id="eu.esdihumboldt.hale.ui.schema.presets.inspire.hy-n"
+            name="INSPIRE HydroNetwork"
+            tag="Bundled"
+            version="3.0">
+         <uri
+               value="resource://inspire.hale-schemas/annex1/3.0/HydroNetwork.xsd">
+         </uri>
+      </schema>
+      <schema
+            description="GML Application Schema from the INSPIRE Data Specification on Hydrography (Revision 937)."
+            icon="icons/inspire.gif"
+            id="eu.esdihumboldt.hale.ui.schema.presets.inspire.hy-r"
+            name="INSPIRE HydroReporting"
+            tag="Bundled"
+            version="3.0">
+         <uri
+               value="resource://inspire.hale-schemas/annex1/3.0/HydroReporting.xsd">
+         </uri>
+      </schema>
+      <schema
+            description="INSPIRE GML Application Schema for Protected Sites (Revision 937)."
+            icon="icons/inspire.gif"
+            id="eu.esdihumboldt.hale.ui.schema.presets.inspire.ps-f"
+            name="INSPIRE ProtectedSites Full"
+            tag="Bundled"
+            version="3.0">
+         <uri
+               value="resource://inspire.hale-schemas/annex1/3.0/ProtectedSitesFull.xsd">
+         </uri>
+      </schema>
+      <schema
+            description="INSPIRE GML Application Schema for Protected Sites (Revision 937)."
+            icon="icons/inspire.gif"
+            id="eu.esdihumboldt.hale.ui.schema.presets.inspire.ps"
+            name="INSPIRE ProtectedSites"
+            tag="Bundled"
+            version="3.0">
+         <uri
+               value="resource://inspire.hale-schemas/annex1/3.0/ProtectedSites.xsd">
+         </uri>
+      </schema>
+      <schema
+            description="INSPIRE GML Application Schema for Air Transport Networks (Revision 937)."
+            icon="icons/inspire.gif"
+            id="eu.esdihumboldt.hale.ui.schema.presets.inspire.tn-a"
+            name="INSPIRE AirTransportNetwork"
+            tag="Bundled"
+            version="3.0">
+         <uri
+               value="resource://inspire.hale-schemas/annex1/3.0/AirTransportNetwork.xsd">
+         </uri>
+      </schema>
+      <schema
+            description="INSPIRE GML Application Schema for Cable Transport Networks (Revision 937)."
+            icon="icons/inspire.gif"
+            id="eu.esdihumboldt.hale.ui.schema.presets.inspire.tn-c"
+            name="INSPIRE CableTransportNetwork"
+            tag="Bundled"
+            version="3.0">
+         <uri
+               value="resource://inspire.hale-schemas/annex1/3.0/CableTransportNetwork.xsd">
+         </uri>
+      </schema>
+      <schema
+            description="INSPIRE GML Application Schema for Railway Transport Networks (Revision 937)."
+            icon="icons/inspire.gif"
+            id="eu.esdihumboldt.hale.ui.schema.presets.inspire.tn-ra"
+            name="INSPIRE RailwayTransportNetwork"
+            tag="Bundled"
+            version="3.0">
+         <uri
+               value="resource://inspire.hale-schemas/annex1/3.0/RailwayTransportNetwork.xsd">
+         </uri>
+      </schema>
+      <schema
+            description="INSPIRE GML Application Schema for Road Transport Networks (Revision 937)."
+            icon="icons/inspire.gif"
+            id="eu.esdihumboldt.hale.ui.schema.presets.inspire.tn-ro"
+            name="INSPIRE RoadTransportNetwork"
+            tag="Bundled"
+            version="3.0">
+         <uri
+               value="resource://inspire.hale-schemas/annex1/3.0/RoadTransportNetwork.xsd">
+         </uri>
+      </schema>
+      <schema
+            description="INSPIRE GML Application Schema for Water Transport Networks (Revision 937)."
+            icon="icons/inspire.gif"
+            id="eu.esdihumboldt.hale.ui.schema.presets.inspire.tn-w"
+            name="INSPIRE WaterTransportNetwork"
+            tag="Bundled"
+            version="3.0">
+         <uri
+               value="resource://inspire.hale-schemas/annex1/3.0/WaterTransportNetwork.xsd">
+         </uri>
+      </schema>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.ui.templates">
+      <project
+            location="resource://inspire.hale-schemas/annex1/projects/HydroPhysicalWaters.halex"
+            icon="icons/inspire.gif"
+            id="eu.esdihumboldt.hale.ui.templates.inspire.hy-p"
+            name="INSPIRE HydroPhysicalWaters">
+      </project>
+   </extension>
+
+</plugin>

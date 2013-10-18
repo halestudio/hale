@@ -17,23 +17,27 @@
 package eu.esdihumboldt.hale.common.core.io.project.impl;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.text.MessageFormat;
 
 import com.google.common.io.Files;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectIO;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
+import eu.esdihumboldt.hale.common.core.io.project.model.Project;
+import eu.esdihumboldt.hale.common.core.io.project.util.LocationUpdater;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
+import eu.esdihumboldt.util.io.IOUtils;
 
 /**
  * Load project from a zip-archive (created by {@link ArchiveProjectWriter})
@@ -44,84 +48,72 @@ public class ArchiveProjectReader extends AbstractProjectReader {
 
 	private static final ALogger log = ALoggerFactory.getLogger(ArchiveProjectReader.class);
 
-	// The reader saves the temporary directory as 'source' to load all
-	// resources, but sometimes you need the old originally source (the archive)
-	private LocatableInputSupplier<? extends InputStream> oldSource;
-
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#execute(eu.esdihumboldt.hale.common.core.io.ProgressIndicator,
-	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
-	 */
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
-
-		XMLProjectReader reader = new XMLProjectReader();
-
 		// copy resources to a temporary directory
 		File tempDir = Files.createTempDir();
-		getZipFiles(getSource().getInput(), tempDir);
+		IOUtils.extract(tempDir, getSource().getInput());
 
 		// create the project file via XMLProjectReader
 		File baseFile = new File(tempDir, "project.halex");
-		LocatableInputSupplier<InputStream> source = new FileIOSupplier(baseFile);
+		ProjectReader reader;
+		if (!baseFile.exists()) {
+			// look for project file
+			log.debug("Default project file not found, looking for other candidates.");
+			String candidate = ProjectIO.findProjectFile(tempDir);
+			if (candidate != null) {
+				log.info(MessageFormat
+						.format("Loading {0} as project file from archive", candidate));
+				baseFile = new File(tempDir, candidate);
+			}
+			reader = HaleIO.findIOProvider(ProjectReader.class, new FileIOSupplier(baseFile),
+					candidate);
+			if (reader == null) {
+				reporter.error(new IOMessageImpl("Could not find reader for project file "
+						+ candidate, null));
+				reporter.setSuccess(false);
+				return reporter;
+			}
+		}
+		else {
+			// default project file
+			reader = new XMLProjectReader();
+		}
+
+		LocatableInputSupplier<InputStream> tempSource = new FileIOSupplier(baseFile);
 
 		// save old save configuration
-		oldSource = getSource();
+		LocatableInputSupplier<? extends InputStream> oldSource = getSource();
 
-		setSource(source);
-		reader.setSource(source);
+		setSource(tempSource);
+		reader.setSource(tempSource);
 		reader.setProjectFiles(getProjectFiles());
-		IOReport report = reader.execute(progress, reporter);
-		setProject(reader.getProject());
+		IOReport report = reader.execute(progress);
+		Project readProject = reader.getProject();
+
+		if (readProject != null) {
+			/*
+			 * Because the original source is only available here, update the
+			 * project's resource paths here.
+			 * 
+			 * The only drawback is that the UILocationUpdater cannot be used.
+			 */
+			LocationUpdater updater = new LocationUpdater(readProject, tempSource.getLocation());
+			// update resources
+			// resources are made absolute (else they can't be found afterwards)
+			updater.updateProject(false);
+		}
+
+		// set the real source
+		setSource(oldSource);
+		// set the read project
+		setProject(readProject);
 
 		// delete the temporary directory
 		deleteDirectoryOnExit(tempDir);
 
 		return report;
-	}
-
-	// extract all files from the InputStream to the destination
-	// InputStream must be based on a zip file
-	// destination file has to be a directory
-	private void getZipFiles(InputStream file, File destination) throws IOException {
-		byte[] buf = new byte[1024];
-		ZipInputStream zipinputstream = null;
-		ZipEntry zipentry;
-		zipinputstream = new ZipInputStream(file);
-
-		try {
-			while ((zipentry = zipinputstream.getNextEntry()) != null) {
-				String entryName = zipentry.getName();
-				int n;
-				FileOutputStream fileoutputstream;
-				File newFile = new File(entryName);
-				String directory = newFile.getParent();
-
-				if (directory != null) {
-					File newF = new File(destination, directory);
-					try {
-						newF.mkdirs();
-					} catch (SecurityException e) {
-						log.debug("Can not create directories because of SecurityManager", e);
-					}
-				}
-
-				File nf = new File(destination, entryName);
-				fileoutputstream = new FileOutputStream(nf);
-
-				while ((n = zipinputstream.read(buf, 0, 1024)) > -1)
-					fileoutputstream.write(buf, 0, n);
-
-				fileoutputstream.close();
-				zipinputstream.closeEntry();
-
-			}
-		} catch (FileNotFoundException e) {
-			throw new IOException("Destination directory not found", e);
-		}
-
-		zipinputstream.close();
 	}
 
 	private void deleteDirectoryOnExit(File directory) {
@@ -139,13 +131,6 @@ public class ArchiveProjectReader extends AbstractProjectReader {
 				}
 			}
 		}
-	}
-
-	/**
-	 * @return the originally source of the archive
-	 */
-	public LocatableInputSupplier<? extends InputStream> getOriginallySource() {
-		return oldSource;
 	}
 
 }

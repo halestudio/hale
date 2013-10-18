@@ -52,6 +52,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
@@ -63,12 +64,14 @@ import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingFunction;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.lookup.LookupService;
 import eu.esdihumboldt.hale.common.lookup.LookupTable;
 import eu.esdihumboldt.hale.common.lookup.impl.LookupTableImpl;
+import eu.esdihumboldt.hale.common.lookup.internal.LookupLoadAdvisor;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
@@ -78,6 +81,9 @@ import eu.esdihumboldt.hale.ui.common.definition.AttributeInputDialog;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
 import eu.esdihumboldt.hale.ui.io.action.IOWizardAction;
+import eu.esdihumboldt.hale.ui.lookup.LookupTableImportWizard;
+import eu.esdihumboldt.hale.ui.lookup.LookupTableLoadWizard;
+import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 
 /**
  * Parameter page for classification mapping function.
@@ -114,6 +120,8 @@ public class ClassificationMappingParameterPage extends
 	private ListViewer values;
 	private PropertyDefinition sourceProperty;
 	private PropertyDefinition targetProperty;
+	private EntityDefinition sourceEntity;
+	private EntityDefinition targetEntity;
 
 	// TODO allowedValues bei enum source
 	// TODO fixedClassifications bei enum target
@@ -126,25 +134,18 @@ public class ClassificationMappingParameterPage extends
 		setPageComplete(false);
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.HaleWizardPage#onShowPage(boolean)
-	 */
 	@Override
 	protected void onShowPage(boolean firstShow) {
 		super.onShowPage(firstShow);
 		Cell unfinishedCell = getWizard().getUnfinishedCell();
-		sourceProperty = (PropertyDefinition) unfinishedCell.getSource().values().iterator().next()
-				.getDefinition().getDefinition();
-		targetProperty = (PropertyDefinition) unfinishedCell.getTarget().values().iterator().next()
-				.getDefinition().getDefinition();
+		sourceEntity = unfinishedCell.getSource().values().iterator().next().getDefinition();
+		sourceProperty = (PropertyDefinition) sourceEntity.getDefinition();
+		targetEntity = unfinishedCell.getTarget().values().iterator().next().getDefinition();
+		targetProperty = (PropertyDefinition) targetEntity.getDefinition();
 		if (fixedValueText == null || fixedValueText.getText() != null)
 			setPageComplete(true);
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage#setParameter(java.util.Set,
-	 *      com.google.common.collect.ListMultimap)
-	 */
 	@Override
 	public void setParameter(Set<FunctionParameter> params,
 			ListMultimap<String, ParameterValue> initialValues) {
@@ -317,7 +318,7 @@ public class ClassificationMappingParameterPage extends
 		manuelItem.setText("Manual");
 
 		Composite item1Content = new Composite(tabs, SWT.NONE);
-		item1Content.setLayout(GridLayoutFactory.swtDefaults().numColumns(4).create());
+		item1Content.setLayout(GridLayoutFactory.swtDefaults().numColumns(6).create());
 
 		// target label
 		Label targetLabel = new Label(item1Content, SWT.NONE);
@@ -340,8 +341,8 @@ public class ClassificationMappingParameterPage extends
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				AttributeInputDialog dialog = new AttributeInputDialog(targetProperty, Display
-						.getCurrent().getActiveShell(), "Add classification",
+				AttributeInputDialog dialog = new AttributeInputDialog(targetProperty,
+						targetEntity, Display.getCurrent().getActiveShell(), "Add classification",
 						"Enter new classification value");
 				if (dialog.open() == AttributeInputDialog.OK) {
 					String newClass = dialog.getValueAsText();
@@ -374,6 +375,55 @@ public class ClassificationMappingParameterPage extends
 			}
 		});
 
+		final Button loadButton = new Button(item1Content, SWT.PUSH);
+		loadButton.setImage(CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_OPEN));
+		loadButton.setToolTipText("Load classification from file");
+		final Button removeAllButton = new Button(item1Content, SWT.PUSH);
+
+		loadButton.addSelectionListener(new SelectionAdapter() {
+
+			@SuppressWarnings("restriction")
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				LookupTableImportWizard wizard = new LookupTableLoadWizard();
+				LookupLoadAdvisor advisor = new LookupLoadAdvisor();
+				wizard.setAdvisor(advisor, null);
+				Shell shell = Display.getCurrent().getActiveShell();
+				HaleWizardDialog dialog = new HaleWizardDialog(shell, wizard);
+				dialog.open();
+
+				if (advisor.getLookupTable() != null) {
+					ListMultimap<Value, Value> tableReverse = advisor.getLookupTable().getTable()
+							.reverse();
+					for (Value key : tableReverse.keySet()) {
+						TreeSet<String> valueSet = new TreeSet<String>();
+						for (Value value : tableReverse.get(key)) {
+							valueSet.add(value.as(String.class));
+						}
+						classifications.put(key.as(String.class), valueSet);
+					}
+					classes.refresh();
+					classes.setSelection(new StructuredSelection(classes.getElementAt(0)));
+					removeAllButton.setEnabled(!classes.getSelection().isEmpty());
+				}
+			}
+		});
+
+		removeAllButton.setImage(CommonSharedImages.getImageRegistry().get(
+				CommonSharedImages.IMG_TRASH));
+		removeAllButton.setEnabled(false);
+		removeAllButton.setToolTipText("Remove complete classification");
+		removeAllButton.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				classifications.clear();
+				classes.refresh();
+				values.setInput(null);
+				removeAllButton.setEnabled(false);
+			}
+		});
+
 		// source label
 		Label sourceLabel = new Label(item1Content, SWT.NONE);
 		sourceLabel.setText("Source values: ");
@@ -382,13 +432,13 @@ public class ClassificationMappingParameterPage extends
 		// list
 		org.eclipse.swt.widgets.List list = new org.eclipse.swt.widgets.List(item1Content,
 				SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
-		list.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
+		list.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 5, 1));
 		values = new ListViewer(list);
 		values.setContentProvider(new ArrayContentProvider());
 
 		// value list controls
 		Composite listControls = new Composite(item1Content, SWT.NONE);
-		listControls.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3, 1));
+		listControls.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 5, 1));
 		listControls.setLayout(new GridLayout(2, true));
 
 		final Button valueAdd = new Button(listControls, SWT.PUSH);
@@ -403,9 +453,10 @@ public class ClassificationMappingParameterPage extends
 				String selectedClass = ((IStructuredSelection) classes.getSelection())
 						.getFirstElement().toString();
 
-				AttributeInputDialog dialog = new AttributeInputDialog(sourceProperty, Display
-						.getCurrent().getActiveShell(), "Add value", MessageFormat.format(
-						"Enter a new value that is classified as \"{0}\"", selectedClass));
+				AttributeInputDialog dialog = new AttributeInputDialog(sourceProperty,
+						sourceEntity, Display.getCurrent().getActiveShell(), "Add value",
+						MessageFormat.format("Enter a new value that is classified as \"{0}\"",
+								selectedClass));
 
 				if (dialog.open() == Dialog.OK) {
 					String newValue = dialog.getValueAsText();
@@ -438,6 +489,7 @@ public class ClassificationMappingParameterPage extends
 				boolean empty = event.getSelection().isEmpty();
 				removeButton.setEnabled(!empty); // !fixedClassifications &&
 				valueAdd.setEnabled(!empty);
+				removeAllButton.setEnabled(!empty);
 				if (!empty) {
 					String className = ((IStructuredSelection) event.getSelection())
 							.getFirstElement().toString();
@@ -607,8 +659,8 @@ public class ClassificationMappingParameterPage extends
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				AttributeInputDialog dialog = new AttributeInputDialog(targetProperty, Display
-						.getCurrent().getActiveShell(), "Set default value",
+				AttributeInputDialog dialog = new AttributeInputDialog(targetProperty,
+						targetEntity, Display.getCurrent().getActiveShell(), "Set default value",
 						"This value will be assigned to targets when the source value is not mapped");
 				if (initialValue != null) {
 					Editor<?> editor = dialog.getEditor();

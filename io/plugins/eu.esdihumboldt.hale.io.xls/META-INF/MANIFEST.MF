@@ -2,10 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: XLS/Instance I/O
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.xls;singleton:=true
-Bundle-Version: 2.6.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Version: 2.7.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.io;version="11.0.1",
  eu.esdihumboldt.hale.common.align.io.impl,
+ eu.esdihumboldt.hale.common.align.model,
  eu.esdihumboldt.hale.common.core.io,
  eu.esdihumboldt.hale.common.core.io.impl,
  eu.esdihumboldt.hale.common.core.io.report,
@@ -16,4 +17,5 @@ Import-Package: com.google.common.io;version="11.0.1",
  org.apache.poi.ss.usermodel;version="3.9.0",
  org.apache.poi.xssf.usermodel;version="3.9.0"
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
- eu.esdihumboldt.hale.common.core;bundle-version="2.5.0"
+ eu.esdihumboldt.hale.common.core;bundle-version="2.5.0",
+ eu.esdihumboldt.hale.common.align

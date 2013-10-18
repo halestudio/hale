@@ -45,6 +45,7 @@ import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.common.core.io.project.util.LocationUpdater;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
+import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 
 /**
  * Represents a declared example project
@@ -99,7 +100,7 @@ public class ExampleProject implements Identifiable, Comparable<ExampleProject> 
 		projectFiles.put(AlignmentIO.PROJECT_FILE_ALIGNMENT, new ProjectFile() {
 
 			@Override
-			public void store(OutputStream out) throws Exception {
+			public void store(LocatableOutputSupplier<OutputStream> target) throws Exception {
 				throw new UnsupportedOperationException();
 			}
 
@@ -130,7 +131,9 @@ public class ExampleProject implements Identifiable, Comparable<ExampleProject> 
 
 		// update paths in project
 		updater = new LocationUpdater(project, url.toURI());
-		updater.updateProject();
+		// example projects cannot be saved where they are, so forget about
+		// relative paths
+		updater.updateProject(false);
 
 		this.info = project;
 	}

@@ -19,10 +19,13 @@ package eu.esdihumboldt.hale.ui.service.project;
 import java.net.URI;
 import java.util.List;
 
-import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.project.ComplexConfigurationService;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectDescription;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
+import eu.esdihumboldt.hale.common.core.io.project.model.Project;
+import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 import eu.esdihumboldt.hale.common.core.io.project.util.LocationUpdater;
 
 /**
@@ -70,9 +73,23 @@ public interface ProjectService {
 	 * 
 	 * @see #rememberIO(String, String, IOProvider)
 	 * @param actionId the I/O action identifier
-	 * @return a list of removed io configurations
+	 * @return a list of removed I/O configurations
 	 */
-	public List<IOConfiguration> removeResources(String actionId);
+	public List<? extends Resource> removeResources(String actionId);
+
+	/**
+	 * Remove a specific resource.
+	 * 
+	 * @param resourceId the resource identifier
+	 */
+	public void removeResource(String resourceId);
+
+	/**
+	 * Get the resources associated with the current project.
+	 * 
+	 * @return the resources
+	 */
+	public Iterable<? extends Resource> getResources();
 
 	/**
 	 * Determines if there are any resources loaded for a given action.
@@ -87,7 +104,7 @@ public interface ProjectService {
 	 * 
 	 * @return the configuration service
 	 */
-	public IConfigurationService getConfigurationService();
+	public ComplexConfigurationService getConfigurationService();
 
 	/**
 	 * Get general information about the current project
@@ -95,6 +112,13 @@ public interface ProjectService {
 	 * @return the project info
 	 */
 	public ProjectInfo getProjectInfo();
+
+	/**
+	 * Update the project information with the given description.
+	 * 
+	 * @param info the project information to merge with the project
+	 */
+	public void updateProjectInfo(ProjectDescription info);
 
 	/**
 	 * Get if the project content is changed
@@ -119,6 +143,13 @@ public interface ProjectService {
 	 * @param uri the project file
 	 */
 	public void load(URI uri);
+
+	/**
+	 * Load a template project.
+	 * 
+	 * @param project the project template
+	 */
+	public void loadTemplate(Project project);
 
 	/**
 	 * Open a project.
@@ -163,5 +194,13 @@ public interface ProjectService {
 	 * @return the export configuration names
 	 */
 	public List<String> getExportConfigurationNames();
+
+	/**
+	 * Returns the location the current project was loaded from. May be
+	 * <code>null</code>.
+	 * 
+	 * @return the location the current project was loaded from
+	 */
+	public URI getLoadLocation();
 
 }

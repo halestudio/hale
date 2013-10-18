@@ -33,6 +33,19 @@ public interface ShapefileConstants {
 	public static final String SHAPEFILE_NS = "http://www.esdi-humboldt.eu/hale/shp";
 
 	/**
+	 * The shapefile augmentation namespace - types and properties that really
+	 * are not part of the data, but are some kind of augmented information or
+	 * metadata should use this namespace.
+	 */
+	public static final String SHAPEFILE_AUGMENT_NS = "http://www.esdi-humboldt.eu/hale/shp/augment";
+
+	/**
+	 * The local name of the augmented property specifying the Shapefile file
+	 * name an instance originated from.
+	 */
+	public static final String AUGMENTED_PROPERTY_FILENAME = "filename";
+
+	/**
 	 * The default type name
 	 */
 	public static final String DEFAULT_TYPE_NAME = "Shapefile";

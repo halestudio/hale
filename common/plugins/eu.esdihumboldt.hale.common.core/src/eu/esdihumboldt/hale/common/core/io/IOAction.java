@@ -35,6 +35,20 @@ public interface IOAction extends Identifiable {
 	public Class<? extends IOProvider> getProviderType();
 
 	/**
+	 * Get the name for this kind of resource.
+	 * 
+	 * @return the resource name
+	 */
+	public String getResourceName();
+
+	/**
+	 * Get the category name for this kind of resource.
+	 * 
+	 * @return the resource category name
+	 */
+	public String getResourceCategoryName();
+
+	/**
 	 * Get the dependencies of the action.
 	 * 
 	 * @return the list of identifiers of other actions the action depends on

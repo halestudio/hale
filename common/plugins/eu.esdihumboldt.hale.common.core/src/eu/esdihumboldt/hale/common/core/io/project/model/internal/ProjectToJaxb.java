@@ -68,7 +68,9 @@ public class ProjectToJaxb {
 		result.setModified(toXMLCalendar(project.getModified()));
 		result.setName(project.getName());
 		result.setSaveConfig(toIOConfigurationType(project.getSaveConfiguration()));
-		result.setVersion(project.getHaleVersion().toString());
+		if (project.getHaleVersion() != null) {
+			result.setVersion(project.getHaleVersion().toString());
+		}
 
 		// resources
 		for (IOConfiguration resource : project.getResources()) {

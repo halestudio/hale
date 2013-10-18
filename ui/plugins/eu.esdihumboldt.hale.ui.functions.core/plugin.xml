@@ -80,6 +80,14 @@
                name="additional_property">
          </parameter>
       </typeParameterPage>
+      <typeParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.core.JoinParameterPage"
+            function="eu.esdihumboldt.hale.align.join"
+            id="eu.esdihumboldt.hale.ui.functions.core.join">
+         <parameter
+               name="join">
+         </parameter>
+      </typeParameterPage>
       <propertyParameterEditor
             class="eu.esdihumboldt.hale.ui.common.editors.BooleanEditorFactory"
             function="eu.esdihumboldt.hale.align.rename"

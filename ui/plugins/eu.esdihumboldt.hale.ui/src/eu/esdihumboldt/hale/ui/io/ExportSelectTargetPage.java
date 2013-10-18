@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.Set;
 
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.jface.dialogs.DialogPage;
@@ -106,7 +107,7 @@ public class ExportSelectTargetPage<P extends ExportProvider, W extends ExportWi
 		IContentType contentType = null;
 
 		if (getWizard().getProviderFactory() != null && targetFile.isValid()) {
-			Collection<IContentType> types = getWizard().getProviderFactory().getSupportedTypes();
+			Collection<IContentType> types = getAllowedContentTypes();
 			if (types != null && !types.isEmpty()) {
 				if (types.size() == 1) {
 					// if only one content type is possible for the export we
@@ -151,7 +152,17 @@ public class ExportSelectTargetPage<P extends ExportProvider, W extends ExportWi
 		super.onShowPage(firstShow);
 
 		// update file editor with possibly changed file extensions
-		targetFile.setContentTypes(getWizard().getProviderFactory().getSupportedTypes());
+		targetFile.setContentTypes(getAllowedContentTypes());
+	}
+
+	/**
+	 * Get the allowed content types.
+	 * 
+	 * @return the allowed content types, by default the supported content types
+	 *         of the selected provider.
+	 */
+	protected Set<IContentType> getAllowedContentTypes() {
+		return getWizard().getProviderFactory().getSupportedTypes();
 	}
 
 	/**

@@ -41,11 +41,11 @@ import org.apache.wicket.validation.validator.PatternValidator;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.server.projects.ProjectScavenger;
-import eu.esdihumboldt.hale.server.projects.ScavengerException;
 import eu.esdihumboldt.hale.server.projects.war.pages.ProjectsPage;
 import eu.esdihumboldt.hale.server.webapp.components.FieldMessage;
 import eu.esdihumboldt.hale.server.webapp.components.FieldValidatingBehavior;
 import eu.esdihumboldt.util.io.IOUtils;
+import eu.esdihumboldt.util.scavenger.ScavengerException;
 
 /**
  * Upload form for new projects.
@@ -90,7 +90,7 @@ public class UploadForm extends Form<Void> {
 			@Override
 			public void validate(IValidatable<String> validatable) {
 				String name = validatable.getValue();
-				for (String project : projects.getProjects()) {
+				for (String project : projects.getResources()) {
 					// ignore case to avoid confusion
 					if (name.equalsIgnoreCase(project)) {
 						validatable.error(new ValidationError()
@@ -162,7 +162,7 @@ public class UploadForm extends Form<Void> {
 		try {
 			final FileUpload upload = file.getFileUpload();
 			if (upload != null) {
-				File dir = projects.reserveProjectId(project);
+				File dir = projects.reserveResourceId(project);
 
 //				File target = new File(dir, upload.getClientFileName());
 				String type = upload.getContentType();
@@ -179,7 +179,7 @@ public class UploadForm extends Form<Void> {
 					onUploadSuccess();
 				}
 				else {
-					projects.releaseProjectId(project);
+					projects.releaseResourceId(project);
 					error(getTypeErrorMessage(type));
 				}
 			}
@@ -189,7 +189,7 @@ public class UploadForm extends Form<Void> {
 		} catch (ScavengerException e) {
 			error(e.getMessage());
 		} catch (Exception e) {
-			projects.releaseProjectId(project);
+			projects.releaseResourceId(project);
 			log.error("Error while uploading file", e);
 			error("Error saving the file");
 		}

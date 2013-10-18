@@ -88,7 +88,7 @@
 	
 	<target name="prepare.custom">
 		<!-- customize product about -->
-		<property name="product-plugin-xml" value="${build}/plugins/eu.esdihumboldt.hale.ui.application/plugin.xml" />
+		<property name="product-plugin-xml" value="${build}/plugins/${topLevelElementId}/plugin.xml" />
 		<property environment="env" />
 		<replace file="${product-plugin-xml}" token="___build___" value="${env.BUILD_ID}" summary="true" />
 		<replace file="${product-plugin-xml}" token="___revision___" value="${env.GIT_COMMIT}" summary="true" />

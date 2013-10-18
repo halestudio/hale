@@ -40,15 +40,28 @@ public class FileIOSupplier implements LocatableInputSupplier<InputStream>,
 		LocatableOutputSupplier<OutputStream> {
 
 	private final File file;
+	private final URI usedURI;
 
 	/**
-	 * Create a file I/O supplier
+	 * Create a file I/O supplier.
 	 * 
 	 * @param file the file
 	 */
 	public FileIOSupplier(File file) {
+		this(file, file.toURI());
+	}
+
+	/**
+	 * Create a file I/O supplier, which may return a relative URI on
+	 * {@link #getLocation()}.
+	 * 
+	 * @param absoluteFile the file
+	 * @param usedURI the (relative) URI to use
+	 */
+	public FileIOSupplier(File absoluteFile, URI usedURI) {
 		super();
-		this.file = file;
+		this.file = absoluteFile;
+		this.usedURI = usedURI;
 	}
 
 	/**
@@ -105,6 +118,11 @@ public class FileIOSupplier implements LocatableInputSupplier<InputStream>,
 		else if (!file.equals(other.file))
 			return false;
 		return true;
+	}
+
+	@Override
+	public URI getUsedLocation() {
+		return usedURI;
 	}
 
 }

@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.common.align.io;
 
+import java.net.URI;
+
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
@@ -46,4 +48,11 @@ public interface BaseAlignmentReader extends ImportProvider {
 	 * @param alignment the alignment
 	 */
 	public void setAlignment(MutableAlignment alignment);
+
+	/**
+	 * Set the project location (if available).
+	 * 
+	 * @param location the project location
+	 */
+	public void setProjectLocation(URI location);
 }

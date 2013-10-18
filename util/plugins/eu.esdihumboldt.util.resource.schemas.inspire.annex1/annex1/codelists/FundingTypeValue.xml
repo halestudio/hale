@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="FundingTypeValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+A list of possible funding types.</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0">FundingTypeValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_22294_39122">
+      <description>-- Definition --&#13;
+The Protected Site is funded by the European Commission, LIFE or LIFE+ Programme. </description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/FundingTypeValue">LIFEProject</identifier>
+      <name>LIFEProject</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22294_39117">
+      <description>-- Definition --&#13;
+The Protected Site is funded by the European Commission, Agri Environment. </description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/FundingTypeValue">agriEnvironment</identifier>
+      <name>agriEnvironment</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22294_39123">
+      <description>-- Definition --&#13;
+The Protected Site is funded by the European Commission, Objective 1 Programme. </description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/FundingTypeValue">objective1</identifier>
+      <name>objective1</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22294_39124">
+      <description>-- Definition --&#13;
+The Protected Site is funded by the European Commission, Objective 2 Programme. </description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/FundingTypeValue">objective2</identifier>
+      <name>objective2</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22294_39120">
+      <description>-- Definition --&#13;
+The Protected Site is funded by the European Commission, Leader Programme. </description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/FundingTypeValue">leader</identifier>
+      <name>leader</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22294_39121">
+      <description>-- Definition --&#13;
+The Protected Site is funded by the European Commission, Leader Plus Programme. </description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/FundingTypeValue">leaderPlus</identifier>
+      <name>leaderPlus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22294_39119">
+      <description>-- Definition --&#13;
+The Protected Site is funded by the European Commission, INTERREG Programme. </description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/FundingTypeValue">interreg</identifier>
+      <name>interreg</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_22294_39118">
+      <description>-- Definition --&#13;
+The Protected Site is funded by the European Commission, European Fisheries Fund. </description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:ProtectedSitesFull:3.0/FundingTypeValue">europeanFisheriesFund</identifier>
+      <name>europeanFisheriesFund</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

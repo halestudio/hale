@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.ui.common.service.compatibility;
 
+import java.util.Set;
+
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
 import eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode;
 
@@ -24,5 +26,13 @@ import eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode;
  * @author Sebastian Reinhardt
  */
 public interface CompatibilityModeFactory extends ExtensionObjectFactory<CompatibilityMode> {
-	/* ignore */
+
+	/**
+	 * Get the filter definition identifiers of filters supported by the
+	 * compatibility mode.
+	 * 
+	 * @return the set of filter definition identifiers
+	 */
+	public Set<String> getSupportedFilters();
+
 }

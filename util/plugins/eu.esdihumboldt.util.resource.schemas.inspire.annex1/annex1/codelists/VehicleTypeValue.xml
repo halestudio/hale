@@ -1,0 +1,330 @@
+<?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="VehicleTypeValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+Possible types of vehicles.</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0">VehicleTypeValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_21941_37623">
+      <description>-- Definition --&#13;
+Any vehicle, not including pedestrians.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/VehicleTypeValue">allVehicle</identifier>
+      <name>allVehicle</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21941_37624">
+      <description>-- Definition --&#13;
+pedal-driven two-wheeled vehicle.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/VehicleTypeValue">bicycle</identifier>
+      <name>bicycle</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21941_37625">
+      <description>-- Definition --&#13;
+A passenger car with an attached trailer.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/VehicleTypeValue">carWithTrailer</identifier>
+      <name>carWithTrailer</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21941_37626">
+      <description>-- Definition --&#13;
+A truck vehicle of relatively small size, whose principal use is for delivery of goods and materials.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/VehicleTypeValue">deliveryTruck</identifier>
+      <name>deliveryTruck</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21941_37627">
+      <description>-- Definition --&#13;
+A vehicle engaged in emergency response, included but not limited to police, ambulance and fire.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/VehicleTypeValue">emergencyVehicle</identifier>
+      <name>emergencyVehicle</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21941_37628">
+      <description>-- Definition --&#13;
+A vehicle operated by an employee of an organization that is used within that organization's ground.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/VehicleTypeValue">employeeVehicle</identifier>
+      <name>employeeVehicle</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21941_37629">
+      <description>-- Definition --&#13;
+A vehicle dedicated to a localized area within a private or restricted estate.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].&#13;
+&#13;
+EXAMPLE Facilities roads within an airport or theme park.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/VehicleTypeValue">facilityVehicle</identifier>
+      <name>facilityVehicle</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21941_37630">
+      <description>-- Definition --&#13;
+Vehicle commonly associated with farming activities.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/VehicleTypeValue">farmVehicle</identifier>
+      <name>farmVehicle</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21941_37631">
+      <description>-- Definition --&#13;
+Vehicle populated with a number of occupants corresponding to (or exceeding) the specified minimum number of passengers.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/VehicleTypeValue">highOccupancyVehicle</identifier>
+      <name>highOccupancyVehicle</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21941_37632">
+      <description>-- Definition --&#13;
+Train-like transport vehicle limited to a rail network within a limited area.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].&#13;
+&#13;
+NOTE Does not include heavy rail lines.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/VehicleTypeValue">lightRail</identifier>
+      <name>lightRail</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21941_37633">
+      <description>-- Definition --&#13;
+A vehicle that collects, carries or delivers mail.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/VehicleTypeValue">mailVehicle</identifier>
+      <name>mailVehicle</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21941_37634">
+      <description>-- Definition --&#13;
+Vehicle authorized by a military authority.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/VehicleTypeValue">militaryVehicle</identifier>
+      <name>militaryVehicle</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21941_37635">
+      <description>-- Definition --&#13;
+Two or three wheeled vehicle equipped with internal combustion engine, with size less than 50 cc and maximum speed that does not exceed 45 km/h (28mph). &#13;
+&#13;
+-- Description --&#13;
+SOURCE Adapted from [CADaS/CARE].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/VehicleTypeValue">moped</identifier>
+      <name>moped</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21941_37636">
+      <description>-- Definition --&#13;
+Two or three wheeled vehicle equipped with internal combustion engine, with size more than 50 cc and maximum speed that does exceed 45 km/h (28mph).&#13;
+&#13;
+-- Description --&#13;
+SOURCE Adapted from [CADaS/CARE].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/VehicleTypeValue">motorcycle</identifier>
+      <name>motorcycle</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21941_37637">
+      <description>-- Definition --&#13;
+A small vehicle designed for private transport of people.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/VehicleTypeValue">passengerCar</identifier>
+      <name>passengerCar</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21941_37638">
+      <description>-- Definition --&#13;
+A person on foot.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/VehicleTypeValue">pedestrian</identifier>
+      <name>pedestrian</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21941_37639">
+      <description>-- Definition --&#13;
+A vehicle designed for transport of large groups of people, privately owned or chartered.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/VehicleTypeValue">privateBus</identifier>
+      <name>privateBus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21941_37640">
+      <description>-- Definition --&#13;
+A vehicle designed for transport of large groups of people that is generally charterized by published routes and schedules.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/VehicleTypeValue">publicBus</identifier>
+      <name>publicBus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21941_37641">
+      <description>-- Definition --&#13;
+A vehicle whose owner is resident (or a guest) of particular street or town area.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/VehicleTypeValue">residentialVehicle</identifier>
+      <name>residentialVehicle</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21941_37642">
+      <description>-- Definition --&#13;
+Vehicle operated on behalf of a school to transport students.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/VehicleTypeValue">schoolBus</identifier>
+      <name>schoolBus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21941_37643">
+      <description>-- Definition --&#13;
+Any vehicle equipped with snow chains.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/VehicleTypeValue">snowChainEquippedVehicle</identifier>
+      <name>snowChainEquippedVehicle</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21941_37644">
+      <description>-- Definition --&#13;
+A truck with more than two axels used to transport liquid loads in bulk.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/VehicleTypeValue">tanker</identifier>
+      <name>tanker</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21941_37645">
+      <description>-- Definition --&#13;
+A vehicle licensed for hire usually fitted with a meter.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/VehicleTypeValue">taxi</identifier>
+      <name>taxi</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21941_37646">
+      <description>-- Definition --&#13;
+A truck vehicle for long range transport of goods.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/VehicleTypeValue">transportTruck</identifier>
+      <name>transportTruck</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21941_37647">
+      <description>-- Definition --&#13;
+A bus-like mass transport vehicle hooked up to an electrical network for power supply.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/VehicleTypeValue">trolleyBus</identifier>
+      <name>trolleyBus</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21941_37648">
+      <description>-- Definition --&#13;
+A vehicle with supporting identification that designates a vehicle for disabled persons.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/VehicleTypeValue">vehicleForDisabledPerson</identifier>
+      <name>vehicleForDisabledPerson</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21941_37649">
+      <description>-- Definition --&#13;
+Vehicle transporting explosive cargo.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/VehicleTypeValue">vehicleWithExplosiveLoad</identifier>
+      <name>vehicleWithExplosiveLoad</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21941_37650">
+      <description>-- Definition --&#13;
+Vehicle transporting dangerous cargo, other than explosive or waterpollution loads.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/VehicleTypeValue">vehicleWithOtherDangerousLoad</identifier>
+      <name>vehicleWithOtherDangerousLoad</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21941_37651">
+      <description>-- Definition --&#13;
+Vehicle transporting water-polluting cargo.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/VehicleTypeValue">vehicleWithWaterPollutingLoad</identifier>
+      <name>vehicleWithWaterPollutingLoad</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.ui.io;
 
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -46,6 +47,7 @@ import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.ProgressMonitorIndicator;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderExtension;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
@@ -507,31 +509,39 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 			// validate configuration
 			provider.validate();
 
-			ProjectService ps = null;
+			ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
+					ProjectService.class);
+			URI projectLoc = ps.getLoadLocation() == null ? null : ps.getLoadLocation();
+			boolean isProjectResource = false;
 			if (actionId != null) {
 				// XXX instead move project resource to action?
 				ActionUI factory = ActionUIExtension.getInstance().findActionUI(actionId);
-				if (factory.isProjectResource()) {
-					ps = (ProjectService) PlatformUI.getWorkbench()
-							.getService(ProjectService.class);
+				isProjectResource = factory.isProjectResource();
+			}
 
-					// prevent loading of duplicate resources
-					if (provider instanceof ImportProvider) {
-						String currentResource = ((ImportProvider) provider).getSource()
-								.getLocation().toString();
-						List<IOConfiguration> resources = ((Project) ps.getProjectInfo())
-								.getResources();
-						for (IOConfiguration conf : resources) {
-							String resource = conf.getProviderConfiguration()
-									.get(ImportProvider.PARAM_SOURCE).as(String.class);
-							String action = conf.getActionId();
-							// resource is already loaded into the project
-							if (resource != null && resource.equals(currentResource)
-									&& Objects.equal(actionId, action)) {
-								log.userError("Resource is already loaded. Loading duplicate resources is aborted!");
-								return false;
-							}
-						}
+			// prevent loading of duplicate resources
+			if (isProjectResource && provider instanceof ImportProvider) {
+				String currentResource = ((ImportProvider) provider).getSource().getLocation()
+						.toString();
+				URI currentAbsolute = URI.create(currentResource);
+				if (projectLoc != null && !currentAbsolute.isAbsolute())
+					currentAbsolute = projectLoc.resolve(currentAbsolute);
+
+				for (IOConfiguration conf : ((Project) ps.getProjectInfo()).getResources()) {
+					Value otherResourceValue = conf.getProviderConfiguration().get(
+							ImportProvider.PARAM_SOURCE);
+					if (otherResourceValue == null)
+						continue;
+
+					String otherResource = otherResourceValue.as(String.class);
+					URI otherAbsolute = URI.create(otherResource);
+					if (projectLoc != null && !otherAbsolute.isAbsolute())
+						otherAbsolute = projectLoc.resolve(otherAbsolute);
+					String action = conf.getActionId();
+					// resource is already loaded into the project
+					if (currentAbsolute.equals(otherAbsolute) && Objects.equal(actionId, action)) {
+						log.userError("Resource is already loaded. Loading duplicate resources is aborted!");
+						return false;
 					}
 				}
 			}
@@ -552,7 +562,7 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 					advisor.handleResults(getProvider());
 
 					// add to project service if necessary
-					if (ps != null)
+					if (isProjectResource)
 						ps.rememberIO(actionId, getProviderFactory().getIdentifier(), provider);
 
 					return true;

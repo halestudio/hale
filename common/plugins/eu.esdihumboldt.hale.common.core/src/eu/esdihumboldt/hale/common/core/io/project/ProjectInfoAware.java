@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.common.core.io.project;
 
+import java.net.URI;
+
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 
 /**
@@ -33,5 +35,13 @@ public interface ProjectInfoAware {
 	 *            no project is available
 	 */
 	public void setProjectInfo(ProjectInfo projectInfo);
+
+	/**
+	 * Set the location the project was loaded from.
+	 * 
+	 * @param location the project location or <code>null</code> if it was not
+	 *            saved yet
+	 */
+	public void setProjectLocation(URI location);
 
 }

@@ -71,6 +71,8 @@ public class OrientInstanceSink implements InstanceSink, Closeable {
 		OInstance conv = ((instance instanceof OInstance) ? ((OInstance) instance)
 				: (new OInstance(instance)));
 
+		conv.setInserted(true);
+
 		ODatabaseRecordThreadLocal.INSTANCE.set(db);
 		// configure the document
 		ODocument doc = conv.configureDocument(db);

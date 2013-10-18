@@ -24,33 +24,29 @@ import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AbstractPara
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AlignmentType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AnnotationType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.CellType
-import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ChildContextType
-import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ComplexParameterType
-import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ConditionType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.DocumentationType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ModifierType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.NamedEntityType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ObjectFactory
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ParameterType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.PriorityType
-import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.PropertyType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.TransformationModeType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AlignmentType.Base
-import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType.Type
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ModifierType.DisableFor
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ModifierType.Transformation
 import eu.esdihumboldt.hale.common.align.model.Alignment
 import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell
 import eu.esdihumboldt.hale.common.align.model.Cell
-import eu.esdihumboldt.hale.common.align.model.ChildContext
 import eu.esdihumboldt.hale.common.align.model.Entity
 import eu.esdihumboldt.hale.common.align.model.ParameterValue
 import eu.esdihumboldt.hale.common.align.model.Property
 import eu.esdihumboldt.hale.common.align.model.TransformationMode
+import eu.esdihumboldt.hale.common.align.model.Type
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter
-import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager
-import eu.esdihumboldt.hale.common.instance.model.Filter
+import eu.esdihumboldt.util.io.PathUpdate
+import groovy.transform.CompileStatic
+import groovy.transform.TypeCheckingMode
 
 
 
@@ -60,31 +56,36 @@ import eu.esdihumboldt.hale.common.instance.model.Filter
  * 
  * @author Simon Templer
  */
+@CompileStatic
 class AlignmentToJaxb {
 
 	private final Alignment alignment
 	private final IOReporter reporter
 	private final ObjectFactory of = new ObjectFactory()
+	private final PathUpdate pathUpdate
 
 	/**
 	 * Create a new converter.
 	 * 
 	 * @param alignment the alignment to convert
 	 * @param reporter the reporter to use for reporting problems, may be <code>null</code>
+	 * @param pathUpdate to update relative paths in case of a path change
 	 */
-	AlignmentToJaxb(Alignment alignment, IOReporter reporter) {
+	AlignmentToJaxb(Alignment alignment, IOReporter reporter, PathUpdate pathUpdate) {
 		this.alignment = alignment
 		this.reporter = reporter
+		this.pathUpdate = pathUpdate
 	}
 
 	/**
 	 * @return
 	 */
+	@CompileStatic(TypeCheckingMode.SKIP)
 	AlignmentType convert() throws Exception {
 		AlignmentType align = new AlignmentType()
 
 		alignment.baseAlignments.collect(align.base) {
-			new Base(prefix: it.key, location: it.value);
+			new Base(prefix: it.key, location: pathUpdate.findLocation(it.value, true, false, true))
 		}
 
 		// convert cells
@@ -100,7 +101,7 @@ class AlignmentToJaxb {
 
 	protected void addModifier(Cell cell, AlignmentType align) {
 		Set<Cell> disabledFor = cell.disabledFor
-		TransformationMode mode = cell.transformatioMode
+		TransformationMode mode = cell.transformationMode
 		if (cell instanceof BaseAlignmentCell) {
 			disabledFor = ((BaseAlignmentCell) cell).additionalDisabledFor
 			if (!cell.overridesTransformationMode()) {
@@ -119,7 +120,7 @@ class AlignmentToJaxb {
 			ModifierType modifier = new ModifierType()
 			modifier.cell = cell.id
 			if (disabledFor) {
-				disabledFor.collect(modifier.disableFor) {
+				disabledFor.collect(modifier.disableFor) { Cell it ->
 					new DisableFor(parent: it.id)
 				}
 			}
@@ -162,7 +163,7 @@ class AlignmentToJaxb {
 		}
 
 		// documentations
-		cell.documentation.entries().each {
+		cell.documentation.entries().each { Entry<String, String> it ->
 			// create documentation element from each multimap entry
 			result.documentationOrAnnotation << new DocumentationType(type: it.key, value: it.value)
 		}
@@ -208,52 +209,17 @@ class AlignmentToJaxb {
 
 		// create the entity object
 		switch (entity) {
-			case eu.esdihumboldt.hale.common.align.model.Type:
-			result.abstractEntity = of.createClass(new ClassType())
+			case Type:
+			result.abstractEntity = EntityDefinitionToJaxb.convert(((Type)entity).definition);
 			break
 			case Property:
-			result.abstractEntity = of.createProperty(new PropertyType())
+			result.abstractEntity = EntityDefinitionToJaxb.convert(((Property)entity).definition);
 			break
 			default:
 			throw new IllegalArgumentException("Illegal entity ${entity.class}")
 		}
 
-		// set the type
-		result.abstractEntity.value.type = new Type(
-		name: entity.definition.type.name.localPart,
-		ns: entity.definition.type.name.namespaceURI ?: null)
-		result.abstractEntity.value.type.condition = entity.definition.filter ?
-		convert(entity.definition.filter) : null
-
-		// add children
-		if (entity instanceof Property) {
-			for (ChildContext child in entity.definition.propertyPath) {
-				result.abstractEntity.value.child << convert(child)
-			}
-		}
-
 		return result
-	}
-
-	protected ChildContextType convert(ChildContext context) {
-		ChildContextType result = new ChildContextType()
-
-		result.name = context.child.name.localPart
-		result.ns = context.child.name.namespaceURI ?: null
-
-		result.context = context.contextName
-		result.index = context.index
-		result.condition = context.condition ? convert(context.condition.filter) : null
-
-		return result
-	}
-
-	protected ConditionType convert(Filter filter) {
-		if (!filter) return null
-
-		def rep = FilterDefinitionManager.getInstance().asPair(filter)
-
-		new ConditionType(lang: rep.first, value: rep.second)
 	}
 
 }

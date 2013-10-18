@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.common.Editor;
 
@@ -38,7 +39,6 @@ import eu.esdihumboldt.hale.ui.common.Editor;
  * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$
  */
 public class AttributeInputDialog extends Dialog {
 
@@ -54,21 +54,26 @@ public class AttributeInputDialog extends Dialog {
 
 	private Object value;
 
+	private final EntityDefinition entity;
+
 	/**
 	 * Create a new attribute input dialog
 	 * 
 	 * @param definition the attribute definition
+	 * @param entity the property entity definition representing the property,
+	 *            may be <code>null</code> if unknown or unavailable
 	 * @param parentShell the parent shell
 	 * @param title the dialog title
 	 * @param message the dialog message
 	 */
-	public AttributeInputDialog(PropertyDefinition definition, Shell parentShell, String title,
-			String message) {
+	public AttributeInputDialog(PropertyDefinition definition, EntityDefinition entity,
+			Shell parentShell, String title, String message) {
 		super(parentShell);
 
 		this.title = title;
 		this.message = message;
 		this.definition = definition;
+		this.entity = entity;
 	}
 
 	/**
@@ -105,7 +110,7 @@ public class AttributeInputDialog extends Dialog {
 		// create editor
 		AttributeEditorFactory aef = (AttributeEditorFactory) PlatformUI.getWorkbench().getService(
 				AttributeEditorFactory.class);
-		editor = aef.createEditor(composite, definition, false);
+		editor = aef.createEditor(composite, definition, entity, false);
 		editor.getControl().setLayoutData(
 				new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
 		editor.setPropertyChangeListener(new IPropertyChangeListener() {

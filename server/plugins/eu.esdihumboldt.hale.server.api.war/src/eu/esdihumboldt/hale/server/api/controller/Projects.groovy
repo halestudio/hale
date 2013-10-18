@@ -29,14 +29,17 @@ import org.springframework.web.multipart.MultipartFile
 
 import de.cs3d.util.logging.ALogger
 import de.cs3d.util.logging.ALoggerFactory
-import eu.esdihumboldt.hale.server.api.internal.wadl.doc.DocScope
-import eu.esdihumboldt.hale.server.api.internal.wadl.doc.WDoc
-import eu.esdihumboldt.hale.server.api.internal.wadl.doc.WDocUtil
-import eu.esdihumboldt.hale.server.api.internal.wadl.doc.WDocs
+import eu.esdihumboldt.hale.server.api.base.APIUtil
+import eu.esdihumboldt.hale.server.api.wadl.doc.DocScope
+import eu.esdihumboldt.hale.server.api.wadl.doc.WDoc
+import eu.esdihumboldt.hale.server.api.wadl.doc.WDocUtil
+import eu.esdihumboldt.hale.server.api.wadl.doc.WDocs
 import eu.esdihumboldt.hale.server.projects.ProjectScavenger
-import eu.esdihumboldt.hale.server.projects.ScavengerException
 import eu.esdihumboldt.hale.server.projects.ProjectScavenger.Status
 import eu.esdihumboldt.util.io.IOUtils
+import eu.esdihumboldt.util.scavenger.ScavengerException;
+import groovy.transform.CompileStatic
+import groovy.transform.TypeCheckingMode
 import groovy.xml.DOMBuilder
 
 /**
@@ -45,6 +48,7 @@ import groovy.xml.DOMBuilder
  * @author Simon Templer
  */
 @Controller
+@CompileStatic
 class Projects {
 
 	private static final ALogger log = ALoggerFactory.getLogger(Projects)
@@ -117,13 +121,14 @@ class Projects {
 		context = 'archive'
 		)
 	])
+	@CompileStatic(TypeCheckingMode.SKIP) // builder in annotation
 	@RequestMapping(value = '/project/{id}', method = RequestMethod.POST,
 	consumes = 'multipart/form-data', produces = 'application/json')
 	Map createProject(@PathVariable('id') String id, @RequestPart('archive') MultipartFile archive,
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
 			if (id && archive) {
-				File dir = projects.reserveProjectId(id)
+				File dir = projects.reserveResourceId(id)
 
 				// try extracting the archive
 				IOUtils.extract(dir, new BufferedInputStream(archive.inputStream))
@@ -147,7 +152,7 @@ class Projects {
 				// ignore
 			}
 		} catch (Exception e) {
-			projects.releaseProjectId(id)
+			projects.releaseResourceId(id)
 			log.error('Error while uploading project file', e)
 			try {
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage())
@@ -220,13 +225,13 @@ class Projects {
 	 * @return the project information map or <code>null</code> if the project
 	 *   does not exist
 	 */
-	protected def buildProjectInfo(String id, HttpServletRequest request) {
-		if (projects.projects.contains(id)) {
+	protected Map buildProjectInfo(String id, HttpServletRequest request) {
+		if (projects.resources.contains(id)) {
 			def status = projects.getStatus(id)
-			def info = [id: id, active: status == Status.ACTIVE, status: status]
+			Map info = [id: id, active: status == Status.ACTIVE, status: status]
 
 			// resource location
-			info.location = Main.getBaseUrl(request) + "/project/$id"
+			info.put('location', APIUtil.getBaseUrl(request) + "/project/$id")
 
 			info
 		}
@@ -277,7 +282,8 @@ class Projects {
 	ModelMap listProjects(HttpServletRequest request) {
 		def projectList = []
 
-		projects.projects.each { projectList << buildProjectInfo(it, request) }
+		projects.resources.each { String id ->
+			projectList << buildProjectInfo(id, request) }
 
 		new ModelMap('projects', projectList)
 	}

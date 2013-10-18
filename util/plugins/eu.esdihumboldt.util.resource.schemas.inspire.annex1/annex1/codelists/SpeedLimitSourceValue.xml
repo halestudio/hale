@@ -1,0 +1,39 @@
+<?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="SpeedLimitSourceValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+Possible sources for speed limits.</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0">SpeedLimitSourceValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_21955_37699">
+      <description>-- Definition --&#13;
+Source is a fixed traffic sign (site specific administrative order, explicit speed limit).&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/SpeedLimitSourceValue">fixedTrafficSign</identifier>
+      <name>fixedTrafficSign</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21955_37700">
+      <description>-- Definition --&#13;
+Source is a regulation (national regulation, rule or 'implicit speed limit').&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/SpeedLimitSourceValue">regulation</identifier>
+      <name>regulation</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21955_37701">
+      <description>-- Definition --&#13;
+Source is a variable traffic sign.&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/SpeedLimitSourceValue">variableTrafficSign</identifier>
+      <name>variableTrafficSign</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

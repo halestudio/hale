@@ -154,6 +154,12 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 			if (targetMaxNum == 1 && context.cardinality().mayOccurMultipleTimes()) {
 				// select only the first
 				selectContext += '[1]'
+				/*
+				 * XXX This may cause problems in cases where source has to
+				 * match certain conditions and the first element is not the
+				 * one meeting them. Then there is no result, because the wrong
+				 * source element was selected.
+				 */
 			}
 
 			// select the context and loop if applicable

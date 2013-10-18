@@ -59,7 +59,7 @@ public class LookupTableTypeTest {
 		Element fragment = HaleIO.getComplexElement(org);
 
 		// convert back
-		LookupTable conv = HaleIO.getComplexValue(fragment, LookupTable.class);
+		LookupTable conv = HaleIO.getComplexValue(fragment, LookupTable.class, null);
 
 		checkTable(conv, values);
 	}
@@ -90,7 +90,7 @@ public class LookupTableTypeTest {
 		Element fragment = HaleIO.getComplexElement(org2);
 
 		// convert back
-		LookupTable conv = HaleIO.getComplexValue(fragment, LookupTable.class);
+		LookupTable conv = HaleIO.getComplexValue(fragment, LookupTable.class, null);
 
 		checkTable(conv, values2);
 	}

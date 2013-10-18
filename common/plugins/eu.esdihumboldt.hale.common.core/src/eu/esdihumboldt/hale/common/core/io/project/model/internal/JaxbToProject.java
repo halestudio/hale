@@ -115,7 +115,7 @@ public class JaxbToProject {
 	}
 
 	private static void addProperty(Map<String, Value> properties, ComplexPropertyType value) {
-		properties.put(value.getName(), new ElementValue(value.getAny()));
+		properties.put(value.getName(), new ElementValue(value.getAny(), null));
 	}
 
 	private static Version toVersion(String version) {

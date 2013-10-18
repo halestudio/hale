@@ -22,6 +22,8 @@ import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.internal.splash.EclipseSplashHandler;
@@ -52,6 +54,11 @@ public class HaleSplash extends EclipseSplashHandler {
 	private static final String PRODUCT_PROP_VERSION_TAG = "versionTag";
 
 	/**
+	 * Name of the product property containing the font color.
+	 */
+	private static final String PRODUCT_PROP_SPLASH_FONT_COLOR = "splashFontColor";
+
+	/**
 	 * Minimum font size in points for the version information.
 	 */
 	private static final int MIN_SIZE = 5;
@@ -72,11 +79,39 @@ public class HaleSplash extends EclipseSplashHandler {
 	 */
 	private Font versionStringFont;
 
+	/**
+	 * Our custom font color.
+	 */
+	private RGB customFontColor;
+
 	@Override
 	public void init(Shell splash) {
+		IProduct product = Platform.getProduct();
+		if (product != null) {
+			/*
+			 * Using a custom property for the foreground color, because when
+			 * using the one defined in IProductConstants, it is overriden when
+			 * recreating a run configuration from the product.
+			 */
+			String foregroundColorString = product.getProperty(PRODUCT_PROP_SPLASH_FONT_COLOR);
+			int foregroundColorInteger;
+			try {
+				foregroundColorInteger = Integer.parseInt(foregroundColorString, 16);
+			} catch (Exception ex) {
+				foregroundColorInteger = 0xD2D7FF; // off white
+			}
+
+			/*
+			 * Foreground color will be overriden in super.init(...), that's why
+			 * we have to set it in getContent() - store it here for later
+			 * access.
+			 */
+			customFontColor = new RGB((foregroundColorInteger & 0xFF0000) >> 16,
+					(foregroundColorInteger & 0xFF00) >> 8, foregroundColorInteger & 0xFF);
+		}
+
 		super.init(splash);
 
-		IProduct product = Platform.getProduct();
 		if (product != null) {
 			// get application version
 			Version haleVersion = Version.parseVersion(Display.getAppVersion());
@@ -152,6 +187,15 @@ public class HaleSplash extends EclipseSplashHandler {
 				}
 			});
 		}
+	}
+
+	@Override
+	protected Composite getContent() {
+		if (customFontColor != null) {
+			setForeground(customFontColor);
+		}
+
+		return super.getContent();
 	}
 
 	@Override

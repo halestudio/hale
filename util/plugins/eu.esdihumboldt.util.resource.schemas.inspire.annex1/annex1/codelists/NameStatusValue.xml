@@ -1,0 +1,41 @@
+<?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="NameStatusValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+The status of a geographical name, that is the information enabling to discern which credit should be given to the name with respect to its standardisation and/or its topicality.&#13;
+&#13;
+-- Description --&#13;
+NOTE The precise definition of the values 'Official', 'Standardised', 'Historical' and 'Other' can only be decided by Member States according to their legislation and practice. &#13;
+</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">NameStatusValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_21625_36901">
+      <description>-- Definition --&#13;
+Name in current use and officially approved or established by legislation.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:GeographicalNames:3.0/NameStatusValue">official</identifier>
+      <name>official</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21625_36902">
+      <description>-- Definition --&#13;
+Name in current use and accepted or recommended by a body assigned advisory function and/or power of decision in matters of toponymy.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:GeographicalNames:3.0/NameStatusValue">standardised</identifier>
+      <name>standardised</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21625_36903">
+      <description>-- Definition --&#13;
+Historical name not in current use.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:GeographicalNames:3.0/NameStatusValue">historical</identifier>
+      <name>historical</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21625_36904">
+      <description>-- Definition --&#13;
+Current, but not official, nor approved name.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:GeographicalNames:3.0/NameStatusValue">other</identifier>
+      <name>other</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

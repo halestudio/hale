@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<hale-project version="2.6.0.qualifier">
+    <name>Map to INSPIRE HydroPhysicalWaters</name>
+    <author>Simon Templer</author>
+    <created>2013-09-17T06:58:04.022+02:00</created>
+    <modified>2013-09-21T06:08:34.772+02:00</modified>
+    <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
+        <setting name="projectFiles.separate">false</setting>
+        <setting name="target">file:/home/simon/repos/hale/util/plugins/eu.esdihumboldt.util.resource.schemas.inspire.annex1/annex1/projects/HydroPhysicalWaters.halex</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
+    </save-config>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.target" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="resourceId">48a16ec2-bd29-45f1-8e36-4ed7ea51727b</setting>
+        <setting name="source">../3.0/HydroPhysicalWaters.xsd</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.codelist.read" provider-id="eu.esdihumboldt.hale.io.codelist.xml.reader">
+        <setting name="resourceId">8ab62224-f2fd-4d83-9797-823a4e07998c</setting>
+        <setting name="source">../codelists/WaterLevelValue.xml</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.codelist.xml</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.codelist.read" provider-id="eu.esdihumboldt.hale.io.codelist.xml.reader">
+        <setting name="resourceId">d96419be-2941-48ef-88fc-bcf9b1f86c58</setting>
+        <setting name="source">../codelists/HydrologicalPersistenceValue.xml</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.codelist.xml</setting>
+    </resource>
+    <file name="styles.sld" location="HydroPhysicalWaters.halex.styles.sld"/>
+    <file name="alignment.xml" location="HydroPhysicalWaters.halex.alignment.xml"/>
+    <property name="codelist:urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0/LandWaterBoundaryType/waterLevelCategory">urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0/WaterLevelValue</property>
+    <property name="codelist:urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0/StandingWaterType/persistence">urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0/HydrologicalPersistenceValue</property>
+    <property name="codelist:urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0/SurfaceWaterType/persistence">urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0/HydrologicalPersistenceValue</property>
+    <property name="codelist:urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0/WatercourseType/persistence">urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0/HydrologicalPersistenceValue</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}CrossingType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}CrossingType/count">1</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}DamOrWeirType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}DamOrWeirType/count">1</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}DrainageBasinType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}DrainageBasinType/count">1</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}FallsType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}FallsType/count">1</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}FluvialPointType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}FluvialPointType/count">1</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}FordType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}FordType/count">1</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}HydroPointOfInterestType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}HydroPointOfInterestType/count">1</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}LandWaterBoundaryType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}LandWaterBoundaryType/count">1</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}LockType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}LockType/count">1</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}ManMadeObjectType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}ManMadeObjectType/count">1</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}RapidsType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}RapidsType/count">1</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}RiverBasinType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}RiverBasinType/count">1</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}ShorelineConstructionType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}ShorelineConstructionType/count">1</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}SluiceType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}SluiceType/count">1</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}StandingWaterType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}StandingWaterType/count">1</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}SurfaceWaterType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}SurfaceWaterType/count">1</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}WatercourseType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}WatercourseType/count">1</property>
+    <property name="mappableTargetType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}SluiceType</property>
+    <property name="mappableTargetType/10">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}FordType</property>
+    <property name="mappableTargetType/11">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}RiverBasinType</property>
+    <property name="mappableTargetType/12">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}LandWaterBoundaryType</property>
+    <property name="mappableTargetType/13">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}DrainageBasinType</property>
+    <property name="mappableTargetType/14">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}HydroPointOfInterestType</property>
+    <property name="mappableTargetType/15">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}ManMadeObjectType</property>
+    <property name="mappableTargetType/16">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}WatercourseType</property>
+    <property name="mappableTargetType/17">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}FallsType</property>
+    <property name="mappableTargetType/2">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}ShorelineConstructionType</property>
+    <property name="mappableTargetType/3">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}SurfaceWaterType</property>
+    <property name="mappableTargetType/4">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}FluvialPointType</property>
+    <property name="mappableTargetType/5">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}CrossingType</property>
+    <property name="mappableTargetType/6">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}LockType</property>
+    <property name="mappableTargetType/7">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}StandingWaterType</property>
+    <property name="mappableTargetType/8">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}RapidsType</property>
+    <property name="mappableTargetType/9">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}DamOrWeirType</property>
+    <property name="mappableTargetType/count">17</property>
+</hale-project>

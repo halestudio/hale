@@ -2,11 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Simple Transformation Web Interface
 Bundle-SymbolicName: eu.esdihumboldt.hale.server.webtransform.war
-Bundle-Version: 2.6.0.qualifier
+Bundle-Version: 2.7.0.qualifier
 Web-ContextPath: /webtransform
 Webapp-Name: Transformations
 Bundle-Vendor: Data Harmonisation Panel
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.base;version="11.0.1",
  com.google.common.collect;version="11.0.1",
  com.google.common.io;version="11.0.1",

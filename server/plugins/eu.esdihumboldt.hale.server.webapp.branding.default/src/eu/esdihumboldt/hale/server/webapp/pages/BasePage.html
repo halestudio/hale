@@ -1,33 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
-	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:wicket="http://wicket.sourceforge.net/"
-	xml:lang="en">
+<!DOCTYPE html>
+<html wicket:id="html" xmlns:wicket="http://wicket.apache.org">
 <head>
 	<title wicket:id="base-page-title">HALE Web</title>
-	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
-	<meta http-equiv="Content-Style-Type" content="text/css" />
+	<meta charset="utf-8">
+	<meta wicket:id="viewport">
+    <meta wicket:id="chrome-frame">
 </head>
 <body>
-	<div id="header">
-		<div id="mainheader"><h1 id="logo"><a href="/" title="Home page">
-		<span id="logo1" />
-		<span id="logo-title" wicket:id="base-application-title">HALE Web</span></a></h1>
-		</div>
-		<div id="auxheader"><span wicket:id="loginLogoutPanel"><a wicket:id="loginLogout"><span wicket:id="label">Login/Logout</span></a></span></div>	
-	</div>
-	<div id="breadcrumb">
-		<span wicket:id="breadcrumb" title="Home page">Home</span>
-	</div>
-	<div id="main">
+	<div id="wrap">
+		<div wicket:id="navbar"></div>
+		
 		<wicket:child />
-		<p>&nbsp;</p>
+		
+		<div id="push"></div>
 	</div>
+	
 	<div id="footer">
-		<p id="footer-copyright">Copyright &copy; 2013 <a href="http://www.dhpanel.eu">data harmonisation panel</a></p>
-		<p id="footer-website"><a href="http://www.esdi-community.eu">www.esdi-community.eu</a></p>
-		<p>&nbsp;</p>
-	</div>
+      	<div class="container">
+          	<p class="credit pull-left">Copyright &copy; 2013 <a target="_blank" href="http://www.igd.fraunhofer.de">Fraunhofer IGD</a>, <a target="_blank" href="http://www.dhpanel.eu">data harmonisation panel</a></p>
+		  	<p class="credit pull-right"><a wicket:id="about">About</a> | <a wicket:id="contact">Contact</a> | <a target="_blank" href="http://www.dhpanel.eu/humboldt-framework/hale.html">What is HALE?</a></p>
+	  	</div>
+    </div>
 </body>
 </html>

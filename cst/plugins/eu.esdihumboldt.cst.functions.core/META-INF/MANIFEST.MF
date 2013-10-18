@@ -2,9 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CST Core Functions
 Bundle-SymbolicName: eu.esdihumboldt.cst.functions.core;singleton:=true
-Bundle-Version: 2.6.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.2.0"
+Bundle-Version: 2.7.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.2.0",
+ groovy;bundle-version="1.8.6"
 Import-Package: com.google.common.base;version="9.0.0",
  com.google.common.collect,
  de.fhg.igd.osgi.util;version="1.0.0",
@@ -17,6 +18,7 @@ Import-Package: com.google.common.base;version="9.0.0",
  eu.esdihumboldt.hale.common.instance.model.impl,
  eu.esdihumboldt.hale.common.lookup,
  eu.esdihumboldt.hale.common.lookup.impl,
+ eu.esdihumboldt.hale.common.schema,
  eu.esdihumboldt.hale.common.schema.model,
  eu.esdihumboldt.hale.common.schema.model.constraint.type,
  eu.esdihumboldt.hale.common.scripting.transformation,

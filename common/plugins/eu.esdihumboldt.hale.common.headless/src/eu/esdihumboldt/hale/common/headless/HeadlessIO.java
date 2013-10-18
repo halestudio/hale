@@ -20,18 +20,23 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 
+import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
+import de.cs3d.util.eclipse.extension.FactoryFilter;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorExtension;
+import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorFactory;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderExtension;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.report.ReportHandler;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.headless.impl.ProjectTransformationEnvironment;
 
 /**
@@ -51,30 +56,63 @@ public abstract class HeadlessIO {
 	 * @param configurations the I/O configurations
 	 * @param advisors map of advisors, action ID mapped to responsible advisor
 	 * @param reportHandler the report handler, may be <code>null</code>
+	 * @param serviceProvider the service provider
 	 * @throws IOException if an error occurs executing a configuration
 	 */
 	public static void executeConfigurations(final List<IOConfiguration> configurations,
-			Map<String, IOAdvisor<?>> advisors, ReportHandler reportHandler) throws IOException {
+			Map<String, IOAdvisor<?>> advisors, ReportHandler reportHandler,
+			ServiceProvider serviceProvider) throws IOException {
 		// TODO sort by dependencies?
 		for (IOConfiguration conf : configurations) {
-			executeConfiguration(conf, advisors, reportHandler);
+			executeConfiguration(conf, advisors, reportHandler, serviceProvider);
 		}
 	}
 
 	/**
 	 * Execute a single I/O configuration. If no matching advisor is given for
-	 * the configuration, it is ignored.
+	 * the configuration, first the extension point is queried for an advisor,
+	 * if not found it is ignored.
 	 * 
 	 * @param conf the I/O configuration
 	 * @param advisors map of advisors, action ID mapped to responsible advisor
 	 * @param reportHandler the report handler, may be <code>null</code>
+	 * @param serviceProvider the service provider
 	 * @throws IOException if an error occurs executing a configuration
 	 */
 	public static void executeConfiguration(IOConfiguration conf,
-			Map<String, IOAdvisor<?>> advisors, ReportHandler reportHandler) throws IOException {
+			Map<String, IOAdvisor<?>> advisors, ReportHandler reportHandler,
+			ServiceProvider serviceProvider) throws IOException {
 		// get advisor ...
 		final String actionId = conf.getActionId();
 		IOAdvisor<?> advisor = advisors.get(actionId);
+		if (advisor == null) {
+			// try to find registered advisor for action (e.g. lookup)
+			List<IOAdvisorFactory> regAdvisors = IOAdvisorExtension.getInstance().getFactories(
+					new FactoryFilter<IOAdvisor<?>, IOAdvisorFactory>() {
+
+						@Override
+						public boolean acceptFactory(IOAdvisorFactory factory) {
+							return factory.getActionID().equals(actionId);
+						}
+
+						@Override
+						public boolean acceptCollection(
+								ExtensionObjectFactoryCollection<IOAdvisor<?>, IOAdvisorFactory> collection) {
+							return true;
+						}
+					});
+			if (regAdvisors != null && !regAdvisors.isEmpty()) {
+				try {
+					advisor = regAdvisors.get(0).createAdvisor(serviceProvider);
+					log.info(MessageFormat
+							.format("No advisor for action {0} given, using advisor registered through extension point.",
+									actionId));
+				} catch (Exception e) {
+					log.error(MessageFormat.format(
+							"Failed to load registered advisor for action {0}.", actionId));
+				}
+			}
+		}
 		if (advisor == null) {
 			log.info(MessageFormat.format(
 					"No advisor for action {0} given, I/O configuration is ignored.", actionId));

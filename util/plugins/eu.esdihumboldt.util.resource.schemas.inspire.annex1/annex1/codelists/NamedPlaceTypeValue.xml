@@ -1,0 +1,175 @@
+<?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="NamedPlaceTypeValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+The type of a named place. &#13;
+</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">NamedPlaceTypeValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_21629_36912">
+      <description>-- Definition --&#13;
+Units of administration, dividing areas where Member States have and/or exercise jurisdictional rights, for local, regional and national governance, separated by administrative boundaries.&#13;
+&#13;
+-- Description --&#13;
+SOURCE Definition of Annex I theme, INSPIRE Directive [Regulation 1205/2008/EC].&#13;
+&#13;
+EXAMPLES&#13;
+&lt;ul&gt;&#13;
+	&lt;li&gt;Country;&lt;/li&gt;&#13;
+	&lt;li&gt;Administrative unit within a country such as state, province, region, municipality. &lt;/li&gt;&#13;
+&lt;/ul&gt;&#13;
+&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:GeographicalNames:3.0/NamedPlaceTypeValue">administrativeUnit</identifier>
+      <name>administrativeUnit</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21629_36913">
+      <description>-- Definition --&#13;
+Geographical location of buildings.&#13;
+&#13;
+-- Description --&#13;
+SOURCE Definition of Annex III theme [INSPIRE Directive].&#13;
+&#13;
+NOTE This definition of building should be refined from future works on the specification of the INSPIRE annex III theme &lt;i&gt;BUILDINGS&lt;/i&gt;.&#13;
+&#13;
+EXAMPLES&#13;
+&lt;ul&gt;&#13;
+	&lt;li&gt;Public buildings such as theatre, museum, library;&lt;/li&gt;&#13;
+	&lt;li&gt;Industrial facility;&lt;/li&gt;&#13;
+	&lt;li&gt;Religious buildings such as church, mosque, synagogue;&lt;/li&gt;&#13;
+	&lt;li&gt;Recreational buildings such as stadium; &lt;/li&gt;&#13;
+	&lt;li&gt;Historical and ancient cite;&lt;/li&gt;&#13;
+	&lt;li&gt;Cultural monument&lt;/li&gt;&#13;
+&lt;/ul&gt;&#13;
+&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:GeographicalNames:3.0/NamedPlaceTypeValue">building</identifier>
+      <name>building</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21629_36914">
+      <description>-- Definition --&#13;
+Hydrographic elements, including marine areas and all other water bodies and items related to them, including river basins and sub-basins.&#13;
+&#13;
+-- Description --&#13;
+SOURCE Definition of Annex I theme &lt;i&gt;HYDROGRAPHY&lt;/i&gt;, INSPIRE Directive [Regulation 1205/2008/EC].&#13;
+&#13;
+NOTE For the usage with Geographical names this includes named places in seas and oceans. &#13;
+&#13;
+EXAMPLES &#13;
+&lt;ul&gt;&#13;
+	&lt;li&gt;Marine areas and parts of them such as sea, gulf, sea strait, sea channel, fjord, sea bay;&lt;/li&gt;&#13;
+	&lt;li&gt;Inland water areas such as lake, reservoir, pond, lake strait, lake bay;&lt;/li&gt;&#13;
+	&lt;li&gt;Watercourses such as river, stream, rapids, waterfall, canal; &lt;/li&gt;&#13;
+	&lt;li&gt;Other hydrographic features such as glacier, snowfield, geyser, spring, fountain, well.&lt;/li&gt;&#13;
+&lt;/ul&gt;&#13;
+&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:GeographicalNames:3.0/NamedPlaceTypeValue">hydrography</identifier>
+      <name>hydrography</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21629_36915">
+      <description>-- Definition --&#13;
+Physical and biological cover of the earth's surface including artificial surfaces, agricultural areas, forests, (semi-)natural areas, wetlands, water bodies.&#13;
+&#13;
+-- Description --&#13;
+SOURCE Definition of Annex III theme, INSPIRE Directive.&#13;
+&#13;
+EXAMPLES&#13;
+&lt;ul&gt;&#13;
+	&lt;li&gt;Forest;&lt;/li&gt;&#13;
+	&lt;li&gt;Low vegetation areas such as thicket;&lt;/li&gt;&#13;
+	&lt;li&gt;Wetlands such as marsh, swamp, bog;&lt;/li&gt;&#13;
+	&lt;li&gt;Agricultural areas such as arable land, cultivated field, pasture;&lt;/li&gt;&#13;
+	&lt;li&gt;Other terrain cover features such as desert, badland, lava field, remarkable tree.&lt;/li&gt;&#13;
+&lt;/ul&gt;&#13;
+&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:GeographicalNames:3.0/NamedPlaceTypeValue">landcover</identifier>
+      <name>landcover</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21629_36916">
+      <description>-- Definition --&#13;
+Geomorphologic terrain feature .&#13;
+&#13;
+-- Description --&#13;
+EXAMPLES&#13;
+&lt;ul&gt;&#13;
+	&lt;li&gt;Land elevations such as mountain range, mountain, mountainside, fell, highland, hill, ridge, peak;&lt;/li&gt;&#13;
+	&lt;li&gt;Land depressions such as plain, valley, pass, gorge;&lt;/li&gt;&#13;
+	&lt;li&gt;Island, rocky islet, archipelago;&lt;/li&gt;&#13;
+	&lt;li&gt;Coastal land formations such as peninsula, headland, cape, delta, beach, cliff;&lt;/li&gt;&#13;
+	&lt;li&gt;Other landforms such as cave, devil's churn, stone.&lt;/li&gt;&#13;
+&lt;/ul&gt;</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:GeographicalNames:3.0/NamedPlaceTypeValue">landform</identifier>
+      <name>landform</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21629_36917">
+      <description>-- Definition --&#13;
+A place inhabited by people.&#13;
+&#13;
+-- Description --&#13;
+EXAMPLES&#13;
+&lt;ul&gt;&#13;
+	&lt;li&gt;City, town, town district, village;&lt;/li&gt;&#13;
+	&lt;li&gt;Hamlet, isolated house.&lt;/li&gt;&#13;
+&lt;/ul&gt;&#13;
+&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:GeographicalNames:3.0/NamedPlaceTypeValue">populatedPlace</identifier>
+      <name>populatedPlace</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21629_36918">
+      <description>-- Definition --&#13;
+Area designated or managed within a framework of international, Community and Member States' legislation to achieve specific conservation objectives.&#13;
+&#13;
+-- Description --&#13;
+SOURCE Definition of Annex I theme, INSPIRE Directive [Regulation 1205/2008/EC].&#13;
+&#13;
+EXAMPLES National park, nature reserve.&#13;
+&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:GeographicalNames:3.0/NamedPlaceTypeValue">protectedSite</identifier>
+      <name>protectedSite</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21629_36919">
+      <description>-- Definition --&#13;
+Road, rail, air and water transport networks and related infrastructure. Includes links between different networks. &#13;
+&#13;
+-- Description --&#13;
+SOURCE Definition of Annex I theme, INSPIRE Directive [Regulation 1205/2008/EC].&#13;
+&#13;
+EXAMPLES&#13;
+&lt;ul&gt;&#13;
+	&lt;li&gt;Air transport structures and facilities such as airport, heliport;&lt;/li&gt;&#13;
+	&lt;li&gt;Water transport structures and facilities such as harbour, dock, pier, ferry line;&lt;/li&gt;&#13;
+	&lt;li&gt;Rail transport structures and facilities such as railway station, railway bridge, railway tunnel;&lt;/li&gt;&#13;
+	&lt;li&gt;Road transport structures and facilities such as bus station, highway, road, street, road bridge, road tunnel.&lt;/li&gt;&#13;
+&lt;/ul&gt;&#13;
+&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:GeographicalNames:3.0/NamedPlaceTypeValue">transportNetwork</identifier>
+      <name>transportNetwork</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21629_36920">
+      <description>-- Definition --&#13;
+A spatial object not included in the other types of the code list.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:GeographicalNames:3.0/NamedPlaceTypeValue">other</identifier>
+      <name>other</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

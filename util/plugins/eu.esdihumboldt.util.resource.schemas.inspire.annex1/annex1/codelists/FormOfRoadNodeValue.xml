@@ -1,0 +1,82 @@
+<?xml-stylesheet type='text/xsl' href='./CodelistDictionary-v32.xsl'?><Dictionary xmlns="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="FormOfRoadNodeValue" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+  <description>-- Definition --&#13;
+Functions of road nodes within Euroroads.</description>
+  <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0">FormOfRoadNodeValue</identifier>
+  <dictionaryEntry>
+    <Definition gml:id="_21952_37690">
+      <description>-- Definition --&#13;
+The road node is situated inside and/or represents an enclosed traffic area.&#13;
+A traffic area is an area with no internal structure of legally defined driving directions. At least two roads are connected to the area..&#13;
+&#13;
+-- Description --&#13;
+SOURCE [Euroroads].</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/FormOfRoadNodeValue">enclosedTrafficArea</identifier>
+      <name>enclosedTrafficArea</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21952_37691">
+      <description>-- Definition --&#13;
+Three or more road links intersect at the road node.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/FormOfRoadNodeValue">junction</identifier>
+      <name>junction</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21952_37692">
+      <description>-- Definition --&#13;
+A railway crosses a road on the same level at the position of the road node.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/FormOfRoadNodeValue">levelCrossing</identifier>
+      <name>levelCrossing</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21952_37693">
+      <description>-- Definition --&#13;
+Exactly two road links connect to the road node.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/FormOfRoadNodeValue">pseudoNode</identifier>
+      <name>pseudoNode</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21952_37694">
+      <description>-- Definition --&#13;
+Only one road link connects to the road node. It signifies the end of a road.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/FormOfRoadNodeValue">roadEnd</identifier>
+      <name>roadEnd</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21952_37695">
+      <description>-- Definition --&#13;
+The road node represents or is a part of a roundabout.</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/FormOfRoadNodeValue">roundabout</identifier>
+      <name>roundabout</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21952_37696">
+      <description>-- Definition --&#13;
+The road node is situated inside and/or represents a traffic square.&#13;
+A traffic square is an area (partly) enclosed by roads which is used for non-traffic purposes and which is not a roundabout. &#13;
+&#13;
+-- Description --&#13;
+SOURCE [GDF, Euroroads].&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/FormOfRoadNodeValue">trafficSquare</identifier>
+      <name>trafficSquare</name>
+    </Definition>
+  </dictionaryEntry>
+  <dictionaryEntry>
+    <Definition gml:id="_21952_37697">
+      <description>-- Definition --&#13;
+Surface annexed to a road and devoted to offer particular services for it.&#13;
+&#13;
+-- Description --&#13;
+EXAMPLES Gas station, rest area, toll area.&#13;
+</description>
+      <identifier codeSpace="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0/FormOfRoadNodeValue">roadServiceArea</identifier>
+      <name>roadServiceArea</name>
+    </Definition>
+  </dictionaryEntry>
+</Dictionary>

@@ -13,5 +13,12 @@
          </parameter>
       </propertyParameterPage>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.ui.filter">
+      <filter-ui
+            dialogFactory="eu.esdihumboldt.hale.io.xslt.ui.filter.XPathFilterDialogFactory"
+            filter="XPath">
+      </filter-ui>
+   </extension>
 
 </plugin>

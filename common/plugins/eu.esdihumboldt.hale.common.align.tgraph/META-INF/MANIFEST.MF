@@ -2,18 +2,18 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Transformation Graph
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.align.tgraph
-Bundle-Version: 2.6.0.qualifier
+Bundle-Version: 2.7.0.qualifier
 Bundle-Vendor: Data Harmonisation Panel
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.collect;version="11.0.1"
-Require-Bundle: gremlin-groovy;bundle-version="2.1.0",
- com.tinkerpop.blueprints;bundle-version="2.1.0",
+Require-Bundle: com.tinkerpop.blueprints;bundle-version="2.1.0",
  groovy;bundle-version="1.8.6",
- gremlin-java;bundle-version="2.1.0",
  eu.esdihumboldt.hale.common.align;bundle-version="2.5.0",
- pipes;bundle-version="2.1.0",
  eu.esdihumboldt.hale.common.schema;bundle-version="2.5.0",
- eu.esdihumboldt.hale.common.instance;bundle-version="2.5.0"
+ eu.esdihumboldt.hale.common.instance;bundle-version="2.5.0",
+ com.tinkerpop.gremlin.groovy;bundle-version="2.4.0",
+ com.tinkerpop.gremlin.java;bundle-version="2.4.0",
+ com.tinkerpop.pipes;bundle-version="2.4.0"
 Export-Package: eu.esdihumboldt.hale.common.align.tgraph,
  eu.esdihumboldt.hale.common.align.tgraph.impl,
  eu.esdihumboldt.hale.common.align.tgraph.impl.internal;x-internal:=true

@@ -31,13 +31,15 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import eu.esdihumboldt.hale.common.align.model.TransformationMode;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.io.csv.writer.AbstractAlignmentMappingExport;
-import eu.esdihumboldt.hale.io.csv.writer.CellInfo;
+import eu.esdihumboldt.hale.io.csv.writer.CellInformation;
+import eu.esdihumboldt.hale.io.csv.writer.CellType;
 
 /**
  * Provider to write the alignment to a xls/xlsx file
@@ -45,6 +47,9 @@ import eu.esdihumboldt.hale.io.csv.writer.CellInfo;
  * @author Patrick Lieb
  */
 public class XLSAlignmentMappingWriter extends AbstractAlignmentMappingExport {
+
+	// in pixels
+	private final int maxWidth = 500;
 
 	@Override
 	public boolean isCancelable() {
@@ -54,6 +59,9 @@ public class XLSAlignmentMappingWriter extends AbstractAlignmentMappingExport {
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
+
+		super.execute(progress, reporter);
+
 		Workbook workbook;
 		// write xls file
 		if (getContentType().getId().equals("eu.esdihumboldt.hale.io.xls.xls")) {
@@ -77,10 +85,10 @@ public class XLSAlignmentMappingWriter extends AbstractAlignmentMappingExport {
 
 		// create cell style of the header
 		CellStyle headerStyle = workbook.createCellStyle();
-		Font f = workbook.createFont();
+		Font headerFont = workbook.createFont();
 		// use bold font
-		f.setBoldweight(Font.BOLDWEIGHT_BOLD);
-		headerStyle.setFont(f);
+		headerFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		headerStyle.setFont(headerFont);
 		// set a medium border
 		headerStyle.setBorderBottom(CellStyle.BORDER_MEDIUM);
 		// set cell data format to text
@@ -97,7 +105,7 @@ public class XLSAlignmentMappingWriter extends AbstractAlignmentMappingExport {
 		// display multiple lines
 		cellStyle.setWrapText(true);
 
-		// create highlight style
+		// create highlight style for type cells
 		CellStyle highlightStyle = workbook.createCellStyle();
 		// set thin border around the cell
 		highlightStyle.setBorderBottom(CellStyle.BORDER_THIN);
@@ -107,93 +115,113 @@ public class XLSAlignmentMappingWriter extends AbstractAlignmentMappingExport {
 		highlightStyle.setDataFormat(df.getFormat("@"));
 		// display multiple lines
 		highlightStyle.setWrapText(true);
-		// font
-//		f = workbook.createFont();
-//		f.setColor(IndexedColors.BLUE.getIndex());
-//		highlightStyle.setFont(f);
 		highlightStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
 		highlightStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
 
-		List<Map<CellType, CellInfo>> mapping = getMappingList();
+		// create disabled style
+		CellStyle disabledStyle = workbook.createCellStyle();
+		// set thin border around the cell
+		disabledStyle.setBorderBottom(CellStyle.BORDER_THIN);
+		disabledStyle.setBorderLeft(CellStyle.BORDER_THIN);
+		disabledStyle.setBorderRight(CellStyle.BORDER_THIN);
+		// set cell data format to text
+		disabledStyle.setDataFormat(df.getFormat("@"));
+		// display multiple lines
+		disabledStyle.setWrapText(true);
+		// strike out font
+		Font disabledFont = workbook.createFont();
+		disabledFont.setStrikeout(true);
+		disabledFont.setColor(IndexedColors.GREY_40_PERCENT.getIndex());
+		disabledStyle.setFont(disabledFont);
+
+		// create disabled highlight style
+		CellStyle disabledTypeStyle = workbook.createCellStyle();
+		// set thin border around the cell
+		disabledTypeStyle.setBorderBottom(CellStyle.BORDER_THIN);
+		disabledTypeStyle.setBorderLeft(CellStyle.BORDER_THIN);
+		disabledTypeStyle.setBorderRight(CellStyle.BORDER_THIN);
+		// set cell data format to text
+		disabledTypeStyle.setDataFormat(df.getFormat("@"));
+		// display multiple lines
+		disabledTypeStyle.setWrapText(true);
+		disabledTypeStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+		disabledTypeStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		// strike out font
+		Font disabledTypeFont = workbook.createFont();
+		disabledTypeFont.setStrikeout(true);
+		disabledTypeFont.setColor(IndexedColors.BLACK.getIndex());
+		disabledStyle.setFont(disabledTypeFont);
+		disabledTypeStyle.setFont(disabledTypeFont);
+
+		List<Map<CellType, CellInformation>> mapping = getMappingList();
 
 		// determine if cells are organized by type cell
-		String mode = getParameter(PARAMETER_MODE).as(String.class);
-		boolean byTypeCell = mode.equals(MODE_BY_TYPE_CELLS);
+		boolean byTypeCell = isByTypeCell();
 
 		int rownum = 0;
 
 		// write header
 		row = sheet.createRow(rownum++);
-		for (int i = 0; i < MAPPING_HEADER.size(); i++) {
+		for (int i = 0; i < getMappingHeader().size(); i++) {
 			cell = row.createCell(i);
-			cell.setCellValue(MAPPING_HEADER.get(i));
+			cell.setCellValue(getMappingHeader().get(i));
 			cell.setCellStyle(headerStyle);
 		}
 
 		// write all mappings
-		for (Map<CellType, CellInfo> entry : mapping) {
+		for (Map<CellType, CellInformation> entry : mapping) {
+
+			boolean disabled = false;
+			if (getParameter(TRANSFORMATION_AND_DISABLED_FOR).as(Boolean.class)) {
+				List<String> transformationDisabled = entry.get(
+						CellType.TRANSFORMATION_AND_DISABLED).getText();
+				disabled = !transformationDisabled.isEmpty()
+						&& !transformationDisabled
+								.contains(TransformationMode.active.displayName());
+			}
+
 			// create a row
 			row = sheet.createRow(rownum);
 
 			CellStyle rowStyle = cellStyle;
-			if (byTypeCell) {
-				// check if the current cell is a type cell
-				String targetProp = getCellValue(entry, CellType.TARGET_PROPERTIES);
-				if (targetProp == null || targetProp.isEmpty()) {
+
+			String targetProp = getCellValue(entry, CellType.TARGET_PROPERTIES);
+			boolean isTypeCell = targetProp == null || targetProp.isEmpty();
+
+			if (isTypeCell && byTypeCell) {
+				// organized by type cells and this is a type cell
+
+				if (disabled) {
+					// disabled type cell
+					rowStyle = disabledTypeStyle;
+				}
+				else {
+					// normal type cell
 					rowStyle = highlightStyle;
 				}
 			}
+			else if (disabled) {
+				// disabled property cell
+				rowStyle = disabledStyle;
+			}
 
-			cell = row.createCell(0);
-			cell.setCellValue(getCellValue(entry, CellType.SOURCE_TYPE));
-			cell.setCellStyle(rowStyle);
-
-			cell = row.createCell(1);
-			cell.setCellValue(getCellValue(entry, CellType.SOURCE_TYPE_CONDITIONS));
-			cell.setCellStyle(rowStyle);
-
-			cell = row.createCell(2);
-			cell.setCellValue(getCellValue(entry, CellType.SOURCE_PROPERTIES));
-			cell.setCellStyle(rowStyle);
-
-			cell = row.createCell(3);
-			cell.setCellValue(getCellValue(entry, CellType.SOURCE_PROPERTY_CONDITIONS));
-			cell.setCellStyle(rowStyle);
-
-			cell = row.createCell(4);
-			cell.setCellValue(getCellValue(entry, CellType.TARGET_TYPE));
-			cell.setCellStyle(rowStyle);
-
-			cell = row.createCell(5);
-			cell.setCellValue(getCellValue(entry, CellType.TARGET_PROPERTIES));
-			cell.setCellStyle(rowStyle);
-
-			cell = row.createCell(6);
-			cell.setCellValue(getCellValue(entry, CellType.RELATION_NAME));
-			cell.setCellStyle(rowStyle);
-
-			cell = row.createCell(7);
-			cell.setCellValue(getCellValue(entry, CellType.PRIORITY));
-			cell.setCellStyle(rowStyle);
-
-			cell = row.createCell(8);
-			cell.setCellValue(getCellValue(entry, CellType.CELL_EXPLANATION));
-			cell.setCellStyle(rowStyle);
-
-			cell = row.createCell(9);
-			cell.setCellValue(getCellValue(entry, CellType.CELL_NOTES));
-			cell.setCellStyle(rowStyle);
-
-			cell = row.createCell(10);
-			cell.setCellValue(getCellValue(entry, CellType.BASE_CELL));
-			cell.setCellStyle(rowStyle);
-
+			List<CellType> celltypes = getCellTypes();
+			for (int i = 0; i < celltypes.size(); i++) {
+				cell = row.createCell(i);
+				cell.setCellValue(getCellValue(entry, celltypes.get(i)));
+				cell.setCellStyle(rowStyle);
+			}
 			rownum++;
-
 		}
+
+		// could be integrated in configuration page
+//		int maxColWidth = calculateWidth(getParameter(MAX_COLUMN_WIDTH).as(Integer.class));
+		int maxColWidth = calculateWidth(maxWidth);
 		// autosize all columns
-		for (int i = 0; i < MAPPING_HEADER.size(); i++) {
+		for (int i = 0; i < getMappingHeader().size(); i++) {
 			sheet.autoSizeColumn(i);
+			if (sheet.getColumnWidth(i) > maxColWidth)
+				sheet.setColumnWidth(i, maxColWidth);
 		}
 
 		// write file
@@ -208,5 +236,9 @@ public class XLSAlignmentMappingWriter extends AbstractAlignmentMappingExport {
 	@Override
 	protected String getDefaultTypeName() {
 		return "XLS HALE Alignment";
+	}
+
+	private int calculateWidth(int maxColWidth) {
+		return (int) (maxColWidth * 35.536);
 	}
 }
