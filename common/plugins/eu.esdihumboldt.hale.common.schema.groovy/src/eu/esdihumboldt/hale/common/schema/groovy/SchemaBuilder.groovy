@@ -17,8 +17,6 @@ package eu.esdihumboldt.hale.common.schema.groovy
 
 import javax.xml.namespace.QName
 
-import org.codehaus.groovy.runtime.InvokerHelper
-
 import eu.esdihumboldt.hale.common.schema.groovy.constraints.AugmentedValueFactory
 import eu.esdihumboldt.hale.common.schema.groovy.constraints.BindingFactory
 import eu.esdihumboldt.hale.common.schema.groovy.constraints.CardinalityFactory
@@ -159,53 +157,6 @@ class SchemaBuilder extends BuilderBase {
 	}
 
 	/**
-	 * Called on for any missing method.
-	 * 
-	 * @param name the method name
-	 * @param args the arguments
-	 * @return something
-	 */
-	@CompileStatic(TypeCheckingMode.SKIP)
-	@TypeChecked
-	def methodMissing(String name, def args) {
-		List list = InvokerHelper.asList(args)
-
-		// determine named parameters (must be first)
-		Map attributes = null
-		def start = 0
-		if (list && list[0] instanceof Map) {
-			attributes = (Map) list[0]
-			start = 1
-		}
-
-		// determine closure (must be last)
-		def end = list.size()
-		Closure closure = null
-		if (list && list.last() instanceof Closure) {
-			closure = (Closure) list.last().clone()
-			closure.delegate = this
-			end--
-		}
-
-		// determine other parameters
-		List params = null
-		if (start < end) {
-			params = list.subList(start, end)
-		}
-
-		def parent = current
-		def node = createNode(name, attributes, params, parent, closure != null)
-		current = node
-
-		closure?.call()
-
-		current = parent
-
-		// return the node created by the call
-		node
-	}
-
-	/**
 	 * Create a new node.
 	 * 
 	 * @param name the node name
@@ -215,7 +166,7 @@ class SchemaBuilder extends BuilderBase {
 	 * @param subClosure states if there is a sub-closure for this node
 	 * @return the created node
 	 */
-	def createNode(String name, Map attributes, List params, def parent, boolean subClosure) {
+	protected def internalCreateNode(String name, Map attributes, List params, def parent, boolean subClosure) {
 		def node
 		if (parent == null) {
 			// create stand-alone type
