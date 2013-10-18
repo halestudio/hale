@@ -24,6 +24,7 @@ import eu.esdihumboldt.hale.common.instance.model.ResourceIterator
 import eu.esdihumboldt.hale.common.schema.groovy.SchemaBuilder
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.test.TestUtil
+import groovy.transform.CompileStatic
 
 
 /**
@@ -51,6 +52,11 @@ class InstanceBuilderTest extends GroovyTestCase {
 			type { href('http://example.com/some-location') }
 		}
 
+		checkDefaultSchemaLessInstance(instance)
+	}
+
+	@CompileStatic
+	private void checkDefaultSchemaLessInstance(Instance instance) {
 		assertNotNull instance
 		assertNull instance.value
 
@@ -69,12 +75,30 @@ class InstanceBuilderTest extends GroovyTestCase {
 		QName typeName = new QName('type')
 		assertEquals 1, instance.getProperty(typeName).size()
 		assertTrue instance.getProperty(typeName)[0] instanceof Group
-		Group type = instance.getProperty(typeName)[0]
+		Group type = (Group) instance.getProperty(typeName)[0]
 
 		// type.href
 		QName hrefName = new QName('href')
 		assertEquals 1, type.getProperty(hrefName).size()
 		assertEquals 'http://example.com/some-location', type.getProperty(hrefName)[0]
+	}
+
+	/**
+	 * Test creating a single instance w/o associated schema using the type safe builder API.
+	 */
+	@CompileStatic
+	void testSchemaLessSafeAPI() {
+		InstanceBuilder b = new InstanceBuilder()
+		Instance instance = b.createInstance {
+			b.createProperty('id', 12)
+			b.createProperty('name', 'test')
+			b.createProperty('name', 'test2')
+			b.createProperty('type') {
+				b.createProperty('href', 'http://example.com/some-location')
+			}
+		}
+
+		checkDefaultSchemaLessInstance(instance)
 	}
 
 	/**
@@ -99,7 +123,7 @@ class InstanceBuilderTest extends GroovyTestCase {
 		QName orderTypeName = new QName('OrderType')
 
 		// create the instance collection
-		InstanceCollection instances = new InstanceBuilder().collection(schema) {
+		InstanceCollection instances = new InstanceBuilder(types: schema).createCollection {
 			OrderType {
 				item {
 					id(12)

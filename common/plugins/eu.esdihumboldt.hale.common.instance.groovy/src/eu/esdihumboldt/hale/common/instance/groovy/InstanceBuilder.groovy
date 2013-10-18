@@ -93,12 +93,11 @@ class InstanceBuilder extends BuilderBase {
 	/**
 	 * The type index to search for types to instantiate.
 	 */
-	private TypeIndex types = null
+	TypeIndex types = null
 
 	@Override
 	public void reset() {
 		super.reset()
-		types = null
 	}
 
 	/**
@@ -107,17 +106,81 @@ class InstanceBuilder extends BuilderBase {
 	 * @param types the underlying type index if the builder should be schema strict
 	 * @return the created instance collection
 	 */
-	InstanceCollection collection(TypeIndex types = null, Closure closure) {
+	InstanceCollection createCollection(Closure closure) {
 		DefaultInstanceCollection root = new DefaultInstanceCollection()
-		this.types = types
 		def parent = current
 		current = root
 		closure = (Closure) closure.clone()
 		closure.delegate = this
 		closure.call()
-		current = parent
 		reset()
 		return root
+	}
+
+	/**
+	 * Create an instance. Type safe alternative to generic builder call.
+	 *
+	 * @param type the type to associate to the instance
+	 * @return the created instance
+	 */
+	Instance createInstance(TypeDefinition type, def value = null, Closure closure) {
+		createInstance(type.getName().getLocalPart(), null, value, type, closure)
+	}
+
+	/**
+	 * Create an instance. Type safe alternative to generic builder call.
+	 * 
+	 * @param typeLocalName the local name of the instance type
+	 * @param namespace the namespace of the instance type
+	 * @return the created instance
+	 */
+	Instance createInstance(String typeLocalName = null, String namespace = null, def value = null, TypeDefinition type = null, Closure closure) {
+		def args = []
+		if (type != null) {
+			args << type
+		}
+		if (value) {
+			args << value
+		}
+		if (namespace) {
+			args << [namespace: namespace]
+		}
+		if (closure != null) {
+			args << closure
+		}
+		return (Instance) createNode(typeLocalName, args)
+	}
+
+	/**
+	 * Create an property. Type safe alternative to generic builder call.
+	 *
+	 * @param name the local name of the property
+	 * @param namespace the namespace of the property
+	 * @param value the property value
+	 * @return the created property
+	 */
+	def createProperty(String name, def value, Closure closure) {
+		createProperty(name, null, value, closure)
+	}
+
+	/**
+	 * Create an property. Type safe alternative to generic builder call.
+	 *
+	 * @param name the local name of the property
+	 * @param namespace the namespace of the property
+	 * @param value the property value
+	 * @return the created property
+	 */
+	def createProperty(String name, String namespace = null, def value, Closure closure = null) {
+		def args = []
+		if (namespace) {
+			args << [namespace: namespace]
+		}
+		args << value
+		if (closure != null) {
+			args << closure
+		}
+		return createNode(name, args)
 	}
 
 	@Override
@@ -127,12 +190,12 @@ class InstanceBuilder extends BuilderBase {
 
 		if (parent == null) {
 			// create instance
-			Instance instance = createInstance(name, attributes, params)
+			Instance instance = internalCreateInstance(name, attributes, params)
 			node = instance
 		}
 		else if (parent instanceof DefaultInstanceCollection) {
 			// create instance and add to collection
-			Instance instance = createInstance(name, attributes, params)
+			Instance instance = internalCreateInstance(name, attributes, params)
 			((DefaultInstanceCollection) parent).add(instance)
 			node = instance
 		}
@@ -274,7 +337,7 @@ class InstanceBuilder extends BuilderBase {
 
 			if (definition instanceof TypeDefinition) {
 				// create an explicit instance
-				return createInstance('', attributes, params)
+				return internalCreateInstance('', attributes, params)
 			}
 
 			if (definition != null) {
@@ -289,7 +352,7 @@ class InstanceBuilder extends BuilderBase {
 				// must be a group or instance
 				if (params) {
 					// must be an instance as a value is given
-					return createInstance(null, params[0])
+					return createInstanceAndValue(null, params[0])
 				}
 				else {
 					// create a group
@@ -327,7 +390,7 @@ class InstanceBuilder extends BuilderBase {
 				}
 
 				// create instance
-				return createInstance(property.propertyType, value)
+				return createInstanceAndValue(property.propertyType, value)
 			}
 			else {
 				// normal property value
@@ -397,7 +460,7 @@ class InstanceBuilder extends BuilderBase {
 		value
 	}
 
-	private Instance createInstance(String name, Map attributes, List params) {
+	private Instance internalCreateInstance(String name, Map attributes, List params) {
 		/*
 		 * 1. determine instance type (if any)
 		 */
@@ -435,10 +498,10 @@ class InstanceBuilder extends BuilderBase {
 		/*
 		 * 3. build instance
 		 */
-		createInstance(type, value)
+		createInstanceAndValue(type, value)
 	}
 
-	private MutableInstance createInstance(TypeDefinition type, def value = null) {
+	private MutableInstance createInstanceAndValue(TypeDefinition type, def value = null) {
 		/*
 		 * 1. build instance
 		 */
