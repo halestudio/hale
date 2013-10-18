@@ -19,8 +19,8 @@ package eu.esdihumboldt.hale.io.jdbc;
 import static eu.esdihumboldt.hale.io.jdbc.JDBCUtil.quote;
 import static eu.esdihumboldt.hale.io.jdbc.JDBCUtil.unquote;
 
-import java.awt.List;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.URI;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -383,18 +383,19 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 		else {
 			// configure type
 			try {
-				// XXX more sophisticated class loading?
 				String className = column.getType().getTypeClassName();
 				Class<?> binding;
 				if (className.endsWith("[]")) {
-					// for arrays use List as binding
-					Class<?> elementType = Class.forName(className.substring(0,
+					// determine element class
+					Class<?> elementType = loadColumnBinding(className.substring(0,
 							className.length() - 2));
 					type.setConstraint(ElementType.get(elementType));
-					binding = List.class;
+
+					// determine array class
+					binding = Array.newInstance(elementType, 0).getClass();
 				}
 				else {
-					binding = Class.forName(className);
+					binding = loadColumnBinding(className);
 				}
 				type.setConstraint(Binding.get(binding));
 
@@ -411,6 +412,21 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 
 		types.addType(type);
 		return type;
+	}
+
+	private Class<?> loadColumnBinding(String name) throws ClassNotFoundException {
+		switch (name) {
+		case "byte":
+			return byte.class;
+		case "int":
+			return int.class;
+		case "long":
+			return long.class;
+		case "boolean":
+			return boolean.class;
+		default:
+			return Class.forName(name);
+		}
 	}
 
 	/**
