@@ -12,6 +12,9 @@
          <provider
                ref="eu.esdihumboldt.hale.io.jdbc.instance.writer">
          </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.jdbc.instance.reader">
+         </provider>
       </configPage>
    </extension>
 
