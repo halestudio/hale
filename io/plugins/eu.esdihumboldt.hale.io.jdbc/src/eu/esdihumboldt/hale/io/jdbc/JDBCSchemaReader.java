@@ -168,7 +168,30 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 				// can't do anything about that
 			}
 
-			String overallNamespace = jdbcURI.getPath();
+			URI specificURI;
+			try {
+				specificURI = URI.create(jdbcURI.getRawSchemeSpecificPart());
+			} catch (Exception e) {
+				specificURI = jdbcURI;
+			}
+			StringBuilder ns = new StringBuilder();
+			if (specificURI.getScheme() != null) {
+				if (!specificURI.getScheme().equals("jdbc")) {
+					ns.append("jdbc:");
+				}
+				ns.append(specificURI.getScheme());
+			}
+			if (specificURI.getPath() != null) {
+				if (ns.length() > 0) {
+					ns.append(':');
+				}
+				String path = specificURI.getPath();
+				if (path.startsWith("/")) {
+					path = path.substring(1);
+				}
+				ns.append(path);
+			}
+			String overallNamespace = ns.toString();
 			if (overallNamespace == null) {
 				overallNamespace = "";
 			}
@@ -178,7 +201,13 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 
 			for (final schemacrawler.schema.Schema schema : database.getSchemas()) {
 				// each schema represents a namespace
-				String namespace = overallNamespace + "/" + unquote(schema.getName());
+				String namespace;
+				if (overallNamespace.isEmpty()) {
+					namespace = unquote(schema.getName());
+				}
+				else {
+					namespace = overallNamespace + ":" + unquote(schema.getName());
+				}
 
 				for (final Table table : schema.getTables()) {
 					// each table is a type
