@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Data Harmonisation Panel
+ * Copyright (c) 2013 Data Harmonisation Panel
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -10,32 +10,27 @@
  * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
  * 
  * Contributors:
- *     HUMBOLDT EU Integrated Project #030962
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.io.jdbc;
+package eu.esdihumboldt.hale.io.jdbc.extension;
+
+import java.net.URI;
 
 /**
- * Constants related to JDBC I/O providers.
+ * Builds a JDBC URI from basic database information.
  * 
  * @author Simon Templer
  */
-public interface JDBCConstants {
+public interface URIBuilder {
 
 	/**
-	 * The identifier of the JDBC content type.
+	 * Create an URI to connect to a specific database via JDBC.
+	 * 
+	 * @param host the database host (and port)
+	 * @param database the database name
+	 * @return the JDBC URI
 	 */
-	public static final String CONTENT_TYPE_ID = "eu.esdihumboldt.hale.io.jdbc";
-
-	/**
-	 * Parameter name for the connection user name
-	 */
-	public static final String PARAM_USER = "jdbc.user";
-
-	/**
-	 * Parameter name for the connection user password
-	 */
-	public static final String PARAM_PASSWORD = "jdbc.password";
+	public URI createJdbcUri(String host, String database);
 
 }

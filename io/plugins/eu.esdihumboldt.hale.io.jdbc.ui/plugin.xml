@@ -17,5 +17,28 @@
          </provider>
       </configPage>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.ui.io.source">
+      <source
+            class="eu.esdihumboldt.hale.io.jdbc.ui.JDBCSource"
+            contentType="eu.esdihumboldt.hale.io.jdbc"
+            description="Load a database schema through JDBC"
+            icon="icons/database.gif"
+            id="eu.esdihumboldt.hale.io.jdbc.ui.source.schema"
+            name="Database (JDBC)"
+            priority="5"
+            providerType="eu.esdihumboldt.hale.common.schema.io.SchemaReader">
+      </source>
+      <source
+            class="eu.esdihumboldt.hale.io.jdbc.ui.JDBCSource"
+            contentType="eu.esdihumboldt.hale.io.jdbc"
+            description="Load data from a database using JDBC"
+            icon="icons/database.gif"
+            id="eu.esdihumboldt.hale.io.jdbc.ui.source.instance"
+            name="Database (JDBC)"
+            priority="5"
+            providerType="eu.esdihumboldt.hale.common.instance.io.InstanceReader">
+      </source>
+   </extension>
 
 </plugin>

@@ -132,6 +132,8 @@ public class UserPasswordPage extends AbstractConfigurationPage<IOProvider, IOWi
 		if (firstShow) {
 			setPageComplete(true);
 		}
+
+		user.setFocus();
 	}
 
 	/**

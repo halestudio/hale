@@ -9,4 +9,9 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
  eu.esdihumboldt.hale.ui;bundle-version="2.5.0",
  eu.esdihumboldt.hale.common.schema;bundle-version="2.5.0",
  eu.esdihumboldt.hale.common.core;bundle-version="2.5.0"
-Import-Package: eu.esdihumboldt.hale.io.jdbc
+Import-Package: com.google.common.io;version="15.0.0",
+ de.cs3d.util.eclipse.extension.simple,
+ eu.esdihumboldt.hale.common.instance.io,
+ eu.esdihumboldt.hale.io.jdbc,
+ eu.esdihumboldt.hale.io.jdbc.extension,
+ eu.esdihumboldt.util
