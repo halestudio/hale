@@ -330,12 +330,12 @@ public class ClassificationMappingParameterPage extends
 		// The manualTab for the manual way to specify something like a
 		// lookupTable
 		manualItem = new TabItem(tabs, SWT.NONE);
-		manualItem.setText("Manual");
+		manualItem.setText("Explicit");
 		manualItem.setControl(createManualTabControl(tabs));
 
 		// FromFileTab to load lookupTable from file
 		fromFileItem = new TabItem(tabs, SWT.NONE);
-		fromFileItem.setText("From File");
+		fromFileItem.setText("From file");
 		fromFileItem.setControl(createFromFileTabControl(tabs));
 
 		if (selectedLookupTableID != null) {
@@ -642,7 +642,7 @@ public class ClassificationMappingParameterPage extends
 
 		// Label to descripe what the user should do
 		Label l = new Label(item2Content, SWT.NONE);
-		l.setText("Select the LookupTable you want to use");
+		l.setText("Select the project lookup table resource you want to use for the classification:");
 
 		// Get the Lookuptable Service
 		final LookupService lookupService = HaleUI.getServiceProvider().getService(
@@ -670,7 +670,8 @@ public class ClassificationMappingParameterPage extends
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.BEGINNING).applyTo(warnImage);
 
 		Label warn = new Label(warnComp, SWT.WRAP);
-		warn.setText("Classifications from a file resource will not function in another project where the alignment with the classification is used as a base alignment.");
+		warn.setText("Classifications from a file resource will not function in another project where the alignment with the classification is imported or used as a base alignment.\n"
+				+ "If unsure, use the 'Explicit' mode instead and use the option to load the classification from a file.");
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.BEGINNING).grab(true, false)
 				.hint(300, SWT.DEFAULT).applyTo(warn);
 
@@ -721,7 +722,7 @@ public class ClassificationMappingParameterPage extends
 
 		// Button to load a lookupTable if no one is loaded
 		final Button browseButton = new Button(parent, SWT.PUSH);
-		browseButton.setText("Browse ...");
+		browseButton.setText("Add...");
 		browseButton.addSelectionListener(new SelectionListener() {
 
 			@Override
