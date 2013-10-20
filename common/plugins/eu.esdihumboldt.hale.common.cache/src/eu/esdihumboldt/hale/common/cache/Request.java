@@ -16,9 +16,6 @@
 
 package eu.esdihumboldt.hale.common.cache;
 
-import groovy.text.SimpleTemplateEngine;
-import groovy.text.Template;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -43,8 +40,6 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreConnectionPNames;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.osgi.service.datalocation.Location;
 
 import com.google.common.io.ByteStreams;
 
@@ -54,7 +49,10 @@ import de.fhg.igd.osgi.util.OsgiUtils;
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import de.fhg.igd.osgi.util.configuration.JavaPreferencesConfigurationService;
 import de.fhg.igd.osgi.util.configuration.NamespaceConfigurationServiceDecorator;
+import eu.esdihumboldt.util.PlatformUtil;
 import eu.esdihumboldt.util.http.ProxyUtil;
+import groovy.text.SimpleTemplateEngine;
+import groovy.text.Template;
 
 /**
  * This class manages requests and caching for remote files.
@@ -111,16 +109,9 @@ public class Request {
 	 */
 	private void init() {
 		if (cacheEnabled) {
-			File cacheDir = new File(System.getProperty("java.io.tmpdir"));
-			Location location = Platform.getInstanceLocation();
-			if (location != null) {
-				try {
-					File instanceLoc = new File(URI.create(location.getURL().toString()
-							.replaceAll(" ", "%20")));
-					cacheDir = instanceLoc;
-				} catch (Exception e) {
-					// ignore
-				}
+			File cacheDir = PlatformUtil.getInstanceLocation();
+			if (cacheDir == null) {
+				cacheDir = new File(System.getProperty("java.io.tmpdir"));
 			}
 
 			try {
