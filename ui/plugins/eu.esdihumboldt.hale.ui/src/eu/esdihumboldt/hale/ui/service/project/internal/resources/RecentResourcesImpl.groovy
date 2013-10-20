@@ -240,12 +240,16 @@ class RecentResourcesImpl implements RecentResources {
 						timestamp(entry.value.stamp.toString())
 					}
 
-					def configNode = DOMProjectHelper.configurationToDOM(entry.value.value)
+					Element configNode = DOMProjectHelper.configurationToDOM(entry.value.value)
 					resNode.appendChild(resNode.ownerDocument.adoptNode(configNode))
 				}
 			}
 		}
 
 		XmlUtil.serialize(root, out)
+	}
+
+	int getNumberOfLocations() {
+		locations.size()
 	}
 }

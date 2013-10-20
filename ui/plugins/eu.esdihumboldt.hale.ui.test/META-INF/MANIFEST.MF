@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: HALE UI Tests
+Bundle-SymbolicName: eu.esdihumboldt.hale.ui.test
+Bundle-Version: 2.7.0.qualifier
+Bundle-Vendor: Data Harmonisation Panel
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: eu.esdihumboldt.hale.ui;bundle-version="2.7.0",
+ org.eclipse.core.runtime;bundle-version="3.7.0"
+Import-Package: eu.esdihumboldt.hale.common.core.io,
+ eu.esdihumboldt.hale.common.core.io.project.model,
+ org.junit;version="4.8.2"
