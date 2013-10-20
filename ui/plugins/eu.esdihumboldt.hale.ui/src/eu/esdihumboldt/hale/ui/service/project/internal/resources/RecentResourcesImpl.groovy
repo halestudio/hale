@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.content.IContentType
 import org.joda.time.DateTime
 import org.w3c.dom.Element
 
+import com.google.common.base.Predicate
 import com.google.common.collect.SortedSetMultimap
 import com.google.common.collect.TreeMultimap
 
@@ -32,6 +33,7 @@ import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfigurationResource
 import eu.esdihumboldt.hale.common.core.io.project.model.Resource
 import eu.esdihumboldt.hale.ui.service.project.RecentResources
+import eu.esdihumboldt.util.Pair
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
 import groovy.xml.DOMBuilder
@@ -121,24 +123,23 @@ class RecentResourcesImpl implements RecentResources {
 	}
 
 	@Override
-	public List<URI> getRecent(Iterable<? extends IContentType> contentTypes,
-			boolean restrictToFiles) {
-		SortedSet<Timestamped<URI>> all = new TreeSet()
+	public List<Pair<URI, IContentType>> getRecent(Iterable<? extends IContentType> contentTypes, Predicate<URI> accept) {
+		SortedSet<Timestamped<Pair<URI, IContentType>>> all = new TreeSet()
 		synchronized (locations) {
 			contentTypes.each { IContentType ct ->
-				all.addAll(locations.get(ct.id))
+				// collect accepted locations with content type
+				locations.get(ct.id).each { Timestamped<URI> it ->
+					if (accept == null || accept.apply(it.value)) {
+						all << new Timestamped(new Pair(it.value, ct), it.stamp)
+					}
+				}
 			}
 		}
 
-		if (restrictToFiles) {
-			all.retainAll { Timestamped<URI> it ->
-				'file' == it.value.scheme
-			}
-		}
-
-		List<URI> result = []
+		// just take the newest X
+		List<Pair<URI, IContentType>> result = []
 		int index = 0
-		for (Timestamped<URI> element : all) {
+		for (Timestamped<Pair<URI, IContentType>> element : all) {
 			if (index < maxReturnResources) {
 				result << element.value
 			}
@@ -150,6 +151,16 @@ class RecentResourcesImpl implements RecentResources {
 		}
 
 		result
+	}
+
+	@Override
+	public List<Pair<URI, IContentType>> getRecent(Iterable<? extends IContentType> contentTypes,
+			boolean restrictToFiles) {
+		getRecent(contentTypes, new Predicate<URI>() {
+					boolean apply(URI uri) {
+						'file' == uri.scheme
+					}
+				});
 	}
 
 	@Override

@@ -20,7 +20,10 @@ import java.util.List;
 
 import org.eclipse.core.runtime.content.IContentType;
 
+import com.google.common.base.Predicate;
+
 import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
+import eu.esdihumboldt.util.Pair;
 
 /**
  * Manages information on recently loaded resources.
@@ -52,8 +55,20 @@ public interface RecentResources {
 	 * @param restrictToFiles if the resources should be restricted to files
 	 * @return the list of recent resource locations for the given content types
 	 */
-	public List<URI> getRecent(Iterable<? extends IContentType> contentTypes,
+	public List<Pair<URI, IContentType>> getRecent(Iterable<? extends IContentType> contentTypes,
 			boolean restrictToFiles);
+
+	/**
+	 * Get the recent resource location based on the given content types
+	 * (independent of actions).
+	 * 
+	 * @param contentTypes the content types
+	 * @param accept the predicate specifying which resources to accept,
+	 *            <code>null</code> to accept all
+	 * @return the list of recent resource locations for the given content types
+	 */
+	public List<Pair<URI, IContentType>> getRecent(Iterable<? extends IContentType> contentTypes,
+			Predicate<URI> accept);
 
 	/**
 	 * Get the recent resource for a given action.

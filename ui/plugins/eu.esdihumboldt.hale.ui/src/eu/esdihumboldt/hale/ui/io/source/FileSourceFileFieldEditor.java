@@ -38,6 +38,7 @@ import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.io.util.OpenFileFieldEditor;
 import eu.esdihumboldt.hale.ui.service.project.RecentProjectsMenu;
 import eu.esdihumboldt.hale.ui.service.project.RecentResources;
+import eu.esdihumboldt.util.Pair;
 import eu.esdihumboldt.util.io.IOUtils;
 
 /**
@@ -239,7 +240,7 @@ public class FileSourceFileFieldEditor extends OpenFileFieldEditor {
 		RecentResources rr = (RecentResources) PlatformUI.getWorkbench().getService(
 				RecentResources.class);
 		if (rr != null) {
-			final List<URI> files = rr.getRecent(types, true);
+			final List<Pair<URI, IContentType>> files = rr.getRecent(types, true);
 
 			if (!files.isEmpty()) {
 				historyButton.addSelectionListener(new SelectionAdapter() {
@@ -247,10 +248,10 @@ public class FileSourceFileFieldEditor extends OpenFileFieldEditor {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						Menu filesMenu = new Menu(historyButton);
-						for (URI uri : files) {
+						for (Pair<URI, IContentType> pair : files) {
 							final File file;
 							try {
-								file = new File(uri);
+								file = new File(pair.getFirst());
 								if (file.exists()) {
 									// only offer existing files
 
