@@ -31,12 +31,15 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.jobs.Job;
 
+import com.google.common.base.Predicate;
+
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.project.RecentResources;
+import eu.esdihumboldt.util.Pair;
 import eu.esdihumboldt.util.PlatformUtil;
 
 /**
@@ -103,7 +106,7 @@ public class RecentResourcesService implements RecentResources {
 	}
 
 	@Override
-	public List<URI> getRecent(Iterable<? extends IContentType> contentTypes,
+	public List<Pair<URI, IContentType>> getRecent(Iterable<? extends IContentType> contentTypes,
 			boolean restrictToFiles) {
 		return rs.getRecent(contentTypes, restrictToFiles);
 	}
@@ -111,6 +114,12 @@ public class RecentResourcesService implements RecentResources {
 	@Override
 	public List<Resource> getRecent(String actionId) {
 		return rs.getRecent(actionId);
+	}
+
+	@Override
+	public List<Pair<URI, IContentType>> getRecent(Iterable<? extends IContentType> contentTypes,
+			Predicate<URI> accept) {
+		return rs.getRecent(contentTypes, accept);
 	}
 
 	/**
