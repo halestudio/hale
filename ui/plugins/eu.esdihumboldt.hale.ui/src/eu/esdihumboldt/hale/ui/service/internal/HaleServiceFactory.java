@@ -39,8 +39,10 @@ import eu.esdihumboldt.hale.ui.service.instance.validation.internal.InstanceVali
 import eu.esdihumboldt.hale.ui.service.population.internal.PopulationServiceImpl;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.RecentProjectsService;
+import eu.esdihumboldt.hale.ui.service.project.RecentResources;
 import eu.esdihumboldt.hale.ui.service.project.internal.ProjectServiceImpl;
 import eu.esdihumboldt.hale.ui.service.project.internal.RecentProjectsServiceImpl;
+import eu.esdihumboldt.hale.ui.service.project.internal.resources.RecentResourcesService;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
 import eu.esdihumboldt.hale.ui.service.report.internal.ReportServiceImpl;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
@@ -124,6 +126,11 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 		if (PopulationService.class.equals(serviceInterface)) {
 			return new PopulationServiceImpl(
 					(InstanceService) locator.getService(InstanceService.class));
+		}
+
+		if (RecentResources.class.equals(serviceInterface)) {
+			return new RecentResourcesService(
+					(ProjectService) locator.getService(ProjectService.class));
 		}
 
 		return null;

@@ -17,11 +17,24 @@ package eu.esdihumboldt.hale.ui.io.source;
 
 import java.io.File;
 import java.net.URI;
+import java.util.List;
+import java.util.Set;
 
+import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.jface.preference.FileFieldEditor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.io.util.OpenFileFieldEditor;
+import eu.esdihumboldt.hale.ui.service.project.RecentResources;
 import eu.esdihumboldt.util.io.IOUtils;
 
 /**
@@ -34,6 +47,7 @@ public class FileSourceFileFieldEditor extends OpenFileFieldEditor {
 
 	private final URI projectURI;
 	private boolean useRelative;
+	private Button historyButton;
 
 	/**
 	 * Default constructor.
@@ -175,5 +189,78 @@ public class FileSourceFileFieldEditor extends OpenFileFieldEditor {
 			return resolved;
 		else
 			return null;
+	}
+
+	// recent resources support
+
+	@Override
+	protected void adjustForNumColumns(int numColumns) {
+		((GridData) getTextControl().getLayoutData()).horizontalSpan = numColumns - 2;
+	}
+
+	@Override
+	protected void doFillIntoGrid(Composite parent, int numColumns) {
+		super.doFillIntoGrid(parent, numColumns - 1);
+	}
+
+	@Override
+	protected Button getChangeControl(Composite parent) {
+		// ensure resource control is added before browse button
+		historyButton = new Button(parent, SWT.PUSH | SWT.FLAT);
+		historyButton.setImage(CommonSharedImages.getImageRegistry().get(
+				CommonSharedImages.IMG_HISTORY));
+		historyButton.setEnabled(false);
+
+		return super.getChangeControl(parent);
+	}
+
+	@Override
+	public void setContentTypes(Set<IContentType> types) {
+		super.setContentTypes(types);
+
+		RecentResources rr = (RecentResources) PlatformUI.getWorkbench().getService(
+				RecentResources.class);
+		if (rr != null) {
+			final List<URI> files = rr.getRecent(types, true);
+
+			if (!files.isEmpty()) {
+				historyButton.addSelectionListener(new SelectionAdapter() {
+
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						Menu filesMenu = new Menu(historyButton);
+						for (URI uri : files) {
+							final File file;
+							try {
+								file = new File(uri);
+								MenuItem item = new MenuItem(filesMenu, SWT.PUSH);
+								item.addSelectionListener(new SelectionAdapter() {
+
+									@Override
+									public void widgetSelected(SelectionEvent e) {
+										getTextControl().setText(file.getAbsolutePath());
+
+										// trigger handling relative path
+										changePressed();
+									}
+								});
+							} catch (Exception e1) {
+								// ignore
+							}
+						}
+
+						filesMenu.setLocation(historyButton.getLocation().x,
+								historyButton.getLocation().y + historyButton.getSize().y);
+						filesMenu.setVisible(true);
+					}
+				});
+				historyButton.setEnabled(true);
+			}
+		}
+	}
+
+	@Override
+	public int getNumberOfControls() {
+		return super.getNumberOfControls() + 1;
 	}
 }

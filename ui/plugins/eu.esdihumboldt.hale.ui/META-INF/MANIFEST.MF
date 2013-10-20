@@ -12,7 +12,8 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.5.0",
  org.opengis;bundle-version="8.0.0",
  eu.esdihumboldt.hale.ui.util,
  eu.esdihumboldt.hale.common.instance,
- com.orientechnologies.orient.core;bundle-version="1.5.1"
+ com.orientechnologies.orient.core;bundle-version="1.5.1",
+ groovy;bundle-version="2.1.6"
 Import-Package: com.google.common.base;version="1.6.0",
  com.google.common.collect;version="1.6.0",
  com.google.common.io;version="1.6.0",
@@ -114,6 +115,8 @@ Import-Package: com.google.common.base;version="1.6.0",
  org.eclipse.zest.core.widgets,
  org.eclipse.zest.layouts,
  org.eclipse.zest.layouts.algorithms,
+ org.joda.time;version="2.1.0",
+ org.joda.time.base;version="2.1.0",
  org.slf4j;version="1.5.11"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.hale.ui.internal.HALEUIPlugin
