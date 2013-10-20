@@ -86,7 +86,13 @@ public class JaxbToProject {
 		return result;
 	}
 
-	private static IOConfiguration toIOConfiguration(IOConfigurationType config) {
+	/**
+	 * Convert a JAXB representation to an {@link IOConfiguration}.
+	 * 
+	 * @param config the JAXB representation
+	 * @return the I/O configuration
+	 */
+	public static IOConfiguration toIOConfiguration(IOConfigurationType config) {
 		if (config == null) {
 			return null;
 		}

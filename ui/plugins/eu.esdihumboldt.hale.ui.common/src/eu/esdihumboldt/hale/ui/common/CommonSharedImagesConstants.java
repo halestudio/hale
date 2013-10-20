@@ -187,7 +187,7 @@ public interface CommonSharedImagesConstants {
 	public static final String IMG_FILTER_GREY = "IMG_FILTER_GREY";
 
 	/**
-	 * key for open image
+	 * key for open image FIXME this icon also is available in ISharedImages
 	 */
 	public static final String IMG_OPEN = "IMG_OPEN";
 
@@ -197,8 +197,13 @@ public interface CommonSharedImagesConstants {
 	public static final String IMG_TRASH = "IMG_TRASH";
 
 	/**
-	 * key for trash image
+	 * key for save image FIXME this icon also is available in ISharedImages
 	 */
 	public static final String IMG_SAVE = "IMG_SAVE";
+
+	/**
+	 * key for history image
+	 */
+	public static final String IMG_HISTORY = "IMG_HISTORY";
 
 }
