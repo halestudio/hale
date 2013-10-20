@@ -32,7 +32,7 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import eu.esdihumboldt.hale.ui.application.internal.Messages;
 import eu.esdihumboldt.hale.ui.launchaction.LaunchAction;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
-import eu.esdihumboldt.hale.ui.service.project.RecentFilesService;
+import eu.esdihumboldt.hale.ui.service.project.RecentProjectsService;
 
 /**
  * The {@link ApplicationWorkbenchAdvisor} controls the appearance of the
@@ -151,7 +151,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
 		// restore list of recent files
 		IWorkbench wb = getWorkbenchConfigurer().getWorkbench();
-		RecentFilesService rfs = (RecentFilesService) wb.getService(RecentFilesService.class);
+		RecentProjectsService rfs = (RecentProjectsService) wb.getService(RecentProjectsService.class);
 		IMemento c = memento.getChild(TAG_RECENTFILES);
 		result.add(rfs.restoreState(c));
 
@@ -169,7 +169,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
 		// save list of recent files
 		IWorkbench wb = getWorkbenchConfigurer().getWorkbench();
-		RecentFilesService rfs = (RecentFilesService) wb.getService(RecentFilesService.class);
+		RecentProjectsService rfs = (RecentProjectsService) wb.getService(RecentProjectsService.class);
 		IMemento c = memento.createChild(TAG_RECENTFILES);
 		result.add(rfs.saveState(c));
 

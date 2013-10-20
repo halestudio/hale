@@ -28,15 +28,15 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.intro.config.IIntroContentProvider;
 import org.eclipse.ui.intro.config.IIntroContentProviderSite;
 
-import eu.esdihumboldt.hale.ui.service.project.RecentFilesMenu;
-import eu.esdihumboldt.hale.ui.service.project.RecentFilesService;
+import eu.esdihumboldt.hale.ui.service.project.RecentProjectsMenu;
+import eu.esdihumboldt.hale.ui.service.project.RecentProjectsService;
 
 /**
  * A content provider to show and link to recently opened projects.
  * 
  * @author Kai Schwierczek
  */
-public class RecentFilesContentProvider implements IIntroContentProvider {
+public class RecentProjectsContentProvider implements IIntroContentProvider {
 
 	private boolean disposed = false;
 
@@ -65,11 +65,11 @@ public class RecentFilesContentProvider implements IIntroContentProvider {
 	public void createContent(String id, PrintWriter out) {
 		if (disposed)
 			return;
-		RecentFilesService.Entry[] entries = getRecentFiles();
+		RecentProjectsService.Entry[] entries = getRecentFiles();
 		if (entries.length > 0) {
 			out.print("<ul id=\"recent-files-list\">"); //$NON-NLS-1$
 			for (int i = entries.length - 1; i >= 0; i--) {
-				RecentFilesService.Entry entry = entries[i];
+				RecentProjectsService.Entry entry = entries[i];
 				out.print("<li>"); //$NON-NLS-1$
 				if (entry.getProjectName() != null) {
 					out.print(entry.getProjectName());
@@ -82,7 +82,7 @@ public class RecentFilesContentProvider implements IIntroContentProvider {
 				out.print("closeIntro=true&path="); //$NON-NLS-1$
 				out.print(entry.getFile());
 				out.print("\">"); //$NON-NLS-1$
-				out.print(RecentFilesMenu.shorten(entry.getFile(), MAX_LENGTH,
+				out.print(RecentProjectsMenu.shorten(entry.getFile(), MAX_LENGTH,
 						new File(entry.getFile()).getName().length()));
 				out.print("</a>"); //$NON-NLS-1$
 				out.print("</li>"); //$NON-NLS-1$
@@ -122,10 +122,10 @@ public class RecentFilesContentProvider implements IIntroContentProvider {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("<form>"); //$NON-NLS-1$
 
-		RecentFilesService.Entry[] entries = getRecentFiles();
+		RecentProjectsService.Entry[] entries = getRecentFiles();
 		if (entries.length > 0) {
 			for (int i = entries.length - 1; i >= 0; i--) {
-				RecentFilesService.Entry entry = entries[i];
+				RecentProjectsService.Entry entry = entries[i];
 				buffer.append("<li style=\"none\">"); //$NON-NLS-1$
 				if (entry.getProjectName() != null) {
 					buffer.append(entry.getProjectName());
@@ -134,7 +134,7 @@ public class RecentFilesContentProvider implements IIntroContentProvider {
 				buffer.append("<a href=\""); //$NON-NLS-1$
 				buffer.append(entry.getFile());
 				buffer.append("\">"); //$NON-NLS-1$
-				buffer.append(RecentFilesMenu.shorten(entry.getFile(), MAX_LENGTH,
+				buffer.append(RecentProjectsMenu.shorten(entry.getFile(), MAX_LENGTH,
 						new File(entry.getFile()).getName().length()));
 				buffer.append("</a>"); //$NON-NLS-1$
 				buffer.append("</li>"); //$NON-NLS-1$
@@ -153,12 +153,12 @@ public class RecentFilesContentProvider implements IIntroContentProvider {
 		formText.setText(text, true, false);
 	}
 
-	private RecentFilesService.Entry[] getRecentFiles() {
-		RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench().getService(
-				RecentFilesService.class);
-		RecentFilesService.Entry[] entries = rfs.getRecentFiles();
+	private RecentProjectsService.Entry[] getRecentFiles() {
+		RecentProjectsService rfs = (RecentProjectsService) PlatformUI.getWorkbench().getService(
+				RecentProjectsService.class);
+		RecentProjectsService.Entry[] entries = rfs.getRecentFiles();
 		if (entries == null)
-			entries = new RecentFilesService.Entry[0];
+			entries = new RecentProjectsService.Entry[0];
 		return entries;
 	}
 

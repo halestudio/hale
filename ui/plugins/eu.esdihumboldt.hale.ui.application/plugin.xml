@@ -210,7 +210,7 @@
                   visible="true">
             </separator>
             <dynamic
-                  class="eu.esdihumboldt.hale.ui.service.project.RecentFilesMenu"
+                  class="eu.esdihumboldt.hale.ui.service.project.RecentProjectsMenu"
                   id="HALE.recentfiles">
             </dynamic>
             <command
