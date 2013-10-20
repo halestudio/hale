@@ -85,7 +85,7 @@ import eu.esdihumboldt.hale.ui.io.project.OpenProjectWizard;
 import eu.esdihumboldt.hale.ui.io.project.SaveProjectWizard;
 import eu.esdihumboldt.hale.ui.io.util.ThreadProgressMonitor;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
-import eu.esdihumboldt.hale.ui.service.project.RecentFilesService;
+import eu.esdihumboldt.hale.ui.service.project.RecentProjectsService;
 import eu.esdihumboldt.hale.ui.service.project.UILocationUpdater;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
 import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
@@ -244,8 +244,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					}
 
 					changed = false;
-					RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench()
-							.getService(RecentFilesService.class);
+					RecentProjectsService rfs = (RecentProjectsService) PlatformUI.getWorkbench()
+							.getService(RecentProjectsService.class);
 					if (projectFile != null) {
 						rfs.add(projectFile.getAbsolutePath(), main.getName());
 					}
@@ -336,8 +336,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					projectFile = new File(provider.getTarget().getLocation());
 					projectLocation = provider.getTarget().getLocation();
 					changed = false;
-					RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench()
-							.getService(RecentFilesService.class);
+					RecentProjectsService rfs = (RecentProjectsService) PlatformUI.getWorkbench()
+							.getService(RecentProjectsService.class);
 					rfs.add(projectFile.getAbsolutePath(), provider.getProject().getName());
 				}
 

@@ -25,7 +25,7 @@ import org.eclipse.ui.IMemento;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public interface RecentFilesService {
+public interface RecentProjectsService {
 
 	/**
 	 * Add a file.

@@ -438,7 +438,7 @@
                serviceClass="eu.esdihumboldt.hale.ui.service.project.ProjectService">
          </service>
          <service
-               serviceClass="eu.esdihumboldt.hale.ui.service.project.RecentFilesService">
+               serviceClass="eu.esdihumboldt.hale.ui.service.project.RecentProjectsService">
          </service>
          <service
                serviceClass="eu.esdihumboldt.hale.ui.service.schema.SchemaService">
