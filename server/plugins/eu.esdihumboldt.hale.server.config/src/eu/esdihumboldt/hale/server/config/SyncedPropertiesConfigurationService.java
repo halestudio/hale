@@ -17,15 +17,12 @@ package eu.esdihumboldt.hale.server.config;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.util.Properties;
-
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.osgi.service.datalocation.Location;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.fhg.igd.osgi.util.configuration.AbstractConfigurationService;
+import eu.esdihumboldt.util.PlatformUtil;
 import eu.esdihumboldt.util.SyncedPropertiesFile;
 
 /**
@@ -80,11 +77,9 @@ public class SyncedPropertiesConfigurationService extends AbstractConfigurationS
 		// try default location
 		if (propertiesFile == null && instanceLocPath != null) {
 			// use default location
-			Location location = Platform.getInstanceLocation();
-			if (location != null) {
+			File instanceLoc = PlatformUtil.getInstanceLocation();
+			if (instanceLoc != null) {
 				try {
-					File instanceLoc = new File(URI.create(location.getURL().toString()
-							.replaceAll(" ", "%20")));
 					propertiesFile = new File(instanceLoc, instanceLocPath);
 					if (!propertiesFile.exists()) {
 						propertiesFile.createNewFile();
