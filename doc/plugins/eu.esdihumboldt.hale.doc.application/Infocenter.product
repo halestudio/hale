@@ -39,6 +39,7 @@
       <plugin id="com.springsource.org.aopalliance"/>
       <plugin id="com.springsource.org.jvnet.staxex"/>
       <plugin id="com.vividsolutions.jts"/>
+      <plugin id="de.fhg.igd.hale.fme.doc"/>
       <plugin id="eu.esdihumboldt.cst.doc.functions"/>
       <plugin id="eu.esdihumboldt.cst.doc.functions.dummy" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.doc.application"/>
