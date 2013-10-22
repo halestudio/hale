@@ -20,6 +20,7 @@
          <choice minOccurs="1" maxOccurs="unbounded">
             <element ref="connection"/>
             <element ref="geometrytype"/>
+            <element ref="driver"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -118,6 +119,45 @@
                </documentation>
                <appinfo>
                   <meta.attribute kind="java"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="driver">
+      <complexType>
+         <attribute name="uriBuilder" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.io.jdbc.extension.URIBuilder"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="testUri" type="string" use="required">
+            <annotation>
+               <documentation>
+                  JDBC URI used to identify compatible JDBC drivers.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Display name for the driver
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
                </appinfo>
             </annotation>
          </attribute>

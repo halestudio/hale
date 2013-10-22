@@ -171,6 +171,9 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.io.gml.ui"/>
       <plugin id="eu.esdihumboldt.hale.io.html"/>
       <plugin id="eu.esdihumboldt.hale.io.html.ui"/>
+      <plugin id="eu.esdihumboldt.hale.io.jdbc"/>
+      <plugin id="eu.esdihumboldt.hale.io.jdbc.postgresql"/>
+      <plugin id="eu.esdihumboldt.hale.io.jdbc.ui"/>
       <plugin id="eu.esdihumboldt.hale.io.json"/>
       <plugin id="eu.esdihumboldt.hale.io.json.ui"/>
       <plugin id="eu.esdihumboldt.hale.io.oml"/>
@@ -423,6 +426,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.io.codelist.xml" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.csv" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.gml" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.io.jdbc.postgresql" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.shp" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.xml" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.xsd" autoStart="true" startLevel="0" />

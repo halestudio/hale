@@ -29,7 +29,6 @@ import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
-import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
@@ -55,16 +54,20 @@ import eu.esdihumboldt.hale.io.jdbc.constraints.internal.GeometryAdvisorConstrai
 public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCConstants {
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.IOProvider#isCancelable()
+	 * Default constructor.
 	 */
+	public JDBCInstanceWriter() {
+		super();
+
+		addSupportedParameter(PARAM_USER);
+		addSupportedParameter(PARAM_PASSWORD);
+	}
+
 	@Override
 	public boolean isCancelable() {
 		return true;
 	}
 
-	/**
-	 * @see AbstractIOProvider#execute(ProgressIndicator, IOReporter)
-	 */
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
