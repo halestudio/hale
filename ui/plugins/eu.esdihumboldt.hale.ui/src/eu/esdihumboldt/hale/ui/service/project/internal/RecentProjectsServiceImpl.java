@@ -23,17 +23,17 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.IMemento;
 
-import eu.esdihumboldt.hale.ui.service.project.RecentFilesService;
+import eu.esdihumboldt.hale.ui.service.project.RecentProjectsService;
 
 /**
  * This service saves a list of recently opened files.
  * 
  * @author Michel Kraemer
  */
-public class RecentFilesServiceImpl implements RecentFilesService {
+public class RecentProjectsServiceImpl implements RecentProjectsService {
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.service.project.RecentFilesService.Entry
+	 * @see eu.esdihumboldt.hale.ui.service.project.RecentProjectsService.Entry
 	 * @author Kai Schwierczek
 	 */
 	public static class EntryImpl implements Entry {
@@ -63,7 +63,7 @@ public class RecentFilesServiceImpl implements RecentFilesService {
 		}
 
 		/**
-		 * @see eu.esdihumboldt.hale.ui.service.project.RecentFilesService.Entry#getFile()
+		 * @see eu.esdihumboldt.hale.ui.service.project.RecentProjectsService.Entry#getFile()
 		 */
 		@Override
 		public String getFile() {
@@ -71,7 +71,7 @@ public class RecentFilesServiceImpl implements RecentFilesService {
 		}
 
 		/**
-		 * @see eu.esdihumboldt.hale.ui.service.project.RecentFilesService.Entry#getProjectName()
+		 * @see eu.esdihumboldt.hale.ui.service.project.RecentProjectsService.Entry#getProjectName()
 		 */
 		@Override
 		public String getProjectName() {
@@ -133,7 +133,7 @@ public class RecentFilesServiceImpl implements RecentFilesService {
 	private CircularFifoBuffer _buffer = new CircularFifoBuffer(MAX_FILES);
 
 	/**
-	 * @see RecentFilesService#add(String, String)
+	 * @see RecentProjectsService#add(String, String)
 	 */
 	@Override
 	public void add(String file, String projectName) {
@@ -154,7 +154,7 @@ public class RecentFilesServiceImpl implements RecentFilesService {
 	}
 
 	/**
-	 * @see RecentFilesService#getRecentFiles()
+	 * @see RecentProjectsService#getRecentFiles()
 	 */
 	@Override
 	public Entry[] getRecentFiles() {
@@ -166,7 +166,7 @@ public class RecentFilesServiceImpl implements RecentFilesService {
 	}
 
 	/**
-	 * @see RecentFilesService#restoreState(IMemento)
+	 * @see RecentProjectsService#restoreState(IMemento)
 	 */
 	@Override
 	public IStatus restoreState(IMemento memento) {
@@ -184,7 +184,7 @@ public class RecentFilesServiceImpl implements RecentFilesService {
 	}
 
 	/**
-	 * @see RecentFilesService#saveState(IMemento)
+	 * @see RecentProjectsService#saveState(IMemento)
 	 */
 	@Override
 	public IStatus saveState(IMemento memento) {

@@ -18,7 +18,6 @@ package eu.esdihumboldt.util.scavenger;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -26,12 +25,11 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.osgi.service.datalocation.Location;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.util.Pair;
+import eu.esdihumboldt.util.PlatformUtil;
 
 /**
  * Scans for folder resources in a specific location or references a single
@@ -70,11 +68,9 @@ public abstract class AbstractResourceScavenger<T> implements ResourceScavenger<
 	public AbstractResourceScavenger(File scavengeLocation, String instanceLocPath) {
 		if (scavengeLocation == null || !scavengeLocation.exists() && instanceLocPath != null) {
 			// use default location
-			Location location = Platform.getInstanceLocation();
-			if (location != null) {
+			File instanceLoc = PlatformUtil.getInstanceLocation();
+			if (instanceLoc != null) {
 				try {
-					File instanceLoc = new File(URI.create(location.getURL().toString()
-							.replaceAll(" ", "%20")));
 					scavengeLocation = new File(instanceLoc, instanceLocPath);
 					if (!scavengeLocation.exists()) {
 						scavengeLocation.mkdirs();

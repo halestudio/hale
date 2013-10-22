@@ -33,7 +33,7 @@ import org.eclipse.ui.PlatformUI;
  * @author Michel Kraemer
  * @author Simon Templer
  */
-public class RecentFilesMenu extends ContributionItem {
+public class RecentProjectsMenu extends ContributionItem {
 
 	/**
 	 * The string filled in for the gap in the filename
@@ -89,9 +89,9 @@ public class RecentFilesMenu extends ContributionItem {
 	 */
 	@Override
 	public void fill(final Menu menu, int index) {
-		RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench().getService(
-				RecentFilesService.class);
-		RecentFilesService.Entry[] entries = rfs.getRecentFiles();
+		RecentProjectsService rfs = (RecentProjectsService) PlatformUI.getWorkbench().getService(
+				RecentProjectsService.class);
+		RecentProjectsService.Entry[] entries = rfs.getRecentFiles();
 		if (entries == null || entries.length == 0) {
 			return;
 		}
@@ -100,7 +100,7 @@ public class RecentFilesMenu extends ContributionItem {
 		new MenuItem(menu, SWT.SEPARATOR, index);
 
 		int i = entries.length;
-		for (RecentFilesService.Entry entry : entries) {
+		for (RecentProjectsService.Entry entry : entries) {
 			String file = entry.getFile();
 			MenuItem mi = new MenuItem(menu, SWT.PUSH, index);
 			String filename = FilenameUtils.getName(file);

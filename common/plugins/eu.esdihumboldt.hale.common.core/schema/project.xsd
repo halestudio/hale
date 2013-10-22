@@ -43,6 +43,8 @@
 	<xs:element name="property" type="PropertyType" substitutionGroup="AbstractProperty" nillable="true" />
 	
 	<!-- IOConfiguration -->
+	<xs:element name="configuration" type="IOConfigurationType" />
+	
 	<xs:complexType name="IOConfigurationType">
 		<xs:sequence>
 			<xs:element ref="AbstractSetting" minOccurs="0" maxOccurs="unbounded" />
