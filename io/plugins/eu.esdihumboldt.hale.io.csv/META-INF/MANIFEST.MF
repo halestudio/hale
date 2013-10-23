@@ -46,6 +46,7 @@ Require-Bundle: eu.esdihumboldt.hale.common.instance,
  org.eclipse.core.runtime;bundle-version="3.6.0",
  eu.esdihumboldt.hale.common.convert.wkt;bundle-version="2.5.0"
 Export-Package: eu.esdihumboldt.hale.io.csv,
- eu.esdihumboldt.hale.io.csv.reader.internal;x-internal:=true,
+ eu.esdihumboldt.hale.io.csv.reader,
+ eu.esdihumboldt.hale.io.csv.reader.internal,
  eu.esdihumboldt.hale.io.csv.writer,
  eu.esdihumboldt.hale.io.csv.writer.internal

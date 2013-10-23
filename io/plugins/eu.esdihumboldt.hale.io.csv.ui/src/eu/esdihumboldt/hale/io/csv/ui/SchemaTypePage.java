@@ -64,7 +64,6 @@ import eu.esdihumboldt.hale.ui.util.components.DynamicScrolledComposite;
  * 
  * @author Kevin Mais
  */
-@SuppressWarnings("restriction")
 public class SchemaTypePage extends SchemaReaderConfigurationPage {
 
 	private String defaultString = "";

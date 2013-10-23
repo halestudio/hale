@@ -22,7 +22,9 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 
 import au.com.bytecode.opencsv.CSVReader;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
+import eu.esdihumboldt.hale.io.csv.reader.CSVConstants;
 
 /**
  * Utils for the CSVSchemaReader and CSVInstanceReader
@@ -54,7 +56,7 @@ public class CSVUtil implements CSVConstants {
 	 * @param provider the provider given to the method
 	 * @return the separator char
 	 */
-	public static char getSep(ImportProvider provider) {
+	public static char getSep(IOProvider provider) {
 		String separator = provider.getParameter(PARAM_SEPARATOR).as(String.class);
 		char sep = ((separator == null || separator.isEmpty()) ? (DEFAULT_SEPARATOR) : (separator
 				.charAt(0)));
@@ -68,7 +70,7 @@ public class CSVUtil implements CSVConstants {
 	 * @param provider the provider given to the method
 	 * @return the quote char
 	 */
-	public static char getQuote(ImportProvider provider) {
+	public static char getQuote(IOProvider provider) {
 		String quote = provider.getParameter(PARAM_QUOTE).as(String.class);
 		char qu = (quote == null || quote.isEmpty()) ? (DEFAULT_QUOTE) : (quote.charAt(0));
 
@@ -81,7 +83,7 @@ public class CSVUtil implements CSVConstants {
 	 * @param provider the provider given to the method
 	 * @return the escape char
 	 */
-	public static char getEscape(ImportProvider provider) {
+	public static char getEscape(IOProvider provider) {
 		String escape = provider.getParameter(PARAM_ESCAPE).as(String.class);
 		char esc = (escape == null || escape.isEmpty()) ? (DEFAULT_ESCAPE) : (escape.charAt(0));
 
