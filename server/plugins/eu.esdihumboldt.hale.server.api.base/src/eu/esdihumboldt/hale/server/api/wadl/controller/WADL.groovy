@@ -189,7 +189,19 @@ class WADL extends WADLBase {
 
 			// template parameters (PathVariable)
 			// must be the same for all handler methods for that resource
-			wadlResource.param.addAll(generateTemplateParams(resourceMethods.find()))
+
+			// find method with parameter documentation
+			Method paramMethod = null
+			paramMethod = resourceMethods.find{
+				// has param documentation
+				WDocUtil.getWadlDocs([it], DocScope.PARAM, null, baseURI)
+			}
+			if (paramMethod == null) {
+				// use any method if none is documented with parameters
+				paramMethod = resourceMethods.find()
+			}
+
+			wadlResource.param.addAll(generateTemplateParams(paramMethod))
 
 			// organize handler methods by HTTP method
 			Multimap methods = HashMultimap.create()
