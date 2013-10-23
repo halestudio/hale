@@ -51,7 +51,7 @@
       <provider
             class="eu.esdihumboldt.hale.io.csv.reader.internal.CSVLookupReader"
             id="eu.esdihumboldt.hale.io.csv.reader.lookup"
-            name="CSV LookupTable">
+            name="LookupTable (CSV)">
          <contentType
                ref="eu.esdihumboldt.hale.io.csv">
          </contentType>
@@ -67,7 +67,7 @@
       <provider
             class="eu.esdihumboldt.hale.io.csv.writer.internal.CSVLookupWriter"
             id="eu.esdihumboldt.hale.io.csv.writer.lookup"
-            name="CSV LookupTable">
+            name="LookupTable (CSV)">
          <contentType
                ref="eu.esdihumboldt.hale.io.csv">
          </contentType>

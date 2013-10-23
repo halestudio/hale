@@ -15,20 +15,20 @@
 
 package eu.esdihumboldt.hale.io.csv.ui;
 
-import eu.esdihumboldt.hale.common.core.io.ExportProvider;
+import eu.esdihumboldt.hale.io.csv.writer.internal.CSVLookupWriter;
 
 /**
  * Configuration page for the csv writer
  * 
  * @author Patrick Lieb
  */
-public class WriterConfigurationPage extends AbstractCSVConfigurationPage<ExportProvider> {
+public class CSVWriterConfigurationPage extends AbstractCSVConfigurationPage<CSVLookupWriter> {
 
 	/**
 	 * Default Constructor
 	 */
-	protected WriterConfigurationPage() {
-		super("csv_writer.conf");
+	public CSVWriterConfigurationPage() {
+		super("lookup_writer.conf");
 	}
 
 	/**
@@ -38,4 +38,13 @@ public class WriterConfigurationPage extends AbstractCSVConfigurationPage<Export
 	public void enable() {
 		// not required
 	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.io.csv.ui.AbstractCSVConfigurationPage#updateConfiguration(eu.esdihumboldt.hale.common.core.io.IOProvider)
+	 */
+	@Override
+	public boolean updateConfiguration(CSVLookupWriter writer) {
+		return true;
+	}
+
 }

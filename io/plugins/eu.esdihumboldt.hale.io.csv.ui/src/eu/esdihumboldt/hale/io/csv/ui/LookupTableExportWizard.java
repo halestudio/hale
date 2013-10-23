@@ -38,7 +38,6 @@ public class LookupTableExportWizard extends ExportWizard<LookupTableExport> {
 	@Override
 	public void addPages() {
 		super.addPages();
-//		addPage(new LookupTableExportConfigurationPage());
-		addPage(new WriterConfigurationPage());
+		addPage(new LookupTableExportConfigurationPage());
 	}
 }
