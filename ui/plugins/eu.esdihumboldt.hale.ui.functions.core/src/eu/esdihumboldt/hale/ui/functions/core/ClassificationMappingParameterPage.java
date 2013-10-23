@@ -100,7 +100,6 @@ import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
 import eu.esdihumboldt.hale.ui.functions.core.internal.CoreFunctionsUIPlugin;
 import eu.esdihumboldt.hale.ui.io.action.IOWizardAction;
-import eu.esdihumboldt.hale.ui.lookup.LookupTableImportWizard;
 import eu.esdihumboldt.hale.ui.lookup.LookupTableLoadWizard;
 import eu.esdihumboldt.hale.ui.service.values.OccurringValues;
 import eu.esdihumboldt.hale.ui.service.values.OccurringValuesListener;
@@ -442,9 +441,9 @@ public class ClassificationMappingParameterPage extends
 		});
 
 		final ToolItem valueAdd = new ToolItem(toolBar, SWT.PUSH);
-		final ToolItem loadButton = new ToolItem(toolBar, SWT.PUSH);
 		final ToolItem fillValues = new ToolItem(toolBar, SWT.PUSH);
 		new ToolItem(toolBar, SWT.SEPARATOR);
+		final ToolItem loadButton = new ToolItem(toolBar, SWT.PUSH);
 		final ToolItem saveButton = new ToolItem(toolBar, SWT.PUSH);
 		new ToolItem(toolBar, SWT.SEPARATOR);
 		final ToolItem valueRemove = new ToolItem(toolBar, SWT.PUSH);
@@ -477,7 +476,7 @@ public class ClassificationMappingParameterPage extends
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				LookupTableImportWizard wizard = new LookupTableLoadWizard();
+				LookupTableLoadWizard wizard = new LookupTableLoadWizard();
 				LookupLoadAdvisor advisor = new LookupLoadAdvisor();
 				wizard.setAdvisor(advisor, null);
 				Shell shell = Display.getCurrent().getActiveShell();
@@ -514,6 +513,7 @@ public class ClassificationMappingParameterPage extends
 				else {
 					// job is running, listener will be notified
 				}
+				removeAllButton.setEnabled(true);
 			}
 		});
 
