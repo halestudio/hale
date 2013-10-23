@@ -175,7 +175,7 @@ class WADL extends WADLBase {
 		}
 
 		// create resources from handler mappings
-		for (String pattern in resourceHandlers.keySet()) {
+		for (String pattern in resourceHandlers.keySet().sort()) {
 			WadlResource wadlResource = new WadlResource();
 
 			// resource path
