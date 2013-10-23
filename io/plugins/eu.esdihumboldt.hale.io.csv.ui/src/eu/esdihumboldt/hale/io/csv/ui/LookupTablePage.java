@@ -17,7 +17,10 @@ package eu.esdihumboldt.hale.io.csv.ui;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
@@ -25,6 +28,15 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.TableColumnLayout;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.StyledCellLabelProvider;
+import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -37,17 +49,19 @@ import org.eclipse.swt.widgets.Label;
 import au.com.bytecode.opencsv.CSVReader;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.lookup.LookupTableImport;
+import eu.esdihumboldt.hale.io.csv.reader.CSVConstants;
+import eu.esdihumboldt.hale.io.csv.reader.DefaultCSVLookupReader;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVLookupReader;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVUtil;
 import eu.esdihumboldt.hale.io.csv.writer.LookupTableExportConstants;
+import eu.esdihumboldt.hale.io.xls.reader.DefaultXLSLookupTableReader;
 import eu.esdihumboldt.hale.ui.lookup.LookupTableImportConfigurationPage;
 
 /**
  * The page to specify which column should be matched with which column
  * 
- * @author Dominik Reuter
+ * @author Dominik Reuter, Patrick Lieb
  */
-@SuppressWarnings("restriction")
 public class LookupTablePage extends LookupTableImportConfigurationPage implements
 		SelectionListener {
 
@@ -56,6 +70,13 @@ public class LookupTablePage extends LookupTableImportConfigurationPage implemen
 	private Combo valueColumn;
 	private Label l;
 	private boolean skip;
+
+	private Map<Value, Value> lookupTable = new HashMap<Value, Value>();
+
+	private TableViewer tableViewer;
+	private TableViewerColumn sourceColumn;
+	private TableViewerColumn targetColumn;
+	private Composite tableContainer;
 
 	/**
 	 * Default Constructor
@@ -105,6 +126,8 @@ public class LookupTablePage extends LookupTableImportConfigurationPage implemen
 		valueColumn.setVisible(false);
 		valueColumn.addSelectionListener(this);
 
+		addPreview(page);
+
 		setPageComplete(false);
 	}
 
@@ -134,6 +157,10 @@ public class LookupTablePage extends LookupTableImportConfigurationPage implemen
 	@Override
 	public void widgetSelected(SelectionEvent e) {
 		if (e.getSource() != null) {
+			lookupTable.clear();
+			sourceColumn.getColumn().setText("");
+			targetColumn.getColumn().setText("");
+			tableViewer.refresh();
 			if (e.getSource().equals(choose)) {
 				l.setVisible(true);
 				keyColumn.setVisible(true);
@@ -160,6 +187,20 @@ public class LookupTablePage extends LookupTableImportConfigurationPage implemen
 					valueColumn.setItems(items);
 					setPageComplete(true);
 				}
+			}
+			else if (keyColumn.getSelectionIndex() >= 0 && valueColumn.getSelectionIndex() >= 0) {
+				tableContainer.setVisible(true);
+				if (skip) {
+					sourceColumn.getColumn().setText(keyColumn.getText());
+					targetColumn.getColumn().setText(valueColumn.getText());
+				}
+				else {
+					sourceColumn.getColumn().setText("Source:");
+					targetColumn.getColumn().setText("Target:");
+				}
+				lookupTable = readLookupTable();
+				tableViewer.setInput(lookupTable.entrySet());
+				tableViewer.refresh();
 			}
 		}
 	}
@@ -194,10 +235,98 @@ public class LookupTablePage extends LookupTableImportConfigurationPage implemen
 				return items.toArray(new String[0]);
 			}
 		} catch (IOException e) {
-			// TODO logging
-			e.printStackTrace();
+			return new String[0];
 		}
-		return new String[0];
+	}
+
+	private void addPreview(Composite page) {
+
+		tableContainer = new Composite(page, SWT.NONE);
+		tableContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		TableColumnLayout layout = new TableColumnLayout();
+		tableContainer.setLayout(layout);
+		tableContainer.setVisible(false);
+
+		tableViewer = new TableViewer(tableContainer, SWT.SINGLE | SWT.FULL_SELECTION | SWT.BORDER);
+		tableViewer.getTable().setLinesVisible(true);
+		tableViewer.getTable().setHeaderVisible(true);
+		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
+
+		sourceColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+//		sourceColumn.getColumn().setText("Source value");
+		layout.setColumnData(sourceColumn.getColumn(), new ColumnWeightData(1));
+		sourceColumn.setLabelProvider(new ColumnLabelProvider() {
+
+			@Override
+			public String getText(Object element) {
+				@SuppressWarnings("unchecked")
+				Entry<Value, Value> entry = (Entry<Value, Value>) element;
+				return entry.getKey().getStringRepresentation();
+			}
+		});
+
+		targetColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+//		targetColumn.getColumn().setText("Target value");
+		layout.setColumnData(targetColumn.getColumn(), new ColumnWeightData(1));
+		targetColumn.setLabelProvider(new StyledCellLabelProvider() {
+
+			@Override
+			public void update(ViewerCell cell) {
+				@SuppressWarnings("unchecked")
+				Entry<Value, Value> entry = (Entry<Value, Value>) cell.getElement();
+				if (entry.getValue() == null) {
+					StyledString styledString = new StyledString("(unmapped)",
+							StyledString.DECORATIONS_STYLER);
+					cell.setText(styledString.getString());
+					cell.setStyleRanges(styledString.getStyleRanges());
+				}
+				else {
+					cell.setText(entry.getValue().getStringRepresentation());
+					cell.setStyleRanges(null);
+				}
+				super.update(cell);
+			}
+		});
+	}
+
+	private Map<Value, Value> readLookupTable() {
+		Map<Value, Value> lookupTable = new HashMap<Value, Value>();
+		try {
+			LookupTableImport provider = getWizard().getProvider();
+			if (provider instanceof CSVLookupReader) {
+				DefaultCSVLookupReader reader = new DefaultCSVLookupReader();
+				lookupTable = reader
+						.read(provider.getSource().getInput(), provider.getCharset(), provider
+								.getParameter(CSVConstants.PARAM_SEPARATOR).as(String.class)
+								.charAt(0),
+								provider.getParameter(CSVConstants.PARAM_QUOTE).as(String.class)
+										.charAt(0), provider
+										.getParameter(CSVConstants.PARAM_ESCAPE).as(String.class)
+										.charAt(0), skip, keyColumn.getSelectionIndex(),
+								valueColumn.getSelectionIndex());
+			}
+			else {
+				Workbook workbook;
+				// write xls file
+				String file = provider.getSource().getLocation().getPath();
+				String fileExtension = file.substring(file.lastIndexOf("."), file.length());
+				if (fileExtension.equals(".xls")) {
+					workbook = new HSSFWorkbook(provider.getSource().getInput());
+				}
+				// write xlsx file
+				else if (fileExtension.equals(".xlsx")) {
+					workbook = new XSSFWorkbook(provider.getSource().getInput());
+				}
+				else
+					return new HashMap<Value, Value>();
+				DefaultXLSLookupTableReader reader = new DefaultXLSLookupTableReader();
+				lookupTable = reader.read(workbook, skip, keyColumn.getSelectionIndex(),
+						valueColumn.getSelectionIndex());
+			}
+		} catch (IOException e) {
+			return lookupTable;
+		}
+		return lookupTable;
 	}
 
 	/**

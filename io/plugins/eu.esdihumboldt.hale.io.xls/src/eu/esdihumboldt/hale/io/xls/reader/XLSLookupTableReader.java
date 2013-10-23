@@ -16,12 +16,9 @@
 package eu.esdihumboldt.hale.io.xls.reader;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -91,20 +88,12 @@ public class XLSLookupTableReader extends AbstractLookupImport {
 			return reporter;
 		}
 
-		Map<Value, Value> map = new HashMap<Value, Value>();
-		Sheet sheet = workbook.getSheetAt(0);
-		int row = 0;
-		if (skipFirst)
-			row++;
-		for (; row < sheet.getPhysicalNumberOfRows(); row++) {
-			Row currentRow = sheet.getRow(row);
-			if (currentRow.getPhysicalNumberOfCells() == 2)
-				map.put(Value.of(currentRow.getCell(keyColumn).getStringCellValue()),
-						Value.of(currentRow.getCell(valueColumn).getStringCellValue()));
-		}
+		DefaultXLSLookupTableReader reader = new DefaultXLSLookupTableReader();
 
-		lookupTable = new LookupTableInfoImpl((new LookupTableImpl(map)), getName(),
-				getDescription());
+		Map<Value, Value> map = reader.read(workbook, skipFirst, keyColumn, valueColumn);
+
+		lookupTable = new LookupTableInfoImpl(new LookupTableImpl(map), getName(), getDescription());
+
 		reporter.setSuccess(true);
 		return reporter;
 	}

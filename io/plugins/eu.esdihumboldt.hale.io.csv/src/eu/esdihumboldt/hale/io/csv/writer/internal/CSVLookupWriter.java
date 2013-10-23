@@ -26,7 +26,7 @@ import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.lookup.impl.AbstractLookupExport;
-import eu.esdihumboldt.hale.io.csv.reader.internal.CSVConstants;
+import eu.esdihumboldt.hale.io.csv.reader.internal.CSVUtil;
 import eu.esdihumboldt.hale.io.csv.writer.LookupTableExportConstants;
 
 /**
@@ -52,17 +52,13 @@ public class CSVLookupWriter extends AbstractLookupExport {
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 
-		String separator = getParameter(CSVConstants.PARAM_SEPARATOR).as(String.class);
-		String quote = getParameter(CSVConstants.PARAM_QUOTE).as(String.class);
-		String escape = getParameter(CSVConstants.PARAM_ESCAPE).as(String.class);
+		String sourceColumn = getParameter(LookupTableExportConstants.PARAM_SOURCE_COLUMN).as(
+				String.class);
+		String targetColumn = getParameter(LookupTableExportConstants.PARAM_TARGET_COLUMN).as(
+				String.class);
 
-		String sourceColumn = getParameter(LookupTableExportConstants.PARAM_SOURCE_COLUMN).as(String.class);
-		String targetColumn = getParameter(LookupTableExportConstants.PARAM_TARGET_COLUMN).as(String.class);
-
-		// parameters have to be strings with only one char, so take the first
-		// ones
 		CSVWriter writer = new CSVWriter(new OutputStreamWriter(getTarget().getOutput()),
-				separator.charAt(0), quote.charAt(0), escape.charAt(0));
+				CSVUtil.getSep(this), CSVUtil.getQuote(this), CSVUtil.getEscape(this));
 		Map<Value, Value> table = getLookupTable().getTable().asMap();
 
 		// write header first

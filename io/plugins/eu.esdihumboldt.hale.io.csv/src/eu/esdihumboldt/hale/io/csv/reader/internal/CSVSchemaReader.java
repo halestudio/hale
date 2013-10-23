@@ -43,6 +43,7 @@ import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 import eu.esdihumboldt.hale.io.csv.CSVFileIO;
 import eu.esdihumboldt.hale.io.csv.PropertyType;
 import eu.esdihumboldt.hale.io.csv.PropertyTypeExtension;
+import eu.esdihumboldt.hale.io.csv.reader.CSVConstants;
 
 /**
  * Reads a schema from a CSV file.

@@ -39,7 +39,7 @@ import eu.esdihumboldt.hale.common.lookup.impl.AbstractLookupExport;
 import eu.esdihumboldt.hale.io.csv.writer.LookupTableExportConstants;
 
 /**
- * TODO Type description
+ * Export provider for xls/xlsx lookup table files
  * 
  * @author Patrick Lieb
  */
@@ -111,11 +111,13 @@ public class XLSLookupTableWriter extends AbstractLookupExport {
 		// write header
 		row = sheet.createRow(rownum++);
 		cell = row.createCell(0);
-		cell.setCellValue(getParameter(LookupTableExportConstants.PARAM_SOURCE_COLUMN).as(String.class));
+		cell.setCellValue(getParameter(LookupTableExportConstants.PARAM_SOURCE_COLUMN).as(
+				String.class));
 		cell.setCellStyle(headerStyle);
 
 		cell = row.createCell(1);
-		cell.setCellValue(getParameter(LookupTableExportConstants.PARAM_TARGET_COLUMN).as(String.class));
+		cell.setCellValue(getParameter(LookupTableExportConstants.PARAM_TARGET_COLUMN).as(
+				String.class));
 		cell.setCellStyle(headerStyle);
 
 		for (Value key : table.keySet()) {
