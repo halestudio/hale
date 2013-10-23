@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.lookup.impl.AbstractLookupExport;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVConstants;
+import eu.esdihumboldt.hale.io.csv.writer.LookupTableExportConstants;
 
 /**
  * Writer to export lookup tables as csv files
@@ -55,6 +56,9 @@ public class CSVLookupWriter extends AbstractLookupExport {
 		String quote = getParameter(CSVConstants.PARAM_QUOTE).as(String.class);
 		String escape = getParameter(CSVConstants.PARAM_ESCAPE).as(String.class);
 
+		String sourceColumn = getParameter(LookupTableExportConstants.PARAM_SOURCE_COLUMN).as(String.class);
+		String targetColumn = getParameter(LookupTableExportConstants.PARAM_TARGET_COLUMN).as(String.class);
+
 		// parameters have to be strings with only one char, so take the first
 		// ones
 		CSVWriter writer = new CSVWriter(new OutputStreamWriter(getTarget().getOutput()),
@@ -62,7 +66,7 @@ public class CSVLookupWriter extends AbstractLookupExport {
 		Map<Value, Value> table = getLookupTable().getTable().asMap();
 
 		// write header first
-		String[] values = new String[] { "Source value", "Target value" };
+		String[] values = new String[] { sourceColumn, targetColumn };
 		writer.writeNext(values);
 
 		for (Value key : table.keySet()) {

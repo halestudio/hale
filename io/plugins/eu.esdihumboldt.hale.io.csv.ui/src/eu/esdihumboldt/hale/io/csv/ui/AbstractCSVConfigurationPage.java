@@ -61,7 +61,7 @@ public abstract class AbstractCSVConfigurationPage<P extends IOProvider> extends
 	protected AbstractCSVConfigurationPage(String pageName) {
 		super(pageName);
 		setTitle("CSV Settings");
-		setDescription("Set the Separating character, Quote character and Escape character");
+		setDescription("Set the Separating, Quote and Escape characters");
 
 		bmap = HashBiMap.create();
 		bmap.put("TAB", "\t");

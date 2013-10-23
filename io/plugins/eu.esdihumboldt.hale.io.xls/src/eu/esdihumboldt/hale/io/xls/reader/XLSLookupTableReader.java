@@ -13,13 +13,18 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.io.csv.reader.internal;
+package eu.esdihumboldt.hale.io.xls.reader;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import au.com.bytecode.opencsv.CSVReader;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.Value;
@@ -32,15 +37,12 @@ import eu.esdihumboldt.hale.common.lookup.impl.LookupTableInfoImpl;
 import eu.esdihumboldt.hale.io.csv.writer.LookupTableExportConstants;
 
 /**
- * The csv lookup reader class
+ * Reader for xls/xlsx lookup table files
  * 
- * @author Dominik Reuter
+ * @author Patrick Lieb
  */
-public class CSVLookupReader extends AbstractLookupImport {
+public class XLSLookupTableReader extends AbstractLookupImport {
 
-	/**
-	 * The lookuptable
-	 */
 	private LookupTableInfo lookupTable;
 
 	/**
@@ -48,10 +50,7 @@ public class CSVLookupReader extends AbstractLookupImport {
 	 */
 	@Override
 	public LookupTableInfo getLookupTable() {
-		if (lookupTable != null) {
-			return lookupTable;
-		}
-		return null;
+		return lookupTable;
 	}
 
 	/**
@@ -59,7 +58,6 @@ public class CSVLookupReader extends AbstractLookupImport {
 	 */
 	@Override
 	public boolean isCancelable() {
-		// Nothing to do here
 		return false;
 	}
 
@@ -78,17 +76,34 @@ public class CSVLookupReader extends AbstractLookupImport {
 
 		boolean skipFirst = getParameter(LookupTableExportConstants.PARAM_SKIP_FIRST_LINE).as(
 				Boolean.class);
-		CSVReader reader = CSVUtil.readFirst(this);
-		String[] nextLine;
-		if (skipFirst) {
-			nextLine = reader.readNext();
+
+		Workbook workbook;
+		// write xls file
+		if (getContentType().getId().equals("eu.esdihumboldt.hale.io.xls.xls")) {
+			workbook = new HSSFWorkbook(getSource().getInput());
+		}
+		// write xlsx file
+		else if (getContentType().getId().equals("eu.esdihumboldt.hale.io.xls.xlsx")) {
+			workbook = new XSSFWorkbook(getSource().getInput());
+		}
+		else {
+			reporter.setSuccess(false);
+			return reporter;
 		}
 
-		Map<Value, Value> values = new HashMap<Value, Value>();
-		while ((nextLine = reader.readNext()) != null) {
-			values.put(Value.of(nextLine[keyColumn]), Value.of(nextLine[valueColumn]));
+		Map<Value, Value> map = new HashMap<Value, Value>();
+		Sheet sheet = workbook.getSheetAt(0);
+		int row = 0;
+		if (skipFirst)
+			row++;
+		for (; row < sheet.getPhysicalNumberOfRows(); row++) {
+			Row currentRow = sheet.getRow(row);
+			if (currentRow.getPhysicalNumberOfCells() == 2)
+				map.put(Value.of(currentRow.getCell(keyColumn).getStringCellValue()),
+						Value.of(currentRow.getCell(valueColumn).getStringCellValue()));
 		}
-		lookupTable = new LookupTableInfoImpl((new LookupTableImpl(values)), getName(),
+
+		lookupTable = new LookupTableInfoImpl((new LookupTableImpl(map)), getName(),
 				getDescription());
 		reporter.setSuccess(true);
 		return reporter;
@@ -99,7 +114,8 @@ public class CSVLookupReader extends AbstractLookupImport {
 	 */
 	@Override
 	protected String getDefaultTypeName() {
-		// Nothing to do here
+		// TODO Auto-generated method stub
 		return null;
 	}
+
 }

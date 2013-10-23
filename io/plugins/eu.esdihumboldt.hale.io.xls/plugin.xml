@@ -29,6 +29,28 @@
                ref="eu.esdihumboldt.hale.io.xls.xlsx">
          </contentType>
       </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.xls.writer.XLSLookupTableWriter"
+            id="eu.esdihumboldt.hale.io.xls.writer.lookup"
+            name="Lookup table (XLS/XLSX)">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.xls.xls">
+         </contentType>
+         <contentType
+               ref="eu.esdihumboldt.hale.io.xls.xlsx">
+         </contentType>
+      </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.xls.reader.XLSLookupTableReader"
+            id="eu.esdihumboldt.hale.io.xls.reader.lookup"
+            name="Lookup table (XLS/XLSX)">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.xls.xls">
+         </contentType>
+         <contentType
+               ref="eu.esdihumboldt.hale.io.xls.xlsx">
+         </contentType>
+      </provider>
    </extension>
 
 </plugin>
