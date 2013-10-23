@@ -27,8 +27,8 @@ import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.io.csv.reader.CSVConstants;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVConfiguration;
-import eu.esdihumboldt.hale.io.csv.reader.internal.CSVConstants;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 
 /**
@@ -36,7 +36,6 @@ import eu.esdihumboldt.hale.ui.HaleWizardPage;
  * 
  * @author Kevin Mais
  */
-@SuppressWarnings("restriction")
 public class ReadConfigurationPage extends AbstractCSVConfigurationPage<ImportProvider> {
 
 	/**

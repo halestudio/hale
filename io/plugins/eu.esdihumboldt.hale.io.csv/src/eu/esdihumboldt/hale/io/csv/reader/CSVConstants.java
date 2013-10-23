@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.io.csv.reader.internal;
+package eu.esdihumboldt.hale.io.csv.reader;
 
 /**
  * Constants for the CSV Classes

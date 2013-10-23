@@ -30,7 +30,7 @@ import com.google.common.collect.HashBiMap;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.Value;
-import eu.esdihumboldt.hale.io.csv.reader.internal.CSVConstants;
+import eu.esdihumboldt.hale.io.csv.reader.CSVConstants;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 
@@ -41,7 +41,6 @@ import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
  * @author Kevin Mais, Patrick Lieb
  * @param <P> the provider type
  */
-@SuppressWarnings("restriction")
 public abstract class AbstractCSVConfigurationPage<P extends IOProvider> extends
 		AbstractConfigurationPage<P, IOWizard<P>> implements ModifyListener {
 
