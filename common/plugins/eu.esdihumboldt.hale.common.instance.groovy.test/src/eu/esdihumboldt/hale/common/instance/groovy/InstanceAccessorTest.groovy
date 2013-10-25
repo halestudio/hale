@@ -17,6 +17,8 @@ package eu.esdihumboldt.hale.common.instance.groovy
 
 import eu.esdihumboldt.hale.common.instance.model.Group
 import eu.esdihumboldt.hale.common.instance.model.Instance
+import eu.esdihumboldt.hale.common.schema.groovy.SchemaBuilder
+import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.test.TestUtil
 
 
@@ -85,4 +87,69 @@ class InstanceAccessorTest extends GroovyTestCase {
 		assertEquals 'father', instance.properties.relative.value()
 		assertTrue instance.properties.relative.first() instanceof Instance
 	}
+
+	void testSchema() {
+		String defaultNs = "http://www.my.namespace"
+
+		// build schema
+		Schema schema = new SchemaBuilder().schema(defaultNs) {
+			Person {
+				name()
+				age(Integer)
+				address(cardinality: '0..n') {
+					street()
+					number()
+					city()
+				}
+				relative(cardinality: '0..n', String) {
+					name()
+					age(Integer)
+				}
+			}
+		}
+
+		// build instance
+		Instance instance = new InstanceBuilder(types: schema).Person {
+			name 'Max Mustermann'
+			age 31
+			address {
+				street 'Musterstrasse'
+				number 12
+				city 'Musterstadt'
+			}
+			address {
+				street 'Taubengasse'
+				number 13
+			}
+			relative('father') {
+				name 'Markus Mustermann'
+				age 56
+			}
+		}
+
+		// test accessor
+		assertEquals 'Max Mustermann', instance.properties.name.value()
+
+		// namespace
+		assertEquals 31, instance.properties.age(defaultNs).value()
+
+		// instance
+		def addresses = instance.properties.address.list()
+		assertEquals 2, addresses.size()
+		// must be instance due to schema
+		addresses.each { assertTrue it instanceof Instance }
+
+		// each
+		def numbers = []
+		instance.properties.address.number.each { numbers << it }
+		assertEquals 2, numbers.size()
+		// numbers are converted to string
+		assertEquals '12', numbers[0]
+		assertEquals '13', numbers[1]
+
+		// instance value
+		assertEquals 'father', instance.properties.relative.value()
+		assertTrue instance.properties.relative.first() instanceof Instance
+	}
+
 }

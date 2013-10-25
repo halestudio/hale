@@ -21,6 +21,8 @@ import com.google.common.collect.ImmutableList
 
 import eu.esdihumboldt.hale.common.instance.model.Group
 import eu.esdihumboldt.hale.common.instance.model.Instance
+import eu.esdihumboldt.hale.common.schema.model.Definition
+import eu.esdihumboldt.hale.common.schema.paths.DefinitionResolver
 import eu.esdihumboldt.util.groovy.paths.AbstractAccessor
 import eu.esdihumboldt.util.groovy.paths.Path
 import eu.esdihumboldt.util.groovy.paths.PathImpl
@@ -85,17 +87,25 @@ class InstanceAccessor extends AbstractAccessor<Object> {
 		all().collectMany { Path<Object> parentPath ->
 			// search for possible children and
 			// create sub-paths for found properties
-			List<Path<Object>> result = []
 
 			def object = parentPath.elements.last()
-
 			def values = null
+
 			if (object instanceof Group) {
 				// there may only be children if this is a group
 				Group group = (Group) object
 
 				if (group.definition != null) {
 					// access based on definitions
+
+					// find possible paths to children
+					def valueList = []
+					List<Path<Definition<?>>> paths = DefinitionResolver.findPropertyCached(group.definition, name, namespace)
+					paths?.each { Path<Definition<?>> propertyPath ->
+						def pvalues = getPropertyValues(group, propertyPath)
+						pvalues?.each { valueList << it }
+					}
+					values = valueList
 				}
 				else {
 					// access only based on group properties
@@ -116,21 +126,31 @@ class InstanceAccessor extends AbstractAccessor<Object> {
 				}
 			}
 
+			List<Path<Object>> result = []
 			values?.each {
 				result << parentPath.subPath(it)
 			}
-
-			//			DefinitionGroup group = DefinitionUtil.getDefinitionGroup(parentPath.elements.last())
-			//
-			//
-			//			List<Path<Definition<?>>> paths = DefinitionResolver.findPropertyCached(group, name, namespace)
-			//			paths?.each { Path<Definition<?>> propertyPath ->
-			//				// create a sub-path for each
-			//				result << parentPath.subPath(propertyPath)
-			//			}
-
 			result
 		}
+	}
+
+	private def getPropertyValues(Group object, Path<Definition<?>> path) {
+		Queue queue = new LinkedList()
+		queue << object
+
+		path.elements.eachWithIndex { Definition definition, int index ->
+			Queue newQueue = new LinkedList()
+			while (!queue.empty) {
+				Object element = queue.poll()
+
+				if (element instanceof Group) {
+					((Group) element).getProperty(definition.name)?.each { newQueue << it }
+				}
+			}
+			queue = newQueue
+		}
+
+		queue
 	}
 
 	/**
