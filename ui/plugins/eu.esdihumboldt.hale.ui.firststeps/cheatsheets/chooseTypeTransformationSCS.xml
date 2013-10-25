@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet
+      title="Alignment between types">
+   <intro href = "/eu.esdihumboldt.hale.doc.user/html/concepts/functions.html">
+      <description>
+         In HALE there are three different type functions available.<br/>
+The first one is the <b>Retype</b> function, the second is the <b>Merge</b> function, the 
+third is the <b>Join</b> function.<br/><br/>
+These three functions are needed to perform an alignment between two concrete selected types (or feature type and type, etc.).<br/>
+Remember:<br/>concrete Types: [T] and [ft] in blue<br/>selected: elements shaded in gray or blue(active)<br/><br/>
+The question mark (Help link) lead to more information about the functions in HALE.<br/><br/>
+      </description>
+   </intro>
+   <item
+   		title="About Context"
+   		href="/eu.esdihumboldt.hale.doc.user/html/concepts/contexts.html">
+   		<description>
+   			Before starting type mapping, you should take a moment the for topic Context 
+and Instance.<br/>
+Contexts are important if you want to differentiate between instances of one type 
+(You will need a property for that). 
+<b>For example</b>: You want to do a mapping between Product and Shirt. You can define a context 
+on a property typeOfProduct of the Product, so only shirts get transformed.<br/>
+You can define a context before performing the mapping (or edit the alignment cell later).<br/>
+To do the mapping between your type with a context and the target type, just choose the created 
+context type. (Product x? typeOfProduct = 'shirt') <br/><br/>
+<b>Another example</b>: Some target properties have not the unique limitation. (Cardinality do not mean quantity of 
+instances!) You have two coordinates X and Y, but in the target Schema, there is only a geometry with one &quot;pos&quot;(2..2) 
+property. (2..2) means minimum is two and maximum is two, so one instance of the target type has two &quot;pos&quot; properties). 
+You can't rename coordinate x and y to the same pos property. Click right mouse button on the target 
+pos property instead. Choose &quot;Add instance context&quot; and another pos property appears. 
+((pos)(2..2) x?) One coordinate property goes to the first pos property, the other one to the second.<br/><br/>
+Check list:
+</description>
+   		<subitem 
+   			label="Add context conditions, if necessary.">
+   		</subitem>
+   </item>
+   <item
+         title="About Instances"
+         href="/eu.esdihumboldt.hale.doc.user/html/concepts/what_is_instance.html">
+      <description>
+A type with an indication of quantity (Product x3) appears if there is some data loaded. 
+(&quot;There are three instances&quot; is equal to &quot;there are three Products&quot;, but not three different values)<br/><br/>
+You can do every step without some sample data, therefore the alignment remains conceptual. 
+It is recommended to import some data, if not done yet. 
+With live transformation activated (default) you could see how many instances were transformed and 
+you can estimate, if the right amount of instances were transformed.<br/><br/>
+Note, that cardinality count per instance!<br/><br/>
+The Help link (upper right corner of this task) will provide more information about what an instance is.
+Check list:<br/>
+      </description>
+      <subitem 
+      		label="If not done yet, think about loading some data.">
+      </subitem>
+   </item>
+   <item
+         title="Retype function (before Merge and/or Join)"
+         href="/eu.esdihumboldt.hale.doc.user/html/tasks/alignment/mapping_schema_elem.html">
+      <description>
+         What is the right alignment between this two types? The Answer depends on the schema definition.<br/>
+Not very helpful at the beginning, but later on, this will make sense.<br/><br/>
+The easiest relation is the 1:1 relation. The source type is semantically equal to the target type. In this case, the proper 
+function is the <b>Retype</b> function.<br/><br/>
+It is recommended to <b>start with 1:1 relations</b>, because this function has no special cases.<br/><br/>
+If there are no unmapped target types (types of the target schema without any relation) left, after the retyping 
+on the 1:1 types, the type mapping is complete.<br/><br/>
+If there are unmapped target types left, in most cases, a merge or join function is needed.<br/><br/>
+Try to perform all possible Retypes.<br/><br/>
+Click on the source and target type, click on the blue arrow between these two 
+and select the Retype function.<br/>
+You see a new (smaller) window. Tasks refer to this window as the function wizard.<br/>
+The title of the function wizard shows you the current used function.<br/>
+The first page is always about the selected types and needed entities (elements).<br/>
+You can choose a different type by clicking on the suitable field.<br/><br/>
+See Help link (question mark upper right corner) for more information about the general mapping process.
+Check list:<br/>
+      </description>
+      <subitem 
+      		label="Do Retypes, if necessary.">
+      </subitem>
+   </item>
+   <item
+   		title="Merge function" href="/eu.esdihumboldt.cst.doc.functions/functions/eu.esdihumboldt.hale.align.merge.html">
+   		<description>
+   			When to use a merge? If more than one instance of the source type (not different types) represent
+one instance of the target type, or you have identified a connection between <b>one</b> source type and <b>one</b> target type and it is not a 
+1:1 relation.<br/><br/>
+Click the Help link (question mark, upper right corner) for more information, about what the merge function is.<br/><br/>
+At a merge, you can pick the property that indicates the belonging of the source type instance to the target type. <br/>
+This could be a key value, a headline for groups, an id, a name, a number, and so on. It could be something, that belongs 
+to the target type.<br/>
+If there is no specific property, but you want to perform a merge (maybe the target type is a 
+collection of your source type instances, or you need some values for the mapping), do merge and do not 
+pick a property on the function wizard second page.<br/><br/>
+An example of use:<br/> The property documentText of a general type has always the same two values. And there 
+is no document type. A mapping between source general type and target document type can be realized 
+by using merge function between these two, with the documentText property as a key. There will be two 
+instances of the document type, after the transformation is completed.<br/><br/>
+Check list:
+   		</description>
+   		<subitem skip="true" 
+   			label="Perform the merge function, using or not using a key property, if necessary">
+   		</subitem>
+   </item>
+   <item
+   		title="Join function"
+   		href="/eu.esdihumboldt.cst.doc.functions/functions/eu.esdihumboldt.hale.align.join.html">
+   		<description>
+   			A join connects different source types (at least two types) on specific properties 
+and assign this join to one target type.<br/>
+You can use this, if the source schema defines correlate data in separate types, so the data parts are separated.<br/>
+Most times, there is only a key value, an id oder href/link property between those source types. And this is 
+where a join comes into play, if such a link between the types exist.<br/><br/>
+To perform a join, you will need more in-depth information about the source schema, because you
+need to identify those links.<br/><br/>
+It is recommended to have a look on a tutorial for this function.
+   		</description>
+   </item>
+</cheatsheet>
