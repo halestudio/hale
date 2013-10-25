@@ -23,6 +23,7 @@ import java.util.Map;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ListMultimap;
 
+import eu.esdihumboldt.cst.functions.groovy.internal.GroovyUtil;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
@@ -45,14 +46,6 @@ import groovy.lang.Script;
 public class GroovyTransformation extends
 		AbstractSingleTargetPropertyTransformation<TransformationEngine> implements GroovyConstants {
 
-	private static final String CONTEXT_SCRIPT = "script";
-
-	/**
-	 * @see AbstractSingleTargetPropertyTransformation#evaluate(String,
-	 *      TransformationEngine, ListMultimap, String,
-	 *      PropertyEntityDefinition, Map, TransformationLog)
-	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,
 			ListMultimap<String, PropertyValue> variables, String resultName,
@@ -62,37 +55,7 @@ public class GroovyTransformation extends
 
 		Object result;
 		try {
-			/*
-			 * The compiled script is stored in a ThreadLocal variable in the
-			 * execution context, so it needs only to be created once per
-			 * transformation thread.
-			 */
-			ThreadLocal<Script> localScript;
-			Map<Object, Object> context = getExecutionContext().getCellContext();
-			synchronized (context) {
-				Object tmp = context.get(CONTEXT_SCRIPT);
-
-				if (tmp instanceof ThreadLocal<?>) {
-					localScript = (ThreadLocal<Script>) tmp;
-				}
-				else {
-					localScript = new ThreadLocal<Script>();
-					context.put(CONTEXT_SCRIPT, localScript);
-				}
-			}
-
-			Script groovyScript = localScript.get();
-			if (groovyScript == null) {
-				// create the script
-				// TODO use a specific classloader?
-				GroovyShell shell = new GroovyShell();
-				String script = getParameterChecked(PARAMETER_SCRIPT).as(String.class);
-				groovyScript = shell.parse(script);
-				localScript.set(groovyScript);
-			}
-
-			// set the binding
-			groovyScript.setBinding(binding);
+			Script groovyScript = GroovyUtil.getScript(this, binding);
 
 			// run the script
 			result = groovyScript.run();

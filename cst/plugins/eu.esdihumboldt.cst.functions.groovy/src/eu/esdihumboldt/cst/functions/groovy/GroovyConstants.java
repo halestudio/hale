@@ -28,8 +28,35 @@ public interface GroovyConstants {
 	public static final String PARAMETER_SCRIPT = "script";
 
 	/**
+	 * Name of the execution context variable holding the compiled script.
+	 */
+	public static final String CONTEXT_SCRIPT = "script";
+
+	/**
 	 * Entity name for variables.
 	 */
 	public static final String ENTITY_VARIABLE = "var";
+
+	/**
+	 * Name of the instance builder variable in the binding.
+	 */
+	public static final String BINDING_BUILDER = "_b";
+
+	/**
+	 * Name of the source instance variable in the binding (not applicable for
+	 * {@link GroovyCreate}).
+	 */
+	public static final String BINDING_SOURCE = "_source";
+
+	/**
+	 * Name of the index variable in the binding (only applicable for
+	 * {@link GroovyCreate}).
+	 */
+	public static final String BINDING_INDEX = "_index";
+
+	/**
+	 * Name of the target instance builder closure in the binding.
+	 */
+	public static final String BINDING_TARGET = "target";
 
 }

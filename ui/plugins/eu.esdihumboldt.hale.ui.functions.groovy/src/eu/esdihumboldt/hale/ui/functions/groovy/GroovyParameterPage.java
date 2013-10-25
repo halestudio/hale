@@ -34,7 +34,7 @@ import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 
 /**
- * Parameter page for Groovy function.
+ * Parameter page for Groovy property function.
  * 
  * @author Kai Schwierczek
  */

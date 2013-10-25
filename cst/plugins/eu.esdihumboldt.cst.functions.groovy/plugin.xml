@@ -36,6 +36,57 @@
             </functionParameterBinding>
          </functionParameter>
       </propertyFunction>
+      <typeFunction
+            identifier="eu.esdihumboldt.cst.functions.groovy.retype"
+            name="Groovy Retype">
+         <targetTypes>
+            <type
+                  maxOccurrence="1"
+                  minOccurrence="1">
+            </type>
+         </targetTypes>
+         <sourceTypes>
+            <type
+                  maxOccurrence="1"
+                  minOccurrence="1">
+            </type>
+         </sourceTypes>
+         <functionParameter
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="script"
+               scriptable="false">
+            <functionParameterBinding></functionParameterBinding>
+         </functionParameter>
+      </typeFunction>
+      <typeFunction
+            identifier="eu.esdihumboldt.cst.functions.groovy.create"
+            name="Groovy Create">
+         <targetTypes>
+            <type
+                  maxOccurrence="1"
+                  minOccurrence="1">
+            </type>
+         </targetTypes>
+         <functionParameter
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="script"
+               scriptable="false">
+            <functionParameterBinding></functionParameterBinding>
+         </functionParameter>
+         <functionParameter
+               description="Number of instances to create"
+               label="Number of instances"
+               maxOccurrence="1"
+               minOccurrence="0"
+               name="number"
+               scriptable="false">
+            <functionParameterBinding
+                  class="java.lang.Integer">
+            </functionParameterBinding>
+         </functionParameter>
+      </typeFunction>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.align.transformation">
@@ -45,6 +96,20 @@
             function="eu.esdihumboldt.cst.functions.groovy"
             id="eu.esdihumboldt.cst.functions.groovy">
       </propertyTransformation>
+      <typeTransformation
+            class="eu.esdihumboldt.cst.functions.groovy.GroovyCreate"
+            engine="eu.esdihumboldt.align.java"
+            function="eu.esdihumboldt.cst.functions.groovy.create"
+            id="eu.esdihumboldt.cst.functions.groovy.create">
+      </typeTransformation>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.align.category">
+      <category
+            description="Functions configured through a Groovy script"
+            id="eu.esdihumboldt.cst.functions.groovy"
+            name="Groovy">
+      </category>
    </extension>
 
 </plugin>

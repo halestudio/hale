@@ -11,6 +11,24 @@
                name="script">
          </parameter>
       </propertyParameterPage>
+      <typeParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.groovy.GroovyCreatePage"
+            function="eu.esdihumboldt.cst.functions.groovy.create"
+            id="eu.esdihumboldt.hale.ui.functions.groovy.create"
+            order="0">
+         <parameter
+               name="script">
+         </parameter>
+      </typeParameterPage>
+      <typeParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.groovy.GroovyScriptPage"
+            function="eu.esdihumboldt.cst.functions.groovy.retype"
+            id="eu.esdihumboldt.hale.ui.functions.groovy.retype"
+            order="0">
+         <parameter
+               name="script">
+         </parameter>
+      </typeParameterPage>
    </extension>
 
 </plugin>
