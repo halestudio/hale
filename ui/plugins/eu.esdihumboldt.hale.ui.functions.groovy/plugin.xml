@@ -21,7 +21,7 @@
          </parameter>
       </typeParameterPage>
       <typeParameterPage
-            class="eu.esdihumboldt.hale.ui.functions.groovy.GroovyScriptPage"
+            class="eu.esdihumboldt.hale.ui.functions.groovy.GroovyRetypePage"
             function="eu.esdihumboldt.cst.functions.groovy.retype"
             id="eu.esdihumboldt.hale.ui.functions.groovy.retype"
             order="0">

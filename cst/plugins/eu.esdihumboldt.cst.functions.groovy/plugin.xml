@@ -4,8 +4,9 @@
    <extension
          point="eu.esdihumboldt.hale.align.function">
       <propertyFunction
-            description="Use a groovy script to derive a target property value."
+            category="eu.esdihumboldt.cst.functions.groovy"
             cellExplanation="eu.esdihumboldt.cst.functions.groovy.GroovyExplanation"
+            description="Use a groovy script to derive a target property value."
             icon="icons/star.png"
             identifier="eu.esdihumboldt.cst.functions.groovy"
             name="Groovy script">
@@ -37,6 +38,9 @@
          </functionParameter>
       </propertyFunction>
       <typeFunction
+            category="eu.esdihumboldt.cst.functions.groovy"
+            description="Use a Groovy script to do a 1:1 instance conversion."
+            icon="icons/star.png"
             identifier="eu.esdihumboldt.cst.functions.groovy.retype"
             name="Groovy Retype">
          <targetTypes>
@@ -60,6 +64,9 @@
          </functionParameter>
       </typeFunction>
       <typeFunction
+            category="eu.esdihumboldt.cst.functions.groovy"
+            description="Use a Groovy script to create target instances."
+            icon="icons/star.png"
             identifier="eu.esdihumboldt.cst.functions.groovy.create"
             name="Groovy Create">
          <targetTypes>
@@ -101,6 +108,12 @@
             engine="eu.esdihumboldt.align.java"
             function="eu.esdihumboldt.cst.functions.groovy.create"
             id="eu.esdihumboldt.cst.functions.groovy.create">
+      </typeTransformation>
+      <typeTransformation
+            class="eu.esdihumboldt.cst.functions.groovy.GroovyRetype"
+            engine="eu.esdihumboldt.align.java"
+            function="eu.esdihumboldt.cst.functions.groovy.retype"
+            id="eu.esdihumboldt.cst.functions.groovy.retype">
       </typeTransformation>
    </extension>
    <extension
