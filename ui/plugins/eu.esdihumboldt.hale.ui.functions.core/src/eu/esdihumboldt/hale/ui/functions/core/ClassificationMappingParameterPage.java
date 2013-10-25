@@ -150,6 +150,7 @@ public class ClassificationMappingParameterPage extends
 	private PropertyDefinition targetProperty;
 	private PropertyEntityDefinition sourceEntity;
 	private PropertyEntityDefinition targetEntity;
+	private ToolItem removeAllButton;
 
 	/**
 	 * Default constructor.
@@ -447,7 +448,7 @@ public class ClassificationMappingParameterPage extends
 		final ToolItem saveButton = new ToolItem(toolBar, SWT.PUSH);
 		new ToolItem(toolBar, SWT.SEPARATOR);
 		final ToolItem valueRemove = new ToolItem(toolBar, SWT.PUSH);
-		final ToolItem removeAllButton = new ToolItem(toolBar, SWT.PUSH);
+		removeAllButton = new ToolItem(toolBar, SWT.PUSH);
 
 		valueAdd.setImage(CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_ADD));
 		valueAdd.setToolTipText("Add source value");
@@ -513,7 +514,7 @@ public class ClassificationMappingParameterPage extends
 				else {
 					// job is running, listener will be notified
 				}
-				removeAllButton.setEnabled(true);
+				removeAllButton.setEnabled(!lookupTable.isEmpty());
 			}
 		});
 
@@ -592,6 +593,13 @@ public class ClassificationMappingParameterPage extends
 	private void addOccurringSourceValues(OccurringValues occurringValues) {
 		if (occurringValues != null && occurringValues.isUpToDate()) {
 			addSourceValuesIfNew(occurringValues.getValues().elementSet());
+			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+
+				@Override
+				public void run() {
+					removeAllButton.setEnabled(!lookupTable.isEmpty());
+				}
+			});
 		}
 	}
 
