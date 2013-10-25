@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet
+      title="Properties">
+   <intro href = "/eu.esdihumboldt.hale.doc.user/html/reference/schema_elements.html">
+      <description>
+         Properties are schema elements and are a part of a type or feature type.<br/>
+They have different data types and divided into [8] numbers, [=] string, [o] geometry and [;.] objects.<br/><br/>
+Use the Schema Explorer View. Use the [+] marks to expand the element to display more properties.<br/><br/>
+The Help (question mark on the upper right corner of this task) will provide more detailed information about schema elements.
+      </description>
+   </intro>
+   <item
+         title="How to analyze schema for properties" href="/eu.esdihumboldt.hale.doc.user/html/views/properties.html">
+      <description>
+         To identify an alignment between the source and the target schema you can search for semantic comparable schema elements. 
+You should have a look at the <b>Properties-View</b>, too.
+(click on question mark for more information).<br/><br/>
+If you select an element and then click on the Properties-View, you get an overview over the selected property (or element). 
+The Headline tells you what property you are looking at. At the <b>General</b> tab, you get some info, like the <b>Description</b>.
+(This Description is part of the schema file)<br/><br/>
+It is recommended to look at <b>target properties</b>, because the source Schema 
+can have more properties than you need for the mapping. And as a part of the harmonization process, it is not possible to change 
+the target schema at this moment.<br/>
+You can not create more than one alignment cell at a time, but sometimes the transformation functions need, 
+or can have additional variables (one or more source properties). 
+For the analysis phase, you do not need to identify the variables, because you need to know 
+about the transformations first. (see Alignment between properties - cheat sheet)
+<br/><br/>
+But vice versa there can be some target schema elements, you can't map, because the required property does not exist in the source schema.<br/>
+The lack of a matching source schema elements can be part of the mapping and is sometimes a valid condition. 
+Future tasks will show you, how to deal with those cases (see Assign function in Alignment between properties - cheat sheet). 
+ 	 </description>
+   </item>
+   <item
+   		 title="How to select a pair, begin with mandatory">
+   	  <description>
+   	  Begin with a target property that is <b>mandatory</b> (it has a red * in the right upper corner).<br/><br/>
+Now, look for a corresponding source property and select it. (Remember, that elements shaded in grey and blue(active) are selected.)<br/>
+A starting Point can be the geometry, an example:<br/>
+Target = standard geometry ([o] with a green arrow and a red *)<br/>
+Source = geometry or the_geom<br/><br/>
+Pay Attention to identifier, because there are different types of them. Maybe a localId like a 
+consecutive numbering of data without special meaning, or it can be a unique identifier, 
+like a GML id or some id you can refer to. The id property can be 
+a link to another schema types property as well. (e.g. a reference to a Document for the data)<br/><br/>
+The &quot;data type&quot; can be an indication of a corresponding property. (like a date data type to a date data type)<br/><br/>
+Think about some alternative names and translations for the target property (in the language of the source schema).<br/><br/>
+Here is a basic check list:<br/>
+   	  </description>
+   	  <subitem 
+   	  		label ="Search for a property with a similar data type. (e.g. date and date)">
+   	  </subitem>
+   	  <subitem 
+   	  		label ="Is there a similar name, in the source schema, for one of the alternative names? (e.g. geometry(target) and the_geom(source))">
+   	  </subitem>
+   	  <subitem 
+   	  		label ="Differ between meaning and naming. (e.g. what is the meaning of this id?)">
+   	  </subitem>
+   	  <subitem 
+   	  		label ="Remember, that a missing source property is a valid condition.">
+   	  </subitem>
+   </item>
+</cheatsheet>

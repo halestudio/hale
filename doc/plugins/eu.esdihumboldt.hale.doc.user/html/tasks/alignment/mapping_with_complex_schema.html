@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Complex Schema</title>
+</head>
+<body>
+	<h1>Mapping with Complex Schema</h1>
+	<div id="introduction">
+		<p>
+			<b>GML</b> (or related) Schema files or <b>XSD</b> (Extensible Markup Language 
+(XML) Schema Definition) files support and can contain inheritance. Defining a <b>context condition</b> on a source type will create a new child type.
+There is a 
+&quot;parent type&quot; (often abstract, <img src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/reference/images/abstract_ft.png"/> 
+or <img src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/reference/images/abstract_type.png"/> ) and one or more 
+&quot;children type&quot;(s). The last children in the depth of inheritance should be 
+concrete. (<img src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/reference/images/concrete_ft.png"/> or <img src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/reference/images/concrete_type.png"/>)
+		</p>
+	</div>
+	<div id="anExampleOfUse">
+		<p>
+			<h2>An example of use</h2>
+		</p>
+		<p class="Note">
+<img src="images/InheritedMappingAB.png" class="fit" alt="TypeA.id -> TargetA.id and TypeB.id -> TargetB.id"/>
+		</p>
+		<p>
+There are two Context Conditions for the River. Every defined context condition on a type will create one new child for this type (see image 1.1). It is not necessary to map each child property, it is possible to choose the parent property, for the mapping, instead.
+		</p>
+		<p>
+On standard perspective (default), the Schema Explorer - view shows the <b>types as a list</b>. This list looks like a flat and simple schema structure, which is good for type mapping.
+		</p>
+		<p>
+Every explanation underneath, works for the <b>target schema</b> as well.
+		</p>
+		<p>
+The <b>type hierarchy</b> <img src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/views/images/inheritance_hierarchy.png"/> icon in the Schema Explorer - view changes the schema to be represented by a tree (the higher in hierarchy the more left a element is listed). 
+Click on the [+] in the Schema Explorer - view source section, to expand the hierarchy. 
+(Switching between type as list and type hierarchy will cause the schema tree to collapse)
+		</p>
+		<p class="Note">
+			<img src="images/ShownAsList.png" style="float: left; "/>
+			<img src="images/HirarchyBrowse.png" style="float: left; "/>
+			<img src="images/TypeHirarchyAndExplanation.png" />
+		</p>
+	</div>
+	<div id="hideProperties">
+		<p>
+To simplify the tree structure, it is possible to hide some properties, which are inherited. Click the <b>Hide inherited properties</b> <img src="images/hideInherited.png"/> icon at the view bar.<br/>
+Is it wanted to be mapped by using inheritence, this can be used. So only the highest appearence of this property is shown and it prevents the case, that a already inherited property is used (slected the property of a child and not the property of a parent type).<br/>
+For example: AbstractGML has the id property, so every AbstractFeature type do. 
+The id is inherited to every type which is an AbstractFeature type. Result: the id appears 
+only at the highest point of the hierarchy and only once.<br/>
+The <i>id</i> property of the feature type <i>Crossing</i> dissapears, but the <i>type</i> property stays.<br>
+Also note the different background colors of the schema elements. A faded color means an indirect mapped property. (Mapped due to inherited relations)<br>
+See <a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/views/schema_explorer.html">Schema Explorer</a> for more informations about interpreting the Schema.
+		</p>
+		<p class="Note">
+			<img src="images/InheritedPropertiesListed.png" style="float: left; "/>
+			<img src="images/hideInheritedPropertiesListed.png" />
+		</p>
+	</div>
+	<div id="renameForInheritence">
+		<p>
+1. Choose the <img src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/views/images/inheritance_hierarchy.png" /> option.<br/>
+2. Expand the tree until ...<br/>
+3. ...the desired source and target properties are found.
+		</p>
+			<img src="images/IMTFindProperty.png" />
+		<p>
+1. Select the source property<br/>
+2. Select the target property<br/>
+3. Click on <img src="images/contextualFunctionSelection.png" /> and choose Rename. It could be any function, the Rename function is common use. Finish the function.
+		</p>
+			<img src="images/IMTTransform.png" />
+		<p>
+Expand the tree within the type with the mapped property. For this example: AbstractGML (parent, abstract type) &gt; AbstractFeatureType (child of AbstractGML, abstract feature type). The <i>description</i> property of the AbstractFeatureType is indirectly mapped  (faded background).
+The abstract feature types ManMadeObject and SurfaceWater (both children of AbstractFeatureType) inherit the property <i>description</i>, and so they also inherit the alignment for the <i>description</i> property.
+		</p>
+			<img src="images/IMTResultHirarchy.png" />
+		<p>
+The created Alignment (cell) for a child type; note the up arrow.<br/>
+<img src="images/InherMappingTuto4.png" />
+		</p>
+	</div>
+	
+	<br>
+	<!-- related tasks: Load a schema -->
+	<div>
+		<br> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelt.png">
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/schema/load_browse_schema.html">Loading and browsing schemas</a>
+		</p>
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/alignment/mapping_schema_elem.html">Mapping schema elements</a>
+		</p>
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/schema/define_context.html">Defining contexts on schema elements</a>
+		</p>
+	</div>
+	
+	<!-- related reference: schema elements -->
+	<div>
+		<br> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelr.png">
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/reference/schema_elements.html">Schema elements</a>
+		</p>
+	</div>
+</body>
+</html>

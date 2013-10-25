@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet
+      title="Start with the Types and feature Types">
+   <intro href="/eu.esdihumboldt.hale.doc.user/html/views/schema_explorer.html">
+      <description>
+         A Type is part of a Schema.<br/>
+It is marked with a <b>[ft] or [T]</b> symbol in the Schema Explorer. A red cursive [ft] or [T] means an abstract feature type and blue means a concrete one.<br/>
+A [ft] schema element is a GML AbstractFeatureType. [T] are own defined types.<br/>
+[+] stand for an expandable type/object/element, so there are sub level elements you may analyze, too, to find the right target for an alignment. 
+In standard Schema Explorer View (default) you get shown all mappable types as a list.<br/><br/>
+For this task, the only thing you need to do, is to identify the concrete (blue) <b>[ft]</b> and <b>[T]</b> symbols in the <b>Schema Explorer</b>-View.<br/>
+Click the little question mark on the right upper corner to get some help. In this case to the Schema Explorer-View.
+      </description>
+   </intro>
+   <item
+   		title="Configure the mappable Types"
+   		href="/eu.esdihumboldt.hale.doc.user/html/tasks/schema/mapping_relevant.html">
+   	<description>
+   		You should identify what types are mapping relevant or you want 
+to use. (You need a source and target schema to do this.) <br/><br/>
+Configure the Types now or do it later, it clears up the Schema Explorer View.<br/>
+If you have only few Types, right-click (right mouse button) on a type and choose &quot;Exclude Type from mapping&quot;. 
+To undo your last action, hold [CTRL] and press [z] on your keyboard. It will also bring back the last 
+excluded Type.<br/><br/>
+The Help Link in the upper right corner, of this task, will give you a guide to do the customization.
+   	</description>
+   </item>
+   <item
+         title="Find (at least) two matching types.">
+      <description>
+         To find two matching types is the task, but how is it done?<br/>
+Two matching types mean, that one type (feature Type or Type) of the source schema and one type 
+(feature Type or Type) of the target schema are alike or somehow related.<br/>
+So, first we need to find all pairs, because the main part of the alignment is done between two elements.<br/>
+One Type can be part of more than one alignment, but the alignments will be performed separately.<br/>
+An example: (there is only one Customer Type listed in the Schema Explorer-View)<br/>
+Source		-> Target Schema<br/>
+[T] Person  -> [T] Customer<br/>
+[T] Address -> [T] Customer<br/>
+or vice versa:<br/>
+Source		-> Target Schema<br/>
+[T] Customer-> [T] Person<br/>
+[T] Customer-> [T] Address<br/><br/>
+Analyze the target schema types and try to find semantically equal type(s) in your source schema.<br/><br/>
+Some hints on finding types:<br/>
+      </description>
+   <subitem 
+   		label="Think about alternative names and/or translations for the target type in your source schema.">
+   </subitem>
+   <subitem 
+   		label="Differ between meaning and naming. (e.g. what is the meaning of this type)">
+   </subitem>   
+   <subitem 
+   		label="Read the Description within the General tab at the Properties-View, while the target type is blue selected.">
+   </subitem>
+   </item>
+   <item
+         title="Select the first two Types.">
+      <description>
+         Now you can imagine how the first steps for the alignment may look like.<br/>
+<b>Select</b> the first pair. To do so, you click (left mouse button) on the type.<br/><br/>
+Start by selecting the first element. It could be the source or the target type.<br/>
+Then select the opposite type.<br/><br/>
+The clicked element gets highlighted. The active selected element has a dark blue background color. 
+The passive (but also selected) element gets a light gray background color. (There can be more passive and no active selection)<br/>
+To undo a selection, hold the [CTRL] key and click (left mouse button) on the element. 
+Click (left mouse button) on one element (without holding any key) and it will become the only selected Element.
+      </description>
+   </item>
+</cheatsheet>

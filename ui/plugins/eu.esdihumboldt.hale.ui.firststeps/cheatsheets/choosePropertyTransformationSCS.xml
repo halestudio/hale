@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet
+      title="Alignment between properties">
+   <intro href="/eu.esdihumboldt.hale.doc.user/html/views/schema_explorer.html">
+      <description>
+         There are a lot of different functions to map schema elements. This tasks 
+are about finding possible transformations between <b>source and target 
+properties</b>.<br/><br/>
+To this point, you should have found some semantically equal properties, or at least 
+found some possible options for mandatory properties.<br/><br/>
+This tasks will not approach the question on finding these pairs.<br/><br/>
+The Help link (question mark upper right corner) opens the help to the 
+Schema Explorer - view. Use it, if you want to know how to browse and interpret 
+the current schema status.<br/><br/>
+Read the tasks, to gain information and then try to perform them, if they fit the requirements. 
+If you are not sure, at any point, continue with the next task. 
+You can go back to a task, by clicking on the tasks Headline. 
+(It will expand and you can reread it)
+      </description>
+   </intro>
+   <item
+         title="Alignment between properties - start"
+         href="/eu.esdihumboldt.hale.doc.user/html/concepts/what_is_alignment.html">
+      <description>
+         For types it is not so complicated to find the right access point for the 
+transformation (see Alignment between types), but for properties it can be tricky, 
+based on the schema complexity.<br/><br/>
+If you are using <b>comma separated value</b> (*.csv) or <b>shape file</b> (*.shp) 
+format as your source schema, or both loaded schema have only few types, you may skip the 
+task &quot;Complex Schema&quot;. It provides more detailed information about 
+browsing and finding properties within depth of inheritance.<br/><br/>
+Also note, that every transformation function have only one target property (no variables) 
+and you can't do more than one alignment at a time.
+<br/><br/>
+The Help link (question mark upper right corner) show more information about 
+the concept of an alignment.
+      </description>
+   </item>
+   <item
+   		title="Three basic tasks"
+   		href="/eu.esdihumboldt.hale.doc.user/html/views/alignment.html">
+   		<description>
+   			Besides the <b>creation</b> of an alignment cell (created automatically after finishing 
+a function wizard), it is possible to <b>edit</b> or <b>remove</b> the cell.<br/>
+Click the right mouse button, on a alignment cell (the one with function name between 
+source and target element cell) in the <b>Alignment - View</b>, to open some options.<br/>
+The <b>Edit...</b> option will open the function wizard with your previously entered 
+arguments, so you can edit them. Just finish the function wizard again, to update the cell.
+<br/>
+The <b>Delete</b> option will remove the cell. 
+Pay attention to inheritance!
+If you delete a inherited alignment cell (little blue up arrow besides the function name, 
+in Alignment - View) 
+this relation is deleted for every other Type, it was inherited to, as well.
+<br/><br/>
+The Help link (question mark upper right corner) of this task, will show you more 
+information about the Alignment - View.
+   		</description>
+   </item>
+   <item
+   		title="Complex Schema"
+   		skip="true"
+   		href="/eu.esdihumboldt.hale.doc.user/html/tasks/alignment/mapping_with_complex_schema.html">
+   		<description>
+   			<b>GML</b> (or related) Schema files or <b>XSD</b> (Extensible Markup Language 
+(XML) Schema Definition) files support and can contain inheritance. There is a 
+&quot;parent type&quot; (often abstract, red and cursive labeled) and one or more 
+&quot;children type&quot;(s). The last children in the depth of inheritance should be 
+concrete.<br/><br/>
+The goal of this task is to show you, how you can save some work by using inherited 
+properties.
+Read the task if you want to do something like this:<br/>
+TypeA.id -> Target.id<br/>
+TypeB.id -> Target.id<br/>
+TybeC.id -> Target.id<br/>
+IF TypeA, TypeB and TypeC have the parent type AbstractType. And AbstractType has a 
+property id (AbstractType.id) so it is same property for every child, 
+than you can map AbstractType.id -> Target.id.<br/><br/>
+<b>You could use this, if ...</b><br/>
+...multiple context conditions defined on one source type. A Type with a context condition is a 
+child of its source type.<br/>
+...the one of the schema has attendance of depth of inheritance. e.g. a complex schema.<br/><br/>
+The Help link (question mark upper right corner of this task) will provide more information about 
+working with complex schema.
+   		</description>
+   	</item>
+   	<item
+   		title="Prepare for mapping: Hide unpopulated properties">
+   		<description>
+   			If you want to create an alignment for a special data set, you can do this. 
+With this Editor, you can reuse this alignment within a project, with same source and target schema, 
+as a base alignment.<br/><br/>
+To have a better overview you can use the [o°o] (hide unpopulated properties) 
+icon within the Schema explorer view, if you've loaded some source data. 
+If you can't find a special property (in source or target schema), check if you have 
+hidden the unpopulated properties (for this schema). It is recommended to do not hide 
+target schema properties until the whole alignment process is finished.<br/>
+In the default case, you can see all populated and unpopulated properties.<br/>
+   		</description>
+   		<subitem 
+   			label="Choose to hide or not to hide unpopulated source properties.">
+   		</subitem>
+   	</item>
+   	<item
+   		title="Add condition context (CQL)"
+   		href="/eu.esdihumboldt.hale.doc.user/html/tasks/schema/define_context.html">
+   		<description>
+   		The Contextual Query Language (CQL) is used if you want to put instance 
+transformation under condition. Note, that only data can have a condition.<br/><br/>
+For example:<br/>
+Does the Person type have the property Person.name (Does the person have a name)?<br/>
+You would check on existence of a value for the Person.name property (e.g. value &lt;&gt; &quot;  
+for string data type).<br/>
+If you filter a value and it appears, the filter will pass &quot;No Value&quot; (golden font color in Data - View) 
+as the function input for this value.<br/>
+The Help link (question mark upper right corner) will give you more information about 
+adding a context.<br/><br/>
+		</description>
+		<subitem 
+   			label="Think about adding CQL filter. And add them, if needed.">
+   		</subitem>
+   	</item>
+   	<item
+   		title="Set priority">
+   		<description>
+   			You may encounter the problem, that you have one property 
+separated into two ore more semantically equal properties. (You may have more than one 
+value for this property, like a list of dates: date1, date2 and so on.)<br/><br/>
+
+Case: You want both dates to be transformed.<br/>
+In this case, you have to add an instance context for the tDate.<br/>
+Do a click on with the right mouse button on the target property tDate. And 
+choose &quot;Add instance context&quot;.<br/>
+If the option is not available, the target schema must not have more instances. 
+(Please check Properties - view -&gt; Constrains)<br/><br/>
+
+Case: You can not have more than one instance but two or more properties.<br/>
+In this case, you have to choose which one of the values (and so the properties) 
+are most important for your transformation. You can have four max (lowest, low, 
+normal=default and high priority).
+Do the transformation as guided. Then click 
+right mouse button on the alignment cell, choose &quot;Set Priority Level&quot; 
+and then choose the level.<br/><br/>
+It is recommended to add the condition (value &lt;&gt; X) to the source property, where X is any value 
+declared as noValue (e.g. '', 0, 999, ) (e.g. value &lt;&gt; null). X depends on your source data and your source 
+property.
+   		</description>
+   	</item>
+   	<item
+   		title="Where to start the alignment"
+   		href="/eu.esdihumboldt.hale.doc.user/html/tasks/alignment/mapping_schema_elem.html">
+   		<description>
+   			There are a lot of different transformations, categorized into <b>General, Geometry, 
+Inspire, Numeric and Others</b>.<br/><br/>
+Select a pair of properties (remember, that there do not have to be a source property) 
+and click on the blue arrow between the two schema trees. You will get a selection of 
+possible functions in random order.<br/><br/>
+To start an alignment, click on the source and target property, click on the blue arrow between them, 
+and select the desired function. To undo a selection click on the element. 
+Do deselect an element hold [CTRL] and click on the selected element. 
+If you click on an unselected source schema element while holding [CTRL], you can add this to the 
+selection (multiple select). Note, that only proper functions are displayed, when 
+using the blue arrow between source and target schema. More than one source property works for 
+additional parameters, like variables. (the element can be any property)<br/><br/>
+If you start to perform a function, 
+you will see a new (smaller) window. Tasks refer to this window as the function wizard.<br/>
+The title of the function wizard shows you the current used function.<br/>
+The first page is always about the selected elements and needed entities (elements).<br/>
+You can choose a different property by clicking on the suitable field.<br/><br/>
+The Help link (question mark upper right corner) will provide more information 
+on how basic alignment is done.
+   		</description>
+   	</item>
+   	<item
+   		title="Assign function"
+   		href="/eu.esdihumboldt.cst.doc.functions/functions/eu.esdihumboldt.hale.align.assign.html">
+   		<description>
+   			<b>The Assign function</b><br/>
+On the second page (click next&gt; at the first page of the function wizard), you can 
+enter the value you want to assign. Note, that the value is the same for every 
+instance! Sometimes you can not enter a value, but choose a predefined one. 
+(Called Enumerations)<br/>
+If there is no predefined value and you do not know, what to enter as a parameter, you 
+should have a look at the description (Properties-View) for the target property.<br/><br/>
+If you have selected a source property and 
+start an assignment, this source property becomes an <b>anchor</b>. This means, that the 
+assignment will be performed, if the source property has a value. 
+(Note, that null is a value.) This is important in combination with a CQL filter. If you filter 
+a value and that value appear, the filter will pass &quot;No Value&quot; (golden font color in Data - View) 
+as the functions input. An assign with a filtered source property as an anchor, will be performed 
+on every value, except the filtered one.<br/>
+<br/><br/>
+The Help link (question mark upper right corner) will give you information 
+about the assign function.
+   		</description>
+   	</item>
+   	<item
+   		title="General function Rename"
+   		href="/eu.esdihumboldt.cst.doc.functions/functions/eu.esdihumboldt.hale.align.rename.html">
+   		<description>
+   			If they have the same data type and you do not want or have to edit the value, you can 
+simply <b>Rename</b> the given properties.<br/>
+<b>The Rename function</b> is a function is limited to one source and one target property. 
+If you have multiple source properties, for the same target property, you can't use rename 
+without some preparations.<br/>
+<br/>
+You can rename a geometry, too. If the geometry is defined in a standard (e.g. GML) you can 
+save some work. In this case, the source and target geometry have the same structure. 
+On the second page of the Rename function wizard, choose true for the structural rename. 
+This option tries to do a rename for every equal child property. 
+No cells will be created due to this process, so you have to check the correctness of 
+this transformation by yourself. 
+If you loaded some data and have live transformation activated, you should see 
+for every instance of the property, there is one instance of the child property (if the 
+values are not filtered).<br/><br/>
+Select one pair of properties, do the alignment and then repeat.<br/><br/>
+The Help link of this task shows you the overview about the rename function.
+   		</description>
+   	</item>
+   	<item
+   		title="Calculate and Build Strings">
+   		<description>
+   		<b>The Mathematical Expression function</b><br/>
+Use this on a selected properties, where only numbers appear as data type, 
+and enter an mathematical expression on the second function wizard page. 
+If you have one or more source property selected, you can use its value as a variable.<br/><br/>
+Example of use is the conversion from yards to meter. (In this case, please pay attention 
+to unit of measurement (uom) properties)<br/><br/>
+
+<b>The Formatted String function</b><br/>
+Use this function if you want to format a value to a String. Every selected source property 
+will be set as a variable. On the second page of the function wizard, you can add these 
+source properties to the String with a double click. ({variable} &lt;- in braces)<br/>
+If you use variables, you get a string for every instance. It is recommended to treat this 
+with caution, if you merged the type, of the variable property, 
+to a target schema type and use formatted String between them. Only use this, if the number 
+of source and target instances are equal. If not, and you want to assign a special 
+string for every target instance (more than one), you should use the classification 
+on the property you used for the merge.
+<br/>
+If you want one static string, you should use the Assign function.
+   		</description>
+   	</item>
+   	<item
+   		title="The Geometric functions">
+   		<description>
+   			If you want to map the source geometry 1:1 to the target property, you can choose the 
+rename function. Remember, that in default case, the child properties are not mapped automatically.
+<br/><br/>
+Do you have a Line geometry, like a path on a street or a river, but want to or need to  
+be represented by a surface, you can use the <b>Network Expansion</b> function.<br/>
+You have different options how to use this function. The function need a geometry and 
+a number. This can be a property (for example the width of the river) with a mathematical 
+expression (the measurement has to be meter (m) so you can convert the values at this point). 
+Select the variable property (a second property within the source schema) by holding [CTRL] 
+and click on it, so you should have both, the geometry and its &quot;width&quot;, 
+and the target geometry selected yet.<br/><br/>
+Use <b>Compute Extent</b> if you want something like a collection of all geometry for 
+a given type. You choose between a bounding box, a convex hull or union. (low detailed to 
+high detailed geometry as a result)<br/><br/>
+Have a close look to what you need and what you have. Sometimes the properties share the name 
+but not the structure or semantically equal meaning. And you can't map them directly. 
+Look out for &quot;Choice&quot; and other properties, with a group symbol (a little package).
+		</description>
+   	</item>
+   	<item
+   		title="Classification function">
+   		<description>
+   			This function is often used between code lists. (Reclassification)<br/>
+One example of use is, if you have a pair and you could simply use a rename, that you 
+have to do a localization within the Mapping.<br/><br/>
+Click on source and target property, and choose Classification transformation.<br/>
+You can build your own look up tables. (A table with the form: source value -&gt; target Value)<br/> 
+Or have a previously build one. You can choose local one (*.csv file) or load a file from 
+an external resource (http://...).<br/><br/>
+<b>Local file</b>
+If you want to use a local look up table, you choose Manual tab on the second function 
+wizard page and click on the little folder icon. 
+Choose your file and follow the instructions. After everything is done, your 
+values will be imported and you can see them in the Manual tab. You can edit them 
+by clicking on the table cell or you can click finish to create the alignment cell.<br/>
+   		</description>
+   	</item>
+</cheatsheet>

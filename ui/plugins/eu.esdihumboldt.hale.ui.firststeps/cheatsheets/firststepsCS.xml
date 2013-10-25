@@ -38,5 +38,45 @@
          <param name="id" value="eu.esdihumboldt.hale.ui.firststeps.createMappingsCS">
          </param>
       </task>
+      <task kind="cheatsheet" name="Start with Types and feature Types" skip="false">
+         <intro>
+            This cheat sheet will show you where to start the harmonisation process, after source and target schema were imported.
+         </intro>
+         <onCompletion>
+            Make sure, you have some matches prepared before proceeding to the next cheat sheet.
+         </onCompletion>
+         <param name="path" value="featureTypeAnalysisSCS.xml">
+         </param>
+      </task>
+      <task kind="cheatsheet" name="Create the mapping for Types" skip="false">
+         <intro>
+            This cheat sheet will show you, how to create the mapping between Types.
+         </intro>
+         <onCompletion>
+            Congratulations, you have mapped all types.
+         </onCompletion>
+         <param name="path" value="chooseTypeTransformationSCS.xml">
+         </param>
+      </task>
+      <task kind="cheatsheet" name="Continue with Properties" skip="false">
+         <intro>
+            This cheat sheet will show you where to continue the harmonisation process, after  all Types were mapped.
+         </intro>
+         <onCompletion>
+            Make sure, you have some matches prepared before proceeding to the next cheat sheet.
+         </onCompletion>
+         <param name="path" value="propertyAnalysisSCS.xml">
+         </param>
+      </task>
+      <task kind="cheatsheet" name="Create the mapping for the Properties" skip="false">
+         <intro>
+            This cheat sheet will show you, how to create the mapping between Properties.
+         </intro>
+         <onCompletion>
+            Congratulations, you completed the mapping.
+         </onCompletion>
+         <param name="path" value="choosePropertyTransformationSCS.xml">
+         </param>
+      </task>
    </taskGroup>
 </compositeCheatsheet>
