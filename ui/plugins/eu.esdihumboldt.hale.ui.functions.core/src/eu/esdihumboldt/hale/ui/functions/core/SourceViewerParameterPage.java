@@ -24,6 +24,7 @@ import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.source.CompositeRuler;
+import org.eclipse.jface.text.source.IOverviewRuler;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.LineNumberRulerColumn;
 import org.eclipse.jface.text.source.SourceViewer;
@@ -91,9 +92,10 @@ public abstract class SourceViewerParameterPage extends SourceListParameterPage<
 	@Override
 	protected SourceViewer createAndLayoutTextField(Composite parent) {
 		// init editor
-		IVerticalRuler ruler = createRuler();
-		SourceViewer viewer = new SourceViewer(parent, ruler, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL
-				| SWT.V_SCROLL);
+		IVerticalRuler verticalRuler = createVerticalRuler();
+		IOverviewRuler overviewRuler = createOverviewRuler();
+		SourceViewer viewer = new SourceViewer(parent, verticalRuler, overviewRuler,
+				overviewRuler != null, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		viewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		viewer.getTextWidget().setFont(JFaceResources.getTextFont());
 
@@ -101,11 +103,20 @@ public abstract class SourceViewerParameterPage extends SourceListParameterPage<
 	}
 
 	/**
+	 * Create the overview ruler for the source viewer.
+	 * 
+	 * @return the overview ruler or <code>null</code>
+	 */
+	protected IOverviewRuler createOverviewRuler() {
+		return null;
+	}
+
+	/**
 	 * Create the vertical ruler for the source viewer.
 	 * 
 	 * @return the vertical ruler
 	 */
-	protected IVerticalRuler createRuler() {
+	protected IVerticalRuler createVerticalRuler() {
 		final Display display = Display.getCurrent();
 		CompositeRuler ruler = new CompositeRuler(3);
 		LineNumberRulerColumn lineNumbers = new LineNumberRulerColumn();

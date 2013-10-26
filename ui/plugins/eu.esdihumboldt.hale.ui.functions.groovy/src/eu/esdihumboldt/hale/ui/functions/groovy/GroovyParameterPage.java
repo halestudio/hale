@@ -18,10 +18,31 @@ package eu.esdihumboldt.hale.ui.functions.groovy;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.Position;
+import org.eclipse.jface.text.source.Annotation;
+import org.eclipse.jface.text.source.AnnotationModel;
+import org.eclipse.jface.text.source.AnnotationRulerColumn;
+import org.eclipse.jface.text.source.CompositeRuler;
+import org.eclipse.jface.text.source.IAnnotationAccessExtension;
+import org.eclipse.jface.text.source.IAnnotationModel;
+import org.eclipse.jface.text.source.IOverviewRuler;
+import org.eclipse.jface.text.source.IVerticalRuler;
+import org.eclipse.jface.text.source.LineNumberRulerColumn;
+import org.eclipse.jface.text.source.OverviewRuler;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
 
+import com.google.common.collect.Iterators;
+
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
 import eu.esdihumboldt.cst.functions.groovy.GroovyTransformation;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
@@ -43,12 +64,16 @@ import groovy.lang.Script;
  * Parameter page for Groovy property function.
  * 
  * @author Kai Schwierczek
+ * @author Simon Templer
  */
 public class GroovyParameterPage extends SourceViewerParameterPage implements GroovyConstants {
 
+	private static final ALogger log = ALoggerFactory.getLogger(GroovyParameterPage.class);
+
 	private Iterable<EntityDefinition> variables;
 	private final TestValues testValues;
-	private IColorManager colorManager;
+	private final IColorManager colorManager = new ColorManager();
+	private final IAnnotationModel annotationModel = new AnnotationModel();
 
 	/**
 	 * Default constructor.
@@ -92,6 +117,7 @@ public class GroovyParameterPage extends SourceViewerParameterPage implements Gr
 	/**
 	 * @see SourceViewerParameterPage#validate(IDocument)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	protected boolean validate(IDocument document) {
 		List<PropertyValue> values = new ArrayList<PropertyValue>();
@@ -103,13 +129,23 @@ public class GroovyParameterPage extends SourceViewerParameterPage implements Gr
 				}
 			}
 		}
+
+		// clear annotations
+		List<Annotation> annotations = new ArrayList<>();
+		Iterators.addAll(annotations, annotationModel.getAnnotationIterator());
+		for (Annotation annotation : annotations) {
+			annotationModel.removeAnnotation(annotation);
+		}
+
 		// TODO specify classloader?
 		GroovyShell shell = new GroovyShell(GroovyTransformation.createGroovyBinding(values, false));
+		Script script = null;
 		try {
-			Script script = shell.parse(document.get());
+			script = shell.parse(document.get());
 			script.run();
 		} catch (Exception e) {
 			setMessage(e.getMessage(), ERROR);
+			addErrorAnnotation(script, e);
 			// return valid if NPE, as this might be caused by null test values
 			return e instanceof NullPointerException;
 //			return false;
@@ -117,6 +153,37 @@ public class GroovyParameterPage extends SourceViewerParameterPage implements Gr
 
 		setMessage(null);
 		return true;
+	}
+
+	private void addErrorAnnotation(Script script, Exception e) {
+		Annotation annotation = new Annotation(SimpleAnnotations.TYPE_ERROR, false,
+				e.getLocalizedMessage());
+		Position position = null;
+
+		// try to determine position from stack trace
+		if (script != null) {
+			for (StackTraceElement ste : e.getStackTrace()) {
+				if (ste.getClassName().equals(script.getClass().getName())) {
+					int line = ste.getLineNumber() - 1;
+					if (line >= 0) {
+						try {
+							position = new Position(getTextField().getDocument()
+									.getLineOffset(line));
+							break;
+						} catch (BadLocationException e1) {
+							log.warn("Wrong error position in document", e1);
+						}
+					}
+				}
+			}
+		}
+
+		// fallback
+		if (position == null) {
+			position = new Position(0);
+		}
+
+		annotationModel.addAnnotation(annotation, position);
 	}
 
 	/**
@@ -138,17 +205,59 @@ public class GroovyParameterPage extends SourceViewerParameterPage implements Gr
 
 	@Override
 	protected SourceViewerConfiguration createConfiguration() {
-		if (colorManager == null) {
-			colorManager = new ColorManager();
-		}
 		return new SimpleGroovySourceViewerConfiguration(colorManager);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.functions.core.SourceViewerParameterPage#createOverviewRuler()
+	 */
+	@Override
+	protected IOverviewRuler createOverviewRuler() {
+		IOverviewRuler ruler = new OverviewRuler(new SimpleAnnotations(), 14, colorManager);
+
+		// type configuration
+		ruler.addAnnotationType(SimpleAnnotations.TYPE_ERROR);
+		ruler.addHeaderAnnotationType(SimpleAnnotations.TYPE_ERROR);
+		ruler.setAnnotationTypeColor(SimpleAnnotations.TYPE_ERROR,
+				colorManager.getColor(new RGB(255, 0, 0)));
+		ruler.setAnnotationTypeLayer(SimpleAnnotations.TYPE_ERROR,
+				IAnnotationAccessExtension.DEFAULT_LAYER);
+
+		ruler.setModel(annotationModel);
+		return ruler;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.functions.core.SourceViewerParameterPage#createVerticalRuler()
+	 */
+	@Override
+	protected IVerticalRuler createVerticalRuler() {
+		final Display display = Display.getCurrent();
+		CompositeRuler ruler = new CompositeRuler(3);
+
+		AnnotationRulerColumn annotations = new AnnotationRulerColumn(annotationModel, 12,
+				new SimpleAnnotations());
+		annotations.addAnnotationType(SimpleAnnotations.TYPE_ERROR);
+
+		ruler.addDecorator(0, annotations);
+
+		LineNumberRulerColumn lineNumbers = new LineNumberRulerColumn();
+		lineNumbers.setBackground(display.getSystemColor(SWT.COLOR_GRAY)); // SWT.COLOR_INFO_BACKGROUND));
+		lineNumbers.setForeground(display.getSystemColor(SWT.COLOR_BLACK)); // SWT.COLOR_INFO_FOREGROUND));
+		lineNumbers.setFont(JFaceResources.getTextFont());
+
+		ruler.addDecorator(1, lineNumbers);
+		return ruler;
 	}
 
 	@Override
 	protected void createAndSetDocument(SourceViewer viewer) {
-		super.createAndSetDocument(viewer);
+		IDocument doc = new Document();
+		GroovyViewerUtil.setupDocument(doc);
+		annotationModel.connect(doc);
+		doc.set(""); //$NON-NLS-1$
 
-		GroovyViewerUtil.setupDocument(viewer.getDocument());
+		viewer.setDocument(doc, annotationModel);
 	}
 
 	@Override
