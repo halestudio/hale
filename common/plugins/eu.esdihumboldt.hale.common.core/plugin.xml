@@ -124,4 +124,14 @@
             id="eu.esdihumboldt.hale.common.core.io">
       </reportDefinition>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.complexvalue">
+      <complexValue
+            descriptor="eu.esdihumboldt.hale.common.core.io.impl.TextType"
+            id="eu.esdihumboldt.hale.common.core.text"
+            name="text"
+            namespace="http://www.esdi-humboldt.eu/hale/core"
+            type="eu.esdihumboldt.hale.common.core.io.Text">
+      </complexValue>
+   </extension>
 </plugin>

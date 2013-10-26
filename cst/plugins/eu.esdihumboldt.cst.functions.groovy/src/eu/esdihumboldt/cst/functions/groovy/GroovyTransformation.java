@@ -17,24 +17,29 @@
 package eu.esdihumboldt.cst.functions.groovy;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ListMultimap;
 
+import eu.esdihumboldt.cst.functions.groovy.internal.GroovyUtil;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
+import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
+import eu.esdihumboldt.hale.common.align.transformation.function.impl.PropertyValueImpl;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
-import groovy.lang.MissingPropertyException;
 import groovy.lang.Script;
 
 /**
@@ -45,54 +50,17 @@ import groovy.lang.Script;
 public class GroovyTransformation extends
 		AbstractSingleTargetPropertyTransformation<TransformationEngine> implements GroovyConstants {
 
-	private static final String CONTEXT_SCRIPT = "script";
-
-	/**
-	 * @see AbstractSingleTargetPropertyTransformation#evaluate(String,
-	 *      TransformationEngine, ListMultimap, String,
-	 *      PropertyEntityDefinition, Map, TransformationLog)
-	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,
 			ListMultimap<String, PropertyValue> variables, String resultName,
 			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
 			TransformationLog log) throws TransformationException, NoResultException {
-		Binding binding = createGroovyBinding(variables.get(ENTITY_VARIABLE), true);
+		Binding binding = createGroovyBinding(variables.get(ENTITY_VARIABLE), getCell().getSource()
+				.get(ENTITY_VARIABLE));
 
 		Object result;
 		try {
-			/*
-			 * The compiled script is stored in a ThreadLocal variable in the
-			 * execution context, so it needs only to be created once per
-			 * transformation thread.
-			 */
-			ThreadLocal<Script> localScript;
-			Map<Object, Object> context = getExecutionContext().getCellContext();
-			synchronized (context) {
-				Object tmp = context.get(CONTEXT_SCRIPT);
-
-				if (tmp instanceof ThreadLocal<?>) {
-					localScript = (ThreadLocal<Script>) tmp;
-				}
-				else {
-					localScript = new ThreadLocal<Script>();
-					context.put(CONTEXT_SCRIPT, localScript);
-				}
-			}
-
-			Script groovyScript = localScript.get();
-			if (groovyScript == null) {
-				// create the script
-				// TODO use a specific classloader?
-				GroovyShell shell = new GroovyShell();
-				String script = getParameterChecked(PARAMETER_SCRIPT).as(String.class);
-				groovyScript = shell.parse(script);
-				localScript.set(groovyScript);
-			}
-
-			// set the binding
-			groovyScript.setBinding(binding);
+			Script groovyScript = GroovyUtil.getScript(this, binding);
 
 			// run the script
 			result = groovyScript.run();
@@ -109,32 +77,37 @@ public class GroovyTransformation extends
 	/**
 	 * Create a Groovy binding from the list of variables.
 	 * 
-	 * @param vars the variables
-	 * @param useNullForMissingBindings if the binding should provide
-	 *            <code>null</code> values for variables that are not provided
-	 *            in the given variable list
+	 * @param vars the variable values
+	 * @param varDefs definition of the assigned variables, in case some
+	 *            variable values are not set, may be <code>null</code>
 	 * @return the binding for use with {@link GroovyShell}
 	 */
 	public static Binding createGroovyBinding(List<PropertyValue> vars,
-			boolean useNullForMissingBindings) {
-		Binding binding;
-		if (useNullForMissingBindings) {
-			binding = new Binding() {
+			List<? extends Entity> varDefs) {
+		Binding binding = new Binding();
 
-				@Override
-				public Object getVariable(String name) {
-					try {
-						return super.getVariable(name);
-					} catch (MissingPropertyException mpe) {
-						// use null value for variables that are not defined
-						return null;
-					}
-				}
-
-			};
+		// collect definitions to check if all were provided
+		Set<EntityDefinition> notDefined = new HashSet<>();
+		if (varDefs != null) {
+			for (Entity entity : varDefs) {
+				notDefined.add(entity.getDefinition());
+			}
 		}
-		else {
-			binding = new Binding();
+		// keep only defs where no value is provided
+		if (!notDefined.isEmpty()) {
+			for (PropertyValue var : vars) {
+				notDefined.remove(var.getProperty());
+			}
+		}
+
+		// add null value for missing variables
+		if (!notDefined.isEmpty()) {
+			vars = new ArrayList<>(vars);
+			for (EntityDefinition entityDef : notDefined) {
+				if (entityDef instanceof PropertyEntityDefinition) {
+					vars.add(new PropertyValueImpl(null, (PropertyEntityDefinition) entityDef));
+				}
+			}
 		}
 
 		for (PropertyValue var : vars) {
@@ -143,8 +116,8 @@ public class GroovyTransformation extends
 			// determine the variable value
 			Object value = var.getValue();
 			if (value instanceof Instance) {
-				value = ((Instance) value).getValue(); // XXX check if there are
-														// any properties?
+				// TODO make this dependent on parameter
+				value = ((Instance) value).getValue();
 			}
 			if (value instanceof Number) {
 				// use numbers as is

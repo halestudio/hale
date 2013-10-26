@@ -72,7 +72,7 @@ public abstract class AbstractTransformationFunction<E extends TransformationEng
 	 * 
 	 * @return the executionContext the execution context
 	 */
-	protected ExecutionContext getExecutionContext() {
+	public ExecutionContext getExecutionContext() {
 		return executionContext;
 	}
 
@@ -85,8 +85,7 @@ public abstract class AbstractTransformationFunction<E extends TransformationEng
 	 * @throws TransformationException if the parameter doesn't exist the given
 	 *             number of times
 	 */
-	protected void checkParameter(String parameterName, int minCount)
-			throws TransformationException {
+	public void checkParameter(String parameterName, int minCount) throws TransformationException {
 		if (parameters == null || parameters.get(parameterName) == null
 				|| parameters.get(parameterName).size() < minCount) {
 			if (minCount == 1) {
@@ -109,8 +108,7 @@ public abstract class AbstractTransformationFunction<E extends TransformationEng
 	 * @throws TransformationException if a parameter with the given name
 	 *             doesn't exist
 	 */
-	protected ParameterValue getParameterChecked(String parameterName)
-			throws TransformationException {
+	public ParameterValue getParameterChecked(String parameterName) throws TransformationException {
 		if (getParameters() == null || getParameters().get(parameterName) == null
 				|| getParameters().get(parameterName).isEmpty()) {
 			throw new TransformationException(MessageFormat.format(
@@ -128,7 +126,7 @@ public abstract class AbstractTransformationFunction<E extends TransformationEng
 	 * @param defaultValue the default value for the parameter
 	 * @return the parameter value, or the default if none is specified
 	 */
-	protected ParameterValue getOptionalParameter(String parameterName, Value defaultValue) {
+	public ParameterValue getOptionalParameter(String parameterName, Value defaultValue) {
 		if (getParameters() == null || getParameters().get(parameterName) == null
 				|| getParameters().get(parameterName).isEmpty()
 				|| getParameters().get(parameterName).get(0).isEmpty()) {
