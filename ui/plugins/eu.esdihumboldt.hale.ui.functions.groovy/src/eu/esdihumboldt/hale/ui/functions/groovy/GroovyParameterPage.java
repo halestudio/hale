@@ -18,6 +18,9 @@ package eu.esdihumboldt.hale.ui.functions.groovy;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.groovy.control.ErrorCollector;
+import org.codehaus.groovy.control.MultipleCompilationErrorsException;
+import org.codehaus.groovy.syntax.SyntaxException;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
@@ -156,12 +159,36 @@ public class GroovyParameterPage extends SourceViewerParameterPage implements Gr
 	}
 
 	private void addErrorAnnotation(Script script, Exception e) {
+		// handle multiple groovy compilation errors
+		if (e instanceof MultipleCompilationErrorsException) {
+			ErrorCollector errors = ((MultipleCompilationErrorsException) e).getErrorCollector();
+			for (int i = 0; i < errors.getErrorCount(); i++) {
+				SyntaxException ex = errors.getSyntaxError(i);
+				if (ex != null) {
+					addErrorAnnotation(script, ex);
+				}
+			}
+			return;
+		}
+
 		Annotation annotation = new Annotation(SimpleAnnotations.TYPE_ERROR, false,
 				e.getLocalizedMessage());
 		Position position = null;
 
-		// try to determine position from stack trace
-		if (script != null) {
+		// single syntax exception
+		if (e instanceof SyntaxException) {
+			int line = ((SyntaxException) e).getStartLine() - 1;
+			if (line >= 0) {
+				try {
+					position = new Position(getTextField().getDocument().getLineOffset(line));
+				} catch (BadLocationException e1) {
+					log.warn("Wrong error position in document", e1);
+				}
+			}
+		}
+
+		// try to determine position from stack trace of script execution
+		if (position == null && script != null) {
 			for (StackTraceElement ste : e.getStackTrace()) {
 				if (ste.getClassName().equals(script.getClass().getName())) {
 					int line = ste.getLineNumber() - 1;
