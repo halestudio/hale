@@ -41,6 +41,7 @@ import eu.esdihumboldt.hale.ui.util.groovy.internal.IJavaPartitions;
 import eu.esdihumboldt.hale.ui.util.groovy.internal.JavaCommentScanner;
 import eu.esdihumboldt.hale.ui.util.groovy.internal.JavaDocScanner;
 import eu.esdihumboldt.hale.ui.util.groovy.internal.SingleTokenJavaScanner;
+import eu.esdihumboldt.hale.ui.util.groovy.internal.autoedit.JavaStringAutoIndentStrategy;
 
 /**
  * Configuration for a source viewer which shows Groovy code. Based on the Java
@@ -335,11 +336,11 @@ public class SimpleGroovySourceViewerConfiguration extends SourceViewerConfigura
 	 */
 	@Override
 	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
-//		String partitioning= getConfiguredDocumentPartitioning(sourceViewer);
+		String partitioning = getConfiguredDocumentPartitioning(sourceViewer);
 //		if (IJavaPartitions.JAVA_DOC.equals(contentType) || IJavaPartitions.JAVA_MULTI_LINE_COMMENT.equals(contentType))
 //			return new IAutoEditStrategy[] { new JavaDocAutoIndentStrategy(partitioning) };
-//		else if (IJavaPartitions.JAVA_STRING.equals(contentType))
-//			return new IAutoEditStrategy[] { new SmartSemicolonAutoEditStrategy(partitioning), new JavaStringAutoIndentStrategy(partitioning) };
+		if (IJavaPartitions.JAVA_STRING.equals(contentType))
+			return new IAutoEditStrategy[] { new JavaStringAutoIndentStrategy(partitioning) };
 //		else if (IJavaPartitions.JAVA_CHARACTER.equals(contentType) || IDocument.DEFAULT_CONTENT_TYPE.equals(contentType))
 //			return new IAutoEditStrategy[] { new SmartSemicolonAutoEditStrategy(partitioning), new JavaAutoIndentStrategy(partitioning, getProject(), sourceViewer) };
 //		else
