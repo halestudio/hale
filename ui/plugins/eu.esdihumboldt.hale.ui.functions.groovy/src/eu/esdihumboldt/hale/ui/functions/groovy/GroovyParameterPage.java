@@ -84,7 +84,7 @@ public class GroovyParameterPage extends SourceViewerParameterPage implements Gr
 		super("script");
 
 		setTitle("Function parameters");
-		setDescription("Enter a groovy script");
+		setDescription("Specify a Groovy script to determine the target property value");
 
 		testValues = new InstanceTestValues();
 	}
