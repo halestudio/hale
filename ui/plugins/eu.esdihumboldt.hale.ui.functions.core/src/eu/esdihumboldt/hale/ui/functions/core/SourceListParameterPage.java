@@ -248,7 +248,8 @@ public abstract class SourceListParameterPage<T> extends
 
 		// variables table
 		Composite tableComposite = new Composite(page, SWT.NONE);
-		tableComposite.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
+		tableComposite.setLayoutData(GridDataFactory.fillDefaults().grab(true, false)
+				.hint(SWT.DEFAULT, 100).create());
 		TableColumnLayout columnLayout = new TableColumnLayout();
 		tableComposite.setLayout(columnLayout);
 		varTable = new TableViewer(tableComposite, SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION);
