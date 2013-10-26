@@ -27,7 +27,7 @@ import eu.esdihumboldt.hale.ui.util.groovy.internal.GroovyPartitionScanner;
  * 
  * @author Simon Templer
  */
-public class GroovyViewerUtil {
+public class GroovySourceViewerUtil {
 
 	/**
 	 * Setup a Groovy document.

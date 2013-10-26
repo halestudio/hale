@@ -30,12 +30,12 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.DocumentEvent;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.source.CompositeRuler;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.LineNumberRulerColumn;
 import org.eclipse.jface.text.source.SourceViewer;
-import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.TableViewer;
@@ -56,6 +56,10 @@ import eu.esdihumboldt.hale.common.align.transformation.function.impl.PropertyVa
 import eu.esdihumboldt.hale.common.scripting.Script;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.editors.AbstractEditor;
+import eu.esdihumboldt.hale.ui.util.IColorManager;
+import eu.esdihumboldt.hale.ui.util.groovy.GroovyColorManager;
+import eu.esdihumboldt.hale.ui.util.groovy.GroovySourceViewerUtil;
+import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
 import eu.esdihumboldt.hale.ui.util.source.SourceViewerUndoSupport;
 
 /**
@@ -75,6 +79,7 @@ public class GroovyEditor extends AbstractEditor<String> {
 	private boolean valid;
 	private final TestValues testValues;
 	private final ControlDecoration decorator;
+	private IColorManager colorManager;
 
 	/**
 	 * Default constructor.
@@ -85,6 +90,7 @@ public class GroovyEditor extends AbstractEditor<String> {
 	 */
 	public GroovyEditor(Composite parent, Script script, Class<?> binding) {
 		this.script = script;
+		this.colorManager = new GroovyColorManager();
 //		this.binding = binding;
 		testValues = new InstanceTestValues();
 
@@ -92,8 +98,10 @@ public class GroovyEditor extends AbstractEditor<String> {
 		composite.setLayout(GridLayoutFactory.swtDefaults().create());
 
 		viewer = createAndLayoutTextField(composite);
-		viewer.configure(new SourceViewerConfiguration());
-		viewer.setDocument(new Document(""));
+		viewer.configure(new SimpleGroovySourceViewerConfiguration(colorManager));
+		IDocument document = new Document("");
+		GroovySourceViewerUtil.setupDocument(document);
+		viewer.setDocument(document);
 
 		// control decoration
 		decorator = new ControlDecoration(viewer.getControl(), SWT.LEFT | SWT.TOP, composite);

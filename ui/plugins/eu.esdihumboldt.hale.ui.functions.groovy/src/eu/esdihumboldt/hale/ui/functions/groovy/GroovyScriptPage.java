@@ -23,7 +23,7 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
 import eu.esdihumboldt.hale.ui.util.ColorManager;
 import eu.esdihumboldt.hale.ui.util.groovy.GroovyColorManager;
-import eu.esdihumboldt.hale.ui.util.groovy.GroovyViewerUtil;
+import eu.esdihumboldt.hale.ui.util.groovy.GroovySourceViewerUtil;
 import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
 
 /**
@@ -51,7 +51,7 @@ public class GroovyScriptPage extends SourceViewerPage {
 	@Override
 	protected void createAndSetDocument(SourceViewer viewer) {
 		IDocument doc = new Document();
-		GroovyViewerUtil.setupDocument(doc);
+		GroovySourceViewerUtil.setupDocument(doc);
 		doc.set(""); //$NON-NLS-1$
 
 		viewer.setDocument(doc);

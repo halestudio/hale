@@ -55,7 +55,7 @@ import eu.esdihumboldt.hale.ui.scripting.groovy.InstanceTestValues;
 import eu.esdihumboldt.hale.ui.scripting.groovy.TestValues;
 import eu.esdihumboldt.hale.ui.util.IColorManager;
 import eu.esdihumboldt.hale.ui.util.groovy.GroovyColorManager;
-import eu.esdihumboldt.hale.ui.util.groovy.GroovyViewerUtil;
+import eu.esdihumboldt.hale.ui.util.groovy.GroovySourceViewerUtil;
 import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
 import eu.esdihumboldt.hale.ui.util.source.SimpleAnnotationUtil;
 import eu.esdihumboldt.hale.ui.util.source.SimpleAnnotations;
@@ -269,7 +269,7 @@ public class GroovyParameterPage extends SourceViewerParameterPage implements Gr
 	@Override
 	protected void createAndSetDocument(SourceViewer viewer) {
 		IDocument doc = new Document();
-		GroovyViewerUtil.setupDocument(doc);
+		GroovySourceViewerUtil.setupDocument(doc);
 		annotationModel.connect(doc);
 		doc.set(""); //$NON-NLS-1$
 
