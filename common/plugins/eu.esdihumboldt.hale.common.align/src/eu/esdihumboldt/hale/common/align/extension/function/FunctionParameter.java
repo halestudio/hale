@@ -57,6 +57,8 @@ public final class FunctionParameter extends AbstractParameter {
 		String scriptableAttr = conf.getAttribute("scriptable");
 		scriptable = scriptableAttr == null ? false : Boolean.valueOf(scriptableAttr);
 		IConfigurationElement[] bindingElement = conf.getChildren("functionParameterBinding");
+		IConfigurationElement[] enumerationElement = conf
+				.getChildren("functionParameterEnumeration");
 		if (bindingElement.length > 0) {
 			this.enumeration = null;
 
@@ -86,18 +88,22 @@ public final class FunctionParameter extends AbstractParameter {
 			else
 				this.validator = null;
 		}
-		else {
+		else if (enumerationElement.length > 0) {
 			this.binding = null;
 			this.validator = null;
 			// must be present, otherwise xml is invalid
-			IConfigurationElement[] enumerationElement = conf
-					.getChildren("functionParameterEnumeration");
 			IConfigurationElement[] enumerationValues = enumerationElement[0]
 					.getChildren("enumerationValue");
 			List<String> enumeration = new ArrayList<String>(enumerationValues.length);
 			for (IConfigurationElement value : enumerationValues)
 				enumeration.add(value.getAttribute("value"));
 			this.enumeration = Collections.unmodifiableList(enumeration);
+		}
+		else {
+			// default
+			this.validator = null;
+			this.enumeration = null;
+			this.binding = String.class;
 		}
 	}
 
