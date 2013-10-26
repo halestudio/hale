@@ -35,6 +35,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
+import eu.esdihumboldt.hale.ui.util.source.SourceViewerUndoSupport;
+
 /**
  * Parameter page using a source viewer.
  * 
@@ -98,6 +100,8 @@ public abstract class SourceViewerParameterPage extends SourceListParameterPage<
 				overviewRuler != null, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		viewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		viewer.getTextWidget().setFont(JFaceResources.getTextFont());
+
+		SourceViewerUndoSupport.install(viewer);
 
 		return viewer;
 	}

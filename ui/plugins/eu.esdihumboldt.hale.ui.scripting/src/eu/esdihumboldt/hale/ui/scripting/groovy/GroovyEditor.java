@@ -56,6 +56,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.impl.PropertyVa
 import eu.esdihumboldt.hale.common.scripting.Script;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.editors.AbstractEditor;
+import eu.esdihumboldt.hale.ui.util.source.SourceViewerUndoSupport;
 
 /**
  * Editor for groovy scripts.
@@ -216,6 +217,8 @@ public class GroovyEditor extends AbstractEditor<String> {
 		viewer.getControl().setLayoutData(
 				GridDataFactory.fillDefaults().grab(true, false).indent(7, 0).create());
 		viewer.getTextWidget().setFont(JFaceResources.getTextFont());
+
+		SourceViewerUndoSupport.install(viewer);
 
 		return viewer;
 	}

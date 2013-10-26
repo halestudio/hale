@@ -40,6 +40,7 @@ import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
+import eu.esdihumboldt.hale.ui.util.source.SourceViewerUndoSupport;
 
 /**
  * Generic parameter page based on a source viewer.
@@ -93,6 +94,8 @@ public class SourceViewerPage extends HaleWizardPage<AbstractGenericFunctionWiza
 		viewer.getTextWidget().setFont(JFaceResources.getTextFont());
 
 		configure(viewer);
+
+		SourceViewerUndoSupport.install(viewer);
 
 		viewer.getDocument().set(initialValue);
 	}
