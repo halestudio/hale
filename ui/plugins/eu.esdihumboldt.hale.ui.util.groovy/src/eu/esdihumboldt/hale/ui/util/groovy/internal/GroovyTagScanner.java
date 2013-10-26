@@ -388,34 +388,23 @@ public class GroovyTagScanner extends AbstractJavaScanner {
 			PreferenceConstants.GROOVY_EDITOR_HIGHLIGHT_BRACKET_COLOR,
 			PreferenceConstants.GROOVY_EDITOR_HIGHLIGHT_OPERATOR_COLOR,
 			PreferenceConstants.GROOVY_EDITOR_HIGHLIGHT_RETURN_COLOR,
-			PreferenceConstants.GROOVY_EDITOR_HIGHLIGHT_STRINGS_COLOR };
+			PreferenceConstants.GROOVY_EDITOR_HIGHLIGHT_STRINGS_COLOR,
+			PreferenceConstants.GROOVY_EDITOR_HIGHLIGHT_CUSTOM_KEYWORD_COLOR };
 
 	private final List<IRule> additionalRules;
 	private final List<String> additionalGroovyKeywords;
 
 	private final List<String> additionalGJDKWords;
+	private final List<String> customKeywords;
 
 	/**
 	 * Constructor.
 	 * 
 	 * @param manager the color manager
+	 * @param customKeywords list of custom keywords or <code>null</code>
 	 */
-	public GroovyTagScanner(IColorManager manager) {
-		this(manager, null, null, null);
-	}
-
-	/**
-	 * Constructor.
-	 * 
-	 * @param manager the color manager
-	 * @param additionalRules Additional scanner rules for sub-types to add new
-	 *            kinds of partitioning
-	 * @param additionalGroovyKeywords Additional keywords for sub-types to add
-	 *            new kinds of syntax highlighting
-	 */
-	public GroovyTagScanner(IColorManager manager, List<IRule> additionalRules,
-			List<String> additionalGroovyKeywords) {
-		this(manager, additionalRules, additionalGroovyKeywords, null);
+	public GroovyTagScanner(IColorManager manager, List<String> customKeywords) {
+		this(manager, null, null, null, customKeywords);
 	}
 
 	/**
@@ -427,14 +416,17 @@ public class GroovyTagScanner extends AbstractJavaScanner {
 	 * @param additionalGroovyKeywords Additional keywords for sub-types to add
 	 *            new kinds of groovy keyword syntax highlighting
 	 * @param additionalGJDKKeywords Additional keywords for sub-types to add
-	 *            new kinds of gjdk syntax highlightin
+	 *            new kinds of gjdk syntax highlighting
+	 * @param customKeywords list of custom keywords or <code>null</code>
 	 */
 	public GroovyTagScanner(IColorManager manager, List<IRule> additionalRules,
-			List<String> additionalGroovyKeywords, List<String> additionalGJDKKeywords) {
+			List<String> additionalGroovyKeywords, List<String> additionalGJDKKeywords,
+			List<String> customKeywords) {
 		super(manager, GroovyUIPlugin.getDefault().getPreferenceStore());
 		this.additionalRules = additionalRules;
 		this.additionalGroovyKeywords = additionalGroovyKeywords;
 		this.additionalGJDKWords = additionalGJDKKeywords;
+		this.customKeywords = customKeywords;
 		initialize();
 	}
 
@@ -515,6 +507,16 @@ public class GroovyTagScanner extends AbstractJavaScanner {
 			}
 		}
 		combinedWordRule.addWordMatcher(gjdkWordsMatcher);
+
+		// custom keywords
+		if (customKeywords != null && !customKeywords.isEmpty()) {
+			WordMatcher customWordsMatcher = new WordMatcher();
+			token = getToken(PreferenceConstants.GROOVY_EDITOR_HIGHLIGHT_CUSTOM_KEYWORD_COLOR);
+			for (String keyword : customKeywords) {
+				customWordsMatcher.addWord(keyword, token);
+			}
+			combinedWordRule.addWordMatcher(customWordsMatcher);
+		}
 
 		// Add rule for brackets
 		// this rule must come before the operator rule

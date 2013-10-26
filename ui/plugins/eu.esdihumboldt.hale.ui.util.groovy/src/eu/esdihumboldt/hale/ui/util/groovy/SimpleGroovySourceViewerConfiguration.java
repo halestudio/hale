@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.ui.util.groovy;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.DefaultIndentLineAutoEditStrategy;
@@ -109,6 +110,8 @@ public class SimpleGroovySourceViewerConfiguration extends SourceViewerConfigura
 
 	private final IPreferenceStore fPreferenceStore;
 
+	private final List<String> fCustomKeywords;
+
 	/**
 	 * Creates a new Groovy source viewer configuration using the given color
 	 * manager.
@@ -116,7 +119,19 @@ public class SimpleGroovySourceViewerConfiguration extends SourceViewerConfigura
 	 * @param colorManager the color manager
 	 */
 	public SimpleGroovySourceViewerConfiguration(IColorManager colorManager) {
-		this(colorManager, GroovyUIPlugin.getDefault().getPreferenceStore(), null);// IJavaPartitions.JAVA_PARTITIONING);
+		this(colorManager, null);
+	}
+
+	/**
+	 * Creates a new Groovy source viewer configuration using the given color
+	 * manager.
+	 * 
+	 * @param colorManager the color manager
+	 * @param customKeywords a list of custom keywords, or <code>null</code>
+	 */
+	public SimpleGroovySourceViewerConfiguration(IColorManager colorManager,
+			List<String> customKeywords) {
+		this(colorManager, GroovyUIPlugin.getDefault().getPreferenceStore(), null, customKeywords);
 	}
 
 	/**
@@ -128,14 +143,16 @@ public class SimpleGroovySourceViewerConfiguration extends SourceViewerConfigura
 	 * @param preferenceStore the preference store, can be read-only
 	 * @param partitioning the document partitioning for this configuration, or
 	 *            <code>null</code> for the default partitioning
+	 * @param customKeywords a list of custom keywords, or <code>null</code>
 	 * @since 3.0
 	 */
 	public SimpleGroovySourceViewerConfiguration(IColorManager colorManager,
-			IPreferenceStore preferenceStore, String partitioning) {
+			IPreferenceStore preferenceStore, String partitioning, List<String> customKeywords) {
 		super();
 		fPreferenceStore = preferenceStore;
 		fColorManager = colorManager;
 		fDocumentPartitioning = partitioning;
+		fCustomKeywords = customKeywords;
 		initializeScanners();
 	}
 
@@ -202,8 +219,7 @@ public class SimpleGroovySourceViewerConfiguration extends SourceViewerConfigura
 	 * @since 3.0
 	 */
 	private void initializeScanners() {
-		fCodeScanner = new GroovyTagScanner(getColorManager()); // ,
-																// fPreferenceStore);
+		fCodeScanner = new GroovyTagScanner(getColorManager(), fCustomKeywords);
 		fMultilineCommentScanner = new JavaCommentScanner(getColorManager(), fPreferenceStore,
 				ColorConstants.JAVA_MULTI_LINE_COMMENT);
 		fSinglelineCommentScanner = new JavaCommentScanner(getColorManager(), fPreferenceStore,

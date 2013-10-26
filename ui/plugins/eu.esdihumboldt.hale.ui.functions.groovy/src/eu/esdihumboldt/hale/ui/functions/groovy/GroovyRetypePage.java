@@ -15,6 +15,12 @@
 
 package eu.esdihumboldt.hale.ui.functions.groovy;
 
+import org.eclipse.jface.text.source.SourceViewerConfiguration;
+
+import com.google.common.collect.ImmutableList;
+
+import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
+
 /**
  * Configuration page for the Groovy Retype script.
  * 
@@ -29,6 +35,12 @@ public class GroovyRetypePage extends GroovyScriptPage {
 		super();
 		setTitle("Convert instances script");
 		setDescription("Specify a Groovy script to build a target instance from a source instance");
+	}
+
+	@Override
+	protected SourceViewerConfiguration createConfiguration() {
+		return new SimpleGroovySourceViewerConfiguration(colorManager, ImmutableList.of(
+				BINDING_BUILDER, BINDING_SOURCE, BINDING_TARGET));
 	}
 
 }

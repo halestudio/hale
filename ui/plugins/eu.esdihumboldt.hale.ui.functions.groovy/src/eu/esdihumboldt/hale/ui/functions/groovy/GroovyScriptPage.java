@@ -31,16 +31,18 @@ import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration
  * 
  * @author Simon Templer
  */
-public class GroovyScriptPage extends SourceViewerPage {
+public class GroovyScriptPage extends SourceViewerPage implements GroovyConstants {
 
-	private final ColorManager colorManager = new GroovyColorManager();
+	/**
+	 * The Groovy color manager.
+	 */
+	protected final ColorManager colorManager = new GroovyColorManager();
 
 	/**
 	 * Default constructor.
 	 */
 	public GroovyScriptPage() {
-		super("groovyScript", GroovyConstants.PARAMETER_SCRIPT, GroovyConstants.BINDING_TARGET
-				+ " = {\n\n}");
+		super("groovyScript", PARAMETER_SCRIPT, BINDING_TARGET + " = {\n\n}");
 	}
 
 	@Override

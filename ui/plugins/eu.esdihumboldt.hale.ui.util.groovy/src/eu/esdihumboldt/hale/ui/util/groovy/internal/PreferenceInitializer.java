@@ -58,6 +58,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 				PreferenceConstants.GROOVY_EDITOR_HIGHLIGHT_OPERATOR_COLOR, new RGB(0, 0, 0));
 		PreferenceConverter.setDefault(store, PreferenceConstants.GROOVY_EDITOR_DEFAULT_COLOR,
 				new RGB(0, 0, 0));
+		PreferenceConverter.setDefault(store,
+				PreferenceConstants.GROOVY_EDITOR_HIGHLIGHT_CUSTOM_KEYWORD_COLOR, new RGB(0, 0, 0));
 
 		PreferenceConverter.setDefault(store, ColorConstants.JAVA_MULTI_LINE_COMMENT, //
 				new RGB(63, 127, 95));
@@ -93,6 +95,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 				+ PreferenceConstants.EDITOR_BOLD_SUFFIX, false);
 		store.setDefault(PreferenceConstants.GROOVY_EDITOR_DEFAULT_COLOR
 				+ PreferenceConstants.EDITOR_BOLD_SUFFIX, false);
+		store.setDefault(PreferenceConstants.GROOVY_EDITOR_HIGHLIGHT_CUSTOM_KEYWORD_COLOR
+				+ PreferenceConstants.EDITOR_BOLD_SUFFIX, true);
 
 		// Dollar slashy string highlighting
 		store.setDefault(PreferenceConstants.GROOVY_EDITOR_HIGHLIGHT_SLASHY_STRINGS, true);
