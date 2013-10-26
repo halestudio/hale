@@ -13,17 +13,16 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.util.groovy;
+package eu.esdihumboldt.hale.ui.util;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.PlatformUI;
-
-import eu.esdihumboldt.hale.ui.util.groovy.internal.GroovyUIPlugin;
 
 /**
  * Default color manager implementation.
@@ -35,6 +34,18 @@ public class ColorManager implements IColorManager {
 	private final Map<String, RGB> keyColors = new HashMap<>();
 
 	private final Map<RGB, Color> rgbColors = new HashMap<>();
+
+	private final IPreferenceStore prefStore;
+
+	/**
+	 * Create a color manager based on the given preference store.
+	 * 
+	 * @param prefStore the preference store
+	 */
+	public ColorManager(IPreferenceStore prefStore) {
+		super();
+		this.prefStore = prefStore;
+	}
 
 	/**
 	 * @see org.eclipse.jface.text.source.ISharedTextColors#getColor(org.eclipse.swt.graphics.RGB)
@@ -68,14 +79,14 @@ public class ColorManager implements IColorManager {
 	 * Get the color for the given key. Uses black as a default color if no
 	 * color for the key can be found.
 	 * 
-	 * @see eu.esdihumboldt.hale.ui.util.groovy.IColorManager#getColor(java.lang.String)
+	 * @see eu.esdihumboldt.hale.ui.util.IColorManager#getColor(java.lang.String)
 	 */
 	@Override
 	public Color getColor(String key) {
 		RGB color = keyColors.get(key);
 		if (color == null) {
 			// try preferences
-			String rgbStr = GroovyUIPlugin.getDefault().getPreferenceStore().getString(key);
+			String rgbStr = prefStore.getString(key);
 			color = StringConverter.asRGB(rgbStr, new RGB(0, 0, 0));
 		}
 		return getColor(color);

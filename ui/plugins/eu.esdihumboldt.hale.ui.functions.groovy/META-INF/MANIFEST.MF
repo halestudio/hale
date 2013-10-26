@@ -21,7 +21,9 @@ Import-Package: de.cs3d.util.logging,
  eu.esdihumboldt.hale.ui.function.generic.pages,
  eu.esdihumboldt.hale.ui.functions.core,
  eu.esdihumboldt.hale.ui.scripting.groovy,
+ eu.esdihumboldt.hale.ui.util,
  eu.esdihumboldt.hale.ui.util.groovy,
+ eu.esdihumboldt.hale.ui.util.source,
  eu.esdihumboldt.hale.ui.util.wizard,
  org.slf4j;version="1.5.11"
 Export-Package: eu.esdihumboldt.hale.ui.functions.groovy

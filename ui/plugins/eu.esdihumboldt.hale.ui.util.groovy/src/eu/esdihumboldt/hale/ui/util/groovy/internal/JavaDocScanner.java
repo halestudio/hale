@@ -26,8 +26,8 @@ import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
 
+import eu.esdihumboldt.hale.ui.util.IColorManager;
 import eu.esdihumboldt.hale.ui.util.groovy.ColorConstants;
-import eu.esdihumboldt.hale.ui.util.groovy.IColorManager;
 import eu.esdihumboldt.hale.ui.util.groovy.internal.CombinedWordRule.CharacterBuffer;
 import eu.esdihumboldt.hale.ui.util.groovy.internal.CombinedWordRule.WordMatcher;
 

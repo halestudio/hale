@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package eu.esdihumboldt.hale.ui.util.groovy;
+package eu.esdihumboldt.hale.ui.util;
 
 import org.eclipse.jface.text.source.ISharedTextColors;
 import org.eclipse.swt.graphics.Color;

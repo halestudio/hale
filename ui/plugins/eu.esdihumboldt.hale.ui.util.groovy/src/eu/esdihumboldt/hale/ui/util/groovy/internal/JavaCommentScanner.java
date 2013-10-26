@@ -19,7 +19,7 @@ import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IWordDetector;
 import org.eclipse.jface.text.rules.Token;
 
-import eu.esdihumboldt.hale.ui.util.groovy.IColorManager;
+import eu.esdihumboldt.hale.ui.util.IColorManager;
 import eu.esdihumboldt.hale.ui.util.groovy.internal.CombinedWordRule.WordMatcher;
 
 /**

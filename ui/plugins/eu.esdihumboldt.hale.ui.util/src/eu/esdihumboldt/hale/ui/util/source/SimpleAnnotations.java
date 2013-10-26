@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.functions.groovy;
+package eu.esdihumboldt.hale.ui.util.source;
 
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationAccess;
@@ -37,15 +37,59 @@ import com.google.common.base.Objects;
 public class SimpleAnnotations implements IAnnotationAccess, IAnnotationAccessExtension {
 
 	/**
+	 * Create an error annotation.
+	 * 
+	 * @param msg the annotation message
+	 * @return the created annotation
+	 */
+	public static Annotation error(String msg) {
+		return new Annotation(TYPE_ERROR, false, msg);
+	}
+
+	/**
+	 * Create a warning annotation.
+	 * 
+	 * @param msg the annotation message
+	 * @return the created annotation
+	 */
+	public static Annotation warn(String msg) {
+		return new Annotation(TYPE_WARN, false, msg);
+	}
+
+	/**
+	 * Create an information annotation.
+	 * 
+	 * @param msg the annotation message
+	 * @return the created annotation
+	 */
+	public static Annotation info(String msg) {
+		return new Annotation(TYPE_INFO, false, msg);
+	}
+
+	/**
 	 * Type for error annotations.
 	 */
 	public static final String TYPE_ERROR = "error";
+
+	/**
+	 * Type for warn annotations.
+	 */
+	public static final String TYPE_WARN = "warn";
+
+	/**
+	 * Type for info annotations.
+	 */
+	public static final String TYPE_INFO = "info";
 
 	@Override
 	public String getTypeLabel(Annotation annotation) {
 		switch (annotation.getType()) {
 		case TYPE_ERROR:
 			return "Error";
+		case TYPE_WARN:
+			return "Warning";
+		case TYPE_INFO:
+			return "Information";
 		}
 		return annotation.getType();
 	}
@@ -63,6 +107,15 @@ public class SimpleAnnotations implements IAnnotationAccess, IAnnotationAccessEx
 		case TYPE_ERROR:
 			image = PlatformUI.getWorkbench().getSharedImages()
 					.getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
+			break;
+		case TYPE_WARN:
+			image = PlatformUI.getWorkbench().getSharedImages()
+					.getImage(ISharedImages.IMG_OBJS_WARN_TSK);
+			break;
+		case TYPE_INFO:
+			image = PlatformUI.getWorkbench().getSharedImages()
+					.getImage(ISharedImages.IMG_OBJS_INFO_TSK);
+			break;
 		}
 
 		if (image != null) {
@@ -75,6 +128,8 @@ public class SimpleAnnotations implements IAnnotationAccess, IAnnotationAccessEx
 	public boolean isPaintable(Annotation annotation) {
 		switch (annotation.getType()) {
 		case TYPE_ERROR:
+		case TYPE_INFO:
+		case TYPE_WARN:
 			return true;
 		}
 		return false;
@@ -99,7 +154,6 @@ public class SimpleAnnotations implements IAnnotationAccess, IAnnotationAccessEx
 	@Deprecated
 	@Override
 	public boolean isMultiLine(Annotation annotation) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

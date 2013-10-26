@@ -33,6 +33,7 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Shell;
 
+import eu.esdihumboldt.hale.ui.util.IColorManager;
 import eu.esdihumboldt.hale.ui.util.groovy.internal.AbstractJavaScanner;
 import eu.esdihumboldt.hale.ui.util.groovy.internal.GroovyPartitionScanner;
 import eu.esdihumboldt.hale.ui.util.groovy.internal.GroovyTagScanner;

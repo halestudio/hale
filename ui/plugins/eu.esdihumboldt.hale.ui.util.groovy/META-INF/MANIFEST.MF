@@ -11,3 +11,4 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: eu.esdihumboldt.hale.ui.util.groovy,
  eu.esdihumboldt.hale.ui.util.groovy.internal;x-internal:=true
+Import-Package: eu.esdihumboldt.hale.ui.util

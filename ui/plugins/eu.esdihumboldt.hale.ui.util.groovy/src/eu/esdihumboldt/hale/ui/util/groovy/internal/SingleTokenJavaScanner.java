@@ -16,7 +16,7 @@ import java.util.List;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.rules.IRule;
 
-import eu.esdihumboldt.hale.ui.util.groovy.IColorManager;
+import eu.esdihumboldt.hale.ui.util.IColorManager;
 
 @SuppressWarnings("javadoc")
 public final class SingleTokenJavaScanner extends AbstractJavaScanner {

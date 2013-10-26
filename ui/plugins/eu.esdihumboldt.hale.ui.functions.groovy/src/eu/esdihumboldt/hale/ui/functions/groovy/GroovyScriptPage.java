@@ -21,9 +21,9 @@ import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
-import eu.esdihumboldt.hale.ui.util.groovy.ColorManager;
+import eu.esdihumboldt.hale.ui.util.ColorManager;
+import eu.esdihumboldt.hale.ui.util.groovy.GroovyColorManager;
 import eu.esdihumboldt.hale.ui.util.groovy.GroovyViewerUtil;
-import eu.esdihumboldt.hale.ui.util.groovy.IColorManager;
 import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
 
 /**
@@ -33,7 +33,7 @@ import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration
  */
 public class GroovyScriptPage extends SourceViewerPage {
 
-	private IColorManager colorManager;
+	private final ColorManager colorManager = new GroovyColorManager();
 
 	/**
 	 * Default constructor.
@@ -45,9 +45,6 @@ public class GroovyScriptPage extends SourceViewerPage {
 
 	@Override
 	protected SourceViewerConfiguration createConfiguration() {
-		if (colorManager == null) {
-			colorManager = new ColorManager();
-		}
 		return new SimpleGroovySourceViewerConfiguration(colorManager);
 	}
 

@@ -27,7 +27,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 
-import eu.esdihumboldt.hale.ui.util.groovy.IColorManager;
+import eu.esdihumboldt.hale.ui.util.IColorManager;
 
 /**
  * Initialized with a color manager and a preference store, its subclasses are

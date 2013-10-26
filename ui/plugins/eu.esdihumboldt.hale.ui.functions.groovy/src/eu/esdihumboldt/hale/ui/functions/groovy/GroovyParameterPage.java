@@ -30,16 +30,13 @@ import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.AnnotationModel;
 import org.eclipse.jface.text.source.AnnotationRulerColumn;
 import org.eclipse.jface.text.source.CompositeRuler;
-import org.eclipse.jface.text.source.IAnnotationAccessExtension;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IOverviewRuler;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.LineNumberRulerColumn;
-import org.eclipse.jface.text.source.OverviewRuler;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 
 import com.google.common.collect.Iterators;
@@ -56,10 +53,12 @@ import eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage;
 import eu.esdihumboldt.hale.ui.functions.core.SourceViewerParameterPage;
 import eu.esdihumboldt.hale.ui.scripting.groovy.InstanceTestValues;
 import eu.esdihumboldt.hale.ui.scripting.groovy.TestValues;
-import eu.esdihumboldt.hale.ui.util.groovy.ColorManager;
+import eu.esdihumboldt.hale.ui.util.IColorManager;
+import eu.esdihumboldt.hale.ui.util.groovy.GroovyColorManager;
 import eu.esdihumboldt.hale.ui.util.groovy.GroovyViewerUtil;
-import eu.esdihumboldt.hale.ui.util.groovy.IColorManager;
 import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
+import eu.esdihumboldt.hale.ui.util.source.SimpleAnnotationUtil;
+import eu.esdihumboldt.hale.ui.util.source.SimpleAnnotations;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 
@@ -75,7 +74,7 @@ public class GroovyParameterPage extends SourceViewerParameterPage implements Gr
 
 	private Iterable<EntityDefinition> variables;
 	private final TestValues testValues;
-	private final IColorManager colorManager = new ColorManager();
+	private final IColorManager colorManager = new GroovyColorManager();
 	private final IAnnotationModel annotationModel = new AnnotationModel();
 
 	/**
@@ -240,17 +239,8 @@ public class GroovyParameterPage extends SourceViewerParameterPage implements Gr
 	 */
 	@Override
 	protected IOverviewRuler createOverviewRuler() {
-		IOverviewRuler ruler = new OverviewRuler(new SimpleAnnotations(), 14, colorManager);
-
-		// type configuration
-		ruler.addAnnotationType(SimpleAnnotations.TYPE_ERROR);
-		ruler.addHeaderAnnotationType(SimpleAnnotations.TYPE_ERROR);
-		ruler.setAnnotationTypeColor(SimpleAnnotations.TYPE_ERROR,
-				colorManager.getColor(new RGB(255, 0, 0)));
-		ruler.setAnnotationTypeLayer(SimpleAnnotations.TYPE_ERROR,
-				IAnnotationAccessExtension.DEFAULT_LAYER);
-
-		ruler.setModel(annotationModel);
+		IOverviewRuler ruler = SimpleAnnotationUtil.createDefaultOverviewRuler(14, colorManager,
+				annotationModel);
 		return ruler;
 	}
 
@@ -262,9 +252,8 @@ public class GroovyParameterPage extends SourceViewerParameterPage implements Gr
 		final Display display = Display.getCurrent();
 		CompositeRuler ruler = new CompositeRuler(3);
 
-		AnnotationRulerColumn annotations = new AnnotationRulerColumn(annotationModel, 12,
-				new SimpleAnnotations());
-		annotations.addAnnotationType(SimpleAnnotations.TYPE_ERROR);
+		AnnotationRulerColumn annotations = SimpleAnnotationUtil
+				.createDefaultAnnotationRuler(annotationModel);
 
 		ruler.addDecorator(0, annotations);
 
