@@ -37,6 +37,8 @@ import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
+import eu.esdihumboldt.hale.common.core.io.Text;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
@@ -74,7 +76,15 @@ public class SourceViewerPage extends HaleWizardPage<AbstractGenericFunctionWiza
 		if (initialValues != null) {
 			List<ParameterValue> val = initialValues.get(parameterName);
 			if (val != null && !val.isEmpty()) {
-				initialValue = val.get(0).as(String.class, initialValue);
+				// try text value
+				Text text = val.get(0).as(Text.class);
+				if (text != null && text.getText() != null) {
+					initialValue = text.getText();
+				}
+				else {
+					// try string value
+					initialValue = val.get(0).as(String.class, initialValue);
+				}
 			}
 		}
 	}
@@ -82,7 +92,8 @@ public class SourceViewerPage extends HaleWizardPage<AbstractGenericFunctionWiza
 	@Override
 	public ListMultimap<String, ParameterValue> getConfiguration() {
 		ListMultimap<String, ParameterValue> result = ArrayListMultimap.create();
-		result.put(parameterName, new ParameterValue(getDocument().get()));
+		// store as complex Text value
+		result.put(parameterName, new ParameterValue(Value.complex(new Text(getDocument().get()))));
 		return result;
 	}
 

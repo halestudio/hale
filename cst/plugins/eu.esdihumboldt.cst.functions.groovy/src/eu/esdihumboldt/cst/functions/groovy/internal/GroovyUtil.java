@@ -18,8 +18,10 @@ package eu.esdihumboldt.cst.functions.groovy.internal;
 import java.util.Map;
 
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractTransformationFunction;
+import eu.esdihumboldt.hale.common.core.io.Text;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
@@ -67,7 +69,19 @@ public class GroovyUtil implements GroovyConstants {
 			// create the script
 			// TODO use a specific classloader?
 			GroovyShell shell = new GroovyShell();
-			String script = function.getParameterChecked(PARAMETER_SCRIPT).as(String.class);
+			ParameterValue scriptValue = function.getParameterChecked(PARAMETER_SCRIPT);
+
+			String script;
+			// try retrieving as text
+			Text text = scriptValue.as(Text.class);
+			if (text != null) {
+				script = text.getText();
+			}
+			else {
+				// fall back to string value
+				script = scriptValue.as(String.class);
+			}
+
 			groovyScript = shell.parse(script);
 			localScript.set(groovyScript);
 		}
