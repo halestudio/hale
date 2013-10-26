@@ -72,4 +72,6 @@ public interface PreferenceConstants {
 	public static final String GROOVY_EDITOR_HIGHLIGHT_OPERATOR_COLOR = "color_operator";
 
 	public static final String GROOVY_EDITOR_HIGHLIGHT_RETURN_COLOR = "color_return";
+
+	public static final String GROOVY_EDITOR_HIGHLIGHT_SLASHY_STRINGS = "highligh_slashy_strings";
 }

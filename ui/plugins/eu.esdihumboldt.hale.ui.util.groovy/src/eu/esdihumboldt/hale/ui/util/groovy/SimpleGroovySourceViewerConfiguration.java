@@ -34,9 +34,9 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Shell;
 
 import eu.esdihumboldt.hale.ui.util.groovy.internal.AbstractJavaScanner;
-import eu.esdihumboldt.hale.ui.util.groovy.internal.GroovyPartitions;
 import eu.esdihumboldt.hale.ui.util.groovy.internal.GroovyTagScanner;
 import eu.esdihumboldt.hale.ui.util.groovy.internal.GroovyUIPlugin;
+import eu.esdihumboldt.hale.ui.util.groovy.internal.IJavaPartitions;
 import eu.esdihumboldt.hale.ui.util.groovy.internal.JavaCommentScanner;
 import eu.esdihumboldt.hale.ui.util.groovy.internal.JavaDocScanner;
 import eu.esdihumboldt.hale.ui.util.groovy.internal.SingleTokenJavaScanner;
@@ -113,7 +113,7 @@ public class SimpleGroovySourceViewerConfiguration extends SourceViewerConfigura
 	 * @param colorManager the color manager
 	 */
 	public SimpleGroovySourceViewerConfiguration(IColorManager colorManager) {
-		this(colorManager, GroovyUIPlugin.getDefault().getPreferenceStore(), null);
+		this(colorManager, GroovyUIPlugin.getDefault().getPreferenceStore(), null);// IJavaPartitions.JAVA_PARTITIONING);
 	}
 
 	/**
@@ -223,24 +223,24 @@ public class SimpleGroovySourceViewerConfiguration extends SourceViewerConfigura
 		reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
 
 		dr = new DefaultDamagerRepairer(getJavaDocScanner());
-		reconciler.setDamager(dr, GroovyPartitions.JAVA_DOC);
-		reconciler.setRepairer(dr, GroovyPartitions.JAVA_DOC);
+		reconciler.setDamager(dr, IJavaPartitions.JAVA_DOC);
+		reconciler.setRepairer(dr, IJavaPartitions.JAVA_DOC);
 
 		dr = new DefaultDamagerRepairer(getMultilineCommentScanner());
-		reconciler.setDamager(dr, GroovyPartitions.JAVA_MULTI_LINE_COMMENT);
-		reconciler.setRepairer(dr, GroovyPartitions.JAVA_MULTI_LINE_COMMENT);
+		reconciler.setDamager(dr, IJavaPartitions.JAVA_MULTI_LINE_COMMENT);
+		reconciler.setRepairer(dr, IJavaPartitions.JAVA_MULTI_LINE_COMMENT);
 
 		dr = new DefaultDamagerRepairer(getSinglelineCommentScanner());
-		reconciler.setDamager(dr, GroovyPartitions.JAVA_SINGLE_LINE_COMMENT);
-		reconciler.setRepairer(dr, GroovyPartitions.JAVA_SINGLE_LINE_COMMENT);
+		reconciler.setDamager(dr, IJavaPartitions.JAVA_SINGLE_LINE_COMMENT);
+		reconciler.setRepairer(dr, IJavaPartitions.JAVA_SINGLE_LINE_COMMENT);
 
 		dr = new DefaultDamagerRepairer(getStringScanner());
-		reconciler.setDamager(dr, GroovyPartitions.JAVA_STRING);
-		reconciler.setRepairer(dr, GroovyPartitions.JAVA_STRING);
+		reconciler.setDamager(dr, IJavaPartitions.JAVA_STRING);
+		reconciler.setRepairer(dr, IJavaPartitions.JAVA_STRING);
 
 		dr = new DefaultDamagerRepairer(getStringScanner());
-		reconciler.setDamager(dr, GroovyPartitions.JAVA_CHARACTER);
-		reconciler.setRepairer(dr, GroovyPartitions.JAVA_CHARACTER);
+		reconciler.setDamager(dr, IJavaPartitions.JAVA_CHARACTER);
+		reconciler.setRepairer(dr, IJavaPartitions.JAVA_CHARACTER);
 
 		return reconciler;
 	}
@@ -545,10 +545,9 @@ public class SimpleGroovySourceViewerConfiguration extends SourceViewerConfigura
 	 */
 	@Override
 	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
-		return new String[] { IDocument.DEFAULT_CONTENT_TYPE, GroovyPartitions.JAVA_DOC,
-				GroovyPartitions.JAVA_MULTI_LINE_COMMENT,
-				GroovyPartitions.JAVA_SINGLE_LINE_COMMENT, GroovyPartitions.JAVA_STRING,
-				GroovyPartitions.JAVA_CHARACTER };
+		return new String[] { IDocument.DEFAULT_CONTENT_TYPE, IJavaPartitions.JAVA_DOC,
+				IJavaPartitions.JAVA_MULTI_LINE_COMMENT, IJavaPartitions.JAVA_SINGLE_LINE_COMMENT,
+				IJavaPartitions.JAVA_STRING, IJavaPartitions.JAVA_CHARACTER };
 	}
 
 	/*

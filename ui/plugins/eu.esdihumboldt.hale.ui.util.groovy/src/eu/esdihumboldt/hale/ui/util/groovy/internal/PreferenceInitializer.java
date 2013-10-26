@@ -20,6 +20,8 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.swt.graphics.RGB;
 
+import eu.esdihumboldt.hale.ui.util.groovy.ColorConstants;
+
 /**
  * Class used to initialize default preference values.
  */
@@ -57,13 +59,16 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		PreferenceConverter.setDefault(store, PreferenceConstants.GROOVY_EDITOR_DEFAULT_COLOR,
 				new RGB(0, 0, 0));
 
-//		ColorConstants.JAVA_MULTI_LINE_COMMENT
-//		ColorConstants.JAVA_SINGLE_LINE_COMMENT
-//		ColorConstants.JAVA_STRING
-//		ColorConstants.JAVADOC_TAG
-//		ColorConstants.JAVADOC_DEFAULT
-//		ColorConstants.JAVADOC_KEYWORD
-//		ColorConstants.JAVADOC_LINK
+		PreferenceConverter.setDefault(store, ColorConstants.JAVA_MULTI_LINE_COMMENT, //
+				new RGB(63, 127, 95));
+		PreferenceConverter.setDefault(store, ColorConstants.JAVA_SINGLE_LINE_COMMENT, //
+				new RGB(63, 127, 95));
+		PreferenceConverter.setDefault(store, ColorConstants.JAVA_STRING, new RGB(255, 0, 204));
+		PreferenceConverter.setDefault(store, ColorConstants.JAVADOC_TAG, new RGB(127, 159, 191));
+		PreferenceConverter.setDefault(store, ColorConstants.JAVADOC_DEFAULT, new RGB(63, 95, 191));
+		PreferenceConverter.setDefault(store, ColorConstants.JAVADOC_KEYWORD,
+				new RGB(127, 127, 159));
+		PreferenceConverter.setDefault(store, ColorConstants.JAVADOC_LINK, new RGB(63, 63, 191));
 
 		// bold syntax
 		store.setDefault(PreferenceConstants.GROOVY_EDITOR_HIGHLIGHT_JAVAKEYWORDS_COLOR
@@ -90,7 +95,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 				+ PreferenceConstants.EDITOR_BOLD_SUFFIX, false);
 
 		// Dollar slashy string highlighting
-//        store.setDefault(PreferenceConstants.GROOVY_EDITOR_HIGHLIGHT_SLASHY_STRINGS, true);
+		store.setDefault(PreferenceConstants.GROOVY_EDITOR_HIGHLIGHT_SLASHY_STRINGS, true);
 
 		// JUnit Monospace font
 //        store.setDefault(PreferenceConstants.GROOVY_JUNIT_MONOSPACE_FONT, false);

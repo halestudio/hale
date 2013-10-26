@@ -47,7 +47,6 @@ public class ColorManager implements IColorManager {
 				color = new Color(PlatformUI.getWorkbench().getDisplay(), rgb);
 				rgbColors.put(rgb, color);
 			}
-			System.out.println("ret color " + rgb.toString());
 			return color;
 		}
 	}
@@ -79,7 +78,6 @@ public class ColorManager implements IColorManager {
 			String rgbStr = GroovyUIPlugin.getDefault().getPreferenceStore().getString(key);
 			color = StringConverter.asRGB(rgbStr, new RGB(0, 0, 0));
 		}
-		System.out.println("color for " + key);
 		return getColor(color);
 	}
 

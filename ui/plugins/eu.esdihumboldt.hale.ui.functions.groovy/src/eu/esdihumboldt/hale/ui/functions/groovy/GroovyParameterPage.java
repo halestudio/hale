@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
@@ -32,6 +33,7 @@ import eu.esdihumboldt.hale.ui.functions.core.SourceViewerParameterPage;
 import eu.esdihumboldt.hale.ui.scripting.groovy.InstanceTestValues;
 import eu.esdihumboldt.hale.ui.scripting.groovy.TestValues;
 import eu.esdihumboldt.hale.ui.util.groovy.ColorManager;
+import eu.esdihumboldt.hale.ui.util.groovy.GroovyViewerUtil;
 import eu.esdihumboldt.hale.ui.util.groovy.IColorManager;
 import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
 import groovy.lang.GroovyShell;
@@ -140,6 +142,13 @@ public class GroovyParameterPage extends SourceViewerParameterPage implements Gr
 			colorManager = new ColorManager();
 		}
 		return new SimpleGroovySourceViewerConfiguration(colorManager);
+	}
+
+	@Override
+	protected void createAndSetDocument(SourceViewer viewer) {
+		super.createAndSetDocument(viewer);
+
+		GroovyViewerUtil.setupDocument(viewer.getDocument());
 	}
 
 	@Override
