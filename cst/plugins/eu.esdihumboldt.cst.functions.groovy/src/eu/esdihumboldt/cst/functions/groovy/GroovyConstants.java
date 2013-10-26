@@ -57,6 +57,6 @@ public interface GroovyConstants {
 	/**
 	 * Name of the target instance builder closure in the binding.
 	 */
-	public static final String BINDING_TARGET = "target";
+	public static final String BINDING_TARGET = "_target";
 
 }

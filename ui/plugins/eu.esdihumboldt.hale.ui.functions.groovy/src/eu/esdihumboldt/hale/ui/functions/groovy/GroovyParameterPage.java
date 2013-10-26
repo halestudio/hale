@@ -140,7 +140,7 @@ public class GroovyParameterPage extends SourceViewerParameterPage implements Gr
 		}
 
 		// TODO specify classloader?
-		GroovyShell shell = new GroovyShell(GroovyTransformation.createGroovyBinding(values, false));
+		GroovyShell shell = new GroovyShell(GroovyTransformation.createGroovyBinding(values, null));
 		Script script = null;
 		try {
 			script = shell.parse(document.get());
