@@ -41,6 +41,8 @@ import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Point;
@@ -102,6 +104,15 @@ public class GroovyEditor extends AbstractEditor<String> {
 		IDocument document = new Document("");
 		GroovySourceViewerUtil.setupDocument(document);
 		viewer.setDocument(document);
+
+		viewer.getControl().addDisposeListener(new DisposeListener() {
+
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				// color manager needs to be disposed
+				colorManager.dispose();
+			}
+		});
 
 		// control decoration
 		decorator = new ControlDecoration(viewer.getControl(), SWT.LEFT | SWT.TOP, composite);
