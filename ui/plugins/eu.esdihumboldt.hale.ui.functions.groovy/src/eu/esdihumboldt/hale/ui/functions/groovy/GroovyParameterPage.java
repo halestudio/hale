@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.source.SourceViewerConfiguration;
 
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
 import eu.esdihumboldt.cst.functions.groovy.GroovyTransformation;
@@ -30,6 +31,9 @@ import eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage;
 import eu.esdihumboldt.hale.ui.functions.core.SourceViewerParameterPage;
 import eu.esdihumboldt.hale.ui.scripting.groovy.InstanceTestValues;
 import eu.esdihumboldt.hale.ui.scripting.groovy.TestValues;
+import eu.esdihumboldt.hale.ui.util.groovy.ColorManager;
+import eu.esdihumboldt.hale.ui.util.groovy.IColorManager;
+import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 
@@ -42,6 +46,7 @@ public class GroovyParameterPage extends SourceViewerParameterPage implements Gr
 
 	private Iterable<EntityDefinition> variables;
 	private final TestValues testValues;
+	private IColorManager colorManager;
 
 	/**
 	 * Default constructor.
@@ -127,5 +132,20 @@ public class GroovyParameterPage extends SourceViewerParameterPage implements Gr
 	protected String getVariableName(EntityDefinition variable) {
 		// dots are not allowed in variable names, an underscore is used instead
 		return super.getVariableName(variable).replace('.', '_');
+	}
+
+	@Override
+	protected SourceViewerConfiguration createConfiguration() {
+		if (colorManager == null) {
+			colorManager = new ColorManager();
+		}
+		return new SimpleGroovySourceViewerConfiguration(colorManager);
+	}
+
+	@Override
+	public void dispose() {
+		colorManager.dispose();
+
+		super.dispose();
 	}
 }

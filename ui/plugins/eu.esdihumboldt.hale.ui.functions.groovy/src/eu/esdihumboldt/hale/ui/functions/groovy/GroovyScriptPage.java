@@ -15,7 +15,12 @@
 
 package eu.esdihumboldt.hale.ui.functions.groovy;
 
+import org.eclipse.jface.text.source.SourceViewerConfiguration;
+
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
+import eu.esdihumboldt.hale.ui.util.groovy.ColorManager;
+import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
+import eu.esdihumboldt.hale.ui.util.groovy.IColorManager;
 
 /**
  * Base page for editing a Groovy script for type relations.
@@ -24,12 +29,29 @@ import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
  */
 public class GroovyScriptPage extends SourceViewerPage {
 
+	private IColorManager colorManager;
+
 	/**
 	 * Default constructor.
 	 */
 	public GroovyScriptPage() {
 		super("groovyScript", GroovyConstants.PARAMETER_SCRIPT, GroovyConstants.BINDING_TARGET
 				+ " = {\n\n}");
+	}
+
+	@Override
+	protected SourceViewerConfiguration createConfiguration() {
+		if (colorManager == null) {
+			colorManager = new ColorManager();
+		}
+		return new SimpleGroovySourceViewerConfiguration(colorManager);
+	}
+
+	@Override
+	public void dispose() {
+		colorManager.dispose();
+
+		super.dispose();
 	}
 
 }
