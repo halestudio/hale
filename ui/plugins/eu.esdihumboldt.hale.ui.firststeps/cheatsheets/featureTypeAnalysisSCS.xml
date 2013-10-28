@@ -1,36 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cheatsheet
-      title="Start with the Types and feature Types">
+      title="Analyze the schema types">
    <intro href="/eu.esdihumboldt.hale.doc.user/html/views/schema_explorer.html">
       <description>
-         A Type is part of a Schema.<br/>
-It is marked with a <b>[ft] or [T]</b> symbol in the Schema Explorer. A red cursive [ft] or [T] means an abstract feature type and blue means a concrete one.<br/>
-A [ft] schema element is a GML AbstractFeatureType. [T] are own defined types.<br/>
-[+] stand for an expandable type/object/element, so there are sub level elements you may analyze, too, to find the right target for an alignment. 
-In standard Schema Explorer View (default) you get shown all mappable types as a list.<br/><br/>
-For this task, the only thing you need to do, is to identify the concrete (blue) <b>[ft]</b> and <b>[T]</b> symbols in the <b>Schema Explorer</b>-View.<br/>
-Click the little question mark on the right upper corner to get some help. In this case to the Schema Explorer-View.
+      	The first step for creating a mapping is analyzing the types in source and target schema.<br />
+      	<br />
+        <!--A Type is part of a Schema.<br/>
+		It is marked with a <b>[ft] or [T]</b> symbol in the Schema Explorer. A red cursive [ft] or [T] means an abstract feature type and blue means a concrete one.<br/>
+		A [ft] schema element is a GML AbstractFeatureType. [T] are own defined types.<br/>
+		[+] stand for an expandable type/object/element, so there are sub level elements you may analyze, too, to find the right target for an alignment. 
+		In standard Schema Explorer View (default) you get shown all mappable types as a list.<br/><br/>
+		For this task, the only thing you need to do, is to identify the concrete (blue) <b>[ft]</b> and <b>[T]</b> symbols in the <b>Schema Explorer</b>-View.<br/>-->
+		The most important tool for this is the <b>Schema Explorer</b> view. It shows the schema types and their attributes and sub-attributes.
+		To proceed with this cheat sheet you should have loaded a source and a target schema already.<br />
+		<br />
+		Click the little question mark on the right upper corner of each task to get some help associated to the individual task.
+		In this case it links to the help for the Schema Explorer.
       </description>
    </intro>
    <item
-   		title="Configure the mappable Types"
+   		title="Determine the relevant types"
    		href="/eu.esdihumboldt.hale.doc.user/html/tasks/schema/mapping_relevant.html">
    	<description>
-   		You should identify what types are mapping relevant or you want 
-to use. (You need a source and target schema to do this.) <br/><br/>
-Configure the Types now or do it later, it clears up the Schema Explorer View.<br/>
+   		Start by identifying which types are relevant for the mapping. The schema may contain more types than are initially listed in the Schema Explorer<br />
+   		<br />
+   		For the source the relevant types usually are those types you expect data to be present for and that contain information relevant for the target schema.<br />
+   		The relevant target types are those you wish to populate and that have related representations in the source schema.<br/>
+   		<br/>
+   		To specify the relevant types, use <b>Edit&#8594;Edit mapping relevant source types</b> and
+   		<b>Edit&#8594;Edit mapping relevant target types</b>.<br />
+   		<br />
+   		Reducing the types to the relevant types allows you to hide unneeded information and
+   		thus easier focus on the parts of the schemas involved in the mapping.<br />
+   		Moreover, the selected relevant types may also influence how source data is loaded.
+   		Depending on the format, data for non-relevant types may be suppressed.
+<!-- Configure the Types now or do it later, it clears up the Schema Explorer View.<br/>
 If you have only few Types, right-click (right mouse button) on a type and choose &quot;Exclude Type from mapping&quot;. 
 To undo your last action, hold [CTRL] and press [z] on your keyboard. It will also bring back the last 
 excluded Type.<br/><br/>
-The Help Link in the upper right corner, of this task, will give you a guide to do the customization.
+The Help Link in the upper right corner, of this task, will give you a guide to do the customization. -->
    	</description>
    </item>
    <item
-         title="Find (at least) two matching types.">
+         title="Find type correspondences">
       <description>
-         To find two matching types is the task, but how is it done?<br/>
-Two matching types mean, that one type (feature Type or Type) of the source schema and one type 
-(feature Type or Type) of the target schema are alike or somehow related.<br/>
+		With a type correspondence we refer to correspondences between source and target types.
+		It needs to be identified, which types in the target schema are alike or somehow related to the types from the source schema.<br />
+		<br />
+		A common way to identify correspondences is
+		1) to identify which (real world) objects each type represents, and
+		2) to identity what information is needed to populate a target type instance and which source types hold that information.<br />
+		<br />
+		The associated help for this task shows some examples on identifying correspondences.
+<!-- TODO extract example to help file
 So, first we need to find all pairs, because the main part of the alignment is done between two elements.<br/>
 One Type can be part of more than one alignment, but the alignments will be performed separately.<br/>
 An example: (there is only one Customer Type listed in the Schema Explorer-View)<br/>
@@ -42,9 +64,9 @@ Source		-> Target Schema<br/>
 [T] Customer-> [T] Person<br/>
 [T] Customer-> [T] Address<br/><br/>
 Analyze the target schema types and try to find semantically equal type(s) in your source schema.<br/><br/>
-Some hints on finding types:<br/>
+Some hints on finding types:<br/> -->
       </description>
-   <subitem 
+   <!-- <subitem 
    		label="Think about alternative names and/or translations for the target type in your source schema.">
    </subitem>
    <subitem 
@@ -52,19 +74,31 @@ Some hints on finding types:<br/>
    </subitem>   
    <subitem 
    		label="Read the Description within the General tab at the Properties-View, while the target type is blue selected.">
-   </subitem>
+   </subitem> -->
    </item>
    <item
-         title="Select the first two Types.">
+         title="Identify type relations">
       <description>
-         Now you can imagine how the first steps for the alignment may look like.<br/>
+      	For the type correspondences as the next step we need to identify how they can be expressed as relations in HALE.<br />  
+      	<br />
+      	The most simple kind of relation is a 1:1 relation -
+		a correspondence between a single source and a single target type,
+		where all information needed to populate a target instance is present in a single source instance.
+		This kind of relation is represented in HALE by the <b>Retype</b> function.<br />
+		<br />
+		If multiple instances of a single source type need to be combined to form a target instance, the <b>Merge</b> function is the right choice.
+		If multiple source types are involved, use the <b>Join</b> function to express the relation and configure how these source types are related to each other.<br />
+		<br /> 
+		Once you have identified a relation, create it by selecting the affected source and target types in the Schema Explorer,
+		then select the <b>Select a mapping function</b> button between source and target schema and choose the appropriate function.
+        <!-- Now you can imagine how the first steps for the alignment may look like.<br/>
 <b>Select</b> the first pair. To do so, you click (left mouse button) on the type.<br/><br/>
 Start by selecting the first element. It could be the source or the target type.<br/>
 Then select the opposite type.<br/><br/>
 The clicked element gets highlighted. The active selected element has a dark blue background color. 
 The passive (but also selected) element gets a light gray background color. (There can be more passive and no active selection)<br/>
 To undo a selection, hold the [CTRL] key and click (left mouse button) on the element. 
-Click (left mouse button) on one element (without holding any key) and it will become the only selected Element.
+Click (left mouse button) on one element (without holding any key) and it will become the only selected Element. -->
       </description>
    </item>
 </cheatsheet>

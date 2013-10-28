@@ -38,7 +38,7 @@
          <param name="id" value="eu.esdihumboldt.hale.ui.firststeps.createMappingsCS">
          </param>
       </task>
-      <task kind="cheatsheet" name="Start with Types and feature Types" skip="false">
+      <task kind="cheatsheet" name="Analyze the schema types" skip="false">
          <intro>
             This cheat sheet will show you where to start the harmonisation process, after source and target schema were imported.
          </intro>
