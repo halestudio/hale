@@ -32,6 +32,10 @@ import eu.esdihumboldt.hale.common.core.io.Value;
 public class DefaultXLSLookupTableReader {
 
 	/**
+	 * Reads a xls/xlsx lookup table workbook (from apache POI). The selected
+	 * columns specified by parameters keyColumn and valueColumn are mapped
+	 * together.
+	 * 
 	 * @param workbook the workbook to read
 	 * @param skipFirst true, if first row should be skipped
 	 * @param keyColumn source column of the lookup table

@@ -103,8 +103,7 @@ public class XLSLookupTableReader extends AbstractLookupImport {
 	 */
 	@Override
 	protected String getDefaultTypeName() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Lookup Table (XLS)";
 	}
 
 }
