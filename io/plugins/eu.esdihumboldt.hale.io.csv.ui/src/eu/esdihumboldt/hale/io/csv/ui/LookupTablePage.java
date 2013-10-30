@@ -102,12 +102,12 @@ public class LookupTablePage extends LookupTableImportConfigurationPage implemen
 		choose = new Combo(head, SWT.READ_ONLY);
 		String[] selection = new String[] { "Yes", "No" };
 		choose.setItems(selection);
+		choose.select(1);
 		choose.addSelectionListener(this);
 
 		// Label
 		l = new Label(page, SWT.NONE);
 		l.setText("Specify which column will be connected with which column");
-		l.setVisible(false);
 
 		// composite
 		Composite middle = new Composite(page, SWT.NONE);
@@ -118,17 +118,41 @@ public class LookupTablePage extends LookupTableImportConfigurationPage implemen
 
 		keyColumn = new Combo(middle, SWT.READ_ONLY);
 		keyColumn.setLayoutData(GridDataFactory.copyData(layoutData));
-		keyColumn.setVisible(false);
+
 		keyColumn.addSelectionListener(this);
 
 		valueColumn = new Combo(middle, SWT.READ_ONLY);
 		valueColumn.setLayoutData(GridDataFactory.copyData(layoutData));
-		valueColumn.setVisible(false);
+
 		valueColumn.addSelectionListener(this);
 
 		addPreview(page);
 
 		setPageComplete(false);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.HaleWizardPage#onShowPage(boolean)
+	 */
+	@Override
+	protected void onShowPage(boolean firstShow) {
+		super.onShowPage(firstShow);
+
+		String[] header = readHeader();
+		int numberOfColumns = header.length;
+		String[] items = new String[numberOfColumns];
+		for (int i = 0; i < numberOfColumns; i++) {
+			int tmp = i + 1;
+			items[i] = "Column " + tmp;
+		}
+		keyColumn.setItems(items);
+		valueColumn.setItems(items);
+		keyColumn.select(0);
+		valueColumn.select(1);
+
+		refreshTable();
+
+		setPageComplete(true);
 	}
 
 	/**
@@ -163,16 +187,12 @@ public class LookupTablePage extends LookupTableImportConfigurationPage implemen
 			tableViewer.refresh();
 			if (e.getSource().equals(choose)) {
 				l.setVisible(true);
-				keyColumn.setVisible(true);
-				valueColumn.setVisible(true);
 				String[] header = readHeader();
 				if (((Combo) e.getSource()).getSelectionIndex() == 0) {
 					// yes is selected
-					// Load the csv-file to get the column informations
 					skip = true;
 					keyColumn.setItems(header);
 					valueColumn.setItems(header);
-					setPageComplete(true);
 				}
 				else {
 					// no is selected
@@ -185,26 +205,18 @@ public class LookupTablePage extends LookupTableImportConfigurationPage implemen
 					}
 					keyColumn.setItems(items);
 					valueColumn.setItems(items);
-					setPageComplete(true);
 				}
+				keyColumn.select(0);
+				valueColumn.select(1);
+				refreshTable();
 			}
 			else if (keyColumn.getSelectionIndex() >= 0 && valueColumn.getSelectionIndex() >= 0) {
-				tableContainer.setVisible(true);
-				if (skip) {
-					sourceColumn.getColumn().setText(keyColumn.getText());
-					targetColumn.getColumn().setText(valueColumn.getText());
-				}
-				else {
-					sourceColumn.getColumn().setText("Source:");
-					targetColumn.getColumn().setText("Target:");
-				}
-				lookupTable = readLookupTable();
-				tableViewer.setInput(lookupTable.entrySet());
-				tableViewer.refresh();
+				refreshTable();
 			}
 		}
 	}
 
+	// read line from a file specified by provider of corresponding wizard
 	private String[] readHeader() {
 		LookupTableImport provider = getWizard().getProvider();
 		List<String> items = new ArrayList<String>();
@@ -239,13 +251,13 @@ public class LookupTablePage extends LookupTableImportConfigurationPage implemen
 		}
 	}
 
+	// add table for the preview to the given composite
 	private void addPreview(Composite page) {
 
 		tableContainer = new Composite(page, SWT.NONE);
 		tableContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		TableColumnLayout layout = new TableColumnLayout();
 		tableContainer.setLayout(layout);
-		tableContainer.setVisible(false);
 
 		tableViewer = new TableViewer(tableContainer, SWT.SINGLE | SWT.FULL_SELECTION | SWT.BORDER);
 		tableViewer.getTable().setLinesVisible(true);
@@ -253,7 +265,6 @@ public class LookupTablePage extends LookupTableImportConfigurationPage implemen
 		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 
 		sourceColumn = new TableViewerColumn(tableViewer, SWT.NONE);
-//		sourceColumn.getColumn().setText("Source value");
 		layout.setColumnData(sourceColumn.getColumn(), new ColumnWeightData(1));
 		sourceColumn.setLabelProvider(new ColumnLabelProvider() {
 
@@ -266,7 +277,6 @@ public class LookupTablePage extends LookupTableImportConfigurationPage implemen
 		});
 
 		targetColumn = new TableViewerColumn(tableViewer, SWT.NONE);
-//		targetColumn.getColumn().setText("Target value");
 		layout.setColumnData(targetColumn.getColumn(), new ColumnWeightData(1));
 		targetColumn.setLabelProvider(new StyledCellLabelProvider() {
 
@@ -289,6 +299,8 @@ public class LookupTablePage extends LookupTableImportConfigurationPage implemen
 		});
 	}
 
+	// read lookup table from file (specified by provider in corresponding
+	// wizard)
 	private Map<Value, Value> readLookupTable() {
 		Map<Value, Value> lookupTable = new HashMap<Value, Value>();
 		try {
@@ -327,6 +339,19 @@ public class LookupTablePage extends LookupTableImportConfigurationPage implemen
 			return lookupTable;
 		}
 		return lookupTable;
+	}
+
+	// read lookup table from file and refresh the table view
+	private void refreshTable() {
+
+		lookupTable = readLookupTable();
+
+		sourceColumn.getColumn().setText(keyColumn.getText());
+		targetColumn.getColumn().setText(valueColumn.getText());
+
+		tableViewer.setInput(lookupTable.entrySet());
+		tableViewer.refresh();
+
 	}
 
 	/**
