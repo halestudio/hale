@@ -1,12 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
-	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:wicket="http://wicket.sourceforge.net/"
-	xml:lang="en">
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
 <body>
 <wicket:panel>
-	<table class="no-stretch">
+	<table class="table" style="width:auto;">
 		<thead>
 			<tr wicket:id="caption">
 				<td>Identifier</td>
@@ -20,8 +16,8 @@
 				<td wicket:id="name" style="vertical-align: middle">[Name]</td>
 			</tr>
 			<tr style="font-size: 0.9em;">
-				<td></td>
-				<td>
+				<td style="border-top: none;"></td>
+				<td style="border-top: none;">
 					<a wicket:id="upload"><img src="images/doctrans.gif" />&nbsp;Upload and transform</a>
 				</td>
 			</tr>

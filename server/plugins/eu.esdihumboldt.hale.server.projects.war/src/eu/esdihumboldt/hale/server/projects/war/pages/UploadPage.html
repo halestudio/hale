@@ -1,40 +1,40 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
-	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:wicket="http://wicket.sourceforge.net/"
-	xml:lang="en">
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
 <head>
 	<title>Project upload</title>
-	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
-	<meta http-equiv="Content-Style-Type" content="text/css" />
+	<meta charset="utf-8">
 </head>
 <body>
 	<wicket:extend>
-		<h2>Project upload</h2>
-		<p>Upload a HALE project archive to be deployed in the server.</p>
+		<div class="container">
+			<div class="page-header">
+                <h2>Project upload</h2>
+        	</div>
 		
-		<fieldset>
-			<legend>New project</legend>
-			<form wicket:id="upload">
-				<p>
-					Please specify a project identifier:<br />
-					<input class="field" wicket:id="identifier" type="text" style="width:170px;" />
-					<span class="field-msg" wicket:id="identifierMessage"></span>
-				</p>
-				<p>
-					Project archive (ZIP):<br />
-					<input wicket:id="file" type="file"/>
-				</p>
-				<p style="text-align: right; margin-bottom: 0px;">
-					<input type="submit" value="Deploy"/>
-				</p>
-				<!-- p>
-					<span wicket:id="progress"></span>
-				</p-->
-				<div wicket:id="feedback"></div>
-			</form>
-		</fieldset>
+			<p>Upload a HALE project archive to be deployed in the server.</p>
+		
+			<fieldset>
+				<legend>New project</legend>
+				<form wicket:id="upload">
+					<p>
+						Please specify a project identifier:<br />
+						<input class="field" wicket:id="identifier" type="text" style="width:170px;" />
+						<span class="field-msg" wicket:id="identifierMessage"></span>
+					</p>
+					<p>
+						Project archive (ZIP):<br />
+						<input wicket:id="file" type="file"/>
+					</p>
+					<p style="margin-bottom: 0px;">
+						<input type="submit" value="Deploy"/>
+					</p>
+					<!-- p>
+						<span wicket:id="progress"></span>
+					</p-->
+					<div wicket:id="feedback"></div>
+				</form>
+			</fieldset>
+		</div>
 	</wicket:extend>
 </body>
 </html>
