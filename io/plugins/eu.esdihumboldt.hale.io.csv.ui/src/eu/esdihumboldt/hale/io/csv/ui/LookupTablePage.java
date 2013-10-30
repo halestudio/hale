@@ -96,6 +96,7 @@ public class LookupTablePage extends LookupTableImportConfigurationPage implemen
 		Composite head = new Composite(page, SWT.NONE);
 		head.setLayout(new GridLayout(2, false));
 
+		// header selection
 		Label withHeadlines = new Label(head, SWT.NONE);
 		withHeadlines.setText("Select if the first row contains headlines");
 
@@ -105,11 +106,10 @@ public class LookupTablePage extends LookupTableImportConfigurationPage implemen
 		choose.select(1);
 		choose.addSelectionListener(this);
 
-		// Label
+		// selection of columns to be connected
 		l = new Label(page, SWT.NONE);
 		l.setText("Specify which column will be connected with which column");
 
-		// composite
 		Composite middle = new Composite(page, SWT.NONE);
 		middle.setLayout(new GridLayout(2, false));
 
@@ -126,6 +126,7 @@ public class LookupTablePage extends LookupTableImportConfigurationPage implemen
 
 		valueColumn.addSelectionListener(this);
 
+		// table preview with current selection
 		addPreview(page);
 
 		setPageComplete(false);
@@ -138,6 +139,7 @@ public class LookupTablePage extends LookupTableImportConfigurationPage implemen
 	protected void onShowPage(boolean firstShow) {
 		super.onShowPage(firstShow);
 
+		// input file is selected, so we can read it
 		String[] header = readHeader();
 		int numberOfColumns = header.length;
 		String[] items = new String[numberOfColumns];
@@ -150,8 +152,10 @@ public class LookupTablePage extends LookupTableImportConfigurationPage implemen
 		keyColumn.select(0);
 		valueColumn.select(1);
 
+		// refresh table with new content
 		refreshTable();
 
+		// page is complete since page is shown
 		setPageComplete(true);
 	}
 

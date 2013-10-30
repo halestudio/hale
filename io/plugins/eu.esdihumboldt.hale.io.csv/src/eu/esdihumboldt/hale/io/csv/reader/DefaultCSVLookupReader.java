@@ -35,6 +35,9 @@ import eu.esdihumboldt.hale.common.core.io.Value;
 public class DefaultCSVLookupReader {
 
 	/**
+	 * Reads a csv lookup table file. The selected columns specified by
+	 * parameters keyColumn and valueColumn are mapped together.
+	 * 
 	 * @param input the inputstream of the csv file
 	 * @param charset specific charset of the csv file
 	 * @param separator used separator char in csv file
