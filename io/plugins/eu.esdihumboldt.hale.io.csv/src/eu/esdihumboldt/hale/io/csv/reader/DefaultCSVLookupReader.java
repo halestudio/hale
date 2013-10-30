@@ -53,6 +53,8 @@ public class DefaultCSVLookupReader {
 		String[] nextLine;
 
 		Map<Value, Value> values = new HashMap<Value, Value>();
+		if (skipFirst)
+			reader.readNext();
 		while ((nextLine = reader.readNext()) != null) {
 			values.put(Value.of(nextLine[keyColumn]), Value.of(nextLine[valueColumn]));
 		}
