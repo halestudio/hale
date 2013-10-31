@@ -52,6 +52,7 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.GenericResourceIteratorAdapter;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.Reference;
 
 /**
  * Join based on equal properties.
@@ -139,7 +140,7 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 					Collection<Object> values = AlignmentUtil.getValues(next, property, true);
 					if (values != null && !values.isEmpty()) {
 						// XXX take only first value for now
-						index.get(property).put(processValue(values.iterator().next()),
+						index.get(property).put(processValue(values.iterator().next(), property),
 								instances.getReference(next));
 					}
 				}
@@ -156,10 +157,14 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 	 * the index.
 	 * 
 	 * @param value the value
+	 * @param property the entity definition the value is associated to
 	 * @return the processed value, possibly wrapped or replaced through a
 	 *         different representation
 	 */
-	protected Object processValue(Object value) {
+	protected Object processValue(Object value, PropertyEntityDefinition property) {
+		// extract the identifier from a reference
+		value = property.getDefinition().getConstraint(Reference.class).extractId(value);
+
 		/*
 		 * This is done so values will be classified as equal even if they are
 		 * of different types, e.g. Long and Integer or Integer and String.
@@ -247,7 +252,8 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 						HashSet<InstanceReference> matches = new HashSet<InstanceReference>();
 						for (Object currentValue : currentValues) {
 							matches.addAll(index.get(joinCondition.getValue().joinProperty).get(
-									processValue(currentValue)));
+									processValue(currentValue,
+											joinCondition.getValue().joinProperty)));
 						}
 						if (possibleInstances == null)
 							possibleInstances = matches;
