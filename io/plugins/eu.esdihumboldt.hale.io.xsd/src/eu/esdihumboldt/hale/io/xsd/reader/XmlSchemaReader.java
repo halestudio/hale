@@ -109,6 +109,7 @@ import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeDefinition;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeUtil;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.ElementName;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.MappableUsingXsiType;
+import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.XLinkReference;
 import eu.esdihumboldt.util.Identifiers;
 import gnu.trove.TObjectIntHashMap;
 
@@ -135,7 +136,12 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 	/**
 	 * The log
 	 */
-	private static ALogger _log = ALoggerFactory.getLogger(XmlSchemaReader.class);
+	private static final ALogger _log = ALoggerFactory.getLogger(XmlSchemaReader.class);
+
+	/**
+	 * Qualified name of the XLink reference attribute.
+	 */
+	private static final QName NAME_XLINK_REF = new QName("http://www.w3.org/1999/xlink", "href");
 
 	/**
 	 * The XML definition index
@@ -1489,6 +1495,12 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 		}
 
 		property.setConstraint(NillableFlag.DISABLED);
+
+		// special handling for XLink references (which are always XML
+		// attributes)
+		if (NAME_XLINK_REF.equals(property.getPropertyType().getName())) {
+			property.setConstraint(new XLinkReference());
+		}
 
 		// set metadata
 		setMetadata(property, attribute, schemaLocation);
