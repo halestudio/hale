@@ -172,7 +172,7 @@ class InstanceAccessor extends AbstractAccessor<Object> {
 	 * @return the first value
 	 */
 	public Object first(boolean instance = true) {
-		def value = eval(false)?.elements.last()
+		def value = eval(false)?.elements?.last()
 		if (value instanceof Instance && !instance) {
 			value = ((Instance) value).value
 		}
