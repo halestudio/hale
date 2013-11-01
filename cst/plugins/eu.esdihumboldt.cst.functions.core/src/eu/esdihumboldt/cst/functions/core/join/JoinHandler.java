@@ -253,7 +253,7 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 						for (Object currentValue : currentValues) {
 							matches.addAll(index.get(joinCondition.getValue().joinProperty).get(
 									processValue(currentValue,
-											joinCondition.getValue().joinProperty)));
+											joinCondition.getValue().baseProperty)));
 						}
 						if (possibleInstances == null)
 							possibleInstances = matches;
