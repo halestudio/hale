@@ -178,17 +178,6 @@ public abstract class SourceViewerParameterPage extends SourceListParameterPage<
 		return getTextField().getDocument();
 	}
 
-//	/**
-//	 * Update the page state.
-//	 * 
-//	 * @param document the current document
-//	 */
-//	protected void updateState(IDocument document) {
-//		boolean valid = validate(document);
-//
-//		setPageComplete(valid);
-//	}
-
 	/**
 	 * Force validation of the source viewers document.
 	 */

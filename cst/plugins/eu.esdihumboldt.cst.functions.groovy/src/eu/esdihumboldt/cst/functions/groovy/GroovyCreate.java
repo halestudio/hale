@@ -29,7 +29,7 @@ import groovy.lang.Closure;
 import groovy.lang.Script;
 
 /**
- * Creates instances based on a groovy script.
+ * Creates instances based on a Groovy script.
  * 
  * @author Simon Templer
  */
@@ -40,25 +40,52 @@ public class GroovyCreate extends Create implements GroovyConstants {
 			Cell cell) throws TransformationException {
 		InstanceBuilder builder = new InstanceBuilder();
 
-		Binding binding = new Binding();
-		binding.setVariable(BINDING_TARGET, null);
-		binding.setVariable(BINDING_INDEX, index);
-		binding.setVariable(BINDING_BUILDER, builder);
+		Binding binding = createBinding(index, builder);
 
 		try {
 			Script script = GroovyUtil.getScript(this, binding);
-			script.run();
-
-			Closure<?> closure = (Closure<?>) binding.getVariable(BINDING_TARGET);
-
-			Instance instance = builder.createInstance(type, closure);
-
-			return (MutableInstance) instance;
+			return evaluate(script, builder, type);
 		} catch (TransformationException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new TransformationException(e.getMessage(), e);
 		}
+	}
+
+	/**
+	 * Evaluate a Groovy Create script.
+	 * 
+	 * @param script the script
+	 * @param builder the instance builder
+	 * @param type the type of the instance to create
+	 * @return the created instance
+	 */
+	public static MutableInstance evaluate(Script script, InstanceBuilder builder,
+			TypeDefinition type) {
+		// run the script
+		script.run();
+
+		// retrieve the target builder closure
+		Closure<?> closure = (Closure<?>) script.getBinding().getVariable(BINDING_TARGET);
+
+		// create the instance
+		Instance instance = builder.createInstance(type, closure);
+		return (MutableInstance) instance;
+	}
+
+	/**
+	 * Create the binding for the Groovy Create script function.
+	 * 
+	 * @param index the instance index
+	 * @param builder the instance builder
+	 * @return the binding
+	 */
+	public static Binding createBinding(int index, InstanceBuilder builder) {
+		Binding binding = new Binding();
+		binding.setVariable(BINDING_TARGET, null);
+		binding.setVariable(BINDING_INDEX, index);
+		binding.setVariable(BINDING_BUILDER, builder);
+		return binding;
 	}
 
 }
