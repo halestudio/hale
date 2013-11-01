@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="Cb7103e26-9d69-47d2-be16-151a5e864e7e" priority="normal">
+        <source>
+            <class>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="T2" ns="http://www.example.org/t2/"/>
+            </class>
+        </target>
+    </cell>
+    <cell relation="eu.esdihumboldt.cst.functions.groovy" id="C3ca93640-8035-42b9-ad9c-77f4fd35ea5d" priority="normal">
+        <source name="var">
+            <property>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+                <child name="name"/>
+            </property>
+        </source>
+        <target name="result">
+            <property>
+                <type name="T2" ns="http://www.example.org/t2/"/>
+                <child name="name"/>
+            </property>
+        </target>
+        <parameter value="_target = {&#xA;&#x9;language name.p.language.value()&#xA;&#x9;spelling name.value&#xA;}" name="script"/>
+        <parameter value="true" name="variablesAsInstances"/>
+    </cell>
+</alignment>

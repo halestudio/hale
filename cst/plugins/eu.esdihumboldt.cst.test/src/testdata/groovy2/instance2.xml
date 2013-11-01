@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<tns:collection xmlns:tns="http://www.example.org/t2/" xmlns:ns1="http://www.w3.org/1999/xhtml" xmlns:hfp="http://www.w3.org/2001/XMLSchema-hasFacetAndProperty" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/t2/ file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/groovy1/t2.xsd">
+  <tns:t2>
+    <name>
+      <spelling>München</spelling>
+      <language>de</language>
+    </name>
+    <name>
+      <spelling>Munich</spelling>
+      <language>en</language>
+    </name>
+  </tns:t2>
+  <tns:t2>
+    <name>
+      <spelling>Wiesbaden</spelling>
+      <language>de</language>
+    </name>
+  </tns:t2>
+  <tns:t2>
+    <name>
+      <spelling>Darmstadt</spelling>
+    </name>
+  </tns:t2>
+</tns:collection>
