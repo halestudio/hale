@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:collection xmlns:tns="http://www.example.org/t1/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.example.org/t1/ t1.xsd">
+    <tns:t1>
+        <name language="de">München</name>
+        <name language="en">Munich</name>
+    </tns:t1>
+    <tns:t1>
+        <name>Darmstadt</name>
+    </tns:t1>
+    <tns:t1>
+        <name language="de">Wiesbaden</name>
+    </tns:t1>
+</tns:collection>

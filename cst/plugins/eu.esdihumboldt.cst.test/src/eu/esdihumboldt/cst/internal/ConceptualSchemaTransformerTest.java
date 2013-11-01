@@ -24,6 +24,7 @@ import org.junit.Test;
 import eu.esdihumboldt.cst.ConceptualSchemaTransformer;
 import eu.esdihumboldt.cst.test.DefaultTransformationTest;
 import eu.esdihumboldt.cst.test.TransformationExample;
+import eu.esdihumboldt.cst.test.TransformationExamples;
 import eu.esdihumboldt.hale.common.align.transformation.service.impl.DefaultInstanceSink;
 import eu.esdihumboldt.hale.common.core.io.impl.NullProgressIndicator;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
@@ -35,6 +36,16 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
  * @author Simon Templer
  */
 public class ConceptualSchemaTransformerTest extends DefaultTransformationTest {
+
+	/**
+	 * Test for the groovy transformation function.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testGroovy1() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.GROOVY1));
+	}
 
 	@Ignore
 	// XXX not working with the current CST
