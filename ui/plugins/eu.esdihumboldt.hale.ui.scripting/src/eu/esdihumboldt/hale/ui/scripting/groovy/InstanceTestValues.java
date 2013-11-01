@@ -30,7 +30,7 @@ import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 
 /**
- * TODO Type description
+ * Test values provided based on the instance service.
  * 
  * @author Simon Templer
  */
@@ -81,9 +81,10 @@ public class InstanceTestValues implements TestValues {
 				return null;
 			}
 		}
-		if (current instanceof Instance) {
-			return ((Instance) current).getValue();
-		}
+		/*
+		 * Do not extract value if it is an instance as we might want to work on
+		 * the instance itself.
+		 */
 
 		return current;
 	}

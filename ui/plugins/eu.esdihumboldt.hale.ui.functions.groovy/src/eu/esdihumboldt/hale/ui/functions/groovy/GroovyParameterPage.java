@@ -45,10 +45,12 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
 import eu.esdihumboldt.cst.functions.groovy.GroovyTransformation;
+import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.PropertyValueImpl;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage;
 import eu.esdihumboldt.hale.ui.functions.core.SourceViewerParameterPage;
 import eu.esdihumboldt.hale.ui.scripting.groovy.InstanceTestValues;
@@ -140,7 +142,10 @@ public class GroovyParameterPage extends SourceViewerParameterPage implements Gr
 		}
 
 		// TODO specify classloader?
-		GroovyShell shell = new GroovyShell(GroovyTransformation.createGroovyBinding(values, null));
+		boolean useInstanceValues = CellUtil.getOptionalParameter(getWizard().getUnfinishedCell(),
+				GroovyTransformation.PARAM_INSTANCE_VARIABLES, Value.of(false)).as(Boolean.class);
+		GroovyShell shell = new GroovyShell(GroovyTransformation.createGroovyBinding(values, null,
+				useInstanceValues));
 		Script script = null;
 		try {
 			script = shell.parse(document.get());
