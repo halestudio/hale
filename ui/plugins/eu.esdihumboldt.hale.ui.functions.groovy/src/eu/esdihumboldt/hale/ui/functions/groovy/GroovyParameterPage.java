@@ -102,7 +102,7 @@ public class GroovyParameterPage extends SourceViewerParameterPage implements Gr
 		super.onShowPage(firstShow);
 
 		// variables may have changed
-		updateState(getDocument());
+		forceValidation();
 	}
 
 	/**
@@ -122,11 +122,11 @@ public class GroovyParameterPage extends SourceViewerParameterPage implements Gr
 	}
 
 	/**
-	 * @see SourceViewerParameterPage#validate(IDocument)
+	 * @see SourceViewerParameterPage#validate(String)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	protected boolean validate(IDocument document) {
+	protected boolean validate(String document) {
 		List<PropertyValue> values = new ArrayList<PropertyValue>();
 		if (variables != null) {
 			for (EntityDefinition var : variables) {
@@ -156,19 +156,31 @@ public class GroovyParameterPage extends SourceViewerParameterPage implements Gr
 				builder, useInstanceValues));
 		Script script = null;
 		try {
-			script = shell.parse(document.get());
+			script = shell.parse(document);
 
 			GroovyTransformation.evaluate(script, builder, targetProperty.getDefinition()
 					.getDefinition().getPropertyType());
-		} catch (Exception e) {
-			setMessage(e.getMessage(), ERROR);
+		} catch (final Exception e) {
+			getShell().getDisplay().syncExec(new Runnable() {
+
+				@Override
+				public void run() {
+					setMessage(e.getMessage(), ERROR);
+				}
+			});
 			addErrorAnnotation(script, e);
 			// return valid if NPE, as this might be caused by null test values
 			return e instanceof NullPointerException;
 //			return false;
 		}
 
-		setMessage(null);
+		getShell().getDisplay().syncExec(new Runnable() {
+
+			@Override
+			public void run() {
+				setMessage(null);
+			}
+		});
 		return true;
 	}
 
@@ -204,7 +216,7 @@ public class GroovyParameterPage extends SourceViewerParameterPage implements Gr
 		// try to determine position from stack trace of script execution
 		if (position == null && script != null) {
 			for (StackTraceElement ste : e.getStackTrace()) {
-				if (ste.getClassName().equals(script.getClass().getName())) {
+				if (ste.getClassName().startsWith(script.getClass().getName())) {
 					int line = ste.getLineNumber() - 1;
 					if (line >= 0) {
 						try {
