@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<hale-project version="2.7.0.qualifier">
+    <name>Groovy transformation test</name>
+    <author>Simon Templer</author>
+    <created>2013-11-01T11:41:14.258+01:00</created>
+    <modified>2013-11-01T13:29:30.530+01:00</modified>
+    <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
+        <setting name="projectFiles.separate">false</setting>
+        <setting name="target">file:/home/simon-local/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/groovy1/t1t2.halex</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
+    </save-config>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.source" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="resourceId">4bf67578-601e-4175-a45f-35021a0a189f</setting>
+        <setting name="source">t1.xsd</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.target" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="resourceId">4720034c-767a-4d4f-a655-f687902940cd</setting>
+        <setting name="source">t2.xsd</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.instance.read.source" provider-id="eu.esdihumboldt.hale.io.xml.reader">
+        <setting name="resourceId">3fa165d6-b5ca-4999-b34f-4a7bea767d55</setting>
+        <setting name="source">instance1.xml</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.gml</setting>
+    </resource>
+    <file name="styles.sld" location="t1t2.halex.styles.sld"/>
+    <file name="alignment.xml" location="t1t2.halex.alignment.xml"/>
+</hale-project>

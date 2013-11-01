@@ -284,6 +284,16 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 	}
 
 	/**
+	 * Test for the groovy transformation function.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testGroovy1() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.GROOVY1));
+	}
+
+	/**
 	 * Test for the classification.
 	 * 
 	 * @throws Exception if an error occurs executing the test
