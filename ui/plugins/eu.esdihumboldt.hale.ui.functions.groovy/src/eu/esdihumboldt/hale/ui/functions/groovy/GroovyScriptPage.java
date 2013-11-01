@@ -15,16 +15,34 @@
 
 package eu.esdihumboldt.hale.ui.functions.groovy;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.source.Annotation;
+import org.eclipse.jface.text.source.AnnotationModel;
+import org.eclipse.jface.text.source.AnnotationRulerColumn;
+import org.eclipse.jface.text.source.CompositeRuler;
+import org.eclipse.jface.text.source.IAnnotationModel;
+import org.eclipse.jface.text.source.IOverviewRuler;
+import org.eclipse.jface.text.source.IVerticalRuler;
+import org.eclipse.jface.text.source.LineNumberRulerColumn;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
+
+import com.google.common.collect.Iterators;
 
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
 import eu.esdihumboldt.hale.ui.util.ColorManager;
 import eu.esdihumboldt.hale.ui.util.groovy.GroovyColorManager;
 import eu.esdihumboldt.hale.ui.util.groovy.GroovySourceViewerUtil;
 import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
+import eu.esdihumboldt.hale.ui.util.source.SimpleAnnotationUtil;
+import groovy.lang.Script;
 
 /**
  * Base page for editing a Groovy script for type relations.
@@ -37,6 +55,8 @@ public class GroovyScriptPage extends SourceViewerPage implements GroovyConstant
 	 * The Groovy color manager.
 	 */
 	protected final ColorManager colorManager = new GroovyColorManager();
+
+	private final IAnnotationModel annotationModel = new AnnotationModel();
 
 	/**
 	 * Default constructor.
@@ -54,9 +74,10 @@ public class GroovyScriptPage extends SourceViewerPage implements GroovyConstant
 	protected void createAndSetDocument(SourceViewer viewer) {
 		IDocument doc = new Document();
 		GroovySourceViewerUtil.setupDocument(doc);
+		annotationModel.connect(doc);
 		doc.set(""); //$NON-NLS-1$
 
-		viewer.setDocument(doc);
+		viewer.setDocument(doc, annotationModel);
 	}
 
 	@Override
@@ -64,6 +85,90 @@ public class GroovyScriptPage extends SourceViewerPage implements GroovyConstant
 		colorManager.dispose();
 
 		super.dispose();
+	}
+
+	/**
+	 * Handle a completed validation and display the results.
+	 * 
+	 * @param script the executed script if it could be compiled, may be
+	 *            <code>null</code>
+	 * @param exception the error that occurred, <code>null</code> if the
+	 *            validation was successful
+	 * @return if the script was validated successfully
+	 */
+	protected boolean handleValidationResult(Script script, final Exception exception) {
+		// set page message
+		getShell().getDisplay().syncExec(new Runnable() {
+
+			@Override
+			public void run() {
+				if (exception == null) {
+					setMessage(null);
+				}
+				else {
+					setMessage(exception.getMessage(), ERROR);
+				}
+			}
+		});
+
+		// add annotation based on exception
+		if (exception != null) {
+			addErrorAnnotation(script, exception);
+		}
+
+		// return valid if NPE, as this might be caused by null test values
+		return exception == null || exception instanceof NullPointerException;
+	}
+
+	/**
+	 * Add an error annotation based on the given exception.
+	 * 
+	 * @param script the Groovy script, may be <code>null</code> if it could not
+	 *            be compiled
+	 * @param exception the occurred exception
+	 */
+	private void addErrorAnnotation(Script script, Exception exception) {
+		GroovyParameterPage.addGroovyErrorAnnotation(annotationModel, getDocument(), script,
+				exception);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	protected boolean validate(String document) {
+		// clear annotations
+		List<Annotation> annotations = new ArrayList<>();
+		Iterators.addAll(annotations, annotationModel.getAnnotationIterator());
+		for (Annotation annotation : annotations) {
+			annotationModel.removeAnnotation(annotation);
+		}
+
+		return super.validate(document);
+	}
+
+	@Override
+	protected IOverviewRuler createOverviewRuler() {
+		IOverviewRuler ruler = SimpleAnnotationUtil.createDefaultOverviewRuler(14, colorManager,
+				annotationModel);
+		return ruler;
+	}
+
+	@Override
+	protected IVerticalRuler createVerticalRuler() {
+		final Display display = Display.getCurrent();
+		CompositeRuler ruler = new CompositeRuler(3);
+
+		AnnotationRulerColumn annotations = SimpleAnnotationUtil
+				.createDefaultAnnotationRuler(annotationModel);
+
+		ruler.addDecorator(0, annotations);
+
+		LineNumberRulerColumn lineNumbers = new LineNumberRulerColumn();
+		lineNumbers.setBackground(display.getSystemColor(SWT.COLOR_GRAY)); // SWT.COLOR_INFO_BACKGROUND));
+		lineNumbers.setForeground(display.getSystemColor(SWT.COLOR_BLACK)); // SWT.COLOR_INFO_FOREGROUND));
+		lineNumbers.setFont(JFaceResources.getTextFont());
+
+		ruler.addDecorator(1, lineNumbers);
+		return ruler;
 	}
 
 }

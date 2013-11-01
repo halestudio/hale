@@ -20,14 +20,15 @@ import java.util.Set;
 
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
-import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.source.CompositeRuler;
+import org.eclipse.jface.text.source.IOverviewRuler;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.LineNumberRulerColumn;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -43,6 +44,7 @@ import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
 import eu.esdihumboldt.hale.ui.util.source.SourceViewerUndoSupport;
+import eu.esdihumboldt.hale.ui.util.source.ValidatingSourceViewer;
 
 /**
  * Generic parameter page based on a source viewer.
@@ -52,7 +54,7 @@ import eu.esdihumboldt.hale.ui.util.source.SourceViewerUndoSupport;
 public class SourceViewerPage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements
 		ParameterPage {
 
-	private SourceViewer viewer;
+	private ValidatingSourceViewer viewer;
 	private final String parameterName;
 	private String initialValue = "";
 
@@ -100,9 +102,33 @@ public class SourceViewerPage extends HaleWizardPage<AbstractGenericFunctionWiza
 	@Override
 	protected void createContent(Composite page) {
 		// init editor
-		IVerticalRuler ruler = createRuler();
-		viewer = new SourceViewer(page, ruler, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		IVerticalRuler ruler = createVerticalRuler();
+		IOverviewRuler overviewRuler = createOverviewRuler();
+		viewer = new ValidatingSourceViewer(page, ruler, overviewRuler, true, SWT.BORDER
+				| SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL) {
+
+			@Override
+			protected boolean validate(String content) {
+				return SourceViewerPage.this.validate(content);
+			}
+
+		};
 		viewer.getTextWidget().setFont(JFaceResources.getTextFont());
+		viewer.addPropertyChangeListener(new IPropertyChangeListener() {
+
+			@Override
+			public void propertyChange(final PropertyChangeEvent event) {
+				if (ValidatingSourceViewer.PROPERTY_VALID.equals(event.getProperty())) {
+					getShell().getDisplay().syncExec(new Runnable() {
+
+						@Override
+						public void run() {
+							setPageComplete((Boolean) event.getNewValue());
+						}
+					});
+				}
+			}
+		});
 
 		configure(viewer);
 
@@ -112,11 +138,20 @@ public class SourceViewerPage extends HaleWizardPage<AbstractGenericFunctionWiza
 	}
 
 	/**
+	 * Create the overview ruler for the source viewer.
+	 * 
+	 * @return the overview ruler or <code>null</code>
+	 */
+	protected IOverviewRuler createOverviewRuler() {
+		return null;
+	}
+
+	/**
 	 * Create the vertical ruler for the source viewer.
 	 * 
 	 * @return the vertical ruler
 	 */
-	protected IVerticalRuler createRuler() {
+	protected IVerticalRuler createVerticalRuler() {
 		final Display display = Display.getCurrent();
 		CompositeRuler ruler = new CompositeRuler(3);
 		LineNumberRulerColumn lineNumbers = new LineNumberRulerColumn();
@@ -138,21 +173,15 @@ public class SourceViewerPage extends HaleWizardPage<AbstractGenericFunctionWiza
 		viewer.configure(conf);
 
 		createAndSetDocument(viewer);
+	}
 
-		viewer.getDocument().addDocumentListener(new IDocumentListener() {
-
-			@Override
-			public void documentChanged(DocumentEvent event) {
-				updateState(event.getDocument());
-			}
-
-			@Override
-			public void documentAboutToBeChanged(DocumentEvent event) {
-				// ignore
-			}
-		});
-
-		updateState(viewer.getDocument());
+	/**
+	 * Force validation of the source viewers document.
+	 */
+	public void forceValidation() {
+		if (viewer != null) {
+			viewer.forceValidation();
+		}
 	}
 
 	/**
@@ -165,24 +194,13 @@ public class SourceViewerPage extends HaleWizardPage<AbstractGenericFunctionWiza
 	}
 
 	/**
-	 * Update the page state.
-	 * 
-	 * @param document the current document
-	 */
-	protected void updateState(IDocument document) {
-		boolean valid = validate(document);
-
-		setPageComplete(valid);
-	}
-
-	/**
 	 * Validate the given document. The default implementation always returns
 	 * <code>true</code>.
 	 * 
 	 * @param document the document to validate
 	 * @return if the document is valid
 	 */
-	protected boolean validate(IDocument document) {
+	protected boolean validate(String document) {
 		return true;
 	}
 

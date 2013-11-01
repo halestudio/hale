@@ -185,28 +185,43 @@ public class GroovyParameterPage extends SourceViewerParameterPage implements Gr
 	}
 
 	private void addErrorAnnotation(Script script, Exception e) {
+		addGroovyErrorAnnotation(annotationModel, getDocument(), script, e);
+	}
+
+	/**
+	 * Add an error annotation to the given annotation model based on an
+	 * exception that occurred while compiling or executing the Groovy Script.
+	 * 
+	 * @param annotationModel the annotation model
+	 * @param document the current document
+	 * @param script the executed script, or <code>null</code>
+	 * @param exception the occurred exception
+	 */
+	public static void addGroovyErrorAnnotation(IAnnotationModel annotationModel,
+			IDocument document, Script script, Exception exception) {
 		// handle multiple groovy compilation errors
-		if (e instanceof MultipleCompilationErrorsException) {
-			ErrorCollector errors = ((MultipleCompilationErrorsException) e).getErrorCollector();
+		if (exception instanceof MultipleCompilationErrorsException) {
+			ErrorCollector errors = ((MultipleCompilationErrorsException) exception)
+					.getErrorCollector();
 			for (int i = 0; i < errors.getErrorCount(); i++) {
 				SyntaxException ex = errors.getSyntaxError(i);
 				if (ex != null) {
-					addErrorAnnotation(script, ex);
+					addGroovyErrorAnnotation(annotationModel, document, script, ex);
 				}
 			}
 			return;
 		}
 
 		Annotation annotation = new Annotation(SimpleAnnotations.TYPE_ERROR, false,
-				e.getLocalizedMessage());
+				exception.getLocalizedMessage());
 		Position position = null;
 
 		// single syntax exception
-		if (e instanceof SyntaxException) {
-			int line = ((SyntaxException) e).getStartLine() - 1;
+		if (exception instanceof SyntaxException) {
+			int line = ((SyntaxException) exception).getStartLine() - 1;
 			if (line >= 0) {
 				try {
-					position = new Position(getTextField().getDocument().getLineOffset(line));
+					position = new Position(document.getLineOffset(line));
 				} catch (BadLocationException e1) {
 					log.warn("Wrong error position in document", e1);
 				}
@@ -215,13 +230,12 @@ public class GroovyParameterPage extends SourceViewerParameterPage implements Gr
 
 		// try to determine position from stack trace of script execution
 		if (position == null && script != null) {
-			for (StackTraceElement ste : e.getStackTrace()) {
+			for (StackTraceElement ste : exception.getStackTrace()) {
 				if (ste.getClassName().startsWith(script.getClass().getName())) {
 					int line = ste.getLineNumber() - 1;
 					if (line >= 0) {
 						try {
-							position = new Position(getTextField().getDocument()
-									.getLineOffset(line));
+							position = new Position(document.getLineOffset(line));
 							break;
 						} catch (BadLocationException e1) {
 							log.warn("Wrong error position in document", e1);

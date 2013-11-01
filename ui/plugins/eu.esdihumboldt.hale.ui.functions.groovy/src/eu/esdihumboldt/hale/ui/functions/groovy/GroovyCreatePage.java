@@ -19,7 +19,14 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration;
 
 import com.google.common.collect.ImmutableList;
 
+import eu.esdihumboldt.cst.functions.groovy.GroovyCreate;
+import eu.esdihumboldt.hale.common.align.model.CellUtil;
+import eu.esdihumboldt.hale.common.align.model.Type;
+import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
 import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
+import groovy.lang.Script;
 
 /**
  * Configuration page for the Groovy Create script.
@@ -41,6 +48,29 @@ public class GroovyCreatePage extends GroovyScriptPage {
 	protected SourceViewerConfiguration createConfiguration() {
 		return new SimpleGroovySourceViewerConfiguration(colorManager, ImmutableList.of(
 				BINDING_BUILDER, BINDING_INDEX, BINDING_TARGET));
+	}
+
+	@Override
+	protected boolean validate(String document) {
+		super.validate(document);
+
+		Type typeEntity = (Type) CellUtil.getFirstEntity(getWizard().getUnfinishedCell()
+				.getTarget());
+
+		InstanceBuilder builder = new InstanceBuilder();
+		Binding binding = GroovyCreate.createBinding(0, builder);
+
+		GroovyShell shell = new GroovyShell(binding);
+		Script script = null;
+		try {
+			script = shell.parse(document);
+
+			GroovyCreate.evaluate(script, builder, typeEntity.getDefinition().getDefinition());
+		} catch (final Exception e) {
+			return handleValidationResult(script, e);
+		}
+
+		return handleValidationResult(script, null);
 	}
 
 }
