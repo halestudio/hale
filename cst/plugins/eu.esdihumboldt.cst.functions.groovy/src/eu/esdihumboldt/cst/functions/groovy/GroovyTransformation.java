@@ -39,8 +39,12 @@ import eu.esdihumboldt.hale.common.align.transformation.function.impl.PropertyVa
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.convert.ConversionUtil;
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import groovy.lang.Binding;
+import groovy.lang.Closure;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 
@@ -63,17 +67,24 @@ public class GroovyTransformation extends
 			ListMultimap<String, PropertyValue> variables, String resultName,
 			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
 			TransformationLog log) throws TransformationException, NoResultException {
+		// determine if instances should be used in variables or their values
 		boolean useInstanceVariables = getOptionalParameter(PARAM_INSTANCE_VARIABLES,
 				Value.of(false)).as(Boolean.class);
+
+		// instance builder
+		InstanceBuilder builder = createBuilder(resultProperty);
+
+		// create the script binding
 		Binding binding = createGroovyBinding(variables.get(ENTITY_VARIABLE), getCell().getSource()
-				.get(ENTITY_VARIABLE), useInstanceVariables);
+				.get(ENTITY_VARIABLE), builder, useInstanceVariables);
 
 		Object result;
 		try {
 			Script groovyScript = GroovyUtil.getScript(this, binding);
 
-			// run the script
-			result = groovyScript.run();
+			// evaluate the script
+			result = evaluate(groovyScript, builder, resultProperty.getDefinition()
+					.getPropertyType());
 		} catch (Throwable e) {
 			throw new TransformationException("Error evaluating the cell script", e);
 		}
@@ -85,18 +96,85 @@ public class GroovyTransformation extends
 	}
 
 	/**
+	 * Evaluate a Groovy script.
+	 * 
+	 * @param groovyScript the script
+	 * @param builder the instance builder, may be <code>null</code>
+	 * @param targetType the type definition of the target property
+	 * @return the result property value or instance
+	 */
+	public static Object evaluate(Script groovyScript, InstanceBuilder builder,
+			TypeDefinition targetType) {
+		Object result = groovyScript.run();
+
+		if (builder != null) {
+			Object target = groovyScript.getBinding().getVariable(BINDING_TARGET);
+			if (target != null) {
+				if (target instanceof Closure<?>) {
+					// builder closure
+					Instance instance = builder.createInstance(targetType, (Closure<?>) target);
+
+					/*
+					 * Set the instance value to the script result, if different
+					 * from the target closure.
+					 */
+					if (instance instanceof MutableInstance && result != target) {
+						((MutableInstance) instance).setValue(result);
+					}
+
+					result = instance;
+				}
+				else {
+					// treat target as value
+					// overriding the result
+					result = target;
+				}
+			}
+		}
+
+		if (result instanceof Closure<?>) {
+			throw new IllegalStateException("A closure cannnot be used as result");
+		}
+
+		return result;
+	}
+
+	/**
+	 * Creates an instance builder for the given result property if applicable.
+	 * 
+	 * @param resultProperty the result property the instance builder should be
+	 *            created for
+	 * @return an instance builder or <code>null</code> if for the property no
+	 *         instance builder should be used
+	 */
+	public static InstanceBuilder createBuilder(PropertyEntityDefinition resultProperty) {
+		if (!resultProperty.getDefinition().getPropertyType().getChildren().isEmpty()) {
+			// property has children and is thus represented as instance
+			return new InstanceBuilder();
+		}
+
+		return null;
+	}
+
+	/**
 	 * Create a Groovy binding from the list of variables.
 	 * 
 	 * @param vars the variable values
 	 * @param varDefs definition of the assigned variables, in case some
 	 *            variable values are not set, may be <code>null</code>
+	 * @param builder the instance builder for creating target instances, or
+	 *            <code>null</code> if not applicable
 	 * @param useInstanceVariables if instances should be used as variables for
 	 *            the binding instead of extracting the instance values
 	 * @return the binding for use with {@link GroovyShell}
 	 */
 	public static Binding createGroovyBinding(List<PropertyValue> vars,
-			List<? extends Entity> varDefs, boolean useInstanceVariables) {
+			List<? extends Entity> varDefs, InstanceBuilder builder, boolean useInstanceVariables) {
 		Binding binding = new Binding();
+
+		// init builder and target bindings
+		binding.setVariable(BINDING_TARGET, null);
+		binding.setVariable(BINDING_BUILDER, builder);
 
 		// collect definitions to check if all were provided
 		Set<EntityDefinition> notDefined = new HashSet<>();
