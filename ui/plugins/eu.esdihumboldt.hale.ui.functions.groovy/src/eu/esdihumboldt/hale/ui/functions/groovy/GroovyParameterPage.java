@@ -39,6 +39,7 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
 
 import de.cs3d.util.logging.ALogger;
@@ -47,10 +48,12 @@ import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
 import eu.esdihumboldt.cst.functions.groovy.GroovyTransformation;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.PropertyValueImpl;
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
 import eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage;
 import eu.esdihumboldt.hale.ui.functions.core.SourceViewerParameterPage;
 import eu.esdihumboldt.hale.ui.scripting.groovy.InstanceTestValues;
@@ -141,15 +144,22 @@ public class GroovyParameterPage extends SourceViewerParameterPage implements Gr
 			annotationModel.removeAnnotation(annotation);
 		}
 
+		Property targetProperty = (Property) CellUtil.getFirstEntity(getWizard()
+				.getUnfinishedCell().getTarget());
+		InstanceBuilder builder = GroovyTransformation
+				.createBuilder(targetProperty.getDefinition());
+
 		// TODO specify classloader?
 		boolean useInstanceValues = CellUtil.getOptionalParameter(getWizard().getUnfinishedCell(),
 				GroovyTransformation.PARAM_INSTANCE_VARIABLES, Value.of(false)).as(Boolean.class);
 		GroovyShell shell = new GroovyShell(GroovyTransformation.createGroovyBinding(values, null,
-				useInstanceValues));
+				builder, useInstanceValues));
 		Script script = null;
 		try {
 			script = shell.parse(document.get());
-			script.run();
+
+			GroovyTransformation.evaluate(script, builder, targetProperty.getDefinition()
+					.getDefinition().getPropertyType());
 		} catch (Exception e) {
 			setMessage(e.getMessage(), ERROR);
 			addErrorAnnotation(script, e);
@@ -236,7 +246,8 @@ public class GroovyParameterPage extends SourceViewerParameterPage implements Gr
 
 	@Override
 	protected SourceViewerConfiguration createConfiguration() {
-		return new SimpleGroovySourceViewerConfiguration(colorManager);
+		return new SimpleGroovySourceViewerConfiguration(colorManager, ImmutableList.of(
+				BINDING_BUILDER, BINDING_TARGET));
 	}
 
 	/**

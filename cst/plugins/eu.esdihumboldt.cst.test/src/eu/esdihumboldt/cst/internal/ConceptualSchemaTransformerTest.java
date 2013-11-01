@@ -47,6 +47,26 @@ public class ConceptualSchemaTransformerTest extends DefaultTransformationTest {
 		testTransform(TransformationExamples.getExample(TransformationExamples.GROOVY1));
 	}
 
+	/**
+	 * Test for the groovy transformation function.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testGroovy2() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.GROOVY2));
+	}
+
+	/**
+	 * Test for the groovy transformation function.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testGroovy3() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.GROOVY3));
+	}
+
 	@Ignore
 	// XXX not working with the current CST
 	@Override
