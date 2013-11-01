@@ -48,7 +48,7 @@ public class InstanceAccessorMetaClass extends DelegatingMetaClass {
 
 	@Override
 	public Object getProperty(Object object, String property) {
-		if (object instanceof Group && "properties".equals(property)) {
+		if (object instanceof Group && ("properties".equals(property) || "p".equals(property))) {
 			return new InstanceAccessor(object);
 		}
 		return super.getProperty(object, property);
