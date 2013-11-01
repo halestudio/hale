@@ -20,15 +20,15 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
-import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.source.CompositeRuler;
 import org.eclipse.jface.text.source.IOverviewRuler;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.LineNumberRulerColumn;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
 import eu.esdihumboldt.hale.ui.util.source.SourceViewerUndoSupport;
+import eu.esdihumboldt.hale.ui.util.source.ValidatingSourceViewer;
 
 /**
  * Parameter page using a source viewer.
@@ -43,6 +44,8 @@ import eu.esdihumboldt.hale.ui.util.source.SourceViewerUndoSupport;
  * @author Simon Templer
  */
 public abstract class SourceViewerParameterPage extends SourceListParameterPage<SourceViewer> {
+
+	private ValidatingSourceViewer viewer;
 
 	/**
 	 * @see SourceListParameterPage#SourceListParameterPage(String, String,
@@ -96,10 +99,33 @@ public abstract class SourceViewerParameterPage extends SourceListParameterPage<
 		// init editor
 		IVerticalRuler verticalRuler = createVerticalRuler();
 		IOverviewRuler overviewRuler = createOverviewRuler();
-		SourceViewer viewer = new SourceViewer(parent, verticalRuler, overviewRuler,
-				overviewRuler != null, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		viewer = new ValidatingSourceViewer(parent, verticalRuler, overviewRuler,
+				overviewRuler != null, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL) {
+
+			@Override
+			protected boolean validate(String content) {
+				return SourceViewerParameterPage.this.validate(content);
+			}
+
+		};
 		viewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		viewer.getTextWidget().setFont(JFaceResources.getTextFont());
+
+		viewer.addPropertyChangeListener(new IPropertyChangeListener() {
+
+			@Override
+			public void propertyChange(final PropertyChangeEvent event) {
+				if (ValidatingSourceViewer.PROPERTY_VALID.equals(event.getProperty())) {
+					getShell().getDisplay().syncExec(new Runnable() {
+
+						@Override
+						public void run() {
+							setPageComplete((Boolean) event.getNewValue());
+						}
+					});
+				}
+			}
+		});
 
 		SourceViewerUndoSupport.install(viewer);
 
@@ -141,21 +167,6 @@ public abstract class SourceViewerParameterPage extends SourceListParameterPage<
 		viewer.configure(conf);
 
 		createAndSetDocument(viewer);
-
-		viewer.getDocument().addDocumentListener(new IDocumentListener() {
-
-			@Override
-			public void documentChanged(DocumentEvent event) {
-				updateState(event.getDocument());
-			}
-
-			@Override
-			public void documentAboutToBeChanged(DocumentEvent event) {
-				// ignore
-			}
-		});
-
-		updateState(viewer.getDocument());
 	}
 
 	/**
@@ -167,15 +178,24 @@ public abstract class SourceViewerParameterPage extends SourceListParameterPage<
 		return getTextField().getDocument();
 	}
 
-	/**
-	 * Update the page state.
-	 * 
-	 * @param document the current document
-	 */
-	protected void updateState(IDocument document) {
-		boolean valid = validate(document);
+//	/**
+//	 * Update the page state.
+//	 * 
+//	 * @param document the current document
+//	 */
+//	protected void updateState(IDocument document) {
+//		boolean valid = validate(document);
+//
+//		setPageComplete(valid);
+//	}
 
-		setPageComplete(valid);
+	/**
+	 * Force validation of the source viewers document.
+	 */
+	public void forceValidation() {
+		if (viewer != null) {
+			viewer.forceValidation();
+		}
 	}
 
 	/**
@@ -185,7 +205,7 @@ public abstract class SourceViewerParameterPage extends SourceListParameterPage<
 	 * @param document the document to validate
 	 * @return if the document is valid
 	 */
-	protected boolean validate(IDocument document) {
+	protected boolean validate(String document) {
 		return true;
 	}
 
