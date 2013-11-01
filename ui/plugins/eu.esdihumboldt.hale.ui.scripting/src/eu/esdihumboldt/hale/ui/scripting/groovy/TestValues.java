@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.ui.scripting.groovy;
 
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
 
 /**
  * Provides test value for use in a script.
@@ -28,7 +29,8 @@ public interface TestValues {
 	 * Get a test value for the given property.
 	 * 
 	 * @param property the property
-	 * @return the test value
+	 * @return the test value, may be an {@link Instance}, a value or
+	 *         <code>null</code>
 	 */
 	public Object get(PropertyEntityDefinition property);
 

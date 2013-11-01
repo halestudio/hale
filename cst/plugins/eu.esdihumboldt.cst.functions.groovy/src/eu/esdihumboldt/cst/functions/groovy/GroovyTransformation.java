@@ -37,6 +37,8 @@ import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSi
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.PropertyValueImpl;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
+import eu.esdihumboldt.hale.common.convert.ConversionUtil;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
@@ -50,13 +52,21 @@ import groovy.lang.Script;
 public class GroovyTransformation extends
 		AbstractSingleTargetPropertyTransformation<TransformationEngine> implements GroovyConstants {
 
+	/**
+	 * Name of the parameter specifying if instances should be used as variables
+	 * in the binding.
+	 */
+	public static final String PARAM_INSTANCE_VARIABLES = "variablesAsInstances";
+
 	@Override
 	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,
 			ListMultimap<String, PropertyValue> variables, String resultName,
 			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
 			TransformationLog log) throws TransformationException, NoResultException {
+		boolean useInstanceVariables = getOptionalParameter(PARAM_INSTANCE_VARIABLES,
+				Value.of(false)).as(Boolean.class);
 		Binding binding = createGroovyBinding(variables.get(ENTITY_VARIABLE), getCell().getSource()
-				.get(ENTITY_VARIABLE));
+				.get(ENTITY_VARIABLE), useInstanceVariables);
 
 		Object result;
 		try {
@@ -80,10 +90,12 @@ public class GroovyTransformation extends
 	 * @param vars the variable values
 	 * @param varDefs definition of the assigned variables, in case some
 	 *            variable values are not set, may be <code>null</code>
+	 * @param useInstanceVariables if instances should be used as variables for
+	 *            the binding instead of extracting the instance values
 	 * @return the binding for use with {@link GroovyShell}
 	 */
 	public static Binding createGroovyBinding(List<PropertyValue> vars,
-			List<? extends Entity> varDefs) {
+			List<? extends Entity> varDefs, boolean useInstanceVariables) {
 		Binding binding = new Binding();
 
 		// collect definitions to check if all were provided
@@ -115,16 +127,27 @@ public class GroovyTransformation extends
 
 			// determine the variable value
 			Object value = var.getValue();
+			boolean asIs = false;
 			if (value instanceof Instance) {
-				// TODO make this dependent on parameter
-				value = ((Instance) value).getValue();
+				if (useInstanceVariables) {
+					// use instance as is
+					asIs = true;
+				}
+				else {
+					// extract value from instance
+					value = ((Instance) value).getValue();
+				}
 			}
 			if (value instanceof Number) {
 				// use numbers as is
 			}
-			else {
+			else if (!asIs) {
 				// try conversion to String as default
-				value = var.getValueAs(String.class);
+				try {
+					value = ConversionUtil.getAs(value, String.class);
+				} catch (Exception e) {
+					// ignore
+				}
 			}
 
 			// determine the variable name
