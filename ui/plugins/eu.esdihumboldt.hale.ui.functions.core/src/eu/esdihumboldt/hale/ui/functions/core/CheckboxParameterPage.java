@@ -24,11 +24,8 @@ import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -40,7 +37,8 @@ import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
 
 /**
- * Parameter page showing a checkbox for the specified function params.
+ * Parameter page showing a checkbox for the specified function params. Default
+ * for an unspecified or illegal parameter value is always <code>false</code>.
  * 
  * @author Kai Schwierczek
  */
@@ -53,7 +51,8 @@ public class CheckboxParameterPage extends HaleWizardPage<AbstractGenericFunctio
 	 * Constructor.
 	 */
 	public CheckboxParameterPage() {
-		super("checkbox", "Please choose", null);
+		super("checkbox", "Please specify the function parameters", null);
+		setDescription("Enable or disable the given options");
 		setPageComplete(true);
 	}
 
@@ -66,10 +65,6 @@ public class CheckboxParameterPage extends HaleWizardPage<AbstractGenericFunctio
 		setPageComplete(true);
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage#setParameter(java.util.Set,
-	 *      com.google.common.collect.ListMultimap)
-	 */
 	@Override
 	public void setParameter(Set<FunctionParameter> params,
 			ListMultimap<String, ParameterValue> initialValues) {
@@ -81,11 +76,12 @@ public class CheckboxParameterPage extends HaleWizardPage<AbstractGenericFunctio
 			else
 				selected.put(param, false);
 		}
+
+//		if (params.size() == 1) {
+//			setDescription(params.iterator().next().getDisplayName());
+//		}
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage#getConfiguration()
-	 */
 	@Override
 	public ListMultimap<String, ParameterValue> getConfiguration() {
 		ListMultimap<String, ParameterValue> result = ArrayListMultimap.create(selected.size(), 1);
@@ -104,15 +100,8 @@ public class CheckboxParameterPage extends HaleWizardPage<AbstractGenericFunctio
 
 		// create section for each function parameter
 		for (final FunctionParameter fp : selected.keySet()) {
-			Group group = new Group(page, SWT.NONE);
-			group.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-			group.setText(fp.getDisplayName());
-			group.setLayout(GridLayoutFactory.swtDefaults().create());
-			if (fp.getDescription() != null) {
-				Label description = new Label(group, SWT.NONE);
-				description.setText(fp.getDescription());
-			}
-			Button checkbox = new Button(group, SWT.CHECK);
+			Button checkbox = new Button(page, SWT.CHECK);
+			checkbox.setText(fp.getDisplayName());
 			checkbox.setSelection(selected.get(fp));
 			checkbox.addSelectionListener(new SelectionAdapter() {
 
@@ -121,6 +110,9 @@ public class CheckboxParameterPage extends HaleWizardPage<AbstractGenericFunctio
 					selected.put(fp, !((Boolean) selected.get(fp)));
 				}
 			});
+			if (fp.getDescription() != null) {
+				checkbox.setToolTipText(fp.getDescription());
+			}
 		}
 	}
 }
