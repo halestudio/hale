@@ -77,6 +77,11 @@ public class ValidatingSourceViewer extends SourceViewer {
 
 	private static final ALogger log = ALoggerFactory.getLogger(ValidatingSourceViewer.class);
 
+	/**
+	 * Validation scheduling delay in milliseconds.
+	 */
+	private static final int VALIDATE_DELAY = 500;
+
 	private final AtomicBoolean validationEnabled = new AtomicBoolean(true);
 
 	private final ReentrantLock changeLock = new ReentrantLock();
@@ -222,7 +227,7 @@ public class ValidatingSourceViewer extends SourceViewer {
 				}
 
 				// schedule validation
-				validateJob.schedule(100);
+				validateJob.schedule(VALIDATE_DELAY);
 			}
 
 			@Override
@@ -273,7 +278,7 @@ public class ValidatingSourceViewer extends SourceViewer {
 
 			if (document != null) {
 				// initial validation
-				validateJob.schedule(100);
+				validateJob.schedule(VALIDATE_DELAY);
 			}
 		}
 	}
