@@ -1,17 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
-    <cell relation="eu.esdihumboldt.hale.align.retype" id="C13507292-a799-4314-b529-23614178f83e" priority="normal">
-        <source>
-            <class>
-                <type name="CityType" ns="http://www.example.org/cities"/>
-            </class>
-        </source>
-        <target>
-            <class>
-                <type name="NamedPlaceType" ns="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"/>
-            </class>
-        </target>
-    </cell>
     <cell relation="eu.esdihumboldt.hale.align.formattedstring" id="Cd3d9f319-188d-4309-83a7-b0d2ef7d34ce" priority="normal">
         <source name="var">
             <property>
@@ -86,20 +74,81 @@
         </target>
         <parameter value="_example" name="value"/>
     </cell>
-    <cell relation="eu.esdihumboldt.cst.functions.groovy" id="Cf01b365d-2aa8-4d79-ae76-fcea402c547c" priority="normal">
-        <source name="var">
-            <property>
+    <cell relation="eu.esdihumboldt.cst.functions.groovy.retype" id="C362f6ed4-b97f-404c-b679-6700fc4b9fdf" priority="normal">
+        <source>
+            <class>
                 <type name="CityType" ns="http://www.example.org/cities"/>
-                <child name="name"/>
-            </property>
+            </class>
         </source>
-        <target name="result">
-            <property>
+        <target>
+            <class>
                 <type name="NamedPlaceType" ns="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"/>
-                <child name="name" ns="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"/>
-            </property>
+            </class>
         </target>
-        <parameter value="true" name="variablesAsInstances"/>
-        <parameter value="// extract language from source name&#xA;def lang = name.p.language.value()&#xA;&#xA;// build each target name&#xA;_target = {&#xA;&#x9;GeographicalName {&#xA;&#x9;&#x9;if (lang) {&#xA;&#x9;&#x9;&#x9;language lang&#xA;&#x9;&#x9;}&#xA;&#x9;&#x9;spelling {&#xA;&#x9;&#x9;&#x9;SpellingOfName {&#xA;&#x9;&#x9;&#x9;&#x9;text name.value&#xA;&#x9;&#x9;&#x9;}&#xA;&#x9;&#x9;}&#xA;&#x9;}&#xA;}" name="script"/>
+        <complexParameter name="script">
+            <core:text xmlns:core="http://www.esdi-humboldt.eu/hale/core" xml:space="preserve">
+/*
+ * Here we use the Groovy Retype because we want to group the
+ * names by language, to differentiate between different names
+ * in different languages and different spellings.
+ *
+ * This cannot be handled with the Groovy Script property
+ * transformation, as we need access to all names at once.
+ */
+ 
+// 1. Pre-processing
+
+// language mapped to name list
+def namesByLanguage = [:]
+
+// group the names
+_source.p.name.each {
+	// for each name in the source City
+	
+	// extract the name instance value
+	def name = it.value
+	// ...and the language
+	def lang = it.p.language.value()
+	
+	if (!namesByLanguage[lang]) {
+		// store a list in the map for the language
+		namesByLanguage[lang] = []
+	}
+	
+	// add name to list for language
+	namesByLanguage[lang] &lt;&lt; name
+}
+
+// 2. Create the target structure
+
+// we only add the GeographicalNames here, the other properties
+// are populated via regular property transformations
+
+println namesByLanguage
+
+_target = {
+	namesByLanguage.each { lang, names -&gt;
+		// create a name for each entry in the map
+		// the namespace must be specified as name is ambigious,
+		// it is specified in the GML namespace as well
+		name(namespace: 'urn:x-inspire:specification:gmlas:GeographicalNames:3.0') {
+			GeographicalName {
+				// the name language
+				language lang
+				
+				// the different spellings for the same language
+				names.each { name -&gt;
+					spelling {
+						SpellingOfName {
+							text name
+						}
+					}
+				}
+			}
+		}
+	}
+}
+</core:text>
+        </complexParameter>
     </cell>
 </alignment>
