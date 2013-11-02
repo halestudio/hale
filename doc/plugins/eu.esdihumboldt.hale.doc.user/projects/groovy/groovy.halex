@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<hale-project version="2.7.0.qualifier">
+    <name>Groovy property transformation example</name>
+    <author>Simon Templer</author>
+    <description>Simple example demonstrating usage of Groovy scripting for property transformations.</description>
+    <created>2013-11-02T15:52:51.134+01:00</created>
+    <modified>2013-11-02T16:27:38.800+01:00</modified>
+    <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
+        <setting name="projectFiles.separate">false</setting>
+        <setting name="target">file:/home/simon/repos/hale/doc/plugins/eu.esdihumboldt.hale.doc.user/projects/groovy/groovy.halex</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
+    </save-config>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.target" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="resourceId">90707092-8578-44a9-ab7f-dfad30e387fe</setting>
+        <setting name="source">resource://inspire.hale-schemas/annex1/3.0/GeographicalNames.xsd</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.source" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="resourceId">e318814b-1dc2-419e-8c3b-626588e1d201</setting>
+        <setting name="source">city.xsd</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.instance.read.source" provider-id="eu.esdihumboldt.hale.io.xml.reader">
+        <setting name="resourceId">fc077a46-8dba-4a12-a34c-a898fbcc5d80</setting>
+        <setting name="source">example.xml</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">org.eclipse.core.runtime.xml</setting>
+    </resource>
+    <file name="styles.sld" location="groovy.halex.styles.sld"/>
+    <file name="alignment.xml" location="groovy.halex.alignment.xml"/>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:GeographicalNames:3.0}NamedPlaceType/1">{urn:x-inspire:specification:gmlas:GeographicalNames:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:GeographicalNames:3.0}NamedPlaceType/count">1</property>
+</hale-project>
