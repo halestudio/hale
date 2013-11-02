@@ -31,5 +31,10 @@
             location="projects/typefilter/t1t2.halex"
             summary="Simple example demonstrating the use of filters on source types.">
       </example-project>
+      <example-project
+            id="eu.esdihumboldt.hale.doc.user.groovy"
+            location="projects/groovy/groovy.halex"
+            summary="Simple example demonstrating usage of Groovy scripting for property transformations.">
+      </example-project>
    </extension>
 </plugin>
