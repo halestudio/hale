@@ -24,11 +24,10 @@ import eu.esdihumboldt.hale.common.align.transformation.function.TransformationE
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractTypeTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
-import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import groovy.lang.Binding;
-import groovy.lang.Closure;
 import groovy.lang.Script;
 
 /**
@@ -49,26 +48,33 @@ public class GroovyRetype extends AbstractTypeTransformation<TransformationEngin
 
 		InstanceBuilder builder = new InstanceBuilder();
 
-		Binding binding = new Binding();
-		binding.setVariable(BINDING_TARGET, null);
-		binding.setVariable(BINDING_BUILDER, builder);
-		binding.setVariable(BINDING_SOURCE, getSource());
+		Binding binding = createBinding(getSource(), builder);
 
 		try {
 			Script script = GroovyUtil.getScript(this, binding);
-			script.run();
+			MutableInstance target = GroovyUtil.evaluate(script, builder, targetType);
 
-			Closure<?> closure = (Closure<?>) binding.getVariable(BINDING_TARGET);
-
-			Instance instance = builder.createInstance(targetType, closure);
-
-			MutableInstance target = (MutableInstance) instance;
 			getPropertyTransformer().publish(getSource(), target, log, cell);
 		} catch (TransformationException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new TransformationException(e.getMessage(), e);
 		}
+	}
+
+	/**
+	 * Create the binding for the Groovy Retype script function.
+	 * 
+	 * @param source the source instance
+	 * @param builder the instance builder
+	 * @return the binding
+	 */
+	public static Binding createBinding(FamilyInstance source, InstanceBuilder builder) {
+		Binding binding = new Binding();
+		binding.setVariable(BINDING_TARGET, null);
+		binding.setVariable(BINDING_BUILDER, builder);
+		binding.setVariable(BINDING_SOURCE, source);
+		return binding;
 	}
 
 }

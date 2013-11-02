@@ -19,14 +19,32 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration;
 
 import com.google.common.collect.ImmutableList;
 
+import eu.esdihumboldt.cst.functions.groovy.GroovyRetype;
+import eu.esdihumboldt.cst.functions.groovy.internal.GroovyUtil;
+import eu.esdihumboldt.hale.common.align.model.CellUtil;
+import eu.esdihumboldt.hale.common.align.model.Type;
+import eu.esdihumboldt.hale.common.align.transformation.function.impl.FamilyInstanceImpl;
+import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
+import eu.esdihumboldt.hale.common.instance.model.DataSet;
+import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
+import eu.esdihumboldt.hale.ui.scripting.groovy.InstanceTestValues;
+import eu.esdihumboldt.hale.ui.scripting.groovy.TestValues;
 import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
+import groovy.lang.Script;
 
 /**
  * Configuration page for the Groovy Retype script.
  * 
  * @author Simon Templer
  */
+@SuppressWarnings("restriction")
 public class GroovyRetypePage extends GroovyScriptPage {
+
+	private final TestValues testValues;
 
 	/**
 	 * Default constructor.
@@ -35,12 +53,47 @@ public class GroovyRetypePage extends GroovyScriptPage {
 		super();
 		setTitle("Convert instances script");
 		setDescription("Specify a Groovy script to build a target instance from a source instance");
+
+		testValues = new InstanceTestValues();
 	}
 
 	@Override
 	protected SourceViewerConfiguration createConfiguration() {
 		return new SimpleGroovySourceViewerConfiguration(colorManager, ImmutableList.of(
 				BINDING_BUILDER, BINDING_SOURCE, BINDING_TARGET));
+	}
+
+	@Override
+	protected boolean validate(String document) {
+		super.validate(document);
+
+		Type targetType = (Type) CellUtil.getFirstEntity(getWizard().getUnfinishedCell()
+				.getTarget());
+		Type sourceType = (Type) CellUtil.getFirstEntity(getWizard().getUnfinishedCell()
+				.getSource());
+
+		InstanceBuilder builder = new InstanceBuilder();
+
+		Instance instance = testValues.get(sourceType.getDefinition());
+		if (instance == null) {
+			// use an empty instance as input for the script
+			instance = new DefaultInstance(sourceType.getDefinition().getDefinition(),
+					DataSet.SOURCE);
+		}
+		FamilyInstance source = new FamilyInstanceImpl(instance);
+		Binding binding = GroovyRetype.createBinding(source, builder);
+
+		GroovyShell shell = new GroovyShell(binding);
+		Script script = null;
+		try {
+			script = shell.parse(document);
+
+			GroovyUtil.evaluate(script, builder, targetType.getDefinition().getDefinition());
+		} catch (final Exception e) {
+			return handleValidationResult(script, e);
+		}
+
+		return handleValidationResult(script, null);
 	}
 
 }
