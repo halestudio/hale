@@ -36,5 +36,10 @@
             location="projects/groovy/groovy.halex"
             summary="Simple example demonstrating usage of Groovy scripting for property transformations.">
       </example-project>
+      <example-project
+            id="eu.esdihumboldt.hale.doc.user.groovy_type"
+            location="projects/groovy/groovy_type.halex"
+            summary="Advanced example demonstrating usage of Groovy scripting in type transformations and the combination with ordinary mapping functions.">
+      </example-project>
    </extension>
 </plugin>
