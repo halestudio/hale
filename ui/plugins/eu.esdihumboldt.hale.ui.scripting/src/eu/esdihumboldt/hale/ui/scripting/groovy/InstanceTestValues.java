@@ -20,7 +20,9 @@ import java.util.List;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.filter.TypeFilter;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Group;
@@ -102,17 +104,17 @@ public class InstanceTestValues implements TestValues {
 	/**
 	 * Get an instance that may hold a value for the given property.
 	 * 
-	 * @param property the property
+	 * @param entity the property
 	 * @return an instance or <code>null</code>
 	 */
-	protected Instance getInstance(PropertyEntityDefinition property) {
+	protected Instance getInstance(EntityDefinition entity) {
 		// TODO cache instance?
 		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
 				InstanceService.class);
 		InstanceCollection instances = is.getInstances(DataSet.SOURCE).select(
-				new TypeFilter(property.getType()));
-		if (property.getFilter() != null) {
-			instances = instances.select(property.getFilter());
+				new TypeFilter(entity.getType()));
+		if (entity.getFilter() != null) {
+			instances = instances.select(entity.getFilter());
 		}
 
 		ResourceIterator<Instance> it = instances.iterator();
@@ -126,6 +128,11 @@ public class InstanceTestValues implements TestValues {
 		}
 
 		return null;
+	}
+
+	@Override
+	public Instance get(TypeEntityDefinition type) {
+		return getInstance(type);
 	}
 
 }

@@ -21,11 +21,9 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
-import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import groovy.lang.Binding;
-import groovy.lang.Closure;
 import groovy.lang.Script;
 
 /**
@@ -44,33 +42,12 @@ public class GroovyCreate extends Create implements GroovyConstants {
 
 		try {
 			Script script = GroovyUtil.getScript(this, binding);
-			return evaluate(script, builder, type);
+			return GroovyUtil.evaluate(script, builder, type);
 		} catch (TransformationException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new TransformationException(e.getMessage(), e);
 		}
-	}
-
-	/**
-	 * Evaluate a Groovy Create script.
-	 * 
-	 * @param script the script
-	 * @param builder the instance builder
-	 * @param type the type of the instance to create
-	 * @return the created instance
-	 */
-	public static MutableInstance evaluate(Script script, InstanceBuilder builder,
-			TypeDefinition type) {
-		// run the script
-		script.run();
-
-		// retrieve the target builder closure
-		Closure<?> closure = (Closure<?>) script.getBinding().getVariable(BINDING_TARGET);
-
-		// create the instance
-		Instance instance = builder.createInstance(type, closure);
-		return (MutableInstance) instance;
 	}
 
 	/**

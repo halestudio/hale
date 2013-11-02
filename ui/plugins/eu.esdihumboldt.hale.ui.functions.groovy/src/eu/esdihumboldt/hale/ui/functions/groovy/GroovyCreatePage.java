@@ -20,6 +20,7 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import com.google.common.collect.ImmutableList;
 
 import eu.esdihumboldt.cst.functions.groovy.GroovyCreate;
+import eu.esdihumboldt.cst.functions.groovy.internal.GroovyUtil;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
@@ -33,6 +34,7 @@ import groovy.lang.Script;
  * 
  * @author Simon Templer
  */
+@SuppressWarnings("restriction")
 public class GroovyCreatePage extends GroovyScriptPage {
 
 	/**
@@ -65,7 +67,7 @@ public class GroovyCreatePage extends GroovyScriptPage {
 		try {
 			script = shell.parse(document);
 
-			GroovyCreate.evaluate(script, builder, typeEntity.getDefinition().getDefinition());
+			GroovyUtil.evaluate(script, builder, typeEntity.getDefinition().getDefinition());
 		} catch (final Exception e) {
 			return handleValidationResult(script, e);
 		}

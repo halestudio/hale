@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.ui.scripting.groovy;
 
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 
 /**
@@ -33,5 +34,14 @@ public interface TestValues {
 	 *         <code>null</code>
 	 */
 	public Object get(PropertyEntityDefinition property);
+
+	/**
+	 * Get a test instance for the given type.
+	 * 
+	 * @param type the type
+	 * @return a test instance, or <code>null</code> if none could be
+	 *         found/created
+	 */
+	public Instance get(TypeEntityDefinition type);
 
 }
