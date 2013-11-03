@@ -6,7 +6,7 @@
 
 In the example the Groovy Retype function is used to transform the concept of names in the source data to a hierarchical structure differentiating between different names and different spellings of names.</description>
     <created>2013-11-02T15:52:51.134+01:00</created>
-    <modified>2013-11-02T17:25:48.752+01:00</modified>
+    <modified>2013-11-03T17:00:58.763+01:00</modified>
     <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
         <setting name="projectFiles.separate">false</setting>
         <setting name="target">file:/home/simon/repos/hale/doc/plugins/eu.esdihumboldt.hale.doc.user/projects/groovy/groovy_type.halex</setting>

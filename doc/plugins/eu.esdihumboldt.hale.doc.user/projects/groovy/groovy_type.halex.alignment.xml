@@ -124,8 +124,6 @@ _source.p.name.each {
 // we only add the GeographicalNames here, the other properties
 // are populated via regular property transformations
 
-println namesByLanguage
-
 _target = {
 	namesByLanguage.each { lang, names -&gt;
 		// create a name for each entry in the map
