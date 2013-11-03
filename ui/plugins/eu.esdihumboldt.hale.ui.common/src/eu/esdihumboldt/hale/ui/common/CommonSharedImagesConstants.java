@@ -206,4 +206,24 @@ public interface CommonSharedImagesConstants {
 	 */
 	public static final String IMG_HISTORY = "IMG_HISTORY";
 
+	/**
+	 * Key for image representing source schema.
+	 */
+	public static final String IMG_SOURCE_SCHEMA = "IMG_SOURCE_SCHEMA";
+
+	/**
+	 * Key for image representing target schema.
+	 */
+	public static final String IMG_TARGET_SCHEMA = "IMG_TARGET_SCHEMA";
+
+	/**
+	 * Key for image representing source schema.
+	 */
+	public static final String IMG_SOURCE_DATA = "IMG_SOURCE_DATA";
+
+	/**
+	 * Key for image representing target schema/data.
+	 */
+	public static final String IMG_TARGET_DATA = "IMG_TARGET_DATA";
+
 }

@@ -16,6 +16,8 @@
 package eu.esdihumboldt.hale.ui.functions.groovy;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.codehaus.groovy.control.ErrorCollector;
@@ -38,6 +40,7 @@ import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.ToolBar;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
@@ -54,8 +57,11 @@ import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.PropertyValueImpl;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage;
 import eu.esdihumboldt.hale.ui.functions.core.SourceViewerParameterPage;
+import eu.esdihumboldt.hale.ui.functions.groovy.TypeStructureTray.TypeProvider;
 import eu.esdihumboldt.hale.ui.scripting.groovy.InstanceTestValues;
 import eu.esdihumboldt.hale.ui.scripting.groovy.TestValues;
 import eu.esdihumboldt.hale.ui.util.IColorManager;
@@ -64,6 +70,7 @@ import eu.esdihumboldt.hale.ui.util.groovy.GroovySourceViewerUtil;
 import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
 import eu.esdihumboldt.hale.ui.util.source.SimpleAnnotationUtil;
 import eu.esdihumboldt.hale.ui.util.source.SimpleAnnotations;
+import eu.esdihumboldt.hale.ui.util.source.ValidatingSourceViewer;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 
@@ -182,6 +189,25 @@ public class GroovyParameterPage extends SourceViewerParameterPage implements Gr
 			}
 		});
 		return true;
+	}
+
+	@Override
+	protected void addActions(ToolBar toolbar, ValidatingSourceViewer viewer) {
+		super.addActions(toolbar, viewer);
+
+		TypeStructureTray.createToolItem(toolbar, this, SchemaSpaceID.TARGET, new TypeProvider() {
+
+			@Override
+			public Collection<? extends TypeDefinition> getTypes() {
+				Property targetProperty = (Property) CellUtil.getFirstEntity(getWizard()
+						.getUnfinishedCell().getTarget());
+				if (targetProperty != null) {
+					return Collections.singleton(targetProperty.getDefinition().getDefinition()
+							.getPropertyType());
+				}
+				return Collections.emptyList();
+			}
+		});
 	}
 
 	private void addErrorAnnotation(Script script, Exception e) {
@@ -324,4 +350,5 @@ public class GroovyParameterPage extends SourceViewerParameterPage implements Gr
 
 		super.dispose();
 	}
+
 }

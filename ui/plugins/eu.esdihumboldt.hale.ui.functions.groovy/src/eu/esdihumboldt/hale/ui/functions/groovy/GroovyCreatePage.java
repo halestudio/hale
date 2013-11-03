@@ -15,7 +15,11 @@
 
 package eu.esdihumboldt.hale.ui.functions.groovy;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
+import org.eclipse.swt.widgets.ToolBar;
 
 import com.google.common.collect.ImmutableList;
 
@@ -24,7 +28,11 @@ import eu.esdihumboldt.cst.functions.groovy.internal.GroovyUtil;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.functions.groovy.TypeStructureTray.TypeProvider;
 import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
+import eu.esdihumboldt.hale.ui.util.source.ValidatingSourceViewer;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
@@ -73,6 +81,24 @@ public class GroovyCreatePage extends GroovyScriptPage {
 		}
 
 		return handleValidationResult(script, null);
+	}
+
+	@Override
+	protected void addActions(ToolBar toolbar, ValidatingSourceViewer viewer) {
+		super.addActions(toolbar, viewer);
+
+		TypeStructureTray.createToolItem(toolbar, this, SchemaSpaceID.TARGET, new TypeProvider() {
+
+			@Override
+			public Collection<? extends TypeDefinition> getTypes() {
+				Type typeEntity = (Type) CellUtil.getFirstEntity(getWizard().getUnfinishedCell()
+						.getTarget());
+				if (typeEntity != null) {
+					return Collections.singleton(typeEntity.getDefinition().getDefinition());
+				}
+				return Collections.emptyList();
+			}
+		});
 	}
 
 }

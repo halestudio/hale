@@ -34,6 +34,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.ToolBar;
 
 import eu.esdihumboldt.hale.ui.util.source.SourceValidator;
 import eu.esdihumboldt.hale.ui.util.source.SourceViewerUndoSupport;
@@ -138,7 +139,19 @@ public abstract class SourceViewerParameterPage extends SourceListParameterPage<
 
 		SourceViewerUndoSupport.install(viewer);
 
+		addActions(panel.getToolbar(), viewer);
+
 		return viewer;
+	}
+
+	/**
+	 * Add actions to the tool bar.
+	 * 
+	 * @param toolbar the tool bar
+	 * @param viewer the source viewer
+	 */
+	protected void addActions(ToolBar toolbar, ValidatingSourceViewer viewer) {
+		// override me
 	}
 
 	/**

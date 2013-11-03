@@ -32,6 +32,7 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.ToolBar;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -145,6 +146,18 @@ public class SourceViewerPage extends HaleWizardPage<AbstractGenericFunctionWiza
 		SourceViewerUndoSupport.install(viewer);
 
 		viewer.getDocument().set(initialValue);
+
+		addActions(panel.getToolbar(), viewer);
+	}
+
+	/**
+	 * Add actions to the tool bar.
+	 * 
+	 * @param toolbar the tool bar
+	 * @param viewer the source viewer
+	 */
+	protected void addActions(ToolBar toolbar, ValidatingSourceViewer viewer) {
+		// override me
 	}
 
 	/**
