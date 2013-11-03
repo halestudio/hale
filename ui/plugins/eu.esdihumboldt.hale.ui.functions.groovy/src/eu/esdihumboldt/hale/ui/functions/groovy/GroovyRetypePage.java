@@ -15,7 +15,11 @@
 
 package eu.esdihumboldt.hale.ui.functions.groovy;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
+import org.eclipse.swt.widgets.ToolBar;
 
 import com.google.common.collect.ImmutableList;
 
@@ -29,9 +33,13 @@ import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.functions.groovy.TypeStructureTray.TypeProvider;
 import eu.esdihumboldt.hale.ui.scripting.groovy.InstanceTestValues;
 import eu.esdihumboldt.hale.ui.scripting.groovy.TestValues;
 import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
+import eu.esdihumboldt.hale.ui.util.source.ValidatingSourceViewer;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
@@ -94,6 +102,37 @@ public class GroovyRetypePage extends GroovyScriptPage {
 		}
 
 		return handleValidationResult(script, null);
+	}
+
+	@Override
+	protected void addActions(ToolBar toolbar, ValidatingSourceViewer viewer) {
+		super.addActions(toolbar, viewer);
+
+		TypeStructureTray.createToolItem(toolbar, this, SchemaSpaceID.SOURCE, new TypeProvider() {
+
+			@Override
+			public Collection<? extends TypeDefinition> getTypes() {
+				Type sourceType = (Type) CellUtil.getFirstEntity(getWizard().getUnfinishedCell()
+						.getSource());
+				if (sourceType != null) {
+					return Collections.singleton(sourceType.getDefinition().getDefinition());
+				}
+				return Collections.emptyList();
+			}
+		});
+
+		TypeStructureTray.createToolItem(toolbar, this, SchemaSpaceID.TARGET, new TypeProvider() {
+
+			@Override
+			public Collection<? extends TypeDefinition> getTypes() {
+				Type targetType = (Type) CellUtil.getFirstEntity(getWizard().getUnfinishedCell()
+						.getTarget());
+				if (targetType != null) {
+					return Collections.singleton(targetType.getDefinition().getDefinition());
+				}
+				return Collections.emptyList();
+			}
+		});
 	}
 
 }

@@ -103,6 +103,14 @@ public abstract class HaleWizardPage<W extends Wizard> extends WizardPage {
 		setControl(page);
 	}
 
+	/*
+	 * Make method public.
+	 */
+	@Override
+	public IWizardContainer getContainer() {
+		return super.getContainer();
+	}
+
 	/**
 	 * @see DialogPage#performHelp()
 	 */
