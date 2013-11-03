@@ -22,9 +22,21 @@ import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.source.SourceViewer;
+import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.viewers.IContentProvider;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ITreeSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
@@ -35,8 +47,18 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 
+import com.google.common.collect.ImmutableList;
+
+import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
+import eu.esdihumboldt.hale.common.schema.Classification;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.schema.groovy.DefinitionAccessor;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
+import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
+import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
@@ -44,6 +66,10 @@ import eu.esdihumboldt.hale.ui.common.definition.viewer.SchemaPatternFilter;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.StyledDefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TypeDefinitionContentProvider;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TypePropertyContentProvider;
+import eu.esdihumboldt.hale.ui.util.IColorManager;
+import eu.esdihumboldt.hale.ui.util.groovy.GroovyColorManager;
+import eu.esdihumboldt.hale.ui.util.groovy.GroovySourceViewerUtil;
+import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
 import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathFilteredTree;
 import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
 
@@ -134,7 +160,7 @@ public class TypeStructureTray extends DialogTray {
 		GridLayoutFactory.fillDefaults().numColumns(1).applyTo(page);
 
 		// retrieve the types
-		Collection<? extends TypeDefinition> types = this.types.getTypes();
+		final Collection<? extends TypeDefinition> types = this.types.getTypes();
 
 		// heading
 		Label caption = new Label(page, SWT.NONE);
@@ -151,7 +177,7 @@ public class TypeStructureTray extends DialogTray {
 		// create tree viewer
 		PatternFilter patternFilter = new SchemaPatternFilter();
 		patternFilter.setIncludeLeadingWildcard(true);
-		final FilteredTree filteredTree = new TreePathFilteredTree(page, SWT.MULTI | SWT.H_SCROLL
+		final FilteredTree filteredTree = new TreePathFilteredTree(page, SWT.SINGLE | SWT.H_SCROLL
 				| SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
 
 		TreeViewer tree = filteredTree.getViewer();
@@ -166,8 +192,7 @@ public class TypeStructureTray extends DialogTray {
 			contentProvider = new TreePathProviderAdapter(new TypeDefinitionContentProvider(tree));
 		}
 		tree.setContentProvider(contentProvider);
-		GridDataFactory.fillDefaults().grab(true, true).hint(250, SWT.DEFAULT)
-				.applyTo(filteredTree);
+		GridDataFactory.fillDefaults().grab(true, true).hint(250, 400).applyTo(filteredTree);
 
 		tree.setComparator(new DefinitionComparator());
 
@@ -179,7 +204,205 @@ public class TypeStructureTray extends DialogTray {
 			tree.setInput(types);
 		}
 
+		/*
+		 * Groovy specific part
+		 */
+		if (schemaSpace == SchemaSpaceID.SOURCE) {
+			// XXX not yet supported for source
+			return page;
+		}
+
+		// caption
+		Label example = new Label(page, SWT.NONE);
+		example.setText("Example");
+		example.setFont(JFaceResources.getHeaderFont());
+
+		// source viewer
+		final SourceViewer viewer = new SourceViewer(page, null, SWT.MULTI | SWT.BORDER
+				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.READ_ONLY);
+
+		final IColorManager colorManager = new GroovyColorManager();
+		SourceViewerConfiguration configuration = new SimpleGroovySourceViewerConfiguration(
+				colorManager, ImmutableList.of(GroovyConstants.BINDING_TARGET,
+						GroovyConstants.BINDING_BUILDER, GroovyConstants.BINDING_INDEX,
+						GroovyConstants.BINDING_SOURCE));
+		viewer.configure(configuration);
+
+		GridDataFactory.fillDefaults().grab(true, false).hint(250, 150)
+				.applyTo(viewer.getControl());
+
+		// make sure the color manager is disposed
+		viewer.getControl().addDisposeListener(new DisposeListener() {
+
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				colorManager.dispose();
+			}
+		});
+
+		// react to tree selection changes
+		tree.addSelectionChangedListener(new ISelectionChangedListener() {
+
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				IDocument doc = new Document();
+				GroovySourceViewerUtil.setupDocument(doc);
+				if (event.getSelection().isEmpty()) {
+					doc.set("// Please select a schema element");
+				}
+				else {
+					switch (schemaSpace) {
+					case SOURCE:
+						doc.set(""); // TODO
+						break;
+					case TARGET:
+						doc.set(createTargetSample(event.getSelection(), types));
+						break;
+					default:
+						doc.set("");
+					}
+				}
+				viewer.setDocument(doc);
+			}
+		});
+
+		tree.setSelection(StructuredSelection.EMPTY);
+
 		return page;
 	}
 
+	/**
+	 * Create sample code for populating the target property.
+	 * 
+	 * @param selection the selection in the tree viewer
+	 * @param types the types serving as input
+	 * @return the sample code
+	 */
+	protected String createTargetSample(ISelection selection,
+			Collection<? extends TypeDefinition> types) {
+		ITreeSelection treeSel = (ITreeSelection) selection;
+
+		TreePath[] paths = treeSel.getPaths();
+		if (paths != null && paths.length > 0) {
+			// XXX for now only use the first path
+
+			TreePath path = paths[0];
+
+			DefinitionGroup parent;
+			int startIndex = 0;
+
+			// determine parent type
+			if (path.getFirstSegment() instanceof TypeDefinition) {
+				// types are the top level elements
+				parent = (DefinitionGroup) path.getFirstSegment();
+				startIndex = 1;
+			}
+			else {
+				// types are not in the tree, single type must be root
+				parent = types.iterator().next();
+			}
+
+			StringBuilder example = new StringBuilder();
+			example.append(GroovyConstants.BINDING_TARGET);
+			example.append(" = {\n");
+
+			int indentCount = 0;
+			for (int i = startIndex; i < path.getSegmentCount(); i++) {
+				Definition<?> def = (Definition<?>) path.getSegment(i);
+				if (def instanceof PropertyDefinition) {
+					String indent = createIndent(++indentCount);
+
+					// property name
+					example.append(indent);
+					// TODO test if poperty must be accessed explicitly through
+					// builder?
+					example.append(def.getName().getLocalPart());
+
+					// test if uniquely accessible from parent
+					boolean useNamespace = true;
+					if (parent instanceof Definition<?>) {
+						try {
+							new DefinitionAccessor((Definition<?>) parent).findChildren(
+									def.getName().getLocalPart()).eval();
+							useNamespace = false;
+						} catch (IllegalStateException e) {
+							// ignore - namespace needed
+						}
+					}
+
+					boolean needComma = false;
+
+					// add namespace if necessary
+					if (useNamespace) {
+						example.append(" namespace: '");
+						example.append(def.getName().getNamespaceURI());
+						example.append('\'');
+						needComma = true;
+					}
+
+					TypeDefinition propertyType = ((PropertyDefinition) def).getPropertyType();
+					if (propertyType.getConstraint(HasValueFlag.class).isEnabled()) {
+						// add an example value
+						if (needComma) {
+							example.append(',');
+						}
+						example.append(' ');
+						switch (Classification.getClassification(def)) {
+						case NUMERIC_PROPERTY:
+							example.append("42");
+							break;
+						case STRING_PROPERTY:
+							example.append("'some value'");
+							break;
+						default:
+							example.append("some_value");
+						}
+
+						needComma = true;
+					}
+
+					if (DefinitionUtil.hasChildren(propertyType)) {
+						if (needComma) {
+							example.append(',');
+						}
+						example.append(" {");
+						example.append('\n');
+					}
+					else {
+						example.append('\n');
+						// no brackets to close here
+						indentCount--;
+						break;
+					}
+				}
+				else {
+					// groups are ignored
+				}
+
+				// set the new parent
+				parent = DefinitionUtil.getDefinitionGroup(def);
+			}
+
+			// close brackets
+			for (int i = indentCount; i > 0; i--) {
+				example.append(createIndent(i));
+				example.append('}');
+				example.append('\n');
+			}
+
+			example.append("}");
+
+			return example.toString();
+		}
+
+		return GroovyConstants.BINDING_TARGET + " = {}";
+	}
+
+	private String createIndent(int count) {
+		StringBuilder builder = new StringBuilder();
+		for (int i = 0; i < count; i++) {
+			builder.append('\t');
+		}
+		return builder.toString();
+	}
 }
