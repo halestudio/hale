@@ -35,8 +35,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
+import eu.esdihumboldt.hale.ui.util.source.SourceValidator;
 import eu.esdihumboldt.hale.ui.util.source.SourceViewerUndoSupport;
 import eu.esdihumboldt.hale.ui.util.source.ValidatingSourceViewer;
+import eu.esdihumboldt.hale.ui.util.source.ValidatingSourceViewerPanel;
 
 /**
  * Parameter page using a source viewer.
@@ -99,16 +101,16 @@ public abstract class SourceViewerParameterPage extends SourceListParameterPage<
 		// init editor
 		IVerticalRuler verticalRuler = createVerticalRuler();
 		IOverviewRuler overviewRuler = createOverviewRuler();
-		viewer = new ValidatingSourceViewer(parent, verticalRuler, overviewRuler,
-				overviewRuler != null, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL) {
+		ValidatingSourceViewerPanel panel = new ValidatingSourceViewerPanel(parent, verticalRuler,
+				overviewRuler, new SourceValidator() {
 
-			@Override
-			protected boolean validate(String content) {
-				return SourceViewerParameterPage.this.validate(content);
-			}
-
-		};
-		viewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+					@Override
+					public boolean validate(String content) {
+						return SourceViewerParameterPage.this.validate(content);
+					}
+				});
+		viewer = panel.getViewer();
+		panel.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		viewer.getTextWidget().setFont(JFaceResources.getTextFont());
 
 		viewer.addPropertyChangeListener(new IPropertyChangeListener() {
@@ -123,6 +125,13 @@ public abstract class SourceViewerParameterPage extends SourceListParameterPage<
 							setPageComplete((Boolean) event.getNewValue());
 						}
 					});
+				}
+				if (ValidatingSourceViewer.PROPERTY_VALIDATION_ENABLED.equals(event.getProperty())) {
+					if (!((Boolean) event.getNewValue())) {
+						// if validation is disabled, automatically set the page
+						// to be complete
+						setPageComplete(true);
+					}
 				}
 			}
 		});
