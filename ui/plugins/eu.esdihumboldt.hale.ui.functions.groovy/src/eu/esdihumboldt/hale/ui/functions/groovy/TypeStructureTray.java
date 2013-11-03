@@ -228,7 +228,7 @@ public class TypeStructureTray extends DialogTray {
 						GroovyConstants.BINDING_SOURCE));
 		viewer.configure(configuration);
 
-		GridDataFactory.fillDefaults().grab(true, false).hint(250, 150)
+		GridDataFactory.fillDefaults().grab(true, false).hint(200, 130)
 				.applyTo(viewer.getControl());
 
 		// make sure the color manager is disposed
