@@ -43,8 +43,10 @@ import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
+import eu.esdihumboldt.hale.ui.util.source.SourceValidator;
 import eu.esdihumboldt.hale.ui.util.source.SourceViewerUndoSupport;
 import eu.esdihumboldt.hale.ui.util.source.ValidatingSourceViewer;
+import eu.esdihumboldt.hale.ui.util.source.ValidatingSourceViewerPanel;
 
 /**
  * Generic parameter page based on a source viewer.
@@ -104,15 +106,15 @@ public class SourceViewerPage extends HaleWizardPage<AbstractGenericFunctionWiza
 		// init editor
 		IVerticalRuler ruler = createVerticalRuler();
 		IOverviewRuler overviewRuler = createOverviewRuler();
-		viewer = new ValidatingSourceViewer(page, ruler, overviewRuler, true, SWT.BORDER
-				| SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL) {
+		ValidatingSourceViewerPanel panel = new ValidatingSourceViewerPanel(page, ruler,
+				overviewRuler, new SourceValidator() {
 
-			@Override
-			protected boolean validate(String content) {
-				return SourceViewerPage.this.validate(content);
-			}
-
-		};
+					@Override
+					public boolean validate(String content) {
+						return SourceViewerPage.this.validate(content);
+					}
+				});
+		viewer = panel.getViewer();
 		viewer.getTextWidget().setFont(JFaceResources.getTextFont());
 		viewer.addPropertyChangeListener(new IPropertyChangeListener() {
 
@@ -126,6 +128,14 @@ public class SourceViewerPage extends HaleWizardPage<AbstractGenericFunctionWiza
 							setPageComplete((Boolean) event.getNewValue());
 						}
 					});
+				}
+				else if (ValidatingSourceViewer.PROPERTY_VALIDATION_ENABLED.equals(event
+						.getProperty())) {
+					if (!((Boolean) event.getNewValue())) {
+						// if validation is disabled, automatically set the page
+						// to be complete
+						setPageComplete(true);
+					}
 				}
 			}
 		});

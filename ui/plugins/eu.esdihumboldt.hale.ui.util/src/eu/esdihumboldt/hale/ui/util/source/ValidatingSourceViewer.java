@@ -107,6 +107,12 @@ public class ValidatingSourceViewer extends SourceViewer {
 	 */
 	public static final String PROPERTY_VALID = "valid";
 
+	/**
+	 * Name of the property holding the state if the viewer validation is
+	 * enabled.
+	 */
+	public static final String PROPERTY_VALIDATION_ENABLED = "validationEnabled";
+
 	private final Set<IPropertyChangeListener> propertyChangeListeners = new CopyOnWriteArraySet<>();
 
 	/**
@@ -198,10 +204,10 @@ public class ValidatingSourceViewer extends SourceViewer {
 				}
 
 				if (notify) {
+					PropertyChangeEvent event = new PropertyChangeEvent(
+							ValidatingSourceViewer.this, PROPERTY_VALID, !success, success);
 					for (IPropertyChangeListener listener : propertyChangeListeners) {
 						try {
-							PropertyChangeEvent event = new PropertyChangeEvent(
-									ValidatingSourceViewer.this, PROPERTY_VALID, !success, success);
 							listener.propertyChange(event);
 						} catch (Exception e) {
 							log.error("Error notifying listener on property change", e);
@@ -322,6 +328,39 @@ public class ValidatingSourceViewer extends SourceViewer {
 	 */
 	public void removePropertyChangeListener(IPropertyChangeListener listener) {
 		propertyChangeListeners.remove(listener);
+	}
+
+	/**
+	 * @return if the validation is currently enabled
+	 */
+	public boolean isValidationEnabled() {
+		return validationEnabled.get();
+	}
+
+	/**
+	 * Enable or disable the automatic validation.
+	 * 
+	 * @param enabled <code>true</code> if the validation should be enabled,
+	 *            <code>false</code> if it should be disabled
+	 */
+	public void setValidationEnabled(boolean enabled) {
+		boolean old = validationEnabled.getAndSet(enabled);
+		if (old != enabled) {
+			PropertyChangeEvent event = new PropertyChangeEvent(ValidatingSourceViewer.this,
+					PROPERTY_VALIDATION_ENABLED, old, enabled);
+			for (IPropertyChangeListener listener : propertyChangeListeners) {
+				try {
+					listener.propertyChange(event);
+				} catch (Exception e) {
+					log.error("Error notifying listener on property change", e);
+				}
+			}
+
+			if (enabled) {
+				// force validation
+				forceValidation();
+			}
+		}
 	}
 
 }
