@@ -15,6 +15,7 @@ Import-Package: com.google.common.base;version="9.0.0",
  groovy.lang;version="1.7.3",
  org.springframework.core.convert;version="3.0.0.RELEASE"
 Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.5.0",
- eu.esdihumboldt.hale.common.instance.groovy;bundle-version="2.7.0"
+ eu.esdihumboldt.hale.common.instance.groovy;bundle-version="2.7.0",
+ org.eclipse.help
 Export-Package: eu.esdihumboldt.cst.functions.groovy,
  eu.esdihumboldt.cst.functions.groovy.internal;x-internal:=true
