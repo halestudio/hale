@@ -8,4 +8,8 @@
       <description>Follow the link below to learn how to use the Groovy Create function to build instances.</description>
       <topic href="help/create.xhtml" label="Groovy Create"/>
    </context>
+   <context id="script" title="Groovy script">
+      <description>Follow the link below to learn how to transform properties with a Groovy script.</description>
+      <topic href="help/script.xhtml" label="Groovy script"/>
+   </context>
 </contexts>

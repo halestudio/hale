@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>Groovy script</title>
+</head>
+<body>
+	<h1>Groovy script</h1>
+	<div id="help">
+		<p>
+			Using the <i>Groovy script</i> function you can control the
+			transformation of source properties to a specific target property
+			through a Groovy script. Basic knowledge of the Groovy language is
+			recommended when using this function. The source properties you
+			choose as variables are available as variables in the script.
+		</p>
+		<p>
+			The Groovy script is called for each set of source property values to
+			transform, and is responsible to create a corresponding target
+			instance or value. The source variables may or may not be set,
+			depending on the occurrence in the source instance. A source variable
+			that is not set has a
+			<code>null</code>
+			value.
+		</p>
+		<p>By default the variables contain the value directly associated
+			to a property. You can configure the function to instead use the
+			property instances with their complete structure as variable values.
+			There is a dedicated API to access the properties of any such
+			instance - it is explained in the following chapter.</p>
+		<h2>Access properties in instance variables</h2>
+		<p>
+			Assuming you have an instance variable called
+			<code>instance</code>
+			available in your script, then you can access the instance value with
+			<code>instance.value</code>
+			. With
+			<code>instance.p</code>
+			or
+			<code>instance.properties</code>
+			on the other hand, you can create a properties accessor.
+		</p>
+		<include
+			path="eu.esdihumboldt.cst.functions.groovy/help/common.xhtml/accessor" />
+
+		<h2>The function result</h2>
+		<p>The result of your function can be a plain value for the target
+			property, a structured instance, or both, depending on the type of
+			the target property.</p>
+		<p>
+			A plain value for the target property can be returned by making it
+			the last statement in the script, or by explicitly exiting the script with the 
+			<code>
+				<b>return</b>
+			</code>
+			command.
+		</p>
+
+		<h3>Build a target instance</h3>
+		<include
+			path="eu.esdihumboldt.cst.functions.groovy/help/common.xhtml/builder" />
+		<include
+			path="eu.esdihumboldt.cst.functions.groovy/help/common.xhtml/builder-accessor" />
+	</div>
+</body>
+</html>
