@@ -4,4 +4,8 @@
       <description>Follow the link below on how to use the Groovy Retype function, accessing the source instance and building a target instance.</description>
       <topic href="help/retype.xhtml" label="Groovy Retype"/>
    </context>
+   <context id="create" title="Groovy Create">
+      <description>Follow the link below to learn how to use the Groovy Create function to build instances.</description>
+      <topic href="help/create.xhtml" label="Groovy Create"/>
+   </context>
 </contexts>
