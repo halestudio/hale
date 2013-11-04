@@ -87,6 +87,8 @@ public class GroovyCreatePage extends GroovyScriptPage {
 	protected void addActions(ToolBar toolbar, ValidatingSourceViewer viewer) {
 		super.addActions(toolbar, viewer);
 
+		PageHelp.createToolItem(toolbar, this);
+
 		TypeStructureTray.createToolItem(toolbar, this, SchemaSpaceID.TARGET, new TypeProvider() {
 
 			@Override
@@ -99,6 +101,11 @@ public class GroovyCreatePage extends GroovyScriptPage {
 				return Collections.emptyList();
 			}
 		});
+	}
+
+	@Override
+	public String getHelpContext() {
+		return "eu.esdihumboldt.cst.functions.groovy.create";
 	}
 
 }

@@ -148,9 +148,12 @@
   }
 }</code></pre>
 		<h3>Troubleshooting</h3>
-		<p>In case there are <b>multiple properties with the same name</b> you
+		<p>
+			In case there are <b>multiple properties with the same name</b> you
 			have to reference a specific property explicitly by specifying its
-			namespace. This is done like this:</p>
+			namespace. This is done through a named parameter <i>namespace</i>
+			like in the example below:
+		</p>
 		<pre><code><b>_target</b> = {
   type(<i>'test'</i>, namespace: <i>'http://my.namespace.com'</i>)
 }</code></pre>
