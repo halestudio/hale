@@ -31,7 +31,7 @@ import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
  */
 public class GroovyExplanation extends AbstractCellExplanation implements GroovyConstants {
 
-	private static final String EXPLANATION_PATTERN = "Populates the {0} property with the result of the following groovy script (be sure to include a return statement):\n"
+	private static final String EXPLANATION_PATTERN = "Populates the {0} property with the result of the following groovy script:\n"
 			+ "{1}\nSource property names are bound to the corresponding value, if the context condition/index matches, otherwise the value isn't set.";
 
 	/**
