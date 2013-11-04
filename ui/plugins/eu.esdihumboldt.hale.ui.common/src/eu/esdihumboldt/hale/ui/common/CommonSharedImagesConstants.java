@@ -226,4 +226,9 @@ public interface CommonSharedImagesConstants {
 	 */
 	public static final String IMG_TARGET_DATA = "IMG_TARGET_DATA";
 
+	/**
+	 * Key for help image.
+	 */
+	public static final String IMG_HELP = "IMG_HELP";
+
 }
