@@ -83,6 +83,7 @@
       <typeFunction
             category="eu.esdihumboldt.cst.functions.groovy"
             description="Use a Groovy script to create target instances."
+            help="help/create.xhtml"
             icon="icons/star.png"
             identifier="eu.esdihumboldt.cst.functions.groovy.create"
             name="Groovy Create">
