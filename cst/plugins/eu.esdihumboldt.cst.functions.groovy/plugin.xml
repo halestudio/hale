@@ -38,7 +38,7 @@
          </functionParameter>
          <functionParameter
                description="Use the complete structured instances as variables in the script instead of only the value if a variable has child properties"
-               label="Always use instances for variables with child properties"
+               label="Use instances for variables with child properties"
                maxOccurrence="1"
                minOccurrence="0"
                name="variablesAsInstances"
