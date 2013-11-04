@@ -18,9 +18,14 @@ package eu.esdihumboldt.hale.ui.functions.groovy;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.groovy.control.ErrorCollector;
+import org.codehaus.groovy.control.MultipleCompilationErrorsException;
+import org.codehaus.groovy.syntax.SyntaxException;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.AnnotationModel;
 import org.eclipse.jface.text.source.AnnotationRulerColumn;
@@ -36,12 +41,15 @@ import org.eclipse.swt.widgets.Display;
 
 import com.google.common.collect.Iterators;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
 import eu.esdihumboldt.hale.ui.util.ColorManager;
 import eu.esdihumboldt.hale.ui.util.groovy.GroovyColorManager;
 import eu.esdihumboldt.hale.ui.util.groovy.GroovySourceViewerUtil;
 import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
 import eu.esdihumboldt.hale.ui.util.source.SimpleAnnotationUtil;
+import eu.esdihumboldt.hale.ui.util.source.SimpleAnnotations;
 import groovy.lang.Script;
 
 /**
@@ -50,6 +58,8 @@ import groovy.lang.Script;
  * @author Simon Templer
  */
 public class GroovyScriptPage extends SourceViewerPage implements GroovyConstants {
+
+	private static final ALogger log = ALoggerFactory.getLogger(GroovyScriptPage.class);
 
 	/**
 	 * The Groovy color manager.
@@ -128,8 +138,7 @@ public class GroovyScriptPage extends SourceViewerPage implements GroovyConstant
 	 * @param exception the occurred exception
 	 */
 	private void addErrorAnnotation(Script script, Exception exception) {
-		GroovyParameterPage.addGroovyErrorAnnotation(annotationModel, getDocument(), script,
-				exception);
+		addGroovyErrorAnnotation(annotationModel, getDocument(), script, exception);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -169,6 +178,71 @@ public class GroovyScriptPage extends SourceViewerPage implements GroovyConstant
 
 		ruler.addDecorator(1, lineNumbers);
 		return ruler;
+	}
+
+	/**
+	 * Add an error annotation to the given annotation model based on an
+	 * exception that occurred while compiling or executing the Groovy Script.
+	 * 
+	 * @param annotationModel the annotation model
+	 * @param document the current document
+	 * @param script the executed script, or <code>null</code>
+	 * @param exception the occurred exception
+	 */
+	public static void addGroovyErrorAnnotation(IAnnotationModel annotationModel,
+			IDocument document, Script script, Exception exception) {
+		// handle multiple groovy compilation errors
+		if (exception instanceof MultipleCompilationErrorsException) {
+			ErrorCollector errors = ((MultipleCompilationErrorsException) exception)
+					.getErrorCollector();
+			for (int i = 0; i < errors.getErrorCount(); i++) {
+				SyntaxException ex = errors.getSyntaxError(i);
+				if (ex != null) {
+					addGroovyErrorAnnotation(annotationModel, document, script, ex);
+				}
+			}
+			return;
+		}
+
+		Annotation annotation = new Annotation(SimpleAnnotations.TYPE_ERROR, false,
+				exception.getLocalizedMessage());
+		Position position = null;
+
+		// single syntax exception
+		if (exception instanceof SyntaxException) {
+			int line = ((SyntaxException) exception).getStartLine() - 1;
+			if (line >= 0) {
+				try {
+					position = new Position(document.getLineOffset(line));
+				} catch (BadLocationException e1) {
+					log.warn("Wrong error position in document", e1);
+				}
+			}
+		}
+
+		// try to determine position from stack trace of script execution
+		if (position == null && script != null) {
+			for (StackTraceElement ste : exception.getStackTrace()) {
+				if (ste.getClassName().startsWith(script.getClass().getName())) {
+					int line = ste.getLineNumber() - 1;
+					if (line >= 0) {
+						try {
+							position = new Position(document.getLineOffset(line));
+							break;
+						} catch (BadLocationException e1) {
+							log.warn("Wrong error position in document", e1);
+						}
+					}
+				}
+			}
+		}
+
+		// fallback
+		if (position == null) {
+			position = new Position(0);
+		}
+
+		annotationModel.addAnnotation(annotation, position);
 	}
 
 }
