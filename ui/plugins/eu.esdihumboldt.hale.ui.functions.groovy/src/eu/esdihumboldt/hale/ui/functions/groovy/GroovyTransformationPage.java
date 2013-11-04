@@ -165,6 +165,8 @@ public class GroovyTransformationPage extends GroovyScriptPage {
 	protected void addActions(ToolBar toolbar, ValidatingSourceViewer viewer) {
 		super.addActions(toolbar, viewer);
 
+		PageHelp.createToolItem(toolbar, this);
+
 		TypeStructureTray.createToolItem(toolbar, this, SchemaSpaceID.SOURCE, new TypeProvider() {
 
 			@Override
@@ -221,6 +223,11 @@ public class GroovyTransformationPage extends GroovyScriptPage {
 				return Collections.emptyList();
 			}
 		});
+	}
+
+	@Override
+	public String getHelpContext() {
+		return "eu.esdihumboldt.cst.functions.groovy.script";
 	}
 
 }
