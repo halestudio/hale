@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import org.codehaus.groovy.control.ErrorCollector;
 import org.codehaus.groovy.control.MultipleCompilationErrorsException;
 import org.codehaus.groovy.syntax.SyntaxException;
@@ -58,7 +60,12 @@ import eu.esdihumboldt.hale.common.align.transformation.function.impl.PropertyVa
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
+import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 import eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage;
 import eu.esdihumboldt.hale.ui.functions.core.SourceViewerParameterPage;
 import eu.esdihumboldt.hale.ui.functions.groovy.TypeStructureTray.TypeProvider;
@@ -194,6 +201,51 @@ public class GroovyParameterPage extends SourceViewerParameterPage implements Gr
 	@Override
 	protected void addActions(ToolBar toolbar, ValidatingSourceViewer viewer) {
 		super.addActions(toolbar, viewer);
+
+		TypeStructureTray.createToolItem(toolbar, this, SchemaSpaceID.SOURCE, new TypeProvider() {
+
+			@Override
+			public Collection<? extends TypeDefinition> getTypes() {
+				// create a dummy type with the variables as children
+				DefaultTypeDefinition dummy = new DefaultTypeDefinition(
+						TypeStructureTray.VARIABLES_TYPE_NAME);
+
+				boolean useInstanceValues = CellUtil.getOptionalParameter(
+						getWizard().getUnfinishedCell(),
+						GroovyTransformation.PARAM_INSTANCE_VARIABLES, Value.of(false)).as(
+						Boolean.class);
+
+				if (variables != null) {
+					for (EntityDefinition variable : variables) {
+						if (variable.getDefinition() instanceof PropertyDefinition) {
+							PropertyDefinition prop = (PropertyDefinition) variable.getDefinition();
+
+							TypeDefinition propertyType;
+							if (useInstanceValues) {
+								// use instance type
+								propertyType = prop.getPropertyType();
+							}
+							else {
+								// use dummy type with only the
+								// binding/HasValueFlag copied
+								DefaultTypeDefinition crippledType = new DefaultTypeDefinition(prop
+										.getPropertyType().getName());
+								crippledType.setConstraint(prop.getPropertyType().getConstraint(
+										Binding.class));
+								crippledType.setConstraint(prop.getPropertyType().getConstraint(
+										HasValueFlag.class));
+								propertyType = crippledType;
+							}
+
+							new DefaultPropertyDefinition(new QName(getVariableName(variable)),
+									dummy, propertyType);
+						}
+					}
+				}
+
+				return Collections.singleton(dummy);
+			}
+		});
 
 		TypeStructureTray.createToolItem(toolbar, this, SchemaSpaceID.TARGET, new TypeProvider() {
 

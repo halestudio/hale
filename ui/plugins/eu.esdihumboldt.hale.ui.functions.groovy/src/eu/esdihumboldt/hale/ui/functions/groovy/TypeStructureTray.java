@@ -17,6 +17,8 @@ package eu.esdihumboldt.hale.ui.functions.groovy;
 
 import java.util.Collection;
 
+import javax.xml.namespace.QName;
+
 import org.eclipse.jface.dialogs.DialogTray;
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -81,6 +83,12 @@ import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
  * @author Simon Templer
  */
 public class TypeStructureTray extends DialogTray {
+
+	/**
+	 * Name for a dummy type where the properties actually represent variables.
+	 */
+	public static final QName VARIABLES_TYPE_NAME = new QName("http://esdi-humboldt.eu/dummy",
+			"VariablesType");
 
 	/**
 	 * Retrieves a list of types.
@@ -299,14 +307,23 @@ public class TypeStructureTray extends DialogTray {
 				// types are the top level elements
 //				parent = (DefinitionGroup) path.getFirstSegment();
 //				startIndex = 1;
-				// TODO (join)
+				// TODO not supported currently (join)
 				return null;
 			}
 			else {
 				// types are not in the tree, single type must be root
-				parent = types.iterator().next();
-				// assuming Retype/Merge
-				prefix = GroovyConstants.BINDING_SOURCE;
+				TypeDefinition type = types.iterator().next();
+				parent = type;
+				if (VARIABLES_TYPE_NAME.equals(type.getName())) {
+					// Groovy property transformation
+					// first segment is variable name
+					startIndex++;
+					prefix = ((Definition<?>) path.getFirstSegment()).getName().getLocalPart();
+				}
+				else {
+					// assuming Retype/Merge
+					prefix = GroovyConstants.BINDING_SOURCE;
+				}
 			}
 
 			StringBuilder access = new StringBuilder();
@@ -316,7 +333,14 @@ public class TypeStructureTray extends DialogTray {
 				access.append(".p");
 			}
 			else {
-				// XXX possible?
+				if (!DefinitionUtil.hasChildren((Definition<?>) path.getLastSegment())) {
+					// variable w/o children referenced
+					return "// access variable\ndef value = " + prefix;
+				}
+				else {
+					// variable w/ children referenced
+					return "// access instance variable value\ndef value = " + prefix + ".value";
+				}
 			}
 
 			for (int i = startIndex; i < path.getSegmentCount(); i++) {
