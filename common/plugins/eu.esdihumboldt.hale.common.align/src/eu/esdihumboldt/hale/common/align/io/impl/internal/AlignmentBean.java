@@ -154,17 +154,14 @@ public class AlignmentBean extends
 	 * @param cell the cell to generate a modifier for
 	 */
 	private void generateModifier(Cell cell) {
-		Collection<Cell> disabledFor;
+		Collection<String> disabledFor;
 		if (cell instanceof BaseAlignmentCell)
 			disabledFor = ((BaseAlignmentCell) cell).getAdditionalDisabledFor();
 		else
 			disabledFor = cell.getDisabledFor();
 		if (!disabledFor.isEmpty()) {
 			ModifierBean modifier = new ModifierBean(cell.getId());
-			ArrayList<String> disabledForIds = new ArrayList<String>(disabledFor.size());
-			for (Cell other : disabledFor)
-				disabledForIds.add(other.getId());
-			modifier.setDisableForRelation(disabledForIds);
+			modifier.setDisableForRelation(disabledFor);
 			modifiers.add(modifier);
 		}
 	}

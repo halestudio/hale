@@ -371,11 +371,10 @@ public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWr
 						cell.getTransformationMode().displayName(), 0);
 			}
 			else {
-				Set<Cell> disabledCells = cell.getDisabledFor();
-				if (disabledCells.contains(currentTypeCell)) {
-					for (Cell disCell : disabledCells) {
-						cellInfos.get(CellType.TRANSFORMATION_AND_DISABLED).addText(
-								disCell.getId(), 0);
+				Set<String> disabledCells = cell.getDisabledFor();
+				if (disabledCells.contains(currentTypeCell.getId())) {
+					for (String disCell : disabledCells) {
+						cellInfos.get(CellType.TRANSFORMATION_AND_DISABLED).addText(disCell, 0);
 					}
 				}
 			}
