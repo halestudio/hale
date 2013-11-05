@@ -33,6 +33,7 @@ import eu.esdihumboldt.hale.ui.application.internal.Messages;
 import eu.esdihumboldt.hale.ui.launchaction.LaunchAction;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.RecentProjectsService;
+import eu.esdihumboldt.hale.ui.service.project.RecentResources;
 
 /**
  * The {@link ApplicationWorkbenchAdvisor} controls the appearance of the
@@ -151,11 +152,23 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
 		// restore list of recent files
 		IWorkbench wb = getWorkbenchConfigurer().getWorkbench();
-		RecentProjectsService rfs = (RecentProjectsService) wb.getService(RecentProjectsService.class);
+		RecentProjectsService rfs = (RecentProjectsService) wb
+				.getService(RecentProjectsService.class);
 		IMemento c = memento.getChild(TAG_RECENTFILES);
 		result.add(rfs.restoreState(c));
 
 		return result;
+	}
+
+	@Override
+	public void preStartup() {
+		super.preStartup();
+
+		/*
+		 * Initialize RecentResources so they are not loaded when the first
+		 * import dialog is opened.
+		 */
+		PlatformUI.getWorkbench().getService(RecentResources.class);
 	}
 
 	/**
@@ -169,7 +182,8 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
 		// save list of recent files
 		IWorkbench wb = getWorkbenchConfigurer().getWorkbench();
-		RecentProjectsService rfs = (RecentProjectsService) wb.getService(RecentProjectsService.class);
+		RecentProjectsService rfs = (RecentProjectsService) wb
+				.getService(RecentProjectsService.class);
 		IMemento c = memento.createChild(TAG_RECENTFILES);
 		result.add(rfs.saveState(c));
 
