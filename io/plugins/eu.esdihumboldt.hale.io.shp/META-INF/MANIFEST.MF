@@ -28,6 +28,7 @@ Import-Package: com.google.common.io;version="1.6.0",
  eu.esdihumboldt.hale.common.schema.model.constraint.type,
  eu.esdihumboldt.hale.common.schema.model.impl,
  eu.esdihumboldt.util,
+ eu.esdihumboldt.util.io,
  org.eclipse.osgi.util,
  org.slf4j;version="1.5.11"
 Require-Bundle: org.geotools;bundle-version="2.6.4",
