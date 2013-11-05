@@ -70,7 +70,7 @@ public class GroovyTransformationPage extends GroovyScriptPage {
 	 */
 	public GroovyTransformationPage() {
 		super();
-		setTitle("Function parameters");
+		setTitle("Property transformation script");
 		setDescription("Specify a Groovy script to determine the target property value");
 
 		testValues = new InstanceTestValues();

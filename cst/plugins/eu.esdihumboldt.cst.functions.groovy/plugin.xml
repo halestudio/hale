@@ -113,6 +113,61 @@
             </functionParameterBinding>
          </functionParameter>
       </typeFunction>
+      <typeFunction
+            category="eu.esdihumboldt.cst.functions.groovy"
+            cellExplanation="eu.esdihumboldt.hale.common.align.model.functions.explanations.MergeExplanation"
+            description="Merges multiple instances of the source type into one instance of the target type, based on one or more matching properties."
+            help="help/merge.xhtml"
+            icon="icons/star.png"
+            identifier="eu.esdihumboldt.cst.functions.groovy.merge"
+            name="Groovy Merge">
+         <sourceTypes>
+            <type
+                  description="The source typed that is to be merged based on its properties."
+                  maxOccurrence="1"
+                  minOccurrence="1">
+            </type>
+         </sourceTypes>
+         <targetTypes>
+            <type
+                  maxOccurrence="1"
+                  minOccurrence="1">
+            </type>
+         </targetTypes>
+         <functionParameter
+               description="Each property is defined by a property path"
+               label="Merge property (key)"
+               maxOccurrence="n"
+               minOccurrence="1"
+               name="property">
+            <functionParameterBinding></functionParameterBinding>
+         </functionParameter>
+         <functionParameter
+               description="Each property is defined by a property path"
+               label="Merge property (no key)"
+               maxOccurrence="n"
+               minOccurrence="0"
+               name="additional_property">
+            <functionParameterBinding></functionParameterBinding>
+         </functionParameter>
+         <functionParameter
+               description="Enable/disable auto detection of additional equal properties which will get merged."
+               label="Auto detect and merge properties with equal values"
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="auto_detect">
+            <functionParameterBinding
+                  class="java.lang.Boolean">
+            </functionParameterBinding>
+         </functionParameter>
+         <functionParameter
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="script"
+               scriptable="false">
+            <functionParameterBinding></functionParameterBinding>
+         </functionParameter>
+      </typeFunction>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.align.transformation">
@@ -133,6 +188,12 @@
             engine="eu.esdihumboldt.align.java"
             function="eu.esdihumboldt.cst.functions.groovy.retype"
             id="eu.esdihumboldt.cst.functions.groovy.retype">
+      </typeTransformation>
+      <typeTransformation
+            class="eu.esdihumboldt.cst.functions.groovy.GroovyMerge"
+            engine="eu.esdihumboldt.align.java"
+            function="eu.esdihumboldt.cst.functions.groovy.merge"
+            id="eu.esdihumboldt.cst.functions.groovy.merge">
       </typeTransformation>
    </extension>
    <extension

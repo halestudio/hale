@@ -59,7 +59,7 @@ public class GroovyRetypePage extends GroovyScriptPage {
 	 */
 	public GroovyRetypePage() {
 		super();
-		setTitle("Convert instances script");
+		setTitle("Convert instance script");
 		setDescription("Specify a Groovy script to build a target instance from a source instance");
 
 		testValues = new InstanceTestValues();

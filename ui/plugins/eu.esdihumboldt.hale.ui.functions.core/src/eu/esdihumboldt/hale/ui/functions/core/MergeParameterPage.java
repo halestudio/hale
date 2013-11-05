@@ -134,10 +134,14 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 		if (params.size() > 1)
 			throw new IllegalArgumentException("MergeParameterPage is only for one parameter");
 		parameter = params.iterator().next();
-		if (parameter.getName().equals(PARAMETER_PROPERTY))
+		if (parameter.getName().equals(PARAMETER_PROPERTY)) {
 			setTitle("Please select the properties that have to match");
-		else if (parameter.getName().equals(PARAMETER_ADDITIONAL_PROPERTY))
+			setDescription("Instances that have equal values for these properties will be merged into one");
+		}
+		else if (parameter.getName().equals(PARAMETER_ADDITIONAL_PROPERTY)) {
 			setTitle("Please select other equal properties to merge");
+			setDescription("For these properties only the unique values will be retained in the merged instance");
+		}
 		else
 			throw new IllegalArgumentException(
 					"MergeParameterPage is only for property or additional_property parameters");

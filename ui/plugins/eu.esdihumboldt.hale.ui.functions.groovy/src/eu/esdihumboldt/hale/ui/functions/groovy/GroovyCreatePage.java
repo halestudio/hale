@@ -50,7 +50,7 @@ public class GroovyCreatePage extends GroovyScriptPage {
 	 */
 	public GroovyCreatePage() {
 		super();
-		setTitle("Create instances script");
+		setTitle("Create instance script");
 		setDescription("Specify a Groovy script to build the target instance");
 	}
 
