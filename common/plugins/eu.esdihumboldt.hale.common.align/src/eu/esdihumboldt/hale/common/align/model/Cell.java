@@ -144,11 +144,11 @@ public interface Cell {
 	public String getId();
 
 	/**
-	 * Returns the cells this cell is disabled for.
+	 * Returns the cell IDs this cell is disabled for.
 	 * 
-	 * @return the cells this cell is disabled for
+	 * @return the cell IDs this cell is disabled for
 	 */
-	public Set<Cell> getDisabledFor();
+	public Set<String> getDisabledFor();
 
 	/**
 	 * Returns the priority for the cell.

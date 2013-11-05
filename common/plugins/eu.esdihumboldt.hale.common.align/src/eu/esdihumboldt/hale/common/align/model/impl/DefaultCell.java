@@ -57,7 +57,7 @@ public class DefaultCell implements Cell, MutableCell {
 	 * The {@link Cell}'s {@link Priority}. Defaults to {@link Priority#NORMAL}.
 	 */
 	private Priority priority = Priority.NORMAL;
-	private final Set<Cell> disabledFor = new HashSet<Cell>();
+	private final Set<String> disabledFor = new HashSet<String>();
 	private boolean baseCell = false;
 
 	private final ListMultimap<String, String> documentation = ArrayListMultimap.create();
@@ -242,16 +242,16 @@ public class DefaultCell implements Cell, MutableCell {
 	@Override
 	public void setDisabledFor(Cell cell, boolean disabled) {
 		if (disabled)
-			disabledFor.add(cell);
+			disabledFor.add(cell.getId());
 		else
-			disabledFor.remove(cell);
+			disabledFor.remove(cell.getId());
 	}
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.align.model.Cell#getDisabledFor()
 	 */
 	@Override
-	public Set<Cell> getDisabledFor() {
+	public Set<String> getDisabledFor() {
 		return Collections.unmodifiableSet(disabledFor);
 	}
 
