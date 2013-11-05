@@ -93,6 +93,11 @@ public class TypeStructureTray extends DialogTray {
 			"VariablesType");
 
 	/**
+	 * If in the target example builder code brackets should be used.
+	 */
+	private static final boolean BUILDER_USE_BRACKETS = true;
+
+	/**
 	 * Retrieves a list of types.
 	 */
 	public interface TypeProvider {
@@ -592,6 +597,9 @@ public class TypeStructureTray extends DialogTray {
 
 			// add namespace if necessary
 			if (useNamespace) {
+				if (BUILDER_USE_BRACKETS && !needComma) {
+					example.append('(');
+				}
 				example.append(" namespace: '");
 				example.append(def.getName().getNamespaceURI());
 				example.append('\'');
@@ -601,6 +609,9 @@ public class TypeStructureTray extends DialogTray {
 			TypeDefinition propertyType = ((PropertyDefinition) def).getPropertyType();
 			if (propertyType.getConstraint(HasValueFlag.class).isEnabled()) {
 				// add an example value
+				if (BUILDER_USE_BRACKETS && !needComma) {
+					example.append('(');
+				}
 				if (needComma) {
 					example.append(',');
 				}
@@ -622,13 +633,21 @@ public class TypeStructureTray extends DialogTray {
 			if (DefinitionUtil.hasChildren(propertyType)
 					&& (!tree.getChildren().isEmpty() || !needComma)) {
 				if (needComma) {
-					example.append(',');
+					if (BUILDER_USE_BRACKETS) {
+						example.append(" )");
+					}
+					else {
+						example.append(',');
+					}
 				}
 				example.append(" {");
 				example.append('\n');
 				opened = true;
 			}
 			else {
+				if (BUILDER_USE_BRACKETS && needComma) {
+					example.append(" )");
+				}
 				example.append('\n');
 			}
 		}
