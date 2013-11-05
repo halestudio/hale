@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.functions.groovy;
+package eu.esdihumboldt.hale.ui.functions.groovy.internal;
 
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.swt.SWT;
