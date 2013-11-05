@@ -97,8 +97,11 @@ public class SourceViewerPage extends HaleWizardPage<AbstractGenericFunctionWiza
 	@Override
 	public ListMultimap<String, ParameterValue> getConfiguration() {
 		ListMultimap<String, ParameterValue> result = ArrayListMultimap.create();
-		// store as complex Text value
-		result.put(parameterName, new ParameterValue(Value.complex(new Text(getDocument().get()))));
+		if (viewer != null) {
+			// store as complex Text value
+			result.put(parameterName,
+					new ParameterValue(Value.complex(new Text(getDocument().get()))));
+		}
 		return result;
 	}
 

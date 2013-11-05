@@ -39,6 +39,42 @@
                name="variablesAsInstances">
          </parameter>
       </propertyParameterPage>
+      <typeParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.core.CheckboxParameterPage"
+            function="eu.esdihumboldt.cst.functions.groovy.merge"
+            id="eu.esdihumboldt.cst.functions.groovy.merge2"
+            order="1">
+         <parameter
+               name="auto_detect">
+         </parameter>
+      </typeParameterPage>
+      <typeParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.core.MergeParameterPage"
+            function="eu.esdihumboldt.cst.functions.groovy.merge"
+            id="eu.esdihumboldt.cst.functions.groovy.merge3"
+            order="2">
+         <parameter
+               name="additional_property">
+         </parameter>
+      </typeParameterPage>
+      <typeParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.core.MergeParameterPage"
+            function="eu.esdihumboldt.cst.functions.groovy.merge"
+            id="eu.esdihumboldt.cst.functions.groovy.merge1"
+            order="0">
+         <parameter
+               name="property">
+         </parameter>
+      </typeParameterPage>
+      <typeParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.groovy.GroovyMergePage"
+            function="eu.esdihumboldt.cst.functions.groovy.merge"
+            id="eu.esdihumboldt.cst.functions.groovy.merge4"
+            order="10">
+         <parameter
+               name="script">
+         </parameter>
+      </typeParameterPage>
    </extension>
 
 </plugin>
