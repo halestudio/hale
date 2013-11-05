@@ -187,7 +187,7 @@ public class TypeStructureTray extends DialogTray {
 		// create tree viewer
 		PatternFilter patternFilter = new SchemaPatternFilter();
 		patternFilter.setIncludeLeadingWildcard(true);
-		final FilteredTree filteredTree = new TreePathFilteredTree(page, SWT.SINGLE | SWT.H_SCROLL
+		final FilteredTree filteredTree = new TreePathFilteredTree(page, SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
 
 		TreeViewer tree = filteredTree.getViewer();
@@ -286,7 +286,7 @@ public class TypeStructureTray extends DialogTray {
 	 * 
 	 * @param selection the selection in the tree viewer
 	 * @param types the types serving as input
-	 * @return the sample code
+	 * @return the sample code or <code>null</code>
 	 */
 	protected String createSourceSample(ISelection selection,
 			Collection<? extends TypeDefinition> types) {
@@ -294,174 +294,196 @@ public class TypeStructureTray extends DialogTray {
 
 		TreePath[] paths = treeSel.getPaths();
 		if (paths != null && paths.length > 0) {
-			// XXX for now only use the first path
+			StringBuilder result = null;
+			for (TreePath path : paths) {
+				String examples = createSourceSample(path, types);
+				if (examples != null) {
+					if (result == null) {
+						result = new StringBuilder();
+					}
+					result.append(examples);
+				}
+			}
+			if (result != null) {
+				return result.toString();
+			}
+			return null;
+		}
 
-			TreePath path = paths[0];
+		return null;
+	}
 
-			DefinitionGroup parent;
-			int startIndex = 0;
-			String prefix;
+	/**
+	 * Create sample code for a single tree path specifying a source property.
+	 * 
+	 * @param path the tree path
+	 * @param types the types serving as input
+	 * @return the sample code or <code>null</code>
+	 */
+	private String createSourceSample(TreePath path, Collection<? extends TypeDefinition> types) {
+		DefinitionGroup parent;
+		int startIndex = 0;
+		String prefix;
 
-			// determine parent type
-			if (path.getFirstSegment() instanceof TypeDefinition) {
-				// types are the top level elements
-//				parent = (DefinitionGroup) path.getFirstSegment();
-//				startIndex = 1;
-				// TODO not supported currently (join)
-				return null;
+		// determine parent type
+		if (path.getFirstSegment() instanceof TypeDefinition) {
+			// types are the top level elements
+//			parent = (DefinitionGroup) path.getFirstSegment();
+//			startIndex = 1;
+			// TODO not supported currently (join)
+			return null;
+		}
+		else {
+			// types are not in the tree, single type must be root
+			TypeDefinition type = types.iterator().next();
+			parent = type;
+			if (VARIABLES_TYPE_NAME.equals(type.getName())) {
+				// Groovy property transformation
+				// first segment is variable name
+				startIndex++;
+				prefix = ((Definition<?>) path.getFirstSegment()).getName().getLocalPart();
 			}
 			else {
-				// types are not in the tree, single type must be root
-				TypeDefinition type = types.iterator().next();
-				parent = type;
-				if (VARIABLES_TYPE_NAME.equals(type.getName())) {
-					// Groovy property transformation
-					// first segment is variable name
-					startIndex++;
-					prefix = ((Definition<?>) path.getFirstSegment()).getName().getLocalPart();
-				}
-				else {
-					// assuming Retype/Merge
-					prefix = GroovyConstants.BINDING_SOURCE;
-				}
+				// assuming Retype/Merge
+				prefix = GroovyConstants.BINDING_SOURCE;
 			}
+		}
 
-			StringBuilder access = new StringBuilder();
-			access.append(prefix);
-			if (path.getSegmentCount() > startIndex) {
-				// a property is referenced
-				access.append(".p");
+		StringBuilder access = new StringBuilder();
+		access.append(prefix);
+		if (path.getSegmentCount() > startIndex) {
+			// a property is referenced
+			access.append(".p");
+		}
+		else {
+			if (!DefinitionUtil.hasChildren((Definition<?>) path.getLastSegment())) {
+				// variable w/o children referenced
+				return "// access variable\ndef value = " + prefix;
 			}
 			else {
-				if (!DefinitionUtil.hasChildren((Definition<?>) path.getLastSegment())) {
-					// variable w/o children referenced
-					return "// access variable\ndef value = " + prefix;
+				// variable w/ children referenced
+				return "// access instance variable value\ndef value = " + prefix + ".value";
+			}
+		}
+
+		for (int i = startIndex; i < path.getSegmentCount(); i++) {
+			Definition<?> def = (Definition<?>) path.getSegment(i);
+			if (def instanceof PropertyDefinition) {
+				// property name
+				access.append('.');
+				access.append(def.getName().getLocalPart());
+
+				// test if uniquely accessible from parent
+				boolean useNamespace = true;
+				if (parent instanceof Definition<?>) {
+					try {
+						new DefinitionAccessor((Definition<?>) parent).findChildren(
+								def.getName().getLocalPart()).eval();
+						useNamespace = false;
+					} catch (IllegalStateException e) {
+						// ignore - namespace needed
+					}
 				}
-				else {
-					// variable w/ children referenced
-					return "// access instance variable value\ndef value = " + prefix + ".value";
+
+				// add namespace if necessary
+				if (useNamespace) {
+					access.append("('");
+					access.append(def.getName().getNamespaceURI());
+					access.append("')");
+				}
+			}
+			else {
+				// groups are ignored
+			}
+
+			// set the new parent
+			parent = DefinitionUtil.getDefinitionGroup(def);
+		}
+
+		if (parent instanceof TypeDefinition) {
+			// only properties at the end of the path are supported
+			TypeDefinition propertyType = (TypeDefinition) parent;
+			StringBuilder example = new StringBuilder();
+
+			boolean canOccurMultipleTimes = false;
+			/*
+			 * Instances/values may occur multiple times if any element in the
+			 * path may occur multiple times.
+			 */
+			for (int i = path.getSegmentCount() - 1; i >= 0 && !canOccurMultipleTimes; i--) {
+				if (path.getSegment(i) instanceof ChildDefinition<?>) {
+					Cardinality card = DefinitionUtil.getCardinality((ChildDefinition<?>) path
+							.getSegment(i));
+					canOccurMultipleTimes = card.getMaxOccurs() == Cardinality.UNBOUNDED
+							|| card.getMaxOccurs() > 1;
 				}
 			}
 
-			for (int i = startIndex; i < path.getSegmentCount(); i++) {
-				Definition<?> def = (Definition<?>) path.getSegment(i);
-				if (def instanceof PropertyDefinition) {
-					// property name
-					access.append('.');
-					access.append(def.getName().getLocalPart());
+			// check different cases
 
-					// test if uniquely accessible from parent
-					boolean useNamespace = true;
-					if (parent instanceof Definition<?>) {
-						try {
-							new DefinitionAccessor((Definition<?>) parent).findChildren(
-									def.getName().getLocalPart()).eval();
-							useNamespace = false;
-						} catch (IllegalStateException e) {
-							// ignore - namespace needed
-						}
-					}
+			if (propertyType.getConstraint(HasValueFlag.class).isEnabled()) {
+				// referenced property is a value or has a value
 
-					// add namespace if necessary
-					if (useNamespace) {
-						access.append("('");
-						access.append(def.getName().getNamespaceURI());
-						access.append("')");
-					}
+				// single value
+				if (canOccurMultipleTimes) {
+					example.append("// access first value\n");
 				}
 				else {
-					// groups are ignored
+					example.append("// access value\n");
 				}
+				example.append("def value = ");
+				example.append(access);
+				example.append(".value()\n\n");
 
-				// set the new parent
-				parent = DefinitionUtil.getDefinitionGroup(def);
-			}
-
-			if (parent instanceof TypeDefinition) {
-				// only properties at the end of the path are supported
-				TypeDefinition propertyType = (TypeDefinition) parent;
-				StringBuilder example = new StringBuilder();
-
-				boolean canOccurMultipleTimes = false;
-				/*
-				 * Instances/values may occur multiple times if any element in
-				 * the path may occur multiple times.
-				 */
-				for (int i = path.getSegmentCount() - 1; i >= 0 && !canOccurMultipleTimes; i--) {
-					if (path.getSegment(i) instanceof ChildDefinition<?>) {
-						Cardinality card = DefinitionUtil.getCardinality((ChildDefinition<?>) path
-								.getSegment(i));
-						canOccurMultipleTimes = card.getMaxOccurs() == Cardinality.UNBOUNDED
-								|| card.getMaxOccurs() > 1;
-					}
-				}
-
-				// check different cases
-
-				if (propertyType.getConstraint(HasValueFlag.class).isEnabled()) {
-					// referenced property is a value or has a value
-
-					// single value
-					if (canOccurMultipleTimes) {
-						example.append("// access first value\n");
-					}
-					else {
-						example.append("// access value\n");
-					}
-					example.append("def value = ");
+				// multiple values
+				if (canOccurMultipleTimes) {
+					example.append("// access all values as list\n");
+					example.append("def valueList = ");
 					example.append(access);
-					example.append(".value()\n\n");
+					example.append(".values()\n\n");
+				}
+			}
 
+			if (DefinitionUtil.hasChildren(propertyType)) {
+				// referenced property is an instance
+
+				// single instance
+				if (canOccurMultipleTimes) {
+					example.append("// access first instance\n");
+				}
+				else {
+					example.append("// access instance\n");
+				}
+				example.append("def instance = ");
+				example.append(access);
+				example.append(".first()\n\n");
+
+				if (canOccurMultipleTimes) {
 					// multiple values
-					if (canOccurMultipleTimes) {
-						example.append("// access all values as list\n");
-						example.append("def valueList = ");
-						example.append(access);
-						example.append(".values()\n\n");
-					}
-				}
-
-				if (DefinitionUtil.hasChildren(propertyType)) {
-					// referenced property is an instance
-
-					// single instance
-					if (canOccurMultipleTimes) {
-						example.append("// access first instance\n");
-					}
-					else {
-						example.append("// access instance\n");
-					}
-					example.append("def instance = ");
+					example.append("// access all instances as list\n");
+					example.append("def instanceList = ");
 					example.append(access);
-					example.append(".first()\n\n");
+					example.append(".all()\n\n");
 
-					if (canOccurMultipleTimes) {
-						// multiple values
-						example.append("// access all instances as list\n");
-						example.append("def instanceList = ");
-						example.append(access);
-						example.append(".all()\n\n");
-
-						// iterate over instances
-						example.append("// iterate over instances\n");
-						example.append(access);
-						example.append(".each {\n");
-						example.append("\tinstance ->\n");
-						example.append("}\n\n");
-					}
-				}
-				else if (canOccurMultipleTimes
-						&& propertyType.getConstraint(HasValueFlag.class).isEnabled()) {
-					// iterate over values
-					example.append("// iterate over values\n");
+					// iterate over instances
+					example.append("// iterate over instances\n");
 					example.append(access);
 					example.append(".each {\n");
-					example.append("\tvalue ->\n");
+					example.append("\tinstance ->\n");
 					example.append("}\n\n");
 				}
-
-				return example.toString();
 			}
+			else if (canOccurMultipleTimes
+					&& propertyType.getConstraint(HasValueFlag.class).isEnabled()) {
+				// iterate over values
+				example.append("// iterate over values\n");
+				example.append(access);
+				example.append(".each {\n");
+				example.append("\tvalue ->\n");
+				example.append("}\n\n");
+			}
+
+			return example.toString();
 		}
 
 		return null;
