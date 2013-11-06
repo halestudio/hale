@@ -15,9 +15,8 @@
 
 package eu.esdihumboldt.hale.ui.service.instance.sample.internal;
 
-import java.util.Map;
-
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.ImmutableBiMap;
 
 import eu.esdihumboldt.hale.ui.service.instance.sample.Sampler;
 import eu.esdihumboldt.hale.ui.service.instance.sample.internal.sampler.first.FirstSampler;
@@ -39,8 +38,13 @@ public class InstanceViewPreferences {
 	 * 
 	 * XXX may be replaced at a later point by an extension point
 	 */
-	public static final Map<String, Sampler> SAMPLERS = ImmutableMap.<String, Sampler> of(
+	public static final BiMap<String, Sampler> SAMPLERS = ImmutableBiMap.<String, Sampler> of(
 			SAMPLER_FIRST, new FirstSampler()); // , "skip", new SkipSampler());
+
+	/**
+	 * Constant defining if instance sampling is enabled by default.
+	 */
+	public static final boolean ENABLED_DEFAULT = false;
 
 	/**
 	 * The key for the configuration specifying whether the instance sampling is

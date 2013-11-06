@@ -42,18 +42,17 @@ public class InstanceViewServiceImpl implements InstanceViewService {
 
 	@Override
 	public InstanceCollection sample(InstanceCollection instances) {
-		String samplerId = projectService.getConfigurationService().get(
-				InstanceViewPreferences.KEY_SAMPLER, InstanceViewPreferences.SAMPLER_FIRST);
+		if (isEnabled()) {
+			String samplerId = projectService.getConfigurationService().get(
+					InstanceViewPreferences.KEY_SAMPLER, InstanceViewPreferences.SAMPLER_FIRST);
 
-		if (samplerId != null) {
-			Sampler sampler = InstanceViewPreferences.SAMPLERS.get(samplerId);
-			if (sampler != null) {
-				Value settings = projectService.getConfigurationService().getProperty(
-						InstanceViewPreferences.KEY_SETTINGS_PREFIX + samplerId);
-				if (settings == null) {
-					settings = Value.NULL;
+			if (samplerId != null) {
+				Sampler sampler = InstanceViewPreferences.SAMPLERS.get(samplerId);
+				if (sampler != null) {
+					Value settings = projectService.getConfigurationService().getProperty(
+							InstanceViewPreferences.KEY_SETTINGS_PREFIX + samplerId);
+					return sampler.sample(instances, settings);
 				}
-				return sampler.sample(instances, settings);
 			}
 		}
 
@@ -64,7 +63,7 @@ public class InstanceViewServiceImpl implements InstanceViewService {
 	public boolean isEnabled() {
 		// enabled by default
 		return projectService.getConfigurationService().getBoolean(
-				InstanceViewPreferences.KEY_ENABLED, true);
+				InstanceViewPreferences.KEY_ENABLED, InstanceViewPreferences.ENABLED_DEFAULT);
 	}
 
 }

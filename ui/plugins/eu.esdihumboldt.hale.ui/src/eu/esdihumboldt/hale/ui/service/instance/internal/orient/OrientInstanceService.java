@@ -342,6 +342,14 @@ public class OrientInstanceService extends AbstractInstanceService {
 		}
 	}
 
+	@Override
+	public void dropInstances() {
+		notifyDatasetAboutToChange(null);
+		source.clear();
+		transformed.clear();
+		notifyDatasetChanged(null);
+	}
+
 	/**
 	 * Delete the databases.
 	 */

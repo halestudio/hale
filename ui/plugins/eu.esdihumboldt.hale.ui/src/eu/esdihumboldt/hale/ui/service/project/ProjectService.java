@@ -203,4 +203,9 @@ public interface ProjectService {
 	 */
 	public URI getLoadLocation();
 
+	/**
+	 * Reload the source data.
+	 */
+	public void reloadSourceData();
+
 }

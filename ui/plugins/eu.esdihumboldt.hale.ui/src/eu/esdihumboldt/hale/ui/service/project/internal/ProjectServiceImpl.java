@@ -80,10 +80,12 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
+import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.io.project.OpenProjectWizard;
 import eu.esdihumboldt.hale.ui.io.project.SaveProjectWizard;
 import eu.esdihumboldt.hale.ui.io.util.ThreadProgressMonitor;
+import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.RecentProjectsService;
 import eu.esdihumboldt.hale.ui.service.project.UILocationUpdater;
@@ -959,6 +961,21 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		setChanged();
 
 		notifyResourceAdded(conf.getActionId(), new IOConfigurationResource(conf, projectLocation));
+	}
+
+	@Override
+	public void reloadSourceData() {
+		// drop the existing instances
+		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
+				InstanceService.class);
+		is.dropInstances();
+
+		// reload the instances
+		for (IOConfiguration conf : main.getResources()) {
+			if (InstanceIO.ACTION_LOAD_SOURCE_DATA.equals(conf.getActionId())) {
+				executeConfiguration(conf);
+			}
+		}
 	}
 
 	@Override

@@ -1122,5 +1122,19 @@
             icon="icons/play.gif">
       </image>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="eu.esdihumboldt.hale.ui.preferences.project"
+            class="eu.esdihumboldt.hale.ui.service.instance.sample.internal.InstanceViewPreferencePage"
+            id="eu.esdihumboldt.hale.ui.preferences.instanceview"
+            name="Source data">
+      </page>
+      <page
+            class="eu.esdihumboldt.hale.ui.service.project.internal.ProjectPreferencePage"
+            id="eu.esdihumboldt.hale.ui.preferences.project"
+            name="Project">
+      </page>
+   </extension>
 
 </plugin>

@@ -47,7 +47,7 @@ public class IntegerEditor extends AbstractEditor<Integer> {
 	public IntegerEditor(Composite parent, int max, int min, int increment, int pageIncrement) {
 		super();
 
-		spinner = new Spinner(parent, SWT.NONE);
+		spinner = new Spinner(parent, SWT.BORDER);
 		spinner.setIncrement(increment);
 		spinner.setPageIncrement(pageIncrement);
 		spinner.setDigits(0);
