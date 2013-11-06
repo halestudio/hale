@@ -74,7 +74,7 @@ public abstract class AbstractRemoveResourcesOperation extends AbstractOperation
 		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
 				ProjectService.class);
 		for (Resource res : removedResources) {
-			ps.executeAndRemember(res.copyConfiguration());
+			ps.executeAndRemember(res.copyConfiguration(false));
 		}
 		return Status.OK_STATUS;
 	}

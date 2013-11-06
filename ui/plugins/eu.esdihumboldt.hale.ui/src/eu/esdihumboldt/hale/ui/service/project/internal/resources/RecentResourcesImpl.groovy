@@ -73,37 +73,45 @@ class RecentResourcesImpl implements RecentResources {
 
 	@Override
 	public void addResource(String contentTypeId, URI uri) {
-		synchronized (locations) {
-			SortedSet<Timestamped<URI>> locs = locations.get(contentTypeId)
+		if (uri != null && uri.absolute) {
+			// only resources with absolute URIs can be saved
+			synchronized (locations) {
+				SortedSet<Timestamped<URI>> locs = locations.get(contentTypeId)
 
-			/*
-			 * Check if there already is the same location (with older timestamp)
-			 * and remove it.
-			 */
-			locs.find { Timestamped<URI> it ->
-				it.value == uri
-			}.each { Timestamped<IOConfiguration> it ->
-				locs.remove(it)
-			}
+				/*
+				 * Check if there already is the same location (with older timestamp)
+				 * and remove it.
+				 */
+				locs.find { Timestamped<URI> it ->
+					it.value == uri
+				}.each { Timestamped<IOConfiguration> it ->
+					locs.remove(it)
+				}
 
-			locs << new Timestamped(uri)
-			if (locs.size() > maxStoreResources) {
-				locs.remove(locs.last())
+				locs << new Timestamped(uri)
+				if (locs.size() > maxStoreResources) {
+					locs.remove(locs.last())
+				}
 			}
 		}
 	}
 
 	@Override
 	public void addResource(Resource resource) {
+		if (resource.absoluteSource == null) {
+			// only resources with absolute URIs can be saved
+			return
+		}
+
 		if (resource.actionId) {
 			synchronized (configs) {
 				SortedSet<Timestamped<IOConfiguration>> confs = configs.get(resource.actionId)
 
 				/*
 				 * Check if there already are configuration for the same source
-				 * and remove them.
+				 * and remove them. Always absolute sources are stored.
 				 */
-				String source = resource.source.toString()
+				String source = resource.absoluteSource.toString()
 				confs.find { Timestamped<IOConfiguration> it ->
 					String confSource = it.value.getProviderConfiguration().get(ImportProvider.PARAM_SOURCE).as(String)
 
@@ -112,14 +120,15 @@ class RecentResourcesImpl implements RecentResources {
 					confs.remove(it)
 				}
 
-				confs << new Timestamped(resource.copyConfiguration())
+				confs << new Timestamped(resource.copyConfiguration(true))
 				if (confs.size() > maxStoreResources) {
 					confs.remove(confs.last())
 				}
 			}
 		}
 
-		addResource(resource.contentType.id, resource.source)
+		// add with absolute URI
+		addResource(resource.contentType.id, resource.absoluteSource)
 	}
 
 	@Override
@@ -168,7 +177,7 @@ class RecentResourcesImpl implements RecentResources {
 		List<Resource> result = []
 		synchronized (configs) {
 			configs.get(actionId).each { Timestamped<IOConfiguration> it ->
-				result << new IOConfigurationResource(it.value)
+				result << new IOConfigurationResource(it.value, null)
 			}
 		}
 
