@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.common.schema.io;
 
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
@@ -35,6 +36,13 @@ public interface SchemaReader extends ImportProvider {
 	 * @param sharedTypes the shared types
 	 */
 	public void setSharedTypes(TypeIndex sharedTypes);
+
+	/**
+	 * Set the schema space for which the schema is loaded.
+	 * 
+	 * @param schemaSpace the schema space
+	 */
+	public void setSchemaSpace(SchemaSpaceID schemaSpace);
 
 	/**
 	 * Get the loaded schema
