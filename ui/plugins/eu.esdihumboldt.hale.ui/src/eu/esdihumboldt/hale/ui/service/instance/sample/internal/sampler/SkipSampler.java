@@ -15,14 +15,19 @@
 
 package eu.esdihumboldt.hale.ui.service.instance.sample.internal.sampler;
 
+import org.eclipse.swt.widgets.Composite;
+
 import com.ibm.icu.text.MessageFormat;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.ui.common.Editor;
+import eu.esdihumboldt.hale.ui.common.editors.IntegerEditor;
+import eu.esdihumboldt.hale.ui.common.editors.value.IntegerValueEditor;
 import eu.esdihumboldt.hale.ui.service.instance.sample.Sampler;
 
 /**
- * TODO Type description
+ * Sampler that returns every n-th instance of each encountered type.
  * 
  * @author Simon Templer
  */
@@ -30,10 +35,12 @@ public class SkipSampler implements Sampler {
 
 	private static final String DISPLAY_NAME = "Every {0} instance per type";
 
+	private static final int DEFAULT_N = 10;
+
 	@Override
 	public InstanceCollection sample(InstanceCollection instances, Value settings) {
 		// TODO Auto-generated method stub
-		return null;
+		return instances;
 	}
 
 	@Override
@@ -62,6 +69,16 @@ public class SkipSampler implements Sampler {
 		}
 
 		return MessageFormat.format(DISPLAY_NAME, arg);
+	}
+
+	@Override
+	public Editor<Value> createEditor(Composite parent) {
+		return new IntegerValueEditor(new IntegerEditor(parent, 1000, 2, 1, 10));
+	}
+
+	@Override
+	public Value getDefaultSettings() {
+		return Value.of(DEFAULT_N);
 	}
 
 }

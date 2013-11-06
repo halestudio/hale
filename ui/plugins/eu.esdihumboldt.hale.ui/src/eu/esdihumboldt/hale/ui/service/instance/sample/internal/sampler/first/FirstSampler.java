@@ -15,10 +15,15 @@
 
 package eu.esdihumboldt.hale.ui.service.instance.sample.internal.sampler.first;
 
+import org.eclipse.swt.widgets.Composite;
+
 import com.ibm.icu.text.MessageFormat;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.ui.common.Editor;
+import eu.esdihumboldt.hale.ui.common.editors.IntegerEditor;
+import eu.esdihumboldt.hale.ui.common.editors.value.IntegerValueEditor;
 import eu.esdihumboldt.hale.ui.service.instance.sample.Sampler;
 
 /**
@@ -52,6 +57,16 @@ public class FirstSampler implements Sampler {
 		else {
 			return MessageFormat.format(DISPLAY_NAME, 'n');
 		}
+	}
+
+	@Override
+	public Editor<Value> createEditor(Composite parent) {
+		return new IntegerValueEditor(new IntegerEditor(parent, 10000, 1, 10, 100));
+	}
+
+	@Override
+	public Value getDefaultSettings() {
+		return Value.of(DEFAULT_MAX);
 	}
 
 }

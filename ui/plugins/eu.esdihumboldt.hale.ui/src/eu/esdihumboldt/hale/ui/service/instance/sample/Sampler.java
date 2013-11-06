@@ -15,8 +15,11 @@
 
 package eu.esdihumboldt.hale.ui.service.instance.sample;
 
+import org.eclipse.swt.widgets.Composite;
+
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.ui.common.Editor;
 
 /**
  * Provides samples from given instance collections. A sampler may not hold any
@@ -46,5 +49,20 @@ public interface Sampler {
 	 * @return the display name
 	 */
 	public String getDisplayName(Value settings);
+
+	/**
+	 * Create an editor for the sampler's settings value.
+	 * 
+	 * @param parent the parent composite
+	 * @return the settings editor
+	 */
+	public Editor<Value> createEditor(Composite parent);
+
+	/**
+	 * Get the default settings for the sampler.
+	 * 
+	 * @return the sampler default settings
+	 */
+	public Value getDefaultSettings();
 
 }
