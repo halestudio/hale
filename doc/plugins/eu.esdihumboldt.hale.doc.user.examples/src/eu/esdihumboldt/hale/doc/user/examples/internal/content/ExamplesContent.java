@@ -52,6 +52,7 @@ import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.io.SchemaIO;
 import eu.esdihumboldt.hale.common.schema.io.impl.LoadSchemaAdvisor;
 import eu.esdihumboldt.hale.doc.user.examples.internal.ExamplesConstants;
@@ -283,13 +284,13 @@ public class ExamplesContent extends AbstractVelocityContent implements Examples
 
 				// load schemas
 				// source schemas
-				LoadSchemaAdvisor source = new LoadSchemaAdvisor();
+				LoadSchemaAdvisor source = new LoadSchemaAdvisor(SchemaSpaceID.SOURCE);
 				for (IOConfiguration conf : confs.get(SchemaIO.ACTION_LOAD_SOURCE_SCHEMA)) {
 					source.setConfiguration(conf);
 					executeProvider(source, conf.getProviderId(), null);
 				}
 				// target schemas
-				LoadSchemaAdvisor target = new LoadSchemaAdvisor();
+				LoadSchemaAdvisor target = new LoadSchemaAdvisor(SchemaSpaceID.TARGET);
 				for (IOConfiguration conf : confs.get(SchemaIO.ACTION_LOAD_TARGET_SCHEMA)) {
 					target.setConfiguration(conf);
 					executeProvider(target, conf.getProviderId(), null);
