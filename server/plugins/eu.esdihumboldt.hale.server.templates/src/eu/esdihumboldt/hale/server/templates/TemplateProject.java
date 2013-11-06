@@ -115,7 +115,7 @@ public class TemplateProject extends ProjectReference<Void> {
 		Path projectFolder = getProjectFolder().toPath();
 		// validate resources
 		for (IOConfiguration config : project.getResources()) {
-			Resource resource = new IOConfigurationResource(config);
+			Resource resource = new IOConfigurationResource(config, getProjectFile().toURI());
 
 			// check if file URIs are valid and inside project folder
 			URI source = resource.getSource();

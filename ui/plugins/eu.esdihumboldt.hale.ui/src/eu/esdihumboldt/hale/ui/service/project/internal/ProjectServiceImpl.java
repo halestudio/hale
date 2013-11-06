@@ -882,7 +882,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		}
 		setChanged();
 
-		notifyResourceAdded(actionId, new IOConfigurationResource(conf));
+		notifyResourceAdded(actionId, new IOConfigurationResource(conf, projectLocation));
 	}
 
 	@Override
@@ -894,7 +894,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				IOConfiguration conf = iter.next();
 				if (conf.getActionId().equals(actionId)) {
 					iter.remove();
-					removedBuilder.add(new IOConfigurationResource(conf));
+					removedBuilder.add(new IOConfigurationResource(conf, projectLocation));
 				}
 			}
 		}
@@ -921,7 +921,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					if (resourceId.equals(id)) {
 						// match found, remove
 						iter.remove();
-						removedResource = new IOConfigurationResource(conf);
+						removedResource = new IOConfigurationResource(conf, projectLocation);
 						break;
 					}
 				}
@@ -958,7 +958,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		}
 		setChanged();
 
-		notifyResourceAdded(conf.getActionId(), new IOConfigurationResource(conf));
+		notifyResourceAdded(conf.getActionId(), new IOConfigurationResource(conf, projectLocation));
 	}
 
 	@Override
@@ -969,7 +969,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 						@Override
 						public Resource apply(IOConfiguration conf) {
-							return new IOConfigurationResource(conf);
+							return new IOConfigurationResource(conf, projectLocation);
 						}
 					});
 		}

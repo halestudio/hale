@@ -36,7 +36,7 @@ public interface RecentResources {
 	 * Add a resource w/o load configuration.
 	 * 
 	 * @param contentTypeId the identifier of the content type of the resource
-	 * @param uri the resource location
+	 * @param uri the absolute resource location
 	 */
 	public void addResource(String contentTypeId, URI uri);
 
