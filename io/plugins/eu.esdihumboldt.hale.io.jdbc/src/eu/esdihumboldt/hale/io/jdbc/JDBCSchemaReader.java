@@ -38,6 +38,7 @@ import schemacrawler.schema.PrimaryKey;
 import schemacrawler.schema.ResultsColumn;
 import schemacrawler.schema.ResultsColumns;
 import schemacrawler.schema.Table;
+import schemacrawler.schema.TableType;
 import schemacrawler.schemacrawler.SchemaCrawlerException;
 import schemacrawler.schemacrawler.SchemaCrawlerOptions;
 import schemacrawler.schemacrawler.SchemaInfoLevel;
@@ -52,6 +53,7 @@ import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.common.schema.io.impl.AbstractSchemaReader;
@@ -156,6 +158,16 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 			// XXX For some advanced info / DBMS specific info we'll need a
 			// properties file. See Config & InformationSchemaViews.
 			level.setTag("hale");
+
+			if (SchemaSpaceID.SOURCE.equals(getSchemaSpace())) {
+				// show views and tables
+				options.setTableTypes(new TableType[] { TableType.table, TableType.view });
+			}
+			else {
+				// only show tables
+				options.setTableTypes(new TableType[] { TableType.table });
+			}
+
 			options.setSchemaInfoLevel(level);
 
 			final Database database = SchemaCrawlerUtility.getDatabase(connection, options);
