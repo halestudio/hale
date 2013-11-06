@@ -226,6 +226,12 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 					}
 					else {
 						// web resource that should not be included this time
+
+						// but the resolved URI should be stored nevertheless
+						// otherwise the URI may be invalid if it was relative
+						providerConfig.put(ImportProvider.PARAM_SOURCE,
+								Value.of(pathUri.toASCIIString()));
+
 						continue;
 					}
 				}
