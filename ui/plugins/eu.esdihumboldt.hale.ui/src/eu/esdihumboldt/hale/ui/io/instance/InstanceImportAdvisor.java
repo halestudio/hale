@@ -19,6 +19,8 @@ package eu.esdihumboldt.hale.ui.io.instance;
 import java.net.URI;
 import java.text.MessageFormat;
 
+import org.eclipse.ui.PlatformUI;
+
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
@@ -33,6 +35,7 @@ import eu.esdihumboldt.hale.ui.io.DefaultIOAdvisor;
 import eu.esdihumboldt.hale.ui.io.instance.crs.DefaultCRSManager;
 import eu.esdihumboldt.hale.ui.io.instance.crs.DialogCRSProvider;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
+import eu.esdihumboldt.hale.ui.service.instance.sample.InstanceViewService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
 /**
@@ -90,6 +93,13 @@ public class InstanceImportAdvisor extends DefaultIOAdvisor<InstanceReader> {
 			}
 		} finally {
 			it.close();
+		}
+
+		// apply sampling before adding to the instance service
+		InstanceViewService ivs = (InstanceViewService) PlatformUI.getWorkbench().getService(
+				InstanceViewService.class);
+		if (ivs != null) {
+			instances = ivs.sample(instances);
 		}
 
 		is.addSourceInstances(instances);

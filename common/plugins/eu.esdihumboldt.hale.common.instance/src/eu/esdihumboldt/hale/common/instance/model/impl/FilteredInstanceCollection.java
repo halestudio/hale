@@ -21,7 +21,6 @@ import java.util.NoSuchElementException;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
-import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 
 /**
@@ -30,7 +29,7 @@ import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
  * 
  * @author Simon Templer
  */
-public class FilteredInstanceCollection implements InstanceCollection {
+public class FilteredInstanceCollection extends InstanceCollectionDecorator {
 
 	/**
 	 * Filtered resource iterator.
@@ -121,8 +120,6 @@ public class FilteredInstanceCollection implements InstanceCollection {
 
 	}
 
-	private final InstanceCollection decoratee;
-
 	private final Filter filter;
 
 	/**
@@ -132,8 +129,7 @@ public class FilteredInstanceCollection implements InstanceCollection {
 	 * @param filter the filter representing the selection
 	 */
 	public FilteredInstanceCollection(InstanceCollection decoratee, Filter filter) {
-		super();
-		this.decoratee = decoratee;
+		super(decoratee);
 		this.filter = filter;
 	}
 
@@ -166,16 +162,6 @@ public class FilteredInstanceCollection implements InstanceCollection {
 	@Override
 	public InstanceCollection select(Filter filter) {
 		return new FilteredInstanceCollection(this, filter);
-	}
-
-	@Override
-	public InstanceReference getReference(Instance instance) {
-		return decoratee.getReference(instance);
-	}
-
-	@Override
-	public Instance getInstance(InstanceReference reference) {
-		return decoratee.getInstance(reference);
 	}
 
 }

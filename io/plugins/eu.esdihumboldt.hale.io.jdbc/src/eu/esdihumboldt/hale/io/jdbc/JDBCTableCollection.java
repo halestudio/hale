@@ -26,6 +26,7 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.InstanceIterator;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
@@ -44,7 +45,7 @@ public class JDBCTableCollection implements InstanceCollection {
 	/**
 	 * Iterator other a JDBC table.
 	 */
-	private class JDBCTableIterator implements ResourceIterator<Instance> {
+	private class JDBCTableIterator implements InstanceIterator {
 
 		private final TableInstanceBuilder builder = new TableInstanceBuilder();
 
@@ -79,6 +80,20 @@ public class JDBCTableCollection implements InstanceCollection {
 			} catch (SQLException e) {
 				throw new IllegalStateException("Could not create database connection", e);
 			}
+		}
+
+		@Override
+		public TypeDefinition typePeek() {
+			if (hasNext()) {
+				// always the same type returned in this iterator
+				return type;
+			}
+			return null;
+		}
+
+		@Override
+		public boolean supportsTypePeek() {
+			return true;
 		}
 
 		@Override
@@ -140,6 +155,16 @@ public class JDBCTableCollection implements InstanceCollection {
 			}
 			else {
 				throw new IllegalStateException();
+			}
+		}
+
+		@Override
+		public void skip() {
+			proceedToNext();
+
+			if (hasNext) {
+				// mark as consumed
+				consumed = true;
 			}
 		}
 

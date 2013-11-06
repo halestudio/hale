@@ -36,6 +36,7 @@ import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.InstanceIterator;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.InstanceResolver;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
@@ -60,7 +61,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 	/**
 	 * Iterates over {@link Instance}s in an XML/GML stream
 	 */
-	public class InstanceIterator implements ResourceIterator<Instance> {
+	public class GmlInstanceIterator implements InstanceIterator {
 
 		private final InputStream in;
 
@@ -87,7 +88,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 		/**
 		 * Default constructor
 		 */
-		public InstanceIterator() {
+		public GmlInstanceIterator() {
 			super();
 
 			nextType = null;
@@ -112,6 +113,19 @@ public class GmlInstanceCollection implements InstanceCollection {
 			}
 
 			return nextType != null;
+		}
+
+		@Override
+		public TypeDefinition typePeek() {
+			if (hasNext()) {
+				return nextType;
+			}
+			return null;
+		}
+
+		@Override
+		public boolean supportsTypePeek() {
+			return true;
 		}
 
 		private void proceedToNext() throws XMLStreamException {
@@ -252,6 +266,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 		/**
 		 * Skip the next object. Can be used instead of {@link #next()}
 		 */
+		@Override
 		public synchronized void skip() {
 			if (nextType == null) {
 				try {
@@ -370,8 +385,8 @@ public class GmlInstanceCollection implements InstanceCollection {
 	 * @see Iterable#iterator()
 	 */
 	@Override
-	public InstanceIterator iterator() {
-		return new InstanceIterator();
+	public GmlInstanceIterator iterator() {
+		return new GmlInstanceIterator();
 	}
 
 	/**
@@ -427,7 +442,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 	public Instance getInstance(InstanceReference reference) {
 		IndexInstanceReference ref = (IndexInstanceReference) reference;
 
-		InstanceIterator it = iterator();
+		GmlInstanceIterator it = iterator();
 		try {
 			for (int i = 0; i < ref.getIndex(); i++) {
 				// skip all instances before the referenced instance
