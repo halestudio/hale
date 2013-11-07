@@ -17,8 +17,8 @@ package eu.esdihumboldt.hale.ui.views.resources.properties;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
@@ -61,10 +61,10 @@ public class ProjectProperties extends AbstractPropertySection implements Projec
 		data.right = new FormAttachment(100, 0);
 		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
 		nameText.setLayoutData(data);
-		nameText.addFocusListener(new FocusAdapter() {
+		nameText.addModifyListener(new ModifyListener() {
 
 			@Override
-			public void focusLost(FocusEvent e) {
+			public void modifyText(ModifyEvent e) {
 				updateProject();
 			}
 
@@ -88,10 +88,10 @@ public class ProjectProperties extends AbstractPropertySection implements Projec
 		data.right = new FormAttachment(100, 0);
 		data.top = new FormAttachment(nameText, ITabbedPropertyConstants.VSPACE);
 		authorText.setLayoutData(data);
-		authorText.addFocusListener(new FocusAdapter() {
+		authorText.addModifyListener(new ModifyListener() {
 
 			@Override
-			public void focusLost(FocusEvent e) {
+			public void modifyText(ModifyEvent e) {
 				updateProject();
 			}
 
@@ -116,10 +116,10 @@ public class ProjectProperties extends AbstractPropertySection implements Projec
 		data.right = new FormAttachment(100, 0);
 		data.top = new FormAttachment(authorText, ITabbedPropertyConstants.VSPACE);
 		descriptionText.setLayoutData(data);
-		descriptionText.addFocusListener(new FocusAdapter() {
+		descriptionText.addModifyListener(new ModifyListener() {
 
 			@Override
-			public void focusLost(FocusEvent e) {
+			public void modifyText(ModifyEvent e) {
 				updateProject();
 			}
 
