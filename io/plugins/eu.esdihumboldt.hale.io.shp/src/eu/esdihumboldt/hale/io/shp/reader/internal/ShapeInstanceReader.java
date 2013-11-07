@@ -19,10 +19,14 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 
 import org.geotools.data.shapefile.ShapefileDataStore;
+import org.geotools.data.simple.SimpleFeatureSource;
+import org.opengis.feature.type.Name;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
@@ -34,6 +38,7 @@ import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceReader;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.ext.impl.PerTypeInstanceCollection;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
@@ -51,7 +56,7 @@ import eu.esdihumboldt.util.Pair;
  */
 public class ShapeInstanceReader extends AbstractInstanceReader implements ShapefileConstants {
 
-	private ShapesInstanceCollection instances;
+	private InstanceCollection instances;
 
 	/**
 	 * Default constructor.
@@ -125,8 +130,22 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 					defaultType.getName(), tp.getSecond()), null));
 		}
 
-		instances = new ShapesInstanceCollection(store, defaultType, getSourceSchema(),
-				getCrsProvider());
+		Map<TypeDefinition, InstanceCollection> collections = new HashMap<>();
+
+		// create a collection for each type
+		for (Name name : store.getNames()) {
+			SimpleFeatureSource features = store.getFeatureSource(name);
+			TypeDefinition type = defaultType;
+			if (type == null) {
+				QName typeName = new QName(ShapefileConstants.SHAPEFILE_NS, name.getLocalPart());
+				type = getSourceSchema().getType(typeName);
+			}
+
+			collections.put(type, new ShapesInstanceCollection(features, type, getCrsProvider(),
+					name.getLocalPart()));
+		}
+
+		instances = new PerTypeInstanceCollection(collections);
 
 		reporter.setSuccess(true);
 		return reporter;

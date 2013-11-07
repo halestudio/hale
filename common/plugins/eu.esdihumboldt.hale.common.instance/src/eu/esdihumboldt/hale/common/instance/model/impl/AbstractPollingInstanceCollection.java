@@ -129,7 +129,7 @@ public abstract class AbstractPollingInstanceCollection<C> implements InstanceCo
 
 	@Override
 	public InstanceCollection select(Filter filter) {
-		return new FilteredInstanceCollection(this, filter);
+		return FilteredInstanceCollection.applyFilter(this, filter);
 	}
 
 }

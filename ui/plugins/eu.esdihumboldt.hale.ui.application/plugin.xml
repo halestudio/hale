@@ -311,6 +311,12 @@
                   style="push">
             </command>
             <command
+                  commandId="eu.esdihumboldt.hale.ui.transform.projectdata"
+                  label="Transform project data..."
+                  style="push"
+                  tooltip="Transform the complete project source data, even if only a sub-set is loaded">
+            </command>
+            <command
                   commandId="eu.esdihumboldt.hale.ui.instance.toggle_transformation"
                   style="toggle">
             </command>
@@ -421,6 +427,22 @@
             <command
                   commandId="eu.esdihumboldt.hale.ui.instancevalidation.status.toggle_validation"
                   style="toggle">
+            </command>
+            <separator
+                  name="eu.esdihumboldt.hale.ui.file.transform"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.instance.toggle_sampling"
+                  style="toggle">
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.instance.sampling.pref"
+                  style="push">
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.instance.reload_data"
+                  style="push">
             </command>
          </toolbar>
          <toolbar

@@ -14,10 +14,8 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.filter;
+package eu.esdihumboldt.hale.common.instance.model;
 
-import eu.esdihumboldt.hale.common.instance.model.Filter;
-import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
@@ -25,7 +23,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * 
  * @author Simon Templer
  */
-public class TypeFilter implements Filter {
+public final class TypeFilter implements Filter {
 
 	private final TypeDefinition type;
 
@@ -51,6 +49,13 @@ public class TypeFilter implements Filter {
 		else {
 			return type.equals(instance.getDefinition());
 		}
+	}
+
+	/**
+	 * @return the type instance will be selected from
+	 */
+	public TypeDefinition getType() {
+		return type;
 	}
 
 	/**

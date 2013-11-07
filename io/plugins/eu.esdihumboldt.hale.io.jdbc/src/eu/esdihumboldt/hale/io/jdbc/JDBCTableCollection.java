@@ -28,7 +28,9 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.instance.model.ext.InstanceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.impl.PseudoInstanceReference;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DatabaseTable;
 
@@ -44,7 +46,7 @@ public class JDBCTableCollection implements InstanceCollection {
 	/**
 	 * Iterator other a JDBC table.
 	 */
-	private class JDBCTableIterator implements ResourceIterator<Instance> {
+	private class JDBCTableIterator implements InstanceIterator {
 
 		private final TableInstanceBuilder builder = new TableInstanceBuilder();
 
@@ -79,6 +81,20 @@ public class JDBCTableCollection implements InstanceCollection {
 			} catch (SQLException e) {
 				throw new IllegalStateException("Could not create database connection", e);
 			}
+		}
+
+		@Override
+		public TypeDefinition typePeek() {
+			if (hasNext()) {
+				// always the same type returned in this iterator
+				return type;
+			}
+			return null;
+		}
+
+		@Override
+		public boolean supportsTypePeek() {
+			return true;
 		}
 
 		@Override
@@ -144,6 +160,16 @@ public class JDBCTableCollection implements InstanceCollection {
 		}
 
 		@Override
+		public void skip() {
+			proceedToNext();
+
+			if (hasNext) {
+				// mark as consumed
+				consumed = true;
+			}
+		}
+
+		@Override
 		public void remove() {
 			throw new UnsupportedOperationException();
 		}
@@ -205,13 +231,15 @@ public class JDBCTableCollection implements InstanceCollection {
 
 	@Override
 	public InstanceReference getReference(Instance instance) {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO create a database backed reference instead?
+		return new PseudoInstanceReference(instance);
 	}
 
 	@Override
 	public Instance getInstance(InstanceReference reference) {
-		// TODO Auto-generated method stub
+		if (reference instanceof PseudoInstanceReference) {
+			return ((PseudoInstanceReference) reference).getInstance();
+		}
 		return null;
 	}
 
@@ -240,25 +268,22 @@ public class JDBCTableCollection implements InstanceCollection {
 
 			return count;
 		} catch (SQLException e) {
-			log.error(e.getMessage(), e);
-			return UNKNOWN_SIZE;
+			log.warn(e.getMessage(), e);
+			// treat as empty
+			return 0;
 		}
 	}
 
 	@Override
 	public boolean isEmpty() {
 		int size = size();
-		if (size == UNKNOWN_SIZE) {
-			// say empty if size cannot be determined
-			return true;
-		}
 		return size <= 0;
 	}
 
 	@Override
 	public InstanceCollection select(Filter filter) {
 		// TODO apply filter to query instead!
-		return new FilteredInstanceCollection(this, filter);
+		return FilteredInstanceCollection.applyFilter(this, filter);
 	}
 
 }

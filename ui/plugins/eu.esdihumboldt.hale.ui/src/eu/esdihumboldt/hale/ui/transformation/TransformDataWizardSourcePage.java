@@ -16,11 +16,15 @@
 
 package eu.esdihumboldt.hale.ui.transformation;
 
+import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.wizard.IWizardContainer;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -30,19 +34,26 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
+import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.headless.transform.ExportJob;
 import eu.esdihumboldt.hale.common.headless.transform.LimboInstanceSink;
 import eu.esdihumboldt.hale.common.headless.transform.ValidationJob;
+import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.ui.DefaultReportHandler;
 import eu.esdihumboldt.hale.ui.io.instance.InstanceExportWizard;
 import eu.esdihumboldt.hale.ui.io.instance.InstanceImportWizard;
+import eu.esdihumboldt.hale.ui.io.util.ThreadProgressMonitor;
+import eu.esdihumboldt.hale.ui.service.project.ProjectResourcesUtil;
+import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 
 /**
@@ -58,6 +69,7 @@ public class TransformDataWizardSourcePage extends WizardPage {
 	private ValidationJob validationJob;
 
 	private final LimboInstanceSink targetSink;
+	private final boolean useProjectData;
 
 	/**
 	 * Creates the transform data wizard page for selecting source data files.
@@ -66,13 +78,23 @@ public class TransformDataWizardSourcePage extends WizardPage {
 	 * 
 	 * @param container the wizard container
 	 * @param targetSink the target sink
+	 * @param useProjectData <code>true</code> if the source data registered in
+	 *            the project should be used, <code>false</code> if the user
+	 *            specify different data
 	 */
-	public TransformDataWizardSourcePage(IWizardContainer container,
-			LimboInstanceSink targetSink) {
+	public TransformDataWizardSourcePage(IWizardContainer container, LimboInstanceSink targetSink,
+			boolean useProjectData) {
 		super("sourceSelection");
 		this.targetSink = targetSink;
-		setTitle("Source instance selection");
-		setDescription("Add all source data files which you want to transform.");
+		this.useProjectData = useProjectData;
+		if (useProjectData) {
+			setTitle("Source data");
+			setDescription("The data sources that are imported into the project and will be transformed");
+		}
+		else {
+			setTitle("Source instance selection");
+			setDescription("Add all source data files which you want to transform.");
+		}
 		setPageComplete(false);
 
 		exportWizard = new InternalInstanceExportWizard();
@@ -93,29 +115,80 @@ public class TransformDataWizardSourcePage extends WizardPage {
 		listViewer.getControl().setLayoutData(
 				GridDataFactory.fillDefaults().grab(true, true).create());
 
-		Button addButton = new Button(content, SWT.PUSH);
-		addButton.setText("Add source file");
-		addButton.setLayoutData(GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER).create());
-		addButton.addSelectionListener(new SelectionAdapter() {
+		if (!useProjectData) {
+			Button addButton = new Button(content, SWT.PUSH);
+			addButton.setText("Add source file");
+			addButton.setLayoutData(GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER)
+					.create());
+			addButton.addSelectionListener(new SelectionAdapter() {
 
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				InstanceImportWizard importWizard = new InstanceImportWizard();
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					InstanceImportWizard importWizard = new InstanceImportWizard();
 
-				TransformDataImportAdvisor advisor = new TransformDataImportAdvisor();
-				// specifying null as actionId results in no call to
-				// ProjectService.rememberIO
-				importWizard.setAdvisor(advisor, null);
+					TransformDataImportAdvisor advisor = new TransformDataImportAdvisor();
+					// specifying null as actionId results in no call to
+					// ProjectService.rememberIO
+					importWizard.setAdvisor(advisor, null);
 
-				new HaleWizardDialog(getShell(), importWizard).open();
+					new HaleWizardDialog(getShell(), importWizard).open();
 
-				if (advisor.getInstances() != null) {
-					sourceCollections.add(advisor.getInstances());
-					listViewer.add(advisor.getLocation());
-					getContainer().updateButtons();
+					if (advisor.getInstances() != null) {
+						sourceCollections.add(advisor.getInstances());
+						listViewer.add(advisor.getLocation());
+						getContainer().updateButtons();
+					}
 				}
+			});
+		}
+		else {
+			// initialize project source data
+			IRunnableWithProgress op = new IRunnableWithProgress() {
+
+				@Override
+				public void run(IProgressMonitor monitor) throws InvocationTargetException,
+						InterruptedException {
+					monitor.beginTask("Prepare data sources", IProgressMonitor.UNKNOWN);
+
+					ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
+							ProjectService.class);
+
+					final List<URI> locations = new ArrayList<>();
+					for (Resource resource : ps.getResources()) {
+						if (InstanceIO.ACTION_LOAD_SOURCE_DATA.equals(resource.getActionId())) {
+							// resource is source data
+
+							IOConfiguration conf = resource.copyConfiguration(true);
+
+							TransformDataImportAdvisor advisor = new TransformDataImportAdvisor();
+							ProjectResourcesUtil.executeConfiguration(conf, advisor, false);
+
+							if (advisor.getInstances() != null) {
+								sourceCollections.add(advisor.getInstances());
+								locations.add(advisor.getLocation());
+							}
+						}
+					}
+
+					PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+
+						@Override
+						public void run() {
+							for (URI location : locations) {
+								listViewer.add(location);
+							}
+						}
+					});
+
+					monitor.done();
+				}
+			};
+			try {
+				ThreadProgressMonitor.runWithProgressDialog(op, false);
+			} catch (Exception e) {
+				throw new IllegalStateException(e);
 			}
-		});
+		}
 
 		setControl(content);
 	}

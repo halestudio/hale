@@ -19,20 +19,20 @@ package eu.esdihumboldt.hale.io.shp.reader.internal;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import org.geotools.data.DataStore;
 import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.GeometryDescriptor;
-import org.opengis.feature.type.Name;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
+import com.google.common.collect.ImmutableMap;
 import com.vividsolutions.jts.geom.Geometry;
 
 import de.cs3d.util.logging.ALogger;
@@ -47,12 +47,13 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.InstanceResolver;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.instance.model.ext.InstanceCollection2;
+import eu.esdihumboldt.hale.common.instance.model.ext.InstanceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.PseudoInstanceReference;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.io.shp.ShapefileConstants;
 
 /**
@@ -60,24 +61,18 @@ import eu.esdihumboldt.hale.io.shp.ShapefileConstants;
  * 
  * @author Simon Templer
  */
-public class ShapesInstanceCollection implements InstanceCollection {
+public class ShapesInstanceCollection implements InstanceCollection2 {
 
 	private static final ALogger log = ALoggerFactory.getLogger(ShapesInstanceCollection.class);
 
 	/**
 	 * Iterates through a shape data store
 	 */
-	private class ShapesIterator implements ResourceIterator<Instance> {
+	private class ShapesIterator implements InstanceIterator {
 
-		private final Iterator<Name> nameIterator;
-
-		private TypeDefinition currentType;
-
-		private SimpleFeatureIterator currentIterator;
+		private final SimpleFeatureIterator currentIterator;
 
 		private final Set<QName> missingProperties = new HashSet<QName>();
-
-		private String currentName;
 
 		/**
 		 * Create a new iterator on the data store.
@@ -87,76 +82,25 @@ public class ShapesInstanceCollection implements InstanceCollection {
 		public ShapesIterator() throws IOException {
 			super();
 
-			nameIterator = store.getNames().iterator();
+			currentIterator = source.getFeatures().features();
 		}
 
-		/**
-		 * @see java.util.Iterator#hasNext()
-		 */
 		@Override
 		public boolean hasNext() {
-			proceedToNext();
-
-			if (currentIterator != null && currentIterator.hasNext()) {
-				return true;
-			}
-			return false;
+			return currentIterator.hasNext();
 		}
 
-		/**
-		 * Proceed to next feature iterator if necessary.
-		 */
-		private synchronized void proceedToNext() {
-			if ((currentIterator == null || !currentIterator.hasNext()) && nameIterator.hasNext()) {
-				if (currentIterator != null) {
-					currentIterator.close();
-				}
-
-				Name name = nameIterator.next();
-				try {
-					currentIterator = store.getFeatureSource(name).getFeatures().features();
-					currentName = name.getLocalPart();
-
-					if (defaultType != null) {
-						currentType = defaultType;
-					}
-					else {
-						QName typeName = new QName(ShapefileConstants.SHAPEFILE_NS,
-								name.getLocalPart());
-						currentType = typeIndex.getType(typeName);
-					}
-
-					if (currentType == null) {
-						proceedToNext();
-						log.error("Could not find type " + name.getLocalPart()
-								+ " in source schema, corresponding instances are not created.");
-					}
-				} catch (IOException e) {
-					log.error("Error accessing feature source " + name, e);
-				}
-			}
-		}
-
-		/**
-		 * @see Iterator#next()
-		 */
 		@Override
 		public Instance next() {
-			proceedToNext();
-
-			if (currentType == null) {
-				throw new IllegalStateException();
-			}
-
 			SimpleFeature feature = currentIterator.next();
 
-			Instance instance = createInstance(currentType, feature);
+			Instance instance = createInstance(type, feature);
 			if (instance != null) {
 				return instance;
 			}
 			else {
 				log.error("Could not create a data instance from a feature of type "
-						+ currentType.getName());
+						+ type.getName());
 				throw new IllegalStateException();
 			}
 		}
@@ -227,55 +171,65 @@ public class ShapesInstanceCollection implements InstanceCollection {
 			}
 
 			// add filename augmented property
-			if (currentName != null) {
+			if (fileName != null) {
 				instance.addProperty(new QName(ShapefileConstants.SHAPEFILE_AUGMENT_NS,
-						ShapefileConstants.AUGMENTED_PROPERTY_FILENAME), currentName);
+						ShapefileConstants.AUGMENTED_PROPERTY_FILENAME), fileName);
 			}
 
 			return instance;
 		}
 
-		/**
-		 * @see Iterator#remove()
-		 */
 		@Override
 		public void remove() {
 			throw new UnsupportedOperationException();
 		}
 
-		/**
-		 * @see ResourceIterator#close()
-		 */
 		@Override
 		public void close() {
-			if (currentIterator != null) {
-				currentIterator.close();
+			currentIterator.close();
+		}
+
+		@Override
+		public TypeDefinition typePeek() {
+			if (hasNext()) {
+				// always the same type
+				return type;
 			}
+			return null;
+		}
+
+		@Override
+		public boolean supportsTypePeek() {
+			return true;
+		}
+
+		@Override
+		public void skip() {
+			currentIterator.next();
 		}
 
 	}
 
-	private final DataStore store;
-	private final TypeIndex typeIndex;
 	private final CRSProvider crsProvider;
-	private final TypeDefinition defaultType;
+	private final TypeDefinition type;
+	private final SimpleFeatureSource source;
+	private final String fileName;
 
 	/**
 	 * Data store for accessing simple features (from a Shapefile).
 	 * 
-	 * @param store the data store
-	 * @param defaultType the default type to use for instances, may be
-	 *            <code>null</code>
-	 * @param typeIndex the type index
+	 * @param features the feature source
+	 * @param type the type to use for instances
 	 * @param crsProvider CRS provider in case no CRS is specified, may be
 	 *            <code>null</code>
+	 * @param fileName the file name to store in the augmented property
 	 */
-	public ShapesInstanceCollection(DataStore store, TypeDefinition defaultType,
-			TypeIndex typeIndex, CRSProvider crsProvider) {
-		this.store = store;
-		this.typeIndex = typeIndex;
+	public ShapesInstanceCollection(SimpleFeatureSource features, TypeDefinition type,
+			CRSProvider crsProvider, String fileName) {
+		this.source = features;
+		this.type = type;
 		this.crsProvider = crsProvider;
-		this.defaultType = defaultType;
+		this.fileName = fileName;
 	}
 
 	/**
@@ -346,8 +300,17 @@ public class ShapesInstanceCollection implements InstanceCollection {
 	 */
 	@Override
 	public InstanceCollection select(Filter filter) {
-		// TODO allow applying filter on data source level?
-		return new FilteredInstanceCollection(this, filter);
+		return FilteredInstanceCollection.applyFilter(this, filter);
+	}
+
+	@Override
+	public boolean supportsFanout() {
+		return true;
+	}
+
+	@Override
+	public Map<TypeDefinition, InstanceCollection> fanout() {
+		return ImmutableMap.<TypeDefinition, InstanceCollection> of(type, this);
 	}
 
 }

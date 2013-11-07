@@ -100,8 +100,13 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	 */
 	public DefaultAlignment(Alignment alignment) {
 		// Since the cells came out of another alignment just pass addCell
-		for (Cell cell : alignment.getCells())
-			internalAdd(cell);
+		for (Cell cell : alignment.getCells()) {
+			/*
+			 * But copy the cell as it is not immutable (things like
+			 * transformation mode and priority may change)
+			 */
+			internalAdd(new DefaultCell(cell));
+		}
 		baseAlignments.putAll(alignment.getBaseAlignments());
 	}
 
