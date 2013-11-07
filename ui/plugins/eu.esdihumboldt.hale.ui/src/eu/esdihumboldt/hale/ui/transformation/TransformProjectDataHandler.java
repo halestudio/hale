@@ -21,17 +21,18 @@ import org.eclipse.jface.wizard.IWizard;
 import eu.esdihumboldt.hale.ui.util.handler.AbstractWizardHandler;
 
 /**
- * Show the {@link TransformDataWizard}.
+ * Show the {@link TransformDataWizard} with the source data configured in the
+ * project.
  * 
- * @author Kai Schwierczek
+ * @author Simon Templer
  */
-public class TransformDataHandler extends AbstractWizardHandler {
+public class TransformProjectDataHandler extends AbstractWizardHandler {
 
 	/**
 	 * @see AbstractWizardHandler#createWizard()
 	 */
 	@Override
 	protected IWizard createWizard() {
-		return new TransformDataWizard(false);
+		return new TransformDataWizard(true);
 	}
 }

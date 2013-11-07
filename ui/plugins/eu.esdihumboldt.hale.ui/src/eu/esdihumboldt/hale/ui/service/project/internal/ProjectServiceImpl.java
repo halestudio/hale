@@ -19,7 +19,6 @@ package eu.esdihumboldt.hale.ui.service.project.internal;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -46,8 +45,6 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 
-import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
-import de.cs3d.util.eclipse.extension.FactoryFilter;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
@@ -56,12 +53,8 @@ import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
-import eu.esdihumboldt.hale.common.core.io.ProgressMonitorIndicator;
 import eu.esdihumboldt.hale.common.core.io.Value;
-import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorExtension;
-import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorFactory;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
-import eu.esdihumboldt.hale.common.core.io.extension.IOProviderExtension;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.project.ComplexConfigurationService;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectDescription;
@@ -75,8 +68,6 @@ import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 import eu.esdihumboldt.hale.common.core.io.project.util.LocationUpdater;
-import eu.esdihumboldt.hale.common.core.io.report.IOReport;
-import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
@@ -86,6 +77,7 @@ import eu.esdihumboldt.hale.ui.io.project.OpenProjectWizard;
 import eu.esdihumboldt.hale.ui.io.project.SaveProjectWizard;
 import eu.esdihumboldt.hale.ui.io.util.ThreadProgressMonitor;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
+import eu.esdihumboldt.hale.ui.service.project.ProjectResourcesUtil;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.RecentProjectsService;
 import eu.esdihumboldt.hale.ui.service.project.UILocationUpdater;
@@ -393,111 +385,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		conf = conf.clone();
 		updater.updateIOConfiguration(conf, false);
 
-		// get provider ...
-		IOProvider provider = null;
-		IOProviderDescriptor descriptor = IOProviderExtension.getInstance().getFactory(
-				conf.getProviderId());
-		if (descriptor != null) {
-			try {
-				provider = descriptor.createExtensionObject();
-			} catch (Exception e) {
-				log.error(
-						MessageFormat
-								.format("Could not execute I/O configuration, provider with ID {0} could not be created.",
-										conf.getProviderId()), e);
-				return;
-			}
-
-			// ... and advisor
-			final String actionId = conf.getActionId();
-			List<IOAdvisorFactory> advisors = IOAdvisorExtension.getInstance().getFactories(
-					new FactoryFilter<IOAdvisor<?>, IOAdvisorFactory>() {
-
-						@Override
-						public boolean acceptFactory(IOAdvisorFactory factory) {
-							return factory.getActionID().equals(actionId);
-						}
-
-						@Override
-						public boolean acceptCollection(
-								ExtensionObjectFactoryCollection<IOAdvisor<?>, IOAdvisorFactory> collection) {
-							return true;
-						}
-					});
-			if (advisors != null && !advisors.isEmpty()) {
-				IOAdvisor<?> advisor;
-				try {
-					advisor = advisors.get(0).createAdvisor(HaleUI.getServiceProvider());
-				} catch (Exception e) {
-					log.error(
-							MessageFormat
-									.format("Could not execute I/O configuration, advisor with ID {0} could not be created.",
-											advisors.get(0).getIdentifier()), e);
-					return;
-				}
-				// configure settings
-				provider.loadConfiguration(conf.getProviderConfiguration());
-				// execute provider
-				executeProvider(provider, advisor);
-			}
-			else {
-				log.error(MessageFormat.format(
-						"Could not execute I/O configuration, no advisor for action {0} found.",
-						actionId));
-			}
-		}
-		else {
-			log.error(MessageFormat.format(
-					"Could not execute I/O configuration, provider with ID {0} not found.",
-					conf.getProviderId()));
-		}
-	}
-
-	/**
-	 * Execute the given I/O provider with the given I/O advisor.
-	 * 
-	 * @param provider the I/O provider
-	 * @param advisor the I/O advisor
-	 */
-	private void executeProvider(final IOProvider provider,
-			@SuppressWarnings("rawtypes") final IOAdvisor advisor) {
-		IRunnableWithProgress op = new IRunnableWithProgress() {
-
-			@SuppressWarnings("unchecked")
-			@Override
-			public void run(IProgressMonitor monitor) throws InvocationTargetException,
-					InterruptedException {
-				IOReporter reporter = provider.createReporter();
-				ATransaction trans = log.begin(reporter.getTaskName());
-				try {
-					// use advisor to configure provider
-					advisor.prepareProvider(provider);
-					advisor.updateConfiguration(provider);
-
-					// execute
-					IOReport report = provider.execute(new ProgressMonitorIndicator(monitor));
-
-					// publish report
-					ReportService rs = (ReportService) PlatformUI.getWorkbench().getService(
-							ReportService.class);
-					rs.addReport(report);
-
-					// handle results
-					if (report.isSuccess()) {
-						advisor.handleResults(provider);
-					}
-				} catch (Exception e) {
-					log.error("Error executing an I/O provider.", e);
-				} finally {
-					trans.end();
-				}
-			}
-		};
-		try {
-			ThreadProgressMonitor.runWithProgressDialog(op, provider.isCancelable());
-		} catch (Exception e) {
-			log.error("Error executing an I/O provider.", e);
-		}
+		ProjectResourcesUtil.executeConfiguration(conf);
 	}
 
 	private boolean internalClean() {
@@ -582,7 +470,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			// configure reader
 			reader.setSource(new DefaultInputSupplier(uri));
 
-			executeProvider(reader, openProjectAdvisor);
+			ProjectResourcesUtil.executeProvider(reader, openProjectAdvisor);
 		}
 		else {
 			log.userError("The project format is not supported.");
@@ -595,7 +483,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		// loaded
 
 		ProjectReader reader = new DummyProjectReader(project);
-		executeProvider(reader, openProjectAdvisor);
+		ProjectResourcesUtil.executeProvider(reader, openProjectAdvisor);
 	}
 
 	/**
@@ -697,7 +585,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					// moved externally)
 					writer.setTarget(new FileIOSupplier(projectFile));
 
-					executeProvider(writer, saveProjectAdvisor);
+					ProjectResourcesUtil.executeProvider(writer, saveProjectAdvisor);
 				}
 				else {
 					log.info("The project cannot be saved because the format the project was saved with is not available or has changed.");
@@ -711,7 +599,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				ProjectWriter writer = HaleIO.findIOProvider(ProjectWriter.class,
 						new FileIOSupplier(projectFile), projectFile.getAbsolutePath());
 				if (writer != null) {
-					executeProvider(writer, saveProjectAdvisor);
+					ProjectResourcesUtil.executeProvider(writer, saveProjectAdvisor);
 				}
 				else {
 					log.error("The project cannot be saved because the format is not available.");

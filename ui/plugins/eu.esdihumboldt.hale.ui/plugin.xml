@@ -126,6 +126,10 @@
             id="eu.esdihumboldt.hale.ui.instance.reload_data"
             name="Reload source data">
       </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.transform.projectdata"
+            name="Transform project data">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -441,6 +445,26 @@
                      value="true">
                </equals>
             </with>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.transformation.TransformProjectDataHandler"
+            commandId="eu.esdihumboldt.hale.ui.transform.projectdata">
+         <enabledWhen>
+            <and>
+               <with
+                     variable="hale.alignment.has_cells">
+                  <equals
+                        value="true">
+                  </equals>
+               </with>
+               <with
+                     variable="hale.instances.has_source_resource">
+                  <equals
+                        value="true">
+                  </equals>
+               </with>
+            </and>
          </enabledWhen>
       </handler>
    </extension>

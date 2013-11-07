@@ -42,16 +42,23 @@ public class TransformDataWizard extends Wizard {
 	private final LimboInstanceSink targetSink;
 	private TransformDataWizardSourcePage sourceSelectionPage;
 
+	private final boolean useProjectData;
+
 	/**
 	 * Default constructor.
+	 * 
+	 * @param useProjectData <code>true</code> if the source data registered in
+	 *            the project should be used, <code>false</code> if the user
+	 *            specify different data
 	 */
-	public TransformDataWizard() {
+	public TransformDataWizard(boolean useProjectData) {
 		super();
 
 		setWindowTitle("Transform data wizard");
 		setForcePreviousAndNextButtons(true);
 
 		targetSink = new LimboInstanceSink();
+		this.useProjectData = useProjectData;
 	}
 
 	/**
@@ -59,7 +66,8 @@ public class TransformDataWizard extends Wizard {
 	 */
 	@Override
 	public void addPages() {
-		sourceSelectionPage = new TransformDataWizardSourcePage(getContainer(), targetSink);
+		sourceSelectionPage = new TransformDataWizardSourcePage(getContainer(), targetSink,
+				useProjectData);
 		addPage(sourceSelectionPage);
 	}
 
