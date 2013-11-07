@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.service.instance.sample.internal.sampler;
+package eu.esdihumboldt.hale.ui.service.instance.sample.internal.sampler.skip;
 
 import org.eclipse.swt.widgets.Composite;
 
@@ -39,7 +39,11 @@ public class SkipSampler implements Sampler {
 
 	@Override
 	public InstanceCollection sample(InstanceCollection instances, Value settings) {
-		// TODO Auto-generated method stub
+		int n = settings.as(Integer.class, DEFAULT_N);
+
+		if (n > 1) {
+			return new SkipSampleInstances(instances, n - 1);
+		}
 		return instances;
 	}
 
