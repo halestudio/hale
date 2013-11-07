@@ -120,7 +120,26 @@ public class MultiInstanceCollection implements InstanceCollection {
 	 */
 	@Override
 	public InstanceCollection select(Filter filter) {
-		return FilteredInstanceCollection.applyFilter(this, filter);
+		/*
+		 * Delegate filter to each collection - there may some optimization take
+		 * place, e.g. with type filters
+		 */
+		List<InstanceCollection> result = new ArrayList<>();
+		for (InstanceCollection collection : collections) {
+			result.add(FilteredInstanceCollection.applyFilter(collection, filter));
+		}
+
+		return createNew(result);
+	}
+
+	/**
+	 * Create a new multi instance collection with filtered child collections
+	 * 
+	 * @param filtered the filtered child collections
+	 * @return the multi instance collection
+	 */
+	protected MultiInstanceCollection createNew(List<InstanceCollection> filtered) {
+		return new MultiInstanceCollection(filtered);
 	}
 
 	/**

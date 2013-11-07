@@ -20,8 +20,10 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 
+import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ext.InstanceCollection2;
+import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.MultiInstanceCollection;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
@@ -55,6 +57,13 @@ public class PerTypeInstanceCollection extends MultiInstanceCollection implement
 	@Override
 	public Map<TypeDefinition, InstanceCollection> fanout() {
 		return collections;
+	}
+
+	@Override
+	public InstanceCollection select(Filter filter) {
+		// apply filter to this collection, as it supports fan-out an probably
+		// the filter can be optimized
+		return FilteredInstanceCollection.applyFilter(this, filter);
 	}
 
 }
