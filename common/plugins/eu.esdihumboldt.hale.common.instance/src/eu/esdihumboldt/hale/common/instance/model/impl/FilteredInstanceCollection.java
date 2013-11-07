@@ -16,12 +16,18 @@
 
 package eu.esdihumboldt.hale.common.instance.model.impl;
 
+import java.util.Map;
 import java.util.NoSuchElementException;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
 
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.instance.model.ext.helper.InstanceCollectionDecorator;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Instance collection that wraps an instance collection and represents a
@@ -162,6 +168,23 @@ public class FilteredInstanceCollection extends InstanceCollectionDecorator {
 	@Override
 	public InstanceCollection select(Filter filter) {
 		return new FilteredInstanceCollection(this, filter);
+	}
+
+	@Override
+	public Map<TypeDefinition, InstanceCollection> fanout() {
+		Map<TypeDefinition, InstanceCollection> fanout = super.fanout();
+		if (fanout != null) {
+			return Maps.transformValues(fanout,
+					new Function<InstanceCollection, InstanceCollection>() {
+
+						@Override
+						public InstanceCollection apply(InstanceCollection from) {
+							return new FilteredInstanceCollection(from, filter);
+						}
+					});
+		}
+
+		return null;
 	}
 
 }

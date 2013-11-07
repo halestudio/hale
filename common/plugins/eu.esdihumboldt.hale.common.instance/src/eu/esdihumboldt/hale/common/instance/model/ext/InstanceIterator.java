@@ -13,14 +13,19 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.instance.model;
+package eu.esdihumboldt.hale.common.instance.model.ext;
 
+import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
- * Instance iterator with advanced capabilities.
+ * Instance iterator with advanced capabilities. Extends the default resource
+ * iterator used in an {@link InstanceCollection}.
  * 
  * @author Simon Templer
+ * @since 2.8
  */
 public interface InstanceIterator extends ResourceIterator<Instance> {
 

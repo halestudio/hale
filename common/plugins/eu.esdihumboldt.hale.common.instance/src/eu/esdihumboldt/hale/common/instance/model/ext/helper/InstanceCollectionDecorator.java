@@ -14,20 +14,24 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.instance.model.impl;
+package eu.esdihumboldt.hale.common.instance.model.ext.helper;
+
+import java.util.Map;
 
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.instance.model.ext.InstanceCollection2;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Decorator for an instance collection.
  * 
  * @author Simon Templer
  */
-public abstract class InstanceCollectionDecorator implements InstanceCollection {
+public abstract class InstanceCollectionDecorator implements InstanceCollection2 {
 
 	/**
 	 * The decorated instance collection.
@@ -77,6 +81,20 @@ public abstract class InstanceCollectionDecorator implements InstanceCollection 
 	@Override
 	public Instance getInstance(InstanceReference reference) {
 		return decoratee.getInstance(reference);
+	}
+
+	@Override
+	public boolean supportsFanout() {
+		return decoratee instanceof InstanceCollection2
+				&& ((InstanceCollection2) decoratee).supportsFanout();
+	}
+
+	@Override
+	public Map<TypeDefinition, InstanceCollection> fanout() {
+		if (decoratee instanceof InstanceCollection2) {
+			return ((InstanceCollection2) decoratee).fanout();
+		}
+		return null;
 	}
 
 }

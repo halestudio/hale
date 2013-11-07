@@ -19,9 +19,9 @@ import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.instance.model.ext.helper.FullInstanceIteratorSupport;
+import eu.esdihumboldt.hale.common.instance.model.ext.helper.InstanceCollectionDecorator;
 import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
-import eu.esdihumboldt.hale.common.instance.model.impl.FullInstanceIteratorSupport;
-import eu.esdihumboldt.hale.common.instance.model.impl.InstanceCollectionDecorator;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import gnu.trove.TObjectIntHashMap;
 

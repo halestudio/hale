@@ -17,8 +17,8 @@ package eu.esdihumboldt.hale.io.jdbc;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceReader;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.ext.impl.PerTypeInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.MultiInstanceCollection;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
@@ -72,17 +73,17 @@ public class JDBCInstanceReader extends AbstractInstanceReader implements JDBCCo
 			String user = getParameter(PARAM_USER).as(String.class);
 			String password = getParameter(PARAM_PASSWORD).as(String.class);
 
-			List<InstanceCollection> collections = new ArrayList<>();
+			Map<TypeDefinition, InstanceCollection> collections = new HashMap<>();
 
-			// XXX for now only load instances for mapping relevant types
+			// only load instances for mapping relevant types
 			for (TypeDefinition type : getSourceSchema().getMappingRelevantTypes()) {
 				// TODO test if table exists in DB
 
-				collections.add(new JDBCTableCollection(type, getSource().getLocation(), user,
-						password));
+				collections.put(type, new JDBCTableCollection(type, getSource().getLocation(),
+						user, password));
 			}
 
-			collection = new MultiInstanceCollection(collections);
+			collection = new PerTypeInstanceCollection(collections);
 			reporter.setSuccess(true);
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl("Error configuring database connection", e));
