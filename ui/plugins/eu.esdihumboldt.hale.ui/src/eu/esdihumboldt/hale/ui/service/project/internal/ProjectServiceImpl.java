@@ -130,6 +130,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				main.getProperties().remove(key);
 			}
 			setChanged();
+			notifyProjectSettingChanged(key, Value.NULL);
 		}
 
 		@Override
@@ -138,6 +139,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				main.getProperties().put(key, Value.of(value));
 			}
 			setChanged();
+			notifyProjectSettingChanged(key, Value.of(value));
 		}
 
 		@Override
@@ -151,6 +153,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				}
 			}
 			setChanged();
+			notifyProjectSettingChanged(name, (value != null) ? (value) : (Value.NULL));
 		}
 
 		@Override

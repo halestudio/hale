@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
@@ -72,6 +73,19 @@ public abstract class AbstractProjectService implements ProjectService {
 	protected void notifyAfterLoad(Map<String, ProjectFile> projectFiles) {
 		for (ProjectServiceListener listener : listeners) {
 			listener.afterLoad(this, projectFiles);
+		}
+	}
+
+	/**
+	 * Call when a project setting has been changed. Will not be called when the
+	 * project has been loaded and the settings changed in consequence.
+	 * 
+	 * @param name the configuration key
+	 * @param value the new value
+	 */
+	protected void notifyProjectSettingChanged(String name, Value value) {
+		for (ProjectServiceListener listener : listeners) {
+			listener.projectSettingChanged(name, value);
 		}
 	}
 
