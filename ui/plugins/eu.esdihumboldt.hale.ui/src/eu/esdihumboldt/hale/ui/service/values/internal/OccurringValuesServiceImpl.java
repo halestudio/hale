@@ -15,31 +15,50 @@
 
 package eu.esdihumboldt.hale.ui.service.values.internal;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.ui.PlatformUI;
 
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.TreeMultiset;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
+import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
+import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.TypeFilter;
+import eu.esdihumboldt.hale.common.instance.model.impl.MultiInstanceCollection;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.ui.io.util.ThreadProgressMonitor;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceAdapter;
+import eu.esdihumboldt.hale.ui.service.instance.sample.internal.InstanceViewPreferences;
+import eu.esdihumboldt.hale.ui.service.project.ProjectResourcesUtil;
+import eu.esdihumboldt.hale.ui.service.project.ProjectService;
+import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.values.OccurringValues;
 import eu.esdihumboldt.hale.ui.service.values.OccurringValuesUtil;
+import eu.esdihumboldt.hale.ui.transformation.TransformDataImportAdvisor;
 
 /**
  * Service that determines what different values occur for specific
@@ -48,6 +67,8 @@ import eu.esdihumboldt.hale.ui.service.values.OccurringValuesUtil;
  * @author Simon Templer
  */
 public class OccurringValuesServiceImpl extends AbstractOccurringValuesService {
+
+	private static final ALogger log = ALoggerFactory.getLogger(OccurringValuesServiceImpl.class);
 
 	/**
 	 * Job determining the occurring values for a specific property entity.
@@ -115,7 +136,8 @@ public class OccurringValuesServiceImpl extends AbstractOccurringValuesService {
 			try {
 				while (it.hasNext()) {
 					Instance instance = it.next();
-					AlignmentUtil.addValues(instance, property.getPropertyPath(), collectedValues, true);
+					AlignmentUtil.addValues(instance, property.getPropertyPath(), collectedValues,
+							true);
 					if (instanceProgress) {
 						// TODO improved monitor update?!
 						monitor.worked(1);
@@ -157,8 +179,9 @@ public class OccurringValuesServiceImpl extends AbstractOccurringValuesService {
 	 * Create a service instance.
 	 * 
 	 * @param instances the instance service
+	 * @param projectService the project service
 	 */
-	public OccurringValuesServiceImpl(InstanceService instances) {
+	public OccurringValuesServiceImpl(InstanceService instances, ProjectService projectService) {
 		super();
 
 		// add instance service listener
@@ -176,6 +199,19 @@ public class OccurringValuesServiceImpl extends AbstractOccurringValuesService {
 				}
 
 				invalidateValues(schemaSpace, type);
+			}
+
+		});
+
+		// add project service listener
+		projectService.addListener(new ProjectServiceAdapter() {
+
+			@Override
+			public void projectSettingChanged(String name, Value value) {
+				if (InstanceViewPreferences.KEY_OCCURRING_VALUES_USE_EXTERNAL.equals(name)) {
+					// invalidate values on setting change
+					invalidateValues(SchemaSpaceID.SOURCE, DataSet.SOURCE);
+				}
 			}
 
 		});
@@ -282,8 +318,61 @@ public class OccurringValuesServiceImpl extends AbstractOccurringValuesService {
 			dataSet = DataSet.SOURCE;
 		}
 
+		// determine if external data should be used
+		boolean useExternalData = false;
+		if (dataSet.equals(DataSet.SOURCE)) {
+			ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
+					ProjectService.class);
+			useExternalData = InstanceViewPreferences.occurringValuesUseExternalData(ps
+					.getConfigurationService());
+		}
+
+		InstanceCollection collection;
+		if (!useExternalData) {
+			collection = instances.getInstances(dataSet);
+		}
+		else {
+			// use complete project data sources
+			final AtomicReference<InstanceCollection> source = new AtomicReference<>();
+
+			IRunnableWithProgress op = new IRunnableWithProgress() {
+
+				@Override
+				public void run(IProgressMonitor monitor) throws InvocationTargetException,
+						InterruptedException {
+					ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
+							ProjectService.class);
+
+					List<InstanceCollection> sources = new ArrayList<>();
+					for (Resource resource : ps.getResources()) {
+						if (InstanceIO.ACTION_LOAD_SOURCE_DATA.equals(resource.getActionId())) {
+							// resource is source data
+
+							IOConfiguration conf = resource.copyConfiguration(true);
+
+							TransformDataImportAdvisor advisor = new TransformDataImportAdvisor();
+							ProjectResourcesUtil.executeConfiguration(conf, advisor, false);
+
+							if (advisor.getInstances() != null) {
+								sources.add(advisor.getInstances());
+							}
+						}
+					}
+
+					source.set(new MultiInstanceCollection(sources));
+				}
+			};
+			try {
+				ThreadProgressMonitor.runWithProgressDialog(op, false);
+				collection = source.get();
+			} catch (Exception e) {
+				log.error("Error initializing data sources", e);
+				return true;
+			}
+		}
+
 		// go through instances to determine occurring values
-		Job job = new OccurringValuesJob(property, values, instances.getInstances(dataSet));
+		Job job = new OccurringValuesJob(property, values, collection);
 		job.schedule();
 
 		return true;

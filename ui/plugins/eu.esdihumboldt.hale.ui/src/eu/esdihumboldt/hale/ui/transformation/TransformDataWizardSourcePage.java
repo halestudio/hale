@@ -161,7 +161,7 @@ public class TransformDataWizardSourcePage extends WizardPage {
 							IOConfiguration conf = resource.copyConfiguration(true);
 
 							TransformDataImportAdvisor advisor = new TransformDataImportAdvisor();
-							ProjectResourcesUtil.executeConfiguration(conf, advisor);
+							ProjectResourcesUtil.executeConfiguration(conf, advisor, false);
 
 							if (advisor.getInstances() != null) {
 								sourceCollections.add(advisor.getInstances());

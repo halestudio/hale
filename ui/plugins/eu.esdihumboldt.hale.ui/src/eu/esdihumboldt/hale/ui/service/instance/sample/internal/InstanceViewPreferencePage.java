@@ -74,6 +74,10 @@ public class InstanceViewPreferencePage extends PreferencePage implements IWorkb
 
 	private Group samplerGroup;
 
+	private Button occurringValuesComplete;
+
+	private boolean ov_changed = false;
+
 	private boolean changed = false;
 
 	private final IPropertyChangeListener editorListener = new IPropertyChangeListener() {
@@ -171,6 +175,27 @@ public class InstanceViewPreferencePage extends PreferencePage implements IWorkb
 			changed = false;
 		}
 
+		// occurring values group
+		Group ovGroup = new Group(page, SWT.NONE);
+		ovGroup.setText("Occurring values");
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(ovGroup);
+		GridLayoutFactory.swtDefaults().applyTo(ovGroup);
+
+		// occurring values button
+		occurringValuesComplete = new Button(ovGroup, SWT.CHECK);
+		occurringValuesComplete
+				.setText("Always use complete source data to determine occurring values (ignore sampling)");
+		occurringValuesComplete.setSelection(ps.getConfigurationService().getBoolean(
+				InstanceViewPreferences.KEY_OCCURRING_VALUES_USE_EXTERNAL,
+				InstanceViewPreferences.OCCURRING_VALUES_EXTERNAL_DEFAULT));
+		occurringValuesComplete.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				ov_changed = true;
+			}
+		});
+
 		return page;
 	}
 
@@ -241,55 +266,69 @@ public class InstanceViewPreferencePage extends PreferencePage implements IWorkb
 		}
 
 		changed = true;
+
+		// update the occurring values button with the default
+		occurringValuesComplete
+				.setSelection(InstanceViewPreferences.OCCURRING_VALUES_EXTERNAL_DEFAULT);
+
+		ov_changed = true;
 	}
 
 	@Override
 	public boolean performOk() {
-		if (!changed) {
-			return true;
-		}
-
-		if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Reload source data",
-				"Applying the new settings will result in the source data being reloaded.")) {
-			return false;
-		}
-
 		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
 				ProjectService.class);
 
-		// save the enabled state
-		ps.getConfigurationService().setBoolean(InstanceViewPreferences.KEY_ENABLED,
-				enabled.getSelection());
+		if (changed) {
+			if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),
+					"Reload source data",
+					"Applying the new settings will result in the source data being reloaded.")) {
+				return false;
+			}
 
-		// store the current editor value in the map
-		if (currentEditor != null) {
-			// store value for current sampler
-			Value setting = currentEditor.getValue();
-			samplerSettings.put(InstanceViewPreferences.SAMPLERS.inverse().get(currentSampler),
-					setting);
+			// save the enabled state
+			ps.getConfigurationService().setBoolean(InstanceViewPreferences.KEY_ENABLED,
+					enabled.getSelection());
+
+			// store the current editor value in the map
+			if (currentEditor != null) {
+				// store value for current sampler
+				Value setting = currentEditor.getValue();
+				samplerSettings.put(InstanceViewPreferences.SAMPLERS.inverse().get(currentSampler),
+						setting);
+			}
+
+			// store the map in the configuration
+			for (Entry<String, Value> entry : samplerSettings.entrySet()) {
+				ps.getConfigurationService().setProperty(
+						InstanceViewPreferences.KEY_SETTINGS_PREFIX + entry.getKey(),
+						entry.getValue());
+			}
+
+			// store the selected sampler
+			Sampler selectedSampler = null;
+			if (!samplers.getSelection().isEmpty()) {
+				selectedSampler = (Sampler) ((IStructuredSelection) samplers.getSelection())
+						.getFirstElement();
+			}
+			if (selectedSampler != null) {
+				ps.getConfigurationService().set(InstanceViewPreferences.KEY_SAMPLER,
+						InstanceViewPreferences.SAMPLERS.inverse().get(selectedSampler));
+			}
+
+			// reload the data
+			ps.reloadSourceData();
+
+			changed = false;
 		}
 
-		// store the map in the configuration
-		for (Entry<String, Value> entry : samplerSettings.entrySet()) {
-			ps.getConfigurationService().setProperty(
-					InstanceViewPreferences.KEY_SETTINGS_PREFIX + entry.getKey(), entry.getValue());
-		}
+		if (ov_changed) {
+			ps.getConfigurationService().setBoolean(
+					InstanceViewPreferences.KEY_OCCURRING_VALUES_USE_EXTERNAL,
+					occurringValuesComplete.getSelection());
 
-		// store the selected sampler
-		Sampler selectedSampler = null;
-		if (!samplers.getSelection().isEmpty()) {
-			selectedSampler = (Sampler) ((IStructuredSelection) samplers.getSelection())
-					.getFirstElement();
+			ov_changed = false;
 		}
-		if (selectedSampler != null) {
-			ps.getConfigurationService().set(InstanceViewPreferences.KEY_SAMPLER,
-					InstanceViewPreferences.SAMPLERS.inverse().get(selectedSampler));
-		}
-
-		// reload the data
-		ps.reloadSourceData();
-
-		changed = false;
 
 		return true;
 	}

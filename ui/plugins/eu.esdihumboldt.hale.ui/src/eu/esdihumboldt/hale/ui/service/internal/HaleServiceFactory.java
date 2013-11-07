@@ -80,7 +80,8 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 
 		if (OccurringValuesService.class.equals(serviceInterface)) {
 			return new OccurringValuesServiceImpl(
-					(InstanceService) locator.getService(InstanceService.class));
+					(InstanceService) locator.getService(InstanceService.class),
+					(ProjectService) locator.getService(ProjectService.class));
 		}
 
 		if (CompatibilityService.class.equals(serviceInterface)) {

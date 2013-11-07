@@ -57,7 +57,7 @@ public class ProjectResourcesUtil {
 	 * @param conf the I/O configuration
 	 */
 	public static void executeConfiguration(IOConfiguration conf) {
-		executeConfiguration(conf, null);
+		executeConfiguration(conf, null, true);
 	}
 
 	/**
@@ -65,8 +65,10 @@ public class ProjectResourcesUtil {
 	 * 
 	 * @param conf the I/O configuration
 	 * @param customAdvisor the custom advisor to use or <code>null</code>
+	 * @param publishReport if the report should be published
 	 */
-	public static void executeConfiguration(IOConfiguration conf, IOAdvisor<?> customAdvisor) {
+	public static void executeConfiguration(IOConfiguration conf, IOAdvisor<?> customAdvisor,
+			boolean publishReport) {
 		// get provider ...
 		IOProvider provider = null;
 		IOProviderDescriptor descriptor = IOProviderExtension.getInstance().getFactory(
@@ -117,7 +119,7 @@ public class ProjectResourcesUtil {
 				// configure settings
 				provider.loadConfiguration(conf.getProviderConfiguration());
 				// execute provider
-				executeProvider(provider, advisor);
+				executeProvider(provider, advisor, publishReport);
 			}
 			else {
 				log.error(MessageFormat.format(
@@ -140,6 +142,18 @@ public class ProjectResourcesUtil {
 	 */
 	public static void executeProvider(final IOProvider provider,
 			@SuppressWarnings("rawtypes") final IOAdvisor advisor) {
+		executeProvider(provider, advisor, true);
+	}
+
+	/**
+	 * Execute the given I/O provider with the given I/O advisor.
+	 * 
+	 * @param provider the I/O provider
+	 * @param advisor the I/O advisor
+	 * @param publishReport if the report should be published
+	 */
+	public static void executeProvider(final IOProvider provider,
+			@SuppressWarnings("rawtypes") final IOAdvisor advisor, final boolean publishReport) {
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 
 			@SuppressWarnings("unchecked")
@@ -156,10 +170,12 @@ public class ProjectResourcesUtil {
 					// execute
 					IOReport report = provider.execute(new ProgressMonitorIndicator(monitor));
 
-					// publish report
-					ReportService rs = (ReportService) PlatformUI.getWorkbench().getService(
-							ReportService.class);
-					rs.addReport(report);
+					if (publishReport) {
+						// publish report
+						ReportService rs = (ReportService) PlatformUI.getWorkbench().getService(
+								ReportService.class);
+						rs.addReport(report);
+					}
 
 					// handle results
 					if (report.isSuccess()) {

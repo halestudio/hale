@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.ui.service.instance.sample.internal;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 
+import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import eu.esdihumboldt.hale.ui.service.instance.sample.Sampler;
 import eu.esdihumboldt.hale.ui.service.instance.sample.internal.sampler.first.FirstSampler;
 import eu.esdihumboldt.hale.ui.service.instance.sample.internal.sampler.skip.SkipSampler;
@@ -41,6 +42,41 @@ public class InstanceViewPreferences {
 	 */
 	public static final BiMap<String, Sampler> SAMPLERS = ImmutableBiMap.<String, Sampler> of(
 			SAMPLER_FIRST, new FirstSampler(), "skip", new SkipSampler());
+
+	/**
+	 * Determine if instance sampling is enabled in the given configuration.
+	 * 
+	 * @param config the configuration service
+	 * @return if instance sampling is enabled
+	 */
+	public static boolean samplingEnabled(IConfigurationService config) {
+		return config.getBoolean(KEY_ENABLED, ENABLED_DEFAULT);
+	}
+
+	/**
+	 * Determine if occurring values should use the external source data instead
+	 * if the instance service sources.
+	 * 
+	 * @param config the configuration service
+	 * @return if occurring values should use the external source data
+	 */
+	public static boolean occurringValuesUseExternalData(IConfigurationService config) {
+		return samplingEnabled(config)
+				&& config.getBoolean(KEY_OCCURRING_VALUES_USE_EXTERNAL,
+						OCCURRING_VALUES_EXTERNAL_DEFAULT);
+	}
+
+	/**
+	 * Constant defining if the complete source data should be used for
+	 * occurring values by default.
+	 */
+	public static final boolean OCCURRING_VALUES_EXTERNAL_DEFAULT = false;
+
+	/**
+	 * The key for the configuration specifying whether in occurring values the
+	 * complete source data should be used.
+	 */
+	public static final String KEY_OCCURRING_VALUES_USE_EXTERNAL = "instances.sampling.ov_complete";
 
 	/**
 	 * Constant defining if instance sampling is enabled by default.
