@@ -968,16 +968,34 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 	@Override
 	public void reloadSourceData() {
-		// drop the existing instances
-		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
-				InstanceService.class);
-		is.dropInstances();
+		IRunnableWithProgress op = new IRunnableWithProgress() {
 
-		// reload the instances
-		for (IOConfiguration conf : main.getResources()) {
-			if (InstanceIO.ACTION_LOAD_SOURCE_DATA.equals(conf.getActionId())) {
-				executeConfiguration(conf);
+			@Override
+			public void run(IProgressMonitor monitor) throws InvocationTargetException,
+					InterruptedException {
+				monitor.beginTask("Reload source data", IProgressMonitor.UNKNOWN);
+
+				monitor.subTask("Clear loaded instances");
+
+				// drop the existing instances
+				InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
+						InstanceService.class);
+				is.dropInstances();
+
+				// reload the instances
+				for (IOConfiguration conf : main.getResources()) {
+					if (InstanceIO.ACTION_LOAD_SOURCE_DATA.equals(conf.getActionId())) {
+						executeConfiguration(conf);
+					}
+				}
+
+				monitor.done();
 			}
+		};
+		try {
+			ThreadProgressMonitor.runWithProgressDialog(op, false);
+		} catch (Exception e) {
+			log.error("Executing data reload failed", e);
 		}
 	}
 
