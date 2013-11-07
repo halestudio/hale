@@ -300,8 +300,7 @@ public class ShapesInstanceCollection implements InstanceCollection2 {
 	 */
 	@Override
 	public InstanceCollection select(Filter filter) {
-		// TODO allow applying filter on data source level?
-		return new FilteredInstanceCollection(this, filter);
+		return FilteredInstanceCollection.applyFilter(this, filter);
 	}
 
 	@Override

@@ -413,12 +413,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 	 */
 	@Override
 	public InstanceCollection select(Filter filter) {
-		/*
-		 * FIXME optimize for cases where there is filtering based on a type?
-		 * Those instances where another type is concerned would not have to be
-		 * created (if they don't include children of that type?!)
-		 */
-		return new FilteredInstanceCollection(this, filter);
+		return FilteredInstanceCollection.applyFilter(this, filter);
 	}
 
 	/**

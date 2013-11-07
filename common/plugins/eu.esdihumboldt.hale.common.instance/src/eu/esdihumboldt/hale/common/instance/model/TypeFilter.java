@@ -23,7 +23,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * 
  * @author Simon Templer
  */
-public class TypeFilter implements Filter {
+public final class TypeFilter implements Filter {
 
 	private final TypeDefinition type;
 

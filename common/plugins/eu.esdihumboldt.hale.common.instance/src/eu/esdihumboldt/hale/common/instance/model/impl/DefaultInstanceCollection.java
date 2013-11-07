@@ -101,7 +101,7 @@ public class DefaultInstanceCollection implements InstanceCollection {
 	 */
 	@Override
 	public InstanceCollection select(Filter filter) {
-		return new FilteredInstanceCollection(this, filter);
+		return FilteredInstanceCollection.applyFilter(this, filter);
 	}
 
 	/**

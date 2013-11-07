@@ -20,11 +20,8 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 
-import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
-import eu.esdihumboldt.hale.common.instance.model.TypeFilter;
 import eu.esdihumboldt.hale.common.instance.model.ext.InstanceCollection2;
-import eu.esdihumboldt.hale.common.instance.model.ext.helper.EmptyInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.MultiInstanceCollection;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
@@ -60,18 +57,4 @@ public class PerTypeInstanceCollection extends MultiInstanceCollection implement
 		return collections;
 	}
 
-	@Override
-	public InstanceCollection select(Filter filter) {
-		// special handling for type filter
-		if (filter instanceof TypeFilter) {
-			TypeDefinition type = ((TypeFilter) filter).getType();
-			InstanceCollection result = collections.get(type);
-			if (result == null) {
-				result = EmptyInstanceCollection.INSTANCE;
-			}
-			return result;
-		}
-
-		return super.select(filter);
-	}
 }

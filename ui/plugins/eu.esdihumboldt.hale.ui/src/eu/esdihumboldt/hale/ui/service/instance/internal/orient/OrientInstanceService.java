@@ -187,7 +187,7 @@ public class OrientInstanceService extends AbstractInstanceService {
 			 * headless transformation must be updated accordingly as well.
 			 */
 
-			return new FilteredInstanceCollection(result, new Filter() {
+			return FilteredInstanceCollection.applyFilter(result, new Filter() {
 
 				@Override
 				public boolean match(Instance instance) {

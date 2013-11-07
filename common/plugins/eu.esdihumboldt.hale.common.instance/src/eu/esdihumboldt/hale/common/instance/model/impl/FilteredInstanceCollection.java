@@ -26,6 +26,10 @@ import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.instance.model.TypeFilter;
+import eu.esdihumboldt.hale.common.instance.model.ext.InstanceCollection2;
+import eu.esdihumboldt.hale.common.instance.model.ext.InstanceIterator;
+import eu.esdihumboldt.hale.common.instance.model.ext.helper.EmptyInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ext.helper.InstanceCollectionDecorator;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
@@ -36,6 +40,35 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * @author Simon Templer
  */
 public class FilteredInstanceCollection extends InstanceCollectionDecorator {
+
+	/**
+	 * Create an instance collection that applies a filter to the given instance
+	 * collection.
+	 * 
+	 * @param instances the instance collection to filter
+	 * @param filter the filter
+	 * @return the filtered instance collection
+	 */
+	public static InstanceCollection applyFilter(InstanceCollection instances, Filter filter) {
+		if (filter instanceof TypeFilter && instances instanceof InstanceCollection2) {
+			/*
+			 * For type filters check if we can make use of fan-out.
+			 */
+			InstanceCollection2 instances2 = (InstanceCollection2) instances;
+
+			if (instances2.supportsFanout()) {
+				TypeDefinition type = ((TypeFilter) filter).getType();
+				InstanceCollection result = instances2.fanout().get(type);
+				if (result == null) {
+					result = EmptyInstanceCollection.INSTANCE;
+				}
+				return result;
+			}
+		}
+
+		// create a filtered collection
+		return new FilteredInstanceCollection(instances, filter);
+	}
 
 	/**
 	 * Filtered resource iterator.
@@ -134,14 +167,20 @@ public class FilteredInstanceCollection extends InstanceCollectionDecorator {
 	 * @param decoratee the instance collection to perform the selection on
 	 * @param filter the filter representing the selection
 	 */
-	public FilteredInstanceCollection(InstanceCollection decoratee, Filter filter) {
+	private FilteredInstanceCollection(InstanceCollection decoratee, Filter filter) {
 		super(decoratee);
 		this.filter = filter;
 	}
 
 	@Override
 	public ResourceIterator<Instance> iterator() {
-		return new FilteredIterator(decoratee.iterator());
+		ResourceIterator<Instance> it = decoratee.iterator();
+		if (filter instanceof TypeFilter && it instanceof InstanceIterator
+				&& ((InstanceIterator) it).supportsTypePeek()) {
+			// make use of type peek if possible
+			return new TypeFilteredIterator(it, ((TypeFilter) filter).getType());
+		}
+		return new FilteredIterator(it);
 	}
 
 	@Override

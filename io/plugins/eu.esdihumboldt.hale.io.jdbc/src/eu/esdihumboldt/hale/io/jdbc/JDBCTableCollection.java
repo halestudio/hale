@@ -283,7 +283,7 @@ public class JDBCTableCollection implements InstanceCollection {
 	@Override
 	public InstanceCollection select(Filter filter) {
 		// TODO apply filter to query instead!
-		return new FilteredInstanceCollection(this, filter);
+		return FilteredInstanceCollection.applyFilter(this, filter);
 	}
 
 }

@@ -99,7 +99,7 @@ public class FirstOverallInstances extends InstanceCollectionDecorator {
 	@Override
 	public InstanceCollection select(Filter filter) {
 		// filter the samples
-		return new FilteredInstanceCollection(this, filter);
+		return FilteredInstanceCollection.applyFilter(this, filter);
 	}
 
 	@Override
