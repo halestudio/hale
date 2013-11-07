@@ -47,17 +47,31 @@ public class InstanceSamplingToggleState extends State {
 		ps.addListener(projectListener = new ProjectServiceAdapter() {
 
 			@Override
-			public void afterLoad(ProjectService projectService,
-					Map<String, ProjectFile> projectFiles) {
+			public void afterLoad(final ProjectService projectService,
+					final Map<String, ProjectFile> projectFiles) {
 				// update after the project has been loaded
-				update(projectService);
+				PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+
+					@Override
+					public void run() {
+						update(projectService);
+					}
+				});
 			}
 
 			@Override
-			public void projectSettingChanged(String name, Value value) {
+			public void projectSettingChanged(final String name, final Value value) {
 				// update after the setting change
 				if (InstanceViewPreferences.KEY_ENABLED.equals(name)) {
-					setValue(value.as(Boolean.class, InstanceViewPreferences.ENABLED_DEFAULT));
+					PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+
+						@Override
+						public void run() {
+							setValue(value.as(Boolean.class,
+									InstanceViewPreferences.ENABLED_DEFAULT));
+						}
+
+					});
 				}
 			}
 
