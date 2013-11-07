@@ -30,6 +30,7 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.ext.InstanceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.impl.PseudoInstanceReference;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DatabaseTable;
 
@@ -230,13 +231,15 @@ public class JDBCTableCollection implements InstanceCollection {
 
 	@Override
 	public InstanceReference getReference(Instance instance) {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO create a database backed reference instead?
+		return new PseudoInstanceReference(instance);
 	}
 
 	@Override
 	public Instance getInstance(InstanceReference reference) {
-		// TODO Auto-generated method stub
+		if (reference instanceof PseudoInstanceReference) {
+			return ((PseudoInstanceReference) reference).getInstance();
+		}
 		return null;
 	}
 
@@ -265,18 +268,15 @@ public class JDBCTableCollection implements InstanceCollection {
 
 			return count;
 		} catch (SQLException e) {
-			log.error(e.getMessage(), e);
-			return UNKNOWN_SIZE;
+			log.warn(e.getMessage(), e);
+			// treat as empty
+			return 0;
 		}
 	}
 
 	@Override
 	public boolean isEmpty() {
 		int size = size();
-		if (size == UNKNOWN_SIZE) {
-			// say empty if size cannot be determined
-			return true;
-		}
 		return size <= 0;
 	}
 

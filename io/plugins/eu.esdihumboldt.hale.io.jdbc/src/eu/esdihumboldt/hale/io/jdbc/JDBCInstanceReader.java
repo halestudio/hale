@@ -77,7 +77,7 @@ public class JDBCInstanceReader extends AbstractInstanceReader implements JDBCCo
 
 			// only load instances for mapping relevant types
 			for (TypeDefinition type : getSourceSchema().getMappingRelevantTypes()) {
-				// TODO test if table exists in DB
+				// TODO test if table exists in DB?
 
 				collections.put(type, new JDBCTableCollection(type, getSource().getLocation(),
 						user, password));
