@@ -422,6 +422,22 @@
                   commandId="eu.esdihumboldt.hale.ui.instancevalidation.status.toggle_validation"
                   style="toggle">
             </command>
+            <separator
+                  name="eu.esdihumboldt.hale.ui.file.transform"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.instance.toggle_sampling"
+                  style="toggle">
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.instance.sampling.pref"
+                  style="push">
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.instance.reload_data"
+                  style="push">
+            </command>
          </toolbar>
          <toolbar
                id="eu.esdihumboldt.hale.ui.edit"

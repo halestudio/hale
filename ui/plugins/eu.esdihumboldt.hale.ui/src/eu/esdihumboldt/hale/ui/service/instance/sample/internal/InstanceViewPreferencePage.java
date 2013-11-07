@@ -57,6 +57,11 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectService;
  */
 public class InstanceViewPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
+	/**
+	 * The preference page ID as registered in the extension point.
+	 */
+	public static final String ID = "eu.esdihumboldt.hale.ui.preferences.instanceview";
+
 	private final Map<String, Value> samplerSettings = new HashMap<>();
 
 	private Button enabled;
@@ -283,6 +288,8 @@ public class InstanceViewPreferencePage extends PreferencePage implements IWorkb
 
 		// reload the data
 		ps.reloadSourceData();
+
+		changed = false;
 
 		return true;
 	}

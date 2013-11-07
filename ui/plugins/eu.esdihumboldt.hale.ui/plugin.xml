@@ -108,6 +108,24 @@
             id="eu.esdihumboldt.hale.ui.values.update_occuring"
             name="Update occurring values">
       </command>
+      <command
+            description="En/disable usage of a sample data set based on the imported source data. Will reload the data when changed."
+            id="eu.esdihumboldt.hale.ui.instance.toggle_sampling"
+            name="Instance sampling">
+         <state
+               class="eu.esdihumboldt.hale.ui.service.instance.sample.internal.InstanceSamplingToggleState"
+               id="org.eclipse.ui.commands.toggleState">
+         </state>
+      </command>
+      <command
+            description="Opens the preference page to edit the settings on using a sample data set of instances"
+            id="eu.esdihumboldt.hale.ui.instance.sampling.pref"
+            name="Configure instance sampling">
+      </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.instance.reload_data"
+            name="Reload source data">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -404,6 +422,26 @@
                </and>
             </with>
          </activeWhen>
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.service.instance.sample.internal.ToggleInstanceSamplingHandler"
+            commandId="eu.esdihumboldt.hale.ui.instance.toggle_sampling">
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.service.instance.sample.internal.InstanceViewPreferencesHandler"
+            commandId="eu.esdihumboldt.hale.ui.instance.sampling.pref">
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.service.instance.ReloadDataHandler"
+            commandId="eu.esdihumboldt.hale.ui.instance.reload_data">
+         <enabledWhen>
+            <with
+                  variable="hale.instances.has_source_resource">
+               <equals
+                     value="true">
+               </equals>
+            </with>
+         </enabledWhen>
       </handler>
    </extension>
    <extension
