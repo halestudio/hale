@@ -15,12 +15,19 @@
 
 package eu.esdihumboldt.hale.ui.service.instance.sample.internal.sampler.first;
 
+import java.util.Map;
+
 import org.eclipse.swt.widgets.Composite;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
 import com.ibm.icu.text.MessageFormat;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.ext.InstanceCollection2;
+import eu.esdihumboldt.hale.common.instance.model.ext.impl.PerTypeInstanceCollection;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.Editor;
 import eu.esdihumboldt.hale.ui.common.editors.IntegerEditor;
 import eu.esdihumboldt.hale.ui.common.editors.value.IntegerValueEditor;
@@ -39,10 +46,31 @@ public class FirstSampler implements Sampler {
 
 	@Override
 	public InstanceCollection sample(InstanceCollection instances, Value settings) {
-		int max = settings.as(Integer.class, DEFAULT_MAX);
+		final int max = settings.as(Integer.class, DEFAULT_MAX);
 
-		if (max > 1) {
-			return new FirstSampleInstances(instances, max);
+		if (max >= 1) {
+			if (instances instanceof InstanceCollection2) {
+				InstanceCollection2 fic = (InstanceCollection2) instances;
+				if (fic.supportsFanout()) {
+					/*
+					 * The instance collection supports fan-out by type -> so we
+					 * apply the sampling on each instance collection
+					 * individually
+					 */
+					Map<TypeDefinition, InstanceCollection> collections = Maps.transformValues(
+							fic.fanout(), new Function<InstanceCollection, InstanceCollection>() {
+
+								@Override
+								public InstanceCollection apply(InstanceCollection org) {
+									return new FirstOverallInstances(org, max);
+								}
+
+							});
+					return new PerTypeInstanceCollection(collections);
+				}
+			}
+
+			return new FirstInstancesPerType(instances, max);
 		}
 		return instances;
 	}

@@ -15,6 +15,11 @@
 
 package eu.esdihumboldt.hale.ui.service.instance.sample.internal.sampler.first;
 
+import java.util.Map;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
+
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -31,12 +36,12 @@ import gnu.trove.TObjectIntHashMap;
  * 
  * @author Simon Templer
  */
-public class FirstSampleInstances extends InstanceCollectionDecorator {
+public class FirstInstancesPerType extends InstanceCollectionDecorator {
 
 	/**
 	 * Iterator that returns at maximum a specific number of instances per type.
 	 */
-	public class FirstSampleIterator extends FullInstanceIteratorSupport {
+	private class FirstSampleIterator extends FullInstanceIteratorSupport {
 
 		private final TObjectIntHashMap<TypeDefinition> typeCount = new TObjectIntHashMap<>();
 
@@ -101,7 +106,7 @@ public class FirstSampleInstances extends InstanceCollectionDecorator {
 	 * @param instances the original instance collection
 	 * @param max the maximum number of instances per type
 	 */
-	public FirstSampleInstances(InstanceCollection instances, int max) {
+	public FirstInstancesPerType(InstanceCollection instances, int max) {
 		super(instances);
 		this.max = max;
 	}
@@ -113,13 +118,38 @@ public class FirstSampleInstances extends InstanceCollectionDecorator {
 
 	@Override
 	public int size() {
-		return Math.min(super.size(), max);
+		return InstanceCollection.UNKNOWN_SIZE;
+	}
+
+	@Override
+	public boolean hasSize() {
+		return false;
 	}
 
 	@Override
 	public InstanceCollection select(Filter filter) {
 		// filter the samples
 		return new FilteredInstanceCollection(this, filter);
+	}
+
+	@Override
+	public Map<TypeDefinition, InstanceCollection> fanout() {
+		Map<TypeDefinition, InstanceCollection> fanout = super.fanout();
+
+		if (fanout != null) {
+			// individually sample each instance collection
+			return Maps.transformValues(fanout,
+					new Function<InstanceCollection, InstanceCollection>() {
+
+						@Override
+						public InstanceCollection apply(InstanceCollection org) {
+							return new FirstOverallInstances(org, max);
+						}
+
+					});
+		}
+
+		return null;
 	}
 
 }
