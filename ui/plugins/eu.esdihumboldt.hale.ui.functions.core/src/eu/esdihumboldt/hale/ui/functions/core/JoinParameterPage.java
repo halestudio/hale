@@ -72,8 +72,13 @@ import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.core.io.impl.ComplexValue;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.Reference;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.PrimaryKey;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
@@ -248,6 +253,7 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 		// check and refresh pages in between
 		for (ConditionPage page : pages.subList(Math.max(0, lowerPageIndex), higherPageIndex + 1))
 			page.checkAndRefresh();
+		getContainer().updateButtons();
 	}
 
 	/**
@@ -674,8 +680,6 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 			setTitle("Join " + typeDisplayName);
 			setDescription("Please select join conditions for type " + typeDisplayName);
 
-			updateCompletionStatus();
-
 			// may be called before the page control was created
 			if (getControl() == null)
 				return;
@@ -696,6 +700,7 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 					removeCondition(condition, false);
 			}
 			conditionViewer.refresh();
+			updateCompletionStatus();
 		}
 
 		/**
@@ -785,6 +790,73 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 
 			// this call after the others to update the buttons, too
 			setPageComplete(pageComplete);
+		}
+
+		@Override
+		protected void onShowPage(boolean firstShow) {
+			super.onShowPage(firstShow);
+
+			// no initial data -> check Reference constraints
+			if (conditions.isEmpty()) {
+				boolean added = false;
+				TypeEntityDefinition joinTypeEntity = types.get(typeIndex);
+				List<TypeDefinition> baseTypes = new ArrayList<>(typeIndex);
+				for (int i = 0; i < typeIndex; i++)
+					baseTypes.add(types.get(i).getDefinition());
+
+				// only check direct children (->database)
+				Collection<? extends ChildDefinition<?>> children = DefinitionUtil
+						.getAllChildren(joinTypeEntity.getDefinition());
+
+				// check all direct children
+				for (ChildDefinition<?> child : children) {
+					// only properties
+					if (child.asProperty() == null)
+						continue;
+					PropertyDefinition property = child.asProperty();
+					Reference ref = property.getConstraint(Reference.class);
+					Collection<? extends TypeDefinition> referencedTypes = ref.getReferencedTypes();
+					// only if they reference something
+					if (referencedTypes == null || referencedTypes.isEmpty())
+						continue;
+
+					// check all references
+					for (TypeDefinition referencedType : referencedTypes) {
+						int index = baseTypes.indexOf(referencedType);
+						// only those which occur in the base types
+						if (index == -1)
+							continue;
+						List<ChildDefinition<?>> path = getPrimaryKeyPath(referencedType);
+						// only those with a property primary key
+						if (path == null)
+							continue;
+
+						// create property entity definitions
+						TypeEntityDefinition baseTypeEntity = types.get(index);
+						PropertyEntityDefinition joinDef = (PropertyEntityDefinition) AlignmentUtil
+								.getChild(joinTypeEntity, property.getName());
+						PropertyEntityDefinition baseDef = (PropertyEntityDefinition) AlignmentUtil
+								.createEntityFromDefinitions(referencedType, path,
+										baseTypeEntity.getSchemaSpace(), baseTypeEntity.getFilter());
+						// add join condition
+						conditions.add(new JoinCondition(baseDef, joinDef));
+						added = true;
+					}
+				}
+				if (added) {
+					conditionViewer.refresh();
+					updateCompletionStatus();
+				}
+			}
+		}
+
+		private List<ChildDefinition<?>> getPrimaryKeyPath(TypeDefinition type) {
+			PrimaryKey key = type.getConstraint(PrimaryKey.class);
+			List<ChildDefinition<?>> path = key.getPrimaryKeyPath();
+			if (key.hasPrimaryKey() && path.get(path.size() - 1) instanceof PropertyDefinition)
+				return path;
+			else
+				return null;
 		}
 
 		@Override
