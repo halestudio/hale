@@ -209,7 +209,7 @@ public class TypeStructureTray extends DialogTray {
 			contentProvider = new TreePathProviderAdapter(new TypeDefinitionContentProvider(tree));
 		}
 		tree.setContentProvider(contentProvider);
-		GridDataFactory.fillDefaults().grab(true, true).hint(250, 400).applyTo(filteredTree);
+		GridDataFactory.fillDefaults().grab(true, true).hint(280, 400).applyTo(filteredTree);
 
 		tree.setComparator(new DefinitionComparator());
 
@@ -227,8 +227,16 @@ public class TypeStructureTray extends DialogTray {
 
 		// caption
 		Label example = new Label(page, SWT.NONE);
-		example.setText("Example");
-		example.setFont(JFaceResources.getHeaderFont());
+		switch (schemaSpace) {
+		case SOURCE:
+			example.setText("Examples: Access variables");
+			break;
+		case TARGET:
+			example.setText("Example: Build instance");
+			break;
+		default:
+			example.setText("Example");
+		}
 
 		// source viewer
 		final SourceViewer viewer = new SourceViewer(page, null, SWT.MULTI | SWT.BORDER
