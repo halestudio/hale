@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="stylesheet" type="text/css" href="new.css" />
+<title>What's new in HALE 2.8?</title>
+</head>
+<body>
+	<h1>What's new in HALE 2.8?</h1>
+	<p>HALE 2.8 comes with some nice new features since the last
+		release HALE 2.7.0 - especially the database support, the possibility
+		to configure sample data and the advanced scripting capabilities.</p>
+
+	<!-- 2.8.0 -->
+	<table border="0" cellpadding="15" cellspacing="0" class="news"
+		id="2_8_0">
+		<tbody>
+
+			<tr id="jdbc">
+				<td class="title" colspan="1" rowspan="1">Database access</td>
+				<td class="content" colspan="1" rowspan="1">Use
+					PostgreSQL/PostGIS databases as schema and data source for a
+					transformation with the new JDBC based database support in HALE. To
+					combine information from different database tables in a mapping,
+					use the <i>Join</i> function. Support for additional types of
+					databases can be provided through plug-ins.
+					<p>
+						<img src="2_8_0_images/jdbc.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="samples">
+				<td class="title" colspan="1" rowspan="1">Define sample data
+					<p>
+						<img src="2_8_0_images/sample-tools.png" />
+					</p>
+				</td>
+				<td class="content" colspan="1" rowspan="1">Source data you
+					load in HALE is used in the live transformation to allow you to
+					directly see the impact of changes to the mapping in the
+					transformed data. But the source data may be to big for it to be
+					reasonable to transform it with every change. Now you can configure
+					that only a sub-set of the data is loaded into HALE, which in most
+					cases also speeds up the import. With only the sub-set loaded in
+					HALE you can still perform the transformation on the whole data set
+					through the <i>Transform project data...</i> option in the <i>Transformation</i>
+					menu.
+					<p>
+						<img src="2_8_0_images/sample-prefs.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="advanced-scripting">
+				<td class="title" colspan="1" rowspan="1">Advanced
+					transformation scripts</td>
+				<td class="content" colspan="1" rowspan="1">Advanced users can
+					combine the regular HALE transformation functions with powerful
+					Groovy scripts. HALE now comes with easy-to-use APIs for accessing
+					and creating complex instances. The new script editor supports
+					syntax highlighting and script validation. Detailed help and
+					generated example code based on the concrete source and target
+					structure is available as well.
+					<p>
+						<img src="2_8_0_images/groovy-ui.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="improved-classification">
+				<td class="title" colspan="1" rowspan="1">Improved
+					classification UI</td>
+				<td class="content" colspan="1" rowspan="1">The user interface
+					for the classification mapping function now uses a tabular
+					representation and has some new features:
+					<ul>
+						<li>Fill the lookup table with values encountered in the
+							source data (<i>Occurring values</i>) or enumeration values
+							defined in the schema
+						</li>
+						<li>Load the lookup table from a CSV or Excel file</li>
+						<li>Save the lookup table as a CSV or Excel file</li>
+					</ul>
+					<p>
+						<img src="2_8_0_images/improved-classification.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="recent-resources">
+				<td class="title" colspan="1" rowspan="1">Load recent resources</td>
+				<td class="content" colspan="1" rowspan="1">Now not only
+					recently loaded projects but all recently loaded resources are
+					remembered. When loading <i>From file</i> or <i>From URL</i> just
+					use the button on the left of the text field to select the recently
+					loaded resources that are applicable for the import. This is
+					especially helpful if you have files that you import both as schema
+					and as data, for instance Shapefiles.
+					<p>
+						<img src="2_8_0_images/recent-resources.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="join-xlink">
+				<td class="title" colspan="1" rowspan="1">Join XML objects</td>
+				<td class="content" colspan="1" rowspan="1">The <i>Join</i>
+					transformation function enables you to combine information from
+					different types of objects in the mapping. Originally this was only
+					possible based on attributes that have the same value. This is a
+					problem with references in XML, as the reference is not the same as
+					the referenced identifier. Now HALE supports matching local XLink
+					references to XML identifiers automatically.
+					<p>
+						<img src="2_8_0_images/join-xlink.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="reload-source">
+				<td class="title" colspan="1" rowspan="1">Reload source data
+					<p>
+						<img src="2_8_0_images/reload-source.png" />
+					</p>
+				</td>
+				<td class="content" colspan="1" rowspan="1">HALE now allows you
+					to manually reload the source data imported into the project, e.g.
+					when the data was subject to changes. Also, many of the data
+					importers in HALE only import data for types in the source schema
+					that are marked as relevant for the mapping - for example the
+					XML/GML and database importers. If you mark additional types in
+					this way after the data was loaded, you can now update the loaded
+					data accordingly.</td>
+			</tr>
+
+		</tbody>
+	</table>
+
+</body>
+</html>
