@@ -804,45 +804,11 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 				for (int i = 0; i < typeIndex; i++)
 					baseTypes.add(types.get(i).getDefinition());
 
-				// only check direct children (->database)
-				Collection<? extends ChildDefinition<?>> children = DefinitionUtil
-						.getAllChildren(joinTypeEntity.getDefinition());
+				added |= addReferenceConditions(joinTypeEntity, types.subList(0, typeIndex), false);
+				for (TypeEntityDefinition baseTypeEntity : types.subList(0, typeIndex))
+					added |= addReferenceConditions(baseTypeEntity,
+							Collections.singletonList(joinTypeEntity), true);
 
-				// check all direct children
-				for (ChildDefinition<?> child : children) {
-					// only properties
-					if (child.asProperty() == null)
-						continue;
-					PropertyDefinition property = child.asProperty();
-					Reference ref = property.getConstraint(Reference.class);
-					Collection<? extends TypeDefinition> referencedTypes = ref.getReferencedTypes();
-					// only if they reference something
-					if (referencedTypes == null || referencedTypes.isEmpty())
-						continue;
-
-					// check all references
-					for (TypeDefinition referencedType : referencedTypes) {
-						int index = baseTypes.indexOf(referencedType);
-						// only those which occur in the base types
-						if (index == -1)
-							continue;
-						List<ChildDefinition<?>> path = getPrimaryKeyPath(referencedType);
-						// only those with a property primary key
-						if (path == null)
-							continue;
-
-						// create property entity definitions
-						TypeEntityDefinition baseTypeEntity = types.get(index);
-						PropertyEntityDefinition joinDef = (PropertyEntityDefinition) AlignmentUtil
-								.getChild(joinTypeEntity, property.getName());
-						PropertyEntityDefinition baseDef = (PropertyEntityDefinition) AlignmentUtil
-								.createEntityFromDefinitions(referencedType, path,
-										baseTypeEntity.getSchemaSpace(), baseTypeEntity.getFilter());
-						// add join condition
-						conditions.add(new JoinCondition(baseDef, joinDef));
-						added = true;
-					}
-				}
 				if (added) {
 					conditionViewer.refresh();
 					updateCompletionStatus();
@@ -850,11 +816,74 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 			}
 		}
 
+		private boolean addReferenceConditions(TypeEntityDefinition joinType,
+				List<TypeEntityDefinition> baseTypes, boolean invert) {
+			int size = baseTypes.size();
+			List<TypeDefinition> baseTypeDefs = new ArrayList<>(size);
+			for (int i = 0; i < size; i++)
+				baseTypeDefs.add(baseTypes.get(i).getDefinition());
+			boolean added = false;
+
+			// only check direct children (->database)
+			Collection<? extends ChildDefinition<?>> children = DefinitionUtil
+					.getAllChildren(joinType.getDefinition());
+
+			// check all direct children
+			for (ChildDefinition<?> child : children) {
+				// only properties
+				if (child.asProperty() == null)
+					continue;
+				PropertyDefinition property = child.asProperty();
+				Reference ref = property.getConstraint(Reference.class);
+				Collection<? extends TypeDefinition> referencedTypes = ref.getReferencedTypes();
+				// only if they reference something
+				if (referencedTypes == null || referencedTypes.isEmpty())
+					continue;
+
+				// check all references
+				for (TypeDefinition referencedType : referencedTypes) {
+					int index = baseTypeDefs.indexOf(referencedType);
+					// only those which occur in the base types
+					if (index == -1)
+						continue;
+
+					PropertyEntityDefinition baseDef = getPrimaryKeyEntity(baseTypes.get(index));
+					// only those with a property primary key
+					if (baseDef == null)
+						continue;
+
+					// create property entity definitions
+					PropertyEntityDefinition joinDef = (PropertyEntityDefinition) AlignmentUtil
+							.getChild(joinType, property.getName());
+
+					if (invert) {
+						PropertyEntityDefinition tmp = joinDef;
+						joinDef = baseDef;
+						baseDef = tmp;
+					}
+
+					// add join condition
+					conditions.add(new JoinCondition(baseDef, joinDef));
+					added = true;
+				}
+			}
+			return added;
+		}
+
 		private List<ChildDefinition<?>> getPrimaryKeyPath(TypeDefinition type) {
 			PrimaryKey key = type.getConstraint(PrimaryKey.class);
 			List<ChildDefinition<?>> path = key.getPrimaryKeyPath();
 			if (key.hasPrimaryKey() && path.get(path.size() - 1) instanceof PropertyDefinition)
 				return path;
+			else
+				return null;
+		}
+
+		private PropertyEntityDefinition getPrimaryKeyEntity(TypeEntityDefinition type) {
+			List<ChildDefinition<?>> primaryKeyPath = getPrimaryKeyPath(type.getDefinition());
+			if (primaryKeyPath != null)
+				return (PropertyEntityDefinition) AlignmentUtil.createEntityFromDefinitions(
+						type.getType(), primaryKeyPath, type.getSchemaSpace(), type.getFilter());
 			else
 				return null;
 		}
