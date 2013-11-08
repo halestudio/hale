@@ -22,6 +22,50 @@
 		geometries, they can be displayed in the map view. Once the mapping is
 		finished, the transformed data can be exported.
 	</p>
+	
+	<h2>Configuring a sample data set</h2>
+	<p>You have the possibility to load only a sub-set of your data in
+		HALE, to use it as a sample for the data analysis and transformation
+		debugging. You can enable it in the tool bar or the project's source
+		data settings. To open the settings use tool bar button highlighted
+		below:</p>
+	<div>
+		<img src="images/sample-tools.png">
+	</div>
+	<p>There you can enable or disable the usage of a data sub-set. You
+		can choose between different strategies to use for the selection of
+		the sample instances. A strategy usually offers some kind of editor to
+		configure it.</p>
+	<p>
+		The default strategy <i>First n instances per type</i> for example
+		allows to configure the maximum number of instances per type that
+		should be part of the sample data.
+	</p>
+	<p>These settings are project specific. This means they will be
+		loaded and saved together with the project. If you have a new project,
+		you can enable the instance sampling before loading any data.</p>
+	<div>
+		<img src="images/sample-prefs.png" class="fit">
+	</div>
+	<p>
+		Also, you can configure if for the <i>Occurring values</i> data
+		analysis the sample data or the complete data should be used.
+		Configuring it to use the complete data will take more time for the
+		analysis, but will enable you to get a complete picture on what values
+		occur in the source data for specific properties.
+	</p>
+	
+	<h3>Sample data and transformation</h3>
+	<p>
+		Even if you are working with only a sample of your data, you can still
+		easily transform and export the complete data. Select <i>Transformation</i>&#8594;<i>Transform
+			project data...</i> from the menu to launch a wizard that will guide you
+		through the export configuration and launch the transformation. While
+		the transformation runs you can continue working in HALE, as the
+		transformation works on a copy of your current mapping.
+	</p>
+
+	<h2>Loading the data</h2>
 	<p>
 		To <a class="command-link"
 			href='javascript:liveAction("eu.esdihumboldt.hale.ui.firststeps", "eu.esdihumboldt.hale.ui.firststeps.ImportAction",
@@ -42,6 +86,7 @@
 		<li><a href="../../reference/import/gml_data.html">GML</a></li>
 		<li><a href="../../reference/import/csv.html">CSV</a></li>
 		<li><a href="../../reference/import/shapefile.html">Shapefile</a></li>
+		<li><a href="../../reference/import/jdbc.html">Databases</a></li>
 	</ul>
 
 	<br>
