@@ -53,6 +53,10 @@ abstract class TransformationExamples {
 	public static final String PRIORITY = 'priority'
 	public static final String NULLVALUE = 'nullvalue'
 
+	public static final String GROOVY1 = 'groovy1'
+	public static final String GROOVY2 = 'groovy2'
+	public static final String GROOVY3 = 'groovy3'
+
 	public static final String PROPCONDITION1 = 'propcondition1'
 	public static final String PROPCONDITION2 = 'propcondition2'
 	public static final String TYPEFILTER = 'typefilter'
@@ -155,6 +159,10 @@ abstract class TransformationExamples {
 		(PROPERTYFILTER): defaultExample(PROPERTYFILTER),
 		(IMPASSIGN): defaultExample(IMPASSIGN),
 
+		(GROOVY1): defaultExample(GROOVY1),
+		(GROOVY2): defaultExample(GROOVY2),
+		(GROOVY3): defaultExample(GROOVY3),
+
 		// context matching examples
 		(CM_UNION_1): defaultExample(CM_UNION_1),
 		(CM_UNION_2): defaultExample(CM_UNION_2),
@@ -196,14 +204,14 @@ abstract class TransformationExamples {
 
 	static def defaultExample(String folder) {
 		[
-					sourceSchema: "/testdata/${folder}/t1.xsd",
-					targetSchema: "/testdata/${folder}/t2.xsd",
-					alignment: "/testdata/${folder}/t1t2.halex.alignment.xml",
-					sourceData: "/testdata/${folder}/instance1.xml",
-					transformedData: "/testdata/${folder}/instance2.xml",
-					containerNamespace: null,
-					containerName: 'collection'
-				]
+			sourceSchema: "/testdata/${folder}/t1.xsd",
+			targetSchema: "/testdata/${folder}/t2.xsd",
+			alignment: "/testdata/${folder}/t1t2.halex.alignment.xml",
+			sourceData: "/testdata/${folder}/instance1.xml",
+			transformedData: "/testdata/${folder}/instance2.xml",
+			containerNamespace: null,
+			containerName: 'collection'
+		]
 	}
 
 	/**

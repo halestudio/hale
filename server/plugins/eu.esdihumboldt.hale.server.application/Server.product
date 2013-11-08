@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="HALE Server" id="eu.esdihumboldt.hale.server.application.Server" application="org.eclipse.ui.ide.workbench" version="2.7.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="HALE Server" id="eu.esdihumboldt.hale.server.application.Server" application="org.eclipse.ui.ide.workbench" version="2.8.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -20,7 +20,8 @@
 -Dcache.level2.enabled=false
 -Dcache.level2.size=0
 -Djetty.port=8080
--Dhale.webapp.loginpage=openid
+-Dhale.webapp.loginpage=false
+-Dhale.webapp.breadcrumbs=true
 -Drecaptcha.private=
 -Drecaptcha.public=</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
@@ -40,6 +41,10 @@
 
    <plugins>
       <plugin id="EDU.oswego.cs.dl.util.concurrent"/>
+      <plugin id="asm"/>
+      <plugin id="asm-analysis"/>
+      <plugin id="asm-tree"/>
+      <plugin id="asm-util"/>
       <plugin id="au.com.bytecode.opencsv"/>
       <plugin id="cal10n.api"/>
       <plugin id="cern.colt"/>
@@ -109,6 +114,7 @@
       <plugin id="eu.esdihumboldt.hale.common.filter"/>
       <plugin id="eu.esdihumboldt.hale.common.headless"/>
       <plugin id="eu.esdihumboldt.hale.common.instance"/>
+      <plugin id="eu.esdihumboldt.hale.common.instance.groovy"/>
       <plugin id="eu.esdihumboldt.hale.common.instance.orient"/>
       <plugin id="eu.esdihumboldt.hale.common.lookup"/>
       <plugin id="eu.esdihumboldt.hale.common.propertyaccessor" fragment="true"/>
@@ -126,6 +132,7 @@
       <plugin id="eu.esdihumboldt.hale.server.api.base"/>
       <plugin id="eu.esdihumboldt.hale.server.api.war"/>
       <plugin id="eu.esdihumboldt.hale.server.application"/>
+      <plugin id="eu.esdihumboldt.hale.server.config"/>
       <plugin id="eu.esdihumboldt.hale.server.console.war"/>
       <plugin id="eu.esdihumboldt.hale.server.db"/>
       <plugin id="eu.esdihumboldt.hale.server.logback.config" fragment="true"/>
@@ -135,10 +142,7 @@
       <plugin id="eu.esdihumboldt.hale.server.projects.war"/>
       <plugin id="eu.esdihumboldt.hale.server.security"/>
       <plugin id="eu.esdihumboldt.hale.server.security.extender"/>
-      <plugin id="eu.esdihumboldt.hale.server.security.openid" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.server.status.war"/>
-      <plugin id="eu.esdihumboldt.hale.server.templates"/>
-      <plugin id="eu.esdihumboldt.hale.server.templates.war"/>
       <plugin id="eu.esdihumboldt.hale.server.users"/>
       <plugin id="eu.esdihumboldt.hale.server.war"/>
       <plugin id="eu.esdihumboldt.hale.server.webapp"/>
@@ -229,8 +233,9 @@
       <plugin id="org.iq80.snappy"/>
       <plugin id="org.jdom"/>
       <plugin id="org.json"/>
-      <plugin id="org.objectweb.asm"/>
       <plugin id="org.opengis"/>
+      <plugin id="org.parboiled.core"/>
+      <plugin id="org.parboiled.java" fragment="true"/>
       <plugin id="org.reflections"/>
       <plugin id="org.slf4j.api"/>
       <plugin id="org.springframework.aop"/>
@@ -249,6 +254,7 @@
       <plugin id="org.springframework.web"/>
       <plugin id="org.springframework.web.servlet"/>
       <plugin id="org.webjars.locator"/>
+      <plugin id="pegdown"/>
       <plugin id="slf4j.ext"/>
       <plugin id="webjar-container-fragment" fragment="true"/>
       <plugin id="wicket-bootstrap-core"/>
@@ -265,19 +271,18 @@
       <plugin id="eu.esdihumboldt.hale.common.convert.wkt" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.common.instance" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.gml" autoStart="true" startLevel="0" />
-      <plugin id="eu.esdihumboldt.hale.server.api.war" autoStart="false" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.server.api.war" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.server.config" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.console.war" autoStart="false" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.progress" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.projects" autoStart="true" startLevel="0" />
-      <plugin id="eu.esdihumboldt.hale.server.projects.war" autoStart="false" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.server.projects.war" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.security" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.status.war" autoStart="false" startLevel="0" />
-      <plugin id="eu.esdihumboldt.hale.server.templates" autoStart="true" startLevel="3" />
-      <plugin id="eu.esdihumboldt.hale.server.templates.war" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.users" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.war" autoStart="false" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.server.webapp.war" autoStart="false" startLevel="0" />
-      <plugin id="eu.esdihumboldt.hale.server.webtransform.war" autoStart="false" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.server.webtransform.war" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.registry" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.gemini.blueprint.core" autoStart="true" startLevel="2" />

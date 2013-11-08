@@ -14,5 +14,18 @@
          </property>
       </product>
    </extension>
+   
+   <extension
+         id="Templates"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.eclipse.ui.ide.workbench"
+            name="HALE Templates">
+         <property
+               name="appName"
+               value="HALE Templates">
+         </property>
+      </product>
+   </extension>
 
 </plugin>

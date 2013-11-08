@@ -180,6 +180,11 @@ public abstract class OSerializationHelper {
 	private static final int SERIALIZATION_TYPE_COLLECTION = 4;
 
 	/**
+	 * Byte array property
+	 */
+	private static final int SERIALIZATION_TYPE_BYTEARRAY = 5;
+
+	/**
 	 * Field specifying the CRS ID
 	 */
 	public static final String FIELD_CRS_ID = "___crs___";
@@ -369,6 +374,11 @@ public abstract class OSerializationHelper {
 			serType = SERIALIZATION_TYPE_GEOM_PROP;
 		}
 
+		if (value.getClass().isArray() && value.getClass().getComponentType().equals(byte.class)) {
+			// direct byte array support
+			record.fromStream((byte[]) value);
+			serType = SERIALIZATION_TYPE_BYTEARRAY;
+		}
 		if (value instanceof Geometry) {
 			// serialize geometry as WKB
 			Geometry geom = (Geometry) value;
@@ -390,7 +400,8 @@ public abstract class OSerializationHelper {
 				ObjectOutputStream out = new ObjectOutputStream(bytes);
 				out.writeObject(value);
 			} catch (IOException e) {
-				throw new IllegalStateException("Could not serialize field value.");
+				throw new IllegalStateException("Could not serialize field value of type "
+						+ value.getClass().getName());
 			}
 			record.fromStream(bytes.toByteArray());
 		}
@@ -526,6 +537,9 @@ public abstract class OSerializationHelper {
 		Object result;
 
 		switch (serType) {
+		case SERIALIZATION_TYPE_BYTEARRAY:
+			result = record.toStream();
+			break;
 		case SERIALIZATION_TYPE_GEOM:
 		case SERIALIZATION_TYPE_GEOM_PROP:
 			ExtendedWKBReader reader = new ExtendedWKBReader();

@@ -24,6 +24,7 @@ import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Condition;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor;
@@ -34,6 +35,7 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog
 import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Group;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
@@ -102,6 +104,22 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 						// Find fitting SourceNodes.
 						Collection<SourceNode> candidateNodes = tree.getRootSourceNodes(child
 								.getDefinition());
+
+						if (candidateNodes.isEmpty()) {
+							/*
+							 * No node found - but this may be because no
+							 * property of the type is mapped, but there still
+							 * might be child instances (in a Join) that have
+							 * types with associated relations. To prevent those
+							 * being skipped we add an artificial node
+							 * representing the instance.
+							 */
+							candidateNodes = new ArrayList<>();
+							EntityDefinition entityDef = new TypeEntityDefinition(
+									child.getDefinition(), SchemaSpaceID.SOURCE, null);
+							candidateNodes.add(new SourceNodeImpl(entityDef, null, false));
+						}
+
 						for (SourceNode candidateNode : candidateNodes) {
 							filter = candidateNode.getEntityDefinition().getFilter();
 							if (filter == null || filter.match(child)) {

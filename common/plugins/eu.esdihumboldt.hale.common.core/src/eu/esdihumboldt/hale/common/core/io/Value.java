@@ -83,6 +83,10 @@ public abstract class Value implements Serializable {
 
 	};
 
+	private static final Value TRUE = new StringValue(true);
+
+	private static final Value FALSE = new StringValue(false);
+
 	/**
 	 * Create a value from a string.
 	 * 
@@ -100,7 +104,15 @@ public abstract class Value implements Serializable {
 	 * @return the value wrapper
 	 */
 	public static Value of(Boolean bool) {
-		return new StringValue(bool);
+		if (bool == null) {
+			return NULL;
+		}
+		else if (bool) {
+			return TRUE;
+		}
+		else {
+			return FALSE;
+		}
 	}
 
 	/**

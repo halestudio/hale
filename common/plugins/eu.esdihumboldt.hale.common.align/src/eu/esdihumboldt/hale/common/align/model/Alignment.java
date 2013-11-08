@@ -94,7 +94,7 @@ public interface Alignment {
 	 * The type cell needs to have at least a source or a target set for this
 	 * method to return anything.
 	 * 
-	 * @see #getPropertyCells(Cell, boolean)
+	 * @see #getPropertyCells(Cell, boolean, boolean)
 	 * @param typeCell the cell in question, has to be a type cell
 	 * @return the property cells associated with the given type cell.
 	 */

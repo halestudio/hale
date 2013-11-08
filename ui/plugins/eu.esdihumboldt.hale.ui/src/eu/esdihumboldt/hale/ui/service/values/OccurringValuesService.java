@@ -44,7 +44,7 @@ public interface OccurringValuesService {
 	 *             not supported for the given property, i.e. if it passes
 	 *             {@link OccurringValuesUtil#supportsOccurringValues(PropertyEntityDefinition)}
 	 */
-	public boolean updateOccuringValues(PropertyEntityDefinition property)
+	public boolean updateOccurringValues(PropertyEntityDefinition property)
 			throws IllegalArgumentException;
 
 	/**

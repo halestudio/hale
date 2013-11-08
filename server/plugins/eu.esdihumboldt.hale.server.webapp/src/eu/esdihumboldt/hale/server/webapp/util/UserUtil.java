@@ -58,6 +58,24 @@ public class UserUtil {
 	}
 
 	/**
+	 * Determines if the current user is an administrator.
+	 * 
+	 * @return if the current user is an administrator
+	 */
+	public static boolean isAdmin() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null && auth.isAuthenticated()) {
+			for (GrantedAuthority authority : auth.getAuthorities()) {
+				if (authority.getAuthority().equals(UserConstants.ROLE_ADMIN)) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Get the current user's display name.
 	 * 
 	 * @param graph a graph to retrieve the user from, or <code>null</code>

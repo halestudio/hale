@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="HUMBOLDT Alignment Editor" uid="eu.esdihumboldt.hale" id="eu.esdihumboldt.hale.ui.application.HALE" application="eu.esdihumboldt.hale.ui.application" version="2.7.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="HUMBOLDT Alignment Editor" uid="eu.esdihumboldt.hale" id="eu.esdihumboldt.hale.ui.application.HALE" application="eu.esdihumboldt.hale.ui.application" version="2.8.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
       <text>
          HUMBOLDT Alignment Editor (HALE)
 
-Version 2.7.0
+Version 2.8.0
 
 Build ___build___
 Revision ___revision___
@@ -104,6 +104,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="de.cs3d.util.logging.logback.observer"/>
       <plugin id="de.fhg.igd.concurrency"/>
       <plugin id="de.fhg.igd.hale.fme"/>
+      <plugin id="de.fhg.igd.hale.fme.doc"/>
       <plugin id="de.fhg.igd.hale.fme.ui"/>
       <plugin id="de.fhg.igd.mapviewer"/>
       <plugin id="de.fhg.igd.mapviewer.server.openstreetmap"/>
@@ -140,6 +141,8 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.common.filter.test"/>
       <plugin id="eu.esdihumboldt.hale.common.headless"/>
       <plugin id="eu.esdihumboldt.hale.common.instance"/>
+      <plugin id="eu.esdihumboldt.hale.common.instance.groovy"/>
+      <plugin id="eu.esdihumboldt.hale.common.instance.groovy.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.instance.orient"/>
       <plugin id="eu.esdihumboldt.hale.common.instancevalidator"/>
       <plugin id="eu.esdihumboldt.hale.common.lookup"/>
@@ -168,6 +171,9 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.io.gml.ui"/>
       <plugin id="eu.esdihumboldt.hale.io.html"/>
       <plugin id="eu.esdihumboldt.hale.io.html.ui"/>
+      <plugin id="eu.esdihumboldt.hale.io.jdbc"/>
+      <plugin id="eu.esdihumboldt.hale.io.jdbc.postgresql"/>
+      <plugin id="eu.esdihumboldt.hale.io.jdbc.ui"/>
       <plugin id="eu.esdihumboldt.hale.io.json"/>
       <plugin id="eu.esdihumboldt.hale.io.json.ui"/>
       <plugin id="eu.esdihumboldt.hale.io.oml"/>
@@ -214,6 +220,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.ui.templates"/>
       <plugin id="eu.esdihumboldt.hale.ui.util"/>
       <plugin id="eu.esdihumboldt.hale.ui.util.graph"/>
+      <plugin id="eu.esdihumboldt.hale.ui.util.groovy"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.data"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.functions"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.mapping"/>
@@ -420,6 +427,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.io.codelist.xml" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.csv" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.gml" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.io.jdbc.postgresql" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.shp" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.xml" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.xsd" autoStart="true" startLevel="0" />

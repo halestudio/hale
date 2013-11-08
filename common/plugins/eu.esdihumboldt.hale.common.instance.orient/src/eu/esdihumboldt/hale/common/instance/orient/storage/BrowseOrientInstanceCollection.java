@@ -45,6 +45,8 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 /**
  * Instance collection based on a {@link LocalOrientDB}
  * 
+ * FIXME implement instance collection fan-out
+ * 
  * @author Simon Templer
  */
 public class BrowseOrientInstanceCollection implements InstanceCollection {
@@ -288,12 +290,7 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 	 */
 	@Override
 	public InstanceCollection select(Filter filter) {
-		/*
-		 * FIXME optimize for cases where there is filtering based on a type?
-		 * Those instances where another type is concerned would not have to be
-		 * browsed/created
-		 */
-		return new FilteredInstanceCollection(this, filter);
+		return FilteredInstanceCollection.applyFilter(this, filter);
 	}
 
 	/**

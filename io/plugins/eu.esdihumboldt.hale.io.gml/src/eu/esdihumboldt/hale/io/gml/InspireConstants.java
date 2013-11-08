@@ -19,11 +19,30 @@ package eu.esdihumboldt.hale.io.gml;
  * Common constants on Inspire.
  * 
  * @author Kai Schwierczek
+ * @author Simon Templer
  */
 public interface InspireConstants {
 
 	/**
-	 * The Inspire base type namespace.
+	 * The default INSPIRE base type namespace. Default because the namespace
+	 * differs with different versions of the schema.
 	 */
-	public static final String INSPIRE_NAMESPACE_BASETYPES = "urn:x-inspire:specification:gmlas:BaseTypes:3.2";
+	public static final String DEFAULT_INSPIRE_NAMESPACE_BASETYPES = "urn:x-inspire:specification:gmlas:BaseTypes:3.2";
+
+	/**
+	 * The common prefix shared by INSPIRE base type namespaces of different
+	 * versions (up to version 3.2).
+	 */
+	public static final String PREFIX_1_INSPIRE_NAMESPACE_BASETYPES = "urn:x-inspire:specification:gmlas:BaseTypes";
+
+	/**
+	 * The common prefix shared by INSPIRE base type namespaces of different
+	 * versions (starting from version 3.3).
+	 */
+	public static final String PREFIX_2_INSPIRE_NAMESPACE_BASETYPES = "http://inspire.ec.europa.eu/schemas/base";
+
+	/**
+	 * The local name of the spatial data set element.
+	 */
+	public static final String ELEMENT_SPATIAL_DATASET = "SpatialDataSet";
 }

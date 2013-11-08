@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Web Administration Console
 Bundle-SymbolicName: eu.esdihumboldt.hale.server.console.war
-Bundle-Version: 2.7.0.qualifier
+Bundle-Version: 2.8.0.qualifier
 Web-ContextPath: /console
 Webapp-Name: Administration Console
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
@@ -10,7 +10,6 @@ Import-Package: de.fhg.igd.osgi.util;version="1.0.0",
  eu.esdihumboldt.hale.server.security.extender,
  eu.esdihumboldt.hale.server.security.util,
  eu.esdihumboldt.hale.server.webapp,
- eu.esdihumboldt.hale.server.webapp.filter,
  eu.esdihumboldt.hale.server.webapp.pages,
  eu.esdihumboldt.hale.server.webapp.util,
  javax.servlet;version="2.5.0",

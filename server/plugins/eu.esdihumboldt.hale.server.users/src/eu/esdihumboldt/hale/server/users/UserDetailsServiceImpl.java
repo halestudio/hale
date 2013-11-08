@@ -31,6 +31,7 @@ import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import eu.esdihumboldt.hale.server.db.orient.DatabaseHelper;
 import eu.esdihumboldt.hale.server.model.User;
 import eu.esdihumboldt.hale.server.security.UserConstants;
@@ -46,6 +47,8 @@ public class UserDetailsServiceImpl implements UserDetailsService, UserConstants
 		AuthenticationUserDetailsService<OpenIDAuthenticationToken> {
 
 	private static final ALogger log = ALoggerFactory.getLogger(UserDetailsServiceImpl.class);
+
+	private IConfigurationService configurationService;
 
 	/**
 	 * @see UserDetailsService#loadUserByUsername(String)
@@ -90,6 +93,14 @@ public class UserDetailsServiceImpl implements UserDetailsService, UserConstants
 
 		// every user has the user role
 		authorities.add(new SimpleGrantedAuthority(ROLE_USER));
+
+		if (configurationService != null) {
+			boolean admin = configurationService.getBoolean("user." + user.getLogin() + ".admin",
+					false);
+			if (admin) {
+				authorities.add(new SimpleGrantedAuthority(ROLE_ADMIN));
+			}
+		}
 
 		ExtendedUser userDetails = new ExtendedUser(user.getLogin(), user.getPassword(), true,
 				true, true, true, authorities);
@@ -147,5 +158,19 @@ public class UserDetailsServiceImpl implements UserDetailsService, UserConstants
 		} finally {
 			graph.shutdown();
 		}
+	}
+
+	/**
+	 * @return the configuration service
+	 */
+	public IConfigurationService getConfigurationService() {
+		return configurationService;
+	}
+
+	/**
+	 * @param configurationService the configuration service to set
+	 */
+	public void setConfigurationService(IConfigurationService configurationService) {
+		this.configurationService = configurationService;
 	}
 }

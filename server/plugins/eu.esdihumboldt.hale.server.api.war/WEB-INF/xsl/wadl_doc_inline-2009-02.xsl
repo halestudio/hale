@@ -358,7 +358,14 @@
     <xsl:template match="wadl:response">
     	<div>
     		<xsl:if test="wadl:doc">
-    			<h5>Response</h5>
+    			<xsl:choose>
+    				<xsl:when test="wadl:doc/@title">
+    					<h5><xsl:value-of select="wadl:doc/@title"></xsl:value-of></h5>
+    				</xsl:when>
+    				<xsl:otherwise>
+    					<h5>Response</h5>
+    				</xsl:otherwise>
+    			</xsl:choose>
     		</xsl:if>
     		<xsl:apply-templates select="wadl:doc"/>
 	        <xsl:apply-templates select="." mode="param-group">

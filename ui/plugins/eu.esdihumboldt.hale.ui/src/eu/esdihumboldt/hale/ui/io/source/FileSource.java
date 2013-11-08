@@ -77,7 +77,7 @@ public class FileSource<P extends ImportProvider> extends AbstractProviderSource
 	 */
 	@Override
 	public void createControls(Composite parent) {
-		parent.setLayout(new GridLayout(3, false));
+		parent.setLayout(new GridLayout(4, false));
 
 		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
 				ProjectService.class);
@@ -121,7 +121,7 @@ public class FileSource<P extends ImportProvider> extends AbstractProviderSource
 		// create provider combo
 		ComboViewer providers = createProviders(parent);
 		providers.getControl().setLayoutData(
-				new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
+				new GridData(SWT.FILL, SWT.BEGINNING, true, false, 3, 1));
 
 		final Button relativeCheck = new Button(parent, SWT.CHECK);
 		String text = "Use relative paths if possible.";
@@ -138,7 +138,7 @@ public class FileSource<P extends ImportProvider> extends AbstractProviderSource
 			text += " Only available once the project is saved to a file.";
 		}
 		relativeCheck.setText(text);
-		relativeCheck.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 3, 1));
+		relativeCheck.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 4, 1));
 
 		// initial state update
 		updateState(true);

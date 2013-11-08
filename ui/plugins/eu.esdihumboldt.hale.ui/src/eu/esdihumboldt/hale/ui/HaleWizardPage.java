@@ -103,6 +103,14 @@ public abstract class HaleWizardPage<W extends Wizard> extends WizardPage {
 		setControl(page);
 	}
 
+	/*
+	 * Make method public.
+	 */
+	@Override
+	public IWizardContainer getContainer() {
+		return super.getContainer();
+	}
+
 	/**
 	 * @see DialogPage#performHelp()
 	 */
@@ -110,9 +118,10 @@ public abstract class HaleWizardPage<W extends Wizard> extends WizardPage {
 	public void performHelp() {
 		boolean closed = false;
 		if (getContainer() instanceof TrayDialog) {
-			if (((TrayDialog) getContainer()).getTray() != null) {
-				((TrayDialog) getContainer()).closeTray();
-				closed = true;
+			TrayDialog trayDialog = (TrayDialog) getContainer();
+			if (trayDialog.getTray() != null) {
+				closed = trayDialog.getTray().getClass().getSimpleName().equals("HelpTray");
+				trayDialog.closeTray();
 			}
 		}
 		if (!closed && getHelpContext() != null)

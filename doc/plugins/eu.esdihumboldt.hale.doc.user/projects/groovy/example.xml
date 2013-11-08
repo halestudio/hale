@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:collection xmlns:tns="http://www.example.org/cities"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.example.org/cities city.xsd">
+    <tns:City id="1">
+        <name language="de">München</name>
+        <name language="en">Munich</name>
+        <name language="it">Monaco</name>
+        <location lat="48.137222" lon="11.575556"></location>
+    </tns:City>
+    <tns:City id="2">
+        <name language="de">Köln</name>
+        <name language="en">Cologne</name>
+        <name language="it">Colonia</name>
+        <name language="es">Colonia</name>
+        <name language="pl">Kolonia</name>
+        <name language="nl">Keulen</name>
+        <location lat="50.938056" lon="6.956944"></location>
+    </tns:City>
+</tns:collection>

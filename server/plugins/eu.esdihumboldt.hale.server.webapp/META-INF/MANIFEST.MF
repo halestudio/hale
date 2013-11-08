@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Web Application Core Components
 Bundle-SymbolicName: eu.esdihumboldt.hale.server.webapp
-Bundle-Version: 2.7.0.qualifier
+Bundle-Version: 2.8.0.qualifier
 Bundle-Vendor: Data Harmonisation Panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: de.cs3d.util.logging,
@@ -13,6 +13,7 @@ Import-Package: de.cs3d.util.logging,
  eu.esdihumboldt.util,
  javax.servlet;version="2.5.0",
  javax.servlet.http;version="2.5.0",
+ org.apache.commons.lang;version="2.4.0",
  org.osgi.framework;version="1.6.0",
  org.osgi.util.tracker;version="1.5.0",
  org.slf4j;version="1.5.11",
@@ -38,7 +39,6 @@ Export-Package: eu.esdihumboldt.hale.server.webapp,
  eu.esdihumboldt.hale.server.webapp.components.openidselector.images,
  eu.esdihumboldt.hale.server.webapp.components.openidselector.js,
  eu.esdihumboldt.hale.server.webapp.components.user,
- eu.esdihumboldt.hale.server.webapp.filter,
  eu.esdihumboldt.hale.server.webapp.pages,
  eu.esdihumboldt.hale.server.webapp.pages.css,
  eu.esdihumboldt.hale.server.webapp.util

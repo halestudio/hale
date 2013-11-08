@@ -119,6 +119,11 @@ public class PathUpdate {
 	 */
 	public URI findLocation(URI uri, boolean tryFallback, boolean allowResource,
 			boolean keepRelative) {
+		if ("jdbc".equals(uri.getScheme())) {
+			// not possible to update JDBC URLs or test the stream
+			return uri;
+		}
+
 		if (!uri.isAbsolute()) {
 			if (newLocation != null) {
 				URI newAbsolute = newLocation.resolve(uri);

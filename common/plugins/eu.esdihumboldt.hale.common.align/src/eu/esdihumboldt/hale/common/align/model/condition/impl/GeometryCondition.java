@@ -114,14 +114,38 @@ public class GeometryCondition implements TypeCondition {
 			boolean isCollection = Collection.class.isAssignableFrom(binding.getBinding());
 
 			// check binding
-			if (BindingCondition.isCompatibleClass(geometryType.getBinding(), to, compatibleClass,
-					allowConversion) && (!isCollection || allowCollection)) {
+			if (isCompatibleClass(geometryType.getBinding(), to, compatibleClass, allowConversion)
+					&& (!isCollection || allowCollection)) {
 				return true;
 			}
 		}
 
 		// no check succeeded
 		return false;
+	}
+
+	/**
+	 * Determine if the given binding is compatible to the compatible class.
+	 * 
+	 * @param binding the geometry binding
+	 * @param to <code>true</code> if the binding is the target,
+	 *            <code>false</code> if it is the source
+	 * @param compatibleClass the geometry compatible class requested
+	 * @param allowConversion if conversion is allowed
+	 * @return if the binding is classified as compatible to the geometry
+	 *         compatible class
+	 */
+	private boolean isCompatibleClass(Class<? extends Geometry> binding, boolean to,
+			Class<? extends Geometry> compatibleClass, boolean allowConversion) {
+		if (to && compatibleClass.equals(Geometry.class)) {
+			/*
+			 * Special case: It is not further specified, which type of geometry
+			 * is produced. So we allow any geometry binding.
+			 */
+			return true;
+		}
+
+		return BindingCondition.isCompatibleClass(binding, to, compatibleClass, allowConversion);
 	}
 
 }

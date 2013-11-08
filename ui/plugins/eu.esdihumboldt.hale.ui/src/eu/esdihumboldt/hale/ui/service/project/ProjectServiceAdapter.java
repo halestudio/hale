@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.ui.service.project;
 import java.util.List;
 import java.util.Map;
 
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
@@ -59,6 +60,11 @@ public class ProjectServiceAdapter implements ProjectServiceListener {
 	 */
 	@Override
 	public void onExportConfigurationChange() {
+		// override me
+	}
+
+	@Override
+	public void projectSettingChanged(String name, Value value) {
 		// override me
 	}
 

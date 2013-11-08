@@ -17,7 +17,7 @@
 package eu.esdihumboldt.hale.common.instance.model;
 
 /**
- * Instance collection interface
+ * Basic instance collection interface.
  * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research

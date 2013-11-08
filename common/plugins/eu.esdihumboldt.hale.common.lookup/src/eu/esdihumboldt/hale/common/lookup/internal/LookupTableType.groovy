@@ -77,9 +77,12 @@ class LookupTableType implements ComplexValueType<LookupTable, Void> {
 
 		def fragment = builder.'lookup-table' {
 			for (Value key in table.keys) {
-				entry {
-					valueTag('key', key)
-					valueTag('value', table.lookup(key))
+				// ignore null values
+				if (table.lookup(key) != null) {
+					entry {
+						valueTag('key', key)
+						valueTag('value', table.lookup(key))
+					}
 				}
 			}
 		}

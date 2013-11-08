@@ -34,6 +34,13 @@ public interface Resource {
 	public abstract URI getSource();
 
 	/**
+	 * Get the absolute resource source URI.
+	 * 
+	 * @return the absolute source URI or <code>null</code>
+	 */
+	public URI getAbsoluteSource();
+
+	/**
 	 * Get the resource identifier.
 	 * 
 	 * @return the resource ID or <code>null</code>
@@ -62,8 +69,11 @@ public interface Resource {
 	/**
 	 * Copy the resource I/O configuration.
 	 * 
+	 * @param absolute <code>true</code> if an absolute URI should be used for
+	 *            the source if possible, <code>false</code> if the copy should
+	 *            be exact
 	 * @return the configuration copy
 	 */
-	public IOConfiguration copyConfiguration();
+	public IOConfiguration copyConfiguration(boolean absolute);
 
 }

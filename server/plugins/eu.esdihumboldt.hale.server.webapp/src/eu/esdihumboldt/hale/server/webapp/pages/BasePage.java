@@ -24,6 +24,7 @@ import org.apache.wicket.Page;
 import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.CssReferenceHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.AbstractLink;
@@ -59,6 +60,7 @@ import de.agilecoders.wicket.core.settings.ITheme;
 import de.agilecoders.wicket.less.LessResourceReference;
 import eu.esdihumboldt.hale.server.security.UserConstants;
 import eu.esdihumboldt.hale.server.webapp.BaseWebApplication;
+import eu.esdihumboldt.hale.server.webapp.components.SimpleBreadcrumbPanel;
 import eu.esdihumboldt.hale.server.webapp.components.bootstrap.NavbarExternalLink;
 import eu.esdihumboldt.hale.server.webapp.util.PageDescription;
 import eu.esdihumboldt.hale.server.webapp.util.UserUtil;
@@ -231,7 +233,12 @@ public abstract class BasePage extends WebPage {
 				// user settings
 				NavbarButton<Void> userButton = new NavbarButton<Void>(UserSettingsPage.class,
 						Model.of(UserUtil.getUserName(null)));
-				userButton.setIconType(IconType.user);
+				if (UserUtil.isAdmin()) {
+					userButton.setIconType(IconType.star);
+				}
+				else {
+					userButton.setIconType(IconType.user);
+				}
 				/*
 				 * XXX instead of getting the user name each time from DB, store
 				 * it somewhere?
@@ -248,8 +255,13 @@ public abstract class BasePage extends WebPage {
 //
 //		navbar.addComponents(NavbarComponents.transform(ComponentPosition.RIGHT, dropdown));
 
-		// XXX
-//		add(new SimpleBreadcrumbPanel("breadcrumb", this.getClass(), "Home", "/"));
+		// breadcrumbs
+		if (Boolean.parseBoolean(System.getProperty("hale.webapp.breadcrumbs", "false"))) {
+			add(new SimpleBreadcrumbPanel("breadcrumb", this.getClass(), "Home", "/"));
+		}
+		else {
+			add(new WebMarkupContainer("breadcrumb"));
+		}
 
 		// about
 		add(new BookmarkablePageLink<>("about", AboutPage.class));

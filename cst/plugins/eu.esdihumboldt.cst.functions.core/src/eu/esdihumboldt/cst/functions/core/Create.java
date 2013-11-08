@@ -49,9 +49,25 @@ public class Create extends AbstractTypeTransformation<TransformationEngine> imp
 			// create <number> of instances of the target type
 			TypeDefinition targetType = getTarget().values().iterator().next().getDefinition()
 					.getDefinition();
-			MutableInstance target = getInstanceFactory().createInstance(targetType);
+			MutableInstance target = createInstance(targetType, i, log, cell);
 			getPropertyTransformer().publish(null, target, log, cell);
 		}
+	}
+
+	/**
+	 * Create an instance.
+	 * 
+	 * @param type the instance type
+	 * @param index the instance index
+	 * @param log the transformation log
+	 * @param cell the type cell
+	 * @return the created instance
+	 * @throws TransformationException if a transformation error occurs
+	 */
+	@SuppressWarnings("unused")
+	protected MutableInstance createInstance(TypeDefinition type, int index, TransformationLog log,
+			Cell cell) throws TransformationException {
+		return getInstanceFactory().createInstance(type);
 	}
 
 }

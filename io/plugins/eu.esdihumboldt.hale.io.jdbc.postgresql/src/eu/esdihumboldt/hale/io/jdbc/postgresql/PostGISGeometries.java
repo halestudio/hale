@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.geotools.geometry.jts.JTS;
+import org.geotools.geometry.jts.WKTReader2;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
@@ -38,6 +39,10 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
+import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
+import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition;
+import eu.esdihumboldt.hale.common.instance.geometry.impl.WKTDefinition;
+import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
@@ -148,5 +153,40 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 		pGeometry = new PGgeometry(targetGeometry.toText());
 		pGeometry.getGeometry().setSrid(Integer.parseInt(columnTypeMetadata.getSrs()));
 		return pGeometry;
+	}
+
+	@Override
+	public GeometryProperty<?> convertToInstanceGeometry(Object geom, TypeDefinition columnType)
+			throws Exception {
+
+		if (geom instanceof PGgeometry) {
+			PGgeometry pgeom = (PGgeometry) geom;
+
+			// conversion to JTS via WKT
+			// TODO use better conversion (p4b?)
+			WKTReader2 reader = new WKTReader2();
+
+			String value = pgeom.getGeometry().toString();
+			if (value.startsWith(PGgeometry.SRIDPREFIX) && value.indexOf(';') >= 0) {
+				value = value.substring(value.indexOf(';') + 1);
+			}
+
+			Geometry jtsGeom = reader.read(value);
+
+			// determine CRS
+			GeometryMetadata columnTypeMetadata = columnType.getConstraint(GeometryMetadata.class);
+			CRSDefinition crsDef = null;
+			if (columnTypeMetadata.getAuthName().equals("EPSG")) {
+				crsDef = new CodeDefinition(columnTypeMetadata.getAuthName() + ":"
+						+ columnTypeMetadata.getSrs(), null);
+			}
+			else {
+				crsDef = new WKTDefinition(columnTypeMetadata.getSrsText(), null);
+			}
+
+			return new DefaultGeometryProperty<Geometry>(crsDef, jtsGeom);
+		}
+
+		throw new IllegalArgumentException("Only conversion of PGgeometry supported");
 	}
 }
