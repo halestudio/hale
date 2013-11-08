@@ -137,6 +137,8 @@
             </topic>
             <topic href="html/reference/import/citygml_data.html" label="CityGML">
             </topic>
+            <topic href="html/reference/import/jdbc.html" label="Database">
+            </topic>
             <anchor id="import"/>
          </topic>
          <topic label="Export">
