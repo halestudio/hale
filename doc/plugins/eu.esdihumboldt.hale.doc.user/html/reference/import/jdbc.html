@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Database Import</title>
+</head>
+<body>
+	<h1>Database Import</h1>
+	<p>Database schemas and data are imported in HALE using JDBC. HALE
+		offers support for PostgreSQL and PostGIS databases out of the box,
+		support for other databases can be added through plug-ins.</p>
+	<p>
+		To load the schema or data from the database, you can either use the <i>From
+			Database (JDBC)</i> tab in the import dialog, or use a JDBC URL in <i>From
+			URL</i>. For the first option, you only need to select the database
+		driver and specify the database host and name:
+	</p>
+	<div>
+		<img src="images/jdbc_source.png" class="fit">
+	</div>
+	<p>Next you will be prompted for a user and password to use for
+		connecting with the database. Be aware that this information will be
+		saved in the alignment project as plain text, so you should only share
+		this project where it does not pose a security risk.</p>
+	<div>
+		<img src="images/jdbc_load_schema.png" class="fit">
+	</div>
+	<h2>Database schema</h2>
+	<p>
+		The database schema is represented as individual types for each
+		database table or view. The namespace for each type depends on the
+		database type, the database name and if applicable the name of the
+		database schema the table is defined in.<br> When you have loaded the
+		database schema you should explicitly specify which tables are
+		relevant for your mapping. Reducing the types in this way has the
+		consequence that only for this types data will be loaded from the
+		database.
+	</p>
+	<div>
+		<img src="images/jdbc_types.png" class="fit">
+	</div>
+	<h2>Data import</h2>
+	<p>
+		To load the data from the database you have to provide the same
+		information as for the schema. Data will only be loaded for those
+		types displayed in the source schema in the Schema Explorer, i.e.
+		those types that are marked as mapping relevant. <br>Before
+		loading the data it is recommended to enable the selection of a
+		sub-set as sample data (<i>First n instances per type</i>), so a
+		potentially big database is not loaded completely into HALE just for
+		the analysis and mapping. This can be enabled in the tool bar or the
+		project's source data settings.
+	</p>
+	<h2>Mapping database schemas</h2>
+	<p>
+		In relational databases tables usually reference other tables through
+		foreign keys. If in a mapping you need to combine information from two
+		or more of such tables, use the <i>Join</i> mapping function. In the
+		configuration for the <i>Join</i> specify Join conditions between the
+		foreign and primary keys of the tables.<br> An alternative is to
+		externally create a view in the database and use it for the mapping,
+		usually with the <i>Merge</i> function.
+	</p>
+
+	<br>
+	<!-- related concepts -->
+	<div>
+		<br> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelc.png">
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/what_is_schema.html">What is a Schema?</a>
+		</p>
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/what_is_instance.html">What is an Instance?</a>
+		</p>
+	</div>
+	
+	<!-- related tasks -->
+	<div>
+		<br> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelt.png">
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/schema/load_browse_schema.html">Loading and browsing schemas</a>
+		</p>
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/schema/mapping_relevant.html">How to customize the mapping relevant types</a>
+		</p>
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/data/working_source_data.html">Working with a source data set</a>
+		</p>
+	</div>
+</body>
+</html>
