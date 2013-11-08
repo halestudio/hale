@@ -62,7 +62,7 @@ import eu.esdihumboldt.hale.ui.util.IColorManager;
 import eu.esdihumboldt.hale.ui.util.groovy.GroovyColorManager;
 import eu.esdihumboldt.hale.ui.util.groovy.GroovySourceViewerUtil;
 import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
-import eu.esdihumboldt.hale.ui.util.source.SourceViewerUndoSupport;
+import eu.esdihumboldt.hale.ui.util.source.SourceViewerKeyBindings;
 
 /**
  * Editor for groovy scripts.
@@ -237,7 +237,7 @@ public class GroovyEditor extends AbstractEditor<String> {
 				GridDataFactory.fillDefaults().grab(true, false).indent(7, 0).create());
 		viewer.getTextWidget().setFont(JFaceResources.getTextFont());
 
-		SourceViewerUndoSupport.install(viewer);
+		SourceViewerKeyBindings.installDefault(viewer);
 
 		return viewer;
 	}

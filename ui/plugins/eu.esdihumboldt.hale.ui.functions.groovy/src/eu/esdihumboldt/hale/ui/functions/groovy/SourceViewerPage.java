@@ -45,7 +45,7 @@ import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
 import eu.esdihumboldt.hale.ui.util.source.SourceValidator;
-import eu.esdihumboldt.hale.ui.util.source.SourceViewerUndoSupport;
+import eu.esdihumboldt.hale.ui.util.source.SourceViewerKeyBindings;
 import eu.esdihumboldt.hale.ui.util.source.ValidatingSourceViewer;
 import eu.esdihumboldt.hale.ui.util.source.ValidatingSourceViewerPanel;
 
@@ -146,7 +146,7 @@ public class SourceViewerPage extends HaleWizardPage<AbstractGenericFunctionWiza
 
 		configure(viewer);
 
-		SourceViewerUndoSupport.install(viewer);
+		SourceViewerKeyBindings.installDefault(viewer);
 
 		viewer.getDocument().set(initialValue);
 

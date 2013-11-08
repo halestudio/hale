@@ -37,7 +37,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ToolBar;
 
 import eu.esdihumboldt.hale.ui.util.source.SourceValidator;
-import eu.esdihumboldt.hale.ui.util.source.SourceViewerUndoSupport;
+import eu.esdihumboldt.hale.ui.util.source.SourceViewerKeyBindings;
 import eu.esdihumboldt.hale.ui.util.source.ValidatingSourceViewer;
 import eu.esdihumboldt.hale.ui.util.source.ValidatingSourceViewerPanel;
 
@@ -137,7 +137,7 @@ public abstract class SourceViewerParameterPage extends SourceListParameterPage<
 			}
 		});
 
-		SourceViewerUndoSupport.install(viewer);
+		SourceViewerKeyBindings.installDefault(viewer);
 
 		addActions(panel.getToolbar(), viewer);
 

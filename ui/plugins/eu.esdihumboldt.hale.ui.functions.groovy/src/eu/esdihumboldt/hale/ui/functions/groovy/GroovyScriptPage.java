@@ -191,6 +191,8 @@ public class GroovyScriptPage extends SourceViewerPage implements GroovyConstant
 	 */
 	public static void addGroovyErrorAnnotation(IAnnotationModel annotationModel,
 			IDocument document, Script script, Exception exception) {
+		exception.printStackTrace();
+
 		// handle multiple groovy compilation errors
 		if (exception instanceof MultipleCompilationErrorsException) {
 			ErrorCollector errors = ((MultipleCompilationErrorsException) exception)
