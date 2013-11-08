@@ -55,11 +55,12 @@
 	<p>
 		In relational databases tables usually reference other tables through
 		foreign keys. If in a mapping you need to combine information from two
-		or more of such tables, use the <i>Join</i> mapping function. In the
-		configuration for the <i>Join</i> specify Join conditions between the
-		foreign and primary keys of the tables.<br> An alternative is to
-		externally create a view in the database and use it for the mapping,
-		usually with the <i>Merge</i> function.
+		or more of such tables, use the <i>Join</i> mapping function. The join
+		wizard will automatically add Join conditions between the foreign and
+		primary keys of the tables, if they could be detected from the schema
+		and you defined the Join order correctly.<br> An alternative is
+		to externally create a view in the database and use it for the
+		mapping, usually with the <i>Merge</i> function.
 	</p>
 
 	<br>
