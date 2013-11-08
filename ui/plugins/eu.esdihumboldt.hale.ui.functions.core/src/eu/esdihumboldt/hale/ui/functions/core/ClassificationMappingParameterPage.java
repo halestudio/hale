@@ -151,6 +151,7 @@ public class ClassificationMappingParameterPage extends
 	private PropertyEntityDefinition sourceEntity;
 	private PropertyEntityDefinition targetEntity;
 	private ToolItem removeAllButton;
+	private ToolItem saveButton;
 
 	/**
 	 * Default constructor.
@@ -445,7 +446,7 @@ public class ClassificationMappingParameterPage extends
 		final ToolItem fillValues = new ToolItem(toolBar, SWT.PUSH);
 		new ToolItem(toolBar, SWT.SEPARATOR);
 		final ToolItem loadButton = new ToolItem(toolBar, SWT.PUSH);
-		final ToolItem saveButton = new ToolItem(toolBar, SWT.PUSH);
+		saveButton = new ToolItem(toolBar, SWT.PUSH);
 		new ToolItem(toolBar, SWT.SEPARATOR);
 		final ToolItem valueRemove = new ToolItem(toolBar, SWT.PUSH);
 		removeAllButton = new ToolItem(toolBar, SWT.PUSH);
@@ -488,6 +489,7 @@ public class ClassificationMappingParameterPage extends
 					lookupTable.putAll(advisor.getLookupTable().getTable().asMap());
 					tableViewer.refresh();
 					removeAllButton.setEnabled(!lookupTable.isEmpty());
+					saveButton.setEnabled(!lookupTable.isEmpty());
 				}
 			}
 		});
@@ -515,6 +517,7 @@ public class ClassificationMappingParameterPage extends
 					// job is running, listener will be notified
 				}
 				removeAllButton.setEnabled(!lookupTable.isEmpty());
+				saveButton.setEnabled(!lookupTable.isEmpty());
 			}
 		});
 
@@ -561,6 +564,7 @@ public class ClassificationMappingParameterPage extends
 				lookupTable.remove(entry.getKey());
 				tableViewer.refresh();
 				removeAllButton.setEnabled(!lookupTable.isEmpty());
+				saveButton.setEnabled(!lookupTable.isEmpty());
 			}
 		});
 
@@ -598,6 +602,7 @@ public class ClassificationMappingParameterPage extends
 				@Override
 				public void run() {
 					removeAllButton.setEnabled(!lookupTable.isEmpty());
+					saveButton.setEnabled(!lookupTable.isEmpty());
 				}
 			});
 		}
