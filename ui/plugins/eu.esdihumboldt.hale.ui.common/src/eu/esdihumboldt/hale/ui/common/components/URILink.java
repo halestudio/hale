@@ -14,13 +14,14 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.util.components;
+package eu.esdihumboldt.hale.ui.common.components;
 
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -28,6 +29,11 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Link;
+
+import com.google.common.io.ByteStreams;
+
+import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
+import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 
 /**
  * Link class based on URIs
@@ -38,7 +44,7 @@ public class URILink {
 
 	private SelectionAdapter adapter;
 
-	private Link link;
+	private final Link link;
 
 	/**
 	 * Creates a {@link Link} based on an URI
@@ -100,7 +106,8 @@ public class URILink {
 			public void widgetSelected(SelectionEvent e) {
 				URI newuri = uri;
 				try {
-					if (uri.getScheme().equals("http")) {
+					// online resource
+					if (uri.getScheme().equals("http") || uri.getScheme().equals("https")) {
 						try {
 							Desktop.getDesktop().browse(uri);
 						} catch (IOException e1) {
@@ -112,6 +119,27 @@ public class URILink {
 					if (uri.toString().contains("#")) {
 						newuri = removeFragment(uri);
 					}
+
+					// local resource
+					if (DefaultInputSupplier.SCHEME_LOCAL.equals(newuri.getScheme())) {
+						// cannot be opened by system
+						// so copy resource to temporary file
+						String name = newuri.getPath();
+						int index = name.lastIndexOf('/');
+						if (index >= 0) {
+							name = name.substring(index + 1);
+						}
+
+						if (!name.isEmpty()) {
+							File tmpFile = Files.createTempFile("resource", name).toFile();
+							ByteStreams.copy(new DefaultInputSupplier(newuri), new FileIOSupplier(
+									tmpFile));
+							tmpFile.deleteOnExit();
+							newuri = tmpFile.toURI();
+						}
+					}
+
+					// try creating a file
 					File file = new File(newuri);
 					if (file.exists()) {
 						try {
@@ -133,8 +161,8 @@ public class URILink {
 									"Opening Error", "No default application set!");
 						}
 					}
-				} catch (URISyntaxException e1) {
-					// do nothing
+				} catch (Exception e1) {
+					// ignore
 				}
 			}
 		};
