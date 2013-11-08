@@ -214,27 +214,50 @@ public abstract class AlignmentUtil {
 	 */
 	public static EntityDefinition createEntity(Path<Definition<?>> path,
 			SchemaSpaceID schemaSpace, Filter filter) {
-		List<Definition<?>> defs = new ArrayList<>(path.getElements());
+		List<Definition<?>> defs = path.getElements();
 
 		// create entity definition
-		Definition<?> top = defs.remove(0);
-		if (!(top instanceof TypeDefinition)) {
+		Definition<?> top = defs.get(0);
+		if (!(top instanceof TypeDefinition))
 			throw new IllegalArgumentException("Topmost accessor must represent a type definition");
-		}
 
-		List<ChildContext> contextPath = Lists.transform(defs,
-				new Function<Definition<?>, ChildContext>() {
+		List<ChildDefinition<?>> childPath = Lists.transform(defs.subList(1, defs.size()),
+				new Function<Definition<?>, ChildDefinition<?>>() {
 
 					@Override
-					public ChildContext apply(Definition<?> input) {
-						if (input instanceof ChildDefinition<?>) {
-							return new ChildContext((ChildDefinition<?>) input);
-						}
+					public ChildDefinition<?> apply(Definition<?> input) {
+						if (input instanceof ChildDefinition<?>)
+							return (ChildDefinition<?>) input;
 						throw new IllegalArgumentException(
 								"All definitions in child accessors must be ChildDefinitions");
 					}
 				});
-		return createEntity((TypeDefinition) top, contextPath, schemaSpace, filter);
+		// childPath will be copied in there, no need to do it here
+		return createEntityFromDefinitions((TypeDefinition) top, childPath, schemaSpace, filter);
+	}
+
+	/**
+	 * Create an entity definition from a definition path. Child contexts will
+	 * all be defaults contexts.
+	 * 
+	 * @param type the path parent
+	 * @param path the child path
+	 * @param schemaSpace the associated schema space
+	 * @param filter the entity filter on the type, may be <code>null</code>
+	 * @return the created entity definition
+	 */
+	public static EntityDefinition createEntityFromDefinitions(TypeDefinition type,
+			List<? extends ChildDefinition<?>> path, SchemaSpaceID schemaSpace, Filter filter) {
+		ArrayList<ChildContext> contextPath = new ArrayList<>(path.size());
+		// use a copy for efficiency later
+		contextPath.addAll(Lists.transform(path, new Function<ChildDefinition<?>, ChildContext>() {
+
+			@Override
+			public ChildContext apply(ChildDefinition<?> input) {
+				return new ChildContext(input);
+			}
+		}));
+		return createEntity(type, contextPath, schemaSpace, filter);
 	}
 
 	/**
