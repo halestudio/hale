@@ -1185,15 +1185,15 @@
       </image>
       <image
             commandId="eu.esdihumboldt.hale.ui.instance.toggle_sampling"
-            icon="icons/samples.svg">
+            icon="icons/samples.png">
       </image>
       <image
             commandId="eu.esdihumboldt.hale.ui.instance.reload_data"
-            icon="icons/reload_source.svg">
+            icon="icons/reload_source.png">
       </image>
       <image
             commandId="eu.esdihumboldt.hale.ui.instance.sampling.pref"
-            icon="icons/samples_config.svg">
+            icon="icons/samples_config.png">
       </image>
    </extension>
    <extension
