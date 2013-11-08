@@ -83,7 +83,7 @@
          </property>
          <property
                name="aboutText"
-               value="HUMBOLDT Alignment Editor (HALE)&#x0A;&#x0A;Version 2.7.0&#x0A;&#x0A;Build ___build___&#x0A;Revision ___revision___&#x0A;&#x0A;http://www.esdi-community.eu/projects/show/hale">
+               value="HUMBOLDT Alignment Editor (HALE)&#x0A;&#x0A;Version 2.8.0&#x0A;&#x0A;Build ___build___&#x0A;Revision ___revision___&#x0A;&#x0A;http://www.esdi-community.eu/projects/show/hale">
          </property>
          <property
                name="introTitle"
