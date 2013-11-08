@@ -99,9 +99,11 @@ public class TransformDataWizardSourcePage extends WizardPage {
 
 		exportWizard = new InternalInstanceExportWizard();
 		exportWizard.setContainer(container);
-		exportWizard.addPages();
 		exportWizard.setAdvisor(new TransformDataExportAdvisor(targetSink.getInstanceCollection()),
 				null);
+		// add pages after setting the advisor, because it creates new config
+		// pages
+		exportWizard.addPages();
 	}
 
 	/**
