@@ -38,18 +38,21 @@ import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.ToolBar;
 
 import com.google.common.collect.Iterators;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
+import eu.esdihumboldt.hale.ui.functions.groovy.internal.GroovyASTTray;
 import eu.esdihumboldt.hale.ui.util.ColorManager;
 import eu.esdihumboldt.hale.ui.util.groovy.GroovyColorManager;
 import eu.esdihumboldt.hale.ui.util.groovy.GroovySourceViewerUtil;
 import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
 import eu.esdihumboldt.hale.ui.util.source.SimpleAnnotationUtil;
 import eu.esdihumboldt.hale.ui.util.source.SimpleAnnotations;
+import eu.esdihumboldt.hale.ui.util.source.ValidatingSourceViewer;
 import groovy.lang.Script;
 
 /**
@@ -243,6 +246,13 @@ public class GroovyScriptPage extends SourceViewerPage implements GroovyConstant
 		}
 
 		annotationModel.addAnnotation(annotation, position);
+	}
+
+	@Override
+	protected void addActions(ToolBar toolbar, ValidatingSourceViewer viewer) {
+		super.addActions(toolbar, viewer);
+
+		GroovyASTTray.createToolItem(toolbar, this, viewer);
 	}
 
 }

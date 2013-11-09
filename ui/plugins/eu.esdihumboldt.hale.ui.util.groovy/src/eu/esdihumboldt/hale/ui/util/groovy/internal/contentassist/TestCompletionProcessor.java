@@ -36,6 +36,10 @@ public class TestCompletionProcessor implements IContentAssistProcessor {
 	public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
 		List<ICompletionProposal> list = new ArrayList<>();
 
+//		String content = viewer.getDocument().get();
+//		AstBuilder builder = new AstBuilder();
+//		List<ASTNode> ast = builder.buildFromString(content);
+
 		list.add(new CompletionProposal("'Hello world'", offset, 0, 0));
 
 		return list.toArray(new ICompletionProposal[list.size()]);
