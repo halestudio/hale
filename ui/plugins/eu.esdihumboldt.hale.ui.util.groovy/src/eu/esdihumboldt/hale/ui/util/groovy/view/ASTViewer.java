@@ -18,18 +18,28 @@ package eu.esdihumboldt.hale.ui.util.groovy.view;
 import java.util.List;
 
 import org.codehaus.groovy.ast.ASTNode;
+import org.codehaus.groovy.ast.Parameter;
+import org.codehaus.groovy.ast.Variable;
+import org.codehaus.groovy.ast.VariableScope;
+import org.codehaus.groovy.ast.stmt.ExpressionStatement;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.StyledCellLabelProvider;
+import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -110,6 +120,8 @@ public class ASTViewer {
 
 	private final ITextViewer textViewer;
 
+	private final Composite page;
+
 	/**
 	 * Constructor.
 	 * 
@@ -120,12 +132,96 @@ public class ASTViewer {
 	public ASTViewer(Composite parent, ITextViewer textViewer) {
 		this.textViewer = textViewer;
 
-		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		page = new Composite(parent, SWT.NONE);
+		TreeColumnLayout layout = new TreeColumnLayout();
+		page.setLayout(layout);
+
+		viewer = new TreeViewer(page, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 //		new DrillDownAdapter(viewer);
 		viewer.setContentProvider(new ViewContentProvider());
 		viewer.setLabelProvider(new ViewLabelProvider());
-		viewer.setSorter(null);
-		viewer.setInput(null);
+
+		viewer.getTree().setHeaderVisible(true);
+
+		TreeViewerColumn mainColumn = new TreeViewerColumn(viewer, SWT.NONE);
+		mainColumn.setLabelProvider(new StyledCellLabelProvider() {
+
+			@Override
+			public void update(ViewerCell cell) {
+				Object element = cell.getElement();
+
+				StyledString text = new StyledString();
+				text.append(element.getClass().getSimpleName());
+
+				cell.setText(text.getString());
+				cell.setStyleRanges(text.getStyleRanges());
+
+				super.update(cell);
+			}
+		});
+		mainColumn.getColumn().setText("Node");
+		layout.setColumnData(mainColumn.getColumn(), new ColumnPixelData(200));
+
+		TreeViewerColumn infoColumn = new TreeViewerColumn(viewer, SWT.NONE);
+		infoColumn.setLabelProvider(new StyledCellLabelProvider() {
+
+			@Override
+			public void update(ViewerCell cell) {
+				Object element = cell.getElement();
+
+				StyledString text = new StyledString();
+				if (element instanceof Parameter) {
+					// getText not implemented for Parameter
+					Parameter param = (Parameter) element;
+					text.append(param.getName());
+				}
+				else if (element instanceof ExpressionStatement) {
+					// getText not properly implemented for ExpressionStatement
+					text.append(((ExpressionStatement) element).getExpression().getText());
+				}
+				else if (element instanceof ASTNode) {
+					ASTNode node = (ASTNode) element;
+					text.append(node.getText());
+				}
+				else if (element instanceof Variable) {
+					Variable var = (Variable) element;
+					text.append(var.getName());
+				}
+				else {
+					text.append(element.toString());
+				}
+
+				cell.setText(text.getString());
+				cell.setStyleRanges(text.getStyleRanges());
+
+				super.update(cell);
+			}
+		});
+		infoColumn.getColumn().setText("Text");
+		layout.setColumnData(infoColumn.getColumn(), new ColumnPixelData(300));
+
+		TreeViewerColumn propertiesColumn = new TreeViewerColumn(viewer, SWT.NONE);
+		propertiesColumn.setLabelProvider(new StyledCellLabelProvider() {
+
+			@Override
+			public void update(ViewerCell cell) {
+				Object element = cell.getElement();
+
+				StyledString text = new StyledString();
+				if (element instanceof Variable || element instanceof ASTNode
+						|| element instanceof VariableScope) {
+					ASTNodeUtil.addProperties(element, text);
+				}
+
+				cell.setText(text.getString());
+				cell.setStyleRanges(text.getStyleRanges());
+
+				super.update(cell);
+			}
+		});
+		propertiesColumn.getColumn().setText("Properties");
+		layout.setColumnData(propertiesColumn.getColumn(), new ColumnPixelData(1600));
+
 		makeActions();
 		if (textViewer != null) {
 			addDoubleClickAction();
@@ -136,7 +232,7 @@ public class ASTViewer {
 	 * @return the control
 	 */
 	public Control getControl() {
-		return viewer.getControl();
+		return page;
 	}
 
 	/**
@@ -169,9 +265,9 @@ public class ASTViewer {
 									node.getLastLineNumber() - 1)
 									+ node.getLastColumnNumber() - 1;
 							textViewer.setSelectedRange(offset0, offset1 - offset0);
+							textViewer.setTopIndex(node.getLineNumber() - 1);
 						} catch (BadLocationException e) {
-							// XXX
-							e.printStackTrace();
+							// ignore
 						}
 					}
 				}

@@ -96,7 +96,8 @@ public class GroovyASTTray extends DialogTray {
 		GridLayoutFactory.fillDefaults().numColumns(1).applyTo(page);
 
 		ASTViewer viewer = new ASTViewer(page, textViewer);
-		GridDataFactory.fillDefaults().grab(true, true).applyTo(viewer.getControl());
+		GridDataFactory.fillDefaults().grab(true, true).hint(400, SWT.DEFAULT)
+				.applyTo(viewer.getControl());
 
 		// XXX
 		if (textViewer != null) {

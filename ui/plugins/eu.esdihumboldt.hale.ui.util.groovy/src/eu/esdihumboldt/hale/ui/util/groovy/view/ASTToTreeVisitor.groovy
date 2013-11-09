@@ -111,7 +111,7 @@ class ASTToTreeVisitor extends CodeVisitorSupport {
 	 */
 	private void addNode(node, Class expectedSubclass, Closure superMethod) {
 
-		if (expectedSubclass.getName() == node.getClass().getName()) {
+		if (expectedSubclass == null || expectedSubclass.getName() == node.getClass().getName()) {
 			if (currentNode == null) {
 				currentNode = node
 				superMethod.call(node)
@@ -125,6 +125,12 @@ class ASTToTreeVisitor extends CodeVisitorSupport {
 				children.put(temp, currentNode)
 				// currentNode.parent = temp
 				superMethod.call(node)
+
+				// additionally add variable scope
+				// if (node.hasProperty('variableScope')) {
+				//	 addNode(node.variableScope, null, {})
+				// }
+
 				currentNode = temp
 			}
 		} else {
