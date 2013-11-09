@@ -22,6 +22,8 @@ import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
+import org.eclipse.jface.text.contentassist.ContentAssistant;
+import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
@@ -44,6 +46,7 @@ import eu.esdihumboldt.hale.ui.util.groovy.internal.JavaCommentScanner;
 import eu.esdihumboldt.hale.ui.util.groovy.internal.JavaDocScanner;
 import eu.esdihumboldt.hale.ui.util.groovy.internal.SingleTokenJavaScanner;
 import eu.esdihumboldt.hale.ui.util.groovy.internal.autoedit.JavaStringAutoIndentStrategy;
+import eu.esdihumboldt.hale.ui.util.groovy.internal.contentassist.TestCompletionProcessor;
 
 /**
  * Configuration for a source viewer which shows Groovy code. Based on the Java
@@ -276,9 +279,12 @@ public class SimpleGroovySourceViewerConfiguration extends SourceViewerConfigura
 
 //		if (getEditor() != null) {
 //
-//			ContentAssistant assistant= new ContentAssistant();
-//			assistant.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
-//
+		ContentAssistant assistant = new ContentAssistant();
+		assistant.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
+
+		IContentAssistProcessor testProcessor = new TestCompletionProcessor();
+		assistant.setContentAssistProcessor(testProcessor, IDocument.DEFAULT_CONTENT_TYPE);
+
 //			assistant.setRestoreCompletionProposalSize(getSettings("completion_proposal_size")); //$NON-NLS-1$
 //
 //			IContentAssistProcessor javaProcessor= new JavaCompletionProcessor(getEditor(), assistant, IDocument.DEFAULT_CONTENT_TYPE);
@@ -305,10 +311,10 @@ public class SimpleGroovySourceViewerConfiguration extends SourceViewerConfigura
 //				}
 //			});
 //
-//			return assistant;
+		return assistant;
 //		}
 
-		return null;
+//		return null;
 	}
 
 	/*
