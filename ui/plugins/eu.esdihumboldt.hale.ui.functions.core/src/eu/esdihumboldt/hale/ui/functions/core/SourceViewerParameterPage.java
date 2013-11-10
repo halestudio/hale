@@ -38,8 +38,8 @@ import org.eclipse.swt.widgets.ToolBar;
 
 import eu.esdihumboldt.hale.ui.util.source.SourceValidator;
 import eu.esdihumboldt.hale.ui.util.source.SourceViewerKeyBindings;
+import eu.esdihumboldt.hale.ui.util.source.SourceViewerPanel;
 import eu.esdihumboldt.hale.ui.util.source.ValidatingSourceViewer;
-import eu.esdihumboldt.hale.ui.util.source.ValidatingSourceViewerPanel;
 
 /**
  * Parameter page using a source viewer.
@@ -102,14 +102,14 @@ public abstract class SourceViewerParameterPage extends SourceListParameterPage<
 		// init editor
 		IVerticalRuler verticalRuler = createVerticalRuler();
 		IOverviewRuler overviewRuler = createOverviewRuler();
-		ValidatingSourceViewerPanel panel = new ValidatingSourceViewerPanel(parent, verticalRuler,
+		SourceViewerPanel<?> panel = new SourceViewerPanel<Void>(parent, verticalRuler,
 				overviewRuler, new SourceValidator() {
 
 					@Override
 					public boolean validate(String content) {
 						return SourceViewerParameterPage.this.validate(content);
 					}
-				});
+				}, null);
 		viewer = panel.getViewer();
 		panel.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		viewer.getTextWidget().setFont(JFaceResources.getTextFont());
@@ -205,7 +205,7 @@ public abstract class SourceViewerParameterPage extends SourceListParameterPage<
 	 */
 	public void forceValidation() {
 		if (viewer != null) {
-			viewer.forceValidation();
+			viewer.forceUpdate();
 		}
 	}
 

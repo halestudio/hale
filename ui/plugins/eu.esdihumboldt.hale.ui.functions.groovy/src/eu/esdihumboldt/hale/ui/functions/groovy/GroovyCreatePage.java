@@ -34,7 +34,8 @@ import eu.esdihumboldt.hale.ui.functions.groovy.internal.PageHelp;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray.TypeProvider;
 import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
-import eu.esdihumboldt.hale.ui.util.source.ValidatingSourceViewer;
+import eu.esdihumboldt.hale.ui.util.groovy.compile.GroovyAST;
+import eu.esdihumboldt.hale.ui.util.source.CompilingSourceViewer;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
@@ -86,7 +87,7 @@ public class GroovyCreatePage extends GroovyScriptPage {
 	}
 
 	@Override
-	protected void addActions(ToolBar toolbar, ValidatingSourceViewer viewer) {
+	protected void addActions(ToolBar toolbar, CompilingSourceViewer<GroovyAST> viewer) {
 		super.addActions(toolbar, viewer);
 
 		PageHelp.createToolItem(toolbar, this);

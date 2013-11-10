@@ -15,25 +15,27 @@
 
 package eu.esdihumboldt.hale.ui.functions.groovy.internal;
 
-import java.util.List;
-
-import org.codehaus.groovy.ast.ASTNode;
-import org.codehaus.groovy.ast.builder.AstBuilder;
 import org.eclipse.jface.dialogs.DialogTray;
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
-import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
+import eu.esdihumboldt.hale.ui.util.groovy.compile.GroovyAST;
 import eu.esdihumboldt.hale.ui.util.groovy.view.ASTViewer;
+import eu.esdihumboldt.hale.ui.util.source.CompilingSourceViewer;
 
 /**
  * Dialog tray displaying the Groovy AST for the source.
@@ -51,7 +53,7 @@ public class GroovyASTTray extends DialogTray {
 	 *            <code>null</code>
 	 */
 	public static void createToolItem(ToolBar bar, final HaleWizardPage<?> page,
-			final ITextViewer viewer) {
+			final CompilingSourceViewer<GroovyAST> viewer) {
 		ToolItem item = new ToolItem(bar, SWT.PUSH);
 		item.setText("AST");
 		item.addSelectionListener(new SelectionAdapter() {
@@ -75,7 +77,7 @@ public class GroovyASTTray extends DialogTray {
 		});
 	}
 
-	private final ITextViewer textViewer;
+	private final CompilingSourceViewer<GroovyAST> groovyViewer;
 
 	/**
 	 * Create a Groovy AST tray.
@@ -83,10 +85,10 @@ public class GroovyASTTray extends DialogTray {
 	 * @param viewer the associated viewer with the Groovy source or
 	 *            <code>null</code>
 	 */
-	public GroovyASTTray(ITextViewer viewer) {
+	public GroovyASTTray(CompilingSourceViewer<GroovyAST> viewer) {
 		super();
 
-		this.textViewer = viewer;
+		this.groovyViewer = viewer;
 	}
 
 	@Override
@@ -95,17 +97,56 @@ public class GroovyASTTray extends DialogTray {
 
 		GridLayoutFactory.fillDefaults().numColumns(1).applyTo(page);
 
-		ASTViewer viewer = new ASTViewer(page, textViewer);
+		final ASTViewer viewer = new ASTViewer(page, groovyViewer);
 		GridDataFactory.fillDefaults().grab(true, true).hint(400, SWT.DEFAULT)
 				.applyTo(viewer.getControl());
 
-		// XXX
-		if (textViewer != null) {
-			String content = textViewer.getDocument().get();
-			AstBuilder builder = new AstBuilder();
-			List<ASTNode> ast = builder.buildFromString(content);
+		if (groovyViewer != null) {
+			// current AST
+			try {
+				GroovyAST ast = groovyViewer.getCompiled().get();
+				if (ast != null) {
+					viewer.setInput(ast.getNodes());
+				}
+				else {
+					viewer.setInput(null);
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
-			viewer.setInput(ast);
+			// listen to AST changes
+			final IPropertyChangeListener listener = new IPropertyChangeListener() {
+
+				@Override
+				public void propertyChange(final PropertyChangeEvent event) {
+					if (CompilingSourceViewer.PROPERTY_COMPILED.equals(event.getProperty())) {
+						PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+
+							@Override
+							public void run() {
+								if (event.getNewValue() instanceof GroovyAST) {
+									viewer.setInput(((GroovyAST) event.getNewValue()).getNodes());
+								}
+								else {
+									viewer.setInput(null);
+								}
+							}
+						});
+					}
+				}
+			};
+			groovyViewer.addPropertyChangeListener(listener);
+
+			// ensure listener is removed
+			page.addDisposeListener(new DisposeListener() {
+
+				@Override
+				public void widgetDisposed(DisposeEvent e) {
+					groovyViewer.removePropertyChangeListener(listener);
+				}
+			});
 		}
 
 		return page;

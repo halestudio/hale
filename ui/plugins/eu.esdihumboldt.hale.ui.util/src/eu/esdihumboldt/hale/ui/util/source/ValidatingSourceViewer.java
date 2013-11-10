@@ -23,7 +23,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
@@ -38,6 +37,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.ui.util.jobs.ExclusiveSchedulingRule;
 
 /**
  * Source viewer that validates its content on document changes asynchronously
@@ -46,34 +46,6 @@ import de.cs3d.util.logging.ALoggerFactory;
  * @author Simon Templer
  */
 public class ValidatingSourceViewer extends SourceViewer {
-
-	private static class ExclusiveSchedulingRule implements ISchedulingRule {
-
-		private final Object owner;
-
-		/**
-		 * Create a rule for scheduling Jobs exclusively if they have the same
-		 * owner.
-		 * 
-		 * @param owner the rule owner
-		 */
-		public ExclusiveSchedulingRule(Object owner) {
-			super();
-			this.owner = owner;
-		}
-
-		@Override
-		public boolean contains(ISchedulingRule rule) {
-			return rule instanceof ExclusiveSchedulingRule
-					&& owner == ((ExclusiveSchedulingRule) rule).owner;
-		}
-
-		@Override
-		public boolean isConflicting(ISchedulingRule rule) {
-			return contains(rule);
-		}
-
-	}
 
 	private static final ALogger log = ALoggerFactory.getLogger(ValidatingSourceViewer.class);
 
@@ -115,22 +87,40 @@ public class ValidatingSourceViewer extends SourceViewer {
 
 	private final Set<IPropertyChangeListener> propertyChangeListeners = new CopyOnWriteArraySet<>();
 
+	private final SourceValidator validator;
+
 	/**
-	 * @see SourceViewer#SourceViewer(Composite, IVerticalRuler, int)
+	 * Constructs a new validating source viewer.
+	 * 
+	 * @param parent the parent of the viewer's control
+	 * @param ruler the vertical ruler used by this source viewer
+	 * @param styles the SWT style bits for the viewer's control
+	 * @param validator the source validator
 	 */
-	public ValidatingSourceViewer(Composite parent, IVerticalRuler ruler, int styles) {
+	public ValidatingSourceViewer(Composite parent, IVerticalRuler ruler, int styles,
+			SourceValidator validator) {
 		super(parent, ruler, styles);
+		this.validator = validator;
 
 		init();
 	}
 
 	/**
-	 * @see SourceViewer#SourceViewer(Composite, IVerticalRuler, IOverviewRuler,
-	 *      boolean, int)
+	 * Constructs a new validating source viewer.
+	 * 
+	 * @param parent the parent of the viewer's control
+	 * @param verticalRuler the vertical ruler used by this source viewer
+	 * @param overviewRuler the overview ruler
+	 * @param showAnnotationsOverview <code>true</code> if the overview ruler
+	 *            should be visible, <code>false</code> otherwise
+	 * @param styles the SWT style bits for the viewer's control
+	 * @param validator the source validator
 	 */
 	public ValidatingSourceViewer(Composite parent, IVerticalRuler verticalRuler,
-			IOverviewRuler overviewRuler, boolean showAnnotationsOverview, int styles) {
+			IOverviewRuler overviewRuler, boolean showAnnotationsOverview, int styles,
+			SourceValidator validator) {
 		super(parent, verticalRuler, overviewRuler, showAnnotationsOverview, styles);
+		this.validator = validator;
 
 		init();
 	}
@@ -142,14 +132,14 @@ public class ValidatingSourceViewer extends SourceViewer {
 	 * @param content the document content
 	 * @return if the content is valid
 	 */
-	protected boolean validate(String content) {
-		return true;
+	protected final boolean validate(String content) {
+		return validator.validate(content);
 	}
 
 	/**
 	 * Initialize the Job and listener.
 	 */
-	private void init() {
+	protected void init() {
 		validateJob = new Job("Source viewer validation") {
 
 			@Override
@@ -206,13 +196,7 @@ public class ValidatingSourceViewer extends SourceViewer {
 				if (notify) {
 					PropertyChangeEvent event = new PropertyChangeEvent(
 							ValidatingSourceViewer.this, PROPERTY_VALID, !success, success);
-					for (IPropertyChangeListener listener : propertyChangeListeners) {
-						try {
-							listener.propertyChange(event);
-						} catch (Exception e) {
-							log.error("Error notifying listener on property change", e);
-						}
-					}
+					notifyOnPropertyChange(event);
 				}
 
 				return Status.OK_STATUS;
@@ -225,15 +209,7 @@ public class ValidatingSourceViewer extends SourceViewer {
 
 			@Override
 			public void documentChanged(DocumentEvent event) {
-				changeLock.lock();
-				try {
-					changed = true;
-				} finally {
-					changeLock.unlock();
-				}
-
-				// schedule validation
-				validateJob.schedule(VALIDATE_DELAY);
+				scheduleValidation();
 			}
 
 			@Override
@@ -244,10 +220,40 @@ public class ValidatingSourceViewer extends SourceViewer {
 	}
 
 	/**
+	 * Notify listeners on a property change event.
+	 * 
+	 * @param event the event
+	 */
+	protected void notifyOnPropertyChange(PropertyChangeEvent event) {
+		for (IPropertyChangeListener listener : propertyChangeListeners) {
+			try {
+				listener.propertyChange(event);
+			} catch (Exception e) {
+				log.error("Error notifying listener on property change", e);
+			}
+		}
+	}
+
+	/**
 	 * Force new validation.
 	 */
-	public void forceValidation() {
-		documentListener.documentChanged(null);
+	public void forceUpdate() {
+		scheduleValidation();
+	}
+
+	/**
+	 * Schedule the validation job.
+	 */
+	protected void scheduleValidation() {
+		changeLock.lock();
+		try {
+			changed = true;
+		} finally {
+			changeLock.unlock();
+		}
+
+		// schedule validation
+		validateJob.schedule(VALIDATE_DELAY);
 	}
 
 	/**
@@ -284,7 +290,7 @@ public class ValidatingSourceViewer extends SourceViewer {
 
 			if (document != null) {
 				// initial validation
-				validateJob.schedule(VALIDATE_DELAY);
+				scheduleValidation();
 			}
 		}
 	}
@@ -348,17 +354,11 @@ public class ValidatingSourceViewer extends SourceViewer {
 		if (old != enabled) {
 			PropertyChangeEvent event = new PropertyChangeEvent(ValidatingSourceViewer.this,
 					PROPERTY_VALIDATION_ENABLED, old, enabled);
-			for (IPropertyChangeListener listener : propertyChangeListeners) {
-				try {
-					listener.propertyChange(event);
-				} catch (Exception e) {
-					log.error("Error notifying listener on property change", e);
-				}
-			}
+			notifyOnPropertyChange(event);
 
 			if (enabled) {
 				// force validation
-				forceValidation();
+				forceUpdate();
 			}
 		}
 	}

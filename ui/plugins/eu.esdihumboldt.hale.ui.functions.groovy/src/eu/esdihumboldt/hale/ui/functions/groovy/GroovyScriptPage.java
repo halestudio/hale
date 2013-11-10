@@ -50,9 +50,11 @@ import eu.esdihumboldt.hale.ui.util.ColorManager;
 import eu.esdihumboldt.hale.ui.util.groovy.GroovyColorManager;
 import eu.esdihumboldt.hale.ui.util.groovy.GroovySourceViewerUtil;
 import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
+import eu.esdihumboldt.hale.ui.util.groovy.compile.GroovyAST;
+import eu.esdihumboldt.hale.ui.util.groovy.compile.GroovyASTSourceCompiler;
+import eu.esdihumboldt.hale.ui.util.source.CompilingSourceViewer;
 import eu.esdihumboldt.hale.ui.util.source.SimpleAnnotationUtil;
 import eu.esdihumboldt.hale.ui.util.source.SimpleAnnotations;
-import eu.esdihumboldt.hale.ui.util.source.ValidatingSourceViewer;
 import groovy.lang.Script;
 
 /**
@@ -60,7 +62,7 @@ import groovy.lang.Script;
  * 
  * @author Simon Templer
  */
-public class GroovyScriptPage extends SourceViewerPage implements GroovyConstants {
+public class GroovyScriptPage extends SourceViewerPage<GroovyAST> implements GroovyConstants {
 
 	private static final ALogger log = ALoggerFactory.getLogger(GroovyScriptPage.class);
 
@@ -75,7 +77,8 @@ public class GroovyScriptPage extends SourceViewerPage implements GroovyConstant
 	 * Default constructor.
 	 */
 	public GroovyScriptPage() {
-		super("groovyScript", PARAMETER_SCRIPT, BINDING_TARGET + " = {\n\n}");
+		super("groovyScript", PARAMETER_SCRIPT, BINDING_TARGET + " = {\n\n}",
+				new GroovyASTSourceCompiler());
 	}
 
 	@Override
@@ -249,7 +252,7 @@ public class GroovyScriptPage extends SourceViewerPage implements GroovyConstant
 	}
 
 	@Override
-	protected void addActions(ToolBar toolbar, ValidatingSourceViewer viewer) {
+	protected void addActions(ToolBar toolbar, CompilingSourceViewer<GroovyAST> viewer) {
 		super.addActions(toolbar, viewer);
 
 		GroovyASTTray.createToolItem(toolbar, this, viewer);

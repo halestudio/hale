@@ -44,22 +44,28 @@ import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
+import eu.esdihumboldt.hale.ui.util.source.CompilingSourceViewer;
+import eu.esdihumboldt.hale.ui.util.source.SourceCompiler;
 import eu.esdihumboldt.hale.ui.util.source.SourceValidator;
 import eu.esdihumboldt.hale.ui.util.source.SourceViewerKeyBindings;
+import eu.esdihumboldt.hale.ui.util.source.SourceViewerPanel;
 import eu.esdihumboldt.hale.ui.util.source.ValidatingSourceViewer;
-import eu.esdihumboldt.hale.ui.util.source.ValidatingSourceViewerPanel;
 
 /**
- * Generic parameter page based on a source viewer.
+ * Generic parameter page based on a source viewer panel.
+ * 
+ * @param <C> the type of the compilation result, if applicable
  * 
  * @author Simon Templer
  */
-public class SourceViewerPage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements
-		ParameterPage {
+public class SourceViewerPage<C> extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>>
+		implements ParameterPage {
 
-	private ValidatingSourceViewer viewer;
+	private CompilingSourceViewer<C> viewer;
 	private final String parameterName;
 	private String initialValue = "";
+
+	private final SourceCompiler<C> compiler;
 
 	/**
 	 * Constructor.
@@ -68,11 +74,15 @@ public class SourceViewerPage extends HaleWizardPage<AbstractGenericFunctionWiza
 	 * @param parameterName the name of the parameter for the source viewer
 	 *            content
 	 * @param defaultValue the default value
+	 * @param compiler the source compiler, <code>null</code> to disable
+	 *            compilation
 	 */
-	public SourceViewerPage(String pageName, String parameterName, String defaultValue) {
+	public SourceViewerPage(String pageName, String parameterName, String defaultValue,
+			SourceCompiler<C> compiler) {
 		super(pageName);
 		this.parameterName = parameterName;
 		this.initialValue = defaultValue;
+		this.compiler = compiler;
 	}
 
 	@Override
@@ -110,14 +120,14 @@ public class SourceViewerPage extends HaleWizardPage<AbstractGenericFunctionWiza
 		// init editor
 		IVerticalRuler ruler = createVerticalRuler();
 		IOverviewRuler overviewRuler = createOverviewRuler();
-		ValidatingSourceViewerPanel panel = new ValidatingSourceViewerPanel(page, ruler,
-				overviewRuler, new SourceValidator() {
+		SourceViewerPanel<C> panel = new SourceViewerPanel<C>(page, ruler, overviewRuler,
+				new SourceValidator() {
 
 					@Override
 					public boolean validate(String content) {
 						return SourceViewerPage.this.validate(content);
 					}
-				});
+				}, compiler);
 		viewer = panel.getViewer();
 		viewer.getTextWidget().setFont(JFaceResources.getTextFont());
 		viewer.addPropertyChangeListener(new IPropertyChangeListener() {
@@ -159,7 +169,7 @@ public class SourceViewerPage extends HaleWizardPage<AbstractGenericFunctionWiza
 	 * @param toolbar the tool bar
 	 * @param viewer the source viewer
 	 */
-	protected void addActions(ToolBar toolbar, ValidatingSourceViewer viewer) {
+	protected void addActions(ToolBar toolbar, CompilingSourceViewer<C> viewer) {
 		// override me
 	}
 
@@ -206,7 +216,7 @@ public class SourceViewerPage extends HaleWizardPage<AbstractGenericFunctionWiza
 	 */
 	public void forceValidation() {
 		if (viewer != null) {
-			viewer.forceValidation();
+			viewer.forceUpdate();
 		}
 	}
 
