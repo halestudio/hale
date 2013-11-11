@@ -246,7 +246,7 @@ public class TypeStructureTray extends DialogTray {
 		SourceViewerConfiguration configuration = new SimpleGroovySourceViewerConfiguration(
 				colorManager, ImmutableList.of(GroovyConstants.BINDING_TARGET,
 						GroovyConstants.BINDING_BUILDER, GroovyConstants.BINDING_INDEX,
-						GroovyConstants.BINDING_SOURCE));
+						GroovyConstants.BINDING_SOURCE), null);
 		viewer.configure(configuration);
 
 		GridDataFactory.fillDefaults().grab(true, false).hint(200, 130)

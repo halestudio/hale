@@ -71,7 +71,7 @@ public class GroovyRetypePage extends GroovyScriptPage {
 	@Override
 	protected SourceViewerConfiguration createConfiguration() {
 		return new SimpleGroovySourceViewerConfiguration(colorManager, ImmutableList.of(
-				BINDING_BUILDER, BINDING_SOURCE, BINDING_TARGET));
+				BINDING_BUILDER, BINDING_SOURCE, BINDING_TARGET), null);
 	}
 
 	@Override

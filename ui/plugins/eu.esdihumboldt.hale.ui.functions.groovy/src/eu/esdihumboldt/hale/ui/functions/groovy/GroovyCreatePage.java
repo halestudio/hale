@@ -60,7 +60,7 @@ public class GroovyCreatePage extends GroovyScriptPage {
 	@Override
 	protected SourceViewerConfiguration createConfiguration() {
 		return new SimpleGroovySourceViewerConfiguration(colorManager, ImmutableList.of(
-				BINDING_BUILDER, BINDING_INDEX, BINDING_TARGET));
+				BINDING_BUILDER, BINDING_INDEX, BINDING_TARGET), null);
 	}
 
 	@Override

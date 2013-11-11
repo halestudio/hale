@@ -46,7 +46,7 @@ import eu.esdihumboldt.hale.ui.util.groovy.internal.JavaCommentScanner;
 import eu.esdihumboldt.hale.ui.util.groovy.internal.JavaDocScanner;
 import eu.esdihumboldt.hale.ui.util.groovy.internal.SingleTokenJavaScanner;
 import eu.esdihumboldt.hale.ui.util.groovy.internal.autoedit.JavaStringAutoIndentStrategy;
-import eu.esdihumboldt.hale.ui.util.groovy.internal.contentassist.TestCompletionProcessor;
+import eu.esdihumboldt.hale.ui.util.groovy.internal.contentassist.GroovyASTCompletionProcessor;
 
 /**
  * Configuration for a source viewer which shows Groovy code. Based on the Java
@@ -115,6 +115,8 @@ public class SimpleGroovySourceViewerConfiguration extends SourceViewerConfigura
 
 	private final List<String> fCustomKeywords;
 
+	private final List<GroovyCompletionProposals> fCustomCompletions;
+
 	/**
 	 * Creates a new Groovy source viewer configuration using the given color
 	 * manager.
@@ -122,7 +124,7 @@ public class SimpleGroovySourceViewerConfiguration extends SourceViewerConfigura
 	 * @param colorManager the color manager
 	 */
 	public SimpleGroovySourceViewerConfiguration(IColorManager colorManager) {
-		this(colorManager, null);
+		this(colorManager, null, null);
 	}
 
 	/**
@@ -131,10 +133,13 @@ public class SimpleGroovySourceViewerConfiguration extends SourceViewerConfigura
 	 * 
 	 * @param colorManager the color manager
 	 * @param customKeywords a list of custom keywords, or <code>null</code>
+	 * @param customCompletions the list of custom Groovy code completion
+	 *            proposal computers, or <code>null</code>
 	 */
 	public SimpleGroovySourceViewerConfiguration(IColorManager colorManager,
-			List<String> customKeywords) {
-		this(colorManager, GroovyUIPlugin.getDefault().getPreferenceStore(), null, customKeywords);
+			List<String> customKeywords, List<GroovyCompletionProposals> customCompletions) {
+		this(colorManager, GroovyUIPlugin.getDefault().getPreferenceStore(), null, customKeywords,
+				customCompletions);
 	}
 
 	/**
@@ -147,15 +152,18 @@ public class SimpleGroovySourceViewerConfiguration extends SourceViewerConfigura
 	 * @param partitioning the document partitioning for this configuration, or
 	 *            <code>null</code> for the default partitioning
 	 * @param customKeywords a list of custom keywords, or <code>null</code>
-	 * @since 3.0
+	 * @param customCompletions the list of custom Groovy code completion
+	 *            proposal computers, or <code>null</code>
 	 */
 	public SimpleGroovySourceViewerConfiguration(IColorManager colorManager,
-			IPreferenceStore preferenceStore, String partitioning, List<String> customKeywords) {
+			IPreferenceStore preferenceStore, String partitioning, List<String> customKeywords,
+			List<GroovyCompletionProposals> customCompletions) {
 		super();
 		fPreferenceStore = preferenceStore;
 		fColorManager = colorManager;
 		fDocumentPartitioning = partitioning;
 		fCustomKeywords = customKeywords;
+		fCustomCompletions = customCompletions;
 		initializeScanners();
 	}
 
@@ -282,7 +290,7 @@ public class SimpleGroovySourceViewerConfiguration extends SourceViewerConfigura
 		ContentAssistant assistant = new ContentAssistant();
 		assistant.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
 
-		IContentAssistProcessor testProcessor = new TestCompletionProcessor();
+		IContentAssistProcessor testProcessor = new GroovyASTCompletionProcessor(fCustomCompletions);
 		assistant.setContentAssistProcessor(testProcessor, IDocument.DEFAULT_CONTENT_TYPE);
 
 //			assistant.setRestoreCompletionProposalSize(getSettings("completion_proposal_size")); //$NON-NLS-1$
