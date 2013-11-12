@@ -33,8 +33,8 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
-import eu.esdihumboldt.hale.ui.util.groovy.compile.GroovyAST;
-import eu.esdihumboldt.hale.ui.util.groovy.view.ASTViewer;
+import eu.esdihumboldt.hale.ui.util.groovy.ast.GroovyAST;
+import eu.esdihumboldt.hale.ui.util.groovy.ast.viewer.ASTViewer;
 import eu.esdihumboldt.hale.ui.util.source.CompilingSourceViewer;
 
 /**
@@ -107,6 +107,7 @@ public class GroovyASTTray extends DialogTray {
 				GroovyAST ast = groovyViewer.getCompiled().get();
 				if (ast != null) {
 					viewer.setInput(ast.getNodes());
+					viewer.getTreeViewer().expandAll();
 				}
 				else {
 					viewer.setInput(null);
@@ -128,6 +129,7 @@ public class GroovyASTTray extends DialogTray {
 							public void run() {
 								if (event.getNewValue() instanceof GroovyAST) {
 									viewer.setInput(((GroovyAST) event.getNewValue()).getNodes());
+									viewer.getTreeViewer().expandAll();
 								}
 								else {
 									viewer.setInput(null);

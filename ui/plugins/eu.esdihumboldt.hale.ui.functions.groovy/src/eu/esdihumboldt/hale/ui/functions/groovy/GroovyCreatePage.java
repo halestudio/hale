@@ -34,7 +34,7 @@ import eu.esdihumboldt.hale.ui.functions.groovy.internal.PageHelp;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray.TypeProvider;
 import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
-import eu.esdihumboldt.hale.ui.util.groovy.compile.GroovyAST;
+import eu.esdihumboldt.hale.ui.util.groovy.ast.GroovyAST;
 import eu.esdihumboldt.hale.ui.util.source.CompilingSourceViewer;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;

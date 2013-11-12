@@ -30,7 +30,7 @@ import com.google.common.collect.Iterables;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.ui.util.groovy.GroovyCompletionProposals;
-import eu.esdihumboldt.hale.ui.util.groovy.compile.GroovyAST;
+import eu.esdihumboldt.hale.ui.util.groovy.ast.GroovyAST;
 import eu.esdihumboldt.hale.ui.util.source.CompilingSourceViewer;
 
 /**

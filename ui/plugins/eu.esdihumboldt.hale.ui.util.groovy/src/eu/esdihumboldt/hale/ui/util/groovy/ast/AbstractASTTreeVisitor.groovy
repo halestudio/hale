@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package eu.esdihumboldt.hale.ui.util.groovy.view
+package eu.esdihumboldt.hale.ui.util.groovy.ast
 
 import org.codehaus.groovy.ast.CodeVisitorSupport
 import org.codehaus.groovy.ast.DynamicVariable
@@ -74,32 +74,22 @@ import org.codehaus.groovy.ast.stmt.TryCatchStatement
 import org.codehaus.groovy.ast.stmt.WhileStatement
 import org.codehaus.groovy.classgen.BytecodeExpression
 
-import com.google.common.collect.ArrayListMultimap
-import com.google.common.collect.ListMultimap
-
 
 /**
  * This AST visitor builds up a tree of nodes.
  * Based on the <code>TreeNodeBuildingVisitor</code> class part of Groovy.
  *
  * @author Hamlet D'Arcy
- * @author Simon Templer
  */
-class ASTToTreeVisitor extends CodeVisitorSupport {
+abstract class AbstractASTTreeVisitor<N> extends CodeVisitorSupport {
 
-	/**
-	 * Multimap that collects the child associations during the visitor traversal.
-	 */
-	ListMultimap children
-
-	private def currentNode
+	private N currentNode
 
 	/**
 	 * Creates the visitor.
 	 */
-	ASTToTreeVisitor() {
+	AbstractASTTreeVisitor() {
 		currentNode = null
-		children = ArrayListMultimap.create()
 	}
 
 	/**
@@ -109,27 +99,27 @@ class ASTToTreeVisitor extends CodeVisitorSupport {
 	 * nodes, for instance seeing an ArgumentListExpression and a TupleExpression in the tree, when
 	 * an ArgumentList is-a Tuple.
 	 */
-	private void addNode(node, Class expectedSubclass, Closure superMethod) {
+	protected void addNode(def node, Class expectedSubclass, Closure superMethod) {
 
 		if (expectedSubclass == null || expectedSubclass.getName() == node.getClass().getName()) {
 			if (currentNode == null) {
-				currentNode = node
-				superMethod.call(node)
+				currentNode = createNode(node)
+				if (currentNode != null) {
+					addRootNode(currentNode)
+					superMethod.call(node)
+				}
 				currentNode = null
 			} else {
 				// visitor works off void methods... so we have to
 				// perform a swap to get accumulation like behavior.
 				def temp = currentNode;
-				currentNode = node
+				currentNode = createNode(node)
 
-				children.put(temp, currentNode)
-				// currentNode.parent = temp
-				superMethod.call(node)
+				if (currentNode != null) {
+					setParent(currentNode, temp)
 
-				// additionally add variable scope
-				// if (node.hasProperty('variableScope')) {
-				//	 addNode(node.variableScope, null, {})
-				// }
+					superMethod.call(node)
+				}
 
 				currentNode = temp
 			}
@@ -137,6 +127,31 @@ class ASTToTreeVisitor extends CodeVisitorSupport {
 			superMethod.call(node)
 		}
 	}
+
+	/**
+	 * Called when a root node has been encountered.
+	 * 
+	 * @param node the root node
+	 */
+	protected void addRootNode(N node) {
+		// override me
+	}
+
+	/**
+	 * Create a tree node from the given AST node.
+	 * 
+	 * @param node the AST node, an {@link ASTNode}, a {@link Parameter}
+	 *   or {@link DynamicVariable}
+	 * @return the tree node, <code>null</code> to reject the AST node
+	 */
+	public abstract N createNode(def node)
+
+	/**
+	 * Set the parent of a tree node.
+	 * @param node the node to set the parent of
+	 * @param parent the parent to set
+	 */
+	public abstract void setParent(N node, N parent)
 
 	public void visitBlockStatement(BlockStatement node) {
 		addNode(node, BlockStatement, { super.visitBlockStatement(it) });

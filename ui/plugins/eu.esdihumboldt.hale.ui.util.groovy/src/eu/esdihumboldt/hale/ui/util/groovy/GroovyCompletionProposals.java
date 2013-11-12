@@ -17,7 +17,7 @@ package eu.esdihumboldt.hale.ui.util.groovy;
 
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 
-import eu.esdihumboldt.hale.ui.util.groovy.compile.GroovyAST;
+import eu.esdihumboldt.hale.ui.util.groovy.ast.GroovyAST;
 
 /**
  * Computes completion proposals based on a Groovy AST.

@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.util.groovy.compile;
+package eu.esdihumboldt.hale.ui.util.groovy.ast;
 
 import org.codehaus.groovy.ast.builder.AstBuilder;
 

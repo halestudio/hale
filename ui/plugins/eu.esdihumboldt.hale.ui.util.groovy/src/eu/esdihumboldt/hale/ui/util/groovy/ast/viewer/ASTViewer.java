@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.util.groovy.view;
+package eu.esdihumboldt.hale.ui.util.groovy.ast.viewer;
 
 import java.util.List;
 
@@ -114,7 +114,7 @@ public class ASTViewer {
 
 	}
 
-	private final TreeViewer viewer;
+	private final TreeViewer treeViewer;
 
 	private Action doubleClickAction;
 
@@ -136,14 +136,14 @@ public class ASTViewer {
 		TreeColumnLayout layout = new TreeColumnLayout();
 		page.setLayout(layout);
 
-		viewer = new TreeViewer(page, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		treeViewer = new TreeViewer(page, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 //		new DrillDownAdapter(viewer);
-		viewer.setContentProvider(new ViewContentProvider());
-		viewer.setLabelProvider(new ViewLabelProvider());
+		treeViewer.setContentProvider(new ViewContentProvider());
+		treeViewer.setLabelProvider(new ViewLabelProvider());
 
-		viewer.getTree().setHeaderVisible(true);
+		treeViewer.getTree().setHeaderVisible(true);
 
-		TreeViewerColumn mainColumn = new TreeViewerColumn(viewer, SWT.NONE);
+		TreeViewerColumn mainColumn = new TreeViewerColumn(treeViewer, SWT.NONE);
 		mainColumn.setLabelProvider(new StyledCellLabelProvider() {
 
 			@Override
@@ -162,7 +162,7 @@ public class ASTViewer {
 		mainColumn.getColumn().setText("Node");
 		layout.setColumnData(mainColumn.getColumn(), new ColumnPixelData(200));
 
-		TreeViewerColumn infoColumn = new TreeViewerColumn(viewer, SWT.NONE);
+		TreeViewerColumn infoColumn = new TreeViewerColumn(treeViewer, SWT.NONE);
 		infoColumn.setLabelProvider(new StyledCellLabelProvider() {
 
 			@Override
@@ -200,7 +200,7 @@ public class ASTViewer {
 		infoColumn.getColumn().setText("Text");
 		layout.setColumnData(infoColumn.getColumn(), new ColumnPixelData(300));
 
-		TreeViewerColumn propertiesColumn = new TreeViewerColumn(viewer, SWT.NONE);
+		TreeViewerColumn propertiesColumn = new TreeViewerColumn(treeViewer, SWT.NONE);
 		propertiesColumn.setLabelProvider(new StyledCellLabelProvider() {
 
 			@Override
@@ -241,7 +241,7 @@ public class ASTViewer {
 	 * @param ast the AST nodes
 	 */
 	public void setInput(List<ASTNode> ast) {
-		viewer.setInput(ast);
+		treeViewer.setInput(ast);
 	}
 
 	private void makeActions() {
@@ -249,7 +249,7 @@ public class ASTViewer {
 
 			@Override
 			public void run() {
-				ISelection selection = viewer.getSelection();
+				ISelection selection = treeViewer.getSelection();
 				Object obj = ((IStructuredSelection) selection).getFirstElement();
 				if (obj == null) {
 					return;
@@ -276,13 +276,20 @@ public class ASTViewer {
 	}
 
 	private void addDoubleClickAction() {
-		viewer.addDoubleClickListener(new IDoubleClickListener() {
+		treeViewer.addDoubleClickListener(new IDoubleClickListener() {
 
 			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				doubleClickAction.run();
 			}
 		});
+	}
+
+	/**
+	 * @return the internal tree viewer
+	 */
+	public TreeViewer getTreeViewer() {
+		return treeViewer;
 	}
 
 }

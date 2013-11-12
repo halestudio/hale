@@ -54,7 +54,7 @@ import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray.TypeP
 import eu.esdihumboldt.hale.ui.scripting.groovy.InstanceTestValues;
 import eu.esdihumboldt.hale.ui.scripting.groovy.TestValues;
 import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
-import eu.esdihumboldt.hale.ui.util.groovy.compile.GroovyAST;
+import eu.esdihumboldt.hale.ui.util.groovy.ast.GroovyAST;
 import eu.esdihumboldt.hale.ui.util.source.CompilingSourceViewer;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;

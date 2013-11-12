@@ -13,11 +13,14 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.util.groovy.compile;
+package eu.esdihumboldt.hale.ui.util.groovy.ast;
 
 import java.util.List;
 
 import org.codehaus.groovy.ast.ASTNode;
+
+import com.tinkerpop.blueprints.Graph;
+import com.tinkerpop.blueprints.Vertex;
 
 /**
  * Represents the Groovy AST of a source document.
@@ -28,6 +31,10 @@ public class GroovyAST {
 
 	private final List<ASTNode> nodes;
 
+	private final Graph graph;
+
+	private final List<Vertex> rootVertices;
+
 	/**
 	 * Constructor.
 	 * 
@@ -36,13 +43,35 @@ public class GroovyAST {
 	public GroovyAST(List<ASTNode> nodes) {
 		super();
 		this.nodes = nodes;
+
+		ASTToGraphVisitor visitor = new ASTToGraphVisitor();
+		for (ASTNode node : nodes) {
+			node.visit(visitor);
+		}
+
+		graph = visitor.getGraph();
+		rootVertices = visitor.getRootVertices();
 	}
 
 	/**
-	 * @return the AST nodes
+	 * @return the root AST nodes
 	 */
 	public List<ASTNode> getNodes() {
 		return nodes;
+	}
+
+	/**
+	 * @return the graph representing the AST
+	 */
+	public Graph getGraph() {
+		return graph;
+	}
+
+	/**
+	 * @return the root vertices of the AST graph
+	 */
+	public List<Vertex> getRootVertices() {
+		return rootVertices;
 	}
 
 }

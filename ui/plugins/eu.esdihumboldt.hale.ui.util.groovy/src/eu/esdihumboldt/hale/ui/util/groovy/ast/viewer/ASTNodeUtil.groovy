@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.util.groovy.view
+package eu.esdihumboldt.hale.ui.util.groovy.ast.viewer
 
 import org.eclipse.jface.viewers.StyledString
 
