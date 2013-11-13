@@ -48,13 +48,15 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
+import eu.esdihumboldt.hale.ui.functions.groovy.internal.InstanceBuilderCompletions;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.PageHelp;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray.TypeProvider;
 import eu.esdihumboldt.hale.ui.scripting.groovy.InstanceTestValues;
 import eu.esdihumboldt.hale.ui.scripting.groovy.TestValues;
 import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
-import eu.esdihumboldt.hale.ui.util.source.ValidatingSourceViewer;
+import eu.esdihumboldt.hale.ui.util.groovy.ast.GroovyAST;
+import eu.esdihumboldt.hale.ui.util.source.CompilingSourceViewer;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 
@@ -80,8 +82,22 @@ public class GroovyTransformationPage extends GroovyScriptPage {
 
 	@Override
 	protected SourceViewerConfiguration createConfiguration() {
+		InstanceBuilderCompletions targetCompletions = new InstanceBuilderCompletions(
+				definitionImages) {
+
+			@Override
+			protected TypeDefinition getTargetType() {
+				Property targetProperty = (Property) CellUtil.getFirstEntity(getWizard()
+						.getUnfinishedCell().getTarget());
+				if (targetProperty != null) {
+					return targetProperty.getDefinition().getDefinition().getPropertyType();
+				}
+				return null;
+			}
+		};
+
 		return new SimpleGroovySourceViewerConfiguration(colorManager, ImmutableList.of(
-				BINDING_BUILDER, BINDING_TARGET));
+				BINDING_BUILDER, BINDING_TARGET), ImmutableList.of(targetCompletions));
 	}
 
 	@Override
@@ -164,7 +180,7 @@ public class GroovyTransformationPage extends GroovyScriptPage {
 	}
 
 	@Override
-	protected void addActions(ToolBar toolbar, ValidatingSourceViewer viewer) {
+	protected void addActions(ToolBar toolbar, CompilingSourceViewer<GroovyAST> viewer) {
 		super.addActions(toolbar, viewer);
 
 		PageHelp.createToolItem(toolbar, this);

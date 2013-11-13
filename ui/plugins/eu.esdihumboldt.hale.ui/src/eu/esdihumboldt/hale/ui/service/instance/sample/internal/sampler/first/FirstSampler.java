@@ -89,7 +89,7 @@ public class FirstSampler implements Sampler {
 
 	@Override
 	public Editor<Value> createEditor(Composite parent) {
-		return new IntegerValueEditor(new IntegerEditor(parent, 10000, 1, 10, 100));
+		return new IntegerValueEditor(new IntegerEditor(parent, 100000, 1, 10, 100));
 	}
 
 	@Override

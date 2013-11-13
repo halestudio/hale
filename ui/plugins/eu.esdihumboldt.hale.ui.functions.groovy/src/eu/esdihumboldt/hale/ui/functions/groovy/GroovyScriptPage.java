@@ -21,6 +21,9 @@ import java.util.List;
 import org.codehaus.groovy.control.ErrorCollector;
 import org.codehaus.groovy.control.MultipleCompilationErrorsException;
 import org.codehaus.groovy.syntax.SyntaxException;
+import org.eclipse.jface.bindings.TriggerSequence;
+import org.eclipse.jface.bindings.keys.KeySequence;
+import org.eclipse.jface.bindings.keys.SWTKeySupport;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
@@ -37,17 +40,25 @@ import org.eclipse.jface.text.source.LineNumberRulerColumn;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.VerifyKeyListener;
+import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.ToolBar;
 
 import com.google.common.collect.Iterators;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
+import eu.esdihumboldt.hale.ui.common.definition.DefinitionImages;
+import eu.esdihumboldt.hale.ui.functions.groovy.internal.GroovyASTTray;
 import eu.esdihumboldt.hale.ui.util.ColorManager;
 import eu.esdihumboldt.hale.ui.util.groovy.GroovyColorManager;
 import eu.esdihumboldt.hale.ui.util.groovy.GroovySourceViewerUtil;
 import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
+import eu.esdihumboldt.hale.ui.util.groovy.ast.GroovyAST;
+import eu.esdihumboldt.hale.ui.util.groovy.ast.GroovyASTSourceCompiler;
+import eu.esdihumboldt.hale.ui.util.source.CompilingSourceViewer;
 import eu.esdihumboldt.hale.ui.util.source.SimpleAnnotationUtil;
 import eu.esdihumboldt.hale.ui.util.source.SimpleAnnotations;
 import groovy.lang.Script;
@@ -57,7 +68,7 @@ import groovy.lang.Script;
  * 
  * @author Simon Templer
  */
-public class GroovyScriptPage extends SourceViewerPage implements GroovyConstants {
+public class GroovyScriptPage extends SourceViewerPage<GroovyAST> implements GroovyConstants {
 
 	private static final ALogger log = ALoggerFactory.getLogger(GroovyScriptPage.class);
 
@@ -66,13 +77,19 @@ public class GroovyScriptPage extends SourceViewerPage implements GroovyConstant
 	 */
 	protected final ColorManager colorManager = new GroovyColorManager();
 
+	/**
+	 * The definition images, e.g. for use with content assist.
+	 */
+	protected final DefinitionImages definitionImages = new DefinitionImages();
+
 	private final IAnnotationModel annotationModel = new AnnotationModel();
 
 	/**
 	 * Default constructor.
 	 */
 	public GroovyScriptPage() {
-		super("groovyScript", PARAMETER_SCRIPT, BINDING_TARGET + " = {\n\n}");
+		super("groovyScript", PARAMETER_SCRIPT, BINDING_TARGET + " = {\n\t\n}",
+				new GroovyASTSourceCompiler());
 	}
 
 	@Override
@@ -93,6 +110,7 @@ public class GroovyScriptPage extends SourceViewerPage implements GroovyConstant
 	@Override
 	public void dispose() {
 		colorManager.dispose();
+		definitionImages.dispose();
 
 		super.dispose();
 	}
@@ -243,6 +261,32 @@ public class GroovyScriptPage extends SourceViewerPage implements GroovyConstant
 		}
 
 		annotationModel.addAnnotation(annotation, position);
+	}
+
+	@Override
+	protected void addActions(ToolBar toolbar, final CompilingSourceViewer<GroovyAST> viewer) {
+		super.addActions(toolbar, viewer);
+
+//		GroovyASTTray.createToolItem(toolbar, this, viewer);
+
+		try {
+			final TriggerSequence astTrigger = KeySequence.getInstance("F8");
+			viewer.appendVerifyKeyListener(new VerifyKeyListener() {
+
+				@Override
+				public void verifyKey(VerifyEvent event) {
+					int accelerator = SWTKeySupport.convertEventToUnmodifiedAccelerator(event);
+					KeySequence sequence = KeySequence.getInstance(SWTKeySupport
+							.convertAcceleratorToKeyStroke(accelerator));
+					if (astTrigger.equals(sequence)) {
+						GroovyASTTray.showTray(GroovyScriptPage.this, viewer);
+						event.doit = false;
+					}
+				}
+			});
+		} catch (Exception e) {
+			log.error("Error installing AST view listener", e);
+		}
 	}
 
 }

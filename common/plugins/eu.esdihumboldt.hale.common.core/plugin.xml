@@ -58,6 +58,7 @@
       </provider>
       <provider
             class="eu.esdihumboldt.hale.common.core.io.project.impl.ZipProjectWriter"
+            description="Single project file that includes alignment and styles"
             id="eu.esdihumboldt.hale.io.project.hale25.writer"
             name="HALE project">
          <contentType
@@ -74,6 +75,7 @@
       </provider>
       <provider
             class="eu.esdihumboldt.hale.common.core.io.project.impl.XMLProjectWriter"
+            description="XML project file with separate alignment file (best choice for version controlled projects)"
             id="eu.esdihumboldt.hale.io.project.hale25.xml.writer"
             name="HALE XML project">
          <contentType
@@ -82,6 +84,7 @@
       </provider>
       <provider
             class="eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectWriter"
+            description="ZIP project archive that also includes local resources (best choice for sharing projects)"
             id="eu.esdihumboldt.hale.io.project.hale25.zip.writer"
             name="HALE project archive">
          <contentType
