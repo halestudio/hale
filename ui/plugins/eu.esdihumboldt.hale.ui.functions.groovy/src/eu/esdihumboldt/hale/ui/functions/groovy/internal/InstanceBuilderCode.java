@@ -105,7 +105,8 @@ public class InstanceBuilderCode {
 			}
 
 			TypeDefinition propertyType = ((PropertyDefinition) def).getPropertyType();
-			if (propertyType.getConstraint(HasValueFlag.class).isEnabled()) {
+			boolean hasValue = propertyType.getConstraint(HasValueFlag.class).isEnabled();
+			if (hasValue) {
 				// add an example value
 				if (useBrackets && !needComma) {
 					example.append('(');
@@ -131,7 +132,7 @@ public class InstanceBuilderCode {
 			}
 
 			if (DefinitionUtil.hasChildren(propertyType)
-					&& (!tree.getChildren().isEmpty() || !needComma || !useExampleValues)) {
+					&& (!tree.getChildren().isEmpty() || !needComma || !hasValue)) {
 				if (needComma) {
 					if (useBrackets) {
 						example.append(" )");
