@@ -90,7 +90,7 @@ public class TextViewerOperationSupport {
 
 		if (contentAssist) {
 			try {
-				operations.put(KeySequence.getInstance("M1+SPACE"),
+				operations.put(KeySequence.getInstance("CTRL+SPACE"),
 						ISourceViewer.CONTENTASSIST_PROPOSALS);
 			} catch (ParseException e) {
 				log.error("Failed to create key sequence for content assist proposal operation", e);
