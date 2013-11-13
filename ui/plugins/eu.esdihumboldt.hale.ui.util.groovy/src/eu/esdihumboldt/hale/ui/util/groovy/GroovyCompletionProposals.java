@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.ui.util.groovy;
 
+import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 
 import eu.esdihumboldt.hale.ui.util.groovy.ast.GroovyAST;
@@ -29,13 +30,14 @@ public interface GroovyCompletionProposals {
 	/**
 	 * Compute proposals for the given position.
 	 * 
+	 * @param viewer the text viewer
 	 * @param ast the Groovy AST
 	 * @param line the line number (1-based)
 	 * @param column the line column (1-based)
 	 * @param offset the document offset (0-based)
 	 * @return the computed proposals or <code>null</code>
 	 */
-	public Iterable<? extends ICompletionProposal> computeProposals(GroovyAST ast, int line,
-			int column, int offset);
+	public Iterable<? extends ICompletionProposal> computeProposals(ITextViewer viewer,
+			GroovyAST ast, int line, int column, int offset);
 
 }

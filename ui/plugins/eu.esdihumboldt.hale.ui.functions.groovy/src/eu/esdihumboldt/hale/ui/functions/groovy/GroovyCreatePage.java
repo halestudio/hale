@@ -30,6 +30,7 @@ import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.functions.groovy.internal.InstanceBuilderCompletions;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.PageHelp;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray.TypeProvider;
@@ -59,8 +60,23 @@ public class GroovyCreatePage extends GroovyScriptPage {
 
 	@Override
 	protected SourceViewerConfiguration createConfiguration() {
+		InstanceBuilderCompletions targetCompletions = new InstanceBuilderCompletions(
+				definitionImages) {
+
+			@Override
+			protected TypeDefinition getTargetType() {
+				Type typeEntity = (Type) CellUtil.getFirstEntity(getWizard().getUnfinishedCell()
+						.getTarget());
+				if (typeEntity != null) {
+					return typeEntity.getDefinition().getDefinition();
+				}
+				return null;
+			}
+		};
+
 		return new SimpleGroovySourceViewerConfiguration(colorManager, ImmutableList.of(
-				BINDING_BUILDER, BINDING_INDEX, BINDING_TARGET), null);
+				BINDING_BUILDER, BINDING_INDEX, BINDING_TARGET),
+				ImmutableList.of(targetCompletions));
 	}
 
 	@Override

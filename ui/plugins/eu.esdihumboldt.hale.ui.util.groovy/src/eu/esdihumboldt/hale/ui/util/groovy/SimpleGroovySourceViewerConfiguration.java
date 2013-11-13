@@ -115,7 +115,7 @@ public class SimpleGroovySourceViewerConfiguration extends SourceViewerConfigura
 
 	private final List<String> fCustomKeywords;
 
-	private final List<GroovyCompletionProposals> fCustomCompletions;
+	private final List<? extends GroovyCompletionProposals> fCustomCompletions;
 
 	/**
 	 * Creates a new Groovy source viewer configuration using the given color
@@ -137,7 +137,7 @@ public class SimpleGroovySourceViewerConfiguration extends SourceViewerConfigura
 	 *            proposal computers, or <code>null</code>
 	 */
 	public SimpleGroovySourceViewerConfiguration(IColorManager colorManager,
-			List<String> customKeywords, List<GroovyCompletionProposals> customCompletions) {
+			List<String> customKeywords, List<? extends GroovyCompletionProposals> customCompletions) {
 		this(colorManager, GroovyUIPlugin.getDefault().getPreferenceStore(), null, customKeywords,
 				customCompletions);
 	}
@@ -157,7 +157,7 @@ public class SimpleGroovySourceViewerConfiguration extends SourceViewerConfigura
 	 */
 	public SimpleGroovySourceViewerConfiguration(IColorManager colorManager,
 			IPreferenceStore preferenceStore, String partitioning, List<String> customKeywords,
-			List<GroovyCompletionProposals> customCompletions) {
+			List<? extends GroovyCompletionProposals> customCompletions) {
 		super();
 		fPreferenceStore = preferenceStore;
 		fColorManager = colorManager;

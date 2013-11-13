@@ -30,7 +30,11 @@ public class GroovyASTSourceCompiler implements SourceCompiler<GroovyAST> {
 
 	@Override
 	public GroovyAST compile(String content) {
-		return new GroovyAST(builder.buildFromString(content));
+		try {
+			return new GroovyAST(builder.buildFromString(content));
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 }

@@ -84,7 +84,7 @@ public class GroovyASTCompletionProcessor implements IContentAssistProcessor {
 					// add proposals of individual computers
 					for (GroovyCompletionProposals proposal : proposals) {
 						Iterable<? extends ICompletionProposal> computed = proposal
-								.computeProposals(ast, line, column, offset);
+								.computeProposals(viewer, ast, line, column, offset);
 						if (computed != null) {
 							Iterables.addAll(list, computed);
 						}

@@ -54,7 +54,6 @@ import org.eclipse.ui.dialogs.PatternFilter;
 import com.google.common.collect.ImmutableList;
 
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
-import eu.esdihumboldt.hale.common.schema.Classification;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.groovy.DefinitionAccessor;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
@@ -556,7 +555,8 @@ public class TypeStructureTray extends DialogTray {
 
 			int indentCount = 1;
 			for (PathTree tree : properties) {
-				appendBuildProperties(example, indentCount, tree, parent);
+				InstanceBuilderCode.appendBuildProperties(example, indentCount, tree, parent,
+						BUILDER_USE_BRACKETS);
 			}
 
 			example.append("}");
@@ -567,122 +567,4 @@ public class TypeStructureTray extends DialogTray {
 		return GroovyConstants.BINDING_TARGET + " = {}";
 	}
 
-	/**
-	 * Append example code to build the properties identified by the given path
-	 * tree.
-	 * 
-	 * @param example the example code to append to
-	 * @param indentCount the indent count to use
-	 * @param tree the path tree representing a specific segment
-	 * @param parent the parent of the segment
-	 */
-	private void appendBuildProperties(StringBuilder example, int indentCount, PathTree tree,
-			DefinitionGroup parent) {
-		Definition<?> def = (Definition<?>) tree.getSegment();
-		String indent = createIndent(indentCount);
-		boolean opened = false;
-
-		if (def instanceof PropertyDefinition) {
-			// property name
-			example.append(indent);
-			// TODO test if property must be accessed explicitly through
-			// builder?
-			example.append(def.getName().getLocalPart());
-
-			// test if uniquely accessible from parent
-			boolean useNamespace = true;
-			if (parent instanceof Definition<?>) {
-				try {
-					new DefinitionAccessor((Definition<?>) parent).findChildren(
-							def.getName().getLocalPart()).eval();
-					useNamespace = false;
-				} catch (IllegalStateException e) {
-					// ignore - namespace needed
-				}
-			}
-
-			boolean needComma = false;
-
-			// add namespace if necessary
-			if (useNamespace) {
-				if (BUILDER_USE_BRACKETS && !needComma) {
-					example.append('(');
-				}
-				example.append(" namespace: '");
-				example.append(def.getName().getNamespaceURI());
-				example.append('\'');
-				needComma = true;
-			}
-
-			TypeDefinition propertyType = ((PropertyDefinition) def).getPropertyType();
-			if (propertyType.getConstraint(HasValueFlag.class).isEnabled()) {
-				// add an example value
-				if (BUILDER_USE_BRACKETS && !needComma) {
-					example.append('(');
-				}
-				if (needComma) {
-					example.append(',');
-				}
-				example.append(' ');
-				switch (Classification.getClassification(def)) {
-				case NUMERIC_PROPERTY:
-					example.append("42");
-					break;
-				case STRING_PROPERTY:
-					example.append("'some value'");
-					break;
-				default:
-					example.append("some_value");
-				}
-
-				needComma = true;
-			}
-
-			if (DefinitionUtil.hasChildren(propertyType)
-					&& (!tree.getChildren().isEmpty() || !needComma)) {
-				if (needComma) {
-					if (BUILDER_USE_BRACKETS) {
-						example.append(" )");
-					}
-					else {
-						example.append(',');
-					}
-				}
-				example.append(" {");
-				example.append('\n');
-				opened = true;
-			}
-			else {
-				if (BUILDER_USE_BRACKETS && needComma) {
-					example.append(" )");
-				}
-				example.append('\n');
-			}
-		}
-		else {
-			// groups are ignored
-		}
-
-		if (opened) {
-			// set the new parent
-			parent = DefinitionUtil.getDefinitionGroup(def);
-
-			// create child properties
-			for (PathTree child : tree.getChildren()) {
-				appendBuildProperties(example, indentCount + 1, child, parent);
-			}
-
-			// close bracket
-			example.append(indent);
-			example.append("}\n");
-		}
-	}
-
-	private String createIndent(int count) {
-		StringBuilder builder = new StringBuilder();
-		for (int i = 0; i < count; i++) {
-			builder.append('\t');
-		}
-		return builder.toString();
-	}
 }

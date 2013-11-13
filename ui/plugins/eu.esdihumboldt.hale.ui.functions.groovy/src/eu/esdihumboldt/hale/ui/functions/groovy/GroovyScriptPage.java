@@ -45,6 +45,7 @@ import com.google.common.collect.Iterators;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
+import eu.esdihumboldt.hale.ui.common.definition.DefinitionImages;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.GroovyASTTray;
 import eu.esdihumboldt.hale.ui.util.ColorManager;
 import eu.esdihumboldt.hale.ui.util.groovy.GroovyColorManager;
@@ -71,13 +72,18 @@ public class GroovyScriptPage extends SourceViewerPage<GroovyAST> implements Gro
 	 */
 	protected final ColorManager colorManager = new GroovyColorManager();
 
+	/**
+	 * The definition images, e.g. for use with content assist.
+	 */
+	protected final DefinitionImages definitionImages = new DefinitionImages();
+
 	private final IAnnotationModel annotationModel = new AnnotationModel();
 
 	/**
 	 * Default constructor.
 	 */
 	public GroovyScriptPage() {
-		super("groovyScript", PARAMETER_SCRIPT, BINDING_TARGET + " = {\n\n}",
+		super("groovyScript", PARAMETER_SCRIPT, BINDING_TARGET + " = {\n\t\n}",
 				new GroovyASTSourceCompiler());
 	}
 
@@ -99,6 +105,7 @@ public class GroovyScriptPage extends SourceViewerPage<GroovyAST> implements Gro
 	@Override
 	public void dispose() {
 		colorManager.dispose();
+		definitionImages.dispose();
 
 		super.dispose();
 	}
