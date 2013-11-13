@@ -24,6 +24,7 @@ import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.bindings.keys.SWTKeySupport;
 import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.TextViewer;
+import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.custom.VerifyKeyListener;
 import org.eclipse.swt.events.VerifyEvent;
 
@@ -67,12 +68,13 @@ public class TextViewerOperationSupport {
 	}
 
 	/**
-	 * Install the shift operations on the given text viewer with default
-	 * bindings.
+	 * Install the default operations on the given text viewer with default
+	 * bindings. Always includes the shift operations.
 	 * 
 	 * @param viewer the text viewer
+	 * @param contentAssist if content assist operations should be added
 	 */
-	public static void installShift(TextViewer viewer) {
+	public static void installDefaults(TextViewer viewer, boolean contentAssist) {
 		Map<TriggerSequence, Integer> operations = new HashMap<>();
 
 		try {
@@ -84,6 +86,15 @@ public class TextViewerOperationSupport {
 			operations.put(KeySequence.getInstance("TAB"), ITextOperationTarget.SHIFT_RIGHT);
 		} catch (ParseException e) {
 			log.error("Failed to create key sequence for shift right operation", e);
+		}
+
+		if (contentAssist) {
+			try {
+				operations.put(KeySequence.getInstance("M1+SPACE"),
+						ISourceViewer.CONTENTASSIST_PROPOSALS);
+			} catch (ParseException e) {
+				log.error("Failed to create key sequence for content assist proposal operation", e);
+			}
 		}
 
 		install(viewer, operations);

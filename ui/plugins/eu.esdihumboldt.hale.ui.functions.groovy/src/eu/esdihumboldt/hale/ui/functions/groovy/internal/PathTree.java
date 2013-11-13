@@ -21,6 +21,7 @@ import java.util.List;
 import org.eclipse.jface.viewers.TreePath;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ListMultimap;
 
 /**
@@ -57,6 +58,16 @@ public class PathTree {
 		}
 
 		return result;
+	}
+
+	/**
+	 * Create a path tree representing only a single object with no children.
+	 * 
+	 * @param segment the object
+	 * @return the path tree
+	 */
+	public static PathTree create(Object segment) {
+		return new PathTree(segment, ImmutableList.<PathTree> of());
 	}
 
 	private final Object segment;

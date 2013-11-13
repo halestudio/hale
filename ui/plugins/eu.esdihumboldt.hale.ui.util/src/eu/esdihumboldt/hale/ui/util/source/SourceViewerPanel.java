@@ -35,15 +35,17 @@ import org.eclipse.swt.widgets.ToolItem;
 import eu.esdihumboldt.hale.ui.util.internal.UIUtilitiesPlugin;
 
 /**
- * Panel with a {@link ValidatingSourceViewer} and a {@link ToolBar}.
+ * Panel with a {@link CompilingSourceViewer} and a {@link ToolBar}.
+ * 
+ * @param <C> type of the compilation result, if applicable
  * 
  * @author Simon Templer
  */
-public class ValidatingSourceViewerPanel {
+public class SourceViewerPanel<C> {
 
 	private final Composite page;
 
-	private final ValidatingSourceViewer viewer;
+	private final CompilingSourceViewer<C> viewer;
 
 	private final ToolBar toolbar;
 
@@ -56,11 +58,12 @@ public class ValidatingSourceViewerPanel {
 	 * @param overviewRuler the source viewer overview ruler, may be
 	 *            <code>null</code>
 	 * @param validator the document validator
+	 * @param compiler the document compiler, may be <code>null</code>
 	 */
-	public ValidatingSourceViewerPanel(Composite parent, IVerticalRuler verticalRuler,
-			IOverviewRuler overviewRuler, SourceValidator validator) {
+	public SourceViewerPanel(Composite parent, IVerticalRuler verticalRuler,
+			IOverviewRuler overviewRuler, SourceValidator validator, SourceCompiler<C> compiler) {
 		this(parent, verticalRuler, overviewRuler, overviewRuler != null, SWT.DEFAULT, SWT.DEFAULT,
-				validator);
+				validator, compiler);
 	}
 
 	/**
@@ -75,24 +78,20 @@ public class ValidatingSourceViewerPanel {
 	 * @param viewerWidthHint the width hint for the source viewer
 	 * @param viewerHeightHint the height hint for the source viewer
 	 * @param validator the document validator
+	 * @param compiler the document compiler, may be <code>null</code>
 	 */
-	public ValidatingSourceViewerPanel(Composite parent, IVerticalRuler verticalRuler,
+	public SourceViewerPanel(Composite parent, IVerticalRuler verticalRuler,
 			IOverviewRuler overviewRuler, boolean showAnnotationsOverview, int viewerWidthHint,
-			int viewerHeightHint, final SourceValidator validator) {
+			int viewerHeightHint, final SourceValidator validator, final SourceCompiler<C> compiler) {
 		super();
 
 		page = new Composite(parent, SWT.NONE);
 		GridLayoutFactory.fillDefaults().numColumns(2).applyTo(page);
 
 		// create source viewer
-		viewer = new ValidatingSourceViewer(page, verticalRuler, overviewRuler,
-				showAnnotationsOverview, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL) {
-
-			@Override
-			protected boolean validate(String content) {
-				return validator.validate(content);
-			}
-		};
+		viewer = new CompilingSourceViewer<C>(page, verticalRuler, overviewRuler,
+				showAnnotationsOverview, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL,
+				validator, compiler);
 		GridDataFactory.fillDefaults().grab(true, true).hint(viewerWidthHint, viewerHeightHint)
 				.applyTo(viewer.getControl());
 
@@ -156,7 +155,7 @@ public class ValidatingSourceViewerPanel {
 	/**
 	 * @return the viewer
 	 */
-	public ValidatingSourceViewer getViewer() {
+	public CompilingSourceViewer<C> getViewer() {
 		return viewer;
 	}
 

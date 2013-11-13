@@ -45,7 +45,7 @@ public abstract class SourceViewerKeyBindings {
 	 */
 	public static void installDefault(SourceViewer viewer) {
 		SourceViewerUndoSupport.install(viewer);
-		TextViewerOperationSupport.installShift(viewer);
+		TextViewerOperationSupport.installDefaults(viewer, true);
 		installDeleteLine(viewer);
 	}
 

@@ -22,6 +22,8 @@ import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
+import org.eclipse.jface.text.contentassist.ContentAssistant;
+import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
@@ -44,6 +46,7 @@ import eu.esdihumboldt.hale.ui.util.groovy.internal.JavaCommentScanner;
 import eu.esdihumboldt.hale.ui.util.groovy.internal.JavaDocScanner;
 import eu.esdihumboldt.hale.ui.util.groovy.internal.SingleTokenJavaScanner;
 import eu.esdihumboldt.hale.ui.util.groovy.internal.autoedit.JavaStringAutoIndentStrategy;
+import eu.esdihumboldt.hale.ui.util.groovy.internal.contentassist.GroovyASTCompletionProcessor;
 
 /**
  * Configuration for a source viewer which shows Groovy code. Based on the Java
@@ -112,6 +115,8 @@ public class SimpleGroovySourceViewerConfiguration extends SourceViewerConfigura
 
 	private final List<String> fCustomKeywords;
 
+	private final List<? extends GroovyCompletionProposals> fCustomCompletions;
+
 	/**
 	 * Creates a new Groovy source viewer configuration using the given color
 	 * manager.
@@ -119,7 +124,7 @@ public class SimpleGroovySourceViewerConfiguration extends SourceViewerConfigura
 	 * @param colorManager the color manager
 	 */
 	public SimpleGroovySourceViewerConfiguration(IColorManager colorManager) {
-		this(colorManager, null);
+		this(colorManager, null, null);
 	}
 
 	/**
@@ -128,10 +133,13 @@ public class SimpleGroovySourceViewerConfiguration extends SourceViewerConfigura
 	 * 
 	 * @param colorManager the color manager
 	 * @param customKeywords a list of custom keywords, or <code>null</code>
+	 * @param customCompletions the list of custom Groovy code completion
+	 *            proposal computers, or <code>null</code>
 	 */
 	public SimpleGroovySourceViewerConfiguration(IColorManager colorManager,
-			List<String> customKeywords) {
-		this(colorManager, GroovyUIPlugin.getDefault().getPreferenceStore(), null, customKeywords);
+			List<String> customKeywords, List<? extends GroovyCompletionProposals> customCompletions) {
+		this(colorManager, GroovyUIPlugin.getDefault().getPreferenceStore(), null, customKeywords,
+				customCompletions);
 	}
 
 	/**
@@ -144,15 +152,18 @@ public class SimpleGroovySourceViewerConfiguration extends SourceViewerConfigura
 	 * @param partitioning the document partitioning for this configuration, or
 	 *            <code>null</code> for the default partitioning
 	 * @param customKeywords a list of custom keywords, or <code>null</code>
-	 * @since 3.0
+	 * @param customCompletions the list of custom Groovy code completion
+	 *            proposal computers, or <code>null</code>
 	 */
 	public SimpleGroovySourceViewerConfiguration(IColorManager colorManager,
-			IPreferenceStore preferenceStore, String partitioning, List<String> customKeywords) {
+			IPreferenceStore preferenceStore, String partitioning, List<String> customKeywords,
+			List<? extends GroovyCompletionProposals> customCompletions) {
 		super();
 		fPreferenceStore = preferenceStore;
 		fColorManager = colorManager;
 		fDocumentPartitioning = partitioning;
 		fCustomKeywords = customKeywords;
+		fCustomCompletions = customCompletions;
 		initializeScanners();
 	}
 
@@ -276,9 +287,12 @@ public class SimpleGroovySourceViewerConfiguration extends SourceViewerConfigura
 
 //		if (getEditor() != null) {
 //
-//			ContentAssistant assistant= new ContentAssistant();
-//			assistant.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
-//
+		ContentAssistant assistant = new ContentAssistant();
+		assistant.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
+
+		IContentAssistProcessor testProcessor = new GroovyASTCompletionProcessor(fCustomCompletions);
+		assistant.setContentAssistProcessor(testProcessor, IDocument.DEFAULT_CONTENT_TYPE);
+
 //			assistant.setRestoreCompletionProposalSize(getSettings("completion_proposal_size")); //$NON-NLS-1$
 //
 //			IContentAssistProcessor javaProcessor= new JavaCompletionProcessor(getEditor(), assistant, IDocument.DEFAULT_CONTENT_TYPE);
@@ -305,10 +319,10 @@ public class SimpleGroovySourceViewerConfiguration extends SourceViewerConfigura
 //				}
 //			});
 //
-//			return assistant;
+		return assistant;
 //		}
 
-		return null;
+//		return null;
 	}
 
 	/*
