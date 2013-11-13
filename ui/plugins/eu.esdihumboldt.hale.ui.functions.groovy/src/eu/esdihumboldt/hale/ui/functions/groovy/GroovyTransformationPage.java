@@ -48,6 +48,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
+import eu.esdihumboldt.hale.ui.functions.groovy.internal.InstanceBuilderCompletions;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.PageHelp;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray.TypeProvider;
@@ -81,8 +82,22 @@ public class GroovyTransformationPage extends GroovyScriptPage {
 
 	@Override
 	protected SourceViewerConfiguration createConfiguration() {
+		InstanceBuilderCompletions targetCompletions = new InstanceBuilderCompletions(
+				definitionImages) {
+
+			@Override
+			protected TypeDefinition getTargetType() {
+				Property targetProperty = (Property) CellUtil.getFirstEntity(getWizard()
+						.getUnfinishedCell().getTarget());
+				if (targetProperty != null) {
+					return targetProperty.getDefinition().getDefinition().getPropertyType();
+				}
+				return null;
+			}
+		};
+
 		return new SimpleGroovySourceViewerConfiguration(colorManager, ImmutableList.of(
-				BINDING_BUILDER, BINDING_TARGET), null);
+				BINDING_BUILDER, BINDING_TARGET), ImmutableList.of(targetCompletions));
 	}
 
 	@Override

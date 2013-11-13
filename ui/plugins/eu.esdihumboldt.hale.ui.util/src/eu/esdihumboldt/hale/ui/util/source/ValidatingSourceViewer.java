@@ -160,7 +160,13 @@ public class ValidatingSourceViewer extends SourceViewer {
 					if (!changed) {
 						return Status.OK_STATUS;
 					}
-					content = getDocument().get();
+					IDocument doc = getDocument();
+					if (doc != null) {
+						content = doc.get();
+					}
+					else {
+						content = "";
+					}
 					changed = false;
 				} finally {
 					changeLock.unlock();

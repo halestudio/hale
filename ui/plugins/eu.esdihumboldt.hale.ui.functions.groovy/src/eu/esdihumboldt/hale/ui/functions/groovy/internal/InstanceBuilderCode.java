@@ -131,7 +131,7 @@ public class InstanceBuilderCode {
 			}
 
 			if (DefinitionUtil.hasChildren(propertyType)
-					&& (!tree.getChildren().isEmpty() || !needComma)) {
+					&& (!tree.getChildren().isEmpty() || !needComma || !useExampleValues)) {
 				if (needComma) {
 					if (useBrackets) {
 						example.append(" )");

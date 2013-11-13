@@ -53,6 +53,20 @@ class DefinitionAccessor extends AbstractAccessor<Definition<?>> {
 		return (DefinitionAccessor) super.findChildren(name);
 	}
 
+	/**
+	 * Find the children with the given local name and namespace.
+	 * 
+	 * @param name the local name
+	 * @param namespace the namespace or <code>null</code> to ignore the namespace
+	 * @return the child accessor
+	 */
+	public DefinitionAccessor findChildren(String name, String namespace) {
+		if (namespace == null)
+			return findChildren(name)
+		else
+			return findChildren(name, [namespace])
+	}
+
 	@Override
 	public DefinitionAccessor findChildren(String name, List<?> args) {
 		return (DefinitionAccessor) super.findChildren(name, args);
@@ -95,7 +109,7 @@ class DefinitionAccessor extends AbstractAccessor<Definition<?>> {
 	}
 
 	public Definition toDefinition() {
-		eval().elements.last()
+		eval()?.elements?.last()
 	}
 
 	public Object asType(Class clazz) {

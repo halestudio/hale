@@ -19,8 +19,14 @@ import java.util.regex.Matcher
 
 import org.codehaus.groovy.ast.DynamicVariable
 import org.codehaus.groovy.ast.Variable
+import org.codehaus.groovy.ast.expr.ArgumentListExpression
 import org.codehaus.groovy.ast.expr.BinaryExpression
 import org.codehaus.groovy.ast.expr.ClosureExpression
+import org.codehaus.groovy.ast.expr.ConstantExpression
+import org.codehaus.groovy.ast.expr.Expression
+import org.codehaus.groovy.ast.expr.MapEntryExpression
+import org.codehaus.groovy.ast.expr.MapExpression
+import org.codehaus.groovy.ast.expr.MethodCallExpression
 import org.codehaus.groovy.ast.expr.VariableExpression
 import org.codehaus.groovy.ast.stmt.BlockStatement
 import org.codehaus.groovy.syntax.Types
@@ -32,7 +38,12 @@ import org.eclipse.swt.graphics.Image
 import com.tinkerpop.blueprints.Vertex
 import com.tinkerpop.gremlin.groovy.Gremlin
 
+import de.cs3d.util.logging.ALogger
+import de.cs3d.util.logging.ALoggerFactory
+import eu.esdihumboldt.cst.functions.groovy.GroovyConstants
 import eu.esdihumboldt.cst.functions.groovy.internal.GroovyUtil
+import eu.esdihumboldt.hale.common.schema.groovy.DefinitionAccessor
+import eu.esdihumboldt.hale.common.schema.model.Definition
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
@@ -55,6 +66,8 @@ public abstract class InstanceBuilderCompletions implements GroovyCompletionProp
 	static {
 		Gremlin.load()
 	}
+
+	private static final ALogger log = ALoggerFactory.getLogger(InstanceBuilderCompletions)
 
 	private final String variableName = GroovyUtil.BINDING_TARGET
 
@@ -81,7 +94,7 @@ public abstract class InstanceBuilderCompletions implements GroovyCompletionProp
 
 		if (v != null) {
 			//XXX debug
-			println "Vertex: ${v.getProperty(P_AST_TYPE)}"
+			// println "Vertex: ${v.getProperty(P_AST_TYPE)}"
 
 			// in general only certain vertices are acceptable as start point
 			Object node = v.getProperty(P_AST_NODE)
@@ -110,29 +123,130 @@ public abstract class InstanceBuilderCompletions implements GroovyCompletionProp
 					!isBuilderClosureAssignment(it.object)
 				}.path.toList()
 
+				// reverse paths so they start with root nodes
+				paths = paths.collect{it.reverse()}
+
 				//XXX debug
 				// println "Paths: $paths"
 
 				if (paths) {
-					// TODO analyse path
-					// TODO determine current type
+					// analyse path
+					// and determine current type
+					type = analysePath(paths[0], type)
 
-					// determine current indent
-					String indent = ''
-					int lineOffset = viewer.getDocument().getLineOffset(line - 1)
-					String lineStart = viewer.getDocument().get(lineOffset, column - 1)
-					Matcher matcher = lineStart =~ /^(\s+).*/
-					if (matcher.find()) {
-						indent = matcher.group(1)
+					if (type != null) {
+						// determine current indent
+						String indent = ''
+						int lineOffset = viewer.getDocument().getLineOffset(line - 1)
+						String lineStart = viewer.getDocument().get(lineOffset, column - 1)
+						Matcher matcher = lineStart =~ /^(\s+).*/
+						if (matcher.find()) {
+							indent = matcher.group(1)
+						}
+
+						// create proposals
+						return createProposals(type, offset, indent, prefix)
 					}
-
-					// create proposals
-					return createProposals(type, offset, indent, prefix)
 				}
 			}
 		}
 
 		return null
+	}
+
+	@CompileStatic
+	protected TypeDefinition analysePath(List<Vertex> path, TypeDefinition parent) {
+		for (Vertex v : path) {
+			Object node = v.getProperty(P_AST_NODE)
+			if (node instanceof MethodCallExpression) {
+				MethodCallExpression mce = (MethodCallExpression) node
+
+				/*
+				 * Certain conditions have to match for the method call to
+				 * identify a builder call.
+				 */
+
+				// check variable
+				boolean varOk = mce.implicitThis
+				if (!varOk) {
+					// builder variable is also OK
+					if (mce.receiver instanceof VariableExpression) {
+						VariableExpression expr = (VariableExpression) mce.receiver
+						varOk = expr.accessedVariable.name == GroovyConstants.BINDING_BUILDER
+					}
+				}
+
+				if (varOk) {
+					if (mce.arguments instanceof ArgumentListExpression) {
+						ArgumentListExpression args = (ArgumentListExpression) mce.arguments
+
+						if (args.expressions) {
+							// only viable with at least the closure as argument
+
+							Expression shouldBeClosure = args.expressions.last()
+							if (shouldBeClosure instanceof ClosureExpression) {
+								// determine name
+								String name = mce.methodAsString
+								String namespace = null
+
+								// ... and namespace
+								for (Expression arg : args.expressions) {
+									if (arg instanceof MapExpression) {
+										// map expression contains the named parameters
+										String ns = extractNamespace((MapExpression) arg)
+										if (ns != null) {
+											namespace = ns
+										}
+									}
+								}
+
+								// find property and set parent
+								try {
+									Definition child = new DefinitionAccessor(parent).
+											findChildren(name, namespace).toDefinition()
+									if (child instanceof PropertyDefinition) {
+										parent = ((PropertyDefinition) child).propertyType
+									}
+									else {
+										log.warn('Invalid definition for builder path', (Throwable)null)
+										return null
+									}
+								} catch (IllegalStateException e) {
+									log.debug 'Unable to determine type for non-unique sub-property', e
+									return null
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		parent
+	}
+
+	@CompileStatic
+	private String extractNamespace(MapExpression me) {
+		for (MapEntryExpression mee : me.mapEntryExpressions) {
+			if (mee.keyExpression instanceof ConstantExpression) {
+				String name = ((ConstantExpression) mee.keyExpression).text
+				if (name == 'ns' || name == 'namespace') {
+					// map key represents namespace
+
+					Expression valueExpr = mee.valueExpression
+
+					//XXX for now only constant namespace supported
+					if (valueExpr instanceof ConstantExpression) {
+						ConstantExpression constantValue = (ConstantExpression) valueExpr
+						if (!constantValue.nullExpression) {
+							return constantValue.text
+						}
+					}
+				}
+			}
+		}
+
+		null
 	}
 
 	@CompileStatic
