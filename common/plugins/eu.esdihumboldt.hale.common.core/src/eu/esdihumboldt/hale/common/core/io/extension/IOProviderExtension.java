@@ -73,6 +73,11 @@ public class IOProviderExtension extends AbstractExtension<IOProvider, IOProvide
 			return conf.getAttribute("name");
 		}
 
+		@Override
+		public String getDescription() {
+			return conf.getAttribute("description");
+		}
+
 		/**
 		 * @see ExtensionObjectDefinition#getIdentifier()
 		 */
