@@ -21,6 +21,9 @@ import java.util.List;
 import org.codehaus.groovy.control.ErrorCollector;
 import org.codehaus.groovy.control.MultipleCompilationErrorsException;
 import org.codehaus.groovy.syntax.SyntaxException;
+import org.eclipse.jface.bindings.TriggerSequence;
+import org.eclipse.jface.bindings.keys.KeySequence;
+import org.eclipse.jface.bindings.keys.SWTKeySupport;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
@@ -37,6 +40,8 @@ import org.eclipse.jface.text.source.LineNumberRulerColumn;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.VerifyKeyListener;
+import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ToolBar;
 
@@ -259,10 +264,29 @@ public class GroovyScriptPage extends SourceViewerPage<GroovyAST> implements Gro
 	}
 
 	@Override
-	protected void addActions(ToolBar toolbar, CompilingSourceViewer<GroovyAST> viewer) {
+	protected void addActions(ToolBar toolbar, final CompilingSourceViewer<GroovyAST> viewer) {
 		super.addActions(toolbar, viewer);
 
-		GroovyASTTray.createToolItem(toolbar, this, viewer);
+//		GroovyASTTray.createToolItem(toolbar, this, viewer);
+
+		try {
+			final TriggerSequence astTrigger = KeySequence.getInstance("F8");
+			viewer.appendVerifyKeyListener(new VerifyKeyListener() {
+
+				@Override
+				public void verifyKey(VerifyEvent event) {
+					int accelerator = SWTKeySupport.convertEventToUnmodifiedAccelerator(event);
+					KeySequence sequence = KeySequence.getInstance(SWTKeySupport
+							.convertAcceleratorToKeyStroke(accelerator));
+					if (astTrigger.equals(sequence)) {
+						GroovyASTTray.showTray(GroovyScriptPage.this, viewer);
+						event.doit = false;
+					}
+				}
+			});
+		} catch (Exception e) {
+			log.error("Error installing AST view listener", e);
+		}
 	}
 
 }

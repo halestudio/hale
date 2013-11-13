@@ -60,21 +60,33 @@ public class GroovyASTTray extends DialogTray {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				if (page.getContainer() instanceof TrayDialog) {
-					TrayDialog dialog = (TrayDialog) page.getContainer();
-
-					// close existing tray
-					if (dialog.getTray() != null) {
-						dialog.closeTray();
-					}
-
-					dialog.openTray(new GroovyASTTray(viewer));
-				}
-				else {
-					// TODO show dialog instead?
-				}
+				showTray(page, viewer);
 			}
 		});
+	}
+
+	/**
+	 * Show the AST viewer in the wizard tray.
+	 * 
+	 * @param page the associated wizard page
+	 * @param viewer the associated viewer with the Groovy source or
+	 *            <code>null</code>
+	 */
+	public static void showTray(final HaleWizardPage<?> page,
+			final CompilingSourceViewer<GroovyAST> viewer) {
+		if (page.getContainer() instanceof TrayDialog) {
+			TrayDialog dialog = (TrayDialog) page.getContainer();
+
+			// close existing tray
+			if (dialog.getTray() != null) {
+				dialog.closeTray();
+			}
+
+			dialog.openTray(new GroovyASTTray(viewer));
+		}
+		else {
+			// TODO show dialog instead?
+		}
 	}
 
 	private final CompilingSourceViewer<GroovyAST> groovyViewer;
