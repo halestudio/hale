@@ -120,8 +120,9 @@ public class URILink {
 						newuri = removeFragment(uri);
 					}
 
-					// local resource
-					if (DefaultInputSupplier.SCHEME_LOCAL.equals(newuri.getScheme())) {
+					// local resource or bundle resource
+					if (DefaultInputSupplier.SCHEME_LOCAL.equals(newuri.getScheme())
+							|| "bundleentry".equals(newuri.getScheme())) {
 						// cannot be opened by system
 						// so copy resource to temporary file
 						String name = newuri.getPath();
