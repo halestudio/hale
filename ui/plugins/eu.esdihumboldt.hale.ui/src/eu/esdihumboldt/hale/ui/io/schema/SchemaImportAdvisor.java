@@ -52,6 +52,8 @@ public class SchemaImportAdvisor extends DefaultIOAdvisor<SchemaReader> {
 	public void prepareProvider(SchemaReader provider) {
 		super.prepareProvider(provider);
 
+		provider.setSchemaSpace(spaceID);
+
 		// set shared types XXX this is not fixed yet
 		SchemaService ss = getService(SchemaService.class);
 		provider.setSharedTypes(ss.getSchemas(spaceID));

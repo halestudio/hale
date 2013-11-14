@@ -15,18 +15,15 @@
 
 package eu.esdihumboldt.hale.server.db.orient;
 
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.osgi.service.datalocation.Location;
 
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.util.PlatformUtil;
 
 /**
  * Database helpers for working with an OrientDB based server database.
@@ -62,8 +59,7 @@ public class DatabaseHelper {
 			}
 		}
 
-		Location loc = Platform.getInstanceLocation();
-		Path instancePath = Paths.get(URI.create(loc.getURL().toString().replaceAll(" ", "%20")));
+		Path instancePath = PlatformUtil.getInstanceLocation().toPath();
 
 		Path dbLoc = instancePath.resolve(DB_NAME);
 
@@ -77,8 +73,7 @@ public class DatabaseHelper {
 //	 * @return an orient graph instance
 //	 */
 //	public static OrientGraphNoTx getNonTransactionalGraph() {
-//		Location loc = Platform.getInstanceLocation();
-//		Path instancePath = Paths.get(URI.create(loc.getURL().toString().replaceAll(" ", "%20")));
+//		Path instancePath = PlatformUtil.getInstanceLocation().toPath();
 //
 //		Path dbLoc = instancePath.resolve(DB_NAME);
 //

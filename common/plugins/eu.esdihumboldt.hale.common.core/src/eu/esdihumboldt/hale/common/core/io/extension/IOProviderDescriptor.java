@@ -44,4 +44,11 @@ public interface IOProviderDescriptor extends ExtensionObjectFactory<IOProvider>
 	 */
 	public Class<? extends IOProvider> getProviderType();
 
+	/**
+	 * Get the I/O provider or format description.
+	 * 
+	 * @return the description or <code>null</code>
+	 */
+	public String getDescription();
+
 }

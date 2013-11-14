@@ -83,7 +83,7 @@
          </property>
          <property
                name="aboutText"
-               value="HUMBOLDT Alignment Editor (HALE)&#x0A;&#x0A;Version 2.7.0&#x0A;&#x0A;Build ___build___&#x0A;Revision ___revision___&#x0A;&#x0A;http://www.esdi-community.eu/projects/show/hale">
+               value="HUMBOLDT Alignment Editor (HALE)&#x0A;&#x0A;Version 2.8.0&#x0A;&#x0A;Build ___build___&#x0A;Revision ___revision___&#x0A;&#x0A;http://www.esdi-community.eu/projects/show/hale">
          </property>
          <property
                name="introTitle"
@@ -214,7 +214,7 @@
                   visible="true">
             </separator>
             <dynamic
-                  class="eu.esdihumboldt.hale.ui.service.project.RecentFilesMenu"
+                  class="eu.esdihumboldt.hale.ui.service.project.RecentProjectsMenu"
                   id="HALE.recentfiles">
             </dynamic>
             <command
@@ -313,6 +313,12 @@
                   commandId="eu.esdihumboldt.hale.ui.transformation"
                   label="Transform external data..."
                   style="push">
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.transform.projectdata"
+                  label="Transform project data..."
+                  style="push"
+                  tooltip="Transform the complete project source data, even if only a sub-set is loaded">
             </command>
             <command
                   commandId="eu.esdihumboldt.hale.ui.instance.toggle_transformation"
@@ -425,6 +431,22 @@
             <command
                   commandId="eu.esdihumboldt.hale.ui.instancevalidation.status.toggle_validation"
                   style="toggle">
+            </command>
+            <separator
+                  name="eu.esdihumboldt.hale.ui.file.transform"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.instance.toggle_sampling"
+                  style="toggle">
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.instance.sampling.pref"
+                  style="push">
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.instance.reload_data"
+                  style="push">
             </command>
          </toolbar>
          <toolbar

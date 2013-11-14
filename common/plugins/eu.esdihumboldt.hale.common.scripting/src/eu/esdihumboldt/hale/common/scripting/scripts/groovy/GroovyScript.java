@@ -69,6 +69,10 @@ public class GroovyScript implements Script {
 	/**
 	 * Create a Groovy binding from the list of variables.
 	 * 
+	 * FIXME why is here an additional implementation of this as already used in
+	 * GroovyTransformation? Could the implementation in GroovyTransformation be
+	 * used instead?
+	 * 
 	 * @param variables the variables
 	 * @param useNullForMissingBindings if the binding should provide
 	 *            <code>null</code> values for variables that are not provided

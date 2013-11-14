@@ -33,14 +33,18 @@ import eu.esdihumboldt.hale.ui.service.geometry.ProjectGeometrySchemaService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.internal.orient.OrientInstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.sample.InstanceSampleService;
+import eu.esdihumboldt.hale.ui.service.instance.sample.InstanceViewService;
 import eu.esdihumboldt.hale.ui.service.instance.sample.internal.InstanceSampleServiceImpl;
+import eu.esdihumboldt.hale.ui.service.instance.sample.internal.InstanceViewServiceImpl;
 import eu.esdihumboldt.hale.ui.service.instance.validation.InstanceValidationService;
 import eu.esdihumboldt.hale.ui.service.instance.validation.internal.InstanceValidationServiceImpl;
 import eu.esdihumboldt.hale.ui.service.population.internal.PopulationServiceImpl;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
-import eu.esdihumboldt.hale.ui.service.project.RecentFilesService;
+import eu.esdihumboldt.hale.ui.service.project.RecentProjectsService;
+import eu.esdihumboldt.hale.ui.service.project.RecentResources;
 import eu.esdihumboldt.hale.ui.service.project.internal.ProjectServiceImpl;
-import eu.esdihumboldt.hale.ui.service.project.internal.RecentFilesServiceImpl;
+import eu.esdihumboldt.hale.ui.service.project.internal.RecentProjectsServiceImpl;
+import eu.esdihumboldt.hale.ui.service.project.internal.resources.RecentResourcesService;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
 import eu.esdihumboldt.hale.ui.service.report.internal.ReportServiceImpl;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
@@ -76,7 +80,8 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 
 		if (OccurringValuesService.class.equals(serviceInterface)) {
 			return new OccurringValuesServiceImpl(
-					(InstanceService) locator.getService(InstanceService.class));
+					(InstanceService) locator.getService(InstanceService.class),
+					(ProjectService) locator.getService(ProjectService.class));
 		}
 
 		if (CompatibilityService.class.equals(serviceInterface)) {
@@ -93,8 +98,8 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 			return new ProjectServiceImpl();
 		}
 
-		if (RecentFilesService.class.equals(serviceInterface)) {
-			return new RecentFilesServiceImpl();
+		if (RecentProjectsService.class.equals(serviceInterface)) {
+			return new RecentProjectsServiceImpl();
 		}
 
 		if (SchemaService.class.equals(serviceInterface)) {
@@ -124,6 +129,16 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 		if (PopulationService.class.equals(serviceInterface)) {
 			return new PopulationServiceImpl(
 					(InstanceService) locator.getService(InstanceService.class));
+		}
+
+		if (RecentResources.class.equals(serviceInterface)) {
+			return new RecentResourcesService(
+					(ProjectService) locator.getService(ProjectService.class));
+		}
+
+		if (InstanceViewService.class.equals(serviceInterface)) {
+			return new InstanceViewServiceImpl(
+					(ProjectService) locator.getService(ProjectService.class));
 		}
 
 		return null;

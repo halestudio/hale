@@ -261,14 +261,21 @@ public class SourceTargetTypeSelector implements ISelectionProvider {
 	 */
 	private void setSelection(Cell cell) {
 		if (cell != null) {
-			Entity source = CellUtil.getFirstEntity(cell.getSource());
-			ISelection selection;
-			selection = (source == null) ? StructuredSelection.EMPTY : new StructuredSelection(
-					AlignmentUtil.getTypeEntity(source.getDefinition()));
-			sourceTypeSelector.setSelection(selection);
+			// in case of a real join cell there are multiple source types
+			if (cell.getSource() == null || cell.getSource().isEmpty())
+				sourceTypeSelector.setSelection(StructuredSelection.EMPTY);
+			else if (cell.getSource().size() > 1)
+				sourceTypeSelector.showText("<multiple types>");
+			else {
+				Entity source = CellUtil.getFirstEntity(cell.getSource());
+				ISelection selection = new StructuredSelection(AlignmentUtil.getTypeEntity(source
+						.getDefinition()));
+				sourceTypeSelector.setSelection(selection);
+			}
+			// target can only be one or none
 			Entity target = CellUtil.getFirstEntity(cell.getTarget());
-			selection = (target == null) ? StructuredSelection.EMPTY : new StructuredSelection(
-					AlignmentUtil.getTypeEntity(target.getDefinition()));
+			ISelection selection = (target == null) ? StructuredSelection.EMPTY
+					: new StructuredSelection(AlignmentUtil.getTypeEntity(target.getDefinition()));
 			targetTypeSelector.setSelection(selection);
 		}
 

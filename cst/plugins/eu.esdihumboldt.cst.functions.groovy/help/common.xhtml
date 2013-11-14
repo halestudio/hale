@@ -1,0 +1,233 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>Groovy Help common elements</title>
+</head>
+<body>
+	<!-- Property accessor -->
+	<div id="accessor">
+		<p>With a properties accessor you can navigate through the
+			properties of an instance, as well as their sub-properties and their
+			sub-properties and so on. Once you reached the property you are
+			interested in, you have to decide how to retrieve it. There are
+			several options:</p>
+		<ul>
+			<li>Retrieve the first property value with <code>.value()</code></li>
+			<li>Retrieve a list of all property values with <code>.values()</code></li>
+			<li>Retrieve the first property instance or value with <code>.first()</code></li>
+			<li>Retrieve a list of all property instances or values with <code>.all()</code></li>
+			<li>Iterate over all property instances or values with <code>.each{}</code></li>
+		</ul>
+		<p>
+			Whether you get instances or values with
+			<code>first()</code>
+			,
+			<code>all()</code>
+			or
+			<code>each{}</code>
+			depends on whether the corresponding property has sub-properties of
+			its own. If it has sub-properties according to the schema, instances
+			will be returned, otherwise directly values.
+		</p>
+		<p>
+			Let's take a look at the following example structure of an instance
+			we assume is stored in the variable
+			<code>instance</code>
+			:
+		</p>
+		<div>
+			<img
+				src="../../eu.esdihumboldt.cst.functions.groovy/help/example-structure.png" />
+		</div>
+		<p>
+			To retrieve the value of the <i>id</i> property we can use the
+			property accessor like this:
+		</p>
+		<pre><code>instance.p.id.value()</code></pre>
+		<p>You can store a value in a variable for later use:</p>
+		<pre><code><b>def</b> id = instance.p.id.value()</code></pre>
+		<p>All names of the instance can be retrieved like this:</p>
+		<pre><code><b>def</b> names = instance.p.name.values()</code></pre>
+		<p>
+			In this case only the direct values associated to the <i>name</i>
+			property are returned.<br />To access both name and language for all
+			names we can use
+			<code>each</code>
+			:
+		</p>
+		<pre><code>instance.p.name.each {
+  nameInstance -&gt;
+	
+  <i>// retrieve name</i>
+  <b>def</b> name = nameInstance.value
+  <i>// retrieve language</i>
+  <b>def</b> language = nameInstance.p.language.value()
+}</code></pre>
+		<p>
+			As you see above, you can easily access the value of an instance
+			with
+			<code>.value</code>
+			.
+		</p>
+		<h3>UI assistance</h3>
+		<p>The script editing page offers the possibility to open a tray
+			showing the source variables structure. You can use it to browse the
+			properties and sub-properties. If you select an element, sample code
+			for accessing the property is shown in the text field below, like in
+			this example:</p>
+		<div>
+			<img
+				src="../../eu.esdihumboldt.cst.functions.groovy/help/source-assist.png" />
+		</div>
+		<h3>Troubleshooting</h3>
+		<p>It may happen that there are <b>multiple properties with the same
+			name</b> - to explicitly reference a specific property you can provide
+			the namespace of the property like this:</p>
+		<pre><code>instance.p.name(<i>'http://my.namespace.com'</i>).value()</code></pre>
+	</div>
+	
+	<!-- Instance builder -->
+	<div id="builder">
+		<p>
+			To create an instance as result of the script, you have to use the
+			so-called builder API. You have to define a closure that describes
+			how the instance is structured, which properties should have which
+			values and so on, and assign it to the
+			<code>
+				<b>_target</b>
+			</code>
+			variable.<br /> The most simple of structures - an empty instance -
+			can be created like this:
+		</p>
+		<pre><code><b>_target</b> = {
+
+}</code></pre>
+		<p>The builder by default creates the instance based on the
+			structure defined in the schema. Thus using properties that do not
+			exist in the type definition will fail. To get into more detail on
+			how the builder API works, let's assume the following structure as
+			the schema of our target instance to be created:</p>
+		<div>
+			<img
+				src="../../eu.esdihumboldt.cst.functions.groovy/help/example-target.png" />
+		</div>
+		<p>The structure is quite complex, but let's start with something
+			simple: There is a <i>type</i> property which can have a string value - we
+			can add a type property with the value <i>test</i> to our instance like this:</p>
+		<pre><code><b>_target</b> = {
+  type(<i>'test'</i>)
+}</code></pre>
+		<p>
+			The <i>type</i> property may occur multiple times, we can easily add
+			the property more than once:
+		</p>
+		<pre><code><b>_target</b> = {
+  type <i>'test1'</i>
+  type <i>'test2'</i>
+  type <i>'test3'</i>
+}</code></pre>
+		<p>
+			This creates three <i>type</i> properties in the instance, each with a different
+			value. As an alternative to before, here we use a notation without
+			brackets.
+		</p>
+		<p>The builder calls can be mixed with programming constructs, for
+			instance could we achieve the same as above using a simple loop:</p>
+		<pre><code><b>_target</b> = {
+  <b>for</b> (i <b>in</b> 1..3) {
+    type(<i>'test'</i> + i)
+  }
+}</code></pre>
+		<h3>Creating complex structures</h3>
+		<p>
+			The type structure also contains a complex <i>name</i> property with
+			several sub-properties on multiple levels. Such a nested structure
+			can for example be created like this:
+		</p>
+		<pre><code><b>_target</b> = {
+  name {
+    GeographicalName {
+      language <i>'en'</i>
+      spelling {
+        SpellingOfName {
+          text <i>'some name'</i>
+        }
+      }
+    }
+  }
+}</code></pre>
+		<h3>UI assistance</h3>
+		<p>The script editing page offers the possibility to open a tray
+			showing the target instance structure. You can use it to browse the
+			properties and sub-properties. If you select an element, sample code
+			for creating an instance with that property is shown in the text
+			field below. Select all the properties you want to populate to
+			generate a template for the instance creation. To use it just copy
+			the sample code to the editor.</p>
+		<div>
+			<img
+				src="../../eu.esdihumboldt.cst.functions.groovy/help/target-assist.png" />
+		</div>
+		<p>
+			In addition there is support for content assistance when building an
+			instance, it can be triggered with
+			<code>Ctrl+Space</code>
+			in the Groovy editor. It allows selecting applicable properties to
+			build at the current position from a list.
+		</p>
+		<div>
+			<img
+				src="../../eu.esdihumboldt.cst.functions.groovy/help/target-content-assist.png" />
+		</div>
+		<h3>Troubleshooting</h3>
+		<p>
+			In case there are <b>multiple properties with the same name</b> you
+			have to reference a specific property explicitly by specifying its
+			namespace. This is done through a named parameter <i>namespace</i>
+			like in the example below:
+		</p>
+		<pre><code><b>_target</b> = {
+  type(<i>'test'</i>, namespace: <i>'http://my.namespace.com'</i>)
+}</code></pre>
+		<p>
+			Another problem that may arise is that <b>property names</b> may be
+			<b>conflicting with variables, reserved keywords or other identifiers</b>.
+			You can solve this by explicitly calling the builder, which is
+			available as the variable
+			<code>
+				<b>_b</b>
+			</code>
+			in the script:
+		</p>
+		<pre><code><b>def</b> type = <i>'test'</i>
+<b>_target</b> = {
+  <b>_b</b>.type type
+}</code></pre>
+	</div>
+	
+	<!-- Builder accessor combination -->
+	<div id="builder-accessor">
+		<h3>Putting both together</h3>
+		<p>Now that we know how accessing properties and building
+			instances works, here a small example related to the above structures that
+			makes use of both to create a target structure populated with values
+			from a source instance:</p>
+		<pre><code><b>_target</b> = {
+  instance.p.name.each { name -&gt;
+    <b>def</b> lang = name.p.language.value()
+    GeographicalName {
+      <b>if</b> (lang) {
+        language lang
+      }
+      spelling {
+        SpellingOfName {
+          text name.value
+        }
+      }
+    }
+  }
+}</code></pre>
+	</div>
+</body>
+</html>

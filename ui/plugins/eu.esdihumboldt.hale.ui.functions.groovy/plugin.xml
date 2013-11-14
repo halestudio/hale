@@ -4,13 +4,77 @@
    <extension
          point="eu.esdihumboldt.hale.ui.function">
       <propertyParameterPage
-            class="eu.esdihumboldt.hale.ui.functions.groovy.GroovyParameterPage"
+            class="eu.esdihumboldt.hale.ui.functions.groovy.GroovyTransformationPage"
             function="eu.esdihumboldt.cst.functions.groovy"
-            id="eu.esdihumboldt.hale.ui.functions.groovy">
+            id="eu.esdihumboldt.hale.ui.functions.groovy"
+            order="0">
          <parameter
                name="script">
          </parameter>
       </propertyParameterPage>
+      <typeParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.groovy.GroovyCreatePage"
+            function="eu.esdihumboldt.cst.functions.groovy.create"
+            id="eu.esdihumboldt.hale.ui.functions.groovy.create"
+            order="0">
+         <parameter
+               name="script">
+         </parameter>
+      </typeParameterPage>
+      <typeParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.groovy.GroovyRetypePage"
+            function="eu.esdihumboldt.cst.functions.groovy.retype"
+            id="eu.esdihumboldt.hale.ui.functions.groovy.retype"
+            order="0">
+         <parameter
+               name="script">
+         </parameter>
+      </typeParameterPage>
+      <propertyParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.core.CheckboxParameterPage"
+            function="eu.esdihumboldt.cst.functions.groovy"
+            id="eu.esdihumboldt.hale.ui.functions.groovy.variablesAsInstances"
+            order="-10">
+         <parameter
+               name="variablesAsInstances">
+         </parameter>
+      </propertyParameterPage>
+      <typeParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.core.CheckboxParameterPage"
+            function="eu.esdihumboldt.cst.functions.groovy.merge"
+            id="eu.esdihumboldt.cst.functions.groovy.merge2"
+            order="1">
+         <parameter
+               name="auto_detect">
+         </parameter>
+      </typeParameterPage>
+      <typeParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.core.MergeParameterPage"
+            function="eu.esdihumboldt.cst.functions.groovy.merge"
+            id="eu.esdihumboldt.cst.functions.groovy.merge3"
+            order="2">
+         <parameter
+               name="additional_property">
+         </parameter>
+      </typeParameterPage>
+      <typeParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.core.MergeParameterPage"
+            function="eu.esdihumboldt.cst.functions.groovy.merge"
+            id="eu.esdihumboldt.cst.functions.groovy.merge1"
+            order="0">
+         <parameter
+               name="property">
+         </parameter>
+      </typeParameterPage>
+      <typeParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.groovy.GroovyMergePage"
+            function="eu.esdihumboldt.cst.functions.groovy.merge"
+            id="eu.esdihumboldt.cst.functions.groovy.merge4"
+            order="10">
+         <parameter
+               name="script">
+         </parameter>
+      </typeParameterPage>
    </extension>
 
 </plugin>

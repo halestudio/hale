@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Templates Repository Webapp
 Web-ContextPath: /templates
 Bundle-SymbolicName: eu.esdihumboldt.hale.server.templates.war
-Bundle-Version: 2.7.0.qualifier
+Bundle-Version: 2.8.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Data Harmonisation Panel
 Require-Bundle: org.apache.wicket.core;bundle-version="6.2.0",
@@ -47,4 +47,7 @@ Import-Package: com.fasterxml.jackson.core;version="2.2.3",
  org.apache.commons.configuration;version="1.5.0",
  org.apache.commons.io,
  org.eclipse.jetty.servlet;version="7.6.0",
+ org.pegdown,
+ org.pegdown.ast,
+ org.pegdown.plugins,
  org.slf4j;version="1.5.11"

@@ -108,6 +108,28 @@
             id="eu.esdihumboldt.hale.ui.values.update_occuring"
             name="Update occurring values">
       </command>
+      <command
+            description="En/disable usage of a sample data set based on the imported source data"
+            id="eu.esdihumboldt.hale.ui.instance.toggle_sampling"
+            name="Instance sampling">
+         <state
+               class="eu.esdihumboldt.hale.ui.service.instance.sample.internal.InstanceSamplingToggleState"
+               id="org.eclipse.ui.commands.toggleState">
+         </state>
+      </command>
+      <command
+            description="Configure sample data selection"
+            id="eu.esdihumboldt.hale.ui.instance.sampling.pref"
+            name="Configure instance sampling">
+      </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.instance.reload_data"
+            name="Reload source data">
+      </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.transform.projectdata"
+            name="Transform project data">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -405,6 +427,46 @@
             </with>
          </activeWhen>
       </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.service.instance.sample.internal.ToggleInstanceSamplingHandler"
+            commandId="eu.esdihumboldt.hale.ui.instance.toggle_sampling">
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.service.instance.sample.internal.InstanceViewPreferencesHandler"
+            commandId="eu.esdihumboldt.hale.ui.instance.sampling.pref">
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.service.instance.ReloadDataHandler"
+            commandId="eu.esdihumboldt.hale.ui.instance.reload_data">
+         <enabledWhen>
+            <with
+                  variable="hale.instances.has_source_resource">
+               <equals
+                     value="true">
+               </equals>
+            </with>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.transformation.TransformProjectDataHandler"
+            commandId="eu.esdihumboldt.hale.ui.transform.projectdata">
+         <enabledWhen>
+            <and>
+               <with
+                     variable="hale.alignment.has_cells">
+                  <equals
+                        value="true">
+                  </equals>
+               </with>
+               <with
+                     variable="hale.instances.has_source_resource">
+                  <equals
+                        value="true">
+                  </equals>
+               </with>
+            </and>
+         </enabledWhen>
+      </handler>
    </extension>
    <extension
          point="org.eclipse.ui.services">
@@ -438,7 +500,7 @@
                serviceClass="eu.esdihumboldt.hale.ui.service.project.ProjectService">
          </service>
          <service
-               serviceClass="eu.esdihumboldt.hale.ui.service.project.RecentFilesService">
+               serviceClass="eu.esdihumboldt.hale.ui.service.project.RecentProjectsService">
          </service>
          <service
                serviceClass="eu.esdihumboldt.hale.ui.service.schema.SchemaService">
@@ -463,6 +525,12 @@
          </service>
          <service
                serviceClass="eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityService">
+         </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.ui.service.project.RecentResources">
+         </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.ui.service.instance.sample.InstanceViewService">
          </service>
       </serviceFactory>
       <sourceProvider
@@ -1115,6 +1183,32 @@
             commandId="eu.esdihumboldt.hale.ui.instance.toggle_transformation"
             icon="icons/play.gif">
       </image>
+      <image
+            commandId="eu.esdihumboldt.hale.ui.instance.toggle_sampling"
+            icon="icons/samples.png">
+      </image>
+      <image
+            commandId="eu.esdihumboldt.hale.ui.instance.reload_data"
+            icon="icons/reload_source.png">
+      </image>
+      <image
+            commandId="eu.esdihumboldt.hale.ui.instance.sampling.pref"
+            icon="icons/samples_config.png">
+      </image>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="eu.esdihumboldt.hale.ui.preferences.project"
+            class="eu.esdihumboldt.hale.ui.service.instance.sample.internal.InstanceViewPreferencePage"
+            id="eu.esdihumboldt.hale.ui.preferences.instanceview"
+            name="Source data">
+      </page>
+      <page
+            class="eu.esdihumboldt.hale.ui.service.project.internal.ProjectPreferencePage"
+            id="eu.esdihumboldt.hale.ui.preferences.project"
+            name="Project">
+      </page>
    </extension>
 
 </plugin>

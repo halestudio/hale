@@ -15,8 +15,10 @@
 
 package eu.esdihumboldt.hale.io.shp;
 
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -25,10 +27,17 @@ import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 
 import org.eclipse.core.runtime.content.IContentType;
+import org.geotools.data.shapefile.ShpFileType;
 
+import com.google.common.io.ByteStreams;
+
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.impl.DefaultResourceAdvisor;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
+import eu.esdihumboldt.util.io.IOUtils;
 
 /**
  * Resource advisor for Shapefiles. When copying a Shapefile it also copies the
@@ -37,6 +46,8 @@ import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
  * @author Simon Templer
  */
 public class ShapefileAdvisor extends DefaultResourceAdvisor {
+
+	private static final ALogger log = ALoggerFactory.getLogger(ShapefileAdvisor.class);
 
 	@Override
 	public void copyResource(LocatableInputSupplier<? extends InputStream> resource,
@@ -47,31 +58,81 @@ public class ShapefileAdvisor extends DefaultResourceAdvisor {
 			throw new IOException("URI for original resource must be known");
 		}
 
-		// determine the filename w/o extension
-		Path orgPath = Paths.get(orgUri);
-		String filemain = orgPath.getFileName().toString();
-		int extPos = filemain.lastIndexOf('.');
-		if (extPos > 0) {
-			filemain = filemain.substring(0, extPos);
+		// copy if files can be resolved as a Path
+		Path orgPath = null;
+		try {
+			orgPath = Paths.get(orgUri);
+		} catch (Exception e) {
+			// ignore
 		}
-		// matcher for associated files
-		final PathMatcher auxfiles = orgPath.getFileSystem().getPathMatcher(
-				"glob:" + filemain + ".???");
 
-		// find all associated files
-		Path orgDir = orgPath.getParent();
-		try (DirectoryStream<Path> files = Files.newDirectoryStream(orgDir,
-				new DirectoryStream.Filter<Path>() {
+		if (orgPath != null) {
+			// determine the filename w/o extension
+			String filemain = orgPath.getFileName().toString();
+			int extPos = filemain.lastIndexOf('.');
+			if (extPos > 0) {
+				filemain = filemain.substring(0, extPos);
+			}
+			// matcher for associated files
+			final PathMatcher auxfiles = orgPath.getFileSystem().getPathMatcher(
+					"glob:" + filemain + ".???");
 
-					@Override
-					public boolean accept(Path entry) throws IOException {
-						return auxfiles.matches(entry.getFileName());
+			// find all associated files
+			Path orgDir = orgPath.getParent();
+			try (DirectoryStream<Path> files = Files.newDirectoryStream(orgDir,
+					new DirectoryStream.Filter<Path>() {
+
+						@Override
+						public boolean accept(Path entry) throws IOException {
+							return auxfiles.matches(entry.getFileName());
+						}
+					})) {
+				// copy the files
+				for (Path orgFile : files) {
+					Path targetFile = target.resolveSibling(orgFile.getFileName());
+					Files.copy(orgFile, targetFile);
+				}
+			}
+		}
+		else {
+			// copy if not accessible through file system
+
+			// copy the main file
+			try (OutputStream out = new BufferedOutputStream(Files.newOutputStream(target))) {
+				ByteStreams.copy(new DefaultInputSupplier(orgUri), out);
+			}
+
+			// determine base URI w/o dot and extension
+			String base = orgUri.toASCIIString();
+			int extPos = base.lastIndexOf('.');
+			if (extPos > 0) {
+				base = base.substring(0, extPos);
+			}
+
+			// determine file base name w/o dot and extension
+			String filemain = target.getFileName().toString();
+			extPos = filemain.lastIndexOf('.');
+			if (extPos > 0) {
+				filemain = filemain.substring(0, extPos);
+			}
+
+			for (ShpFileType type : ShpFileType.values()) {
+				if (!type.equals(ShpFileType.SHP)) {
+					try {
+						URI source = URI.create(base + type.extensionWithPeriod);
+						if (IOUtils.testStream(source, true)) {
+							Path targetFile = target.resolveSibling(filemain
+									+ type.extensionWithPeriod);
+							// copy the auxiliary file
+							try (OutputStream out = new BufferedOutputStream(
+									Files.newOutputStream(targetFile))) {
+								ByteStreams.copy(new DefaultInputSupplier(source), out);
+							}
+						}
+					} catch (Exception e) {
+						log.debug("Failed to copy auxiliary file for Shapefile", e);
 					}
-				})) {
-			// copy the files
-			for (Path orgFile : files) {
-				Path targetFile = target.resolveSibling(orgFile.getFileName());
-				Files.copy(orgFile, targetFile);
+				}
 			}
 		}
 	}

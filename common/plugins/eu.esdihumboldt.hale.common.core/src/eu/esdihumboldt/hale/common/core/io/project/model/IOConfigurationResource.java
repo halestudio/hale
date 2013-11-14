@@ -32,14 +32,20 @@ public class IOConfigurationResource implements Resource {
 
 	private final IOConfiguration config;
 
+	private final URI projectLocation;
+
 	/**
 	 * Create a new resource.
 	 * 
 	 * @param config the I/O configuration to wrap
+	 * @param projectLocation the location of the project relative URIs should
+	 *            be resolved against, should be <code>null</code> only if there
+	 *            are no relative resources
 	 */
-	public IOConfigurationResource(IOConfiguration config) {
+	public IOConfigurationResource(IOConfiguration config, URI projectLocation) {
 		super();
 		this.config = config;
+		this.projectLocation = projectLocation;
 	}
 
 	@Override
@@ -47,6 +53,22 @@ public class IOConfigurationResource implements Resource {
 		Value sourceValue = config.getProviderConfiguration().get(ImportProvider.PARAM_SOURCE);
 		if (sourceValue != null) {
 			return URI.create(sourceValue.as(String.class));
+		}
+		return null;
+	}
+
+	@Override
+	public URI getAbsoluteSource() {
+		URI uri = getSource();
+		if (uri != null) {
+			if (uri.isAbsolute()) {
+				return uri;
+			}
+
+			if (projectLocation != null) {
+				// resolve against project
+				return projectLocation.resolve(uri);
+			}
 		}
 		return null;
 	}
@@ -80,8 +102,14 @@ public class IOConfigurationResource implements Resource {
 	}
 
 	@Override
-	public IOConfiguration copyConfiguration() {
-		return config.clone();
+	public IOConfiguration copyConfiguration(boolean absolute) {
+		IOConfiguration copy = config.clone();
+		URI abs = getAbsoluteSource();
+		if (abs != null) {
+			copy.getProviderConfiguration().put(ImportProvider.PARAM_SOURCE,
+					Value.of(abs.toASCIIString()));
+		}
+		return copy;
 	}
 
 	@Override

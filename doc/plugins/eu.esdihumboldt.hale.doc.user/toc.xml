@@ -10,6 +10,8 @@
       <anchor id="introduction"/>
    </topic>
    <topic label="What&apos;s new?">
+      <topic href="html/new/2_8_0.xhtml" label="New in 2.8">
+      </topic>
       <topic href="html/new/2_7_0.xhtml" label="New in 2.7">
       </topic>
       <topic href="html/new/2_6_0.xhtml" label="New in 2.6">
@@ -134,6 +136,8 @@
             <topic href="html/reference/import/gml_data.html" label="GML">
             </topic>
             <topic href="html/reference/import/citygml_data.html" label="CityGML">
+            </topic>
+            <topic href="html/reference/import/jdbc.html" label="Database">
             </topic>
             <anchor id="import"/>
          </topic>

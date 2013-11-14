@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Instance API
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.instance;singleton:=true
-Bundle-Version: 2.7.0.qualifier
+Bundle-Version: 2.8.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/CodeDefinitionFactory.xml, OSGI-INF/WKTDefinitionFactory.xml, OSGI-INF/DefaultInstanceFactory.xml
 Import-Package: com.google.common.base;version="1.6.0",
@@ -47,6 +47,9 @@ Export-Package: eu.esdihumboldt.hale.common.instance.extension.filter,
  eu.esdihumboldt.hale.common.instance.io,
  eu.esdihumboldt.hale.common.instance.io.impl,
  eu.esdihumboldt.hale.common.instance.model,
+ eu.esdihumboldt.hale.common.instance.model.ext,
+ eu.esdihumboldt.hale.common.instance.model.ext.helper,
+ eu.esdihumboldt.hale.common.instance.model.ext.impl,
  eu.esdihumboldt.hale.common.instance.model.impl
 Require-Bundle: eu.esdihumboldt.hale.common.convert;bundle-version="2.2.0",
  org.eclipse.core.contenttype;bundle-version="3.4.100",

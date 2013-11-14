@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.cst.functions.core.join;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -50,6 +52,7 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.GenericResourceIteratorAdapter;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.Reference;
 
 /**
  * Join based on equal properties.
@@ -137,7 +140,7 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 					Collection<Object> values = AlignmentUtil.getValues(next, property, true);
 					if (values != null && !values.isEmpty()) {
 						// XXX take only first value for now
-						index.get(property).put(values.iterator().next(),
+						index.get(property).put(processValue(values.iterator().next(), property),
 								instances.getReference(next));
 					}
 				}
@@ -147,6 +150,45 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 		}
 
 		return new JoinIterator(instances, startInstances, directParent, index, joinTable);
+	}
+
+	/**
+	 * Process a value of a property in a join condition before using it with
+	 * the index.
+	 * 
+	 * @param value the value
+	 * @param property the entity definition the value is associated to
+	 * @return the processed value, possibly wrapped or replaced through a
+	 *         different representation
+	 */
+	protected Object processValue(Object value, PropertyEntityDefinition property) {
+		// extract the identifier from a reference
+		value = property.getDefinition().getConstraint(Reference.class).extractId(value);
+
+		/*
+		 * This is done so values will be classified as equal even if they are
+		 * of different types, e.g. Long and Integer or Integer and String.
+		 */
+
+		/*
+		 * Use string representation for numbers.
+		 */
+		if (value instanceof Number) {
+			if (value instanceof BigInteger || value instanceof Long || value instanceof Integer
+					|| value instanceof Byte || value instanceof Short) {
+				// use string representation for integer numbers
+				value = value.toString();
+			}
+			else if (value instanceof BigDecimal) {
+				BigDecimal v = (BigDecimal) value;
+				if (v.scale() <= 0) {
+					// use string representation for integer big decimal
+					value = v.toBigInteger().toString();
+				}
+			}
+		}
+
+		return value;
 	}
 
 	private class JoinIterator extends
@@ -210,7 +252,8 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 						HashSet<InstanceReference> matches = new HashSet<InstanceReference>();
 						for (Object currentValue : currentValues) {
 							matches.addAll(index.get(joinCondition.getValue().joinProperty).get(
-									currentValue));
+									processValue(currentValue,
+											joinCondition.getValue().baseProperty)));
 						}
 						if (possibleInstances == null)
 							possibleInstances = matches;

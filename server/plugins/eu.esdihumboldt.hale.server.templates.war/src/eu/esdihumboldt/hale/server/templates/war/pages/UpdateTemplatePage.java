@@ -76,24 +76,17 @@ public class UpdateTemplatePage extends SecuredPage {
 					// get associated user
 					Vertex v = template.getV();
 					Iterator<Vertex> owners = v.getVertices(Direction.OUT, "owner").iterator();
-					if (owners.hasNext()) {
-						User user = new User(owners.next(), graph);
-
-						// check if user is owner
-						if (UserUtil.getLogin().equals(user.getLogin())) {
-							add(new Label("name", template.getName()));
-
-							add(new TemplateUploadForm("upload-form", templateId));
-						}
-						else {
-							throw new AbortWithHttpErrorCodeException(
-									HttpServletResponse.SC_FORBIDDEN);
-						}
+					if (UserUtil.isAdmin() // user is admin
+							// or user is owner
+							|| (owners.hasNext() && UserUtil.getLogin().equals(
+									new User(owners.next(), graph).getLogin()))) {
+						// template name
+						add(new Label("name", template.getName()));
+						// upload form
+						add(new TemplateUploadForm("upload-form", templateId));
 					}
 					else {
-						throw new AbortWithHttpErrorCodeException(
-								HttpServletResponse.SC_BAD_REQUEST,
-								"Template doesn't have an owner.");
+						throw new AbortWithHttpErrorCodeException(HttpServletResponse.SC_FORBIDDEN);
 					}
 				}
 				else {

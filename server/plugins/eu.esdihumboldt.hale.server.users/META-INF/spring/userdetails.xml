@@ -5,6 +5,7 @@
 
 	<bean id="userDetails"
 		class="eu.esdihumboldt.hale.server.users.UserDetailsServiceImpl">
+		<property name="configurationService" ref="configService" />
 	</bean>
 
 </beans>

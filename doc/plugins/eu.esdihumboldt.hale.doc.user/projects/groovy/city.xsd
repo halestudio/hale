@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.example.org/cities" targetNamespace="http://www.example.org/cities">
+    <complexType name="CityType">
+    	<sequence>
+    		<element name="name" minOccurs="1" maxOccurs="unbounded">
+    			<complexType>
+    				<simpleContent>
+    					<extension base="string">
+    						<attribute name="language" use="optional" type="string"></attribute>
+    					</extension>
+    				</simpleContent>
+    			</complexType>
+    		</element>
+    		<element name="location">
+    			<complexType>
+    				<attribute name="lat" type="double" use="required"></attribute>
+    				<attribute name="lon" type="double" use="required"></attribute>
+    			</complexType>
+    		</element>
+    	</sequence>
+    	<attribute name="id" type="string"></attribute>
+    </complexType>
+
+    <element name="City" type="tns:CityType"></element>
+    
+    <element name="collection" type="tns:CollectionType"></element>
+    
+    <complexType name="CollectionType">
+    	<sequence>
+    		<element ref="tns:City" maxOccurs="unbounded" minOccurs="0"></element>
+    	</sequence>
+    </complexType>
+</schema>

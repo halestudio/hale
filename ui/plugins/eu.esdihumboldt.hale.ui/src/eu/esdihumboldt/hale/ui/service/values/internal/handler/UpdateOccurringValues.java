@@ -51,7 +51,7 @@ public class UpdateOccurringValues extends AbstractHandler {
 				if (ovs != null) {
 					try {
 						boolean updating = ovs
-								.updateOccuringValues((PropertyEntityDefinition) element);
+								.updateOccurringValues((PropertyEntityDefinition) element);
 						if (!updating) {
 							log.userInfo("Occurring values already up-to-date.");
 						}

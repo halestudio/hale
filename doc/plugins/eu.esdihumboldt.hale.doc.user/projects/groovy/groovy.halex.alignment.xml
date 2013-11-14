@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="C13507292-a799-4314-b529-23614178f83e" priority="normal">
+        <source>
+            <class>
+                <type name="CityType" ns="http://www.example.org/cities"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="NamedPlaceType" ns="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"/>
+            </class>
+        </target>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.formattedstring" id="Cd3d9f319-188d-4309-83a7-b0d2ef7d34ce" priority="normal">
+        <source name="var">
+            <property>
+                <type name="CityType" ns="http://www.example.org/cities"/>
+                <child name="id"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="NamedPlaceType" ns="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"/>
+                <child name="id" ns="http://www.opengis.net/gml/3.2"/>
+            </property>
+        </target>
+        <parameter value="ID_{id}" name="pattern"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.cst.functions.geometric.ordinates_to_point" id="C941e3d92-f07e-4826-9cf0-5eac5977f71a" priority="normal">
+        <source name="y">
+            <property>
+                <type name="CityType" ns="http://www.example.org/cities"/>
+                <child name="location"/>
+                <child name="lat"/>
+            </property>
+        </source>
+        <source name="x">
+            <property>
+                <type name="CityType" ns="http://www.example.org/cities"/>
+                <child name="location"/>
+                <child name="lon"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="NamedPlaceType" ns="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"/>
+                <child name="geometry" ns="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"/>
+                <child name="choice" ns="http://www.opengis.net/gml/3.2/AbstractGeometry"/>
+                <child name="Point" ns="http://www.opengis.net/gml/3.2"/>
+            </property>
+        </target>
+        <parameter value="EPSG:4326" name="referenceSystem"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C4d2ef84a-9c2a-4f79-a146-241d91678d82" priority="normal">
+        <source>
+            <property>
+                <type name="CityType" ns="http://www.example.org/cities"/>
+                <child name="id"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="NamedPlaceType" ns="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"/>
+                <child name="inspireId" ns="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"/>
+                <child name="Identifier" ns="urn:x-inspire:specification:gmlas:BaseTypes:3.2"/>
+                <child name="localId" ns="urn:x-inspire:specification:gmlas:BaseTypes:3.2"/>
+            </property>
+        </target>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.assign" id="C266ed321-8dcb-4946-9579-8a457c0eb6df" priority="normal">
+        <source name="anchor">
+            <property>
+                <type name="CityType" ns="http://www.example.org/cities"/>
+                <child name="id"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="NamedPlaceType" ns="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"/>
+                <child name="inspireId" ns="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"/>
+                <child name="Identifier" ns="urn:x-inspire:specification:gmlas:BaseTypes:3.2"/>
+                <child name="namespace" ns="urn:x-inspire:specification:gmlas:BaseTypes:3.2"/>
+            </property>
+        </target>
+        <parameter value="_example" name="value"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.cst.functions.groovy" id="Cf01b365d-2aa8-4d79-ae76-fcea402c547c" priority="normal">
+        <source name="var">
+            <property>
+                <type name="CityType" ns="http://www.example.org/cities"/>
+                <child name="name"/>
+            </property>
+        </source>
+        <target name="result">
+            <property>
+                <type name="NamedPlaceType" ns="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"/>
+                <child name="name" ns="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"/>
+            </property>
+        </target>
+        <parameter value="true" name="variablesAsInstances"/>
+        <parameter value="// extract language from source name&#xA;def lang = name.p.language.value()&#xA;&#xA;// build each target name&#xA;_target = {&#xA;&#x9;GeographicalName {&#xA;&#x9;&#x9;if (lang) {&#xA;&#x9;&#x9;&#x9;language lang&#xA;&#x9;&#x9;}&#xA;&#x9;&#x9;spelling {&#xA;&#x9;&#x9;&#x9;SpellingOfName {&#xA;&#x9;&#x9;&#x9;&#x9;text name.value&#xA;&#x9;&#x9;&#x9;}&#xA;&#x9;&#x9;}&#xA;&#x9;}&#xA;}" name="script"/>
+    </cell>
+</alignment>

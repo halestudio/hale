@@ -145,9 +145,6 @@ public abstract class DefinitionUtil {
 		if (definition instanceof ChildDefinition<?>) {
 			return getChild((ChildDefinition<?>) definition, name);
 		}
-		if (definition instanceof DefinitionGroup) {
-			return ((DefinitionGroup) definition).getChild(name);
-		}
 
 		throw new IllegalStateException("Illegal definition.");
 	}

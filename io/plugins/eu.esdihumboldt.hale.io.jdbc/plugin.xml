@@ -12,9 +12,17 @@
                ref="eu.esdihumboldt.hale.io.jdbc">
          </contentType>
       </provider>
-      <provider
+      <!--provider
             class="eu.esdihumboldt.hale.io.jdbc.JDBCInstanceWriter"
             id="eu.esdihumboldt.hale.io.jdbc.instance.writer"
+            name="Database (JDBC)">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.jdbc">
+         </contentType>
+      </provider-->
+      <provider
+            class="eu.esdihumboldt.hale.io.jdbc.JDBCInstanceReader"
+            id="eu.esdihumboldt.hale.io.jdbc.instance.reader"
             name="Database (JDBC)">
          <contentType
                ref="eu.esdihumboldt.hale.io.jdbc">

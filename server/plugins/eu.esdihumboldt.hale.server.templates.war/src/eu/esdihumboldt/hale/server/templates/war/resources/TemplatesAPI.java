@@ -82,16 +82,20 @@ public class TemplatesAPI {
 				gen.writeArrayFieldStart("templates");
 
 				for (Template template : allTemplates) {
-					gen.writeStartObject();
+					if (template.isValid()) {
+						// only valid templates should be returned
 
-					String id = template.getTemplateId();
-					gen.writeStringField("id", id);
-					gen.writeStringField("name", template.getName());
-					gen.writeStringField("project",
-							TemplateLocations.getTemplateProjectUrl(scavenger, id));
-					gen.writeStringField("site", TemplateLocations.getTemplatePageUrl(id));
+						gen.writeStartObject();
 
-					gen.writeEndObject();
+						String id = template.getTemplateId();
+						gen.writeStringField("id", id);
+						gen.writeStringField("name", template.getName());
+						gen.writeStringField("project",
+								TemplateLocations.getTemplateProjectUrl(scavenger, id));
+						gen.writeStringField("site", TemplateLocations.getTemplatePageUrl(id));
+
+						gen.writeEndObject();
+					}
 				}
 
 				gen.writeEndArray();

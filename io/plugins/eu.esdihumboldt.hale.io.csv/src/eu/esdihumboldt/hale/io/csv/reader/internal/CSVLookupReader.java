@@ -16,10 +16,8 @@
 package eu.esdihumboldt.hale.io.csv.reader.internal;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
-import au.com.bytecode.opencsv.CSVReader;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.Value;
@@ -29,6 +27,8 @@ import eu.esdihumboldt.hale.common.lookup.LookupTableInfo;
 import eu.esdihumboldt.hale.common.lookup.impl.AbstractLookupImport;
 import eu.esdihumboldt.hale.common.lookup.impl.LookupTableImpl;
 import eu.esdihumboldt.hale.common.lookup.impl.LookupTableInfoImpl;
+import eu.esdihumboldt.hale.io.csv.reader.DefaultCSVLookupReader;
+import eu.esdihumboldt.hale.io.csv.writer.LookupTableExportConstants;
 
 /**
  * The csv lookup reader class
@@ -70,20 +70,19 @@ public class CSVLookupReader extends AbstractLookupImport {
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 
-		int keyColumn = getParameter(CSVConstants.LOOKUP_KEY_COLUMN).as(Integer.class);
-		int valueColumn = getParameter(CSVConstants.LOOKUP_VALUE_COLUMN).as(Integer.class);
+		int keyColumn = getParameter(LookupTableExportConstants.LOOKUP_KEY_COLUMN)
+				.as(Integer.class);
+		int valueColumn = getParameter(LookupTableExportConstants.LOOKUP_VALUE_COLUMN).as(
+				Integer.class);
 
-		boolean skipFirst = getParameter(CSVConstants.PARAM_SKIP_FIRST_LINE).as(Boolean.class);
-		CSVReader reader = CSVUtil.readFirst(this);
-		String[] nextLine;
-		if (skipFirst) {
-			nextLine = reader.readNext();
-		}
+		boolean skipFirst = getParameter(LookupTableExportConstants.PARAM_SKIP_FIRST_LINE).as(
+				Boolean.class);
 
-		Map<Value, Value> values = new HashMap<Value, Value>();
-		while ((nextLine = reader.readNext()) != null) {
-			values.put(Value.of(nextLine[keyColumn]), Value.of(nextLine[valueColumn]));
-		}
+		DefaultCSVLookupReader reader = new DefaultCSVLookupReader();
+		Map<Value, Value> values = reader.read(getSource().getInput(), getCharset(),
+				CSVUtil.getSep(this), CSVUtil.getQuote(this), CSVUtil.getEscape(this), skipFirst,
+				keyColumn, valueColumn);
+
 		lookupTable = new LookupTableInfoImpl((new LookupTableImpl(values)), getName(),
 				getDescription());
 		reporter.setSuccess(true);

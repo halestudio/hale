@@ -131,11 +131,22 @@ public class ExportSelectProviderPage<P extends ExportProvider, W extends Export
 	private void updateWizard(ISelection selection) {
 		if (selection.isEmpty()) {
 			providerFactoryChanged(null);
+			setMessage(null);
 		}
 		else if (selection instanceof IStructuredSelection) {
 			IStructuredSelection sel = (IStructuredSelection) selection;
 			Object element = sel.getFirstElement();
-			providerFactoryChanged((IOProviderDescriptor) element);
+			IOProviderDescriptor desc = (IOProviderDescriptor) element;
+
+			String descrText = desc.getDescription();
+			if (descrText != null) {
+				setMessage(descrText, INFORMATION);
+			}
+			else {
+				setMessage(null);
+			}
+
+			providerFactoryChanged(desc);
 		}
 	}
 

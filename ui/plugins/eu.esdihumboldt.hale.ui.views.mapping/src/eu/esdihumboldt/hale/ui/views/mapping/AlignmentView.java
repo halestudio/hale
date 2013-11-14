@@ -384,7 +384,7 @@ public class AlignmentView extends AbstractMappingView {
 			return;
 
 		// check current disable status
-		if (!selectedCell.getDisabledFor().contains(typeCell)) {
+		if (!selectedCell.getDisabledFor().contains(typeCell.getId())) {
 			manager.add(new Action("Disable") {
 
 				/**
@@ -421,7 +421,7 @@ public class AlignmentView extends AbstractMappingView {
 					// Still show the action for clarity.
 					if (selectedCell instanceof BaseAlignmentCell)
 						return !((BaseAlignmentCell) selectedCell).getBaseDisabledFor().contains(
-								typeCell);
+								typeCell.getId());
 					return true;
 				}
 			});
@@ -635,7 +635,7 @@ public class AlignmentView extends AbstractMappingView {
 
 	private boolean isDisabledForCurrentType(Cell cell) {
 		if (sourceTargetSelector.isCellSelected())
-			return cell.getDisabledFor().contains(sourceTargetSelector.getSelectedCell());
+			return cell.getDisabledFor().contains(sourceTargetSelector.getSelectedCell().getId());
 		else
 			return false;
 	}

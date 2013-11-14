@@ -30,7 +30,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import eu.esdihumboldt.hale.common.schema.model.Definition;
-import eu.esdihumboldt.hale.ui.util.components.URILink;
+import eu.esdihumboldt.hale.ui.common.components.URILink;
 
 /**
  * Properties section with a link to open the location in editor or browser

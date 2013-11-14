@@ -76,4 +76,17 @@ public interface GeometryAdvisor<C> {
 	public Object convertGeometry(GeometryProperty<?> geom, TypeDefinition columnType)
 			throws Exception;
 
+	/**
+	 * Convert a geometry read from the database to a geometry property.
+	 * 
+	 * @param geom the geometry read from the database
+	 * @param columnType the type definition of the associated geometry column
+	 *            that was previously configured using
+	 *            {@link #configureGeometryColumnType(Object, Column, DefaultTypeDefinition)}
+	 * @return the geometry property
+	 * @throws Exception if the conversion failed
+	 */
+	public GeometryProperty<?> convertToInstanceGeometry(Object geom, TypeDefinition columnType)
+			throws Exception;
+
 }

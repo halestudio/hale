@@ -22,88 +22,27 @@ import java.io.InputStreamReader;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
-
-import com.google.common.collect.HashBiMap;
-
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.io.csv.reader.CSVConstants;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVConfiguration;
-import eu.esdihumboldt.hale.io.csv.reader.internal.CSVConstants;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
-import eu.esdihumboldt.hale.ui.io.ImportWizard;
-import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 
 /**
  * Advanced configuration for the SchemaReader
  * 
  * @author Kevin Mais
  */
-@SuppressWarnings("restriction")
-public class ReadConfigurationPage extends
-		AbstractConfigurationPage<ImportProvider, ImportWizard<ImportProvider>> implements
-		ModifyListener {
-
-	private Combo separator;
-	private Combo quote;
-	private Combo escape;
-
-	private final HashBiMap<String, String> bmap;
-
-	private QName last_name;
+public class ReadConfigurationPage extends AbstractCSVConfigurationPage<ImportProvider> {
 
 	/**
 	 * default constructor
 	 */
 	public ReadConfigurationPage() {
 		super("CSVRead");
-
-		setTitle("Reader Settings");
-		setDescription("Set the Separating character, Quote character and Escape character");
-
-		bmap = HashBiMap.create();
-		bmap.put("TAB", "\t");
-	}
-
-	/**
-	 * sets the PageComplete boolean to true, if the text is valid
-	 * 
-	 * @see org.eclipse.swt.events.ModifyListener
-	 */
-	@Override
-	public void modifyText(ModifyEvent e) {
-
-		String sep = separator.getText();
-		String qu = quote.getText();
-		String esc = escape.getText();
-
-		if (sep.isEmpty() || sep.contains("/") || sep.contains(":")
-				|| (bmap.get(sep) == null && sep.length() > 1) || qu.isEmpty() || qu.contains("/")
-				|| qu.contains(":") || qu.contains(".")
-				|| (bmap.get(qu) == null && qu.length() > 1) || esc.isEmpty() || esc.contains("/")
-				|| esc.contains(":") || (bmap.get(esc) == null && esc.length() > 1)) {
-			setPageComplete(false);
-			setErrorMessage("You have not entered valid characters!");
-		}
-		else if (sep.equals(qu) || qu.equals(esc) || esc.equals(sep)) {
-			setPageComplete(false);
-			setErrorMessage("Your signs must be different!");
-		}
-		else {
-			setPageComplete(true);
-			setErrorMessage(null);
-		}
-
 	}
 
 	/**
@@ -118,98 +57,6 @@ public class ReadConfigurationPage extends
 		 * the page shown.
 		 */
 		setPageComplete(false);
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage#disable()
-	 */
-	@Override
-	public void disable() {
-		// TODO Auto-generated method stub
-
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.ui.io.IOWizardPage#updateConfiguration(eu.esdihumboldt.hale.common.core.io.IOProvider)
-	 */
-	@Override
-	public boolean updateConfiguration(ImportProvider provider) {
-
-		String sep = separator.getText();
-		String qu = quote.getText();
-		String esc = escape.getText();
-
-		if (bmap.get(sep) != null) {
-			provider.setParameter(CSVConstants.PARAM_SEPARATOR, Value.of(bmap.get(sep)));
-		}
-		else {
-			provider.setParameter(CSVConstants.PARAM_SEPARATOR, Value.of(sep));
-		}
-		if (bmap.get(qu) != null) {
-			provider.setParameter(CSVConstants.PARAM_QUOTE, Value.of(bmap.get(qu)));
-		}
-		else {
-			provider.setParameter(CSVConstants.PARAM_QUOTE, Value.of(qu));
-		}
-		if (bmap.get(esc) != null) {
-			provider.setParameter(CSVConstants.PARAM_ESCAPE, Value.of(bmap.get(esc)));
-		}
-		else {
-			provider.setParameter(CSVConstants.PARAM_ESCAPE, Value.of(esc));
-		}
-		return true;
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.ui.HaleWizardPage#createContent(org.eclipse.swt.widgets.Composite)
-	 */
-	@Override
-	protected void createContent(Composite page) {
-		page.setLayout(new GridLayout(2, true));
-		String[] separatorSelection = new String[] { "TAB", ",", "|", ".", ";" };
-
-		GridDataFactory labelLayout = GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER)
-				.grab(false, false);
-		GridDataFactory comboLayout = GridDataFactory.swtDefaults()
-				.align(SWT.BEGINNING, SWT.CENTER).grab(false, false);
-
-		// column 1, row 1
-		Label separatorLabel = new Label(page, SWT.NONE);
-		separatorLabel.setText("Select Separating Sign");
-		labelLayout.applyTo(separatorLabel);
-		// column 2, row 1
-		separator = new Combo(page, SWT.NONE);
-		separator.setItems(separatorSelection);
-		separator.addModifyListener(this);
-		comboLayout.applyTo(separator);
-
-		// column 1, row 2
-		Label quoteLabel = new Label(page, SWT.NONE);
-		quoteLabel.setText("Select Quote Sign");
-		labelLayout.applyTo(quoteLabel);
-
-		// column 2, row 2
-		quote = new Combo(page, SWT.NONE);
-		quote.setItems(new String[] { "\"", "\'", ",", "-" });
-		quote.select(0);
-		quote.addModifyListener(this);
-		comboLayout.applyTo(quote);
-
-		// column 1, row 3
-		Label escapeLabel = new Label(page, SWT.NONE);
-		escapeLabel.setText("Select Escape Sign");
-		labelLayout.applyTo(escapeLabel);
-
-		// column 2, row 3
-		escape = new Combo(page, SWT.NONE);
-		escape.setItems(new String[] { "\\", "." });
-		escape.select(0);
-		escape.addModifyListener(this);
-		comboLayout.applyTo(escape);
-
-		page.pack();
-
-		setPageComplete(true);
 	}
 
 	/**
@@ -275,11 +122,11 @@ public class ReadConfigurationPage extends
 				.as(String.class);
 		for (int i = 0; i < separatorSelection.length; i++) {
 			if (separatorSelection[i].equals(selection)) {
-				separator.select(i);
+				getSeparator().select(i);
 				break;
 			}
 			else {
-				separator.select(0);
+				getSeparator().select(0);
 			}
 		}
 
@@ -287,38 +134,35 @@ public class ReadConfigurationPage extends
 			QName name = QName
 					.valueOf(p.getParameter(CSVConstants.PARAM_TYPENAME).as(String.class));
 
-			if (last_name == null || !(last_name.equals(name))) {
+			if (getLast_name() == null || !(getLast_name().equals(name))) {
 				TypeDefinition type = ((InstanceReader) p).getSourceSchema().getType(name);
 				CSVConfiguration config = type.getConstraint(CSVConfiguration.class);
 
 				String sep = String.valueOf(config.getSeparator());
-				if (bmap.inverse().get(sep) != null) {
-					separator.setText(bmap.inverse().get(sep));
+				if (getBmap().inverse().get(sep) != null) {
+					getSeparator().setText(getBmap().inverse().get(sep));
 				}
 				else {
-					separator.setText(sep);
+					getSeparator().setText(sep);
 				}
 				String qu = String.valueOf(config.getQuote());
-				if (bmap.inverse().get(qu) != null) {
-					quote.setText(bmap.inverse().get(qu));
+				if (getBmap().inverse().get(qu) != null) {
+					getQuote().setText(getBmap().inverse().get(qu));
 				}
 				else {
-					quote.setText(qu);
+					getQuote().setText(qu);
 				}
 				String esc = String.valueOf(config.getEscape());
-				if (bmap.inverse().get(esc) != null) {
-					separator.setText(bmap.inverse().get(esc));
+				if (getBmap().inverse().get(esc) != null) {
+					getSeparator().setText(getBmap().inverse().get(esc));
 				}
 				else {
-					escape.setText(esc);
+					getEscape().setText(esc);
 				}
 
-				last_name = name;
+				setLast_name(name);
 			}
-
 		}
-
 		setPageComplete(true);
 	}
-
 }
