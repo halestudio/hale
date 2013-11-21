@@ -32,6 +32,7 @@ import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.impl.LogProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
+import eu.esdihumboldt.hale.common.schema.SchemaConstants;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -71,7 +72,7 @@ public class CSVSchemaReaderTest {
 		CSVSchemaReader schemaReader = new CSVSchemaReader();
 		schemaReader.setSource(new DefaultInputSupplier(getClass().getResource("/data/test1.csv")
 				.toURI()));
-		schemaReader.setParameter(CSVSchemaReader.PARAM_TYPENAME, Value.of("TestTyp"));
+		schemaReader.setParameter(SchemaConstants.PARAM_TYPENAME, Value.of("TestTyp"));
 		schemaReader.setParameter(CSVSchemaReader.PARAM_PROPERTY, Value.of(props));
 		schemaReader.setParameter(CSVSchemaReader.PARAM_PROPERTYTYPE,
 				Value.of("java.lang.String,java.lang.String,java.lang.String,java.lang.String"));
@@ -107,7 +108,7 @@ public class CSVSchemaReaderTest {
 		CSVSchemaReader schemaReader = new CSVSchemaReader();
 		schemaReader.setSource(new DefaultInputSupplier(getClass().getResource("/data/test1.csv")
 				.toURI()));
-		schemaReader.setParameter(CSVSchemaReader.PARAM_TYPENAME, Value.of("TestTyp"));
+		schemaReader.setParameter(SchemaConstants.PARAM_TYPENAME, Value.of("TestTyp"));
 		schemaReader.setParameter(CSVSchemaReader.PARAM_PROPERTY, null);
 		schemaReader.setParameter(CSVSchemaReader.PARAM_PROPERTYTYPE, null);
 		schemaReader.setParameter(CSVSchemaReader.PARAM_SEPARATOR, null);
@@ -141,7 +142,7 @@ public class CSVSchemaReaderTest {
 		CSVSchemaReader schemaReader = new CSVSchemaReader();
 		schemaReader.setSource(new DefaultInputSupplier(getClass().getResource("/data/test1.csv")
 				.toURI()));
-		schemaReader.setParameter(CSVSchemaReader.PARAM_TYPENAME, Value.of("TestTyp"));
+		schemaReader.setParameter(SchemaConstants.PARAM_TYPENAME, Value.of("TestTyp"));
 		schemaReader.setParameter(CSVSchemaReader.PARAM_PROPERTY, null);
 		schemaReader.setParameter(CSVSchemaReader.PARAM_PROPERTYTYPE,
 				Value.of("java.lang.String,java.lang.String"));
@@ -167,7 +168,7 @@ public class CSVSchemaReaderTest {
 		CSVSchemaReader schemaReader2 = new CSVSchemaReader();
 		schemaReader2.setSource(new DefaultInputSupplier(getClass().getResource("/data/test1.csv")
 				.toURI()));
-		schemaReader2.setParameter(CSVSchemaReader.PARAM_TYPENAME, null);
+		schemaReader2.setParameter(SchemaConstants.PARAM_TYPENAME, null);
 
 		IOReport report = schemaReader2.execute(new LogProgressIndicator());
 

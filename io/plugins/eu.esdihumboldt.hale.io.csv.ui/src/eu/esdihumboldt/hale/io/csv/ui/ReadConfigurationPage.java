@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
+import eu.esdihumboldt.hale.common.schema.SchemaConstants;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.csv.reader.CSVConstants;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVConfiguration;
@@ -131,8 +132,8 @@ public class ReadConfigurationPage extends AbstractCSVConfigurationPage<ImportPr
 		}
 
 		if (p instanceof InstanceReader) {
-			QName name = QName
-					.valueOf(p.getParameter(CSVConstants.PARAM_TYPENAME).as(String.class));
+			QName name = QName.valueOf(p.getParameter(SchemaConstants.PARAM_TYPENAME).as(
+					String.class));
 
 			if (getLast_name() == null || !(getLast_name().equals(name))) {
 				TypeDefinition type = ((InstanceReader) p).getSourceSchema().getType(name);

@@ -4,7 +4,7 @@
    <extension
          point="eu.esdihumboldt.hale.ui.io.config">
       <configPage
-            class="eu.esdihumboldt.hale.io.csv.ui.SchemaTypePage"
+            class="eu.esdihumboldt.hale.io.csv.ui.CSVSchemaTypePage"
             order="0">
          <provider
                ref="eu.esdihumboldt.hale.io.csv.reader.schema">
@@ -76,6 +76,13 @@
             order="0">
          <provider
                ref="eu.esdihumboldt.hale.io.xls.reader.lookup">
+         </provider>
+      </configPage>
+      <configPage
+            class="eu.esdihumboldt.hale.io.csv.ui.AbstractConfigurationPage:1"
+            order="0">
+         <provider
+               ref="eu.esdihumboldt.hale.io.csv.ui.provider1">
          </provider>
       </configPage>
    </extension>
