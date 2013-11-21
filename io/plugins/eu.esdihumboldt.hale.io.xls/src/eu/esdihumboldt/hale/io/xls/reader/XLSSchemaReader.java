@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Data Harmonisation Panel
+ * Copyright (c) 2013 Data Harmonisation Panel
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -10,25 +10,23 @@
  * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
  * 
  * Contributors:
- *     HUMBOLDT EU Integrated Project #030962
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
-package eu.esdihumboldt.hale.io.csv.reader.internal;
+
+package eu.esdihumboldt.hale.io.xls.reader;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import au.com.bytecode.opencsv.CSVReader;
-import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
-import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
-import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
@@ -39,41 +37,39 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantF
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
-import eu.esdihumboldt.hale.io.csv.CSVFileIO;
 import eu.esdihumboldt.hale.io.csv.PropertyType;
 import eu.esdihumboldt.hale.io.csv.PropertyTypeExtension;
-import eu.esdihumboldt.hale.io.csv.reader.CSVConstants;
 import eu.esdihumboldt.hale.io.csv.reader.CommonSchemaConstants;
+import eu.esdihumboldt.hale.io.csv.reader.internal.AbstractTableSchemaReader;
+import eu.esdihumboldt.hale.io.csv.reader.internal.CSVConfiguration;
+import eu.esdihumboldt.hale.io.csv.reader.internal.CSVUtil;
+import eu.esdihumboldt.hale.io.xls.AnalyseXLSSchemaTable;
 
 /**
- * Reads a schema from a CSV file.
+ * Schema reader for xls/xlsx files
  * 
- * @author Thorsten Reitz
- * @author Simon Templer
+ * @author Patrick Lieb
  */
-public class CSVSchemaReader extends AbstractTableSchemaReader implements CSVConstants {
-
-	/**
-	 * The first line of the CSV file
-	 */
-	public static String[] firstLine;
+public class XLSSchemaReader extends AbstractTableSchemaReader {
 
 	private DefaultSchema schema;
+	private List<String> header = new ArrayList<String>();
 
 	/**
-	 * @see IOProvider#isCancelable()
-	 */
-	@Override
-	public boolean isCancelable() {
-		return false;
-	}
-
-	/**
-	 * @see SchemaReader#getSchema()
+	 * @see eu.esdihumboldt.hale.common.schema.io.SchemaReader#getSchema()
 	 */
 	@Override
 	public Schema getSchema() {
 		return schema;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.core.io.IOProvider#isCancelable()
+	 */
+	@Override
+	public boolean isCancelable() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	@Override
@@ -85,21 +81,21 @@ public class CSVSchemaReader extends AbstractTableSchemaReader implements CSVCon
 	}
 
 	/**
-	 * @see AbstractIOProvider#execute(ProgressIndicator, IOReporter)
+	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#execute(eu.esdihumboldt.hale.common.core.io.ProgressIndicator,
+	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
 	 */
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
-		progress.begin("Load CSV schema", ProgressIndicator.UNKNOWN); //$NON-NLS-1$
+		progress.begin("Load XLS/XLSX schema", ProgressIndicator.UNKNOWN);
 
-		String namespace = CSVFileIO.CSVFILE_NS;
+		String namespace = "http://www.esdi-humboldt.eu/hale/csv";
 		schema = new DefaultSchema(namespace, getSource().getLocation());
-
-		CSVReader reader = CSVUtil.readFirst(this);
+		AnalyseXLSSchemaTable analyser;
 
 		try {
-			// initializes the first line of the table (names of the columns)
-			firstLine = reader.readNext();
+			analyser = new AnalyseXLSSchemaTable(getSource().getLocation());
+			header = analyser.getHeader();
 
 			// create type definition
 			String typename = getParameter(CommonSchemaConstants.PARAM_TYPENAME).as(String.class);
@@ -122,7 +118,7 @@ public class CSVSchemaReader extends AbstractTableSchemaReader implements CSVCon
 			StringBuffer defaultPropertyTypeBuffer = new StringBuffer();
 			String[] comboSelections;
 			if (getParameter(PARAM_PROPERTYTYPE).isEmpty()) {
-				for (int i = 0; i < firstLine.length; i++) {
+				for (int i = 0; i < header.size(); i++) {
 					defaultPropertyTypeBuffer.append("java.lang.String");
 					defaultPropertyTypeBuffer.append(",");
 				}
@@ -135,15 +131,15 @@ public class CSVSchemaReader extends AbstractTableSchemaReader implements CSVCon
 			}
 			String[] properties;
 			if (getParameter(PARAM_PROPERTY).isEmpty()) {
-				properties = firstLine;
+				properties = header.toArray(new String[0]);
 			}
 			else {
 				properties = getParameter(PARAM_PROPERTY).as(String.class).split(",");
 			}
 			// fails if there are less or more property names or property types
 			// than the entries in the first line
-			if ((firstLine.length != properties.length && properties.length != 0)
-					|| (firstLine.length != comboSelections.length && comboSelections.length != 0)) {
+			if ((header.size() != properties.length && properties.length != 0)
+					|| (header.size() != comboSelections.length && comboSelections.length != 0)) {
 				fail("Not the same number of entries for property names, property types and words in the first line of the file");
 			}
 			for (int i = 0; i < comboSelections.length; i++) {
@@ -155,7 +151,7 @@ public class CSVSchemaReader extends AbstractTableSchemaReader implements CSVCon
 						properties[i]), type, propertyType.getTypeDefinition());
 
 				// set constraints on property
-//				property.setConstraint(NillableFlag.DISABLED); // nillable
+//							property.setConstraint(NillableFlag.DISABLED); // nillable
 				property.setConstraint(NillableFlag.ENABLED); // nillable FIXME
 																// should be
 																// configurable
@@ -168,16 +164,15 @@ public class CSVSchemaReader extends AbstractTableSchemaReader implements CSVCon
 				property.setLocation(getSource().getLocation());
 			}
 
-			boolean skip = Arrays.equals(properties, firstLine);
+			boolean skip = Arrays.equals(properties, header.toArray(new String[0]));
 
 			type.setConstraint(new CSVConfiguration(CSVUtil.getSep(this), CSVUtil.getQuote(this),
 					CSVUtil.getEscape(this), skip));
 
 			schema.addType(type);
 
-		} catch (Exception ex) {
-			throw new RuntimeException(ex);
-
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 
 		reporter.setSuccess(true);
@@ -185,11 +180,11 @@ public class CSVSchemaReader extends AbstractTableSchemaReader implements CSVCon
 	}
 
 	/**
-	 * @see AbstractIOProvider#getDefaultTypeName()
+	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#getDefaultTypeName()
 	 */
 	@Override
 	protected String getDefaultTypeName() {
-		return CSVFileIO.DEFAULT_TYPE_NAME;
+		return "XLS file (schema)";
 	}
 
 	/**
@@ -197,11 +192,7 @@ public class CSVSchemaReader extends AbstractTableSchemaReader implements CSVCon
 	 */
 	@Override
 	public String[] getHeaderContent() {
-		try {
-			return CSVUtil.readFirst(this).readNext();
-		} catch (IOException e) {
-			return new String[0];
-		}
+		return header.toArray(new String[0]);
 	}
 
 }
