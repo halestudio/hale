@@ -13,7 +13,7 @@
  *     Fraunhofer IGD
  */
 
-package eu.esdihumboldt.hale.app.bgis.ade.common;
+package eu.esdihumboldt.hale.io.xls;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
@@ -94,7 +94,7 @@ public abstract class AbstractAnalyseTable {
 	 */
 	private void analyseContent(Sheet sheet) {
 		// for each row starting from the second
-		for (int i = 1; i < sheet.getLastRowNum(); i++) {
+		for (int i = 1; i <= sheet.getLastRowNum(); i++) {
 			Row row = sheet.getRow(i);
 			analyseRow(i, row);
 		}
