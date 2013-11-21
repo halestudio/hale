@@ -43,7 +43,7 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.io.csv.CSVFileIO;
-import eu.esdihumboldt.hale.io.csv.reader.CSVConstants;
+import eu.esdihumboldt.hale.io.csv.reader.CommonSchemaConstants;
 
 /**
  * Reads instances from a CSVfile
@@ -82,7 +82,7 @@ public class CSVInstanceReader extends AbstractInstanceReader {
 
 		// build instances
 		TypeDefinition type = getSourceSchema().getType(
-				QName.valueOf(getParameter(CSVConstants.PARAM_TYPENAME).as(String.class)));
+				QName.valueOf(getParameter(CommonSchemaConstants.PARAM_TYPENAME).as(String.class)));
 
 		PropertyDefinition[] propAr = type.getChildren().toArray(
 				new PropertyDefinition[type.getChildren().size()]);

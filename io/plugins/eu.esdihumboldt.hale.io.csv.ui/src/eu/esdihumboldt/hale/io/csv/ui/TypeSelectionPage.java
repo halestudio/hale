@@ -34,6 +34,7 @@ import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.csv.reader.CSVConstants;
+import eu.esdihumboldt.hale.io.csv.reader.CommonSchemaConstants;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVConfiguration;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVInstanceReader;
 import eu.esdihumboldt.hale.ui.common.definition.selector.TypeDefinitionSelector;
@@ -129,7 +130,7 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage implement
 		if (sel.getSelectedObject() != null) {
 			QName name = sel.getSelectedObject().getName();
 			String param_name = name.toString();
-			provider.setParameter(CSVConstants.PARAM_TYPENAME, Value.of(param_name));
+			provider.setParameter(CommonSchemaConstants.PARAM_TYPENAME, Value.of(param_name));
 		}
 		else {
 			return false;
