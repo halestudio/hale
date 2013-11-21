@@ -23,7 +23,7 @@ import org.apache.poi.ss.usermodel.Row;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
-import eu.esdihumboldt.hale.app.bgis.ade.common.AbstractAnalyseTable;
+import eu.esdihumboldt.hale.io.xls.AbstractAnalyseTable;
 
 /**
  * Feature map based on excel table.

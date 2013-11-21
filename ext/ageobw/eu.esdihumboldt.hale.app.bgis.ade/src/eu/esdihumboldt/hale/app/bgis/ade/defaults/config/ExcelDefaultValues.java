@@ -21,7 +21,7 @@ import java.text.MessageFormat;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 
-import eu.esdihumboldt.hale.app.bgis.ade.common.AbstractAnalyseTable;
+import eu.esdihumboldt.hale.io.xls.AbstractAnalyseTable;
 
 /**
  * Reads default values configuration from an Excel file.

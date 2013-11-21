@@ -54,14 +54,4 @@ public interface CSVConstants {
 	 */
 	public static final char DEFAULT_ESCAPE = '\\';
 
-	/**
-	 * Name of the parameter specifying the type name
-	 */
-	public static String PARAM_TYPENAME = "typename";
-
-	/**
-	 * Name of the parameter specifying the geometry/coordinate system
-	 */
-	public static String PARAM_GEOMETRY = "geometry";
-
 }
