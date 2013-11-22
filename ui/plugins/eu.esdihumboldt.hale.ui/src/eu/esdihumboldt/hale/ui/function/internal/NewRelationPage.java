@@ -33,6 +33,8 @@ import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;
+import eu.esdihumboldt.hale.ui.function.contribution.SchemaSelectionFunctionMatcher;
+import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.util.wizard.ViewerWizardSelectionPage;
 import eu.esdihumboldt.util.Pair;
@@ -51,11 +53,25 @@ public class NewRelationPage extends ViewerWizardSelectionPage {
 
 	private TreeViewer viewer;
 
+	private final SchemaSelection initialSelection;
+
+	private final SchemaSelectionFunctionMatcher selectionMatcher;
+
 	/**
 	 * @param title the page title
+	 * @param initialSelection the initial selection to initialize the wizard
+	 *            with, may be <code>null</code> to start with an empty
+	 *            configuration
+	 * @param selectionMatcher the matcher that determines if a function is
+	 *            applicable for the initial selection, may be <code>null</code>
+	 *            to allow all functions
 	 */
-	protected NewRelationPage(String title) {
+	public NewRelationPage(String title, SchemaSelection initialSelection,
+			SchemaSelectionFunctionMatcher selectionMatcher) {
 		super("newRelation");
+
+		this.initialSelection = initialSelection;
+		this.selectionMatcher = selectionMatcher;
 
 		setTitle(title);
 	}
@@ -71,7 +87,8 @@ public class NewRelationPage extends ViewerWizardSelectionPage {
 				| SWT.V_SCROLL, filter, true);
 
 		viewer = tree.getViewer();
-		viewer.setContentProvider(new FunctionWizardNodeContentProvider(getContainer()));
+		viewer.setContentProvider(new FunctionWizardNodeContentProvider(getContainer(),
+				initialSelection, selectionMatcher));
 		viewer.setLabelProvider(new FunctionWizardNodeLabelProvider());
 		// no input needed, but we have to set something
 		viewer.setInput(Boolean.TRUE);
@@ -161,7 +178,8 @@ public class NewRelationPage extends ViewerWizardSelectionPage {
 				// create function wizard node and select it
 				AbstractFunction<?> function = FunctionUtil.getFunction(functionId);
 				if (function != null) {
-					FunctionWizardNode node = new FunctionWizardNode(function, getContainer());
+					FunctionWizardNode node = new FunctionWizardNode(function, getContainer(),
+							initialSelection);
 					viewer.setSelection(new StructuredSelection(node), true);
 				}
 			}
