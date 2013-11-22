@@ -98,6 +98,10 @@ public class GroovyRetypePage extends GroovyScriptPage {
 				.getTarget());
 		Type sourceType = (Type) CellUtil.getFirstEntity(getWizard().getUnfinishedCell()
 				.getSource());
+		if (sourceType == null || targetType == null) {
+			// not yet selected (NewRelationWizard)
+			return false;
+		}
 
 		InstanceBuilder builder = new InstanceBuilder();
 
