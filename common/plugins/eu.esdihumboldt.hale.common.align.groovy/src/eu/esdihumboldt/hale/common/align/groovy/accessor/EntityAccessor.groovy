@@ -56,6 +56,20 @@ class EntityAccessor extends AbstractAccessor<PathElement> {
 		return (EntityAccessor) super.findChildren(name);
 	}
 
+	/**
+	 * Find the children with the given local name and namespace.
+	 *
+	 * @param name the local name
+	 * @param namespace the namespace or <code>null</code> to ignore the namespace
+	 * @return the child accessor
+	 */
+	public EntityAccessor findChildren(String name, String namespace) {
+		if (namespace == null)
+			return findChildren(name)
+		else
+			return findChildren(name, [namespace])
+	}
+
 	@Override
 	public EntityAccessor findChildren(String name, List<?> args) {
 		return (EntityAccessor) super.findChildren(name, args);
