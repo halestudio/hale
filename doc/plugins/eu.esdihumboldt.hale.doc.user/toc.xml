@@ -105,6 +105,8 @@
          <anchor id="tasks_data"/>
       </topic>
       <topic label="Alignment/Mapping">
+         <topic href="html/tasks/alignment/type_relations.html" label="Identify type relations">
+         </topic>
          <topic href="html/tasks/alignment/mapping_schema_elem.html" label="Mapping schema elements">
          </topic>
          <topic href="html/tasks/alignment/edit_cell.html" label="Editing a mapping cell">

@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Identify type relations</title>
+</head>
+<body>
+	<h1>Identify type relations</h1>
+	<p>When creating a mapping the first steps usually are analyzing
+		the source and target schema types, identifying correspondences
+		between those types and creating corresponding relations. After this
+		each type relation is given attention to in turn, for identifying
+		the relations between the properties.</p>
+
+	<h2>1. Identify relevant types</h2>
+	<p>First you should identify which types are relevant for the
+		mapping. The schemas may contain more types than are initially listed
+		in the Schema Explorer, especially if you are working with XML
+		Schemas.</p>
+	<p>
+		For the source the relevant types usually are those types you expect
+		data to be present for and that contain information relevant for the
+		target schema.<br> The relevant target types are those you wish
+		to populate and that have related representations in the source
+		schema.
+	</p>
+	<p>
+		To specify the relevant types, use <i>Edit&#8594;Edit mapping
+			relevant source types</i> and <i>Edit&#8594;Edit mapping relevant target
+			types</i>. Take a look at <a
+			href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/schema/mapping_relevant.html">How
+			to customize the mapping relevant types</a> for more information.
+	</p>
+	
+	<h2>2. Find type correspondences</h2>
+	<p>
+		With a type correspondence we refer to correspondences between source
+		and target types. It needs to be identified, which types in the
+		target schema are alike or somehow related to the types from the
+		source schema.<br> A common way to identify correspondences is
+	</p>
+	<ol>
+		<li>to identify which (real world) objects each type represents,
+			and</li>
+		<li>to identity what information is needed to populate a target
+			type instance and which source types hold that information.</li>
+	</ol>
+	<p>
+		As an example, take the <i>River</i> source and <i>Watercourse</i>
+		target type below. There is a clear correspondence there, as the
+		concept of a Watercourse includes Rivers.
+	</p>
+	<div>
+		<img src="images/type_ex_river_pre.png">
+	</div>
+	<p>There may be multiple correspondences for a type, and a single
+		correspondence may involve multiple source types if the information of
+		all of them has to be combined to provide the information needed to
+		populated the target.</p>
+
+	<h2>Identify each type relation</h2>
+	<p>For the type correspondences as the next step you need to
+		identify how they can be expressed as relations in HALE.</p>
+	<p>
+		The most simple kind of relation is a 1:1 relation - a correspondence
+		between a single source and a single target type, where all
+		information needed to populate a target instance is present in a
+		single source instance - like in our <i>River/Watercourse</i> example.
+		This kind of relation is represented in HALE by the <a
+			href="PLUGINS_ROOT/eu.esdihumboldt.cst.doc.functions/functions/eu.esdihumboldt.hale.align.retype.html">Retype</a>
+		function.<br />
+	</p>
+	<div>
+		<img src="images/type_ex_river.png">
+	</div>
+	<p>
+		If multiple instances of a single source type need to be combined to
+		form a target instance, the <a
+			href="PLUGINS_ROOT/eu.esdihumboldt.cst.doc.functions/functions/eu.esdihumboldt.hale.align.merge.html">Merge</a>
+		function is the right choice. If multiple source types are involved,
+		use the <a
+			href="PLUGINS_ROOT/eu.esdihumboldt.cst.doc.functions/functions/eu.esdihumboldt.hale.align.join.html">Join</a>
+		function to express the relation and configure how these source types
+		are related to each other. A good practice in such cases is also to
+		start with a <i>Retype</i> with the most relevant source type of the
+		correspondence, and replace it with a <i>Join</i> later on.
+	</p>
+	<p>
+		Once you have identified a relation, create it by selecting the
+		affected source and target types in the Schema Explorer, then select
+		the <i>Select a mapping function</i> button between source and target
+		schema and choose the appropriate function. See <a
+			href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/alignment/mapping_schema_elem.html">Mapping
+			schema elements</a> for more information on the creation of relations.
+	</p>
+
+	<p>For each type relation then the next step should be analyzing
+		the properties of the involved source and target types and identifying
+		correspondences and relations between those properties.</p>
+
+	<br>
+	<!-- related concepts: alignment, functions, contexts -->
+	<div>
+		<br> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelc.png">
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/what_is_alignment.html">What is an Alignment?</a>
+		</p>
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/contexts.html">Contexts</a>
+		</p>
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/functions.html">Functions</a>
+		</p>
+	</div>
+	
+	<!-- related tasks: edit cell, remove cell -->
+	<div>
+		<br /> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelt.png"></img>
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/schema/mapping_relevant.html">How to customize the mapping relevant types</a>
+		</p>
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/alignment/mapping_schema_elem.html">Mapping schema elements</a>
+		</p>
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/alignment/edit_cell.html">Editing a Mapping Cell</a>
+		</p>
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/alignment/remove_cell.html">Deleting a relation</a>
+		</p>
+	</div>
+</body>
+</html>
