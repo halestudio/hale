@@ -57,6 +57,36 @@
 		correspondence may involve multiple source types if the information of
 		all of them has to be combined to provide the information needed to
 		populated the target.</p>
+		
+	<h2>Conditional relations</h2>
+	<p>
+		Often correspondences are bound to certain conditions. As an example
+		let's assume we have an <i>InlandWater</i> type defined in the source
+		schema, with an attribute <i>type</i>. Values that can occur for the
+		attribute are
+		<code>river</code>
+		,
+		<code>canal</code>
+		and
+		<code>lake</code>
+		. Only <i>InlandWaters</i> that are rivers or canals correspond to the
+		target type <i>Watercourse</i> - so in this case the relation should
+		only apply to a subset of <i>InlandWater</i>s. This can be realised by
+		defining a condition context on the <i>InlandWater</i> type and use
+		the context in the relation.
+	</p>
+	<p>
+		Take a look at <a
+			href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/schema/define_context.html">Defining
+			contexts on schema elements</a> on how to create condition contexts. For
+		the above example the context could be defined with this CQL
+		condition:<br>
+		<code>type = 'river' OR type = 'canal'</code>
+	</p>
+	<p>
+		A defined context for a type appears next to it in the <i>Schema
+			Explorer</i> and can be used just like a normal type for the mapping.
+	</p>
 
 	<h2>Identify each type relation</h2>
 	<p>For the type correspondences as the next step you need to
