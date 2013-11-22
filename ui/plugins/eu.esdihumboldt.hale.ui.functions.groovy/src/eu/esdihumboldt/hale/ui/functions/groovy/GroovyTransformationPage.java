@@ -122,6 +122,11 @@ public class GroovyTransformationPage extends GroovyScriptPage {
 
 		Property targetProperty = (Property) CellUtil.getFirstEntity(getWizard()
 				.getUnfinishedCell().getTarget());
+		if (targetProperty == null) {
+			// not yet selected (NewRelationWizard)
+			return false;
+		}
+
 		InstanceBuilder builder = GroovyTransformation
 				.createBuilder(targetProperty.getDefinition());
 
