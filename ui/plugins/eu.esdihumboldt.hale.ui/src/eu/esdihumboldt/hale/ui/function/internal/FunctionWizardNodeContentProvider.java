@@ -87,6 +87,19 @@ public class FunctionWizardNodeContentProvider extends FunctionContentProvider {
 		return super.getParent(element);
 	}
 
+	@Override
+	public boolean apply(AbstractFunction<?> function) {
+		if (initialSelection != null && selectionMatcher != null) {
+			// use selection matcher to determine if function should be
+			// displayed
+			if (!selectionMatcher.matchFunction(function, initialSelection)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	private Object[] toNodes(Object[] children) {
 		if (children == null || children.length == 0) {
 			return children;
@@ -100,20 +113,7 @@ public class FunctionWizardNodeContentProvider extends FunctionContentProvider {
 						initialSelection);
 			}
 
-			boolean accept = true;
-			if (initialSelection != null && selectionMatcher != null
-					&& child instanceof FunctionWizardNode) {
-				// use selection matcher to determine if function should be
-				// displayed
-				if (!selectionMatcher.matchFunction(((FunctionWizardNode) child).getFunction(),
-						initialSelection)) {
-					accept = false;
-				}
-			}
-
-			if (accept) {
-				result.add(child);
-			}
+			result.add(child);
 		}
 		return result.toArray();
 	}

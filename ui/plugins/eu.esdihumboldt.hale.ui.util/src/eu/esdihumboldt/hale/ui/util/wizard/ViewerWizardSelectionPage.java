@@ -54,6 +54,15 @@ public abstract class ViewerWizardSelectionPage extends WizardSelectionPage {
 	}
 
 	/**
+	 * Get the size hint for the viewer height.
+	 * 
+	 * @return the size hint
+	 */
+	protected int getViewerHeightHint() {
+		return SWT.DEFAULT;
+	}
+
+	/**
 	 * @see IDialogPage#createControl(Composite)
 	 */
 	@Override
@@ -69,7 +78,8 @@ public abstract class ViewerWizardSelectionPage extends WizardSelectionPage {
 		Pair<StructuredViewer, Control> viewerControl = createViewer(outerContainer);
 		viewer = viewerControl.getFirst();
 		viewerControl.getSecond().setLayoutData(
-				GridDataFactory.fillDefaults().grab(true, true).create());
+				GridDataFactory.fillDefaults().grab(true, true)
+						.hint(SWT.DEFAULT, getViewerHeightHint()).create());
 
 		// wire viewer
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
