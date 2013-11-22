@@ -44,6 +44,29 @@ import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
  */
 public class SchemaSelectionFunctionMatcher {
 
+	private final boolean ignoreTarget;
+
+	private final boolean ignoreSource;
+
+	/**
+	 * Default constructor.
+	 */
+	public SchemaSelectionFunctionMatcher() {
+		this(false, false);
+	}
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param ignoreSource if the source items should be ignored
+	 * @param ignoreTarget if the target items should be ignored
+	 */
+	public SchemaSelectionFunctionMatcher(boolean ignoreSource, boolean ignoreTarget) {
+		super();
+		this.ignoreTarget = ignoreTarget;
+		this.ignoreSource = ignoreSource;
+	}
+
 	/**
 	 * Determine if the given function is applicable for the given selection.
 	 * 
@@ -98,9 +121,11 @@ public class SchemaSelectionFunctionMatcher {
 			return true;
 		}
 
-		// check types
 		Set<EntityDefinition> sourceItems = selection.getSourceItems();
-		if (!checkType(sourceItems, PropertyEntityDefinition.class)) {
+		Set<EntityDefinition> targetItems = selection.getTargetItems();
+
+		// check types
+		if (!ignoreSource && !checkType(sourceItems, PropertyEntityDefinition.class)) {
 			if (checkType(sourceItems, TypeEntityDefinition.class)) {
 				/*
 				 * Allow types selected as source, handle as if no source is
@@ -111,26 +136,25 @@ public class SchemaSelectionFunctionMatcher {
 			else
 				return false;
 		}
-		Set<EntityDefinition> targetItems = selection.getTargetItems();
-		if (!checkType(targetItems, PropertyEntityDefinition.class)) {
+		if (!ignoreTarget && !checkType(targetItems, PropertyEntityDefinition.class)) {
 			return false;
 		}
 
 		// TODO check if properties have the same parent type? what about joins?
 
 		// check counts
-		if (!checkCount(sourceItems.size(), function.getSource(), false)) {
+		if (!ignoreSource && !checkCount(sourceItems.size(), function.getSource(), false)) {
 			return false;
 		}
-		if (!checkCount(targetItems.size(), function.getTarget(), true)) {
+		if (!ignoreTarget && !checkCount(targetItems.size(), function.getTarget(), true)) {
 			return false;
 		}
 
 		// check mandatory source/target with special conditions
-		if (!checkMandatoryConditions(sourceItems, function.getSource())) {
+		if (!ignoreSource && !checkMandatoryConditions(sourceItems, function.getSource())) {
 			return false;
 		}
-		if (!checkMandatoryConditions(targetItems, function.getTarget())) {
+		if (!ignoreTarget && !checkMandatoryConditions(targetItems, function.getTarget())) {
 			return false;
 		}
 
@@ -240,27 +264,27 @@ public class SchemaSelectionFunctionMatcher {
 	public boolean matchTypeFunction(TypeFunction function, SchemaSelection selection) {
 		// check types
 		Set<EntityDefinition> sourceItems = selection.getSourceItems();
-		if (!checkType(sourceItems, TypeEntityDefinition.class)) {
+		if (!ignoreSource && !checkType(sourceItems, TypeEntityDefinition.class)) {
 			return false;
 		}
 		Set<EntityDefinition> targetItems = selection.getTargetItems();
-		if (!checkType(targetItems, TypeEntityDefinition.class)) {
+		if (!ignoreTarget && !checkType(targetItems, TypeEntityDefinition.class)) {
 			return false;
 		}
 
 		// check counts
-		if (!checkCount(sourceItems.size(), function.getSource(), true)) {
+		if (!ignoreSource && !checkCount(sourceItems.size(), function.getSource(), true)) {
 			return false;
 		}
-		if (!checkCount(targetItems.size(), function.getTarget(), false)) {
+		if (!ignoreTarget && !checkCount(targetItems.size(), function.getTarget(), false)) {
 			return false;
 		}
 
 		// check mandatory source/target with special conditions
-		if (!checkMandatoryConditions(sourceItems, function.getSource())) {
+		if (!ignoreSource && !checkMandatoryConditions(sourceItems, function.getSource())) {
 			return false;
 		}
-		if (!checkMandatoryConditions(targetItems, function.getTarget())) {
+		if (!ignoreTarget && !checkMandatoryConditions(targetItems, function.getTarget())) {
 			return false;
 		}
 
