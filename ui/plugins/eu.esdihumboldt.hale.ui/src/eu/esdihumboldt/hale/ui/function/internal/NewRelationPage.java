@@ -119,6 +119,9 @@ public class NewRelationPage extends ViewerWizardSelectionPage {
 		// set focus on viewer control to prevent odd behavior
 		viewer.getControl().setFocus();
 
+		// expand selection
+		viewer.expandAll();
+
 		// load page configuration
 		// XXX would be better if called from outside
 		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
@@ -126,6 +129,11 @@ public class NewRelationPage extends ViewerWizardSelectionPage {
 		restore(ps.getConfigurationService());
 
 		return new Pair<StructuredViewer, Control>(viewer, tree);
+	}
+
+	@Override
+	protected int getViewerHeightHint() {
+		return 300;
 	}
 
 	/**
