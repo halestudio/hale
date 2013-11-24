@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Data Harmonisation Panel
+ * Copyright (c) 2013 Data Harmonisation Panel
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -10,29 +10,27 @@
  * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
  * 
  * Contributors:
- *     HUMBOLDT EU Integrated Project #030962
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.io.csv.reader.internal;
+package eu.esdihumboldt.hale.io.xls.reader;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
 import org.springframework.core.convert.ConversionService;
 
-import au.com.bytecode.opencsv.CSVReader;
 import de.fhg.igd.osgi.util.OsgiUtils;
-import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
-import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
-import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceReader;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -43,19 +41,29 @@ import eu.esdihumboldt.hale.common.schema.SchemaConstants;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
-import eu.esdihumboldt.hale.io.csv.CSVFileIO;
+import eu.esdihumboldt.hale.io.csv.reader.internal.CSVInstanceReader;
+import eu.esdihumboldt.hale.io.xls.AnalyseXLSSchemaTable;
 
 /**
- * Reads instances from a CSVfile
+ * Read source data of xls instance files (based on the
+ * {@link CSVInstanceReader}
  * 
- * @author Kevin Mais
+ * @author Patrick Lieb
  */
-public class CSVInstanceReader extends AbstractInstanceReader {
+public class XLSInstanceReader extends AbstractInstanceReader {
 
 	private DefaultInstanceCollection instances;
 
 	/**
-	 * @see IOProvider#isCancelable()
+	 * @see eu.esdihumboldt.hale.common.instance.io.InstanceReader#getInstances()
+	 */
+	@Override
+	public InstanceCollection getInstances() {
+		return instances;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.core.io.IOProvider#isCancelable()
 	 */
 	@Override
 	public boolean isCancelable() {
@@ -63,17 +71,24 @@ public class CSVInstanceReader extends AbstractInstanceReader {
 	}
 
 	/**
-	 * @see AbstractIOProvider#execute(ProgressIndicator, IOReporter)
+	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#execute(eu.esdihumboldt.hale.common.core.io.ProgressIndicator,
+	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
 	 */
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
-
 		boolean skipFirst = getParameter(PARAM_SKIP_FIRST_LINE).as(Boolean.class);
 		instances = new DefaultInstanceCollection(new ArrayList<Instance>());
 		int line = 0;
 
-		CSVReader reader = CSVUtil.readFirst(this);
+		AnalyseXLSSchemaTable analyser;
+		try {
+			analyser = new AnalyseXLSSchemaTable(getSource().getLocation());
+		} catch (Exception e1) {
+			// XXX set message
+			reporter.setSuccess(false);
+			return reporter;
+		}
 
 		// build instances
 		TypeDefinition type = getSourceSchema().getType(
@@ -81,22 +96,23 @@ public class CSVInstanceReader extends AbstractInstanceReader {
 
 		PropertyDefinition[] propAr = type.getChildren().toArray(
 				new PropertyDefinition[type.getChildren().size()]);
-		String[] nextLine;
+		Collection<List<String>> rows = analyser.getRows();
+
+		Iterator<List<String>> allRows = rows.iterator();
+		List<String> rowList;
 
 		if (skipFirst) {
-			// nextLine[] is an array of values in the first line (we don't need
-			// them)
-			nextLine = reader.readNext();
+			allRows.next();
 			line++;
 		}
 
-		while ((nextLine = reader.readNext()) != null) {
+		while (allRows.hasNext()) {
 			MutableInstance instance = new DefaultInstance(type, null);
-			line++;
-			// nextLine[] is now an array of all values in the line (starting in
-			// second line if skipFirst == true)
+
+			rowList = allRows.next();
+
 			int index = 0;
-			for (String part : nextLine) {
+			for (String part : rowList) {
 				PropertyDefinition property = propAr[index];
 
 				if (part != null && part.isEmpty()) {
@@ -137,18 +153,11 @@ public class CSVInstanceReader extends AbstractInstanceReader {
 	}
 
 	/**
-	 * @see AbstractIOProvider#getDefaultTypeName()
+	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#getDefaultTypeName()
 	 */
 	@Override
 	protected String getDefaultTypeName() {
-		return CSVFileIO.DEFAULT_TYPE_NAME;
+		return "XLS Instance Reader";
 	}
 
-	/**
-	 * @see InstanceReader#getInstances()
-	 */
-	@Override
-	public InstanceCollection getInstances() {
-		return instances;
-	}
 }

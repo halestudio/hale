@@ -18,9 +18,9 @@ package eu.esdihumboldt.hale.io.csv.reader.internal;
 import eu.esdihumboldt.hale.common.schema.io.impl.AbstractSchemaReader;
 
 /**
- * TODO Type description
+ * Abstract class for table schema readers
  * 
- * @author Patrick
+ * @author Patrick Lieb
  */
 public abstract class AbstractTableSchemaReader extends AbstractSchemaReader {
 
@@ -34,6 +34,9 @@ public abstract class AbstractTableSchemaReader extends AbstractSchemaReader {
 	 */
 	public static final String PARAM_PROPERTYTYPE = "types";
 
+	/**
+	 * @return the header
+	 */
 	public abstract String[] getHeaderContent();
 
 }

@@ -31,6 +31,11 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
  */
 public abstract class AbstractInstanceReader extends GZipEnabledImport implements InstanceReader {
 
+	/**
+	 * the parameter specifying the reader setting
+	 */
+	public static final String PARAM_SKIP_FIRST_LINE = "skip";
+
 	private TypeIndex sourceSchema;
 
 	private CRSProvider crsProvider;
