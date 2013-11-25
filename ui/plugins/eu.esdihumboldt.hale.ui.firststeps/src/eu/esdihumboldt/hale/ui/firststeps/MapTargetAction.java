@@ -48,7 +48,21 @@ public class MapTargetAction extends AbstractTargetAction {
 		}
 
 		// launch the wizard
-		return FunctionWizardUtil.addRelationForTarget(target);
+		return createRelation(target, null, manager);
+	}
+
+	/**
+	 * Create the relation.
+	 * 
+	 * @param target the target entity
+	 * @param source the source entities the target should be mapped from,
+	 *            <code>null</code> by default
+	 * @param manager the cheat sheet manager
+	 * @return the created cell or <code>null</code>
+	 */
+	protected Cell createRelation(EntityDefinition target, Iterable<EntityDefinition> source,
+			ICheatSheetManager manager) {
+		return FunctionWizardUtil.addRelationForTarget(target, source);
 	}
 
 }
