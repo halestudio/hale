@@ -30,6 +30,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.swt.SWT;
@@ -156,6 +157,14 @@ public class SchemasView extends PropertiesViewPart {
 		@Override
 		public void setSelection(ISelection selection) {
 			SchemasView.this.currentSelection = selection;
+
+			if (selection instanceof SchemaSelection) {
+				SchemaSelection ss = (SchemaSelection) selection;
+				sourceExplorer.getTreeViewer().setSelection(
+						new StructuredSelection(ss.getSourceItems().toArray()));
+				targetExplorer.getTreeViewer().setSelection(
+						new StructuredSelection(ss.getTargetItems().toArray()));
+			}
 		}
 
 		/**
