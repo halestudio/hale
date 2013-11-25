@@ -80,10 +80,37 @@ public class FunctionWizardUtil {
 	 * @return the created cell or <code>null</code>
 	 */
 	public static Cell addRelationForTarget(EntityDefinition target) {
+		return addRelationForTarget(target, null);
+	}
+
+	/**
+	 * Launches a wizard for mapping to a specific target entity.
+	 * 
+	 * @param target the target entity
+	 * @param source the source entities the target should be mapped from, or
+	 *            <code>null</code>
+	 * @return the created cell or <code>null</code>
+	 */
+	public static Cell addRelationForTarget(EntityDefinition target,
+			Iterable<EntityDefinition> source) {
 		DefaultSchemaSelection initialSelection = new DefaultSchemaSelection();
 		initialSelection.addTargetItem(target);
-		SchemaSelectionFunctionMatcher selectionMatcher = new SchemaSelectionFunctionMatcher(true,
-				false);
+		if (source != null) {
+			for (EntityDefinition sourceEntity : source) {
+				initialSelection.addSourceItem(sourceEntity);
+			}
+		}
+
+		SchemaSelectionFunctionMatcher selectionMatcher;
+		if (source == null) {
+			// ignore source
+			selectionMatcher = new SchemaSelectionFunctionMatcher(true, false);
+		}
+		else {
+			// respect source
+			selectionMatcher = new SchemaSelectionFunctionMatcher(false, false);
+		}
+
 		NewRelationWizard wizard = new NewRelationWizard(initialSelection, selectionMatcher);
 		wizard.setWindowTitle("Map to " + target.getDefinition().getDisplayName());
 		Shell shell = Display.getCurrent().getActiveShell();
