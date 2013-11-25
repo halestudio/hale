@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.ui.function.internal;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;
 import eu.esdihumboldt.hale.ui.function.contribution.SchemaSelectionFunctionMatcher;
@@ -37,6 +38,8 @@ public class NewRelationWizard extends MultiWizard<NewRelationPage> {
 
 	private final SchemaSelection initialSelection;
 	private final SchemaSelectionFunctionMatcher selectionMatcher;
+
+	private Cell createdCell;
 
 	/**
 	 * Default constructor
@@ -104,6 +107,7 @@ public class NewRelationWizard extends MultiWizard<NewRelationPage> {
 					AlignmentService.class);
 			as.addCell(cell);
 		}
+		createdCell = cell;
 
 		// save page configuration
 		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
@@ -111,6 +115,13 @@ public class NewRelationWizard extends MultiWizard<NewRelationPage> {
 		getSelectionPage().store(ps.getConfigurationService());
 
 		return true;
+	}
+
+	/**
+	 * @return the cell created through the wizard, or <code>null</code>
+	 */
+	public Cell getCreatedCell() {
+		return createdCell;
 	}
 
 }

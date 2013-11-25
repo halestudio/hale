@@ -127,8 +127,10 @@ public abstract class AbstractTargetAction extends Action implements ICheatSheet
 	 * 
 	 * @param target the target entity
 	 * @param manager the cheat sheet manager
+	 * @return a result that may be used when overriding the method, not used
+	 *         after the execution and thus may be <code>null</code>
 	 */
-	protected abstract void run(EntityDefinition target, ICheatSheetManager manager);
+	protected abstract Object run(EntityDefinition target, ICheatSheetManager manager);
 
 	@Override
 	public void run(String[] params, ICheatSheetManager manager) {
