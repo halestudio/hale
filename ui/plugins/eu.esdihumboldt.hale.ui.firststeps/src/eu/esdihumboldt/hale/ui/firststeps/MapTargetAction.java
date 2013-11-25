@@ -19,6 +19,7 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.cheatsheets.ICheatSheetManager;
 
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.ui.function.FunctionWizardUtil;
 import eu.esdihumboldt.hale.ui.selection.impl.DefaultSchemaSelection;
@@ -33,7 +34,7 @@ import eu.esdihumboldt.hale.ui.views.schemas.SchemasView;
 public class MapTargetAction extends AbstractTargetAction {
 
 	@Override
-	protected void run(EntityDefinition target, ICheatSheetManager manager) {
+	protected Cell run(EntityDefinition target, ICheatSheetManager manager) {
 		// try selecting the target entity in the schema explorer
 		try {
 			DefaultSchemaSelection ss = new DefaultSchemaSelection();
@@ -47,7 +48,7 @@ public class MapTargetAction extends AbstractTargetAction {
 		}
 
 		// launch the wizard
-		FunctionWizardUtil.addRelationForTarget(target);
+		return FunctionWizardUtil.addRelationForTarget(target);
 	}
 
 }

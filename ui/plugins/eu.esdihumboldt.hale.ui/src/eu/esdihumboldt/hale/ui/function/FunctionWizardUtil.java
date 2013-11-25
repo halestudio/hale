@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.ui.function;
 
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -76,8 +77,9 @@ public class FunctionWizardUtil {
 	 * Launches a wizard for mapping to a specific target entity.
 	 * 
 	 * @param target the target entity
+	 * @return the created cell or <code>null</code>
 	 */
-	public static void addRelationForTarget(EntityDefinition target) {
+	public static Cell addRelationForTarget(EntityDefinition target) {
 		DefaultSchemaSelection initialSelection = new DefaultSchemaSelection();
 		initialSelection.addTargetItem(target);
 		SchemaSelectionFunctionMatcher selectionMatcher = new SchemaSelectionFunctionMatcher(true,
@@ -86,7 +88,11 @@ public class FunctionWizardUtil {
 		wizard.setWindowTitle("Map to " + target.getDefinition().getDisplayName());
 		Shell shell = Display.getCurrent().getActiveShell();
 		HaleWizardDialog dialog = new HaleWizardDialog(shell, wizard);
-		dialog.open();
+		if (dialog.open() == Window.OK) {
+			return wizard.getCreatedCell();
+		}
+		else {
+			return null;
+		}
 	}
-
 }
