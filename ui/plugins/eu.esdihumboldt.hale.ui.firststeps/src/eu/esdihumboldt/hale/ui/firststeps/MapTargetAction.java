@@ -35,19 +35,6 @@ public class MapTargetAction extends AbstractTargetAction {
 
 	@Override
 	protected Cell run(EntityDefinition target, ICheatSheetManager manager) {
-		// try selecting the target entity in the schema explorer
-		try {
-			DefaultSchemaSelection ss = new DefaultSchemaSelection();
-			ss.addTargetItem(target);
-
-			IViewPart view = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-					.findView(SchemasView.ID);
-			view.getSite().getSelectionProvider().setSelection(ss);
-		} catch (Exception e) {
-			// ignore
-		}
-
-		// launch the wizard
 		return createRelation(target, null, manager);
 	}
 
@@ -62,6 +49,24 @@ public class MapTargetAction extends AbstractTargetAction {
 	 */
 	protected Cell createRelation(EntityDefinition target, Iterable<EntityDefinition> source,
 			ICheatSheetManager manager) {
+		// try selecting the entities in the schema explorer
+		try {
+			DefaultSchemaSelection ss = new DefaultSchemaSelection();
+			ss.addTargetItem(target);
+			if (source != null) {
+				for (EntityDefinition item : source) {
+					ss.addSourceItem(item);
+				}
+			}
+
+			IViewPart view = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+					.findView(SchemasView.ID);
+			view.getSite().getSelectionProvider().setSelection(ss);
+		} catch (Exception e) {
+			// ignore
+		}
+
+		// launch the wizard
 		return FunctionWizardUtil.addRelationForTarget(target, source);
 	}
 
