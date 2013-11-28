@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.ui.firststeps;
 
+import java.util.Arrays;
+
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.cheatsheets.ICheatSheetManager;
@@ -33,6 +35,10 @@ import eu.esdihumboldt.hale.ui.views.schemas.SchemasView;
  */
 public class MapTargetAction extends AbstractTargetAction {
 
+	private static final String FUNCTION_PREFIX = "function:";
+
+	private String functionId;
+
 	@Override
 	protected Cell run(EntityDefinition target, ICheatSheetManager manager) {
 		return createRelation(target, null, manager);
@@ -50,15 +56,14 @@ public class MapTargetAction extends AbstractTargetAction {
 	protected Cell createRelation(EntityDefinition target, Iterable<EntityDefinition> source,
 			ICheatSheetManager manager) {
 		// try selecting the entities in the schema explorer
-		try {
-			DefaultSchemaSelection ss = new DefaultSchemaSelection();
-			ss.addTargetItem(target);
-			if (source != null) {
-				for (EntityDefinition item : source) {
-					ss.addSourceItem(item);
-				}
+		DefaultSchemaSelection ss = new DefaultSchemaSelection();
+		ss.addTargetItem(target);
+		if (source != null) {
+			for (EntityDefinition item : source) {
+				ss.addSourceItem(item);
 			}
-
+		}
+		try {
 			IViewPart view = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
 					.findView(SchemasView.ID);
 			view.getSite().getSelectionProvider().setSelection(ss);
@@ -67,7 +72,24 @@ public class MapTargetAction extends AbstractTargetAction {
 		}
 
 		// launch the wizard
-		return FunctionWizardUtil.addRelationForTarget(target, source);
+		if (functionId == null) {
+			return FunctionWizardUtil.addRelationForTarget(target, source);
+		}
+		else {
+			return FunctionWizardUtil.createNewWizard(functionId, ss);
+		}
+	}
+
+	@Override
+	public void run(String[] params, ICheatSheetManager manager) {
+		functionId = null;
+		if (params != null && params.length > 1 && params[0].startsWith(FUNCTION_PREFIX)) {
+			functionId = params[0].substring(FUNCTION_PREFIX.length());
+			super.run(Arrays.copyOfRange(params, 1, params.length), manager);
+		}
+		else {
+			super.run(params, manager);
+		}
 	}
 
 }
