@@ -164,6 +164,12 @@ public abstract class EntitiesPage<T extends AbstractFunction<D>, D extends Abst
 		if (firstShow) {
 			// redraw to prevent ghost images drawn by ControlDecoration
 			getControl().getParent().redraw();
+
+			/*
+			 * Re-layout the wizard dialog as the buttons may be hidden when
+			 * using the NewRelationWizard.
+			 */
+			getWizard().getContainer().getShell().layout(true, true);
 		}
 	}
 
