@@ -103,10 +103,19 @@ public class AddConditionContextContribution extends ContributionItem {
 	private static final ALogger log = ALoggerFactory
 			.getLogger(AddConditionContextContribution.class);
 
+	/**
+	 * Get the selection the condition actions should be based on.
+	 * 
+	 * @return the selection
+	 */
+	protected ISelection getSelection() {
+		return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService()
+				.getSelection();
+	}
+
 	@Override
 	public void fill(Menu menu, int index) {
-		ISelection selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-				.getSelectionService().getSelection();
+		ISelection selection = getSelection();
 
 		if (selection != null && !selection.isEmpty() && selection instanceof IStructuredSelection) {
 			Object element = ((IStructuredSelection) selection).getFirstElement();
