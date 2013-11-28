@@ -164,6 +164,17 @@ public abstract class EntitiesPage<T extends AbstractFunction<D>, D extends Abst
 		if (firstShow) {
 			// redraw to prevent ghost images drawn by ControlDecoration
 			getControl().getParent().redraw();
+
+			/*
+			 * Re-layout the wizard dialog as the buttons may be hidden when
+			 * using the NewRelationWizard.
+			 */
+//			for (Control control : getWizard().getShell().getChildren()) {
+//				if (control instanceof Composite) {
+//					((Composite) control).layout(true, true);
+//				}
+//			}
+			getWizard().getShell().layout(true, true);
 		}
 	}
 
@@ -236,8 +247,7 @@ public abstract class EntitiesPage<T extends AbstractFunction<D>, D extends Abst
 		// propagate to this place.
 		ScrolledComposite sc = new DynamicScrolledComposite(holder, SWT.V_SCROLL);
 		sc.setExpandHorizontal(true);
-		sc.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, 200)
-				.create());
+		sc.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).hint(200, 200).create());
 
 		Group main = new Group(sc, SWT.NONE);
 		sc.setContent(main);
