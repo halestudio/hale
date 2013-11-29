@@ -36,7 +36,6 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.csv.reader.CSVConstants;
 import eu.esdihumboldt.hale.io.csv.reader.CommonSchemaConstants;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVConfiguration;
-import eu.esdihumboldt.hale.io.csv.reader.internal.CSVInstanceReader;
 import eu.esdihumboldt.hale.ui.common.definition.selector.TypeDefinitionSelector;
 import eu.esdihumboldt.hale.ui.io.instance.InstanceReaderConfigurationPage;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
@@ -125,7 +124,7 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage implement
 	@Override
 	public boolean updateConfiguration(InstanceReader provider) {
 
-		provider.setParameter(CSVInstanceReader.PARAM_SKIP_FIRST_LINE,
+		provider.setParameter(CommonSchemaConstants.PARAM_SKIP_FIRST_LINE,
 				Value.of(button.getSelection()));
 		if (sel.getSelectedObject() != null) {
 			QName name = sel.getSelectedObject().getName();

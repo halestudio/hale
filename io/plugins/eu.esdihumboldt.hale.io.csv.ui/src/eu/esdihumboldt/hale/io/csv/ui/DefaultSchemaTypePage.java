@@ -47,7 +47,6 @@ import eu.esdihumboldt.hale.io.csv.PropertyTypeExtension;
 import eu.esdihumboldt.hale.io.csv.PropertyTypeFactory;
 import eu.esdihumboldt.hale.io.csv.reader.CommonSchemaConstants;
 import eu.esdihumboldt.hale.io.csv.reader.internal.AbstractTableSchemaReader;
-import eu.esdihumboldt.hale.io.csv.reader.internal.CSVInstanceReader;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.io.IOWizardPage;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
@@ -115,10 +114,10 @@ public class DefaultSchemaTypePage extends SchemaReaderConfigurationPage {
 		oldNamesBuffer.deleteCharAt(oldNamesBuffer.lastIndexOf(","));
 		String oldNames = oldNamesBuffer.toString();
 		if (oldNames.equals(propNames)) {
-			provider.setParameter(CSVInstanceReader.PARAM_SKIP_FIRST_LINE, Value.of("True"));
+			provider.setParameter(CommonSchemaConstants.PARAM_SKIP_FIRST_LINE, Value.of("True"));
 		}
 		else {
-			provider.setParameter(CSVInstanceReader.PARAM_SKIP_FIRST_LINE, Value.of("False"));
+			provider.setParameter(CommonSchemaConstants.PARAM_SKIP_FIRST_LINE, Value.of("False"));
 		}
 		provider.setParameter(AbstractTableSchemaReader.PARAM_PROPERTY, Value.of(propNames));
 
