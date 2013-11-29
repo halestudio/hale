@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.io.xls;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,6 +86,13 @@ public class AnalyseXLSSchemaTable extends AbstractAnalyseTable {
 	 */
 	public List<String> getSecondRow() {
 		return rows.get(1);
+	}
+
+	/**
+	 * @return a map of all rows with row number as keys
+	 */
+	public Collection<List<String>> getRows() {
+		return rows.values();
 	}
 
 }
