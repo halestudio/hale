@@ -136,7 +136,6 @@ public class CSVSchemaReaderTest {
 	 * 
 	 * @throws Exception the Exception thrown if the test fails
 	 */
-	@Test(expected = RuntimeException.class)
 	public void failTest() throws Exception {
 
 		CSVSchemaReader schemaReader = new CSVSchemaReader();
@@ -150,9 +149,10 @@ public class CSVSchemaReaderTest {
 		schemaReader.setParameter(CSVSchemaReader.PARAM_QUOTE, null);
 		schemaReader.setParameter(CSVSchemaReader.PARAM_ESCAPE, null);
 
-		// unused because we expect a RuntimeException
-		@SuppressWarnings("unused")
 		IOReport report = schemaReader.execute(new LogProgressIndicator());
+
+		assertFalse(report.getErrors().isEmpty());
+		assertFalse(report.isSuccess());
 
 	}
 
