@@ -52,11 +52,6 @@ import eu.esdihumboldt.hale.io.csv.reader.CommonSchemaConstants;
  */
 public class CSVInstanceReader extends AbstractInstanceReader {
 
-	/**
-	 * the parameter specifying the reader setting
-	 */
-	public static final String PARAM_SKIP_FIRST_LINE = "skip";
-
 	private DefaultInstanceCollection instances;
 
 	/**
@@ -74,7 +69,8 @@ public class CSVInstanceReader extends AbstractInstanceReader {
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 
-		boolean skipFirst = getParameter(PARAM_SKIP_FIRST_LINE).as(Boolean.class);
+		boolean skipFirst = getParameter(CommonSchemaConstants.PARAM_SKIP_FIRST_LINE).as(
+				Boolean.class);
 		instances = new DefaultInstanceCollection(new ArrayList<Instance>());
 		int line = 0;
 
