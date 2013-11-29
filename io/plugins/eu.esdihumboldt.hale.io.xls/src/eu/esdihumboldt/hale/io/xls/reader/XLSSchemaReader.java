@@ -167,7 +167,9 @@ public class XLSSchemaReader extends AbstractTableSchemaReader {
 			schema.addType(type);
 
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			reporter.error(new IOMessageImpl("Cannot load xls/xlsx schema", e));
+			reporter.setSuccess(false);
+			return reporter;
 		}
 
 		reporter.setSuccess(true);
