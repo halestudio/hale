@@ -23,6 +23,11 @@ package eu.esdihumboldt.hale.io.csv.reader;
 public interface CommonSchemaConstants {
 
 	/**
+	 * the parameter specifying the reader setting
+	 */
+	public static final String PARAM_SKIP_FIRST_LINE = "skip";
+
+	/**
 	 * Name of the parameter specifying the type name
 	 */
 	public static String PARAM_TYPENAME = "typename";

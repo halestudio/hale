@@ -20,7 +20,7 @@ import eu.esdihumboldt.hale.common.schema.io.impl.AbstractSchemaReader;
 /**
  * Abstract schema reader for tables (e.g. csv/xls files)
  * 
- * @author Patrick
+ * @author Patrick Lieb
  */
 public abstract class AbstractTableSchemaReader extends AbstractSchemaReader {
 
