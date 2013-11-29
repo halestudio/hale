@@ -176,8 +176,9 @@ public class CSVSchemaReader extends AbstractTableSchemaReader implements CSVCon
 			schema.addType(type);
 
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
-
+			reporter.error(new IOMessageImpl("Cannot load csv schema", ex));
+			reporter.setSuccess(false);
+			return reporter;
 		}
 
 		reporter.setSuccess(true);
