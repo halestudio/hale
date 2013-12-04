@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.content.IContentType;
 import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueExtension;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
  * Interface for I/O providers
@@ -114,6 +115,13 @@ public interface IOProvider {
 	 * @return the character set or <code>null</code>
 	 */
 	public Charset getCharset();
+
+	/**
+	 * Set the contextual service provider for the I/O provider.
+	 * 
+	 * @param serviceProvider the service provider
+	 */
+	public void setServiceProvider(ServiceProvider serviceProvider);
 
 	/**
 	 * Get the supported configuration parameters.

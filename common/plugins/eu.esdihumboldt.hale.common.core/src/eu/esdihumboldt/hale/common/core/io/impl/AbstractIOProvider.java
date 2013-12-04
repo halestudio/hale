@@ -34,6 +34,7 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
  * Abstract base class for implementing {@link IOProvider}s
@@ -58,6 +59,11 @@ public abstract class AbstractIOProvider implements IOProvider {
 	 * The content type
 	 */
 	private IContentType contentType = null;
+
+	/**
+	 * The service provider.
+	 */
+	private ServiceProvider serviceProvider = null;
 
 	/**
 	 * The character set
@@ -228,6 +234,18 @@ public abstract class AbstractIOProvider implements IOProvider {
 			// load generic parameter
 			parameters.put(name, value);
 		}
+	}
+
+	@Override
+	public void setServiceProvider(ServiceProvider serviceProvider) {
+		this.serviceProvider = serviceProvider;
+	}
+
+	/**
+	 * @return the service provider
+	 */
+	protected ServiceProvider getServiceProvider() {
+		return serviceProvider;
 	}
 
 	/**
