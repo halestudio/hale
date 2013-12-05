@@ -212,6 +212,10 @@ public class JaxbToAlignment extends
 					SchemaSpaceID.SOURCE, resolver));
 			result.setTarget(convertEntities(cell.getTarget(), context.getTargetTypes(),
 					SchemaSpaceID.TARGET, resolver));
+			if (result.getTarget() == null || result.getTarget().isEmpty()) {
+				// target is mandatory for cells!
+				throw new IllegalStateException("Cannot create cell without target");
+			}
 		} catch (Exception e) {
 			if (reporter != null) {
 				reporter.error(new IOMessageImpl("Could not create cell", e));
