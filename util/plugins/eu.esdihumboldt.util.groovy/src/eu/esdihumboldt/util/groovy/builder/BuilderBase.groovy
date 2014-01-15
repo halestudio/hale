@@ -86,6 +86,8 @@ abstract class BuilderBase {
 
 		current = parent
 
+		internalNodeWrapup(node)
+
 		// return the node created by the call
 		node
 	}
@@ -111,5 +113,16 @@ abstract class BuilderBase {
 	 * @return the created node
 	 */
 	protected def abstract internalCreateNode(String name, Map attributes, List params, def parent, boolean subClosure);
+
+	/**
+	 * Method that is called for a node created with
+	 * {@link #internalCreateNode(String, Map, List, Object, boolean)} after all
+	 * sub-closures have been handled.
+	 * 
+	 * @param node the created node
+	 */
+	protected void internalNodeWrapup(def node) {
+		// override me
+	}
 
 }
