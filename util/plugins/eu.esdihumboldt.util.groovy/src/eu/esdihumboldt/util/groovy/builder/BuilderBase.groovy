@@ -83,6 +83,7 @@ abstract class BuilderBase {
 		current = node
 
 		closure?.call()
+		internalExtendNode(node)
 
 		current = parent
 
@@ -122,6 +123,16 @@ abstract class BuilderBase {
 	 * @param node the created node
 	 */
 	protected void internalNodeWrapup(def node) {
+		// override me
+	}
+
+	/**
+	 * Method that is called after (or if it does not exist: instead) a node's
+	 * sub-closure. Thus builder calls to extend the node can be performed here.
+	 * 
+	 * @param node the created node to extend
+	 */
+	protected void internalExtendNode(def node) {
 		// override me
 	}
 
