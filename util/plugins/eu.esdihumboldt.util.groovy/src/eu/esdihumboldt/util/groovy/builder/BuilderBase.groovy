@@ -90,7 +90,7 @@ abstract class BuilderBase {
 		internalNodeWrapup(node)
 
 		// return the node created by the call
-		node
+		internalExtractNode(node)
 	}
 
 	/**
@@ -134,6 +134,19 @@ abstract class BuilderBase {
 	 */
 	protected void internalExtendNode(def node) {
 		// override me
+	}
+
+	/**
+	 * Method that is called at the end of {@link #createNode(String, def)} to
+	 * extract a value to return from a node. This return value is only relevant
+	 * for use inside the builder closure. The default implementation just
+	 * returns the node itself unchanged.
+	 * 
+	 * @param node the node to extract a return value from
+	 * @return the return value for the given node
+	 */
+	protected def internalExtractNode(def node) {
+		node
 	}
 
 }
