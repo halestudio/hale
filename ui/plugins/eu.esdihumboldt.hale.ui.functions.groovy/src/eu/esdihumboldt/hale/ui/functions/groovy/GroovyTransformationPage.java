@@ -31,6 +31,7 @@ import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
 import eu.esdihumboldt.cst.functions.groovy.GroovyTransformation;
+import eu.esdihumboldt.cst.functions.groovy.internal.GroovyUtil;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -133,8 +134,8 @@ public class GroovyTransformationPage extends GroovyScriptPage {
 		boolean useInstanceValues = CellUtil.getOptionalParameter(getWizard().getUnfinishedCell(),
 				GroovyTransformation.PARAM_INSTANCE_VARIABLES, Value.of(false)).as(Boolean.class);
 
-		GroovyShell shell = new GroovyShell(GroovyTransformation.createGroovyBinding(values, null,
-				builder, useInstanceValues));
+		GroovyShell shell = GroovyUtil.createShell(GroovyTransformation.createGroovyBinding(values,
+				null, builder, useInstanceValues));
 		Script script = null;
 		try {
 			script = shell.parse(document);

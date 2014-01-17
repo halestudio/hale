@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="126">
+<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="127">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.sdk.ide" version="3.7.1.M20110909-1335"/>
@@ -19,5 +19,6 @@
 <unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.0.1.v201108020506"/>
 <repository location="http://www.cityserver3d.de/updates/releases/indigo"/>
 </location>
+<location path="D:\Fraunhofer IGD\hale-git\platform\target\plugins\org.kohsuke.groovy.sandbox" type="Directory"/>
 </locations>
 </target>

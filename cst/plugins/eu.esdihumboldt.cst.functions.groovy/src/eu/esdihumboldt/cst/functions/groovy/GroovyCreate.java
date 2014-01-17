@@ -36,7 +36,7 @@ public class GroovyCreate extends Create implements GroovyConstants {
 	@Override
 	protected MutableInstance createInstance(TypeDefinition type, int index, TransformationLog log,
 			Cell cell) throws TransformationException {
-		InstanceBuilder builder = new InstanceBuilder();
+		InstanceBuilder builder = new InstanceBuilder(false);
 
 		Binding binding = createBinding(index, builder);
 
