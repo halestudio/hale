@@ -103,7 +103,7 @@ public class GroovyRetypePage extends GroovyScriptPage {
 			return false;
 		}
 
-		InstanceBuilder builder = new InstanceBuilder();
+		InstanceBuilder builder = new InstanceBuilder(false);
 
 		Instance instance = testValues.get(sourceType.getDefinition());
 		if (instance == null) {
@@ -114,7 +114,7 @@ public class GroovyRetypePage extends GroovyScriptPage {
 		FamilyInstance source = new FamilyInstanceImpl(instance);
 		Binding binding = GroovyRetype.createBinding(source, builder);
 
-		GroovyShell shell = new GroovyShell(binding);
+		GroovyShell shell = GroovyUtil.createShell(binding);
 		Script script = null;
 		try {
 			script = shell.parse(document);
