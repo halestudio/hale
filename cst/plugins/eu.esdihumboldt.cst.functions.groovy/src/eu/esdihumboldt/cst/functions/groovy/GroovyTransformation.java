@@ -26,6 +26,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.cst.functions.groovy.internal.GroovyUtil;
+import eu.esdihumboldt.cst.functions.groovy.internal.RestrictiveGroovyInterceptor;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
@@ -105,38 +106,44 @@ public class GroovyTransformation extends
 	 */
 	public static Object evaluate(Script groovyScript, InstanceBuilder builder,
 			TypeDefinition targetType) {
-		Object result = groovyScript.run();
+		RestrictiveGroovyInterceptor interceptor = new RestrictiveGroovyInterceptor();
+		interceptor.register();
+		try {
+			Object result = groovyScript.run();
 
-		if (builder != null) {
-			Object target = groovyScript.getBinding().getVariable(BINDING_TARGET);
-			if (target != null) {
-				if (target instanceof Closure<?>) {
-					// builder closure
-					Instance instance = builder.createInstance(targetType, (Closure<?>) target);
+			if (builder != null) {
+				Object target = groovyScript.getBinding().getVariable(BINDING_TARGET);
+				if (target != null) {
+					if (target instanceof Closure<?>) {
+						// builder closure
+						Instance instance = builder.createInstance(targetType, (Closure<?>) target);
 
-					/*
-					 * Set the instance value to the script result, if different
-					 * from the target closure.
-					 */
-					if (instance instanceof MutableInstance && result != target) {
-						((MutableInstance) instance).setValue(result);
+						/*
+						 * Set the instance value to the script result, if
+						 * different from the target closure.
+						 */
+						if (instance instanceof MutableInstance && result != target) {
+							((MutableInstance) instance).setValue(result);
+						}
+
+						result = instance;
 					}
-
-					result = instance;
-				}
-				else {
-					// treat target as value
-					// overriding the result
-					result = target;
+					else {
+						// treat target as value
+						// overriding the result
+						result = target;
+					}
 				}
 			}
-		}
 
-		if (result instanceof Closure<?>) {
-			throw new IllegalStateException("A closure cannnot be used as result");
-		}
+			if (result instanceof Closure<?>) {
+				throw new IllegalStateException("A closure cannnot be used as result");
+			}
 
-		return result;
+			return result;
+		} finally {
+			interceptor.unregister();
+		}
 	}
 
 	/**
@@ -150,7 +157,7 @@ public class GroovyTransformation extends
 	public static InstanceBuilder createBuilder(PropertyEntityDefinition resultProperty) {
 		if (!resultProperty.getDefinition().getPropertyType().getChildren().isEmpty()) {
 			// property has children and is thus represented as instance
-			return new InstanceBuilder();
+			return new InstanceBuilder(false);
 		}
 
 		return null;

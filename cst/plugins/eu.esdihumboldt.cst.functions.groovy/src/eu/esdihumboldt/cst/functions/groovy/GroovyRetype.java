@@ -46,7 +46,7 @@ public class GroovyRetype extends AbstractTypeTransformation<TransformationEngin
 		TypeDefinition targetType = getTarget().values().iterator().next().getDefinition()
 				.getDefinition();
 
-		InstanceBuilder builder = new InstanceBuilder();
+		InstanceBuilder builder = new InstanceBuilder(false);
 
 		Binding binding = createBinding(getSource(), builder);
 
