@@ -18,8 +18,11 @@ package eu.esdihumboldt.hale.ui.functions.groovy;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.codehaus.groovy.control.CompilerConfiguration;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.swt.widgets.ToolBar;
+import org.kohsuke.groovy.sandbox.GroovyInterceptor;
+import org.kohsuke.groovy.sandbox.SandboxTransformer;
 
 import com.google.common.collect.ImmutableList;
 
@@ -39,6 +42,7 @@ import eu.esdihumboldt.hale.ui.functions.groovy.internal.InstanceBuilderCompleti
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.PageHelp;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray.TypeProvider;
+import eu.esdihumboldt.hale.ui.functions.groovy.internal.VerboseGroovyInterceptor;
 import eu.esdihumboldt.hale.ui.scripting.groovy.InstanceTestValues;
 import eu.esdihumboldt.hale.ui.scripting.groovy.TestValues;
 import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
@@ -103,7 +107,7 @@ public class GroovyRetypePage extends GroovyScriptPage {
 			return false;
 		}
 
-		InstanceBuilder builder = new InstanceBuilder();
+		InstanceBuilder builder = new InstanceBuilder(false);
 
 		Instance instance = testValues.get(sourceType.getDefinition());
 		if (instance == null) {
@@ -114,7 +118,11 @@ public class GroovyRetypePage extends GroovyScriptPage {
 		FamilyInstance source = new FamilyInstanceImpl(instance);
 		Binding binding = GroovyRetype.createBinding(source, builder);
 
-		GroovyShell shell = new GroovyShell(binding);
+		CompilerConfiguration cc = new CompilerConfiguration();
+		cc.addCompilationCustomizers(new SandboxTransformer());
+		GroovyShell shell = new GroovyShell(binding, cc);
+		GroovyInterceptor interceptor = new VerboseGroovyInterceptor();
+		interceptor.register();
 		Script script = null;
 		try {
 			script = shell.parse(document);
@@ -122,6 +130,8 @@ public class GroovyRetypePage extends GroovyScriptPage {
 			GroovyUtil.evaluate(script, builder, targetType.getDefinition().getDefinition());
 		} catch (final Exception e) {
 			return handleValidationResult(script, e);
+		} finally {
+			interceptor.unregister();
 		}
 
 		return handleValidationResult(script, null);

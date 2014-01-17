@@ -109,6 +109,7 @@ public class GroovyUtil implements GroovyConstants {
 			TypeDefinition type) {
 		// run the script
 		script.run();
+//		return (MutableInstance) script.run();
 
 		// retrieve the target builder closure
 		Closure<?> closure = (Closure<?>) script.getBinding().getVariable(BINDING_TARGET);

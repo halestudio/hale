@@ -36,6 +36,12 @@ abstract class BuilderBase {
 	 */
 	def current
 
+	private final boolean cloneClosures;
+
+	public BuilderBase(boolean cloneClosures = true) {
+		this.cloneClosures = cloneClosures;
+	}
+
 	/**
 	 * Reset the builder
 	 */
@@ -67,7 +73,10 @@ abstract class BuilderBase {
 		def end = list.size()
 		Closure closure = null
 		if (list && list.last() instanceof Closure) {
-			closure = (Closure) list.last().clone()
+			if (cloneClosures)
+				closure = (Closure) list.last().clone()
+			else
+				closure = list.last()
 			closure.delegate = this
 			end--
 		}
@@ -112,4 +121,7 @@ abstract class BuilderBase {
 	 */
 	protected def abstract internalCreateNode(String name, Map attributes, List params, def parent, boolean subClosure);
 
+	public boolean isCloneClosures() {
+		return cloneClosures;
+	}
 }
