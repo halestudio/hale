@@ -375,6 +375,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.junit"/>
       <plugin id="org.junit4"/>
       <plugin id="org.jvnet.staxex"/>
+      <plugin id="org.kohsuke.groovy.sandbox"/>
       <plugin id="org.libtiff.jai"/>
       <plugin id="org.mortbay.jetty.server"/>
       <plugin id="org.mortbay.jetty.util"/>
