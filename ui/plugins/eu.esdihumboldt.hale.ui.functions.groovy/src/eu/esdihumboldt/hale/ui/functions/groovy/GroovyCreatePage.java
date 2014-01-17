@@ -93,7 +93,7 @@ public class GroovyCreatePage extends GroovyScriptPage {
 		InstanceBuilder builder = new InstanceBuilder();
 		Binding binding = GroovyCreate.createBinding(0, builder);
 
-		GroovyShell shell = new GroovyShell(binding);
+		GroovyShell shell = GroovyUtil.createShell(binding);
 		Script script = null;
 		try {
 			script = shell.parse(document);

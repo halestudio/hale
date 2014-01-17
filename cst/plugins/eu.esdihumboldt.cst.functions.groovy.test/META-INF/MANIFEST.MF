@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Groovy Interceptor Test
+Bundle-SymbolicName: eu.esdihumboldt.cst.functions.groovy.test
+Bundle-Version: 2.8.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ClassPath: groovy-sandbox-1.4-SNAPSHOT.jar,
+ .

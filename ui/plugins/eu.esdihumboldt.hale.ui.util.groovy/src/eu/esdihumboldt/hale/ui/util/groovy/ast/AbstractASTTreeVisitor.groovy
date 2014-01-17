@@ -16,9 +16,14 @@
 
 package eu.esdihumboldt.hale.ui.util.groovy.ast
 
-import org.codehaus.groovy.ast.CodeVisitorSupport
+import org.codehaus.groovy.ast.ClassCodeVisitorSupport
+import org.codehaus.groovy.ast.ClassNode
+import org.codehaus.groovy.ast.ConstructorNode
 import org.codehaus.groovy.ast.DynamicVariable
+import org.codehaus.groovy.ast.FieldNode
+import org.codehaus.groovy.ast.MethodNode
 import org.codehaus.groovy.ast.Parameter
+import org.codehaus.groovy.ast.PropertyNode
 import org.codehaus.groovy.ast.expr.ArgumentListExpression
 import org.codehaus.groovy.ast.expr.ArrayExpression
 import org.codehaus.groovy.ast.expr.AttributeExpression
@@ -67,12 +72,14 @@ import org.codehaus.groovy.ast.stmt.ExpressionStatement
 import org.codehaus.groovy.ast.stmt.ForStatement
 import org.codehaus.groovy.ast.stmt.IfStatement
 import org.codehaus.groovy.ast.stmt.ReturnStatement
+import org.codehaus.groovy.ast.stmt.Statement
 import org.codehaus.groovy.ast.stmt.SwitchStatement
 import org.codehaus.groovy.ast.stmt.SynchronizedStatement
 import org.codehaus.groovy.ast.stmt.ThrowStatement
 import org.codehaus.groovy.ast.stmt.TryCatchStatement
 import org.codehaus.groovy.ast.stmt.WhileStatement
 import org.codehaus.groovy.classgen.BytecodeExpression
+import org.codehaus.groovy.control.SourceUnit
 
 
 /**
@@ -81,7 +88,7 @@ import org.codehaus.groovy.classgen.BytecodeExpression
  *
  * @author Hamlet D'Arcy
  */
-abstract class AbstractASTTreeVisitor<N> extends CodeVisitorSupport {
+abstract class AbstractASTTreeVisitor<N> extends ClassCodeVisitorSupport {
 
 	private N currentNode
 
@@ -394,5 +401,35 @@ abstract class AbstractASTTreeVisitor<N> extends CodeVisitorSupport {
 				node.visit(this)
 			}
 		}
+	}
+
+	public void visitClass(ClassNode node) {
+		addNode(node, ClassNode, { super.visitClass(it) });
+	}
+
+	public void visitConstructor(ConstructorNode node) {
+		// do not include constructors of script class
+		if (!node.declaringClass.name.startsWith('script'))
+			addNode(node, ConstructorNode, { super.visitConstructor(it) });
+	}
+
+	public void visitMethod(MethodNode node) {
+		// do not include this$dist$(invoke|get|set)-methods
+		// do not include static main-method of script class
+		if (!node.name.startsWith('this$dist$') && (!node.name.equals('main') || !node.static || !node.declaringClass.name.startsWith('script')))
+			addNode(node, MethodNode, { super.visitMethod(it) });
+	}
+
+	public void visitField(FieldNode node) {
+		addNode(node, FieldNode, { super.visitField(it) });
+	}
+
+	public void visitProperty(PropertyNode node) {
+		addNode(node, PropertyNode, { super.visitProperty(it) });
+	}
+
+	@Override
+	protected SourceUnit getSourceUnit() {
+		return null;
 	}
 }

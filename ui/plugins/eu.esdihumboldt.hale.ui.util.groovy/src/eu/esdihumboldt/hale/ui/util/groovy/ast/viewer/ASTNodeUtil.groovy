@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.ui.util.groovy.ast.viewer
 
+import org.codehaus.groovy.ast.PropertyNode
 import org.eclipse.jface.viewers.StyledString
 
 
@@ -55,23 +56,25 @@ class ASTNodeUtil {
 	 */
 	static void addProperties(def node, StyledString text) {
 		int index = 0
-		node.properties.each { prop, val ->
-			if (val == null) {
-				return
-			}
+		if (!(node instanceof PropertyNode)) {
+			node.properties.each { prop, val ->
+				if (val == null) {
+					return
+				}
 
-			if (IGNORE_PROPS.find{ it == prop }) {
-				return
-			}
+				if (IGNORE_PROPS.find{ it == prop }) {
+					return
+				}
 
-			if (index > 0) {
-				text.append(', ')
-			}
-			text.append(prop, StyledString.DECORATIONS_STYLER)
-			text.append(' = ')
-			text.append(val as String)
+				if (index > 0) {
+					text.append(', ')
+				}
+				text.append(prop, StyledString.DECORATIONS_STYLER)
+				text.append(' = ')
+				text.append(val as String)
 
-			index++
+				index++
+			}
 		}
 	}
 }

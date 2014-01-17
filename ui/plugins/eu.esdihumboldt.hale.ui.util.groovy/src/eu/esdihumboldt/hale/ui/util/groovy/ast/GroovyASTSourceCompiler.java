@@ -15,7 +15,12 @@
 
 package eu.esdihumboldt.hale.ui.util.groovy.ast;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.codehaus.groovy.ast.ASTNode;
 import org.codehaus.groovy.ast.builder.AstBuilder;
+import org.codehaus.groovy.control.CompilePhase;
 
 import eu.esdihumboldt.hale.ui.util.source.SourceCompiler;
 
@@ -31,7 +36,12 @@ public class GroovyASTSourceCompiler implements SourceCompiler<GroovyAST> {
 	@Override
 	public GroovyAST compile(String content) {
 		try {
-			return new GroovyAST(builder.buildFromString(content));
+			List<ASTNode> nodes = builder.buildFromString(CompilePhase.CANONICALIZATION, false,
+					content);
+			// first entry is the BlockStatement, which is contained in
+			// script.run(), too!
+			nodes = new ArrayList<>(nodes.subList(1, nodes.size()));
+			return new GroovyAST(nodes);
 		} catch (Exception e) {
 			return null;
 		}
