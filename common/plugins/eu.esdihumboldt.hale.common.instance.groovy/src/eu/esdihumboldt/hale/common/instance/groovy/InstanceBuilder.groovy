@@ -95,6 +95,10 @@ class InstanceBuilder extends BuilderBase {
 	 */
 	TypeIndex types = null
 
+	public InstanceBuilder(boolean cloneClosures = true) {
+		super(cloneClosures)
+	}
+
 	@Override
 	public void reset() {
 		super.reset()
@@ -110,7 +114,8 @@ class InstanceBuilder extends BuilderBase {
 		DefaultInstanceCollection root = new DefaultInstanceCollection()
 		def parent = current
 		current = root
-		closure = (Closure) closure.clone()
+		if (cloneClosures)
+			closure = (Closure) closure.clone()
 		closure.delegate = this
 		closure.call()
 		reset()

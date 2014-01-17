@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.ui.util.groovy.ast.viewer;
 import java.util.List;
 
 import org.codehaus.groovy.ast.ASTNode;
+import org.codehaus.groovy.ast.ClassNode;
 import org.codehaus.groovy.ast.Parameter;
 import org.codehaus.groovy.ast.Variable;
 import org.codehaus.groovy.ast.VariableScope;
@@ -70,7 +71,8 @@ public class ASTViewer {
 			if (newInput instanceof Iterable<?>) {
 				for (Object node : ((Iterable<?>) newInput)) {
 					if (node instanceof ASTNode) {
-						((ASTNode) node).visit(v);
+						if (node instanceof ClassNode)
+							v.visitClass((ClassNode) node);
 					}
 				}
 			}

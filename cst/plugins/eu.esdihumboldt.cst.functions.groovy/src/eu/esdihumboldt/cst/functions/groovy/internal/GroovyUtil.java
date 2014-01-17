@@ -17,6 +17,9 @@ package eu.esdihumboldt.cst.functions.groovy.internal;
 
 import java.util.Map;
 
+import org.codehaus.groovy.control.CompilerConfiguration;
+import org.kohsuke.groovy.sandbox.SandboxTransformer;
+
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
@@ -72,8 +75,6 @@ public class GroovyUtil implements GroovyConstants {
 		Script groovyScript = localScript.get();
 		if (groovyScript == null) {
 			// create the script
-			// TODO use a specific classloader?
-			GroovyShell shell = new GroovyShell();
 			ParameterValue scriptValue = function.getParameterChecked(PARAMETER_SCRIPT);
 
 			String script;
@@ -87,7 +88,7 @@ public class GroovyUtil implements GroovyConstants {
 				script = scriptValue.as(String.class);
 			}
 
-			groovyScript = shell.parse(script);
+			groovyScript = createShell(null).parse(script);
 			localScript.set(groovyScript);
 		}
 
@@ -107,15 +108,37 @@ public class GroovyUtil implements GroovyConstants {
 	 */
 	public static MutableInstance evaluate(Script script, InstanceBuilder builder,
 			TypeDefinition type) {
-		// run the script
-		script.run();
+		RestrictiveGroovyInterceptor interceptor = new RestrictiveGroovyInterceptor();
+		interceptor.register();
+		try {
+			// run the script
+			script.run();
 
-		// retrieve the target builder closure
-		Closure<?> closure = (Closure<?>) script.getBinding().getVariable(BINDING_TARGET);
+			// retrieve the target builder closure
+			Closure<?> closure = (Closure<?>) script.getBinding().getVariable(BINDING_TARGET);
 
-		// create the instance
-		Instance instance = builder.createInstance(type, closure);
-		return (MutableInstance) instance;
+			// create the instance
+			Instance instance = builder.createInstance(type, closure);
+			return (MutableInstance) instance;
+		} finally {
+			interceptor.unregister();
+		}
+	}
+
+	/**
+	 * Create a customized {@link GroovyShell}.
+	 * 
+	 * @param binding the binding, may be <code>null</code>
+	 * @return a customized {@link GroovyShell}
+	 */
+	public static GroovyShell createShell(Binding binding) {
+		// TODO use a specific classloader?
+		CompilerConfiguration cc = new CompilerConfiguration();
+		cc.addCompilationCustomizers(new SandboxTransformer());
+		if (binding != null)
+			return new GroovyShell(binding, cc);
+		else
+			return new GroovyShell(cc);
 	}
 
 }
