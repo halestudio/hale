@@ -11,11 +11,15 @@ Import-Package: com.google.common.base;version="9.0.0",
  eu.esdihumboldt.hale.common.convert,
  eu.esdihumboldt.hale.common.core.io,
  eu.esdihumboldt.hale.common.instance.model,
+ eu.esdihumboldt.hale.common.instance.model.impl,
+ eu.esdihumboldt.hale.common.instance.orient,
  eu.esdihumboldt.hale.common.schema.model,
  eu.esdihumboldt.util.groovy.builder,
- groovy.lang;version="1.7.3",
  org.springframework.core.convert;version="3.0.0.RELEASE"
 Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.5.0",
- eu.esdihumboldt.hale.common.instance.groovy;bundle-version="2.7.0"
+ eu.esdihumboldt.hale.common.instance.groovy;bundle-version="2.7.0",
+ groovy;bundle-version="2.1.6"
 Export-Package: eu.esdihumboldt.cst.functions.groovy,
  eu.esdihumboldt.cst.functions.groovy.internal;x-internal:=true
+Bundle-ClassPath: groovy-sandbox-1.4-SNAPSHOT.jar,
+ .
