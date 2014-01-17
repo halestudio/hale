@@ -41,27 +41,21 @@ public class ASTGraphUtil implements ASTGraphConstants {
 			final int vEndLine = v.getProperty(P_END_LINE);
 			final int vEndCol = v.getProperty(P_END_COL);
 
-			if (vStartLine != -1 && vEndLine != -1) {
-				// only check nodes with valid lines
+			// Valid in the sense that a position is set, i.e. the vertex is
+			// "visible"
+			// Vertices can not be visible, but still have visible children!
+			boolean validNode = vStartLine != -1 && vEndLine != -1;
+			boolean afterStart = (line == vStartLine && col > vStartCol) || line > vStartLine;
+			boolean beforeEnd = (line == vEndLine && col <= vEndCol) || line < vEndLine;
 
-				if ((line == vStartLine && col > vStartCol) || line > vStartLine) {
-					// is after start
-					if ((line == vEndLine && col <= vEndCol) || line < vEndLine) {
-						// is after or at end
-
-						/*
-						 * Vertex is a valid candidate, but we prefer its
-						 * children if possible.
-						 */
-						Vertex match = findAt(v.getVertices(Direction.OUT, E_CHILD), line, col);
-						if (match != null) {
-							return match;
-						}
-						else {
-							return v;
-						}
-					}
-				}
+			// Check children of invalid, and of valid&fitting vertices
+			if (!validNode || (afterStart && beforeEnd)) {
+				Vertex match = findAt(v.getVertices(Direction.OUT, E_CHILD), line, col);
+				// Return closer match or, if valid, this vertex
+				if (match != null)
+					return match;
+				else if (validNode)
+					return v;
 			}
 		}
 

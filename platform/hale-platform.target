@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="126">
+<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="133">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.sdk.ide" version="3.7.1.M20110909-1335"/>
-<repository location="http://www.cityserver3d.de/updates/eclipse/updates/3.7"/>
-</location>
-<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="eu.esdihumboldt.hale.platform.feature.group" version="2.9.2"/>
-<repository location="http://hale.igd.fraunhofer.de/build-support/507d3beeb80f12c624cc0c8eb7f86d69c0471896/updatesites/platform"/>
+<repository location="http://hale.igd.fraunhofer.de/build-support/bacf57b15bfa9469939118afb9e4546dd28a80b3/updatesites/platform"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.emf.sdk.feature.group" version="2.7.1.v20110913-1526"/>
@@ -18,6 +14,10 @@
 <unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.0.1.v201108020809"/>
 <unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.0.1.v201108020506"/>
 <repository location="http://www.cityserver3d.de/updates/releases/indigo"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.sdk.ide" version="3.7.1.M20110909-1335"/>
+<repository location="http://www.cityserver3d.de/updates/eclipse/updates/3.7"/>
 </location>
 </locations>
 </target>
