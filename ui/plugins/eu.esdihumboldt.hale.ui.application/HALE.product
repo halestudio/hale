@@ -37,13 +37,15 @@ http://www.esdi-community.eu/projects/show/hale
       </win>
    </launcher>
 
-
    <vm>
    </vm>
 
-
    <plugins>
       <plugin id="EDU.oswego.cs.dl.util.concurrent"/>
+      <plugin id="asm"/>
+      <plugin id="asm-analysis"/>
+      <plugin id="asm-tree"/>
+      <plugin id="asm-util"/>
       <plugin id="au.com.bytecode.opencsv"/>
       <plugin id="cal10n.api"/>
       <plugin id="cern.colt"/>
@@ -172,6 +174,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.io.gml.test"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.ui"/>
       <plugin id="eu.esdihumboldt.hale.io.html"/>
+      <plugin id="eu.esdihumboldt.hale.io.html.svg"/>
       <plugin id="eu.esdihumboldt.hale.io.html.ui"/>
       <plugin id="eu.esdihumboldt.hale.io.jdbc"/>
       <plugin id="eu.esdihumboldt.hale.io.jdbc.postgresql"/>
@@ -398,8 +401,9 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.libtiff.jai"/>
       <plugin id="org.mortbay.jetty.server"/>
       <plugin id="org.mortbay.jetty.util"/>
-      <plugin id="org.objectweb.asm"/>
       <plugin id="org.opengis"/>
+      <plugin id="org.parboiled.core"/>
+      <plugin id="org.parboiled.java" fragment="true"/>
       <plugin id="org.postgresql.jdbc4"/>
       <plugin id="org.slf4j.api"/>
       <plugin id="org.springframework.aop"/>
@@ -413,6 +417,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.w3c.dom.events"/>
       <plugin id="org.w3c.dom.smil"/>
       <plugin id="org.w3c.dom.svg"/>
+      <plugin id="pegdown"/>
       <plugin id="relaxngDatatype"/>
       <plugin id="schemacrawler.core"/>
       <plugin id="slf4j.ext"/>
