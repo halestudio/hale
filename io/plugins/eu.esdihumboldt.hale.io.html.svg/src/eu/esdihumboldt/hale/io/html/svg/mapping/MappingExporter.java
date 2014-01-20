@@ -16,10 +16,15 @@
 package eu.esdihumboldt.hale.io.html.svg.mapping;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.io.Writer;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
+
+import com.google.common.io.CharStreams;
 
 import eu.esdihumboldt.hale.common.align.io.impl.AbstractAlignmentWriter;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
@@ -52,13 +57,21 @@ public class MappingExporter extends AbstractAlignmentWriter {
 		URL templateUrl = getClass().getResource("mapping.html");
 
 		// create template binding
-		Map<?, ?> binding = MappingDocumentation.createBinding(getProjectInfo(), getAlignment());
+		@SuppressWarnings("unchecked")
+		Map<String, Object> binding = MappingDocumentation.createBinding(getProjectInfo(),
+				getAlignment());
+
+		// read javascript from file and store it in the binding
+		try (Reader reader = new InputStreamReader(getClass().getResourceAsStream(
+				"render-mapping.js"), StandardCharsets.UTF_8)) {
+			binding.put("javascript", CharStreams.toString(reader));
+		}
 
 		// initialize template engine
 		GStringTemplateEngine engine = new GStringTemplateEngine();
 
 		// bind and write template
-		try (Writer out = new OutputStreamWriter(getTarget().getOutput(), "UTF-8")) {
+		try (Writer out = new OutputStreamWriter(getTarget().getOutput(), StandardCharsets.UTF_8)) {
 			Writable template = engine.createTemplate(templateUrl).make(binding);
 			template.writeTo(out);
 
