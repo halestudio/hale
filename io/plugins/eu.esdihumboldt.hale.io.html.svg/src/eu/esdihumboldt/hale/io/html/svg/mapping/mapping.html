@@ -100,32 +100,81 @@
 		<h1>$project.name</h1>
 		<h3>$project.author</h3> 
 		<% if (project.description) { %>
-			<p>$project.description</p>
+			<div>$project.description</div>
 		<% } %>
 	</div>
 	<% } %>
 
 	<!-- Overview? -->
 	
-	<!-- All cells unordered -->
-    <div class="mappingContainer">
-   	<% alignment.cells.each { %>
-        <h1>Cell ${it.key}:</h1>
-        <svg id="mapping_${it.key}" class="svgContainer"></svg>
-        <div id="mapping_${it.key}_properties" class="propertyContainer"></div>
-    <% } %>
-    </div>
+	<!-- Cells per type cell -->
+	<%
+		// map that store which cell to paint for which ID
+		def idmap = [:]
+		// generated ID counter
+		int id = 0
+		// explanation
+		def expl = null
+		
+		alignment.typeCells.each {
+	%>
+	<div class="mappingContainer">
+		<!-- Type cell -->
+		<h2>${it.id}:</h2>
+		<%
+			idmap[++id] = it.id
+		%>
+        <svg id="mapping_${id}" class="svgContainer"></svg>
+        <div id="mapping_${id}_properties" class="propertyContainer"></div>
+        <%
+        	expl = alignment.explanations[it.id]
+        	if (expl) {
+        %>
+        	<div>$expl</div>
+        <%
+        	}
+        %>
+        <div style="margin-left: 16px;">
+	        <!-- Property cells -->
+	        <%
+	        	it.cells.each {
+	        		idmap[++id] = it 
+	        %>
+	        	<h4>${it}:</h4>
+	        	<svg id="mapping_${id}" class="svgContainer"></svg>
+	        	<div id="mapping_${id}_properties" class="propertyContainer"></div>
+	        	<%
+		        	expl = alignment.explanations[it]
+		        	if (expl) {
+		        %>
+		        	<div>$expl</div>
+		        <%
+		        	}
+		        %>
+	        <%
+	        	} 
+	        %>
+        </div>
+	</div>
+	<%
+		}
+	%>
 
     <script>
         window.onload = function() {
-       	<% alignment.cells.each { %>
-	        drawMapping("#mapping_${it.key}", $it.value, {
+       	<%
+       		idmap.each {
+       			def element_id, def ref_id ->
+       	%>
+	        drawMapping("#mapping_${element_id}", ${alignment.cells[ref_id]}, {
 	            width: 800,
 	            lineHeight: 24,
 	            padding: 5,
 	            charLength: 6
 	        });
-        <% } %>
+        <%
+        	}
+       	%>
         }
     </script>
 
