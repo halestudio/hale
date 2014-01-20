@@ -208,7 +208,7 @@ class MappingDocumentation {
 	}
 
 	private static Map projectInfoBinding(ProjectInfo project) {
-		if (project.name) {
+		if (project?.name) {
 			def b = [:]
 
 			// project name
