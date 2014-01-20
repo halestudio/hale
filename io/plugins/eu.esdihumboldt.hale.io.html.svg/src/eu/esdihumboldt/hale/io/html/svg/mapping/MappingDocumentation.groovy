@@ -33,6 +33,7 @@ import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo
 import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality
+import eu.esdihumboldt.util.Identifiers
 import groovy.json.JsonBuilder
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
@@ -68,15 +69,60 @@ class MappingDocumentation {
 	private static Map alignmentBinding(Alignment alignment) {
 		def b = [:]
 
+		// cell ID mapping (as the original cell IDs may contain invalid characters)
+		Identifiers<Cell> simpleIds = new Identifiers<Cell>(Cell.class, false)
+
+		// for each type cell
+		b.typeCells = alignment.typeCells.collect { Cell typeCell ->
+			[ //
+				// type cell ID
+				id: simpleIds.getId(typeCell), //
+
+				// display name
+				//TODO
+
+				// IDs of cells associated to the type cell
+				cells: alignment.getPropertyCells(typeCell).collect { //
+					Cell propertyCell ->
+					simpleIds.getId(propertyCell)
+				}]
+		}
+
 		// for each cell create the JSON representation
 		def cellData = [:]
+		def cellExplanations = [:]
 		alignment.cells.each { Cell cell ->
+			def id = simpleIds.getId(cell)
 			// create JSON representation
-			cellData[cell.id] = cellInfoJSON(cell)
+			cellData[id] = cellInfoJSON(cell)
+
+			// create cell explanation
+			cellExplanations[id] = cellExplanation(cell)
 		}
 		b.cells = cellData
+		b.explanations = cellExplanations
 
 		b
+	}
+
+	@CompileStatic(TypeCheckingMode.SKIP)
+	private static String cellExplanation(Cell cell) {
+		// get the associated function
+		AbstractFunction<?> function = FunctionUtil.getFunction(cell
+				.getTransformationIdentifier())
+
+		String exp = null
+		if (function?.explanation) {
+			exp = function.explanation.getExplanationAsHtml(cell, null)
+			if (!exp) {
+				exp = function.explanation.getExplanation(cell, null)
+				if (exp) {
+					exp = markdownToHtml(exp)
+				}
+			}
+		}
+
+		exp
 	}
 
 	@CompileStatic(TypeCheckingMode.SKIP)
@@ -137,33 +183,32 @@ class MappingDocumentation {
 						)
 
 				// property descriptions
-				if (false) //XXX disabled
-					propertyDescriptions(
-							// type
-							[
-								builder.call {
-									if (ede.type.description) {
-										typeDescription markdownToHtml(ede.type.description)
-									}
-								}]
-							+
-							// children
-							ede.propertyPath.collect { ChildContext context ->
-								builder.call {
-									if (context.child.asProperty()) {
-										// property type
-										propertyType context.child.asProperty().propertyType.displayName
-									}
-									// cardinality
-									Cardinality card = DefinitionUtil.getCardinality(context.child)
-									propertyCardinality card as String
-									// description
-									if (context.child.description) {
-										propertyDescription markdownToHtml(context.child.description)
-									}
+				propertyDescriptions(
+						// type
+						[
+							builder.call {
+								if (ede.type.description) {
+									typeDescription markdownToHtml(ede.type.description)
+								}
+							}]
+						+
+						// children
+						ede.propertyPath.collect { ChildContext context ->
+							builder.call {
+								if (context.child.asProperty()) {
+									// property type
+									propertyType context.child.asProperty().propertyType.displayName
+								}
+								// cardinality
+								Cardinality card = DefinitionUtil.getCardinality(context.child)
+								propertyCardinality card as String
+								// description
+								if (context.child.description) {
+									propertyDescription markdownToHtml(context.child.description)
 								}
 							}
-							)
+						}
+						)
 			}
 		}
 	}
