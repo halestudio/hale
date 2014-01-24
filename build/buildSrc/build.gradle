@@ -1,0 +1,24 @@
+// Fraunhofer Institute for Computer Graphics Research (IGD)
+// Department Graphical Information Systems (GIS)
+//
+// Copyright (c) 2004-2013 Fraunhofer IGD. All rights reserved.
+//
+// This source code is property of the Fraunhofer IGD and underlies
+// copyright restrictions. It may only be used with explicit
+// permission from the respective owner.
+
+repositories {
+    maven {
+        url 'http://www.cityserver3d.de:8082/artifactory/repo'
+    }
+}
+
+dependencies {
+    compile 'com.beust:jcommander:1.32'
+    compile 'de.undercouch:gradle-download-task:0.4'
+    compile 'org.apache.maven:maven-embedder:3.1.1'
+    compile 'org.apache.maven.wagon:wagon-http-lightweight:2.4'
+    compile 'org.eclipse.tycho:org.eclipse.osgi:3.6.2.R36x_v20110210'
+    compile 'org.eclipse.aether:aether-connector-wagon:0.9.0.M2'
+    compile 'org.yaml:snakeyaml:1.13'
+}

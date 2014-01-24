@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="${Name}" uid="${Uid}" id="${Id}" application="${Application}" version="${Version}" useFeatures="false" includeLaunchers="true">
+
+   <aboutInfo>
+      <% if (AboutImagePath != null) { %><image path="${AboutImagePath}"/><% } %>
+      <text>
+         ${Name}
+
+Version ${Version}
+
+Copyright (c) 2004-2013 Fraunhofer IGD
+      </text>
+   </aboutInfo>
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgs>${ProgramArgs}</programArgs>
+      <vmArgs><% for (Arg in VmArgs) { %>${Arg}
+<% } %></vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+   </launcherArgs>
+
+   <% if (UI) { %>
+   <windowImages i16="/de.cs3d.ui.application/icons/cs3dlogo_icon16.png" i32="/de.cs3d.ui.application/icons/cs3dlogo_icon32.png" i48="/de.cs3d.ui.application/icons/cs3dlogo_icon48.png" i64="/de.cs3d.ui.application/icons/cs3dlogo_icon64.png" i128="/de.cs3d.ui.application/icons/cs3dlogo_icon128.png"/>
+   <% } else { %>
+   <windowImages/>
+   <% } %>
+
+   <% if (UI) { %>
+   <splash
+      location="de.cs3d.ui.admintool"
+      startupProgressRect="0,285,480,15"
+      startupMessageRect="7,266,466,15"
+      startupForegroundColor="FFFFFF" />
+   <% } %>
+   
+   <launcher name="${LauncherName}">
+      <solaris/>
+      <% if (WinIco != null) { %>
+      <win useIco="true">
+         <ico path="${WinIco}"/>
+         <bmp/>
+      </win>
+      <% } else { %>
+      <win useIco="false">
+         <bmp/>
+      </win>
+      <% } %>
+   </launcher>
+
+   <vm>
+   </vm>
+
+   <plugins>
+      <% for (Plugin in Plugins) { %><plugin id="${Plugin}"/>
+      <% } %>
+   </plugins>
+
+   <configurations>
+      <% for (Plugin in StartLevels) { %><plugin id="${Plugin.Name}" autoStart="true" startLevel="${Plugin.StartLevel}" />
+      <% } %>
+   </configurations>
+
+</product>
