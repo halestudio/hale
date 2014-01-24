@@ -123,7 +123,7 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 	}
 
 	/**
-	 * build instances see
+	 * create instances see
 	 * {@link CSVInstanceReader#execute(ProgressIndicator, IOReporter)}
 	 * 
 	 * @param row the current row
