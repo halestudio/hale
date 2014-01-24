@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+  <name>eu.esdihumboldt.hale.updatesite.feature</name>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.pde.ManifestBuilder</name>
+    </buildCommand>
+    <buildCommand>
+      <name>org.eclipse.pde.SchemaBuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.pde.PluginNature</nature>
+  </natures>
+</projectDescription>

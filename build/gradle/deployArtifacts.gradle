@@ -1,0 +1,44 @@
+// Fraunhofer Institute for Computer Graphics Research (IGD)
+// Department Graphical Information Systems (GIS)
+//
+// Copyright (c) 2004-2013 Fraunhofer IGD. All rights reserved.
+//
+// This source code is property of the Fraunhofer IGD and underlies
+// copyright restrictions. It may only be used with explicit
+// permission from the respective owner.
+
+import org.apache.maven.cli.MavenCli
+
+/**
+ * Deploy artifacts for all bundles
+ */
+task deployBundleArtifacts << {
+    project.ext.generateArtifacts = true
+
+    // generate pom files for all bundles
+    def pg = new PomGenerator(project)
+    pg.generatePomFiles()
+    pg.generateParentPomFile()
+
+    println('Generating artifacts ...')
+    def res = new MavenCli().doMain([ 'deploy' ] as String[], project.ext.rootDir.path, System.out, System.err)
+    if (res != 0) {
+        throw new RuntimeException("Maven failed with exit code ${res}")
+    }
+}
+
+/**
+ * Build and deploy snapshot artifacts for all bundles
+ */
+task deployArtifacts(dependsOn: buildUpdateSite) {
+    finalizedBy deployBundleArtifacts
+} << {
+    project.ext.versionSuffix = '-SNAPSHOT'
+}
+
+/**
+ * Build and deploy release artifacts for all bundles
+ */
+task deployReleaseArtifacts(dependsOn: buildUpdateSite) {
+    finalizedBy deployBundleArtifacts
+}
