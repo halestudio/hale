@@ -73,6 +73,17 @@
                ref="eu.esdihumboldt.hale.io.xls.xlsx">
          </contentType>
       </provider>
-   </extension>
+      <provider
+            class="eu.esdihumboldt.hale.io.xls.writer.XLSInstanceWriter"
+            id="eu.esdihumboldt.hale.io.xls.writer.instance"
+            name="XLS file">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.xls.xls">
+         </contentType>
+         <contentType
+               ref="eu.esdihumboldt.hale.io.xls.xlsx">
+         </contentType>
+      </provider>
+      </extension>
 
 </plugin>

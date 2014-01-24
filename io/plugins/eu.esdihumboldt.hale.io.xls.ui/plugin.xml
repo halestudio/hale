@@ -18,5 +18,17 @@
          </provider>
       </configPage>
    </extension>
-
+      <extension
+         point="eu.esdihumboldt.hale.io.action">
+      <action
+            id="eu.esdihumboldt.hale.io.xls.write.instance"
+            name="XLS Instance Writer"
+            type="eu.esdihumboldt.hale.io.xls.writer.XLSInstanceWriter">
+      </action>
+      <advisor
+            action="eu.esdihumboldt.hale.io.xls.write.instance"
+            class="eu.esdihumboldt.hale.ui.io.instance.InstanceExportAdvisor"
+            id="eu.esdihumboldt.hale.io.xls.write.instance">
+      </advisor>
+   </extension>
 </plugin>
