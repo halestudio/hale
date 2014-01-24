@@ -28,8 +28,6 @@
       <plugin id="ch.qos.logback.core"/>
       <plugin id="ch.qos.logback.slf4j" fragment="true"/>
       <plugin id="com.ibm.icu"/>
-      <plugin id="com.springsource.com.sun.xml.bind"/>
-      <plugin id="com.springsource.com.sun.xml.fastinfoset"/>
       <plugin id="com.springsource.javax.activation"/>
       <plugin id="com.springsource.javax.el"/>
       <plugin id="com.springsource.javax.media.jai.codec"/>
@@ -37,7 +35,8 @@
       <plugin id="com.springsource.javax.persistence"/>
       <plugin id="com.springsource.javax.servlet.jsp"/>
       <plugin id="com.springsource.org.aopalliance"/>
-      <plugin id="com.springsource.org.jvnet.staxex"/>
+      <plugin id="com.sun.xml.bind"/>
+      <plugin id="com.sun.xml.fastinfoset"/>
       <plugin id="com.vividsolutions.jts"/>
       <plugin id="de.fhg.igd.hale.fme.doc"/>
       <plugin id="eu.esdihumboldt.cst.doc.functions"/>
@@ -95,6 +94,7 @@
       <plugin id="org.jdom"/>
       <plugin id="org.junit"/>
       <plugin id="org.junit4"/>
+      <plugin id="org.jvnet.staxex"/>
       <plugin id="org.mortbay.jetty.server"/>
       <plugin id="org.mortbay.jetty.util"/>
       <plugin id="org.slf4j.api"/>

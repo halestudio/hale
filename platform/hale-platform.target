@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="115">
+<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="124">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.codehaus.groovy21.feature.feature.group" version="2.8.0.xx-20130703-1500-e37-RELEASE"/>
-<unit id="org.codehaus.groovy.eclipse.feature.feature.group" version="2.8.0.xx-20130703-1500-e37-RELEASE"/>
-<repository location="http://dist.springsource.org/release/GRECLIPSE/e3.7/"/>
+<unit id="org.eclipse.sdk.ide" version="3.7.1.M20110909-1335"/>
+<repository location="http://www.cityserver3d.de/updates/eclipse/updates/3.7"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.emf.sdk.feature.group" version="2.7.1.v20110913-1526"/>
@@ -16,12 +15,8 @@
 <repository location="http://www.cityserver3d.de/updates/releases/indigo"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.sdk.ide" version="3.7.1.M20110909-1335"/>
-<repository location="http://www.cityserver3d.de/updates/eclipse/updates/3.7"/>
-</location>
-<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="eu.esdihumboldt.hale.platform.feature.group" version="2.9.0"/>
-<repository location="http://hale.igd.fraunhofer.de/build-support/1bb482b758a63e5a145267424b0b61e1c4f643c8/updatesites/platform"/>
+<unit id="eu.esdihumboldt.hale.platform.feature.group" version="2.9.2"/>
+<repository location="http://hale.igd.fraunhofer.de/build-support/d657e86d712e6e475a73cb0319fe19ef38fd02dd/updatesites/platform"/>
 </location>
 </locations>
 </target>
