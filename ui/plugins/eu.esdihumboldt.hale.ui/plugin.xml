@@ -709,6 +709,14 @@
 			projectResource="false"
 			wizard="eu.esdihumboldt.hale.ui.io.project.ArchiveProjectImportWizard">
 		</action-ui>
+  <action-ui
+        action="eu.esdihumboldt.hale.io.xls.write.instance"
+        id="eu.esdihumboldt.hale.io.instance.write.source.ui"
+        label="Source data..."
+        priority="0"
+        projectResource="false"
+        wizard="eu.esdihumboldt.hale.ui.io.instance.InstanceExportWizard">
+  </action-ui>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.ui.io.source">
