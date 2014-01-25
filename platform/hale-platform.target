@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="124">
+<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="125">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.sdk.ide" version="3.7.1.M20110909-1335"/>
@@ -16,7 +16,7 @@
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="eu.esdihumboldt.hale.platform.feature.group" version="2.9.2"/>
-<repository location="http://hale.igd.fraunhofer.de/build-support/d657e86d712e6e475a73cb0319fe19ef38fd02dd/updatesites/platform"/>
+<repository location="http://hale.igd.fraunhofer.de/build-support/507d3beeb80f12c624cc0c8eb7f86d69c0471896/updatesites/platform"/>
 </location>
 </locations>
 </target>
