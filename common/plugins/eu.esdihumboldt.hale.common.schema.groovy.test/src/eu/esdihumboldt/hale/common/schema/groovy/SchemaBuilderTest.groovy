@@ -218,7 +218,7 @@ class SchemaBuilderTest extends GroovyTestCase {
 			}
 
 			OrderType {
-				_{
+				'_'{
 					item(itemType)
 					quantity(Integer)
 				}
@@ -239,13 +239,13 @@ class SchemaBuilderTest extends GroovyTestCase {
 		}
 		assertNotNull orderType
 
-		assertEquals 1, orderType.children.size()
+		assertEquals 'Group was not created', 1, orderType.children.size()
 
 		// group
 		GroupPropertyDefinition group = orderType.children[0]
 		assertNotNull group
 
-		assertEquals 2, group.declaredChildren.size()
+		assertEquals 'Group child count is wrong', 2, group.declaredChildren.size()
 
 		// children
 		PropertyDefinition childItem = group.declaredChildren[0]
