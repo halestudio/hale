@@ -473,7 +473,7 @@ task createProductFeature(dependsOn: [ generatePomFiles, makeProductFile, makePr
 
     //create pom.xml
     def productFeaturePath = makeProductFeatureProjectDefinition.destinationDir
-    pg.makePomFileWithPackaging(productFeaturePath.name, '1.0.0', false, 'eclipse-repository',
+    pg.makePomFileWithPackaging(productFeaturePath.name, '1.0.0', false, false, 'eclipse-repository',
             'pom-product.xml', productFeaturePath)
 
     // create build.properties
