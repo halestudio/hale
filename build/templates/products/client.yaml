@@ -1,175 +1,250 @@
-Common:
-  Name: CityServer3D AdminTool
-  Uid: de.cs3d.ui.admintool.AdminTool
-  Id: de.cs3d.ui.admintool.AdminTool
-  Application: de.cs3d.ui.application.application
-  AboutImagePath: /de.cs3d.ui.application/about.png
+HALE:
+  Name: HUMBOLDT Alignment Editor
+  Uid: eu.esdihumboldt.hale
+  Id: eu.esdihumboldt.hale.ui.application.HALE
+  Application: eu.esdihumboldt.hale.ui.application
+#  AboutImagePath: /de.cs3d.ui.application/about.png
   UI: true
-  LauncherName: AdminTool
-  ProgramArgs: -nl de
+  LauncherName: HALE
+  ProgramArgs: -nl en_GB -clean -name "HUMBOLDT Alignment Editor" --launcher.defaultAction openFile
   VmArgs:
+  - -Xmx800m
+  - -XX:MaxPermSize=128m
+  - -Dcache.level1.enabled=false
+  - -Dcache.level1.size=0
+  - -Dcache.level2.enabled=false
+  - -Dcache.level2.size=0
   - -Xms256M
   - -XX:MinHeapFreeRatio=40
   - -XX:MaxHeapFreeRatio=55
-  WinIco: /de.cs3d.ui.admintool/icons/cs3d.ico
+  WinIco: /eu.esdihumboldt.hale.ui.application/images/hale.ico
   Plugins:
+  - EDU.oswego.cs.dl.util.concurrent
+  - asm
+  - asm-analysis
+  - asm-tree
+  - asm-util
+  - au.com.bytecode.opencsv
   - cal10n.api
+  - cern.colt
   - ch.qos.logback.classic
   - ch.qos.logback.core
   - ch.qos.logback.slf4j
-  - com.arjuna.ats
-  - com.fasterxml.jackson.core.jackson-annotations
+  - com.google.appengine
   - com.google.guava
+  - com.iabcinc.jmep
   - com.ibm.icu
+  - com.orientechnologies.common
+  - com.orientechnologies.orient.core
   - com.springsource.antlr
   - com.springsource.com.thoughtworks.xstream
-  - com.springsource.edu.oswego.cs.dl.util.concurrent
-  - com.springsource.javassist
+  - com.springsource.javax.activation
   - com.springsource.javax.el
   - com.springsource.javax.media.jai.codec
   - com.springsource.javax.media.jai.core
-  - com.springsource.javax.resource
+  - com.springsource.javax.persistence
   - com.springsource.javax.servlet.jsp
-  - com.springsource.javax.xml.stream
-  - com.springsource.net.sf.cglib
   - com.springsource.org.aopalliance
   - com.springsource.org.apache.commons.beanutils
   - com.springsource.org.apache.commons.collections
   - com.springsource.org.apache.commons.configuration
   - com.springsource.org.apache.commons.digester
   - com.springsource.org.apache.commons.jxpath
+  - com.springsource.org.apache.commons.lang
   - com.springsource.org.apache.commons.pool
+  - com.springsource.org.apache.velocity
   - com.springsource.org.apache.xerces
   - com.springsource.org.apache.xml.resolver
+  - com.springsource.org.apache.xmlbeans
   - com.springsource.org.apache.xmlcommons
-  - com.springsource.org.codehaus.janino
-  - com.springsource.org.dom4j
-  - com.springsource.org.jaxen
-  - com.springsource.org.jboss.logging
-  - com.springsource.org.jboss.util
-  - com.springsource.org.jgroups
-  - com.sun.imageio.jai.tools
-  - com.verhas.licensor
+  - com.springsource.org.castor
+  - com.springsource.org.custommonkey.xmlunit
+  - com.springsource.org.picocontainer
+  - com.springsource.org.xmlpull
+  - com.sun.jna
+  - com.sun.xml.bind
+  - com.sun.xml.fastinfoset
+  - com.sun.xsom
+  - com.tinkerpop.blueprints
+  - com.tinkerpop.blueprints.orient
+  - com.tinkerpop.gremlin.groovy
+  - com.tinkerpop.gremlin.java
+  - com.tinkerpop.pipes
   - com.vividsolutions.jts
-  - de.cs3d.common.algorithm
-  - de.cs3d.common.core
-  - de.cs3d.common.crypt
-  - de.cs3d.common.gl@0
-  - de.cs3d.common.index
-  - de.cs3d.common.logging.service
   - de.cs3d.common.metamodel
-  - de.cs3d.common.rules@0
-  - de.cs3d.common.visualization  
-  - de.cs3d.model.blender@0
-  - de.cs3d.model.citygml@0
-  - de.cs3d.model.citygml.ui
-  - de.cs3d.model.collada@0
-  - de.cs3d.model.collada.ui
-  - de.cs3d.model.cs3d@0
-  - de.cs3d.model.dxf@0
-  - de.cs3d.model.dxf.ui
-  - de.cs3d.model.esri.grid@0
-  - de.cs3d.model.esri.grid.ui
-  - de.cs3d.model.esri.tin@0
-  - de.cs3d.model.esri.tin.ui
-  - de.cs3d.model.geoimage@0
-  - de.cs3d.model.geotiff@0
-  - de.cs3d.model.geotiff.ui
-  - de.cs3d.model.geotools
-  - de.cs3d.model.gml
-  - de.cs3d.model.kml@0
-  - de.cs3d.model.kml.ui
-  - de.cs3d.model.kmz@0
-  - de.cs3d.model.kmz.ui
-  - de.cs3d.model.raw@0
-  - de.cs3d.model.raw.ui
-  - de.cs3d.model.repository@0
-  - de.cs3d.model.shapefile@0
-  - de.cs3d.model.shapefile.ui
-  - de.cs3d.model.terrain
-  - de.cs3d.model.vrml@0
-  - de.cs3d.model.vrml.ui
-  - de.cs3d.model.x3d@0
-  - de.cs3d.model.x3d.ui
-  - de.cs3d.model.xyz@0
-  - de.cs3d.model.xyz.ui
-  - de.cs3d.ui.admintool
-# Add these plugins with STARTLVL as soon as the scenario edior gets into production 
-# - de.cs3d.common.portrayal@0
-# - de.cs3d.ui.portrayal@0
-# the rest can be added without starting lvl   
-  - de.cs3d.ui.application
   - de.cs3d.ui.bookmarks
-  - de.cs3d.ui.bookmarks.coordinates
-  - de.cs3d.ui.bookmarks.custom
-  - de.cs3d.ui.bookmarks.home
-  - de.cs3d.ui.bookmarks.scene
-  - de.cs3d.ui.citycompact
-  - de.cs3d.ui.commands.citycompact
-  - de.cs3d.ui.commands.edit
-  - de.cs3d.ui.commands.insert
-  - de.cs3d.ui.commands.object
-  - de.cs3d.ui.commands.save
-  - de.cs3d.ui.common
-  - de.cs3d.ui.controls.memoryusage
-  - de.cs3d.ui.crypt
-  - de.cs3d.ui.dataintegration
-  - de.cs3d.ui.firststeps
-  - de.cs3d.ui.index@0
-  - de.cs3d.ui.perspectives.edit
-  - de.cs3d.ui.perspectives.projects
-  - de.cs3d.ui.perspectives.scene
-  - de.cs3d.ui.planning
-  - de.cs3d.ui.rules
-  - de.cs3d.ui.rules.graphicaleditor
-  - de.cs3d.ui.scenemap
-  - de.cs3d.ui.screenshot
-  - de.cs3d.ui.server
-  - de.cs3d.ui.util.eclipse@0
+  - de.cs3d.ui.util.eclipse
   - de.cs3d.ui.util.logging.errorlog@0
   - de.cs3d.ui.util.logging.userstatus
-  - de.cs3d.ui.views.appearance
-  - de.cs3d.ui.views.details
-  - de.cs3d.ui.views.explorer
-  - de.cs3d.ui.views.gl
-  - de.cs3d.ui.views.gl.camroute
-  - de.cs3d.ui.views.gl.navigation
-  - de.cs3d.ui.views.gl.renderchain.default
-  - de.cs3d.ui.views.gl.renderer
-  - de.cs3d.ui.views.project
-  - de.cs3d.ui.views.properties
-  - de.cs3d.ui.workspace
-  - de.cs3d.ui.xgeorule
-  - de.cs3d.util.castor
-  - de.cs3d.util.eclipse@0
+  - de.cs3d.util.eclipse
   - de.cs3d.util.helper
   - de.cs3d.util.logging
-  - de.cs3d.util.logging.logback
+  - de.cs3d.util.logging.logback@1
   - de.cs3d.util.logging.logback.appender
   - de.cs3d.util.logging.logback.observer
   - de.fhg.igd.concurrency
+  - de.fhg.igd.hale.fme
+  - de.fhg.igd.hale.fme.doc
+  - de.fhg.igd.hale.fme.ui
   - de.fhg.igd.mapviewer
-  - de.fhg.igd.mapviewer.server.file
   - de.fhg.igd.mapviewer.server.openstreetmap
-  - de.fhg.igd.mapviewer.server.wms
   - de.fhg.igd.mapviewer.tools.boxzoom
   - de.fhg.igd.osgi.util
-  - de.fhg.igd.pcolor
   - de.fhg.igd.swingrcp
-  - de.undercouch.bson4jackson
   - edu.umd.cs.findbugs.annotations
+  - eu.esdihumboldt.cst@0
+  - eu.esdihumboldt.cst.doc.functions
+  - eu.esdihumboldt.cst.doc.functions.dynamic
+  - eu.esdihumboldt.cst.functions.core
+  - eu.esdihumboldt.cst.functions.geometric
+  - eu.esdihumboldt.cst.functions.groovy
+  - eu.esdihumboldt.cst.functions.inspire
+  - eu.esdihumboldt.cst.functions.numeric
+  - eu.esdihumboldt.cst.functions.string
+  - eu.esdihumboldt.cst.test
+  - eu.esdihumboldt.hale.common.align@0
+  - eu.esdihumboldt.hale.common.align.groovy
+  - eu.esdihumboldt.hale.common.align.groovy.test
+  - eu.esdihumboldt.hale.common.align.test
+  - eu.esdihumboldt.hale.common.align.tgraph
+  - eu.esdihumboldt.hale.common.align.tgraph.test
+  - eu.esdihumboldt.hale.common.app
+  - eu.esdihumboldt.hale.common.cache
+  - eu.esdihumboldt.hale.common.cache.test
+  - eu.esdihumboldt.hale.common.codelist
+  - eu.esdihumboldt.hale.common.convert@0
+  - eu.esdihumboldt.hale.common.convert.core@0
+  - eu.esdihumboldt.hale.common.convert.wkt@0
+  - eu.esdihumboldt.hale.common.core@0
+  - eu.esdihumboldt.hale.common.core.test
+  - eu.esdihumboldt.hale.common.filter
+  - eu.esdihumboldt.hale.common.filter.test
+  - eu.esdihumboldt.hale.common.headless
+  - eu.esdihumboldt.hale.common.instance@0
+  - eu.esdihumboldt.hale.common.instance.groovy
+  - eu.esdihumboldt.hale.common.instance.groovy.test
+  - eu.esdihumboldt.hale.common.instance.orient
+  - eu.esdihumboldt.hale.common.instancevalidator
+  - eu.esdihumboldt.hale.common.lookup
+  - eu.esdihumboldt.hale.common.lookup.test
+  - eu.esdihumboldt.hale.common.propertyaccessor
+  - eu.esdihumboldt.hale.common.schema
+  - eu.esdihumboldt.hale.common.schema.groovy
+  - eu.esdihumboldt.hale.common.schema.groovy.test
+  - eu.esdihumboldt.hale.common.schema.test
+  - eu.esdihumboldt.hale.common.scripting
+  - eu.esdihumboldt.hale.common.test
+  - eu.esdihumboldt.hale.doc.user
+  - eu.esdihumboldt.hale.doc.user.examples
+  - eu.esdihumboldt.hale.doc.user.examples.meridian2
+  - eu.esdihumboldt.hale.doc.user.views.styledmap
+  - eu.esdihumboldt.hale.doc.util
+  - eu.esdihumboldt.hale.instance.test
+  - eu.esdihumboldt.hale.io.codelist.xml@0
+  - eu.esdihumboldt.hale.io.csv@0
+  - eu.esdihumboldt.hale.io.csv.test
+  - eu.esdihumboldt.hale.io.csv.ui
+  - eu.esdihumboldt.hale.io.gml@0
+  - eu.esdihumboldt.hale.io.gml.geometry
+  - eu.esdihumboldt.hale.io.gml.geometry.test
+  - eu.esdihumboldt.hale.io.gml.test
+  - eu.esdihumboldt.hale.io.gml.ui
+  - eu.esdihumboldt.hale.io.html
+  - eu.esdihumboldt.hale.io.html.svg
+  - eu.esdihumboldt.hale.io.html.svg.test
+  - eu.esdihumboldt.hale.io.html.ui
+  - eu.esdihumboldt.hale.io.jdbc
+  - eu.esdihumboldt.hale.io.jdbc.postgresql@0
+  - eu.esdihumboldt.hale.io.jdbc.ui
+  - eu.esdihumboldt.hale.io.json
+  - eu.esdihumboldt.hale.io.json.ui
+  - eu.esdihumboldt.hale.io.oml
+  - eu.esdihumboldt.hale.io.oml.test
+  - eu.esdihumboldt.hale.io.project.jaxb
+  - eu.esdihumboldt.hale.io.shp@0
+  - eu.esdihumboldt.hale.io.shp.ui
+  - eu.esdihumboldt.hale.io.xls
+  - eu.esdihumboldt.hale.io.xls.ui
+  - eu.esdihumboldt.hale.io.xml@0
+  - eu.esdihumboldt.hale.io.xsd@0
+  - eu.esdihumboldt.hale.io.xsd.test
+  - eu.esdihumboldt.hale.io.xsd.ui
+  - eu.esdihumboldt.hale.io.xslt
+  - eu.esdihumboldt.hale.io.xslt.test
+  - eu.esdihumboldt.hale.io.xslt.ui
+  - eu.esdihumboldt.hale.prefixmapper
+  - eu.esdihumboldt.hale.ui
+  - eu.esdihumboldt.hale.ui.application
+  - eu.esdihumboldt.hale.ui.application.help.external
+#  - eu.esdihumboldt.hale.ui.application.help.internal
+  - eu.esdihumboldt.hale.ui.cache
+  - eu.esdihumboldt.hale.ui.codelist
+  - eu.esdihumboldt.hale.ui.codelist.test
+  - eu.esdihumboldt.hale.ui.common
+  - eu.esdihumboldt.hale.ui.common.definition.editors
+  - eu.esdihumboldt.hale.ui.common.graph
+  - eu.esdihumboldt.hale.ui.cst@0
+  - eu.esdihumboldt.hale.ui.examples
+  - eu.esdihumboldt.hale.ui.filter
+  - eu.esdihumboldt.hale.ui.firststeps
+  - eu.esdihumboldt.hale.ui.functions.core
+  - eu.esdihumboldt.hale.ui.functions.groovy
+  - eu.esdihumboldt.hale.ui.functions.inspire
+  - eu.esdihumboldt.hale.ui.functions.numeric
+  - eu.esdihumboldt.hale.ui.geometry
+  - eu.esdihumboldt.hale.ui.instancevalidation
+  - eu.esdihumboldt.hale.ui.launchaction
+  - eu.esdihumboldt.hale.ui.logback.config
+  - eu.esdihumboldt.hale.ui.lookup
+  - eu.esdihumboldt.hale.ui.schema.presets
+  - eu.esdihumboldt.hale.ui.schema.presets.inspire
+  - eu.esdihumboldt.hale.ui.scripting
+  - eu.esdihumboldt.hale.ui.style
+  - eu.esdihumboldt.hale.ui.templates
+  - eu.esdihumboldt.hale.ui.util
+  - eu.esdihumboldt.hale.ui.util.graph
+  - eu.esdihumboldt.hale.ui.util.groovy
+  - eu.esdihumboldt.hale.ui.util.groovy.test
+  - eu.esdihumboldt.hale.ui.views.data
+  - eu.esdihumboldt.hale.ui.views.functions
+  - eu.esdihumboldt.hale.ui.views.mapping
+  - eu.esdihumboldt.hale.ui.views.properties
+  - eu.esdihumboldt.hale.ui.views.report
+  - eu.esdihumboldt.hale.ui.views.resources
+  - eu.esdihumboldt.hale.ui.views.schemas
+  - eu.esdihumboldt.hale.ui.views.styledmap
+  - eu.esdihumboldt.hale.ui.views.transformation
+  - eu.esdihumboldt.hale.ui.views.typehierarchy
+  - eu.esdihumboldt.hale.userstatus.config
+  - eu.esdihumboldt.util
+  - eu.esdihumboldt.util.blueprints.entities
+  - eu.esdihumboldt.util.blueprints.entities.test
+  - eu.esdihumboldt.util.groovy
+  - eu.esdihumboldt.util.groovy.meta.extension
+  - eu.esdihumboldt.util.groovy.meta.fragment
+  - eu.esdihumboldt.util.resource
+  - eu.esdihumboldt.util.resource.schemas.citygml
+  - eu.esdihumboldt.util.resource.schemas.inspire
+  - eu.esdihumboldt.util.resource.schemas.inspire.annex1
+  - eu.esdihumboldt.util.resource.schemas.opengis.net
+  - eu.esdihumboldt.util.resource.schemas.test
+  - eu.esdihumboldt.util.test
   - gnu.trove
-  - jackson-core
-  - jackson-databind
-  - jackson-dataformat-smile
+  - groovy
+  - groovyx.net.http
+  - hale.net.sf.ehcache
+  - javax.measure
   - javax.servlet
-  - javax.transaction
-  - javax.vecmath
+  - javax.servlet.jsp
   - jcl.over.slf4j
+  - jline
+  - joda-time
+  - jsr305
   - jul.to.slf4j
   - log4j.over.slf4j
-  - org.antlr3
-  - org.apache.ant
+  - net.sf.ezmorph
+  - net.sf.json
+  - oauth.signpost
   - org.apache.batik.bridge
   - org.apache.batik.css
   - org.apache.batik.dom
@@ -183,58 +258,72 @@ Common:
   - org.apache.batik.util.gui
   - org.apache.batik.xml
   - org.apache.commons.codec
+  - org.apache.commons.convert
+  - org.apache.commons.el
   - org.apache.commons.httpclient
   - org.apache.commons.io
   - org.apache.commons.lang
   - org.apache.httpcomponents.httpclient
   - org.apache.httpcomponents.httpcore
+  - org.apache.jasper
   - org.apache.lucene
   - org.apache.lucene.analysis
   - org.apache.lucene.core
-  - org.bouncycastle
+  - org.apache.poi@1
+  - org.apache.ws.commons.schema
   - org.castor.core
   - org.castor.xml
-  - org.drools
+  - org.codehaus.jackson
+  - org.codehaus.jackson.mapper
+  - org.codehaus.jettison
+  - org.cyberneko.html
+  - org.dom4j
   - org.eclipse.compare.core
-  - org.eclipse.compare.core.nl_de
   - org.eclipse.core.commands
-  - org.eclipse.core.commands.nl_de
   - org.eclipse.core.contenttype
-  - org.eclipse.core.contenttype.nl_de
   - org.eclipse.core.databinding
-  - org.eclipse.core.databinding.nl_de
   - org.eclipse.core.databinding.observable
   - org.eclipse.core.databinding.property
   - org.eclipse.core.expressions
-  - org.eclipse.core.expressions.nl_de
   - org.eclipse.core.filesystem
-  - org.eclipse.core.filesystem.nl_de
+  - org.eclipse.core.filesystem.linux.x86
+  - org.eclipse.core.filesystem.linux.x86_64
+#  - org.eclipse.core.filesystem.macosx
   - org.eclipse.core.filesystem.win32.x86
   - org.eclipse.core.filesystem.win32.x86_64
   - org.eclipse.core.jobs
-  - org.eclipse.core.jobs.nl_de
   - org.eclipse.core.resources
-  - org.eclipse.core.resources.nl_de
-  - org.eclipse.core.runtime@0
+  - org.eclipse.core.resources.win32.x86
+  - org.eclipse.core.runtime
   - org.eclipse.core.runtime.compatibility.registry
-  - org.eclipse.core.runtime.nl_de
   - org.eclipse.core.variables
-  - org.eclipse.core.variables.nl_de
   - org.eclipse.draw2d
+  - org.eclipse.emf.common
+  - org.eclipse.emf.ecore
   - org.eclipse.equinox.app
   - org.eclipse.equinox.common
   - org.eclipse.equinox.ds@0
-  - org.eclipse.equinox.p2.core
-  - org.eclipse.equinox.p2.engine
-  - org.eclipse.equinox.p2.metadata
-  - org.eclipse.equinox.p2.metadata.repository
-  - org.eclipse.equinox.p2.repository
+  - org.eclipse.equinox.http.jetty
+  - org.eclipse.equinox.http.registry
+  - org.eclipse.equinox.http.servlet
+  - org.eclipse.equinox.jsp.jasper
+  - org.eclipse.equinox.jsp.jasper.registry
+  - org.eclipse.equinox.launcher
+#  - org.eclipse.equinox.launcher.cocoa.macosx
+  - org.eclipse.equinox.launcher.cocoa.macosx.x86_64
+  - org.eclipse.equinox.launcher.gtk.linux.x86
+  - org.eclipse.equinox.launcher.gtk.linux.x86_64
+  - org.eclipse.equinox.launcher.win32.win32.x86
+  - org.eclipse.equinox.launcher.win32.win32.x86_64
   - org.eclipse.equinox.preferences
   - org.eclipse.equinox.registry
   - org.eclipse.equinox.security
-  - org.eclipse.equinox.security.nl_de
+#  - org.eclipse.equinox.security.macosx
+  - org.eclipse.equinox.security.win32.x86
+  - org.eclipse.equinox.security.win32.x86_64
   - org.eclipse.equinox.util
-  - org.eclipse.gemini.blueprint.core
+  - org.eclipse.gemini.blueprint.core@0
+  - org.eclipse.gemini.blueprint.extender@5
   - org.eclipse.gemini.blueprint.io
   - org.eclipse.gmf.runtime.common.core
   - org.eclipse.gmf.runtime.common.ui
@@ -243,61 +332,43 @@ Common:
   - org.eclipse.gmf.runtime.draw2d.ui.render.awt
   - org.eclipse.help
   - org.eclipse.help.base
-  - org.eclipse.help.base.nl_de
-  - org.eclipse.help.nl_de
   - org.eclipse.help.ui
-  - org.eclipse.help.ui.nl_de
+  - org.eclipse.help.webapp
   - org.eclipse.jface
   - org.eclipse.jface.databinding
-  - org.eclipse.jface.databinding.nl_de
-  - org.eclipse.jface.nl_de
   - org.eclipse.jface.text
-  - org.eclipse.jface.text.nl_de
   - org.eclipse.osgi
   - org.eclipse.osgi.services
   - org.eclipse.platform
-  - org.eclipse.platform.nl_de
-  - org.eclipse.rcp
-  - org.eclipse.rcp.nl_de
   - org.eclipse.swt
-  - org.eclipse.swt.nl_de
+#  - org.eclipse.swt.cocoa.macosx
+  - org.eclipse.swt.cocoa.macosx.x86_64
+  - org.eclipse.swt.gtk.linux.x86
+  - org.eclipse.swt.gtk.linux.x86_64
   - org.eclipse.swt.win32.win32.x86
   - org.eclipse.swt.win32.win32.x86_64
   - org.eclipse.team.core
-  - org.eclipse.team.core.nl_de
   - org.eclipse.text
-  - org.eclipse.text.nl_de
   - org.eclipse.ui
   - org.eclipse.ui.cheatsheets
-  - org.eclipse.ui.cheatsheets.nl_de
   - org.eclipse.ui.console
-  - org.eclipse.ui.console.nl_de
   - org.eclipse.ui.forms
-  - org.eclipse.ui.forms.nl_de
-  - org.eclipse.ui.ide
-  - org.eclipse.ui.ide.nl_de
   - org.eclipse.ui.intro
-  - org.eclipse.ui.intro.nl_de
-  - org.eclipse.ui.navigator
-  - org.eclipse.ui.navigator.nl_de
-  - org.eclipse.ui.nl_de
+  - org.eclipse.ui.intro.universal
   - org.eclipse.ui.views
   - org.eclipse.ui.views.log
-  - org.eclipse.ui.views.log.nl_de
-  - org.eclipse.ui.views.nl_de
+  - org.eclipse.ui.views.properties.tabbed
   - org.eclipse.ui.workbench
-  - org.eclipse.ui.workbench.nl_de
   - org.eclipse.ui.workbench.texteditor
-  - org.eclipse.ui.workbench.texteditor.nl_de
+  - org.eclipse.xsd
   - org.eclipse.zest.core
-  - org.eclipse.zest.core.nl_de
+  - org.eclipse.zest.dot.export
+  - org.eclipse.zest.jface
   - org.eclipse.zest.layouts
-  - org.eclipse.zest.layouts.nl_de
-  - org.gdal
-  - org.gdal.win32_i586
-  - org.gdal.win32_x86_64
+  - org.geotiff
   - org.geotools
   - org.hamcrest.core
+  - org.iq80.snappy
   - org.javolution
   - org.jdesktop.swingx
   - org.jdesktop.swingx.mapviewer
@@ -305,23 +376,29 @@ Common:
   - org.jscience
   - org.junit
   - org.junit4
+  - org.jvnet.staxex
   - org.libtiff.jai
-  - org.lwjgl
-  - org.lwjgl.win32_i586
-  - org.lwjgl.win32_x86_64
-  - org.mvel2
-  - org.scala-ide.scala.library
+  - org.mortbay.jetty.server
+  - org.mortbay.jetty.util
+  - org.opengis
+  - org.parboiled.core
+  - org.parboiled.java
+  - org.postgresql.jdbc4
   - org.slf4j.api
-  - org.springframework.aop
-  - org.springframework.beans
-  - org.springframework.context
-  - org.springframework.core
-  - org.stringtemplate.v4
+  - org.springframework.aop@0
+  - org.springframework.asm
+  - org.springframework.beans@0
+  - org.springframework.context@0
+  - org.springframework.core@0
+  - org.springframework.expression
+  - org.springframework.transaction
   - org.w3c.css.sac
   - org.w3c.dom.events
   - org.w3c.dom.smil
   - org.w3c.dom.svg
-  - org.xmlpull.xpp3
+  - pegdown
+  - relaxngDatatype
+  - schemacrawler.core
   - slf4j.ext
 
 SelfService:
