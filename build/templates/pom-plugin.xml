@@ -73,7 +73,13 @@
 	        <dependency>
 	        	<groupId>org.codehaus.groovy</groupId>
 	        	<artifactId>groovy-eclipse-batch</artifactId>
+	        	<version>2.1.5-03</version>
+	        	<!--
+	        	For some reasons with the most up-to-date version
+	        	the compiled Groovy is not consistent with the
+	        	Groovy compiled in the Eclipse workspace.  
 	        	<version>2.1.8-01</version>
+	        	-->
 	        </dependency>
 	        <!-- dependency>
 			    <groupId>org.codehaus.groovy</groupId>
