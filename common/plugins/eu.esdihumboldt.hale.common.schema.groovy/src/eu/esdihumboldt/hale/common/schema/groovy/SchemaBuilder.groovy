@@ -196,7 +196,7 @@ class SchemaBuilder extends BuilderBase {
 			}
 		}
 		else {
-			//TODO
+			throw new IllegalStateException("${parent.class.name} as parent not supported")
 		}
 
 		node
