@@ -92,12 +92,15 @@ class UnitTestRunner {
 
         runnerargs += symbolicNames
 
+        def errorFile = new File(project.buildDir, 'hs_err_pid%p.log')
+
         try {
             project.javaexec {
                 classpath = project.files(equinoxBundle, osgiTestBundle)
                 main = osgiTestRunnerClass
                 args = runnerargs
                 maxHeapSize = osgiTestMaxMemory
+		jvmArgs = ['-XX:ErrorFile=${errorFile.absolutePath}']
             }
         } catch (e) {
             // do not fail the whole build if one unit test fails
