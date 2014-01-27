@@ -92,7 +92,7 @@ class UnitTestRunner {
 
         runnerargs += symbolicNames
 
-        def errorFile = new File(project.buildDir, 'hs_err_pid%p.log')
+        def errorFile = new File(project.buildDir, 'hs_err_test.log')
 
         try {
             project.javaexec {
