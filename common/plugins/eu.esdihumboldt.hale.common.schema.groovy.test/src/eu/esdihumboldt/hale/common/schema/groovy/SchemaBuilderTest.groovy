@@ -224,8 +224,8 @@ class SchemaBuilderTest extends GroovyTestCase {
 				 * fails in the maven tycho build tests, while it works inside
 				 * Eclipse - maybe a Groovy version issue?
 				 */
-				// _{
-				_(cardinality: 1) {
+				_{
+					//_(cardinality: 1) {
 					item(itemType)
 					quantity(Integer)
 				}
