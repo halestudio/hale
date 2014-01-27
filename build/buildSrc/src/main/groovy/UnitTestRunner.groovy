@@ -101,6 +101,8 @@ class UnitTestRunner {
             }
         } catch (e) {
             // do not fail the whole build if one unit test fails
+            println 'Error executing OSGi test runner'
+            e.printStackTrace()
         }
     }
 
