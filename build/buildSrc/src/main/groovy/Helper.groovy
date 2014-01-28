@@ -30,4 +30,11 @@ class Helper {
     static def buildForLinux(Project project) {
         return project.ext.osgiOS == 'linux'
     }
+	
+	/**
+	 * @return true if we're building for Mac OS X
+	 */
+	static def buildForMac(Project project) {
+		return project.ext.osgiOS == 'macosx'
+	}
 }

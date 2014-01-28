@@ -247,56 +247,73 @@ def includeAdditionalFiles(artifacts, relsrcpath, productOutputPath, reldstpath,
  */
 def packageClient(productOutputPath) {
     if (Helper.buildForWindows(project)) {
-        // get path to Windows Installer XML Kit
-        if (!project.ext.properties.containsKey("wixDir")) {
-            def dirs = fileTree(dir: 'C:\\', includes: [ 'Program Files*\\Windows Installer XML v3*\\bin\\candle.exe',
-                    'Program Files*\\WIX Toolset v3*\\bin\\candle.exe' ])
-
-            if (dirs.isEmpty()) {
-                throw new IllegalStateException("Could not guess WIX installation directory. Please specify it " +
-                        "in the 'wixDir' property")
-            }
-
-            if (dirs.files.size() > 1) {
-                throw new IllegalStateException("More than one WiX installation found. Please select the right " +
-                        "one in the 'wixDir' property")
-            }
-
-            project.ext.wixDir = dirs.singleFile.parentFile.parentFile
-            println('Guessing WIX directory: ' + project.ext.wixDir)
-        }
-
-        // call legacy Ant file to build the Windows installer
-        def timestamp = new SimpleDateFormat('YYYYMMddHHmm').format(Calendar.getInstance().getTime())
-        def wixArch
-        if (Helper.buildFor64bit(project)) {
-            wixArch = 'x64'
-        } else {
-            wixArch = 'x86'
-        }
-        ant.ant(antfile: new File("ant", "build-msi.xml")) {
-            property(name: "buildId", value: getProductLauncher())
-            property(name: "shortName", value: getProductLauncher())
-            property(name: "title", value: project.ext.win32InstallerTitle)
-            property(name: "version", value: project.version + '.' + timestamp)
-            property(name: "GUID.UpgradeCode", value: project.ext.win32InstallerUpgradeGUID)
-            property(name: "GUID.ApplicationShortcut", value: project.ext.win32InstallerShortcutGUID)
-            if (project.ext.properties.containsKey('tag')) {
-                property(name: "tag", value: project.ext.tag)
-            }
-            property(name: "wix.arch", value: wixArch)
-            if (project.ext.properties.containsKey('language')) {
-                property(name: "language", value: project.ext.language)
-            } else {
-                property(name: "language", value: 'en')
-            }
-            property(name: "wix.dir", value: project.ext.wixDir)
-            property(name: "wxs.dir", value: new File("templates/wix"))
-            property(name: "wxs.file.ui", value: "WixUI_CityServer3D")
-            property(name: "wxs.file.config", value: "CityServer3D")
-            property(name: "src", value: productOutputPath)
-        }
+		try {
+	        // get path to Windows Installer XML Kit
+	        if (!project.ext.properties.containsKey("wixDir")) {
+	            def dirs = fileTree(dir: 'C:\\', includes: [ 'Program Files*\\Windows Installer XML v3*\\bin\\candle.exe',
+	                    'Program Files*\\WIX Toolset v3*\\bin\\candle.exe' ])
+	
+	            if (dirs.isEmpty()) {
+	                throw new IllegalStateException("Could not guess WIX installation directory. Please specify it " +
+	                        "in the 'wixDir' property")
+	            }
+	
+	            if (dirs.files.size() > 1) {
+	                throw new IllegalStateException("More than one WiX installation found. Please select the right " +
+	                        "one in the 'wixDir' property")
+	            }
+	
+	            project.ext.wixDir = dirs.singleFile.parentFile.parentFile
+	            println('Guessing WIX directory: ' + project.ext.wixDir)
+	        }
+	
+	        // call legacy Ant file to build the Windows installer
+	        def timestamp = new SimpleDateFormat('YYYYMMddHHmm').format(Calendar.getInstance().getTime())
+	        def wixArch
+	        if (Helper.buildFor64bit(project)) {
+	            wixArch = 'x64'
+	        } else {
+	            wixArch = 'x86'
+	        }
+	        ant.ant(antfile: new File("ant", "build-msi.xml")) {
+	            property(name: "buildId", value: getProductLauncher())
+	            property(name: "shortName", value: getProductLauncher())
+	            property(name: "title", value: project.ext.win32InstallerTitle)
+	            property(name: "version", value: project.version + '.' + timestamp)
+	            property(name: "GUID.UpgradeCode", value: project.ext.win32InstallerUpgradeGUID)
+	            property(name: "GUID.ApplicationShortcut", value: project.ext.win32InstallerShortcutGUID)
+	            if (project.ext.properties.containsKey('tag')) {
+	                property(name: "tag", value: project.ext.tag)
+	            }
+	            property(name: "wix.arch", value: wixArch)
+	            if (project.ext.properties.containsKey('language')) {
+	                property(name: "language", value: project.ext.language)
+	            } else {
+	                property(name: "language", value: 'en')
+	            }
+	            property(name: "wix.dir", value: project.ext.wixDir)
+	            property(name: "wxs.dir", value: new File("templates/wix"))
+	            property(name: "wxs.file.ui", value: "WixUI_CityServer3D")
+	            property(name: "wxs.file.config", value: "CityServer3D")
+	            property(name: "src", value: productOutputPath)
+	        }
+		} catch (e) {
+			println "Could not find WiX installation ($e.message), packaging as ZIP instead"
+			
+			// package as ZIP
+			def packageName = getPackageName()
+			def packageFileName = new File('target', packageName + '.zip')
+			
+			println('Creating package ' + packageFileName + ' ...')
+			ant.zip(destfile: packageFileName, prefix: packageName) {
+				zipfileset(dir: productOutputPath, prefix: packageName) {
+					include(name: '**')
+				}
+			}
+		}
     } else {
+		// Linux / Mac OS
+		// package as .tar.gz
         def packageName = getPackageName()
         def packageFileName = new File('target', packageName + '.tar.gz')
 
