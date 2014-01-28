@@ -3,6 +3,19 @@
 
 <product name="${Name}" uid="${Uid}" id="${Id}" application="${Application}" version="${Version}" useFeatures="false" includeLaunchers="true">
 
+   <aboutInfo>
+      <text>
+         HUMBOLDT Alignment Editor (HALE)
+
+Version ${Version}
+
+Build ___build___
+Revision ___revision___
+
+http://www.esdi-community.eu/projects/show/hale
+      </text>
+   </aboutInfo>
+
    <configIni use="default">
    </configIni>
 
