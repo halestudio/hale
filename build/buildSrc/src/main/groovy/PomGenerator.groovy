@@ -24,9 +24,11 @@ class PomGenerator {
         makePomFileWithPackaging(symbolicName, version, needsScala, needsGroovy, packaging, 'pom-plugin.xml', path)
     }
 	
+	/**
+	 * Resolve a template file.
+	 */
 	def resolveTemplate(def name) {
-		//TODO look also in alternative locations?
-		new File(new File(project.projectDir, 'templates'), name)
+		Helper.resolveTemplate(project, name)
 	}
 
     /**

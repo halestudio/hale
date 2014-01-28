@@ -10,6 +10,15 @@
 import org.gradle.api.Project
 
 class Helper {
+	
+	/**
+	 * Resolve a template file or folder.
+	 */
+	static def resolveTemplate(Project project, String name) {
+		//TODO look also in alternative locations?
+		new File(new File(project.projectDir, 'templates'), name)
+	}
+	
     /**
      * @return true if we're building for a 64 bit platform
      */

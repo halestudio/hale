@@ -113,7 +113,7 @@ task buildUpdateSite(dependsOn: [ createUpdateSiteFeature, generatePomFiles ]) <
 
     // create category.xml
     new File(updateSitePath, 'category.xml').withWriter { w ->
-        def template = new GStringTemplateEngine().createTemplate(new File('templates', 'category.xml'))
+        def template = new GStringTemplateEngine().createTemplate(Helper.resolveTemplate(project, 'category.xml'))
         def result = template.make([
             'featureId': createUpdateSiteFeatureProjectDefinition.destinationDir.name,
             'version': '1.0.0',

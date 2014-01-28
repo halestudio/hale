@@ -360,7 +360,7 @@ def packageClient(productOutputPath) {
 	                property(name: "language", value: 'en')
 	            }
 	            property(name: "wix.dir", value: project.ext.wixDir)
-	            property(name: "wxs.dir", value: new File("templates/wix"))
+	            property(name: "wxs.dir", value: Helper.resolveTemplate(project, 'wix'))
 	            property(name: "wxs.file.ui", value: "WixUI_CityServer3D")
 	            property(name: "wxs.file.config", value: "CityServer3D")
 	            property(name: "src", value: productOutputPath)
@@ -416,12 +416,12 @@ def packageServer(productOutputPath) {
         def values = [
             'launcher': launcherName
         ]
-        def srcPath = new File('templates/startup/server/linux')
+        def srcPath = Helper.resolveTemplate(project, 'startup/server/linux')
         renderTemplate(new File(srcPath, 'launcher.sh'), new File(productOutputPath, "${launcherName}.sh"), values)
         renderTemplate(new File(srcPath, 'shutdown.sh'), new File(productOutputPath, 'shutdown.sh'), values)
         renderTemplate(new File(srcPath, 'startup.sh'), new File(productOutputPath, 'startup.sh'), values)
     } else if (Helper.buildForWindows(project)) {
-        def srcPath = new File('templates/startup/server/win32')
+        def srcPath = Helper.resolveTemplate(project, 'startup/server/win32')
 
         // copy service launcher
         def serviceLauncher = project.ext.serviceExeName + '.exe'
@@ -489,7 +489,7 @@ def packageServer(productOutputPath) {
 }
 
 task makeProductFeatureProjectDefinition(type: Copy) {
-    from 'templates/plugin-project.xml'
+    from Helper.resolveTemplate(project, 'plugin-project.xml')
     into new File(buildDir, 'de.cs3d.product.feature')
     rename { '.project' }
 }
@@ -516,7 +516,7 @@ task makeProductFile << {
         def productName = project.ext.productName
 
         // load product definition
-        def productDefsFile = file("templates/products/${productType}.yaml")
+        def productDefsFile = Helper.resolveTemplate(project, "products/${productType}.yaml")
         if (!productDefsFile.exists()) {
             throw new IllegalStateException("Unknown product type: ${productType}")
         }
@@ -557,7 +557,7 @@ task makeProductFile << {
 
         // render product template using the parsed product definition
         def productFileTemp = new File(buildDir, 'temp.product')
-        renderTemplate(file('templates/products/template.product'), productFileTemp, productDef)
+        renderTemplate(Helper.resolveTemplate(project, 'products/template.product'), productFileTemp, productDef)
 
         // set environment variable to the path to the new temporary
         // product file, so subsequent tasks can use it
@@ -656,7 +656,7 @@ task buildProduct(dependsOn: createProductFeature) << {
         println('Copying additional files ...')
         project.ext.additionalFilesToPackage.each { af ->
             project.copy {
-                from new File("templates/additional_files/${af}")
+                from Helper.resolveTemplate(project, "additional_files/${af}")
                 into productOutputPath
             }
         }
