@@ -85,7 +85,7 @@ class PomGenerator {
 
         // generate pom file for target platform
         new File(project.ext.platformBundle, 'pom.xml').withWriter { w ->
-            def template = new GStringTemplateEngine().createTemplate(new File('templates', 'pom-platform.xml'))
+            def template = new GStringTemplateEngine().createTemplate(resolveTemplate('pom-platform.xml'))
             def result = template.make([
                     'groupId': project.group,
                     'version': project.version + project.ext.versionSuffix,
@@ -104,7 +104,7 @@ class PomGenerator {
      */
     def generateParentPomFile(additionalModules = [:]) {
         new File(project.ext.rootDir, 'pom.xml').withWriter { w ->
-            def template = new GStringTemplateEngine().createTemplate(new File('templates', 'pom-parent.xml'))
+            def template = new GStringTemplateEngine().createTemplate(resolveTemplate('pom-parent.xml'))
             def bundles = new BundleParser(project).getParsedBundles()
             def result = template.make([
                     'groupId': project.group,
