@@ -169,6 +169,7 @@ def filterPlatformSpecificFragments(productFile) {
     // remove bundles from product file
     bundlesToRemove.each { p ->
         productFileContents = productFileContents.replaceAll(/<plugin.*id="${p}".+\r?\n\s+/, '')
+		println "Removed platform specific bundle $p from product configuration"
     }
 
     // overwrite product file

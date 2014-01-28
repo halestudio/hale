@@ -100,7 +100,7 @@ ext {
 	 */
 	osSpecificBundles = [
 		'eu.esdihumboldt.hale.ui.application.help.internal': ['macosx', 'win32'],
-		'eu.esdihumboldt.hale.ui.application.help.external': 'linux'
+		'eu.esdihumboldt.hale.ui.application.help.external': ['linux']
 	]
 
     // URL to the directory containing mirrored artifacts (Maven, JRE, ...)
