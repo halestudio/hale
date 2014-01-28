@@ -17,8 +17,8 @@ class CommandLineBuilder {
     private def main = new MainCommand()
     private def jc = new JCommander(main)
     private def commitStage = new CommitStageCommand()
-    private def integrationTestStage = new IntegrationTestStageCommand()
-    private def deployArtifacts = new DeployArtifactsCommand()
+//    private def integrationTestStage = new IntegrationTestStageCommand()
+//    private def deployArtifacts = new DeployArtifactsCommand()
     private def client = new ClientCommand()
     private def server = new ServerCommand()
     private def clean = new CleanCommand()
@@ -32,8 +32,8 @@ class CommandLineBuilder {
     def run(args) {
         jc.setProgramName('build')
         jc.addCommand('commitStage', commitStage)
-        jc.addCommand('integrationTestStage', integrationTestStage)
-        jc.addCommand('deployArtifacts', deployArtifacts)
+//        jc.addCommand('integrationTestStage', integrationTestStage)
+//        jc.addCommand('deployArtifacts', deployArtifacts)
         jc.addCommand('client', client)
         jc.addCommand('server', server)
         jc.addCommand('clean', clean)
@@ -116,7 +116,7 @@ class CommandLineBuilder {
         @Parameter(description = '<product name>')
         List<String> names = new ArrayList<String>();
 
-        @Parameter(names = [ '-o', '--os' ], description = 'Targeted operating system: auto, windows, linux')
+        @Parameter(names = [ '-o', '--os' ], description = 'Targeted operating system: auto, windows, linux, macosx')
         String os = 'auto'
 
         @Parameter(names = [ '-a', '--arch' ], description = 'Targeted architecture: auto, x86, x86_64')
@@ -147,6 +147,9 @@ class CommandLineBuilder {
                 } else if (os == 'linux') {
                     project.ext.osgiOS = 'linux'
                     project.ext.osgiWS = 'gtk'
+                } else if (os == 'macosx') {
+					project.ext.osgiOS = 'macosx'
+					project.ext.osgiWS = 'cocoa'
                 } else if (os != 'auto') {
                     help.commands = [ getType() ]
                     help.run()

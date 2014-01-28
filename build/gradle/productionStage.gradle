@@ -305,10 +305,8 @@ def packageClient(productOutputPath) {
 			def packageFileName = new File('target', packageName + '.zip')
 			
 			println('Creating package ' + packageFileName + ' ...')
-			ant.zip(destfile: packageFileName, prefix: packageName) {
-				zipfileset(dir: productOutputPath, prefix: packageName) {
-					include(name: '**')
-				}
+			ant.zip(destfile: packageFileName) {
+				zipfileset(dir: productOutputPath, prefix: packageName)
 			}
 		}
     } else {
@@ -316,6 +314,7 @@ def packageClient(productOutputPath) {
 		// package as .tar.gz
         def packageName = getPackageName()
         def packageFileName = new File('target', packageName + '.tar.gz')
+		def launcherName = getProductLauncher()
 
         println('Creating package ' + packageFileName + ' ...')
         ant.tar(destfile: packageFileName, longfile: 'gnu', compression: 'gzip') {
@@ -324,12 +323,16 @@ def packageClient(productOutputPath) {
                 exclude(name: '**/*.sh')
                 exclude(name: '**/*.so')
                 exclude(name: '**/jre/bin/*')
+				exclude(name: launcherName)
+				exclude(name: "${launcherName}.app/Contents/MacOS/${launcherName}")
             }
             tarfileset(dir: productOutputPath, prefix: packageName, filemode: '755') {
                 include(name: getProductLauncher())
                 include(name: '**/*.sh')
                 include(name: '**/*.so')
                 include(name: '**/jre/bin/*')
+				include(name: launcherName)
+				include(name: "${launcherName}.app/Contents/MacOS/${launcherName}")
             }
         }
     }
@@ -341,7 +344,7 @@ def packageClient(productOutputPath) {
 def packageServer(productOutputPath) {
     // Include launchers
     def launcherName = getProductLauncher()
-    if (Helper.buildForLinux(project)) {
+    if (Helper.buildForLinux(project) || Helper.buildForMac(project)) {
         def values = [
             'launcher': launcherName
         ]
@@ -402,12 +405,16 @@ def packageServer(productOutputPath) {
                 exclude(name: '**/*.sh')
                 exclude(name: '**/*.so')
                 exclude(name: '**/jre/bin/*')
+				exclude(name: launcherName)
+				exclude(name: "${launcherName}.app/Contents/MacOS/${launcherName}")
             }
             tarfileset(dir: productOutputPath, prefix: packageName, filemode: '755') {
                 include(name: launcherName)
                 include(name: '**/*.sh')
                 include(name: '**/*.so')
                 include(name: '**/jre/bin/*')
+				include(name: launcherName)
+				include(name: "${launcherName}.app/Contents/MacOS/${launcherName}")
             }
         }
     }
