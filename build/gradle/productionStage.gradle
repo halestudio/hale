@@ -134,7 +134,14 @@ def filterPlatformSpecificFragments(productFile) {
     def dlcdoc = new XmlSlurper().parseText(productFileContents)
     dlcdoc.plugins.plugin.each { p ->
         def id = p.@id.toString()
-        if (id.contains('x86') || id.contains('i586')) {
+		/*
+		 * Find platform specific bundles based on the symbolic name.
+		 * Platform specific bundles provided by Eclipse/Equinox usually
+		 * contain the tested strings in the symbolic name, but this is
+		 * only a workaround as the information really is encoded in the
+		 * manifest of each bundle.
+		 */
+        if (id.contains('x86') || id.contains('i586') || id.contains('macosx')) {
             // found a platform-specific bundle
             // check architecture
             def is64bit = id.contains('x86_64')
@@ -147,6 +154,16 @@ def filterPlatformSpecificFragments(productFile) {
                 }
             }
         }
+		/*
+		 * Find OS specific bundles. 
+		 */
+		if (project.ext.properties.containsKey('osSpecificBundles')) {
+			def os = project.ext.osSpecificBundles[id]
+			if (os && !os.any { it == project.ext.osgiOS}) {
+				// OS information is there but does not match
+				bundlesToRemove << id
+			}
+		}
     }
 
     // remove bundles from product file

@@ -85,6 +85,23 @@ ext {
 		'eu.esdihumboldt.hale.ui.application.help.internal',
 		'eu.esdihumboldt.hale.ui.application.help.external'
 	]
+	
+	/*
+	 * Specify OS specific bundles. Maps symbolic names to OS
+	 * identifiers.
+	 * 
+	 * Maven tycho has problems with platform/os specific bundles.
+	 * Thus we have to filter them in the product configuration.
+	 * As this happens based on the bundle symbolic names, we have
+	 * to provide information for which OS each bundle should be
+	 * applied.
+	 * see also productionStage.gradle#filterPlatformSpecificFragments
+	 * FIXME remove once maven tycho can deal with it on its own
+	 */
+	osSpecificBundles = [
+		'eu.esdihumboldt.hale.ui.application.help.internal': ['macosx', 'win32'],
+		'eu.esdihumboldt.hale.ui.application.help.external': 'linux'
+	]
 
     // URL to the directory containing mirrored artifacts (Maven, JRE, ...)
     cs3dMirrorUrl = 'http://www.cityserver3d.de/updates2/56abe3f5559dc32c35c6a7e5e7acbcb05659132c'

@@ -156,7 +156,7 @@ HALE:
   - eu.esdihumboldt.hale.ui
   - eu.esdihumboldt.hale.ui.application
   - eu.esdihumboldt.hale.ui.application.help.external
-#  - eu.esdihumboldt.hale.ui.application.help.internal
+  - eu.esdihumboldt.hale.ui.application.help.internal
   - eu.esdihumboldt.hale.ui.cache
   - eu.esdihumboldt.hale.ui.codelist
   - eu.esdihumboldt.hale.ui.common
@@ -263,7 +263,7 @@ HALE:
   - org.eclipse.core.filesystem
   - org.eclipse.core.filesystem.linux.x86
   - org.eclipse.core.filesystem.linux.x86_64
-#  - org.eclipse.core.filesystem.macosx
+  - org.eclipse.core.filesystem.macosx
   - org.eclipse.core.filesystem.win32.x86
   - org.eclipse.core.filesystem.win32.x86_64
   - org.eclipse.core.jobs
@@ -284,7 +284,7 @@ HALE:
   - org.eclipse.equinox.jsp.jasper
   - org.eclipse.equinox.jsp.jasper.registry
   - org.eclipse.equinox.launcher
-#  - org.eclipse.equinox.launcher.cocoa.macosx
+  - org.eclipse.equinox.launcher.cocoa.macosx
   - org.eclipse.equinox.launcher.cocoa.macosx.x86_64
   - org.eclipse.equinox.launcher.gtk.linux.x86
   - org.eclipse.equinox.launcher.gtk.linux.x86_64
@@ -293,7 +293,7 @@ HALE:
   - org.eclipse.equinox.preferences
   - org.eclipse.equinox.registry
   - org.eclipse.equinox.security
-#  - org.eclipse.equinox.security.macosx
+  - org.eclipse.equinox.security.macosx
   - org.eclipse.equinox.security.win32.x86
   - org.eclipse.equinox.security.win32.x86_64
   - org.eclipse.equinox.util
@@ -316,7 +316,7 @@ HALE:
   - org.eclipse.osgi.services
   - org.eclipse.platform
   - org.eclipse.swt
-#  - org.eclipse.swt.cocoa.macosx
+  - org.eclipse.swt.cocoa.macosx
   - org.eclipse.swt.cocoa.macosx.x86_64
   - org.eclipse.swt.gtk.linux.x86
   - org.eclipse.swt.gtk.linux.x86_64
@@ -376,108 +376,9 @@ HALE:
   - schemacrawler.core
   - slf4j.ext
 
-SelfService:
-  Extends: Common
-  VmArgs:
-  - -Xmx1600M
-  - -Dadmintool.connection.server.host=localhost
-  - -Dadmintool.connection.server.port=8080
-  - -Dde.cs3d.ui.defaultSrs=31468
-  
-Coburg:
-  Extends: Common
-  VmArgs:
-  - -Xmx1600M
-  - -Dadmintool.connection.server.host=w2003s22
-  - -Dadmintool.connection.server.port=8080
-  - -Dde.cs3d.ui.defaultSrs=31468
-
-Fuerth:
-  Extends: Common
-  VmArgs:
-  - -Xmx900M
-  - -Dadmintool.connection.server.host=10.5.2.70
-  - -Dadmintool.connection.server.port=8000
-  - -Dhttp.proxyHost=212.204.79.60
-  - -Dhttp.proxyPort=8080
-  - -Dde.cs3d.ui.defaultSrs=31468
-
-Geoinfo:
-  Extends: Common
-  VmArgs:
-  - -Xmx1100M
-  - -Dadmintool.connection.server.host=GEO4V080
-  - -Dadmintool.connection.server.port=8080
-  - -Dde.cs3d.ui.defaultSrs=21781
-  Plugins:
-  - de.cs3d.projects.geoinfo.rules
-  
-Jade:
-  Extends: Common
-  VmArgs:
-  - -Xmx900M
-  - -Dadmintool.connection.server.host=139.13.147.13
-  - -Dadmintool.connection.server.port=8080
-  - -Dde.cs3d.ui.defaultSrs=32632
-
-Mainz3D:
-  Extends: Common
-  VmArgs:
-  - -Xmx900M
-  - -Dadmintool.connection.server.host=lx-3d.mainz.de
-  - -Dadmintool.connection.server.port=8080
-  - -Dadmintool.connection.server.path=/mainz3d2
-  - -Dhttp.proxyHost=100.1.1.2
-  - -Dhttp.proxyPort=8080
-  - -Dhttp.nonProxyHosts=lx-3d.mainz.de|lx-gint-1.stadt.mainz.de 
-  - -Dde.cs3d.ui.defaultSrs=25832
-  Plugins:
-  - de.cs3d.projects.mainz3d.defaultconfig
-  - de.cs3d.projects.mainz3d.model.cs3d
-  - de.cs3d.projects.mainz3d.onr@0
-  - de.cs3d.projects.mainz3d.ui.views.gl.renderer.vegetation@0
-
-Schwerin:
-  Extends: Common
-  VmArgs:
-  - -Xmx1200M
-  - -Dadmintool.connection.server.host=dgm-dgmdb
-  - -Dadmintool.connection.server.port=8080
-  - -Dde.cs3d.ui.defaultSrs=35833
-  Plugins:
-  - de.cs3d.projects.schwerin.defaultconfig
-
-Villingen-Schwenningen:
-  Extends: Common
-  VmArgs:
-  - -Xmx900M
-  - -Dadmintool.connection.server.host=CITY-SERVER-3D
-  - -Dadmintool.connection.server.port=8080
-  - -Dde.cs3d.ui.defaultSrs=31467
-  
-UrbanAPI:
-  Extends: Common
-  ProgramArgs: -nl en
-  VmArgs:
-  - -Xmx1200M
-  - -Dadmintool.connection.server.host=localhost
-  - -Dadmintool.connection.server.port=8080
-  Plugins:
-  - de.cs3d.projects.urbanapi.demoscenarios
-  - de.cs3d.projects.urbanapi.rules
-  - de.cs3d.common.portrayal@0
-  - de.cs3d.ui.portrayal@0
-  - de.cs3d.ui.viewservice.admin
-  - de.cs3d.ui.viewservice.admin.intro
-  - de.cs3d.ui.views.gl.renderer.portrayal
-  - de.cs3d.ui.perspectives.viewservice
-  - de.cs3d.model.x3dom@0
-  - de.cs3d.model.x3dom.ui
-  
-GTA:
-  Extends: Common
-  VmArgs:
-  - -Xmx1200M
-  - -Dadmintool.connection.server.host=localhost
-  - -Dadmintool.connection.server.port=8080
-  - -Dde.cs3d.ui.defaultSrs=31468
+AGeoBw:
+  Extends: HALE
+#  VmArgs:
+#  - -Xmx1600M
+#  Plugins:
+#  - ...
