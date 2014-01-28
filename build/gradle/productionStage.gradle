@@ -8,6 +8,8 @@
 // permission from the respective owner.
 
 import groovy.text.GStringTemplateEngine
+
+import java.nio.file.Files;
 import java.text.SimpleDateFormat
 import org.apache.maven.cli.MavenCli
 import org.yaml.snakeyaml.Yaml
@@ -35,6 +37,26 @@ def getProductUid() {
 }
 
 /**
+ * @return the id of the product definition
+ */
+def getProductId() {
+	def dlcdoc = new XmlSlurper().parse(project.file(getProductFile()))
+	def id = dlcdoc.@id
+	if (id == null) {
+		throw new IllegalStateException('Product needs a valid id')
+	}
+	return id.toString()
+}
+
+/**
+ * Get the symbolic name of the bundle that contains the product definition
+ */
+def getProductDefiningBundleName() {
+	String productId = getProductId()
+	productId[0..productId.lastIndexOf('.')-1]
+}
+
+/**
  * @return the name of the launcher defined in the product to build
  */
 def getProductLauncher() {
@@ -58,8 +80,7 @@ def getPackageName() {
     } else {
         tag = ''
     }
-    def timestamp = new SimpleDateFormat('YYYYMMddHHmm').format(Calendar.getInstance().getTime())
-    return getProductLauncher() + '-' + project.version + '.' + timestamp + '-' + tag +
+    return getProductLauncher() + '-' + project.version + '.' + project.ext.buildId + '-' + tag +
             project.ext.osgiOS + '.' + project.ext.osgiWS + '.' + project.osgiArch
 }
 
@@ -241,6 +262,47 @@ def includeAdditionalFiles(artifacts, relsrcpath, productOutputPath, reldstpath,
     } else {
         println('Cannot find ' + name + ' for this platform. ' + name + ' will not be copied into the product.')
     }
+}
+
+/**
+ * Replace placeholders in product about text with information on build and revision. 
+ */
+void updateAboutInfo(productOutputPath) {
+	def productBundle = getProductDefiningBundleName()
+
+	def jars = fileTree(dir: productOutputPath, includes: [ "plugins/${productBundle}_*.jar" ])
+	if (jars.isEmpty()) {
+		println "Could not find product defining bundle $productBundle"
+		return
+	}
+	
+	println "Updating about information in ${productBundle}..."
+	
+	File productBundleJar = jars.iterator().next()
+	File tmpDir = Files.createTempDirectory('product-app').toFile()
+	
+	// extract product bundle to temporary directory
+	println "Extracting product bundle ${productBundleJar}"
+	ant.unzip(src: productBundleJar, dest: tmpDir)
+	
+	// determine revision
+	def revision = System.getenv()['GIT_COMMIT'] // set by jenkins
+	//TODO determine by other means?
+	if (!revision) {
+		revision = 'unknown'
+	}
+	
+	// replace tokens in plugin.xml
+	File pluginXml = new File(tmpDir, 'plugin.xml')
+	ant.replace(file: pluginXml, token: '___build___', value: project.ext.buildId, summary: true)
+	ant.replace(file: pluginXml, token: '___revision___', value: revision, summary: true)
+	
+	// update original jar with updated plugin.xml
+	ant.jar(update: 'true', destfile: productBundleJar) {
+		fileset(dir: tmpDir, includes: 'plugin.xml')
+	}
+	
+//	tmpDir.deleteDir()
 }
 
 /**
@@ -594,6 +656,8 @@ task buildProduct(dependsOn: createProductFeature) << {
             }
         }
     }
+	
+	updateAboutInfo(productOutputPath)
 
     if (productContainsUIBundles()) {
         packageClient(productOutputPath)

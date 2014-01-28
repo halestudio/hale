@@ -3,6 +3,9 @@
 
 <product name="${Name}" uid="${Uid}" id="${Id}" application="${Application}" version="${Version}" useFeatures="false" includeLaunchers="true">
 
+   <!-- Note that the about text in the product definition does not have
+     any effect as in the application it is retrieved from the plugin.xml
+     in the bundle defining the product -->
    <aboutInfo>
       <text>
          HUMBOLDT Alignment Editor (HALE)

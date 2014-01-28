@@ -17,9 +17,23 @@ apply from: 'gradle/productionStage.gradle'
 // apply from: 'gradle/deployArtifacts.gradle'
 
 import org.eclipse.core.runtime.internal.adaptor.EclipseEnvironmentInfo
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 
 group = 'eu.esdihumboldt'
 version = '2.9.0'
+
+Calendar calendar = Calendar.getInstance();
+DateFormat dateFormat = new SimpleDateFormat('YYYYMMddHHmm');
+
+gradle.taskGraph.whenReady {
+	// determine build ID
+	String buildID = System.getenv()['BUILD_ID'] // set by jenkins
+	if (buildID == null){
+		buildID = dateFormat.format(calendar.getTime())
+	}
+	project.ext.buildId = buildID
+}
 
 defaultTasks 'commitStage'
 
