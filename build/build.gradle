@@ -51,6 +51,9 @@ ext {
 	
 	// name of the platform definition file (w/o extension [.target])
 	platformFileName = 'hale-platform' 
+	
+	// path to default unit test launch configuration
+	defaultUnitTestLaunchConfiguration = file('../common/plugins/eu.esdihumboldt.hale.common.core.test/defaultUnitTestLaunchConfiguration.launch')
 
     // true if MongoDB should be included in the final product
     includeMongoDB = false

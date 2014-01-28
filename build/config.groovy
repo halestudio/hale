@@ -1,5 +1,6 @@
 /*
- * Build configuration that is specific for HALE and HALE server applications. 
+ * Build configuration that is specific for HALE and HALE server applications
+ * that should not be reused in other applications. 
  */
 project = {
 	// version
@@ -17,9 +18,6 @@ project = {
 	
 	    // Name of the Windows service
 	    serviceName = 'HALE Server'
-		
-		// path to default unit test launch configuration
-		defaultUnitTestLaunchConfiguration = file('../common/plugins/eu.esdihumboldt.hale.common.core.test/defaultUnitTestLaunchConfiguration.launch')
 		
 		// Name of the Windows service executable (without extension), must be different
 		// from the product's launcher name
