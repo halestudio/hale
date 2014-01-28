@@ -52,6 +52,9 @@ ext {
 	// name of the platform definition file (w/o extension [.target])
 	platformFileName = 'hale-platform' 
 	
+	// pattern for recognizing unit test bundles
+	testBundlePattern = '*.test_*.jar'
+	
 	// path to default unit test launch configuration
 	defaultUnitTestLaunchConfiguration = file('../common/plugins/eu.esdihumboldt.hale.common.core.test/defaultUnitTestLaunchConfiguration.launch')
 

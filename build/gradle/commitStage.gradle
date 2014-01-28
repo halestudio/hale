@@ -153,7 +153,7 @@ task buildUpdateSite(dependsOn: [ createUpdateSiteFeature, generatePomFiles ]) <
  * unit test fails.
  */
 task runUnitTests(dependsOn: buildUpdateSite) << {
-    new UnitTestRunner(project).executeUnitTests('*.test_*.jar')
+    new UnitTestRunner(project).executeUnitTests(project.ext.testBundlePattern)
 }
 
 /**
