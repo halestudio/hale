@@ -378,7 +378,10 @@ HALE:
 
 AGeoBw:
   Extends: HALE
+  Tag: AGeoBw
 #  VmArgs:
 #  - -Xmx1600M
-#  Plugins:
-#  - ...
+  Plugins:
+  - eu.esdihumboldt.hale.ui.util.bbr
+  - eu.esdihumboldt.hale.functions.bgis
+  - eu.esdihumboldt.hale.app.bgis.ade

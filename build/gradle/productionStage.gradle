@@ -494,6 +494,9 @@ task makeProductFile << {
         // set environment variable to the path to the new temporary
         // product file, so subsequent tasks can use it
         project.ext.productFile = productFileTemp.path
+		
+		// set tag from product definition
+		project.ext.tag = productDef['Tag']
 
         // set global variables for additional files so
         // subsequent tasks can use it
