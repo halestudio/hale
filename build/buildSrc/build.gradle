@@ -23,4 +23,5 @@ dependencies {
     compile 'org.eclipse.tycho:org.eclipse.osgi:3.6.2.R36x_v20110210'
     compile 'org.eclipse.aether:aether-connector-wagon:0.9.0.M2'
     compile 'org.yaml:snakeyaml:1.13'
+	compile 'org.eclipse.jgit:org.eclipse.jgit:3.2.0.201312181205-r'
 }

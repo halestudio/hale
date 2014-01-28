@@ -287,8 +287,13 @@ void updateAboutInfo(productOutputPath) {
 	
 	// determine revision
 	def revision = System.getenv()['GIT_COMMIT'] // set by jenkins
-	//TODO determine by other means?
 	if (!revision) {
+		// determine commit ID from checkout
+		//TODO configure directory?
+		revision = GitHelper.currentCommitId(new File(rootDir.parentFile, '.git'))
+	}
+	if (!revision) {
+		// unable to detect revision
 		revision = 'unknown'
 	}
 	
