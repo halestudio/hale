@@ -23,6 +23,11 @@ class PomGenerator {
     def makePluginPomFileWithPackaging(symbolicName, version, needsScala, needsGroovy, packaging, path) {
         makePomFileWithPackaging(symbolicName, version, needsScala, needsGroovy, packaging, 'pom-plugin.xml', path)
     }
+	
+	def resolveTemplate(def name) {
+		//TODO look also in alternative locations?
+		new File(new File(project.projectDir, 'templates'), name)
+	}
 
     /**
      * Creates a generic pom file for an OSGi bundle using the specified packaging and template file
@@ -34,7 +39,7 @@ class PomGenerator {
         relativePath = relativePath.replaceFirst(/\/[^\/]+$/, '/../pom.xml')
 		
         new File(path, 'pom.xml').withWriter { w ->
-            def template = new GStringTemplateEngine().createTemplate(new File('templates', templateName))
+            def template = new GStringTemplateEngine().createTemplate(resolveTemplate(templateName))
             def result = template.make([
                 'groupId': project.group,
                 'artifactId': symbolicName,
