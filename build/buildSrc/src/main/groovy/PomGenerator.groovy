@@ -9,6 +9,7 @@
 
 import groovy.text.GStringTemplateEngine
 import org.gradle.api.Project
+import java.nio.file.Path
 
 class PomGenerator {
     private Project project
@@ -36,9 +37,9 @@ class PomGenerator {
      */
     def makePomFileWithPackaging(symbolicName, version, needsScala, needsGroovy, packaging, templateName, path) {
         // calculate relative path to pom.xml of parent project
-        def relativePath = path.path.substring(project.ext.rootDir.path.length() + 1).replace('\\', '/')
-        relativePath = relativePath.replaceAll(/.+?\//, '../')
-        relativePath = relativePath.replaceFirst(/\/[^\/]+$/, '/../pom.xml')
+		Path rootPath = project.ext.rootDir.toPath()
+		Path relativeRoot = path.toPath().relativize(rootPath)
+		def relativePath = relativeRoot.toString()
 		
         new File(path, 'pom.xml').withWriter { w ->
             def template = new GStringTemplateEngine().createTemplate(resolveTemplate(templateName))
@@ -106,6 +107,8 @@ class PomGenerator {
      */
     def generateParentPomFile(additionalModules = [:]) {
         new File(project.ext.rootDir, 'pom.xml').withWriter { w ->
+			Path rootPath = project.ext.rootDir.toPath()
+			
             def template = new GStringTemplateEngine().createTemplate(resolveTemplate('pom-parent.xml'))
             def bundles = new BundleParser(project).getParsedBundles()
             def result = template.make([
@@ -115,7 +118,7 @@ class PomGenerator {
                     'parentArtifactId': project.ext.parentArtifactId,
                     'parentVersion': project.version + project.ext.versionSuffix,
                     'modules': (bundles + additionalModules).values().collect {
-                        it.path.path.substring(project.ext.rootDir.path.length() + 1).replace('\\', '/')
+						rootPath.relativize(it.path.toPath()).toString()
                     }.sort(),
                     'envOs': project.ext.osgiOS,
                     'envWs': project.ext.osgiWS,
