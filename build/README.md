@@ -76,9 +76,9 @@ products. You can build a specific product with the following command:
 names declared in `templates/products/client.yaml` or `templates/products/server.yaml`
 depending on which type you chose. For example:
 
-    ./build.sh client Mainz3D
+    ./build.sh client HALE
 
-This command will build the Mainz3D client application.
+This command will build the normal HALE client application.
 
 Alternatively you can use the following command to build from a specific
 product definition file:
@@ -88,31 +88,12 @@ product definition file:
 The product file must be based on plugins. The path to this file must be
 relative. For example:
 
-    ./gradlew buildProduct -PproductFile=../platform/products/CityServer3D.AdminTool.product
+    ./gradlew buildProduct -PproductFile=../ui/plugins/eu.esdihumboldt.hale.ui.application/HALE.product
 
 Build properties
 ----------------
 
-The build can be customized with the following options:
+See the build help for options to provide to the different stages:
 
-    ./build.sh <type> <name> <options...>
+    ./build.sh help
 
-Currently the following properties are defined:
-
-* **--os**, **--arch**, **osgiArch**
-
-  The targeted operating system and architecture. These options control
-  which artifacts are built and copied into products, and thus, on which
-  platform the result will run. Example: `--os win32 --arch x86_64`. If
-  you don't specify these options, the build process will automatically
-  detect the targeted platform from the current environment.
-
-* **--lang**
-
-  Language of the Windows installer for the client. Valid values: "de" and "en"
-
-* **--tag**
-
-  A 'tag' that will be appended to the output package's file name. This
-  is mostly used to tag packages for different customers. For example,
-  common values are 'Mainz3D', 'Coburg', ...
