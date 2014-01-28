@@ -21,7 +21,6 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 
 group = 'eu.esdihumboldt'
-version = '2.9.0'
 
 Calendar calendar = Calendar.getInstance();
 DateFormat dateFormat = new SimpleDateFormat('YYYYMMddHHmm');
@@ -47,11 +46,9 @@ ext {
     // suffix for bundle version numbers
     versionSuffix = ''
 
-    // path to default unit test launch configuration
-    defaultUnitTestLaunchConfiguration = file('../common/plugins/eu.esdihumboldt.hale.common.core.test/defaultUnitTestLaunchConfiguration.launch')
-
     // path to the platform bundle
     platformBundle = file('../platform')
+	
 	// name of the platform definition file (w/o extension [.target])
 	platformFileName = 'hale-platform' 
 
@@ -63,22 +60,6 @@ ext {
 
     // a list of additional files to include in the final product (default: empty)
     additionalFilesToPackage = []
-
-    // The title of the win32 installer
-    win32InstallerTitle = 'HALE'
-
-    // The GUID used by the win32 installer for product upgrades (must never change!)
-    win32InstallerUpgradeGUID = '6b6151c0-e3f9-11de-8a39-0800200c9a66'
-
-    // The GUID for the shortcuts the installer will create
-    win32InstallerShortcutGUID = '76ed8ea0-e3f9-11de-8a39-0800200c9a66'
-
-    // Name of the Windows service
-    serviceName = 'HALE Server'
-
-    // Name of the Windows service executable (without extension), must be different
-    // from the product's launcher name
-    serviceExeName = 'hale_server'
 
     // path to the bundles to build
     bundles = [
@@ -159,6 +140,36 @@ ext {
 //            ]
 //        ]
 //    ]
+}
+
+if (project.ext.has('additionalConfig')) {
+	applyExternalConfiguration(file(project.ext.additionalConfig))
+}
+else {
+	applyExternalConfiguration(file('config.groovy'))
+}
+
+def applyExternalConfiguration(File configFile) {
+	assert configFile.exists()
+	// execute config file as groovy script...
+	Binding binding = new Binding();
+	
+	// specify the binding for the script
+	binding.setVariable('parentDir', configFile.parentFile);
+	
+	GroovyShell shell = new GroovyShell(binding);
+	def res = shell.evaluate(configFile.text)
+	
+	// ... creating a closure to configure the project
+	def prjClosure = binding.project.clone()
+	prjClosure.delegate = project
+	prjClosure.resolveStrategy = Closure.DELEGATE_FIRST
+	prjClosure()
+	
+//	def extClosure = binding.ext.clone()
+//	extClosure.delegate = project.ext
+//	extClosure.resolveStrategy = Closure.DELEGATE_FIRST
+//	extClosure()
 }
 
 configureEnvironment()
