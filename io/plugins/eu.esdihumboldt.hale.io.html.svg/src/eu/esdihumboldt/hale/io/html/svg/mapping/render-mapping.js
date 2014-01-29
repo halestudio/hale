@@ -39,23 +39,29 @@ function drawMapping(elementId, thisCell, options) {
 
     // draw function name & parameter elements
     var nameLength = thisCell.functionName.length * 1.333; // add additional space for parameters and long function names
+    var displayName = thisCell.functionName;
     if (nameLength * charLength > myWidth / 3) { // deal with too long function names that would take more than 1/3 of screen width
-        thisCell.functionName = thisCell.functionName.substr(0, myWidth / 3) + "...";
-        nameLength = thisCell.functionName.length * 1.333;
+        displayName = displayName.substr(0, myWidth / 3) + "...";
+        nameLength = displayName.length * 1.333;
     }
     var paramCount = thisCell.functionParameters.length;
+
+    var displayLabel = [];
+    var displayValue = [];
 
     for (var j = 0; j < thisCell.functionParameters.length; j++) { // deal with parameter k/v pairs that are too long
         var thisParam = thisCell.functionParameters[j];
         var thisParamlength = thisParam.paramLabel.length + thisParam.paramValue.length;
         var refNameLength = nameLength * 1.333;
+        displayLabel[j] = thisParam.paramLabel;
+        displayValue[j] = thisParam.paramValue;
         if (thisParamlength > refNameLength) {
             // truncate parameter key and value
             if (thisParam.paramLabel.length > refNameLength / 2 - 1) {
-                thisParam.paramLabel = thisParam.paramLabel.substr(0, refNameLength / 2 - 1) + "...";
+                displayLabel[j] = thisParam.paramLabel.substr(0, refNameLength / 2 - 1) + "...";
             }
             if (thisParam.paramValue.length > refNameLength / 2 + 1) {
-                thisParam.paramValue =  "..." + thisParam.paramValue.substr(refNameLength / 2 - 1);
+                displayValue[j] =  "..." + thisParam.paramValue.substr(refNameLength / 2 - 1);
             }
         }
     }
@@ -72,58 +78,62 @@ function drawMapping(elementId, thisCell, options) {
     ];
 
     var functionNameShape = s.polygon(functionNameCoordinates).attr({
-        stroke: "#000000",
-        fill: "#a8d0f4",
-        filter: shadowFilter
+        "class": "functionName",
+        "filter": shadowFilter
     });
-    var functionNameText = s.text(startX + 2, myHeight / 2 + 5,thisCell.functionName);
-    var helpCircle = s.circle(startX + ((nameLength + 3) * charLength), myHeight / 2, (fNameBoxHeight / 2) - 4).attr({
-        "stroke": "#000000",
-        "fill": "#f4d887",
-        "font-size": "14px",
-        "class": "infoButton"
+    var functionNameText = s.text(startX + 2, myHeight / 2 + 5, displayName);
+
+    var functionInfoIconID = elementId.substr(1) + "_function_" + "_" + j;
+
+    var fmatrix = new Snap.Matrix().translate(
+        startX + ((nameLength + 3) * charLength) + charLength,
+        (myHeight / 2) + 8.5).scale(-0.015,-0.015);
+
+    var infoIcon = s.path("M3 600q0 162 80 299.5t217.5 217.5t299.5 80t299.5 -80t217.5 -217.5t80 -299.5t-80 -300t-217.5 -218t-299.5 -80t-299.5 80t-217.5 218t-80 300zM400 300h400v100h-100v300h-300v-100h100v-200h-100v-100zM500 800h200v100h-200v-100z").attr({
+        "transform": fmatrix,
+        "class": "infoCircleFunction",
+        "id": functionInfoIconID
     });
-    var helpQMark = s.text(startX + ((nameLength + 3) * charLength) - 5, myHeight / 2 + 5, "?").attr({
-        "font-weight": "bold",
-        "font-size": "14px"
-    });
-    var qmarkGroup = s.g(helpCircle, helpQMark);
-    qmarkGroup.hover(
-        function() { // f_in handler
-            helpCircle.attr({
-                "fill": "#fcf0c3",
-                "r": (fNameBoxHeight / 2) - 3
-            });
-        },
-        function() { // f_out handler
-            helpCircle.attr({
-                "fill": "#f4d887",
-                "r": (fNameBoxHeight / 2) - 4
+
+    // add listeners to info buttons and adjust state according to data availability.
+    (function() {
+        var selectID = "#" + functionInfoIconID;
+        var propertyDisplayID = elementId + "_properties";
+        if (thisCell.functionParameters != null) {
+            Snap.select(selectID).click(
+                function () {
+                    displayFunctionProperties(propertyDisplayID, thisCell.functionParameters);
+                }
+            );
+        }
+        else {
+            infoIcon.attr({
+                "class": "infoCircleInactive"
             });
         }
-    ) ;
+    })();
+
     var paramKVShape = s.rect(startX, startY, ((nameLength + 4) * charLength), (1 + paramCount * 0.75) * fNameBoxHeight).attr({
-        stroke: "#000000",
-        fill: "#a8d0f4",
-        filter: shadowFilter
+        "class": "functionName",
+        "filter": shadowFilter
     });
     s.text(startX + 4, startY + 18, "Parameters").attr({
         "font-size": "12px",
         "font-style": "italic"
     });
-    for (var j = 0; j < thisCell.functionParameters.length; j++) {
-        s.text(startX + 4, startY + fNameBoxHeight + 12 + (fNameBoxHeight - 6) * j, thisCell.functionParameters[j].paramLabel).attr({
+    for (var j = 0; j < displayLabel.length; j++) {
+        s.text(startX + 4, startY + fNameBoxHeight + 12 + (fNameBoxHeight - 6) * j, displayLabel[j]).attr({
             "font-size": "12px"
         });
     }
-    for (var j = 0; j < thisCell.functionParameters.length; j++) {
+    for (var j = 0; j < displayValue.length; j++) {
         s.text(
                 startX + ((nameLength + 4) * charLength) - 4,
                 startY + fNameBoxHeight + 12 + (fNameBoxHeight - 6) * j,
-                thisCell.functionParameters[j].paramValue).attr({
-                "font-size": "12px",
-                "text-anchor": "end"
-            });
+                displayValue[j]).attr({
+                    "font-size": "12px",
+                    "text-anchor": "end"
+                });
     }
 
     // draw source elements.................................................................................
@@ -256,10 +266,10 @@ function drawSourcesTargets(s, side, cell, whitespaceRows, myWidth, myHeight, li
             var targetNameCoordinates = getPathPolyCoords(
                 thisPath, side, basicCoordinates, k, lineHeight, paddingXShift, paddingYShift, myWidth);
 
+            var targetNameShapeID =  elementId + "_targetNameShape_" + side + "_" + j + "_" + k;
             var targetNameShape = s.polygon(targetNameCoordinates).attr({
-                stroke: "#000000",
-                fill: "#e9c551",
-                "fill-opacity": 0.5
+                "class": "propertyPathName",
+                "id": targetNameShapeID
             });
             if (k === 0) {
                 targetNameShape.attr({filter: shadowFilter});
@@ -277,15 +287,9 @@ function drawSourcesTargets(s, side, cell, whitespaceRows, myWidth, myHeight, li
 
             var infoIconID = elementId + "_iCircle_" + side + "_" + j + "_" + k;
 
-/*            var infoIcon = s.text(targetNameCoordinates[0] - 12 * mirrorFactor, targetNameCoordinates[3] + (lineHeight / 2) + 4, "i").attr({
-                "class": "infoCircle",
-                "font-family": "WetfIconfont",
-                "id": infoIconID
-            });*/
-
             var matrix = new Snap.Matrix().translate(
                 targetNameCoordinates[0] + 9 - 14 * mirrorFactor,
-                targetNameCoordinates[3] + (lineHeight / 2) + 9).scale(-0.015,-0.015)
+                targetNameCoordinates[3] + (lineHeight / 2) + 9).scale(0.015,-0.015);
 
             var infoIcon = s.path("M3 600q0 162 80 299.5t217.5 217.5t299.5 80t299.5 -80t217.5 -217.5t80 -299.5t-80 -300t-217.5 -218t-299.5 -80t-299.5 80t-217.5 218t-80 300zM400 300h400v100h-100v300h-300v-100h100v-200h-100v-100zM500 800h200v100h-200v-100z").attr({
                 "transform": matrix,
@@ -297,11 +301,15 @@ function drawSourcesTargets(s, side, cell, whitespaceRows, myWidth, myHeight, li
             (function() {
                 var selectID = "#" + infoIconID;
                 var propertyDisplayID = elementId + "_properties";
+                var propertyPathName = thisPath[k];
+                var ltargetNameShapeID = targetNameShapeID;
                 if (elements[j].propertyDescriptions != null) {
                     var thisPropertyDescription = elements[j].propertyDescriptions[k];
                     Snap.select(selectID).click(
                         function () {
-                            displayAttributeProperties(propertyDisplayID, thisPropertyDescription);
+                            displayAttributeProperties(propertyDisplayID, thisPropertyDescription, propertyPathName, targetNameShapeID);
+                            $(".propertyPathNameActive").attr("class", "propertyPathName");
+                            $("#" + ltargetNameShapeID).attr("class", "propertyPathNameActive");
                         }
                     );
                 }
@@ -317,41 +325,94 @@ function drawSourcesTargets(s, side, cell, whitespaceRows, myWidth, myHeight, li
     }
 }
 
-function displayAttributeProperties(elemID, propertyDescription) {
+function displayAttributeProperties(elemID, propertyDescription, propertyPathName, ltargetNameShapeID) {
     // add all attributes for a given propertyDescription to the Div below the SVG area
-    if (propertyDescription != null) {
-        var propertyDiv = document.getElementById(elemID);
-
-        // remove any children that are present.
-        while (propertyDiv.firstChild) {
-            propertyDiv.removeChild(propertyDiv.firstChild);
-        }
-
-        // create a DIV for the "close" button
-        var closeDiv = document.createElement("div");
-        closeDiv.appendChild(document.createTextNode("close"));
-        closeDiv.className = "closeButton";
-        closeDiv.onclick = function() {
-            while (propertyDiv.firstChild) {
-                propertyDiv.removeChild(propertyDiv.firstChild);
-            }
-        }
-        propertyDiv.appendChild(closeDiv);
+    if (propertyDescription != null && Object.keys(propertyDescription).length > 0) {
+        var propertyDiv = setupPropertyFrame(elemID, ltargetNameShapeID);
 
         // create table for object properties
         var prpTable = document.createElement("table");
         prpTable.className = "propertyTable";
         propertyDiv.appendChild(prpTable);
+        if (propertyDescription.qname != null) {
+            var headRow = prpTable.insertRow();
+            var headCell = headRow.insertCell(0);
+            headCell.className = "headCell";
+            headCell.colSpan = 2;
+            headCell.appendChild(document.createTextNode(propertyDescription.qname));
+        }
+        else if (propertyPathName != null) {
+            var headRow = prpTable.insertRow();
+            var headCell = headRow.insertCell(0);
+            headCell.className = "headCell";
+            headCell.colSpan = 2;
+            headCell.appendChild(document.createTextNode(propertyPathName));
+        }
         for (var aProperty in propertyDescription) {
+            if (aProperty !== "qname") {
+                var prpRow = prpTable.insertRow();
+                var prpKeyCell = prpRow.insertCell(0);
+                prpKeyCell.className = "keyCell";
+                var prpValueCell = prpRow.insertCell(1);
+                prpValueCell.className = "valueCell";
+                prpKeyCell.appendChild(document.createTextNode(aProperty));
+                prpValueCell.innerHTML = propertyDescription[aProperty];
+            }
+        }
+    }
+}
+
+
+function displayFunctionProperties(propertyDisplayID, functionParameters) {
+    if (propertyDisplayID != null && functionParameters.length > 0) {
+        var propertyDiv = setupPropertyFrame(propertyDisplayID.substr(1), null);
+
+        // create table for object properties
+        var prpTable = document.createElement("table");
+        prpTable.className = "propertyTable";
+        propertyDiv.appendChild(prpTable);
+        for (var i = 0; i < functionParameters.length; i++) {
             var prpRow = prpTable.insertRow();
+            prpRow.className = "functionRow";
             var prpKeyCell = prpRow.insertCell(0);
             prpKeyCell.className = "keyCell";
             var prpValueCell = prpRow.insertCell(1);
             prpValueCell.className = "valueCell";
-            prpKeyCell.appendChild(document.createTextNode(aProperty));
-            prpValueCell.appendChild(document.createTextNode(propertyDescription[aProperty]));
+            prpKeyCell.appendChild(document.createTextNode(functionParameters[i].paramLabel));
+            prpValueCell.innerHTML = functionParameters[i].paramValue;
         }
     }
+}
+
+/**
+ * Create the DOM framework for display of attribute or funciton properties
+ * @param elemID the ID of the DOM element in which the properties are to be displayed.
+ * @param ltargetNameShapeID The ID of the DOM element of which properties are to be displayed.
+ * @returns {HTMLElement} corresponding to elemID
+ */
+function setupPropertyFrame(elemID, ltargetNameShapeID) {
+    var propertyDiv = document.getElementById(elemID);
+
+    // remove any children that are present.
+    while (propertyDiv.firstChild) {
+        propertyDiv.removeChild(propertyDiv.firstChild);
+    }
+
+    // create a DIV for the "close" button
+    var closeDiv = document.createElement("div");
+    var textClose = document.createElement("span");
+    textClose.className = "glyphicon glyphicon-remove-circle";
+    textClose.appendChild(document.createTextNode(""));
+    closeDiv.appendChild(textClose);
+    closeDiv.className = "closeButton";
+    closeDiv.onclick = function() {
+        while (propertyDiv.firstChild) {
+            propertyDiv.removeChild(propertyDiv.firstChild);
+        }
+        $(".propertyPathNameActive").attr("class", "propertyPathName");
+    }
+    propertyDiv.appendChild(closeDiv);
+    return propertyDiv;
 }
 
 function drawConnectorLine(s, functionNameCoordinates, basicCoordinates, side, myWidth) {
