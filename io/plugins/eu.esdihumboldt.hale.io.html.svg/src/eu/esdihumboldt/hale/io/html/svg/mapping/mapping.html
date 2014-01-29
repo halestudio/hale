@@ -7,19 +7,56 @@
     <script type="text/javascript" src="http://snapsvg.io/assets/js/snap.svg-min.js"></script>
     
     <style>
+
+        .functionName {
+            stroke: #000000;
+            fill: #f4d887;
+        }
+
+        .propertyPathName {
+            stroke: #000000;
+            fill: #a8d0f4;
+            fill-opacity: 0.4;
+        }
+
+        .propertyPathNameActive {
+            stroke: #000000;
+            fill: #FFFFFF;
+            fill-opacity: 0.8;
+        }
+
         .infoCircle {
-            fill: #3e7ab1;
+            fill: #254969;
+            stroke: #ffffff;
+            stroke-width: 67px;
+            stroke-opacity: 0.65;
             font-size: 16px;
         }
 
+        .infoCircleFunction {
+            fill: #933f29;
+            stroke: #ffffff;
+            stroke-width: 67px;
+            stroke-opacity: 0.65;
+            font-size: 16px;
+        }
+
+        .infoCircleFunction:hover {
+            cursor: pointer;
+            fill: #9f735c;
+        }
+
         .infoCircleInactive {
-            fill: #FFFFFF;
+            fill: #eeeeee;
+            stroke: #333333;
+            stroke-width: 67px;
+            stroke-opacity: 0.75;
             opacity: 0.6;
         }
 
         .infoCircle:hover {
             cursor: pointer;
-            fill: #74b0ef;
+            fill: #3e7ab1;
         }
 
         .mappingContainer {
@@ -41,6 +78,7 @@
         .closeButton {
             color: #f4d887;
             font-weight: bold;
+            font-size: 18px;
             position: absolute;
             right: 0px;
             height: 100%;
@@ -66,9 +104,17 @@
             width: 100%
         }
 
+        .functionRow {
+            background-color: #fcf0c3;
+        }
+
         tr:nth-child(even) {
             background-color: #a8d0f4;
             border: 1px solid #4a4a4a;
+        }
+
+        .functionRow:nth-child(even) {
+            background-color: #f4d887;
         }
 
         tr:last-child {
@@ -82,6 +128,10 @@
 
         .keyCell {
             font-style: italic;
+        }
+
+        .headCell {
+            font-weight: bold;
         }
 
 
