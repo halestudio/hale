@@ -83,17 +83,20 @@ This command will build the normal HALE client application.
 Alternatively you can use the following command to build from a specific
 product definition file:
 
-    ./gradlew buildProduct -PproductFile=<path-to-product-file>
+    ./build.sh product <path-to-product-file-or-product-alias>
 
-The product file must be based on plugins. The path to this file must be
-relative. For example:
+The product file must be based on plugins. Either give a product alias as
+defined in the build configuration (e.g. `HALE`) or the path to the product
+file. The path to this file must be relative.
+For example:
 
-    ./gradlew buildProduct -PproductFile=../ui/plugins/eu.esdihumboldt.hale.ui.application/HALE.product
+    ./build.sh product -PproductFile=../ui/plugins/eu.esdihumboldt.hale.ui.application/HALE.product
 
 Build properties
 ----------------
 
-See the build help for options to provide to the different stages:
+See the build help for options to provide to the different stages (e.g.
+compiling for specific operation systems and architectures):
 
     ./build.sh help
 

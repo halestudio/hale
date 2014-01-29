@@ -100,7 +100,7 @@ class UnitTestRunner {
                 main = osgiTestRunnerClass
                 args = runnerargs
                 maxHeapSize = osgiTestMaxMemory
-		jvmArgs = ['-XX:ErrorFile=${errorFile.absolutePath}']
+				jvmArgs = ['-XX:ErrorFile=${errorFile.absolutePath}']
             }
         } catch (e) {
             // do not fail the whole build if one unit test fails
