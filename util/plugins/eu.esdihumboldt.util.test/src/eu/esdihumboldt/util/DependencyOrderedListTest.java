@@ -25,8 +25,6 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
-import eu.esdihumboldt.util.DependencyOrderedList;
-
 /**
  * Test case for {@link DependencyOrderedList}
  * 
@@ -65,13 +63,17 @@ public class DependencyOrderedListTest {
 
 		System.out.println(items.toString());
 
-		int a, b, c, x, y;
+		int a = items.indexOf("A");
+		int b = items.indexOf("B");
+		int c = items.indexOf("C");
+		int x = items.indexOf("X");
+		int y = items.indexOf("Y");
 
-		Assert.assertTrue("Item A missing", (a = items.indexOf("A")) >= 0); //$NON-NLS-1$ //$NON-NLS-2$
-		Assert.assertTrue("Item B missing", (b = items.indexOf("B")) >= 0); //$NON-NLS-1$ //$NON-NLS-2$
-		Assert.assertTrue("Item C missing", (c = items.indexOf("C")) >= 0); //$NON-NLS-1$ //$NON-NLS-2$
-		Assert.assertTrue("Item X missing", (x = items.indexOf("X")) >= 0); //$NON-NLS-1$ //$NON-NLS-2$
-		Assert.assertTrue("Item Y missing", (y = items.indexOf("Y")) >= 0); //$NON-NLS-1$ //$NON-NLS-2$
+		Assert.assertTrue("Item A missing", a >= 0); //$NON-NLS-1$ //$NON-NLS-2$
+		Assert.assertTrue("Item B missing", b >= 0); //$NON-NLS-1$ //$NON-NLS-2$
+		Assert.assertTrue("Item C missing", c >= 0); //$NON-NLS-1$ //$NON-NLS-2$
+		Assert.assertTrue("Item X missing", x >= 0); //$NON-NLS-1$ //$NON-NLS-2$
+		Assert.assertTrue("Item Y missing", y >= 0); //$NON-NLS-1$ //$NON-NLS-2$
 
 		Assert.assertEquals("Wrong list size", 5, items.size()); //$NON-NLS-1$
 
@@ -106,11 +108,13 @@ public class DependencyOrderedListTest {
 
 		System.out.println(items.toString());
 
-		int a, b, c;
+		int a = items.indexOf("A");
+		int b = items.indexOf("B");
+		int c = items.indexOf("C");
 
-		Assert.assertTrue("Item A missing", (a = items.indexOf("A")) >= 0); //$NON-NLS-1$ //$NON-NLS-2$
-		Assert.assertTrue("Item B missing", (b = items.indexOf("B")) >= 0); //$NON-NLS-1$ //$NON-NLS-2$
-		Assert.assertTrue("Item C missing", (c = items.indexOf("C")) >= 0); //$NON-NLS-1$ //$NON-NLS-2$
+		Assert.assertTrue("Item A missing", a >= 0); //$NON-NLS-1$ //$NON-NLS-2$
+		Assert.assertTrue("Item B missing", b >= 0); //$NON-NLS-1$ //$NON-NLS-2$
+		Assert.assertTrue("Item C missing", c >= 0); //$NON-NLS-1$ //$NON-NLS-2$
 
 		Assert.assertEquals("Wrong list size", 3, items.size()); //$NON-NLS-1$
 

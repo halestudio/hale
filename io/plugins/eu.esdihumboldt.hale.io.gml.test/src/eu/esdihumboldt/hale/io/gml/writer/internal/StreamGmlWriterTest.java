@@ -24,7 +24,6 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -38,8 +37,6 @@ import javax.xml.namespace.QName;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -52,7 +49,6 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
-import de.fhg.igd.osgi.util.OsgiUtilsActivator;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
@@ -74,6 +70,7 @@ import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace;
+import eu.esdihumboldt.hale.common.test.TestUtil;
 import eu.esdihumboldt.hale.io.gml.reader.internal.GmlInstanceReader;
 import eu.esdihumboldt.hale.io.gml.writer.GmlInstanceWriter;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryConverterRegistry;
@@ -1021,37 +1018,7 @@ public class StreamGmlWriterTest {
 	 */
 	@BeforeClass
 	public static void initAll() {
-		List<String> bundlesToStart = new ArrayList<String>();
-		// for osgi extensions in application context
-		bundlesToStart.add("org.eclipse.gemini.blueprint.core");
-		// activate the extender
-		bundlesToStart.add("org.eclipse.gemini.blueprint.extender");
-		// activate the conversion service
-		bundlesToStart.add("eu.esdihumboldt.hale.common.convert");
-
-		Map<String, Bundle> bundles = new HashMap<String, Bundle>();
-		BundleContext context = OsgiUtilsActivator.getInstance().getContext();
-		for (Bundle bundle : context.getBundles()) {
-			bundles.put(bundle.getSymbolicName(), bundle);
-		}
-
-		for (String bundleName : bundlesToStart) {
-			Bundle bundle = bundles.get(bundleName);
-			if (bundle != null) {
-				try {
-					bundle.start();
-					System.out.println("Attempting to start bundle " + bundle.getSymbolicName());
-					Thread.sleep(2000); // XXX wait for start to have finished
-										// FIXME improve
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			else {
-				System.err.println("Bundle to start not found: " + bundleName);
-			}
-		}
+		TestUtil.startConversionService();
 	}
 
 }

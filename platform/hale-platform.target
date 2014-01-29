@@ -1,146 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="108">
+<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="126">
 <locations>
-<location path="${project_loc}/target/plugins/org.apache.xml.serializer" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.springframework.security" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.eclipse.gemini.jpa" type="Directory"/>
-<location path="${project_loc}/target/plugins/javax.validation" type="Directory"/>
-<location path="${project_loc}/target/plugins/com.google.guava" type="Directory"/>
-<location path="${project_loc}/target/plugins/com.sun.jna" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.apache.poi" type="Directory"/>
-<location path="${project_loc}/target/plugins/javax.activation" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.custommonkey" type="Directory"/>
-<location path="${project_loc}/target/plugins/com.orientechnologies" type="Directory"/>
-<location path="${project_loc}/target/plugins/com.vaadin" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.apache.xalan" type="Directory"/>
-<location path="${project_loc}/target/plugins/de.fhg.igd.hale.fme" type="Directory"/>
-<location path="${project_loc}/target/plugins/com.oracle.jdbc" type="Directory"/>
-<location path="${project_loc}/target/plugins/javax.mail" type="Directory"/>
-<location path="${project_loc}/target/plugins/oauth.signpost" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.parboiled" type="Directory"/>
-<location path="${project_loc}/target/plugins/groovyx.net.http" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.json" type="Directory"/>
-<location path="${project_loc}/target/plugins/javax.servlet" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.fusesource" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.springframework" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.iq80.snappy" type="Directory"/>
-<location path="${project_loc}/target/plugins/osgi.enterprise" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.apache.ws" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.geotools" type="Directory"/>
-<location path="${project_loc}/target/plugins/com.github.sommeri.less4j" type="Directory"/>
-<location path="${project_loc}/target/plugins/de.cs3d.map" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.w3c.css.sac" type="Directory"/>
-<location path="${project_loc}/target/plugins/ch.qos.logback" type="Directory"/>
-<location path="${project_loc}/target/plugins/javax.media.jai" type="Directory"/>
-<location path="${project_loc}/target/plugins/EDU.oswego.cs.dl.util.concurrent" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.jdom" type="Directory"/>
-<location path="${project_loc}/target/plugins/eu.esdihumboldt.hale" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.apache.xerces" type="Directory"/>
-<location path="${project_loc}/target/plugins/javax.persistence" type="Directory"/>
-<location path="${project_loc}/target/plugins/com.google.appengine" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.apache.httpcomponents" type="Directory"/>
-<location path="${project_loc}/target/plugins/javax.xml.crypto" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.codehaus.jackson.mapper" type="Directory"/>
-<location path="${project_loc}/target/plugins/com.iabcinc.jmep" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.semanticweb.owl" type="Directory"/>
-<location path="${project_loc}/target/plugins/cern.colt" type="Directory"/>
-<location path="${project_loc}/target/plugins/com.sun.xml.bind" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.aopalliance" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.codehaus.castor" type="Directory"/>
-<location path="${project_loc}/target/plugins/javax.inject" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.postgresql.jdbc" type="Directory"/>
-<location path="${project_loc}/target/plugins/com.thoughtworks.xstream" type="Directory"/>
-<location path="${project_loc}/target/plugins/com.mysql.jdbc" type="Directory"/>
-<location path="${project_loc}/target/plugins/gnu.trove" type="Directory"/>
-<location path="${project_loc}/target/plugins/com.google.javascript" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.eclipse.zest" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.slf4j" type="Directory"/>
-<location path="${project_loc}/target/plugins/net.tanesha.recaptcha" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.javolution" type="Directory"/>
-<location path="${project_loc}/target/plugins/net.sf.ehcache.core" type="Directory"/>
-<location path="${project_loc}/target/plugins/fr.inrialpes.exmo" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.apache.velocity" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.apache.commons" type="Directory"/>
-<location path="${project_loc}/target/plugins/javax.annotation" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.pegdown" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.xmlpull" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.codehaus.jettison" type="Directory"/>
-<location path="${project_loc}/target/plugins/schemacrawler" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.apache.wicket" type="Directory"/>
-<location path="${project_loc}/target/plugins/net.sf.json" type="Directory"/>
-<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.sdk.ide" version="3.7.1.M20110909-1335"/>
 <repository location="http://www.cityserver3d.de/updates/eclipse/updates/3.7"/>
 </location>
-<location path="${project_loc}/target/plugins/com.google.inject" type="Directory"/>
-<location path="${project_loc}/target/plugins/net.sf.ezmorph" type="Directory"/>
-<location path="${project_loc}/target/plugins/com.google.gson" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.objectweb.asm" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.reflections" type="Directory"/>
-<location path="${project_loc}/target/plugins/com.vaadin.addons.jpacontainer" type="Directory"/>
-<location path="${project_loc}/target/plugins/au.com.bytecode" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.agilecoders.wicket" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.aopalliance" type="Directory"/>
-<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.codehaus.groovy21.feature.feature.group" version="2.8.0.xx-20130703-1500-e37-RELEASE"/>
-<unit id="org.codehaus.groovy.eclipse.feature.feature.group" version="2.8.0.xx-20130703-1500-e37-RELEASE"/>
-<repository location="http://dist.springsource.org/release/GRECLIPSE/e3.7/"/>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="eu.esdihumboldt.hale.platform.feature.group" version="2.9.2"/>
+<repository location="http://hale.igd.fraunhofer.de/build-support/507d3beeb80f12c624cc0c8eb7f86d69c0471896/updatesites/platform"/>
 </location>
-<location path="${project_loc}/target/plugins/com.onespatial" type="Directory"/>
-<location path="${project_loc}/target/plugins/com.tinkerpop.blueprints" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.jdesktop.swingx" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.apache.commons.httpclient.contrib.ssl" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.eclipse.xsd" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.antlr" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.dom4j" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.castor" type="Directory"/>
-<location path="${project_loc}/target/plugins/com.google.protobuf" type="Directory"/>
-<location path="${project_loc}/target/plugins/net.java" type="Directory"/>
-<location path="${project_loc}/target/plugins/eu.esdihumboldt.util.resource" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.jscience" type="Directory"/>
-<location path="${project_loc}/target/plugins/edu.umd.cs.findbugs" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.eclipse.persistence" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.jvnet.staxex" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.joda" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.apache.ddlutils" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.cyberneko.html" type="Directory"/>
-<location path="${project_loc}/target/plugins/com.vaadin.addons.beanvalidation" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.apache.commons.vfs2" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.picocontainer" type="Directory"/>
-<location path="${project_loc}/target/plugins/jline" type="Directory"/>
-<location path="${project_loc}/target/plugins/eu.esdihumboldt.hale.prefixmapper" type="Directory"/>
-<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.emf.sdk.feature.group" version="2.7.1.v20110913-1526"/>
+<unit id="org.eclipse.equinox.sdk.feature.group" version="3.7.1.R37x_v20110907-7M7W8h8eNV4Vrz-hz01A7SL_MhZP"/>
+<unit id="org.eclipse.xtext.sdk.feature.group" version="2.0.1.v201108020636"/>
 <unit id="org.eclipse.gef.sdk.feature.group" version="3.7.1.v20110830-1143-7G7W2A5WNgEQNgNXBJgcPLWZeMNI"/>
 <unit id="org.eclipse.gmf.runtime.sdk.feature.group" version="1.5.0.v20110607-1200-67N09E9QnChoWswz-3wf_rz0kQ8Y"/>
 <unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.0.1.v201108020809"/>
 <unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.0.1.v201108020506"/>
-<unit id="org.eclipse.xtext.sdk.feature.group" version="2.0.1.v201108020636"/>
 <repository location="http://www.cityserver3d.de/updates/releases/indigo"/>
 </location>
-<location path="${project_loc}/target/plugins/com.tinkerpop.pipes" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.opensaml" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.jasig.cas" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.webjars" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.wicketstuff" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.jboss.javassist" type="Directory"/>
-<location path="${project_loc}/target/plugins/com.fasterxml.jackson" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.apache.xmlbeans" type="Directory"/>
-<location path="${project_loc}/target/plugins/net.sf.cglib" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.quartz" type="Directory"/>
-<location path="${project_loc}/target/plugins/de.cs3d.util" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.eclipse.jetty" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.codehaus.jackson" type="Directory"/>
-<location path="${project_loc}/target/plugins/com.tinkerpop.gremlin" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.openid4java" type="Directory"/>
-<location path="${project_loc}/target/plugins/com.vividsolutions.jts" type="Directory"/>
-<location path="${project_loc}/target/plugins/javax.el" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.eclipse.gemini" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.codehaus.groovy" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.geotiff" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.jscience" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.w3c.dom.mathml" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.vaadin.addon.customfield" type="Directory"/>
-<location path="${project_loc}/target/plugins/org.eclipse.jgit" type="Directory"/>
 </locations>
 </target>
