@@ -21,6 +21,7 @@ class CommandLineBuilder {
 //    private def deployArtifacts = new DeployArtifactsCommand()
     private def client = new ClientCommand()
     private def server = new ServerCommand()
+	private def product = new ProductFileCommand()
     private def clean = new CleanCommand()
     private def help = new HelpCommand()
     private Project project
@@ -36,6 +37,7 @@ class CommandLineBuilder {
 //        jc.addCommand('deployArtifacts', deployArtifacts)
         jc.addCommand('client', client)
         jc.addCommand('server', server)
+		jc.addCommand('product', product)
         jc.addCommand('clean', clean)
         jc.addCommand('help', help)
 
@@ -71,6 +73,8 @@ class CommandLineBuilder {
             integrationTestStage.run()
         } else if (cmd == 'deployArtifacts') {
             deployArtifacts.run()
+        } else if (cmd == 'product') {
+			product.run()
         } else {
             commitStage.run()
         }
@@ -175,6 +179,31 @@ class CommandLineBuilder {
         }
     }
 
+	@Parameters(commandDescription = 'Build a product based on a product file or alias')
+	class ProductFileCommand extends ProductCommand {
+		@Override
+		String getType() {
+			return 'product'
+		}
+		
+		def run() {
+			String product = names[0]
+			
+			// check if product is a product alias
+			if (project.ext.has('productAlias')) {
+				String candidate = project.ext.productAlias[product]
+				if (candidate != null) {
+					product = candidate
+				}
+			}
+			
+			// set productFile property
+			project.ext.productFile = product
+			
+			super.run()
+		}
+	}
+	
     @Parameters(commandDescription = 'Build client product')
     class ClientCommand extends ProductCommand {
         @Override

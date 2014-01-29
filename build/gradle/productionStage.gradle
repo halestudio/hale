@@ -505,7 +505,9 @@ task makeProductFeatureProjectDefinition(type: Copy) {
  */
 task makeProductFile << {
     // check environment variables
-    if ((project.ext.properties.containsKey("productType") && !project.ext.properties.containsKey("productName")) ||
+	if (project.ext.has('productFile')) {
+		// if a product file is given, prefer it over any productType/productName properties
+	} else if ((project.ext.properties.containsKey("productType") && !project.ext.properties.containsKey("productName")) ||
         (!project.ext.properties.containsKey("productType") && project.ext.properties.containsKey("productName"))) {
         throw new IllegalStateException("Please specify the parameters 'productType' and 'productName'")
     } else if (!project.ext.properties.containsKey("productType") && !project.ext.properties.containsKey("productName")) {

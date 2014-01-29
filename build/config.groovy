@@ -22,5 +22,13 @@ project = {
 		// Name of the Windows service executable (without extension), must be different
 		// from the product's launcher name
 		serviceExeName = 'hale_srvc'
+		
+		// Product aliases pointing to product file locations
+		productAlias = [
+			HALE: '../ui/plugins/eu.esdihumboldt.hale.ui.application/HALE.product',
+			Infocenter: '../doc/plugins/eu.esdihumboldt.hale.doc.application/Infocenter.product',
+			Server: '../server/plugins/eu.esdihumboldt.hale.server.application/Server.product',
+			Templates: '../server/plugins/eu.esdihumboldt.hale.server.application/Templates.product'
+		]
 	}
 }
