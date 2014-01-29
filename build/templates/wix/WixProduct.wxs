@@ -6,7 +6,7 @@
 	<Product Id="*" UpgradeCode="@{GUID.UPGRADECODE}"
 			Version="@{SHORTVERSION}" Language="@{LANGID}"
 			Name="@{TITLE} @{SHORTVERSION}"
-			Manufacturer="Fraunhofer IGD">
+			Manufacturer="ESDI HUMBOLDT">
 		<Package Id="*" InstallerVersion="300" Compressed="yes"/>
 		<Media Id="1" Cabinet="@{BUILDID}.cab" EmbedCab="yes" />
 		
@@ -17,7 +17,7 @@
 		
 		<!-- select UI -->
 		<Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR"/>
-		<UIRef Id="WixUI_CityServer3D" />
+		<UIRef Id="WixUI_Product" />
 		
 		<!-- Install for all users -->
 		<Property Id="ALLUSERS" Value="1" />
@@ -30,13 +30,13 @@
 		<!-- Define target directory structure -->
 		<Directory Id="TARGETDIR" Name="SourceDir">
 			<Directory Id="@{PROGRAMFILESFOLDER}">
-				<Directory Id="FRAUNHOFERDIR" Name="Fraunhofer IGD">
-					<Directory Id="CITYSERVER3DDIR" Name="CityServer3D">
+				<Directory Id="MANUFACTURERDIR" Name="ESDI HUMBOLDT">
+					<!--Directory Id="APPDIR" Name="@{SHORTNAME}"-->
 						<Directory Id="INSTALLDIR" Name="@{BUILDID}">
 							@{DIRECTORIES}
 							<Directory Id="CONFIGDIR" Name="configuration" />
 						</Directory>
-					</Directory>
+					<!--/Directory-->
 				</Directory>
 			</Directory>
 			<Directory Id="ProgramMenuFolder">
@@ -69,11 +69,11 @@
 			<Component Id="ApplicationShortcut" Guid="@{GUID.APPLICATIONSHORTCUT}">
 				<Shortcut Id="ApplicationStartMenuShortcut" 
 					Name="@{TITLE}"
-					Arguments="-clean -data &quot;%APPDATA%\Fraunhofer IGD\CityServer3D\@{BUILDID}&quot;"
+					Arguments="-clean -data &quot;%APPDATA%\ESDI HUMBOLDT\@{SHORTNAME}\@{BUILDID}&quot;"
 					Target="[INSTALLDIR]@{BUILDID}.exe"
 					WorkingDirectory="INSTALLDIR" />
 				<RemoveFolder Id="ApplicationProgramsFolder" On="uninstall" />
-				<RegistryValue Root="HKCU" Key="Software\Fraunhofer IGD\CityServer3D\@{BUILDID}"
+				<RegistryValue Root="HKCU" Key="Software\ESDI HUMBOLDT\@{SHORTNAME}\@{BUILDID}"
 					Name="Installed" Type="integer" Value="1" KeyPath="yes" />
 			</Component>
 		</DirectoryRef>
@@ -85,12 +85,10 @@
 			<ComponentRef Id="@{BUILDID}.ini" />
 			<ComponentRef Id="config.ini" />
 			<ComponentRef Id="ApplicationShortcut" />
-			
-			@{DEPLOYMENTSPECIFICWXS}
 		</Feature>
 		
 		<InstallExecuteSequence>
-			<RemoveExistingProducts Before="InstallInitialize" />
+			<RemoveExistingProducts After="InstallFinalize" />
 		</InstallExecuteSequence>
 	</Product>
 </Wix>

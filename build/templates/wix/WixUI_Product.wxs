@@ -25,7 +25,7 @@ First-time install dialog sequence:      Maintenance dialog sequence:
         <WixVariable Id="WixUIBannerBmp" Value="Bitmaps\bannrbmp.bmp" />
         <WixVariable Id="WixUIDialogBmp" Value="Bitmaps\dlgbmp.bmp" />
         
-        <UI Id="WixUI_CityServer3D">
+        <UI Id="WixUI_Product">
             <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
             <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
             <TextStyle Id="WixUI_Font_Title" FaceName="Tahoma" Size="9" Bold="yes" />

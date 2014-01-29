@@ -319,7 +319,7 @@ def packageClient(productOutputPath) {
 	        // get path to Windows Installer XML Kit
 	        if (!project.ext.properties.containsKey("wixDir")) {
 	            def dirs = fileTree(dir: 'C:\\', includes: [ 'Program Files*\\Windows Installer XML v3*\\bin\\candle.exe',
-	                    'Program Files*\\WIX Toolset v3*\\bin\\candle.exe' ])
+	                    'Program Files*\\WiX Toolset v3*\\bin\\candle.exe' ])
 	
 	            if (dirs.isEmpty()) {
 	                throw new IllegalStateException("Could not guess WIX installation directory. Please specify it " +
@@ -336,7 +336,6 @@ def packageClient(productOutputPath) {
 	        }
 	
 	        // call legacy Ant file to build the Windows installer
-	        def timestamp = new SimpleDateFormat('YYYYMMddHHmm').format(Calendar.getInstance().getTime())
 	        def wixArch
 	        if (Helper.buildFor64bit(project)) {
 	            wixArch = 'x64'
@@ -347,7 +346,7 @@ def packageClient(productOutputPath) {
 	            property(name: "buildId", value: getProductLauncher())
 	            property(name: "shortName", value: getProductLauncher())
 	            property(name: "title", value: project.ext.win32InstallerTitle)
-	            property(name: "version", value: project.version + '.' + timestamp)
+	            property(name: "version", value: project.version + '.' + project.ext.buildId)
 	            property(name: "GUID.UpgradeCode", value: project.ext.win32InstallerUpgradeGUID)
 	            property(name: "GUID.ApplicationShortcut", value: project.ext.win32InstallerShortcutGUID)
 	            if (project.ext.properties.containsKey('tag')) {
@@ -361,8 +360,8 @@ def packageClient(productOutputPath) {
 	            }
 	            property(name: "wix.dir", value: project.ext.wixDir)
 	            property(name: "wxs.dir", value: Helper.resolveTemplate(project, 'wix'))
-	            property(name: "wxs.file.ui", value: "WixUI_CityServer3D")
-	            property(name: "wxs.file.config", value: "CityServer3D")
+	            property(name: "wxs.file.ui", value: "WixUI_Product")
+	            property(name: "wxs.file.config", value: "WixProduct")
 	            property(name: "src", value: productOutputPath)
 	        }
 		} catch (e) {
