@@ -241,7 +241,7 @@ def includeAdditionalFiles(artifacts, relsrcpath, productOutputPath, reldstpath,
         def f = artifacts[project.ext.osgiOS][project.ext.osgiWS][project.ext.osgiArch]
         def artifactZipPath = new File(buildDir, f)
         def artifactZipPathPart = new File(buildDir, f + '.part')
-        def artifactDownloadUrl = project.ext.cs3dMirrorUrl + '/' + relsrcpath + '/' + f
+        def artifactDownloadUrl = project.ext.artifactsMirrorUrl + '/' + relsrcpath + '/' + f
         if (!artifactZipPath.exists()) {
             download {
                 src artifactDownloadUrl
@@ -644,7 +644,7 @@ task buildProduct(dependsOn: createProductFeature) << {
     ant.unzip(src: tychoOutputProductZip, dest: productOutputPath)
 
     // Include JRE if available for this platform
-    includeAdditionalFiles(project.ext.jreArtifacts, 'jre7', productOutputPath, 'jre', 'JRE')
+    includeAdditionalFiles(project.ext.jreArtifacts, 'jre', productOutputPath, 'jre', 'JRE')
 
     // Include additional files
     if (project.ext.includeMongoDB) {
