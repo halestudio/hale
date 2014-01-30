@@ -17,8 +17,7 @@ class UnitTestRunner {
     private Project project
     private static final String osgiTestBundleSymbolicName = 'de.cs3d.util.osgi.test'
     private static final String osgiTestRunnerClass = 'de.cs3d.util.osgi.test.OSGITestRunner'
-    private static final String osgiTestMaxMemory = '256M'
-
+    
     UnitTestRunner(Project project) {
         this.project = project
     }
@@ -99,7 +98,7 @@ class UnitTestRunner {
                 classpath = project.files(equinoxBundle, osgiTestBundle)
                 main = osgiTestRunnerClass
                 args = runnerargs
-                maxHeapSize = osgiTestMaxMemory
+                maxHeapSize = project.ext.osgiTestMaxMemory
 				jvmArgs = ['-XX:ErrorFile=${errorFile.absolutePath}']
             }
         } catch (e) {
