@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="eu.esdihumboldt.hale.ui.workbench" name="HALE workbench hooks" schema="schema/eu.esdihumboldt.hale.ui.workbench.exsd"/>
    <extension
          point="org.eclipse.ui.preferencePages">
       <page

@@ -24,12 +24,13 @@ import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+
 import eu.esdihumboldt.hale.common.align.extension.category.Category;
 import eu.esdihumboldt.hale.common.align.extension.category.CategoryExtension;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExtension;
-import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionExtension;
 import eu.esdihumboldt.hale.ui.common.internal.Messages;
 
@@ -39,7 +40,8 @@ import eu.esdihumboldt.hale.ui.common.internal.Messages;
  * 
  * @author Simon Templer
  */
-public class FunctionContentProvider implements ITreeContentProvider {
+public class FunctionContentProvider implements ITreeContentProvider,
+		Predicate<AbstractFunction<?>> {
 
 	private static final Category CAT_OTHER = new Category(null,
 			Messages.FunctionContentProvider_others, Messages.FunctionContentProvider_description);
@@ -79,6 +81,11 @@ public class FunctionContentProvider implements ITreeContentProvider {
 		return cats.toArray();
 	}
 
+	@Override
+	public boolean apply(AbstractFunction<?> function) {
+		return true;
+	}
+
 	/**
 	 * @see ITreeContentProvider#getChildren(Object)
 	 */
@@ -88,9 +95,10 @@ public class FunctionContentProvider implements ITreeContentProvider {
 			Category category = (Category) parentElement;
 
 			List<AbstractFunction<?>> functions = new ArrayList<AbstractFunction<?>>();
-			functions.addAll(TypeFunctionExtension.getInstance().getFunctions(category.getId()));
-			functions
-					.addAll(PropertyFunctionExtension.getInstance().getFunctions(category.getId()));
+			functions.addAll(Collections2.filter(
+					TypeFunctionExtension.getInstance().getFunctions(category.getId()), this));
+			functions.addAll(Collections2.filter(PropertyFunctionExtension.getInstance()
+					.getFunctions(category.getId()), this));
 
 			return functions.toArray();
 		}
@@ -122,23 +130,8 @@ public class FunctionContentProvider implements ITreeContentProvider {
 	 */
 	@Override
 	public boolean hasChildren(Object element) {
-		if (element instanceof Category) {
-			Category category = (Category) element;
-
-			List<TypeFunction> typeFunctions = TypeFunctionExtension.getInstance().getFunctions(
-					category.getId());
-			if (!typeFunctions.isEmpty()) {
-				return true;
-			}
-
-			List<PropertyFunction> properyFunctions = PropertyFunctionExtension.getInstance()
-					.getFunctions(category.getId());
-			if (!properyFunctions.isEmpty()) {
-				return true;
-			}
-		}
-
-		return false;
+		Object[] children = getChildren(element);
+		return children != null && children.length > 0;
 	}
 
 }

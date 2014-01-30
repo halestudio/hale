@@ -51,6 +51,39 @@
                ref="eu.esdihumboldt.hale.io.xls.xlsx">
          </contentType>
       </provider>
-   </extension>
+      <provider
+            class="eu.esdihumboldt.hale.io.xls.reader.XLSSchemaReader"
+            id="eu.esdihumboldt.hale.io.xls.reader.schema"
+            name="XLS file">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.xls.xls">
+         </contentType>
+         <contentType
+               ref="eu.esdihumboldt.hale.io.xls.xlsx">
+         </contentType>
+      </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.xls.reader.XLSInstanceReader"
+            id="eu.esdihumboldt.hale.io.xls.reader.instance"
+            name="XLS file">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.xls.xls">
+         </contentType>
+         <contentType
+               ref="eu.esdihumboldt.hale.io.xls.xlsx">
+         </contentType>
+      </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.xls.writer.XLSInstanceWriter"
+            id="eu.esdihumboldt.hale.io.xls.writer.instance"
+            name="XLS file">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.xls.xls">
+         </contentType>
+         <contentType
+               ref="eu.esdihumboldt.hale.io.xls.xlsx">
+         </contentType>
+      </provider>
+      </extension>
 
 </plugin>

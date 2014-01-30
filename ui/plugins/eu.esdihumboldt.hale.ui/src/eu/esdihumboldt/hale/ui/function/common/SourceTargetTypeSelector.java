@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.ui.function.common;
 
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -28,7 +29,6 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -98,9 +98,11 @@ public class SourceTargetTypeSelector implements ISelectionProvider {
 			}
 		};
 
+		GridDataFactory selectorgd = GridDataFactory.fillDefaults().grab(true, false)
+				.hint(200, SWT.DEFAULT);
+
 		sourceTypeSelector = new TypeEntitySelector(SchemaSpaceID.SOURCE, null, main, false);
-		sourceTypeSelector.getControl()
-				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		selectorgd.applyTo(sourceTypeSelector.getControl());
 		sourceTypeSelector.addSelectionChangedListener(listener);
 
 		selectCellButton = new Button(main, SWT.PUSH);
@@ -143,8 +145,7 @@ public class SourceTargetTypeSelector implements ISelectionProvider {
 		resetSelectionButton.setToolTipText("Reset selection");
 
 		targetTypeSelector = new TypeEntitySelector(SchemaSpaceID.TARGET, null, main, false);
-		targetTypeSelector.getControl()
-				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		selectorgd.applyTo(targetTypeSelector.getControl());
 		targetTypeSelector.addSelectionChangedListener(listener);
 	}
 

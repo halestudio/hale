@@ -83,11 +83,14 @@ abstract class BuilderBase {
 		current = node
 
 		closure?.call()
+		internalExtendNode(node)
 
 		current = parent
 
+		internalNodeWrapup(node)
+
 		// return the node created by the call
-		node
+		internalExtractNode(node)
 	}
 
 	/**
@@ -111,5 +114,39 @@ abstract class BuilderBase {
 	 * @return the created node
 	 */
 	protected def abstract internalCreateNode(String name, Map attributes, List params, def parent, boolean subClosure);
+
+	/**
+	 * Method that is called for a node created with
+	 * {@link #internalCreateNode(String, Map, List, Object, boolean)} after all
+	 * sub-closures have been handled.
+	 * 
+	 * @param node the created node
+	 */
+	protected void internalNodeWrapup(def node) {
+		// override me
+	}
+
+	/**
+	 * Method that is called after (or if it does not exist: instead) a node's
+	 * sub-closure. Thus builder calls to extend the node can be performed here.
+	 * 
+	 * @param node the created node to extend
+	 */
+	protected void internalExtendNode(def node) {
+		// override me
+	}
+
+	/**
+	 * Method that is called at the end of {@link #createNode(String, def)} to
+	 * extract a value to return from a node. This return value is only relevant
+	 * for use inside the builder closure. The default implementation just
+	 * returns the node itself unchanged.
+	 * 
+	 * @param node the node to extract a return value from
+	 * @return the return value for the given node
+	 */
+	protected def internalExtractNode(def node) {
+		node
+	}
 
 }

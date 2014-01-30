@@ -15,15 +15,21 @@
 
 package eu.esdihumboldt.hale.ui.function;
 
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.ui.function.contribution.SchemaSelectionFunctionMatcher;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardDescriptor;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardExtension;
+import eu.esdihumboldt.hale.ui.function.internal.NewRelationWizard;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
+import eu.esdihumboldt.hale.ui.selection.impl.DefaultSchemaSelection;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 
@@ -67,4 +73,53 @@ public class FunctionWizardUtil {
 		return null;
 	}
 
+	/**
+	 * Launches a wizard for mapping to a specific target entity.
+	 * 
+	 * @param target the target entity
+	 * @return the created cell or <code>null</code>
+	 */
+	public static Cell addRelationForTarget(EntityDefinition target) {
+		return addRelationForTarget(target, null);
+	}
+
+	/**
+	 * Launches a wizard for mapping to a specific target entity.
+	 * 
+	 * @param target the target entity
+	 * @param source the source entities the target should be mapped from, or
+	 *            <code>null</code>
+	 * @return the created cell or <code>null</code>
+	 */
+	public static Cell addRelationForTarget(EntityDefinition target,
+			Iterable<EntityDefinition> source) {
+		DefaultSchemaSelection initialSelection = new DefaultSchemaSelection();
+		initialSelection.addTargetItem(target);
+		if (source != null) {
+			for (EntityDefinition sourceEntity : source) {
+				initialSelection.addSourceItem(sourceEntity);
+			}
+		}
+
+		SchemaSelectionFunctionMatcher selectionMatcher;
+		if (source == null) {
+			// ignore source
+			selectionMatcher = new SchemaSelectionFunctionMatcher(true, false);
+		}
+		else {
+			// respect source
+			selectionMatcher = new SchemaSelectionFunctionMatcher(false, false);
+		}
+
+		NewRelationWizard wizard = new NewRelationWizard(initialSelection, selectionMatcher);
+		wizard.setWindowTitle("Map to " + target.getDefinition().getDisplayName());
+		Shell shell = Display.getCurrent().getActiveShell();
+		HaleWizardDialog dialog = new HaleWizardDialog(shell, wizard);
+		if (dialog.open() == Window.OK) {
+			return wizard.getCreatedCell();
+		}
+		else {
+			return null;
+		}
+	}
 }

@@ -65,7 +65,8 @@ public class PropertyEntityDialog extends EntityDialog {
 	 * 
 	 * @param parentShell the parent shell
 	 * @param ssid the schema space
-	 * @param parentType the parent type for the property to be selected
+	 * @param parentType the parent type for the property to be selected, may be
+	 *            <code>null</code> if any type is allowed
 	 * @param title the dialog title
 	 * @param initialSelection the entity definition to select initially (if
 	 *            possible), may be <code>null</code>

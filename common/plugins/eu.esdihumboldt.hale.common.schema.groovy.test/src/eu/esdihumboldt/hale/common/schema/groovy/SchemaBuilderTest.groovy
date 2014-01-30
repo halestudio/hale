@@ -209,7 +209,8 @@ class SchemaBuilderTest extends GroovyTestCase {
 	 */
 	void testGroup() {
 		// create the schema
-		Schema schema = new SchemaBuilder().schema {
+		def b = new SchemaBuilder()
+		Schema schema = b.schema {
 			def itemType = ItemType {
 				id(Long)
 				name(String)
@@ -218,7 +219,13 @@ class SchemaBuilderTest extends GroovyTestCase {
 			}
 
 			OrderType {
-				_{
+				/*
+				 * Strange stuff: A call to the _ method with no parameter
+				 * fails in the maven tycho build tests, while it works inside
+				 * Eclipse - maybe a Groovy version issue?
+				 */
+				// _{
+				_(cardinality: 1) {
 					item(itemType)
 					quantity(Integer)
 				}

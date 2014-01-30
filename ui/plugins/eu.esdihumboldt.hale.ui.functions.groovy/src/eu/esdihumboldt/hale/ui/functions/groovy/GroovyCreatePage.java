@@ -85,6 +85,10 @@ public class GroovyCreatePage extends GroovyScriptPage {
 
 		Type typeEntity = (Type) CellUtil.getFirstEntity(getWizard().getUnfinishedCell()
 				.getTarget());
+		if (typeEntity == null) {
+			// not yet selected (NewRelationWizard)
+			return false;
+		}
 
 		InstanceBuilder builder = new InstanceBuilder();
 		Binding binding = GroovyCreate.createBinding(0, builder);

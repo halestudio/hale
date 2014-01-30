@@ -22,6 +22,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import eu.esdihumboldt.hale.common.core.io.ComplexValueType;
+import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.Text;
 
 /**
@@ -30,8 +31,6 @@ import eu.esdihumboldt.hale.common.core.io.Text;
  * @author Simon Templer
  */
 public class TextType implements ComplexValueType<Text, Void> {
-
-	private static final String NS = "http://www.esdi-humboldt.eu/hale/core";
 
 	@Override
 	public Text fromDOM(Element fragment, Void context) {
@@ -55,7 +54,7 @@ public class TextType implements ComplexValueType<Text, Void> {
 		try {
 			Document doc = dbf.newDocumentBuilder().newDocument();
 
-			Element result = doc.createElementNS(NS, "text");
+			Element result = doc.createElementNS(HaleIO.NS_HALE_CORE, "text");
 			result.setPrefix("core");
 			result.setAttribute("xml:space", "preserve");
 

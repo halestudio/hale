@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.ui.io.config">
+      <configPage
+            class="eu.esdihumboldt.hale.io.xls.ui.XLSSchemaTypePage"
+            order="0">
+         <provider
+               ref="eu.esdihumboldt.hale.io.xls.reader.schema">
+         </provider>
+      </configPage>
+      <configPage
+            class="eu.esdihumboldt.hale.io.csv.ui.TypeSelectionPage"
+            order="0">
+         <provider
+               ref="eu.esdihumboldt.hale.io.xls.reader.instance">
+         </provider>
+      </configPage>
+   </extension>
+      <extension
+         point="eu.esdihumboldt.hale.io.action">
+      <action
+            id="eu.esdihumboldt.hale.io.xls.write.instance"
+            name="XLS Instance Writer"
+            type="eu.esdihumboldt.hale.io.xls.writer.XLSInstanceWriter">
+      </action>
+      <advisor
+            action="eu.esdihumboldt.hale.io.xls.write.instance"
+            class="eu.esdihumboldt.hale.ui.io.instance.InstanceExportAdvisor"
+            id="eu.esdihumboldt.hale.io.xls.write.instance">
+      </advisor>
+   </extension>
+</plugin>

@@ -19,8 +19,11 @@ package eu.esdihumboldt.hale.ui.function.internal;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;
+import eu.esdihumboldt.hale.ui.function.contribution.SchemaSelectionFunctionMatcher;
+import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
@@ -33,13 +36,36 @@ import eu.esdihumboldt.hale.ui.util.wizard.MultiWizard;
  */
 public class NewRelationWizard extends MultiWizard<NewRelationPage> {
 
+	private final SchemaSelection initialSelection;
+	private final SchemaSelectionFunctionMatcher selectionMatcher;
+
+	private Cell createdCell;
+
 	/**
 	 * Default constructor
 	 */
 	public NewRelationWizard() {
-		super();
-		setHelpAvailable(true);
+		this(null, null);
+	}
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param initialSelection the initial selection to initialize the wizard
+	 *            with, may be <code>null</code> to start with an empty
+	 *            configuration
+	 * @param selectionMatcher the matcher that determines if a function is
+	 *            applicable for the initial selection, may be <code>null</code>
+	 *            to allow all functions
+	 */
+	public NewRelationWizard(SchemaSelection initialSelection,
+			SchemaSelectionFunctionMatcher selectionMatcher) {
+		super();
+
+		this.initialSelection = initialSelection;
+		this.selectionMatcher = selectionMatcher;
+
+		setHelpAvailable(true);
 		setWindowTitle("New relation");
 	}
 
@@ -58,7 +84,8 @@ public class NewRelationWizard extends MultiWizard<NewRelationPage> {
 	 */
 	@Override
 	protected NewRelationPage createPage() {
-		return new NewRelationPage("Select the type of the new relation");
+		return new NewRelationPage("Select the type of the new relation", initialSelection,
+				selectionMatcher);
 	}
 
 	/**
@@ -80,6 +107,7 @@ public class NewRelationWizard extends MultiWizard<NewRelationPage> {
 					AlignmentService.class);
 			as.addCell(cell);
 		}
+		createdCell = cell;
 
 		// save page configuration
 		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
@@ -87,6 +115,13 @@ public class NewRelationWizard extends MultiWizard<NewRelationPage> {
 		getSelectionPage().store(ps.getConfigurationService());
 
 		return true;
+	}
+
+	/**
+	 * @return the cell created through the wizard, or <code>null</code>
+	 */
+	public Cell getCreatedCell() {
+		return createdCell;
 	}
 
 }
