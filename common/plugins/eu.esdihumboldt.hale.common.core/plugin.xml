@@ -158,4 +158,11 @@
             type="eu.esdihumboldt.hale.common.core.io.ValueList">
       </complexValue>
    </extension>
+   <extension
+         point="eu.esdihumboldt.util.groovy.meta">
+      <metaClass
+            for="java.lang.Object"
+            implementation="eu.esdihumboldt.hale.common.core.io.internal.AsValueMetaClass">
+      </metaClass>
+   </extension>
 </plugin>
