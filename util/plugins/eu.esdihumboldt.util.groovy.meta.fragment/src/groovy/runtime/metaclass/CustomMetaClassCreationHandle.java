@@ -42,7 +42,8 @@ public class CustomMetaClassCreationHandle extends MetaClassCreationHandle {
 			Class<?> forClass = descriptor.getForClass();
 
 			if (forClass.equals(theClass)
-					|| (forClass.isInterface() && forClass.isAssignableFrom(theClass))) {
+//					|| (forClass.isInterface() && forClass.isAssignableFrom(theClass))) {
+					|| forClass.isAssignableFrom(theClass)) {
 				// create meta class
 				Class<?> delegatingMetaClass = descriptor.getMetaClass();
 				try {
