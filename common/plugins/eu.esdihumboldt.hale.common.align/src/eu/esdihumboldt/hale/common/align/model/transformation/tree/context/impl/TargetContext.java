@@ -659,8 +659,8 @@ public class TargetContext implements TransformationContext {
 			// null!
 			// XXX instead log and return null or not connected TargetNode? See
 			// T O D O below
-			log.error(log.createMessage(
-					"DuplicationContext present, but no matching target found.", null));
+			log.warn(log.createMessage("DuplicationContext present, but no matching target found.",
+					null));
 			return null;
 //			throw new IllegalStateException(
 //					"DuplicationContext present, but no matching target found.");

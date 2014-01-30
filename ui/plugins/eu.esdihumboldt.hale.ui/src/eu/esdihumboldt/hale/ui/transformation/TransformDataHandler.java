@@ -32,6 +32,6 @@ public class TransformDataHandler extends AbstractWizardHandler {
 	 */
 	@Override
 	protected IWizard createWizard() {
-		return new TransformDataWizard();
+		return new TransformDataWizard(false);
 	}
 }

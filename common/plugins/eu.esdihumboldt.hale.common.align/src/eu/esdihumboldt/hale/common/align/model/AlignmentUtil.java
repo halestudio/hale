@@ -214,27 +214,50 @@ public abstract class AlignmentUtil {
 	 */
 	public static EntityDefinition createEntity(Path<Definition<?>> path,
 			SchemaSpaceID schemaSpace, Filter filter) {
-		List<Definition<?>> defs = new ArrayList<>(path.getElements());
+		List<Definition<?>> defs = path.getElements();
 
 		// create entity definition
-		Definition<?> top = defs.remove(0);
-		if (!(top instanceof TypeDefinition)) {
+		Definition<?> top = defs.get(0);
+		if (!(top instanceof TypeDefinition))
 			throw new IllegalArgumentException("Topmost accessor must represent a type definition");
-		}
 
-		List<ChildContext> contextPath = Lists.transform(defs,
-				new Function<Definition<?>, ChildContext>() {
+		List<ChildDefinition<?>> childPath = Lists.transform(defs.subList(1, defs.size()),
+				new Function<Definition<?>, ChildDefinition<?>>() {
 
 					@Override
-					public ChildContext apply(Definition<?> input) {
-						if (input instanceof ChildDefinition<?>) {
-							return new ChildContext((ChildDefinition<?>) input);
-						}
+					public ChildDefinition<?> apply(Definition<?> input) {
+						if (input instanceof ChildDefinition<?>)
+							return (ChildDefinition<?>) input;
 						throw new IllegalArgumentException(
 								"All definitions in child accessors must be ChildDefinitions");
 					}
 				});
-		return createEntity((TypeDefinition) top, contextPath, schemaSpace, filter);
+		// childPath will be copied in there, no need to do it here
+		return createEntityFromDefinitions((TypeDefinition) top, childPath, schemaSpace, filter);
+	}
+
+	/**
+	 * Create an entity definition from a definition path. Child contexts will
+	 * all be defaults contexts.
+	 * 
+	 * @param type the path parent
+	 * @param path the child path
+	 * @param schemaSpace the associated schema space
+	 * @param filter the entity filter on the type, may be <code>null</code>
+	 * @return the created entity definition
+	 */
+	public static EntityDefinition createEntityFromDefinitions(TypeDefinition type,
+			List<? extends ChildDefinition<?>> path, SchemaSpaceID schemaSpace, Filter filter) {
+		ArrayList<ChildContext> contextPath = new ArrayList<>(path.size());
+		// use a copy for efficiency later
+		contextPath.addAll(Lists.transform(path, new Function<ChildDefinition<?>, ChildContext>() {
+
+			@Override
+			public ChildContext apply(ChildDefinition<?> input) {
+				return new ChildContext(input);
+			}
+		}));
+		return createEntity(type, contextPath, schemaSpace, filter);
 	}
 
 	/**
@@ -785,11 +808,14 @@ public abstract class AlignmentUtil {
 	 * 
 	 * @param instance the instance to collect values from
 	 * @param definition the property
+	 * @param onlyValues whether to only return values, or to return whatever
+	 *            can be found (including groups/instances)
 	 * @return all values of the given property
 	 */
-	public static Multiset<Object> getValues(Instance instance, PropertyEntityDefinition definition) {
+	public static Multiset<Object> getValues(Instance instance,
+			PropertyEntityDefinition definition, boolean onlyValues) {
 		Multiset<Object> result = HashMultiset.create();
-		addValues(instance, definition.getPropertyPath(), result);
+		addValues(instance, definition.getPropertyPath(), result, onlyValues);
 		return result;
 	}
 
@@ -799,17 +825,27 @@ public abstract class AlignmentUtil {
 	 * @param group the parent group
 	 * @param path the path on the group
 	 * @param collectedValues the set to add the values to
+	 * @param onlyValues whether to only return values, or to return whatever
+	 *            can be found (including groups/instances)
 	 */
 	public static void addValues(Group group, List<ChildContext> path,
-			Multiset<Object> collectedValues) {
+			Multiset<Object> collectedValues, boolean onlyValues) {
 		if (path == null || path.isEmpty()) {
-			// empty path - retrieve value from instance
-			if (group instanceof Instance) {
-				Object value = ((Instance) group).getValue();
-				if (value != null) {
-					collectedValues.add(value);
+			// group/instance at end of path
+			if (onlyValues) {
+				// only include instance values
+				if (group instanceof Instance) {
+					Object value = ((Instance) group).getValue();
+					if (value != null) {
+						collectedValues.add(value);
+					}
 				}
 			}
+			else {
+				// include the group/instance as is
+				collectedValues.add(group);
+			}
+			// empty path - retrieve value from instance
 		}
 		else {
 			// go down the path
@@ -844,7 +880,7 @@ public abstract class AlignmentUtil {
 				// check all values
 				for (Object value : values) {
 					if (value instanceof Group) {
-						addValues((Group) value, subPath, collectedValues);
+						addValues((Group) value, subPath, collectedValues, onlyValues);
 					}
 					else if (subPath.isEmpty()) {
 						// normal value and at the end of the path

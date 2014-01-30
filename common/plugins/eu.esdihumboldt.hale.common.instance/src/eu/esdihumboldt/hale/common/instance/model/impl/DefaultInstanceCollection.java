@@ -37,13 +37,22 @@ public class DefaultInstanceCollection implements InstanceCollection {
 	private final List<Instance> collection;
 
 	/**
-	 * Create an instance collection backed
+	 * Create an instance collection backed by an array list
 	 * 
-	 * @param collection the instance collection
+	 * @param collection the instance collection holding the initial contained
+	 *            instances
 	 */
 	public DefaultInstanceCollection(Collection<? extends Instance> collection) {
 		super();
 		this.collection = new ArrayList<Instance>(collection);
+	}
+
+	/**
+	 * Create an empty instance collection.
+	 */
+	public DefaultInstanceCollection() {
+		super();
+		this.collection = new ArrayList<Instance>();
 	}
 
 	/**
@@ -92,7 +101,7 @@ public class DefaultInstanceCollection implements InstanceCollection {
 	 */
 	@Override
 	public InstanceCollection select(Filter filter) {
-		return new FilteredInstanceCollection(this, filter);
+		return FilteredInstanceCollection.applyFilter(this, filter);
 	}
 
 	/**

@@ -65,8 +65,27 @@ public interface CodeListService {
 	/**
 	 * Add a code list to the service.
 	 * 
+	 * @param resourceId the resource identifier of the code list
 	 * @param code the code list to add
 	 */
-	public void addCodeList(CodeList code);
+	public void addCodeList(String resourceId, CodeList code);
+
+	/**
+	 * Get the code list associated to a specific resource.
+	 * 
+	 * @param resourceId the resource identifier
+	 * @return the code list or <code>null</code> if no code list associated to
+	 *         the resource ID could be found
+	 */
+	public CodeList getCodeList(String resourceId);
+
+	/**
+	 * Remove the code list associated to a specific resource.
+	 * 
+	 * @param resourceId the resource identifier
+	 * @return <code>true</code> if the code list associated to the resource was
+	 *         present and successfully removed, <code>false</code> otherwise
+	 */
+	public boolean removeCodeList(String resourceId);
 
 }

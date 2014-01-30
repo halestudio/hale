@@ -81,6 +81,25 @@ public abstract class AbstractParameter {
 	}
 
 	/**
+	 * Create a parameter definition.
+	 * 
+	 * @param name the parameter name
+	 * @param minOccurrence min occurrences
+	 * @param maxOccurrence max occurrences
+	 * @param label human readable label
+	 * @param description human readable description
+	 */
+	public AbstractParameter(String name, int minOccurrence, int maxOccurrence, String label,
+			String description) {
+		super();
+		this.name = name;
+		this.minOccurrence = minOccurrence;
+		this.maxOccurrence = maxOccurrence;
+		this.label = label;
+		this.description = description;
+	}
+
+	/**
 	 * @return the parameter name
 	 */
 	public final String getName() {

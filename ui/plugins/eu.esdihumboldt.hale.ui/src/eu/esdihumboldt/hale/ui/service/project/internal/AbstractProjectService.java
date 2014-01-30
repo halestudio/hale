@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
@@ -75,6 +77,19 @@ public abstract class AbstractProjectService implements ProjectService {
 	}
 
 	/**
+	 * Call when a project setting has been changed. Will not be called when the
+	 * project has been loaded and the settings changed in consequence.
+	 * 
+	 * @param name the configuration key
+	 * @param value the new value
+	 */
+	protected void notifyProjectSettingChanged(String name, Value value) {
+		for (ProjectServiceListener listener : listeners) {
+			listener.projectSettingChanged(name, value);
+		}
+	}
+
+	/**
 	 * Call after a new resource was added.
 	 * 
 	 * @param actionId the action the resource is associated to
@@ -113,6 +128,17 @@ public abstract class AbstractProjectService implements ProjectService {
 	protected void notifyExportConfigurationChanged() {
 		for (ProjectServiceListener listener : listeners) {
 			listener.onExportConfigurationChange();
+		}
+	}
+
+	/**
+	 * Called when the project information has been changed.
+	 * 
+	 * @param info the updated project information
+	 */
+	public void notifyProjectInfoChanged(ProjectInfo info) {
+		for (ProjectServiceListener listener : listeners) {
+			listener.projectInfoChanged(info);
 		}
 	}
 

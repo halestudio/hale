@@ -58,6 +58,11 @@ public abstract class HaleIO {
 	private static final ALogger log = ALoggerFactory.getLogger(HaleIO.class);
 
 	/**
+	 * Namespace for HALE core complex value type elements.
+	 */
+	public static final String NS_HALE_CORE = "http://www.esdi-humboldt.eu/hale/core";
+
+	/**
 	 * Filter I/O provider factories by content type
 	 * 
 	 * @param factories the I/O provider factories
@@ -123,6 +128,11 @@ public abstract class HaleIO {
 		}
 
 		if ((results.isEmpty() || results.size() > 1) && in != null) {
+			// remember previous results
+			List<IContentType> extensionResults = null;
+			if (!results.isEmpty()) {
+				extensionResults = new ArrayList<>(results);
+			}
 			// clear results because only an ambiguous result was found
 			results.clear();
 			// use input stream to make a better test
@@ -131,22 +141,17 @@ public abstract class HaleIO {
 				InputStream is = in.getInput();
 
 				/*
-				 * XXX IContentTypeManager.findContentTypes seems to return all
-				 * kind of content types that match in any way, but ordered by
+				 * IContentTypeManager.findContentTypes seems to return all kind
+				 * of content types that match in any way, but ordered by
 				 * relevance - so if all but the allowed types are removed, the
 				 * remaining types may be very irrelevant and not a match that
 				 * actually was determined based on the input stream.
 				 * 
-				 * XXX thus findContentTypesFor should not be used or only
-				 * relied upon the single best match that is returned
+				 * Thus findContentTypesFor should not be used or only relied
+				 * upon the single best match that is returned. It is now only
+				 * used as fall-back if there is no result for
+				 * findContentTypeFor.
 				 */
-//				IContentType[] candidates = ctm.findContentTypesFor(is, filename);
-//
-//				for (IContentType candidate : candidates) {
-//					if (types.contains(candidate)) {
-//						results.add(candidate);
-//					}
-//				}
 				// instead use findContentTypeFor
 				IContentType candidate = ctm.findContentTypeFor(is, null);
 				if (types.contains(candidate)) {
@@ -156,6 +161,34 @@ public abstract class HaleIO {
 				is.close();
 			} catch (IOException e) {
 				log.warn("Could not read input to determine content type", e);
+			}
+
+			if (results.isEmpty()) {
+				/*
+				 * Fall-back to findContentTypesFor if there was no valid result
+				 * for findContentTypeFor.
+				 */
+				try (InputStream is = in.getInput()) {
+					IContentType[] candidates = ctm.findContentTypesFor(is, filename);
+
+					for (IContentType candidate : candidates) {
+						if (types.contains(candidate)) {
+							results.add(candidate);
+						}
+					}
+				} catch (IOException e) {
+					log.warn("Could not read input to determine content type", e);
+				}
+			}
+
+			if (results.isEmpty() && extensionResults != null) {
+				/*
+				 * If there was no valid result for the stream check, but for
+				 * the extension checks, use those results. This may happen for
+				 * instance for generic XML files, that have no specific root
+				 * element.
+				 */
+				results.addAll(extensionResults);
 			}
 		}
 

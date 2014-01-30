@@ -18,15 +18,21 @@ package eu.esdihumboldt.hale.io.jdbc;
 
 /**
  * Constants related to JDBC I/O providers.
+ * 
  * @author Simon Templer
  */
 public interface JDBCConstants {
-	
+
+	/**
+	 * The identifier of the JDBC content type.
+	 */
+	public static final String CONTENT_TYPE_ID = "eu.esdihumboldt.hale.io.jdbc";
+
 	/**
 	 * Parameter name for the connection user name
 	 */
 	public static final String PARAM_USER = "jdbc.user";
-	
+
 	/**
 	 * Parameter name for the connection user password
 	 */

@@ -29,7 +29,6 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
-import eu.esdihumboldt.hale.common.schema.io.impl.AbstractSchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
@@ -43,6 +42,8 @@ import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 import eu.esdihumboldt.hale.io.csv.CSVFileIO;
 import eu.esdihumboldt.hale.io.csv.PropertyType;
 import eu.esdihumboldt.hale.io.csv.PropertyTypeExtension;
+import eu.esdihumboldt.hale.io.csv.reader.CSVConstants;
+import eu.esdihumboldt.hale.io.csv.reader.CommonSchemaConstants;
 
 /**
  * Reads a schema from a CSV file.
@@ -50,7 +51,7 @@ import eu.esdihumboldt.hale.io.csv.PropertyTypeExtension;
  * @author Thorsten Reitz
  * @author Simon Templer
  */
-public class CSVSchemaReader extends AbstractSchemaReader implements CSVConstants {
+public class CSVSchemaReader extends AbstractTableSchemaReader implements CSVConstants {
 
 	/**
 	 * The first line of the CSV file
@@ -58,16 +59,6 @@ public class CSVSchemaReader extends AbstractSchemaReader implements CSVConstant
 	public static String[] firstLine;
 
 	private DefaultSchema schema;
-
-	/**
-	 * Name of the parameter specifying the property name
-	 */
-	public static final String PARAM_PROPERTY = "properties";
-
-	/**
-	 * Name of the parameter specifying the property type
-	 */
-	public static final String PARAM_PROPERTYTYPE = "types";
 
 	/**
 	 * @see IOProvider#isCancelable()
@@ -88,7 +79,7 @@ public class CSVSchemaReader extends AbstractSchemaReader implements CSVConstant
 	@Override
 	public void validate() throws IOProviderConfigurationException {
 		super.validate();
-		if (getParameter(PARAM_TYPENAME).isEmpty()) {
+		if (getParameter(CommonSchemaConstants.PARAM_TYPENAME).isEmpty()) {
 			fail("No Typename specified");
 		}
 	}
@@ -111,7 +102,7 @@ public class CSVSchemaReader extends AbstractSchemaReader implements CSVConstant
 			firstLine = reader.readNext();
 
 			// create type definition
-			String typename = getParameter(PARAM_TYPENAME).as(String.class);
+			String typename = getParameter(CommonSchemaConstants.PARAM_TYPENAME).as(String.class);
 			if (typename == null || typename.isEmpty()) {
 				reporter.setSuccess(false);
 				reporter.error(new IOMessageImpl("No Typename was set", null));
@@ -185,8 +176,9 @@ public class CSVSchemaReader extends AbstractSchemaReader implements CSVConstant
 			schema.addType(type);
 
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
-
+			reporter.error(new IOMessageImpl("Cannot load csv schema", ex));
+			reporter.setSuccess(false);
+			return reporter;
 		}
 
 		reporter.setSuccess(true);
@@ -199,6 +191,18 @@ public class CSVSchemaReader extends AbstractSchemaReader implements CSVConstant
 	@Override
 	protected String getDefaultTypeName() {
 		return CSVFileIO.DEFAULT_TYPE_NAME;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.io.csv.reader.internal.AbstractTableSchemaReader#getHeaderContent()
+	 */
+	@Override
+	public String[] getHeaderContent() {
+		try {
+			return CSVUtil.readFirst(this).readNext();
+		} catch (IOException e) {
+			return new String[0];
+		}
 	}
 
 }

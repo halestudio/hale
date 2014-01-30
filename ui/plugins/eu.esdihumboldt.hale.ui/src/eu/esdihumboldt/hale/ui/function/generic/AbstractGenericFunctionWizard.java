@@ -142,6 +142,8 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 	protected void init(Cell cell) {
 		// create a new cell even if a cell is already present
 		resultCell = new DefaultCell(cell);
+		// copy ID
+		resultCell.setId(cell.getId());
 		// XXX necessary to reset those?
 		resultCell.setSource(null);
 		resultCell.setTarget(null);

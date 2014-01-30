@@ -17,7 +17,10 @@ package eu.esdihumboldt.util.blueprints.entities;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.codehaus.groovy.ast.ASTNode;
 import org.codehaus.groovy.ast.AnnotationNode;
@@ -88,85 +91,133 @@ public class VertexEntityTransformation implements ASTTransformation {
 
 		List<ClassNode> classes = sourceUnit.getAST().getClasses();
 		for (ClassNode clazz : classes) {
-			// find all classes annotated with @ODocumentEntity
-			List<AnnotationNode> entityAnnotations = clazz.getAnnotations(VERTEX_ENTITY_CLASS);
-			if (entityAnnotations != null && !entityAnnotations.isEmpty()) {
-				Expression entityName = entityAnnotations.get(0).getMember("value");
-				Expression typeProperty = entityAnnotations.get(0).getMember("typeProperty");
-				if (typeProperty == null) {
-					// default value if none given
-					typeProperty = new ConstantExpression("_type");
-				}
+			processClass(clazz);
+		}
+	}
 
-				// add the vertex field
-				FieldNode vertexField = clazz.addField("v", Modifier.PRIVATE, VERTEX_CLASS, null);
+	/**
+	 * Process a class and make it a vertex entity class.
+	 * 
+	 * @param clazz the class node
+	 */
+	private void processClass(ClassNode clazz) {
+		// check if class already was processed (has field v)
+		if (clazz.getField("v") != null) {
+			return;
+		}
 
-				// add the vertex field
-				FieldNode graphField = clazz.addField("g", Modifier.PRIVATE, GRAPH_CLASS, null);
-
-				// add constructor
-				clazz.addConstructor(buildVertexGraphConstructor(vertexField, graphField,
-						typeProperty, entityName));
-
-				// get all non-static properties
-				List<PropertyNode> properties = AbstractASTTransformUtil
-						.getInstanceProperties(clazz);
-				List<PropertyNode> newProperties = new ArrayList<>();
-				for (PropertyNode property : properties) {
-					// TODO check for "transient" properties?
-					// TODO check not allowed property names, e.g. id, v, g
-					// TODO decide on kind of property
-
-					// add static findByX method
-					clazz.addMethod(buildFindByMethod(clazz, entityName, typeProperty,
-							property.getName(), property.getType()));
-
-					// add static findUniqueByX method
-					clazz.addMethod(buildGetByMethod(clazz, entityName, typeProperty,
-							property.getName(), property.getType()));
-
-					// update property
-					property.setGetterBlock(createGetter(property.getName(), vertexField));
-					property.setSetterBlock(createSetter(property.getName(), vertexField));
-					newProperties.add(property);
-
-				}
-				// readd updated properties
-				for (PropertyNode property : newProperties) {
-					readdProperty(clazz, property);
-				}
-
-				// add the vertex getter
-				clazz.addMethod("getV", Modifier.PUBLIC, VERTEX_CLASS, //
-						new Parameter[0], new ClassNode[0], new ReturnStatement(
-								new FieldExpression(vertexField)));
-
-				// add the graph getter
-				clazz.addMethod("getG", Modifier.PUBLIC, GRAPH_CLASS, //
-						new Parameter[0], new ClassNode[0], new ReturnStatement(
-								new FieldExpression(graphField)));
-
-				// add the id getter
-				clazz.addMethod("getId", Modifier.PUBLIC, ClassHelper.OBJECT_TYPE,
-						new Parameter[0], new ClassNode[0], new ReturnStatement(
-								new MethodCallExpression(new FieldExpression(vertexField), "getId",
-										new ArgumentListExpression())));
-
-				// add delete method
-				clazz.addMethod(buildDeleteMethod(vertexField, graphField));
-
-				// add static create method
-				clazz.addMethod(buildCreateMethod(clazz, entityName));
-
-				// add static findAll method
-				clazz.addMethod(buildFindAllMethod(clazz, entityName, typeProperty));
-
-				// add static getById method
-				clazz.addMethod(buildGetByIdMethod(clazz));
-
-				// add static initGraph method
-				clazz.addMethod(buildInitGraphMethod(entityName));
+		// find all classes annotated with @ODocumentEntity
+		List<AnnotationNode> entityAnnotations = clazz.getAnnotations(VERTEX_ENTITY_CLASS);
+		if (entityAnnotations != null && !entityAnnotations.isEmpty()) {
+			Expression entityName = entityAnnotations.get(0).getMember("value");
+			Expression typeProperty = entityAnnotations.get(0).getMember("typeProperty");
+			if (typeProperty == null) {
+				// default value if none given
+				typeProperty = new ConstantExpression("_type");
 			}
+
+			Expression superEntityName = null;
+			FieldNode vertexField = null;
+			FieldNode graphField = null;
+			ClassNode superClass = clazz.getSuperClass();
+			if (superClass != null) {
+				List<AnnotationNode> superAnnotations = superClass
+						.getAnnotations(VERTEX_ENTITY_CLASS);
+				if (superAnnotations != null && !superAnnotations.isEmpty()) {
+					// super class is also a vertex entity
+					superEntityName = superAnnotations.get(0).getMember("value");
+
+					// super class must be processed first
+					processClass(superClass);
+
+					// use fields from super class
+					vertexField = clazz.getField("v");
+					graphField = clazz.getField("g");
+				}
+				else {
+					superClass = null;
+				}
+			}
+
+			// add the vertex field
+			if (vertexField == null) {
+				vertexField = clazz.addField("v", Modifier.PROTECTED, VERTEX_CLASS, null);
+			}
+
+			// add the graph field
+			if (graphField == null) {
+				graphField = clazz.addField("g", Modifier.PROTECTED, GRAPH_CLASS, null);
+			}
+
+			// add constructor
+			clazz.addConstructor(buildVertexGraphConstructor(vertexField, graphField, superClass,
+					typeProperty, entityName));
+
+			Map<String, Expression> initialExpressions = new HashMap<>();
+
+			// get all non-static properties
+			List<PropertyNode> properties = AbstractASTTransformUtil.getInstanceProperties(clazz);
+			List<PropertyNode> newProperties = new ArrayList<>();
+			for (PropertyNode property : properties) {
+				// TODO check for "transient" properties?
+				// TODO check not allowed property names, e.g. id, v, g
+				// TODO decide on kind of property
+
+				// collect initial expressions for create function
+				if (property.getField().getInitialExpression() != null) {
+					initialExpressions.put(property.getName(), property.getInitialExpression());
+				}
+
+				// add static findByX method
+				clazz.addMethod(buildFindByMethod(clazz, entityName, typeProperty,
+						property.getName(), property.getType()));
+
+				// add static findUniqueByX method
+				clazz.addMethod(buildGetByMethod(clazz, entityName, typeProperty,
+						property.getName(), property.getType()));
+
+				// update property
+				property.setGetterBlock(createGetter(property.getName(), vertexField,
+						property.getType(), property.getField().getInitialExpression()));
+				property.setSetterBlock(createSetter(property.getName(), vertexField));
+				newProperties.add(property);
+
+			}
+			// readd updated properties
+			for (PropertyNode property : newProperties) {
+				readdProperty(clazz, property);
+			}
+
+			// add the vertex getter
+			clazz.addMethod("getV", Modifier.PUBLIC, VERTEX_CLASS, //
+					new Parameter[0], new ClassNode[0], new ReturnStatement(new FieldExpression(
+							vertexField)));
+
+			// add the graph getter
+			clazz.addMethod("getG", Modifier.PUBLIC, GRAPH_CLASS, //
+					new Parameter[0], new ClassNode[0], new ReturnStatement(new FieldExpression(
+							graphField)));
+
+			// add the id getter
+			clazz.addMethod("getId", Modifier.PUBLIC, ClassHelper.OBJECT_TYPE, new Parameter[0],
+					new ClassNode[0], new ReturnStatement(
+							new MethodCallExpression(new FieldExpression(vertexField), "getId",
+									new ArgumentListExpression())));
+
+			// add delete method
+			clazz.addMethod(buildDeleteMethod(vertexField, graphField));
+
+			// add static create method
+			clazz.addMethod(buildCreateMethod(clazz, entityName, initialExpressions));
+
+			// add static findAll method
+			clazz.addMethod(buildFindAllMethod(clazz, entityName, typeProperty));
+
+			// add static getById method
+			clazz.addMethod(buildGetByIdMethod(clazz));
+
+			// add static initGraph method
+			clazz.addMethod(buildInitGraphMethod(entityName, superEntityName));
 		}
 	}
 
@@ -175,18 +226,23 @@ public class VertexEntityTransformation implements ASTTransformation {
 	 * {@link OrientGraph} it registers the entity class as a schema type.
 	 * 
 	 * @param entityName the entity name
+	 * @param superEntityName the super entity name, may be <code>null</code>
 	 * @return the method
 	 */
-	private MethodNode buildInitGraphMethod(Expression entityName) {
+	private MethodNode buildInitGraphMethod(Expression entityName, Expression superEntityName) {
 		// graph (parameter)
 		VariableExpression graph = new VariableExpression("graph");
+
+		if (superEntityName == null) {
+			superEntityName = new ConstantExpression(null);
+		}
 
 		BlockStatement code = new BlockStatement();
 
 		// register class
 		code.addStatement(new ExpressionStatement(new StaticMethodCallExpression(
 				VE_DELEGATES_CLASS, VertexEntityDelegates.METHOD_REGISTER_CLASS,
-				new ArgumentListExpression(graph, entityName))));
+				new ArgumentListExpression(graph, entityName, superEntityName))));
 
 		return new MethodNode("initGraph", Modifier.PUBLIC | Modifier.STATIC,
 				ClassHelper.VOID_TYPE, new Parameter[] { new Parameter(GRAPH_CLASS, "graph") },
@@ -235,9 +291,11 @@ public class VertexEntityTransformation implements ASTTransformation {
 	 * 
 	 * @param clazz the entity class
 	 * @param entityName the entity name
+	 * @param initialExpressions the initial expressions per property
 	 * @return the static create method taking a graph as an argument
 	 */
-	private MethodNode buildCreateMethod(ClassNode clazz, Expression entityName) {
+	private MethodNode buildCreateMethod(ClassNode clazz, Expression entityName,
+			Map<String, Expression> initialExpressions) {
 		clazz = ClassHelper.make(clazz.getName());
 
 		BlockStatement code = new BlockStatement();
@@ -267,6 +325,14 @@ public class VertexEntityTransformation implements ASTTransformation {
 				new MethodCallExpression(graph, new ConstantExpression("addVertex"),
 						new ArgumentListExpression(id)));
 		code.addStatement(assignVertex);
+
+		// set initial values on vertex
+		for (Entry<String, Expression> propertyInitial : initialExpressions.entrySet()) {
+			// > vertex.setProperty(name, initialValue)
+			code.addStatement(new ExpressionStatement(new MethodCallExpression(vertex,
+					"setProperty", new ArgumentListExpression(new ConstantExpression(
+							propertyInitial.getKey()), propertyInitial.getValue()))));
+		}
 
 		// > return new Entity(vertex, graph)
 		code.addStatement(new ReturnStatement(new ConstructorCallExpression(clazz,
@@ -485,34 +551,47 @@ public class VertexEntityTransformation implements ASTTransformation {
 	 * 
 	 * @param vertexField the vertex field
 	 * @param graphField the graph field
+	 * @param superClass the vertex entity super class or <code>null</code>
 	 * @param typeProperty the expression specifying the name of the type
 	 *            property
 	 * @param entityName the expression specifying the entity name
 	 * @return a constructor taking a Vertex as an argument
 	 */
 	private ConstructorNode buildVertexGraphConstructor(FieldNode vertexField,
-			FieldNode graphField, Expression typeProperty, Expression entityName) {
+			FieldNode graphField, ClassNode superClass, Expression typeProperty,
+			Expression entityName) {
 		BlockStatement block = new BlockStatement();
 
-		// > this.v = v
-		block.addStatement(AbstractASTTransformUtil.assignStatement(
-				new FieldExpression(vertexField), new VariableExpression("v")));
-		// > this.g = g
-		block.addStatement(AbstractASTTransformUtil.assignStatement(
-				new FieldExpression(graphField), new VariableExpression("g")));
+		// parameter vertex
+		VariableExpression vertex = new VariableExpression("vertex");
+		// parameter graph
+		VariableExpression graph = new VariableExpression("graph");
 
-		// this.v.setProperty(typeProperty, entityName)
-		Statement notOrientStatement = new ExpressionStatement(new MethodCallExpression(
-				new FieldExpression(vertexField), "setProperty", new ArgumentListExpression(
-						new Expression[] { typeProperty, entityName })));
-		// > if (!(this.g instanceof OrientGraph))
+		if (superClass != null) {
+			// super(vertex, graph)
+			block.addStatement(new ExpressionStatement(new ConstructorCallExpression(
+					ClassNode.SUPER, new ArgumentListExpression(vertex, graph))));
+		}
+		else {
+			// > this.v = vertex
+			block.addStatement(AbstractASTTransformUtil.assignStatement(new FieldExpression(
+					vertexField), new VariableExpression("vertex")));
+			// > this.g = graph
+			block.addStatement(AbstractASTTransformUtil.assignStatement(new FieldExpression(
+					graphField), new VariableExpression("graph")));
+		}
+
+		// vertex.setProperty(typeProperty, entityName)
+		Statement notOrientStatement = new ExpressionStatement(new MethodCallExpression(vertex,
+				"setProperty", new ArgumentListExpression(new Expression[] { typeProperty,
+						entityName })));
+		// > if (!(graph instanceof OrientGraph))
 		// > this.v.setProperty(typeProperty, entityName)
 		block.addStatement(new IfStatement(new NotExpression(AbstractASTTransformUtil.isInstanceOf(
-				new FieldExpression(graphField), ORIENT_GRAPH_CLASS)), notOrientStatement,
-				new EmptyStatement()));
+				graph, ORIENT_GRAPH_CLASS)), notOrientStatement, new EmptyStatement()));
 
 		return new ConstructorNode(Modifier.PUBLIC, new Parameter[] {
-				new Parameter(VERTEX_CLASS, "v"), new Parameter(GRAPH_CLASS, "g") },
+				new Parameter(VERTEX_CLASS, "vertex"), new Parameter(GRAPH_CLASS, "graph") },
 				new ClassNode[0], block);
 	}
 
@@ -538,30 +617,54 @@ public class VertexEntityTransformation implements ASTTransformation {
 	private Statement createSetter(String name, FieldNode vertexField) {
 		BlockStatement block = new BlockStatement();
 
+		VariableExpression value = new VariableExpression("value");
+
 		/*
-		 * > v.setProperty(name, value)
+		 * v.setProperty(name, value)
 		 */
 		ArgumentListExpression args = new ArgumentListExpression();
-
 		args.addExpression(new ConstantExpression(name));
-		args.addExpression(new VariableExpression("value"));
+		args.addExpression(value);
+		Statement ifNotNull = new ExpressionStatement(new MethodCallExpression(new FieldExpression(
+				vertexField), "setProperty", args));
 
-		block.addStatement(new ExpressionStatement(new MethodCallExpression(new FieldExpression(
-				vertexField), "setProperty", args)));
+		/*
+		 * v.removeProperty(name)
+		 */
+		Statement ifNull = new ExpressionStatement(new MethodCallExpression(new FieldExpression(
+				vertexField), "removeProperty", new ArgumentListExpression(new ConstantExpression(
+				name))));
+
+		block.addStatement(new IfStatement(AbstractASTTransformUtil.equalsNullExpr(value), ifNull,
+				ifNotNull));
 
 		return block;
 	}
 
-	private Statement createGetter(String name, FieldNode vertexField) {
+	private Statement createGetter(String name, FieldNode vertexField, ClassNode propertyType,
+			Expression initialExpression) {
 		BlockStatement block = new BlockStatement();
 
+		// def tmp
+		VariableExpression tmpValue = new VariableExpression("tmp");
+
 		/*
-		 * > v.getProperty(name)
+		 * > tmp = v.getProperty(name)
 		 */
 		ArgumentListExpression args = new ArgumentListExpression();
 		args.addExpression(new ConstantExpression(name));
-		block.addStatement(new ExpressionStatement(new MethodCallExpression(new FieldExpression(
-				vertexField), "getProperty", args)));
+		block.addStatement(AbstractASTTransformUtil.declStatement(tmpValue,
+				new MethodCallExpression(new FieldExpression(vertexField), "getProperty", args)));
+
+		if (ClassHelper.isPrimitiveType(propertyType) && initialExpression != null) {
+			// if the class is a primitive, we must do a null check here
+
+			// if (tmp == null) return <initial-value>
+			block.addStatement(new IfStatement(AbstractASTTransformUtil.equalsNullExpr(tmpValue),
+					new ReturnStatement(initialExpression), new EmptyStatement()));
+		}
+
+		block.addStatement(new ReturnStatement(tmpValue));
 
 		return block;
 	}

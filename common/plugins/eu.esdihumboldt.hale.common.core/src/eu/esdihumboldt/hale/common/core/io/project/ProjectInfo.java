@@ -26,19 +26,7 @@ import org.osgi.framework.Version;
  * @author Simon Templer
  * @since 2.5
  */
-public interface ProjectInfo {
-
-	/**
-	 * Get the project name
-	 * 
-	 * @return the project name, may be <code>null</code> if not set
-	 */
-	public String getName();
-
-	/**
-	 * @return the author
-	 */
-	public String getAuthor();
+public interface ProjectInfo extends ProjectDescription {
 
 	/**
 	 * @return the haleVersion
@@ -54,10 +42,5 @@ public interface ProjectInfo {
 	 * @return the modified
 	 */
 	public Date getModified();
-
-	/**
-	 * @return the description
-	 */
-	public String getDescription();
 
 }

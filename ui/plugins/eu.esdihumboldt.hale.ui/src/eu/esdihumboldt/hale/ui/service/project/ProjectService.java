@@ -21,6 +21,7 @@ import java.util.List;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.project.ComplexConfigurationService;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectDescription;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
@@ -72,16 +73,16 @@ public interface ProjectService {
 	 * 
 	 * @see #rememberIO(String, String, IOProvider)
 	 * @param actionId the I/O action identifier
-	 * @return a list of removed io configurations
+	 * @return a list of removed I/O configurations
 	 */
 	public List<? extends Resource> removeResources(String actionId);
 
-//	/**
-//	 * Remove a specific resource.
-//	 * 
-//	 * @param resourceId the resource identifier
-//	 */
-//	public void removeResource(String resourceId);
+	/**
+	 * Remove a specific resource.
+	 * 
+	 * @param resourceId the resource identifier
+	 */
+	public void removeResource(String resourceId);
 
 	/**
 	 * Get the resources associated with the current project.
@@ -111,6 +112,13 @@ public interface ProjectService {
 	 * @return the project info
 	 */
 	public ProjectInfo getProjectInfo();
+
+	/**
+	 * Update the project information with the given description.
+	 * 
+	 * @param info the project information to merge with the project
+	 */
+	public void updateProjectInfo(ProjectDescription info);
 
 	/**
 	 * Get if the project content is changed
@@ -194,5 +202,10 @@ public interface ProjectService {
 	 * @return the location the current project was loaded from
 	 */
 	public URI getLoadLocation();
+
+	/**
+	 * Reload the source data.
+	 */
+	public void reloadSourceData();
 
 }

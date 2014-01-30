@@ -457,8 +457,6 @@ public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriter
 				}
 				else {
 					// determine a valid definition path in the container
-					// TODO specify a maximum descent level? (else searching the
-					// container for matches might take _very_ long)
 					defPath = findMemberAttribute(containerDefinition, containerName, type);
 					// store path (may be null)
 					paths.put(type, defPath);
@@ -697,9 +695,9 @@ public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriter
 			}
 		};
 
-		// candidate match
+		// candidate match (go down at maximum ten levels)
 		List<DefinitionPath> candidates = matcher.findCandidates(container, containerName, true,
-				memberType);
+				memberType, 10);
 		if (candidates != null && !candidates.isEmpty()) {
 			return candidates.get(0); // TODO notification? FIXME will this
 										// work? possible problem: attribute is

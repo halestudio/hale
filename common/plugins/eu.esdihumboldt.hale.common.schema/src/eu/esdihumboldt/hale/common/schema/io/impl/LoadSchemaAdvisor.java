@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.common.schema.io.impl;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.impl.ConfigurationIOAdvisor;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace;
@@ -32,6 +33,23 @@ import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace;
 public class LoadSchemaAdvisor extends ConfigurationIOAdvisor<SchemaReader> {
 
 	private final DefaultSchemaSpace schemaSpace = new DefaultSchemaSpace();
+	private final SchemaSpaceID ssid;
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param ssid the associated schema space id
+	 */
+	public LoadSchemaAdvisor(SchemaSpaceID ssid) {
+		this.ssid = ssid;
+	}
+
+	@Override
+	public void prepareProvider(SchemaReader provider) {
+		super.prepareProvider(provider);
+
+		provider.setSchemaSpace(ssid);
+	}
 
 	/**
 	 * @see AbstractIOAdvisor#handleResults(IOProvider)

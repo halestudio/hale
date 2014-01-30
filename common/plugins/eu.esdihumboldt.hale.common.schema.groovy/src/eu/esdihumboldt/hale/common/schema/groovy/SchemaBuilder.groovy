@@ -17,8 +17,6 @@ package eu.esdihumboldt.hale.common.schema.groovy
 
 import javax.xml.namespace.QName
 
-import org.codehaus.groovy.runtime.InvokerHelper
-
 import eu.esdihumboldt.hale.common.schema.groovy.constraints.AugmentedValueFactory
 import eu.esdihumboldt.hale.common.schema.groovy.constraints.BindingFactory
 import eu.esdihumboldt.hale.common.schema.groovy.constraints.CardinalityFactory
@@ -47,6 +45,7 @@ import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeIndex
+import eu.esdihumboldt.util.groovy.builder.BuilderBase
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import groovy.transform.TypeCheckingMode
@@ -59,12 +58,7 @@ import groovy.transform.TypeCheckingMode
  * @author Simon Templer
  */
 @CompileStatic
-class SchemaBuilder {
-
-	/**
-	 * The current node.
-	 */
-	def current
+class SchemaBuilder extends BuilderBase {
 
 	/**
 	 * Maps attribute names to constraint factories.
@@ -119,7 +113,7 @@ class SchemaBuilder {
 	 * Reset the builder
 	 */
 	void reset() {
-		current = null
+		super.reset()
 		defaultTypes = [:]
 		defaultTypeNames.clear()
 	}
@@ -163,53 +157,6 @@ class SchemaBuilder {
 	}
 
 	/**
-	 * Called on for any missing method.
-	 * 
-	 * @param name the method name
-	 * @param args the arguments
-	 * @return something
-	 */
-	@CompileStatic(TypeCheckingMode.SKIP)
-	@TypeChecked
-	def methodMissing(String name, def args) {
-		List list = InvokerHelper.asList(args)
-
-		// determine named parameters (must be first)
-		Map attributes = null
-		def start = 0
-		if (list && list[0] instanceof Map) {
-			attributes = (Map) list[0]
-			start = 1
-		}
-
-		// determine closure (must be last)
-		def end = list.size()
-		Closure closure = null
-		if (list && list.last() instanceof Closure) {
-			closure = (Closure) list.last().clone()
-			closure.delegate = this
-			end--
-		}
-
-		// determine other parameters
-		List params = null
-		if (start < end) {
-			params = list.subList(start, end)
-		}
-
-		def parent = current
-		def node = createNode(name, attributes, params, parent, closure != null)
-		current = node
-
-		closure?.call()
-
-		current = parent
-
-		// return the node created by the call
-		node
-	}
-
-	/**
 	 * Create a new node.
 	 * 
 	 * @param name the node name
@@ -219,7 +166,7 @@ class SchemaBuilder {
 	 * @param subClosure states if there is a sub-closure for this node
 	 * @return the created node
 	 */
-	def createNode(String name, Map attributes, List params, def parent, boolean subClosure) {
+	protected def internalCreateNode(String name, Map attributes, List params, def parent, boolean subClosure) {
 		def node
 		if (parent == null) {
 			// create stand-alone type
@@ -249,7 +196,7 @@ class SchemaBuilder {
 			}
 		}
 		else {
-			//TODO
+			throw new IllegalStateException("${parent.class.name} as parent not supported")
 		}
 
 		node
@@ -368,6 +315,7 @@ class SchemaBuilder {
 	 *   associated factories
 	 * @param params the additional parameters
 	 */
+	@CompileStatic(TypeCheckingMode.SKIP)
 	protected void addConstraints(AbstractDefinition definition, Map attributes, List params) {
 		// add constraints from attributes
 		attributes?.each { key, value ->

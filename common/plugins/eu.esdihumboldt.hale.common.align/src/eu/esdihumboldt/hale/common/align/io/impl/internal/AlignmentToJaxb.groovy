@@ -100,7 +100,7 @@ class AlignmentToJaxb {
 	}
 
 	protected void addModifier(Cell cell, AlignmentType align) {
-		Set<Cell> disabledFor = cell.disabledFor
+		Set<String> disabledFor = cell.disabledFor
 		TransformationMode mode = cell.transformationMode
 		if (cell instanceof BaseAlignmentCell) {
 			disabledFor = ((BaseAlignmentCell) cell).additionalDisabledFor
@@ -120,8 +120,8 @@ class AlignmentToJaxb {
 			ModifierType modifier = new ModifierType()
 			modifier.cell = cell.id
 			if (disabledFor) {
-				disabledFor.collect(modifier.disableFor) { Cell it ->
-					new DisableFor(parent: it.id)
+				disabledFor.collect(modifier.disableFor) { String it ->
+					new DisableFor(parent: it)
 				}
 			}
 			if (mode) {

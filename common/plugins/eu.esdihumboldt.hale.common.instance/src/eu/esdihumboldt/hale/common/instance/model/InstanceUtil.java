@@ -169,13 +169,15 @@ public final class InstanceUtil {
 				builder.append('\n');
 			builder.append(property.toString()).append("=[\n");
 			for (Object propertyValue : group.getProperty(property)) {
-				String representation = null;
+				String representation;
 				if (propertyValue instanceof Instance)
 					representation = instanceToString((Instance) propertyValue);
 				else if (propertyValue instanceof Group)
 					representation = groupToString((Group) propertyValue);
-				else
+				else if (propertyValue != null)
 					representation = propertyValue.toString();
+				else
+					representation = "<null>";
 				builder.append(indent(representation)).append('\n');
 			}
 			builder.append("]");

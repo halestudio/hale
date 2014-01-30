@@ -99,6 +99,22 @@ public abstract class AbstractTypeMatcher<T> {
 	 */
 	public List<DefinitionPath> findCandidates(TypeDefinition elementType, QName elementName,
 			boolean unique, T matchParam) {
+		return findCandidates(elementType, elementName, unique, matchParam, Integer.MAX_VALUE);
+	}
+
+	/**
+	 * Find candidates for a possible path
+	 * 
+	 * @param elementType the start element type
+	 * @param elementName the start element name
+	 * @param unique if the start element cannot be repeated
+	 * @param matchParam the match parameter
+	 * @param maxDepth the maximum depth that is allowed for paths
+	 * 
+	 * @return the path candidates
+	 */
+	public List<DefinitionPath> findCandidates(TypeDefinition elementType, QName elementName,
+			boolean unique, T matchParam, int maxDepth) {
 		Queue<PathCandidate> candidates = new LinkedList<PathCandidate>();
 		PathCandidate base = new PathCandidate(elementType, new DefinitionPath(elementType,
 				elementName, unique), new HashSet<TypeDefinition>());
@@ -109,6 +125,18 @@ public abstract class AbstractTypeMatcher<T> {
 			TypeDefinition type = candidate.getType();
 			DefinitionPath basePath = candidate.getPath();
 			HashSet<TypeDefinition> checkedTypes = candidate.getCheckedTypes();
+
+			if (basePath.getSteps().size() >= maxDepth) {
+				// max depth already reached, only direct match allowed
+
+				// check if there is a direct match
+				DefinitionPath path = matchPath(type, matchParam, basePath);
+				if (path != null) {
+					return Collections.singletonList(path); // return instantly
+				}
+				// skip sub paths
+				continue;
+			}
 
 			if (checkedTypes.contains(type)) {
 				continue; // prevent cycles
@@ -125,17 +153,10 @@ public abstract class AbstractTypeMatcher<T> {
 				// change if we allow matchPath to yield multiple results
 			}
 
-			if (!type.getConstraint(AbstractFlag.class).isEnabled()) { // only
-																		// allow
-																		// stepping
-																		// down
-																		// properties
-																		// if
-																		// the
-																		// type
-																		// is
-																		// not
-																		// abstract
+			if (!type.getConstraint(AbstractFlag.class).isEnabled()) {
+				// only allow stepping down properties if the type is not
+				// abstract
+
 				// step down properties
 				// XXX why differentiate here?
 				@SuppressWarnings("unchecked")
@@ -162,24 +183,12 @@ public abstract class AbstractTypeMatcher<T> {
 //			}
 
 			// step down sub-types - elements may be downcast using xsi:type
-			if (!type.getConstraint(AbstractFlag.class).isEnabled()) { // don't
-																		// do it
-																		// for
-																		// abstract
-																		// types
-																		// as
-																		// they
-																		// have
-																		// no
-																		// element
-																		// that
-																		// may
-																		// be
-																		// used
-																		// XXX
-																		// is
-																		// this
-																		// true?
+			if (!type.getConstraint(AbstractFlag.class).isEnabled()) {
+				/*
+				 * don't do it for abstract types as they have no element that
+				 * may be used XXX is this true?
+				 */
+
 				for (TypeDefinition subtype : type.getSubTypes()) {
 					// FIXME how to determine which types are ok for xsi:type?!
 //					if (!substitutionTypes.contains(subtype)) { // only types that are no valid substitutions

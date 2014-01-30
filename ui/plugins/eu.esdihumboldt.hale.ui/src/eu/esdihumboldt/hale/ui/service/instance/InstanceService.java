@@ -78,9 +78,16 @@ public interface InstanceService extends InstanceResolver {
 	public boolean isTransformationEnabled();
 
 	/**
-	 * This will remove all instances from the service.
+	 * This will remove all instances from the service and the corresponding
+	 * resources from the project.
 	 */
 	public void clearInstances();
+
+	/**
+	 * Drop all instances without removing the resources from the project.
+	 * Should not be undoable. Called when reloading instances.
+	 */
+	public void dropInstances();
 
 	/**
 	 * Adds an instance service listener

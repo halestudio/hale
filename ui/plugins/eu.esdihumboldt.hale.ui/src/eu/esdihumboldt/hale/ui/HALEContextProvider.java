@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 import eu.esdihumboldt.hale.common.instance.orient.ONameUtil;
 import eu.esdihumboldt.hale.ui.common.help.SelectionContextProvider;
+import eu.esdihumboldt.hale.ui.function.internal.FunctionWizardNode;
 
 /**
  * Selection context provider for selection containing objects from the HALE
@@ -69,6 +70,9 @@ public class HALEContextProvider extends SelectionContextProvider {
 	}
 
 	private Object extractObject(Object node) {
+		if (node instanceof FunctionWizardNode) {
+			return ((FunctionWizardNode) node).getFunction();
+		}
 		if (node instanceof TransformationTree) {
 			return ((TransformationTree) node).getType();
 		}

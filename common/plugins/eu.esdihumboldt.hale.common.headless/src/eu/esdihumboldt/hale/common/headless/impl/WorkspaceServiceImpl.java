@@ -25,14 +25,13 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.osgi.service.datalocation.Location;
 import org.joda.time.DateTime;
 import org.joda.time.ReadableDuration;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.headless.WorkspaceService;
+import eu.esdihumboldt.util.PlatformUtil;
 import eu.esdihumboldt.util.PropertiesFile;
 
 /**
@@ -74,30 +73,17 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 	public WorkspaceServiceImpl(File workspacesDir) {
 		if (workspacesDir == null || !workspacesDir.exists()) {
 			// use default location
-			Location location = Platform.getInstanceLocation();
-			if (location != null) {
-				try {
-					File instanceLoc = new File(location.getURL().toURI());
-					workspacesDir = new File(instanceLoc, "workspaces");
-					if (!workspacesDir.exists()) {
-						workspacesDir.mkdirs();
-					}
-				} catch (Exception e) {
-					log.error(
-							"Unable to determine instance location, can't initialize workspace service.",
-							e);
-					workspacesDir = null;
+			workspacesDir = PlatformUtil.getInstanceLocation();
+			if (workspacesDir != null) {
+				if (!workspacesDir.exists()) {
+					workspacesDir.mkdirs();
 				}
-				parentDir = workspacesDir;
 			}
 			else {
 				log.error("No instance location, can't initialize workspace service.");
-				parentDir = null;
 			}
 		}
-		else {
-			parentDir = workspacesDir;
-		}
+		parentDir = workspacesDir;
 
 		if (parentDir != null) {
 			log.info("Workspaces location is " + parentDir.getAbsolutePath());

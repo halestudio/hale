@@ -252,8 +252,8 @@
             </functionParameterBinding>
          </functionParameter>
          <functionParameter
-               description="Auto detection of additional equal properties which will get merged."
-               label="Auto detect"
+               description="Enable/disable auto detection of additional equal properties which will get merged."
+               label="Auto detect and merge properties with equal values"
                maxOccurrence="1"
                minOccurrence="1"
                name="auto_detect">

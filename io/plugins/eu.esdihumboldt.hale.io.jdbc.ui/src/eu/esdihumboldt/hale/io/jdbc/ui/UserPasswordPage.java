@@ -24,6 +24,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.Value;
@@ -81,9 +83,6 @@ public class UserPasswordPage extends AbstractConfigurationPage<IOProvider, IOWi
 		return true;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.HaleWizardPage#createContent(org.eclipse.swt.widgets.Composite)
-	 */
 	@Override
 	protected void createContent(Composite page) {
 		page.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
@@ -107,17 +106,34 @@ public class UserPasswordPage extends AbstractConfigurationPage<IOProvider, IOWi
 		password.setLayoutData(GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER)
 				.grab(true, false).create());
 
+		// filler
+		new Label(page, SWT.NONE);
+
+		// label with warning message
+		Composite warnComp = new Composite(page, SWT.NONE);
+		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(warnComp);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(warnComp);
+
+		Label warnImage = new Label(warnComp, SWT.NONE);
+		warnImage.setImage(PlatformUI.getWorkbench().getSharedImages()
+				.getImage(ISharedImages.IMG_OBJS_WARN_TSK));
+		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.BEGINNING).applyTo(warnImage);
+
+		Label warn = new Label(warnComp, SWT.WRAP);
+		warn.setText("User and password may be saved in the project configuration as plain text. Be aware of this when distributing the project.");
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.BEGINNING).grab(true, false)
+				.hint(300, SWT.DEFAULT).applyTo(warn);
+
 		setPageComplete(false);
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.HaleWizardPage#onShowPage(boolean)
-	 */
 	@Override
 	protected void onShowPage(boolean firstShow) {
 		if (firstShow) {
 			setPageComplete(true);
 		}
+
+		user.setFocus();
 	}
 
 	/**

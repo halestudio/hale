@@ -38,6 +38,13 @@ public interface ActionUI extends ExtensionObjectFactory<IOWizard<?>> {
 	public String getActionID();
 
 	/**
+	 * Get the UI action advisor.
+	 * 
+	 * @return the action advisor or <code>null</code> if none is available
+	 */
+	public ActionUIAdvisor<?> getUIAdvisor();
+
+	/**
 	 * States if I/O operations based on this advisor represent project
 	 * resources and thus shall be remembered, i.e. the configuration stored in
 	 * the project. If stored in a project the resource will be loaded again

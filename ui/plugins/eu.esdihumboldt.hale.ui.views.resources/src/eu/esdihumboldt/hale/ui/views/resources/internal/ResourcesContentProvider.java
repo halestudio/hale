@@ -66,11 +66,18 @@ public class ResourcesContentProvider implements ITreeContentProvider {
 
 	@Override
 	public Object[] getElements(Object inputElement) {
-		return resources.keySet().toArray();
+		List<Object> result = new ArrayList<>();
+
+		result.add(ProjectToken.TOKEN);
+
+		return result.toArray();
 	}
 
 	@Override
 	public Object[] getChildren(Object parentElement) {
+		if (parentElement instanceof ProjectToken) {
+			return resources.keySet().toArray();
+		}
 		if (parentElement instanceof IOAction) {
 			return resources.get((IOAction) parentElement).toArray();
 		}
@@ -97,6 +104,14 @@ public class ResourcesContentProvider implements ITreeContentProvider {
 
 	@Override
 	public Object getParent(Object element) {
+		if (element instanceof Resource) {
+			Resource resource = (Resource) element;
+			return IOActionExtension.getInstance().get(resource.getActionId());
+		}
+		if (element instanceof IOAction) {
+			return ProjectToken.TOKEN;
+		}
+
 		return null;
 	}
 
@@ -105,7 +120,7 @@ public class ResourcesContentProvider implements ITreeContentProvider {
 		if (element instanceof IOAction) {
 			return resources.containsKey(element);
 		}
-		return element instanceof Resource;
+		return element instanceof ProjectToken || element instanceof Resource;
 	}
 
 }

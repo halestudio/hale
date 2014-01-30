@@ -468,9 +468,9 @@ public abstract class DefaultAlignmentIOTest {
 		// test disable, it should not be with the related property cells
 		cell2.setDisabledFor(cell1, true);
 		assertEquals(1, baseAlignment.getPropertyCells(typeCell).size());
-		assertTrue(cell2.getDisabledFor().contains(cell1));
+		assertTrue(cell2.getDisabledFor().contains(cell1.getId()));
 		cell2.setDisabledFor(cell1, false);
-		assertFalse(cell2.getDisabledFor().contains(cell1));
+		assertFalse(cell2.getDisabledFor().contains(cell1.getId()));
 		cell2.setDisabledFor(cell1, true);
 		assertEquals(1, baseAlignment.getPropertyCells(typeCell).size());
 

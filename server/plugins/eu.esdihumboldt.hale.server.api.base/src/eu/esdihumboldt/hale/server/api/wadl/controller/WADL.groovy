@@ -61,6 +61,7 @@ import eu.esdihumboldt.hale.server.api.wadl.internal.generated.WadlRequest
 import eu.esdihumboldt.hale.server.api.wadl.internal.generated.WadlResource
 import eu.esdihumboldt.hale.server.api.wadl.internal.generated.WadlResources
 import eu.esdihumboldt.hale.server.api.wadl.internal.generated.WadlResponse
+import groovy.transform.CompileStatic
 
 /**
  * Controller generating WADL and documentation.
@@ -69,7 +70,7 @@ import eu.esdihumboldt.hale.server.api.wadl.internal.generated.WadlResponse
  */
 @Controller
 @RequestMapping
-class WADL {
+class WADL extends WADLBase {
 
 	private static final ALogger log = ALoggerFactory.getLogger(WADL)
 
@@ -154,13 +155,27 @@ class WADL {
 		Map<RequestMappingInfo, HandlerMethod> handlerMethods = handlerMapping.handlerMethods
 		for (Entry<RequestMappingInfo, HandlerMethod> entry in handlerMethods.entrySet()) {
 			def patterns = entry.key.patternsCondition.patterns
-			patterns.each {
-				resourceHandlers.put(it, entry)
+			patterns.each { String pattern ->
+				pattern = normalizePattern(pattern) { String pathVar, boolean isEnd ->
+					def matcher = pathVar =~ /^([^:]+):.*$/
+					if (matcher.find()) {
+						def name = matcher.group(1)
+						if (isEnd && name == 'ext') {
+							// special case: don't include extension path variable in pattern
+							return null
+						}
+						return name
+					}
+					else {
+						return pathVar
+					}
+				}
+				resourceHandlers.put(pattern, entry)
 			}
 		}
 
 		// create resources from handler mappings
-		for (String pattern in resourceHandlers.keySet()) {
+		for (String pattern in resourceHandlers.keySet().sort()) {
 			WadlResource wadlResource = new WadlResource();
 
 			// resource path
@@ -174,7 +189,19 @@ class WADL {
 
 			// template parameters (PathVariable)
 			// must be the same for all handler methods for that resource
-			wadlResource.param.addAll(generateTemplateParams(resourceMethods.find()))
+
+			// find method with parameter documentation
+			Method paramMethod = null
+			paramMethod = resourceMethods.find{
+				// has param documentation
+				WDocUtil.getWadlDocs([it], DocScope.PARAM, null, baseURI)
+			}
+			if (paramMethod == null) {
+				// use any method if none is documented with parameters
+				paramMethod = resourceMethods.find()
+			}
+
+			wadlResource.param.addAll(generateTemplateParams(paramMethod))
 
 			// organize handler methods by HTTP method
 			Multimap methods = HashMultimap.create()
@@ -227,6 +254,7 @@ class WADL {
 	 * @param method the java handler method
 	 * @return the template parameters or an empty list
 	 */
+	@CompileStatic
 	private def generateTemplateParams(Method method) {
 		def result = []
 
@@ -266,11 +294,12 @@ class WADL {
 		result
 	}
 
+	@CompileStatic
 	private WadlRequest generateRequest(Collection<Entry<RequestMappingInfo, HandlerMethod>> methods) {
 		WadlRequest wadlRequest = new WadlRequest()
 
 		//XXX for now assume the same request for all methods
-		def firstEntry = methods.find{ true }
+		Entry firstEntry = methods.find{ true }
 		RequestMappingInfo mappingInfo = firstEntry.key
 		HandlerMethod handlerMethod = firstEntry.value
 
@@ -350,10 +379,11 @@ class WADL {
 			return wadlRequest
 		}
 
-		[]
+		null
 	}
 
 	@SuppressWarnings("rawtypes")
+	@CompileStatic
 	private int skipDefaultParams(Class[] paramTypes, int currentIndex) {
 		if (paramTypes && paramTypes.length > currentIndex) {
 			if (paramTypes.length > currentIndex
@@ -374,6 +404,7 @@ class WADL {
 	 * @param method the handler method
 	 * @return the {@link WadlResponse} or an empty list
 	 */
+	@CompileStatic
 	private def generateResponse(RequestMappingInfo mappingInfo, HandlerMethod method) {
 		Set<MediaType> mediaTypes = mappingInfo.producesCondition.producibleMediaTypes
 
@@ -399,6 +430,7 @@ class WADL {
 		return []
 	}
 
+	@CompileStatic
 	private String cleanDefault(String value) {
 		if (value == ValueConstants.DEFAULT_NONE) return null
 
@@ -417,6 +449,7 @@ class WADL {
 	 * @return the corresponding schema type or <code>null</code> if none was
 	 *         recognized
 	 */
+	@CompileStatic
 	private QName getQNameForType(Class<?> classType) {
 		QName qName = null;
 

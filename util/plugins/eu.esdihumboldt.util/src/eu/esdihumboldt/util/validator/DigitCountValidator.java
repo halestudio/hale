@@ -70,7 +70,7 @@ public class DigitCountValidator extends AbstractValidator {
 					 * FIXME this does not change the original value, so what
 					 * does this achieve?
 					 */
-					decimal.setScale(length);
+					decimal = decimal.setScale(length);
 				}
 			} catch (ArithmeticException ae) {
 				ok = false; // scaling failed

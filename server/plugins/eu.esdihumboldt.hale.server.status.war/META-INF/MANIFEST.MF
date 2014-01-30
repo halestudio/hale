@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Server Status Pages
 Bundle-SymbolicName: eu.esdihumboldt.hale.server.status.war
-Bundle-Version: 2.6.0.qualifier
+Bundle-Version: 2.8.0.qualifier
 Web-ContextPath: /status
 Webapp-Name: Server status
 Bundle-Vendor: Data Harmonisation Panel
@@ -11,7 +11,6 @@ Import-Package: eu.esdihumboldt.hale.server.security.extender,
  eu.esdihumboldt.hale.server.security.util,
  eu.esdihumboldt.hale.server.webapp,
  eu.esdihumboldt.hale.server.webapp.components,
- eu.esdihumboldt.hale.server.webapp.filter,
  eu.esdihumboldt.hale.server.webapp.pages,
  eu.esdihumboldt.hale.server.webapp.util,
  org.eclipse.jetty.servlet;version="7.6.0",

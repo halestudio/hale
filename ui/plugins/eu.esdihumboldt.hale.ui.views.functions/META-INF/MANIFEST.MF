@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Functions View
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.views.functions;singleton:=true
-Bundle-Version: 2.6.0.qualifier
+Bundle-Version: 2.8.0.qualifier
 Bundle-Activator: eu.esdihumboldt.hale.ui.views.functions.internal.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -11,7 +11,8 @@ Require-Bundle: org.eclipse.ui,
  eu.esdihumboldt.hale.ui.common
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: de.cs3d.util.eclipse.extension.exclusive,
+Import-Package: com.google.common.base;version="15.0.0",
+ de.cs3d.util.eclipse.extension.exclusive,
  de.cs3d.util.eclipse.extension.simple,
  de.fhg.igd.osgi.util;version="1.0.0",
  eu.esdihumboldt.hale.ui.common.function.viewer,

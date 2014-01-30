@@ -38,7 +38,10 @@ import eu.esdihumboldt.hale.common.core.io.project.model.internal.generated.Proj
  */
 public class JaxbProjectIO {
 
-	private static final String PROJECT_CONTEXT = "eu.esdihumboldt.hale.common.core.io.project.model.internal.generated";
+	/**
+	 * The JAXB context.
+	 */
+	public static final String PROJECT_CONTEXT = "eu.esdihumboldt.hale.common.core.io.project.model.internal.generated";
 
 	/**
 	 * Load a project from an input stream.

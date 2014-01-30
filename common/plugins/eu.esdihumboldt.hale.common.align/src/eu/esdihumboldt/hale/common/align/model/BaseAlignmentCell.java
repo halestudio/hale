@@ -35,7 +35,7 @@ public class BaseAlignmentCell implements ModifiableCell {
 	private final ModifiableCell base;
 	private final URI baseAlignment;
 	private final String prefix;
-	private final Set<Cell> disabledFor = new HashSet<Cell>();
+	private final Set<String> disabledFor = new HashSet<String>();
 	private TransformationMode mode;
 
 	/**
@@ -95,8 +95,8 @@ public class BaseAlignmentCell implements ModifiableCell {
 	 * @see eu.esdihumboldt.hale.common.align.model.Cell#getDisabledFor()
 	 */
 	@Override
-	public Set<Cell> getDisabledFor() {
-		return Collections.unmodifiableSet(new HashSet<Cell>(Sets.union(disabledFor,
+	public Set<String> getDisabledFor() {
+		return Collections.unmodifiableSet(new HashSet<String>(Sets.union(disabledFor,
 				base.getDisabledFor())));
 	}
 
@@ -114,7 +114,7 @@ public class BaseAlignmentCell implements ModifiableCell {
 	 * 
 	 * @return the result of {@link #getDisabledFor()} from the base cell
 	 */
-	public Set<Cell> getBaseDisabledFor() {
+	public Set<String> getBaseDisabledFor() {
 		return base.getDisabledFor();
 	}
 
@@ -123,7 +123,7 @@ public class BaseAlignmentCell implements ModifiableCell {
 	 * 
 	 * @return the additional disabled for entries of the extended cell
 	 */
-	public Set<Cell> getAdditionalDisabledFor() {
+	public Set<String> getAdditionalDisabledFor() {
 		return disabledFor;
 	}
 
@@ -139,14 +139,14 @@ public class BaseAlignmentCell implements ModifiableCell {
 
 	@Override
 	public void setDisabledFor(Cell cell, boolean disabled) {
-		if (disabled && !base.getDisabledFor().contains(cell))
-			disabledFor.add(cell);
+		if (disabled && !base.getDisabledFor().contains(cell.getId()))
+			disabledFor.add(cell.getId());
 		if (!disabled) {
-			if (base.getDisabledFor().contains(cell))
+			if (base.getDisabledFor().contains(cell.getId()))
 				throw new IllegalArgumentException(
 						"Can not re-enable a cell disabled in the base alignment.");
 			else
-				disabledFor.remove(cell);
+				disabledFor.remove(cell.getId());
 		}
 
 	}

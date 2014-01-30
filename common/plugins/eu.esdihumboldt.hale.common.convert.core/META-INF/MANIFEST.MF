@@ -2,7 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Core Converters
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.convert.core
-Bundle-Version: 2.6.0.qualifier
+Bundle-Version: 2.8.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: eu.esdihumboldt.hale.common.convert;bundle-version="2.5.0"
-Import-Package: org.joda.time
+Import-Package: org.joda.time,
+ org.joda.time.base;version="2.1.0"

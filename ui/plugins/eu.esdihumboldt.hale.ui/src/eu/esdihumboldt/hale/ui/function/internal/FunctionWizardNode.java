@@ -30,6 +30,7 @@ import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardExtension;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardFactory;
 import eu.esdihumboldt.hale.ui.function.generic.GenericPropertyFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.GenericTypeFunctionWizard;
+import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.util.wizard.AbstractWizardNode;
 import eu.esdihumboldt.hale.ui.util.wizard.ExtendedWizardNode;
 
@@ -42,6 +43,8 @@ public class FunctionWizardNode extends AbstractWizardNode {
 
 	private final AbstractFunction<?> function;
 
+	private final SchemaSelection initialSelection;
+
 	/**
 	 * Create a wizard node
 	 * 
@@ -49,9 +52,24 @@ public class FunctionWizardNode extends AbstractWizardNode {
 	 * @param container the wizard container
 	 */
 	public FunctionWizardNode(AbstractFunction<?> function, IWizardContainer container) {
+		this(function, container, null);
+	}
+
+	/**
+	 * Create a wizard node
+	 * 
+	 * @param function the function
+	 * @param container the wizard container
+	 * @param initialSelection the initial selection to initialize the wizard
+	 *            with, may be <code>null</code> to start with an empty
+	 *            configuration
+	 */
+	public FunctionWizardNode(AbstractFunction<?> function, IWizardContainer container,
+			SchemaSelection initialSelection) {
 		super(container);
 
 		this.function = function;
+		this.initialSelection = initialSelection;
 	}
 
 	/**
@@ -87,16 +105,16 @@ public class FunctionWizardNode extends AbstractWizardNode {
 		if (!factories.isEmpty()) {
 			// create registered wizard
 			FunctionWizardDescriptor<?> fwd = factories.get(0);
-			result = fwd.createNewWizard(null);
+			result = fwd.createNewWizard(initialSelection);
 		}
 
 		if (result == null) {
 			// create generic wizard
 			if (function instanceof TypeFunction) {
-				result = new GenericTypeFunctionWizard(null, function.getId());
+				result = new GenericTypeFunctionWizard(initialSelection, function.getId());
 			}
 			else {
-				result = new GenericPropertyFunctionWizard(null, function.getId());
+				result = new GenericPropertyFunctionWizard(initialSelection, function.getId());
 			}
 		}
 

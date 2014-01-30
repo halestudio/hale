@@ -41,6 +41,19 @@ class VertexEntityTransformationTest extends GroovyTestCase {
 		println ast
 	}
 
+	public void testDefaultValueOrient() {
+		Graph graph = new OrientGraph("memory:defValue");
+
+		DefaultValue val = DefaultValue.create(graph)
+		assertNotNull val
+		assertEquals 2, val.value
+		assertEquals 2, val.v.getProperty('value')
+
+		assertEquals 'somethin\'', val.name
+
+		graph.shutdown();
+	}
+
 	/**
 	 * Test querying before creating a node to test graph setup.
 	 */
@@ -69,6 +82,27 @@ class VertexEntityTransformationTest extends GroovyTestCase {
 
 		graph.shutdown();
 	}
+
+	/**
+	 * Test category entity w/ {@link TinkerGraph}.
+	 */
+	//	public void testExtendedCategoryOrient() {
+	//		OrientGraph graph = new OrientGraph('memory:ext')
+	//
+	//		// create Category
+	//		ExtendedCategory extCat = ExtendedCategory.create(graph)
+	//		assertNotNull extCat
+	//
+	//		extCat.extra = 'Extra!'
+	//		assertEquals 'Extra!', extCat.v.getProperty('extra')
+	//
+	//		assertEquals 'Extra!', extCat.extra
+	//
+	//		commonCategoryTest(graph, extCat)
+	//
+	//		graph.rollback()
+	//		graph.shutdown();
+	//	}
 
 	/**
 	 * Test category entity w/ {@link TinkerGraph}.
@@ -122,6 +156,11 @@ class VertexEntityTransformationTest extends GroovyTestCase {
 		cat.v.setProperty('description', 'Test')
 		assertEquals 'Test', cat.getDescription()
 
+		// find all
+		Iterable<Category> cats = Category.findAll(graph)
+		assertNotNull cats
+		assertEquals 1, Iterables.size(cats)
+
 		// deletion
 		assertEquals 1, graph.vertices.toList().size()
 		cat.delete()
@@ -135,7 +174,7 @@ class VertexEntityTransformationTest extends GroovyTestCase {
 		cat3.setName('Bar')
 
 		// find all
-		Iterable<Category> cats = Category.findAll(graph)
+		cats = Category.findAll(graph)
 		assertNotNull cats
 		assertEquals 2, Iterables.size(cats)
 

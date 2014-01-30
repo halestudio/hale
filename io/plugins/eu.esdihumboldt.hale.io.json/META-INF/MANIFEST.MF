@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Json IO
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.json;singleton:=true
-Bundle-Version: 2.6.0.qualifier
+Bundle-Version: 2.8.0.qualifier
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.base;version="1.6.0",
@@ -13,6 +13,8 @@ Import-Package: com.google.common.base;version="1.6.0",
  de.cs3d.util.eclipse.extension,
  de.cs3d.util.logging,
  de.fhg.igd.osgi.util;version="1.0.0",
+ eu.esdihumboldt.hale.common.align.model,
+ eu.esdihumboldt.hale.common.align.model.impl,
  eu.esdihumboldt.hale.common.core.internal,
  eu.esdihumboldt.hale.common.core.io,
  eu.esdihumboldt.hale.common.core.io.impl,

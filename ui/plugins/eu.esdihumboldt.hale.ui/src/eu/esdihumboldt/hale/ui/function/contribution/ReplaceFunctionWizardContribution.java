@@ -50,7 +50,22 @@ public class ReplaceFunctionWizardContribution extends SchemaSelectionFunctionCo
 	 * @param originalCell the original cell
 	 */
 	public ReplaceFunctionWizardContribution(Cell originalCell) {
-		super();
+		super(new SchemaSelectionFunctionMatcher() {
+
+			@Override
+			protected boolean checkCount(int count, Set<? extends AbstractParameter> entities,
+					boolean isTarget) {
+				// ignore the count
+				return true;
+			}
+
+			@Override
+			protected boolean checkMandatoryConditions(Set<EntityDefinition> schemaEntities,
+					Iterable<? extends AbstractParameter> functionEntities) {
+				// ignore conditions
+				return true;
+			}
+		});
 
 		this.originalCell = originalCell;
 	}
@@ -112,27 +127,6 @@ public class ReplaceFunctionWizardContribution extends SchemaSelectionFunctionCo
 		}
 
 		return super.isActive(descriptor);
-	}
-
-	/**
-	 * @see SchemaSelectionFunctionContribution#checkCount(int, Set, boolean)
-	 */
-	@Override
-	protected boolean checkCount(int count, Set<? extends AbstractParameter> entities,
-			boolean isTarget) {
-		// ignore the count
-		return true;
-	}
-
-	/**
-	 * @see SchemaSelectionFunctionContribution#checkMandatoryConditions(Set,
-	 *      Iterable)
-	 */
-	@Override
-	protected boolean checkMandatoryConditions(Set<EntityDefinition> schemaEntities,
-			Iterable<? extends AbstractParameter> functionEntities) {
-		// ignore conditions
-		return true;
 	}
 
 	/**

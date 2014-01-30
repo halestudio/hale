@@ -15,6 +15,8 @@
  */
 package eu.esdihumboldt.hale.ui.application;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.swt.SWT;
@@ -29,10 +31,17 @@ import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
+
 import eu.esdihumboldt.hale.ui.application.internal.Messages;
+import eu.esdihumboldt.hale.ui.application.workbench.WorkbenchHook;
+import eu.esdihumboldt.hale.ui.application.workbench.extension.WorkbenchHookExtension;
+import eu.esdihumboldt.hale.ui.application.workbench.extension.WorkbenchHookFactory;
 import eu.esdihumboldt.hale.ui.launchaction.LaunchAction;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
-import eu.esdihumboldt.hale.ui.service.project.RecentFilesService;
+import eu.esdihumboldt.hale.ui.service.project.RecentProjectsService;
+import eu.esdihumboldt.hale.ui.service.project.RecentResources;
 
 /**
  * The {@link ApplicationWorkbenchAdvisor} controls the appearance of the
@@ -54,6 +63,8 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	private final OpenDocumentEventProcessor openDocProcessor;
 
 	private final LaunchAction action;
+
+	private List<WorkbenchHook> hooks;
 
 	/**
 	 * Create the application workbench advisor
@@ -109,7 +120,23 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	 */
 	@Override
 	public boolean preShutdown() {
+		// call workbench hooks
+		boolean shutdownCanceled = false;
+		for (WorkbenchHook hook : hooks) {
+			try {
+				if (!hook.preShutdown(getWorkbenchConfigurer().getWorkbench())) {
+					shutdownCanceled = true;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		if (shutdownCanceled) {
+			return false;
+		}
+
 		// ask for save if there are changes
+		// TODO use a workbench hook for this
 		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
 				ProjectService.class);
 		if (ps.isChanged()) {
@@ -139,6 +166,20 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 		}
 	}
 
+	@Override
+	public void postShutdown() {
+		super.postShutdown();
+
+		// call workbench hooks
+		for (WorkbenchHook hook : hooks) {
+			try {
+				hook.postShutdown(getWorkbenchConfigurer().getWorkbench());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	/**
 	 * @see WorkbenchAdvisor#restoreState(IMemento)
 	 */
@@ -151,11 +192,61 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
 		// restore list of recent files
 		IWorkbench wb = getWorkbenchConfigurer().getWorkbench();
-		RecentFilesService rfs = (RecentFilesService) wb.getService(RecentFilesService.class);
+		RecentProjectsService rfs = (RecentProjectsService) wb
+				.getService(RecentProjectsService.class);
 		IMemento c = memento.getChild(TAG_RECENTFILES);
 		result.add(rfs.restoreState(c));
 
 		return result;
+	}
+
+	@Override
+	public void preStartup() {
+		super.preStartup();
+
+		/*
+		 * Initialize RecentResources so they are not loaded when the first
+		 * import dialog is opened.
+		 * 
+		 * TODO instead use a workbench hook?!
+		 */
+		PlatformUI.getWorkbench().getService(RecentResources.class);
+
+		// initialize workbench hooks
+		Builder<WorkbenchHook> builder = ImmutableList.builder();
+		WorkbenchHookExtension ext = new WorkbenchHookExtension();
+		for (WorkbenchHookFactory fact : ext.getFactories()) {
+			try {
+				builder.add(fact.createExtensionObject());
+			} catch (Exception e) {
+				// ignore
+				e.printStackTrace();
+			}
+		}
+		hooks = builder.build();
+
+		// call workbench hooks
+		for (WorkbenchHook hook : hooks) {
+			try {
+				hook.preStartup(getWorkbenchConfigurer().getWorkbench());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Override
+	public void postStartup() {
+		super.postStartup();
+
+		// call workbench hooks
+		for (WorkbenchHook hook : hooks) {
+			try {
+				hook.postStartup(getWorkbenchConfigurer().getWorkbench());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**
@@ -169,7 +260,8 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
 		// save list of recent files
 		IWorkbench wb = getWorkbenchConfigurer().getWorkbench();
-		RecentFilesService rfs = (RecentFilesService) wb.getService(RecentFilesService.class);
+		RecentProjectsService rfs = (RecentProjectsService) wb
+				.getService(RecentProjectsService.class);
 		IMemento c = memento.createChild(TAG_RECENTFILES);
 		result.add(rfs.saveState(c));
 

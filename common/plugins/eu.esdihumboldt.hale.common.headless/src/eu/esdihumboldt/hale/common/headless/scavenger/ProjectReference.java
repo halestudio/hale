@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectIO;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
+import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.report.ReportHandler;
@@ -66,7 +67,7 @@ public class ProjectReference<C> {
 	/**
 	 * The project information, if the project was loaded.
 	 */
-	private ProjectInfo projectInfo;
+	private Project projectInfo;
 
 	/**
 	 * The project folder
@@ -97,6 +98,16 @@ public class ProjectReference<C> {
 		if (overrideProjectFile != null) {
 			config.setProjectFileName(overrideProjectFile);
 		}
+	}
+
+	/**
+	 * Force an update by resetting the loaded project information.
+	 * 
+	 * @param context the update context
+	 */
+	public void forceUpdate(C context) {
+		projectInfo = null;
+		update(context);
 	}
 
 	/**
@@ -137,7 +148,7 @@ public class ProjectReference<C> {
 				onFailure(context, projectId);
 			}
 			else {
-				onSuccess(context, projectId, projectFile, rf);
+				onSuccess(context, projectId, projectFile, projectInfo, rf);
 			}
 		}
 	}
@@ -160,9 +171,11 @@ public class ProjectReference<C> {
 	 * @param context the update context
 	 * @param projectId the project identifier
 	 * @param projectFile the project file
+	 * @param project the loaded project
 	 * @param reportFile the report file to publish any additional reports to
 	 */
-	protected void onSuccess(C context, String projectId, File projectFile, ReportFile reportFile) {
+	protected void onSuccess(C context, String projectId, File projectFile, Project project,
+			ReportFile reportFile) {
 		// do nothing
 	}
 
@@ -196,12 +209,21 @@ public class ProjectReference<C> {
 	}
 
 	/**
-	 * Set the internal project info.
+	 * Get the loaded project if available.
 	 * 
-	 * @param projectInfo the project info to set
+	 * @return the project
 	 */
-	protected void setProjectInfo(ProjectInfo projectInfo) {
-		this.projectInfo = projectInfo;
+	protected Project getProject() {
+		return projectInfo;
+	}
+
+	/**
+	 * Set the internal project.
+	 * 
+	 * @param project the project to set
+	 */
+	protected void setProject(Project project) {
+		this.projectInfo = project;
 	}
 
 	/**
@@ -221,7 +243,7 @@ public class ProjectReference<C> {
 	 * @return the project info or <code>null</code> if the project file could
 	 *         not be loaded
 	 */
-	protected ProjectInfo loadProjectInfo(File projectFile, ReportHandler reportHandler) {
+	protected Project loadProjectInfo(File projectFile, ReportHandler reportHandler) {
 		FileIOSupplier in = new FileIOSupplier(projectFile);
 		ProjectReader reader = HaleIO
 				.findIOProvider(ProjectReader.class, in, projectFile.getName());
@@ -243,8 +265,17 @@ public class ProjectReference<C> {
 	 * 
 	 * @return the project file or <code>null</code>
 	 */
-	protected File getProjectFile() {
+	public File getProjectFile() {
 		String projectFile = config.getProjectFileName();
+		if (projectFile != null) {
+			// check if the file actually exists
+			File file = new File(projectFolder, projectFile);
+			if (!file.exists()) {
+				log.info("Project file no longer exists, scanning for new project file.");
+				projectFile = null;
+				projectInfo = null;
+			}
+		}
 		if (projectFile == null) {
 			// determine the project file automatically
 			projectFile = ProjectIO.findProjectFile(projectFolder, getSupportedExtensions());
@@ -254,6 +285,13 @@ public class ProjectReference<C> {
 			return null;
 		}
 		return new File(projectFolder, projectFile);
+	}
+
+	/**
+	 * @return the project folder
+	 */
+	public File getProjectFolder() {
+		return projectFolder;
 	}
 
 	/**

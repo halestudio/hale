@@ -23,6 +23,8 @@ import org.eclipse.jface.wizard.IWizardContainer;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionContentProvider;
+import eu.esdihumboldt.hale.ui.function.contribution.SchemaSelectionFunctionMatcher;
+import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 
 /**
  * Function content provider that wraps {@link AbstractFunction} in
@@ -34,14 +36,27 @@ public class FunctionWizardNodeContentProvider extends FunctionContentProvider {
 
 	private final IWizardContainer container;
 
+	private final SchemaSelection initialSelection;
+
+	private final SchemaSelectionFunctionMatcher selectionMatcher;
+
 	/**
 	 * Create a new content provider
 	 * 
 	 * @param container the wizard container
+	 * @param initialSelection the initial selection to initialize the wizard
+	 *            with, may be <code>null</code> to start with an empty
+	 *            configuration
+	 * @param selectionMatcher the matcher that determines if a function is
+	 *            applicable for the initial selection, may be <code>null</code>
+	 *            to allow all functions
 	 */
-	public FunctionWizardNodeContentProvider(IWizardContainer container) {
+	public FunctionWizardNodeContentProvider(IWizardContainer container,
+			SchemaSelection initialSelection, SchemaSelectionFunctionMatcher selectionMatcher) {
 		super();
 		this.container = container;
+		this.initialSelection = initialSelection;
+		this.selectionMatcher = selectionMatcher;
 	}
 
 	/**
@@ -72,6 +87,19 @@ public class FunctionWizardNodeContentProvider extends FunctionContentProvider {
 		return super.getParent(element);
 	}
 
+	@Override
+	public boolean apply(AbstractFunction<?> function) {
+		if (initialSelection != null && selectionMatcher != null) {
+			// use selection matcher to determine if function should be
+			// displayed
+			if (!selectionMatcher.matchFunction(function, initialSelection)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	private Object[] toNodes(Object[] children) {
 		if (children == null || children.length == 0) {
 			return children;
@@ -81,8 +109,10 @@ public class FunctionWizardNodeContentProvider extends FunctionContentProvider {
 
 		for (Object child : children) {
 			if (child instanceof AbstractFunction<?>) {
-				child = new FunctionWizardNode((AbstractFunction<?>) child, container);
+				child = new FunctionWizardNode((AbstractFunction<?>) child, container,
+						initialSelection);
 			}
+
 			result.add(child);
 		}
 		return result.toArray();

@@ -10,6 +10,10 @@
       <anchor id="introduction"/>
    </topic>
    <topic label="What&apos;s new?">
+      <topic href="html/new/2_8_0.xhtml" label="New in 2.8">
+      </topic>
+      <topic href="html/new/2_7_0.xhtml" label="New in 2.7">
+      </topic>
       <topic href="html/new/2_6_0.xhtml" label="New in 2.6">
       </topic>
       <topic href="html/new/2_5_0.xhtml" label="New in 2.5">
@@ -101,6 +105,8 @@
          <anchor id="tasks_data"/>
       </topic>
       <topic label="Alignment/Mapping">
+         <topic href="html/tasks/alignment/type_relations.html" label="Identify type relations">
+         </topic>
          <topic href="html/tasks/alignment/mapping_schema_elem.html" label="Mapping schema elements">
          </topic>
          <topic href="html/tasks/alignment/edit_cell.html" label="Editing a mapping cell">
@@ -132,6 +138,8 @@
             <topic href="html/reference/import/gml_data.html" label="GML">
             </topic>
             <topic href="html/reference/import/citygml_data.html" label="CityGML">
+            </topic>
+            <topic href="html/reference/import/jdbc.html" label="Database">
             </topic>
             <anchor id="import"/>
          </topic>

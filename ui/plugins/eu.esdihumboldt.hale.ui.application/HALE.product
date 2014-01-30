@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="HUMBOLDT Alignment Editor" uid="eu.esdihumboldt.hale" id="eu.esdihumboldt.hale.ui.application.HALE" application="eu.esdihumboldt.hale.ui.application" version="2.6.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="HUMBOLDT Alignment Editor" uid="eu.esdihumboldt.hale" id="eu.esdihumboldt.hale.ui.application.HALE" application="eu.esdihumboldt.hale.ui.application" version="2.8.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
       <text>
          HUMBOLDT Alignment Editor (HALE)
 
-Version 2.6.0
+Version 2.8.0
 
 Build ___build___
 Revision ___revision___
@@ -42,20 +42,23 @@ http://www.esdi-community.eu/projects/show/hale
 
    <plugins>
       <plugin id="EDU.oswego.cs.dl.util.concurrent"/>
+      <plugin id="asm"/>
+      <plugin id="asm-analysis"/>
+      <plugin id="asm-tree"/>
+      <plugin id="asm-util"/>
       <plugin id="au.com.bytecode.opencsv"/>
       <plugin id="cal10n.api"/>
       <plugin id="cern.colt"/>
       <plugin id="ch.qos.logback.classic"/>
       <plugin id="ch.qos.logback.core"/>
       <plugin id="ch.qos.logback.slf4j" fragment="true"/>
+      <plugin id="com.google.appengine"/>
       <plugin id="com.google.guava"/>
       <plugin id="com.iabcinc.jmep"/>
       <plugin id="com.ibm.icu"/>
       <plugin id="com.orientechnologies.common"/>
       <plugin id="com.orientechnologies.orient.core"/>
       <plugin id="com.springsource.antlr"/>
-      <plugin id="com.springsource.com.sun.xml.bind"/>
-      <plugin id="com.springsource.com.sun.xml.fastinfoset"/>
       <plugin id="com.springsource.com.thoughtworks.xstream"/>
       <plugin id="com.springsource.javax.activation"/>
       <plugin id="com.springsource.javax.el"/>
@@ -78,11 +81,11 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="com.springsource.org.apache.xmlcommons"/>
       <plugin id="com.springsource.org.castor"/>
       <plugin id="com.springsource.org.custommonkey.xmlunit"/>
-      <plugin id="com.springsource.org.dom4j"/>
-      <plugin id="com.springsource.org.jvnet.staxex"/>
       <plugin id="com.springsource.org.picocontainer"/>
       <plugin id="com.springsource.org.xmlpull"/>
       <plugin id="com.sun.jna"/>
+      <plugin id="com.sun.xml.bind"/>
+      <plugin id="com.sun.xml.fastinfoset"/>
       <plugin id="com.sun.xsom"/>
       <plugin id="com.tinkerpop.blueprints"/>
       <plugin id="com.tinkerpop.blueprints.orient"/>
@@ -103,6 +106,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="de.cs3d.util.logging.logback.observer"/>
       <plugin id="de.fhg.igd.concurrency"/>
       <plugin id="de.fhg.igd.hale.fme"/>
+      <plugin id="de.fhg.igd.hale.fme.doc"/>
       <plugin id="de.fhg.igd.hale.fme.ui"/>
       <plugin id="de.fhg.igd.mapviewer"/>
       <plugin id="de.fhg.igd.mapviewer.server.openstreetmap"/>
@@ -119,70 +123,56 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.cst.functions.inspire"/>
       <plugin id="eu.esdihumboldt.cst.functions.numeric"/>
       <plugin id="eu.esdihumboldt.cst.functions.string"/>
-      <plugin id="eu.esdihumboldt.cst.test"/>
       <plugin id="eu.esdihumboldt.hale.common.align"/>
       <plugin id="eu.esdihumboldt.hale.common.align.groovy"/>
-      <plugin id="eu.esdihumboldt.hale.common.align.groovy.test"/>
-      <plugin id="eu.esdihumboldt.hale.common.align.test"/>
       <plugin id="eu.esdihumboldt.hale.common.align.tgraph"/>
-      <plugin id="eu.esdihumboldt.hale.common.align.tgraph.test"/>
       <plugin id="eu.esdihumboldt.hale.common.app"/>
       <plugin id="eu.esdihumboldt.hale.common.cache"/>
-      <plugin id="eu.esdihumboldt.hale.common.cache.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.codelist"/>
       <plugin id="eu.esdihumboldt.hale.common.convert"/>
       <plugin id="eu.esdihumboldt.hale.common.convert.core"/>
       <plugin id="eu.esdihumboldt.hale.common.convert.wkt"/>
       <plugin id="eu.esdihumboldt.hale.common.core"/>
-      <plugin id="eu.esdihumboldt.hale.common.core.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.filter"/>
-      <plugin id="eu.esdihumboldt.hale.common.filter.test"/>
       <plugin id="eu.esdihumboldt.hale.common.headless"/>
       <plugin id="eu.esdihumboldt.hale.common.instance"/>
+      <plugin id="eu.esdihumboldt.hale.common.instance.groovy"/>
       <plugin id="eu.esdihumboldt.hale.common.instance.orient"/>
       <plugin id="eu.esdihumboldt.hale.common.instancevalidator"/>
       <plugin id="eu.esdihumboldt.hale.common.lookup"/>
-      <plugin id="eu.esdihumboldt.hale.common.lookup.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.propertyaccessor" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.schema"/>
       <plugin id="eu.esdihumboldt.hale.common.schema.groovy"/>
-      <plugin id="eu.esdihumboldt.hale.common.schema.groovy.test" fragment="true"/>
-      <plugin id="eu.esdihumboldt.hale.common.schema.test"/>
       <plugin id="eu.esdihumboldt.hale.common.scripting"/>
-      <plugin id="eu.esdihumboldt.hale.common.test"/>
       <plugin id="eu.esdihumboldt.hale.doc.user"/>
       <plugin id="eu.esdihumboldt.hale.doc.user.examples"/>
       <plugin id="eu.esdihumboldt.hale.doc.user.examples.meridian2"/>
       <plugin id="eu.esdihumboldt.hale.doc.user.views.styledmap"/>
       <plugin id="eu.esdihumboldt.hale.doc.util"/>
-      <plugin id="eu.esdihumboldt.hale.instance.test"/>
       <plugin id="eu.esdihumboldt.hale.io.codelist.xml"/>
       <plugin id="eu.esdihumboldt.hale.io.csv"/>
-      <plugin id="eu.esdihumboldt.hale.io.csv.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.csv.ui"/>
       <plugin id="eu.esdihumboldt.hale.io.gml"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.geometry"/>
-      <plugin id="eu.esdihumboldt.hale.io.gml.geometry.test"/>
-      <plugin id="eu.esdihumboldt.hale.io.gml.test"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.ui"/>
       <plugin id="eu.esdihumboldt.hale.io.html"/>
+      <plugin id="eu.esdihumboldt.hale.io.html.svg"/>
       <plugin id="eu.esdihumboldt.hale.io.html.ui"/>
       <plugin id="eu.esdihumboldt.hale.io.jdbc"/>
       <plugin id="eu.esdihumboldt.hale.io.jdbc.postgresql"/>
       <plugin id="eu.esdihumboldt.hale.io.jdbc.ui"/>
       <plugin id="eu.esdihumboldt.hale.io.json"/>
+      <plugin id="eu.esdihumboldt.hale.io.json.ui"/>
       <plugin id="eu.esdihumboldt.hale.io.oml"/>
-      <plugin id="eu.esdihumboldt.hale.io.oml.test"/>
       <plugin id="eu.esdihumboldt.hale.io.project.jaxb"/>
       <plugin id="eu.esdihumboldt.hale.io.shp"/>
       <plugin id="eu.esdihumboldt.hale.io.shp.ui"/>
       <plugin id="eu.esdihumboldt.hale.io.xls"/>
+      <plugin id="eu.esdihumboldt.hale.io.xls.ui"/>
       <plugin id="eu.esdihumboldt.hale.io.xml"/>
       <plugin id="eu.esdihumboldt.hale.io.xsd"/>
-      <plugin id="eu.esdihumboldt.hale.io.xsd.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.xsd.ui"/>
       <plugin id="eu.esdihumboldt.hale.io.xslt"/>
-      <plugin id="eu.esdihumboldt.hale.io.xslt.test"/>
       <plugin id="eu.esdihumboldt.hale.io.xslt.ui"/>
       <plugin id="eu.esdihumboldt.hale.prefixmapper"/>
       <plugin id="eu.esdihumboldt.hale.ui"/>
@@ -191,7 +181,6 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.ui.application.help.internal" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.ui.cache"/>
       <plugin id="eu.esdihumboldt.hale.ui.codelist"/>
-      <plugin id="eu.esdihumboldt.hale.ui.codelist.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.ui.common"/>
       <plugin id="eu.esdihumboldt.hale.ui.common.definition.editors"/>
       <plugin id="eu.esdihumboldt.hale.ui.common.graph"/>
@@ -215,6 +204,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.ui.templates"/>
       <plugin id="eu.esdihumboldt.hale.ui.util"/>
       <plugin id="eu.esdihumboldt.hale.ui.util.graph"/>
+      <plugin id="eu.esdihumboldt.hale.ui.util.groovy"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.data"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.functions"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.mapping"/>
@@ -228,7 +218,6 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.userstatus.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.util"/>
       <plugin id="eu.esdihumboldt.util.blueprints.entities"/>
-      <plugin id="eu.esdihumboldt.util.blueprints.entities.test"/>
       <plugin id="eu.esdihumboldt.util.groovy"/>
       <plugin id="eu.esdihumboldt.util.groovy.meta.extension"/>
       <plugin id="eu.esdihumboldt.util.groovy.meta.fragment" fragment="true"/>
@@ -237,10 +226,10 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.util.resource.schemas.inspire"/>
       <plugin id="eu.esdihumboldt.util.resource.schemas.inspire.annex1"/>
       <plugin id="eu.esdihumboldt.util.resource.schemas.opengis.net"/>
-      <plugin id="eu.esdihumboldt.util.resource.schemas.test"/>
-      <plugin id="eu.esdihumboldt.util.test" fragment="true"/>
       <plugin id="gnu.trove"/>
       <plugin id="groovy"/>
+      <plugin id="groovyx.net.http"/>
+      <plugin id="hale.net.sf.ehcache"/>
       <plugin id="javax.measure"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.servlet.jsp"/>
@@ -250,7 +239,9 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="jsr305"/>
       <plugin id="jul.to.slf4j"/>
       <plugin id="log4j.over.slf4j"/>
-      <plugin id="net.sf.ehcache"/>
+      <plugin id="net.sf.ezmorph"/>
+      <plugin id="net.sf.json"/>
+      <plugin id="oauth.signpost"/>
       <plugin id="org.apache.batik.bridge"/>
       <plugin id="org.apache.batik.css"/>
       <plugin id="org.apache.batik.dom"/>
@@ -282,6 +273,8 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.codehaus.jackson"/>
       <plugin id="org.codehaus.jackson.mapper"/>
       <plugin id="org.codehaus.jettison"/>
+      <plugin id="org.cyberneko.html"/>
+      <plugin id="org.dom4j"/>
       <plugin id="org.eclipse.compare.core"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
@@ -380,11 +373,13 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.jscience"/>
       <plugin id="org.junit"/>
       <plugin id="org.junit4"/>
+      <plugin id="org.jvnet.staxex"/>
       <plugin id="org.libtiff.jai"/>
       <plugin id="org.mortbay.jetty.server"/>
       <plugin id="org.mortbay.jetty.util"/>
-      <plugin id="org.objectweb.asm"/>
       <plugin id="org.opengis"/>
+      <plugin id="org.parboiled.core"/>
+      <plugin id="org.parboiled.java" fragment="true"/>
       <plugin id="org.postgresql.jdbc4"/>
       <plugin id="org.slf4j.api"/>
       <plugin id="org.springframework.aop"/>
@@ -398,6 +393,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.w3c.dom.events"/>
       <plugin id="org.w3c.dom.smil"/>
       <plugin id="org.w3c.dom.svg"/>
+      <plugin id="pegdown"/>
       <plugin id="relaxngDatatype"/>
       <plugin id="schemacrawler.core"/>
       <plugin id="slf4j.ext"/>

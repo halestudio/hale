@@ -33,6 +33,7 @@ import eu.esdihumboldt.hale.common.core.io.IOAction;
 import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 import eu.esdihumboldt.hale.ui.io.action.ActionUI;
 import eu.esdihumboldt.hale.ui.io.action.ActionUIExtension;
+import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 
 /**
  * Resource and action label provider.
@@ -42,6 +43,9 @@ import eu.esdihumboldt.hale.ui.io.action.ActionUIExtension;
 public class ResourcesLabelProvider extends StyledCellLabelProvider implements ILabelProvider {
 
 	private final Map<String, Image> actionImages = new HashMap<>();
+
+	private final Image projectImage = ResourcesViewPlugin.getImageDescriptor(
+			"icons/project_open.gif").createImage();
 
 	@Override
 	public void update(ViewerCell cell) {
@@ -90,16 +94,40 @@ public class ResourcesLabelProvider extends StyledCellLabelProvider implements I
 			return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE);
 		}
 
+		if (element instanceof ProjectToken) {
+			return projectImage;
+		}
+
 		return null;
 	}
 
 	@Override
 	public String getText(Object element) {
+		if (element instanceof ProjectToken) {
+			ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
+					ProjectService.class);
+			String name = ps.getProjectInfo().getName();
+			if (name == null) {
+				return "<Unnamed project>";
+			}
+			return name;
+		}
 		if (element instanceof IOAction) {
 			IOAction action = (IOAction) element;
+
+			// try names in order of preference
+
+			// resource category name
+			if (action.getResourceCategoryName() != null) {
+				return action.getResourceCategoryName();
+			}
+
+			// action name
 			if (action.getName() != null) {
 				return action.getName();
 			}
+
+			// action ID
 			return action.getId();
 		}
 		if (element instanceof Resource) {
@@ -129,6 +157,8 @@ public class ResourcesLabelProvider extends StyledCellLabelProvider implements I
 			image.dispose();
 		}
 		actionImages.clear();
+
+		projectImage.dispose();
 
 		super.dispose();
 	}

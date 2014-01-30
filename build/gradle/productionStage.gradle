@@ -1,0 +1,673 @@
+// Fraunhofer Institute for Computer Graphics Research (IGD)
+// Department Graphical Information Systems (GIS)
+//
+// Copyright (c) 2004-2013 Fraunhofer IGD. All rights reserved.
+//
+// This source code is property of the Fraunhofer IGD and underlies
+// copyright restrictions. It may only be used with explicit
+// permission from the respective owner.
+
+import groovy.text.GStringTemplateEngine
+
+import java.nio.file.Files;
+import java.text.SimpleDateFormat
+import org.apache.maven.cli.MavenCli
+import org.yaml.snakeyaml.Yaml
+
+/**
+ * @return the value of the 'productFile' property
+ */
+def getProductFile() {
+    if (!project.ext.properties.containsKey("productFile")) {
+        throw new IllegalStateException("Please specify a product file to build:\n\n    -PproductFile=<path_to_product_file>\n\n")
+    }
+    return project.ext.productFile
+}
+
+/**
+ * @return the unique id of the product file to build
+ */
+def getProductUid() {
+    def dlcdoc = new XmlSlurper().parse(project.file(getProductFile()))
+    def uid = dlcdoc.@uid
+    if (uid == null) {
+        throw new IllegalStateException('Product needs a valid uid')
+    }
+    return uid.toString()
+}
+
+/**
+ * @return the id of the product definition
+ */
+def getProductId() {
+	def dlcdoc = new XmlSlurper().parse(project.file(getProductFile()))
+	def id = dlcdoc.@id
+	if (id == null) {
+		throw new IllegalStateException('Product needs a valid id')
+	}
+	return id.toString()
+}
+
+/**
+ * Get the symbolic name of the bundle that contains the product definition
+ */
+def getProductDefiningBundleName() {
+	String productId = getProductId()
+	productId[0..productId.lastIndexOf('.')-1]
+}
+
+/**
+ * @return the name of the launcher defined in the product to build
+ */
+def getProductLauncher() {
+    def dlcdoc = new XmlSlurper().parse(project.file(getProductFile()))
+    def name = null
+    dlcdoc.launcher.each { name = it.@name }
+    if (name == null) {
+        throw new IllegalStateException('Product needs a valid launcher name')
+    }
+    return name.toString()
+}
+
+/**
+ * @return the name of the package which is created by
+ * packageServer() or packageClient()
+ */
+def getPackageName() {
+    def tag
+    if (project.ext.properties.containsKey('tag')) {
+        tag = project.ext.tag + '-'
+    } else {
+        tag = ''
+    }
+    return getProductLauncher() + '-' + project.version + '.' + project.ext.buildId + '-' + tag +
+            project.ext.osgiOS + '.' + project.ext.osgiWS + '.' + project.osgiArch
+}
+
+/**
+ * @return 'true' if the product to build contains the 'org.eclipse.ui' bundle
+ */
+def productContainsUIBundles() {
+    def dlcdoc = new XmlSlurper().parse(project.file(getProductFile()))
+    return dlcdoc.plugins.plugin.any { it.@id.toString() == 'org.eclipse.ui' }
+}
+
+/**
+ * Extracts the product definition for a product with a given
+ * name from the given hash of product definitions (see files
+ * templates/products/client.yaml and server.yaml for examples)
+ */
+def makeProductDef(productDefs, productName) {
+    // check if the product definition contains a product with the given name
+    if (!productDefs.containsKey(productName)) {
+        throw new IllegalStateException("Unknown product name: ${productName}")
+    }
+
+    def d = productDefs[productName]
+
+    // handle 'Extends' keyword
+    if (d.containsKey('Extends')) {
+        // make product definition for parent product
+        def e = makeProductDef(productDefs, d['Extends'])
+
+        // remove 'Extends' value from product definition
+        d.remove('Extends')
+
+        // for each key-value pair, overwrite pairs from parent
+        // product or add values to existing arrays
+        d.each {
+            if (it.value instanceof List && e[it.key] != null) {
+                e[it.key] += it.value
+            } else {
+                e[it.key] = it.value
+            }
+        }
+
+        // replace product definition by extended one
+        d = e
+    }
+
+    return d
+}
+
+/**
+ * Copies a template file from src to dst and replaces the
+ * given values using GStringTemplateEngine
+ */
+def renderTemplate(src, dst, values) {
+    dst.withWriter { w ->
+        def template = new GStringTemplateEngine().createTemplate(src)
+        def result = template.make(values).toString()
+        w << result
+    }
+}
+
+/**
+ * Remove platform-specific fragments from the given product file
+ * FIXME remove this once Tycho knows how to handle platform-specific
+ * fragments on its own. See BUG 342890
+ * https://bugs.eclipse.org/bugs/show_bug.cgi?id=342890
+ */
+def filterPlatformSpecificFragments(productFile) {
+    def bundlesToRemove = []
+
+    def productFileContents = productFile.text
+    def dlcdoc = new XmlSlurper().parseText(productFileContents)
+    dlcdoc.plugins.plugin.each { p ->
+        def id = p.@id.toString()
+		/*
+		 * Find platform specific bundles based on the symbolic name.
+		 * Platform specific bundles provided by Eclipse/Equinox usually
+		 * contain the tested strings in the symbolic name, but this is
+		 * only a workaround as the information really is encoded in the
+		 * manifest of each bundle.
+		 */
+        if (id.contains('x86') || id.contains('i586') || id.contains('macosx')) {
+            // found a platform-specific bundle
+            // check architecture
+            def is64bit = id.contains('x86_64')
+            if (is64bit != Helper.buildFor64bit(project)) {
+                bundlesToRemove << id
+            } else {
+                // check OS
+                if (!id.contains(project.ext.osgiOS)) {
+                    bundlesToRemove << id
+                }
+            }
+        }
+		/*
+		 * Find OS specific bundles. 
+		 */
+		if (project.ext.properties.containsKey('osSpecificBundles')) {
+			def os = project.ext.osSpecificBundles[id]
+			if (os && !os.any { it == project.ext.osgiOS}) {
+				// OS information is there but does not match
+				bundlesToRemove << id
+			}
+		}
+    }
+
+    // remove bundles from product file
+    bundlesToRemove.each { p ->
+        productFileContents = productFileContents.replaceAll(/<plugin.*id="${p}".+\r?\n\s+/, '')
+		println "Removed platform specific bundle $p from product configuration"
+    }
+
+    // overwrite product file
+    productFile.write(productFileContents)
+}
+
+/**
+ * Replaces the paths to win32 icons in the given product file
+ * by absolute ones. Assumes that the paths are specified using the
+ * symbolic name of the bundle containing the icon and that they start with
+ * a slash. For example, if the path is '/de.cs3d.admintool/icons/cs3d.ico'
+ * this method will replace the substring 'de.cs3d.admintool' by the absolute
+ * path to the bundle 'de.cs3d.admintool'.
+ */
+def replaceIconPaths(productFile) {
+    def pathsToReplace = [:]
+
+    def productFileContents = productFile.text
+    def dlcdoc = new XmlSlurper().parseText(productFileContents)
+    dlcdoc.launcher.win.ico.each { i ->
+        def path = i.@path.toString()
+        if (path.startsWith('/')) {
+            def symbolicName = path.replaceAll(/^\/([^\/]+)\/.*/, '$1')
+            def pb = new BundleParser(project).getParsedBundles()[symbolicName]
+            if (pb != null) {
+                pathsToReplace[symbolicName] = pb.path.path.replace('\\', '/')
+            }
+        }
+    }
+
+    // replace icon paths
+    pathsToReplace.each {
+        productFileContents = productFileContents.replaceAll(/<ico(.*)path="\/${it.key}\/([^>]+)>/, '<ico$1path="' + it.value + '/$2>')
+    }
+
+    // overwrite product file
+    productFile.write(productFileContents)
+}
+
+/*
+ * Downloads platform specific artifacts from '@CS3D_MIRROR_URL/relsrcpath'
+ * and unzips them to 'reldstpath'. Prints 'name' to the console.
+ */
+def includeAdditionalFiles(artifacts, relsrcpath, productOutputPath, reldstpath, name) {
+    if (artifacts.containsKey(project.ext.osgiOS) && artifacts[project.ext.osgiOS].containsKey(project.ext.osgiWS) &&
+            artifacts[project.ext.osgiOS][project.ext.osgiWS].containsKey(project.ext.osgiArch)) {
+        // Download artifact
+        def f = artifacts[project.ext.osgiOS][project.ext.osgiWS][project.ext.osgiArch]
+        def artifactZipPath = new File(buildDir, f)
+        def artifactZipPathPart = new File(buildDir, f + '.part')
+        def artifactDownloadUrl = project.ext.artifactsMirrorUrl + '/' + relsrcpath + '/' + f
+        if (!artifactZipPath.exists()) {
+            download {
+                src artifactDownloadUrl
+                dest artifactZipPathPart
+                overwrite true
+            }
+            artifactZipPathPart.renameTo(artifactZipPath)
+        }
+
+        // Unzip artifact
+        println('Copying ' + name + ' ...')
+        def artifactInstallPath = new File(productOutputPath, reldstpath)
+        if (artifactZipPath.name.endsWith('.zip')) {
+            ant.unzip(src: artifactZipPath, dest: artifactInstallPath)
+        } else {
+            ant.untar(src: artifactZipPath, dest: artifactInstallPath, compression: 'gzip')
+        }
+    } else {
+        println('Cannot find ' + name + ' for this platform. ' + name + ' will not be copied into the product.')
+    }
+}
+
+/**
+ * Replace placeholders in product about text with information on build and revision. 
+ */
+void updateAboutInfo(productOutputPath) {
+	def productBundle = getProductDefiningBundleName()
+
+	def jars = fileTree(dir: productOutputPath, includes: [ "plugins/${productBundle}_*.jar" ])
+	if (jars.isEmpty()) {
+		println "Could not find product defining bundle $productBundle"
+		return
+	}
+	
+	println "Updating about information in ${productBundle}..."
+	
+	File productBundleJar = jars.iterator().next()
+	File tmpDir = Files.createTempDirectory('product-app').toFile()
+	
+	// extract product bundle to temporary directory
+	println "Extracting product bundle ${productBundleJar}"
+	ant.unzip(src: productBundleJar, dest: tmpDir)
+	
+	// determine revision
+	def revision = System.getenv()['GIT_COMMIT'] // set by jenkins
+	if (!revision) {
+		// determine commit ID from checkout
+		//TODO configure directory?
+		revision = GitHelper.currentCommitId(new File(rootDir.parentFile, '.git'))
+	}
+	if (!revision) {
+		// unable to detect revision
+		revision = 'unknown'
+	}
+	
+	// replace tokens in plugin.xml
+	File pluginXml = new File(tmpDir, 'plugin.xml')
+	ant.replace(file: pluginXml, token: '___build___', value: project.ext.buildId, summary: true)
+	ant.replace(file: pluginXml, token: '___revision___', value: revision, summary: true)
+	
+	// update original jar with updated plugin.xml
+	ant.jar(update: 'true', destfile: productBundleJar) {
+		fileset(dir: tmpDir, includes: 'plugin.xml')
+	}
+	
+//	tmpDir.deleteDir()
+}
+
+/**
+ * Creates an installable package for the client
+ */
+def packageClient(productOutputPath) {
+    if (Helper.buildForWindows(project)) {
+		try {
+	        // get path to Windows Installer XML Kit
+	        if (!project.ext.properties.containsKey("wixDir")) {
+	            def dirs = fileTree(dir: 'C:\\', includes: [ 'Program Files*\\Windows Installer XML v3*\\bin\\candle.exe',
+	                    'Program Files*\\WiX Toolset v3*\\bin\\candle.exe' ])
+	
+	            if (dirs.isEmpty()) {
+	                throw new IllegalStateException("Could not guess WIX installation directory. Please specify it " +
+	                        "in the 'wixDir' property")
+	            }
+	
+	            if (dirs.files.size() > 1) {
+	                throw new IllegalStateException("More than one WiX installation found. Please select the right " +
+	                        "one in the 'wixDir' property")
+	            }
+	
+	            project.ext.wixDir = dirs.singleFile.parentFile.parentFile
+	            println('Guessing WIX directory: ' + project.ext.wixDir)
+	        }
+	
+	        // call legacy Ant file to build the Windows installer
+	        def wixArch
+	        if (Helper.buildFor64bit(project)) {
+	            wixArch = 'x64'
+	        } else {
+	            wixArch = 'x86'
+	        }
+	        ant.ant(antfile: new File("ant", "build-msi.xml")) {
+	            property(name: "buildId", value: getProductLauncher())
+	            property(name: "shortName", value: getProductLauncher())
+	            property(name: "title", value: project.ext.win32InstallerTitle)
+	            property(name: "version", value: project.version + '.' + project.ext.buildId)
+	            property(name: "GUID.UpgradeCode", value: project.ext.win32InstallerUpgradeGUID)
+	            property(name: "GUID.ApplicationShortcut", value: project.ext.win32InstallerShortcutGUID)
+	            if (project.ext.properties.containsKey('tag')) {
+	                property(name: "tag", value: project.ext.tag)
+	            }
+	            property(name: "wix.arch", value: wixArch)
+	            if (project.ext.properties.containsKey('language')) {
+	                property(name: "language", value: project.ext.language)
+	            } else {
+	                property(name: "language", value: 'en')
+	            }
+	            property(name: "wix.dir", value: project.ext.wixDir)
+	            property(name: "wxs.dir", value: Helper.resolveTemplate(project, 'wix'))
+	            property(name: "wxs.file.ui", value: "WixUI_Product")
+	            property(name: "wxs.file.config", value: "WixProduct")
+	            property(name: "src", value: productOutputPath)
+	        }
+		} catch (e) {
+			println "Could not find WiX installation ($e.message), packaging as ZIP instead"
+			
+			// package as ZIP
+			def packageName = getPackageName()
+			def packageFileName = new File('target', packageName + '.zip')
+			
+			println('Creating package ' + packageFileName + ' ...')
+			ant.zip(destfile: packageFileName) {
+				zipfileset(dir: productOutputPath, prefix: packageName)
+			}
+		}
+    } else {
+		// Linux / Mac OS
+		// package as .tar.gz
+        def packageName = getPackageName()
+        def packageFileName = new File('target', packageName + '.tar.gz')
+		def launcherName = getProductLauncher()
+
+        println('Creating package ' + packageFileName + ' ...')
+        ant.tar(destfile: packageFileName, longfile: 'gnu', compression: 'gzip') {
+            tarfileset(dir: productOutputPath, prefix: packageName) {
+                exclude(name: getProductLauncher())
+                exclude(name: '**/*.sh')
+                exclude(name: '**/*.so')
+                exclude(name: '**/jre/bin/*')
+				exclude(name: launcherName)
+				exclude(name: "${launcherName}.app/Contents/MacOS/${launcherName}")
+            }
+            tarfileset(dir: productOutputPath, prefix: packageName, filemode: '755') {
+                include(name: getProductLauncher())
+                include(name: '**/*.sh')
+                include(name: '**/*.so')
+                include(name: '**/jre/bin/*')
+				include(name: launcherName)
+				include(name: "${launcherName}.app/Contents/MacOS/${launcherName}")
+            }
+        }
+    }
+}
+
+/**
+ * Creates an installable package for the server
+ */
+def packageServer(productOutputPath) {
+    // Include launchers
+    def launcherName = getProductLauncher()
+    if (Helper.buildForLinux(project) || Helper.buildForMac(project)) {
+        def values = [
+            'launcher': launcherName
+        ]
+        def srcPath = Helper.resolveTemplate(project, 'startup/server/linux')
+        renderTemplate(new File(srcPath, 'launcher.sh'), new File(productOutputPath, "${launcherName}.sh"), values)
+        renderTemplate(new File(srcPath, 'shutdown.sh'), new File(productOutputPath, 'shutdown.sh'), values)
+        renderTemplate(new File(srcPath, 'startup.sh'), new File(productOutputPath, 'startup.sh'), values)
+    } else if (Helper.buildForWindows(project)) {
+        def srcPath = Helper.resolveTemplate(project, 'startup/server/win32')
+
+        // copy service launcher
+        def serviceLauncher = project.ext.serviceExeName + '.exe'
+        def serviceWrapper = (Helper.buildFor64bit(project) ? 'jsl64.exe' : 'jsl.exe')
+        project.copy {
+            from new File(srcPath, serviceWrapper)
+            into productOutputPath
+            rename { serviceLauncher }
+        }
+
+        // read command line from ini file
+        def iniFile = new File(productOutputPath, "${launcherName}.ini").text
+        def programArgs = iniFile.replaceAll(/\r?\n+/, ' ').replaceAll(/-vmargs.*/, '').trim()
+        def vmArgs = iniFile.replaceAll(/\r?\n+/, ' ').replaceAll(/.*-vmargs/, '').trim()
+
+        // find launcher jar
+        def launcherJar = 'plugins/' + fileTree(dir: new File(productOutputPath, 'plugins'),
+                include: 'org.eclipse.equinox.launcher*.jar').files.toList()[0].name
+
+        def values = [
+            'launcher': launcherName,
+            'serviceName': project.ext.serviceName,
+            'serviceShort': project.ext.serviceExeName,
+            'cmdLine': "${vmArgs} -jar ${launcherJar} ${programArgs}"
+        ]
+        renderTemplate(new File(srcPath, 'service-install.bat'), new File(productOutputPath, 'service-install.bat'), values)
+        renderTemplate(new File(srcPath, 'service-remove.bat'), new File(productOutputPath, 'service-remove.bat'), values)
+        renderTemplate(new File(srcPath, 'jsl.ini'), new File(productOutputPath, "${project.ext.serviceExeName}.ini"), values)
+    }
+
+    // create package
+    def packageName = getPackageName()
+    def packageFileName
+    if (Helper.buildForWindows(project)) {
+        packageFileName = new File("target/${packageName}.zip")
+    } else {
+        packageFileName = new File("target/${packageName}.tar.gz")
+    }
+
+    println("Creating package ${packageFileName} ...")
+    if (Helper.buildForWindows(project)) {
+        ant.zip(destfile: packageFileName) {
+            zipfileset(dir: productOutputPath, prefix: packageName)
+        }
+    } else {
+        ant.tar(destfile: packageFileName, longfile: 'gnu', compression: 'gzip') {
+            tarfileset(dir: productOutputPath, prefix: packageName) {
+                exclude(name: launcherName)
+                exclude(name: '**/*.sh')
+                exclude(name: '**/*.so')
+                exclude(name: '**/jre/bin/*')
+				exclude(name: launcherName)
+				exclude(name: "${launcherName}.app/Contents/MacOS/${launcherName}")
+            }
+            tarfileset(dir: productOutputPath, prefix: packageName, filemode: '755') {
+                include(name: launcherName)
+                include(name: '**/*.sh')
+                include(name: '**/*.so')
+                include(name: '**/jre/bin/*')
+				include(name: launcherName)
+				include(name: "${launcherName}.app/Contents/MacOS/${launcherName}")
+            }
+        }
+    }
+}
+
+task makeProductFeatureProjectDefinition(type: Copy) {
+    from Helper.resolveTemplate(project, 'plugin-project.xml')
+    into new File(buildDir, 'de.cs3d.product.feature')
+    rename { '.project' }
+}
+
+/**
+ * Creates a temporary product file to build from. Uses the 'productType'
+ * and 'productName' environment variables to select a template for the
+ * product. Does nothing if these both variables are not set, but
+ * 'productFile' is set instead.
+ * After creating the product file, this method will set the 'productFile'
+ * environment variable in order to let subsequent tasks know about the
+ * path to the new temporary product file.
+ */
+task makeProductFile << {
+    // check environment variables
+	if (project.ext.has('productFile')) {
+		// if a product file is given, prefer it over any productType/productName properties
+	} else if ((project.ext.properties.containsKey("productType") && !project.ext.properties.containsKey("productName")) ||
+        (!project.ext.properties.containsKey("productType") && project.ext.properties.containsKey("productName"))) {
+        throw new IllegalStateException("Please specify the parameters 'productType' and 'productName'")
+    } else if (!project.ext.properties.containsKey("productType") && !project.ext.properties.containsKey("productName")) {
+        // make sure 'productFile' is given instead
+        getProductFile()
+    } else {
+        def productType = project.ext.productType
+        def productName = project.ext.productName
+
+        // load product definition
+        def productDefsFile = Helper.resolveTemplate(project, "products/${productType}.yaml")
+        if (!productDefsFile.exists()) {
+            throw new IllegalStateException("Unknown product type: ${productType}")
+        }
+        def productDefs = new Yaml().load(productDefsFile.newReader())
+
+        // parse product definition (e.g. process 'Extends' directives, etc.)
+        def productDef = makeProductDef(productDefs, productName)
+
+        // add target version to product definition (so it can be
+        // used in the product template)
+        productDef['Version'] = project.version
+
+        // parse plugins and add start levels to product definition
+        def startLevels = []
+        def plugins = []
+        productDef['Plugins'].each { p ->
+            def at = p.indexOf('@')
+            if (at >= 0) {
+                def name = p.substring(0, at)
+                def level = p.substring(at + 1)
+                startLevels << [
+                    'Name': name,
+                    'StartLevel': level
+                ]
+                p = name
+            }
+            plugins << p
+        }
+        productDef['Plugins'] = plugins
+        productDef['StartLevels'] = startLevels
+
+        if (!productDef.containsKey('AboutImagePath')) {
+            productDef['AboutImagePath'] = null
+        }
+        if (!productDef.containsKey('WinIco')) {
+            productDef['WinIco'] = null
+        }
+
+        // render product template using the parsed product definition
+        def productFileTemp = new File(buildDir, 'temp.product')
+        renderTemplate(Helper.resolveTemplate(project, 'products/template.product'), productFileTemp, productDef)
+
+        // set environment variable to the path to the new temporary
+        // product file, so subsequent tasks can use it
+        project.ext.productFile = productFileTemp.path
+		
+		// set tag from product definition
+		project.ext.tag = productDef['Tag']
+
+        // set global variables for additional files so
+        // subsequent tasks can use it
+        if (productDef['IncludeMongoDB'] != null) {
+            project.ext.includeMongoDB = productDef['IncludeMongoDB']
+        }
+        if (productDef['IncludeTranscoder'] != null) {
+            project.ext.includeTranscoder = productDef['IncludeTranscoder']
+        }
+        if (productDef['AdditionalFiles'] != null) {
+            project.ext.additionalFilesToPackage = productDef['AdditionalFiles']
+        }
+    }
+}
+
+task createProductFeature(dependsOn: [ generatePomFiles, makeProductFile, makeProductFeatureProjectDefinition ]) << {
+    def pg = new PomGenerator(project)
+
+    //create pom.xml
+    def productFeaturePath = makeProductFeatureProjectDefinition.destinationDir
+    pg.makePomFileWithPackaging(productFeaturePath.name, '1.0.0', false, false, 'eclipse-repository',
+            'pom-product.xml', productFeaturePath)
+
+    // create build.properties
+    def productFile = getProductFile()
+    new File(productFeaturePath, 'build.properties').withWriter {
+        it << "bin.includes = ${productFile}\n"
+    }
+
+    def shortProductFile = new File(productFile).name
+    pg.generateParentPomFile([ (productFeaturePath.name): [ 'path': productFeaturePath ] ])
+    project.delete(fileTree(dir: productFeaturePath, include: '*.product'))
+    copy {
+        from productFile
+        into productFeaturePath
+    }
+
+    // remove platform-specific fragments from product
+    // FIXME remove this once Tycho knows how to handle platform-specific
+    // fragments on its own. See BUG 342890
+    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=342890
+    def dstProductFile = new File(productFeaturePath, shortProductFile)
+    filterPlatformSpecificFragments(dstProductFile)
+
+    // replace relative paths to launcher icons by absolute ones
+    // Note: the icon paths are usually specified as relative paths to
+    // resources in a bundle. Therefore the paths contain the bundle's symbolic
+    // name. Eclipse PDE knows how to handle that, but Tycho doesn't. Tycho
+    // expects the icon path point to a local file (i.e. a relative or absolute
+    // file path). Hence, we have to replace the symbolic name by an absolute
+    // file path on our own.
+    replaceIconPaths(dstProductFile)
+}
+
+/**
+ * Builds a product. Uses the product specified with the properties
+ * 'productType' (either 'client' or 'server') and 'productName' (one of
+ * the names defined in 'templates/products/client.yaml' or
+ * 'templates/products/server.yaml'). Alternatively you can specify
+ * a path to a product file manually with the 'productFile' property.
+ */
+task buildProduct(dependsOn: createProductFeature) << {
+    def res = new MavenCli().doMain([ 'package' ] as String[], project.ext.rootDir.path, System.out, System.err)
+    if (res != 0) {
+        throw new RuntimeException("Maven failed with exit code ${res}")
+    }
+
+    // extract zip file which has been created by Tycho
+    def tychoOutputProductName = getProductUid() + '-' + project.ext.osgiOS + '.' +
+            project.ext.osgiWS + '.' + project.ext.osgiArch
+    def productFeaturePath = makeProductFeatureProjectDefinition.destinationDir
+    def tychoOutputProductZip = new File(productFeaturePath, "target/products/${tychoOutputProductName}.zip")
+    def productOutputPath = new File(buildDir, getProductUid())
+    project.delete(productOutputPath)
+    println('Extracting product ...')
+    ant.unzip(src: tychoOutputProductZip, dest: productOutputPath)
+
+    // Include JRE if available for this platform
+    includeAdditionalFiles(project.ext.jreArtifacts, 'jre', productOutputPath, 'jre', 'JRE')
+
+    // Include additional files
+    if (project.ext.includeMongoDB) {
+        includeAdditionalFiles(project.ext.mongodbArtifacts, 'mongodb', productOutputPath, 'mongodb', 'MongoDB')
+    }
+    if (project.ext.includeTranscoder) {
+        includeAdditionalFiles(project.ext.transcoderArtifacts, 'transcoder', productOutputPath, 'transcoder', 'Transcoder')
+    }
+    if (!project.ext.additionalFilesToPackage.isEmpty()) {
+        println('Copying additional files ...')
+        project.ext.additionalFilesToPackage.each { af ->
+            project.copy {
+                from Helper.resolveTemplate(project, "additional_files/${af}")
+                into productOutputPath
+            }
+        }
+    }
+	
+	updateAboutInfo(productOutputPath)
+
+    if (productContainsUIBundles()) {
+        packageClient(productOutputPath)
+    } else {
+        packageServer(productOutputPath)
+    }
+}

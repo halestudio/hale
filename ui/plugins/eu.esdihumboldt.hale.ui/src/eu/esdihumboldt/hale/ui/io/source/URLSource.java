@@ -61,7 +61,6 @@ import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
 import eu.esdihumboldt.hale.ui.io.ImportSource;
-import eu.esdihumboldt.hale.ui.io.util.URIFieldEditor;
 
 /**
  * URL import source
@@ -76,7 +75,7 @@ public class URLSource<P extends ImportProvider> extends AbstractProviderSource<
 	/**
 	 * The file field editor for the source URL
 	 */
-	private URIFieldEditor sourceURL;
+	private URLSourceURIFieldEditor sourceURL;
 
 	/**
 	 * The set of supported content types
@@ -94,12 +93,21 @@ public class URLSource<P extends ImportProvider> extends AbstractProviderSource<
 	 */
 	@Override
 	public void createControls(Composite parent) {
-		parent.setLayout(new GridLayout(2, false));
+		parent.setLayout(new GridLayout(3, false));
 
 		detectImage = HALEUIPlugin.getImageDescriptor("icons/find_obj.gif").createImage();
 
 		// source file
-		sourceURL = new URIFieldEditor("sourceURL", "Source URL:", parent);
+		sourceURL = new URLSourceURIFieldEditor("sourceURL", "Source URL:", parent) {
+
+			@Override
+			protected void onHistorySelected(URI location, IContentType contentType) {
+				// select the content type associated with the recent URL
+				types.setSelection(new StructuredSelection(contentType));
+				updateState(false);
+			}
+
+		};
 		sourceURL.setPage(getPage());
 
 		// set content types for file field
@@ -108,6 +116,8 @@ public class URLSource<P extends ImportProvider> extends AbstractProviderSource<
 		for (IOProviderDescriptor factory : factories) {
 			supportedTypes.addAll(factory.getSupportedTypes());
 		}
+
+		sourceURL.setContentTypes(supportedTypes);
 
 		sourceURL.setPropertyChangeListener(new IPropertyChangeListener() {
 
@@ -132,7 +142,7 @@ public class URLSource<P extends ImportProvider> extends AbstractProviderSource<
 
 		// types combo
 		Composite group = new Composite(parent, SWT.NONE);
-		group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
 		group.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
 
 		types = new ComboViewer(group, SWT.DROP_DOWN | SWT.READ_ONLY);
@@ -169,53 +179,7 @@ public class URLSource<P extends ImportProvider> extends AbstractProviderSource<
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				try {
-					getPage().getWizard().getContainer()
-							.run(false, false, new IRunnableWithProgress() {
-
-								@Override
-								public void run(IProgressMonitor monitor)
-										throws InvocationTargetException, InterruptedException {
-									monitor.beginTask("Detect content type",
-											IProgressMonitor.UNKNOWN);
-
-									final IContentType detected = detectContentType();
-
-									PlatformUI.getWorkbench().getDisplay()
-											.asyncExec(new Runnable() {
-
-												@Override
-												public void run() {
-													if (detected != null) {
-														types.setSelection(new StructuredSelection(
-																detected));
-														getPage()
-																.setMessage(
-																		MessageFormat
-																				.format("Detected {0} as content type",
-																						detected.getName()),
-																		DialogPage.INFORMATION);
-														updateState(true);
-													}
-													else {
-														types.setSelection(new StructuredSelection());
-														getPage()
-																.setMessage(
-																		"Could not detect content type. The resource might be not available or it has no matching content type.",
-																		DialogPage.WARNING);
-														updateState(true);
-													}
-												}
-											});
-
-									monitor.done();
-								}
-							});
-				} catch (Throwable t) {
-					getPage()
-							.setErrorMessage("Starting the task to detect the content type failed");
-				}
-
+				runDetectContentType();
 			}
 		});
 
@@ -227,10 +191,55 @@ public class URLSource<P extends ImportProvider> extends AbstractProviderSource<
 
 		// create provider combo
 		ComboViewer providers = createProviders(parent);
-		providers.getControl().setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		providers.getControl().setLayoutData(
+				new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
 
 		// initial state update
 		updateState(true);
+	}
+
+	/**
+	 * Run content type detection.
+	 */
+	protected void runDetectContentType() {
+		try {
+			getPage().getWizard().getContainer().run(false, false, new IRunnableWithProgress() {
+
+				@Override
+				public void run(IProgressMonitor monitor) throws InvocationTargetException,
+						InterruptedException {
+					monitor.beginTask("Detect content type", IProgressMonitor.UNKNOWN);
+
+					final IContentType detected = detectContentType();
+
+					PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+
+						@Override
+						public void run() {
+							if (detected != null) {
+								types.setSelection(new StructuredSelection(detected));
+								getPage().setMessage(
+										MessageFormat.format("Detected {0} as content type",
+												detected.getName()), DialogPage.INFORMATION);
+								updateState(true);
+							}
+							else {
+								types.setSelection(new StructuredSelection());
+								getPage()
+										.setMessage(
+												"Could not detect content type. The resource might be not available or it has no matching content type.",
+												DialogPage.WARNING);
+								updateState(true);
+							}
+						}
+					});
+
+					monitor.done();
+				}
+			});
+		} catch (Throwable t) {
+			getPage().setErrorMessage("Starting the task to detect the content type failed");
+		}
 	}
 
 	/**

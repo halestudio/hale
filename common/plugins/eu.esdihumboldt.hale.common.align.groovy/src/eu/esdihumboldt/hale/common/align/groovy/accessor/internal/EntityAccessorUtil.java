@@ -41,9 +41,14 @@ public class EntityAccessorUtil {
 	 * @param path the path, the topmost element has to represent an
 	 *            {@link EntityDefinition}, all other elements must represent
 	 *            {@link ChildContext}s
-	 * @return the created entity definition
+	 * @return the created entity definition or <code>null</code> if the path
+	 *         was <code>null</code>
 	 */
 	public static EntityDefinition createEntity(Path<PathElement> path) {
+		if (path == null) {
+			return null;
+		}
+
 		List<PathElement> elements = new ArrayList<>(path.getElements());
 
 		// create entity definition

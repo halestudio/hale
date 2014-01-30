@@ -34,7 +34,7 @@ import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace;
  * 
  * @author Simon Templer
  */
-class LoadSchemaAdvisor extends AbstractIOAdvisor<SchemaReader> {
+public class LoadSchemaAdvisor extends AbstractIOAdvisor<SchemaReader> {
 
 	private final List<Schema> schemas = new ArrayList<Schema>();
 
@@ -62,6 +62,8 @@ class LoadSchemaAdvisor extends AbstractIOAdvisor<SchemaReader> {
 	@Override
 	public void prepareProvider(SchemaReader provider) {
 		super.prepareProvider(provider);
+
+		provider.setSchemaSpace(ssid);
 
 		// TODO set already loaded schemas as shared types
 //			provider.setSharedTypes(...);

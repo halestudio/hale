@@ -15,16 +15,21 @@
 
 package eu.esdihumboldt.hale.server.templates;
 
-import eu.esdihumboldt.hale.common.headless.scavenger.ProjectReference;
-import eu.esdihumboldt.util.resource.scavenger.ResourceScavenger;
+import eu.esdihumboldt.util.scavenger.ResourceScavenger;
 
 /**
  * Service that scans for (template) projects in a directory.
  * 
  * @author Simon Templer
  */
-public interface TemplateScavenger extends ResourceScavenger<ProjectReference<Void>> {
+public interface TemplateScavenger extends ResourceScavenger<TemplateProject> {
 
-	// concrete typed interface
+	/**
+	 * Force an update of the template with the given ID, resetting already
+	 * loaded information.
+	 * 
+	 * @param templateId the template identifier
+	 */
+	public void forceUpdate(String templateId);
 
 }

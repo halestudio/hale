@@ -16,13 +16,22 @@
 
 package eu.esdihumboldt.hale.common.instance.model.impl;
 
+import java.util.Map;
 import java.util.NoSuchElementException;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
 
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
-import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.instance.model.TypeFilter;
+import eu.esdihumboldt.hale.common.instance.model.ext.InstanceCollection2;
+import eu.esdihumboldt.hale.common.instance.model.ext.InstanceIterator;
+import eu.esdihumboldt.hale.common.instance.model.ext.helper.EmptyInstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.ext.helper.InstanceCollectionDecorator;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Instance collection that wraps an instance collection and represents a
@@ -30,7 +39,36 @@ import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
  * 
  * @author Simon Templer
  */
-public class FilteredInstanceCollection implements InstanceCollection {
+public class FilteredInstanceCollection extends InstanceCollectionDecorator {
+
+	/**
+	 * Create an instance collection that applies a filter to the given instance
+	 * collection.
+	 * 
+	 * @param instances the instance collection to filter
+	 * @param filter the filter
+	 * @return the filtered instance collection
+	 */
+	public static InstanceCollection applyFilter(InstanceCollection instances, Filter filter) {
+		if (filter instanceof TypeFilter && instances instanceof InstanceCollection2) {
+			/*
+			 * For type filters check if we can make use of fan-out.
+			 */
+			InstanceCollection2 instances2 = (InstanceCollection2) instances;
+
+			if (instances2.supportsFanout()) {
+				TypeDefinition type = ((TypeFilter) filter).getType();
+				InstanceCollection result = instances2.fanout().get(type);
+				if (result == null) {
+					result = EmptyInstanceCollection.INSTANCE;
+				}
+				return result;
+			}
+		}
+
+		// create a filtered collection
+		return new FilteredInstanceCollection(instances, filter);
+	}
 
 	/**
 	 * Filtered resource iterator.
@@ -121,8 +159,6 @@ public class FilteredInstanceCollection implements InstanceCollection {
 
 	}
 
-	private final InstanceCollection decoratee;
-
 	private final Filter filter;
 
 	/**
@@ -131,15 +167,20 @@ public class FilteredInstanceCollection implements InstanceCollection {
 	 * @param decoratee the instance collection to perform the selection on
 	 * @param filter the filter representing the selection
 	 */
-	public FilteredInstanceCollection(InstanceCollection decoratee, Filter filter) {
-		super();
-		this.decoratee = decoratee;
+	private FilteredInstanceCollection(InstanceCollection decoratee, Filter filter) {
+		super(decoratee);
 		this.filter = filter;
 	}
 
 	@Override
 	public ResourceIterator<Instance> iterator() {
-		return new FilteredIterator(decoratee.iterator());
+		ResourceIterator<Instance> it = decoratee.iterator();
+		if (filter instanceof TypeFilter && it instanceof InstanceIterator
+				&& ((InstanceIterator) it).supportsTypePeek()) {
+			// make use of type peek if possible
+			return new TypeFilteredIterator(it, ((TypeFilter) filter).getType());
+		}
+		return new FilteredIterator(it);
 	}
 
 	@Override
@@ -169,13 +210,20 @@ public class FilteredInstanceCollection implements InstanceCollection {
 	}
 
 	@Override
-	public InstanceReference getReference(Instance instance) {
-		return decoratee.getReference(instance);
-	}
+	public Map<TypeDefinition, InstanceCollection> fanout() {
+		Map<TypeDefinition, InstanceCollection> fanout = super.fanout();
+		if (fanout != null) {
+			return Maps.transformValues(fanout,
+					new Function<InstanceCollection, InstanceCollection>() {
 
-	@Override
-	public Instance getInstance(InstanceReference reference) {
-		return decoratee.getInstance(reference);
+						@Override
+						public InstanceCollection apply(InstanceCollection from) {
+							return new FilteredInstanceCollection(from, filter);
+						}
+					});
+		}
+
+		return null;
 	}
 
 }

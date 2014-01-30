@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.common.schema.io.impl;
 
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractImportProvider;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
@@ -28,6 +29,20 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 public abstract class AbstractSchemaReader extends AbstractImportProvider implements SchemaReader {
 
 	private TypeIndex sharedTypes;
+
+	private SchemaSpaceID schemaSpace;
+
+	@Override
+	public void setSchemaSpace(SchemaSpaceID schemaSpace) {
+		this.schemaSpace = schemaSpace;
+	}
+
+	/**
+	 * @return the schema space the loaded schema will be associated to
+	 */
+	public SchemaSpaceID getSchemaSpace() {
+		return schemaSpace;
+	}
 
 	/**
 	 * @see SchemaReader#setSharedTypes(TypeIndex)

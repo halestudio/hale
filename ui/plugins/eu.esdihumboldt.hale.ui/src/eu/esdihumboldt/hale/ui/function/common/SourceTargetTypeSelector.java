@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.ui.function.common;
 
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -28,7 +29,6 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -98,9 +98,11 @@ public class SourceTargetTypeSelector implements ISelectionProvider {
 			}
 		};
 
+		GridDataFactory selectorgd = GridDataFactory.fillDefaults().grab(true, false)
+				.hint(200, SWT.DEFAULT);
+
 		sourceTypeSelector = new TypeEntitySelector(SchemaSpaceID.SOURCE, null, main, false);
-		sourceTypeSelector.getControl()
-				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		selectorgd.applyTo(sourceTypeSelector.getControl());
 		sourceTypeSelector.addSelectionChangedListener(listener);
 
 		selectCellButton = new Button(main, SWT.PUSH);
@@ -143,8 +145,7 @@ public class SourceTargetTypeSelector implements ISelectionProvider {
 		resetSelectionButton.setToolTipText("Reset selection");
 
 		targetTypeSelector = new TypeEntitySelector(SchemaSpaceID.TARGET, null, main, false);
-		targetTypeSelector.getControl()
-				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		selectorgd.applyTo(targetTypeSelector.getControl());
 		targetTypeSelector.addSelectionChangedListener(listener);
 	}
 
@@ -261,14 +262,21 @@ public class SourceTargetTypeSelector implements ISelectionProvider {
 	 */
 	private void setSelection(Cell cell) {
 		if (cell != null) {
-			Entity source = CellUtil.getFirstEntity(cell.getSource());
-			ISelection selection;
-			selection = (source == null) ? StructuredSelection.EMPTY : new StructuredSelection(
-					AlignmentUtil.getTypeEntity(source.getDefinition()));
-			sourceTypeSelector.setSelection(selection);
+			// in case of a real join cell there are multiple source types
+			if (cell.getSource() == null || cell.getSource().isEmpty())
+				sourceTypeSelector.setSelection(StructuredSelection.EMPTY);
+			else if (cell.getSource().size() > 1)
+				sourceTypeSelector.showText("<multiple types>");
+			else {
+				Entity source = CellUtil.getFirstEntity(cell.getSource());
+				ISelection selection = new StructuredSelection(AlignmentUtil.getTypeEntity(source
+						.getDefinition()));
+				sourceTypeSelector.setSelection(selection);
+			}
+			// target can only be one or none
 			Entity target = CellUtil.getFirstEntity(cell.getTarget());
-			selection = (target == null) ? StructuredSelection.EMPTY : new StructuredSelection(
-					AlignmentUtil.getTypeEntity(target.getDefinition()));
+			ISelection selection = (target == null) ? StructuredSelection.EMPTY
+					: new StructuredSelection(AlignmentUtil.getTypeEntity(target.getDefinition()));
 			targetTypeSelector.setSelection(selection);
 		}
 

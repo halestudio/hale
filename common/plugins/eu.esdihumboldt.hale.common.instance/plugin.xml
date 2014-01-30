@@ -7,8 +7,10 @@
    <extension
          point="eu.esdihumboldt.hale.io.action">
       <action
+            categoryName="Source data"
             id="eu.esdihumboldt.hale.io.instance.read.source"
             name="Load source data"
+            resourceName="source data"
             type="eu.esdihumboldt.hale.common.instance.io.InstanceReader">
          <dependsOn
                action="eu.esdihumboldt.hale.io.schema.read.source">

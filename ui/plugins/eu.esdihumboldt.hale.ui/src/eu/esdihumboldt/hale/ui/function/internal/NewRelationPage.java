@@ -16,11 +16,19 @@
 
 package eu.esdihumboldt.hale.ui.function.internal;
 
+import org.eclipse.help.IContext;
+import org.eclipse.jface.dialogs.IPageChangeProvider;
+import org.eclipse.jface.dialogs.IPageChangedListener;
+import org.eclipse.jface.dialogs.PageChangedEvent;
+import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.wizard.IWizardContainer;
 import org.eclipse.jface.wizard.IWizardNode;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -32,8 +40,12 @@ import org.eclipse.ui.dialogs.PatternFilter;
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
+import eu.esdihumboldt.hale.ui.HALEContextProvider;
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;
+import eu.esdihumboldt.hale.ui.function.contribution.SchemaSelectionFunctionMatcher;
+import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
+import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 import eu.esdihumboldt.hale.ui.util.wizard.ViewerWizardSelectionPage;
 import eu.esdihumboldt.util.Pair;
 
@@ -51,11 +63,29 @@ public class NewRelationPage extends ViewerWizardSelectionPage {
 
 	private TreeViewer viewer;
 
+	private final SchemaSelection initialSelection;
+
+	private final SchemaSelectionFunctionMatcher selectionMatcher;
+
+	private HALEContextProvider contextProvider;
+
+	private IPageChangedListener changeListener;
+
 	/**
 	 * @param title the page title
+	 * @param initialSelection the initial selection to initialize the wizard
+	 *            with, may be <code>null</code> to start with an empty
+	 *            configuration
+	 * @param selectionMatcher the matcher that determines if a function is
+	 *            applicable for the initial selection, may be <code>null</code>
+	 *            to allow all functions
 	 */
-	protected NewRelationPage(String title) {
+	public NewRelationPage(String title, SchemaSelection initialSelection,
+			SchemaSelectionFunctionMatcher selectionMatcher) {
 		super("newRelation");
+
+		this.initialSelection = initialSelection;
+		this.selectionMatcher = selectionMatcher;
 
 		setTitle(title);
 	}
@@ -71,36 +101,62 @@ public class NewRelationPage extends ViewerWizardSelectionPage {
 				| SWT.V_SCROLL, filter, true);
 
 		viewer = tree.getViewer();
-		viewer.setContentProvider(new FunctionWizardNodeContentProvider(getContainer()));
+		viewer.setContentProvider(new FunctionWizardNodeContentProvider(getContainer(),
+				initialSelection, selectionMatcher));
 		viewer.setLabelProvider(new FunctionWizardNodeLabelProvider());
 		// no input needed, but we have to set something
 		viewer.setInput(Boolean.TRUE);
 
-		// set viewer filter; Not needed anymore
-//		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-//				AlignmentService.class);
-//		if (!AlignmentUtil.hasTypeRelation(as.getAlignment())) {
-//			// if there are no type relations, don't allow creating a property
-//			// relation
-//			viewer.addFilter(new ViewerFilter() {
-//
-//				@Override
-//				public boolean select(Viewer viewer, Object parentElement, Object element) {
-//					if (element instanceof FunctionWizardNode) {
-//						AbstractFunction<?> function = ((FunctionWizardNode) element).getFunction();
-//						if (function instanceof PropertyFunction) {
-//							// hide any property function nodes
-//							return false;
-//						}
-//					}
-//
-//					return true;
-//				}
-//			});
-//		}
-
 		// set focus on viewer control to prevent odd behavior
 		viewer.getControl().setFocus();
+
+		// expand selection
+		viewer.expandAll();
+
+		// selection context
+		contextProvider = new HALEContextProvider(viewer, null);
+
+		// help update on page shown
+		if (getContainer() instanceof IPageChangeProvider) {
+			((IPageChangeProvider) getContainer())
+					.addPageChangedListener(changeListener = new IPageChangedListener() {
+
+						@Override
+						public void pageChanged(PageChangedEvent event) {
+							if (event.getSelectedPage() == NewRelationPage.this) {
+								// update the help button
+								if (getContainer() instanceof HaleWizardDialog) {
+									((HaleWizardDialog) getContainer())
+											.setHelpButtonEnabled(getHelpContext() != null);
+								}
+							}
+						}
+
+					});
+		}
+
+		// help update on selection change
+		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				IContext context = getHelpContext();
+
+				// update the help button
+				if (getContainer() instanceof HaleWizardDialog) {
+					((HaleWizardDialog) getContainer()).setHelpButtonEnabled(context != null);
+				}
+
+				// update the help
+				if (context != null) {
+					TrayDialog trayDialog = (TrayDialog) getContainer();
+					if (trayDialog.getTray() != null) {
+						// if the tray is already open, update the help
+						performHelp();
+					}
+				}
+			}
+		});
 
 		// load page configuration
 		// XXX would be better if called from outside
@@ -109,6 +165,37 @@ public class NewRelationPage extends ViewerWizardSelectionPage {
 		restore(ps.getConfigurationService());
 
 		return new Pair<StructuredViewer, Control>(viewer, tree);
+	}
+
+	@Override
+	public void performHelp() {
+		IContext helpContext = getHelpContext();
+
+		if (helpContext == null) {
+			TrayDialog trayDialog = (TrayDialog) getContainer();
+			if (trayDialog.getTray() != null) {
+				trayDialog.closeTray();
+			}
+		}
+		else {
+			PlatformUI.getWorkbench().getHelpSystem().displayHelp(helpContext);
+		}
+	}
+
+	private IContext getHelpContext() {
+		if (contextProvider != null) {
+			ISelection sel = viewer.getSelection();
+			if (!sel.isEmpty() && sel instanceof IStructuredSelection) {
+				return contextProvider.getContext(((IStructuredSelection) sel).getFirstElement());
+			}
+		}
+
+		return null;
+	}
+
+	@Override
+	protected int getViewerHeightHint() {
+		return 300;
 	}
 
 	/**
@@ -161,11 +248,24 @@ public class NewRelationPage extends ViewerWizardSelectionPage {
 				// create function wizard node and select it
 				AbstractFunction<?> function = FunctionUtil.getFunction(functionId);
 				if (function != null) {
-					FunctionWizardNode node = new FunctionWizardNode(function, getContainer());
+					FunctionWizardNode node = new FunctionWizardNode(function, getContainer(),
+							initialSelection);
 					viewer.setSelection(new StructuredSelection(node), true);
 				}
 			}
 		}
+	}
+
+	@Override
+	public void dispose() {
+		if (changeListener != null) {
+			IWizardContainer container = getContainer();
+			if (container instanceof IPageChangeProvider) {
+				((IPageChangeProvider) container).removePageChangedListener(changeListener);
+			}
+		}
+
+		super.dispose();
 	}
 
 }

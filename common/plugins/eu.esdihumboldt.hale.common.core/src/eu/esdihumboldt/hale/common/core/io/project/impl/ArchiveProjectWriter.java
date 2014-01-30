@@ -17,7 +17,6 @@
 package eu.esdihumboldt.hale.common.core.io.project.impl;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -29,7 +28,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FileUtils;
@@ -58,6 +56,7 @@ import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
+import eu.esdihumboldt.util.io.IOUtils;
 
 /**
  * Save projects (including all related resources) as an archive (zip)
@@ -132,7 +131,7 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		}
 
 		// put the complete temp directory into a zip file
-		zipDirectory(tempDir, zip, "");
+		IOUtils.zipDirectory(tempDir, zip);
 		zip.close();
 
 		// delete the temp directory
@@ -227,6 +226,12 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 					}
 					else {
 						// web resource that should not be included this time
+
+						// but the resolved URI should be stored nevertheless
+						// otherwise the URI may be invalid if it was relative
+						providerConfig.put(ImportProvider.PARAM_SOURCE,
+								Value.of(pathUri.toASCIIString()));
+
 						continue;
 					}
 				}
@@ -281,36 +286,4 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		}
 	}
 
-	// zip all files (with subdirectories) to the ZipOutputStream
-	private void zipDirectory(File zipDir, ZipOutputStream zos, String parentFolder)
-			throws IOException {
-
-		String[] dirList = zipDir.list();
-		byte[] readBuffer = new byte[2156];
-		int bytesIn = 0;
-
-		for (int i = 0; i < dirList.length; i++) {
-
-			File f = new File(zipDir, dirList[i]);
-			if (f.isDirectory()) {
-				if (parentFolder.isEmpty())
-					zipDirectory(f, zos, f.getName());
-				else
-					zipDirectory(f, zos, parentFolder + "/" + f.getName());
-				continue;
-			}
-			FileInputStream fis = new FileInputStream(f);
-			ZipEntry anEntry;
-			if (parentFolder.isEmpty())
-				anEntry = new ZipEntry(f.getName());
-			else
-				anEntry = new ZipEntry(parentFolder + "/" + f.getName());
-			zos.putNextEntry(anEntry);
-
-			while ((bytesIn = fis.read(readBuffer)) != -1) {
-				zos.write(readBuffer, 0, bytesIn);
-			}
-			fis.close();
-		}
-	}
 }

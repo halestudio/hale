@@ -19,7 +19,6 @@ package eu.esdihumboldt.hale.ui.service.instance.internal.orient;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.HashSet;
@@ -35,7 +34,6 @@ import org.eclipse.core.commands.operations.IUndoableOperation;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.operations.IWorkbenchOperationSupport;
@@ -78,6 +76,7 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.internal.AbstractRemoveResourcesOperation;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
+import eu.esdihumboldt.util.PlatformUtil;
 
 /**
  * {@link InstanceService} implementation based on OrientDB. This must be a
@@ -139,10 +138,8 @@ public class OrientInstanceService extends AbstractInstanceService {
 		this.schemaService = schemaService;
 
 		// setup databases
-		File instanceLoc;
-		try {
-			instanceLoc = new File(Platform.getInstanceLocation().getURL().toURI());
-		} catch (URISyntaxException e) {
+		File instanceLoc = PlatformUtil.getInstanceLocation();
+		if (instanceLoc == null) {
 			instanceLoc = new File(System.getProperty("java.io.tmpdir"));
 		}
 		instanceLoc = new File(instanceLoc, "instances");
@@ -190,7 +187,7 @@ public class OrientInstanceService extends AbstractInstanceService {
 			 * headless transformation must be updated accordingly as well.
 			 */
 
-			return new FilteredInstanceCollection(result, new Filter() {
+			return FilteredInstanceCollection.applyFilter(result, new Filter() {
 
 				@Override
 				public boolean match(Instance instance) {
@@ -343,6 +340,14 @@ public class OrientInstanceService extends AbstractInstanceService {
 		} catch (ExecutionException e) {
 			log.error("Error executing operation on instance service", e);
 		}
+	}
+
+	@Override
+	public void dropInstances() {
+		notifyDatasetAboutToChange(null);
+		source.clear();
+		transformed.clear();
+		notifyDatasetChanged(null);
 	}
 
 	/**

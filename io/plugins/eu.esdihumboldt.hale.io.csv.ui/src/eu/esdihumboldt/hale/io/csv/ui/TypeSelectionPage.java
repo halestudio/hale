@@ -33,9 +33,9 @@ import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.io.csv.reader.CSVConstants;
+import eu.esdihumboldt.hale.io.csv.reader.CommonSchemaConstants;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVConfiguration;
-import eu.esdihumboldt.hale.io.csv.reader.internal.CSVConstants;
-import eu.esdihumboldt.hale.io.csv.reader.internal.CSVInstanceReader;
 import eu.esdihumboldt.hale.ui.common.definition.selector.TypeDefinitionSelector;
 import eu.esdihumboldt.hale.ui.io.instance.InstanceReaderConfigurationPage;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
@@ -45,7 +45,6 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
  * 
  * @author Kevin Mais
  */
-@SuppressWarnings("restriction")
 public class TypeSelectionPage extends InstanceReaderConfigurationPage implements CSVConstants {
 
 	private TypeDefinitionSelector sel;
@@ -68,7 +67,7 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage implement
 	 */
 	@Override
 	public void enable() {
-		// TODO Auto-generated method stub
+		// not required
 
 	}
 
@@ -77,7 +76,7 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage implement
 	 */
 	@Override
 	public void disable() {
-		// TODO Auto-generated method stub
+		// not required
 
 	}
 
@@ -125,12 +124,12 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage implement
 	@Override
 	public boolean updateConfiguration(InstanceReader provider) {
 
-		provider.setParameter(CSVInstanceReader.PARAM_SKIP_FIRST_LINE,
+		provider.setParameter(CommonSchemaConstants.PARAM_SKIP_FIRST_LINE,
 				Value.of(button.getSelection()));
 		if (sel.getSelectedObject() != null) {
 			QName name = sel.getSelectedObject().getName();
 			String param_name = name.toString();
-			provider.setParameter(CSVConstants.PARAM_TYPENAME, Value.of(param_name));
+			provider.setParameter(CommonSchemaConstants.PARAM_TYPENAME, Value.of(param_name));
 		}
 		else {
 			return false;

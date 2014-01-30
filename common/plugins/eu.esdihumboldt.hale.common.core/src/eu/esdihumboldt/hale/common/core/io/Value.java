@@ -83,6 +83,10 @@ public abstract class Value implements Serializable {
 
 	};
 
+	private static final Value TRUE = new StringValue(true);
+
+	private static final Value FALSE = new StringValue(false);
+
 	/**
 	 * Create a value from a string.
 	 * 
@@ -100,7 +104,15 @@ public abstract class Value implements Serializable {
 	 * @return the value wrapper
 	 */
 	public static Value of(Boolean bool) {
-		return new StringValue(bool);
+		if (bool == null) {
+			return NULL;
+		}
+		else if (bool) {
+			return TRUE;
+		}
+		else {
+			return FALSE;
+		}
 	}
 
 	/**
@@ -157,6 +169,34 @@ public abstract class Value implements Serializable {
 	 *         could not be created/converted
 	 */
 	public abstract <T> T as(Class<T> expectedType, T defValue);
+
+	/**
+	 * Get the value as the given type.
+	 * 
+	 * @param type the type to convert the value to
+	 * @return the value converted to the type or <code>null</code> for a null
+	 *         value
+	 * @throws IllegalArgumentException if the value cannot be converted to the
+	 *             given type
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T asType(Class<T> type) {
+		// check for null
+		if (getValue() == null) {
+			return null;
+		}
+
+		// for String target, use toString()
+		if (String.class.equals(type)) {
+			return (T) toString();
+		}
+
+		T obj = as(type);
+		if (obj == null) {
+			throw new IllegalArgumentException("Value could not be converted to " + type);
+		}
+		return obj;
+	}
 
 	/**
 	 * Get the internal value.<br>

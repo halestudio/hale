@@ -158,12 +158,8 @@ public class TreePropertyTransformer implements PropertyTransformer {
 					Collection<Instance> sources = InstanceUtil.getInstanceOutOfFamily(source);
 					Set<Object> ids = new HashSet<Object>();
 					for (Instance inst : sources) {
-						List<Object> sourceIDs = inst.getMetaData(InstanceMetadata.METADATA_ID); // Merge
-																									// instances
-																									// may
-																									// have
-																									// multiple
-																									// IDs
+						// Merge instances may have multiple IDs
+						List<Object> sourceIDs = inst.getMetaData(InstanceMetadata.METADATA_ID);
 						if (sourceIDs != null) {
 							ids.addAll(sourceIDs);
 						}

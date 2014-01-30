@@ -6,11 +6,47 @@
       <view
             category="eu.esdihumboldt.hale.ui"
             class="eu.esdihumboldt.hale.ui.views.resources.ResourcesView"
-            icon="icons/resources.gif"
+            icon="icons/project.gif"
             id="eu.esdihumboldt.hale.ui.views.resources"
-            name="Resources"
+            name="Project"
             restorable="true">
       </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="*">
+         <viewShortcut
+               id="eu.esdihumboldt.hale.ui.views.resources">
+         </viewShortcut>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertyTabs">
+      <propertyTabs
+            contributorId="eu.esdihumboldt.hale.ui.views.properties">
+         <propertyTab
+               category="eu.esdihumboldt.hale.ui.views.properties.other"
+               id="eu.esdihumboldt.hale.ui.views.resources.properties.project"
+               image="icons/project_open.gif"
+               label="Project">
+         </propertyTab>
+      </propertyTabs>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertySections">
+      <propertySections
+            contributorId="eu.esdihumboldt.hale.ui.views.properties">
+         <propertySection
+               class="eu.esdihumboldt.hale.ui.views.resources.properties.ProjectProperties"
+               enablesFor="1"
+               id="eu.esdihumboldt.hale.ui.views.resources.propertySection1"
+               tab="eu.esdihumboldt.hale.ui.views.resources.properties.project">
+            <input
+                  type="eu.esdihumboldt.hale.ui.views.resources.internal.ProjectToken">
+            </input>
+         </propertySection>
+      </propertySections>
    </extension>
 
 </plugin>

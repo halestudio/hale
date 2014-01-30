@@ -19,7 +19,7 @@ import org.w3c.dom.Element
 
 import eu.esdihumboldt.hale.common.core.io.ComplexValueType
 import eu.esdihumboldt.hale.common.core.io.Value
-import eu.esdihumboldt.hale.common.core.io.impl.ElementValue
+import eu.esdihumboldt.hale.common.core.io.impl.ValueListType
 import eu.esdihumboldt.hale.common.lookup.LookupTable
 import eu.esdihumboldt.hale.common.lookup.impl.LookupTableImpl
 import groovy.xml.DOMBuilder
@@ -33,25 +33,14 @@ import groovy.xml.dom.DOMCategory
  */
 class LookupTableType implements ComplexValueType<LookupTable, Void> {
 
-	private static Value fromTag(def element) {
-		if (element.'@value') {
-			// string representation
-			return Value.of(element.'@value')
-		}
-		else {
-			// DOM representation
-			return new ElementValue(element.'*'[0], null)
-		}
-	}
-
 	@Override
 	public LookupTable fromDOM(Element fragment, Void context) {
 		Map<Value, Value> values = new HashMap<Value, Value>();
 
 		use (DOMCategory) {
 			for (entry in fragment.entry) {
-				Value key = fromTag(entry.key[0]);
-				Value value = fromTag(entry.value[0])
+				Value key = ValueListType.fromTag(entry.key[0]);
+				Value value = ValueListType.fromTag(entry.value[0])
 				values.put(key, value)
 			}
 		}
@@ -63,23 +52,14 @@ class LookupTableType implements ComplexValueType<LookupTable, Void> {
 	public Element toDOM(LookupTable table) {
 		def builder = DOMBuilder.newInstance(false, true)
 
-		def valueTag = { String tagName, Value value ->
-			if (value.isRepresentedAsDOM()) {
-				def element = builder."$tagName"()
-				def child = value.getDOMRepresentation();
-				// add value representation as child
-				element.appendChild(element.ownerDocument.adoptNode(child))
-			}
-			else {
-				builder."$tagName"(value: value.stringRepresentation)
-			}
-		}
-
 		def fragment = builder.'lookup-table' {
 			for (Value key in table.keys) {
-				entry {
-					valueTag('key', key)
-					valueTag('value', table.lookup(key))
+				// ignore null values
+				if (table.lookup(key) != null) {
+					entry {
+						ValueListType.valueTag(builder, 'key', key)
+						ValueListType.valueTag(builder, 'value', table.lookup(key))
+					}
 				}
 			}
 		}

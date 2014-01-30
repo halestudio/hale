@@ -43,6 +43,7 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.io.csv.CSVFileIO;
+import eu.esdihumboldt.hale.io.csv.reader.CommonSchemaConstants;
 
 /**
  * Reads instances from a CSVfile
@@ -50,11 +51,6 @@ import eu.esdihumboldt.hale.io.csv.CSVFileIO;
  * @author Kevin Mais
  */
 public class CSVInstanceReader extends AbstractInstanceReader {
-
-	/**
-	 * the parameter specifying the reader setting
-	 */
-	public static final String PARAM_SKIP_FIRST_LINE = "skip";
 
 	private DefaultInstanceCollection instances;
 
@@ -73,7 +69,8 @@ public class CSVInstanceReader extends AbstractInstanceReader {
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 
-		boolean skipFirst = getParameter(PARAM_SKIP_FIRST_LINE).as(Boolean.class);
+		boolean skipFirst = getParameter(CommonSchemaConstants.PARAM_SKIP_FIRST_LINE).as(
+				Boolean.class);
 		instances = new DefaultInstanceCollection(new ArrayList<Instance>());
 		int line = 0;
 
@@ -81,7 +78,7 @@ public class CSVInstanceReader extends AbstractInstanceReader {
 
 		// build instances
 		TypeDefinition type = getSourceSchema().getType(
-				QName.valueOf(getParameter(CSVConstants.PARAM_TYPENAME).as(String.class)));
+				QName.valueOf(getParameter(CommonSchemaConstants.PARAM_TYPENAME).as(String.class)));
 
 		PropertyDefinition[] propAr = type.getChildren().toArray(
 				new PropertyDefinition[type.getChildren().size()]);

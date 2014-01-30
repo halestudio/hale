@@ -185,15 +185,9 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements Proj
 			return reportError(reporter, "Could not load template", e);
 		}
 
-		// delete template file for cleanup
-		templateFile.delete();
-
 		FileWriter fileWriter = new FileWriter(htmlExportFile);
 		template.merge(context, fileWriter);
 		fileWriter.close();
-
-		// delete tempDir for cleanup
-		tempDir.deleteOnExit();
 
 		reporter.setSuccess(true);
 		return reporter;
@@ -223,6 +217,9 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements Proj
 
 				inputStream.close();
 				outputStream.close();
+
+				tempDir.deleteOnExit();
+				templateFile.deleteOnExit();
 
 				velocityEngine.setProperty("file.resource.loader.path", tempDir.getAbsolutePath());
 				// initialize VelocityEngine
