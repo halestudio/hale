@@ -38,8 +38,8 @@ class ValueMapType implements ComplexValueType<ValueMap, Void> {
 
 		use (DOMCategory) {
 			for (entry in fragment.entry) {
-				Value key = ValueMapType.fromTag(entry.key[0])
-				Value value = ValueMapType.fromTag(entry.value[0])
+				Value key = ValueListType.fromTag(entry.key[0])
+				Value value = ValueListType.fromTag(entry.value[0])
 				map.put(key, value)
 			}
 		}
@@ -52,11 +52,11 @@ class ValueMapType implements ComplexValueType<ValueMap, Void> {
 		def builder = NSDOMBuilder.newInstance(core: HaleIO.NS_HALE_CORE)
 
 		def fragment = builder.'core:map' {
-			map.each { String key, Value value ->
+			map.each { Value key, Value value ->
 				// ignore null values
 				if (value != null) {
 					entry {
-						ValueListType.valueTag(builder, 'key', value)
+						ValueListType.valueTag(builder, 'key', key)
 						ValueListType.valueTag(builder, 'value', value)
 					}
 				}

@@ -39,7 +39,7 @@ class ValuePropertiesType implements ComplexValueType<ValueProperties, Void> {
 		use (DOMCategory) {
 			for (entry in fragment.property) {
 				String key = entry.'@name'
-				Value value = ValuePropertiesType.fromTag(entry.value[0])
+				Value value = ValueListType.fromTag(entry.value[0])
 				properties[key] = value
 			}
 		}

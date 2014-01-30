@@ -52,6 +52,10 @@ public class AsValueMetaClass extends DelegatingMetaClass {
 			if (object == null) {
 				return Value.NULL;
 			}
+			else if (object instanceof Value) {
+				// return the value itself if it is already a value
+				return object;
+			}
 			else if (object instanceof String) {
 				return Value.of((String) object);
 			}
