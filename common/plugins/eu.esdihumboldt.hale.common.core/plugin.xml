@@ -164,5 +164,33 @@
             for="java.lang.Object"
             implementation="eu.esdihumboldt.hale.common.core.io.internal.AsValueMetaClass">
       </metaClass>
+      <metaClass
+            for="java.lang.Integer"
+            implementation="eu.esdihumboldt.hale.common.core.io.internal.AsValueMetaClass">
+      </metaClass>
+      <metaClass
+            for="java.lang.Double"
+            implementation="eu.esdihumboldt.hale.common.core.io.internal.AsValueMetaClass">
+      </metaClass>
+      <metaClass
+            for="java.lang.Float"
+            implementation="eu.esdihumboldt.hale.common.core.io.internal.AsValueMetaClass">
+      </metaClass>
+      <metaClass
+            for="java.lang.Short"
+            implementation="eu.esdihumboldt.hale.common.core.io.internal.AsValueMetaClass">
+      </metaClass>
+      <metaClass
+            for="java.lang.Byte"
+            implementation="eu.esdihumboldt.hale.common.core.io.internal.AsValueMetaClass">
+      </metaClass>
+      <metaClass
+            for="java.lang.Boolean"
+            implementation="eu.esdihumboldt.hale.common.core.io.internal.AsValueMetaClass">
+      </metaClass>
+      <metaClass
+            for="java.lang.String"
+            implementation="eu.esdihumboldt.hale.common.core.io.internal.AsValueMetaClass">
+      </metaClass>
    </extension>
 </plugin>
