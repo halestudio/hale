@@ -58,6 +58,11 @@ public abstract class HaleIO {
 	private static final ALogger log = ALoggerFactory.getLogger(HaleIO.class);
 
 	/**
+	 * Namespace for HALE core complex value type elements.
+	 */
+	public static final String NS_HALE_CORE = "http://www.esdi-humboldt.eu/hale/core";
+
+	/**
 	 * Filter I/O provider factories by content type
 	 * 
 	 * @param factories the I/O provider factories
