@@ -53,6 +53,17 @@ class ValueListType implements ComplexValueType<ValueList, Void> {
 
 	/**
 	 * Create a value tag on the given DOM builder.
+	 *
+	 * @param builder the DOM builder
+	 * @param tagName the name of the tag
+	 * @param value the contained value
+	 */
+	static void objectTag(DOMBuilder builder, String tagName, Object value) {
+		valueTag(builder, tagName, value as Value)
+	}
+
+	/**
+	 * Create a value tag on the given DOM builder.
 	 * 
 	 * @param builder the DOM builder
 	 * @param tagName the name of the tag

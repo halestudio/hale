@@ -17,6 +17,11 @@ package eu.esdihumboldt.hale.common.core.io.impl;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.ByteArrayInputStream;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.junit.Test;
 import org.w3c.dom.Element;
 
@@ -30,6 +35,35 @@ import eu.esdihumboldt.hale.common.core.io.ValueList;
  * @author Simon Templer
  */
 public class ValueListTypeTest {
+
+	private final String XML_SAMPLE = "<core:list xmlns:core=\"http://www.esdi-humboldt.eu/hale/core\">" //
+			+ "<entry value=\"foo\" />" //
+			+ "<entry value=\"bar\" />" //
+			+ "<entry>" //
+			+ "<core:list><entry value=\"hello\"/></core:list>" //
+			+ "</entry>" //
+			+ "</core:list>";
+
+	/**
+	 * Test reading a value list from XML.
+	 */
+	@SuppressWarnings("javadoc")
+	@Test
+	public void testRead() throws Exception {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		DocumentBuilder builder = factory.newDocumentBuilder();
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(XML_SAMPLE.getBytes());
+		Element root = builder.parse(inputStream).getDocumentElement();
+
+		// read
+		ValueList conv = HaleIO.getComplexValue(root, ValueList.class, null);
+
+		assertEquals(3, conv.size());
+		assertEquals("foo", conv.get(0).as(String.class));
+		assertEquals("bar", conv.get(1).as(String.class));
+		assertEquals("hello", conv.get(2).as(ValueList.class).get(0).as(String.class));
+	}
 
 	/**
 	 * Test if a simple list containing only {@link StringValue}s is the same
