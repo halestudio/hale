@@ -40,6 +40,9 @@ ext {
     rootDir = file('..')
     parentArtifactId = 'rcp-parent'
 
+    // maximum amount of memory for the unit test runner
+    osgiTestMaxMemory = '256M'
+
     // true if Maven artifacts should be created instead of OSGI bundles
     generateArtifacts = false
 
