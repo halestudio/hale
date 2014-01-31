@@ -180,6 +180,11 @@ public abstract class AbstractGroupPropertyDecorator implements GroupPropertyDef
 		return propertyGroup.getConstraint(constraintType);
 	}
 
+	@Override
+	public Iterable<GroupPropertyConstraint> getExplicitConstraints() {
+		return propertyGroup.getExplicitConstraints();
+	}
+
 	/**
 	 * @see GroupPropertyDefinition#allowFlatten()
 	 */
