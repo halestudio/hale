@@ -36,6 +36,56 @@
             id="cardinality"
             type="eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality">
       </valueconstraint>
+      <valueconstraint
+            factory="eu.esdihumboldt.hale.common.schema.model.constraint.property.factory.ChoiceFlagFactory"
+            id="choice"
+            type="eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag">
+      </valueconstraint>
+      <valueconstraint
+            factory="eu.esdihumboldt.hale.common.schema.model.constraint.property.factory.NillableFlagFactory"
+            id="nillable"
+            type="eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag">
+      </valueconstraint>
+      <valueconstraint
+            factory="eu.esdihumboldt.hale.common.schema.model.constraint.property.factory.UniqueConstraintFactory"
+            id="unique-context"
+            type="eu.esdihumboldt.hale.common.schema.model.constraint.property.Unique">
+      </valueconstraint>
+      <valueconstraint
+            factory="eu.esdihumboldt.hale.common.schema.model.constraint.type.factory.AbstractFlagFactory"
+            id="abstract"
+            type="eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag">
+      </valueconstraint>
+      <valueconstraint
+            factory="eu.esdihumboldt.hale.common.schema.model.constraint.type.factory.AugmentedValueFlagFactory"
+            id="augmented-value"
+            type="eu.esdihumboldt.hale.common.schema.model.constraint.type.AugmentedValueFlag">
+      </valueconstraint>
+      <valueconstraint
+            factory="eu.esdihumboldt.hale.common.schema.model.constraint.type.factory.HasValueFlagFactory"
+            id="has-value"
+            type="eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag">
+      </valueconstraint>
+      <valueconstraint
+            factory="eu.esdihumboldt.hale.common.schema.model.constraint.type.factory.MappableFlagFactory"
+            id="mappable"
+            type="eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag">
+      </valueconstraint>
+      <valueconstraint
+            factory="eu.esdihumboldt.hale.common.schema.model.constraint.type.factory.MappingRelevantFlagFactory"
+            id="mapping-relevant"
+            type="eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag">
+      </valueconstraint>
+      <valueconstraint
+            factory="eu.esdihumboldt.hale.common.schema.model.constraint.type.factory.BindingFactory"
+            id="binding"
+            type="eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding">
+      </valueconstraint>
+      <valueconstraint
+            factory="eu.esdihumboldt.hale.common.schema.model.constraint.type.factory.EnumerationFactory"
+            id="enumeration"
+            type="eu.esdihumboldt.hale.common.schema.model.constraint.type.Enumeration">
+      </valueconstraint>
    </extension>
 
 </plugin>
