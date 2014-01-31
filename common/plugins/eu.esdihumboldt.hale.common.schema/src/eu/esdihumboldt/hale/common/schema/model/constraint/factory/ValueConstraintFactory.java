@@ -30,7 +30,7 @@ public interface ValueConstraintFactory<T> {
 	 * Create a representation as {@link Value} of the given constraint.
 	 * 
 	 * @param constraint the constraint to store as {@link Value}
-	 * @return the {@link Value} representation
+	 * @return the {@link Value} representation, may be <code>null</code>
 	 */
 	public Value store(T constraint);
 
