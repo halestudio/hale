@@ -22,6 +22,8 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import com.google.common.collect.ImmutableList;
+
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
@@ -148,6 +150,11 @@ public abstract class AbstractDefinition<C> implements Definition<C> {
 				.getClass()))) {
 			setConstraint(constraint);
 		}
+	}
+
+	@Override
+	public Iterable<C> getExplicitConstraints() {
+		return ImmutableList.copyOf(constraints.values());
 	}
 
 	/**

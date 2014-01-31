@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="eu.esdihumboldt.hale.schema.valueconstraint" name="Constraints represented as Values" schema="schema/eu.esdihumboldt.hale.schema.valueconstraint.exsd"/>
    <extension
          point="eu.esdihumboldt.hale.io.action">
       <action
@@ -27,6 +28,14 @@
             name="Export source schemas"
             type="eu.esdihumboldt.hale.common.schema.io.SchemaWriter">
       </action>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.schema.valueconstraint">
+      <valueconstraint
+            factory="eu.esdihumboldt.hale.common.schema.model.constraint.property.factory.CardinalityFactory"
+            id="cardinality"
+            type="eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality">
+      </valueconstraint>
    </extension>
 
 </plugin>

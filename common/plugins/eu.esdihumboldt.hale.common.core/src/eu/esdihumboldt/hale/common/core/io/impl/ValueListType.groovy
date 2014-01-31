@@ -57,8 +57,9 @@ class ValueListType implements ComplexValueType<ValueList, Void> {
 	 * @param builder the DOM builder
 	 * @param tagName the name of the tag
 	 * @param value the contained value
+	 * @return the created element with the given tag name and value content
 	 */
-	static void objectTag(DOMBuilder builder, String tagName, Object value) {
+	static Element objectTag(DOMBuilder builder, String tagName, Object value) {
 		valueTag(builder, tagName, value as Value)
 	}
 
@@ -68,13 +69,16 @@ class ValueListType implements ComplexValueType<ValueList, Void> {
 	 * @param builder the DOM builder
 	 * @param tagName the name of the tag
 	 * @param value the contained value
+	 * @return the created element with the given tag name and value content
 	 */
-	static void valueTag(DOMBuilder builder, String tagName, Value value) {
+	static Element valueTag(DOMBuilder builder, String tagName, Value value) {
 		if (value.isRepresentedAsDOM()) {
 			def element = builder."$tagName"()
 			def child = value.getDOMRepresentation();
 			// add value representation as child
 			element.appendChild(element.ownerDocument.adoptNode(child))
+
+			element
 		}
 		else {
 			builder."$tagName"(value: value.stringRepresentation)

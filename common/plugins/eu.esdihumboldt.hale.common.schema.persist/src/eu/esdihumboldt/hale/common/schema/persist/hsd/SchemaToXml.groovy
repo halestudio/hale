@@ -17,12 +17,18 @@ package eu.esdihumboldt.hale.common.schema.persist.hsd
 
 import javax.xml.namespace.QName
 
+import org.w3c.dom.Element
+
+import eu.esdihumboldt.hale.common.core.io.Value
+import eu.esdihumboldt.hale.common.core.io.impl.ValueListType
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition
 import eu.esdihumboldt.hale.common.schema.model.Definition
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.extension.ValueConstraintExtension
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.extension.ValueConstraintFactoryDescriptor
 import eu.esdihumboldt.util.groovy.xml.NSDOMBuilder
 
 
@@ -130,6 +136,7 @@ class SchemaToXml implements HaleSchemaConstants {
 			defToXml(builder, property)
 
 			//TODO property type
+			//TODO anonymous property type (nested)
 			//XXX what about parent type?
 		}
 	}
@@ -167,7 +174,21 @@ class SchemaToXml implements HaleSchemaConstants {
 			b.'hsd:description'(d.description)
 		}
 		// constraints
-		//TODO
+		d.explicitConstraints.each { def constraint ->
+			// get value constraint factory, if possible
+			ValueConstraintFactoryDescriptor desc = ValueConstraintExtension.INSTANCE.getForConstraint(constraint);
+			if (desc != null && desc.factory != null) {
+				// determine value representation of constraint
+				Value value = desc.factory.store(constraint)
+				String id = desc.id
+				if (value != null && value.value != null) {
+					// add constraint definition represented as Value
+					Element element = ValueListType.valueTag(b, 'hsd:constraint', value)
+					// add constraint type/id as attribute
+					element.setAttribute('type', id)
+				}
+			}
+		}
 	}
 
 	/**
