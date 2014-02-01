@@ -120,10 +120,7 @@ class SchemaToXml implements HaleSchemaConstants {
 		// prepare attributes
 		def attributes = [:]
 		Integer index = typeIndex.get(type)
-		if (index == null) {
-			attributes.anonymous = true
-		}
-		else {
+		if (index != null) {
 			attributes.index = index
 		}
 
