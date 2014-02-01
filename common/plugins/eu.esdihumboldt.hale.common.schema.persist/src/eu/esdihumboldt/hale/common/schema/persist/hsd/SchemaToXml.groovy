@@ -84,17 +84,26 @@ class SchemaToXml implements HaleSchemaConstants {
 		// sort to have a reproducible order (e.g. for versioning)
 		types.sort()
 
-		// create type index and relevant types list
 		Map<TypeDefinition, Integer> typeIndex = [:]
 		List<Integer> relevantTypes = []
-		types.eachWithIndex { TypeDefinition type, int index ->
-			typeIndex[type] = index
-			if (type.getConstraint(MappingRelevantFlag).enabled) {
-				relevantTypes << index
-			}
-		}
 
 		builder.'hsd:schema'(attributes) {
+			// type names to index
+			'hsd:type-index' {
+				types.eachWithIndex { TypeDefinition type, int index ->
+					// create type index and relevant types list
+					typeIndex[type] = index
+					if (type.getConstraint(MappingRelevantFlag).enabled) {
+						relevantTypes << index
+					}
+
+					// add index element
+					'hsd:entry'(index: index) {
+						qNameToXml(builder, type.name)
+					}
+				}
+			}
+
 			// mapping relevant types index (list of indices)
 			'hsd:mapping-relevant'(relevantTypes.join(' '))
 
