@@ -18,12 +18,17 @@ package eu.esdihumboldt.hale.common.schema.persist.hsd.test
 import java.nio.file.Files
 import java.nio.file.Path
 
+import javax.xml.XMLConstants
+import javax.xml.transform.stream.StreamSource
+import javax.xml.validation.SchemaFactory
+
 import eu.esdihumboldt.hale.common.core.io.report.IOReport
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier
 import eu.esdihumboldt.hale.common.schema.groovy.SchemaBuilder
 import eu.esdihumboldt.hale.common.schema.io.SchemaWriter
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace
+import eu.esdihumboldt.hale.common.schema.persist.hsd.HaleSchemaUtil
 import eu.esdihumboldt.hale.common.schema.persist.hsd.HaleSchemaWriter
 import groovy.transform.CompileStatic
 
@@ -71,6 +76,14 @@ class HaleSchemaWriterTest extends GroovyTestCase {
 
 		assertTrue 'Writer not successful', report.isSuccess()
 		assertTrue 'Errors reported by the writer', report.errors.isEmpty()
+
+		// XML validation
+		def factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
+		def xsdschema = factory.newSchema(new StreamSource(HaleSchemaUtil.getHaleSchemaXSD()))
+		def validator = xsdschema.newValidator()
+		tempFile.toFile().withReader { Reader r ->
+			validator.validate(new StreamSource(r))
+		}
 
 		tempFile
 	}
