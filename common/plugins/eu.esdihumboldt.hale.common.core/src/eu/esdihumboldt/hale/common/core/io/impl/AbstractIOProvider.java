@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.common.core.io.impl;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -83,7 +84,7 @@ public abstract class AbstractIOProvider implements IOProvider {
 	 * @return the default character set
 	 */
 	protected Charset getDefaultCharset() {
-		return Charset.forName("UTF-8");
+		return StandardCharsets.UTF_8;
 	}
 
 	/**

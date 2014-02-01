@@ -17,6 +17,20 @@
 	<element name="schema" type="hsd:SchemaType" />
 	<complexType name="SchemaType">
 		<sequence>
+			<element name="type-index" minOccurs="1" maxOccurs="1">
+				<complexType>
+					<sequence>
+						<element name="entry" minOccurs="0" maxOccurs="unbounded">
+							<complexType>
+								<sequence>
+									<element ref="hsd:name" minOccurs="1" maxOccurs="1" />
+								</sequence>
+								<attribute name="index" type="int" use="required" />
+							</complexType>
+						</element>
+					</sequence>
+				</complexType>
+			</element>
 			<element name="mapping-relevant" minOccurs="0" maxOccurs="1">
 				<simpleType>
 					<list itemType="int" />
@@ -38,18 +52,20 @@
 		<attribute name="index" type="int" use="required" />
 	</complexType>
 	
+	<!-- Name element and type -->
+	<element name="name" type="hsd:NameType" />
+	<complexType name="NameType">
+		<simpleContent>
+			<extension base="string">
+				<attribute name="namespace" type="string" use="optional" />
+			</extension>
+		</simpleContent>
+	</complexType>
+	
 	<!-- Definition type -->
 	<complexType name="DefinitionType" abstract="true">
 		<sequence>
-			<element name="name" minOccurs="1" maxOccurs="1">
-				<complexType>
-					<simpleContent>
-						<extension base="string">
-							<attribute name="namespace" type="string" use="optional" />
-						</extension>
-					</simpleContent>
-				</complexType>
-			</element>
+			<element ref="hsd:name" minOccurs="1" maxOccurs="1" />
 			<element name="description" minOccurs="0" maxOccurs="1" type="string" />
 			<element name="constraint" minOccurs="0" maxOccurs="unbounded">
 				<complexType>

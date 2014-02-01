@@ -6,7 +6,15 @@
       <provider
             class="eu.esdihumboldt.hale.common.schema.persist.hsd.HaleSchemaWriter"
             description="HALE native schema format"
-            id="eu.esdihumboldt.hale.common.schema.persist.hsd"
+            id="eu.esdihumboldt.hale.common.schema.persist.hsd.write"
+            name="HALE Schema Definition">
+         <contentType
+               ref="eu.esdihumboldt.hale.common.schema.hsd">
+         </contentType>
+      </provider>
+      <provider
+            class="eu.esdihumboldt.hale.common.schema.persist.hsd.HaleSchemaReader"
+            id="eu.esdihumboldt.hale.common.schema.persist.hsd.read"
             name="HALE Schema Definition">
          <contentType
                ref="eu.esdihumboldt.hale.common.schema.hsd">

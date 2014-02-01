@@ -40,14 +40,17 @@ class ValueListType implements ComplexValueType<ValueList, Void> {
 	 * @param element the tag
 	 * @return
 	 */
-	static Value fromTag(def element) {
-		if (element.'@value') {
-			// string representation
-			return Value.of(element.'@value')
-		}
-		else {
-			// DOM representation
-			return new ElementValue(element.'*'[0], null)
+	static Value fromTag(Element element) {
+		use (DOMCategory) {
+			if (element.hasAttribute('value')) {
+				// string representation
+				// may be an empty string
+				return Value.of(element.'@value')
+			}
+			else {
+				// DOM representation
+				return new ElementValue(element.'*'[0], null)
+			}
 		}
 	}
 
