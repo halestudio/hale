@@ -23,12 +23,14 @@ import eu.esdihumboldt.hale.common.core.io.Value
 import eu.esdihumboldt.hale.common.core.io.impl.ValueListType
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition
 import eu.esdihumboldt.hale.common.schema.model.Definition
+import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.extension.ValueConstraintExtension
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.extension.ValueConstraintFactoryDescriptor
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag
 import eu.esdihumboldt.util.groovy.xml.NSDOMBuilder
 
 
@@ -77,14 +79,29 @@ class SchemaToXml implements HaleSchemaConstants {
 			attributes['namespace'] = schema.namespace
 		}
 
+		// organize types in a list
+		List types = []+ schema.types
+		// sort to have a reproducible order (e.g. for versioning)
+		types.sort()
+
+		// create type index and relevant types list
+		Map<TypeDefinition, Integer> typeIndex = [:]
+		List<Integer> relevantTypes = []
+		types.eachWithIndex { TypeDefinition type, int index ->
+			typeIndex[type] = index
+			if (type.getConstraint(MappingRelevantFlag).enabled) {
+				relevantTypes << index
+			}
+		}
+
 		builder.'hsd:schema'(attributes) {
-			//XXX what all to put in here? some kind of index? (all types, map. rel. types)
-			//XXX for now just all types
+			// mapping relevant types index (list of indices)
+			'hsd:mapping-relevant'(relevantTypes.join(' '))
 
 			// add all types
 			'hsd:types' {
-				schema.types.each { TypeDefinition type ->
-					typeToXml(builder, type)
+				types.each { TypeDefinition type ->
+					typeToXml(builder, type, typeIndex)
 				}
 			}
 		}
@@ -95,31 +112,38 @@ class SchemaToXml implements HaleSchemaConstants {
 	 *
 	 * @param builder the XML builder
 	 * @param type the type to serialize
+	 * @param typeIndex the index that allows resolving type definitions
+	 *   to an integer index as reference
 	 * @return the builder return value for the type element
 	 */
-	static def typeToXml(def builder, TypeDefinition type) {
-		builder.'hsd:type' {
+	static def typeToXml(def builder, TypeDefinition type, Map<TypeDefinition, Integer> typeIndex) {
+		// prepare attributes
+		def attributes = [:]
+		Integer index = typeIndex.get(type)
+		if (index == null) {
+			attributes.anonymous = true
+		}
+		else {
+			attributes.index = index
+		}
+
+		builder.'hsd:type'(attributes) {
 			// definition content (QName, description, constraints)
 			defToXml(builder, type)
 
-			//TODO children (only declared children?!!)
-			if (!type.declaredChildren.empty) {
-				'hsd:declares' {
-					type.declaredChildren.each { ChildDefinition<?> child ->
-						if (child.asProperty() != null) {
-							propertyToXml(builder, child.asProperty())
-						}
-						else if (child.asGroup() != null) {
-							groupToXml(builder, child.asGroup())
-						}
-						else {
-							throw new IllegalStateException('Unknown type of child definition encountered')
-						}
-					}
+			// children (only declared!)
+			defGroupToXml(builder, type, typeIndex)
+
+			// super type
+			if (type.superType != null) {
+				Integer superIndex = typeIndex.get(type.superType)
+				if (superIndex != null) {
+					'hsd:superType'(index: superIndex)
+				}
+				else {
+					//TODO warn?
 				}
 			}
-
-			//TODO super type
 		}
 	}
 
@@ -128,15 +152,28 @@ class SchemaToXml implements HaleSchemaConstants {
 	 *
 	 * @param builder the XML builder
 	 * @param property the property to serialize
+	 * @param typeIndex the index that allows resolving type definitions
+	 *   to an integer index as reference
 	 * @return the builder return value for the property element
 	 */
-	static def propertyToXml(def builder, PropertyDefinition property) {
+	static def propertyToXml(def builder, PropertyDefinition property, Map<TypeDefinition, Integer> typeIndex) {
 		builder.'hsd:property' {
 			// definition content (QName, description, constraints)
 			defToXml(builder, property)
 
-			//TODO property type
-			//TODO anonymous property type (nested)
+			// property type
+			Integer index = typeIndex.get(property.propertyType)
+			if (index != null) {
+				// type reference
+				'hsd:propertyType'(index: index)
+			}
+			else {
+				// anonymous type (nested)
+				'hsd:propertyType' {
+					typeToXml(builder, property.propertyType, typeIndex)
+				}
+			}
+
 			//XXX what about parent type?
 		}
 	}
@@ -146,15 +183,44 @@ class SchemaToXml implements HaleSchemaConstants {
 	 *
 	 * @param builder the XML builder
 	 * @param group the group property to serialize
+	 * @param typeIndex the index that allows resolving type definitions
+	 *   to an integer index as reference
 	 * @return the builder return value for the group element
 	 */
-	static def groupToXml(def builder, GroupPropertyDefinition group) {
+	static def groupToXml(def builder, GroupPropertyDefinition group, Map<TypeDefinition, Integer> typeIndex) {
 		builder.'hsd:group' {
 			// definition content (QName, description, constraints)
 			defToXml(builder, group)
 
-			//TODO declared children
+			// declared children
+			defGroupToXml(builder, group, typeIndex)
+
 			//XXX what about parent type?
+		}
+	}
+
+	/**
+	 * Creates content (XML elements) for the XML representation of the
+	 * definition group.
+	 *
+	 * @param b the XML builder
+	 * @param d the definition group to serialize
+	 */
+	static def defGroupToXml(def builder, DefinitionGroup group, Map<TypeDefinition, Integer> typeIndex) {
+		if (!group.declaredChildren.empty) {
+			builder.'hsd:declares' {
+				group.declaredChildren.each { ChildDefinition<?> child ->
+					if (child.asProperty() != null) {
+						propertyToXml(builder, child.asProperty(), typeIndex)
+					}
+					else if (child.asGroup() != null) {
+						groupToXml(builder, child.asGroup(), typeIndex)
+					}
+					else {
+						throw new IllegalStateException('Unknown type of child definition encountered')
+					}
+				}
+			}
 		}
 	}
 
