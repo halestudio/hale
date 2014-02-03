@@ -39,7 +39,7 @@ class JsonStreamBuilder extends BuilderBase {
 		boolean array = false
 		// if the node represents a JSON object
 		boolean object = false
-		// if the node is the root
+		// if the node represents a virtual root
 		boolean root = false
 
 		// the last child of the node
@@ -53,20 +53,27 @@ class JsonStreamBuilder extends BuilderBase {
 	}
 
 	/**
-	 * Creates a JSON root object.
+	 * Creates a JSON root object. If a parent already exists will just call
+	 * the given closure.
 	 * 
 	 * @param closure the closure defining the object
 	 */
 	public void call(Closure closure) {
 		def parent = current
-		current = new NodeState(object: true)
+		if (parent == null) {
+			current = new NodeState(object: true, root: false)
+			writer.write( '{' )
+		}
+
 		closure = (Closure) closure.clone()
 		closure.delegate = this
-		writer.write( '{' )
 		closure.call()
-		writer.write( '}' )
-		current = parent
-		reset()
+
+		if (parent == null) {
+			internalNodeWrapup(current)
+			current = parent
+			reset()
+		}
 	}
 
 	@Override
@@ -193,7 +200,7 @@ class JsonStreamBuilder extends BuilderBase {
 			writer << '}'
 		}
 
-		// close root (if the node is the root node)
+		// close root (if the node is a root node not created by #call(Closure))
 		if (state.root) {
 			writer << '}'
 		}

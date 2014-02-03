@@ -15,10 +15,9 @@
  */
 package eu.esdihumboldt.util.groovy.json
 
-
-
-
 /**
+ * Tests for {@link JsonStreamBuilder}.
+ * 
  * @author Tim Yates
  * @author Guillaume Laforge
  * @author Simon Templer
@@ -71,6 +70,60 @@ class JsonStreamBuilderTest extends GroovyTestCase {
 			}
 
 			assert w.toString() == '{"a":{"b":{"c":1}}}'
+		}
+	}
+
+	void testLoopArray() {
+		new StringWriter().with { w ->
+			def json = new JsonStreamBuilder( w )
+
+			json {
+				for (i in 1..3) {
+					'item[]' {
+						id i
+						name "name$i"
+					}
+				}
+			}
+
+			assert w.toString() == '{"item":[{"id":1,"name":"name1"},{"id":2,"name":"name2"},{"id":3,"name":"name3"}]}'
+		}
+	}
+
+	void testDoubleObject() {
+		new StringWriter().with { w ->
+			def json = new JsonStreamBuilder( w )
+
+			json {
+				for (i in 1..3) {
+					'item[]' {
+						json {
+							id i
+							name "name$i"
+						}
+					}
+				}
+			}
+
+			assert w.toString() == '{"item":[{"id":1,"name":"name1"},{"id":2,"name":"name2"},{"id":3,"name":"name3"}]}'
+		}
+	}
+	void testDoubleObject2() {
+		new StringWriter().with { w ->
+			def json = new JsonStreamBuilder( w )
+
+			json {
+				for (i in 1..3) {
+					json {
+						'item[]' {
+							id i
+							name "name$i"
+						}
+					}
+				}
+			}
+
+			assert w.toString() == '{"item":[{"id":1,"name":"name1"},{"id":2,"name":"name2"},{"id":3,"name":"name3"}]}'
 		}
 	}
 
