@@ -98,6 +98,7 @@ class JsonStreamBuilderTest extends GroovyTestCase {
 				for (i in 1..3) {
 					'item[]' {
 						json {
+							// should have no effect
 							id i
 							name "name$i"
 						}
@@ -115,6 +116,7 @@ class JsonStreamBuilderTest extends GroovyTestCase {
 			json {
 				for (i in 1..3) {
 					json {
+						// should have no effect
 						'item[]' {
 							id i
 							name "name$i"
