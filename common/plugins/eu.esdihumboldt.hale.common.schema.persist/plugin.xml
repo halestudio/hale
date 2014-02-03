@@ -12,6 +12,14 @@
                ref="eu.esdihumboldt.hale.common.schema.hsd">
          </contentType>
       </provider>
+      <provider
+            class="eu.esdihumboldt.hale.common.schema.persist.json.JsonWriter"
+            id="eu.esdihumboldt.hale.common.schema.persist.json"
+            name="HALE Schema JSON Vis">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.json">
+         </contentType>
+      </provider>
    </extension>
    <extension
          point="org.eclipse.core.contenttype.contentTypes">
