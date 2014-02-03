@@ -99,7 +99,7 @@ class NSDOMBuilder extends DOMBuilder {
 			String ns = prefixes[prefix]
 
 			if (ns) {
-				new QName(ns, parts[1])
+				new QName(ns, parts[1], prefix)
 			}
 			else {
 				new QName(parts[1])
