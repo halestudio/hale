@@ -48,7 +48,7 @@ public class HaleSchemaReader extends AbstractSchemaReader {
 		progress.begin("Load schema", ProgressIndicator.UNKNOWN);
 		try (InputStream in = getSource().getInput();
 				Reader reader = new InputStreamReader(in, getCharset())) {
-			schema = XmlToSchema.parseSchema(reader);
+			schema = XmlToSchema.parseSchema(reader, reporter);
 
 			reporter.setSuccess(true);
 		} catch (Exception e) {

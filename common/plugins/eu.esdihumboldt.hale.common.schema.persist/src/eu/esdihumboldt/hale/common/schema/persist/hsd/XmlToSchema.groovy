@@ -23,6 +23,8 @@ import de.cs3d.util.logging.ALogger
 import de.cs3d.util.logging.ALoggerFactory
 import eu.esdihumboldt.hale.common.core.io.Value
 import eu.esdihumboldt.hale.common.core.io.impl.ValueListType
+import eu.esdihumboldt.hale.common.core.io.report.IOReporter
+import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
@@ -54,7 +56,7 @@ public class XmlToSchema implements HaleSchemaConstants {
 	 * @throws Exception if an error occurs
 	 */
 	@TypeChecked
-	public static Schema parseSchema(Reader reader) throws Exception {
+	public static Schema parseSchema(Reader reader, IOReporter reporter = null) throws Exception {
 		Element root = DOMBuilder.parse(reader, false, true).documentElement
 		switch (root.localName) {
 			case 'schemas':
@@ -66,9 +68,9 @@ public class XmlToSchema implements HaleSchemaConstants {
 				else if (schemas.size() > 1) {
 					// FIXME report? combine? what?
 				}
-				return parseSchema(schemas[0])
+				return parseSchema(schemas[0], reporter)
 			case 'schema':
-				return parseSchema(root)
+				return parseSchema(root, reporter)
 			default:
 				throw new IllegalStateException('No schema element found in the document')
 		}
@@ -80,7 +82,7 @@ public class XmlToSchema implements HaleSchemaConstants {
 	 * @param schema the schema element
 	 * @return the created schema
 	 */
-	public static Schema parseSchema(Element schema) {
+	public static Schema parseSchema(Element schema, IOReporter reporter = null) {
 		use (NSDOMCategory) {
 			DefaultSchema result = new DefaultSchema(schema.'@namespace', null)
 
@@ -111,7 +113,7 @@ public class XmlToSchema implements HaleSchemaConstants {
 				DefaultTypeDefinition typeDef = types[lookup]
 
 				// populate type
-				parseType(typeElem, typeDef, types)
+				parseType(typeElem, typeDef, types, reporter)
 
 				result.addType(typeDef)
 			}
@@ -129,12 +131,12 @@ public class XmlToSchema implements HaleSchemaConstants {
 	 *            definitions
 	 */
 	private static void parseType(Element typeElem, DefaultTypeDefinition typeDef,
-			Map<String, DefaultTypeDefinition> typeIndex) {
+			Map<String, DefaultTypeDefinition> typeIndex, IOReporter reporter) {
 		// common definition stuff (description etc.)
-		populateDefinition(typeElem, typeDef)
+		populateDefinition(typeElem, typeDef, reporter)
 
 		// declared children
-		populateGroup(typeElem, typeDef, typeIndex)
+		populateGroup(typeElem, typeDef, typeIndex, reporter)
 
 		// super type
 		typeElem.child(NS, 'superType')?.with {
@@ -146,7 +148,7 @@ public class XmlToSchema implements HaleSchemaConstants {
 	}
 
 	private static void populateDefinition(Element defElem,
-			AbstractDefinition definition) {
+			AbstractDefinition definition, IOReporter reporter) {
 		// description
 		defElem.child(NS, 'description')?.with {
 			definition.description = it.text()
@@ -164,32 +166,29 @@ public class XmlToSchema implements HaleSchemaConstants {
 						Object constraint = desc.getFactory().restore(config)
 						definition.setConstraint(constraint)
 					} catch (Exception e) {
-						log.error("Failed to restore constraint of type $id", e)
-						// TODO report?
+						reporter.error(new IOMessageImpl("Failed to restore constraint of type $id", e))
 					}
 				}
 				else {
-					log.error("Could not find factory for constraint with type $id")
-					// TODO report?
+					reporter.error(new IOMessageImpl("Could not find factory for constraint with type $id"))
 				}
 			}
 			else {
-				log.warn('No type ID provided for constraint')
-				// TODO report?
+				reporter.error(new IOMessageImpl('No type ID provided for constraint', null))
 			}
 		}
 	}
 
 	private static void populateGroup(Element defElem, DefinitionGroup group,
-			Map<String, DefaultTypeDefinition> typeIndex) {
+			Map<String, DefaultTypeDefinition> typeIndex, IOReporter reporter) {
 		defElem.child(NS, 'declares')?.children()?.each { child ->
 			if (child instanceof Element) {
 				switch (child.localName) {
 					case 'property':
-						parseProperty(child, group, typeIndex);
+						parseProperty(child, group, typeIndex, reporter)
 						break;
 					case 'group':
-						parseGroup(child, group, typeIndex);
+						parseGroup(child, group, typeIndex, reporter)
 						break;
 				}
 			}
@@ -197,7 +196,7 @@ public class XmlToSchema implements HaleSchemaConstants {
 	}
 
 	private static DefaultPropertyDefinition parseProperty(Element propertyElem,
-			DefinitionGroup parent, Map<String, DefaultTypeDefinition> typeIndex) {
+			DefinitionGroup parent, Map<String, DefaultTypeDefinition> typeIndex, IOReporter reporter) {
 		// name
 		QName name = parseName(propertyElem.child(NS, 'name'))
 
@@ -218,7 +217,7 @@ public class XmlToSchema implements HaleSchemaConstants {
 			DefaultTypeDefinition typeDef = new DefaultTypeDefinition(typeName)
 
 			// populate anonymous type
-			parseType(typeElem, typeDef, typeIndex)
+			parseType(typeElem, typeDef, typeIndex, reporter)
 
 			propertyType = typeDef
 		}
@@ -227,13 +226,13 @@ public class XmlToSchema implements HaleSchemaConstants {
 				propertyType)
 
 		// common definition stuff (description etc.)
-		populateDefinition(propertyElem, property)
+		populateDefinition(propertyElem, property, reporter)
 
 		property
 	}
 
 	private static DefaultGroupPropertyDefinition parseGroup(Element groupElem,
-			DefinitionGroup parent, Map<String, DefaultTypeDefinition> typeIndex) {
+			DefinitionGroup parent, Map<String, DefaultTypeDefinition> typeIndex, IOReporter reporter) {
 		// name
 		QName name = parseName(groupElem.child(NS, 'name'));
 
@@ -241,10 +240,10 @@ public class XmlToSchema implements HaleSchemaConstants {
 				false)
 
 		// common definition stuff (description etc.)
-		populateDefinition(groupElem, group)
+		populateDefinition(groupElem, group, reporter)
 
 		// declared children
-		populateGroup(groupElem, group, typeIndex)
+		populateGroup(groupElem, group, typeIndex, reporter)
 
 		group
 	}
