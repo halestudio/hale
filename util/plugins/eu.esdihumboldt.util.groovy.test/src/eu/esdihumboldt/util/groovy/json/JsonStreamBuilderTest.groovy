@@ -43,8 +43,8 @@ class JsonStreamBuilderTest extends GroovyTestCase {
 				b true
 			}
 			assert w.toString() == '''{
-\t"a":1,
-\t"b":true
+\t"a": 1,
+\t"b": true
 }'''
 		}
 	}
@@ -57,9 +57,9 @@ class JsonStreamBuilderTest extends GroovyTestCase {
 				b true
 			}
 			assert w.toString() == '''{
-\t"x":{
-\t\t"a":1,
-\t\t"b":true
+\t"x": {
+\t\t"a": 1,
+\t\t"b": true
 \t}
 }'''
 		}
@@ -68,7 +68,8 @@ class JsonStreamBuilderTest extends GroovyTestCase {
 	void testEmptyObject() {
 		new StringWriter().with { w ->
 			def json = new JsonStreamBuilder( w )
-			json {}
+			json {
+			}
 
 			assert w.toString() == '{}'
 		}
@@ -116,9 +117,9 @@ class JsonStreamBuilderTest extends GroovyTestCase {
 			}
 
 			assert w.toString() == '''{
-\t"a":{
-\t\t"b":{
-\t\t\t"c":1
+\t"a": {
+\t\t"b": {
+\t\t\t"c": 1
 \t\t}
 \t}
 }'''
@@ -156,18 +157,47 @@ class JsonStreamBuilderTest extends GroovyTestCase {
 			}
 
 			assert w.toString() == '''{
-\t"item":[{
-\t\t"id":1,
-\t\t"name":"name1"
-\t},
-\t{
-\t\t"id":2,
-\t\t"name":"name2"
-\t},
-\t{
-\t\t"id":3,
-\t\t"name":"name3"
-\t}]
+\t"item": [
+\t\t{
+\t\t\t"id": 1,
+\t\t\t"name": "name1"
+\t\t},
+\t\t{
+\t\t\t"id": 2,
+\t\t\t"name": "name2"
+\t\t},
+\t\t{
+\t\t\t"id": 3,
+\t\t\t"name": "name3"
+\t\t}
+\t]
+}'''
+		}
+	}
+
+	void testNestedArrayPrettyPrint() {
+		new StringWriter().with { w ->
+			def json = new JsonStreamBuilder( w, true )
+
+			json {
+				'item[]' {
+					name 'item'
+					for (i in 1..2) {
+						'code[]' i*32
+					}
+				}
+			}
+
+			assert w.toString() == '''{
+\t"item": [
+\t\t{
+\t\t\t"name": "item",
+\t\t\t"code": [
+\t\t\t\t32,
+\t\t\t\t64
+\t\t\t]
+\t\t}
+\t]
 }'''
 		}
 	}
