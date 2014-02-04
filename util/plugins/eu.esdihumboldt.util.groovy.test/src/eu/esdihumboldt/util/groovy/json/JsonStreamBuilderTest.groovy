@@ -35,6 +35,36 @@ class JsonStreamBuilderTest extends GroovyTestCase {
 		}
 	}
 
+	void testJsonBuilderPrettyPrint() {
+		new StringWriter().with { w ->
+			def json = new JsonStreamBuilder(w, true)
+			json {
+				a 1
+				b true
+			}
+			assert w.toString() == '''{
+\t"a":1,
+\t"b":true
+}'''
+		}
+	}
+
+	void testVirtualRootPrettyPrint() {
+		new StringWriter().with { w ->
+			def json = new JsonStreamBuilder(w, true)
+			json.x {
+				a 1
+				b true
+			}
+			assert w.toString() == '''{
+\t"x":{
+\t\t"a":1,
+\t\t"b":true
+\t}
+}'''
+		}
+	}
+
 	void testEmptyObject() {
 		new StringWriter().with { w ->
 			def json = new JsonStreamBuilder( w )
@@ -73,6 +103,28 @@ class JsonStreamBuilderTest extends GroovyTestCase {
 		}
 	}
 
+	void testNestedObjectsPrettyPrint() {
+		new StringWriter().with { w ->
+			def json = new JsonStreamBuilder( w, true )
+			json {
+				a {
+					//
+					b { //
+						c 1 //
+					} //
+				} //
+			}
+
+			assert w.toString() == '''{
+\t"a":{
+\t\t"b":{
+\t\t\t"c":1
+\t\t}
+\t}
+}'''
+		}
+	}
+
 	void testLoopArray() {
 		new StringWriter().with { w ->
 			def json = new JsonStreamBuilder( w )
@@ -87,6 +139,36 @@ class JsonStreamBuilderTest extends GroovyTestCase {
 			}
 
 			assert w.toString() == '{"item":[{"id":1,"name":"name1"},{"id":2,"name":"name2"},{"id":3,"name":"name3"}]}'
+		}
+	}
+
+	void testLoopArrayPrettyPrint() {
+		new StringWriter().with { w ->
+			def json = new JsonStreamBuilder( w, true )
+
+			json {
+				for (i in 1..3) {
+					'item[]' {
+						id i
+						name "name$i"
+					}
+				}
+			}
+
+			assert w.toString() == '''{
+\t"item":[{
+\t\t"id":1,
+\t\t"name":"name1"
+\t},
+\t{
+\t\t"id":2,
+\t\t"name":"name2"
+\t},
+\t{
+\t\t"id":3,
+\t\t"name":"name3"
+\t}]
+}'''
 		}
 	}
 

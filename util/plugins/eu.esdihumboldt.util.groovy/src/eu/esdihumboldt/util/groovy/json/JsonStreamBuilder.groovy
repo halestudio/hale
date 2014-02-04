@@ -24,15 +24,18 @@ import groovy.transform.TypeCheckingMode
 
 /**
  * Alternative to {@link StreamingJsonBuilder} with a slightly different syntax
- * and support for arrays.
+ * and support concerning arrays.
  * 
  * @author Simon Templer
  */
 @CompileStatic
 class JsonStreamBuilder extends BuilderBase {
 
+	private static final String INDENT = '\t'
+
 	// represents a builder node
 	private static class NodeState {
+		int level = 0
 		// the node name
 		String name
 		// if the node is part of an array
@@ -43,13 +46,22 @@ class JsonStreamBuilder extends BuilderBase {
 		boolean root = false
 
 		// the last child of the node
-		NodeState lastChild;
+		NodeState lastChild
 	}
 
-	final Writer writer;
+	final Writer writer
 
-	JsonStreamBuilder(Writer writer) {
+	final boolean prettyPrint
+
+	/**
+	 * Create a new builder streaming JSON to the given writer.
+	 * 
+	 * @param writer the writer, it's the callers responsibility to close the writer
+	 * @param prettyPrint if the output should be pretty printed
+	 */
+	JsonStreamBuilder(Writer writer, boolean prettyPrint = false) {
 		this.writer = writer
+		this.prettyPrint = prettyPrint
 	}
 
 	/**
@@ -86,10 +98,12 @@ class JsonStreamBuilder extends BuilderBase {
 			// has a parent
 			previous = parentNode.lastChild
 			parentNode.lastChild = node
+			node.level = parentNode.level + 1
 		}
 		else {
 			// has no parent -> create a root object
 			node.root = true
+			node.level = 1
 			writer << '{'
 		}
 
@@ -111,6 +125,11 @@ class JsonStreamBuilder extends BuilderBase {
 		// need a comma?
 		if (previous != null) {
 			writer << ','
+		}
+
+		if (prettyPrint) {
+			writer << '\n'
+			node.level.times { writer << INDENT }
 		}
 
 		// a named node
@@ -166,9 +185,17 @@ class JsonStreamBuilder extends BuilderBase {
 				if (index > 0) {
 					writer << ','
 				}
+				if (prettyPrint) {
+					writer << '\n'
+					(node.level + 1).times { writer << INDENT }
+				}
 				writer << internalToJson(key)
 				writer << ':'
 				writer << internalToJson(value)
+			}
+
+			if (prettyPrint) {
+				writer << '\n'
 			}
 
 			// mark node to already have children (so the comma is written appropriately)
@@ -197,11 +224,18 @@ class JsonStreamBuilder extends BuilderBase {
 
 		// close an object (if the node is an object)
 		if (state.object) {
+			if (prettyPrint) {
+				writer << '\n'
+				state.level.times { writer << INDENT }
+			}
 			writer << '}'
 		}
 
 		// close root (if the node is a root node not created by #call(Closure))
 		if (state.root) {
+			if (prettyPrint) {
+				writer << '\n'
+			}
 			writer << '}'
 		}
 
