@@ -144,7 +144,6 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.common.schema"/>
       <plugin id="eu.esdihumboldt.hale.common.schema.groovy"/>
       <plugin id="eu.esdihumboldt.hale.common.schema.persist"/>
-      <plugin id="eu.esdihumboldt.hale.common.schema.persist.test"/>
       <plugin id="eu.esdihumboldt.hale.common.scripting"/>
       <plugin id="eu.esdihumboldt.hale.doc.user"/>
       <plugin id="eu.esdihumboldt.hale.doc.user.examples"/>
