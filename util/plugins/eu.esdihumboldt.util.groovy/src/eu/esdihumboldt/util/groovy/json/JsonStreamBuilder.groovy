@@ -113,9 +113,15 @@ class JsonStreamBuilder extends BuilderBase {
 			name = name[0..name.length()-3]
 			node.array = true
 		}
-		else if (previous?.array && previous.name == name) {
-			// a continued array, even if not marked with []
-			node.array = true
+		else if (previous != null && previous.name == name) {
+			if (previous.array) {
+				// a continued array, even if not marked with []
+				node.array = true
+			}
+			else {
+				// continued node, but was not created as array -> invalid JSON
+				throw new IllegalStateException("Multiple subsequent nodes with the same name ('$name'), but the first one was not created as array")
+			}
 		}
 
 		// store child name for later reference
