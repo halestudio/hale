@@ -16,9 +16,13 @@
 
 package eu.esdihumboldt.hale.common.schema.model.impl.internal;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.jcip.annotations.Immutable;
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyConstraint;
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.ConstraintUtil;
 import eu.esdihumboldt.hale.common.schema.model.impl.AbstractDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.AbstractGroupPropertyDecorator;
 import eu.esdihumboldt.hale.common.schema.model.impl.AbstractPropertyDecorator;
@@ -66,6 +70,24 @@ public class ConstraintOverrideGroupProperty extends AbstractGroupPropertyDecora
 		}
 
 		return super.getConstraint(constraintType);
+	}
+
+	@Override
+	public Iterable<GroupPropertyConstraint> getExplicitConstraints() {
+		// maps constraint types to constraints
+		Map<Class<?>, GroupPropertyConstraint> constraintMap = new HashMap<>();
+
+		// add all explicit constraints from decoratee
+		for (GroupPropertyConstraint constraint : super.getExplicitConstraints()) {
+			constraintMap.put(ConstraintUtil.getConstraintType(constraint.getClass()), constraint);
+		}
+
+		// replace with override constraints
+		for (GroupPropertyConstraint constraint : constraints.getExplicitConstraints()) {
+			constraintMap.put(ConstraintUtil.getConstraintType(constraint.getClass()), constraint);
+		}
+
+		return constraintMap.values();
 	}
 
 }
