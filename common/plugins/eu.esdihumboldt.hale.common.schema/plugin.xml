@@ -86,6 +86,11 @@
             id="enumeration"
             type="eu.esdihumboldt.hale.common.schema.model.constraint.type.Enumeration">
       </valueconstraint>
+      <valueconstraint
+            factory="eu.esdihumboldt.hale.common.schema.model.constraint.factory.DisplayNameFactory"
+            id="display-name"
+            type="eu.esdihumboldt.hale.common.schema.model.constraint.DisplayName">
+      </valueconstraint>
    </extension>
 
 </plugin>
