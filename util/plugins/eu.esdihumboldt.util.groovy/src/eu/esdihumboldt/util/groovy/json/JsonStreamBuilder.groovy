@@ -24,7 +24,10 @@ import groovy.transform.TypeCheckingMode
 
 /**
  * Alternative to {@link StreamingJsonBuilder} with a slightly different syntax
- * and support concerning arrays.
+ * and support concerning arrays. It is for one time use only, as it is bound to
+ * a {@link Writer} instance.<br>
+ * <br>
+ * See {@link JsonStreamBuilderTest} for examples.
  * 
  * @author Simon Templer
  */
@@ -35,6 +38,7 @@ class JsonStreamBuilder extends BuilderBase {
 
 	// represents a builder node
 	private static class NodeState {
+		// the indentation level
 		int level = 0
 		// the node name
 		String name
@@ -52,6 +56,12 @@ class JsonStreamBuilder extends BuilderBase {
 	final Writer writer
 
 	final boolean prettyPrint
+
+	/**
+	 * If set to true the next created node will create an array (w/o the need
+	 * to include <code>[]</code> in the node name).
+	 */
+	boolean startArray = false
 
 	/**
 	 * Create a new builder streaming JSON to the given writer.
@@ -108,12 +118,17 @@ class JsonStreamBuilder extends BuilderBase {
 		}
 
 		// name denotes an array?
-		//XXX allow other conditions?
 		if (name.endsWith('[]')) {
 			name = name[0..name.length()-3]
 			node.array = true
 		}
-		else if (previous != null && previous.name == name) {
+		// builder configured to start an array?
+		else if (startArray) {
+			node.array = true
+		}
+
+		// same name as previous node?
+		if (previous != null && previous.name == name) {
 			if (previous.array) {
 				// a continued array, even if not marked with []
 				node.array = true
@@ -123,6 +138,9 @@ class JsonStreamBuilder extends BuilderBase {
 				throw new IllegalStateException("Multiple subsequent nodes with the same name ('$name'), but the first one was not created as array")
 			}
 		}
+
+		// reset startArray property
+		startArray = false
 
 		// store child name for later reference
 		node.name = name

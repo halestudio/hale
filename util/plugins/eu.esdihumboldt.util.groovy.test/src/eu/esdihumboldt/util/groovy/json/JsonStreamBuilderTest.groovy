@@ -61,6 +61,18 @@ class JsonStreamBuilderTest extends GroovyTestCase {
 		}
 	}
 
+	void testJsonBuilderSameNameFail2() {
+		shouldFail {
+			new StringWriter().with { w ->
+				def json = new JsonStreamBuilder(w)
+				json {
+					a 1
+					'a[]' true
+				}
+			}
+		}
+	}
+
 	void testVirtualRootPrettyPrint() {
 		new StringWriter().with { w ->
 			def json = new JsonStreamBuilder(w, true)
@@ -145,6 +157,24 @@ class JsonStreamBuilderTest extends GroovyTestCase {
 			json {
 				for (i in 1..3) {
 					'item[]' {
+						id i
+						name "name$i"
+					}
+				}
+			}
+
+			assert w.toString() == '{"item":[{"id":1,"name":"name1"},{"id":2,"name":"name2"},{"id":3,"name":"name3"}]}'
+		}
+	}
+
+	void testLoopStartArray() {
+		new StringWriter().with { w ->
+			def json = new JsonStreamBuilder( w )
+
+			json {
+				json.startArray = true // mark next call as array
+				for (i in 1..3) {
+					item {
 						id i
 						name "name$i"
 					}
