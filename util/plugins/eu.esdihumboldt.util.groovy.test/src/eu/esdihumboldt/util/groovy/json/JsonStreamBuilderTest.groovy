@@ -49,6 +49,18 @@ class JsonStreamBuilderTest extends GroovyTestCase {
 		}
 	}
 
+	void testJsonBuilderSameNameFail() {
+		shouldFail {
+			new StringWriter().with { w ->
+				def json = new JsonStreamBuilder(w)
+				json {
+					a 1
+					a true
+				}
+			}
+		}
+	}
+
 	void testVirtualRootPrettyPrint() {
 		new StringWriter().with { w ->
 			def json = new JsonStreamBuilder(w, true)
