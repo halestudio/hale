@@ -113,12 +113,20 @@ class JsonStreamBuilder extends BuilderBase {
 			name = name[0..name.length()-3]
 			node.array = true
 		}
+		else if (previous?.array && previous.name == name) {
+			// a continued array, even if not marked with []
+			node.array = true
+		}
 
 		// store child name for later reference
 		node.name = name
 
 		// closes a previous array?
 		if (previous?.array && previous.name != name) {
+			if (prettyPrint) {
+				writer << '\n'
+				(previous.level - 1).times { writer << INDENT }
+			}
 			writer << ']'
 		}
 
@@ -137,11 +145,30 @@ class JsonStreamBuilder extends BuilderBase {
 		if (previous == null || !(previous.array && node.array && previous.name == node.name)) {
 			writer << "\"${StringEscapeUtils.escapeJava(name)}\""
 			writer << ':'
+			if (prettyPrint) {
+				writer << ' '
+			}
 		}
 
-		// starts an array?
-		if (node.array && (previous == null || previous.name != name)) {
-			writer << '['
+		// is an array?
+		if (node.array) {
+			node.level++ // increase indent level due to array
+
+			// starts an array?
+			if (previous == null || previous.name != name) {
+				writer << '['
+				if (prettyPrint) {
+					writer << '\n'
+					node.level.times { writer << INDENT }
+				}
+			}
+			else {
+				if (prettyPrint) {
+					// write the additional indent for the array
+					// (as previously the node level was not yet increased)
+					writer << INDENT
+				}
+			}
 		}
 
 		if (subClosure) {
@@ -191,6 +218,9 @@ class JsonStreamBuilder extends BuilderBase {
 				}
 				writer << internalToJson(key)
 				writer << ':'
+				if (prettyPrint) {
+					writer << ' '
+				}
 				writer << internalToJson(value)
 			}
 
@@ -219,6 +249,10 @@ class JsonStreamBuilder extends BuilderBase {
 
 		// close an array (if the last child is in an array)
 		if (state.lastChild != null && state.lastChild.array) {
+			if (prettyPrint) {
+				writer << '\n'
+				(state.lastChild.level - 1).times { writer << INDENT }
+			}
 			writer << ']'
 		}
 
