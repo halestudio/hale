@@ -92,18 +92,20 @@ public class ReferenceFactory implements ValueConstraintFactory<Reference> {
 		Reference ref = new Reference(props.get(P_IS_REF).as(Boolean.class, false));
 
 		Value types = props.get(P_TYPES);
-
-		ValueList list = types.as(ValueList.class);
-		if (list != null) {
-			for (Value entry : list) {
-				String index = entry.as(String.class);
-				TypeDefinition type = typeIndex.get(index);
-				if (type != null) {
-					ref.addReferencedType(type);
-				}
-				else {
-					throw new IllegalStateException("Could not resolve type definition for index "
-							+ index);
+		if (types.as(String.class) == null) { // prevent getting a list with
+												// "unknown"
+			ValueList list = types.as(ValueList.class);
+			if (list != null) {
+				for (Value entry : list) {
+					String index = entry.as(String.class);
+					TypeDefinition type = typeIndex.get(index);
+					if (type != null) {
+						ref.addReferencedType(type);
+					}
+					else {
+						throw new IllegalStateException(
+								"Could not resolve type definition for index " + index);
+					}
 				}
 			}
 		}
