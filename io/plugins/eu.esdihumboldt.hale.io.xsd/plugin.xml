@@ -39,5 +39,13 @@
          </contentType>
       </advisor>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.schema.valueconstraint">
+      <valueconstraint
+            factory="eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.factory.XLinkReferenceFactory"
+            id="reference.xsd.xlink"
+            type="eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.XLinkReference">
+      </valueconstraint>
+   </extension>
 
 </plugin>

@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.schema.io.impl.AbstractSchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.OsgiClassResolver;
 
 /**
  * Reads the HALE schema model from XML (HALE Schema Definition).
@@ -48,7 +49,7 @@ public class HaleSchemaReader extends AbstractSchemaReader {
 		progress.begin("Load schema", ProgressIndicator.UNKNOWN);
 		try (InputStream in = getSource().getInput();
 				Reader reader = new InputStreamReader(in, getCharset())) {
-			schema = XmlToSchema.parseSchema(reader, reporter);
+			schema = XmlToSchema.parseSchema(reader, new OsgiClassResolver(), reporter);
 
 			reporter.setSuccess(true);
 		} catch (Exception e) {

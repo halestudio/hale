@@ -28,6 +28,7 @@ import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ClassResolver
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.extension.ValueConstraintExtension
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.extension.ValueConstraintFactoryDescriptor
 import eu.esdihumboldt.hale.common.schema.model.impl.AbstractDefinition
@@ -56,7 +57,7 @@ public class XmlToSchema implements HaleSchemaConstants {
 	 * @throws Exception if an error occurs
 	 */
 	@TypeChecked
-	public static Schema parseSchema(Reader reader, IOReporter reporter = null) throws Exception {
+	public static Schema parseSchema(Reader reader, ClassResolver resolver, IOReporter reporter = null) throws Exception {
 		Element root = DOMBuilder.parse(reader, false, true).documentElement
 		switch (root.localName) {
 			case 'schemas':
@@ -68,9 +69,9 @@ public class XmlToSchema implements HaleSchemaConstants {
 				else if (schemas.size() > 1) {
 					// FIXME report? combine? what?
 				}
-				return parseSchema(schemas[0], reporter)
+				return parseSchema(schemas[0], resolver, reporter)
 			case 'schema':
-				return parseSchema(root, reporter)
+				return parseSchema(root, resolver, reporter)
 			default:
 				throw new IllegalStateException('No schema element found in the document')
 		}
@@ -82,7 +83,7 @@ public class XmlToSchema implements HaleSchemaConstants {
 	 * @param schema the schema element
 	 * @return the created schema
 	 */
-	public static Schema parseSchema(Element schema, IOReporter reporter = null) {
+	public static Schema parseSchema(Element schema, ClassResolver resolver, IOReporter reporter = null) {
 		use (NSDOMCategory) {
 			DefaultSchema result = new DefaultSchema(schema.'@namespace', null)
 
@@ -113,7 +114,7 @@ public class XmlToSchema implements HaleSchemaConstants {
 				DefaultTypeDefinition typeDef = types[lookup]
 
 				// populate type
-				parseType(typeElem, typeDef, types, reporter)
+				parseType(typeElem, typeDef, types, resolver, reporter)
 
 				result.addType(typeDef)
 			}
@@ -131,12 +132,12 @@ public class XmlToSchema implements HaleSchemaConstants {
 	 *            definitions
 	 */
 	private static void parseType(Element typeElem, DefaultTypeDefinition typeDef,
-			Map<String, DefaultTypeDefinition> typeIndex, IOReporter reporter) {
+			Map<String, DefaultTypeDefinition> typeIndex, ClassResolver resolver, IOReporter reporter) {
 		// common definition stuff (description etc.)
-		populateDefinition(typeElem, typeDef, reporter)
+		populateDefinition(typeElem, typeDef, typeIndex, resolver, reporter)
 
 		// declared children
-		populateGroup(typeElem, typeDef, typeIndex, reporter)
+		populateGroup(typeElem, typeDef, typeIndex, resolver, reporter)
 
 		// super type
 		typeElem.child(NS, 'superType')?.with {
@@ -148,7 +149,8 @@ public class XmlToSchema implements HaleSchemaConstants {
 	}
 
 	private static void populateDefinition(Element defElem,
-			AbstractDefinition definition, IOReporter reporter) {
+			AbstractDefinition definition, Map<String, ? extends TypeDefinition> typeIndex, 
+			ClassResolver resolver, IOReporter reporter) {
 		// description
 		defElem.child(NS, 'description')?.with {
 			definition.description = it.text()
@@ -163,7 +165,7 @@ public class XmlToSchema implements HaleSchemaConstants {
 				if (desc != null && desc.factory != null) {
 					Value config = ValueListType.fromTag(constraintElem)
 					try {
-						Object constraint = desc.getFactory().restore(config)
+						Object constraint = desc.getFactory().restore(config, typeIndex, resolver)
 						definition.setConstraint(constraint)
 					} catch (Exception e) {
 						reporter.error(new IOMessageImpl("Failed to restore constraint of type $id", e))
@@ -180,15 +182,15 @@ public class XmlToSchema implements HaleSchemaConstants {
 	}
 
 	private static void populateGroup(Element defElem, DefinitionGroup group,
-			Map<String, DefaultTypeDefinition> typeIndex, IOReporter reporter) {
+			Map<String, DefaultTypeDefinition> typeIndex, ClassResolver resolver, IOReporter reporter) {
 		defElem.child(NS, 'declares')?.children()?.each { child ->
 			if (child instanceof Element) {
 				switch (child.localName) {
 					case 'property':
-						parseProperty(child, group, typeIndex, reporter)
+						parseProperty(child, group, typeIndex, resolver, reporter)
 						break;
 					case 'group':
-						parseGroup(child, group, typeIndex, reporter)
+						parseGroup(child, group, typeIndex, resolver, reporter)
 						break;
 				}
 			}
@@ -196,7 +198,8 @@ public class XmlToSchema implements HaleSchemaConstants {
 	}
 
 	private static DefaultPropertyDefinition parseProperty(Element propertyElem,
-			DefinitionGroup parent, Map<String, DefaultTypeDefinition> typeIndex, IOReporter reporter) {
+			DefinitionGroup parent, Map<String, DefaultTypeDefinition> typeIndex, 
+			ClassResolver resolver, IOReporter reporter) {
 		// name
 		QName name = parseName(propertyElem.child(NS, 'name'))
 
@@ -217,7 +220,7 @@ public class XmlToSchema implements HaleSchemaConstants {
 			DefaultTypeDefinition typeDef = new DefaultTypeDefinition(typeName)
 
 			// populate anonymous type
-			parseType(typeElem, typeDef, typeIndex, reporter)
+			parseType(typeElem, typeDef, typeIndex, resolver, reporter)
 
 			propertyType = typeDef
 		}
@@ -226,13 +229,14 @@ public class XmlToSchema implements HaleSchemaConstants {
 				propertyType)
 
 		// common definition stuff (description etc.)
-		populateDefinition(propertyElem, property, reporter)
+		populateDefinition(propertyElem, property, typeIndex, resolver, reporter)
 
 		property
 	}
 
 	private static DefaultGroupPropertyDefinition parseGroup(Element groupElem,
-			DefinitionGroup parent, Map<String, DefaultTypeDefinition> typeIndex, IOReporter reporter) {
+			DefinitionGroup parent, Map<String, DefaultTypeDefinition> typeIndex, 
+			ClassResolver resolver, IOReporter reporter) {
 		// name
 		QName name = parseName(groupElem.child(NS, 'name'));
 
@@ -240,10 +244,10 @@ public class XmlToSchema implements HaleSchemaConstants {
 				false)
 
 		// common definition stuff (description etc.)
-		populateDefinition(groupElem, group, reporter)
+		populateDefinition(groupElem, group, typeIndex, resolver, reporter)
 
 		// declared children
-		populateGroup(groupElem, group, typeIndex, reporter)
+		populateGroup(groupElem, group, typeIndex, resolver, reporter)
 
 		group
 	}
