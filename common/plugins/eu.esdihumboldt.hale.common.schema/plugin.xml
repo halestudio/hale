@@ -96,6 +96,11 @@
             id="reference"
             type="eu.esdihumboldt.hale.common.schema.model.constraint.property.Reference">
       </valueconstraint>
+      <valueconstraint
+            factory="eu.esdihumboldt.hale.common.schema.model.constraint.type.factory.ElementTypeFactory"
+            id="element-type"
+            type="eu.esdihumboldt.hale.common.schema.model.constraint.type.ElementType">
+      </valueconstraint>
    </extension>
 
 </plugin>
