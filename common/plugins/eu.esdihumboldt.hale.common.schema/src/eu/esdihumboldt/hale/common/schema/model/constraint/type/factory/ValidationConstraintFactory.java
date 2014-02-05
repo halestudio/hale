@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.schema.model.constraint.property.factory;
+package eu.esdihumboldt.hale.common.schema.model.constraint.type.factory;
 
 import java.util.Map;
 
@@ -22,29 +22,29 @@ import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ClassResolver;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ValueConstraintFactory;
-import eu.esdihumboldt.hale.common.schema.model.constraint.property.Unique;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.ValidationConstraint;
+import eu.esdihumboldt.hale.common.schema.model.validate.factory.ValidatorValue;
+import eu.esdihumboldt.util.validator.Validator;
 
 /**
- * Converts {@link Unique} constraints to {@link Value} objects and vice versa.
+ * Converts {@link ValidationConstraint}s to {@link Value}s and vice versa.
  * 
  * @author Simon Templer
  */
-public class UniqueConstraintFactory implements ValueConstraintFactory<Unique> {
+public class ValidationConstraintFactory implements ValueConstraintFactory<ValidationConstraint> {
 
 	@Override
-	public Value store(Unique constraint, Map<TypeDefinition, String> typeIndex) {
-		if (constraint.isEnabled()) {
-			return Value.of(constraint.getIdentifier());
-		}
-		// OK to fall back to default
-		return null;
+	public Value store(ValidationConstraint constraint, Map<TypeDefinition, String> typeIndex)
+			throws Exception {
+		return new ValidatorValue(constraint.getValidator()).toValue();
 	}
 
 	@Override
-	public Unique restore(Value value, Definition<?> definition,
+	public ValidationConstraint restore(Value value, Definition<?> definition,
 			Map<String, TypeDefinition> typeIndex, ClassResolver resolver) throws Exception {
-		String context = value.as(String.class);
-		return new Unique(context);
+		Validator validator = value.as(ValidatorValue.class).toValidator();
+		TypeDefinition type = (TypeDefinition) definition;
+		return new ValidationConstraint(validator, type);
 	}
 
 }

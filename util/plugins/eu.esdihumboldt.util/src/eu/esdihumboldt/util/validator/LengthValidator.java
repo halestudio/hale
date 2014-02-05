@@ -23,8 +23,8 @@ package eu.esdihumboldt.util.validator;
  */
 public class LengthValidator extends AbstractValidator {
 
-	private Type type;
-	private int length;
+	private final Type type;
+	private final int length;
 
 	/**
 	 * Construct a validator that checks the length of the input to match the
@@ -80,6 +80,20 @@ public class LengthValidator extends AbstractValidator {
 		default:
 			return ""; // all types checked, doesn't happen
 		}
+	}
+
+	/**
+	 * @return the validation type
+	 */
+	public Type getType() {
+		return type;
+	}
+
+	/**
+	 * @return the length attribute to check for
+	 */
+	public int getLength() {
+		return length;
 	}
 
 	/**

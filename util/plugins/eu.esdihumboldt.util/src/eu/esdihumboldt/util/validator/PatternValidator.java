@@ -62,4 +62,11 @@ public class PatternValidator extends AbstractValidator {
 	public String getDescription() {
 		return "Input must match this pattern: " + pattern + ".";
 	}
+
+	/**
+	 * @return the pattern used for validation
+	 */
+	public String getPattern() {
+		return pattern;
+	}
 }

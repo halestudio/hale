@@ -20,6 +20,7 @@ import java.util.Map;
 import com.vividsolutions.jts.geom.Geometry;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ClassResolver;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ValueConstraintFactory;
@@ -44,8 +45,8 @@ public class GeometryTypeFactory implements ValueConstraintFactory<GeometryType>
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public GeometryType restore(Value value, Map<String, TypeDefinition> typeIndex,
-			ClassResolver resolver) throws Exception {
+	public GeometryType restore(Value value, Definition<?> definition,
+			Map<String, TypeDefinition> typeIndex, ClassResolver resolver) throws Exception {
 		Class<?> binding = resolver.loadClass(value.as(String.class), "com.vividsolutions.jts");
 
 		if (binding == null) {

@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.common.schema.model.constraint.factory;
 import java.util.Map;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.AbstractFlagConstraint;
 
@@ -36,8 +37,8 @@ public abstract class FlagConstraintFactory<T extends AbstractFlagConstraint> im
 	}
 
 	@Override
-	public T restore(Value value, Map<String, TypeDefinition> typeIndex, ClassResolver resolver)
-			throws Exception {
+	public T restore(Value value, Definition<?> definition, Map<String, TypeDefinition> typeIndex,
+			ClassResolver resolver) throws Exception {
 		return restore(value.asType(Boolean.class));
 	}
 

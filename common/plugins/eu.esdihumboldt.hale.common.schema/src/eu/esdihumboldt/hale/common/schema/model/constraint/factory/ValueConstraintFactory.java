@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.common.schema.model.constraint.factory;
 import java.util.Map;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
@@ -44,13 +45,14 @@ public interface ValueConstraintFactory<T> {
 	 * Restore a constraint from its {@link Value} representation.
 	 * 
 	 * @param value the {@link Value} to recreate the constraint from
+	 * @param definition the definition the constraint will be associated to
 	 * @param typeIndex the type index that allows resolving IDs/indices to
 	 *            types
 	 * @param resolver the resolver for reconstructing classes
 	 * @return the restored constraint
 	 * @throws Exception if the creation of the constraint fails
 	 */
-	public T restore(Value value, Map<String, TypeDefinition> typeIndex, ClassResolver resolver)
-			throws Exception;
+	public T restore(Value value, Definition<?> definition, Map<String, TypeDefinition> typeIndex,
+			ClassResolver resolver) throws Exception;
 
 }
