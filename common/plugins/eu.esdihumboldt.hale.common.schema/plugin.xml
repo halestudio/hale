@@ -2,6 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="eu.esdihumboldt.hale.schema.valueconstraint" name="Constraints represented as Values" schema="schema/eu.esdihumboldt.hale.schema.valueconstraint.exsd"/>
+   <extension-point id="eu.esdihumboldt.hale.schema.validatorfactory" name="Validators represented as and created from Values" schema="schema/eu.esdihumboldt.hale.schema.validatorfactory.exsd"/>
    <extension
          point="eu.esdihumboldt.hale.io.action">
       <action
@@ -116,6 +117,59 @@
             id="skip-validation"
             type="eu.esdihumboldt.hale.common.schema.model.constraint.type.SkipValidation">
       </valueconstraint>
+      <valueconstraint
+            factory="eu.esdihumboldt.hale.common.schema.model.constraint.type.factory.ValidationConstraintFactory"
+            id="validation"
+            type="eu.esdihumboldt.hale.common.schema.model.constraint.type.ValidationConstraint">
+      </valueconstraint>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.schema.validatorfactory">
+      <validator
+            factory="eu.esdihumboldt.hale.common.schema.model.validate.factory.impl.PatternValidatorFactory"
+            id="pattern"
+            type="eu.esdihumboldt.util.validator.PatternValidator">
+      </validator>
+      <validator
+            factory="eu.esdihumboldt.hale.common.schema.model.validate.factory.impl.AndValidatorFactory"
+            id="and"
+            type="eu.esdihumboldt.util.validator.AndValidator">
+      </validator>
+      <validator
+            factory="eu.esdihumboldt.hale.common.schema.model.validate.factory.impl.OrValidatorFactory"
+            id="or"
+            type="eu.esdihumboldt.util.validator.OrValidator">
+      </validator>
+      <validator
+            factory="eu.esdihumboldt.hale.common.schema.model.validate.factory.impl.LengthValidatorFactory"
+            id="length"
+            type="eu.esdihumboldt.util.validator.LengthValidator">
+      </validator>
+      <validator
+            factory="eu.esdihumboldt.hale.common.schema.model.validate.factory.impl.DigitCountValidatorFactory"
+            id="digit-count"
+            type="eu.esdihumboldt.util.validator.DigitCountValidator">
+      </validator>
+      <validator
+            factory="eu.esdihumboldt.hale.common.schema.model.validate.factory.impl.NumberValidatorFactory"
+            id="number"
+            type="eu.esdihumboldt.util.validator.NumberValidator">
+      </validator>
+      <validator
+            factory="eu.esdihumboldt.hale.common.schema.model.validate.factory.impl.EnumerationValidatorFactory"
+            id="enumeration"
+            type="eu.esdihumboldt.util.validator.EnumerationValidator">
+      </validator>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.complexvalue">
+      <complexValue
+            descriptor="eu.esdihumboldt.hale.common.schema.model.validate.factory.internal.ValidatorValueType"
+            id="eu.esdihumboldt.hale.common.schema.model.validate.factory.ValidatorValue"
+            name="validator"
+            namespace="http://www.esdi-humboldt.eu/hale/core"
+            type="eu.esdihumboldt.hale.common.schema.model.validate.factory.ValidatorValue">
+      </complexValue>
    </extension>
 
 </plugin>

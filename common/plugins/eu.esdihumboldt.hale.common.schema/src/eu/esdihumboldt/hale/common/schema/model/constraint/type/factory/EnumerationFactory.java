@@ -22,6 +22,7 @@ import java.util.Map;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.ValueList;
 import eu.esdihumboldt.hale.common.core.io.ValueProperties;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ClassResolver;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ValueConstraintFactory;
@@ -67,8 +68,8 @@ public class EnumerationFactory implements ValueConstraintFactory<Enumeration<?>
 	}
 
 	@Override
-	public Enumeration<?> restore(Value value, Map<String, TypeDefinition> typeIndex,
-			ClassResolver resolver) throws Exception {
+	public Enumeration<?> restore(Value value, Definition<?> definition,
+			Map<String, TypeDefinition> typeIndex, ClassResolver resolver) throws Exception {
 		ValueProperties props = value.as(ValueProperties.class);
 
 		boolean allowOthers = props.get(P_ALLOW_OTHERS).as(Boolean.class, true);

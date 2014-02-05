@@ -23,6 +23,7 @@ import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.ValueList;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ClassResolver;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ValueConstraintFactory;
@@ -52,8 +53,8 @@ public class PrimaryKeyFactory implements ValueConstraintFactory<PrimaryKey> {
 	}
 
 	@Override
-	public PrimaryKey restore(Value value, Map<String, TypeDefinition> typeIndex,
-			ClassResolver resolver) throws Exception {
+	public PrimaryKey restore(Value value, Definition<?> definition,
+			Map<String, TypeDefinition> typeIndex, ClassResolver resolver) throws Exception {
 		ValueList list = value.as(ValueList.class);
 
 		List<QName> names = new ArrayList<>();
