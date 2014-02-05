@@ -56,4 +56,13 @@ public class ValueMap extends HashMap<Value, Value> {
 		super(m);
 	}
 
+	/**
+	 * Creates a {@link Value} wrapping the map.
+	 * 
+	 * @return the {@link Value} representation of this map
+	 */
+	public Value toValue() {
+		return Value.complex(this);
+	}
+
 }
