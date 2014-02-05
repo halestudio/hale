@@ -519,9 +519,9 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 				// create constraint, get property definition for original table
 				// column (maybe could use index column, too)
 				type.setConstraint(new eu.esdihumboldt.hale.common.schema.model.constraint.type.PrimaryKey(
-						Collections.<ChildDefinition<?>> singletonList(getOrCreateProperty(schema,
-								type, table.getColumn(columns[0].getName()), overallNamespace,
-								namespace, types, connection, reporter))));
+						Collections.<QName> singletonList(getOrCreateProperty(schema, type,
+								table.getColumn(columns[0].getName()), overallNamespace, namespace,
+								types, connection, reporter).getName())));
 			}
 		}
 
