@@ -91,6 +91,11 @@
             id="display-name"
             type="eu.esdihumboldt.hale.common.schema.model.constraint.DisplayName">
       </valueconstraint>
+      <valueconstraint
+            factory="eu.esdihumboldt.hale.common.schema.model.constraint.property.factory.ReferenceFactory"
+            id="reference"
+            type="eu.esdihumboldt.hale.common.schema.model.constraint.property.Reference">
+      </valueconstraint>
    </extension>
 
 </plugin>

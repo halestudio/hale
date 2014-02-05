@@ -15,7 +15,10 @@
 
 package eu.esdihumboldt.hale.common.schema.model.constraint.factory;
 
+import java.util.Map;
+
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.AbstractFlagConstraint;
 
 /**
@@ -28,12 +31,13 @@ public abstract class FlagConstraintFactory<T extends AbstractFlagConstraint> im
 		ValueConstraintFactory<T> {
 
 	@Override
-	public Value store(T constraint) {
+	public Value store(T constraint, Map<TypeDefinition, String> typeIndex) {
 		return Value.of(constraint.isEnabled());
 	}
 
 	@Override
-	public T restore(Value value) throws Exception {
+	public T restore(Value value, Map<String, TypeDefinition> typeIndex, ClassResolver resolver)
+			throws Exception {
 		return restore(value.asType(Boolean.class));
 	}
 

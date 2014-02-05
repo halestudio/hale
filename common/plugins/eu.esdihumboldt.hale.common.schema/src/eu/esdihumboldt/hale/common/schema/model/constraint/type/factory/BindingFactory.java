@@ -15,8 +15,11 @@
 
 package eu.esdihumboldt.hale.common.schema.model.constraint.type.factory;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
+import java.util.Map;
+
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ClassResolver;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ValueConstraintFactory;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 
@@ -29,7 +32,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 public class BindingFactory implements ValueConstraintFactory<Binding> {
 
 	@Override
-	public Value store(Binding constraint) {
+	public Value store(Binding constraint, Map<TypeDefinition, String> typeIndex) {
 		Class<?> clazz = constraint.getBinding();
 		if (clazz != null) {
 			return Value.of(clazz.getName());
@@ -39,13 +42,11 @@ public class BindingFactory implements ValueConstraintFactory<Binding> {
 	}
 
 	@Override
-	public Binding restore(Value value) throws Exception {
+	public Binding restore(Value value, Map<String, TypeDefinition> typeIndex,
+			ClassResolver resolver) throws Exception {
 		String className = value.as(String.class);
 
-		// need to load class - could be that it is not in the classpath
-		// of this bundle
-		// FIXME in a more efficient way?
-		Class<?> clazz = OsgiUtils.loadClass(className, null);
+		Class<?> clazz = resolver.loadClass(className);
 
 		return Binding.get(clazz);
 	}
