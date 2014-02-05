@@ -101,6 +101,11 @@
             id="element-type"
             type="eu.esdihumboldt.hale.common.schema.model.constraint.type.ElementType">
       </valueconstraint>
+      <valueconstraint
+            factory="eu.esdihumboldt.hale.common.schema.model.constraint.type.factory.GeometryTypeFactory"
+            id="geometry-type"
+            type="eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType">
+      </valueconstraint>
    </extension>
 
 </plugin>
