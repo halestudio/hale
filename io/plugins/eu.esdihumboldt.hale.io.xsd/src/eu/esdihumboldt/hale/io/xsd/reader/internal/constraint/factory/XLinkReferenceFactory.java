@@ -13,37 +13,34 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.schema.model.constraint.property.factory;
+package eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.factory;
 
 import java.util.Map;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ClassResolver;
-import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ValueConstraintFactory;
-import eu.esdihumboldt.hale.common.schema.model.constraint.property.Unique;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.Reference;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.factory.ReferenceFactory;
+import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.XLinkReference;
 
 /**
- * Converts {@link Unique} constraints to {@link Value} objects and vice versa.
+ * Reconstructs {@link XLinkReference} constraints.
  * 
  * @author Simon Templer
  */
-public class UniqueConstraintFactory implements ValueConstraintFactory<Unique> {
+public class XLinkReferenceFactory extends ReferenceFactory {
 
 	@Override
-	public Value store(Unique constraint, Map<TypeDefinition, String> typeIndex) {
-		if (constraint.isEnabled()) {
-			return Value.of(constraint.getIdentifier());
+	public Reference restore(Value value, Map<String, TypeDefinition> typeIndex,
+			ClassResolver resolver) throws Exception {
+		Reference ref = super.restore(value, typeIndex, resolver);
+
+		if (ref.isReference()) {
+			return new XLinkReference();
 		}
-		// OK to fall back to default
-		return null;
-	}
 
-	@Override
-	public Unique restore(Value value, Map<String, TypeDefinition> typeIndex, ClassResolver resolver)
-			throws Exception {
-		String context = value.as(String.class);
-		return new Unique(context);
+		return ref;
 	}
 
 }
