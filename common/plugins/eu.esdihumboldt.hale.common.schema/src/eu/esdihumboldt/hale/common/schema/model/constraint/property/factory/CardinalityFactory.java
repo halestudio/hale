@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.common.schema.model.constraint.property.factory;
 import java.util.Map;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ClassResolver;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ValueConstraintFactory;
@@ -50,8 +51,8 @@ public class CardinalityFactory implements ValueConstraintFactory<Cardinality> {
 	}
 
 	@Override
-	public Cardinality restore(Value value, Map<String, TypeDefinition> typeIndex,
-			ClassResolver resolver) {
+	public Cardinality restore(Value value, Definition<?> definition,
+			Map<String, TypeDefinition> typeIndex, ClassResolver resolver) {
 		String str = value.as(String.class);
 
 		if (str != null) {

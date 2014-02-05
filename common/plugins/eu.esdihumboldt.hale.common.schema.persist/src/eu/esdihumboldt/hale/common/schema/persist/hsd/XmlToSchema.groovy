@@ -165,7 +165,7 @@ public class XmlToSchema implements HaleSchemaConstants {
 				if (desc != null && desc.factory != null) {
 					Value config = ValueListType.fromTag(constraintElem)
 					try {
-						Object constraint = desc.getFactory().restore(config, typeIndex, resolver)
+						Object constraint = desc.getFactory().restore(config, definition, typeIndex, resolver)
 						definition.setConstraint(constraint)
 					} catch (Exception e) {
 						reporter.error(new IOMessageImpl("Failed to restore constraint of type $id", e))

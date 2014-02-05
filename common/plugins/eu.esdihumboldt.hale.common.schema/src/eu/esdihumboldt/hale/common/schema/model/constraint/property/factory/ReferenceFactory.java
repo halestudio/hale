@@ -21,6 +21,7 @@ import java.util.Map;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.ValueList;
 import eu.esdihumboldt.hale.common.core.io.ValueProperties;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ClassResolver;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ValueConstraintFactory;
@@ -84,8 +85,8 @@ public class ReferenceFactory implements ValueConstraintFactory<Reference> {
 	}
 
 	@Override
-	public Reference restore(Value value, Map<String, TypeDefinition> typeIndex,
-			ClassResolver resolver) throws Exception {
+	public Reference restore(Value value, Definition<?> definition,
+			Map<String, TypeDefinition> typeIndex, ClassResolver resolver) throws Exception {
 		ValueProperties props = value.as(ValueProperties.class);
 
 		Reference ref = new Reference(props.get(P_IS_REF).as(Boolean.class, false));

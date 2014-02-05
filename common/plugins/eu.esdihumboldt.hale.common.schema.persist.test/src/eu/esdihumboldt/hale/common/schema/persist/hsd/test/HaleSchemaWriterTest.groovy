@@ -39,11 +39,14 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.Enumeration
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.ValidationConstraint
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace
 import eu.esdihumboldt.hale.common.schema.persist.hsd.HaleSchemaReader
 import eu.esdihumboldt.hale.common.schema.persist.hsd.HaleSchemaUtil
 import eu.esdihumboldt.hale.common.schema.persist.hsd.HaleSchemaWriter
 import eu.esdihumboldt.hale.common.test.TestUtil
+import eu.esdihumboldt.util.validator.EnumerationValidator
+import eu.esdihumboldt.util.validator.Validator
 import groovy.transform.CompileStatic
 
 
@@ -93,8 +96,10 @@ class HaleSchemaWriterTest extends GroovyTestCase {
 			def evilType = EvilType(enumeration: ['devil', 'grinch'], binding: String, [
 				HasValueFlag.ENABLED,
 				MappingRelevantFlag.DISABLED,
-				MappableFlag.DISABLED
+				MappableFlag.DISABLED,
 			])
+
+			evilType.setConstraint(new ValidationConstraint(new EnumerationValidator(['devil', 'grinch']), evilType))
 
 			Person(display: 'Persona') {
 				name()
@@ -136,6 +141,15 @@ class HaleSchemaWriterTest extends GroovyTestCase {
 		Enumeration en = goodType2.getConstraint(Enumeration)
 		assertFalse en.allowOthers
 		assertEquals(['saint', 'angel'], en.values)
+
+		// evil type
+		TypeDefinition evilType2 = schema2.getType(new QName('EvilType'))
+		assertNotNull evilType2
+		// validation constraint
+		ValidationConstraint valEvil2 = evilType2.getConstraint(ValidationConstraint)
+		Validator val = valEvil2.validator
+		assertTrue val instanceof EnumerationValidator
+		assertEquals(['devil', 'grinch'], val.values.toList())
 
 		// person type
 		TypeDefinition personType = schema.getType(new QName('Person'))
