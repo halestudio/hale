@@ -1,0 +1,7 @@
+Code-Review+2: Simon Templer <simon.templer@igd.fraunhofer.de>
+Verified+1: Jenkins <sitemple@igd.fraunhofer.de>
+Submitted-by: Simon Templer <simon.templer@igd.fraunhofer.de>
+Submitted-at: Wed, 05 Feb 2014 13:22:53 +0100
+Reviewed-on: http://gerrit.esdi-community.eu/2700
+Project: hale
+Branch: refs/heads/feature/writeschema2
