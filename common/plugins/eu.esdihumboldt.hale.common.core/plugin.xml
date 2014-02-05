@@ -157,6 +157,13 @@
             namespace="http://www.esdi-humboldt.eu/hale/core"
             type="eu.esdihumboldt.hale.common.core.io.ValueList">
       </complexValue>
+      <complexValue
+            descriptor="eu.esdihumboldt.hale.common.core.io.impl.QNameType"
+            id="eu.esdihumboldt.hale.common.core.qname"
+            name="name"
+            namespace="http://www.esdi-humboldt.eu/hale/core"
+            type="javax.xml.namespace.QName">
+      </complexValue>
    </extension>
    <extension
          point="eu.esdihumboldt.util.groovy.meta">
