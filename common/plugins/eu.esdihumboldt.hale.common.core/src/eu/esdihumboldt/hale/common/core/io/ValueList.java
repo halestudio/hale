@@ -48,4 +48,13 @@ public class ValueList extends ArrayList<Value> {
 		super(initialCapacity);
 	}
 
+	/**
+	 * Creates a {@link Value} wrapping the list.
+	 * 
+	 * @return the {@link Value} representation of this list
+	 */
+	public Value toValue() {
+		return Value.complex(this);
+	}
+
 }

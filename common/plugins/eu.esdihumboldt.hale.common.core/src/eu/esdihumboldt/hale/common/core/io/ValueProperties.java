@@ -56,4 +56,13 @@ public class ValueProperties extends HashMap<String, Value> {
 		super(m);
 	}
 
+	/**
+	 * Creates a {@link Value} wrapping the properties.
+	 * 
+	 * @return the {@link Value} representation of the properties
+	 */
+	public Value toValue() {
+		return Value.complex(this);
+	}
+
 }
