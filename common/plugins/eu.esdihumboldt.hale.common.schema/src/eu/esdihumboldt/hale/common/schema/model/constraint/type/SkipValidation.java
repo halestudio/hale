@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.common.schema.model.constraint.type;
 import net.jcip.annotations.Immutable;
 import eu.esdihumboldt.hale.common.schema.model.Constraint;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
+import eu.esdihumboldt.hale.common.schema.model.constraint.AbstractFlagConstraint;
 
 /**
  * Specifies if validation should be skipped for a property value. May be
@@ -28,7 +29,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
  */
 @Immutable
 @Constraint(mutable = false)
-public class SkipValidation implements TypeConstraint {
+public class SkipValidation extends AbstractFlagConstraint implements TypeConstraint {
 
 	/**
 	 * Enabled skip validation flag
@@ -50,8 +51,6 @@ public class SkipValidation implements TypeConstraint {
 		return (skipValidation) ? (ENABLED) : (DISABLED);
 	}
 
-	private final boolean enabled;
-
 	/**
 	 * Creates a default skip validation constraint, which is disabled. If
 	 * possible, instead of creating an instance, use {@link #get(boolean)},
@@ -68,7 +67,7 @@ public class SkipValidation implements TypeConstraint {
 	 *            associated property
 	 */
 	protected SkipValidation(boolean enabled) {
-		this.enabled = enabled;
+		super(enabled);
 	}
 
 	/**
@@ -79,7 +78,7 @@ public class SkipValidation implements TypeConstraint {
 	 * @return if validation should be skipped for the property and its children
 	 */
 	public boolean skipValidation(Object propertyValue) {
-		return enabled;
+		return isEnabled();
 	}
 
 	/**

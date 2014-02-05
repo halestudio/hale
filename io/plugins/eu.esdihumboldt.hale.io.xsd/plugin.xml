@@ -61,6 +61,11 @@
             id="xsd.mixed"
             type="eu.esdihumboldt.hale.io.xsd.constraint.XmlMixedFlag">
       </valueconstraint>
+      <valueconstraint
+            factory="eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.factory.SkipGeometryValidationFactory"
+            id="xsd.skip-geometry-validation"
+            type="eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.SkipGeometryValidation">
+      </valueconstraint>
    </extension>
 
 </plugin>

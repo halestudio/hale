@@ -111,6 +111,11 @@
             id="primary-key"
             type="eu.esdihumboldt.hale.common.schema.model.constraint.type.PrimaryKey">
       </valueconstraint>
+      <valueconstraint
+            factory="eu.esdihumboldt.hale.common.schema.model.constraint.type.factory.SkipValidationFactory"
+            id="skip-validation"
+            type="eu.esdihumboldt.hale.common.schema.model.constraint.type.SkipValidation">
+      </valueconstraint>
    </extension>
 
 </plugin>
