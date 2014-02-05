@@ -65,4 +65,18 @@ public class ValueProperties extends HashMap<String, Value> {
 		return Value.complex(this);
 	}
 
+	/**
+	 * Get the value for the given property.
+	 * 
+	 * @param property the property name
+	 * @return the value or the NULL value, never <code>null</code>
+	 */
+	public Value getSafe(String property) {
+		Value val = get(property);
+		if (val == null) {
+			val = Value.NULL;
+		}
+		return val;
+	}
+
 }
