@@ -168,7 +168,35 @@
    <extension
          point="eu.esdihumboldt.util.groovy.meta">
       <metaClass
-            for="java.lang.Object"
+            for="java.lang.String"
+            implementation="eu.esdihumboldt.hale.common.core.io.internal.AsValueMetaClass">
+      </metaClass>
+      <metaClass
+            for="java.lang.Number"
+            implementation="eu.esdihumboldt.hale.common.core.io.internal.AsValueMetaClass">
+      </metaClass>
+      <metaClass
+            for="java.lang.Boolean"
+            implementation="eu.esdihumboldt.hale.common.core.io.internal.AsValueMetaClass">
+      </metaClass>
+      <metaClass
+            for="eu.esdihumboldt.hale.common.core.io.Text"
+            implementation="eu.esdihumboldt.hale.common.core.io.internal.AsValueMetaClass">
+      </metaClass>
+      <metaClass
+            for="eu.esdihumboldt.hale.common.core.io.ValueList"
+            implementation="eu.esdihumboldt.hale.common.core.io.internal.AsValueMetaClass">
+      </metaClass>
+      <metaClass
+            for="eu.esdihumboldt.hale.common.core.io.ValueProperties"
+            implementation="eu.esdihumboldt.hale.common.core.io.internal.AsValueMetaClass">
+      </metaClass>
+      <metaClass
+            for="eu.esdihumboldt.hale.common.core.io.ValueMap"
+            implementation="eu.esdihumboldt.hale.common.core.io.internal.AsValueMetaClass">
+      </metaClass>
+      <metaClass
+            for="javax.xml.namespace.QName"
             implementation="eu.esdihumboldt.hale.common.core.io.internal.AsValueMetaClass">
       </metaClass>
    </extension>
