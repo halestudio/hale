@@ -15,6 +15,8 @@
  */
 package eu.esdihumboldt.util.groovy.json
 
+import groovy.transform.CompileStatic
+
 /**
  * Tests for {@link JsonStreamBuilder}.
  * 
@@ -30,6 +32,18 @@ class JsonStreamBuilderTest extends GroovyTestCase {
 			json {
 				a 1
 				b true
+			}
+			assert w.toString() == '{"a":1,"b":true}'
+		}
+	}
+
+	@CompileStatic
+	void testJsonBuilderTypeSafe() {
+		new StringWriter().with { Writer w ->
+			def json = new JsonStreamBuilder(w)
+			json {
+				json 'a', 1
+				json 'b', true
 			}
 			assert w.toString() == '{"a":1,"b":true}'
 		}
@@ -159,6 +173,24 @@ class JsonStreamBuilderTest extends GroovyTestCase {
 					'item[]' {
 						id i
 						name "name$i"
+					}
+				}
+			}
+
+			assert w.toString() == '{"item":[{"id":1,"name":"name1"},{"id":2,"name":"name2"},{"id":3,"name":"name3"}]}'
+		}
+	}
+
+	@CompileStatic
+	void testLoopArrayTypeSafe() {
+		new StringWriter().with { Writer w ->
+			def json = new JsonStreamBuilder( w )
+
+			json {
+				for (i in 1..3) {
+					json 'item', true, {
+						json 'id', i
+						json 'name', "name$i"
 					}
 				}
 			}
@@ -304,6 +336,16 @@ class JsonStreamBuilderTest extends GroovyTestCase {
 		}
 	}
 
+	@CompileStatic
+	void testMethodCallWithNamedArgumentsTypeSafe() {
+		new StringWriter().with { Writer w ->
+			def json = new JsonStreamBuilder( w )
+			json 'person', [name: "Guillaume", age: 33]
+
+			assert w.toString() == '{"person":{"name":"Guillaume","age":33}}'
+		}
+	}
+
 	void testElementHasListOfObjects() {
 		new StringWriter().with { w ->
 			def json = new JsonStreamBuilder( w )
@@ -356,6 +398,44 @@ class JsonStreamBuilderTest extends GroovyTestCase {
 					webTitle "Tunisia protests continue in pictures "
 					webUrl "http://www.guardian.co.uk/world/gallery/2011/jan/19/tunisia-protests-pictures"
 					apiUrl "http://content.guardianapis.com/world/gallery/2011/jan/19/tunisia-protests-pictures"
+				}
+			}
+
+			assert w.toString() ==
+			'''{"response":{"status":"ok","userTier":"free","total":2413,"startIndex":1,"pageSize":10,"currentPage":1,"pages":242,"orderBy":"newest","results":[{"id":"world/video/2011/jan/19/tunisia-demonstrators-democracy-video","sectionId":"world","sectionName":"World news","webPublicationDate":"2011-01-19T15:12:46Z","webTitle":"Tunisian demonstrators demand new democracy - video","webUrl":"http://www.guardian.co.uk/world/video/2011/jan/19/tunisia-demonstrators-democracy-video","apiUrl":"http://content.guardianapis.com/world/video/2011/jan/19/tunisia-demonstrators-democracy-video"},{"id":"world/gallery/2011/jan/19/tunisia-protests-pictures","sectionId":"world","sectionName":"World news","webPublicationDate":"2011-01-19T15:01:09Z","webTitle":"Tunisia protests continue in pictures ","webUrl":"http://www.guardian.co.uk/world/gallery/2011/jan/19/tunisia-protests-pictures","apiUrl":"http://content.guardianapis.com/world/gallery/2011/jan/19/tunisia-protests-pictures"}]}}'''
+		}
+	}
+
+	@CompileStatic
+	void testComplexStructureFromTheGuardianTypeSafe() {
+		new StringWriter().with { Writer w ->
+			def j = new JsonStreamBuilder( w )
+			j 'response', {
+				j 'status', "ok"
+				j 'userTier', "free"
+				j 'total', 2413
+				j 'startIndex', 1
+				j 'pageSize', 10
+				j 'currentPage', 1
+				j 'pages', 242
+				j 'orderBy', "newest"
+				j 'results', true, [
+					id: "world/video/2011/jan/19/tunisia-demonstrators-democracy-video",
+					sectionId: "world",
+					sectionName: "World news",
+					webPublicationDate: "2011-01-19T15:12:46Z",
+					webTitle: "Tunisian demonstrators demand new democracy - video",
+					webUrl: "http://www.guardian.co.uk/world/video/2011/jan/19/tunisia-demonstrators-democracy-video",
+					apiUrl: "http://content.guardianapis.com/world/video/2011/jan/19/tunisia-demonstrators-democracy-video"
+				]
+				j 'results[]', {
+					j 'id', "world/gallery/2011/jan/19/tunisia-protests-pictures"
+					j 'sectionId', "world"
+					j 'sectionName', "World news"
+					j 'webPublicationDate', "2011-01-19T15:01:09Z"
+					j 'webTitle', "Tunisia protests continue in pictures "
+					j 'webUrl', "http://www.guardian.co.uk/world/gallery/2011/jan/19/tunisia-protests-pictures"
+					j 'apiUrl', "http://content.guardianapis.com/world/gallery/2011/jan/19/tunisia-protests-pictures"
 				}
 			}
 
