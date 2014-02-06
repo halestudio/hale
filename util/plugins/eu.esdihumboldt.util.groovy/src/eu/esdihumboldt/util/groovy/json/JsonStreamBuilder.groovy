@@ -75,6 +75,70 @@ class JsonStreamBuilder extends BuilderBase {
 	}
 
 	/**
+	 * Creates a property with the given content in the current object. If no
+	 * root JSON object exists yet it will be created and wrap the property.<br>
+	 * <br>
+	 * Convenience method for type safe JSON building.
+	 * 
+	 * @param name the property name
+	 * @param array states if the property should be an array
+	 * @param content the property content
+	 */
+	void call(String name, boolean array = false, Object content) {
+		startArray = array
+		createNode(name, [content])
+	}
+
+	/**
+	 * Creates a property in the current object that contains a child object with
+	 * the given properties. If no root JSON object exists yet it will be
+	 * created and wrap the property.<br>
+	 * <br>
+	 * Convenience method for type safe JSON building.
+	 *
+	 * @param name the property name
+	 * @param array states if the property should be an array
+	 * @param properties the properties of the child object
+	 */
+	void call(String name, boolean array = false, Map properties) {
+		startArray = array
+		createNode(name, [properties])
+	}
+
+	/**
+	 * Creates a property in the current object that contains a child object
+	 * defined by the given closure. If no root JSON object exists yet it will be
+	 * created and wrap the property.<br>
+	 * <br>
+	 * Convenience method for type safe JSON building.
+	 *
+	 * @param name the property name
+	 * @param array states if the property should be an array
+	 * @param closure the closure defining the child object
+	 */
+	void call(String name, boolean array = false, Closure closure) {
+		startArray = array
+		createNode(name, [closure])
+	}
+
+	/**
+	 * Creates a property in the current object that contains a child object with
+	 * the given properties and additional content defined through the given closure.
+	 * If no root JSON object exists yet it will be created and wrap the property.<br>
+	 * <br>
+	 * Convenience method for type safe JSON building.
+	 *
+	 * @param name the property name
+	 * @param array states if the property should be an array
+	 * @param properties the properties of the child object
+	 * @param closure the closure defining additional content of the child object
+	 */
+	void call(String name, boolean array = false, Map properties, Closure closure) {
+		startArray = array
+		createNode(name, [properties, closure])
+	}
+
+	/**
 	 * Creates a JSON root object. If a parent already exists will just call
 	 * the given closure.
 	 * 
