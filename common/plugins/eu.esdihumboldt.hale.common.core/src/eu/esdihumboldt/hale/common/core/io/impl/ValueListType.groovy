@@ -76,10 +76,17 @@ class ValueListType implements ComplexValueType<ValueList, Void> {
 	 */
 	static Element valueTag(DOMBuilder builder, String tagName, Value value) {
 		if (value.isRepresentedAsDOM()) {
-			def element = builder."$tagName"()
+			Element element = builder."$tagName"()
 			def child = value.getDOMRepresentation();
 			// add value representation as child
-			element.appendChild(element.ownerDocument.adoptNode(child))
+			Element adopted = element.ownerDocument.adoptNode(child)
+
+			if (adopted == null) {
+				// adoption failed (e.g. different DOM implementation), use importNode instead
+				adopted = element.ownerDocument.importNode(child, true)
+			}
+
+			element.appendChild(adopted)
 
 			element
 		}

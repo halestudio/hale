@@ -21,6 +21,7 @@ import org.w3c.dom.Element;
 
 import com.google.common.base.Objects;
 
+import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueDefinition;
 import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueExtension;
 import eu.esdihumboldt.hale.common.core.io.impl.ComplexValue;
 import eu.esdihumboldt.hale.common.core.io.impl.StringValue;
@@ -146,6 +147,28 @@ public abstract class Value implements Serializable {
 	}
 
 	/**
+	 * Create a value from an object. If a complex value representation is found
+	 * in {@link ComplexValueExtension} a complex value is created, otherwise a
+	 * simple value.
+	 * 
+	 * @see #complex(Object)
+	 * @see #simple(Object)
+	 * @param object the object to wrap
+	 * @return the value wrapper
+	 */
+	public static Value of(Object object) {
+		// check if there is a complex value definition for the object
+		ComplexValueDefinition def = ComplexValueExtension.getInstance().getDefinition(
+				object.getClass());
+		if (def != null) {
+			return Value.complex(object);
+		}
+		else {
+			return Value.simple(object);
+		}
+	}
+
+	/**
 	 * Get the value as the expected type if possible.
 	 * 
 	 * @param expectedType the expected value type, this must be either
@@ -225,6 +248,26 @@ public abstract class Value implements Serializable {
 	 * @see #getStringRepresentation()
 	 */
 	public abstract boolean isRepresentedAsDOM();
+
+	/**
+	 * Convenience method to determine if this value has a simple
+	 * representation.
+	 * 
+	 * @return if this value has a simple representation
+	 */
+	public boolean isSimple() {
+		return !isRepresentedAsDOM();
+	}
+
+	/**
+	 * Convenience method to determine if this value has a complex
+	 * representation.
+	 * 
+	 * @return if this value has a complex representation
+	 */
+	public boolean isComplex() {
+		return isRepresentedAsDOM();
+	}
 
 	/**
 	 * Get the value's DOM representation if applicable.
