@@ -15,12 +15,18 @@
 
 package eu.esdihumboldt.hale.common.schema.persist.json
 
+import javax.xml.namespace.QName
+
+import com.google.common.collect.ArrayListMultimap
+
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import eu.esdihumboldt.util.groovy.json.JsonStreamBuilder
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
+import groovy.transform.TypeCheckingMode
 
 
 /**
@@ -55,34 +61,75 @@ class SchemaToJson {
 		}
 	}
 
+	@CompileStatic(TypeCheckingMode.SKIP)
+	@TypeChecked
 	static void schemaToJson(JsonStreamBuilder json, Schema schema, List<Element> elements) {
 		json {
 			json 'nodeLabel', schema.namespace
 			json 'nodeQName', schema.namespace
 			json 'nodeType', 'package'
 
-			// list to collect references to types
-			def typeIndices = []
-
-			// subnodes (= types)
-			schema.mappingRelevantTypes.each { TypeDefinition type ->
-				json 'subNodes[]', {
-					typeToJson(json, type, elements)
-				}
-
-				// create element representing type
-				Element element = new Element(label: type.displayName, name: type.name)
-				if (type.description) {
-					element.description = type.description
-				}
-
-				// add to elements, remember index
-				elements << element
-				typeIndices << elements.size() - 1
+			// collect types per namespace
+			ArrayListMultimap<String, TypeDefinition> typesPerNamespace = ArrayListMultimap.create()
+			schema.types.each { TypeDefinition type ->
+				def ns = type.getName().getNamespaceURI()
+				typesPerNamespace.put(ns, type)
 			}
 
-			json 'nodeElements', typeIndices
+			if (typesPerNamespace.keySet().size() <= 1) {
+				// include types directly here
+				typesToJson(json, schema.types, elements)
+			}
+			else {
+				// create sub-packages per namespace
+				def nsIndices = []
+
+				for (String ns in typesPerNamespace.keySet()) {
+					json 'subNodes[]', {
+						json 'nodeLabel', ns
+						json 'nodeQName', ns
+						json 'nodeType', 'package'
+
+						// include namespace types
+						List<? extends TypeDefinition> types = typesPerNamespace.get(ns)
+						typesToJson(json, types, elements)
+					}
+
+					// create element representing namespace
+					Element element = new Element(label: ns, name: new QName(ns))
+
+					// add to elements, remember index
+					elements << element
+					nsIndices << elements.size() - 1
+				}
+
+				json 'nodeElements', nsIndices
+			}
 		}
+	}
+
+	static void typesToJson(JsonStreamBuilder json, Iterable<? extends TypeDefinition> types, List<Element> elements) {
+		// list to collect references to types
+		def typeIndices = []
+
+		// subnodes (= types)
+		types.each { TypeDefinition type ->
+			json 'subNodes[]', {
+				typeToJson(json, type, elements)
+			}
+
+			// create element representing type
+			Element element = new Element(label: type.displayName, name: type.name)
+			if (type.description) {
+				element.description = type.description
+			}
+
+			// add to elements, remember index
+			elements << element
+			typeIndices << elements.size() - 1
+		}
+
+		json 'nodeElements', typeIndices
 	}
 
 	static void typeToJson(JsonStreamBuilder json, TypeDefinition type, List<Element> elements) {
