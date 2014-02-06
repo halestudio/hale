@@ -15,7 +15,10 @@
 
 package eu.esdihumboldt.util.groovy.xml
 
+import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import groovy.xml.DOMBuilder
+import groovy.xml.QName
 import groovy.xml.dom.DOMCategory
 
 import javax.xml.transform.OutputKeys
@@ -35,12 +38,12 @@ import org.w3c.dom.Node
  */
 class NSDOMBuilderTest extends GroovyTestCase {
 
-	private static NS1 = "http://www.example.com/ns1"
+	private static String NS1 = "http://www.example.com/ns1"
 
-	private static NS2 = "http://www.example.com/ns2"
+	private static String NS2 = "http://www.example.com/ns2"
 
 	void testWriteRead() {
-		NSDOMBuilder builder = NSDOMBuilder.newInstance(ns1: NS1, ns2: NS2)
+		NSDOMBuilder builder = NSDOMBuilder.newBuilder(ns1: NS1, ns2: NS2)
 		Node nsroot = builder.'ns1:root' {
 			'ns2:item' (att1: 'test', att2: 'text') {
 				'ns1:test' ( 'hello' )
@@ -49,6 +52,39 @@ class NSDOMBuilderTest extends GroovyTestCase {
 			fix 'me'
 		}
 
+		writeReadTest(nsroot)
+	}
+
+	@CompileStatic
+	void testWriteReadTypeSafeQName() {
+		NSDOMBuilder b = NSDOMBuilder.newBuilder(ns1: NS1, ns2: NS2)
+		// XXX for some reason call(QName, Closure) is not found
+		Element nsroot = b(new QName(NS1, 'root'), [:]) {
+			b(new QName(NS2, 'item'), [att1: 'test', att2: 'text']) {
+				b(new QName(NS1, 'test'), 'hello')
+				b('nons-ense') { b 'text', 'lalal' }
+			}
+			b 'fix', 'me'
+		}
+
+		writeReadTest(nsroot)
+	}
+
+	@CompileStatic
+	void testWriteReadTypeSafe() {
+		NSDOMBuilder b = NSDOMBuilder.newBuilder(ns1: NS1, ns2: NS2)
+		Element nsroot = b('ns1:root') {
+			b('ns2:item', [att1: 'test', att2: 'text']) {
+				b('ns1:test', 'hello')
+				b('nons-ense') { b 'text', 'lalal' }
+			}
+			b 'fix', 'me'
+		}
+
+		writeReadTest(nsroot)
+	}
+
+	private void writeReadTest(Node nsroot) {
 		// configure transformer for serialization
 		Transformer transformer = TransformerFactory.newInstance().newTransformer();
 		transformer.setOutputProperty(OutputKeys.METHOD, "xml"); //$NON-NLS-1$

@@ -52,7 +52,7 @@ public class ValidatorValueType implements ComplexValueType<ValidatorValue, Void
 		prefixes.put("core", HaleIO.NS_HALE_CORE);
 		NSDOMBuilder builder;
 		try {
-			builder = NSDOMBuilder.newInstance(prefixes);
+			builder = NSDOMBuilder.newBuilder(prefixes);
 			Element element = ValueListType.valueTag(builder, "core:validator",
 					value.getValidatorRepresentation());
 			element.setAttribute(ATTRIBUTE_TYPE, value.getType());
