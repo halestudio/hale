@@ -21,8 +21,8 @@ import org.w3c.dom.Element
 
 import de.cs3d.util.logging.ALogger
 import de.cs3d.util.logging.ALoggerFactory
+import eu.esdihumboldt.hale.common.core.io.DOMValueUtil
 import eu.esdihumboldt.hale.common.core.io.Value
-import eu.esdihumboldt.hale.common.core.io.impl.ValueListType
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup
@@ -89,7 +89,7 @@ public class XmlToSchema implements HaleSchemaConstants {
 
 			// maps indices to type definitions
 			Map<String, DefaultTypeDefinition> types = [:]
-			Element typeIndex = schema.child(NS, 'type-index')
+			Element typeIndex = schema.firstChild(NS, 'type-index')
 			if (!typeIndex) {
 				throw new IllegalStateException('Schema document misses type index')
 			}
@@ -97,11 +97,11 @@ public class XmlToSchema implements HaleSchemaConstants {
 			typeIndex.children(NS, 'entry').each { Element entry ->
 
 				// create an 'empty' type definition for each type
-				QName typeName = parseName(entry.child(NS, 'name'))
+				QName typeName = parseName(entry.firstChild(NS, 'name'))
 				types[entry.'@index'] =  new DefaultTypeDefinition(typeName)
 			}
 
-			Element typesElem = schema.child(NS, 'types')
+			Element typesElem = schema.firstChild(NS, 'types')
 			typesElem?.children(NS, 'type').eachWithIndex { Element typeElem, int index ->
 
 				// retrieve 'empty' type
@@ -163,7 +163,7 @@ public class XmlToSchema implements HaleSchemaConstants {
 				ValueConstraintFactoryDescriptor desc = ValueConstraintExtension.INSTANCE.get(id)
 
 				if (desc != null && desc.factory != null) {
-					Value config = ValueListType.fromTag(constraintElem)
+					Value config = DOMValueUtil.fromTag(constraintElem)
 					try {
 						Object constraint = desc.getFactory().restore(config, definition, typeIndex, resolver)
 						definition.setConstraint(constraint)

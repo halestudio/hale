@@ -18,12 +18,13 @@ package eu.esdihumboldt.hale.common.core.io.impl
 import org.w3c.dom.Element
 
 import eu.esdihumboldt.hale.common.core.io.ComplexValueType
+import eu.esdihumboldt.hale.common.core.io.DOMValueUtil
 import eu.esdihumboldt.hale.common.core.io.HaleIO
 import eu.esdihumboldt.hale.common.core.io.Value
 import eu.esdihumboldt.hale.common.core.io.ValueList
 import eu.esdihumboldt.util.groovy.xml.NSDOMBuilder
-import groovy.xml.DOMBuilder
-import groovy.xml.dom.DOMCategory
+import eu.esdihumboldt.util.groovy.xml.NSDOMCategory
+import groovy.transform.CompileStatic
 
 
 /**
@@ -31,78 +32,16 @@ import groovy.xml.dom.DOMCategory
  * 
  * @author Simon Templer
  */
+@CompileStatic
 class ValueListType implements ComplexValueType<ValueList, Void> {
-
-	/**
-	 * Create a value from an XML tag that is either represented as
-	 * a simple attribute (named <i>value</i>) or a child element.
-	 * 
-	 * @param element the tag
-	 * @return
-	 */
-	static Value fromTag(Element element) {
-		use (DOMCategory) {
-			if (element.hasAttribute('value')) {
-				// string representation
-				// may be an empty string
-				return Value.of(element.'@value')
-			}
-			else {
-				// DOM representation
-				return new ElementValue(element.'*'[0], null)
-			}
-		}
-	}
-
-	/**
-	 * Create a value tag on the given DOM builder.
-	 *
-	 * @param builder the DOM builder
-	 * @param tagName the name of the tag
-	 * @param value the contained value
-	 * @return the created element with the given tag name and value content
-	 */
-	static Element objectTag(DOMBuilder builder, String tagName, Object value) {
-		valueTag(builder, tagName, value as Value)
-	}
-
-	/**
-	 * Create a value tag on the given DOM builder.
-	 * 
-	 * @param builder the DOM builder
-	 * @param tagName the name of the tag
-	 * @param value the contained value
-	 * @return the created element with the given tag name and value content
-	 */
-	static Element valueTag(DOMBuilder builder, String tagName, Value value) {
-		if (value.isRepresentedAsDOM()) {
-			Element element = builder."$tagName"()
-			def child = value.getDOMRepresentation();
-			// add value representation as child
-			Element adopted = element.ownerDocument.adoptNode(child)
-
-			if (adopted == null) {
-				// adoption failed (e.g. different DOM implementation), use importNode instead
-				adopted = element.ownerDocument.importNode(child, true)
-			}
-
-			element.appendChild(adopted)
-
-			element
-		}
-		else {
-			builder."$tagName"(value: value.stringRepresentation)
-		}
-	}
 
 	@Override
 	ValueList fromDOM(Element fragment, Void context) {
 		ValueList list = new ValueList()
 
-		use (DOMCategory) {
-			for (entry in fragment.entry) {
-				list << ValueListType.fromTag(entry)
-			}
+		def entries = NSDOMCategory.children(fragment, HaleIO.NS_HALE_CORE, 'entry')
+		for (Element entry in entries) {
+			list << DOMValueUtil.fromTag(entry)
 		}
 
 		return list;
@@ -112,11 +51,11 @@ class ValueListType implements ComplexValueType<ValueList, Void> {
 	Element toDOM(ValueList list) {
 		def builder = NSDOMBuilder.newBuilder(core: HaleIO.NS_HALE_CORE)
 
-		def fragment = builder.'core:list' {
+		def fragment = builder('core:list') {
 			for (Value value in list) {
 				// ignore null values
 				if (value != null) {
-					valueTag(builder, 'entry', value)
+					DOMValueUtil.valueTag(builder, 'core:entry', value)
 				}
 			}
 		}

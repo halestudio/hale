@@ -31,18 +31,27 @@ import org.w3c.dom.NodeList
 public class NSDOMCategory extends DOMCategory {
 
 	/**
+	 * Get the first child element.
+	 * @param parent the parent element
+	 * @return the first child element or <code>null</code> if none exists
+	 */
+	public static Element firstChild(Element parent) {
+		firstChild(parent, null, null)
+	}
+
+	/**
 	 * Get the first child element with the given namespace and local name.
 	 * 
 	 * @param parent the parent element
 	 * @param ns the namespace, may be <code>null</code> to ignore namespace
-	 * @param localName the local name, may not be <code>null</code>
+	 * @param localName the local name, may be <code>null</code> to find a child with any local name
 	 * @return the child element or <code>null</code> if none exists
 	 */
-	public static Element child(Element parent, String ns = null, String localName) {
+	public static Element firstChild(Element parent, String ns = null, String localName) {
 		NodeList children = parent.getChildNodes();
 		for (int i = 0; i < children.getLength(); i++) {
 			Node node = children.item(i);
-			if (node instanceof Element && node.getLocalName().equals(localName)
+			if (node instanceof Element && (localName == null || node.getLocalName().equals(localName))
 			&& (ns == null || ns.equals(node.getNamespaceURI()))) {
 				return (Element) node;
 			}

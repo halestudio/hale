@@ -15,8 +15,8 @@
 
 package eu.esdihumboldt.hale.common.schema.model.constraint.factory;
 
+import eu.esdihumboldt.hale.common.core.io.DOMValueUtil;
 import eu.esdihumboldt.hale.common.core.io.Value;
-import eu.esdihumboldt.hale.common.core.io.impl.ValueListType;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyConstraint;
 import eu.esdihumboldt.hale.common.schema.model.PropertyConstraint;
@@ -29,8 +29,8 @@ import eu.esdihumboldt.hale.common.schema.model.impl.DefaultGroupPropertyDefinit
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 import eu.esdihumboldt.hale.common.test.TestUtil;
+import eu.esdihumboldt.util.groovy.xml.NSDOMBuilder;
 import groovy.util.GroovyTestCase;
-import groovy.xml.DOMBuilder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -102,11 +102,11 @@ public abstract class AbstractValueConstraintFactoryTest<T> extends GroovyTestCa
 		T read;
 		if (val != null) {
 			// to DOM
-			DOMBuilder builder = DOMBuilder.newInstance(false, true);
-			Element elem = ValueListType.valueTag(builder, "test", val);
+			NSDOMBuilder builder = NSDOMBuilder.newBuilder(new HashMap<String, String>());
+			Element elem = DOMValueUtil.valueTag(builder, "test", val);
 
 			// from DOM
-			Value res = ValueListType.fromTag(elem);
+			Value res = DOMValueUtil.fromTag(elem);
 
 			// bimap for reverse index
 			BiMap<TypeDefinition, String> types = HashBiMap.create(typeIndex);

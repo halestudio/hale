@@ -37,11 +37,11 @@ import eu.esdihumboldt.hale.common.core.io.ValueList;
 public class ValueListTypeTest {
 
 	private final String XML_SAMPLE = "<core:list xmlns:core=\"http://www.esdi-humboldt.eu/hale/core\">" //
-			+ "<entry value=\"foo\" />" //
-			+ "<entry value=\"bar\" />" //
-			+ "<entry>" //
-			+ "<core:list><entry value=\"hello\"/></core:list>" //
-			+ "</entry>" //
+			+ "<core:entry value=\"foo\" />" //
+			+ "<core:entry value=\"bar\" />" //
+			+ "<core:entry>" //
+			+ "<core:list><core:entry value=\"hello\"/></core:list>" //
+			+ "</core:entry>" //
 			+ "</core:list>";
 
 	/**

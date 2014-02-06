@@ -21,9 +21,9 @@ import java.util.Map;
 import org.w3c.dom.Element;
 
 import eu.esdihumboldt.hale.common.core.io.ComplexValueType;
+import eu.esdihumboldt.hale.common.core.io.DOMValueUtil;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.Value;
-import eu.esdihumboldt.hale.common.core.io.impl.ValueListType;
 import eu.esdihumboldt.hale.common.schema.model.validate.factory.ValidatorValue;
 import eu.esdihumboldt.util.groovy.xml.NSDOMBuilder;
 
@@ -41,7 +41,7 @@ public class ValidatorValueType implements ComplexValueType<ValidatorValue, Void
 
 	@Override
 	public ValidatorValue fromDOM(Element fragment, Void context) {
-		Value val = ValueListType.fromTag(fragment);
+		Value val = DOMValueUtil.fromTag(fragment);
 		String id = fragment.getAttribute(ATTRIBUTE_TYPE);
 		return new ValidatorValue(id, val);
 	}
@@ -53,7 +53,7 @@ public class ValidatorValueType implements ComplexValueType<ValidatorValue, Void
 		NSDOMBuilder builder;
 		try {
 			builder = NSDOMBuilder.newBuilder(prefixes);
-			Element element = ValueListType.valueTag(builder, "core:validator",
+			Element element = DOMValueUtil.valueTag(builder, "core:validator",
 					value.getValidatorRepresentation());
 			element.setAttribute(ATTRIBUTE_TYPE, value.getType());
 			return element;
