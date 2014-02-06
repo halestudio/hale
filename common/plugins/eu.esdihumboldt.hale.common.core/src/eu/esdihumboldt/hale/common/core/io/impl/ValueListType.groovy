@@ -110,7 +110,7 @@ class ValueListType implements ComplexValueType<ValueList, Void> {
 
 	@Override
 	Element toDOM(ValueList list) {
-		def builder = NSDOMBuilder.newInstance(core: HaleIO.NS_HALE_CORE)
+		def builder = NSDOMBuilder.newBuilder(core: HaleIO.NS_HALE_CORE)
 
 		def fragment = builder.'core:list' {
 			for (Value value in list) {
