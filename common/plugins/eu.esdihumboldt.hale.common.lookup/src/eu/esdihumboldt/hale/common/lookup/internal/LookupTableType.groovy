@@ -18,11 +18,11 @@ package eu.esdihumboldt.hale.common.lookup.internal
 import org.w3c.dom.Element
 
 import eu.esdihumboldt.hale.common.core.io.ComplexValueType
+import eu.esdihumboldt.hale.common.core.io.DOMValueUtil
 import eu.esdihumboldt.hale.common.core.io.Value
-import eu.esdihumboldt.hale.common.core.io.impl.ValueListType
 import eu.esdihumboldt.hale.common.lookup.LookupTable
 import eu.esdihumboldt.hale.common.lookup.impl.LookupTableImpl
-import groovy.xml.DOMBuilder
+import eu.esdihumboldt.util.groovy.xml.NSDOMBuilder
 import groovy.xml.dom.DOMCategory
 
 
@@ -39,8 +39,8 @@ class LookupTableType implements ComplexValueType<LookupTable, Void> {
 
 		use (DOMCategory) {
 			for (entry in fragment.entry) {
-				Value key = ValueListType.fromTag(entry.key[0]);
-				Value value = ValueListType.fromTag(entry.value[0])
+				Value key = DOMValueUtil.fromTag(entry.key[0]);
+				Value value = DOMValueUtil.fromTag(entry.value[0])
 				values.put(key, value)
 			}
 		}
@@ -50,15 +50,15 @@ class LookupTableType implements ComplexValueType<LookupTable, Void> {
 
 	@Override
 	public Element toDOM(LookupTable table) {
-		def builder = DOMBuilder.newInstance(false, true)
+		def builder = NSDOMBuilder.newBuilder([:])
 
 		def fragment = builder.'lookup-table' {
 			for (Value key in table.keys) {
 				// ignore null values
 				if (table.lookup(key) != null) {
 					entry {
-						ValueListType.valueTag(builder, 'key', key)
-						ValueListType.valueTag(builder, 'value', table.lookup(key))
+						DOMValueUtil.valueTag(builder, 'key', key)
+						DOMValueUtil.valueTag(builder, 'value', table.lookup(key))
 					}
 				}
 			}
