@@ -92,8 +92,7 @@ public class ReferenceFactory implements ValueConstraintFactory<Reference> {
 		Reference ref = new Reference(props.get(P_IS_REF).as(Boolean.class, false));
 
 		Value types = props.get(P_TYPES);
-		if (types.as(String.class) == null) { // prevent getting a list with
-												// "unknown"
+		if (types.isComplex()) {
 			ValueList list = types.as(ValueList.class);
 			if (list != null) {
 				for (Value entry : list) {
