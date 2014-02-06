@@ -49,7 +49,7 @@ class ValueMapType implements ComplexValueType<ValueMap, Void> {
 
 	@Override
 	Element toDOM(ValueMap map) {
-		def builder = NSDOMBuilder.newInstance(core: HaleIO.NS_HALE_CORE)
+		def builder = NSDOMBuilder.newBuilder(core: HaleIO.NS_HALE_CORE)
 
 		def fragment = builder.'core:map' {
 			map.each { Value key, Value value ->

@@ -48,7 +48,7 @@ class SchemaToXml implements HaleSchemaConstants {
 	 * @return a new NSDOMBuilder instance with preconfigured namespace prefixes
 	 */
 	static NSDOMBuilder createBuilder() {
-		NSDOMBuilder.newInstance(DEF_PREFIXES)
+		NSDOMBuilder.newBuilder(DEF_PREFIXES)
 	}
 
 	/**

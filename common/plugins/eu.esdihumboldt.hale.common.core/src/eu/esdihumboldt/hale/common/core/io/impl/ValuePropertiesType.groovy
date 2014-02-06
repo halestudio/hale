@@ -49,7 +49,7 @@ class ValuePropertiesType implements ComplexValueType<ValueProperties, Void> {
 
 	@Override
 	Element toDOM(ValueProperties properties) {
-		def builder = NSDOMBuilder.newInstance(core: HaleIO.NS_HALE_CORE)
+		def builder = NSDOMBuilder.newBuilder(core: HaleIO.NS_HALE_CORE)
 
 		def fragment = builder.'core:properties' {
 			properties.each { String key, Value value ->
