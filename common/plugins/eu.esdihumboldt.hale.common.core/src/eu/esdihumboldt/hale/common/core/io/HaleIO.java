@@ -26,7 +26,6 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import org.apache.commons.io.FilenameUtils;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager;
@@ -108,21 +107,19 @@ public abstract class HaleIO {
 
 		List<IContentType> results = new ArrayList<IContentType>();
 
-		if (filename != null) {
+		if (filename != null && !filename.isEmpty()) {
 			// test file extension
+			String lowerFile = filename.toLowerCase();
 			for (IContentType type : types) {
-				String ext = FilenameUtils.getExtension(filename);
-				if (ext != null && !ext.isEmpty()) {
-					String[] extensions = type.getFileSpecs(IContentType.FILE_EXTENSION_SPEC);
-					boolean match = false;
-					for (int i = 0; i < extensions.length && !match; i++) {
-						if (extensions[i].equalsIgnoreCase(ext)) {
-							match = true;
-						}
+				String[] extensions = type.getFileSpecs(IContentType.FILE_EXTENSION_SPEC);
+				boolean match = false;
+				for (int i = 0; i < extensions.length && !match; i++) {
+					if (lowerFile.endsWith("." + extensions[i].toLowerCase())) {
+						match = true;
 					}
-					if (match) {
-						results.add(type);
-					}
+				}
+				if (match) {
+					results.add(type);
 				}
 			}
 		}
