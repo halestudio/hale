@@ -70,6 +70,7 @@ public class IOConfiguration implements Serializable, Cloneable {
 		copy.setActionId(getActionId());
 		copy.setProviderId(getProviderId());
 		copy.setName(getName());
+		copy.setCache(getCache());
 
 		copy.getProviderConfiguration().putAll(getProviderConfiguration());
 
