@@ -11,6 +11,9 @@
          <contentType
                ref="eu.esdihumboldt.hale.common.schema.hsd">
          </contentType>
+         <contentType
+               ref="eu.esdihumboldt.hale.common.schema.hsd.gzip">
+         </contentType>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.common.schema.persist.hsd.HaleSchemaReader"
@@ -18,6 +21,9 @@
             name="HALE Schema Definition">
          <contentType
                ref="eu.esdihumboldt.hale.common.schema.hsd">
+         </contentType>
+         <contentType
+               ref="eu.esdihumboldt.hale.common.schema.hsd.gzip">
          </contentType>
       </provider>
    </extension>
@@ -31,6 +37,24 @@
             priority="normal">
          <describer
                class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+            <parameter
+                  name="element"
+                  value="{http://www.esdi-humboldt.eu/hale/schema}schema">
+            </parameter>
+            <parameter
+                  name="element"
+                  value="{http://www.esdi-humboldt.eu/hale/schema}schemas">
+            </parameter>
+         </describer>
+      </content-type>
+      <content-type
+            base-type="eu.esdihumboldt.hale.common.core.gzip"
+            file-extensions="gz,hsd.gz,haleschema.gz"
+            id="eu.esdihumboldt.hale.common.schema.hsd.gzip"
+            name="GZiped HALE Schema Definition"
+            priority="normal">
+         <describer
+               class="eu.esdihumboldt.hale.common.core.io.util.GZipXMLRootElementContentDescriber">
             <parameter
                   name="element"
                   value="{http://www.esdi-humboldt.eu/hale/schema}schema">
