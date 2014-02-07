@@ -49,7 +49,7 @@
       </content-type>
       <content-type
             base-type="eu.esdihumboldt.hale.common.core.gzip"
-            file-extensions="gz,hsd.gz,haleschema.gz"
+            file-extensions="hsd.gz,haleschema.gz"
             id="eu.esdihumboldt.hale.common.schema.hsd.gzip"
             name="GZiped HALE Schema Definition"
             priority="normal">
