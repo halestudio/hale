@@ -18,11 +18,13 @@ package eu.esdihumboldt.hale.common.core.io.impl
 import org.w3c.dom.Element
 
 import eu.esdihumboldt.hale.common.core.io.ComplexValueType
+import eu.esdihumboldt.hale.common.core.io.DOMValueUtil
 import eu.esdihumboldt.hale.common.core.io.HaleIO
 import eu.esdihumboldt.hale.common.core.io.Value
 import eu.esdihumboldt.hale.common.core.io.ValueProperties
 import eu.esdihumboldt.util.groovy.xml.NSDOMBuilder
-import groovy.xml.dom.DOMCategory
+import eu.esdihumboldt.util.groovy.xml.NSDOMCategory
+import groovy.transform.CompileStatic
 
 
 /**
@@ -30,18 +32,18 @@ import groovy.xml.dom.DOMCategory
  * 
  * @author Simon Templer
  */
+@CompileStatic
 class ValuePropertiesType implements ComplexValueType<ValueProperties, Void> {
 
 	@Override
 	ValueProperties fromDOM(Element fragment, Void context) {
 		ValueProperties properties = new ValueProperties()
 
-		use (DOMCategory) {
-			for (entry in fragment.property) {
-				String key = entry.'@name'
-				Value value = ValueListType.fromTag(entry.value[0])
-				properties[key] = value
-			}
+		def entries = NSDOMCategory.children(fragment, HaleIO.NS_HALE_CORE, 'property')
+		for (Element entry in entries) {
+			String key = entry.getAttribute('name')
+			Value value = DOMValueUtil.fromTag(NSDOMCategory.firstChild(entry, HaleIO.NS_HALE_CORE, 'value'))
+			properties[key] = value
 		}
 
 		return properties;
@@ -49,14 +51,14 @@ class ValuePropertiesType implements ComplexValueType<ValueProperties, Void> {
 
 	@Override
 	Element toDOM(ValueProperties properties) {
-		def builder = NSDOMBuilder.newInstance(core: HaleIO.NS_HALE_CORE)
+		def b = NSDOMBuilder.newBuilder(core: HaleIO.NS_HALE_CORE)
 
-		def fragment = builder.'core:properties' {
+		def fragment = b 'core:properties', {
 			properties.each { String key, Value value ->
 				// ignore null values
 				if (value != null) {
-					property(name: key) {
-						ValueListType.valueTag(builder, 'value', value)
+					b 'core:property', [name: key], {
+						DOMValueUtil.valueTag(b, 'core:value', value)
 					}
 				}
 			}

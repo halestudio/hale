@@ -16,8 +16,6 @@
 package eu.esdihumboldt.hale.common.core.io.internal;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
-import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueDefinition;
-import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueExtension;
 import groovy.lang.DelegatingMetaClass;
 import groovy.lang.MetaClass;
 
@@ -66,15 +64,7 @@ public class AsValueMetaClass extends DelegatingMetaClass {
 				return Value.of((Number) object);
 			}
 			else {
-				// check if there is a complex value definition for the object
-				ComplexValueDefinition def = ComplexValueExtension.getInstance().getDefinition(
-						object.getClass());
-				if (def != null) {
-					return Value.complex(object);
-				}
-				else {
-					return Value.simple(object);
-				}
+				return Value.of(object);
 			}
 		}
 		return super.invokeMethod(object, methodName, arguments);

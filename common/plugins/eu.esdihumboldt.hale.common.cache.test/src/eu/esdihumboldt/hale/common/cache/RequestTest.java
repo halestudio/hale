@@ -66,7 +66,7 @@ public class RequestTest {
 					.close();
 		} catch (Exception e) {
 			e.printStackTrace();
-			fail();
+			fail(e.getMessage());
 		}
 	}
 

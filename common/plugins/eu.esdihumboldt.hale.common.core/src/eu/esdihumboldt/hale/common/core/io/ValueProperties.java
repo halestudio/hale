@@ -56,4 +56,27 @@ public class ValueProperties extends HashMap<String, Value> {
 		super(m);
 	}
 
+	/**
+	 * Creates a {@link Value} wrapping the properties.
+	 * 
+	 * @return the {@link Value} representation of the properties
+	 */
+	public Value toValue() {
+		return Value.complex(this);
+	}
+
+	/**
+	 * Get the value for the given property.
+	 * 
+	 * @param property the property name
+	 * @return the value or the NULL value, never <code>null</code>
+	 */
+	public Value getSafe(String property) {
+		Value val = get(property);
+		if (val == null) {
+			val = Value.NULL;
+		}
+		return val;
+	}
+
 }

@@ -85,7 +85,7 @@ public class Reference implements PropertyConstraint {
 			return null;
 		}
 		else {
-			return Collections.unmodifiableCollection(referencedTypes);
+			return Collections.unmodifiableSet(referencedTypes);
 		}
 	}
 

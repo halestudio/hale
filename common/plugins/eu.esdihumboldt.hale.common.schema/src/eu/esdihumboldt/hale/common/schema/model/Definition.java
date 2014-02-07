@@ -70,4 +70,15 @@ public interface Definition<C> extends Locatable, Comparable<Definition<?>> {
 	 */
 	public <T extends C> T getConstraint(Class<T> constraintType);
 
+	/**
+	 * Get the constraints that are explicitly set on the definition (i.e.
+	 * inherited and default constraints are not included). This method is
+	 * intended for use when persisting the schema model. To obtain information
+	 * on the constraints of a definition, use {@link #getConstraint(Class)}
+	 * instead.
+	 * 
+	 * @return the collection of constraints explicitly set for this definition
+	 */
+	public Iterable<C> getExplicitConstraints();
+
 }

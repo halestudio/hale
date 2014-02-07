@@ -1,3 +1,5 @@
+
+
 /*
  * Copyright (c) 2014 Data Harmonisation Panel
  * 
@@ -25,6 +27,7 @@ import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.parsers.ParserConfigurationException
 
 import org.w3c.dom.Document
+import org.w3c.dom.Element
 
 import com.google.common.collect.ImmutableMap
 
@@ -48,7 +51,7 @@ class NSDOMBuilder extends DOMBuilder {
 	 * @param prefixes prefixes mapped to namespace
 	 * @return a new DOM builder
 	 */
-	public static NSDOMBuilder newInstance(Map<String, String> prefixes,
+	public static NSDOMBuilder newBuilder(Map<String, String> prefixes,
 			boolean validating = false) throws ParserConfigurationException {
 		DocumentBuilderFactory factory = FactorySupport.createDocumentBuilderFactory();
 		factory.setNamespaceAware(true);
@@ -89,8 +92,112 @@ class NSDOMBuilder extends DOMBuilder {
 		this.prefixes = ImmutableMap.copyOf(prefixes)
 	}
 
+	/**
+	 * Convenience method for building DOM in a type safe way.
+	 * @param name the name of the element to create
+	 * @param attributes the attributes to attach to the element
+	 * @param the element text content
+	 * @return the created element
+	 */
+	Element call(String name, Map attributes = null, String text) {
+		call(getName(name), attributes, text)
+	}
+
+	/**
+	 * Convenience method for building DOM in a type safe way.
+	 *
+	 * @param name the name of the element to create
+	 * @param closure the closure where potential child elements may be created
+	 * @return the created element
+	 */
+	Element call(String name, Closure closure) {
+		call(getName(name), null, closure)
+	}
+
+	/**
+	 * Convenience method for building DOM in a type safe way.
+	 *
+	 * @param name the name of the element to create
+	 * @param attributes the attributes to attach to the element
+	 * @param closure the closure where potential child elements may be created
+	 * @return the created element
+	 */
+	Element call(String name, Map attributes = null, Closure closure = null) {
+		call(getName(name), attributes, closure)
+	}
+
+	/**
+	 * Convenience method for building DOM in a type safe way.
+	 *
+	 * @param name the name of the element to create
+	 * @param closure the closure where potential child elements may be created
+	 * @return the created element
+	 */
+	Element call(QName name, Map attributes) {
+		call(name, attributes, (Closure) null)
+	}
+
+	/**
+	 * Convenience method for building DOM in a type safe way.
+	 * @param name the name of the element to create
+	 * @param attributes the attributes to attach to the element
+	 * @param the element text content
+	 * @return the created element
+	 */
+	Element call(QName name, Map attributes = null, String text) {
+		Element node;
+		if (attributes == null) {
+			node = (Element) createNode(name, text)
+		}
+		else {
+			node = (Element) createNode(name, attributes, text)
+		}
+
+		if (getCurrent() != null) {
+			setParent(getCurrent(), node);
+		}
+
+		nodeCompleted(getCurrent(), node);
+		return (Element) postNodeCompletion(getCurrent(), node);
+	}
+
+	/**
+	 * Convenience method for building DOM in a type safe way.
+	 * 
+	 * @param name the name of the element to create
+	 * @param attributes the attributes to attach to the element
+	 * @param closure the closure where potential child elements may be created
+	 * @return the created element
+	 */
+	Element call(QName name, Map attributes = null, Closure closure) {
+		Element node;
+		if (attributes == null || attributes.empty) {
+			node = (Element) createNode(name)
+		}
+		else {
+			node = (Element) createNode(name, attributes)
+		}
+
+		if (getCurrent() != null) {
+			setParent(getCurrent(), node);
+		}
+
+		if (closure != null) {
+			// push new node on stack
+			Object oldCurrent = getCurrent();
+			setCurrent(node);
+			// let's register the builder as the delegate
+			setClosureDelegate(closure, node);
+			closure.call();
+			setCurrent(oldCurrent);
+		}
+
+		nodeCompleted(getCurrent(), node);
+		return (Element) postNodeCompletion(getCurrent(), node);
+	}
+
 	@Override
-	protected Object getName(String methodName) {
+	protected QName getName(String methodName) {
 		String[] parts = methodName.split(/:/, 2)
 
 		if (parts.length == 2) {
@@ -99,14 +206,14 @@ class NSDOMBuilder extends DOMBuilder {
 			String ns = prefixes[prefix]
 
 			if (ns) {
-				new QName(ns, parts[1])
+				new QName(ns, parts[1], prefix)
 			}
 			else {
 				new QName(parts[1])
 			}
 		}
 		else {
-			super.getName(methodName)
+			return new QName(methodName)
 		}
 	}
 }

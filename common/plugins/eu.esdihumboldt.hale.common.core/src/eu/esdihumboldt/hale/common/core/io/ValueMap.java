@@ -56,4 +56,27 @@ public class ValueMap extends HashMap<Value, Value> {
 		super(m);
 	}
 
+	/**
+	 * Creates a {@link Value} wrapping the map.
+	 * 
+	 * @return the {@link Value} representation of this map
+	 */
+	public Value toValue() {
+		return Value.complex(this);
+	}
+
+	/**
+	 * Get the value for the given key.
+	 * 
+	 * @param key the key
+	 * @return the value or the NULL value, never <code>null</code>
+	 */
+	public Value getSafe(Value key) {
+		Value val = get(key);
+		if (val == null) {
+			val = Value.NULL;
+		}
+		return val;
+	}
+
 }
