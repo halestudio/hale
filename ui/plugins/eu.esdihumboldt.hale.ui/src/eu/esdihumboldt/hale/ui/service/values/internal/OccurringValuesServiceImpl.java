@@ -351,7 +351,7 @@ public class OccurringValuesServiceImpl extends AbstractOccurringValuesService {
 							IOConfiguration conf = resource.copyConfiguration(true);
 
 							TransformDataImportAdvisor advisor = new TransformDataImportAdvisor();
-							ProjectResourcesUtil.executeConfiguration(conf, advisor, false);
+							ProjectResourcesUtil.executeConfiguration(conf, advisor, false, null);
 
 							if (advisor.getInstances() != null) {
 								sources.add(advisor.getInstances());

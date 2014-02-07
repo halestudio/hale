@@ -24,7 +24,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.w3c.dom.Node;
+import org.w3c.dom.Element;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -53,7 +53,7 @@ public class HaleSchemaWriter extends AbstractSchemaWriter {
 		try (OutputStream out = getTarget().getOutput()) {
 			// create DOM
 			NSDOMBuilder builder = SchemaToXml.createBuilder();
-			Node root = (Node) SchemaToXml.schemasToXml(builder, getSchemas().getSchemas());
+			Element root = SchemaToXml.schemasToXml(builder, getSchemas().getSchemas());
 
 			// configure transformer for serialization
 			Transformer transformer = TransformerFactory.newInstance().newTransformer();

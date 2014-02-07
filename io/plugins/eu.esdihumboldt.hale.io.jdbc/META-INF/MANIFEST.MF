@@ -19,6 +19,7 @@ Import-Package: com.google.common.base;version="1.0.0",
  de.cs3d.util.eclipse.extension.simple,
  de.cs3d.util.logging,
  eu.esdihumboldt.hale.common.instance.groovy,
+ eu.esdihumboldt.hale.common.schema.persist,
  eu.esdihumboldt.util.groovy.builder,
  org.slf4j;version="1.5.11"
 Export-Package: eu.esdihumboldt.hale.io.jdbc,

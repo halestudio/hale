@@ -10,21 +10,25 @@ package eu.esdihumboldt.hale.common.core.io.project.model.internal.generated;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
+import org.w3c.dom.Element;
 
 
 /**
- * <p>Java class for ProjectFileType complex type.
+ * <p>Java class for ValueType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ProjectFileType">
+ * &lt;complexType name="ValueType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="location" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;sequence>
+ *         &lt;any/>
+ *       &lt;/sequence>
+ *       &lt;attribute name="value" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -33,60 +37,62 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ProjectFileType")
-public class ProjectFileType {
+@XmlType(name = "ValueType", propOrder = {
+    "any"
+})
+public class ValueType {
 
-    @XmlAttribute(required = true)
-    protected String name;
-    @XmlAttribute(required = true)
-    protected String location;
+    @XmlAnyElement
+    protected Element any;
+    @XmlAttribute
+    protected String value;
 
     /**
-     * Gets the value of the name property.
+     * Gets the value of the any property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Element }
+     *     
+     */
+    public Element getAny() {
+        return any;
+    }
+
+    /**
+     * Sets the value of the any property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Element }
+     *     
+     */
+    public void setAny(Element value) {
+        this.any = value;
+    }
+
+    /**
+     * Gets the value of the value property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getName() {
-        return name;
+    public String getValue() {
+        return value;
     }
 
     /**
-     * Sets the value of the name property.
+     * Sets the value of the value property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setName(String value) {
-        this.name = value;
-    }
-
-    /**
-     * Gets the value of the location property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getLocation() {
-        return location;
-    }
-
-    /**
-     * Sets the value of the location property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setLocation(String value) {
-        this.location = value;
+    public void setValue(String value) {
+        this.value = value;
     }
 
 }

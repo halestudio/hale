@@ -25,6 +25,7 @@ import de.cs3d.util.eclipse.extension.FactoryFilter;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
+import eu.esdihumboldt.hale.common.core.io.CachingImportProvider;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -152,6 +153,9 @@ public abstract class HeadlessIO {
 
 				// configure settings
 				provider.loadConfiguration(conf.getProviderConfiguration());
+				if (provider instanceof CachingImportProvider) {
+					((CachingImportProvider) provider).setCache(conf.getCache());
+				}
 			} catch (Exception e) {
 				log.error("Could not instantiate I/O provider.", e);
 			}

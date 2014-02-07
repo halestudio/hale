@@ -49,6 +49,7 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
 import de.fhg.igd.osgi.util.configuration.AbstractDefaultConfigurationService;
+import eu.esdihumboldt.hale.common.core.io.CachingImportProvider;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
@@ -77,6 +78,7 @@ import eu.esdihumboldt.hale.ui.io.project.OpenProjectWizard;
 import eu.esdihumboldt.hale.ui.io.project.SaveProjectWizard;
 import eu.esdihumboldt.hale.ui.io.util.ThreadProgressMonitor;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
+import eu.esdihumboldt.hale.ui.service.project.CacheCallback;
 import eu.esdihumboldt.hale.ui.service.project.ProjectResourcesUtil;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.RecentProjectsService;
@@ -379,13 +381,22 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	 * 
 	 * @param conf the I/O configuration
 	 */
-	private void executeConfiguration(IOConfiguration conf) {
+	private void executeConfiguration(final IOConfiguration conf) {
 		// work with a cloned configuration for the case that we make a relative
 		// URI absolute
-		conf = conf.clone();
-		updater.updateIOConfiguration(conf, false);
+		IOConfiguration cloned = conf.clone();
+		updater.updateIOConfiguration(cloned, false);
 
-		ProjectResourcesUtil.executeConfiguration(conf);
+		ProjectResourcesUtil.executeConfiguration(cloned, new CacheCallback() {
+
+			@Override
+			public void update(Value cache) {
+				// update the original configuration with the new cache value
+				conf.setCache(cache);
+				// set the project status to changed
+				setChanged();
+			}
+		});
 	}
 
 	private boolean internalClean() {
@@ -470,7 +481,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			// configure reader
 			reader.setSource(new DefaultInputSupplier(uri));
 
-			ProjectResourcesUtil.executeProvider(reader, openProjectAdvisor);
+			ProjectResourcesUtil.executeProvider(reader, openProjectAdvisor, null);
 		}
 		else {
 			log.userError("The project format is not supported.");
@@ -483,7 +494,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		// loaded
 
 		ProjectReader reader = new DummyProjectReader(project);
-		ProjectResourcesUtil.executeProvider(reader, openProjectAdvisor);
+		ProjectResourcesUtil.executeProvider(reader, openProjectAdvisor, null);
 	}
 
 	/**
@@ -585,7 +596,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					// moved externally)
 					writer.setTarget(new FileIOSupplier(projectFile));
 
-					ProjectResourcesUtil.executeProvider(writer, saveProjectAdvisor);
+					ProjectResourcesUtil.executeProvider(writer, saveProjectAdvisor, null);
 				}
 				else {
 					log.info("The project cannot be saved because the format the project was saved with is not available or has changed.");
@@ -599,7 +610,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				ProjectWriter writer = HaleIO.findIOProvider(ProjectWriter.class,
 						new FileIOSupplier(projectFile), projectFile.getAbsolutePath());
 				if (writer != null) {
-					ProjectResourcesUtil.executeProvider(writer, saveProjectAdvisor);
+					ProjectResourcesUtil.executeProvider(writer, saveProjectAdvisor, null);
 				}
 				else {
 					log.error("The project cannot be saved because the format is not available.");
@@ -768,6 +779,9 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		conf.setActionId(actionId);
 		conf.setProviderId(providerId);
 		provider.storeConfiguration(conf.getProviderConfiguration());
+		if (provider instanceof CachingImportProvider) {
+			conf.setCache(((CachingImportProvider) provider).getCache());
+		}
 
 		// add configuration to project
 		synchronized (this) {

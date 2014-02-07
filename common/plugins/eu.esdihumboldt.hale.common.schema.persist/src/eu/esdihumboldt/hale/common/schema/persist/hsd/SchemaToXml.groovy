@@ -60,7 +60,7 @@ class SchemaToXml implements HaleSchemaConstants {
 	 * @param schemas the schemas to serialize
 	 * @return the builder return value for the schemas element
 	 */
-	static def schemasToXml(NSDOMBuilder b, Iterable<? extends Schema> schemas) {
+	static Element schemasToXml(NSDOMBuilder b, Iterable<? extends Schema> schemas) throws Exception {
 		b 'hsd:schemas', {
 			schemas.each { Schema schema ->
 				schemaToXml(b, schema)
@@ -75,7 +75,7 @@ class SchemaToXml implements HaleSchemaConstants {
 	 * @param schemas the schema to serialize
 	 * @return the builder return value for the schema element
 	 */
-	static def schemaToXml(NSDOMBuilder b, Schema schema) {
+	static Element schemaToXml(NSDOMBuilder b, Schema schema) throws Exception {
 		def attributes = [:]
 		if (schema.namespace) {
 			attributes['namespace'] = schema.namespace
@@ -128,7 +128,7 @@ class SchemaToXml implements HaleSchemaConstants {
 	 *   to an string index as reference
 	 * @return the builder return value for the type element
 	 */
-	static def typeToXml(NSDOMBuilder b, TypeDefinition type, Map<TypeDefinition, String> typeIndex) {
+	static Element typeToXml(NSDOMBuilder b, TypeDefinition type, Map<TypeDefinition, String> typeIndex) throws Exception {
 		// prepare attributes
 		def attributes = [:]
 		String index = typeIndex.get(type)
