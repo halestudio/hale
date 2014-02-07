@@ -15,7 +15,7 @@
 
 package eu.esdihumboldt.hale.common.schema.io.impl;
 
-import eu.esdihumboldt.hale.common.core.io.impl.AbstractExportProvider;
+import eu.esdihumboldt.hale.common.core.io.impl.GZipEnabledExport;
 import eu.esdihumboldt.hale.common.schema.io.SchemaWriter;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 
@@ -24,7 +24,7 @@ import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
  * 
  * @author Simon Templer
  */
-public abstract class AbstractSchemaWriter extends AbstractExportProvider implements SchemaWriter {
+public abstract class AbstractSchemaWriter extends GZipEnabledExport implements SchemaWriter {
 
 	private SchemaSpace schemas;
 

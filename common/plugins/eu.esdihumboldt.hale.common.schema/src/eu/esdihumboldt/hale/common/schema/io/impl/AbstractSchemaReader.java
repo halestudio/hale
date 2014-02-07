@@ -16,7 +16,7 @@
 
 package eu.esdihumboldt.hale.common.schema.io.impl;
 
-import eu.esdihumboldt.hale.common.core.io.impl.AbstractImportProvider;
+import eu.esdihumboldt.hale.common.core.io.impl.GZipEnabledImport;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
@@ -26,7 +26,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
  * 
  * @author Simon Templer
  */
-public abstract class AbstractSchemaReader extends AbstractImportProvider implements SchemaReader {
+public abstract class AbstractSchemaReader extends GZipEnabledImport implements SchemaReader {
 
 	private TypeIndex sharedTypes;
 
