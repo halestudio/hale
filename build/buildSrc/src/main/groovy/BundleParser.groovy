@@ -70,6 +70,13 @@ class BundleParser {
 		if (!hasNature(path, 'org.eclipse.pde.PluginNature'))
 			return false
 			
+		// skip projects where the specified OS does not match the build
+		def os = project.ext.osSpecificBundles[sname]
+		if (os && !os.any { it == project.ext.osgiOS}) {
+			// OS information is there but does not match
+			return false
+		}
+			
 		true
 	}
 
