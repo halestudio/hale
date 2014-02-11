@@ -32,6 +32,7 @@ import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.function.common.PropertyEntityDialog;
 import eu.esdihumboldt.hale.ui.function.common.TypeEntityDialog;
 import eu.esdihumboldt.hale.ui.service.align.resolver.internal.EntityCandidates;
@@ -56,8 +57,10 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 			// use PropertyEntityDialog as fall-back
 			final EntityDefinition candidate = EntityCandidates.find(entity, schema, schemaSpace);
 			if (candidate != null) {
-				EntityDefinitionService es = null;
-				// FIXME ensure is present in EDS
+				// ensure the corresponding contexts are present
+				EntityDefinitionService es = HaleUI.getServiceProvider().getService(
+						EntityDefinitionService.class);
+				es.addContexts(candidate);
 			}
 			final AtomicReference<EntityDefinition> result = new AtomicReference<>();
 			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
@@ -100,8 +103,10 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 			// use TypeEntityDialog as fall-back
 			final EntityDefinition candidate = EntityCandidates.find(entity, schema, schemaSpace);
 			if (candidate != null) {
-				EntityDefinitionService es = null;
-				// FIXME ensure is present in EDS
+				// ensure the corresponding contexts are present
+				EntityDefinitionService es = HaleUI.getServiceProvider().getService(
+						EntityDefinitionService.class);
+				es.addContexts(candidate);
 			}
 			final AtomicReference<EntityDefinition> result = new AtomicReference<>();
 			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
