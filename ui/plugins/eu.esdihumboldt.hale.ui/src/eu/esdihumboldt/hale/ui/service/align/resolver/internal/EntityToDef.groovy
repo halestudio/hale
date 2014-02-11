@@ -30,6 +30,7 @@ import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionMan
 import eu.esdihumboldt.hale.common.instance.model.Filter
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
+import eu.esdihumboldt.hale.common.schema.model.constraint.DisplayName
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition
 import groovy.transform.TypeChecked
@@ -44,6 +45,11 @@ import groovy.transform.TypeChecked
 @SuppressWarnings("restriction")
 class EntityToDef {
 
+	/**
+	 * Postfix for display names for dummy types and properties. 
+	 */
+	private static final String NAME_POSTFIX = '*'
+
 	static EntityDefinition toDummyDef(AbstractEntityType entity, SchemaSpaceID schemaSpace) {
 		// delegate to concrete methods
 		toDummyDef(entity, schemaSpace)
@@ -54,7 +60,9 @@ class EntityToDef {
 	}
 
 	static TypeEntityDefinition toDummyDef(ClassType.Type clazz, SchemaSpaceID schemaSpace) {
-		toDef(clazz, new DefaultTypeDefinition(new QName(clazz.ns, clazz.name)), schemaSpace)
+		DefaultTypeDefinition typeDef = new DefaultTypeDefinition(new QName(clazz.ns, clazz.name))
+		typeDef.setConstraint(new DisplayName(clazz.name + NAME_POSTFIX))
+		toDef(clazz, typeDef, schemaSpace)
 	}
 
 	static TypeEntityDefinition toDef(ClassType.Type clazz, TypeDefinition type, SchemaSpaceID schemaSpace) {
@@ -76,8 +84,9 @@ class EntityToDef {
 
 		property.child.eachWithIndex { ChildContextType cct, int index ->
 			// create child for parent type
-			DefaultTypeDefinition propertyType = new DefaultTypeDefinition(new QName("UnknownPropertyType_$index"))
+			DefaultTypeDefinition propertyType = new DefaultTypeDefinition(new QName("UnknownPropertyType_${index}"))
 			DefaultPropertyDefinition propDef = new DefaultPropertyDefinition(new QName(cct.ns, cct.name), parentType, propertyType)
+			propDef.setConstraint(new DisplayName(cct.name + NAME_POSTFIX))
 
 			// create child context
 			Condition condition = null

@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.ui.service.align.resolver;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.jface.window.Window;
@@ -36,6 +37,7 @@ import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.function.common.PropertyEntityDialog;
 import eu.esdihumboldt.hale.ui.function.common.TypeEntityDialog;
 import eu.esdihumboldt.hale.ui.service.align.resolver.internal.EntityCandidates;
+import eu.esdihumboldt.hale.ui.service.align.resolver.internal.EntityToDef;
 import eu.esdihumboldt.hale.ui.service.align.resolver.internal.ViewerEntityTray;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 
@@ -63,6 +65,7 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 				es.addContexts(candidate);
 			}
 			final AtomicReference<EntityDefinition> result = new AtomicReference<>();
+			final AtomicBoolean canceled = new AtomicBoolean(false);
 			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 
 				@Override
@@ -81,11 +84,19 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 					if (dlg.open() == Window.OK) {
 						result.set(dlg.getObject());
 					}
+					else {
+						canceled.set(true);
+					}
 				}
 			});
 			EntityDefinition def = result.get();
-			if (def == null) {
-				// XXX caller should deal with invalid cells
+			if (canceled.get()) {
+				// return a dummy so the cell is not lost
+				return new DefaultProperty((PropertyEntityDefinition) EntityToDef.toDummyDef(
+						entity, schemaSpace));
+			}
+			else if (def == null) {
+				// caller must take care about this
 				return null;
 			}
 			else {
@@ -109,6 +120,7 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 				es.addContexts(candidate);
 			}
 			final AtomicReference<EntityDefinition> result = new AtomicReference<>();
+			final AtomicBoolean canceled = new AtomicBoolean(false);
 			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 
 				@Override
@@ -127,11 +139,18 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 					if (dlg.open() == Window.OK) {
 						result.set(dlg.getObject());
 					}
+					else {
+						canceled.set(true);
+					}
 				}
 			});
 			EntityDefinition def = result.get();
-			if (def == null) {
-				// XXX caller should deal with invalid cells
+			if (canceled.get()) {
+				// return a dummy so the cell is not lost
+				return new DefaultType(EntityToDef.toDummyDef(entity, schemaSpace));
+			}
+			else if (def == null) {
+				// caller must take care about this
 				return null;
 			}
 			else {
