@@ -34,6 +34,9 @@ import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.ui.function.common.PropertyEntityDialog;
 import eu.esdihumboldt.hale.ui.function.common.TypeEntityDialog;
+import eu.esdihumboldt.hale.ui.service.align.resolver.internal.EntityCandidates;
+import eu.esdihumboldt.hale.ui.service.align.resolver.internal.ViewerEntityTray;
+import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 
 /**
  * Entity resolver that asks the user for replacement of entities that were not
@@ -51,6 +54,11 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 			return super.resolveProperty(entity, schema, schemaSpace);
 		} catch (RuntimeException e) {
 			// use PropertyEntityDialog as fall-back
+			final EntityDefinition candidate = EntityCandidates.find(entity, schema, schemaSpace);
+			if (candidate != null) {
+				EntityDefinitionService es = null;
+				// FIXME ensure is present in EDS
+			}
 			final AtomicReference<EntityDefinition> result = new AtomicReference<>();
 			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 
@@ -58,12 +66,12 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 				public void run() {
 					PropertyEntityDialog dlg = new PropertyEntityDialog(Display.getCurrent()
 							.getActiveShell(), schemaSpace, null,
-							"Cell entity could not be resolved", null) {
+							"Cell entity could not be resolved", candidate) {
 
 						@Override
 						public void create() {
 							super.create();
-							openTray(new ViewerEntityTray(entity));
+							openTray(new ViewerEntityTray(entity, schemaSpace));
 						}
 
 					};
@@ -90,6 +98,11 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 			return super.resolveType(entity, schema, schemaSpace);
 		} catch (RuntimeException e) {
 			// use TypeEntityDialog as fall-back
+			final EntityDefinition candidate = EntityCandidates.find(entity, schema, schemaSpace);
+			if (candidate != null) {
+				EntityDefinitionService es = null;
+				// FIXME ensure is present in EDS
+			}
 			final AtomicReference<EntityDefinition> result = new AtomicReference<>();
 			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 
@@ -97,12 +110,12 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 				public void run() {
 					TypeEntityDialog dlg = new TypeEntityDialog(Display.getCurrent()
 							.getActiveShell(), schemaSpace, "Cell entity could not be resolved",
-							null, true) {
+							candidate, true) {
 
 						@Override
 						public void create() {
 							super.create();
-							openTray(new ViewerEntityTray(entity));
+							openTray(new ViewerEntityTray(entity, schemaSpace));
 						}
 
 					};

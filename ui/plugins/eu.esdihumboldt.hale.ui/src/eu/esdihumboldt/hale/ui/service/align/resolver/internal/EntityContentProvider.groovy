@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.service.align.resolver;
+package eu.esdihumboldt.hale.ui.service.align.resolver.internal;
 
 import org.eclipse.jface.viewers.ArrayContentProvider
 import org.eclipse.jface.viewers.ITreeContentProvider

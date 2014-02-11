@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.service.align.resolver
+package eu.esdihumboldt.hale.ui.service.align.resolver.internal
 
 import javax.xml.namespace.QName
 
@@ -36,36 +36,38 @@ import groovy.transform.TypeChecked
 
 
 /**
- * Creates dummy entity definitions for {@link AbstractEntityType}s.
+ * Creates (dummy) entity definitions for {@link AbstractEntityType}s.
  * 
  * @author Simon Templer
  */
 @TypeChecked
 @SuppressWarnings("restriction")
-class EntityToDummyDef {
+class EntityToDef {
 
-	static EntityDefinition toDef(AbstractEntityType entity) {
+	static EntityDefinition toDummyDef(AbstractEntityType entity, SchemaSpaceID schemaSpace) {
 		// delegate to concrete methods
-		toDef(entity)
+		toDummyDef(entity, schemaSpace)
 	}
 
-	static TypeEntityDefinition toDef(ClassType clazz) {
-		toDef(clazz.type)
+	static TypeEntityDefinition toDummyDef(ClassType clazz, SchemaSpaceID schemaSpace) {
+		toDummyDef(clazz.type, schemaSpace)
 	}
 
-	static TypeEntityDefinition toDef(ClassType.Type clazz) {
-		TypeDefinition type = new DefaultTypeDefinition(new QName(clazz.ns, clazz.name))
+	static TypeEntityDefinition toDummyDef(ClassType.Type clazz, SchemaSpaceID schemaSpace) {
+		toDef(clazz, new DefaultTypeDefinition(new QName(clazz.ns, clazz.name)), schemaSpace)
+	}
 
+	static TypeEntityDefinition toDef(ClassType.Type clazz, TypeDefinition type, SchemaSpaceID schemaSpace) {
 		Filter filter = null
 		if (clazz.condition) {
 			filter = FilterDefinitionManager.instance.from(clazz.condition.lang, clazz.condition.value)
 		}
 
-		new TypeEntityDefinition(type, SchemaSpaceID.SOURCE, filter)
+		new TypeEntityDefinition(type, schemaSpace, filter)
 	}
 
-	static EntityDefinition toDef(PropertyType property) {
-		TypeEntityDefinition typeEntity = toDef(property.type)
+	static EntityDefinition toDummyDef(PropertyType property, SchemaSpaceID schemaSpace) {
+		TypeEntityDefinition typeEntity = toDummyDef(property.type, schemaSpace)
 
 		DefaultTypeDefinition typeDef = (DefaultTypeDefinition) typeEntity.definition
 		DefaultTypeDefinition parentType = typeDef
@@ -90,6 +92,6 @@ class EntityToDummyDef {
 			parentType = propertyType
 		}
 
-		new PropertyEntityDefinition(typeDef, path, SchemaSpaceID.SOURCE, typeEntity.filter)
+		new PropertyEntityDefinition(typeDef, path, schemaSpace, typeEntity.filter)
 	}
 }

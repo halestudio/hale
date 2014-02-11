@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.service.align.resolver;
+package eu.esdihumboldt.hale.ui.service.align.resolver.internal;
 
 import java.util.Collections;
 
@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Label;
 
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AbstractEntityType;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.StyledDefinitionLabelProvider;
 
 /**
@@ -43,9 +44,10 @@ public class ViewerEntityTray extends DialogTray {
 
 	/**
 	 * @param entity the JAXB entity
+	 * @param schemaSpace the schema space
 	 */
-	public ViewerEntityTray(AbstractEntityType entity) {
-		this.entity = EntityToDummyDef.toDef(entity);
+	public ViewerEntityTray(AbstractEntityType entity, SchemaSpaceID schemaSpace) {
+		this.entity = EntityToDef.toDummyDef(entity, schemaSpace);
 	}
 
 	@Override
