@@ -63,7 +63,7 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 						@Override
 						public void create() {
 							super.create();
-							openTray(new EntityTray(entity));
+							openTray(new ViewerEntityTray(entity));
 						}
 
 					};
@@ -102,7 +102,7 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 						@Override
 						public void create() {
 							super.create();
-							openTray(new EntityTray(entity));
+							openTray(new ViewerEntityTray(entity));
 						}
 
 					};

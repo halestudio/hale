@@ -44,14 +44,14 @@ import groovy.xml.XmlUtil;
  * @author Simon Templer
  */
 @SuppressWarnings("restriction")
-public class EntityTray extends DialogTray {
+public class TextEntityTray extends DialogTray {
 
 	private final AbstractEntityType entity;
 
 	/**
 	 * @param entity the JAXB entity
 	 */
-	public EntityTray(AbstractEntityType entity) {
+	public TextEntityTray(AbstractEntityType entity) {
 		this.entity = entity;
 	}
 
