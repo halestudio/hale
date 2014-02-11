@@ -17,6 +17,7 @@
 package eu.esdihumboldt.util.validator;
 
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Validator for a specific set of allowed inputs.
@@ -64,6 +65,13 @@ public class EnumerationValidator extends AbstractValidator {
 			buf.append(s);
 		}
 		return buf.toString();
+	}
+
+	/**
+	 * @return the allowed values
+	 */
+	public Collection<String> getValues() {
+		return Collections.unmodifiableCollection(values);
 	}
 
 	/**

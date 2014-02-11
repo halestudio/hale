@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import eu.esdihumboldt.hale.common.core.io.CachingImportProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueExtension;
@@ -39,6 +40,14 @@ public class IOConfiguration implements Serializable, Cloneable {
 	private String providerId;
 
 	private String name;
+
+	/**
+	 * Value that optionally stores cached information or the cached resource
+	 * and may be updated when the {@link IOConfiguration} is executed.
+	 * 
+	 * @see CachingImportProvider
+	 */
+	private Value cache;
 
 	private final Map<String, Value> providerConfiguration = new HashMap<String, Value>();
 
@@ -61,6 +70,7 @@ public class IOConfiguration implements Serializable, Cloneable {
 		copy.setActionId(getActionId());
 		copy.setProviderId(getProviderId());
 		copy.setName(getName());
+		copy.setCache(getCache());
 
 		copy.getProviderConfiguration().putAll(getProviderConfiguration());
 
@@ -118,6 +128,24 @@ public class IOConfiguration implements Serializable, Cloneable {
 	 */
 	public Map<String, Value> getProviderConfiguration() {
 		return providerConfiguration;
+	}
+
+	/**
+	 * @return the cached value
+	 */
+	public Value getCache() {
+		if (cache == null)
+			return Value.NULL;
+		return cache;
+	}
+
+	/**
+	 * Sets the cached value.
+	 * 
+	 * @param cache the cached value
+	 */
+	public void setCache(Value cache) {
+		this.cache = cache;
 	}
 
 }

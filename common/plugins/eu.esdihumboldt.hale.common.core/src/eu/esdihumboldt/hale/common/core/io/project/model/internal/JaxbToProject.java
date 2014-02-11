@@ -34,6 +34,7 @@ import eu.esdihumboldt.hale.common.core.io.project.model.internal.generated.IOCo
 import eu.esdihumboldt.hale.common.core.io.project.model.internal.generated.ProjectFileType;
 import eu.esdihumboldt.hale.common.core.io.project.model.internal.generated.ProjectType;
 import eu.esdihumboldt.hale.common.core.io.project.model.internal.generated.PropertyType;
+import eu.esdihumboldt.hale.common.core.io.project.model.internal.generated.ValueType;
 
 /**
  * Converts a JAXB {@link ProjectType} to a {@link Project}.
@@ -111,6 +112,19 @@ public class JaxbToProject {
 			else if (value instanceof ComplexPropertyType) {
 				addProperty(result.getProviderConfiguration(), (ComplexPropertyType) value);
 			}
+		}
+
+		// cache
+		ValueType cache = config.getCache();
+		if (cache != null) {
+			Value value = Value.NULL;
+			if (cache.getAny() != null) {
+				value = new ElementValue(cache.getAny(), null);
+			}
+			else if (cache.getValue() != null) {
+				value = Value.of(cache.getValue());
+			}
+			result.setCache(value);
 		}
 
 		return result;

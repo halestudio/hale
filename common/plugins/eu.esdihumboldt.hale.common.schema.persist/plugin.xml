@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.io.provider">
+      <provider
+            class="eu.esdihumboldt.hale.common.schema.persist.hsd.HaleSchemaWriter"
+            description="HALE native schema format"
+            id="eu.esdihumboldt.hale.common.schema.persist.hsd.write"
+            name="HALE Schema Definition">
+         <contentType
+               ref="eu.esdihumboldt.hale.common.schema.hsd">
+         </contentType>
+         <contentType
+               ref="eu.esdihumboldt.hale.common.schema.hsd.gzip">
+         </contentType>
+      </provider>
+      <provider
+            class="eu.esdihumboldt.hale.common.schema.persist.hsd.HaleSchemaReader"
+            id="eu.esdihumboldt.hale.common.schema.persist.hsd.read"
+            name="HALE Schema Definition">
+         <contentType
+               ref="eu.esdihumboldt.hale.common.schema.hsd">
+         </contentType>
+         <contentType
+               ref="eu.esdihumboldt.hale.common.schema.hsd.gzip">
+         </contentType>
+      </provider>
+   </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="hsd,haleschema"
+            id="eu.esdihumboldt.hale.common.schema.hsd"
+            name="HALE Schema Definition"
+            priority="normal">
+         <describer
+               class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+            <parameter
+                  name="element"
+                  value="{http://www.esdi-humboldt.eu/hale/schema}schema">
+            </parameter>
+            <parameter
+                  name="element"
+                  value="{http://www.esdi-humboldt.eu/hale/schema}schemas">
+            </parameter>
+         </describer>
+      </content-type>
+      <content-type
+            base-type="eu.esdihumboldt.hale.common.core.gzip"
+            file-extensions="hsd.gz,haleschema.gz"
+            id="eu.esdihumboldt.hale.common.schema.hsd.gzip"
+            name="GZiped HALE Schema Definition"
+            priority="normal">
+         <describer
+               class="eu.esdihumboldt.hale.common.core.io.util.GZipXMLRootElementContentDescriber">
+            <parameter
+                  name="element"
+                  value="{http://www.esdi-humboldt.eu/hale/schema}schema">
+            </parameter>
+            <parameter
+                  name="element"
+                  value="{http://www.esdi-humboldt.eu/hale/schema}schemas">
+            </parameter>
+         </describer>
+      </content-type>
+   </extension>
+
+</plugin>

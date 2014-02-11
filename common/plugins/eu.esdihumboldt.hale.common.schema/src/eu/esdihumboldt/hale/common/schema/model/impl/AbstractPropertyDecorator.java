@@ -110,6 +110,11 @@ public abstract class AbstractPropertyDecorator implements PropertyDefinition {
 		return property.getConstraint(constraintType);
 	}
 
+	@Override
+	public Iterable<PropertyConstraint> getExplicitConstraints() {
+		return property.getExplicitConstraints();
+	}
+
 	/**
 	 * @see PropertyDefinition#getDeclaringGroup()
 	 */

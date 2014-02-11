@@ -196,7 +196,7 @@ class SchemaBuilder extends BuilderBase {
 			}
 		}
 		else {
-			//TODO
+			throw new IllegalStateException("${parent.class.name} as parent not supported")
 		}
 
 		node
@@ -315,6 +315,7 @@ class SchemaBuilder extends BuilderBase {
 	 *   associated factories
 	 * @param params the additional parameters
 	 */
+	@CompileStatic(TypeCheckingMode.SKIP)
 	protected void addConstraints(AbstractDefinition definition, Map attributes, List params) {
 		// add constraints from attributes
 		attributes?.each { key, value ->

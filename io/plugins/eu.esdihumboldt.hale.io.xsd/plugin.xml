@@ -39,5 +39,33 @@
          </contentType>
       </advisor>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.schema.valueconstraint">
+      <valueconstraint
+            factory="eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.factory.XLinkReferenceFactory"
+            id="xsd.xlink"
+            type="eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.XLinkReference">
+      </valueconstraint>
+      <valueconstraint
+            factory="eu.esdihumboldt.hale.io.xsd.constraint.factory.XmlAttributeFlagFactory"
+            id="xsd.attribute"
+            type="eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag">
+      </valueconstraint>
+      <valueconstraint
+            factory="eu.esdihumboldt.hale.io.xsd.constraint.factory.RestrictionFlagFactory"
+            id="xsd.restriction"
+            type="eu.esdihumboldt.hale.io.xsd.constraint.RestrictionFlag">
+      </valueconstraint>
+      <valueconstraint
+            factory="eu.esdihumboldt.hale.io.xsd.constraint.factory.XmlMixedFlagFactory"
+            id="xsd.mixed"
+            type="eu.esdihumboldt.hale.io.xsd.constraint.XmlMixedFlag">
+      </valueconstraint>
+      <valueconstraint
+            factory="eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.factory.SkipGeometryValidationFactory"
+            id="xsd.skip-geometry-validation"
+            type="eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.SkipGeometryValidation">
+      </valueconstraint>
+   </extension>
 
 </plugin>

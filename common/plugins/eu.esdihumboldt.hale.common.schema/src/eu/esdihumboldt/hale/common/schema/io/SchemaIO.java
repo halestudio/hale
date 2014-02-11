@@ -54,6 +54,18 @@ public abstract class SchemaIO {
 	public static final String ACTION_LOAD_TARGET_SCHEMA = "eu.esdihumboldt.hale.io.schema.read.target";
 
 	/**
+	 * ID of the action to export the target schemas. Reflects the ID defined in
+	 * the extension.
+	 */
+	public static final String ACTION_EXPORT_TARGET_SCHEMAS = "eu.esdihumboldt.hale.io.schema.export.target";
+
+	/**
+	 * ID of the action to export the source schemas. Reflects the ID defined in
+	 * the extension.
+	 */
+	public static final String ACTION_EXPORT_SOURCE_SCHEMAS = "eu.esdihumboldt.hale.io.schema.export.source";
+
+	/**
 	 * Creates a schema reader instance
 	 * 
 	 * @param contentType the content type the provider must match, may be

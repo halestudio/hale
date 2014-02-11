@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
+
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -59,6 +61,8 @@ import org.eclipse.ui.dialogs.PatternFilter;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionExtension;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
@@ -73,6 +77,7 @@ import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.core.io.impl.ComplexValue;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -99,6 +104,8 @@ import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
  * @author Kai Schwierczek
  */
 public class JoinParameterPage extends AbstractParameterPage implements JoinFunction {
+
+	private static final ALogger log = ALoggerFactory.getLogger(JoinParameterPage.class);
 
 	private final List<ConditionPage> pages = new ArrayList<ConditionPage>();
 	private List<TypeEntityDefinition> types = new ArrayList<TypeEntityDefinition>();
@@ -872,7 +879,22 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 
 		private List<ChildDefinition<?>> getPrimaryKeyPath(TypeDefinition type) {
 			PrimaryKey key = type.getConstraint(PrimaryKey.class);
-			List<ChildDefinition<?>> path = key.getPrimaryKeyPath();
+
+			List<ChildDefinition<?>> path = new ArrayList<>();
+			Definition<?> parent = type;
+
+			List<QName> namePath = key.getPrimaryKeyPath();
+			for (QName name : namePath) {
+				ChildDefinition<?> child = DefinitionUtil.getChild(parent, name);
+				if (child == null) {
+					log.error("Primary key property path could not be resolved in type "
+							+ type.getName());
+					return null;
+				}
+				path.add(child);
+				parent = child;
+			}
+
 			if (key.hasPrimaryKey() && path.get(path.size() - 1) instanceof PropertyDefinition)
 				return path;
 			else

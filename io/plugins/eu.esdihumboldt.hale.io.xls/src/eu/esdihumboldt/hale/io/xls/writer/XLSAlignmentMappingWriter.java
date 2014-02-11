@@ -23,9 +23,6 @@ import java.util.Map;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.DataFormat;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -40,6 +37,7 @@ import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.io.csv.writer.AbstractAlignmentMappingExport;
 import eu.esdihumboldt.hale.io.csv.writer.CellInformation;
 import eu.esdihumboldt.hale.io.csv.writer.CellType;
+import eu.esdihumboldt.hale.io.xls.XLSCellStyles;
 
 /**
  * Provider to write the alignment to a xls/xlsx file
@@ -81,77 +79,21 @@ public class XLSAlignmentMappingWriter extends AbstractAlignmentMappingExport {
 		workbook.setSheetName(0, "Mapping table");
 		Row row = null;
 		Cell cell = null;
-		DataFormat df = workbook.createDataFormat();
 
 		// create cell style of the header
-		CellStyle headerStyle = workbook.createCellStyle();
-		Font headerFont = workbook.createFont();
-		// use bold font
-		headerFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
-		headerStyle.setFont(headerFont);
-		// set a medium border
-		headerStyle.setBorderBottom(CellStyle.BORDER_MEDIUM);
-		// set cell data format to text
-		headerStyle.setDataFormat(df.getFormat("@"));
+		CellStyle headerStyle = XLSCellStyles.getHeaderStyle(workbook);
 
 		// create cell style
-		CellStyle cellStyle = workbook.createCellStyle();
-		// set thin border around the cell
-		cellStyle.setBorderBottom(CellStyle.BORDER_THIN);
-		cellStyle.setBorderLeft(CellStyle.BORDER_THIN);
-		cellStyle.setBorderRight(CellStyle.BORDER_THIN);
-		// set cell data format to text
-		cellStyle.setDataFormat(df.getFormat("@"));
-		// display multiple lines
-		cellStyle.setWrapText(true);
+		CellStyle cellStyle = XLSCellStyles.getNormalStyle(workbook, false);
 
 		// create highlight style for type cells
-		CellStyle highlightStyle = workbook.createCellStyle();
-		// set thin border around the cell
-		highlightStyle.setBorderBottom(CellStyle.BORDER_THIN);
-		highlightStyle.setBorderLeft(CellStyle.BORDER_THIN);
-		highlightStyle.setBorderRight(CellStyle.BORDER_THIN);
-		// set cell data format to text
-		highlightStyle.setDataFormat(df.getFormat("@"));
-		// display multiple lines
-		highlightStyle.setWrapText(true);
-		highlightStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
-		highlightStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		CellStyle highlightStyle = XLSCellStyles.getHighlightedStyle(workbook, false);
 
 		// create disabled style
-		CellStyle disabledStyle = workbook.createCellStyle();
-		// set thin border around the cell
-		disabledStyle.setBorderBottom(CellStyle.BORDER_THIN);
-		disabledStyle.setBorderLeft(CellStyle.BORDER_THIN);
-		disabledStyle.setBorderRight(CellStyle.BORDER_THIN);
-		// set cell data format to text
-		disabledStyle.setDataFormat(df.getFormat("@"));
-		// display multiple lines
-		disabledStyle.setWrapText(true);
-		// strike out font
-		Font disabledFont = workbook.createFont();
-		disabledFont.setStrikeout(true);
-		disabledFont.setColor(IndexedColors.GREY_40_PERCENT.getIndex());
-		disabledStyle.setFont(disabledFont);
+		CellStyle disabledStyle = XLSCellStyles.getNormalStyle(workbook, true);
 
 		// create disabled highlight style
-		CellStyle disabledTypeStyle = workbook.createCellStyle();
-		// set thin border around the cell
-		disabledTypeStyle.setBorderBottom(CellStyle.BORDER_THIN);
-		disabledTypeStyle.setBorderLeft(CellStyle.BORDER_THIN);
-		disabledTypeStyle.setBorderRight(CellStyle.BORDER_THIN);
-		// set cell data format to text
-		disabledTypeStyle.setDataFormat(df.getFormat("@"));
-		// display multiple lines
-		disabledTypeStyle.setWrapText(true);
-		disabledTypeStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
-		disabledTypeStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
-		// strike out font
-		Font disabledTypeFont = workbook.createFont();
-		disabledTypeFont.setStrikeout(true);
-		disabledTypeFont.setColor(IndexedColors.BLACK.getIndex());
-		disabledStyle.setFont(disabledTypeFont);
-		disabledTypeStyle.setFont(disabledTypeFont);
+		CellStyle disabledTypeStyle = XLSCellStyles.getHighlightedStyle(workbook, true);
 
 		List<Map<CellType, CellInformation>> mapping = getMappingList();
 

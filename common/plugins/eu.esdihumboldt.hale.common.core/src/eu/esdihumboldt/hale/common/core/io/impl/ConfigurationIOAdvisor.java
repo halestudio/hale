@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.hale.common.core.io.impl;
 
+import eu.esdihumboldt.hale.common.core.io.CachingImportProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 
@@ -69,6 +70,9 @@ public class ConfigurationIOAdvisor<T extends IOProvider> extends AbstractIOAdvi
 		if (conf != null) {
 			// load the configuration from the IOConfiguration object
 			provider.loadConfiguration(conf.getProviderConfiguration());
+			if (provider instanceof CachingImportProvider) {
+				((CachingImportProvider) provider).setCache(conf.getCache());
+			}
 		}
 	}
 

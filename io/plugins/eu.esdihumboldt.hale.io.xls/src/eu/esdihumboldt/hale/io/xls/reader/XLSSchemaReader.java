@@ -24,7 +24,6 @@ import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
-import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
@@ -52,24 +51,7 @@ import eu.esdihumboldt.hale.io.xls.AnalyseXLSSchemaTable;
  */
 public class XLSSchemaReader extends AbstractTableSchemaReader {
 
-	private DefaultSchema schema;
 	private List<String> header = new ArrayList<String>();
-
-	/**
-	 * @see eu.esdihumboldt.hale.common.schema.io.SchemaReader#getSchema()
-	 */
-	@Override
-	public Schema getSchema() {
-		return schema;
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.IOProvider#isCancelable()
-	 */
-	@Override
-	public boolean isCancelable() {
-		return false;
-	}
 
 	@Override
 	public void validate() throws IOProviderConfigurationException {
@@ -79,17 +61,13 @@ public class XLSSchemaReader extends AbstractTableSchemaReader {
 		}
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#execute(eu.esdihumboldt.hale.common.core.io.ProgressIndicator,
-	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
-	 */
 	@Override
-	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
+	protected Schema loadFromSource(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 		progress.begin("Load XLS/XLSX schema", ProgressIndicator.UNKNOWN);
 
 		String namespace = "http://www.esdi-humboldt.eu/hale/csv";
-		schema = new DefaultSchema(namespace, getSource().getLocation());
+		DefaultSchema schema = new DefaultSchema(namespace, getSource().getLocation());
 		AnalyseXLSSchemaTable analyser;
 
 		try {
@@ -101,7 +79,7 @@ public class XLSSchemaReader extends AbstractTableSchemaReader {
 			if (typename == null || typename.isEmpty()) {
 				reporter.setSuccess(false);
 				reporter.error(new IOMessageImpl("No Typename was set", null));
-				return reporter;
+				return null;
 			}
 			DefaultTypeDefinition type = new DefaultTypeDefinition(new QName(typename));
 
@@ -169,11 +147,11 @@ public class XLSSchemaReader extends AbstractTableSchemaReader {
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl("Cannot load xls/xlsx schema", e));
 			reporter.setSuccess(false);
-			return reporter;
+			return null;
 		}
 
 		reporter.setSuccess(true);
-		return reporter;
+		return schema;
 	}
 
 	/**

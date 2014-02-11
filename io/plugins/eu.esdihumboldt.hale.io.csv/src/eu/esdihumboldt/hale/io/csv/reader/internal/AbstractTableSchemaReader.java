@@ -15,14 +15,14 @@
 
 package eu.esdihumboldt.hale.io.csv.reader.internal;
 
-import eu.esdihumboldt.hale.common.schema.io.impl.AbstractSchemaReader;
+import eu.esdihumboldt.hale.common.schema.persist.AbstractCachedSchemaReader;
 
 /**
  * Abstract schema reader for tables (e.g. csv/xls files)
  * 
  * @author Patrick Lieb
  */
-public abstract class AbstractTableSchemaReader extends AbstractSchemaReader {
+public abstract class AbstractTableSchemaReader extends AbstractCachedSchemaReader {
 
 	/**
 	 * Name of the parameter specifying the property name

@@ -16,9 +16,13 @@
 
 package eu.esdihumboldt.hale.common.schema.model.impl.internal;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.jcip.annotations.Immutable;
 import eu.esdihumboldt.hale.common.schema.model.PropertyConstraint;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.ConstraintUtil;
 import eu.esdihumboldt.hale.common.schema.model.impl.AbstractDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.AbstractPropertyDecorator;
 
@@ -64,6 +68,24 @@ public class ConstraintOverrideProperty extends AbstractPropertyDecorator {
 		}
 
 		return super.getConstraint(constraintType);
+	}
+
+	@Override
+	public Iterable<PropertyConstraint> getExplicitConstraints() {
+		// maps constraint types to constraints
+		Map<Class<?>, PropertyConstraint> constraintMap = new HashMap<>();
+
+		// add all explicit constraints from decoratee
+		for (PropertyConstraint constraint : super.getExplicitConstraints()) {
+			constraintMap.put(ConstraintUtil.getConstraintType(constraint.getClass()), constraint);
+		}
+
+		// replace with override constraints
+		for (PropertyConstraint constraint : constraints.getExplicitConstraints()) {
+			constraintMap.put(ConstraintUtil.getConstraintType(constraint.getClass()), constraint);
+		}
+
+		return constraintMap.values();
 	}
 
 }

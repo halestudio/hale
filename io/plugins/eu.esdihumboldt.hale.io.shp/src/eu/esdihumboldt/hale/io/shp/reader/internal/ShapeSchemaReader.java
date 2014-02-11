@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.io.shp.reader.internal;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.Collection;
 
@@ -31,17 +32,13 @@ import org.opengis.feature.type.Name;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
-import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
-import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
-import eu.esdihumboldt.hale.common.schema.io.impl.AbstractSchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
@@ -54,6 +51,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantF
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
+import eu.esdihumboldt.hale.common.schema.persist.AbstractCachedSchemaReader;
 import eu.esdihumboldt.hale.io.shp.ShapefileConstants;
 import eu.esdihumboldt.hale.io.shp.internal.Messages;
 
@@ -63,31 +61,10 @@ import eu.esdihumboldt.hale.io.shp.internal.Messages;
  * @author Thorsten Reitz
  * @author Simon Templer
  */
-public class ShapeSchemaReader extends AbstractSchemaReader implements ShapefileConstants {
+public class ShapeSchemaReader extends AbstractCachedSchemaReader implements ShapefileConstants {
 
-	private DefaultSchema schema;
-
-	/**
-	 * @see IOProvider#isCancelable()
-	 */
 	@Override
-	public boolean isCancelable() {
-		return false;
-	}
-
-	/**
-	 * @see SchemaReader#getSchema()
-	 */
-	@Override
-	public Schema getSchema() {
-		return schema;
-	}
-
-	/**
-	 * @see AbstractIOProvider#execute(ProgressIndicator, IOReporter)
-	 */
-	@Override
-	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
+	protected Schema loadFromSource(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 		progress.begin(Messages.getString("ShapeSchemaProvider.1"), ProgressIndicator.UNKNOWN); //$NON-NLS-1$
 
@@ -99,7 +76,7 @@ public class ShapeSchemaReader extends AbstractSchemaReader implements Shapefile
 
 		// TODO namespace from configuration parameter?!
 		String namespace = ShapefileConstants.SHAPEFILE_NS;
-		schema = new DefaultSchema(namespace, getSource().getLocation());
+		DefaultSchema schema = new DefaultSchema(namespace, getSource().getLocation());
 
 		progress.setCurrentTask(Messages.getString("ShapeSchemaProvider.2")); //$NON-NLS-1$
 
@@ -165,13 +142,13 @@ public class ShapeSchemaReader extends AbstractSchemaReader implements Shapefile
 		}
 
 		reporter.setSuccess(true);
-		return reporter;
+		return schema;
 	}
 
 	@Override
 	protected Charset getDefaultCharset() {
 		// default charset: ISO-8859-1
-		return Charset.forName("ISO-8859-1");
+		return StandardCharsets.ISO_8859_1;
 	}
 
 	/**
