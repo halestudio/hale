@@ -15,12 +15,12 @@
 
 package eu.esdihumboldt.hale.common.align.groovy.accessor
 
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ChildContextType
 import eu.esdihumboldt.hale.common.align.model.ChildContext
-import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
-import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
-import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID
 import eu.esdihumboldt.hale.common.schema.groovy.SchemaBuilder
-import eu.esdihumboldt.hale.common.schema.model.Definition
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 
 
@@ -30,6 +30,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
  * 
  * @author Simon Templer
  */
+@SuppressWarnings("restriction")
 class EntityAccessorTest extends GroovyTestCase {
 
 	private static final String MAIN_NS = 'http://www.example.com'
@@ -69,7 +70,7 @@ class EntityAccessorTest extends GroovyTestCase {
 	 */
 	void testMetaClass() {
 		TypeEntityDefinition itemEntity = new TypeEntityDefinition(itemType, SchemaSpaceID.SOURCE, null)
-		
+
 		EntityDefinition definition = itemEntity.accessor().price as EntityDefinition
 		assertNotNull definition
 	}
@@ -79,7 +80,7 @@ class EntityAccessorTest extends GroovyTestCase {
 	 */
 	void testSimpleAll() {
 		TypeEntityDefinition itemEntity = new TypeEntityDefinition(itemType, SchemaSpaceID.SOURCE, null)
-		
+
 		def names = new EntityAccessor(itemEntity).name.all()
 
 		assertNotNull names
@@ -102,9 +103,9 @@ class EntityAccessorTest extends GroovyTestCase {
 		EntityDefinition itemPrices = new EntityAccessor(orderEntity).item(filter: 'parent.quantity > 1').price as EntityDefinition
 
 		assertNotNull itemPrices
-		
+
 		assertEquals 3, itemPrices.propertyPath.size()
-		
+
 		ChildContext itemContext = itemPrices.propertyPath[1]
 		assertNotNull itemContext.condition.filter
 	}
@@ -116,9 +117,46 @@ class EntityAccessorTest extends GroovyTestCase {
 		TypeEntityDefinition itemEntity = new TypeEntityDefinition(itemType, SchemaSpaceID.SOURCE, null)
 		EntityDefinition name = new EntityAccessor(itemEntity).name(SPECIAL_NS, 0) as EntityDefinition
 		assertNotNull name
-		
+
 		assertEquals 2, name.propertyPath.size()
-		
+
+		ChildContext nameContext = name.propertyPath[1]
+		assertNull nameContext.condition
+		assertNull nameContext.contextName
+		assertEquals 0, nameContext.index
+	}
+
+	/**
+	 * Test w/ a fixed namespace and an index context when expecting a unique result.
+	 */
+	void testNamespaceIndexChildContext() {
+		ChildContext testContext = new ChildContext(null, 0, null, null)
+
+		TypeEntityDefinition itemEntity = new TypeEntityDefinition(itemType, SchemaSpaceID.SOURCE, null)
+		EntityDefinition name = new EntityAccessor(itemEntity).name(SPECIAL_NS, testContext) as EntityDefinition
+		assertNotNull name
+
+		assertEquals 2, name.propertyPath.size()
+
+		ChildContext nameContext = name.propertyPath[1]
+		assertNull nameContext.condition
+		assertNull nameContext.contextName
+		assertEquals 0, nameContext.index
+	}
+
+	/**
+	 * Test w/ a fixed namespace and an index context when expecting a unique result.
+	 */
+	void testNamespaceIndexChildContextType() {
+		ChildContextType testContext = new ChildContextType()
+		testContext.index = 0
+
+		TypeEntityDefinition itemEntity = new TypeEntityDefinition(itemType, SchemaSpaceID.SOURCE, null)
+		EntityDefinition name = new EntityAccessor(itemEntity).name(SPECIAL_NS, testContext) as EntityDefinition
+		assertNotNull name
+
+		assertEquals 2, name.propertyPath.size()
+
 		ChildContext nameContext = name.propertyPath[1]
 		assertNull nameContext.condition
 		assertNull nameContext.contextName
@@ -139,5 +177,4 @@ class EntityAccessorTest extends GroovyTestCase {
 
 		fail()
 	}
-
 }

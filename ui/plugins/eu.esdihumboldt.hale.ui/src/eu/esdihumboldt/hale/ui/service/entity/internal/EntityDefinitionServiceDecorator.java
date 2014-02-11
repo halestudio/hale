@@ -55,6 +55,11 @@ public class EntityDefinitionServiceDecorator implements EntityDefinitionService
 		return entityDefinitionService.getChildren(entity);
 	}
 
+	@Override
+	public void addContexts(EntityDefinition entityDef) {
+		entityDefinitionService.addContexts(entityDef);
+	}
+
 	/**
 	 * @see eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService#getTypeEntities(eu.esdihumboldt.hale.common.schema.model.TypeDefinition,
 	 *      eu.esdihumboldt.hale.common.schema.SchemaSpaceID)

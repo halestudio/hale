@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.ui.service.internal;
 import org.eclipse.ui.services.AbstractServiceFactory;
 import org.eclipse.ui.services.IServiceLocator;
 
+import eu.esdihumboldt.hale.common.align.io.EntityResolver;
 import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityService;
 import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
 import eu.esdihumboldt.hale.ui.compatibility.extension.impl.CompatibilityServiceImpl;
@@ -26,6 +27,7 @@ import eu.esdihumboldt.hale.ui.geometry.service.GeometrySchemaService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.internal.AlignmentServiceImpl;
 import eu.esdihumboldt.hale.ui.service.align.internal.AlignmentServiceUndoSupport;
+import eu.esdihumboldt.hale.ui.service.align.resolver.UserFallbackEntityResolver;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 import eu.esdihumboldt.hale.ui.service.entity.internal.EntityDefinitionServiceImpl;
 import eu.esdihumboldt.hale.ui.service.entity.internal.EntityDefinitionServiceUndoSupport;
@@ -139,6 +141,10 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 		if (InstanceViewService.class.equals(serviceInterface)) {
 			return new InstanceViewServiceImpl(
 					(ProjectService) locator.getService(ProjectService.class));
+		}
+
+		if (EntityResolver.class.equals(serviceInterface)) {
+			return new UserFallbackEntityResolver();
 		}
 
 		return null;

@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.common.align.groovy.accessor
 
 import eu.esdihumboldt.hale.common.align.groovy.accessor.internal.EntityAccessorUtil
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ChildContextType
 import eu.esdihumboldt.hale.common.align.model.ChildContext
 import eu.esdihumboldt.hale.common.align.model.Condition
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition
@@ -39,6 +40,7 @@ import groovy.transform.TypeCheckingMode
  * 
  * @author Simon Templer
  */
+@SuppressWarnings("restriction")
 @CompileStatic
 class EntityAccessor extends AbstractAccessor<PathElement> {
 
@@ -192,6 +194,23 @@ class EntityAccessor extends AbstractAccessor<PathElement> {
 							// target only supports name
 								contextName = value
 								break;
+						}
+					}
+					else if (it instanceof ChildContext) {
+						// copy from ChildContext
+						contextName = it.contextName
+						condition = it.condition
+						index = it.index
+					}
+					else if (it instanceof ChildContextType) {
+						// copy from ChildContextType
+						contextName = it.context as Integer
+						index = it.index as Integer
+						if (it.condition) {
+							Filter filter = FilterDefinitionManager.instance.from(it.condition.lang, it.condition.value)
+							if (filter) {
+								condition = new Condition(filter)
+							}
 						}
 					}
 					else {
