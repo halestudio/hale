@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.ui.util.selector;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -46,7 +47,8 @@ import org.eclipse.swt.widgets.ToolBar;
  * @param <V> the type of the viewer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewer> extends Dialog {
+public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewer> extends
+		TrayDialog {
 
 	private static final int NONE_ID = IDialogConstants.CLIENT_ID + 1;
 
