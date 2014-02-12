@@ -30,6 +30,7 @@ import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.InstanceBuilderCompletions;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.PageHelp;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray;
@@ -37,8 +38,8 @@ import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray.TypeP
 import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
 import eu.esdihumboldt.hale.ui.util.groovy.ast.GroovyAST;
 import eu.esdihumboldt.hale.ui.util.source.CompilingSourceViewer;
+import eu.esdihumboldt.util.groovy.sandbox.GroovyService;
 import groovy.lang.Binding;
-import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 
 /**
@@ -93,12 +94,13 @@ public class GroovyCreatePage extends GroovyScriptPage {
 		InstanceBuilder builder = new InstanceBuilder(false);
 		Binding binding = GroovyCreate.createBinding(0, builder);
 
-		GroovyShell shell = GroovyUtil.createShell(binding);
+		GroovyService service = HaleUI.getServiceProvider().getService(GroovyService.class);;
 		Script script = null;
 		try {
-			script = shell.parse(document);
+			service.parseScript(document, binding);
 
-			GroovyUtil.evaluate(script, builder, typeEntity.getDefinition().getDefinition());
+			GroovyUtil.evaluate(script, builder, typeEntity.getDefinition().getDefinition(),
+					service);
 		} catch (final Exception e) {
 			return handleValidationResult(script, e);
 		}

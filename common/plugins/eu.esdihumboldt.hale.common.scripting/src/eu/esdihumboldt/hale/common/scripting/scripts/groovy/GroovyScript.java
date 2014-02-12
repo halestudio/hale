@@ -17,7 +17,6 @@ package eu.esdihumboldt.hale.common.scripting.scripts.groovy;
 
 import javax.script.ScriptException;
 
-import org.codehaus.groovy.control.CompilationFailedException;
 import org.springframework.core.convert.ConversionException;
 
 import com.google.common.base.Function;
@@ -27,8 +26,10 @@ import com.google.common.collect.Lists;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.scripting.Script;
+import eu.esdihumboldt.util.groovy.sandbox.GroovyService;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.MissingPropertyException;
@@ -41,21 +42,19 @@ import groovy.lang.MissingPropertyException;
 public class GroovyScript implements Script {
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.scripting.Script#evaluate(java.lang.String,
-	 *      java.lang.Iterable)
+	 * @see Script#evaluate(String, Iterable, ServiceProvider)
 	 */
 	@Override
-	public Object evaluate(String script, Iterable<PropertyValue> variables) throws ScriptException {
+	public Object evaluate(String script, Iterable<PropertyValue> variables,
+			ServiceProvider provider) throws ScriptException {
 		Binding binding = createGroovyBinding(variables, true);
-
+		GroovyService service = provider.getService(GroovyService.class);
 		Object result;
 		try {
-			GroovyShell shell = new GroovyShell(binding);
-			result = shell.evaluate(script);
+			result = service.evaluate(service.parseScript(script, binding));
 		} catch (Exception e) {
 			throw new ScriptException(e);
 		} catch (Throwable t) {
-			// XXX ScriptEngine's constructor does not allow a Throwable?
 			throw new ScriptException(t.toString());
 		}
 
@@ -71,7 +70,8 @@ public class GroovyScript implements Script {
 	 * 
 	 * FIXME why is here an additional implementation of this as already used in
 	 * GroovyTransformation? Could the implementation in GroovyTransformation be
-	 * used instead?
+	 * used instead? FIXME It could (should?) only be the other way around
+	 * (because of dependencies); or it should be at another "common"-place
 	 * 
 	 * @param variables the variables
 	 * @param useNullForMissingBindings if the binding should provide
@@ -154,19 +154,18 @@ public class GroovyScript implements Script {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.scripting.Script#validate(java.lang.String,
-	 *      java.lang.Iterable)
+	 * @see Script#validate(String, Iterable, ServiceProvider)
 	 */
 	@Override
-	public String validate(String script, Iterable<PropertyValue> variables) {
+	public String validate(String script, Iterable<PropertyValue> variables,
+			ServiceProvider provider) {
 		Binding binding = createGroovyBinding(variables, false);
 
+		GroovyService service = provider.getService(GroovyService.class);
+
 		try {
-			GroovyShell shell = new GroovyShell(binding);
-			shell.parse(script);
-			// TODO Also run the script? Since it is dynamically typed, parsing
-			// alone is probably not enough.
-		} catch (CompilationFailedException e) {
+			service.evaluate(service.parseScript(script, binding));
+		} catch (Exception e) {
 			return e.getLocalizedMessage();
 		}
 

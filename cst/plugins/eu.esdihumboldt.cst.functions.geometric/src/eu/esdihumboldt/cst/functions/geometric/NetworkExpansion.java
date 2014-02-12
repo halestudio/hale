@@ -79,7 +79,7 @@ public class NetworkExpansion extends
 			MathScript mathScript = new MathScript();
 			try {
 				Object result = mathScript.evaluate(bufferWidthString,
-						variables.get(ENTITY_VARIABLE));
+						variables.get(ENTITY_VARIABLE), getExecutionContext());
 				bufferWidth = ConversionUtil.getAs(result, Double.class);
 			} catch (ScriptException e1) {
 				throw new TransformationException("Failed to evaluate buffer width expression.", e1);
