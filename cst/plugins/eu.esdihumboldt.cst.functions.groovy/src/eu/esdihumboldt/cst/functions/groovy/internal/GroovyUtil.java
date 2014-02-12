@@ -42,6 +42,30 @@ import groovy.lang.Script;
 public class GroovyUtil implements GroovyConstants {
 
 	/**
+	 * Get the script string.
+	 * 
+	 * @param function the transformation function the script is associated to
+	 * @return the script string
+	 * @throws TransformationException if getting the script parameter from the
+	 *             function fails
+	 */
+	public static String getScript(AbstractTransformationFunction<?> function)
+			throws TransformationException {
+		ParameterValue scriptValue = function.getParameterChecked(PARAMETER_SCRIPT);
+		String script;
+		// try retrieving as text
+		Text text = scriptValue.as(Text.class);
+		if (text != null) {
+			script = text.getText();
+		}
+		else {
+			// fall back to string value
+			script = scriptValue.as(String.class);
+		}
+		return script;
+	}
+
+	/**
 	 * Get the compiled script.
 	 * 
 	 * @param function the transformation function the script is associated to
@@ -75,18 +99,7 @@ public class GroovyUtil implements GroovyConstants {
 		Script groovyScript = localScript.get();
 		if (groovyScript == null) {
 			// create the script
-			ParameterValue scriptValue = function.getParameterChecked(PARAMETER_SCRIPT);
-
-			String script;
-			// try retrieving as text
-			Text text = scriptValue.as(Text.class);
-			if (text != null) {
-				script = text.getText();
-			}
-			else {
-				// fall back to string value
-				script = scriptValue.as(String.class);
-			}
+			String script = getScript(function);
 
 			groovyScript = createShell(null).parse(script);
 			localScript.set(groovyScript);
