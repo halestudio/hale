@@ -489,5 +489,12 @@
             file="help/contexts.xml">
       </contexts>
    </extension>
+   <extension
+         point="eu.esdihumboldt.util.groovy.sandbox">
+      <allow
+            allowAll="false"
+            class="eu.esdihumboldt.hale.common.align.transformation.function.impl.FamilyInstanceImpl">
+      </allow>
+   </extension>
 
 </plugin>

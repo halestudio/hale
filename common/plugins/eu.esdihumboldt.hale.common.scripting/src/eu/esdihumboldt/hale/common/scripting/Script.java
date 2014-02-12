@@ -20,6 +20,7 @@ import javax.script.ScriptException;
 
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
  * Interface for the scripting extension.
@@ -28,10 +29,6 @@ import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
  */
 public interface Script {
 
-	// XXX Further allow some configuration settings for the script execution?
-	// For example class loader for Groovy.
-	// -> ClassLoader for groovy should be the BundleActivator's ClassLoader?
-	// -> should be custom classloader that goes through all bundles?
 	// XXX Allow testing the return type via validate or somehow else?
 
 	/**
@@ -39,20 +36,24 @@ public interface Script {
 	 * 
 	 * @param script the script to use
 	 * @param variables the variables to use
+	 * @param provider the service provider
 	 * @return the result of the evaluation
 	 * @throws ScriptException if the evaluation fails
 	 */
-	public Object evaluate(String script, Iterable<PropertyValue> variables) throws ScriptException;
+	public Object evaluate(String script, Iterable<PropertyValue> variables,
+			ServiceProvider provider) throws ScriptException;
 
 	/**
 	 * Validates the given script against the given variables
 	 * 
 	 * @param script the script to validate
 	 * @param variables the variables to use
+	 * @param provider the service provider
 	 * @return <code>null</code> if the script validates, an error message
 	 *         otherwise
 	 */
-	public String validate(String script, Iterable<PropertyValue> variables);
+	public String validate(String script, Iterable<PropertyValue> variables,
+			ServiceProvider provider);
 
 	/**
 	 * Returns the string representation of the given entity definition this
