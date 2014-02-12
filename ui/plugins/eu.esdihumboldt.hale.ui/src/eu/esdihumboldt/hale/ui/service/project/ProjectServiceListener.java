@@ -42,6 +42,13 @@ public interface ProjectServiceListener {
 	public void beforeSave(ProjectService projectService, Map<String, ProjectFile> projectFiles);
 
 	/**
+	 * Called after a project is saved.
+	 * 
+	 * @param projectService the calling project service
+	 */
+	public void afterSave(ProjectService projectService);
+
+	/**
 	 * Called after a project was loaded.
 	 * 
 	 * @param projectService the calling project service

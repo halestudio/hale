@@ -8,5 +8,16 @@
             implementation="eu.esdihumboldt.hale.common.instance.groovy.meta.InstanceAccessorMetaClass">
       </metaClass>
    </extension>
+   <extension
+         point="eu.esdihumboldt.util.groovy.sandbox">
+      <allow
+            allowAll="true"
+            class="eu.esdihumboldt.hale.common.instance.groovy.InstanceAccessor">
+      </allow>
+      <allow
+            allowAll="true"
+            class="eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder">
+      </allow>
+   </extension>
 
 </plugin>

@@ -17,9 +17,6 @@ package eu.esdihumboldt.cst.functions.groovy.internal;
 
 import java.util.Map;
 
-import org.codehaus.groovy.control.CompilerConfiguration;
-import org.kohsuke.groovy.sandbox.SandboxTransformer;
-
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
@@ -29,9 +26,9 @@ import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.util.groovy.sandbox.GroovyService;
 import groovy.lang.Binding;
 import groovy.lang.Closure;
-import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 
 /**
@@ -42,17 +39,42 @@ import groovy.lang.Script;
 public class GroovyUtil implements GroovyConstants {
 
 	/**
+	 * Get the script string.
+	 * 
+	 * @param function the transformation function the script is associated to
+	 * @return the script string
+	 * @throws TransformationException if getting the script parameter from the
+	 *             function fails
+	 */
+	public static String getScriptString(AbstractTransformationFunction<?> function)
+			throws TransformationException {
+		ParameterValue scriptValue = function.getParameterChecked(PARAMETER_SCRIPT);
+		String script;
+		// try retrieving as text
+		Text text = scriptValue.as(Text.class);
+		if (text != null) {
+			script = text.getText();
+		}
+		else {
+			// fall back to string value
+			script = scriptValue.as(String.class);
+		}
+		return script;
+	}
+
+	/**
 	 * Get the compiled script.
 	 * 
 	 * @param function the transformation function the script is associated to
 	 * @param binding the binding to set on the script
+	 * @param service the Groovy service
 	 * @return the script
 	 * @throws TransformationException if getting the script parameter from the
 	 *             function fails
 	 */
 	@SuppressWarnings("unchecked")
-	public static Script getScript(AbstractTransformationFunction<?> function, Binding binding)
-			throws TransformationException {
+	public static Script getScript(AbstractTransformationFunction<?> function, Binding binding,
+			GroovyService service) throws TransformationException {
 		/*
 		 * The compiled script is stored in a ThreadLocal variable in the
 		 * execution context, so it needs only to be created once per
@@ -75,25 +97,12 @@ public class GroovyUtil implements GroovyConstants {
 		Script groovyScript = localScript.get();
 		if (groovyScript == null) {
 			// create the script
-			ParameterValue scriptValue = function.getParameterChecked(PARAMETER_SCRIPT);
+			String script = getScriptString(function);
 
-			String script;
-			// try retrieving as text
-			Text text = scriptValue.as(Text.class);
-			if (text != null) {
-				script = text.getText();
-			}
-			else {
-				// fall back to string value
-				script = scriptValue.as(String.class);
-			}
+			groovyScript = service.parseScript(script, binding);
 
-			groovyScript = createShell(null).parse(script);
 			localScript.set(groovyScript);
 		}
-
-		// set the binding
-		groovyScript.setBinding(binding);
 
 		return groovyScript;
 	}
@@ -104,41 +113,21 @@ public class GroovyUtil implements GroovyConstants {
 	 * @param script the script
 	 * @param builder the instance builder
 	 * @param type the type of the instance to create
+	 * @param service the Groovy service
 	 * @return the created instance
 	 */
 	public static MutableInstance evaluate(Script script, InstanceBuilder builder,
-			TypeDefinition type) {
-		RestrictiveGroovyInterceptor interceptor = new RestrictiveGroovyInterceptor();
-		interceptor.register();
-		try {
-			// run the script
-			script.run();
+			TypeDefinition type, GroovyService service) {
+		service.evaluate(script);
+		// run the script
+		script.run();
 
-			// retrieve the target builder closure
-			Closure<?> closure = (Closure<?>) script.getBinding().getVariable(BINDING_TARGET);
+		// retrieve the target builder closure
+		Closure<?> closure = (Closure<?>) script.getBinding().getVariable(BINDING_TARGET);
 
-			// create the instance
-			Instance instance = builder.createInstance(type, closure);
-			return (MutableInstance) instance;
-		} finally {
-			interceptor.unregister();
-		}
-	}
-
-	/**
-	 * Create a customized {@link GroovyShell}.
-	 * 
-	 * @param binding the binding, may be <code>null</code>
-	 * @return a customized {@link GroovyShell}
-	 */
-	public static GroovyShell createShell(Binding binding) {
-		// TODO use a specific classloader?
-		CompilerConfiguration cc = new CompilerConfiguration();
-		cc.addCompilationCustomizers(new SandboxTransformer());
-		if (binding != null)
-			return new GroovyShell(binding, cc);
-		else
-			return new GroovyShell(cc);
+		// create the instance
+		Instance instance = builder.createInstance(type, closure);
+		return (MutableInstance) instance;
 	}
 
 }
