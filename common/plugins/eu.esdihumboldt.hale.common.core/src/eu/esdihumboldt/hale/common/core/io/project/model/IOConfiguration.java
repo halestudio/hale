@@ -131,7 +131,8 @@ public class IOConfiguration implements Serializable, Cloneable {
 	}
 
 	/**
-	 * @return the cached value
+	 * @return the cached value, never <code>null</code>, but possibly the NULL
+	 *         value
 	 */
 	public Value getCache() {
 		if (cache == null)
