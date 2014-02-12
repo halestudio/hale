@@ -55,7 +55,8 @@ Import-Package: com.google.common.base;version="1.6.0",
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  org.castor.xml;bundle-version="1.3.0",
  eu.esdihumboldt.hale.common.schema;bundle-version="2.5.0",
- groovy;bundle-version="1.8.6"
+ groovy;bundle-version="1.8.6",
+ eu.esdihumboldt.util.groovy.sandbox
 Export-Package: eu.esdihumboldt.hale.common.align.compatibility,
  eu.esdihumboldt.hale.common.align.conditions,
  eu.esdihumboldt.hale.common.align.extension.annotation,

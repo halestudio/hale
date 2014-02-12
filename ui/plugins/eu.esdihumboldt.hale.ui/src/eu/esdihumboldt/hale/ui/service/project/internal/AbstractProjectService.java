@@ -65,6 +65,15 @@ public abstract class AbstractProjectService implements ProjectService {
 	}
 
 	/**
+	 * Call after a project is saved.
+	 */
+	protected void notifyAfterSave() {
+		for (ProjectServiceListener listener : listeners) {
+			listener.afterSave(this);
+		}
+	}
+
+	/**
 	 * Call after a project was loaded.
 	 * 
 	 * @param projectFiles the additional project files that were loaded,

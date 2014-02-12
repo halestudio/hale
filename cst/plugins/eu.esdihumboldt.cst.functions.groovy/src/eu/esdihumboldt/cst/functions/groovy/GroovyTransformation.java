@@ -26,7 +26,6 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.cst.functions.groovy.internal.GroovyUtil;
-import eu.esdihumboldt.cst.functions.groovy.internal.RestrictiveGroovyInterceptor;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
@@ -44,6 +43,7 @@ import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.util.groovy.sandbox.GroovyService;
 import groovy.lang.Binding;
 import groovy.lang.Closure;
 import groovy.lang.GroovyShell;
@@ -81,11 +81,12 @@ public class GroovyTransformation extends
 
 		Object result;
 		try {
-			Script groovyScript = GroovyUtil.getScript(this, binding);
+			GroovyService service = getExecutionContext().getService(GroovyService.class);
+			Script groovyScript = GroovyUtil.getScript(this, binding, service);
 
 			// evaluate the script
 			result = evaluate(groovyScript, builder, resultProperty.getDefinition()
-					.getPropertyType());
+					.getPropertyType(), service);
 		} catch (Throwable e) {
 			throw new TransformationException("Error evaluating the cell script", e);
 		}
@@ -102,48 +103,43 @@ public class GroovyTransformation extends
 	 * @param groovyScript the script
 	 * @param builder the instance builder, may be <code>null</code>
 	 * @param targetType the type definition of the target property
+	 * @param service the Groovy service
 	 * @return the result property value or instance
 	 */
 	public static Object evaluate(Script groovyScript, InstanceBuilder builder,
-			TypeDefinition targetType) {
-		RestrictiveGroovyInterceptor interceptor = new RestrictiveGroovyInterceptor();
-		interceptor.register();
-		try {
-			Object result = groovyScript.run();
+			TypeDefinition targetType, GroovyService service) {
+		Object result = service.evaluate(groovyScript);
 
-			if (builder != null) {
-				Object target = groovyScript.getBinding().getVariable(BINDING_TARGET);
-				if (target != null) {
-					if (target instanceof Closure<?>) {
-						// builder closure
-						Instance instance = builder.createInstance(targetType, (Closure<?>) target);
+		if (builder != null) {
+			Object target = groovyScript.getBinding().getVariable(BINDING_TARGET);
+			if (target != null) {
+				if (target instanceof Closure<?>) {
+					// builder closure
+					Instance instance = builder.createInstance(targetType, (Closure<?>) target);
 
-						/*
-						 * Set the instance value to the script result, if
-						 * different from the target closure.
-						 */
-						if (instance instanceof MutableInstance && result != target) {
-							((MutableInstance) instance).setValue(result);
-						}
-
-						result = instance;
+					/*
+					 * Set the instance value to the script result, if different
+					 * from the target closure.
+					 */
+					if (instance instanceof MutableInstance && result != target) {
+						((MutableInstance) instance).setValue(result);
 					}
-					else {
-						// treat target as value
-						// overriding the result
-						result = target;
-					}
+
+					result = instance;
+				}
+				else {
+					// treat target as value
+					// overriding the result
+					result = target;
 				}
 			}
-
-			if (result instanceof Closure<?>) {
-				throw new IllegalStateException("A closure cannnot be used as result");
-			}
-
-			return result;
-		} finally {
-			interceptor.unregister();
 		}
+
+		if (result instanceof Closure<?>) {
+			throw new IllegalStateException("A closure cannnot be used as result");
+		}
+
+		return result;
 	}
 
 	/**
@@ -247,16 +243,25 @@ public class GroovyTransformation extends
 
 			// add with long name if applicable
 			if (var.getProperty().getPropertyPath().size() > 1) {
-				List<String> names = new ArrayList<String>();
-				for (ChildContext context : var.getProperty().getPropertyPath()) {
-					names.add(context.getChild().getName().getLocalPart());
-				}
-				String longName = Joiner.on('_').join(names);
-				binding.setVariable(longName, value);
+				binding.setVariable(getVariableName(var.getProperty()), value);
 			}
 		}
 
 		return binding;
+	}
+
+	/**
+	 * Returns the full variable name used for the given entity definition.
+	 * 
+	 * @param entityDefinition the entity definition
+	 * @return the full variable name used
+	 */
+	public static String getVariableName(PropertyEntityDefinition entityDefinition) {
+		List<String> names = new ArrayList<String>();
+		for (ChildContext context : entityDefinition.getPropertyPath()) {
+			names.add(context.getChild().getName().getLocalPart());
+		}
+		return Joiner.on('_').join(names);
 	}
 
 }

@@ -30,6 +30,7 @@ import com.iabcinc.jmep.hooks.Constant;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.scripting.Script;
 
 /**
@@ -40,11 +41,11 @@ import eu.esdihumboldt.hale.common.scripting.Script;
 public class MathScript implements Script {
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.scripting.Script#evaluate(java.lang.String,
-	 *      java.lang.Iterable)
+	 * @see Script#evaluate(String, Iterable, ServiceProvider)
 	 */
 	@Override
-	public Object evaluate(String script, Iterable<PropertyValue> variables) throws ScriptException {
+	public Object evaluate(String script, Iterable<PropertyValue> variables,
+			ServiceProvider provider) throws ScriptException {
 		Object result;
 		try {
 			Expression ex = new Expression(script, createEnvironment(variables));
@@ -107,9 +108,6 @@ public class MathScript implements Script {
 				Lists.transform(entityDefinition.getPropertyPath(),
 						new Function<ChildContext, String>() {
 
-							/**
-							 * @see com.google.common.base.Function#apply(java.lang.Object)
-							 */
 							@Override
 							public String apply(ChildContext input) {
 								return input.getChild().getName().getLocalPart();
@@ -118,11 +116,11 @@ public class MathScript implements Script {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.scripting.Script#validate(java.lang.String,
-	 *      java.lang.Iterable)
+	 * @see Script#validate(String, Iterable, ServiceProvider)
 	 */
 	@Override
-	public String validate(String script, Iterable<PropertyValue> variables) {
+	public String validate(String script, Iterable<PropertyValue> variables,
+			ServiceProvider provider) {
 		try {
 			// without evaluate no check is done whether the used variables are
 			// actually available
