@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
 import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.util.groovy.sandbox.GroovyService;
 import groovy.lang.Binding;
 import groovy.lang.Script;
 
@@ -51,8 +52,9 @@ public class GroovyRetype extends AbstractTypeTransformation<TransformationEngin
 		Binding binding = createBinding(getSource(), builder);
 
 		try {
-			Script script = GroovyUtil.getScript(this, binding);
-			MutableInstance target = GroovyUtil.evaluate(script, builder, targetType);
+			GroovyService service = getExecutionContext().getService(GroovyService.class);
+			Script script = GroovyUtil.getScript(this, binding, service);
+			MutableInstance target = GroovyUtil.evaluate(script, builder, targetType, service);
 
 			getPropertyTransformer().publish(getSource(), target, log, cell);
 		} catch (TransformationException e) {

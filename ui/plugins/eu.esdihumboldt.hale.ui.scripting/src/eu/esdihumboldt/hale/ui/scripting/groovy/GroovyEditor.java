@@ -18,7 +18,6 @@ package eu.esdihumboldt.hale.ui.scripting.groovy;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecoration;
@@ -56,6 +55,7 @@ import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.PropertyValueImpl;
 import eu.esdihumboldt.hale.common.scripting.Script;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.editors.AbstractEditor;
 import eu.esdihumboldt.hale.ui.util.IColorManager;
@@ -192,9 +192,9 @@ public class GroovyEditor extends AbstractEditor<String> {
 	 * Validates the current input against the currently available variables.
 	 */
 	private void validate() {
-		// TODO validate actually only does a syntax check currently.
 		// also the returned type isn't checked.
-		String result = GroovyEditor.this.script.validate(currentValue, createPropertyValues());
+		String result = GroovyEditor.this.script.validate(currentValue, createPropertyValues(),
+				HaleUI.getServiceProvider());
 		boolean oldValid = valid;
 		valid = result == null;
 		if (valid)
@@ -215,12 +215,11 @@ public class GroovyEditor extends AbstractEditor<String> {
 	 *         {@link Script}
 	 */
 	protected Iterable<PropertyValue> createPropertyValues() {
-		Collection<PropertyValue> result = new ArrayList<PropertyValue>(variables.size());
-		List<PropertyValue> values = new ArrayList<PropertyValue>();
+		Collection<PropertyValue> values = new ArrayList<PropertyValue>(variables.size());
 		for (PropertyEntityDefinition property : variables)
 			values.add(new PropertyValueImpl(testValues.get(property), property));
 
-		return result;
+		return values;
 	}
 
 	/**
