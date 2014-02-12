@@ -40,6 +40,14 @@ public class ProjectServiceAdapter implements ProjectServiceListener {
 	}
 
 	/**
+	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectServiceListener#afterSave(eu.esdihumboldt.hale.ui.service.project.ProjectService)
+	 */
+	@Override
+	public void afterSave(ProjectService projectService) {
+		// override me
+	}
+
+	/**
 	 * @see ProjectServiceListener#afterLoad(ProjectService, Map)
 	 */
 	@Override

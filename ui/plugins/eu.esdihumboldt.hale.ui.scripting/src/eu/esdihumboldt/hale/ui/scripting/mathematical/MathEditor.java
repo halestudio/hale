@@ -48,6 +48,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.PropertyValueImpl;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.scripting.Script;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.editors.AbstractEditor;
 
@@ -165,7 +166,8 @@ public class MathEditor extends AbstractEditor<String> {
 	 * Validates the current input against the currently available variables.
 	 */
 	private void validate() {
-		String result = MathEditor.this.script.validate(currentValue, createPropertyValues());
+		String result = MathEditor.this.script.validate(currentValue, createPropertyValues(),
+				HaleUI.getServiceProvider());
 		boolean oldValid = valid;
 		valid = result == null;
 		if (result == null)
