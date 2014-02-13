@@ -21,8 +21,8 @@ import java.io.ByteArrayOutputStream;
 import com.tinkerpop.blueprints.Graph;
 import com.tinkerpop.blueprints.util.io.graphml.GraphMLWriter;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.cst.extension.hooks.TransformationTreeHook;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;

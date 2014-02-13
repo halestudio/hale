@@ -7,7 +7,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.base;version="9.0.0",
  com.google.common.io;version="9.0.0",
  com.sun.xml.bind.marshaller;version="2.1.7",
- de.cs3d.util.logging,
+ de.fhg.igd.slf4jplus,
  eu.esdihumboldt.cst.functions.geometric,
  eu.esdihumboldt.cst.functions.inspire,
  eu.esdihumboldt.cst.functions.numeric,

@@ -5,7 +5,7 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.io.xml;singleton:=true
 Bundle-Version: 2.8.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.io;version="1.6.0",
- de.cs3d.util.logging,
+ de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.cache,
  eu.esdihumboldt.hale.common.instance.io,
  eu.esdihumboldt.hale.common.instance.io.impl,

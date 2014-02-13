@@ -8,7 +8,7 @@ Webapp-Name: Manage projects
 Bundle-Vendor: Data Harmonisation Panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.io;version="11.0.1",
- de.cs3d.util.logging,
+ de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.core.io.project,
  eu.esdihumboldt.hale.common.headless.scavenger,
  eu.esdihumboldt.hale.server.projects,

@@ -34,8 +34,8 @@ import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
 import de.cs3d.util.eclipse.extension.ExtensionUtil;
 import de.cs3d.util.eclipse.extension.FactoryFilter;
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 

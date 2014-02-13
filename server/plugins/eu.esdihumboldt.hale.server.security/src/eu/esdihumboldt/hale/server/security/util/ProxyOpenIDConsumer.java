@@ -45,8 +45,8 @@ import org.springframework.security.openid.OpenIDConsumer;
 import org.springframework.security.openid.OpenIDConsumerException;
 import org.springframework.util.StringUtils;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 
 /**
  * OpenID consumer with support for being proxied, based on the

@@ -38,8 +38,8 @@ import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
 import org.apache.wicket.validation.validator.PatternValidator;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.server.projects.ProjectScavenger;
 import eu.esdihumboldt.hale.server.projects.war.pages.ProjectsPage;
 import eu.esdihumboldt.hale.server.webapp.components.FieldMessage;

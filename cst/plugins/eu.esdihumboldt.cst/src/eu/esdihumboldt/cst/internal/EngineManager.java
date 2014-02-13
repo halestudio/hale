@@ -20,8 +20,8 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.extension.engine.EngineExtension;
 import eu.esdihumboldt.hale.common.align.extension.engine.EngineFactory;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;

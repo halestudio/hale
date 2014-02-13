@@ -27,8 +27,8 @@ import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.ui.util.groovy.GroovyCompletionProposals;
 import eu.esdihumboldt.hale.ui.util.groovy.ast.GroovyAST;
 import eu.esdihumboldt.hale.ui.util.source.CompilingSourceViewer;

@@ -26,8 +26,8 @@ import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.util.Pair;
 import eu.esdihumboldt.util.PlatformUtil;
 

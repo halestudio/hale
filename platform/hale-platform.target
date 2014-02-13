@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="133">
+<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="136">
 <locations>
-<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="eu.esdihumboldt.hale.platform.feature.group" version="2.9.2"/>
-<repository location="http://hale.igd.fraunhofer.de/build-support/bacf57b15bfa9469939118afb9e4546dd28a80b3/updatesites/platform"/>
-</location>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.emf.sdk.feature.group" version="2.7.1.v20110913-1526"/>
 <unit id="org.eclipse.equinox.sdk.feature.group" version="3.7.1.R37x_v20110907-7M7W8h8eNV4Vrz-hz01A7SL_MhZP"/>
@@ -18,6 +14,15 @@
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.sdk.ide" version="3.7.1.M20110909-1335"/>
 <repository location="http://www.cityserver3d.de/updates/eclipse/updates/3.7"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="de.fhg.igd.slf4jplus.feature.feature.group" version="1.2.0.201402121942"/>
+<unit id="de.fhg.igd.slf4jplus.ui.feature.feature.group" version="1.2.0.201402121942"/>
+<repository location="http://hale.igd.fraunhofer.de/jenkins/view/Libraries/job/slf4jplus/8/updatesite"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="eu.esdihumboldt.hale.platform.feature.group" version="2.9.2"/>
+<repository location="http://hale.igd.fraunhofer.de/build-support/04704e0d5d1869303e951cd2b19c6f4c409e777b/updatesites/platform"/>
 </location>
 </locations>
 </target>
