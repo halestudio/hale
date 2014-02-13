@@ -14,7 +14,7 @@ Require-Bundle: org.eclipse.ui,
  com.tinkerpop.gremlin.groovy;bundle-version="2.4.0",
  com.tinkerpop.gremlin.java;bundle-version="2.4.0",
  com.tinkerpop.pipes;bundle-version="2.4.0"
-Import-Package: de.cs3d.util.logging,
+Import-Package: de.fhg.igd.slf4jplus,
  eu.esdihumboldt.cst.functions.core,
  eu.esdihumboldt.cst.functions.groovy,
  eu.esdihumboldt.cst.functions.groovy.internal,

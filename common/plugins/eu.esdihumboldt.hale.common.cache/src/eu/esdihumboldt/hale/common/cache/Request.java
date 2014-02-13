@@ -43,8 +43,8 @@ import org.apache.http.params.CoreConnectionPNames;
 
 import com.google.common.io.ByteStreams;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import de.fhg.igd.osgi.util.OsgiUtils;
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import de.fhg.igd.osgi.util.configuration.JavaPreferencesConfigurationService;

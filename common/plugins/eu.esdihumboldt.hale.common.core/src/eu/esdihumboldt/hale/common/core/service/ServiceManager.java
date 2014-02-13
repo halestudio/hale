@@ -18,8 +18,8 @@ package eu.esdihumboldt.hale.common.core.service;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.service.internal.ServiceFactoryDefinition;
 import eu.esdihumboldt.hale.common.core.service.internal.ServiceFactoryExtension;
 

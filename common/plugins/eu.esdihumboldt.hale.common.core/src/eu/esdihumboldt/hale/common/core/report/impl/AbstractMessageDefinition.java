@@ -21,8 +21,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Properties;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.report.Message;
 import eu.esdihumboldt.hale.common.core.report.MessageDefinition;
 import eu.esdihumboldt.util.definition.ObjectDefinition;

@@ -51,7 +51,6 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="cern.colt"/>
       <plugin id="ch.qos.logback.classic"/>
       <plugin id="ch.qos.logback.core"/>
-      <plugin id="ch.qos.logback.slf4j" fragment="true"/>
       <plugin id="com.google.appengine"/>
       <plugin id="com.google.guava"/>
       <plugin id="com.iabcinc.jmep"/>
@@ -83,6 +82,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="com.springsource.org.custommonkey.xmlunit"/>
       <plugin id="com.springsource.org.picocontainer"/>
       <plugin id="com.springsource.org.xmlpull"/>
+      <plugin id="com.sun.imageio.jai.tools"/>
       <plugin id="com.sun.jna"/>
       <plugin id="com.sun.xml.bind"/>
       <plugin id="com.sun.xml.fastinfoset"/>
@@ -96,14 +96,8 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="de.cs3d.common.metamodel"/>
       <plugin id="de.cs3d.ui.bookmarks"/>
       <plugin id="de.cs3d.ui.util.eclipse"/>
-      <plugin id="de.cs3d.ui.util.logging.errorlog"/>
-      <plugin id="de.cs3d.ui.util.logging.userstatus"/>
       <plugin id="de.cs3d.util.eclipse"/>
       <plugin id="de.cs3d.util.helper"/>
-      <plugin id="de.cs3d.util.logging"/>
-      <plugin id="de.cs3d.util.logging.logback"/>
-      <plugin id="de.cs3d.util.logging.logback.appender" fragment="true"/>
-      <plugin id="de.cs3d.util.logging.logback.observer"/>
       <plugin id="de.fhg.igd.concurrency"/>
       <plugin id="de.fhg.igd.hale.fme"/>
       <plugin id="de.fhg.igd.hale.fme.doc"/>
@@ -112,6 +106,12 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="de.fhg.igd.mapviewer.server.openstreetmap"/>
       <plugin id="de.fhg.igd.mapviewer.tools.boxzoom"/>
       <plugin id="de.fhg.igd.osgi.util"/>
+      <plugin id="de.fhg.igd.slf4jplus"/>
+      <plugin id="de.fhg.igd.slf4jplus.logback"/>
+      <plugin id="de.fhg.igd.slf4jplus.logback.appender" fragment="true"/>
+      <plugin id="de.fhg.igd.slf4jplus.logback.observer"/>
+      <plugin id="de.fhg.igd.slf4jplus.ui.errorlog"/>
+      <plugin id="de.fhg.igd.slf4jplus.ui.userstatus"/>
       <plugin id="de.fhg.igd.swingrcp"/>
       <plugin id="edu.umd.cs.findbugs.annotations"/>
       <plugin id="eu.esdihumboldt.cst"/>
@@ -383,7 +383,6 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.parboiled.core"/>
       <plugin id="org.parboiled.java" fragment="true"/>
       <plugin id="org.postgresql.jdbc4"/>
-      <plugin id="org.slf4j.api"/>
       <plugin id="org.springframework.aop"/>
       <plugin id="org.springframework.asm"/>
       <plugin id="org.springframework.beans"/>
@@ -398,12 +397,13 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="pegdown"/>
       <plugin id="relaxngDatatype"/>
       <plugin id="schemacrawler.core"/>
+      <plugin id="slf4j.api"/>
       <plugin id="slf4j.ext"/>
    </plugins>
 
    <configurations>
-      <plugin id="de.cs3d.ui.util.logging.errorlog" autoStart="true" startLevel="0" />
-      <plugin id="de.cs3d.util.logging.logback" autoStart="true" startLevel="1" />
+      <plugin id="de.fhg.igd.slf4jplus.logback" autoStart="true" startLevel="1" />
+      <plugin id="de.fhg.igd.slf4jplus.ui.errorlog" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.cst" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.common.align" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.common.convert" autoStart="true" startLevel="0" />

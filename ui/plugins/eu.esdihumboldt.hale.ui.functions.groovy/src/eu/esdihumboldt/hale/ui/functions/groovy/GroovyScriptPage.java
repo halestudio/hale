@@ -47,8 +47,8 @@ import org.eclipse.swt.widgets.ToolBar;
 
 import com.google.common.collect.Iterators;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
 import eu.esdihumboldt.hale.ui.common.definition.DefinitionImages;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.GroovyASTTray;

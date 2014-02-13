@@ -35,8 +35,8 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.TreeItem;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.instance.extension.metadata.MetadataActionExtension;
 import eu.esdihumboldt.hale.common.instance.extension.metadata.MetadataActionFactory;
 import eu.esdihumboldt.util.Pair;

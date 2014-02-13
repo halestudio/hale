@@ -12,7 +12,7 @@ Require-Bundle: eu.esdihumboldt.hale.common.instance;bundle-version="2.5.0",
  eu.esdihumboldt.hale.common.core;bundle-version="2.5.0",
  com.orientechnologies.orient.core;bundle-version="1.5.1"
 Import-Package: com.google.common.base;version="11.0.1",
- de.cs3d.util.logging,
+ de.fhg.igd.slf4jplus,
  de.fhg.igd.osgi.util;version="1.0.0",
  eu.esdihumboldt.hale.common.align.transformation.service,
  eu.esdihumboldt.util,

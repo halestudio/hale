@@ -19,8 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import de.fhg.igd.osgi.util.configuration.AbstractConfigurationService;
 import eu.esdihumboldt.util.PlatformUtil;
 import eu.esdihumboldt.util.SyncedPropertiesFile;

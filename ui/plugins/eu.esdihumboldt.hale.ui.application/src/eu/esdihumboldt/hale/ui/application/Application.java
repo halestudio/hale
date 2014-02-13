@@ -24,8 +24,8 @@ import org.eclipse.ui.PlatformUI;
 import org.geotools.referencing.CRS;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.app.AbstractApplication;
 import eu.esdihumboldt.hale.ui.common.crs.WKTPreferencesCRSFactory;
 import eu.esdihumboldt.hale.ui.launchaction.LaunchAction;

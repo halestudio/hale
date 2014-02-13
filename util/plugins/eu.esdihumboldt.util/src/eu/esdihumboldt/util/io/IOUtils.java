@@ -35,8 +35,8 @@ import java.util.zip.ZipOutputStream;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.util.resource.Resources;
 
 /**

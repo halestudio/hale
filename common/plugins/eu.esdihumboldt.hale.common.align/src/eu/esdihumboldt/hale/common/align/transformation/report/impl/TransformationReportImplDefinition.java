@@ -18,8 +18,8 @@ package eu.esdihumboldt.hale.common.align.transformation.report.impl;
 
 import java.util.Properties;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReport;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReporter;
 import eu.esdihumboldt.hale.common.core.report.impl.AbstractReportDefinition;
