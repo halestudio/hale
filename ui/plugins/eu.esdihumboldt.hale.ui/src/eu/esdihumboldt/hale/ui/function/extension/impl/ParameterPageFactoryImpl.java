@@ -24,8 +24,8 @@ import java.util.Set;
 import org.eclipse.core.runtime.IConfigurationElement;
 
 import de.cs3d.util.eclipse.extension.AbstractConfigurationFactory;
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.ui.function.extension.ParameterPageFactory;

@@ -38,8 +38,8 @@ import org.eclipse.swt.graphics.Image
 import com.tinkerpop.blueprints.Vertex
 import com.tinkerpop.gremlin.groovy.Gremlin
 
-import de.cs3d.util.logging.ALogger
-import de.cs3d.util.logging.ALoggerFactory
+import de.fhg.igd.slf4jplus.ALogger
+import de.fhg.igd.slf4jplus.ALoggerFactory
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants
 import eu.esdihumboldt.cst.functions.groovy.internal.GroovyUtil
 import eu.esdihumboldt.hale.common.schema.groovy.DefinitionAccessor

@@ -4,7 +4,7 @@ Bundle-Name: Hale Filter Api
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.filter;singleton:=true
 Bundle-Version: 2.8.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: de.cs3d.util.logging,
+Import-Package: de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.core.io.supplier,
  eu.esdihumboldt.hale.common.instance.extension.filter,
  eu.esdihumboldt.hale.common.instance.helper,

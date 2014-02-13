@@ -21,8 +21,8 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.ui.PlatformUI;
 import org.geotools.filter.text.cql2.CQLException;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.filter.FilterGeoCqlImpl;
 import eu.esdihumboldt.hale.common.instance.model.Filter;

@@ -29,7 +29,6 @@ HALE:
   - cern.colt
   - ch.qos.logback.classic
   - ch.qos.logback.core
-  - ch.qos.logback.slf4j
   - com.google.appengine
   - com.google.guava
   - com.iabcinc.jmep
@@ -74,14 +73,14 @@ HALE:
   - de.cs3d.common.metamodel
   - de.cs3d.ui.bookmarks
   - de.cs3d.ui.util.eclipse
-  - de.cs3d.ui.util.logging.errorlog@0
-  - de.cs3d.ui.util.logging.userstatus
+  - de.fhg.igd.slf4jplus.ui.errorlog@0
+  - de.fhg.igd.slf4jplus.ui.userstatus
   - de.cs3d.util.eclipse
   - de.cs3d.util.helper
-  - de.cs3d.util.logging
-  - de.cs3d.util.logging.logback@1
-  - de.cs3d.util.logging.logback.appender
-  - de.cs3d.util.logging.logback.observer
+  - de.fhg.igd.slf4jplus
+  - de.fhg.igd.slf4jplus.logback@1
+  - de.fhg.igd.slf4jplus.logback.appender
+  - de.fhg.igd.slf4jplus.logback.observer
   - de.fhg.igd.concurrency
   - de.fhg.igd.hale.fme
   - de.fhg.igd.hale.fme.doc
@@ -359,7 +358,7 @@ HALE:
   - org.parboiled.core
   - org.parboiled.java
   - org.postgresql.jdbc4
-  - org.slf4j.api
+  - slf4j.api
   - org.springframework.aop@0
   - org.springframework.asm
   - org.springframework.beans@0

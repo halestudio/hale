@@ -24,9 +24,9 @@ import org.eclipse.help.IHelpResource;
 import org.eclipse.help.ITopic;
 import org.eclipse.help.IUAElement;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
-import de.cs3d.util.logging.ATransaction;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ATransaction;
 
 import eu.esdihumboldt.hale.doc.user.examples.internal.ExamplesConstants;
 import eu.esdihumboldt.hale.doc.user.examples.internal.extension.ExampleProject;

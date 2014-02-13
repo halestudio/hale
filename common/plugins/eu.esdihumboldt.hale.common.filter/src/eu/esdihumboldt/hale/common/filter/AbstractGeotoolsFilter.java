@@ -19,8 +19,8 @@ package eu.esdihumboldt.hale.common.filter;
 import org.geotools.filter.text.cql2.CQLException;
 import org.opengis.filter.Filter;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 

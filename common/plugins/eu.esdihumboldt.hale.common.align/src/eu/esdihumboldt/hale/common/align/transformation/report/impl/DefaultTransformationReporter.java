@@ -25,8 +25,8 @@ import com.google.common.collect.LinkedHashMultiset;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Multiset.Entry;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationMessage;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReport;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReporter;

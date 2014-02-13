@@ -23,8 +23,8 @@ import java.util.Map;
 
 import com.google.common.collect.Multimap;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.lookup.LookupService;

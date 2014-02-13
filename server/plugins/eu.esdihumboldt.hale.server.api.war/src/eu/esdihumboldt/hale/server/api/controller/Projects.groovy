@@ -27,8 +27,8 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.multipart.MultipartFile
 
-import de.cs3d.util.logging.ALogger
-import de.cs3d.util.logging.ALoggerFactory
+import de.fhg.igd.slf4jplus.ALogger
+import de.fhg.igd.slf4jplus.ALoggerFactory
 import eu.esdihumboldt.hale.server.api.base.APIUtil
 import eu.esdihumboldt.hale.server.api.wadl.doc.DocScope
 import eu.esdihumboldt.hale.server.api.wadl.doc.WDoc

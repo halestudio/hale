@@ -28,8 +28,8 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import com.vividsolutions.jts.geom.Geometry;
 
 import de.cs3d.util.eclipse.extension.ExtensionUtil;
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.condition.PropertyCondition;
 import eu.esdihumboldt.hale.common.align.model.condition.PropertyOrChildrenTypeCondition;

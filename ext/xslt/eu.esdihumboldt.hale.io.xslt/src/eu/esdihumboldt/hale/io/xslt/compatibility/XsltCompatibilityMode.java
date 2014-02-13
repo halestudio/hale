@@ -15,8 +15,8 @@
 
 package eu.esdihumboldt.hale.io.xslt.compatibility;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.io.xslt.extension.XslPropertyTransformationExtension;

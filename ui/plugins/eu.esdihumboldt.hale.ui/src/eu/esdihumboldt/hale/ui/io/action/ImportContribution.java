@@ -18,8 +18,8 @@ package eu.esdihumboldt.hale.ui.io.action;
 
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
 import de.cs3d.util.eclipse.extension.FactoryFilter;
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOAction;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.extension.IOActionExtension;

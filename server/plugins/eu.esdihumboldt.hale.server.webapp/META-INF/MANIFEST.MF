@@ -5,7 +5,7 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.server.webapp
 Bundle-Version: 2.8.0.qualifier
 Bundle-Vendor: Data Harmonisation Panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: de.cs3d.util.logging,
+Import-Package: de.fhg.igd.slf4jplus,
  de.fhg.igd.osgi.util;version="1.0.0",
  eu.esdihumboldt.hale.server.db.orient,
  eu.esdihumboldt.hale.server.progress,

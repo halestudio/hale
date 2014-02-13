@@ -24,8 +24,8 @@ import org.springframework.security.openid.OpenIDAuthenticationFilter;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 
 /**
  * Open ID Authentication filter that supports proxying with X-Forwarded-For

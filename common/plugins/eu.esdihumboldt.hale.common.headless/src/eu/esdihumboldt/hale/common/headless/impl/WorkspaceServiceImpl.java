@@ -28,8 +28,8 @@ import org.apache.commons.io.FileUtils;
 import org.joda.time.DateTime;
 import org.joda.time.ReadableDuration;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.headless.WorkspaceService;
 import eu.esdihumboldt.util.PlatformUtil;
 import eu.esdihumboldt.util.PropertiesFile;

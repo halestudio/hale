@@ -6,7 +6,7 @@ Bundle-Version: 2.8.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.io;version="1.6.0",
  de.cs3d.util.eclipse.extension,
- de.cs3d.util.logging,
+ de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.align.io,
  eu.esdihumboldt.hale.common.core.io,
  eu.esdihumboldt.hale.common.core.io.extension,

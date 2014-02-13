@@ -21,8 +21,8 @@ import java.util.Map;
 import org.eclipse.core.runtime.IConfigurationElement;
 
 import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension;
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.schema.model.validate.factory.ValidatorFactory;
 import eu.esdihumboldt.util.Pair;

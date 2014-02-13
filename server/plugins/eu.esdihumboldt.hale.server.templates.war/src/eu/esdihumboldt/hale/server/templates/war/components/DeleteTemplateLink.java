@@ -20,8 +20,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.server.db.orient.DatabaseHelper;
 import eu.esdihumboldt.hale.server.model.Template;
 import eu.esdihumboldt.hale.server.templates.TemplateScavenger;

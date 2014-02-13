@@ -24,8 +24,8 @@ import org.eclipse.jface.viewers.Viewer;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOAction;
 import eu.esdihumboldt.hale.common.core.io.extension.IOActionExtension;
 import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
