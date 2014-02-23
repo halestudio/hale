@@ -10,4 +10,4 @@ Import-Package: eu.esdihumboldt.hale.common.instance.groovy,
  eu.esdihumboldt.hale.common.schema.groovy,
  eu.esdihumboldt.hale.common.test
 Require-Bundle: org.junit,
- groovy;bundle-version="2.1.6"
+ groovy;bundle-version="2.1.5"

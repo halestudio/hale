@@ -6,7 +6,7 @@ Bundle-Version: 2.8.0.qualifier
 Bundle-Vendor: Data Harmonisation Panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: eu.esdihumboldt.hale.common.schema.persist;bundle-version="2.8.0",
- groovy;bundle-version="2.2.1",
+ groovy;bundle-version="2.1.5",
  eu.esdihumboldt.hale.common.schema;bundle-version="2.8.0",
  eu.esdihumboldt.hale.common.schema.groovy;bundle-version="2.8.0",
  eu.esdihumboldt.hale.common.core;bundle-version="2.8.0",
