@@ -203,6 +203,8 @@ public abstract class AbstractIOProvider implements IOProvider {
 	}
 
 	/**
+	 * @return the parameter or a NULL value
+	 * 
 	 * @see IOProvider#getParameter(String)
 	 */
 	@Override

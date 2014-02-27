@@ -16,8 +16,11 @@
 
 package eu.esdihumboldt.hale.io.gml.writer;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.MessageFormat;
 
 import javax.xml.XMLConstants;
@@ -70,7 +73,12 @@ public class InspireInstanceWriter extends GmlInstanceWriter {
 	/**
 	 * The parameter name for the XML file to load to fill the metadata with.
 	 */
-	public static final String PARAM_SPATIAL_DATA_SET_METADATA = "inspire.sds.metadata";
+	public static final String PARAM_SPATIAL_DATA_SET_METADATA_FILE = "inspire.sds.metadata";
+
+	/**
+	 * The parameter name metadata provided as DOM.
+	 */
+	public static final String PARAM_SPATIAL_DATA_SET_METADATA_DOM = "inspire.sds.metadata.inline";
 
 	/**
 	 * @see StreamGmlWriter#findDefaultContainter(XmlIndex, IOReporter)
@@ -128,34 +136,51 @@ public class InspireInstanceWriter extends GmlInstanceWriter {
 		// write metadata
 		writer.writeStartElement(metadataName.getNamespaceURI(), metadataName.getLocalPart());
 
-		String metadataFile = getParameter(PARAM_SPATIAL_DATA_SET_METADATA).as(String.class);
-		if (metadataFile == null || metadataFile.isEmpty())
-			writer.writeAttribute(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "nil", "true");
-		else {
+		// retrieve metadata element (if any)
+		Element metadataElement = getParameter(PARAM_SPATIAL_DATA_SET_METADATA_DOM).as(
+				Element.class);
+
+		// metadata from file (if any)
+		if (metadataElement == null) {
+			String metadataFile = getParameter(PARAM_SPATIAL_DATA_SET_METADATA_FILE).as(
+					String.class);
+			if (metadataFile != null && !metadataFile.isEmpty()) {
+				try (InputStream input = new BufferedInputStream(new FileInputStream(new File(
+						metadataFile)))) {
+					metadataElement = findMetadata(input, reporter);
+				} catch (IOException e) {
+					reporter.warn(new IOMessageImpl("Could not load specified metadata file.", e));
+				}
+			}
+		}
+
+		if (metadataElement != null) {
 			try {
-				Element metadata = findMetadata(new File(metadataFile), reporter);
-				if (metadata != null)
-					writeElement(metadata, writer);
+				writeElement(metadataElement, writer);
 			} catch (TransformerException e) {
 				reporter.warn(new IOMessageImpl("Couldn't include specified metadata file.", e));
 			}
 		}
+		else {
+			writer.writeAttribute(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "nil", "true");
+		}
+
 		writer.writeEndElement();
 	}
 
 	/**
 	 * Loads the given file and tries to find a MD_Metadata element.
 	 * 
-	 * @param file the file to read
+	 * @param input the metadata source
 	 * @param reporter the reporter
 	 * @return the metadata element or <code>null</code> if it couldn't be found
 	 */
-	private Element findMetadata(File file, IOReporter reporter) {
+	private Element findMetadata(InputStream input, IOReporter reporter) {
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		dbf.setNamespaceAware(true);
 		Document doc;
 		try {
-			doc = dbf.newDocumentBuilder().parse(file);
+			doc = dbf.newDocumentBuilder().parse(input);
 		} catch (SAXException | IOException | ParserConfigurationException e) {
 			reporter.warn(new IOMessageImpl("Couldn't parse specified metadata file.", e));
 			return null;
