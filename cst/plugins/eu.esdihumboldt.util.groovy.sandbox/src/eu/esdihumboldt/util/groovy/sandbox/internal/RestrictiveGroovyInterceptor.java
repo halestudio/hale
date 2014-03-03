@@ -155,7 +155,8 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 		if (instanceAllowedClasses.contains(receiver) || isScriptClass(receiver))
 			return super.onStaticCall(invoker, receiver, method, args);
 		else
-			throw new GroovyRestrictionException("using class " + receiver + " is not allowed!");
+			throw new GroovyRestrictionException("using class " + receiver.getSimpleName()
+					+ " is not allowed!");
 	}
 
 	@Override
