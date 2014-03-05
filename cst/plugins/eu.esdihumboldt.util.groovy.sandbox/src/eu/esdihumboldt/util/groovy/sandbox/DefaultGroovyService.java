@@ -7,6 +7,7 @@ import groovy.lang.Script;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -28,6 +29,8 @@ public class DefaultGroovyService implements GroovyService {
 	 * Extension point ID.
 	 */
 	private static final String ID = "eu.esdihumboldt.util.groovy.sandbox";
+
+	private final CopyOnWriteArraySet<GroovyServiceListener> listeners = new CopyOnWriteArraySet<GroovyServiceListener>();
 
 	private boolean restrictionActive = true;
 	private final Set<Class<?>> additionalAllowedClasses;
@@ -103,6 +106,30 @@ public class DefaultGroovyService implements GroovyService {
 
 	@Override
 	public void setRestrictionActive(boolean active) {
-		restrictionActive = active;
+		if (active != restrictionActive) {
+			restrictionActive = active;
+			notifyRestrictionChanged(active);
+		}
+	}
+
+	@Override
+	public void addListener(GroovyServiceListener listener) {
+		listeners.add(listener);
+	}
+
+	@Override
+	public void removeListener(GroovyServiceListener listener) {
+		listeners.remove(listener);
+	}
+
+	/**
+	 * Call when restriction active changes.
+	 * 
+	 * @param restrictionActive the new value
+	 */
+	protected void notifyRestrictionChanged(boolean restrictionActive) {
+		for (GroovyServiceListener listener : listeners) {
+			listener.restrictionChanged(restrictionActive);
+		}
 	}
 }

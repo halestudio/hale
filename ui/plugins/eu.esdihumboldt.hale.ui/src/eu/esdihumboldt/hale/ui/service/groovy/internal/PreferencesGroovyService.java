@@ -48,8 +48,6 @@ import eu.esdihumboldt.util.groovy.sandbox.DefaultGroovyService;
 import eu.esdihumboldt.util.groovy.sandbox.GroovyRestrictionException;
 import groovy.lang.Script;
 
-// TODO save setting on project save
-
 /**
  * Groovy service utilizing preferences to save project restriction exceptions.
  * 
@@ -87,7 +85,10 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 
 			@Override
 			public void onClean() {
-				restrictionActive = true;
+				if (restrictionActive == false) {
+					restrictionActive = true;
+					notifyRestrictionChanged(true);
+				}
 				restrictionActiveURI = null;
 				scriptHash = null;
 				askedForAllowance = false;
@@ -96,6 +97,11 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 			@Override
 			public void afterSave(ProjectService projectService) {
 				projectSaved();
+			}
+
+			@Override
+			public void afterLoad(ProjectService projectService) {
+				projectLoaded();
 			}
 		});
 		alignmentService.addListener(new AlignmentServiceListener() {
@@ -187,7 +193,6 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 
 	@Override
 	public void setRestrictionActive(boolean active) {
-		updateRestrictionActive();
 		if (restrictionActive != active) {
 			restrictionActive = active;
 			if (restrictionActiveURI != null) {
@@ -198,32 +203,13 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 					preferences.remove(restrictionActiveURI);
 				savePreferences(preferences);
 			}
+			notifyRestrictionChanged(active);
 		}
 	}
 
 	@Override
 	public boolean isRestrictionActive() {
-		updateRestrictionActive();
 		return restrictionActive;
-	}
-
-	/**
-	 * Updates the restrictionActive and restrictionActiveURI values if
-	 * necessary.
-	 */
-	private synchronized void updateRestrictionActive() {
-		URI location = projectService.getLoadLocation();
-		if (!Objects.equal(location, restrictionActiveURI)) {
-			if (location == null) {
-				restrictionActive = true;
-			}
-			else {
-				String hash = loadPreferences().get(location);
-				boolean hashChecked = hash != null && getScriptHash().equals(hash);
-				restrictionActive = !hashChecked;
-			}
-			restrictionActiveURI = location;
-		}
 	}
 
 	/**
@@ -304,6 +290,28 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 			Map<URI, String> preferences = loadPreferences();
 			preferences.put(restrictionActiveURI, getScriptHash());
 			savePreferences(preferences);
+		}
+	}
+
+	/**
+	 * Call when a project was loaded
+	 */
+	protected void projectLoaded() {
+		URI location = projectService.getLoadLocation();
+		if (!Objects.equal(location, restrictionActiveURI)) {
+			restrictionActiveURI = location;
+			if (location == null) {
+				restrictionActive = true;
+			}
+			else {
+				String hash = loadPreferences().get(location);
+				boolean hashChecked = hash != null && getScriptHash().equals(hash);
+				restrictionActive = !hashChecked;
+				// XXX inform user directly if the hash was invalid?
+				if (!restrictionActive) {
+					notifyRestrictionChanged(restrictionActive);
+				}
+			}
 		}
 	}
 

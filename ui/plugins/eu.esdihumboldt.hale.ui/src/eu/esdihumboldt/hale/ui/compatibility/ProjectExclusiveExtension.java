@@ -16,7 +16,6 @@
 package eu.esdihumboldt.hale.ui.compatibility;
 
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.ui.PlatformUI;
 
@@ -25,7 +24,6 @@ import de.cs3d.util.eclipse.extension.ObjectExtension;
 import de.cs3d.util.eclipse.extension.exclusive.AbstractExclusiveExtension;
 import de.cs3d.util.eclipse.extension.exclusive.ExclusiveExtension;
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
-import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
 
@@ -90,8 +88,7 @@ public abstract class ProjectExclusiveExtension<T, F extends ExtensionObjectFact
 		ps.addListener(new ProjectServiceAdapter() {
 
 			@Override
-			public void afterLoad(ProjectService projectService,
-					Map<String, ProjectFile> projectFiles) {
+			public void afterLoad(ProjectService projectService) {
 				String key = projectService.getConfigurationService().get(preferenceKey);
 				ProjectExclusiveExtension.this.setCurrent(key);
 			}

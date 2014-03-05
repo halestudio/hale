@@ -288,7 +288,6 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 				// notify listeners
 				Map<String, ProjectFile> projectFiles = provider.getProjectFiles();
-				notifyAfterLoad(projectFiles);
 				notifyExportConfigurationChanged();
 				// apply remaining project files
 				for (ProjectFile file : projectFiles.values()) {
@@ -302,6 +301,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				synchronized (ProjectServiceImpl.this) {
 					changed = false;
 				}
+				notifyAfterLoad();
 				updateWindowTitle();
 			}
 		};
@@ -321,8 +321,6 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				provider.getProject().setHaleVersion(haleVersion);
 				Map<String, ProjectFile> projectFiles = ProjectIO.createDefaultProjectFiles(HaleUI
 						.getServiceProvider());
-				notifyBeforeSave(projectFiles); // get additional files from
-												// listeners
 				provider.setProjectFiles(projectFiles);
 				if (projectLocation != null) {
 					provider.setPreviousTarget(projectLocation);

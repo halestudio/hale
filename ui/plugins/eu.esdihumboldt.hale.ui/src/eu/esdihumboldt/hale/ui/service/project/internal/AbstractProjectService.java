@@ -17,12 +17,10 @@
 package eu.esdihumboldt.hale.ui.service.project.internal;
 
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
-import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectServiceListener;
@@ -53,18 +51,6 @@ public abstract class AbstractProjectService implements ProjectService {
 	}
 
 	/**
-	 * Call before a project is saved.
-	 * 
-	 * @param projectFiles the map of additional project files, listeners may
-	 *            add additional files to the map
-	 */
-	protected void notifyBeforeSave(Map<String, ProjectFile> projectFiles) {
-		for (ProjectServiceListener listener : listeners) {
-			listener.beforeSave(this, projectFiles);
-		}
-	}
-
-	/**
 	 * Call after a project is saved.
 	 */
 	protected void notifyAfterSave() {
@@ -75,13 +61,10 @@ public abstract class AbstractProjectService implements ProjectService {
 
 	/**
 	 * Call after a project was loaded.
-	 * 
-	 * @param projectFiles the additional project files that were loaded,
-	 *            listeners may use them to update their state
 	 */
-	protected void notifyAfterLoad(Map<String, ProjectFile> projectFiles) {
+	protected void notifyAfterLoad() {
 		for (ProjectServiceListener listener : listeners) {
-			listener.afterLoad(this, projectFiles);
+			listener.afterLoad(this);
 		}
 	}
 
