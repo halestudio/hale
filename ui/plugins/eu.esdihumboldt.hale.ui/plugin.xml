@@ -101,6 +101,15 @@
          </state>
       </command>
       <command
+            defaultHandler="eu.esdihumboldt.hale.ui.service.groovy.internal.handler.ToggleRestrictionHandler"
+            id="eu.esdihumboldt.hale.ui.groovy.toggle_restriction"
+            name="Groovy restriction">
+         <state
+               class="eu.esdihumboldt.hale.ui.service.groovy.internal.handler.RestrictionToggleState"
+               id="eu.esdihumboldt.hale.ui.groovy.restriction_toggle_state">
+         </state>
+      </command>
+      <command
             id="eu.esdihumboldt.hale.ui.transformation"
             name="Transform external data">
       </command>

@@ -429,6 +429,10 @@
                   commandId="eu.esdihumboldt.hale.ui.instancevalidation.status.toggle_validation"
                   style="toggle">
             </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.groovy.toggle_restriction"
+                  style="toggle">
+            </command>
             <separator
                   name="eu.esdihumboldt.hale.ui.file.transform"
                   visible="true">
