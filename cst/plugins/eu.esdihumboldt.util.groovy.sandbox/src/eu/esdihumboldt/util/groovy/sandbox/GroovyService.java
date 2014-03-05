@@ -51,4 +51,18 @@ public interface GroovyService {
 	 * @param active whether the restriction should be active or not
 	 */
 	public void setRestrictionActive(boolean active);
+
+	/**
+	 * Adds a Groovy service listener
+	 * 
+	 * @param listener the listener to add
+	 */
+	public void addListener(GroovyServiceListener listener);
+
+	/**
+	 * Removes a Groovy service listener
+	 * 
+	 * @param listener the listener to remove
+	 */
+	public void removeListener(GroovyServiceListener listener);
 }

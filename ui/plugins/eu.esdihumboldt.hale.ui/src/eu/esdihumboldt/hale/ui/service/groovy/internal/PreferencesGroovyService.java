@@ -48,8 +48,6 @@ import eu.esdihumboldt.util.groovy.sandbox.DefaultGroovyService;
 import eu.esdihumboldt.util.groovy.sandbox.GroovyRestrictionException;
 import groovy.lang.Script;
 
-// TODO save setting on project save
-
 /**
  * Groovy service utilizing preferences to save project restriction exceptions.
  * 
@@ -87,7 +85,10 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 
 			@Override
 			public void onClean() {
-				restrictionActive = true;
+				if (restrictionActive == false) {
+					restrictionActive = true;
+					notifyRestrictionChanged(true);
+				}
 				restrictionActiveURI = null;
 				scriptHash = null;
 				askedForAllowance = false;
@@ -198,6 +199,7 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 					preferences.remove(restrictionActiveURI);
 				savePreferences(preferences);
 			}
+			notifyRestrictionChanged(active);
 		}
 	}
 
@@ -221,6 +223,15 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 				String hash = loadPreferences().get(location);
 				boolean hashChecked = hash != null && getScriptHash().equals(hash);
 				restrictionActive = !hashChecked;
+				// TODO this happens the first time after
+				// is/setRestrictionActive is called after a project is loaded
+				// This may not be directly (in case of disabled live
+				// transformation), and thus may suprise the user when he clicks
+				// the toggle button.
+				// A "update-after-project-load" would be more intuitive.
+				if (!restrictionActive) {
+					notifyRestrictionChanged(restrictionActive);
+				}
 			}
 			restrictionActiveURI = location;
 		}
