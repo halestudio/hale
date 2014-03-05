@@ -77,6 +77,7 @@ import eu.esdihumboldt.hale.ui.service.project.internal.AbstractRemoveResourcesO
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.util.PlatformUtil;
+import eu.esdihumboldt.util.groovy.sandbox.GroovyService;
 
 /**
  * {@link InstanceService} implementation based on OrientDB. This must be a
@@ -97,12 +98,15 @@ public class OrientInstanceService extends AbstractInstanceService {
 	 * @param schemaService the schema service
 	 * @param projectService the project service
 	 * @param alignmentService the alignment service
+	 * @param groovyService the groovy service
 	 * @return the service instance
 	 */
 	public static final OrientInstanceService getInstance(SchemaService schemaService,
-			ProjectService projectService, AlignmentService alignmentService) {
+			ProjectService projectService, AlignmentService alignmentService,
+			GroovyService groovyService) {
 		if (instance == null) {
-			instance = new OrientInstanceService(schemaService, projectService, alignmentService);
+			instance = new OrientInstanceService(schemaService, projectService, alignmentService,
+					groovyService);
 		}
 		return instance;
 	}
@@ -130,10 +134,11 @@ public class OrientInstanceService extends AbstractInstanceService {
 	 * @param schemaService the schema service
 	 * @param projectService the project service
 	 * @param alignmentService the alignment service
+	 * @param groovyService the groovy service
 	 */
 	private OrientInstanceService(SchemaService schemaService, ProjectService projectService,
-			AlignmentService alignmentService) {
-		super(projectService, alignmentService);
+			AlignmentService alignmentService, GroovyService groovyService) {
+		super(projectService, alignmentService, groovyService);
 
 		this.schemaService = schemaService;
 

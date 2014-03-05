@@ -29,6 +29,8 @@ import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceListener;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
+import eu.esdihumboldt.util.groovy.sandbox.GroovyService;
+import eu.esdihumboldt.util.groovy.sandbox.GroovyServiceListener;
 
 /**
  * Notification handling for {@link InstanceService}s that support
@@ -53,8 +55,10 @@ public abstract class AbstractInstanceService implements InstanceService {
 	 * @param projectService the project service. The instances will be cleared
 	 *            when the project is cleaned.
 	 * @param alignmentService the alignment service
+	 * @param groovyService the groovy service
 	 */
-	public AbstractInstanceService(ProjectService projectService, AlignmentService alignmentService) {
+	public AbstractInstanceService(ProjectService projectService,
+			AlignmentService alignmentService, GroovyService groovyService) {
 		super();
 
 		this.alignmentService = alignmentService;
@@ -119,6 +123,14 @@ public abstract class AbstractInstanceService implements InstanceService {
 				retransform();
 			}
 
+		});
+
+		groovyService.addListener(new GroovyServiceListener() {
+
+			@Override
+			public void restrictionChanged(boolean restrictionActive) {
+				retransform();
+			}
 		});
 	}
 

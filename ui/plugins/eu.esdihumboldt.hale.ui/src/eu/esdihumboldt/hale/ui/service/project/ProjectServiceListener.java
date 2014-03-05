@@ -17,11 +17,9 @@
 package eu.esdihumboldt.hale.ui.service.project;
 
 import java.util.List;
-import java.util.Map;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
-import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 
 /**
@@ -31,15 +29,6 @@ import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
  * @author Simon Templer
  */
 public interface ProjectServiceListener {
-
-	/**
-	 * Called before a project is saved.
-	 * 
-	 * @param projectService the calling project service
-	 * @param projectFiles the map of additional project files, listeners may
-	 *            add additional files to the map
-	 */
-	public void beforeSave(ProjectService projectService, Map<String, ProjectFile> projectFiles);
 
 	/**
 	 * Called after a project is saved.
@@ -52,10 +41,8 @@ public interface ProjectServiceListener {
 	 * Called after a project was loaded.
 	 * 
 	 * @param projectService the calling project service
-	 * @param projectFiles the additional project files that were loaded,
-	 *            listeners may use them to update their state
 	 */
-	public void afterLoad(ProjectService projectService, Map<String, ProjectFile> projectFiles);
+	public void afterLoad(ProjectService projectService);
 
 	/**
 	 * Called after a new resource was added.

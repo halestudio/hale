@@ -25,7 +25,6 @@ import org.eclipse.ui.ISourceProvider;
 import org.eclipse.ui.ISources;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
@@ -113,8 +112,7 @@ public class InstanceServiceSource extends AbstractSourceProvider {
 			}
 
 			@Override
-			public void afterLoad(ProjectService projectService,
-					Map<String, ProjectFile> projectFiles) {
+			public void afterLoad(ProjectService projectService) {
 				fireSourceChanged(ISources.WORKBENCH, HAS_SOURCE_RESOURCES,
 						hasSourceResources(projectService));
 			}

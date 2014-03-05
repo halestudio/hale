@@ -16,13 +16,10 @@
 
 package eu.esdihumboldt.hale.ui.service.instance.sample.internal;
 
-import java.util.Map;
-
 import org.eclipse.core.commands.State;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
-import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.project.ProjectServiceListener;
@@ -47,8 +44,7 @@ public class InstanceSamplingToggleState extends State {
 		ps.addListener(projectListener = new ProjectServiceAdapter() {
 
 			@Override
-			public void afterLoad(final ProjectService projectService,
-					final Map<String, ProjectFile> projectFiles) {
+			public void afterLoad(final ProjectService projectService) {
 				// update after the project has been loaded
 				PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 

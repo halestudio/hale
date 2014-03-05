@@ -17,7 +17,6 @@ package eu.esdihumboldt.hale.ui.views.resources;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
@@ -25,7 +24,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
-import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
@@ -67,8 +65,7 @@ public class ResourcesView extends PropertiesViewPart {
 			}
 
 			@Override
-			public void afterLoad(ProjectService projectService,
-					Map<String, ProjectFile> projectFiles) {
+			public void afterLoad(ProjectService projectService) {
 				updateInDisplayThread();
 			}
 
