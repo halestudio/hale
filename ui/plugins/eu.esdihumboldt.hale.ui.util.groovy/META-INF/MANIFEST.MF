@@ -7,8 +7,8 @@ Bundle-Activator: eu.esdihumboldt.hale.ui.util.groovy.internal.GroovyUIPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.jface.text;bundle-version="3.7.1",
- groovy;bundle-version="2.1.6",
- com.tinkerpop.blueprints;bundle-version="2.4.0"
+ groovy;bundle-version="2.1.5",
+ com.tinkerpop.blueprints.core;bundle-version="2.4.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: eu.esdihumboldt.hale.ui.util.groovy,
