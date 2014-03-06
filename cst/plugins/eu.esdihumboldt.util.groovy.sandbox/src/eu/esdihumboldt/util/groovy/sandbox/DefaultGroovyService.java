@@ -1,10 +1,5 @@
 package eu.esdihumboldt.util.groovy.sandbox;
 
-import groovy.lang.Binding;
-import groovy.lang.GroovyShell;
-import groovy.lang.Script;
-
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -17,6 +12,9 @@ import org.kohsuke.groovy.sandbox.SandboxTransformer;
 import de.cs3d.util.eclipse.extension.ExtensionUtil;
 import eu.esdihumboldt.util.groovy.sandbox.internal.RestrictiveGroovyInterceptor;
 import eu.esdihumboldt.util.groovy.sandbox.internal.SecureScript;
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
+import groovy.lang.Script;
 
 /**
  * Default implementation of the {@link GroovyService} interface.
@@ -33,8 +31,7 @@ public class DefaultGroovyService implements GroovyService {
 	private final CopyOnWriteArraySet<GroovyServiceListener> listeners = new CopyOnWriteArraySet<GroovyServiceListener>();
 
 	private boolean restrictionActive = true;
-	private final Set<Class<?>> additionalAllowedClasses;
-	private final Set<Class<?>> additionalAllAllowedClasses;
+	private final RestrictiveGroovyInterceptor interceptor;
 
 	/**
 	 * Constructs a new groovy sandbox service. Use
@@ -56,8 +53,8 @@ public class DefaultGroovyService implements GroovyService {
 					additionalAllowedClasses.add(allowedClass);
 			}
 		}
-		this.additionalAllowedClasses = Collections.unmodifiableSet(additionalAllowedClasses);
-		this.additionalAllAllowedClasses = Collections.unmodifiableSet(additionalAllAllowedClasses);
+		interceptor = new RestrictiveGroovyInterceptor(additionalAllowedClasses,
+				additionalAllAllowedClasses);
 	}
 
 	@Override
@@ -81,20 +78,19 @@ public class DefaultGroovyService implements GroovyService {
 
 	@Override
 	public Object evaluate(Script script) {
-		RestrictiveGroovyInterceptor interceptor = null;
+		boolean registered = false;
 		if (isRestrictionActive()) {
 			if (!(script instanceof SecureScript)) {
 				throw new GroovyRestrictionException(
 						"Supplied script was not parsed with active restriction.");
 			}
-			interceptor = new RestrictiveGroovyInterceptor(additionalAllowedClasses,
-					additionalAllAllowedClasses);
 			interceptor.register();
+			registered = true;
 		}
 		try {
 			return script.run();
 		} finally {
-			if (interceptor != null)
+			if (registered)
 				interceptor.unregister();
 		}
 	}
