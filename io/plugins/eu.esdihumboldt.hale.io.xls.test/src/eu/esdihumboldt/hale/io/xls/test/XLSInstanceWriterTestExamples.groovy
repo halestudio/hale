@@ -30,36 +30,40 @@ class XLSInstanceWriterTestExamples {
 		Schema schema = createSchema()
 		
 		// create the instance collection
+		// concrete types are only strings, since the test is not able to choose the correct type in wizard
 		InstanceCollection instances = new InstanceBuilder(types: schema).createCollection {
 			ItemType{
-					id(12)
+					id('12')
 					name('item12')
-					price(1.2)
+					price('1.2')
 					description('Item number 12')
 				}
 
 			ItemType {
-					id('42') // auto-convert to Long
+					id('42')
 					name('item42')
-					price(4.2)
+					price('4.2')
 					description('Item number 42')
 				}
 			
 			ItemType {
-				id('42') // auto-convert to Long
-				price(4.2)
+				id('42')
+				price('4.2')
 				description('Item number 42')
+				name(null)
 			}
 			
 			ItemType {
-				id('42') // auto-convert to Long
+				id('42')
 				name('item42')
+				price(null)
+				description(null)
 			}
 			
 			OtherType {
-				children(2)
+				children('2')
 				name('other')
-				number(1)
+				number('1')
 				description('other type')
 			}
 		}
@@ -71,9 +75,9 @@ class XLSInstanceWriterTestExamples {
 		// create the instance collection
 		InstanceCollection instances = new InstanceBuilder(types: schema).createCollection {
 			ItemType{
-					id(55)
+					id('55')
 					name('item55')
-					price(5.5)
+					price('5.5')
 					description('Item number 55')
 				}
 		}
@@ -82,16 +86,16 @@ class XLSInstanceWriterTestExamples {
 	static Schema createSchema(){
 		Schema schema = new SchemaBuilder().schema {
 			ItemType {
-				id(Long)
+				id(String)
 				name(String)
-				price(Double)
+				price(String)
 				description(String)
 			}
 			
 			OtherType {
-				children(Long)
+				children(String)
 				name(String)
-				number(Double)
+				number(String)
 				description(String)
 			}
 		}

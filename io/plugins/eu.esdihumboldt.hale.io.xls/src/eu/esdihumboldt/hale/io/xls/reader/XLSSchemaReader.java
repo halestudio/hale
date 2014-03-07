@@ -64,6 +64,10 @@ public class XLSSchemaReader extends AbstractTableSchemaReader {
 	@Override
 	protected Schema loadFromSource(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
+
+//		boolean solveNestedProperties = getParameter(XLSConstants.SOLVE_NESTED_PROPERTIES).as(
+//				Boolean.class);
+
 		progress.begin("Load XLS/XLSX schema", ProgressIndicator.UNKNOWN);
 
 		String namespace = "http://www.esdi-humboldt.eu/hale/csv";
@@ -120,15 +124,14 @@ public class XLSSchemaReader extends AbstractTableSchemaReader {
 				fail("Not the same number of entries for property names, property types and words in the first line of the file");
 			}
 			for (int i = 0; i < comboSelections.length; i++) {
-				PropertyType propertyType;
-				propertyType = PropertyTypeExtension.getInstance().getFactory(comboSelections[i])
-						.createExtensionObject();
+				PropertyType propertyType = PropertyTypeExtension.getInstance()
+						.getFactory(comboSelections[i]).createExtensionObject();
 
 				DefaultPropertyDefinition property = new DefaultPropertyDefinition(new QName(
 						properties[i]), type, propertyType.getTypeDefinition());
 
 				// set constraints on property
-//							property.setConstraint(NillableFlag.DISABLED); // nillable
+//				property.setConstraint(NillableFlag.DISABLED); // nillable
 				property.setConstraint(NillableFlag.ENABLED); // nillable FIXME
 				// should be configurable per field (see also CSVInstanceReader)
 				property.setConstraint(Cardinality.CC_EXACTLY_ONCE); // cardinality
