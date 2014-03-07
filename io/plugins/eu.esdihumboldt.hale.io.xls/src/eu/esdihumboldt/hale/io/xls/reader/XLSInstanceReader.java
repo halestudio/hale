@@ -39,10 +39,16 @@ import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstanceCollection;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
+import eu.esdihumboldt.hale.io.csv.PropertyType;
+import eu.esdihumboldt.hale.io.csv.PropertyTypeExtension;
 import eu.esdihumboldt.hale.io.csv.reader.CommonSchemaConstants;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVInstanceReader;
 import eu.esdihumboldt.hale.io.xls.AnalyseXLSSchemaTable;
+import eu.esdihumboldt.hale.io.xls.XLSConstants;
 
 /**
  * Read source data of xls instance files (based on the
@@ -82,7 +88,10 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
+
 		boolean skipFirst = getParameter(CommonSchemaConstants.PARAM_SKIP_FIRST_LINE).as(
+				Boolean.class);
+		boolean solveNestedProperties = getParameter(XLSConstants.SOLVE_NESTED_PROPERTIES).as(
 				Boolean.class);
 		instances = new DefaultInstanceCollection(new ArrayList<Instance>());
 
@@ -106,7 +115,7 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 		// skip if first row is a header
 		if (!skipFirst) {
 			// otherwise first line is also an instance
-			createInstanceCollection(analyser.getHeader(), reporter);
+			createInstanceCollection(analyser.getHeader(), reporter, solveNestedProperties);
 			line++;
 		}
 
@@ -114,7 +123,7 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 		Iterator<List<String>> allRows = rows.iterator();
 		while (allRows.hasNext()) {
 			List<String> row = allRows.next();
-			createInstanceCollection(row, reporter);
+			createInstanceCollection(row, reporter, solveNestedProperties);
 			line++;
 		}
 
@@ -130,40 +139,85 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 	 * @param reporter the reporter of the writer
 	 **/
 	@SuppressWarnings("javadoc")
-	private void createInstanceCollection(List<String> row, IOReporter reporter) {
+	private void createInstanceCollection(List<String> row, IOReporter reporter,
+			boolean solveNestedProperties) {
 		MutableInstance instance = new DefaultInstance(type, null);
 
+		int propertyIndex = 0;
 		for (int index = 0; index < row.size(); index++) {
 			String part = row.get(index);
-			PropertyDefinition property = propAr[index];
+			if (part != null) {
+				PropertyDefinition property = propAr[propertyIndex];
 
-			if (part != null && part.isEmpty()) {
-				// FIXME make this configurable
-				part = null;
-			}
+				if (solveNestedProperties) {
+					while (part.startsWith(".")) {
+						PropertyType propertyType;
+						try {
+							propertyType = PropertyTypeExtension.getInstance()
+									.getFactory("java.lang.String").createExtensionObject();
+							part = part.substring(1, part.length());
+							DefaultPropertyDefinition prop;
+							String currentProp;
+							if (part.contains("\n")) {
+								currentProp = part.substring(0, part.indexOf("\n"));
+								prop = new DefaultPropertyDefinition(new QName(currentProp),
+										property.getPropertyType(),
+										propertyType.getTypeDefinition());
+							}
+							else {
+								currentProp = part.substring(0, part.length()).replace("\n", "");
+								prop = new DefaultPropertyDefinition(new QName(currentProp),
+										property.getPropertyType(),
+										propertyType.getTypeDefinition());
+							}
 
-			Object value = part;
+							// set constraints on property
+//							property.setConstraint(NillableFlag.DISABLED); // nillable
+							prop.setConstraint(NillableFlag.ENABLED); // nillable
+																		// FIXME
+							// should be configurable per field (see also
+							// CSVInstanceReader)
+							prop.setConstraint(Cardinality.CC_EXACTLY_ONCE); // cardinality
+							// set metadata for property
+							prop.setLocation(getSource().getLocation());
 
-			if (value != null) {
-				Binding binding = property.getPropertyType().getConstraint(Binding.class);
-				try {
-					if (!binding.getBinding().equals(String.class)) {
-						ConversionService conversionService = OsgiUtils
-								.getService(ConversionService.class);
-						if (conversionService.canConvert(String.class, binding.getBinding())) {
-							value = conversionService.convert(part, binding.getBinding());
-						}
-						else {
-							throw new IllegalStateException("Conversion not possible!");
+							property = prop;
+							part = part.replace(currentProp + "\n", "");
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
 					}
-				} catch (Exception e) {
-					reporter.error(new IOMessageImpl("Cannot convert property value to {0}", e,
-							line, -1, binding.getBinding().getSimpleName()));
 				}
-			}
 
-			instance.addProperty(property.getName(), value);
+				if (part.isEmpty()) {
+					// FIXME make this configurable
+					part = null;
+				}
+
+				Object value = part;
+
+				if (value != null) {
+					Binding binding = property.getPropertyType().getConstraint(Binding.class);
+					try {
+						if (!binding.getBinding().equals(String.class)) {
+							ConversionService conversionService = OsgiUtils
+									.getService(ConversionService.class);
+							if (conversionService.canConvert(String.class, binding.getBinding())) {
+								value = conversionService.convert(part, binding.getBinding());
+							}
+							else {
+								throw new IllegalStateException("Conversion not possible!");
+							}
+						}
+					} catch (Exception e) {
+						reporter.error(new IOMessageImpl("Cannot convert property value to {0}", e,
+								line, -1, binding.getBinding().getSimpleName()));
+					}
+				}
+				instance.addProperty(property.getName(), value);
+				propertyIndex++;
+			}
 		}
 		instances.add(instance);
 	}
