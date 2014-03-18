@@ -80,4 +80,11 @@ public interface PropertyTransformation<E extends TransformationEngine> extends
 	 */
 	public boolean allowAutomatedResultConversion();
 
+	/**
+	 * Set the type cell this property transformation belongs to.
+	 * 
+	 * @param typeCell the type cell
+	 */
+	public void setTypeCell(Cell typeCell);
+
 }

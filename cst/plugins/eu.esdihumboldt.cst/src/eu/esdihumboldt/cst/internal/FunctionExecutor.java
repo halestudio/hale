@@ -69,6 +69,7 @@ public class FunctionExecutor extends CellNodeValidator {
 	private final PropertyTransformationExtension transformations;
 	private final TransformationContext context;
 	private final Priority functionPriority;
+	private final ThreadLocal<Cell> typeCell = new ThreadLocal<>();
 
 	/**
 	 * Create a function executor.
@@ -213,6 +214,7 @@ public class FunctionExecutor extends CellNodeValidator {
 			targetType = target.getEntityDefinition().getType();
 		}
 		function.setTargetType(targetType);
+		function.setTypeCell(typeCell.get());
 
 		// execute function
 		try {
@@ -368,4 +370,12 @@ public class FunctionExecutor extends CellNodeValidator {
 				def.getPropertyPath()), def.getSchemaSpace(), def.getFilter());
 	}
 
+	/**
+	 * Set the current type cell. The value is stored in a {@link ThreadLocal}.
+	 * 
+	 * @param typeCell the current type cell
+	 */
+	public void setTypeCell(Cell typeCell) {
+		this.typeCell.set(typeCell);
+	}
 }
