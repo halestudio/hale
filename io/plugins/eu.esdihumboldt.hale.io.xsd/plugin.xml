@@ -67,5 +67,16 @@
             type="eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.SkipGeometryValidation">
       </valueconstraint>
    </extension>
+   <extension
+         point="eu.esdihumboldt.util.groovy.sandbox">
+      <allowPackage
+            allowChildren="true"
+            name="eu.esdihumboldt.hale.io.xsd.reader.internal">
+      </allowPackage>
+      <allowPackage
+            allowChildren="true"
+            name="eu.esdihumboldt.hale.io.xsd.model">
+      </allowPackage>
+   </extension>
 
 </plugin>
