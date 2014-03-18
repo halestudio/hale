@@ -1,6 +1,7 @@
 package eu.esdihumboldt.util.groovy.sandbox.internal;
 
 import static junit.framework.Assert.fail;
+import eu.esdihumboldt.util.groovy.sandbox.internal.RestrictiveGroovyInterceptor.AllowedPackage;
 import groovy.lang.GroovyShell;
 
 import java.util.Collections;
@@ -29,7 +30,7 @@ public class GroovySandboxTest {
 		cc.addCompilationCustomizers(new SandboxTransformer());
 		shell = new GroovyShell(cc);
 		interceptor = new RestrictiveGroovyInterceptor(Collections.<Class<?>> emptySet(),
-				Collections.<Class<?>> emptySet());
+				Collections.<Class<?>> emptySet(), Collections.<AllowedPackage> emptyList());
 	}
 
 	/**
