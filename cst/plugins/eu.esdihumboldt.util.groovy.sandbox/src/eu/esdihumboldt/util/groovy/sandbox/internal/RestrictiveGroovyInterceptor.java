@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Set;
 
 import org.codehaus.groovy.runtime.GStringImpl;
@@ -36,7 +37,8 @@ import org.codehaus.groovy.runtime.InvokerHelper;
 import org.kohsuke.groovy.sandbox.GroovyInterceptor;
 
 /**
- * {@link GroovyInterceptor} with lots of output.
+ * {@link GroovyInterceptor} which allows some basic classes but is pretty
+ * restrictive. Constructor offers parameters to allow more classes.
  * 
  * @author Kai Schwierczek
  */
@@ -78,6 +80,11 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 	 * Disallowed Closure properties (write access).
 	 */
 	private static final Set<String> disallowedClosureWriteProperties = new HashSet<>();
+
+	/**
+	 * Allowed packages.
+	 */
+	private static final List<AllowedPackage> allowedPackages = new ArrayList<>();
 
 	static {
 		// standard classes
@@ -130,8 +137,48 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 		disallowedClosureWriteProperties.add("directive");
 	}
 
+	/**
+	 * AllowedPackage saves information to allow the use of a package.
+	 */
+	public static class AllowedPackage {
+
+		private final String packagePrefix;
+		private final boolean allowChildren;
+
+		/**
+		 * @param packagePrefix the package prefix (final '.' is added if not
+		 *            present)
+		 * @param allowChildren whether child-packages are allowed, too
+		 */
+		public AllowedPackage(String packagePrefix, boolean allowChildren) {
+			if (!packagePrefix.endsWith("."))
+				packagePrefix += '.';
+			this.packagePrefix = packagePrefix;
+			this.allowChildren = allowChildren;
+		}
+
+		/**
+		 * Checks whether the given class is allowed to be used because of this
+		 * allowed package.
+		 * 
+		 * @param clazz the class to test
+		 * @return true, if the class may be used, false otherwise
+		 */
+		public boolean checkAllowed(Class<?> clazz) {
+			String className = clazz.getName();
+
+			if (className.startsWith(packagePrefix)) {
+				return allowChildren || !className.substring(packagePrefix.length()).contains(".");
+			}
+			else {
+				return false;
+			}
+		}
+	}
+
 	private final Set<Class<?>> instanceAllowedClasses = new HashSet<>(allowedClasses);
 	private final Set<Class<?>> instanceAllAllowedClasses = new HashSet<>(allAllowedClasses);
+	private final List<AllowedPackage> instanceAllowedPackages = new ArrayList<>(allowedPackages);
 
 	/**
 	 * Constructor using additional allowed classes.
@@ -141,18 +188,22 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 	 * @param additionalAllAllowedClasses classes, which may be initialized, and
 	 *            any call on them is allowed (has to implement methodMissing or
 	 *            equal)
+	 * @param additionalAllowedPackages packages whose classes and their
+	 *            declared methods may be used
 	 */
 	public RestrictiveGroovyInterceptor(Set<Class<?>> additionalAllowedClasses,
-			Set<Class<?>> additionalAllAllowedClasses) {
+			Set<Class<?>> additionalAllAllowedClasses,
+			List<AllowedPackage> additionalAllowedPackages) {
 		instanceAllowedClasses.addAll(additionalAllowedClasses);
 		instanceAllowedClasses.addAll(additionalAllAllowedClasses);
 		instanceAllAllowedClasses.addAll(additionalAllAllowedClasses);
+		instanceAllowedPackages.addAll(additionalAllowedPackages);
 	}
 
 	@Override
 	public Object onStaticCall(Invoker invoker, Class receiver, String method, Object... args)
 			throws Throwable {
-		if (instanceAllowedClasses.contains(receiver) || isScriptClass(receiver))
+		if (isAllowedClass(receiver) || isScriptClass(receiver))
 			return super.onStaticCall(invoker, receiver, method, args);
 		else
 			throw new GroovyRestrictionException("using class " + receiver.getSimpleName()
@@ -163,7 +214,7 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 	public Object onNewInstance(Invoker invoker, Class receiver, Object... args) throws Throwable {
 		// classes defined in the script would be okay, sadly it is not possible
 		// to identify those?
-		if (instanceAllowedClasses.contains(receiver) || isScriptClass(receiver))
+		if (isAllowedClass(receiver) || isScriptClass(receiver))
 			return super.onNewInstance(invoker, receiver, args);
 		else
 			throw new GroovyRestrictionException("using class " + receiver.getSimpleName()
@@ -213,7 +264,7 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 			// delegation to this closure.
 			return false;
 		}
-		else if (instanceAllowedClasses.contains(receiver.getClass()))
+		else if (isAllowedClass(receiver.getClass()))
 			return instanceAllAllowedClasses.contains(receiver.getClass())
 					|| !InvokerHelper.getMetaClass(receiver).respondsTo(receiver, method).isEmpty();
 		else if (isScriptClass(receiver.getClass()) && !disallowedScriptMethods.contains(method))
@@ -233,7 +284,7 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 
 	@Override
 	public Object onGetProperty(Invoker invoker, Object receiver, String property) throws Throwable {
-		if (receiver instanceof Class<?> && instanceAllowedClasses.contains(receiver)
+		if (receiver instanceof Class<?> && isAllowedClass((Class<?>) receiver)
 				&& !"class".equals(property))
 			return super.onGetProperty(invoker, receiver, property);
 		checkPropertyAccess(receiver, property, false);
@@ -281,7 +332,7 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 		}
 		else if (instanceAllAllowedClasses.contains(receiver.getClass()))
 			return true;
-		else if (instanceAllowedClasses.contains(receiver.getClass()))
+		else if (isAllowedClass(receiver.getClass()))
 			return hasProperty(receiver, property);
 		else if (isScriptClass(receiver.getClass())
 				&& (!set || !disallowedScriptWriteProperties.contains(property)))
@@ -343,5 +394,20 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 		} catch (MissingPropertyException e) {
 			return false;
 		}
+	}
+
+	private boolean isAllowedClass(Class<?> clazz) {
+		if (instanceAllowedClasses.contains(clazz))
+			return true;
+		for (AllowedPackage allowedPackage : instanceAllowedPackages) {
+			if (allowedPackage.checkAllowed(clazz)) {
+				// add needs to be synchronized, all other places don't matter
+				synchronized (instanceAllowedClasses) {
+					instanceAllowedClasses.add(clazz);
+				}
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -34,10 +34,10 @@
    </extension>
    <extension
          point="eu.esdihumboldt.util.groovy.sandbox">
-      <allow
-            allowAll="false"
-            class="eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance">
-      </allow>
+      <allowPackage
+            allowChildren="true"
+            name="eu.esdihumboldt.hale.common.instance.model">
+      </allowPackage>
    </extension>
 
 </plugin>
