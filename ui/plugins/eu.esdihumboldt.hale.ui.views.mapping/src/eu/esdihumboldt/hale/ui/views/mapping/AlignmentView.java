@@ -63,6 +63,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
@@ -322,6 +323,15 @@ public class AlignmentView extends AbstractMappingView {
 
 					@Override
 					public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+
+						if (part != AlignmentView.this
+								&& selection instanceof IStructuredSelection
+								&& ((IStructuredSelection) selection).getFirstElement() instanceof Cell) {
+							Cell cell = (Cell) ((IStructuredSelection) selection).getFirstElement();
+							if (cell.getSource().values().iterator().next().getDefinition() instanceof TypeEntityDefinition) {
+								updateRelationWithCell(cell);
+							}
+						}
 						if (!(selection instanceof SchemaSelection)) {
 							// only react on schema selections
 							return;
@@ -631,6 +641,28 @@ public class AlignmentView extends AbstractMappingView {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Update the selected type relation to a cell that is related to the given
+	 * schema selection.
+	 * 
+	 * @param selection the schema selection
+	 */
+	private void updateRelationWithCell(Cell cell) {
+		Cell typeCell = sourceTargetSelector.getSelectedCell();
+
+		if (typeCell != null && cell.equals(typeCell)) {
+			// type cell is the same, don't change
+			return;
+		}
+
+		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+				AlignmentService.class);
+		Alignment alignment = as.getAlignment();
+
+		sourceTargetSelector.setSelection(new StructuredSelection(cell));
+
 	}
 
 	private boolean isDisabledForCurrentType(Cell cell) {
