@@ -19,6 +19,22 @@
             name="Mapping"
             restorable="true">
       </view>
+      <view
+            category="eu.esdihumboldt.hale.ui"
+            class="eu.esdihumboldt.hale.ui.views.mapping.AlignmentViewTypesOnly"
+            icon="icons/alignment.gif"
+            id="eu.esdihumboldt.hale.ui.views.mapping.alignmenttypes"
+            name="Navigation"
+            restorable="true">
+      </view>
+      <view
+            category="eu.esdihumboldt.hale.ui"
+            class="eu.esdihumboldt.hale.ui.views.mapping.AlignmentViewOneElement"
+            icon="icons/alignment.gif"
+            id="eu.esdihumboldt.hale.ui.views.mapping.alignmentoneelement"
+            name="Detailed Transformation"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
