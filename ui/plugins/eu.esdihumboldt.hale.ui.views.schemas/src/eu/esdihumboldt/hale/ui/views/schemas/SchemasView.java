@@ -345,7 +345,9 @@ public class SchemasView extends PropertiesViewPart {
 
 		// source schema toolbar, filter and explorer
 //		sourceExplorer = new SchemaExplorer(modelComposite, "Source");
-		sourceExplorer = new EntitySchemaExplorer(modelComposite, "Source", SchemaSpaceID.SOURCE);
+		// sourceExplorer = new EntitySchemaExplorer(modelComposite, "Source",
+		// SchemaSpaceID.SOURCE);
+		sourceExplorer = createSchemaExplorer(modelComposite, "Source", SchemaSpaceID.SOURCE);
 		sourceExplorer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		sourceExplorerManager = new ServiceSchemaExplorer(sourceExplorer, SchemaSpaceID.SOURCE);
 
@@ -382,7 +384,9 @@ public class SchemasView extends PropertiesViewPart {
 		});
 
 		// target schema toolbar, filter and explorer
-		targetExplorer = new EntitySchemaExplorer(modelComposite, "Target", SchemaSpaceID.TARGET);
+		// targetExplorer = new EntitySchemaExplorer(modelComposite, "Target",
+		// SchemaSpaceID.TARGET);
+		targetExplorer = createSchemaExplorer(modelComposite, "Target", SchemaSpaceID.TARGET);
 		targetExplorer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		targetExplorerManager = new ServiceSchemaExplorer(targetExplorer, SchemaSpaceID.TARGET);
 
@@ -446,6 +450,20 @@ public class SchemasView extends PropertiesViewPart {
 	}
 
 	/**
+	 * Wrapper method to support different content provider.
+	 * 
+	 * @param parent the parent composite
+	 * @param title the title
+	 * @param schemaSpace the associated schema space
+	 * @return
+	 */
+	protected SchemaExplorer createSchemaExplorer(Composite parent, String title,
+			SchemaSpaceID schemaSpace) {
+		// if (parent != null && title != null && schemaSpace != null) {
+		return new EntitySchemaExplorer(parent, title, schemaSpace);
+	}
+
+	/**
 	 * @see WorkbenchPart#dispose()
 	 */
 	@Override
@@ -467,6 +485,14 @@ public class SchemasView extends PropertiesViewPart {
 		}
 		if (augmentImage != null) {
 			augmentImage.dispose();
+		}
+
+		if (sourceExplorer != null) {
+			sourceExplorer.dispose();
+		}
+
+		if (targetExplorer != null) {
+			targetExplorer.dispose();
 		}
 
 		super.dispose();
