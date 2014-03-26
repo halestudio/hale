@@ -221,4 +221,11 @@ public class SchemaExplorer {
 		return main;
 	}
 
+	/**
+	 * Dispose the action, removing any service listeners.
+	 */
+	public void dispose() {
+		// no actions or listener
+	}
+
 }
