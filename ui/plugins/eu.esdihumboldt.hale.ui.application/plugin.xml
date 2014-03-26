@@ -35,6 +35,21 @@
             id="eu.esdihumboldt.hale.ui.application.perspective.thorsten"
             name="Thorsten">
       </perspective>
+      <perspective
+            class="eu.esdihumboldt.hale.ui.application.RoughPerspective"
+            id="eu.esdihumboldt.hale.ui.application.perspective.grob"
+            name="Grob">
+      </perspective>
+      <perspective
+            class="eu.esdihumboldt.hale.ui.application.DetailedPerspective"
+            id="eu.esdihumboldt.hale.ui.application.perspective.feintest"
+            name="Fein">
+      </perspective>
+      <perspective
+            class="eu.esdihumboldt.hale.ui.application.TransformationPerspective"
+            id="eu.esdihumboldt.hale.ui.application.perspective.transformtest"
+            name="Transf">
+      </perspective>
    </extension>
    <extension
          id="id1"
