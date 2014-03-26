@@ -24,6 +24,20 @@
             id="eu.esdihumboldt.hale.ui.views.schema.target"
             name="Target Schema">
       </view>
+      <view
+            category="eu.esdihumboldt.hale.ui"
+            class="eu.esdihumboldt.hale.ui.views.schemas.SchemasViewTypes"
+            icon="icons/schema.gif"
+            id="eu.esdihumboldt.hale.ui.views.schemas.typesonly"
+            name="Schema Types Explorer">
+      </view>
+      <view
+            category="eu.esdihumboldt.hale.ui"
+            class="eu.esdihumboldt.hale.ui.views.schemas.SchemasViewOneTypeFocus"
+            icon="icons/schema.gif"
+            id="eu.esdihumboldt.hale.ui.views.schemas.typefocus"
+            name="Schema Focus">
+      </view>
    </extension>
 
 </plugin>
