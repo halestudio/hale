@@ -15,10 +15,17 @@
 
 package eu.esdihumboldt.cst.functions.groovy.internal;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
+import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.CellUtil;
+import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
+import eu.esdihumboldt.hale.common.align.model.Type;
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractTransformationFunction;
 import eu.esdihumboldt.hale.common.core.io.Text;
@@ -128,4 +135,35 @@ public class GroovyUtil implements GroovyConstants {
 		return (MutableInstance) instance;
 	}
 
+	/**
+	 * Creates a basic binding used by all Groovy functions.
+	 * 
+	 * @param builder the instance builder, may be <code>null</code>
+	 * @param typeCell the type cell the function works on, may be
+	 *            <code>null</code>
+	 * @return a basic binding
+	 */
+	public static Binding createBinding(InstanceBuilder builder, Cell typeCell) {
+		Binding binding = new Binding();
+		binding.setVariable(BINDING_TARGET, null);
+		binding.setVariable(BINDING_BUILDER, builder);
+
+		// init type cell types
+		ArrayList<TypeEntityDefinition> sourceTypes = null;
+		TypeEntityDefinition targetType = null;
+		if (typeCell != null) {
+			targetType = ((Type) CellUtil.getFirstEntity(typeCell.getTarget())).getDefinition();
+			if (typeCell.getSource() != null) {
+				Collection<? extends Entity> sources = typeCell.getSource().values();
+				sourceTypes = new ArrayList<>(sources.size());
+				for (Entity entity : sources) {
+					sourceTypes.add(((Type) entity).getDefinition());
+				}
+			}
+		}
+		binding.setVariable(BINDING_SOURCE_TYPES, sourceTypes);
+		binding.setVariable(BINDING_TARGET_TYPE, targetType);
+
+		return binding;
+	}
 }

@@ -24,6 +24,7 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.ui.PlatformUI;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
@@ -31,6 +32,7 @@ import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
 import eu.esdihumboldt.cst.functions.groovy.GroovyTransformation;
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -55,6 +57,7 @@ import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray.TypeProvider;
 import eu.esdihumboldt.hale.ui.scripting.groovy.InstanceTestValues;
 import eu.esdihumboldt.hale.ui.scripting.groovy.TestValues;
+import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
 import eu.esdihumboldt.hale.ui.util.groovy.ast.GroovyAST;
 import eu.esdihumboldt.hale.ui.util.source.CompilingSourceViewer;
@@ -134,14 +137,26 @@ public class GroovyTransformationPage extends GroovyScriptPage {
 		boolean useInstanceValues = CellUtil.getOptionalParameter(getWizard().getUnfinishedCell(),
 				GroovyTransformation.PARAM_INSTANCE_VARIABLES, Value.of(false)).as(Boolean.class);
 
-		GroovyService service = HaleUI.getServiceProvider().getService(GroovyService.class);
+		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+				AlignmentService.class);
+		GroovyService gs = HaleUI.getServiceProvider().getService(GroovyService.class);
 		Script script = null;
 		try {
-			script = service.parseScript(document, GroovyTransformation.createGroovyBinding(values,
-					null, builder, useInstanceValues));
+			Collection<? extends Cell> typeCells = as.getAlignment().getTypeCells(
+					getWizard().getUnfinishedCell());
+			// select one matching type cell, the script has to run for all
+			// matching cells
+			// XXX if there is no matching type cell the evaluation might fail
+			// even though it is valid (-> BaseAlignment)
+			Cell typeCell = null;
+			if (!typeCells.isEmpty()) {
+				typeCell = typeCells.iterator().next();
+			}
+			script = gs.parseScript(document, GroovyTransformation.createGroovyBinding(values,
+					null, typeCell, builder, useInstanceValues));
 
 			GroovyTransformation.evaluate(script, builder, targetProperty.getDefinition()
-					.getDefinition().getPropertyType(), service);
+					.getDefinition().getPropertyType(), gs);
 		} catch (final Exception e) {
 			return handleValidationResult(script, e);
 		}

@@ -49,7 +49,7 @@ public class GroovyRetype extends AbstractTypeTransformation<TransformationEngin
 
 		InstanceBuilder builder = new InstanceBuilder(false);
 
-		Binding binding = createBinding(getSource(), builder);
+		Binding binding = createBinding(getSource(), cell, builder);
 
 		try {
 			GroovyService service = getExecutionContext().getService(GroovyService.class);
@@ -68,13 +68,13 @@ public class GroovyRetype extends AbstractTypeTransformation<TransformationEngin
 	 * Create the binding for the Groovy Retype script function.
 	 * 
 	 * @param source the source instance
+	 * @param typeCell the type cell
 	 * @param builder the instance builder
 	 * @return the binding
 	 */
-	public static Binding createBinding(FamilyInstance source, InstanceBuilder builder) {
-		Binding binding = new Binding();
-		binding.setVariable(BINDING_TARGET, null);
-		binding.setVariable(BINDING_BUILDER, builder);
+	public static Binding createBinding(FamilyInstance source, Cell typeCell,
+			InstanceBuilder builder) {
+		Binding binding = GroovyUtil.createBinding(builder, typeCell);
 		binding.setVariable(BINDING_SOURCE, source);
 		return binding;
 	}

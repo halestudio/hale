@@ -113,7 +113,8 @@ public class GroovyRetypePage extends GroovyScriptPage {
 					DataSet.SOURCE);
 		}
 		FamilyInstance source = new FamilyInstanceImpl(instance);
-		Binding binding = GroovyRetype.createBinding(source, builder);
+		Binding binding = GroovyRetype.createBinding(source, getWizard().getUnfinishedCell(),
+				builder);
 
 		GroovyService service = HaleUI.getServiceProvider().getService(GroovyService.class);
 		Script script = null;

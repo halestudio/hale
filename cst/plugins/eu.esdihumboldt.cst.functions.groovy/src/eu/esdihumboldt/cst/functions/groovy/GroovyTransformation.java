@@ -26,6 +26,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.cst.functions.groovy.internal.GroovyUtil;
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
@@ -77,7 +78,7 @@ public class GroovyTransformation extends
 
 		// create the script binding
 		Binding binding = createGroovyBinding(variables.get(ENTITY_VARIABLE), getCell().getSource()
-				.get(ENTITY_VARIABLE), builder, useInstanceVariables);
+				.get(ENTITY_VARIABLE), getTypeCell(), builder, useInstanceVariables);
 
 		Object result;
 		try {
@@ -165,6 +166,8 @@ public class GroovyTransformation extends
 	 * @param vars the variable values
 	 * @param varDefs definition of the assigned variables, in case some
 	 *            variable values are not set, may be <code>null</code>
+	 * @param typeCell the type cell the binding is created for, may be
+	 *            <code>null</code>
 	 * @param builder the instance builder for creating target instances, or
 	 *            <code>null</code> if not applicable
 	 * @param useInstanceVariables if instances should be used as variables for
@@ -172,12 +175,9 @@ public class GroovyTransformation extends
 	 * @return the binding for use with {@link GroovyShell}
 	 */
 	public static Binding createGroovyBinding(List<PropertyValue> vars,
-			List<? extends Entity> varDefs, InstanceBuilder builder, boolean useInstanceVariables) {
-		Binding binding = new Binding();
-
-		// init builder and target bindings
-		binding.setVariable(BINDING_TARGET, null);
-		binding.setVariable(BINDING_BUILDER, builder);
+			List<? extends Entity> varDefs, Cell typeCell, InstanceBuilder builder,
+			boolean useInstanceVariables) {
+		Binding binding = GroovyUtil.createBinding(builder, typeCell);
 
 		// collect definitions to check if all were provided
 		Set<EntityDefinition> notDefined = new HashSet<>();
