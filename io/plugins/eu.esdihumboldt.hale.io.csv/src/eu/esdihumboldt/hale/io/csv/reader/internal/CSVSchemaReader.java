@@ -21,14 +21,11 @@ import java.util.Arrays;
 import javax.xml.namespace.QName;
 
 import au.com.bytecode.opencsv.CSVReader;
-import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
-import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
-import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
@@ -58,24 +55,6 @@ public class CSVSchemaReader extends AbstractTableSchemaReader implements CSVCon
 	 */
 	public static String[] firstLine;
 
-	private DefaultSchema schema;
-
-	/**
-	 * @see IOProvider#isCancelable()
-	 */
-	@Override
-	public boolean isCancelable() {
-		return false;
-	}
-
-	/**
-	 * @see SchemaReader#getSchema()
-	 */
-	@Override
-	public Schema getSchema() {
-		return schema;
-	}
-
 	@Override
 	public void validate() throws IOProviderConfigurationException {
 		super.validate();
@@ -84,16 +63,13 @@ public class CSVSchemaReader extends AbstractTableSchemaReader implements CSVCon
 		}
 	}
 
-	/**
-	 * @see AbstractIOProvider#execute(ProgressIndicator, IOReporter)
-	 */
 	@Override
-	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
+	protected Schema loadFromSource(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 		progress.begin("Load CSV schema", ProgressIndicator.UNKNOWN); //$NON-NLS-1$
 
 		String namespace = CSVFileIO.CSVFILE_NS;
-		schema = new DefaultSchema(namespace, getSource().getLocation());
+		DefaultSchema schema = new DefaultSchema(namespace, getSource().getLocation());
 
 		CSVReader reader = CSVUtil.readFirst(this);
 
@@ -106,7 +82,7 @@ public class CSVSchemaReader extends AbstractTableSchemaReader implements CSVCon
 			if (typename == null || typename.isEmpty()) {
 				reporter.setSuccess(false);
 				reporter.error(new IOMessageImpl("No Typename was set", null));
-				return reporter;
+				return null;
 			}
 			DefaultTypeDefinition type = new DefaultTypeDefinition(new QName(typename));
 
@@ -178,11 +154,11 @@ public class CSVSchemaReader extends AbstractTableSchemaReader implements CSVCon
 		} catch (Exception ex) {
 			reporter.error(new IOMessageImpl("Cannot load csv schema", ex));
 			reporter.setSuccess(false);
-			return reporter;
+			return null;
 		}
 
 		reporter.setSuccess(true);
-		return reporter;
+		return schema;
 	}
 
 	/**

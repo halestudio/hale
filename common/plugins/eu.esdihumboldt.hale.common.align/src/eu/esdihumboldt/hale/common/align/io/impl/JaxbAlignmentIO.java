@@ -25,6 +25,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import eu.esdihumboldt.hale.common.align.io.EntityResolver;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.AlignmentToJaxb;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.JaxbToAlignment;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AlignmentType;
@@ -58,16 +59,19 @@ public class JaxbAlignmentIO {
 	 * @param targetTypes the target types to use for resolving definition
 	 *            references
 	 * @param updater the path updater to use for base alignments
+	 * @param resolver the entity resolver, <code>null</code> to use the default
+	 *            resolver
 	 * @return the alignment
 	 * @throws JAXBException if reading the alignment failed
 	 * @throws IOException if loading of base alignments failed
 	 */
 	public static MutableAlignment load(InputStream in, IOReporter reporter, TypeIndex sourceTypes,
-			TypeIndex targetTypes, PathUpdate updater) throws JAXBException, IOException {
+			TypeIndex targetTypes, PathUpdate updater, EntityResolver resolver)
+			throws JAXBException, IOException {
 		AlignmentType genAlignment = JaxbToAlignment.load(in, reporter);
 		// convert to alignment
-		return new JaxbToAlignment(genAlignment, reporter, sourceTypes, targetTypes, updater)
-				.convert();
+		return new JaxbToAlignment(genAlignment, reporter, sourceTypes, targetTypes, updater,
+				resolver).convert();
 	}
 
 	/**

@@ -11,7 +11,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.base;version="9.0.0",
  com.vividsolutions.jts.geom,
  de.cs3d.util.eclipse,
- de.cs3d.util.logging,
+ de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.align.model,
  eu.esdihumboldt.hale.common.core.io.supplier,
  eu.esdihumboldt.hale.common.instance.geometry,

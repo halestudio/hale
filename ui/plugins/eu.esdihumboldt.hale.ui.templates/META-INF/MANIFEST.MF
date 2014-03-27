@@ -7,13 +7,13 @@ Bundle-Vendor: Data Harmonisation Panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.io;version="11.0.1",
  de.cs3d.util.eclipse.extension.simple,
- de.cs3d.util.logging,
+ de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.core.io.supplier,
  eu.esdihumboldt.hale.ui.service.project,
  eu.esdihumboldt.hale.ui.util.selector,
  org.apache.commons.logging,
- org.apache.http.client;version="4.1.0",
- org.apache.http.impl.client;version="4.1.0",
+ org.apache.http.client,
+ org.apache.http.impl.client,
  org.apache.http.params,
  org.slf4j;version="1.5.11"
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",

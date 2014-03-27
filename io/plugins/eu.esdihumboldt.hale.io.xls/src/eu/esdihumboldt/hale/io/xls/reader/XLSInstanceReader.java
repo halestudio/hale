@@ -53,6 +53,11 @@ import eu.esdihumboldt.hale.io.xls.AnalyseXLSSchemaTable;
 public class XLSInstanceReader extends AbstractInstanceReader {
 
 	private DefaultInstanceCollection instances;
+	private PropertyDefinition[] propAr;
+	private TypeDefinition type;
+
+	// only needed for correct error description
+	private int line = 0;
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.instance.io.InstanceReader#getInstances()
@@ -80,77 +85,87 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 		boolean skipFirst = getParameter(CommonSchemaConstants.PARAM_SKIP_FIRST_LINE).as(
 				Boolean.class);
 		instances = new DefaultInstanceCollection(new ArrayList<Instance>());
-		int line = 0;
 
 		AnalyseXLSSchemaTable analyser;
 		try {
+			// analyse the excel sheet to get all information
 			analyser = new AnalyseXLSSchemaTable(getSource().getLocation());
-		} catch (Exception e1) {
-			// XXX set message
-			reporter.setSuccess(false);
+		} catch (Exception e) {
+			reporter.error(new IOMessageImpl("Reading the excel sheet has failed", e));
 			return reporter;
 		}
 
-		// build instances
-		TypeDefinition type = getSourceSchema().getType(
+		// get type definition of the schema
+		type = getSourceSchema().getType(
 				QName.valueOf(getParameter(CommonSchemaConstants.PARAM_TYPENAME).as(String.class)));
 
-		PropertyDefinition[] propAr = type.getChildren().toArray(
-				new PropertyDefinition[type.getChildren().size()]);
+		// get property definition
+		propAr = type.getChildren().toArray(new PropertyDefinition[type.getChildren().size()]);
 		Collection<List<String>> rows = analyser.getRows();
 
-		Iterator<List<String>> allRows = rows.iterator();
-		List<String> rowList;
-
-		if (skipFirst) {
-			allRows.next();
+		// skip if first row is a header
+		if (!skipFirst) {
+			// otherwise first line is also an instance
+			createInstanceCollection(analyser.getHeader(), reporter);
 			line++;
 		}
 
+		// iterate over all rows to create the instances
+		Iterator<List<String>> allRows = rows.iterator();
 		while (allRows.hasNext()) {
-			MutableInstance instance = new DefaultInstance(type, null);
-
-			rowList = allRows.next();
-
-			int index = 0;
-			for (String part : rowList) {
-				PropertyDefinition property = propAr[index];
-
-				if (part != null && part.isEmpty()) {
-					// FIXME make this configurable
-					part = null;
-				}
-
-				Object value = part;
-
-				if (value != null) {
-					Binding binding = property.getPropertyType().getConstraint(Binding.class);
-					try {
-						if (!binding.getBinding().equals(String.class)) {
-							ConversionService conversionService = OsgiUtils
-									.getService(ConversionService.class);
-							if (conversionService.canConvert(String.class, binding.getBinding())) {
-								value = conversionService.convert(part, binding.getBinding());
-							}
-							else {
-								throw new IllegalStateException("Conversion not possible!");
-							}
-						}
-					} catch (Exception e) {
-						reporter.error(new IOMessageImpl("Cannot convert property value to {0}", e,
-								line, -1, binding.getBinding().getSimpleName()));
-					}
-				}
-
-				instance.addProperty(property.getName(), value);
-				index++;
-			}
-
-			instances.add(instance);
+			List<String> row = allRows.next();
+			createInstanceCollection(row, reporter);
+			line++;
 		}
 
 		reporter.setSuccess(true);
 		return reporter;
+	}
+
+	/**
+	 * create instances see
+	 * {@link CSVInstanceReader#execute(ProgressIndicator, IOReporter)}
+	 * 
+	 * @param row the current row
+	 * @param reporter the reporter of the writer
+	 **/
+	@SuppressWarnings("javadoc")
+	private void createInstanceCollection(List<String> row, IOReporter reporter) {
+		MutableInstance instance = new DefaultInstance(type, null);
+
+		for (int index = 0; index < row.size(); index++) {
+			String part = row.get(index);
+			PropertyDefinition property = propAr[index];
+
+			if (part != null && part.isEmpty()) {
+				// FIXME make this configurable
+				part = null;
+			}
+
+			Object value = part;
+
+			if (value != null) {
+				Binding binding = property.getPropertyType().getConstraint(Binding.class);
+				try {
+					if (!binding.getBinding().equals(String.class)) {
+						ConversionService conversionService = OsgiUtils
+								.getService(ConversionService.class);
+						if (conversionService.canConvert(String.class, binding.getBinding())) {
+							value = conversionService.convert(part, binding.getBinding());
+						}
+						else {
+							throw new IllegalStateException("Conversion not possible!");
+						}
+					}
+				} catch (Exception e) {
+					reporter.error(new IOMessageImpl("Cannot convert property value to {0}", e,
+							line, -1, binding.getBinding().getSimpleName()));
+				}
+			}
+
+			instance.addProperty(property.getName(), value);
+		}
+		instances.add(instance);
 	}
 
 	/**

@@ -40,8 +40,8 @@ import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.components.PopoverConfig;
 import de.agilecoders.wicket.core.markup.html.bootstrap.components.TooltipConfig.Placement;
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.server.db.orient.DatabaseHelper;
 import eu.esdihumboldt.hale.server.model.Template;
 import eu.esdihumboldt.hale.server.model.User;

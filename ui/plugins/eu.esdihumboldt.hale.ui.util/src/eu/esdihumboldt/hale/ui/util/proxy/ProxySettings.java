@@ -22,8 +22,8 @@ import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
 import org.eclipse.equinox.security.storage.StorageException;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.ui.util.internal.UIUtilitiesPlugin;
 import eu.esdihumboldt.hale.ui.util.proxy.preferences.PreferenceConstants;
 import eu.esdihumboldt.util.http.ProxyUtil;

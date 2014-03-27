@@ -129,6 +129,20 @@ public class DigitCountValidator extends AbstractValidator {
 	}
 
 	/**
+	 * @return the type of the compare operation
+	 */
+	public Type getType() {
+		return type;
+	}
+
+	/**
+	 * @return the length to compare against
+	 */
+	public int getLength() {
+		return length;
+	}
+
+	/**
 	 * Type specifies what DigitCountValidator should check.
 	 */
 	public enum Type {

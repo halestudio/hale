@@ -26,7 +26,6 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import org.apache.commons.io.FilenameUtils;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager;
@@ -37,8 +36,8 @@ import com.google.common.io.InputSupplier;
 
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
 import de.cs3d.util.eclipse.extension.FactoryFilter;
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueDefinition;
 import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueExtension;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
@@ -56,6 +55,11 @@ import eu.esdihumboldt.util.Pair;
 public abstract class HaleIO {
 
 	private static final ALogger log = ALoggerFactory.getLogger(HaleIO.class);
+
+	/**
+	 * Namespace for HALE core complex value type elements.
+	 */
+	public static final String NS_HALE_CORE = "http://www.esdi-humboldt.eu/hale/core";
 
 	/**
 	 * Filter I/O provider factories by content type
@@ -103,21 +107,19 @@ public abstract class HaleIO {
 
 		List<IContentType> results = new ArrayList<IContentType>();
 
-		if (filename != null) {
+		if (filename != null && !filename.isEmpty()) {
 			// test file extension
+			String lowerFile = filename.toLowerCase();
 			for (IContentType type : types) {
-				String ext = FilenameUtils.getExtension(filename);
-				if (ext != null && !ext.isEmpty()) {
-					String[] extensions = type.getFileSpecs(IContentType.FILE_EXTENSION_SPEC);
-					boolean match = false;
-					for (int i = 0; i < extensions.length && !match; i++) {
-						if (extensions[i].equalsIgnoreCase(ext)) {
-							match = true;
-						}
+				String[] extensions = type.getFileSpecs(IContentType.FILE_EXTENSION_SPEC);
+				boolean match = false;
+				for (int i = 0; i < extensions.length && !match; i++) {
+					if (lowerFile.endsWith("." + extensions[i].toLowerCase())) {
+						match = true;
 					}
-					if (match) {
-						results.add(type);
-					}
+				}
+				if (match) {
+					results.add(type);
 				}
 			}
 		}

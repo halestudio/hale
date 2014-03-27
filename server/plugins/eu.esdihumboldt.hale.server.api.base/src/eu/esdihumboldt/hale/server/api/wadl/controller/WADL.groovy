@@ -45,8 +45,8 @@ import org.w3c.dom.Document
 import com.google.common.collect.HashMultimap
 import com.google.common.collect.Multimap
 
-import de.cs3d.util.logging.ALogger
-import de.cs3d.util.logging.ALoggerFactory
+import de.fhg.igd.slf4jplus.ALogger
+import de.fhg.igd.slf4jplus.ALoggerFactory
 import eu.esdihumboldt.hale.server.api.base.APIUtil
 import eu.esdihumboldt.hale.server.api.wadl.doc.DocScope
 import eu.esdihumboldt.hale.server.api.wadl.doc.WDoc

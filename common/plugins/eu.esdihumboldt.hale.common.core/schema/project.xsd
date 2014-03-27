@@ -48,6 +48,7 @@
 	<xs:complexType name="IOConfigurationType">
 		<xs:sequence>
 			<xs:element ref="AbstractSetting" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="cache" minOccurs="0" maxOccurs="1" type="ValueType" />
 		</xs:sequence>
 		<xs:attribute name="action-id" type="xs:string" use="required" />
 		<xs:attribute name="provider-id" type="xs:string" use="required" />
@@ -57,6 +58,13 @@
 	<xs:element name="AbstractSetting" type="xs:anyType" abstract="true" />
 	<xs:element name="setting" type="PropertyType" substitutionGroup="AbstractSetting" nillable="true" />
 	<xs:element name="complex-setting" type="ComplexPropertyType" substitutionGroup="AbstractSetting" />
+	
+	<xs:complexType name="ValueType">
+		<xs:sequence>
+			<xs:any processContents="skip" minOccurs="0" />
+		</xs:sequence>
+		<xs:attribute name="value" type="xs:string" use="optional" />
+	</xs:complexType>
 	
 	<!-- ProjectFile -->
 	<xs:complexType name="ProjectFileType">

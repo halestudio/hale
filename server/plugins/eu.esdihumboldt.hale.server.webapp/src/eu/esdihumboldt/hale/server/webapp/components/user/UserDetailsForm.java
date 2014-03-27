@@ -23,8 +23,8 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapForm;
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.server.db.orient.DatabaseHelper;
 import eu.esdihumboldt.hale.server.model.User;
 import eu.esdihumboldt.hale.server.webapp.components.bootstrap.BootstrapFeedbackPanel;

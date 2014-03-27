@@ -23,6 +23,7 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.util.groovy.sandbox.GroovyService;
 import groovy.lang.Binding;
 import groovy.lang.Script;
 
@@ -36,13 +37,14 @@ public class GroovyCreate extends Create implements GroovyConstants {
 	@Override
 	protected MutableInstance createInstance(TypeDefinition type, int index, TransformationLog log,
 			Cell cell) throws TransformationException {
-		InstanceBuilder builder = new InstanceBuilder();
+		InstanceBuilder builder = new InstanceBuilder(false);
 
 		Binding binding = createBinding(index, builder);
 
 		try {
-			Script script = GroovyUtil.getScript(this, binding);
-			return GroovyUtil.evaluate(script, builder, type);
+			GroovyService service = getExecutionContext().getService(GroovyService.class);
+			Script script = GroovyUtil.getScript(this, binding, service);
+			return GroovyUtil.evaluate(script, builder, type, service);
 		} catch (TransformationException e) {
 			throw e;
 		} catch (Exception e) {

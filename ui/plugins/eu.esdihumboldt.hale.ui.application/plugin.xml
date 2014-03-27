@@ -342,6 +342,14 @@
                   style="toggle">
             </command>
             <separator
+                  name="transformation.separator0"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.groovy.toggle_restriction"
+                  style="toggle">
+            </command>
+            <separator
                   name="transformation.separator1"
                   visible="true">
             </separator>
@@ -442,6 +450,14 @@
             </command>
             <command
                   commandId="eu.esdihumboldt.hale.ui.instancevalidation.status.toggle_validation"
+                  style="toggle">
+            </command>
+            <separator
+                  name="eu.esdihumboldt.hale.ui.file.groovy_restriction"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.groovy.toggle_restriction"
                   style="toggle">
             </command>
             <separator

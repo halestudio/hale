@@ -90,14 +90,14 @@ public class SpatialDataSetConfigurationPage extends
 					Value.of(localIdEditor.getAsText()));
 			provider.setParameter(InspireInstanceWriter.PARAM_SPATIAL_DATA_SET_NAMESPACE,
 					Value.of(namespaceEditor.getAsText()));
-			provider.setParameter(InspireInstanceWriter.PARAM_SPATIAL_DATA_SET_METADATA,
+			provider.setParameter(InspireInstanceWriter.PARAM_SPATIAL_DATA_SET_METADATA_FILE,
 					Value.of(metadataFile.getStringValue().trim()));
 			return true;
 		}
 		else {
 			provider.setParameter(InspireInstanceWriter.PARAM_SPATIAL_DATA_SET_LOCALID, null);
 			provider.setParameter(InspireInstanceWriter.PARAM_SPATIAL_DATA_SET_NAMESPACE, null);
-			provider.setParameter(InspireInstanceWriter.PARAM_SPATIAL_DATA_SET_METADATA, null);
+			provider.setParameter(InspireInstanceWriter.PARAM_SPATIAL_DATA_SET_METADATA_FILE, null);
 			return false;
 		}
 	}
@@ -256,7 +256,7 @@ public class SpatialDataSetConfigurationPage extends
 		Value namespace = conf.getProviderConfiguration().get(
 				InspireInstanceWriter.PARAM_SPATIAL_DATA_SET_NAMESPACE);
 		Value metadata = conf.getProviderConfiguration().get(
-				InspireInstanceWriter.PARAM_SPATIAL_DATA_SET_METADATA);
+				InspireInstanceWriter.PARAM_SPATIAL_DATA_SET_METADATA_FILE);
 		if (localId != null)
 			localIdEditor.setAsText(localId.getStringRepresentation());
 		if (namespace != null)

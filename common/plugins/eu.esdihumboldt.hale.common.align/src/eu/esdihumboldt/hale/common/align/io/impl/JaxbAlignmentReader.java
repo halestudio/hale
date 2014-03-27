@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import eu.esdihumboldt.hale.common.align.io.AlignmentReader;
+import eu.esdihumboldt.hale.common.align.io.EntityResolver;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
@@ -64,8 +65,13 @@ public class JaxbAlignmentReader extends AbstractAlignmentReader {
 
 		InputStream in = getSource().getInput();
 		try {
+
+			EntityResolver entityResolver = null;
+			if (getServiceProvider() != null) {
+				entityResolver = getServiceProvider().getService(EntityResolver.class);
+			}
 			alignment = JaxbAlignmentIO.load(in, reporter, getSourceSchema(), getTargetSchema(),
-					getPathUpdater());
+					getPathUpdater(), entityResolver);
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl(e.getMessage(), e));
 			reporter.setSuccess(false);

@@ -113,7 +113,7 @@ public class TestUtil {
 					new PathUpdate(null, null));
 		} catch (Exception e) {
 			alignment = JaxbAlignmentIO.load(input.getInput(), report, sourceTypes, targetTypes,
-					new PathUpdate(null, null));
+					new PathUpdate(null, null), null);
 		}
 
 		assertTrue("Errors are contained in the report", report.getErrors().isEmpty());

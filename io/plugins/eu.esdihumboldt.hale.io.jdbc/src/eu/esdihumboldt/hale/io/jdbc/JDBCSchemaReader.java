@@ -46,17 +46,14 @@ import schemacrawler.utility.SchemaCrawlerUtility;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
-import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
-import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
-import eu.esdihumboldt.hale.common.schema.io.impl.AbstractSchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -72,6 +69,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantF
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
+import eu.esdihumboldt.hale.common.schema.persist.AbstractCachedSchemaReader;
 import eu.esdihumboldt.hale.io.jdbc.constraints.AutoIncrementFlag;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DatabaseTable;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DefaultValue;
@@ -84,9 +82,7 @@ import eu.esdihumboldt.hale.io.jdbc.extension.internal.GeometryTypeInfo;
  * 
  * @author Simon Templer
  */
-public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConstants {
-
-	private DefaultSchema typeIndex;
+public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBCConstants {
 
 	/**
 	 * Default constructor
@@ -98,29 +94,23 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 		addSupportedParameter(PARAM_PASSWORD);
 	}
 
-	/**
-	 * @see SchemaReader#getSchema()
-	 */
 	@Override
-	public Schema getSchema() {
-		return typeIndex;
+	protected boolean useCache(Value cache) {
+		// check if a connection can be established
+		try {
+			Connection conn = JDBCConnection.getConnection(this);
+			conn.close();
+			return false;
+		} catch (Exception e) {
+			// on error, use cache
+			return true;
+		}
 	}
 
-	/**
-	 * @see IOProvider#isCancelable()
-	 */
 	@Override
-	public boolean isCancelable() {
-		return false;
-	}
-
-	/**
-	 * @see AbstractIOProvider#execute(ProgressIndicator, IOReporter)
-	 */
-	@Override
-	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
+	protected Schema loadFromSource(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
-		typeIndex = null;
+		DefaultSchema typeIndex = null;
 
 		progress.begin("Read database schema", ProgressIndicator.UNKNOWN);
 		Connection connection = null;
@@ -133,7 +123,7 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 				reporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
 				reporter.setSuccess(false);
 				reporter.setSummary("Failed to connect to database.");
-				return reporter;
+				return null;
 			}
 
 			URI jdbcURI = getSource().getLocation();
@@ -287,7 +277,7 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 			progress.end();
 		}
 
-		return reporter;
+		return typeIndex;
 	}
 
 	/**
@@ -519,9 +509,9 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 				// create constraint, get property definition for original table
 				// column (maybe could use index column, too)
 				type.setConstraint(new eu.esdihumboldt.hale.common.schema.model.constraint.type.PrimaryKey(
-						Collections.<ChildDefinition<?>> singletonList(getOrCreateProperty(schema,
-								type, table.getColumn(columns[0].getName()), overallNamespace,
-								namespace, types, connection, reporter))));
+						Collections.<QName> singletonList(getOrCreateProperty(schema, type,
+								table.getColumn(columns[0].getName()), overallNamespace, namespace,
+								types, connection, reporter).getName())));
 			}
 		}
 

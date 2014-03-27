@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.common.core.io.impl;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,6 +35,7 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
  * Abstract base class for implementing {@link IOProvider}s
@@ -60,6 +62,11 @@ public abstract class AbstractIOProvider implements IOProvider {
 	private IContentType contentType = null;
 
 	/**
+	 * The service provider.
+	 */
+	private ServiceProvider serviceProvider = null;
+
+	/**
 	 * The character set
 	 */
 	private Charset charset = null;
@@ -83,7 +90,7 @@ public abstract class AbstractIOProvider implements IOProvider {
 	 * @return the default character set
 	 */
 	protected Charset getDefaultCharset() {
-		return Charset.forName("UTF-8");
+		return StandardCharsets.UTF_8;
 	}
 
 	/**
@@ -196,6 +203,8 @@ public abstract class AbstractIOProvider implements IOProvider {
 	}
 
 	/**
+	 * @return the parameter or a NULL value
+	 * 
 	 * @see IOProvider#getParameter(String)
 	 */
 	@Override
@@ -228,6 +237,18 @@ public abstract class AbstractIOProvider implements IOProvider {
 			// load generic parameter
 			parameters.put(name, value);
 		}
+	}
+
+	@Override
+	public void setServiceProvider(ServiceProvider serviceProvider) {
+		this.serviceProvider = serviceProvider;
+	}
+
+	/**
+	 * @return the service provider
+	 */
+	protected ServiceProvider getServiceProvider() {
+		return serviceProvider;
 	}
 
 	/**

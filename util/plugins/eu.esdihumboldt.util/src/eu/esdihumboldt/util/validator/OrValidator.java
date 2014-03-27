@@ -17,7 +17,9 @@
 package eu.esdihumboldt.util.validator;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Validator that only checks whether one of its known validators validate the
@@ -25,9 +27,9 @@ import java.util.LinkedList;
  * 
  * @author Kai Schwierczek
  */
-public class OrValidator implements Validator {
+public class OrValidator implements CombinedValidator {
 
-	private LinkedList<Validator> validators = new LinkedList<Validator>();
+	private final LinkedList<Validator> validators = new LinkedList<Validator>();
 
 	/**
 	 * Constructs an OrValidator with the given validators.
@@ -119,5 +121,13 @@ public class OrValidator implements Validator {
 			if (validator.isAlwaysTrue())
 				return true;
 		return false;
+	}
+
+	/**
+	 * @return the internal validators
+	 */
+	@Override
+	public List<Validator> getValidators() {
+		return Collections.unmodifiableList(validators);
 	}
 }

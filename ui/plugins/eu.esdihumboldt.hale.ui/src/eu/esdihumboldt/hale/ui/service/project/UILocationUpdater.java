@@ -51,35 +51,45 @@ public class UILocationUpdater extends LocationUpdater {
 	 */
 	@Override
 	protected URI updatePathFallback(final URI oldLocation) {
-		// let user choose alternative location
-		final Display display = PlatformUI.getWorkbench().getDisplay();
-		final AtomicReference<URI> result = new AtomicReference<URI>();
-		display.syncExec(new Runnable() {
+		if (oldLocation == null) {
+			return null;
+		}
 
-			@Override
-			public void run() {
-				String uriString = oldLocation.toString();
-				MessageDialog.openWarning(display.getActiveShell(), "Loading Error", "Can't find "
-						+ uriString);
+		final String uriString = oldLocation.toString();
+		final String target = uriString.substring(uriString.lastIndexOf("/") + 1);
+		int extIndex = uriString.lastIndexOf(".");
+		if (extIndex >= 0) {
+			final String extension = "*" + uriString.substring(extIndex);
 
-				String target = uriString.substring(uriString.lastIndexOf("/") + 1);
-				String extension = "*" + uriString.substring(uriString.lastIndexOf("."));
-				String[] extensions = new String[] { extension };
-				FileDialog filedialog = new FileDialog(Display.getCurrent().getActiveShell(),
-						SWT.OPEN | SWT.SHEET);
-				filedialog.setFilterExtensions(extensions);
-				filedialog.setFileName(target);
+			// let user choose alternative location
+			final Display display = PlatformUI.getWorkbench().getDisplay();
+			final AtomicReference<URI> result = new AtomicReference<URI>();
+			display.syncExec(new Runnable() {
 
-				String openfile = filedialog.open();
-				if (openfile != null) {
-					openfile = openfile.trim();
-					if (openfile.length() > 0)
-						result.set(new File(openfile).toURI());
+				@Override
+				public void run() {
+					MessageDialog.openWarning(display.getActiveShell(), "Loading Error",
+							"Can't find " + uriString);
+
+					String[] extensions = new String[] { extension };
+					FileDialog filedialog = new FileDialog(Display.getCurrent().getActiveShell(),
+							SWT.OPEN | SWT.SHEET);
+					filedialog.setFilterExtensions(extensions);
+					filedialog.setFileName(target);
+
+					String openfile = filedialog.open();
+					if (openfile != null) {
+						openfile = openfile.trim();
+						if (openfile.length() > 0)
+							result.set(new File(openfile).toURI());
+					}
 				}
-			}
-		});
+			});
 
-		return result.get();
+			return result.get();
+		}
+
+		return null;
 	}
 
 }

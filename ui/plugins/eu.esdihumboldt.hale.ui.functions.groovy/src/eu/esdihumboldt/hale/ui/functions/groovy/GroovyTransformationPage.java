@@ -48,6 +48,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.InstanceBuilderCompletions;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.PageHelp;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray;
@@ -57,7 +58,7 @@ import eu.esdihumboldt.hale.ui.scripting.groovy.TestValues;
 import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
 import eu.esdihumboldt.hale.ui.util.groovy.ast.GroovyAST;
 import eu.esdihumboldt.hale.ui.util.source.CompilingSourceViewer;
-import groovy.lang.GroovyShell;
+import eu.esdihumboldt.util.groovy.sandbox.GroovyService;
 import groovy.lang.Script;
 
 /**
@@ -133,14 +134,14 @@ public class GroovyTransformationPage extends GroovyScriptPage {
 		boolean useInstanceValues = CellUtil.getOptionalParameter(getWizard().getUnfinishedCell(),
 				GroovyTransformation.PARAM_INSTANCE_VARIABLES, Value.of(false)).as(Boolean.class);
 
-		GroovyShell shell = new GroovyShell(GroovyTransformation.createGroovyBinding(values, null,
-				builder, useInstanceValues));
+		GroovyService service = HaleUI.getServiceProvider().getService(GroovyService.class);
 		Script script = null;
 		try {
-			script = shell.parse(document);
+			script = service.parseScript(document, GroovyTransformation.createGroovyBinding(values,
+					null, builder, useInstanceValues));
 
 			GroovyTransformation.evaluate(script, builder, targetProperty.getDefinition()
-					.getDefinition().getPropertyType());
+					.getDefinition().getPropertyType(), service);
 		} catch (final Exception e) {
 			return handleValidationResult(script, e);
 		}

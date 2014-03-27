@@ -55,6 +55,8 @@ public abstract class AbstractIOAdvisor<T extends IOProvider> implements IOAdvis
 	 */
 	@Override
 	public void updateConfiguration(T provider) {
+		provider.setServiceProvider(serviceProvider);
+
 		// override me
 	}
 

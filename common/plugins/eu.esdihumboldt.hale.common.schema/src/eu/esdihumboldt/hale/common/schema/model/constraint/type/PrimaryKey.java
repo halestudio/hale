@@ -19,8 +19,9 @@ package eu.esdihumboldt.hale.common.schema.model.constraint.type;
 import java.util.Collections;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import net.jcip.annotations.Immutable;
-import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Constraint;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Reference;
@@ -35,7 +36,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.Reference;
 @Constraint(mutable = false)
 public class PrimaryKey implements TypeConstraint {
 
-	private final List<ChildDefinition<?>> primaryKeyPath;
+	private final List<QName> primaryKeyPath;
 
 	/**
 	 * Creates a constraint saying that a type does not have a primary key.
@@ -49,7 +50,7 @@ public class PrimaryKey implements TypeConstraint {
 	 * 
 	 * @param primaryKeyPath the path to the primary key
 	 */
-	public PrimaryKey(List<ChildDefinition<?>> primaryKeyPath) {
+	public PrimaryKey(List<QName> primaryKeyPath) {
 		if (primaryKeyPath == null)
 			this.primaryKeyPath = null;
 		else
@@ -71,7 +72,7 @@ public class PrimaryKey implements TypeConstraint {
 	 * 
 	 * @return the path to the primary key, may be <code>null</code>
 	 */
-	public List<ChildDefinition<?>> getPrimaryKeyPath() {
+	public List<QName> getPrimaryKeyPath() {
 		return primaryKeyPath;
 	}
 

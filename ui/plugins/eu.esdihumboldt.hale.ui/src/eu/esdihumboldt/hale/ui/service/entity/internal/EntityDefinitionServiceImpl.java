@@ -599,57 +599,80 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 		for (Entity entity : entities) {
 			EntityDefinition entityDef = entity.getDefinition();
 
-			// collect the entity definition and all of its parents
-			LinkedList<EntityDefinition> hierarchy = new LinkedList<EntityDefinition>();
-			EntityDefinition parent = entityDef;
-			while (parent != null) {
-				hierarchy.addFirst(parent);
-				parent = getParent(parent);
-			}
-
-			// check if the entity definitions are known starting with the
-			// topmost parent
-			for (EntityDefinition candidate : hierarchy) {
-				Integer contextName = AlignmentUtil.getContextName(candidate);
-				Integer contextIndex = AlignmentUtil.getContextIndex(candidate);
-				Condition contextCondition = AlignmentUtil.getContextCondition(candidate);
-
-				if (contextName != null || contextIndex != null || contextCondition != null) {
-					if (contextName != null && contextIndex == null && contextCondition == null) {
-						// add named context
-						boolean added = namedContexts.put(
-								AlignmentUtil.getDefaultEntity(candidate), contextName);
-						if (added) {
-							addedContexts.add(candidate);
-						}
-					}
-					else if (contextIndex != null && contextName == null
-							&& contextCondition == null) {
-						// add index context
-						boolean added = indexContexts.put(
-								AlignmentUtil.getDefaultEntity(candidate), contextIndex);
-						if (added) {
-							addedContexts.add(candidate);
-						}
-					}
-					else if (contextCondition != null && contextName == null
-							&& contextIndex == null) {
-						// add condition context
-						boolean added = conditionContexts.put(
-								AlignmentUtil.getDefaultEntity(candidate), contextCondition);
-						if (added) {
-							addedContexts.add(candidate);
-						}
-					}
-					else {
-						throw new IllegalArgumentException(
-								"Illegal combination of instance contexts");
-					}
-				}
-			}
+			addContexts(entityDef, addedContexts);
 		}
 
 		return addedContexts;
+	}
+
+	@Override
+	public void addContexts(EntityDefinition entityDef) {
+		Collection<EntityDefinition> addedContexts = new ArrayList<EntityDefinition>();
+		synchronized (namedContexts) {
+			synchronized (indexContexts) {
+				synchronized (conditionContexts) {
+					addContexts(entityDef, addedContexts);
+				}
+			}
+		}
+		if (!addedContexts.isEmpty()) {
+			notifyContextsAdded(addedContexts);
+		}
+	}
+
+	/**
+	 * Add the missing contexts for the given entity definition.
+	 * 
+	 * @param entityDef the entity definition to add contexts for
+	 * @param addedContexts a collection where newly created contexts must be
+	 *            added
+	 */
+	private void addContexts(EntityDefinition entityDef, Collection<EntityDefinition> addedContexts) {
+		// collect the entity definition and all of its parents
+		LinkedList<EntityDefinition> hierarchy = new LinkedList<EntityDefinition>();
+		EntityDefinition parent = entityDef;
+		while (parent != null) {
+			hierarchy.addFirst(parent);
+			parent = getParent(parent);
+		}
+
+		// check if the entity definitions are known starting with the
+		// topmost parent
+		for (EntityDefinition candidate : hierarchy) {
+			Integer contextName = AlignmentUtil.getContextName(candidate);
+			Integer contextIndex = AlignmentUtil.getContextIndex(candidate);
+			Condition contextCondition = AlignmentUtil.getContextCondition(candidate);
+
+			if (contextName != null || contextIndex != null || contextCondition != null) {
+				if (contextName != null && contextIndex == null && contextCondition == null) {
+					// add named context
+					boolean added = namedContexts.put(AlignmentUtil.getDefaultEntity(candidate),
+							contextName);
+					if (added) {
+						addedContexts.add(candidate);
+					}
+				}
+				else if (contextIndex != null && contextName == null && contextCondition == null) {
+					// add index context
+					boolean added = indexContexts.put(AlignmentUtil.getDefaultEntity(candidate),
+							contextIndex);
+					if (added) {
+						addedContexts.add(candidate);
+					}
+				}
+				else if (contextCondition != null && contextName == null && contextIndex == null) {
+					// add condition context
+					boolean added = conditionContexts.put(
+							AlignmentUtil.getDefaultEntity(candidate), contextCondition);
+					if (added) {
+						addedContexts.add(candidate);
+					}
+				}
+				else {
+					throw new IllegalArgumentException("Illegal combination of instance contexts");
+				}
+			}
+		}
 	}
 
 	/**

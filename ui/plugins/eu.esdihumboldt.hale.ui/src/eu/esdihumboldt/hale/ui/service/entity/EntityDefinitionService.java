@@ -94,6 +94,13 @@ public interface EntityDefinitionService {
 	public EntityDefinition addConditionContext(EntityDefinition sibling, Filter filter);
 
 	/**
+	 * Add all contexts represented by the given entity definition.
+	 * 
+	 * @param entityDef the entity definition
+	 */
+	public void addContexts(EntityDefinition entityDef);
+
+	/**
 	 * Creates a new sibling for the given entity definition with a new
 	 * condition context using the given filter.<br>
 	 * All cells using the given entity definition are changed to use the new

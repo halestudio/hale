@@ -31,8 +31,8 @@ import org.eclipse.ui.services.IEvaluationReference;
 import org.eclipse.ui.services.IEvaluationService;
 
 import de.cs3d.ui.util.eclipse.extension.AbstractFactoryAction;
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorExtension;
 import eu.esdihumboldt.hale.ui.HaleUI;

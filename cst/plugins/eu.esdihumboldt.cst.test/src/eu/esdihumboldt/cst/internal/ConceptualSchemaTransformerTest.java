@@ -27,6 +27,7 @@ import eu.esdihumboldt.cst.test.TransformationExample;
 import eu.esdihumboldt.cst.test.TransformationExamples;
 import eu.esdihumboldt.hale.common.align.transformation.service.impl.DefaultInstanceSink;
 import eu.esdihumboldt.hale.common.core.io.impl.NullProgressIndicator;
+import eu.esdihumboldt.hale.common.core.service.ServiceManager;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 
@@ -231,14 +232,8 @@ public class ConceptualSchemaTransformerTest extends DefaultTransformationTest {
 	protected List<Instance> transformData(TransformationExample example) throws Exception {
 		ConceptualSchemaTransformer transformer = new ConceptualSchemaTransformer();
 		DefaultInstanceSink sink = new DefaultInstanceSink();
-		// FIXME for now using null service provider
-		ServiceProvider serviceProvider = new ServiceProvider() {
-
-			@Override
-			public <T> T getService(Class<T> serviceInterface) {
-				return null;
-			}
-		};
+		// FIXME global scope not supported yet
+		ServiceProvider serviceProvider = new ServiceManager(ServiceManager.SCOPE_PROJECT);
 		transformer.transform(example.getAlignment(), example.getSourceInstances(), sink,
 				serviceProvider, new NullProgressIndicator());
 

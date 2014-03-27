@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.ui.service.internal;
 import org.eclipse.ui.services.AbstractServiceFactory;
 import org.eclipse.ui.services.IServiceLocator;
 
+import eu.esdihumboldt.hale.common.align.io.EntityResolver;
 import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityService;
 import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
 import eu.esdihumboldt.hale.ui.compatibility.extension.impl.CompatibilityServiceImpl;
@@ -26,10 +27,12 @@ import eu.esdihumboldt.hale.ui.geometry.service.GeometrySchemaService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.internal.AlignmentServiceImpl;
 import eu.esdihumboldt.hale.ui.service.align.internal.AlignmentServiceUndoSupport;
+import eu.esdihumboldt.hale.ui.service.align.resolver.UserFallbackEntityResolver;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 import eu.esdihumboldt.hale.ui.service.entity.internal.EntityDefinitionServiceImpl;
 import eu.esdihumboldt.hale.ui.service.entity.internal.EntityDefinitionServiceUndoSupport;
 import eu.esdihumboldt.hale.ui.service.geometry.ProjectGeometrySchemaService;
+import eu.esdihumboldt.hale.ui.service.groovy.internal.PreferencesGroovyService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.internal.orient.OrientInstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.sample.InstanceSampleService;
@@ -51,6 +54,7 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.service.schema.internal.SchemaServiceImpl;
 import eu.esdihumboldt.hale.ui.service.values.OccurringValuesService;
 import eu.esdihumboldt.hale.ui.service.values.internal.OccurringValuesServiceImpl;
+import eu.esdihumboldt.util.groovy.sandbox.GroovyService;
 
 /**
  * Factory for HALE services
@@ -75,7 +79,8 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 			return OrientInstanceService.getInstance(
 					(SchemaService) locator.getService(SchemaService.class),
 					(ProjectService) locator.getService(ProjectService.class),
-					(AlignmentService) locator.getService(AlignmentService.class));
+					(AlignmentService) locator.getService(AlignmentService.class),
+					(GroovyService) locator.getService(GroovyService.class));
 		}
 
 		if (OccurringValuesService.class.equals(serviceInterface)) {
@@ -139,6 +144,16 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 		if (InstanceViewService.class.equals(serviceInterface)) {
 			return new InstanceViewServiceImpl(
 					(ProjectService) locator.getService(ProjectService.class));
+		}
+
+		if (EntityResolver.class.equals(serviceInterface)) {
+			return new UserFallbackEntityResolver();
+		}
+
+		if (GroovyService.class.equals(serviceInterface)) {
+			return new PreferencesGroovyService(
+					(ProjectService) locator.getService(ProjectService.class),
+					(AlignmentService) locator.getService(AlignmentService.class));
 		}
 
 		return null;

@@ -42,6 +42,7 @@ public class ProjectProperties extends AbstractPropertySection implements Projec
 	private Text nameText;
 	private Text authorText;
 	private Text descriptionText;
+	private boolean updateProject = true;
 
 	@Override
 	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
@@ -134,9 +135,11 @@ public class ProjectProperties extends AbstractPropertySection implements Projec
 	}
 
 	private void updateProject() {
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
-		ps.updateProjectInfo(this);
+		if (updateProject) {
+			ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
+					ProjectService.class);
+			ps.updateProjectInfo(this);
+		}
 	}
 
 	@Override
@@ -162,9 +165,11 @@ public class ProjectProperties extends AbstractPropertySection implements Projec
 				ProjectService.class);
 		ProjectInfo info = ps.getProjectInfo();
 
+		updateProject = false;
 		nameText.setText((info.getName() == null) ? ("") : (info.getName()));
 		authorText.setText((info.getAuthor() == null) ? ("") : (info.getAuthor()));
 		descriptionText.setText((info.getDescription() == null) ? ("") : (info.getDescription()));
+		updateProject = true;
 	}
 
 }

@@ -78,7 +78,7 @@ public abstract class AbstractScriptedPropertyTransformation<E extends Transform
 					Object result;
 					try {
 						result = script.evaluate(entry.getValue().as(String.class),
-								variables.values());
+								variables.values(), getExecutionContext());
 					} catch (ScriptException e) {
 						throw new TransformationException(
 								"Couldn't evaluate a transformation parameter", e);

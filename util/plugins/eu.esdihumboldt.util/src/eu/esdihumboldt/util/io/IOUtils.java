@@ -16,10 +16,13 @@
 
 package eu.esdihumboldt.util.io;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
@@ -32,8 +35,8 @@ import java.util.zip.ZipOutputStream;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.util.resource.Resources;
 
 /**
@@ -95,8 +98,7 @@ public final class IOUtils {
 	public static Collection<File> extract(File baseDir, InputStream in) throws IOException {
 		final Path basePath = baseDir.getAbsoluteFile().toPath();
 		Collection<File> collect = new ArrayList<>();
-		final ZipInputStream zis = new ZipInputStream(in);
-		try {
+		try (ZipInputStream zis = new ZipInputStream(in)) {
 			ZipEntry entry;
 			while ((entry = zis.getNextEntry()) != null) {
 				if (!entry.isDirectory()) {
@@ -112,12 +114,12 @@ public final class IOUtils {
 
 					File fileObj = file.toFile();
 					Files.createParentDirs(fileObj);
-					Files.write(ByteStreams.toByteArray(zis), fileObj);
+					try (OutputStream out = new BufferedOutputStream(new FileOutputStream(fileObj))) {
+						ByteStreams.copy(zis, out);
+					}
 					collect.add(fileObj);
 				}
 			}
-		} finally {
-			zis.close();
 		}
 		return collect;
 	}

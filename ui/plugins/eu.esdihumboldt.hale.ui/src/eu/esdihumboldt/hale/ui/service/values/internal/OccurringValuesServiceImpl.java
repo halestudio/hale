@@ -33,8 +33,8 @@ import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.TreeMultiset;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.core.io.Value;
@@ -351,7 +351,7 @@ public class OccurringValuesServiceImpl extends AbstractOccurringValuesService {
 							IOConfiguration conf = resource.copyConfiguration(true);
 
 							TransformDataImportAdvisor advisor = new TransformDataImportAdvisor();
-							ProjectResourcesUtil.executeConfiguration(conf, advisor, false);
+							ProjectResourcesUtil.executeConfiguration(conf, advisor, false, null);
 
 							if (advisor.getInstances() != null) {
 								sources.add(advisor.getInstances());

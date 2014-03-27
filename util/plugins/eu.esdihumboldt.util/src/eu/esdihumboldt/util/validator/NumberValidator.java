@@ -27,8 +27,8 @@ import org.springframework.core.convert.ConversionException;
  */
 public class NumberValidator extends AbstractValidator {
 
-	private Type type;
-	private BigDecimal value;
+	private final Type type;
+	private final BigDecimal value;
 
 	/**
 	 * Construct a validator that checks the value of the input to match the
@@ -103,6 +103,20 @@ public class NumberValidator extends AbstractValidator {
 		default:
 			return ""; // all types checked, doesn't happen
 		}
+	}
+
+	/**
+	 * @return the type of the comparison
+	 */
+	public Type getType() {
+		return type;
+	}
+
+	/**
+	 * @return the value to compare against
+	 */
+	public BigDecimal getValue() {
+		return value;
 	}
 
 	/**

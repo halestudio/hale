@@ -50,13 +50,14 @@ import com.vividsolutions.jts.geom.Polygon;
 
 import de.cs3d.common.metamodel.Point3D;
 import de.cs3d.common.metamodel.helperGeometry.BoundingBox;
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
 import de.fhg.igd.mapviewer.AbstractTileOverlayPainter;
+import de.fhg.igd.mapviewer.Refresher;
 import de.fhg.igd.mapviewer.marker.Marker;
 import de.fhg.igd.mapviewer.waypoints.GenericWaypoint;
 import de.fhg.igd.mapviewer.waypoints.GenericWaypointPainter;
 import de.fhg.igd.mapviewer.waypoints.MarkerWaypointRenderer;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.convert.ConversionUtil;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;

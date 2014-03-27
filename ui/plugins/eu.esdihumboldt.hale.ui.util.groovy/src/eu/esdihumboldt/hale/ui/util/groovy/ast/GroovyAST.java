@@ -18,9 +18,13 @@ package eu.esdihumboldt.hale.ui.util.groovy.ast;
 import java.util.List;
 
 import org.codehaus.groovy.ast.ASTNode;
+import org.codehaus.groovy.ast.ClassNode;
 
 import com.tinkerpop.blueprints.Graph;
 import com.tinkerpop.blueprints.Vertex;
+
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 
 /**
  * Represents the Groovy AST of a source document.
@@ -28,6 +32,8 @@ import com.tinkerpop.blueprints.Vertex;
  * @author Simon Templer
  */
 public class GroovyAST {
+
+	private static final ALogger log = ALoggerFactory.getLogger(GroovyAST.class);
 
 	private final List<ASTNode> nodes;
 
@@ -46,7 +52,10 @@ public class GroovyAST {
 
 		ASTToGraphVisitor visitor = new ASTToGraphVisitor();
 		for (ASTNode node : nodes) {
-			node.visit(visitor);
+			if (node instanceof ClassNode)
+				visitor.visitClass((ClassNode) node);
+			else
+				log.error("unexpected node type " + node.getClass());
 		}
 
 		graph = visitor.getGraph();
