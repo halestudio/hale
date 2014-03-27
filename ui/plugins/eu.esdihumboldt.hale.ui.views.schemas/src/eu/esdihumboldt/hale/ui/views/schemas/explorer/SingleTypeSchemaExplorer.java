@@ -147,7 +147,6 @@ public class SingleTypeSchemaExplorer extends SchemaExplorer {
 	 * @param selection
 	 */
 	private void updateFocus(SchemaSelection selection) {
-		// TODO Auto-generated method stub
 		if (!selection.isEmpty()) {
 			if (super.getSchemaSpace().equals(SchemaSpaceID.SOURCE)) {
 

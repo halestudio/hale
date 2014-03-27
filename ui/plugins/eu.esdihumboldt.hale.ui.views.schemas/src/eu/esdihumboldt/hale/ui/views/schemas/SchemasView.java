@@ -455,7 +455,7 @@ public class SchemasView extends PropertiesViewPart {
 	 * @param parent the parent composite
 	 * @param title the title
 	 * @param schemaSpace the associated schema space
-	 * @return
+	 * @return the content provider
 	 */
 	protected SchemaExplorer createSchemaExplorer(Composite parent, String title,
 			SchemaSpaceID schemaSpace) {

@@ -29,20 +29,20 @@ import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure;
 import eu.esdihumboldt.hale.ui.util.graph.shapes.FingerPost;
 
 /**
- * TODO Type description
+ * Label Provider for transformation specialized Mapping Graph.
  * 
  * @author Yasmina Kammeyer
  */
 public class CustomGraphLabelProvider extends GraphLabelProvider {
 
-	//
-
 	/**
-	 * @param provider
+	 * Default constructor
+	 * 
+	 * @param provider the service provider that may be needed to obtain cell
+	 *            explanations, may be <code>null</code>
 	 */
 	public CustomGraphLabelProvider(ServiceProvider provider) {
 		super(provider);
-
 	}
 
 	/**
@@ -107,6 +107,19 @@ public class CustomGraphLabelProvider extends GraphLabelProvider {
 		}
 
 		return figure;
+	}
+
+	protected String getValueFromEntity(Object entity) {
+
+		// To get one value use this
+		// TestValues instanceValue = new InstanceTestValues();
+		// if(entity instanceof PropertyEntityDefinition){
+		// Object value = instanceValue.get((PropertyEntityDefinition) entity);
+		// return value.getValue();
+		// }
+
+		return null;
+
 	}
 
 }
