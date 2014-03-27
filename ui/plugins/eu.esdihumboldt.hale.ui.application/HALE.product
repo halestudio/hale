@@ -50,7 +50,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="com.fasterxml.jackson.core.jackson-annotations"/>
       <plugin id="com.fasterxml.jackson.core.jackson-core"/>
       <plugin id="com.fasterxml.jackson.core.jackson-databind"/>
-      <plugin id="com.google.code.findbugs.jsr305"/>
+      <plugin id="com.google.code.findbugs.jsr305" fragment="true"/>
       <plugin id="com.google.guava"/>
       <plugin id="com.googlecode.json-simple"/>
       <plugin id="com.iabcinc.jmep"/>
@@ -208,11 +208,15 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="it.geosolutions.imageio-ext.tiff"/>
       <plugin id="it.geosolutions.imageio-ext.utilities"/>
       <plugin id="java3d.vecmath"/>
+      <plugin id="javax.activation"/>
       <plugin id="javax.mail"/>
+      <plugin id="javax.media.jai_codec"/>
       <plugin id="javax.media.jai_core"/>
+      <plugin id="javax.media.jai_imageio"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.servlet.jsp"/>
       <plugin id="javax.xml"/>
+      <plugin id="javax.xml.bind.jaxb-api"/>
       <plugin id="jcl.over.slf4j"/>
       <plugin id="jdom"/>
       <plugin id="jgridshift"/>
@@ -396,6 +400,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="picocontainer"/>
       <plugin id="slf4j.api"/>
       <plugin id="slf4j.ext"/>
+      <plugin id="xerces.xercesImpl"/>
       <plugin id="xpp3.xpp3_min"/>
       <plugin id="xstream"/>
    </plugins>
