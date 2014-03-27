@@ -26,7 +26,7 @@ import eu.esdihumboldt.hale.ui.views.mapping.AlignmentViewTypesOnly;
 /**
  * This is the perspective define a transformation mapping
  * 
- * @author Mina
+ * @author Yasmina Kammeyer
  */
 public class TransformationPerspective implements IPerspectiveFactory {
 

@@ -25,7 +25,7 @@ import eu.esdihumboldt.hale.ui.views.schemas.SchemasViewTypes;
 /**
  * This is the perspective for type only mapping
  * 
- * @author Mina
+ * @author Yasmina Kammeyer
  */
 public class RoughPerspective implements IPerspectiveFactory {
 
