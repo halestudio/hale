@@ -495,6 +495,14 @@
             allowAll="false"
             class="eu.esdihumboldt.hale.common.align.transformation.function.impl.FamilyInstanceImpl">
       </allow>
+      <allowPackage
+            allowChildren="true"
+            name="eu.esdihumboldt.hale.common.align.transformation.report.impl">
+      </allowPackage>
+      <allowPackage
+            allowChildren="true"
+            name="eu.esdihumboldt.hale.common.align.model">
+      </allowPackage>
    </extension>
 
 </plugin>

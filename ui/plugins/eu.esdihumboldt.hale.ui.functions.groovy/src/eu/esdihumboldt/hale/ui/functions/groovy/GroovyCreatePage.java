@@ -94,7 +94,7 @@ public class GroovyCreatePage extends GroovyScriptPage {
 		InstanceBuilder builder = new InstanceBuilder(false);
 		Binding binding = GroovyCreate.createBinding(0, builder);
 
-		GroovyService service = HaleUI.getServiceProvider().getService(GroovyService.class);;
+		GroovyService service = HaleUI.getServiceProvider().getService(GroovyService.class);
 		Script script = null;
 		try {
 			service.parseScript(document, binding);

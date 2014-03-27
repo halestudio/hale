@@ -59,4 +59,14 @@ public interface GroovyConstants {
 	 */
 	public static final String BINDING_TARGET = "_target";
 
+	/**
+	 * Name of the top level source type entities variable in the binding (not
+	 * applicable for {@link GroovyCreate}).
+	 */
+	public static final String BINDING_SOURCE_TYPES = "_sourceTypes";
+
+	/**
+	 * Name of the top level target type entity variable in the binding.
+	 */
+	public static final String BINDING_TARGET_TYPE = "_targetType";
 }
