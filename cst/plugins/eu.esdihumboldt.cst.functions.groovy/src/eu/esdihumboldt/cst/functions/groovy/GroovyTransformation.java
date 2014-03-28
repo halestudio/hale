@@ -32,6 +32,7 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
+import eu.esdihumboldt.hale.common.align.transformation.function.ExecutionContext;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation;
@@ -78,7 +79,8 @@ public class GroovyTransformation extends
 
 		// create the script binding
 		Binding binding = createGroovyBinding(variables.get(ENTITY_VARIABLE), getCell().getSource()
-				.get(ENTITY_VARIABLE), getTypeCell(), builder, useInstanceVariables);
+				.get(ENTITY_VARIABLE), getCell(), getTypeCell(), builder, useInstanceVariables,
+				log, getExecutionContext());
 
 		Object result;
 		try {
@@ -166,18 +168,20 @@ public class GroovyTransformation extends
 	 * @param vars the variable values
 	 * @param varDefs definition of the assigned variables, in case some
 	 *            variable values are not set, may be <code>null</code>
+	 * @param cell the cell the binding is created for
 	 * @param typeCell the type cell the binding is created for, may be
 	 *            <code>null</code>
 	 * @param builder the instance builder for creating target instances, or
 	 *            <code>null</code> if not applicable
 	 * @param useInstanceVariables if instances should be used as variables for
 	 *            the binding instead of extracting the instance values
+	 * @param log the transformation log
 	 * @return the binding for use with {@link GroovyShell}
 	 */
 	public static Binding createGroovyBinding(List<PropertyValue> vars,
-			List<? extends Entity> varDefs, Cell typeCell, InstanceBuilder builder,
-			boolean useInstanceVariables) {
-		Binding binding = GroovyUtil.createBinding(builder, typeCell);
+			List<? extends Entity> varDefs, Cell cell, Cell typeCell, InstanceBuilder builder,
+			boolean useInstanceVariables, TransformationLog log, ExecutionContext context) {
+		Binding binding = GroovyUtil.createBinding(builder, cell, typeCell, log, context);
 
 		// collect definitions to check if all were provided
 		Set<EntityDefinition> notDefined = new HashSet<>();

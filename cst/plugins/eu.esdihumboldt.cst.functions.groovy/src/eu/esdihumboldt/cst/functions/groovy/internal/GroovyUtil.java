@@ -26,8 +26,10 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.align.transformation.function.ExecutionContext;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractTransformationFunction;
+import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.core.io.Text;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -139,14 +141,21 @@ public class GroovyUtil implements GroovyConstants {
 	 * Creates a basic binding used by all Groovy functions.
 	 * 
 	 * @param builder the instance builder, may be <code>null</code>
+	 * @param cell the cell of the function
 	 * @param typeCell the type cell the function works on, may be
 	 *            <code>null</code>
+	 * @param log the transformation log
+	 * @param executionContext the execution context
 	 * @return a basic binding
 	 */
-	public static Binding createBinding(InstanceBuilder builder, Cell typeCell) {
+	public static Binding createBinding(InstanceBuilder builder, Cell cell, Cell typeCell,
+			TransformationLog log, ExecutionContext executionContext) {
 		Binding binding = new Binding();
 		binding.setVariable(BINDING_TARGET, null);
 		binding.setVariable(BINDING_BUILDER, builder);
+		binding.setVariable(BINDING_CELL, cell);
+		binding.setVariable(BINDING_LOG, log);
+		binding.setVariable(BINDING_EXECUTION_CONTEXT, executionContext);
 
 		// init type cell types
 		ArrayList<TypeEntityDefinition> sourceTypes = null;

@@ -20,6 +20,7 @@ import java.util.Map;
 import eu.esdihumboldt.cst.functions.groovy.internal.GroovyUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
+import eu.esdihumboldt.hale.common.align.transformation.function.ExecutionContext;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractTypeTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
@@ -49,7 +50,7 @@ public class GroovyRetype extends AbstractTypeTransformation<TransformationEngin
 
 		InstanceBuilder builder = new InstanceBuilder(false);
 
-		Binding binding = createBinding(getSource(), cell, builder);
+		Binding binding = createBinding(getSource(), cell, builder, log, getExecutionContext());
 
 		try {
 			GroovyService service = getExecutionContext().getService(GroovyService.class);
@@ -70,11 +71,13 @@ public class GroovyRetype extends AbstractTypeTransformation<TransformationEngin
 	 * @param source the source instance
 	 * @param typeCell the type cell
 	 * @param builder the instance builder
+	 * @param log the transformation log
+	 * @param context the execution context
 	 * @return the binding
 	 */
 	public static Binding createBinding(FamilyInstance source, Cell typeCell,
-			InstanceBuilder builder) {
-		Binding binding = GroovyUtil.createBinding(builder, typeCell);
+			InstanceBuilder builder, TransformationLog log, ExecutionContext context) {
+		Binding binding = GroovyUtil.createBinding(builder, typeCell, typeCell, log, context);
 		binding.setVariable(BINDING_SOURCE, source);
 		return binding;
 	}

@@ -13,7 +13,7 @@ import org.kohsuke.groovy.sandbox.SandboxTransformer;
 
 import de.cs3d.util.eclipse.extension.ExtensionUtil;
 import eu.esdihumboldt.util.groovy.sandbox.internal.RestrictiveGroovyInterceptor;
-import eu.esdihumboldt.util.groovy.sandbox.internal.RestrictiveGroovyInterceptor.AllowedPackage;
+import eu.esdihumboldt.util.groovy.sandbox.internal.RestrictiveGroovyInterceptor.AllowedPrefix;
 import eu.esdihumboldt.util.groovy.sandbox.internal.SecureScript;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
@@ -44,7 +44,7 @@ public class DefaultGroovyService implements GroovyService {
 	public DefaultGroovyService() {
 		Set<Class<?>> additionalAllowedClasses = new HashSet<>();
 		Set<Class<?>> additionalAllAllowedClasses = new HashSet<>();
-		List<AllowedPackage> additionalAllowedPackages = new ArrayList<>();
+		List<AllowedPrefix> additionalAllowedPackages = new ArrayList<>();
 
 		for (IConfigurationElement conf : Platform.getExtensionRegistry()
 				.getConfigurationElementsFor(ID)) {
@@ -59,7 +59,7 @@ public class DefaultGroovyService implements GroovyService {
 			if (conf.getName().equals("allowPackage")) {
 				boolean allowChildren = Boolean.parseBoolean(conf.getAttribute("allowChildren"));
 				String packageName = conf.getAttribute("name");
-				additionalAllowedPackages.add(new AllowedPackage(packageName, allowChildren));
+				additionalAllowedPackages.add(new AllowedPrefix(packageName, allowChildren));
 			}
 		}
 		interceptor = new RestrictiveGroovyInterceptor(additionalAllowedClasses,

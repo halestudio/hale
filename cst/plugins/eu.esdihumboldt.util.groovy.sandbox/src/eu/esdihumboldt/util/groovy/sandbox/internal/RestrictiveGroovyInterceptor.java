@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -84,7 +85,7 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 	/**
 	 * Allowed packages.
 	 */
-	private static final List<AllowedPackage> allowedPackages = new ArrayList<>();
+	private static final List<AllowedPrefix> allowedPackages = new ArrayList<>();
 
 	static {
 		// standard classes
@@ -100,7 +101,7 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 		allowedClasses.add(Math.class);
 		allowedClasses.add(Date.class);
 
-		// Groovy Collections & Classes
+		// Collections & Classes used by Groovy
 		allowedClasses.add(LinkedHashMap.class);
 		allowedClasses.add(ArrayList.class);
 		allowedClasses.add(Range.class);
@@ -109,9 +110,13 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 		// Some more collections
 		allowedClasses.add(HashMap.class);
 		allowedClasses.add(HashSet.class);
+		allowedClasses.add(Collections.class);
 
 		// Binding classes
 		allowedClasses.add(Timestamp.class);
+
+		// Google collect
+		allowedPackages.add(new AllowedPrefix("com.google.common.collect", true));
 
 		// general disallow access to specific Groovy methods
 		disallowedMethods.add("invokeMethod");
@@ -138,22 +143,24 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 	}
 
 	/**
-	 * AllowedPackage saves information to allow the use of a package.
+	 * AllowedPackage saves information to allow the use of all classes with a
+	 * given prefix.
 	 */
-	public static class AllowedPackage {
+	public static class AllowedPrefix {
 
-		private final String packagePrefix;
+		private final String prefix;
 		private final boolean allowChildren;
 
 		/**
-		 * @param packagePrefix the package prefix (final '.' is added if not
-		 *            present)
+		 * Default constructor which accepts a package name.
+		 * 
+		 * @param prefix the package prefix (final '.' is added if not present)
 		 * @param allowChildren whether child-packages are allowed, too
 		 */
-		public AllowedPackage(String packagePrefix, boolean allowChildren) {
-			if (!packagePrefix.endsWith("."))
-				packagePrefix += '.';
-			this.packagePrefix = packagePrefix;
+		public AllowedPrefix(String prefix, boolean allowChildren) {
+			if (!prefix.endsWith("."))
+				prefix += '.';
+			this.prefix = prefix;
 			this.allowChildren = allowChildren;
 		}
 
@@ -167,8 +174,8 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 		public boolean checkAllowed(Class<?> clazz) {
 			String className = clazz.getName();
 
-			if (className.startsWith(packagePrefix)) {
-				return allowChildren || !className.substring(packagePrefix.length()).contains(".");
+			if (className.startsWith(prefix)) {
+				return allowChildren || !className.substring(prefix.length()).contains(".");
 			}
 			else {
 				return false;
@@ -178,7 +185,7 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 
 	private final Set<Class<?>> instanceAllowedClasses = new HashSet<>(allowedClasses);
 	private final Set<Class<?>> instanceAllAllowedClasses = new HashSet<>(allAllowedClasses);
-	private final List<AllowedPackage> instanceAllowedPackages = new ArrayList<>(allowedPackages);
+	private final List<AllowedPrefix> instanceAllowedPackages = new ArrayList<>(allowedPackages);
 
 	/**
 	 * Constructor using additional allowed classes.
@@ -192,8 +199,7 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 	 *            declared methods may be used
 	 */
 	public RestrictiveGroovyInterceptor(Set<Class<?>> additionalAllowedClasses,
-			Set<Class<?>> additionalAllAllowedClasses,
-			List<AllowedPackage> additionalAllowedPackages) {
+			Set<Class<?>> additionalAllAllowedClasses, List<AllowedPrefix> additionalAllowedPackages) {
 		instanceAllowedClasses.addAll(additionalAllowedClasses);
 		instanceAllowedClasses.addAll(additionalAllAllowedClasses);
 		instanceAllAllowedClasses.addAll(additionalAllAllowedClasses);
@@ -397,11 +403,33 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 	}
 
 	private boolean isAllowedClass(Class<?> clazz) {
+		// instanceAllowedClasses.add needs to be synchronized, as internal
+		// state changes.
+		// .contains does not need to be synchronized, worst case would be that
+		// an element is added several times then, which doesn't matter.
+
 		if (instanceAllowedClasses.contains(clazz))
 			return true;
-		for (AllowedPackage allowedPackage : instanceAllowedPackages) {
+
+		// allow nested classes of allowed classes
+		Class<?> topLevelClass = clazz;
+		while (topLevelClass.getEnclosingClass() != null) {
+			topLevelClass = topLevelClass.getEnclosingClass();
+		}
+		if (topLevelClass != clazz) {
+			if (instanceAllowedClasses.contains(topLevelClass)) {
+				// cache result for nested class
+				synchronized (instanceAllowedClasses) {
+					instanceAllowedClasses.add(clazz);
+				}
+				return true;
+			}
+		}
+
+		// walk through prefixes
+		for (AllowedPrefix allowedPackage : instanceAllowedPackages) {
 			if (allowedPackage.checkAllowed(clazz)) {
-				// add needs to be synchronized, all other places don't matter
+				// cache result for class within a allowed package
 				synchronized (instanceAllowedClasses) {
 					instanceAllowedClasses.add(clazz);
 				}

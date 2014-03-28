@@ -51,7 +51,7 @@
    <element name="allow">
       <annotation>
          <documentation>
-            Allows the use of a class.
+            Allows the use of a class. Nested classes are allowed, too.
          </documentation>
       </annotation>
       <complexType>

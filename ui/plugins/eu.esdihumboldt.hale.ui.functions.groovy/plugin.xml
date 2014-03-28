@@ -76,5 +76,12 @@
          </parameter>
       </typeParameterPage>
    </extension>
+   <extension
+         point="eu.esdihumboldt.util.groovy.sandbox">
+      <allow
+            allowAll="false"
+            class="eu.esdihumboldt.hale.ui.functions.groovy.DummyExecutionContext">
+      </allow>
+   </extension>
 
 </plugin>
