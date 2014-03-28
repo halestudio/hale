@@ -15,7 +15,7 @@
 
 package eu.esdihumboldt.hale.io.xls.reader;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Row;
@@ -44,7 +44,7 @@ public class DefaultXLSLookupTableReader {
 	 */
 	public Map<Value, Value> read(Workbook workbook, boolean skipFirst, int keyColumn,
 			int valueColumn) {
-		Map<Value, Value> map = new HashMap<Value, Value>();
+		Map<Value, Value> map = new LinkedHashMap<Value, Value>();
 		Sheet sheet = workbook.getSheetAt(0);
 		int row = 0;
 		if (skipFirst)
