@@ -39,8 +39,11 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.align.transformation.function.ExecutionContext;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.PropertyValueImpl;
+import eu.esdihumboldt.hale.common.align.transformation.report.impl.CellLog;
+import eu.esdihumboldt.hale.common.align.transformation.report.impl.DefaultTransformationReporter;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
@@ -134,7 +137,9 @@ public class GroovyTransformationPage extends GroovyScriptPage {
 		InstanceBuilder builder = GroovyTransformation
 				.createBuilder(targetProperty.getDefinition());
 
-		boolean useInstanceValues = CellUtil.getOptionalParameter(getWizard().getUnfinishedCell(),
+		Cell cell = getWizard().getUnfinishedCell();
+
+		boolean useInstanceValues = CellUtil.getOptionalParameter(cell,
 				GroovyTransformation.PARAM_INSTANCE_VARIABLES, Value.of(false)).as(Boolean.class);
 
 		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
@@ -142,8 +147,7 @@ public class GroovyTransformationPage extends GroovyScriptPage {
 		GroovyService gs = HaleUI.getServiceProvider().getService(GroovyService.class);
 		Script script = null;
 		try {
-			Collection<? extends Cell> typeCells = as.getAlignment().getTypeCells(
-					getWizard().getUnfinishedCell());
+			Collection<? extends Cell> typeCells = as.getAlignment().getTypeCells(cell);
 			// select one matching type cell, the script has to run for all
 			// matching cells
 			// XXX if there is no matching type cell the evaluation might fail
@@ -152,8 +156,10 @@ public class GroovyTransformationPage extends GroovyScriptPage {
 			if (!typeCells.isEmpty()) {
 				typeCell = typeCells.iterator().next();
 			}
+			CellLog log = new CellLog(new DefaultTransformationReporter("dummy", false), cell);
+			ExecutionContext context = new DummyExecutionContext(HaleUI.getServiceProvider());
 			script = gs.parseScript(document, GroovyTransformation.createGroovyBinding(values,
-					null, typeCell, builder, useInstanceValues));
+					null, cell, typeCell, builder, useInstanceValues, log, context));
 
 			GroovyTransformation.evaluate(script, builder, targetProperty.getDefinition()
 					.getDefinition().getPropertyType(), gs);

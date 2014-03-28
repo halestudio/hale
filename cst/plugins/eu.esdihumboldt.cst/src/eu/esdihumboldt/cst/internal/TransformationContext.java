@@ -34,10 +34,8 @@ public class TransformationContext {
 
 	/**
 	 * Function contexts, mapped by function identifier.
-	 * 
-	 * XXX would implementation class be better?
 	 */
-	private final Map<String, Map<Object, Object>> functionContexts = new HashMap<String, Map<Object, Object>>();
+	private final FunctionContexts functionContexts = new FunctionContexts();
 
 	/**
 	 * Overall transformation context.
@@ -71,41 +69,8 @@ public class TransformationContext {
 		synchronized (cachedContexts) {
 			context = cachedContexts.get(cell);
 			if (context == null) {
-				context = new ExecutionContext() {
-
-					private final Map<Object, Object> cellContext = Collections
-							.synchronizedMap(new HashMap<Object, Object>());
-
-					@Override
-					public Map<Object, Object> getTransformationContext() {
-						return TransformationContext.this.context;
-					}
-
-					@Override
-					public Map<Object, Object> getFunctionContext() {
-						String functionId = cell.getTransformationIdentifier();
-						Map<Object, Object> context;
-						synchronized (functionContexts) {
-							context = functionContexts.get(functionId);
-							if (context == null) {
-								context = Collections
-										.synchronizedMap(new HashMap<Object, Object>());
-								functionContexts.put(functionId, context);
-							}
-						}
-						return context;
-					}
-
-					@Override
-					public Map<Object, Object> getCellContext() {
-						return cellContext;
-					}
-
-					@Override
-					public <T> T getService(Class<T> serviceInterface) {
-						return serviceProvider.getService(serviceInterface);
-					}
-				};
+				context = new ExecutionContextImpl(serviceProvider, functionContexts,
+						TransformationContext.this.context, cell);
 			}
 			cachedContexts.put(cell, context);
 		}

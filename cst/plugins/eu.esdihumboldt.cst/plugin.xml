@@ -17,5 +17,12 @@
          </supportsFilter>
       </compatibility>
    </extension>
+   <extension
+         point="eu.esdihumboldt.util.groovy.sandbox">
+      <allow
+            allowAll="false"
+            class="eu.esdihumboldt.cst.internal.ExecutionContextImpl">
+      </allow>
+   </extension>
 
 </plugin>

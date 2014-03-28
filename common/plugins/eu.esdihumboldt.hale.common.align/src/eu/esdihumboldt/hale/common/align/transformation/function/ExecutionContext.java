@@ -57,7 +57,7 @@ public interface ExecutionContext extends ServiceProvider {
 
 	/**
 	 * Get the overall transformation execution context. This context is shared
-	 * between all functions of the same type.
+	 * throughout the whole transformation.
 	 * 
 	 * When invoking multiple operations on the context map, make sure to use
 	 * synchronization if appropriate.

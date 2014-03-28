@@ -25,9 +25,13 @@ import com.google.common.collect.ImmutableList;
 
 import eu.esdihumboldt.cst.functions.groovy.GroovyRetype;
 import eu.esdihumboldt.cst.functions.groovy.internal.GroovyUtil;
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Type;
+import eu.esdihumboldt.hale.common.align.transformation.function.ExecutionContext;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.FamilyInstanceImpl;
+import eu.esdihumboldt.hale.common.align.transformation.report.impl.CellLog;
+import eu.esdihumboldt.hale.common.align.transformation.report.impl.DefaultTransformationReporter;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
@@ -113,8 +117,10 @@ public class GroovyRetypePage extends GroovyScriptPage {
 					DataSet.SOURCE);
 		}
 		FamilyInstance source = new FamilyInstanceImpl(instance);
-		Binding binding = GroovyRetype.createBinding(source, getWizard().getUnfinishedCell(),
-				builder);
+		Cell cell = getWizard().getUnfinishedCell();
+		CellLog log = new CellLog(new DefaultTransformationReporter("dummy", false), cell);
+		ExecutionContext context = new DummyExecutionContext(HaleUI.getServiceProvider());
+		Binding binding = GroovyRetype.createBinding(source, cell, builder, log, context);
 
 		GroovyService service = HaleUI.getServiceProvider().getService(GroovyService.class);
 		Script script = null;
