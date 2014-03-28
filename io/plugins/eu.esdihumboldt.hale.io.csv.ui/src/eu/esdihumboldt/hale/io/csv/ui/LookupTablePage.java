@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.io.csv.ui;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,7 +84,7 @@ public class LookupTablePage extends LookupTableImportConfigurationPage implemen
 	 */
 	public LookupTablePage() {
 		super("LookupTablePage");
-		setTitle("Specify which column will be connected with which column");
+		setTitle("Specify which column will be connected to which column");
 	}
 
 	/**
@@ -142,21 +143,27 @@ public class LookupTablePage extends LookupTableImportConfigurationPage implemen
 		// input file is selected, so we can read it
 		String[] header = readHeader();
 		int numberOfColumns = header.length;
-		String[] items = new String[numberOfColumns];
-		for (int i = 0; i < numberOfColumns; i++) {
-			int tmp = i + 1;
-			items[i] = "Column " + tmp;
+		if (numberOfColumns > 1) {
+			String[] items = new String[numberOfColumns];
+			for (int i = 0; i < numberOfColumns; i++) {
+				int tmp = i + 1;
+				items[i] = "Column " + tmp;
+			}
+			keyColumn.setItems(items);
+			valueColumn.setItems(items);
+			keyColumn.select(0);
+			valueColumn.select(1);
 		}
-		keyColumn.setItems(items);
-		valueColumn.setItems(items);
-		keyColumn.select(0);
-		valueColumn.select(1);
+		else {
+			keyColumn.setItems(new String[0]);
+			valueColumn.setItems(new String[0]);
+		}
 
 		// refresh table with new content
 		refreshTable();
 
-		// page is complete since page is shown
-		setPageComplete(true);
+//		// page is complete since page is shown
+//		setPageComplete(true);
 	}
 
 	/**
@@ -350,12 +357,26 @@ public class LookupTablePage extends LookupTableImportConfigurationPage implemen
 
 		lookupTable = readLookupTable();
 
-		sourceColumn.getColumn().setText(keyColumn.getText());
-		targetColumn.getColumn().setText(valueColumn.getText());
+		if (lookupTable.isEmpty()) {
+			setErrorMessage("Not able to load columns! Maybe selected sign seperator is wrong!");
+			sourceColumn.getColumn().setText("");
+			targetColumn.getColumn().setText("");
+//			valueColumn.setText("");
+//			keyColumn.setText("");
 
-		tableViewer.setInput(lookupTable.entrySet());
-		tableViewer.refresh();
+			tableViewer.setInput(Collections.EMPTY_SET);
+			tableViewer.refresh();
+			setPageComplete(false);
+		}
+		else {
+			setErrorMessage(null);
+			sourceColumn.getColumn().setText(keyColumn.getText());
+			targetColumn.getColumn().setText(valueColumn.getText());
 
+			tableViewer.setInput(lookupTable.entrySet());
+			tableViewer.refresh();
+			setPageComplete(true);
+		}
 	}
 
 	/**
