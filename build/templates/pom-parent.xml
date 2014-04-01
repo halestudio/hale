@@ -42,7 +42,7 @@
   </properties>
   
   <modules>
-    <% if (!generateArtifacts) { %><module>platform</module><% } %><% for (module in modules) { %>
+    <% if (!generateArtifacts) { %><module>${platformPath}</module><% } %><% for (module in modules) { %>
     <module>${module}</module><% } %>
   </modules>
   

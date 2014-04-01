@@ -88,12 +88,18 @@ class PomGenerator {
 
         // generate pom file for target platform
         new File(project.ext.platformBundle, 'pom.xml').withWriter { w ->
+            // calculate relative path to pom.xml of parent project
+            Path rootPath = project.ext.rootDir.toPath()
+            Path relativeRoot = project.ext.platformBundle.toPath().relativize(rootPath)
+            def relativePath = relativeRoot.toString()
+
             def template = new GStringTemplateEngine().createTemplate(resolveTemplate('pom-platform.xml'))
             def result = template.make([
                     'groupId': project.group,
                     'version': project.version + project.ext.versionSuffix,
                     'parentGroupId': project.group,
                     'parentArtifactId': project.ext.parentArtifactId,
+                    'parentRelativePath': relativePath,
                     'parentVersion': project.version + project.ext.versionSuffix,
 					'platformClassifier': project.ext.platformFileName
             ]).toString()
@@ -120,6 +126,7 @@ class PomGenerator {
                     'modules': (bundles + additionalModules).values().collect {
 						rootPath.relativize(it.path.toPath()).toString()
                     }.sort(),
+		    'platformPath': rootPath.relativize(project.ext.platformBundle.toPath()).toString(),
                     'envOs': project.ext.osgiOS,
                     'envWs': project.ext.osgiWS,
                     'envArch': project.ext.osgiArch,
