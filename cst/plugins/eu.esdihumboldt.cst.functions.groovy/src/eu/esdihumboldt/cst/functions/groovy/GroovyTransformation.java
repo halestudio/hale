@@ -176,6 +176,7 @@ public class GroovyTransformation extends
 	 * @param useInstanceVariables if instances should be used as variables for
 	 *            the binding instead of extracting the instance values
 	 * @param log the transformation log
+	 * @param context the execution context
 	 * @return the binding for use with {@link GroovyShell}
 	 */
 	public static Binding createGroovyBinding(List<PropertyValue> vars,
@@ -209,46 +210,8 @@ public class GroovyTransformation extends
 
 		for (PropertyValue var : vars) {
 			// add the variable to the environment
-
-			// determine the variable value
-			Object value = var.getValue();
-			boolean asIs = false;
-			if (value instanceof Instance) {
-				if (useInstanceVariables) {
-					// use instance as is
-					asIs = true;
-				}
-				else {
-					// extract value from instance
-					value = ((Instance) value).getValue();
-				}
-			}
-			if (value instanceof Number) {
-				// use numbers as is
-			}
-			else if (!asIs) {
-				// try conversion to String as default
-				try {
-					value = ConversionUtil.getAs(value, String.class);
-				} catch (Exception e) {
-					// ignore
-				}
-			}
-
-			// determine the variable name
-			String name = var.getProperty().getDefinition().getName().getLocalPart();
-
-			// add with short name, but ensure no variable with only a short
-			// name is overridden
-			if (binding.getVariables().get(name) == null
-					|| var.getProperty().getPropertyPath().size() == 1) {
-				binding.setVariable(name, value);
-			}
-
-			// add with long name if applicable
-			if (var.getProperty().getPropertyPath().size() > 1) {
-				binding.setVariable(getVariableName(var.getProperty()), value);
-			}
+			addToBinding(binding, var.getProperty(),
+					getUseValue(var.getValue(), useInstanceVariables));
 		}
 
 		return binding;
@@ -268,4 +231,62 @@ public class GroovyTransformation extends
 		return Joiner.on('_').join(names);
 	}
 
+	/**
+	 * Adds the variable to the binding.
+	 * 
+	 * @param binding the binding to add to
+	 * @param prop the property of the variable
+	 * @param value the value of the variable
+	 */
+	public static void addToBinding(Binding binding, PropertyEntityDefinition prop, Object value) {
+		// determine the variable name
+		String name = prop.getDefinition().getName().getLocalPart();
+
+		// add with short name, but ensure no variable with only a short
+		// name is overridden
+		if (binding.getVariables().get(name) == null || prop.getPropertyPath().size() == 1) {
+			binding.setVariable(name, value);
+		}
+
+		// add with long name if applicable
+		if (prop.getPropertyPath().size() > 1) {
+			binding.setVariable(getVariableName(prop), value);
+		}
+	}
+
+	/**
+	 * Extracts the value to be used in the binding from the present value.
+	 * 
+	 * @param value the original unmodified value
+	 * @param useInstanceVariables if instances should be used as variables for
+	 *            the binding instead of extracting the instance values
+	 * @return the value to be used by the script
+	 */
+	public static Object getUseValue(Object value, boolean useInstanceVariables) {
+		// determine the variable value
+		boolean asIs = false;
+		if (value instanceof Instance) {
+			if (useInstanceVariables) {
+				// use instance as is
+				asIs = true;
+			}
+			else {
+				// extract value from instance
+				value = ((Instance) value).getValue();
+			}
+		}
+		if (value instanceof Number) {
+			// use numbers as is
+		}
+		else if (!asIs) {
+			// try conversion to String as default
+			try {
+				value = ConversionUtil.getAs(value, String.class);
+			} catch (Exception e) {
+				// ignore
+			}
+		}
+
+		return value;
+	}
 }
