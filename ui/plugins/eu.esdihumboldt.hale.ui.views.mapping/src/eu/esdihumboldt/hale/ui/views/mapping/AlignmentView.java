@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -48,8 +47,6 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.WorkbenchPart;
-import org.eclipse.zest.layouts.LayoutAlgorithm;
-import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
@@ -99,8 +96,6 @@ public class AlignmentView extends AbstractMappingView {
 	private final FunctionLabelProvider functionLabels = new FunctionLabelProvider();
 
 	private ISelectionListener selectionListener;
-
-	private TreeLayoutAlgorithm treeLayout;
 
 	private AlignmentViewContentProvider contentProvider;
 
@@ -549,27 +544,6 @@ public class AlignmentView extends AbstractMappingView {
 				inheritedCellFilter, true, true));
 	}
 
-	@Override
-	protected LayoutAlgorithm createLayout() {
-		treeLayout = new TreeLayoutAlgorithm(TreeLayoutAlgorithm.RIGHT_LEFT);
-		return treeLayout;
-	}
-
-	/**
-	 * Update the layout to the view size.
-	 * 
-	 * @param triggerLayout if the layout should be applied directly
-	 */
-	private void updateLayout(boolean triggerLayout) {
-		int width = getViewer().getControl().getSize().x;
-
-		treeLayout.setNodeSpace(new Dimension((width - 10) / 3, 30));
-
-		if (triggerLayout) {
-			getViewer().applyLayout();
-		}
-	}
-
 	/**
 	 * Update the selected type relation to a cell that is related to the given
 	 * schema selection.
@@ -647,7 +621,7 @@ public class AlignmentView extends AbstractMappingView {
 	 * Update the selected type relation to a cell that is related to the given
 	 * schema selection.
 	 * 
-	 * @param selection the schema selection
+	 * @param cell the selected cell
 	 */
 	private void updateRelationWithCell(Cell cell) {
 		Cell typeCell = sourceTargetSelector.getSelectedCell();
@@ -656,10 +630,6 @@ public class AlignmentView extends AbstractMappingView {
 			// type cell is the same, don't change
 			return;
 		}
-
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-				AlignmentService.class);
-		Alignment alignment = as.getAlignment();
 
 		sourceTargetSelector.setSelection(new StructuredSelection(cell));
 
@@ -711,7 +681,8 @@ public class AlignmentView extends AbstractMappingView {
 //		});
 //	}
 
-	private void refreshGraph() {
+	@Override
+	protected void refreshGraph() {
 
 		final Display display = PlatformUI.getWorkbench().getDisplay();
 		display.syncExec(new Runnable() {

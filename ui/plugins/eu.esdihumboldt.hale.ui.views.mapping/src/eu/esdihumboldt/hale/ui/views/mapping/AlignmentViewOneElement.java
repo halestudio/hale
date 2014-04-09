@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -27,6 +28,8 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.WorkbenchPart;
+import org.eclipse.zest.layouts.LayoutAlgorithm;
+import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.ui.HaleUI;
@@ -52,6 +55,8 @@ public class AlignmentViewOneElement extends AbstractMappingView {
 
 	private ISelectionListener selectionListener;
 
+	private TreeLayoutAlgorithm treeLayout;
+
 	/**
 	 * @see eu.esdihumboldt.hale.ui.views.mapping.AbstractMappingView#createViewControl(org.eclipse.swt.widgets.Composite)
 	 */
@@ -64,7 +69,7 @@ public class AlignmentViewOneElement extends AbstractMappingView {
 
 		// update the view on last selected relation
 		if (as.getAlignment() != null) {
-			update();
+			clear();
 		}
 
 		as.addListener(alignmentListener = new AlignmentServiceAdapter() {
@@ -81,10 +86,7 @@ public class AlignmentViewOneElement extends AbstractMappingView {
 
 			@Override
 			public void cellsReplaced(Map<? extends Cell, ? extends Cell> cells) {
-//				if (cells.containsKey(getViewer().getInput())) {
-//					update(cells.get(getViewer().getInput()));
-//				}
-				update();
+				clear();
 			}
 
 			@Override
@@ -94,12 +96,12 @@ public class AlignmentViewOneElement extends AbstractMappingView {
 
 			@Override
 			public void alignmentChanged() {
-				update();
+				clear();
 			}
 
 			@Override
 			public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
-				update();
+				clear();
 			}
 
 		});
@@ -113,8 +115,9 @@ public class AlignmentViewOneElement extends AbstractMappingView {
 
 					@Override
 					public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-
-						if (selection instanceof IStructuredSelection
+						// do not react on own selected cell
+						if (part != AlignmentViewOneElement.this
+								&& selection instanceof IStructuredSelection
 								&& ((IStructuredSelection) selection).getFirstElement() instanceof Cell) {
 							Cell dt = (Cell) ((IStructuredSelection) selection).getFirstElement();
 
@@ -125,18 +128,21 @@ public class AlignmentViewOneElement extends AbstractMappingView {
 						}
 					}
 				});
+		// Create a layout and apply it
+		getViewer().setLayoutAlgorithm(createLayout());
 	}
 
 	/**
-	 * @param dt
+	 * @param cell
 	 */
 	protected void setContent(Cell cell) {
-		// set cells
+		// set cell
 		if (cell != null) {
 			List<Cell> cells = new ArrayList<Cell>();
 			cells.add(cell);
 			getViewer().setInput(cells);
 		}
+		updateLayout(true);
 	}
 
 	/**
@@ -147,15 +153,6 @@ public class AlignmentViewOneElement extends AbstractMappingView {
 	}
 
 	/**
-	 * Update the view on last selected relation
-	 * 
-	 * @param selection the selection
-	 */
-	protected void update() {
-		getViewer().refresh();
-	}
-
-	/**
 	 * Create the label provider to be used for the graph
 	 * 
 	 * @return the label provider
@@ -163,6 +160,29 @@ public class AlignmentViewOneElement extends AbstractMappingView {
 	@Override
 	protected IBaseLabelProvider createLabelProvider() {
 		return new CustomGraphLabelProvider(HaleUI.getServiceProvider());
+	}
+
+	@Override
+	protected LayoutAlgorithm createLayout() {
+		treeLayout = new TreeLayoutAlgorithm(TreeLayoutAlgorithm.BOTTOM_UP);
+		return treeLayout;
+	}
+
+	/**
+	 * Update the layout to the view size.
+	 * 
+	 * @param triggerLayout if the layout should be applied directly
+	 */
+	@Override
+	protected void updateLayout(boolean triggerLayout) {
+		int width = getViewer().getControl().getSize().x;
+		int hight = getViewer().getControl().getSize().y;
+
+		treeLayout.setNodeSpace(new Dimension((int) (width * 0.9), (hight - 1) / 3));
+
+		if (triggerLayout) {
+			getViewer().applyLayout();
+		}
 	}
 
 	/**

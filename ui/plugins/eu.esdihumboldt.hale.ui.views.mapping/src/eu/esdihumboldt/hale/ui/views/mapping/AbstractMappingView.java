@@ -16,13 +16,16 @@
 
 package eu.esdihumboldt.hale.ui.views.mapping;
 
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.WorkbenchPart;
 import org.eclipse.zest.core.viewers.AbstractZoomableViewer;
 import org.eclipse.zest.core.viewers.GraphViewer;
@@ -50,6 +53,7 @@ public abstract class AbstractMappingView extends PropertiesViewPart implements
 		IZoomableWorkbenchPart {
 
 	private GraphViewer viewer;
+	private LayoutAlgorithm layout;
 
 	/**
 	 * @see eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart#createViewControl(org.eclipse.swt.widgets.Composite)
@@ -62,7 +66,7 @@ public abstract class AbstractMappingView extends PropertiesViewPart implements
 //		viewer.setContentProvider(new NestedCellRelationshipContentProvider());
 		viewer.setLabelProvider(createLabelProvider());
 		viewer.setInput(null);
-		LayoutAlgorithm layout = createLayout();
+		layout = createLayout();
 		viewer.setLayoutAlgorithm(layout, true);
 		viewer.applyLayout();
 		fillToolBar();
@@ -113,14 +117,12 @@ public abstract class AbstractMappingView extends PropertiesViewPart implements
 	}
 
 	/**
-	 * Create the initial layout to use
+	 * Create the initial layout to use, e.g. TreeLayoutAlgorithm
 	 * 
 	 * @return the layout
 	 */
 	protected LayoutAlgorithm createLayout() {
-		LayoutAlgorithm layout;
-		layout = new TreeLayoutAlgorithm(TreeLayoutAlgorithm.RIGHT_LEFT);
-		return layout;
+		return new TreeLayoutAlgorithm(TreeLayoutAlgorithm.RIGHT_LEFT);
 	}
 
 	/**
@@ -152,11 +154,54 @@ public abstract class AbstractMappingView extends PropertiesViewPart implements
 	}
 
 	/**
+	 * @return the layout
+	 */
+	protected LayoutAlgorithm getLayout() {
+		return layout;
+	}
+
+	/**
 	 * @see IZoomableWorkbenchPart#getZoomableViewer()
 	 */
 	@Override
 	public AbstractZoomableViewer getZoomableViewer() {
 		return viewer;
+	}
+
+	/**
+	 * Update the layout to the view size.
+	 * 
+	 * @param triggerLayout if the layout should be applied directly
+	 */
+	protected void updateLayout(boolean triggerLayout) {
+
+		if (!(layout instanceof TreeLayoutAlgorithm)) {
+			return;
+		}
+
+		int width = getViewer().getControl().getSize().x;
+
+		((TreeLayoutAlgorithm) layout).setNodeSpace(new Dimension((width - 10) / 3, 30));
+
+		if (triggerLayout) {
+			getViewer().applyLayout();
+		}
+	}
+
+	/**
+	 * Refresh the Input of the viewer
+	 */
+	protected void refreshGraph() {
+
+		final Display display = PlatformUI.getWorkbench().getDisplay();
+		display.syncExec(new Runnable() {
+
+			@Override
+			public void run() {
+				getViewer().refresh();
+				updateLayout(true);
+			}
+		});
 	}
 
 }
