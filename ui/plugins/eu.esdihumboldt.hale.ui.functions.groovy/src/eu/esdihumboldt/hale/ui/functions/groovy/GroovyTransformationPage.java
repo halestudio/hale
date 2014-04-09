@@ -31,6 +31,7 @@ import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
 import eu.esdihumboldt.cst.functions.groovy.GroovyTransformation;
+import eu.esdihumboldt.hale.common.align.helper.TestValues;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -53,8 +54,7 @@ import eu.esdihumboldt.hale.ui.functions.groovy.internal.InstanceBuilderCompleti
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.PageHelp;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray.TypeProvider;
-import eu.esdihumboldt.hale.ui.scripting.groovy.InstanceTestValues;
-import eu.esdihumboldt.hale.ui.scripting.groovy.TestValues;
+import eu.esdihumboldt.hale.ui.service.instance.InstanceTestValues;
 import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
 import eu.esdihumboldt.hale.ui.util.groovy.ast.GroovyAST;
 import eu.esdihumboldt.hale.ui.util.source.CompilingSourceViewer;

@@ -13,12 +13,13 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.scripting.groovy;
+package eu.esdihumboldt.hale.ui.service.instance;
 
 import java.util.List;
 
 import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.common.align.helper.TestValues;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
@@ -29,7 +30,6 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.TypeFilter;
-import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 
 /**
  * Test values provided based on the instance service.
@@ -37,6 +37,11 @@ import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
  * @author Simon Templer
  */
 public class InstanceTestValues implements TestValues {
+
+	/**
+	 * getInstance tries to find an Instance with existing values X times.
+	 */
+	public static final int MAX_NUMBER_OF_TRIES = 3;
 
 	/**
 	 * @see TestValues#get(PropertyEntityDefinition)
@@ -111,15 +116,39 @@ public class InstanceTestValues implements TestValues {
 		// TODO cache instance?
 		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
 				InstanceService.class);
-		InstanceCollection instances = is.getInstances(DataSet.SOURCE).select(
+
+		DataSet dataSet;
+		switch (entity.getSchemaSpace()) {
+		case SOURCE:
+			dataSet = DataSet.SOURCE;
+			break;
+		case TARGET:
+			dataSet = DataSet.TRANSFORMED;
+			break;
+		default:
+			return null;
+		}
+
+		InstanceCollection instances = is.getInstances(dataSet).select(
 				new TypeFilter(entity.getType()));
 		if (entity.getFilter() != null) {
 			instances = instances.select(entity.getFilter());
 		}
 
 		ResourceIterator<Instance> it = instances.iterator();
+
 		try {
 			// TODO use a random instance?
+			if (entity instanceof PropertyEntityDefinition) {
+				for (int i = 0; i < MAX_NUMBER_OF_TRIES; i++) {
+					while (it.hasNext()) {
+						Instance inst = it.next();
+						if (extractValue(inst, (PropertyEntityDefinition) entity) != null) {
+							return inst;
+						}
+					}
+				}
+			}
 			if (it.hasNext()) {
 				return it.next();
 			}

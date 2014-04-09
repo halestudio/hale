@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.ui.service.internal;
 import org.eclipse.ui.services.AbstractServiceFactory;
 import org.eclipse.ui.services.IServiceLocator;
 
+import eu.esdihumboldt.hale.common.align.helper.TestValues;
 import eu.esdihumboldt.hale.common.align.io.EntityResolver;
 import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityService;
 import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
@@ -34,6 +35,7 @@ import eu.esdihumboldt.hale.ui.service.entity.internal.EntityDefinitionServiceUn
 import eu.esdihumboldt.hale.ui.service.geometry.ProjectGeometrySchemaService;
 import eu.esdihumboldt.hale.ui.service.groovy.internal.PreferencesGroovyService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
+import eu.esdihumboldt.hale.ui.service.instance.InstanceTestValues;
 import eu.esdihumboldt.hale.ui.service.instance.internal.orient.OrientInstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.sample.InstanceSampleService;
 import eu.esdihumboldt.hale.ui.service.instance.sample.InstanceViewService;
@@ -154,6 +156,10 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 			return new PreferencesGroovyService(
 					(ProjectService) locator.getService(ProjectService.class),
 					(AlignmentService) locator.getService(AlignmentService.class));
+		}
+
+		if (TestValues.class.equals(serviceInterface)) {
+			return new InstanceTestValues();
 		}
 
 		return null;

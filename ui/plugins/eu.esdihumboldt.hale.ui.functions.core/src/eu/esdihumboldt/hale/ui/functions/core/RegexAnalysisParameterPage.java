@@ -50,7 +50,7 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
-import eu.esdihumboldt.hale.ui.scripting.groovy.InstanceTestValues;
+import eu.esdihumboldt.hale.ui.service.instance.InstanceTestValues;
 
 /**
  * Parameter page for Regex Analysis function.
