@@ -25,7 +25,11 @@ import com.google.common.collect.ImmutableList;
 
 import eu.esdihumboldt.cst.functions.groovy.GroovyRetype;
 import eu.esdihumboldt.cst.functions.groovy.internal.GroovyUtil;
+<<<<<<< HEAD
 import eu.esdihumboldt.hale.common.align.model.Cell;
+=======
+import eu.esdihumboldt.hale.common.align.helper.TestValues;
+>>>>>>> TestValues and InstanceTestValues were moved, changed Project manifests and
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.transformation.function.ExecutionContext;
@@ -44,8 +48,7 @@ import eu.esdihumboldt.hale.ui.functions.groovy.internal.InstanceBuilderCompleti
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.PageHelp;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray.TypeProvider;
-import eu.esdihumboldt.hale.ui.scripting.groovy.InstanceTestValues;
-import eu.esdihumboldt.hale.ui.scripting.groovy.TestValues;
+import eu.esdihumboldt.hale.ui.service.instance.InstanceTestValues;
 import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
 import eu.esdihumboldt.hale.ui.util.groovy.ast.GroovyAST;
 import eu.esdihumboldt.hale.ui.util.source.CompilingSourceViewer;
