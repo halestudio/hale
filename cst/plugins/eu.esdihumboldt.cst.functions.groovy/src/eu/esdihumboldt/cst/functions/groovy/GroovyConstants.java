@@ -81,7 +81,17 @@ public interface GroovyConstants {
 	public static final String BINDING_LOG = "_log";
 
 	/**
-	 * Name of the execution context variable in the binding.
+	 * Name of the cell context variable in the binding.
 	 */
-	public static final String BINDING_EXECUTION_CONTEXT = "_executionContext";
+	public static final String BINDING_CELL_CONTEXT = "_cellContext";
+
+	/**
+	 * Name of the function context variable in the binding.
+	 */
+	public static final String BINDING_FUNCTION_CONTEXT = "_functionContext";
+
+	/**
+	 * Name of the transformation context variable in the binding.
+	 */
+	public static final String BINDING_TRANSFORMATION_CONTEXT = "_transformationContext";
 }

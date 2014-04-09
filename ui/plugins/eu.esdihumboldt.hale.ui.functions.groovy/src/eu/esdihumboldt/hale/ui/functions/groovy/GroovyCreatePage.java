@@ -76,8 +76,9 @@ public class GroovyCreatePage extends GroovyScriptPage {
 		};
 
 		return new SimpleGroovySourceViewerConfiguration(colorManager, ImmutableList.of(
-				BINDING_BUILDER, BINDING_INDEX, BINDING_TARGET),
-				ImmutableList.of(targetCompletions));
+				BINDING_BUILDER, BINDING_INDEX, BINDING_TARGET, BINDING_TARGET_TYPE, BINDING_CELL,
+				BINDING_LOG, BINDING_CELL_CONTEXT, BINDING_FUNCTION_CONTEXT,
+				BINDING_TRANSFORMATION_CONTEXT), ImmutableList.of(targetCompletions));
 	}
 
 	@Override

@@ -15,10 +15,6 @@
 
 package eu.esdihumboldt.cst.functions.groovy.internal;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
@@ -39,12 +35,18 @@ import eu.esdihumboldt.util.groovy.sandbox.GroovyService;
 import groovy.lang.Binding;
 import groovy.lang.Closure;
 import groovy.lang.Script;
+import groovy.transform.CompileStatic;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * Groovy function utilities.
  * 
  * @author Simon Templer
  */
+@CompileStatic
 public class GroovyUtil implements GroovyConstants {
 
 	/**
@@ -154,8 +156,13 @@ public class GroovyUtil implements GroovyConstants {
 		binding.setVariable(BINDING_TARGET, null);
 		binding.setVariable(BINDING_BUILDER, builder);
 		binding.setVariable(BINDING_CELL, cell);
-		binding.setVariable(BINDING_LOG, log);
-		binding.setVariable(BINDING_EXECUTION_CONTEXT, executionContext);
+		binding.setVariable(BINDING_LOG, new TransformationLogWrapper(log));
+		binding.setVariable(BINDING_CELL_CONTEXT,
+				SynchronizedContextProvider.getContextClosure(executionContext.getCellContext()));
+		binding.setVariable(BINDING_FUNCTION_CONTEXT, SynchronizedContextProvider
+				.getContextClosure(executionContext.getFunctionContext()));
+		binding.setVariable(BINDING_TRANSFORMATION_CONTEXT, SynchronizedContextProvider
+				.getContextClosure(executionContext.getTransformationContext()));
 
 		// init type cell types
 		ArrayList<TypeEntityDefinition> sourceTypes = null;
@@ -165,7 +172,7 @@ public class GroovyUtil implements GroovyConstants {
 			if (typeCell.getSource() != null) {
 				Collection<? extends Entity> sources = typeCell.getSource().values();
 				sourceTypes = new ArrayList<>(sources.size());
-				for (Entity entity : sources) {
+				for (Object entity : sources) {
 					sourceTypes.add(((Type) entity).getDefinition());
 				}
 			}
