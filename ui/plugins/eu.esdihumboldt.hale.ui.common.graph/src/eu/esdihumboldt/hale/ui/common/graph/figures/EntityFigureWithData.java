@@ -34,20 +34,18 @@ import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure;
 public class EntityFigureWithData extends CustomShapeFigure {
 
 	/**
-	 * @param painter
-	 * @param customFont
+	 * @param painter the painter for the shape, e.g. FingerPost
+	 * @param customFont the font used for text
 	 */
 	public EntityFigureWithData(ShapePainter painter, Font customFont) {
 		super(painter, customFont);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
-	 * @param painter
+	 * @param painter the painter for the shape, e.g. FingerPost
 	 */
 	public EntityFigureWithData(ShapePainter painter) {
 		super(painter);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -77,7 +75,7 @@ public class EntityFigureWithData extends CustomShapeFigure {
 
 		// Create Label Provider
 		Label label = new Label();
-		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true, 1, 3);
+		GridData gridData = new GridData(GridData.BEGINNING, GridData.FILL, true, true, 1, 3);
 		add(label, gridData);
 
 		// create Label for context text
@@ -107,7 +105,7 @@ public class EntityFigureWithData extends CustomShapeFigure {
 				addTextLabel.setFont(customFont);
 			}
 			addTextLabel.setText(additionalText);
-			GridData cardGridData = new GridData(GridData.END, GridData.CENTER, false, true);
+			GridData cardGridData = new GridData(GridData.BEGINNING, GridData.CENTER, false, true);
 			add(addTextLabel, cardGridData);
 		}
 
