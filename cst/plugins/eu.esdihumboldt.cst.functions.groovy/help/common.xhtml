@@ -229,5 +229,102 @@
   }
 }</code></pre>
 	</div>
+	
+	<!-- Binding content -->
+	<div id="binding-content">
+		<h2>Additional binding content</h2>
+		<p>Now we know already that the binding allows accessing 
+			<code><b>_target</b></code>, <code><b>_b</b></code> and, depending on 
+			which Groovy function you are using either <code><b>_index</b></code>, 
+			<code><b>_source</b></code> or the source properties. But there are 
+			further variables you can access.
+		</p>
+		<ul>
+			<li>
+				<p>
+					<code><b>_sourceTypes</b></code> (not available in <i>GroovyCreate</i>) contain the 
+					source types in the case of a type function and in the case of a 
+					property function the source types of the type function in 
+					which this property function is executed in. It is a List of
+					eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition.
+				</p>
+			</li>
+			<li>
+				<p>
+					<code><b>_targetType</b></code> contains the 
+					target type in the case of a type function and in the case of a 
+					property function the target type of the type function in
+					which this property function is executed in. It is a 
+					eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition.
+				</p>
+			</li>
+			<li>
+				<p>
+					<code><b>_cell</b></code> contains the cell of this function. It is a
+					eu.esdihumboldt.hale.common.align.model.Cell
+				</p>
+			</li>
+			<li>
+				<p>
+					<code><b>_log</b></code> enables the script to log infos/warnings/errors 
+					during execution. Each method accepts a string and (optionally) a throwable.
+					Examples:
+				</p>
+				<pre><code><b>_log</b>.info(&quot;Executing function!&quot;)
+<b>if</b> (badCondition)
+  <b>_log</b>.warn(&quot;Bad condition occured!&quot;)
+<b>try</b> {
+  executeSomething()
+} <b>catch</b> (SomeException e) {
+  <b>_log</b>.error(&quot;Exception occured!&quot;, e)
+}</code></pre>
+			</li>
+			<li>
+				<p>
+					<code><b>_cellContext</b></code> provides access to a map unique to each 
+					cell. For synchronization you should only access the map inside the 
+					closure like shown in this example:
+				</p>
+				<pre><code><b>_cellContext</b> {
+  <b>def</b> count = it.count
+  <b>if</b> (count == null)
+    count = 0
+  it.count = ++count
+  <b>_log</b>.info(&quot;count is &quot; + it.count)
+}
+</code></pre>
+			</li>
+			<li>
+				<p>
+					<code><b>_functionContext</b></code> provides access to a map unique to 
+					each function (all cells of this function). For synchronization you 
+					should only access the map inside the closure like shown in this example:
+				</p>
+				<pre><code><b>_functionContext</b> {
+  <b>def</b> count = it.count
+  <b>if</b> (count == null)
+    count = 0
+  it.count = ++count
+  <b>_log</b>.info(&quot;count is &quot; + it.count)
+}
+</code></pre>
+			</li>
+			<li>
+				<p>
+					<code><b>_transformationContext</b></code> provides access to a map 
+					unique to the whole transformation. For synchronization you should 
+					only access the map inside the closure like shown in this example:
+				</p>
+				<pre><code><b>_transformationContext</b> {
+  <b>def</b> count = it.count
+  <b>if</b> (count == null)
+    count = 0
+  it.count = ++count
+  <b>_log</b>.info(&quot;count is &quot; + it.count)
+}
+</code></pre>
+			</li>
+		</ul>
+	</div>
 </body>
 </html>
