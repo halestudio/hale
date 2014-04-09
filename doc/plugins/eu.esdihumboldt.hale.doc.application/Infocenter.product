@@ -27,15 +27,6 @@
       <plugin id="ch.qos.logback.classic"/>
       <plugin id="ch.qos.logback.core"/>
       <plugin id="com.ibm.icu"/>
-      <plugin id="com.springsource.javax.activation"/>
-      <plugin id="com.springsource.javax.el"/>
-      <plugin id="com.springsource.javax.media.jai.codec"/>
-      <plugin id="com.springsource.javax.media.jai.core"/>
-      <plugin id="com.springsource.javax.persistence"/>
-      <plugin id="com.springsource.javax.servlet.jsp"/>
-      <plugin id="com.springsource.org.aopalliance"/>
-      <plugin id="com.sun.xml.bind"/>
-      <plugin id="com.sun.xml.fastinfoset"/>
       <plugin id="com.vividsolutions.jts"/>
       <plugin id="de.fhg.igd.hale.fme.doc"/>
       <plugin id="eu.esdihumboldt.cst.doc.functions"/>
@@ -43,12 +34,11 @@
       <plugin id="eu.esdihumboldt.hale.doc.application"/>
       <plugin id="eu.esdihumboldt.hale.doc.user"/>
       <plugin id="eu.esdihumboldt.hale.doc.user.views.styledmap"/>
-      <plugin id="eu.esdihumboldt.hale.platform.extension" fragment="true"/>
-      <plugin id="javax.measure"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.servlet.jsp"/>
       <plugin id="jcl.over.slf4j"/>
       <plugin id="log4j.over.slf4j"/>
+      <plugin id="org.aopalliance"/>
       <plugin id="org.apache.commons.codec"/>
       <plugin id="org.apache.commons.el"/>
       <plugin id="org.apache.commons.httpclient"/>
@@ -90,10 +80,8 @@
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.services"/>
       <plugin id="org.hamcrest.core"/>
-      <plugin id="org.jdom"/>
       <plugin id="org.junit"/>
       <plugin id="org.junit4"/>
-      <plugin id="org.jvnet.staxex"/>
       <plugin id="org.mortbay.jetty.server"/>
       <plugin id="org.mortbay.jetty.util"/>
       <plugin id="org.springframework.aop"/>
