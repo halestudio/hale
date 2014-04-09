@@ -208,15 +208,13 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="it.geosolutions.imageio-ext.tiff"/>
       <plugin id="it.geosolutions.imageio-ext.utilities"/>
       <plugin id="java3d.vecmath"/>
-      <plugin id="javax.activation"/>
       <plugin id="javax.mail"/>
       <plugin id="javax.media.jai_codec"/>
       <plugin id="javax.media.jai_core"/>
       <plugin id="javax.media.jai_imageio"/>
-      <plugin id="javax.servlet"/>
+      <plugin id="javax.servlet" version="2.5.0.v201103041518"/>
       <plugin id="javax.servlet.jsp"/>
       <plugin id="javax.xml"/>
-      <plugin id="javax.xml.bind.jaxb-api"/>
       <plugin id="jcl.over.slf4j"/>
       <plugin id="jdom"/>
       <plugin id="jgridshift"/>
@@ -375,8 +373,8 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.kohsuke.groovy.sandbox"/>
       <plugin id="org.mortbay.jetty.server"/>
       <plugin id="org.mortbay.jetty.util"/>
-      <plugin id="org.objectweb.asm"/>
       <plugin id="org.objectweb.asm.analysis"/>
+      <plugin id="org.objectweb.asm.core"/>
       <plugin id="org.objectweb.asm.tree"/>
       <plugin id="org.objectweb.asm.util"/>
       <plugin id="org.opengis"/>
