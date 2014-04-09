@@ -19,14 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.WorkbenchPart;
-import org.eclipse.zest.layouts.LayoutAlgorithm;
-import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceAdapter;
@@ -46,8 +46,6 @@ public class AlignmentViewTypesOnly extends AbstractMappingView {
 
 	private AlignmentServiceListener alignmentListener;
 
-	private TreeLayoutAlgorithm treeLayout;
-
 	/**
 	 * @see eu.esdihumboldt.hale.ui.views.mapping.AbstractMappingView#createViewControl(org.eclipse.swt.widgets.Composite)
 	 */
@@ -60,49 +58,69 @@ public class AlignmentViewTypesOnly extends AbstractMappingView {
 
 		// initialize
 		if (as.getAlignment() != null) {
-			refresh();
+			updateViewerInput();
 		}
 
 		as.addListener(alignmentListener = new AlignmentServiceAdapter() {
 
 			@Override
 			public void alignmentCleared() {
-				refresh();
+				PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+
+					@Override
+					public void run() {
+						getViewer().setInput(null);
+					}
+				});
 			}
 
 			@Override
 			public void cellsRemoved(Iterable<Cell> cells) {
-				refresh();
+				// check for removed type cells
+				for (Cell cell : cells) {
+					if (AlignmentUtil.isTypeCell(cell) == true) {
+						refreshGraph();
+						return;
+					}
+				}
 			}
 
 			@Override
 			public void cellsReplaced(Map<? extends Cell, ? extends Cell> cells) {
-				refresh();
+				updateViewerInput();
 			}
 
 			@Override
 			public void cellsAdded(Iterable<Cell> cells) {
-				refresh();
+				updateViewerInput();
 			}
 
 			@Override
 			public void alignmentChanged() {
-				refresh();
+				updateViewerInput();
 			}
 
 			@Override
 			public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
-				refresh();
+				updateViewerInput();
 			}
 
+		});
+		// listen on size changes
+		getViewer().getControl().addControlListener(new ControlAdapter() {
+
+			@Override
+			public void controlResized(ControlEvent e) {
+				updateLayout(true);
+			}
 		});
 
 	}
 
 	/**
-	 * Refresh the input of the viewer. Set all (Type) cells from the Alignment.
+	 * Set the input of the viewer
 	 */
-	protected void refresh() {
+	private void updateViewerInput() {
 		List<Cell> cells = null;
 
 		// get the current alignment
@@ -117,52 +135,7 @@ public class AlignmentViewTypesOnly extends AbstractMappingView {
 		}
 
 		getViewer().setInput(cells);
-		updateLayout();
-	}
-
-	/**
-	 * Update the view
-	 * 
-	 */
-	protected void update(Iterable<Cell> cells) {
-
-		List<Cell> nCells = null;
-
-//		if (getViewer().getInput() == null) {
-//			refresh();
-//			return;
-//		}
-//		
-//		else {
-//			if (getViewer().getInput() instanceof List<?>) {
-//				List<?> currentCells = (List<?>) getViewer().getInput();
-//				for(Object cell: currentCells)
-//					if(cell instanceof Cell)
-//				cells = (List<Cell>) getViewer().getInput();
-//			}
-//		}
-
-		getViewer().setInput(nCells);
-		updateLayout();
-	}
-
-	@Override
-	protected LayoutAlgorithm createLayout() {
-		treeLayout = new TreeLayoutAlgorithm(TreeLayoutAlgorithm.RIGHT_LEFT);
-		return treeLayout;
-	}
-
-	/**
-	 * used to update the Layout
-	 * 
-	 * @see AlignmentView
-	 */
-	private void updateLayout() {
-		int width = getViewer().getControl().getSize().x;
-
-		treeLayout.setNodeSpace(new Dimension((width - 10) / 3, 30));
-
-		getViewer().applyLayout();
+		updateLayout(true);
 	}
 
 	/**

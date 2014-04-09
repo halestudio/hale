@@ -198,6 +198,7 @@ public class MappingView extends AbstractMappingView {
 		}
 
 		getViewer().setInput(cells);
+		updateLayout(true);
 	}
 
 	private Pair<Set<EntityDefinition>, Set<EntityDefinition>> getDefinitionsFromSelection(
