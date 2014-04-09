@@ -38,17 +38,17 @@
       <perspective
             class="eu.esdihumboldt.hale.ui.application.RoughPerspective"
             id="eu.esdihumboldt.hale.ui.application.perspective.grob"
-            name="Grob">
+            name="Step 1 - Rough">
       </perspective>
       <perspective
             class="eu.esdihumboldt.hale.ui.application.DetailedPerspective"
             id="eu.esdihumboldt.hale.ui.application.perspective.feintest"
-            name="Fein">
+            name="Step 2 - Detailed">
       </perspective>
       <perspective
             class="eu.esdihumboldt.hale.ui.application.TransformationPerspective"
             id="eu.esdihumboldt.hale.ui.application.perspective.transformtest"
-            name="Transf">
+            name="Step 3 - Transformation">
       </perspective>
    </extension>
    <extension
