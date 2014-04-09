@@ -91,7 +91,9 @@ public class GroovyRetypePage extends GroovyScriptPage {
 		};
 
 		return new SimpleGroovySourceViewerConfiguration(colorManager, ImmutableList.of(
-				BINDING_BUILDER, BINDING_SOURCE, BINDING_TARGET),
+				BINDING_BUILDER, BINDING_SOURCE, BINDING_TARGET, BINDING_SOURCE_TYPES,
+				BINDING_TARGET_TYPE, BINDING_CELL, BINDING_LOG, BINDING_CELL_CONTEXT,
+				BINDING_FUNCTION_CONTEXT, BINDING_TRANSFORMATION_CONTEXT),
 				ImmutableList.of(targetCompletions));
 	}
 

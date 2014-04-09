@@ -104,7 +104,9 @@ public class GroovyTransformationPage extends GroovyScriptPage {
 		};
 
 		return new SimpleGroovySourceViewerConfiguration(colorManager, ImmutableList.of(
-				BINDING_BUILDER, BINDING_TARGET), ImmutableList.of(targetCompletions));
+				BINDING_BUILDER, BINDING_TARGET, BINDING_SOURCE_TYPES, BINDING_TARGET_TYPE,
+				BINDING_CELL, BINDING_LOG, BINDING_CELL_CONTEXT, BINDING_FUNCTION_CONTEXT,
+				BINDING_TRANSFORMATION_CONTEXT), ImmutableList.of(targetCompletions));
 	}
 
 	@Override

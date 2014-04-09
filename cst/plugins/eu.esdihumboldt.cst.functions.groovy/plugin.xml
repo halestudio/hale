@@ -270,5 +270,12 @@
             file="help/contexts.xml">
       </contexts>
    </extension>
+   <extension
+         point="eu.esdihumboldt.util.groovy.sandbox">
+      <allow
+            allowAll="false"
+            class="eu.esdihumboldt.cst.functions.groovy.internal.TransformationLogWrapper">
+      </allow>
+   </extension>
 
 </plugin>
