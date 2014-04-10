@@ -25,9 +25,13 @@ import com.google.common.collect.ImmutableList;
 
 import eu.esdihumboldt.cst.functions.groovy.GroovyRetype;
 import eu.esdihumboldt.cst.functions.groovy.internal.GroovyUtil;
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Type;
+import eu.esdihumboldt.hale.common.align.transformation.function.ExecutionContext;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.FamilyInstanceImpl;
+import eu.esdihumboldt.hale.common.align.transformation.report.impl.CellLog;
+import eu.esdihumboldt.hale.common.align.transformation.report.impl.DefaultTransformationReporter;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
@@ -35,6 +39,7 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.InstanceBuilderCompletions;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.PageHelp;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray;
@@ -44,8 +49,8 @@ import eu.esdihumboldt.hale.ui.scripting.groovy.TestValues;
 import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
 import eu.esdihumboldt.hale.ui.util.groovy.ast.GroovyAST;
 import eu.esdihumboldt.hale.ui.util.source.CompilingSourceViewer;
+import eu.esdihumboldt.util.groovy.sandbox.GroovyService;
 import groovy.lang.Binding;
-import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 
 /**
@@ -86,7 +91,9 @@ public class GroovyRetypePage extends GroovyScriptPage {
 		};
 
 		return new SimpleGroovySourceViewerConfiguration(colorManager, ImmutableList.of(
-				BINDING_BUILDER, BINDING_SOURCE, BINDING_TARGET),
+				BINDING_BUILDER, BINDING_SOURCE, BINDING_TARGET, BINDING_SOURCE_TYPES,
+				BINDING_TARGET_TYPE, BINDING_CELL, BINDING_LOG, BINDING_CELL_CONTEXT,
+				BINDING_FUNCTION_CONTEXT, BINDING_TRANSFORMATION_CONTEXT),
 				ImmutableList.of(targetCompletions));
 	}
 
@@ -112,14 +119,18 @@ public class GroovyRetypePage extends GroovyScriptPage {
 					DataSet.SOURCE);
 		}
 		FamilyInstance source = new FamilyInstanceImpl(instance);
-		Binding binding = GroovyRetype.createBinding(source, builder);
+		Cell cell = getWizard().getUnfinishedCell();
+		CellLog log = new CellLog(new DefaultTransformationReporter("dummy", false), cell);
+		ExecutionContext context = new DummyExecutionContext(HaleUI.getServiceProvider());
+		Binding binding = GroovyRetype.createBinding(source, cell, builder, log, context);
 
-		GroovyShell shell = GroovyUtil.createShell(binding);
+		GroovyService service = HaleUI.getServiceProvider().getService(GroovyService.class);
 		Script script = null;
 		try {
-			script = shell.parse(document);
+			script = service.parseScript(document, binding);
 
-			GroovyUtil.evaluate(script, builder, targetType.getDefinition().getDefinition());
+			GroovyUtil.evaluate(script, builder, targetType.getDefinition().getDefinition(),
+					service);
 		} catch (final Exception e) {
 			return handleValidationResult(script, e);
 		}

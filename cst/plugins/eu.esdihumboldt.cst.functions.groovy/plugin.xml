@@ -54,6 +54,58 @@
             </functionParameterEnumeration>
          </functionParameter>
       </propertyFunction>
+      <propertyFunction
+            category="eu.esdihumboldt.cst.functions.groovy"
+            cellExplanation="eu.esdihumboldt.cst.functions.groovy.GroovyExplanation"
+            description="Use a groovy script to derive a target property value."
+            icon="icons/star.png"
+            help="help/script.xhtml"
+            identifier="eu.esdihumboldt.cst.functions.groovy.greedy"
+            name="Groovy script (greedy)">
+         <targetProperties>
+            <property
+                  description="The property to store the script result in."
+                  label="Result"
+                  maxOccurrence="1"
+                  minOccurrence="1"
+                  name="result">
+            </property>
+         </targetProperties>
+         <sourceProperties>
+            <property
+                  description="Variables for the script."
+                  eager="true"
+                  label="Variables"
+                  maxOccurrence="n"
+                  minOccurrence="0"
+                  name="var">
+            </property>
+         </sourceProperties>
+         <functionParameter
+               label="Groovy script"
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="script">
+            <functionParameterBinding>
+            </functionParameterBinding>
+         </functionParameter>
+         <functionParameter
+               description="Use the complete structured instances as variables in the script instead of only the value if a variable has child properties"
+               label="Use instances for variables with child properties"
+               maxOccurrence="1"
+               minOccurrence="0"
+               name="variablesAsInstances"
+               scriptable="false">
+            <functionParameterEnumeration>
+               <enumerationValue
+                     value="true">
+               </enumerationValue>
+               <enumerationValue
+                     value="false">
+               </enumerationValue>
+            </functionParameterEnumeration>
+         </functionParameter>
+      </propertyFunction>
       <typeFunction
             category="eu.esdihumboldt.cst.functions.groovy"
             cellExplanation="eu.esdihumboldt.hale.common.align.model.functions.explanations.RetypeExplanation"
@@ -179,6 +231,12 @@
             function="eu.esdihumboldt.cst.functions.groovy"
             id="eu.esdihumboldt.cst.functions.groovy">
       </propertyTransformation>
+      <propertyTransformation
+            class="eu.esdihumboldt.cst.functions.groovy.GroovyGreedyTransformation"
+            engine="eu.esdihumboldt.align.java"
+            function="eu.esdihumboldt.cst.functions.groovy.greedy"
+            id="eu.esdihumboldt.cst.functions.groovy.greedy">
+      </propertyTransformation>
       <typeTransformation
             class="eu.esdihumboldt.cst.functions.groovy.GroovyCreate"
             engine="eu.esdihumboldt.align.java"
@@ -211,6 +269,13 @@
       <contexts
             file="help/contexts.xml">
       </contexts>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.util.groovy.sandbox">
+      <allow
+            allowAll="false"
+            class="eu.esdihumboldt.cst.functions.groovy.internal.TransformationLogWrapper">
+      </allow>
    </extension>
 
 </plugin>

@@ -27,7 +27,6 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.codelist.CodeList;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.ComplexConfigurationService;
-import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.ui.codelist.service.CodeListService;
 import eu.esdihumboldt.hale.ui.codelist.service.internal.config.CodeListAssociations;
 import eu.esdihumboldt.hale.ui.codelist.service.internal.config.CodeListReference;
@@ -89,8 +88,7 @@ public class CodeListServiceImpl implements CodeListService {
 			}
 
 			@Override
-			public void afterLoad(ProjectService projectService,
-					Map<String, ProjectFile> projectFiles) {
+			public void afterLoad(ProjectService projectService) {
 				// update associations from configuration
 				CodeListAssociations projectAssociations = complexConfigService.getProperty(
 						KEY_ASSOCIATIONS).as(CodeListAssociations.class);

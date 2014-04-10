@@ -17,11 +17,9 @@
 package eu.esdihumboldt.hale.ui.service.project;
 
 import java.util.List;
-import java.util.Map;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
-import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 
 /**
@@ -32,18 +30,18 @@ import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 public class ProjectServiceAdapter implements ProjectServiceListener {
 
 	/**
-	 * @see ProjectServiceListener#beforeSave(ProjectService, Map)
+	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectServiceListener#afterSave(eu.esdihumboldt.hale.ui.service.project.ProjectService)
 	 */
 	@Override
-	public void beforeSave(ProjectService projectService, Map<String, ProjectFile> projectFiles) {
+	public void afterSave(ProjectService projectService) {
 		// override me
 	}
 
 	/**
-	 * @see ProjectServiceListener#afterLoad(ProjectService, Map)
+	 * @see ProjectServiceListener#afterLoad(ProjectService)
 	 */
 	@Override
-	public void afterLoad(ProjectService projectService, Map<String, ProjectFile> projectFiles) {
+	public void afterLoad(ProjectService projectService) {
 		// override me
 	}
 

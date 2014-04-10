@@ -190,6 +190,7 @@ public class TreePropertyTransformer implements PropertyTransformer {
 
 					// apply functions
 					for (FunctionExecutor functionExecutor : executors) {
+						functionExecutor.setTypeCell(typeCell);
 						tree.accept(functionExecutor);
 					}
 

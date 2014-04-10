@@ -12,6 +12,15 @@
                name="script">
          </parameter>
       </propertyParameterPage>
+      <propertyParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.groovy.GroovyTransformationPage"
+            function="eu.esdihumboldt.cst.functions.groovy.greedy"
+            id="eu.esdihumboldt.hale.ui.functions.groovy.greedy"
+            order="0">
+         <parameter
+               name="script">
+         </parameter>
+      </propertyParameterPage>
       <typeParameterPage
             class="eu.esdihumboldt.hale.ui.functions.groovy.GroovyCreatePage"
             function="eu.esdihumboldt.cst.functions.groovy.create"
@@ -34,6 +43,15 @@
             class="eu.esdihumboldt.hale.ui.functions.core.CheckboxParameterPage"
             function="eu.esdihumboldt.cst.functions.groovy"
             id="eu.esdihumboldt.hale.ui.functions.groovy.variablesAsInstances"
+            order="-10">
+         <parameter
+               name="variablesAsInstances">
+         </parameter>
+      </propertyParameterPage>
+      <propertyParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.core.CheckboxParameterPage"
+            function="eu.esdihumboldt.cst.functions.groovy.greedy"
+            id="eu.esdihumboldt.hale.ui.functions.groovy.greedy.variablesAsInstances"
             order="-10">
          <parameter
                name="variablesAsInstances">
@@ -75,6 +93,13 @@
                name="script">
          </parameter>
       </typeParameterPage>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.util.groovy.sandbox">
+      <allow
+            allowAll="false"
+            class="eu.esdihumboldt.hale.ui.functions.groovy.DummyExecutionContext">
+      </allow>
    </extension>
 
 </plugin>

@@ -59,4 +59,39 @@ public interface GroovyConstants {
 	 */
 	public static final String BINDING_TARGET = "_target";
 
+	/**
+	 * Name of the top level source type entities variable in the binding (not
+	 * applicable for {@link GroovyCreate}).
+	 */
+	public static final String BINDING_SOURCE_TYPES = "_sourceTypes";
+
+	/**
+	 * Name of the top level target type entity variable in the binding.
+	 */
+	public static final String BINDING_TARGET_TYPE = "_targetType";
+
+	/**
+	 * Name of the cell variable in the binding.
+	 */
+	public static final String BINDING_CELL = "_cell";
+
+	/**
+	 * Name of the transformation log variable in the binding.
+	 */
+	public static final String BINDING_LOG = "_log";
+
+	/**
+	 * Name of the cell context variable in the binding.
+	 */
+	public static final String BINDING_CELL_CONTEXT = "_cellContext";
+
+	/**
+	 * Name of the function context variable in the binding.
+	 */
+	public static final String BINDING_FUNCTION_CONTEXT = "_functionContext";
+
+	/**
+	 * Name of the transformation context variable in the binding.
+	 */
+	public static final String BINDING_TRANSFORMATION_CONTEXT = "_transformationContext";
 }

@@ -32,5 +32,12 @@
             label="Identifier">
       </metadata>
    </extension>
+   <extension
+         point="eu.esdihumboldt.util.groovy.sandbox">
+      <allowPackage
+            allowChildren="true"
+            name="eu.esdihumboldt.hale.common.instance.model">
+      </allowPackage>
+   </extension>
 
 </plugin>

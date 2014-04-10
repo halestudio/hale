@@ -21,7 +21,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import au.com.bytecode.opencsv.CSVReader;
@@ -46,8 +46,8 @@ public class DefaultCSVLookupReader {
 	 * @param skipFirst true, if first line should be skipped
 	 * @param keyColumn source column of the lookup table
 	 * @param valueColumn target column of the lookup table
-	 * @return the lookup table as map
-	 * @throws IOException thrown if the inputstream is not readable
+	 * @return lookup table as map
+	 * @throws IOException if inputstream is not readable
 	 */
 	public Map<Value, Value> read(InputStream input, Charset charset, char separator, char quote,
 			char escape, boolean skipFirst, int keyColumn, int valueColumn) throws IOException {
@@ -55,11 +55,12 @@ public class DefaultCSVLookupReader {
 		CSVReader reader = new CSVReader(streamReader, separator, quote, escape);
 		String[] nextLine;
 
-		Map<Value, Value> values = new HashMap<Value, Value>();
+		Map<Value, Value> values = new LinkedHashMap<Value, Value>();
 		if (skipFirst)
 			reader.readNext();
 		while ((nextLine = reader.readNext()) != null) {
-			values.put(Value.of(nextLine[keyColumn]), Value.of(nextLine[valueColumn]));
+			if (nextLine.length >= 2)
+				values.put(Value.of(nextLine[keyColumn]), Value.of(nextLine[valueColumn]));
 		}
 		reader.close();
 		return values;

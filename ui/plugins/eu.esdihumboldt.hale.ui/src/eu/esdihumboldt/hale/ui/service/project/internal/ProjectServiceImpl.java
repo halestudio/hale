@@ -45,10 +45,10 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 
+import de.fhg.igd.osgi.util.configuration.AbstractDefaultConfigurationService;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import de.fhg.igd.slf4jplus.ATransaction;
-import de.fhg.igd.osgi.util.configuration.AbstractDefaultConfigurationService;
 import eu.esdihumboldt.hale.common.core.io.CachingImportProvider;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
@@ -288,7 +288,6 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 				// notify listeners
 				Map<String, ProjectFile> projectFiles = provider.getProjectFiles();
-				notifyAfterLoad(projectFiles);
 				notifyExportConfigurationChanged();
 				// apply remaining project files
 				for (ProjectFile file : projectFiles.values()) {
@@ -302,6 +301,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				synchronized (ProjectServiceImpl.this) {
 					changed = false;
 				}
+				notifyAfterLoad();
 				updateWindowTitle();
 			}
 		};
@@ -321,8 +321,6 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				provider.getProject().setHaleVersion(haleVersion);
 				Map<String, ProjectFile> projectFiles = ProjectIO.createDefaultProjectFiles(HaleUI
 						.getServiceProvider());
-				notifyBeforeSave(projectFiles); // get additional files from
-												// listeners
 				provider.setProjectFiles(projectFiles);
 				if (projectLocation != null) {
 					provider.setPreviousTarget(projectLocation);
@@ -340,6 +338,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					rfs.add(projectFile.getAbsolutePath(), provider.getProject().getName());
 				}
 
+				notifyAfterSave();
 				updateWindowTitle();
 			}
 		};

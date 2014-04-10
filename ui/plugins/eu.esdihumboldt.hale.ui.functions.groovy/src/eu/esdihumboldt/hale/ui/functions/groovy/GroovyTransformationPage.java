@@ -24,6 +24,7 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.ui.PlatformUI;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
@@ -31,15 +32,18 @@ import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
 import eu.esdihumboldt.cst.functions.groovy.GroovyTransformation;
-import eu.esdihumboldt.cst.functions.groovy.internal.GroovyUtil;
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.align.transformation.function.ExecutionContext;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.PropertyValueImpl;
+import eu.esdihumboldt.hale.common.align.transformation.report.impl.CellLog;
+import eu.esdihumboldt.hale.common.align.transformation.report.impl.DefaultTransformationReporter;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
@@ -49,16 +53,18 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.InstanceBuilderCompletions;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.PageHelp;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray.TypeProvider;
 import eu.esdihumboldt.hale.ui.scripting.groovy.InstanceTestValues;
 import eu.esdihumboldt.hale.ui.scripting.groovy.TestValues;
+import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.util.groovy.SimpleGroovySourceViewerConfiguration;
 import eu.esdihumboldt.hale.ui.util.groovy.ast.GroovyAST;
 import eu.esdihumboldt.hale.ui.util.source.CompilingSourceViewer;
-import groovy.lang.GroovyShell;
+import eu.esdihumboldt.util.groovy.sandbox.GroovyService;
 import groovy.lang.Script;
 
 /**
@@ -98,7 +104,9 @@ public class GroovyTransformationPage extends GroovyScriptPage {
 		};
 
 		return new SimpleGroovySourceViewerConfiguration(colorManager, ImmutableList.of(
-				BINDING_BUILDER, BINDING_TARGET), ImmutableList.of(targetCompletions));
+				BINDING_BUILDER, BINDING_TARGET, BINDING_SOURCE_TYPES, BINDING_TARGET_TYPE,
+				BINDING_CELL, BINDING_LOG, BINDING_CELL_CONTEXT, BINDING_FUNCTION_CONTEXT,
+				BINDING_TRANSFORMATION_CONTEXT), ImmutableList.of(targetCompletions));
 	}
 
 	@Override
@@ -131,17 +139,32 @@ public class GroovyTransformationPage extends GroovyScriptPage {
 		InstanceBuilder builder = GroovyTransformation
 				.createBuilder(targetProperty.getDefinition());
 
-		boolean useInstanceValues = CellUtil.getOptionalParameter(getWizard().getUnfinishedCell(),
+		Cell cell = getWizard().getUnfinishedCell();
+
+		boolean useInstanceValues = CellUtil.getOptionalParameter(cell,
 				GroovyTransformation.PARAM_INSTANCE_VARIABLES, Value.of(false)).as(Boolean.class);
 
-		GroovyShell shell = GroovyUtil.createShell(GroovyTransformation.createGroovyBinding(values,
-				null, builder, useInstanceValues));
+		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+				AlignmentService.class);
+		GroovyService gs = HaleUI.getServiceProvider().getService(GroovyService.class);
 		Script script = null;
 		try {
-			script = shell.parse(document);
+			Collection<? extends Cell> typeCells = as.getAlignment().getTypeCells(cell);
+			// select one matching type cell, the script has to run for all
+			// matching cells
+			// XXX if there is no matching type cell the evaluation might fail
+			// even though it is valid (-> BaseAlignment)
+			Cell typeCell = null;
+			if (!typeCells.isEmpty()) {
+				typeCell = typeCells.iterator().next();
+			}
+			CellLog log = new CellLog(new DefaultTransformationReporter("dummy", false), cell);
+			ExecutionContext context = new DummyExecutionContext(HaleUI.getServiceProvider());
+			script = gs.parseScript(document, GroovyTransformation.createGroovyBinding(values,
+					null, cell, typeCell, builder, useInstanceValues, log, context));
 
 			GroovyTransformation.evaluate(script, builder, targetProperty.getDefinition()
-					.getDefinition().getPropertyType());
+					.getDefinition().getPropertyType(), gs);
 		} catch (final Exception e) {
 			return handleValidationResult(script, e);
 		}

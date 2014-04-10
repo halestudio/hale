@@ -5,10 +5,16 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.server.config
 Bundle-Version: 2.8.0.qualifier
 Bundle-Vendor: Data Harmonisation Panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: de.fhg.igd.slf4jplus,
+Import-Package: de.fhg.igd.osgi.util;version="1.0.0",
  de.fhg.igd.osgi.util.configuration;version="1.0.0",
+ de.fhg.igd.slf4jplus,
  eu.esdihumboldt.util,
  org.quartz.simpl;version="1.6.2",
  org.slf4j;version="1.5.11",
- org.springframework.scheduling.quartz;version="3.1.1.RELEASE"
+ org.springframework.beans;version="3.1.1.RELEASE",
+ org.springframework.beans.factory.config;version="3.1.1.RELEASE",
+ org.springframework.core;version="3.1.1.RELEASE",
+ org.springframework.scheduling.quartz;version="3.1.1.RELEASE",
+ org.springframework.util;version="3.1.1.RELEASE"
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0"
+Export-Package: eu.esdihumboldt.hale.server.config

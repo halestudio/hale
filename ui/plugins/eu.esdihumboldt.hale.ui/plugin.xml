@@ -101,6 +101,15 @@
          </state>
       </command>
       <command
+            defaultHandler="eu.esdihumboldt.hale.ui.service.groovy.internal.handler.ToggleRestrictionHandler"
+            id="eu.esdihumboldt.hale.ui.groovy.toggle_restriction"
+            name="Groovy restriction">
+         <state
+               class="eu.esdihumboldt.hale.ui.service.groovy.internal.handler.RestrictionToggleState"
+               id="org.eclipse.ui.commands.toggleState">
+         </state>
+      </command>
+      <command
             id="eu.esdihumboldt.hale.ui.transformation"
             name="Transform external data">
       </command>
@@ -534,6 +543,9 @@
          </service>
          <service
                serviceClass="eu.esdihumboldt.hale.common.align.io.EntityResolver">
+         </service>
+         <service
+               serviceClass="eu.esdihumboldt.util.groovy.sandbox.GroovyService">
          </service>
       </serviceFactory>
       <sourceProvider
@@ -1239,6 +1251,10 @@
       <image
             commandId="eu.esdihumboldt.hale.ui.instance.toggle_transformation"
             icon="icons/play.gif">
+      </image>
+      <image
+            commandId="eu.esdihumboldt.hale.ui.groovy.toggle_restriction"
+            icon="icons/groovy_protect.png">
       </image>
       <image
             commandId="eu.esdihumboldt.hale.ui.instance.toggle_sampling"

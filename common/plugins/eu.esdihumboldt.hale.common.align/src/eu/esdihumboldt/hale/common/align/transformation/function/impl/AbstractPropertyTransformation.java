@@ -46,6 +46,7 @@ public abstract class AbstractPropertyTransformation<E extends TransformationEng
 	private ListMultimap<String, PropertyEntityDefinition> resultNames;
 	private TypeDefinition targetType;
 	private Cell cell;
+	private Cell typeCell;
 
 	/**
 	 * @see PropertyTransformation#setTargetType(TypeDefinition)
@@ -143,5 +144,22 @@ public abstract class AbstractPropertyTransformation<E extends TransformationEng
 	@Override
 	public boolean allowAutomatedResultConversion() {
 		return true;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.transformation.function.PropertyTransformation#setTypeCell(eu.esdihumboldt.hale.common.align.model.Cell)
+	 */
+	@Override
+	public void setTypeCell(Cell typeCell) {
+		this.typeCell = typeCell;
+	}
+
+	/**
+	 * Get the type cell this property transformation belongs to.
+	 * 
+	 * @return the cell
+	 */
+	protected Cell getTypeCell() {
+		return typeCell;
 	}
 }
