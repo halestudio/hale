@@ -281,11 +281,11 @@
 			</li>
 			<li>
 				<p>
-					<code><b>_cellContext</b></code> provides access to a map unique to each 
+					<code><b>withCellContext</b></code> provides access to a map unique to each 
 					cell. For synchronization you should only access the map inside the 
 					closure like shown in this example:
 				</p>
-				<pre><code><b>_cellContext</b> {
+				<pre><code><b>withCellContext</b> {
   <b>def</b> count = it.count
   <b>if</b> (count == null)
     count = 0
@@ -296,11 +296,11 @@
 			</li>
 			<li>
 				<p>
-					<code><b>_functionContext</b></code> provides access to a map unique to 
+					<code><b>withFunctionContext</b></code> provides access to a map unique to 
 					each function (all cells of this function). For synchronization you 
 					should only access the map inside the closure like shown in this example:
 				</p>
-				<pre><code><b>_functionContext</b> {
+				<pre><code><b>withFunctionContext</b> {
   <b>def</b> count = it.count
   <b>if</b> (count == null)
     count = 0
@@ -311,11 +311,11 @@
 			</li>
 			<li>
 				<p>
-					<code><b>_transformationContext</b></code> provides access to a map 
+					<code><b>withTransformationContext</b></code> provides access to a map 
 					unique to the whole transformation. For synchronization you should 
 					only access the map inside the closure like shown in this example:
 				</p>
-				<pre><code><b>_transformationContext</b> {
+				<pre><code><b>withTransformationContext</b> {
   <b>def</b> count = it.count
   <b>if</b> (count == null)
     count = 0
