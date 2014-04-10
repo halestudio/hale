@@ -53,7 +53,8 @@ class PomGenerator {
                 'parentVersion': project.version + project.ext.versionSuffix,
                 'parentRelativePath': relativePath,
                 'needsScala': needsScala,
-				'needsGroovy': needsGroovy
+				'needsGroovy': needsGroovy,
+				'extraRequirements': project.ext.extraRequirements
             ]).toString()
             w << result
         }

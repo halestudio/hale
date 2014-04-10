@@ -85,9 +85,16 @@ ext {
     ]
 	
 	// bundles to exclude for the build (symbolic names)
-	excludeBundles = [
-		'eu.esdihumboldt.hale.ui.application.help.internal',
-		'eu.esdihumboldt.hale.ui.application.help.external'
+	excludeBundles = []
+//	excludeBundles = [
+//		'eu.esdihumboldt.hale.ui.application.help.internal',
+//		'eu.esdihumboldt.hale.ui.application.help.external'
+//	]
+	
+	// bundles or fragments that are required additionally for compilation
+	extraRequirements = [
+		// this system bundle extension fragment is otherwise not found by tycho
+		'com.google.code.findbugs.jsr305'
 	]
 	
 	/*
