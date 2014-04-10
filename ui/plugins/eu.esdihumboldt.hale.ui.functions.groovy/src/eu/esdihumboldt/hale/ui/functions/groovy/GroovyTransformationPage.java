@@ -31,6 +31,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
+import eu.esdihumboldt.cst.functions.groovy.GroovyGreedyTransformation;
 import eu.esdihumboldt.cst.functions.groovy.GroovyTransformation;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
@@ -49,6 +50,7 @@ import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
@@ -152,16 +154,23 @@ public class GroovyTransformationPage extends GroovyScriptPage {
 			Collection<? extends Cell> typeCells = as.getAlignment().getTypeCells(cell);
 			// select one matching type cell, the script has to run for all
 			// matching cells
-			// XXX if there is no matching type cell the evaluation might fail
-			// even though it is valid (-> BaseAlignment)
+			// if there is no matching cell it may produce a npe, which is okay
 			Cell typeCell = null;
 			if (!typeCells.isEmpty()) {
 				typeCell = typeCells.iterator().next();
 			}
 			CellLog log = new CellLog(new DefaultTransformationReporter("dummy", false), cell);
 			ExecutionContext context = new DummyExecutionContext(HaleUI.getServiceProvider());
-			script = gs.parseScript(document, GroovyTransformation.createGroovyBinding(values,
-					null, cell, typeCell, builder, useInstanceValues, log, context));
+			groovy.lang.Binding binding;
+			if (cell.getTransformationIdentifier().equals(GroovyGreedyTransformation.ID)) {
+				binding = GroovyGreedyTransformation.createGroovyBinding(values, null, cell,
+						typeCell, builder, useInstanceValues, log, context);
+			}
+			else {
+				binding = GroovyTransformation.createGroovyBinding(values, null, cell, typeCell,
+						builder, useInstanceValues, log, context);
+			}
+			script = gs.parseScript(document, binding);
 
 			GroovyTransformation.evaluate(script, builder, targetProperty.getDefinition()
 					.getDefinition().getPropertyType(), gs);
@@ -222,8 +231,9 @@ public class GroovyTransformationPage extends GroovyScriptPage {
 				DefaultTypeDefinition dummy = new DefaultTypeDefinition(
 						TypeStructureTray.VARIABLES_TYPE_NAME);
 
-				boolean useInstanceValues = CellUtil.getOptionalParameter(
-						getWizard().getUnfinishedCell(),
+				Cell cell = getWizard().getUnfinishedCell();
+
+				boolean useInstanceValues = CellUtil.getOptionalParameter(cell,
 						GroovyTransformation.PARAM_INSTANCE_VARIABLES, Value.of(false)).as(
 						Boolean.class);
 
@@ -248,8 +258,14 @@ public class GroovyTransformationPage extends GroovyScriptPage {
 							propertyType = crippledType;
 						}
 
-						new DefaultPropertyDefinition(new QName(getVariableName(variable)), dummy,
-								propertyType);
+						DefaultPropertyDefinition dummyProp = new DefaultPropertyDefinition(
+								new QName(getVariableName(variable)), dummy, propertyType);
+
+						// for greedy transformation the property can occur any
+						// number of times
+						if (cell.getTransformationIdentifier()
+								.equals(GroovyGreedyTransformation.ID))
+							dummyProp.setConstraint(Cardinality.CC_ANY_NUMBER);
 					}
 				}
 

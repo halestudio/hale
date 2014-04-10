@@ -16,19 +16,18 @@
 
 package eu.esdihumboldt.cst.functions.groovy;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Multimap;
 
 import eu.esdihumboldt.cst.functions.groovy.internal.GroovyUtil;
+import eu.esdihumboldt.cst.functions.groovy.internal.InstanceAccessorArrayList;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
@@ -55,6 +54,11 @@ import groovy.lang.Script;
  */
 public class GroovyGreedyTransformation extends
 		AbstractSingleTargetPropertyTransformation<TransformationEngine> implements GroovyConstants {
+
+	/**
+	 * The function/transformation ID.
+	 */
+	public static final String ID = "eu.esdihumboldt.cst.functions.groovy.greedy";
 
 	/**
 	 * Name of the parameter specifying if instances should be used as variables
@@ -140,16 +144,21 @@ public class GroovyGreedyTransformation extends
 			}
 		}
 
-		Multimap<PropertyEntityDefinition, Object> bindingMap = ArrayListMultimap.create();
+		Map<PropertyEntityDefinition, InstanceAccessorArrayList<Object>> bindingMap = new HashMap<>();
 
 		// collect the values
 		for (PropertyValue var : vars) {
-			bindingMap.put(var.getProperty(),
-					GroovyTransformation.getUseValue(var.getValue(), useInstanceVariables));
+			PropertyEntityDefinition property = var.getProperty();
+			InstanceAccessorArrayList<Object> valueList = bindingMap.get(property);
+			if (valueList == null) {
+				valueList = new InstanceAccessorArrayList<>();
+				bindingMap.put(property, valueList);
+			}
+			valueList.add(GroovyTransformation.getUseValue(var.getValue(), useInstanceVariables));
 		}
 
 		// add collected values to environment
-		for (Entry<PropertyEntityDefinition, Collection<Object>> entry : bindingMap.asMap()
+		for (Entry<PropertyEntityDefinition, InstanceAccessorArrayList<Object>> entry : bindingMap
 				.entrySet()) {
 			GroovyTransformation.addToBinding(binding, entry.getKey(), entry.getValue());
 		}

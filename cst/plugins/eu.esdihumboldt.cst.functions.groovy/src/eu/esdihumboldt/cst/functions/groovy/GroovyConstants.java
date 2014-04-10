@@ -83,15 +83,15 @@ public interface GroovyConstants {
 	/**
 	 * Name of the cell context variable in the binding.
 	 */
-	public static final String BINDING_CELL_CONTEXT = "_cellContext";
+	public static final String BINDING_CELL_CONTEXT = "withCellContext";
 
 	/**
 	 * Name of the function context variable in the binding.
 	 */
-	public static final String BINDING_FUNCTION_CONTEXT = "_functionContext";
+	public static final String BINDING_FUNCTION_CONTEXT = "withFunctionContext";
 
 	/**
 	 * Name of the transformation context variable in the binding.
 	 */
-	public static final String BINDING_TRANSFORMATION_CONTEXT = "_transformationContext";
+	public static final String BINDING_TRANSFORMATION_CONTEXT = "withTransformationContext";
 }

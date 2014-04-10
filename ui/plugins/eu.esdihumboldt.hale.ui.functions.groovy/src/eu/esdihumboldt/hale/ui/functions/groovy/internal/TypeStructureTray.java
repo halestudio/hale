@@ -63,6 +63,7 @@ import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.AugmentedValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
@@ -83,7 +84,7 @@ import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
  * 
  * @author Simon Templer
  */
-public class TypeStructureTray extends DialogTray {
+public class TypeStructureTray extends DialogTray implements GroovyConstants {
 
 	/**
 	 * Name for a dummy type where the properties actually represent variables.
@@ -243,9 +244,10 @@ public class TypeStructureTray extends DialogTray {
 
 		final IColorManager colorManager = new GroovyColorManager();
 		SourceViewerConfiguration configuration = new SimpleGroovySourceViewerConfiguration(
-				colorManager, ImmutableList.of(GroovyConstants.BINDING_TARGET,
-						GroovyConstants.BINDING_BUILDER, GroovyConstants.BINDING_INDEX,
-						GroovyConstants.BINDING_SOURCE), null);
+				colorManager, ImmutableList.of(BINDING_TARGET, BINDING_BUILDER, BINDING_INDEX,
+						BINDING_SOURCE, BINDING_SOURCE_TYPES, BINDING_TARGET_TYPE, BINDING_CELL,
+						BINDING_LOG, BINDING_CELL_CONTEXT, BINDING_FUNCTION_CONTEXT,
+						BINDING_TRANSFORMATION_CONTEXT), null);
 		viewer.configure(configuration);
 
 		GridDataFactory.fillDefaults().grab(true, false).hint(200, 130)
@@ -346,7 +348,7 @@ public class TypeStructureTray extends DialogTray {
 	private String createSourceSample(TreePath path, Collection<? extends TypeDefinition> types) {
 		DefinitionGroup parent;
 		int startIndex = 0;
-		String prefix;
+		StringBuilder access = new StringBuilder();
 
 		// determine parent type
 		if (path.getFirstSegment() instanceof TypeDefinition) {
@@ -363,31 +365,41 @@ public class TypeStructureTray extends DialogTray {
 			if (VARIABLES_TYPE_NAME.equals(type.getName())) {
 				// Groovy property transformation
 				// first segment is variable name
+				Definition<?> def = (Definition<?>) path.getFirstSegment();
 				startIndex++;
-				prefix = ((Definition<?>) path.getFirstSegment()).getName().getLocalPart();
+				access.append(def.getName().getLocalPart());
+				// XXX add namespace if necessary
+				// XXX currently groovy transformation does not support multiple
+				// variables with the same name
+				parent = DefinitionUtil.getDefinitionGroup(def);
 			}
 			else {
 				// assuming Retype/Merge
-				prefix = GroovyConstants.BINDING_SOURCE;
+				access.append(GroovyConstants.BINDING_SOURCE);
 			}
 		}
 
-		StringBuilder access = new StringBuilder();
-		access.append(prefix);
-		if (path.getSegmentCount() > startIndex) {
-			// a property is referenced
-			access.append(".p");
-		}
-		else {
-			if (!DefinitionUtil.hasChildren((Definition<?>) path.getLastSegment())) {
-				// variable w/o children referenced
-				return "// access variable\ndef value = " + prefix;
+		// is a property or list of inputs referenced -> use accessor
+		boolean propertyOrList = path.getSegmentCount() > startIndex
+				|| (path.getLastSegment() instanceof ChildDefinition<?> && canOccureMultipleTimes((ChildDefinition<?>) path
+						.getLastSegment()));
+		if (!propertyOrList) {
+			if (parent instanceof TypeDefinition && canHaveValue((TypeDefinition) parent)) {
+				if (!DefinitionUtil.hasChildren((Definition<?>) path.getLastSegment())) {
+					// variable w/o children referenced
+					return "// access variable\ndef value = " + access;
+				}
+				else {
+					// variable w/ children referenced
+					return "// access instance variable value\ndef value = " + access + ".value";
+				}
 			}
 			else {
-				// variable w/ children referenced
-				return "// access instance variable value\ndef value = " + prefix + ".value";
+				return null;
 			}
 		}
+
+		access.append(".p");
 
 		for (int i = startIndex; i < path.getSegmentCount(); i++) {
 			Definition<?> def = (Definition<?>) path.getSegment(i);
@@ -399,13 +411,7 @@ public class TypeStructureTray extends DialogTray {
 				// test if uniquely accessible from parent
 				boolean useNamespace = true;
 				if (parent instanceof Definition<?>) {
-					try {
-						new DefinitionAccessor((Definition<?>) parent).findChildren(
-								def.getName().getLocalPart()).eval();
-						useNamespace = false;
-					} catch (IllegalStateException e) {
-						// ignore - namespace needed
-					}
+					useNamespace = namespaceNeeded((Definition<?>) parent, def);
 				}
 
 				// add namespace if necessary
@@ -435,16 +441,14 @@ public class TypeStructureTray extends DialogTray {
 			 */
 			for (int i = path.getSegmentCount() - 1; i >= 0 && !canOccurMultipleTimes; i--) {
 				if (path.getSegment(i) instanceof ChildDefinition<?>) {
-					Cardinality card = DefinitionUtil.getCardinality((ChildDefinition<?>) path
+					canOccurMultipleTimes = canOccureMultipleTimes((ChildDefinition<?>) path
 							.getSegment(i));
-					canOccurMultipleTimes = card.getMaxOccurs() == Cardinality.UNBOUNDED
-							|| card.getMaxOccurs() > 1;
 				}
 			}
 
 			// check different cases
 
-			if (propertyType.getConstraint(HasValueFlag.class).isEnabled()) {
+			if (canHaveValue(propertyType)) {
 				// referenced property is a value or has a value
 
 				// single value
@@ -510,6 +514,27 @@ public class TypeStructureTray extends DialogTray {
 		}
 
 		return null;
+	}
+
+	private boolean canOccureMultipleTimes(ChildDefinition<?> child) {
+		Cardinality card = DefinitionUtil.getCardinality(child);
+		return card.getMaxOccurs() == Cardinality.UNBOUNDED || card.getMaxOccurs() > 1;
+	}
+
+	private boolean canHaveValue(TypeDefinition propertyType) {
+		return propertyType.getConstraint(HasValueFlag.class).isEnabled()
+				|| propertyType.getConstraint(AugmentedValueFlag.class).isEnabled();
+	}
+
+	private boolean namespaceNeeded(Definition<?> parent, Definition<?> child) {
+		boolean namespaceNeeded = true;
+		try {
+			new DefinitionAccessor(parent).findChildren(child.getName().getLocalPart()).eval();
+			namespaceNeeded = false;
+		} catch (IllegalStateException e) {
+			// ignore - namespace needed
+		}
+		return namespaceNeeded;
 	}
 
 	/**

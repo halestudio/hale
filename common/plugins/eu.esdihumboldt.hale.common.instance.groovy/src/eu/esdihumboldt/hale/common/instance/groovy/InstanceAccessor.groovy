@@ -17,7 +17,9 @@ package eu.esdihumboldt.hale.common.instance.groovy;
 
 import javax.xml.namespace.QName
 
+import com.google.common.base.Function
 import com.google.common.collect.ImmutableList
+import com.google.common.collect.Lists
 
 import eu.esdihumboldt.hale.common.instance.model.Group
 import eu.esdihumboldt.hale.common.instance.model.Instance
@@ -45,6 +47,24 @@ class InstanceAccessor extends AbstractAccessor<Object> {
 	 */
 	public InstanceAccessor(def object) {
 		super(ImmutableList.of(new PathImpl<Object>(object)));
+	}
+
+	/**
+	 * Creates an accessor for the given instances/values.
+	 * 
+	 * @param objects the initial objects
+	 */
+	public InstanceAccessor(List<?> objects) {
+		super(transform(objects));
+	}
+
+	private static List<Path<Object>> transform(List<?> objects) {
+		List<Path<Object>> list = Lists.transform(objects, new Function<Object, Path<Object>>() {
+					public Path<Object> apply(Object from) {
+						return new PathImpl<Object>(from);
+					}
+				});
+		return Collections.unmodifiableList(list);
 	}
 
 	@Override

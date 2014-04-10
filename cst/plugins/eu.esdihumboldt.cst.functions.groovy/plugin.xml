@@ -276,6 +276,10 @@
             allowAll="false"
             class="eu.esdihumboldt.cst.functions.groovy.internal.TransformationLogWrapper">
       </allow>
+      <allow
+            allowAll="false"
+            class="eu.esdihumboldt.cst.functions.groovy.internal.InstanceAccessorArrayList">
+      </allow>
    </extension>
 
 </plugin>
