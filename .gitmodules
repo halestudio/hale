@@ -1,3 +1,0 @@
-[submodule "platform/target"]
-	path = platform/target
-	url = http://gerrit.esdi-community.eu/p/hale-target

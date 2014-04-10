@@ -39,53 +39,35 @@
    </vm>
 
    <plugins>
-      <plugin id="EDU.oswego.cs.dl.util.concurrent"/>
-      <plugin id="asm"/>
-      <plugin id="asm-analysis"/>
-      <plugin id="asm-tree"/>
-      <plugin id="asm-util"/>
-      <plugin id="au.com.bytecode.opencsv"/>
+      <plugin id="antlr"/>
+      <plugin id="args4j"/>
       <plugin id="cal10n.api"/>
-      <plugin id="cern.colt"/>
+      <plugin id="cglib"/>
       <plugin id="ch.qos.logback.classic"/>
       <plugin id="ch.qos.logback.core"/>
+      <plugin id="colt"/>
       <plugin id="com.fasterxml.jackson.core.jackson-annotations"/>
       <plugin id="com.fasterxml.jackson.core.jackson-core"/>
-      <plugin id="com.fasterxml.jackson.databind"/>
+      <plugin id="com.fasterxml.jackson.core.jackson-databind"/>
       <plugin id="com.github.sommeri.less4j"/>
-      <plugin id="com.google.gson"/>
+      <plugin id="com.google.code.findbugs.jsr305" fragment="true"/>
       <plugin id="com.google.guava"/>
-      <plugin id="com.google.javascript.jscomp"/>
-      <plugin id="com.google.protobuf"/>
+      <plugin id="com.google.inject"/>
+      <plugin id="com.google.javascript.closure-compiler"/>
+      <plugin id="com.google.protobuf.java"/>
+      <plugin id="com.googlecode.json-simple"/>
       <plugin id="com.iabcinc.jmep"/>
       <plugin id="com.jcraft.jsch"/>
       <plugin id="com.orientechnologies.common"/>
-      <plugin id="com.orientechnologies.orient.core"/>
-      <plugin id="com.springsource.antlr"/>
-      <plugin id="com.springsource.com.google.inject"/>
-      <plugin id="com.springsource.javassist"/>
-      <plugin id="com.springsource.javax.el"/>
-      <plugin id="com.springsource.javax.media.jai.codec"/>
-      <plugin id="com.springsource.javax.media.jai.core"/>
-      <plugin id="com.springsource.javax.persistence"/>
-      <plugin id="com.springsource.javax.servlet.jsp"/>
-      <plugin id="com.springsource.net.sf.cglib"/>
-      <plugin id="com.springsource.org.aopalliance"/>
-      <plugin id="com.springsource.org.apache.commons.beanutils"/>
-      <plugin id="com.springsource.org.apache.commons.collections"/>
-      <plugin id="com.springsource.org.apache.commons.configuration"/>
-      <plugin id="com.springsource.org.apache.commons.digester"/>
-      <plugin id="com.springsource.org.apache.commons.jxpath"/>
-      <plugin id="com.springsource.org.apache.commons.pool"/>
-      <plugin id="com.springsource.org.apache.xmlbeans"/>
-      <plugin id="com.springsource.org.castor"/>
-      <plugin id="com.springsource.org.openid4java"/>
-      <plugin id="com.springsource.org.picocontainer"/>
-      <plugin id="com.springsource.org.quartz"/>
+      <plugin id="com.orientechnologies.orientdb-client" fragment="true"/>
+      <plugin id="com.orientechnologies.orientdb-core"/>
+      <plugin id="com.orientechnologies.orientdb-enterprise"/>
       <plugin id="com.sun.jna"/>
-      <plugin id="com.tinkerpop.blueprints"/>
-      <plugin id="com.tinkerpop.blueprints.orient"/>
+      <plugin id="com.tinkerpop.blueprints.core"/>
+      <plugin id="com.tinkerpop.blueprints.orient-graph"/>
       <plugin id="com.vividsolutions.jts"/>
+      <plugin id="commons-digester"/>
+      <plugin id="concurrent"/>
       <plugin id="de.agilecoders.wicket.webjars"/>
       <plugin id="de.cs3d.util.eclipse"/>
       <plugin id="de.fhg.igd.concurrency"/>
@@ -93,7 +75,7 @@
       <plugin id="de.fhg.igd.slf4jplus"/>
       <plugin id="de.fhg.igd.slf4jplus.logback"/>
       <plugin id="de.fhg.igd.slf4jplus.logback.appender" fragment="true"/>
-      <plugin id="edu.umd.cs.findbugs.annotations"/>
+      <plugin id="dom4j"/>
       <plugin id="eu.esdihumboldt.cst"/>
       <plugin id="eu.esdihumboldt.cst.functions.core"/>
       <plugin id="eu.esdihumboldt.cst.functions.geometric"/>
@@ -109,6 +91,7 @@
       <plugin id="eu.esdihumboldt.hale.common.convert.wkt"/>
       <plugin id="eu.esdihumboldt.hale.common.core"/>
       <plugin id="eu.esdihumboldt.hale.common.filter"/>
+      <plugin id="eu.esdihumboldt.hale.common.groovy.sandbox.enable"/>
       <plugin id="eu.esdihumboldt.hale.common.headless"/>
       <plugin id="eu.esdihumboldt.hale.common.instance"/>
       <plugin id="eu.esdihumboldt.hale.common.instance.groovy"/>
@@ -126,7 +109,6 @@
       <plugin id="eu.esdihumboldt.hale.io.shp"/>
       <plugin id="eu.esdihumboldt.hale.io.xml"/>
       <plugin id="eu.esdihumboldt.hale.io.xsd"/>
-      <plugin id="eu.esdihumboldt.hale.platform.extension" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.server.api.base"/>
       <plugin id="eu.esdihumboldt.hale.server.api.war"/>
       <plugin id="eu.esdihumboldt.hale.server.application"/>
@@ -149,39 +131,62 @@
       <plugin id="eu.esdihumboldt.hale.server.webapp"/>
       <plugin id="eu.esdihumboldt.hale.server.webapp.branding.igd" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.server.webapp.war"/>
+      <plugin id="eu.esdihumboldt.hale.server.webjars" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.server.webtransform.war"/>
       <plugin id="eu.esdihumboldt.util"/>
       <plugin id="eu.esdihumboldt.util.blueprints.entities"/>
       <plugin id="eu.esdihumboldt.util.groovy"/>
       <plugin id="eu.esdihumboldt.util.groovy.meta.extension"/>
       <plugin id="eu.esdihumboldt.util.groovy.meta.fragment" fragment="true"/>
+      <plugin id="eu.esdihumboldt.util.groovy.sandbox"/>
       <plugin id="eu.esdihumboldt.util.resource"/>
       <plugin id="eu.esdihumboldt.util.resource.schemas.citygml"/>
       <plugin id="eu.esdihumboldt.util.resource.schemas.inspire"/>
       <plugin id="eu.esdihumboldt.util.resource.schemas.inspire.annex1"/>
       <plugin id="eu.esdihumboldt.util.resource.schemas.opengis.net"/>
       <plugin id="eu.esdihumboldt.util.resource.schemas.test"/>
+      <plugin id="findbugsAnnotations"/>
       <plugin id="gnu.trove"/>
       <plugin id="groovy"/>
-      <plugin id="hale.net.sf.ehcache"/>
-      <plugin id="javax.inject"/>
-      <plugin id="javax.measure"/>
+      <plugin id="hsqldb"/>
+      <plugin id="it.geosolutions.imageio-ext.tiff"/>
+      <plugin id="it.geosolutions.imageio-ext.utilities"/>
+      <plugin id="java3d.vecmath"/>
+      <plugin id="javassist"/>
+      <plugin id="javax.inject.javax.inject"/>
+      <plugin id="javax.mail"/>
+      <plugin id="javax.media.jai_codec"/>
+      <plugin id="javax.media.jai_core"/>
+      <plugin id="javax.media.jai_imageio"/>
       <plugin id="javax.servlet"/>
+      <plugin id="javax.servlet.jsp"/>
       <plugin id="javax.xml"/>
       <plugin id="jcl.over.slf4j"/>
+      <plugin id="jdom"/>
+      <plugin id="jgridshift"/>
       <plugin id="joda-time"/>
-      <plugin id="jsr305"/>
       <plugin id="jul.to.slf4j"/>
       <plugin id="log4j.over.slf4j"/>
-      <plugin id="net.tanesha.recaptcha"/>
+      <plugin id="net.java.dev.jsr-275"/>
+      <plugin id="net.sf.ehcache.core"/>
+      <plugin id="net.sf.opencsv"/>
+      <plugin id="net.sourceforge.nekohtml"/>
+      <plugin id="net.tanesha.recaptcha4j"/>
+      <plugin id="org.antlr"/>
+      <plugin id="org.antlr.ST4"/>
       <plugin id="org.antlr.runtime"/>
-      <plugin id="org.apache.ant"/>
+      <plugin id="org.antlr.stringtemplate"/>
+      <plugin id="org.aopalliance"/>
+      <plugin id="org.apache.commons.beanutils"/>
       <plugin id="org.apache.commons.codec"/>
+      <plugin id="org.apache.commons.collections"/>
+      <plugin id="org.apache.commons.configuration"/>
       <plugin id="org.apache.commons.fileupload"/>
       <plugin id="org.apache.commons.httpclient"/>
       <plugin id="org.apache.commons.io"/>
+      <plugin id="org.apache.commons.jxpath"/>
       <plugin id="org.apache.commons.lang"/>
-      <plugin id="org.apache.commons.vfs"/>
+      <plugin id="org.apache.commons.pool"/>
       <plugin id="org.apache.httpcomponents.httpclient"/>
       <plugin id="org.apache.httpcomponents.httpcore"/>
       <plugin id="org.apache.wicket.core"/>
@@ -190,17 +195,16 @@
       <plugin id="org.apache.wicket.request"/>
       <plugin id="org.apache.wicket.spring"/>
       <plugin id="org.apache.wicket.util"/>
-      <plugin id="org.apache.ws.commons.schema"/>
+      <plugin id="org.apache.ws.commons.schema.XmlSchema"/>
       <plugin id="org.apache.xerces"/>
       <plugin id="org.apache.xml.resolver"/>
       <plugin id="org.apache.xml.serializer"/>
-      <plugin id="org.castor.core"/>
-      <plugin id="org.castor.xml"/>
+      <plugin id="org.apache.xmlbeans"/>
+      <plugin id="org.codehaus.castor.core"/>
+      <plugin id="org.codehaus.castor.xml"/>
       <plugin id="org.codehaus.jackson"/>
       <plugin id="org.codehaus.jackson.mapper"/>
-      <plugin id="org.codehaus.jettison"/>
-      <plugin id="org.cyberneko.html"/>
-      <plugin id="org.dom4j"/>
+      <plugin id="org.codehaus.jettison.jettison"/>
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.runtime"/>
@@ -233,12 +237,21 @@
       <plugin id="org.eclipse.xsd"/>
       <plugin id="org.geotools"/>
       <plugin id="org.iq80.snappy"/>
-      <plugin id="org.jdom"/>
+      <plugin id="org.jaitools.jt-utils"/>
+      <plugin id="org.jaitools.jt-zonalstats"/>
       <plugin id="org.json"/>
       <plugin id="org.kohsuke.groovy.sandbox"/>
+      <plugin id="org.objectweb.asm"/>
+      <plugin id="org.objectweb.asm.analysis"/>
+      <plugin id="org.objectweb.asm.core"/>
+      <plugin id="org.objectweb.asm.tree"/>
+      <plugin id="org.objectweb.asm.util"/>
       <plugin id="org.opengis"/>
+      <plugin id="org.openid4java"/>
       <plugin id="org.parboiled.core"/>
       <plugin id="org.parboiled.java" fragment="true"/>
+      <plugin id="org.pegdown"/>
+      <plugin id="org.quartz-scheduler.quartz"/>
       <plugin id="org.reflections"/>
       <plugin id="org.springframework.aop"/>
       <plugin id="org.springframework.asm"/>
@@ -256,15 +269,16 @@
       <plugin id="org.springframework.web"/>
       <plugin id="org.springframework.web.servlet"/>
       <plugin id="org.webjars.locator"/>
-      <plugin id="pegdown"/>
+      <plugin id="org.wicketstuff.html5"/>
+      <plugin id="picocontainer"/>
       <plugin id="slf4j.api"/>
       <plugin id="slf4j.ext"/>
-      <plugin id="webjar-container-fragment" fragment="true"/>
       <plugin id="wicket-bootstrap-core"/>
       <plugin id="wicket-bootstrap-extensions"/>
       <plugin id="wicket-bootstrap-less"/>
       <plugin id="wicket-bootstrap-themes"/>
-      <plugin id="wicketstuff-html5"/>
+      <plugin id="xerces.xercesImpl"/>
+      <plugin id="xpp3.xpp3_min"/>
    </plugins>
 
    <configurations>

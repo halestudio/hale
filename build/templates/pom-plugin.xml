@@ -17,6 +17,26 @@
   
   <build>
     <plugins>
+      <% if (extraRequirements) { %>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <version>\${tycho-version}</version>
+        <configuration>
+	  <dependency-resolution>
+	    <extraRequirements>
+              <% extraRequirements.each { %>
+	      <requirement>
+	        <type>eclipse-plugin</type>
+  	        <id>$it</id>
+	        <versionRange>0.0.0</versionRange>
+	      </requirement>
+	      <% } %>
+	    </extraRequirements>
+	  </dependency-resolution>
+        </configuration>
+      </plugin>
+      <% } %>
       <% if (needsScala) { %>
       <plugin>
         <groupId>org.eclipse.tycho</groupId>

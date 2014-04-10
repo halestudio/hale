@@ -19,7 +19,7 @@ Import-Package: com.google.common.base;version="9.0.0",
  eu.esdihumboldt.hale.common.schema.model.constraint,
  eu.esdihumboldt.hale.common.schema.model.constraint.type,
  eu.esdihumboldt.util.reflection,
- org.opengis.referencing.crs;version="8.0.0.M1",
+ org.opengis.referencing.crs;version="8.0.0",
  org.slf4j;version="1.5.11",
  org.springframework.core.convert;version="3.0.0.RELEASE"
 Export-Package: eu.esdihumboldt.hale.io.gml.geometry,

@@ -57,7 +57,8 @@ public class JaxbProjectIO {
 		Unmarshaller u = jc.createUnmarshaller();
 
 		// it will debug problems while unmarshalling
-		u.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
+		// don't set the event handler to prevent errors on unexpected elements
+//		u.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
 
 		try {
 			root = u.unmarshal(new StreamSource(in), ProjectType.class);
