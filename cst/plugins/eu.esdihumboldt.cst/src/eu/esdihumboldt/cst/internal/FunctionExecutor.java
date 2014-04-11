@@ -27,6 +27,7 @@ import org.springframework.core.convert.ConversionException;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
+import eu.esdihumboldt.cst.MultiValue;
 import eu.esdihumboldt.hale.common.align.extension.transformation.PropertyTransformationExtension;
 import eu.esdihumboldt.hale.common.align.extension.transformation.PropertyTransformationFactory;
 import eu.esdihumboldt.hale.common.align.model.Cell;
@@ -235,59 +236,38 @@ public class FunctionExecutor extends CellNodeValidator {
 				List<Object> values = results.get(name);
 				List<Pair<TargetNode, Entity>> nodes = targets.get(name);
 
-				int count = Math.min(values.size(), nodes.size());
-
-				if (count > values.size()) {
+				if (nodes.size() > values.size()) {
 					cellLog.warn(cellLog.createMessage(MessageFormat.format(
 							"Transformation result misses values for result with name {0}", name),
 							null));
 				}
-				if (count > nodes.size()) {
+				if (values.size() > nodes.size()) {
 					cellLog.warn(cellLog.createMessage(
 							MessageFormat
 									.format("More transformation results than target nodes for result with name {0}",
 											name), null));
 				}
 
+				int count = Math.min(values.size(), nodes.size());
+
+				// FIXME if multiple target nodes should be implemented ever
+				// ith value is ignored if ith node already has a value
+				// instead it should probably look to put ith value into i+1th
+				// node...
 				for (int i = 0; i < count; i++) {
 					Object value = values.get(i);
 					TargetNode node = nodes.get(i).getFirst();
 
-					if (function.allowAutomatedResultConversion()) {
-						if (!(value instanceof Group)) {
-							// convert value for target
-							try {
-								value = convert(value,
-										toPropertyEntityDefinition(node.getEntityDefinition()));
-							} catch (Throwable e) {
-								// ignore, but create error
-								cellLog.error(cellLog
-										.createMessage(
-												"Conversion according to target property failed, using value as is.",
-												e));
-							}
+					if (value instanceof MultiValue) {
+						MultiValue originalValue = (MultiValue) value;
+						MultiValue processedValue = new MultiValue(originalValue.size());
+						for (Object o : originalValue) {
+							processedValue.add(processValue(cellLog, function, o, node));
 						}
-						else {
-							// TODO any conversion necessary/possible
-						}
+						value = processedValue;
 					}
 					else {
-						// unwrap value
-						if (value instanceof Value) {
-							value = ((Value) value).getValue();
-						}
-					}
-
-					/*
-					 * If the value is no group, but it should be one, create an
-					 * instance wrapping the value
-					 */
-					TypeDefinition propertyType = toPropertyEntityDefinition(
-							node.getEntityDefinition()).getDefinition().getPropertyType();
-					if (!(value instanceof Group) && !propertyType.getChildren().isEmpty()) {
-						MutableInstance instance = new DefaultInstance(propertyType, null);
-						instance.setValue(value);
-						value = instance;
+						value = processValue(cellLog, function, value, node);
 					}
 
 					/*
@@ -303,6 +283,55 @@ public class FunctionExecutor extends CellNodeValidator {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Processes the given value. Does not handle {@link MultiValue}!
+	 * 
+	 * @param cellLog the transformation log
+	 * @param function the property function
+	 * @param value the value to process
+	 * @param node the target node
+	 * @return the processed value
+	 */
+	private Object processValue(TransformationLog cellLog, PropertyTransformation<?> function,
+			Object value, TargetNode node) {
+		if (function.allowAutomatedResultConversion()) {
+			if (!(value instanceof Group)) {
+				// convert value for target
+				try {
+					value = convert(value, toPropertyEntityDefinition(node.getEntityDefinition()));
+				} catch (Throwable e) {
+					// ignore, but create error
+					cellLog.error(cellLog
+							.createMessage(
+									"Conversion according to target property failed, using value as is.",
+									e));
+				}
+			}
+			else {
+				// TODO any conversion necessary/possible
+			}
+		}
+		else {
+			// unwrap value
+			if (value instanceof Value) {
+				value = ((Value) value).getValue();
+			}
+		}
+
+		/*
+		 * If the value is no group, but it should be one, create an instance
+		 * wrapping the value
+		 */
+		TypeDefinition propertyType = toPropertyEntityDefinition(node.getEntityDefinition())
+				.getDefinition().getPropertyType();
+		if (!(value instanceof Group) && !propertyType.getChildren().isEmpty()) {
+			MutableInstance instance = new DefaultInstance(propertyType, null);
+			instance.setValue(value);
+			value = instance;
+		}
+		return value;
 	}
 
 	/**
