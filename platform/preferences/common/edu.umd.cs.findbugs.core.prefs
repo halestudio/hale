@@ -129,4 +129,4 @@ detector_threshold=2
 effort=default
 filter_settings=Medium|BAD_PRACTICE,CORRECTNESS,I18N,MALICIOUS_CODE,MT_CORRECTNESS,PERFORMANCE,SECURITY,STYLE|false|15
 filter_settings_neg=NOISE,EXPERIMENTAL|
-run_at_full_build=true
+run_at_full_build=false
