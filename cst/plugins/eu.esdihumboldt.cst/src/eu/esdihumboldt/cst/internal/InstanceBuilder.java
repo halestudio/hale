@@ -16,14 +16,17 @@
 
 package eu.esdihumboldt.cst.internal;
 
+import eu.esdihumboldt.cst.MultiValue;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.GroupNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
-import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.instance.model.MutableGroup;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultGroup;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
+import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 
 /**
  * Populates an instance from a transformation tree.
@@ -44,18 +47,20 @@ public class InstanceBuilder {
 	 * 
 	 * @param target the target instance
 	 * @param tree the transformation tree
+	 * @param typeLog the type transformation log
 	 */
-	public void populate(MutableInstance target, TransformationTree tree) {
-		populateGroup(target, tree);
+	public void populate(MutableInstance target, TransformationTree tree, TransformationLog typeLog) {
+		populateGroup(target, tree, typeLog);
 	}
 
 	/**
 	 * Get the value for a target node.
 	 * 
 	 * @param node the target node
+	 * @param typeLog the type transformation log
 	 * @return the value or {@link NoObject#NONE} representing no value
 	 */
-	private Object getValue(TargetNode node) {
+	private Object getValue(TargetNode node, TransformationLog typeLog) {
 		if (node.getChildren(true).isEmpty()) {
 			// simple leaf
 			if (node.isDefined()) {
@@ -69,13 +74,45 @@ public class InstanceBuilder {
 			}
 		}
 
-		// group or complex property
-		boolean empty = true;
+		boolean isProperty = node.getDefinition().asProperty() != null;
+		boolean isGroup = node.getDefinition().asGroup() != null;
+		if (isProperty && node.isDefined()) {
+			// it's a property and we have a value/values
+			Object nodeValue = node.getResult();
+			if (!(nodeValue instanceof MultiValue)) {
+				// pack single value into multivalue
+				MultiValue nodeMultiValue = new MultiValue();
+				nodeMultiValue.add(nodeValue);
+				nodeValue = nodeMultiValue;
+			}
+			MultiValue nodeMultiValue = (MultiValue) nodeValue;
+			if (!nodeMultiValue.isEmpty()) {
+				// Create n instances
+				MultiValue resultMultiValue = new MultiValue(nodeMultiValue.size());
+
+				for (Object value : nodeMultiValue) {
+					MutableInstance instance = new DefaultInstance(node.getDefinition()
+							.asProperty().getPropertyType(), null);
+					// XXX since this is the same for all instances maybe do
+					// this on a dummy and only copy properties for each?
+					// XXX MultiValue w/ target node children => strange results
+					populateGroup(instance, node, typeLog);
+					instance.setValue(value);
+					resultMultiValue.add(instance);
+				}
+
+				return resultMultiValue;
+			}
+			// if nodeMultiValue is empty fall through to below
+			// it the instance could still have children even without a value
+		}
+
+		// it's a property or group with no value
 		MutableGroup group;
-		if (node.getDefinition().asGroup() != null) {
+		if (isGroup) {
 			group = new DefaultGroup(node.getDefinition().asGroup());
 		}
-		else if (node.getDefinition().asProperty() != null) {
+		else if (isProperty) {
 			group = new DefaultInstance(node.getDefinition().asProperty().getPropertyType(), null);
 		}
 		else {
@@ -83,29 +120,11 @@ public class InstanceBuilder {
 		}
 
 		// populate with children
-		empty = !populateGroup(group, node);
-
-		// populate with instance value (if applicable)
-		if (group instanceof MutableInstance) {
-			if (node.isDefined()) {
-				Object nodeValue = node.getResult();
-				// FunctionExecutor may have wrapped the value in an instance
-				if (nodeValue instanceof Instance) {
-					// extract the value
-					nodeValue = ((Instance) nodeValue).getValue();
-				}
-
-				MutableInstance instance = (MutableInstance) group;
-				instance.setValue(nodeValue);
-				empty = false;
-			}
-		}
-
-		if (empty) {
-			return NoObject.NONE;
+		if (populateGroup(group, node, typeLog)) {
+			return group;
 		}
 		else {
-			return group;
+			return NoObject.NONE;
 		}
 	}
 
@@ -114,18 +133,41 @@ public class InstanceBuilder {
 	 * 
 	 * @param group the group
 	 * @param node the node associated with the group
+	 * @param typeLog the type transformation log
 	 * @return if any values were added to the group
 	 */
-	private boolean populateGroup(MutableGroup group, GroupNode node) {
+	private boolean populateGroup(MutableGroup group, GroupNode node, TransformationLog typeLog) {
 		boolean anyValue = false;
 		for (TargetNode child : node.getChildren(true)) {
-			Object value = getValue(child);
+			Object value = getValue(child, typeLog);
 			if (value != NoObject.NONE) {
 				// add value to group
-				group.addProperty(child.getDefinition().getName(), value);
+				if (value instanceof MultiValue) {
+					MultiValue multiValue = (MultiValue) value;
+					int toAdd = multiValue.size();
 
-				// valid value
-				anyValue = true;
+					// check cardinality
+					Cardinality card = DefinitionUtil.getCardinality(child.getDefinition());
+					if (card.getMaxOccurs() != Cardinality.UNBOUNDED && card.getMaxOccurs() < toAdd) {
+						toAdd = (int) card.getMaxOccurs();
+						typeLog.warn(typeLog.createMessage("Too many values present for "
+								+ child.getDefinition().getDisplayName()
+								+ ". Limiting to match cardinality.", null));
+					}
+
+					// add properties
+					for (int i = 0; i < toAdd; i++) {
+						group.addProperty(child.getDefinition().getName(), multiValue.get(i));
+					}
+
+					if (toAdd > 0) {
+						anyValue = true;
+					}
+				}
+				else {
+					group.addProperty(child.getDefinition().getName(), value);
+					anyValue = true;
+				}
 			}
 		}
 		return anyValue;
