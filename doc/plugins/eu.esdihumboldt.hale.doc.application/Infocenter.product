@@ -34,8 +34,8 @@
       <plugin id="eu.esdihumboldt.hale.doc.application"/>
       <plugin id="eu.esdihumboldt.hale.doc.user"/>
       <plugin id="eu.esdihumboldt.hale.doc.user.views.styledmap"/>
-      <plugin id="javax.servlet" version="2.5.0.v201103041518"/>
       <plugin id="javax.servlet.jsp"/>
+      <plugin id="javax.servlet2"/>
       <plugin id="jcl.over.slf4j"/>
       <plugin id="log4j.over.slf4j"/>
       <plugin id="org.aopalliance"/>

@@ -213,8 +213,8 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="javax.media.jai_codec"/>
       <plugin id="javax.media.jai_core"/>
       <plugin id="javax.media.jai_imageio"/>
-      <plugin id="javax.servlet" version="2.5.0.v201103041518"/>
       <plugin id="javax.servlet.jsp"/>
+      <plugin id="javax.servlet2"/>
       <plugin id="javax.xml"/>
       <plugin id="jcl.over.slf4j"/>
       <plugin id="jdom"/>
