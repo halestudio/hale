@@ -198,7 +198,7 @@ public class TreePropertyTransformer implements PropertyTransformer {
 					HooksUtil.executeTreeHooks(treeHooks, TreeState.FULL, tree, target);
 
 					// fill instance
-					builder.populate(target, tree);
+					builder.populate(target, tree, typeLog);
 
 					// generate the rest of the metadatas
 					metaworkerthread.get().generate(target);
