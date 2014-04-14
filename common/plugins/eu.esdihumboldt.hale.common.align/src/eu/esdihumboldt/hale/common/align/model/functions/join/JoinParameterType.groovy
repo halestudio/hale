@@ -79,16 +79,21 @@ public class JoinParameterType implements ComplexValueType<JoinParameter, LoadAl
 		Document doc = dbf.newDocumentBuilder().newDocument()
 		def result = doc.createElementNS("http://www.esdi-humboldt.eu/hale/join", "jp:join-parameter")
 		value.types.each{ type ->
-			result.appendChild(result.ownerDocument.adoptNode(
-					DOMEntityDefinitionHelper.typeToDOM(type)))
+			def typeDom = DOMEntityDefinitionHelper.typeToDOM(type)
+			result.appendChild(
+					result.ownerDocument.adoptNode(typeDom)?:result.ownerDocument.importNode(typeDom, true))
 		}
 		value.conditions.each{ condition ->
 			def conditionNode = doc.createElementNS("http://www.esdi-humboldt.eu/hale/join", "jp:condition")
 			result.appendChild(conditionNode)
-			conditionNode.appendChild(conditionNode.ownerDocument.adoptNode(
-					DOMEntityDefinitionHelper.propertyToDOM(condition.baseProperty)))
-			conditionNode.appendChild(conditionNode.ownerDocument.adoptNode(
-					DOMEntityDefinitionHelper.propertyToDOM(condition.joinProperty)))
+
+			def baseProp = DOMEntityDefinitionHelper.propertyToDOM(condition.baseProperty)
+			conditionNode.appendChild(
+					conditionNode.ownerDocument.adoptNode(baseProp)?:conditionNode.ownerDocument.importNode(baseProp, true))
+
+			def joinProp = DOMEntityDefinitionHelper.propertyToDOM(condition.joinProperty)
+			conditionNode.appendChild(
+					conditionNode.ownerDocument.adoptNode(joinProp)?:conditionNode.ownerDocument.importNode(joinProp, true))
 		}
 		return result
 	}
