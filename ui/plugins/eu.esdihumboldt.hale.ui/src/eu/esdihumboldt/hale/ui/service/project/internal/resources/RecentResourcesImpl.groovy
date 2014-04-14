@@ -250,7 +250,7 @@ class RecentResourcesImpl implements RecentResources {
 					}
 
 					def configNode = DOMProjectHelper.configurationToDOM(entry.value.value)
-					resNode.appendChild(resNode.ownerDocument.adoptNode(configNode))
+					resNode.appendChild(resNode.ownerDocument.adoptNode(configNode)?:resNode.ownerDocument.importNode(configNode, true))
 				}
 			}
 		}
