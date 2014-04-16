@@ -20,7 +20,7 @@ http://www.esdi-community.eu/projects/show/hale
    </configIni>
 
    <launcherArgs>
-      <programArgs>-nl en_GB -clean -name &quot;HUMBOLDT Alignment Editor&quot; --launcher.defaultAction openFile</programArgs>
+      <programArgs>-clean -name &quot;HUMBOLDT Alignment Editor&quot; --launcher.defaultAction openFile</programArgs>
       <vmArgs>-Xmx800m -XX:MaxPermSize=128m -Dcache.level1.enabled=false -Dcache.level1.size=0 -Dcache.level2.enabled=false -Dcache.level2.size=0</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
@@ -257,6 +257,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.apache.commons.jxpath"/>
       <plugin id="org.apache.commons.lang"/>
       <plugin id="org.apache.commons.pool"/>
+      <plugin id="org.apache.httpcomponents.fluent-hc"/>
       <plugin id="org.apache.httpcomponents.httpclient"/>
       <plugin id="org.apache.httpcomponents.httpcore"/>
       <plugin id="org.apache.jasper"/>
