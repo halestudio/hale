@@ -98,7 +98,7 @@ public class GroovyCreatePage extends GroovyScriptPage {
 		GroovyService service = HaleUI.getServiceProvider().getService(GroovyService.class);
 		Script script = null;
 		try {
-			service.parseScript(document, binding);
+			script = service.parseScript(document, binding);
 
 			GroovyUtil.evaluate(script, builder, typeEntity.getDefinition().getDefinition(),
 					service);
