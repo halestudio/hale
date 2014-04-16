@@ -37,8 +37,7 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 
 /**
- * 
- * TODO Type description
+ * Load XML code lists as provided by the INSPIRE registry.
  * 
  * @author Kai Schwierczek
  */
@@ -70,40 +69,7 @@ public class INSPIRECodeListReader extends AbstractImportProvider implements Cod
 		if (loc != null && (loc.getScheme().equals("http") || loc.getScheme().equals("https"))) {
 			// load with HTTP client
 			// and provide headers to retrieve correct format and language
-			doc = Request.Get(loc)
-					.addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_XML.getMimeType())
-					.addHeader(HttpHeaders.ACCEPT_LANGUAGE, Locale.getDefault().getLanguage())
-					.execute().handleResponse(new ResponseHandler<Document>() {
-
-						@Override
-						public Document handleResponse(HttpResponse response)
-								throws ClientProtocolException, IOException {
-							StatusLine statusLine = response.getStatusLine();
-							HttpEntity entity = response.getEntity();
-							if (statusLine.getStatusCode() >= 300) {
-								throw new HttpResponseException(statusLine.getStatusCode(),
-										statusLine.getReasonPhrase());
-							}
-							if (entity == null) {
-								throw new ClientProtocolException("Response contains no content");
-							}
-							DocumentBuilderFactory dbfac = DocumentBuilderFactory.newInstance();
-							try {
-								DocumentBuilder docBuilder = dbfac.newDocumentBuilder();
-								ContentType contentType = ContentType.getOrDefault(entity);
-								if (!contentType.getMimeType().equals(
-										ContentType.APPLICATION_XML.getMimeType())) {
-									throw new ClientProtocolException("Unexpected content type:"
-											+ contentType);
-								}
-								return docBuilder.parse(entity.getContent());
-							} catch (ParserConfigurationException ex) {
-								throw new IllegalStateException(ex);
-							} catch (SAXException ex) {
-								throw new ClientProtocolException("Malformed XML document", ex);
-							}
-						}
-					});
+			doc = loadXmlDocument(loc);
 		}
 		else {
 			// just access stream
@@ -124,6 +90,52 @@ public class INSPIRECodeListReader extends AbstractImportProvider implements Cod
 		progress.setCurrentTask("Code list loaded.");
 
 		return reporter;
+	}
+
+	/**
+	 * Load an XML document via HTTP, providing headers to request proper format
+	 * and language.
+	 * 
+	 * @param loc the location
+	 * @return the XML document
+	 * @throws IOException if reading the document fails
+	 * @throws ClientProtocolException if retrieving the document fails
+	 */
+	public static Document loadXmlDocument(URI loc) throws ClientProtocolException, IOException {
+		return Request.Get(loc)
+				.addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_XML.getMimeType())
+				.addHeader(HttpHeaders.ACCEPT_LANGUAGE, Locale.getDefault().getLanguage())
+				.execute().handleResponse(new ResponseHandler<Document>() {
+
+					@Override
+					public Document handleResponse(HttpResponse response)
+							throws ClientProtocolException, IOException {
+						StatusLine statusLine = response.getStatusLine();
+						HttpEntity entity = response.getEntity();
+						if (statusLine.getStatusCode() >= 300) {
+							throw new HttpResponseException(statusLine.getStatusCode(), statusLine
+									.getReasonPhrase());
+						}
+						if (entity == null) {
+							throw new ClientProtocolException("Response contains no content");
+						}
+						DocumentBuilderFactory dbfac = DocumentBuilderFactory.newInstance();
+						try {
+							DocumentBuilder docBuilder = dbfac.newDocumentBuilder();
+							ContentType contentType = ContentType.getOrDefault(entity);
+							if (!contentType.getMimeType().equals(
+									ContentType.APPLICATION_XML.getMimeType())) {
+								throw new ClientProtocolException("Unexpected content type:"
+										+ contentType);
+							}
+							return docBuilder.parse(entity.getContent());
+						} catch (ParserConfigurationException ex) {
+							throw new IllegalStateException(ex);
+						} catch (SAXException ex) {
+							throw new ClientProtocolException("Malformed XML document", ex);
+						}
+					}
+				});
 	}
 
 	private boolean parse(Document doc, URI location, IOReporter reporter) throws Exception {

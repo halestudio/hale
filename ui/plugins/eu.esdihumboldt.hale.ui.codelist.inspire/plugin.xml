@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.ui.io.source">
+      <source
+            class="eu.esdihumboldt.hale.ui.codelist.inspire.RegistrySource"
+            contentType="eu.esdihumboldt.hale.io.codelist.inspire"
+            description="Load a code list from the INSPIRE registry"
+            icon="icons/inspire.gif"
+            id="codelist.inspire.registry"
+            name="INSPIRE registry"
+            priority="0"
+            providerType="eu.esdihumboldt.hale.common.codelist.io.CodeListReader">
+      </source>
+   </extension>
+
+</plugin>
