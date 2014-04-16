@@ -27,6 +27,7 @@ import org.codehaus.groovy.ast.expr.Expression
 import org.codehaus.groovy.ast.expr.MapEntryExpression
 import org.codehaus.groovy.ast.expr.MapExpression
 import org.codehaus.groovy.ast.expr.MethodCallExpression
+import org.codehaus.groovy.ast.expr.TupleExpression
 import org.codehaus.groovy.ast.expr.VariableExpression
 import org.codehaus.groovy.ast.stmt.BlockStatement
 import org.codehaus.groovy.syntax.Types
@@ -120,11 +121,11 @@ public abstract class InstanceBuilderCompletions implements GroovyCompletionProp
 				 */
 				def paths = v.out(E_PARENT).loop(1) {
 					// loop while...
-					!isBuilderClosureAssignment(it.object)
+					!isBuilderClosure(it.object)
 				}.path.toList()
 
 				// reverse paths so they start with root nodes
-				paths = paths.collect{it.reverse()}
+				paths = paths.collect{it.reverse().drop(1)}
 
 				//XXX debug
 				// println "Paths: $paths"
@@ -324,20 +325,31 @@ public abstract class InstanceBuilderCompletions implements GroovyCompletionProp
 	}
 
 	/**
-	 * Checks if the given vertex represents the closure assignment of the
+	 * Checks if the given vertex represents the closure assignment or a closure call of the
 	 * builder closure variable.
 	 * 
 	 * @param v the vertex
 	 * @return if the vertex represents the builder closure assignment
 	 */
 	@CompileStatic
-	private boolean isBuilderClosureAssignment(Vertex v) {
-		if (v.getProperty(P_AST_TYPE) != 'BinaryExpression') {
-			// not a binary expression
+	private boolean isBuilderClosure(Vertex v) {
+		if (v.getProperty(P_AST_TYPE) == 'BinaryExpression') {
+			return isBuilderClosureAssignment((BinaryExpression) v.getProperty(P_AST_NODE))
+		} else if (v.getProperty(P_AST_TYPE) == 'MethodCallExpression') {
+			return isBuilderClosureCall((MethodCallExpression) v.getProperty(P_AST_NODE))
+		} else {
 			return false
 		}
+	}
 
-		BinaryExpression expr = (BinaryExpression) v.getProperty(P_AST_NODE)
+	/**
+	 * Checks if the given vertex represents the closure assignment of the
+	 * builder closure variable.
+	 *
+	 * @param v the vertex
+	 * @return if the vertex represents the builder closure assignment
+	 */
+	private boolean isBuilderClosureAssignment(BinaryExpression expr) {
 		if (expr.operation.type != Types.ASSIGN) {
 			// not an assignment
 			return false
@@ -356,6 +368,27 @@ public abstract class InstanceBuilderCompletions implements GroovyCompletionProp
 
 		// check if assignment is a closure
 		return expr.rightExpression instanceof ClosureExpression
+	}
+
+	/**
+	 * Checks if the given vertex represents a closure call of the
+	 * builder closure variable.
+	 *
+	 * @param v the vertex
+	 * @return if the vertex represents the builder closure assignment
+	 */
+	private boolean isBuilderClosureCall(MethodCallExpression expr) {
+		// _target {} is an implicit call on the script with method name _target
+		if (!expr.implicitThis || variableName != expr.methodAsString) {
+			return false
+		}
+
+		// check if argument is a closure
+		TupleExpression arguments = expr.arguments
+		if (arguments.expressions.size() != 1) {
+			return false
+		}
+		return arguments.expressions.get(0) instanceof ClosureExpression
 	}
 
 	/**
