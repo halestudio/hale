@@ -26,6 +26,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.cst.functions.groovy.internal.GroovyUtil;
+import eu.esdihumboldt.cst.functions.groovy.internal.TargetCollector;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -130,6 +131,12 @@ public class GroovyTransformation extends
 
 					result = instance;
 				}
+				else if (target instanceof TargetCollector) {
+					// don't override result if target collector is empty!
+					if (!((TargetCollector) target).isEmpty()) {
+						result = ((TargetCollector) target).toMultiValue(builder, targetType);
+					}
+				}
 				else {
 					// treat target as value
 					// overriding the result
@@ -183,6 +190,9 @@ public class GroovyTransformation extends
 			List<? extends Entity> varDefs, Cell cell, Cell typeCell, InstanceBuilder builder,
 			boolean useInstanceVariables, TransformationLog log, ExecutionContext context) {
 		Binding binding = GroovyUtil.createBinding(builder, cell, typeCell, log, context);
+
+		// target ready for MultiValue...
+		binding.setVariable(BINDING_TARGET, new TargetCollector());
 
 		// collect definitions to check if all were provided
 		Set<EntityDefinition> notDefined = new HashSet<>();
