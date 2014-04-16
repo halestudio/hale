@@ -22,3 +22,5 @@ Import-Package: com.google.common.io;version="1.6.0",
  org.slf4j;version="1.5.11"
 Require-Bundle: eu.esdihumboldt.hale.common.core,
  org.eclipse.core.contenttype;bundle-version="3.4.100"
+Export-Package: eu.esdihumboldt.hale.io.codelist.inspire.reader,
+ eu.esdihumboldt.hale.io.codelist.xml.reader
