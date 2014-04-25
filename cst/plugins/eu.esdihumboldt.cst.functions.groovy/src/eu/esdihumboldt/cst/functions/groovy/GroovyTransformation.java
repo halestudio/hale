@@ -109,44 +109,47 @@ public class GroovyTransformation extends
 	 * @param targetType the type definition of the target property
 	 * @param service the Groovy service
 	 * @return the result property value or instance
+	 * @throws TransformationException if the evaluation fails
 	 */
 	public static Object evaluate(Script groovyScript, InstanceBuilder builder,
-			TypeDefinition targetType, GroovyService service) {
-		Object result = service.evaluate(groovyScript);
+			TypeDefinition targetType, GroovyService service) throws TransformationException {
+		Object scriptResult = service.evaluate(groovyScript);
+		Object result = scriptResult;
+		Object target = groovyScript.getBinding().getVariable(BINDING_TARGET);
 
-		if (builder != null) {
-			Object target = groovyScript.getBinding().getVariable(BINDING_TARGET);
-			if (target != null) {
-				if (target instanceof Closure<?>) {
-					// builder closure
-					Instance instance = builder.createInstance(targetType, (Closure<?>) target);
-
-					/*
-					 * Set the instance value to the script result, if different
-					 * from the target closure.
-					 */
-					if (instance instanceof MutableInstance && result != target) {
-						((MutableInstance) instance).setValue(result);
-					}
-
-					result = instance;
-				}
-				else if (target instanceof TargetCollector) {
-					// don't override result if target collector is empty!
-					if (!((TargetCollector) target).isEmpty()) {
-						result = ((TargetCollector) target).toMultiValue(builder, targetType);
-					}
-				}
-				else {
-					// treat target as value
-					// overriding the result
-					result = target;
-				}
+		if (target instanceof TargetCollector) {
+			TargetCollector collector = (TargetCollector) target;
+			if (collector.size() == 0) {
+				// use script result as result
+				result = scriptResult;
+			}
+			else if (collector.size() == 1) {
+				// use single collector value as result
+				// -> instance value is set to return value if applicable
+				result = collector.toMultiValue(builder, targetType).get(0);
+			}
+			else {
+				// use collector MultiValue as result
+				result = collector.toMultiValue(builder, targetType);
 			}
 		}
+		else if (target instanceof Closure<?>) {
+			// legacy way to set target binding
+			if (builder != null) {
+				result = builder.createInstance(targetType, (Closure<?>) target);
+			}
+			else {
+				throw new TransformationException("An instance is not applicable for the target.");
+			}
+		}
+		else if (target != null) {
+			// use target as result
+			result = target;
+		}
 
-		if (result instanceof Closure<?>) {
-			throw new IllegalStateException("A closure cannnot be used as result");
+		// use script result as instance value (if possible)
+		if (result instanceof MutableInstance && scriptResult != target) {
+			((MutableInstance) result).setValue(scriptResult);
 		}
 
 		return result;
@@ -190,9 +193,6 @@ public class GroovyTransformation extends
 			List<? extends Entity> varDefs, Cell cell, Cell typeCell, InstanceBuilder builder,
 			boolean useInstanceVariables, TransformationLog log, ExecutionContext context) {
 		Binding binding = GroovyUtil.createBinding(builder, cell, typeCell, log, context);
-
-		// target ready for MultiValue...
-		binding.setVariable(BINDING_TARGET, new TargetCollector());
 
 		// collect definitions to check if all were provided
 		Set<EntityDefinition> notDefined = new HashSet<>();
