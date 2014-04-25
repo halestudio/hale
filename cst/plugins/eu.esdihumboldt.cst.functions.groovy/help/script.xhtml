@@ -46,6 +46,7 @@
 			or
 			<code>instance.properties</code>
 			on the other hand, you can create a properties accessor.
+			This also works for lists of instances in the case of a greedy Groovy script.
 		</p>
 		<include
 			path="eu.esdihumboldt.cst.functions.groovy/help/common.xhtml/accessor" />
@@ -68,6 +69,26 @@
 			path="eu.esdihumboldt.cst.functions.groovy/help/common.xhtml/builder" />
 		<include
 			path="eu.esdihumboldt.cst.functions.groovy/help/common.xhtml/builder-accessor" />
+
+		<h3>Producing multiple results</h3>
+		<p>The Groovy script function allows the creation of multiple result values, 
+		if the target property may occur multiple times. To create multiple instances you can simply use
+		</p>
+		<pre><code><b>_target</b> {
+  ...
+}</code></pre>
+		<p>multiple times. The return value is not used when creating multiple target instances.
+		If you need to set the instance values, you can instead supply the value directly to the 
+		<code><b>_target</b></code> call:
+		</p>
+		<pre><code><b>_target</b>(value) {
+  ...
+}</code></pre>
+		<p>To create multiple plain values you simply leave out the closure:
+		</p>
+		<pre><code><b>_target</b>(value)</code></pre>
+		<p>Again, the return value of the script is not used in this case.
+		</p>
 
 		<include
 			path="eu.esdihumboldt.cst.functions.groovy/help/common.xhtml/binding-content" />
