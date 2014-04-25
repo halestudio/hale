@@ -28,7 +28,6 @@ import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.cst.functions.groovy.internal.GroovyUtil;
 import eu.esdihumboldt.cst.functions.groovy.internal.InstanceAccessorArrayList;
-import eu.esdihumboldt.cst.functions.groovy.internal.TargetCollector;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
@@ -123,9 +122,6 @@ public class GroovyGreedyTransformation extends
 			List<? extends Entity> varDefs, Cell cell, Cell typeCell, InstanceBuilder builder,
 			boolean useInstanceVariables, TransformationLog log, ExecutionContext context) {
 		Binding binding = GroovyUtil.createBinding(builder, cell, typeCell, log, context);
-
-		// target ready for MultiValue...
-		binding.setVariable(BINDING_TARGET, new TargetCollector());
 
 		// collect definitions to check if all were provided
 		Set<EntityDefinition> notDefined = new HashSet<>();

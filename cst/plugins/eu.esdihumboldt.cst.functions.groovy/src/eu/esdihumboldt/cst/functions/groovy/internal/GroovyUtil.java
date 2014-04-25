@@ -28,7 +28,6 @@ import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractTr
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.core.io.Text;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
-import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.util.groovy.sandbox.GroovyService;
@@ -126,17 +125,28 @@ public class GroovyUtil implements GroovyConstants {
 	 * @param type the type of the instance to create
 	 * @param service the Groovy service
 	 * @return the created instance
+	 * @throws TransformationException if the target binding does not contain
+	 *             exactly one result after script evaluation
 	 */
 	public static MutableInstance evaluate(Script script, InstanceBuilder builder,
-			TypeDefinition type, GroovyService service) {
+			TypeDefinition type, GroovyService service) throws TransformationException {
 		service.evaluate(script);
 
-		// retrieve the target builder closure
-		Closure<?> closure = (Closure<?>) script.getBinding().getVariable(BINDING_TARGET);
+		// get target binding
+		Object result = script.getBinding().getVariable(BINDING_TARGET);
 
-		// create the instance
-		Instance instance = builder.createInstance(type, closure);
-		return (MutableInstance) instance;
+		// collector or closure
+		if (result instanceof TargetCollector) {
+			if (((TargetCollector) result).size() != 1) {
+				throw new TransformationException(
+						"Cell script does not produce exactly one result.");
+			}
+			result = ((TargetCollector) result).toMultiValue(builder, type).get(0);
+		}
+		else {
+			result = builder.createInstance(type, (Closure<?>) result);
+		}
+		return (MutableInstance) result;
 	}
 
 	/**
@@ -153,7 +163,7 @@ public class GroovyUtil implements GroovyConstants {
 	public static Binding createBinding(InstanceBuilder builder, Cell cell, Cell typeCell,
 			TransformationLog log, ExecutionContext executionContext) {
 		Binding binding = new Binding();
-		binding.setVariable(BINDING_TARGET, null);
+		binding.setVariable(BINDING_TARGET, new TargetCollector());
 		binding.setVariable(BINDING_BUILDER, builder);
 		binding.setVariable(BINDING_CELL, cell);
 		binding.setVariable(BINDING_LOG, new TransformationLogWrapper(log));

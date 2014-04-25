@@ -18,6 +18,8 @@ Import-Package: com.google.common.base;version="9.0.0",
  eu.esdihumboldt.hale.common.instance.model.impl,
  eu.esdihumboldt.hale.common.instance.orient,
  eu.esdihumboldt.hale.common.schema.model,
+ eu.esdihumboldt.hale.common.schema.model.constraint,
+ eu.esdihumboldt.hale.common.schema.model.constraint.type,
  eu.esdihumboldt.util.groovy.builder,
  eu.esdihumboldt.util.groovy.sandbox,
  org.springframework.core.convert;version="3.0.0.RELEASE"
