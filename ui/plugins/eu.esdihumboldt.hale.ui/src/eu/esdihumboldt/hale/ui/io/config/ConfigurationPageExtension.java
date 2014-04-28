@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Multimap;
 
 import de.cs3d.util.eclipse.extension.AbstractConfigurationFactory;
 import de.cs3d.util.eclipse.extension.AbstractExtension;
@@ -183,7 +182,7 @@ public class ConfigurationPageExtension extends
 	 *         (the same instance) might be mapped for multiple identifiers
 	 */
 	@SuppressWarnings("unchecked")
-	public <P extends IOProvider> Multimap<String, AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> getConfigurationPages(
+	public <P extends IOProvider> ListMultimap<String, AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> getConfigurationPages(
 			Iterable<IOProviderDescriptor> descriptors) {
 		// collect provider IDs
 		final Set<String> providerIds = new HashSet<String>();
