@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.ui.io;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,6 +36,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.PlatformUI;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
@@ -104,8 +106,7 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 		this.providerType = providerType;
 
 		// create possible configuration pages
-		configPages = ConfigurationPageExtension.getInstance()
-				.getConfigurationPages(getFactories());
+		configPages = createConfigurationPages(getFactories());
 
 		setNeedsProgressMonitor(true);
 	}
@@ -139,8 +140,18 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 		this.actionId = actionId;
 
 		// recreate possible configuration pages now that advisor is set
-		configPages = ConfigurationPageExtension.getInstance()
-				.getConfigurationPages(getFactories());
+		configPages = createConfigurationPages(getFactories());
+	}
+
+	/**
+	 * Get the provider IDs mapped to configuration pages.
+	 * 
+	 * @param factories the provider descriptors
+	 * @return provider IDs mapped to configuration pages
+	 */
+	protected ListMultimap<String, AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> createConfigurationPages(
+			Collection<IOProviderDescriptor> factories) {
+		return ConfigurationPageExtension.getInstance().getConfigurationPages(getFactories());
 	}
 
 	/**
@@ -151,8 +162,8 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 		super.addPages();
 
 		// add configuration pages
-		for (AbstractConfigurationPage<? extends P, ? extends IOWizard<P>> page : configPages
-				.values()) {
+		for (AbstractConfigurationPage<? extends P, ? extends IOWizard<P>> page : new HashSet<>(
+				configPages.values())) {
 			addPage(page);
 		}
 
@@ -347,7 +358,19 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 	 */
 	@Override
 	public IWizardPage getStartingPage() {
-		return mainPages.get(0);
+		if (!mainPages.isEmpty()) {
+			return mainPages.get(0);
+		}
+		else {
+			List<AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> cps = getConfigurationPages();
+			if (cps != null && !cps.isEmpty()) {
+				return cps.get(0);
+			}
+			else {
+				// TODO provide an empty completed page instead?
+				throw new IllegalStateException("No starting page to display for wizard");
+			}
+		}
 	}
 
 	/**
@@ -425,6 +448,9 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 				page.enable();
 			}
 		}
+
+		// force button update
+		getContainer().updateButtons();
 
 		fireProviderFactoryChanged(descriptor);
 	}

@@ -26,11 +26,11 @@ import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
 /**
- * Advisor for exporting transformed instances.
+ * Advisor for exporting source instances.
  * 
  * @author Simon Templer
  */
-public class InstanceExportAdvisor extends DefaultIOAdvisor<InstanceWriter> {
+public class SourceInstanceExportAdvisor extends DefaultIOAdvisor<InstanceWriter> {
 
 	/**
 	 * @see IOAdvisor#prepareProvider(IOProvider)
@@ -41,11 +41,11 @@ public class InstanceExportAdvisor extends DefaultIOAdvisor<InstanceWriter> {
 
 		// set target schema
 		SchemaService ss = getService(SchemaService.class);
-		provider.setTargetSchema(ss.getSchemas(SchemaSpaceID.TARGET));
+		provider.setTargetSchema(ss.getSchemas(SchemaSpaceID.SOURCE));
 
 		// set instances to export
 		InstanceService is = getService(InstanceService.class);
-		provider.setInstances(is.getInstances(DataSet.TRANSFORMED));
+		provider.setInstances(is.getInstances(DataSet.SOURCE));
 	}
 
 }

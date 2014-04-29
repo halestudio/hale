@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<hale-project version="2.8.0">
+    <name>Simple structural retype</name>
+    <author>Simon Templer</author>
+    <description></description>
+    <created>2013-01-18T16:56:46.443+01:00</created>
+    <modified>2014-04-29T10:07:07.340+02:00</modified>
+    <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
+        <setting name="projectFiles.separate">false</setting>
+        <setting name="target">file:/home/simon-local/repos/integrate/platform/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/structuralretype_1/t1t2.halex</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
+    </save-config>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.source" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="resourceId">c52ba90d-8a2e-4ec2-b2ba-1f4dc08cfeae</setting>
+        <setting name="source">t1.xsd</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.target" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="resourceId">046d191a-d5ec-46f9-b3ce-4465cfad0713</setting>
+        <setting name="source">t2.xsd</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.instance.read.source" provider-id="eu.esdihumboldt.hale.io.xml.reader">
+        <setting name="resourceId">35061890-5bb8-476e-bc86-2cf9e6aa59f5</setting>
+        <setting name="source">instance1.xml</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.gml</setting>
+    </resource>
+    <file name="styles.sld" location="t1t2.halex.styles.sld"/>
+    <file name="alignment.xml" location="t1t2.halex.alignment.xml"/>
+</hale-project>

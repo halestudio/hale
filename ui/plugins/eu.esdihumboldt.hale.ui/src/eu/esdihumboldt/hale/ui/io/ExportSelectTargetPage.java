@@ -42,6 +42,7 @@ import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
+import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 import eu.esdihumboldt.hale.ui.io.util.SaveFileFieldEditor;
 
 /**
@@ -54,7 +55,7 @@ import eu.esdihumboldt.hale.ui.io.util.SaveFileFieldEditor;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class ExportSelectTargetPage<P extends ExportProvider, W extends ExportWizard<P>> extends
-		IOWizardPage<P, W> {
+		AbstractConfigurationPage<P, W> {
 
 	private static final ALogger log = ALoggerFactory.getLogger(ExportSelectTargetPage.class);
 
@@ -216,6 +217,16 @@ public class ExportSelectTargetPage<P extends ExportProvider, W extends ExportWi
 	 */
 	protected SaveFileFieldEditor getSaveFieldEditor() {
 		return targetFile;
+	}
+
+	@Override
+	public void enable() {
+		// do nothing
+	}
+
+	@Override
+	public void disable() {
+		// do nothing
 	}
 
 }

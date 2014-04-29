@@ -37,12 +37,12 @@
       </perspective>
    </extension>
    <extension
-         id="id1"
+         id="eu.esdihumboldt.hale.ui.application.secstorage.default"
          point="org.eclipse.equinox.security.secureStorage">
       <provider
             class="eu.esdihumboldt.hale.ui.util.proxy.DefaultPasswordProvider"
             description="%provider.description"
-            priority="eu.esdihumboldt.hale.ui.application.secstorage.default">
+            priority="0">
       </provider>
    </extension>
    <extension

@@ -16,11 +16,18 @@
 
 package eu.esdihumboldt.hale.ui.io;
 
+import java.util.Collection;
+
 import org.eclipse.jface.wizard.Wizard;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.core.io.ExportProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
+import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 
 /**
  * Abstract export wizard
@@ -59,9 +66,30 @@ public abstract class ExportWizard<P extends ExportProvider> extends IOWizard<P>
 			setProviderFactory(getFactories().iterator().next());
 		}
 		else {
-			addPage(new ExportSelectProviderPage<P, ExportWizard<P>>());
+			addPage(createSelectProviderPage());
 		}
-		addPage(selectTargetPage = createSelectTargetPage());
+	}
+
+	@Override
+	protected ListMultimap<String, AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> createConfigurationPages(
+			Collection<IOProviderDescriptor> factories) {
+		ListMultimap<String, AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> configPages = super
+				.createConfigurationPages(factories);
+
+		ListMultimap<String, AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> result = ArrayListMultimap
+				.create();
+
+		// append target selection page if applicable
+		for (IOProviderDescriptor descr : factories) {
+			if (descr.getSupportedTypes() != null && !descr.getSupportedTypes().isEmpty()) {
+				result.put(descr.getIdentifier(), getSelectTargetPage());
+			}
+		}
+
+		// append all other configuration pages
+		result.putAll(configPages);
+
+		return result;
 	}
 
 	/**
@@ -86,6 +114,9 @@ public abstract class ExportWizard<P extends ExportProvider> extends IOWizard<P>
 	 * @return the selectTargetPage
 	 */
 	protected ExportSelectTargetPage<P, ? extends ExportWizard<P>> getSelectTargetPage() {
+		if (selectTargetPage == null) {
+			selectTargetPage = createSelectTargetPage();
+		}
 		return selectTargetPage;
 	}
 

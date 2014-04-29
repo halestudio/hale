@@ -307,8 +307,7 @@ public class ReportList extends PropertiesViewPart implements
 					// select new item
 					_treeViewer.setSelection(new StructuredSelection(report), true);
 				} catch (NullPointerException e) {
-					_log.warn("NullpointerException while adding a Report.");
-					_log.trace(e.getMessage());
+					_log.warn("NullpointerException while adding a Report.", e);
 				}
 			}
 		});

@@ -37,6 +37,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
@@ -165,9 +166,10 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 			// only one column if the amount is fixed (-> no remove buttons)
 			group.setLayout(GridLayoutFactory.swtDefaults().numColumns(fixed ? 1 : 2).create());
 			if (fp.getDescription() != null) {
-				Label description = new Label(group, SWT.NONE);
+				Label description = new Label(group, SWT.WRAP);
 				description.setText(fp.getDescription());
 				description.setLayoutData(GridDataFactory.swtDefaults().span(fixed ? 1 : 2, 1)
+						.align(SWT.FILL, SWT.CENTER).grab(true, false).hint(250, SWT.DEFAULT)
 						.create());
 			}
 
@@ -285,7 +287,18 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 
 			@Override
 			public void controlResized(ControlEvent e) {
-				layoutAndPack();
+				/*
+				 * call layoutAndPack() later as a call now breaks the wizard
+				 * dialog sizing (at least on Linux) and makes the button bar
+				 * disappear.
+				 */
+				Display.getCurrent().asyncExec(new Runnable() {
+
+					@Override
+					public void run() {
+						layoutAndPack();
+					}
+				});
 			}
 
 			@Override
@@ -374,10 +387,24 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 	 * updating the height, not the width.
 	 */
 	private void layoutAndPack() {
-		((Composite) getControl()).layout();
+		((Composite) getControl()).getParent().layout();
 
 		Shell shell = getWizard().getShell();
 		Point preferredSize = shell.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
-		shell.setSize(shell.getSize().x, preferredSize.y);
+		int width = shell.getSize().x; // Math.min(shell.getSize().x,
+										// preferredSize.x);
+		int height = preferredSize.y;
+		shell.setSize(width, height);
+
+		// center on current monitor
+		// XXX not needed if the layoutAndPack() is not called to early
+//		Monitor monitor = shell.getMonitor();
+//		Rectangle bounds = monitor.getBounds();
+//		Rectangle rect = shell.getBounds();
+//
+//		int x = bounds.x + (bounds.width - rect.width) / 2;
+//		int y = bounds.y + (bounds.height - rect.height) / 2;
+//
+//		shell.setLocation(x, y);
 	}
 }

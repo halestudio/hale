@@ -40,10 +40,11 @@ import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.InstanceFactory;
 import eu.esdihumboldt.hale.common.instance.model.MutableGroup;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultGroup;
-import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
+import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstanceFactory;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -92,7 +93,7 @@ public class Rename extends AbstractSingleTargetPropertyTransformation<Transform
 		else {
 			// structural rename
 			Object result = structuralRename(sourceValue, resultProperty.getDefinition(),
-					ignoreNamespacesEnabled);
+					ignoreNamespacesEnabled, new DefaultInstanceFactory());
 			if (result == Result.NO_MATCH)
 				return null; // source could neither be used for target value,
 								// nor any child properties
@@ -108,10 +109,11 @@ public class Rename extends AbstractSingleTargetPropertyTransformation<Transform
 	 * @param targetDefinition the target definition
 	 * @param allowIgnoreNamespaces if for the structure comparison, namespaces
 	 *            may be ignored
+	 * @param instanceFactory the instance factory
 	 * @return the transformed value (or group/instance) or NO_MATCH
 	 */
-	private Object structuralRename(Object source, ChildDefinition<?> targetDefinition,
-			boolean allowIgnoreNamespaces) {
+	public static Object structuralRename(Object source, ChildDefinition<?> targetDefinition,
+			boolean allowIgnoreNamespaces, InstanceFactory instanceFactory) {
 		if (!(source instanceof Group)) {
 			// source simple value
 			if (targetDefinition.asProperty() != null) {
@@ -122,8 +124,9 @@ public class Rename extends AbstractSingleTargetPropertyTransformation<Transform
 				}
 				else {
 					// instance with value
-					MutableInstance instance = new DefaultInstance(targetDefinition.asProperty()
-							.getPropertyType(), DataSet.TRANSFORMED);
+					MutableInstance instance = instanceFactory.createInstance(targetDefinition
+							.asProperty().getPropertyType());
+					instance.setDataSet(DataSet.TRANSFORMED);
 					instance.setValue(convertValue(source, targetDefinition.asProperty()
 							.getPropertyType()));
 					return instance;
@@ -143,12 +146,13 @@ public class Rename extends AbstractSingleTargetPropertyTransformation<Transform
 				}
 				else {
 					// instance with value
-					MutableInstance instance = new DefaultInstance(targetDefinition.asProperty()
-							.getPropertyType(), DataSet.TRANSFORMED);
+					MutableInstance instance = instanceFactory.createInstance(targetDefinition
+							.asProperty().getPropertyType());
+					instance.setDataSet(DataSet.TRANSFORMED);
 					instance.setValue(convertValue(((Instance) source).getValue(), targetDefinition
 							.asProperty().getPropertyType()));
 					renameChildren((Group) source, instance, targetDefinition,
-							allowIgnoreNamespaces);
+							allowIgnoreNamespaces, instanceFactory);
 					return instance;
 				}
 			}
@@ -158,10 +162,11 @@ public class Rename extends AbstractSingleTargetPropertyTransformation<Transform
 					return Result.NO_MATCH; // no match possible
 				else {
 					// instance with no value set
-					MutableInstance instance = new DefaultInstance(targetDefinition.asProperty()
-							.getPropertyType(), DataSet.TRANSFORMED);
+					MutableInstance instance = instanceFactory.createInstance(targetDefinition
+							.asProperty().getPropertyType());
+					instance.setDataSet(DataSet.TRANSFORMED);
 					if (renameChildren((Group) source, instance, targetDefinition,
-							allowIgnoreNamespaces))
+							allowIgnoreNamespaces, instanceFactory))
 						return instance;
 					else
 						return Result.NO_MATCH; // no child matched and no value
@@ -177,7 +182,8 @@ public class Rename extends AbstractSingleTargetPropertyTransformation<Transform
 			else {
 				// group
 				MutableGroup group = new DefaultGroup(targetDefinition.asGroup());
-				if (renameChildren((Group) source, group, targetDefinition, allowIgnoreNamespaces))
+				if (renameChildren((Group) source, group, targetDefinition, allowIgnoreNamespaces,
+						instanceFactory))
 					return group;
 				else
 					return Result.NO_MATCH; // no child matched and no value
@@ -198,10 +204,12 @@ public class Rename extends AbstractSingleTargetPropertyTransformation<Transform
 	 * @param targetDefinition the target definition
 	 * @param allowIgnoreNamespaces if for the structure comparison, namespaces
 	 *            may be ignored
+	 * @param instanceFactory the instance factory
 	 * @return true, if any property could be matched to the targetDefinition
 	 */
-	private boolean renameChildren(Group source, MutableGroup target,
-			ChildDefinition<?> targetDefinition, boolean allowIgnoreNamespaces) {
+	private static boolean renameChildren(Group source, MutableGroup target,
+			ChildDefinition<?> targetDefinition, boolean allowIgnoreNamespaces,
+			InstanceFactory instanceFactory) {
 		boolean matchedChild = false;
 		// walk over all source property names
 		for (QName sourcePropertyName : source.getPropertyNames()) {
@@ -222,7 +230,7 @@ public class Rename extends AbstractSingleTargetPropertyTransformation<Transform
 				for (Object sourceProperty : sourceProperties) {
 					// try to match them
 					Object result = structuralRename(sourceProperty, targetDefinitionChild,
-							allowIgnoreNamespaces);
+							allowIgnoreNamespaces, instanceFactory);
 					if (result != Result.NO_MATCH) {
 						// found match!
 						target.addProperty(targetDefinitionChild.getName(), result);
@@ -242,7 +250,7 @@ public class Rename extends AbstractSingleTargetPropertyTransformation<Transform
 	 * @param targetType the target type
 	 * @return the converted value if successful, the original value otherwise
 	 */
-	private Object convertValue(Object value, TypeDefinition targetType) {
+	private static Object convertValue(Object value, TypeDefinition targetType) {
 		if (value == null)
 			return null;
 

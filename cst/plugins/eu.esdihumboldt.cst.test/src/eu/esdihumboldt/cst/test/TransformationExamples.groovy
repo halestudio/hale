@@ -40,6 +40,7 @@ abstract class TransformationExamples {
 	public static final String STRUCTURAL_RENAME_1 = 'structuralrename_1'
 	public static final String STRUCTURAL_RENAME_2 = 'structuralrename_2'
 	public static final String STRUCTURAL_RENAME_3 = 'structuralrename_3'
+	public static final String STRUCTURAL_RETYPE_1 = 'structuralretype_1'
 	public static final String INLINE_2 = 'inline_2'
 	public static final String INLINE_3 = 'inline_3'
 	public static final String MATH_EXPRESSION = 'mathexpression'
@@ -141,6 +142,7 @@ abstract class TransformationExamples {
 		(STRUCTURAL_RENAME_1): defaultExample(STRUCTURAL_RENAME_1),
 		(STRUCTURAL_RENAME_2): defaultExample(STRUCTURAL_RENAME_2),
 		(STRUCTURAL_RENAME_3): defaultExample(STRUCTURAL_RENAME_3),
+		(STRUCTURAL_RETYPE_1): defaultExample(STRUCTURAL_RETYPE_1),
 		(INLINE_2): defaultExample(INLINE_2),
 		(INLINE_3): defaultExample(INLINE_3),
 		(MATH_EXPRESSION): defaultExample(MATH_EXPRESSION),

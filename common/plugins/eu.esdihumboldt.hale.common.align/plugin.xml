@@ -36,6 +36,26 @@
                   minOccurrence="1">
             </type>
          </targetTypes>
+         <functionParameter
+               description="If set to true, the Retype transformation will try to copy child properties of equal names"
+               label="Structural rename"
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="structuralRename">
+            <functionParameterBinding
+                  class="java.lang.Boolean">
+            </functionParameterBinding>
+         </functionParameter>
+         <functionParameter
+               description="Specifies if for the structural rename it is allowed to do copying independent of property namespaces."
+               label="Allow ignore namespace"
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="ignoreNamespaces">
+            <functionParameterBinding
+                  class="java.lang.Boolean">
+            </functionParameterBinding>
+         </functionParameter>
       </typeFunction>
       <propertyFunction
             category="eu.esdihumboldt.hale.align.general"
@@ -71,7 +91,7 @@
                description="Specifies if for the structural rename it is allowed to do copying independent of property namespaces."
                label="Allow ignore namespace"
                maxOccurrence="1"
-               minOccurrence="0"
+               minOccurrence="1"
                name="ignoreNamespaces">
             <functionParameterBinding
                class="java.lang.Boolean">

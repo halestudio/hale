@@ -761,12 +761,21 @@
      </enabledWhen>
   </action-ui>
   <action-ui
-        action="eu.esdihumboldt.hale.io.xls.write.instance"
+        action="eu.esdihumboldt.hale.io.instance.write.source"
         id="eu.esdihumboldt.hale.io.instance.write.source.ui"
         label="Source data..."
         priority="0"
         projectResource="false"
         wizard="eu.esdihumboldt.hale.ui.io.instance.InstanceExportWizard">
+     <enabledWhen
+           disabledReason="No source instances available">
+        <with
+              variable="hale.instances.has_source">
+           <equals
+                 value="true">
+           </equals>
+        </with>
+     </enabledWhen>
   </action-ui>
    </extension>
    <extension
@@ -851,6 +860,11 @@
          action="eu.esdihumboldt.hale.io.schema.export.target"
          class="eu.esdihumboldt.hale.ui.io.schema.TargetSchemaExportAdvisor"
          id="eu.esdihumboldt.hale.io.schema.export.target">
+   </advisor>
+   <advisor
+         action="eu.esdihumboldt.hale.io.instance.write.source"
+         class="eu.esdihumboldt.hale.ui.io.instance.SourceInstanceExportAdvisor"
+         id="eu.esdihumboldt.hale.ui.io.instance.write.source">
    </advisor>
    </extension>
    <extension

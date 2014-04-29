@@ -18,18 +18,25 @@ package eu.esdihumboldt.cst.functions.core;
 
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 import net.jcip.annotations.Immutable;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.functions.RenameFunction;
 import eu.esdihumboldt.hale.common.align.model.functions.RetypeFunction;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
-import eu.esdihumboldt.hale.common.align.transformation.function.TransformationFunction;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractTypeTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
+import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 
 /**
- * Simple 1:1 retype
+ * Simple 1:1 retype. In addition supports structural rename for properties.
  * 
  * @author Simon Templer
  */
@@ -37,18 +44,44 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 public class Retype extends AbstractTypeTransformation<TransformationEngine> implements
 		RetypeFunction {
 
-	/**
-	 * @see TransformationFunction#execute(String, TransformationEngine, Map,
-	 *      TransformationLog, Cell)
-	 */
 	@Override
 	public void execute(String transformationIdentifier, TransformationEngine engine,
 			Map<String, String> executionParameters, TransformationLog log, Cell cell) {
 		// for each source instance create a target instance
 		TypeDefinition targetType = getTarget().values().iterator().next().getDefinition()
 				.getDefinition();
-		MutableInstance target = getInstanceFactory().createInstance(targetType);
+		MutableInstance target = null;
+
+		// structural rename
+		boolean structuralRename = getOptionalParameter(RenameFunction.PARAMETER_STRUCTURAL_RENAME,
+				Value.of(false)).as(Boolean.class, false);
+		if (structuralRename) {
+			boolean ignoreNamespaces = getOptionalParameter(
+					RenameFunction.PARAMETER_IGNORE_NAMESPACES, Value.of(false)).as(Boolean.class,
+					false);
+			target = doStructuralRename(getSource(), targetType, ignoreNamespaces, log);
+		}
+		if (target == null) {
+			target = getInstanceFactory().createInstance(targetType);
+		}
+
 		getPropertyTransformer().publish(getSource(), target, log, cell);
 	}
 
+	private MutableInstance doStructuralRename(FamilyInstance source, TypeDefinition targetType,
+			boolean ignoreNamespaces, TransformationLog log) {
+		// create a dummy child definition for the structural rename
+		PropertyDefinition dummyProp = new DefaultPropertyDefinition(new QName("dummyProp"),
+				new DefaultTypeDefinition(new QName("dummyType")), targetType);
+
+		Object result = Rename.structuralRename(source, dummyProp, ignoreNamespaces,
+				getInstanceFactory());
+		if (result instanceof MutableInstance) {
+			return ((MutableInstance) result);
+		}
+		else {
+			log.error(log.createMessage("Structural rename in type transformation failed", null));
+			return null;
+		}
+	}
 }
