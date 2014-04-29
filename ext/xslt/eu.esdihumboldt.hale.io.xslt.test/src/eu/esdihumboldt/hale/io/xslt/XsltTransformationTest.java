@@ -72,6 +72,14 @@ public class XsltTransformationTest extends DefaultTransformationTest {
 		testTransform(TransformationExamples.getExample(TransformationExamples.INLINE_2));
 	}
 
+	@Ignore
+	// FIXME structural retype not implemented for XSLT
+	@Override
+	@Test
+	public void testStructuralRetype1() throws Exception {
+		super.testStructuralRetype1();
+	}
+
 	/**
 	 * Simple test case with inline transformation of property types.
 	 * 
