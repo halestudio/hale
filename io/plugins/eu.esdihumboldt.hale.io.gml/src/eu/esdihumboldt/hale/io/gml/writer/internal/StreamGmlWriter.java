@@ -50,7 +50,7 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
-import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition;
+import eu.esdihumboldt.hale.common.instance.geometry.CRSDefinitionUtil;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -954,12 +954,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriter
 			String srsName;
 			CRSDefinition def = ((GeometryProperty<?>) value).getCRSDefinition();
 			if (def != null) {
-				if (def instanceof CodeDefinition)
-					srsName = ((CodeDefinition) def).getCode();
-				else if (def.getCRS() != null)
-					srsName = null; // TODO getName().toString() is not correct
-				else
-					srsName = null;
+				srsName = CRSDefinitionUtil.getCode(def);
 			}
 			else
 				srsName = null;
