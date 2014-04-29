@@ -39,8 +39,6 @@ import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
  */
 public abstract class AbstractInstanceWriter extends GZipEnabledExport implements InstanceWriter {
 
-//	private String commonSRSName;
-
 	private InstanceCollection instances;
 
 	private SchemaSpace targetSchema;
@@ -83,14 +81,6 @@ public abstract class AbstractInstanceWriter extends GZipEnabledExport implement
 		return result;
 	}
 
-//	/**
-//	 * @see InstanceWriter#setCommonSRSName(String)
-//	 */
-//	@Override
-//	public void setCommonSRSName(String commonSRSName) {
-//		this.commonSRSName = commonSRSName;
-//	}
-
 	/**
 	 * @see InstanceWriter#setInstances(InstanceCollection)
 	 */
@@ -106,13 +96,6 @@ public abstract class AbstractInstanceWriter extends GZipEnabledExport implement
 	public void setTargetSchema(SchemaSpace targetSchema) {
 		this.targetSchema = targetSchema;
 	}
-
-//	/**
-//	 * @return the commonSRSName
-//	 */
-//	protected String getCommonSRSName() {
-//		return commonSRSName;
-//	}
 
 	/**
 	 * @return the instances
