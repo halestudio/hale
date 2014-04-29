@@ -18,6 +18,22 @@
                ref="eu.esdihumboldt.hale.io.inspiregml.writer">
          </provider>
       </configPage>
+      <configPage
+            class="eu.esdihumboldt.hale.ui.io.config.TargetCRSConfigurationPage"
+            order="0">
+         <provider
+               ref="eu.esdihumboldt.hale.io.xml.writer">
+         </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.citygml.writer">
+         </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.gml.writer">
+         </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.inspiregml.writer">
+         </provider>
+      </configPage>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.ui.io.source">

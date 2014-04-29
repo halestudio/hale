@@ -329,28 +329,11 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 
 		if (srsName != null) {
 			PropertyDefinition srsAtt = null;
-			for (ChildDefinition<?> att : DefinitionUtil.getAllProperties(type)) { // XXX
-																					// is
-																					// this
-																					// enough?
-																					// or
-																					// should
-																					// groups
-																					// be
-																					// handled
-																					// explicitly?
+			for (ChildDefinition<?> att : DefinitionUtil.getAllProperties(type)) {
+				// XXX is this enough? or should groups be handled explicitly?
 				if (att.asProperty() != null
-						&& att.asProperty().getConstraint(XmlAttributeFlag.class).isEnabled() // if
-																								// we
-																								// write
-																								// an
-																								// attribute,
-																								// it
-																								// must
-																								// be
-																								// an
-																								// attribute
-																								// ;)
+						// if we write an attribute, it must be an attribute ;)
+						&& att.asProperty().getConstraint(XmlAttributeFlag.class).isEnabled()
 						&& att.getName().getLocalPart().equals("srsName") //TODO improve condition? //$NON-NLS-1$
 						&& (att.getName().getNamespaceURI() == null
 								|| att.getName().getNamespaceURI().equals(gmlNs) || att.getName()
