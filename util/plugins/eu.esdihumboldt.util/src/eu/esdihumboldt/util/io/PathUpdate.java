@@ -180,8 +180,10 @@ public class PathUpdate {
 		String n = newLocation.toString();
 
 		// cut off file name. only look at the path to the files.
-		o = o.substring(0, o.lastIndexOf('/'));
-		n = n.substring(0, n.lastIndexOf('/'));
+		int oindex = o.lastIndexOf('/');
+		o = (oindex >= 0) ? (o.substring(0, oindex)) : "";
+		int nindex = n.lastIndexOf('/');
+		n = (nindex >= 0) ? (n.substring(0, nindex)) : "";
 
 		int commonEndLength = 0;
 		while (commonEndLength < o.length()
