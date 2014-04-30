@@ -21,6 +21,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationMessage;
 import eu.esdihumboldt.hale.common.core.report.Message;
+import eu.esdihumboldt.hale.common.core.report.Report;
 import eu.esdihumboldt.hale.common.core.report.ReportLog;
 
 /**
@@ -76,6 +77,14 @@ public class CellLog implements TransformationLog {
 	@Override
 	public void info(TransformationMessage message) {
 		log.info(message);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.core.report.ReportLog#importMessages(eu.esdihumboldt.hale.common.core.report.Report)
+	 */
+	@Override
+	public void importMessages(Report<? extends TransformationMessage> report) {
+		log.importMessages(report);
 	}
 
 }
