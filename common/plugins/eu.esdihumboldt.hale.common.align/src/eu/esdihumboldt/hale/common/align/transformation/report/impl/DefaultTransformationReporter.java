@@ -30,6 +30,8 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationMessage;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReport;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReporter;
+import eu.esdihumboldt.hale.common.core.report.Report;
+import eu.esdihumboldt.hale.common.core.report.ReportLog;
 import eu.esdihumboldt.hale.common.core.report.impl.AbstractReporter;
 
 /**
@@ -266,6 +268,25 @@ public class DefaultTransformationReporter extends AbstractReporter<Transformati
 			else {
 				log.info(message);
 			}
+		}
+	}
+
+	/**
+	 * Add all messages of the given report to this report. They may the logged
+	 * (again) with a call to {@link #setSuccess(boolean)}.
+	 * 
+	 * @see ReportLog#importMessages(Report)
+	 */
+	@Override
+	public void importMessages(Report<? extends TransformationMessage> report) {
+		for (TransformationMessage message : report.getErrors()) {
+			error.add(message);
+		}
+		for (TransformationMessage message : report.getWarnings()) {
+			warn.add(message);
+		}
+		for (TransformationMessage message : report.getInfos()) {
+			info.add(message);
 		}
 	}
 }

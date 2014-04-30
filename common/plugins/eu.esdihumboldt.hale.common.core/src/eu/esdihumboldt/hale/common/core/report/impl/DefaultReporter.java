@@ -25,6 +25,7 @@ import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.report.Message;
 import eu.esdihumboldt.hale.common.core.report.Report;
+import eu.esdihumboldt.hale.common.core.report.ReportLog;
 
 /**
  * Default report implementation
@@ -128,6 +129,20 @@ public class DefaultReporter<T extends Message> extends AbstractReporter<T> {
 	@Override
 	public Collection<T> getInfos() {
 		return Collections.unmodifiableList(infos);
+	}
+
+	/**
+	 * Add all messages of the given report to this report. This method will
+	 * never log the messages (because the original report may have logged them
+	 * already.
+	 * 
+	 * @see ReportLog#importMessages(Report)
+	 */
+	@Override
+	public void importMessages(Report<? extends T> report) {
+		errors.addAll(report.getErrors());
+		warnings.addAll(report.getWarnings());
+		infos.addAll(report.getInfos());
 	}
 
 }
