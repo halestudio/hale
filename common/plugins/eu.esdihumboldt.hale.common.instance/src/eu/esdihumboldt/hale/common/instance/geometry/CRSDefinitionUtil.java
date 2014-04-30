@@ -115,4 +115,19 @@ public abstract class CRSDefinitionUtil {
 		}
 	}
 
+	/**
+	 * Get the EPSG number for a CRS definition if possible.
+	 * 
+	 * @param def the CRS definition
+	 * @return the EPSG code representing the definition or <code>null</code>
+	 */
+	public static String getEPSG(CRSDefinition def) {
+		String code = getCode(def);
+		if (code == null)
+			return null;
+		if (!code.contains("EPSG"))
+			return null;
+		return code.substring(code.lastIndexOf(':' + 1));
+	}
+
 }
