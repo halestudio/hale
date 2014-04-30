@@ -150,6 +150,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 
 		addSupportedParameter(PARAM_ROOT_ELEMENT_NAMESPACE);
 		addSupportedParameter(PARAM_ROOT_ELEMENT_NAME);
+		addSupportedParameter(PARAM_SIMPLIFY_GEOMETRY);
 	}
 
 	/**
@@ -896,8 +897,8 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 				GmlWriterUtil.writeStartElement(writer, propDef.getName());
 
 				Pair<Geometry, CRSDefinition> pair = extractGeometry(value, true, report);
-				String srsName = (pair != null) ? extractCode(pair.getSecond()) : null;
 				if (pair != null) {
+					String srsName = extractCode(pair.getSecond());
 					// write geometry
 					writeGeometry(pair.getFirst(), propDef, srsName);
 				}
@@ -919,9 +920,9 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 					.isEnabled();
 
 			Pair<Geometry, CRSDefinition> pair = extractGeometry(value, true, report);
-			String srsName = (pair != null) ? extractCode(pair.getSecond()) : null;
 			// handle about annotated geometries
 			if (!hasValue && pair != null) {
+				String srsName = extractCode(pair.getSecond());
 				// write geometry
 				writeGeometry(pair.getFirst(), propDef, srsName);
 			}
