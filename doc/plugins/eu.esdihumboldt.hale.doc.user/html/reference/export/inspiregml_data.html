@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>INSPIRE SpatialDataSet Export</title>
+</head>
+<body>
+	<h1>INSPIRE SpatialDataSet Export</h1>
+	<p>
+		The support for exporting GML is covered by the <a
+			href="xml_data.html">XML Export</a> and <a
+			href="gml_data.html">GML Export</a>.
+		If the result schema contains the INSPIRE <i>SpatialDataSet</i>
+		you can furthermore choose <i>GML (INSPIRE SpatialDataSet)</i>.
+		This option allows you to specify an INSPIRE identifier, metadata to include,
+		and the creation of an INSPIRE dataset feed.
+	</p>
+	<h3>INSPIRE Download Services</h3>
+	<p>
+		The created dataset feed can be used to create an INSPIRE download service.
+		To complement the dataset feed a download feed is needed. The download feed
+		has to link to metadata for the download service and to an <i>OpenSearchDescription</i>.
+		Examples for the metadata and information about the <i>OpenSearchDescription</i>
+		are out of scope for this help.<br />
+		The download feed can look like the following (with one entry for each dataset):
+	</p>
+	<pre>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;
+&lt;feed xmlns=&quot;http://www.w3.org/2005/Atom&quot;
+      xmlns:georss=&quot;http://www.georss.org/georss&quot;
+      xmlns:inspire_dls=&quot;http://inspire.ec.europa.eu/schemas/inspire_dls/1.0&quot;&gt;
+   &lt;title&gt;My INSPIRE Download Service&lt;/title&gt;
+   &lt;link href=&quot;downloadservicemetadata.xml&quot; rel=&quot;describedby&quot;
+         type=&quot;application/vnd.iso.19139+xml&quot;/&gt;
+   &lt;link href=&quot;http://example.org/datasets.atom&quot; rel=&quot;self&quot;
+         title=&quot;This document&quot; type=&quot;application/atom+xml&quot;/&gt;
+   &lt;link href=&quot;http://example.org/opensearchdescription.xml&quot;
+         rel=&quot;search&quot; title=&quot;Search Description for INSPIRE download service&quot;
+         type=&quot;application/opensearchdescription+xml&quot;/&gt;
+   &lt;id&gt;http://example.org/datasets.atom&lt;/id&gt;
+   &lt;rights&gt;Copyright (c) 2014, XYZ; all rights reserved&lt;/rights&gt;
+   &lt;updated&gt;2014-05-05T15:21:35+02:00&lt;/updated&gt;
+   &lt;author&gt;
+      &lt;name&gt;John Doe&lt;/name&gt;
+      &lt;email&gt;john.doe@example.org&lt;/email&gt;
+   &lt;/author&gt;
+   &lt;entry&gt;
+      &lt;inspire_dls:spatial_dataset_identifier_namespace&gt;org.example:ns&lt;/inspire_dls:spatial_dataset_identifier_namespace&gt;
+      &lt;inspire_dls:spatial_dataset_identifier_code&gt;EX0&lt;/inspire_dls:spatial_dataset_identifier_code&gt;
+      &lt;link href=&quot;http://example.org/datasets/1/metadata&quot; rel=&quot;describedby&quot; type=&quot;application/xml&quot;/&gt;
+      &lt;link href=&quot;http://example.org/datasets/1.atom&quot; rel=&quot;alternate&quot;
+            title=&quot;Feed containing this dataset (in one or more downloadable formats)&quot; type=&quot;application/atom+xml&quot;/&gt;
+      &lt;id&gt;http://example.org/datasets/1.atom&lt;/id&gt;
+      &lt;title&gt;Example Dataset Feed&lt;/title&gt;
+      &lt;updated&gt;2014-03-10T10:23:04+01:00&lt;/updated&gt;
+      &lt;author&gt;
+         &lt;name&gt;John Doe&lt;/name&gt;
+         &lt;email&gt;john.doe@example.org&lt;/email&gt;
+      &lt;/author&gt;
+      &lt;category label=&quot;WGS 84 / Pseudo-Mercator&quot; term=&quot;http://www.opengis.net/def/crs/EPSG/0/3857&quot;/&gt;
+   &lt;/entry&gt;
+&lt;/feed&gt;</pre>
+<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<feed xmlns="http://www.w3.org/2005/Atom"
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:inspire_dls="http://inspire.ec.europa.eu/schemas/inspire_dls/1.0">
+	<title>My INSPIRE Download Service</title>
+	<link href="downloadservicemetadata.xml" rel="describedby" type="application/vnd.iso.19139+xml"/>
+	<link href="http://example.org/datasets.atom" rel="self" title="This document" type="application/atom+xml"/>
+	<link href="http://example.org/opensearchdescription.xml" rel="search" title="Search Description for INSPIRE download service" type="application/opensearchdescription+xml"/>
+	<id>http://example.org/datasets.atom</id>
+	<rights>Copyright (c) 2014, XYZ; all rights reserved</rights>
+	<updated>2014-05-05T15:21:35+02:00</updated>
+	<author>
+		<name>John Doe</name>
+		<email>john.doe@example.org</email>
+	</author>
+	<entry>
+		<inspire_dls:spatial_dataset_identifier_namespace>org.example:ns</inspire_dls:spatial_dataset_identifier_namespace>
+		<inspire_dls:spatial_dataset_identifier_code>EX0</inspire_dls:spatial_dataset_identifier_code>
+		<link href="http://example.org/datasets/1/metadata" rel="describedby" type="application/xml"/>
+		<link href="http://example.org/datasets/1.atom" rel="alternate" title="Feed containing this dataset (in one or more downloadable formats)" type="application/atom+xml"/>
+		<id>http://example.org/datasets/1.atom</id>
+		<title>Example Dataset Feed</title>
+		<updated>2014-03-10T10:23:04+01:00</updated>
+		<author>
+			<name>John Doe</name>
+			<email>john.doe@example.org</email>
+		</author>
+		<category label="WGS 84 / Pseudo-Mercator" term="http://www.opengis.net/def/crs/EPSG/0/3857"/>
+	</entry>
+</feed>
+-->
+	
+	<br>
+	<!-- related concepts -->
+	<div>
+		<br> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelc.png">
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/what_is_instance.html">What is an Instance?</a>
+		</p>
+	</div>
+	
+	<!-- related tasks: save transformed data -->
+	<div>
+		<br> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelt.png">
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/data/save_transformation.html">Save the transformation result</a>
+		</p>
+	</div>
+</body>
+</html>
