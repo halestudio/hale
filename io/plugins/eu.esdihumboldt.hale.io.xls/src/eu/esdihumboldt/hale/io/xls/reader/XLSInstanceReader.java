@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Data Harmonisation Panel
+ * Copyright (c) 2014 Data Harmonisation Panel
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -39,12 +39,7 @@ import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstanceCollection;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
-import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
-import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
-import eu.esdihumboldt.hale.io.csv.PropertyType;
-import eu.esdihumboldt.hale.io.csv.PropertyTypeExtension;
 import eu.esdihumboldt.hale.io.csv.reader.CommonSchemaConstants;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVInstanceReader;
 import eu.esdihumboldt.hale.io.xls.AnalyseXLSSchemaTable;
@@ -61,6 +56,7 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 	private DefaultInstanceCollection instances;
 	private PropertyDefinition[] propAr;
 	private TypeDefinition type;
+	private AnalyseXLSSchemaTable analyser;
 
 	// only needed for correct error description
 	private int line = 0;
@@ -95,9 +91,8 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 				Boolean.class);
 		instances = new DefaultInstanceCollection(new ArrayList<Instance>());
 
-		AnalyseXLSSchemaTable analyser;
 		try {
-			// analyse the excel sheet to get all information
+			// analyze the excel sheet to get all information
 			analyser = new AnalyseXLSSchemaTable(getSource().getLocation());
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl("Reading the excel sheet has failed", e));
@@ -137,6 +132,8 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 	 * 
 	 * @param row the current row
 	 * @param reporter the reporter of the writer
+	 * @param solveNestedProperties true, if schema should not be flat <b>(not
+	 *            implemented yet)</b>
 	 **/
 	@SuppressWarnings("javadoc")
 	private void createInstanceCollection(List<String> row, IOReporter reporter,
@@ -144,51 +141,32 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 		MutableInstance instance = new DefaultInstance(type, null);
 
 		int propertyIndex = 0;
+//		List<String> header = analyser.getHeader();
 		for (int index = 0; index < row.size(); index++) {
 			String part = row.get(index);
 			if (part != null) {
 				PropertyDefinition property = propAr[propertyIndex];
 
-				if (solveNestedProperties) {
-					while (part.startsWith(".")) {
-						PropertyType propertyType;
-						try {
-							propertyType = PropertyTypeExtension.getInstance()
-									.getFactory("java.lang.String").createExtensionObject();
-							part = part.substring(1, part.length());
-							DefaultPropertyDefinition prop;
-							String currentProp;
-							if (part.contains("\n")) {
-								currentProp = part.substring(0, part.indexOf("\n"));
-								prop = new DefaultPropertyDefinition(new QName(currentProp),
-										property.getPropertyType(),
-										propertyType.getTypeDefinition());
-							}
-							else {
-								currentProp = part.substring(0, part.length()).replace("\n", "");
-								prop = new DefaultPropertyDefinition(new QName(currentProp),
-										property.getPropertyType(),
-										propertyType.getTypeDefinition());
-							}
-
-							// set constraints on property
-//							property.setConstraint(NillableFlag.DISABLED); // nillable
-							prop.setConstraint(NillableFlag.ENABLED); // nillable
-																		// FIXME
-							// should be configurable per field (see also
-							// CSVInstanceReader)
-							prop.setConstraint(Cardinality.CC_EXACTLY_ONCE); // cardinality
-							// set metadata for property
-							prop.setLocation(getSource().getLocation());
-
-							property = prop;
-							part = part.replace(currentProp + "\n", "");
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-				}
+				// XXX create hierarchical schema
+//				if (solveNestedProperties) {
+//					String headerValue = header.get(propertyIndex);
+//					if (headerValue.contains(".")) {
+//						String[] values = headerValue.split("\\.");
+//						PropertyDefinition[] currentDefinitions = propAr;
+//						for (String value : values) {
+//							for (PropertyDefinition prop : currentDefinitions) {
+//								if (prop.getName().getLocalPart().equals(value)) {
+//									currentDefinitions = prop.getPropertyType()
+//											.getDeclaredChildren()
+//											.toArray(new PropertyDefinition[0]);
+//									property = prop;
+//									break;
+//								}
+//							}
+//						}
+//					}
+//
+//				}
 
 				if (part.isEmpty()) {
 					// FIXME make this configurable

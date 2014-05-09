@@ -124,20 +124,38 @@ public class XLSSchemaReader extends AbstractTableSchemaReader {
 				fail("Not the same number of entries for property names, property types and words in the first line of the file");
 			}
 			for (int i = 0; i < comboSelections.length; i++) {
+//				String stringProperty = properties[i];
+				// no nested properties
+//				if (!stringProperty.contains(".")) {
 				PropertyType propertyType = PropertyTypeExtension.getInstance()
 						.getFactory(comboSelections[i]).createExtensionObject();
 
 				DefaultPropertyDefinition property = new DefaultPropertyDefinition(new QName(
 						properties[i]), type, propertyType.getTypeDefinition());
-
-				// set constraints on property
-//				property.setConstraint(NillableFlag.DISABLED); // nillable
-				property.setConstraint(NillableFlag.ENABLED); // nillable FIXME
-				// should be configurable per field (see also CSVInstanceReader)
-				property.setConstraint(Cardinality.CC_EXACTLY_ONCE); // cardinality
-
-				// set metadata for property
-				property.setLocation(getSource().getLocation());
+				configureProperty(property);
+//				}
+				// schema contains nested properties
+//				else {
+//					String[] nestedProperties = stringProperty.split("\\.");
+//
+//					PropertyType propertyType = PropertyTypeExtension.getInstance()
+//							.getFactory("java.lang.String").createExtensionObject();
+//
+//					DefaultPropertyDefinition lastProperty = new DefaultPropertyDefinition(
+//							new QName(nestedProperties[0]), type, propertyType.getTypeDefinition());
+//					configureProperty(lastProperty);
+//
+//					for (int k = 1; k < nestedProperties.length; k++) {
+//						propertyType = PropertyTypeExtension.getInstance()
+//								.getFactory("java.lang.String").createExtensionObject();
+//
+//						DefaultPropertyDefinition property = new DefaultPropertyDefinition(
+//								new QName(nestedProperties[k]), lastProperty.getPropertyType(),
+//								propertyType.getTypeDefinition());
+//						configureProperty(property);
+//						lastProperty = property;
+//					}
+//				}
 			}
 
 			boolean skip = Arrays.equals(properties, header.toArray(new String[0]));
@@ -171,6 +189,17 @@ public class XLSSchemaReader extends AbstractTableSchemaReader {
 	@Override
 	public String[] getHeaderContent() {
 		return header.toArray(new String[0]);
+	}
+
+	private void configureProperty(DefaultPropertyDefinition property) {
+		// set constraints on property
+//		property.setConstraint(NillableFlag.DISABLED); // nillable
+		property.setConstraint(NillableFlag.ENABLED); // nillable FIXME
+		// should be configurable per field (see also CSVInstanceReader)
+		property.setConstraint(Cardinality.CC_EXACTLY_ONCE); // cardinality
+
+		// set metadata for property
+		property.setLocation(getSource().getLocation());
 	}
 
 }
