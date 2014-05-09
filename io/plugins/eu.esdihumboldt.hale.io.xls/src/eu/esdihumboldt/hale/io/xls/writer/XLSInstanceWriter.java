@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Data Harmonisation Panel
+ * Copyright (c) 2014 Data Harmonisation Panel
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -19,12 +19,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.xml.namespace.QName;
 
@@ -46,8 +43,8 @@ import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.orient.OGroup;
-import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
-import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.instance.orient.OInstance;
+import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.xls.XLSCellStyles;
 import eu.esdihumboldt.hale.io.xls.XLSConstants;
@@ -113,15 +110,20 @@ public class XLSInstanceWriter extends AbstractInstanceWriter {
 		// the sheet name is defined by the type definition
 		Sheet sh = wb.createSheet(definition.getDisplayName());
 
+		Row headerRow = sh.createRow(0);
+		List<String> headerCells = new ArrayList<String>();
+
 		// store instances with other type definitions in extra sheet
-		List<Instance> remaining = write(instanceIterator, instance, definition, sh);
+		List<Instance> remaining = write(instanceIterator, instance, definition, sh, headerRow,
+				headerCells);
 		while (!remaining.isEmpty()) {
 			// this type defines the type of all instances in this sheet
 			TypeDefinition currentType = remaining.get(0).getDefinition();
 			Sheet newSheet = wb.createSheet(currentType.getDisplayName());
 			instanceIterator = remaining.iterator();
 			instance = instanceIterator.next();
-			remaining = write(instanceIterator, instance, currentType, newSheet);
+			remaining = write(instanceIterator, instance, currentType, newSheet, headerRow,
+					headerCells);
 		}
 
 		// write file
@@ -133,14 +135,20 @@ public class XLSInstanceWriter extends AbstractInstanceWriter {
 		return reporter;
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#getDefaultTypeName()
+	 */
+	@Override
+	protected String getDefaultTypeName() {
+		return "XLS file";
+	}
+
 	// the first instance has to be handled independently since it determines
 	// the type definition of the current sheet
 	private List<Instance> write(Iterator<Instance> instances, Instance firstInstance,
-			TypeDefinition definition, Sheet sheet) {
-
+			TypeDefinition definition, Sheet sheet, Row headerRow, List<String> headerCells) {
 		// position of current row
-		int rowNum = 0;
-		Row row = sheet.createRow(rowNum++);
+		int rownum = 1;
 
 		// the instances that are currently processed
 		List<Instance> currentInstances = new ArrayList<Instance>();
@@ -150,43 +158,29 @@ public class XLSInstanceWriter extends AbstractInstanceWriter {
 		// position of current cell in current row
 		currentInstances.add(firstInstance);
 
-		Collection<? extends PropertyDefinition> allDefProp = DefinitionUtil
-				.getAllProperties(definition);
-
-		Set<QName> allProperties = new HashSet<QName>();
-		for (PropertyDefinition currentDef : allDefProp) {
-			allProperties.add(currentDef.getName());
-		}
-
-		// write header of the sheet; contains of all local parts of the
-		// instance properties
-		writeHeader(allProperties, row);
 		while (instances.hasNext()) {
 			Instance instance = instances.next();
 			if (instance.getDefinition().equals(definition)) {
 				currentInstances.add(instance);
-				writeHeader(allProperties, row);
 			}
 			else
-				// other instances have to handled separately afterwards
 				remaining.add(instance);
 		}
+		// properties of current instance
+		Iterable<QName> allProperties = firstInstance.getPropertyNames();
 
 		// write properties; currently only the first property of nested
 		// properties is selected
 		for (int i = 0; i < currentInstances.size(); i++) {
 			Instance instance = currentInstances.get(i);
-			row = sheet.createRow(rowNum++);
+			Row row = sheet.createRow(rownum++);
 			int cellNum = 0;
 			for (QName qname : allProperties) {
-				// initialize cell
-				Cell cell = row.createCell(cellNum++); //
-				cell.setCellStyle(cellStyle);
 
 				// get property of the current instance
 				Object[] properties = instance.getProperty(qname);
 				if (properties != null && properties.length != 0) {
-					String cellValue = "";
+					String cellValue = qname.getLocalPart();
 					// only the first property is evaluated
 					Object property = properties[0];
 					// if property is an OInstance, it's a nested property
@@ -195,46 +189,85 @@ public class XLSInstanceWriter extends AbstractInstanceWriter {
 						Iterator<QName> propertyIt = inst.getPropertyNames().iterator();
 						if (propertyIt.hasNext()) {
 							QName value = propertyIt.next();
-							cellValue += ".";
-							cellValue += value.getLocalPart();
-
 							Object nextProp = inst.getProperty(value)[0];
+							if (shouldBeDisplayed(nextProp)) {
+								cellValue += ".";
+								cellValue += value.getLocalPart();
+							}
 
-							// go through all nested properties
+							// iterate over all nested properties
 							while (nextProp instanceof OGroup) {
 								OGroup oinst = (OGroup) nextProp;
+
 								Iterator<QName> qnames = oinst.getPropertyNames().iterator();
 								if (qnames.hasNext()) {
 									value = qnames.next();
-									cellValue += "\n.";
-									cellValue += value.getLocalPart();
 									nextProp = oinst.getProperty(value)[0];
+									if (shouldBeDisplayed(nextProp)) {
+										cellValue += ".";
+										cellValue += value.getLocalPart();
+									}
+									else
+										continue;
 								}
 								else
 									break;
 							}
-							cellValue += "\n." + nextProp.toString();
-							cell.setCellValue(cellValue);
+							if (!headerCells.contains(cellValue)) {
+								// XXX only if cell is needed
+								Cell headerCell = headerRow.createCell(cellNum);
+								headerCell.setCellStyle(headerStyle);
+								headerCell.setCellValue(cellValue);
+
+								// initialize cell
+								Cell cell = row.createCell(cellNum++);
+								cell.setCellStyle(cellStyle);
+								setValueOfCell(cell, nextProp);
+
+								headerCells.add(cellValue);
+							}
+							else {
+								int cellIndex = headerCells.indexOf(cellValue);
+								Cell cell = row.createCell(cellIndex);
+								cell.setCellStyle(cellStyle);
+								setValueOfCell(cell, nextProp);
+							}
 						}
 					}
 					else {
-						setValueOfCell(cell, property);
+						if (!headerCells.contains(cellValue)) {
+							// XXX only if cell is needed
+							Cell headerCell = headerRow.createCell(cellNum);
+							headerCell.setCellStyle(headerStyle);
+							headerCell.setCellValue(qname.getLocalPart());
+
+							// initialize cell
+							Cell cell = row.createCell(cellNum++); //
+							cell.setCellStyle(cellStyle);
+							setValueOfCell(cell, property);
+
+							headerCells.add(cellValue);
+						}
+						else {
+							int cellIndex = headerCells.indexOf(cellValue);
+							Cell cell = row.createCell(cellIndex); //
+							cell.setCellStyle(cellStyle);
+							setValueOfCell(cell, property);
+						}
 					}
 				}
 			}
 		}
-
 		resizeSheet(sheet);
 
 		return remaining;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#getDefaultTypeName()
-	 */
-	@Override
-	protected String getDefaultTypeName() {
-		return "XLS file";
+	// only based on first row
+	private void resizeSheet(Sheet sheet) {
+		for (int i = 0; i < sheet.getRow(0).getPhysicalNumberOfCells(); i++) {
+			sheet.autoSizeColumn(i);
+		}
 	}
 
 	private void setValueOfCell(Cell cell, Object value) {
@@ -251,30 +284,24 @@ public class XLSInstanceWriter extends AbstractInstanceWriter {
 		else if (value instanceof String)
 			cell.setCellValue((String) value);
 		else {
+			if (value instanceof OInstance) {
+				Object instValue = ((OInstance) value).getValue();
+				if (instValue != null) {
+					cell.setCellValue(instValue.toString());
+					return;
+				}
+			}
 			if (value != null)
 				cell.setCellValue(value.toString());
 			else
 				cell.setCellValue("");
 		}
-
 	}
 
-	// only based on first row
-	private void resizeSheet(Sheet sheet) {
-		for (int i = 0; i < sheet.getRow(0).getPhysicalNumberOfCells(); i++) {
-			sheet.autoSizeColumn(i);
+	private boolean shouldBeDisplayed(Object obj) {
+		if (obj instanceof OGroup) {
+			return !(((OGroup) obj).getDefinition() instanceof GroupPropertyDefinition);
 		}
-	}
-
-	// write header of the sheet; properties contains the qnames of all
-	// properties
-	private void writeHeader(Set<QName> properties, Row row) {
-		int cellIndex = 0;
-		for (Iterator<QName> iter = properties.iterator(); iter.hasNext();) {
-			QName qname = iter.next();
-			Cell cell = row.createCell(cellIndex++);
-			cell.setCellValue(qname.getLocalPart());
-			cell.setCellStyle(headerStyle);
-		}
+		return true;
 	}
 }
