@@ -64,7 +64,7 @@ import eu.esdihumboldt.hale.ui.util.components.DynamicScrolledComposite;
 public class DefaultSchemaTypePage extends SchemaReaderConfigurationPage {
 
 	private String defaultString = "";
-	private StringFieldEditor sfe;
+	protected StringFieldEditor sfe;
 	private Group group;
 	private String[] lastSecondRow = null;
 	private final List<TypeNameField> fields = new ArrayList<TypeNameField>();
