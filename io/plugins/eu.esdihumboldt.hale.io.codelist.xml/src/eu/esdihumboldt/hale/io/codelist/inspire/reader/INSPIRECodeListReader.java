@@ -146,7 +146,8 @@ public class INSPIRECodeListReader extends AbstractImportProvider implements Cod
 	private boolean parse(Document doc, URI location, IOReporter reporter) throws Exception {
 		XPath xpath = XPathFactory.newInstance().newXPath();
 
-		String name = null;
+		boolean directlyReferenced = location.toString().toLowerCase().endsWith(".xml");
+
 		String description = null;
 		String namespace = null;
 
@@ -156,13 +157,17 @@ public class INSPIRECodeListReader extends AbstractImportProvider implements Cod
 			return false;
 		}
 
-		// XXX what about multiple labels or definitions?
-		NodeList labels = (NodeList) xpath.evaluate("codelist/label", doc, XPathConstants.NODESET);
-		if (labels.getLength() > 0)
-			name = labels.item(0).getTextContent();
-		else {
-			reporter.error(new IOMessageImpl("No label present in INSPIRE codelist.", null));
-			return false;
+		// use the id as name as well
+		String name = namespace;
+
+		if (directlyReferenced) {
+			// if directly referenced use the label as name
+			// (for backwards compatibility)
+			NodeList labels = (NodeList) xpath.evaluate("codelist/label", doc,
+					XPathConstants.NODESET);
+			if (labels.getLength() > 0) {
+				name = labels.item(0).getTextContent();
+			}
 		}
 		NodeList definitions = (NodeList) xpath.evaluate("codelist/definition", doc,
 				XPathConstants.NODESET);
@@ -172,7 +177,7 @@ public class INSPIRECodeListReader extends AbstractImportProvider implements Cod
 
 		// also ignore status, extensibility, register, applicationschema and
 		// theme
-
+		// don't use the name as identifier, as it is language dependent!
 		INSPIRECodeList codelist = new INSPIRECodeList(namespace, name, description, location);
 
 		NodeList entries = (NodeList) xpath.evaluate("codelist/containeditems/value", doc,
