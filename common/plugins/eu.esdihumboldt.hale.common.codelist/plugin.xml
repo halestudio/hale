@@ -11,5 +11,14 @@
             type="eu.esdihumboldt.hale.common.codelist.io.CodeListReader">
       </action>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.complexvalue">
+      <complexValue
+            descriptor="eu.esdihumboldt.hale.common.codelist.config.CodeListAssociationsType"
+            id="eu.esdihumboldt.hale.ui.codelist.config"
+            name="associations"
+            type="eu.esdihumboldt.hale.common.codelist.config.CodeListAssociations">
+      </complexValue>
+   </extension>
 
 </plugin>

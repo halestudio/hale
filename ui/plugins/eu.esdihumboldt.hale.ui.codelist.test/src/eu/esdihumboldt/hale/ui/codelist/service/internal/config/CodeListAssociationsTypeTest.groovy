@@ -15,6 +15,10 @@
 
 package eu.esdihumboldt.hale.ui.codelist.service.internal.config
 
+import eu.esdihumboldt.hale.common.codelist.config.CodeListAssociations;
+import eu.esdihumboldt.hale.common.codelist.config.CodeListAssociationsType;
+import eu.esdihumboldt.hale.common.codelist.config.CodeListReference;
+import eu.esdihumboldt.hale.common.codelist.config.DummyEntityKey;
 import groovy.transform.CompileStatic
 
 import javax.xml.namespace.QName
