@@ -24,6 +24,8 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
+import eu.esdihumboldt.hale.common.inspire.codelists.CodeListRef;
+
 /**
  * Label provider for {@link CodeListRef}s.
  * 

@@ -109,6 +109,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.common.core"/>
       <plugin id="eu.esdihumboldt.hale.common.filter"/>
       <plugin id="eu.esdihumboldt.hale.common.headless"/>
+      <plugin id="eu.esdihumboldt.hale.common.inspire"/>
       <plugin id="eu.esdihumboldt.hale.common.instance"/>
       <plugin id="eu.esdihumboldt.hale.common.instance.groovy"/>
       <plugin id="eu.esdihumboldt.hale.common.instance.orient"/>

@@ -35,6 +35,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 
+import eu.esdihumboldt.hale.common.inspire.codelists.CodeListRef;
+import eu.esdihumboldt.hale.common.inspire.codelists.RegistryCodeLists;
 import eu.esdihumboldt.hale.ui.util.selector.AbstractViewerSelectionDialog;
 
 /**
@@ -97,7 +99,8 @@ public class CodeListSelectionDialog extends AbstractViewerSelectionDialog<CodeL
 					monitor.beginTask("Loading available code lists from INSPIRE registry",
 							IProgressMonitor.UNKNOWN);
 
-					final Collection<CodeListRef> codeLists = RegistryCodeLists.loadCodeLists();
+					final Collection<CodeListRef> codeLists = RegistryCodeLists.loadCodeLists()
+							.values();
 
 					display.asyncExec(new Runnable() {
 

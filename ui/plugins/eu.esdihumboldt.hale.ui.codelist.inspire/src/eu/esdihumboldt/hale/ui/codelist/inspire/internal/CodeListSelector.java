@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.ui.codelist.inspire.internal;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
+import eu.esdihumboldt.hale.common.inspire.codelists.CodeListRef;
 import eu.esdihumboldt.hale.ui.util.selector.AbstractSelector;
 import eu.esdihumboldt.hale.ui.util.selector.AbstractViewerSelectionDialog;
 

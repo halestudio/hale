@@ -21,6 +21,8 @@ import org.eclipse.jface.viewers.Viewer;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
+import eu.esdihumboldt.hale.common.inspire.codelists.CodeListRef;
+
 /**
  * Content provider for code list listing.
  * 

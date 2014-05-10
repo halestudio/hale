@@ -13,33 +13,26 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.codelist.inspire.internal
+package eu.esdihumboldt.hale.common.inspire.schemas
 
-import javax.annotation.concurrent.Immutable
+import groovy.transform.Immutable
 
 
 /**
- * A reference to a remote code list.
- *  
+ * TODO Type description
+ * 
  * @author Simon Templer
  */
 @Immutable
-class CodeListRef {
-	/** the location of the code list */
+class SchemaInfo {
+	/** the location of the XSD file */
 	URI location
-
-	/** the code list name */
+	/** the schema namespace */
+	String namespace
+	/** application schema identifier in the registry */
+	String appSchemaId
+	/** the schema version */
+	String version
+	/** the schema name */
 	String name
-
-	/** the code list description */
-	String description
-
-	/** the code list definition */
-	String definition
-
-	/** the name of the schema the code list is associated to */
-	String schemaName
-
-	/** the name of the theme the code list is associated to */
-	String themeName
 }
