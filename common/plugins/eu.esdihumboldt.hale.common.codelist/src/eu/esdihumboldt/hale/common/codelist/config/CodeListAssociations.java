@@ -52,6 +52,19 @@ public class CodeListAssociations {
 	}
 
 	/**
+	 * Assign a code list for an entity.
+	 * 
+	 * @param entity the entity definition
+	 * @param codeListNamespace the code list namespace
+	 * @param codeListIdentifier the code list identifier
+	 */
+	public void assignCodeList(EntityDefinition entity, String codeListNamespace,
+			String codeListIdentifier) {
+		associations.put(new DummyEntityKey(entity, true), new CodeListReference(codeListNamespace,
+				codeListIdentifier));
+	}
+
+	/**
 	 * @return the map with code list associations
 	 */
 	public Map<DummyEntityKey, CodeListReference> getAssociations() {

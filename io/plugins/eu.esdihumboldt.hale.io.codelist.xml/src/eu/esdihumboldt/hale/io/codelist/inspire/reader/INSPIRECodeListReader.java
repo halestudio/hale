@@ -157,8 +157,12 @@ public class INSPIRECodeListReader extends AbstractImportProvider implements Cod
 			return false;
 		}
 
-		// use the id as name as well
+		// use the last part of the id as name
 		String name = namespace;
+		int idxSlash = name.indexOf('/');
+		if (idxSlash >= 0 && idxSlash + 1 < name.length()) {
+			name = name.substring(idxSlash);
+		}
 
 		if (directlyReferenced) {
 			// if directly referenced use the label as name

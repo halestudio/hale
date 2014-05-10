@@ -27,4 +27,9 @@ class GenerateTemplatesContext {
 	 * The target directory to write the template projects to.
 	 */
 	File targetDir
+
+	/**
+	 * If references to INSPIRE code lists should be explicit (to be backwards compatible with 2.8)
+	 */
+	boolean explicit = false
 }

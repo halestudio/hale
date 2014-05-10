@@ -69,7 +69,6 @@ public class RegistryCodeLists {
 	 */
 	public static Collection<CodeListRef> getCodeLists(String applicationSchemaId) {
 		Collections.unmodifiableCollection(loadCodeLists().get(applicationSchemaId))
-		//TODO look up other (base) application schemas?
 	}
 
 	@CompileStatic(TypeCheckingMode.SKIP)
@@ -80,6 +79,8 @@ public class RegistryCodeLists {
 			register.containeditems.codelist.each { codelist ->
 				String schemaId = codelist.applicationschema[0].'@id'
 				result.put(schemaId, new CodeListRef(
+						id: codelist.'@id',
+						parentId: codelist.parent[0]?.'@id',
 						name: codelist.label[0]?.text(),
 						location: URI.create(codelist.'@id'),
 						description: codelist.description[0]?.text(),

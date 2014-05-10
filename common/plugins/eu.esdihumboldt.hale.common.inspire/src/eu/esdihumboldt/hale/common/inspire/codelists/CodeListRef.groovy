@@ -45,4 +45,10 @@ class CodeListRef {
 
 	/** the name of the theme the code list is associated to */
 	String themeName
+
+	/** the code list identifier */
+	String id
+
+	/** the parent code list identifier */
+	String parentId
 }
