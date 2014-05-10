@@ -18,6 +18,8 @@ package eu.esdihumboldt.hale.ui.codelist.inspire.internal;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 
+import eu.esdihumboldt.hale.common.inspire.codelists.CodeListRef;
+
 /**
  * Comparator for {@link CodeListRef}s.
  * 

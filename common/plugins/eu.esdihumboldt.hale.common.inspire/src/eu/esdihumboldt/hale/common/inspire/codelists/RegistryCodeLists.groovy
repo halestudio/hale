@@ -13,11 +13,14 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.codelist.inspire.internal;
+package eu.esdihumboldt.hale.common.inspire.codelists;
 
 import java.lang.ref.SoftReference
 
 import org.w3c.dom.Document
+
+import com.google.common.collect.ArrayListMultimap
+import com.google.common.collect.Multimap
 
 import de.fhg.igd.slf4jplus.ALogger
 import de.fhg.igd.slf4jplus.ALoggerFactory
@@ -41,35 +44,40 @@ public class RegistryCodeLists {
 	/**
 	 * Caches the last loaded result.
 	 */
-	private static SoftReference<Collection<CodeListRef>> cached
+	private static SoftReference<Multimap<String, CodeListRef>> cached
 
 	/**
-	 * Load the code lists from the registry, may access an already cached list. 
+	 * Load the code lists from the registry, may access an already cached lists.
+	 * @return application schema IDs mapped to code list references 
 	 */
-	public static Collection<CodeListRef> loadCodeLists() {
+	public static Multimap<String, CodeListRef> loadCodeLists() {
 		synchronized (RegistryCodeLists) {
 			def result = cached?.get()
 			if (result == null) {
 				result = parse(INSPIRECodeListReader.loadXmlDocument(CODE_LISTS))
-				cached = new SoftReference<Collection<CodeListRef>>(result)
+				cached = new SoftReference<Multimap<String, CodeListRef>>(result)
 			}
 			result
 		}
 	}
 
 	@CompileStatic(TypeCheckingMode.SKIP)
-	private static Collection<CodeListRef> parse(Document doc) {
+	private static Multimap<String, CodeListRef> parse(Document doc) {
 		def register = doc.documentElement
+		def result = ArrayListMultimap.create()
 		use (DOMCategory) {
-			register.containeditems.codelist.collect { codelist ->
-				new CodeListRef(
+			register.containeditems.codelist.each { codelist ->
+				def schemaId = codelist.applicationschema.'@id'
+				result.put(schemaId, new CodeListRef(
 						name: codelist.label[0]?.text(),
 						location: URI.create(codelist.'@id'),
 						description: codelist.description[0]?.text(),
 						definition: codelist.definition[0]?.text(),
 						schemaName: codelist.applicationschema.label[0]?.text(),
-						themeName: codelist.theme.label[0]?.text())
+						schemaId: schemaId,
+						themeName: codelist.theme.label[0]?.text()))
 			}
 		}
+		result
 	}
 }
