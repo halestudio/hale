@@ -19,7 +19,7 @@ import groovy.transform.Immutable
 
 
 /**
- * TODO Type description
+ * Basic information on INSPIRE application schemas.
  * 
  * @author Simon Templer
  */
@@ -35,4 +35,6 @@ class SchemaInfo {
 	String version
 	/** the schema name */
 	String name
+	/** namespaces of direct schema imports */
+	List<String> directImports
 }

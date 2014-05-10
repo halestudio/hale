@@ -69,7 +69,7 @@ public class ApplicationSchemas {
 
 		def result = ArrayListMultimap.create()
 		xml.applicationSchema.each { appSchema ->
-			String id = appSchema.@id
+			String id = appSchema.@id as String
 
 			// load application schema information
 			//			Document doc = INSPIRECodeListReader.loadXmlDocument(URI.create(id))
@@ -83,14 +83,30 @@ public class ApplicationSchemas {
 			// create schema info for each schema
 			appSchema.schema.each { schema ->
 				def location = URI.create(schema.@url as String)
-				def namespace = determineNamespace(location)
+
+				// load schema
+				DefaultInputSupplier schemaIs = new DefaultInputSupplier(location)
+				def xsd
+				schemaIs.getInput().withStream {
+					xsd = new XmlSlurper().parse(it)
+				}
+				def namespace = xsd.@targetNamespace as String
+				def directImports = []
+				xsd.'import'.each {
+					def ns = (it.@namespace as String)
+					if (ns.toLowerCase().contains('inspire')) {
+						// only record INSPIRE related imports
+						directImports << ns
+					}
+				}
 
 				SchemaInfo schemaInfo = new SchemaInfo(
 						location: location,
-						version: schema.@version,
+						version: schema.@version as String,
 						namespace: namespace,
 						appSchemaId: id,
-						name: name
+						name: name,
+						directImports: directImports
 						)
 				result.put(namespace, schemaInfo)
 			}
@@ -99,12 +115,4 @@ public class ApplicationSchemas {
 		result
 	}
 
-	private static String determineNamespace(URI location) {
-		DefaultInputSupplier is = new DefaultInputSupplier(location)
-		def xsd
-		is.getInput().withStream {
-			xsd = new XmlSlurper().parse(it)
-		}
-		xsd.@targetNamespace
-	}
 }

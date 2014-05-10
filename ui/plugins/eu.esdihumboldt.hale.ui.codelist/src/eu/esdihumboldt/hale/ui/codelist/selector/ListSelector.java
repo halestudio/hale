@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.ui.codelist.selector;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelection;
@@ -112,7 +113,12 @@ public class ListSelector implements CodeListSelector {
 			public String getText(Object element) {
 				if (element instanceof CodeList) {
 					CodeList codeList = (CodeList) element;
-					return codeList.getIdentifier() + " (" + codeList.getNamespace() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+					if (Objects.equals(codeList.getIdentifier(), codeList.getNamespace())) {
+						return codeList.getIdentifier();
+					}
+					else {
+						return codeList.getIdentifier() + " (" + codeList.getNamespace() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+					}
 				}
 				else {
 					return super.getText(element);

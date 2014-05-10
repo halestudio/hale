@@ -46,6 +46,14 @@ public class GenerateTemplatesApplication extends AbstractApplication<GenerateTe
 	}
 
 	@Override
+	protected void processFlag(String arg, GenerateTemplatesContext executionContext) {
+		switch (arg) {
+		case "-explicit":
+			executionContext.setExplicit(true);
+		}
+	}
+
+	@Override
 	protected GenerateTemplatesContext createExecutionContext() {
 		return new GenerateTemplatesContext();
 	}
