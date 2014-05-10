@@ -44,7 +44,9 @@ public class ApplicationSchemas {
 	private static SoftReference<Multimap<String, SchemaInfo>> cached
 
 	/**
-	 * Load the schema information, may access an already cached list.
+	 * Load the schema information, may access an already cached lists.
+	 * 
+	 * @return schema namespaces mapped to schema information
 	 */
 	static Multimap<String, SchemaInfo> getSchemaInfos() {
 		synchronized (ApplicationSchemas) {
@@ -90,7 +92,7 @@ public class ApplicationSchemas {
 						appSchemaId: id,
 						name: name
 						)
-				result.put(id, schemaInfo)
+				result.put(namespace, schemaInfo)
 			}
 		}
 

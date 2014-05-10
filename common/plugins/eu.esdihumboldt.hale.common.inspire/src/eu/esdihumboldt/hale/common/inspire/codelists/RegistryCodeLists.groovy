@@ -61,13 +61,24 @@ public class RegistryCodeLists {
 		}
 	}
 
+	/**
+	 * Get the code lists for a specific application schema.
+	 * 
+	 * @param applicationSchemaId the application schema identifier/url
+	 * @return the code lists
+	 */
+	public static Collection<CodeListRef> getCodeLists(String applicationSchemaId) {
+		Collections.unmodifiableCollection(loadCodeLists().get(applicationSchemaId))
+		//TODO look up other (base) application schemas?
+	}
+
 	@CompileStatic(TypeCheckingMode.SKIP)
 	private static Multimap<String, CodeListRef> parse(Document doc) {
 		def register = doc.documentElement
 		def result = ArrayListMultimap.create()
 		use (DOMCategory) {
 			register.containeditems.codelist.each { codelist ->
-				def schemaId = codelist.applicationschema.'@id'
+				String schemaId = codelist.applicationschema[0].'@id'
 				result.put(schemaId, new CodeListRef(
 						name: codelist.label[0]?.text(),
 						location: URI.create(codelist.'@id'),
