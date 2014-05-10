@@ -24,6 +24,7 @@ import com.google.common.collect.Multimap
 
 import de.fhg.igd.slf4jplus.ALogger
 import de.fhg.igd.slf4jplus.ALoggerFactory
+import eu.esdihumboldt.hale.common.codelist.io.CodeListReader
 import eu.esdihumboldt.hale.common.core.io.HaleIO
 import eu.esdihumboldt.hale.common.core.io.ImportProvider
 import eu.esdihumboldt.hale.common.core.io.Value
@@ -34,9 +35,12 @@ import eu.esdihumboldt.hale.common.core.io.project.model.Project
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile
 import eu.esdihumboldt.hale.common.core.io.report.IOReport
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier
+import eu.esdihumboldt.hale.common.inspire.codelists.CodeListRef
+import eu.esdihumboldt.hale.common.inspire.codelists.RegistryCodeLists
 import eu.esdihumboldt.hale.common.inspire.schemas.ApplicationSchemas
 import eu.esdihumboldt.hale.common.inspire.schemas.SchemaInfo
 import eu.esdihumboldt.hale.common.schema.io.SchemaIO
+import eu.esdihumboldt.hale.io.codelist.inspire.reader.INSPIRECodeListReader
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
 
@@ -96,8 +100,16 @@ public class GenerateTemplates {
 		project.modified = project.created
 
 		// schema reader
-		IOConfiguration schemaConf = createSchemaConfiguration(schema);
-		project.getResources().add(schemaConf);
+		IOConfiguration schemaConf = createSchemaConfiguration(schema)
+		project.resources << schemaConf
+
+		// code list readers
+		Collection<CodeListRef> codeLists = RegistryCodeLists.getCodeLists(schema.appSchemaId)
+		println "Found ${codeLists.size()} code lists for schema $schema.name"
+		for (CodeListRef cl in codeLists) {
+			IOConfiguration clConf = createCodeListConfiguration(cl)
+			project.resources << clConf
+		}
 
 		// write project
 		IContentType projectType = HaleIO.findContentType(ProjectWriter.class, null, filename);
@@ -135,6 +147,20 @@ public class GenerateTemplates {
 		result.providerId = XML_SCHEMA_READER_ID
 		result.getProviderConfiguration().put(ImportProvider.PARAM_SOURCE,
 				Value.of(schema.location.toString()))
+
+		result
+	}
+
+	private IOConfiguration createCodeListConfiguration(CodeListRef cl) {
+		IOConfiguration result = new IOConfiguration()
+
+		String loc = cl.location.toString()
+		//TODO append format and language for old versions!
+
+		result.actionId = CodeListReader.ACTION_ID
+		result.providerId = INSPIRECodeListReader.PROVIDER_ID
+		result.getProviderConfiguration().put(ImportProvider.PARAM_SOURCE,
+				Value.of(loc))
 
 		result
 	}

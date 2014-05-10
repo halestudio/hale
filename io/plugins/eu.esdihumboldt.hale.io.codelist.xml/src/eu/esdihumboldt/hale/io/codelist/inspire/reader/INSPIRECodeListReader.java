@@ -43,6 +43,11 @@ import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
  */
 public class INSPIRECodeListReader extends AbstractImportProvider implements CodeListReader {
 
+	/**
+	 * The provider ID.
+	 */
+	public static final String PROVIDER_ID = "eu.esdihumboldt.hale.io.codelist.inspire.reader";
+
 	private CodeList codelist;
 
 	@Override
