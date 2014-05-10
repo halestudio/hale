@@ -174,7 +174,6 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.ui.logback.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.ui.lookup"/>
       <plugin id="eu.esdihumboldt.hale.ui.schema.presets"/>
-      <plugin id="eu.esdihumboldt.hale.ui.schema.presets.inspire"/>
       <plugin id="eu.esdihumboldt.hale.ui.scripting"/>
       <plugin id="eu.esdihumboldt.hale.ui.style"/>
       <plugin id="eu.esdihumboldt.hale.ui.templates"/>
