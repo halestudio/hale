@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.codelist.service.internal.config;
+package eu.esdihumboldt.hale.common.codelist.config;
 
 import java.util.HashMap;
 import java.util.Map;
