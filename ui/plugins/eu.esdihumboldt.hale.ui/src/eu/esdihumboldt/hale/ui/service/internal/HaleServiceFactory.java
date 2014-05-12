@@ -29,6 +29,8 @@ import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.internal.AlignmentServiceImpl;
 import eu.esdihumboldt.hale.ui.service.align.internal.AlignmentServiceUndoSupport;
 import eu.esdihumboldt.hale.ui.service.align.resolver.UserFallbackEntityResolver;
+import eu.esdihumboldt.hale.ui.service.cell.TypeCellFocusService;
+import eu.esdihumboldt.hale.ui.service.cell.internal.TypeCellFocusServiceImpl;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 import eu.esdihumboldt.hale.ui.service.entity.internal.EntityDefinitionServiceImpl;
 import eu.esdihumboldt.hale.ui.service.entity.internal.EntityDefinitionServiceUndoSupport;
@@ -160,6 +162,10 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 
 		if (TestValues.class.equals(serviceInterface)) {
 			return new InstanceTestValues();
+		}
+
+		if (TypeCellFocusService.class.equals(serviceInterface)) {
+			return new TypeCellFocusServiceImpl();
 		}
 
 		return null;

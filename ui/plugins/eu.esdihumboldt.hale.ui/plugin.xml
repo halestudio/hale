@@ -550,6 +550,9 @@
          <service
                serviceClass="eu.esdihumboldt.hale.common.align.helper.TestValues">
          </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.ui.service.cell.TypeCellFocusService">
+         </service>
       </serviceFactory>
       <sourceProvider
             provider="eu.esdihumboldt.hale.ui.service.schema.internal.SchemaServiceSource">
