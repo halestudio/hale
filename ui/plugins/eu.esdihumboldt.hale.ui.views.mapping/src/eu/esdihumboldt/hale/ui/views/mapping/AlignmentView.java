@@ -635,11 +635,28 @@ public class AlignmentView extends AbstractMappingView {
 
 	}
 
-	private boolean isDisabledForCurrentType(Cell cell) {
+	/**
+	 * Checks whether the cell is disabled for the selected type cell
+	 * 
+	 * @param cell the cell which could be disabled
+	 * @return true if disabled, false if not or no type cell is selected
+	 */
+	protected boolean isDisabledForCurrentType(Cell cell) {
 		if (sourceTargetSelector.isCellSelected())
 			return cell.getDisabledFor().contains(sourceTargetSelector.getSelectedCell().getId());
 		else
 			return false;
+	}
+
+	/**
+	 * @return the selectedCell or null
+	 */
+	protected Cell getSelectedCell() {
+		// the sourceTargetSelector should not be null at this point
+		if (sourceTargetSelector != null)
+			return sourceTargetSelector.getSelectedCell();
+		else
+			return null;
 	}
 
 //	/**

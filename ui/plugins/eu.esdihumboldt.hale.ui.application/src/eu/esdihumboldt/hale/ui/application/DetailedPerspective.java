@@ -19,8 +19,8 @@ import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
-import eu.esdihumboldt.hale.ui.views.mapping.AlignmentView;
 import eu.esdihumboldt.hale.ui.views.mapping.AlignmentViewTypesOnly;
+import eu.esdihumboldt.hale.ui.views.mapping.NavigationSensitiveAlignmentView;
 import eu.esdihumboldt.hale.ui.views.schemas.SchemasViewOneTypeFocus;
 
 /**
@@ -55,7 +55,7 @@ public class DetailedPerspective implements IPerspectiveFactory {
 		// Right = Alignment View
 		IFolderLayout topRight = _layout.createFolder(
 				"topRight", IPageLayout.RIGHT, 0.4f, editorArea); //$NON-NLS-1$
-		topRight.addView(AlignmentView.ID);
+		topRight.addView(NavigationSensitiveAlignmentView.ID);
 
 		_layout.setEditorAreaVisible(false);
 

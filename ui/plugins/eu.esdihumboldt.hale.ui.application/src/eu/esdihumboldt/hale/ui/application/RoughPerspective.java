@@ -19,7 +19,7 @@ import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
-import eu.esdihumboldt.hale.ui.views.mapping.AlignmentViewTypesOnly;
+import eu.esdihumboldt.hale.ui.views.mapping.AlignmentViewTypeOverview;
 import eu.esdihumboldt.hale.ui.views.schemas.SchemasViewTypes;
 
 /**
@@ -48,7 +48,7 @@ public class RoughPerspective implements IPerspectiveFactory {
 		// Right = Alignment
 		IFolderLayout topRight = _layout.createFolder(
 				"topRight", IPageLayout.RIGHT, 0.4f, editorArea); //$NON-NLS-1$
-		topRight.addView(AlignmentViewTypesOnly.ID);
+		topRight.addView(AlignmentViewTypeOverview.ID);
 
 		_layout.setEditorAreaVisible(false);
 	}

@@ -35,6 +35,20 @@
             name="Detailed Transformation"
             restorable="true">
       </view>
+      <view
+            class="eu.esdihumboldt.hale.ui.views.mapping.NavigationSensitiveAlignmentView"
+            icon="icons/alignment.gif"
+            id="eu.esdihumboldt.hale.ui.views.mapping.alignmentnavigationsensitive"
+            name="Alignment - Based on Navigation Selection"
+            restorable="true">
+      </view>
+      <view
+            class="eu.esdihumboldt.hale.ui.views.mapping.AlignmentViewTypeOverview"
+            icon="icons/alignment.gif"
+            id="eu.esdihumboldt.hale.ui.views.mapping.typeoverview"
+            name="Track of Type Alignments"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.menus">

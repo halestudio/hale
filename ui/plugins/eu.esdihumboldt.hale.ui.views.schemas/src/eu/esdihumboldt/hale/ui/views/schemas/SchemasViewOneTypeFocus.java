@@ -18,13 +18,15 @@ package eu.esdihumboldt.hale.ui.views.schemas;
 import org.eclipse.swt.widgets.Composite;
 
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
-import eu.esdihumboldt.hale.ui.views.schemas.explorer.SingleTypeSchemaExplorer;
+import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
 import eu.esdihumboldt.hale.ui.views.schemas.explorer.SchemaExplorer;
+import eu.esdihumboldt.hale.ui.views.schemas.explorer.SingleTypeSchemaExplorer;
 
 /**
- * TODO Type description
+ * A Schema View that sets focus on one type relation. It reacts on Navigation
+ * Selections
  * 
- * @author Mina
+ * @author Yasmina Kammeyer
  */
 public class SchemasViewOneTypeFocus extends SchemasView {
 
@@ -48,6 +50,14 @@ public class SchemasViewOneTypeFocus extends SchemasView {
 			return new SingleTypeSchemaExplorer(parent, title, schemaSpace);
 		}
 		return null;
+	}
+
+	/**
+	 * @see PropertiesViewPart#getViewContext()
+	 */
+	@Override
+	protected String getViewContext() {
+		return "eu.esdihumboldt.hale.doc.user.schema_explorer";
 	}
 
 }

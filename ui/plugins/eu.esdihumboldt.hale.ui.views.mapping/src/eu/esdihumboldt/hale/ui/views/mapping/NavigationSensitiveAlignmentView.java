@@ -17,17 +17,12 @@ package eu.esdihumboldt.hale.ui.views.mapping;
 
 import java.util.Map;
 
-import org.eclipse.jface.action.ControlContribution;
-import org.eclipse.jface.action.IContributionItem;
-import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
-import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.WorkbenchPart;
@@ -37,31 +32,32 @@ import com.google.common.collect.Iterables;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.ui.HaleUI;
+import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider;
-import eu.esdihumboldt.hale.ui.function.common.TypeCellSelector;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceAdapter;
-import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener;
-import eu.esdihumboldt.hale.ui.service.cell.TypeCellFocusListener;
+import eu.esdihumboldt.hale.ui.service.cell.TypeCellFocusAdapter;
 import eu.esdihumboldt.hale.ui.service.cell.TypeCellFocusService;
 
 /**
- * An Alignment View for Types, overview and navigation.
+ * Alignment View that reacts only on Navigation Selections.
  * 
  * @author Yasmina Kammeyer
  */
-public class AlignmentViewTypesOnly extends AbstractMappingView {
+public class NavigationSensitiveAlignmentView extends AbstractMappingView {
 
 	/**
 	 * The view ID
 	 */
-	public static final String ID = "eu.esdihumboldt.hale.ui.views.mapping.alignmenttypes";
+	public static final String ID = "eu.esdihumboldt.hale.ui.views.mapping.alignmentnavigationsensitive";
 
-	private AlignmentServiceListener alignmentListener;
+	private AlignmentViewContentProvider contentProvider;
 
-	private TypeCellSelector sourceTargetSelector;
+	private final FunctionLabelProvider functionLabels = new FunctionLabelProvider();
 
-	private TypeCellFocusListener selectionListener;
+	private AlignmentServiceAdapter alignmentListener;
+
+	private TypeCellFocusAdapter selectionListener;
 
 	/**
 	 * @see eu.esdihumboldt.hale.ui.views.mapping.AbstractMappingView#createViewControl(org.eclipse.swt.widgets.Composite)
@@ -69,19 +65,6 @@ public class AlignmentViewTypesOnly extends AbstractMappingView {
 	@Override
 	public void createViewControl(Composite parent) {
 		super.createViewControl(parent);
-
-		TypeCellFocusService tc = (TypeCellFocusService) PlatformUI.getWorkbench().getService(
-				TypeCellFocusService.class);
-
-		tc.addListener(selectionListener = new TypeCellFocusListener() {
-
-			@Override
-			public void dataChanged(Cell cell) {
-				getViewer().setInput(cell);
-				refreshGraph();
-			}
-
-		});
 
 		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
 				AlignmentService.class);
@@ -94,24 +77,26 @@ public class AlignmentViewTypesOnly extends AbstractMappingView {
 
 					@Override
 					public void run() {
-						sourceTargetSelector.setSelection(StructuredSelection.EMPTY);
-
+						getViewer().setInput(null);
 					}
 				});
 			}
 
 			@Override
 			public void cellsRemoved(Iterable<Cell> cells) {
-				if (sourceTargetSelector.isCellSelected()
-						&& Iterables.contains(cells, sourceTargetSelector.getSelectedCell()))
-					sourceTargetSelector.setSelection(StructuredSelection.EMPTY);
+				// check for removed type cell
+				if (getSelectedCell() != null && Iterables.contains(cells, getSelectedCell())) {
+					getViewer().setInput(null);
+				}
+				refreshGraph();
 			}
 
 			@Override
 			public void cellsReplaced(Map<? extends Cell, ? extends Cell> cells) {
-				if (sourceTargetSelector.isCellSelected()
-						&& cells.keySet().contains(sourceTargetSelector.getSelectedCell()))
-					sourceTargetSelector.setSelection(StructuredSelection.EMPTY);
+				if (getSelectedCell() != null && cells.keySet().contains(getSelectedCell())) {
+					getViewer().setInput(null);
+				}
+				refreshGraph();
 			}
 
 			@Override
@@ -125,7 +110,7 @@ public class AlignmentViewTypesOnly extends AbstractMappingView {
 
 					@Override
 					public void run() {
-						sourceTargetSelector.setSelection(StructuredSelection.EMPTY);
+						getViewer().setInput(null);
 					}
 				});
 			}
@@ -137,6 +122,18 @@ public class AlignmentViewTypesOnly extends AbstractMappingView {
 
 		});
 
+		// Listen on Navigation Selection
+		TypeCellFocusService ts = (TypeCellFocusService) PlatformUI.getWorkbench().getService(
+				TypeCellFocusService.class);
+
+		ts.addListener(selectionListener = new TypeCellFocusAdapter() {
+
+			@Override
+			public void dataChanged(Cell cell) {
+				updateRelationWithCell(cell);
+			}
+		});
+
 		// listen on size changes
 		getViewer().getControl().addControlListener(new ControlAdapter() {
 
@@ -146,18 +143,21 @@ public class AlignmentViewTypesOnly extends AbstractMappingView {
 			}
 		});
 
+		// getViewer().setInput(new DefaultCell());
+
+		// Initialize the View
+		updateRelationWithCell(ts.getLastSelectedTypeCell());
 	}
 
 	/**
-	 * @return the last selected Cell
+	 * Set the input of the viewer if a cell is selected
+	 * 
+	 * @param cell the input cell, can be null
 	 */
-	protected Cell getSelectedCell() {
-		return sourceTargetSelector.getSelectedCell();
+	protected void updateRelationWithCell(Cell cell) {
+		getViewer().setInput(cell);
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.views.mapping.AbstractMappingView#refreshGraph()
-	 */
 	@Override
 	protected void refreshGraph() {
 
@@ -170,6 +170,17 @@ public class AlignmentViewTypesOnly extends AbstractMappingView {
 				updateLayout(true);
 			}
 		});
+	}
+
+	/**
+	 * Create the content provider to be used for the graph
+	 * 
+	 * @return the content provider
+	 */
+	@Override
+	protected IContentProvider createContentProvider() {
+		contentProvider = new AlignmentViewContentProvider();
+		return contentProvider;
 	}
 
 	/**
@@ -191,44 +202,56 @@ public class AlignmentViewTypesOnly extends AbstractMappingView {
 				return AlignmentUtil.reparentCell(cell, getSelectedCell(), true) != cell;
 			}
 
-			private final Color connectionHighlightColor = new Color(Display.getCurrent(), 255, 0,
-					0);
+			private final Color cellDisabledBackgroundColor = new Color(Display.getCurrent(), 240,
+					240, 240);
+			private final Color cellDisabledForegroundColor = new Color(Display.getCurrent(), 109,
+					109, 132);
+			private final Color cellDisabledHighlightColor = new Color(Display.getCurrent(),
+					(int) (getCellHighlightColor().getRed() * 0.7), (int) (getCellHighlightColor()
+							.getGreen() * 0.7), (int) (getCellHighlightColor().getBlue() * 0.7));
+
+			/**
+			 * @see eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider#getNodeHighlightColor(java.lang.Object)
+			 */
+			@Override
+			public Color getNodeHighlightColor(Object entity) {
+				if (entity instanceof Cell && isDisabledForCurrentType((Cell) entity))
+					return cellDisabledHighlightColor;
+
+				return super.getNodeHighlightColor(entity);
+			}
+
+			/**
+			 * @see eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider#getBackgroundColour(java.lang.Object)
+			 */
+			@Override
+			public Color getBackgroundColour(Object entity) {
+				if (entity instanceof Cell && isDisabledForCurrentType((Cell) entity))
+					return cellDisabledBackgroundColor;
+				return super.getBackgroundColour(entity);
+			}
+
+			/**
+			 * @see eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider#getForegroundColour(java.lang.Object)
+			 */
+			@Override
+			public Color getForegroundColour(Object entity) {
+				if (entity instanceof Cell && isDisabledForCurrentType((Cell) entity))
+					return cellDisabledForegroundColor;
+				return super.getForegroundColour(entity);
+			}
 
 			/**
 			 * @see eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider#dispose()
 			 */
 			@Override
 			public void dispose() {
-				connectionHighlightColor.dispose();
+				cellDisabledBackgroundColor.dispose();
+				cellDisabledForegroundColor.dispose();
+				cellDisabledHighlightColor.dispose();
 				super.dispose();
 			}
 		};
-	}
-
-	/**
-	 * Fill the view toolbar.
-	 */
-	@Override
-	protected void fillToolBar() {
-		super.fillToolBar();
-		IToolBarManager manager = getViewSite().getActionBars().getToolBarManager();
-
-		manager.add(new Separator());
-
-		// Create a new item; here create the button.
-		IContributionItem item = new ControlContribution("Select Cell") {
-
-			@Override
-			protected Control createControl(Composite parent) {
-
-				sourceTargetSelector = new TypeCellSelector(parent);
-
-				return sourceTargetSelector.getControl();
-			}
-
-		};
-
-		manager.add(item);
 	}
 
 	/**
@@ -239,9 +262,19 @@ public class AlignmentViewTypesOnly extends AbstractMappingView {
 	 */
 	protected boolean isDisabledForCurrentType(Cell cell) {
 		if (getSelectedCell() != null)
-			return cell.getDisabledFor().contains(sourceTargetSelector.getSelectedCell().getId());
+			return cell.getDisabledFor().contains(getSelectedCell().getId());
 		else
 			return false;
+	}
+
+	/**
+	 * @return the selectedCell or null
+	 */
+	protected Cell getSelectedCell() {
+		if (getViewer().getInput() instanceof Cell)
+			return (Cell) getViewer().getInput();
+		else
+			return null;
 	}
 
 	/**
@@ -249,7 +282,6 @@ public class AlignmentViewTypesOnly extends AbstractMappingView {
 	 */
 	@Override
 	public void dispose() {
-
 		if (alignmentListener != null) {
 			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
 					AlignmentService.class);
@@ -257,12 +289,12 @@ public class AlignmentViewTypesOnly extends AbstractMappingView {
 		}
 
 		if (selectionListener != null) {
-			TypeCellFocusService as = (TypeCellFocusService) PlatformUI.getWorkbench().getService(
+			TypeCellFocusService ts = (TypeCellFocusService) PlatformUI.getWorkbench().getService(
 					TypeCellFocusService.class);
-			as.removeListener(selectionListener);
+			ts.removeListener(selectionListener);
 		}
 
-		sourceTargetSelector.setSelection(StructuredSelection.EMPTY);
+		functionLabels.dispose();
 
 		super.dispose();
 	}
