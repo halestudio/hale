@@ -26,7 +26,7 @@ http://www.ordnancesurvey.co.uk/oswebsite/opendata/licence</description>
         <setting name="contentType">eu.esdihumboldt.hale.io.gml</setting>
     </resource>
     <resource action-id="eu.esdihumboldt.hale.io.schema.read.target" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
-        <setting name="source">resource://hale-test/inspire3/HydroPhysicalWaters.xsd</setting>
+        <setting name="source">http://inspire.ec.europa.eu/schemas/hy-p/3.0/HydroPhysicalWaters.xsd</setting>
         <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
     </resource>
     <file name="styles.sld" location="file:/C:/Users/sitemple/Entwicklung/hale/_testdata/hydro%20UK/basic/hydroEx_inspire.halex.styles.sld"/>
