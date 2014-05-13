@@ -25,8 +25,12 @@ import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
+import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaCategory;
+import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaCategoryExtension;
 import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaPreset;
 
 /**
@@ -38,6 +42,8 @@ public class SchemaPresetLabelProvider extends StyledCellLabelProvider implement
 
 	private final Image defImage = AbstractUIPlugin.imageDescriptorFromPlugin(
 			"eu.esdihumboldt.hale.ui.schema.presets", "icons/def_preset.gif").createImage();
+	private final Image categoryImage = PlatformUI.getWorkbench().getSharedImages()
+			.getImage(ISharedImages.IMG_OBJ_FOLDER);
 
 	private final Map<String, Image> urlImages = new HashMap<String, Image>();
 
@@ -45,7 +51,15 @@ public class SchemaPresetLabelProvider extends StyledCellLabelProvider implement
 	public void update(ViewerCell cell) {
 		Object element = cell.getElement();
 
-		StyledString text = new StyledString(getText(element));
+		StyledString text = new StyledString();
+
+		if (element instanceof SchemaPreset) {
+			SchemaPreset schema = (SchemaPreset) element;
+			text.append(schema.getName());
+		}
+		if (element instanceof SchemaCategory) {
+			text.append(((SchemaCategory) element).getName());
+		}
 
 		if (element instanceof SchemaPreset) {
 			SchemaPreset preset = (SchemaPreset) element;
@@ -85,6 +99,9 @@ public class SchemaPresetLabelProvider extends StyledCellLabelProvider implement
 
 			return defImage;
 		}
+		if (element instanceof SchemaCategory) {
+			return categoryImage;
+		}
 		return null;
 	}
 
@@ -92,7 +109,13 @@ public class SchemaPresetLabelProvider extends StyledCellLabelProvider implement
 	public String getText(Object element) {
 		if (element instanceof SchemaPreset) {
 			SchemaPreset schema = (SchemaPreset) element;
-			return schema.getName();
+			// name and category name for search
+			return schema.getName() + "("
+					+ SchemaCategoryExtension.getInstance().get(schema.getCategoryId()).getName()
+					+ ")";
+		}
+		if (element instanceof SchemaCategory) {
+			return ((SchemaCategory) element).getName();
 		}
 
 		return element.toString();

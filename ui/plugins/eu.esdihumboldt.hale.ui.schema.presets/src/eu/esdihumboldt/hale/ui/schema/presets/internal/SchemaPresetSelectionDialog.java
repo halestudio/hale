@@ -15,22 +15,21 @@
 
 package eu.esdihumboldt.hale.ui.schema.presets.internal;
 
-import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 
+import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaCategoryExtension;
 import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaPreset;
-import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaPresetExtension;
 import eu.esdihumboldt.hale.ui.util.selector.AbstractViewerSelectionDialog;
 
 /**
@@ -61,6 +60,17 @@ public class SchemaPresetSelectionDialog extends
 		FilteredTree tree = new FilteredTree(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL
 				| SWT.BORDER, patternFilter, true);
 		tree.getViewer().setComparator(new SchemaPresetComparator());
+
+		// set filter to only accept schema selection (must be set after
+		// pattern filter is created)
+		setFilters(new ViewerFilter[] { new ViewerFilter() {
+
+			@Override
+			public boolean select(Viewer viewer, Object parentElement, Object element) {
+				return element instanceof SchemaPreset;
+			}
+		} });
+
 		return tree.getViewer();
 	}
 
@@ -70,40 +80,9 @@ public class SchemaPresetSelectionDialog extends
 	@Override
 	protected void setupViewer(TreeViewer viewer, SchemaPreset initialSelection) {
 		viewer.setLabelProvider(new SchemaPresetLabelProvider());
-		viewer.setContentProvider(new ITreeContentProvider() {
+		viewer.setContentProvider(new SchemaPresetContentProvider());
 
-			@Override
-			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-				// do nothing
-			}
-
-			@Override
-			public void dispose() {
-				// ignore
-			}
-
-			@Override
-			public boolean hasChildren(Object element) {
-				return false;
-			}
-
-			@Override
-			public Object getParent(Object element) {
-				return null;
-			}
-
-			@Override
-			public Object[] getElements(Object inputElement) {
-				return ArrayContentProvider.getInstance().getElements(inputElement);
-			}
-
-			@Override
-			public Object[] getChildren(Object parentElement) {
-				return new Object[] {};
-			}
-		});
-
-		viewer.setInput(SchemaPresetExtension.getInstance().getElements());
+		viewer.setInput(SchemaCategoryExtension.getInstance().getElements());
 
 		if (initialSelection != null) {
 			viewer.setSelection(new StructuredSelection(initialSelection));

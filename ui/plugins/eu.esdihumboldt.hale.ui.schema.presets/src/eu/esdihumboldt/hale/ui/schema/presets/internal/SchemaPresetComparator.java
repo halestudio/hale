@@ -20,6 +20,8 @@ import java.util.Objects;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 
+import eu.esdihumboldt.hale.ui.schema.presets.extension.Named;
+import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaCategoryExtension;
 import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaPreset;
 
 /**
@@ -34,8 +36,22 @@ public class SchemaPresetComparator extends ViewerComparator {
 		if (e1 instanceof SchemaPreset && e2 instanceof SchemaPreset) {
 			return compare((SchemaPreset) e1, (SchemaPreset) e2);
 		}
+		if (e1 instanceof Named && e2 instanceof Named) {
+			return compare((Named) e1, (Named) e2);
+		}
 
 		return super.compare(viewer, e1, e2);
+	}
+
+	private int compare(Named e1, Named e2) {
+		if (SchemaCategoryExtension.DEFAULT_CATEGORY.equals(e1)) {
+			return 1;
+		}
+		else if (SchemaCategoryExtension.DEFAULT_CATEGORY.equals(e2)) {
+			return -1;
+		}
+
+		return e1.getName().compareToIgnoreCase(e2.getName());
 	}
 
 	private int compare(SchemaPreset o1, SchemaPreset o2) {
