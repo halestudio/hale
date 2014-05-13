@@ -26,14 +26,12 @@ import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
  * 
  * @author Simon Templer
  */
-public interface SchemaPreset extends Identifiable {
+public interface SchemaPreset extends Named, Identifiable {
 
 	/**
-	 * Get the schema name.
-	 * 
-	 * @return the schema name
+	 * @return the category identifier
 	 */
-	public abstract String getName();
+	String getCategoryId();
 
 	/**
 	 * Get a tag to discern it from other versions of the same schema, e.g.
