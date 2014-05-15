@@ -7,7 +7,7 @@
 	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
 		<classpath>
 			<pathelement path="${bld.loc}/../../../platform/tools/xjc/com.springsource.com.sun.tools.xjc-2.1.7.jar"/>
-			<pathelement path="${bld.loc}/../../../platform/target/plugins/com.sun.xml.bind/com.sun.xml.bind-2.1.7.jar"/>
+			<pathelement path="${bld.loc}/../../../platform/tools/xjc/com.sun.xml.bind-2.1.7.jar"/>
 		</classpath>
 	</taskdef>
 	
