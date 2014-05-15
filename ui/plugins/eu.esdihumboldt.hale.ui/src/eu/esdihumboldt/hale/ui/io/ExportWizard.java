@@ -16,9 +16,12 @@
 
 package eu.esdihumboldt.hale.ui.io;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.ui.PlatformUI;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -26,8 +29,12 @@ import com.google.common.collect.ListMultimap;
 import eu.esdihumboldt.hale.common.core.io.ExportProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
+import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptorDecorator;
+import eu.esdihumboldt.hale.common.core.io.extension.IOProviderExtension;
+import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
+import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 
 /**
  * Abstract export wizard
@@ -40,7 +47,35 @@ import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
  */
 public abstract class ExportWizard<P extends ExportProvider> extends IOWizard<P> {
 
+	/**
+	 * I/O provider descriptor marked as preset.
+	 */
+	private static class PresetDescriptor extends IOProviderDescriptorDecorator {
+
+		private final String name;
+
+		/**
+		 * @param descriptor the decoratee
+		 * @param name the preset name
+		 */
+		public PresetDescriptor(IOProviderDescriptor descriptor, String name) {
+			super(descriptor);
+			this.name = name;
+		}
+
+		/**
+		 * @return the preset name
+		 */
+		@SuppressWarnings("unused")
+		public String getName() {
+			return name;
+		}
+
+	}
+
 	private ExportSelectTargetPage<P, ? extends ExportWizard<P>> selectTargetPage;
+
+	private final ProjectService projectService;
 
 	/**
 	 * @see IOWizard#IOWizard(Class)
@@ -52,6 +87,66 @@ public abstract class ExportWizard<P extends ExportProvider> extends IOWizard<P>
 
 		setDefaultPageImageDescriptor(HALEUIPlugin.imageDescriptorFromPlugin(
 				HALEUIPlugin.PLUGIN_ID, "/icons/banner/export_wiz.png"));
+
+		projectService = (ProjectService) PlatformUI.getWorkbench()
+				.getService(ProjectService.class);
+	}
+
+	/**
+	 * @return the names of presets applicable for the provider type
+	 */
+	public Collection<String> getPresets() {
+		return projectService.getExportConfigurationNames(getProviderType());
+	}
+
+	/**
+	 * Set the given preset.
+	 * 
+	 * @param preset the preset name
+	 * @return if the preset was successfully set
+	 */
+	public boolean setPreset(String preset) {
+		IOConfiguration config = projectService.getExportConfiguration(preset);
+		if (config != null) {
+			IOProviderDescriptor descriptor = IOProviderExtension.getInstance().getFactory(
+					config.getProviderId());
+			if (descriptor != null) {
+				descriptor = new PresetDescriptor(descriptor, preset);
+				setProviderFactory(descriptor);
+				getProvider().loadConfiguration(config.getProviderConfiguration());
+				setContentType(getProvider().getContentType());
+				return true;
+			}
+		}
+
+		setProviderFactory(null);
+		return false;
+	}
+
+	@Override
+	protected List<AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> getConfigurationPages() {
+		List<AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> pages = super
+				.getConfigurationPages();
+		if (pages == null) {
+			return null;
+		}
+
+		if (getProviderFactory() instanceof PresetDescriptor) {
+			// only accept the target page as configuration page
+			// because the other configuration is already provided
+			for (AbstractConfigurationPage<? extends P, ? extends IOWizard<P>> page : pages) {
+				if (page == getSelectTargetPage()) {
+					List<AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> result = new ArrayList<>();
+					result.add(page);
+					return result;
+				}
+			}
+			return null;
+		}
+		else {
+			// leave pages untouched
+			return pages;
+		}
 	}
 
 	/**
@@ -61,7 +156,7 @@ public abstract class ExportWizard<P extends ExportProvider> extends IOWizard<P>
 	public void addPages() {
 		super.addPages();
 
-		if (getFactories().size() == 1) {
+		if (getFactories().size() == 1 && getPresets().isEmpty()) {
 			// only one possibility, directly set the provider
 			setProviderFactory(getFactories().iterator().next());
 		}
@@ -118,6 +213,13 @@ public abstract class ExportWizard<P extends ExportProvider> extends IOWizard<P>
 			selectTargetPage = createSelectTargetPage();
 		}
 		return selectTargetPage;
+	}
+
+	/**
+	 * @return the project service
+	 */
+	protected ProjectService getProjectService() {
+		return projectService;
 	}
 
 }

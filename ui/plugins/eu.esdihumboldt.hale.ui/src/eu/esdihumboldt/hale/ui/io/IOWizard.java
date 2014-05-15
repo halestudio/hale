@@ -425,8 +425,11 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 	 * @param descriptor the provider factory to set
 	 */
 	public void setProviderFactory(IOProviderDescriptor descriptor) {
-		if (Objects.equal(descriptor, this.descriptor))
-			return;
+		/*
+		 * The following must be done even if the descriptor seems the same, as
+		 * the descriptor might be a preset and thus influence the configuration
+		 * pages.
+		 */
 
 		// disable old configuration pages
 		List<AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> pages = getConfigurationPages();
