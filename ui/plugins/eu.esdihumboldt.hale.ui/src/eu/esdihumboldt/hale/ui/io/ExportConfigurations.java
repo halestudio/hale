@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.io.instance.exportconfig;
+package eu.esdihumboldt.hale.ui.io;
 
 /**
  * Interface to define parameters for the export configurations

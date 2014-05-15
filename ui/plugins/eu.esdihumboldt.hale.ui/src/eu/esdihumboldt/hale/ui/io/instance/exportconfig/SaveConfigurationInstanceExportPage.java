@@ -41,6 +41,7 @@ import org.eclipse.ui.PlatformUI;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
+import eu.esdihumboldt.hale.ui.io.ExportConfigurations;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 
@@ -63,7 +64,7 @@ public class SaveConfigurationInstanceExportPage extends
 	public SaveConfigurationInstanceExportPage() {
 		super("instancExport.Namepage");
 
-		setTitle("Export configuration settings");
+		setTitle("Custom export configuration settings");
 		setDescription("Configure the export configuration");
 	}
 
@@ -192,7 +193,7 @@ public class SaveConfigurationInstanceExportPage extends
 
 		String confName = name.getText();
 		if (confName == null || confName.isEmpty()) {
-			setErrorMessage("Please provide a name for the configuration to easily identify it");
+			setErrorMessage("Please provide a name for the preset to easily identify it");
 			setPageComplete(false);
 			return;
 		}

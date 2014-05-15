@@ -191,7 +191,7 @@ public interface ProjectService {
 	public void removeExportConfiguration(String name);
 
 	/**
-	 * Get the export configuration with the given name.
+	 * Get a clone of the export configuration with the given name.
 	 * 
 	 * @param name the export configuration name
 	 * @return the I/O configuration
@@ -199,11 +199,21 @@ public interface ProjectService {
 	public IOConfiguration getExportConfiguration(String name);
 
 	/**
-	 * Get all the names of the saved export configurations
+	 * Get the names of all export configurations.
 	 * 
 	 * @return the export configuration names
 	 */
 	public Collection<String> getExportConfigurationNames();
+
+	/**
+	 * Get the names of export configurations applicable for the given provider
+	 * class.
+	 * 
+	 * @param providerClass the provider type
+	 * 
+	 * @return the export configuration names
+	 */
+	public Collection<String> getExportConfigurationNames(Class<? extends IOProvider> providerClass);
 
 	/**
 	 * Returns the location the current project was loaded from. May be

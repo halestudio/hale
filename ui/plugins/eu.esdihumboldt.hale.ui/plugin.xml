@@ -781,7 +781,7 @@
             action="eu.esdihumboldt.hale.io.instance.write.transformed"
             customTitle="Create export configuration"
             id="eu.esdihumboldt.hale.io.instance.write.transformed.save.ui"
-            label="Create data export configuration..."
+            label="Create custom data export..."
             priority="9"
             projectResource="false"
             wizard="eu.esdihumboldt.hale.ui.io.instance.exportconfig.SaveConfigurationInstanceExportWizard">
