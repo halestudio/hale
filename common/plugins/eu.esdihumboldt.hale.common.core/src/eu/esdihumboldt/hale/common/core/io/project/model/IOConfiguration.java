@@ -39,8 +39,6 @@ public class IOConfiguration implements Serializable, Cloneable {
 
 	private String providerId;
 
-	private String name;
-
 	/**
 	 * Value that optionally stores cached information or the cached resource
 	 * and may be updated when the {@link IOConfiguration} is executed.
@@ -69,26 +67,11 @@ public class IOConfiguration implements Serializable, Cloneable {
 
 		copy.setActionId(getActionId());
 		copy.setProviderId(getProviderId());
-		copy.setName(getName());
 		copy.setCache(getCache());
 
 		copy.getProviderConfiguration().putAll(getProviderConfiguration());
 
 		return copy;
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	/**

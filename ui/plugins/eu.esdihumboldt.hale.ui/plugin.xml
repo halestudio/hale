@@ -777,6 +777,24 @@
         </with>
      </enabledWhen>
   </action-ui>
+  <action-ui
+            action="eu.esdihumboldt.hale.io.instance.write.transformed"
+            customTitle="Create export configuration"
+            id="eu.esdihumboldt.hale.io.instance.write.transformed.save.ui"
+            label="Create data export configuration..."
+            priority="9"
+            projectResource="false"
+            wizard="eu.esdihumboldt.hale.ui.io.instance.exportconfig.SaveConfigurationInstanceExportWizard">
+         <enabledWhen
+               disabledReason="No target schema available">
+            <with
+                  variable="hale.schemas.has_mappable_target">
+               <equals
+                     value="true">
+               </equals>
+            </with>
+         </enabledWhen>
+      </action-ui>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.ui.io.source">

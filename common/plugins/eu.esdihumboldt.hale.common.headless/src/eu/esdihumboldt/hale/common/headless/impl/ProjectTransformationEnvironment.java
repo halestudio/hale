@@ -18,9 +18,10 @@ package eu.esdihumboldt.hale.common.headless.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.google.common.base.Strings;
 
@@ -32,6 +33,7 @@ import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
+import eu.esdihumboldt.hale.common.core.io.project.model.ExportConfigurationMap;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
@@ -64,9 +66,9 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 
 	private final Alignment alignment;
 
-	private final List<IOConfiguration> exportTemplates = new ArrayList<IOConfiguration>();
+	private final Map<String, IOConfiguration> exportTemplates = new ExportConfigurationMap();
 
-	private final List<IOConfiguration> exportPresets = new ArrayList<IOConfiguration>();
+	private final Map<String, IOConfiguration> exportPresets = new ExportConfigurationMap();
 
 	/**
 	 * Project context service provider.
@@ -132,7 +134,8 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 		// TODO import/export configurations for data
 
 		// export presets
-		for (IOConfiguration conf : project.getResources()) {
+		for (Entry<String, IOConfiguration> preset : project.getExportConfigurations().entrySet()) {
+			IOConfiguration conf = preset.getValue();
 			if (InstanceIO.ACTION_SAVE_TRANSFORMED_DATA.equals(conf.getActionId())) {
 				// configuration for data export
 				IOConfiguration c = conf.clone();
@@ -141,10 +144,11 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 				IOProviderDescriptor factory = HaleIO.findIOProviderFactory(InstanceWriter.class,
 						null, c.getProviderId());
 				if (factory != null) {
-					if (Strings.isNullOrEmpty(c.getName())) {
-						c.setName(factory.getDisplayName());
+					String name = preset.getKey();
+					if (Strings.isNullOrEmpty(name)) {
+						name = factory.getDisplayName();
 					}
-					exportPresets.add(c);
+					exportPresets.put(name, c);
 				}
 				else {
 					log.error("I/O provider for export preset not found.");
@@ -165,8 +169,7 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 				IOConfiguration conf = new IOConfiguration();
 				conf.setActionId(InstanceIO.ACTION_SAVE_TRANSFORMED_DATA);
 				conf.setProviderId(factory.getIdentifier());
-				conf.setName(factory.getDisplayName());
-				exportTemplates.add(conf);
+				exportTemplates.put(factory.getDisplayName(), conf);
 			} catch (IOProviderConfigurationException e) {
 				// ignore
 			} catch (Exception e) {
@@ -175,28 +178,14 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 		}
 	}
 
-	/**
-	 * @see TransformationEnvironment#getExportPresets()
-	 */
 	@Override
-	public Collection<? extends IOConfiguration> getExportPresets() {
-		List<IOConfiguration> result = new ArrayList<IOConfiguration>();
-		for (IOConfiguration conf : exportPresets) {
-			result.add(conf.clone());
-		}
-		return result;
+	public Map<String, ? extends IOConfiguration> getExportPresets() {
+		return Collections.unmodifiableMap(exportPresets);
 	}
 
-	/**
-	 * @see TransformationEnvironment#getExportTemplates()
-	 */
 	@Override
-	public Collection<? extends IOConfiguration> getExportTemplates() {
-		List<IOConfiguration> result = new ArrayList<IOConfiguration>();
-		for (IOConfiguration conf : exportTemplates) {
-			result.add(conf.clone());
-		}
-		return result;
+	public Map<String, ? extends IOConfiguration> getExportTemplates() {
+		return Collections.unmodifiableMap(exportTemplates);
 	}
 
 	@Override

@@ -41,6 +41,6 @@ public class SelectTargetExportConfigurationPage extends InstanceSelectTargetPag
 		Set<IContentType> contentType = new HashSet<IContentType>();
 		contentType.add(getWizard().getProvider().getContentType());
 		getSaveFieldEditor().setContentTypes(contentType);
-
 	}
+
 }

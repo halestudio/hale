@@ -15,23 +15,16 @@
 
 package eu.esdihumboldt.hale.ui.io.instance.exportconfig;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.text.MessageFormat;
 
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.ui.PlatformUI;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.ExportProvider;
-import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
-import eu.esdihumboldt.hale.common.core.io.report.IOReport;
-import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
-import eu.esdihumboldt.hale.common.instance.model.Filter;
-import eu.esdihumboldt.hale.common.instance.model.Instance;
-import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
-import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
-import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.ui.io.instance.InstanceExportWizard;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 
@@ -42,37 +35,25 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectService;
  */
 public class SaveConfigurationInstanceExportWizard extends InstanceExportWizard {
 
+	private static final ALogger log = ALoggerFactory
+			.getLogger(SaveConfigurationInstanceExportWizard.class);
+
+	private String configurationName;
+
 	/**
-	 * @see eu.esdihumboldt.hale.ui.io.IOWizard#execute(eu.esdihumboldt.hale.common.core.io.IOProvider,
-	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
+	 * @return the name of the export configuration
 	 */
-	@Override
-	protected IOReport execute(IOProvider provider, IOReporter defaultReporter) {
-
-		IOConfiguration configuration = new IOConfiguration();
-		// store the (export) configuration of the provider in the new IO
-		// configuration
-		configuration.setActionId(getActionId());
-		configuration.setProviderId(getProvider().getContentType().getId());
-		provider.storeConfiguration(configuration.getProviderConfiguration());
-
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
-		// target is not set here and also not needed for the configuration
-		configuration.getProviderConfiguration().remove(ExportProvider.PARAM_TARGET);
-		// add the new configuration to the export configurations of the project
-		List<IOConfiguration> configList = new ArrayList<IOConfiguration>();
-		configList.add(configuration);
-		ps.addExportConfigurations(configList);
-
-		// no provider is executed so we return the default reporter
-		defaultReporter.setSuccess(true);
-		return defaultReporter;
+	public String getConfigurationName() {
+		return configurationName;
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.io.ExportWizard#addPages()
+	 * @param configurationName the export configuration name to set
 	 */
+	public void setConfigurationName(String configurationName) {
+		this.configurationName = configurationName;
+	}
+
 	@Override
 	public void addPages() {
 		super.addPages();
@@ -80,9 +61,6 @@ public class SaveConfigurationInstanceExportWizard extends InstanceExportWizard 
 		addPage(new SaveConfigurationInstanceExportPage());
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.io.IOWizard#getNextPage(org.eclipse.jface.wizard.IWizardPage)
-	 */
 	@Override
 	public IWizardPage getNextPage(IWizardPage page) {
 		IWizardPage nextPage = super.getNextPage(page);
@@ -100,50 +78,29 @@ public class SaveConfigurationInstanceExportWizard extends InstanceExportWizard 
 		return nextPage;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.io.instance.InstanceExportWizard#performFinish()
-	 */
 	@Override
 	public boolean performFinish() {
-		// set a dummy instance collection to pass provider validation
-		getProvider().setInstances(new InstanceCollection() {
+		if (!applyConfiguration()) {
+			return false;
+		}
 
-			@Override
-			public InstanceReference getReference(Instance instance) {
-				return null;
-			}
+		IOConfiguration configuration = new IOConfiguration();
+		// store the (export) configuration of the provider in the new IO
+		// configuration
+		configuration.setActionId(getActionId());
+		configuration.setProviderId(getProvider().getContentType().getId());
+		getProvider().storeConfiguration(configuration.getProviderConfiguration());
 
-			@Override
-			public Instance getInstance(InstanceReference reference) {
-				return null;
-			}
+		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
+				ProjectService.class);
+		// target is not set here and also not needed for the configuration
+		configuration.getProviderConfiguration().remove(ExportProvider.PARAM_TARGET);
+		// add the new configuration to the export configurations of the project
+		ps.addExportConfiguration(configurationName, configuration);
 
-			@Override
-			public int size() {
-				return 0;
-			}
+		log.userInfo(MessageFormat
+				.format("Created export configuration ''{0}''", configurationName));
 
-			@Override
-			public InstanceCollection select(Filter filter) {
-				return null;
-			}
-
-			@Override
-			public ResourceIterator<Instance> iterator() {
-				return null;
-			}
-
-			@Override
-			public boolean isEmpty() {
-				// collection must not be empty to pass validation
-				return false;
-			}
-
-			@Override
-			public boolean hasSize() {
-				return false;
-			}
-		});
-		return super.performFinish();
+		return true;
 	}
 }
