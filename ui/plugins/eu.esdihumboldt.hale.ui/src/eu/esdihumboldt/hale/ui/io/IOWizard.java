@@ -450,7 +450,11 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 		}
 
 		// force button update
-		getContainer().updateButtons();
+		try {
+			getContainer().updateButtons();
+		} catch (NullPointerException e) {
+			// ignore - buttons may not have been initialized yet
+		}
 
 		fireProviderFactoryChanged(descriptor);
 	}
