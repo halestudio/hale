@@ -10,23 +10,22 @@ package eu.esdihumboldt.hale.common.core.io.project.model.internal.generated;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import org.w3c.dom.Element;
 
 
 /**
- * <p>Java class for ComplexPropertyType complex type.
+ * <p>Java class for ExportConfigurationType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ComplexPropertyType">
+ * &lt;complexType name="ExportConfigurationType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;any/>
+ *         &lt;element ref="{}configuration"/>
  *       &lt;/sequence>
  *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
@@ -37,38 +36,38 @@ import org.w3c.dom.Element;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ComplexPropertyType", propOrder = {
-    "any"
+@XmlType(name = "ExportConfigurationType", propOrder = {
+    "configuration"
 })
-public class ComplexPropertyType {
+public class ExportConfigurationType {
 
-    @XmlAnyElement
-    protected Element any;
+    @XmlElement(required = true)
+    protected IOConfigurationType configuration;
     @XmlAttribute(required = true)
     protected String name;
 
     /**
-     * Gets the value of the any property.
+     * Gets the value of the configuration property.
      * 
      * @return
      *     possible object is
-     *     {@link Element }
+     *     {@link IOConfigurationType }
      *     
      */
-    public Element getAny() {
-        return any;
+    public IOConfigurationType getConfiguration() {
+        return configuration;
     }
 
     /**
-     * Sets the value of the any property.
+     * Sets the value of the configuration property.
      * 
      * @param value
      *     allowed object is
-     *     {@link Element }
+     *     {@link IOConfigurationType }
      *     
      */
-    public void setAny(Element value) {
-        this.any = value;
+    public void setConfiguration(IOConfigurationType value) {
+        this.configuration = value;
     }
 
     /**

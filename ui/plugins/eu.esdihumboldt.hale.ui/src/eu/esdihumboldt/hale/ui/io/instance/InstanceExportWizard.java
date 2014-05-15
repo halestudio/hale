@@ -28,8 +28,6 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
-import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
-import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
@@ -40,7 +38,6 @@ import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.ui.io.ExportSelectTargetPage;
 import eu.esdihumboldt.hale.ui.io.ExportWizard;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
-import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
 
 /**
@@ -202,16 +199,16 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 		this.validatorFactory = validatorFactory;
 	}
 
-	/**
-	 * Get all export configuration saved in the current project
-	 * 
-	 * @return the exportConfigs
-	 */
-	public List<IOConfiguration> getExportConfigurations() {
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
-		Project p = (Project) ps.getProjectInfo();
-		return p.getExportConfigurations();
-	}
+//	/**
+//	 * Get all export configuration saved in the current project
+//	 * 
+//	 * @return the exportConfigs
+//	 */
+//	public List<IOConfiguration> getExportConfigurations() {
+//		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
+//				ProjectService.class);
+//		Project p = (Project) ps.getProjectInfo();
+//		return p.getExportConfigurations();
+//	}
 
 }

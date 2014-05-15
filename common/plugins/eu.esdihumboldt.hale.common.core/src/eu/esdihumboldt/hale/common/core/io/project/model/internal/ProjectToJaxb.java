@@ -28,6 +28,7 @@ import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFileInfo;
 import eu.esdihumboldt.hale.common.core.io.project.model.internal.generated.ComplexPropertyType;
+import eu.esdihumboldt.hale.common.core.io.project.model.internal.generated.ExportConfigurationType;
 import eu.esdihumboldt.hale.common.core.io.project.model.internal.generated.IOConfigurationType;
 import eu.esdihumboldt.hale.common.core.io.project.model.internal.generated.ObjectFactory;
 import eu.esdihumboldt.hale.common.core.io.project.model.internal.generated.ProjectFileType;
@@ -79,8 +80,13 @@ public class ProjectToJaxb {
 		}
 
 		// export configs
-		for (IOConfiguration exportConf : project.getExportConfigurations()) {
-			result.getExportConfig().add(toIOConfigurationType(exportConf));
+		for (Entry<String, IOConfiguration> confEntry : project.getExportConfigurations()
+				.entrySet()) {
+			IOConfigurationType conf = toIOConfigurationType(confEntry.getValue());
+			ExportConfigurationType exportConf = new ExportConfigurationType();
+			exportConf.setConfiguration(conf);
+			exportConf.setName(confEntry.getKey());
+			result.getExportConfig().add(exportConf);
 		}
 
 		// project files
@@ -125,7 +131,6 @@ public class ProjectToJaxb {
 		IOConfigurationType result = new IOConfigurationType();
 
 		result.setActionId(config.getActionId());
-		result.setName(config.getName());
 		result.setProviderId(config.getProviderId());
 
 		for (Entry<String, Value> setting : config.getProviderConfiguration().entrySet()) {

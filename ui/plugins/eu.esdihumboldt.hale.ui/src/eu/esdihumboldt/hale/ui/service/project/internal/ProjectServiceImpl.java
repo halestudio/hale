@@ -922,40 +922,28 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		return updater;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#addExportConfigurations(java.util.List)
-	 */
 	@Override
-	public void addExportConfigurations(List<IOConfiguration> confs) {
-		for (IOConfiguration conf : confs) {
-			main.getExportConfigurations().add(conf);
-		}
-		notifyExportConfigurationChanged();
-
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#removeExportConfigurations(java.util.List)
-	 */
-	@Override
-	public void removeExportConfigurations(List<IOConfiguration> confs) {
-		main.getExportConfigurations().removeAll(confs);
+	public void addExportConfiguration(String name, IOConfiguration conf) {
+		main.getExportConfigurations().put(name, conf);
+		setChanged();
 		notifyExportConfigurationChanged();
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#getExportConfigurationNames()
-	 */
 	@Override
-	public List<String> getExportConfigurationNames() {
-		List<String> names = new ArrayList<String>();
-		for (IOConfiguration conf : main.getExportConfigurations()) {
-			String name = conf.getProviderConfiguration().get("configurationName")
-					.getStringRepresentation();
-			if (name != null)
-				names.add(name);
-		}
-		return names;
+	public void removeExportConfiguration(String name) {
+		main.getExportConfigurations().remove(name);
+		setChanged();
+		notifyExportConfigurationChanged();
+	}
+
+	@Override
+	public IOConfiguration getExportConfiguration(String name) {
+		return main.getExportConfigurations().get(name);
+	}
+
+	@Override
+	public Collection<String> getExportConfigurationNames() {
+		return Collections.unmodifiableSet(main.getExportConfigurations().keySet());
 	}
 
 	@Override

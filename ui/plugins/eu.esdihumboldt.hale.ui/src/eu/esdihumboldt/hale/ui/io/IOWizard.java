@@ -504,33 +504,9 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 			return false;
 		}
 
-		// process main pages
-		for (int i = 0; i < mainPages.size(); i++) {
-			// validating is still necessary as it is not guaranteed to be up to
-			// date by handlePageChanging
-			boolean valid = validatePage(mainPages.get(i));
-			if (!valid) {
-				// TODO error message?!
-				return false;
-			}
+		if (!applyConfiguration()) {
+			return false;
 		}
-
-		// check if configuration pages are complete
-		List<AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> confPages = getConfigurationPages();
-		if (confPages != null) {
-			for (int i = 0; i < confPages.size(); i++) {
-				// validating is still necessary as it is not guaranteed to be
-				// up to date by handlePageChanging
-				boolean valid = validatePage(confPages.get(i));
-				if (!valid) {
-					// TODO error message?!
-					return false;
-				}
-			}
-		}
-
-		// process wizard
-		updateConfiguration(provider);
 
 		// create default report
 		IOReporter defReport = provider.createReporter();
@@ -618,6 +594,44 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 					e);
 			return false;
 		}
+	}
+
+	/**
+	 * Apply configuration of main pages, configuration pages and the wizard.
+	 * 
+	 * @return <code>true</code> if validation was successful,
+	 *         <code>false</code> otherwise
+	 */
+	protected boolean applyConfiguration() {
+		// process main pages
+		for (int i = 0; i < mainPages.size(); i++) {
+			// validating is still necessary as it is not guaranteed to be up to
+			// date by handlePageChanging
+			boolean valid = validatePage(mainPages.get(i));
+			if (!valid) {
+				// TODO error message?!
+				return false;
+			}
+		}
+
+		// check if configuration pages are complete
+		List<AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> confPages = getConfigurationPages();
+		if (confPages != null) {
+			for (int i = 0; i < confPages.size(); i++) {
+				// validating is still necessary as it is not guaranteed to be
+				// up to date by handlePageChanging
+				boolean valid = validatePage(confPages.get(i));
+				if (!valid) {
+					// TODO error message?!
+					return false;
+				}
+			}
+		}
+
+		// process wizard
+		updateConfiguration(provider);
+
+		return true;
 	}
 
 	/**

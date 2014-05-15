@@ -20,23 +20,12 @@ package eu.esdihumboldt.hale.ui.io.instance.exportconfig;
  * 
  * @author Patrick Lieb
  */
-public interface InstanceExportConfigurations {
-
-	/**
-	 * Name of the export configuration stored as a parameter in the provider
-	 */
-	public final String PARAM_CONFIGURATION_NAME = "configurationName";
+public interface ExportConfigurations {
 
 	/**
 	 * Description of the export configuration stored as a parameter in the
 	 * provider
 	 */
-	public final String PARAM_CONFIGURATION_DESCRIPTION = "description";
-
-	/**
-	 * Format of the file that should be export in the export configuration
-	 * stored as a parameter in the provider
-	 */
-	public final String PARAM_FILE_FORMAT = "fileFormat";
+	public final String PARAM_CONFIGURATION_DESCRIPTION = "meta.description";
 
 }
