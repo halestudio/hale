@@ -88,7 +88,7 @@ public class SaveConfigurationInstanceExportWizard extends InstanceExportWizard 
 		// store the (export) configuration of the provider in the new IO
 		// configuration
 		configuration.setActionId(getActionId());
-		configuration.setProviderId(getProvider().getContentType().getId());
+		configuration.setProviderId(getProviderFactory().getIdentifier());
 		getProvider().storeConfiguration(configuration.getProviderConfiguration());
 
 		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(

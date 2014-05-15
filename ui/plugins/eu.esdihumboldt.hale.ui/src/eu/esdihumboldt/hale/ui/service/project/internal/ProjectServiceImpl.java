@@ -938,7 +938,11 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 	@Override
 	public IOConfiguration getExportConfiguration(String name) {
-		return main.getExportConfigurations().get(name);
+		IOConfiguration conf = main.getExportConfigurations().get(name);
+		if (conf != null) {
+			return conf.clone();
+		}
+		return null;
 	}
 
 	@Override
