@@ -79,6 +79,7 @@ ext {
 		file('../server/plugins'),
 		file('../ui/plugins'),
 		file('../util/plugins'),
+		file('../app/plugins'),
 		file('../ext/styledmap'),
 		file('../ext/xslt'),
 		file('../ext/ageobw')
