@@ -17,6 +17,7 @@ package eu.esdihumboldt.util.groovy.sandbox.internal;
 
 import eu.esdihumboldt.util.groovy.sandbox.GroovyRestrictionException;
 import groovy.lang.Closure;
+import groovy.lang.GString;
 import groovy.lang.MissingPropertyException;
 import groovy.lang.Range;
 import groovy.lang.Script;
@@ -270,14 +271,32 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 			// delegation to this closure.
 			return false;
 		}
-		else if (isAllowedClass(receiver.getClass()))
+		else if (isAllowedClass(receiver.getClass())) {
+			checkExecute(receiver, method);
 			return instanceAllAllowedClasses.contains(receiver.getClass())
 					|| !InvokerHelper.getMetaClass(receiver).respondsTo(receiver, method).isEmpty();
+		}
 		else if (isScriptClass(receiver.getClass()) && !disallowedScriptMethods.contains(method))
 			return !InvokerHelper.getMetaClass(receiver).respondsTo(receiver, method).isEmpty();
 		throw new GroovyRestrictionException("Possible access of method " + method + " on class "
 				+ receiver.getClass().getSimpleName()
 				+ " is not allowed in Groovy transformations!");
+	}
+
+	/**
+	 * Checks for an execute call on List, String, String[] and GString.
+	 * 
+	 * @param receiver the receiver object
+	 * @param method the method name
+	 */
+	private void checkExecute(Object receiver, String method) {
+		if ("execute".equals(method)) {
+			if (receiver instanceof List || receiver instanceof String
+					|| receiver instanceof String[] || receiver instanceof GString) {
+				throw new GroovyRestrictionException(
+						"Possible access of method execute on List, String, String[] and GString is not allowed in Groovy transformations!");
+			}
+		}
 	}
 
 	private boolean isScriptClass(Class<?> receiver) {
