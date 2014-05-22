@@ -13,14 +13,14 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.io.xls;
+package eu.esdihumboldt.hale.io.csv;
 
 /**
- * TODO Type description
+ * Constants for IO of table instance files (csv and xls)
  * 
  * @author Patrick Lieb Lieb
  */
-public class XLSConstants {
+public class InstanceTableIOConstants {
 
 	/**
 	 * Parameter for XLS IO Provider to decide whether nested properties should

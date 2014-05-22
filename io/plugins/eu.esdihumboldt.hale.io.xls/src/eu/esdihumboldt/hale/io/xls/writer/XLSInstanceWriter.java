@@ -17,13 +17,9 @@ package eu.esdihumboldt.hale.io.xls.writer;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-
-import javax.xml.namespace.QName;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -39,37 +35,21 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
-import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceWriter;
-import eu.esdihumboldt.hale.common.instance.model.Instance;
-import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
-import eu.esdihumboldt.hale.common.instance.orient.OGroup;
 import eu.esdihumboldt.hale.common.instance.orient.OInstance;
-import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.io.csv.writer.AbstractTableInstanceWriter;
 import eu.esdihumboldt.hale.io.xls.XLSCellStyles;
-import eu.esdihumboldt.hale.io.xls.XLSConstants;
 
 /**
  * Instance export provider for xls files
  * 
  * @author Patrick Lieb
  */
-public class XLSInstanceWriter extends AbstractInstanceWriter {
+public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 
 	private Workbook wb;
 
 	private CellStyle headerStyle;
 	private CellStyle cellStyle;
-
-	private boolean solveNestedProperties;
-
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.IOProvider#isCancelable()
-	 */
-	@Override
-	public boolean isCancelable() {
-		return false;
-	}
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#execute(eu.esdihumboldt.hale.common.core.io.ProgressIndicator,
@@ -79,8 +59,7 @@ public class XLSInstanceWriter extends AbstractInstanceWriter {
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 
-		solveNestedProperties = getParameter(XLSConstants.SOLVE_NESTED_PROPERTIES)
-				.as(Boolean.class);
+		super.execute(progress, reporter);
 
 		// write xls file
 		if (getContentType().getId().equals("eu.esdihumboldt.hale.io.xls.xls")) {
@@ -98,30 +77,14 @@ public class XLSInstanceWriter extends AbstractInstanceWriter {
 		cellStyle = XLSCellStyles.getNormalStyle(wb, false);
 		headerStyle = XLSCellStyles.getHeaderStyle(wb);
 
-		// get all instances
-		InstanceCollection instances = getInstances();
-		Iterator<Instance> instanceIterator = instances.iterator();
-		Instance instance = instanceIterator.next();
+		List<List<List<Object>>> sheets = getTable();
+		List<String> sheetNames = getSheetNames();
 
-		// all instances with equal type definitions are stored in an extra
-		// sheet
-		TypeDefinition definition = instance.getDefinition();
+		for (int i = 0; i < sheets.size(); i++) {
+			Sheet sh = wb.createSheet(sheetNames.get(i));
 
-		// the sheet name is defined by the type definition
-		Sheet sh = wb.createSheet(definition.getDisplayName());
-
-		Row headerRow = sh.createRow(0);
-
-		// store instances with other type definitions in extra sheet
-		List<Instance> remaining = write(instanceIterator, instance, definition, sh, headerRow);
-		while (!remaining.isEmpty()) {
-			// this type defines the type of all instances in this sheet
-			TypeDefinition currentType = remaining.get(0).getDefinition();
-			Sheet newSheet = wb.createSheet(currentType.getDisplayName());
-			instanceIterator = remaining.iterator();
-			instance = instanceIterator.next();
-			headerRow = newSheet.createRow(0);
-			remaining = write(instanceIterator, instance, currentType, newSheet, headerRow);
+			// store instances with other type definitions in extra sheet
+			write(sheets.get(i), sh);
 		}
 
 		// write file
@@ -143,125 +106,26 @@ public class XLSInstanceWriter extends AbstractInstanceWriter {
 
 	// the first instance has to be handled independently since it determines
 	// the type definition of the current sheet
-	private List<Instance> write(Iterator<Instance> instances, Instance firstInstance,
-			TypeDefinition definition, Sheet sheet, Row headerRow) {
-		// position of current row
-		int rownum = 1;
+	private void write(List<List<Object>> table, Sheet sheet) {
 
-		// the instances that are currently processed
-		List<Instance> currentInstances = new ArrayList<Instance>();
-		// the instances that will be processed in next sheet
-		List<Instance> remaining = new ArrayList<Instance>();
+		for (int i = 0; i < table.size(); i++) {
+			Row row = sheet.createRow(i);
+			List<Object> tableRow = table.get(i);
+			writeRow(row, tableRow, i == 0);
 
-		// position of current cell in current row
-		currentInstances.add(firstInstance);
-
-		while (instances.hasNext()) {
-			Instance instance = instances.next();
-			if (instance.getDefinition().equals(definition)) {
-				currentInstances.add(instance);
-			}
-			else
-				remaining.add(instance);
-		}
-		// properties of current instance
-		Iterable<QName> allProperties = firstInstance.getPropertyNames();
-
-		// content of the cells of the header row
-		List<String> headerCells = new ArrayList<String>();
-
-		// write properties; currently only the first property of nested
-		// properties is selected
-		for (int i = 0; i < currentInstances.size(); i++) {
-			Instance instance = currentInstances.get(i);
-			Row row = sheet.createRow(rownum++);
-			int cellNum = 0;
-			for (QName qname : allProperties) {
-
-				// get property of the current instance
-				Object[] properties = instance.getProperty(qname);
-				if (properties != null && properties.length != 0) {
-					String cellValue = qname.getLocalPart();
-					// only the first property is evaluated
-					Object property = properties[0];
-					// if property is an OInstance, it's a nested property
-					if (solveNestedProperties && property instanceof OGroup) {
-						OGroup inst = (OGroup) property;
-						Iterator<QName> propertyIt = inst.getPropertyNames().iterator();
-						if (propertyIt.hasNext()) {
-							QName value = propertyIt.next();
-							Object nextProp = inst.getProperty(value)[0];
-							if (shouldBeDisplayed(nextProp)) {
-								cellValue += ".";
-								cellValue += value.getLocalPart();
-							}
-
-							// iterate over all nested properties
-							while (nextProp instanceof OGroup) {
-								OGroup oinst = (OGroup) nextProp;
-
-								Iterator<QName> qnames = oinst.getPropertyNames().iterator();
-								if (qnames.hasNext()) {
-									value = qnames.next();
-									nextProp = oinst.getProperty(value)[0];
-									if (shouldBeDisplayed(nextProp)) {
-										cellValue += ".";
-										cellValue += value.getLocalPart();
-									}
-									else
-										continue;
-								}
-								else
-									break;
-							}
-							if (!headerCells.contains(cellValue)) {
-								// XXX only if cell is needed
-								Cell headerCell = headerRow.createCell(cellNum);
-								headerCell.setCellStyle(headerStyle);
-								headerCell.setCellValue(cellValue);
-
-								// initialize cell
-								Cell cell = row.createCell(cellNum++);
-								cell.setCellStyle(cellStyle);
-								setValueOfCell(cell, nextProp);
-
-								headerCells.add(cellValue);
-							}
-							else {
-								int cellIndex = headerCells.indexOf(cellValue);
-								Cell cell = row.createCell(cellIndex);
-								cell.setCellStyle(cellStyle);
-								setValueOfCell(cell, nextProp);
-							}
-						}
-					}
-					else {
-						if (!headerCells.contains(cellValue)) {
-							// XXX only if cell is needed
-							Cell headerCell = headerRow.createCell(cellNum);
-							headerCell.setCellStyle(headerStyle);
-							headerCell.setCellValue(qname.getLocalPart());
-
-							// initialize cell
-							Cell cell = row.createCell(cellNum++); //
-							cell.setCellStyle(cellStyle);
-							setValueOfCell(cell, property);
-
-							headerCells.add(cellValue);
-						}
-						else {
-							int cellIndex = headerCells.indexOf(cellValue);
-							Cell cell = row.createCell(cellIndex); //
-							cell.setCellStyle(cellStyle);
-							setValueOfCell(cell, property);
-						}
-					}
-				}
-			}
 		}
 		resizeSheet(sheet);
+	}
 
-		return remaining;
+	private void writeRow(Row row, List<Object> tableRow, boolean header) {
+		for (int k = 0; k < tableRow.size(); k++) {
+			Cell cell = row.createCell(k);
+			if (header)
+				cell.setCellStyle(headerStyle);
+			else
+				cell.setCellStyle(cellStyle);
+			setValueOfCell(cell, tableRow.get(k));
+		}
 	}
 
 	// only based on first row
@@ -297,12 +161,5 @@ public class XLSInstanceWriter extends AbstractInstanceWriter {
 			else
 				cell.setCellValue("");
 		}
-	}
-
-	private boolean shouldBeDisplayed(Object obj) {
-		if (obj instanceof OGroup) {
-			return !(((OGroup) obj).getDefinition() instanceof GroupPropertyDefinition);
-		}
-		return true;
 	}
 }
