@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.io.xls.ui;
+package eu.esdihumboldt.hale.io.csv.ui;
 
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
@@ -22,16 +22,16 @@ import org.eclipse.swt.widgets.Composite;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.Value;
-import eu.esdihumboldt.hale.io.xls.XLSConstants;
+import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 
 /**
- * Configuration page for xls instance export
+ * Configuration page for exporting of instances
  * 
  * @author Patrick Lieb
  */
-public class XLSInstanceExportConfigurationPage extends
+public class InstanceExportConfigurationPage extends
 		AbstractConfigurationPage<IOProvider, IOWizard<IOProvider>> {
 
 	private Button solveNestedProperties;
@@ -39,7 +39,7 @@ public class XLSInstanceExportConfigurationPage extends
 	/**
 	 * 
 	 */
-	public XLSInstanceExportConfigurationPage() {
+	public InstanceExportConfigurationPage() {
 		super("xlsInstanceExport.configPage");
 
 		setTitle("Additonal Export Options");
@@ -52,7 +52,6 @@ public class XLSInstanceExportConfigurationPage extends
 	@Override
 	public void enable() {
 		// not required
-
 	}
 
 	/**
@@ -61,7 +60,6 @@ public class XLSInstanceExportConfigurationPage extends
 	@Override
 	public void disable() {
 		// not required
-
 	}
 
 	/**
@@ -69,7 +67,7 @@ public class XLSInstanceExportConfigurationPage extends
 	 */
 	@Override
 	public boolean updateConfiguration(IOProvider provider) {
-		provider.setParameter(XLSConstants.SOLVE_NESTED_PROPERTIES,
+		provider.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES,
 				Value.of(solveNestedProperties.getSelection()));
 		return true;
 	}
@@ -83,6 +81,5 @@ public class XLSInstanceExportConfigurationPage extends
 		solveNestedProperties = new Button(page, SWT.CHECK);
 		solveNestedProperties.setText("Solve nested properties");
 		solveNestedProperties.setSelection(false);
-
 	}
 }

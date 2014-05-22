@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 
-import javax.xml.namespace.QName;
-
 import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.Platform;
@@ -23,13 +21,18 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceUtil;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.test.TestUtil;
+import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
 import eu.esdihumboldt.hale.io.csv.reader.CommonSchemaConstants;
-import eu.esdihumboldt.hale.io.xls.XLSConstants;
 import eu.esdihumboldt.hale.io.xls.reader.XLSInstanceReader;
 import eu.esdihumboldt.hale.io.xls.reader.XLSSchemaReader;
 import eu.esdihumboldt.hale.io.xls.writer.XLSInstanceWriter;
 
-public class XLSInstanceWriterTest extends TestCase {
+/**
+ * Tests for reading and writing instances in XLS file format
+ * 
+ * @author Patrick Lieb
+ */
+public class XLSInstanceIOTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
@@ -38,6 +41,15 @@ public class XLSInstanceWriterTest extends TestCase {
 		TestUtil.startConversionService();
 	}
 
+	/**
+	 * Exports the instances created by
+	 * {@link XLSInstanceWriterTestExamples#createInstanceCollection} into a
+	 * temporary XLS file by executing {@link XLSInstanceWriter#execute}.
+	 * Afterwards, the schema is read by {@link XLSSchemaReader} and the
+	 * instances are loaded by {@link XLSInstanceReader}. Each of the imported
+	 * instances are compared with the original instances. In addtion, a
+	 * different set of instances is compared with the imported instances.
+	 */
 	@Test
 	public void test() {
 		// set instances to xls instance writer
@@ -45,27 +57,28 @@ public class XLSInstanceWriterTest extends TestCase {
 		InstanceCollection instances = XLSInstanceWriterTestExamples.createInstanceCollection();
 		IContentType contentType = Platform.getContentTypeManager().getContentType(
 				"eu.esdihumboldt.hale.io.xls.xls");
-		writer.setParameter(XLSConstants.SOLVE_NESTED_PROPERTIES, Value.of(false));
+		writer.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES, Value.of(false));
 		File tempDir = Files.createTempDir();
 		File tempFile = new File(tempDir, "data.xls");
 		writer.setInstances(instances);
 		try {
-			// write instances to temporary xls file
+			// write instances to a temporary XLS file
 			writer.setTarget(new FileIOSupplier(tempFile));
 			writer.setContentType(contentType);
-
 			IOReport report = writer.execute(null);
+
 			assertTrue(report.isSuccess());
 
 		} catch (IOProviderConfigurationException | IOException e) {
 			fail("Execution of xls instance writer failed.");
 		}
 
+		// read the schema from the temporary XLS file
 		XLSSchemaReader schemaReader = new XLSSchemaReader();
 		schemaReader.setContentType(contentType);
 		schemaReader.setSource(new FileIOSupplier(tempFile));
 		schemaReader.setParameter(CommonSchemaConstants.PARAM_TYPENAME, Value.of("ItemType"));
-		schemaReader.setParameter(XLSConstants.SOLVE_NESTED_PROPERTIES, Value.of(false));
+		schemaReader.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES, Value.of(false));
 		try {
 			IOReport report = schemaReader.execute(null);
 			assertTrue(report.isSuccess());
@@ -74,11 +87,12 @@ public class XLSInstanceWriterTest extends TestCase {
 		}
 		Schema schema = schemaReader.getSchema();
 
+		// read the instances form the temporary XLS file
 		XLSInstanceReader reader = new XLSInstanceReader();
 		reader.setSourceSchema(schema);
 		reader.setParameter(CommonSchemaConstants.PARAM_SKIP_FIRST_LINE, Value.of(true));
 		reader.setParameter(CommonSchemaConstants.PARAM_TYPENAME, Value.of("ItemType"));
-		reader.setParameter(XLSConstants.SOLVE_NESTED_PROPERTIES, Value.of(false));
+		reader.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES, Value.of(false));
 		reader.setContentType(contentType);
 		reader.setSource(new FileIOSupplier(tempFile));
 		try {
@@ -87,15 +101,18 @@ public class XLSInstanceWriterTest extends TestCase {
 		} catch (IOProviderConfigurationException | IOException e) {
 			fail("Execution of xls instance reader failed.");
 		}
+		// compare size of instance collection
 		InstanceCollection inst = reader.getInstances();
 		assertEquals(4, inst.size());
 
+		// check if instance collection contains current instance
 		Iterator<Instance> instanceIt = inst.iterator();
 		while (instanceIt.hasNext()) {
 			Instance instance = instanceIt.next();
 			assertTrue(contains(instances.iterator(), instance));
 		}
 
+		// other instance should be contained in the imported instances
 		InstanceCollection falseInstances = XLSInstanceWriterTestExamples
 				.createFalseTestInstanceCollection();
 		instanceIt = inst.iterator();
@@ -118,49 +135,6 @@ public class XLSInstanceWriterTest extends TestCase {
 				return true;
 		}
 		return false;
-	}
-
-	// currently only definition and properties
-	private boolean compareInstances(Instance first, Instance second) {
-		if (!first.getDefinition().getName().equals(second.getDefinition().getName()))
-			return false;
-		for (QName qname : first.getPropertyNames()) {
-			Object[] firstProp = first.getProperty(qname);
-			Object[] secProp = second.getProperty(qname);
-			String firstPropStr = "";
-			String secondPropStr = "";
-			if (firstProp != null && firstProp.length > 0) {
-				Object fProp = firstProp[0];
-				if (fProp != null) {
-					firstPropStr = firstProp[0].toString();
-				}
-				else {
-					// object is null!!!
-					firstProp = null;
-				}
-			}
-			if (secProp != null && secProp.length > 0) {
-				Object sProp = secProp[0];
-				if (sProp != null) {
-					secondPropStr = secProp[0].toString();
-				}
-				else
-					sProp = null;
-			}
-
-			if (!firstPropStr.equals(secondPropStr))
-				return false;
-
-//			if(firstProp != null && secProp != null && firstProp.length > 0 &&
-//					secProp.length > 0 && firstProp[0] != null && secProp[0] != null){
-////				String a = first.getProperty(qname)[0].toString();
-////				String b = secProp[0].toString();
-//				if(!first.getProperty(qname)[0].toString().equals(secProp[0].toString()))
-//					return false;
-//			} else
-//				return false;
-		}
-		return true;
 	}
 
 }
