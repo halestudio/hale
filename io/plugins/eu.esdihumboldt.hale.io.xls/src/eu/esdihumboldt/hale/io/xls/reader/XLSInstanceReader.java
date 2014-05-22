@@ -43,7 +43,6 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.io.csv.reader.CommonSchemaConstants;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVInstanceReader;
 import eu.esdihumboldt.hale.io.xls.AnalyseXLSSchemaTable;
-import eu.esdihumboldt.hale.io.xls.XLSConstants;
 
 /**
  * Read source data of xls instance files (based on the
@@ -87,8 +86,6 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 
 		boolean skipFirst = getParameter(CommonSchemaConstants.PARAM_SKIP_FIRST_LINE).as(
 				Boolean.class);
-		boolean solveNestedProperties = getParameter(XLSConstants.SOLVE_NESTED_PROPERTIES).as(
-				Boolean.class);
 		instances = new DefaultInstanceCollection(new ArrayList<Instance>());
 
 		try {
@@ -110,7 +107,7 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 		// skip if first row is a header
 		if (!skipFirst) {
 			// otherwise first line is also an instance
-			createInstanceCollection(analyser.getHeader(), reporter, solveNestedProperties);
+			createInstanceCollection(analyser.getHeader(), reporter);
 			line++;
 		}
 
@@ -118,7 +115,7 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 		Iterator<List<String>> allRows = rows.iterator();
 		while (allRows.hasNext()) {
 			List<String> row = allRows.next();
-			createInstanceCollection(row, reporter, solveNestedProperties);
+			createInstanceCollection(row, reporter);
 			line++;
 		}
 
@@ -136,37 +133,14 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 	 *            implemented yet)</b>
 	 **/
 	@SuppressWarnings("javadoc")
-	private void createInstanceCollection(List<String> row, IOReporter reporter,
-			boolean solveNestedProperties) {
+	private void createInstanceCollection(List<String> row, IOReporter reporter) {
 		MutableInstance instance = new DefaultInstance(type, null);
 
 		int propertyIndex = 0;
-//		List<String> header = analyser.getHeader();
 		for (int index = 0; index < row.size(); index++) {
 			String part = row.get(index);
 			if (part != null) {
 				PropertyDefinition property = propAr[propertyIndex];
-
-				// XXX create hierarchical schema
-//				if (solveNestedProperties) {
-//					String headerValue = header.get(propertyIndex);
-//					if (headerValue.contains(".")) {
-//						String[] values = headerValue.split("\\.");
-//						PropertyDefinition[] currentDefinitions = propAr;
-//						for (String value : values) {
-//							for (PropertyDefinition prop : currentDefinitions) {
-//								if (prop.getName().getLocalPart().equals(value)) {
-//									currentDefinitions = prop.getPropertyType()
-//											.getDeclaredChildren()
-//											.toArray(new PropertyDefinition[0]);
-//									property = prop;
-//									break;
-//								}
-//							}
-//						}
-//					}
-//
-//				}
 
 				if (part.isEmpty()) {
 					// FIXME make this configurable

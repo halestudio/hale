@@ -193,12 +193,11 @@ public class XLSSchemaReader extends AbstractTableSchemaReader {
 
 	private void configureProperty(DefaultPropertyDefinition property) {
 		// set constraints on property
-//		property.setConstraint(NillableFlag.DISABLED); // nillable
 		property.setConstraint(NillableFlag.ENABLED); // nillable FIXME
 		// should be configurable per field (see also CSVInstanceReader)
 		property.setConstraint(Cardinality.CC_EXACTLY_ONCE); // cardinality
 
-		// set metadata for property
+		// set metadata of property
 		property.setLocation(getSource().getLocation());
 	}
 
