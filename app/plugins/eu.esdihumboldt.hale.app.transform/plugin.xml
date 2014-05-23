@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="transform"
+         name="Execute a transformation based on a project file"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="any"
+            visible="true">
+         <run
+               class="eu.esdihumboldt.hale.app.transform.ExecApplication">
+         </run>
+      </application>
+   </extension>
+
+</plugin>

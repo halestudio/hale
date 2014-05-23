@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.app.transform
 
+import eu.esdihumboldt.hale.common.core.io.Value
 import groovy.transform.CompileStatic;
 
 import java.net.URI
@@ -36,16 +37,36 @@ class ExecContext {
 	 * URI pointing to the source data to transform.
 	 */
 	URI source
+	
+	/**
+	 * Specific source I/O provider identifier to use.
+	 */
+	String sourceProviderId
+	
+	/**
+	 * Settings for reading the source.
+	 */
+	Map<String, Value> sourceSettings = [:]
 
+	/**
+	 * The target file to write the transformed data to.
+	 */
+	URI target
+	
 	/**
 	 * Name of the export configuration preset.
 	 */
 	String preset
 	
 	/**
-	 * The target file to write the transformed data to.
+	 * Specific target I/O provider identifier to use.
 	 */
-	File out
+	String targetProviderId
+	
+	/**
+	 * Settings for writing the target.
+	 */
+	Map<String, Value> targetSettings = [:]
 	
 	/**
 	 * The target file to write any reports to, optional.
