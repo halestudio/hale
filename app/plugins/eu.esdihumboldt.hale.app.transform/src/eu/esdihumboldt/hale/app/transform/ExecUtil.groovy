@@ -21,14 +21,17 @@ import org.joda.time.format.PeriodFormat
 import eu.esdihumboldt.hale.common.core.report.Report
 import groovy.transform.CompileStatic;
 import groovy.transform.TypeChecked;
+import groovy.transform.TypeCheckingMode;
 
 /**
+ * Utilities for console output.
+ * 
  * @author Simon Templer
  */
 @TypeChecked
 class ExecUtil implements ConsoleConstants {
 	
-	static String printSummary(Report report) {
+	static void printSummary(Report report) {
 		// print report summary
 		println "${MSG_PREFIX}Action summary: ${report.taskName}"
 		println "${report.errors.empty ? MSG_PREFIX : WARN_PREFIX}   ${report.errors.size()} errors"
@@ -49,6 +52,27 @@ class ExecUtil implements ConsoleConstants {
 		}
 		// complete success line
 		println ''
+	}
+	
+	static void info(String msg) {
+		println "${MSG_PREFIX}$msg"
+	}
+	
+	static void warn(String msg) {
+		println "${WARN_PREFIX}$msg"
+	}
+	
+	static void error(String msg) {
+		println "${ERROR_PREFIX}$msg"
+	}
+	
+	static void status(String msg) {
+		println "${STATUS_PREFIX}$msg"
+	}
+	
+	static IllegalStateException fail(String msg) {
+		error(msg)
+		throw new IllegalStateException(msg)
 	}
 
 }
