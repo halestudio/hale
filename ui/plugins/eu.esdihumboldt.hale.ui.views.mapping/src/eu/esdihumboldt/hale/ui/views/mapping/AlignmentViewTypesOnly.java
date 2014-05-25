@@ -55,7 +55,7 @@ public class AlignmentViewTypesOnly extends AbstractMappingView {
 	/**
 	 * The view ID
 	 */
-	public static final String ID = "eu.esdihumboldt.hale.ui.views.mapping.alignmenttypes";
+	public static final String ID = "eu.esdihumboldt.hale.ui.views.mapping.navigation";
 
 	private AlignmentServiceListener alignmentListener;
 
@@ -77,6 +77,10 @@ public class AlignmentViewTypesOnly extends AbstractMappingView {
 
 			@Override
 			public void dataChanged(Cell cell) {
+				if (cell == null) {
+
+					getViewer().setInput(null);
+				}
 				getViewer().setInput(cell);
 				refreshGraph();
 			}

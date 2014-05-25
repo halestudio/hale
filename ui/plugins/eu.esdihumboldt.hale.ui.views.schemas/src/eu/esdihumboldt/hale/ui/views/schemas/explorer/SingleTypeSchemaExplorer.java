@@ -26,6 +26,7 @@ import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
@@ -83,8 +84,8 @@ public class SingleTypeSchemaExplorer extends SchemaExplorer {
 			}
 		});
 
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-				AlignmentService.class);
+//		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+//				AlignmentService.class);
 
 //		as.addListener(alignmentListener = new AlignmentServiceAdapter() {
 //
@@ -219,7 +220,8 @@ public class SingleTypeSchemaExplorer extends SchemaExplorer {
 		};
 
 		collapseTree.setToolTipText("Click to collapse the tree");
-		collapseTree.setImageDescriptor(SchemasViewPlugin.getImageDescriptor("icons/schema.gif"));
+		collapseTree.setImageDescriptor(SchemasViewPlugin
+				.getImageDescriptor(ISharedImages.IMG_ELCL_COLLAPSEALL));
 
 		manager.add(collapseTree);
 		manager.add(new Separator());

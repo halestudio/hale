@@ -23,7 +23,7 @@
             category="eu.esdihumboldt.hale.ui"
             class="eu.esdihumboldt.hale.ui.views.mapping.AlignmentViewTypesOnly"
             icon="icons/alignment.gif"
-            id="eu.esdihumboldt.hale.ui.views.mapping.alignmenttypes"
+            id="eu.esdihumboldt.hale.ui.views.mapping.navigation"
             name="Navigation"
             restorable="true">
       </view>

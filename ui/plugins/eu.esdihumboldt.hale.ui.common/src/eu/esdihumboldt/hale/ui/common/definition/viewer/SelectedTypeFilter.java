@@ -15,8 +15,9 @@
 
 package eu.esdihumboldt.hale.ui.common.definition.viewer;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.Viewer;
@@ -33,8 +34,8 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  */
 public class SelectedTypeFilter extends ViewerFilter {
 
-	Collection<TypeEntityDefinition> types;
-	Collection<TypeDefinition> associatedParents;
+	Set<TypeEntityDefinition> types;
+	Set<TypeDefinition> superTypes;
 
 	/**
 	 * Max number of parents
@@ -45,8 +46,8 @@ public class SelectedTypeFilter extends ViewerFilter {
 	 * Constructor
 	 */
 	public SelectedTypeFilter() {
-		types = new ArrayList<TypeEntityDefinition>();
-		associatedParents = new ArrayList<TypeDefinition>();
+		types = new HashSet<TypeEntityDefinition>();
+		superTypes = new HashSet<TypeDefinition>();
 	}
 
 	/**
@@ -60,16 +61,13 @@ public class SelectedTypeFilter extends ViewerFilter {
 		if (selectedType != null && !selectedType.isEmpty()) {
 			for (TypeEntityDefinition type : selectedType) {
 				types.add(type);
+				superTypes.add(type.getDefinition());
 				// Add all parent Type Definition
-				TypeDefinition typeDef = type.getDefinition().getSuperType();
-				// add parents until the max. number of parent is reached or
-				// there isn't another parent
-				for (int i = 0; i <= PARENT_DEPTH && typeDef != null; i++) {
-					associatedParents.add(typeDef);
-					typeDef = typeDef.getSuperType();
-				}
-			}
-		}
+				TypeDefinition typeDef = type.getDefinition();
+				while ((typeDef = typeDef.getSuperType()) != null)
+					superTypes.add(typeDef);
+			}// end for
+		}// end if
 	}
 
 	/**
@@ -94,21 +92,25 @@ public class SelectedTypeFilter extends ViewerFilter {
 
 		if (element instanceof TypeEntityDefinition) {
 			TypeEntityDefinition typeDef = (TypeEntityDefinition) element;
-			for (TypeEntityDefinition type : types) {
-				// Always add the root element
-				if (typeDef.getDefinition().getSuperType() == null)
-					return true;
-				// Add all root elements
-				if (!typeDef.getDefinition().getSubTypes().isEmpty()
-						&& associatedParents.contains(typeDef.getDefinition()))
-					return true;
-				// If the element is not equal to the selected type, check the
-				// element with no filter matches the name of the selected type
-				if (typeDef.equals(type)
-						|| (type.getFilter() != null && typeDef.getFilter() == null && typeDef
-								.getDefinition().getName().equals(type.getDefinition().getName())))
-					return true;
+			// Always add the root element
+			if (typeDef.getDefinition().getSuperType() == null)
+				return true;
+			// Check if the element is the selected Type
+			if (types.contains(typeDef)) {
+				return true;
 			}
+			if (typeDef.getFilter() == null)
+				return superTypes.contains(typeDef.getDefinition());
+			// If element has SubTypes, add all root elements
+//				if (!typeDef.getDefinition().getSubTypes().isEmpty()
+//						&& associatedParents.contains(typeDef.getDefinition()))
+//					return true;
+//				// If the element is not equal to the selected type, check the
+//				// element with no filter matches the name of the selected type
+//				if (typeDef.equals(type)
+//						|| (type.getFilter() != null && typeDef.getFilter() == null && typeDef
+//								.getDefinition().getName().equals(type.getDefinition().getName())))
+//					return true;
 		}
 		return false;
 	}

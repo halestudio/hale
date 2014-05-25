@@ -36,14 +36,14 @@
             name="Thorsten">
       </perspective>
       <perspective
-            class="eu.esdihumboldt.hale.ui.application.RoughPerspective"
+            class="eu.esdihumboldt.hale.ui.application.TypeMappingPerspective"
             id="eu.esdihumboldt.hale.ui.application.perspective.grob"
-            name="Step 1 - Rough">
+            name="Type Mapping">
       </perspective>
       <perspective
-            class="eu.esdihumboldt.hale.ui.application.DetailedPerspective"
+            class="eu.esdihumboldt.hale.ui.application.AttributesMappingPerspective"
             id="eu.esdihumboldt.hale.ui.application.perspective.feintest"
-            name="Step 2 - Detailed">
+            name="Attributes Mapping">
       </perspective>
       <perspective
             class="eu.esdihumboldt.hale.ui.application.TransformationPerspective"

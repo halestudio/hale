@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>The Rough and Detailed Perspective</title>
+</head>
+<body>
+	<h1>The Rough and Detailed Perspective</h1>
+	<p>
+		You should setup a new Project first. (see <a
+			href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/getting_started/main_workflow.html"> 
+			First steps in HALE
+			</a> in case you don't know how to setup a new Project.)
+		There are some example projects you can use: <a 
+			href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user.examples/src/eu/esdihumboldt/hale/doc/user/examples/internal/content/overview.html">
+			Overview of Example Projects</a>
+	</p>
+	<p>
+		After the setup of a new Project your Workspace is clean.
+		If you load an existing project or an example, 
+		there could be some existing alignments.
+		Either way your workbench should look similar to this, 
+		if the 'Rough' Perspective is shown:
+		<img src="images/cleanWorkbenchInstructions.png" class="fit">
+		If your workbench looks different, try to open the 
+		Perspectives 'Step 1 - Rough' and 'Step 2 - Detailed'.
+		<a 
+			href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/getting_started/confWorkbench.html">
+			Click for Help 'Configuring your workbench'.
+		</a>
+	</p>
+	<h2>Rough Perspective</h2>
+	<p>
+		This perspective is used to create Type alignments.
+	</p>
+		<ol>
+			<li>
+				Configure the Mapping Relevant Types, if not done before.
+				<a 
+			href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/schema/mapping_relevant.html">
+			Click for Help.</a>
+			</li>
+			<li>
+				You may declare Context/(CQL) Filter if necessary.
+				<a 
+			href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/schema/define_context.html">
+			Click for Help.</a>
+			</li>
+			<li>
+				Create Type relations. <a 
+			href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/alignment/type_relations.html">
+			Click for Help 'Identify Type Relations'.</a> For example:
+				<img src="images/createTypeRelation.png" class="fit">
+			</li>
+		</ol>
+	<p>
+		If you create a new Type Alignment, the result is shown
+		in View 'Track of Type Alignments'. For the example it 
+		looks like this:
+		<img src="images/resultRough.png" class="fit">
+	</p>
+	<p>
+		If you have done creating all type alignment, change the 
+		Perspective by clicking on 'Step 2 - Detailed'.
+		<img src="images/roughFin.png" class="fit">
+	</p>
+	<h2>Detailed Perspective</h2>
+	<p>
+		This perspective is used to refine your mapping.
+		You can choose one type relation by clicking on
+		'Select cell' button of the 'Navigation' View 
+		(lower left corner).
+		<img src="images/selectCellA.png" class="fit">
+		(The result of the prior perspective)
+	</p>
+	<p>
+		The 'Select Cell' Button opens a dialog where you
+		can choose a type alignment:
+		<img src="images/selectCellDialog.png" class="fit">
+	</p>
+	<p>
+		If the cell was chosen, the perspective will react
+		and only show mappable types with context to the 
+		selected type cell. You can deactivate this behavior 
+		in case you want to analyze another type. 
+		The view reacts as a normal Schema Explorer then. 
+		However the 'Alignment - based on Navigation Selection' 
+		stays focused on the selected Type cell.
+		<img src="images/DShowAll.png" class="fit">
+	</p>
+	<p>
+		Like the normal 'Schema Explorer' you can display 
+		the hierarchy of the source or target Schema. Below 
+		is an example of the example Source Schema Hierarchy.
+		<img src="images/DHierarchy.png" class="fit">
+	</p>
+	<p>
+		The 'Detailed' perspective is used to map properties 
+		for every type. Here is an example of how to work 
+		with this Perspective. The example shows the mapping 
+		of the property 'description' of the '(River)code=...' and 
+		'Crossing' Type by using inheritance. This means, that
+		every 'River' description is aligned to the 
+		'Abstract Feature' description.
+	</p>
+		<ol>
+			<li>
+				Select a source or target property. (e.g. description)
+			</li>
+			<li>
+				Select the correspond source/target property. (e.g. description)
+			</li>
+			<li>
+				Click on the middle button.
+			</li>
+			<li>
+				Choose appropriate Function and end 
+				the dialog. (e.g. Rename)
+			</li>
+			<li>
+				Verify the result appeared on the 
+				'Alignment - Based on Nav. Sel.' View 
+				(on the right side).
+			</li>
+		</ol>
+	<img src="images/DMappingProcess.png" class="fit">
+</body>
+</html>

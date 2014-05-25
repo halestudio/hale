@@ -19,38 +19,46 @@ import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
-import eu.esdihumboldt.hale.ui.views.mapping.AlignmentViewTypeOverview;
-import eu.esdihumboldt.hale.ui.views.schemas.SchemasViewTypes;
+import eu.esdihumboldt.hale.ui.views.mapping.AlignmentViewTypesOnly;
+import eu.esdihumboldt.hale.ui.views.mapping.NavigationSensitiveAlignmentView;
+import eu.esdihumboldt.hale.ui.views.schemas.SchemasViewOneTypeFocus;
 
 /**
- * This is the perspective for type only mapping
+ * This is the perspective for detailed mapping
  * 
  * @author Yasmina Kammeyer
  */
-public class RoughPerspective implements IPerspectiveFactory {
+public class AttributesMappingPerspective implements IPerspectiveFactory {
 
 	/**
 	 * @see org.eclipse.ui.IPerspectiveFactory#createInitialLayout(org.eclipse.ui.IPageLayout)
 	 */
 	@Override
 	public void createInitialLayout(IPageLayout _layout) {
+
 		// getting EditorArea
 		String editorArea = _layout.getEditorArea();
 
-		// Bottom = Properties/Documentation
-		IFolderLayout bottom = _layout.createFolder("bottom", IPageLayout.BOTTOM, 0.7f, editorArea); //$NON-NLS-1$
-		bottom.addView(IPageLayout.ID_PROP_SHEET);
+		// Bottom left = Navigation (types only)
+		IFolderLayout bottom = _layout.createFolder("bottom", IPageLayout.BOTTOM, 0.5f, editorArea); //$NON-NLS-1$
+		bottom.addView(AlignmentViewTypesOnly.ID);
 
-		// Left = Schema View
+		// Bottom right
+		IFolderLayout bottomRight = _layout.createFolder(
+				"bottomRight", IPageLayout.RIGHT, 0.5f, "bottom"); //$NON-NLS-1$
+		bottomRight.addView(IPageLayout.ID_PROP_SHEET);
+
+		// Left = Schema Explorer for one relation
 		IFolderLayout topLeft = _layout.createFolder("topLeft", IPageLayout.LEFT, 0.6f, editorArea); //$NON-NLS-1$
-		topLeft.addView(SchemasViewTypes.ID);
+		topLeft.addView(SchemasViewOneTypeFocus.ID);
 
-		// Right = Alignment
+		// Right = Alignment View
 		IFolderLayout topRight = _layout.createFolder(
 				"topRight", IPageLayout.RIGHT, 0.4f, editorArea); //$NON-NLS-1$
-		topRight.addView(AlignmentViewTypeOverview.ID);
+		topRight.addView(NavigationSensitiveAlignmentView.ID);
 
 		_layout.setEditorAreaVisible(false);
+
 	}
 
 }

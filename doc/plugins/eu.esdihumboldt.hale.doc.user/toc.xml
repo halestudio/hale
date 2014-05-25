@@ -117,6 +117,10 @@
       <topic href="html/tasks/save_project.html" label="Saving your work">
       </topic>
       <anchor id="tasks"/>
+      <topic label="Perspective">
+         <topic href="html/tasks/perspective/rough_and_detailed.html" label="Rough and Detailed Perspective">
+         </topic>
+      </topic>
    </topic>
    <topic label="Reference">
       <topic href="html/reference/schema_elements.html" label="Schema elements">

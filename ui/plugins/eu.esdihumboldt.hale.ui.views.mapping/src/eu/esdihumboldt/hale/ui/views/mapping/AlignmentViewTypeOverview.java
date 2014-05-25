@@ -164,23 +164,30 @@ public class AlignmentViewTypeOverview extends AbstractMappingView {
 	 * Set the input of the viewer
 	 */
 	private void updateViewerInput() {
-		List<Cell> cells = null;
+		Display.getDefault().asyncExec(new Runnable() {
 
-		// get the current alignment
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-				AlignmentService.class);
-		if (as == null)
-			return;
-		Alignment alignment = as.getAlignment();
-		// cells array
-		cells = new ArrayList<Cell>();
-		// add current type cells
-		for (Cell cell : alignment.getTypeCells()) {
-			cells.add(cell);
-		}
+			@Override
+			public void run() {
+				List<Cell> cells = null;
 
-		getViewer().setInput(cells);
-		updateLayout(true);
+				// get the current alignment
+				AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+						AlignmentService.class);
+				if (as == null)
+					return;
+				Alignment alignment = as.getAlignment();
+				// cells array
+				cells = new ArrayList<Cell>();
+				// add current type cells
+				for (Cell cell : alignment.getTypeCells()) {
+					cells.add(cell);
+				}
+
+				getViewer().setInput(cells);
+				updateLayout(true);
+			}
+		});
+
 	}
 
 	/**
