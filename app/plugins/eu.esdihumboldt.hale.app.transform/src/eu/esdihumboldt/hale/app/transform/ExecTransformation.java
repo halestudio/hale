@@ -72,7 +72,7 @@ public class ExecTransformation implements ConsoleConstants {
 	private InstanceReader source;
 
 	@SuppressWarnings("javadoc")
-	public void run(ExecContext context) throws Exception {
+	public int run(ExecContext context) throws Exception {
 		this.context = context;
 
 		new ConsoleProgressManager();
@@ -91,14 +91,15 @@ public class ExecTransformation implements ConsoleConstants {
 
 		if (target == null) {
 			// writer could not be created
-			return;
+			// return error code
+			return 1;
 		}
-
-		// set up validator
-//		setupValidator();
 
 		// trigger transformation
 		transform();
+
+		// exit OK
+		return 0;
 	}
 
 	private void setupReportHandler() {
