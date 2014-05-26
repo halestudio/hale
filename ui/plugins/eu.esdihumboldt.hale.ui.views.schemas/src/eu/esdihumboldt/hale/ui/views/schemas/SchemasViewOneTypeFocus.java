@@ -59,5 +59,4 @@ public class SchemasViewOneTypeFocus extends SchemasView {
 	protected String getViewContext() {
 		return "eu.esdihumboldt.hale.doc.user.schema_explorer";
 	}
-
 }

@@ -167,7 +167,6 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 		if (TypeCellFocusService.class.equals(serviceInterface)) {
 			return new TypeCellFocusServiceImpl();
 		}
-
 		return null;
 	}
 

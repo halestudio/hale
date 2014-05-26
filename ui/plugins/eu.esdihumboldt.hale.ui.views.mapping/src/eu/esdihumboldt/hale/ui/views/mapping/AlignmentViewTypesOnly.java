@@ -99,7 +99,6 @@ public class AlignmentViewTypesOnly extends AbstractMappingView {
 					@Override
 					public void run() {
 						sourceTargetSelector.setSelection(StructuredSelection.EMPTY);
-
 					}
 				});
 			}
@@ -267,7 +266,6 @@ public class AlignmentViewTypesOnly extends AbstractMappingView {
 		}
 
 		sourceTargetSelector.setSelection(StructuredSelection.EMPTY);
-
 		super.dispose();
 	}
 
