@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.app.transform.test;
+package eu.esdihumboldt.hale.common.app;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +29,7 @@ import org.osgi.service.application.ApplicationException;
 import org.osgi.service.application.ApplicationHandle;
 import org.osgi.util.tracker.ServiceTracker;
 
-import eu.esdihumboldt.hale.app.transform.test.internal.Activator;
+import eu.esdihumboldt.hale.common.app.internal.Activator;
 
 /**
  * Utilities for launching applications.

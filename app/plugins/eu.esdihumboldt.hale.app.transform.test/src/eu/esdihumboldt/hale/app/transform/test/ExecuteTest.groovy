@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.app.transform.test;
 
 import eu.esdihumboldt.hale.app.transform.ExecApplication
+import eu.esdihumboldt.hale.common.app.ApplicationUtil
 
 
 
@@ -27,9 +28,12 @@ import eu.esdihumboldt.hale.app.transform.ExecApplication
 class ExecuteTest extends GroovyTestCase {
 
 	void testUsage() {
-		transform {
-			def lines = it.readLines()
+		transform { File output, int code ->
+			// check exit code
+			assert code != 0
 
+			// check if usage was printed
+			def lines = output.readLines()
 			assert lines[0].contains('Usage') || lines[1].contains('Usage')
 		}
 	}
@@ -37,9 +41,10 @@ class ExecuteTest extends GroovyTestCase {
 	// general stuff / utilities
 
 	/**
-	 * Run the transformation application.
-	 * @param exec
-	 * @return
+	 * Run the transformation application and write the output to a file.
+	 * @param exec a closure taking the {@link File} the output was written to as argument,
+	 *   and additionally the exit code
+	 * @return the exit code
 	 */
 	private int transform(List<String> args = [], Closure exec) {
 		PrintStream console = System.out
@@ -68,7 +73,12 @@ class ExecuteTest extends GroovyTestCase {
 			console.println "$number\t: $line"
 		}
 
-		exec(output)
+		if (exec.maximumNumberOfParameters == 1) {
+			exec(output)
+		}
+		else {
+			exec(output, res)
+		}
 
 		return res
 	}

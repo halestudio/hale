@@ -15,15 +15,13 @@
 
 package eu.esdihumboldt.hale.app.transform;
 
-import java.net.URI;
+import static eu.esdihumboldt.hale.app.transform.ExecUtil.*
 
 import org.eclipse.equinox.app.IApplicationContext
 
 import eu.esdihumboldt.hale.common.app.AbstractApplication
-import eu.esdihumboldt.hale.common.core.io.Value;
-import groovy.transform.CompileStatic;
-
-import static eu.esdihumboldt.hale.app.transform.ExecUtil.*;
+import eu.esdihumboldt.hale.common.core.io.Value
+import groovy.transform.CompileStatic
 
 /**
  * Application that executes a transformation based on a project file.
@@ -32,54 +30,57 @@ import static eu.esdihumboldt.hale.app.transform.ExecUtil.*;
  */
 @CompileStatic
 class ExecApplication extends AbstractApplication<ExecContext> {
-	
+
 	public static final String SETTING_PREFIX = '-S'
-	
+
 	enum Configurable {
 		source,
 		target
 	}
-	
+
 	private Configurable lastConfigurable
 
 	@Override
 	protected Object run(ExecContext executionContext, IApplicationContext appContext) {
 		// set system err to system out, otherwise system err messages seem to get lost
 		System.setErr(System.out);
-		
+
 		if (validate(executionContext)) {
-			new ExecTransformation().run(executionContext)
+			try {
+				new ExecTransformation().run(executionContext)
+			} catch (Exception | AssertionError e) {
+				e.printStackTrace()
+				1 // exit with error
+			}
 		}
 		else {
 			usage()
 		}
-
-		EXIT_OK
 	}
-	
+
 	protected boolean validate(ExecContext ec) {
 		// project is required
 		if (!ec.project) {
 			error('You need to provide a reference to a HALE project that defines the mapping for the transformation')
 			return false
 		}
-		
+
 		// source is required
 		if (!ec.source) {
 			error('You need to provide a reference to source data to transform')
 			return false
 		}
-		
+
 		// target is required
 		if (!ec.target) {
 			error('You need to provide a target to save the transformation result to')
 			return false
 		}
-		
+
 		true
 	}
-	
-	protected void usage() {
+
+	protected int usage() {
 		println """
 Usage:
 HALE -nosplash -application transform
@@ -99,42 +100,45 @@ HALE -nosplash -application transform
   and options are
      -reportsOut <reports-file>
 		""".trim()
+
+		// general error code
+		new Integer(1)
 	}
 
 	@Override
 	protected void processParameter(String param, String value,
-	ExecContext executionContext) throws Exception {
+			ExecContext executionContext) throws Exception {
 		switch (param) {
 			case '-project':
-				// project file or URI to project
+			// project file or URI to project
 				executionContext.project = fileOrUri(value)
 				lastConfigurable = null
 				break
 			case '-source':
-				// source file or URI to source data
+			// source file or URI to source data
 				executionContext.source = fileOrUri(value)
 				lastConfigurable = Configurable.source
 				break
 			case '-out':
 			case '-target':
-				// target file or URI
+			// target file or URI
 				executionContext.target = fileOrUri(value)
 				lastConfigurable = Configurable.target
 				break
 			case '-reportsOut':
 			case '-reportsFile':
-				// reports file
+			// reports file
 				executionContext.reportsOut = new File(value)
 				lastConfigurable = null
 				break
 			case '-preset':
-				// the target preset
+			// the target preset
 				executionContext.preset = value
 				lastConfigurable = null
 				break
-				
+
 			case '-providerId':
-				// specify/override provider ID
+			// specify/override provider ID
 				if (lastConfigurable) {
 					switch (lastConfigurable) {
 						case Configurable.source:
@@ -158,7 +162,7 @@ HALE -nosplash -application transform
 				break
 		}
 	}
-	
+
 	/**
 	 * Create an URI from a String that is a file or URI.
 	 * 
@@ -178,7 +182,7 @@ HALE -nosplash -application transform
 			return new File(value).toURI()
 		}
 	}
-	
+
 	/**
 	 * Store a setting for a {@link Configurable}
 	 * 
@@ -188,7 +192,7 @@ HALE -nosplash -application transform
 	protected void storeSetting(String key, String value) {
 		if (lastConfigurable) {
 			// static Groovy can't deal with generics properly...
-			ExecContext ec = (ExecContext) executionContext 
+			ExecContext ec = (ExecContext) executionContext
 			switch (lastConfigurable) {
 				case Configurable.source:
 					ec.sourceSettings[key] = valueFromString(value)
@@ -202,7 +206,7 @@ HALE -nosplash -application transform
 			//TODO warn about ignored
 		}
 	}
-	
+
 	/**
 	 * Creates a {@link Value} object from a string given as parameter.
 	 * @param value the string value
