@@ -17,6 +17,9 @@ package eu.esdihumboldt.hale.app.transform.test;
 
 import eu.esdihumboldt.hale.app.transform.ExecApplication
 import eu.esdihumboldt.hale.common.app.ApplicationUtil
+import eu.esdihumboldt.hale.common.test.TestUtil
+import groovy.transform.CompileStatic
+import groovy.transform.TypeCheckingMode
 
 
 
@@ -25,8 +28,64 @@ import eu.esdihumboldt.hale.common.app.ApplicationUtil
  * 
  * @author Simon Templer
  */
+@CompileStatic
 class ExecuteTest extends GroovyTestCase {
 
+	private static final String PLUGIN_NAME = 'eu.esdihumboldt.hale.app.transform.test'
+
+	private static final String HYDRO_PROJECT = "platform:/plugin/$PLUGIN_NAME/projects/hydro/hydro-basic.halez"
+	private static final String HYDRO_DATA = "platform:/plugin/$PLUGIN_NAME/projects/hydro/hydro-source.gml.gz"
+
+	/**
+	 * Test transformation of an example project.
+	 *
+	 * XXX Disabled because for some reason it breaks the test execution
+	 * part of the build process, even though the test itself is executed w/o problems.
+	 * The problem seems to be the framework shutdown, maybe related to the use of OrientDB
+	 * within the transformation in this test.
+	 */
+	void ignore_testTransform() {
+		File targetFile =  File.createTempFile('transform-hydro', '.gml')
+		targetFile.deleteOnExit()
+		println ">> Transformed data will be written to ${targetFile}..."
+
+		transform([
+			'-project',
+			HYDRO_PROJECT,
+			'-source',
+			HYDRO_DATA,
+			'-target',
+			targetFile.absolutePath,
+			// select preset for export
+			'-preset',
+			'INSPIRE SpatialDataSet',
+			// override a setting
+			'-Sinspire.sds.localId',
+			'1234'
+		]) { //
+			File output, int code ->
+			// check exit code
+			assert code == 0
+		}
+
+		validateHydro(targetFile, '1234')
+	}
+
+	@CompileStatic(TypeCheckingMode.SKIP)
+	private void validateHydro(File targetFile, String dataSetId) {
+		// check written file
+		def root = new XmlSlurper().parse(targetFile)
+		// check container
+		assert root.name() == 'SpatialDataSet'
+		// check transformed feature count
+		assert root.member.Watercourse.size() == 982
+		// check local ID
+		assert root.identifier.Identifier.localId[0].text() == dataSetId
+	}
+
+	/**
+	 * Run w/o parameters. Usage should be printed.
+	 */
 	void testUsage() {
 		transform { File output, int code ->
 			// check exit code
@@ -47,6 +106,18 @@ class ExecuteTest extends GroovyTestCase {
 	 * @return the exit code
 	 */
 	private int transform(List<String> args = [], Closure exec) {
+		/*
+		 * Exclude scala-ide - it leads to NoClassDefFoundErrors because it somehow
+		 * hooks into output and error streams used by Eclipse
+		 */
+		TestUtil.uninstallBundle('org.scala-ide.sdt.core')
+
+		// set up necessary bundles for transformation
+		TestUtil.startConversionService()
+		TestUtil.startInstanceFactory();
+		TestUtil.startTransformationService()
+
+
 		PrintStream console = System.out
 		File output = File.createTempFile('app-test', '.log')
 		output.createNewFile()
@@ -62,7 +133,8 @@ class ExecuteTest extends GroovyTestCase {
 			 * executable like this locally in Eclipse.
 			 */
 			//res = (int) ApplicationUtil.launchApplication('hale.transform', args)
-			res = ApplicationUtil.launchSyncApplication(new ExecApplication(), args)
+			ExecApplication app = new ExecApplication()
+			res = (int) ApplicationUtil.launchSyncApplication(app, args)
 		} finally {
 			System.setOut(console)
 		}
@@ -82,4 +154,5 @@ class ExecuteTest extends GroovyTestCase {
 
 		return res
 	}
+
 }
