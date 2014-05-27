@@ -15,7 +15,6 @@
 
 package eu.esdihumboldt.hale.app.transform;
 
-import static eu.esdihumboldt.hale.app.transform.ExecUtil.error;
 import static eu.esdihumboldt.hale.app.transform.ExecUtil.fail;
 import static eu.esdihumboldt.hale.app.transform.ExecUtil.info;
 import static eu.esdihumboldt.hale.app.transform.ExecUtil.status;
@@ -245,7 +244,7 @@ public class ExecTransformation implements ConsoleConstants {
 			info("Transformation completed. Please check the reports for more details.");
 		}
 		else {
-			error("Transformation failed, please check the reports for details.");
+			fail("Transformation failed, please check the reports for details.");
 		}
 	}
 

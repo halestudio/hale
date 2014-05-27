@@ -6,7 +6,7 @@
          name="Execute a transformation based on a project file"
          point="org.eclipse.core.runtime.applications">
       <application
-            cardinality="1"
+            cardinality="singleton-global"
             thread="any"
             visible="true">
          <run
