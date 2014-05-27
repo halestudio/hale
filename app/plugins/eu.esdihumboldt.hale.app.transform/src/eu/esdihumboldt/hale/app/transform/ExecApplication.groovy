@@ -49,7 +49,9 @@ class ExecApplication extends AbstractApplication<ExecContext> {
 			try {
 				new ExecTransformation().run(executionContext)
 			} catch (Exception | AssertionError e) {
-				e.printStackTrace()
+				if (executionContext.logException) {
+					e.printStackTrace()
+				}
 				1 // exit with error
 			}
 		}
@@ -83,7 +85,7 @@ class ExecApplication extends AbstractApplication<ExecContext> {
 	protected int usage() {
 		println """
 Usage:
-HALE -nosplash -application transform
+HALE -nosplash -application hale.transform
      -project <file-or-URI-to-HALE-project>
      -source <file-or-URI-to-source-data>
          [-providerId <ID-of-source-reader>]
@@ -99,6 +101,7 @@ HALE -nosplash -application transform
 
   and options are
      -reportsOut <reports-file>
+     -stacktrace
 		""".trim()
 
 		// general error code
@@ -131,10 +134,10 @@ HALE -nosplash -application transform
 				executionContext.reportsOut = new File(value)
 				lastConfigurable = null
 				break
+
 			case '-preset':
 			// the target preset
 				executionContext.preset = value
-				lastConfigurable = null
 				break
 
 			case '-providerId':
@@ -192,7 +195,7 @@ HALE -nosplash -application transform
 	protected void storeSetting(String key, String value) {
 		if (lastConfigurable) {
 			// static Groovy can't deal with generics properly...
-			ExecContext ec = (ExecContext) executionContext
+			ExecContext ec = (ExecContext) this.executionContext
 			switch (lastConfigurable) {
 				case Configurable.source:
 					ec.sourceSettings[key] = valueFromString(value)
@@ -203,7 +206,7 @@ HALE -nosplash -application transform
 			}
 		}
 		else {
-			//TODO warn about ignored
+			fail('Setting must be specified in context of either source or target')
 		}
 	}
 
@@ -220,7 +223,9 @@ HALE -nosplash -application transform
 	@Override
 	protected void processFlag(String arg, ExecContext executionContext) {
 		switch (arg) {
-			// any?
+			case '-stacktrace':
+				executionContext.logException = true
+				break
 		}
 	}
 

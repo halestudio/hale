@@ -38,6 +38,7 @@ import de.fhg.igd.osgi.util.OsgiUtilsActivator;
 import eu.esdihumboldt.hale.common.align.io.impl.CastorAlignmentIO;
 import eu.esdihumboldt.hale.common.align.io.impl.JaxbAlignmentIO;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
@@ -160,6 +161,7 @@ public class TestUtil {
 		bundlesToStart.add("eu.esdihumboldt.hale.common.convert");
 		// add core converters
 		bundlesToStart.add("eu.esdihumboldt.hale.common.convert.core");
+		bundlesToStart.add("eu.esdihumboldt.hale.common.convert.wkt");
 
 		startService(bundlesToStart, ConversionService.class);
 	}
@@ -173,6 +175,35 @@ public class TestUtil {
 		bundlesToStart.add("eu.esdihumboldt.hale.common.instance");
 
 		startService(bundlesToStart, InstanceFactory.class);
+	}
+
+	/**
+	 * Starts the instance factory.
+	 */
+	public static void startTransformationService() {
+		List<String> bundlesToStart = new ArrayList<String>();
+		bundlesToStart.add("org.eclipse.equinox.ds");
+		bundlesToStart.add("eu.esdihumboldt.cst");
+
+		startService(bundlesToStart, TransformationService.class);
+	}
+
+	/**
+	 * Uninstalls a bundle with the given symbolic name.
+	 * 
+	 * @param name the symbolic name of the bundle to uninstall
+	 */
+	public static void uninstallBundle(String name) {
+		BundleContext context = OsgiUtilsActivator.getInstance().getContext();
+		for (Bundle bundle : context.getBundles()) {
+			if (bundle.getSymbolicName().equals(name)) {
+				try {
+					bundle.uninstall();
+				} catch (BundleException e) {
+					throw new IllegalStateException("Failed to uninstall bundle", e);
+				}
+			}
+		}
 	}
 
 	/**

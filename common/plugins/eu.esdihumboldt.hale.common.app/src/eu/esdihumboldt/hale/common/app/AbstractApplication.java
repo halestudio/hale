@@ -59,6 +59,13 @@ public abstract class AbstractApplication<C> implements IApplication {
 	}
 
 	/**
+	 * @return the execution context (if already created)
+	 */
+	public C getExecutionContext() {
+		return executionContext;
+	}
+
+	/**
 	 * Run the application.
 	 * 
 	 * @param executionContext the execution context configured based on the
