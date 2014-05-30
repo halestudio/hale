@@ -227,7 +227,17 @@ public class DefaultProjectReader extends AbstractProjectReader {
 		}
 
 		// clear project infos
-		getProject().getProjectFiles().clear();
+		/*
+		 * XXX was there any particular reason why this was done? I suspect it
+		 * was done so when saving the project this information is not saved
+		 * again as-is, but on the basis of actual files written. However, this
+		 * case is handled in the project writer already.
+		 * 
+		 * As this information is in fact necessary when trying to identify
+		 * certain files like the alignment, clearing the list of project files
+		 * was commented out.
+		 */
+//		getProject().getProjectFiles().clear();
 
 		progress.end();
 		reporter.setSuccess(true);
