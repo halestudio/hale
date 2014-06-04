@@ -37,18 +37,15 @@
       </perspective>
       <perspective
             class="eu.esdihumboldt.hale.ui.application.TypeMappingPerspective"
-            id="eu.esdihumboldt.hale.ui.application.perspective.grob"
+            icon="icons/concrete_type.png"
+            id="eu.esdihumboldt.hale.ui.application.perspective.typemapping"
             name="Type Mapping">
       </perspective>
       <perspective
             class="eu.esdihumboldt.hale.ui.application.AttributesMappingPerspective"
-            id="eu.esdihumboldt.hale.ui.application.perspective.feintest"
-            name="Attributes Mapping">
-      </perspective>
-      <perspective
-            class="eu.esdihumboldt.hale.ui.application.TransformationPerspective"
-            id="eu.esdihumboldt.hale.ui.application.perspective.transformtest"
-            name="Step 3 - Transformation">
+            icon="icons/attribute.gif"
+            id="eu.esdihumboldt.hale.ui.application.perspective.attributemapping"
+            name="Attribute Mapping">
       </perspective>
    </extension>
    <extension

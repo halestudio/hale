@@ -130,4 +130,9 @@ public class TypeCellSelectionDialog extends AbstractViewerSelectionDialog<Cell,
 		return null;
 	}
 
+	@Override
+	public Cell getObject() {
+		return super.getObject();
+	}
+
 }

@@ -16,18 +16,12 @@
 package eu.esdihumboldt.hale.ui.function.common;
 
 import org.eclipse.core.runtime.ListenerList;
-import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
@@ -42,42 +36,33 @@ import eu.esdihumboldt.hale.ui.service.cell.TypeCellFocusService;
  */
 public class TypeCellSelector implements ISelectionProvider {
 
-	private final Composite main;
-
 	private Cell selection;
 
 	private final ListenerList selectionChangedListeners = new ListenerList();
 
-	private final Button selectCellButton;
-
 	/**
 	 * Creates a new selector.
 	 * 
-	 * @param parent the parent composite
 	 */
-	public TypeCellSelector(Composite parent) {
-//		main = parent;
-		main = new Composite(parent, SWT.NONE);
-		main.setLayout(GridLayoutFactory.fillDefaults().create());
+	public TypeCellSelector() {
 
 		selection = null;
 
-		selectCellButton = new Button(main, SWT.PUSH);
-		selectCellButton.setText("Select cell");
-		selectCellButton.setToolTipText("Select a type cell");
-		selectCellButton.addSelectionListener(new SelectionAdapter() {
+	}
 
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				TypeCellSelectionDialog dialog = new TypeCellSelectionDialog(main.getShell()
-						.getShell(), "Select a type cell", selection);
-				if (dialog.open() == TypeCellSelectionDialog.OK) {
-					Cell selected = dialog.getObject();
-					setSelection(selected);
-					fireSelectionChanged();
-				}
-			}
-		});
+	/**
+	 * Opens the TypeCellSelectionDialog and get the selection
+	 * 
+	 * @param shell The shell for the dialog
+	 */
+	public void performTypeCellDialog(Shell shell) {
+		TypeCellSelectionDialog dialog = new TypeCellSelectionDialog(shell.getShell(),
+				"Select a type cell", selection);
+		if (dialog.open() == TypeCellSelectionDialog.OK) {
+			Cell selected = dialog.getObject();
+			setSelection(selected);
+			fireSelectionChanged();
+		}
 	}
 
 	/**
@@ -147,10 +132,6 @@ public class TypeCellSelector implements ISelectionProvider {
 	 * Fire a selection changed event to all listeners.
 	 */
 	private void fireSelectionChanged() {
-//		SelectionChangedEvent event = new SelectionChangedEvent(this, new StructuredSelection(
-//				getSelectedCell()));
-//		for (Object listener : selectionChangedListeners.getListeners())
-//			((ISelectionChangedListener) listener).selectionChanged(event);
 
 		TypeCellFocusService tc = (TypeCellFocusService) PlatformUI.getWorkbench().getService(
 				TypeCellFocusService.class);
@@ -165,13 +146,6 @@ public class TypeCellSelector implements ISelectionProvider {
 	 */
 	public boolean isCellSelected() {
 		return (selection != null);
-	}
-
-	/**
-	 * @return the main selector control
-	 */
-	public Control getControl() {
-		return main;
 	}
 
 }

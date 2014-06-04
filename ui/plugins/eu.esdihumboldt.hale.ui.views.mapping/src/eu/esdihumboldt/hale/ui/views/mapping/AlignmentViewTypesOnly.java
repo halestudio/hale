@@ -17,27 +17,29 @@ package eu.esdihumboldt.hale.ui.views.mapping;
 
 import java.util.Map;
 
-import org.eclipse.jface.action.ControlContribution;
-import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
+import org.eclipse.jface.viewers.IContentProvider;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.WorkbenchPart;
 
 import com.google.common.collect.Iterables;
 
-import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.ui.HaleUI;
-import eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider;
+import eu.esdihumboldt.hale.ui.common.graph.content.DummyCellGraphContentProvider;
+import eu.esdihumboldt.hale.ui.common.graph.labels.StringGraphLabelProvider;
 import eu.esdihumboldt.hale.ui.function.common.TypeCellSelector;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceAdapter;
@@ -63,6 +65,10 @@ public class AlignmentViewTypesOnly extends AbstractMappingView {
 
 	private TypeCellFocusListener selectionListener;
 
+	private DummyCellGraphContentProvider contentProvider;
+
+	private ISelectionListener mouseClickListener;
+
 	/**
 	 * @see eu.esdihumboldt.hale.ui.views.mapping.AbstractMappingView#createViewControl(org.eclipse.swt.widgets.Composite)
 	 */
@@ -78,10 +84,15 @@ public class AlignmentViewTypesOnly extends AbstractMappingView {
 			@Override
 			public void dataChanged(Cell cell) {
 				if (cell == null) {
-
-					getViewer().setInput(null);
+					// getViewer().setInput(new
+					DefaultCell newCell = new DefaultCell();
+					// newCell.setTransformationIdentifier("None");
+					getViewer().setInput(newCell);
+					// StructuredSelection("Double Click to open dialog."));
 				}
-				getViewer().setInput(cell);
+				else {
+					getViewer().setInput(cell);
+				}
 				refreshGraph();
 			}
 
@@ -149,6 +160,29 @@ public class AlignmentViewTypesOnly extends AbstractMappingView {
 			}
 		});
 
+		// Open the selection Dialog, if the user click on this view
+		getSite().getWorkbenchWindow().getSelectionService()
+				.addPostSelectionListener(mouseClickListener = new ISelectionListener() {
+
+					@Override
+					public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+						// only react to own selections
+						if (part != AlignmentViewTypesOnly.this)
+							return;
+						// view doesn't react, if an active cell is selected
+						if (sourceTargetSelector.isCellSelected()
+								|| selection.equals(StructuredSelection.EMPTY)) {
+							return;
+						}
+
+						getViewer().setSelection(StructuredSelection.EMPTY);
+						sourceTargetSelector.performTypeCellDialog(Display.getCurrent()
+								.getActiveShell());
+						// System.out.println("Selection" + selection);
+					}
+				});
+
+		getViewer().setInput(new DefaultCell());
 	}
 
 	/**
@@ -180,32 +214,17 @@ public class AlignmentViewTypesOnly extends AbstractMappingView {
 	 */
 	@Override
 	protected IBaseLabelProvider createLabelProvider() {
-		return new GraphLabelProvider(HaleUI.getServiceProvider()) {
+		return new StringGraphLabelProvider(HaleUI.getServiceProvider());
+	}
 
-			/**
-			 * @see eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider#isInherited(eu.esdihumboldt.hale.common.align.model.Cell)
-			 */
-			@Override
-			protected boolean isInherited(Cell cell) {
-				// cannot inherit type cells
-				if (AlignmentUtil.isTypeCell(cell))
-					return false;
-
-				return AlignmentUtil.reparentCell(cell, getSelectedCell(), true) != cell;
-			}
-
-			private final Color connectionHighlightColor = new Color(Display.getCurrent(), 255, 0,
-					0);
-
-			/**
-			 * @see eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider#dispose()
-			 */
-			@Override
-			public void dispose() {
-				connectionHighlightColor.dispose();
-				super.dispose();
-			}
-		};
+	/**
+	 * @see AbstractMappingView#createContentProvider()
+	 */
+	@Override
+	protected IContentProvider createContentProvider() {
+		contentProvider = new DummyCellGraphContentProvider("Select type:",
+				"Click here to select a type cell.", "Or Click 'Select Cell' Button'.");
+		return contentProvider;
 	}
 
 	/**
@@ -214,21 +233,33 @@ public class AlignmentViewTypesOnly extends AbstractMappingView {
 	@Override
 	protected void fillToolBar() {
 		super.fillToolBar();
-		IToolBarManager manager = getViewSite().getActionBars().getToolBarManager();
+		final IToolBarManager manager = getViewSite().getActionBars().getToolBarManager();
 
 		manager.add(new Separator());
 
 		// Create a new item; here create the button.
-		IContributionItem item = new ControlContribution("Select Cell") {
+//		IContributionItem item = new ControlContribution("Select Cell") {
+//
+//			@Override
+//			protected Control createControl(Composite parent) {
+//
+//				sourceTargetSelector = new TypeCellSelector(parent);
+//
+//				return sourceTargetSelector.getControl();
+//			}
+//
+//		};
+		sourceTargetSelector = new TypeCellSelector();
 
+		Action item = new Action("Select Cell", Action.AS_PUSH_BUTTON) {
+
+			/**
+			 * @see org.eclipse.jface.action.Action#run()
+			 */
 			@Override
-			protected Control createControl(Composite parent) {
-
-				sourceTargetSelector = new TypeCellSelector(parent);
-
-				return sourceTargetSelector.getControl();
+			public void run() {
+				sourceTargetSelector.performTypeCellDialog(Display.getCurrent().getActiveShell());
 			}
-
 		};
 
 		manager.add(item);
@@ -263,6 +294,11 @@ public class AlignmentViewTypesOnly extends AbstractMappingView {
 			TypeCellFocusService as = (TypeCellFocusService) PlatformUI.getWorkbench().getService(
 					TypeCellFocusService.class);
 			as.removeListener(selectionListener);
+		}
+
+		if (mouseClickListener != null) {
+			getSite().getWorkbenchWindow().getSelectionService()
+					.removePostSelectionListener(mouseClickListener);
 		}
 
 		sourceTargetSelector.setSelection(StructuredSelection.EMPTY);
