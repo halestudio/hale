@@ -257,7 +257,27 @@ def includeAdditionalFiles(artifacts, relsrcpath, productOutputPath, reldstpath,
         if (artifactZipPath.name.endsWith('.zip')) {
             ant.unzip(src: artifactZipPath, dest: artifactInstallPath)
         } else {
-            ant.untar(src: artifactZipPath, dest: artifactInstallPath, compression: 'gzip')
+	    if (!Helper.buildForMac(project)) {
+	        ant.untar(src: artifactZipPath, dest: artifactInstallPath, compression: 'gzip')
+	    } else {
+		// Use external tar command for OSX build since the jdk to bundle with HALE contains symbolic links
+		// This does only work on UNIX-based systems with tar installed!
+		def command = ['tar', '--preserve-permissions','-xzf', artifactZipPath.absolutePath]
+	    	artifactInstallPath.mkdir()
+	 	try {
+		    // On windows, an IOException will be thrown here
+	    	    def proc = command.execute(null, artifactInstallPath)
+		    def buffer = new StringBuffer()
+		    proc.consumeProcessErrorStream(buffer)
+	    	    proc.waitFor()
+		    // If unpacking fails on linux/osx just handle it the same way
+		    if (proc.exitValue() != 0) {
+		        throw new IOException("${buffer.toString()}")
+		    }
+		} catch (ex) {
+		    throw new IllegalStateException("Unable to unpack ${name} - The MacOSX build requires a UNIX-based system with tar installed:\n${ex.toString()}")
+		}	
+	    }
         }
     } else {
         println('Cannot find ' + name + ' for this platform. ' + name + ' will not be copied into the product.')
@@ -376,8 +396,8 @@ def packageClient(productOutputPath) {
 				zipfileset(dir: productOutputPath, prefix: packageName)
 			}
 		}
-    } else {
-		// Linux / Mac OS
+    } else if (Helper.buildForLinux(project)) {
+		// Linux
 		// package as .tar.gz
         def packageName = getPackageName()
         def packageFileName = new File('target', packageName + '.tar.gz')
@@ -390,18 +410,45 @@ def packageClient(productOutputPath) {
                 exclude(name: '**/*.sh')
                 exclude(name: '**/*.so')
                 exclude(name: '**/jre/bin/*')
-				exclude(name: launcherName)
-				exclude(name: "${launcherName}.app/Contents/MacOS/${launcherName}")
             }
             tarfileset(dir: productOutputPath, prefix: packageName, filemode: '755') {
                 include(name: getProductLauncher())
                 include(name: '**/*.sh')
                 include(name: '**/*.so')
                 include(name: '**/jre/bin/*')
-				include(name: launcherName)
-				include(name: "${launcherName}.app/Contents/MacOS/${launcherName}")
             }
         }
+    } else {
+		// OSX
+		// package as .tar.gz using external tar command to preserve symbolic links in jdk
+	def packageName = getPackageName()
+	def launcherName = getProductLauncher()
+	
+	// Set file permissions
+	def permCmd = ['chmod', '755', launcherName, "${launcherName}.app/Contents/MacOS/${launcherName}"]
+	def permProc = permCmd.execute(null, productOutputPath)
+	def permBuffer = new StringBuffer()
+	permProc.consumeProcessErrorStream(permBuffer)
+	permProc.waitFor()
+	if (permProc.exitValue() != 0) {
+	    println("Exit value is ${permProc.exitValue()}")
+	    println("ls".execute(null, productOutputPath).text)
+	    throw new IllegalStateException("Unable to set required file permissions:\n${permBuffer.toString()}");
+	}
+	
+	// Pack tar archive
+	println('Creating package ' + packageName + '.tar.gz' + ' ...')
+	def targetDir = new File(productOutputPath.absolutePath + '/../../target')
+	targetDir.mkdir()
+	def tarPath = targetDir.absolutePath + '/' + packageName + '.tar.gz';
+	def packCmd =  ['tar', '--preserve-permissions', '-czf', tarPath, "."]
+	def packProc = packCmd.execute(null, productOutputPath)
+	def packBuffer = new StringBuffer()
+	packProc.consumeProcessErrorStream(packBuffer)
+	packProc.waitFor()
+	if (packProc.exitValue() != 0) {
+	    throw new IllegalStateException("Unable to create tar archive:\n${packBuffer.toString()}");
+	}
     }
 }
 

@@ -116,7 +116,7 @@ ext {
 	]
 
     // URL to the directory containing mirrored artifacts (Maven, JRE, ...)
-    artifactsMirrorUrl = 'http://hale.igd.fraunhofer.de/build-support/3705cbb87b782e3cfe2ea02d297f0b29ba3a55ba'
+    artifactsMirrorUrl = 'http://hale.igd.fraunhofer.de/build-support/38157ce25358e0c2010d1ff67ff5cfd7806215b7'
 
     // Names of zip files containing Java Runtimes (sorted by their respective platform)
     jreArtifacts = [
@@ -130,6 +130,11 @@ ext {
             'gtk': [
                 'x86': 'jre-7u51-linux-i586.tar.gz',
                 'x86_64': 'jre-7u51-linux-x64.tar.gz'
+            ]
+        ],
+        'macosx': [
+            'cocoa': [
+                'x86_64': 'jdk-min-7u60-macosx-x64.tar.gz'
             ]
         ]
     ]
