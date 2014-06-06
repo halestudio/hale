@@ -39,9 +39,9 @@ import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality
 import eu.esdihumboldt.util.Identifiers
 import eu.esdihumboldt.util.groovy.json.JsonStreamBuilder
+import eu.esdihumboldt.util.xml.XmlUtil
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
-import groovy.xml.XmlUtil
 
 
 /**
@@ -137,7 +137,7 @@ class MappingDocumentation {
 	private static String getValueRepresentation(Value value) {
 		if (value.isRepresentedAsDOM()) {
 			Element element = value.getDOMRepresentation()
-			return element != null ? XmlUtil.serialize(element) : null
+			return element != null ? XmlUtil.serialize(element, false) : null
 		}
 		else {
 			return value.getStringRepresentation()
