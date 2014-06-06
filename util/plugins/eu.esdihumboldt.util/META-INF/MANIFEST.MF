@@ -33,5 +33,6 @@ Export-Package: eu.esdihumboldt.util,
  eu.esdihumboldt.util.io,
  eu.esdihumboldt.util.reflection,
  eu.esdihumboldt.util.scavenger,
- eu.esdihumboldt.util.validator
+ eu.esdihumboldt.util.validator,
+ eu.esdihumboldt.util.xml
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0"
