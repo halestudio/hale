@@ -25,6 +25,7 @@ import org.pegdown.PegDownProcessor
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil
 import eu.esdihumboldt.hale.common.align.model.Alignment
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil
 import eu.esdihumboldt.hale.common.align.model.Cell
 import eu.esdihumboldt.hale.common.align.model.ChildContext
 import eu.esdihumboldt.hale.common.align.model.Entity
@@ -145,6 +146,12 @@ class MappingDocumentation {
 			// function name
 			json 'functionName', function?.displayName?:cell.transformationIdentifier
 
+			// function ID
+			json 'functionId', cell.transformationIdentifier
+
+			// if the cell is a type relation
+			json 'typeRelation', AlignmentUtil.isTypeCell(cell)
+
 			// list of function parameters
 			if (cell.transformationParameters) {
 				cell.transformationParameters.entries().each { Entry<String, ParameterValue> entry ->
@@ -227,6 +234,9 @@ class MappingDocumentation {
 					}
 				}
 			}
+
+			// short name
+			json 'shortName', ede.definition.displayName
 		}
 	}
 
