@@ -134,7 +134,7 @@ class MappingDocumentation {
 	/**
 	 * Create a JSON representation from a cell.
 	 */
-	public static String cellInfoJSON(Cell cell, JsonStreamBuilder json) {
+	public static String cellInfoJSON(Cell cell, JsonStreamBuilder json, CellJsonExtension ext = null) {
 		// collect cell information
 
 		// get the associated function
@@ -170,7 +170,7 @@ class MappingDocumentation {
 			if (cell.source != null && !cell.source.isEmpty()) {
 				cell.source.entries().each { Entry<String, Entity> entry ->
 					json 'sources[]', {
-						entityJSON(json, entry.key, entry.value)
+						entityJSON(json, entry.key, entry.value, ext)
 					}
 				}
 			}
@@ -181,7 +181,7 @@ class MappingDocumentation {
 			if (cell.target != null && !cell.target.isEmpty()) {
 				cell.target.entries().each { Entry<String, Entity> entry ->
 					json 'targets[]', {
-						entityJSON(json, entry.key, entry.value)
+						entityJSON(json, entry.key, entry.value, ext)
 					}
 				}
 			}
@@ -194,10 +194,14 @@ class MappingDocumentation {
 			if (explanation) {
 				json 'explanation', explanation
 			}
+
+			if (ext != null) {
+				ext.augmentCellJson(cell, json)
+			}
 		}
 	}
 
-	private static def entityJSON(JsonStreamBuilder json, String name, Entity entity) {
+	private static def entityJSON(JsonStreamBuilder json, String name, Entity entity, CellJsonExtension ext) {
 		json {
 			EntityDefinition ede = entity.definition
 
@@ -237,6 +241,10 @@ class MappingDocumentation {
 
 			// short name
 			json 'shortName', ede.definition.displayName
+
+			if (ext != null) {
+				ext.augmentEntityJson(entity, name, json)
+			}
 		}
 	}
 
