@@ -21,6 +21,7 @@ import java.util.Map.Entry
 
 import org.pegdown.Extensions
 import org.pegdown.PegDownProcessor
+import org.w3c.dom.Element
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil
@@ -31,6 +32,7 @@ import eu.esdihumboldt.hale.common.align.model.ChildContext
 import eu.esdihumboldt.hale.common.align.model.Entity
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition
 import eu.esdihumboldt.hale.common.align.model.ParameterValue
+import eu.esdihumboldt.hale.common.core.io.Value
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo
 import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
@@ -39,6 +41,7 @@ import eu.esdihumboldt.util.Identifiers
 import eu.esdihumboldt.util.groovy.json.JsonStreamBuilder
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
+import groovy.xml.XmlUtil
 
 
 /**
@@ -131,6 +134,16 @@ class MappingDocumentation {
 		exp
 	}
 
+	private static String getValueRepresentation(Value value) {
+		if (value.isRepresentedAsDOM()) {
+			Element element = value.getDOMRepresentation()
+			return element != null ? XmlUtil.serialize(element) : null
+		}
+		else {
+			return value.getStringRepresentation()
+		}
+	}
+
 	/**
 	 * Create a JSON representation from a cell.
 	 */
@@ -158,7 +171,8 @@ class MappingDocumentation {
 					json 'functionParameters[]', {
 						// label and value
 						json 'paramLabel', entry.key
-						json 'paramValue', entry.value as String
+						json 'paramValue', getValueRepresentation(entry.value.intern())
+						json 'xmlParam', entry.value.representedAsDOM
 					}
 				}
 			}
