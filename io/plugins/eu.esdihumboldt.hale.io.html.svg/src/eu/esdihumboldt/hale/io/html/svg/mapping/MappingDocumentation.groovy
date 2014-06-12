@@ -170,7 +170,8 @@ class MappingDocumentation {
 				cell.transformationParameters.entries().each { Entry<String, ParameterValue> entry ->
 					json 'functionParameters[]', {
 						// label and value
-						json 'paramLabel', entry.key
+						json 'paramLabel', entry.key //TODO actually use the label
+						json 'paramName', entry.key
 						json 'paramValue', getValueRepresentation(entry.value.intern())
 						json 'xmlParam', entry.value.representedAsDOM
 					}
