@@ -134,7 +134,7 @@ class MappingDocumentation {
 		exp
 	}
 
-	private static String getValueRepresentation(Value value, ValueRepresentation valueRep) {
+	private static Object getValueRepresentation(Value value, ValueRepresentation valueRep) {
 		if (valueRep != null) {
 			return valueRep.getValueRepresentation(value)
 		}
