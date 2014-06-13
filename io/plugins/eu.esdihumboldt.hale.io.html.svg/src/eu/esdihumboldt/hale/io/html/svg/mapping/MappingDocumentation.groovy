@@ -134,7 +134,12 @@ class MappingDocumentation {
 		exp
 	}
 
-	private static String getValueRepresentation(Value value) {
+	private static String getValueRepresentation(Value value, ValueRepresentation valueRep) {
+		if (valueRep != null) {
+			return valueRep.getValueRepresentation(value)
+		}
+
+		// fall-back to default representation
 		if (value.isRepresentedAsDOM()) {
 			Element element = value.getDOMRepresentation()
 			return element != null ? XmlUtil.serialize(element, false) : null
@@ -147,7 +152,7 @@ class MappingDocumentation {
 	/**
 	 * Create a JSON representation from a cell.
 	 */
-	public static String cellInfoJSON(Cell cell, JsonStreamBuilder json, CellJsonExtension ext = null) {
+	public static String cellInfoJSON(Cell cell, JsonStreamBuilder json, CellJsonExtension ext = null, ValueRepresentation valueRep = null) {
 		// collect cell information
 
 		// get the associated function
@@ -172,8 +177,8 @@ class MappingDocumentation {
 						// label and value
 						json 'paramLabel', entry.key //TODO actually use the label
 						json 'paramName', entry.key
-						json 'paramValue', getValueRepresentation(entry.value.intern())
-						json 'xmlParam', entry.value.representedAsDOM
+						json 'paramValue', getValueRepresentation(entry.value.intern(), valueRep)
+						json 'simple', !entry.value.representedAsDOM
 					}
 				}
 			}
