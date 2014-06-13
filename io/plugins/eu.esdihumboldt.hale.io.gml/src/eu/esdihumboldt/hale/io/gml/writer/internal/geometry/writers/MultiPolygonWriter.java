@@ -46,6 +46,7 @@ public class MultiPolygonWriter extends AbstractGeometryWriter<MultiPolygon> {
 
 		// compatible types to serve as entry point
 		addCompatibleType(new QName(Pattern.GML_NAMESPACE_PLACEHOLDER, "MultiPolygonType")); //$NON-NLS-1$
+		addCompatibleType(new QName(Pattern.GML_NAMESPACE_PLACEHOLDER, "MultiSurfaceType")); //$NON-NLS-1$
 		addCompatibleType(new QName(Pattern.GML_NAMESPACE_PLACEHOLDER, "CompositeSurfaceType")); //$NON-NLS-1$
 
 		// patterns for matching inside compatible types
