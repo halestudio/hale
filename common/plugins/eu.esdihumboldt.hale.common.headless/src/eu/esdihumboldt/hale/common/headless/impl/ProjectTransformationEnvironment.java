@@ -29,6 +29,7 @@ import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
+import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
@@ -97,6 +98,23 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 	public ProjectTransformationEnvironment(String id,
 			LocatableInputSupplier<? extends InputStream> input, ReportHandler reportHandler)
 			throws IOException {
+		this(id, input, reportHandler, null);
+	}
+
+	/**
+	 * Create a transformation environment based on a project file.
+	 * 
+	 * @param id the identifier for the transformation environment
+	 * @param input the project file input
+	 * @param reportHandler the report handler for the reports during project
+	 *            loading, may be <code>null</code>
+	 * @param additionalAdvisors a map with additional I/O advisors, action ID
+	 *            mapped to advisor, may be <code>null</code>
+	 * @throws IOException if loading the project fails
+	 */
+	public ProjectTransformationEnvironment(String id,
+			LocatableInputSupplier<? extends InputStream> input, ReportHandler reportHandler,
+			Map<String, IOAdvisor<?>> additionalAdvisors) throws IOException {
 		super();
 		this.id = id;
 
@@ -109,7 +127,7 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 			reader.setSource(input);
 
 			HeadlessProjectAdvisor advisor = new HeadlessProjectAdvisor(reportHandler,
-					serviceProvider);
+					serviceProvider, additionalAdvisors);
 			HeadlessIO.executeProvider(reader, advisor, null, reportHandler);
 			// XXX progress???!!
 
