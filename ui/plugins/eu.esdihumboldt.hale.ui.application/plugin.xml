@@ -114,6 +114,10 @@
                name="revision"
                value="___revision___">
          </property>
+         <property
+               name="applicationXMI"
+               value="eu.esdihumboldt.hale.ui.application/HALELegacyIDE.e4xmi">
+         </property>
       </product>
    </extension>
    <extension
