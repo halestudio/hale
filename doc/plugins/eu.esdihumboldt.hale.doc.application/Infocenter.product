@@ -23,6 +23,7 @@
    </vm>
 
    <plugins>
+      <plugin id="aopalliance"/>
       <plugin id="cal10n.api"/>
       <plugin id="ch.qos.logback.classic"/>
       <plugin id="ch.qos.logback.core"/>
@@ -34,20 +35,19 @@
       <plugin id="eu.esdihumboldt.hale.doc.application"/>
       <plugin id="eu.esdihumboldt.hale.doc.user"/>
       <plugin id="eu.esdihumboldt.hale.doc.user.views.styledmap"/>
+      <plugin id="javax.el"/>
+      <plugin id="javax.servlet"/>
       <plugin id="javax.servlet.jsp"/>
       <plugin id="javax.servlet2"/>
+      <plugin id="javax.xml"/>
       <plugin id="jcl.over.slf4j"/>
       <plugin id="log4j.over.slf4j"/>
-      <plugin id="org.aopalliance"/>
       <plugin id="org.apache.commons.codec"/>
-      <plugin id="org.apache.commons.el"/>
-      <plugin id="org.apache.commons.httpclient"/>
       <plugin id="org.apache.commons.io"/>
       <plugin id="org.apache.commons.lang"/>
       <plugin id="org.apache.httpcomponents.httpclient"/>
       <plugin id="org.apache.httpcomponents.httpcore"/>
-      <plugin id="org.apache.jasper"/>
-      <plugin id="org.apache.lucene"/>
+      <plugin id="org.apache.jasper.glassfish"/>
       <plugin id="org.apache.lucene.analysis"/>
       <plugin id="org.apache.lucene.core"/>
       <plugin id="org.eclipse.compare.core"/>
@@ -74,16 +74,19 @@
       <plugin id="org.eclipse.equinox.registry"/>
       <plugin id="org.eclipse.equinox.security"/>
       <plugin id="org.eclipse.help"/>
-      <plugin id="org.eclipse.help.appserver"/>
       <plugin id="org.eclipse.help.base"/>
       <plugin id="org.eclipse.help.webapp"/>
+      <plugin id="org.eclipse.jetty.continuation"/>
+      <plugin id="org.eclipse.jetty.http"/>
+      <plugin id="org.eclipse.jetty.io"/>
+      <plugin id="org.eclipse.jetty.security"/>
+      <plugin id="org.eclipse.jetty.server"/>
+      <plugin id="org.eclipse.jetty.servlet"/>
+      <plugin id="org.eclipse.jetty.util"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.services"/>
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.junit"/>
-      <plugin id="org.junit4"/>
-      <plugin id="org.mortbay.jetty.server"/>
-      <plugin id="org.mortbay.jetty.util"/>
       <plugin id="org.springframework.aop"/>
       <plugin id="org.springframework.beans"/>
       <plugin id="org.springframework.context"/>
@@ -98,8 +101,6 @@
       <plugin id="org.eclipse.help" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.help.base" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.help.webapp" autoStart="true" startLevel="0" />
-      <plugin id="org.mortbay.jetty.server" autoStart="true" startLevel="0" />
-      <plugin id="org.mortbay.jetty.util" autoStart="true" startLevel="0" />
    </configurations>
 
 </product>
