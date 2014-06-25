@@ -116,7 +116,7 @@
          </property>
          <property
                name="applicationXMI"
-               value="org.eclipse.ui.workbench/LegacyIDE.e4xmi">
+               value="eu.esdihumboldt.hale.ui.application/HALELegacyIDE.e4xmi">
          </property>
       </product>
    </extension>
