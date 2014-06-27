@@ -132,4 +132,47 @@ class BundleParser {
 
         return project.ext.parsedBundles
     }
+	
+	private def getParsedFeaturesTraverse(dir) {
+		dir.listFiles().each { path ->
+			if (path.isDirectory()) {
+				def featureXmlPath = new File(path, 'feature.xml')
+				if (featureXmlPath.exists()) {
+					// read feature information
+					def feature = new groovy.util.XmlSlurper().parse(featureXmlPath)
+					
+					def id = feature.@id
+					if (!project.ext.parsedFeatures.containsKey(id)) {
+						//TODO? check if the project is valid / should be part of the update site
+//						if (acceptFeature(path, id)) {
+							project.ext.parsedFeatures[id] = [
+									'version': feature.@version,
+									'path': path,
+									'label': feature.@id
+							]
+//						}
+//						else {
+//							println "Skipping project at $path ($sname)"
+//						}
+					} else {
+						throw new IllegalStateException("Duplicate feature ID ${id}")
+					}
+				} else {
+					getParsedFeaturesTraverse(path)
+				}
+			}
+		}
+	}
+	
+	def getParsedFeatures() {
+		if (!project.ext.properties.containsKey("parsedFeatures")) {
+			println('Parsing features ...')
+			project.ext.parsedFeatures = [:]
+			for (b in project.ext.bundles) {
+				getParsedFeaturesTraverse(b)
+			}
+		}
+
+		return project.ext.parsedFeatures
+	}
 }
