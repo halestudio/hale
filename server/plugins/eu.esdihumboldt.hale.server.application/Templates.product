@@ -42,6 +42,10 @@
       <plugin id="antlr"/>
       <plugin id="aopalliance"/>
       <plugin id="args4j"/>
+      <plugin id="asm"/>
+      <plugin id="asm.asm-analysis"/>
+      <plugin id="asm.asm-tree"/>
+      <plugin id="asm.asm-util"/>
       <plugin id="cal10n.api"/>
       <plugin id="cglib"/>
       <plugin id="ch.qos.logback.classic"/>
