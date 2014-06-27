@@ -89,7 +89,14 @@ def getPackageName() {
  */
 def productContainsUIBundles() {
     def dlcdoc = new XmlSlurper().parse(project.file(getProductFile()))
-    return dlcdoc.plugins.plugin.any { it.@id.toString() == 'org.eclipse.ui' }
+	if (dlcdoc.@useFeatures.toString() == 'true') {
+		// defined through features
+		return !(dlcdoc.features.feature.any { it.@id.toString().contains('server') })
+	}
+	else {
+		// defined through bundles
+		return dlcdoc.plugins.plugin.any { it.@id.toString() == 'org.eclipse.ui' }
+	}
 }
 
 /**
