@@ -78,6 +78,7 @@ ext {
 		file('../io/plugins'),
 		file('../server/plugins'),
 		file('../ui/plugins'),
+		file('../ui/features'),
 		file('../util/plugins'),
 		file('../app/plugins'),
 		file('../ext/styledmap'),
