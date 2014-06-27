@@ -42,8 +42,11 @@ http://www.esdi-community.eu/projects/show/hale
    <vm>
    </vm>
 
+   <plugins>
+   </plugins>
+
    <features>
-      <feature id="eu.esdihumboldt.hale.ui.feature" version="2.9.0.qualifier"/>
+      <feature id="eu.esdihumboldt.hale.ui.feature" version="2.9.0"/>
    </features>
 
    <configurations>

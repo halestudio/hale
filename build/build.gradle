@@ -73,6 +73,7 @@ ext {
     // path to the bundles to build
     bundles = [
 		file('../common/plugins'),
+		file('../common/features'),
 		file('../cst/plugins'),
 		file('../doc/plugins'),
 		file('../io/plugins'),
