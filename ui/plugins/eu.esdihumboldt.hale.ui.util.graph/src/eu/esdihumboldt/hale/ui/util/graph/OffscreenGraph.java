@@ -22,18 +22,11 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
 import javax.imageio.ImageIO;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.SWTGraphics;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.gmf.runtime.draw2d.ui.render.awt.internal.svg.export.GraphicsSVG;
+//import org.eclipse.gmf.runtime.draw2d.ui.render.awt.internal.svg.export.GraphicsSVG;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
@@ -45,7 +38,6 @@ import org.eclipse.zest.core.viewers.GraphViewer;
 import org.eclipse.zest.core.widgets.Graph;
 import org.eclipse.zest.internal.dot.DotExport;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
-import org.w3c.dom.Element;
 
 import eu.esdihumboldt.hale.ui.util.swing.SwingRcpUtilities;
 
@@ -168,10 +160,11 @@ public abstract class OffscreenGraph {
 	 *             fails
 	 * @throws TransformerException if writing the document fails
 	 */
-	public void saveSVG(OutputStream out) throws IOException, TransformerFactoryConfigurationError,
-			TransformerException {
-		saveSVG(graph.getRootLayer(), out);
-	}
+	/*
+	 * public void saveSVG(OutputStream out) throws IOException,
+	 * TransformerFactoryConfigurationError, TransformerException {
+	 * saveSVG(graph.getRootLayer(), out); }
+	 */
 
 	/**
 	 * Save a figure as image to an output stream.
@@ -220,37 +213,33 @@ public abstract class OffscreenGraph {
 	 *             fails
 	 * @throws TransformerException if writing the document fails
 	 */
-	public static void saveSVG(IFigure root, OutputStream out) throws IOException,
-			TransformerFactoryConfigurationError, TransformerException {
-		Rectangle viewBox = root.getBounds().getCopy();
-		GraphicsSVG graphics = GraphicsSVG.getInstance(viewBox);
-
-		// paint figure
-		try {
-			root.paint(graphics);
-
-			Element svgRoot = graphics.getRoot();
-
-			// Define the view box
-			svgRoot.setAttributeNS(null, "viewBox", String.valueOf(viewBox.x) + " " + //$NON-NLS-1$ //$NON-NLS-2$
-					String.valueOf(viewBox.y) + " " + //$NON-NLS-1$
-					String.valueOf(viewBox.width) + " " + //$NON-NLS-1$
-					String.valueOf(viewBox.height));
-
-			// Write the document to the stream
-			Transformer transformer = TransformerFactory.newInstance().newTransformer();
-			transformer.setOutputProperty(OutputKeys.METHOD, "xml"); //$NON-NLS-1$
-			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8"); //$NON-NLS-1$
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
-
-			DOMSource source = new DOMSource(svgRoot);
-			StreamResult result = new StreamResult(out);
-			transformer.transform(source, result);
-		} finally {
-			graphics.dispose();
-			out.close();
-		}
-	}
+	/*
+	 * public static void saveSVG(IFigure root, OutputStream out) throws
+	 * IOException, TransformerFactoryConfigurationError, TransformerException {
+	 * Rectangle viewBox = root.getBounds().getCopy(); GraphicsSVG graphics =
+	 * GraphicsSVG.getInstance(viewBox);
+	 * 
+	 * // paint figure try { root.paint(graphics);
+	 * 
+	 * Element svgRoot = graphics.getRoot();
+	 * 
+	 * // Define the view box svgRoot.setAttributeNS(null, "viewBox",
+	 * String.valueOf(viewBox.x) + " " + //$NON-NLS-1$ //$NON-NLS-2$
+	 * String.valueOf(viewBox.y) + " " + //$NON-NLS-1$
+	 * String.valueOf(viewBox.width) + " " + //$NON-NLS-1$
+	 * String.valueOf(viewBox.height));
+	 * 
+	 * // Write the document to the stream Transformer transformer =
+	 * TransformerFactory.newInstance().newTransformer();
+	 * transformer.setOutputProperty(OutputKeys.METHOD, "xml"); //$NON-NLS-1$
+	 * transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+	 * //$NON-NLS-1$ transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+	 * //$NON-NLS-1$
+	 * 
+	 * DOMSource source = new DOMSource(svgRoot); StreamResult result = new
+	 * StreamResult(out); transformer.transform(source, result); } finally {
+	 * graphics.dispose(); out.close(); } }
+	 */
 
 	/**
 	 * Save a graph in the dot format to an output stream.

@@ -60,7 +60,7 @@ public class ExportGraphAction extends Action {
 		this.viewer = viewer;
 
 		setText("Export to file");
-		setToolTipText("Export the graph to an image, SVG or dot file");
+		setToolTipText("Export the graph to an image or dot file");
 		setImageDescriptor(GraphUIUtilBundle.getImageDescriptor("icons/export.gif"));
 	}
 
@@ -124,9 +124,9 @@ public class ExportGraphAction extends Action {
 							if (ext.equalsIgnoreCase("gv") || ext.equalsIgnoreCase("dot")) {
 								OffscreenGraph.saveDot(graph, out);
 							}
-							if (ext.equalsIgnoreCase("svg")) {
-								OffscreenGraph.saveSVG(root, out);
-							}
+//							else if (ext.equalsIgnoreCase("svg")) {
+//								OffscreenGraph.saveSVG(root, out);
+//							}
 							else {
 								OffscreenGraph.saveImage(root, out, ext);
 							}
