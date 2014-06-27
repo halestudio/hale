@@ -602,13 +602,6 @@
          unpack="false"/>
 
    <plugin
-         id="eu.esdihumboldt.hale.io.html.svg"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.apache.xerces"
          download-size="0"
          install-size="0"
@@ -946,13 +939,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.pegdown"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.opengis"
          download-size="0"
          install-size="0"
@@ -1268,7 +1254,6 @@
 
    <plugin
          id="eu.esdihumboldt.hale.ui.application.help.internal"
-         os="macosx,win32"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -1445,13 +1430,6 @@
 
    <plugin
          id="com.fasterxml.jackson.core.jackson-annotations"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.parboiled.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -1722,14 +1700,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.parboiled.java"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
          unpack="false"/>
 
    <plugin
