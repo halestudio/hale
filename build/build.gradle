@@ -70,7 +70,7 @@ ext {
     // a list of additional files to include in the final product (default: empty)
     additionalFilesToPackage = []
 
-    // path to the bundles to build
+    // path to the bundles and features to build
     bundles = [
 		file('../common/plugins'),
 		file('../common/features'),
@@ -78,9 +78,11 @@ ext {
 		file('../doc/plugins'),
 		file('../io/plugins'),
 		file('../server/plugins'),
+		file('../server/features'),
 		file('../ui/plugins'),
 		file('../ui/features'),
 		file('../util/plugins'),
+		file('../util/features'),
 		file('../app/plugins'),
 		file('../ext/styledmap'),
 		file('../ext/xslt'),

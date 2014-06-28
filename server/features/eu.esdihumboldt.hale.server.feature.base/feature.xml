@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="eu.esdihumboldt.hale.common.feature.base"
-      label="Equinox base feature"
+      id="eu.esdihumboldt.hale.server.feature.base"
+      label="HALE server base feature"
       version="2.9.0">
 
    <description url="http://www.example.com/description">
@@ -17,162 +17,134 @@
    </license>
 
    <includes
-         id="de.fhg.igd.slf4jplus.feature"
+         id="eu.esdihumboldt.hale.common.feature.base"
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.equinox.core.feature"
+         id="eu.esdihumboldt.hale.common.feature.core"
          version="0.0.0"/>
 
    <plugin
-         id="org.apache.felix.gogo.command"
+         id="org.springframework.context.support"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.apache.felix.gogo.runtime"
+         id="org.springframework.osgi.web.mini"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.apache.felix.gogo.shell"
+         id="org.springframework.security.config"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.console"
+         id="org.springframework.security.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="ch.qos.logback.classic"
+         id="org.springframework.security.web"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="ch.qos.logback.core"
+         id="org.springframework.web.servlet"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="cal10n.api"
+         id="org.quartz-scheduler.quartz"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.gemini.blueprint.core"
+         id="org.eclipse.jetty.continuation"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.gemini.blueprint.extender"
+         id="org.eclipse.jetty.deploy"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.gemini.blueprint.io"
+         id="org.eclipse.jetty.http"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.springframework.aop"
+         id="org.eclipse.jetty.io"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.springframework.asm"
+         id="org.eclipse.jetty.osgi.boot"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.springframework.beans"
+         id="org.eclipse.jetty.security"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.springframework.context"
+         id="org.eclipse.jetty.server"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.springframework.expression"
+         id="org.eclipse.jetty.servlet"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.springframework.transaction"
+         id="org.eclipse.jetty.util"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.springframework.core"
+         id="org.eclipse.jetty.webapp"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="jcl.over.slf4j"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="jul.to.slf4j"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="log4j.over.slf4j"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="slf4j.api"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="slf4j.ext"
+         id="org.eclipse.jetty.xml"
          download-size="0"
          install-size="0"
          version="0.0.0"
