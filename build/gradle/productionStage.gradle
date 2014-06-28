@@ -157,6 +157,7 @@ def renderTemplate(src, dst, values) {
  */
 def filterPlatformSpecificFragments(productFile) {
     def bundlesToRemove = []
+	def featuresToRemove = []
 
     def productFileContents = productFile.text
     def dlcdoc = new XmlSlurper().parseText(productFileContents)
@@ -193,12 +194,33 @@ def filterPlatformSpecificFragments(productFile) {
 			}
 		}
     }
+	
+	// also check features
+	dlcdoc.features.feature.each { f ->
+		def id = f.@id.toString()
+		/*
+		 * Find OS specific features.
+		 */
+		if (project.ext.properties.containsKey('osSpecificBundles')) {
+			def os = project.ext.osSpecificBundles[id]
+			if (os && !os.any { it == project.ext.osgiOS}) {
+				// OS information is there but does not match
+				featuresToRemove << id
+			}
+		}
+	}
 
     // remove bundles from product file
     bundlesToRemove.each { p ->
         productFileContents = productFileContents.replaceAll(/<plugin.*id="${p}".+\r?\n\s+/, '')
 		println "Removed platform specific bundle $p from product configuration"
     }
+	
+	// remove features from product file
+	featuresToRemove.each { f ->
+		productFileContents = productFileContents.replaceAll(/<feature.*id="${f}".+\r?\n\s+/, '')
+		println "Removed platform specific feature $f from product configuration"
+	}
 
     // overwrite product file
     productFile.write(productFileContents)

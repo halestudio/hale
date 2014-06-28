@@ -32,10 +32,6 @@
          id="eu.esdihumboldt.hale.common.feature.core"
          version="0.0.0"/>
 
-   <includes
-         id="eu.esdihumboldt.hale.ui.feature.win32"
-         version="0.0.0"/>
-
    <plugin
          id="org.jdesktop.swingx.mapviewer"
          download-size="0"

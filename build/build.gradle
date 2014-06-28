@@ -103,8 +103,8 @@ ext {
 	]
 	
 	/*
-	 * Specify OS specific bundles. Maps symbolic names to OS
-	 * identifiers.
+	 * Specify OS specific bundles or features. Maps symbolic names
+	 * to OS identifiers.
 	 * 
 	 * Maven tycho has problems with platform/os specific bundles.
 	 * Thus we have to filter them in the product configuration.
@@ -116,7 +116,11 @@ ext {
 	 */
 	osSpecificBundles = [
 		'eu.esdihumboldt.hale.ui.application.help.internal': ['macosx', 'win32'],
-		'eu.esdihumboldt.hale.ui.application.help.external': ['linux']
+		'eu.esdihumboldt.hale.ui.application.help.external': ['linux'],
+		// features
+		'eu.esdihumboldt.hale.ui.feature.win32': ['win32'],
+		'eu.esdihumboldt.hale.ui.feature.linux': ['linux'],
+		'eu.esdihumboldt.hale.ui.feature.macosx': ['macosx']
 	]
 
     // URL to the directory containing mirrored artifacts (Maven, JRE, ...)

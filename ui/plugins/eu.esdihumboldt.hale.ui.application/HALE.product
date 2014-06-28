@@ -47,6 +47,7 @@ http://www.esdi-community.eu/projects/show/hale
 
    <features>
       <feature id="eu.esdihumboldt.hale.ui.feature" version="2.9.0"/>
+      <feature id="eu.esdihumboldt.hale.ui.feature.win32" version="2.9.0"/>
    </features>
 
    <configurations>
