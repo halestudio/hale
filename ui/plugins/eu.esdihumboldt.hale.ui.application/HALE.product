@@ -48,6 +48,21 @@ http://www.esdi-community.eu/projects/show/hale
    <features>
       <feature id="eu.esdihumboldt.hale.ui.feature" version="2.9.0"/>
       <feature id="eu.esdihumboldt.hale.ui.feature.win32" version="2.9.0"/>
+      <feature id="eu.esdihumboldt.hale.ui.feature.liveeditor" version="2.9.0"/>
+      <feature id="eu.esdihumboldt.hale.common.feature.base"/>
+      <feature id="de.fhg.igd.slf4jplus.ui.feature"/>
+      <feature id="org.eclipse.equinox.core.feature"/>
+      <feature id="org.eclipse.draw2d"/>
+      <feature id="eu.esdihumboldt.hale.ui.feature.rcp"/>
+      <feature id="org.eclipse.help"/>
+      <feature id="org.eclipse.emf.ecore"/>
+      <feature id="org.eclipse.e4.rcp"/>
+      <feature id="eu.esdihumboldt.hale.ui.feature.zest"/>
+      <feature id="org.eclipse.emf.common"/>
+      <feature id="de.fhg.igd.slf4jplus.feature"/>
+      <feature id="eu.esdihumboldt.util.feature.resource"/>
+      <feature id="eu.esdihumboldt.hale.common.feature.core"/>
+      <feature id="org.eclipse.gef"/>
    </features>
 
    <configurations>

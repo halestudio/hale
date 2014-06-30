@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="188">
+<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="190">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.scala-ide.sdt.feature.feature.group" version="3.0.3.v-2_10-201403271605-8d2c756"/>
-<unit id="org.scala-ide.sdt.source.feature.feature.group" version="3.0.3.v-2_10-201403271605-8d2c756"/>
-<repository location="http://download.scala-ide.org/sdk/helium/e38/scala210/stable/site"/>
+<unit id="org.eclipse.jetty.bundles.f.source.feature.group" version="8.1.14.201311072346"/>
+<unit id="org.eclipse.jetty.bundles.f.feature.group" version="8.1.14.201311072346"/>
+<repository location="http://download.eclipse.org/jetty/updates/jetty-bundles-8.x/8.1.14.v20131031"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.sdk.ide" version="4.4.0.I20140606-1215"/>
+<repository location="http://download.eclipse.org/eclipse/updates/4.4"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="de.fhg.igd.slf4jplus.feature.feature.group" version="1.2.0.201403111309"/>
@@ -12,8 +16,8 @@
 <repository location="http://hale.igd.fraunhofer.de/jenkins/view/Libraries/job/slf4jplus/9/updatesite"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.sdk.ide" version="4.4.0.I20140606-1215"/>
-<repository location="http://download.eclipse.org/eclipse/updates/4.4"/>
+<unit id="eu.esdihumboldt.hale.platform.feature.group" version="2.9.3"/>
+<repository location="http://hale.igd.fraunhofer.de/build-support/97265b28d4076449ad31abd1a4edb3659ba415f6/updatesites/platform"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.equinox.sdk.feature.group" version="3.10.0.v20140606-1602"/>
@@ -26,17 +30,13 @@
 <repository location="http://download.eclipse.org/releases/luna/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.jetty.bundles.f.source.feature.group" version="8.1.14.201311072346"/>
-<unit id="org.eclipse.jetty.bundles.f.feature.group" version="8.1.14.201311072346"/>
-<repository location="http://download.eclipse.org/jetty/updates/jetty-bundles-8.x/8.1.14.v20131031"/>
+<unit id="org.scala-ide.sdt.feature.feature.group" version="3.0.3.v-2_10-201403271605-8d2c756"/>
+<unit id="org.scala-ide.sdt.source.feature.feature.group" version="3.0.3.v-2_10-201403271605-8d2c756"/>
+<repository location="http://download.scala-ide.org/sdk/helium/e38/scala210/stable/site"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.e4.core.tools.feature.feature.group" version="0.14.0.v20140112-2002"/>
-<repository location="http://download.eclipse.org/e4/updates/0.15"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="eu.esdihumboldt.hale.platform.feature.group" version="2.9.3"/>
-<repository location="http://hale.igd.fraunhofer.de/build-support/97265b28d4076449ad31abd1a4edb3659ba415f6/updatesites/platform"/>
+<unit id="org.eclipse.e4.core.tools.feature.feature.group" version="0.14.0.v20140624-1329"/>
+<repository location="http://download.vogella.com/luna/e4tools"/>
 </location>
 </locations>
 </target>
