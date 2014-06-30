@@ -433,6 +433,7 @@
                mnemonic="%menu.help.mnemonic">
             <command
                   commandId="org.eclipse.ui.help.aboutAction"
+                  icon="icons/dhp.png"
                   style="push">
             </command>
             <command
