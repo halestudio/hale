@@ -112,32 +112,14 @@
       </menuContribution>
       <menuContribution
             allPopups="false"
-            locationURI="toolbar:org.eclipse.ui.main.toolbar">
-         <toolbar
-               id="eu.esdihumboldt.hale.ui.views.styledmap.toolbar"
-               label="Map">
-            <dynamic
-                  class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension.IconPainterLayoutContribution"
-                  id="eu.esdihumboldt.hale.ui.views.styledmap.layouts">
-               <visibleWhen
-                     checkEnabled="false">
-                  <or>
-                     <with
-                           variable="activePartId">
-                        <equals
-                              value="eu.esdihumboldt.hale.ui.views.styledmap">
-                        </equals>
-                     </with>
-                     <with
-                           variable="activeWorkbenchWindow.activePerspective">
-                        <equals
-                              value="eu.esdihumboldt.hale.ui.views.styledmap">
-                        </equals>
-                     </with>
-                  </or>
-               </visibleWhen>
-            </dynamic>
-         </toolbar>
+            locationURI="menu:eu.esdihumboldt.hale.ui.views.styledmap">
+         <separator
+               name="eu.esdihumboldt.hale.ui.views.styledmap.separator1">
+         </separator>
+         <dynamic
+               class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension.IconPainterLayoutContribution"
+               id="eu.esdihumboldt.hale.ui.views.styledmap.layouts">
+         </dynamic>
       </menuContribution>
    </extension>
    <extension
