@@ -84,7 +84,7 @@
          </property>
          <property
                name="aboutText"
-               value="HUMBOLDT Alignment Editor (HALE)&#x0A;&#x0A;Version 2.8.0&#x0A;&#x0A;Build ___build___&#x0A;Revision ___revision___&#x0A;&#x0A;http://www.esdi-community.eu/projects/show/hale">
+               value="HUMBOLDT Alignment Editor (HALE)&#x0A;&#x0A;Version 2.8.0&#x0A;&#x0A;Build ___build___&#x0A;Revision ___revision___&#x0A;&#x0A;http://www.esdi-community.eu/projects/show/hale&#x0A;http://www.wetransform.to/products/hale">
          </property>
          <property
                name="introTitle"
@@ -125,6 +125,10 @@
          <property
                name="cssTheme"
                value="org.eclipse.e4.ui.css.theme.e4_default">
+         </property>
+         <property
+               name="aboutImage"
+               value="images/hale_about_sm.gif">
          </property>
       </product>
    </extension>
