@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="186">
+<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="187">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.scala-ide.sdt.feature.feature.group" version="3.0.3.v-2_10-201403271605-8d2c756"/>
@@ -33,6 +33,10 @@
 <unit id="org.eclipse.jetty.bundles.f.source.feature.group" version="8.1.14.201311072346"/>
 <unit id="org.eclipse.jetty.bundles.f.feature.group" version="8.1.14.201311072346"/>
 <repository location="http://download.eclipse.org/jetty/updates/jetty-bundles-8.x/8.1.14.v20131031"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.e4.core.tools.feature.feature.group" version="0.14.0.v20140112-2002"/>
+<repository location="http://download.eclipse.org/e4/updates/0.15"/>
 </location>
 </locations>
 </target>
