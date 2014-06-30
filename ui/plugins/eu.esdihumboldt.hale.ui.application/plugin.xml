@@ -116,7 +116,15 @@
          </property>
          <property
                name="applicationXMI"
-               value="eu.esdihumboldt.hale.ui.application/HALELegacyIDE.e4xmi">
+               value="org.eclipse.ui.workbench/LegacyIDE.e4xmi">
+         </property>
+         <property
+               name="applicationCSSResources"
+               value="platform:/plugin/org.eclipse.ui.themes/images/">
+         </property>
+         <property
+               name="cssTheme"
+               value="org.eclipse.e4.ui.css.theme.e4_default">
          </property>
       </product>
    </extension>

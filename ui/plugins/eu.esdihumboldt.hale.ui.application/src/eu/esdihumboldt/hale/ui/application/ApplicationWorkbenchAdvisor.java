@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.e4.ui.css.swt.theme.IThemeManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
@@ -35,7 +34,6 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.ui.application.internal.Messages;
 import eu.esdihumboldt.hale.ui.application.workbench.WorkbenchHook;
 import eu.esdihumboldt.hale.ui.application.workbench.extension.WorkbenchHookExtension;
@@ -108,15 +106,15 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
 		configurer.setSaveAndRestore(true);
 
-		// set a specific theme
-		IThemeManager tm = OsgiUtils.getService(IThemeManager.class);
-		try {
-			tm.getEngineForDisplay(Display.getCurrent()).setTheme(
-					"org.eclipse.e4.ui.css.theme.e4_default", true);
-			// "org.eclipse.e4.ui.css.theme.e4_dark", true);
-		} catch (Exception e) {
-			// ignore
-		}
+		// set a specific theme XXX done in product configuration
+//		IThemeManager tm = OsgiUtils.getService(IThemeManager.class);
+//		try {
+//			tm.getEngineForDisplay(Display.getCurrent()).setTheme(
+//					"org.eclipse.e4.ui.css.theme.e4_default", true);
+//			// "org.eclipse.e4.ui.css.theme.e4_dark", true);
+//		} catch (Exception e) {
+//			// ignore
+//		}
 	}
 
 	/**
