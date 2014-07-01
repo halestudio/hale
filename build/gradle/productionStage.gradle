@@ -704,7 +704,7 @@ task createProductFeature(dependsOn: [ generatePomFiles, makeProductFile, makePr
  * a path to a product file manually with the 'productFile' property.
  */
 task buildProduct(dependsOn: createProductFeature) << {
-    def res = new MavenCli().doMain([ 'package' ] as String[], project.ext.rootDir.path, System.out, System.err)
+    def res = new MavenCli().doMain([ '-e', 'package' ] as String[], project.ext.rootDir.path, System.out, System.err)
     if (res != 0) {
         throw new RuntimeException("Maven failed with exit code ${res}")
     }

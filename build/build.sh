@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./gradlew cli -Pargs="$*"
+./gradlew --stacktrace cli -Pargs="$*"

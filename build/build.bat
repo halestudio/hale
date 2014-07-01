@@ -6,4 +6,4 @@ if NOT "%ARGS%" == "" (
   set ARGS=!ARGS:"=\"!
 )
 
-gradlew cli -Pargs="%ARGS%"
+gradlew --stacktrace cli -Pargs="%ARGS%"
