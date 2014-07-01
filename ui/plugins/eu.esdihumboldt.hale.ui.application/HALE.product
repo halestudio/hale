@@ -97,6 +97,7 @@ http://www.wetransform.to/products/hale
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.gemini.blueprint.core" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.gemini.blueprint.extender" autoStart="true" startLevel="5" />
+      <plugin id="org.eclipse.update.configurator" autoStart="false" startLevel="0" />
       <plugin id="org.springframework.aop" autoStart="true" startLevel="0" />
       <plugin id="org.springframework.beans" autoStart="true" startLevel="0" />
       <plugin id="org.springframework.context" autoStart="true" startLevel="0" />
