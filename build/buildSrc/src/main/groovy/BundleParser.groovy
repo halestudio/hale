@@ -51,6 +51,13 @@ class BundleParser {
 	}
 	
 	/**
+	 * Checks if a plugin in the given path has the Java nature.
+	 */
+	def isJavaProject(path) {
+		hasNature(path, 'org.eclipse.jdt.core.javanature')
+	}
+	
+	/**
 	 * Checks if a plugin in the given path has a specific nature.
 	 */
 	def hasNature(path, String nature) {
@@ -93,7 +100,8 @@ class BundleParser {
 	                                'version': readVersion(manifestPath),
 	                                'path': path,
 	                                'needsScala': needsScala(path),
-									'needsGroovy': needsGroovy(path)
+									'needsGroovy': needsGroovy(path),
+									'isJavaProject': isJavaProject(path)
 	                        ]
 						}
 						else {

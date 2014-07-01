@@ -15,6 +15,10 @@
     <relativePath>${parentRelativePath}</relativePath>
   </parent>
   
+  <properties>
+	<doc.output.folder>\${project.build.directory}/gen-doc/</doc.output.folder>
+  </properties>
+  
   <build>
     <plugins>
       <% if (extraRequirements) { %>
@@ -109,6 +113,52 @@
          </dependencies>
       </plugin>
       <% } %>
+      <% if (false) /*(isJavaProject)*/ { %>
+      <plugin>
+			<groupId>org.eclipse.tycho.extras</groupId>
+			<artifactId>tycho-document-bundle-plugin</artifactId>
+			<version>\${tycho-version}</version>
+			<executions>
+				<execution>
+					<id>javadoc</id>
+					<phase>generate-resources</phase>
+					<goals>
+						<goal>javadoc</goal>
+					</goals>
+		
+					<configuration>
+						<basedir>\${doc.output.folder}</basedir>
+						<outputDirectory>\${doc.output.folder}/reference/api</outputDirectory>
+						<tocFile>\${doc.output.folder}/toc/javadoc.xml</tocFile>
+						<!-- javadocOptions>
+							<additionalArguments>
+								<additionalArgument>-linkoffline
+									http://docs.oracle.com/javase/7/docs/api/
+									\${basedir}/input/javase-7</additionalArgument>
+								<additionalArgument>-linkoffline
+									http://www.osgi.org/javadoc/r4v43/ \${basedir}/input/osgi-r4v43</additionalArgument>
+							</additionalArguments>
+						</javadocOptions -->
+					</configuration>
+				</execution>
+			</executions>
+		</plugin>
+		<plugin>
+			<groupId>org.eclipse.tycho</groupId>
+			<artifactId>tycho-packaging-plugin</artifactId>
+			<version>\${tycho-version}</version>
+			<configuration>
+				<additionalFileSets>
+					<fileSet>
+						<directory>\${doc.output.folder}</directory>
+						<includes>
+							<include>**/*</include>
+						</includes>
+					</fileSet>
+				</additionalFileSets>
+			</configuration>
+		</plugin>
+		<% } %>
     </plugins>
   </build>
 </project>
