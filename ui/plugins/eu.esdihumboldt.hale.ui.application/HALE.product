@@ -41,7 +41,6 @@ http://www.wetransform.to/products/hale
       </win>
    </launcher>
 
-
    <vm>
    </vm>
 
@@ -69,7 +68,7 @@ http://www.wetransform.to/products/hale
    </features>
 
    <configurations>
-      <plugin id="de.fhg.igd.slf4jplus.logback" autoStart="true" startLevel="1" />
+      <plugin id="de.fhg.igd.slf4jplus.logback" autoStart="true" startLevel="2" />
       <plugin id="de.fhg.igd.slf4jplus.ui.errorlog" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.cst" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.common.align" autoStart="true" startLevel="0" />
@@ -89,7 +88,7 @@ http://www.wetransform.to/products/hale
       <plugin id="org.apache.felix.gogo.command" autoStart="true" startLevel="0" />
       <plugin id="org.apache.felix.gogo.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.apache.felix.gogo.shell" autoStart="true" startLevel="0" />
-      <plugin id="org.apache.poi" autoStart="true" startLevel="1" />
+      <plugin id="org.apache.poi" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.console" autoStart="true" startLevel="0" />
@@ -102,6 +101,7 @@ http://www.wetransform.to/products/hale
       <plugin id="org.springframework.beans" autoStart="true" startLevel="0" />
       <plugin id="org.springframework.context" autoStart="true" startLevel="0" />
       <plugin id="org.springframework.core" autoStart="true" startLevel="0" />
+      <property name="org.eclipse.update.reconcile" value="false" />
    </configurations>
 
 </product>
