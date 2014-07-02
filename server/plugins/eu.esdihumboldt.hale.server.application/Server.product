@@ -254,11 +254,10 @@
       <plugin id="org.jaitools.jt-zonalstats"/>
       <plugin id="org.json"/>
       <plugin id="org.kohsuke.groovy.sandbox"/>
-      <plugin id="org.objectweb.asm"/>
-      <plugin id="org.objectweb.asm.analysis"/>
-      <plugin id="org.objectweb.asm.core"/>
-      <plugin id="org.objectweb.asm.tree"/>
-      <plugin id="org.objectweb.asm.util"/>
+      <plugin id="org.objectweb.asm-4"/>
+      <plugin id="org.objectweb.asm.analysis-4"/>
+      <plugin id="org.objectweb.asm.tree-4"/>
+      <plugin id="org.objectweb.asm.util-4"/>
       <plugin id="org.opengis"/>
       <plugin id="org.openid4java"/>
       <plugin id="org.parboiled.core"/>
