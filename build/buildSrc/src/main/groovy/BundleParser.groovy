@@ -86,6 +86,24 @@ class BundleParser {
 			
 		true
 	}
+	
+	/**
+	 * Determines if a workspace feature should be included.
+	 */
+	boolean acceptFeature(def path, def sname) {
+		// skip features that are explicitly excluded
+		if (project.ext.excludeBundles?.any { it == sname})
+			return false
+		
+		// skip features where the specified OS does not match the build
+		def os = project.ext.osSpecificBundles[sname]
+		if (os && !os.any { it == project.ext.osgiOS}) {
+			// OS information is there but does not match
+			return false
+		}
+			
+		true
+	}
 
     private def getParsedBundlesTraverse(dir) {
         dir.listFiles().each { path ->
@@ -151,17 +169,16 @@ class BundleParser {
 					
 					def id = feature.@id
 					if (!project.ext.parsedFeatures.containsKey(id)) {
-						//TODO? check if the project is valid / should be part of the update site
-//						if (acceptFeature(path, id)) {
+						if (acceptFeature(path, id)) {
 							project.ext.parsedFeatures[id] = [
 									'version': feature.@version,
 									'path': path,
 									'label': feature.@id
 							]
-//						}
-//						else {
-//							println "Skipping project at $path ($sname)"
-//						}
+						}
+						else {
+							println "Skipping project at $path ($sname)"
+						}
 					} else {
 						throw new IllegalStateException("Duplicate feature ID ${id}")
 					}
