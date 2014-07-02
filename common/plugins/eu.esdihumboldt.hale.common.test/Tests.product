@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="Tests" uid="eu.esdihumboldt.hale.tests" id="eu.esdihumboldt.hale.common.test.Tests" application="de.fhg.igd.equinox.test" version="2.9.0" useFeatures="false" includeLaunchers="true">
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgs>-consoleLog -clean</programArgs>
+      <vmArgs>-Xmx800M</vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+   </launcherArgs>
+
+   <windowImages/>
+
+   <launcher name="hale_tests">
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
+   <plugins>
+      <plugin id="aopalliance"/>
+      <plugin id="cal10n.api"/>
+      <plugin id="ch.qos.logback.classic"/>
+      <plugin id="ch.qos.logback.core"/>
+      <plugin id="colt"/>
+      <plugin id="com.google.code.findbugs.jsr305" fragment="true"/>
+      <plugin id="com.google.guava"/>
+      <plugin id="com.googlecode.json-simple"/>
+      <plugin id="com.iabcinc.jmep"/>
+      <plugin id="com.ibm.icu"/>
+      <plugin id="com.orientechnologies.common"/>
+      <plugin id="com.orientechnologies.orientdb-client" fragment="true"/>
+      <plugin id="com.orientechnologies.orientdb-core"/>
+      <plugin id="com.orientechnologies.orientdb-enterprise"/>
+      <plugin id="com.sun.jna"/>
+      <plugin id="com.sun.xml.bind.jaxb-core"/>
+      <plugin id="com.tinkerpop.blueprints.core"/>
+      <plugin id="com.tinkerpop.blueprints.orient-graph"/>
+      <plugin id="com.tinkerpop.gremlin.groovy"/>
+      <plugin id="com.tinkerpop.gremlin.java"/>
+      <plugin id="com.tinkerpop.pipes"/>
+      <plugin id="com.vividsolutions.jts"/>
+      <plugin id="commons-digester"/>
+      <plugin id="commons-httpclient"/>
+      <plugin id="concurrent"/>
+      <plugin id="de.cs3d.ui.util.eclipse"/>
+      <plugin id="de.cs3d.util.eclipse"/>
+      <plugin id="de.fhg.igd.concurrency"/>
+      <plugin id="de.fhg.igd.equinox.test.app"/>
+      <plugin id="de.fhg.igd.osgi.util"/>
+      <plugin id="de.fhg.igd.slf4jplus"/>
+      <plugin id="de.fhg.igd.slf4jplus.logback"/>
+      <plugin id="de.fhg.igd.slf4jplus.logback.appender" fragment="true"/>
+      <plugin id="dom4j"/>
+      <plugin id="eu.esdihumboldt.cst"/>
+      <plugin id="eu.esdihumboldt.cst.doc.functions"/>
+      <plugin id="eu.esdihumboldt.cst.doc.functions.dummy" fragment="true"/>
+      <plugin id="eu.esdihumboldt.cst.doc.functions.dynamic" fragment="true"/>
+      <plugin id="eu.esdihumboldt.cst.functions.core"/>
+      <plugin id="eu.esdihumboldt.cst.functions.geometric"/>
+      <plugin id="eu.esdihumboldt.cst.functions.groovy"/>
+      <plugin id="eu.esdihumboldt.cst.functions.inspire"/>
+      <plugin id="eu.esdihumboldt.cst.functions.numeric"/>
+      <plugin id="eu.esdihumboldt.cst.functions.string"/>
+      <plugin id="eu.esdihumboldt.cst.test"/>
+      <plugin id="eu.esdihumboldt.hale.app.transform"/>
+      <plugin id="eu.esdihumboldt.hale.app.transform.test"/>
+      <plugin id="eu.esdihumboldt.hale.common.align"/>
+      <plugin id="eu.esdihumboldt.hale.common.align.groovy"/>
+      <plugin id="eu.esdihumboldt.hale.common.align.groovy.test"/>
+      <plugin id="eu.esdihumboldt.hale.common.align.test"/>
+      <plugin id="eu.esdihumboldt.hale.common.align.tgraph"/>
+      <plugin id="eu.esdihumboldt.hale.common.align.tgraph.test"/>
+      <plugin id="eu.esdihumboldt.hale.common.app"/>
+      <plugin id="eu.esdihumboldt.hale.common.cache"/>
+      <plugin id="eu.esdihumboldt.hale.common.cache.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.common.codelist"/>
+      <plugin id="eu.esdihumboldt.hale.common.convert"/>
+      <plugin id="eu.esdihumboldt.hale.common.convert.core"/>
+      <plugin id="eu.esdihumboldt.hale.common.convert.wkt"/>
+      <plugin id="eu.esdihumboldt.hale.common.core"/>
+      <plugin id="eu.esdihumboldt.hale.common.core.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.common.filter"/>
+      <plugin id="eu.esdihumboldt.hale.common.filter.test"/>
+      <plugin id="eu.esdihumboldt.hale.common.groovy.sandbox.enable"/>
+      <plugin id="eu.esdihumboldt.hale.common.headless"/>
+      <plugin id="eu.esdihumboldt.hale.common.instance"/>
+      <plugin id="eu.esdihumboldt.hale.common.instance.groovy"/>
+      <plugin id="eu.esdihumboldt.hale.common.instance.groovy.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.common.instance.orient"/>
+      <plugin id="eu.esdihumboldt.hale.common.instancevalidator"/>
+      <plugin id="eu.esdihumboldt.hale.common.logback.config.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.common.lookup"/>
+      <plugin id="eu.esdihumboldt.hale.common.lookup.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.common.propertyaccessor" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.common.schema"/>
+      <plugin id="eu.esdihumboldt.hale.common.schema.groovy"/>
+      <plugin id="eu.esdihumboldt.hale.common.schema.groovy.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.common.schema.persist"/>
+      <plugin id="eu.esdihumboldt.hale.common.schema.persist.test"/>
+      <plugin id="eu.esdihumboldt.hale.common.schema.test"/>
+      <plugin id="eu.esdihumboldt.hale.common.scripting"/>
+      <plugin id="eu.esdihumboldt.hale.common.test"/>
+      <plugin id="eu.esdihumboldt.hale.doc.util"/>
+      <plugin id="eu.esdihumboldt.hale.instance.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.csv"/>
+      <plugin id="eu.esdihumboldt.hale.io.csv.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.io.gml"/>
+      <plugin id="eu.esdihumboldt.hale.io.gml.geometry"/>
+      <plugin id="eu.esdihumboldt.hale.io.gml.geometry.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.gml.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.oml"/>
+      <plugin id="eu.esdihumboldt.hale.io.oml.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.shp"/>
+      <plugin id="eu.esdihumboldt.hale.io.xls"/>
+      <plugin id="eu.esdihumboldt.hale.io.xls.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.io.xml"/>
+      <plugin id="eu.esdihumboldt.hale.io.xsd"/>
+      <plugin id="eu.esdihumboldt.hale.io.xsd.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.io.xslt"/>
+      <plugin id="eu.esdihumboldt.hale.io.xslt.test"/>
+      <plugin id="eu.esdihumboldt.hale.prefixmapper"/>
+      <plugin id="eu.esdihumboldt.hale.server.logback.config" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.ui"/>
+      <plugin id="eu.esdihumboldt.hale.ui.codelist"/>
+      <plugin id="eu.esdihumboldt.hale.ui.codelist.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.ui.common"/>
+      <plugin id="eu.esdihumboldt.hale.ui.common.graph"/>
+      <plugin id="eu.esdihumboldt.hale.ui.filter"/>
+      <plugin id="eu.esdihumboldt.hale.ui.geometry"/>
+      <plugin id="eu.esdihumboldt.hale.ui.logback.config" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.ui.util"/>
+      <plugin id="eu.esdihumboldt.hale.ui.util.graph"/>
+      <plugin id="eu.esdihumboldt.hale.ui.util.groovy"/>
+      <plugin id="eu.esdihumboldt.hale.ui.util.groovy.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.util"/>
+      <plugin id="eu.esdihumboldt.util.blueprints.entities"/>
+      <plugin id="eu.esdihumboldt.util.blueprints.entities.test"/>
+      <plugin id="eu.esdihumboldt.util.groovy"/>
+      <plugin id="eu.esdihumboldt.util.groovy.meta.extension"/>
+      <plugin id="eu.esdihumboldt.util.groovy.meta.fragment" fragment="true"/>
+      <plugin id="eu.esdihumboldt.util.groovy.sandbox"/>
+      <plugin id="eu.esdihumboldt.util.groovy.sandbox.test"/>
+      <plugin id="eu.esdihumboldt.util.groovy.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.util.orient.embedded.test"/>
+      <plugin id="eu.esdihumboldt.util.resource"/>
+      <plugin id="eu.esdihumboldt.util.resource.schemas.citygml"/>
+      <plugin id="eu.esdihumboldt.util.resource.schemas.inspire"/>
+      <plugin id="eu.esdihumboldt.util.resource.schemas.inspire.annex1"/>
+      <plugin id="eu.esdihumboldt.util.resource.schemas.opengis.net"/>
+      <plugin id="eu.esdihumboldt.util.resource.schemas.test"/>
+      <plugin id="eu.esdihumboldt.util.resource.w3.org"/>
+      <plugin id="eu.esdihumboldt.util.test" fragment="true"/>
+      <plugin id="findbugsAnnotations"/>
+      <plugin id="gnu.trove"/>
+      <plugin id="groovy"/>
+      <plugin id="hsqldb"/>
+      <plugin id="it.geosolutions.imageio-ext.tiff"/>
+      <plugin id="it.geosolutions.imageio-ext.utilities"/>
+      <plugin id="java3d.vecmath"/>
+      <plugin id="javax.el"/>
+      <plugin id="javax.inject"/>
+      <plugin id="javax.mail"/>
+      <plugin id="javax.media.jai_codec"/>
+      <plugin id="javax.media.jai_core"/>
+      <plugin id="javax.media.jai_imageio"/>
+      <plugin id="javax.servlet"/>
+      <plugin id="javax.servlet.jsp"/>
+      <plugin id="javax.xml"/>
+      <plugin id="jcl.over.slf4j"/>
+      <plugin id="jdom"/>
+      <plugin id="jgridshift"/>
+      <plugin id="jline"/>
+      <plugin id="joda-time"/>
+      <plugin id="jul.to.slf4j"/>
+      <plugin id="log4j.over.slf4j"/>
+      <plugin id="net.java.dev.jsr-275"/>
+      <plugin id="net.sf.ehcache.core"/>
+      <plugin id="net.sf.opencsv"/>
+      <plugin id="org.apache.batik.css"/>
+      <plugin id="org.apache.batik.util"/>
+      <plugin id="org.apache.batik.util.gui"/>
+      <plugin id="org.apache.commons.beanutils"/>
+      <plugin id="org.apache.commons.codec"/>
+      <plugin id="org.apache.commons.collections"/>
+      <plugin id="org.apache.commons.configuration"/>
+      <plugin id="org.apache.commons.io"/>
+      <plugin id="org.apache.commons.jxpath"/>
+      <plugin id="org.apache.commons.lang"/>
+      <plugin id="org.apache.commons.pool"/>
+      <plugin id="org.apache.felix.gogo.command"/>
+      <plugin id="org.apache.felix.gogo.runtime"/>
+      <plugin id="org.apache.felix.gogo.shell"/>
+      <plugin id="org.apache.httpcomponents.httpclient"/>
+      <plugin id="org.apache.httpcomponents.httpcore"/>
+      <plugin id="org.apache.poi"/>
+      <plugin id="org.apache.velocity"/>
+      <plugin id="org.apache.ws.commons.schema.XmlSchema"/>
+      <plugin id="org.apache.xmlbeans"/>
+      <plugin id="org.codehaus.castor.core"/>
+      <plugin id="org.codehaus.castor.xml"/>
+      <plugin id="org.codehaus.jettison.jettison"/>
+      <plugin id="org.eclipse.core.commands"/>
+      <plugin id="org.eclipse.core.contenttype"/>
+      <plugin id="org.eclipse.core.databinding"/>
+      <plugin id="org.eclipse.core.databinding.observable"/>
+      <plugin id="org.eclipse.core.databinding.property"/>
+      <plugin id="org.eclipse.core.expressions"/>
+      <plugin id="org.eclipse.core.jobs"/>
+      <plugin id="org.eclipse.core.runtime"/>
+      <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
+      <plugin id="org.eclipse.draw2d"/>
+      <plugin id="org.eclipse.e4.core.commands"/>
+      <plugin id="org.eclipse.e4.core.contexts"/>
+      <plugin id="org.eclipse.e4.core.di"/>
+      <plugin id="org.eclipse.e4.core.di.extensions"/>
+      <plugin id="org.eclipse.e4.core.services"/>
+      <plugin id="org.eclipse.e4.ui.bindings"/>
+      <plugin id="org.eclipse.e4.ui.css.core"/>
+      <plugin id="org.eclipse.e4.ui.css.swt"/>
+      <plugin id="org.eclipse.e4.ui.css.swt.theme"/>
+      <plugin id="org.eclipse.e4.ui.di"/>
+      <plugin id="org.eclipse.e4.ui.model.workbench"/>
+      <plugin id="org.eclipse.e4.ui.services"/>
+      <plugin id="org.eclipse.e4.ui.widgets"/>
+      <plugin id="org.eclipse.e4.ui.workbench"/>
+      <plugin id="org.eclipse.e4.ui.workbench.addons.swt"/>
+      <plugin id="org.eclipse.e4.ui.workbench.renderers.swt"/>
+      <plugin id="org.eclipse.e4.ui.workbench.swt"/>
+      <plugin id="org.eclipse.e4.ui.workbench3"/>
+      <plugin id="org.eclipse.emf.common"/>
+      <plugin id="org.eclipse.emf.ecore"/>
+      <plugin id="org.eclipse.emf.ecore.change"/>
+      <plugin id="org.eclipse.emf.ecore.xmi"/>
+      <plugin id="org.eclipse.equinox.app"/>
+      <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.console"/>
+      <plugin id="org.eclipse.equinox.ds"/>
+      <plugin id="org.eclipse.equinox.preferences"/>
+      <plugin id="org.eclipse.equinox.region" fragment="true"/>
+      <plugin id="org.eclipse.equinox.registry"/>
+      <plugin id="org.eclipse.equinox.security"/>
+      <plugin id="org.eclipse.equinox.security.win32.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.equinox.simpleconfigurator"/>
+      <plugin id="org.eclipse.equinox.transforms.hook" fragment="true"/>
+      <plugin id="org.eclipse.equinox.util"/>
+      <plugin id="org.eclipse.equinox.weaving.hook" fragment="true"/>
+      <plugin id="org.eclipse.gemini.blueprint.core"/>
+      <plugin id="org.eclipse.gemini.blueprint.extender"/>
+      <plugin id="org.eclipse.gemini.blueprint.io"/>
+      <plugin id="org.eclipse.help"/>
+      <plugin id="org.eclipse.jface"/>
+      <plugin id="org.eclipse.jface.databinding"/>
+      <plugin id="org.eclipse.jface.text"/>
+      <plugin id="org.eclipse.osgi"/>
+      <plugin id="org.eclipse.osgi.compatibility.state" fragment="true"/>
+      <plugin id="org.eclipse.osgi.services"/>
+      <plugin id="org.eclipse.swt"/>
+      <plugin id="org.eclipse.swt.win32.win32.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.text"/>
+      <plugin id="org.eclipse.ui"/>
+      <plugin id="org.eclipse.ui.workbench"/>
+      <plugin id="org.eclipse.xsd"/>
+      <plugin id="org.eclipse.zest.core"/>
+      <plugin id="org.eclipse.zest.dot.export"/>
+      <plugin id="org.eclipse.zest.jface"/>
+      <plugin id="org.eclipse.zest.layouts"/>
+      <plugin id="org.geotools"/>
+      <plugin id="org.hamcrest.core"/>
+      <plugin id="org.iq80.snappy"/>
+      <plugin id="org.jaitools.jt-utils"/>
+      <plugin id="org.jaitools.jt-zonalstats"/>
+      <plugin id="org.junit"/>
+      <plugin id="org.kohsuke.groovy.sandbox"/>
+      <plugin id="org.objectweb.asm"/>
+      <plugin id="org.objectweb.asm.analysis"/>
+      <plugin id="org.objectweb.asm.core"/>
+      <plugin id="org.objectweb.asm.tree"/>
+      <plugin id="org.objectweb.asm.util"/>
+      <plugin id="org.opengis"/>
+      <plugin id="org.springframework.aop"/>
+      <plugin id="org.springframework.asm"/>
+      <plugin id="org.springframework.beans"/>
+      <plugin id="org.springframework.context"/>
+      <plugin id="org.springframework.core"/>
+      <plugin id="org.springframework.expression"/>
+      <plugin id="org.w3c.css.sac"/>
+      <plugin id="org.w3c.dom.events"/>
+      <plugin id="org.w3c.dom.smil"/>
+      <plugin id="org.w3c.dom.svg"/>
+      <plugin id="oro"/>
+      <plugin id="picocontainer"/>
+      <plugin id="slf4j.api"/>
+      <plugin id="slf4j.ext"/>
+      <plugin id="xerces.xercesImpl"/>
+      <plugin id="xpp3.xpp3_min"/>
+   </plugins>
+
+   <configurations>
+      <plugin id="eu.esdihumboldt.cst" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.common.convert" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.common.convert.core" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.common.convert.wkt" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.common.instance" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.io.gml" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.gemini.blueprint.core" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.gemini.blueprint.extender" autoStart="true" startLevel="5" />
+      <plugin id="org.springframework.aop" autoStart="true" startLevel="0" />
+      <plugin id="org.springframework.beans" autoStart="true" startLevel="0" />
+      <plugin id="org.springframework.context" autoStart="true" startLevel="0" />
+      <plugin id="org.springframework.core" autoStart="true" startLevel="0" />
+   </configurations>
+
+</product>

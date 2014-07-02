@@ -740,10 +740,63 @@ task buildProduct(dependsOn: createProductFeature) << {
     }
 	
 	updateAboutInfo(productOutputPath)
-
-    if (productContainsUIBundles()) {
-        packageClient(productOutputPath)
-    } else {
-        packageServer(productOutputPath)
-    }
 }
+
+/**
+ * Packages a built product.
+ */
+task packageProduct(dependsOn: buildProduct) << {
+	def productOutputPath = new File(buildDir, getProductUid())
+
+	if (productContainsUIBundles()) {
+		packageClient(productOutputPath)
+	} else {
+		packageServer(productOutputPath)
+	}
+}
+
+/**
+ * Runs the OSGi unit tests. This method does not fail the build if one
+ * unit test fails.
+ */
+task runUnitTests(dependsOn: buildProduct) << {
+	def productOutputPath = new File(buildDir, getProductUid())
+	def launcherName = project.ext.testProductLauncher?:'eclipse'
+	def testReportDir = project.file('target/testReports')
+	testReportDir.mkdirs()
+	
+	File outFile = new File(testReportDir, "${launcherName}.out")
+	File errFile = new File(testReportDir, "${launcherName}.err")
+	File reportFile = new File(testReportDir, "${launcherName}.xml")
+
+	println 'Starting test product...'
+	outFile.withOutputStream { out ->
+		errFile.withOutputStream { err ->
+			def process = [
+				new File(productOutputPath, launcherName) as String,
+				'-out',
+				reportFile as String
+			].execute()
+			process.waitForProcessOutput(out, err)
+			if (process.exitValue() != 0) {
+				throw new IllegalStateException("Test product failed with exit code ${process.exitValue()}")
+			}
+		}
+	}
+	println 'Test product execution completed.'
+	
+	// evaluate test report
+	def root = new groovy.util.XmlSlurper().parse(reportFile)
+	println "> ${root.@tests} tests"
+	println "> ${root.@errors} errors"
+	println "> ${root.@failures} failed"
+	println "> ${root.@skip} skipped"
+	println "in ${root.@time} seconds"
+}
+
+/**
+ * Runs the commit stage. The commit stage includes building all sources,
+ * creating binary artifacts (in this case an update site containing all
+ * exported bundles) and running unit tests.
+ */
+task commitStage(dependsOn: runUnitTests)

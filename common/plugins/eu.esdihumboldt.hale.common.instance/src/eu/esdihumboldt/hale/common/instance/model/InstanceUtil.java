@@ -53,6 +53,8 @@ public final class InstanceUtil {
 	public static boolean instanceEqual(Instance a, Instance b, boolean propertyOrderRelevant) {
 		if (a == b)
 			return true;
+		if (a == null || b == null)
+			return false;
 		// compare value
 		// XXX other checks than equals possible?
 		if (!Objects.equal(a.getValue(), b.getValue()))

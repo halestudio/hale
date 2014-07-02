@@ -148,17 +148,17 @@ task buildUpdateSite(dependsOn: [ createUpdateSiteFeature, generatePomFiles ]) <
     junit3bundle.each { it.delete() }
 }
 
-/**
- * Runs the OSGi unit tests. This method does not fail the build if one
- * unit test fails.
- */
-task runUnitTests(dependsOn: buildUpdateSite) << {
-    new UnitTestRunner(project).executeUnitTests(project.ext.testBundlePattern)
-}
+///**
+// * Runs the OSGi unit tests. This method does not fail the build if one
+// * unit test fails.
+// */
+//task runUnitTests(dependsOn: buildUpdateSite) << {
+//    new UnitTestRunner(project).executeUnitTests(project.ext.testBundlePattern)
+//}
 
-/**
- * Runs the commit stage. The commit stage includes building all sources,
- * creating binary artifacts (in this case an update site containing all
- * exported bundles) and running unit tests.
- */
-task commitStage(dependsOn: runUnitTests)
+///**
+// * Runs the commit stage. The commit stage includes building all sources,
+// * creating binary artifacts (in this case an update site containing all
+// * exported bundles) and running unit tests.
+// */
+//task commitStage(dependsOn: runUnitTests)

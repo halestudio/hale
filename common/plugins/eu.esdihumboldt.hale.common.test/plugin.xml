@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="Tests"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="de.fhg.igd.equinox.test"
+            name="Tests">
+         <property
+               name="appName"
+               value="Tests">
+         </property>
+      </product>
+   </extension>
+
+</plugin>

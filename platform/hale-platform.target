@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="190">
+<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="191">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.jetty.bundles.f.source.feature.group" version="8.1.14.201311072346"/>
@@ -37,6 +37,10 @@
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.e4.core.tools.feature.feature.group" version="0.14.0.v20140624-1329"/>
 <repository location="http://download.vogella.com/luna/e4tools"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="de.fhg.igd.equinox.test.feature.feature.group" version="1.0.0.201407021137"/>
+<repository location="http://hale.igd.fraunhofer.de/jenkins/job/site-equinox-test/1/updatesite/"/>
 </location>
 </locations>
 </target>

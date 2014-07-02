@@ -23,6 +23,10 @@ project = {
 		// from the product's launcher name
 		serviceExeName = 'hale_srvc'
 		
+		// test product
+		testProduct = '../common/plugins/eu.esdihumboldt.hale.common.test/Tests.product'
+		testProductLauncher = 'hale_tests'
+		
 		// Product aliases pointing to product file locations
 		productAlias = [
 			HALE: '../ui/plugins/eu.esdihumboldt.hale.ui.application/HALE.product',

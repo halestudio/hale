@@ -5,9 +5,9 @@ Bundle-SymbolicName: eu.esdihumboldt.util.groovy.sandbox.test
 Bundle-Version: 2.8.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: .
-Require-Bundle: org.junit,
- groovy;bundle-version="2.1.5",
+Require-Bundle: groovy;bundle-version="2.1.5",
  eu.esdihumboldt.cst.functions.groovy,
  org.kohsuke.groovy.sandbox;bundle-version="1.5.0"
 Import-Package: eu.esdihumboldt.hale.common.align.transformation.function,
- eu.esdihumboldt.util.groovy.sandbox.internal
+ eu.esdihumboldt.util.groovy.sandbox.internal,
+ org.junit;version="4.11.0"
