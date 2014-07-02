@@ -772,6 +772,8 @@ task runUnitTests(dependsOn: buildProduct) << {
 	
 	// make launcher executable
 	ant.chmod(file: launcherFile, perm:'a+x')
+	// make JRE executable (linux)
+	ant.chmod(dir: new File(productOutputPath, 'jre/bin'), perm: 'a+x', includes: '*')
 
 	println 'Starting test product...'
 	outFile.withOutputStream { out ->
