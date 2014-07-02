@@ -65,6 +65,8 @@ http://www.wetransform.to/products/hale
       <feature id="eu.esdihumboldt.util.feature.resource"/>
       <feature id="eu.esdihumboldt.hale.common.feature.core"/>
       <feature id="org.eclipse.gef"/>
+      <feature id="eu.esdihumboldt.hale.ui.feature.linux" version="2.9.0"/>
+      <feature id="eu.esdihumboldt.hale.ui.feature.macosx" version="2.9.0"/>
    </features>
 
    <configurations>

@@ -92,7 +92,7 @@ class BundleParser {
 	 */
 	boolean acceptFeature(def path, def sname) {
 		// skip features that are explicitly excluded
-		if (project.ext.excludeBundles?.any { it == sname})
+		if (project.ext.excludeBundles?.any { it == sname })
 			return false
 		
 		// skip features where the specified OS does not match the build
@@ -167,17 +167,17 @@ class BundleParser {
 					// read feature information
 					def feature = new groovy.util.XmlSlurper().parse(featureXmlPath)
 					
-					def id = feature.@id
+					def id = feature.@id as String
 					if (!project.ext.parsedFeatures.containsKey(id)) {
 						if (acceptFeature(path, id)) {
 							project.ext.parsedFeatures[id] = [
-									'version': feature.@version,
+									'version': feature.@version as String,
 									'path': path,
-									'label': feature.@id
+									'label': feature.@id as String
 							]
 						}
 						else {
-							println "Skipping project at $path ($sname)"
+							println "Skipping feature at $path ($id)"
 						}
 					} else {
 						throw new IllegalStateException("Duplicate feature ID ${id}")
@@ -191,7 +191,6 @@ class BundleParser {
 	
 	def getParsedFeatures() {
 		if (!project.ext.properties.containsKey("parsedFeatures")) {
-			println('Parsing features ...')
 			project.ext.parsedFeatures = [:]
 			for (b in project.ext.bundles) {
 				getParsedFeaturesTraverse(b)
