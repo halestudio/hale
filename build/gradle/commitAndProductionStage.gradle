@@ -793,11 +793,27 @@ task runUnitTests(dependsOn: buildProduct) << {
 	
 	// evaluate test report
 	def root = new groovy.util.XmlSlurper().parse(reportFile)
+	def failures = root.@failures as String
 	println "> ${root.@tests} tests"
 	println "> ${root.@errors} errors"
-	println "> ${root.@failures} failed"
+	println "> ${failures} failed"
 	println "> ${root.@skip} skipped"
 	println "in ${root.@time} seconds"
+	
+	// print failures
+	if (failures && failures != '0') {
+		println 'Failures: '
+		root.testcase.each { test ->
+			if (test.failure.size() > 0) {
+				def testClass = test.@classname as String
+				def testName = test.@name as String
+				
+				println "> ${testClass}:${testName}"
+				println test.failure[0].text()
+				println()
+			}
+		}
+	}
 }
 
 /**
