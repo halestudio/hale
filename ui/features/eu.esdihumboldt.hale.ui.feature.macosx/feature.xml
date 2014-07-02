@@ -19,7 +19,7 @@
    </license>
 
    <plugin
-         id="eu.esdihumboldt.hale.ui.application.help.external"
+         id="eu.esdihumboldt.hale.ui.application.help.internal"
          download-size="0"
          install-size="0"
          version="0.0.0"
