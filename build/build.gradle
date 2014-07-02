@@ -10,9 +10,8 @@
 apply plugin: 'download-task'
 apply plugin: 'java'
 apply from: 'gradle/tycho.gradle'
-apply from: 'gradle/commitStage.gradle'
-apply from: 'gradle/integrationTestStage.gradle'
-apply from: 'gradle/productionStage.gradle'
+apply from: 'gradle/updateSite.gradle'
+apply from: 'gradle/commitAndProductionStage.gradle'
 // apply from: 'gradle/checkDependencies.gradle'
 // apply from: 'gradle/deployArtifacts.gradle'
 
@@ -40,9 +39,6 @@ ext {
     rootDir = file('..')
     parentArtifactId = 'rcp-parent'
 
-    // maximum amount of memory for the unit test runner
-    osgiTestMaxMemory = '256M'
-
     // true if Maven artifacts should be created instead of OSGI bundles
     generateArtifacts = false
 
@@ -58,9 +54,6 @@ ext {
 	// pattern for recognizing unit test bundles
 	testBundlePattern = '*.test_*.jar'
 	
-	// path to default unit test launch configuration
-	defaultUnitTestLaunchConfiguration = file('../common/plugins/eu.esdihumboldt.hale.common.core.test/defaultUnitTestLaunchConfiguration.launch')
-
     // true if MongoDB should be included in the final product
     includeMongoDB = false
 

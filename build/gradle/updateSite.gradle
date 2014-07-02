@@ -19,7 +19,7 @@ import org.apache.maven.cli.MavenCli
 
 task createUpdateSiteFeatureProjectDefinition(type: Copy) {
     from 'templates/plugin-project.xml'
-    into new File(buildDir, 'de.cs3d.updatesite.feature')
+    into new File(buildDir, "gen.site.feature")
     rename { '.project' }
 }
 
@@ -27,8 +27,7 @@ task createUpdateSiteFeatureProjectDefinition(type: Copy) {
  * Creates the update site feature's feature.xml file
  * This file has to be re-created every time a new build is started in
  * order to update all projects.
- * The feature will include all workspace bundles as well as the target
- * platform bundles referenced in the defaultLaunchConfiguration file
+ * The feature will include all workspace bundles.
  */
 task createUpdateSiteFeature(dependsOn: createUpdateSiteFeatureProjectDefinition) << {
     // create pom.xml
@@ -41,47 +40,9 @@ task createUpdateSiteFeature(dependsOn: createUpdateSiteFeatureProjectDefinition
         it << "bin.includes = feature.xml\n"
     }
 
-    // read defaultLaunchConfiguration
+    // target platform plugins
     def targetPlugins = []
-    def dutlc = new XmlSlurper().parse(project.ext.defaultUnitTestLaunchConfiguration)
-    dutlc.stringAttribute.each { sa ->
-        if (sa.@key.toString() == 'selected_target_plugins') {
-            def value = sa.@value.toString()
-            value.split(',').each { e ->
-                def bundleAndVersion = e.split('@')[0].split(/\*/).toList()
-                if (bundleAndVersion.size() < 2) {
-                    bundleAndVersion += '0.0.0'
-                }
-        
-                // FIXME remove this, once the bug in the OSGi bundle has been
-                // fixed and we don't need the extra bundle anymore
-                def id = bundleAndVersion[0]
-                if (id == 'org.eclipse.osgi') {
-                  bundleAndVersion[1] = '0.0.0'
-                }
-
-                // Filter platform-specific bundles
-                def skipBundle = false
-                if (id.contains('x86') || id.contains('i586')) {
-                    // found a platform-specific bundle
-                    // check architecture
-                    def is64bit = id.contains('x86_64')
-                    if (is64bit != Helper.buildFor64bit(project)) {
-                        skipBundle = true
-                    } else {
-                        // check OS
-                        if (!id.contains(project.ext.osgiOS)) {
-                            skipBundle = true
-                        }
-                    }
-                }
-
-                if (!skipBundle) {
-                    targetPlugins << [ id, bundleAndVersion[1] ]
-                }
-            }
-        }
-    }
+	// currently NONE
 
     new File(updateSiteFeaturePath, 'feature.xml').withWriter { w ->
         def xml = new MarkupBuilder(w)
@@ -106,7 +67,7 @@ task buildUpdateSite(dependsOn: [ createUpdateSiteFeature, generatePomFiles ]) <
     def pg = new PomGenerator(project)
 
     // create pom file
-    def updateSitePath = new File(buildDir, 'de.cs3d.updatesite')
+    def updateSitePath = new File(buildDir, 'gen.site')
     updateSitePath.mkdirs()
     pg.makePomFileWithPackaging(updateSitePath.name, '1.0.0', false, false, 'eclipse-repository',
             'pom-repository.xml', updateSitePath)
@@ -138,27 +99,4 @@ task buildUpdateSite(dependsOn: [ createUpdateSiteFeature, generatePomFiles ]) <
     if (res != 0) {
         throw new RuntimeException("Maven failed with exit code ${res}")
     }
-
-    // delete junit3 bundle (because during unit testing it conflicts
-    // with junit4 and we don't need it anyway)
-    // Note: Only the jar file will be deleted, leaving the update site
-    // in an invalid state (content.xml is not updated)
-    def updateSitePlugins = new File(updateSitePath, 'target/repository/plugins')
-    def junit3bundle = fileTree(dir: updateSitePlugins, include: 'org.junit_3*.jar')
-    junit3bundle.each { it.delete() }
 }
-
-///**
-// * Runs the OSGi unit tests. This method does not fail the build if one
-// * unit test fails.
-// */
-//task runUnitTests(dependsOn: buildUpdateSite) << {
-//    new UnitTestRunner(project).executeUnitTests(project.ext.testBundlePattern)
-//}
-
-///**
-// * Runs the commit stage. The commit stage includes building all sources,
-// * creating binary artifacts (in this case an update site containing all
-// * exported bundles) and running unit tests.
-// */
-//task commitStage(dependsOn: runUnitTests)

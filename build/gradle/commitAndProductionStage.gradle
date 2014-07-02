@@ -260,7 +260,7 @@ def replaceIconPaths(productFile) {
 }
 
 /*
- * Downloads platform specific artifacts from '@CS3D_MIRROR_URL/relsrcpath'
+ * Downloads platform specific artifacts from '<artifactsMirrorUrl>/relsrcpath'
  * and unzips them to 'reldstpath'. Prints 'name' to the console.
  */
 def includeAdditionalFiles(artifacts, relsrcpath, productOutputPath, reldstpath, name) {
@@ -565,7 +565,7 @@ def packageServer(productOutputPath) {
 
 task makeProductFeatureProjectDefinition(type: Copy) {
     from Helper.resolveTemplate(project, 'plugin-project.xml')
-    into new File(buildDir, 'de.cs3d.product.feature')
+    into new File(buildDir, 'gen.product.feature')
     rename { '.project' }
 }
 
