@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="eu.esdihumboldt.hale.common.feature.base"
-      label="Equinox base feature"
-      version="2.9.0">
+      id="eu.esdihumboldt.hale.ui.views.styledmap.feature"
+      label="Style Map View Feature"
+      version="2.9.0"
+      provider-name="Fraunhofer IGD &amp; data harmonisation panel">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -16,170 +17,112 @@
       [Enter License Description here.]
    </license>
 
-   <includes
-         id="de.fhg.igd.slf4jplus.feature"
+   <plugin
+         id="eu.esdihumboldt.hale.doc.user.views.styledmap"
+         download-size="0"
+         install-size="0"
          version="0.0.0"/>
 
-   <includes
-         id="org.eclipse.equinox.core.feature"
-         version="0.0.0"/>
-
    <plugin
-         id="org.apache.felix.gogo.command"
+         id="eu.esdihumboldt.hale.ui.views.styledmap"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.apache.felix.gogo.runtime"
+         id="de.fhg.igd.mapviewer"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.apache.felix.gogo.shell"
+         id="de.fhg.igd.mapviewer.server.openstreetmap"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.console"
+         id="de.fhg.igd.mapviewer.tools.boxzoom"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="ch.qos.logback.classic"
+         id="de.fhg.igd.swingrcp"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="ch.qos.logback.core"
+         id="org.jdesktop.swingx"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="cal10n.api"
+         id="org.jdesktop.swingx.mapviewer"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.gemini.blueprint.core"
+         id="org.jdesktop.swingx.mapviewer.source"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.gemini.blueprint.extender"
+         id="org.swinglabs.swing-worker"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.gemini.blueprint.io"
+         id="de.cs3d.common.metamodel"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.springframework.aop"
+         id="de.cs3d.ui.bookmarks"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.springframework.asm"
+         id="de.cs3d.ui.util.eclipse"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.springframework.beans"
+         id="de.cs3d.util.eclipse"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.springframework.context"
+         id="de.cs3d.util.helper"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.springframework.expression"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.springframework.transaction"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.springframework.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="jcl.over.slf4j"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="jul.to.slf4j"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="log4j.over.slf4j"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="slf4j.api"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="slf4j.ext"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="aopalliance"
+         id="gnu.trove"
          download-size="0"
          install-size="0"
          version="0.0.0"

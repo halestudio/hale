@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="eu.esdihumboldt.hale.io.feature.html"
+      label="HTML Export Feature"
+      version="2.9.0"
+      provider-name="data harmonisation panel">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <plugin
+         id="eu.esdihumboldt.hale.io.html.svg"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.pegdown"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.parboiled.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.parboiled.java"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.objectweb.asm.analysis"
+         download-size="0"
+         install-size="0"
+         version="4.1.0.bnd-5J23vA"
+         unpack="false"/>
+
+   <plugin
+         id="org.objectweb.asm.core"
+         download-size="0"
+         install-size="0"
+         version="4.1.0.bnd-lteUUw"
+         unpack="false"/>
+
+   <plugin
+         id="org.objectweb.asm.tree"
+         download-size="0"
+         install-size="0"
+         version="4.1.0.bnd-ez6c3A"
+         unpack="false"/>
+
+   <plugin
+         id="org.objectweb.asm.util"
+         download-size="0"
+         install-size="0"
+         version="4.1.0.bnd-C93uPA"
+         unpack="false"/>
+
+</feature>

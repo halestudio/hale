@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="eu.esdihumboldt.hale.common.feature.base"
-      label="Equinox base feature"
+      id="eu.esdihumboldt.hale.io.feature.core"
+      label="Core I/O Providers"
       version="2.9.0">
 
    <description url="http://www.example.com/description">
@@ -17,169 +17,130 @@
    </license>
 
    <includes
-         id="de.fhg.igd.slf4jplus.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.equinox.core.feature"
+         id="eu.esdihumboldt.hale.common.feature.core"
          version="0.0.0"/>
 
    <plugin
-         id="org.apache.felix.gogo.command"
+         id="eu.esdihumboldt.hale.io.codelist.xml"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.apache.felix.gogo.runtime"
+         id="eu.esdihumboldt.hale.io.csv"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.apache.felix.gogo.shell"
+         id="eu.esdihumboldt.hale.io.gml"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.console"
+         id="eu.esdihumboldt.hale.io.gml.geometry"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="ch.qos.logback.classic"
+         id="eu.esdihumboldt.hale.io.jdbc"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="ch.qos.logback.core"
+         id="eu.esdihumboldt.hale.io.jdbc.postgresql"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="cal10n.api"
+         id="eu.esdihumboldt.hale.io.json"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.gemini.blueprint.core"
+         id="eu.esdihumboldt.hale.io.shp"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.gemini.blueprint.extender"
+         id="eu.esdihumboldt.hale.io.xls"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.gemini.blueprint.io"
+         id="eu.esdihumboldt.hale.io.xml"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.springframework.aop"
+         id="eu.esdihumboldt.hale.io.xsd"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.springframework.asm"
+         id="net.sf.opencsv"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.springframework.beans"
+         id="org.apache.poi"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.springframework.context"
+         id="net.sourceforge.schemacrawler"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.springframework.expression"
+         id="org.apache.ws.commons.schema.XmlSchema"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.springframework.transaction"
+         id="org.postgresql.jdbc"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.springframework.core"
+         id="org.codehaus.jackson"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="jcl.over.slf4j"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="jul.to.slf4j"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="log4j.over.slf4j"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="slf4j.api"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="slf4j.ext"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="aopalliance"
+         id="org.codehaus.jackson.mapper"
          download-size="0"
          install-size="0"
          version="0.0.0"

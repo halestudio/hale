@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="eu.esdihumboldt.hale.io.feature.html.ui"
+      label="HTML Export UI Feature"
+      version="2.9.0"
+      provider-name="data harmonisation panel">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <includes
+         id="eu.esdihumboldt.hale.ui.feature.zest"
+         version="0.0.0"/>
+
+   <plugin
+         id="eu.esdihumboldt.hale.io.html"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="eu.esdihumboldt.hale.io.html.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.velocity"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
