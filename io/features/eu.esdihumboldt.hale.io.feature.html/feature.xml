@@ -47,31 +47,31 @@
          unpack="false"/>
 
    <plugin
-         id="org.objectweb.asm.analysis"
+         id="org.objectweb.asm-4"
          download-size="0"
          install-size="0"
-         version="4.1.0.bnd-5J23vA"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.objectweb.asm.core"
+         id="org.objectweb.asm.analysis-4"
          download-size="0"
          install-size="0"
-         version="4.1.0.bnd-lteUUw"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.objectweb.asm.tree"
+         id="org.objectweb.asm.tree-4"
          download-size="0"
          install-size="0"
-         version="4.1.0.bnd-ez6c3A"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.objectweb.asm.util"
+         id="org.objectweb.asm.util-4"
          download-size="0"
          install-size="0"
-         version="4.1.0.bnd-C93uPA"
+         version="0.0.0"
          unpack="false"/>
 
 </feature>
