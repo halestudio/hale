@@ -768,12 +768,16 @@ task runUnitTests(dependsOn: buildProduct) << {
 	File outFile = new File(testReportDir, "${launcherName}.out")
 	File errFile = new File(testReportDir, "${launcherName}.err")
 	File reportFile = new File(testReportDir, "${launcherName}.xml")
+	File launcherFile = new File(productOutputPath, launcherName)
+	
+	// make launcher executable
+	ant.chmod(file: launcherFile, perm:'a+x')
 
 	println 'Starting test product...'
 	outFile.withOutputStream { out ->
 		errFile.withOutputStream { err ->
 			def process = [
-				new File(productOutputPath, launcherName) as String,
+				launcherFile as String,
 				'-out',
 				reportFile as String
 			].execute()
