@@ -32,50 +32,44 @@
          id="eu.esdihumboldt.hale.common.feature.core"
          version="0.0.0"/>
 
-   <plugin
-         id="org.jdesktop.swingx.mapviewer"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <includes
+         id="eu.esdihumboldt.cst.feature"
+         version="0.0.0"/>
 
-   <plugin
-         id="org.apache.poi"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <includes
+         id="eu.esdihumboldt.hale.io.xslt.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="eu.esdihumboldt.hale.io.xslt.feature.ui"
+         version="0.0.0"/>
+
+   <includes
+         id="eu.esdihumboldt.hale.io.feature.core"
+         version="0.0.0"/>
+
+   <includes
+         id="eu.esdihumboldt.hale.io.feature.core.ui"
+         version="0.0.0"/>
+
+   <includes
+         id="eu.esdihumboldt.hale.io.feature.legacy"
+         version="0.0.0"/>
+
+   <includes
+         id="eu.esdihumboldt.hale.io.feature.html"
+         version="0.0.0"/>
+
+   <includes
+         id="eu.esdihumboldt.hale.io.feature.html.ui"
+         version="0.0.0"/>
+
+   <includes
+         id="eu.esdihumboldt.hale.ui.views.styledmap.feature"
+         version="0.0.0"/>
 
    <plugin
          id="eu.esdihumboldt.hale.ui.functions.groovy"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.antlr.ST4"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.objectweb.asm.analysis"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="gnu.trove"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.hale.common.codelist"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -88,20 +82,6 @@
          version="0.0.0"/>
 
    <plugin
-         id="com.sun.xml.bind.jaxb-core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.iq80.snappy"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="eu.esdihumboldt.hale.ui.templates"
          download-size="0"
          install-size="0"
@@ -109,35 +89,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.jdesktop.swingx"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.hale.io.shp.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.antlr.runtime"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="eu.esdihumboldt.hale.ui.schema.presets"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="antlr"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -159,35 +111,7 @@
          unpack="false"/>
 
    <plugin
-         id="eu.esdihumboldt.hale.io.shp"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.ws.commons.schema.XmlSchema"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.hale.io.xml"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="eu.esdihumboldt.hale.ui.util.groovy"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.hale.io.csv"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -208,31 +132,10 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.velocity"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="eu.esdihumboldt.hale.doc.user.views.styledmap"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
-
-   <plugin
-         id="org.antlr.stringtemplate"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.swinglabs.swing-worker"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="eu.esdihumboldt.hale.ui.scripting"
@@ -249,49 +152,7 @@
          unpack="false"/>
 
    <plugin
-         id="eu.esdihumboldt.hale.io.gml.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.objectweb.asm.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="javax.el"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="eu.esdihumboldt.hale.ui.views.properties"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.orientechnologies.orientdb-core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="aopalliance"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.xsd"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -305,42 +166,7 @@
          unpack="false"/>
 
    <plugin
-         id="net.sf.json-lib"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.w3c.dom.events"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.hale.common.lookup"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.w3c.dom.svg"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="eu.esdihumboldt.hale.ui.common.definition.editors"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.antlr"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -354,56 +180,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.lucene.analysis"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.postgresql.jdbc"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="net.sourceforge.schemacrawler"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="eu.esdihumboldt.cst.doc.functions"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.xerces"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.hale.io.xsd.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.objectweb.asm.util"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.iabcinc.jmep"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -417,42 +194,7 @@
          unpack="false"/>
 
    <plugin
-         id="eu.esdihumboldt.cst.functions.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.tinkerpop.blueprints.orient-graph"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.cst"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.cst.functions.groovy"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="eu.esdihumboldt.hale.ui.common.graph"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.w3c.css.sac"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -466,28 +208,7 @@
          unpack="false"/>
 
    <plugin
-         id="eu.esdihumboldt.util.blueprints.entities"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.objectweb.asm.tree"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="eu.esdihumboldt.hale.ui.util"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.hale.io.jdbc"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -501,13 +222,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.lucene.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="eu.esdihumboldt.hale.ui.views.functions"
          download-size="0"
          install-size="0"
@@ -515,21 +229,7 @@
          unpack="false"/>
 
    <plugin
-         id="de.cs3d.ui.bookmarks"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="eu.esdihumboldt.hale.common.inspire"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="de.fhg.igd.mapviewer.server.openstreetmap"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -557,13 +257,6 @@
          unpack="false"/>
 
    <plugin
-         id="eu.esdihumboldt.hale.prefixmapper"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="de.fhg.igd.hale.fme.ui"
          download-size="0"
          install-size="0"
@@ -585,49 +278,7 @@
          unpack="false"/>
 
    <plugin
-         id="eu.esdihumboldt.hale.common.instance.orient"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.codehaus.jackson"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.hale.io.xls"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.hale.io.html.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="eu.esdihumboldt.hale.ui.views.schemas"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.hale.io.project.jaxb"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="javax.xml"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -655,49 +306,7 @@
          unpack="false"/>
 
    <plugin
-         id="eu.esdihumboldt.hale.io.gml.geometry"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.hale.io.jdbc.postgresql"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="de.cs3d.ui.util.eclipse"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="eu.esdihumboldt.hale.ui.functions.inspire"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.hale.io.csv.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.objectweb.asm.tree"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.hale.io.oml"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -711,88 +320,11 @@
          unpack="false"/>
 
    <plugin
-         id="eu.esdihumboldt.hale.io.xslt.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.hale.io.xslt"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="de.fhg.igd.mapviewer.tools.boxzoom"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.hamcrest.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="net.sf.opencsv"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.codehaus.groovy.modules.http-builder"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="de.fhg.igd.mapviewer"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="net.sf.ezmorph"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.hale.io.gml"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.sun.jna"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="eu.esdihumboldt.hale.ui.logback.config"
          download-size="0"
          install-size="0"
          version="0.0.0"
          fragment="true"
-         unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.cst.functions.numeric"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
          unpack="false"/>
 
    <plugin
@@ -809,34 +341,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.w3c.dom.smil"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.jasper.glassfish"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.cst.functions.inspire"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="net.sourceforge.nekohtml"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="eu.esdihumboldt.hale.common.instancevalidator"
          download-size="0"
          install-size="0"
@@ -845,41 +349,6 @@
 
    <plugin
          id="eu.esdihumboldt.hale.ui.cst"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.orientechnologies.common"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.hale.io.html"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="de.cs3d.util.helper"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.hale.io.jdbc.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="de.fhg.igd.swingrcp"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -901,42 +370,7 @@
          unpack="false"/>
 
    <plugin
-         id="eu.esdihumboldt.cst.functions.geometric"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.hale.common.scripting"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="eu.esdihumboldt.hale.ui.instancevalidation"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="de.cs3d.common.metamodel"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.cst.functions.string"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.codehaus.jackson.mapper"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -951,20 +385,6 @@
 
    <plugin
          id="eu.esdihumboldt.hale.doc.user.examples"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.hale.io.xls.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.hale.io.xsd"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -999,19 +419,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.junit"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="eu.esdihumboldt.hale.io.json"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="eu.esdihumboldt.hale.ui.codelist"
          download-size="0"
          install-size="0"
@@ -1019,21 +426,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.xml.serializer"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="eu.esdihumboldt.hale.ui.examples"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.hale.io.codelist.xml"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -1049,6 +442,20 @@
 
    <plugin
          id="eu.esdihumboldt.hale.ui.codelist.inspire"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.codehaus.groovy.modules.http-builder"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="net.sourceforge.nekohtml"
          download-size="0"
          install-size="0"
          version="0.0.0"
