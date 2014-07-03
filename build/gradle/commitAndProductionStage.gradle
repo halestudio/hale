@@ -346,17 +346,22 @@ void updateAboutInfo(productOutputPath) {
 		revision = 'unknown'
 	}
 	
+	// determine version from manifest
+	File manifestFile = new File(tmpDir, 'META-INF/MANIFEST.MF')
+	def bundleVersion = new BundleParser(project).readVersion(manifestFile, true)
+	
 	// replace tokens in plugin.xml
 	File pluginXml = new File(tmpDir, 'plugin.xml')
 	ant.replace(file: pluginXml, token: '___build___', value: project.ext.buildId, summary: true)
 	ant.replace(file: pluginXml, token: '___revision___', value: revision, summary: true)
+	ant.replace(file: pluginXml, token: '___version___', value: bundleVersion, summary: true)
 	
 	// update original jar with updated plugin.xml
 	ant.jar(update: 'true', destfile: productBundleJar) {
 		fileset(dir: tmpDir, includes: 'plugin.xml')
 	}
 	
-//	tmpDir.deleteDir()
+	tmpDir.deleteDir()
 }
 
 /**

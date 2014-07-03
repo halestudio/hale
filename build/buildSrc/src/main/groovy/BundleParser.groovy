@@ -31,10 +31,15 @@ class BundleParser {
     /**
      * Reads a bundle's version from its MANIFEST.MF file
      */
-    def readVersion(manifestFile) {
+    def readVersion(manifestFile, boolean bundleVersion = false) {
         def map = ManifestElement.parseBundleManifest(new FileInputStream(manifestFile), null)
         def version = map.get(Constants.BUNDLE_VERSION).split(';')[0]
-		return formatVersion(version)
+		if (bundleVersion) {
+			version
+		}
+		else {
+			formatVersion(version)
+		}
     }
 	
 	/**
