@@ -33,8 +33,23 @@ class BundleParser {
      */
     def readVersion(manifestFile) {
         def map = ManifestElement.parseBundleManifest(new FileInputStream(manifestFile), null)
-        return map.get(Constants.BUNDLE_VERSION).split(';')[0]
+        def version = map.get(Constants.BUNDLE_VERSION).split(';')[0]
+		return formatVersion(version)
     }
+	
+	/**
+	 * Format a version how it should be represented in a POM file.
+	 */
+	String formatVersion(String version) {
+		if (version.endsWith('.qualifier')) {
+			// turn qualifiers into SNAPSHOTS
+			version[0..-11] + '-SNAPSHOT'
+		}
+		else {
+			// return as-is
+			version
+		}
+	}
 	
 	/**
 	 * Tries to detect the bundle's Java version from the manifest.
@@ -194,7 +209,7 @@ class BundleParser {
 					if (!project.ext.parsedFeatures.containsKey(id)) {
 						if (acceptFeature(path, id)) {
 							project.ext.parsedFeatures[id] = [
-									'version': feature.@version as String,
+									'version': formatVersion(feature.@version as String),
 									'path': path,
 									'label': feature.@id as String
 							]
