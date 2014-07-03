@@ -76,6 +76,7 @@ http://www.wetransform.to/products/hale
       <feature id="eu.esdihumboldt.hale.io.feature.html.ui"/>
       <feature id="eu.esdihumboldt.hale.io.feature.core"/>
       <feature id="eu.esdihumboldt.hale.io.feature.html"/>
+      <feature id="eu.esdihumboldt.hale.ui.feature.dropins" version="2.9.0"/>
    </features>
 
    <configurations>
@@ -105,6 +106,7 @@ http://www.wetransform.to/products/hale
       <plugin id="org.eclipse.equinox.console" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.p2.reconciler.dropins" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.gemini.blueprint.core" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.gemini.blueprint.extender" autoStart="true" startLevel="5" />
