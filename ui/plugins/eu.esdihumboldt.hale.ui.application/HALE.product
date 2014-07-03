@@ -56,7 +56,6 @@ http://www.wetransform.to/products/hale
       <feature id="org.eclipse.equinox.core.feature"/>
       <feature id="org.eclipse.draw2d"/>
       <feature id="eu.esdihumboldt.hale.ui.feature.rcp"/>
-      <feature id="org.eclipse.help"/>
       <feature id="org.eclipse.emf.ecore"/>
       <feature id="org.eclipse.e4.rcp"/>
       <feature id="eu.esdihumboldt.hale.ui.feature.zest"/>
