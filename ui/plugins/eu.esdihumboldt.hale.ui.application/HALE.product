@@ -4,16 +4,25 @@
 <product name="HUMBOLDT Alignment Editor" uid="eu.esdihumboldt.hale" id="eu.esdihumboldt.hale.ui.application.HALE" application="eu.esdihumboldt.hale.ui.application" version="2.8.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
-      <image path="/eu.esdihumboldt.hale.ui.application/images/hale_about_sm.gif"/>
+      <image path="/eu.esdihumboldt.hale.ui.application/images/hale_about.gif"/>
       <text>
          HUMBOLDT Alignment Editor (HALE)
 
-Version 2.8.0
+Version ___version___
 
 Build ___build___
 Revision ___revision___
 
+Project page:
 http://www.esdi-community.eu/projects/show/hale
+
+Forum:
+http://www.esdi-community.eu/projects/hale/boards
+
+News:
+http://blog.dhpanel.eu
+
+Get professional support:
 http://www.wetransform.to/products/hale
       </text>
    </aboutInfo>
@@ -40,6 +49,7 @@ http://www.wetransform.to/products/hale
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
