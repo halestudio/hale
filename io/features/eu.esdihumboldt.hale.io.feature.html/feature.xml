@@ -3,7 +3,8 @@
       id="eu.esdihumboldt.hale.io.feature.html"
       label="HTML Export Feature"
       version="2.9.0"
-      provider-name="data harmonisation panel">
+      provider-name="data harmonisation panel"
+      plugin="eu.esdihumboldt.hale.ui.application">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]

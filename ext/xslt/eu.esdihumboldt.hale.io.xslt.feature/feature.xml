@@ -3,7 +3,8 @@
       id="eu.esdihumboldt.hale.io.xslt.feature"
       label="XSLT Mapping Feature"
       version="2.9.0"
-      provider-name="Fraunhofer IGD">
+      provider-name="Fraunhofer IGD"
+      plugin="eu.esdihumboldt.hale.io.xslt">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]

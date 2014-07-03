@@ -2,7 +2,8 @@
 <feature
       id="eu.esdihumboldt.hale.io.feature.core.ui"
       label="UI Support for Core I/O Providers"
-      version="2.9.0">
+      version="2.9.0"
+      provider-name="data harmonisation panel">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]

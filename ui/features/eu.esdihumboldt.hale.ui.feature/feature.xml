@@ -2,7 +2,9 @@
 <feature
       id="eu.esdihumboldt.hale.ui.feature"
       label="HALE application feature"
-      version="2.9.0">
+      version="2.9.0"
+      provider-name="data harmonisation panel"
+      plugin="eu.esdihumboldt.hale.ui.application">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -37,14 +39,6 @@
          version="0.0.0"/>
 
    <includes
-         id="eu.esdihumboldt.hale.io.xslt.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="eu.esdihumboldt.hale.io.xslt.feature.ui"
-         version="0.0.0"/>
-
-   <includes
          id="eu.esdihumboldt.hale.io.feature.core"
          version="0.0.0"/>
 
@@ -62,10 +56,6 @@
 
    <includes
          id="eu.esdihumboldt.hale.io.feature.html.ui"
-         version="0.0.0"/>
-
-   <includes
-         id="eu.esdihumboldt.hale.ui.views.styledmap.feature"
          version="0.0.0"/>
 
    <plugin
@@ -130,12 +120,6 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.hale.doc.user.views.styledmap"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
 
    <plugin
          id="eu.esdihumboldt.hale.ui.scripting"
@@ -392,13 +376,6 @@
 
    <plugin
          id="eu.esdihumboldt.hale.doc.util"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.hale.ui.views.styledmap"
          download-size="0"
          install-size="0"
          version="0.0.0"

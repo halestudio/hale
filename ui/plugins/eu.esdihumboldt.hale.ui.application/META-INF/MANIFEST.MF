@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: HALE Application Bundle
+Bundle-Name: HALE Application
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.application;singleton:=true
 Bundle-Version: 2.8.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
@@ -49,3 +49,4 @@ Export-Package: eu.esdihumboldt.hale.ui.application,
  eu.esdihumboldt.hale.ui.application.splash,
  eu.esdihumboldt.hale.ui.application.workbench,
  eu.esdihumboldt.hale.ui.application.workbench.extension
+Bundle-Vendor: data harmonisation panel
