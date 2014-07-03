@@ -20,3 +20,4 @@ Require-Bundle: groovy;bundle-version="2.1.5",
 Export-Package: eu.esdihumboldt.hale.common.align.groovy.accessor,
  eu.esdihumboldt.hale.common.align.groovy.accessor.internal;x-internal:=true,
  eu.esdihumboldt.hale.common.align.groovy.internal;x-internal:=true
+Bundle-Vendor: data harmonisation panel

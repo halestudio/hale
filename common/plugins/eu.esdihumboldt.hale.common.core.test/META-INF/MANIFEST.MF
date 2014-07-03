@@ -8,3 +8,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: junit.framework;version="4.8.2",
  org.junit;version="4.5.0",
  org.junit.rules;version="4.8.1"
+Bundle-Vendor: data harmonisation panel

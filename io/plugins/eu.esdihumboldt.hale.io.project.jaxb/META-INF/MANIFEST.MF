@@ -25,3 +25,4 @@ Import-Package: com.google.common.io;version="1.6.0",
  org.osgi.framework,
  org.slf4j;version="1.5.11"
 Require-Bundle: org.eclipse.core.contenttype;bundle-version="3.4.100"
+Bundle-Vendor: data harmonisation panel

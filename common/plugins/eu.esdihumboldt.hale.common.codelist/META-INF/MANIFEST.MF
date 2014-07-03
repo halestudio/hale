@@ -12,3 +12,4 @@ Export-Package: eu.esdihumboldt.hale.common.codelist,
  eu.esdihumboldt.hale.common.codelist.config,
  eu.esdihumboldt.hale.common.codelist.io
 Require-Bundle: groovy;bundle-version="2.1.5"
+Bundle-Vendor: data harmonisation panel

@@ -3,3 +3,4 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Styled Map View User Documentation
 Bundle-SymbolicName: eu.esdihumboldt.hale.doc.user.views.styledmap;singleton:=true
 Bundle-Version: 2.9.0.qualifier
+Bundle-Vendor: data harmonisation panel

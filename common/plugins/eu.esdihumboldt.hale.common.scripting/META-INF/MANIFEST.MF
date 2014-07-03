@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Scripting
+Bundle-Name: Common Scripting API
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.scripting;singleton:=true
 Bundle-Version: 2.9.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
@@ -26,3 +26,4 @@ Export-Package: eu.esdihumboldt.hale.common.scripting,
  eu.esdihumboldt.hale.common.scripting.scripts.groovy,
  eu.esdihumboldt.hale.common.scripting.scripts.mathematical,
  eu.esdihumboldt.hale.common.scripting.transformation
+Bundle-Vendor: data harmonisation panel

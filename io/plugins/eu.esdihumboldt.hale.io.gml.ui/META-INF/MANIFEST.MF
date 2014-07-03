@@ -31,3 +31,4 @@ Import-Package: com.google.common.io;version="1.6.0",
 Export-Package: eu.esdihumboldt.hale.io.gml.ui.wfs
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.hale.io.gml.ui.internal.GmlUIPlugin
+Bundle-Vendor: data harmonisation panel

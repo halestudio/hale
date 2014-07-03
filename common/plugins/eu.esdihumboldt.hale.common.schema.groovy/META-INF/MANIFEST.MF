@@ -16,3 +16,4 @@ Export-Package: eu.esdihumboldt.hale.common.schema.groovy,
  eu.esdihumboldt.hale.common.schema.groovy.constraints,
  eu.esdihumboldt.hale.common.schema.groovy.internal;x-internal:=true,
  eu.esdihumboldt.hale.common.schema.groovy.meta
+Bundle-Vendor: data harmonisation panel

@@ -25,3 +25,4 @@ Import-Package: com.google.common.base;version="1.0.0",
 Export-Package: eu.esdihumboldt.hale.io.jdbc,
  eu.esdihumboldt.hale.io.jdbc.extension,
  eu.esdihumboldt.hale.io.jdbc.extension.internal;x-internal:=true
+Bundle-Vendor: data harmonisation panel

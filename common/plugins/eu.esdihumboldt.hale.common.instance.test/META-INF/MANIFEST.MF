@@ -30,3 +30,4 @@ Import-Package: de.fhg.igd.osgi.util;version="1.0.0",
  eu.esdihumboldt.hale.io.xsd.model,
  eu.esdihumboldt.hale.io.xsd.reader,
  org.junit
+Bundle-Vendor: data harmonisation panel

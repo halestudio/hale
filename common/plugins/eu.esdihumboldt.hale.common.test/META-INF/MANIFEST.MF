@@ -29,3 +29,4 @@ Import-Package: de.fhg.igd.osgi.util,
  org.osgi.framework;version="1.6.0",
  org.springframework.core.convert
 Export-Package: eu.esdihumboldt.hale.common.test
+Bundle-Vendor: data harmonisation panel

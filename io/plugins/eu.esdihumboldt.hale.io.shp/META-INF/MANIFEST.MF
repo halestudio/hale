@@ -41,3 +41,4 @@ Require-Bundle: org.geotools;bundle-version="2.6.4",
 Export-Package: eu.esdihumboldt.hale.io.shp,
  eu.esdihumboldt.hale.io.shp.internal;x-internal:=true,
  eu.esdihumboldt.hale.io.shp.reader.internal;x-internal:=true
+Bundle-Vendor: data harmonisation panel

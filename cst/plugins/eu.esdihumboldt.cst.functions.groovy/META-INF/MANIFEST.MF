@@ -30,3 +30,4 @@ Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.5.0",
 Export-Package: eu.esdihumboldt.cst.functions.groovy,
  eu.esdihumboldt.cst.functions.groovy.internal;x-internal:=true
 Bundle-ClassPath: .
+Bundle-Vendor: data harmonisation panel

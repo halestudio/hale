@@ -17,3 +17,4 @@ Import-Package: com.google.common.base;version="9.0.0",
  org.springframework.core.convert;version="3.0.0.RELEASE"
 Export-Package: eu.esdihumboldt.cst.functions.numeric,
  eu.esdihumboldt.cst.functions.numeric.sequentialid
+Bundle-Vendor: data harmonisation panel

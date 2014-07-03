@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Headless Transformation
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.headless
 Bundle-Version: 2.9.0.qualifier
-Bundle-Vendor: Data Harmonisation Panel
+Bundle-Vendor: data harmonisation panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.base;version="11.0.1",
  com.google.common.collect;version="11.0.1",

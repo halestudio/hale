@@ -3,5 +3,5 @@ Bundle-ManifestVersion: 2
 Bundle-Name: HALE User Guide
 Bundle-SymbolicName: eu.esdihumboldt.hale.doc.user;singleton:=true
 Bundle-Version: 2.9.0.qualifier
-Bundle-Vendor: Fraunhofer IGD
+Bundle-Vendor: data harmonisation panel
 Require-Bundle: org.eclipse.help
