@@ -6,3 +6,4 @@ Fragment-Host: eu.esdihumboldt.cst.doc.functions;bundle-version="2.5.0"
 Bundle-Version: 2.9.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0"
+Bundle-Vendor: data harmonisation panel

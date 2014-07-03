@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Hale Filter Api Test
+Bundle-Name: Hale Filter API Tests
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.filter.test
 Bundle-Version: 2.9.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
@@ -31,3 +31,4 @@ Import-Package: de.fhg.igd.osgi.util;version="1.0.0",
 Require-Bundle: eu.esdihumboldt.hale.common.filter;bundle-version="2.5.0",
  eu.esdihumboldt.hale.common.convert;bundle-version="2.5.0",
  org.geotools;bundle-version="8.0.0"
+Bundle-Vendor: data harmonisation panel

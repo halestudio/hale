@@ -52,3 +52,4 @@ Export-Package: eu.esdihumboldt.hale.io.csv,
  eu.esdihumboldt.hale.io.csv.reader.internal,
  eu.esdihumboldt.hale.io.csv.writer,
  eu.esdihumboldt.hale.io.csv.writer.internal
+Bundle-Vendor: data harmonisation panel

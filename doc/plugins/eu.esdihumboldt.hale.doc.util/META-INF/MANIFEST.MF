@@ -14,3 +14,4 @@ Import-Package: com.google.common.base;version="9.0.0",
 Export-Package: eu.esdihumboldt.hale.doc.util.content,
  eu.esdihumboldt.hale.doc.util.context,
  eu.esdihumboldt.hale.doc.util.toc
+Bundle-Vendor: data harmonisation panel

@@ -25,3 +25,4 @@ Import-Package: com.vividsolutions.jts,
  schemacrawler.schema;version="8.16.0"
 Require-Bundle: eu.esdihumboldt.hale.io.jdbc;bundle-version="2.5.0",
  eu.esdihumboldt.hale.common.schema;bundle-version="2.5.0"
+Bundle-Vendor: data harmonisation panel

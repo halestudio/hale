@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Hale Filter Api
+Bundle-Name: Hale Filter API
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.filter;singleton:=true
 Bundle-Version: 2.9.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
@@ -17,3 +17,4 @@ Export-Package: eu.esdihumboldt.hale.common.filter,
  eu.esdihumboldt.hale.common.filter.definition
 Require-Bundle: org.geotools,
  org.opengis;bundle-version="8.0.0"
+Bundle-Vendor: data harmonisation panel

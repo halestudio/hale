@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Inspire
+Bundle-Name: Inspire Transformation Functions
 Bundle-SymbolicName: eu.esdihumboldt.cst.functions.inspire;singleton:=true
 Bundle-Version: 2.9.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
@@ -22,3 +22,4 @@ Import-Package: com.google.common.base;version="9.0.0",
  org.springframework.core.convert;version="3.0.0.RELEASE"
 Export-Package: eu.esdihumboldt.cst.functions.inspire,
  eu.esdihumboldt.cst.functions.inspire.data
+Bundle-Vendor: data harmonisation panel
