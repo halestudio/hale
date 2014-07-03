@@ -41,12 +41,25 @@
         </configuration>
       </plugin>
       <% } %>
+      <% if (isJavaProject && !needsGroovy && !needsScala) { %>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-compiler-plugin</artifactId>
+        <version>\${tycho-version}</version>
+        <configuration>
+          <source>$javaSource</source>
+          <target>$javaTarget</target>
+        </configuration>
+      </plugin>
+      <% } %>
       <% if (needsScala) { %>
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-compiler-plugin</artifactId>
         <version>\${tycho-version}</version>
         <configuration>
+          <source>$javaSource</source>
+          <target>$javaTarget</target>
           <!-- exclude scala source files; they will be compiled
                by the maven-scala-plugin (see below) and must not
                be included into the output jar -->
@@ -81,6 +94,8 @@
 		 <artifactId>tycho-compiler-plugin</artifactId>
 		 <version>\${tycho-version}</version>
          <configuration>
+           <source>$javaSource</source>
+           <target>$javaTarget</target>
                 <compilerId>groovy-eclipse-compiler</compilerId>
                 <verbose>true</verbose>
                 <extensions>true</extensions>
