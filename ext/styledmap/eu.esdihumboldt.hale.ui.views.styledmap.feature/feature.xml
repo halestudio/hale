@@ -3,7 +3,8 @@
       id="eu.esdihumboldt.hale.ui.views.styledmap.feature"
       label="Style Map View Feature"
       version="2.9.0"
-      provider-name="Fraunhofer IGD &amp; data harmonisation panel">
+      provider-name="data harmonisation panel, Fraunhofer IGD"
+      plugin="eu.esdihumboldt.hale.ui.views.styledmap">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
