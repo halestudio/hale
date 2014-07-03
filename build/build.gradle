@@ -38,6 +38,7 @@ defaultTasks 'commitStage'
 ext {
     rootDir = file('..')
     parentArtifactId = 'rcp-parent'
+	defaultJavaVersion = '1.7'
 
     // true if Maven artifacts should be created instead of OSGI bundles
     generateArtifacts = false

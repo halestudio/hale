@@ -35,6 +35,28 @@ class BundleParser {
         def map = ManifestElement.parseBundleManifest(new FileInputStream(manifestFile), null)
         return map.get(Constants.BUNDLE_VERSION).split(';')[0]
     }
+	
+	/**
+	 * Tries to detect the bundle's Java version from the manifest.
+	 * If detection fails, it returns the default version.
+	 */
+	def readJavaVersion(manifestFile) {
+		def map = ManifestElement.parseBundleManifest(new FileInputStream(manifestFile), null)
+		def env = map.get(Constants.BUNDLE_REQUIREDEXECUTIONENVIRONMENT)
+		if (env) {
+			String envStr = env as String
+			if (env.startsWith('JavaSE-')) {
+				return env.substring(7)
+			}
+			if (env.startsWith('OSGi/Minimum-')) {
+				return env.substring(13)
+			}
+		}
+		
+		//TODO also check possible instruction in build.properties?
+	
+		return project.ext.defaultJavaVersion
+	}
 
     /**
      * Checks if a plugin in the given path has the Scala nature.
@@ -119,7 +141,8 @@ class BundleParser {
 	                                'path': path,
 	                                'needsScala': needsScala(path),
 									'needsGroovy': needsGroovy(path),
-									'isJavaProject': isJavaProject(path)
+									'isJavaProject': isJavaProject(path),
+									'javaVersion': readJavaVersion(manifestPath),
 	                        ]
 						}
 						else {

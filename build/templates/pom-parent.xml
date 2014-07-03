@@ -49,7 +49,7 @@
   <build>
     <plugins>
       <% if (!generateArtifacts) { %>
-      <plugin>
+      <!-- plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-compiler-plugin</artifactId>
         <version>\${tycho-version}</version>
@@ -57,7 +57,7 @@
           <source>1.7</source>
           <target>1.7</target>
         </configuration>
-      </plugin>
+      </plugin -->
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>target-platform-configuration</artifactId>

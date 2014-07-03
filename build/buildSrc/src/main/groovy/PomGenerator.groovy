@@ -21,8 +21,8 @@ class PomGenerator {
     /**
      * Creates a generic pom file for an OSGi bundle using the specified packaging
      */
-    def makePluginPomFileWithPackaging(symbolicName, version, needsScala, needsGroovy, packaging, path, isJavaProject = false) {
-        makePomFileWithPackaging(symbolicName, version, needsScala, needsGroovy, packaging, 'pom-plugin.xml', path, isJavaProject)
+    def makePluginPomFileWithPackaging(symbolicName, version, needsScala, needsGroovy, packaging, path, Map additional = [:]) {
+        makePomFileWithPackaging(symbolicName, version, needsScala, needsGroovy, packaging, 'pom-plugin.xml', path, additional)
     }
 	
 	/**
@@ -35,7 +35,7 @@ class PomGenerator {
     /**
      * Creates a generic pom file for an OSGi bundle using the specified packaging and template file
      */
-    def makePomFileWithPackaging(symbolicName, version, needsScala, needsGroovy, packaging, templateName, path, isJavaProject = false) {
+    def makePomFileWithPackaging(symbolicName, version, needsScala, needsGroovy, packaging, templateName, path, Map additional = [:]) {
         // calculate relative path to pom.xml of parent project
 		Path rootPath = project.ext.rootDir.toPath()
 		Path relativeRoot = path.toPath().relativize(rootPath)
@@ -54,9 +54,8 @@ class PomGenerator {
                 'parentRelativePath': relativePath,
                 'needsScala': needsScala,
 				'needsGroovy': needsGroovy,
-				'extraRequirements': project.ext.extraRequirements,
-				'isJavaProject': isJavaProject
-            ]).toString()
+				'extraRequirements': project.ext.extraRequirements
+            ] + additional).toString()
             w << result
         }
     }
@@ -64,7 +63,7 @@ class PomGenerator {
     /**
      * Creates a generic pom file for an OSGi bundle
      */
-    def makePomFile(symbolicName, version, needsScala, needsGroovy, path, isJavaProject = false) {
+    def makePomFile(symbolicName, version, needsScala, needsGroovy, path, isJavaProject, javaVersion) {
         def packaging = 'eclipse-plugin'
         if (symbolicName.endsWith('.test')) {
             packaging = 'eclipse-test-plugin'
@@ -73,7 +72,11 @@ class PomGenerator {
             packaging = 'jar'
         }
         version += project.ext.versionSuffix
-        makePluginPomFileWithPackaging(symbolicName, version, needsScala, needsGroovy, packaging, path, isJavaProject)
+        makePluginPomFileWithPackaging(symbolicName, version, needsScala, needsGroovy, packaging, path, [
+			'isJavaProject': isJavaProject,
+			'javaSource': javaVersion,
+			'javaTarget': javaVersion
+		])
     }
 
     /**
@@ -87,7 +90,8 @@ class PomGenerator {
         println('Generating pom.xml files for bundles ...')
 
         parsedBundles.each {
-            makePomFile(it.key, it.value.version, it.value.needsScala, it.value.needsGroovy, it.value.path, it.value.isJavaProject)
+            makePomFile(it.key, it.value.version, it.value.needsScala, it.value.needsGroovy, it.value.path,
+				it.value.isJavaProject, it.value.javaVersion)
         }
 
 		// generate pom files for all features
