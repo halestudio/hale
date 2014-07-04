@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Data Harmonisation Panel
+ * Copyright (c) 2014 Data Harmonisation Panel
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -15,19 +15,21 @@
 
 package eu.esdihumboldt.hale.io.csv.ui;
 
-import eu.esdihumboldt.hale.io.csv.writer.internal.CSVLookupWriter;
+import eu.esdihumboldt.hale.io.csv.writer.internal.CSVInstanceWriter;
 
 /**
- * Configuration page for the csv writer
+ * Configuration page for csv instance writer
  * 
  * @author Patrick Lieb
  */
-public class CSVWriterConfigurationPage extends AbstractCSVConfigurationPage<CSVLookupWriter> {
+public class CSVInstanceWriterConfigurationPage extends
+		AbstractCSVConfigurationPage<CSVInstanceWriter> {
 
 	/**
-	 * Default Constructor
+	 * Default constructor
 	 */
-	public CSVWriterConfigurationPage() {
-		super("lookup_writer.conf");
+	public CSVInstanceWriterConfigurationPage() {
+		super("csv.instance.writer.configuration");
 	}
+
 }

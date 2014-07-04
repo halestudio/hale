@@ -38,7 +38,7 @@ import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
  * Abstract configuration page for csv I/O<br>
  * Sets the separator, quote and escape string in the provider
  * 
- * @author Kevin Mais, Patrick Lieb
+ * @author Kevin Mais
  * @param <P> the provider type
  */
 public abstract class AbstractCSVConfigurationPage<P extends IOProvider> extends
@@ -94,6 +94,15 @@ public abstract class AbstractCSVConfigurationPage<P extends IOProvider> extends
 			setPageComplete(true);
 			setErrorMessage(null);
 		}
+
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage#enable()
+	 */
+	@Override
+	public void enable() {
+		// not required
 
 	}
 
