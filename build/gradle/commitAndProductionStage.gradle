@@ -286,27 +286,27 @@ def includeAdditionalFiles(artifacts, relsrcpath, productOutputPath, reldstpath,
         if (artifactZipPath.name.endsWith('.zip')) {
             ant.unzip(src: artifactZipPath, dest: artifactInstallPath)
         } else {
-	    if (!Helper.buildForMac(project)) {
-	        ant.untar(src: artifactZipPath, dest: artifactInstallPath, compression: 'gzip')
-	    } else {
-		// Use external tar command for OSX build since the jdk to bundle with HALE contains symbolic links
-		// This does only work on UNIX-based systems with tar installed!
-		def command = ['tar', '--preserve-permissions','-xzf', artifactZipPath.absolutePath]
-	    	artifactInstallPath.mkdir()
-	 	try {
-		    // On windows, an IOException will be thrown here
-	    	    def proc = command.execute(null, artifactInstallPath)
-		    def buffer = new StringBuffer()
-		    proc.consumeProcessErrorStream(buffer)
-	    	    proc.waitFor()
-		    // If unpacking fails on linux/osx just handle it the same way
-		    if (proc.exitValue() != 0) {
-		        throw new IOException("${buffer.toString()}")
-		    }
-		} catch (ex) {
-		    throw new IllegalStateException("Unable to unpack ${name} - The MacOSX build requires a UNIX-based system with tar installed:\n${ex.toString()}")
-		}	
-	    }
+		    if (!Helper.buildForMac(project)) {
+		        ant.untar(src: artifactZipPath, dest: artifactInstallPath, compression: 'gzip')
+		    } else {
+				// Use external tar command for OSX build since the jdk to bundle with HALE contains symbolic links
+				// This does only work on UNIX-based systems with tar installed!
+				def command = ['tar', '--preserve-permissions','-xzf', artifactZipPath.absolutePath]
+			    artifactInstallPath.mkdir()
+			 	try {
+				    // On windows, an IOException will be thrown here
+			    	def proc = command.execute(null, artifactInstallPath)
+				    def buffer = new StringBuffer()
+				    proc.consumeProcessErrorStream(buffer)
+			    	    proc.waitFor()
+				    // If unpacking fails on linux/osx just handle it the same way
+				    if (proc.exitValue() != 0) {
+				        throw new IOException("${buffer.toString()}")
+				    }
+				} catch (ex) {
+				    throw new IllegalStateException("Unable to unpack ${name} - The MacOSX build requires a UNIX-based system with tar installed:\n${ex.toString()}")
+				}	
+			}
         }
     } else {
         println('Cannot find ' + name + ' for this platform. ' + name + ' will not be copied into the product.')
@@ -455,34 +455,34 @@ def packageClient(productOutputPath) {
     } else {
 		// OSX
 		// package as .tar.gz using external tar command to preserve symbolic links in jdk
-	def packageName = getPackageName()
-	def launcherName = getProductLauncher()
-	
-	// Set file permissions
-	def permCmd = ['chmod', '755', launcherName, "${launcherName}.app/Contents/MacOS/${launcherName}"]
-	def permProc = permCmd.execute(null, productOutputPath)
-	def permBuffer = new StringBuffer()
-	permProc.consumeProcessErrorStream(permBuffer)
-	permProc.waitFor()
-	if (permProc.exitValue() != 0) {
-	    println("Exit value is ${permProc.exitValue()}")
-	    println("ls".execute(null, productOutputPath).text)
-	    throw new IllegalStateException("Unable to set required file permissions:\n${permBuffer.toString()}");
-	}
-	
-	// Pack tar archive
-	println('Creating package ' + packageName + '.tar.gz' + ' ...')
-	def targetDir = new File(productOutputPath.absolutePath + '/../../target')
-	targetDir.mkdir()
-	def tarPath = targetDir.absolutePath + '/' + packageName + '.tar.gz';
-	def packCmd =  ['tar', '--preserve-permissions', '-czf', tarPath, "."]
-	def packProc = packCmd.execute(null, productOutputPath)
-	def packBuffer = new StringBuffer()
-	packProc.consumeProcessErrorStream(packBuffer)
-	packProc.waitFor()
-	if (packProc.exitValue() != 0) {
-	    throw new IllegalStateException("Unable to create tar archive:\n${packBuffer.toString()}");
-	}
+		def packageName = getPackageName()
+		def launcherName = getProductLauncher()
+		
+		// Set file permissions
+		def permCmd = ['chmod', '755', launcherName, "${launcherName}.app/Contents/MacOS/${launcherName}"]
+		def permProc = permCmd.execute(null, productOutputPath)
+		def permBuffer = new StringBuffer()
+		permProc.consumeProcessErrorStream(permBuffer)
+		permProc.waitFor()
+		if (permProc.exitValue() != 0) {
+		    println("Exit value is ${permProc.exitValue()}")
+		    println("ls".execute(null, productOutputPath).text)
+		    throw new IllegalStateException("Unable to set required file permissions:\n${permBuffer.toString()}");
+		}
+		
+		// Pack tar archive
+		println('Creating package ' + packageName + '.tar.gz' + ' ...')
+		def targetDir = new File(productOutputPath.absolutePath + '/../../target')
+		targetDir.mkdir()
+		def tarPath = targetDir.absolutePath + '/' + packageName + '.tar.gz';
+		def packCmd =  ['tar', '--preserve-permissions', '-czf', tarPath, '--transform', "'s,^\\./,HALE/,'", "."]
+		def packProc = packCmd.execute(null, productOutputPath)
+		def packBuffer = new StringBuffer()
+		packProc.consumeProcessErrorStream(packBuffer)
+		packProc.waitFor()
+		if (packProc.exitValue() != 0) {
+		    throw new IllegalStateException("Unable to create tar archive:\n${packBuffer.toString()}");
+		}
     }
 }
 
