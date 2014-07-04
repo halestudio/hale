@@ -15,7 +15,7 @@
       </menuContribution>
       <menuContribution
             allPopups="false"
-            locationURI="toolbar:eu.esdihumboldt.hale.ui.file?before=openProject">
+            locationURI="toolbar:org.eclipse.ui.workbench.file?before=openProject">
          <command
                commandId="eu.esdihumboldt.hale.ui.templates.openwebtemplate"
                label="New project from template..."

@@ -15,7 +15,9 @@ target/
 !legacy/plugins/eu.esdihumboldt.commons/target/
 *.patch
 /build/build/
+/build/workspace/
 pom.xml
+.metadata/
 
 # generic main project
 /.project

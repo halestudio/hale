@@ -1,8 +1,6 @@
-package eu.esdihumboldt.util.groovy.sandbox.internal;
+package eu.esdihumboldt.util.groovy.sandbox.test.internal;
 
-import static junit.framework.Assert.fail;
-import eu.esdihumboldt.util.groovy.sandbox.internal.RestrictiveGroovyInterceptor.AllowedPrefix;
-import groovy.lang.GroovyShell;
+import static org.junit.Assert.fail;
 
 import java.util.Collections;
 
@@ -11,11 +9,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kohsuke.groovy.sandbox.SandboxTransformer;
 
+import eu.esdihumboldt.util.groovy.sandbox.internal.RestrictiveGroovyInterceptor;
+import eu.esdihumboldt.util.groovy.sandbox.internal.RestrictiveGroovyInterceptor.AllowedPrefix;
+import groovy.lang.GroovyShell;
+
 /**
  * Test for Groovy sandboxing.
  * 
  * @author Kai Schwierczek
  */
+@SuppressWarnings("restriction")
 public class GroovySandboxTest {
 
 	private RestrictiveGroovyInterceptor interceptor;

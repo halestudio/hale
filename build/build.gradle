@@ -10,9 +10,8 @@
 apply plugin: 'download-task'
 apply plugin: 'java'
 apply from: 'gradle/tycho.gradle'
-apply from: 'gradle/commitStage.gradle'
-apply from: 'gradle/integrationTestStage.gradle'
-apply from: 'gradle/productionStage.gradle'
+apply from: 'gradle/updateSite.gradle'
+apply from: 'gradle/commitAndProductionStage.gradle'
 // apply from: 'gradle/checkDependencies.gradle'
 // apply from: 'gradle/deployArtifacts.gradle'
 
@@ -39,9 +38,7 @@ defaultTasks 'commitStage'
 ext {
     rootDir = file('..')
     parentArtifactId = 'rcp-parent'
-
-    // maximum amount of memory for the unit test runner
-    osgiTestMaxMemory = '256M'
+	defaultJavaVersion = '1.7'
 
     // true if Maven artifacts should be created instead of OSGI bundles
     generateArtifacts = false
@@ -58,9 +55,6 @@ ext {
 	// pattern for recognizing unit test bundles
 	testBundlePattern = '*.test_*.jar'
 	
-	// path to default unit test launch configuration
-	defaultUnitTestLaunchConfiguration = file('../common/plugins/eu.esdihumboldt.hale.common.core.test/defaultUnitTestLaunchConfiguration.launch')
-
     // true if MongoDB should be included in the final product
     includeMongoDB = false
 
@@ -70,19 +64,26 @@ ext {
     // a list of additional files to include in the final product (default: empty)
     additionalFilesToPackage = []
 
-    // path to the bundles to build
+    // path to the bundles and features to build
     bundles = [
 		file('../common/plugins'),
+		file('../common/features'),
 		file('../cst/plugins'),
+		file('../cst/features'),
 		file('../doc/plugins'),
 		file('../io/plugins'),
+		file('../io/features'),
 		file('../server/plugins'),
+		file('../server/features'),
 		file('../ui/plugins'),
+		file('../ui/features'),
 		file('../util/plugins'),
+		file('../util/features'),
 		file('../app/plugins'),
 		file('../ext/styledmap'),
 		file('../ext/xslt'),
-		file('../ext/ageobw')
+		file('../ext/ageobw'),
+		file('../ext/fme')
     ]
 	
 	// bundles to exclude for the build (symbolic names)
@@ -99,8 +100,8 @@ ext {
 	]
 	
 	/*
-	 * Specify OS specific bundles. Maps symbolic names to OS
-	 * identifiers.
+	 * Specify OS specific bundles or features. Maps symbolic names
+	 * to OS identifiers.
 	 * 
 	 * Maven tycho has problems with platform/os specific bundles.
 	 * Thus we have to filter them in the product configuration.
@@ -112,11 +113,15 @@ ext {
 	 */
 	osSpecificBundles = [
 		'eu.esdihumboldt.hale.ui.application.help.internal': ['macosx', 'win32'],
-		'eu.esdihumboldt.hale.ui.application.help.external': ['linux']
+		'eu.esdihumboldt.hale.ui.application.help.external': ['linux'],
+		// features
+		'eu.esdihumboldt.hale.ui.feature.win32': ['win32'],
+		'eu.esdihumboldt.hale.ui.feature.linux': ['linux'],
+		'eu.esdihumboldt.hale.ui.feature.macosx': ['macosx']
 	]
 
     // URL to the directory containing mirrored artifacts (Maven, JRE, ...)
-    artifactsMirrorUrl = 'http://hale.igd.fraunhofer.de/build-support/3705cbb87b782e3cfe2ea02d297f0b29ba3a55ba'
+    artifactsMirrorUrl = 'http://hale.igd.fraunhofer.de/build-support/38157ce25358e0c2010d1ff67ff5cfd7806215b7'
 
     // Names of zip files containing Java Runtimes (sorted by their respective platform)
     jreArtifacts = [
@@ -130,6 +135,11 @@ ext {
             'gtk': [
                 'x86': 'jre-7u51-linux-i586.tar.gz',
                 'x86_64': 'jre-7u51-linux-x64.tar.gz'
+            ]
+        ],
+        'macosx': [
+            'cocoa': [
+                'x86_64': 'jdk-min-7u60-macosx-x64.tar.gz'
             ]
         ]
     ]

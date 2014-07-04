@@ -89,7 +89,14 @@ def getPackageName() {
  */
 def productContainsUIBundles() {
     def dlcdoc = new XmlSlurper().parse(project.file(getProductFile()))
-    return dlcdoc.plugins.plugin.any { it.@id.toString() == 'org.eclipse.ui' }
+	if (dlcdoc.@useFeatures.toString() == 'true') {
+		// defined through features
+		return !(dlcdoc.features.feature.any { it.@id.toString().contains('server') })
+	}
+	else {
+		// defined through bundles
+		return dlcdoc.plugins.plugin.any { it.@id.toString() == 'org.eclipse.ui' }
+	}
 }
 
 /**
@@ -150,6 +157,7 @@ def renderTemplate(src, dst, values) {
  */
 def filterPlatformSpecificFragments(productFile) {
     def bundlesToRemove = []
+	def featuresToRemove = []
 
     def productFileContents = productFile.text
     def dlcdoc = new XmlSlurper().parseText(productFileContents)
@@ -186,12 +194,33 @@ def filterPlatformSpecificFragments(productFile) {
 			}
 		}
     }
+	
+	// also check features
+	dlcdoc.features.feature.each { f ->
+		def id = f.@id.toString()
+		/*
+		 * Find OS specific features.
+		 */
+		if (project.ext.properties.containsKey('osSpecificBundles')) {
+			def os = project.ext.osSpecificBundles[id]
+			if (os && !os.any { it == project.ext.osgiOS}) {
+				// OS information is there but does not match
+				featuresToRemove << id
+			}
+		}
+	}
 
     // remove bundles from product file
     bundlesToRemove.each { p ->
         productFileContents = productFileContents.replaceAll(/<plugin.*id="${p}".+\r?\n\s+/, '')
 		println "Removed platform specific bundle $p from product configuration"
     }
+	
+	// remove features from product file
+	featuresToRemove.each { f ->
+		productFileContents = productFileContents.replaceAll(/<feature.*id="${f}".+\r?\n\s+/, '')
+		println "Removed platform specific feature $f from product configuration"
+	}
 
     // overwrite product file
     productFile.write(productFileContents)
@@ -231,7 +260,7 @@ def replaceIconPaths(productFile) {
 }
 
 /*
- * Downloads platform specific artifacts from '@CS3D_MIRROR_URL/relsrcpath'
+ * Downloads platform specific artifacts from '<artifactsMirrorUrl>/relsrcpath'
  * and unzips them to 'reldstpath'. Prints 'name' to the console.
  */
 def includeAdditionalFiles(artifacts, relsrcpath, productOutputPath, reldstpath, name) {
@@ -257,7 +286,27 @@ def includeAdditionalFiles(artifacts, relsrcpath, productOutputPath, reldstpath,
         if (artifactZipPath.name.endsWith('.zip')) {
             ant.unzip(src: artifactZipPath, dest: artifactInstallPath)
         } else {
-            ant.untar(src: artifactZipPath, dest: artifactInstallPath, compression: 'gzip')
+	    if (!Helper.buildForMac(project)) {
+	        ant.untar(src: artifactZipPath, dest: artifactInstallPath, compression: 'gzip')
+	    } else {
+		// Use external tar command for OSX build since the jdk to bundle with HALE contains symbolic links
+		// This does only work on UNIX-based systems with tar installed!
+		def command = ['tar', '--preserve-permissions','-xzf', artifactZipPath.absolutePath]
+	    	artifactInstallPath.mkdir()
+	 	try {
+		    // On windows, an IOException will be thrown here
+	    	    def proc = command.execute(null, artifactInstallPath)
+		    def buffer = new StringBuffer()
+		    proc.consumeProcessErrorStream(buffer)
+	    	    proc.waitFor()
+		    // If unpacking fails on linux/osx just handle it the same way
+		    if (proc.exitValue() != 0) {
+		        throw new IOException("${buffer.toString()}")
+		    }
+		} catch (ex) {
+		    throw new IllegalStateException("Unable to unpack ${name} - The MacOSX build requires a UNIX-based system with tar installed:\n${ex.toString()}")
+		}	
+	    }
         }
     } else {
         println('Cannot find ' + name + ' for this platform. ' + name + ' will not be copied into the product.')
@@ -297,17 +346,22 @@ void updateAboutInfo(productOutputPath) {
 		revision = 'unknown'
 	}
 	
+	// determine version from manifest
+	File manifestFile = new File(tmpDir, 'META-INF/MANIFEST.MF')
+	def bundleVersion = new BundleParser(project).readVersion(manifestFile, true)
+	
 	// replace tokens in plugin.xml
 	File pluginXml = new File(tmpDir, 'plugin.xml')
 	ant.replace(file: pluginXml, token: '___build___', value: project.ext.buildId, summary: true)
 	ant.replace(file: pluginXml, token: '___revision___', value: revision, summary: true)
+	ant.replace(file: pluginXml, token: '___version___', value: bundleVersion, summary: true)
 	
 	// update original jar with updated plugin.xml
 	ant.jar(update: 'true', destfile: productBundleJar) {
 		fileset(dir: tmpDir, includes: 'plugin.xml')
 	}
 	
-//	tmpDir.deleteDir()
+	tmpDir.deleteDir()
 }
 
 /**
@@ -376,8 +430,8 @@ def packageClient(productOutputPath) {
 				zipfileset(dir: productOutputPath, prefix: packageName)
 			}
 		}
-    } else {
-		// Linux / Mac OS
+    } else if (Helper.buildForLinux(project)) {
+		// Linux
 		// package as .tar.gz
         def packageName = getPackageName()
         def packageFileName = new File('target', packageName + '.tar.gz')
@@ -390,18 +444,45 @@ def packageClient(productOutputPath) {
                 exclude(name: '**/*.sh')
                 exclude(name: '**/*.so')
                 exclude(name: '**/jre/bin/*')
-				exclude(name: launcherName)
-				exclude(name: "${launcherName}.app/Contents/MacOS/${launcherName}")
             }
             tarfileset(dir: productOutputPath, prefix: packageName, filemode: '755') {
                 include(name: getProductLauncher())
                 include(name: '**/*.sh')
                 include(name: '**/*.so')
                 include(name: '**/jre/bin/*')
-				include(name: launcherName)
-				include(name: "${launcherName}.app/Contents/MacOS/${launcherName}")
             }
         }
+    } else {
+		// OSX
+		// package as .tar.gz using external tar command to preserve symbolic links in jdk
+	def packageName = getPackageName()
+	def launcherName = getProductLauncher()
+	
+	// Set file permissions
+	def permCmd = ['chmod', '755', launcherName, "${launcherName}.app/Contents/MacOS/${launcherName}"]
+	def permProc = permCmd.execute(null, productOutputPath)
+	def permBuffer = new StringBuffer()
+	permProc.consumeProcessErrorStream(permBuffer)
+	permProc.waitFor()
+	if (permProc.exitValue() != 0) {
+	    println("Exit value is ${permProc.exitValue()}")
+	    println("ls".execute(null, productOutputPath).text)
+	    throw new IllegalStateException("Unable to set required file permissions:\n${permBuffer.toString()}");
+	}
+	
+	// Pack tar archive
+	println('Creating package ' + packageName + '.tar.gz' + ' ...')
+	def targetDir = new File(productOutputPath.absolutePath + '/../../target')
+	targetDir.mkdir()
+	def tarPath = targetDir.absolutePath + '/' + packageName + '.tar.gz';
+	def packCmd =  ['tar', '--preserve-permissions', '-czf', tarPath, "."]
+	def packProc = packCmd.execute(null, productOutputPath)
+	def packBuffer = new StringBuffer()
+	packProc.consumeProcessErrorStream(packBuffer)
+	packProc.waitFor()
+	if (packProc.exitValue() != 0) {
+	    throw new IllegalStateException("Unable to create tar archive:\n${packBuffer.toString()}");
+	}
     }
 }
 
@@ -489,7 +570,7 @@ def packageServer(productOutputPath) {
 
 task makeProductFeatureProjectDefinition(type: Copy) {
     from Helper.resolveTemplate(project, 'plugin-project.xml')
-    into new File(buildDir, 'de.cs3d.product.feature')
+    into new File(buildDir, 'gen.product.feature')
     rename { '.project' }
 }
 
@@ -628,7 +709,7 @@ task createProductFeature(dependsOn: [ generatePomFiles, makeProductFile, makePr
  * a path to a product file manually with the 'productFile' property.
  */
 task buildProduct(dependsOn: createProductFeature) << {
-    def res = new MavenCli().doMain([ 'package' ] as String[], project.ext.rootDir.path, System.out, System.err)
+    def res = new MavenCli().doMain([ '-e', 'package' ] as String[], project.ext.rootDir.path, System.out, System.err)
     if (res != 0) {
         throw new RuntimeException("Maven failed with exit code ${res}")
     }
@@ -664,10 +745,85 @@ task buildProduct(dependsOn: createProductFeature) << {
     }
 	
 	updateAboutInfo(productOutputPath)
-
-    if (productContainsUIBundles()) {
-        packageClient(productOutputPath)
-    } else {
-        packageServer(productOutputPath)
-    }
 }
+
+/**
+ * Packages a built product.
+ */
+task packageProduct(dependsOn: buildProduct) << {
+	def productOutputPath = new File(buildDir, getProductUid())
+
+	if (productContainsUIBundles()) {
+		packageClient(productOutputPath)
+	} else {
+		packageServer(productOutputPath)
+	}
+}
+
+/**
+ * Runs the OSGi unit tests. This method does not fail the build if one
+ * unit test fails.
+ */
+task runUnitTests(dependsOn: buildProduct) << {
+	def productOutputPath = new File(buildDir, getProductUid())
+	def launcherName = project.ext.testProductLauncher?:'eclipse'
+	def testReportDir = project.file('target/testReports')
+	testReportDir.mkdirs()
+	
+	File outFile = new File(testReportDir, "${launcherName}.out")
+	File errFile = new File(testReportDir, "${launcherName}.err")
+	File reportFile = new File(testReportDir, "${launcherName}.xml")
+	File launcherFile = new File(productOutputPath, launcherName)
+	
+	// make launcher executable
+	ant.chmod(file: launcherFile, perm:'a+x')
+	// make JRE executable (linux)
+	ant.chmod(dir: new File(productOutputPath, 'jre/bin'), perm: 'a+x', includes: '*')
+
+	println 'Starting test product...'
+	outFile.withOutputStream { out ->
+		errFile.withOutputStream { err ->
+			def process = [
+				launcherFile as String,
+				'-out',
+				reportFile as String
+			].execute()
+			process.waitForProcessOutput(out, err)
+			if (process.exitValue() != 0) {
+				throw new IllegalStateException("Test product failed with exit code ${process.exitValue()}")
+			}
+		}
+	}
+	println 'Test product execution completed.'
+	
+	// evaluate test report
+	def root = new groovy.util.XmlSlurper().parse(reportFile)
+	def failures = root.@failures as String
+	println "> ${root.@tests} tests"
+	println "> ${root.@errors} errors"
+	println "> ${failures} failed"
+	println "> ${root.@skip} skipped"
+	println "in ${root.@time} seconds"
+	
+	// print failures
+	if (failures && failures != '0') {
+		println 'Failures: '
+		root.testcase.each { test ->
+			if (test.failure.size() > 0) {
+				def testClass = test.@classname as String
+				def testName = test.@name as String
+				
+				println "> ${testClass}:${testName}"
+				println test.failure[0].text()
+				println()
+			}
+		}
+	}
+}
+
+/**
+ * Runs the commit stage. The commit stage includes building all sources,
+ * creating binary artifacts (in this case an update site containing all
+ * exported bundles) and running unit tests.
+ */
+task commitStage(dependsOn: runUnitTests)

@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.AbstractSourceProvider;
 import org.eclipse.ui.ISourceProvider;
 import org.eclipse.ui.ISources;
@@ -100,19 +101,31 @@ public class SchemaServiceSource extends AbstractSourceProvider {
 				update(spaceID);
 			}
 
-			private void update(SchemaSpaceID spaceID) {
-				switch (spaceID) {
-				case SOURCE:
-					fireSourceChanged(ISources.WORKBENCH, HAS_SOURCE_SCHEMA, hasSchema(ss, spaceID));
-					fireSourceChanged(ISources.WORKBENCH, HAS_MAPPABLE_SOURCE_SCHEMA,
-							hasMappableType(ss, spaceID));
-					break;
-				case TARGET:
-					fireSourceChanged(ISources.WORKBENCH, HAS_TARGET_SCHEMA, hasSchema(ss, spaceID));
-					fireSourceChanged(ISources.WORKBENCH, HAS_MAPPABLE_TARGET_SCHEMA,
-							hasMappableType(ss, spaceID));
-					break;
-				}
+			private void update(final SchemaSpaceID spaceID) {
+				// perform update in Display thread
+				// else invalid thread access exceptions occur (since update to
+				// e4)
+				final Display display = PlatformUI.getWorkbench().getDisplay();
+				display.syncExec(new Runnable() {
+
+					@Override
+					public void run() {
+						switch (spaceID) {
+						case SOURCE:
+							fireSourceChanged(ISources.WORKBENCH, HAS_SOURCE_SCHEMA,
+									hasSchema(ss, spaceID));
+							fireSourceChanged(ISources.WORKBENCH, HAS_MAPPABLE_SOURCE_SCHEMA,
+									hasMappableType(ss, spaceID));
+							break;
+						case TARGET:
+							fireSourceChanged(ISources.WORKBENCH, HAS_TARGET_SCHEMA,
+									hasSchema(ss, spaceID));
+							fireSourceChanged(ISources.WORKBENCH, HAS_MAPPABLE_TARGET_SCHEMA,
+									hasMappableType(ss, spaceID));
+							break;
+						}
+					}
+				});
 			}
 		});
 	}

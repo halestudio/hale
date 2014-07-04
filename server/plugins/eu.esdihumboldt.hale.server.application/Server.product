@@ -41,7 +41,12 @@
 
    <plugins>
       <plugin id="antlr"/>
+      <plugin id="aopalliance"/>
       <plugin id="args4j"/>
+      <plugin id="asm"/>
+      <plugin id="asm.asm-analysis"/>
+      <plugin id="asm.asm-tree"/>
+      <plugin id="asm.asm-util"/>
       <plugin id="cal10n.api"/>
       <plugin id="cglib"/>
       <plugin id="ch.qos.logback.classic"/>
@@ -69,6 +74,7 @@
       <plugin id="com.tinkerpop.pipes"/>
       <plugin id="com.vividsolutions.jts"/>
       <plugin id="commons-digester"/>
+      <plugin id="commons-httpclient"/>
       <plugin id="concurrent"/>
       <plugin id="de.agilecoders.wicket.webjars"/>
       <plugin id="de.cs3d.util.eclipse"/>
@@ -155,6 +161,7 @@
       <plugin id="it.geosolutions.imageio-ext.utilities"/>
       <plugin id="java3d.vecmath"/>
       <plugin id="javassist"/>
+      <plugin id="javax.el"/>
       <plugin id="javax.inject.javax.inject"/>
       <plugin id="javax.mail"/>
       <plugin id="javax.media.jai_codec"/>
@@ -178,7 +185,6 @@
       <plugin id="org.antlr.ST4"/>
       <plugin id="org.antlr.runtime"/>
       <plugin id="org.antlr.stringtemplate"/>
-      <plugin id="org.aopalliance"/>
       <plugin id="org.apache.ant"/>
       <plugin id="org.apache.ant.launcher"/>
       <plugin id="org.apache.commons.beanutils"/>
@@ -186,11 +192,13 @@
       <plugin id="org.apache.commons.collections"/>
       <plugin id="org.apache.commons.configuration"/>
       <plugin id="org.apache.commons.fileupload"/>
-      <plugin id="org.apache.commons.httpclient"/>
       <plugin id="org.apache.commons.io"/>
       <plugin id="org.apache.commons.jxpath"/>
       <plugin id="org.apache.commons.lang"/>
       <plugin id="org.apache.commons.pool"/>
+      <plugin id="org.apache.felix.gogo.command"/>
+      <plugin id="org.apache.felix.gogo.runtime"/>
+      <plugin id="org.apache.felix.gogo.shell"/>
       <plugin id="org.apache.httpcomponents.httpclient"/>
       <plugin id="org.apache.httpcomponents.httpcore"/>
       <plugin id="org.apache.wicket.core"/>
@@ -217,6 +225,7 @@
       <plugin id="org.eclipse.emf.ecore"/>
       <plugin id="org.eclipse.equinox.app"/>
       <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.console"/>
       <plugin id="org.eclipse.equinox.ds"/>
       <plugin id="org.eclipse.equinox.preferences"/>
       <plugin id="org.eclipse.equinox.registry"/>
@@ -225,17 +234,17 @@
       <plugin id="org.eclipse.gemini.blueprint.core"/>
       <plugin id="org.eclipse.gemini.blueprint.extender"/>
       <plugin id="org.eclipse.gemini.blueprint.io"/>
-      <plugin id="org.eclipse.jetty.continuation"/>
-      <plugin id="org.eclipse.jetty.deploy"/>
-      <plugin id="org.eclipse.jetty.http"/>
-      <plugin id="org.eclipse.jetty.io"/>
+      <plugin id="org.eclipse.jetty.continuation-9"/>
+      <plugin id="org.eclipse.jetty.deploy-9"/>
+      <plugin id="org.eclipse.jetty.http-9"/>
+      <plugin id="org.eclipse.jetty.io-9"/>
       <plugin id="org.eclipse.jetty.osgi.boot"/>
-      <plugin id="org.eclipse.jetty.security"/>
-      <plugin id="org.eclipse.jetty.server"/>
-      <plugin id="org.eclipse.jetty.servlet"/>
-      <plugin id="org.eclipse.jetty.util"/>
+      <plugin id="org.eclipse.jetty.security-9"/>
+      <plugin id="org.eclipse.jetty.server-9"/>
+      <plugin id="org.eclipse.jetty.servlet-9"/>
+      <plugin id="org.eclipse.jetty.util-9"/>
       <plugin id="org.eclipse.jetty.webapp"/>
-      <plugin id="org.eclipse.jetty.xml"/>
+      <plugin id="org.eclipse.jetty.xml-9"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.services"/>
       <plugin id="org.eclipse.xsd"/>
@@ -245,11 +254,10 @@
       <plugin id="org.jaitools.jt-zonalstats"/>
       <plugin id="org.json"/>
       <plugin id="org.kohsuke.groovy.sandbox"/>
-      <plugin id="org.objectweb.asm"/>
-      <plugin id="org.objectweb.asm.analysis"/>
-      <plugin id="org.objectweb.asm.core"/>
-      <plugin id="org.objectweb.asm.tree"/>
-      <plugin id="org.objectweb.asm.util"/>
+      <plugin id="org.objectweb.asm-4"/>
+      <plugin id="org.objectweb.asm.analysis-4"/>
+      <plugin id="org.objectweb.asm.tree-4"/>
+      <plugin id="org.objectweb.asm.util-4"/>
       <plugin id="org.opengis"/>
       <plugin id="org.openid4java"/>
       <plugin id="org.parboiled.core"/>

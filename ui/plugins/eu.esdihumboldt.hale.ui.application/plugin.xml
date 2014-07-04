@@ -84,7 +84,7 @@
          </property>
          <property
                name="aboutText"
-               value="HUMBOLDT Alignment Editor (HALE)&#x0A;&#x0A;Version 2.8.0&#x0A;&#x0A;Build ___build___&#x0A;Revision ___revision___&#x0A;&#x0A;http://www.esdi-community.eu/projects/show/hale">
+               value="HUMBOLDT Alignment Editor (HALE)&#x0A;&#x0A;Version ___version___&#x0A;&#x0A;Build ___build___&#x0A;Revision ___revision___&#x0A;&#x0A;Project page:&#x0A;http://www.esdi-community.eu/projects/show/hale&#x0A;&#x0A;Forum:&#x0A;http://www.esdi-community.eu/projects/hale/boards&#x0A;&#x0A;News:&#x0A;http://blog.dhpanel.eu&#x0A;&#x0A;Get professional support:&#x0A;http://www.wetransform.to/products/hale">
          </property>
          <property
                name="introTitle"
@@ -113,6 +113,22 @@
          <property
                name="revision"
                value="___revision___">
+         </property>
+         <property
+               name="applicationXMI"
+               value="org.eclipse.ui.workbench/LegacyIDE.e4xmi">
+         </property>
+         <property
+               name="applicationCSSResources"
+               value="platform:/plugin/org.eclipse.ui.themes/images/">
+         </property>
+         <property
+               name="cssTheme"
+               value="org.eclipse.e4.ui.css.theme.e4_default">
+         </property>
+         <property
+               name="aboutImage"
+               value="images/hale_about.gif">
          </property>
       </product>
    </extension>
@@ -376,137 +392,34 @@
          </menu>
       </menuContribution>
       <menuContribution
-            locationURI="toolbar:org.eclipse.ui.main.toolbar">
-         <toolbar
-               id="eu.esdihumboldt.hale.ui.file"
-               label="File">
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.project.new"
-                  icon="icons/new.gif"
-                  label="%command.newproject.label"
-                  style="push">
-            </command>
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.project.open"
-                  icon="icons/open.gif"
-                  id="openProject"
-                  label="%command.openProject.label"
-                  style="push">
-            </command>
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.project.save"
-                  icon="icons/save.gif"
-                  id="saveAlignmentProject"
-                  label="%command.savealignment.name"
-                  style="push">
-            </command>
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.project.export"
-                  icon="icons/saveas.gif"
-                  id="saveAlignmentProjectAs"
-                  label="%command.saveProject.label"
-                  style="push">
-            </command>
-            <separator
-                  name="eu.esdihumboldt.hale.ui.file.project"
-                  visible="true">
-            </separator>
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.io.import"
-                  icon="icons/import_wiz.gif"
-                  id="eu.esdihumboldt.hale.ui.io.import"
-                  label="Import"
-                  style="pulldown">
-            </command>
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.io.export"
-                  icon="icons/export_wiz.gif"
-                  id="eu.esdihumboldt.hale.ui.io.export"
-                  label="Export"
-                  style="pulldown">
-            </command>
-            <separator
-                  name="eu.esdihumboldt.hale.ui.file.io"
-                  visible="true">
-            </separator>
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.instance.toggle_transformation"
-                  style="toggle">
-            </command>
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.instancevalidation.status.toggle_validation"
-                  style="toggle">
-            </command>
-            <separator
-                  name="eu.esdihumboldt.hale.ui.file.groovy_restriction"
-                  visible="true">
-            </separator>
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.groovy.toggle_restriction"
-                  style="toggle">
-            </command>
-            <separator
-                  name="eu.esdihumboldt.hale.ui.file.transform"
-                  visible="true">
-            </separator>
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.instance.toggle_sampling"
-                  style="toggle">
-            </command>
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.instance.sampling.pref"
-                  style="push">
-            </command>
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.instance.reload_data"
-                  style="push">
-            </command>
-         </toolbar>
-         <toolbar
-               id="eu.esdihumboldt.hale.ui.edit"
-               label="Edit">
-            <command
-                  commandId="org.eclipse.ui.edit.undo"
-                  style="push">
-            </command>
-            <command
-                  commandId="org.eclipse.ui.edit.redo"
-                  style="push">
-            </command>
-            <separator
-                  name="eu.esdihumboldt.hale.ui.edit.undoredo"
-                  visible="true">
-            </separator>
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.schema.mappable_source"
-                  style="push">
-            </command>
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.schema.mappable_target"
-                  style="push">
-            </command>
-            <separator
-                  name="eu.esdihumboldt.hale.ui.edit.mappable_toolbar"
-                  visible="true">
-            </separator>
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.align.add_relation"
-                  id="eu.esdihumboldt.hale.ui.edit.add_relation"
-                  label="Add relation..."
-                  style="push"
-                  tooltip="Add a new relation">
-            </command>
-         </toolbar>
-         <toolbar
-               id="eu.esdihumboldt.hale.ui.application.help"
-               label="Help">
-            <command
-                  commandId="org.eclipse.ui.help.displayHelp"
-                  icon="icons/help.gif"
-                  label="Open help browser"
-                  style="push">
-            </command>
-         </toolbar>
+            locationURI="toolbar:org.eclipse.ui.workbench.file?after=new.group">
+         <command
+               commandId="eu.esdihumboldt.hale.ui.project.new"
+               icon="icons/new.gif"
+               label="%command.newproject.label"
+               style="push">
+         </command>
+         <command
+               commandId="eu.esdihumboldt.hale.ui.project.open"
+               icon="icons/open.gif"
+               id="openProject"
+               label="%command.openProject.label"
+               style="push">
+         </command>
+         <command
+               commandId="eu.esdihumboldt.hale.ui.project.save"
+               icon="icons/save.gif"
+               id="saveAlignmentProject"
+               label="%command.savealignment.name"
+               style="push">
+         </command>
+         <command
+               commandId="eu.esdihumboldt.hale.ui.project.export"
+               icon="icons/saveas.gif"
+               id="saveAlignmentProjectAs"
+               label="%command.saveProject.label"
+               style="push">
+         </command>
       </menuContribution>
       <menuContribution
             allPopups="false"
@@ -532,6 +445,7 @@
                mnemonic="%menu.help.mnemonic">
             <command
                   commandId="org.eclipse.ui.help.aboutAction"
+                  icon="icons/dhp.png"
                   style="push">
             </command>
             <command
@@ -562,6 +476,100 @@
             <visibleWhen
                   checkEnabled="true">
             </visibleWhen>
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:org.eclipse.ui.workbench.navigate?after=history.group">
+         <command
+               commandId="org.eclipse.ui.edit.undo"
+               style="push">
+         </command>
+         <command
+               commandId="org.eclipse.ui.edit.redo"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:org.eclipse.ui.workbench.help?after=group.help">
+         <command
+               commandId="org.eclipse.ui.help.displayHelp"
+               icon="icons/help.gif"
+               label="Open help browser"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:org.eclipse.ui.workbench.file?after=build.group">
+         <command
+               commandId="eu.esdihumboldt.hale.ui.io.import"
+               icon="icons/import_wiz.gif"
+               id="eu.esdihumboldt.hale.ui.io.import"
+               label="Import"
+               style="pulldown">
+         </command>
+         <command
+               commandId="eu.esdihumboldt.hale.ui.io.export"
+               icon="icons/export_wiz.gif"
+               id="eu.esdihumboldt.hale.ui.io.export"
+               label="Export"
+               style="pulldown">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:org.eclipse.ui.workbench.file?after=additions">
+         <command
+               commandId="eu.esdihumboldt.hale.ui.instance.toggle_transformation"
+               style="toggle">
+         </command>
+         <command
+               commandId="eu.esdihumboldt.hale.ui.instancevalidation.status.toggle_validation"
+               style="toggle">
+         </command>
+         <separator
+               name="eu.esdihumboldt.hale.ui.file.groovy_restriction"
+               visible="true">
+         </separator>
+         <command
+               commandId="eu.esdihumboldt.hale.ui.groovy.toggle_restriction"
+               style="toggle">
+         </command>
+         <separator
+               name="eu.esdihumboldt.hale.ui.file.transform"
+               visible="true">
+         </separator>
+         <command
+               commandId="eu.esdihumboldt.hale.ui.instance.toggle_sampling"
+               style="toggle">
+         </command>
+         <command
+               commandId="eu.esdihumboldt.hale.ui.instance.sampling.pref"
+               style="push">
+         </command>
+         <command
+               commandId="eu.esdihumboldt.hale.ui.instance.reload_data"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:org.eclipse.ui.workbench.navigate?after=group.application">
+         <command
+               commandId="eu.esdihumboldt.hale.ui.schema.mappable_source"
+               style="push">
+         </command>
+         <command
+               commandId="eu.esdihumboldt.hale.ui.schema.mappable_target"
+               style="push">
+         </command>
+         <separator
+               name="eu.esdihumboldt.hale.ui.edit.mappable_toolbar"
+               visible="true">
+         </separator>
+         <command
+               commandId="eu.esdihumboldt.hale.ui.align.add_relation"
+               id="eu.esdihumboldt.hale.ui.edit.add_relation"
+               label="Add relation..."
+               style="push"
+               tooltip="Add a new relation">
          </command>
       </menuContribution>
    </extension>

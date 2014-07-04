@@ -2,7 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Shapefile I/O UI
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.shp.ui;singleton:=true
-Bundle-Version: 2.8.0.qualifier
+Bundle-Vendor: data harmonisation panel
+Bundle-Version: 2.9.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.io;version="9.0.0",
  eu.esdihumboldt.hale.common.core.io,

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: GML Geometry Tests
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.gml.geometry.test
-Bundle-Version: 2.8.0.qualifier
+Bundle-Version: 2.9.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: de.fhg.igd.osgi.util;version="1.0.0",
  eu.esdihumboldt.hale.common.test,
@@ -15,3 +15,4 @@ Require-Bundle: eu.esdihumboldt.hale.io.gml.geometry;bundle-version="2.5.0",
  eu.esdihumboldt.hale.common.instance;bundle-version="2.5.0",
  eu.esdihumboldt.hale.common.core;bundle-version="2.5.0",
  com.vividsolutions.jts;bundle-version="1.12.0"
+Bundle-Vendor: data harmonisation panel
