@@ -37,17 +37,28 @@ public abstract class AbstractAnalyseTable {
 	private FormulaEvaluator evaluator;
 
 	/**
-	 * Load table to analyse from an Excel file.
+	 * Load table to analyse from an Excel file (first sheet).
 	 * 
 	 * @param location the file location
 	 * @throws Exception if an error occurs loading the file
 	 */
 	protected void analyse(URI location) throws Exception {
+		analyse(location, 0);
+	}
+
+	/**
+	 * Load table to analyse from an Excel file.
+	 * 
+	 * @param location the file location
+	 * @param sheetNum number of the sheet that should be loaded
+	 * @throws Exception if an error occurs loading the file
+	 */
+	protected void analyse(URI location, int sheetNum) throws Exception {
 		InputStream inp = new BufferedInputStream(location.toURL().openStream());
 
 		try {
 			Workbook wb = WorkbookFactory.create(inp);
-			Sheet sheet = wb.getSheetAt(0);
+			Sheet sheet = wb.getSheetAt(sheetNum);
 			evaluator = wb.getCreationHelper().createFormulaEvaluator();
 
 			// the first row represents the header

@@ -15,51 +15,45 @@
 
 package eu.esdihumboldt.hale.io.xls.test
 
-import javax.xml.namespace.QName
-
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection
 import eu.esdihumboldt.hale.common.schema.groovy.SchemaBuilder
 import eu.esdihumboldt.hale.common.schema.model.Schema
-import groovy.transform.CompileStatic
 
 class XLSInstanceWriterTestExamples {
-	
+
 	static InstanceCollection createInstanceCollection(){
-		
+
 		Schema schema = createSchema()
-		
+
 		// create the instance collection
 		// concrete types are only strings, since the test is not able to choose the correct type in wizard
 		InstanceCollection instances = new InstanceBuilder(types: schema).createCollection {
 			ItemType{
-					id('12')
-					name('item12')
-					price('1.2')
-					description('Item number 12')
-				}
+				id('12')
+				name('item12')
+				price('1.2')
+				description('Item number 12')
+			}
 
 			ItemType {
-					id('42')
-					name('item42')
-					price('4.2')
-					description('Item number 42')
-				}
-			
+				id('42')
+				name('item42')
+				price('4.2')
+				description('Item number 42')
+			}
+
 			ItemType {
 				id('42')
 				price('4.2')
 				description('Item number 42')
-				name(null)
 			}
-			
+
 			ItemType {
 				id('42')
 				name('item42')
-				price(null)
-				description(null)
 			}
-			
+
 			OtherType {
 				children('2')
 				name('other')
@@ -68,21 +62,21 @@ class XLSInstanceWriterTestExamples {
 			}
 		}
 	}
-	
+
 	static InstanceCollection createFalseTestInstanceCollection(){
 		Schema schema = createSchema()
-		
+
 		// create the instance collection
 		InstanceCollection instances = new InstanceBuilder(types: schema).createCollection {
 			ItemType{
-					id('55')
-					name('item55')
-					price('5.5')
-					description('Item number 55')
-				}
+				id('55')
+				name('item55')
+				price('5.5')
+				description('Item number 55')
+			}
 		}
 	}
-	
+
 	static Schema createSchema(){
 		Schema schema = new SchemaBuilder().schema {
 			ItemType {
@@ -91,7 +85,7 @@ class XLSInstanceWriterTestExamples {
 				price(String)
 				description(String)
 			}
-			
+
 			OtherType {
 				children(String)
 				name(String)

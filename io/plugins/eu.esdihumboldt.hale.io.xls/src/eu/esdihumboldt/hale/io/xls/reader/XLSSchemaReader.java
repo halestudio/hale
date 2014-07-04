@@ -36,6 +36,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantF
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
+import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
 import eu.esdihumboldt.hale.io.csv.PropertyType;
 import eu.esdihumboldt.hale.io.csv.PropertyTypeExtension;
 import eu.esdihumboldt.hale.io.csv.reader.CommonSchemaConstants;
@@ -53,6 +54,8 @@ public class XLSSchemaReader extends AbstractTableSchemaReader {
 
 	private List<String> header = new ArrayList<String>();
 
+	private int sheetNum = 0;
+
 	@Override
 	public void validate() throws IOProviderConfigurationException {
 		super.validate();
@@ -65,17 +68,16 @@ public class XLSSchemaReader extends AbstractTableSchemaReader {
 	protected Schema loadFromSource(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 
-//		boolean solveNestedProperties = getParameter(XLSConstants.SOLVE_NESTED_PROPERTIES).as(
-//				Boolean.class);
+		sheetNum = getParameter(InstanceTableIOConstants.SHEET_INDEX).as(int.class);
 
 		progress.begin("Load XLS/XLSX schema", ProgressIndicator.UNKNOWN);
 
-		String namespace = "http://www.esdi-humboldt.eu/hale/csv";
+		String namespace = "http://www.esdi-humboldt.eu/hale/xls";
 		DefaultSchema schema = new DefaultSchema(namespace, getSource().getLocation());
 		AnalyseXLSSchemaTable analyser;
 
 		try {
-			analyser = new AnalyseXLSSchemaTable(getSource().getLocation());
+			analyser = new AnalyseXLSSchemaTable(getSource().getLocation(), sheetNum);
 			header = analyser.getHeader();
 
 			// create type definition
@@ -124,38 +126,12 @@ public class XLSSchemaReader extends AbstractTableSchemaReader {
 				fail("Not the same number of entries for property names, property types and words in the first line of the file");
 			}
 			for (int i = 0; i < comboSelections.length; i++) {
-//				String stringProperty = properties[i];
-				// no nested properties
-//				if (!stringProperty.contains(".")) {
 				PropertyType propertyType = PropertyTypeExtension.getInstance()
 						.getFactory(comboSelections[i]).createExtensionObject();
 
 				DefaultPropertyDefinition property = new DefaultPropertyDefinition(new QName(
 						properties[i]), type, propertyType.getTypeDefinition());
 				configureProperty(property);
-//				}
-				// schema contains nested properties
-//				else {
-//					String[] nestedProperties = stringProperty.split("\\.");
-//
-//					PropertyType propertyType = PropertyTypeExtension.getInstance()
-//							.getFactory("java.lang.String").createExtensionObject();
-//
-//					DefaultPropertyDefinition lastProperty = new DefaultPropertyDefinition(
-//							new QName(nestedProperties[0]), type, propertyType.getTypeDefinition());
-//					configureProperty(lastProperty);
-//
-//					for (int k = 1; k < nestedProperties.length; k++) {
-//						propertyType = PropertyTypeExtension.getInstance()
-//								.getFactory("java.lang.String").createExtensionObject();
-//
-//						DefaultPropertyDefinition property = new DefaultPropertyDefinition(
-//								new QName(nestedProperties[k]), lastProperty.getPropertyType(),
-//								propertyType.getTypeDefinition());
-//						configureProperty(property);
-//						lastProperty = property;
-//					}
-//				}
 			}
 
 			boolean skip = Arrays.equals(properties, header.toArray(new String[0]));
