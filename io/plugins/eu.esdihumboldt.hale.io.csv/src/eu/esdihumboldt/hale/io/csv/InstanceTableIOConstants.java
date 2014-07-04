@@ -23,9 +23,15 @@ package eu.esdihumboldt.hale.io.csv;
 public class InstanceTableIOConstants {
 
 	/**
-	 * Parameter for XLS IO Provider to decide whether nested properties should
-	 * be solved or not
+	 * Parameter for IO Provider to decide whether nested properties should be
+	 * solved or not
 	 */
 	public static final String SOLVE_NESTED_PROPERTIES = "solveNestedProperties";
+
+	/**
+	 * Parameter for XLS import Provider to decide which Excel sheet should be
+	 * read
+	 */
+	public static final String SHEET_INDEX = "sheetIndex";
 
 }
