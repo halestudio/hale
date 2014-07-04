@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ASCII"?>
-<application:Application xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:application="http://www.eclipse.org/ui/2010/UIModel/application" xmlns:basic="http://www.eclipse.org/ui/2010/UIModel/application/ui/basic" xmlns:menu="http://www.eclipse.org/ui/2010/UIModel/application/ui/menu" xsi:schemaLocation="http://www.eclipse.org/ui/2010/UIModel/application/ui/basic http://www.eclipse.org/ui/2010/UIModel/application#//ui/basic http://www.eclipse.org/ui/2010/UIModel/application/ui/menu http://www.eclipse.org/ui/2010/UIModel/application#//ui/menu" xmi:id="org.eclipse.e4.legacy.ide.application" elementId="org.eclipse.e4.legacy.ide.application" bindingContexts="_SeXUHO8EEd6BC9cDb6iV7y">
+<application:Application xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:application="http://www.eclipse.org/ui/2010/UIModel/application" xmlns:basic="http://www.eclipse.org/ui/2010/UIModel/application/ui/basic" xsi:schemaLocation="http://www.eclipse.org/ui/2010/UIModel/application/ui/basic http://www.eclipse.org/ui/2010/UIModel/application#//ui/basic" xmi:id="org.eclipse.e4.legacy.ide.application" elementId="org.eclipse.e4.legacy.ide.application" bindingContexts="_SeXUHO8EEd6BC9cDb6iV7y">
   <children xsi:type="basic:TrimmedWindow" xmi:id="IDEWindow" elementId="IDEWindow" label="%trimmedwindow.label.eclipseSDK" width="5" height="5"/>
   <bindingTables xmi:id="_SeXUEO8EEd6FC9cDb6iV7x" bindingContext="_SeXUHO8EEd6BC9cDb6iV7y"/>
   <rootContext xmi:id="_SeXUHO8EEd6BC9cDb6iV7y" elementId="org.eclipse.ui.contexts.dialogAndWindow" name="%bindingcontext.name.dialogAndWindows">
@@ -8,15 +8,6 @@
     </children>
     <children xmi:id="_SeXUEO8EEd6FC9cDb6iV7x" elementId="org.eclipse.ui.contexts.dialog" name="%bindingcontext.name.dialogs"/>
   </rootContext>
-  <trimContributions xmi:id="_Hen9MABdEeSdiMEu81eO4w" elementId="eu.esdihumboldt.hale.ui.application.trimcontribution.0" parentId="org.eclipse.ui.main.toolbar" positionInParent="last">
-    <children xsi:type="menu:ToolControl" xmi:id="_aoH9oABdEeSdiMEu81eO4w" elementId="Spacer Glue" contributionURI="bundleclass://org.eclipse.e4.ui.workbench.renderers.swt/org.eclipse.e4.ui.workbench.renderers.swt.LayoutModifierToolControl">
-      <tags>glue</tags>
-    </children>
-    <children xsi:type="menu:ToolControl" xmi:id="_bFf2IABdEeSdiMEu81eO4w" elementId="SearchField" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.quickaccess.SearchField"/>
-    <children xsi:type="menu:ToolControl" xmi:id="_bYu7MABdEeSdiMEu81eO4w" elementId="Search-PS Glue" contributionURI="bundleclass://org.eclipse.e4.ui.workbench.renderers.swt/org.eclipse.e4.ui.workbench.renderers.swt.LayoutModifierToolControl">
-      <tags>glue</tags>
-    </children>
-  </trimContributions>
   <addons xmi:id="_XGB3wPZlEd-XstlTZ6nTXg" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
   <addons xmi:id="_XGB3wPZlEd-XstlTZ6nTXh" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
   <addons xmi:id="_XGB3wPZlEd-XstlTZ6nTXi" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>
