@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.ui.io;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,6 +36,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.PlatformUI;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
@@ -104,8 +106,7 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 		this.providerType = providerType;
 
 		// create possible configuration pages
-		configPages = ConfigurationPageExtension.getInstance()
-				.getConfigurationPages(getFactories());
+		configPages = createConfigurationPages(getFactories());
 
 		setNeedsProgressMonitor(true);
 	}
@@ -139,8 +140,18 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 		this.actionId = actionId;
 
 		// recreate possible configuration pages now that advisor is set
-		configPages = ConfigurationPageExtension.getInstance()
-				.getConfigurationPages(getFactories());
+		configPages = createConfigurationPages(getFactories());
+	}
+
+	/**
+	 * Get the provider IDs mapped to configuration pages.
+	 * 
+	 * @param factories the provider descriptors
+	 * @return provider IDs mapped to configuration pages
+	 */
+	protected ListMultimap<String, AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> createConfigurationPages(
+			Collection<IOProviderDescriptor> factories) {
+		return ConfigurationPageExtension.getInstance().getConfigurationPages(getFactories());
 	}
 
 	/**
@@ -151,8 +162,8 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 		super.addPages();
 
 		// add configuration pages
-		for (AbstractConfigurationPage<? extends P, ? extends IOWizard<P>> page : configPages
-				.values()) {
+		for (AbstractConfigurationPage<? extends P, ? extends IOWizard<P>> page : new HashSet<>(
+				configPages.values())) {
 			addPage(page);
 		}
 
@@ -347,7 +358,19 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 	 */
 	@Override
 	public IWizardPage getStartingPage() {
-		return mainPages.get(0);
+		if (!mainPages.isEmpty()) {
+			return mainPages.get(0);
+		}
+		else {
+			List<AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> cps = getConfigurationPages();
+			if (cps != null && !cps.isEmpty()) {
+				return cps.get(0);
+			}
+			else {
+				// TODO provide an empty completed page instead?
+				throw new IllegalStateException("No starting page to display for wizard");
+			}
+		}
 	}
 
 	/**
@@ -402,8 +425,11 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 	 * @param descriptor the provider factory to set
 	 */
 	public void setProviderFactory(IOProviderDescriptor descriptor) {
-		if (Objects.equal(descriptor, this.descriptor))
-			return;
+		/*
+		 * The following must be done even if the descriptor seems the same, as
+		 * the descriptor might be a preset and thus influence the configuration
+		 * pages.
+		 */
 
 		// disable old configuration pages
 		List<AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> pages = getConfigurationPages();
@@ -424,6 +450,13 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 			for (AbstractConfigurationPage<? extends P, ? extends IOWizard<P>> page : pages) {
 				page.enable();
 			}
+		}
+
+		// force button update
+		try {
+			getContainer().updateButtons();
+		} catch (NullPointerException e) {
+			// ignore - buttons may not have been initialized yet
 		}
 
 		fireProviderFactoryChanged(descriptor);
@@ -474,33 +507,9 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 			return false;
 		}
 
-		// process main pages
-		for (int i = 0; i < mainPages.size(); i++) {
-			// validating is still necessary as it is not guaranteed to be up to
-			// date by handlePageChanging
-			boolean valid = validatePage(mainPages.get(i));
-			if (!valid) {
-				// TODO error message?!
-				return false;
-			}
+		if (!applyConfiguration()) {
+			return false;
 		}
-
-		// check if configuration pages are complete
-		List<AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> confPages = getConfigurationPages();
-		if (confPages != null) {
-			for (int i = 0; i < confPages.size(); i++) {
-				// validating is still necessary as it is not guaranteed to be
-				// up to date by handlePageChanging
-				boolean valid = validatePage(confPages.get(i));
-				if (!valid) {
-					// TODO error message?!
-					return false;
-				}
-			}
-		}
-
-		// process wizard
-		updateConfiguration(provider);
 
 		// create default report
 		IOReporter defReport = provider.createReporter();
@@ -588,6 +597,44 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 					e);
 			return false;
 		}
+	}
+
+	/**
+	 * Apply configuration of main pages, configuration pages and the wizard.
+	 * 
+	 * @return <code>true</code> if validation was successful,
+	 *         <code>false</code> otherwise
+	 */
+	protected boolean applyConfiguration() {
+		// process main pages
+		for (int i = 0; i < mainPages.size(); i++) {
+			// validating is still necessary as it is not guaranteed to be up to
+			// date by handlePageChanging
+			boolean valid = validatePage(mainPages.get(i));
+			if (!valid) {
+				// TODO error message?!
+				return false;
+			}
+		}
+
+		// check if configuration pages are complete
+		List<AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> confPages = getConfigurationPages();
+		if (confPages != null) {
+			for (int i = 0; i < confPages.size(); i++) {
+				// validating is still necessary as it is not guaranteed to be
+				// up to date by handlePageChanging
+				boolean valid = validatePage(confPages.get(i));
+				if (!valid) {
+					// TODO error message?!
+					return false;
+				}
+			}
+		}
+
+		// process wizard
+		updateConfiguration(provider);
+
+		return true;
 	}
 
 	/**

@@ -15,7 +15,16 @@
 
 package eu.esdihumboldt.hale.ui.schema.presets.extension;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
 import org.eclipse.core.runtime.IConfigurationElement;
+
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.SetMultimap;
 
 import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension;
 import eu.esdihumboldt.hale.ui.schema.presets.extension.internal.PredefinedSchemaImpl;
@@ -33,6 +42,10 @@ public class SchemaPresetExtension extends IdentifiableExtension<SchemaPreset> {
 	public static final String ID = "eu.esdihumboldt.hale.ui.schema.presets";
 
 	private static SchemaPresetExtension instance;
+
+	private SetMultimap<String, SchemaPreset> categorySchemas;
+
+	private boolean initialized = false;
 
 	/**
 	 * Get the extension singleton instance.
@@ -63,10 +76,44 @@ public class SchemaPresetExtension extends IdentifiableExtension<SchemaPreset> {
 	@Override
 	protected SchemaPreset create(String elementId, IConfigurationElement element) {
 		if ("schema".equals(element.getName())) {
-			return new PredefinedSchemaImpl(element, elementId);
+			SchemaPreset sp = new PredefinedSchemaImpl(element, elementId);
+			if (categorySchemas == null) {
+				categorySchemas = LinkedHashMultimap.create();
+			}
+			categorySchemas.put(sp.getCategoryId(), sp);
+			return sp;
 		}
 
 		return null;
+	}
+
+	/**
+	 * Get the schemas associated to the category with the given ID
+	 * 
+	 * @param category the category ID, may be <code>null</code>
+	 * @return the list of schemas or an empty list
+	 */
+	public List<SchemaPreset> getSchemas(String category) {
+		if (!initialized || categorySchemas == null) {
+			// initialize
+			getElements();
+		}
+
+		if (categorySchemas != null) {
+			Set<SchemaPreset> res = categorySchemas.get(category);
+			return new ArrayList<SchemaPreset>(res);
+		}
+
+		return Collections.emptyList();
+	}
+
+	@Override
+	public Collection<SchemaPreset> getElements() {
+		try {
+			return super.getElements();
+		} finally {
+			initialized = true;
+		}
 	}
 
 }

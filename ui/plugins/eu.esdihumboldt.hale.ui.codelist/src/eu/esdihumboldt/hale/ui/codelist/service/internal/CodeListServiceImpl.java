@@ -25,11 +25,11 @@ import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import de.fhg.igd.osgi.util.configuration.NamespaceConfigurationServiceDecorator;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.codelist.CodeList;
+import eu.esdihumboldt.hale.common.codelist.config.CodeListAssociations;
+import eu.esdihumboldt.hale.common.codelist.config.CodeListReference;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.ComplexConfigurationService;
 import eu.esdihumboldt.hale.ui.codelist.service.CodeListService;
-import eu.esdihumboldt.hale.ui.codelist.service.internal.config.CodeListAssociations;
-import eu.esdihumboldt.hale.ui.codelist.service.internal.config.CodeListReference;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
 

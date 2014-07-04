@@ -15,17 +15,17 @@
 
 package eu.esdihumboldt.hale.ui.io.instance.exportconfig;
 
-import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.content.IContentType;
+import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
@@ -40,8 +40,8 @@ import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
-import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
+import eu.esdihumboldt.hale.ui.io.ExportConfigurations;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 
@@ -52,12 +52,11 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectService;
  */
 public class SaveConfigurationInstanceExportPage extends
 		AbstractConfigurationPage<InstanceWriter, SaveConfigurationInstanceExportWizard> implements
-		InstanceExportConfigurations {
+		ExportConfigurations {
 
 	private Text name;
 	private Text description;
-	private ListViewer fileFormats;
-	private String fileFormat;
+	private ComboViewer fileFormats;
 
 	/**
 	 * Default Constructor
@@ -65,48 +64,19 @@ public class SaveConfigurationInstanceExportPage extends
 	public SaveConfigurationInstanceExportPage() {
 		super("instancExport.Namepage");
 
-		setTitle("Name of the export configuration");
-		setDescription("Set name for the export configuration");
+		setTitle("Custom export configuration settings");
+		setDescription("Configure the export configuration");
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.io.IOWizardPage#updateConfiguration(eu.esdihumboldt.hale.common.core.io.IOProvider)
-	 */
 	@Override
 	public boolean updateConfiguration(InstanceWriter provider) {
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
-		Project p = (Project) ps.getProjectInfo();
-		// prevent saving with an empty name or description or a name which is
-		// already used
-		if (name.getText().isEmpty() || hasName(p.getExportConfigurations(), name.getText())
-				|| description.getText().isEmpty())
-			return false;
+		getWizard().setConfigurationName(name.getText());
+
 		// set additional information to the provider
-		provider.setParameter(PARAM_CONFIGURATION_NAME, Value.of(name.getText()));
 		provider.setParameter(PARAM_CONFIGURATION_DESCRIPTION, Value.of(description.getText()));
-		provider.setParameter(PARAM_FILE_FORMAT, Value.of(fileFormat));
 		return true;
 	}
 
-	/**
-	 * Determines if any of the given I/O configurations has the given name.
-	 * 
-	 * @param configs the I/O configurations
-	 * @param name the name
-	 * @return if a configuration with the given name was found
-	 */
-	private boolean hasName(List<IOConfiguration> configs, String name) {
-		for (IOConfiguration config : configs) {
-			if (config.getName().equals(name)) // ignore case?
-				return true;
-		}
-		return false;
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.ui.HaleWizardPage#createContent(org.eclipse.swt.widgets.Composite)
-	 */
 	@Override
 	protected void createContent(Composite page) {
 		// set grid layout with two columns
@@ -122,8 +92,7 @@ public class SaveConfigurationInstanceExportPage extends
 
 			@Override
 			public void modifyText(ModifyEvent e) {
-				setPageComplete(!fileFormats.getSelection().isEmpty()
-						&& isNameAndDescriptionValid());
+				update();
 			}
 		});
 		name.setLayoutData(GridDataFactory.swtDefaults().align(SWT.FILL, SWT.BEGINNING)
@@ -139,8 +108,7 @@ public class SaveConfigurationInstanceExportPage extends
 
 			@Override
 			public void modifyText(ModifyEvent e) {
-				setPageComplete(!fileFormats.getSelection().isEmpty()
-						&& isNameAndDescriptionValid());
+				update();
 			}
 		});
 		GridData data = GridDataFactory.swtDefaults().align(SWT.FILL, SWT.BEGINNING)
@@ -150,30 +118,21 @@ public class SaveConfigurationInstanceExportPage extends
 
 		// create viewer for possible content types
 		Label labelConf = new Label(page, SWT.NONE);
-		labelConf.setText("File format:");
+		labelConf.setText("Format:");
 		labelConf.setLayoutData(GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER).create());
-		fileFormats = new ListViewer(page, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.BORDER);
+		fileFormats = new ComboViewer(page, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.BORDER);
 		data = GridDataFactory.fillDefaults().grab(true, false).create();
 		// adapt viewer to size of current font
-		float height = fileFormats.getControl().getFont().getFontData()[0].getHeight();
-		// XXX only space for two items requested:
-		// height * space around * item count : height * 1.7 * 2
-		data.heightHint = (int) (height * 3.4);
 		fileFormats.getControl().setLayoutData(data);
 		fileFormats.setContentProvider(ArrayContentProvider.getInstance());
 		fileFormats.setLabelProvider(new LabelProvider() {
 
-			/**
-			 * @see org.eclipse.jface.viewers.LabelProvider#getText(java.lang.Object)
-			 */
 			@Override
 			public String getText(Object element) {
 				if (element instanceof IContentType) {
-					fileFormat = ((IContentType) element).getName();
-					return fileFormat;
+					return ((IContentType) element).getName();
 				}
-				else
-					return super.getText(element);
+				return super.getText(element);
 			}
 		});
 
@@ -187,38 +146,30 @@ public class SaveConfigurationInstanceExportPage extends
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				ISelection selection = event.getSelection();
-				setPageComplete(!selection.isEmpty() && isNameAndDescriptionValid());
 				updateContentType(selection);
+				update();
 			}
 		});
-		setPageComplete(false);
+
+		update();
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage#enable()
-	 */
 	@Override
 	public void enable() {
 		// do nothing
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage#disable()
-	 */
 	@Override
 	public void disable() {
 		// do nothing
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.HaleWizardPage#onShowPage(boolean)
-	 */
 	@Override
 	protected void onShowPage(boolean firstShow) {
 		super.onShowPage(firstShow);
 		Set<IContentType> contentTypes = getWizard().getProviderFactory().getSupportedTypes();
 		// content types are not available when the page is created, so it has
-		// to be setted here
+		// to be set here
 		fileFormats.setInput(contentTypes);
 		fileFormats.setSelection(new StructuredSelection(contentTypes.iterator().next()), true);
 		updateContentType(fileFormats.getSelection());
@@ -230,15 +181,35 @@ public class SaveConfigurationInstanceExportPage extends
 		getWizard().setContentType(type);
 	}
 
-	// check if name and description fields are valid
-	// should not be empty or contain a name which is already used
-	private boolean isNameAndDescriptionValid() {
+	/**
+	 * Update the page state.
+	 */
+	protected void update() {
+		if (fileFormats.getSelection().isEmpty()) {
+			setErrorMessage("Please select a format");
+			setPageComplete(false);
+			return;
+		}
+
+		String confName = name.getText();
+		if (confName == null || confName.isEmpty()) {
+			setErrorMessage("Please provide a name for the preset to easily identify it");
+			setPageComplete(false);
+			return;
+		}
+
+		setErrorMessage(null);
+
+		// configuration with that name already present?
 		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
 				ProjectService.class);
-		Project p = (Project) ps.getProjectInfo();
-		// prevent saving with an empty name or description or a name which is
-		// already used
-		return !(name.getText().isEmpty() || hasName(p.getExportConfigurations(), name.getText()) || description
-				.getText().isEmpty());
+		IOConfiguration conf = ps.getExportConfiguration(confName);
+		if (conf == null) {
+			setMessage(null);
+		}
+		else {
+			setMessage("Overrides an existing configuration with the same name", DialogPage.WARNING);
+		}
+		setPageComplete(true);
 	}
 }

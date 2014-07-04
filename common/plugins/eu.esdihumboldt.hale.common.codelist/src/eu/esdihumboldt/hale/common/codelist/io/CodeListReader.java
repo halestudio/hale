@@ -27,6 +27,11 @@ import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 public interface CodeListReader extends ImportProvider {
 
 	/**
+	 * The action identifier.
+	 */
+	public static final String ACTION_ID = "eu.esdihumboldt.hale.codelist.read";
+
+	/**
 	 * @return the imported CodeList
 	 */
 	public CodeList getCodeList();

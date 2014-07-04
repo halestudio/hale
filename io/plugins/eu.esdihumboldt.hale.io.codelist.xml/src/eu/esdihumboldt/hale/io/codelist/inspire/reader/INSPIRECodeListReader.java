@@ -3,16 +3,28 @@ package eu.esdihumboldt.hale.io.codelist.inspire.reader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Locale;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpResponseException;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.fluent.Request;
+import org.apache.http.entity.ContentType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import eu.esdihumboldt.hale.common.codelist.CodeList;
 import eu.esdihumboldt.hale.common.codelist.CodeList.CodeEntry;
@@ -25,12 +37,16 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 
 /**
- * 
- * TODO Type description
+ * Load XML code lists as provided by the INSPIRE registry.
  * 
  * @author Kai Schwierczek
  */
 public class INSPIRECodeListReader extends AbstractImportProvider implements CodeListReader {
+
+	/**
+	 * The provider ID.
+	 */
+	public static final String PROVIDER_ID = "eu.esdihumboldt.hale.io.codelist.inspire.reader";
 
 	private CodeList codelist;
 
@@ -51,27 +67,87 @@ public class INSPIRECodeListReader extends AbstractImportProvider implements Cod
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 		progress.begin("Loading code list.", ProgressIndicator.UNKNOWN);
-		try (InputStream is = getSource().getInput()) {
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			DocumentBuilder db = dbf.newDocumentBuilder();
-			Document doc = db.parse(is);
 
-			URI loc = getSource().getLocation();
+		Document doc;
 
+		URI loc = getSource().getLocation();
+		if (loc != null && (loc.getScheme().equals("http") || loc.getScheme().equals("https"))) {
+			// load with HTTP client
+			// and provide headers to retrieve correct format and language
+			doc = loadXmlDocument(loc);
+		}
+		else {
+			// just access stream
+			try (InputStream is = getSource().getInput()) {
+				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+				DocumentBuilder db = dbf.newDocumentBuilder();
+				doc = db.parse(is);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		try {
 			reporter.setSuccess(parse(doc, loc, reporter));
-
-			progress.setCurrentTask("Code list loaded.");
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+		progress.setCurrentTask("Code list loaded.");
 
 		return reporter;
+	}
+
+	/**
+	 * Load an XML document via HTTP, providing headers to request proper format
+	 * and language.
+	 * 
+	 * @param loc the location
+	 * @return the XML document
+	 * @throws IOException if reading the document fails
+	 * @throws ClientProtocolException if retrieving the document fails
+	 */
+	public static Document loadXmlDocument(URI loc) throws ClientProtocolException, IOException {
+		return Request.Get(loc)
+				.addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_XML.getMimeType())
+				.addHeader(HttpHeaders.ACCEPT_LANGUAGE, Locale.getDefault().getLanguage())
+				.execute().handleResponse(new ResponseHandler<Document>() {
+
+					@Override
+					public Document handleResponse(HttpResponse response)
+							throws ClientProtocolException, IOException {
+						StatusLine statusLine = response.getStatusLine();
+						HttpEntity entity = response.getEntity();
+						if (statusLine.getStatusCode() >= 300) {
+							throw new HttpResponseException(statusLine.getStatusCode(), statusLine
+									.getReasonPhrase());
+						}
+						if (entity == null) {
+							throw new ClientProtocolException("Response contains no content");
+						}
+						DocumentBuilderFactory dbfac = DocumentBuilderFactory.newInstance();
+						try {
+							DocumentBuilder docBuilder = dbfac.newDocumentBuilder();
+							ContentType contentType = ContentType.getOrDefault(entity);
+							if (!contentType.getMimeType().equals(
+									ContentType.APPLICATION_XML.getMimeType())) {
+								throw new ClientProtocolException("Unexpected content type:"
+										+ contentType);
+							}
+							return docBuilder.parse(entity.getContent());
+						} catch (ParserConfigurationException ex) {
+							throw new IllegalStateException(ex);
+						} catch (SAXException ex) {
+							throw new ClientProtocolException("Malformed XML document", ex);
+						}
+					}
+				});
 	}
 
 	private boolean parse(Document doc, URI location, IOReporter reporter) throws Exception {
 		XPath xpath = XPathFactory.newInstance().newXPath();
 
-		String name = null;
+		boolean directlyReferenced = location.toString().toLowerCase().endsWith(".xml");
+
 		String description = null;
 		String namespace = null;
 
@@ -81,13 +157,21 @@ public class INSPIRECodeListReader extends AbstractImportProvider implements Cod
 			return false;
 		}
 
-		// XXX what about multiple labels or definitions?
-		NodeList labels = (NodeList) xpath.evaluate("codelist/label", doc, XPathConstants.NODESET);
-		if (labels.getLength() > 0)
-			name = labels.item(0).getTextContent();
-		else {
-			reporter.error(new IOMessageImpl("No label present in INSPIRE codelist.", null));
-			return false;
+		// use the last part of the id as name
+		String name = namespace;
+		int idxSlash = name.indexOf('/');
+		if (idxSlash >= 0 && idxSlash + 1 < name.length()) {
+			name = name.substring(idxSlash);
+		}
+
+		if (directlyReferenced) {
+			// if directly referenced use the label as name
+			// (for backwards compatibility)
+			NodeList labels = (NodeList) xpath.evaluate("codelist/label", doc,
+					XPathConstants.NODESET);
+			if (labels.getLength() > 0) {
+				name = labels.item(0).getTextContent();
+			}
 		}
 		NodeList definitions = (NodeList) xpath.evaluate("codelist/definition", doc,
 				XPathConstants.NODESET);
@@ -97,7 +181,7 @@ public class INSPIRECodeListReader extends AbstractImportProvider implements Cod
 
 		// also ignore status, extensibility, register, applicationschema and
 		// theme
-
+		// don't use the name as identifier, as it is language dependent!
 		INSPIRECodeList codelist = new INSPIRECodeList(namespace, name, description, location);
 
 		NodeList entries = (NodeList) xpath.evaluate("codelist/containeditems/value", doc,

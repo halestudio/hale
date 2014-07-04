@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -153,22 +154,22 @@ public class UploadAndTransForm extends Form<Void> {
 
 	private IOConfiguration target;
 
-	private static final IOptionRenderer<IOConfiguration> RENDERER = new IOptionRenderer<IOConfiguration>() {
+	private static final IOptionRenderer<NamedIOConfiguration> RENDERER = new IOptionRenderer<NamedIOConfiguration>() {
 
 		private static final long serialVersionUID = 4714894437575668850L;
 
 		@Override
-		public String getDisplayValue(IOConfiguration object) {
+		public String getDisplayValue(NamedIOConfiguration object) {
 			String name = object.getName();
 			if (name != null && !name.isEmpty()) {
 				return name;
 			}
-			return object.getProviderId();
+			return object.getConfig().getProviderId();
 		}
 
 		@Override
-		public IModel<IOConfiguration> getModel(IOConfiguration value) {
-			return new Model<IOConfiguration>(value);
+		public IModel<NamedIOConfiguration> getModel(NamedIOConfiguration value) {
+			return new Model<NamedIOConfiguration>(value);
 		}
 	};
 
@@ -210,23 +211,29 @@ public class UploadAndTransForm extends Form<Void> {
 		TransformationEnvironment env = environmentService.getEnvironment(projectId);
 
 		// determine presets
-		Collection<? extends IOConfiguration> presetList = env.getExportPresets();
-		SelectOptions<IOConfiguration> presets = new SelectOptions<IOConfiguration>("presets",
-				presetList, RENDERER);
+		Collection<NamedIOConfiguration> presetList = new ArrayList<>();
+		for (Entry<String, ? extends IOConfiguration> entry : env.getExportPresets().entrySet()) {
+			presetList.add(new NamedIOConfiguration(entry.getKey(), entry.getValue()));
+		}
+		SelectOptions<NamedIOConfiguration> presets = new SelectOptions<NamedIOConfiguration>(
+				"presets", presetList, RENDERER);
 		selectTarget.add(presets);
 
 		// determine valid exporters
-		Collection<? extends IOConfiguration> templateList = env.getExportTemplates();
-		SelectOptions<IOConfiguration> exporters = new SelectOptions<IOConfiguration>("exporters",
-				templateList, RENDERER);
+		Collection<NamedIOConfiguration> templateList = new ArrayList<>();
+		for (Entry<String, ? extends IOConfiguration> entry : env.getExportTemplates().entrySet()) {
+			presetList.add(new NamedIOConfiguration(entry.getKey(), entry.getValue()));
+		}
+		SelectOptions<NamedIOConfiguration> exporters = new SelectOptions<NamedIOConfiguration>(
+				"exporters", templateList, RENDERER);
 		selectTarget.add(exporters);
 
 		// initial selection
 		if (!presetList.isEmpty()) {
-			setTarget(presetList.iterator().next());
+			setTarget(presetList.iterator().next().getConfig());
 		}
 		else if (!templateList.isEmpty()) {
-			setTarget(templateList.iterator().next());
+			setTarget(templateList.iterator().next().getConfig());
 		}
 
 		// panel for I/O configuration

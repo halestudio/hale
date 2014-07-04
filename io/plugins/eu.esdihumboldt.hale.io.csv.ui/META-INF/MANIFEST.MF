@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CSV Schema/Instance I/O UI
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.csv.ui;singleton:=true
-Bundle-Version: 2.8.0.qualifier
+Bundle-Version: 2.9.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.ui;bundle-version="3.6.2",
  org.eclipse.core.runtime;bundle-version="3.6.0",
@@ -49,3 +49,4 @@ Import-Package: au.com.bytecode.opencsv;version="2.3.0",
  org.slf4j;version="1.5.11",
  org.springframework.core.convert;version="3.0.0.RELEASE"
 Export-Package: eu.esdihumboldt.hale.io.csv.ui
+Bundle-Vendor: data harmonisation panel

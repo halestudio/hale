@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml" xmlns:imgeo="http://www.geonovum.nl/IMGEO" targetNamespace="http://www.geonovum.nl/IMGEO" elementFormDefault="qualified" version="1.0.0">
-	<import namespace="http://www.opengis.net/gml" schemaLocation="gml/3.1.1/base/gml.xsd"/>
+	<import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"/>
 	<!--XML Schema document created by ShapeChange-->
 	<!--Versie informatie: Versie 1.0.0; Eerste officieel uitgebrachte versie: datum 1 11  2007; UML: IMGEO_7; doc IMGeo rapport definitief versie 1.0.pdf (17 oktober 2007)-->
 	<!--Versie informatie: Versie 0.05: datum 24 10 2007; UML: IMGEO_7; doc IMGeo rapport definitief versie 1.0.pdf (17 oktober 2007)-->

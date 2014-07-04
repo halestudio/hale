@@ -26,7 +26,7 @@ import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
 /**
- * Advisor for exporting source instances.
+ * Advisor for exporting transformed instances.
  * 
  * @author Simon Templer
  */

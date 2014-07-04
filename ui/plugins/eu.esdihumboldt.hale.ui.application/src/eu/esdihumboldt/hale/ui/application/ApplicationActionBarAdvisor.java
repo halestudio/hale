@@ -17,7 +17,9 @@ package eu.esdihumboldt.hale.ui.application;
 
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -27,6 +29,7 @@ import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.actions.ContributionItemFactory;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
+import org.eclipse.ui.internal.provisional.application.IActionBarConfigurer2;
 
 import eu.esdihumboldt.hale.ui.application.internal.Messages;
 
@@ -35,6 +38,7 @@ import eu.esdihumboldt.hale.ui.application.internal.Messages;
  * the actions added to a workbench window. Each window will be populated with
  * new actions.
  */
+@SuppressWarnings("restriction")
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
 	private IWorkbenchAction undoAction;
@@ -101,6 +105,57 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		helpMenu.add(introAction);
 
 		menuBar.add(helpMenu);
+	}
+
+	/**
+	 * @see org.eclipse.ui.application.ActionBarAdvisor#fillCoolBar(org.eclipse.jface.action.ICoolBarManager)
+	 */
+	@Override
+	protected void fillCoolBar(ICoolBarManager coolBar) {
+		IActionBarConfigurer2 actionBarConfigurer = (IActionBarConfigurer2) getActionBarConfigurer();
+		coolBar.add(new GroupMarker(IWorkbenchActionConstants.GROUP_FILE));
+		{ // File Group
+			IToolBarManager fileToolBar = actionBarConfigurer.createToolBarManager();
+			fileToolBar.add(new Separator(IWorkbenchActionConstants.NEW_GROUP));
+			fileToolBar.add(new GroupMarker(IWorkbenchActionConstants.NEW_EXT));
+			fileToolBar.add(new GroupMarker(IWorkbenchActionConstants.SAVE_GROUP));
+			fileToolBar.add(new GroupMarker(IWorkbenchActionConstants.SAVE_EXT));
+			fileToolBar.add(new Separator(IWorkbenchActionConstants.BUILD_GROUP));
+			fileToolBar.add(new GroupMarker(IWorkbenchActionConstants.BUILD_EXT));
+			fileToolBar.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+
+			// Add to the cool bar manager
+			coolBar.add(actionBarConfigurer.createToolBarContributionItem(fileToolBar,
+					IWorkbenchActionConstants.TOOLBAR_FILE));
+		}
+
+//		coolBar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+
+		coolBar.add(new GroupMarker("group.nav"));
+		{ // Navigate group
+			IToolBarManager navToolBar = actionBarConfigurer.createToolBarManager();
+			navToolBar.add(new Separator(IWorkbenchActionConstants.HISTORY_GROUP));
+			navToolBar.add(new Separator(IWorkbenchActionConstants.GROUP_APP));
+			navToolBar.add(new Separator(IWorkbenchActionConstants.PIN_GROUP));
+
+			// Add to the cool bar manager
+			coolBar.add(actionBarConfigurer.createToolBarContributionItem(navToolBar,
+					IWorkbenchActionConstants.TOOLBAR_NAVIGATE));
+		}
+
+		coolBar.add(new GroupMarker(IWorkbenchActionConstants.GROUP_EDITOR));
+
+		coolBar.add(new GroupMarker(IWorkbenchActionConstants.GROUP_HELP));
+
+		{ // Help group
+			IToolBarManager helpToolBar = actionBarConfigurer.createToolBarManager();
+			helpToolBar.add(new Separator(IWorkbenchActionConstants.GROUP_HELP));
+			// Add the group for applications to contribute
+			helpToolBar.add(new GroupMarker(IWorkbenchActionConstants.GROUP_APP));
+			// Add to the cool bar manager
+			coolBar.add(actionBarConfigurer.createToolBarContributionItem(helpToolBar,
+					IWorkbenchActionConstants.TOOLBAR_HELP));
+		}
 	}
 
 }

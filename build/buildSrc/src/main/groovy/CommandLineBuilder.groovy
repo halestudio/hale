@@ -91,6 +91,13 @@ class CommandLineBuilder {
     @Parameters(commandDescription = 'Compiles everything and runs all unit tests')
     class CommitStageCommand {
         def run() {
+			if (!project.ext.testProduct) {
+				throw new IllegalStateException('No test product specified')
+			}
+			
+			// set productFile property to test product
+			project.ext.productFile = project.ext.testProduct
+			
             project.tasks['cli'].dependsOn(project.tasks['commitStage'])
         }
     }
@@ -175,7 +182,7 @@ class CommandLineBuilder {
             if (lang != null) {
                 project.ext.language = lang
             }
-            project.tasks['cli'].dependsOn(project.tasks['buildProduct'])
+            project.tasks['cli'].dependsOn(project.tasks['packageProduct'])
         }
     }
 

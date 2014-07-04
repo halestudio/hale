@@ -13,7 +13,7 @@
 			<xs:element name="modified" type="xs:dateTime" minOccurs="0" />
 			<xs:element name="save-config" type="IOConfigurationType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="resource" type="IOConfigurationType" minOccurs="0" maxOccurs="unbounded" />
-      <xs:element name="export-config" type="IOConfigurationType" minOccurs="0" maxOccurs="unbounded" />
+      		<xs:element name="export-config" type="ExportConfigurationType" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="file" type="ProjectFileType" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element ref="AbstractProperty" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
@@ -52,7 +52,6 @@
 		</xs:sequence>
 		<xs:attribute name="action-id" type="xs:string" use="required" />
 		<xs:attribute name="provider-id" type="xs:string" use="required" />
-		<xs:attribute name="name" type="xs:string" use="optional" />
 	</xs:complexType>
 	
 	<xs:element name="AbstractSetting" type="xs:anyType" abstract="true" />
@@ -64,6 +63,14 @@
 			<xs:any processContents="skip" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="value" type="xs:string" use="optional" />
+	</xs:complexType>
+	
+	<!-- Export configuration -->
+	<xs:complexType name="ExportConfigurationType">
+		<xs:sequence>
+			<xs:element ref="configuration" />
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required" />
 	</xs:complexType>
 	
 	<!-- ProjectFile -->

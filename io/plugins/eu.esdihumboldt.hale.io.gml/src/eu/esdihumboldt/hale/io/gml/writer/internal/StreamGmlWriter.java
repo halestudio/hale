@@ -50,14 +50,13 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
-import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition;
+import eu.esdihumboldt.hale.common.instance.io.impl.AbstractGeoInstanceWriter;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
-import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
@@ -91,7 +90,8 @@ import eu.esdihumboldt.util.Pair;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriterBase, GMLConstants {
+public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWriterBase,
+		GMLConstants {
 
 	/**
 	 * Schema instance namespace (for specifying schema locations)
@@ -150,6 +150,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriter
 
 		addSupportedParameter(PARAM_ROOT_ELEMENT_NAMESPACE);
 		addSupportedParameter(PARAM_ROOT_ELEMENT_NAME);
+		addSupportedParameter(PARAM_SIMPLIFY_GEOMETRY);
 	}
 
 	/**
@@ -464,7 +465,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriter
 				if (defPath != null) {
 					// write the feature
 					lastDescent = Descent.descend(writer, defPath, lastDescent, false);
-					writeMember(instance, type);
+					writeMember(instance, type, reporter);
 				}
 				else {
 					reporter.warn(new IOMessageImpl(
@@ -478,11 +479,8 @@ public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriter
 				count++;
 
 				long now = System.currentTimeMillis();
-				if (now - lastUpdate > 100 || !itInstance.hasNext()) { // only
-																		// update
-																		// every
-																		// 100
-																		// milliseconds
+				// only update every 100 milliseconds
+				if (now - lastUpdate > 100 || !itInstance.hasNext()) {
 					lastUpdate = now;
 					sub.subTask(String.valueOf(count) + " instances");
 				}
@@ -730,13 +728,15 @@ public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriter
 	 * 
 	 * @param instance the instance to writer
 	 * @param type the feature type definition
+	 * @param report the reporter
 	 * @throws XMLStreamException if writing the feature fails
 	 */
-	protected void writeMember(Instance instance, TypeDefinition type) throws XMLStreamException {
+	protected void writeMember(Instance instance, TypeDefinition type, IOReporter report)
+			throws XMLStreamException {
 //		Name elementName = GmlWriterUtil.getElementName(type);
 //		writer.writeStartElement(elementName.getNamespaceURI(), elementName.getLocalPart());
 
-		writeProperties(instance, type, true);
+		writeProperties(instance, type, true, report);
 
 //		writer.writeEndElement(); // type element name
 	}
@@ -747,10 +747,11 @@ public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriter
 	 * @param group the feature
 	 * @param definition the feature type
 	 * @param allowElements if element properties may be written
+	 * @param report the reporter
 	 * @throws XMLStreamException if writing the properties fails
 	 */
-	private void writeProperties(Group group, DefinitionGroup definition, boolean allowElements)
-			throws XMLStreamException {
+	private void writeProperties(Group group, DefinitionGroup definition, boolean allowElements,
+			IOReporter report) throws XMLStreamException {
 		// eventually generate mandatory ID that is not set
 		GmlWriterUtil.writeRequiredID(writer, definition, group, true);
 
@@ -759,11 +760,11 @@ public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriter
 		// structure! (e.g. including groups)
 
 		// write the attributes, as they must be handled first
-		writeProperties(group, DefinitionUtil.getAllChildren(definition), true);
+		writeProperties(group, DefinitionUtil.getAllChildren(definition), true, report);
 
 		if (allowElements) {
 			// write the elements
-			writeProperties(group, DefinitionUtil.getAllChildren(definition), false);
+			writeProperties(group, DefinitionUtil.getAllChildren(definition), false, report);
 		}
 	}
 
@@ -775,10 +776,11 @@ public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriter
 	 * @param attributes <code>true</code> if attribute properties shall be
 	 *            written, <code>false</code> if element properties shall be
 	 *            written
+	 * @param report the reporter
 	 * @throws XMLStreamException if writing the attributes/elements fails
 	 */
 	private void writeProperties(Group parent, Collection<? extends ChildDefinition<?>> children,
-			boolean attributes) throws XMLStreamException {
+			boolean attributes, IOReporter report) throws XMLStreamException {
 		if (parent == null) {
 			return;
 		}
@@ -809,7 +811,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriter
 					if (values != null) {
 						// write element
 						for (Object value : values) {
-							writeElement(value, propDef);
+							writeElement(value, propDef, report);
 						}
 						numValues = values.length;
 					}
@@ -823,7 +825,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriter
 								// nillable element
 								for (int i = numValues; i < cardinality.getMinOccurs(); i++) {
 									// write nil element
-									writeElement(null, propDef);
+									writeElement(null, propDef, report);
 								}
 							}
 							else {
@@ -846,7 +848,8 @@ public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriter
 					for (Object value : values) {
 						if (value instanceof Group) {
 							writeProperties((Group) value,
-									DefinitionUtil.getAllChildren(child.asGroup()), attributes);
+									DefinitionUtil.getAllChildren(child.asGroup()), attributes,
+									report);
 						}
 						else {
 							// TODO warning/error?
@@ -862,9 +865,11 @@ public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriter
 	 * 
 	 * @param value the element value
 	 * @param propDef the property definition
+	 * @param report the reporter
 	 * @throws XMLStreamException if writing the element fails
 	 */
-	private void writeElement(Object value, PropertyDefinition propDef) throws XMLStreamException {
+	private void writeElement(Object value, PropertyDefinition propDef, IOReporter report)
+			throws XMLStreamException {
 		Group group = null;
 		if (value instanceof Group) {
 			group = (Group) value;
@@ -891,10 +896,11 @@ public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriter
 			else {
 				GmlWriterUtil.writeStartElement(writer, propDef.getName());
 
-				Pair<Geometry, String> pair = getGeometryAndSRSName(value);
+				Pair<Geometry, CRSDefinition> pair = extractGeometry(value, true, report);
 				if (pair != null) {
+					String srsName = extractCode(pair.getSecond());
 					// write geometry
-					writeGeometry(pair.getFirst(), propDef, pair.getSecond());
+					writeGeometry(pair.getFirst(), propDef, srsName);
 				}
 				else {
 					// simple element with value
@@ -913,15 +919,16 @@ public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriter
 			boolean hasValue = propDef.getPropertyType().getConstraint(HasValueFlag.class)
 					.isEnabled();
 
-			Pair<Geometry, String> pair = getGeometryAndSRSName(value);
+			Pair<Geometry, CRSDefinition> pair = extractGeometry(value, true, report);
 			// handle about annotated geometries
 			if (!hasValue && pair != null) {
+				String srsName = extractCode(pair.getSecond());
 				// write geometry
-				writeGeometry(pair.getFirst(), propDef, pair.getSecond());
+				writeGeometry(pair.getFirst(), propDef, srsName);
 			}
 			else {
 				// write all children (no elements if there is a value)
-				writeProperties(group, group.getDefinition(), !hasValue);
+				writeProperties(group, group.getDefinition(), !hasValue, report);
 
 				// write value
 				if (hasValue) {
@@ -931,43 +938,6 @@ public class StreamGmlWriter extends AbstractInstanceWriter implements XmlWriter
 
 			writer.writeEndElement();
 		}
-	}
-
-	/**
-	 * Returns a pair of geometry and srsname for the given value. Value has to
-	 * be a Geometry or a GeometryProperty, otherwise null is returned. The
-	 * returned srsname may be null.
-	 * 
-	 * @param value the value to extract the information from
-	 * @return a pair of geometry and srsname (latter may be null), or null if
-	 *         the argument doesn't contain a geometry
-	 */
-	private Pair<Geometry, String> getGeometryAndSRSName(Object value) {
-		// TODO collection handling (-> happens for example with target
-		// CompositeSurface)
-		if (value instanceof Collection)
-			if (!((Collection<?>) value).isEmpty())
-				value = ((Collection<?>) value).iterator().next();
-		if (value instanceof Geometry)
-			return new Pair<Geometry, String>((Geometry) value, null);
-		else if (value instanceof GeometryProperty<?>) {
-			String srsName;
-			CRSDefinition def = ((GeometryProperty<?>) value).getCRSDefinition();
-			if (def != null) {
-				if (def instanceof CodeDefinition)
-					srsName = ((CodeDefinition) def).getCode();
-				else if (def.getCRS() != null)
-					srsName = null; // TODO getName().toString() is not correct
-				else
-					srsName = null;
-			}
-			else
-				srsName = null;
-
-			return new Pair<Geometry, String>(((GeometryProperty<?>) value).getGeometry(), srsName);
-		}
-		else
-			return null;
 	}
 
 	/**

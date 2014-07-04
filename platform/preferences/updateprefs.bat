@@ -5,6 +5,7 @@ java -jar proprefapp.jar common ../../server
 java -jar proprefapp.jar common ../../doc
 java -jar proprefapp.jar common ../../ui
 java -jar proprefapp.jar common ../../util
+java -jar proprefapp.jar common ../../app
 java -jar proprefapp.jar common ../../ext/styledmap
 java -jar proprefapp.jar xslt ../../ext/xslt
 java -jar proprefapp.jar xslt ../../ext/ageobw

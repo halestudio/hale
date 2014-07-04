@@ -15,10 +15,11 @@
    <extension
          point="eu.esdihumboldt.hale.ui.schema.presets">
       <schema
+            category="http://inspire.ec.europa.eu/theme/hy"
             description="GML Application Schema from the INSPIRE Data Specification on Hydrography (Revision 937)."
             icon="icons/inspire.gif"
             id="eu.esdihumboldt.hale.ui.schema.presets.inspire.hy-p"
-            name="INSPIRE HydroPhysicalWaters"
+            name="INSPIRE Hydro Physical Waters"
             tag="Bundled"
             version="3.0">
          <uri
@@ -26,6 +27,7 @@
          </uri>
       </schema>
       <schema
+            category="http://inspire.ec.europa.eu/theme/ad"
             description="INSPIRE GML Application Schema for Addresses (Revision 937)."
             icon="icons/inspire.gif"
             id="eu.esdihumboldt.hale.ui.schema.presets.inspire.ad"
@@ -37,10 +39,11 @@
          </uri>
       </schema>
       <schema
+            category="http://inspire.ec.europa.eu/theme/au"
             description="INSPIRE GML Application Schema for Administrative Units (Revision 937)."
             icon="icons/inspire.gif"
             id="eu.esdihumboldt.hale.ui.schema.presets.inspire.au"
-            name="INSPIRE AdministrativeUnits"
+            name="INSPIRE Administrative Units"
             tag="Bundled"
             version="3.0">
          <uri
@@ -48,10 +51,11 @@
          </uri>
       </schema>
       <schema
+            category="http://inspire.ec.europa.eu/theme/cp"
             description="INSPIRE GML Application Schema for Cadastral Parcels (Revision 937)."
             icon="icons/inspire.gif"
             id="eu.esdihumboldt.hale.ui.schema.presets.inspire.cp"
-            name="INSPIRE CadastralParcels"
+            name="INSPIRE Cadastral Parcels"
             tag="Bundled"
             version="3.0">
          <uri
@@ -70,10 +74,11 @@
          </uri>
       </schema>
       <schema
+            category="http://inspire.ec.europa.eu/theme/gn"
             description="INSPIRE GML Application Schema for Geographical Names (Revision 937)."
             icon="icons/inspire.gif"
             id="eu.esdihumboldt.hale.ui.schema.presets.inspire.gn"
-            name="INSPIRE GeographicalNames"
+            name="INSPIRE Geographical Names"
             tag="Bundled"
             version="3.0">
          <uri
@@ -81,10 +86,11 @@
          </uri>
       </schema>
       <schema
+            category="http://inspire.ec.europa.eu/theme/hy"
             description="GML Application Schema from the INSPIRE Data Specification on Hydrography (Revision 937)."
             icon="icons/inspire.gif"
             id="eu.esdihumboldt.hale.ui.schema.presets.inspire.hy-n"
-            name="INSPIRE HydroNetwork"
+            name="INSPIRE Hydro Network"
             tag="Bundled"
             version="3.0">
          <uri
@@ -92,10 +98,11 @@
          </uri>
       </schema>
       <schema
+            category="http://inspire.ec.europa.eu/theme/hy"
             description="GML Application Schema from the INSPIRE Data Specification on Hydrography (Revision 937)."
             icon="icons/inspire.gif"
             id="eu.esdihumboldt.hale.ui.schema.presets.inspire.hy-r"
-            name="INSPIRE HydroReporting"
+            name="INSPIRE Hydro Reporting"
             tag="Bundled"
             version="3.0">
          <uri
@@ -103,10 +110,11 @@
          </uri>
       </schema>
       <schema
+            category="http://inspire.ec.europa.eu/theme/ps"
             description="INSPIRE GML Application Schema for Protected Sites (Revision 937)."
             icon="icons/inspire.gif"
             id="eu.esdihumboldt.hale.ui.schema.presets.inspire.ps-f"
-            name="INSPIRE ProtectedSites Full"
+            name="INSPIRE Protected Sites Full"
             tag="Bundled"
             version="3.0">
          <uri
@@ -114,10 +122,11 @@
          </uri>
       </schema>
       <schema
+            category="http://inspire.ec.europa.eu/theme/ps"
             description="INSPIRE GML Application Schema for Protected Sites (Revision 937)."
             icon="icons/inspire.gif"
             id="eu.esdihumboldt.hale.ui.schema.presets.inspire.ps"
-            name="INSPIRE ProtectedSites"
+            name="INSPIRE Protected Sites"
             tag="Bundled"
             version="3.0">
          <uri
@@ -125,10 +134,11 @@
          </uri>
       </schema>
       <schema
+            category="http://inspire.ec.europa.eu/theme/tn"
             description="INSPIRE GML Application Schema for Air Transport Networks (Revision 937)."
             icon="icons/inspire.gif"
             id="eu.esdihumboldt.hale.ui.schema.presets.inspire.tn-a"
-            name="INSPIRE AirTransportNetwork"
+            name="INSPIRE Air Transport Network"
             tag="Bundled"
             version="3.0">
          <uri
@@ -136,10 +146,11 @@
          </uri>
       </schema>
       <schema
+            category="http://inspire.ec.europa.eu/theme/tn"
             description="INSPIRE GML Application Schema for Cable Transport Networks (Revision 937)."
             icon="icons/inspire.gif"
             id="eu.esdihumboldt.hale.ui.schema.presets.inspire.tn-c"
-            name="INSPIRE CableTransportNetwork"
+            name="INSPIRE Cable Transport Network"
             tag="Bundled"
             version="3.0">
          <uri
@@ -147,10 +158,11 @@
          </uri>
       </schema>
       <schema
+            category="http://inspire.ec.europa.eu/theme/tn"
             description="INSPIRE GML Application Schema for Railway Transport Networks (Revision 937)."
             icon="icons/inspire.gif"
             id="eu.esdihumboldt.hale.ui.schema.presets.inspire.tn-ra"
-            name="INSPIRE RailwayTransportNetwork"
+            name="INSPIRE Railway Transport Network"
             tag="Bundled"
             version="3.0">
          <uri
@@ -158,10 +170,11 @@
          </uri>
       </schema>
       <schema
+            category="http://inspire.ec.europa.eu/theme/tn"
             description="INSPIRE GML Application Schema for Road Transport Networks (Revision 937)."
             icon="icons/inspire.gif"
             id="eu.esdihumboldt.hale.ui.schema.presets.inspire.tn-ro"
-            name="INSPIRE RoadTransportNetwork"
+            name="INSPIRE Road Transport Network"
             tag="Bundled"
             version="3.0">
          <uri
@@ -169,10 +182,11 @@
          </uri>
       </schema>
       <schema
+            category="http://inspire.ec.europa.eu/theme/tn"
             description="INSPIRE GML Application Schema for Water Transport Networks (Revision 937)."
             icon="icons/inspire.gif"
             id="eu.esdihumboldt.hale.ui.schema.presets.inspire.tn-w"
-            name="INSPIRE WaterTransportNetwork"
+            name="INSPIRE Water Transport Network"
             tag="Bundled"
             version="3.0">
          <uri

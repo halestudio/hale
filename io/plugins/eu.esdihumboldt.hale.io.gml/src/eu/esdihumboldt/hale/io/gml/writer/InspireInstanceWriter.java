@@ -21,7 +21,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.text.MessageFormat;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -40,8 +43,18 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Multiset;
+import com.vividsolutions.jts.geom.Geometry;
+
+import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.groovy.DefinitionAccessor;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -50,6 +63,7 @@ import eu.esdihumboldt.hale.io.gml.writer.internal.AbstractXMLStreamWriterDecora
 import eu.esdihumboldt.hale.io.gml.writer.internal.StreamGmlWriter;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
+import eu.esdihumboldt.util.Pair;
 import eu.esdihumboldt.util.groovy.paths.Path;
 
 /**
@@ -81,6 +95,84 @@ public class InspireInstanceWriter extends GmlInstanceWriter {
 	public static final String PARAM_SPATIAL_DATA_SET_METADATA_DOM = "inspire.sds.metadata.inline";
 
 	/**
+	 * The parameter specifying whether a dataset feed should be created.
+	 */
+	public static final String PARAM_SPATIAL_DATA_SET_CREATE_FEED = "inspire.sds.create_feed";
+
+	private final Set<TypeDefinition> types = new HashSet<>();
+	private final Multiset<CRSDefinition> crss = HashMultiset.create();
+
+	/**
+	 * Default constructor.
+	 */
+	public InspireInstanceWriter() {
+		addSupportedParameter(PARAM_SPATIAL_DATA_SET_LOCALID);
+		addSupportedParameter(PARAM_SPATIAL_DATA_SET_NAMESPACE);
+		addSupportedParameter(PARAM_SPATIAL_DATA_SET_METADATA_FILE);
+		addSupportedParameter(PARAM_SPATIAL_DATA_SET_METADATA_DOM);
+		addSupportedParameter(PARAM_SPATIAL_DATA_SET_CREATE_FEED);
+
+		for (String param : InspireDatasetFeedWriter.getAdditionalParams()) {
+			addSupportedParameter(param);
+		}
+	}
+
+	@Override
+	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
+			throws IOProviderConfigurationException, IOException {
+		// first write gml file (also collects types-set)
+		super.execute(progress, reporter);
+
+		// run feed writer if applicable
+		if (getParameter(PARAM_SPATIAL_DATA_SET_CREATE_FEED).as(Boolean.class, false)) {
+			InspireDatasetFeedWriter feedWriter = new InspireDatasetFeedWriter();
+			for (String copyParam : InspireDatasetFeedWriter.getAdditionalParams()) {
+				feedWriter.setParameter(copyParam, getParameter(copyParam));
+			}
+			feedWriter.setOccurringTypes(types);
+			feedWriter.setOccurringCRSs(crss);
+
+			feedWriter.setParameter(PARAM_TARGET,
+					Value.of(getDatasetFeedTarget(getTarget().getLocation()).toString()));
+
+			reporter.importMessages(feedWriter.execute(progress));
+			// Ignore success of feedWriter-report, since main success criteria
+			// is successfully writing the data.
+		}
+
+		return reporter;
+	}
+
+	/**
+	 * Transforms the given GML file target to a target URI for the dataset feed
+	 * creation.
+	 * 
+	 * @param gmlTarget the original GML target
+	 * @return the dataset feed target
+	 */
+	public static URI getDatasetFeedTarget(URI gmlTarget) {
+		String location = gmlTarget.toString();
+		String locationPath;
+		String locationName;
+		int nameIndex = location.lastIndexOf('/');
+		if (nameIndex != -1) {
+			locationName = location.substring(nameIndex + 1);
+			locationPath = location.substring(0, nameIndex + 1);
+		}
+		else {
+			locationName = location;
+			locationPath = "";
+		}
+		// XXX split filename at which '.'? (for now first)
+		int suffixIndex = locationName.indexOf('.');
+		if (suffixIndex != -1) {
+			locationName = locationName.substring(0, suffixIndex);
+		}
+		String feedTaregt = locationPath + locationName + "-feed.atom";
+		return URI.create(feedTaregt);
+	}
+
+	/**
 	 * @see StreamGmlWriter#findDefaultContainter(XmlIndex, IOReporter)
 	 */
 	@Override
@@ -91,6 +183,25 @@ public class InspireInstanceWriter extends GmlInstanceWriter {
 
 		throw new IllegalStateException(MessageFormat.format(
 				"Element {0} not found in the schema.", "SpatialDataSet"));
+	}
+
+	@Override
+	protected void writeMember(Instance instance, TypeDefinition type, IOReporter report)
+			throws XMLStreamException {
+		// collect written types in case a dataset feed will be written
+		types.add(type);
+		super.writeMember(instance, type, report);
+	}
+
+	@Override
+	protected Pair<Geometry, CRSDefinition> extractGeometry(Object value, boolean allowConvert,
+			IOReporter report) {
+		// collect used CRS definitions
+		Pair<Geometry, CRSDefinition> result = super.extractGeometry(value, allowConvert, report);
+		if (result != null) {
+			crss.add(result.getSecond());
+		}
+		return result;
 	}
 
 	/**

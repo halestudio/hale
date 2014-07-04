@@ -15,6 +15,7 @@
  */
 package eu.esdihumboldt.hale.ui.application;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.swt.SWT;
@@ -22,11 +23,13 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.geotools.referencing.CRS;
+import org.osgi.framework.Version;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.app.AbstractApplication;
+import eu.esdihumboldt.hale.ui.application.internal.HALEApplicationPlugin;
 import eu.esdihumboldt.hale.ui.common.crs.WKTPreferencesCRSFactory;
 import eu.esdihumboldt.hale.ui.launchaction.LaunchAction;
 import eu.esdihumboldt.hale.ui.launchaction.extension.LaunchActionExtension;
@@ -96,6 +99,12 @@ public class Application extends AbstractApplication<ApplicationContext> impleme
 
 		// initialize UI
 		Display display = PlatformUI.createDisplay();
+
+		// set application version
+		String versionString = Platform.getBundle(HALEApplicationPlugin.PLUGIN_ID).getHeaders()
+				.get("Bundle-Version");
+		Version version = Version.parseVersion(versionString);
+		Display.setAppVersion(version.toString());
 
 		// register listener for OpenDoc events
 		OpenDocumentEventProcessor openDocProcessor = new OpenDocumentEventProcessor();

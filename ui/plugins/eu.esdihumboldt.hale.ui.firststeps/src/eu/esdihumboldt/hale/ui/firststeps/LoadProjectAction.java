@@ -21,7 +21,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Properties;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.ILiveHelpAction;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.widgets.Display;
@@ -109,7 +108,15 @@ public class LoadProjectAction extends Action implements IIntroAction, ICheatShe
 				ps.load(URI.create(path));
 			else if (TYPE_BUNDLE.equalsIgnoreCase(type))
 				try {
-					ps.load(Platform.getBundle(bundle).getEntry(path).toURI());
+//					ps.load(Platform.getBundle(bundle).getEntry(path).toURI());
+					StringBuilder b = new StringBuilder();
+					b.append("platform:/plugin/");
+					b.append(bundle);
+					if (path.length() > 0 && path.charAt(0) != '/') {
+						b.append("/");
+					}
+					b.append(path);
+					ps.load(new URI(b.toString()));
 				} catch (URISyntaxException e) {
 					throw new IllegalArgumentException(e);
 				}

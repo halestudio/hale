@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:hale="eu:esdihumboldt:hale:test" xmlns:gml="http://www.opengis.net/gml" elementFormDefault="qualified" targetNamespace="eu:esdihumboldt:hale:test">
 
-  <import namespace="http://www.opengis.net/gml" schemaLocation="schemas/gml/2.1.2.1/feature.xsd"/>
+  <import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/2.1.2/gml.xsd"/>
   
   <element name="Test" substitutionGroup="gml:_Feature" type="hale:TestType" />
     

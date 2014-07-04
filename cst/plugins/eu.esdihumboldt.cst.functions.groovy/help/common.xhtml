@@ -93,14 +93,14 @@
 			To create an instance as result of the script, you have to use the
 			so-called builder API. You have to define a closure that describes
 			how the instance is structured, which properties should have which
-			values and so on, and assign it to the
+			values and so on, and add it using the
 			<code>
 				<b>_target</b>
 			</code>
 			variable.<br /> The most simple of structures - an empty instance -
 			can be created like this:
 		</p>
-		<pre><code><b>_target</b> = {
+		<pre><code><b>_target</b> {
 
 }</code></pre>
 		<p>The builder by default creates the instance based on the
@@ -115,14 +115,14 @@
 		<p>The structure is quite complex, but let's start with something
 			simple: There is a <i>type</i> property which can have a string value - we
 			can add a type property with the value <i>test</i> to our instance like this:</p>
-		<pre><code><b>_target</b> = {
+		<pre><code><b>_target</b> {
   type(<i>'test'</i>)
 }</code></pre>
 		<p>
 			The <i>type</i> property may occur multiple times, we can easily add
 			the property more than once:
 		</p>
-		<pre><code><b>_target</b> = {
+		<pre><code><b>_target</b> {
   type <i>'test1'</i>
   type <i>'test2'</i>
   type <i>'test3'</i>
@@ -134,7 +134,7 @@
 		</p>
 		<p>The builder calls can be mixed with programming constructs, for
 			instance could we achieve the same as above using a simple loop:</p>
-		<pre><code><b>_target</b> = {
+		<pre><code><b>_target</b> {
   <b>for</b> (i <b>in</b> 1..3) {
     type(<i>'test'</i> + i)
   }
@@ -145,7 +145,7 @@
 			several sub-properties on multiple levels. Such a nested structure
 			can for example be created like this:
 		</p>
-		<pre><code><b>_target</b> = {
+		<pre><code><b>_target</b> {
   name {
     GeographicalName {
       language <i>'en'</i>
@@ -187,7 +187,7 @@
 			namespace. This is done through a named parameter <i>namespace</i>
 			like in the example below:
 		</p>
-		<pre><code><b>_target</b> = {
+		<pre><code><b>_target</b> {
   type(<i>'test'</i>, namespace: <i>'http://my.namespace.com'</i>)
 }</code></pre>
 		<p>
@@ -201,7 +201,7 @@
 			in the script:
 		</p>
 		<pre><code><b>def</b> type = <i>'test'</i>
-<b>_target</b> = {
+<b>_target</b> {
   <b>_b</b>.type type
 }</code></pre>
 	</div>
@@ -213,7 +213,7 @@
 			instances works, here a small example related to the above structures that
 			makes use of both to create a target structure populated with values
 			from a source instance:</p>
-		<pre><code><b>_target</b> = {
+		<pre><code><b>_target</b> {
   instance.p.name.each { name -&gt;
     <b>def</b> lang = name.p.language.value()
     GeographicalName {

@@ -154,6 +154,8 @@
             </topic>
             <topic href="html/reference/export/citygml_data.html" label="CityGML">
             </topic>
+            <topic href="html/reference/export/inspiregml_data.html" label="INSPIRE SpatialDataSet">
+            </topic>
             <topic href="html/reference/export/html_mapping.html" label="HTML mapping documentation">
                <topic href="html/reference/export/sample_documentation.html" label="Example">
                </topic>

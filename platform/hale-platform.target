@@ -1,38 +1,41 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="146">
+<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="205">
 <locations>
-<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.emf.sdk.feature.group" version="2.7.1.v20110913-1526"/>
-<unit id="org.eclipse.equinox.sdk.feature.group" version="3.7.1.R37x_v20110907-7M7W8h8eNV4Vrz-hz01A7SL_MhZP"/>
-<unit id="org.eclipse.xtext.sdk.feature.group" version="2.0.1.v201108020636"/>
-<unit id="org.eclipse.gef.sdk.feature.group" version="3.7.1.v20110830-1143-7G7W2A5WNgEQNgNXBJgcPLWZeMNI"/>
-<unit id="org.eclipse.gmf.runtime.sdk.feature.group" version="1.5.0.v20110607-1200-67N09E9QnChoWswz-3wf_rz0kQ8Y"/>
-<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.0.1.v201108020809"/>
-<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.0.1.v201108020506"/>
-<repository location="http://www.cityserver3d.de/updates/releases/indigo"/>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.equinox.sdk.feature.group" version="3.10.0.v20140606-1602"/>
+<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.6.0.v201405200714"/>
+<unit id="org.eclipse.xtext.sdk.feature.group" version="2.6.0.v201405210727"/>
+<unit id="org.eclipse.emf.sdk.feature.group" version="2.10.0.v20140519-0339"/>
+<unit id="org.eclipse.gef.sdk.feature.group" version="3.9.100.201405261516"/>
+<unit id="org.eclipse.gmf.runtime.sdk.feature.group" version="1.8.0.201406111639"/>
+<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.6.0.v201405200939"/>
+<repository location="http://download.eclipse.org/releases/luna/"/>
 </location>
-<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.sdk.ide" version="3.7.1.M20110909-1335"/>
-<repository location="http://www.cityserver3d.de/updates/eclipse/updates/3.7"/>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.sdk.ide" version="4.4.0.I20140606-1215"/>
+<repository location="http://download.eclipse.org/eclipse/updates/4.4"/>
 </location>
-<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.scala-ide.sdt.feature.feature.group" version="3.0.1.v-2_10-201307110731-b1c1861"/>
-<unit id="org.scala-ide.sdt.source.feature.feature.group" version="3.0.1.v-2_10-201307110731-b1c1861"/>
-<repository location="http://download.scala-ide.org/sdk/helium/e37/scala210/stable/site"/>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.scala-ide.sdt.feature.feature.group" version="3.0.3.v-2_10-201403271605-8d2c756"/>
+<unit id="org.scala-ide.sdt.source.feature.feature.group" version="3.0.3.v-2_10-201403271605-8d2c756"/>
+<repository location="http://download.scala-ide.org/sdk/helium/e38/scala210/stable/site"/>
 </location>
-<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.jetty.bundles.f.feature.group" version="8.1.14.201311072346"/>
-<unit id="org.eclipse.jetty.bundles.f.source.feature.group" version="8.1.14.201311072346"/>
-<repository location="http://download.eclipse.org/jetty/updates/jetty-bundles-8.x/8.1.14.v20131031"/>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.e4.core.tools.feature.feature.group" version="0.14.0.v20140624-1329"/>
+<repository location="http://download.vogella.com/luna/e4tools"/>
 </location>
-<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="de.fhg.igd.equinox.test.feature.feature.group" version="1.0.0.201407021539"/>
+<repository location="http://hale.igd.fraunhofer.de/jenkins/job/site-equinox-test/3/updatesite/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="de.fhg.igd.slf4jplus.feature.feature.group" version="1.2.0.201403111309"/>
 <unit id="de.fhg.igd.slf4jplus.ui.feature.feature.group" version="1.2.0.201403111309"/>
 <repository location="http://hale.igd.fraunhofer.de/jenkins/view/Libraries/job/slf4jplus/9/updatesite"/>
 </location>
-<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="eu.esdihumboldt.hale.platform.feature.group" version="2.9.3"/>
-<repository location="http://hale.igd.fraunhofer.de/build-support/9e875af259a3cd6b3ef4c6ecfacf5e6ffa4dfba4/updatesites/platform"/>
+<repository location="http://hale.igd.fraunhofer.de/build-support/e6d01f22b4afc0034c2d0e016db582d385b7f5eb/updatesites/platform"/>
 </location>
 </locations>
 </target>

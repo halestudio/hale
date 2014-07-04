@@ -30,6 +30,7 @@ import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFileInfo;
 import eu.esdihumboldt.hale.common.core.io.project.model.internal.generated.ComplexPropertyType;
+import eu.esdihumboldt.hale.common.core.io.project.model.internal.generated.ExportConfigurationType;
 import eu.esdihumboldt.hale.common.core.io.project.model.internal.generated.IOConfigurationType;
 import eu.esdihumboldt.hale.common.core.io.project.model.internal.generated.ProjectFileType;
 import eu.esdihumboldt.hale.common.core.io.project.model.internal.generated.ProjectType;
@@ -65,8 +66,12 @@ public class JaxbToProject {
 			result.getResources().add(toIOConfiguration(resource));
 		}
 
-		for (IOConfigurationType exportConfig : project.getExportConfig()) {
-			result.getExportConfigurations().add(toIOConfiguration(exportConfig));
+		for (ExportConfigurationType exportConfig : project.getExportConfig()) {
+			String name = exportConfig.getName();
+			if (name != null && !name.isEmpty()) {
+				result.getExportConfigurations().put(name,
+						toIOConfiguration(exportConfig.getConfiguration()));
+			}
 		}
 
 		for (ProjectFileType file : project.getFile()) {
@@ -102,7 +107,6 @@ public class JaxbToProject {
 
 		result.setActionId(config.getActionId());
 		result.setProviderId(config.getProviderId());
-		result.setName(config.getName());
 
 		for (JAXBElement<?> setting : config.getAbstractSetting()) {
 			Object value = setting.getValue();

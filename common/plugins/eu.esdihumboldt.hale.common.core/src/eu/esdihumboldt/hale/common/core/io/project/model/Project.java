@@ -112,9 +112,10 @@ public class Project implements ProjectInfo {
 	private final List<ProjectFileInfo> projectFiles = new ArrayList<ProjectFileInfo>();
 
 	/**
-	 * The saved export configurations
+	 * The saved export configurations. Names (case insensitive) mapped to I/O
+	 * configurations.
 	 */
-	private final List<IOConfiguration> exportConfigurations = new ArrayList<IOConfiguration>();
+	private final Map<String, IOConfiguration> exportConfigurations = new ExportConfigurationMap();
 
 	/**
 	 * @return the configurations
@@ -222,9 +223,9 @@ public class Project implements ProjectInfo {
 	}
 
 	/**
-	 * @return the exportConfigurations
+	 * @return names (case insensitive) mapped to export configurations
 	 */
-	public List<IOConfiguration> getExportConfigurations() {
+	public Map<String, IOConfiguration> getExportConfigurations() {
 		return exportConfigurations;
 	}
 

@@ -21,6 +21,11 @@
             name="Save transformed data"
             type="eu.esdihumboldt.hale.common.instance.io.InstanceWriter">
       </action>
+      <action
+            id="eu.esdihumboldt.hale.io.instance.write.source"
+            name="Save source data"
+            type="eu.esdihumboldt.hale.common.instance.io.InstanceWriter">
+      </action>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.instance.metadata">

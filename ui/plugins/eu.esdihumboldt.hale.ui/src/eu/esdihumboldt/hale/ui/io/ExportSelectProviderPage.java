@@ -16,7 +16,10 @@
 
 package eu.esdihumboldt.hale.ui.io;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -35,6 +38,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import eu.esdihumboldt.hale.common.core.io.ExportProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
@@ -83,12 +87,21 @@ public class ExportSelectProviderPage<P extends ExportProvider, W extends Export
 				if (element instanceof IOProviderDescriptor) {
 					return ((IOProviderDescriptor) element).getDisplayName();
 				}
-				return super.getText(element);
+				return "Custom configuration: " + super.getText(element);
 			}
 
 		});
 		factories = getWizard().getFactories();
-		providers.setInput(factories);
+		List<Object> input = new ArrayList<>();
+
+		// check for presets
+		Collection<String> presets = getWizard().getPresets();
+		if (presets != null && !presets.isEmpty()) {
+			input.addAll(presets);
+		}
+
+		input.addAll(factories);
+		providers.setInput(input);
 
 		providers.addDoubleClickListener(new IDoubleClickListener() {
 
@@ -129,6 +142,7 @@ public class ExportSelectProviderPage<P extends ExportProvider, W extends Export
 	 * @param selection the current selection
 	 */
 	private void updateWizard(ISelection selection) {
+		setErrorMessage(null);
 		if (selection.isEmpty()) {
 			providerFactoryChanged(null);
 			setMessage(null);
@@ -136,17 +150,47 @@ public class ExportSelectProviderPage<P extends ExportProvider, W extends Export
 		else if (selection instanceof IStructuredSelection) {
 			IStructuredSelection sel = (IStructuredSelection) selection;
 			Object element = sel.getFirstElement();
-			IOProviderDescriptor desc = (IOProviderDescriptor) element;
+			if (element instanceof IOProviderDescriptor) {
+				IOProviderDescriptor desc = (IOProviderDescriptor) element;
 
-			String descrText = desc.getDescription();
-			if (descrText != null) {
-				setMessage(descrText, INFORMATION);
+				String descrText = desc.getDescription();
+				if (descrText != null) {
+					setMessage(descrText, INFORMATION);
+				}
+				else {
+					setMessage(null);
+				}
+
+				providerFactoryChanged(desc);
 			}
 			else {
-				setMessage(null);
-			}
+				if (getWizard().setPreset(element.toString())) {
+					String msg = null;
+					// try to get preset description
+					IOConfiguration conf = getWizard().getProjectService().getExportConfiguration(
+							element.toString());
+					if (conf != null) {
+						Value val = conf.getProviderConfiguration().get(
+								ExportConfigurations.PARAM_CONFIGURATION_DESCRIPTION);
+						if (val != null) {
+							String descr = val.as(String.class);
+							if (descr != null && !descr.isEmpty()) {
+								msg = descr;
+							}
+						}
+					}
 
-			providerFactoryChanged(desc);
+					if (msg == null) {
+						msg = MessageFormat.format("Use custom export configuration ''{0}''",
+								element);
+					}
+					setMessage(msg, INFORMATION);
+				}
+				else {
+					setMessage(null);
+					setErrorMessage("Invalid preset");
+				}
+			}
 		}
 	}
 
@@ -167,9 +211,6 @@ public class ExportSelectProviderPage<P extends ExportProvider, W extends Export
 		return true;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.io.IOWizardPage#loadPreSelection(eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration)
-	 */
 	@Override
 	public void loadPreSelection(IOConfiguration conf) {
 		for (IOProviderDescriptor desc : factories) {

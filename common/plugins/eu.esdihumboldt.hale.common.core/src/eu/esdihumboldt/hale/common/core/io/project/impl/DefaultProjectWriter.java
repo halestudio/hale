@@ -170,7 +170,8 @@ public class DefaultProjectWriter extends AbstractProjectWriter {
 		}
 		progress.begin("Save project", entries);
 
-		// clear project file information in project
+		// clear project file information that may already be contained in the
+		// project
 		getProject().getProjectFiles().clear();
 
 		// write additional project files if they are to be placed in separate

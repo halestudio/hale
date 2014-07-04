@@ -31,10 +31,52 @@ class BundleParser {
     /**
      * Reads a bundle's version from its MANIFEST.MF file
      */
-    def readVersion(manifestFile) {
+    def readVersion(manifestFile, boolean bundleVersion = false) {
         def map = ManifestElement.parseBundleManifest(new FileInputStream(manifestFile), null)
-        return map.get(Constants.BUNDLE_VERSION).split(';')[0]
+        def version = map.get(Constants.BUNDLE_VERSION).split(';')[0]
+		if (bundleVersion) {
+			version
+		}
+		else {
+			formatVersion(version)
+		}
     }
+	
+	/**
+	 * Format a version how it should be represented in a POM file.
+	 */
+	String formatVersion(String version) {
+		if (version.endsWith('.qualifier')) {
+			// turn qualifiers into SNAPSHOTS
+			version[0..-11] + '-SNAPSHOT'
+		}
+		else {
+			// return as-is
+			version
+		}
+	}
+	
+	/**
+	 * Tries to detect the bundle's Java version from the manifest.
+	 * If detection fails, it returns the default version.
+	 */
+	def readJavaVersion(manifestFile) {
+		def map = ManifestElement.parseBundleManifest(new FileInputStream(manifestFile), null)
+		def env = map.get(Constants.BUNDLE_REQUIREDEXECUTIONENVIRONMENT)
+		if (env) {
+			String envStr = env as String
+			if (env.startsWith('JavaSE-')) {
+				return env.substring(7)
+			}
+			if (env.startsWith('OSGi/Minimum-')) {
+				return env.substring(13)
+			}
+		}
+		
+		//TODO also check possible instruction in build.properties?
+	
+		return project.ext.defaultJavaVersion
+	}
 
     /**
      * Checks if a plugin in the given path has the Scala nature.
@@ -48,6 +90,13 @@ class BundleParser {
 	 */
 	def needsGroovy(path) {
 		hasNature(path, 'org.eclipse.jdt.groovy.core.groovyNature')
+	}
+	
+	/**
+	 * Checks if a plugin in the given path has the Java nature.
+	 */
+	def isJavaProject(path) {
+		hasNature(path, 'org.eclipse.jdt.core.javanature')
 	}
 	
 	/**
@@ -79,6 +128,24 @@ class BundleParser {
 			
 		true
 	}
+	
+	/**
+	 * Determines if a workspace feature should be included.
+	 */
+	boolean acceptFeature(def path, def sname) {
+		// skip features that are explicitly excluded
+		if (project.ext.excludeBundles?.any { it == sname })
+			return false
+		
+		// skip features where the specified OS does not match the build
+		def os = project.ext.osSpecificBundles[sname]
+		if (os && !os.any { it == project.ext.osgiOS}) {
+			// OS information is there but does not match
+			return false
+		}
+			
+		true
+	}
 
     private def getParsedBundlesTraverse(dir) {
         dir.listFiles().each { path ->
@@ -93,7 +160,9 @@ class BundleParser {
 	                                'version': readVersion(manifestPath),
 	                                'path': path,
 	                                'needsScala': needsScala(path),
-									'needsGroovy': needsGroovy(path)
+									'needsGroovy': needsGroovy(path),
+									'isJavaProject': isJavaProject(path),
+									'javaVersion': readJavaVersion(manifestPath),
 	                        ]
 						}
 						else {
@@ -132,4 +201,45 @@ class BundleParser {
 
         return project.ext.parsedBundles
     }
+	
+	private def getParsedFeaturesTraverse(dir) {
+		dir.listFiles().each { path ->
+			if (path.isDirectory()) {
+				def featureXmlPath = new File(path, 'feature.xml')
+				if (featureXmlPath.exists()) {
+					// read feature information
+					def feature = new groovy.util.XmlSlurper().parse(featureXmlPath)
+					
+					def id = feature.@id as String
+					if (!project.ext.parsedFeatures.containsKey(id)) {
+						if (acceptFeature(path, id)) {
+							project.ext.parsedFeatures[id] = [
+									'version': formatVersion(feature.@version as String),
+									'path': path,
+									'label': feature.@id as String
+							]
+						}
+						else {
+							println "Skipping feature at $path ($id)"
+						}
+					} else {
+						throw new IllegalStateException("Duplicate feature ID ${id}")
+					}
+				} else {
+					getParsedFeaturesTraverse(path)
+				}
+			}
+		}
+	}
+	
+	def getParsedFeatures() {
+		if (!project.ext.properties.containsKey("parsedFeatures")) {
+			project.ext.parsedFeatures = [:]
+			for (b in project.ext.bundles) {
+				getParsedFeaturesTraverse(b)
+			}
+		}
+
+		return project.ext.parsedFeatures
+	}
 }

@@ -17,24 +17,30 @@ package eu.esdihumboldt.hale.io.html.svg.mapping
 
 import static org.apache.commons.lang.StringEscapeUtils.escapeHtml as escape
 
+import java.util.Map.Entry
+
 import org.pegdown.Extensions
 import org.pegdown.PegDownProcessor
-
-import com.google.common.collect.ListMultimap
+import org.w3c.dom.Element
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil
 import eu.esdihumboldt.hale.common.align.model.Alignment
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil
 import eu.esdihumboldt.hale.common.align.model.Cell
 import eu.esdihumboldt.hale.common.align.model.ChildContext
 import eu.esdihumboldt.hale.common.align.model.Entity
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition
+import eu.esdihumboldt.hale.common.align.model.ParameterValue
+import eu.esdihumboldt.hale.common.core.io.Value
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo
 import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality
 import eu.esdihumboldt.util.Identifiers
-import groovy.json.JsonBuilder
+import eu.esdihumboldt.util.groovy.json.JsonStreamBuilder
+import eu.esdihumboldt.util.xml.XmlUtil
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
 
@@ -94,7 +100,11 @@ class MappingDocumentation {
 		alignment.cells.each { Cell cell ->
 			def id = simpleIds.getId(cell)
 			// create JSON representation
-			cellData[id] = cellInfoJSON(cell)
+			StringWriter writer = new StringWriter()
+			writer.withWriter { Writer w ->
+				cellInfoJSON(cell, new JsonStreamBuilder(w))
+			}
+			cellData[id] = writer.toString()
 
 			// create cell explanation
 			cellExplanations[id] = cellExplanation(cell)
@@ -125,90 +135,137 @@ class MappingDocumentation {
 		exp
 	}
 
-	@CompileStatic(TypeCheckingMode.SKIP)
-	private static String cellInfoJSON(Cell cell) {
+	private static Object getValueRepresentation(Value value, ValueRepresentation valueRep) {
+		if (valueRep != null) {
+			return valueRep.getValueRepresentation(value)
+		}
+
+		// fall-back to default representation
+		if (value.isRepresentedAsDOM()) {
+			Element element = value.getDOMRepresentation()
+			return element != null ? XmlUtil.serialize(element, false) : null
+		}
+		else {
+			return value.getStringRepresentation()
+		}
+	}
+
+	/**
+	 * Create a JSON representation from a cell.
+	 */
+	public static String cellInfoJSON(Cell cell, JsonStreamBuilder json, CellJsonExtension ext = null, ValueRepresentation valueRep = null) {
 		// collect cell information
 
 		// get the associated function
 		AbstractFunction<?> function = FunctionUtil.getFunction(cell
 				.getTransformationIdentifier())
 
-		// create JSON representation
-		JsonBuilder builder = new JsonBuilder()
-		builder.call {
+		// create JSON representation of individual cell
+		json {
 			// function name
-			functionName function.displayName
+			json 'functionName', function?.displayName?:cell.transformationIdentifier
+
+			// function ID
+			json 'functionId', cell.transformationIdentifier
+
+			// if the cell is a type relation
+			json 'typeRelation', AlignmentUtil.isTypeCell(cell)
 
 			// list of function parameters
 			if (cell.transformationParameters) {
-				functionParameters(cell.transformationParameters.entries().collect {
-					// label and value
-					[paramLabel: it.key, paramValue: it.value as String]
-				})
+				cell.transformationParameters.entries().each { Entry<String, ParameterValue> entry ->
+					FunctionParameter paramDef = function?.getParameter(entry.key)
+					json 'functionParameters[]', {
+						// label and value
+						json 'paramLabel', paramDef?.displayName?:entry.key
+						json 'paramName', entry.key
+						json 'paramValue', getValueRepresentation(entry.value.intern(), valueRep)
+						json 'simple', !entry.value.representedAsDOM
+					}
+				}
 			}
 			else {
-				functionParameters([])
+				// fails w/o -> write empty array
+				json 'functionParameters', []
 			}
 
-			if (cell.source) {
-				sources(entitiesJSON(builder, cell.source))
+			if (cell.source != null && !cell.source.isEmpty()) {
+				cell.source.entries().each { Entry<String, Entity> entry ->
+					json 'sources[]', {
+						entityJSON(json, entry.key, entry.value, ext)
+					}
+				}
 			}
 			else {
-				sources([])
+				// fails w/o -> write empty array
+				json 'sources', []
 			}
-			if (cell.target) {
-				targets(entitiesJSON(builder, cell.target))
+			if (cell.target != null && !cell.target.isEmpty()) {
+				cell.target.entries().each { Entry<String, Entity> entry ->
+					json 'targets[]', {
+						entityJSON(json, entry.key, entry.value, ext)
+					}
+				}
 			}
 			else {
-				targets([])
+				// fails w/o -> write empty array
+				json 'targets', []
+			}
+
+			String explanation = cellExplanation(cell)
+			if (explanation) {
+				json 'explanation', explanation
+			}
+
+			if (ext != null) {
+				ext.augmentCellJson(cell, json)
 			}
 		}
-		builder.toString()
 	}
 
-	@CompileStatic(TypeCheckingMode.SKIP)
-	private static def entitiesJSON(JsonBuilder builder, ListMultimap<String, Entity> entities) {
-		entities.entries().collect {
-			Entity entity = it.value
-			builder.call {
-				EntityDefinition ede = entity.definition
-				// property path
-				propertyPath(
-						// type (TODO include filter)
-						[typeString(ede)]+
-						// properties
-						ede.propertyPath.collect { ChildContext context ->
-							childString(context)
-						}
-						)
+	private static def entityJSON(JsonStreamBuilder json, String name, Entity entity, CellJsonExtension ext) {
+		json {
+			EntityDefinition ede = entity.definition
 
-				// property descriptions
-				propertyDescriptions(
-						// type
-						[
-							builder.call {
-								if (ede.type.description) {
-									typeDescription markdownToHtml(ede.type.description)
-								}
-							}]
-						+
-						// children
-						ede.propertyPath.collect { ChildContext context ->
-							builder.call {
-								if (context.child.asProperty()) {
-									// property type
-									propertyType context.child.asProperty().propertyType.displayName
-								}
-								// cardinality
-								Cardinality card = DefinitionUtil.getCardinality(context.child)
-								propertyCardinality card as String
-								// description
-								if (context.child.description) {
-									propertyDescription markdownToHtml(context.child.description)
-								}
-							}
-						}
-						)
+			// property path
+
+			// type (TODO include filter)
+			json 'propertyPath[]', typeString(ede)
+			// children
+			ede.propertyPath.each { ChildContext context ->
+				json 'propertyPath[]', childString(context)
+			}
+
+			// property descriptions
+
+			// type
+			json 'propertyDescriptions[]', {
+				if (ede.type.description) {
+					json 'typeDescription', markdownToHtml(ede.type.description)
+				}
+			}
+			// children
+			ede.propertyPath.each { ChildContext context ->
+				json 'propertyDescriptions[]', {
+					if (context.child.asProperty()) {
+						// property type
+						json 'propertyType', context.child.asProperty().propertyType.displayName
+					}
+					// cardinality
+					Cardinality card = DefinitionUtil.getCardinality(context.child)
+					json 'propertyCardinality', card as String
+					// description
+					if (context.child.description) {
+						json 'propertyDescription', markdownToHtml(context.child.description)
+					}
+				}
+			}
+
+			// short name
+			json 'shortName', ede.definition.displayName
+
+			if (ext != null) {
+				ext.augmentEntityJson(entity, name, json)
 			}
 		}
 	}

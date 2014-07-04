@@ -131,6 +131,20 @@ public class HeadlessProjectAdvisor extends AbstractIOAdvisor<ProjectReader> {
 	 * @param serviceProvider the service provider in the current context
 	 */
 	public HeadlessProjectAdvisor(ReportHandler reportHandler, ServiceProvider serviceProvider) {
+		this(reportHandler, serviceProvider, null);
+	}
+
+	/**
+	 * Default constructor
+	 * 
+	 * @param reportHandler the report handler to use when executing contained
+	 *            I/O configurations, may be <code>null</code>
+	 * @param serviceProvider the service provider in the current context
+	 * @param additionalAdvisors a map with additional I/O advisors, action ID
+	 *            mapped to advisor, may be <code>null</code>
+	 */
+	public HeadlessProjectAdvisor(ReportHandler reportHandler, ServiceProvider serviceProvider,
+			Map<String, IOAdvisor<?>> additionalAdvisors) {
 		super();
 
 		setServiceProvider(serviceProvider);
@@ -138,6 +152,9 @@ public class HeadlessProjectAdvisor extends AbstractIOAdvisor<ProjectReader> {
 		this.reportHandler = reportHandler;
 
 		advisors = new HashMap<String, IOAdvisor<?>>();
+		if (additionalAdvisors != null) {
+			advisors.putAll(additionalAdvisors);
+		}
 
 		sourceSchemaAdvisor = new LoadSchemaAdvisor(SchemaSpaceID.SOURCE);
 		advisors.put(SchemaIO.ACTION_LOAD_SOURCE_SCHEMA, sourceSchemaAdvisor);

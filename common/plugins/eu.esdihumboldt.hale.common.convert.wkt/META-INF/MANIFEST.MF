@@ -2,9 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WKT Geometry Converters
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.convert.wkt
-Bundle-Version: 2.8.0.qualifier
+Bundle-Version: 2.9.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.vividsolutions.jts,
  com.vividsolutions.jts.geom,
  com.vividsolutions.jts.io
 Require-Bundle: eu.esdihumboldt.hale.common.convert;bundle-version="2.2.0"
+Bundle-Vendor: data harmonisation panel

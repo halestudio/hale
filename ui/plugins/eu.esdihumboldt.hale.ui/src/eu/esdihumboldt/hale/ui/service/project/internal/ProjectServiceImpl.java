@@ -26,7 +26,10 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -56,6 +59,7 @@ import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
+import eu.esdihumboldt.hale.common.core.io.extension.IOProviderExtension;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.project.ComplexConfigurationService;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectDescription;
@@ -922,40 +926,46 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		return updater;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#addExportConfigurations(java.util.List)
-	 */
 	@Override
-	public void addExportConfigurations(List<IOConfiguration> confs) {
-		for (IOConfiguration conf : confs) {
-			main.getExportConfigurations().add(conf);
-		}
-		notifyExportConfigurationChanged();
-
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#removeExportConfigurations(java.util.List)
-	 */
-	@Override
-	public void removeExportConfigurations(List<IOConfiguration> confs) {
-		main.getExportConfigurations().removeAll(confs);
+	public void addExportConfiguration(String name, IOConfiguration conf) {
+		main.getExportConfigurations().put(name, conf);
+		setChanged();
 		notifyExportConfigurationChanged();
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#getExportConfigurationNames()
-	 */
 	@Override
-	public List<String> getExportConfigurationNames() {
-		List<String> names = new ArrayList<String>();
-		for (IOConfiguration conf : main.getExportConfigurations()) {
-			String name = conf.getProviderConfiguration().get("configurationName")
-					.getStringRepresentation();
-			if (name != null)
-				names.add(name);
+	public void removeExportConfiguration(String name) {
+		main.getExportConfigurations().remove(name);
+		setChanged();
+		notifyExportConfigurationChanged();
+	}
+
+	@Override
+	public IOConfiguration getExportConfiguration(String name) {
+		IOConfiguration conf = main.getExportConfigurations().get(name);
+		if (conf != null) {
+			return conf.clone();
 		}
-		return names;
+		return null;
+	}
+
+	@Override
+	public Collection<String> getExportConfigurationNames() {
+		return Collections.unmodifiableSet(main.getExportConfigurations().keySet());
+	}
+
+	@Override
+	public Collection<String> getExportConfigurationNames(Class<? extends IOProvider> providerClass) {
+		Set<String> result = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+		for (Entry<String, IOConfiguration> entry : main.getExportConfigurations().entrySet()) {
+			IOConfiguration conf = entry.getValue();
+			String providerId = conf.getProviderId();
+			IOProviderDescriptor descr = IOProviderExtension.getInstance().getFactory(providerId);
+			if (descr != null && providerClass.isAssignableFrom(descr.getProviderType())) {
+				result.add(entry.getKey());
+			}
+		}
+		return result;
 	}
 
 	@Override

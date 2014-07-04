@@ -216,6 +216,16 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 	}
 
 	/**
+	 * Simple structural retype transformation test.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testStructuralRetype1() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.STRUCTURAL_RETYPE_1));
+	}
+
+	/**
 	 * A simple Math Expression transformation test.
 	 * 
 	 * @throws Exception if an error occurs executing the test

@@ -15,7 +15,7 @@
 
 package eu.esdihumboldt.hale.common.headless;
 
-import java.util.Collection;
+import java.util.Map;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
@@ -72,7 +72,7 @@ public interface TransformationEnvironment extends ServiceProvider {
 	 * @return copies of the export presets, fully configured except for the
 	 *         target
 	 */
-	public Collection<? extends IOConfiguration> getExportPresets();
+	public Map<String, ? extends IOConfiguration> getExportPresets();
 
 	/**
 	 * Get export templates compatible to the target schema, not fully
@@ -81,7 +81,7 @@ public interface TransformationEnvironment extends ServiceProvider {
 	 * @return copies of the export templates, configured at least with the
 	 *         action and provider ID
 	 */
-	public Collection<? extends IOConfiguration> getExportTemplates();
+	public Map<String, ? extends IOConfiguration> getExportTemplates();
 
 	// TODO import/export configurations
 

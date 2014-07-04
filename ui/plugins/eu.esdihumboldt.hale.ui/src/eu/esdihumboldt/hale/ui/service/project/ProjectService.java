@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.ui.service.project;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.List;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
@@ -174,26 +175,45 @@ public interface ProjectService {
 	public LocationUpdater getLocationUpdater();
 
 	/**
-	 * Add the given configuration to the export configurations of the project
+	 * Add the given configuration to the export configurations of the project.
 	 * 
-	 * @param confs the configurations which should be added
+	 * @param name the configuration name
+	 * @param config the I/O configuration
 	 */
-	public void addExportConfigurations(List<IOConfiguration> confs);
+	public void addExportConfiguration(String name, IOConfiguration config);
 
 	/**
-	 * Remove the given configurations from the export configurations of the
-	 * project
+	 * Remove the export configuration with the given name from the export
+	 * configurations of the project.
 	 * 
-	 * @param confs the list of configurations which should be removed
+	 * @param name the export configuration name
 	 */
-	public void removeExportConfigurations(List<IOConfiguration> confs);
+	public void removeExportConfiguration(String name);
 
 	/**
-	 * Get all the names of the saved export configurations
+	 * Get a clone of the export configuration with the given name.
+	 * 
+	 * @param name the export configuration name
+	 * @return the I/O configuration
+	 */
+	public IOConfiguration getExportConfiguration(String name);
+
+	/**
+	 * Get the names of all export configurations.
 	 * 
 	 * @return the export configuration names
 	 */
-	public List<String> getExportConfigurationNames();
+	public Collection<String> getExportConfigurationNames();
+
+	/**
+	 * Get the names of export configurations applicable for the given provider
+	 * class.
+	 * 
+	 * @param providerClass the provider type
+	 * 
+	 * @return the export configuration names
+	 */
+	public Collection<String> getExportConfigurationNames(Class<? extends IOProvider> providerClass);
 
 	/**
 	 * Returns the location the current project was loaded from. May be

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: XML CodeList I/O
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.codelist.xml;singleton:=true
-Bundle-Version: 2.8.0.qualifier
+Bundle-Version: 2.9.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.io;version="1.6.0",
  de.fhg.igd.slf4jplus,
@@ -14,7 +14,14 @@ Import-Package: com.google.common.io;version="1.6.0",
  eu.esdihumboldt.hale.common.core.io.report.impl,
  eu.esdihumboldt.hale.common.core.io.supplier,
  eu.esdihumboldt.hale.common.core.report,
+ org.apache.http;version="4.3.2",
+ org.apache.http.client;version="4.3.3",
+ org.apache.http.client.fluent;version="4.3.3",
+ org.apache.http.entity;version="4.3.2",
  org.eclipse.osgi.util,
  org.slf4j;version="1.5.11"
 Require-Bundle: eu.esdihumboldt.hale.common.core,
  org.eclipse.core.contenttype;bundle-version="3.4.100"
+Export-Package: eu.esdihumboldt.hale.io.codelist.inspire.reader,
+ eu.esdihumboldt.hale.io.codelist.xml.reader
+Bundle-Vendor: data harmonisation panel

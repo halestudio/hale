@@ -51,4 +51,10 @@ public interface ReportLog<T extends Message> {
 	 */
 	public void info(T message);
 
+	/**
+	 * Add all messages of the given report to this report.
+	 * 
+	 * @param report the report to add the messages from
+	 */
+	public void importMessages(Report<? extends T> report);
 }

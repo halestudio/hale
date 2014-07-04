@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="de.fhg.igd.hale.fme.feature"
+      label="HALE FME Plug-In Connector Feature"
+      version="2.9.0"
+      provider-name="Fraunhofer IGD"
+      plugin="de.fhg.igd.hale.fme.branding">
+
+   <copyright>
+      Copyright 2013-2014 Fraunhofer IGD
+   </copyright>
+
+   <license url="http://www.esdi-community.eu/attachments/204/license.txt">
+      End User License Agreement for Fraunhofer HALE Schema Transformation Plug-in for FME
+   </license>
+
+   <plugin
+         id="de.fhg.igd.hale.fme"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="de.fhg.igd.hale.fme.branding"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="de.fhg.igd.hale.fme.doc"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="de.fhg.igd.hale.fme.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

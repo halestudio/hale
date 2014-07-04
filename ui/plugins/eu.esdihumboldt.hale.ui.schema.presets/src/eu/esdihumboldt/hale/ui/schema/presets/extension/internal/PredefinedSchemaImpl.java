@@ -25,6 +25,8 @@ import org.osgi.framework.Bundle;
 
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
+import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaCategory;
+import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaCategoryExtension;
 import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaPreset;
 
 /**
@@ -124,6 +126,19 @@ public class PredefinedSchemaImpl implements SchemaPreset {
 	@Override
 	public String getVersion() {
 		return element.getAttribute("version");
+	}
+
+	@Override
+	public String getCategoryId() {
+		String catId = element.getAttribute("category");
+		// check if category actually exists
+		SchemaCategory cat = SchemaCategoryExtension.getInstance().get(catId);
+		if (cat != null) {
+			return catId;
+		}
+		else {
+			return null;
+		}
 	}
 
 }
