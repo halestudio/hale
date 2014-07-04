@@ -64,6 +64,9 @@ import eu.esdihumboldt.hale.ui.util.components.DynamicScrolledComposite;
 public class DefaultSchemaTypePage extends SchemaReaderConfigurationPage {
 
 	private String defaultString = "";
+	/**
+	 * Field editor for editing the schema name as string
+	 */
 	protected StringFieldEditor sfe;
 	private Group group;
 	private String[] lastSecondRow = null;
@@ -142,31 +145,39 @@ public class DefaultSchemaTypePage extends SchemaReaderConfigurationPage {
 
 		super.onShowPage(firstShow);
 
-		getWizard().getProvider();
-
 		LocatableInputSupplier<? extends InputStream> source = getWizard().getProvider()
 				.getSource();
 
 		int indexStart = 0;
 		int indexEnd = source.getLocation().getPath().length() - 1;
 
+		// get schema name based on file name
 		if (source.getLocation().getPath() != null) {
 			indexStart = source.getLocation().getPath().lastIndexOf("/") + 1;
 			if (source.getLocation().getPath().lastIndexOf(".") >= 0) {
 				indexEnd = source.getLocation().getPath().lastIndexOf(".");
 			}
 
+			// set type name
 			defaultString = source.getLocation().getPath().substring(indexStart, indexEnd);
 			sfe.setStringValue(defaultString);
 			setPageComplete(sfe.isValid());
 		}
 
+		update();
+	}
+
+	/**
+	 * Update all fields (should be called if page is initialized or the
+	 * selection of input (file or table) has been changed
+	 */
+	protected void update() {
 		int length = 0;
 		if (header.length != 0) {
 			length = header.length;
 		}
 
-		// disposes all property names if the read configuration has changed
+		// dispose all property names if the read configuration has been changed
 		if (lastSecondRow != null && !Arrays.equals(header, lastSecondRow)) {
 			for (TypeNameField properties : fields) {
 				properties.dispose();
