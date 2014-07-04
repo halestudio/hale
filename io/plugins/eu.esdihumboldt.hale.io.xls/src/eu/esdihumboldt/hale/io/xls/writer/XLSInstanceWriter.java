@@ -17,9 +17,12 @@ package eu.esdihumboldt.hale.io.xls.writer;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -35,7 +38,11 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.orient.OInstance;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
 import eu.esdihumboldt.hale.io.csv.writer.AbstractTableInstanceWriter;
 import eu.esdihumboldt.hale.io.xls.XLSCellStyles;
 
@@ -51,6 +58,8 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 	private CellStyle headerStyle;
 	private CellStyle cellStyle;
 
+	private List<String> headerRowStrings;
+
 	/**
 	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#execute(eu.esdihumboldt.hale.common.core.io.ProgressIndicator,
 	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
@@ -59,7 +68,8 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 
-		super.execute(progress, reporter);
+		boolean solveNestedProperties = getParameter(
+				InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES).as(Boolean.class);
 
 		// write xls file
 		if (getContentType().getId().equals("eu.esdihumboldt.hale.io.xls.xls")) {
@@ -77,15 +87,37 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 		cellStyle = XLSCellStyles.getNormalStyle(wb, false);
 		headerStyle = XLSCellStyles.getHeaderStyle(wb);
 
-		List<List<List<Object>>> sheets = getTable();
-		List<String> sheetNames = getSheetNames();
+		// get all instances
+		InstanceCollection instances = getInstances();
+		Iterator<Instance> instanceIterator = instances.iterator();
+		Instance instance = instanceIterator.next();
 
-		for (int i = 0; i < sheets.size(); i++) {
-			Sheet sh = wb.createSheet(sheetNames.get(i));
+		List<Instance> remainingInstances = new ArrayList<Instance>();
 
-			// store instances with other type definitions in extra sheet
-			write(sheets.get(i), sh);
+		headerRowStrings = new ArrayList<String>();
+
+		// all instances with equal type definitions are stored in an extra
+		// sheet
+		TypeDefinition definition = instance.getDefinition();
+		Sheet sheet = wb.createSheet(definition.getDisplayName());
+		Row headerRow = sheet.createRow(0);
+		int rowNum = 1;
+		Row row = sheet.createRow(rowNum++);
+		writeRow(row, super.getPropertyMap(instance, headerRowStrings, solveNestedProperties));
+
+		while (instanceIterator.hasNext()) {
+			Instance nextInst = instanceIterator.next();
+			if (nextInst.getDefinition().equals(definition)) {
+				row = sheet.createRow(rowNum++);
+				writeRow(row,
+						super.getPropertyMap(nextInst, headerRowStrings, solveNestedProperties));
+			}
+			else
+				remainingInstances.add(nextInst);
 		}
+		writeHeaderRow(headerRow, headerRowStrings);
+		setCellStyle(sheet, headerRowStrings.size());
+		resizeSheet(sheet);
 
 		// write file
 		FileOutputStream out = new FileOutputStream(getTarget().getLocation().getPath());
@@ -104,27 +136,19 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 		return "XLS file";
 	}
 
-	// the first instance has to be handled independently since it determines
-	// the type definition of the current sheet
-	private void write(List<List<Object>> table, Sheet sheet) {
-
-		for (int i = 0; i < table.size(); i++) {
-			Row row = sheet.createRow(i);
-			List<Object> tableRow = table.get(i);
-			writeRow(row, tableRow, i == 0);
-
+	private void writeHeaderRow(Row row, List<String> cells) {
+		for (int k = 0; k < cells.size(); k++) {
+			Cell cell = row.createCell(k);
+			cell.setCellStyle(headerStyle);
+			setValueOfCell(cell, cells.get(k));
 		}
-		resizeSheet(sheet);
 	}
 
-	private void writeRow(Row row, List<Object> tableRow, boolean header) {
-		for (int k = 0; k < tableRow.size(); k++) {
+	private void writeRow(Row row, Map<String, Object> tableRow) {
+		for (int k = 0; k < headerRowStrings.size(); k++) {
 			Cell cell = row.createCell(k);
-			if (header)
-				cell.setCellStyle(headerStyle);
-			else
-				cell.setCellStyle(cellStyle);
-			setValueOfCell(cell, tableRow.get(k));
+//			cell.setCellStyle(cellStyle);
+			setValueOfCell(cell, tableRow.get(headerRowStrings.get(k)));
 		}
 	}
 
@@ -136,30 +160,48 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 	}
 
 	private void setValueOfCell(Cell cell, Object value) {
-		if (value instanceof Double)
-			cell.setCellValue((Double) value);
-		else if (value instanceof Boolean)
-			cell.setCellValue((Boolean) value);
-		else if (value instanceof Calendar)
-			cell.setCellValue((Calendar) value);
-		else if (value instanceof Date)
-			cell.setCellValue((Date) value);
-		else if (value instanceof RichTextString)
-			cell.setCellValue((RichTextString) value);
-		else if (value instanceof String)
-			cell.setCellValue((String) value);
-		else {
-			if (value instanceof OInstance) {
-				Object instValue = ((OInstance) value).getValue();
-				if (instValue != null) {
-					cell.setCellValue(instValue.toString());
-					return;
-				}
-			}
-			if (value != null)
-				cell.setCellValue(value.toString());
-			else
-				cell.setCellValue("");
+		if (value == null) {
+			cell.setCellValue("");
 		}
+		else {
+			if (value instanceof Double)
+				cell.setCellValue((Double) value);
+			else if (value instanceof Boolean)
+				cell.setCellValue((Boolean) value);
+			else if (value instanceof Calendar)
+				cell.setCellValue((Calendar) value);
+			else if (value instanceof Date)
+				cell.setCellValue((Date) value);
+			else if (value instanceof RichTextString)
+				cell.setCellValue((RichTextString) value);
+			else if (value instanceof String)
+				cell.setCellValue((String) value);
+			else {
+				if (value instanceof OInstance) {
+					Object instValue = ((OInstance) value).getValue();
+					if (instValue != null) {
+						cell.setCellValue(instValue.toString());
+						return;
+					}
+				}
+				cell.setCellValue(value.toString());
+			}
+		}
+
+	}
+
+	private void setCellStyle(Sheet sheet, int rowSize) {
+		int rowNum = sheet.getPhysicalNumberOfRows();
+		for (int i = 1; i < rowNum; i++) {
+			Row row = sheet.getRow(i);
+			for (int k = 0; k < rowSize; k++) {
+				Cell cell = row.getCell(k);
+				if (cell != null)
+					cell.setCellStyle(cellStyle);
+				else
+					row.createCell(k).setCellStyle(cellStyle);
+			}
+		}
+
 	}
 }
