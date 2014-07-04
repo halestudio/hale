@@ -84,7 +84,7 @@
          </property>
          <property
                name="aboutText"
-               value="HUMBOLDT Alignment Editor (HALE)&#x0D;&#x0A;&#x0D;&#x0A;Version ___version___&#x0D;&#x0A;&#x0D;&#x0A;Build ___build___&#x0D;&#x0A;Revision ___revision___&#x0D;&#x0A;&#x0D;&#x0A;Project page:&#x0D;&#x0A;http://www.esdi-community.eu/projects/show/hale&#x0D;&#x0A;&#x0D;&#x0A;Forum:&#x0D;&#x0A;http://www.esdi-community.eu/projects/hale/boards&#x0D;&#x0A;&#x0D;&#x0A;News:&#x0D;&#x0A;http://blog.dhpanel.eu&#x0D;&#x0A;&#x0D;&#x0A;Get professional support:&#x0D;&#x0A;http://www.wetransform.to/products/hale">
+               value="HUMBOLDT Alignment Editor (HALE)&#x0A;&#x0A;Version ___version___&#x0A;&#x0A;Build ___build___&#x0A;Revision ___revision___&#x0A;&#x0A;Project page:&#x0A;http://www.esdi-community.eu/projects/show/hale&#x0A;&#x0A;Forum:&#x0A;http://www.esdi-community.eu/projects/hale/boards&#x0A;&#x0A;News:&#x0A;http://blog.dhpanel.eu&#x0A;&#x0A;Get professional support:&#x0A;http://www.wetransform.to/products/hale">
          </property>
          <property
                name="introTitle"
