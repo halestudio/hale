@@ -6,16 +6,8 @@
       provider-name="data harmonisation panel"
       os="macosx">
 
-   <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
-   </description>
-
-   <copyright url="http://www.example.com/copyright">
-      [Enter Copyright Description here.]
-   </copyright>
-
-   <license url="http://www.example.com/license">
-      [Enter License Description here.]
+   <license>
+      GNU Lesser General Public License, license of included dependencies may vary (see the individual plug-ins).
    </license>
 
    <plugin
