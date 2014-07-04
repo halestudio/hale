@@ -38,16 +38,17 @@ public class AnalyseXLSSchemaTable extends AbstractAnalyseTable {
 	/**
 	 * Default constructor
 	 * 
-	 * @param location the location of the xls/xlsx file
+	 * @param location the location of the Excel file
+	 * @param sheetNum number of the sheet in Excel file
 	 * 
 	 * @throws Exception thrown if the analysis fails
 	 */
-	public AnalyseXLSSchemaTable(URI location) throws Exception {
+	public AnalyseXLSSchemaTable(URI location, int sheetNum) throws Exception {
 
 		header = new ArrayList<String>();
 		rows = new HashMap<Integer, List<String>>();
 
-		analyse(location);
+		analyse(location, sheetNum);
 	}
 
 	/**

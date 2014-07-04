@@ -78,7 +78,9 @@ public class XLSInstanceIOTest extends TestCase {
 		schemaReader.setContentType(contentType);
 		schemaReader.setSource(new FileIOSupplier(tempFile));
 		schemaReader.setParameter(CommonSchemaConstants.PARAM_TYPENAME, Value.of("ItemType"));
-		schemaReader.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES, Value.of(false));
+		schemaReader
+				.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES, Value.of(false));
+		schemaReader.setParameter(InstanceTableIOConstants.SHEET_INDEX, Value.of(0));
 		try {
 			IOReport report = schemaReader.execute(null);
 			assertTrue(report.isSuccess());
@@ -93,6 +95,8 @@ public class XLSInstanceIOTest extends TestCase {
 		reader.setParameter(CommonSchemaConstants.PARAM_SKIP_FIRST_LINE, Value.of(true));
 		reader.setParameter(CommonSchemaConstants.PARAM_TYPENAME, Value.of("ItemType"));
 		reader.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES, Value.of(false));
+		// read sheet with index 0 since there is only one sheet
+		reader.setParameter(InstanceTableIOConstants.SHEET_INDEX, Value.of(0));
 		reader.setContentType(contentType);
 		reader.setSource(new FileIOSupplier(tempFile));
 		try {

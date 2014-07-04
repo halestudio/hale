@@ -40,6 +40,7 @@ import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstanceCollection
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
 import eu.esdihumboldt.hale.io.csv.reader.CommonSchemaConstants;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVInstanceReader;
 import eu.esdihumboldt.hale.io.xls.AnalyseXLSSchemaTable;
@@ -59,6 +60,8 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 
 	// only needed for correct error description
 	private int line = 0;
+
+	private int sheetNum = 0;
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.instance.io.InstanceReader#getInstances()
@@ -86,11 +89,14 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 
 		boolean skipFirst = getParameter(CommonSchemaConstants.PARAM_SKIP_FIRST_LINE).as(
 				Boolean.class);
+
+		sheetNum = getParameter(InstanceTableIOConstants.SHEET_INDEX).as(int.class);
+
 		instances = new DefaultInstanceCollection(new ArrayList<Instance>());
 
 		try {
 			// analyze the excel sheet to get all information
-			analyser = new AnalyseXLSSchemaTable(getSource().getLocation());
+			analyser = new AnalyseXLSSchemaTable(getSource().getLocation(), sheetNum);
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl("Reading the excel sheet has failed", e));
 			return reporter;
@@ -124,7 +130,7 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 	}
 
 	/**
-	 * create instances see
+	 * create instances, see
 	 * {@link CSVInstanceReader#execute(ProgressIndicator, IOReporter)}
 	 * 
 	 * @param row the current row
@@ -148,7 +154,6 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 				}
 
 				Object value = part;
-
 				if (value != null) {
 					Binding binding = property.getPropertyType().getConstraint(Binding.class);
 					try {
@@ -166,8 +171,8 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 						reporter.error(new IOMessageImpl("Cannot convert property value to {0}", e,
 								line, -1, binding.getBinding().getSimpleName()));
 					}
+					instance.addProperty(property.getName(), value);
 				}
-				instance.addProperty(property.getName(), value);
 				propertyIndex++;
 			}
 		}
