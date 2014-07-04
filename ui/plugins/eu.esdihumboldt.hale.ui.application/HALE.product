@@ -50,7 +50,6 @@ http://www.wetransform.to/products/hale
       </win>
    </launcher>
 
-
    <vm>
    </vm>
 
@@ -87,6 +86,7 @@ http://www.wetransform.to/products/hale
       <feature id="eu.esdihumboldt.hale.io.feature.core"/>
       <feature id="eu.esdihumboldt.hale.io.feature.html"/>
       <feature id="eu.esdihumboldt.hale.ui.feature.dropins" version="2.9.0"/>
+      <feature id="de.fhg.igd.hale.fme.feature" version="2.9.0"/>
    </features>
 
    <configurations>

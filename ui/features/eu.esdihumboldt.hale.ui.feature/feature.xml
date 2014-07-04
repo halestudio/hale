@@ -185,13 +185,6 @@
          unpack="false"/>
 
    <plugin
-         id="de.fhg.igd.hale.fme"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="eu.esdihumboldt.hale.ui.util"
          download-size="0"
          install-size="0"
@@ -220,13 +213,6 @@
          unpack="false"/>
 
    <plugin
-         id="de.fhg.igd.hale.fme.doc"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="eu.esdihumboldt.hale.ui.functions.numeric"
          download-size="0"
          install-size="0"
@@ -235,13 +221,6 @@
 
    <plugin
          id="eu.esdihumboldt.hale.ui.cache"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="de.fhg.igd.hale.fme.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
