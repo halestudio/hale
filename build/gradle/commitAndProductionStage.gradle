@@ -475,7 +475,7 @@ def packageClient(productOutputPath) {
 		def targetDir = new File(productOutputPath.absolutePath + '/../../target')
 		targetDir.mkdir()
 		def tarPath = targetDir.absolutePath + '/' + packageName + '.tar.gz';
-		def packCmd =  ['tar', '--preserve-permissions', '-czf', tarPath, '--transform', "'s,^\\./,HALE/,'", "."]
+		def packCmd =  ['tar', '--preserve-permissions', '-czf', tarPath, '--transform', "s,^\\.,$packageName,", '.']
 		def packProc = packCmd.execute(null, productOutputPath)
 		def packBuffer = new StringBuffer()
 		packProc.consumeProcessErrorStream(packBuffer)
