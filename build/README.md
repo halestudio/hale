@@ -10,6 +10,13 @@ The driver has been designed with the following objectives in mind:
   (see limitations below)
 * Tasks should be atomic and as small as possible so build tasks can be grouped
   into pipeline steps (see below)
+  
+License
+-------
+
+The HALE Continuous Delivery build scripts (hale-build) were initially developed
+by Fraunhofer IGD. hale-build is licensed under the terms of the GNU General
+Public License, version 3 or later. 
 
 Requirements
 ------------
@@ -63,12 +70,27 @@ tests. Currently it consists of the following steps:
 
 You can run the commit stage with the following command:
 
-    ./build.sh
+    ./build.sh commitStage
 
 ### Production stage
 
 The production stage consists of compiling sources and building RCP
 products. You can build a specific product with the following command:
+
+   ./build.sh product <path-to-product-file-or-product-alias>
+
+The product file can be based on plugins or features. Either give a product alias as
+defined in the build configuration (e.g. `HALE`) or the path to the product
+file. The path to this file must be relative.
+For example:
+
+	./build.sh product HALE
+
+    ./build.sh product ../ui/plugins/eu.esdihumboldt.hale.ui.application/HALE.product
+
+Alternatively you can use the following command to build from a product
+configuration defined in a yaml file
+(though the HALE yaml definition is currently not maintained):
 
     ./build.sh <type> <name>
 
@@ -77,20 +99,6 @@ names declared in `templates/products/client.yaml` or `templates/products/server
 depending on which type you chose. For example:
 
     ./build.sh client HALE
-
-This command will build the normal HALE client application.
-
-Alternatively you can use the following command to build from a specific
-product definition file:
-
-    ./build.sh product <path-to-product-file-or-product-alias>
-
-The product file must be based on plugins. Either give a product alias as
-defined in the build configuration (e.g. `HALE`) or the path to the product
-file. The path to this file must be relative.
-For example:
-
-    ./build.sh product -PproductFile=../ui/plugins/eu.esdihumboldt.hale.ui.application/HALE.product
 
 Build properties
 ----------------
