@@ -246,7 +246,7 @@
          unpack="false"/>
 
    <plugin
-         id="de.cs3d.util.eclipse"
+         id="de.fhg.igd.eclipse.util"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -368,13 +368,6 @@
 
    <plugin
          id="commons-httpclient"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="de.fhg.igd.concurrency"
          download-size="0"
          install-size="0"
          version="0.0.0"

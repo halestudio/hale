@@ -19,7 +19,7 @@ package eu.esdihumboldt.hale.ui.io.action;
 import org.eclipse.core.expressions.Expression;
 import org.eclipse.ui.services.IEvaluationService;
 
-import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 
 /**

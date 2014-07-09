@@ -19,9 +19,9 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import de.cs3d.util.eclipse.extension.AbstractExtension;
-import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
-import de.cs3d.util.eclipse.extension.FactoryFilter;
+import de.fhg.igd.eclipse.util.extension.AbstractExtension;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactoryCollection;
+import de.fhg.igd.eclipse.util.extension.FactoryFilter;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExtension;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;

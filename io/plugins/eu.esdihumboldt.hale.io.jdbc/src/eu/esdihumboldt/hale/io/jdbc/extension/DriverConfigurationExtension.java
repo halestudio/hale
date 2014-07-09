@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.io.jdbc.extension;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension;
+import de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension;
 
 /**
  * Extension for {@link ConnectionConfigurer}s.

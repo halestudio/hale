@@ -21,12 +21,12 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import de.cs3d.util.eclipse.extension.AbstractConfigurationFactory;
-import de.cs3d.util.eclipse.extension.AbstractExtension;
-import de.cs3d.util.eclipse.extension.ExtensionObjectDefinition;
-import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
-import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
-import de.cs3d.util.eclipse.extension.FactoryFilter;
+import de.fhg.igd.eclipse.util.extension.AbstractConfigurationFactory;
+import de.fhg.igd.eclipse.util.extension.AbstractExtension;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectDefinition;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactoryCollection;
+import de.fhg.igd.eclipse.util.extension.FactoryFilter;
 
 /**
  * Extension for {@link MetadataAction}s
@@ -79,7 +79,7 @@ public class MetadataActionExtension extends
 		}
 
 		/**
-		 * @see de.cs3d.util.eclipse.extension.ExtensionObjectDefinition#getDisplayName()
+		 * @see de.fhg.igd.eclipse.util.extension.ExtensionObjectDefinition#getDisplayName()
 		 */
 		@Override
 		public String getDisplayName() {

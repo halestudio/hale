@@ -21,9 +21,9 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import de.cs3d.util.eclipse.extension.AbstractConfigurationFactory;
-import de.cs3d.util.eclipse.extension.AbstractExtension;
-import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
+import de.fhg.igd.eclipse.util.extension.AbstractConfigurationFactory;
+import de.fhg.igd.eclipse.util.extension.AbstractExtension;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.util.definition.AbstractObjectFactory;
@@ -97,7 +97,7 @@ public class ReportFactory extends AbstractObjectFactory<Report, ReportDefinitio
 		}
 
 		/**
-		 * @see de.cs3d.util.eclipse.extension.AbstractExtension#createFactory(org.eclipse.core.runtime.IConfigurationElement)
+		 * @see de.fhg.igd.eclipse.util.extension.AbstractExtension#createFactory(org.eclipse.core.runtime.IConfigurationElement)
 		 */
 		@Override
 		protected ExtensionObjectFactory<ReportDefinition<?>> createFactory(

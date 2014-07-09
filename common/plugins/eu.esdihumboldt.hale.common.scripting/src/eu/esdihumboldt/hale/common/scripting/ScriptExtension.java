@@ -21,7 +21,7 @@ import java.util.Collection;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import de.cs3d.util.eclipse.extension.AbstractExtension;
+import de.fhg.igd.eclipse.util.extension.AbstractExtension;
 
 /**
  * Extension for {@link Script}s.
@@ -57,7 +57,7 @@ public class ScriptExtension extends AbstractExtension<Script, ScriptFactory> {
 	}
 
 	/**
-	 * @see de.cs3d.util.eclipse.extension.AbstractExtension#createFactory(org.eclipse.core.runtime.IConfigurationElement)
+	 * @see de.fhg.igd.eclipse.util.extension.AbstractExtension#createFactory(org.eclipse.core.runtime.IConfigurationElement)
 	 */
 	@Override
 	protected ScriptFactory createFactory(IConfigurationElement conf) throws Exception {

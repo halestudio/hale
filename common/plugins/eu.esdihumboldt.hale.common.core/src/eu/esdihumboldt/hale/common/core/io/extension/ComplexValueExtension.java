@@ -22,8 +22,8 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import de.cs3d.util.eclipse.extension.ExtensionUtil;
-import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension;
+import de.fhg.igd.eclipse.util.extension.ExtensionUtil;
+import de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.ComplexValueType;

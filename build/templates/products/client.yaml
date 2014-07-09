@@ -72,10 +72,10 @@ HALE:
   - com.vividsolutions.jts
   - de.cs3d.common.metamodel
   - de.cs3d.ui.bookmarks
-  - de.cs3d.ui.util.eclipse
+  - de.fhg.igd.eclipse.ui.util
   - de.fhg.igd.slf4jplus.ui.errorlog@0
   - de.fhg.igd.slf4jplus.ui.userstatus
-  - de.cs3d.util.eclipse
+  - de.fhg.igd.eclipse.util
   - de.cs3d.util.helper
   - de.fhg.igd.slf4jplus
   - de.fhg.igd.slf4jplus.logback@1

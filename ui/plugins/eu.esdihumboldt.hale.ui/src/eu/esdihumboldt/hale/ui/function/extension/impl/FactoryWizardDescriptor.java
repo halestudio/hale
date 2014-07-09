@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.ui.function.extension.impl;
 
 import java.net.URL;
 
-import de.cs3d.util.eclipse.extension.AbstractObjectFactory;
+import de.fhg.igd.eclipse.util.extension.AbstractObjectFactory;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;

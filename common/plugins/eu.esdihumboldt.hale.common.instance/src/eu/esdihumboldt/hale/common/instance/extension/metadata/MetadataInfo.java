@@ -22,8 +22,8 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
-import de.cs3d.util.eclipse.extension.ExtensionUtil;
-import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
+import de.fhg.igd.eclipse.util.extension.ExtensionUtil;
+import de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension.Identifiable;
 
 /**
  * Represents a declared Metadata Info
@@ -62,7 +62,7 @@ public class MetadataInfo implements Identifiable {
 	}
 
 	/**
-	 * @see de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable#getId()
+	 * @see de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension.Identifiable#getId()
 	 */
 	@Override
 	public String getId() {

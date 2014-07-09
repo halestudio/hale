@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.common.align.extension.transformation;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import de.cs3d.util.eclipse.extension.AbstractExtension;
+import de.fhg.igd.eclipse.util.extension.AbstractExtension;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyTransformation;
 
 /**

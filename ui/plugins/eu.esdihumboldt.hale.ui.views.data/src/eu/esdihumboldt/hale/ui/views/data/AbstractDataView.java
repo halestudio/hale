@@ -31,9 +31,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.part.WorkbenchPart;
 
-import de.cs3d.ui.util.eclipse.extension.exclusive.ExclusiveExtensionContribution;
-import de.cs3d.util.eclipse.extension.exclusive.ExclusiveExtension;
-import de.cs3d.util.eclipse.extension.exclusive.ExclusiveExtension.ExclusiveExtensionListener;
+import de.fhg.igd.eclipse.ui.util.extension.exclusive.ExclusiveExtensionContribution;
+import de.fhg.igd.eclipse.util.extension.exclusive.ExclusiveExtension;
+import de.fhg.igd.eclipse.util.extension.exclusive.ExclusiveExtension.ExclusiveExtensionListener;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;

@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.WorkbenchPart;
 
-import de.cs3d.util.eclipse.extension.exclusive.ExclusiveExtension.ExclusiveExtensionListener;
+import de.fhg.igd.eclipse.util.extension.exclusive.ExclusiveExtension.ExclusiveExtensionListener;
 import eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;

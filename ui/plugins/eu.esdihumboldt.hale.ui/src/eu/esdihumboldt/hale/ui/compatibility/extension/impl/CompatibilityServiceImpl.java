@@ -28,10 +28,10 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.ui.PlatformUI;
 
-import de.cs3d.util.eclipse.extension.AbstractConfigurationFactory;
-import de.cs3d.util.eclipse.extension.AbstractExtension;
-import de.cs3d.util.eclipse.extension.AbstractObjectFactory;
-import de.cs3d.util.eclipse.extension.ObjectExtension;
+import de.fhg.igd.eclipse.util.extension.AbstractConfigurationFactory;
+import de.fhg.igd.eclipse.util.extension.AbstractExtension;
+import de.fhg.igd.eclipse.util.extension.AbstractObjectFactory;
+import de.fhg.igd.eclipse.util.extension.ObjectExtension;
 import eu.esdihumboldt.cst.internal.CSTCompatibilityMode;
 import eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode;
 import eu.esdihumboldt.hale.common.align.model.Cell;

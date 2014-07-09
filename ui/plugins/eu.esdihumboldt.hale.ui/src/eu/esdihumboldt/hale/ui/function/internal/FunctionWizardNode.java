@@ -20,8 +20,8 @@ import java.util.List;
 
 import org.eclipse.jface.wizard.IWizardContainer;
 
-import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
-import de.cs3d.util.eclipse.extension.FactoryFilter;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactoryCollection;
+import de.fhg.igd.eclipse.util.extension.FactoryFilter;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;

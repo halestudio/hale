@@ -18,9 +18,9 @@ package eu.esdihumboldt.hale.common.align.extension.transformation;
 
 import java.util.List;
 
-import de.cs3d.util.eclipse.extension.AbstractExtension;
-import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
-import de.cs3d.util.eclipse.extension.FactoryFilter;
+import de.fhg.igd.eclipse.util.extension.AbstractExtension;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactoryCollection;
+import de.fhg.igd.eclipse.util.extension.FactoryFilter;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationFunction;
 
 /**

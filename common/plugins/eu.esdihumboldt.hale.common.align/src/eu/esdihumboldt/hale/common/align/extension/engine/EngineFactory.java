@@ -16,7 +16,7 @@
 
 package eu.esdihumboldt.hale.common.align.extension.engine;
 
-import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 
 /**

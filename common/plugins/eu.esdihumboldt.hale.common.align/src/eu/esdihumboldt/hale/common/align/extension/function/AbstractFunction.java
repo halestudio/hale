@@ -30,7 +30,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
-import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
+import de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension.Identifiable;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.CellExplanation;

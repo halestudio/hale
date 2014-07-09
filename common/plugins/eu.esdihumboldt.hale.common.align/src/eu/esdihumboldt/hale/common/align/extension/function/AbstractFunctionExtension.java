@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.SetMultimap;
 
-import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension;
+import de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension;
 
 /**
  * Abstract function extension

@@ -25,10 +25,10 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 
-import de.cs3d.util.eclipse.extension.AbstractConfigurationFactory;
-import de.cs3d.util.eclipse.extension.AbstractExtension;
-import de.cs3d.util.eclipse.extension.ExtensionObjectDefinition;
-import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
+import de.fhg.igd.eclipse.util.extension.AbstractConfigurationFactory;
+import de.fhg.igd.eclipse.util.extension.AbstractExtension;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectDefinition;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.ResourceAdvisor;

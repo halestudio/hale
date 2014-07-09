@@ -15,7 +15,7 @@
 
 package eu.esdihumboldt.hale.ui.common.service.compatibility;
 
-import de.cs3d.util.eclipse.extension.exclusive.ExclusiveExtension;
+import de.fhg.igd.eclipse.util.extension.exclusive.ExclusiveExtension;
 import eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode;
 
 /**

@@ -15,7 +15,7 @@
 
 package eu.esdihumboldt.hale.ui.schema.presets.extension;
 
-import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
+import de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension.Identifiable;
 
 /**
  * Represents a schema category.

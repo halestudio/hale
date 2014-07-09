@@ -28,7 +28,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import de.cs3d.util.eclipse.extension.ExtensionUtil;
+import de.fhg.igd.eclipse.util.extension.ExtensionUtil;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 

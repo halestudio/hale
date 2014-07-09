@@ -50,9 +50,8 @@
       <plugin id="commons-digester"/>
       <plugin id="commons-httpclient"/>
       <plugin id="concurrent"/>
-      <plugin id="de.cs3d.ui.util.eclipse"/>
-      <plugin id="de.cs3d.util.eclipse"/>
-      <plugin id="de.fhg.igd.concurrency"/>
+      <plugin id="de.fhg.igd.eclipse.ui.util"/>
+      <plugin id="de.fhg.igd.eclipse.util"/>
       <plugin id="de.fhg.igd.equinox.test.app"/>
       <plugin id="de.fhg.igd.osgi.util"/>
       <plugin id="de.fhg.igd.slf4jplus"/>

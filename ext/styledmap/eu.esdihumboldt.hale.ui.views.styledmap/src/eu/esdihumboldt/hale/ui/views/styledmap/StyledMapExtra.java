@@ -23,7 +23,7 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PlatformUI;
 import org.jdesktop.swingx.mapviewer.TileOverlayPainter;
 
-import de.cs3d.util.eclipse.extension.selective.SelectiveExtension.SelectiveExtensionListener;
+import de.fhg.igd.eclipse.util.extension.selective.SelectiveExtension.SelectiveExtensionListener;
 import de.fhg.igd.mapviewer.view.MapView;
 import de.fhg.igd.mapviewer.view.MapViewExtension;
 import de.fhg.igd.mapviewer.view.overlay.ITileOverlayService;

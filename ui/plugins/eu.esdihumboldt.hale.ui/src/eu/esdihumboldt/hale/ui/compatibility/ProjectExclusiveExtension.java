@@ -19,10 +19,10 @@ import java.util.List;
 
 import org.eclipse.ui.PlatformUI;
 
-import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
-import de.cs3d.util.eclipse.extension.ObjectExtension;
-import de.cs3d.util.eclipse.extension.exclusive.AbstractExclusiveExtension;
-import de.cs3d.util.eclipse.extension.exclusive.ExclusiveExtension;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
+import de.fhg.igd.eclipse.util.extension.ObjectExtension;
+import de.fhg.igd.eclipse.util.extension.exclusive.AbstractExclusiveExtension;
+import de.fhg.igd.eclipse.util.extension.exclusive.ExclusiveExtension;
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;

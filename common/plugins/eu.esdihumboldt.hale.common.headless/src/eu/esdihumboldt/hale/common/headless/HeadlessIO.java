@@ -20,8 +20,8 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 
-import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
-import de.cs3d.util.eclipse.extension.FactoryFilter;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactoryCollection;
+import de.fhg.igd.eclipse.util.extension.FactoryFilter;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import de.fhg.igd.slf4jplus.ATransaction;

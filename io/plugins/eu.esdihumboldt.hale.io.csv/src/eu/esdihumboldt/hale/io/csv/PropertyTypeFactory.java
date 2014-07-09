@@ -16,7 +16,7 @@
 
 package eu.esdihumboldt.hale.io.csv;
 
-import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
 
 /**
  * Property type interface

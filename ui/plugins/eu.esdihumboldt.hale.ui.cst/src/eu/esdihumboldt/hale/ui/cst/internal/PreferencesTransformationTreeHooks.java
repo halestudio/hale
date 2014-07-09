@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.ui.cst.internal;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 
-import de.cs3d.ui.util.eclipse.extension.selective.PreferencesSelectiveExtension;
+import de.fhg.igd.eclipse.ui.util.extension.selective.PreferencesSelectiveExtension;
 import eu.esdihumboldt.cst.extension.hooks.TransformationTreeHook;
 import eu.esdihumboldt.cst.extension.hooks.TransformationTreeHookExtension;
 import eu.esdihumboldt.cst.extension.hooks.TransformationTreeHookFactory;
