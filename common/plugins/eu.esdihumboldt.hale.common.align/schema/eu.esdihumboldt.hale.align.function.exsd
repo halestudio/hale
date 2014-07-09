@@ -10,6 +10,8 @@
       </documentation>
    </annotation>
 
+   <include schemaLocation="schema://eu.esdihumboldt.hale.common.core/schema/eu.esdihumboldt.hale.parameter.exsd"/>
+
    <element name="extension">
       <annotation>
          <appinfo>
@@ -447,8 +449,8 @@ For references, e.g. to images, use absolute references to plugin and path, led 
       </annotation>
       <complexType>
          <choice>
-            <element ref="functionParameterEnumeration"/>
-            <element ref="functionParameterBinding"/>
+            <element ref="parameterEnumeration"/>
+            <element ref="parameterBinding"/>
          </choice>
          <attribute name="name" type="string" use="required">
             <annotation>
@@ -496,48 +498,6 @@ For references, e.g. to images, use absolute references to plugin and path, led 
                <documentation>
                   Whether the function parameter value may be specified with a script.
 Defaults to false.
-               </documentation>
-            </annotation>
-         </attribute>
-      </complexType>
-   </element>
-
-   <element name="validator">
-      <annotation>
-         <documentation>
-            Validator for functionParameters with a binding.
-         </documentation>
-      </annotation>
-      <complexType>
-         <choice minOccurs="0" maxOccurs="unbounded">
-            <element ref="validatorParameter"/>
-         </choice>
-         <attribute name="class" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-               <appinfo>
-                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.align.extension.function.Validator"/>
-               </appinfo>
-            </annotation>
-         </attribute>
-      </complexType>
-   </element>
-
-   <element name="validatorParameter">
-      <complexType>
-         <attribute name="name" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="value" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
                </documentation>
             </annotation>
          </attribute>
@@ -607,59 +567,6 @@ In principle this is a generalisation of the binding condition, missing the bind
                   </enumeration>
                </restriction>
             </simpleType>
-         </attribute>
-      </complexType>
-   </element>
-
-   <element name="functionParameterEnumeration">
-      <annotation>
-         <documentation>
-            Enumeration for functionParameter.
-         </documentation>
-      </annotation>
-      <complexType>
-         <choice minOccurs="1" maxOccurs="unbounded">
-            <element ref="enumerationValue"/>
-         </choice>
-      </complexType>
-   </element>
-
-   <element name="enumerationValue">
-      <annotation>
-         <documentation>
-            Values of enumeration.
-         </documentation>
-      </annotation>
-      <complexType>
-         <attribute name="value" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-            </annotation>
-         </attribute>
-      </complexType>
-   </element>
-
-   <element name="functionParameterBinding">
-      <annotation>
-         <documentation>
-            Specify a binding for a functionParameter, with an additional validator if needed.
-         </documentation>
-      </annotation>
-      <complexType>
-         <choice minOccurs="0" maxOccurs="1">
-            <element ref="validator"/>
-         </choice>
-         <attribute name="class" type="string" use="default" value="java.lang.String">
-            <annotation>
-               <documentation>
-                  The binding class. Defaults to String.
-               </documentation>
-               <appinfo>
-                  <meta.attribute kind="java"/>
-               </appinfo>
-            </annotation>
          </attribute>
       </complexType>
    </element>

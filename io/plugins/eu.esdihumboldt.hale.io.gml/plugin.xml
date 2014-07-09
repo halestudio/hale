@@ -155,6 +155,17 @@
          <contentType
                ref="eu.esdihumboldt.hale.io.gml.gzip">
          </contentType>
+         <providerParameter
+               optional="false">
+            <parameter
+                  description="The parameter name for the identifier.localId attribute"
+                  label="inspire.sds.localId"
+                  name="inspire.sds.localId">
+               <parameterBinding
+                     class="java.lang.String">
+               </parameterBinding>
+            </parameter>
+         </providerParameter>
       </provider>
    </extension>
 

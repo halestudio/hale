@@ -20,13 +20,15 @@ import net.jcip.annotations.Immutable;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
+import eu.esdihumboldt.hale.common.core.extension.AbstractCommonParameter;
+
 /**
  * Abstract definition of a parameter based on an {@link IConfigurationElement}
  * 
  * @author Simon Templer
  */
 @Immutable
-public abstract class AbstractParameter {
+public abstract class AbstractParameter extends AbstractCommonParameter {
 
 	/**
 	 * Value for {@link #maxOccurrence} that represents an unbounded maximum
@@ -34,12 +36,8 @@ public abstract class AbstractParameter {
 	 */
 	public static final int UNBOUNDED = -1;
 
-	private final String name;
 	private final int minOccurrence;
 	private final int maxOccurrence;
-
-	private final String label;
-	private final String description;
 
 	/**
 	 * Create a parameter definition
@@ -47,11 +45,7 @@ public abstract class AbstractParameter {
 	 * @param conf the configuration element
 	 */
 	public AbstractParameter(IConfigurationElement conf) {
-		super();
-
-		this.name = conf.getAttribute("name");
-		this.label = conf.getAttribute("label");
-		this.description = conf.getAttribute("description");
+		super(conf);
 
 		String minOccurrence = conf.getAttribute("minOccurrence");
 		String maxOccurrence = conf.getAttribute("maxOccurrence");
@@ -91,19 +85,9 @@ public abstract class AbstractParameter {
 	 */
 	public AbstractParameter(String name, int minOccurrence, int maxOccurrence, String label,
 			String description) {
-		super();
-		this.name = name;
+		super(name, label, description);
 		this.minOccurrence = minOccurrence;
 		this.maxOccurrence = maxOccurrence;
-		this.label = label;
-		this.description = description;
-	}
-
-	/**
-	 * @return the parameter name
-	 */
-	public final String getName() {
-		return name;
 	}
 
 	/**
@@ -121,40 +105,13 @@ public abstract class AbstractParameter {
 	}
 
 	/**
-	 * Get the display name for the parameter. If present the parameter label
-	 * will be used, otherwise the parameter name is returned. In case the
-	 * parameter name is <code>null</code> an empty string is returned.
-	 * 
-	 * @return the parameter display name
-	 */
-	public String getDisplayName() {
-		String displayName = label;
-		if (displayName == null) {
-			displayName = name;
-		}
-		if (displayName == null) {
-			displayName = "";
-		}
-		return displayName;
-	}
-
-	/**
-	 * Get the parameter description
-	 * 
-	 * @return the description, may be <code>null</code>
-	 */
-	public String getDescription() {
-		return description;
-	}
-
-	/**
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
 		return result;
 	}
 
@@ -170,11 +127,11 @@ public abstract class AbstractParameter {
 		if (getClass() != obj.getClass())
 			return false;
 		AbstractParameter other = (AbstractParameter) obj;
-		if (name == null) {
-			if (other.name != null)
+		if (getName() == null) {
+			if (other.getName() != null)
 				return false;
 		}
-		else if (!name.equals(other.name))
+		else if (!getName().equals(other.getName()))
 			return false;
 		return true;
 	}
