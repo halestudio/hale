@@ -62,7 +62,7 @@ public class InstanceIOReferenceContent extends AbstractVelocityContent implemen
 	@Override
 	public InputStream getInputStream(String pluginID, String href, Locale locale) {
 		// it is an instance io overiew
-		if (href.endsWith(INSTANCEIO_OVERVIEW_PATH))
+		if (href.contains(INSTANCEIO_OVERVIEW_PATH))
 			try {
 				return getContentFromTemplate("instanceIO", TEMPLATE_OVERVIEW,
 						new Callable<VelocityContext>() {
