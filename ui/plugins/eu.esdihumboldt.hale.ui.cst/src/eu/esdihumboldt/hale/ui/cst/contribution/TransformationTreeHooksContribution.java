@@ -22,9 +22,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
-import de.cs3d.ui.util.eclipse.extension.AbstractExtensionContribution;
-import de.cs3d.ui.util.eclipse.extension.selective.SelectiveExtensionContribution;
-import de.cs3d.util.eclipse.extension.selective.SelectiveExtension;
+import de.fhg.igd.eclipse.ui.util.extension.AbstractExtensionContribution;
+import de.fhg.igd.eclipse.ui.util.extension.selective.SelectiveExtensionContribution;
+import de.fhg.igd.eclipse.util.extension.selective.SelectiveExtension;
 import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.cst.extension.hooks.TransformationTreeHook;
 import eu.esdihumboldt.cst.extension.hooks.TransformationTreeHookFactory;

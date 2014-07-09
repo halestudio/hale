@@ -11,7 +11,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.kohsuke.groovy.sandbox.SandboxTransformer;
 
-import de.cs3d.util.eclipse.extension.ExtensionUtil;
+import de.fhg.igd.eclipse.util.extension.ExtensionUtil;
 import eu.esdihumboldt.util.groovy.sandbox.internal.RestrictiveGroovyInterceptor;
 import eu.esdihumboldt.util.groovy.sandbox.internal.RestrictiveGroovyInterceptor.AllowedPrefix;
 import eu.esdihumboldt.util.groovy.sandbox.internal.SecureScript;

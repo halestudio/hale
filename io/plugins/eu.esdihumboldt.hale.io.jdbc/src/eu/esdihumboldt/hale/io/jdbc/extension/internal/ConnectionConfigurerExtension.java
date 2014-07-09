@@ -20,7 +20,7 @@ import java.sql.Connection;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension;
+import de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension;
 import eu.esdihumboldt.hale.io.jdbc.extension.ConnectionConfigurer;
 
 /**
@@ -55,7 +55,7 @@ public class ConnectionConfigurerExtension extends IdentifiableExtension<Connect
 	}
 
 	/**
-	 * @see de.cs3d.util.eclipse.extension.simple.IdentifiableExtension#getIdAttributeName()
+	 * @see de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension#getIdAttributeName()
 	 */
 	@Override
 	protected String getIdAttributeName() {
@@ -63,7 +63,7 @@ public class ConnectionConfigurerExtension extends IdentifiableExtension<Connect
 	}
 
 	/**
-	 * @see de.cs3d.util.eclipse.extension.simple.IdentifiableExtension#create(java.lang.String, org.eclipse.core.runtime.IConfigurationElement)
+	 * @see de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension#create(java.lang.String, org.eclipse.core.runtime.IConfigurationElement)
 	 */
 	@Override
 	protected ConnectionConfiguration create(String elementId,

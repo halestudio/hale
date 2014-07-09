@@ -17,7 +17,7 @@ package eu.esdihumboldt.hale.common.align.extension.annotation;
 
 import org.w3c.dom.Element;
 
-import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
+import de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension.Identifiable;
 import eu.esdihumboldt.hale.common.align.model.AnnotationDescriptor;
 
 /**

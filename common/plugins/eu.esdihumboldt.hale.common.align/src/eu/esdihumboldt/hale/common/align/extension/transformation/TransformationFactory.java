@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.common.align.extension.transformation;
 
 import java.util.Map;
 
-import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationFunction;
 
 /**

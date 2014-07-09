@@ -21,13 +21,13 @@ import java.net.URL;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-import de.cs3d.ui.util.eclipse.extension.exclusive.PreferencesExclusiveExtension;
-import de.cs3d.util.eclipse.extension.AbstractConfigurationFactory;
-import de.cs3d.util.eclipse.extension.AbstractExtension;
-import de.cs3d.util.eclipse.extension.AbstractObjectFactory;
-import de.cs3d.util.eclipse.extension.ExtensionObjectDefinition;
-import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
-import de.cs3d.util.eclipse.extension.ObjectExtension;
+import de.fhg.igd.eclipse.ui.util.extension.exclusive.PreferencesExclusiveExtension;
+import de.fhg.igd.eclipse.util.extension.AbstractConfigurationFactory;
+import de.fhg.igd.eclipse.util.extension.AbstractExtension;
+import de.fhg.igd.eclipse.util.extension.AbstractObjectFactory;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectDefinition;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
+import de.fhg.igd.eclipse.util.extension.ObjectExtension;
 import eu.esdihumboldt.hale.ui.views.data.InstanceViewer;
 import eu.esdihumboldt.hale.ui.views.data.internal.compare.DefinitionInstanceTreeViewer;
 

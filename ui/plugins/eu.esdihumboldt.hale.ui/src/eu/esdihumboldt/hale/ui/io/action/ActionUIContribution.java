@@ -18,8 +18,8 @@ package eu.esdihumboldt.hale.ui.io.action;
 
 import org.eclipse.jface.action.IAction;
 
-import de.cs3d.ui.util.eclipse.extension.AbstractExtensionContribution;
-import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
+import de.fhg.igd.eclipse.ui.util.extension.AbstractExtensionContribution;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 

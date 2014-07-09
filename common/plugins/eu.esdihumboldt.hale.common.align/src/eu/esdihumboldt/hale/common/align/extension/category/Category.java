@@ -17,7 +17,7 @@
 package eu.esdihumboldt.hale.common.align.extension.category;
 
 import net.jcip.annotations.Immutable;
-import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
+import de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension.Identifiable;
 
 /**
  * Represents a function category. Usually provided through the corresponding

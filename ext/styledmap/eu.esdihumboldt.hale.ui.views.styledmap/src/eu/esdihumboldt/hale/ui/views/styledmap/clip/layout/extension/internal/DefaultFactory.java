@@ -19,8 +19,8 @@ package eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension.internal;
 import java.util.Collections;
 import java.util.List;
 
-import de.cs3d.util.eclipse.extension.AbstractObjectFactory;
-import de.cs3d.util.eclipse.extension.ExtensionObjectDefinition;
+import de.fhg.igd.eclipse.util.extension.AbstractObjectFactory;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectDefinition;
 import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.PainterLayout;
 import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension.PainterLayoutFactory;
 import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension.PainterProxy;

@@ -6,7 +6,7 @@ Bundle-Version: 2.9.0.qualifier
 Bundle-Vendor: Data Harmonisation Panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.io;version="11.0.1",
- de.cs3d.util.eclipse.extension.simple,
+ de.fhg.igd.eclipse.util.extension.simple,
  de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.core.io.supplier,
  eu.esdihumboldt.hale.ui.service.project,

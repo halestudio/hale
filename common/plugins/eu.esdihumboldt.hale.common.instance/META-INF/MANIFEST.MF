@@ -10,7 +10,7 @@ Import-Package: com.google.common.base;version="1.6.0",
  com.google.common.io;version="1.6.0",
  com.vividsolutions.jts.geom,
  com.vividsolutions.jts.io,
- de.cs3d.util.eclipse.extension,
+ de.fhg.igd.eclipse.util.extension,
  de.fhg.igd.osgi.util;version="1.0.0",
  de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.core.internal,
@@ -57,6 +57,6 @@ Export-Package: eu.esdihumboldt.hale.common.instance.extension.filter,
  eu.esdihumboldt.hale.common.instance.model.impl
 Require-Bundle: org.eclipse.core.contenttype;bundle-version="3.4.100",
  org.eclipse.core.runtime;bundle-version="3.7.0",
- de.cs3d.util.eclipse,
+ de.fhg.igd.eclipse.util,
  eu.esdihumboldt.util.groovy.sandbox
 Bundle-Vendor: data harmonisation panel

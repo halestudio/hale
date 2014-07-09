@@ -22,7 +22,7 @@
       <import plugin="org.eclipse.core.runtime" version="3.7.0" match="greaterOrEqual"/>
       <import plugin="eu.esdihumboldt.util.groovy.sandbox"/>
       <import plugin="com.google.guava"/>
-      <import plugin="de.cs3d.util.eclipse"/>
+      <import plugin="de.fhg.igd.eclipse.util"/>
       <import plugin="de.fhg.igd.osgi.util"/>
       <import plugin="de.fhg.igd.slf4jplus"/>
       <import plugin="eu.esdihumboldt.hale.common.align"/>

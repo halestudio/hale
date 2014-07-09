@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.common.core.io;
 
 import java.util.Set;
 
-import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
+import de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension.Identifiable;
 
 /**
  * Represents an I/O action

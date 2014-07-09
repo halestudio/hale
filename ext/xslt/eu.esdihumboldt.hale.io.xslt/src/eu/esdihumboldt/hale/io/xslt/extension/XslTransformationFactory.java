@@ -15,7 +15,7 @@
 
 package eu.esdihumboldt.hale.io.xslt.extension;
 
-import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
 import eu.esdihumboldt.hale.common.align.extension.function.Function;
 import eu.esdihumboldt.hale.io.xslt.XslTransformation;
 

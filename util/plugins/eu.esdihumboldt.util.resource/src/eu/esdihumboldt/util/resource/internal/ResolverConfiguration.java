@@ -22,7 +22,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
+import de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension.Identifiable;
 import eu.esdihumboldt.util.resource.ResourceResolver;
 
 /**

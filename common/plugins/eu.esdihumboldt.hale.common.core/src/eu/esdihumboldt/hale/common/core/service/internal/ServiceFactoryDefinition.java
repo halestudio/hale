@@ -21,8 +21,8 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import de.cs3d.util.eclipse.extension.ExtensionUtil;
-import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
+import de.fhg.igd.eclipse.util.extension.ExtensionUtil;
+import de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension.Identifiable;
 import eu.esdihumboldt.hale.common.core.service.ServiceFactory;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 

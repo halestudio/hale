@@ -6,7 +6,7 @@ Bundle-Version: 2.9.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.io;version="11.0.1",
  com.orientechnologies.orient.core.db.record;version="1.5.1",
- de.cs3d.util.eclipse.extension,
+ de.fhg.igd.eclipse.util.extension,
  de.fhg.igd.osgi.util;version="1.0.0",
  eu.esdihumboldt.hale.common.align.io.impl,
  eu.esdihumboldt.hale.common.align.model,

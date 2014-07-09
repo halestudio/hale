@@ -16,7 +16,7 @@
 
 package eu.esdihumboldt.hale.common.instance.extension.filter;
 
-import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
 
 /**
  * Factory interface for {@link FilterDefinition}s.
