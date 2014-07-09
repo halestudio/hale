@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Using Command Prompt to Transform</title>
+</head>
+<body>
+	<h1>Using Command Prompt to Transform</h1>
+	<p>
+	This Help section is about performing transformation of source data 
+	using the (windows) command prompt/shell. If using another command 
+	shell, try to use suitable commands.
+	</p>
+	<h2>Preparations</h2>
+	<p>
+	In order to use the command prompt to transform source data into 
+	transformed data, you will need the recent HALE application on 
+	your machine and the following things:
+	</p>
+	<ol>
+		<li>An existing HALE Project</li>
+		<li>The source data, that matches the source schema of the project</li>
+		<li>A (path+)filename and file format for the transformed data</li>
+		<li>Additional to the file format you will need a corresponding 
+		target/output provider or a preset.</li>
+	</ol>
+	<h3>To 1.</h3>
+		<p>You will need a path to an existing HALE Project, either *.halez or *.zip, with 
+		loaded source and target schema and a mapping between them. 
+		These Information are used to perform the transformation.</p>
+		<ul>
+			<li>C:\Hale-Project\myProject.halez, for an absolute path.</li>
+			<li>.\myProject.halez, for relative path to project in
+			same folder your command prompt is currently focused and not the 
+			location of the application.</li>
+			<li>If the project name contains any space or interpretable 
+			characters you have to use quotes "C:\Hale-Project\my Project.halez".</li>
+		</ul>
+	<h3>To 2.</h3>
+		<p>The source data need to be one of the supported file formats. 
+		The same rules as for project path applies to source data path. 
+		See 1. If the HALE application can identify the file's format 
+		and no additional parameter are required to read the source data 
+		you can omit the source reader. See source reader for further 
+		information on this topic. 
+		</p>
+	<h3>To 3.</h3>
+		<p>You can use any path like 1. and 2., but you also have to use 
+		one supported target file format. The file do not have to exist.</p>
+	<h3>To 4.</h3>
+		<p>You have to use either a target writer through a providerId or a 
+		preset through its name. See target writer for further 
+		information on this topic. </p>
+		
+	<h3>Info on path and file names</h3>
+	<p>You can use relative path and spaces inside the path and/or filename. 
+	But you have to notice that the relative path is the location your command 
+	prompt is currently at and that you have to use quotes if there are any 
+	spaces.</p>
+	
+	<h3>Info on preset</h3>
+	<p>There are standard presets or you can create a custom preset. To 
+	create a custom preset you have to open your HALE project and export a 
+	custom data export.</p>
+	
+	<h2>General use</h2>
+	<div>
+		Open a command prompt and change into the directory where the 
+		HALE.exe is located.
+		<br/>
+		Than type <b>HALE -nosplash -console -application hale.transform</b> 
+		to start the HALE application doing the transformation. <b>-nosplash</b> 
+		suppresses the splash screen that would appear on start. 
+		Use <b>-console</b> if you want to get feedback about the process. 
+		<b>-application hale.transform</b> starts the transformation process.
+		<br/>
+		The hale.transform need some parameter. You will need the preparation 1.-4.
+		<ul>
+			<li>-project &ltfile-or-URI-to-HALE-project&rt</li>
+			<li>-source &ltfile-or-URI-to-source-data&rt</li>
+			<li>[optional] -providerId &ltID-of-source-reader&rt</li>
+			<li>-target &lttarget-file&rt</li>
+			<li>-providerId &ltID-of-target-writer&rt or<br/>-preset &ltname-of-export-preset&rt</li>
+		</ul>
+		Depending on the source reader and target writer you can or have to indicate 
+		additional <b>seetings</b>.<br/>
+		Eventually you can add <b>-stacktrace</b> thereby errors are shown and you 
+		can add <b>-reportsOut &ltreports-file&rt</b> to store infos, warnings and 
+		errors that are reported.
+	</div>
+	<h2>Example Command</h2>
+	<p>Here is an example on how to use a command. There is a 
+	HALE project named "toInspire.halez" which contains a source schema 
+	and a mapping to the INSPIRE schema. The source data is contained 
+	in the "geographicData.shp" (schapefile) file. The transformed 
+	data should be stored as "inspireData.gml" and as GML (INSPIRE SptialDataSet) 
+	file format. The source reader do not have to be declared and the 
+	providerId for the target writer is "eu.esdihumboldt.hale.io.inspiregml.writer". 
+	Alternative to the providerId the preset can be used and reads 
+	as follows "INSPIRE SpatialDataSet".</p>
+	<p>
+	The whole command could be:<br/>
+	<b>HALE -nosplash -console -application hale.transform 
+	-project "C:\mapping projects\toInspire.halez" 
+	-source "C:\source data\geographicData.shp" 
+	-target "C:\target data\inspireData.gml" 
+	-providerId eu.esdihumboldt.hale.io.inspiregml.writer</b>
+	<br/>or<br/>
+	<b>HALE -nosplash -console -application hale.transform 
+	-project "C:\mapping projects\toInspire.halez" 
+	-source "C:\source data\geographicData.shp" 
+	-target "C:\target data\inspireData.gml" 
+	-preset INSPIRE SpatialDataSet</b>
+	</p>
+</body>
+</html>

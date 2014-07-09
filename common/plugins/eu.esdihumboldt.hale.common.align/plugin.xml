@@ -42,9 +42,9 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="structuralRename">
-            <functionParameterBinding
+            <parameterBinding
                   class="java.lang.Boolean">
-            </functionParameterBinding>
+            </parameterBinding>
          </functionParameter>
          <functionParameter
                description="Specifies if for the structural rename it is allowed to do copying independent of property namespaces."
@@ -52,9 +52,9 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="ignoreNamespaces">
-            <functionParameterBinding
+            <parameterBinding
                   class="java.lang.Boolean">
-            </functionParameterBinding>
+            </parameterBinding>
          </functionParameter>
       </typeFunction>
       <propertyFunction
@@ -83,9 +83,9 @@
                name="structuralRename"
                label="Structural rename"
                description="If set to true, the rename transformation will try to copy child properties of equal names, too.">
-            <functionParameterBinding
+            <parameterBinding
                class="java.lang.Boolean">
-            </functionParameterBinding>
+            </parameterBinding>
          </functionParameter>
          <functionParameter
                description="Specifies if for the structural rename it is allowed to do copying independent of property namespaces."
@@ -93,9 +93,9 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="ignoreNamespaces">
-            <functionParameterBinding
+            <parameterBinding
                class="java.lang.Boolean">
-            </functionParameterBinding>
+            </parameterBinding>
          </functionParameter>
       </propertyFunction>
       <propertyFunction
@@ -130,8 +130,8 @@
                minOccurrence="1"
                name="value"
                scriptable="true">
-            <functionParameterBinding>
-            </functionParameterBinding>
+            <parameterBinding>
+            </parameterBinding>
          </functionParameter>
       </propertyFunction>
       <propertyFunction
@@ -181,16 +181,16 @@
                maxOccurrence="*"
                minOccurrence="0"
                name="classificationMapping">
-            <functionParameterBinding>
-            </functionParameterBinding>
+            <parameterBinding>
+            </parameterBinding>
          </functionParameter>
          <functionParameter
                label="If not classified"
                maxOccurrence="1"
                minOccurrence="0"
                name="notClassifiedAction">
-            <functionParameterBinding>
-            </functionParameterBinding>
+            <parameterBinding>
+            </parameterBinding>
          </functionParameter>
          <functionParameter
                label="Classification table"
@@ -238,8 +238,8 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="pattern">
-            <functionParameterBinding>
-            </functionParameterBinding>
+            <parameterBinding>
+            </parameterBinding>
          </functionParameter>
       </propertyFunction>
       <typeFunction
@@ -268,8 +268,8 @@
                maxOccurrence="n"
                minOccurrence="1"
                name="property">
-            <functionParameterBinding>
-            </functionParameterBinding>
+            <parameterBinding>
+            </parameterBinding>
          </functionParameter>
          <functionParameter
                description="Each property is defined by a property path"
@@ -277,8 +277,8 @@
                maxOccurrence="n"
                minOccurrence="0"
                name="additional_property">
-            <functionParameterBinding>
-            </functionParameterBinding>
+            <parameterBinding>
+            </parameterBinding>
          </functionParameter>
          <functionParameter
                description="Enable/disable auto detection of additional equal properties which will get merged."
@@ -286,9 +286,9 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="auto_detect">
-            <functionParameterBinding
+            <parameterBinding
                   class="java.lang.Boolean">
-            </functionParameterBinding>
+            </parameterBinding>
          </functionParameter>
       </typeFunction>
       <typeFunction
@@ -319,8 +319,8 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="join">
-            <functionParameterBinding>
-            </functionParameterBinding>
+            <parameterBinding>
+            </parameterBinding>
          </functionParameter>
       </typeFunction>
       <propertyFunction
@@ -367,9 +367,9 @@
                minOccurrence="0"
                name="number"
                scriptable="false">
-            <functionParameterBinding
+            <parameterBinding
                   class="java.lang.Integer">
-            </functionParameterBinding>
+            </parameterBinding>
          </functionParameter>
       </typeFunction>
    </extension>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>$io.DisplayName</title>
+</head>
+<body>
+	<h1>$io.DisplayName</h1>
+	
+	<p>
+		This help section provide you an overview of the 
+		chosen $io.DisplayName<br/> instance $direction.
+	</p>
+	<h2>Provider ID:</h2>
+	$io.Identifier
+	
+	<h2>Parameter</h2>
+	<ul>
+		#foreach ($param in $parameter)
+			<li>$param</li>
+		#end
+	</ul>
+	
+	#if($fileformat)
+		<h2>Supported File Formats</h2>
+		<ul>
+		#foreach ($file in $fileformat)
+			<li>$file</li>
+		#end
+		</ul>
+	#end
+</body>
+</html>

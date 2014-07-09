@@ -21,6 +21,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.content.IContentType;
 
 import de.fhg.igd.eclipse.util.extension.ExtensionObjectDefinition;
+import eu.esdihumboldt.hale.common.core.extension.InstanceProviderParameter;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 
 /**
@@ -68,6 +69,11 @@ public abstract class IOProviderDescriptorDecorator implements IOProviderDescrip
 	@Override
 	public Set<IContentType> getSupportedTypes() {
 		return descriptor.getSupportedTypes();
+	}
+
+	@Override
+	public Set<InstanceProviderParameter> getProviderParameter() {
+		return descriptor.getProviderParameter();
 	}
 
 	@Override

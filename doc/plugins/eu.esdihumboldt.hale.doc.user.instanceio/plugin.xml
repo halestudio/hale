@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.help.toc">
+      <tocProvider
+            class="eu.esdihumboldt.hale.doc.user.instanceio.toc.InstanceIOReferenceToc">
+      </tocProvider>
+   </extension>
+   <extension
+         point="org.eclipse.help.contentProducer">
+      <contentProducer
+            producer="eu.esdihumboldt.hale.doc.user.instanceio.content.InstanceIOReferenceContent">
+      </contentProducer>
+   </extension>
+
+</plugin>
