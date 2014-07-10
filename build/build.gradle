@@ -98,11 +98,10 @@ ext {
     ]
 	
 	// bundles to exclude for the build (symbolic names)
-	excludeBundles = []
-//	excludeBundles = [
-//		'eu.esdihumboldt.hale.ui.application.help.internal',
-//		'eu.esdihumboldt.hale.ui.application.help.external'
-//	]
+	excludeBundles = [
+	  // dependencies for this feature currently not included in platform
+    'eu.esdihumboldt.hale.ui.feature.liveeditor'
+	]
 	
 	// bundles or fragments that are required additionally for compilation
 	extraRequirements = [
