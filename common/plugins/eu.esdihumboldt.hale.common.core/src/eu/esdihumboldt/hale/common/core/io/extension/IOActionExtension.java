@@ -22,8 +22,8 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import de.cs3d.util.eclipse.extension.ExtensionUtil;
-import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension;
+import de.fhg.igd.eclipse.util.extension.ExtensionUtil;
+import de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension;
 import eu.esdihumboldt.hale.common.core.io.IOAction;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 
@@ -54,7 +54,7 @@ public class IOActionExtension extends IdentifiableExtension<IOAction> {
 		}
 
 		/**
-		 * @see de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable#getId()
+		 * @see de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension.Identifiable#getId()
 		 */
 		@Override
 		public String getId() {

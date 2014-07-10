@@ -16,8 +16,8 @@
 
 package eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension;
 
-import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
-import de.cs3d.util.eclipse.extension.FactoryFilter;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactoryCollection;
+import de.fhg.igd.eclipse.util.extension.FactoryFilter;
 import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.PainterLayout;
 
 /**

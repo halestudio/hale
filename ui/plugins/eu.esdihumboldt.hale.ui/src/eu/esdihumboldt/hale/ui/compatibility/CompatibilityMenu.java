@@ -17,8 +17,8 @@ package eu.esdihumboldt.hale.ui.compatibility;
 
 import org.eclipse.ui.PlatformUI;
 
-import de.cs3d.ui.util.eclipse.extension.exclusive.ExclusiveExtensionContribution;
-import de.cs3d.util.eclipse.extension.exclusive.ExclusiveExtension;
+import de.fhg.igd.eclipse.ui.util.extension.exclusive.ExclusiveExtensionContribution;
+import de.fhg.igd.eclipse.util.extension.exclusive.ExclusiveExtension;
 import eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode;
 import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityModeFactory;
 import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityService;
@@ -32,7 +32,7 @@ public class CompatibilityMenu extends
 		ExclusiveExtensionContribution<CompatibilityMode, CompatibilityModeFactory> {
 
 	/**
-	 * @see de.cs3d.ui.util.eclipse.extension.AbstractExtensionContribution#initExtension()
+	 * @see de.fhg.igd.eclipse.ui.util.extension.AbstractExtensionContribution#initExtension()
 	 */
 	@Override
 	protected ExclusiveExtension<CompatibilityMode, CompatibilityModeFactory> initExtension() {

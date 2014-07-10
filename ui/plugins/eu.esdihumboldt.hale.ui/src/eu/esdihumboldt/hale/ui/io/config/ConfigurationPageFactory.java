@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.ui.io.config;
 
 import java.util.Set;
 
-import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
 
 /**
  * TODO Type description

@@ -25,14 +25,15 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 
-import de.cs3d.util.eclipse.extension.AbstractConfigurationFactory;
-import de.cs3d.util.eclipse.extension.AbstractExtension;
-import de.cs3d.util.eclipse.extension.ExtensionObjectDefinition;
-import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
-import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
-import de.cs3d.util.eclipse.extension.ExtensionUtil;
+import de.fhg.igd.eclipse.util.extension.AbstractConfigurationFactory;
+import de.fhg.igd.eclipse.util.extension.AbstractExtension;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectDefinition;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactoryCollection;
+import de.fhg.igd.eclipse.util.extension.ExtensionUtil;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.extension.InstanceProviderParameter;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 
 /**
@@ -122,6 +123,24 @@ public class IOProviderExtension extends AbstractExtension<IOProvider, IOProvide
 		@Override
 		public Class<? extends IOProvider> getProviderType() {
 			return (Class<? extends IOProvider>) ExtensionUtil.loadClass(conf, "class");
+		}
+
+		/**
+		 * @see eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor#getProviderParameter()
+		 */
+		@Override
+		public Set<InstanceProviderParameter> getProviderParameter() {
+			IConfigurationElement[] children = conf.getChildren("providerParameter");
+
+			if (children != null) {
+				Set<InstanceProviderParameter> result = new HashSet<InstanceProviderParameter>();
+				for (IConfigurationElement child : children) {
+					result.add(new InstanceProviderParameter(child));
+				}
+				return result;
+			}
+			else
+				return Collections.emptySet();
 		}
 
 	}

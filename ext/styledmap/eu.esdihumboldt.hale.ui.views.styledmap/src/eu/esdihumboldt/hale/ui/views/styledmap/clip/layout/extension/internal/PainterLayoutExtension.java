@@ -22,12 +22,12 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import de.cs3d.util.eclipse.extension.AbstractConfigurationFactory;
-import de.cs3d.util.eclipse.extension.AbstractExtension;
-import de.cs3d.util.eclipse.extension.AbstractObjectDefinition;
-import de.cs3d.util.eclipse.extension.AbstractObjectFactory;
-import de.cs3d.util.eclipse.extension.ExtensionObjectDefinition;
-import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
+import de.fhg.igd.eclipse.util.extension.AbstractConfigurationFactory;
+import de.fhg.igd.eclipse.util.extension.AbstractExtension;
+import de.fhg.igd.eclipse.util.extension.AbstractObjectDefinition;
+import de.fhg.igd.eclipse.util.extension.AbstractObjectFactory;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectDefinition;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
 import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.PainterLayout;
 import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension.PainterLayoutFactory;
 import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension.PainterProxy;

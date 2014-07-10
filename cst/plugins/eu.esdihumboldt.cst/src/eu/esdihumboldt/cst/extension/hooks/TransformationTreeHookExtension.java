@@ -18,7 +18,7 @@ package eu.esdihumboldt.cst.extension.hooks;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import de.cs3d.util.eclipse.extension.AbstractExtension;
+import de.fhg.igd.eclipse.util.extension.AbstractExtension;
 import eu.esdihumboldt.cst.extension.hooks.TransformationTreeHook.TreeState;
 import eu.esdihumboldt.cst.extension.hooks.internal.DefaultTreeHookFactory;
 

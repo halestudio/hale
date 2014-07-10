@@ -17,7 +17,7 @@ package eu.esdihumboldt.hale.ui.scripting;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import de.cs3d.util.eclipse.extension.AbstractConfigurationFactory;
+import de.fhg.igd.eclipse.util.extension.AbstractConfigurationFactory;
 
 /**
  * Factory for {@link ScriptUI}s.
@@ -37,7 +37,7 @@ public class ScriptUIFactory extends AbstractConfigurationFactory<ScriptUI> {
 	}
 
 	/**
-	 * @see de.cs3d.util.eclipse.extension.ExtensionObjectFactory#dispose(java.lang.Object)
+	 * @see de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory#dispose(java.lang.Object)
 	 */
 	@Override
 	public void dispose(ScriptUI script) {
@@ -45,7 +45,7 @@ public class ScriptUIFactory extends AbstractConfigurationFactory<ScriptUI> {
 	}
 
 	/**
-	 * @see de.cs3d.util.eclipse.extension.ExtensionObjectDefinition#getDisplayName()
+	 * @see de.fhg.igd.eclipse.util.extension.ExtensionObjectDefinition#getDisplayName()
 	 */
 	@Override
 	public String getDisplayName() {
@@ -53,7 +53,7 @@ public class ScriptUIFactory extends AbstractConfigurationFactory<ScriptUI> {
 	}
 
 	/**
-	 * @see de.cs3d.util.eclipse.extension.ExtensionObjectDefinition#getIdentifier()
+	 * @see de.fhg.igd.eclipse.util.extension.ExtensionObjectDefinition#getIdentifier()
 	 */
 	@Override
 	public String getIdentifier() {

@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.eclipse.ui.PlatformUI;
 
-import de.cs3d.util.eclipse.extension.exclusive.ExclusiveExtension.ExclusiveExtensionListener;
+import de.fhg.igd.eclipse.util.extension.exclusive.ExclusiveExtension.ExclusiveExtensionListener;
 import de.fhg.igd.mapviewer.BasicMapKit;
 import eu.esdihumboldt.hale.ui.views.styledmap.clip.Clip;
 import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.PainterLayout;

@@ -16,7 +16,7 @@
 
 package eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension.internal;
 
-import de.cs3d.ui.util.eclipse.extension.exclusive.PreferencesExclusiveExtension;
+import de.fhg.igd.eclipse.ui.util.extension.exclusive.PreferencesExclusiveExtension;
 import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.PainterLayout;
 import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension.PainterLayoutFactory;
 import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension.PainterLayoutService;

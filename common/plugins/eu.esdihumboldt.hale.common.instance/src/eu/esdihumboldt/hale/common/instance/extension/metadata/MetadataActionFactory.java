@@ -16,7 +16,7 @@
 
 package eu.esdihumboldt.hale.common.instance.extension.metadata;
 
-import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
 
 /**
  * Factory Interface for {MetadataAction}s

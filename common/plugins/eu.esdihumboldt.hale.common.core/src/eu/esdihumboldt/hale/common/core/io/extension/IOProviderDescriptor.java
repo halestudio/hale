@@ -20,7 +20,8 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.content.IContentType;
 
-import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
+import eu.esdihumboldt.hale.common.core.extension.InstanceProviderParameter;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 
 /**
@@ -36,6 +37,13 @@ public interface IOProviderDescriptor extends ExtensionObjectFactory<IOProvider>
 	 * @return the set of supported content types
 	 */
 	public Set<IContentType> getSupportedTypes();
+
+	/**
+	 * Get the providers' supported parameters
+	 * 
+	 * @return the set of supported parameters
+	 */
+	public Set<InstanceProviderParameter> getProviderParameter();
 
 	/**
 	 * Get the concrete provider type

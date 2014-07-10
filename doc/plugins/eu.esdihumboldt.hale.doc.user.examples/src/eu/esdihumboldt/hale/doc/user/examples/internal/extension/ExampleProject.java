@@ -34,7 +34,7 @@ import org.osgi.framework.Bundle;
 
 import com.google.common.io.ByteStreams;
 
-import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
+import de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension.Identifiable;
 import eu.esdihumboldt.hale.common.align.io.AlignmentIO;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;

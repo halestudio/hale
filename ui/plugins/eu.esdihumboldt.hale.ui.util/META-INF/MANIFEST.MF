@@ -29,7 +29,6 @@ Export-Package: eu.esdihumboldt.hale.ui.util,
  eu.esdihumboldt.hale.ui.util.wizard
 Import-Package: com.google.common.base;version="11.0.1",
  com.google.common.util.concurrent;version="15.0.0",
- de.cs3d.util.eclipse,
  de.fhg.igd.slf4jplus,
  de.fhg.igd.osgi.util;version="1.0.0",
  eu.esdihumboldt.util,

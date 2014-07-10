@@ -10,6 +10,8 @@
       </documentation>
    </annotation>
 
+   <include schemaLocation="eu.esdihumboldt.hale.parameter.exsd"/>
+
    <element name="extension">
       <annotation>
          <appinfo>
@@ -52,6 +54,7 @@
       <complexType>
          <sequence minOccurs="1" maxOccurs="unbounded">
             <element ref="contentType"/>
+            <element ref="providerParameter" minOccurs="0" maxOccurs="unbounded"/>
          </sequence>
          <attribute name="id" type="string" use="required">
             <annotation>

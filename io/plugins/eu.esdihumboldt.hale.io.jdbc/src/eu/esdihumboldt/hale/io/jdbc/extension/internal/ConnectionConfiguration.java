@@ -20,8 +20,8 @@ import java.sql.Connection;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import de.cs3d.util.eclipse.extension.ExtensionUtil;
-import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
+import de.fhg.igd.eclipse.util.extension.ExtensionUtil;
+import de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension.Identifiable;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.io.jdbc.extension.ConnectionConfigurer;
@@ -54,7 +54,7 @@ public class ConnectionConfiguration implements Identifiable {
 	}
 
 	/**
-	 * @see de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable#getId()
+	 * @see de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension.Identifiable#getId()
 	 */
 	@Override
 	public String getId() {

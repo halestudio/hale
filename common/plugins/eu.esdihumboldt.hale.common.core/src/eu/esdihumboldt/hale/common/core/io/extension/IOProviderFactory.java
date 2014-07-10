@@ -16,7 +16,7 @@
 
 package eu.esdihumboldt.hale.common.core.io.extension;
 
-import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactoryCollection;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 
 /**

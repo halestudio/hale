@@ -20,8 +20,8 @@ import java.util.Collection;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import de.cs3d.util.eclipse.extension.AbstractConfigurationFactory;
-import de.cs3d.util.eclipse.extension.ExtensionUtil;
+import de.fhg.igd.eclipse.util.extension.AbstractConfigurationFactory;
+import de.fhg.igd.eclipse.util.extension.ExtensionUtil;
 
 /**
  * Factory for {@link Script}s.
@@ -40,7 +40,7 @@ public class ScriptFactory extends AbstractConfigurationFactory<Script> {
 	}
 
 	/**
-	 * @see de.cs3d.util.eclipse.extension.ExtensionObjectFactory#dispose(java.lang.Object)
+	 * @see de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory#dispose(java.lang.Object)
 	 */
 	@Override
 	public void dispose(Script script) {
@@ -48,7 +48,7 @@ public class ScriptFactory extends AbstractConfigurationFactory<Script> {
 	}
 
 	/**
-	 * @see de.cs3d.util.eclipse.extension.ExtensionObjectDefinition#getDisplayName()
+	 * @see de.fhg.igd.eclipse.util.extension.ExtensionObjectDefinition#getDisplayName()
 	 */
 	@Override
 	public String getDisplayName() {
@@ -56,7 +56,7 @@ public class ScriptFactory extends AbstractConfigurationFactory<Script> {
 	}
 
 	/**
-	 * @see de.cs3d.util.eclipse.extension.ExtensionObjectDefinition#getIdentifier()
+	 * @see de.fhg.igd.eclipse.util.extension.ExtensionObjectDefinition#getIdentifier()
 	 */
 	@Override
 	public String getIdentifier() {

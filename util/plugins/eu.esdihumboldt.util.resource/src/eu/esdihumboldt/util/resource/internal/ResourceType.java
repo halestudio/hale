@@ -16,7 +16,7 @@
 
 package eu.esdihumboldt.util.resource.internal;
 
-import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
+import de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension.Identifiable;
 
 /**
  * Represents a resource type.

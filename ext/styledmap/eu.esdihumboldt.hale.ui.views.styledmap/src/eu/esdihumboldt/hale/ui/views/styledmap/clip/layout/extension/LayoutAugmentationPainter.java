@@ -24,7 +24,7 @@ import org.eclipse.ui.PlatformUI;
 import org.jdesktop.swingx.mapviewer.JXMapViewer;
 import org.jdesktop.swingx.painter.AbstractPainter;
 
-import de.cs3d.util.eclipse.extension.exclusive.ExclusiveExtension.ExclusiveExtensionListener;
+import de.fhg.igd.eclipse.util.extension.exclusive.ExclusiveExtension.ExclusiveExtensionListener;
 import de.fhg.igd.mapviewer.BasicMapKit;
 import de.fhg.igd.mapviewer.MapPainter;
 import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.LayoutAugmentation;

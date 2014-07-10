@@ -23,7 +23,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import de.cs3d.util.eclipse.extension.AbstractConfigurationFactory;
+import de.fhg.igd.eclipse.util.extension.AbstractConfigurationFactory;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
@@ -52,7 +52,7 @@ public class ParameterPageFactoryImpl extends AbstractConfigurationFactory<Param
 	}
 
 	/**
-	 * @see de.cs3d.util.eclipse.extension.AbstractObjectDefinition#getPriority()
+	 * @see de.fhg.igd.eclipse.util.extension.AbstractObjectDefinition#getPriority()
 	 */
 	@Override
 	public int getPriority() {
@@ -67,7 +67,7 @@ public class ParameterPageFactoryImpl extends AbstractConfigurationFactory<Param
 	}
 
 	/**
-	 * @see de.cs3d.util.eclipse.extension.ExtensionObjectFactory#dispose(java.lang.Object)
+	 * @see de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory#dispose(java.lang.Object)
 	 */
 	@Override
 	public void dispose(ParameterPage instance) {
@@ -75,7 +75,7 @@ public class ParameterPageFactoryImpl extends AbstractConfigurationFactory<Param
 	}
 
 	/**
-	 * @see de.cs3d.util.eclipse.extension.ExtensionObjectDefinition#getIdentifier()
+	 * @see de.fhg.igd.eclipse.util.extension.ExtensionObjectDefinition#getIdentifier()
 	 */
 	@Override
 	public String getIdentifier() {
@@ -83,7 +83,7 @@ public class ParameterPageFactoryImpl extends AbstractConfigurationFactory<Param
 	}
 
 	/**
-	 * @see de.cs3d.util.eclipse.extension.ExtensionObjectDefinition#getDisplayName()
+	 * @see de.fhg.igd.eclipse.util.extension.ExtensionObjectDefinition#getDisplayName()
 	 */
 	@Override
 	public String getDisplayName() {

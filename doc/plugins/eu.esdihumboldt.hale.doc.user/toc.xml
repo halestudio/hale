@@ -164,6 +164,7 @@
          </topic>
       </topic>
       <anchor id="reference"/>
+      <anchor id="instanceIO"/>
    </topic>
    <topic label="Tips and Tricks">
       <anchor id="tips"/>
@@ -172,5 +173,7 @@
    <topic href="html/pointofcontact.html" label="Point of Contact">
    </topic>
    <topic href="html/contributors.html" label="Contributors">
+   </topic>
+   <topic label="Using Command Prompt to Transform">
    </topic>
 </toc>

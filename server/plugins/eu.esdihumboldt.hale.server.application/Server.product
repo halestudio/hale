@@ -77,8 +77,7 @@
       <plugin id="commons-httpclient"/>
       <plugin id="concurrent"/>
       <plugin id="de.agilecoders.wicket.webjars"/>
-      <plugin id="de.cs3d.util.eclipse"/>
-      <plugin id="de.fhg.igd.concurrency"/>
+      <plugin id="de.fhg.igd.eclipse.util"/>
       <plugin id="de.fhg.igd.osgi.util"/>
       <plugin id="de.fhg.igd.slf4jplus"/>
       <plugin id="de.fhg.igd.slf4jplus.logback"/>

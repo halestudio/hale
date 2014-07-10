@@ -18,8 +18,8 @@ package eu.esdihumboldt.hale.io.csv;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import de.cs3d.util.eclipse.extension.AbstractConfigurationFactory;
-import de.cs3d.util.eclipse.extension.AbstractExtension;
+import de.fhg.igd.eclipse.util.extension.AbstractConfigurationFactory;
+import de.fhg.igd.eclipse.util.extension.AbstractExtension;
 
 /**
  * Class for the property type extension
@@ -46,7 +46,7 @@ public class PropertyTypeExtension extends AbstractExtension<PropertyType, Prope
 		}
 
 		/**
-		 * @see de.cs3d.util.eclipse.extension.ExtensionObjectFactory#dispose(java.lang.Object)
+		 * @see de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory#dispose(java.lang.Object)
 		 */
 		@Override
 		public void dispose(PropertyType arg0) {
@@ -54,7 +54,7 @@ public class PropertyTypeExtension extends AbstractExtension<PropertyType, Prope
 		}
 
 		/**
-		 * @see de.cs3d.util.eclipse.extension.ExtensionObjectDefinition#getDisplayName()
+		 * @see de.fhg.igd.eclipse.util.extension.ExtensionObjectDefinition#getDisplayName()
 		 */
 		@Override
 		public String getDisplayName() {
@@ -62,7 +62,7 @@ public class PropertyTypeExtension extends AbstractExtension<PropertyType, Prope
 		}
 
 		/**
-		 * @see de.cs3d.util.eclipse.extension.ExtensionObjectDefinition#getIdentifier()
+		 * @see de.fhg.igd.eclipse.util.extension.ExtensionObjectDefinition#getIdentifier()
 		 */
 		@Override
 		public String getIdentifier() {
@@ -99,7 +99,7 @@ public class PropertyTypeExtension extends AbstractExtension<PropertyType, Prope
 	}
 
 	/**
-	 * @see de.cs3d.util.eclipse.extension.AbstractExtension#createFactory(org.eclipse.core.runtime.IConfigurationElement)
+	 * @see de.fhg.igd.eclipse.util.extension.AbstractExtension#createFactory(org.eclipse.core.runtime.IConfigurationElement)
 	 */
 	@Override
 	protected PropertyTypeFactory createFactory(IConfigurationElement conf) throws Exception {

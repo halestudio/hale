@@ -28,7 +28,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import de.cs3d.util.eclipse.extension.ExtensionUtil;
+import de.fhg.igd.eclipse.util.extension.ExtensionUtil;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 
@@ -56,9 +56,8 @@ public final class FunctionParameter extends AbstractParameter {
 		super(conf);
 		String scriptableAttr = conf.getAttribute("scriptable");
 		scriptable = scriptableAttr == null ? false : Boolean.valueOf(scriptableAttr);
-		IConfigurationElement[] bindingElement = conf.getChildren("functionParameterBinding");
-		IConfigurationElement[] enumerationElement = conf
-				.getChildren("functionParameterEnumeration");
+		IConfigurationElement[] bindingElement = conf.getChildren("parameterBinding");
+		IConfigurationElement[] enumerationElement = conf.getChildren("parameterEnumeration");
 		if (bindingElement.length > 0) {
 			this.enumeration = null;
 

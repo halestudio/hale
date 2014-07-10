@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import de.cs3d.util.eclipse.extension.AbstractExtension;
+import de.fhg.igd.eclipse.util.extension.AbstractExtension;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyConstraint;
@@ -122,7 +122,7 @@ public class ConstraintValidatorExtension extends
 	}
 
 	/**
-	 * @see de.cs3d.util.eclipse.extension.AbstractExtension#createFactory(org.eclipse.core.runtime.IConfigurationElement)
+	 * @see de.fhg.igd.eclipse.util.extension.AbstractExtension#createFactory(org.eclipse.core.runtime.IConfigurationElement)
 	 */
 	@Override
 	protected ConstraintValidatorFactory createFactory(IConfigurationElement conf) throws Exception {

@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.ui.schema.presets.extension;
 import java.io.InputStream;
 import java.net.URL;
 
-import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
+import de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension.Identifiable;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 
 /**

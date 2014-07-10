@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.ui.function.extension;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import de.cs3d.util.eclipse.extension.AbstractExtension;
+import de.fhg.igd.eclipse.util.extension.AbstractExtension;
 import eu.esdihumboldt.hale.ui.function.extension.impl.ParameterPageFactoryImpl;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
 
@@ -51,7 +51,7 @@ public class ParameterPageExtension extends AbstractExtension<ParameterPage, Par
 	}
 
 	/**
-	 * @see de.cs3d.util.eclipse.extension.AbstractExtension#createFactory(org.eclipse.core.runtime.IConfigurationElement)
+	 * @see de.fhg.igd.eclipse.util.extension.AbstractExtension#createFactory(org.eclipse.core.runtime.IConfigurationElement)
 	 */
 	@Override
 	protected ParameterPageFactory createFactory(IConfigurationElement conf) throws Exception {
