@@ -59,7 +59,6 @@ http://www.wetransform.to/products/hale
    <features>
       <feature id="eu.esdihumboldt.hale.ui.feature" version="2.9.0"/>
       <feature id="eu.esdihumboldt.hale.ui.feature.win32" version="2.9.0"/>
-      <feature id="eu.esdihumboldt.hale.ui.feature.liveeditor" version="2.9.0"/>
       <feature id="eu.esdihumboldt.hale.common.feature.base"/>
       <feature id="de.fhg.igd.slf4jplus.ui.feature"/>
       <feature id="org.eclipse.equinox.core.feature"/>
