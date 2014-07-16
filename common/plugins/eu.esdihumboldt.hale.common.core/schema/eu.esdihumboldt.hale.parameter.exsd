@@ -74,6 +74,7 @@
          <choice>
             <element ref="parameterEnumeration"/>
             <element ref="parameterBinding"/>
+            <element ref="parameterComplexValue"/>
          </choice>
          <attribute name="name" type="string" use="required">
             <annotation>
