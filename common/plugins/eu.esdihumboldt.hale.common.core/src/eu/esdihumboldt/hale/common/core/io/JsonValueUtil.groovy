@@ -57,10 +57,13 @@ class JsonValueUtil {
 				throw new IllegalStateException('Unable to extract value from Json object: ' + json)
 			}
 		}
+		else if (json instanceof List) {
+			// array
+			// represent as ValueList
+			new ValueList(json.collect { fromJson(it) }).toValue()
+		}
 		else {
-			// primitive or array
-			//XXX what about array?
-
+			// primitive
 			new StringValue(json as String)
 		}
 	}
@@ -103,11 +106,17 @@ class JsonValueUtil {
 				// parse Json because we there is no way to add it unescaped
 				def valueJs = parseValue(writer.toString())
 
-				// create wrapper
-				def builder = new JsonBuilder()
-				builder {
-					'@type' cdv.id
-					'@value' valueJs
+				if (intern instanceof ValueList) {
+					// no wrapper needed - represented as Json array
+					valueJs
+				}
+				else {
+					// create wrapper
+					def builder = new JsonBuilder()
+					builder {
+						'@type' cdv.id
+						'@value' valueJs
+					}
 				}
 			}
 			else {
