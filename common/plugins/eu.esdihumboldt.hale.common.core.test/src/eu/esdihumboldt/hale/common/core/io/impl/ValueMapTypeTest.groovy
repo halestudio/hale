@@ -56,4 +56,36 @@ class ValueMapTypeTest extends GroovyTestCase {
 		assertEquals 3, conv.keySet().size()
 		assertEquals vm, conv
 	}
+
+	/**
+	 * Test if a map containing simple values and complex values is the same
+	 * when converted to JSON and back again.
+	 */
+	@Test
+	public void testValueMapJson() {
+		ValueMap vm = new ValueMap()
+		vm['languages' as Value] = new ValueList(['de' as Value, 'en' as Value]) as Value
+		vm[6*7 as Value] = 42 as Value
+		vm[new ValueList([
+				1 as Value,
+				2 as Value,
+				3 as Value
+			]) as Value] = 123 as Value
+
+		// converter
+		ValueMapType vmt = new ValueMapType()
+
+		// convert to Json
+		StringWriter writer = new StringWriter()
+		vmt.toJson(vm, writer);
+
+		System.out.println(writer.toString())
+
+		// convert back
+		ValueMap conv = vmt.fromJson(new StringReader(writer.toString()), null)
+
+		assertNotNull conv
+		assertEquals 3, conv.keySet().size()
+		assertEquals vm, conv
+	}
 }
