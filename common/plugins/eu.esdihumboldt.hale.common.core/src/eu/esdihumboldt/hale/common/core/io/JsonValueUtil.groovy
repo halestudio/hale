@@ -19,6 +19,7 @@ import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueDefinition
 import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueExtension
 import eu.esdihumboldt.hale.common.core.io.impl.ComplexValue
 import eu.esdihumboldt.hale.common.core.io.impl.StringValue
+import eu.esdihumboldt.hale.common.core.io.impl.ValuePropertiesType
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 
@@ -47,14 +48,21 @@ class JsonValueUtil {
 
 			// determine object type from property
 			def type = json.'@type'
-			ComplexValueDefinition cdv = ComplexValueExtension.instance.get(type)
-			if (cdv && cdv.jsonConverter) {
-				String child = new JsonBuilder(json.'@value').toString()
-				def value = cdv.jsonConverter.fromJson(new StringReader(child), null)
-				new ComplexValue(value)
+			if (type) {
+				ComplexValueDefinition cdv = ComplexValueExtension.instance.get(type)
+				if (cdv && cdv.jsonConverter) {
+					String child = new JsonBuilder(json.'@value').toString()
+					def value = cdv.jsonConverter.fromJson(new StringReader(child), null)
+					new ComplexValue(value)
+				}
+				else {
+					throw new IllegalStateException('Unable to extract value from Json object: no converter found for type ' + type)
+				}
 			}
 			else {
-				throw new IllegalStateException('Unable to extract value from Json object: ' + json)
+				// object w/o @type information
+				// create ValueProperties
+				new ValuePropertiesType().fromJson(new JsonBuilder(json).toString(), null).toValue()
 			}
 		}
 		else if (json instanceof List) {
