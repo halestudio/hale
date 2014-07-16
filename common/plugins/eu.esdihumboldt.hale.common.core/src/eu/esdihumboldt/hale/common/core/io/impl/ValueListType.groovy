@@ -17,14 +17,19 @@ package eu.esdihumboldt.hale.common.core.io.impl
 
 import org.w3c.dom.Element
 
+import eu.esdihumboldt.hale.common.core.io.ComplexValueJson
 import eu.esdihumboldt.hale.common.core.io.ComplexValueType
 import eu.esdihumboldt.hale.common.core.io.DOMValueUtil
 import eu.esdihumboldt.hale.common.core.io.HaleIO
+import eu.esdihumboldt.hale.common.core.io.JsonValueUtil
 import eu.esdihumboldt.hale.common.core.io.Value
 import eu.esdihumboldt.hale.common.core.io.ValueList
 import eu.esdihumboldt.util.groovy.xml.NSDOMBuilder
 import eu.esdihumboldt.util.groovy.xml.NSDOMCategory
+import groovy.json.JsonSlurper
+import groovy.json.StreamingJsonBuilder
 import groovy.transform.CompileStatic
+import groovy.transform.TypeCheckingMode
 
 
 /**
@@ -33,7 +38,7 @@ import groovy.transform.CompileStatic
  * @author Simon Templer
  */
 @CompileStatic
-class ValueListType implements ComplexValueType<ValueList, Void> {
+class ValueListType implements ComplexValueType<ValueList, Void>, ComplexValueJson<ValueList, Void> {
 
 	@Override
 	ValueList fromDOM(Element fragment, Void context) {
@@ -61,6 +66,28 @@ class ValueListType implements ComplexValueType<ValueList, Void> {
 		}
 
 		return fragment;
+	}
+
+	@CompileStatic(TypeCheckingMode.SKIP)
+	@Override
+	public ValueList fromJson(Reader json, Void context) {
+		List<Value> values = []
+
+		def js = new JsonSlurper().parse(json) // expecting an array
+		js.each { entry ->
+			values.add(JsonValueUtil.fromJson(entry))
+		}
+
+		return new ValueList(values)
+	}
+
+	@CompileStatic(TypeCheckingMode.SKIP)
+	@Override
+	public void toJson(ValueList list, Writer writer) {
+		def json = new StreamingJsonBuilder(writer)
+		json(list.collect { value ->
+			JsonValueUtil.valueJson(value)
+		})
 	}
 
 	@Override

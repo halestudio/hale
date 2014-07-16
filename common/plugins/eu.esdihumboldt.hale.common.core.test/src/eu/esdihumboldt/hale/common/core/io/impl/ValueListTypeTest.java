@@ -18,6 +18,8 @@ package eu.esdihumboldt.hale.common.core.io.impl;
 import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -94,7 +96,39 @@ public class ValueListTypeTest {
 
 	/**
 	 * Test if a simple list containing only {@link StringValue}s is the same
-	 * when converted to DOM and back again.
+	 * when converted to JSON and back again.
+	 */
+	@Test
+	public void testStringValueListJson() {
+		ValueList values = new ValueList();
+
+		values.add(Value.of(1));
+		values.add(Value.of(2));
+		values.add(Value.of(3));
+		values.add(Value.of(4));
+		values.add(Value.of(5));
+
+		// converter
+		ValueListType vlt = new ValueListType();
+
+		// convert to Json
+		StringWriter writer = new StringWriter();
+		vlt.toJson(values, writer);
+
+		System.out.println(writer.toString());
+
+		// convert back
+		ValueList conv = vlt.fromJson(new StringReader(writer.toString()), null);
+
+		assertEquals("List size does not match", values.size(), conv.size());
+
+		for (int i = 0; i < values.size(); i++) {
+			assertEquals(values.get(i), conv.get(i));
+		}
+	}
+
+	/**
+	 * Test if a nested list is the same when converted to DOM and back again.
 	 */
 	@Test
 	public void testValueListValueList() {
@@ -116,6 +150,41 @@ public class ValueListTypeTest {
 
 		// convert back
 		ValueList conv = HaleIO.getComplexValue(fragment, ValueList.class, null);
+
+		assertEquals("List size does not match", 2, conv.size());
+
+		assertEquals(values, conv);
+	}
+
+	/**
+	 * Test if a nested list is the same when converted to JSON and back again.
+	 */
+	@Test
+	public void testValueListValueListJson() {
+		ValueList values1 = new ValueList();
+		values1.add(Value.of(1));
+		values1.add(Value.of(2));
+
+		ValueList values2 = new ValueList();
+		values2.add(Value.of("a"));
+		values2.add(Value.of("b"));
+		values2.add(Value.of("c"));
+
+		ValueList values = new ValueList();
+		values.add(new ComplexValue(values1));
+		values.add(new ComplexValue(values2));
+
+		// converter
+		ValueListType vlt = new ValueListType();
+
+		// convert to Json
+		StringWriter writer = new StringWriter();
+		vlt.toJson(values, writer);
+
+		System.out.println(writer.toString());
+
+		// convert back
+		ValueList conv = vlt.fromJson(new StringReader(writer.toString()), null);
 
 		assertEquals("List size does not match", 2, conv.size());
 
