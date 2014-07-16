@@ -72,6 +72,10 @@ public class ComplexValueExtension extends IdentifiableExtension<ComplexValueDef
 	@SuppressWarnings("unchecked")
 	@Override
 	protected ComplexValueDefinition create(String id, IConfigurationElement conf) {
+		if (!conf.getName().equals("complexValue")) {
+			return null;
+		}
+
 		try {
 			String localPart = conf.getAttribute("name");
 			String ns = conf.getAttribute("namespace");
