@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.align.extension.function;
+package eu.esdihumboldt.hale.common.core.parameter;
 
 import com.google.common.collect.ListMultimap;
 

@@ -51,8 +51,8 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="expression">
-            <functionParameterBinding>
-            </functionParameterBinding>
+            <parameterBinding>
+            </parameterBinding>
          </functionParameter>
       </propertyFunction>
       <propertyFunction
@@ -79,8 +79,8 @@
                maxOccurrence="1"
                minOccurrence="0"
                name="prefix">
-            <functionParameterBinding>
-            </functionParameterBinding>
+            <parameterBinding>
+            </parameterBinding>
          </functionParameter>
          <functionParameter
                description="Identifier suffix"
@@ -88,8 +88,8 @@
                maxOccurrence="1"
                minOccurrence="0"
                name="suffix">
-            <functionParameterBinding>
-            </functionParameterBinding>
+            <parameterBinding>
+            </parameterBinding>
          </functionParameter>
          <functionParameter
                description="Generation sequence to use"
@@ -97,14 +97,14 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="sequence">
-            <functionParameterEnumeration>
+            <parameterEnumeration>
                <enumerationValue
                      value="overall">
                </enumerationValue>
                <enumerationValue
                      value="type">
                </enumerationValue>
-            </functionParameterEnumeration>
+            </parameterEnumeration>
          </functionParameter>
       </propertyFunction>
    </extension>

@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat;
 
 import com.google.common.collect.ListMultimap;
 
-import eu.esdihumboldt.hale.common.align.extension.function.Validator;
+import eu.esdihumboldt.hale.common.core.parameter.Validator;
 
 /**
  * Validator for date format strings.
@@ -30,7 +30,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.Validator;
 public class DateExtractionFormatValidator implements Validator {
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.align.extension.function.Validator#validate(java.lang.String)
+	 * @see eu.esdihumboldt.hale.common.core.parameter.Validator#validate(java.lang.String)
 	 */
 	@Override
 	public String validate(String value) {
@@ -43,7 +43,7 @@ public class DateExtractionFormatValidator implements Validator {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.align.extension.function.Validator#setParameters(com.google.common.collect.ListMultimap)
+	 * @see eu.esdihumboldt.hale.common.core.parameter.Validator#setParameters(com.google.common.collect.ListMultimap)
 	 */
 	@Override
 	public void setParameters(ListMultimap<String, String> parameters) {

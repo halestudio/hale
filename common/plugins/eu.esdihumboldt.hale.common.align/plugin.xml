@@ -198,6 +198,9 @@
                minOccurrence="0"
                name="lookupTable"
                scriptable="false">
+            <parameterComplexValue
+                  ref="eu.esdihumboldt.hale.common.lookup.lookuptable">
+            </parameterComplexValue>
          </functionParameter>
       </propertyFunction>
       <propertyFunction

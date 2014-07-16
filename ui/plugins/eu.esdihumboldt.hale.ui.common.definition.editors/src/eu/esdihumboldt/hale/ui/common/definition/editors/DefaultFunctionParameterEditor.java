@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
-import eu.esdihumboldt.hale.common.align.extension.function.Validator;
+import eu.esdihumboldt.hale.common.core.parameter.Validator;
 
 /**
  * A default function parameter editor using binding and validator.
