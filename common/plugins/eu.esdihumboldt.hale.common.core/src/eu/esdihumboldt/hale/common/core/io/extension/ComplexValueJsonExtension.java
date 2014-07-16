@@ -57,6 +57,10 @@ public class ComplexValueJsonExtension extends IdentifiableExtension<ComplexValu
 	@SuppressWarnings("unchecked")
 	@Override
 	protected ComplexValueJsonDescriptor create(String id, IConfigurationElement conf) {
+		if (!conf.getName().equals("complexValueJson")) {
+			return null;
+		}
+
 		try {
 			ComplexValueJsonDescriptor cvs = new ComplexValueJsonDescriptor(id,
 					(Class<ComplexValueJson<?, ?>>) ExtensionUtil.loadClass(conf, "class"));
