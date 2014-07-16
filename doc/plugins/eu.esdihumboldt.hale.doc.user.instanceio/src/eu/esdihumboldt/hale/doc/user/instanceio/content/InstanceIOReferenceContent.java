@@ -26,9 +26,9 @@ import org.eclipse.core.runtime.content.IContentType;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
-import eu.esdihumboldt.hale.common.core.extension.InstanceProviderParameter;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
+import eu.esdihumboldt.hale.common.core.parameter.InstanceProviderParameter;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.doc.user.instanceio.InstanceIOReferenceConstants;

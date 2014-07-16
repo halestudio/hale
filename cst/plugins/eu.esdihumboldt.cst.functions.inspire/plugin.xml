@@ -51,8 +51,8 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="countryName">
-            <functionParameterBinding>
-            </functionParameterBinding>
+            <parameterBinding>
+            </parameterBinding>
          </functionParameter>
          <functionParameter
                description="The identifier of the data provider."
@@ -60,8 +60,8 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="providerName">
-            <functionParameterBinding>
-            </functionParameterBinding>
+            <parameterBinding>
+            </parameterBinding>
          </functionParameter>
          <functionParameter
                description="The identifier of the product the feature is part of."
@@ -69,8 +69,8 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="productName">
-            <functionParameterBinding>
-            </functionParameterBinding>
+            <parameterBinding>
+            </parameterBinding>
          </functionParameter>
          <functionParameter
                description="The version of the identifier."
@@ -78,8 +78,8 @@
                maxOccurrence="1"
                minOccurrence="0"
                name="version">
-            <functionParameterBinding>
-            </functionParameterBinding>
+            <parameterBinding>
+            </parameterBinding>
          </functionParameter>
          <functionParameter
                description="Specify the reason why a version is not present."
@@ -87,8 +87,8 @@
                maxOccurrence="1"
                minOccurrence="0"
                name="versionNilReason">
-            <functionParameterBinding>
-            </functionParameterBinding>
+            <parameterBinding>
+            </parameterBinding>
          </functionParameter>
       </propertyFunction>
       <propertyFunction
@@ -124,8 +124,8 @@
                maxOccurrence="n"
                minOccurrence="1"
                name="text">
-            <functionParameterBinding>
-            </functionParameterBinding>
+            <parameterBinding>
+            </parameterBinding>
          </functionParameter>
          <functionParameter
                description="A script for each spelling text. The script is a set of graphic symbols (e.g. an alphabet) employed in writing the name, expressed using the four letters codes defined in ISO 15924, where applicable."
@@ -133,8 +133,8 @@
                maxOccurrence="n"
                minOccurrence="1"
                name="script">
-            <functionParameterBinding>
-            </functionParameterBinding>
+            <parameterBinding>
+            </parameterBinding>
          </functionParameter>
          <functionParameter
                description="A transliteration scheme for each spelling text. The transliteration scheme is the method used for the names conversion between different scripts."
@@ -142,8 +142,8 @@
                maxOccurrence="n"
                minOccurrence="1"
                name="transliterationScheme">
-            <functionParameterBinding>
-            </functionParameterBinding>
+            <parameterBinding>
+            </parameterBinding>
          </functionParameter>
          <functionParameter
                description="Qualitative information enabling to discern which credit should be given to the name with respect to its standardisation and/or its topicality."
@@ -151,8 +151,8 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="nameStatus">
-            <functionParameterBinding>
-            </functionParameterBinding>
+            <parameterBinding>
+            </parameterBinding>
          </functionParameter>
          <functionParameter
                description="Language of the name, given as a three letters code, in accordance with either ISO 639-3 or ISO 639-5."
@@ -160,8 +160,8 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="language">
-            <functionParameterBinding>
-            </functionParameterBinding>
+            <parameterBinding>
+            </parameterBinding>
          </functionParameter>
          <functionParameter
                description="Information enabling to acknowledge if the name is the one that is/was used in the area where the feature is situated at the instant when the name is/was in use."
@@ -169,8 +169,8 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="nativeness">
-            <functionParameterBinding>
-            </functionParameterBinding>
+            <parameterBinding>
+            </parameterBinding>
          </functionParameter>
          <functionParameter
                description="Original data source from which the geographical name is taken from and integrated in the data set providing/publishing it. For some named spatial objects it might refer again to the publishing data set if no other information is available."
@@ -178,8 +178,8 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="sourceOfName">
-            <functionParameterBinding>
-            </functionParameterBinding>
+            <parameterBinding>
+            </parameterBinding>
          </functionParameter>
          <functionParameter
                description="Proper, correct or standard (standard within the linguistic community concerned) pronunciation of a name, expressed in International Phonetic Alphabet (IPA)."
@@ -187,8 +187,8 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="pronunciationIPA">
-            <functionParameterBinding>
-            </functionParameterBinding>
+            <parameterBinding>
+            </parameterBinding>
          </functionParameter>
          <functionParameter
                description="Proper, correct or standard (standard within the linguistic community concerned) pronunciation of a name, expressed by a link to any sound file."
@@ -196,8 +196,8 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="pronunciationSoundLink">
-            <functionParameterBinding>
-            </functionParameterBinding>
+            <parameterBinding>
+            </parameterBinding>
          </functionParameter>
          <functionParameter
                description="Classes of nouns reflected in the behaviour of associated words."
@@ -205,8 +205,8 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="grammaticalGender">
-            <functionParameterBinding>
-            </functionParameterBinding>
+            <parameterBinding>
+            </parameterBinding>
          </functionParameter>
          <functionParameter
                description="Grammatical category of nouns that expresses count distinctions."
@@ -214,8 +214,8 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="grammaticalNumber">
-            <functionParameterBinding>
-            </functionParameterBinding>
+            <parameterBinding>
+            </parameterBinding>
          </functionParameter>
       </propertyFunction>
    </extension>
