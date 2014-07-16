@@ -22,16 +22,22 @@ import java.util.Set;
 
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.part.WorkbenchPart;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.ui.function.common.TypeCellSelector;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener;
@@ -49,6 +55,8 @@ public class AlignmentViewTypeOverview extends AbstractMappingView {
 	public static final String ID = "eu.esdihumboldt.hale.ui.views.mapping.typeoverview";
 
 	private AlignmentServiceListener alignmentListener;
+
+	private TypeCellSelector sourceTargetSelector;
 
 	/**
 	 * @see eu.esdihumboldt.hale.ui.views.mapping.AbstractMappingView#createViewControl(org.eclipse.swt.widgets.Composite)
@@ -130,24 +138,36 @@ public class AlignmentViewTypeOverview extends AbstractMappingView {
 
 		});
 
-		// listen on SchemaSelections
-//		getSite().getWorkbenchWindow().getSelectionService()
-//				.addPostSelectionListener(selectionListener = new ISelectionListener() {
-//
-//					@Override
-//					public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-//
-//						if (part != AlignmentViewTypeOverview.this
-//								&& selection instanceof IStructuredSelection
-//								&& ((IStructuredSelection) selection).getFirstElement() instanceof Cell) {
-//							Cell cell = (Cell) ((IStructuredSelection) selection).getFirstElement();
-//							if (cell.getSource().values().iterator().next().getDefinition() instanceof TypeEntityDefinition) {
-//								setSelectedCell(cell);
-//								refreshGraph();
-//							}
-//						}// end if
-//					}
-//				});
+		// type cell selector to provide type cell selection
+		sourceTargetSelector = new TypeCellSelector();
+
+		// select type cell, if it is double clicked
+		getViewer().addDoubleClickListener(new IDoubleClickListener() {
+
+			@Override
+			public void doubleClick(DoubleClickEvent event) {
+				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+				if (selection.size() == 1) {
+					Object selected = selection.getFirstElement();
+					if (selected instanceof Cell && AlignmentUtil.isTypeCell((Cell) selected)) {
+						// Send the selected Cell to the
+						// type cell selected action listener
+						sourceTargetSelector.setSelection(event.getSelection());
+						// TODO 2: Change View
+						IWorkbench workbench = PlatformUI.getWorkbench();
+						try {
+							workbench
+									.showPerspective(
+											"eu.esdihumboldt.hale.ui.application.perspective.attributemapping",
+											workbench.getActiveWorkbenchWindow());
+						} catch (WorkbenchException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		});
 
 		// listen on size changes
 		getViewer().getControl().addControlListener(new ControlAdapter() {

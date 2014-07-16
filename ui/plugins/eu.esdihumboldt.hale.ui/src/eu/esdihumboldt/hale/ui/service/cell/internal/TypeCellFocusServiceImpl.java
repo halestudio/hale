@@ -23,7 +23,7 @@ import eu.esdihumboldt.hale.ui.service.cell.TypeCellFocusListener;
 import eu.esdihumboldt.hale.ui.service.cell.TypeCellFocusService;
 
 /**
- * TODO Type description
+ * Implementation of TypeCellFocusService
  * 
  * @author Yasmina Kammeyer
  */

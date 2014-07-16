@@ -237,18 +237,6 @@ public class AlignmentViewTypesOnly extends AbstractMappingView {
 
 		manager.add(new Separator());
 
-		// Create a new item; here create the button.
-//		IContributionItem item = new ControlContribution("Select Cell") {
-//
-//			@Override
-//			protected Control createControl(Composite parent) {
-//
-//				sourceTargetSelector = new TypeCellSelector(parent);
-//
-//				return sourceTargetSelector.getControl();
-//			}
-//
-//		};
 		sourceTargetSelector = new TypeCellSelector();
 
 		Action item = new Action("Select Cell", Action.AS_PUSH_BUTTON) {

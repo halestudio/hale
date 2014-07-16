@@ -17,8 +17,15 @@ package eu.esdihumboldt.hale.ui.views.mapping;
 
 import java.util.Map;
 
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.IContentProvider;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.graphics.Color;
@@ -32,24 +39,27 @@ import com.google.common.collect.Iterables;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.ui.HaleUI;
+import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider;
+import eu.esdihumboldt.hale.ui.function.common.TypeCellSelector;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.cell.TypeCellFocusAdapter;
 import eu.esdihumboldt.hale.ui.service.cell.TypeCellFocusService;
 
 /**
- * Alignment View that reacts only on Navigation Selections.
+ * Alignment View that reacts only on special type cell selections. These cell
+ * selections are provided by {@link TypeCellFocusService}
  * 
  * @author Yasmina Kammeyer
  */
-public class NavigationSensitiveAlignmentView extends AbstractMappingView {
+public class ContextualAlignmentView extends AbstractMappingView {
 
 	/**
 	 * The view ID
 	 */
-	public static final String ID = "eu.esdihumboldt.hale.ui.views.mapping.alignmentnavigationsensitive";
+	public static final String ID = "eu.esdihumboldt.hale.ui.views.mapping.alignmentcontextsensitive";
 
 	private AlignmentViewContentProvider contentProvider;
 
@@ -58,6 +68,8 @@ public class NavigationSensitiveAlignmentView extends AbstractMappingView {
 	private AlignmentServiceAdapter alignmentListener;
 
 	private TypeCellFocusAdapter selectionListener;
+
+	private TypeCellSelector sourceTargetSelector;
 
 	/**
 	 * @see eu.esdihumboldt.hale.ui.views.mapping.AbstractMappingView#createViewControl(org.eclipse.swt.widgets.Composite)
@@ -144,9 +156,30 @@ public class NavigationSensitiveAlignmentView extends AbstractMappingView {
 		});
 
 		// getViewer().setInput(new DefaultCell());
+		// Create cell selector for select cell button
+		sourceTargetSelector = new TypeCellSelector();
+
+		// select type cell, if it is double clicked
+		getViewer().addDoubleClickListener(new IDoubleClickListener() {
+
+			@Override
+			public void doubleClick(DoubleClickEvent event) {
+				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+				if (selection.size() == 1) {
+					Object selected = selection.getFirstElement();
+					if (selected instanceof Cell && AlignmentUtil.isTypeCell((Cell) selected)) {
+						// start the type cell selection dialog to change
+						// the active selected cell
+						sourceTargetSelector.performTypeCellDialog(Display.getCurrent()
+								.getActiveShell());
+					}
+				}
+			}
+		});
 
 		// Initialize the View
 		updateRelationWithCell(ts.getLastSelectedTypeCell());
+		refreshGraph();
 	}
 
 	/**
@@ -181,6 +214,39 @@ public class NavigationSensitiveAlignmentView extends AbstractMappingView {
 	protected IContentProvider createContentProvider() {
 		contentProvider = new AlignmentViewContentProvider();
 		return contentProvider;
+	}
+
+	/**
+	 * Fill the view toolbar.
+	 */
+	@Override
+	protected void fillToolBar() {
+		super.fillToolBar();
+		final IToolBarManager manager = getViewSite().getActionBars().getToolBarManager();
+
+		manager.add(new Separator());
+
+		// Add Button to select a type cell
+		Action button = new Action(null, Action.AS_PUSH_BUTTON) {
+
+			/**
+			 * @see org.eclipse.jface.action.Action#run()
+			 */
+			@Override
+			public void run() {
+				sourceTargetSelector.performTypeCellDialog(Display.getCurrent().getActiveShell());
+			}
+		};
+
+		// Set the icon
+		ImageDescriptor imageD = CommonSharedImages.getImageRegistry().getDescriptor(
+				CommonSharedImages.IMG_DEFINITION_CONCRETE_TYPE);
+
+		button.setImageDescriptor(imageD);
+
+		button.setToolTipText("Click to select a type cell");
+
+		manager.add(button);
 	}
 
 	/**

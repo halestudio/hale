@@ -58,6 +58,7 @@ public class SelectedTypeFilter extends ViewerFilter {
 	 */
 	public void setSelectedTypes(Collection<TypeEntityDefinition> selectedType) {
 		types.clear();
+		superTypes.clear();
 		if (selectedType != null && !selectedType.isEmpty()) {
 			for (TypeEntityDefinition type : selectedType) {
 				types.add(type);

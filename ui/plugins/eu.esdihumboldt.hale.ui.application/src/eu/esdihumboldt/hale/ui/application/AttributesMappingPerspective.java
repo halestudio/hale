@@ -19,8 +19,9 @@ import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
-import eu.esdihumboldt.hale.ui.views.mapping.AlignmentViewTypesOnly;
-import eu.esdihumboldt.hale.ui.views.mapping.NavigationSensitiveAlignmentView;
+import eu.esdihumboldt.hale.ui.views.data.SourceDataView;
+import eu.esdihumboldt.hale.ui.views.data.TransformedDataView;
+import eu.esdihumboldt.hale.ui.views.mapping.ContextualAlignmentView;
 import eu.esdihumboldt.hale.ui.views.schemas.SchemasViewOneTypeFocus;
 
 /**
@@ -31,6 +32,11 @@ import eu.esdihumboldt.hale.ui.views.schemas.SchemasViewOneTypeFocus;
 public class AttributesMappingPerspective implements IPerspectiveFactory {
 
 	/**
+	 * The ID of this perspective
+	 */
+	public static final String ID = "eu.esdihumboldt.hale.ui.application.perspective.attributemapping";
+
+	/**
 	 * @see org.eclipse.ui.IPerspectiveFactory#createInitialLayout(org.eclipse.ui.IPageLayout)
 	 */
 	@Override
@@ -39,23 +45,44 @@ public class AttributesMappingPerspective implements IPerspectiveFactory {
 		// getting EditorArea
 		String editorArea = _layout.getEditorArea();
 
-		// Bottom left = Navigation (types only)
-		IFolderLayout bottom = _layout.createFolder("bottom", IPageLayout.BOTTOM, 0.5f, editorArea); //$NON-NLS-1$
-		bottom.addView(AlignmentViewTypesOnly.ID);
+//		// Bottom left = Navigation (types only)
+//		IFolderLayout bottom = _layout.createFolder("bottom", IPageLayout.BOTTOM, 0.5f, editorArea);
+//		bottom.addView(SourceDataView.ID);
+//
+//		// Bottom right
+//		IFolderLayout bottomRight = _layout.createFolder(
+//				"bottomRight", IPageLayout.RIGHT, 0.5f, "bottom"); //$NON-NLS-1$
+//		bottomRight.addView(TransformedDataView.ID);
+//		bottomRight.addView(IPageLayout.ID_PROP_SHEET);
+//
+//		// Left = Schema Explorer for one relation
+//		IFolderLayout topLeft = _layout.createFolder("topLeft", IPageLayout.LEFT, 0.6f, editorArea); //$NON-NLS-1$
+//		topLeft.addView(SchemasViewOneTypeFocus.ID);
+//
+//		// Right = Alignment View
+//		IFolderLayout topRight = _layout.createFolder(
+//				"topRight", IPageLayout.RIGHT, 0.4f, editorArea); //$NON-NLS-1$
+//		topRight.addView(ContextualAlignmentView.ID);
 
-		// Bottom right
-		IFolderLayout bottomRight = _layout.createFolder(
-				"bottomRight", IPageLayout.RIGHT, 0.5f, "bottom"); //$NON-NLS-1$
-		bottomRight.addView(IPageLayout.ID_PROP_SHEET);
-
-		// Left = Schema Explorer for one relation
+		// Top Left = Schema Explorer for one relation
 		IFolderLayout topLeft = _layout.createFolder("topLeft", IPageLayout.LEFT, 0.6f, editorArea); //$NON-NLS-1$
 		topLeft.addView(SchemasViewOneTypeFocus.ID);
 
-		// Right = Alignment View
-		IFolderLayout topRight = _layout.createFolder(
-				"topRight", IPageLayout.RIGHT, 0.4f, editorArea); //$NON-NLS-1$
-		topRight.addView(NavigationSensitiveAlignmentView.ID);
+		// Bottom Left = Alignment View
+		IFolderLayout bottomLeft = _layout.createFolder(
+				"bottomLeft", IPageLayout.BOTTOM, 0.4f, "topLeft"); //$NON-NLS-1$
+		bottomLeft.addView(ContextualAlignmentView.ID);
+
+		// Top right = Source Data View
+		IFolderLayout topRight = _layout.createFolder("topRight", IPageLayout.RIGHT, 0.5f,
+				editorArea);
+		topRight.addView(SourceDataView.ID);
+
+		// Bottom right = Transformed Data View
+		IFolderLayout bottomRight = _layout.createFolder(
+				"bottomRight", IPageLayout.BOTTOM, 0.5f, "topRight"); //$NON-NLS-1$
+		bottomRight.addView(TransformedDataView.ID);
+		bottomRight.addView(IPageLayout.ID_PROP_SHEET);
 
 		_layout.setEditorAreaVisible(false);
 

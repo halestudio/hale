@@ -26,6 +26,7 @@ import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
@@ -80,10 +81,13 @@ public class SingleTypeSchemaExplorer extends SchemaExplorer {
 			@Override
 			public void dataChanged(Cell cell) {
 				updateFilter(cell);
-				getTreeViewer().refresh();
+				refresh();
 			}
 		});
 
+		// Initialize Filter
+		updateFilter(tc.getLastSelectedTypeCell());
+		refresh();
 	}
 
 	/**
@@ -160,6 +164,19 @@ public class SingleTypeSchemaExplorer extends SchemaExplorer {
 	}
 
 	/**
+	 * Call this to update the explorer's view/ draw again
+	 */
+	private void refresh() {
+		Display.getDefault().syncExec(new Runnable() {
+
+			@Override
+			public void run() {
+				getTreeViewer().refresh();
+			}
+		});
+	}
+
+	/**
 	 * Set the (selected Cell) as the new Input of the
 	 * {@link SelectedTypeFilter}
 	 * 
@@ -173,7 +190,7 @@ public class SingleTypeSchemaExplorer extends SchemaExplorer {
 		if (cell != null && !AlignmentUtil.isTypeCell(cell))
 			return;
 		// No selected Cell - set Filter types empty
-		if (cell == null) {
+		if (cell == null || cell.getTarget() == null) {
 			// Set the new Filter Types
 			selected.setSelectedTypes(Collections.<TypeEntityDefinition> emptyList());
 			return;
@@ -205,7 +222,7 @@ public class SingleTypeSchemaExplorer extends SchemaExplorer {
 		// update the Viewer
 		// getTreeViewer().removeFilter(selected);
 		// getTreeViewer().addFilter(selected);
-		getTreeViewer().refresh();
+		// getTreeViewer().refresh();
 	}
 
 	/**

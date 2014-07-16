@@ -20,33 +20,17 @@
             restorable="true">
       </view>
       <view
-            category="eu.esdihumboldt.hale.ui"
-            class="eu.esdihumboldt.hale.ui.views.mapping.AlignmentViewTypesOnly"
+            class="eu.esdihumboldt.hale.ui.views.mapping.ContextualAlignmentView"
             icon="icons/alignment.gif"
-            id="eu.esdihumboldt.hale.ui.views.mapping.navigation"
-            name="Navigation"
-            restorable="true">
-      </view>
-      <view
-            category="eu.esdihumboldt.hale.ui"
-            class="eu.esdihumboldt.hale.ui.views.mapping.AlignmentViewOneElement"
-            icon="icons/alignment.gif"
-            id="eu.esdihumboldt.hale.ui.views.mapping.alignmentoneelement"
-            name="Detailed Transformation"
-            restorable="true">
-      </view>
-      <view
-            class="eu.esdihumboldt.hale.ui.views.mapping.NavigationSensitiveAlignmentView"
-            icon="icons/alignment.gif"
-            id="eu.esdihumboldt.hale.ui.views.mapping.alignmentnavigationsensitive"
-            name="Alignment - Based on Navigation Selection"
+            id="eu.esdihumboldt.hale.ui.views.mapping.alignmentcontextsensitive"
+            name="Attributes Mapping"
             restorable="true">
       </view>
       <view
             class="eu.esdihumboldt.hale.ui.views.mapping.AlignmentViewTypeOverview"
             icon="icons/alignment.gif"
             id="eu.esdihumboldt.hale.ui.views.mapping.typeoverview"
-            name="Track of Type Alignments"
+            name="Type Mapping"
             restorable="true">
       </view>
    </extension>

@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.ui.function.common;
 
+import java.util.Map;
+
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -27,6 +29,8 @@ import org.eclipse.ui.PlatformUI;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
+import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
+import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener;
 import eu.esdihumboldt.hale.ui.service.cell.TypeCellFocusService;
 
 /**
@@ -36,7 +40,7 @@ import eu.esdihumboldt.hale.ui.service.cell.TypeCellFocusService;
  */
 public class TypeCellSelector implements ISelectionProvider {
 
-	private Cell selection;
+	private static Cell selection;
 
 	private final ListenerList selectionChangedListeners = new ListenerList();
 
@@ -48,6 +52,42 @@ public class TypeCellSelector implements ISelectionProvider {
 
 		selection = null;
 
+		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+				AlignmentService.class);
+
+		as.addListener(new AlignmentServiceListener() {
+
+			@Override
+			public void cellsReplaced(Map<? extends Cell, ? extends Cell> cells) {
+				setSelection((Cell) null);
+			}
+
+			@Override
+			public void cellsRemoved(Iterable<Cell> cells) {
+				setSelection((Cell) null);
+			}
+
+			@Override
+			public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
+				setSelection((Cell) null);
+			}
+
+			@Override
+			public void cellsAdded(Iterable<Cell> cells) {
+				setSelection((Cell) null);
+			}
+
+			@Override
+			public void alignmentCleared() {
+				setSelection((Cell) null);
+				fireSelectionChanged();
+			}
+
+			@Override
+			public void alignmentChanged() {
+				setSelection((Cell) null);
+			}
+		});
 	}
 
 	/**
