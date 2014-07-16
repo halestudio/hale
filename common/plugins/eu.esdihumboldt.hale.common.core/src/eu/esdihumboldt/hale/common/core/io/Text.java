@@ -45,4 +45,27 @@ public class Text {
 		return text;
 	}
 
+	@Override
+	public int hashCode() {
+		return ((text == null) ? 0 : text.hashCode());
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Text other = (Text) obj;
+		if (text == null) {
+			if (other.text != null)
+				return false;
+		}
+		else if (!text.equals(other.text))
+			return false;
+		return true;
+	}
+
 }
