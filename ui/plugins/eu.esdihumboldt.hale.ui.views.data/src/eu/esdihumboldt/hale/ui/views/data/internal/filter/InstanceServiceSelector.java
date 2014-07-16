@@ -42,6 +42,10 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.PlatformUI;
 
+import com.google.common.collect.ListMultimap;
+
+import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -54,6 +58,8 @@ import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.filter.TypeFilterField;
 import eu.esdihumboldt.hale.ui.filter.cql.CQLFilterField;
+import eu.esdihumboldt.hale.ui.service.cell.TypeCellFocusListener;
+import eu.esdihumboldt.hale.ui.service.cell.TypeCellFocusService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceListener;
@@ -99,6 +105,8 @@ public class InstanceServiceSelector implements InstanceSelector {
 		private final SchemaServiceListener schemaListener;
 
 		private final InstanceServiceListener instanceListener;
+
+		private TypeCellFocusListener typeCellFocusListener;
 
 		/**
 		 * @see Composite#Composite(Composite, int)
@@ -274,6 +282,25 @@ public class InstanceServiceSelector implements InstanceSelector {
 				}
 
 			});
+
+			TypeCellFocusService tc = (TypeCellFocusService) PlatformUI.getWorkbench().getService(
+					TypeCellFocusService.class);
+			tc.addListener(typeCellFocusListener = new TypeCellFocusListener() {
+
+				@Override
+				public void dataChanged(Cell cell) {
+					final Display display = PlatformUI.getWorkbench().getDisplay();
+					display.syncExec(new Runnable() {
+
+						@Override
+						public void run() {
+							if (typeDefinitions != null
+									&& !typeDefinitions.getControl().isDisposed())
+								updateTypesSelection();
+						}
+					});
+				}
+			});
 		}
 
 		/**
@@ -311,6 +338,23 @@ public class InstanceServiceSelector implements InstanceSelector {
 			// select the previously selected type if possible
 			TypeDefinition typeToSelect = (filteredTypes.contains(lastSelected)) ? (lastSelected)
 					: (null);
+
+			TypeCellFocusService tc = (TypeCellFocusService) PlatformUI.getWorkbench().getService(
+					TypeCellFocusService.class);
+
+			if (tc.getLastSelectedTypeCell() != null && typeToSelect != null) {
+				ListMultimap<String, ? extends Entity> source = tc.getLastSelectedTypeCell()
+						.getSource();
+				if (source != null && !source.isEmpty()) {
+					TypeDefinition tmpTypeDef = source.values().iterator().next().getDefinition()
+							.getType();
+					// If previously selected type is not equal to the last
+					// selected type
+					if (tmpTypeDef.compareTo(typeToSelect) != 0) {
+						typeToSelect = tmpTypeDef;
+					}
+				}
+			}
 
 			// fallback selection
 			if (typeToSelect == null && !filteredTypes.isEmpty()) {
@@ -412,9 +456,14 @@ public class InstanceServiceSelector implements InstanceSelector {
 					SchemaService.class);
 			InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
 					InstanceService.class);
+			TypeCellFocusService tc = (TypeCellFocusService) PlatformUI.getWorkbench().getService(
+					TypeCellFocusService.class);
 
 			ss.removeSchemaServiceListener(schemaListener);
 			is.removeListener(instanceListener);
+
+			if (tc != null)
+				tc.removeListener(typeCellFocusListener);
 
 			refreshImage.dispose();
 
