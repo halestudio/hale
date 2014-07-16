@@ -17,14 +17,19 @@ package eu.esdihumboldt.hale.common.core.io.impl
 
 import org.w3c.dom.Element
 
+import eu.esdihumboldt.hale.common.core.io.ComplexValueJson
 import eu.esdihumboldt.hale.common.core.io.ComplexValueType
 import eu.esdihumboldt.hale.common.core.io.DOMValueUtil
 import eu.esdihumboldt.hale.common.core.io.HaleIO
+import eu.esdihumboldt.hale.common.core.io.JsonValueUtil
 import eu.esdihumboldt.hale.common.core.io.Value
 import eu.esdihumboldt.hale.common.core.io.ValueProperties
+import eu.esdihumboldt.util.groovy.json.JsonStreamBuilder
 import eu.esdihumboldt.util.groovy.xml.NSDOMBuilder
 import eu.esdihumboldt.util.groovy.xml.NSDOMCategory
+import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic
+import groovy.transform.TypeCheckingMode
 
 
 /**
@@ -33,7 +38,7 @@ import groovy.transform.CompileStatic
  * @author Simon Templer
  */
 @CompileStatic
-class ValuePropertiesType implements ComplexValueType<ValueProperties, Void> {
+class ValuePropertiesType implements ComplexValueType<ValueProperties, Void>, ComplexValueJson<ValueProperties, Void> {
 
 	@Override
 	ValueProperties fromDOM(Element fragment, Void context) {
@@ -65,6 +70,34 @@ class ValuePropertiesType implements ComplexValueType<ValueProperties, Void> {
 		}
 
 		return fragment;
+	}
+
+	@CompileStatic(TypeCheckingMode.SKIP)
+	@Override
+	public ValueProperties fromJson(Reader json, Void context) {
+		ValueProperties values = new ValueProperties()
+
+		def js = new JsonSlurper().parse(json)
+		js.each { name, val ->
+			Value value = JsonValueUtil.fromJson(val)
+			values.put(name, value)
+		}
+
+		return values
+	}
+
+	@CompileStatic(TypeCheckingMode.SKIP)
+	@Override
+	public void toJson(ValueProperties properties, Writer writer) {
+		def json = new JsonStreamBuilder(writer)
+		json {
+			properties.each { String key, Value value ->
+				// ignore null values
+				if (value != null) {
+					json key, JsonValueUtil.valueJson(value)
+				}
+			}
+		}
 	}
 
 	@Override
