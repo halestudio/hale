@@ -30,6 +30,8 @@ import com.google.common.collect.ListMultimap;
 import de.fhg.igd.eclipse.util.extension.ExtensionUtil;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueDefinition;
+import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueExtension;
 
 /**
  * Parameter definition utilities.
@@ -53,15 +55,24 @@ public class ParameterUtil {
 	public static final String CONF_PARAMETER_BINDING = "parameterBinding";
 
 	/**
+	 * Name of the configuration element defining a complex value binding for a
+	 * parameter.
+	 */
+	public static final String CONF_PARAMETER_COMPLEX_VALUE = "complexValue";
+
+	/**
 	 * Determine the binding of a defined parameter.
 	 * 
 	 * @param parameterConf the configuration element defining the parameter
-	 * @return the binding class
+	 * @return the binding class or <code>null</code>
 	 */
-	public static Class<?> getBinding(IConfigurationElement parameterConf) {
+	public static @Nullable
+	Class<?> getBinding(IConfigurationElement parameterConf) {
 		IConfigurationElement[] bindingElement = parameterConf.getChildren(CONF_PARAMETER_BINDING);
 		IConfigurationElement[] enumerationElement = parameterConf
 				.getChildren(CONF_PARAMETER_ENUMERATION);
+		IConfigurationElement[] complexValueElement = parameterConf
+				.getChildren(CONF_PARAMETER_COMPLEX_VALUE);
 		if (bindingElement.length > 0) {
 			// default to String
 			String clazz = bindingElement[0].getAttribute("class");
@@ -73,10 +84,41 @@ public class ParameterUtil {
 		else if (enumerationElement.length > 0) {
 			return String.class;
 		}
+		else if (complexValueElement.length > 0) {
+			String complexValueId = complexValueElement[0].getAttribute("ref");
+			if (complexValueId != null) {
+				ComplexValueDefinition cv = ComplexValueExtension.getInstance().get(complexValueId);
+				if (cv != null) {
+					return cv.getValueType();
+				}
+			}
+			return null;
+		}
 		else {
 			// default
 			return String.class;
 		}
+	}
+
+	/**
+	 * Get the complex value definition of a defined parameter if applicable.
+	 * 
+	 * @param parameterConf the configuration element defining the parameter
+	 * @return the complex value definition or <code>null</code>
+	 */
+	public static @Nullable
+	ComplexValueDefinition getComplexValueDefinition(IConfigurationElement parameterConf) {
+		IConfigurationElement[] complexValueElement = parameterConf
+				.getChildren(CONF_PARAMETER_COMPLEX_VALUE);
+		if (complexValueElement.length > 0) {
+			String complexValueId = complexValueElement[0].getAttribute("ref");
+			if (complexValueId != null) {
+				return ComplexValueExtension.getInstance().get(complexValueId);
+			}
+		}
+
+		// default
+		return null;
 	}
 
 	/**

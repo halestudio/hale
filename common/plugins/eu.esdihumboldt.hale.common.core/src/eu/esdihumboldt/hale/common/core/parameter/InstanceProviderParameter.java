@@ -47,6 +47,8 @@ public class InstanceProviderParameter extends AbstractCommonParameter {
 		this.binding = ParameterUtil.getBinding(children[0]);
 		this.enumeration = ParameterUtil.getEnumeration(children[0]);
 
+		// TODO also use complex value and validator information
+
 		boolean optionalElement = Boolean.parseBoolean(conf.getAttribute("optional"));
 		this.optional = optionalElement;
 	}
