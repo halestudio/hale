@@ -54,11 +54,11 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="dateFormat">
-            <functionParameterBinding>
+            <parameterBinding>
                <validator
                      class="eu.esdihumboldt.cst.functions.string.DateExtractionFormatValidator">
                </validator>
-            </functionParameterBinding>
+            </parameterBinding>
          </functionParameter>
       </propertyFunction>
       <propertyFunction
@@ -98,11 +98,11 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="regexPattern">
-            <functionParameterBinding>
+            <parameterBinding>
                <validator
                      class="eu.esdihumboldt.cst.functions.string.RegexFormatValidator">
                </validator>
-            </functionParameterBinding>
+            </parameterBinding>
          </functionParameter>
          <functionParameter
                description="The output format to apply, containing curly brackets delimited group definitions. Ex. {1} represents the result of group 1 from the regex analysis."
@@ -110,8 +110,8 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="outputFormat">
-            <functionParameterBinding>
-            </functionParameterBinding>
+            <parameterBinding>
+            </parameterBinding>
          </functionParameter>
       </propertyFunction>
    </extension>

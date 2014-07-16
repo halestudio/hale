@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.core.extension;
+package eu.esdihumboldt.hale.common.core.parameter;
 
 import net.jcip.annotations.Immutable;
 

@@ -21,8 +21,8 @@ import java.util.Set;
 import org.eclipse.core.runtime.content.IContentType;
 
 import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
-import eu.esdihumboldt.hale.common.core.extension.InstanceProviderParameter;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.parameter.InstanceProviderParameter;
 
 /**
  * Descriptor and factory for an {@link IOProvider}

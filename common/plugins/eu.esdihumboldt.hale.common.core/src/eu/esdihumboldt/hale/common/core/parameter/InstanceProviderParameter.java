@@ -13,15 +13,11 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.core.extension;
+package eu.esdihumboldt.hale.common.core.parameter;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.IConfigurationElement;
-
-import de.fhg.igd.eclipse.util.extension.ExtensionUtil;
 
 /**
  * Definition of an Instance Reader/Writer parameter
@@ -46,38 +42,12 @@ public class InstanceProviderParameter extends AbstractCommonParameter {
 	 */
 	public InstanceProviderParameter(IConfigurationElement conf) {
 		super(conf.getChildren("parameter")[0]);
-		IConfigurationElement[] child = conf.getChildren("parameter");
-		IConfigurationElement[] bindingElement = child[0].getChildren("parameterBinding");
-		IConfigurationElement[] enumerationElement = child[0].getChildren("parameterEnumeration");
+		IConfigurationElement[] children = conf.getChildren("parameter");
+
+		this.binding = ParameterUtil.getBinding(children[0]);
+		this.enumeration = ParameterUtil.getEnumeration(children[0]);
+
 		boolean optionalElement = Boolean.parseBoolean(conf.getAttribute("optional"));
-
-		if (bindingElement.length > 0) {
-			this.enumeration = null;
-
-			// default to String
-			String clazz = bindingElement[0].getAttribute("class");
-			if (clazz == null)
-				this.binding = String.class;
-			else
-				this.binding = ExtensionUtil.loadClass(bindingElement[0], "class");
-		}
-		else if (enumerationElement.length > 0) {
-			this.binding = null;
-			// this.validator = null;
-			// must be present, otherwise xml is invalid
-			IConfigurationElement[] enumerationValues = enumerationElement[0]
-					.getChildren("enumerationValue");
-			List<String> enumeration = new ArrayList<String>(enumerationValues.length);
-			for (IConfigurationElement value : enumerationValues)
-				enumeration.add(value.getAttribute("value"));
-			this.enumeration = Collections.unmodifiableList(enumeration);
-		}
-		else {
-			// default
-			// this.validator = null;
-			this.enumeration = null;
-			this.binding = String.class;
-		}
 		this.optional = optionalElement;
 	}
 

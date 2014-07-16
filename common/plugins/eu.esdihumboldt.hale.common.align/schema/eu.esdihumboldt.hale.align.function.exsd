@@ -451,6 +451,7 @@ For references, e.g. to images, use absolute references to plugin and path, led 
          <choice>
             <element ref="parameterEnumeration"/>
             <element ref="parameterBinding"/>
+            <element ref="parameterComplexValue"/>
          </choice>
          <attribute name="name" type="string" use="required">
             <annotation>
