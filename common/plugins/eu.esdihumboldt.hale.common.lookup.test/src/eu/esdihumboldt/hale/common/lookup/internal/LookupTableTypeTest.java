@@ -18,6 +18,8 @@ package eu.esdihumboldt.hale.common.lookup.internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -45,13 +47,7 @@ public class LookupTableTypeTest {
 	 */
 	@Test
 	public void testStringLookup() {
-		Map<Value, Value> values = new HashMap<Value, Value>();
-
-		values.put(Value.of("a"), Value.of("1"));
-		values.put(Value.of("b"), Value.of("1"));
-		values.put(Value.of("c"), Value.of("1"));
-		values.put(Value.of("d"), Value.of("2"));
-		values.put(Value.of("e"), Value.of("2"));
+		Map<Value, Value> values = createStringLookup();
 
 		LookupTable org = new LookupTableImpl(values);
 
@@ -65,11 +61,86 @@ public class LookupTableTypeTest {
 	}
 
 	/**
+	 * Test if a simple lookup table containing only string values is the same
+	 * when converted to JSON and back again.
+	 */
+	@Test
+	public void testStringLookupJson() {
+		Map<Value, Value> values = createStringLookup();
+
+		LookupTable org = new LookupTableImpl(values);
+
+		// converter
+		LookupTableType ltt = new LookupTableType();
+
+		// convert to Json
+		StringWriter writer = new StringWriter();
+		ltt.toJson(org, writer);
+
+		System.out.println(writer.toString());
+
+		// convert back
+		LookupTable conv = ltt.fromJson(new StringReader(writer.toString()), null);
+
+		checkTable(conv, values);
+	}
+
+	private Map<Value, Value> createStringLookup() {
+		Map<Value, Value> values = new HashMap<Value, Value>();
+
+		values.put(Value.of("a"), Value.of("1"));
+		values.put(Value.of("b"), Value.of("1"));
+		values.put(Value.of("c"), Value.of("1"));
+		values.put(Value.of("d"), Value.of("2"));
+		values.put(Value.of("e"), Value.of("2"));
+
+		return values;
+	}
+
+	/**
 	 * Test if a lookup table containing only complex values is the same when
 	 * converted to DOM and back again.
 	 */
 	@Test
 	public void testComplexLookup() {
+		Map<Value, Value> values2 = createComplexLookup();
+
+		LookupTable org2 = new LookupTableImpl(values2);
+
+		// convert to DOM
+		Element fragment = HaleIO.getComplexElement(org2);
+
+		// convert back
+		LookupTable conv = HaleIO.getComplexValue(fragment, LookupTable.class, null);
+
+		checkTable(conv, values2);
+	}
+
+	/**
+	 * Test if a lookup table containing only complex values is the same when
+	 * converted to JSON and back again.
+	 */
+	@Test
+	public void testComplexLookupJson() {
+		Map<Value, Value> values2 = createComplexLookup();
+
+		LookupTable org2 = new LookupTableImpl(values2);
+
+		// converter
+		LookupTableType ltt = new LookupTableType();
+
+		// convert to Json
+		StringWriter writer = new StringWriter();
+		ltt.toJson(org2, writer);
+
+		System.out.println(writer.toString());
+
+		// convert back
+		LookupTable conv = ltt.fromJson(new StringReader(writer.toString()), null);
+		checkTable(conv, values2);
+	}
+
+	private Map<Value, Value> createComplexLookup() {
 		// simple internal table
 		Map<Value, Value> values = new HashMap<Value, Value>();
 
@@ -84,15 +155,7 @@ public class LookupTableTypeTest {
 		values2.put(Value.of("sub"), Value.complex(org));
 		values2.put(Value.of("c"), Value.of("2"));
 
-		LookupTable org2 = new LookupTableImpl(values2);
-
-		// convert to DOM
-		Element fragment = HaleIO.getComplexElement(org2);
-
-		// convert back
-		LookupTable conv = HaleIO.getComplexValue(fragment, LookupTable.class, null);
-
-		checkTable(conv, values2);
+		return values2;
 	}
 
 	private void checkTable(LookupTable conv, Map<Value, Value> values) {
