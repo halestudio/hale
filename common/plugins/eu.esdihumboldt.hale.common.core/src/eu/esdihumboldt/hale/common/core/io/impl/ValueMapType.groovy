@@ -17,14 +17,19 @@ package eu.esdihumboldt.hale.common.core.io.impl
 
 import org.w3c.dom.Element
 
+import eu.esdihumboldt.hale.common.core.io.ComplexValueJson
 import eu.esdihumboldt.hale.common.core.io.ComplexValueType
 import eu.esdihumboldt.hale.common.core.io.DOMValueUtil
 import eu.esdihumboldt.hale.common.core.io.HaleIO
+import eu.esdihumboldt.hale.common.core.io.JsonValueUtil
 import eu.esdihumboldt.hale.common.core.io.Value
 import eu.esdihumboldt.hale.common.core.io.ValueMap
+import eu.esdihumboldt.util.groovy.json.JsonStreamBuilder
 import eu.esdihumboldt.util.groovy.xml.NSDOMBuilder
 import eu.esdihumboldt.util.groovy.xml.NSDOMCategory
+import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic
+import groovy.transform.TypeCheckingMode
 
 
 /**
@@ -33,7 +38,7 @@ import groovy.transform.CompileStatic
  * @author Simon Templer
  */
 @CompileStatic
-class ValueMapType implements ComplexValueType<ValueMap, Void> {
+class ValueMapType implements ComplexValueType<ValueMap, Void>, ComplexValueJson<ValueMap, Void> {
 
 	@Override
 	ValueMap fromDOM(Element fragment, Void context) {
@@ -66,6 +71,38 @@ class ValueMapType implements ComplexValueType<ValueMap, Void> {
 		}
 
 		return fragment;
+	}
+
+	@CompileStatic(TypeCheckingMode.SKIP)
+	@Override
+	public ValueMap fromJson(Reader json, Void context) {
+		ValueMap values = new ValueMap()
+
+		def js = new JsonSlurper().parse(json)
+		js.entries.each { entry ->
+			Value key = JsonValueUtil.fromJson(entry.key)
+			Value value = JsonValueUtil.fromJson(entry.value)
+			values.put(key, value)
+		}
+
+		return values
+	}
+
+	@CompileStatic(TypeCheckingMode.SKIP)
+	@Override
+	public void toJson(ValueMap map, Writer writer) {
+		def json = new JsonStreamBuilder(writer)
+		json {
+			map.each { Value key, Value value ->
+				// ignore null values
+				if (value != null) {
+					'entries[]' {
+						json.key JsonValueUtil.valueJson(key)
+						json.value JsonValueUtil.valueJson(value)
+					}
+				}
+			}
+		}
 	}
 
 	@Override
