@@ -30,6 +30,7 @@ import org.w3c.dom.Element;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.ValueList;
+import groovy.json.JsonBuilder;
 
 /**
  * Tests {@link ValueList} serialization.
@@ -97,9 +98,11 @@ public class ValueListTypeTest {
 	/**
 	 * Test if a simple list containing only {@link StringValue}s is the same
 	 * when converted to JSON and back again.
+	 * 
+	 * @throws Exception if an error occurs
 	 */
 	@Test
-	public void testStringValueListJson() {
+	public void testStringValueListJson() throws Exception {
 		ValueList values = new ValueList();
 
 		values.add(Value.of(1));
@@ -158,9 +161,11 @@ public class ValueListTypeTest {
 
 	/**
 	 * Test if a nested list is the same when converted to JSON and back again.
+	 * 
+	 * @throws Exception if an error occurs
 	 */
 	@Test
-	public void testValueListValueListJson() {
+	public void testValueListValueListJson() throws Exception {
 		ValueList values1 = new ValueList();
 		values1.add(Value.of(1));
 		values1.add(Value.of(2));
@@ -185,6 +190,42 @@ public class ValueListTypeTest {
 
 		// convert back
 		ValueList conv = vlt.fromJson(new StringReader(writer.toString()), null);
+
+		assertEquals("List size does not match", 2, conv.size());
+
+		assertEquals(values, conv);
+	}
+
+	/**
+	 * Test if a nested list is the same when converted to JSON and back again.
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testValueListValueListJsonGroovy() throws Exception {
+		ValueList values1 = new ValueList();
+		values1.add(Value.of(1));
+		values1.add(Value.of(2));
+
+		ValueList values2 = new ValueList();
+		values2.add(Value.of("a"));
+		values2.add(Value.of("b"));
+		values2.add(Value.of("c"));
+
+		ValueList values = new ValueList();
+		values.add(new ComplexValue(values1));
+		values.add(new ComplexValue(values2));
+
+		// converter
+		ValueListType vlt = new ValueListType();
+
+		// convert to Json
+		Object json = vlt.toJson(values);
+
+		System.out.println(new JsonBuilder(json).toString());
+
+		// convert back
+		ValueList conv = vlt.fromJson(json, null);
 
 		assertEquals("List size does not match", 2, conv.size());
 

@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.common.core.io;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 
@@ -37,16 +38,40 @@ public interface ComplexValueJson<T, C> {
 	 * @param context the complex value context, may be <code>null</code> if
 	 *            unavailable
 	 * @return the loaded complex value
+	 * @throws IOException if there are problems reading the representation
 	 */
-	public T fromJson(Reader json, C context);
+	public T fromJson(Reader json, C context) throws IOException;
 
 	/**
 	 * Write the complex value as JSON.
 	 * 
 	 * @param value the complex value to save
 	 * @param writer the writer to write the JSON representation to
+	 * @throws IOException if writing the representation fails
 	 */
-	public void toJson(T value, Writer writer);
+	public void toJson(T value, Writer writer) throws IOException;
+
+	// convenience methods for Groovy
+
+	/**
+	 * Load the complex value from a JSON representation.
+	 * 
+	 * @param json the JSON object representation as used by Groovy JsonSlurper,
+	 *            JsonBuilder and JsonOutput
+	 * @param context the complex value context, may be <code>null</code> if
+	 *            unavailable
+	 * @return the loaded complex value
+	 */
+	public T fromJson(Object json, C context);
+
+	/**
+	 * Write the complex value as JSON.
+	 * 
+	 * @param value the complex value to save
+	 * @return the JSON object representation as used by Groovy JsonSlurper,
+	 *         JsonBuilder and JsonOutput
+	 */
+	public Object toJson(T value);
 
 	/**
 	 * @return the type of the complex value context
