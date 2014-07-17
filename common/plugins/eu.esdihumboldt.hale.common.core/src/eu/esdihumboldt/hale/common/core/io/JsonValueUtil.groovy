@@ -39,7 +39,7 @@ class JsonValueUtil {
 	 * @param json the JSON object / primitive / array (e.g. as retrieved through JsonSlurper)
 	 * @return the extracted value
 	 */
-	static Value fromJson(def json) {
+	static Value fromJson(def json, def context = null) {
 		if (json == null) {
 			return Value.NULL
 		}
@@ -51,7 +51,8 @@ class JsonValueUtil {
 			if (type) {
 				ComplexValueDefinition cdv = ComplexValueExtension.instance.get(type)
 				if (cdv && cdv.jsonConverter) {
-					def value = cdv.jsonConverter.fromJson(json.'@value', null)
+					def value = cdv.jsonConverter.fromJson(json.'@value',
+							cdv.getContextType().isInstance(context) ? context : null)
 					new ComplexValue(value)
 				}
 				else {

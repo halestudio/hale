@@ -36,16 +36,16 @@ import groovy.transform.TypeCheckingMode
  * @author Simon Templer
  */
 @CompileStatic
-class ValueMapType extends AbstractGroovyValueJson<ValueMap, Void> implements ComplexValueType<ValueMap, Void> {
+class ValueMapType extends AbstractGroovyValueJson<ValueMap, Object> implements ComplexValueType<ValueMap, Object> {
 
 	@Override
-	ValueMap fromDOM(Element fragment, Void context) {
+	ValueMap fromDOM(Element fragment, Object context) {
 		ValueMap map = new ValueMap()
 
 		def entries = NSDOMCategory.children(fragment, HaleIO.NS_HALE_CORE, 'entry')
 		for (Element entry in entries) {
-			Value key = DOMValueUtil.fromTag(NSDOMCategory.firstChild(entry, HaleIO.NS_HALE_CORE, 'key'))
-			Value value = DOMValueUtil.fromTag(NSDOMCategory.firstChild(entry, HaleIO.NS_HALE_CORE, 'value'))
+			Value key = DOMValueUtil.fromTag(NSDOMCategory.firstChild(entry, HaleIO.NS_HALE_CORE, 'key'), context)
+			Value value = DOMValueUtil.fromTag(NSDOMCategory.firstChild(entry, HaleIO.NS_HALE_CORE, 'value'), context)
 			map.put(key, value)
 		}
 
@@ -90,12 +90,12 @@ class ValueMapType extends AbstractGroovyValueJson<ValueMap, Void> implements Co
 
 	@CompileStatic(TypeCheckingMode.SKIP)
 	@Override
-	public ValueMap fromJson(Object json, Void context) {
+	public ValueMap fromJson(Object json, Object context) {
 		ValueMap values = new ValueMap()
 
 		json.entries.each { entry ->
-			Value key = JsonValueUtil.fromJson(entry.key)
-			Value value = JsonValueUtil.fromJson(entry.value)
+			Value key = JsonValueUtil.fromJson(entry.key, context)
+			Value value = JsonValueUtil.fromJson(entry.value, context)
 			values.put(key, value)
 		}
 
@@ -121,7 +121,7 @@ class ValueMapType extends AbstractGroovyValueJson<ValueMap, Void> implements Co
 	}
 
 	@Override
-	Class<Void> getContextType() {
-		return Void.class;
+	Class<Object> getContextType() {
+		return Object.class;
 	}
 }

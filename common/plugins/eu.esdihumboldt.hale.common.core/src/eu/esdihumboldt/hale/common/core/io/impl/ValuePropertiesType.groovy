@@ -35,16 +35,16 @@ import groovy.transform.TypeCheckingMode
  * @author Simon Templer
  */
 @CompileStatic
-class ValuePropertiesType extends AbstractGroovyValueJson<ValueProperties, Void> implements ComplexValueType<ValueProperties, Void> {
+class ValuePropertiesType extends AbstractGroovyValueJson<ValueProperties, Object> implements ComplexValueType<ValueProperties, Object> {
 
 	@Override
-	ValueProperties fromDOM(Element fragment, Void context) {
+	ValueProperties fromDOM(Element fragment, Object context) {
 		ValueProperties properties = new ValueProperties()
 
 		def entries = NSDOMCategory.children(fragment, HaleIO.NS_HALE_CORE, 'property')
 		for (Element entry in entries) {
 			String key = entry.getAttribute('name')
-			Value value = DOMValueUtil.fromTag(NSDOMCategory.firstChild(entry, HaleIO.NS_HALE_CORE, 'value'))
+			Value value = DOMValueUtil.fromTag(NSDOMCategory.firstChild(entry, HaleIO.NS_HALE_CORE, 'value'), context)
 			properties[key] = value
 		}
 
@@ -71,11 +71,11 @@ class ValuePropertiesType extends AbstractGroovyValueJson<ValueProperties, Void>
 
 	@CompileStatic(TypeCheckingMode.SKIP)
 	@Override
-	public ValueProperties fromJson(Object json, Void context) {
+	public ValueProperties fromJson(Object json, Object context) {
 		ValueProperties values = new ValueProperties()
 
 		json.each { name, val ->
-			Value value = JsonValueUtil.fromJson(val)
+			Value value = JsonValueUtil.fromJson(val, context)
 			values.put(name, value)
 		}
 
@@ -95,7 +95,7 @@ class ValuePropertiesType extends AbstractGroovyValueJson<ValueProperties, Void>
 	}
 
 	@Override
-	Class<Void> getContextType() {
-		return Void.class;
+	Class<Object> getContextType() {
+		return Object.class;
 	}
 }

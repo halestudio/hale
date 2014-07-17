@@ -432,7 +432,7 @@ public abstract class HaleIO {
 		ComplexValueDefinition cvt = ComplexValueExtension.getInstance().getDefinition(name);
 		if (cvt != null) {
 			// create and return the complex parameter value
-			return cvt.fromDOM(element, context);
+			return cvt.fromDOM(element, cvt.getContextType().isInstance(context) ? context : null);
 		}
 
 		// the element itself is the complex value
@@ -468,7 +468,8 @@ public abstract class HaleIO {
 		Object value = null;
 		if (cvt != null) {
 			try {
-				value = cvt.fromDOM(element, context);
+				value = cvt.fromDOM(element, cvt.getContextType().isInstance(context) ? context
+						: null);
 			} catch (Exception e) {
 				throw new IllegalStateException("Failed to load complex value from DOM", e);
 			}
