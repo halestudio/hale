@@ -33,6 +33,7 @@ import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.lookup.LookupTable;
 import eu.esdihumboldt.hale.common.lookup.impl.LookupTableImpl;
+import groovy.json.JsonBuilder;
 
 /**
  * Tests for {@link LookupTable} complex value conversion.
@@ -137,6 +138,29 @@ public class LookupTableTypeTest {
 
 		// convert back
 		LookupTable conv = ltt.fromJson(new StringReader(writer.toString()), null);
+		checkTable(conv, values2);
+	}
+
+	/**
+	 * Test if a lookup table containing only complex values is the same when
+	 * converted to JSON and back again.
+	 */
+	@Test
+	public void testComplexLookupJsonGroovy() {
+		Map<Value, Value> values2 = createComplexLookup();
+
+		LookupTable org2 = new LookupTableImpl(values2);
+
+		// converter
+		LookupTableType ltt = new LookupTableType();
+
+		// convert to Json
+		Object json = ltt.toJson(org2);
+
+		System.out.println(new JsonBuilder(json).toString());
+
+		// convert back
+		LookupTable conv = ltt.fromJson(json, null);
 		checkTable(conv, values2);
 	}
 

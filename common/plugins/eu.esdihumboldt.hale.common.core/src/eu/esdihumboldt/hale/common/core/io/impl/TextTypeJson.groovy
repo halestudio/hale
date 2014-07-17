@@ -45,6 +45,16 @@ class TextTypeJson implements ComplexValueJson<Text, Void> {
 	}
 
 	@Override
+	public Text fromJson(Object json, Void context) {
+		return new Text(json as String)
+	}
+
+	@Override
+	public Object toJson(Text value) {
+		return value.text
+	}
+
+	@Override
 	Class<Void> getContextType() {
 		Void
 	}
