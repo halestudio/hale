@@ -34,15 +34,15 @@ import groovy.transform.CompileStatic
  * @author Simon Templer
  */
 @CompileStatic
-class ValueListType extends AbstractGroovyValueJson<ValueList, Void> implements ComplexValueType<ValueList, Void> {
+class ValueListType extends AbstractGroovyValueJson<ValueList, Object> implements ComplexValueType<ValueList, Object> {
 
 	@Override
-	ValueList fromDOM(Element fragment, Void context) {
+	ValueList fromDOM(Element fragment, Object context) {
 		ValueList list = new ValueList()
 
 		def entries = NSDOMCategory.children(fragment, HaleIO.NS_HALE_CORE, 'entry')
 		for (Element entry in entries) {
-			list << DOMValueUtil.fromTag(entry)
+			list << DOMValueUtil.fromTag(entry, context)
 		}
 
 		return list;
@@ -65,12 +65,12 @@ class ValueListType extends AbstractGroovyValueJson<ValueList, Void> implements 
 	}
 
 	@Override
-	public ValueList fromJson(Object json, Void context) {
+	public ValueList fromJson(Object json, Object context) {
 		List<Value> values = []
 
 		// expecting an array
 		json.each { entry ->
-			values.add(JsonValueUtil.fromJson(entry))
+			values.add(JsonValueUtil.fromJson(entry, context))
 		}
 
 		return new ValueList(values)
@@ -84,7 +84,7 @@ class ValueListType extends AbstractGroovyValueJson<ValueList, Void> implements 
 	}
 
 	@Override
-	Class<Void> getContextType() {
-		return Void.class;
+	Class<Object> getContextType() {
+		return Object.class;
 	}
 }

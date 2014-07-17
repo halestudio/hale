@@ -34,16 +34,16 @@ import groovy.xml.dom.DOMCategory
  * 
  * @author Simon Templer
  */
-class LookupTableType extends AbstractGroovyValueJson<LookupTable, Void> implements ComplexValueType<LookupTable, Void> {
+class LookupTableType extends AbstractGroovyValueJson<LookupTable, Object> implements ComplexValueType<LookupTable, Object> {
 
 	@Override
-	public LookupTable fromDOM(Element fragment, Void context) {
+	public LookupTable fromDOM(Element fragment, Object context) {
 		Map<Value, Value> values = new HashMap<Value, Value>();
 
 		use (DOMCategory) {
 			for (entry in fragment.entry) {
-				Value key = DOMValueUtil.fromTag(entry.key[0]);
-				Value value = DOMValueUtil.fromTag(entry.value[0])
+				Value key = DOMValueUtil.fromTag(entry.key[0], context)
+				Value value = DOMValueUtil.fromTag(entry.value[0], context)
 				values.put(key, value)
 			}
 		}
@@ -87,12 +87,12 @@ class LookupTableType extends AbstractGroovyValueJson<LookupTable, Void> impleme
 	}
 
 	@Override
-	public LookupTable fromJson(Object json, Void context) {
+	public LookupTable fromJson(Object json, Object context) {
 		Map<Value, Value> values = new HashMap<Value, Value>()
 
 		json.entries.each { entry ->
-			Value key = JsonValueUtil.fromJson(entry.key)
-			Value value = JsonValueUtil.fromJson(entry.value)
+			Value key = JsonValueUtil.fromJson(entry.key, context)
+			Value value = JsonValueUtil.fromJson(entry.value, context)
 			values.put(key, value)
 		}
 
@@ -117,7 +117,7 @@ class LookupTableType extends AbstractGroovyValueJson<LookupTable, Void> impleme
 	}
 
 	@Override
-	public Class<Void> getContextType() {
-		Void.class
+	public Class<Object> getContextType() {
+		Object.class
 	}
 }
