@@ -51,8 +51,7 @@ class JsonValueUtil {
 			if (type) {
 				ComplexValueDefinition cdv = ComplexValueExtension.instance.get(type)
 				if (cdv && cdv.jsonConverter) {
-					String child = new JsonBuilder(json.'@value').toString()
-					def value = cdv.jsonConverter.fromJson(new StringReader(child), null)
+					def value = cdv.jsonConverter.fromJson(json.'@value', null)
 					new ComplexValue(value)
 				}
 				else {
@@ -106,13 +105,7 @@ class JsonValueUtil {
 			// retrieve complex value definition based on object type
 			ComplexValueDefinition cdv = ComplexValueExtension.instance.getDefinition(intern.class)
 			if (cdv && cdv.jsonConverter) {
-				StringWriter writer = new StringWriter()
-				writer.withWriter {
-					cdv.jsonConverter.toJson(intern, it)
-				}
-
-				// parse Json because we there is no way to add it unescaped
-				def valueJs = parseValue(writer.toString())
+				def valueJs = cdv.jsonConverter.toJson(intern)
 
 				if (intern instanceof ValueList) {
 					// no wrapper needed - represented as Json array
