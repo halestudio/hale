@@ -58,7 +58,7 @@ public class ParameterUtil {
 	 * Name of the configuration element defining a complex value binding for a
 	 * parameter.
 	 */
-	public static final String CONF_PARAMETER_COMPLEX_VALUE = "complexValue";
+	public static final String CONF_PARAMETER_COMPLEX_VALUE = "parameterComplexValue";
 
 	/**
 	 * Determine the binding of a defined parameter.
