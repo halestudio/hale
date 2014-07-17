@@ -70,7 +70,7 @@ public class DefinedAnnotation implements Identifiable, AnnotationDescriptor<Obj
 
 	@Override
 	public Class<Void> getContextType() {
-		return descriptor.getContextType();
+		return Void.class;
 	}
 
 }

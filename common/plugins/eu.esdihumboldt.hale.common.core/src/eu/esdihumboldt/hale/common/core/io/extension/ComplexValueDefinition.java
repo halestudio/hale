@@ -119,9 +119,10 @@ public class ComplexValueDefinition implements Identifiable, ComplexValueType<Ob
 		return valueType;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Class<Object> getContextType() {
-		return Object.class;
+	public Class<? extends Object> getContextType() {
+		return descriptor.getContextType();
 	}
 
 	/**
