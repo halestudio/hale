@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<Metadata xmlns:gmd="http://www.isotc211.org/2005/gmd"
+xmlns:gco="http://www.isotc211.org/2005/gco">
+<gmd:MD_Metadata>
+    <gmd:language>
+      <gco:CharacterString>DE</gco:CharacterString>
+    </gmd:language>
+    <gmd:dateStamp>
+      <gco:Date>2014-06-10</gco:Date>
+    </gmd:dateStamp>
+</gmd:MD_Metadata>
+</Metadata>
