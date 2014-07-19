@@ -1,3 +1,5 @@
+
+
 /*
  * Copyright (c) 2014 Data Harmonisation Panel
  * 
@@ -17,10 +19,17 @@ package eu.esdihumboldt.hale.app.transform;
 
 import static eu.esdihumboldt.hale.app.transform.ExecUtil.*
 
+import javax.xml.parsers.DocumentBuilderFactory
+
 import org.eclipse.equinox.app.IApplicationContext
+import org.w3c.dom.Document
+import org.w3c.dom.Element
+import org.xml.sax.SAXException
 
 import eu.esdihumboldt.hale.common.app.AbstractApplication
 import eu.esdihumboldt.hale.common.core.io.Value
+import eu.esdihumboldt.hale.common.core.io.impl.ElementValue
+import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier
 import groovy.transform.CompileStatic
 
 /**
@@ -32,6 +41,7 @@ import groovy.transform.CompileStatic
 class ExecApplication extends AbstractApplication<ExecContext> {
 
 	public static final String SETTING_PREFIX = '-S'
+	public static final String XML_SETTING_PREFIX = '-X'
 
 	enum Configurable {
 		source,
@@ -162,6 +172,11 @@ HALE -nosplash -application hale.transform
 					String key = param[SETTING_PREFIX.length()..-1]
 					storeSetting(key, value)
 				}
+				if(param.startsWith(XML_SETTING_PREFIX) && param.length() > XML_SETTING_PREFIX.length()){
+					// XML setting
+					String key = param[XML_SETTING_PREFIX.length()..-1]
+					storeXMLSetting(key, value)
+				}
 				break
 		}
 	}
@@ -218,6 +233,66 @@ HALE -nosplash -application hale.transform
 	protected Value valueFromString(String value) {
 		//TODO support detection of complex values
 		Value.of(value)
+	}
+
+	/**
+	 * Store a Setting of a {@link Configurable} if it is an XML 
+	 * file Parameter
+	 * 
+	 * @param key the XML setting key/name
+	 * @param value XML path/file
+	 */
+	protected void storeXMLSetting(String key, String value){
+		if (lastConfigurable) {
+			// static Groovy can't deal with generics properly...
+			ExecContext ec = (ExecContext) this.executionContext
+			// try to parse XML file to ElementValue
+			ElementValue ev = new ElementValue(elementValueFromString(value), null)
+
+			if (ev)
+				switch (lastConfigurable) {
+					case Configurable.source:
+						ec.sourceSettings[key] = ev
+						break
+					case Configurable.target:
+						ec.targetSettings[key] = ev
+						break
+				}
+		}
+		else {
+			fail('Setting must be specified in context of either source or target')
+		}
+	}
+
+	/**
+	 * Create Element Object from String value
+	 * 
+	 * @param value The file/path to the XML file as String
+	 * @return The (XML) Element
+	 */
+	protected Element elementValueFromString(String value){
+		// parse value to URI
+		URI uri = fileOrUri(value)
+
+		// build the document out of the String value
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance()
+		dbf.setNamespaceAware(true)
+		Document doc
+
+		try{
+			InputStream input = new DefaultInputSupplier(uri).getInput()
+			input.withStream { InputStream it ->
+				doc = dbf.newDocumentBuilder().parse(it)
+			}
+			return doc.getDocumentElement()
+		}
+		catch(IOException e){
+			fail('An error occurred reading the XML file.')
+		}
+		catch(SAXException e){
+			fail('XML file must be a valid XML.'+e)
+		}
+		return null
 	}
 
 	@Override

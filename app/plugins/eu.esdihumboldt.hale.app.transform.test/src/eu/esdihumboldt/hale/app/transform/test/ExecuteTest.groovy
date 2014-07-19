@@ -36,15 +36,79 @@ class ExecuteTest extends GroovyTestCase {
 	private static final String HYDRO_PROJECT = "platform:/plugin/$PLUGIN_NAME/projects/hydro/hydro-basic.halez"
 	private static final String HYDRO_DATA = "platform:/plugin/$PLUGIN_NAME/projects/hydro/hydro-source.gml.gz"
 
+	// XXX Doesn't work -> private static final String METADATA_PATH = "platform:/plugin/$PLUGIN_NAME/projects/gmdMD_Metadata.xml"
+	// works, same as absolute path does
+	private static final String METADATA_PATH = "./projects/gmdMD_Metadata.xml"
+
+	/**
+	 * Test transformation of an example project.
+	 */
+	void testTransformXml() {
+		File targetFile =  File.createTempFile('transform-hydro', '.gml')
+		targetFile.deleteOnExit()
+		println ">> Transformed data will be written to ${targetFile}..."
+
+		transform([
+			'-project',
+			HYDRO_PROJECT,
+			'-source',
+			HYDRO_DATA,
+			'-target',
+			targetFile.absolutePath,
+			// select target provider
+			'-providerId',
+			'eu.esdihumboldt.hale.io.inspiregml.writer',
+			// override a setting
+			'-Sinspire.sds.localId',
+			'1234',
+			'-Sinspire.sds.metadata',
+			METADATA_PATH
+		]) { //
+			File output, int code ->
+			// check exit code
+			assert code == 0
+		}
+
+		validateHydroXml(targetFile)
+	}
+
+	/**
+	 * Test transformation of an example project.
+	 * Try, if the metadata.inline parameter can be set with 
+	 * content read from XML file.
+	 */
+	void testTransformXmlInline() {
+		File targetFile =  File.createTempFile('transform-hydro', '.gml')
+		targetFile.deleteOnExit()
+		println ">> Transformed data will be written to ${targetFile}..."
+
+		transform([
+			'-project',
+			HYDRO_PROJECT,
+			'-source',
+			HYDRO_DATA,
+			'-target',
+			targetFile.absolutePath,
+			// select target provider for export
+			'-providerId',
+			'eu.esdihumboldt.hale.io.inspiregml.writer',
+			// override a setting
+			'-Xinspire.sds.metadata.inline',
+			METADATA_PATH
+		]) { //
+			File output, int code ->
+			// check exit code
+			assert code == 0
+		}
+
+		validateHydroXml(targetFile)
+	}
+
 	/**
 	 * Test transformation of an example project.
 	 *
-	 * XXX Disabled because for some reason it breaks the test execution
-	 * part of the build process, even though the test itself is executed w/o problems.
-	 * The problem seems to be the framework shutdown, maybe related to the use of OrientDB
-	 * within the transformation in this test.
 	 */
-	void ignore_testTransform() {
+	void testTransform() {
 		File targetFile =  File.createTempFile('transform-hydro', '.gml')
 		targetFile.deleteOnExit()
 		println ">> Transformed data will be written to ${targetFile}..."
@@ -81,6 +145,18 @@ class ExecuteTest extends GroovyTestCase {
 		assert root.member.Watercourse.size() == 982
 		// check local ID
 		assert root.identifier.Identifier.localId[0].text() == dataSetId
+	}
+
+	@CompileStatic(TypeCheckingMode.SKIP)
+	private void validateHydroXml(File targetFile) {
+		// check written file
+		def root = new XmlSlurper().parse(targetFile)
+		// check container
+		assert root.name() == 'SpatialDataSet'
+		// check transformed feature count
+		assert root.member.Watercourse.size() == 982
+		// check metadata tag
+		assert root.metadata.MD_Metadata.language.CharacterString.text() == 'DE' || root.metadata.Metadata.MD_Metadata.language.CharacterString.text() == 'DE'
 	}
 
 	/**
