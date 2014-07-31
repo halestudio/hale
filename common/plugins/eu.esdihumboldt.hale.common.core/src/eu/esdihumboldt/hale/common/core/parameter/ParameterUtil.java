@@ -61,6 +61,11 @@ public class ParameterUtil {
 	public static final String CONF_PARAMETER_COMPLEX_VALUE = "parameterComplexValue";
 
 	/**
+	 * Name of the configuration elements' attribute defining a parameter value
+	 */
+	public static final String CONF_PARAMETER_VALUE = "parameterValue";
+
+	/**
 	 * Determine the binding of a defined parameter.
 	 * 
 	 * @param parameterConf the configuration element defining the parameter
@@ -119,6 +124,48 @@ public class ParameterUtil {
 
 		// default
 		return null;
+	}
+
+	/**
+	 * Get the default value of a defined parameter.
+	 * 
+	 * @param parameterConf the configuration element defining the parameter
+	 * @return the default default value or <code>null</code>
+	 */
+	public static @Nullable
+	ParameterValues getDefaultValue(IConfigurationElement parameterConf) {
+		// IConfigurationElement[] complexValueElement =
+		// parameterConf.getChildren(CONF_PARAMETER_COMPLEX_VALUE);
+		// Iterate trough the defaultValue Sequence of the complexValue
+		// List<ParameterValues> defaultValueList = new
+		// ArrayList<ParameterValues>();
+
+		// if (complexValueElement.length > 0) {
+		// get the parameterDefault sequence
+//			IConfigurationElement[] defaultComplexValueElement = complexValueElement[0]
+//					.getChildren(CONF_PARAMETER_DEFAULT_COMPLEX_VALUE);
+//			try {
+//				// for every default value element in the sequence
+//				for (IConfigurationElement defaultValue : defaultComplexValueElement) {
+//					defaultValueList.add((ParameterValues) defaultValue
+//							.createExecutableExtension("defaultValue"));
+//				}
+//			} catch (CoreException e) {
+//				log.error("Error creating DefaultValue from extension", e);
+//			}
+//			if (defaultValueList.size() > 0)
+//				return defaultValueList;
+		ParameterValues pv = null;
+		if (parameterConf != null && parameterConf.getAttribute(CONF_PARAMETER_VALUE) != null) {
+			try {
+				pv = (ParameterValues) parameterConf
+						.createExecutableExtension(CONF_PARAMETER_VALUE);
+			} catch (CoreException e) {
+				log.error("Error creating DefaultValue from extension", e);
+			}
+		}
+
+		return pv;
 	}
 
 	/**
