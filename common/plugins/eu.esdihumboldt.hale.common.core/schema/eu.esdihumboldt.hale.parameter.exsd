@@ -203,6 +203,9 @@
 
    <element name="parameterComplexValue">
       <complexType>
+         <sequence>
+            <element ref="parameterDefaultComplexValue" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
          <attribute name="ref" type="string" use="required">
             <annotation>
                <documentation>
@@ -210,6 +213,26 @@
                </documentation>
                <appinfo>
                   <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.io.complexvalue/complexValue/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="parameterDefaultComplexValue">
+      <annotation>
+         <documentation>
+            The Extension to define a default value for a complex value parameter.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="defaultValue" type="string">
+            <annotation>
+               <documentation>
+                  Implementation of the DefaultValue Interface for the specific parameter complex value.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.core.parameter.DefaultValue"/>
                </appinfo>
             </annotation>
          </attribute>

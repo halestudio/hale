@@ -61,6 +61,12 @@ public class ParameterUtil {
 	public static final String CONF_PARAMETER_COMPLEX_VALUE = "parameterComplexValue";
 
 	/**
+	 * Name of the configuration element defining a default complex value for a
+	 * complex value parameter
+	 */
+	public static final String CONF_PARAMETER_DEFAULT_COMPLEX_VALUE = "parameterDefaultComplexValue";
+
+	/**
 	 * Determine the binding of a defined parameter.
 	 * 
 	 * @param parameterConf the configuration element defining the parameter
@@ -115,6 +121,40 @@ public class ParameterUtil {
 			if (complexValueId != null) {
 				return ComplexValueExtension.getInstance().get(complexValueId);
 			}
+		}
+
+		// default
+		return null;
+	}
+
+	/**
+	 * Get the default value of a defined parameter.
+	 * 
+	 * @param parameterConf the configuration element defining the parameter
+	 * @return the default default value or <code>null</code>
+	 */
+	public static @Nullable
+	List<DefaultValue> getDefaultValue(IConfigurationElement parameterConf) {
+		IConfigurationElement[] complexValueElement = parameterConf
+				.getChildren(CONF_PARAMETER_COMPLEX_VALUE);
+		// Iterate trough the defaultValue Sequence of the complexValue
+		List<DefaultValue> defaultValueList = new ArrayList<DefaultValue>();
+
+		if (complexValueElement.length > 0) {
+			// get the parameterDefault sequence
+			IConfigurationElement[] defaultComplexValueElement = complexValueElement[0]
+					.getChildren(CONF_PARAMETER_DEFAULT_COMPLEX_VALUE);
+			try {
+				// for every default value element in the sequence
+				for (IConfigurationElement defaultValue : defaultComplexValueElement) {
+					defaultValueList.add((DefaultValue) defaultValue
+							.createExecutableExtension("defaultValue"));
+				}
+			} catch (CoreException e) {
+				log.error("Error creating DefaultValue from extension", e);
+			}
+			if (defaultValueList.size() > 0)
+				return defaultValueList;
 		}
 
 		// default

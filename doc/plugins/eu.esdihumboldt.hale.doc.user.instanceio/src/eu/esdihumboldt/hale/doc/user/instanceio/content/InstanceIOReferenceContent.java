@@ -18,7 +18,9 @@ package eu.esdihumboldt.hale.doc.user.instanceio.content;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.apache.velocity.VelocityContext;
@@ -28,6 +30,7 @@ import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
+import eu.esdihumboldt.hale.common.core.parameter.DefaultValue;
 import eu.esdihumboldt.hale.common.core.parameter.InstanceProviderParameter;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
@@ -160,16 +163,33 @@ public class InstanceIOReferenceContent extends AbstractVelocityContent implemen
 						context.put("fileformat",
 								fileextensions.toArray(new String[fileextensions.size()]));
 						// collect all optional parameter
-						Collection<String> parameter = new ArrayList<String>();
+						Collection<InstanceProviderParameter> parameter = new ArrayList<InstanceProviderParameter>();
+						Map<String, String> example = new HashMap<String, String>();
+						String providerName = "";
 						for (InstanceProviderParameter param : io.getProviderParameter()) {
+							parameter.add(param);
+							providerName = param.getName();
 							// parse if parameter is optional
-							if (param.isOptional()) {
-								parameter.add(param.getName());
+//							if (param.isOptional()) {
+//								parameter.add(providerName);
+//							}
+//							else
+//								parameter.add(providerName += "*");
+
+							// get example use of parameter
+							if (param.getDefaultValue() != null) {
+								// parameter.add(param.getDefaultValue().getSampleData());
+								// example.put(providerName,
+								// param.getDefaultValue().getSampleData());
+								for (DefaultValue value : param.getDefaultValue()) {
+									example.put(providerName, value.getSampleData());
+								}
 							}
-							else
-								parameter.add(param.getName() + "*");
 						}
-						context.put("parameter", parameter.toArray(new String[parameter.size()]));
+
+						context.put("parameter",
+								parameter.toArray(new InstanceProviderParameter[parameter.size()]));
+						context.put("example", example);
 						return context;
 					}
 				});

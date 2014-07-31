@@ -158,11 +158,25 @@
          <providerParameter
                optional="false">
             <parameter
-                  description="The parameter name for the identifier.localId attribute"
-                  label="inspire.sds.localId"
-                  name="inspire.sds.localId">
+                  description="The parameter name for the namespace attribute"
+                  label="inspire.sds.namespace"
+                  name="inspire.sds.namespace">
+               <parameterComplexValue
+                     ref="eu.esdihumboldt.hale.common.core.text">
+                  <parameterDefaultComplexValue
+                        defaultValue="eu.esdihumboldt.hale.io.gml.writer.InspireSDSNamespaceDefaultValue">
+                  </parameterDefaultComplexValue>
+               </parameterComplexValue>
+            </parameter>
+         </providerParameter>
+         <providerParameter
+               optional="true">
+            <parameter
+                  description="The path to a metadata (XML) file."
+                  label="inspire.sds.metadata"
+                  name="inspire.sds.metadata">
                <parameterBinding
-                     class="java.lang.String">
+                     class="java.io.File">
                </parameterBinding>
             </parameter>
          </providerParameter>

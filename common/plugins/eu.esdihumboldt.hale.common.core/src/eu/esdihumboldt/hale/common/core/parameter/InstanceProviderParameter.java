@@ -17,6 +17,8 @@ package eu.esdihumboldt.hale.common.core.parameter;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import org.eclipse.core.runtime.IConfigurationElement;
 
 /**
@@ -30,10 +32,12 @@ public class InstanceProviderParameter extends AbstractCommonParameter {
 	// ALoggerFactory.getLogger(InstanceProviderParameter.class);
 
 	private final Class<?> binding;
-	// private final Validator validator;
+	private final Validator validator;
 	private final List<String> enumeration;
 	// true if the parameter is optional
 	private final boolean optional;
+
+	private final List<DefaultValue> defaultValue;
 
 	/**
 	 * Create a InstanceProvider parameter definition
@@ -42,12 +46,16 @@ public class InstanceProviderParameter extends AbstractCommonParameter {
 	 */
 	public InstanceProviderParameter(IConfigurationElement conf) {
 		super(conf.getChildren("parameter")[0]);
+
 		IConfigurationElement[] children = conf.getChildren("parameter");
 
 		this.binding = ParameterUtil.getBinding(children[0]);
-		this.enumeration = ParameterUtil.getEnumeration(children[0]);
+		// also use validator information
+		this.validator = ParameterUtil.getValidator(children[0]);
 
-		// TODO also use complex value and validator information
+		this.enumeration = ParameterUtil.getEnumeration(children[0]);
+		// Get complex Value
+		this.defaultValue = ParameterUtil.getDefaultValue(children[0]);
 
 		boolean optionalElement = Boolean.parseBoolean(conf.getAttribute("optional"));
 		this.optional = optionalElement;
@@ -61,6 +69,17 @@ public class InstanceProviderParameter extends AbstractCommonParameter {
 	 */
 	public Class<?> getBinding() {
 		return binding;
+	}
+
+	/**
+	 * Returns the validator associated with this function parameter or null if
+	 * there is none. A validator can only be present if a binding is present.
+	 * 
+	 * @return the validator or <code>null</code>
+	 */
+	public @Nullable
+	Validator getValidator() {
+		return validator;
 	}
 
 	/**
@@ -80,6 +99,15 @@ public class InstanceProviderParameter extends AbstractCommonParameter {
 	 */
 	public boolean isOptional() {
 		return optional;
+	}
+
+	/**
+	 * Returns the ComplexValue or null.
+	 * 
+	 * @return the ComplexValue
+	 */
+	public List<DefaultValue> getDefaultValue() {
+		return defaultValue;
 	}
 
 }

@@ -18,7 +18,14 @@
 	<h2>Parameter</h2>
 	<ul>
 		#foreach ($param in $parameter)
-			<li>$param</li>
+			<li><b>$param.getName()</b><br/>
+			#if ($param.getDescription())
+			Description: $param.getDescription()<br/>
+			#end
+			#if ($example.get($param.getName()))
+			Example: $example.get($param.getName())
+			#end
+			</li>
 		#end
 	</ul>
 	
