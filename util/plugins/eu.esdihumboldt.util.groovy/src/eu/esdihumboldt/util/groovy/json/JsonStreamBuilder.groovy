@@ -27,6 +27,9 @@ import groovy.transform.TypeCheckingMode
  * and support concerning arrays. It is for one time use only, as it is bound to
  * a {@link Writer} instance.<br>
  * <br>
+ * Use {@link JsonStreamBuilder} to create JSON objects and arrays of JSON objects,
+ * for simpler structures use for instance {@link JsonOutput}.
+ * <br>
  * See {@link JsonStreamBuilderTest} for examples.
  * 
  * @author Simon Templer
@@ -57,6 +60,8 @@ class JsonStreamBuilder extends BuilderBase {
 
 	final boolean prettyPrint
 
+	final boolean rootArray
+
 	/**
 	 * If set to true the next created node will create an array (w/o the need
 	 * to include <code>[]</code> in the node name).
@@ -68,10 +73,12 @@ class JsonStreamBuilder extends BuilderBase {
 	 * 
 	 * @param writer the writer, it's the callers responsibility to close the writer
 	 * @param prettyPrint if the output should be pretty printed
+	 * @param rootArray if as root an array should be created instead of a root object
 	 */
-	JsonStreamBuilder(Writer writer, boolean prettyPrint = false) {
+	JsonStreamBuilder(Writer writer, boolean prettyPrint = false, boolean rootArray = false) {
 		this.writer = writer
 		this.prettyPrint = prettyPrint
+		this.rootArray = rootArray
 	}
 
 	/**
@@ -146,19 +153,54 @@ class JsonStreamBuilder extends BuilderBase {
 	 */
 	public void call(Closure closure) {
 		def parent = current
+		boolean rootArrayChild = false
 		if (parent == null) {
-			current = new NodeState(object: true, root: false)
-			writer.write( '{' )
+			if (rootArray) {
+				// root node that is an array
+				current = new NodeState(root: true)
+				writer.write( '[' )
+			}
+			else {
+				// non-virtual root node
+				current = new NodeState(object: true, root: false)
+				writer.write( '{' )
+			}
+		}
+		else if (rootArray) {
+			NodeState parentNode = (NodeState) parent
+			if (parentNode.root) {
+				// child object of a root array
+				def previous = parentNode.lastChild
+
+				// need a comma?
+				if (previous != null) {
+					writer << ','
+				}
+
+				def currentNode = new NodeState(object: true, array: true, root: false, level: 1)
+				if (prettyPrint) {
+					writer << '\n'
+					currentNode.level.times { writer << INDENT }
+				}
+
+				parentNode.lastChild = currentNode
+				current = currentNode
+				writer.write( '{' )
+				rootArrayChild = true
+			}
 		}
 
 		closure = (Closure) closure.clone()
 		closure.delegate = this
 		closure.call()
 
-		if (parent == null) {
+		if (parent == null || rootArrayChild) {
 			internalNodeWrapup(current)
 			current = parent
-			reset()
+			if (parent == null) {
+				// only reset after the root
+				reset()
+			}
 		}
 	}
 
@@ -169,6 +211,10 @@ class JsonStreamBuilder extends BuilderBase {
 		NodeState node = new NodeState()
 		NodeState previous = null
 		if (parentNode) {
+			if (parentNode.root && rootArray) {
+				throw new IllegalStateException('Named nodes not allowed in root array')
+			}
+
 			// has a parent
 			previous = parentNode.lastChild
 			parentNode.lastChild = node
@@ -336,7 +382,7 @@ class JsonStreamBuilder extends BuilderBase {
 		NodeState state = (NodeState) node
 
 		// close an array (if the last child is in an array)
-		if (state.lastChild != null && state.lastChild.array) {
+		if (state.lastChild != null && state.lastChild.array && !(state.root && rootArray)) {
 			if (prettyPrint) {
 				writer << '\n'
 				(state.lastChild.level - 1).times { writer << INDENT }
@@ -353,12 +399,17 @@ class JsonStreamBuilder extends BuilderBase {
 			writer << '}'
 		}
 
-		// close root (if the node is a root node not created by #call(Closure))
+		// close root (if the node is a root node not created by #call(Closure) or a root array)
 		if (state.root) {
 			if (prettyPrint) {
 				writer << '\n'
 			}
-			writer << '}'
+			if (rootArray) {
+				writer << ']'
+			}
+			else {
+				writer << '}'
+			}
 		}
 
 		// remove child reference (allow clean-up)
