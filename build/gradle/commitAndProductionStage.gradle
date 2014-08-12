@@ -749,7 +749,8 @@ task buildProduct(dependsOn: createProductFeature) << {
         println('Copying additional files ...')
         project.ext.additionalFilesToPackage.each { af ->
             project.copy {
-                from Helper.resolveTemplate(project, "additional_files/${af}")
+                from Helper.resolveTemplate(project, 'additional_files')
+				include af
                 into productOutputPath
             }
         }
