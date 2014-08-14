@@ -136,9 +136,10 @@
 	<br/><br/>
 	<p>In addition the *.jar as command can be used to execute the transformation.<br/>
 	The command HALE is replaced by: <br/>
-	<b>java -jar org.eclipse.equinox.launcher_1.2.0.v20110502.jar -application hale.transform</b><br/>
-	Here is an example command on how to use this:<br/>
-	<b>java -jar .\HALE-2.9.0.201405310701-win32.win32.x86\plugins\org.eclipse.equinox.launcher_1.2.0.v20110502.jar 
+	<b>java -jar org.eclipse.equinox.launcher_{version-number}.jar -application hale.transform</b>. 
+	You can lookup the version-number in the .\plugins\ in you installation directory of HALE.<br/>
+	Here is an example command on how to use this (version-number = 1.2.0.v20110502):<br/>
+	<b>java -jar .\plugins\org.eclipse.equinox.launcher_1.2.0.v20110502.jar 
 	-application hale.transform 
 	-project "C:\mapping projects\toInspire.halez" 
 	-source "C:\source data\geographicData.shp" 
