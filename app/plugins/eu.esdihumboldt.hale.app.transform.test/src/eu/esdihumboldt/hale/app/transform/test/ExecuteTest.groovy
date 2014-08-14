@@ -170,8 +170,10 @@ class ExecuteTest extends GroovyTestCase {
 		assert root.name() == 'SpatialDataSet'
 		// check transformed feature count
 		assert root.member.Watercourse.size() == 982
-		// check metadata tag
-		assert root.metadata.MD_Metadata.language.CharacterString.text() == 'DE' || root.metadata.Metadata.MD_Metadata.language.CharacterString.text() == 'DE'
+		// check metadata language tag
+		assert root.metadata.MD_Metadata.language.CharacterString.text() == 'DE'
+		// check metadata date tag
+		assert root.metadata.MD_Metadata.dateStamp.Date.text() == '2014-06-10'
 	}
 
 	/**
