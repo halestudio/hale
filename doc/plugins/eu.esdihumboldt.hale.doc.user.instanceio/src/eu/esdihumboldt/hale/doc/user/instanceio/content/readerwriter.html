@@ -15,10 +15,13 @@
 	<h2>Provider ID:</h2>
 	$io.Identifier
 	
+	#if ($parameter.size() > 0)
 	<h2>Parameter</h2>
 	<ul>
 		#foreach ($param in $parameter)
-			<li><b>$param.getName()</b><br/>
+			<li><b>$param.getName()
+			#if ($param.isOptional()) *
+			#end</b><br/>
 			#if ($param.getDescription())
 			Description: $param.getDescription()<br/>
 			#end
@@ -28,6 +31,7 @@
 			</li>
 		#end
 	</ul>
+	#end
 	
 	#if($fileformat)
 		<h2>Supported File Formats</h2>
