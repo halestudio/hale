@@ -157,11 +157,14 @@
          </contentType>
          <providerParameter
                optional="false"
-               parameterValue="eu.esdihumboldt.hale.io.gml.writer.InspireSDSNamespaceDefaultValue">
+               valueDescriptor="eu.esdihumboldt.hale.io.gml.writer.InspireSDSNamespaceDefaultValue">
             <parameter
                   description="The parameter name for the namespace attribute"
                   label="inspire.sds.namespace"
                   name="inspire.sds.namespace">
+               <parameterBinding
+                     class="java.lang.String">
+               </parameterBinding>
             </parameter>
          </providerParameter>
          <providerParameter

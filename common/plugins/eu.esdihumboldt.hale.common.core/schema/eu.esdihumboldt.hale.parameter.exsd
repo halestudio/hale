@@ -61,14 +61,14 @@
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="parameterValue" type="string">
+         <attribute name="valueDescriptor" type="string">
             <annotation>
                <documentation>
                   The Extension to define a default value and sample data for a parameter.
-Implementation of the ParameterValues Interface for the specific parameter complex value.
+Implementation of the ParameterValueDescriptor Interface for the specific parameter.
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.core.parameter.ParameterValues"/>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.core.parameter.ParameterValueDescriptor"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -221,27 +221,6 @@ Implementation of the ParameterValues Interface for the specific parameter compl
                </documentation>
                <appinfo>
                   <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.io.complexvalue/complexValue/@id"/>
-               </appinfo>
-            </annotation>
-         </attribute>
-      </complexType>
-   </element>
-
-   <element name="parameterValue">
-      <annotation>
-         <documentation>
-            The Extension to define a default value for a parameter.
-Used to provide default value or sample data.
-         </documentation>
-      </annotation>
-      <complexType>
-         <attribute name="defaultValue" type="string">
-            <annotation>
-               <documentation>
-                  Implementation of the ParameterValues Interface for the specific parameter complex value.
-               </documentation>
-               <appinfo>
-                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.core.parameter.ParameterValues"/>
                </appinfo>
             </annotation>
          </attribute>

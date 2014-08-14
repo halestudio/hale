@@ -197,7 +197,8 @@
                maxOccurrence="1"
                minOccurrence="0"
                name="lookupTable"
-               scriptable="false">
+               scriptable="false"
+               valueDescriptor="eu.esdihumboldt.hale.common.lookup.impl.LookupTableParameterValue">
             <parameterComplexValue
                   ref="eu.esdihumboldt.hale.common.lookup.lookuptable">
             </parameterComplexValue>

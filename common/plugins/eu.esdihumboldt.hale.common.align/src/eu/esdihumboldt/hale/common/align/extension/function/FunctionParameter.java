@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 
 import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueDefinition;
 import eu.esdihumboldt.hale.common.core.parameter.ParameterUtil;
+import eu.esdihumboldt.hale.common.core.parameter.ParameterValueDescriptor;
 import eu.esdihumboldt.hale.common.core.parameter.Validator;
 
 /**
@@ -41,6 +42,7 @@ public final class FunctionParameter extends AbstractParameter {
 	private final List<String> enumeration;
 	private final boolean scriptable;
 	private final ComplexValueDefinition complexBinding;
+	private final ParameterValueDescriptor valueDescriptor;
 
 	/**
 	 * Create a function parameter definition.
@@ -55,6 +57,7 @@ public final class FunctionParameter extends AbstractParameter {
 		this.enumeration = ParameterUtil.getEnumeration(conf);
 		this.validator = ParameterUtil.getValidator(conf);
 		this.complexBinding = ParameterUtil.getComplexValueDefinition(conf);
+		this.valueDescriptor = ParameterUtil.getValueDescriptor(conf);
 	}
 
 	/**
@@ -106,5 +109,14 @@ public final class FunctionParameter extends AbstractParameter {
 	public @Nullable
 	ComplexValueDefinition getComplexBinding() {
 		return complexBinding;
+	}
+
+	/**
+	 * @return the value descriptor associated to the parameter, or
+	 *         <code>null</code>
+	 */
+	public @Nullable
+	ParameterValueDescriptor getValueDescriptor() {
+		return valueDescriptor;
 	}
 }

@@ -37,7 +37,7 @@ public class InstanceProviderParameter extends AbstractCommonParameter {
 	// true if the parameter is optional
 	private final boolean optional;
 
-	private final ParameterValues defaultValue;
+	private final ParameterValueDescriptor valueDescriptor;
 
 	/**
 	 * Create a InstanceProvider parameter definition
@@ -55,7 +55,7 @@ public class InstanceProviderParameter extends AbstractCommonParameter {
 
 		this.enumeration = ParameterUtil.getEnumeration(children[0]);
 
-		this.defaultValue = ParameterUtil.getDefaultValue(conf);
+		this.valueDescriptor = ParameterUtil.getValueDescriptor(conf);
 
 		boolean optionalElement = Boolean.parseBoolean(conf.getAttribute("optional"));
 		this.optional = optionalElement;
@@ -106,8 +106,8 @@ public class InstanceProviderParameter extends AbstractCommonParameter {
 	 * 
 	 * @return the ComplexValue
 	 */
-	public ParameterValues getDefaultValue() {
-		return defaultValue;
+	public ParameterValueDescriptor getValueDescriptor() {
+		return valueDescriptor;
 	}
 
 }

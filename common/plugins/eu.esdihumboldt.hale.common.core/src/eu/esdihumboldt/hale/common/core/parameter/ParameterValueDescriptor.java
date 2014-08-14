@@ -18,13 +18,13 @@ package eu.esdihumboldt.hale.common.core.parameter;
 import eu.esdihumboldt.hale.common.core.io.Value;
 
 /**
- * Default Value interface for parameter (e.g. provider parameter) Implement
- * this interface to provide a default value and/or sample data for your
- * (provider) parameter type.
+ * {@link ParameterValueDescriptor} interface for parameter (e.g. provider parameter).
+ * Implement this interface to provide a default value and/or sample data for
+ * your parameter type.
  * 
  * @author Yasmina Kammeyer
  */
-public interface ParameterValues {
+public interface ParameterValueDescriptor {
 
 	/**
 	 * @return a default object of the parameter type
