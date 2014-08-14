@@ -64,8 +64,20 @@ $function.description<br />
 #end
 <br />
 <b>Function ID:</b> $function.id <br />
+
 </p>
 
 <include path="$include"/>
+
+#if ($parameterDocu.keySet().size() > 0)
+<p>
+	<h2>Representation of Parameter (Advanced Documentation)</h2>
+	
+	#foreach($paramDocu in $parameterDocu.keySet())
+		Representation of <b>$paramDocu</b> :<br />
+		<pre>$parameterDocu.get($paramDocu)</pre>
+	#end
+</p>
+#end
 </body>
 </html>

@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.doc.user.instanceio.content;
 
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -23,18 +24,25 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.velocity.VelocityContext;
 import org.eclipse.core.runtime.content.IContentType;
+import org.w3c.dom.Element;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.parameter.InstanceProviderParameter;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.doc.user.instanceio.InstanceIOReferenceConstants;
 import eu.esdihumboldt.hale.doc.util.content.AbstractVelocityContent;
+import eu.esdihumboldt.util.xml.XmlUtil;
 
 /**
  * Content Producer to dynamically produce Instance Reader and Writer
@@ -168,28 +176,30 @@ public class InstanceIOReferenceContent extends AbstractVelocityContent implemen
 						for (InstanceProviderParameter param : io.getProviderParameter()) {
 							parameter.add(param);
 							providerName = param.getName();
-							// parse if parameter is optional
-//							if (param.isOptional()) {
-//								parameter.add(providerName);
-//							}
-//							else
-//								parameter.add(providerName += "*");
 
 							// get example use of parameter
-							if (param.getDefaultValue() != null) {
-								// parameter.add(param.getDefaultValue().getSampleData());
-								// example.put(providerName,
-								// param.getDefaultValue().getSampleData());
-								// for (ParameterValues value :
-								// param.getDefaultValue()) {
-								example.put(providerName, param.getDefaultValue()
-										.getDocumentationRepresentation());
-								// }
+							if (param.getValueDescriptor() != null
+									&& param.getValueDescriptor().getSampleData() != null) {
+								Value sample = param.getValueDescriptor().getSampleData();
+								if (sample.isRepresentedAsDOM()) {
+									// get DOM Element as String
+									Element ele = sample.getDOMRepresentation();
+									StringWriter writer = new StringWriter();
+									StreamResult formattedXmlString = new StreamResult(writer);
+									XmlUtil.prettyPrint(new DOMSource(ele), formattedXmlString);
+									// escape special chars to display xml code
+									// on html
+									String xmlString = formattedXmlString.getWriter().toString();
+									xmlString = StringEscapeUtils.escapeXml(xmlString);
+
+									example.put(providerName, xmlString);
+								}
+								else
+									example.put(providerName, sample.getStringRepresentation());
 							}
 						}
 
-						context.put("parameter",
-								parameter.toArray(new InstanceProviderParameter[parameter.size()]));
+						context.put("parameter", parameter);
 						context.put("example", example);
 						return context;
 					}

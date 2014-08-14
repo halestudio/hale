@@ -18,12 +18,14 @@ package eu.esdihumboldt.util.xml;
 import java.io.StringWriter;
 
 import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.w3c.dom.Node;
 
@@ -78,6 +80,27 @@ public class XmlUtil {
 		transformer.setOutputProperty(OutputKeys.INDENT, indent ? "yes" : "no");
 		transformer.setOutputProperty(OutputKeys.METHOD, "xml");
 		transformer.setOutputProperty(OutputKeys.MEDIA_TYPE, "text/xml");
+		transformer.transform(source, target);
+	}
+
+	/**
+	 * Transform a Source (XML) to pretty formatted Result.
+	 * 
+	 * @param source the source, e.g. {@link DOMSource}
+	 * @param target the target, e.g. {@link StreamResult}
+	 * @throws TransformerException if the XSLT transformation for pretty
+	 *             printing cannot be loaded
+	 */
+	public static void prettyPrint(Source source, Result target) throws TransformerException {
+
+		StreamSource transformation = new StreamSource(
+				XmlUtil.class.getResourceAsStream("prettyprint.xsl"));
+
+		TransformerFactory factory = TransformerFactory.newInstance();
+		Transformer transformer = factory.newTransformer(transformation);
+
+		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+
 		transformer.transform(source, target);
 	}
 

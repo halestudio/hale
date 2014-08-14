@@ -23,12 +23,19 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.velocity.VelocityContext;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.help.IHelpContentProducer;
@@ -38,6 +45,7 @@ import org.eclipse.zest.core.viewers.GraphViewer;
 import org.eclipse.zest.core.widgets.Graph;
 import org.eclipse.zest.core.widgets.GraphNode;
 import org.eclipse.zest.layouts.LayoutAlgorithm;
+import org.w3c.dom.Element;
 
 import com.google.common.io.Files;
 
@@ -47,13 +55,16 @@ import eu.esdihumboldt.cst.doc.functions.FunctionReferenceConstants;
 import eu.esdihumboldt.hale.common.align.extension.category.Category;
 import eu.esdihumboldt.hale.common.align.extension.category.CategoryExtension;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.doc.util.content.AbstractVelocityContent;
 import eu.esdihumboldt.hale.ui.common.graph.content.FunctionGraphContentProvider;
 import eu.esdihumboldt.hale.ui.common.graph.labels.FunctionGraphLabelProvider;
 import eu.esdihumboldt.hale.ui.common.graph.layout.FunctionTreeLayoutAlgorithm;
 import eu.esdihumboldt.hale.ui.util.DisplayThread;
 import eu.esdihumboldt.hale.ui.util.graph.OffscreenGraph;
+import eu.esdihumboldt.util.xml.XmlUtil;
 
 /**
  * Provides content for function documentation.
@@ -141,6 +152,32 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 				VelocityContext context = new VelocityContext();
 
 				context.put("function", function);
+
+				// Map<paramDisplayName, sampleDataStringRepresentation>
+				Map<String, String> parameterDocu = new HashMap<String, String>();
+				for (FunctionParameter param : function.getDefinedParameters()) {
+					if (param.getValueDescriptor() != null
+							&& param.getValueDescriptor().getSampleData() != null) {
+						Value sample = param.getValueDescriptor().getSampleData();
+						if (sample.isRepresentedAsDOM()) {
+							// get DOM Element as String
+							Element ele = sample.getDOMRepresentation();
+							StringWriter writer = new StringWriter();
+							StreamResult formattedXmlString = new StreamResult(writer);
+							XmlUtil.prettyPrint(new DOMSource(ele), formattedXmlString);
+							// escape special chars to display xml code on html
+							String xmlString = formattedXmlString.getWriter().toString();
+							xmlString = StringEscapeUtils.escapeXml(xmlString);
+
+							parameterDocu.put(param.getDisplayName(), xmlString);
+						}
+						else {
+							parameterDocu.put(param.getDisplayName(),
+									sample.getStringRepresentation());
+						}
+					}
+				}
+				context.put("parameterDocu", parameterDocu);
 
 				if (function.getCategoryId() != null) {
 					String categoryId = function.getCategoryId();
