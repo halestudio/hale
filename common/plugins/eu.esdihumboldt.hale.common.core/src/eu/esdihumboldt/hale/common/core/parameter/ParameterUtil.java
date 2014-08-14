@@ -61,9 +61,9 @@ public class ParameterUtil {
 	public static final String CONF_PARAMETER_COMPLEX_VALUE = "parameterComplexValue";
 
 	/**
-	 * Name of the configuration elements' attribute defining a parameter value
+	 * Name of the configuration elements' attribute defining a value descriptor
 	 */
-	public static final String CONF_PARAMETER_VALUE = "parameterValue";
+	public static final String CONF_PARAMETER_VALUE_DESCRIPTOR = "valueDescriptor";
 
 	/**
 	 * Determine the binding of a defined parameter.
@@ -127,41 +127,23 @@ public class ParameterUtil {
 	}
 
 	/**
-	 * Get the default value of a defined parameter.
+	 * Get the value descriptor of a defined parameter.
 	 * 
-	 * @param parameterConf the configuration element defining the parameter
-	 * @return the default default value or <code>null</code>
+	 * @param parameterConf the configuration element defining the parameter, it
+	 *            can describe a providerParameter or functionParameter.
+	 * @return the value descriptor or <code>null</code>
 	 */
 	public static @Nullable
-	ParameterValues getDefaultValue(IConfigurationElement parameterConf) {
-		// IConfigurationElement[] complexValueElement =
-		// parameterConf.getChildren(CONF_PARAMETER_COMPLEX_VALUE);
-		// Iterate trough the defaultValue Sequence of the complexValue
-		// List<ParameterValues> defaultValueList = new
-		// ArrayList<ParameterValues>();
+	ParameterValueDescriptor getValueDescriptor(IConfigurationElement parameterConf) {
 
-		// if (complexValueElement.length > 0) {
-		// get the parameterDefault sequence
-//			IConfigurationElement[] defaultComplexValueElement = complexValueElement[0]
-//					.getChildren(CONF_PARAMETER_DEFAULT_COMPLEX_VALUE);
-//			try {
-//				// for every default value element in the sequence
-//				for (IConfigurationElement defaultValue : defaultComplexValueElement) {
-//					defaultValueList.add((ParameterValues) defaultValue
-//							.createExecutableExtension("defaultValue"));
-//				}
-//			} catch (CoreException e) {
-//				log.error("Error creating DefaultValue from extension", e);
-//			}
-//			if (defaultValueList.size() > 0)
-//				return defaultValueList;
-		ParameterValues pv = null;
-		if (parameterConf != null && parameterConf.getAttribute(CONF_PARAMETER_VALUE) != null) {
+		ParameterValueDescriptor pv = null;
+		if (parameterConf != null
+				&& parameterConf.getAttribute(CONF_PARAMETER_VALUE_DESCRIPTOR) != null) {
 			try {
-				pv = (ParameterValues) parameterConf
-						.createExecutableExtension(CONF_PARAMETER_VALUE);
+				pv = (ParameterValueDescriptor) parameterConf
+						.createExecutableExtension(CONF_PARAMETER_VALUE_DESCRIPTOR);
 			} catch (CoreException e) {
-				log.error("Error creating DefaultValue from extension", e);
+				log.error("Error creating Value Descriptor from extension", e);
 			}
 		}
 

@@ -19,20 +19,19 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
-import eu.esdihumboldt.hale.common.core.parameter.ParameterValues;
-import eu.esdihumboldt.hale.common.lookup.LookupTable;
+import eu.esdihumboldt.hale.common.core.parameter.ParameterValueDescriptor;
 
 /**
- * Implementation of the LookupTable Default Value
+ * Implementation of the LookupTable parameter representation
  * 
  * @author Yasmina Kammeyer
  */
-public class LookupTableParameterValue implements ParameterValues {
+public class LookupTableParameterValue implements ParameterValueDescriptor {
 
 	/**
 	 * Returns an empty lookup table object.
 	 * 
-	 * @see eu.esdihumboldt.hale.common.core.parameter.ParameterValues#getDefaultValue()
+	 * @see eu.esdihumboldt.hale.common.core.parameter.ParameterValueDescriptor#getDefaultValue()
 	 */
 	@Override
 	public Value getDefaultValue() {
@@ -40,31 +39,23 @@ public class LookupTableParameterValue implements ParameterValues {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.core.parameter.ParameterValues#getDocumentationRepresentation()
+	 * @see eu.esdihumboldt.hale.common.core.parameter.ParameterValueDescriptor#getDocumentationRepresentation()
 	 */
 	@Override
 	public String getDocumentationRepresentation() {
-		StringBuilder sb = new StringBuilder();
-		Map<Value, Value> tmpMap = getDefaultValue().as(LookupTable.class).asMap();
-		for (Value key : tmpMap.keySet()) {
-			// add-> key , value
-			sb.append(key.getStringRepresentation()).append(" , ")
-					.append(tmpMap.get(key).getStringRepresentation()).append("\n");
-		}
-
-		return sb.toString();
+		return "The ´key´ has an associated ´value´.";
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.core.parameter.ParameterValues#getSampleData()
+	 * @see eu.esdihumboldt.hale.common.core.parameter.ParameterValueDescriptor#getSampleData()
 	 */
 	@Override
 	public Value getSampleData() {
 		Map<Value, Value> table = new LinkedHashMap<Value, Value>();
 		// add some data to the table
-		table.put(Value.of("key"), Value.of("value"));
+		table.put(Value.of("Source_1"), Value.of("Target_1"));
 
-		return Value.complex(new LookupTableImpl(table));
+		return Value.of(new LookupTableImpl(table));
 	}
 
 }

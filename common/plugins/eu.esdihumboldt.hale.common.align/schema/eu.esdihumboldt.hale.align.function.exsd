@@ -502,6 +502,17 @@ Defaults to false.
                </documentation>
             </annotation>
          </attribute>
+         <attribute name="valueDescriptor" type="string">
+            <annotation>
+               <documentation>
+                  The Extension to define a value and sample data for a parameter.
+Implementation of the ParameterValueDescriptor Interface for the specific paramete.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.core.parameter.ParameterValueDescriptor"/>
+               </appinfo>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 

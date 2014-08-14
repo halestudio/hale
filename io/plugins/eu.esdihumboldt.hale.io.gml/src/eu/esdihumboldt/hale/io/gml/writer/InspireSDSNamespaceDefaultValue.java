@@ -15,39 +15,38 @@
 
 package eu.esdihumboldt.hale.io.gml.writer;
 
-import eu.esdihumboldt.hale.common.core.io.Text;
 import eu.esdihumboldt.hale.common.core.io.Value;
-import eu.esdihumboldt.hale.common.core.parameter.ParameterValues;
+import eu.esdihumboldt.hale.common.core.parameter.ParameterValueDescriptor;
 
 /**
  * For testing Text based parameter complex value
  * 
  * @author Yasmina Kammeyer
  */
-public class InspireSDSNamespaceDefaultValue implements ParameterValues {
+public class InspireSDSNamespaceDefaultValue implements ParameterValueDescriptor {
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.core.parameter.ParameterValues#getDefaultValue()
+	 * @see eu.esdihumboldt.hale.common.core.parameter.ParameterValueDescriptor#getDefaultValue()
 	 */
 	@Override
 	public Value getDefaultValue() {
-		return Value.of(new Text(""));
+		return null;
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.core.parameter.ParameterValues#getDocumentationRepresentation()
+	 * @see eu.esdihumboldt.hale.common.core.parameter.ParameterValueDescriptor#getDocumentationRepresentation()
 	 */
 	@Override
 	public String getDocumentationRepresentation() {
-		return "plu:city:xyz";
+		return "The namespace of the spatial dataset.";
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.core.parameter.ParameterValues#getSampleData()
+	 * @see eu.esdihumboldt.hale.common.core.parameter.ParameterValueDescriptor#getSampleData()
 	 */
 	@Override
 	public Value getSampleData() {
-		return Value.of(new Text("plu:city:xyz"));
+		return Value.of("plu:city:xyz");
 	}
 
 }
