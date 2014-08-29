@@ -9,6 +9,7 @@
       <Pattern>%d{dd.MM.yyyy HH:mm:ss} %-5level %C{1}.%M\(%L\) - %m%n</Pattern>
     </encoder>
   </appender>
+  <logger name="to.wetf" level="INFO" />
   <logger name="eu.esdihumboldt" level="INFO" />
   <root level="WARN">
     <appender-ref ref="CONSOLE"/>
