@@ -47,6 +47,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
+import com.google.common.util.concurrent.ListenableFuture;
 
 import de.fhg.igd.osgi.util.configuration.AbstractDefaultConfigurationService;
 import de.fhg.igd.slf4jplus.ALogger;
@@ -73,6 +74,7 @@ import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 import eu.esdihumboldt.hale.common.core.io.project.util.LocationUpdater;
+import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
@@ -665,6 +667,25 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				dialog.open();
 			}
 		});
+	}
+
+	@Override
+	public ListenableFuture<IOReport> export(ProjectWriter writer) {
+		IOAdvisor<ProjectWriter> exportAdvisor = new AbstractIOAdvisor<ProjectWriter>() {
+
+			@Override
+			public void prepareProvider(ProjectWriter provider) {
+				saveProjectAdvisor.prepareProvider(provider);
+			}
+
+			@Override
+			public void updateConfiguration(ProjectWriter provider) {
+				saveProjectAdvisor.updateConfiguration(provider);
+			}
+
+		};
+
+		return ProjectResourcesUtil.executeProvider(writer, exportAdvisor, true, null);
 	}
 
 	/**
