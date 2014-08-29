@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.io.util;
+package eu.esdihumboldt.hale.ui.util.io;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
@@ -27,7 +27,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.ui.io.util.internal.StatesIfDoneProgressMonitor;
+import eu.esdihumboldt.hale.ui.util.io.internal.StatesIfDoneProgressMonitor;
 
 /**
  * Stores current {@link IProgressMonitor}s used in a thread. Allows subtasking

@@ -49,7 +49,6 @@ import eu.esdihumboldt.hale.common.instance.model.TypeFilter;
 import eu.esdihumboldt.hale.common.instance.model.impl.MultiInstanceCollection;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
-import eu.esdihumboldt.hale.ui.io.util.ThreadProgressMonitor;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.instance.sample.internal.InstanceViewPreferences;
@@ -59,6 +58,7 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.values.OccurringValues;
 import eu.esdihumboldt.hale.ui.service.values.OccurringValuesUtil;
 import eu.esdihumboldt.hale.ui.transformation.TransformDataImportAdvisor;
+import eu.esdihumboldt.hale.ui.util.io.ThreadProgressMonitor;
 
 /**
  * Service that determines what different values occur for specific

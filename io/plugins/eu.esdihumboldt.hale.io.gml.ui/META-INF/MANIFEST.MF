@@ -26,6 +26,7 @@ Import-Package: com.google.common.io;version="1.6.0",
  eu.esdihumboldt.hale.io.xsd.model,
  eu.esdihumboldt.hale.ui.common,
  eu.esdihumboldt.hale.ui.common.definition,
+ eu.esdihumboldt.hale.ui.util.io,
  eu.esdihumboldt.util.groovy.paths,
  org.slf4j;version="1.5.11"
 Export-Package: eu.esdihumboldt.hale.io.gml.ui.wfs

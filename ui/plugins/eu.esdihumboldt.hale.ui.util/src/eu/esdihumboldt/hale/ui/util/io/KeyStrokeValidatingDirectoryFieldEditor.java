@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.io.util;
+package eu.esdihumboldt.hale.ui.util.io;
 
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.resource.JFaceResources;

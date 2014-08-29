@@ -35,9 +35,9 @@ import org.eclipse.ui.PlatformUI;
 import com.google.common.base.Predicate;
 
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
-import eu.esdihumboldt.hale.ui.io.util.URIFieldEditor;
 import eu.esdihumboldt.hale.ui.service.project.RecentProjectsMenu;
 import eu.esdihumboldt.hale.ui.service.project.RecentResources;
+import eu.esdihumboldt.hale.ui.util.io.URIFieldEditor;
 import eu.esdihumboldt.util.Pair;
 
 /**

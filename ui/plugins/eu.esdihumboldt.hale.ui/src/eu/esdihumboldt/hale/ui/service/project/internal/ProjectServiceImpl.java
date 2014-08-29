@@ -80,7 +80,6 @@ import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.io.project.OpenProjectWizard;
 import eu.esdihumboldt.hale.ui.io.project.SaveProjectWizard;
-import eu.esdihumboldt.hale.ui.io.util.ThreadProgressMonitor;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.project.CacheCallback;
 import eu.esdihumboldt.hale.ui.service.project.ProjectResourcesUtil;
@@ -88,6 +87,7 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.RecentProjectsService;
 import eu.esdihumboldt.hale.ui.service.project.UILocationUpdater;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
+import eu.esdihumboldt.hale.ui.util.io.ThreadProgressMonitor;
 import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 
 /**

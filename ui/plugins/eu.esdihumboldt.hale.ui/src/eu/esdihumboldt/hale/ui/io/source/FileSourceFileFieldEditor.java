@@ -35,9 +35,9 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
-import eu.esdihumboldt.hale.ui.io.util.OpenFileFieldEditor;
 import eu.esdihumboldt.hale.ui.service.project.RecentProjectsMenu;
 import eu.esdihumboldt.hale.ui.service.project.RecentResources;
+import eu.esdihumboldt.hale.ui.util.io.OpenFileFieldEditor;
 import eu.esdihumboldt.util.Pair;
 import eu.esdihumboldt.util.io.IOUtils;
 

@@ -43,7 +43,7 @@ import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
-import eu.esdihumboldt.hale.ui.io.util.SaveFileFieldEditor;
+import eu.esdihumboldt.hale.ui.util.io.SaveFileFieldEditor;
 
 /**
  * Wizard page that allows selecting a target file

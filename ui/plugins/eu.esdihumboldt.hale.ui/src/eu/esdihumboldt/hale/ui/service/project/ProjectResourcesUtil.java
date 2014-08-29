@@ -41,8 +41,8 @@ import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.ui.HaleUI;
-import eu.esdihumboldt.hale.ui.io.util.ThreadProgressMonitor;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
+import eu.esdihumboldt.hale.ui.util.io.ThreadProgressMonitor;
 
 /**
  * Utility methods for loading project resources.
