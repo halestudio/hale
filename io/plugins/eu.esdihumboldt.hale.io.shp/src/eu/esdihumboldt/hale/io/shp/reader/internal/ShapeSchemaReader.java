@@ -149,7 +149,18 @@ public class ShapeSchemaReader extends AbstractCachedSchemaReader implements Sha
 			geomProperty.setConstraint(NillableFlag.ENABLED); // nillable
 			geomProperty.setConstraint(Cardinality.CC_OPTIONAL); // cardinality
 
-			//
+			// FIXME ID1 property
+			DefaultTypeDefinition id1Type = new DefaultTypeDefinition(new QName(
+					SHAPEFILE_AUGMENT_NS, "ID1Type"));
+			id1Type.setConstraint(MappableFlag.DISABLED);
+			id1Type.setConstraint(MappingRelevantFlag.DISABLED);
+			id1Type.setConstraint(HasValueFlag.ENABLED);
+			id1Type.setConstraint(Binding.get(Long.class));
+			DefaultPropertyDefinition id1Property = new DefaultPropertyDefinition(new QName("ID1"),
+					bt, id1Type);
+			// set constraints on property
+			id1Property.setConstraint(NillableFlag.ENABLED); // nillable
+			id1Property.setConstraint(Cardinality.CC_OPTIONAL); // cardinality
 
 			baseType = bt;
 
