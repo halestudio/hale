@@ -93,7 +93,7 @@ public class DefaultFunctionParameterEditor extends AbstractBindingValidatingEdi
 	 */
 	@Override
 	public void setAsText(String text) {
-		this.text.setText(text);
+		this.text.setText(text == null ? "" : text);
 	}
 
 	/**
