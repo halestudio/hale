@@ -35,6 +35,7 @@ import eu.esdihumboldt.hale.common.core.io.impl.AbstractImportProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.util.resource.Resources;
 
 /**
  * Load XML code lists as provided by the INSPIRE registry.
@@ -71,7 +72,8 @@ public class INSPIRECodeListReader extends AbstractImportProvider implements Cod
 		Document doc;
 
 		URI loc = getSource().getLocation();
-		if (loc != null && (loc.getScheme().equals("http") || loc.getScheme().equals("https"))) {
+		if (loc != null && (loc.getScheme().equals("http") || loc.getScheme().equals("https"))
+				&& Resources.tryResolve(loc, Resources.RESOURCE_TYPE_XML_CODELIST) == null) {
 			// load with HTTP client
 			// and provide headers to retrieve correct format and language
 			doc = loadXmlDocument(loc);
