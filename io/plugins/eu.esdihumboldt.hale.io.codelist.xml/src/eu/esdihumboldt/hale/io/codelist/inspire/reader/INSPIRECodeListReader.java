@@ -129,7 +129,9 @@ public class INSPIRECodeListReader extends AbstractImportProvider implements Cod
 							DocumentBuilder docBuilder = dbfac.newDocumentBuilder();
 							ContentType contentType = ContentType.getOrDefault(entity);
 							if (!contentType.getMimeType().equals(
-									ContentType.APPLICATION_XML.getMimeType())) {
+									ContentType.APPLICATION_XML.getMimeType())
+									&& !contentType.getMimeType().equals(
+											ContentType.TEXT_XML.getMimeType())) {
 								throw new ClientProtocolException("Unexpected content type:"
 										+ contentType);
 							}
