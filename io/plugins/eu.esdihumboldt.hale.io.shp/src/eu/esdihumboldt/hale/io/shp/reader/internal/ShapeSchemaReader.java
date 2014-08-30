@@ -95,6 +95,65 @@ public class ShapeSchemaReader extends AbstractCachedSchemaReader implements Sha
 			fnt.setConstraint(HasValueFlag.ENABLED);
 
 			filenameType = fnt;
+
+			schema.addType(filenameType);
+		}
+
+		// create type for augmented generic geometry property
+		QName genGeomTypeName = new QName(SHAPEFILE_AUGMENT_NS, "geomType");
+		TypeDefinition genGeomType = null;
+		if (getSharedTypes() != null) {
+			genGeomType = getSharedTypes().getType(genGeomTypeName);
+		}
+		if (genGeomType == null) {
+			DefaultTypeDefinition ggt = new DefaultTypeDefinition(genGeomTypeName);
+
+			ggt.setConstraint(MappableFlag.DISABLED);
+			ggt.setConstraint(MappingRelevantFlag.DISABLED);
+			ggt.setConstraint(HasValueFlag.ENABLED);
+			ggt.setConstraint(Binding.get(GeometryProperty.class));
+
+			genGeomType = ggt;
+
+			schema.addType(genGeomType);
+		}
+
+		// shared (artificial) base type for ShapeFiles
+		QName baseTypeName = new QName(SHAPEFILE_AUGMENT_NS, "AbstractShapeFeature");
+		TypeDefinition baseType = null;
+		if (getSharedTypes() != null) {
+			baseType = getSharedTypes().getType(baseTypeName);
+		}
+		if (baseType == null) {
+			DefaultTypeDefinition bt = new DefaultTypeDefinition(baseTypeName);
+
+			bt.setConstraint(MappableFlag.DISABLED);
+			bt.setConstraint(MappingRelevantFlag.DISABLED);
+			bt.setConstraint(HasValueFlag.DISABLED);
+			bt.setConstraint(AbstractFlag.ENABLED);
+
+			// populate base type
+
+			// add additional filename property
+//			String filename = sft.getName().getLocalPart();
+			DefaultPropertyDefinition property = new DefaultPropertyDefinition(new QName(
+					SHAPEFILE_AUGMENT_NS, AUGMENTED_PROPERTY_FILENAME), bt, filenameType);
+			property.setConstraint(Cardinality.CC_EXACTLY_ONCE);
+			property.setConstraint(NillableFlag.ENABLED);
+
+			// generic geometry property (XXX can't be overriden currently ->
+			// would result in a duplicate)
+			DefaultPropertyDefinition geomProperty = new DefaultPropertyDefinition(new QName(
+					"the_geom"), bt, genGeomType);
+			// set constraints on property
+			geomProperty.setConstraint(NillableFlag.ENABLED); // nillable
+			geomProperty.setConstraint(Cardinality.CC_OPTIONAL); // cardinality
+
+			//
+
+			baseType = bt;
+
+			schema.addType(baseType);
 		}
 
 		// build type definitions based on Schema extracted by geotools
@@ -104,6 +163,7 @@ public class ShapeSchemaReader extends AbstractCachedSchemaReader implements Sha
 				// create type definition
 				DefaultTypeDefinition type = new DefaultTypeDefinition(new QName(namespace, sft
 						.getName().getLocalPart()));
+				type.setSuperType((DefaultTypeDefinition) baseType);
 
 				// constraints on main type
 				type.setConstraint(MappingRelevantFlag.ENABLED);
@@ -113,24 +173,23 @@ public class ShapeSchemaReader extends AbstractCachedSchemaReader implements Sha
 				type.setConstraint(Binding.get(Instance.class));
 
 				for (AttributeDescriptor ad : sft.getAttributeDescriptors()) {
-					DefaultPropertyDefinition property = new DefaultPropertyDefinition(new QName(
-							ad.getLocalName()), type, getTypeFromAttributeType(ad.getType(),
-							schema, namespace));
+					QName propertyName = new QName(ad.getLocalName());
 
-					// set constraints on property
-					property.setConstraint(NillableFlag.get(ad.isNillable())); // nillable
-					property.setConstraint(Cardinality.get(ad.getMinOccurs(), ad.getMaxOccurs())); // cardinality
+					if (baseType.getChild(propertyName) == null) {
+						// only add property if not yet present in the base type
 
-					// set metadata
-					property.setLocation(getSource().getLocation());
+						DefaultPropertyDefinition property = new DefaultPropertyDefinition(
+								propertyName, type, getTypeFromAttributeType(ad.getType(), schema,
+										namespace));
+
+						// set constraints on property
+						property.setConstraint(NillableFlag.get(ad.isNillable())); // nillable
+						property.setConstraint(Cardinality.get(ad.getMinOccurs(), ad.getMaxOccurs())); // cardinality
+
+						// set metadata
+						property.setLocation(getSource().getLocation());
+					}
 				}
-
-				// add additional filename property
-//				String filename = sft.getName().getLocalPart();
-				DefaultPropertyDefinition property = new DefaultPropertyDefinition(new QName(
-						SHAPEFILE_AUGMENT_NS, AUGMENTED_PROPERTY_FILENAME), type, filenameType);
-				property.setConstraint(Cardinality.CC_EXACTLY_ONCE);
-				property.setConstraint(NillableFlag.ENABLED);
 
 				schema.addType(type);
 			} catch (Exception ex) {
