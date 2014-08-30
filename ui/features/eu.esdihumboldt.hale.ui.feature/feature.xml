@@ -416,4 +416,18 @@
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="net.sf.ezmorph"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="net.sf.json-lib"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>
