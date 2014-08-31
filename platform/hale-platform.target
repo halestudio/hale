@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="214">
+<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="215">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="de.fhg.igd.equinox.test.feature.feature.group" version="1.0.0.201407021539"/>
@@ -35,8 +35,8 @@
 <repository location="http://download.scala-ide.org/sdk/helium/e38/scala210/stable/site"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="eu.esdihumboldt.hale.platform.feature.group" version="2.9.5"/>
-<repository location="http://hale.igd.fraunhofer.de/build-support/55ba57f9e5e3fe4e6b0dc97b9e1fd1b004920c2f/updatesites/platform"/>
+<unit id="eu.esdihumboldt.hale.platform.feature.group" version="2.9.5.bnd-5AxVIQ"/>
+<repository location="http://hale.igd.fraunhofer.de/build-support/433bf358f61d2d1b616ef1e6b60be7b57286291a/updatesites/platform"/>
 </location>
 </locations>
 </target>
