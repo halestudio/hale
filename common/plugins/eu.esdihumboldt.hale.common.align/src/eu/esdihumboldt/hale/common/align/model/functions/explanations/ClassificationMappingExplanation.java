@@ -99,11 +99,10 @@ public class ClassificationMappingExplanation extends AbstractCellExplanation im
 		if (target != null && source != null) {
 			StringBuilder mappingString = new StringBuilder();
 			mappingString
-					.append("<table border=\"1\"><tr><th>Target value</th><th>Source values</th></tr>");
+					.append("<table border=\"1\"><tr><th>Source values</th><th>Target value</th></tr>");
 			for (Value targetValue : revLookup.keySet()) {
 				mappingString.append("<tr><td>");
-				mappingString.append(quoteText(targetValue.as(String.class), true));
-				mappingString.append("</td><td>");
+
 				int i = 1;
 				for (Value sourceValue : revLookup.get(targetValue)) {
 					if (i != 1) {
@@ -112,6 +111,10 @@ public class ClassificationMappingExplanation extends AbstractCellExplanation im
 					mappingString.append(quoteText(sourceValue.as(String.class), true));
 					i++;
 				}
+				mappingString.append("</td><td>");
+
+				mappingString.append(quoteText(targetValue.as(String.class), true));
+
 				mappingString.append("</td></tr>");
 			}
 			mappingString.append("</table>");
