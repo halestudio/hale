@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.ui.common.definition.editors;
 
+import java.util.List;
+
 import org.eclipse.swt.widgets.Composite;
 
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
@@ -72,7 +74,18 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 	public Editor<?> createEditor(Composite parent, FunctionParameter parameter,
 			ParameterValue initialValue) {
 		Class<?> binding = parameter.getBinding();
-		if (binding != null) {
+		// assume String as default binding for parameters
+		if (binding == null)
+			binding = String.class;
+		List<String> enumeration = parameter.getEnumeration();
+
+		if (enumeration != null && !enumeration.isEmpty()) {
+			EnumerationEditor editor = new EnumerationEditor(parent, parameter.getEnumeration());
+			if (initialValue != null)
+				editor.setAsText(initialValue.as(String.class));
+			return editor;
+		}
+		else {
 			if (parameter.isScriptable()) {
 				EditorChooserEditor<Object> result = new FunctionParameterEditorChooserEditor(
 						parent, binding, parameter.getValidator());
@@ -95,12 +108,6 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 					resultEditor.setAsText(initialValue.as(String.class));
 				return resultEditor;
 			}
-		}
-		else {
-			EnumerationEditor editor = new EnumerationEditor(parent, parameter.getEnumeration());
-			if (initialValue != null)
-				editor.setAsText(initialValue.as(String.class));
-			return editor;
 		}
 	}
 }
