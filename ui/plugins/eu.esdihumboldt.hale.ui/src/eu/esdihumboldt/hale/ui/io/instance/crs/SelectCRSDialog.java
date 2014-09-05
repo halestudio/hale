@@ -183,9 +183,9 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 
 	}
 
-	private static final String defaultCode = "EPSG:4326"; //$NON-NLS-1$
+	private static final String DEFAULT_CODE = "EPSG:4326"; //$NON-NLS-1$
 
-	private static final String defaultWKT = "PROJCS[\"MGI (Ferro)/AustriaGKWestZone\",\n" + //$NON-NLS-1$
+	private static final String DEFAULT_WKT = "PROJCS[\"MGI (Ferro)/AustriaGKWestZone\",\n" + //$NON-NLS-1$
 			"\tGEOGCS[\"MGI (Ferro)\",\n" + //$NON-NLS-1$
 			"\t\tDATUM[\"Militar-Geographische Institut (Ferro)\",\n" + //$NON-NLS-1$
 			"\t\t\tSPHEROID[\"Bessel 1841\",6377397.155,299.1528128,\n" + //$NON-NLS-1$
@@ -205,6 +205,9 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 			"AXIS[\"Y\",EAST],\n" + //$NON-NLS-1$
 			"AXIS[\"X\",NORTH],\n" + //$NON-NLS-1$
 			"AUTHORITY[\"EPSG\",\"31251\"]]"; //$NON-NLS-1$
+
+	private static String lastCode = DEFAULT_CODE;
+	private static String lastWKT = DEFAULT_WKT;
 
 	private CRSFieldEditor crsField;
 
@@ -304,7 +307,7 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 			code = ((CodeDefinition) value).getCode();
 		}
 		else {
-			code = defaultCode;
+			code = lastCode;
 		}
 		crsField.setStringValue(code);
 		crsField.setPropertyChangeListener(this);
@@ -323,7 +326,7 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 			wkt = ((WKTDefinition) value).getWkt();
 		}
 		else {
-			wkt = defaultWKT;
+			wkt = lastWKT;
 		}
 		wktField.setText(wkt);
 		wktField.getTextField().setEnabled(!lastWasCode);
@@ -352,9 +355,11 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 		CRSDefinition crs;
 		if (radioCRS.getSelection()) {
 			crs = crsField.getCRSDefinition();
+			lastCode = crsField.getCRSDefinition().getCode();
 		}
 		else {
 			crs = wktField.getCRSDefinition();
+			lastWKT = wktField.getCRSDefinition().getWkt();
 		}
 
 		value = crs;
