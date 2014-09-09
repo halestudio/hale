@@ -155,12 +155,17 @@ public class StyledInstanceMarker extends InstanceMarker {
 		InstanceReference ir = context.getValue();
 		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
 				InstanceService.class);
-		Instance inst = is.getInstance(ir);
+		boolean instanceInitialized = false;
+		Instance inst = null; // instance variable - only initialize if needed
 
 		for (int i = 0; i < rules.length; i++) {
 
 			if (rules[i].getFilter() != null) {
-
+				if (!instanceInitialized) {
+					// initialize instance (as it is needed for the filter)
+					inst = is.getInstance(ir);
+					instanceInitialized = true;
+				}
 				if (rules[i].getFilter().evaluate(inst)) {
 					return rules[i];
 				}
@@ -404,13 +409,8 @@ public class StyledInstanceMarker extends InstanceMarker {
 	 */
 	private Style getStyle(InstanceWaypoint context) {
 		StyleService ss = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
-		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
-				InstanceService.class);
-
 		InstanceReference ref = context.getValue();
-		Instance instance = is.getInstance(ref);
-
-		return ss.getStyle(instance.getDefinition(), ref.getDataSet());
+		return ss.getStyle(context.getInstanceType(), ref.getDataSet());
 	}
 
 	/**
