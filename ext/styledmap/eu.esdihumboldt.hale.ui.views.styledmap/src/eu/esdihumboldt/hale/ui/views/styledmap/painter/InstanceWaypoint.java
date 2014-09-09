@@ -25,6 +25,7 @@ import de.fhg.igd.mapviewer.waypoints.GenericWaypoint;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Map way-point representing an {@link Instance}.
@@ -37,6 +38,8 @@ public class InstanceWaypoint extends GenericWaypoint<InstanceReference, Instanc
 
 	private final String name;
 
+	private final TypeDefinition instanceType;
+
 	/**
 	 * Create an instance way-point.
 	 * 
@@ -44,14 +47,16 @@ public class InstanceWaypoint extends GenericWaypoint<InstanceReference, Instanc
 	 * @param bb the bounding box
 	 * @param value the reference to the instance
 	 * @param geometries the instance geometries
+	 * @param instanceType the type definition associated with the instance
 	 * @param name the instance name, <code>null</code> if unknown
 	 */
 	public InstanceWaypoint(GeoPosition pos, BoundingBox bb, InstanceReference value,
-			List<GeometryProperty<?>> geometries, String name) {
+			List<GeometryProperty<?>> geometries, TypeDefinition instanceType, String name) {
 		super(pos, bb, value);
 
 		this.geometries = geometries;
 		this.name = name;
+		this.instanceType = instanceType;
 	}
 
 	/**
@@ -78,6 +83,13 @@ public class InstanceWaypoint extends GenericWaypoint<InstanceReference, Instanc
 	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * @return the instance type definition
+	 */
+	public TypeDefinition getInstanceType() {
+		return instanceType;
 	}
 
 }

@@ -390,7 +390,8 @@ public abstract class AbstractInstancePainter extends
 
 		// create the way-point
 		// XXX in abstract method?
-		InstanceWaypoint wp = new InstanceWaypoint(pos, bb, ref, geometries, name);
+		InstanceWaypoint wp = new InstanceWaypoint(pos, bb, ref, geometries,
+				instance.getDefinition(), name);
 
 		// each way-point must have its own marker, as the marker stores the
 		// marker areas
