@@ -25,6 +25,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.ui.PlatformUI;
 import org.geotools.geometry.jts.GeomCollectionIterator;
@@ -79,7 +80,7 @@ import eu.esdihumboldt.hale.ui.views.styledmap.util.CRSConverter;
 @SuppressWarnings("restriction")
 public class StyledInstanceMarker extends InstanceMarker {
 
-	private boolean styleInitialized = false;
+	private final AtomicBoolean styleInitialized = new AtomicBoolean(false);
 	private volatile Color styleFillColor;
 	private volatile Color styleStrokeColor;
 	private volatile java.awt.Stroke styleStroke;
@@ -107,11 +108,9 @@ public class StyledInstanceMarker extends InstanceMarker {
 	 * @param context the context
 	 */
 	private synchronized void initStyle(InstanceWaypoint context) {
-		if (styleInitialized) {
+		if (!styleInitialized.compareAndSet(false, true)) {
+			// already initialized
 			return;
-		}
-		else {
-			styleInitialized = true;
 		}
 
 		// check if there is a Rule from the Rulestyle-Page and apply to the
@@ -128,7 +127,6 @@ public class StyledInstanceMarker extends InstanceMarker {
 
 		fillStyle(honoredRule, context);
 		strokeStyle(honoredRule, context);
-
 	}
 
 	/**
@@ -321,8 +319,8 @@ public class StyledInstanceMarker extends InstanceMarker {
 	/**
 	 * Reset the marker style
 	 */
-	public synchronized void resetStyle() {
-		styleInitialized = false;
+	public void resetStyle() {
+		styleInitialized.set(false);
 		areaReset();
 	}
 
