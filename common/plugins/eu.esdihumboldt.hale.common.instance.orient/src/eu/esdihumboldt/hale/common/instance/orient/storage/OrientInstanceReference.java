@@ -19,9 +19,12 @@ package eu.esdihumboldt.hale.common.instance.orient.storage;
 import net.jcip.annotations.Immutable;
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
+import com.orientechnologies.orient.core.exception.ODatabaseException;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
@@ -36,6 +39,8 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  */
 @Immutable
 public class OrientInstanceReference implements InstanceReference {
+
+	private static final ALogger log = ALoggerFactory.getLogger(OrientInstanceReference.class);
 
 	private final ORID id;
 	private final DataSet dataSet;
@@ -136,23 +141,29 @@ public class OrientInstanceReference implements InstanceReference {
 	 */
 	public Instance load(LocalOrientDB lodb) {
 		DatabaseReference<ODatabaseDocumentTx> db = lodb.openRead();
-//		DatabaseHandle handle = new DatabaseHandle(db.getDatabase());
 		try {
 			ODocument document = db.getDatabase().load(getId());
 			if (document != null) {
 				OInstance instance = new OInstance(document, getTypeDefinition(), db.getDatabase(),
 						getDataSet());
-//				handle.addReference(instance);
+				// return a copy of the instance, so no database connection is
+				// needed
 				return new DefaultInstance(instance);
 			}
 			else
 				return null;
-		} catch (IllegalArgumentException iae) {
+		} catch (IllegalArgumentException e) {
+			// ignore - instance does not exist
+			return null;
+		} catch (ODatabaseException e) {
+			// for newer versions the exception seems to be wrapped in an
+			// ODatabaseException
+			if (!(e.getCause() instanceof IllegalArgumentException)) {
+				log.error("Failed to retrieve instance with ID " + id, e);
+			}
 			return null;
 		} finally {
 			db.dispose();
-//			db.dispose(false);
-//			handle.tryClose();
 		}
 	}
 
