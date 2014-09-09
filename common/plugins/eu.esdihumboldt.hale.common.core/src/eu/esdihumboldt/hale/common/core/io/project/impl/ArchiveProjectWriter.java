@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.commons.io.FileUtils;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 
@@ -48,6 +47,7 @@ import eu.esdihumboldt.hale.common.core.io.impl.SubtaskProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFileInfo;
+import eu.esdihumboldt.hale.common.core.io.project.util.LocationUpdater;
 import eu.esdihumboldt.hale.common.core.io.project.util.XMLAlignmentUpdater;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
@@ -135,17 +135,20 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		zip.close();
 
 		// delete the temp directory
-		try {
-			FileUtils.deleteDirectory(tempDir);
-		} catch (IOException e) {
-			log.debug("Can not delete directory " + tempDir.toString(), e);
-		}
+		// XXX the files may not be deleted as they will be needed if the
+		// project is saved again w/o loading it first
+		// FIXME provide a mechanism for clean-up
 
-		// reset all IOConfigurations for further IO operations
+		// update the relative resource locations
+		LocationUpdater updater = new LocationUpdater(getProject(), out.getLocation());
+		// resources are made absolute (else they can't be found afterwards),
+		// e.g. when saving the project again before loading it
+		updater.updateProject(false);
+
+		// reset the save configurations that has been overridden by the XML
+		// project writer
 		getProject().setSaveConfiguration(oldSaveConfig);
-		List<IOConfiguration> resources = getProject().getResources();
-		resources.clear();
-		resources.addAll(oldResources);
+
 		return report;
 	}
 

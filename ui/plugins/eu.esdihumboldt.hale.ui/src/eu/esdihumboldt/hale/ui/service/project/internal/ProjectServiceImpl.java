@@ -342,6 +342,9 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					RecentProjectsService rfs = (RecentProjectsService) PlatformUI.getWorkbench()
 							.getService(RecentProjectsService.class);
 					rfs.add(projectFile.getAbsolutePath(), provider.getProject().getName());
+
+					// override the project load content type
+					projectLoadContentType = provider.getContentType();
 				}
 
 				notifyAfterSave();

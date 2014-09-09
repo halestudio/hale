@@ -71,7 +71,7 @@ public class LocationUpdater extends PathUpdate {
 		if (saveconfig == null)
 			return;
 
-		if (!getOldLocation().equals(getNewLocation())) {
+		if (!getOldLocation().equals(getNewLocation()) || !keepRelative) {
 			// update save configuration
 			saveconfig.getProviderConfiguration().put(ExportProvider.PARAM_TARGET,
 					Value.of(getNewLocation().toString()));
