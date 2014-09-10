@@ -41,7 +41,6 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
-import eu.esdihumboldt.hale.common.instance.orient.OInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVUtil;
@@ -157,6 +156,9 @@ public class CSVInstanceWriter extends AbstractTableInstanceWriter {
 			line += sep;
 		}
 
+		// remove last separator
+		line = line.substring(0, line.lastIndexOf(sep));
+
 		out.println(line);
 
 		String thisLine = "";
@@ -177,8 +179,8 @@ public class CSVInstanceWriter extends AbstractTableInstanceWriter {
 		}
 		else {
 
-			if (property instanceof OInstance) {
-				Object instValue = ((OInstance) property).getValue();
+			if (property instanceof Instance) {
+				Object instValue = ((Instance) property).getValue();
 				if (instValue != null) {
 					return (instValue.toString());
 				}
