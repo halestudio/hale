@@ -35,6 +35,7 @@ import org.eclipse.core.runtime.content.IContentType;
 
 import com.google.common.io.Files;
 
+import de.fhg.igd.osgi.util.OsgiUtils;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
@@ -56,6 +57,8 @@ import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
+import eu.esdihumboldt.hale.common.core.service.cleanup.CleanupContext;
+import eu.esdihumboldt.hale.common.core.service.cleanup.CleanupService;
 import eu.esdihumboldt.util.io.IOUtils;
 
 /**
@@ -91,6 +94,10 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		// create temporary directory and project file
 		File tempDir = Files.createTempDir();
 		File baseFile = new File(tempDir, "project.halex");
+
+		// mark the temporary directory for clean-up if the project is closed
+		CleanupService clean = OsgiUtils.getService(CleanupService.class);
+		clean.addTemporaryFiles(CleanupContext.PROJECT, tempDir);
 
 		LocatableOutputSupplier<OutputStream> out = new FileIOSupplier(baseFile);
 		ZipOutputStream zip = new ZipOutputStream(getTarget().getOutput());
@@ -134,10 +141,8 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		IOUtils.zipDirectory(tempDir, zip);
 		zip.close();
 
-		// delete the temp directory
-		// XXX the files may not be deleted as they will be needed if the
+		// the files may not be deleted now as they will be needed if the
 		// project is saved again w/o loading it first
-		// FIXME provide a mechanism for clean-up
 
 		// update the relative resource locations
 		LocationUpdater updater = new LocationUpdater(getProject(), out.getLocation());
