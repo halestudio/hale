@@ -146,7 +146,7 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 		for (int index = 0; index < row.size(); index++) {
 			String part = row.get(index);
 			if (part != null) {
-				PropertyDefinition property = propAr[propertyIndex];
+				PropertyDefinition property = propAr[index];
 
 				if (part.isEmpty()) {
 					// FIXME make this configurable
