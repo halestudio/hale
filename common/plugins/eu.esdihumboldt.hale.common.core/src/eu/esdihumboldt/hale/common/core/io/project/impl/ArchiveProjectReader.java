@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
+import java.util.Collections;
 
 import com.google.common.io.Files;
 
@@ -37,6 +38,7 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
+import eu.esdihumboldt.hale.common.core.service.cleanup.TemporaryFiles;
 import eu.esdihumboldt.util.io.IOUtils;
 
 /**
@@ -44,15 +46,17 @@ import eu.esdihumboldt.util.io.IOUtils;
  * 
  * @author Patrick Lieb
  */
-public class ArchiveProjectReader extends AbstractProjectReader {
+public class ArchiveProjectReader extends AbstractProjectReader implements TemporaryFiles {
 
 	private static final ALogger log = ALoggerFactory.getLogger(ArchiveProjectReader.class);
+
+	private File tempDir;
 
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 		// copy resources to a temporary directory
-		File tempDir = Files.createTempDir();
+		tempDir = Files.createTempDir();
 		IOUtils.extract(tempDir, getSource().getInput());
 
 		// create the project file via XMLProjectReader
@@ -110,27 +114,12 @@ public class ArchiveProjectReader extends AbstractProjectReader {
 		// set the read project
 		setProject(readProject);
 
-		// delete the temporary directory
-		deleteDirectoryOnExit(tempDir);
-
 		return report;
 	}
 
-	private void deleteDirectoryOnExit(File directory) {
-		if (directory.exists()) {
-			directory.deleteOnExit();
-			File[] files = directory.listFiles();
-			if (files != null) {
-				for (File f : files) {
-					if (f.isDirectory()) {
-						deleteDirectoryOnExit(f);
-					}
-					else {
-						f.deleteOnExit();
-					}
-				}
-			}
-		}
+	@Override
+	public Iterable<File> getTemporaryFiles() {
+		return (tempDir == null) ? (Collections.<File> emptyList()) : (Collections
+				.singleton(tempDir));
 	}
-
 }
