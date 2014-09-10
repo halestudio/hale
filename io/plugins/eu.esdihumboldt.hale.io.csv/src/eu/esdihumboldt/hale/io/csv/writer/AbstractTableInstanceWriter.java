@@ -23,9 +23,8 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceWriter;
+import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
-import eu.esdihumboldt.hale.common.instance.orient.OGroup;
-import eu.esdihumboldt.hale.common.instance.orient.OInstance;
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
 
 /**
@@ -73,8 +72,8 @@ public abstract class AbstractTableInstanceWriter extends AbstractInstanceWriter
 				// only the first property is evaluated
 				Object property = properties[0];
 				// if property is an OInstance or OGroup, it's a nested property
-				if (solveNestedProperties && property instanceof OGroup) {
-					OGroup inst = (OGroup) property;
+				if (solveNestedProperties && property instanceof Group) {
+					Group inst = (Group) property;
 					// check if property has a value and add it
 					checkValue(inst, headerRow, row, cellValue);
 					// go through nested properties to get other properties
@@ -89,8 +88,8 @@ public abstract class AbstractTableInstanceWriter extends AbstractInstanceWriter
 						}
 
 						// iterate over all nested properties
-						while (nextProp instanceof OGroup) {
-							OGroup oinst = (OGroup) nextProp;
+						while (nextProp instanceof Group) {
+							Group oinst = (Group) nextProp;
 							checkValue(oinst, headerRow, row, cellValue);
 
 							// get localparts of all nested properties
@@ -127,8 +126,8 @@ public abstract class AbstractTableInstanceWriter extends AbstractInstanceWriter
 	// currently names of group property definitions should not be displayed, so
 	// filter them
 	private boolean shouldBeDisplayed(Object obj) {
-		if (obj instanceof OGroup) {
-			return !(((OGroup) obj).getDefinition() instanceof GroupPropertyDefinition);
+		if (obj instanceof Group) {
+			return !(((Group) obj).getDefinition() instanceof GroupPropertyDefinition);
 		}
 		return true;
 	}
@@ -149,10 +148,10 @@ public abstract class AbstractTableInstanceWriter extends AbstractInstanceWriter
 	}
 
 	// check if value of current property isn't null and add it
-	private void checkValue(OGroup group, List<String> headerRow, Map<String, Object> row,
+	private void checkValue(Group group, List<String> headerRow, Map<String, Object> row,
 			String propertyTypeName) {
-		if (group instanceof OInstance) {
-			Object value = ((OInstance) group).getValue();
+		if (group instanceof Instance) {
+			Object value = ((Instance) group).getValue();
 			if (value != null) {
 				addProperty(headerRow, row, value, propertyTypeName);
 			}
