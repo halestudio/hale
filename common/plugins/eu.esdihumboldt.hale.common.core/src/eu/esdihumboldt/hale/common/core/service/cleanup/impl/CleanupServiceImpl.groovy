@@ -38,6 +38,15 @@ class CleanupServiceImpl implements CleanupService {
 
 	private static final String ENC = 'UTF-8'
 
+	/*
+	 * XXX Deactivated persisting the temporary file list, because this will
+	 * cause issues when starting multiple instances of HALE (deleting files
+	 * that the other running instance needs).
+	 * FIXME Would be great if we found another way here, maybe by saving
+	 * some kind of valid-until for temporary files.
+	 */
+	private static final boolean PERSIST = false
+
 	private final File persistTmpFiles
 
 	private final Multimap<CleanupContext, File> tmpFiles = HashMultimap.create()
@@ -45,23 +54,25 @@ class CleanupServiceImpl implements CleanupService {
 	private final Multimap<CleanupContext, Cleanup> cleaners = HashMultimap.create()
 
 	CleanupServiceImpl() {
-		// temporary files location
-		File instanceLoc = PlatformUtil.getInstanceLocation()
-		persistTmpFiles = instanceLoc == null ? null : new File(instanceLoc, 'tmpFileList.txt')
+		if (PERSIST) {
+			// temporary files location
+			File instanceLoc = PlatformUtil.getInstanceLocation()
+			persistTmpFiles = instanceLoc == null ? null : new File(instanceLoc, 'tmpFileList.txt')
 
-		if (instanceLoc == null) {
-			log.warn('Instance location could not be determined, unable to persist temporary file names', (Throwable) null)
-		}
-
-		// startup cleanup
-
-		// read file list from previous executions
-		if (persistTmpFiles?.exists()) {
-			persistTmpFiles.eachLine(ENC) { String fileName ->
-				// and delete them if possible
-				delete(new File(fileName))
+			if (instanceLoc == null) {
+				log.warn('Instance location could not be determined, unable to persist temporary file names', (Throwable) null)
 			}
-			persistTmpFiles.delete()
+
+			// startup cleanup
+
+			// read file list from previous executions
+			if (persistTmpFiles?.exists()) {
+				persistTmpFiles.eachLine(ENC) { String fileName ->
+					// and delete them if possible
+					delete(new File(fileName))
+				}
+				persistTmpFiles.delete()
+			}
 		}
 	}
 
@@ -104,7 +115,7 @@ class CleanupServiceImpl implements CleanupService {
 	}
 
 	private void persistFiles() {
-		if (persistTmpFiles != null) {
+		if (PERSIST && persistTmpFiles != null) {
 			String fileList = tmpFiles.values().collect { File file ->
 				file.getAbsolutePath()
 			}.join('\n')
