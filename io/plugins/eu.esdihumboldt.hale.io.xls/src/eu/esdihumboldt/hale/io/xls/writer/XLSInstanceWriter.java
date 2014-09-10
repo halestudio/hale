@@ -40,7 +40,6 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
-import eu.esdihumboldt.hale.common.instance.orient.OInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
 import eu.esdihumboldt.hale.io.csv.writer.AbstractTableInstanceWriter;
@@ -177,8 +176,8 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 			else if (value instanceof String)
 				cell.setCellValue((String) value);
 			else {
-				if (value instanceof OInstance) {
-					Object instValue = ((OInstance) value).getValue();
+				if (value instanceof Instance) {
+					Object instValue = ((Instance) value).getValue();
 					if (instValue != null) {
 						cell.setCellValue(instValue.toString());
 						return;
