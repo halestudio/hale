@@ -9,6 +9,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: eu.esdihumboldt.cst.test,
  eu.esdihumboldt.hale.common.instance.groovy,
  eu.esdihumboldt.hale.common.schema.groovy,
- eu.esdihumboldt.hale.common.test
+ eu.esdihumboldt.hale.common.test,
+ eu.esdihumboldt.hale.io.xsd.reader
 Require-Bundle: org.junit,
  groovy;bundle-version="2.1.5"
