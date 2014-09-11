@@ -25,8 +25,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import eu.esdihumboldt.hale.common.align.io.EntityResolver;
+import eu.esdihumboldt.hale.common.align.io.impl.dummy.DummyEntityResolver;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.EntityDefinitionToJaxb;
-import eu.esdihumboldt.hale.common.align.io.impl.internal.JaxbToEntityDefinition;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.PropertyType;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
@@ -44,6 +45,8 @@ public class DOMEntityDefinitionHelper {
 
 	private DOMEntityDefinitionHelper() {
 	}
+
+	private static final EntityResolver resolver = new DummyEntityResolver();
 
 	/**
 	 * Converts the given element to a type entity definition. If any exception
@@ -66,7 +69,7 @@ public class DOMEntityDefinitionHelper {
 
 			JAXBElement<ClassType> root = u.unmarshal(fragment, ClassType.class);
 
-			return JaxbToEntityDefinition.convert(root.getValue(), types, ssid);
+			return resolver.resolveType(root.getValue(), types, ssid).getDefinition();
 		} catch (Exception e) {
 			return null;
 		}
@@ -93,7 +96,7 @@ public class DOMEntityDefinitionHelper {
 
 			JAXBElement<PropertyType> root = u.unmarshal(fragment, PropertyType.class);
 
-			return JaxbToEntityDefinition.convert(root.getValue(), types, ssid);
+			return resolver.resolveProperty(root.getValue(), types, ssid).getDefinition();
 		} catch (Exception e) {
 			return null;
 		}

@@ -21,6 +21,8 @@ import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AbstractEnti
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.PropertyType;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.Property;
+import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
@@ -62,12 +64,12 @@ public class DefaultEntityResolver implements EntityResolver {
 	}
 
 	@Override
-	public Entity resolveProperty(PropertyType entity, TypeIndex schema, SchemaSpaceID schemaSpace) {
+	public Property resolveProperty(PropertyType entity, TypeIndex schema, SchemaSpaceID schemaSpace) {
 		return new DefaultProperty(JaxbToEntityDefinition.convert(entity, schema, schemaSpace));
 	}
 
 	@Override
-	public Entity resolveType(ClassType entity, TypeIndex schema, SchemaSpaceID schemaSpace) {
+	public Type resolveType(ClassType entity, TypeIndex schema, SchemaSpaceID schemaSpace) {
 		return new DefaultType(JaxbToEntityDefinition.convert(entity, schema, schemaSpace));
 	}
 
