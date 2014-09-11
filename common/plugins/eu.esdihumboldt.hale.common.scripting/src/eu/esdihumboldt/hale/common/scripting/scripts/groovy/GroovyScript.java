@@ -41,6 +41,9 @@ import groovy.lang.MissingPropertyException;
  */
 public class GroovyScript implements Script {
 
+	/**
+	 * ID that identifies Groovy scripts.
+	 */
 	public static final String GROOVY_SCRIPT_ID = "eu.esdihumboldt.hale.common.scripting.groovy";
 
 	/**

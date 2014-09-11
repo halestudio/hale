@@ -79,7 +79,6 @@ public abstract class JDBCConnection implements JDBCConstants {
 		return getConnection(jdbcExportProvider.getTarget().getLocation(), jdbcExportProvider);
 	}
 
-	@SuppressWarnings("null")
 	private static Connection getConnection(URI jdbcURI, IOProvider jdbcIOProvider)
 			throws SQLException {
 		Preconditions.checkArgument(jdbcURI != null, "JDBC URI needed");
