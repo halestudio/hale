@@ -100,6 +100,30 @@
          <contentType
                ref="eu.esdihumboldt.hale.io.gml.gzip">
          </contentType>
+         <providerParameter
+               optional="true"
+               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToTrueParameter">
+            <parameter
+                  description="States if the root element should be ignored and thus not be loaded as an object itself."
+                  label="No root object"
+                  name="ignoreRoot">
+               <parameterBinding
+                     class="java.lang.Boolean">
+               </parameterBinding>
+            </parameter>
+         </providerParameter>
+         <providerParameter
+               optional="true"
+               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToFalseParameter">
+            <parameter
+                  description="States if parsing of XML instances is done strictly according to the schema or if invalid property paths are allowed, e.g. if the element order in the data is not correct."
+                  label="Strict mode"
+                  name="strict">
+               <parameterBinding
+                     class="java.lang.Boolean">
+               </parameterBinding>
+            </parameter>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.gml.reader.internal.XmlInstanceReader"
@@ -111,6 +135,30 @@
          <contentType
                ref="eu.esdihumboldt.hale.io.xml.gzip">
          </contentType>
+         <providerParameter
+               optional="true"
+               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToTrueParameter">
+            <parameter
+                  description="States if the root element should be ignored and thus not be loaded as an object itself."
+                  label="No root object"
+                  name="ignoreRoot">
+               <parameterBinding
+                     class="java.lang.Boolean">
+               </parameterBinding>
+            </parameter>
+         </providerParameter>
+         <providerParameter
+               optional="true"
+               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToFalseParameter">
+            <parameter
+                  description="States if parsing of XML instances is done strictly according to the schema or if invalid property paths are allowed, e.g. if the element order in the data is not correct."
+                  label="Strict mode"
+                  name="strict">
+               <parameterBinding
+                     class="java.lang.Boolean">
+               </parameterBinding>
+            </parameter>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.gml.writer.GmlInstanceWriter"
@@ -122,6 +170,18 @@
          <contentType
                ref="eu.esdihumboldt.hale.io.gml.gzip">
          </contentType>
+         <providerParameter
+               optional="true"
+               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToTrueParameter">
+            <parameter
+                  description="If geometries should be simplified (e.g. a MultiPolygon to a Polygon), if possible, before writing them."
+                  label="Simplify geometries"
+                  name="gml.geometry.simplify">
+               <parameterBinding
+                     class="java.lang.Boolean">
+               </parameterBinding>
+            </parameter>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.gml.writer.XmlInstanceWriter"
@@ -133,6 +193,40 @@
          <contentType
                ref="eu.esdihumboldt.hale.io.xml.gzip">
          </contentType>
+         <providerParameter
+               optional="true"
+               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToTrueParameter">
+            <parameter
+                  description="If geometries should be simplified (e.g. a MultiPolygon to a Polygon), if possible, before writing them."
+                  label="Simplify geometries"
+                  name="gml.geometry.simplify">
+               <parameterBinding
+                     class="java.lang.Boolean">
+               </parameterBinding>
+            </parameter>
+         </providerParameter>
+         <providerParameter
+               optional="false">
+            <parameter
+                  description="The local name of the root element for the target XML file."
+                  label="Root element name"
+                  name="xml.rootElement.name">
+               <parameterBinding
+                     class="java.lang.String">
+               </parameterBinding>
+            </parameter>
+         </providerParameter>
+         <providerParameter
+               optional="true">
+            <parameter
+                  description="The namespace of the root element for the target XML file, defaults to the target schema namespace."
+                  label="Root element namespace"
+                  name="xml.rootElement.namespace">
+               <parameterBinding
+                     class="java.lang.String">
+               </parameterBinding>
+            </parameter>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.gml.writer.CityGMLInstanceWriter"
@@ -144,6 +238,18 @@
          <contentType
                ref="eu.esdihumboldt.hale.io.citygml.gzip">
          </contentType>
+         <providerParameter
+               optional="true"
+               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToTrueParameter">
+            <parameter
+                  description="If geometries should be simplified (e.g. a MultiPolygon to a Polygon), if possible, before writing them."
+                  label="Simplify geometries"
+                  name="gml.geometry.simplify">
+               <parameterBinding
+                     class="java.lang.Boolean">
+               </parameterBinding>
+            </parameter>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.gml.writer.InspireInstanceWriter"
@@ -156,11 +262,22 @@
                ref="eu.esdihumboldt.hale.io.gml.gzip">
          </contentType>
          <providerParameter
+               optional="false">
+            <parameter
+                  description="The local ID of the INSPIRE identifier of the SpatialDataSet."
+                  label="INSPIRE identifier local ID"
+                  name="inspire.sds.localId">
+               <parameterBinding
+                     class="java.lang.String">
+               </parameterBinding>
+            </parameter>
+         </providerParameter>
+         <providerParameter
                optional="false"
                valueDescriptor="eu.esdihumboldt.hale.io.gml.writer.InspireSDSNamespaceDefaultValue">
             <parameter
-                  description="The parameter name for the namespace attribute"
-                  label="inspire.sds.namespace"
+                  description="The namespace of the INSPIRE identifier of the SpatialDataSet."
+                  label="INSPIRE identifier namespace"
                   name="inspire.sds.namespace">
                <parameterBinding
                      class="java.lang.String">
@@ -171,10 +288,42 @@
                optional="true">
             <parameter
                   description="The path to a metadata (XML) file."
-                  label="inspire.sds.metadata"
+                  label="Metadata file"
                   name="inspire.sds.metadata">
                <parameterBinding
-                     class="java.io.File">
+                     class="java.lang.String">
+               </parameterBinding>
+            </parameter>
+         </providerParameter>
+         <providerParameter
+               optional="true">
+            <parameter
+                  description="Metadata as XML (DOM)"
+                  label="Metadata XML"
+                  name="inspire.sds.metadata.inline">
+            </parameter>
+         </providerParameter>
+         <providerParameter
+               optional="true"
+               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToTrueParameter">
+            <parameter
+                  description="If geometries should be simplified (e.g. a MultiPolygon to a Polygon), if possible, before writing them."
+                  label="Simplify geometries"
+                  name="gml.geometry.simplify">
+               <parameterBinding
+                     class="java.lang.Boolean">
+               </parameterBinding>
+            </parameter>
+         </providerParameter>
+         <providerParameter
+               optional="false"
+               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToFalseParameter">
+            <parameter
+                  description="If an INSPIRE Dataset ATOM Feed should be created."
+                  label="Create Dataset Feed"
+                  name="inspire.sds.create_feed">
+               <parameterBinding
+                     class="java.lang.Boolean">
                </parameterBinding>
             </parameter>
          </providerParameter>
