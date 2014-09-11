@@ -117,6 +117,8 @@
       <plugin id="eu.esdihumboldt.hale.io.gml.test"/>
       <plugin id="eu.esdihumboldt.hale.io.html.svg"/>
       <plugin id="eu.esdihumboldt.hale.io.html.svg.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.json"/>
+      <plugin id="eu.esdihumboldt.hale.io.json.test"/>
       <plugin id="eu.esdihumboldt.hale.io.oml"/>
       <plugin id="eu.esdihumboldt.hale.io.oml.test"/>
       <plugin id="eu.esdihumboldt.hale.io.shp"/>
@@ -207,6 +209,8 @@
       <plugin id="org.apache.xmlbeans"/>
       <plugin id="org.codehaus.castor.core"/>
       <plugin id="org.codehaus.castor.xml"/>
+      <plugin id="org.codehaus.jackson"/>
+      <plugin id="org.codehaus.jackson.mapper"/>
       <plugin id="org.codehaus.jettison.jettison"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
