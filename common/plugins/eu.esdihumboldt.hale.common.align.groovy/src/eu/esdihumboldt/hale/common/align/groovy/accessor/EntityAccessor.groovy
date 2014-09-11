@@ -20,6 +20,8 @@ import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ChildContext
 import eu.esdihumboldt.hale.common.align.model.ChildContext
 import eu.esdihumboldt.hale.common.align.model.Condition
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition
 import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager
 import eu.esdihumboldt.hale.common.instance.model.Filter
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID
@@ -27,6 +29,8 @@ import eu.esdihumboldt.hale.common.schema.model.ChildDefinition
 import eu.esdihumboldt.hale.common.schema.model.Definition
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import eu.esdihumboldt.hale.common.schema.paths.DefinitionResolver
 import eu.esdihumboldt.util.groovy.paths.AbstractAccessor
 import eu.esdihumboldt.util.groovy.paths.Path
@@ -262,10 +266,10 @@ class EntityAccessor extends AbstractAccessor<PathElement> {
 	}
 
 	public Object asType(Class clazz) {
-		if (clazz == EntityDefinition) {
+		if (clazz == EntityDefinition || clazz == TypeEntityDefinition || clazz == PropertyEntityDefinition) {
 			toEntityDefinition()
 		}
-		else if (clazz == Definition) {
+		else if (clazz == Definition || clazz == TypeDefinition || clazz == PropertyDefinition || clazz == ChildDefinition) {
 			toDefinition()
 		}
 		else {
