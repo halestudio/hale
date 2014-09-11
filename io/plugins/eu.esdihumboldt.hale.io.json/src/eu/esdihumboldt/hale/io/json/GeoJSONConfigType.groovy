@@ -44,14 +44,11 @@ public class GeoJSONConfigType implements ComplexValueType<GeoJSONConfig, Object
 
 		def entries = NSDOMCategory.children(fragment, NAMESPACE, 'default-geometry')
 		for (Element entry in entries) {
-			// type from first element
-			TypeDefinition type = DOMEntityDefinitionHelper.typeFromDOM(
-					(Element) DOMCategory.getAt(entry, 0), null, SchemaSpaceID.TARGET).definition
-			// property from second element
+			// property from first element
 			PropertyEntityDefinition property = DOMEntityDefinitionHelper.propertyFromDOM(
-					(Element) DOMCategory.getAt(entry, 1), null, SchemaSpaceID.TARGET)
+					(Element) DOMCategory.getAt(entry, 0), null, SchemaSpaceID.TARGET)
 			// add to configuration
-			config.addDefaultGeometry(type, property)
+			config.addDefaultGeometry(property.getType(), property)
 		}
 
 		return config
@@ -65,8 +62,6 @@ public class GeoJSONConfigType implements ComplexValueType<GeoJSONConfig, Object
 			config.defaultGeometries.each { TypeDefinition type, PropertyEntityDefinition property ->
 				if (type != null && property != null) {
 					Element association = b 'gj:default-geometry'
-					// append type
-					XmlUtil.append(association, DOMEntityDefinitionHelper.typeToDOM(type))
 					// append property
 					XmlUtil.append(association, DOMEntityDefinitionHelper.propertyToDOM(property))
 				}
