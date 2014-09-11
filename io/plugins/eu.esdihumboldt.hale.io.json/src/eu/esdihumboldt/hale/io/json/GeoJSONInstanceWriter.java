@@ -31,6 +31,9 @@ import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceWriter;
  */
 public class GeoJSONInstanceWriter extends AbstractInstanceWriter {
 
+	/**
+	 * Parameter name for the default geometry association.
+	 */
 	public static final String PARAM_GEOMETRY_CONFIG = "geojson.geometry.config";
 
 	@Override
