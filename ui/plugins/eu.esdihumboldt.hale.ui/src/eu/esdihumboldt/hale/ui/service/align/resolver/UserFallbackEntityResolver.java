@@ -26,8 +26,9 @@ import eu.esdihumboldt.hale.common.align.io.impl.DefaultEntityResolver;
 import eu.esdihumboldt.hale.common.align.io.impl.dummy.EntityToDef;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.PropertyType;
-import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.Property;
+import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
@@ -51,7 +52,7 @@ import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 public class UserFallbackEntityResolver extends DefaultEntityResolver {
 
 	@Override
-	public Entity resolveProperty(final PropertyType entity, final TypeIndex schema,
+	public Property resolveProperty(final PropertyType entity, final TypeIndex schema,
 			final SchemaSpaceID schemaSpace) {
 		try {
 			return super.resolveProperty(entity, schema, schemaSpace);
@@ -106,7 +107,7 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 	}
 
 	@Override
-	public Entity resolveType(final ClassType entity, final TypeIndex schema,
+	public Type resolveType(final ClassType entity, final TypeIndex schema,
 			final SchemaSpaceID schemaSpace) {
 		try {
 			return super.resolveType(entity, schema, schemaSpace);
