@@ -27,6 +27,18 @@
          <contentType
                ref="eu.esdihumboldt.hale.io.shp">
          </contentType>
+         <providerParameter
+               optional="true"
+               valueDescriptor="eu.esdihumboldt.hale.io.shp.reader.internal.ShapeInstanceReader$TypenameParameterDescriptor">
+            <parameter
+                  description="The name of the schema type the loaded instances should be associated to. Will be auto-detected if not provided."
+                  label="Type name"
+                  name="typename">
+               <parameterBinding
+                     class="java.lang.String">
+               </parameterBinding>
+            </parameter>
+         </providerParameter>
       </provider>
    </extension>
    <extension
