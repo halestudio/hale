@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.service.align.resolver.internal
+package eu.esdihumboldt.hale.common.align.io.impl.dummy
 
 import javax.xml.namespace.QName
 
@@ -42,7 +42,6 @@ import groovy.transform.TypeChecked
  * @author Simon Templer
  */
 @TypeChecked
-@SuppressWarnings("restriction")
 class EntityToDef {
 
 	/**

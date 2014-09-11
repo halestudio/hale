@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.align.io.impl.DefaultEntityResolver;
+import eu.esdihumboldt.hale.common.align.io.impl.dummy.EntityToDef;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.PropertyType;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -37,7 +38,6 @@ import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.function.common.PropertyEntityDialog;
 import eu.esdihumboldt.hale.ui.function.common.TypeEntityDialog;
 import eu.esdihumboldt.hale.ui.service.align.resolver.internal.EntityCandidates;
-import eu.esdihumboldt.hale.ui.service.align.resolver.internal.EntityToDef;
 import eu.esdihumboldt.hale.ui.service.align.resolver.internal.ViewerEntityTray;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 
@@ -51,7 +51,7 @@ import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 public class UserFallbackEntityResolver extends DefaultEntityResolver {
 
 	@Override
-	protected Entity resolveProperty(final PropertyType entity, final TypeIndex schema,
+	public Entity resolveProperty(final PropertyType entity, final TypeIndex schema,
 			final SchemaSpaceID schemaSpace) {
 		try {
 			return super.resolveProperty(entity, schema, schemaSpace);
@@ -106,7 +106,7 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 	}
 
 	@Override
-	protected Entity resolveType(final ClassType entity, final TypeIndex schema,
+	public Entity resolveType(final ClassType entity, final TypeIndex schema,
 			final SchemaSpaceID schemaSpace) {
 		try {
 			return super.resolveType(entity, schema, schemaSpace);

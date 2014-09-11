@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.ui.service.align.resolver.internal
 
+import eu.esdihumboldt.hale.common.align.io.impl.dummy.EntityToDef
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ChildContextType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.PropertyType
