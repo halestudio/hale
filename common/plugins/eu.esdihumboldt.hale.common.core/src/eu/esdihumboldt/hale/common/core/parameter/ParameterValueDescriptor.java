@@ -15,25 +15,31 @@
 
 package eu.esdihumboldt.hale.common.core.parameter;
 
+import javax.annotation.Nullable;
+
 import eu.esdihumboldt.hale.common.core.io.Value;
 
 /**
- * {@link ParameterValueDescriptor} interface for parameter (e.g. provider parameter).
- * Implement this interface to provide a default value and/or sample data for
- * your parameter type.
+ * {@link ParameterValueDescriptor} interface for parameter (e.g. provider
+ * parameter). Implement this interface to provide a default value and/or sample
+ * data for your parameter type.
  * 
  * @author Yasmina Kammeyer
  */
 public interface ParameterValueDescriptor {
 
 	/**
-	 * @return a default object of the parameter type
+	 * @return a default object of the parameter type or <code>null</code> if no
+	 *         default value is provided
 	 */
+	@Nullable
 	public Value getDefaultValue();
 
 	/**
-	 * @return the sample data of the parameter
+	 * @return the sample data of the parameter or <code>null</code> if no
+	 *         sample value is provided
 	 */
+	@Nullable
 	public Value getSampleData();
 
 	/**
@@ -42,6 +48,7 @@ public interface ParameterValueDescriptor {
 	 * 
 	 * @return a String representing an object with sample data or null
 	 */
+	@Nullable
 	public String getDocumentationRepresentation();
 
 }

@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.common.core.parameter;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
@@ -37,7 +38,8 @@ public abstract class AbstractParameterValueDescriptor implements ParameterValue
 	 * @param defaultValue the default value
 	 * @param sampleValue the sample value
 	 */
-	public AbstractParameterValueDescriptor(@Nonnull Value defaultValue, @Nonnull Value sampleValue) {
+	public AbstractParameterValueDescriptor(@Nullable Value defaultValue,
+			@Nullable Value sampleValue) {
 		Preconditions.checkNotNull(defaultValue);
 		Preconditions.checkNotNull(sampleValue);
 
