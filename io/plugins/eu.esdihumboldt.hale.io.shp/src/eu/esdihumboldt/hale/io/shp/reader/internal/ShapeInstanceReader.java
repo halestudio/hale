@@ -31,10 +31,12 @@ import org.opengis.feature.type.Name;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.core.parameter.AbstractParameterValueDescriptor;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceReader;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -65,6 +67,19 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 		super();
 
 		addSupportedParameter(PARAM_TYPENAME);
+	}
+
+	@SuppressWarnings("javadoc")
+	public static class TypenameParameterDescriptor extends AbstractParameterValueDescriptor {
+
+		public TypenameParameterDescriptor() {
+			super(null, Value.of(new QName("namespace", "localname").toString()));
+		}
+
+		@Override
+		public String getDocumentationRepresentation() {
+			return "The type name is represented like in the given example, with the namespace in curly braces.";
+		}
 	}
 
 	/**
