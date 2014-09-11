@@ -27,6 +27,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
@@ -35,6 +36,20 @@ import org.w3c.dom.Node;
  * @author Simon Templer
  */
 public class XmlUtil {
+
+	/**
+	 * Append an foreign DOM element as child to an existing DOM element.
+	 * 
+	 * @param parent the parent DOM element
+	 * @param child the child element to append to the parent
+	 */
+	public static void append(Element parent, Element child) {
+		Node newChild = parent.getOwnerDocument().adoptNode(child);
+		if (newChild == null) {
+			newChild = parent.getOwnerDocument().importNode(child, true);
+		}
+		parent.appendChild(newChild);
+	}
 
 	/**
 	 * Serialize a node to a String.
