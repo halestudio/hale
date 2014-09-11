@@ -214,7 +214,7 @@ public class ReportReader {
 			// close reader
 			reader.close();
 		} catch (Exception e) {
-			_log.error("Error while parsing a log file.", e.getStackTrace());
+			_log.error("Error while parsing a log file.", e);
 		}
 
 		return session;
