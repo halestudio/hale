@@ -89,12 +89,22 @@ public class XmlUtil {
 	public static void serialize(Source source, StreamResult target, boolean indent,
 			boolean omitXmlDeclaration) throws TransformerException {
 		TransformerFactory factory = TransformerFactory.newInstance();
-		Transformer transformer = factory.newTransformer();
+		Transformer transformer;
+		if (indent) {
+			StreamSource transformation = new StreamSource(
+					XmlUtil.class.getResourceAsStream("prettyprint.xsl"));
+			transformer = factory.newTransformer(transformation);
+			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+		}
+		else {
+			transformer = factory.newTransformer();
+		}
 		transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, omitXmlDeclaration ? "yes"
 				: "no");
-		transformer.setOutputProperty(OutputKeys.INDENT, indent ? "yes" : "no");
+		// transformer.setOutputProperty(OutputKeys.INDENT, indent ? "yes" :
+		// "no");
 		transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-		transformer.setOutputProperty(OutputKeys.MEDIA_TYPE, "text/xml");
+		transformer.setOutputProperty(OutputKeys.MEDIA_TYPE, "application/xml");
 		transformer.transform(source, target);
 	}
 
