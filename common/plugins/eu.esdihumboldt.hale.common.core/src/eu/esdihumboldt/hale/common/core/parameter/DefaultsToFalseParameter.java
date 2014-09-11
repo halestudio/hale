@@ -13,31 +13,23 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.io.gml.writer;
+package eu.esdihumboldt.hale.common.core.parameter;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
-import eu.esdihumboldt.hale.common.core.parameter.ParameterValueDescriptor;
 
 /**
- * For testing Text based parameter complex value
+ * Parameter value descriptor for boolean parameters with <code>true</code> as
+ * default.
  * 
- * @author Yasmina Kammeyer
+ * @author Simon Templer
  */
-public class InspireSDSNamespaceDefaultValue implements ParameterValueDescriptor {
+public class DefaultsToFalseParameter extends AbstractParameterValueDescriptor {
 
-	@Override
-	public Value getDefaultValue() {
-		return Value.of("");
-	}
-
-	@Override
-	public String getDocumentationRepresentation() {
-		return "Example how an URI-based namespace for the GDI-DE registry could look like.";
-	}
-
-	@Override
-	public Value getSampleData() {
-		return Value.of("http://gdi-de.org/oid/de.bund.bkg");
+	/**
+	 * Default constructor.
+	 */
+	public DefaultsToFalseParameter() {
+		super(Value.of(true), Value.of(false));
 	}
 
 }
