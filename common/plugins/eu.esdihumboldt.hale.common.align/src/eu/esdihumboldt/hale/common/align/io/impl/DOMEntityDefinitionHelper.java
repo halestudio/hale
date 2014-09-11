@@ -33,6 +33,7 @@ import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.PropertyType
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
@@ -110,6 +111,17 @@ public class DOMEntityDefinitionHelper {
 	 */
 	public static Element typeToDOM(TypeEntityDefinition type) {
 		return jaxbElementToDOM(EntityDefinitionToJaxb.convert(type));
+	}
+
+	/**
+	 * Converts the given type entity definition to an element.
+	 * 
+	 * @param type the type entity definition to convert
+	 * @return the created element or <code>null</code> in case of an exception
+	 */
+	public static Element typeToDOM(TypeDefinition type) {
+		TypeEntityDefinition entity = new TypeEntityDefinition(type, null, null);
+		return typeToDOM(entity);
 	}
 
 	/**

@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.io.json;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,5 +57,12 @@ public class GeoJSONConfig {
 	 */
 	public PropertyEntityDefinition getDefaultGeometry(TypeDefinition type) {
 		return defaultGeometries.get(type);
+	}
+
+	/**
+	 * @return the default geometries configuration map
+	 */
+	public Map<TypeDefinition, PropertyEntityDefinition> getDefaultGeometries() {
+		return Collections.unmodifiableMap(defaultGeometries);
 	}
 }
