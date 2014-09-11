@@ -21,6 +21,11 @@ import java.io.File;
  * Service that provides the possibility to clean up application or project
  * related resources.
  * 
+ * FIXME this interface is currently really only appropriate for the client
+ * application use case where only one project is present. The project cleanup
+ * should rather be handled by a project scoped service (not published via
+ * OSGi).
+ * 
  * @author Simon Templer
  */
 public interface CleanupService {
