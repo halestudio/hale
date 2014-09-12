@@ -126,7 +126,8 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage implement
 				if (lastType != null) {
 					Pair<TypeDefinition, Integer> pt = ShapeInstanceReader
 							.getMostCompatibleShapeType(
-									getWizard().getProvider().getSourceSchema(), lastType);
+									getWizard().getProvider().getSourceSchema(), lastType, lastType
+											.getName().getLocalPart());
 					if (pt != null) {
 						selector.setSelection(new StructuredSelection(pt.getFirst()));
 					}
