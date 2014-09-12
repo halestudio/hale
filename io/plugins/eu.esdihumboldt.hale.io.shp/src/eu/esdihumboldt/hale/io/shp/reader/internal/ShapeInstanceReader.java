@@ -133,8 +133,13 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 			if (dataType == null) {
 				throw new IOException("Could not read shapefile structure information");
 			}
+			String preferredName = null;
+			Name name = store.getNames().iterator().next();
+			if (name != null) {
+				preferredName = name.getLocalPart();
+			}
 			Pair<TypeDefinition, Integer> tp = getMostCompatibleShapeType(getSourceSchema(),
-					dataType);
+					dataType, preferredName);
 			if (tp == null) {
 				throw new IOProviderConfigurationException(
 						"No schema type specified and auto-detection failed");
@@ -178,6 +183,7 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 	 * 
 	 * @param types the type index
 	 * @param dataType the Shapefile data type
+	 * @param preferredName the name of the preferred type
 	 * @return the most compatible type found together with is compatibility
 	 *         rating or <code>null</code> if there is no type that at least has
 	 *         one matching property
@@ -185,9 +191,25 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 	 * @see #checkCompatibility(TypeDefinition, TypeDefinition)
 	 */
 	public static Pair<TypeDefinition, Integer> getMostCompatibleShapeType(TypeIndex types,
-			TypeDefinition dataType) {
+			TypeDefinition dataType, String preferredName) {
 		int maxCompatibility = -1;
 		TypeDefinition maxType = null;
+
+		// check preferred name first
+		TypeDefinition preferredType = types.getType(new QName(ShapefileConstants.SHAPEFILE_NS,
+				preferredName));
+		if (preferredType != null) {
+			int comp = checkCompatibility(preferredType, dataType);
+			if (comp >= 100) {
+				// return an exact match directly
+				return new Pair<TypeDefinition, Integer>(preferredType, 100);
+			}
+			else {
+				maxType = preferredType;
+				maxCompatibility = comp;
+			}
+		}
+
 		for (TypeDefinition schemaType : types.getMappingRelevantTypes()) {
 			if (ShapefileConstants.SHAPEFILE_NS.equals(schemaType.getName().getNamespaceURI())) {
 				// is a shapefile type
