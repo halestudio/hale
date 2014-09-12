@@ -16,8 +16,6 @@
 
 package eu.esdihumboldt.hale.ui.service.project;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.ui.IMemento;
 
 /**
  * Service that manages recent projects
@@ -63,21 +61,5 @@ public interface RecentProjectsService {
 	 * @return the recent files
 	 */
 	public abstract Entry[] getRecentFiles();
-
-	/**
-	 * Restore the state
-	 * 
-	 * @param memento the memento
-	 * @return the status
-	 */
-	public abstract IStatus restoreState(IMemento memento);
-
-	/**
-	 * Save the state
-	 * 
-	 * @param memento the memento
-	 * @return the status
-	 */
-	public abstract IStatus saveState(IMemento memento);
 
 }
