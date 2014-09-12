@@ -8,7 +8,8 @@
 
    <launcherArgs>
       <programArgs>-consoleLog -clean</programArgs>
-      <vmArgs>-Xmx800M</vmArgs>
+      <vmArgs>-Xmx1200M
+-XX:MaxPermSize=256m</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
