@@ -61,6 +61,9 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 	// only needed for correct error description
 	private int line = 0;
 
+	/*
+	 * XXX does 0 represent the first sheet?
+	 */
 	private int sheetNum = 0;
 
 	/**
@@ -90,7 +93,7 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 		boolean skipFirst = getParameter(CommonSchemaConstants.PARAM_SKIP_FIRST_LINE).as(
 				Boolean.class);
 
-		sheetNum = getParameter(InstanceTableIOConstants.SHEET_INDEX).as(int.class);
+		sheetNum = getParameter(InstanceTableIOConstants.SHEET_INDEX).as(int.class, 0);
 
 		instances = new DefaultInstanceCollection(new ArrayList<Instance>());
 
