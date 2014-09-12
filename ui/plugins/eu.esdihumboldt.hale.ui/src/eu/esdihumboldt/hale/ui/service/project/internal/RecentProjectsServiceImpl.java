@@ -16,21 +16,31 @@
 
 package eu.esdihumboldt.hale.ui.service.project.internal;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.collections.buffer.CircularFifoBuffer;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.ui.IMemento;
+import org.osgi.service.prefs.PreferencesService;
 
+import com.google.common.base.Splitter;
+
+import de.fhg.igd.osgi.util.OsgiUtils;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.ui.service.project.RecentProjectsService;
 
 /**
  * This service saves a list of recently opened files.
  * 
  * @author Michel Kraemer
+ * @author Simon Templer
  */
 public class RecentProjectsServiceImpl implements RecentProjectsService {
+
+	private static final ALogger log = ALoggerFactory.getLogger(RecentProjectsServiceImpl.class);
 
 	/**
 	 * @see eu.esdihumboldt.hale.ui.service.project.RecentProjectsService.Entry
@@ -38,8 +48,8 @@ public class RecentProjectsServiceImpl implements RecentProjectsService {
 	 */
 	public static class EntryImpl implements Entry {
 
-		private String file;
-		private String projectName;
+		private final String file;
+		private final String projectName;
 
 		/**
 		 * Creates an entry with the given data.
@@ -52,45 +62,16 @@ public class RecentProjectsServiceImpl implements RecentProjectsService {
 			this.projectName = projectName;
 		}
 
-		/**
-		 * Restores an entry from a given memento.
-		 * 
-		 * @param memento the memento
-		 */
-		private EntryImpl(IMemento memento) {
-			file = memento.getString(TAG_NAME);
-			projectName = memento.getString(TAG_PROJECT_NAME);
-		}
-
-		/**
-		 * @see eu.esdihumboldt.hale.ui.service.project.RecentProjectsService.Entry#getFile()
-		 */
 		@Override
 		public String getFile() {
 			return file;
 		}
 
-		/**
-		 * @see eu.esdihumboldt.hale.ui.service.project.RecentProjectsService.Entry#getProjectName()
-		 */
 		@Override
 		public String getProjectName() {
 			return projectName;
 		}
 
-		/**
-		 * Saves an entry to the given memento.
-		 * 
-		 * @param memento the memento
-		 */
-		private void saveEntry(IMemento memento) {
-			memento.putString(TAG_NAME, file);
-			memento.putString(TAG_PROJECT_NAME, projectName);
-		}
-
-		/**
-		 * @see java.lang.Object#equals(java.lang.Object)
-		 */
 		@Override
 		public boolean equals(Object obj) {
 			if (obj != null && obj instanceof Entry) {
@@ -104,9 +85,6 @@ public class RecentProjectsServiceImpl implements RecentProjectsService {
 			return false;
 		}
 
-		/**
-		 * @see java.lang.Object#hashCode()
-		 */
 		@Override
 		public int hashCode() {
 			if (file == null)
@@ -120,17 +98,8 @@ public class RecentProjectsServiceImpl implements RecentProjectsService {
 	 */
 	public static final int MAX_FILES = 6;
 
-	/**
-	 * Tag for data sources stored in a memento
-	 */
-	private static final String TAG_FILE = "file"; //$NON-NLS-1$
-	private static final String TAG_NAME = "name"; //$NON-NLS-1$
-	private static final String TAG_PROJECT_NAME = "projectName"; //$NON-NLS-1$
-
-	/**
-	 * A circular buffer which saves the recent files
-	 */
-	private CircularFifoBuffer _buffer = new CircularFifoBuffer(MAX_FILES);
+	private static final String CONFIG_PROPERTY = "hale.recentProjects"; //$NON-NLS-1$
+	private static final String ENC = "UTF-8"; //$NON-NLS-1$
 
 	/**
 	 * @see RecentProjectsService#add(String, String)
@@ -138,10 +107,12 @@ public class RecentProjectsServiceImpl implements RecentProjectsService {
 	@Override
 	public void add(String file, String projectName) {
 		if (file != null) {
+			CircularFifoBuffer buffer = restoreState();
+
 			if (projectName == null)
 				projectName = "";
 			Entry entry = new EntryImpl(file, projectName);
-			Iterator<?> i = _buffer.iterator();
+			Iterator<?> i = buffer.iterator();
 			while (i.hasNext()) {
 				Entry rfe = (Entry) i.next();
 				if (entry.equals(rfe)) {
@@ -149,50 +120,66 @@ public class RecentProjectsServiceImpl implements RecentProjectsService {
 					break;
 				}
 			}
-			_buffer.add(entry);
+			buffer.add(entry);
+
+			saveState(buffer);
 		}
 	}
 
-	/**
-	 * @see RecentProjectsService#getRecentFiles()
-	 */
 	@Override
 	public Entry[] getRecentFiles() {
-		Entry[] result = new Entry[_buffer.size()];
+		CircularFifoBuffer buffer = restoreState();
+
+		Entry[] result = new Entry[buffer.size()];
 		int i = 0;
-		for (Object o : _buffer)
+		for (Object o : buffer)
 			result[i++] = (Entry) o;
 		return result;
 	}
 
-	/**
-	 * @see RecentProjectsService#restoreState(IMemento)
-	 */
-	@Override
-	public IStatus restoreState(IMemento memento) {
-		if (memento != null) {
-			IMemento[] dsms = memento.getChildren(TAG_FILE);
-			if (dsms != null) {
-				for (IMemento dsm : dsms) {
-					Entry entry = new EntryImpl(dsm);
-					if (entry.getFile() != null)
-						_buffer.add(entry);
-				}
+	private CircularFifoBuffer restoreState() {
+		PreferencesService prefs = OsgiUtils.getService(PreferencesService.class);
+
+		CircularFifoBuffer buffer = new CircularFifoBuffer(MAX_FILES);
+		String configString = prefs.getSystemPreferences().get(CONFIG_PROPERTY, "");
+
+		List<String> parts = Splitter.on(' ').splitToList(configString);
+
+		buffer.clear();
+		for (int i = 0; i < parts.size() - 1; i += 2) {
+			try {
+				String name = URLDecoder.decode(parts.get(i), ENC);
+				String filename = URLDecoder.decode(parts.get(i + 1), ENC);
+
+				Entry entry = new EntryImpl(filename, name);
+				buffer.add(entry);
+			} catch (UnsupportedEncodingException e) {
+				log.error(ENC + "? That's supposed to be an encoding?", e);
 			}
 		}
-		return Status.OK_STATUS;
+		return buffer;
 	}
 
-	/**
-	 * @see RecentProjectsService#saveState(IMemento)
-	 */
-	@Override
-	public IStatus saveState(IMemento memento) {
-		for (Object o : _buffer) {
-			EntryImpl entry = (EntryImpl) o;
-			IMemento c = memento.createChild(TAG_FILE);
-			entry.saveEntry(c);
+	private void saveState(CircularFifoBuffer buffer) {
+		PreferencesService prefs = OsgiUtils.getService(PreferencesService.class);
+
+		StringBuilder configString = new StringBuilder();
+		boolean first = true;
+		for (Object o : buffer) {
+			try {
+				Entry entry = (Entry) o;
+				if (first)
+					first = false;
+				else
+					configString.append(' ');
+				configString.append(URLEncoder.encode(entry.getProjectName(), ENC));
+				configString.append(' ');
+				configString.append(URLEncoder.encode(entry.getFile(), ENC));
+			} catch (UnsupportedEncodingException e) {
+				log.error(ENC + "? That's supposed to be an encoding?", e);
+			}
 		}
-		return Status.OK_STATUS;
+
+		prefs.getSystemPreferences().put(CONFIG_PROPERTY, configString.toString());
 	}
 }
