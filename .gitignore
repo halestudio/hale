@@ -16,6 +16,7 @@ target/
 *.patch
 /build/build/
 /build/workspace/
+/workspace/
 pom.xml
 .metadata/
 
