@@ -54,6 +54,9 @@ public class XLSSchemaReader extends AbstractTableSchemaReader {
 
 	private List<String> header = new ArrayList<String>();
 
+	/**
+	 * XXX does 0 reference the first sheet?
+	 */
 	private int sheetNum = 0;
 
 	@Override
@@ -68,7 +71,7 @@ public class XLSSchemaReader extends AbstractTableSchemaReader {
 	protected Schema loadFromSource(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 
-		sheetNum = getParameter(InstanceTableIOConstants.SHEET_INDEX).as(int.class);
+		sheetNum = getParameter(InstanceTableIOConstants.SHEET_INDEX).as(int.class, 0);
 
 		progress.begin("Load XLS/XLSX schema", ProgressIndicator.UNKNOWN);
 
