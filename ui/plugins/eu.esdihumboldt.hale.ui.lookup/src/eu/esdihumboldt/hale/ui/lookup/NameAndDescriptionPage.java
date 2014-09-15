@@ -72,14 +72,14 @@ public class NameAndDescriptionPage extends LookupTableImportConfigurationPage i
 		// Name
 		Label name = new Label(page, SWT.NONE);
 		name.setText("Name: ");
-		nameText = new Text(page, SWT.BORDER);
+		nameText = new Text(page, SWT.BORDER | SWT.SINGLE);
 		nameText.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 		nameText.addModifyListener(this);
 
 		// Description
 		Label desc = new Label(page, SWT.NONE);
 		desc.setText("Description: ");
-		descText = new Text(page, SWT.BORDER);
+		descText = new Text(page, SWT.BORDER | SWT.SINGLE);
 		descText.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 		descText.addModifyListener(this);
 

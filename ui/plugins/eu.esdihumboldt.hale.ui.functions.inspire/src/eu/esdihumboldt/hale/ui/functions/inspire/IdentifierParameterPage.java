@@ -240,7 +240,7 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		FunctionParameter param = function.getParameter(COUNTRY_PARAMETER_NAME);
 		configureParameterLabel(ccLabel, param);
 
-		this.countryCode = new Text(nsGroup, SWT.BORDER);
+		this.countryCode = new Text(nsGroup, SWT.BORDER | SWT.SINGLE);
 		this.countryCode.setText(initialCountry); //$NON-NLS-1$
 		this.countryCode.setEnabled(true);
 		this.countryCode.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
@@ -253,7 +253,7 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		param = function.getParameter(DATA_PROVIDER_PARAMETER_NAME);
 		configureParameterLabel(providerLabel, param);
 
-		this.providerName = new Text(nsGroup, SWT.BORDER);
+		this.providerName = new Text(nsGroup, SWT.BORDER | SWT.SINGLE);
 		this.providerName.setText(initialProvider); //$NON-NLS-1$
 		this.providerName.setEnabled(true);
 		this.providerName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
@@ -266,7 +266,7 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		param = function.getParameter(PRODUCT_PARAMETER_NAME);
 		configureParameterLabel(productLabel, param);
 
-		this.productName = new Text(nsGroup, SWT.BORDER);
+		this.productName = new Text(nsGroup, SWT.BORDER | SWT.SINGLE);
 		this.productName.setText(initialProduct); //$NON-NLS-1$
 		this.productName.setEnabled(true);
 		this.productName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
@@ -331,7 +331,7 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		}
 		versionLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 
-		this.version = new Text(versGroup, SWT.BORDER);
+		this.version = new Text(versGroup, SWT.BORDER | SWT.SINGLE);
 		this.version.setText(initialVersion); //$NON-NLS-1$
 		this.version.setEnabled(true);
 		this.version.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
