@@ -58,6 +58,7 @@ import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.io.project.jaxb.generated.ConfigData;
 import eu.esdihumboldt.hale.io.project.jaxb.generated.ConfigSection;
 import eu.esdihumboldt.hale.io.project.jaxb.generated.HaleProject;
+import eu.esdihumboldt.hale.io.project.jaxb.generated.ObjectFactory;
 import eu.esdihumboldt.hale.io.project.jaxb.internal.Messages;
 import eu.esdihumboldt.hale.ui.style.io.StyleReader;
 
@@ -147,7 +148,7 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 			JAXBContext jc;
 			JAXBElement<HaleProject> root;
 			try {
-				jc = JAXBContext.newInstance(PROJECT_CONTEXT);
+				jc = JAXBContext.newInstance(PROJECT_CONTEXT, ObjectFactory.class.getClassLoader());
 				Unmarshaller u = jc.createUnmarshaller();
 				u.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
 				root = u.unmarshal(new StreamSource(getSource().getInput()), HaleProject.class);
