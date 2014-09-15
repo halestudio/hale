@@ -55,7 +55,7 @@ public class DefaultFunctionParameterEditor extends AbstractBindingValidatingEdi
 		composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(GridLayoutFactory.swtDefaults().margins(0, 0).create());
 
-		text = new Text(composite, SWT.NONE);
+		text = new Text(composite, SWT.SINGLE | SWT.BORDER);
 		text.setLayoutData(GridDataFactory.fillDefaults().indent(7, 0).grab(true, false).create());
 		text.addModifyListener(new ModifyListener() {
 

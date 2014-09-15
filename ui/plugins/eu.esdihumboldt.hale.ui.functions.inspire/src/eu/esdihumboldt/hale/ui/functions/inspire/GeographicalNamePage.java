@@ -493,7 +493,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		configureParameterLabel(namePronounciationTextLabel, PROPERTY_PRONUNCIATIONSOUNDLINK,
 				function);
 
-		this.namePronounciationSounds = new Text(configurationComposite, SWT.BORDER);
+		this.namePronounciationSounds = new Text(configurationComposite, SWT.BORDER | SWT.SINGLE);
 		this.namePronounciationSounds.setLayoutData(configurationLayoutData);
 		this.namePronounciationSounds.setEnabled(true);
 		String sound = "";
