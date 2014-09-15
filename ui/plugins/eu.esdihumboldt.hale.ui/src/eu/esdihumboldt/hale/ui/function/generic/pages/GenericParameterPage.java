@@ -387,7 +387,7 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 	 * updating the height, not the width.
 	 */
 	private void layoutAndPack() {
-		((Composite) getControl()).getParent().layout();
+		((Composite) getControl()).getParent().layout(true, true);
 
 		Shell shell = getWizard().getShell();
 		Point preferredSize = shell.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
