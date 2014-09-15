@@ -30,7 +30,6 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -71,7 +70,6 @@ public class XLSInstanceWriterTest {
 	 * 
 	 * @throws Exception , if an error occurs
 	 */
-	@Ignore
 	@Test
 	public void testWriteComplexSchema() throws Exception {
 
@@ -116,7 +114,6 @@ public class XLSInstanceWriterTest {
 	 * 
 	 * @throws Exception , if an error occurs
 	 */
-	@Ignore
 	@Test
 	public void testWriteNotNestedProperties() throws Exception {
 
