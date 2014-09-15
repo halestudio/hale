@@ -209,10 +209,7 @@ public class CSVInstanceWriterTest {
 
 		String[] header = row.next();
 
-		// XXX This test will fail, because not all populated properties are
-		// correctly resolved yet.
-		// assertEquals("There are not enough entries.", numberOfEntries,
-		// header.length);
+		assertEquals("There are not enough entries.", numberOfEntries, header.length);
 
 		for (int i = 0; i < header.length; i++) {
 			assertTrue("The header of the csv file do not contain all properties.",
