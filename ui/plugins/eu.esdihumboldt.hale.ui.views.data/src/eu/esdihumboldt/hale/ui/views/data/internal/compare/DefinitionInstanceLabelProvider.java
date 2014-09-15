@@ -83,13 +83,73 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 		this.instance = instance;
 	}
 
-	/**
-	 * @see CellLabelProvider#update(ViewerCell)
-	 */
-	@Override
-	public void update(ViewerCell cell) {
-		TreePath treePath = cell.getViewerRow().getTreePath();
+	@SuppressWarnings("javadoc")
+	public static class InstanceEntry {
 
+		/**
+		 * If a definition is represented by the entry.
+		 */
+		private final boolean definition;
+
+		/**
+		 * The value count of the entry.
+		 */
+		private final int valueCount;
+
+		/**
+		 * The index of the chosen value.
+		 */
+		private final int choice;
+
+		/**
+		 * The actual value of the entry.
+		 */
+		private final Object value;
+
+		/**
+		 * The associated child definition, if any.
+		 */
+		private final ChildDefinition<?> childDef;
+
+		public InstanceEntry(int valueCount, int choice, Object value, boolean definition,
+				ChildDefinition<?> childDef) {
+			super();
+			this.valueCount = valueCount;
+			this.choice = choice;
+			this.value = value;
+			this.definition = definition;
+			this.childDef = childDef;
+		}
+
+		public int getValueCount() {
+			return valueCount;
+		}
+
+		public int getChoice() {
+			return choice;
+		}
+
+		public Object getValue() {
+			return value;
+		}
+
+		public boolean isDefinition() {
+			return definition;
+		}
+
+		public ChildDefinition<?> getChildDef() {
+			return childDef;
+		}
+
+	}
+
+	/**
+	 * Find the instance entry at the given tree path.
+	 * 
+	 * @param treePath the tree path
+	 * @return the instance entry information
+	 */
+	public InstanceEntry findInstanceEntry(TreePath treePath) {
 		// descend in instance
 		int valueCount = 0;
 		int choice = 0;
@@ -154,17 +214,30 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 			}
 		}
 
+		return new InstanceEntry(valueCount, choice, value, definition, childDef);
+	}
+
+	/**
+	 * @see CellLabelProvider#update(ViewerCell)
+	 */
+	@Override
+	public void update(ViewerCell cell) {
+		TreePath treePath = cell.getViewerRow().getTreePath();
+
+		InstanceEntry entry = findInstanceEntry(treePath);
+		Object value = entry.value;
+
 		InstanceValidationReport report = null;
 		// If childDef is null we are at the top element.
-		if (definition && childDef == null) {
+		if (entry.definition && entry.childDef == null) {
 			report = InstanceValidator.validate(instance);
 		}
 
 		boolean hasValue = false;
-		if (definition && value instanceof Instance) {
+		if (entry.definition && value instanceof Instance) {
 			hasValue = ((Instance) value).getValue() != null;
 		}
-		else if (!definition && treePath.getSegmentCount() == 1) {
+		else if (!entry.definition && treePath.getSegmentCount() == 1) {
 			// metadata root
 			if (instance.getMetaDataNames().isEmpty()) {
 				hasValue = true;
@@ -200,9 +273,10 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 		}
 
 		// mark cell if there are other values
-		if (valueCount > 1) {
+		if (entry.valueCount > 1) {
 			String decoration = " "
-					+ MessageFormat.format(MULTIPLE_VALUE_FORMAT, choice + 1, valueCount);
+					+ MessageFormat.format(MULTIPLE_VALUE_FORMAT, entry.choice + 1,
+							entry.valueCount);
 			styledString.append(decoration, StyledString.COUNTER_STYLER);
 		}
 

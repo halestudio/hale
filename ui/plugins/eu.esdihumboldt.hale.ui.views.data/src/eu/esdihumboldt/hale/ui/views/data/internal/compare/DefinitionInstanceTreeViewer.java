@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
@@ -42,14 +43,23 @@ import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TreeEditor;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
@@ -101,7 +111,6 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 		// Add an editor for selecting specific paths.
 		editor = new TreeEditor(treeViewer.getTree());
 		editor.horizontalAlignment = SWT.RIGHT;
-		editor.minimumWidth = 40;
 		treeViewer.getTree().addMouseMoveListener(new MouseMoveListener() {
 
 			@Override
@@ -119,14 +128,24 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 					}
 				}
 
-				// No selected cell or selected cell didn't change.
-				if (cell == null
-						|| cell.getColumnIndex() == 0
-
-						|| (editor.getItem() == cell.getItem() && editor.getColumn() == cell
-								.getColumnIndex()))
-
+				// No valid selected cell
+				if (cell == null || cell.getColumnIndex() == 0) {
 					return;
+				}
+
+				// cell didn't change
+				if ((editor.getItem() == cell.getItem() && editor.getColumn() == cell
+						.getColumnIndex())) {
+					return;
+				}
+
+				Composite editorControl = new Composite(treeViewer.getTree(), SWT.NONE);
+				GridLayoutFactory.fillDefaults().margins(0, 0).spacing(0, 0).numColumns(2)
+						.applyTo(editorControl);
+
+				boolean hideCopy = false;
+
+				// multi value selector
 
 				// Quote the format first. Pattern.quote does the same, except,
 				// that it checks the input for \Es.
@@ -138,38 +157,91 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 				pattern = pattern.replace("{0}", "\\E(\\d+)\\Q").replace("{1}", "\\E(\\d+)\\Q");
 
 				Matcher m = Pattern.compile(pattern).matcher(cell.getText());
-				if (!m.find())
-					return;
+				if (m.find()) {
+					// multi value element
 
-				int current = Integer.parseInt(m.group(1));
-				int total = Integer.parseInt(m.group(2));
+					int current = Integer.parseInt(m.group(1));
+					int total = Integer.parseInt(m.group(2));
 
-				// Create the selection control.
-				ComboViewer combo = new ComboViewer(treeViewer.getTree());
-				Integer[] values = new Integer[total];
-				for (int i = 1; i <= total; i++)
-					values[i - 1] = i;
-				combo.setContentProvider(ArrayContentProvider.getInstance());
-				combo.setInput(values);
-				combo.setSelection(new StructuredSelection(current));
-				combo.addSelectionChangedListener(new ISelectionChangedListener() {
+					// Create the selection control.
+					ComboViewer combo = new ComboViewer(editorControl);
+					Integer[] values = new Integer[total];
+					for (int i = 1; i <= total; i++)
+						values[i - 1] = i;
+					combo.setContentProvider(ArrayContentProvider.getInstance());
+					combo.setInput(values);
+					combo.setSelection(new StructuredSelection(current));
+					combo.addSelectionChangedListener(new ISelectionChangedListener() {
 
-					@Override
-					public void selectionChanged(SelectionChangedEvent event) {
-						if (event.getSelection() instanceof IStructuredSelection) {
-							// Update label provider and refresh viewer.
+						@Override
+						public void selectionChanged(SelectionChangedEvent event) {
+							if (event.getSelection() instanceof IStructuredSelection) {
+								// Update label provider and refresh viewer.
 
-							labelProviders.get(cell.getColumnIndex()).selectPath(
-									cell.getViewerRow().getTreePath(),
-									(Integer) (((IStructuredSelection) event.getSelection())
-											.getFirstElement()));
+								labelProviders.get(cell.getColumnIndex()).selectPath(
+										cell.getViewerRow().getTreePath(),
+										(Integer) (((IStructuredSelection) event.getSelection())
+												.getFirstElement()));
 
-							treeViewer.refresh(cell.getElement(), true);
+								treeViewer.refresh(cell.getElement(), true);
+							}
 						}
+					});
+				}
+				else {
+					/*
+					 * only one value - so we can safely determine if the copy
+					 * button should be shown
+					 */
+					Object value = labelProviders.get(cell.getColumnIndex())
+							.findInstanceEntry(cell.getViewerRow().getTreePath()).getValue();
+					if (value instanceof Instance) {
+						value = ((Instance) value).getValue();
 					}
-				});
-				editor.setEditor(combo.getControl(), (TreeItem) cell.getItem(),
-						cell.getColumnIndex());
+
+					hideCopy = value == null || value.toString().isEmpty();
+				}
+
+				// copy button
+				if (!hideCopy) {
+					Button button = new Button(editorControl, SWT.PUSH | SWT.FLAT);
+					button.setImage(PlatformUI.getWorkbench().getSharedImages()
+							.getImage(ISharedImages.IMG_TOOL_COPY));
+					button.setToolTipText("Copy string value");
+					button.addSelectionListener(new SelectionAdapter() {
+
+						@Override
+						public void widgetSelected(SelectionEvent e) {
+							// determine text value
+							Object value = labelProviders.get(cell.getColumnIndex())
+									.findInstanceEntry(cell.getViewerRow().getTreePath())
+									.getValue();
+							if (value instanceof Instance) {
+								value = ((Instance) value).getValue();
+							}
+
+							if (value != null) {
+								final String textValue = value.toString();
+
+								if (!textValue.isEmpty()) { // empty string is
+															// invalid
+									// copy content to clipboard
+									Clipboard clipBoard = new Clipboard(Display.getCurrent());
+									clipBoard.setContents(new Object[] { textValue },
+											new Transfer[] { TextTransfer.getInstance() });
+									clipBoard.dispose();
+								}
+							}
+						}
+					});
+				}
+
+				// calculate editor size
+				Point size = editorControl.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+				editor.minimumHeight = size.y;
+				editor.minimumWidth = size.x;
+
+				editor.setEditor(editorControl, (TreeItem) cell.getItem(), cell.getColumnIndex());
 			}
 		});
 
