@@ -29,6 +29,7 @@ import eu.esdihumboldt.hale.common.align.io.EntityResolver;
 import eu.esdihumboldt.hale.common.align.io.impl.dummy.DummyEntityResolver;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.EntityDefinitionToJaxb;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ObjectFactory;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.PropertyType;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
@@ -136,7 +137,8 @@ public class DOMEntityDefinitionHelper {
 
 	private static Element jaxbElementToDOM(Object jaxbElement) {
 		try {
-			JAXBContext jc = JAXBContext.newInstance(JaxbAlignmentIO.ALIGNMENT_CONTEXT);
+			JAXBContext jc = JAXBContext.newInstance(JaxbAlignmentIO.ALIGNMENT_CONTEXT,
+					ObjectFactory.class.getClassLoader());
 			Marshaller m = jc.createMarshaller();
 
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

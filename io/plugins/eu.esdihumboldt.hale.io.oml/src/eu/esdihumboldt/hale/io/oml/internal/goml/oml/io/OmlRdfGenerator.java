@@ -64,6 +64,7 @@ import eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.Entity2;
 import eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.EntityType;
 import eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.FormalismType;
 import eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.FunctionType;
+import eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.ObjectFactory;
 import eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.OntologyType;
 import eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.OntologyType.Formalism;
 import eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.ParamType;
@@ -124,7 +125,8 @@ public class OmlRdfGenerator {
 		// 1. convert OML Alignment to the jaxb generated AlignmentType
 		AlignmentType aType = getAlignment(alignment);
 		// 2. marshall AlignmentType to xml
-		JAXBContext jc = JAXBContext.newInstance(ALIGNMENT_CONTEXT);
+		JAXBContext jc = JAXBContext.newInstance(ALIGNMENT_CONTEXT,
+				ObjectFactory.class.getClassLoader());
 		Marshaller m = jc.createMarshaller();
 
 		configurePrefixMapper(m);
