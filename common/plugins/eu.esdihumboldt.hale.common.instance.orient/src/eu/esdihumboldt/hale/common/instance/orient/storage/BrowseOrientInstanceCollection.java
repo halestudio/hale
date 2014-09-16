@@ -24,6 +24,8 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
+import javax.xml.namespace.QName;
+
 import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.iterator.ORecordIteratorClass;
@@ -35,6 +37,7 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.InstanceResolver;
+import eu.esdihumboldt.hale.common.instance.model.MetaFilter;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.orient.OInstance;
@@ -45,7 +48,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 /**
  * Instance collection based on a {@link LocalOrientDB}
  * 
- * FIXME implement instance collection fan-out
+ * FIXME implement instance collection fan-out (InstanceCollection2)
  * 
  * @author Simon Templer
  */
@@ -290,6 +293,41 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 	 */
 	@Override
 	public InstanceCollection select(Filter filter) {
+		// XXX special handling for MetaFilter (as SQL query)
+		if (filter instanceof MetaFilter) {
+			MetaFilter metaFilter = (MetaFilter) filter;
+
+			if (metaFilter.getType() != null && !metaFilter.getValues().isEmpty()) {
+				StringBuilder query = new StringBuilder();
+
+				// build SQL query (XXX not injection safe)
+				query.append("SELECT FROM ");
+				query.append(ONamespaceMap.encode(metaFilter.getType().getName()));
+
+				query.append(" WHERE ");
+				query.append(OInstance.FIELD_METADATA);
+				query.append(".");
+				query.append(ONamespaceMap.encode(new QName(metaFilter.getMetadataKey())));
+				query.append(" in [");
+				boolean first = true;
+				for (Object value : metaFilter.getValues()) {
+					if (first) {
+						first = false;
+					}
+					else {
+						query.append(',');
+					}
+					query.append('\'');
+					query.append(value);
+					query.append('\'');
+				}
+				query.append("]");
+
+				return new SQLQueryInstanceCollection(database, query.toString(), types, dataSet);
+			}
+		}
+
+		// TODO specific support for Type filters?!
 		return FilteredInstanceCollection.applyFilter(this, filter);
 	}
 
