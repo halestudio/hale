@@ -99,6 +99,18 @@ names declared in `templates/products/client.yaml` or `templates/products/server
 depending on which type you chose. For example:
 
     ./build.sh client HALE
+    
+### Building update sites / p2 repositories
+
+Use
+
+    ./build.sh site
+
+to build an Eclipse Update Site including all bundles and features.
+
+If you want only specific content included contained in an Update Site, you can specify a specific feature to include:
+
+    ./build.sh site <featureId>
 
 Build properties
 ----------------
