@@ -56,6 +56,10 @@ ext {
 
     // suffix for bundle version numbers
     versionSuffix = ''
+	
+	// ID of generated update site feature
+	generatedUpdateSiteFeatureId = 'eu.esdihumboldt.hale.all.feature'
+	generatedUpdateSiteFeatureLabel = 'Generated overall feature'
 
     // path to the platform bundle
     platformBundle = file('../platform')
