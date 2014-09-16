@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.ui.views.data.internal.filter;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -46,6 +47,8 @@ import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.InstanceMetadata;
+import eu.esdihumboldt.hale.common.instance.model.MetaFilter;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
@@ -367,7 +370,34 @@ public class InstanceServiceSelector implements InstanceSelector {
 				DataSet dataset = (space == SchemaSpaceID.SOURCE) ? (DataSet.SOURCE)
 						: (DataSet.TRANSFORMED);
 
-				Filter filter = filterField.getFilter();
+				Filter filter = null;
+				String filterExpression = filterField.getFilterExpression();
+				/*
+				 * Custom filter handling.
+				 * 
+				 * FIXME Ultimately this should be done by the filter field
+				 * instead, which should be able to handle all kinds of
+				 * registered filters (e.g. also Groovy).
+				 */
+				if (filterExpression.startsWith("id:")) {
+					// XXX meta ID "hack"
+					String metaFilter = filterExpression.substring("id:".length());
+					String[] values = metaFilter.split(",");
+
+					filter = new MetaFilter(type, InstanceMetadata.METADATA_ID, new HashSet<>(
+							Arrays.asList(values)));
+				}
+				else if (filterExpression.startsWith("source:")) {
+					// XXX meta source ID "hack"
+					String metaFilter = filterExpression.substring("source:".length());
+					String[] values = metaFilter.split(",");
+
+					filter = new MetaFilter(type, InstanceMetadata.METADATA_SOURCEID,
+							new HashSet<>(Arrays.asList(values)));
+				}
+				else {
+					filter = filterField.getFilter();
+				}
 
 				InstanceCollection instances = is.getInstances(dataset);
 				if (filter != null) {
