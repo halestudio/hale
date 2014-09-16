@@ -41,38 +41,45 @@ task createUpdateSiteFeatureProjectDefinition(type: Copy) {
  * The feature will include all workspace bundles.
  */
 task createUpdateSiteFeature(dependsOn: createUpdateSiteFeatureProjectDefinition) << {
-    // create pom.xml
-    def updateSiteFeaturePath = createUpdateSiteFeatureProjectDefinition.destinationDir
-    new PomGenerator(project).makePluginPomFileWithPackaging(updateSiteFeaturePath.name, '1.0.0', false,
-            false, 'eclipse-feature', updateSiteFeaturePath, [isJavaProject: false])
-
-    // create build.properties
-    new File(updateSiteFeaturePath, 'build.properties').withWriter {
-        it << "bin.includes = feature.xml\n"
-    }
-
-    // target platform plugins
-    def targetPlugins = []
-	// currently NONE
-
-    new File(updateSiteFeaturePath, 'feature.xml').withWriter { w ->
-        def xml = new MarkupBuilder(w)
-        xml.mkp.xmlDeclaration(version: '1.0', encoding: 'utf-8')
-        xml.feature('id': updateSiteFeaturePath.name, 'label': updateSiteFeaturePath.name, 'version': '1.0.0') {
-            // add workspace plugins
-            new BundleParser(project).getParsedBundles().each {
-                plugin('id': it.key, 'version': '0.0.0')
-            }
-            // add required target platform plugins
-            targetPlugins.each {
-                plugin('id': it[0], 'version': it[1])
-            }
-        }
-    }
+	if (project.hasProperty('customUpdateSiteFeatureId')) {
+		// an existing feature should provide the update site
+	}
+	else {
+		// generate overall feature
+	
+	    // create pom.xml
+	    def updateSiteFeaturePath = createUpdateSiteFeatureProjectDefinition.destinationDir
+	    new PomGenerator(project).makePluginPomFileWithPackaging(updateSiteFeaturePath.name, project.version, false,
+	            false, 'eclipse-feature', updateSiteFeaturePath, [isJavaProject: false])
+	
+	    // create build.properties
+	    new File(updateSiteFeaturePath, 'build.properties').withWriter {
+	        it << "bin.includes = feature.xml\n"
+	    }
+	
+	    // target platform plugins
+	    def targetPlugins = []
+		// currently NONE
+	
+	    new File(updateSiteFeaturePath, 'feature.xml').withWriter { w ->
+	        def xml = new MarkupBuilder(w)
+	        xml.mkp.xmlDeclaration(version: '1.0', encoding: 'utf-8')
+	        xml.feature('id': updateSiteFeaturePath.name, 'label': updateSiteFeaturePath.name, 'version': project.version) {
+	            // add workspace plugins
+	            new BundleParser(project).getParsedBundles().each {
+	                plugin('id': it.key, 'version': '0.0.0')
+	            }
+	            // add required target platform plugins
+	            targetPlugins.each {
+	                plugin('id': it[0], 'version': it[1])
+	            }
+	        }
+	    }
+	}
 }
 
 /**
- * Build all bundles and assemble update site needed for testing
+ * Build bundles and assemble update site.
  */
 task buildUpdateSite(dependsOn: [ createUpdateSiteFeature, generatePomFiles ]) << {
     def pg = new PomGenerator(project)
@@ -80,34 +87,50 @@ task buildUpdateSite(dependsOn: [ createUpdateSiteFeature, generatePomFiles ]) <
     // create pom file
     def updateSitePath = new File(buildDir, 'gen.site')
     updateSitePath.mkdirs()
-    pg.makePomFileWithPackaging(updateSitePath.name, '1.0.0', false, false, 'eclipse-repository',
+    pg.makePomFileWithPackaging(updateSitePath.name, project.version, false, false, 'eclipse-repository',
             'pom-repository.xml', updateSitePath)
 
     // create category.xml
     new File(updateSitePath, 'category.xml').withWriter { w ->
         def template = new GStringTemplateEngine().createTemplate(Helper.resolveTemplate(project, 'category.xml'))
         def result = template.make([
-            'featureId': createUpdateSiteFeatureProjectDefinition.destinationDir.name,
-            'version': '1.0.0',
+			// custom or generated feature
+            'featureId': project.hasProperty('customUpdateSiteFeatureId') ?
+				project.ext.customUpdateSiteFeatureId : createUpdateSiteFeatureProjectDefinition.destinationDir.name,
+            'version': project.version,
         ]).toString()
         w << result
     }
 
     // generate parent pom file and add update site module(s)
-    pg.generateParentPomFile([
+	def parentPomConfig = [
         (updateSitePath.name): [
-            'version': '1.0.0',
+            'version': project.version,
             'path': updateSitePath
-        ],
-        (createUpdateSiteFeatureProjectDefinition.destinationDir.name): [
-            'version': '1.0.0',
-            'path': createUpdateSiteFeatureProjectDefinition.destinationDir
         ]
-    ])
+    ]
+	if (!project.hasProperty('customUpdateSiteFeatureId')) {
+		// include generated feature path if no custom feature is used
+		parentPomConfig[createUpdateSiteFeatureProjectDefinition.destinationDir.name] = [
+			'version': project.version,
+			'path': createUpdateSiteFeatureProjectDefinition.destinationDir
+		]
+	}
+    pg.generateParentPomFile(parentPomConfig)
 
     // build update site
     def res = new MavenCli().doMain([ 'package' ] as String[], project.ext.rootDir.path, System.out, System.err)
     if (res != 0) {
         throw new RuntimeException("Maven failed with exit code ${res}")
     }
+}
+
+task packageUpdateSite(dependsOn: buildUpdateSite) << {
+	copy {
+		from (new File(buildDir, 'gen.site/target')) {
+			include "gen.site-${project.version}.zip"
+		}
+		into 'target/'
+		includeEmptyDirs = false
+	}
 }
