@@ -44,7 +44,7 @@ task createUpdateSiteFeature(dependsOn: createUpdateSiteFeatureProjectDefinition
     // create pom.xml
     def updateSiteFeaturePath = createUpdateSiteFeatureProjectDefinition.destinationDir
     new PomGenerator(project).makePluginPomFileWithPackaging(updateSiteFeaturePath.name, '1.0.0', false,
-            false, 'eclipse-feature', updateSiteFeaturePath)
+            false, 'eclipse-feature', updateSiteFeaturePath, [isJavaProject: false])
 
     // create build.properties
     new File(updateSiteFeaturePath, 'build.properties').withWriter {
