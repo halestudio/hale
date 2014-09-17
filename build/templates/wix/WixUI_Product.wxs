@@ -25,6 +25,9 @@ First-time install dialog sequence:      Maintenance dialog sequence:
         <WixVariable Id="WixUIBannerBmp" Value="Bitmaps\bannrbmp.bmp" />
         <WixVariable Id="WixUIDialogBmp" Value="Bitmaps\dlgbmp.bmp" />
         
+        <Icon Id="uninstall.ico" SourceFile="Icons\dhp.ico"/>
+		<Property Id="ARPPRODUCTICON" Value="uninstall.ico" />
+        
         <UI Id="WixUI_Product">
             <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
             <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
