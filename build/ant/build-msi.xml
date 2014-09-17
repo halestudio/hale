@@ -69,8 +69,12 @@
 	<property name="build" location="build" />
 	<property name="dist" location="target" />
 	<property name="src" location="src" />
+	<!-- folders to include in product -->
 	<property name="src.jre" location="${src}/jre" />
 	<property name="src.plugins" location="${src}/plugins" />
+	<property name="src.features" location="${src}/features" />
+	<property name="src.p2" location="${src}/p2" />
+	<property name="src.configuration" location="${src}/configuration" />
 	
 	<!-- add hyphen to tag -->
 	<condition property="tag.hyphen" value="${tag}-">
@@ -225,16 +229,36 @@
 			var src = project.getProperty("src");
 			var srcjre = project.getProperty("src.jre");
 			var srcplugins = project.getProperty("src.plugins");
+			var srcfeatures = project.getProperty("src.features");
+			var srcconfiguration = project.getProperty("src.configuration");
+			var srcp2 = project.getProperty("src.p2");
 			
 			//create result object...
+			
 			//parse "jre/"
 			var result = create_dirs(srcjre, src);
 			//parse "plugins/"
 			var result2 = create_dirs(srcplugins, src);
+			//parse "features/"
+			var result3 = create_dirs(srcfeatures, src);
+			//parse "p2/"
+			var result4 = create_dirs(srcp2, src);
+			//parse "configuration/"
+			var result5 = create_dirs(srcconfiguration, src);
+			
 			//combine results
 			result["dirs"] += result2["dirs"];
+			result["dirs"] += result3["dirs"];
+			result["dirs"] += result4["dirs"];
+			result["dirs"] += result5["dirs"];
 			result["components"] += result2["components"];
+			result["components"] += result3["components"];
+			result["components"] += result4["components"];
+			result["components"] += result5["components"];
 			result["componentrefs"] += result2["componentrefs"];
+			result["componentrefs"] += result3["componentrefs"];
+			result["componentrefs"] += result4["componentrefs"];
+			result["componentrefs"] += result5["componentrefs"];
 			
 			//set result properties
 			project.setProperty("directories", result["dirs"]);
