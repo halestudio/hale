@@ -80,6 +80,21 @@ def getProductLauncher() {
     return name.toString()
 }
 
+String qualifiedVersion(String version) {
+	if (version.endsWith('.qualifier')) {
+		// replace qualifier by buildId
+		version[0..-11] + '.' + project.ext.buildId
+	}
+	else if (version.endsWith('-SNAPSHOT')) {
+		// replace SNAPSHOT by buildId
+		version[0..-10] + '.' + project.ext.buildId
+	}
+	else {
+		// return as-is
+		version
+	}
+}
+
 /**
  * @return the name of the package which is created by
  * packageServer() or packageClient()
@@ -91,7 +106,7 @@ def getPackageName() {
     } else {
         tag = ''
     }
-    return getProductLauncher() + '-' + project.version + '.' + project.ext.buildId + '-' + tag +
+    return getProductLauncher() + '-' + qualifiedVersion(project.version) + '-' + tag +
             project.ext.osgiOS + '.' + project.ext.osgiWS + '.' + project.osgiArch
 }
 
@@ -411,7 +426,7 @@ def packageClient(productOutputPath) {
 	            property(name: "buildId", value: getProductLauncher())
 	            property(name: "shortName", value: getProductLauncher())
 	            property(name: "title", value: project.ext.win32InstallerTitle)
-	            property(name: "version", value: project.version + '.' + project.ext.buildId)
+	            property(name: "version", value: qualifiedVersion(project.version))
 	            property(name: "GUID.UpgradeCode", value: project.ext.win32InstallerUpgradeGUID)
 	            property(name: "GUID.ApplicationShortcut", value: project.ext.win32InstallerShortcutGUID)
 	            if (project.ext.properties.containsKey('tag')) {
@@ -620,7 +635,7 @@ task makeProductFile << {
 
         // add target version to product definition (so it can be
         // used in the product template)
-        productDef['Version'] = project.version
+        productDef['Version'] = formatBundleVersion(project.version) //TODO check if this method defined in updateSite.gradle is accessible
 
         // parse plugins and add start levels to product definition
         def startLevels = []

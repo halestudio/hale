@@ -165,5 +165,8 @@ task packageUpdateSite(dependsOn: buildUpdateSite) << {
 		}
 		into 'target/'
 		includeEmptyDirs = false
+		rename { filename ->
+			filename.replace '-SNAPSHOT', ".${project.buildId}"
+		}
 	}
 }
