@@ -31,6 +31,11 @@ import eu.esdihumboldt.hale.ui.views.data.TransformedDataView;
 public class StyledMapPerspective implements IPerspectiveFactory {
 
 	/**
+	 * The perspective identifier as registered in the application.
+	 */
+	public static final String ID = "eu.esdihumboldt.hale.ui.views.styledmap";
+
+	/**
 	 * @see IPerspectiveFactory#createInitialLayout(IPageLayout)
 	 */
 	@Override
