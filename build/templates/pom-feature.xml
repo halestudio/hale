@@ -14,5 +14,18 @@
     <version>${parentVersion}</version>
     <relativePath>${parentRelativePath}</relativePath>
   </parent>
+  
+  <build>
+  	<plugins>
+ 		<plugin>
+			<groupId>org.eclipse.tycho</groupId>
+			<artifactId>tycho-packaging-plugin</artifactId>
+			<version>\${tycho-version}</version>
+			<configuration>
+				<forceContextQualifier>${buildId}</forceContextQualifier>
+			</configuration>
+		</plugin>
+  	</plugins>
+  </build>
 
 </project>

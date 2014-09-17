@@ -65,7 +65,8 @@ class PomGenerator {
                 'parentRelativePath': relativePath,
                 'needsScala': needsScala,
 				'needsGroovy': needsGroovy,
-				'extraRequirements': project.ext.extraRequirements
+				'extraRequirements': project.ext.extraRequirements,
+				'buildId': project.buildId
             ] + additional).toString()
             w << result
         }
