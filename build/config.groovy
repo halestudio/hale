@@ -4,7 +4,7 @@
  */
 project = {
 	// version
-	version = '2.9.0'
+	version = '2.9.0-SNAPSHOT'
 	
 	ext {
 		// The title of the win32 installer
