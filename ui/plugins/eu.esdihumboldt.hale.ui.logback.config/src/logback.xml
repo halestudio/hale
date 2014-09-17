@@ -11,6 +11,10 @@
   </appender>
   <logger name="to.wetf" level="INFO" />
   <logger name="eu.esdihumboldt" level="INFO" />
+  
+  <!-- ignore some warnings: -->
+  <logger name="org.geotools.referencing.operation.projection" level="ERROR" />
+  
   <root level="WARN">
     <appender-ref ref="CONSOLE"/>
     <appender-ref ref="SERVICE"/>
