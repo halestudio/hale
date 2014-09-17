@@ -14,6 +14,7 @@
   
   <!-- ignore some warnings: -->
   <logger name="org.geotools.referencing.operation.projection" level="ERROR" />
+  <logger name="java.util.prefs" level="ERROR" />
   
   <root level="WARN">
     <appender-ref ref="CONSOLE"/>
