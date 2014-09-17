@@ -57,8 +57,8 @@ http://www.wetransform.to/products/hale
    </plugins>
 
    <features>
-      <feature id="eu.esdihumboldt.hale.ui.feature" version="2.9.0"/>
-      <feature id="eu.esdihumboldt.hale.ui.feature.win32" version="2.9.0"/>
+      <feature id="eu.esdihumboldt.hale.ui.feature"/>
+      <feature id="eu.esdihumboldt.hale.ui.feature.win32"/>
       <feature id="eu.esdihumboldt.hale.common.feature.base"/>
       <feature id="de.fhg.igd.slf4jplus.ui.feature"/>
       <feature id="org.eclipse.equinox.core.feature"/>
@@ -72,8 +72,8 @@ http://www.wetransform.to/products/hale
       <feature id="eu.esdihumboldt.util.feature.resource"/>
       <feature id="eu.esdihumboldt.hale.common.feature.core"/>
       <feature id="org.eclipse.gef"/>
-      <feature id="eu.esdihumboldt.hale.ui.feature.linux" version="2.9.0"/>
-      <feature id="eu.esdihumboldt.hale.ui.feature.macosx" version="2.9.0"/>
+      <feature id="eu.esdihumboldt.hale.ui.feature.linux"/>
+      <feature id="eu.esdihumboldt.hale.ui.feature.macosx"/>
       <feature id="eu.esdihumboldt.hale.common.feature.orient"/>
       <feature id="eu.esdihumboldt.cst.feature"/>
       <feature id="eu.esdihumboldt.hale.io.xslt.feature"/>
@@ -84,8 +84,8 @@ http://www.wetransform.to/products/hale
       <feature id="eu.esdihumboldt.hale.io.feature.html.ui"/>
       <feature id="eu.esdihumboldt.hale.io.feature.core"/>
       <feature id="eu.esdihumboldt.hale.io.feature.html"/>
-      <feature id="eu.esdihumboldt.hale.ui.feature.dropins" version="2.9.0"/>
-      <feature id="de.fhg.igd.hale.fme.feature" version="2.9.0"/>
+      <feature id="eu.esdihumboldt.hale.ui.feature.dropins"/>
+      <feature id="de.fhg.igd.hale.fme.feature"/>
       <feature id="eu.esdihumboldt.hale.platform.resources"/>
    </features>
 
