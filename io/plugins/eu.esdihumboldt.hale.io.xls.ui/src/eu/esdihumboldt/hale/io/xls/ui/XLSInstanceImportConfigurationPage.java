@@ -69,6 +69,7 @@ public class XLSInstanceImportConfigurationPage extends
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
 				.applyTo(sheetSelection);
 
+		setPageComplete(false);
 	}
 
 	/**
@@ -76,6 +77,10 @@ public class XLSInstanceImportConfigurationPage extends
 	 */
 	@Override
 	protected void onShowPage(boolean firstShow) {
+
+		if (!firstShow) {
+			setErrorMessage(null);
+		}
 
 		try {
 			Workbook wb = WorkbookFactory.create(getWizard().getProvider().getSource().getInput());
@@ -87,10 +92,12 @@ public class XLSInstanceImportConfigurationPage extends
 			sheetSelection.setItems(items);
 		} catch (Exception e) {
 			setErrorMessage("Cannot load Excel file!");
+			setPageComplete(false);
 			return;
 		}
 		super.onShowPage(firstShow);
 		sheetSelection.select(0);
+		setPageComplete(true);
 	}
 
 	/**

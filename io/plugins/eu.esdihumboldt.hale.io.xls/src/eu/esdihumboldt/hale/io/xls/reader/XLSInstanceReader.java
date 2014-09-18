@@ -146,8 +146,12 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 		MutableInstance instance = new DefaultInstance(type, null);
 
 		int propertyIndex = 0;
-		for (int index = 0; index < row.size(); index++) {
-			String part = row.get(index);
+		for (int index = 0; index < propAr.length; index++) {
+
+			String part = null;
+			if (index < row.size())
+				part = row.get(index);
+
 			if (part != null) {
 				PropertyDefinition property = propAr[index];
 

@@ -28,6 +28,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
+
+import javax.xml.namespace.QName;
 
 import org.apache.commons.io.FileUtils;
 
@@ -39,6 +42,7 @@ import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -83,10 +87,24 @@ public class CSVInstanceWriter extends AbstractTableInstanceWriter {
 
 		List<String> headerRow = new ArrayList<String>();
 
-		// get all instances
-		InstanceCollection instances = getInstances();
+		// get the parameter to get the type definition
+		String exportType = getParameter(InstanceTableIOConstants.EXPORT_TYPE).as(String.class);
+		QName selectedTypeName = null;
+
+		if (exportType != null && !exportType.equals("") && !exportType.equals(" ")) {
+			selectedTypeName = QName.valueOf(exportType);
+		}
+
+		// get all instances of the selected Type
+		InstanceCollection instances = getInstanceCollection(selectedTypeName);
 		Iterator<Instance> instanceIterator = instances.iterator();
-		Instance instance = instanceIterator.next();
+		Instance instance = null;
+		try {
+			instance = instanceIterator.next();
+		} catch (NoSuchElementException e) {
+			reporter.error(new IOMessageImpl("There are no instances for the selected type.", e));
+			return reporter;
+		}
 
 		// get definition of current instance (only this properties with this
 		// definition type will be written to csv file)

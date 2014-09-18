@@ -33,6 +33,7 @@ public class CSVSchemaTypePage extends DefaultSchemaTypePage {
 	 */
 	public CSVSchemaTypePage() {
 		super("CSV.SchemaTypePage");
+		setPageComplete(false);
 	}
 
 	/**
@@ -40,16 +41,20 @@ public class CSVSchemaTypePage extends DefaultSchemaTypePage {
 	 */
 	@Override
 	protected void onShowPage(boolean firstShow) {
-
 		try {
 			CSVReader reader = CSVUtil.readFirst(getWizard().getProvider());
 			setHeader(reader.readNext());
 			setSecondRow(reader.readNext());
 			super.onShowPage(firstShow);
 		} catch (IOException e) {
+			setHeader(new String[0]);
+			setSecondRow(new String[0]);
+			super.onShowPage(firstShow);
 			setMessage("File cannot be loaded!", WARNING);
+			setPageComplete(false);
 		}
 
+		setPageComplete(super.isValid());
 	}
 
 }

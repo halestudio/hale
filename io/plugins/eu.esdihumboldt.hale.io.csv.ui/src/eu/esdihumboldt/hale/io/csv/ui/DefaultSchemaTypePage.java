@@ -67,7 +67,7 @@ public class DefaultSchemaTypePage extends SchemaReaderConfigurationPage {
 	/**
 	 * Field editor for editing the schema name as string
 	 */
-	protected StringFieldEditor sfe;
+	private StringFieldEditor sfe;
 	private Group group;
 	private String[] lastSecondRow = null;
 	private final List<TypeNameField> fields = new ArrayList<TypeNameField>();
@@ -151,6 +151,10 @@ public class DefaultSchemaTypePage extends SchemaReaderConfigurationPage {
 		int indexStart = 0;
 		int indexEnd = source.getLocation().getPath().length() - 1;
 
+		// set the content of this page, type name and property name with data
+		// type
+		update();
+
 		// get schema name based on file name
 		if (source.getLocation().getPath() != null) {
 			indexStart = source.getLocation().getPath().lastIndexOf("/") + 1;
@@ -161,10 +165,13 @@ public class DefaultSchemaTypePage extends SchemaReaderConfigurationPage {
 			// set type name
 			defaultString = source.getLocation().getPath().substring(indexStart, indexEnd);
 			sfe.setStringValue(defaultString);
-			setPageComplete(sfe.isValid());
+			// setPageComplete(sfe.isValid());
 		}
+		// Content has changed so clear everything (if this is not first visit)
+//		if (!firstShow && lastSecondRow != null && !Arrays.equals(header, lastSecondRow)) {
+//			clearPage();
+//		}
 
-		update();
 	}
 
 	/**
@@ -173,6 +180,18 @@ public class DefaultSchemaTypePage extends SchemaReaderConfigurationPage {
 	 */
 	protected void update() {
 		int length = 0;
+
+		// the header is not valid so clear all content
+		if (header == null || header.length == 0) {
+			// clear properties
+			clearPage();
+			return;
+		}
+
+		if (secondRow == null || secondRow.length == 0) {
+			secondRow = header;
+		}
+
 		if (header.length != 0) {
 			length = header.length;
 		}
@@ -226,11 +245,13 @@ public class DefaultSchemaTypePage extends SchemaReaderConfigurationPage {
 						if (event.getProperty().equals(StringFieldEditor.IS_VALID)) {
 							isValid = (Boolean) event.getNewValue();
 						}
-						setPageComplete(isValid && valid);
+
+						setPageComplete(isValid());
 
 					}
 				});
-				propField.setStringValue(header[i]);
+				propField.setStringValue(header[i].replace(" ", ""));
+
 				cv = new ComboViewer(group);
 				comboFields.add(cv);
 				cv.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -294,6 +315,30 @@ public class DefaultSchemaTypePage extends SchemaReaderConfigurationPage {
 
 		group.layout();
 		sc.layout();
+//		setPageComplete(sfe.isValid() && isValid && valid);
+	}
+
+	/**
+	 * Clear the page. Can be called when the content has changed. Set everthing
+	 * on an initial state
+	 */
+	private void clearPage() {
+		// clear properties
+		for (TypeNameField properties : fields) {
+			properties.dispose();
+			properties.getTextControl(group).dispose();
+			properties.getLabelControl(group).dispose();
+		}
+		for (ComboViewer combViewer : comboFields) {
+			combViewer.getCombo().dispose();
+		}
+		validSel.clear();
+		fields.clear();
+		comboFields.clear();
+		sfe.setStringValue("");
+		group.layout();
+		sc.layout();
+		lastSecondRow = null;
 	}
 
 	/**
@@ -316,19 +361,19 @@ public class DefaultSchemaTypePage extends SchemaReaderConfigurationPage {
 
 		sfe = new TypeNameField("typename", "Typename", page);
 		sfe.setEmptyStringAllowed(false);
-		sfe.setErrorMessage("Please enter a valid Type Name");
+		// sfe.setErrorMessage("Please enter a valid Type Name");
 		sfe.setPropertyChangeListener(new IPropertyChangeListener() {
 
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				if (event.getProperty().equals(StringFieldEditor.IS_VALID)) {
-					setPageComplete((Boolean) event.getNewValue());
+					setPageComplete(isValid());
 				}
 			}
 		});
 
 		sfe.setStringValue(defaultString);
-		sfe.setPage(this);
+		// sfe.setPage(this);
 
 		group = new Group(page, SWT.NONE);
 		group.setText("Properties");
@@ -339,7 +384,7 @@ public class DefaultSchemaTypePage extends SchemaReaderConfigurationPage {
 		sc.setContent(page);
 		sc.layout();
 
-		setPageComplete(sfe.isValid());
+//		setPageComplete(sfe.isValid());
 	}
 
 	/**
@@ -354,6 +399,42 @@ public class DefaultSchemaTypePage extends SchemaReaderConfigurationPage {
 	 */
 	public void setSecondRow(String[] secondRow) {
 		this.secondRow = secondRow;
+	}
+
+	/**
+	 * @return true, if the state of properties and type names are valid
+	 */
+	public boolean isValid() {
+		if (sfe.isValid() && isValid && valid && header != null && header.length != 0) {
+			setErrorMessage(null);
+			return true;
+		}
+		else {
+			showMessage();
+			return false;
+		}
+	}
+
+	/**
+	 * Set Message based on not valid condition
+	 */
+	private void showMessage() {
+		if (header == null || header.length == 0)
+			setErrorMessage("The file contains no data");
+		else if (!sfe.isValid())
+			setErrorMessage("Please enter a valid Type Name");
+		else if (!isValid)
+			setErrorMessage("Please enter a valid Property Name");
+		else if (!valid)
+			setErrorMessage("Doublicated property name is not allowed");
+		// else if();
+	}
+
+	/**
+	 * @param value the string to set
+	 */
+	public void setStringFieldEditorValue(String value) {
+		this.sfe.setStringValue(value);
 	}
 
 	/**
