@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.common.instance.model.MutableInstance
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultGroup
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstanceCollection
+import eu.esdihumboldt.hale.common.schema.groovy.DefinitionAccessor
 import eu.esdihumboldt.hale.common.schema.model.Definition
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition
@@ -43,7 +44,6 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag
 import eu.esdihumboldt.util.groovy.builder.BuilderBase
 import eu.esdihumboldt.util.groovy.paths.Path
 import groovy.transform.CompileStatic
-import groovy.transform.TypeCheckingMode
 
 
 /**
@@ -298,18 +298,17 @@ class InstanceBuilder extends BuilderBase {
 	 * @return the definition path
 	 * @throws IllegalStateException if the path cannot be found or if it is not unique
 	 */
-	@CompileStatic(TypeCheckingMode.SKIP)
 	private Path<Definition> findPath(Definition parentDef, QName propertyName) {
 		/*
 		 * 1. try to find exact match (including namespace)
 		 */
-		Path<Definition> result = parentDef.accessor()."$propertyName.localPart"(propertyName.namespaceURI).eval()
+		Path<Definition> result =  new DefinitionAccessor(parentDef).findChildren("$propertyName.localPart", propertyName.namespaceURI).eval()
 
 		if (ignoreNamespace && result == null) {
 			/*
 			 * 2. try w/o namespace
 			 */
-			result = parentDef.accessor()."$propertyName.localPart".eval()
+			result = new DefinitionAccessor(parentDef).findChildren("$propertyName.localPart").eval()
 		}
 
 		if (result == null) {
