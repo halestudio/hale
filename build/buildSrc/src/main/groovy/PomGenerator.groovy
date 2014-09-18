@@ -66,7 +66,7 @@ class PomGenerator {
                 'needsScala': needsScala,
 				'needsGroovy': needsGroovy,
 				'extraRequirements': project.ext.extraRequirements,
-				'buildId': project.buildId
+				'contextQualifier': project.contextQualifier
             ] + additional).toString()
             w << result
         }

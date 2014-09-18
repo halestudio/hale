@@ -80,14 +80,19 @@ def getProductLauncher() {
     return name.toString()
 }
 
-String qualifiedVersion(String version) {
+/**
+ * @return the product version, includes the qualifier for SNAPSHOTS
+ */
+String productVersion(String version) {
+	def qualifier = project.ext.contextQualifier
+	
 	if (version.endsWith('.qualifier')) {
-		// replace qualifier by buildId
-		version[0..-11] + '.' + project.ext.buildId
+		// replace qualifier (omit if RELEASE)
+		version[0..-11] + ((qualifier == 'RELEASE')?(''):('.' + qualifier)) 
 	}
 	else if (version.endsWith('-SNAPSHOT')) {
-		// replace SNAPSHOT by buildId
-		version[0..-10] + '.' + project.ext.buildId
+		// replace SNAPSHOT (omit if RELEASE)
+		version[0..-10] + ((qualifier == 'RELEASE')?(''):('.' + qualifier))
 	}
 	else {
 		// return as-is
@@ -106,7 +111,7 @@ def getPackageName() {
     } else {
         tag = ''
     }
-    return getProductLauncher() + '-' + qualifiedVersion(project.version) + '-' + tag +
+    return getProductLauncher() + '-' + productVersion(project.version) + '-' + tag +
             project.ext.osgiOS + '.' + project.ext.osgiWS + '.' + project.osgiArch
 }
 
@@ -426,7 +431,7 @@ def packageClient(productOutputPath) {
 	            property(name: "buildId", value: getProductLauncher())
 	            property(name: "shortName", value: getProductLauncher())
 	            property(name: "title", value: project.ext.win32InstallerTitle)
-	            property(name: "version", value: qualifiedVersion(project.version))
+	            property(name: "version", value: productVersion(project.version))
 	            property(name: "GUID.UpgradeCode", value: project.ext.win32InstallerUpgradeGUID)
 	            property(name: "GUID.ApplicationShortcut", value: project.ext.win32InstallerShortcutGUID)
 	            if (project.ext.properties.containsKey('tag')) {
