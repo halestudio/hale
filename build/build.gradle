@@ -42,6 +42,16 @@ gradle.taskGraph.whenReady {
 		buildID = dateFormat.format(calendar.getTime())
 	}
 	project.ext.buildId = buildID
+	
+	// determine context qualifier
+	if (project.version.endsWith("-SNAPSHOT")) {
+		// buildID as qualifier
+		project.ext.contextQualifier = buildID
+	}
+	else {
+		// mark as RELEASE
+		project.ext.contextQualifier = 'RELEASE'
+	}
 }
 
 defaultTasks 'commitStage'
