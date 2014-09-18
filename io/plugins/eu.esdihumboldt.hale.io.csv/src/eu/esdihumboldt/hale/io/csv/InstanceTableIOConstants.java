@@ -34,4 +34,9 @@ public class InstanceTableIOConstants {
 	 */
 	public static final String SHEET_INDEX = "sheetIndex";
 
+	/**
+	 * Parameter for XLS/CSV Export
+	 */
+	public static final String EXPORT_TYPE = "selectedExportType";
+
 }

@@ -24,10 +24,7 @@ import java.util.Iterator;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.core.convert.ConversionService;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
-import de.fhg.igd.osgi.util.OsgiUtils.Condition;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.impl.LogProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -35,6 +32,7 @@ import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.test.TestUtil;
 import eu.esdihumboldt.hale.io.csv.reader.CommonSchemaConstants;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVSchemaReader;
 
@@ -45,18 +43,26 @@ import eu.esdihumboldt.hale.io.csv.reader.internal.CSVSchemaReader;
  */
 public class CSVSchemaReaderTest {
 
+//	/**
+//	 * Wait for needed services to be running
+//	 */
+//	@BeforeClass
+//	public static void waitForServices() {
+//		assertTrue("Conversion service not available", OsgiUtils.waitUntil(new Condition() {
+//
+//			@Override
+//			public boolean evaluate() {
+//				return OsgiUtils.getService(ConversionService.class) != null;
+//			}
+//		}, 30));
+//	}
+
 	/**
 	 * Wait for needed services to be running
 	 */
 	@BeforeClass
 	public static void waitForServices() {
-		assertTrue("Conversion service not available", OsgiUtils.waitUntil(new Condition() {
-
-			@Override
-			public boolean evaluate() {
-				return OsgiUtils.getService(ConversionService.class) != null;
-			}
-		}, 30));
+		TestUtil.startConversionService();
 	}
 
 	/**

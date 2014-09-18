@@ -86,6 +86,7 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage implement
 	@Override
 	protected void createContent(Composite page) {
 		page.setLayout(new GridLayout(2, false));
+		// XXX needed?
 		GridData layoutData = new GridData();
 		layoutData.widthHint = 200;
 
@@ -108,6 +109,7 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage implement
 					CSVConfiguration conf = type.getConstraint(CSVConfiguration.class);
 					Boolean skip = conf.skipFirst();
 					button.setSelection(skip);
+					label.getParent().layout();
 				}
 			}
 		});
