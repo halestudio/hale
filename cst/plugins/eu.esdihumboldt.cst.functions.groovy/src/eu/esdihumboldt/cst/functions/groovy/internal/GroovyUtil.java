@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.util.groovy.sandbox.GroovyService;
+import eu.esdihumboldt.util.groovy.sandbox.GroovyService.ResultProcessor;
 import groovy.lang.Binding;
 import groovy.lang.Closure;
 import groovy.lang.Script;
@@ -128,25 +129,35 @@ public class GroovyUtil implements GroovyConstants {
 	 * @throws TransformationException if the target binding does not contain
 	 *             exactly one result after script evaluation
 	 */
-	public static MutableInstance evaluate(Script script, InstanceBuilder builder,
-			TypeDefinition type, GroovyService service) throws TransformationException {
-		service.evaluate(script);
+	public static MutableInstance evaluate(Script script, final InstanceBuilder builder,
+			final TypeDefinition type, GroovyService service) throws TransformationException {
+		try {
+			return service.evaluate(script, new ResultProcessor<MutableInstance>() {
 
-		// get target binding
-		Object result = script.getBinding().getVariable(BINDING_TARGET);
+				@Override
+				public MutableInstance process(Script script, Object returnValue) throws Exception {
+					// get target binding
+					Object result = script.getBinding().getVariable(BINDING_TARGET);
 
-		// collector or closure
-		if (result instanceof TargetCollector) {
-			if (((TargetCollector) result).size() != 1) {
-				throw new TransformationException(
-						"Cell script does not produce exactly one result.");
-			}
-			result = ((TargetCollector) result).toMultiValue(builder, type).get(0);
+					// collector or closure
+					if (result instanceof TargetCollector) {
+						if (((TargetCollector) result).size() != 1) {
+							throw new TransformationException(
+									"Cell script does not produce exactly one result.");
+						}
+						result = ((TargetCollector) result).toMultiValue(builder, type).get(0);
+					}
+					else {
+						result = builder.createInstance(type, (Closure<?>) result);
+					}
+					return (MutableInstance) result;
+				}
+			});
+		} catch (RuntimeException | TransformationException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new TransformationException(e.getMessage(), e);
 		}
-		else {
-			result = builder.createInstance(type, (Closure<?>) result);
-		}
-		return (MutableInstance) result;
 	}
 
 	/**

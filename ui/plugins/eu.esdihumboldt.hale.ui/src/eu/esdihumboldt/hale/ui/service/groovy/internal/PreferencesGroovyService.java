@@ -139,12 +139,12 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 	}
 
 	@Override
-	public Object evaluate(Script script) {
+	public <T> T evaluate(Script script, ResultProcessor<T> processor) throws Exception {
 		try {
-			return super.evaluate(script);
+			return super.evaluate(script, processor);
 		} catch (GroovyRestrictionException e) {
 			if (!askedForAllowance && askForAllowance()) {
-				return super.evaluate(script);
+				return super.evaluate(script, processor);
 			}
 			else {
 				throw e;

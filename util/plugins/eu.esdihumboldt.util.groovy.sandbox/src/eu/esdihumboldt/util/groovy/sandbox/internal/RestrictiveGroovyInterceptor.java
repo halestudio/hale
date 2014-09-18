@@ -208,8 +208,8 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 	}
 
 	@Override
-	public Object onStaticCall(Invoker invoker, Class receiver, String method, Object... args)
-			throws Throwable {
+	public Object onStaticCall(Invoker invoker, @SuppressWarnings("rawtypes") Class receiver,
+			String method, Object... args) throws Throwable {
 		if (isAllowedClass(receiver) || isScriptClass(receiver))
 			return super.onStaticCall(invoker, receiver, method, args);
 		else
@@ -218,7 +218,8 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 	}
 
 	@Override
-	public Object onNewInstance(Invoker invoker, Class receiver, Object... args) throws Throwable {
+	public Object onNewInstance(Invoker invoker, @SuppressWarnings("rawtypes") Class receiver,
+			Object... args) throws Throwable {
 		// classes defined in the script would be okay, sadly it is not possible
 		// to identify those?
 		if (isAllowedClass(receiver) || isScriptClass(receiver))

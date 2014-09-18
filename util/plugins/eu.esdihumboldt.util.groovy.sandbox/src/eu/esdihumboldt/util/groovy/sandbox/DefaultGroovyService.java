@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import javax.annotation.Nullable;
+
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
@@ -42,6 +44,14 @@ public class DefaultGroovyService implements GroovyService {
 	 * options.
 	 */
 	public DefaultGroovyService() {
+		interceptor = createInterceptorFromExtensions();
+	}
+
+	/**
+	 * @return the Groovy interceptor configured with the allowed classes from
+	 *         the extension point.
+	 */
+	public static RestrictiveGroovyInterceptor createInterceptorFromExtensions() {
 		Set<Class<?>> additionalAllowedClasses = new HashSet<>();
 		Set<Class<?>> additionalAllAllowedClasses = new HashSet<>();
 		List<AllowedPrefix> additionalAllowedPackages = new ArrayList<>();
@@ -62,7 +72,7 @@ public class DefaultGroovyService implements GroovyService {
 				additionalAllowedPackages.add(new AllowedPrefix(packageName, allowChildren));
 			}
 		}
-		interceptor = new RestrictiveGroovyInterceptor(additionalAllowedClasses,
+		return new RestrictiveGroovyInterceptor(additionalAllowedClasses,
 				additionalAllAllowedClasses, additionalAllowedPackages);
 	}
 
@@ -86,7 +96,7 @@ public class DefaultGroovyService implements GroovyService {
 	}
 
 	@Override
-	public Object evaluate(Script script) {
+	public <T> T evaluate(Script script, @Nullable ResultProcessor<T> processor) throws Exception {
 		boolean registered = false;
 		if (isRestrictionActive()) {
 			if (!(script instanceof SecureScript)) {
@@ -97,7 +107,13 @@ public class DefaultGroovyService implements GroovyService {
 			registered = true;
 		}
 		try {
-			return script.run();
+			Object returnValue = script.run();
+			if (processor != null) {
+				return processor.process(script, returnValue);
+			}
+			else {
+				return null;
+			}
 		} finally {
 			if (registered)
 				interceptor.unregister();
