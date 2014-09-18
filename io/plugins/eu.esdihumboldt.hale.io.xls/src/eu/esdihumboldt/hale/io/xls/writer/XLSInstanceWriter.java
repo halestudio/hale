@@ -23,6 +23,9 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
+
+import javax.xml.namespace.QName;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -70,6 +73,10 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 		boolean solveNestedProperties = getParameter(
 				InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES).as(Boolean.class);
 
+		// get the parameter to get the type definition
+		QName selectedTypeName = QName.valueOf(getParameter(InstanceTableIOConstants.EXPORT_TYPE)
+				.as(String.class));
+
 		// write xls file
 		if (getContentType().getId().equals("eu.esdihumboldt.hale.io.xls.xls")) {
 			wb = new HSSFWorkbook();
@@ -86,10 +93,16 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 		cellStyle = XLSCellStyles.getNormalStyle(wb, false);
 		headerStyle = XLSCellStyles.getHeaderStyle(wb);
 
-		// get all instances
-		InstanceCollection instances = getInstances();
+		// get all instances of the selected Type
+		InstanceCollection instances = getInstanceCollection(selectedTypeName);
 		Iterator<Instance> instanceIterator = instances.iterator();
-		Instance instance = instanceIterator.next();
+		Instance instance = null;
+		try {
+			instance = instanceIterator.next();
+		} catch (NoSuchElementException e) {
+			reporter.error(new IOMessageImpl("There are no instances for the selected type.", e));
+			return reporter;
+		}
 
 		List<Instance> remainingInstances = new ArrayList<Instance>();
 
@@ -98,6 +111,7 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 		// all instances with equal type definitions are stored in an extra
 		// sheet
 		TypeDefinition definition = instance.getDefinition();
+
 		Sheet sheet = wb.createSheet(definition.getDisplayName());
 		Row headerRow = sheet.createRow(0);
 		int rowNum = 1;

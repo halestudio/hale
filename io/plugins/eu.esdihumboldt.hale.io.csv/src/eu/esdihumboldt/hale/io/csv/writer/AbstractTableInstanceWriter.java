@@ -24,7 +24,10 @@ import javax.xml.namespace.QName;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.TypeFilter;
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Default instance export provider for table files (xls and csv)
@@ -208,6 +211,28 @@ public abstract class AbstractTableInstanceWriter extends AbstractInstanceWriter
 				addProperty(headerRow, row, value, propertyTypeName);
 			}
 		}
+	}
+
+	/**
+	 * Call this to get an instance collection based on the selected Type
+	 * 
+	 * @param typeName the QName of the typeDefinition
+	 * @return The instance collection for the given type, can be empty
+	 *         collection
+	 */
+	protected InstanceCollection getInstanceCollection(QName typeName) {
+		// get all instances of the selected Type
+		InstanceCollection instances = null;
+		TypeDefinition selectedType = getTargetSchema().getType(typeName);
+
+		if (selectedType != null) {
+			instances = getInstances().select(new TypeFilter(selectedType));
+		}
+		// if there is no selected type return random instance
+		else
+			instances = getInstances();
+
+		return instances;
 	}
 
 }
