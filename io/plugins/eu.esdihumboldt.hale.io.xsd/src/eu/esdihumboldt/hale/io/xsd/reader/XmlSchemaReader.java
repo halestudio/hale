@@ -92,6 +92,7 @@ import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlIdUnique;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlMixedFlag;
 import eu.esdihumboldt.hale.io.xsd.internal.Messages;
+import eu.esdihumboldt.hale.io.xsd.model.HasNotInheritableValue;
 import eu.esdihumboldt.hale.io.xsd.model.XmlAttribute;
 import eu.esdihumboldt.hale.io.xsd.model.XmlAttributeGroup;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
@@ -1082,23 +1083,19 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 		if (complexType.isMixed()) {
 			if (type.getName().equals(XmlTypeUtil.NAME_ANY_TYPE)) {
 				// prevent enabling HasValueFlag on anyType
-				type.setConstraint(HasValueFlag.DISABLED);
+//				type.setConstraint(HasValueFlag.DISABLED);
+
+				// anyType may have a simple value like a string etc.
+				type.setConstraint(HasNotInheritableValue.INSTANCE);
 			}
 			else {
 				// XXX how to treat mixed type?
 				// XXX for now represent as a string value
-				type.setConstraint(new HasValueFlag(true) {
-
-					@Override
-					public boolean isInheritable() {
-						/*
-						 * Types inheriting from a mixed don't necessarily are
-						 * mixed themselves.
-						 */
-						return false;
-					}
-
-				});
+				/*
+				 * Types inheriting from a mixed don't necessarily are mixed
+				 * themselves.
+				 */
+				type.setConstraint(HasNotInheritableValue.INSTANCE);
 			}
 			/*
 			 * XXX String binding is a problem as it is inherited to non-mixed
