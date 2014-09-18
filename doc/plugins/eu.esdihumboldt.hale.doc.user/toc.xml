@@ -116,6 +116,8 @@
       </topic>
       <topic href="html/tasks/save_project.html" label="Saving your work">
       </topic>
+      <topic href="html/tasks/transform_cli.html" label="Transformation via the command line">
+      </topic>
       <anchor id="tasks"/>
    </topic>
    <topic label="Reference">
@@ -172,7 +174,5 @@
    <topic href="html/pointofcontact.html" label="Point of Contact">
    </topic>
    <topic href="html/contributors.html" label="Contributors">
-   </topic>
-   <topic href="html/cmdhelp.html" label="Using Command Prompt to Transform">
    </topic>
 </toc>

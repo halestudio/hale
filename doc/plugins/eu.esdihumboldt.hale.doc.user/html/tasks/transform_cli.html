@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Transformation via the command line</title>
+</head>
+<body>
+	<h1>Transformation via the command line</h1>
+	<p>This help topic is about performing transformation of source
+		data using the command line interface provided by HALE. It allows you
+		to execute transformations based on mappings defined in HALE, without
+		having to use HALE as desktop application, for instance to run the
+		transformation automatically on a regular basis or to integrate it
+		with existing infrastructure.</p>
+	<p>The following are the basic things you need to use the command
+		line interface:</p>
+	<ol>
+		<li>An existing <b>HALE project file</b>, e.g. a project archive (.halez).</li>
+		<li>The location of the <b>source data to transform</b>, either an URL or a file name. The data has to match the source schema of the project.</li>
+		<li>Configuration on <b>how and where to write the transformed data</b>.</li>
+	</ol>
+	
+	<h2>General usage</h2>
+	<p>You can run HALE on the command line either using the HALE
+		executable (e.g. HALE.exe) or using Java directly. Depending on the
+		operating system, behavior may be different, but in general it is
+		better to use Java directly (but make sure you have a compatible
+		version of Java installed), especially if you include the task in an
+		automated process. The advantage of using the HALE executable is that
+		it uses the Java version that is shipped with HALE. The following are
+		the commands to show the usage of the command line interface, with the
+		executable or via Java, assuming your working directory is the HALE
+		installation folder:</p>
+	<p>Running the HALE executable</p>
+	<pre class="cli"><code><b>&gt;</b> HALE -nosplash -application hale.transform</code></pre>
+	<p>Running Java</p>
+	<pre class="cli"><code><b>&gt;</b> java -jar plugins\org.eclipse.equinox.launcher_1.3.0.v20140415-2008.jar -application hale.transform</code></pre>
+	<p>
+		Running the command above will show the usage information of the
+		transformation application. Please note that for the Java call, the
+		version of the launcher JAR file may change with new HALE versions.
+		For simplicity, the following examples will use the
+		<code>HALE</code>
+		executable, you can substitute HALE by the call to Java as above.
+	</p>
+	<p class="Note">
+		<b>Note:</b>
+		If using the HALE executable on Windows you will probably want to add the <code>-console</code> parameter as well:
+		<code>HALE -nosplash -console -application hale.transform</code><br>
+		Otherwise you may get no feedback from the application (if you still get no feedback, launch via Java).
+	</p>
+	<h3>Configuration parameters</h3>
+	<p>The following is the usage information provided by the transformation application:</p>
+	<pre><code>HALE -nosplash -application hale.transform
+     -project &lt;file-or-URI-to-HALE-project&gt;
+     -source &lt;file-or-URI-to-source-data&gt;
+         [-providerId &lt;ID-of-source-reader&gt;]
+         [&lt;setting&gt;...]
+     -target &lt;target-file&gt;
+         [-preset &lt;name-of-export-preset&gt;]
+         [-providerId &lt;ID-of-target-writer&gt;]
+         [&lt;setting&gt;...]
+     [options...]
+
+  where setting is
+     -S&lt;setting-name&gt; &lt;value&gt;
+     -X&lt;setting-name&gt; &lt;path-to-XML-file&gt;
+
+  and options are
+     -reportsOut &lt;reports-file&gt;
+     -stacktrace</code></pre>
+	<h4>HALE project file</h4>
+	<pre class="cli"><code>-project &lt;file-or-URI-to-HALE-project&gt;</code></pre>
+	<p>
+		A HALE project contains all the necessary information to perform the
+		transformation from one data model into another. It references the
+		source and target schemas and describes the transformation rules in
+		the aligment.<br> Use the
+		<code>-project</code>
+		parameter to provide the location to your project file, as a relative
+		or absolute path, or as a URI.
+	</p>
+	<p>If you want to share your project, the best option is to save it
+		as a project archive. In the save wizard you can specify to include
+		online resources to make it loadable offline. You can also exlude any
+		source data from the project, which will be ignored for command line
+		transformation anyway.</p>
+	<div>Here are some examples on how you can provide paths to a project file on Windows: 
+		<ul>
+			<li><code>-project C:\Hale-Project\myProject.halez</code> (absolute path)</li>
+			<li><code>-project myProject.halez</code> (relative path)</li>
+			<li><code>-project "C:\Hale-Project\my Project.halez"</code> (quoted absolute path with spaces)</li>
+		</ul>
+	</div>
+	<h4>Source data</h4>
+	<pre class="cli"><code>-source &lt;file-or-URI-to-source-data&gt; [-providerId &lt;ID-of-source-reader&gt;] [&lt;setting&gt;...]</code></pre>
+	<p>The source data you can as well provide as path to a file or a
+		URI. For instance you can provide a URI to a Web Feature Service
+		GetFeature request. Specifying a source data location is mandatory,
+		any source data configured in the HALE project will be ignored for the
+		transformation.</p>
+	<p>HALE will try to guess the file format and how to read it, so in
+		most cases it will be enough to specify the location of the source
+		data. But you also have the possibility to control in detail which
+		HALE data reader to use and how to configure it.</p>
+	<h4>Transformation result</h4>
+	<pre class="cli"><code>-target &lt;target-file&gt; [-preset &lt;name-of-export-preset&gt;] [-providerId &lt;ID-of-target-writer&gt;] [&lt;setting&gt;...]</code></pre>
+	<p>
+		Also you need to specify where to write the transformation result to.
+		Usually this is a file.<br>In addition you need to provide either
+		an export preset or a HALE data writer ID and configuration.
+	</p>
+	<p>
+		The recommended approach is to use an export preset. You can easily
+		define it in HALE with support through the UI, and save it as part of
+		the project. An export preset essentially stores the configuration
+		information on how to save the data. Create it in HALE via <i>File</i>&#8594;<i>Export</i>&#8594;<i>Create
+			custom data export...</i> in the main menu. Configure the export and
+		specify a name for the preset - this name is what you specify to use
+		the preset on the command line.
+	</p>
+	<div>
+		For example, if you created a preset named <code>GML</code> you can use it for the transformation like this:
+		<pre class="cli"><code>-target output.gml -preset GML</code></pre>
+	</div>
+	<p>Even when using a preset, you can still provide setting parameters to override specific behavior.</p>
+
+	
+	
+	<h2>Source Reader and Target Writer</h2>
+	<p>There are several source reader and target writer. To use a specific 
+	source reader you can use -providerId &ltID-of-source-reader&gt, same goes for 
+	instance writer. You can lookup the desired providerId at 
+	<a href ="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user.instanceio/instanceIO/instanceIO.html">InstanceIO</a> help page.</p>
+	<p>As mentioned before there are additional settings that can or have to be used, 
+	Like the username and password for a database. After using the -providerId or 
+	-preset (for target only) append <b>-S&ltsetting-name&gt &ltvalue&gt</b> to 
+	use a setting. The <b>-S</b> flag only applies for String type parameter, like a 
+	path or any String value. However there are some parameter which need another 
+	value type. For example: The use of inline metadata coded as XML. To use 
+	XML code as an input you can use <b>-X</b> like <b>-X&ltsetting-name&gt &ltpath-to-value&gt</b>, 
+	whereas the value is a path to an XML file. Therefore the metadata can not be 
+	passed directly but with the workaround of an XML file.<br/>
+	For more information to a reader or writer and its parameters visit: 
+	<a href ="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user.instanceio/instanceIO/instanceIO.html">InstanceIO</a> 
+	help page and follow the link to your desired provider.</p>
+	
+	<h2>Examples</h2>
+	<p>Here is a full example on how to use the command line interface. There is a 
+	HALE project named <code>toInspire.halez</code> which contains a source schema 
+	and a mapping one of the INSPIRE application schemas. The source data is contained 
+	in the <code>geographicData.shp</code> file. The transformed 
+	data should be stored in <code>inspireData.gml</code> and as GML with an INSPIRE SpatialDataSet as container.</p>
+	<div>
+		Using a previously defined preset <code>SpatialDataSet</code>
+		<pre class="cli"><code><b>&gt;</b> HALE -nosplash -application hale.transform -project toInspire.halez -source geographicData.shp -target inspireData.gml -preset SpatialDataSet</code></pre>
+	</div> 
+	<div>
+		Specifying writer and settings explicitly
+		<pre class="cli"><code><b>&gt;</b> HALE -nosplash -application hale.transform -project toInspire.halez -source geographicData.shp -target inspireData.gml -providerId eu.esdihumboldt.hale.io.inspiregml.writer</code></pre>
+	</div>
+	
+	<!-- related tasks: additional instance reader or writer parameter -->
+	<div>
+		<br> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelt.png">
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user.instanceio/instanceIO/instanceIO.html">Instance IO Reference Page</a>
+		</p>
+	</div>
+</body>
+</html>
