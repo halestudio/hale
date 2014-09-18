@@ -66,8 +66,16 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 	public void preWindowOpen() {
 		IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
 		configurer.setInitialSize(new Point(1280, 1024));
-		configurer.setTitle(Display.getAppName() + " "
-				+ Version.parseVersion(Display.getAppVersion()));
+
+		Version appVersion = Version.parseVersion(Display.getAppVersion());
+
+		// strip RELEASE qualifier
+		if ("RELEASE".equals(appVersion.getQualifier())) {
+			appVersion = new Version(appVersion.getMajor(), appVersion.getMinor(),
+					appVersion.getMicro());
+		}
+
+		configurer.setTitle(Display.getAppName() + " " + appVersion);
 		configurer.setShowCoolBar(true); // this reserves space for action bars
 											// on top.
 		configurer.setShowPerspectiveBar(true); // this reserves space for the
