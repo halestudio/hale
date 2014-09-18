@@ -25,8 +25,12 @@ import com.google.common.collect.ImmutableList;
 
 import eu.esdihumboldt.cst.functions.groovy.GroovyCreate;
 import eu.esdihumboldt.cst.functions.groovy.internal.GroovyUtil;
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Type;
+import eu.esdihumboldt.hale.common.align.transformation.function.ExecutionContext;
+import eu.esdihumboldt.hale.common.align.transformation.report.impl.CellLog;
+import eu.esdihumboldt.hale.common.align.transformation.report.impl.DefaultTransformationReporter;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -93,7 +97,10 @@ public class GroovyCreatePage extends GroovyScriptPage {
 		}
 
 		InstanceBuilder builder = new InstanceBuilder(false);
-		Binding binding = GroovyCreate.createBinding(0, builder);
+		Cell cell = getWizard().getUnfinishedCell();
+		CellLog log = new CellLog(new DefaultTransformationReporter("dummy", false), cell);
+		ExecutionContext context = new DummyExecutionContext(HaleUI.getServiceProvider());
+		Binding binding = GroovyCreate.createBinding(0, cell, builder, log, context);
 
 		GroovyService service = HaleUI.getServiceProvider().getService(GroovyService.class);
 		Script script = null;
