@@ -47,6 +47,7 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.util.groovy.sandbox.GroovyService;
+import eu.esdihumboldt.util.groovy.sandbox.GroovyService.ResultProcessor;
 import groovy.lang.Binding;
 import groovy.lang.Closure;
 import groovy.lang.GroovyShell;
@@ -111,48 +112,62 @@ public class GroovyTransformation extends
 	 * @return the result property value or instance
 	 * @throws TransformationException if the evaluation fails
 	 */
-	public static Object evaluate(Script groovyScript, InstanceBuilder builder,
-			TypeDefinition targetType, GroovyService service) throws TransformationException {
-		Object scriptResult = service.evaluate(groovyScript);
-		Object result = scriptResult;
-		Object target = groovyScript.getBinding().getVariable(BINDING_TARGET);
+	public static Object evaluate(Script groovyScript, final InstanceBuilder builder,
+			final TypeDefinition targetType, GroovyService service) throws TransformationException {
+		try {
+			return service.evaluate(groovyScript, new ResultProcessor<Object>() {
 
-		if (target instanceof TargetCollector) {
-			TargetCollector collector = (TargetCollector) target;
-			if (collector.size() == 0) {
-				// use script result as result
-				result = scriptResult;
-			}
-			else if (collector.size() == 1) {
-				// use single collector value as result
-				// -> instance value is set to return value if applicable
-				result = collector.toMultiValue(builder, targetType).get(0);
-			}
-			else {
-				// use collector MultiValue as result
-				result = collector.toMultiValue(builder, targetType);
-			}
-		}
-		else if (target instanceof Closure<?>) {
-			// legacy way to set target binding
-			if (builder != null) {
-				result = builder.createInstance(targetType, (Closure<?>) target);
-			}
-			else {
-				throw new TransformationException("An instance is not applicable for the target.");
-			}
-		}
-		else if (target != null) {
-			// use target as result
-			result = target;
+				@Override
+				public Object process(Script groovyScript, Object scriptResult) throws Exception {
+					Object result = scriptResult;
+					Object target = groovyScript.getBinding().getVariable(BINDING_TARGET);
+
+					if (target instanceof TargetCollector) {
+						TargetCollector collector = (TargetCollector) target;
+						if (collector.size() == 0) {
+							// use script result as result
+							result = scriptResult;
+						}
+						else if (collector.size() == 1) {
+							// use single collector value as result
+							// -> instance value is set to return value if
+							// applicable
+							result = collector.toMultiValue(builder, targetType).get(0);
+						}
+						else {
+							// use collector MultiValue as result
+							result = collector.toMultiValue(builder, targetType);
+						}
+					}
+					else if (target instanceof Closure<?>) {
+						// legacy way to set target binding
+						if (builder != null) {
+							result = builder.createInstance(targetType, (Closure<?>) target);
+						}
+						else {
+							throw new TransformationException(
+									"An instance is not applicable for the target.");
+						}
+					}
+					else if (target != null) {
+						// use target as result
+						result = target;
+					}
+
+					// use script result as instance value (if possible)
+					if (result instanceof MutableInstance && scriptResult != target) {
+						((MutableInstance) result).setValue(scriptResult);
+					}
+
+					return result;
+				}
+			});
+		} catch (RuntimeException | TransformationException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new TransformationException(e.getMessage(), e);
 		}
 
-		// use script result as instance value (if possible)
-		if (result instanceof MutableInstance && scriptResult != target) {
-			((MutableInstance) result).setValue(scriptResult);
-		}
-
-		return result;
 	}
 
 	/**
