@@ -19,14 +19,12 @@ package eu.esdihumboldt.hale.common.align.io.impl;
 import java.io.IOException;
 import java.io.InputStream;
 
-import eu.esdihumboldt.hale.common.align.io.AlignmentReader;
 import eu.esdihumboldt.hale.common.align.io.EntityResolver;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
-import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 
@@ -36,16 +34,6 @@ import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
  * @author Simon Templer
  */
 public class JaxbAlignmentReader extends AbstractAlignmentReader {
-
-	private MutableAlignment alignment;
-
-	/**
-	 * @see AlignmentReader#getAlignment()
-	 */
-	@Override
-	public MutableAlignment getAlignment() {
-		return alignment;
-	}
 
 	/**
 	 * @see IOProvider#isCancelable()
@@ -59,11 +47,12 @@ public class JaxbAlignmentReader extends AbstractAlignmentReader {
 	 * @see AbstractIOProvider#execute(ProgressIndicator, IOReporter)
 	 */
 	@Override
-	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
+	protected MutableAlignment loadAlignment(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 		progress.begin("Load HALE alignment", ProgressIndicator.UNKNOWN);
 
 		InputStream in = getSource().getInput();
+		MutableAlignment alignment = null;
 		try {
 
 			EntityResolver entityResolver = null;
@@ -75,22 +64,14 @@ public class JaxbAlignmentReader extends AbstractAlignmentReader {
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl(e.getMessage(), e));
 			reporter.setSuccess(false);
-			return reporter;
+			return alignment;
 		} finally {
 			in.close();
 		}
 
 		progress.end();
 		reporter.setSuccess(true);
-		return reporter;
-	}
-
-	/**
-	 * @see AbstractIOProvider#getDefaultTypeName()
-	 */
-	@Override
-	protected String getDefaultTypeName() {
-		return "HALE alignment";
+		return alignment;
 	}
 
 }

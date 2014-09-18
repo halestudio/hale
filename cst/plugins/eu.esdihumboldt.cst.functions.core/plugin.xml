@@ -57,6 +57,12 @@
             function="eu.esdihumboldt.hale.align.create"
             id="eu.esdihumboldt.cst.functions.core.create">
       </typeTransformation>
+      <propertyTransformation
+            class="eu.esdihumboldt.cst.functions.core.Assign"
+            engine="eu.esdihumboldt.align.java"
+            function="eu.esdihumboldt.hale.align.assign.bound"
+            id="eu.esdihumboldt.cst.functions.core.assign">
+      </propertyTransformation>
    </extension>
 
 </plugin>
