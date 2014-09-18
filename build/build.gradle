@@ -49,7 +49,7 @@ gradle.taskGraph.whenReady {
 		project.ext.contextQualifier = buildID
 	}
 	else {
-		// mark as RELEASE
+		// mark as RELEASE (used for product, application bundles only)
 		project.ext.contextQualifier = 'RELEASE'
 	}
 }
