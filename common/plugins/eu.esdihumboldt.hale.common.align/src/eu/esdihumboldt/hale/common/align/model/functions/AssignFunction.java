@@ -29,11 +29,16 @@ public interface AssignFunction {
 	public static final String ID = "eu.esdihumboldt.hale.align.assign";
 
 	/**
+	 * the assign function Id
+	 */
+	public static final String ID_BOUND = "eu.esdihumboldt.hale.align.assign.bound";
+
+	/**
 	 * Name of the parameter specifying the value to assign. See the function
 	 * definition on <code>eu.esdihumboldt.hale.common.align</code>.
 	 */
 	public static final String PARAMETER_VALUE = "value";
-	
+
 	/**
 	 * Name of the anchor source entity, that may be associated with the
 	 * assignment.
