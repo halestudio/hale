@@ -2,40 +2,92 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Using Command Prompt to Transform</title>
+<title>Transformation via the command line</title>
 </head>
 <body>
-	<h1>Using Command Prompt to Transform</h1>
-	<p>
-	This Help section is about performing transformation of source data 
-	using the (windows) command prompt/shell. If using another command 
-	shell, try to use suitable commands.
-	</p>
-	<h2>Preparations</h2>
-	<p>
-	In order to use the command prompt to transform source data into 
-	transformed data, you will need the recent HALE application on 
-	your machine and the following things:
-	</p>
+	<h1>Transformation via the command line</h1>
+	<p>This help topic is about performing transformation of source
+		data using the command line interface provided by HALE. It allows you
+		to execute transformations based on mappings defined in HALE, without
+		having to use HALE as desktop application, for instance to run the
+		transformation automatically on a regular basis or to integrate it
+		with existing infrastructure.</p>
+	<p>The following are the basic things you need to use the command
+		line interface:</p>
 	<ol>
-		<li>An existing HALE Project</li>
-		<li>The source data, that matches the source schema of the project</li>
-		<li>A (path+)filename and file format for the transformed data</li>
-		<li>Additional to the file format you will need a corresponding 
-		target/output provider or a preset.</li>
+		<li>An existing <b>HALE project file</b>, e.g. a project archive (.halez).</li>
+		<li>The location of the <b>source data to transform</b>, either an URL or a file name. The data has to match the source schema of the project.</li>
+		<li>Configuration on <b>how and where to write the transformed data</b>.</li>
 	</ol>
-	<h3>To 1.</h3>
-		<p>You will need a path to an existing HALE Project, either *.halez or *.zip, with 
-		loaded source and target schema and a mapping between them. 
-		These Information are used to perform the transformation.</p>
+	
+	<h2>General usage</h2>
+	<p>You can run HALE on the command line either using the HALE
+		executable (e.g. HALE.exe) or using Java directly. Depending on the
+		operating system, behavior may be different, but in general it is
+		better to use Java directly (but make sure you have a compatible
+		version of Java installed), especially if you include the task in an
+		automated process. The advantage of using the HALE executable is that
+		it uses the Java version that is shipped with HALE. The following are
+		the commands to show the usage of the command line interface, with the
+		executable or via Java, assuming your working directory is the HALE
+		installation folder:</p>
+	<p>Running the HALE executable</p>
+	<pre class="cli"><code><b>&gt;</b> HALE -nosplash -application hale.transform</code></pre>
+	<p>Running Java</p>
+	<pre class="cli"><code><b>&gt;</b> java -jar plugins\org.eclipse.equinox.launcher_1.3.0.v20140415-2008.jar -application hale.transform</code></pre>
+	<p>
+		Running the command above will show the usage information of the
+		transformation application. Please note that for the Java call, the
+		version of the launcher JAR file may change with new HALE versions.
+		For simplicity, the following examples will use the
+		<code>HALE</code>
+		executable, you can substitute HALE by the call to Java as above.
+	</p>
+	<p class="Note">
+		<b>Note:</b>
+		If using the HALE executable on Windows you will probably want to add the <code>-console</code> parameter as well:<br>
+		<code>HALE -nosplash -console -application hale.transform</code><br>
+		Otherwise you may get no feedback from the application (if you still get no feedback, launch via Java).
+	</p>
+	<h3>Configuration parameters</h3>
+	<p>The following is the usage information provided by the transformation application:</p>
+	<pre><code>HALE -nosplash -application hale.transform
+     -project &lt;file-or-URI-to-HALE-project&gt;
+     -source &lt;file-or-URI-to-source-data&gt;
+         [-providerId &lt;ID-of-source-reader&gt;]
+         [&lt;setting&gt;...]
+     -target &lt;target-file&gt;
+         [-preset &lt;name-of-export-preset&gt;]
+         [-providerId &lt;ID-of-target-writer&gt;]
+         [&lt;setting&gt;...]
+     [options...]
+
+  where setting is
+     -S&lt;setting-name&gt; &lt;value%gt;
+         -X&lt;setting-name&gt; &lt;path-to-XML-file&gt;
+
+  and options are
+     -reportsOut &lt;reports-file&gt;
+     -stacktrace</code></pre>
+	<h4>HALE project file</h4>
+	<pre class="cli"><code>-project &lt;file-or-URI-to-HALE-project&gt;</code></pre>
+	<p>
+		A HALE project contains all the necessary information to perform the
+		transformation from one data model into another. It references the
+		source and target schemas and describes the transformation rules in
+		the aligment.<br> Use the
+		<code>-project</code>
+		parameter to provide the location to your project file, as a relative
+		or absolute path, or as a URI.
+	</p>
+	<div>Here some examples on how you can provide paths to a project file on Windows: 
 		<ul>
-			<li>C:\Hale-Project\myProject.halez, for an absolute path.</li>
-			<li>.\myProject.halez, for relative path to project in
-			same folder your command prompt is currently focused and not the 
-			location of the application.</li>
-			<li>If the project name contains any space or interpretable 
-			characters you have to use quotes "C:\Hale-Project\my Project.halez".</li>
+			<li><code>C:\Hale-Project\myProject.halez</code> (absolute path)</li>
+			<li><code>myProject.halez</code> (relative path)</li>
+			<li><code>"C:\Hale-Project\my Project.halez"</code> (quoted absolute path with spaces)</li>
 		</ul>
+	</div>
+	<p>
 	<h3>To 2.</h3>
 		<p>The source data need to be one of the supported file formats. 
 		The same rules as for project path applies to source data path. 
@@ -62,32 +114,6 @@
 	<p>There are standard presets or you can create a custom preset. To 
 	create a custom preset you have to open your HALE project and export a 
 	custom data export.</p>
-	
-	<h2>General use</h2>
-	<div>
-		Open a command prompt and change into the directory where the 
-		HALE.exe is located.
-		<br/>
-		Than type <b>HALE -nosplash -console -application hale.transform</b> 
-		to start the HALE application doing the transformation. <b>-nosplash</b> 
-		suppresses the splash screen that would appear on start. 
-		Use <b>-console</b> if you want to get feedback about the process. 
-		<b>-application hale.transform</b> starts the transformation process.
-		<br/>
-		The hale.transform need some parameter. You will need the preparation 1.-4.
-		<ul>
-			<li>-project &ltfile-or-URI-to-HALE-project&gt</li>
-			<li>-source &ltfile-or-URI-to-source-data&gt</li>
-			<li>[optional] -providerId &ltID-of-source-reader&gt</li>
-			<li>-target &lttarget-file&gt</li>
-			<li>-providerId &ltID-of-target-writer&gt or<br/>-preset &ltname-of-export-preset&gt</li>
-		</ul>
-		Depending on the source reader and target writer you can or have to indicate 
-		additional <b>seetings</b>.<br/>
-		Eventually you can add <b>-stacktrace</b> thereby errors are shown and you 
-		can add <b>-reportsOut &ltreports-file&gt</b> to store infos, warnings and 
-		errors that are reported.
-	</div>
 	
 	<div>
 	<h2>Source Reader and Target Writer</h2>

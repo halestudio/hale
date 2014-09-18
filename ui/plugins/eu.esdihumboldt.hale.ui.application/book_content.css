@@ -119,5 +119,10 @@ pre code {
 	padding: 1em;
 	background-color: #F3F3F3;
 }
+
+pre.cli {
+	word-wrap: break-word;
+}
+
 /* prevent image forcing scrollbars */
 .fit { max-width: 100% }
