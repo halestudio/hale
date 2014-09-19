@@ -177,6 +177,9 @@ class CommandLineBuilder {
 
         @Parameter(names = [ '-l', '--lang' ], description = 'Targeted language: de, en')
         String lang = 'en'
+		
+		@Parameter(names = [ '--no-installer' ], description = 'For Windows builds create a ZIP package instead of an installer')
+		boolean noInstaller = false;
 
         abstract String getType()
 
@@ -190,6 +193,7 @@ class CommandLineBuilder {
             String productName = names[0]
             project.ext.productType = getType()
             project.ext.productName = productName
+			project.ext.noInstaller = noInstaller
             if (os != null) {
                 if (os == 'windows') {
                     project.ext.osgiOS = 'win32'
