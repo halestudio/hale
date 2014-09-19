@@ -182,7 +182,7 @@ class ExecuteTest extends GroovyTestCase {
 	void testUsage() {
 		transform { File output, int code ->
 			// check exit code
-			assert code != 0
+			assert code == 0
 
 			// check if usage was printed
 			def lines = output.readLines()
