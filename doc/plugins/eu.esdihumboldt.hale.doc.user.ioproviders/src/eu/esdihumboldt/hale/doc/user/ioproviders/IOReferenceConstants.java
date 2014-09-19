@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.doc.user.instanceio;
+package eu.esdihumboldt.hale.doc.user.ioproviders;
 
 import org.eclipse.help.ITopic;
 
@@ -22,12 +22,12 @@ import org.eclipse.help.ITopic;
  * 
  * @author Yasmina Kammeyer
  */
-public interface InstanceIOReferenceConstants {
+public interface IOReferenceConstants {
 
 	/**
 	 * The identifier of this plug-in
 	 */
-	public static final String PLUGIN_ID = "eu.esdihumboldt.hale.doc.user.instanceio";
+	public static final String PLUGIN_ID = "eu.esdihumboldt.hale.doc.user.ioproviders";
 
 	/**
 	 * The path referencing the plug-ins root
@@ -37,12 +37,12 @@ public interface InstanceIOReferenceConstants {
 	/**
 	 * The base path of function topics
 	 */
-	public static final String INSTANCEIO_TOPIC_PATH = "instanceIO/";
+	public static final String OVERVIEW_TOPIC_PATH = "overview/";
 
 	/**
 	 * The base path of function topics
 	 */
-	public static final String INSTANCEIO_OVERVIEW_PATH = "instanceIO.html";
+	public static final String IO_PROVIDERS_TOPIC_PATH = "ioproviders/";
 
 	/**
 	 * Empty topics array

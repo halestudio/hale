@@ -13,74 +13,58 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.doc.user.instanceio.toc;
+package eu.esdihumboldt.hale.doc.user.ioproviders.toc;
 
 import org.eclipse.core.expressions.IEvaluationContext;
 import org.eclipse.help.ITopic;
 import org.eclipse.help.IUAElement;
 
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
-import eu.esdihumboldt.hale.doc.user.instanceio.InstanceIOReferenceConstants;
+import eu.esdihumboldt.hale.doc.user.ioproviders.IOReferenceConstants;
 
 /**
  * One topic for reader or writer of instances
  * 
  * @author Yasmina Kammeyer
  */
-public class InstanceIOTopic implements ITopic, InstanceIOReferenceConstants {
+public class IOProviderTopic implements ITopic, IOReferenceConstants {
 
 	private final IOProviderDescriptor readerWriter;
 
 	/**
 	 * @param readerWriter The instance reader or instance writer
 	 */
-	public InstanceIOTopic(IOProviderDescriptor readerWriter) {
+	public IOProviderTopic(IOProviderDescriptor readerWriter) {
 		super();
 
 		this.readerWriter = readerWriter;
 	}
 
-	/**
-	 * @see org.eclipse.help.IUAElement#isEnabled(org.eclipse.core.expressions.IEvaluationContext)
-	 */
 	@Override
 	public boolean isEnabled(IEvaluationContext context) {
 		return true;
 	}
 
-	/**
-	 * @see org.eclipse.help.IUAElement#getChildren()
-	 */
 	@Override
 	public IUAElement[] getChildren() {
 		return getSubtopics();
 	}
 
-	/**
-	 * @see org.eclipse.help.IHelpResource#getHref()
-	 */
 	@Override
 	public String getHref() {
 		// readerWriter.getIdentifier(); <- not allowed due to restrictions
-		return "/" + PLUGIN_ID + "/" + INSTANCEIO_TOPIC_PATH + readerWriter.getIdentifier()
+		return "/" + PLUGIN_ID + "/" + IO_PROVIDERS_TOPIC_PATH + readerWriter.getIdentifier()
 				+ ".html";
 	}
 
-	/**
-	 * @see org.eclipse.help.IHelpResource#getLabel()
-	 */
 	@Override
 	public String getLabel() {
 		// readerWriter.getDisplayName(); <- not allowed due to restrictions
 		return readerWriter.getDisplayName();
 	}
 
-	/**
-	 * @see org.eclipse.help.ITopic#getSubtopics()
-	 */
 	@Override
 	public ITopic[] getSubtopics() {
-		// TODO Auto-generated method stub
 		return NO_TOPICS;
 	}
 

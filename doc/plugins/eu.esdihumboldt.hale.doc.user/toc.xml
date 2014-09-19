@@ -127,6 +127,7 @@
       </topic>
       <topic label="Supported formats">
          <topic label="Import">
+            <anchor id="import-start"/>
             <topic href="html/reference/import/shapefile.html" label="Shapefile (SHP)">
             </topic>
             <topic href="html/reference/import/xml_schema.html" label="XML Schema">
@@ -148,6 +149,7 @@
             <anchor id="import"/>
          </topic>
          <topic label="Export">
+            <anchor id="export-start"/>
             <topic href="html/reference/export/xml_data.html" label="XML">
             </topic>
             <topic href="html/reference/export/gml_data.html" label="GML">

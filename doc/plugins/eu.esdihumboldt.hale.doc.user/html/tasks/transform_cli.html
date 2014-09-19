@@ -27,14 +27,14 @@
 		better to use Java directly (but make sure you have a compatible
 		version of Java installed), especially if you include the task in an
 		automated process. The advantage of using the HALE executable is that
-		it uses the Java version that is shipped with HALE. The following are
-		the commands to show the usage of the command line interface, with the
+		it uses the Java version that is shipped with HALE automatically. The following are
+		the commands to show the usage information of the command line interface, with the
 		executable or via Java, assuming your working directory is the HALE
 		installation folder:</p>
-	<p>Running the HALE executable</p>
-	<pre class="cli"><code><b>&gt;</b> HALE -nosplash -application hale.transform</code></pre>
-	<p>Running Java</p>
-	<pre class="cli"><code><b>&gt;</b> java -jar plugins\org.eclipse.equinox.launcher_1.3.0.v20140415-2008.jar -application hale.transform</code></pre>
+	<p>Running the HALE executable:</p>
+	<pre class="cli"><code><b>&gt;</b> <i>HALE -nosplash</i> -application hale.transform</code></pre>
+	<p>Running Java:</p>
+	<pre class="cli"><code><b>&gt;</b> <i>java -jar plugins\org.eclipse.equinox.launcher_1.3.0.v20140415-2008.jar</i> -application hale.transform</code></pre>
 	<p>
 		Running the command above will show the usage information of the
 		transformation application. Please note that for the Java call, the
@@ -43,11 +43,29 @@
 		<code>HALE</code>
 		executable, you can substitute HALE by the call to Java as above.
 	</p>
+	<p>
+		Please note that every argument before
+		<code>-application</code>
+		and after the executable or JAR file is a <b>launcher argument</b>,
+		every argument after
+		<code>hale.transform</code>
+		is an <b>application argument</b>.
+	</p>
 	<p class="Note">
 		<b>Note:</b>
-		If using the HALE executable on Windows you will probably want to add the <code>-console</code> parameter as well:
+		If using the HALE executable on Windows you will probably want to add the <code>-console</code> launcher argument as well:
 		<code>HALE -nosplash -console -application hale.transform</code><br>
 		Otherwise you may get no feedback from the application (if you still get no feedback, launch via Java).
+	</p>
+	<p class="Note">
+		<b>Note:</b> If using a version of HALE installed with the Windows
+		installer (or generally a version of HALE that has no write access to
+		its directory) it is needed to specify a data location with the
+		additional launcher argument
+		<code>-data</code>
+		, for instance like this:
+		<code>HALE -nosplash -console -data "%APPDATA%\dhpanel\HALE"
+			-application hale.transform</code>
 	</p>
 	<h3>Configuration parameters</h3>
 	<p>The following is the usage information provided by the transformation application:</p>
@@ -90,6 +108,7 @@
 			<li><code>-project C:\Hale-Project\myProject.halez</code> (absolute path)</li>
 			<li><code>-project myProject.halez</code> (relative path)</li>
 			<li><code>-project "C:\Hale-Project\my Project.halez"</code> (quoted absolute path with spaces)</li>
+			<li><code>-project http://hale.igd.fraunhofer.de/templates/resources/files/example-inheritance-hydro/project.halex</code> (URL)</li>
 		</ul>
 	</div>
 	<h4>Source data</h4>
@@ -103,6 +122,16 @@
 		most cases it will be enough to specify the location of the source
 		data. But you also have the possibility to control in detail which
 		HALE data reader to use and how to configure it.</p>
+	<p>
+		Please take a look at the <a
+			href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user.ioproviders/overview/InstanceReader.html">InstanceReader
+			reference</a> to see what kind of providers are available for you and what
+		kind of configuration options they offer. <i>Please note that this
+			reference documentation is generated from the I/O providers present
+			in your local HALE installation (including eventual additional
+			plugins and custom implementations), so it is <b>only available in the
+			local HALE help and not in the online version on the web</b>.</i>
+	</p>
 	<h4>Transformation result</h4>
 	<pre class="cli"><code>-target &lt;target-file&gt; [-preset &lt;name-of-export-preset&gt;] [-providerId &lt;ID-of-target-writer&gt;] [&lt;setting&gt;...]</code></pre>
 	<p>
@@ -124,49 +153,30 @@
 		<pre class="cli"><code>-target output.gml -preset GML</code></pre>
 	</div>
 	<p>Even when using a preset, you can still provide setting parameters to override specific behavior.</p>
-
-	
-	
-	<h2>Source Reader and Target Writer</h2>
-	<p>There are several source reader and target writer. To use a specific 
-	source reader you can use -providerId &ltID-of-source-reader&gt, same goes for 
-	instance writer. You can lookup the desired providerId at 
-	<a href ="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user.instanceio/instanceIO/instanceIO.html">InstanceIO</a> help page.</p>
-	<p>As mentioned before there are additional settings that can or have to be used, 
-	Like the username and password for a database. After using the -providerId or 
-	-preset (for target only) append <b>-S&ltsetting-name&gt &ltvalue&gt</b> to 
-	use a setting. The <b>-S</b> flag only applies for String type parameter, like a 
-	path or any String value. However there are some parameter which need another 
-	value type. For example: The use of inline metadata coded as XML. To use 
-	XML code as an input you can use <b>-X</b> like <b>-X&ltsetting-name&gt &ltpath-to-value&gt</b>, 
-	whereas the value is a path to an XML file. Therefore the metadata can not be 
-	passed directly but with the workaround of an XML file.<br/>
-	For more information to a reader or writer and its parameters visit: 
-	<a href ="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user.instanceio/instanceIO/instanceIO.html">InstanceIO</a> 
-	help page and follow the link to your desired provider.</p>
-	
+	<p>
+		Please take a look at the <a
+			href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user.ioproviders/overview/InstanceWriter.html">InstanceWriter
+			reference</a> to see what kind of providers are available for you and what
+		kind of configuration options they offer. <i>Please note that this
+			reference documentation is generated from the I/O providers present
+			in your local HALE installation (including eventual additional
+			plugins and custom implementations), so it is <b>only available in the
+			local HALE help and not in the online version on the web</b>.</i>
+	</p>	
 	<h2>Examples</h2>
 	<p>Here is a full example on how to use the command line interface. There is a 
 	HALE project named <code>toInspire.halez</code> which contains a source schema 
 	and a mapping one of the INSPIRE application schemas. The source data is contained 
-	in the <code>geographicData.shp</code> file. The transformed 
+	in the <code>geographicData.shp</code> file, which is encoded in <code>UTF-8</code>. The transformed 
 	data should be stored in <code>inspireData.gml</code> and as GML with an INSPIRE SpatialDataSet as container.</p>
 	<div>
 		Using a previously defined preset <code>SpatialDataSet</code>
-		<pre class="cli"><code><b>&gt;</b> HALE -nosplash -application hale.transform -project toInspire.halez -source geographicData.shp -target inspireData.gml -preset SpatialDataSet</code></pre>
+		<pre class="cli"><code><b>&gt;</b> HALE -nosplash -application hale.transform -project toInspire.halez -source geographicData.shp -Scharset UTF-8 -target inspireData.gml -preset SpatialDataSet</code></pre>
 	</div> 
 	<div>
 		Specifying writer and settings explicitly
-		<pre class="cli"><code><b>&gt;</b> HALE -nosplash -application hale.transform -project toInspire.halez -source geographicData.shp -target inspireData.gml -providerId eu.esdihumboldt.hale.io.inspiregml.writer</code></pre>
+		<pre class="cli"><code><b>&gt;</b> HALE -nosplash -application hale.transform -project toInspire.halez -source geographicData.shp -Scharset UTF-8 -target inspireData.gml -providerId eu.esdihumboldt.hale.io.inspiregml.writer -Sinspire.sds.namespace http://gdi-de.org/oid/de.beispiel.namespace -Sinspire.sds.localId 10</code></pre>
 	</div>
 	
-	<!-- related tasks: additional instance reader or writer parameter -->
-	<div>
-		<br> <img
-			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelt.png">
-		<p>
-			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user.instanceio/instanceIO/instanceIO.html">Instance IO Reference Page</a>
-		</p>
-	</div>
 </body>
 </html>
