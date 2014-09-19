@@ -410,13 +410,6 @@
          unpack="false"/>
 
    <plugin
-         id="eu.esdihumboldt.hale.doc.user.instanceio"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="net.sf.ezmorph"
          download-size="0"
          install-size="0"
@@ -425,6 +418,13 @@
 
    <plugin
          id="net.sf.json-lib"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="eu.esdihumboldt.hale.doc.user.ioproviders"
          download-size="0"
          install-size="0"
          version="0.0.0"

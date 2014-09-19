@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.doc.user.instanceio.toc;
+package eu.esdihumboldt.hale.doc.user.ioproviders.toc;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,74 +22,62 @@ import org.eclipse.core.expressions.IEvaluationContext;
 import org.eclipse.help.ITopic;
 import org.eclipse.help.IUAElement;
 
-import eu.esdihumboldt.hale.doc.user.instanceio.InstanceIOReferenceConstants;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
-import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
-import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
+import eu.esdihumboldt.hale.doc.user.ioproviders.IOReferenceConstants;
 
 /**
- * Table of contents for the instance IO reference
+ * Table of contents for I/O provider reference.
  * 
  * @author Yasmina Kammeyer
  */
-public class InstanceIOReferenceTopic implements ITopic, InstanceIOReferenceConstants {
+public class IOReferenceTopic implements ITopic, IOReferenceConstants {
 
 	private ITopic[] readerWriterTopics;
+	private final String name;
+	private final Class<? extends IOProvider> providerClass;
 
 	/**
 	 * Default constructor
+	 * 
+	 * @param name the topic name
+	 * @param providerClass the I/O provider class
 	 */
-	public InstanceIOReferenceTopic() {
+	public IOReferenceTopic(String name, Class<? extends IOProvider> providerClass) {
 		super();
-		// create topics
+		this.name = name;
+		this.providerClass = providerClass;
 	}
 
-	/**
-	 * @see org.eclipse.help.IUAElement#isEnabled(org.eclipse.core.expressions.IEvaluationContext)
-	 */
 	@Override
 	public boolean isEnabled(IEvaluationContext context) {
 		return true;
 	}
 
-	/**
-	 * @see org.eclipse.help.IUAElement#getChildren()
-	 */
 	@Override
 	public IUAElement[] getChildren() {
 		return getSubtopics();
 	}
 
-	/**
-	 * @see org.eclipse.help.IHelpResource#getHref()
-	 */
 	@Override
 	public String getHref() {
-		return "/" + PLUGIN_ID + "/" + INSTANCEIO_TOPIC_PATH + INSTANCEIO_OVERVIEW_PATH;
+		return "/" + PLUGIN_ID + "/" + OVERVIEW_TOPIC_PATH + providerClass.getSimpleName()
+				+ ".html";
 	}
 
-	/**
-	 * @see org.eclipse.help.IHelpResource#getLabel()
-	 */
 	@Override
 	public String getLabel() {
-		return "InstanceIO";
+		return name;
 	}
 
-	/**
-	 * @see org.eclipse.help.ITopic#getSubtopics()
-	 */
 	@Override
 	public ITopic[] getSubtopics() {
 		if (readerWriterTopics == null) {
 			// build subtopic with reader and writer
 			Collection<ITopic> topics = new ArrayList<>();
-			for (IOProviderDescriptor io : HaleIO.getProviderFactories(InstanceReader.class)) {
-				topics.add(new InstanceIOTopic(io));
-			}
-			for (IOProviderDescriptor io : HaleIO.getProviderFactories(InstanceWriter.class)) {
-				topics.add(new InstanceIOTopic(io));
+			for (IOProviderDescriptor io : HaleIO.getProviderFactories(providerClass)) {
+				topics.add(new IOProviderTopic(io));
 			}
 			if (topics.isEmpty()) {
 				readerWriterTopics = NO_TOPICS;
@@ -97,7 +85,13 @@ public class InstanceIOReferenceTopic implements ITopic, InstanceIOReferenceCons
 			else
 				readerWriterTopics = topics.toArray(new ITopic[topics.size()]);
 		}
-		// return NO_TOPICS;
 		return readerWriterTopics;
+	}
+
+	/**
+	 * @return the provider class
+	 */
+	public Class<? extends IOProvider> getProviderClass() {
+		return providerClass;
 	}
 }

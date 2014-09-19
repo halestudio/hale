@@ -13,14 +13,16 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.doc.user.instanceio.toc;
+package eu.esdihumboldt.hale.doc.user.ioproviders.toc;
 
 import org.eclipse.help.AbstractTocProvider;
 import org.eclipse.help.IToc;
 import org.eclipse.help.ITocContribution;
 import org.eclipse.help.internal.toc.HrefUtil;
 
-import eu.esdihumboldt.hale.doc.user.instanceio.InstanceIOReferenceConstants;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.ImportProvider;
+import eu.esdihumboldt.hale.doc.user.ioproviders.IOReferenceConstants;
 import eu.esdihumboldt.hale.doc.util.toc.OneTopicToc;
 
 /**
@@ -29,22 +31,25 @@ import eu.esdihumboldt.hale.doc.util.toc.OneTopicToc;
  * @author Yasmina Kammeyer
  */
 @SuppressWarnings("restriction")
-public class InstanceIOReferenceToc extends AbstractTocProvider implements
-		InstanceIOReferenceConstants {
+public abstract class AbstractIOReferenceToc extends AbstractTocProvider implements
+		IOReferenceConstants {
+
+	/**
+	 * Constant for no extra documents.
+	 */
+	protected static final String[] NO_DOCS = new String[] {};
 
 	/**
 	 * TOC contribution for the function reference.
 	 */
-	public static class InstanceIOTocContribution implements ITocContribution {
-
-		private static final String[] NO_DOCS = new String[] {};
+	public class IOTocContribution implements ITocContribution {
 
 		private final String locale;
 
 		/**
 		 * @param locale the locale
 		 */
-		public InstanceIOTocContribution(String locale) {
+		public IOTocContribution(String locale) {
 			super();
 			this.locale = locale;
 		}
@@ -80,7 +85,8 @@ public class InstanceIOReferenceToc extends AbstractTocProvider implements
 		 */
 		@Override
 		public String getId() {
-			return HrefUtil.normalizeHref(PLUGIN_ID, "instanceIO.xml");
+			return HrefUtil.normalizeHref(PLUGIN_ID, topic.getProviderClass().getSimpleName()
+					+ ".xml");
 		}
 
 		/**
@@ -88,7 +94,7 @@ public class InstanceIOReferenceToc extends AbstractTocProvider implements
 		 */
 		@Override
 		public String getLinkTo() {
-			return PLUGINS_ROOT + "/eu.esdihumboldt.hale.doc.user/toc.xml#reference";
+			return PLUGINS_ROOT + "/eu.esdihumboldt.hale.doc.user/toc.xml#" + anchor;
 		}
 
 		/**
@@ -104,7 +110,7 @@ public class InstanceIOReferenceToc extends AbstractTocProvider implements
 		 */
 		@Override
 		public IToc getToc() {
-			return new OneTopicToc(new InstanceIOReferenceTopic());
+			return new OneTopicToc(topic);
 		}
 
 		/**
@@ -118,18 +124,36 @@ public class InstanceIOReferenceToc extends AbstractTocProvider implements
 	}
 
 	/**
-	 * Default constructor
+	 * The topic.
 	 */
-	public InstanceIOReferenceToc() {
-		super();
-	}
+	protected final IOReferenceTopic topic;
+	/**
+	 * The help TOC anchor.
+	 */
+	protected final String anchor;
 
 	/**
-	 * @see AbstractTocProvider#getTocContributions(java.lang.String)
+	 * Default constructor
+	 * 
+	 * @param topic the I/O reference topic
 	 */
+	public AbstractIOReferenceToc(IOReferenceTopic topic) {
+		super();
+		this.topic = topic;
+
+		// determine anchor
+		Class<? extends IOProvider> providerclass = topic.getProviderClass();
+		if (ImportProvider.class.isAssignableFrom(providerclass)) {
+			anchor = "import-start";
+		}
+		else {
+			anchor = "export-start";
+		}
+	}
+
 	@Override
 	public ITocContribution[] getTocContributions(String locale) {
-		return new ITocContribution[] { new InstanceIOTocContribution(locale) };
+		return new ITocContribution[] { new IOTocContribution(locale) };
 	}
 
 }
