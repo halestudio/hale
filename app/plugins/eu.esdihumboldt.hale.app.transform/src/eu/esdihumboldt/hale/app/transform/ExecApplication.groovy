@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.common.core.io.Value
 import eu.esdihumboldt.hale.common.core.io.impl.ElementValue
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier
 import groovy.transform.CompileStatic
+import groovy.transform.TypeCheckingMode
 
 /**
  * Application that executes a transformation based on a project file.
@@ -50,12 +51,20 @@ class ExecApplication extends AbstractApplication<ExecContext> {
 
 	private Configurable lastConfigurable
 
+	@CompileStatic(TypeCheckingMode.SKIP)
 	@Override
 	protected Object run(ExecContext executionContext, IApplicationContext appContext) {
 		// set system err to system out, otherwise system err messages seem to get lost
 		System.setErr(System.out);
 
-		if (validate(executionContext)) {
+		def args = appContext.arguments[IApplicationContext.APPLICATION_ARGS]
+
+		if (args == null || args.toList().isEmpty()) {
+			// no application parameters provided
+			usage()
+			0 // don't exit with error
+		}
+		else if (validate(executionContext)) {
 			try {
 				new ExecTransformation().run(executionContext)
 			} catch (Exception | AssertionError e) {
@@ -108,7 +117,7 @@ HALE -nosplash -application hale.transform
 
   where setting is
      ${SETTING_PREFIX}<setting-name> <value>
-	 ${XML_SETTING_PREFIX}<setting-name> <path-to-XML-file>
+     ${XML_SETTING_PREFIX}<setting-name> <path-to-XML-file>
 
   and options are
      -reportsOut <reports-file>
