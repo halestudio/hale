@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>$descriptor.displayName</title>
+</head>
+<body>
+	<h1>$descriptor.displayName</h1>
+	<p>
+		This is a reference documentation of the $descriptor.displayName
+		$providerType in HALE. Usually you will not need this reference, as in
+		HALE the configuration of I/O providers is done via the respective
+		wizards for import and export. Where this reference can come in handy
+		is if you want launch a <a
+			href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/transform_cli.html">transformation
+			via the command line</a>.
+	</p>
+
+	<table class="facts">
+		<tr>
+			<th style="text-align: right;">Name</th>
+			<td>$descriptor.displayName</td>
+		</tr>
+		<tr>
+			<th style="text-align: right;">Identifier</th>
+			<td><code>$descriptor.identifier</code></td>
+		</tr>
+		#if ($descriptor.description)
+		<tr>
+			<th style="text-align: right;">Description</th>
+			<td>$descriptor.description</td>
+		</tr>
+		#end
+		<tr>
+			<th style="text-align: right;">Implementation</th>
+			<td>$descriptor.providerType.name</td>
+		</tr>
+	</table>
+	
+	<h2>Configuration parameters</h2>
+	#if ($parameter.size() > 0)
+	<p>Following are the specific configuration parameters for this ${providerType}.</p>
+	<ul>
+		#foreach ($param in $parameter)
+		<li>
+			<div>
+			<h3>$param.displayName
+				#if (!$param.isOptional())
+					(required)
+				#end
+			</h3>
+			#if ($param.getDescription())
+				<p>$param.getDescription()</p>
+			#end
+			
+			<table class="facts">
+				<tr>
+					<th  style="text-align: right;">Setting name</th>
+					<td><code>$param.name</code></td>
+				</tr>
+				#if ($example.get($param.getName()))
+					<tr>
+						<th  style="text-align: right;">Example value</th>
+						<td>$example.get($param.getName())</td>
+					</tr>
+				#end
+				#if ($param.valueDescriptor && $param.valueDescriptor.documentationRepresentation)
+					<tr>
+						<th  style="text-align: right;"></th>
+						<td>$param.valueDescriptor.documentationRepresentation</td>
+					</tr>
+				#end
+				#if ($defaults.get($param.getName()))
+					<tr>
+						<th  style="text-align: right;">Default value</th>
+						<td>$defaults.get($param.getName())</td>
+					</tr>
+				#end
+			</table>
+			</div>
+		</li>
+		#end
+	</ul>
+	#end
+	<p>The following configuration parameters are shared for all I/O providers.</p>
+	<ul>
+		<li>
+			<div>
+				<h3>Content type</h3>
+				<p>During import the content type is tried to be auto-detected,
+					for export this is not possible, but I/O providers may have a
+					default content type associated. If an I/O provider only supports
+					one content type, it's usually not necessary to set this parameter.
+					In any case you can override the content type to use/assume using a
+					content type identifier (see the list of supported content types at
+					the bottom of the page).</p>
+				<table class="facts">
+					<tr>
+						<th style="text-align: right;">Setting name</th>
+						<td><code>contentType</code></td>
+					</tr>
+					<tr>
+						<th  style="text-align: right;">Example value</th>
+						#if(!$descriptor.supportedTypes.isEmpty())
+							<td>$descriptor.supportedTypes.iterator().next().id</td>
+						#else
+							<td>org.eclipse.core.runtime.text</td>
+						#end
+					</tr>
+				</table>
+			</div>
+		</li>
+		<li>
+			<div>
+				<h3>Character encoding</h3>
+				<p>
+					Specifying a character encoding is important especially for the
+					import, so data is interpreted correctly. Not every I/O provider
+					may respect this setting though (e.g. if the encoding is given by
+					the data source).<br />Specify a character encoding by its name
+					as recognised by Java.
+				</p>
+				<table class="facts">
+					<tr>
+						<th style="text-align: right;">Setting name</th>
+						<td><code>charset</code></td>
+					</tr>
+					<tr>
+						<th  style="text-align: right;">Example value</th>
+						<td>UTF-8</td>
+					</tr>
+				</table>
+			</div>
+		</li>
+	</ul>
+	
+	#if(!$descriptor.supportedTypes.isEmpty())
+		<h2>Supported content types</h2>
+		<ul>
+		#foreach ($contentType in $descriptor.supportedTypes)
+			<li>$contentType.name (<code>$contentType.id</code>)</li>
+		#end
+		</ul>
+	#end
+</body>
+</html>

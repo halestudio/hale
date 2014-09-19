@@ -316,7 +316,7 @@
             </parameter>
          </providerParameter>
          <providerParameter
-               optional="false"
+               optional="true"
                valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToFalseParameter">
             <parameter
                   description="If an INSPIRE Dataset ATOM Feed should be created."
