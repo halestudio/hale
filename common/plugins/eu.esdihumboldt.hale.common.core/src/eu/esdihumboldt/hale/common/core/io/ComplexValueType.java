@@ -47,6 +47,6 @@ public interface ComplexValueType<T, C> {
 	/**
 	 * @return the type of the complex value context
 	 */
-	public Class<C> getContextType();
+	public Class<? extends C> getContextType();
 
 }

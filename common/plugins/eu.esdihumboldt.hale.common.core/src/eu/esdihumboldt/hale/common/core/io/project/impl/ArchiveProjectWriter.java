@@ -30,12 +30,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.commons.io.FileUtils;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 
 import com.google.common.io.Files;
 
+import de.fhg.igd.osgi.util.OsgiUtils;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
@@ -48,6 +48,7 @@ import eu.esdihumboldt.hale.common.core.io.impl.SubtaskProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFileInfo;
+import eu.esdihumboldt.hale.common.core.io.project.util.LocationUpdater;
 import eu.esdihumboldt.hale.common.core.io.project.util.XMLAlignmentUpdater;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
@@ -56,6 +57,8 @@ import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
+import eu.esdihumboldt.hale.common.core.service.cleanup.CleanupContext;
+import eu.esdihumboldt.hale.common.core.service.cleanup.CleanupService;
 import eu.esdihumboldt.util.io.IOUtils;
 
 /**
@@ -91,6 +94,10 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		// create temporary directory and project file
 		File tempDir = Files.createTempDir();
 		File baseFile = new File(tempDir, "project.halex");
+
+		// mark the temporary directory for clean-up if the project is closed
+		CleanupService clean = OsgiUtils.getService(CleanupService.class);
+		clean.addTemporaryFiles(CleanupContext.PROJECT, tempDir);
 
 		LocatableOutputSupplier<OutputStream> out = new FileIOSupplier(baseFile);
 		ZipOutputStream zip = new ZipOutputStream(getTarget().getOutput());
@@ -134,18 +141,19 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		IOUtils.zipDirectory(tempDir, zip);
 		zip.close();
 
-		// delete the temp directory
-		try {
-			FileUtils.deleteDirectory(tempDir);
-		} catch (IOException e) {
-			log.debug("Can not delete directory " + tempDir.toString(), e);
-		}
+		// the files may not be deleted now as they will be needed if the
+		// project is saved again w/o loading it first
 
-		// reset all IOConfigurations for further IO operations
+		// update the relative resource locations
+		LocationUpdater updater = new LocationUpdater(getProject(), out.getLocation());
+		// resources are made absolute (else they can't be found afterwards),
+		// e.g. when saving the project again before loading it
+		updater.updateProject(false);
+
+		// reset the save configurations that has been overridden by the XML
+		// project writer
 		getProject().setSaveConfiguration(oldSaveConfig);
-		List<IOConfiguration> resources = getProject().getResources();
-		resources.clear();
-		resources.addAll(oldResources);
+
 		return report;
 	}
 

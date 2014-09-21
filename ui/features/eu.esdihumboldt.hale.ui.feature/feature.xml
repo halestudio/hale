@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.ui.feature"
       label="HALE application feature"
-      version="2.9.0"
+      version="2.9.0.qualifier"
       provider-name="data harmonisation panel"
       plugin="eu.esdihumboldt.hale.ui.application">
 
@@ -410,7 +410,21 @@
          unpack="false"/>
 
    <plugin
-         id="eu.esdihumboldt.hale.doc.user.instanceio"
+         id="net.sf.ezmorph"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="net.sf.json-lib"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="eu.esdihumboldt.hale.doc.user.ioproviders"
          download-size="0"
          install-size="0"
          version="0.0.0"

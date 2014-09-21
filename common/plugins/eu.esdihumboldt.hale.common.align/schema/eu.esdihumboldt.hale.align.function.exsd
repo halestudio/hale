@@ -451,6 +451,7 @@ For references, e.g. to images, use absolute references to plugin and path, led 
          <choice>
             <element ref="parameterEnumeration"/>
             <element ref="parameterBinding"/>
+            <element ref="parameterComplexValue"/>
          </choice>
          <attribute name="name" type="string" use="required">
             <annotation>
@@ -499,6 +500,17 @@ For references, e.g. to images, use absolute references to plugin and path, led 
                   Whether the function parameter value may be specified with a script.
 Defaults to false.
                </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="valueDescriptor" type="string">
+            <annotation>
+               <documentation>
+                  The Extension to define a value and sample data for a parameter.
+Implementation of the ParameterValueDescriptor Interface for the specific paramete.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.core.parameter.ParameterValueDescriptor"/>
+               </appinfo>
             </annotation>
          </attribute>
       </complexType>

@@ -51,8 +51,8 @@ import eu.esdihumboldt.hale.ui.common.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.IOWizardPage;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
-import eu.esdihumboldt.hale.ui.io.util.OpenFileFieldEditor;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
+import eu.esdihumboldt.hale.ui.util.io.OpenFileFieldEditor;
 import eu.esdihumboldt.util.groovy.paths.Path;
 
 /**

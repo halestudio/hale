@@ -47,7 +47,10 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
+import com.google.common.collect.Iterables;
+import com.google.common.util.concurrent.ListenableFuture;
 
+import de.fhg.igd.osgi.util.OsgiUtils;
 import de.fhg.igd.osgi.util.configuration.AbstractDefaultConfigurationService;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
@@ -73,14 +76,18 @@ import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 import eu.esdihumboldt.hale.common.core.io.project.util.LocationUpdater;
+import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
+import eu.esdihumboldt.hale.common.core.service.cleanup.Cleanup;
+import eu.esdihumboldt.hale.common.core.service.cleanup.CleanupContext;
+import eu.esdihumboldt.hale.common.core.service.cleanup.CleanupService;
+import eu.esdihumboldt.hale.common.core.service.cleanup.TemporaryFiles;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.io.project.OpenProjectWizard;
 import eu.esdihumboldt.hale.ui.io.project.SaveProjectWizard;
-import eu.esdihumboldt.hale.ui.io.util.ThreadProgressMonitor;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.project.CacheCallback;
 import eu.esdihumboldt.hale.ui.service.project.ProjectResourcesUtil;
@@ -88,6 +95,7 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.RecentProjectsService;
 import eu.esdihumboldt.hale.ui.service.project.UILocationUpdater;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
+import eu.esdihumboldt.hale.ui.util.io.ThreadProgressMonitor;
 import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 
 /**
@@ -226,6 +234,18 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					return;
 				}
 
+				// check if project reader requires clean-up
+				if (provider instanceof TemporaryFiles || provider instanceof Cleanup) {
+					CleanupService cs = OsgiUtils.getService(CleanupService.class);
+					if (provider instanceof TemporaryFiles) {
+						cs.addTemporaryFiles(CleanupContext.PROJECT, Iterables.toArray(
+								((TemporaryFiles) provider).getTemporaryFiles(), File.class));
+					}
+					if (provider instanceof Cleanup) {
+						cs.addCleaner(CleanupContext.PROJECT, ((Cleanup) provider));
+					}
+				}
+
 				synchronized (ProjectServiceImpl.this) {
 					main = provider.getProject();
 					if (provider.getSource() != null) {
@@ -340,6 +360,9 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					RecentProjectsService rfs = (RecentProjectsService) PlatformUI.getWorkbench()
 							.getService(RecentProjectsService.class);
 					rfs.add(projectFile.getAbsolutePath(), provider.getProject().getName());
+
+					// override the project load content type
+					projectLoadContentType = provider.getContentType();
 				}
 
 				notifyAfterSave();
@@ -419,6 +442,11 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			public void run(IProgressMonitor monitor) throws InvocationTargetException,
 					InterruptedException {
 				ATransaction trans = log.begin("Clean project");
+
+				CleanupService cs = OsgiUtils.getService(CleanupService.class);
+				if (cs != null) {
+					cs.triggerProjectCleanup();
+				}
 
 				monitor.beginTask("Clean project", IProgressMonitor.UNKNOWN);
 				try {
@@ -665,6 +693,25 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				dialog.open();
 			}
 		});
+	}
+
+	@Override
+	public ListenableFuture<IOReport> export(ProjectWriter writer) {
+		IOAdvisor<ProjectWriter> exportAdvisor = new AbstractIOAdvisor<ProjectWriter>() {
+
+			@Override
+			public void prepareProvider(ProjectWriter provider) {
+				saveProjectAdvisor.prepareProvider(provider);
+			}
+
+			@Override
+			public void updateConfiguration(ProjectWriter provider) {
+				saveProjectAdvisor.updateConfiguration(provider);
+			}
+
+		};
+
+		return ProjectResourcesUtil.executeProvider(writer, exportAdvisor, true, null);
 	}
 
 	/**

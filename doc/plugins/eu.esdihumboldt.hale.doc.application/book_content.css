@@ -120,5 +120,41 @@ pre code {
 	background-color: #F3F3F3;
 }
 
+pre.cli {
+	word-wrap: break-word;
+}
+
+/* facts table */
+table.facts {
+	border: none;
+	border-spacing: 0px;
+	margin-top: 10px;
+	margin-left: 20px;
+}
+
+table.facts td,th {
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 6px;
+	padding-bottom: 6px;
+}
+
+table.facts tr > th:first-child,td:first-child {
+  border-radius: 6px 0 0 6px;
+  -moz-border-radius: 6px 0 0 6px;
+}
+
+table.facts tr > td:last-child {
+  border-radius: 0 6px 6px 0; 
+  -moz-border-radius: 0 6px 6px 0;
+}
+
+table.facts tr:nth-child(odd) {
+	background-color:#eee;
+}
+table.facts tr:nth-child(even) {
+	background-color:#fff;
+}
+
 /* prevent image forcing scrollbars */
 .fit { max-width: 100% }

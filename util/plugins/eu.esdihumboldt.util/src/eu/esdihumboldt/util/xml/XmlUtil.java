@@ -18,13 +18,16 @@ package eu.esdihumboldt.util.xml;
 import java.io.StringWriter;
 
 import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
@@ -33,6 +36,20 @@ import org.w3c.dom.Node;
  * @author Simon Templer
  */
 public class XmlUtil {
+
+	/**
+	 * Append an foreign DOM element as child to an existing DOM element.
+	 * 
+	 * @param parent the parent DOM element
+	 * @param child the child element to append to the parent
+	 */
+	public static void append(Element parent, Element child) {
+		Node newChild = parent.getOwnerDocument().adoptNode(child);
+		if (newChild == null) {
+			newChild = parent.getOwnerDocument().importNode(child, true);
+		}
+		parent.appendChild(newChild);
+	}
 
 	/**
 	 * Serialize a node to a String.
@@ -72,12 +89,43 @@ public class XmlUtil {
 	public static void serialize(Source source, StreamResult target, boolean indent,
 			boolean omitXmlDeclaration) throws TransformerException {
 		TransformerFactory factory = TransformerFactory.newInstance();
-		Transformer transformer = factory.newTransformer();
+		Transformer transformer;
+		if (indent) {
+			StreamSource transformation = new StreamSource(
+					XmlUtil.class.getResourceAsStream("prettyprint.xsl"));
+			transformer = factory.newTransformer(transformation);
+			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+		}
+		else {
+			transformer = factory.newTransformer();
+		}
 		transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, omitXmlDeclaration ? "yes"
 				: "no");
-		transformer.setOutputProperty(OutputKeys.INDENT, indent ? "yes" : "no");
+		// transformer.setOutputProperty(OutputKeys.INDENT, indent ? "yes" :
+		// "no");
 		transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-		transformer.setOutputProperty(OutputKeys.MEDIA_TYPE, "text/xml");
+		transformer.setOutputProperty(OutputKeys.MEDIA_TYPE, "application/xml");
+		transformer.transform(source, target);
+	}
+
+	/**
+	 * Transform a Source (XML) to pretty formatted Result.
+	 * 
+	 * @param source the source, e.g. {@link DOMSource}
+	 * @param target the target, e.g. {@link StreamResult}
+	 * @throws TransformerException if the XSLT transformation for pretty
+	 *             printing cannot be loaded
+	 */
+	public static void prettyPrint(Source source, Result target) throws TransformerException {
+
+		StreamSource transformation = new StreamSource(
+				XmlUtil.class.getResourceAsStream("prettyprint.xsl"));
+
+		TransformerFactory factory = TransformerFactory.newInstance();
+		Transformer transformer = factory.newTransformer(transformation);
+
+		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+
 		transformer.transform(source, target);
 	}
 

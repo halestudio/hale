@@ -26,6 +26,7 @@ import de.fhg.igd.eclipse.util.extension.ExtensionUtil;
 import de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.io.ComplexValueJson;
 import eu.esdihumboldt.hale.common.core.io.ComplexValueType;
 
 /**
@@ -71,6 +72,10 @@ public class ComplexValueExtension extends IdentifiableExtension<ComplexValueDef
 	@SuppressWarnings("unchecked")
 	@Override
 	protected ComplexValueDefinition create(String id, IConfigurationElement conf) {
+		if (!conf.getName().equals("complexValue")) {
+			return null;
+		}
+
 		try {
 			String localPart = conf.getAttribute("name");
 			String ns = conf.getAttribute("namespace");
@@ -81,9 +86,16 @@ public class ComplexValueExtension extends IdentifiableExtension<ComplexValueDef
 			else {
 				name = new QName(ns, localPart);
 			}
+
+			Class<ComplexValueJson<?, ?>> converterClass = null;
+			ComplexValueJsonDescriptor cvs = ComplexValueJsonExtension.getInstance().get(id);
+			if (cvs != null) {
+				converterClass = cvs.getConverterClass();
+			}
+
 			ComplexValueDefinition cvd = new ComplexValueDefinition(id, name,
 					(Class<ComplexValueType<?, ?>>) ExtensionUtil.loadClass(conf, "descriptor"),
-					(Class<?>) ExtensionUtil.loadClass(conf, "type"));
+					converterClass, (Class<?>) ExtensionUtil.loadClass(conf, "type"));
 			synchronized (definitions) {
 				definitions.put(name, cvd);
 			}

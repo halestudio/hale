@@ -21,7 +21,7 @@ import java.util.List;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ListMultimap;
 
-import eu.esdihumboldt.hale.common.align.extension.function.Validator;
+import eu.esdihumboldt.hale.common.core.parameter.Validator;
 
 /**
  * Validator that checks whether the value is one of the given values.<br>
@@ -35,7 +35,7 @@ public class EnumerationValidator implements Validator {
 	private List<String> values;
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.align.extension.function.Validator#validate(java.lang.String)
+	 * @see eu.esdihumboldt.hale.common.core.parameter.Validator#validate(java.lang.String)
 	 */
 	@Override
 	public String validate(String value) {
@@ -46,7 +46,7 @@ public class EnumerationValidator implements Validator {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.align.extension.function.Validator#setParameters(com.google.common.collect.ListMultimap)
+	 * @see eu.esdihumboldt.hale.common.core.parameter.Validator#setParameters(com.google.common.collect.ListMultimap)
 	 */
 	@Override
 	public void setParameters(ListMultimap<String, String> parameters) {

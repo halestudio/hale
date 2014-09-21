@@ -10,6 +10,8 @@
       <anchor id="introduction"/>
    </topic>
    <topic label="What&apos;s new?">
+      <topic href="html/new/2_9_0.xhtml" label="New in 2.9">
+      </topic>
       <topic href="html/new/2_8_0.xhtml" label="New in 2.8">
       </topic>
       <topic href="html/new/2_7_0.xhtml" label="New in 2.7">
@@ -116,6 +118,8 @@
       </topic>
       <topic href="html/tasks/save_project.html" label="Saving your work">
       </topic>
+      <topic href="html/tasks/transform_cli.html" label="Transformation via the command line">
+      </topic>
       <anchor id="tasks"/>
       <topic label="Perspective">
          <topic href="html/tasks/perspective/rough_and_detailed.html" label="Rough and Detailed Perspective">
@@ -129,6 +133,7 @@
       </topic>
       <topic label="Supported formats">
          <topic label="Import">
+            <anchor id="import-start"/>
             <topic href="html/reference/import/shapefile.html" label="Shapefile (SHP)">
             </topic>
             <topic href="html/reference/import/xml_schema.html" label="XML Schema">
@@ -145,9 +150,12 @@
             </topic>
             <topic href="html/reference/import/jdbc.html" label="Database">
             </topic>
+            <topic href="html/reference/import/xls.html" label="XLS">
+            </topic>
             <anchor id="import"/>
          </topic>
          <topic label="Export">
+            <anchor id="export-start"/>
             <topic href="html/reference/export/xml_data.html" label="XML">
             </topic>
             <topic href="html/reference/export/gml_data.html" label="GML">
@@ -155,6 +163,8 @@
             <topic href="html/reference/export/citygml_data.html" label="CityGML">
             </topic>
             <topic href="html/reference/export/inspiregml_data.html" label="INSPIRE SpatialDataSet">
+            </topic>
+            <topic href="html/reference/export/xls_data.html" label="XLS">
             </topic>
             <topic href="html/reference/export/html_mapping.html" label="HTML mapping documentation">
                <topic href="html/reference/export/sample_documentation.html" label="Example">
@@ -164,7 +174,6 @@
          </topic>
       </topic>
       <anchor id="reference"/>
-      <anchor id="instanceIO"/>
    </topic>
    <topic label="Tips and Tricks">
       <anchor id="tips"/>
@@ -173,7 +182,5 @@
    <topic href="html/pointofcontact.html" label="Point of Contact">
    </topic>
    <topic href="html/contributors.html" label="Contributors">
-   </topic>
-   <topic href="html/cmdhelp.html" label="Using Command Prompt to Transform">
    </topic>
 </toc>

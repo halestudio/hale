@@ -20,14 +20,18 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 
+import com.google.common.util.concurrent.ListenableFuture;
+
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.project.ComplexConfigurationService;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectDescription;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectWriter;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 import eu.esdihumboldt.hale.common.core.io.project.util.LocationUpdater;
+import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 
 /**
  * The {@link ProjectService} manages information on a HALE project, such as the
@@ -166,6 +170,14 @@ public interface ProjectService {
 	 * Save the project to the given file
 	 */
 	public void saveAs();
+
+	/**
+	 * Export the project
+	 * 
+	 * @param writer the project writer to use for the export
+	 * @return the future yielding the report on success
+	 */
+	public ListenableFuture<IOReport> export(ProjectWriter writer);
 
 	/**
 	 * Returns the location updater for the current project.

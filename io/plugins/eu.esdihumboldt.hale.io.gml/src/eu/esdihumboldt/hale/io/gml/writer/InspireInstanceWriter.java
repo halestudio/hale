@@ -75,12 +75,14 @@ import eu.esdihumboldt.util.groovy.paths.Path;
 public class InspireInstanceWriter extends GmlInstanceWriter {
 
 	/**
-	 * The parameter name for the identifier.localId attribute.
+	 * The parameter name for the identifier.localId attribute, defaults to an
+	 * empty string.
 	 */
 	public static final String PARAM_SPATIAL_DATA_SET_LOCALID = "inspire.sds.localId";
 
 	/**
-	 * The parameter name for the identifier.namespace attribute.
+	 * The parameter name for the identifier.namespace attribute, defaults to an
+	 * empty string.
 	 */
 	public static final String PARAM_SPATIAL_DATA_SET_NAMESPACE = "inspire.sds.namespace";
 
@@ -95,7 +97,8 @@ public class InspireInstanceWriter extends GmlInstanceWriter {
 	public static final String PARAM_SPATIAL_DATA_SET_METADATA_DOM = "inspire.sds.metadata.inline";
 
 	/**
-	 * The parameter specifying whether a dataset feed should be created.
+	 * The parameter specifying whether a dataset feed should be created,
+	 * defaults to <code>false</code>.
 	 */
 	public static final String PARAM_SPATIAL_DATA_SET_CREATE_FEED = "inspire.sds.create_feed";
 

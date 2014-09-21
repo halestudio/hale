@@ -52,6 +52,15 @@ class PomGenerator {
 		Path relativeRoot = path.toPath().relativize(rootPath)
 		def relativePath = relativeRoot.toString()
 		
+		// determine context qualifier to use
+		// default is buildId
+		def contextQualifier = project.buildId
+		// use the RELEASE contextQualifier for application bundles only
+		// that have the same version as the product
+		if (version.startsWith(project.version) && symbolicName.endsWith('.application')) {
+			contextQualifier = project.contextQualifier 
+		}
+		
         new File(path, 'pom.xml').withWriter { w ->
             def template = new GStringTemplateEngine().createTemplate(resolveTemplate(templateName))
             def result = template.make([
@@ -65,7 +74,8 @@ class PomGenerator {
                 'parentRelativePath': relativePath,
                 'needsScala': needsScala,
 				'needsGroovy': needsGroovy,
-				'extraRequirements': project.ext.extraRequirements
+				'extraRequirements': project.ext.extraRequirements,
+				'contextQualifier': contextQualifier
             ] + additional).toString()
             w << result
         }

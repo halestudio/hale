@@ -30,6 +30,7 @@ import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.scripting.Script;
 import eu.esdihumboldt.util.groovy.sandbox.GroovyService;
+import eu.esdihumboldt.util.groovy.sandbox.GroovyService.ResultProcessor;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.MissingPropertyException;
@@ -41,6 +42,9 @@ import groovy.lang.MissingPropertyException;
  */
 public class GroovyScript implements Script {
 
+	/**
+	 * ID that identifies Groovy scripts.
+	 */
 	public static final String GROOVY_SCRIPT_ID = "eu.esdihumboldt.hale.common.scripting.groovy";
 
 	/**
@@ -53,7 +57,15 @@ public class GroovyScript implements Script {
 		GroovyService service = provider.getService(GroovyService.class);
 		Object result;
 		try {
-			result = service.evaluate(service.parseScript(script, binding));
+			result = service.evaluate(service.parseScript(script, binding),
+					new ResultProcessor<Object>() {
+
+						@Override
+						public Object process(groovy.lang.Script script, Object returnValue)
+								throws Exception {
+							return returnValue;
+						}
+					});
 		} catch (Exception e) {
 			throw new ScriptException(e);
 		} catch (Throwable t) {
@@ -166,7 +178,7 @@ public class GroovyScript implements Script {
 		GroovyService service = provider.getService(GroovyService.class);
 
 		try {
-			service.evaluate(service.parseScript(script, binding));
+			service.evaluate(service.parseScript(script, binding), null);
 		} catch (Exception e) {
 			return e.getLocalizedMessage();
 		}

@@ -30,21 +30,4 @@ public class CSVWriterConfigurationPage extends AbstractCSVConfigurationPage<CSV
 	public CSVWriterConfigurationPage() {
 		super("lookup_writer.conf");
 	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage#enable()
-	 */
-	@Override
-	public void enable() {
-		// not required
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.io.csv.ui.AbstractCSVConfigurationPage#updateConfiguration(eu.esdihumboldt.hale.common.core.io.IOProvider)
-	 */
-	@Override
-	public boolean updateConfiguration(CSVLookupWriter writer) {
-		return true;
-	}
-
 }

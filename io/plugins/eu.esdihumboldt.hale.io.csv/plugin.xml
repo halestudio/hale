@@ -72,6 +72,14 @@
                ref="eu.esdihumboldt.hale.io.csv">
          </contentType>
       </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.csv.writer.internal.CSVInstanceWriter"
+            id="eu.esdihumboldt.hale.io.csv.writer.instance"
+            name="CSV file">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.csv">
+         </contentType>
+      </provider>
    </extension>
 
 </plugin>

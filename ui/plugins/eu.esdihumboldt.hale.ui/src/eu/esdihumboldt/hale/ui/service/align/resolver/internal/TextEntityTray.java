@@ -78,7 +78,8 @@ public class TextEntityTray extends DialogTray {
 		String text;
 		if (element != null) {
 			try {
-				JAXBContext jc = JAXBContext.newInstance(JaxbAlignmentIO.ALIGNMENT_CONTEXT);
+				JAXBContext jc = JAXBContext.newInstance(JaxbAlignmentIO.ALIGNMENT_CONTEXT,
+						ObjectFactory.class.getClassLoader());
 				Marshaller m = jc.createMarshaller();
 
 				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

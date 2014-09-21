@@ -18,6 +18,7 @@ package eu.esdihumboldt.cst.functions.groovy;
 import eu.esdihumboldt.cst.functions.core.Create;
 import eu.esdihumboldt.cst.functions.groovy.internal.GroovyUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.transformation.function.ExecutionContext;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
@@ -39,7 +40,7 @@ public class GroovyCreate extends Create implements GroovyConstants {
 			Cell cell) throws TransformationException {
 		InstanceBuilder builder = new InstanceBuilder(false);
 
-		Binding binding = createBinding(index, builder);
+		Binding binding = createBinding(index, cell, builder, log, getExecutionContext());
 
 		try {
 			GroovyService service = getExecutionContext().getService(GroovyService.class);
@@ -56,14 +57,16 @@ public class GroovyCreate extends Create implements GroovyConstants {
 	 * Create the binding for the Groovy Create script function.
 	 * 
 	 * @param index the instance index
+	 * @param typeCell the type cell
 	 * @param builder the instance builder
+	 * @param log the transformation log
+	 * @param context the execution context
 	 * @return the binding
 	 */
-	public static Binding createBinding(int index, InstanceBuilder builder) {
-		Binding binding = new Binding();
-		binding.setVariable(BINDING_TARGET, null);
+	public static Binding createBinding(int index, Cell typeCell, InstanceBuilder builder,
+			TransformationLog log, ExecutionContext context) {
+		Binding binding = GroovyUtil.createBinding(builder, typeCell, typeCell, log, context);
 		binding.setVariable(BINDING_INDEX, index);
-		binding.setVariable(BINDING_BUILDER, builder);
 		return binding;
 	}
 

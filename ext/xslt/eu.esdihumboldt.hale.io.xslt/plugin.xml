@@ -129,9 +129,9 @@
                minOccurrence="1"
                name="select"
                scriptable="false">
-            <functionParameterBinding
+            <parameterBinding
                   class="java.lang.String">
-            </functionParameterBinding>
+            </parameterBinding>
          </functionParameter>
          <sourceProperties>
             <property

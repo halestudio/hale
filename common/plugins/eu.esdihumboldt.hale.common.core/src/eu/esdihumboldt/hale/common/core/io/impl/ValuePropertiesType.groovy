@@ -20,11 +20,13 @@ import org.w3c.dom.Element
 import eu.esdihumboldt.hale.common.core.io.ComplexValueType
 import eu.esdihumboldt.hale.common.core.io.DOMValueUtil
 import eu.esdihumboldt.hale.common.core.io.HaleIO
+import eu.esdihumboldt.hale.common.core.io.JsonValueUtil
 import eu.esdihumboldt.hale.common.core.io.Value
 import eu.esdihumboldt.hale.common.core.io.ValueProperties
 import eu.esdihumboldt.util.groovy.xml.NSDOMBuilder
 import eu.esdihumboldt.util.groovy.xml.NSDOMCategory
 import groovy.transform.CompileStatic
+import groovy.transform.TypeCheckingMode
 
 
 /**
@@ -33,16 +35,16 @@ import groovy.transform.CompileStatic
  * @author Simon Templer
  */
 @CompileStatic
-class ValuePropertiesType implements ComplexValueType<ValueProperties, Void> {
+class ValuePropertiesType extends AbstractGroovyValueJson<ValueProperties, Object> implements ComplexValueType<ValueProperties, Object> {
 
 	@Override
-	ValueProperties fromDOM(Element fragment, Void context) {
+	ValueProperties fromDOM(Element fragment, Object context) {
 		ValueProperties properties = new ValueProperties()
 
 		def entries = NSDOMCategory.children(fragment, HaleIO.NS_HALE_CORE, 'property')
 		for (Element entry in entries) {
 			String key = entry.getAttribute('name')
-			Value value = DOMValueUtil.fromTag(NSDOMCategory.firstChild(entry, HaleIO.NS_HALE_CORE, 'value'))
+			Value value = DOMValueUtil.fromTag(NSDOMCategory.firstChild(entry, HaleIO.NS_HALE_CORE, 'value'), context)
 			properties[key] = value
 		}
 
@@ -67,8 +69,33 @@ class ValuePropertiesType implements ComplexValueType<ValueProperties, Void> {
 		return fragment;
 	}
 
+	@CompileStatic(TypeCheckingMode.SKIP)
 	@Override
-	Class<Void> getContextType() {
-		return Void.class;
+	public ValueProperties fromJson(Object json, Object context) {
+		ValueProperties values = new ValueProperties()
+
+		json.each { name, val ->
+			Value value = JsonValueUtil.fromJson(val, context)
+			values.put(name, value)
+		}
+
+		return values
+	}
+
+	@Override
+	public Object toJson(ValueProperties properties) {
+		Map result = [:]
+		properties.each { String key, Value value ->
+			// ignore null values
+			if (value != null) {
+				result[key] = JsonValueUtil.valueJson(value)
+			}
+		}
+		result
+	}
+
+	@Override
+	Class<Object> getContextType() {
+		return Object.class;
 	}
 }

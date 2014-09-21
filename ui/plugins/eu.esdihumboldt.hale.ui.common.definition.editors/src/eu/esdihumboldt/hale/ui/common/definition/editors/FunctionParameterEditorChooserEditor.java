@@ -17,7 +17,7 @@ package eu.esdihumboldt.hale.ui.common.definition.editors;
 
 import org.eclipse.swt.widgets.Composite;
 
-import eu.esdihumboldt.hale.common.align.extension.function.Validator;
+import eu.esdihumboldt.hale.common.core.parameter.Validator;
 import eu.esdihumboldt.hale.ui.common.Editor;
 
 /**

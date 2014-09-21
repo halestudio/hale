@@ -73,7 +73,6 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.geometry.DefaultGeometryUtil;
 import eu.esdihumboldt.hale.ui.geometry.service.GeometrySchemaServiceListener;
-import eu.esdihumboldt.hale.ui.io.util.ThreadProgressMonitor;
 import eu.esdihumboldt.hale.ui.selection.InstanceSelection;
 import eu.esdihumboldt.hale.ui.selection.impl.DefaultInstanceSelection;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
@@ -81,6 +80,7 @@ import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceListener;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.style.service.StyleService;
 import eu.esdihumboldt.hale.ui.style.service.StyleServiceListener;
+import eu.esdihumboldt.hale.ui.util.io.ThreadProgressMonitor;
 import eu.esdihumboldt.hale.ui.views.styledmap.clip.Clip;
 import eu.esdihumboldt.hale.ui.views.styledmap.clip.ClipPainter;
 import eu.esdihumboldt.hale.ui.views.styledmap.util.CRSConverter;
@@ -390,7 +390,8 @@ public abstract class AbstractInstancePainter extends
 
 		// create the way-point
 		// XXX in abstract method?
-		InstanceWaypoint wp = new InstanceWaypoint(pos, bb, ref, geometries, name);
+		InstanceWaypoint wp = new InstanceWaypoint(pos, bb, ref, geometries,
+				instance.getDefinition(), name);
 
 		// each way-point must have its own marker, as the marker stores the
 		// marker areas

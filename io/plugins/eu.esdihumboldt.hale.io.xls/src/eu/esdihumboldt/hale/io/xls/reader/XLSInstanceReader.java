@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Data Harmonisation Panel
+ * Copyright (c) 2014 Data Harmonisation Panel
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -39,16 +39,11 @@ import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstanceCollection;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
-import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
-import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
-import eu.esdihumboldt.hale.io.csv.PropertyType;
-import eu.esdihumboldt.hale.io.csv.PropertyTypeExtension;
+import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
 import eu.esdihumboldt.hale.io.csv.reader.CommonSchemaConstants;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVInstanceReader;
 import eu.esdihumboldt.hale.io.xls.AnalyseXLSSchemaTable;
-import eu.esdihumboldt.hale.io.xls.XLSConstants;
 
 /**
  * Read source data of xls instance files (based on the
@@ -61,9 +56,15 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 	private DefaultInstanceCollection instances;
 	private PropertyDefinition[] propAr;
 	private TypeDefinition type;
+	private AnalyseXLSSchemaTable analyser;
 
 	// only needed for correct error description
 	private int line = 0;
+
+	/*
+	 * XXX does 0 represent the first sheet?
+	 */
+	private int sheetNum = 0;
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.instance.io.InstanceReader#getInstances()
@@ -91,14 +92,14 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 
 		boolean skipFirst = getParameter(CommonSchemaConstants.PARAM_SKIP_FIRST_LINE).as(
 				Boolean.class);
-		boolean solveNestedProperties = getParameter(XLSConstants.SOLVE_NESTED_PROPERTIES).as(
-				Boolean.class);
+
+		sheetNum = getParameter(InstanceTableIOConstants.SHEET_INDEX).as(int.class, 0);
+
 		instances = new DefaultInstanceCollection(new ArrayList<Instance>());
 
-		AnalyseXLSSchemaTable analyser;
 		try {
-			// analyse the excel sheet to get all information
-			analyser = new AnalyseXLSSchemaTable(getSource().getLocation());
+			// analyze the excel sheet to get all information
+			analyser = new AnalyseXLSSchemaTable(getSource().getLocation(), sheetNum);
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl("Reading the excel sheet has failed", e));
 			return reporter;
@@ -115,7 +116,7 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 		// skip if first row is a header
 		if (!skipFirst) {
 			// otherwise first line is also an instance
-			createInstanceCollection(analyser.getHeader(), reporter, solveNestedProperties);
+			createInstanceCollection(analyser.getHeader(), reporter);
 			line++;
 		}
 
@@ -123,7 +124,7 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 		Iterator<List<String>> allRows = rows.iterator();
 		while (allRows.hasNext()) {
 			List<String> row = allRows.next();
-			createInstanceCollection(row, reporter, solveNestedProperties);
+			createInstanceCollection(row, reporter);
 			line++;
 		}
 
@@ -132,63 +133,27 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 	}
 
 	/**
-	 * create instances see
+	 * create instances, see
 	 * {@link CSVInstanceReader#execute(ProgressIndicator, IOReporter)}
 	 * 
 	 * @param row the current row
 	 * @param reporter the reporter of the writer
+	 * @param solveNestedProperties true, if schema should not be flat <b>(not
+	 *            implemented yet)</b>
 	 **/
 	@SuppressWarnings("javadoc")
-	private void createInstanceCollection(List<String> row, IOReporter reporter,
-			boolean solveNestedProperties) {
+	private void createInstanceCollection(List<String> row, IOReporter reporter) {
 		MutableInstance instance = new DefaultInstance(type, null);
 
 		int propertyIndex = 0;
-		for (int index = 0; index < row.size(); index++) {
-			String part = row.get(index);
+		for (int index = 0; index < propAr.length; index++) {
+
+			String part = null;
+			if (index < row.size())
+				part = row.get(index);
+
 			if (part != null) {
-				PropertyDefinition property = propAr[propertyIndex];
-
-				if (solveNestedProperties) {
-					while (part.startsWith(".")) {
-						PropertyType propertyType;
-						try {
-							propertyType = PropertyTypeExtension.getInstance()
-									.getFactory("java.lang.String").createExtensionObject();
-							part = part.substring(1, part.length());
-							DefaultPropertyDefinition prop;
-							String currentProp;
-							if (part.contains("\n")) {
-								currentProp = part.substring(0, part.indexOf("\n"));
-								prop = new DefaultPropertyDefinition(new QName(currentProp),
-										property.getPropertyType(),
-										propertyType.getTypeDefinition());
-							}
-							else {
-								currentProp = part.substring(0, part.length()).replace("\n", "");
-								prop = new DefaultPropertyDefinition(new QName(currentProp),
-										property.getPropertyType(),
-										propertyType.getTypeDefinition());
-							}
-
-							// set constraints on property
-//							property.setConstraint(NillableFlag.DISABLED); // nillable
-							prop.setConstraint(NillableFlag.ENABLED); // nillable
-																		// FIXME
-							// should be configurable per field (see also
-							// CSVInstanceReader)
-							prop.setConstraint(Cardinality.CC_EXACTLY_ONCE); // cardinality
-							// set metadata for property
-							prop.setLocation(getSource().getLocation());
-
-							property = prop;
-							part = part.replace(currentProp + "\n", "");
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-				}
+				PropertyDefinition property = propAr[index];
 
 				if (part.isEmpty()) {
 					// FIXME make this configurable
@@ -196,7 +161,6 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 				}
 
 				Object value = part;
-
 				if (value != null) {
 					Binding binding = property.getPropertyType().getConstraint(Binding.class);
 					try {
@@ -214,8 +178,8 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 						reporter.error(new IOMessageImpl("Cannot convert property value to {0}", e,
 								line, -1, binding.getBinding().getSimpleName()));
 					}
+					instance.addProperty(property.getName(), value);
 				}
-				instance.addProperty(property.getName(), value);
 				propertyIndex++;
 			}
 		}

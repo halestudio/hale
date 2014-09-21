@@ -69,6 +69,7 @@ import eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.DomainRestrictio
 import eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.EntityType;
 import eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.FormalismType;
 import eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.FunctionType;
+import eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.ObjectFactory;
 import eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.OntologyType;
 import eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.ParamType;
 import eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.PropertyCollectionType;
@@ -139,7 +140,7 @@ public class OmlRdfReader {
 		JAXBContext jc;
 		JAXBElement<AlignmentType> root = null;
 		try {
-			jc = JAXBContext.newInstance(ALIGNMENT_CONTEXT);
+			jc = JAXBContext.newInstance(ALIGNMENT_CONTEXT, ObjectFactory.class.getClassLoader());
 			Unmarshaller u = jc.createUnmarshaller();
 
 			// it will debug problems while unmarshalling

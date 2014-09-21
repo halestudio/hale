@@ -16,7 +16,11 @@
 package eu.esdihumboldt.hale.common.align.io;
 
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AbstractEntityType;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.PropertyType;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.Property;
+import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
@@ -39,5 +43,27 @@ public interface EntityResolver {
 	 * @throws IllegalStateException if resolving the entity is not possible
 	 */
 	public Entity resolve(AbstractEntityType entity, TypeIndex schema, SchemaSpaceID schemaSpace);
+
+	/**
+	 * Resolve a schema property entity based on the given JAXB property.
+	 * 
+	 * @param entity the property
+	 * @param schema the schema
+	 * @param schemaSpace the schema space
+	 * @return the schema property entity
+	 * @throws IllegalStateException if resolving the entity is not possible
+	 */
+	public Property resolveProperty(PropertyType entity, TypeIndex schema, SchemaSpaceID schemaSpace);
+
+	/**
+	 * Resolve a schema type entity based on the given JAXB type.
+	 * 
+	 * @param entity the type
+	 * @param schema the schema
+	 * @param schemaSpace the schema space
+	 * @return the schema type entity
+	 * @throws IllegalStateException if resolving the entity is not possible
+	 */
+	public Type resolveType(ClassType entity, TypeIndex schema, SchemaSpaceID schemaSpace);
 
 }

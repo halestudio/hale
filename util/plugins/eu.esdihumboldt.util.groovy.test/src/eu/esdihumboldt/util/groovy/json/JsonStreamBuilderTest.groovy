@@ -113,6 +113,82 @@ class JsonStreamBuilderTest extends GroovyTestCase {
 		}
 	}
 
+	void testRootArrayObjects() {
+		new StringWriter().with { w ->
+			def json = new JsonStreamBuilder( w, false, true)
+			json {
+				json { a 1 }
+				json { b 2 }
+			}
+
+			assert w.toString() == '[{"a":1},{"b":2}]'
+		}
+	}
+
+	void testRootArrayEmpty() {
+		new StringWriter().with { w ->
+			def json = new JsonStreamBuilder( w, false, true)
+			json {
+			}
+
+			assert w.toString() == '[]'
+		}
+	}
+
+	void testRootArrayObjectsFail() {
+		new StringWriter().with { w ->
+			def json = new JsonStreamBuilder( w, false, true)
+			try {
+				json { a 1 }
+				json { b 2 }
+			} catch (e) {
+				return
+			}
+
+			fail()
+		}
+	}
+
+	void testRootArrayObjectNested() {
+		new StringWriter().with { w ->
+			def json = new JsonStreamBuilder( w, false, true)
+			json {
+				json { json { a 1 } }
+				json {
+					b 2
+					c { d 3 }
+				}
+			}
+
+			assert w.toString() == '[{"a":1},{"b":2,"c":{"d":3}}]'
+		}
+	}
+
+	void testRootArrayObjectNestedPrettyPrint() {
+		new StringWriter().with { w ->
+			def json = new JsonStreamBuilder( w, true, true)
+			json {
+				json { json { a 1 } }
+				json {
+					b 2
+					c { d 3 }
+				}
+			}
+
+			assert w.toString() == '''[
+\t{
+\t\t"a": 1
+\t},
+\t{
+\t\t"b": 2,
+\t\t"c": {
+\t\t\t"d": 3
+\t\t}
+\t}
+]'''
+		}
+	}
+
 	void testBasicObject() {
 		new StringWriter().with { w ->
 			def json = new JsonStreamBuilder( w )

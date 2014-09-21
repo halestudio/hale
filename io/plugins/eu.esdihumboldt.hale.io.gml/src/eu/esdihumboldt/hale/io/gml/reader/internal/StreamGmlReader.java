@@ -64,6 +64,9 @@ public class StreamGmlReader extends AbstractInstanceReader {
 	public StreamGmlReader(boolean restrictToFeatures) {
 		super();
 		this.restrictToFeatures = restrictToFeatures;
+
+		addSupportedParameter(PARAM_IGNORE_ROOT);
+		addSupportedParameter(PARAM_STRICT);
 	}
 
 	/**

@@ -4,11 +4,24 @@ Bundle-Name: XLS Instance Test
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.xls.test
 Bundle-Version: 2.9.0.qualifier
 Bundle-Vendor: Data Harmonisation Panel
-Fragment-Host: eu.esdihumboldt.hale.io.xls;bundle-version="2.8.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: eu.esdihumboldt.cst.test,
+Require-Bundle: org.junit,
+ groovy;bundle-version="2.1.5",
+ eu.esdihumboldt.hale.common.core;bundle-version="2.9.0",
+ eu.esdihumboldt.hale.io.csv;bundle-version="2.9.0",
+ eu.esdihumboldt.hale.common.instance;bundle-version="2.9.0",
+ eu.esdihumboldt.hale.common.schema;bundle-version="2.9.0",
+ eu.esdihumboldt.hale.io.xls;bundle-version="2.9.0",
+ eu.esdihumboldt.hale.common.schema.persist;bundle-version="2.9.0"
+Import-Package: com.google.common.io;version="15.0.0",
+ eu.esdihumboldt.cst.test,
  eu.esdihumboldt.hale.common.instance.groovy,
  eu.esdihumboldt.hale.common.schema.groovy,
- eu.esdihumboldt.hale.common.test
-Require-Bundle: org.junit,
- groovy;bundle-version="2.1.5"
+ eu.esdihumboldt.hale.common.schema.model,
+ eu.esdihumboldt.hale.common.schema.model.constraint.type,
+ eu.esdihumboldt.hale.common.test,
+ eu.esdihumboldt.hale.io.xls.reader,
+ eu.esdihumboldt.hale.io.xls.writer,
+ org.apache.poi.ss.usermodel;version="3.9.0",
+ org.eclipse.core.runtime;version="3.4.0",
+ org.eclipse.core.runtime.content

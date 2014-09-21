@@ -20,6 +20,7 @@ import org.w3c.dom.Element
 import eu.esdihumboldt.hale.common.core.io.ComplexValueType
 import eu.esdihumboldt.hale.common.core.io.DOMValueUtil
 import eu.esdihumboldt.hale.common.core.io.HaleIO
+import eu.esdihumboldt.hale.common.core.io.JsonValueUtil
 import eu.esdihumboldt.hale.common.core.io.Value
 import eu.esdihumboldt.hale.common.core.io.ValueList
 import eu.esdihumboldt.util.groovy.xml.NSDOMBuilder
@@ -33,15 +34,15 @@ import groovy.transform.CompileStatic
  * @author Simon Templer
  */
 @CompileStatic
-class ValueListType implements ComplexValueType<ValueList, Void> {
+class ValueListType extends AbstractGroovyValueJson<ValueList, Object> implements ComplexValueType<ValueList, Object> {
 
 	@Override
-	ValueList fromDOM(Element fragment, Void context) {
+	ValueList fromDOM(Element fragment, Object context) {
 		ValueList list = new ValueList()
 
 		def entries = NSDOMCategory.children(fragment, HaleIO.NS_HALE_CORE, 'entry')
 		for (Element entry in entries) {
-			list << DOMValueUtil.fromTag(entry)
+			list << DOMValueUtil.fromTag(entry, context)
 		}
 
 		return list;
@@ -64,7 +65,26 @@ class ValueListType implements ComplexValueType<ValueList, Void> {
 	}
 
 	@Override
-	Class<Void> getContextType() {
-		return Void.class;
+	public ValueList fromJson(Object json, Object context) {
+		List<Value> values = []
+
+		// expecting an array
+		json.each { entry ->
+			values.add(JsonValueUtil.fromJson(entry, context))
+		}
+
+		return new ValueList(values)
+	}
+
+	@Override
+	public Object toJson(ValueList list) {
+		list.collect { Value value ->
+			JsonValueUtil.valueJson(value)
+		}
+	}
+
+	@Override
+	Class<Object> getContextType() {
+		return Object.class;
 	}
 }

@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Excel File (XLS, XLSX) Import</title>
+</head>
+<body>
+	<h1>Excel File (XLS, XLSX) Import</h1>
+	<p>
+		Excel files can be used as a data source in <i>HALE</i>. The 
+		schema definition can/should also be derived from this excel file, 
+		by using a headline or user input to define attribute names.
+	</p>
+	<!-- sheet explain -->
+	<h2>Schema import</h2>
+	<p>
+		This section provide information to the schema import process.
+	</p>
+	<h3>Sheet and structure of the sheet</h3>
+	<p>
+		The Excel file can have more than one sheet and you are able 
+		to choose your sheet during the import process.
+		The type name is declared using the sheet's name or by user input.
+		Please notice, that the fist entry (headline entry or value) 
+		should be presented in the upper left cell of your chosen sheet.
+	</p>
+	<!-- headline and attribute name -->
+	<h3>Headline and attribute names</h3>
+	<p>
+		A headline defines the attribute names and is located at the top 
+		of each column.
+		It is possible to import a schema without a present 
+		headline, because the attribute names can be declared during 
+		the import process.
+	</p>
+	<!-- associated data type -->
+	<h3>Data Type</h3>
+	<p>
+		It is possible to choose the value's type during the schema import 
+		process. The type is checked against the present values of the 
+		associated column, so you will get a notice if your choice is invalid.
+	</p>
+	<!-- data import -->
+	<h2>Data import</h2>
+	<p>
+		During the source data import and if a headline is present, 
+		the "Skip first line" option should be checked, preventing the 
+		attribute names from being read as actual values.
+		If you are using two different excel files, please make sure
+		that the rows have the same structure. It is recommended to use 
+		the same file.
+	</p>
+	<!-- related concepts -->
+	<div>
+		<br> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelc.png">
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/what_is_schema.html">What is a Schema?</a>
+		</p>
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/what_is_instance.html">What is an Instance?</a>
+		</p>
+	</div>
+	
+	<!-- related tasks -->
+	<div>
+		<br> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelt.png">
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/schema/load_browse_schema.html">Loading and browsing schemas</a>
+		</p>
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/data/working_source_data.html">Working with a source data set</a>
+		</p>
+	</div>
+</body>
+</html>

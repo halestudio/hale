@@ -18,13 +18,11 @@ package eu.esdihumboldt.hale.ui.application;
 import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IMemento;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
@@ -40,7 +38,6 @@ import eu.esdihumboldt.hale.ui.application.workbench.extension.WorkbenchHookExte
 import eu.esdihumboldt.hale.ui.application.workbench.extension.WorkbenchHookFactory;
 import eu.esdihumboldt.hale.ui.launchaction.LaunchAction;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
-import eu.esdihumboldt.hale.ui.service.project.RecentProjectsService;
 import eu.esdihumboldt.hale.ui.service.project.RecentResources;
 
 /**
@@ -51,15 +48,9 @@ import eu.esdihumboldt.hale.ui.service.project.RecentResources;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-@SuppressWarnings("restriction")
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
 	private static final String PERSPECTIVE_ID = "eu.esdihumboldt.hale.ui.application.perspective.default"; //$NON-NLS-1$
-
-	/**
-	 * A tag for the list of recent files in the workbench memento
-	 */
-	private static final String TAG_RECENTFILES = "recentFiles"; //$NON-NLS-1$
 
 	private final OpenDocumentEventProcessor openDocProcessor;
 
@@ -191,24 +182,14 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 		}
 	}
 
-	/**
-	 * @see WorkbenchAdvisor#restoreState(IMemento)
-	 */
 	@Override
 	public IStatus restoreState(IMemento memento) {
-		MultiStatus result = new MultiStatus(PlatformUI.PLUGIN_ID, IStatus.OK,
-				"Restored state", null); //$NON-NLS-1$
-
-		result.add(super.restoreState(memento));
-
-		// restore list of recent files
-		IWorkbench wb = getWorkbenchConfigurer().getWorkbench();
-		RecentProjectsService rfs = (RecentProjectsService) wb
-				.getService(RecentProjectsService.class);
-		IMemento c = memento.getChild(TAG_RECENTFILES);
-		result.add(rfs.restoreState(c));
-
-		return result;
+		/*
+		 * This method seems no longer to be called within the Eclipse RCP 3
+		 * compatibility layer in Eclipse 4. A reason might be that the Eclipse
+		 * IDE application itself does not use/override this method.
+		 */
+		return super.restoreState(memento);
 	}
 
 	@Override
@@ -258,25 +239,6 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 				e.printStackTrace();
 			}
 		}
-	}
-
-	/**
-	 * @see WorkbenchAdvisor#saveState(IMemento)
-	 */
-	@Override
-	public IStatus saveState(IMemento memento) {
-		MultiStatus result = new MultiStatus(PlatformUI.PLUGIN_ID, IStatus.OK, "Saved state", null); //$NON-NLS-1$
-
-		result.add(super.saveState(memento));
-
-		// save list of recent files
-		IWorkbench wb = getWorkbenchConfigurer().getWorkbench();
-		RecentProjectsService rfs = (RecentProjectsService) wb
-				.getService(RecentProjectsService.class);
-		IMemento c = memento.createChild(TAG_RECENTFILES);
-		result.add(rfs.saveState(c));
-
-		return result;
 	}
 
 }

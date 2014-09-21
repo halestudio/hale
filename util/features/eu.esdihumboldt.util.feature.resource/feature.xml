@@ -2,11 +2,15 @@
 <feature
       id="eu.esdihumboldt.util.feature.resource"
       label="HALE resources feature"
-      version="2.9.0">
+      version="2.9.0.qualifier">
 
    <license>
       Licenses of the individual features and plug-ins apply.
    </license>
+
+   <includes
+         id="eu.esdihumboldt.hale.platform.resources"
+         version="0.0.0"/>
 
    <plugin
          id="eu.esdihumboldt.util.resource"
@@ -23,30 +27,9 @@
          unpack="false"/>
 
    <plugin
-         id="eu.esdihumboldt.util.resource.schemas.inspire"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="eu.esdihumboldt.util.resource.schemas.inspire.annex1"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
-
-   <plugin
-         id="eu.esdihumboldt.util.resource.schemas.opengis.net"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.util.resource.w3.org"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
 </feature>

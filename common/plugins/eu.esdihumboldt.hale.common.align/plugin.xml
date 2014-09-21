@@ -105,15 +105,6 @@
             icon="icons/augmentation.gif"
             identifier="eu.esdihumboldt.hale.align.assign"
             name="Assign">
-         <sourceProperties>
-            <property
-                  description="Optional anchor. If set, the assignment only is applicable if the anchor has a value."
-                  label="Anchor"
-                  maxOccurrence="1"
-                  minOccurrence="0"
-                  name="anchor">
-            </property>
-         </sourceProperties>
          <targetProperties>
             <property
                   description="The property a value shall be assigned to"
@@ -197,7 +188,11 @@
                maxOccurrence="1"
                minOccurrence="0"
                name="lookupTable"
-               scriptable="false">
+               scriptable="false"
+               valueDescriptor="eu.esdihumboldt.hale.common.lookup.impl.LookupTableParameterValue">
+            <parameterComplexValue
+                  ref="eu.esdihumboldt.hale.common.lookup.lookuptable">
+            </parameterComplexValue>
          </functionParameter>
       </propertyFunction>
       <propertyFunction
@@ -372,6 +367,42 @@
             </parameterBinding>
          </functionParameter>
       </typeFunction>
+      <propertyFunction
+            category="eu.esdihumboldt.hale.align.general"
+            cellExplanation="eu.esdihumboldt.hale.common.align.model.functions.explanations.AssignExplanation"
+            description="Assigns a value to a target property if a source property is present"
+            icon="icons/augmentation.gif"
+            identifier="eu.esdihumboldt.hale.align.assign.bound"
+            name="Assign (Bound)">
+         <sourceProperties>
+            <property
+                  description="If set, the assignment only is applicable if the anchor has a value."
+                  label="Anchor"
+                  maxOccurrence="1"
+                  minOccurrence="1"
+                  name="anchor">
+            </property>
+         </sourceProperties>
+         <targetProperties>
+            <property
+                  description="The property a value shall be assigned to"
+                  maxOccurrence="1"
+                  minOccurrence="1">
+               <valueCondition
+                     allowAugmented="false">
+               </valueCondition>
+            </property>
+         </targetProperties>
+         <functionParameter
+               description="The value to be assigned."
+               label="Value"
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="value"
+               scriptable="true">
+            <parameterBinding></parameterBinding>
+         </functionParameter>
+      </propertyFunction>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.align.engine">

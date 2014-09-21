@@ -16,8 +16,14 @@
 
 package eu.esdihumboldt.hale.common.core.internal;
 
+import java.util.Hashtable;
+
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
+
+import eu.esdihumboldt.hale.common.core.service.cleanup.CleanupService;
+import eu.esdihumboldt.hale.common.core.service.cleanup.impl.CleanupServiceImpl;
 
 /**
  * Bundle activator
@@ -28,13 +34,22 @@ import org.osgi.framework.BundleContext;
  */
 public class CoreBundle implements BundleActivator {
 
+	private BundleContext context;
+
+	private CleanupServiceImpl cleanupService;
+
+	private ServiceRegistration<CleanupService> cleanupServiceRef;
+
 	/**
 	 * @see BundleActivator#start(BundleContext)
 	 */
 	@Override
 	public void start(BundleContext context) throws Exception {
-		// stuff to allow class loading FIXME move to osgi utils
 		this.context = context;
+
+		cleanupService = new CleanupServiceImpl();
+		cleanupServiceRef = context.registerService(CleanupService.class, cleanupService,
+				new Hashtable<String, Object>());
 	}
 
 	/**
@@ -42,10 +57,12 @@ public class CoreBundle implements BundleActivator {
 	 */
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		// do nothing
-	}
+		cleanupServiceRef.unregister();
+		cleanupService.triggerApplicationCleanup();
+		cleanupService = null;
 
-	private BundleContext context;
+		this.context = null;
+	}
 
 	/**
 	 * @return the context

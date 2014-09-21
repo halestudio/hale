@@ -215,6 +215,8 @@ public abstract class XmlTypeUtil {
 		}
 
 		// only enable hasValue if the type is not anyType
+		// anyType has special treatment in
+		// XmlSchemaReader.setMetadataAndConstraints(TypeDefinition, ...)
 		boolean hasValue = !typeName.getLocalPart().equals("anyType");
 
 		if (ty != null) {
@@ -223,7 +225,9 @@ public abstract class XmlTypeUtil {
 			// set binding
 			type.setConstraint(Binding.get(ty.getBinding()));
 			// simple type flag
-			type.setConstraint(HasValueFlag.get(hasValue));
+			if (hasValue) {
+				type.setConstraint(HasValueFlag.ENABLED);
+			}
 			// not abstract
 			type.setConstraint(AbstractFlag.DISABLED);
 			// not mappable

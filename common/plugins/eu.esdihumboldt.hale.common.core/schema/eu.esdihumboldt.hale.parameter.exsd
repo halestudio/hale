@@ -61,6 +61,17 @@
                </documentation>
             </annotation>
          </attribute>
+         <attribute name="valueDescriptor" type="string">
+            <annotation>
+               <documentation>
+                  The Extension to define a default value and sample data for a parameter.
+Implementation of the ParameterValueDescriptor Interface for the specific parameter.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.core.parameter.ParameterValueDescriptor"/>
+               </appinfo>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
@@ -74,6 +85,7 @@
          <choice>
             <element ref="parameterEnumeration"/>
             <element ref="parameterBinding"/>
+            <element ref="parameterComplexValue"/>
          </choice>
          <attribute name="name" type="string" use="required">
             <annotation>
@@ -195,6 +207,21 @@
                <documentation>
                   
                </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="parameterComplexValue">
+      <complexType>
+         <attribute name="ref" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Reference to the complex value definition that represents the parameter type.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.io.complexvalue/complexValue/@id"/>
+               </appinfo>
             </annotation>
          </attribute>
       </complexType>

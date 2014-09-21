@@ -92,6 +92,15 @@ def listVersions() {
 		vers[ver] += "(feature) $name"
 	}
 	
+	for (p in products) {
+		def product = new groovy.util.XmlSlurper().parse(p)
+		def name = product.@uid as String
+		def ver = product.@version as String
+		if (vers[ver] == null)
+			vers[ver] = []
+		vers[ver] += '(product) ' + name
+	}
+	
 	for (k in vers.sort()) {
 		println k.key + ':'
 		for (v in k.value) {
@@ -144,7 +153,7 @@ def updateFeatures(o, n) {
 def updateProducts(o, n) {
 	println 'Replacing product versions ...'
 	println products.iterator().toList().size() + ' product files found.'
-	ant.replace(dir: '.', summary: true, token: "version=\"${o}\"", value: "version=\"${n}\"") {
+	ant.replace(dir: '.', summary: true, token: "version=\"${o}", value: "version=\"${n}") {
 		patternset(refid: 'products')
 	}
 	ant.replace(dir: '.', summary: true, token: "Version ${o}", value: "Version ${n}") {

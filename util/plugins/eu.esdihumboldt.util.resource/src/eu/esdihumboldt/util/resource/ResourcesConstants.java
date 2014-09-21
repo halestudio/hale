@@ -28,4 +28,9 @@ public interface ResourcesConstants {
 	 */
 	public static final String RESOURCE_TYPE_XML_SCHEMA = "xmlSchema";
 
+	/**
+	 * ID of the predefined XML Code List resource type
+	 */
+	public static final String RESOURCE_TYPE_XML_CODELIST = "xmlCodeList";
+
 }

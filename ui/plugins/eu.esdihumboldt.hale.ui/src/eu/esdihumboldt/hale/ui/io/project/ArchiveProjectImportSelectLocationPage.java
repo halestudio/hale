@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Composite;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectImport;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
-import eu.esdihumboldt.hale.ui.io.util.KeyStrokeValidatingDirectoryFieldEditor;
+import eu.esdihumboldt.hale.ui.util.io.KeyStrokeValidatingDirectoryFieldEditor;
 
 /**
  * Selection page for the directory to chose where the project archive should be

@@ -15,11 +15,13 @@
 
 package eu.esdihumboldt.hale.common.core.io.extension;
 
+import javax.annotation.Nullable;
 import javax.xml.namespace.QName;
 
 import org.w3c.dom.Element;
 
 import de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension.Identifiable;
+import eu.esdihumboldt.hale.common.core.io.ComplexValueJson;
 import eu.esdihumboldt.hale.common.core.io.ComplexValueType;
 
 /**
@@ -38,26 +40,45 @@ public class ComplexValueDefinition implements Identifiable, ComplexValueType<Ob
 
 	private final Class<?> valueType;
 
+	@SuppressWarnings("rawtypes")
+	private final ComplexValueJson jsonConverter;
+
 	/**
 	 * Create a complex value definition.
 	 * 
 	 * @param id complex value identifier
 	 * @param elementName the qualified name of the XML element representing the
 	 *            complex value
-	 * @param descriptor the complex value descriptor
+	 * @param descriptor the complex value descriptor class
+	 * @param jsonConverter the complex value JSON converter class, may be
+	 *            <code>null</code>
 	 * @param valueType the complex value type
 	 * @throws IllegalAccessException if access to the default constructor of
 	 *             the descriptor class is not allowed
 	 * @throws InstantiationException if the descriptor object cannot be created
 	 */
+	@SuppressWarnings("rawtypes")
 	public ComplexValueDefinition(String id, QName elementName,
-			Class<ComplexValueType<?, ?>> descriptor, Class<?> valueType)
+			Class<ComplexValueType<?, ?>> descriptor,
+			@Nullable Class<ComplexValueJson<?, ?>> jsonConverter, Class<?> valueType)
 			throws InstantiationException, IllegalAccessException {
 		super();
 		this.id = id;
 		this.elementName = elementName;
 		this.valueType = valueType;
 		this.descriptor = descriptor.newInstance();
+		if (jsonConverter == null) {
+			// test if descriptor is also applicable as JSON converter
+			if (this.descriptor instanceof ComplexValueJson) {
+				this.jsonConverter = (ComplexValueJson) this.descriptor;
+			}
+			else {
+				this.jsonConverter = null;
+			}
+		}
+		else {
+			this.jsonConverter = jsonConverter.newInstance();
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -98,9 +119,19 @@ public class ComplexValueDefinition implements Identifiable, ComplexValueType<Ob
 		return valueType;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Class<Object> getContextType() {
-		return Object.class;
+	public Class<? extends Object> getContextType() {
+		return descriptor.getContextType();
+	}
+
+	/**
+	 * @return the JSON converter or <code>null</code>
+	 */
+	@SuppressWarnings("unchecked")
+	public @Nullable
+	ComplexValueJson<Object, Object> getJsonConverter() {
+		return jsonConverter;
 	}
 
 }

@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Tests" uid="eu.esdihumboldt.hale.tests" id="eu.esdihumboldt.hale.common.test.Tests" application="de.fhg.igd.equinox.test" version="2.9.0" useFeatures="false" includeLaunchers="true">
+<product name="Tests" uid="eu.esdihumboldt.hale.tests" id="eu.esdihumboldt.hale.common.test.Tests" application="de.fhg.igd.equinox.test" version="2.9.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
       <programArgs>-consoleLog -clean</programArgs>
-      <vmArgs>-Xmx800M</vmArgs>
+      <vmArgs>-Xmx1200M
+-XX:MaxPermSize=256m</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
@@ -117,6 +118,8 @@
       <plugin id="eu.esdihumboldt.hale.io.gml.test"/>
       <plugin id="eu.esdihumboldt.hale.io.html.svg"/>
       <plugin id="eu.esdihumboldt.hale.io.html.svg.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.json"/>
+      <plugin id="eu.esdihumboldt.hale.io.json.test"/>
       <plugin id="eu.esdihumboldt.hale.io.oml"/>
       <plugin id="eu.esdihumboldt.hale.io.oml.test"/>
       <plugin id="eu.esdihumboldt.hale.io.shp"/>
@@ -207,6 +210,8 @@
       <plugin id="org.apache.xmlbeans"/>
       <plugin id="org.codehaus.castor.core"/>
       <plugin id="org.codehaus.castor.xml"/>
+      <plugin id="org.codehaus.jackson"/>
+      <plugin id="org.codehaus.jackson.mapper"/>
       <plugin id="org.codehaus.jettison.jettison"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>

@@ -165,6 +165,10 @@
             namespace="http://www.esdi-humboldt.eu/hale/core"
             type="javax.xml.namespace.QName">
       </complexValue>
+      <complexValueJson
+            class="eu.esdihumboldt.hale.common.core.io.impl.TextTypeJson"
+            ref="eu.esdihumboldt.hale.common.core.text">
+      </complexValueJson>
    </extension>
    <extension
          point="eu.esdihumboldt.util.groovy.meta">

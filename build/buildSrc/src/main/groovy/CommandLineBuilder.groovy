@@ -35,6 +35,7 @@ class CommandLineBuilder {
 	private def product = new ProductFileCommand()
     private def clean = new CleanCommand()
     private def help = new HelpCommand()
+	private def site = new SiteCommand()
     private Project project
 
     CommandLineBuilder(Project project) {
@@ -51,6 +52,7 @@ class CommandLineBuilder {
 		jc.addCommand('product', product)
         jc.addCommand('clean', clean)
         jc.addCommand('help', help)
+		jc.addCommand('site', site)
 
         try {
             jc.parse(args.split(' '))
@@ -86,6 +88,8 @@ class CommandLineBuilder {
             deployArtifacts.run()
         } else if (cmd == 'product') {
 			product.run()
+		} else if (cmd == 'site') {
+			site.run()
         } else {
             commitStage.run()
         }
@@ -133,6 +137,30 @@ class CommandLineBuilder {
             }
         }
     }
+	
+	@Parameters(commandDescription = 'Build an Eclipse Update Site / p2 repository')
+	class SiteCommand {
+		@Override
+		String getType() {
+			return 'site'
+		}
+		
+		@Parameter(description = '[<featureId>]')
+		List<String> featureIds = []
+
+		def run() {
+			if (featureIds.size() > 1) {
+				help.commands = [ getType() ]
+				help.run()
+				return
+			}
+			
+			if (featureIds && featureIds[0]) {
+				project.ext.customUpdateSiteFeatureId = featureIds[0]
+			}
+			project.tasks['cli'].dependsOn(project.tasks['packageUpdateSite'])
+		}
+	}
 
     abstract class ProductCommand {
         @Parameter(description = '<product name>')
@@ -149,6 +177,9 @@ class CommandLineBuilder {
 
         @Parameter(names = [ '-l', '--lang' ], description = 'Targeted language: de, en')
         String lang = 'en'
+		
+		@Parameter(names = [ '--no-installer' ], description = 'For Windows builds create a ZIP package instead of an installer')
+		boolean noInstaller = false;
 
         abstract String getType()
 
@@ -162,6 +193,7 @@ class CommandLineBuilder {
             String productName = names[0]
             project.ext.productType = getType()
             project.ext.productName = productName
+			project.ext.noInstaller = noInstaller
             if (os != null) {
                 if (os == 'windows') {
                     project.ext.osgiOS = 'win32'

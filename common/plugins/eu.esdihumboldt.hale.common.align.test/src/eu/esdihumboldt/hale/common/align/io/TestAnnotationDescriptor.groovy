@@ -61,6 +61,6 @@ class TestAnnotationDescriptor implements AnnotationDescriptor<TestAnnotation> {
 
 	@Override
 	public Class<Void> getContextType() {
-		Void.class
+		Void
 	}
 }

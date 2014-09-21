@@ -23,6 +23,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.PlatformUI;
 
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
+
 import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactoryCollection;
 import de.fhg.igd.eclipse.util.extension.FactoryFilter;
 import de.fhg.igd.slf4jplus.ALogger;
@@ -41,8 +44,8 @@ import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.ui.HaleUI;
-import eu.esdihumboldt.hale.ui.io.util.ThreadProgressMonitor;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
+import eu.esdihumboldt.hale.ui.util.io.ThreadProgressMonitor;
 
 /**
  * Utility methods for loading project resources.
@@ -164,10 +167,12 @@ public class ProjectResourcesUtil {
 	 * @param publishReport if the report should be published
 	 * @param cacheCallback call back that is notified on cache changes for the
 	 *            I/O provider, may be <code>null</code>
+	 * @return the future yielding the report on success
 	 */
-	public static void executeProvider(final IOProvider provider,
+	public static ListenableFuture<IOReport> executeProvider(final IOProvider provider,
 			@SuppressWarnings("rawtypes") final IOAdvisor advisor, final boolean publishReport,
 			final CacheCallback cacheCallback) {
+		final SettableFuture<IOReport> result = SettableFuture.create();
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 
 			@SuppressWarnings("unchecked")
@@ -208,9 +213,11 @@ public class ProjectResourcesUtil {
 					// handle results
 					if (report.isSuccess()) {
 						advisor.handleResults(provider);
+						result.set(report);
 					}
 				} catch (Exception e) {
 					log.error("Error executing an I/O provider.", e);
+					result.setException(e);
 				} finally {
 					trans.end();
 				}
@@ -220,7 +227,8 @@ public class ProjectResourcesUtil {
 			ThreadProgressMonitor.runWithProgressDialog(op, provider.isCancelable());
 		} catch (Exception e) {
 			log.error("Error executing an I/O provider.", e);
+			result.setException(e);
 		}
+		return result;
 	}
-
 }

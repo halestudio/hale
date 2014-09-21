@@ -37,7 +37,6 @@ import eu.esdihumboldt.hale.common.align.io.impl.internal.TypeBean;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
-import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
@@ -87,8 +86,6 @@ public class OmlReader extends AbstractAlignmentReader implements AlignmentReade
 
 	private final Map<String, FunctionTranslator> map = new HashMap<String, FunctionTranslator>();
 
-	private MutableAlignment mutableAlignment = null;
-
 	/**
 	 * Default Constructor
 	 */
@@ -124,28 +121,13 @@ public class OmlReader extends AbstractAlignmentReader implements AlignmentReade
 				new IdentifierTranslator());
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.IOProvider#isCancelable()
-	 */
 	@Override
 	public boolean isCancelable() {
 		return false;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.io.AlignmentReader#getAlignment()
-	 */
 	@Override
-	public MutableAlignment getAlignment() {
-		return mutableAlignment;
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#execute(eu.esdihumboldt.hale.common.core.io.ProgressIndicator,
-	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
-	 */
-	@Override
-	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
+	protected MutableAlignment loadAlignment(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 
 		try {
@@ -204,23 +186,20 @@ public class OmlReader extends AbstractAlignmentReader implements AlignmentReade
 			// set the cells for the alignment after the all iterations
 			align.setCells(cells);
 
-			mutableAlignment = align.createAlignment(reporter, getSourceSchema(),
+			MutableAlignment mutableAlignment = align.createAlignment(reporter, getSourceSchema(),
 					getTargetSchema(), new PathUpdate(null, null));
 
 			reporter.setSuccess(true);
 
-			return reporter;
+			return mutableAlignment;
 		} finally {
 			progress.end();
 		}
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#getDefaultTypeName()
-	 */
 	@Override
 	protected String getDefaultTypeName() {
-		return null;
+		return "HALE 2.1 Alignment";
 	}
 
 	private void setBeanLists(IEntity entity, List<NamedEntityBean> list, TypeIndex schema) {

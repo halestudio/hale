@@ -118,7 +118,7 @@ public class PointGraphicEditor implements Editor<PointSymbolizer> {
 		supportLabel.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
 		supportLabel.setText("\n" + Messages.PointGraphicEditor_SupportedTypes);
 
-		supportText = new Text(page, SWT.BORDER | SWT.READ_ONLY);
+		supportText = new Text(page, SWT.SINGLE | SWT.BORDER | SWT.READ_ONLY);
 		supportText.setLayoutData(new GridData(SWT.BOTTOM, SWT.CENTER, false, false, 2, 1));
 		supportText.setText(new HashSet<String>(Arrays.asList(ImageIO.getReaderMIMETypes()))
 				.toString());

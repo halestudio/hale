@@ -30,14 +30,26 @@ import org.eclipse.jface.viewers.TreeColumnViewerLabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.TreeEditor;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 
 import com.google.common.collect.Iterables;
 
@@ -48,6 +60,7 @@ import eu.esdihumboldt.hale.ui.util.viewer.PairLabelProvider;
 import eu.esdihumboldt.hale.ui.views.data.InstanceViewer;
 import eu.esdihumboldt.hale.ui.views.data.internal.MetadataActionProvider;
 import eu.esdihumboldt.hale.ui.views.data.internal.SimpleInstanceSelectionProvider;
+import eu.esdihumboldt.util.Pair;
 
 /**
  * Instance explorer
@@ -63,6 +76,8 @@ public class InstanceExplorer implements InstanceViewer {
 	private Composite main;
 
 	private TreeViewer viewer;
+
+	private TreeEditor editor;
 
 	private List<Instance> instances = new ArrayList<Instance>();
 
@@ -127,7 +142,8 @@ public class InstanceExplorer implements InstanceViewer {
 		// add value column
 		column = new TreeViewerColumn(viewer, SWT.LEFT);
 		column.getColumn().setText("Value");
-		column.setLabelProvider(new InstanceValueLabelProvider());
+		final InstanceValueLabelProvider instanceLabelProvider = new InstanceValueLabelProvider();
+		column.setLabelProvider(instanceLabelProvider);
 		// new PairLabelProvider(false, new LabelProvider())));
 
 		ColumnViewerToolTipSupport.enableFor(viewer);
@@ -136,6 +152,77 @@ public class InstanceExplorer implements InstanceViewer {
 
 		MetadataActionProvider maep = new MetadataExploreActionProvider(viewer);
 		maep.setup();
+
+		// Add an editor for copying instance values
+		editor = new TreeEditor(viewer.getTree());
+		editor.horizontalAlignment = SWT.RIGHT;
+		viewer.getTree().addMouseMoveListener(new MouseMoveListener() {
+
+			@Override
+			public void mouseMove(MouseEvent e) {
+				final ViewerCell cell = viewer.getCell(new Point(e.x, e.y));
+
+				// Selected cell changed?
+				if (cell == null || editor.getItem() != cell.getItem()
+						|| editor.getColumn() != cell.getColumnIndex()) {
+					// Clean up any previous editor control
+					Control oldEditor = editor.getEditor();
+					if (oldEditor != null) {
+						oldEditor.dispose();
+						editor.setEditor(null, null, 0);
+					}
+				}
+
+				// No valid selected cell
+				if (cell == null || cell.getColumnIndex() == 0) {
+					return;
+				}
+
+				// cell didn't change
+				if ((editor.getItem() == cell.getItem() && editor.getColumn() == cell
+						.getColumnIndex())) {
+					return;
+				}
+
+				// determine instance value
+				Object value = ((Pair<?, ?>) cell.getViewerRow().getTreePath().getLastSegment())
+						.getSecond();
+				if (value instanceof Instance) {
+					value = ((Instance) value).getValue();
+				}
+
+				// copy button
+				if (value != null) {
+					final String textValue = value.toString();
+
+					if (!textValue.isEmpty()) { // empty string invalid for
+												// clipboard
+						Button button = new Button(viewer.getTree(), SWT.PUSH | SWT.FLAT);
+						button.setImage(PlatformUI.getWorkbench().getSharedImages()
+								.getImage(ISharedImages.IMG_TOOL_COPY));
+						button.setToolTipText("Copy string value");
+						button.addSelectionListener(new SelectionAdapter() {
+
+							@Override
+							public void widgetSelected(SelectionEvent e) {
+								// copy content to clipboard
+								Clipboard clipBoard = new Clipboard(Display.getCurrent());
+								clipBoard.setContents(new Object[] { textValue },
+										new Transfer[] { TextTransfer.getInstance() });
+								clipBoard.dispose();
+							}
+						});
+
+						// calculate editor size
+						Point size = button.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+						editor.minimumHeight = size.y;
+						editor.minimumWidth = size.x;
+
+						editor.setEditor(button, (TreeItem) cell.getItem(), cell.getColumnIndex());
+					}
+				}
+			}
+		});
 
 		update();
 	}

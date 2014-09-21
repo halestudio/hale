@@ -54,6 +54,34 @@ class ValuePropertiesTypeTest extends GroovyTestCase {
 	}
 
 	/**
+	 * Test if a simple properties map containing only simple values is the same
+	 * when converted to JSON and back again.
+	 */
+	@Test
+	public void testValuePropertiesJson() {
+		ValueProperties vp = new ValueProperties()
+		Value name = 'Peter' as Value
+		vp['name'] = name
+		vp['city'] = 'Petersburg' as Value
+		vp['age'] = 2.power(5) as Value
+
+		// converter
+		ValuePropertiesType vpt = new ValuePropertiesType()
+
+		// convert to Json
+		StringWriter writer = new StringWriter()
+		vpt.toJson(vp, writer);
+
+		System.out.println(writer.toString())
+
+		// convert back
+		ValueProperties conv = vpt.fromJson(new StringReader(writer.toString()), null)
+
+		assertNotNull conv
+		assertEquals vp, conv
+	}
+
+	/**
 	 * Test if a properties map containing simple value and a value list is the same
 	 * when converted to DOM and back again.
 	 */
@@ -73,6 +101,38 @@ class ValuePropertiesTypeTest extends GroovyTestCase {
 
 		// convert back
 		ValueProperties conv = HaleIO.getComplexValue(fragment, ValueProperties, null)
+
+		assertNotNull conv
+		assertEquals 3, conv.keySet().size()
+		assertEquals vp, conv
+	}
+
+	/**
+	 * Test if a properties map containing simple value and a value list is the same
+	 * when converted to DOM and back again.
+	 */
+	@Test
+	public void testValuePropertiesListJson() {
+		ValueProperties vp = new ValueProperties()
+		vp['name'] = 'Peter' as Value
+		vp['cities'] = new ValueList([
+			'Petersburg' as Value,
+			'Katzenhirn' as Value,
+			'Munich' as Value
+		]) as Value
+		vp['age'] = 42 - 10 as Value
+
+		// converter
+		ValuePropertiesType vpt = new ValuePropertiesType()
+
+		// convert to Json
+		StringWriter writer = new StringWriter()
+		vpt.toJson(vp, writer);
+
+		System.out.println(writer.toString())
+
+		// convert back
+		ValueProperties conv = vpt.fromJson(new StringReader(writer.toString()), null)
 
 		assertNotNull conv
 		assertEquals 3, conv.keySet().size()

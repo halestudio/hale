@@ -21,6 +21,8 @@ import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AbstractEnti
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.PropertyType;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.Property;
+import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
@@ -61,30 +63,13 @@ public class DefaultEntityResolver implements EntityResolver {
 		throw new IllegalArgumentException("Illegal type of entity");
 	}
 
-	/**
-	 * Resolve a schema property entity based on the given JAXB property.
-	 * 
-	 * @param entity the property
-	 * @param schema the schema
-	 * @param schemaSpace the schema space
-	 * @return the schema property entity
-	 * @throws IllegalStateException if resolving the entity is not possible
-	 */
-	protected Entity resolveProperty(PropertyType entity, TypeIndex schema,
-			SchemaSpaceID schemaSpace) {
+	@Override
+	public Property resolveProperty(PropertyType entity, TypeIndex schema, SchemaSpaceID schemaSpace) {
 		return new DefaultProperty(JaxbToEntityDefinition.convert(entity, schema, schemaSpace));
 	}
 
-	/**
-	 * Resolve a schema type entity based on the given JAXB type.
-	 * 
-	 * @param entity the type
-	 * @param schema the schema
-	 * @param schemaSpace the schema space
-	 * @return the schema type entity
-	 * @throws IllegalStateException if resolving the entity is not possible
-	 */
-	protected Entity resolveType(ClassType entity, TypeIndex schema, SchemaSpaceID schemaSpace) {
+	@Override
+	public Type resolveType(ClassType entity, TypeIndex schema, SchemaSpaceID schemaSpace) {
 		return new DefaultType(JaxbToEntityDefinition.convert(entity, schema, schemaSpace));
 	}
 

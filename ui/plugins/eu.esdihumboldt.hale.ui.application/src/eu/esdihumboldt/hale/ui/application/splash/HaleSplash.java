@@ -116,12 +116,22 @@ public class HaleSplash extends EclipseSplashHandler {
 			// get application version
 			Version haleVersion = Version.parseVersion(Display.getAppVersion());
 
+			// classified as development version if a qualifier other than
+			// RELEASE is given
+			boolean developmentVersion = haleVersion.getQualifier() != null
+					&& !haleVersion.getQualifier().isEmpty()
+					&& !haleVersion.getQualifier().equals("RELEASE");
+
+			if (!developmentVersion) {
+				// strip qualifier for RELEASE
+				haleVersion = new Version(haleVersion.getMajor(), haleVersion.getMinor(),
+						haleVersion.getMicro());
+			}
+
 			StringBuilder versionStringBuilder = new StringBuilder();
 			versionStringBuilder.append(haleVersion.toString());
 
-			if (haleVersion.getQualifier() != null && !haleVersion.getQualifier().isEmpty()) {
-				// classified as development version
-
+			if (developmentVersion) {
 				// add revision information
 				String revisionString = product.getProperty(PRODUCT_PROP_REVISION);
 				if (revisionString != null && !revisionString.isEmpty()) {

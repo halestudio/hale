@@ -109,7 +109,8 @@ public class JaxbAlignmentIO {
 			PathUpdate pathUpdate) throws Exception {
 		AlignmentType align = new AlignmentToJaxb(alignment, reporter, pathUpdate).convert();
 
-		JAXBContext jc = JAXBContext.newInstance(ALIGNMENT_CONTEXT);
+		JAXBContext jc = JAXBContext.newInstance(ALIGNMENT_CONTEXT,
+				ObjectFactory.class.getClassLoader());
 		Marshaller m = jc.createMarshaller();
 
 		// Indent output

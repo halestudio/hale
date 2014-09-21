@@ -20,7 +20,7 @@ import net.jcip.annotations.Immutable;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import eu.esdihumboldt.hale.common.core.extension.AbstractCommonParameter;
+import eu.esdihumboldt.hale.common.core.parameter.AbstractCommonParameter;
 
 /**
  * Abstract definition of a parameter based on an {@link IConfigurationElement}

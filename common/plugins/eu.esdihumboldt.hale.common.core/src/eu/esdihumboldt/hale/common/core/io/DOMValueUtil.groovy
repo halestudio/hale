@@ -37,7 +37,7 @@ class DOMValueUtil {
 	 * @param element the tag
 	 * @return
 	 */
-	static Value fromTag(Element element) {
+	static Value fromTag(Element element, Object context = null) {
 		if (element.hasAttribute('value')) {
 			// string representation
 			// may be an empty string
@@ -45,7 +45,7 @@ class DOMValueUtil {
 		}
 		else {
 			// DOM representation
-			return new ElementValue(NSDOMCategory.firstChild(element), null)
+			return new ElementValue(NSDOMCategory.firstChild(element), context)
 		}
 	}
 

@@ -87,7 +87,8 @@ public class DOMProjectHelper {
 
 	private static Element jaxbElementToDOM(Object jaxbElement) {
 		try {
-			JAXBContext jc = JAXBContext.newInstance(JaxbProjectIO.PROJECT_CONTEXT);
+			JAXBContext jc = JAXBContext.newInstance(JaxbProjectIO.PROJECT_CONTEXT,
+					ObjectFactory.class.getClassLoader());
 			Marshaller m = jc.createMarshaller();
 
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

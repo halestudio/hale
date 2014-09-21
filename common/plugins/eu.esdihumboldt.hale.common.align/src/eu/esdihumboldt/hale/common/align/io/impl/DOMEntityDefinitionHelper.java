@@ -25,13 +25,16 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import eu.esdihumboldt.hale.common.align.io.EntityResolver;
+import eu.esdihumboldt.hale.common.align.io.impl.dummy.DummyEntityResolver;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.EntityDefinitionToJaxb;
-import eu.esdihumboldt.hale.common.align.io.impl.internal.JaxbToEntityDefinition;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ObjectFactory;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.PropertyType;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
@@ -44,6 +47,8 @@ public class DOMEntityDefinitionHelper {
 
 	private DOMEntityDefinitionHelper() {
 	}
+
+	private static final EntityResolver resolver = new DummyEntityResolver();
 
 	/**
 	 * Converts the given element to a type entity definition. If any exception
@@ -66,7 +71,7 @@ public class DOMEntityDefinitionHelper {
 
 			JAXBElement<ClassType> root = u.unmarshal(fragment, ClassType.class);
 
-			return JaxbToEntityDefinition.convert(root.getValue(), types, ssid);
+			return resolver.resolveType(root.getValue(), types, ssid).getDefinition();
 		} catch (Exception e) {
 			return null;
 		}
@@ -93,7 +98,7 @@ public class DOMEntityDefinitionHelper {
 
 			JAXBElement<PropertyType> root = u.unmarshal(fragment, PropertyType.class);
 
-			return JaxbToEntityDefinition.convert(root.getValue(), types, ssid);
+			return resolver.resolveProperty(root.getValue(), types, ssid).getDefinition();
 		} catch (Exception e) {
 			return null;
 		}
@@ -110,6 +115,17 @@ public class DOMEntityDefinitionHelper {
 	}
 
 	/**
+	 * Converts the given type entity definition to an element.
+	 * 
+	 * @param type the type entity definition to convert
+	 * @return the created element or <code>null</code> in case of an exception
+	 */
+	public static Element typeToDOM(TypeDefinition type) {
+		TypeEntityDefinition entity = new TypeEntityDefinition(type, null, null);
+		return typeToDOM(entity);
+	}
+
+	/**
 	 * Converts the given property entity definition to an element.
 	 * 
 	 * @param property the property entity definition to convert
@@ -121,7 +137,8 @@ public class DOMEntityDefinitionHelper {
 
 	private static Element jaxbElementToDOM(Object jaxbElement) {
 		try {
-			JAXBContext jc = JAXBContext.newInstance(JaxbAlignmentIO.ALIGNMENT_CONTEXT);
+			JAXBContext jc = JAXBContext.newInstance(JaxbAlignmentIO.ALIGNMENT_CONTEXT,
+					ObjectFactory.class.getClassLoader());
 			Marshaller m = jc.createMarshaller();
 
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

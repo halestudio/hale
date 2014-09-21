@@ -68,7 +68,6 @@ import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
-import eu.esdihumboldt.hale.ui.io.util.ThreadProgressMonitor;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.internal.AbstractInstanceService;
@@ -76,6 +75,7 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.internal.AbstractRemoveResourcesOperation;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
+import eu.esdihumboldt.hale.ui.util.io.ThreadProgressMonitor;
 import eu.esdihumboldt.util.PlatformUtil;
 import eu.esdihumboldt.util.groovy.sandbox.GroovyService;
 

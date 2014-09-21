@@ -31,10 +31,12 @@ import org.opengis.feature.type.Name;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.core.parameter.AbstractParameterValueDescriptor;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceReader;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -65,6 +67,19 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 		super();
 
 		addSupportedParameter(PARAM_TYPENAME);
+	}
+
+	@SuppressWarnings("javadoc")
+	public static class TypenameParameterDescriptor extends AbstractParameterValueDescriptor {
+
+		public TypenameParameterDescriptor() {
+			super(null, Value.of(new QName("namespace", "localname").toString()));
+		}
+
+		@Override
+		public String getDocumentationRepresentation() {
+			return "The type name is represented like in the given example, with the namespace in curly braces.";
+		}
 	}
 
 	/**
@@ -118,8 +133,13 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 			if (dataType == null) {
 				throw new IOException("Could not read shapefile structure information");
 			}
+			String preferredName = null;
+			Name name = store.getNames().iterator().next();
+			if (name != null) {
+				preferredName = name.getLocalPart();
+			}
 			Pair<TypeDefinition, Integer> tp = getMostCompatibleShapeType(getSourceSchema(),
-					dataType);
+					dataType, preferredName);
 			if (tp == null) {
 				throw new IOProviderConfigurationException(
 						"No schema type specified and auto-detection failed");
@@ -163,6 +183,7 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 	 * 
 	 * @param types the type index
 	 * @param dataType the Shapefile data type
+	 * @param preferredName the name of the preferred type
 	 * @return the most compatible type found together with is compatibility
 	 *         rating or <code>null</code> if there is no type that at least has
 	 *         one matching property
@@ -170,9 +191,25 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 	 * @see #checkCompatibility(TypeDefinition, TypeDefinition)
 	 */
 	public static Pair<TypeDefinition, Integer> getMostCompatibleShapeType(TypeIndex types,
-			TypeDefinition dataType) {
+			TypeDefinition dataType, String preferredName) {
 		int maxCompatibility = -1;
 		TypeDefinition maxType = null;
+
+		// check preferred name first
+		TypeDefinition preferredType = types.getType(new QName(ShapefileConstants.SHAPEFILE_NS,
+				preferredName));
+		if (preferredType != null) {
+			int comp = checkCompatibility(preferredType, dataType);
+			if (comp >= 100) {
+				// return an exact match directly
+				return new Pair<TypeDefinition, Integer>(preferredType, 100);
+			}
+			else {
+				maxType = preferredType;
+				maxCompatibility = comp;
+			}
+		}
+
 		for (TypeDefinition schemaType : types.getMappingRelevantTypes()) {
 			if (ShapefileConstants.SHAPEFILE_NS.equals(schemaType.getName().getNamespaceURI())) {
 				// is a shapefile type

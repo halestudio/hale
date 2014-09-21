@@ -36,6 +36,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantF
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
+import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
 import eu.esdihumboldt.hale.io.csv.PropertyType;
 import eu.esdihumboldt.hale.io.csv.PropertyTypeExtension;
 import eu.esdihumboldt.hale.io.csv.reader.CommonSchemaConstants;
@@ -53,6 +54,11 @@ public class XLSSchemaReader extends AbstractTableSchemaReader {
 
 	private List<String> header = new ArrayList<String>();
 
+	/**
+	 * XXX does 0 reference the first sheet?
+	 */
+	private int sheetNum = 0;
+
 	@Override
 	public void validate() throws IOProviderConfigurationException {
 		super.validate();
@@ -65,17 +71,16 @@ public class XLSSchemaReader extends AbstractTableSchemaReader {
 	protected Schema loadFromSource(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 
-//		boolean solveNestedProperties = getParameter(XLSConstants.SOLVE_NESTED_PROPERTIES).as(
-//				Boolean.class);
+		sheetNum = getParameter(InstanceTableIOConstants.SHEET_INDEX).as(int.class, 0);
 
 		progress.begin("Load XLS/XLSX schema", ProgressIndicator.UNKNOWN);
 
-		String namespace = "http://www.esdi-humboldt.eu/hale/csv";
+		String namespace = "http://www.esdi-humboldt.eu/hale/xls";
 		DefaultSchema schema = new DefaultSchema(namespace, getSource().getLocation());
 		AnalyseXLSSchemaTable analyser;
 
 		try {
-			analyser = new AnalyseXLSSchemaTable(getSource().getLocation());
+			analyser = new AnalyseXLSSchemaTable(getSource().getLocation(), sheetNum);
 			header = analyser.getHeader();
 
 			// create type definition
@@ -129,15 +134,7 @@ public class XLSSchemaReader extends AbstractTableSchemaReader {
 
 				DefaultPropertyDefinition property = new DefaultPropertyDefinition(new QName(
 						properties[i]), type, propertyType.getTypeDefinition());
-
-				// set constraints on property
-//				property.setConstraint(NillableFlag.DISABLED); // nillable
-				property.setConstraint(NillableFlag.ENABLED); // nillable FIXME
-				// should be configurable per field (see also CSVInstanceReader)
-				property.setConstraint(Cardinality.CC_EXACTLY_ONCE); // cardinality
-
-				// set metadata for property
-				property.setLocation(getSource().getLocation());
+				configureProperty(property);
 			}
 
 			boolean skip = Arrays.equals(properties, header.toArray(new String[0]));
@@ -171,6 +168,16 @@ public class XLSSchemaReader extends AbstractTableSchemaReader {
 	@Override
 	public String[] getHeaderContent() {
 		return header.toArray(new String[0]);
+	}
+
+	private void configureProperty(DefaultPropertyDefinition property) {
+		// set constraints on property
+		property.setConstraint(NillableFlag.ENABLED); // nillable FIXME
+		// should be configurable per field (see also CSVInstanceReader)
+		property.setConstraint(Cardinality.CC_EXACTLY_ONCE); // cardinality
+
+		// set metadata of property
+		property.setLocation(getSource().getLocation());
 	}
 
 }

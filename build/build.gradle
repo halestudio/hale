@@ -42,6 +42,16 @@ gradle.taskGraph.whenReady {
 		buildID = dateFormat.format(calendar.getTime())
 	}
 	project.ext.buildId = buildID
+	
+	// determine context qualifier
+	if (project.version.endsWith("-SNAPSHOT")) {
+		// buildID as qualifier
+		project.ext.contextQualifier = buildID
+	}
+	else {
+		// mark as RELEASE (used for product, application bundles only)
+		project.ext.contextQualifier = 'RELEASE'
+	}
 }
 
 defaultTasks 'commitStage'
@@ -56,6 +66,10 @@ ext {
 
     // suffix for bundle version numbers
     versionSuffix = ''
+	
+	// ID of generated update site feature
+	generatedUpdateSiteFeatureId = 'eu.esdihumboldt.hale.all.feature'
+	generatedUpdateSiteFeatureLabel = 'Generated overall feature'
 
     // path to the platform bundle
     platformBundle = file('../platform')
@@ -98,11 +112,10 @@ ext {
     ]
 	
 	// bundles to exclude for the build (symbolic names)
-	excludeBundles = []
-//	excludeBundles = [
-//		'eu.esdihumboldt.hale.ui.application.help.internal',
-//		'eu.esdihumboldt.hale.ui.application.help.external'
-//	]
+	excludeBundles = [
+	  // dependencies for this feature currently not included in platform
+    'eu.esdihumboldt.hale.ui.feature.liveeditor'
+	]
 	
 	// bundles or fragments that are required additionally for compilation
 	extraRequirements = [

@@ -9,7 +9,13 @@
       <Pattern>%d{dd.MM.yyyy HH:mm:ss} %-5level %C{1}.%M\(%L\) - %m%n</Pattern>
     </encoder>
   </appender>
+  <logger name="to.wetf" level="INFO" />
   <logger name="eu.esdihumboldt" level="INFO" />
+  
+  <!-- ignore some warnings: -->
+  <logger name="org.geotools.referencing.operation.projection" level="ERROR" />
+  <logger name="java.util.prefs" level="ERROR" />
+  
   <root level="WARN">
     <appender-ref ref="CONSOLE"/>
     <appender-ref ref="SERVICE"/>

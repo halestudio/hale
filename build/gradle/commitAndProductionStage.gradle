@@ -81,6 +81,26 @@ def getProductLauncher() {
 }
 
 /**
+ * @return the product version, includes the qualifier for SNAPSHOTS
+ */
+String productVersion(String version) {
+	def qualifier = project.ext.contextQualifier
+	
+	if (version.endsWith('.qualifier')) {
+		// replace qualifier (omit if RELEASE)
+		version[0..-11] + ((qualifier == 'RELEASE')?(''):('.' + qualifier)) 
+	}
+	else if (version.endsWith('-SNAPSHOT')) {
+		// replace SNAPSHOT (omit if RELEASE)
+		version[0..-10] + ((qualifier == 'RELEASE')?(''):('.' + qualifier))
+	}
+	else {
+		// return as-is
+		version
+	}
+}
+
+/**
  * @return the name of the package which is created by
  * packageServer() or packageClient()
  */
@@ -91,7 +111,7 @@ def getPackageName() {
     } else {
         tag = ''
     }
-    return getProductLauncher() + '-' + project.version + '.' + project.ext.buildId + '-' + tag +
+    return getProductLauncher() + '-' + productVersion(project.version) + '-' + tag +
             project.ext.osgiOS + '.' + project.ext.osgiWS + '.' + project.osgiArch
 }
 
@@ -380,58 +400,66 @@ void updateAboutInfo(productOutputPath) {
  */
 def packageClient(productOutputPath) {
     if (Helper.buildForWindows(project)) {
-		try {
-	        // get path to Windows Installer XML Kit
-	        if (!project.ext.properties.containsKey("wixDir")) {
-	            def dirs = fileTree(dir: 'C:\\', includes: [ 'Program Files*\\Windows Installer XML v3*\\bin\\candle.exe',
-	                    'Program Files*\\WiX Toolset v3*\\bin\\candle.exe' ])
-	
-	            if (dirs.isEmpty()) {
-	                throw new IllegalStateException("Could not guess WIX installation directory. Please specify it " +
-	                        "in the 'wixDir' property")
-	            }
-	
-	            if (dirs.files.size() > 1) {
-	                throw new IllegalStateException("More than one WiX installation found. Please select the right " +
-	                        "one in the 'wixDir' property")
-	            }
-	
-	            project.ext.wixDir = dirs.singleFile.parentFile.parentFile
-	            println('Guessing WIX directory: ' + project.ext.wixDir)
-	        }
-	
-	        // call legacy Ant file to build the Windows installer
-	        def wixArch
-	        if (Helper.buildFor64bit(project)) {
-	            wixArch = 'x64'
-	        } else {
-	            wixArch = 'x86'
-	        }
-	        ant.ant(antfile: new File("ant", "build-msi.xml")) {
-	            property(name: "buildId", value: getProductLauncher())
-	            property(name: "shortName", value: getProductLauncher())
-	            property(name: "title", value: project.ext.win32InstallerTitle)
-	            property(name: "version", value: project.version + '.' + project.ext.buildId)
-	            property(name: "GUID.UpgradeCode", value: project.ext.win32InstallerUpgradeGUID)
-	            property(name: "GUID.ApplicationShortcut", value: project.ext.win32InstallerShortcutGUID)
-	            if (project.ext.properties.containsKey('tag')) {
-	                property(name: "tag", value: project.ext.tag)
-	            }
-	            property(name: "wix.arch", value: wixArch)
-	            if (project.ext.properties.containsKey('language')) {
-	                property(name: "language", value: project.ext.language)
-	            } else {
-	                property(name: "language", value: 'en')
-	            }
-	            property(name: "wix.dir", value: project.ext.wixDir)
-	            property(name: "wxs.dir", value: Helper.resolveTemplate(project, 'wix'))
-	            property(name: "wxs.file.ui", value: "WixUI_Product")
-	            property(name: "wxs.file.config", value: "WixProduct")
-	            property(name: "src", value: productOutputPath)
-	        }
-		} catch (e) {
-			println "Could not find WiX installation ($e.message), packaging as ZIP instead"
-			
+		boolean packageAsZip = project.hasProperty('noInstaller') && project.ext.noInstaller
+		
+		if (!packageAsZip) {
+			try {
+		        // get path to Windows Installer XML Kit
+		        if (!project.ext.properties.containsKey("wixDir")) {
+		            def dirs = fileTree(dir: 'C:\\', includes: [ 'Program Files*\\Windows Installer XML v3*\\bin\\candle.exe',
+		                    'Program Files*\\WiX Toolset v3*\\bin\\candle.exe' ])
+		
+		            if (dirs.isEmpty()) {
+		                throw new IllegalStateException("Could not guess WIX installation directory. Please specify it " +
+		                        "in the 'wixDir' property")
+		            }
+		
+		            if (dirs.files.size() > 1) {
+		                throw new IllegalStateException("More than one WiX installation found. Please select the right " +
+		                        "one in the 'wixDir' property")
+		            }
+		
+		            project.ext.wixDir = dirs.singleFile.parentFile.parentFile
+		            println('Guessing WIX directory: ' + project.ext.wixDir)
+		        }
+		
+		        // call legacy Ant file to build the Windows installer
+		        def wixArch
+		        if (Helper.buildFor64bit(project)) {
+		            wixArch = 'x64'
+		        } else {
+		            wixArch = 'x86'
+		        }
+		        ant.ant(antfile: new File("ant", "build-msi.xml")) {
+		            property(name: "buildId", value: getProductLauncher())
+		            property(name: "shortName", value: getProductLauncher())
+		            property(name: "title", value: project.ext.win32InstallerTitle)
+		            property(name: "version", value: productVersion(project.version))
+		            property(name: "GUID.UpgradeCode", value: project.ext.win32InstallerUpgradeGUID)
+		            property(name: "GUID.ApplicationShortcut", value: project.ext.win32InstallerShortcutGUID)
+		            if (project.ext.properties.containsKey('tag')) {
+		                property(name: "tag", value: project.ext.tag)
+		            }
+		            property(name: "wix.arch", value: wixArch)
+		            if (project.ext.properties.containsKey('language')) {
+		                property(name: "language", value: project.ext.language)
+		            } else {
+		                property(name: "language", value: 'en')
+		            }
+		            property(name: "wix.dir", value: project.ext.wixDir)
+		            property(name: "wxs.dir", value: Helper.resolveTemplate(project, 'wix'))
+		            property(name: "wxs.file.ui", value: "WixUI_Product")
+		            property(name: "wxs.file.config", value: "WixProduct")
+		            property(name: "src", value: productOutputPath)
+		        }
+			} catch (e) {
+				println "Could not find WiX installation ($e.message), packaging as ZIP instead"
+				
+				packageAsZip = true
+			}
+		}
+		
+		if (packageAsZip) {
 			// package as ZIP
 			def packageName = getPackageName()
 			def packageFileName = new File('target', packageName + '.zip')
@@ -486,7 +514,7 @@ def packageClient(productOutputPath) {
 		def targetDir = new File(productOutputPath.absolutePath + '/../../target')
 		targetDir.mkdir()
 		def tarPath = targetDir.absolutePath + '/' + packageName + '.tar.gz';
-		def packCmd =  ['tar', '--preserve-permissions', '-czf', tarPath, '--transform', "s,^\\.,$packageName,", '.']
+		def packCmd =  ['tar', '--preserve-permissions', '-czf', tarPath, '--transform', "s,^\\./,$packageName/,", '.']
 		def packProc = packCmd.execute(null, productOutputPath)
 		def packBuffer = new StringBuffer()
 		packProc.consumeProcessErrorStream(packBuffer)
@@ -620,7 +648,7 @@ task makeProductFile << {
 
         // add target version to product definition (so it can be
         // used in the product template)
-        productDef['Version'] = project.version
+        productDef['Version'] = formatBundleVersion(project.version) //TODO check if this method defined in updateSite.gradle is accessible
 
         // parse plugins and add start levels to product definition
         def startLevels = []
@@ -749,7 +777,8 @@ task buildProduct(dependsOn: createProductFeature) << {
         println('Copying additional files ...')
         project.ext.additionalFilesToPackage.each { af ->
             project.copy {
-                from Helper.resolveTemplate(project, "additional_files/${af}")
+                from Helper.resolveTemplate(project, 'additional_files')
+				include af
                 into productOutputPath
             }
         }

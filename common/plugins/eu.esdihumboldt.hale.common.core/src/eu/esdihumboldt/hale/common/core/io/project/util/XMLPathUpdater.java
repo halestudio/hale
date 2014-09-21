@@ -23,7 +23,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -179,14 +178,16 @@ public class XMLPathUpdater {
 			URI locationUri = null;
 			try {
 				locationUri = new URI(location);
-			} catch (URISyntaxException e1) {
+			} catch (Exception e1) {
 				reporter.error(new IOMessageImpl("The location is no valid URI.", e1));
 				continue;
 			}
 
-			if (!locationUri.isAbsolute())
+			if (!locationUri.isAbsolute()) {
 				locationUri = oldPath.resolve(locationUri);
+			}
 
+			@SuppressWarnings("null")
 			String scheme = locationUri.getScheme();
 			InputStream input = null;
 			if (scheme != null) {

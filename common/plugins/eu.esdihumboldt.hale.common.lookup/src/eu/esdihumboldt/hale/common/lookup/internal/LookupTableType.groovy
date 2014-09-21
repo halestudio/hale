@@ -19,9 +19,12 @@ import org.w3c.dom.Element
 
 import eu.esdihumboldt.hale.common.core.io.ComplexValueType
 import eu.esdihumboldt.hale.common.core.io.DOMValueUtil
+import eu.esdihumboldt.hale.common.core.io.JsonValueUtil
 import eu.esdihumboldt.hale.common.core.io.Value
+import eu.esdihumboldt.hale.common.core.io.impl.AbstractGroovyValueJson
 import eu.esdihumboldt.hale.common.lookup.LookupTable
 import eu.esdihumboldt.hale.common.lookup.impl.LookupTableImpl
+import eu.esdihumboldt.util.groovy.json.JsonStreamBuilder
 import eu.esdihumboldt.util.groovy.xml.NSDOMBuilder
 import groovy.xml.dom.DOMCategory
 
@@ -31,16 +34,16 @@ import groovy.xml.dom.DOMCategory
  * 
  * @author Simon Templer
  */
-class LookupTableType implements ComplexValueType<LookupTable, Void> {
+class LookupTableType extends AbstractGroovyValueJson<LookupTable, Object> implements ComplexValueType<LookupTable, Object> {
 
 	@Override
-	public LookupTable fromDOM(Element fragment, Void context) {
+	public LookupTable fromDOM(Element fragment, Object context) {
 		Map<Value, Value> values = new HashMap<Value, Value>();
 
 		use (DOMCategory) {
 			for (entry in fragment.entry) {
-				Value key = DOMValueUtil.fromTag(entry.key[0]);
-				Value value = DOMValueUtil.fromTag(entry.value[0])
+				Value key = DOMValueUtil.fromTag(entry.key[0], context)
+				Value value = DOMValueUtil.fromTag(entry.value[0], context)
 				values.put(key, value)
 			}
 		}
@@ -68,7 +71,53 @@ class LookupTableType implements ComplexValueType<LookupTable, Void> {
 	}
 
 	@Override
-	public Class<Void> getContextType() {
-		Void.class
+	public void toJson(LookupTable table, Writer writer) {
+		def json = new JsonStreamBuilder(writer)
+		json {
+			for (Value key in table.keys) {
+				// ignore null values
+				if (table.lookup(key) != null) {
+					'entries[]' {
+						json.key JsonValueUtil.valueJson(key)
+						json.value JsonValueUtil.valueJson(table.lookup(key))
+					}
+				}
+			}
+		}
+	}
+
+	@Override
+	public LookupTable fromJson(Object json, Object context) {
+		Map<Value, Value> values = new HashMap<Value, Value>()
+
+		json.entries.each { entry ->
+			Value key = JsonValueUtil.fromJson(entry.key, context)
+			Value value = JsonValueUtil.fromJson(entry.value, context)
+			values.put(key, value)
+		}
+
+		return new LookupTableImpl(values)
+	}
+
+	@Override
+	public Object toJson(LookupTable table) {
+		def entries = []
+
+		for (Value key in table.keys) {
+			// ignore null values
+			if (table.lookup(key) != null) {
+				entries << [
+					key: JsonValueUtil.valueJson(key),
+					value: JsonValueUtil.valueJson(table.lookup(key))
+				]
+			}
+		}
+
+		[entries: entries]
+	}
+
+	@Override
+	public Class<Object> getContextType() {
+		Object.class
 	}
 }

@@ -34,8 +34,9 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="script">
-            <functionParameterBinding>
-            </functionParameterBinding>
+            <parameterComplexValue
+                  ref="eu.esdihumboldt.hale.common.core.text">
+            </parameterComplexValue>
          </functionParameter>
          <functionParameter
                description="Use the complete structured instances as variables in the script instead of only the value if a variable has child properties"
@@ -44,14 +45,14 @@
                minOccurrence="0"
                name="variablesAsInstances"
                scriptable="false">
-            <functionParameterEnumeration>
+            <parameterEnumeration>
                <enumerationValue
                      value="true">
                </enumerationValue>
                <enumerationValue
                      value="false">
                </enumerationValue>
-            </functionParameterEnumeration>
+            </parameterEnumeration>
          </functionParameter>
       </propertyFunction>
       <propertyFunction
@@ -86,8 +87,9 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="script">
-            <functionParameterBinding>
-            </functionParameterBinding>
+            <parameterComplexValue
+                  ref="eu.esdihumboldt.hale.common.core.text">
+            </parameterComplexValue>
          </functionParameter>
          <functionParameter
                description="Use the complete structured instances as variables in the script instead of only the value if a variable has child properties"
@@ -96,14 +98,14 @@
                minOccurrence="0"
                name="variablesAsInstances"
                scriptable="false">
-            <functionParameterEnumeration>
+            <parameterEnumeration>
                <enumerationValue
                      value="true">
                </enumerationValue>
                <enumerationValue
                      value="false">
                </enumerationValue>
-            </functionParameterEnumeration>
+            </parameterEnumeration>
          </functionParameter>
       </propertyFunction>
       <typeFunction
@@ -131,7 +133,9 @@
                minOccurrence="1"
                name="script"
                scriptable="false">
-            <functionParameterBinding></functionParameterBinding>
+            <parameterComplexValue
+                  ref="eu.esdihumboldt.hale.common.core.text">
+            </parameterComplexValue>
          </functionParameter>
       </typeFunction>
       <typeFunction
@@ -153,7 +157,9 @@
                minOccurrence="1"
                name="script"
                scriptable="false">
-            <functionParameterBinding></functionParameterBinding>
+            <parameterComplexValue
+                  ref="eu.esdihumboldt.hale.common.core.text">
+            </parameterComplexValue>
          </functionParameter>
          <functionParameter
                description="Number of instances to create"
@@ -162,9 +168,9 @@
                minOccurrence="0"
                name="number"
                scriptable="false">
-            <functionParameterBinding
+            <parameterBinding
                   class="java.lang.Integer">
-            </functionParameterBinding>
+            </parameterBinding>
          </functionParameter>
       </typeFunction>
       <typeFunction
@@ -194,7 +200,7 @@
                maxOccurrence="n"
                minOccurrence="1"
                name="property">
-            <functionParameterBinding></functionParameterBinding>
+            <parameterBinding></parameterBinding>
          </functionParameter>
          <functionParameter
                description="Each property is defined by a property path"
@@ -202,7 +208,7 @@
                maxOccurrence="n"
                minOccurrence="0"
                name="additional_property">
-            <functionParameterBinding></functionParameterBinding>
+            <parameterBinding></parameterBinding>
          </functionParameter>
          <functionParameter
                description="Enable/disable auto detection of additional equal properties which will get merged."
@@ -210,16 +216,18 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="auto_detect">
-            <functionParameterBinding
+            <parameterBinding
                   class="java.lang.Boolean">
-            </functionParameterBinding>
+            </parameterBinding>
          </functionParameter>
          <functionParameter
                maxOccurrence="1"
                minOccurrence="1"
                name="script"
                scriptable="false">
-            <functionParameterBinding></functionParameterBinding>
+            <parameterComplexValue
+                  ref="eu.esdihumboldt.hale.common.core.text">
+            </parameterComplexValue>
          </functionParameter>
       </typeFunction>
    </extension>

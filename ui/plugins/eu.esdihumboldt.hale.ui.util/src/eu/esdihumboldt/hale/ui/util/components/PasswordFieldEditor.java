@@ -96,7 +96,7 @@ public class PasswordFieldEditor extends FieldEditor {
 		label.setText(name);
 		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
 
-		text = new Text(parent, SWT.PASSWORD | SWT.BORDER);
+		text = new Text(parent, SWT.SINGLE | SWT.PASSWORD | SWT.BORDER);
 
 		adjustForNumColumns(numColumns);
 	}

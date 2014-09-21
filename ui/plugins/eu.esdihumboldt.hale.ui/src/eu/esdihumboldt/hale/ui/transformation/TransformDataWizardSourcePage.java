@@ -51,9 +51,9 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.ui.DefaultReportHandler;
 import eu.esdihumboldt.hale.ui.io.instance.InstanceExportWizard;
 import eu.esdihumboldt.hale.ui.io.instance.InstanceImportWizard;
-import eu.esdihumboldt.hale.ui.io.util.ThreadProgressMonitor;
 import eu.esdihumboldt.hale.ui.service.project.ProjectResourcesUtil;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
+import eu.esdihumboldt.hale.ui.util.io.ThreadProgressMonitor;
 import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 
 /**

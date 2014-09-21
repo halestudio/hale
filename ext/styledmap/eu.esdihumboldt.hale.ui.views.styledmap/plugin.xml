@@ -121,6 +121,22 @@
                id="eu.esdihumboldt.hale.ui.views.styledmap.layouts">
          </dynamic>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.workbench.navigate?after=group.application">
+         <command
+               commandId="eu.esdihumboldt.hale.ui.views.styledmap.layoutdropdown"
+               style="pulldown">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:eu.esdihumboldt.hale.ui.views.styledmap.layoutdropdown">
+         <dynamic
+               class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension.IconPainterLayoutContribution"
+               id="eu.esdihumboldt.hale.ui.views.styledmap.layoutdropdown.layouts">
+         </dynamic>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.commandImages">
@@ -131,6 +147,10 @@
       <image
             commandId="eu.esdihumboldt.hale.ui.views.styledmap.zoomToSelection"
             icon="icons/navigation.png">
+      </image>
+      <image
+            commandId="eu.esdihumboldt.hale.ui.views.styledmap.layoutdropdown"
+            icon="icons/world.gif">
       </image>
    </extension>
    <extension
@@ -144,6 +164,11 @@
       <command
             id="eu.esdihumboldt.hale.ui.views.styledmap.zoomToSelection"
             name="Zoom to selection">
+      </command>
+      <command
+            defaultHandler="eu.esdihumboldt.hale.ui.views.styledmap.handler.ShowLayoutMenuHandler"
+            id="eu.esdihumboldt.hale.ui.views.styledmap.layoutdropdown"
+            name="Go to map / change map layout">
       </command>
    </extension>
    <extension
