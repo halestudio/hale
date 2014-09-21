@@ -68,6 +68,7 @@ class ExecApplication extends AbstractApplication<ExecContext> {
 			try {
 				new ExecTransformation().run(executionContext)
 			} catch (Exception | AssertionError e) {
+				error "Transformation execution failed: $e.message"
 				if (executionContext.logException) {
 					e.printStackTrace()
 				}
