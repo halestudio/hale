@@ -78,7 +78,8 @@ public class CSVInstanceWriter extends AbstractTableInstanceWriter {
 			throws IOProviderConfigurationException, IOException {
 
 		boolean solveNestedProperties = getParameter(
-				InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES).as(Boolean.class);
+				InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES).as(Boolean.class, false);
+		// XXX what does "solve nested properties" mean?
 
 		// get separation, quote and escape sign
 		sep = CSVUtil.getSep(this);

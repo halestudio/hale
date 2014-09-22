@@ -137,6 +137,52 @@
          <contentType
                ref="eu.esdihumboldt.hale.io.csv">
          </contentType>
+         <providerParameter
+               description="Schema type which instances should be exported."
+               label="Export type"
+               name="selectedExportType"
+               optional="false"
+               valueDescriptor="eu.esdihumboldt.hale.io.csv.TypenameParameterDescriptor">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+         </providerParameter>
+         <providerParameter
+               description="Separator character that delimits columns in the CSV file"
+               label="Separator character"
+               name="separator"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="Defaults to tabulator (\t)">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Character used to quote CSV entries"
+               label="Quote character"
+               name="quote"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  default="&quot;">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Character used to escape special characters, e.g. the quote character"
+               label="Escape character"
+               name="escape"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  default="\">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
    </extension>
 
