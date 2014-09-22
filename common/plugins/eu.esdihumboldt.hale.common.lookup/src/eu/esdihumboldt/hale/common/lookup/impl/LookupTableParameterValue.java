@@ -39,10 +39,10 @@ public class LookupTableParameterValue implements ParameterValueDescriptor {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.core.parameter.ParameterValueDescriptor#getDocumentationRepresentation()
+	 * @see eu.esdihumboldt.hale.common.core.parameter.ParameterValueDescriptor#getSampleDescription()
 	 */
 	@Override
-	public String getDocumentationRepresentation() {
+	public String getSampleDescription() {
 		return "The ´key´ has an associated ´value´.";
 	}
 

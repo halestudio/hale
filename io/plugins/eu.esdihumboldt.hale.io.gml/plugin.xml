@@ -102,23 +102,27 @@
          </contentType>
          <providerParameter
                optional="true"
-               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToTrueParameter"
                   description="States if the root element should be ignored and thus not be loaded as an object itself."
                   label="No root object"
                   name="ignoreRoot">
                <parameterBinding
                      class="java.lang.Boolean">
                </parameterBinding>
+               <valueDescriptor
+                     default="true">
+               </valueDescriptor>
          </providerParameter>
          <providerParameter
                optional="true"
-               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToFalseParameter"
                   description="States if parsing of XML instances is done strictly according to the schema or if invalid property paths are allowed, e.g. if the element order in the data is not correct."
                   label="Strict mode"
                   name="strict">
                <parameterBinding
                      class="java.lang.Boolean">
                </parameterBinding>
+               <valueDescriptor
+                     default="false">
+               </valueDescriptor>
          </providerParameter>
       </provider>
       <provider
@@ -133,23 +137,27 @@
          </contentType>
          <providerParameter
                optional="true"
-               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToTrueParameter"
                   description="States if the root element should be ignored and thus not be loaded as an object itself."
                   label="No root object"
                   name="ignoreRoot">
                <parameterBinding
                      class="java.lang.Boolean">
                </parameterBinding>
+               <valueDescriptor
+                     default="true">
+               </valueDescriptor>
          </providerParameter>
          <providerParameter
                optional="true"
-               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToFalseParameter"
                   description="States if parsing of XML instances is done strictly according to the schema or if invalid property paths are allowed, e.g. if the element order in the data is not correct."
                   label="Strict mode"
                   name="strict">
                <parameterBinding
                      class="java.lang.Boolean">
                </parameterBinding>
+               <valueDescriptor
+                     default="false">
+               </valueDescriptor>
          </providerParameter>
       </provider>
       <provider
@@ -164,13 +172,15 @@
          </contentType>
          <providerParameter
                optional="true"
-               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToTrueParameter"
                   description="If geometries should be simplified (e.g. a MultiPolygon to a Polygon), if possible, before writing them."
                   label="Simplify geometries"
                   name="gml.geometry.simplify">
                <parameterBinding
                      class="java.lang.Boolean">
                </parameterBinding>
+               <valueDescriptor
+                     default="true">
+               </valueDescriptor>
          </providerParameter>
       </provider>
       <provider
@@ -185,13 +195,15 @@
          </contentType>
          <providerParameter
                optional="true"
-               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToTrueParameter"
                   description="If geometries should be simplified (e.g. a MultiPolygon to a Polygon), if possible, before writing them."
                   label="Simplify geometries"
                   name="gml.geometry.simplify">
                <parameterBinding
                      class="java.lang.Boolean">
                </parameterBinding>
+               <valueDescriptor
+                     default="true">
+               </valueDescriptor>
          </providerParameter>
          <providerParameter
                optional="false"
@@ -224,13 +236,15 @@
          </contentType>
          <providerParameter
                optional="true"
-               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToTrueParameter"
                   description="If geometries should be simplified (e.g. a MultiPolygon to a Polygon), if possible, before writing them."
                   label="Simplify geometries"
                   name="gml.geometry.simplify">
                <parameterBinding
                      class="java.lang.Boolean">
                </parameterBinding>
+               <valueDescriptor
+                     default="true">
+               </valueDescriptor>
          </providerParameter>
       </provider>
       <provider
@@ -279,23 +293,27 @@
          </providerParameter>
          <providerParameter
                optional="true"
-               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToTrueParameter"
                   description="If geometries should be simplified (e.g. a MultiPolygon to a Polygon), if possible, before writing them."
                   label="Simplify geometries"
                   name="gml.geometry.simplify">
                <parameterBinding
                      class="java.lang.Boolean">
                </parameterBinding>
+               <valueDescriptor
+                     default="true">
+               </valueDescriptor>
          </providerParameter>
          <providerParameter
                optional="true"
-               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToFalseParameter"
                   description="States if a data set feed for an INSPIRE ATOM based Download Service should be created."
                   label="Create data set feed"
                   name="inspire.sds.create_feed">
                <parameterBinding
                      class="java.lang.Boolean">
                </parameterBinding>
+               <valueDescriptor
+                     default="false">
+               </valueDescriptor>
          </providerParameter>
          <providerParameter
                optional="true"

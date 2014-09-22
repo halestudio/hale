@@ -30,6 +30,7 @@ import com.google.common.collect.ListMultimap;
 import de.fhg.igd.eclipse.util.extension.ExtensionUtil;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueDefinition;
 import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueExtension;
 
@@ -39,6 +40,81 @@ import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueExtension;
  * @author Simon Templer
  */
 public class ParameterUtil {
+
+	/**
+	 * Value descriptor that delegates to given value descriptor (if any) and
+	 * otherwise retrieves the information from a configuration element.
+	 */
+	private static class DefaultValueDescriptor implements ParameterValueDescriptor {
+
+		private final ParameterValueDescriptor delegatee;
+		private final IConfigurationElement conf;
+
+		/**
+		 * Create a new value descriptor.
+		 * 
+		 * @param delegatee the value descriptor to delegate to, may be
+		 *            <code>null</code>
+		 * @param conf the configuration element to use as fall-back
+		 */
+		public DefaultValueDescriptor(@Nullable ParameterValueDescriptor delegatee,
+				IConfigurationElement conf) {
+			this.conf = conf;
+			this.delegatee = delegatee;
+		}
+
+		@Override
+		public Value getDefaultValue() {
+			Value result = null;
+
+			if (delegatee != null) {
+				result = delegatee.getDefaultValue();
+			}
+
+			if (result == null) {
+				String strValue = conf.getAttribute("default");
+				if (strValue != null) {
+					result = Value.of(strValue);
+				}
+			}
+
+			return result;
+		}
+
+		@Override
+		public Value getSampleData() {
+			Value result = null;
+
+			if (delegatee != null) {
+				result = delegatee.getSampleData();
+			}
+
+			if (result == null) {
+				String strValue = conf.getAttribute("sample");
+				if (strValue != null) {
+					result = Value.of(strValue);
+				}
+			}
+
+			return result;
+		}
+
+		@Override
+		public String getSampleDescription() {
+			String result = null;
+
+			if (delegatee != null) {
+				result = delegatee.getSampleDescription();
+			}
+
+			if (result == null) {
+				result = conf.getAttribute("sampleDescription");
+			}
+
+			return result;
+		}
+
+	}
 
 	private static final ALogger log = ALoggerFactory.getLogger(ParameterUtil.class);
 
@@ -144,6 +220,15 @@ public class ParameterUtil {
 						.createExecutableExtension(CONF_PARAMETER_VALUE_DESCRIPTOR);
 			} catch (CoreException e) {
 				log.error("Error creating Value Descriptor from extension", e);
+			}
+		}
+
+		if (parameterConf != null) {
+			IConfigurationElement[] valueDescriptorArr = parameterConf
+					.getChildren("valueDescriptor");
+			if (valueDescriptorArr != null && valueDescriptorArr.length > 0) {
+				IConfigurationElement valueDescriptor = valueDescriptorArr[0];
+				pv = new DefaultValueDescriptor(pv, valueDescriptor);
 			}
 		}
 

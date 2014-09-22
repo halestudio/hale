@@ -57,11 +57,14 @@
          </documentation>
       </annotation>
       <complexType>
-         <choice>
-            <element ref="parameterEnumeration"/>
-            <element ref="parameterBinding"/>
-            <element ref="parameterComplexValue"/>
-         </choice>
+         <sequence>
+            <choice>
+               <element ref="parameterBinding"/>
+               <element ref="parameterEnumeration"/>
+               <element ref="parameterComplexValue"/>
+            </choice>
+            <element ref="valueDescriptor" minOccurs="0" maxOccurs="1"/>
+         </sequence>
          <attribute name="name" type="string" use="required">
             <annotation>
                <documentation>
