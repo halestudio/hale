@@ -46,7 +46,8 @@ class ExecApplication extends AbstractApplication<ExecContext> {
 
 	enum Configurable {
 		source,
-		target
+		target,
+		validate
 	}
 
 	private Configurable lastConfigurable
@@ -114,6 +115,7 @@ HALE -nosplash -application hale.transform
          [-preset <name-of-export-preset>]
          [-providerId <ID-of-target-writer>]
          [<setting>...]
+     [-validate <ID-of-target-validator> [<setting>...]]
      [options...]
 
   where setting is
@@ -142,6 +144,10 @@ HALE -nosplash -application hale.transform
 			// source file or URI to source data
 				executionContext.source = fileOrUri(value)
 				lastConfigurable = Configurable.source
+				break
+			case '-validate':
+				executionContext.validateProviderId = value
+				lastConfigurable = Configurable.validate
 				break
 			case '-out':
 			case '-target':
@@ -174,19 +180,19 @@ HALE -nosplash -application hale.transform
 					}
 				}
 				else {
-					//TODO message?
+					warn('Unexpected parameter -providerId')
 				}
 				break
 			default:
 				if (param.startsWith(SETTING_PREFIX) && param.length() > SETTING_PREFIX.length()) {
 					// setting
 					String key = param[SETTING_PREFIX.length()..-1]
-					storeSetting(key, value)
+					storeSetting(key, value, false)
 				}
 				if(param.startsWith(XML_SETTING_PREFIX) && param.length() > XML_SETTING_PREFIX.length()){
 					// XML setting
 					String key = param[XML_SETTING_PREFIX.length()..-1]
-					storeXMLSetting(key, value)
+					storeSetting(key, value, true)
 				}
 				break
 		}
@@ -218,57 +224,30 @@ HALE -nosplash -application hale.transform
 	 * @param key the setting key/name
 	 * @param value the setting's value
 	 */
-	protected void storeSetting(String key, String value) {
+	protected void storeSetting(String key, String value, boolean xml) {
 		if (lastConfigurable) {
 			// static Groovy can't deal with generics properly...
 			ExecContext ec = (ExecContext) this.executionContext
+
+			Value val
+			if (xml) {
+				val = new ElementValue(elementFromPath(value), null)
+			}
+			else {
+				val = Value.of(value)
+			}
+
 			switch (lastConfigurable) {
 				case Configurable.source:
-					ec.sourceSettings[key] = valueFromString(value)
+					ec.sourceSettings[key] = val
 					break
 				case Configurable.target:
-					ec.targetSettings[key] = valueFromString(value)
+					ec.targetSettings[key] = val
+					break
+				case Configurable.validate:
+					ec.validateSettings[key] = val
 					break
 			}
-		}
-		else {
-			fail('Setting must be specified in context of either source or target')
-		}
-	}
-
-	/**
-	 * Creates a {@link Value} object from a string given as parameter.
-	 * @param value the string value
-	 * @return the Value representation
-	 */
-	protected Value valueFromString(String value) {
-		//TODO support detection of complex values
-		Value.of(value)
-	}
-
-	/**
-	 * Store a Setting of a {@link Configurable} if it is an XML 
-	 * file Parameter
-	 * 
-	 * @param key the XML setting key/name
-	 * @param value XML path/file
-	 */
-	protected void storeXMLSetting(String key, String value){
-		if (lastConfigurable) {
-			// static Groovy can't deal with generics properly...
-			ExecContext ec = (ExecContext) this.executionContext
-			// try to parse XML file to ElementValue
-			ElementValue ev = new ElementValue(elementValueFromString(value), null)
-
-			if (ev)
-				switch (lastConfigurable) {
-					case Configurable.source:
-						ec.sourceSettings[key] = ev
-						break
-					case Configurable.target:
-						ec.targetSettings[key] = ev
-						break
-				}
 		}
 		else {
 			fail('Setting must be specified in context of either source or target')
@@ -281,7 +260,7 @@ HALE -nosplash -application hale.transform
 	 * @param value The file/path to the XML file as String
 	 * @return The (XML) Element
 	 */
-	protected Element elementValueFromString(String value){
+	protected Element elementFromPath(String value){
 		// parse value to URI
 		URI uri = fileOrUri(value)
 
