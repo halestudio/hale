@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.common.core.io.extension;
 import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -125,15 +126,12 @@ public class IOProviderExtension extends AbstractExtension<IOProvider, IOProvide
 			return (Class<? extends IOProvider>) ExtensionUtil.loadClass(conf, "class");
 		}
 
-		/**
-		 * @see eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor#getProviderParameter()
-		 */
 		@Override
 		public Set<IOProviderParameter> getProviderParameter() {
 			IConfigurationElement[] children = conf.getChildren("providerParameter");
 
 			if (children != null) {
-				Set<IOProviderParameter> result = new HashSet<IOProviderParameter>();
+				Set<IOProviderParameter> result = new LinkedHashSet<IOProviderParameter>();
 				for (IConfigurationElement child : children) {
 					result.add(new IOProviderParameter(child));
 				}
