@@ -43,12 +43,10 @@ public interface ParameterValueDescriptor {
 	public Value getSampleData();
 
 	/**
-	 * Override this method to provide a String representation of the specific
-	 * Parameter. Used for documentation purposes.
-	 * 
-	 * @return a String representing an object with sample data or null
+	 * @return description of the sample data or general description, may be
+	 *         <code>null</code>
 	 */
 	@Nullable
-	public String getDocumentationRepresentation();
+	public String getSampleDescription();
 
 }

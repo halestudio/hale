@@ -65,10 +65,10 @@
 						<td>$example.get($param.getName())</td>
 					</tr>
 				#end
-				#if ($param.valueDescriptor && $param.valueDescriptor.documentationRepresentation)
+				#if ($param.valueDescriptor && $param.valueDescriptor.sampleDescription)
 					<tr>
 						<th  style="text-align: right;"></th>
-						<td>$param.valueDescriptor.documentationRepresentation</td>
+						<td>$param.valueDescriptor.sampleDescription</td>
 					</tr>
 				#end
 				#if ($defaults.get($param.getName()))

@@ -31,7 +31,7 @@ public class InspireSDSNamespaceDefaultValue implements ParameterValueDescriptor
 	}
 
 	@Override
-	public String getDocumentationRepresentation() {
+	public String getSampleDescription() {
 		return "Example how an URI-based namespace for the GDI-DE registry could look like.";
 	}
 

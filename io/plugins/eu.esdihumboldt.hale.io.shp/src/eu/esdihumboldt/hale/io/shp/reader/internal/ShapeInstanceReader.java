@@ -77,7 +77,7 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 		}
 
 		@Override
-		public String getDocumentationRepresentation() {
+		public String getSampleDescription() {
 			return "The type name is represented like in the given example, with the namespace in curly braces.";
 		}
 	}

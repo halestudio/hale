@@ -187,8 +187,7 @@ public class IOReferenceContent extends AbstractVelocityContent implements IORef
 							parameter.add(param);
 
 							// get example use of parameter
-							if (param.getValueDescriptor() != null
-									&& param.getValueDescriptor().getSampleData() != null) {
+							if (param.getValueDescriptor() != null) {
 								// store sample value
 								Value sample = param.getValueDescriptor().getSampleData();
 								String displayValue = toDisplayValue(sample);

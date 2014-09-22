@@ -52,7 +52,7 @@ public abstract class AbstractParameterValueDescriptor implements ParameterValue
 	}
 
 	@Override
-	public String getDocumentationRepresentation() {
+	public String getSampleDescription() {
 		// override me
 		return null;
 	}

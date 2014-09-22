@@ -52,8 +52,8 @@
       </annotation>
       <complexType>
          <choice>
-            <element ref="parameterEnumeration"/>
             <element ref="parameterBinding"/>
+            <element ref="parameterEnumeration"/>
             <element ref="parameterComplexValue"/>
          </choice>
          <attribute name="name" type="string" use="required">
@@ -191,6 +191,32 @@
                <appinfo>
                   <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.io.complexvalue/complexValue/@id"/>
                </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="valueDescriptor">
+      <complexType>
+         <attribute name="default" type="string">
+            <annotation>
+               <documentation>
+                  Default value for the parameter (string value)
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="sample" type="string">
+            <annotation>
+               <documentation>
+                  Sample value for the parameter (string value)
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="sampleDescription" type="string">
+            <annotation>
+               <documentation>
+                  Description for the sample value or general description
+               </documentation>
             </annotation>
          </attribute>
       </complexType>
