@@ -38,6 +38,7 @@ import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
+import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 import eu.esdihumboldt.hale.common.core.report.Report;
@@ -46,6 +47,7 @@ import eu.esdihumboldt.hale.common.headless.impl.ProjectTransformationEnvironmen
 import eu.esdihumboldt.hale.common.headless.report.ReportFile;
 import eu.esdihumboldt.hale.common.headless.transform.Transformation;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
+import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 
 /**
@@ -70,6 +72,8 @@ public class ExecTransformation implements ConsoleConstants {
 
 	private InstanceReader source;
 
+	private InstanceValidator validator;
+
 	@SuppressWarnings("javadoc")
 	public int run(ExecContext context) throws Exception {
 		this.context = context;
@@ -87,6 +91,9 @@ public class ExecTransformation implements ConsoleConstants {
 
 		// set up writer for target
 		setupWriter();
+
+		// set up the target validator (if any)
+		setupValidator();
 
 		if (target == null) {
 			// writer could not be created
@@ -212,6 +219,27 @@ public class ExecTransformation implements ConsoleConstants {
 		target.loadConfiguration(conf.getProviderConfiguration());
 	}
 
+	private void setupValidator() {
+		if (context.getValidateProviderId() != null
+				&& !context.getValidateProviderId().trim().isEmpty()) {
+			validator = HaleIO.createIOProvider(InstanceValidator.class, null,
+					context.getValidateProviderId());
+			if (validator == null) {
+				throw fail("Instance validator with ID " + context.getValidateProviderId()
+						+ " not found");
+			}
+
+			// set validation schemas
+			List<? extends Locatable> schemas = target.getValidationSchemas();
+			validator.setSchemas(schemas.toArray(new Locatable[schemas.size()]));
+			// set source
+			validator.setSource(new DefaultInputSupplier(context.getTarget()));
+
+			// apply target content type
+			validator.setContentType(target.getContentType());
+		}
+	}
+
 	private LocatableOutputSupplier<? extends OutputStream> createTargetSupplier(final URI uri) {
 		try {
 			File file = new File(uri);
@@ -242,7 +270,7 @@ public class ExecTransformation implements ConsoleConstants {
 		List<InstanceReader> sources = new ArrayList<InstanceReader>();
 		sources.add(source);
 		ListenableFuture<Boolean> res = Transformation.transform(sources, target, env,
-				reportHandler, id, null);
+				reportHandler, id, validator);
 
 		if (res.get()) {
 			info("Transformation completed. Please check the reports for more details.");

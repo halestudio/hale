@@ -78,6 +78,7 @@
          [-preset &lt;name-of-export-preset&gt;]
          [-providerId &lt;ID-of-target-writer&gt;]
          [&lt;setting&gt;...]
+     [-validate &lt;ID-of-target-validator&gt; [&lt;setting&gt;...]]
      [options...]
 
   where setting is
@@ -162,7 +163,26 @@
 			in your local HALE installation (including eventual additional
 			plugins and custom implementations), so it is <b>only available in the
 			local HALE help and not in the online version on the web</b>.</i>
-	</p>	
+	</p>
+	<h4>Validation</h4>
+	<pre class="cli"><code>-validate &lt;ID-of-target-validator&gt; [&lt;setting&gt;...]</code></pre>
+	<p>The transformation result can optionally also be validated. To
+		do so, specify a validator to use by its ID in HALE. For example to
+		validate a created XML/GML file against it's XML Schema Definition use:</p>
+	<pre><code>-validate eu.esdihumboldt.hale.io.xml.validator</code></pre>
+	<p>
+		Please take a look at the <a
+			href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user.ioproviders/overview/InstanceValidator.html">Instance
+			validators</a> reference to see what kind of validators are available
+		for you and what kind of configuration options they offer. The
+		validator will by default be configured with the content type of the
+		transformation result writer. <i>Please note that this reference
+			documentation is generated from the I/O providers present in your
+			local HALE installation (including eventual additional plugins and
+			custom implementations), so it is <b>only available in the local
+				HALE help and not in the online version on the web</b>.
+		</i>
+	</p>
 	<h2>Examples</h2>
 	<p>Here is a full example on how to use the command line interface. There is a 
 	HALE project named <code>toInspire.halez</code> which contains a source schema 
