@@ -5,6 +5,7 @@
          point="eu.esdihumboldt.hale.io.provider">
       <provider
             class="eu.esdihumboldt.hale.io.xml.validator.XmlInstanceValidator"
+            description="Validates XML files against an associated XML schema definition (XSD) using the Java XML API"
             id="eu.esdihumboldt.hale.io.xml.validator"
             name="XML validator (Java XML API)">
          <contentType

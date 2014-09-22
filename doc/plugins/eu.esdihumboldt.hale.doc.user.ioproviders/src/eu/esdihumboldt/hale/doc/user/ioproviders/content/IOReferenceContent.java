@@ -41,6 +41,7 @@ import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.parameter.IOProviderParameter;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
+import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.doc.user.ioproviders.IOReferenceConstants;
 import eu.esdihumboldt.hale.doc.util.content.AbstractVelocityContent;
@@ -109,6 +110,9 @@ public class IOReferenceContent extends AbstractVelocityContent implements IORef
 				break;
 			case "InstanceWriter":
 				providerClass = InstanceWriter.class;
+				break;
+			case "InstanceValidator":
+				providerClass = InstanceValidator.class;
 				break;
 			}
 
