@@ -17,12 +17,17 @@
 	</p>
 	<h3>INSPIRE Download Services</h3>
 	<p>
-		The created dataset feed can be used to create an INSPIRE download service.
-		To complement the dataset feed a download feed is needed. The download feed
-		has to link to metadata for the download service and to an <i>OpenSearchDescription</i>.
-		Examples for the metadata and information about the <i>OpenSearchDescription</i>
-		are out of scope for this help.<br />
-		The download feed can look like the following (with one entry for each dataset):
+		The created dataset feed can be used to create an INSPIRE download
+		service. To complement the dataset feed a download feed is needed. The
+		download feed has to link to metadata for the download service and to
+		an <i>OpenSearchDescription</i>. Please have a look at the <i>Technical
+			Guidance for the implementation of INSPIRE Download Services</i> (to be
+		found at the INSPIRE website in <a
+			href="http://inspire.ec.europa.eu/index.cfm/pageid/5" target="_blank">Network
+			Services</a>) for more details on implementing an ATOM based INSPIRE
+		Download Service.<br /> Following is an example of how a download
+		feed could look like, that references the generated data set feed (with
+		one entry for each dataset):
 	</p>
 	<pre>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;
 &lt;feed xmlns=&quot;http://www.w3.org/2005/Atom&quot;
