@@ -50,7 +50,7 @@ public abstract class AbstractAnalyseTable {
 	 * Load table to analyse from an Excel file.
 	 * 
 	 * @param location the file location
-	 * @param sheetNum number of the sheet that should be loaded
+	 * @param sheetNum number of the sheet that should be loaded (0-based)
 	 * @throws Exception if an error occurs loading the file
 	 */
 	protected void analyse(URI location, int sheetNum) throws Exception {

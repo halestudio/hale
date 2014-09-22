@@ -61,9 +61,7 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 	// only needed for correct error description
 	private int line = 0;
 
-	/*
-	 * XXX does 0 represent the first sheet?
-	 */
+	// first sheet as default
 	private int sheetNum = 0;
 
 	/**
@@ -82,10 +80,6 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 		return false;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#execute(eu.esdihumboldt.hale.common.core.io.ProgressIndicator,
-	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
-	 */
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
@@ -93,6 +87,7 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 		boolean skipFirst = getParameter(CommonSchemaConstants.PARAM_SKIP_FIRST_LINE).as(
 				Boolean.class);
 
+		// first sheet as default
 		sheetNum = getParameter(InstanceTableIOConstants.SHEET_INDEX).as(int.class, 0);
 
 		instances = new DefaultInstanceCollection(new ArrayList<Instance>());
