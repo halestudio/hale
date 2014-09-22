@@ -176,7 +176,8 @@ public class ExecTransformation implements ConsoleConstants {
 		}
 		if (conf == null) {
 			if (customProvider == null) {
-				throw fail("Data export configration preset not found: " + preset);
+				throw fail("Data export configration preset not found: " + preset
+						+ " (please make sure you created it and saved it as part of the project)");
 			}
 			else {
 				conf = new IOConfiguration();
@@ -198,6 +199,9 @@ public class ExecTransformation implements ConsoleConstants {
 		// determine content type to use based on file extension
 		IOProviderDescriptor factory = HaleIO.findIOProviderFactory(InstanceWriter.class, null,
 				writerId);
+		if (factory == null) {
+			throw fail("Instance writer with ID " + writerId + " not found");
+		}
 		List<IContentType> cts = HaleIO.findContentTypesFor(factory.getSupportedTypes(), null,
 				context.getTarget().getPath());
 		if (!cts.isEmpty()) {
