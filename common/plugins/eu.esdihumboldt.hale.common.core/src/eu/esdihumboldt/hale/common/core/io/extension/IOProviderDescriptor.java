@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.content.IContentType;
 
 import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
-import eu.esdihumboldt.hale.common.core.parameter.InstanceProviderParameter;
+import eu.esdihumboldt.hale.common.core.parameter.IOProviderParameter;
 
 /**
  * Descriptor and factory for an {@link IOProvider}
@@ -43,7 +43,7 @@ public interface IOProviderDescriptor extends ExtensionObjectFactory<IOProvider>
 	 * 
 	 * @return the set of supported parameters
 	 */
-	public Set<InstanceProviderParameter> getProviderParameter();
+	public Set<IOProviderParameter> getProviderParameter();
 
 	/**
 	 * Get the concrete provider type

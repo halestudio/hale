@@ -102,27 +102,23 @@
          </contentType>
          <providerParameter
                optional="true"
-               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToTrueParameter">
-            <parameter
+               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToTrueParameter"
                   description="States if the root element should be ignored and thus not be loaded as an object itself."
                   label="No root object"
                   name="ignoreRoot">
                <parameterBinding
                      class="java.lang.Boolean">
                </parameterBinding>
-            </parameter>
          </providerParameter>
          <providerParameter
                optional="true"
-               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToFalseParameter">
-            <parameter
+               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToFalseParameter"
                   description="States if parsing of XML instances is done strictly according to the schema or if invalid property paths are allowed, e.g. if the element order in the data is not correct."
                   label="Strict mode"
                   name="strict">
                <parameterBinding
                      class="java.lang.Boolean">
                </parameterBinding>
-            </parameter>
          </providerParameter>
       </provider>
       <provider
@@ -137,27 +133,23 @@
          </contentType>
          <providerParameter
                optional="true"
-               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToTrueParameter">
-            <parameter
+               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToTrueParameter"
                   description="States if the root element should be ignored and thus not be loaded as an object itself."
                   label="No root object"
                   name="ignoreRoot">
                <parameterBinding
                      class="java.lang.Boolean">
                </parameterBinding>
-            </parameter>
          </providerParameter>
          <providerParameter
                optional="true"
-               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToFalseParameter">
-            <parameter
+               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToFalseParameter"
                   description="States if parsing of XML instances is done strictly according to the schema or if invalid property paths are allowed, e.g. if the element order in the data is not correct."
                   label="Strict mode"
                   name="strict">
                <parameterBinding
                      class="java.lang.Boolean">
                </parameterBinding>
-            </parameter>
          </providerParameter>
       </provider>
       <provider
@@ -172,15 +164,13 @@
          </contentType>
          <providerParameter
                optional="true"
-               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToTrueParameter">
-            <parameter
+               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToTrueParameter"
                   description="If geometries should be simplified (e.g. a MultiPolygon to a Polygon), if possible, before writing them."
                   label="Simplify geometries"
                   name="gml.geometry.simplify">
                <parameterBinding
                      class="java.lang.Boolean">
                </parameterBinding>
-            </parameter>
          </providerParameter>
       </provider>
       <provider
@@ -195,37 +185,31 @@
          </contentType>
          <providerParameter
                optional="true"
-               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToTrueParameter">
-            <parameter
+               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToTrueParameter"
                   description="If geometries should be simplified (e.g. a MultiPolygon to a Polygon), if possible, before writing them."
                   label="Simplify geometries"
                   name="gml.geometry.simplify">
                <parameterBinding
                      class="java.lang.Boolean">
                </parameterBinding>
-            </parameter>
          </providerParameter>
          <providerParameter
-               optional="false">
-            <parameter
+               optional="false"
                   description="The local name of the root element for the target XML file."
                   label="Root element name"
                   name="xml.rootElement.name">
                <parameterBinding
                      class="java.lang.String">
                </parameterBinding>
-            </parameter>
          </providerParameter>
          <providerParameter
-               optional="true">
-            <parameter
+               optional="true"
                   description="The namespace of the root element for the target XML file, defaults to the target schema namespace."
                   label="Root element namespace"
                   name="xml.rootElement.namespace">
                <parameterBinding
                      class="java.lang.String">
                </parameterBinding>
-            </parameter>
          </providerParameter>
       </provider>
       <provider
@@ -240,15 +224,13 @@
          </contentType>
          <providerParameter
                optional="true"
-               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToTrueParameter">
-            <parameter
+               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToTrueParameter"
                   description="If geometries should be simplified (e.g. a MultiPolygon to a Polygon), if possible, before writing them."
                   label="Simplify geometries"
                   name="gml.geometry.simplify">
                <parameterBinding
                      class="java.lang.Boolean">
                </parameterBinding>
-            </parameter>
          </providerParameter>
       </provider>
       <provider
@@ -262,147 +244,121 @@
                ref="eu.esdihumboldt.hale.io.gml.gzip">
          </contentType>
          <providerParameter
-               optional="false">
-            <parameter
+               optional="false"
                   description="The local ID of the INSPIRE identifier of the SpatialDataSet."
                   label="INSPIRE identifier local ID"
                   name="inspire.sds.localId">
                <parameterBinding
                      class="java.lang.String">
                </parameterBinding>
-            </parameter>
          </providerParameter>
          <providerParameter
                optional="false"
-               valueDescriptor="eu.esdihumboldt.hale.io.gml.writer.InspireSDSNamespaceDefaultValue">
-            <parameter
+               valueDescriptor="eu.esdihumboldt.hale.io.gml.writer.InspireSDSNamespaceDefaultValue"
                   description="The namespace of the INSPIRE identifier of the SpatialDataSet."
                   label="INSPIRE identifier namespace"
                   name="inspire.sds.namespace">
                <parameterBinding
                      class="java.lang.String">
                </parameterBinding>
-            </parameter>
          </providerParameter>
          <providerParameter
-               optional="true">
-            <parameter
+               optional="true"
                   description="The path to a metadata (XML) file."
                   label="Metadata file"
                   name="inspire.sds.metadata">
                <parameterBinding
                      class="java.lang.String">
                </parameterBinding>
-            </parameter>
-         </providerParameter>
-         <providerParameter
-               optional="true">
-            <parameter
-                  description="Metadata as XML (DOM)"
-                  label="Metadata XML"
-                  name="inspire.sds.metadata.inline">
-            </parameter>
          </providerParameter>
          <providerParameter
                optional="true"
-               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToTrueParameter">
-            <parameter
+                  description="Metadata as XML (DOM)"
+                  label="Metadata XML"
+                  name="inspire.sds.metadata.inline">
+         </providerParameter>
+         <providerParameter
+               optional="true"
+               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToTrueParameter"
                   description="If geometries should be simplified (e.g. a MultiPolygon to a Polygon), if possible, before writing them."
                   label="Simplify geometries"
                   name="gml.geometry.simplify">
                <parameterBinding
                      class="java.lang.Boolean">
                </parameterBinding>
-            </parameter>
          </providerParameter>
          <providerParameter
                optional="true"
-               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToFalseParameter">
-            <parameter
+               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToFalseParameter"
                   description="States if a data set feed for an INSPIRE ATOM based Download Service should be created."
                   label="Create data set feed"
                   name="inspire.sds.create_feed">
                <parameterBinding
                      class="java.lang.Boolean">
                </parameterBinding>
-            </parameter>
          </providerParameter>
          <providerParameter
-               optional="true">
-            <parameter
+               optional="true"
                   description="Title of the generated ATOM data set feed, if created."
                   label="Dataset feed title"
                   name="inspire.feed.title">
                <parameterBinding
                      class="java.lang.String">
                </parameterBinding>
-            </parameter>
          </providerParameter>
          <providerParameter
-               optional="true">
-            <parameter
+               optional="true"
                   description="Subtitle of the generated ATOM data set feed, if created."
                   label="Dataset feed subtitle"
                   name="inspire.feed.subtitle">
                <parameterBinding
                      class="java.lang.String">
                </parameterBinding>
-            </parameter>
          </providerParameter>
          <providerParameter
-               optional="true">
-            <parameter
+               optional="true"
                   description="Rights information for the generated ATOM data set feed, if created."
                   label="Feed rights information"
                   name="inspire.feed.rights">
                <parameterBinding
                      class="java.lang.String">
                </parameterBinding>
-            </parameter>
          </providerParameter>
          <providerParameter
-               optional="true">
-            <parameter
+               optional="true"
                   description="Author name for the generated ATOM data set feed, if created."
                   label="Feed author name"
                   name="inspire.feed.author_name">
                <parameterBinding
                      class="java.lang.String">
                </parameterBinding>
-            </parameter>
          </providerParameter>
          <providerParameter
-               optional="true">
-            <parameter
+               optional="true"
                   description="Author email address for the generated ATOM data set feed, if created."
                   label="Feed author email"
                   name="inspire.feed.author_mail">
                <parameterBinding
                      class="java.lang.String">
                </parameterBinding>
-            </parameter>
          </providerParameter>
          <providerParameter
-               optional="true">
-            <parameter
+               optional="true"
                   description="URL the generated ATOM data set feed will be available on."
                   label="URL to dataset feed"
                   name="inspire.feed.selflink">
                <parameterBinding
                      class="java.lang.String">
                </parameterBinding>
-            </parameter>
          </providerParameter>
          <providerParameter
-               optional="true">
-            <parameter
+               optional="true"
                   description="URL the GML file will be available on as part of the generated ATOM data set feed."
                   label="URL to GML file"
                   name="inspire.feed.gmllink">
                <parameterBinding
                      class="java.lang.String">
                </parameterBinding>
-            </parameter>
          </providerParameter>
       </provider>
    </extension>

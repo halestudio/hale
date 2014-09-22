@@ -34,7 +34,7 @@ import de.fhg.igd.eclipse.util.extension.ExtensionUtil;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
-import eu.esdihumboldt.hale.common.core.parameter.InstanceProviderParameter;
+import eu.esdihumboldt.hale.common.core.parameter.IOProviderParameter;
 
 /**
  * Extension for {@link IOProvider}s
@@ -129,13 +129,13 @@ public class IOProviderExtension extends AbstractExtension<IOProvider, IOProvide
 		 * @see eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor#getProviderParameter()
 		 */
 		@Override
-		public Set<InstanceProviderParameter> getProviderParameter() {
+		public Set<IOProviderParameter> getProviderParameter() {
 			IConfigurationElement[] children = conf.getChildren("providerParameter");
 
 			if (children != null) {
-				Set<InstanceProviderParameter> result = new HashSet<InstanceProviderParameter>();
+				Set<IOProviderParameter> result = new HashSet<IOProviderParameter>();
 				for (IConfigurationElement child : children) {
-					result.add(new InstanceProviderParameter(child));
+					result.add(new IOProviderParameter(child));
 				}
 				return result;
 			}
