@@ -114,6 +114,21 @@ public class ParameterUtil {
 			return result;
 		}
 
+		@Override
+		public String getDefaultDescription() {
+			String result = null;
+
+			if (delegatee != null) {
+				result = delegatee.getDefaultDescription();
+			}
+
+			if (result == null) {
+				result = conf.getAttribute("defaultDescription");
+			}
+
+			return result;
+		}
+
 	}
 
 	private static final ALogger log = ALoggerFactory.getLogger(ParameterUtil.class);

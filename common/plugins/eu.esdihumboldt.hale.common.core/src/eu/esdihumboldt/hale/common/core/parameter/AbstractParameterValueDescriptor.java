@@ -52,6 +52,12 @@ public abstract class AbstractParameterValueDescriptor implements ParameterValue
 	}
 
 	@Override
+	public String getDefaultDescription() {
+		// override me
+		return null;
+	}
+
+	@Override
 	public String getSampleDescription() {
 		// override me
 		return null;

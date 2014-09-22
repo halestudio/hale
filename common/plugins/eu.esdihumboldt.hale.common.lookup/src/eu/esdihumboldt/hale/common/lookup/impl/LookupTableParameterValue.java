@@ -38,6 +38,11 @@ public class LookupTableParameterValue implements ParameterValueDescriptor {
 		return Value.of(new LookupTableImpl(new LinkedHashMap<Value, Value>()));
 	}
 
+	@Override
+	public String getDefaultDescription() {
+		return null;
+	}
+
 	/**
 	 * @see eu.esdihumboldt.hale.common.core.parameter.ParameterValueDescriptor#getSampleDescription()
 	 */

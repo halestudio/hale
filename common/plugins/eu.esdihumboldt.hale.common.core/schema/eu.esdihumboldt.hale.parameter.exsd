@@ -205,6 +205,13 @@
                </documentation>
             </annotation>
          </attribute>
+         <attribute name="defaultDescription" type="string">
+            <annotation>
+               <documentation>
+                  Description of the default value or general description of defaults.
+               </documentation>
+            </annotation>
+         </attribute>
          <attribute name="sample" type="string">
             <annotation>
                <documentation>
