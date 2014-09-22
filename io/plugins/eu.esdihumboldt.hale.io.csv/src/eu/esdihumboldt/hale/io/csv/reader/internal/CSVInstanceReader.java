@@ -70,7 +70,7 @@ public class CSVInstanceReader extends AbstractInstanceReader {
 			throws IOProviderConfigurationException, IOException {
 
 		boolean skipFirst = getParameter(CommonSchemaConstants.PARAM_SKIP_FIRST_LINE).as(
-				Boolean.class);
+				Boolean.class, false);
 		instances = new DefaultInstanceCollection(new ArrayList<Instance>());
 		int line = 0;
 
