@@ -36,8 +36,6 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  */
 public abstract class AbstractTableInstanceWriter extends AbstractInstanceWriter {
 
-	private List<String> sheetNames;
-
 	/**
 	 * @see eu.esdihumboldt.hale.common.core.io.IOProvider#isCancelable()
 	 */
@@ -185,13 +183,6 @@ public abstract class AbstractTableInstanceWriter extends AbstractInstanceWriter
 			return !(((Group) obj).getDefinition() instanceof GroupPropertyDefinition);
 		}
 		return true;
-	}
-
-	/**
-	 * @return the sheetNames
-	 */
-	public List<String> getSheetNames() {
-		return sheetNames;
 	}
 
 	private void addProperty(List<String> headerRow, Map<String, Object> row, Object property,
