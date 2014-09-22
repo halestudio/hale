@@ -114,6 +114,16 @@
          <contentType
                ref="eu.esdihumboldt.hale.io.xls.xlsx">
          </contentType>
+         <providerParameter
+               description="Schema type which instances should be exported."
+               label="Export type"
+               name="selectedExportType"
+               optional="false"
+               valueDescriptor="eu.esdihumboldt.hale.io.csv.TypenameParameterDescriptor">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+         </providerParameter>
       </provider>
       </extension>
 
