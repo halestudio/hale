@@ -319,11 +319,88 @@
                optional="true"
                valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.DefaultsToFalseParameter">
             <parameter
-                  description="If an INSPIRE Dataset ATOM Feed should be created."
-                  label="Create Dataset Feed"
+                  description="States if a data set feed for an INSPIRE ATOM based Download Service should be created."
+                  label="Create data set feed"
                   name="inspire.sds.create_feed">
                <parameterBinding
                      class="java.lang.Boolean">
+               </parameterBinding>
+            </parameter>
+         </providerParameter>
+         <providerParameter
+               optional="true">
+            <parameter
+                  description="Title of the generated ATOM data set feed, if created."
+                  label="Dataset feed title"
+                  name="inspire.feed.title">
+               <parameterBinding
+                     class="java.lang.String">
+               </parameterBinding>
+            </parameter>
+         </providerParameter>
+         <providerParameter
+               optional="true">
+            <parameter
+                  description="Subtitle of the generated ATOM data set feed, if created."
+                  label="Dataset feed subtitle"
+                  name="inspire.feed.subtitle">
+               <parameterBinding
+                     class="java.lang.String">
+               </parameterBinding>
+            </parameter>
+         </providerParameter>
+         <providerParameter
+               optional="true">
+            <parameter
+                  description="Rights information for the generated ATOM data set feed, if created."
+                  label="Feed rights information"
+                  name="inspire.feed.rights">
+               <parameterBinding
+                     class="java.lang.String">
+               </parameterBinding>
+            </parameter>
+         </providerParameter>
+         <providerParameter
+               optional="true">
+            <parameter
+                  description="Author name for the generated ATOM data set feed, if created."
+                  label="Feed author name"
+                  name="inspire.feed.author_name">
+               <parameterBinding
+                     class="java.lang.String">
+               </parameterBinding>
+            </parameter>
+         </providerParameter>
+         <providerParameter
+               optional="true">
+            <parameter
+                  description="Author email address for the generated ATOM data set feed, if created."
+                  label="Feed author email"
+                  name="inspire.feed.author_mail">
+               <parameterBinding
+                     class="java.lang.String">
+               </parameterBinding>
+            </parameter>
+         </providerParameter>
+         <providerParameter
+               optional="true">
+            <parameter
+                  description="URL the generated ATOM data set feed will be available on."
+                  label="URL to dataset feed"
+                  name="inspire.feed.selflink">
+               <parameterBinding
+                     class="java.lang.String">
+               </parameterBinding>
+            </parameter>
+         </providerParameter>
+         <providerParameter
+               optional="true">
+            <parameter
+                  description="URL the GML file will be available on as part of the generated ATOM data set feed."
+                  label="URL to GML file"
+                  name="inspire.feed.gmllink">
+               <parameterBinding
+                     class="java.lang.String">
                </parameterBinding>
             </parameter>
          </providerParameter>
