@@ -77,6 +77,12 @@
 						<td>$defaults.get($param.getName())</td>
 					</tr>
 				#end
+				#if ($param.valueDescriptor && $param.valueDescriptor.defaultDescription)
+					<tr>
+						<th  style="text-align: right;"></th>
+						<td>$param.valueDescriptor.defaultDescription</td>
+					</tr>
+				#end
 			</table>
 			</div>
 		</li>
