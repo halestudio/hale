@@ -22,6 +22,7 @@ import org.eclipse.help.internal.toc.HrefUtil;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
+import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.doc.user.ioproviders.IOReferenceConstants;
 import eu.esdihumboldt.hale.doc.util.toc.OneTopicToc;
 
@@ -143,7 +144,14 @@ public abstract class AbstractIOReferenceToc extends AbstractTocProvider impleme
 
 		// determine anchor
 		Class<? extends IOProvider> providerclass = topic.getProviderClass();
-		if (ImportProvider.class.isAssignableFrom(providerclass)) {
+		if (InstanceValidator.class.isAssignableFrom(providerclass)) {
+			/*
+			 * validators are special in the sense that they don't actually
+			 * import something.
+			 */
+			anchor = "reference";
+		}
+		else if (ImportProvider.class.isAssignableFrom(providerclass)) {
 			anchor = "import-start";
 		}
 		else {

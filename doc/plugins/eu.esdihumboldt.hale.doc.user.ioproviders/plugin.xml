@@ -9,6 +9,9 @@
       <tocProvider
             class="eu.esdihumboldt.hale.doc.user.ioproviders.toc.InstanceReaderToc">
       </tocProvider>
+      <tocProvider
+            class="eu.esdihumboldt.hale.doc.user.ioproviders.toc.InstanceValidatorToc">
+      </tocProvider>
    </extension>
    <extension
          point="org.eclipse.help.contentProducer">
