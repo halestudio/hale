@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.resource.DataFormatException;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.RGB;
 
@@ -129,8 +130,12 @@ public class StylePreferences extends AbstractPreferenceInitializer implements
 			return null;
 		}
 		else {
-			RGB rgb = StringConverter.asRGB(color);
-			return SwingRcpUtilities.convertToColor(rgb);
+			try {
+				RGB rgb = StringConverter.asRGB(color);
+				return SwingRcpUtilities.convertToColor(rgb);
+			} catch (DataFormatException e) {
+				return null;
+			}
 		}
 	}
 
@@ -142,8 +147,12 @@ public class StylePreferences extends AbstractPreferenceInitializer implements
 	public static RGB getDefaultBackground() {
 		IPreferenceStore preferences = InstanceStylePlugin.getDefault().getPreferenceStore();
 
-		String color = preferences.getString(KEY_DEFAULT_BACKGROUND);
-		return StringConverter.asRGB(color);
+		try {
+			String color = preferences.getString(KEY_DEFAULT_BACKGROUND);
+			return StringConverter.asRGB(color);
+		} catch (DataFormatException e) {
+			return DEFAULT_BACKGROUND;
+		}
 	}
 
 }
