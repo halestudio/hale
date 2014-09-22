@@ -39,7 +39,7 @@ public class AnalyseXLSSchemaTable extends AbstractAnalyseTable {
 	 * Default constructor
 	 * 
 	 * @param location the location of the Excel file
-	 * @param sheetNum number of the sheet in Excel file
+	 * @param sheetNum number of the sheet in Excel file (0-based)
 	 * 
 	 * @throws Exception thrown if the analysis fails
 	 */
