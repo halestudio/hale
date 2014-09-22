@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.content.IContentType;
 
 import de.fhg.igd.eclipse.util.extension.ExtensionObjectDefinition;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
-import eu.esdihumboldt.hale.common.core.parameter.InstanceProviderParameter;
+import eu.esdihumboldt.hale.common.core.parameter.IOProviderParameter;
 
 /**
  * Decorator for an {@link IOProviderDescriptor}.
@@ -72,7 +72,7 @@ public abstract class IOProviderDescriptorDecorator implements IOProviderDescrip
 	}
 
 	@Override
-	public Set<InstanceProviderParameter> getProviderParameter() {
+	public Set<IOProviderParameter> getProviderParameter() {
 		return descriptor.getProviderParameter();
 	}
 

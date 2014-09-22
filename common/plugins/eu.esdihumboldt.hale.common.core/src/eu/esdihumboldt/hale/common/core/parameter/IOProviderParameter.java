@@ -22,11 +22,11 @@ import javax.annotation.Nullable;
 import org.eclipse.core.runtime.IConfigurationElement;
 
 /**
- * Definition of an Instance Reader/Writer parameter
+ * Definition of a parameter for an I/O provider.
  * 
  * @author Yasmina Kammeyer
  */
-public class InstanceProviderParameter extends AbstractCommonParameter {
+public class IOProviderParameter extends AbstractCommonParameter {
 
 	// private static final ALogger log =
 	// ALoggerFactory.getLogger(InstanceProviderParameter.class);
@@ -44,16 +44,14 @@ public class InstanceProviderParameter extends AbstractCommonParameter {
 	 * 
 	 * @param conf the configuration element
 	 */
-	public InstanceProviderParameter(IConfigurationElement conf) {
-		super(conf.getChildren("parameter")[0]);
+	public IOProviderParameter(IConfigurationElement conf) {
+		super(conf);
 
-		IConfigurationElement[] children = conf.getChildren("parameter");
-
-		this.binding = ParameterUtil.getBinding(children[0]);
+		this.binding = ParameterUtil.getBinding(conf);
 		// also use validator information
-		this.validator = ParameterUtil.getValidator(children[0]);
+		this.validator = ParameterUtil.getValidator(conf);
 
-		this.enumeration = ParameterUtil.getEnumeration(children[0]);
+		this.enumeration = ParameterUtil.getEnumeration(conf);
 
 		this.valueDescriptor = ParameterUtil.getValueDescriptor(conf);
 

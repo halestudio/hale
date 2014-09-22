@@ -49,6 +49,66 @@
          </attribute>
       </complexType>
    </element>
+   
+   <element name="providerParameter">
+      <annotation>
+         <documentation>
+            Defines a provider paramter
+         </documentation>
+      </annotation>
+      <complexType>
+         <choice>
+            <element ref="parameterEnumeration"/>
+            <element ref="parameterBinding"/>
+            <element ref="parameterComplexValue"/>
+         </choice>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="label" type="string">
+            <annotation>
+               <documentation>
+                  Display name for the parameter.
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="description" type="string">
+            <annotation>
+               <documentation>
+                  Parameter description.
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="optional" type="boolean" use="default" value="false">
+            <annotation>
+               <documentation>
+                  Flag, if the parameter is optional or not
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="valueDescriptor" type="string">
+            <annotation>
+               <documentation>
+                  The Extension to define a default value and sample data for a parameter.
+Implementation of the ParameterValueDescriptor Interface for the specific parameter.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.core.parameter.ParameterValueDescriptor"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
 
    <element name="provider">
       <complexType>

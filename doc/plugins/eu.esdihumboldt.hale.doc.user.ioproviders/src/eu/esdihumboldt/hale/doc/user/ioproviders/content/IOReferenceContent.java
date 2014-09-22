@@ -39,7 +39,7 @@ import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
-import eu.esdihumboldt.hale.common.core.parameter.InstanceProviderParameter;
+import eu.esdihumboldt.hale.common.core.parameter.IOProviderParameter;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.doc.user.ioproviders.IOReferenceConstants;
@@ -180,10 +180,10 @@ public class IOReferenceContent extends AbstractVelocityContent implements IORef
 						context.put("providerType", type);
 
 						// collect all optional parameter
-						Collection<InstanceProviderParameter> parameter = new ArrayList<InstanceProviderParameter>();
+						Collection<IOProviderParameter> parameter = new ArrayList<IOProviderParameter>();
 						Map<String, String> example = new HashMap<String, String>();
 						Map<String, String> defaults = new HashMap<String, String>();
-						for (InstanceProviderParameter param : descriptor.getProviderParameter()) {
+						for (IOProviderParameter param : descriptor.getProviderParameter()) {
 							parameter.add(param);
 
 							// get example use of parameter

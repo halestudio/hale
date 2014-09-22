@@ -12,26 +12,22 @@
                ref="eu.esdihumboldt.hale.io.jdbc">
          </contentType>
          <providerParameter
-               optional="false">
-            <parameter
+               optional="false"
                   description="The user name for the connection to the database."
                   label="User name"
                   name="jdbc.user">
                <parameterBinding
                      class="java.lang.String">
                </parameterBinding>
-            </parameter>
          </providerParameter>
          <providerParameter
-               optional="false">
-            <parameter
+               optional="false"
                   description="The password for the connection to the database."
                   label="Password"
                   name="jdbc.password">
                <parameterBinding
                      class="java.lang.String">
                </parameterBinding>
-            </parameter>
          </providerParameter>
       </provider>
       <provider
@@ -42,26 +38,22 @@
                ref="eu.esdihumboldt.hale.io.jdbc">
          </contentType>
          <providerParameter
-               optional="false">
-            <parameter
+               optional="false"
                   description="The user name for the connection to the database."
                   label="User name"
                   name="jdbc.user">
                <parameterBinding
                      class="java.lang.String">
                </parameterBinding>
-            </parameter>
          </providerParameter>
          <providerParameter
-               optional="false">
-            <parameter
+               optional="false"
                   description="The password for the connection to the database."
                   label="Password"
                   name="jdbc.password">
                <parameterBinding
                      class="java.lang.String">
                </parameterBinding>
-            </parameter>
          </providerParameter>
       </provider>
       <provider
@@ -72,26 +64,22 @@
                ref="eu.esdihumboldt.hale.io.jdbc">
          </contentType>
          <providerParameter
-               optional="false">
-            <parameter
+               optional="false"
                   description="The user name for the connection to the database."
                   label="User name"
                   name="jdbc.user">
                <parameterBinding
                      class="java.lang.String">
                </parameterBinding>
-            </parameter>
          </providerParameter>
          <providerParameter
-               optional="false">
-            <parameter
+               optional="false"
                   description="The password for the connection to the database."
                   label="Password"
                   name="jdbc.password">
                <parameterBinding
                      class="java.lang.String">
                </parameterBinding>
-            </parameter>
          </providerParameter>
       </provider>
    </extension>
