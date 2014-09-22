@@ -71,7 +71,7 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 			throws IOProviderConfigurationException, IOException {
 
 		boolean solveNestedProperties = getParameter(
-				InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES).as(Boolean.class);
+				InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES).as(Boolean.class, false);
 
 		// get the parameter to get the type definition
 		String exportType = getParameter(InstanceTableIOConstants.EXPORT_TYPE).as(String.class);
