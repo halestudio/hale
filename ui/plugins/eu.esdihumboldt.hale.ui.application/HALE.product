@@ -95,7 +95,6 @@ http://www.wetransform.to/products/hale
       <feature id="eu.esdihumboldt.hale.ui.feature.dropins"/>
       <feature id="de.fhg.igd.hale.fme.feature"/>
       <feature id="eu.esdihumboldt.hale.platform.resources"/>
-      <feature id="eu.esdihumboldt.hale.ui.feature.liveeditor"/>
    </features>
 
    <configurations>
