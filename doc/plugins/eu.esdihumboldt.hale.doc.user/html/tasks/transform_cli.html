@@ -189,8 +189,31 @@
 				HALE help and not in the online version on the web</b>.
 		</i>
 	</p>
+	<h4>Other options</h4>
+	<dl>
+		<dt><code>-reportsOut &lt;reports-file&gt;</code></dt>
+		<dd>
+			Specifies the location of a report file to be written. The report file will hold
+			information on the different tasks executed during the transformation
+			process, e.g. the data import, the transformation, the data export or
+			the validation. Use this option if you want to know in detail what
+			kind of warnings or errors may have occurred during the execution of
+			these tasks. If you find the file format hard to read, import the
+			report log into the <i>Report List</i> view in HALE.
+		</dd>
+		<dt><code>-stacktrace</code></dt>
+		<dd>Provide this flag to enable printing the stacktrace if
+			launching the transformation process fails due to an internal error
+			or misconfiguration. Please note that this does not encompass errors
+			that occur as part of the transformation tasks as stated above - use
+			the report file for information on those.</dd>
+		<dt><code>-trustGroovy</code></dt>
+		<dd>Provide this flag if you trust any Groovy transformation
+			functions used in the provided project. This will lift restrictions
+			on Groovy calls and speed up the execution.</dd>
+	</dl>
 	<h2>Examples</h2>
-	<p>Here is a full example on how to use the command line interface. There is a 
+	<p>Here is an example on how to use the command line interface. There is a 
 	HALE project named <code>toInspire.halez</code> which contains a source schema 
 	and a mapping one of the INSPIRE application schemas. The source data is contained 
 	in the <code>geographicData.shp</code> file, which is encoded in <code>UTF-8</code>. The transformed 
@@ -203,6 +226,15 @@
 		Specifying writer and settings explicitly
 		<pre class="cli"><code><b>&gt;</b> HALE -nosplash -application hale.transform -project toInspire.halez -source geographicData.shp -Scharset UTF-8 -target inspireData.gml -providerId eu.esdihumboldt.hale.io.inspiregml.writer -Sinspire.sds.namespace http://gdi-de.org/oid/de.beispiel.namespace -Sinspire.sds.localId 10</code></pre>
 	</div>
-	
+	<h3>Full example with project and data</h3>
+	<p>
+		Based on a public example project we created an example you can
+		directly try, complete with project data and script file to launch the
+		transformation. You can download the example <a
+			href="http://builds.esdi-humboldt.eu/clisample_29.zip">here</a>.
+		Please take a look at the README provided as part of the example, on
+		how to set it up.
+	</p>
+
 </body>
 </html>
