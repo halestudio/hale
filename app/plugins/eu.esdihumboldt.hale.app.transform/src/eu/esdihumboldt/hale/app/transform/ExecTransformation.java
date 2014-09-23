@@ -50,6 +50,8 @@ import eu.esdihumboldt.hale.common.headless.transform.Transformation;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
+import eu.esdihumboldt.util.groovy.sandbox.DefaultGroovyService;
+import eu.esdihumboldt.util.groovy.sandbox.GroovyService;
 
 /**
  * Executes a transformation.
@@ -274,6 +276,14 @@ public class ExecTransformation implements ConsoleConstants {
 	private void transform() throws InterruptedException, ExecutionException {
 		status("Running HALE transformation...");
 
+		// configure transformation environment
+
+		// override/set Groovy service
+		GroovyService gs = new DefaultGroovyService();
+		gs.setRestrictionActive(context.isRestrictGroovy());
+		env.addService(GroovyService.class, gs);
+
+		// run transformation
 		ListenableFuture<Boolean> res = Transformation.transform(sources, target, env,
 				reportHandler, id, validator);
 

@@ -85,4 +85,9 @@ class ExecContext {
 	 * If an exception failing the transformation should be logged.
 	 */
 	boolean logException = false
+
+	/**
+	 * If Groovy based transformation functions should be restricted.
+	 */
+	boolean restrictGroovy = true
 }

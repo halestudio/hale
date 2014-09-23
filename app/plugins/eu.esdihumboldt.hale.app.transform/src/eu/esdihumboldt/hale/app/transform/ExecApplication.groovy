@@ -125,6 +125,7 @@ HALE -nosplash -application hale.transform
   and options are
      -reportsOut <reports-file>
      -stacktrace
+     -trustGroovy
 		""".trim()
 
 		// general error code
@@ -292,6 +293,9 @@ HALE -nosplash -application hale.transform
 		switch (arg) {
 			case '-stacktrace':
 				executionContext.logException = true
+				break
+			case '-trustGroovy':
+				executionContext.restrictGroovy = false
 				break
 		}
 	}
