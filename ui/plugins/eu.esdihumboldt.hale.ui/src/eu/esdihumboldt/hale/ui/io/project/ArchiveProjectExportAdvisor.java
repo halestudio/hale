@@ -39,7 +39,8 @@ public class ArchiveProjectExportAdvisor extends DefaultIOAdvisor<ArchiveProject
 
 		ProjectService projectService = getService(ProjectService.class);
 		Project project = (Project) projectService.getProjectInfo();
-		provider.setProject(project);
+		// set a copy of the project
+		provider.setProject(project.clone());
 	}
 
 	@Override
