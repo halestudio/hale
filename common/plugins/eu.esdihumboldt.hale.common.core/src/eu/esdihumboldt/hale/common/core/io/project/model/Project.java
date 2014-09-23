@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import org.osgi.framework.Version;
@@ -36,7 +37,7 @@ import eu.esdihumboldt.hale.common.core.io.project.model.internal.JaxbProjectIO;
  * 
  * @author Simon Templer
  */
-public class Project implements ProjectInfo {
+public class Project implements ProjectInfo, Cloneable {
 
 	/**
 	 * Load a project from an input stream.
@@ -116,6 +117,43 @@ public class Project implements ProjectInfo {
 	 * configurations.
 	 */
 	private final Map<String, IOConfiguration> exportConfigurations = new ExportConfigurationMap();
+
+	/**
+	 * Default constructor.
+	 */
+	public Project() {
+	}
+
+	/**
+	 * Copy constructor.
+	 * 
+	 * @param project the project to copy
+	 */
+	public Project(Project project) {
+		this.name = project.getName();
+		this.author = project.getAuthor();
+		this.haleVersion = project.getHaleVersion();
+		this.created = project.getCreated();
+		this.modified = project.getModified();
+		this.description = project.getDescription();
+		this.saveConfiguration = project.getSaveConfiguration().clone();
+		for (IOConfiguration resource : project.getResources()) {
+			this.resources.add(resource.clone());
+		}
+		this.properties.putAll(project.getProperties());
+		for (ProjectFileInfo fileInfo : project.getProjectFiles()) {
+			this.projectFiles.add(fileInfo.clone());
+		}
+		for (Entry<String, IOConfiguration> exportPreset : project.getExportConfigurations()
+				.entrySet()) {
+			this.exportConfigurations.put(exportPreset.getKey(), exportPreset.getValue().clone());
+		}
+	}
+
+	@Override
+	public Project clone() {
+		return new Project(this);
+	}
 
 	/**
 	 * @return the configurations

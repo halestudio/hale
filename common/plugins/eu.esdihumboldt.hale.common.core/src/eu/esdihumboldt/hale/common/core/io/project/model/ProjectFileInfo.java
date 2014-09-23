@@ -23,7 +23,7 @@ import java.net.URI;
  * 
  * @author Simon Templer
  */
-public class ProjectFileInfo {
+public class ProjectFileInfo implements Cloneable {
 
 	private String name;
 
@@ -74,6 +74,19 @@ public class ProjectFileInfo {
 	 */
 	public void setLocation(URI location) {
 		this.location = location;
+	}
+
+	/**
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	protected ProjectFileInfo clone() {
+		ProjectFileInfo copy = new ProjectFileInfo();
+
+		copy.setLocation(getLocation());
+		copy.setName(getName());
+
+		return copy;
 	}
 
 }
