@@ -132,14 +132,14 @@ table.facts {
 	margin-left: 20px;
 }
 
-table.facts td,th {
+table.facts td, table.facts th {
 	padding-left: 10px;
 	padding-right: 10px;
 	padding-top: 6px;
 	padding-bottom: 6px;
 }
 
-table.facts tr > th:first-child,td:first-child {
+table.facts tr > th:first-child, table.facts tr > td:first-child {
   border-radius: 6px 0 0 6px;
   -moz-border-radius: 6px 0 0 6px;
 }
