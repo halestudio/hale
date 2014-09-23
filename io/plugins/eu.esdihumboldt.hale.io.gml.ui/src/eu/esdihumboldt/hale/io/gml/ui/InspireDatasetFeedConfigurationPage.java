@@ -71,11 +71,15 @@ public class InspireDatasetFeedConfigurationPage extends
 	@Override
 	protected void onShowPage(boolean firstShow) {
 		// update defaults for self+gml uri
-		URI gmlTarget = getWizard().getProvider().getTarget().getLocation();
-		if (!gmlTarget.equals(lastGMLTarget)) {
-			lastGMLTarget = gmlTarget;
-			selfLink.setStringValue(getFeedURIDefault());
-			gmlLink.setStringValue(getGMLURIDefault());
+		if (getWizard().getProvider().getTarget() != null) {
+			// may be null when creating custom export configuration
+
+			URI gmlTarget = getWizard().getProvider().getTarget().getLocation();
+			if (!gmlTarget.equals(lastGMLTarget)) {
+				lastGMLTarget = gmlTarget;
+				selfLink.setStringValue(getFeedURIDefault());
+				gmlLink.setStringValue(getGMLURIDefault());
+			}
 		}
 	}
 
