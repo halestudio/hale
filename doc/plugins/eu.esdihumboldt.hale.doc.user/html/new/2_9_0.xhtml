@@ -12,12 +12,258 @@
 		line interface for transformation, improved INSPIRE support and some
 		bug fixes.</p>
 
+	<p class="Note">Please note that projects created with HALE 2.9 in
+		some cases may be incompatible with previous versions of HALE. This is
+		because the project file format has been extended, but the project
+		file parser in HALE 2.8 and earlier is very strict and fails if it
+		encounters anything unknown.</p>
+
 	<!-- 2.9.0 -->
 	<table border="0" cellpadding="15" cellspacing="0" class="news"
 		id="2_9_0">
 		<tbody>
 
-			<!-- TODO -->
+			<tr id="transform_cli">
+				<td class="title" colspan="1" rowspan="1">Extended command line
+					interface</td>
+				<td class="content" colspan="1" rowspan="1">For integrating
+					schema transformation based on HALE into your infrastructure an
+					easy way is to use the command line interface. Some have already
+					used the command line interface part of the integration with the
+					HALE FME plug-in - but this is very limited in functionality. The
+					new command line interface is far more flexible in its
+					configuration and allows data export to be easily configured with
+					support through the HALE user interface. HALE plug-ins and
+					extensions offering additional data format or validation support
+					can be used with minimal effort.
+					<p>
+						<img src="2_9_0_images/cli.png" />
+					</p>
+					<p>
+						For detailed information on the command line interface, please see
+						the <i><a
+							href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/transform_cli.html">Transformation
+								via the command line</a></i> help topic.
+					</p>
+				</td>
+			</tr>
+
+			<tr id="dataset_feed">
+				<td class="title" colspan="1" rowspan="1">Dataset feed for
+					INSPIRE Download Service</td>
+				<td class="content" colspan="1" rowspan="1">HALE aids you in
+					creating an ATOM feed based INSPIRE download service by generating
+					a dataset feed for your transformed data automatically. Just enable
+					the creation of the feed in the <a
+					href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/reference/export/inspiregml_data.html">INSPIRE
+						SpatialDataSet export</a> and provide some basic information for the
+					feed metadata. Information on feature types and coordinate
+					reference systems will be included automatically.
+					<p>
+						<img src="2_9_0_images/feed3.png" />
+					</p>
+					<p>
+						For a complete ATOM based INSPIRE Download Service you will need
+						to include the dataset feed in a download feed. Take a look <i><a
+							href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/reference/export/inspiregml_data.html">here</a></i>
+						for more information and a template.
+					</p>
+				</td>
+			</tr>
+
+			<tr id="crs_conversion">
+				<td class="title" colspan="1" rowspan="1">CRS conversion</td>
+				<td class="content" colspan="1" rowspan="1">You can now include
+					a conversion to a given coordinate reference system (CRS) as part
+					of writing the transformed data to GML. You can identify the CRS
+					with an EPSG code or define a custom CRS using a WKT
+					representation.
+					<p>
+						<img src="2_9_0_images/crs_conv.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="structural_retype">
+				<td class="title" colspan="1" rowspan="1">Easily copy similar
+					attributes</td>
+				<td class="content" colspan="1" rowspan="1">Do you have source
+					and target schema types that are very similar and differ just in a
+					few properties or only the namespace? Now the <b>Retype</b>
+					transformation function has configuration options to automatically
+					copy properties/attributes with similar names. To do this only on
+					the level of a certain property, use the <b>Rename</b> function and
+					configure it as <i>structural rename</i>.
+				</td>
+			</tr>
+
+			<tr id="excel">
+				<td class="title" colspan="1" rowspan="1">Excel file support</td>
+				<td class="content" colspan="1" rowspan="1">Similar to the
+					support for CSV files you can now read or write simple Excel files
+					(.xls, .xlsx) with HALE. For more information, see <a
+					href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/reference/import/xls.html">Excel
+						File Import</a> and <a
+					href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/reference/export/xls_data.html">Excel
+						File Export</a>.
+					<p>Are Excel files potential source data you need to transform?
+						Let us know your requirements for an extended Excel support.</p>
+				</td>
+			</tr>
+
+			<tr id="migrate">
+				<td class="title" colspan="1" rowspan="1">Cope with schema
+					changes</td>
+				<td class="content" colspan="1" rowspan="1">Easily adapt a
+					mapping created for a different version of a schema. When HALE
+					encounters a mapping of a schema element that no longer exists
+					(e.g. because it has been renamed or deleted), it will ask you to
+					select an element from the current schema instead. You also have
+					the option to cancel and keep the now invalid relation instead.
+					<p>
+						<img src="2_9_0_images/migrate.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="inspire_registry_cl">
+				<td class="title" colspan="1" rowspan="1">Load code lists from
+					INSPIRE registry</td>
+				<td class="content" colspan="1" rowspan="1">Browse and search
+					the code lists from the <a
+					href="http://inspire.ec.europa.eu/registry/" target="_blank">INSPIRE
+						registry</a> provided by the JRC and directly load them in HALE.
+					<p>
+						<img src="2_9_0_images/registry_codelists.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="inspire_annex23">
+				<td class="title" colspan="1" rowspan="1">INSPIRE Annex II
+					&amp; III schemas</td>
+				<td class="content" colspan="1" rowspan="1">The INSPIRE Annex
+					II and III themes application schemas are now included in HALE, for
+					faster loading and offline usage. Also check out the INSPIRE
+					project templates (<i>File</i>&#8594;<i>New project from
+						template</i>) to get you started faster on your transformation towards
+					INSPIRE.
+				</td>
+			</tr>
+
+			<tr id="export_source">
+				<td class="title" colspan="1" rowspan="1">Export source data</td>
+				<td class="content" colspan="1" rowspan="1">The same options
+					you have for export of transformed data are now available for
+					source data as well. This means you can easily export data in the
+					same structure but in a different encoding, for instance XML as
+					JSON.</td>
+			</tr>
+
+			<tr id="data_copyval">
+				<td class="title" colspan="1" rowspan="1">Copy property values
+					to clipboard</td>
+				<td class="content" colspan="1" rowspan="1">
+					<p>The data views now allow to easily copy values from
+						inspected instances to the clipboard for further use or detailed
+						inspection.</p>
+					<div>
+						<img src="2_9_0_images/data_copyval.png" />
+					</div>
+				</td>
+			</tr>
+
+			<tr id="metadata_filter">
+				<td class="title" colspan="1" rowspan="1">Easily find source or
+					target</td>
+				<td class="content" colspan="1" rowspan="1">In addition to the
+					possibility to filter based on CQL, you can search for specific
+					instances in the data views by their internal HALE identifiers.
+					These identifiers are displayed in the data views for each instance
+					in the metadata category.
+					<p>
+						This allows you to easily find a source instance for a transformed
+						instance, or a transformed instance for a source instance. To find
+						the source instance for a transformed instance, copy the
+						identifier displayed as <i>Source ID</i> for the transformed
+						instance, and specify a filter with the identifier preceded by
+						<code>id:</code>
+						in the source data view. The respective prefix for finding
+						transformed instances for a source instance in the transformed
+						data view is
+						<code>source:</code>
+					</p>
+					<p>
+						<img src="2_9_0_images/metadata_filter.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="alignment_doc_svg">
+				<td class="title" colspan="1" rowspan="1">New mapping
+					documentation format</td>
+				<td class="content" colspan="1" rowspan="1">Additionally to the
+					existing mapping documentation HTML format that is more suited for
+					printing, we added a new mapping documentation format based on HTML
+					and SVG that is better suited to be displayed in a web browser.
+					<p>
+						<img src="2_9_0_images/alignment_doc.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="cache_schemas">
+				<td class="title" colspan="1" rowspan="1">Map database schemas
+					without database access</td>
+				<td class="content" colspan="1" rowspan="1">HALE now caches
+					certain types of schemas as part of the project, in case the
+					resource to load the schema from is not accessible. This allows you
+					to share projects that use your database schema without the need
+					for them to be able to connect to the database.</td>
+			</tr>
+
+			<tr id="safer_groovy">
+				<td class="title" colspan="1" rowspan="1">Safer execution of
+					Groovy scripts</td>
+				<td class="content" colspan="1" rowspan="1">With the Groovy
+					transformation functions you practically can do anything - but that
+					doesn't only have good sides. HALE by default restricts the
+					execution of Groovy code as part of the transformation to allow
+					access only to certain classes and methods. If you trust a
+					project's Groovy code, you can disable the restriction, which also
+					allows a more performant execution.
+					<p>
+						<img src="2_9_0_images/sandbox1.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="assign_split">
+				<td class="title" colspan="1" rowspan="1"><i>Assign</i> - back
+					to the roots</td>
+				<td class="content" colspan="1" rowspan="1">In one of the
+					previous releases the <i>Assign</i> transformation function has
+					been extended with the possibility to only apply it if a certain
+					source property value is present. This change in the function has led to
+					some confusion and accidental misconfiguration of relations. The <i>Assign</i>
+					function now again is a pure augmentation, that has no connection
+					to the source schema. Instead there now is an additional function <i>Assign
+						(Bound)</i> that requires a source schema element as anchor. This
+					doesn't break any existing mappings, existing assigns will be
+					replaced on load with the bound assign if applicable.
+				</td>
+			</tr>
+
+			<tr id="other">
+				<td class="title" colspan="1" rowspan="1">Other stuff</td>
+				<td class="content" colspan="1" rowspan="1">There is a lot more
+					that has changed under the hood for the 2.9 release. Apart from a
+					lot of bug fixes and an upgrade of the underlying platform from
+					Eclipse Indigo to Eclipse Luna, there also was a new build system
+					introduced that allows us to again provide an installer for Windows
+					and a version of HALE that runs on current Mac OS X operating
+					systems.</td>
+			</tr>
 
 		</tbody>
 	</table>
