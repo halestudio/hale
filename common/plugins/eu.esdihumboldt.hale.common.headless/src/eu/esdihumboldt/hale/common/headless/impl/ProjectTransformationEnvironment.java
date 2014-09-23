@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -71,6 +72,8 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 
 	private final Map<String, IOConfiguration> exportPresets = new ExportConfigurationMap();
 
+	private final Map<Class<?>, Object> customServices = new HashMap<>();
+
 	/**
 	 * Project context service provider.
 	 */
@@ -79,8 +82,13 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 		private final ServiceProvider projectScope = new ServiceManager(
 				ServiceManager.SCOPE_PROJECT);
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public <T> T getService(Class<T> serviceInterface) {
+			if (customServices.containsKey(serviceInterface)) {
+				return (T) customServices.get(serviceInterface);
+			}
+
 			// FIXME global scope not supported yet
 			return projectScope.getService(serviceInterface);
 		}
@@ -141,6 +149,16 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 		else {
 			throw new IOException("Cannot load project, no corresponding I/O provider found.");
 		}
+	}
+
+	/**
+	 * Add a custom service to the transformation environment.
+	 * 
+	 * @param serviceInterface the service interface
+	 * @param service the service
+	 */
+	public <T> void addService(Class<T> serviceInterface, T service) {
+		customServices.put(serviceInterface, service);
 	}
 
 	/**
