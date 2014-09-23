@@ -89,7 +89,7 @@ class ExecApplication extends AbstractApplication<ExecContext> {
 		}
 
 		// source is required
-		if (!ec.source) {
+		if (!ec.sources) {
 			error('You need to provide a reference to source data to transform')
 			return false
 		}
@@ -142,7 +142,9 @@ HALE -nosplash -application hale.transform
 				break
 			case '-source':
 			// source file or URI to source data
-				executionContext.source = fileOrUri(value)
+				executionContext.sources << fileOrUri(value)
+				executionContext.sourceProviderIds << null
+				executionContext.sourcesSettings << [:]
 				lastConfigurable = Configurable.source
 				break
 			case '-validate':
@@ -172,7 +174,7 @@ HALE -nosplash -application hale.transform
 				if (lastConfigurable) {
 					switch (lastConfigurable) {
 						case Configurable.source:
-							executionContext.sourceProviderId = value
+							executionContext.sourceProviderIds[executionContext.sources.size() - 1] = value
 							break
 						case Configurable.target:
 							executionContext.targetProviderId = value
@@ -239,7 +241,7 @@ HALE -nosplash -application hale.transform
 
 			switch (lastConfigurable) {
 				case Configurable.source:
-					ec.sourceSettings[key] = val
+					ec.sourcesSettings[ec.sources.size() - 1][key] = val
 					break
 				case Configurable.target:
 					ec.targetSettings[key] = val
