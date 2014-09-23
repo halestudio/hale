@@ -37,7 +37,9 @@ public class CodeListImportAdvisor extends DefaultIOAdvisor<CodeListReader> {
 		CodeList code = provider.getCodeList();
 
 		CodeListService cs = getService(CodeListService.class);
-		cs.addCodeList(provider.getResourceIdentifier(), code);
+		if (cs != null) {
+			cs.addCodeList(provider.getResourceIdentifier(), code);
+		}
 
 		super.handleResults(provider);
 	}
