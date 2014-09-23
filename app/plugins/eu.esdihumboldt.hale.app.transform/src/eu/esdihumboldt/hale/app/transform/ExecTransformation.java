@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -70,7 +71,7 @@ public class ExecTransformation implements ConsoleConstants {
 
 	private InstanceWriter target;
 
-	private InstanceReader source;
+	private final List<InstanceReader> sources = new ArrayList<InstanceReader>();
 
 	private InstanceValidator validator;
 
@@ -87,7 +88,12 @@ public class ExecTransformation implements ConsoleConstants {
 		loadProject();
 
 		// set up reader for source
-		setupReader();
+		Iterator<URI> sourceIt = context.getSources().iterator();
+		int index = 0;
+		while (sourceIt.hasNext()) {
+			setupReader(sourceIt.next(), index);
+			index++;
+		}
 
 		// set up writer for target
 		setupWriter();
@@ -139,12 +145,12 @@ public class ExecTransformation implements ConsoleConstants {
 				context.getProject()), reportHandler);
 	}
 
-	private void setupReader() {
-		LocatableInputSupplier<? extends InputStream> sourceIn = new DefaultInputSupplier(
-				context.getSource());
+	private void setupReader(URI uri, int index) {
+		LocatableInputSupplier<? extends InputStream> sourceIn = new DefaultInputSupplier(uri);
 
 		// create I/O provider
-		String customProvider = context.getSourceProviderId();
+		InstanceReader source = null;
+		String customProvider = context.getSourceProviderIds().get(index);
 		if (customProvider != null) {
 			// use specified provider
 			source = HaleIO.createIOProvider(InstanceReader.class, null, customProvider);
@@ -154,19 +160,20 @@ public class ExecTransformation implements ConsoleConstants {
 		}
 		if (source == null) {
 			// find applicable reader
-			source = HaleIO.findIOProvider(InstanceReader.class, sourceIn, context.getSource()
-					.getPath());
+			source = HaleIO.findIOProvider(InstanceReader.class, sourceIn, uri.getPath());
 		}
 		if (source == null) {
-			fail("Could not determine instance reader to use for source data");
+			throw fail("Could not determine instance reader to use for source data");
 		}
 
 		// apply custom settings
-		source.loadConfiguration(context.getSourceSettings());
+		source.loadConfiguration(context.getSourcesSettings().get(index));
 
 		source.setSource(sourceIn);
-//		source.setCRSProvider(crsProvider)
 		// source schema is set in Transformation.transform
+		// CRS provider is set in headless transformation
+
+		sources.add(source);
 	}
 
 	private void setupWriter() {
@@ -267,8 +274,6 @@ public class ExecTransformation implements ConsoleConstants {
 	private void transform() throws InterruptedException, ExecutionException {
 		status("Running HALE transformation...");
 
-		List<InstanceReader> sources = new ArrayList<InstanceReader>();
-		sources.add(source);
 		ListenableFuture<Boolean> res = Transformation.transform(sources, target, env,
 				reportHandler, id, validator);
 

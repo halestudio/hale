@@ -34,17 +34,17 @@ class ExecContext {
 	/**
 	 * URI pointing to the source data to transform.
 	 */
-	URI source
+	List<URI> sources = []
 
 	/**
 	 * Specific source I/O provider identifier to use.
 	 */
-	String sourceProviderId
+	List<String> sourceProviderIds = []
 
 	/**
 	 * Settings for reading the source.
 	 */
-	Map<String, Value> sourceSettings = [:]
+	List<Map<String, Value>> sourcesSettings = []
 
 	/**
 	 * The target file to write the transformed data to.
