@@ -159,7 +159,7 @@ public class ReportServiceImpl implements ReportService {
 					IWorkbenchPage page = window.getActivePage();
 					page.showView("eu.esdihumboldt.hale.ui.views.report.ReportList");
 				} catch (Exception e) {
-					_log.error("Could not open report view!", e.getStackTrace());
+					_log.error("Could not open report view!", e);
 				}
 			}
 		});
@@ -280,7 +280,7 @@ public class ReportServiceImpl implements ReportService {
 				ReportWriter.write(file, s.getAllReports().values(), false);
 			} catch (IOException e) {
 				// error during saving
-				_log.error("Cannot save report session.", e.getStackTrace());
+				_log.error("Cannot save report session.", e);
 			}
 		}
 	}

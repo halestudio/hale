@@ -24,7 +24,6 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.gml.writer.internal.GmlWriterUtil;
@@ -127,7 +126,6 @@ public class Pattern {
 	 * 
 	 * @return the parsed pattern
 	 */
-	@SuppressWarnings(value = "SBSC_USE_STRINGBUFFER_CONCATENATION", justification = "More convenient at this point and number of parts will not be large")
 	public static Pattern parse(String pattern) {
 		List<PatternElement> elements = new ArrayList<PatternElement>();
 

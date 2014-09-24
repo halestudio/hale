@@ -140,7 +140,7 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 	private void createInstanceCollection(List<String> row, IOReporter reporter) {
 		MutableInstance instance = new DefaultInstance(type, null);
 
-		int propertyIndex = 0;
+//		int propertyIndex = 0;
 		for (int index = 0; index < propAr.length; index++) {
 
 			String part = null;
@@ -175,7 +175,7 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 					}
 					instance.addProperty(property.getName(), value);
 				}
-				propertyIndex++;
+//				propertyIndex++;
 			}
 		}
 		instances.add(instance);

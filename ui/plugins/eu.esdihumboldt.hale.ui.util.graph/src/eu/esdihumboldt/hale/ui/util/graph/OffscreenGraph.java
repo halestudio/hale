@@ -46,7 +46,6 @@ import eu.esdihumboldt.hale.ui.util.swing.SwingRcpUtilities;
  * 
  * @author Simon Templer
  */
-@SuppressWarnings("restriction")
 public abstract class OffscreenGraph {
 
 	private final Graph graph;
