@@ -89,12 +89,14 @@
       <plugin id="eu.esdihumboldt.cst.functions.numeric"/>
       <plugin id="eu.esdihumboldt.cst.functions.string"/>
       <plugin id="eu.esdihumboldt.hale.common.align"/>
+      <plugin id="eu.esdihumboldt.hale.common.align.io.model.jaxb"/>
       <plugin id="eu.esdihumboldt.hale.common.cache"/>
       <plugin id="eu.esdihumboldt.hale.common.codelist"/>
       <plugin id="eu.esdihumboldt.hale.common.convert"/>
       <plugin id="eu.esdihumboldt.hale.common.convert.core"/>
       <plugin id="eu.esdihumboldt.hale.common.convert.wkt"/>
       <plugin id="eu.esdihumboldt.hale.common.core"/>
+      <plugin id="eu.esdihumboldt.hale.common.core.io.project.model.jaxb"/>
       <plugin id="eu.esdihumboldt.hale.common.filter"/>
       <plugin id="eu.esdihumboldt.hale.common.groovy.sandbox.enable"/>
       <plugin id="eu.esdihumboldt.hale.common.headless"/>
@@ -115,6 +117,7 @@
       <plugin id="eu.esdihumboldt.hale.io.xml"/>
       <plugin id="eu.esdihumboldt.hale.io.xsd"/>
       <plugin id="eu.esdihumboldt.hale.server.api.base"/>
+      <plugin id="eu.esdihumboldt.hale.server.api.wadl.model.jaxb"/>
       <plugin id="eu.esdihumboldt.hale.server.api.war"/>
       <plugin id="eu.esdihumboldt.hale.server.application"/>
       <plugin id="eu.esdihumboldt.hale.server.config"/>

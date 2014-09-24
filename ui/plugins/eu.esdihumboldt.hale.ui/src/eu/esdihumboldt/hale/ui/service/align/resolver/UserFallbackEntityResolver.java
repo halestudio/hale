@@ -48,7 +48,6 @@ import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
  * 
  * @author Simon Templer
  */
-@SuppressWarnings("restriction")
 public class UserFallbackEntityResolver extends DefaultEntityResolver {
 
 	@Override

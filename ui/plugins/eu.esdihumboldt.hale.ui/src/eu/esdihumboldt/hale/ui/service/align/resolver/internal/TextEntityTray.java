@@ -43,7 +43,6 @@ import groovy.xml.XmlUtil;
  * 
  * @author Simon Templer
  */
-@SuppressWarnings("restriction")
 public class TextEntityTray extends DialogTray {
 
 	private final AbstractEntityType entity;

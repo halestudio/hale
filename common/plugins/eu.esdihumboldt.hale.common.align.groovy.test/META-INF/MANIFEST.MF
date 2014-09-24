@@ -9,7 +9,8 @@ Require-Bundle: eu.esdihumboldt.hale.common.align.groovy;bundle-version="2.6.0",
  groovy;bundle-version="2.1.5",
  eu.esdihumboldt.hale.common.align;bundle-version="2.6.0",
  eu.esdihumboldt.hale.common.schema;bundle-version="2.6.0"
-Import-Package: eu.esdihumboldt.hale.common.instance.model,
+Import-Package: eu.esdihumboldt.hale.common.align.io.impl.internal.generated;version="2.9.0",
+ eu.esdihumboldt.hale.common.instance.model,
  eu.esdihumboldt.util.groovy.paths,
  junit.framework;version="4.8.2"
 Bundle-Vendor: data harmonisation panel

@@ -60,7 +60,7 @@ public class TransformationReportImplDefinition extends
 		try {
 			AbstractReportDefinition.configureBasicReporter(reporter, props);
 		} catch (Exception e) {
-			_log.error("Error while parsing a report", e.getStackTrace());
+			_log.error("Error while parsing a report", e);
 		}
 
 		return reporter;

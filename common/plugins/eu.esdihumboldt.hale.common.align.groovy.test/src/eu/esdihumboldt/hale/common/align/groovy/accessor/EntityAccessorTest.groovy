@@ -30,7 +30,6 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
  * 
  * @author Simon Templer
  */
-@SuppressWarnings("restriction")
 class EntityAccessorTest extends GroovyTestCase {
 
 	private static final String MAIN_NS = 'http://www.example.com'
