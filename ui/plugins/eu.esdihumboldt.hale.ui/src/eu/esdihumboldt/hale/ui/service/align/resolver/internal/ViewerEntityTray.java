@@ -38,7 +38,6 @@ import eu.esdihumboldt.hale.ui.common.definition.viewer.StyledDefinitionLabelPro
  * 
  * @author Simon Templer
  */
-@SuppressWarnings("restriction")
 public class ViewerEntityTray extends DialogTray {
 
 	private final EntityDefinition entity;

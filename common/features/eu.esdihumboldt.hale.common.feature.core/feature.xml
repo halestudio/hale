@@ -625,4 +625,18 @@
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="eu.esdihumboldt.hale.common.align.io.model.jaxb"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="eu.esdihumboldt.hale.common.core.io.project.model.jaxb"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>

@@ -75,6 +75,7 @@
       <plugin id="eu.esdihumboldt.hale.common.align"/>
       <plugin id="eu.esdihumboldt.hale.common.align.groovy"/>
       <plugin id="eu.esdihumboldt.hale.common.align.groovy.test"/>
+      <plugin id="eu.esdihumboldt.hale.common.align.io.model.jaxb"/>
       <plugin id="eu.esdihumboldt.hale.common.align.test"/>
       <plugin id="eu.esdihumboldt.hale.common.align.tgraph"/>
       <plugin id="eu.esdihumboldt.hale.common.align.tgraph.test"/>
@@ -86,6 +87,7 @@
       <plugin id="eu.esdihumboldt.hale.common.convert.core"/>
       <plugin id="eu.esdihumboldt.hale.common.convert.wkt"/>
       <plugin id="eu.esdihumboldt.hale.common.core"/>
+      <plugin id="eu.esdihumboldt.hale.common.core.io.project.model.jaxb"/>
       <plugin id="eu.esdihumboldt.hale.common.core.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.filter"/>
       <plugin id="eu.esdihumboldt.hale.common.filter.test"/>
@@ -121,10 +123,11 @@
       <plugin id="eu.esdihumboldt.hale.io.json"/>
       <plugin id="eu.esdihumboldt.hale.io.json.test"/>
       <plugin id="eu.esdihumboldt.hale.io.oml"/>
+      <plugin id="eu.esdihumboldt.hale.io.oml.model.jaxb"/>
       <plugin id="eu.esdihumboldt.hale.io.oml.test"/>
       <plugin id="eu.esdihumboldt.hale.io.shp"/>
       <plugin id="eu.esdihumboldt.hale.io.xls"/>
-      <plugin id="eu.esdihumboldt.hale.io.xls.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.io.xls.test"/>
       <plugin id="eu.esdihumboldt.hale.io.xml"/>
       <plugin id="eu.esdihumboldt.hale.io.xsd"/>
       <plugin id="eu.esdihumboldt.hale.io.xsd.test" fragment="true"/>

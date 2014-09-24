@@ -44,7 +44,6 @@ import groovy.transform.TypeCheckingMode
  * 
  * @author Simon Templer
  */
-@SuppressWarnings("restriction")
 @CompileStatic
 class EntityAccessor extends AbstractAccessor<PathElement> {
 

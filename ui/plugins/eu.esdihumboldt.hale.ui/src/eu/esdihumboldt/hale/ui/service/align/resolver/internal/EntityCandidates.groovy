@@ -32,7 +32,6 @@ import groovy.transform.TypeCheckingMode
  * 
  * @author Simon Templer
  */
-@SuppressWarnings("restriction")
 @CompileStatic
 class EntityCandidates {
 

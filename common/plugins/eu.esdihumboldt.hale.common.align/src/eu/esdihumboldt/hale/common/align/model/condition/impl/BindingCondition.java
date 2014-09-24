@@ -21,7 +21,6 @@ import net.jcip.annotations.Immutable;
 import org.springframework.core.convert.ConversionService;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.condition.EntityCondition;
@@ -38,7 +37,6 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
  * @author Simon Templer
  */
 @Immutable
-@SuppressWarnings(value = "JCIP_FIELD_ISNT_FINAL_IN_IMMUTABLE_CLASS", justification = "FindBugs presents a warning about a switch table not being final")
 public class BindingCondition implements TypeCondition {
 
 	private final boolean allowCollection;
