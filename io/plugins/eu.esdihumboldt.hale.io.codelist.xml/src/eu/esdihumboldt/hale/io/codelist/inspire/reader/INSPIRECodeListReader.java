@@ -26,6 +26,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.google.common.io.InputSupplier;
+
 import eu.esdihumboldt.hale.common.codelist.CodeList;
 import eu.esdihumboldt.hale.common.codelist.CodeList.CodeEntry;
 import eu.esdihumboldt.hale.common.codelist.io.CodeListReader;
@@ -69,27 +71,38 @@ public class INSPIRECodeListReader extends AbstractImportProvider implements Cod
 			throws IOProviderConfigurationException, IOException {
 		progress.begin("Loading code list.", ProgressIndicator.UNKNOWN);
 
-		Document doc;
-
-		URI loc = getSource().getLocation();
-		if (loc != null && (loc.getScheme().equals("http") || loc.getScheme().equals("https"))
-				&& Resources.tryResolve(loc, Resources.RESOURCE_TYPE_XML_CODELIST) == null) {
-			// load with HTTP client
-			// and provide headers to retrieve correct format and language
-			doc = loadXmlDocument(loc);
-		}
-		else {
-			// just access stream
-			try (InputStream is = getSource().getInput()) {
-				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-				DocumentBuilder db = dbf.newDocumentBuilder();
-				doc = db.parse(is);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
-
 		try {
+			Document doc;
+			URI loc = getSource().getLocation();
+			if (loc != null && (loc.getScheme().equals("http") || loc.getScheme().equals("https"))) {
+				// load with HTTP client
+				// and provide headers to retrieve correct format and language
+				try {
+					doc = loadXmlDocument(loc);
+				} catch (Exception e) {
+					// try local resources as fall-back
+					InputSupplier<? extends InputStream> localInput = Resources.tryResolve(loc,
+							Resources.RESOURCE_TYPE_XML_CODELIST);
+					if (localInput != null) {
+						try (InputStream is = localInput.getInput()) {
+							DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+							DocumentBuilder db = dbf.newDocumentBuilder();
+							doc = db.parse(is);
+						}
+					}
+					else
+						throw e;
+				}
+			}
+			else {
+				// just access stream
+				try (InputStream is = getSource().getInput()) {
+					DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+					DocumentBuilder db = dbf.newDocumentBuilder();
+					doc = db.parse(is);
+				}
+			}
+
 			reporter.setSuccess(parse(doc, loc, reporter));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -150,7 +163,8 @@ public class INSPIRECodeListReader extends AbstractImportProvider implements Cod
 	private boolean parse(Document doc, URI location, IOReporter reporter) throws Exception {
 		XPath xpath = XPathFactory.newInstance().newXPath();
 
-		boolean directlyReferenced = location.toString().toLowerCase().endsWith(".xml");
+		boolean directlyReferenced = location != null
+				&& location.toString().toLowerCase().endsWith(".xml");
 
 		String description = null;
 		String namespace = null;
