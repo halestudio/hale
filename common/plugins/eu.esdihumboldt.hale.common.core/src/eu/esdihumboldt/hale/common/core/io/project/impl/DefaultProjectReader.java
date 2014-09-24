@@ -37,8 +37,8 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
-import eu.esdihumboldt.hale.common.core.io.util.InputStreamDecorator;
 import eu.esdihumboldt.util.io.IOUtils;
+import eu.esdihumboldt.util.io.InputStreamDecorator;
 import eu.esdihumboldt.util.io.PathUpdate;
 
 /**

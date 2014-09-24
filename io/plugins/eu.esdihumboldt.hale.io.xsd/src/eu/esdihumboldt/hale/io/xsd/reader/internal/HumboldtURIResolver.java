@@ -46,6 +46,8 @@ public class HumboldtURIResolver implements CollectionURIResolver {
 	 */
 	@Override
 	public InputSource resolveEntity(String namespace, String schemaLocation, String baseUri) {
+		final URI uriLoc;
+		final String stringLoc;
 		if (baseUri != null) {
 			try {
 				if (baseUri.startsWith("file:/")) { //$NON-NLS-1$
@@ -63,62 +65,77 @@ public class HumboldtURIResolver implements CollectionURIResolver {
 					}
 				}
 
-				URI ref = new URI(baseUri).resolve(new URI(schemaLocation));
+				uriLoc = new URI(baseUri).resolve(new URI(schemaLocation));
+				stringLoc = uriLoc.toString();
 
-				// try resolving using (local) Resources
-				InputSupplier<? extends InputStream> input = Resources.tryResolve(ref,
-						Resources.RESOURCE_TYPE_XML_SCHEMA);
-				if (input != null) {
-					try {
-						InputSource is = new InputSource(input.getInput());
-						is.setSystemId(ref.toString());
-						return is;
-					} catch (Throwable e) {
-						// ignore
-					}
-				}
-
-				// try resolving through cache
-				try {
-					InputSource is = new InputSource(Request.getInstance().get(ref));
-					is.setSystemId(ref.toString());
-					return is;
-				} catch (Throwable e) {
-					// ignore
-				}
-
-				// fall-back
-				return new InputSource(ref.toString());
 			} catch (URISyntaxException e1) {
 				throw new RuntimeException(e1);
 			}
 		}
-
-		// try resolving using (local) Resources
-		try {
-			URI locationUri = new URI(schemaLocation);
-			InputSupplier<? extends InputStream> input = Resources.tryResolve(locationUri,
-					Resources.RESOURCE_TYPE_XML_SCHEMA);
-			if (input != null) {
-				InputSource is = new InputSource(input.getInput());
-				is.setSystemId(schemaLocation);
-				return is;
+		else {
+			stringLoc = schemaLocation;
+			URI uri;
+			try {
+				uri = new URI(schemaLocation);
+			} catch (URISyntaxException e) {
+				uri = null;
 			}
-		} catch (Throwable e) {
-			// ignore
+			uriLoc = uri;
 		}
 
-		// try resolving through cache
-		try {
-			InputSource is = new InputSource(Request.getInstance().get(schemaLocation));
-			is.setSystemId(schemaLocation);
-			return is;
-		} catch (Throwable e) {
-			// ignore
-		}
+		// create a lazy input source because we cannot be sure that the
+		// stream is actually consumed (and if not consumed we get a
+		// problem because the connection is not released)
+		InputSource is = new InputSource(stringLoc) {
 
-		// fall-back
-		return new InputSource(schemaLocation);
+			private boolean initializedStream = false;
+
+			@Override
+			public InputStream getByteStream() {
+				if (!initializedStream) {
+					initializedStream = true;
+					InputStream in = null;
+
+					// try resolving using (local) Resources
+					if (uriLoc != null) {
+						InputSupplier<? extends InputStream> input = Resources.tryResolve(uriLoc,
+								Resources.RESOURCE_TYPE_XML_SCHEMA);
+						if (input != null) {
+							try {
+								in = input.getInput();
+							} catch (Exception e) {
+								// ignore
+							}
+						}
+					}
+
+					// try resolving through cache
+					if (in == null) {
+						try {
+							in = Request.getInstance().get(getSystemId());
+						} catch (Exception e) {
+							// ignore
+						}
+					}
+
+					// fall-back
+					if (in == null && uriLoc != null) {
+						try {
+							in = uriLoc.toURL().openStream();
+						} catch (Exception e) {
+							// ignore
+						}
+					}
+
+					setByteStream(in);
+				}
+
+				return super.getByteStream();
+			}
+
+		};
+
+		return is;
 	}
 
 	/**
