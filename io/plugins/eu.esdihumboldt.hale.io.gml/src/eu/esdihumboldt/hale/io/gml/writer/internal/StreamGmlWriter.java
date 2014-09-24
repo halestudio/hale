@@ -317,13 +317,13 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 		GmlWriterUtil.addNamespace(tmpWriter, SCHEMA_INSTANCE_NS, "xsi"); //$NON-NLS-1$
 
 		// determine default namespace
-		if (defNamespace == null) {
-			// XXX don't use a default namespace, as this results in problems
-			// with schemas w/o elementFormQualified=true
-			// defNamespace = index.getNamespace();
+//		if (defNamespace == null) {
+		// XXX don't use a default namespace, as this results in problems
+		// with schemas w/o elementFormQualified=true
+		// defNamespace = index.getNamespace();
 
-			// TODO remove prefix for target schema namespace?
-		}
+		// TODO remove prefix for target schema namespace?
+//		}
 
 		tmpWriter.setDefaultNamespace(defNamespace);
 

@@ -189,7 +189,8 @@ public abstract class AbstractTypeMatcher<T> {
 				 * may be used XXX is this true?
 				 */
 
-				for (TypeDefinition subtype : type.getSubTypes()) {
+				for (@SuppressWarnings("unused")
+				TypeDefinition subtype : type.getSubTypes()) {
 					// FIXME how to determine which types are ok for xsi:type?!
 //					if (!substitutionTypes.contains(subtype)) { // only types that are no valid substitutions
 //						// add candidate

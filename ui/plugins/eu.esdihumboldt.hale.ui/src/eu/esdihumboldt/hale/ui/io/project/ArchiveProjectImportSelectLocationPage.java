@@ -35,7 +35,7 @@ import eu.esdihumboldt.hale.ui.util.io.KeyStrokeValidatingDirectoryFieldEditor;
 public class ArchiveProjectImportSelectLocationPage extends
 		AbstractConfigurationPage<ArchiveProjectImport, ArchiveProjectImportWizard> {
 
-	private final String location = "";
+//	private final String location = "";
 
 	private DirectoryFieldEditor directoryField;
 

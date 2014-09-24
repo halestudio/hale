@@ -438,7 +438,7 @@ public class ReportList extends PropertiesViewPart implements
 						try {
 							repService.saveCurrentReports(file);
 						} catch (IOException exception) {
-							_log.error("Could not save the report log.", exception.getStackTrace());
+							_log.error("Could not save the report log.", exception);
 						}
 					}
 					super.run();

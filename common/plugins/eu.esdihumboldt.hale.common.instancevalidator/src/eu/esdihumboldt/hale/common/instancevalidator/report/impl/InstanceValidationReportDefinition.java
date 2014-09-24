@@ -60,7 +60,7 @@ public class InstanceValidationReportDefinition extends
 		try {
 			AbstractReportDefinition.configureBasicReporter(reporter, props);
 		} catch (Exception e) {
-			log.error("Error while parsing a report", e.getStackTrace());
+			log.error("Error while parsing a report", e);
 		}
 
 		return reporter;
