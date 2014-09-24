@@ -37,18 +37,20 @@ import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.CoreConnectionPNames;
+import org.apache.http.config.SocketConfig;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 
 import com.google.common.io.ByteStreams;
 
-import de.fhg.igd.slf4jplus.ALogger;
-import de.fhg.igd.slf4jplus.ALoggerFactory;
 import de.fhg.igd.osgi.util.OsgiUtils;
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import de.fhg.igd.osgi.util.configuration.JavaPreferencesConfigurationService;
 import de.fhg.igd.osgi.util.configuration.NamespaceConfigurationServiceDecorator;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.util.PlatformUtil;
 import eu.esdihumboldt.util.http.ProxyUtil;
 import groovy.text.SimpleTemplateEngine;
@@ -72,7 +74,7 @@ public class Request {
 
 	private final IConfigurationService configService;
 
-	private final Map<Proxy, DefaultHttpClient> clients = new HashMap<Proxy, DefaultHttpClient>();
+	private final Map<Proxy, CloseableHttpClient> clients = new HashMap<Proxy, CloseableHttpClient>();
 
 	/**
 	 * The instance of {@link Request}
@@ -231,7 +233,7 @@ public class Request {
 	 */
 	private InputStream openStream(URI uri) throws IOException {
 		Proxy proxy = ProxyUtil.findProxy(uri);
-		DefaultHttpClient client = getClient(proxy);
+		CloseableHttpClient client = getClient(proxy);
 
 		HttpGet httpget = new HttpGet(uri);
 		HttpResponse response = client.execute(httpget);
@@ -258,18 +260,21 @@ public class Request {
 	 * @param proxy the proxy
 	 * @return the client configured for the proxy
 	 */
-	private synchronized DefaultHttpClient getClient(Proxy proxy) {
-		DefaultHttpClient client = clients.get(proxy);
+	private synchronized CloseableHttpClient getClient(Proxy proxy) {
+		CloseableHttpClient client = clients.get(proxy);
 
 		if (client == null) {
-			client = ClientUtil.createThreadSafeHttpClient();
-			ProxyUtil.setupClient(client, proxy);
+			HttpClientBuilder builder = ClientUtil.threadSafeHttpClientBuilder();
+			builder = ProxyUtil.applyProxy(builder, proxy);
 
 			// set timeout
-			// 2 seconds socket timeout
-			client.getParams().setIntParameter(CoreConnectionPNames.SO_TIMEOUT, 3000);
-			// 2 seconds connections timeout
-			client.getParams().setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 3000);
+			// 3 seconds socket timeout
+			SocketConfig socketconfig = SocketConfig.custom().setSoTimeout(3000).build();
+			// 3 seconds connections timeout
+			RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(3000).build();
+
+			client = builder.setDefaultRequestConfig(requestConfig)
+					.setDefaultSocketConfig(socketconfig).build();
 
 			clients.put(proxy, client);
 		}
