@@ -23,6 +23,7 @@ import java.io.OutputStream;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.util.io.InputStreamDecorator;
 
 /**
  * Input stream for debugging purposes. Writes read bytes to a file so it can be

@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.core.io.util;
+package eu.esdihumboldt.util.io;
 
 import java.io.FilterInputStream;
 import java.io.IOException;

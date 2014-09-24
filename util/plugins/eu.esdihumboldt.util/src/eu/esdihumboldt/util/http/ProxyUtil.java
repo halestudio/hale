@@ -28,8 +28,10 @@ import java.util.Set;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.conn.params.ConnRoutePNames;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.ProxyAuthenticationStrategy;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
@@ -101,10 +103,11 @@ public class ProxyUtil {
 	/**
 	 * Set-up the given HTTP client to use the given proxy
 	 * 
-	 * @param client the HTTP client
+	 * @param builder the HTTP client builder
 	 * @param proxy the proxy
+	 * @return the client builder adapted with the proxy settings
 	 */
-	public static void setupClient(DefaultHttpClient client, Proxy proxy) {
+	public static HttpClientBuilder applyProxy(HttpClientBuilder builder, Proxy proxy) {
 		init();
 
 		// check if proxy shall be used
@@ -113,7 +116,7 @@ public class ProxyUtil {
 
 			// set the proxy
 			HttpHost proxyHost = new HttpHost(proxyAddress.getHostName(), proxyAddress.getPort());
-			client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxyHost);
+			builder = builder.setProxy(proxyHost);
 
 			String user = System.getProperty("http.proxyUser"); //$NON-NLS-1$
 			String password = System.getProperty("http.proxyPassword"); //$NON-NLS-1$
@@ -121,18 +124,19 @@ public class ProxyUtil {
 
 			if (useProxyAuth) {
 				// set the proxy credentials
-				client.getCredentialsProvider().setCredentials(
+				CredentialsProvider credsProvider = new BasicCredentialsProvider();
+				credsProvider.setCredentials(
 						new AuthScope(proxyAddress.getHostName(), proxyAddress.getPort()),
 						new UsernamePasswordCredentials(user, password));
+				builder = builder.setDefaultCredentialsProvider(credsProvider)
+						.setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy());
 			}
 
 			_log.trace("Set proxy to " + proxyAddress.getHostName() + ":" + //$NON-NLS-1$ //$NON-NLS-2$
 					proxyAddress.getPort() + ((useProxyAuth) ? (" as user " + user) : (""))); //$NON-NLS-1$ //$NON-NLS-2$
 		}
-		else {
-			// unset proxy
-			client.getParams().removeParameter(ConnRoutePNames.DEFAULT_PROXY);
-		}
+
+		return builder;
 	}
 
 	/**

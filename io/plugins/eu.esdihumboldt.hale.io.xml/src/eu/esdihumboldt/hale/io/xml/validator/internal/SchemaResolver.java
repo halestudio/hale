@@ -76,40 +76,58 @@ public class SchemaResolver implements LSResourceResolver {
 			return null;
 		}
 
-		InputStream inputStream = null;
+		final URI uriLoc = uri;
 
-		// try resolving using (local) Resources
-		try {
-			InputSupplier<? extends InputStream> input = Resources.tryResolve(uri,
-					Resources.RESOURCE_TYPE_XML_SCHEMA);
-			if (input != null) {
-				inputStream = input.getInput();
+		// create a lazy LSInput because we cannot be sure that the
+		// stream is actually consumed (and if not consumed we get a
+		// problem because the connection is not released)
+		LSInput lsin = new LSInputImpl() {
+
+			private boolean initializedStream = false;
+
+			@Override
+			public InputStream getByteStream() {
+				if (!initializedStream) {
+					initializedStream = true;
+					InputStream inputStream = null;
+
+					// try resolving using (local) Resources
+					try {
+						InputSupplier<? extends InputStream> input = Resources.tryResolve(uriLoc,
+								Resources.RESOURCE_TYPE_XML_SCHEMA);
+						if (input != null) {
+							inputStream = input.getInput();
+						}
+					} catch (Exception e) {
+						// ignore
+					}
+
+					// try resolving using cache
+					if (inputStream == null) {
+						try {
+							inputStream = Request.getInstance().get(uriLoc);
+						} catch (Exception e) {
+							// ignore
+						}
+					}
+
+					// fall-back
+					if (inputStream == null) {
+						try {
+							inputStream = uriLoc.toURL().openStream();
+						} catch (Exception e) {
+							// ignore
+						}
+					}
+
+					setByteStream(inputStream);
+				}
+
+				return super.getByteStream();
 			}
-		} catch (Throwable e) {
-			// ignore
-		}
 
-		// try resolving using cache
-		if (inputStream == null) {
-			try {
-				inputStream = Request.getInstance().get(uri);
-			} catch (Throwable e) {
-				// ignore
-			}
-		}
-
-		// fall-back
-		if (inputStream == null) {
-			try {
-				inputStream = uri.toURL().openStream();
-			} catch (Throwable e) {
-				return null;
-			}
-		}
-
-		LSInput lsin = new LSInputImpl();
+		};
 		lsin.setSystemId(uri.toString());
-		lsin.setByteStream(inputStream);
 		return lsin;
 	}
 }

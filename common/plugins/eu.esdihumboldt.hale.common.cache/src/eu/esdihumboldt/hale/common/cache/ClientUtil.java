@@ -16,17 +16,9 @@
 
 package eu.esdihumboldt.hale.common.cache;
 
-import org.apache.http.HttpVersion;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 
 /**
  * HTTP client utilities
@@ -40,22 +32,20 @@ public class ClientUtil {
 	 * 
 	 * @return the created HTTP client
 	 */
-	public static DefaultHttpClient createThreadSafeHttpClient() {
-		// create default scheme registry
-		SchemeRegistry schemeRegistry = new SchemeRegistry();
-		schemeRegistry.register(new Scheme("http", 80, //$NON-NLS-1$
-				PlainSocketFactory.getSocketFactory()));
-		schemeRegistry.register(new Scheme("https", 443, //$NON-NLS-1$
-				SSLSocketFactory.getSocketFactory()));
-
-		// create multi-threaded connection manager
-		HttpParams params = new BasicHttpParams();
-		HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-
-		ClientConnectionManager cm = new ThreadSafeClientConnManager(schemeRegistry);
-
+	public static CloseableHttpClient createThreadSafeHttpClient() {
 		// create HTTP client
-		return new DefaultHttpClient(cm, params);
+		return threadSafeHttpClientBuilder().build();
+	}
+
+	/**
+	 * Create a thread safe HTTP client
+	 * 
+	 * @return the created HTTP client
+	 */
+	public static HttpClientBuilder threadSafeHttpClientBuilder() {
+		// create HTTP client builder
+		PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
+		return HttpClientBuilder.create().setConnectionManager(cm);
 	}
 
 }
