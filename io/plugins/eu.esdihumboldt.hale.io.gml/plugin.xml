@@ -332,6 +332,9 @@
                   description="Metadata as XML (DOM)"
                   label="Metadata XML"
                   name="inspire.sds.metadata.inline">
+            <parameterBinding
+                  class="org.w3c.dom.Element">
+            </parameterBinding>
          </providerParameter>
          <providerParameter
                optional="true"

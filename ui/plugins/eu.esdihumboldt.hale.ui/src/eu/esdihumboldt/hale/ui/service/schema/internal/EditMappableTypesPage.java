@@ -250,9 +250,11 @@ public class EditMappableTypesPage extends WizardPage {
 			changedTypes.remove(type);
 		else
 			changedTypes.add(type);
-		Object parent = contentProvider.getParent(type);
-		viewer.setGrayed(parent, checkStateProvider.isGrayed(parent));
-		viewer.setChecked(parent, checkStateProvider.isChecked(parent));
+		if (contentProvider != null && checkStateProvider != null) {
+			Object parent = contentProvider.getParent(type);
+			viewer.setGrayed(parent, checkStateProvider.isGrayed(parent));
+			viewer.setChecked(parent, checkStateProvider.isChecked(parent));
+		}
 //		}
 //		else if (!checked)
 //			viewer.setChecked(type, true);
