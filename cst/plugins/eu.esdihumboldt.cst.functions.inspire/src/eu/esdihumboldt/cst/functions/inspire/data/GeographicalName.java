@@ -55,7 +55,7 @@ public class GeographicalName {
 	public void setSpelling(SpellingOfName sp) {
 		try {
 			spelling.clear();
-			spelling.add(0, (SpellingOfName) sp.clone());
+			spelling.add(0, sp.clone());
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
@@ -63,7 +63,7 @@ public class GeographicalName {
 
 	public void addSpelling(SpellingOfName sp) {
 		try {
-			spelling.add(0, (SpellingOfName) sp.clone());
+			spelling.add(0, sp.clone());
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
@@ -107,7 +107,7 @@ public class GeographicalName {
 
 	public void setPronunciation(PronunciationOfName pr) {
 		try {
-			pronunciation = (PronunciationOfName) pr.clone();
+			pronunciation = pr.clone();
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
@@ -129,95 +129,63 @@ public class GeographicalName {
 		grammaticalNumber = gn;
 	}
 
-	public boolean equals(GeographicalName target) {
-		if (target == null)
-			return false;
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((grammaticalGender == null) ? 0 : grammaticalGender.hashCode());
+		result = prime * result + ((grammaticalNumber == null) ? 0 : grammaticalNumber.hashCode());
+		result = prime * result + ((language == null) ? 0 : language.hashCode());
+		result = prime * result + ((nameStatus == null) ? 0 : nameStatus.hashCode());
+		result = prime * result + ((nativeness == null) ? 0 : nativeness.hashCode());
+		result = prime * result + ((pronunciation == null) ? 0 : pronunciation.hashCode());
+		result = prime * result + ((sourceOfName == null) ? 0 : sourceOfName.hashCode());
+		result = prime * result + ((spelling == null) ? 0 : spelling.hashCode());
+		return result;
+	}
 
-		if (spelling.size() != target.getSpellingCount())
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
 			return false;
-		else {
-			for (int j = 0; j < spelling.size(); j++)
-				if (spelling.get(j).equals(target.getSpelling(j)) == false)
-					return false;
+		if (getClass() != obj.getClass())
+			return false;
+		GeographicalName other = (GeographicalName) obj;
+		if (grammaticalGender != other.grammaticalGender)
+			return false;
+		if (grammaticalNumber != other.grammaticalNumber)
+			return false;
+		if (language == null) {
+			if (other.language != null)
+				return false;
 		}
-
-		if (pronunciation == null && target.getPronunciation() != null)
+		else if (!language.equals(other.language))
 			return false;
-		else if (pronunciation.equals(target.getPronunciation()) == false)
+		if (nameStatus != other.nameStatus)
 			return false;
-
-		if (language != null && language.equals(target.getLanguage()) == false)
+		if (nativeness != other.nativeness)
 			return false;
-		else if (language == null && target.getLanguage() != null)
+		if (pronunciation == null) {
+			if (other.pronunciation != null)
+				return false;
+		}
+		else if (!pronunciation.equals(other.pronunciation))
 			return false;
-
-		if (nativeness != null && nativeness.equals(target.getNativeness()) == false)
+		if (sourceOfName == null) {
+			if (other.sourceOfName != null)
+				return false;
+		}
+		else if (!sourceOfName.equals(other.sourceOfName))
 			return false;
-		else if (nativeness == null && target.getNativeness() != null)
-			return false;
-
-		if (nameStatus != null && nameStatus.equals(target.getNameStatus()) == false)
-			return false;
-		else if (nameStatus == null && target.getNameStatus() != null)
-			return false;
-
-		if (sourceOfName != null && sourceOfName.equals(target.getSourceOfName()) == false)
-			return false;
-		else if (sourceOfName == null && target.getSourceOfName() != null)
-			return false;
-
-		if (grammaticalGender != null
-				&& grammaticalGender.equals(target.getGrammaticalGender()) == false)
-			return false;
-		else if (grammaticalGender == null && target.getGrammaticalGender() != null)
-			return false;
-
-		if (grammaticalNumber != null
-				&& grammaticalNumber.equals(target.getGrammaticalNumber()) == false)
-			return false;
-		else if (grammaticalNumber == null && target.getGrammaticalNumber() != null)
-			return false;
-
-		return true;
-	}
-
-	public boolean equalsuniquevalues(GeographicalName target) {
-		if (pronunciation == null && target.getPronunciation() != null)
-			return false;
-		else if (pronunciation.equals(target.getPronunciation()) == false)
-			return false;
-
-		if (language != null && language.equals(target.getLanguage()) == false)
-			return false;
-		else if (language == null && target.getLanguage() != null)
-			return false;
-
-		if (nativeness != null && nativeness.equals(target.getNativeness()) == false)
-			return false;
-		else if (nativeness == null && target.getNativeness() != null)
-			return false;
-
-		if (nameStatus != null && nameStatus.equals(target.getNameStatus()) == false)
-			return false;
-		else if (nameStatus == null && target.getNameStatus() != null)
-			return false;
-
-		if (sourceOfName != null && sourceOfName.equals(target.getSourceOfName()) == false)
-			return false;
-		else if (sourceOfName == null && target.getSourceOfName() != null)
-			return false;
-
-		if (grammaticalGender != null
-				&& grammaticalGender.equals(target.getGrammaticalGender()) == false)
-			return false;
-		else if (grammaticalGender == null && target.getGrammaticalGender() != null)
-			return false;
-
-		if (grammaticalNumber != null
-				&& grammaticalNumber.equals(target.getGrammaticalNumber()) == false)
-			return false;
-		else if (grammaticalNumber == null && target.getGrammaticalNumber() != null)
+		if (spelling == null) {
+			if (other.spelling != null)
+				return false;
+		}
+		else if (!spelling.equals(other.spelling))
 			return false;
 		return true;
 	}
+
 }

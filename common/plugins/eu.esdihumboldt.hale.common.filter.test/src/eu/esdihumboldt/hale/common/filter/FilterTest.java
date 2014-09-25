@@ -130,9 +130,8 @@ public class FilterTest {
 		try {
 			filter = new FilterGeoCqlImpl("Name = 'Mein Porsche'");
 			assertTrue(filter.match(auto));
-			@SuppressWarnings("unused")
 			Filter filter1 = new FilterGeoCqlImpl("Name like 'Porsche'");
-			assertTrue(filter.match(auto));
+			assertTrue(filter1.match(auto));
 		} catch (CQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -302,10 +301,10 @@ public class FilterTest {
 					"\"id\" = '_00000000-7953-b57f-0000-00000010cb14'");
 
 			Filter cqlfilter3 = new FilterGeoCqlImpl("\"geometry.Polygon.srsName\" = 'EPSG:4326'");
-			Filter cqlfilter4 = new FilterGeoCqlImpl(
-					"\"geometry.{http://www.opengis.net/gml/3.2}Polygon.srsName\" = 'EPSG:4326'");
-			Filter cqlfilter5 = new FilterGeoCqlImpl(
-					"\"{http://www.opengis.net/gml/3.2}geometry.Polygon.srsName\" = 'EPSG:4326'");
+//			Filter cqlfilter4 = new FilterGeoCqlImpl(
+//					"\"geometry.{http://www.opengis.net/gml/3.2}Polygon.srsName\" = 'EPSG:4326'");
+//			Filter cqlfilter5 = new FilterGeoCqlImpl(
+//					"\"{http://www.opengis.net/gml/3.2}geometry.Polygon.srsName\" = 'EPSG:4326'");
 
 			while (ri.hasNext()) {
 				Instance inst = ri.next();
@@ -380,9 +379,8 @@ public class FilterTest {
 		try {
 			filter = new FilterGeoECqlImpl("Name = 'Mein Porsche'");
 			assertTrue(filter.match(auto));
-			@SuppressWarnings("unused")
 			Filter filter1 = new FilterGeoECqlImpl("Name like %Porsche%");
-			assertTrue(filter.match(auto));
+			assertTrue(filter1.match(auto));
 		} catch (CQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

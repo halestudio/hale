@@ -56,25 +56,43 @@ public class InspireIdentifier {
 		this.versionID = versionID;
 	}
 
-	public boolean equals(InspireIdentifier target) {
-		if (target == null)
-			return false;
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((localID == null) ? 0 : localID.hashCode());
+		result = prime * result + ((nameSpace == null) ? 0 : nameSpace.hashCode());
+		result = prime * result + ((versionID == null) ? 0 : versionID.hashCode());
+		return result;
+	}
 
-		if (this.localID != null && this.localID.equals(target.getLocalID()) == false)
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
 			return false;
-		else if (this.localID == null && target.getLocalID() != null)
+		if (getClass() != obj.getClass())
 			return false;
-
-		if (this.nameSpace != null && this.nameSpace.equals(target.getNameSpace()) == false)
+		InspireIdentifier other = (InspireIdentifier) obj;
+		if (localID == null) {
+			if (other.localID != null)
+				return false;
+		}
+		else if (!localID.equals(other.localID))
 			return false;
-		else if (this.nameSpace == null && target.getNameSpace() != null)
+		if (nameSpace == null) {
+			if (other.nameSpace != null)
+				return false;
+		}
+		else if (!nameSpace.equals(other.nameSpace))
 			return false;
-
-		if (this.versionID != null && this.versionID.equals(target.getVersionID()) == false)
+		if (versionID == null) {
+			if (other.versionID != null)
+				return false;
+		}
+		else if (!versionID.equals(other.versionID))
 			return false;
-		else if (this.versionID == null && target.getVersionID() != null)
-			return false;
-
 		return true;
 	}
 

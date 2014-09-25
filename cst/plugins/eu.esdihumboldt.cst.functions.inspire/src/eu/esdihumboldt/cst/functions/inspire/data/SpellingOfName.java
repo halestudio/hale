@@ -57,28 +57,49 @@ public class SpellingOfName implements Cloneable {
 	}
 
 	@Override
-	public Object clone() throws CloneNotSupportedException {
-		return super.clone();
+	public SpellingOfName clone() throws CloneNotSupportedException {
+		return (SpellingOfName) super.clone();
 	}
 
-	public boolean equals(SpellingOfName target) {
-		if (target == null)
-			return false;
-		if (text != null && text.equals(target.getText()) == false)
-			return false;
-		else if (text == null && target.getText() != null)
-			return false;
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((script == null) ? 0 : script.hashCode());
+		result = prime * result + ((text == null) ? 0 : text.hashCode());
+		result = prime * result
+				+ ((transliterationScheme == null) ? 0 : transliterationScheme.hashCode());
+		return result;
+	}
 
-		if (script != null && script.equals(target.getScript()) == false)
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
 			return false;
-		else if (script == null && target.getScript() != null)
+		if (getClass() != obj.getClass())
 			return false;
-
-		if (transliterationScheme != null
-				&& transliterationScheme.equals(target.getTransliterationScheme()) == false)
+		SpellingOfName other = (SpellingOfName) obj;
+		if (script == null) {
+			if (other.script != null)
+				return false;
+		}
+		else if (!script.equals(other.script))
 			return false;
-		else if (transliterationScheme == null && target.getTransliterationScheme() != null)
+		if (text == null) {
+			if (other.text != null)
+				return false;
+		}
+		else if (!text.equals(other.text))
+			return false;
+		if (transliterationScheme == null) {
+			if (other.transliterationScheme != null)
+				return false;
+		}
+		else if (!transliterationScheme.equals(other.transliterationScheme))
 			return false;
 		return true;
 	}
+
 }
