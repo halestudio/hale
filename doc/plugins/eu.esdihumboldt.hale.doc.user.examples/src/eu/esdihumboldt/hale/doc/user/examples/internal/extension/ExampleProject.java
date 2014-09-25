@@ -92,6 +92,9 @@ public class ExampleProject implements Identifiable, Comparable<ExampleProject> 
 
 		this.location = conf.getAttribute("location");
 		URL url = bundle.getResource(location);
+		if (url == null) {
+			throw new IllegalStateException("Example project location not found in bundle");
+		}
 		LocatableInputSupplier<InputStream> in = new DefaultInputSupplier(url.toURI());
 
 		// load project info

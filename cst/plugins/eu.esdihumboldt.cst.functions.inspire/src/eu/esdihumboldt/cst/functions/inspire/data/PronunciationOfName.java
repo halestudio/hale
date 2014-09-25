@@ -50,25 +50,42 @@ public class PronunciationOfName implements Cloneable {
 	}
 
 	@Override
-	public Object clone() throws CloneNotSupportedException {
-		return super.clone();
+	public PronunciationOfName clone() throws CloneNotSupportedException {
+		return (PronunciationOfName) super.clone();
 	}
 
-	public boolean equals(PronunciationOfName target) {
-		if (target == null)
-			return false;
-		if (pronunciationSoundLink != null
-				&& pronunciationSoundLink.equals(target.getPronunciationSoundLink()) == false)
-			return false;
-		else if (pronunciationSoundLink == null && target.getPronunciationSoundLink() != null)
-			return false;
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((pronunciationIPA == null) ? 0 : pronunciationIPA.hashCode());
+		result = prime * result
+				+ ((pronunciationSoundLink == null) ? 0 : pronunciationSoundLink.hashCode());
+		return result;
+	}
 
-		if (pronunciationIPA != null
-				&& pronunciationIPA.equals(target.getPronunciationIPA()) == false)
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
 			return false;
-		else if (pronunciationIPA == null && target.getPronunciationIPA() != null)
+		if (getClass() != obj.getClass())
 			return false;
-
+		PronunciationOfName other = (PronunciationOfName) obj;
+		if (pronunciationIPA == null) {
+			if (other.pronunciationIPA != null)
+				return false;
+		}
+		else if (!pronunciationIPA.equals(other.pronunciationIPA))
+			return false;
+		if (pronunciationSoundLink == null) {
+			if (other.pronunciationSoundLink != null)
+				return false;
+		}
+		else if (!pronunciationSoundLink.equals(other.pronunciationSoundLink))
+			return false;
 		return true;
 	}
+
 }

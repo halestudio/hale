@@ -31,10 +31,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.springframework.core.convert.ConversionService;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
-import de.fhg.igd.osgi.util.OsgiUtils.Condition;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
@@ -50,6 +47,7 @@ import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
+import eu.esdihumboldt.hale.common.test.TestUtil;
 import eu.esdihumboldt.hale.io.gml.reader.internal.GmlInstanceReader;
 import eu.esdihumboldt.hale.io.gml.reader.internal.StreamGmlReader;
 import eu.esdihumboldt.hale.io.gml.reader.internal.XmlInstanceReader;
@@ -73,13 +71,7 @@ public class FilterTest {
 	 */
 	@BeforeClass
 	public static void waitForServices() {
-		assertTrue("Conversion service not available", OsgiUtils.waitUntil(new Condition() {
-
-			@Override
-			public boolean evaluate() {
-				return OsgiUtils.getService(ConversionService.class) != null;
-			}
-		}, 30));
+		TestUtil.startConversionService();
 	}
 
 	@Before
@@ -109,7 +101,7 @@ public class FilterTest {
 	}
 
 	@Test
-	public void simpleFilterTestCQL() {
+	public void simpleFilterTestCQL() throws CQLException {
 		DefaultTypeDefinition stringType = new DefaultTypeDefinition(new QName("StringType"));
 		stringType.setConstraint(Binding.get(String.class));
 
@@ -127,17 +119,12 @@ public class FilterTest {
 		auto.addProperty(new QName("Besitzer"), ich);
 
 		Filter filter;
-		try {
-			filter = new FilterGeoCqlImpl("Name = 'Mein Porsche'");
-			assertTrue(filter.match(auto));
-			@SuppressWarnings("unused")
-			Filter filter1 = new FilterGeoCqlImpl("Name like 'Porsche'");
-			assertTrue(filter.match(auto));
-		} catch (CQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		filter = new FilterGeoCqlImpl("Name = 'Mein Porsche'");
+		assertTrue(filter.match(auto));
+		Filter filter1 = new FilterGeoCqlImpl("Name like 'Porsche'");
+		assertFalse(filter1.match(auto));
+		Filter filter2 = new FilterGeoCqlImpl("Name like '%Porsche'");
+		assertTrue(filter2.match(auto));
 	}
 
 	@Test
@@ -302,10 +289,10 @@ public class FilterTest {
 					"\"id\" = '_00000000-7953-b57f-0000-00000010cb14'");
 
 			Filter cqlfilter3 = new FilterGeoCqlImpl("\"geometry.Polygon.srsName\" = 'EPSG:4326'");
-			Filter cqlfilter4 = new FilterGeoCqlImpl(
-					"\"geometry.{http://www.opengis.net/gml/3.2}Polygon.srsName\" = 'EPSG:4326'");
-			Filter cqlfilter5 = new FilterGeoCqlImpl(
-					"\"{http://www.opengis.net/gml/3.2}geometry.Polygon.srsName\" = 'EPSG:4326'");
+//			Filter cqlfilter4 = new FilterGeoCqlImpl(
+//					"\"geometry.{http://www.opengis.net/gml/3.2}Polygon.srsName\" = 'EPSG:4326'");
+//			Filter cqlfilter5 = new FilterGeoCqlImpl(
+//					"\"{http://www.opengis.net/gml/3.2}geometry.Polygon.srsName\" = 'EPSG:4326'");
 
 			while (ri.hasNext()) {
 				Instance inst = ri.next();
@@ -359,7 +346,7 @@ public class FilterTest {
 	}
 
 	@Test
-	public void simpleFilterTestECQL() {
+	public void simpleFilterTestECQL() throws CQLException {
 		DefaultTypeDefinition stringType = new DefaultTypeDefinition(new QName("StringType"));
 		stringType.setConstraint(Binding.get(String.class));
 
@@ -377,17 +364,10 @@ public class FilterTest {
 		auto.addProperty(new QName("Besitzer"), ich);
 
 		Filter filter;
-		try {
-			filter = new FilterGeoECqlImpl("Name = 'Mein Porsche'");
-			assertTrue(filter.match(auto));
-			@SuppressWarnings("unused")
-			Filter filter1 = new FilterGeoECqlImpl("Name like %Porsche%");
-			assertTrue(filter.match(auto));
-		} catch (CQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		filter = new FilterGeoECqlImpl("Name = 'Mein Porsche'");
+		assertTrue(filter.match(auto));
+		Filter filter1 = new FilterGeoECqlImpl("Name like '%Porsche%'");
+		assertTrue(filter1.match(auto));
 	}
 
 	@Test
