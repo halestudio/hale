@@ -123,10 +123,12 @@ public class WfsGetFeatureConfiguration extends WfsConfiguration {
 				getFeature = getFeature
 						.concat("&FILTER=" + URLEncoder.encode(filterString.toString(), "UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$
 			}
-		}
 
-		// get the URL
-		return new URL(getFeature);
+			return new URL(getFeature);
+		}
+		else {
+			throw new IllegalStateException("Request URL could not be determined");
+		}
 	}
 
 }

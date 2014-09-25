@@ -522,6 +522,8 @@ public class PropertyResolver {
 
 					ChildDefinition<?> tempdef = tempit.next();
 
+					// FIXME this condition is never true because LoopQNames is
+					// a list of lists
 					if (currentItem.getLoopQNames().contains(tempdef.getName())) {
 						continue;
 					}
@@ -621,6 +623,8 @@ public class PropertyResolver {
 
 					ChildDefinition<?> tempdef = tempit.next();
 
+					// FIXME this condition is never true because LoopQNames is
+					// a list of lists
 					if (currentItem.getLoopQNames().contains(tempdef.getName())) {
 						continue;
 					}
