@@ -30,9 +30,9 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 
+import de.fhg.igd.osgi.util.OsgiUtils;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
-import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.headless.EnvironmentService;
@@ -188,6 +188,23 @@ public class TransformationWorkspace {
 					+ " not available.");
 		}
 
+		return transform(env, sources, target);
+	}
+
+	/**
+	 * Transform the instances provided through the given instance readers and
+	 * store the result in the {@link #getTargetFolder()}.
+	 * 
+	 * @param env the transformation environment
+	 * @param sources the instance readers
+	 * @param target the configuration of the target instance writer
+	 * @return the future representing the successful completion of the
+	 *         transformation (note that a successful completion doesn't
+	 *         necessary mean there weren't any internal transformation errors)
+	 * @throws Exception if launching the transformation fails
+	 */
+	public ListenableFuture<Boolean> transform(TransformationEnvironment env,
+			List<InstanceReader> sources, IOConfiguration target) throws Exception {
 		InstanceWriter writer = (InstanceWriter) HeadlessIO.loadProvider(target);
 		// TODO determine content type if not set?
 
