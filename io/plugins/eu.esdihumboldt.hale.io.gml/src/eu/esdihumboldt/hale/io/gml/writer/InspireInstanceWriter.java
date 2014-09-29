@@ -75,6 +75,11 @@ import eu.esdihumboldt.util.groovy.paths.Path;
 public class InspireInstanceWriter extends GmlInstanceWriter {
 
 	/**
+	 * Identifier of the writer.
+	 */
+	public static final String ID = "eu.esdihumboldt.hale.io.inspiregml.writer";
+
+	/**
 	 * The parameter name for the identifier.localId attribute, defaults to an
 	 * empty string.
 	 */
