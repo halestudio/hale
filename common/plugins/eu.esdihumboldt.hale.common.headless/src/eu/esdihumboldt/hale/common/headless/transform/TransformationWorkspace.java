@@ -305,6 +305,35 @@ public class TransformationWorkspace {
 	}
 
 	/**
+	 * Get the workspace settings.
+	 * 
+	 * @return the current workspace settings, changes to the map will not be
+	 *         reflected in the settings
+	 * @throws FileNotFoundException if the workspace does not exist
+	 * @throws IOException if the workspace configuration file cannot be read
+	 * 
+	 * @see #set(String, String)
+	 */
+	public Map<String, String> getSettings() throws FileNotFoundException, IOException {
+		return workspaces.getSettings(workspaceId);
+	}
+
+	/**
+	 * Change a workspace setting.
+	 * 
+	 * @param setting the name of the setting
+	 * @param value the value, <code>null</code> to remove the setting
+	 * @throws FileNotFoundException if the workspace does not exist
+	 * @throws IOException if the workspace configuration file cannot be read or
+	 *             written
+	 * 
+	 * @see #getSettings()
+	 */
+	public void set(String setting, String value) throws FileNotFoundException, IOException {
+		workspaces.set(workspaceId, setting, value);
+	}
+
+	/**
 	 * Get the default file extension for the given content type.
 	 * 
 	 * @param contentType the content type, may be <code>null</code>
