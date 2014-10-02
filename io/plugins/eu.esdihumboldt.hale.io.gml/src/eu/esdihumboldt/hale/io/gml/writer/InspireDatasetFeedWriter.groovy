@@ -303,7 +303,7 @@ public class InspireDatasetFeedWriter extends AbstractExportProvider {
 			def json = new JsonSlurper().parse(new InputStreamReader(input.getInput()));
 			def fcdMap = [:]
 			json.register.containeditems.each {
-				fcdMap[it.featureconcept.umlname] = it.featureconcept.id
+				fcdMap[it.featureconcept.umlname.text as String] = it.featureconcept.id
 			}
 			for (TypeDefinition type : types) {
 				def names = type.getConstraint(XmlElements).elements.collect {it.name.localPart}
