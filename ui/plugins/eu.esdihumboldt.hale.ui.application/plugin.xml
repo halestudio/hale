@@ -549,6 +549,10 @@
                commandId="eu.esdihumboldt.hale.ui.instance.reload_data"
                style="push">
          </command>
+         <command
+               commandId="eu.esdihumboldt.hale.ui.align.auto_correlation"
+               style="push">
+         </command>
       </menuContribution>
       <menuContribution
             locationURI="toolbar:org.eclipse.ui.workbench.navigate?after=group.application">

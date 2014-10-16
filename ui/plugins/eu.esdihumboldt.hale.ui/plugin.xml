@@ -139,6 +139,10 @@
             id="eu.esdihumboldt.hale.ui.transform.projectdata"
             name="Transform project data">
       </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.align.auto_correlation"
+            name="Auto Correlation">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -475,6 +479,10 @@
                </with>
             </and>
          </enabledWhen>
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.function.internal.AutoCorrelationFunctionHandler"
+            commandId="eu.esdihumboldt.hale.ui.align.auto_correlation">
       </handler>
    </extension>
    <extension
@@ -1299,6 +1307,10 @@
       <image
             commandId="eu.esdihumboldt.hale.ui.instance.sampling.pref"
             icon="icons/samples_config.png">
+      </image>
+      <image
+            commandId="eu.esdihumboldt.hale.ui.align.auto_correlation"
+            icon="icons/solve.png">
       </image>
    </extension>
    <extension
