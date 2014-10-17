@@ -35,12 +35,13 @@ public class AutoCorrelationFunctionHandler extends AbstractHandler {
 	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
+
 		AutoCorrelationFunctionWizard wizard = new AutoCorrelationFunctionWizard();
 		Shell shell = Display.getCurrent().getActiveShell();
 		WizardDialog dialog = new WizardDialog(shell, wizard);
 
 		if (dialog.open() == Window.OK) {
-			// return wizard.getCreatedCells();
+			// return ???;
 		}
 
 		return null;

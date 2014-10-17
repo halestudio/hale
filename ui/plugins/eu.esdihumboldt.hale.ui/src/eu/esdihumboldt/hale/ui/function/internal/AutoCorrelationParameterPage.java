@@ -33,9 +33,16 @@ import eu.esdihumboldt.hale.ui.HaleWizardPage;
 public class AutoCorrelationParameterPage extends HaleWizardPage<AutoCorrelationFunctionWizard> {
 
 	private Composite pageComposite;
-	private Button superType;
+	private Button useSuperType;
 	private Button ignoreNamespace;
 	private Combo mode;
+
+	/**
+	 * The enum of the mode states.
+	 */
+	public enum modeStates {
+		RETYPE_RENAME, RETYPE_ONLY, RENAME_ONLY
+	}
 
 	/**
 	 * @param pageName The name of the page
@@ -71,10 +78,10 @@ public class AutoCorrelationParameterPage extends HaleWizardPage<AutoCorrelation
 
 		Label superTypeLabel = new Label(pageComposite, SWT.NONE);
 		superTypeLabel.setText("Check if attribute mapping should be inherited to sub types.");
-		superType = new Button(pageComposite, SWT.CHECK);
-		superType.setText("Use super type");
-		superType.setSelection(true);
-		GridDataFactory.swtDefaults().grab(true, false).applyTo(superType);
+		useSuperType = new Button(pageComposite, SWT.CHECK);
+		useSuperType.setText("Use super type");
+		useSuperType.setSelection(true);
+		GridDataFactory.swtDefaults().grab(true, false).applyTo(useSuperType);
 
 		Label ignoreNamespaceLabel = new Label(pageComposite, SWT.NONE);
 		ignoreNamespaceLabel.setText("Check if only types with equal namespaces should be mapped.");
@@ -86,6 +93,27 @@ public class AutoCorrelationParameterPage extends HaleWizardPage<AutoCorrelation
 		setPageComplete(true);
 		pageComposite.layout();
 		pageComposite.pack();
+	}
+
+	/**
+	 * @return the superType
+	 */
+	public boolean getUseSuperType() {
+		return useSuperType.getSelection();
+	}
+
+	/**
+	 * @return the ignoreNamespace
+	 */
+	public Button getIgnoreNamespace() {
+		return ignoreNamespace;
+	}
+
+	/**
+	 * @return the mode
+	 */
+	public int getMode() {
+		return mode.getSelectionIndex();
 	}
 
 }

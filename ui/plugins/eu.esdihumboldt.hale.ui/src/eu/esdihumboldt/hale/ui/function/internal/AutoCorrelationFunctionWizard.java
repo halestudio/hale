@@ -16,11 +16,12 @@
 package eu.esdihumboldt.hale.ui.function.internal;
 
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.ui.PlatformUI;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.common.align.model.MutableCell;
-import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 
 /**
  * Wizard for creating an automatic mapping.
@@ -66,13 +67,18 @@ public class AutoCorrelationFunctionWizard extends Wizard {
 	 */
 	@Override
 	public boolean performFinish() {
+
+		// get SchemaSelection (source and target files) from page
+		// fill with parameters from page
+		ListMultimap<String, ParameterValue> parameters = ArrayListMultimap.create();
+
 		// Add all cells
-		MutableCell cell = null;//
-		if (cell != null) {
-			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-					AlignmentService.class);
-			as.addCell(cell);
-		}
+//		MutableCell cell = null;//
+//		if (cell != null) {
+//			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+//					AlignmentService.class);
+//			as.addCell(cell);
+//		}
 
 		// save page configuration ???
 
