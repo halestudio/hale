@@ -17,11 +17,9 @@ package eu.esdihumboldt.hale.ui.function.internal;
 
 import org.eclipse.jface.wizard.Wizard;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
-
 import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.common.align.model.ParameterValue;
+import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
+import eu.esdihumboldt.hale.ui.selection.impl.DefaultSchemaSelection;
 
 /**
  * Wizard for creating an automatic mapping.
@@ -70,7 +68,8 @@ public class AutoCorrelationFunctionWizard extends Wizard {
 
 		// get SchemaSelection (source and target files) from page
 		// fill with parameters from page
-		ListMultimap<String, ParameterValue> parameters = ArrayListMultimap.create();
+		SchemaSelection typeSelection = new DefaultSchemaSelection(typePage.getSourceTypes(),
+				typePage.getTargetTypes(), DefaultSchemaSelection.SchemaStructuredMode.ALL);
 
 		// Add all cells
 //		MutableCell cell = null;//

@@ -40,7 +40,7 @@ public class AutoCorrelationParameterPage extends HaleWizardPage<AutoCorrelation
 	/**
 	 * The enum of the mode states.
 	 */
-	public enum modeStates {
+	public enum STATE {
 		RETYPE_RENAME, RETYPE_ONLY, RENAME_ONLY
 	}
 
@@ -73,7 +73,7 @@ public class AutoCorrelationParameterPage extends HaleWizardPage<AutoCorrelation
 		mode.add("Retype and Rename (based on Type matching)");
 		mode.add("Retype only (based on Type matching)");
 		mode.add("Rename only (based on Attribute matching)");
-		mode.select(0); // default selection
+		mode.select(STATE.RETYPE_RENAME.ordinal()); // default selection
 		GridDataFactory.swtDefaults().grab(true, false).applyTo(mode);
 
 		Label superTypeLabel = new Label(pageComposite, SWT.NONE);

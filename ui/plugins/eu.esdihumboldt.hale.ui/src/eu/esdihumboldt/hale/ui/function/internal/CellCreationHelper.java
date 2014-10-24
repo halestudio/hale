@@ -15,12 +15,15 @@
 
 package eu.esdihumboldt.hale.ui.function.internal;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
+import eu.esdihumboldt.hale.common.align.model.functions.RenameFunction;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
+import eu.esdihumboldt.hale.common.core.io.Value;
 
 /**
  * Helper class which accepts source, target and transformation parameter to
@@ -51,6 +54,23 @@ public class CellCreationHelper {
 		cell.setTarget(target);
 
 		return cell;
+	}
+
+	/**
+	 * Create a ListMultimap with the given boolean
+	 * 
+	 * @param ignoreNamespace
+	 * @param structuralRename
+	 * @return the parameter list
+	 */
+	public static ListMultimap<String, ParameterValue> createParameter(boolean ignoreNamespace,
+			boolean structuralRename) {
+		ListMultimap<String, ParameterValue> parameter = ArrayListMultimap.create();
+		parameter.put(RenameFunction.PARAMETER_IGNORE_NAMESPACES,
+				new ParameterValue(Value.of(ignoreNamespace)));
+		parameter.put(RenameFunction.PARAMETER_STRUCTURAL_RENAME,
+				new ParameterValue(Value.of(structuralRename)));
+		return parameter;
 	}
 
 }

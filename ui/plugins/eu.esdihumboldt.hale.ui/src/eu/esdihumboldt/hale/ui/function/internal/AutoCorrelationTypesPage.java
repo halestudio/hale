@@ -15,9 +15,10 @@
 
 package eu.esdihumboldt.hale.ui.function.internal;
 
+import java.util.Set;
+
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridLayout;
@@ -25,6 +26,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Text;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -46,10 +49,14 @@ public class AutoCorrelationTypesPage extends HaleWizardPage<AutoCorrelationFunc
 
 	private Composite pageComposite;
 	private Button processEntireSchema;
-	private ListMultimap<String, Type> source;
-	private ListMultimap<String, Type> target;
+	// private ListMultimap<String, Type> source;
+	private Set<EntityDefinition> source;
+	// private ListMultimap<String, Type> target;
+	private Set<EntityDefinition> target;
 	private Label targetType;
-	private Label sourceType;
+	private Text sourceType;
+	private List listOfSourceTypes;
+	private List listOfTargetTypes;
 
 	/**
 	 * @param pageName The name of the page
@@ -74,6 +81,7 @@ public class AutoCorrelationTypesPage extends HaleWizardPage<AutoCorrelationFunc
 
 		else if (source != null && !source.isEmpty() && target != null && !target.isEmpty()) {
 			setPageComplete(true);
+			return true;
 		}
 
 		setPageComplete(false);
@@ -90,28 +98,21 @@ public class AutoCorrelationTypesPage extends HaleWizardPage<AutoCorrelationFunc
 		// set the source and target types to the selection if firstShow
 		if (firstShow) {
 			SchemaSelection selection = SchemaSelectionHelper.getSchemaSelection();
-			source = ArrayListMultimap.create();
-			target = ArrayListMultimap.create();
+			source = selection.getSourceItems();
+			target = selection.getTargetItems();
 
-			for (EntityDefinition entity : selection.getSourceItems()) {
-				if (entity instanceof TypeEntityDefinition) {
-					Type type = new DefaultType((TypeEntityDefinition) entity);
-
-					source.put(null, type);
+			if (isValid()) {
+				for (EntityDefinition entity : source) {
+					listOfSourceTypes.add(entity.getType().getDisplayName());
+				}
+				for (EntityDefinition entity : target) {
+					listOfTargetTypes.add(entity.getType().getDisplayName());
 				}
 			}
-
-			for (EntityDefinition entity : selection.getTargetItems()) {
-				if (entity instanceof TypeEntityDefinition) {
-					Type type = new DefaultType((TypeEntityDefinition) entity);
-
-					target.put(null, type);
-				}
+			else {
+				listOfSourceTypes.add("<Please click here!>");
+				listOfTargetTypes.add("<Please click here!>");
 			}
-			sourceType.setText(source.entries().iterator().next().getValue().getDefinition()
-					.getType().getDisplayName());
-			targetType.setText(target.entries().iterator().next().getValue().getDefinition()
-					.getType().getDisplayName());
 
 		}
 
@@ -130,33 +131,21 @@ public class AutoCorrelationTypesPage extends HaleWizardPage<AutoCorrelationFunc
 		page.setLayout(layout);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(page);
 
-//		Composite typeSelectorSpace = new Composite(page, SWT.NONE);
-//		typeSelectorSpace.setLayout(new GridLayout(2, false));
-//		GridDataFactory.fillDefaults().grab(true, false).applyTo(typeSelectorSpace);
 		Group typeSelectorSpace = new Group(page, SWT.NONE);
 		typeSelectorSpace.setText("Types");
 		typeSelectorSpace.setLayout(new GridLayout(2, false));
 		GridDataFactory.fillDefaults().grab(false, true).applyTo(typeSelectorSpace);
 
-		// Source Type
+		// Types
 		Label sourceLabel = new Label(typeSelectorSpace, SWT.NONE);
 		sourceLabel.setText("Source Type: ");
-		sourceType = new Label(typeSelectorSpace, SWT.BEGINNING);
-		sourceType.setText("");
-//		StringFieldEditor mySourceType = new StringFieldEditor("sourceType", "Source Type: ",
-//				typeSelectorSpace);
-		// createSourceField(typeSelectorSpace,
-		// "Wildcard source Type Selector");
-
-		// Target Type
 		Label targetLabel = new Label(typeSelectorSpace, SWT.NONE);
 		targetLabel.setText("Target Type: ");
-		targetType = new Label(typeSelectorSpace, SWT.BEGINNING);
-		targetType.setText("");
-//		StringFieldEditor myTargetType = new StringFieldEditor("targetType", "Target Type: ",
-//				typeSelectorSpace);
-		// createSourceField(typeSelectorSpace,
-		// "Wildcard target Type Selector");
+
+		listOfSourceTypes = new List(typeSelectorSpace, SWT.BORDER | SWT.V_SCROLL | SWT.FILL);
+		GridDataFactory.swtDefaults().grab(true, true).applyTo(listOfSourceTypes);
+		listOfTargetTypes = new List(typeSelectorSpace, SWT.BORDER | SWT.V_SCROLL | SWT.FILL);
+		GridDataFactory.swtDefaults().grab(true, true).applyTo(listOfTargetTypes);
 
 		// Checkbox entire Schema
 		processEntireSchema = new Button(page, SWT.CHECK);
@@ -196,30 +185,63 @@ public class AutoCorrelationTypesPage extends HaleWizardPage<AutoCorrelationFunc
 	/**
 	 * 
 	 */
-	private void createSourceField(Composite parent, String text) {
+	private void createField(Composite parent) {
+		// , String text) {
 
-		ScrolledComposite sc = new ScrolledComposite(parent, SWT.V_SCROLL);
+		// Add the items, one by one
 
-		// Create a child composite to hold the controls
-		Composite control = new Composite(sc, SWT.NONE);
-		control.setLayout(new GridLayout(1, false));
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(control);
-		control.setSize(300, 100);
+//		ScrolledComposite sc = new ScrolledComposite(parent, SWT.V_SCROLL);
+//
+//		// Create a child composite to hold the controls
+//		Composite control = new Composite(sc, SWT.NONE);
+//		control.setLayout(new GridLayout(1, false));
+//		GridDataFactory.fillDefaults().grab(true, false).applyTo(control);
+//		control.setSize(300, 100);
+//
+//		Label name = new Label(control, SWT.NONE);
+//		name.setText(text);
+//		name.setLayoutData(GridDataFactory.swtDefaults().create());
+//		/*
+//		 * // Set the absolute size of the child child.setSize(400, 400);
+//		 */
+//		// Set the child as the scrolled content of the ScrolledComposite
+//		sc.setContent(control);
+//
+//		// Set the minimum size
+//		// sc.setMinSize(400, 400);
+//
+//		// Expand both horizontally and vertically
+//		sc.setExpandHorizontal(false);
+//		sc.setExpandVertical(true);
+	}
 
-		Label name = new Label(control, SWT.NONE);
-		name.setText(text);
-		name.setLayoutData(GridDataFactory.swtDefaults().create());
-		/*
-		 * // Set the absolute size of the child child.setSize(400, 400);
-		 */
-		// Set the child as the scrolled content of the ScrolledComposite
-		sc.setContent(control);
+	/**
+	 * 
+	 * @return The page's result - source types to be processed
+	 */
+	public Set<EntityDefinition> getSourceTypes() {
+		return source;// convertEntityToType(source);
+	}
 
-		// Set the minimum size
-		// sc.setMinSize(400, 400);
+	/**
+	 * 
+	 * @return The page's result - target types to be processed
+	 */
+	public Set<EntityDefinition> getTargetTypes() {
+		return target;// convertEntityToType(target);
+	}
 
-		// Expand both horizontally and vertically
-		sc.setExpandHorizontal(false);
-		sc.setExpandVertical(true);
+	private ListMultimap<String, Type> convertEntityToType(Set<EntityDefinition> list) {
+		ListMultimap<String, Type> result = ArrayListMultimap.create();
+
+		for (EntityDefinition entity : list) {
+			if (entity instanceof TypeEntityDefinition) {
+				Type type = new DefaultType((TypeEntityDefinition) entity);
+
+				result.put(null, type);
+			}
+		}
+
+		return result;
 	}
 }
