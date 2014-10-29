@@ -119,6 +119,25 @@ class BundleParser {
 	}
 	
 	/**
+	 * Get's a plugin's build properties.
+	 */
+	def getBuildProperties(path) {
+		def props = new Properties()
+		new File(path, 'build.properties').withReader { r ->
+			props.load(r)
+		}
+		props
+	}
+	
+	/**
+	 * Determines if a plugin requires the Twirl compiler.
+	 */
+	def needsTwirl(path) {
+		def props = getBuildProperties(path)
+		Boolean.parseBoolean(props.getProperty('extras.twirl', 'false').trim())
+	}
+	
+	/**
 	 * Determines if a workspace project should be included in the update site.
 	 */
 	boolean acceptProject(def path, def sname) {
@@ -174,6 +193,7 @@ class BundleParser {
 									'needsGroovy': needsGroovy(path),
 									'isJavaProject': isJavaProject(path),
 									'javaVersion': readJavaVersion(manifestPath),
+									'needsTwirl': needsTwirl(path)
 	                        ]
 						}
 						else {
