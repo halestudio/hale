@@ -138,6 +138,14 @@ class BundleParser {
 	}
 	
 	/**
+	 * Get additional imports for Twirl.
+	 */
+	def twirlImports(path) {
+		def props = getBuildProperties(path)
+		props.getProperty('twirl.imports', '').trim().split().toList()
+	}
+	
+	/**
 	 * Determines if a workspace project should be included in the update site.
 	 */
 	boolean acceptProject(def path, def sname) {
@@ -186,6 +194,8 @@ class BundleParser {
                     if (!project.ext.parsedBundles.containsKey(sname)) {
 						// check if the project is valid / should be part of the update site
 						if (acceptProject(path, sname)) {
+							def needsTwirl = needsTwirl(path)
+							
 	                        project.ext.parsedBundles[sname] = [
 	                                'version': readVersion(manifestPath),
 	                                'path': path,
@@ -193,7 +203,8 @@ class BundleParser {
 									'needsGroovy': needsGroovy(path),
 									'isJavaProject': isJavaProject(path),
 									'javaVersion': readJavaVersion(manifestPath),
-									'needsTwirl': needsTwirl(path)
+									'needsTwirl': needsTwirl,
+									'twirlImports': needsTwirl ? twirlImports(path) : []
 	                        ]
 						}
 						else {

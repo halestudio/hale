@@ -111,7 +111,8 @@ class PomGenerator {
 				isJavaProject: it.value.isJavaProject,
 				javaSource: it.value.javaVersion,
 				javaTarget: it.value.javaVersion,
-				needsTwirl: it.value.needsTwirl
+				needsTwirl: it.value.needsTwirl,
+				twirlImports: it.value.twirlImports
 			])
         }
 

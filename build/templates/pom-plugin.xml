@@ -29,7 +29,7 @@
         <configuration>
 	  <dependency-resolution>
 	    <extraRequirements>
-              <% extraRequirements.each { %>
+          <% extraRequirements.each { %>
 	      <requirement>
 	        <type>eclipse-plugin</type>
   	        <id>$it</id>
@@ -181,6 +181,13 @@
 			<version>1.0.2</version>
 			<configuration>
 				<templateDirectory>\${project.basedir}/src</templateDirectory>
+				<% if (twirlImports) { %>
+				<imports>
+					<% twirlImports.each { %>
+					<import>$it</import>
+					<% } %>
+				</imports>
+				<% } %>
 			</configuration>
 			<executions>
 				<execution>
