@@ -105,8 +105,8 @@ public class AutoCorrelationParameterPage extends HaleWizardPage<AutoCorrelation
 	/**
 	 * @return the ignoreNamespace
 	 */
-	public Button getIgnoreNamespace() {
-		return ignoreNamespace;
+	public boolean getIgnoreNamespace() {
+		return ignoreNamespace.getSelection();
 	}
 
 	/**

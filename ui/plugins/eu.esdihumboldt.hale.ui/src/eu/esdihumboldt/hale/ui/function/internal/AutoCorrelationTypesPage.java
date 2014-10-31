@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -36,9 +36,12 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelectionHelper;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
 /**
  * Page to select/set the source of the auto correlation function
@@ -53,8 +56,6 @@ public class AutoCorrelationTypesPage extends HaleWizardPage<AutoCorrelationFunc
 	private Set<EntityDefinition> source;
 	// private ListMultimap<String, Type> target;
 	private Set<EntityDefinition> target;
-	private Label targetType;
-	private Text sourceType;
 	private List listOfSourceTypes;
 	private List listOfTargetTypes;
 
@@ -156,10 +157,12 @@ public class AutoCorrelationTypesPage extends HaleWizardPage<AutoCorrelationFunc
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (processEntireSchema.getSelection()) {
-					// TODO disable type selector
+					listOfSourceTypes.setEnabled(false);
+					listOfTargetTypes.setEnabled(false);
 				}
 				else {
-					// TODO enable type selector
+					listOfSourceTypes.setEnabled(true);
+					listOfTargetTypes.setEnabled(true);
 				}
 				isValid();
 			}
@@ -167,10 +170,12 @@ public class AutoCorrelationTypesPage extends HaleWizardPage<AutoCorrelationFunc
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 				if (processEntireSchema.getSelection()) {
-					// TODO disable type selector
+					listOfSourceTypes.setEnabled(false);
+					listOfTargetTypes.setEnabled(false);
 				}
 				else {
-					// TODO enable type selector
+					listOfSourceTypes.setEnabled(true);
+					listOfTargetTypes.setEnabled(true);
 				}
 				isValid();
 			}
@@ -220,6 +225,10 @@ public class AutoCorrelationTypesPage extends HaleWizardPage<AutoCorrelationFunc
 	 * @return The page's result - source types to be processed
 	 */
 	public Set<EntityDefinition> getSourceTypes() {
+		if (processEntireSchema.getSelection()) {
+			// process the whole schema
+			return getCompleteTypesFromSchemaSpace(SchemaSpaceID.SOURCE);
+		}
 		return source;// convertEntityToType(source);
 	}
 
@@ -228,7 +237,23 @@ public class AutoCorrelationTypesPage extends HaleWizardPage<AutoCorrelationFunc
 	 * @return The page's result - target types to be processed
 	 */
 	public Set<EntityDefinition> getTargetTypes() {
+		if (processEntireSchema.getSelection()) {
+			// process the whole schema
+
+		}
 		return target;// convertEntityToType(target);
+	}
+
+	/**
+	 * @param spaceID the SchemaSpace which should be used
+	 * @return the top most type of the schema ID
+	 */
+	private Set<EntityDefinition> getCompleteTypesFromSchemaSpace(SchemaSpaceID spaceID) {
+		SchemaService sches = (SchemaService) PlatformUI.getWorkbench().getService(
+				SchemaService.class);
+		SchemaSpace schema = sches.getSchemas(spaceID);
+		schema.getMappingRelevantTypes();
+		return null;
 	}
 
 	private ListMultimap<String, Type> convertEntityToType(Set<EntityDefinition> list) {

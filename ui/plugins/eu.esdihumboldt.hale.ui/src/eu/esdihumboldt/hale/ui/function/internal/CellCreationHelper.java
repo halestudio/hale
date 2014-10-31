@@ -15,6 +15,10 @@
 
 package eu.esdihumboldt.hale.ui.function.internal;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
+
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
@@ -22,8 +26,12 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.RenameFunction;
+import eu.esdihumboldt.hale.common.align.model.functions.RetypeFunction;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
+import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.util.Pair;
 
 /**
  * Helper class which accepts source, target and transformation parameter to
@@ -38,9 +46,9 @@ public class CellCreationHelper {
 	 * 
 	 * @param source The source entities, can be Type or Property
 	 * @param target The target entities, can be Type or Property
-	 * @param transformationParameter
-	 * @param transformationIdentifier
-	 * @return
+	 * @param transformationParameter The transformation parameters
+	 * @param transformationIdentifier The id of the transformation
+	 * @return The created MutableCell
 	 */
 	public static MutableCell createCell(ListMultimap<String, ? extends Entity> source,
 			ListMultimap<String, ? extends Entity> target,
@@ -57,10 +65,59 @@ public class CellCreationHelper {
 	}
 
 	/**
+	 * @param pairs pairs of types which will be source and target of this cell
+	 * @param ignoreNamespace true, if the namespace should be ignored
+	 * @param structuralRename true, if properties or types should use
+	 *            structuralRename/Retype
+	 * @return a collection of cells
+	 */
+	public static Collection<MutableCell> createTypeCellRetypeCollection(
+			Set<Pair<TypeEntityDefinition, TypeEntityDefinition>> pairs, boolean ignoreNamespace,
+			boolean structuralRename) {
+
+		Collection<MutableCell> cells = Collections.emptyList();
+
+		for (Pair<TypeEntityDefinition, TypeEntityDefinition> pair : pairs) {
+			cells.add(createRetypeTypeCell(pair.getFirst(), pair.getSecond(), ignoreNamespace,
+					structuralRename));
+		}
+
+		return cells;
+	}
+
+	/**
+	 * Creates a mutable Type Cell
+	 * 
+	 * @param source The source TypeEntityDefinition
+	 * @param target The target TypeEntityDefinition
+	 * @param ignoreNamespace True indicates that the namespace will be ignored
+	 * @param structuralRename True, if properties should use structuralRename
+	 * @return The created MutableCell
+	 */
+	public static MutableCell createRetypeTypeCell(TypeEntityDefinition source,
+			TypeEntityDefinition target, boolean ignoreNamespace, boolean structuralRename) {
+
+		MutableCell cell = new DefaultCell();
+
+		ListMultimap<String, Entity> sourceType = ArrayListMultimap.create();
+		sourceType.put(null, new DefaultType(source));
+		cell.setSource(sourceType);
+
+		ListMultimap<String, Entity> targetType = ArrayListMultimap.create();
+		targetType.put(null, new DefaultType(target));
+		cell.setTarget(targetType);
+
+		cell.setTransformationParameters(createParameter(ignoreNamespace, structuralRename));
+		cell.setTransformationIdentifier(RetypeFunction.ID);
+
+		return cell;
+	}
+
+	/**
 	 * Create a ListMultimap with the given boolean
 	 * 
-	 * @param ignoreNamespace
-	 * @param structuralRename
+	 * @param ignoreNamespace True indicates that the namespace will be ignored
+	 * @param structuralRename True, if properties should use structuralRename
 	 * @return the parameter list
 	 */
 	public static ListMultimap<String, ParameterValue> createParameter(boolean ignoreNamespace,
