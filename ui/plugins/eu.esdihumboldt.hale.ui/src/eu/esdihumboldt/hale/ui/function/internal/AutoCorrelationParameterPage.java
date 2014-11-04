@@ -38,13 +38,6 @@ public class AutoCorrelationParameterPage extends HaleWizardPage<AutoCorrelation
 	private Combo mode;
 
 	/**
-	 * The enum of the mode states.
-	 */
-	public enum STATE {
-		RETYPE_RENAME, RETYPE_ONLY, RENAME_ONLY
-	}
-
-	/**
 	 * @param pageName The name of the page
 	 */
 	protected AutoCorrelationParameterPage(String pageName) {
@@ -72,8 +65,8 @@ public class AutoCorrelationParameterPage extends HaleWizardPage<AutoCorrelation
 		mode = new Combo(pageComposite, SWT.DROP_DOWN | SWT.READ_ONLY);
 		mode.add("Retype and Rename (based on Type matching)");
 		mode.add("Retype only (based on Type matching)");
-		mode.add("Rename only (based on Attribute matching)");
-		mode.select(STATE.RETYPE_RENAME.ordinal()); // default selection
+		// mode.add("Rename only (based on Attribute matching)");
+		mode.select(0); // default selection
 		GridDataFactory.swtDefaults().grab(true, false).applyTo(mode);
 
 		Label superTypeLabel = new Label(pageComposite, SWT.NONE);
@@ -86,7 +79,7 @@ public class AutoCorrelationParameterPage extends HaleWizardPage<AutoCorrelation
 		Label ignoreNamespaceLabel = new Label(pageComposite, SWT.NONE);
 		ignoreNamespaceLabel.setText("Check if only types with equal namespaces should be mapped.");
 		ignoreNamespace = new Button(pageComposite, SWT.CHECK);
-		ignoreNamespace.setText("Use super type");
+		ignoreNamespace.setText("Ignore Namespace");
 		ignoreNamespace.setSelection(true);
 		GridDataFactory.swtDefaults().grab(true, false).applyTo(ignoreNamespace);
 

@@ -15,13 +15,16 @@
 
 package eu.esdihumboldt.hale.ui.function.internal;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Set;
+
+import org.eclipse.ui.PlatformUI;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
+import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
@@ -72,15 +75,58 @@ public class CellCreationHelper {
 	 * @return a collection of cells
 	 */
 	public static Collection<MutableCell> createTypeCellRetypeCollection(
-			Set<Pair<TypeEntityDefinition, TypeEntityDefinition>> pairs, boolean ignoreNamespace,
-			boolean structuralRename) {
+			Collection<Pair<TypeEntityDefinition, TypeEntityDefinition>> pairs,
+			boolean ignoreNamespace, boolean structuralRename) {
 
-		Collection<MutableCell> cells = Collections.emptyList();
+		Collection<MutableCell> cells = new ArrayList<MutableCell>();
 
 		for (Pair<TypeEntityDefinition, TypeEntityDefinition> pair : pairs) {
 			cells.add(createRetypeTypeCell(pair.getFirst(), pair.getSecond(), ignoreNamespace,
 					structuralRename));
 		}
+
+		return cells;
+	}
+
+	/**
+	 * @param pairs pairs of types which will be source and target of this cell
+	 * @param ignoreNamespace true, if the namespace should be ignored
+	 * @param structuralRename true, if properties or types should use
+	 *            structuralRename/Retype
+	 * @param alignment The alignment which should be checked for existing type
+	 *            cells
+	 * @param log The log to at a info to, if a type mapping between two types
+	 *            already exists. Can be null and nothing will be logged
+	 * @return a collection of cells
+	 */
+	public static Collection<MutableCell> createTypeCellRetypeCollectionWithoutDoubles(
+			final Collection<Pair<TypeEntityDefinition, TypeEntityDefinition>> pairs,
+			final boolean ignoreNamespace, final boolean structuralRename, Alignment alignment) {
+
+		final Collection<MutableCell> cells = new ArrayList<MutableCell>();
+
+		final Alignment align = alignment;
+
+		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+
+			@Override
+			public void run() {
+				for (Pair<TypeEntityDefinition, TypeEntityDefinition> pair : pairs) {
+					// check if types already mapped or not
+					if (!AlignmentUtil.hasTypeRelation(align)
+							|| !AlignmentUtil.hasTypeRelation(align, pair.getFirst(),
+									pair.getSecond())) {
+						cells.add(createRetypeTypeCell(pair.getFirst(), pair.getSecond(),
+								ignoreNamespace, structuralRename));
+					}
+//					else {
+//						if (log != null)
+//							log.info("Existing type mapping between source: " + pair.getFirst()
+//									+ " and target: " + pair.getSecond());
+//					}
+				}
+			}
+		});
 
 		return cells;
 	}

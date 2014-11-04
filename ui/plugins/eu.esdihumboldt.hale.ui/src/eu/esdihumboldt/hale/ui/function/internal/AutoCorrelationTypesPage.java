@@ -15,9 +15,14 @@
 
 package eu.esdihumboldt.hale.ui.function.internal;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Set;
 
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -26,19 +31,19 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.ui.PlatformUI;
-
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
+import org.eclipse.ui.dialogs.FilteredTree;
+import org.eclipse.ui.dialogs.PatternFilter;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
-import eu.esdihumboldt.hale.common.align.model.Type;
-import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
+import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
+import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
+import eu.esdihumboldt.hale.ui.common.definition.viewer.TypesContentProvider;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelectionHelper;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
@@ -56,8 +61,8 @@ public class AutoCorrelationTypesPage extends HaleWizardPage<AutoCorrelationFunc
 	private Set<EntityDefinition> source;
 	// private ListMultimap<String, Type> target;
 	private Set<EntityDefinition> target;
-	private List listOfSourceTypes;
-	private List listOfTargetTypes;
+	private TreeViewer listOfSourceTypes;
+	private TreeViewer listOfTargetTypes;
 
 	/**
 	 * @param pageName The name of the page
@@ -80,7 +85,7 @@ public class AutoCorrelationTypesPage extends HaleWizardPage<AutoCorrelationFunc
 			return true;
 		}
 
-		else if (source != null && !source.isEmpty() && target != null && !target.isEmpty()) {
+		else if ((source != null && !source.isEmpty()) || (target != null && !target.isEmpty())) {
 			setPageComplete(true);
 			return true;
 		}
@@ -102,21 +107,30 @@ public class AutoCorrelationTypesPage extends HaleWizardPage<AutoCorrelationFunc
 			source = selection.getSourceItems();
 			target = selection.getTargetItems();
 
+			Collection<TypeDefinition> types = new ArrayList<TypeDefinition>();
 			if (isValid()) {
 				for (EntityDefinition entity : source) {
-					listOfSourceTypes.add(entity.getType().getDisplayName());
+					// listOfSourceTypes.add(entity.getType().getDisplayName());
+					if (entity.getDefinition() instanceof TypeDefinition) {
+						types.add((TypeDefinition) entity.getDefinition());
+					}
 				}
+				listOfSourceTypes.setInput(types);
+				types = new ArrayList<TypeDefinition>();
+
 				for (EntityDefinition entity : target) {
-					listOfTargetTypes.add(entity.getType().getDisplayName());
+					// listOfTargetTypes.add(entity.getType().getDisplayName());
+					if (entity.getDefinition() instanceof TypeDefinition) {
+						types.add((TypeDefinition) entity.getDefinition());
+					}
 				}
-			}
-			else {
-				listOfSourceTypes.add("<Please click here!>");
-				listOfTargetTypes.add("<Please click here!>");
+				listOfTargetTypes.setInput(types);
 			}
 
 		}
 
+		listOfSourceTypes.refresh();
+		listOfTargetTypes.refresh();
 		pageComposite.layout();
 		pageComposite.pack();
 	}
@@ -135,7 +149,7 @@ public class AutoCorrelationTypesPage extends HaleWizardPage<AutoCorrelationFunc
 		Group typeSelectorSpace = new Group(page, SWT.NONE);
 		typeSelectorSpace.setText("Types");
 		typeSelectorSpace.setLayout(new GridLayout(2, false));
-		GridDataFactory.fillDefaults().grab(false, true).applyTo(typeSelectorSpace);
+		GridDataFactory.fillDefaults().grab(true, true).applyTo(typeSelectorSpace);
 
 		// Types
 		Label sourceLabel = new Label(typeSelectorSpace, SWT.NONE);
@@ -143,10 +157,8 @@ public class AutoCorrelationTypesPage extends HaleWizardPage<AutoCorrelationFunc
 		Label targetLabel = new Label(typeSelectorSpace, SWT.NONE);
 		targetLabel.setText("Target Type: ");
 
-		listOfSourceTypes = new List(typeSelectorSpace, SWT.BORDER | SWT.V_SCROLL | SWT.FILL);
-		GridDataFactory.swtDefaults().grab(true, true).applyTo(listOfSourceTypes);
-		listOfTargetTypes = new List(typeSelectorSpace, SWT.BORDER | SWT.V_SCROLL | SWT.FILL);
-		GridDataFactory.swtDefaults().grab(true, true).applyTo(listOfTargetTypes);
+		listOfSourceTypes = createTypeViewer(typeSelectorSpace, new ArrayList<TypeDefinition>());
+		listOfTargetTypes = createTypeViewer(typeSelectorSpace, new ArrayList<TypeDefinition>());
 
 		// Checkbox entire Schema
 		processEntireSchema = new Button(page, SWT.CHECK);
@@ -157,12 +169,12 @@ public class AutoCorrelationTypesPage extends HaleWizardPage<AutoCorrelationFunc
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (processEntireSchema.getSelection()) {
-					listOfSourceTypes.setEnabled(false);
-					listOfTargetTypes.setEnabled(false);
+					// listOfSourceTypes.setEnabled(false);
+					// listOfTargetTypes.setEnabled(false);
 				}
 				else {
-					listOfSourceTypes.setEnabled(true);
-					listOfTargetTypes.setEnabled(true);
+					// listOfSourceTypes.setEnabled(true);
+					// listOfTargetTypes.setEnabled(true);
 				}
 				isValid();
 			}
@@ -170,12 +182,12 @@ public class AutoCorrelationTypesPage extends HaleWizardPage<AutoCorrelationFunc
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 				if (processEntireSchema.getSelection()) {
-					listOfSourceTypes.setEnabled(false);
-					listOfTargetTypes.setEnabled(false);
+					// listOfSourceTypes.setEnabled(false);
+					// listOfTargetTypes.setEnabled(false);
 				}
 				else {
-					listOfSourceTypes.setEnabled(true);
-					listOfTargetTypes.setEnabled(true);
+					// listOfSourceTypes.setEnabled(true);
+					// listOfTargetTypes.setEnabled(true);
 				}
 				isValid();
 			}
@@ -183,8 +195,8 @@ public class AutoCorrelationTypesPage extends HaleWizardPage<AutoCorrelationFunc
 		GridDataFactory.swtDefaults().grab(true, false).applyTo(processEntireSchema);
 
 		setPageComplete(false);
-		page.layout();
-		page.pack();
+		// page.layout();
+		// page.pack();
 	}
 
 	/**
@@ -220,53 +232,102 @@ public class AutoCorrelationTypesPage extends HaleWizardPage<AutoCorrelationFunc
 //		sc.setExpandVertical(true);
 	}
 
+	private TreeViewer createTypeViewer(Composite parent, Collection<TypeDefinition> initialInput) {
+		PatternFilter patternFilter = new PatternFilter();
+		patternFilter.setIncludeLeadingWildcard(true);
+		FilteredTree tree = new FilteredTree(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL
+				| SWT.BORDER, patternFilter, true);
+		tree.getViewer().setComparator(new DefinitionComparator());
+
+		TreeViewer viewer = tree.getViewer();
+
+		viewer.setComparator(new DefinitionComparator());
+
+		viewer.setLabelProvider(new DefinitionLabelProvider());
+		viewer.setContentProvider(new TypesContentProvider(viewer));
+
+		viewer.setInput(initialInput);
+
+		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				// updateButtonStatus();
+			}
+		});
+
+		return viewer;
+	}
+
 	/**
 	 * 
 	 * @return The page's result - source types to be processed
 	 */
-	public Set<EntityDefinition> getSourceTypes() {
+	public Collection<TypeDefinition> getSourceTypes() {
 		if (processEntireSchema.getSelection()) {
 			// process the whole schema
 			return getCompleteTypesFromSchemaSpace(SchemaSpaceID.SOURCE);
 		}
-		return source;// convertEntityToType(source);
+		Collection<TypeDefinition> sourceTypes = new ArrayList<TypeDefinition>();
+		for (EntityDefinition type : source) {
+			if (type instanceof TypeEntityDefinition) {
+				sourceTypes.add(type.getType());
+			}
+		}
+		// return all source types if target type(s) selected
+		if (sourceTypes.isEmpty() && (target != null && !target.isEmpty())) {
+			return getCompleteTypesFromSchemaSpace(SchemaSpaceID.SOURCE);
+		}
+		return sourceTypes;
 	}
 
 	/**
 	 * 
 	 * @return The page's result - target types to be processed
 	 */
-	public Set<EntityDefinition> getTargetTypes() {
+	public Collection<TypeDefinition> getTargetTypes() {
 		if (processEntireSchema.getSelection()) {
 			// process the whole schema
-
+			return getCompleteTypesFromSchemaSpace(SchemaSpaceID.TARGET);
 		}
-		return target;// convertEntityToType(target);
+		Collection<TypeDefinition> targetTypes = new ArrayList<TypeDefinition>();
+		for (EntityDefinition type : target) {
+			if (type instanceof TypeEntityDefinition) {
+				targetTypes.add(type.getType());
+			}
+		}
+		// return all source types if target type(s) selected
+		if (targetTypes.isEmpty() && (source != null && !source.isEmpty())) {
+			return getCompleteTypesFromSchemaSpace(SchemaSpaceID.TARGET);
+		}
+		return targetTypes;
 	}
 
 	/**
 	 * @param spaceID the SchemaSpace which should be used
 	 * @return the top most type of the schema ID
 	 */
-	private Set<EntityDefinition> getCompleteTypesFromSchemaSpace(SchemaSpaceID spaceID) {
+	private Collection<TypeDefinition> getCompleteTypesFromSchemaSpace(SchemaSpaceID spaceID) {
 		SchemaService sches = (SchemaService) PlatformUI.getWorkbench().getService(
 				SchemaService.class);
 		SchemaSpace schema = sches.getSchemas(spaceID);
-		schema.getMappingRelevantTypes();
-		return null;
+
+		Collection<TypeDefinition> types = new ArrayList<TypeDefinition>(
+				schema.getMappingRelevantTypes());
+		return types;
 	}
 
-	private ListMultimap<String, Type> convertEntityToType(Set<EntityDefinition> list) {
-		ListMultimap<String, Type> result = ArrayListMultimap.create();
-
-		for (EntityDefinition entity : list) {
-			if (entity instanceof TypeEntityDefinition) {
-				Type type = new DefaultType((TypeEntityDefinition) entity);
-
-				result.put(null, type);
-			}
-		}
-
-		return result;
-	}
+//	private ListMultimap<String, Type> convertEntityToType(Set<EntityDefinition> list) {
+//		ListMultimap<String, Type> result = ArrayListMultimap.create();
+//
+//		for (EntityDefinition entity : list) {
+//			if (entity instanceof TypeEntityDefinition) {
+//				Type type = new DefaultType((TypeEntityDefinition) entity);
+//
+//				result.put(null, type);
+//			}
+//		}
+//
+//		return result;
+//	}
 }

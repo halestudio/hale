@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.function.internal;
+package eu.esdihumboldt.hale.common.test;
 
 import static org.junit.Assert.*
 
@@ -21,12 +21,9 @@ import org.junit.Before
 import org.junit.Test
 
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition
-import eu.esdihumboldt.hale.common.schema.SchemaSpaceID
 import eu.esdihumboldt.hale.common.schema.groovy.SchemaBuilder
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
-import eu.esdihumboldt.hale.ui.selection.SchemaSelection
-import eu.esdihumboldt.hale.ui.selection.impl.DefaultSchemaSelection
-import eu.esdihumboldt.hale.ui.selection.impl.DefaultSchemaSelection.SchemaStructuredMode
+import eu.esdihumboldt.hale.ui.function.internal.AutoCorrelation;
 import eu.esdihumboldt.util.Pair
 
 
@@ -97,24 +94,17 @@ class AutoCorrelationTest {
 	 * This method tests the same type selected as source and target.
 	 */
 	@Test
-	public void testRetypeOneType() {
+	public void testRetypeSameType() {
 		boolean namespaceIgnore = false;
-		Set<TypeDefinition> sourceAndTarget = Collections.emptyList()
+		Collection<TypeDefinition> sourceAndTarget = new ArrayList<TypeDefinition>()
 		sourceAndTarget.add(aType)
 
-		Set<Pair<TypeEntityDefinition, TypeEntityDefinition>> pairs = Collections.emptyList()
+		Collection<Pair<TypeEntityDefinition, TypeEntityDefinition>> pairs = new ArrayList<Pair<TypeEntityDefinition, TypeEntityDefinition>>()
 		AutoCorrelation.createPairsThroughTypeComparison(sourceAndTarget, sourceAndTarget, pairs, namespaceIgnore)
 		//There should be one pair
 		assertEquals("There should be only one pair!", 1, pairs.size())
 
-		TypeEntityDefinition sourceType = pairs.iterator().next().first
-		TypeEntityDefinition targetType = pairs.iterator().next().second
-
-		assertEquals("Source and Target Type should have the same QName", sourceType.getDefinition().getName().toString(), targetType.getDefinition().getName().toString())
-
-
-		//SchemaSelection selection = new DefaultSchemaSelection(sourceAndTarget, sourceAndTarget, SchemaStructuredMode.ALL);
-		//Set<Pair<TypeEntityDefinition, TypeEntityDefinition>> pairs = AutoCorrelation.retype(selection, namespaceIgnore);
+		assertEquals("Source and Target Type should have the same QName", pairs[0].first.getDefinition().getName().toString(), pairs[0].second.getDefinition().getName().toString())
 	}
 
 	/**
@@ -124,17 +114,20 @@ class AutoCorrelationTest {
 	@Test
 	public void testRetypeSuperTypeToDifferentNamespaceType() {
 		boolean namespaceIgnore = false;
-		Set<TypeEntityDefinition> sourceType = new HashSet<TypeEntityDefinition>()
-		sourceType.add(new TypeEntityDefinition(superType, SchemaSpaceID.SOURCE, null))
-		Set<TypeEntityDefinition> targetType = new HashSet<TypeEntityDefinition>()
-		targetType.add(new TypeEntityDefinition(ansType, SchemaSpaceID.TARGET, null))
+		//		Collection<TypeEntityDefinition> sourceType = new ArrayList<TypeEntityDefinition>()
+		//		sourceType.add(new TypeEntityDefinition(superType, SchemaSpaceID.SOURCE, null))
+		//		Collection<TypeEntityDefinition> targetType = new ArrayList<TypeEntityDefinition>()
+		//		targetType.add(new TypeEntityDefinition(ansType, SchemaSpaceID.TARGET, null))
+		//
+		//		SchemaSelection selection = new DefaultSchemaSelection(sourceType, targetType, SchemaStructuredMode.ALL)
+		Collection<TypeDefinition> sourceTypes = [superType]
+		Collection<TypeDefinition> targetTypes = [ansType]
 
-		SchemaSelection selection = new DefaultSchemaSelection(sourceType, targetType, SchemaStructuredMode.ALL)
-		Set<Pair<TypeEntityDefinition, TypeEntityDefinition>> pairs = AutoCorrelation.retype(selection, namespaceIgnore)
+		Collection<Pair<TypeEntityDefinition, TypeEntityDefinition>> pairs = AutoCorrelation.retype(sourceTypes, targetTypes, namespaceIgnore)
 		assertEquals("There should be no pairs, because of different namespaces!", 0, pairs.size())
 
 		namespaceIgnore = true;
-		pairs = AutoCorrelation.retype(selection, namespaceIgnore)
+		pairs = AutoCorrelation.retype(sourceTypes, targetTypes, namespaceIgnore)
 		assertEquals("There should be one pair, because namespace will be ignored!", 1, pairs.size())
 	}
 
@@ -145,15 +138,18 @@ class AutoCorrelationTest {
 	@Test
 	public void testRetypeSuperTypeToType() {
 		boolean namespaceIgnore = false;
-		Set<TypeEntityDefinition> sourceType = new HashSet<TypeEntityDefinition>()
-		sourceType.add(new TypeEntityDefinition(superType, SchemaSpaceID.SOURCE, null))
-		Set<TypeEntityDefinition> targetType = new HashSet<TypeEntityDefinition>()
-		targetType.add(new TypeEntityDefinition(aType, SchemaSpaceID.TARGET, null))
+		//		Set<TypeEntityDefinition> sourceType = new HashSet<TypeEntityDefinition>()
+		//		sourceType.add(new TypeEntityDefinition(superType, SchemaSpaceID.SOURCE, null))
+		//		Set<TypeEntityDefinition> targetType = new HashSet<TypeEntityDefinition>()
+		//		targetType.add(new TypeEntityDefinition(aType, SchemaSpaceID.TARGET, null))
+		//		SchemaSelection selection = new DefaultSchemaSelection(sourceType, targetType, SchemaStructuredMode.ALL)
 
-		SchemaSelection selection = new DefaultSchemaSelection(sourceType, targetType, SchemaStructuredMode.ALL)
-		Set<Pair<TypeEntityDefinition, TypeEntityDefinition>> pairs = AutoCorrelation.retype(selection, namespaceIgnore)
+		Collection<TypeDefinition> sourceTypes = [superType]
+		Collection<TypeDefinition> targetTypes = [aType]
+
+		Collection<Pair<TypeEntityDefinition, TypeEntityDefinition>> pairs = AutoCorrelation.retype(sourceTypes, targetTypes, namespaceIgnore)
 		assertEquals("The subType of superType and aType should match (they are the same)!", 1, pairs.size())
-
+		assertEquals("Source and Target Type should have the same QName", pairs[0].first.getDefinition().getName().toString(), pairs[0].second.getDefinition().getName().toString())
 	}
 
 	/**

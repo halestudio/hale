@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.ui.function.internal;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -49,22 +50,52 @@ public class AutoCorrelation {
 	 * @return All pairs which should be retyped (only
 	 *         {@link TypeEntityDefinition}s)
 	 */
-	public static Set<Pair<TypeEntityDefinition, TypeEntityDefinition>> retype(
+	public static Collection<Pair<TypeEntityDefinition, TypeEntityDefinition>> retype(
 			SchemaSelection sourceAndTarget, boolean ignoreNamespace) {
 
 //		EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench()
 //				.getService(EntityDefinitionService.class);
 
-		Set<TypeDefinition> sourceTypes;
-		Set<TypeDefinition> targetTypes;
+		Collection<TypeDefinition> sourceTypes;
+		Collection<TypeDefinition> targetTypes;
 
 		sourceTypes = collectTypeDefinitions(sourceAndTarget.getSourceItems());
 		targetTypes = collectTypeDefinitions(sourceAndTarget.getTargetItems());
 
 //		Set<Pair<TypeDefinition, TypeDefinition>> pairs = HashSet<Pair<TypeDefinition, TypeDefinition>>()// Collections.emptySet();
 //		createPairsThroughTypeMatching(sourceTypes, targetTypes, pairs, ignoreNamespace);
-		Set<Pair<TypeEntityDefinition, TypeEntityDefinition>> pairs = new HashSet<Pair<TypeEntityDefinition, TypeEntityDefinition>>();
+		Collection<Pair<TypeEntityDefinition, TypeEntityDefinition>> pairs = new ArrayList<Pair<TypeEntityDefinition, TypeEntityDefinition>>();
 		createPairsThroughTypeComparison(sourceTypes, targetTypes, pairs, ignoreNamespace);
+
+		return pairs;
+	}
+
+	/**
+	 * Build and returns pairs of types. A pair represent a match between a
+	 * source and a target type.
+	 * 
+	 * @param sourceTypes The source TypeDefinitions which will be compared with
+	 *            target types
+	 * @param targetTypes The target TypeDefinitions which will be compared with
+	 *            source types
+	 * @param ignoreNamespace Indicates if the namespace is irrelevant for type
+	 *            comparison
+	 * @return All pairs which should be retyped (only
+	 *         {@link TypeEntityDefinition}s)
+	 */
+	public static Collection<Pair<TypeEntityDefinition, TypeEntityDefinition>> retype(
+			Collection<TypeDefinition> sourceTypes, Collection<TypeDefinition> targetTypes,
+			boolean ignoreNamespace) {
+
+		Collection<TypeDefinition> allSourceTypes = new ArrayList<TypeDefinition>();
+		Collection<TypeDefinition> allTargetTypes = new ArrayList<TypeDefinition>();
+
+		collectTypeDefinitions(sourceTypes, allSourceTypes);
+		collectTypeDefinitions(targetTypes, allTargetTypes);
+
+		Collection<Pair<TypeEntityDefinition, TypeEntityDefinition>> pairs = new ArrayList<Pair<TypeEntityDefinition, TypeEntityDefinition>>();
+
+		createPairsThroughTypeComparison(allSourceTypes, allTargetTypes, pairs, ignoreNamespace);
 
 		return pairs;
 	}
@@ -75,9 +106,10 @@ public class AutoCorrelation {
 	 * @param source Contains the TypeDefinitions to add
 	 * @return The Set of Types, which will be source or target of cell
 	 */
-	public static Set<TypeDefinition> collectTypeDefinitions(Set<EntityDefinition> source) {
+	public static Collection<TypeDefinition> collectTypeDefinitions(
+			Collection<EntityDefinition> source) {
 
-		Set<TypeDefinition> result = new HashSet<TypeDefinition>();
+		Collection<TypeDefinition> result = new HashSet<TypeDefinition>();
 
 		for (EntityDefinition entity : source) {
 			if (entity instanceof TypeEntityDefinition) {
@@ -102,13 +134,14 @@ public class AutoCorrelation {
 	 * @param result The result
 	 */
 	private static void collectTypeDefinitions(Collection<? extends TypeDefinition> source,
-			Set<TypeDefinition> result) {
+			Collection<TypeDefinition> result) {
 
 		for (TypeDefinition def : source) {
 			// entity is type definition
 			if (def.getSubTypes().isEmpty()) {
 				// entity is concrete type
-				result.add(def);
+				if (!result.contains(def))
+					result.add(def);
 			}
 			else {
 				collectTypeDefinitions(def.getSubTypes(), result);
@@ -117,62 +150,20 @@ public class AutoCorrelation {
 	}
 
 	/**
-	 * Used to collect all TypeDefinitions - preprocessing step
+	 * Every source and target type will be compared. If they are a match, than
+	 * they will be stored as a pair
 	 * 
-	 * @param source Contains the TypeDefinitions to add
-	 * @param useSuperType False, if only concrete Type properties should be
-	 *            collected
-	 * @return The Set of Types, which will be source or target of cell
-	 */
-	public static Set<PropertyDefinition> collectPropertyDefinitions(
-			Collection<? extends TypeDefinition> source, boolean useSuperType) {
-
-		Set<PropertyDefinition> result = new HashSet<PropertyDefinition>();
-
-		for (TypeDefinition def : source) {
-			if (useSuperType) {
-				// entity is concrete type
-				collectPropertyDefinitions(def.getSubTypes(), result);
-			}
-			else {
-				collectPropertyDefinitions(def.getSubTypes(), result);
-			}
-		}
-
-		return result;
-	}
-
-	/**
-	 * Iterate recursively through all children - preprocessing step
-	 * 
-	 * @param source The TypeDefinition to add
-	 * @param result The result
-	 */
-	private static void collectPropertyDefinitions(Collection<? extends TypeDefinition> source,
-			Set<PropertyDefinition> result) {
-
-		for (TypeDefinition def : source) {
-			// entity is type definition
-			if (def.getSubTypes().isEmpty()) {
-				// entity is concrete type
-
-			}
-			else {
-				collectPropertyDefinitions(def.getSubTypes(), result);
-			}
-		}
-	}
-
-	/**
 	 * @param sourceTypes The source types
 	 * @param targetTypes The target types
-	 * @param pairs The {@link Set} to collect the pairs
+	 * @param pairs The {@link Set} to collect the pairs, will contain all
+	 *            matches
 	 * @param ignoreNamespace The name space is irrelevant for types to be
 	 *            compared
 	 */
 	private static void createPairsThroughTypeComparison(Collection<TypeDefinition> sourceTypes,
 			Collection<TypeDefinition> targetTypes,
-			Set<Pair<TypeEntityDefinition, TypeEntityDefinition>> pairs, boolean ignoreNamespace) {
+			Collection<Pair<TypeEntityDefinition, TypeEntityDefinition>> pairs,
+			boolean ignoreNamespace) {
 
 		if (sourceTypes == null || sourceTypes.size() <= 0 || targetTypes == null
 				|| targetTypes.size() <= 0 || pairs == null) {
@@ -195,13 +186,25 @@ public class AutoCorrelation {
 				source = eds.getTypeEntities(sourceTypeDef, SchemaSpaceID.SOURCE).iterator().next();
 				// best match - same qname
 				if (targetTypeDef.getName().equals(sourceTypeDef.getName())) {
-					pairs.add(new Pair<TypeEntityDefinition, TypeEntityDefinition>(source, target));
+					// pairs.add(new Pair<TypeEntityDefinition,
+					// TypeEntityDefinition>(source, target));
+					for (TypeEntityDefinition filteredSource : eds.getTypeEntities(sourceTypeDef,
+							SchemaSpaceID.SOURCE)) {
+						pairs.add(new Pair<TypeEntityDefinition, TypeEntityDefinition>(
+								filteredSource, target));
+					}
 				}
 				else if (ignoreNamespace
 						&& targetTypeDef.getName().getLocalPart()
 								.equals(sourceTypeDef.getName().getLocalPart())) {
 					// weaker match - same local part (e.g. name)
-					pairs.add(new Pair<TypeEntityDefinition, TypeEntityDefinition>(source, target));
+					// pairs.add(new Pair<TypeEntityDefinition,
+					// TypeEntityDefinition>(source, target));
+					for (TypeEntityDefinition filteredSource : eds.getTypeEntities(sourceTypeDef,
+							SchemaSpaceID.SOURCE)) {
+						pairs.add(new Pair<TypeEntityDefinition, TypeEntityDefinition>(
+								filteredSource, target));
+					}
 				}
 			}
 		}
@@ -223,6 +226,53 @@ public class AutoCorrelation {
 			SchemaSelection sourceAndTarget, boolean ignoreNamespace, boolean ignoreInherited) {
 		// TODO
 		return null;
+	}
+
+	/**
+	 * Used to collect all TypeDefinitions - preprocessing step
+	 * 
+	 * @param source Contains the TypeDefinitions to add
+	 * @param useSuperType False, if only concrete Type properties should be
+	 *            collected
+	 * @return The Set of Types, which will be source or target of cell
+	 */
+	public static Collection<PropertyDefinition> collectPropertyDefinitions(
+			Collection<? extends TypeDefinition> source, boolean useSuperType) {
+
+		Collection<PropertyDefinition> result = new ArrayList<PropertyDefinition>();
+
+		for (TypeDefinition def : source) {
+			if (useSuperType) {
+				// entity is concrete type
+				collectPropertyDefinitions(def.getSubTypes(), result);
+			}
+			else {
+				collectPropertyDefinitions(def.getSubTypes(), result);
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * Iterate recursively through all children - preprocessing step
+	 * 
+	 * @param source The TypeDefinition to add
+	 * @param result The result
+	 */
+	private static void collectPropertyDefinitions(Collection<? extends TypeDefinition> source,
+			Collection<PropertyDefinition> result) {
+
+		for (TypeDefinition def : source) {
+			// entity is type definition
+			if (def.getSubTypes().isEmpty()) {
+				// entity is concrete type
+
+			}
+			else {
+				collectPropertyDefinitions(def.getSubTypes(), result);
+			}
+		}
 	}
 
 	/**
