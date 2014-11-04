@@ -117,7 +117,8 @@ public abstract class AlignmentUtil {
 		}
 		else {
 			// accept relations only if they combine both types
-			Collection<? extends Cell> targetCells = alignment.getCells(targetType);
+			Collection<? extends Cell> targetCells = new ArrayList<Cell>(
+					alignment.getCells(targetType));
 			Collection<? extends Cell> sourceCells = alignment.getCells(sourceType);
 			targetCells.retainAll(sourceCells);
 			return !targetCells.isEmpty();
