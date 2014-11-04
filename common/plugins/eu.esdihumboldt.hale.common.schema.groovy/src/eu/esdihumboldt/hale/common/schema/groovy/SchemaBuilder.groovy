@@ -226,6 +226,10 @@ class SchemaBuilder extends BuilderBase {
 		QName typeName = createName(name, attributes)
 		DefaultTypeDefinition type = new DefaultTypeDefinition(typeName)
 
+		if (attributes['superType']) {
+			type.superType = (DefaultTypeDefinition) attributes['superType']
+		}
+
 		addConstraints(type, attributes, params)
 
 		// named types are by default mappable
