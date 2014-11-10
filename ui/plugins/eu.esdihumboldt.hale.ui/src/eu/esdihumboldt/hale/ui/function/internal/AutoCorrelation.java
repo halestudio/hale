@@ -25,8 +25,10 @@ import org.eclipse.ui.PlatformUI;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 import eu.esdihumboldt.util.Pair;
@@ -114,7 +116,7 @@ public class AutoCorrelation {
 		for (EntityDefinition entity : source) {
 			if (entity instanceof TypeEntityDefinition) {
 				// entity is type definition
-				if (entity.getType().getSubTypes().isEmpty()) {
+				if (!entity.getType().getConstraint(AbstractFlag.class).isEnabled()) {
 					// entity is concrete type
 					result.add((TypeDefinition) entity.getDefinition());
 				}
@@ -138,12 +140,13 @@ public class AutoCorrelation {
 
 		for (TypeDefinition def : source) {
 			// entity is type definition
-			if (def.getSubTypes().isEmpty()) {
+			if (!def.getConstraint(AbstractFlag.class).isEnabled()) {
 				// entity is concrete type
 				if (!result.contains(def))
 					result.add(def);
 			}
-			else {
+			if (def.getSubTypes() != null && !def.getSubTypes().isEmpty()) {
+				// there are some subtypes
 				collectTypeDefinitions(def.getSubTypes(), result);
 			}
 		}
@@ -186,25 +189,23 @@ public class AutoCorrelation {
 				source = eds.getTypeEntities(sourceTypeDef, SchemaSpaceID.SOURCE).iterator().next();
 				// best match - same qname
 				if (targetTypeDef.getName().equals(sourceTypeDef.getName())) {
-					// pairs.add(new Pair<TypeEntityDefinition,
-					// TypeEntityDefinition>(source, target));
-					for (TypeEntityDefinition filteredSource : eds.getTypeEntities(sourceTypeDef,
-							SchemaSpaceID.SOURCE)) {
-						pairs.add(new Pair<TypeEntityDefinition, TypeEntityDefinition>(
-								filteredSource, target));
-					}
+					pairs.add(new Pair<TypeEntityDefinition, TypeEntityDefinition>(source, target));
+//					for (TypeEntityDefinition filteredSource : eds.getTypeEntities(sourceTypeDef,
+//							SchemaSpaceID.SOURCE)) {
+//						pairs.add(new Pair<TypeEntityDefinition, TypeEntityDefinition>(
+//								filteredSource, target));
+//					}
 				}
 				else if (ignoreNamespace
 						&& targetTypeDef.getName().getLocalPart()
 								.equals(sourceTypeDef.getName().getLocalPart())) {
 					// weaker match - same local part (e.g. name)
-					// pairs.add(new Pair<TypeEntityDefinition,
-					// TypeEntityDefinition>(source, target));
-					for (TypeEntityDefinition filteredSource : eds.getTypeEntities(sourceTypeDef,
-							SchemaSpaceID.SOURCE)) {
-						pairs.add(new Pair<TypeEntityDefinition, TypeEntityDefinition>(
-								filteredSource, target));
-					}
+					pairs.add(new Pair<TypeEntityDefinition, TypeEntityDefinition>(source, target));
+//					for (TypeEntityDefinition filteredSource : eds.getTypeEntities(sourceTypeDef,
+//							SchemaSpaceID.SOURCE)) {
+//						pairs.add(new Pair<TypeEntityDefinition, TypeEntityDefinition>(
+//								filteredSource, target));
+//					}
 				}
 			}
 		}
@@ -244,10 +245,10 @@ public class AutoCorrelation {
 		for (TypeDefinition def : source) {
 			if (useSuperType) {
 				// entity is concrete type
-				collectPropertyDefinitions(def.getSubTypes(), result);
+				// collectPropertyDefinitions(def.getSubTypes(), result);
 			}
 			else {
-				collectPropertyDefinitions(def.getSubTypes(), result);
+				// collectPropertyDefinitions(def.getSubTypes(), result);
 			}
 		}
 
@@ -257,20 +258,22 @@ public class AutoCorrelation {
 	/**
 	 * Iterate recursively through all children - preprocessing step
 	 * 
-	 * @param source The TypeDefinition to add
-	 * @param result The result
+	 * @param source The Property Definitions to add
+	 * @param result The result, containing all property definitions
 	 */
-	private static void collectPropertyDefinitions(Collection<? extends TypeDefinition> source,
+	private static void collectPropertyDefinitions(Collection<? extends ChildDefinition<?>> source,
 			Collection<PropertyDefinition> result) {
 
-		for (TypeDefinition def : source) {
+		for (ChildDefinition<?> def : source) {
 			// entity is type definition
-			if (def.getSubTypes().isEmpty()) {
-				// entity is concrete type
-
+			if (def.asProperty() != null) {
+				// def is a property
+				if (!result.contains(def.asProperty())) {
+					result.add(def.asProperty());
+				}
 			}
-			else {
-				collectPropertyDefinitions(def.getSubTypes(), result);
+			else if (def.asGroup() != null) {
+				collectPropertyDefinitions(def.asGroup().getDeclaredChildren(), result);
 			}
 		}
 	}

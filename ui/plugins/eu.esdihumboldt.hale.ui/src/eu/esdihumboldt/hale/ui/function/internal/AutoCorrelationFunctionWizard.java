@@ -28,6 +28,7 @@ import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
@@ -115,49 +116,75 @@ public class AutoCorrelationFunctionWizard extends Wizard {
 			@Override
 			public void run(IProgressMonitor monitor) throws InvocationTargetException,
 					InterruptedException {
+				try {
+					// step #2 create/find pairs
+					monitor.beginTask("Finding pairs between " + source.size() + " source and "
+							+ target.size() + " target Types.", IProgressMonitor.UNKNOWN);
+					Collection<Pair<TypeEntityDefinition, TypeEntityDefinition>> typePairs = Collections
+							.emptyList();
+					// what cells should be created
+					switch (mode) {
+					case 0:
+						typePairs = AutoCorrelation.retype(source, target, ignoreNamespace);
+						// TODO missing property relation
+						break;
+					case 1:
+						typePairs = AutoCorrelation.retype(source, target, ignoreNamespace);
+						break;
+					case 2:
+						//
+						return;
+						// TODO missing property relation
+					default:
+						break;
+					}
 
-				// step #2 create/find pairs
-				monitor.beginTask("Finding pairs between " + source.size() + " source and "
-						+ target.size() + " target Types.", IProgressMonitor.UNKNOWN);
-				Collection<Pair<TypeEntityDefinition, TypeEntityDefinition>> typePairs = Collections
-						.emptyList();
-				switch (mode) {
-				case 0:
-					typePairs = AutoCorrelation.retype(source, target, ignoreNamespace);
-					// TODO missing property relation
-					break;
-				case 1:
-					typePairs = AutoCorrelation.retype(source, target, ignoreNamespace);
-					break;
-				case 2:
-					//
-					return;
-					// TODO missing property relation
-				default:
-					break;
+					// ### no matches -> no cells ###
+					if (typePairs.size() <= 0 || typePairs.isEmpty()) {
+						log.info("No matching types were found.");
+						return;
+					}
+
+					// step #3 create cells for type pairs (retype only)
+					monitor.beginTask("Creating cells for " + typePairs.size() + " pairs.",
+							IProgressMonitor.UNKNOWN);
+					Collection<MutableCell> cells = CellCreationHelper
+							.createTypeCellRetypeCollectionWithoutDoubles(typePairs,
+									ignoreNamespace, false, alignment);
+
+					// ### no cells -> only dublicates -> no new cells ###
+					if (cells.size() <= 0 || cells.isEmpty()) {
+						log.info("All found matches are already part of this alignement. No new cell(s) could be created.");
+						return;
+					}
+					// log info if some types were already mapped
+					if (typePairs.size() != cells.size()) {
+						log.info("Already mapped types were ignored: " + typePairs.size()
+								+ " pair(s) found, but " + cells.size() + " cell(s) created.");
+					}
+
+					// step #4 add all cells through AlignmentService
+					monitor.beginTask("Construct alignment by adding " + cells.size()
+							+ " cell(s) to alignment.", cells.size());
+					DefaultAlignment alignment = new DefaultAlignment();
+
+					// prestep add cell to an constructed default
+					// alignment
+					for (MutableCell cell : cells) {
+						alignment.addCell(cell);
+						monitor.worked(1);
+					}
+
+					monitor.beginTask("Integrating constructed alignment.",
+							IProgressMonitor.UNKNOWN);
+
+					as.addOrUpdateAlignment(alignment);
+
+				} finally {
+
+					monitor.done();
 				}
 
-				// step #3 create cells for type pairs (retype only)
-				monitor.beginTask("Creating cells for " + typePairs.size() + " pairs.",
-						IProgressMonitor.UNKNOWN);
-				Collection<MutableCell> cells = CellCreationHelper
-						.createTypeCellRetypeCollectionWithoutDoubles(typePairs, ignoreNamespace,
-								false, alignment);
-
-				// log info if some types were already mapped
-				if (typePairs.size() != cells.size()) {
-					log.info("Already mapped types were ignored: " + typePairs.size()
-							+ " pair(s) found but " + cells.size() + " cell(s) created.");
-				}
-
-				// step #4 add all cells through AlignmentService
-				monitor.beginTask("Adding " + cells.size() + " cells to alignment.", cells.size());
-
-				for (MutableCell cell : cells) {
-					as.addCell(cell);
-					monitor.worked(1);
-				}
-				monitor.done();
 			}
 		};
 
