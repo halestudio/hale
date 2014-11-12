@@ -36,27 +36,45 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
  */
 public enum Classification {
 	/** Abstract feature type */
-	ABSTRACT_FT,
+	ABSTRACT_FT("abstractFeatureType"),
 	/** Concrete feature type */
-	CONCRETE_FT,
+	CONCRETE_FT("concreteFeatureType"),
 	/** Abstract complex type */
-	ABSTRACT_TYPE,
+	ABSTRACT_TYPE("abstractType"),
 	/** Complex type */
-	CONCRETE_TYPE,
+	CONCRETE_TYPE("concreteType"),
 	/** Numeric property */
-	NUMERIC_PROPERTY,
+	NUMERIC_PROPERTY("numericProperty"),
 	/** String property */
-	STRING_PROPERTY,
+	STRING_PROPERTY("stringProperty"),
 	/** Complex property */
-	COMPLEX_PROPERTY,
+	COMPLEX_PROPERTY("complexProperty"),
 	/** Geometric property */
-	GEOMETRIC_PROPERTY,
+	GEOMETRIC_PROPERTY("geometricProperty"),
 	/** Group */
-	GROUP,
+	GROUP("group"),
 	/** Choice */
-	CHOICE,
+	CHOICE("choice"),
 	/** Unknown */
-	UNKNOWN;
+	UNKNOWN("unknown");
+
+	private final String code;
+
+	Classification(String code) {
+		this.code = code;
+	}
+
+	/**
+	 * @return the associated code string
+	 */
+	public String getCode() {
+		return code;
+	}
+
+	@Override
+	public String toString() {
+		return code;
+	}
 
 	/**
 	 * Determine the classification for a definition
