@@ -91,6 +91,7 @@ class JsonValueUtil {
 	 *
 	 * @param value the contained value
 	 * @return the created JSON object / primitive / array (e.g. for use with JsonBuilder or JsonOutput)
+	 * @throws IllegalStateException if no JSON representation could be created
 	 */
 	static def valueJson(Value value) {
 		if (value == null) {
