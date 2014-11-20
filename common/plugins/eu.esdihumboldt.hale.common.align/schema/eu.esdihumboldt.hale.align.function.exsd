@@ -516,6 +516,13 @@ Implementation of the ParameterValueDescriptor Interface for the specific parame
                </appinfo>
             </annotation>
          </attribute>
+         <attribute name="deprecated" type="boolean" use="default" value="false">
+            <annotation>
+               <documentation>
+                  Marks a deprecated function parameter that may be encountered, but should no longer be used.
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
