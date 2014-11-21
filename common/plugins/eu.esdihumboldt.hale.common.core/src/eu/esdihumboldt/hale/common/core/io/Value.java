@@ -95,6 +95,9 @@ public abstract class Value implements Serializable {
 	 * @return the value wrapper
 	 */
 	public static Value of(String str) {
+		if (str == null) {
+			return Value.NULL;
+		}
 		return new StringValue(str);
 	}
 
