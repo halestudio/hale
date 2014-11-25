@@ -32,6 +32,22 @@ public class ProgressMonitor implements IProgressMonitor, Progress {
 	private volatile int totalWork = 0;
 	private volatile boolean indeterminate = true;
 	private volatile boolean canceled = false;
+	private final String id;
+
+	/**
+	 * Create a new progress monitor with the given identifier.
+	 * 
+	 * @param id the job identifier
+	 */
+	public ProgressMonitor(String id) {
+		super();
+		this.id = id;
+	}
+
+	@Override
+	public String getJobId() {
+		return id;
+	}
 
 	@Override
 	public void beginTask(String name, int totalWork) {

@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.UUID;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -83,7 +84,15 @@ public class ProgressManager extends ProgressProvider implements ProgressService
 	 */
 	@Override
 	public IProgressMonitor createMonitor(final Job job) {
-		ProgressMonitor monitor = new ProgressMonitor() {
+		// derive ID from job or generate ID for job
+
+		// the toString method uses the intern job number
+		// XXX this is unreliable (e.g. if toString is overridden)
+//		final String id = job.toString();
+		// use generated ID
+		final String id = UUID.randomUUID().toString();
+
+		ProgressMonitor monitor = new ProgressMonitor(id) {
 
 			@Override
 			public void beginTask(String name, int totalWork) {
