@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.common.headless.transform;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +36,7 @@ import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
+import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 import eu.esdihumboldt.hale.common.headless.EnvironmentService;
 import eu.esdihumboldt.hale.common.headless.HeadlessIO;
 import eu.esdihumboldt.hale.common.headless.TransformationEnvironment;
@@ -188,29 +190,38 @@ public class TransformationWorkspace {
 					+ " not available.");
 		}
 
-		return transform(env, sources, target);
+		return transform(env, sources, target, null);
 	}
 
 	/**
 	 * Transform the instances provided through the given instance readers and
-	 * store the result in the {@link #getTargetFolder()}.
+	 * by default stores the result in the {@link #getTargetFolder()}.
 	 * 
 	 * @param env the transformation environment
 	 * @param sources the instance readers
 	 * @param target the configuration of the target instance writer
+	 * @param customTarget the custom output supplier to use for the target,
+	 *            <code>null</code> to use the default target in thet
+	 *            {@link #getTargetFolder()}
 	 * @return the future representing the successful completion of the
 	 *         transformation (note that a successful completion doesn't
 	 *         necessary mean there weren't any internal transformation errors)
 	 * @throws Exception if launching the transformation fails
 	 */
 	public ListenableFuture<Boolean> transform(TransformationEnvironment env,
-			List<InstanceReader> sources, IOConfiguration target) throws Exception {
+			List<InstanceReader> sources, IOConfiguration target,
+			LocatableOutputSupplier<? extends OutputStream> customTarget) throws Exception {
 		InstanceWriter writer = (InstanceWriter) HeadlessIO.loadProvider(target);
 		// TODO determine content type if not set?
 
 		// output file
-		File out = new File(targetFolder, "result." + getFileExtension(writer.getContentType()));
-		writer.setTarget(new FileIOSupplier(out));
+		if (customTarget != null) {
+			writer.setTarget(customTarget);
+		}
+		else {
+			File out = new File(targetFolder, "result." + getFileExtension(writer.getContentType()));
+			writer.setTarget(new FileIOSupplier(out));
+		}
 
 		ListenableFuture<Boolean> result = Transformation.transform(sources, writer, env,
 				new ReportFile(reportFile), workspace.getName());
