@@ -188,29 +188,34 @@ public class TransformationWorkspace {
 					+ " not available.");
 		}
 
-		return transform(env, sources, target);
+		return transform(env, sources, target, true);
 	}
 
 	/**
 	 * Transform the instances provided through the given instance readers and
-	 * store the result in the {@link #getTargetFolder()}.
+	 * by default stores the result in the {@link #getTargetFolder()}.
 	 * 
 	 * @param env the transformation environment
 	 * @param sources the instance readers
 	 * @param target the configuration of the target instance writer
+	 * @param overrideTarget if the target configuration should be overridden
+	 *            with a file in the target folder
 	 * @return the future representing the successful completion of the
 	 *         transformation (note that a successful completion doesn't
 	 *         necessary mean there weren't any internal transformation errors)
 	 * @throws Exception if launching the transformation fails
 	 */
 	public ListenableFuture<Boolean> transform(TransformationEnvironment env,
-			List<InstanceReader> sources, IOConfiguration target) throws Exception {
+			List<InstanceReader> sources, IOConfiguration target, boolean overrideTarget)
+			throws Exception {
 		InstanceWriter writer = (InstanceWriter) HeadlessIO.loadProvider(target);
 		// TODO determine content type if not set?
 
 		// output file
-		File out = new File(targetFolder, "result." + getFileExtension(writer.getContentType()));
-		writer.setTarget(new FileIOSupplier(out));
+		if (writer.getTarget() == null || overrideTarget) {
+			File out = new File(targetFolder, "result." + getFileExtension(writer.getContentType()));
+			writer.setTarget(new FileIOSupplier(out));
+		}
 
 		ListenableFuture<Boolean> result = Transformation.transform(sources, writer, env,
 				new ReportFile(reportFile), workspace.getName());
