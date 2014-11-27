@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.joda.time.Duration;
 import org.joda.time.ReadableDuration;
@@ -34,6 +35,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import de.fhg.igd.osgi.util.OsgiUtils;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
@@ -342,6 +344,22 @@ public class TransformationWorkspace {
 	 */
 	public void set(String setting, String value) throws FileNotFoundException, IOException {
 		workspaces.set(workspaceId, setting, value);
+	}
+
+	/**
+	 * Guess the file extension for a given I/O configuration.
+	 * 
+	 * @param config the I/O provider configuration
+	 * @return the file extensions or a default, w/o leading dot
+	 */
+	public static String guessFileExtension(IOConfiguration config) {
+		String id = config.getProviderConfiguration().get(IOProvider.PARAM_CONTENT_TYPE)
+				.as(String.class);
+		IContentType contentType = null;
+		if (id != null) {
+			contentType = Platform.getContentTypeManager().getContentType(id);
+		}
+		return getFileExtension(contentType);
 	}
 
 	/**
