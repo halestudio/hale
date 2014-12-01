@@ -40,6 +40,11 @@ import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 public class CityGMLInstanceWriter extends GmlInstanceWriter implements CityGMLConstants {
 
 	/**
+	 * The identifier of the writer as registered to the I/O provider extension.
+	 */
+	public static final String ID = "eu.esdihumboldt.hale.io.citygml.writer";
+
+	/**
 	 * @see StreamGmlWriter#findDefaultContainter(XmlIndex, IOReporter)
 	 */
 	@Override

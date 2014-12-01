@@ -26,6 +26,11 @@ import eu.esdihumboldt.hale.io.gml.writer.internal.StreamGmlWriter;
 public class GmlInstanceWriter extends StreamGmlWriter {
 
 	/**
+	 * The identifier of the writer as registered to the I/O provider extension.
+	 */
+	public static final String ID = "eu.esdihumboldt.hale.io.gml.writer";
+
+	/**
 	 * Default constructor
 	 */
 	public GmlInstanceWriter() {
