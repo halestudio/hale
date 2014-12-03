@@ -35,6 +35,7 @@
       <plugin id="eu.esdihumboldt.hale.doc.application"/>
       <plugin id="eu.esdihumboldt.hale.doc.user"/>
       <plugin id="eu.esdihumboldt.hale.doc.user.views.styledmap"/>
+      <plugin id="findbugsAnnotations"/>
       <plugin id="javax.el"/>
       <plugin id="javax.servlet.jsp"/>
       <plugin id="javax.servlet3"/>
