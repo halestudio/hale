@@ -82,7 +82,7 @@ class SchemaToXml implements HaleSchemaConstants {
 		}
 
 		// organize types in a list
-		List types = []
+		List<TypeDefinition> types = []
 		types.addAll(schema.types)
 		// sort to have a reproducible order (e.g. for versioning)
 		types.sort()
@@ -218,7 +218,8 @@ class SchemaToXml implements HaleSchemaConstants {
 	static def defGroupToXml(NSDOMBuilder b, DefinitionGroup group, Map<TypeDefinition, String> typeIndex) {
 		if (!group.declaredChildren.empty) {
 			b 'hsd:declares', {
-				group.declaredChildren.each { ChildDefinition<?> child ->
+				Collection<ChildDefinition<?>> children = (Collection<ChildDefinition<?>>) group.declaredChildren // Groovy CompileStatic can't deal properly with ? extends ...
+				children.each { ChildDefinition<?> child ->
 					if (child.asProperty() != null) {
 						propertyToXml(b, child.asProperty(), typeIndex)
 					}

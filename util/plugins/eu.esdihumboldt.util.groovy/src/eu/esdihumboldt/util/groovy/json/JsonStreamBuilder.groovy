@@ -342,7 +342,7 @@ class JsonStreamBuilder extends BuilderBase {
 
 		if (attributes) {
 			// write attributes
-			attributes.eachWithIndex { String key, def value, int index ->
+			attributes.eachWithIndex { def key, def value, int index ->
 				if (index > 0) {
 					writer << ','
 				}

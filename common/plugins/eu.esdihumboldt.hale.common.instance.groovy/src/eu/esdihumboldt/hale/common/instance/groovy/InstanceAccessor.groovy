@@ -104,7 +104,8 @@ class InstanceAccessor extends AbstractAccessor<Object> {
 			fullName = new QName(name)
 		}
 
-		all().collectMany { Path<Object> parentPath ->
+		List<Path<Object>> allPaths = (List<Path<Object>>) all() // Groovy CompileStatic can't deal properly with ? extends ...
+		allPaths.collectMany { Path<Object> parentPath ->
 			// search for possible children and
 			// create sub-paths for found properties
 
@@ -216,7 +217,8 @@ class InstanceAccessor extends AbstractAccessor<Object> {
 	 * @return the list of values
 	 */
 	public List<Object> list(boolean instance = true) {
-		all().collect { Path<Object> path ->
+		List<Path<Object>> allPaths = (List<Path<Object>>) all() // Groovy CompileStatic can't deal properly with ? extends ...
+		allPaths.collect { Path<Object> path ->
 			def value = path.elements.last()
 			if (value instanceof Instance && !instance) {
 				value = ((Instance) value).value

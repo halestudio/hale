@@ -35,7 +35,7 @@ import groovy.transform.TypeCheckingMode
  */
 @Singleton
 @CompileStatic
-class CardinalityFactory implements ConstraintFactory<Cardinality> {
+class CardinalityFactory extends OptionalContextConstraintFactory<Cardinality> {
 
 	/**
 	 * Pattern for catching minimal and maximal occurrence.
@@ -43,7 +43,7 @@ class CardinalityFactory implements ConstraintFactory<Cardinality> {
 	private static final Pattern pattern = ~/^(\d+)[\.\-]{1,3}(\w+|\*)$/
 
 	@Override
-	Cardinality createConstraint(Object arg, Definition context = null) {
+	Cardinality createConstraint(Object arg, Definition context) {
 		if (arg instanceof Range) {
 			// defined as a Range
 			return createFromRange((Range) arg)

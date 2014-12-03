@@ -27,10 +27,10 @@ import groovy.transform.CompileStatic
  */
 @Singleton
 @CompileStatic
-class AugmentedValueFactory implements ConstraintFactory<AugmentedValueFlag> {
+class AugmentedValueFactory extends OptionalContextConstraintFactory<AugmentedValueFlag> {
 
 	@Override
-	public AugmentedValueFlag createConstraint(Object arg, Definition<?> context = null) {
+	public AugmentedValueFlag createConstraint(Object arg, Definition<?> context) {
 		arg ? AugmentedValueFlag.ENABLED : AugmentedValueFlag.DISABLED
 	}
 }
