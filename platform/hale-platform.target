@@ -1,28 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="224">
+<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="226">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="de.fhg.igd.equinox.test.feature.feature.group" version="1.0.0.201407021539"/>
 <repository location="http://hale.igd.fraunhofer.de/jenkins/job/site-equinox-test/3/updatesite/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.sdk.ide" version="4.4.0.I20140606-1215"/>
-<repository location="http://download.eclipse.org/eclipse/updates/4.4"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="de.fhg.igd.eclipse.util.feature.feature.group" version="1.0.0.201407081822"/>
 <unit id="de.fhg.igd.eclipse.ui.util.feature.feature.group" version="1.0.0.201407081822"/>
 <repository location="http://hale.igd.fraunhofer.de/jenkins/job/site-eclipse-util/1/updatesite"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.equinox.sdk.feature.group" version="3.10.0.v20140606-1602"/>
-<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.6.0.v201405200714"/>
-<unit id="org.eclipse.xtext.sdk.feature.group" version="2.6.0.v201405210727"/>
-<unit id="org.eclipse.emf.sdk.feature.group" version="2.10.0.v20140519-0339"/>
-<unit id="org.eclipse.gef.sdk.feature.group" version="3.9.100.201405261516"/>
-<unit id="org.eclipse.gmf.runtime.sdk.feature.group" version="1.8.0.201406111639"/>
-<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.6.0.v201405200939"/>
-<repository location="http://download.eclipse.org/releases/luna/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="de.fhg.igd.slf4jplus.feature.feature.group" version="1.2.0.201403111309"/>
@@ -42,6 +28,20 @@
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="eu.esdihumboldt.hale.platform.feature.group" version="3.0.0.bnd-7CcSyw"/>
 <repository location="http://hale.igd.fraunhofer.de/build-support/527e933140ee6f2d87e52a1c4d85e97eabaa6114/updatesites/platform"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.sdk.ide" version="4.4.1.M20140925-0400"/>
+<repository location="http://download.eclipse.org/eclipse/updates/4.4"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.gef.sdk.feature.group" version="3.9.101.201408150207"/>
+<unit id="org.eclipse.xtext.sdk.feature.group" version="2.7.2.v201409160908"/>
+<unit id="org.eclipse.emf.sdk.feature.group" version="2.10.1.v20140901-1055"/>
+<unit id="org.eclipse.gmf.runtime.sdk.feature.group" version="1.8.1.201408201453"/>
+<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.7.0.v201409021027"/>
+<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.7.0.v201409021051"/>
+<unit id="org.eclipse.equinox.sdk.feature.group" version="3.10.0.v20140909-1633"/>
+<repository location="http://download.eclipse.org/releases/luna/"/>
 </location>
 </locations>
 </target>
