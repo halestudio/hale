@@ -28,10 +28,10 @@ import groovy.transform.CompileStatic
  */
 @Singleton
 @CompileStatic
-class BindingFactory implements ConstraintFactory<Binding> {
+class BindingFactory extends OptionalContextConstraintFactory<Binding> {
 
 	@Override
-	Binding createConstraint(Object arg, Definition context = null) {
+	Binding createConstraint(Object arg, Definition context) {
 		Binding.get(arg as Class)
 	}
 }

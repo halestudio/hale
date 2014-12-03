@@ -97,7 +97,8 @@ class MappingDocumentation {
 		// for each cell create the JSON representation
 		def cellData = [:]
 		def cellExplanations = [:]
-		alignment.cells.each { Cell cell ->
+		Collection<Cell> alignmentCells = (Collection<Cell>) alignment.cells // Groovy CompileStatic can't deal properly with ? extends ...
+		alignmentCells.each { Cell cell ->
 			def id = simpleIds.getId(cell)
 			// create JSON representation
 			StringWriter writer = new StringWriter()
@@ -190,7 +191,7 @@ class MappingDocumentation {
 			}
 
 			if (cell.source != null && !cell.source.isEmpty()) {
-				cell.source.entries().each { Entry<String, Entity> entry ->
+				cell.source.entries().each { Entry<String, ? extends Entity> entry ->
 					json 'sources[]', {
 						entityJSON(json, entry.key, entry.value, ext)
 					}
@@ -201,7 +202,7 @@ class MappingDocumentation {
 				json 'sources', []
 			}
 			if (cell.target != null && !cell.target.isEmpty()) {
-				cell.target.entries().each { Entry<String, Entity> entry ->
+				cell.target.entries().each { Entry<String, ? extends Entity> entry ->
 					json 'targets[]', {
 						entityJSON(json, entry.key, entry.value, ext)
 					}

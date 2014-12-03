@@ -27,10 +27,10 @@ import groovy.transform.CompileStatic
  */
 @Singleton
 @CompileStatic
-class ChoiceFactory implements ConstraintFactory<ChoiceFlag> {
+class ChoiceFactory extends OptionalContextConstraintFactory<ChoiceFlag> {
 
 	@Override
-	public ChoiceFlag createConstraint(Object arg, Definition<?> context = null) {
+	public ChoiceFlag createConstraint(Object arg, Definition<?> context) {
 		arg ? ChoiceFlag.ENABLED : ChoiceFlag.DISABLED
 	}
 }

@@ -27,10 +27,10 @@ import groovy.transform.CompileStatic
  */
 @Singleton
 @CompileStatic
-class TypeAbstractFactory implements ConstraintFactory<AbstractFlag> {
+class TypeAbstractFactory extends OptionalContextConstraintFactory<AbstractFlag> {
 
 	@Override
-	public AbstractFlag createConstraint(Object arg, Definition<?> context = null) {
+	public AbstractFlag createConstraint(Object arg, Definition<?> context) {
 		arg ? AbstractFlag.ENABLED : AbstractFlag.DISABLED
 	}
 }

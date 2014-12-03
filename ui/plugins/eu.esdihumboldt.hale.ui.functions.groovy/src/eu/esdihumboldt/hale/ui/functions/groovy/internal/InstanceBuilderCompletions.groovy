@@ -54,7 +54,6 @@ import eu.esdihumboldt.hale.ui.util.groovy.ast.ASTGraphConstants
 import eu.esdihumboldt.hale.ui.util.groovy.ast.ASTGraphUtil
 import eu.esdihumboldt.hale.ui.util.groovy.ast.GroovyAST
 import groovy.transform.CompileStatic
-import groovy.transform.TypeChecked
 
 /**
  * Completion proposals for instance builders.
@@ -253,7 +252,7 @@ public abstract class InstanceBuilderCompletions implements GroovyCompletionProp
 	@CompileStatic
 	protected Iterable<? extends ICompletionProposal> createProposals(final TypeDefinition type,
 			int offset, String baseIndent, String namePrefix) {
-		Collection<? extends PropertyDefinition> properties = DefinitionUtil.getAllProperties(type)
+		Collection<PropertyDefinition> properties = (Collection<PropertyDefinition>) DefinitionUtil.getAllProperties(type) // Groovy CompileStatic can't deal properly with ? extends ...
 		final DefinitionImages images = this.images
 
 		// filter

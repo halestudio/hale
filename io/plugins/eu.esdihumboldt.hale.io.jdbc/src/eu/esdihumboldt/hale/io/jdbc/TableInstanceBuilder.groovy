@@ -62,7 +62,8 @@ class TableInstanceBuilder {
 		// create instance
 		builder.createInstance(type) {
 			// create properties
-			DefinitionUtil.getAllProperties(type).each { PropertyDefinition property ->
+			Collection<PropertyDefinition> allProperties = (Collection<PropertyDefinition>) DefinitionUtil.getAllProperties(type) // Groovy CompileStatic can't deal properly with ? extends ...
+			allProperties.each { PropertyDefinition property ->
 				// get property value
 				try {
 					Object value = row.getObject(property.name.localPart)

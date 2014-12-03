@@ -152,7 +152,7 @@ class EntityAccessor extends AbstractAccessor<PathElement> {
 					switch (key) {
 						case 'filter':
 							if (value instanceof Filter) {
-								condition = new Condition(value)
+								condition = new Condition((Filter) value)
 							}
 							else {
 								Filter filter = createFilter(value as String)

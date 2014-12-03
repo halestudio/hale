@@ -27,10 +27,10 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType
  * @author Simon Templer
  */
 @Singleton
-class GeometryFactory implements ConstraintFactory<GeometryType> {
+class GeometryFactory extends OptionalContextConstraintFactory<GeometryType> {
 
 	@Override
-	public GeometryType createConstraint(Object arg, Definition<?> context = null) {
+	public GeometryType createConstraint(Object arg, Definition<?> context) {
 		TypeDefinition typeDef = context as TypeDefinition
 
 		// set also the binding to GeometryProperty
