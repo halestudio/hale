@@ -17,7 +17,6 @@ package eu.esdihumboldt.hale.ui.autocorrelation;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
@@ -86,15 +85,16 @@ public class AutoCorrelationParameterPage extends HaleWizardPage<AutoCorrelation
 		ignoreNamespace.setSelection(true);
 		GridDataFactory.swtDefaults().grab(true, false).applyTo(ignoreNamespace);
 
-		Label useStructuralRenameLabel = new Label(pageComposite, SWT.WRAP);
-		useStructuralRenameLabel
-				.setText("Check if congruent properties with same sup-property structure should be atomatically mapped with 'Structural Rename' option.");
-		useStructuralRename = new Button(pageComposite, SWT.CHECK);
-		useStructuralRename.setText("Use Structural Rename");
-		useStructuralRename.setSelection(true);
-		GridDataFactory.createFrom(new GridData(GridData.FILL_HORIZONTAL)).grab(true, false)
-				.applyTo(useStructuralRenameLabel);
-		GridDataFactory.swtDefaults().grab(true, false).applyTo(useStructuralRename);
+		// XXX This part is currently disabled
+//		Label useStructuralRenameLabel = new Label(pageComposite, SWT.WRAP);
+//		useStructuralRenameLabel
+//				.setText("Check if congruent properties with same sup-property structure should be automatically mapped with 'Structural Rename' option.");
+//		useStructuralRename = new Button(pageComposite, SWT.CHECK);
+//		useStructuralRename.setText("Use Structural Rename");
+//		useStructuralRename.setSelection(true);
+//		GridDataFactory.createFrom(new GridData(GridData.FILL_HORIZONTAL)).grab(true, false)
+//				.applyTo(useStructuralRenameLabel);
+//		GridDataFactory.swtDefaults().grab(true, false).applyTo(useStructuralRename);
 
 		setPageComplete(true);
 		pageComposite.layout();
@@ -119,7 +119,9 @@ public class AutoCorrelationParameterPage extends HaleWizardPage<AutoCorrelation
 	 * @return the ignoreNamespace
 	 */
 	public boolean getUseStructuralRename() {
-		return useStructuralRename.getSelection();
+		// XXX currently disabled
+		// return useStructuralRename.getSelection();
+		return true;
 	}
 
 	/**
