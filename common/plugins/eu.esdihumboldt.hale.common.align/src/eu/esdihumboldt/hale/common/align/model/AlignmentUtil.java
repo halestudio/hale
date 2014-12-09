@@ -159,6 +159,32 @@ public abstract class AlignmentUtil {
 	}
 
 	/**
+	 * Get collection of default children for the given entity.
+	 * 
+	 * @param entity the parent entity
+	 * @return the collection of child entities or an empty list if there are no
+	 *         children for the given entity
+	 */
+	public static Collection<EntityDefinition> getDefaultChildren(EntityDefinition entity) {
+
+		Collection<EntityDefinition> children = new ArrayList<>();
+		EntityDefinition childEntity;
+
+		for (ChildDefinition<?> child : DefinitionUtil.getAllChildren(DefinitionUtil
+				.getDefinitionGroup(entity.getDefinition()))) {
+
+			childEntity = getChild(entity, child.getName());
+
+			if (childEntity != null) {
+				children.add(getChild(entity, child.getName()));
+			}
+
+		}
+
+		return children;
+	}
+
+	/**
 	 * Get the default child of the given entity.
 	 * 
 	 * @param entity the parent entity
