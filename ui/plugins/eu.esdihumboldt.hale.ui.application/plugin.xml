@@ -550,7 +550,7 @@
                style="push">
          </command>
          <command
-               commandId="eu.esdihumboldt.hale.ui.align.auto_correlation"
+               commandId="eu.esdihumboldt.hale.ui.auto_correlation"
                style="push">
          </command>
       </menuContribution>

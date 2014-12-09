@@ -140,7 +140,7 @@
             name="Transform project data">
       </command>
       <command
-            id="eu.esdihumboldt.hale.ui.align.auto_correlation"
+            id="eu.esdihumboldt.hale.ui.auto_correlation"
             name="Auto Correlation">
       </command>
    </extension>
@@ -481,8 +481,24 @@
          </enabledWhen>
       </handler>
       <handler
-            class="eu.esdihumboldt.hale.ui.function.internal.AutoCorrelationFunctionHandler"
-            commandId="eu.esdihumboldt.hale.ui.align.auto_correlation">
+            class="eu.esdihumboldt.hale.ui.autocorrelation.AutoCorrelationFunctionHandler"
+            commandId="eu.esdihumboldt.hale.ui.auto_correlation">
+         <activeWhen>
+            <and>
+               <with
+                     variable="hale.schemas.has_mappable_source">
+                  <equals
+                        value="true">
+                  </equals>
+               </with>
+               <with
+                     variable="hale.schemas.has_mappable_target">
+                  <equals
+                        value="true">
+                  </equals>
+               </with>
+            </and>
+         </activeWhen>
       </handler>
    </extension>
    <extension
@@ -1309,7 +1325,7 @@
             icon="icons/samples_config.png">
       </image>
       <image
-            commandId="eu.esdihumboldt.hale.ui.align.auto_correlation"
+            commandId="eu.esdihumboldt.hale.ui.auto_correlation"
             icon="icons/solve.png">
       </image>
    </extension>

@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.function.internal;
+package eu.esdihumboldt.hale.ui.autocorrelation;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -84,8 +84,24 @@ public class AutoCorrelationTypesPage extends HaleWizardPage<AutoCorrelationFunc
 			setPageComplete(true);
 			return true;
 		}
-
 		else if ((source != null && !source.isEmpty()) || (target != null && !target.isEmpty())) {
+			// ### temporary, until PorpertyEntityDefinition Selection will be
+			// supported
+			for (EntityDefinition entity : source) {
+				if (!(entity.getDefinition() instanceof TypeDefinition)) {
+					setPageComplete(false);
+					return false;
+				}
+			}
+			for (EntityDefinition entity : target) {
+				if (!(entity.getDefinition() instanceof TypeDefinition)) {
+					setPageComplete(false);
+					return false;
+				}
+			}
+			// ### temporary, until PorpertyEntityDefinition Selection will be
+			// supported
+
 			setPageComplete(true);
 			return true;
 		}
@@ -132,7 +148,6 @@ public class AutoCorrelationTypesPage extends HaleWizardPage<AutoCorrelationFunc
 		listOfSourceTypes.refresh();
 		listOfTargetTypes.refresh();
 		pageComposite.layout();
-		pageComposite.pack();
 	}
 
 	/**
@@ -199,13 +214,10 @@ public class AutoCorrelationTypesPage extends HaleWizardPage<AutoCorrelationFunc
 		// page.pack();
 	}
 
-	/**
-	 * 
-	 */
-	private void createField(Composite parent) {
-		// , String text) {
+//	private void createField(Composite parent) {
+	// , String text) {
 
-		// Add the items, one by one
+	// Add the items, one by one
 
 //		ScrolledComposite sc = new ScrolledComposite(parent, SWT.V_SCROLL);
 //
@@ -230,7 +242,7 @@ public class AutoCorrelationTypesPage extends HaleWizardPage<AutoCorrelationFunc
 //		// Expand both horizontally and vertically
 //		sc.setExpandHorizontal(false);
 //		sc.setExpandVertical(true);
-	}
+//	}
 
 	private TreeViewer createTypeViewer(Composite parent, Collection<TypeDefinition> initialInput) {
 		PatternFilter patternFilter = new PatternFilter();

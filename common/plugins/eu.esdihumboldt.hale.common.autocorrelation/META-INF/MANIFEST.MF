@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Autocorrelation
+Bundle-SymbolicName: eu.esdihumboldt.hale.common.autocorrelation
+Bundle-Version: 3.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: eu.esdihumboldt.hale.common.align.model,
+ eu.esdihumboldt.hale.common.align.model.impl,
+ eu.esdihumboldt.hale.common.core.io.supplier,
+ eu.esdihumboldt.hale.common.instance.model,
+ eu.esdihumboldt.hale.common.schema,
+ eu.esdihumboldt.hale.common.schema.model,
+ eu.esdihumboldt.hale.common.schema.model.constraint,
+ eu.esdihumboldt.hale.common.schema.model.constraint.property,
+ eu.esdihumboldt.hale.common.schema.model.constraint.type,
+ eu.esdihumboldt.util
+Export-Package: eu.esdihumboldt.hale.common.autocorrelation

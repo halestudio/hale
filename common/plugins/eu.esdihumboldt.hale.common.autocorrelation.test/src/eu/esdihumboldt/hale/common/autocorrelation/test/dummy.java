@@ -13,18 +13,13 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.function.internal;
+package eu.esdihumboldt.hale.common.autocorrelation.test;
+
 
 /**
- * Constants for Auto Correlation
- * 
+ * TODO Type description
  * @author Yasmina Kammeyer
  */
-public interface AutoCorrelationConstants {
+public class dummy {
 
-	/**
-	 * This is a boolean indicating if inherited attributes should be ignored or
-	 * not. True, if the inherited attributes should be ignored.
-	 */
-	public static final String PARAMETER_USE_SUPERTYPE = "useSupertype";
 }

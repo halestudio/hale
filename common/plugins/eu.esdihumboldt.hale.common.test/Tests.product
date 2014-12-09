@@ -80,6 +80,8 @@
       <plugin id="eu.esdihumboldt.hale.common.align.tgraph"/>
       <plugin id="eu.esdihumboldt.hale.common.align.tgraph.test"/>
       <plugin id="eu.esdihumboldt.hale.common.app"/>
+      <plugin id="eu.esdihumboldt.hale.common.autocorrelation"/>
+      <plugin id="eu.esdihumboldt.hale.common.autocorrelation.test"/>
       <plugin id="eu.esdihumboldt.hale.common.cache"/>
       <plugin id="eu.esdihumboldt.hale.common.cache.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.codelist"/>
