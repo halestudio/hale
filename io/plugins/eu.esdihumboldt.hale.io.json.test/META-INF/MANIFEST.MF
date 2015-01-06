@@ -15,4 +15,5 @@ Require-Bundle: eu.esdihumboldt.hale.io.json;bundle-version="2.9.0",
  eu.esdihumboldt.hale.common.align.groovy;bundle-version="2.9.0"
 Import-Package: eu.esdihumboldt.hale.common.instance.model,
  eu.esdihumboldt.util.xml,
+ net.jcip.annotations,
  org.junit;version="4.11.0"

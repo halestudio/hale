@@ -17,7 +17,6 @@ package eu.esdihumboldt.hale.ui.templates.webtemplates
 
 import eu.esdihumboldt.hale.ui.templates.internal.TemplatesUIPlugin
 import eu.esdihumboldt.hale.ui.templates.preferences.WebTemplatesPreferences
-import groovy.transform.CompileStatic
 import groovyx.net.http.RESTClient
 
 
@@ -27,7 +26,6 @@ import groovyx.net.http.RESTClient
  */
 class WebTemplateLoader {
 
-	@CompileStatic
 	static List<WebTemplate> load() throws Exception {
 		load(TemplatesUIPlugin.getDefault().preferenceStore.getString(WebTemplatesPreferences.PREF_WEB_TEMPLATES_URL))
 	}
