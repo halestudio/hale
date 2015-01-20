@@ -583,6 +583,83 @@ public abstract class AlignmentUtil {
 	}
 
 	/**
+	 * Assures that an entity is a {@link TypeEntityDefinition},
+	 * {@link PropertyEntityDefinition} or {@link ChildEntityDefinition} and
+	 * that the inherent classification is correct.
+	 * 
+	 * @param entity the entity definition
+	 * @return the entity that is guaranteed to be a
+	 *         {@link TypeEntityDefinition}, {@link PropertyEntityDefinition} or
+	 *         {@link ChildEntityDefinition}
+	 */
+	public static EntityDefinition normalizeEntity(EntityDefinition entity) {
+		if (entity instanceof TypeEntityDefinition) {
+			return entity;
+		}
+		else if (entity instanceof PropertyEntityDefinition) {
+			// check if use of PED is correct
+			if (entity.getDefinition() instanceof ChildDefinition<?>
+					&& ((ChildDefinition<?>) entity.getDefinition()).asGroup() != null) {
+				// should be a CED
+				return new ChildEntityDefinition(entity.getType(), entity.getPropertyPath(),
+						entity.getSchemaSpace(), entity.getFilter());
+			}
+			else if (entity.getPropertyPath().isEmpty()) {
+				return new TypeEntityDefinition(entity.getType(), entity.getSchemaSpace(),
+						entity.getFilter());
+			}
+			else {
+				return entity;
+			}
+		}
+		else if (entity instanceof ChildEntityDefinition) {
+			// check if use of CED is correct
+			if (entity.getDefinition() instanceof ChildDefinition<?>
+					&& ((ChildDefinition<?>) entity.getDefinition()).asProperty() != null) {
+				// should be a PED
+				return new PropertyEntityDefinition(entity.getType(), entity.getPropertyPath(),
+						entity.getSchemaSpace(), entity.getFilter());
+			}
+			else if (entity.getPropertyPath().isEmpty()) {
+				return new TypeEntityDefinition(entity.getType(), entity.getSchemaSpace(),
+						entity.getFilter());
+			}
+			else {
+				return entity;
+			}
+		}
+		else {
+			if (entity.getPropertyPath().isEmpty()) {
+				return new TypeEntityDefinition(entity.getType(), entity.getSchemaSpace(),
+						entity.getFilter());
+			}
+			else {
+				if (entity.getDefinition() instanceof ChildDefinition<?>) {
+					ChildDefinition<?> child = (ChildDefinition<?>) entity.getDefinition();
+					if (child.asProperty() != null) {
+						// should be a PED
+						return new PropertyEntityDefinition(entity.getType(),
+								entity.getPropertyPath(), entity.getSchemaSpace(),
+								entity.getFilter());
+					}
+					else if (child.asGroup() != null) {
+						// should be a CED
+						return new ChildEntityDefinition(entity.getType(),
+								entity.getPropertyPath(), entity.getSchemaSpace(),
+								entity.getFilter());
+					}
+					else {
+						throw new IllegalArgumentException("Illegal entity definition");
+					}
+				}
+				else {
+					throw new IllegalArgumentException("Illegal entity definition");
+				}
+			}
+		}
+	}
+
+	/**
 	 * Match a property condition against a property value.
 	 * 
 	 * @param condition the property condition
