@@ -369,8 +369,13 @@ class JsonStreamBuilder extends BuilderBase {
 
 	@CompileStatic(TypeCheckingMode.SKIP)
 	private static def internalToJson(object) {
-		// not compiled static to allow method selection based on type
-		JsonOutput.toJson(object)
+		if (object instanceof RawJson) {
+			object.json
+		}
+		else {
+			// not compiled static to allow method selection based on type
+			JsonOutput.toJson(object)
+		}
 	}
 
 	@Override
