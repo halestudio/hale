@@ -1326,6 +1326,10 @@
             class="eu.esdihumboldt.hale.ui.io.instance.FileValidateTarget"
             id="instanceFile">
       </target>
+      <target
+            class="eu.esdihumboldt.hale.ui.io.target.URLTarget"
+            id="uri">
+      </target>
    </extension>
 
 </plugin>
