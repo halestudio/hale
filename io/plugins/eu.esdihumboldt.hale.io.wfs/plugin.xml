@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.io.provider">
+      <provider
+            class="eu.esdihumboldt.hale.io.wfs.SimpleWFSWriter"
+            description="Upload to a remote service via WFS-T"
+            id="eu.esdihumboldt.hale.io.wfs.write"
+            name="WFS-T">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.wfs-t">
+         </contentType>
+      </provider>
+   </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            id="eu.esdihumboldt.hale.io.wfs-t"
+            name="WFS-T"
+            priority="normal">
+      </content-type>
+   </extension>
+
+</plugin>
