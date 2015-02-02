@@ -205,7 +205,7 @@ public abstract class ExportWizard<P extends ExportProvider> extends IOWizard<P>
 	}
 
 	/**
-	 * Create the page where the provider is selected
+	 * Create the page where the target (e.g. a file) is selected
 	 * 
 	 * @return the created page
 	 */
