@@ -5,6 +5,7 @@
    <extension-point id="eu.esdihumboldt.hale.ui.function" name="Function wizards" schema="schema/eu.esdihumboldt.hale.ui.function.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.ui.io.action" name="UI extensions for I/O actions" schema="schema/eu.esdihumboldt.hale.ui.io.action.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.ui.io.source" name="Import sources" schema="schema/eu.esdihumboldt.hale.ui.io.source.exsd"/>
+   <extension-point id="eu.esdihumboldt.hale.ui.io.target" name="Custom I/O targets" schema="schema/eu.esdihumboldt.hale.ui.io.target.exsd"/>
    <extension
          point="org.eclipse.ui.commands">
       <command
@@ -1314,6 +1315,17 @@
             id="eu.esdihumboldt.hale.ui.preferences.project"
             name="Project">
       </page>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.ui.io.target">
+      <target
+            class="eu.esdihumboldt.hale.ui.io.target.FileTarget"
+            id="file">
+      </target>
+      <target
+            class="eu.esdihumboldt.hale.ui.io.instance.FileValidateTarget"
+            id="instanceFile">
+      </target>
    </extension>
 
 </plugin>

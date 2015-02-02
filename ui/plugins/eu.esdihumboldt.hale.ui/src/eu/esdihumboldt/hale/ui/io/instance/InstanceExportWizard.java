@@ -35,9 +35,10 @@ import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
-import eu.esdihumboldt.hale.ui.io.ExportSelectTargetPage;
+import eu.esdihumboldt.hale.ui.io.ExportTarget;
 import eu.esdihumboldt.hale.ui.io.ExportWizard;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
+import eu.esdihumboldt.hale.ui.io.target.FileTarget;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
 
 /**
@@ -131,58 +132,52 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 			// configure validator
 			List<? extends Locatable> schemas = getProvider().getValidationSchemas();
 			validator.setSchemas(schemas.toArray(new Locatable[schemas.size()]));
-			String fileName = getSelectTargetPage().getTargetFileName(); // XXX
-																			// will
-																			// only
-																			// work
-																			// for
-																			// files!
-			LocatableInputSupplier<? extends InputStream> source = new FileIOSupplier(new File(
-					fileName));
-			validator.setSource(source);
-			validator.setContentType(getContentType());
+			ExportTarget<?> exportTarget = getSelectTargetPage().getExportTarget();
+			if (exportTarget instanceof FileTarget) {
+				String fileName = ((FileTarget<?>) exportTarget).getTargetFileName();
+				LocatableInputSupplier<? extends InputStream> source = new FileIOSupplier(new File(
+						fileName));
+				validator.setSource(source);
+				validator.setContentType(getContentType());
 
-			// XXX configuration pages for validator?
+				// XXX configuration pages for validator?
 
-			IOReporter defReport = validator.createReporter();
+				IOReporter defReport = validator.createReporter();
 
-			// validate and execute provider
-			try {
-				// validate configuration
-				validator.validate();
-				IOReport report = execute(validator, defReport);
+				// validate and execute provider
+				try {
+					// validate configuration
+					validator.validate();
+					IOReport report = execute(validator, defReport);
 
-				if (report != null) {
-					// add report to report server
-					ReportService repService = (ReportService) PlatformUI.getWorkbench()
-							.getService(ReportService.class);
-					repService.addReport(report);
-					// show message to user
-					if (report.isSuccess()) {
-						// info message
-						log.userInfo(report.getSummary());
+					if (report != null) {
+						// add report to report server
+						ReportService repService = (ReportService) PlatformUI.getWorkbench()
+								.getService(ReportService.class);
+						repService.addReport(report);
+						// show message to user
+						if (report.isSuccess()) {
+							// info message
+							log.userInfo(report.getSummary());
+						}
+						else {
+							// error message
+							log.userError(report.getSummary()
+									+ "\nPlease see the report for more details.");
+						}
 					}
-					else {
-						// error message
-						log.userError(report.getSummary()
-								+ "\nPlease see the report for more details.");
-					}
+				} catch (IOProviderConfigurationException e) {
+					log.userError("The validator could not be executed", e);
+					return false;
 				}
-			} catch (IOProviderConfigurationException e) {
-				log.userError("The validator could not be executed", e);
+			}
+			else {
+				log.error("No input can be provided for validation (no file target)");
 				return false;
 			}
 		}
 
 		return success;
-	}
-
-	/**
-	 * @see ExportWizard#createSelectTargetPage()
-	 */
-	@Override
-	protected ExportSelectTargetPage<InstanceWriter, ? extends ExportWizard<InstanceWriter>> createSelectTargetPage() {
-		return new InstanceSelectTargetPage();
 	}
 
 	/**
