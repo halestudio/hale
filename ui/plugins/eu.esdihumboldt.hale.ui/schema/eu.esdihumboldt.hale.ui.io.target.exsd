@@ -70,12 +70,34 @@
       </complexType>
    </element>
 
-   <element name="providerTarget" type="string">
+   <element name="providerTarget">
       <annotation>
          <documentation>
             Associates a target to a provider.
          </documentation>
       </annotation>
+      <complexType>
+         <attribute name="target" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.ui.io.target/target/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="provider" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.io.provider/provider/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
    </element>
 
    <annotation>
