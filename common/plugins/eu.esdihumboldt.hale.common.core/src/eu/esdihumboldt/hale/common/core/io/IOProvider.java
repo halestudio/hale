@@ -144,7 +144,7 @@ public interface IOProvider {
 	 * Get the value for the given parameter name
 	 * 
 	 * @param name the parameter name
-	 * @return the parameter value or <code>null</code>, the value is either a
+	 * @return the parameter value or the NULL value, the value is either a
 	 *         string, a DOM elements or a complex value types defined in the
 	 *         {@link ComplexValueExtension}
 	 */
