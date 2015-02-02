@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Data Harmonisation Panel
+ * Copyright (c) 2015 Data Harmonisation Panel
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -10,7 +10,6 @@
  * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
  * 
  * Contributors:
- *     HUMBOLDT EU Integrated Project #030962
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
@@ -42,32 +41,30 @@ import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
-import eu.esdihumboldt.hale.ui.HaleWizardPage;
-import eu.esdihumboldt.hale.ui.io.ExportSelectTargetPage;
 import eu.esdihumboldt.hale.ui.io.IOWizardListener;
+import eu.esdihumboldt.hale.ui.io.target.FileTarget;
 
 /**
- * Wizard page that allows selecting a target instance file and a corresponding
- * validator
+ * File target that adds instance validation. Only usable for instance export.
  * 
  * @author Simon Templer
- * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class InstanceSelectTargetPage extends
-		ExportSelectTargetPage<InstanceWriter, InstanceExportWizard> implements
+public class FileValidateTarget extends FileTarget<InstanceWriter> implements
 		IOWizardListener<InstanceWriter, InstanceExportWizard> {
 
 	private ComboViewer validators;
 
-	/**
-	 * @see ExportSelectTargetPage#createContent(Composite)
-	 */
 	@Override
-	protected void createContent(Composite page) {
-		super.createContent(page);
+	public InstanceExportWizard getWizard() {
+		return (InstanceExportWizard) super.getWizard();
+	}
+
+	@Override
+	public void createControls(Composite parent) {
+		super.createControls(parent);
 		// page has a 3-column grid layout
 
-		Group validatorGroup = new Group(page, SWT.NONE);
+		Group validatorGroup = new Group(parent, SWT.NONE);
 		validatorGroup.setText("Validation");
 		validatorGroup.setLayoutData(GridDataFactory.swtDefaults().align(SWT.FILL, SWT.BEGINNING)
 				.grab(true, false).span(3, 1).indent(8, 10).create());
@@ -105,6 +102,30 @@ public class InstanceSelectTargetPage extends
 		});
 
 		getWizard().addIOWizardListener(this);
+	}
+
+	@Override
+	public void onShowPage(boolean firstShow) {
+		super.onShowPage(firstShow);
+
+		updateInput();
+	}
+
+	@Override
+	public void contentTypeChanged(IContentType contentType) {
+		updateInput();
+	}
+
+	@Override
+	public void providerDescriptorChanged(IOProviderDescriptor providerFactory) {
+		// do nothing
+	}
+
+	@Override
+	public void dispose() {
+		getWizard().removeIOWizardListener(this);
+
+		super.dispose();
 	}
 
 	/**
@@ -176,42 +197,6 @@ public class InstanceSelectTargetPage extends
 				getWizard().setValidatorFactory(null);
 			}
 		}
-	}
-
-	/**
-	 * @see ExportSelectTargetPage#onShowPage(boolean)
-	 */
-	@Override
-	protected void onShowPage(boolean firstShow) {
-		super.onShowPage(firstShow);
-
-		updateInput();
-	}
-
-	/**
-	 * @see IOWizardListener#contentTypeChanged(IContentType)
-	 */
-	@Override
-	public void contentTypeChanged(IContentType contentType) {
-		updateInput();
-	}
-
-	/**
-	 * @see IOWizardListener#providerDescriptorChanged(IOProviderDescriptor)
-	 */
-	@Override
-	public void providerDescriptorChanged(IOProviderDescriptor providerFactory) {
-		// do nothing
-	}
-
-	/**
-	 * @see HaleWizardPage#dispose()
-	 */
-	@Override
-	public void dispose() {
-		getWizard().removeIOWizardListener(this);
-
-		super.dispose();
 	}
 
 }

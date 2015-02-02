@@ -17,7 +17,6 @@ package eu.esdihumboldt.hale.ui.io.instance.exportconfig;
 
 import java.text.MessageFormat;
 
-import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.ui.PlatformUI;
 
 import de.fhg.igd.slf4jplus.ALogger;
@@ -62,23 +61,6 @@ public class SaveConfigurationInstanceExportWizard extends InstanceExportWizard 
 	}
 
 	@Override
-	public IWizardPage getNextPage(IWizardPage page) {
-		IWizardPage nextPage = super.getNextPage(page);
-		if (nextPage != null) {
-			if (!(nextPage.getName().equals("export.selTarget"))) {
-				return nextPage;
-			}
-			else {
-				// no selection of the export file is desired, so we skip the
-				// export select target page
-				getSelectTargetPage().setPageComplete(true);
-				return super.getNextPage(getSelectTargetPage());
-			}
-		}
-		return nextPage;
-	}
-
-	@Override
 	public boolean performFinish() {
 		if (!applyConfiguration()) {
 			return false;
@@ -103,4 +85,11 @@ public class SaveConfigurationInstanceExportWizard extends InstanceExportWizard 
 
 		return true;
 	}
+
+	@Override
+	protected boolean suppressTargetPage() {
+		// target page is to be ignored
+		return true;
+	}
+
 }
