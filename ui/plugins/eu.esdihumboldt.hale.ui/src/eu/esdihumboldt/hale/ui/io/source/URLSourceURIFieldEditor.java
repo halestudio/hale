@@ -41,9 +41,9 @@ import eu.esdihumboldt.hale.ui.util.io.URIFieldEditor;
 import eu.esdihumboldt.util.Pair;
 
 /**
- * TODO Type description
+ * Field editor for the {@link URLSource}.
  * 
- * @author simon
+ * @author Simon Templer
  */
 public class URLSourceURIFieldEditor extends URIFieldEditor {
 

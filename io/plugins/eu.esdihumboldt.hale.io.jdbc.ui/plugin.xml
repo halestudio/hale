@@ -40,5 +40,16 @@
             providerType="eu.esdihumboldt.hale.common.instance.io.InstanceReader">
       </source>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.ui.io.target">
+      <target
+            class="eu.esdihumboldt.hale.io.jdbc.ui.JDBCTarget"
+            id="jdbcUrl">
+      </target>
+      <providerTarget
+            provider="eu.esdihumboldt.hale.io.jdbc.instance.writer"
+            target="jdbcUrl">
+      </providerTarget>
+   </extension>
 
 </plugin>
