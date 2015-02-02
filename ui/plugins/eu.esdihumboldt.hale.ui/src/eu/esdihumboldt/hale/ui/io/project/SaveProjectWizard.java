@@ -17,10 +17,10 @@
 package eu.esdihumboldt.hale.ui.io.project;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.core.runtime.content.IContentType;
 
@@ -95,12 +95,13 @@ public class SaveProjectWizard extends ExportWizard<ProjectWriter> {
 		return new ExportSelectTargetPage<ProjectWriter, SaveProjectWizard>() {
 
 			@Override
-			protected Set<IContentType> getAllowedContentTypes() {
+			public void setAllowedContentTypes(Collection<IContentType> contentTypes) {
 				if (restrictToContentType == null) {
-					return super.getAllowedContentTypes();
+					super.setAllowedContentTypes(contentTypes);
 				}
 				else {
-					return Collections.singleton(restrictToContentType);
+					// restrict to given specific content type
+					super.setAllowedContentTypes(Collections.singleton(restrictToContentType));
 				}
 			}
 

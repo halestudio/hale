@@ -16,34 +16,24 @@
 
 package eu.esdihumboldt.hale.ui.io;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Collection;
-import java.util.Set;
+
+import javax.annotation.Nullable;
 
 import org.eclipse.core.runtime.content.IContentType;
-import org.eclipse.jface.dialogs.DialogPage;
-import org.eclipse.jface.preference.FieldEditor;
-import org.eclipse.jface.preference.FileFieldEditor;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.ExportProvider;
-import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
-import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
-import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
-import eu.esdihumboldt.hale.ui.util.io.SaveFileFieldEditor;
+import eu.esdihumboldt.hale.ui.io.target.internal.ExportTargetExtension;
+import eu.esdihumboldt.hale.ui.io.target.internal.ExportTargetFactory;
 
 /**
  * Wizard page that allows selecting a target file
@@ -59,10 +49,12 @@ public class ExportSelectTargetPage<P extends ExportProvider, W extends ExportWi
 
 	private static final ALogger log = ALoggerFactory.getLogger(ExportSelectTargetPage.class);
 
-	/**
-	 * The file field editor for the target file
-	 */
-	private SaveFileFieldEditor targetFile;
+	private Composite page;
+	private Composite main;
+	private ExportTarget<? super P> currentTarget;
+	private String currentTargetId;
+
+	private Collection<IContentType> allowedContentTypes;
 
 	/**
 	 * Default constructor
@@ -70,7 +62,6 @@ public class ExportSelectTargetPage<P extends ExportProvider, W extends ExportWi
 	public ExportSelectTargetPage() {
 		super("export.selTarget");
 		setTitle("Export destination");
-		setDescription("Please select a destination file for the export");
 	}
 
 	/**
@@ -78,92 +69,85 @@ public class ExportSelectTargetPage<P extends ExportProvider, W extends ExportWi
 	 */
 	@Override
 	protected void createContent(Composite page) {
-		page.setLayout(new GridLayout(3, false));
+		this.page = page;
 
-		targetFile = new SaveFileFieldEditor("targetFile", "Target file:", true,
-				FileFieldEditor.VALIDATE_ON_KEY_STROKE, page);
-		targetFile.setEmptyStringAllowed(false);
-		targetFile.setAllowUri(true);
-		targetFile.setPage(this);
-		targetFile.setPropertyChangeListener(new IPropertyChangeListener() {
+		GridLayoutFactory.fillDefaults().applyTo(page);
 
-			@Override
-			public void propertyChange(PropertyChangeEvent event) {
-				if (event.getProperty().equals(FieldEditor.IS_VALID)) {
-					updateState();
-				}
-				else if (event.getProperty().equals(FieldEditor.VALUE)) {
-					updateContentType();
-				}
-			}
-		});
-
-		updateState();
-	}
-
-	/**
-	 * Update the content type
-	 */
-	private void updateContentType() {
-		IContentType contentType = null;
-
-		if (getWizard().getProviderFactory() != null && targetFile.isValid()) {
-			Collection<IContentType> types = getAllowedContentTypes();
-			if (types != null && !types.isEmpty()) {
-				if (types.size() == 1) {
-					// if only one content type is possible for the export we
-					// can assume that it is used
-					contentType = types.iterator().next();
-				}
-				else {
-					Collection<IContentType> filteredTypes = HaleIO.findContentTypesFor(types,
-							null, targetFile.getStringValue());
-					if (!filteredTypes.isEmpty()) {
-						contentType = filteredTypes.iterator().next();
-					}
-				}
-			}
-			else {
-				// no supported content types!
-				log.error("Export provider {0} doesn't support any content types", getWizard()
-						.getProviderFactory().getDisplayName());
-			}
-		}
-
-		getWizard().setContentType(contentType);
-		if (contentType != null) {
-			setMessage(contentType.getName(), DialogPage.INFORMATION);
-		}
-		else {
-			setMessage(null);
-		}
-	}
-
-	private void updateState() {
-		updateContentType();
-
-		setPageComplete(targetFile.isValid());
+		// content will be created later based on selected provider
 	}
 
 	/**
 	 * @see HaleWizardPage#onShowPage(boolean)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void onShowPage(boolean firstShow) {
 		super.onShowPage(firstShow);
 
-		// update file editor with possibly changed file extensions
-		targetFile.setContentTypes(getAllowedContentTypes());
+		updateContentTypes();
+
+		// determine which target to show
+		ExportTargetFactory targetFactory = ExportTargetExtension.getInstance().forProvider(
+				getWizard().getProviderType(), getWizard().getProviderFactory().getIdentifier());
+
+		if (currentTargetId != null && currentTargetId.equals(targetFactory.getIdentifier())) {
+			// if it is the same as the current, just call onShowPage
+			currentTarget.onShowPage(false);
+		}
+		else {
+			// otherwise, remove the old content, create the new target
+			if (main != null) {
+				main.dispose();
+			}
+			if (currentTarget != null) {
+				currentTarget.dispose();
+			}
+
+			try {
+				currentTarget = (ExportTarget<? super P>) targetFactory.createExtensionObject();
+				currentTargetId = targetFactory.getIdentifier();
+				main = new Composite(page, SWT.NONE);
+				GridDataFactory.fillDefaults().grab(true, false).applyTo(main);
+
+				currentTarget.setParent(getWizard(), this);
+				currentTarget.createControls(main);
+				currentTarget.setAllowedContentTypes(allowedContentTypes);
+
+				currentTarget.onShowPage(true);
+			} catch (Exception e) {
+				log.error("Could not create export target", e);
+			}
+
+			// re-layout
+			page.layout(true);
+		}
 	}
 
 	/**
-	 * Get the allowed content types.
-	 * 
-	 * @return the allowed content types, by default the supported content types
-	 *         of the selected provider.
+	 * Update the content types available. Called each time the page is shown.
 	 */
-	protected Set<IContentType> getAllowedContentTypes() {
-		return getWizard().getProviderFactory().getSupportedTypes();
+	protected void updateContentTypes() {
+		setAllowedContentTypes(getWizard().getProviderFactory().getSupportedTypes());
+	}
+
+	/**
+	 * Set the allowed content types.
+	 * 
+	 * @param contentTypes the content types
+	 */
+	public void setAllowedContentTypes(Collection<IContentType> contentTypes) {
+		this.allowedContentTypes = contentTypes;
+		if (currentTarget != null) {
+			currentTarget.setAllowedContentTypes(contentTypes);
+		}
+	}
+
+	/**
+	 * @return the currently active export target
+	 */
+	@Nullable
+	public ExportTarget<?> getExportTarget() {
+		return currentTarget;
 	}
 
 	/**
@@ -171,52 +155,12 @@ public class ExportSelectTargetPage<P extends ExportProvider, W extends ExportWi
 	 */
 	@Override
 	public boolean updateConfiguration(P provider) {
-		try {
-			URI uri = new URI(targetFile.getStringValue());
-			if (!uri.isAbsolute()) {
-				// was a file
-				uri = new File(targetFile.getStringValue()).toURI();
-			}
-			final URI location = uri;
-			provider.setTarget(new LocatableOutputSupplier<OutputStream>() {
-
-				@Override
-				public OutputStream getOutput() throws IOException {
-					File file = new File(location);
-					return new FileOutputStream(file);
-
-					// XXX other URIs unsupported for now
-				}
-
-				@Override
-				public URI getLocation() {
-					return location;
-				}
-			});
-			return true;
-		} catch (URISyntaxException e) {
-			// ignore, assume it's a file
+		if (currentTarget != null) {
+			return currentTarget.updateConfiguration(provider);
 		}
-
-		File file = new File(targetFile.getStringValue());
-		provider.setTarget(new FileIOSupplier(file));
-		return true;
-	}
-
-	/**
-	 * Get the target file name
-	 * 
-	 * @return the target file name
-	 */
-	public String getTargetFileName() {
-		return targetFile.getStringValue();
-	}
-
-	/**
-	 * @return the file field editor for the target file
-	 */
-	protected SaveFileFieldEditor getSaveFieldEditor() {
-		return targetFile;
+		else {
+			return false;
+		}
 	}
 
 	@Override
