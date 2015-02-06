@@ -33,6 +33,9 @@
          <parameter
                name="notClassifiedAction">
          </parameter>
+         <parameter
+               name="lookupTable">
+         </parameter>
       </propertyParameterPage>
       <propertyParameterPage
             class="eu.esdihumboldt.hale.ui.functions.core.FormattedStringParameterPage"
