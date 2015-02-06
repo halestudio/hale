@@ -102,5 +102,13 @@
             parameter="structuralRename"
             priority="0">
       </propertyParameterEditor>
+      <propertyParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.core.AssignParameterPage"
+            function="eu.esdihumboldt.hale.align.assign.bound"
+            id="eu.esdihumboldt.hale.ui.functions.core.assign.bound">
+         <parameter
+               name="value">
+         </parameter>
+      </propertyParameterPage>
    </extension>
 </plugin>
