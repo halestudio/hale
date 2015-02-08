@@ -229,10 +229,13 @@ public class TemplateUploadForm extends Panel {
 
 		// max size for upload
 		if (UserUtil.isAdmin()) {
+			// admin max upload size
 			form.setMaxSize(Bytes.megabytes(100));
 		}
 		else {
-			form.setMaxSize(Bytes.megabytes(1));
+			// normal user max upload size
+			// TODO differentiate between logged in and anonymous user?
+			form.setMaxSize(Bytes.megabytes(15));
 		}
 
 		// Add file input field for multiple files
