@@ -249,6 +249,32 @@
             </parameterEnumeration>
          </functionParameter>
       </propertyFunction>
+      <propertyFunction
+            category="eu.esdihumboldt.cst.functions.geometric"
+            description="Aggregate similar input geometries"
+            icon="icons/geometry.png"
+            identifier="eu.esdihumboldt.cst.functions.geometric.aggregate"
+            name="Aggregate">
+         <targetProperties>
+            <property
+                  description="Aggregated geometry"
+                  eager="false"
+                  maxOccurrence="1"
+                  minOccurrence="1">
+               <geometryOrParentCondition></geometryOrParentCondition>
+            </property>
+         </targetProperties>
+         <sourceProperties>
+            <property
+                  description="Source geometries (eager)"
+                  eager="true"
+                  label="Geometries"
+                  maxOccurrence="n"
+                  minOccurrence="1">
+               <geometryOrParentCondition></geometryOrParentCondition>
+            </property>
+         </sourceProperties>
+      </propertyFunction>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.align.transformation">
@@ -287,6 +313,12 @@
             engine="eu.esdihumboldt.align.java"
             function="eu.esdihumboldt.cst.functions.geometric.extent"
             id="eu.esdihumboldt.cst.functions.geometric.extent">
+      </propertyTransformation>
+      <propertyTransformation
+            class="eu.esdihumboldt.cst.functions.geometric.aggregate.AggregateTransformation"
+            engine="eu.esdihumboldt.align.java"
+            function="eu.esdihumboldt.cst.functions.geometric.aggregate"
+            id="eu.esdihumboldt.cst.functions.geometric.aggregate">
       </propertyTransformation>
    </extension>
 
