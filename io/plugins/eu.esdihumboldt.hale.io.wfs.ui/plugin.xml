@@ -8,5 +8,15 @@
             target="uri">
       </providerTarget>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.ui.io.config">
+      <configPage
+            class="eu.esdihumboldt.hale.ui.io.config.TargetCRSConfigurationPage"
+            order="0">
+         <provider
+               ref="eu.esdihumboldt.hale.io.wfs.write">
+         </provider>
+      </configPage>
+   </extension>
 
 </plugin>
