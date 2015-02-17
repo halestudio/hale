@@ -84,7 +84,11 @@
 			<td style="vertical-align: top; min-width: 18px"><img src="images/mandatory.png" width="16" height="16"></td>
 			<td>A red asterisk marks properties that are mandatory, i.e.
 				they occur exactly once and must have a value (and the value may not
-				be <i>null</i>).
+				be <i>null</i>).<br>
+				<em>Please note that if the parent of such a property is a <em>choice</em> (<img
+				src="images/choice.gif" width="16" height="16">) the choice takes precedence,
+				i.e. only one of its children may be present in an object, but the child that
+				is present may still not hold a <em>null</em> value if marked with a red asterisk.</em>
 			</td>
 		</tr>
 		<tr>
