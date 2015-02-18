@@ -17,7 +17,6 @@
 package eu.esdihumboldt.hale.io.gml.writer.internal.geometry;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -120,6 +119,8 @@ public abstract class AbstractTypeMatcher<T> {
 				elementName, unique), new HashSet<TypeDefinition>());
 		candidates.add(base);
 
+		List<DefinitionPath> results = new ArrayList<>();
+
 		while (!candidates.isEmpty()) {
 			PathCandidate candidate = candidates.poll();
 			TypeDefinition type = candidate.getType();
@@ -132,7 +133,11 @@ public abstract class AbstractTypeMatcher<T> {
 				// check if there is a direct match
 				DefinitionPath path = matchPath(type, matchParam, basePath);
 				if (path != null) {
-					return Collections.singletonList(path); // return instantly
+					if (results.isEmpty()) {
+						// first result -> adjust max depth
+						maxDepth = path.getSteps().size();
+					}
+					results.add(path);
 				}
 				// skip sub paths
 				continue;
@@ -148,9 +153,16 @@ public abstract class AbstractTypeMatcher<T> {
 			// check if there is a direct match
 			DefinitionPath path = matchPath(type, matchParam, basePath);
 			if (path != null) {
-				return Collections.singletonList(path); // return instantly
+				if (results.isEmpty()) {
+					// first result -> adjust max depth
+					maxDepth = path.getSteps().size();
+				}
+				results.add(path);
 				// XXX currently always only one path is returned - this might
 				// change if we allow matchPath to yield multiple results
+
+				// skip sub paths
+				continue;
 			}
 
 			if (!type.getConstraint(AbstractFlag.class).isEnabled()) {
@@ -203,7 +215,7 @@ public abstract class AbstractTypeMatcher<T> {
 			}
 		}
 
-		return new ArrayList<DefinitionPath>();
+		return results;
 	}
 
 	/**
