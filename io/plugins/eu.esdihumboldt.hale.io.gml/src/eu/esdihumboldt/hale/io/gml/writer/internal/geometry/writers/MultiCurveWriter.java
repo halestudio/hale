@@ -25,27 +25,31 @@ import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiLineString;
 
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.Descent;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryWriter;
 
 /**
- * {@link MultiLineString} writer
+ * Writes {@link MultiLineString} in gml:MultiCurveTypes
  * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class CurveWriter extends AbstractGeometryWriter<MultiLineString> {
+public class MultiCurveWriter extends AbstractGeometryWriter<MultiLineString> {
 
 	/**
 	 * Default constructor
 	 */
-	public CurveWriter() {
+	public MultiCurveWriter() {
 		super(MultiLineString.class);
 
 		// compatible types to serve as entry point
-		addCompatibleType(new QName(Pattern.GML_NAMESPACE_PLACEHOLDER, "CurveType")); //$NON-NLS-1$
+		addCompatibleType(new QName(Pattern.GML_NAMESPACE_PLACEHOLDER, "MultiCurveType"));
 
 		// patterns for matching inside compatible types
-		addBasePattern("**/LineStringSegment"); //$NON-NLS-1$
+		addBasePattern("*/curveMember"); //$NON-NLS-1$
+
+		// verification patterns
+		addVerificationPattern("*/LineString"); //$NON-NLS-1$
 	}
 
 	/**
@@ -60,19 +64,18 @@ public class CurveWriter extends AbstractGeometryWriter<MultiLineString> {
 				writer.writeStartElement(elementName.getNamespaceURI(), elementName.getLocalPart());
 			}
 
+			Descent descent = descend(writer, Pattern.parse("*/LineString"), //$NON-NLS-1$
+					elementType, elementName, gmlNs, false);
+
 			LineString line = (LineString) geometry.getGeometryN(i);
-			writeCoordinates(writer, line.getCoordinates(), elementType, gmlNs);
+			writeCoordinates(writer, line.getCoordinates(), descent.getPath().getLastType(), gmlNs);
+
+			descent.close();
 
 			if (i < geometry.getNumGeometries() - 1) {
 				writer.writeEndElement();
 			}
 		}
-	}
-
-	@Override
-	protected boolean checkValid(MultiLineString geometry) {
-		// FIXME check if segments are connected
-		return true;
 	}
 
 }

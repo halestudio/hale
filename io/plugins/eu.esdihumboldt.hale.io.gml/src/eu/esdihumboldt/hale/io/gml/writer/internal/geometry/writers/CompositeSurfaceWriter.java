@@ -21,20 +21,26 @@ import javax.xml.namespace.QName;
 import com.vividsolutions.jts.geom.MultiPolygon;
 
 /**
- * Writes {@link MultiPolygon}s as MultiPolygon or MultiSurface.
+ * Writes {@link MultiPolygon}s as CompositeSurfaces.
  * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class MultiPolygonWriter extends AbstractMultiPolygonWriter {
+public class CompositeSurfaceWriter extends AbstractMultiPolygonWriter {
 
 	/**
 	 * Default constructor
 	 */
-	public MultiPolygonWriter() {
+	public CompositeSurfaceWriter() {
 		// compatible types to serve as entry point
-		addCompatibleType(new QName(Pattern.GML_NAMESPACE_PLACEHOLDER, "MultiPolygonType")); //$NON-NLS-1$
-		addCompatibleType(new QName(Pattern.GML_NAMESPACE_PLACEHOLDER, "MultiSurfaceType")); //$NON-NLS-1$
+		addCompatibleType(new QName(Pattern.GML_NAMESPACE_PLACEHOLDER, "CompositeSurfaceType")); //$NON-NLS-1$
+	}
+
+	@Override
+	public boolean checkValid(MultiPolygon geometry) {
+		// FIXME check if individual surfaces are properly aligned to form a
+		// composite surface
+		return super.checkValid(geometry);
 	}
 
 }
