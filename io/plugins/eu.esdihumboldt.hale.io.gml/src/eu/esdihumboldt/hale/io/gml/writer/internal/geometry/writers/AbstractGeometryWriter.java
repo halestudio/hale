@@ -119,16 +119,8 @@ public abstract class AbstractGeometryWriter<T extends Geometry> extends Abstrac
 	 */
 	@Override
 	protected boolean verifyEndPoint(TypeDefinition endPoint) {
-		for (PropertyDefinition attribute : DefinitionUtil.getAllProperties(endPoint)) { // XXX
-																							// is
-																							// this
-																							// enough?
-																							// or
-																							// must
-																							// groups
-																							// be
-																							// handled
-																							// explicitly?
+		for (PropertyDefinition attribute : DefinitionUtil.getAllProperties(endPoint)) {
+			// XXX is this enough? or must groups be handled explicitly?
 			if (SUPPORTED_COORDINATES_TYPES.contains(attribute.asProperty().getPropertyType()
 					.getName().getLocalPart())) {
 				// a valid property was found
