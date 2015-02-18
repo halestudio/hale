@@ -81,4 +81,12 @@ public interface GeometryWriter<T extends Geometry> {
 	public void write(XMLStreamWriter writer, T geometry, TypeDefinition elementType,
 			QName elementName, String gmlNs) throws XMLStreamException;
 
+	/**
+	 * Determines if a geometry is valid to be written with the writer.
+	 * 
+	 * @param geometry the geometry to test
+	 * @return <code>true</code> if the
+	 */
+	public boolean accepts(Geometry geometry);
+
 }

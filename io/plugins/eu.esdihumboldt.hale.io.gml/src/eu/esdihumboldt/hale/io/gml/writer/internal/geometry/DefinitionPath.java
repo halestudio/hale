@@ -482,6 +482,8 @@ public class DefinitionPath {
 
 	private boolean lastUnique;
 
+	private TypeDefinition geometryCompatibleType;
+
 	/**
 	 * Create a definition path beginning with the given base path
 	 * 
@@ -620,10 +622,21 @@ public class DefinitionPath {
 	}
 
 	/**
-	 * @param geometryWriter the geometryWriter to set
+	 * @return the geometryCompatibleType
 	 */
-	public void setGeometryWriter(GeometryWriter<?> geometryWriter) {
+	public TypeDefinition getGeometryCompatibleType() {
+		return geometryCompatibleType;
+	}
+
+	/**
+	 * @param geometryWriter the geometryWriter to set
+	 * @param geometryCompatibleType the type that was identified as compatible
+	 *            type by the writer
+	 */
+	public void setGeometryWriter(GeometryWriter<?> geometryWriter,
+			TypeDefinition geometryCompatibleType) {
 		this.geometryWriter = geometryWriter;
+		this.geometryCompatibleType = geometryCompatibleType;
 	}
 
 	/**

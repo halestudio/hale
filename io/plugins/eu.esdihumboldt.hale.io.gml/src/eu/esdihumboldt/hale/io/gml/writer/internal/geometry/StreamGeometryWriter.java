@@ -18,12 +18,14 @@ package eu.esdihumboldt.hale.io.gml.writer.internal.geometry;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nullable;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -41,11 +43,13 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 import eu.esdihumboldt.hale.io.gml.writer.internal.GmlWriterUtil;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryConverterRegistry.ConversionLadder;
+import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.CompositeSurfaceWriter;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.CurveWriter;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.EnvelopeWriter;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.LegacyMultiPolygonWriter;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.LegacyPolygonWriter;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.LineStringWriter;
+import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.MultiCurveWriter;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.MultiLineStringWriter;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.MultiPointWriter;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.MultiPolygonWriter;
@@ -76,12 +80,14 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 	public static StreamGeometryWriter getDefaultInstance(String gmlNs, boolean simplifyGeometry) {
 		StreamGeometryWriter sgm = new StreamGeometryWriter(gmlNs, simplifyGeometry);
 
-		// TODO configure
+		// TODO configure via extension?
 		sgm.registerGeometryWriter(new CurveWriter());
+		sgm.registerGeometryWriter(new MultiCurveWriter());
 		sgm.registerGeometryWriter(new PointWriter());
 		sgm.registerGeometryWriter(new PolygonWriter());
 		sgm.registerGeometryWriter(new LineStringWriter());
 		sgm.registerGeometryWriter(new MultiPolygonWriter());
+		sgm.registerGeometryWriter(new CompositeSurfaceWriter());
 		sgm.registerGeometryWriter(new MultiPointWriter());
 		sgm.registerGeometryWriter(new MultiLineStringWriter());
 		sgm.registerGeometryWriter(new LegacyPolygonWriter());
@@ -105,7 +111,7 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 	 * Types mapped to geometry types mapped to matched definition paths
 	 */
 	// XXX stored paths instead per attribute definition?
-	private final Map<TypeDefinition, Map<Class<? extends Geometry>, DefinitionPath>> storedPaths = new HashMap<TypeDefinition, Map<Class<? extends Geometry>, DefinitionPath>>();
+	private final Map<TypeDefinition, Map<Class<? extends Geometry>, List<DefinitionPath>>> storedPaths = new HashMap<TypeDefinition, Map<Class<? extends Geometry>, List<DefinitionPath>>>();
 
 	private final boolean simplifyGeometry;
 
@@ -170,9 +176,9 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 		Class<? extends Geometry> geomType = geometry.getClass();
 
 		// remember if we already found a solution to this problem
-		DefinitionPath path = restoreCandidate(property.getPropertyType(), geomType);
+		List<DefinitionPath> preferredPaths = restoreCandidate(property.getPropertyType(), geomType);
 
-		if (path == null) {
+		if (preferredPaths == null) {
 			// find candidates
 			List<DefinitionPath> candidates = findCandidates(property, geomType);
 
@@ -188,10 +194,11 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 				log.info("Possible structure for writing " + originalType.getSimpleName() + //$NON-NLS-1$
 						" not found, trying " + geomType.getSimpleName() + " instead"); //$NON-NLS-1$ //$NON-NLS-2$
 
-				DefinitionPath candPath = restoreCandidate(property.getPropertyType(), geomType);
-				if (candPath != null) {
+				List<DefinitionPath> candPaths = restoreCandidate(property.getPropertyType(),
+						geomType);
+				if (candPaths != null) {
 					// use stored candidate
-					candidates = Collections.singletonList(candPath);
+					candidates = new ArrayList<>(candPaths);
 				}
 				else {
 					candidates = findCandidates(property, geomType);
@@ -206,17 +213,19 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 				log.info("Possible structure for writing " + originalType.getSimpleName() + //$NON-NLS-1$
 						" not found, trying the generic geometry type instead"); //$NON-NLS-1$ //$NON-NLS-2$
 
-				DefinitionPath candPath = restoreCandidate(property.getPropertyType(), geomType);
-				if (candPath != null) {
+				List<DefinitionPath> candPaths = restoreCandidate(property.getPropertyType(),
+						geomType);
+				if (candPaths != null) {
 					// use stored candidate
-					candidates = Collections.singletonList(candPath);
+					candidates = new ArrayList<>(candidates);
 				}
 				else {
 					candidates = findCandidates(property, geomType);
 				}
 
 				// remember generic match for later
-				storeCandidate(property.getPropertyType(), originalType, candidates.get(0));
+				storeCandidate(property.getPropertyType(), originalType,
+						sortPreferredCandidates(candidates, geomType));
 			}
 
 			for (DefinitionPath candidate : candidates) {
@@ -233,15 +242,100 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 			}
 
 			// determine preferred candidate
-			// XXX for now: first one
-			path = candidates.get(0);
+			preferredPaths = sortPreferredCandidates(candidates, geomType);
 
 			// remember for later
-			storeCandidate(property.getPropertyType(), geomType, path);
+			storeCandidate(property.getPropertyType(), geomType, preferredPaths);
 		}
 
-		// write geometry
-		writeGeometry(writer, geometry, path, srsName);
+		DefinitionPath path = selectValidPath(preferredPaths, geometry);
+		if (path != null) {
+			// write geometry
+			writeGeometry(writer, geometry, path, srsName);
+		}
+		else {
+			throw new IllegalStateException("No valid path found for encoding geometry");
+		}
+	}
+
+	/**
+	 * Select the first valid path that is applicable for the given geometry.
+	 * 
+	 * @param preferredPaths the path candidates in order
+	 * @param geometry the geometry to write
+	 * @return the selected path
+	 */
+	@Nullable
+	private DefinitionPath selectValidPath(List<DefinitionPath> preferredPaths, Geometry geometry) {
+		for (DefinitionPath candidate : preferredPaths) {
+			GeometryWriter<?> writer = candidate.getGeometryWriter();
+			if (writer.accepts(geometry)) {
+				return candidate;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Sort the given candidates by preference.
+	 * 
+	 * @param candidates the path candidates
+	 * @param geomType the geometry type
+	 * @return the sorted list of candidates
+	 */
+	private List<DefinitionPath> sortPreferredCandidates(List<DefinitionPath> candidates,
+			Class<? extends Geometry> geomType) {
+		List<DefinitionPath> preferred = new ArrayList<>(candidates);
+
+		// sort candidates by preference
+		Collections.sort(preferred, new Comparator<DefinitionPath>() {
+
+			@Override
+			public int compare(DefinitionPath o1, DefinitionPath o2) {
+				int p1 = priority(o1);
+				int p2 = priority(o2);
+				if (p1 > p2)
+					return -1;
+				else if (p2 < p1)
+					return 1;
+				return 0;
+			}
+
+			public int priority(DefinitionPath path) {
+				if (path != null && path.getGeometryCompatibleType() != null) {
+					/*
+					 * Policies:
+					 * 
+					 * General - prefer simple types over composite types
+					 * 
+					 * MultiPolygons - prefer MultiSurface over
+					 * CompositeSurface, because it is more flexible
+					 * 
+					 * MultiLineString - rely on validity check
+					 */
+					switch (path.getGeometryCompatibleType().getName().getLocalPart()) {
+					case "LineStringType":
+						return 50;
+					case "CurveType":
+						return 40;
+					case "CompositeCurveType":
+						return 30;
+					case "MultiCurveType":
+					case "MultiSurfaceType":
+						return 10;
+					case "MultiPolygonType":
+						return 5;
+					case "CompositeSurfaceType":
+						return -10;
+					}
+				}
+
+				return 0;
+			}
+		});
+
+		return preferred;
 	}
 
 	/**
@@ -357,10 +451,10 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 	 * @param path the definition path
 	 */
 	private void storeCandidate(TypeDefinition type, Class<? extends Geometry> geomType,
-			DefinitionPath path) {
-		Map<Class<? extends Geometry>, DefinitionPath> paths = storedPaths.get(type);
+			List<DefinitionPath> path) {
+		Map<Class<? extends Geometry>, List<DefinitionPath>> paths = storedPaths.get(type);
 		if (paths == null) {
-			paths = new HashMap<Class<? extends Geometry>, DefinitionPath>();
+			paths = new HashMap<>();
 			storedPaths.put(type, paths);
 		}
 		paths.put(geomType, path);
@@ -374,8 +468,9 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 	 * 
 	 * @return a previously found path or <code>null</code>
 	 */
-	private DefinitionPath restoreCandidate(TypeDefinition type, Class<? extends Geometry> geomType) {
-		Map<Class<? extends Geometry>, DefinitionPath> paths = storedPaths.get(type);
+	private List<DefinitionPath> restoreCandidate(TypeDefinition type,
+			Class<? extends Geometry> geomType) {
+		Map<Class<? extends Geometry>, List<DefinitionPath>> paths = storedPaths.get(type);
 		if (paths != null) {
 			return paths.get(geomType);
 		}
@@ -421,7 +516,7 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 						DefinitionPath candidate = writer.match(type, path, gmlNs);
 						if (candidate != null) {
 							// set appropriate writer for path and return it
-							candidate.setGeometryWriter(writer);
+							candidate.setGeometryWriter(writer, type);
 							return candidate;
 						}
 					}
@@ -442,7 +537,7 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 					DefinitionPath candidate = writer.match(type, path, gmlNs);
 					if (candidate != null) {
 						// set appropriate writer for path and return it
-						candidate.setGeometryWriter(writer);
+						candidate.setGeometryWriter(writer, type);
 						return candidate;
 					}
 				}
