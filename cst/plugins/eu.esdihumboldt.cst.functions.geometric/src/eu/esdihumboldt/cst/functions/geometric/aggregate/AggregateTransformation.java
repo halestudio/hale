@@ -17,14 +17,10 @@ package eu.esdihumboldt.cst.functions.geometric.aggregate;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.google.common.collect.ListMultimap;
-import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -49,7 +45,7 @@ import eu.esdihumboldt.hale.common.instance.helper.DepthFirstInstanceTraverser;
 import eu.esdihumboldt.hale.common.instance.helper.InstanceTraverser;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
-import eu.esdihumboldt.util.DependencyOrderedList;
+import eu.esdihumboldt.util.geometry.CurveHelper;
 
 /**
  * Aggregates input geometries if possible.
@@ -144,7 +140,7 @@ public class AggregateTransformation extends
 					.toArray(new Point[collectedGeometries.size()]));
 		}
 		else if (LineString.class.isAssignableFrom(commonGeometryType)) {
-			return combineCurve((List<LineString>) collectedGeometries, fact);
+			return CurveHelper.combineCurve((List<LineString>) collectedGeometries, fact, false);
 		}
 		else if (Polygon.class.isAssignableFrom(commonGeometryType)) {
 			return fact.createMultiPolygon(((Collection<Polygon>) collectedGeometries)
@@ -154,34 +150,6 @@ public class AggregateTransformation extends
 			return fact.createGeometryCollection(collectedGeometries
 					.toArray(new Geometry[collectedGeometries.size()]));
 		}
-	}
-
-	private Geometry combineCurve(List<? extends LineString> lineStrings, GeometryFactory fact) {
-		// try to order by start/end point (e.g. for composite curves)
-		Map<Coordinate, LineString> endPoints = new HashMap<>();
-
-		for (LineString element : lineStrings) {
-			endPoints.put(element.getEndPoint().getCoordinate(), element);
-		}
-
-		Map<LineString, Set<LineString>> dependencies = new HashMap<>();
-		for (LineString element : lineStrings) {
-			// check if there is another line that ends at this line's start
-			// and build the dependency map accordingly
-			LineString dependsOn = endPoints.get(element.getStartPoint().getCoordinate());
-			@SuppressWarnings("unchecked")
-			Set<LineString> deps = (Set<LineString>) ((dependsOn == null) ? Collections.emptySet()
-					: Collections.singleton(dependsOn));
-			dependencies.put(element, deps);
-		}
-
-		// use dependency ordered list to achieve sorting
-		// will only yield a perfect result if all lines can be combined into
-		// one
-		DependencyOrderedList<LineString> ordered = new DependencyOrderedList<>(dependencies);
-
-		return fact.createMultiLineString(ordered.getInternalList().toArray(
-				new LineString[ordered.getInternalList().size()]));
 	}
 
 	/**

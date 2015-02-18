@@ -26,6 +26,7 @@ import com.vividsolutions.jts.geom.MultiLineString;
 
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryWriter;
+import eu.esdihumboldt.util.geometry.CurveHelper;
 
 /**
  * {@link MultiLineString} writer
@@ -55,6 +56,9 @@ public class CurveWriter extends AbstractGeometryWriter<MultiLineString> {
 	@Override
 	public void write(XMLStreamWriter writer, MultiLineString geometry, TypeDefinition elementType,
 			QName elementName, String gmlNs) throws XMLStreamException {
+		// reorder segments
+		geometry = CurveHelper.combineCurve(geometry, geometry.getFactory(), false);
+
 		for (int i = 0; i < geometry.getNumGeometries(); i++) {
 			if (i > 0) {
 				writer.writeStartElement(elementName.getNamespaceURI(), elementName.getLocalPart());
@@ -71,8 +75,7 @@ public class CurveWriter extends AbstractGeometryWriter<MultiLineString> {
 
 	@Override
 	protected boolean checkValid(MultiLineString geometry) {
-		// FIXME check if segments are connected
-		return true;
+		// check if segments are connected
+		return CurveHelper.combineCurve(geometry, geometry.getFactory(), true) != null;
 	}
-
 }
