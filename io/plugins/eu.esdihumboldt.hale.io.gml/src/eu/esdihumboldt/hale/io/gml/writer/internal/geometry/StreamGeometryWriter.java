@@ -35,6 +35,8 @@ import com.vividsolutions.jts.geom.GeometryCollection;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
@@ -154,10 +156,11 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 	 * @param property the geometry property
 	 * @param srsName the SRS name of a common SRS for the whole document, may
 	 *            be <code>null</code>
+	 * @param report the reporter
 	 * @throws XMLStreamException if any error occurs writing the geometry
 	 */
 	public void write(XMLStreamWriter writer, Geometry geometry, PropertyDefinition property,
-			String srsName) throws XMLStreamException {
+			String srsName, IOReporter report) throws XMLStreamException {
 		// write eventual required id
 		GmlWriterUtil.writeRequiredID(writer, property.getPropertyType(), null, false);
 
@@ -254,7 +257,8 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 			writeGeometry(writer, geometry, path, srsName);
 		}
 		else {
-			throw new IllegalStateException("No valid path found for encoding geometry");
+			report.error(new IOMessageImpl(
+					"No valid path found for encoding geometry, geometry is skipped.", null));
 		}
 	}
 
