@@ -27,7 +27,7 @@ import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 
 import org.eclipse.core.runtime.content.IContentType;
-import org.geotools.data.shapefile.ShpFileType;
+import org.geotools.data.shapefile.files.ShpFileType;
 
 import com.google.common.io.ByteStreams;
 

@@ -101,8 +101,8 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 //		DataStore store = new ShapefileDataStoreFactory().createDataStore(location.toURL());
 //		DataStore store = FileDataStoreFinder.getDataStore(getSource().getLocation().toURL());
 
-		ShapefileDataStore store = new ShapefileDataStore(getSource().getLocation().toURL(), false,
-				getCharset());
+		ShapefileDataStore store = new ShapefileDataStore(getSource().getLocation().toURL());
+		store.setCharset(getCharset());
 
 		progress.setCurrentTask("Extracting shape instances");
 
