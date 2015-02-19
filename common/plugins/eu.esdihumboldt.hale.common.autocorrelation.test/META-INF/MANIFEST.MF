@@ -8,6 +8,7 @@ Require-Bundle: eu.esdihumboldt.hale.common.autocorrelation;bundle-version="3.0.
  groovy;bundle-version="1.8.6"
 Import-Package: eu.esdihumboldt.hale.common.align.model,
  eu.esdihumboldt.hale.common.align.model.impl,
+ eu.esdihumboldt.hale.common.instance.model,
  eu.esdihumboldt.hale.common.schema,
  eu.esdihumboldt.hale.common.schema.groovy,
  eu.esdihumboldt.hale.common.schema.model,
