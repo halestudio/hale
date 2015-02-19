@@ -24,6 +24,8 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiLineString;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryWriter;
 import eu.esdihumboldt.util.geometry.CurveHelper;
@@ -35,6 +37,8 @@ import eu.esdihumboldt.util.geometry.CurveHelper;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class CurveWriter extends AbstractGeometryWriter<MultiLineString> {
+
+	private static final ALogger log = ALoggerFactory.getLogger(CurveWriter.class);
 
 	/**
 	 * Default constructor
@@ -76,6 +80,10 @@ public class CurveWriter extends AbstractGeometryWriter<MultiLineString> {
 	@Override
 	protected boolean checkValid(MultiLineString geometry) {
 		// check if segments are connected
-		return CurveHelper.combineCurve(geometry, geometry.getFactory(), true) != null;
+		boolean valid = CurveHelper.combineCurve(geometry, geometry.getFactory(), true) != null;
+		if (!valid) {
+			log.warn("Geometry cannot be encoded as curve, because it is not continuous.");
+		}
+		return valid;
 	}
 }

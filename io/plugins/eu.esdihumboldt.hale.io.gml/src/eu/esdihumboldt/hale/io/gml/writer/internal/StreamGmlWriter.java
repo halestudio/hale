@@ -187,7 +187,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 
 		try {
 			write(getInstances(), progress, reporter);
-			reporter.setSuccess(true);
+			reporter.setSuccess(reporter.getErrors().isEmpty());
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
 			reporter.setSuccess(false);
@@ -932,7 +932,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 				if (pair != null) {
 					String srsName = extractCode(pair.getSecond());
 					// write geometry
-					writeGeometry(pair.getFirst(), propDef, srsName);
+					writeGeometry(pair.getFirst(), propDef, srsName, report);
 				}
 				else {
 					// simple element with value
@@ -956,7 +956,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 			if (!hasValue && pair != null) {
 				String srsName = extractCode(pair.getSecond());
 				// write geometry
-				writeGeometry(pair.getFirst(), propDef, srsName);
+				writeGeometry(pair.getFirst(), propDef, srsName, report);
 			}
 			else {
 				// write all children (no elements if there is a value)
@@ -1003,12 +1003,13 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 	 * @param geometry the geometry
 	 * @param property the geometry property
 	 * @param srsName the common SRS name, may be <code>null</code>
+	 * @param report the reporter
 	 * @throws XMLStreamException if an error occurs writing the geometry
 	 */
-	private void writeGeometry(Geometry geometry, PropertyDefinition property, String srsName)
-			throws XMLStreamException {
+	private void writeGeometry(Geometry geometry, PropertyDefinition property, String srsName,
+			IOReporter report) throws XMLStreamException {
 		// write geometries
-		getGeometryWriter().write(writer, geometry, property, srsName);
+		getGeometryWriter().write(writer, geometry, property, srsName, report);
 	}
 
 	/**
