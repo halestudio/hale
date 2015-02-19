@@ -187,7 +187,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 
 		try {
 			write(getInstances(), progress, reporter);
-			reporter.setSuccess(true);
+			reporter.setSuccess(reporter.getErrors().isEmpty());
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
 			reporter.setSuccess(false);
