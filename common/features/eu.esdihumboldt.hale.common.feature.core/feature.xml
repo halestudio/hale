@@ -381,13 +381,6 @@
          unpack="false"/>
 
    <plugin
-         id="hsqldb"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="it.geosolutions.imageio-ext.tiff"
          download-size="0"
          install-size="0"
@@ -438,13 +431,6 @@
 
    <plugin
          id="jgridshift"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="jdom"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -634,6 +620,20 @@
 
    <plugin
          id="eu.esdihumboldt.hale.common.core.io.project.model.jaxb"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.hsqldb.hsqldb"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.jdom"
          download-size="0"
          install-size="0"
          version="0.0.0"
