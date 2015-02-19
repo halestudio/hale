@@ -71,8 +71,8 @@ public class ShapeSchemaReader extends AbstractCachedSchemaReader implements Sha
 //		DataStore store = new ShapefileDataStoreFactory().createDataStore(location.toURL());
 //		DataStore store = FileDataStoreFinder.getDataStore(getSource().getLocation().toURL());
 
-		ShapefileDataStore store = new ShapefileDataStore(getSource().getLocation().toURL(), false,
-				getCharset());
+		ShapefileDataStore store = new ShapefileDataStore(getSource().getLocation().toURL());
+		store.setCharset(getCharset());
 
 		// TODO namespace from configuration parameter?!
 		String namespace = ShapefileConstants.SHAPEFILE_NS;

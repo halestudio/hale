@@ -27,10 +27,10 @@ import groovy.transform.CompileStatic
  */
 @Singleton
 @CompileStatic
-class DisplayNameFactory implements ConstraintFactory<DisplayName> {
+class DisplayNameFactory extends OptionalContextConstraintFactory<DisplayName> {
 
 	@Override
-	public DisplayName createConstraint(Object arg, Definition<?> context = null) {
+	public DisplayName createConstraint(Object arg, Definition<?> context) {
 		new DisplayName(arg as String)
 	}
 }

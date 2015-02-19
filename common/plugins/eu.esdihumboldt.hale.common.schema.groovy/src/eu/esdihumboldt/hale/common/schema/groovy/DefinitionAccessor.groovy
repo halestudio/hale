@@ -91,7 +91,8 @@ class DefinitionAccessor extends AbstractAccessor<Definition<?>> {
 			}
 		}
 
-		all().collectMany { Path<Definition<?>> parentPath ->
+		List<Path<Definition<?>>> allPaths = (List<Path<Definition<?>>>) all() // Groovy CompileStatic can't deal properly with ? extends ...
+		allPaths.collectMany { Path<Definition<?>> parentPath ->
 			// search for possible property paths and
 			// create sub-paths for found properties
 

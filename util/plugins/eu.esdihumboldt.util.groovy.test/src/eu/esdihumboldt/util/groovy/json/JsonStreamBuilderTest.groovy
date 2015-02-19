@@ -37,6 +37,17 @@ class JsonStreamBuilderTest extends GroovyTestCase {
 		}
 	}
 
+	void testJsonBuilderRawJson() {
+		new StringWriter().with { w ->
+			def json = new JsonStreamBuilder(w)
+			json {
+				a 1
+				b new RawJson('{"c":2,"d":false}')
+			}
+			assert w.toString() == '{"a":1,"b":{"c":2,"d":false}}'
+		}
+	}
+
 	@CompileStatic
 	void testJsonBuilderTypeSafe() {
 		new StringWriter().with { Writer w ->
@@ -153,7 +164,8 @@ class JsonStreamBuilderTest extends GroovyTestCase {
 		new StringWriter().with { w ->
 			def json = new JsonStreamBuilder( w, false, true)
 			json {
-				json { json { a 1 } }
+				json { json { a 1
+					} }
 				json {
 					b 2
 					c { d 3 }
@@ -168,7 +180,8 @@ class JsonStreamBuilderTest extends GroovyTestCase {
 		new StringWriter().with { w ->
 			def json = new JsonStreamBuilder( w, true, true)
 			json {
-				json { json { a 1 } }
+				json { json { a 1
+					} }
 				json {
 					b 2
 					c { d 3 }

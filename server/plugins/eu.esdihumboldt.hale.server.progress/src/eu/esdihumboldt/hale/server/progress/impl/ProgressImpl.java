@@ -30,6 +30,7 @@ public class ProgressImpl implements Progress {
 	private final boolean indeterminate;
 	private final int worked;
 	private final int totalWork;
+	private final String jobId;
 
 	/**
 	 * Create a progress information object.
@@ -39,15 +40,22 @@ public class ProgressImpl implements Progress {
 	 * @param indeterminate if the progress is indeterminate
 	 * @param worked the number of worked work units
 	 * @param totalWork the total work units
+	 * @param jobId a unique identifier for the associated job
 	 */
 	public ProgressImpl(String taskName, String subTask, boolean indeterminate, int worked,
-			int totalWork) {
+			int totalWork, String jobId) {
 		super();
 		this.taskName = taskName;
 		this.subTask = subTask;
 		this.indeterminate = indeterminate;
 		this.worked = worked;
 		this.totalWork = totalWork;
+		this.jobId = jobId;
+	}
+
+	@Override
+	public String getJobId() {
+		return jobId;
 	}
 
 	@Override

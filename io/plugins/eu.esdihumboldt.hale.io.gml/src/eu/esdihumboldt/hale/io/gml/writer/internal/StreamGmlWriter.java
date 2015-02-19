@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.annotation.Nullable;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLOutputFactory;
@@ -72,6 +73,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.io.gml.geometry.GMLConstants;
 import eu.esdihumboldt.hale.io.gml.internal.simpletype.SimpleTypeUtil;
+import eu.esdihumboldt.hale.io.gml.writer.XmlWrapper;
 import eu.esdihumboldt.hale.io.gml.writer.XmlWriterBase;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.AbstractTypeMatcher;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.DefinitionPath;
@@ -138,6 +140,8 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 
 	private XmlIndex targetIndex;
 
+	private XmlWrapper documentWrapper;
+
 	/**
 	 * Create a GML writer
 	 * 
@@ -154,6 +158,21 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 	}
 
 	/**
+	 * @return the document wrapper
+	 */
+	@Nullable
+	public XmlWrapper getDocumentWrapper() {
+		return documentWrapper;
+	}
+
+	/**
+	 * @param documentWrapper the document wrapper to set
+	 */
+	public void setDocumentWrapper(@Nullable XmlWrapper documentWrapper) {
+		this.documentWrapper = documentWrapper;
+	}
+
+	/**
 	 * @see AbstractIOProvider#execute(ProgressIndicator, IOReporter)
 	 */
 	@Override
@@ -161,14 +180,14 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 			throws IOProviderConfigurationException, IOException {
 		OutputStream out;
 		try {
-			out = init();
+			out = init(reporter);
 		} catch (XMLStreamException e) {
 			throw new IOException("Creating the XML stream writer failed", e);
 		}
 
 		try {
 			write(getInstances(), progress, reporter);
-			reporter.setSuccess(true);
+			reporter.setSuccess(reporter.getErrors().isEmpty());
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
 			reporter.setSuccess(false);
@@ -274,12 +293,14 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 	 * (Initializes {@link #writer}, {@link #gmlNs} and {@link #targetIndex},
 	 * resets {@link #geometryWriter} and {@link #additionalSchemas}).
 	 * 
+	 * @param reporter the reporter for any errors
+	 * 
 	 * @return the opened output stream
 	 * 
 	 * @throws XMLStreamException if creating the {@link XMLStreamWriter} fails
 	 * @throws IOException if creating the output stream fails
 	 */
-	private OutputStream init() throws XMLStreamException, IOException {
+	private OutputStream init(IOReporter reporter) throws XMLStreamException, IOException {
 		// reset target index
 		targetIndex = null;
 		// reset geometry writer
@@ -327,6 +348,11 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 
 		tmpWriter.setDefaultNamespace(defNamespace);
 
+		if (documentWrapper != null) {
+			documentWrapper.configure(tmpWriter, reporter);
+		}
+
+		// TODO make configurable if indendation is used
 		writer = new IndentingXMLStreamWriter(tmpWriter);
 
 		// determine GML namespace from target schema
@@ -407,6 +433,9 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 		}
 
 		writer.writeStartDocument();
+		if (documentWrapper != null) {
+			documentWrapper.startWrap(writer, reporter);
+		}
 		GmlWriterUtil.writeStartElement(writer, containerName);
 
 		// generate mandatory id attribute (for feature collection)
@@ -494,6 +523,9 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 
 		writer.writeEndElement(); // FeatureCollection
 
+		if (documentWrapper != null) {
+			documentWrapper.endWrap(writer, reporter);
+		}
 		writer.writeEndDocument();
 
 		writer.close();
@@ -900,7 +932,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 				if (pair != null) {
 					String srsName = extractCode(pair.getSecond());
 					// write geometry
-					writeGeometry(pair.getFirst(), propDef, srsName);
+					writeGeometry(pair.getFirst(), propDef, srsName, report);
 				}
 				else {
 					// simple element with value
@@ -924,7 +956,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 			if (!hasValue && pair != null) {
 				String srsName = extractCode(pair.getSecond());
 				// write geometry
-				writeGeometry(pair.getFirst(), propDef, srsName);
+				writeGeometry(pair.getFirst(), propDef, srsName, report);
 			}
 			else {
 				// write all children (no elements if there is a value)
@@ -971,12 +1003,13 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 	 * @param geometry the geometry
 	 * @param property the geometry property
 	 * @param srsName the common SRS name, may be <code>null</code>
+	 * @param report the reporter
 	 * @throws XMLStreamException if an error occurs writing the geometry
 	 */
-	private void writeGeometry(Geometry geometry, PropertyDefinition property, String srsName)
-			throws XMLStreamException {
+	private void writeGeometry(Geometry geometry, PropertyDefinition property, String srsName,
+			IOReporter report) throws XMLStreamException {
 		// write geometries
-		getGeometryWriter().write(writer, geometry, property, srsName);
+		getGeometryWriter().write(writer, geometry, property, srsName, report);
 	}
 
 	/**

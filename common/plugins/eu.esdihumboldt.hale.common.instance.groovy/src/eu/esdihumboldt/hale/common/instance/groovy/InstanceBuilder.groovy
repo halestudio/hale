@@ -252,7 +252,7 @@ class InstanceBuilder extends BuilderBase {
 			defs.elements.eachWithIndex { Definition element, int index ->
 				if (index > 0 && element instanceof GroupPropertyDefinition) {
 					// add group to parent
-					MutableGroup childGroup = new DefaultGroup(element)
+					MutableGroup childGroup = new DefaultGroup((GroupPropertyDefinition) element)
 					parentGroup.addProperty(element.getName(), childGroup);
 					parentGroup = childGroup
 
@@ -269,7 +269,7 @@ class InstanceBuilder extends BuilderBase {
 					}
 
 					// add property value to parent group
-					def value = createPropertyValue(element, attributes, params, subClosure)
+					def value = createPropertyValue((PropertyDefinition) element, attributes, params, subClosure)
 					parentGroup.addProperty(element.getName(), value)
 					result = value
 					resultSet = true

@@ -18,10 +18,12 @@ package eu.esdihumboldt.hale.common.headless.transform;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.joda.time.Duration;
 import org.joda.time.ReadableDuration;
@@ -33,8 +35,10 @@ import com.google.common.util.concurrent.ListenableFuture;
 import de.fhg.igd.osgi.util.OsgiUtils;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
+import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 import eu.esdihumboldt.hale.common.headless.EnvironmentService;
 import eu.esdihumboldt.hale.common.headless.HeadlessIO;
 import eu.esdihumboldt.hale.common.headless.TransformationEnvironment;
@@ -188,29 +192,38 @@ public class TransformationWorkspace {
 					+ " not available.");
 		}
 
-		return transform(env, sources, target);
+		return transform(env, sources, target, null);
 	}
 
 	/**
 	 * Transform the instances provided through the given instance readers and
-	 * store the result in the {@link #getTargetFolder()}.
+	 * by default stores the result in the {@link #getTargetFolder()}.
 	 * 
 	 * @param env the transformation environment
 	 * @param sources the instance readers
 	 * @param target the configuration of the target instance writer
+	 * @param customTarget the custom output supplier to use for the target,
+	 *            <code>null</code> to use the default target in thet
+	 *            {@link #getTargetFolder()}
 	 * @return the future representing the successful completion of the
 	 *         transformation (note that a successful completion doesn't
 	 *         necessary mean there weren't any internal transformation errors)
 	 * @throws Exception if launching the transformation fails
 	 */
 	public ListenableFuture<Boolean> transform(TransformationEnvironment env,
-			List<InstanceReader> sources, IOConfiguration target) throws Exception {
+			List<InstanceReader> sources, IOConfiguration target,
+			LocatableOutputSupplier<? extends OutputStream> customTarget) throws Exception {
 		InstanceWriter writer = (InstanceWriter) HeadlessIO.loadProvider(target);
 		// TODO determine content type if not set?
 
 		// output file
-		File out = new File(targetFolder, "result." + getFileExtension(writer.getContentType()));
-		writer.setTarget(new FileIOSupplier(out));
+		if (customTarget != null) {
+			writer.setTarget(customTarget);
+		}
+		else {
+			File out = new File(targetFolder, "result." + getFileExtension(writer.getContentType()));
+			writer.setTarget(new FileIOSupplier(out));
+		}
 
 		ListenableFuture<Boolean> result = Transformation.transform(sources, writer, env,
 				new ReportFile(reportFile), workspace.getName());
@@ -331,6 +344,22 @@ public class TransformationWorkspace {
 	 */
 	public void set(String setting, String value) throws FileNotFoundException, IOException {
 		workspaces.set(workspaceId, setting, value);
+	}
+
+	/**
+	 * Guess the file extension for a given I/O configuration.
+	 * 
+	 * @param config the I/O provider configuration
+	 * @return the file extensions or a default, w/o leading dot
+	 */
+	public static String guessFileExtension(IOConfiguration config) {
+		String id = config.getProviderConfiguration().get(IOProvider.PARAM_CONTENT_TYPE)
+				.as(String.class);
+		IContentType contentType = null;
+		if (id != null) {
+			contentType = Platform.getContentTypeManager().getContentType(id);
+		}
+		return getFileExtension(contentType);
 	}
 
 	/**

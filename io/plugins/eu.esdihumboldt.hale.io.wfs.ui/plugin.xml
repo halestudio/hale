@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.ui.io.target">
+      <providerTarget
+            provider="eu.esdihumboldt.hale.io.wfs.write"
+            target="uri">
+      </providerTarget>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.ui.io.config">
+      <configPage
+            class="eu.esdihumboldt.hale.ui.io.config.TargetCRSConfigurationPage"
+            order="0">
+         <provider
+               ref="eu.esdihumboldt.hale.io.wfs.write">
+         </provider>
+      </configPage>
+   </extension>
+
+</plugin>

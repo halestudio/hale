@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="HALE Server" uid="eu.esdihumboldt.hale.server" id="eu.esdihumboldt.hale.server.application.Server" application="org.eclipse.ui.ide.workbench" version="2.9.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="HALE Server" uid="eu.esdihumboldt.hale.server" id="eu.esdihumboldt.hale.server.application.Server" application="eu.esdihumboldt.hale.server.application" version="2.9.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -158,7 +158,6 @@
       <plugin id="findbugsAnnotations"/>
       <plugin id="gnu.trove"/>
       <plugin id="groovy"/>
-      <plugin id="hsqldb"/>
       <plugin id="it.geosolutions.imageio-ext.tiff"/>
       <plugin id="it.geosolutions.imageio-ext.utilities"/>
       <plugin id="java3d.vecmath"/>
@@ -173,7 +172,6 @@
       <plugin id="javax.servlet.jsp"/>
       <plugin id="javax.xml"/>
       <plugin id="jcl.over.slf4j"/>
-      <plugin id="jdom"/>
       <plugin id="jgridshift"/>
       <plugin id="jline"/>
       <plugin id="joda-time"/>
@@ -251,9 +249,11 @@
       <plugin id="org.eclipse.osgi.services"/>
       <plugin id="org.eclipse.xsd"/>
       <plugin id="org.geotools"/>
+      <plugin id="org.hsqldb.hsqldb"/>
       <plugin id="org.iq80.snappy"/>
       <plugin id="org.jaitools.jt-utils"/>
       <plugin id="org.jaitools.jt-zonalstats"/>
+      <plugin id="org.jdom"/>
       <plugin id="org.json"/>
       <plugin id="org.kohsuke.groovy.sandbox"/>
       <plugin id="org.objectweb.asm-4"/>

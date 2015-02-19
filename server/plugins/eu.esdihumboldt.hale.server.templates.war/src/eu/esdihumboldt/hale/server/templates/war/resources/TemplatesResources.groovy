@@ -128,8 +128,8 @@ class TemplatesResources {
 			response.contentType = 'application/zip'
 			response.addHeader('Content-Disposition', "attachment; filename=\"template-${id}.zip\"")
 
-			new ZipOutputStream(response.outputStream).withStream{ ZipOutputStream zos ->
-				IOUtils.zipDirectory(templatePath.toFile(), zos)
+			new ZipOutputStream(response.outputStream).withStream{ OutputStream zos ->
+				IOUtils.zipDirectory(templatePath.toFile(), (ZipOutputStream) zos)
 			}
 
 			// count download

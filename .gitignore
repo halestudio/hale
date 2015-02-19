@@ -12,6 +12,7 @@ classes/
 target/
 /_*/
 !platform/target/
+!/**/src/**/target/
 !legacy/plugins/eu.esdihumboldt.commons/target/
 *.patch
 /build/build/

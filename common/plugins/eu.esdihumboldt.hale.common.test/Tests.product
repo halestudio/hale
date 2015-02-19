@@ -170,7 +170,6 @@
       <plugin id="findbugsAnnotations"/>
       <plugin id="gnu.trove"/>
       <plugin id="groovy"/>
-      <plugin id="hsqldb"/>
       <plugin id="it.geosolutions.imageio-ext.tiff"/>
       <plugin id="it.geosolutions.imageio-ext.utilities"/>
       <plugin id="java3d.vecmath"/>
@@ -184,7 +183,6 @@
       <plugin id="javax.servlet.jsp"/>
       <plugin id="javax.xml"/>
       <plugin id="jcl.over.slf4j"/>
-      <plugin id="jdom"/>
       <plugin id="jgridshift"/>
       <plugin id="jline"/>
       <plugin id="joda-time"/>
@@ -212,6 +210,7 @@
       <plugin id="org.apache.poi"/>
       <plugin id="org.apache.velocity"/>
       <plugin id="org.apache.ws.commons.schema.XmlSchema"/>
+      <plugin id="org.apache.xml.resolver"/>
       <plugin id="org.apache.xmlbeans"/>
       <plugin id="org.codehaus.castor.core"/>
       <plugin id="org.codehaus.castor.xml"/>
@@ -289,9 +288,11 @@
       <plugin id="org.eclipse.zest.layouts"/>
       <plugin id="org.geotools"/>
       <plugin id="org.hamcrest.core"/>
+      <plugin id="org.hsqldb.hsqldb"/>
       <plugin id="org.iq80.snappy"/>
       <plugin id="org.jaitools.jt-utils"/>
       <plugin id="org.jaitools.jt-zonalstats"/>
+      <plugin id="org.jdom"/>
       <plugin id="org.junit"/>
       <plugin id="org.kohsuke.groovy.sandbox"/>
       <plugin id="org.objectweb.asm-4"/>

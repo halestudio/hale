@@ -27,10 +27,10 @@ import groovy.transform.CompileStatic
  */
 @Singleton
 @CompileStatic
-class EnumerationFactory implements ConstraintFactory<Enumeration> {
+class EnumerationFactory extends OptionalContextConstraintFactory<Enumeration> {
 
 	@Override
-	public Enumeration createConstraint(Object arg, Definition<?> context = null) {
+	public Enumeration createConstraint(Object arg, Definition<?> context) {
 		/*
 		 * XXX always creates fixed enumerations allowing no other values
 		 * XXX maybe add an additional factory for lax enums?

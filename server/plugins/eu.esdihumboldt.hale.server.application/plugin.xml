@@ -27,5 +27,15 @@
          </property>
       </product>
    </extension>
+   <extension
+         id="eu.esdihumboldt.hale.server.application"
+         name="Server Application"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+      </application>
+   </extension>
 
 </plugin>

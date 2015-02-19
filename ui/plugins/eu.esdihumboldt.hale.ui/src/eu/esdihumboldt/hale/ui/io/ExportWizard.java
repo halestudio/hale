@@ -176,7 +176,8 @@ public abstract class ExportWizard<P extends ExportProvider> extends IOWizard<P>
 
 		// append target selection page if applicable
 		for (IOProviderDescriptor descr : factories) {
-			if (descr.getSupportedTypes() != null && !descr.getSupportedTypes().isEmpty()) {
+			if (!suppressTargetPage() && descr.getSupportedTypes() != null
+					&& !descr.getSupportedTypes().isEmpty()) {
 				result.put(descr.getIdentifier(), getSelectTargetPage());
 			}
 		}
@@ -185,6 +186,13 @@ public abstract class ExportWizard<P extends ExportProvider> extends IOWizard<P>
 		result.putAll(configPages);
 
 		return result;
+	}
+
+	/**
+	 * @return if the target page should be suppressed
+	 */
+	protected boolean suppressTargetPage() {
+		return false;
 	}
 
 	/**
@@ -197,7 +205,7 @@ public abstract class ExportWizard<P extends ExportProvider> extends IOWizard<P>
 	}
 
 	/**
-	 * Create the page where the provider is selected
+	 * Create the page where the target (e.g. a file) is selected
 	 * 
 	 * @return the created page
 	 */

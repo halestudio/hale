@@ -23,6 +23,11 @@ package eu.esdihumboldt.hale.server.progress;
 public interface Progress {
 
 	/**
+	 * @return a unique string identifier for the associated job
+	 */
+	public String getJobId();
+
+	/**
 	 * @return the task name, may be <code>null</code>
 	 */
 	public String getTaskName();

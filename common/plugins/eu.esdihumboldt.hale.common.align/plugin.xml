@@ -168,6 +168,7 @@
             </property>
          </targetProperties>
          <functionParameter
+               deprecated="true"
                description="(deprecated)"
                maxOccurrence="*"
                minOccurrence="0"
@@ -178,7 +179,7 @@
          <functionParameter
                label="If not classified"
                maxOccurrence="1"
-               minOccurrence="0"
+               minOccurrence="1"
                name="notClassifiedAction">
             <parameterBinding>
             </parameterBinding>
@@ -186,7 +187,7 @@
          <functionParameter
                label="Classification table"
                maxOccurrence="1"
-               minOccurrence="0"
+               minOccurrence="1"
                name="lookupTable"
                scriptable="false"
                valueDescriptor="eu.esdihumboldt.hale.common.lookup.impl.LookupTableParameterValue">

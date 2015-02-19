@@ -52,6 +52,10 @@ public class ParameterValue extends Value {
 	 * @param value the value
 	 */
 	public ParameterValue(String type, Value value) {
+		if (value == null) {
+			value = Value.NULL;
+		}
+
 		this.type = type;
 		this.value = value;
 	}

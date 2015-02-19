@@ -43,6 +43,7 @@ public final class FunctionParameter extends AbstractParameter {
 	private final boolean scriptable;
 	private final ComplexValueDefinition complexBinding;
 	private final ParameterValueDescriptor valueDescriptor;
+	private final boolean deprecated;
 
 	/**
 	 * Create a function parameter definition.
@@ -53,6 +54,8 @@ public final class FunctionParameter extends AbstractParameter {
 		super(conf);
 		String scriptableAttr = conf.getAttribute("scriptable");
 		this.scriptable = scriptableAttr == null ? false : Boolean.valueOf(scriptableAttr);
+		String deprecatedAttr = conf.getAttribute("deprecated");
+		this.deprecated = deprecatedAttr == null ? false : Boolean.valueOf(deprecatedAttr);
 		this.binding = ParameterUtil.getBinding(conf);
 		this.enumeration = ParameterUtil.getEnumeration(conf);
 		this.validator = ParameterUtil.getValidator(conf);
@@ -100,6 +103,13 @@ public final class FunctionParameter extends AbstractParameter {
 	 */
 	public boolean isScriptable() {
 		return scriptable;
+	}
+
+	/**
+	 * @return whether this function parameter is deprecated
+	 */
+	public boolean isDeprecated() {
+		return deprecated;
 	}
 
 	/**

@@ -27,10 +27,10 @@ import groovy.transform.CompileStatic
  */
 @Singleton
 @CompileStatic
-class NillableFactory implements ConstraintFactory<NillableFlag> {
+class NillableFactory extends OptionalContextConstraintFactory<NillableFlag> {
 
 	@Override
-	public NillableFlag createConstraint(Object arg, Definition<?> context = null) {
+	public NillableFlag createConstraint(Object arg, Definition<?> context) {
 		arg ? NillableFlag.ENABLED : NillableFlag.DISABLED
 	}
 }
