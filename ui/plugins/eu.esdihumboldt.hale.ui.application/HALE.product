@@ -31,8 +31,7 @@ http://www.wetransform.to/products/hale
    </configIni>
 
    <launcherArgs>
-      <programArgs>-nl en_GB
--clean
+      <programArgs>-clean
 -name &quot;HUMBOLDT Alignment Editor&quot;
 --launcher.defaultAction openFile</programArgs>
       <programArgsMac>-vm

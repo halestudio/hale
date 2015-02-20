@@ -49,6 +49,10 @@
         <configuration>
           <source>$javaSource</source>
           <target>$javaTarget</target>
+          <excludeResources>
+       		<!-- Exclude translation files (because they are very incomplete ATM) -->
+       		<excludeResource>**/messages_*.properties</excludeResource>
+     	  </excludeResources>
         </configuration>
       </plugin>
       <% } %>
@@ -65,6 +69,8 @@
                be included into the output jar -->
           <excludeResources>
             <excludeResource>**/*.scala</excludeResource>
+            <!-- Exclude translation files (because they are very incomplete ATM) -->
+            <excludeResource>**/messages_*.properties</excludeResource>
           </excludeResources>
         </configuration>
       </plugin>
@@ -101,6 +107,8 @@
                 <extensions>true</extensions>
                 <excludeResources>
             		<excludeResource>**/*.groovy</excludeResource>
+            		<!-- Exclude translation files (because they are very incomplete ATM) -->
+            		<excludeResource>**/messages_*.properties</excludeResource>
           		</excludeResources>
          </configuration>
          <dependencies>
