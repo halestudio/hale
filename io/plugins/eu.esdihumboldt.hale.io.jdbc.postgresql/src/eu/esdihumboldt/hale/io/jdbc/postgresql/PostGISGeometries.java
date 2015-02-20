@@ -142,16 +142,29 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 					+ columnTypeMetadata.getSrs());
 		}
 		else {
-			targetCRS = CRS.parseWKT(columnTypeMetadata.getSrsText());
+			String wkt = columnTypeMetadata.getSrsText();
+			if (wkt != null && !wkt.isEmpty()) {
+				targetCRS = CRS.parseWKT(columnTypeMetadata.getSrsText());
+			}
 		}
 
-		MathTransform transform = CRS
-				.findMathTransform(geom.getCRSDefinition().getCRS(), targetCRS);
-		Geometry targetGeometry = JTS.transform(geom.getGeometry(), transform);
+		Geometry targetGeometry;
+		if (targetCRS != null) {
+			MathTransform transform = CRS.findMathTransform(geom.getCRSDefinition().getCRS(),
+					targetCRS);
+			targetGeometry = JTS.transform(geom.getGeometry(), transform);
+		}
+		else {
+			targetGeometry = geom.getGeometry();
+		}
 
 		// Convert the jts Geometry to postgis PGgeometry and set the SRSID
 		pGeometry = new PGgeometry(targetGeometry.toText());
-		pGeometry.getGeometry().setSrid(Integer.parseInt(columnTypeMetadata.getSrs()));
+		try {
+			pGeometry.getGeometry().setSrid(Integer.parseInt(columnTypeMetadata.getSrs()));
+		} catch (Exception e) {
+			// ignore
+		}
 		return pGeometry;
 	}
 
