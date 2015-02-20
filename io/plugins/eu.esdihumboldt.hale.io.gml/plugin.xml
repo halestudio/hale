@@ -196,6 +196,18 @@
                   sampleDescription="Reference systems can be defined either as code or WKT (preceded with code: or wkt: respectively)">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="If the output should be pretty printed (indented)"
+               label="Pretty print"
+               name="xml.pretty"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="false">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.gml.writer.XmlInstanceWriter"
@@ -251,6 +263,18 @@
                   sampleDescription="Reference systems can be defined either as code or WKT (preceded with code: or wkt: respectively)">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="If the output should be pretty printed (indented)"
+               label="Pretty print"
+               name="xml.pretty"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="false">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.gml.writer.CityGMLInstanceWriter"
@@ -286,6 +310,18 @@
                   defaultDescription="By default no CRS transformation is performed, the existing geometries are written with their respective CRS."
                   sample="code:EPSG:4326"
                   sampleDescription="Reference systems can be defined either as code or WKT (preceded with code: or wkt: respectively)">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="If the output should be pretty printed (indented)"
+               label="Pretty print"
+               name="xml.pretty"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="false">
             </valueDescriptor>
          </providerParameter>
       </provider>
@@ -435,6 +471,18 @@
                   defaultDescription="By default no CRS transformation is performed, the existing geometries are written with their respective CRS."
                   sample="code:EPSG:4326"
                   sampleDescription="Reference systems can be defined either as code or WKT (preceded with code: or wkt: respectively)">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="If the output should be pretty printed (indented)"
+               label="Pretty print"
+               name="xml.pretty"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="false">
             </valueDescriptor>
          </providerParameter>
       </provider>

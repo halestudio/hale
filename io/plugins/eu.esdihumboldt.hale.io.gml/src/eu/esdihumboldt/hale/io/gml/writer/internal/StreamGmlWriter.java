@@ -45,6 +45,7 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.SubtaskProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -107,6 +108,12 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 	 * simplified before writing it, if possible. Defaults to true.
 	 */
 	public static final String PARAM_SIMPLIFY_GEOMETRY = "gml.geometry.simplify";
+
+	/**
+	 * The parameter name for the flag specifying if the output should be
+	 * indented. Defaults to <code>false</code>.
+	 */
+	public static final String PARAM_PRETTY_PRINT = "xml.pretty";
 
 	/**
 	 * The XML stream writer
@@ -352,8 +359,13 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 			documentWrapper.configure(tmpWriter, reporter);
 		}
 
-		// TODO make configurable if indendation is used
-		writer = new IndentingXMLStreamWriter(tmpWriter);
+		// prettyPrint if enabled
+		if (isPrettyPrint()) {
+			writer = new IndentingXMLStreamWriter(tmpWriter);
+		}
+		else {
+			writer = tmpWriter;
+		}
 
 		// determine GML namespace from target schema
 		String gml = null;
@@ -377,6 +389,23 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 		}
 
 		return outStream;
+	}
+
+	/**
+	 * @return if the output should be pretty printed
+	 */
+	public boolean isPrettyPrint() {
+		return getParameter(PARAM_PRETTY_PRINT).as(Boolean.class, false);
+	}
+
+	/**
+	 * Set if the output should be pretty printed.
+	 * 
+	 * @param prettyPrint <code>true</code> if the output should be indented,
+	 *            <code>false</code> otherwise
+	 */
+	public void setPrettyPrint(boolean prettyPrint) {
+		setParameter(PARAM_PRETTY_PRINT, Value.of(prettyPrint));
 	}
 
 	/**
