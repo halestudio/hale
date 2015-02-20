@@ -160,6 +160,8 @@
             </topic>
             <topic href="html/reference/export/inspiregml_data.html" label="INSPIRE SpatialDataSet">
             </topic>
+            <topic href="html/reference/export/jdbc.html" label="Database">
+            </topic>
             <topic href="html/reference/export/xls_data.html" label="XLS">
             </topic>
             <topic href="html/reference/export/html_mapping.html" label="HTML mapping documentation">

@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Database Export</title>
+</head>
+<body>
+	<h1>Database Export</h1>
+	<p>HALE write to databases using JDBC. HALE
+		offers support for PostgreSQL and PostGIS databases out of the box,
+		support for other databases can be added through plug-ins.</p>
+	<p class="Note">The database export in this version of HALE is
+		deemed experimental. This means it does not have the full
+		functionality we want to provide for a database export feature.
+		However, within its limits it is functional and may be useful to you.</p>
+	<p>The database export currently has the following known limitations:</p>
+	<ul>
+		<li>The database schema must already exist. It should be loaded
+			as target schema from the database. The export based on other types
+			of schemas will fail due to missing information on SQL types.</li>
+		<li>IDs (primary keys) generated in the database during insertion
+			are not available to be used to create references between different
+			tables. To be able to link tables, IDs and references must be
+			provided as part of the mapping/transformation.</li>
+	</ul>
+	<p>When storing geometries in PostGIS, HALE will try to detect the
+		spatial reference system associated to the target column and transform
+		them appropriately.</p>
+	<p>
+		To store data in the database, you need to provide the database
+		driver and specify the database host and name:
+	</p>
+	<div>
+		<img src="images/jdbc_db.png" class="fit">
+	</div>
+	<p>Next you will be prompted for a user and password to use for
+		connecting with the database.</p>
+	<div>
+		<img src="images/jdbc_user.png" class="fit">
+	</div>
+	
+	<br>
+	<!-- related concepts -->
+	<div>
+		<br> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelc.png">
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/what_is_instance.html">What is an Instance?</a>
+		</p>
+	</div>
+	
+	<!-- related tasks: save transformed data -->
+	<div>
+		<br> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelt.png">
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/data/save_transformation.html">Save the transformation result</a>
+		</p>
+	</div>
+	
+	<!-- related reference: database import -->
+	<div>
+		<br> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelr.png">
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/reference/import/jdbc.html">Database Import</a>
+		</p>
+	</div>
+</body>
+</html>
