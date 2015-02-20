@@ -7,7 +7,7 @@
             class="eu.esdihumboldt.hale.io.wfs.SimpleWFSWriter"
             description="Upload to a remote service via WFS-T"
             id="eu.esdihumboldt.hale.io.wfs.write"
-            name="WFS-T (Direct upload)">
+            name="WFS-T (Direct upload) [experimental]">
          <contentType
                ref="eu.esdihumboldt.hale.io.wfs-t">
          </contentType>

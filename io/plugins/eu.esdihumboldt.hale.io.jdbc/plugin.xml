@@ -32,8 +32,9 @@
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.jdbc.JDBCInstanceWriter"
+            description="Write simple features to existing database schema"
             id="eu.esdihumboldt.hale.io.jdbc.instance.writer"
-            name="Database (JDBC)">
+            name="Database (JDBC) [experimental]">
          <contentType
                ref="eu.esdihumboldt.hale.io.jdbc">
          </contentType>
