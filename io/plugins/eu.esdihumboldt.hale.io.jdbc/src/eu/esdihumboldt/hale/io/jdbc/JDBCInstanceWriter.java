@@ -43,6 +43,7 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
+import eu.esdihumboldt.hale.io.jdbc.constraints.DatabaseTable;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DefaultValue;
 import eu.esdihumboldt.hale.io.jdbc.constraints.SQLType;
 import eu.esdihumboldt.hale.io.jdbc.constraints.internal.GeometryAdvisorConstraint;
@@ -67,6 +68,15 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 	@Override
 	public boolean isCancelable() {
 		return true;
+	}
+
+	@Override
+	public void checkCompatibility() throws IOProviderConfigurationException {
+		super.checkCompatibility();
+
+		// XXX check if the target schema is a JDBC schema?
+		// this export needs the SQLTypes being set on the property types of
+		// instances to write
 	}
 
 	@Override
@@ -252,14 +262,14 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 		PreparedStatement result = typeSpecificMap.get(properties);
 
 		if (result == null) {
-			String tableName = type.getName().getLocalPart();
+			String tableName = type.getConstraint(DatabaseTable.class).getFullTableName();
 
 			// create prepared statement SQL
 			StringBuffer pSql = new StringBuffer();
 
-			pSql.append("INSERT INTO \"");
+			pSql.append("INSERT INTO ");
 			pSql.append(tableName);
-			pSql.append("\" (");
+			pSql.append(" (");
 
 			StringBuffer valuesSql = new StringBuffer();
 
