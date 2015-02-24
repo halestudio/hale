@@ -240,4 +240,9 @@ public interface ProjectService {
 	 */
 	public void reloadSourceData();
 
+	/**
+	 * Reload the project and offer options to update it.
+	 */
+	public void update();
+
 }

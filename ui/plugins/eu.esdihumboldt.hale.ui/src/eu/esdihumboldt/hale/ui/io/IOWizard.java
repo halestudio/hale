@@ -702,7 +702,7 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 	@SuppressWarnings("unchecked")
 	protected boolean validatePage(IWizardPage page) {
 		if (page instanceof IOWizardPage<?, ?>) {
-			return ((IOWizardPage<P, ?>) page).updateConfiguration(provider);
+			return ((IOWizardPage<P, ?>) page).updateConfiguration(getProvider());
 		}
 		else {
 			return true;
