@@ -5,4 +5,12 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.io.wfs.ui;singleton:=true
 Bundle-Version: 2.9.1.qualifier
 Bundle-Vendor: data harmonisation panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: eu.esdihumboldt.hale.ui
+Require-Bundle: eu.esdihumboldt.hale.ui,
+ org.eclipse.ui;bundle-version="3.106.0",
+ org.eclipse.core.runtime;bundle-version="3.10.0",
+ eu.esdihumboldt.hale.io.wfs;bundle-version="2.9.1"
+Import-Package: com.google.common.io;version="15.0.0",
+ eu.esdihumboldt.hale.common.core.io,
+ eu.esdihumboldt.hale.common.core.io.supplier,
+ eu.esdihumboldt.hale.common.instance.io.util,
+ eu.esdihumboldt.hale.io.gml.writer.internal
