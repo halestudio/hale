@@ -126,6 +126,8 @@
       <plugin id="eu.esdihumboldt.hale.io.oml.model.jaxb"/>
       <plugin id="eu.esdihumboldt.hale.io.oml.test"/>
       <plugin id="eu.esdihumboldt.hale.io.shp"/>
+      <plugin id="eu.esdihumboldt.hale.io.wfs"/>
+      <plugin id="eu.esdihumboldt.hale.io.wfs.test"/>
       <plugin id="eu.esdihumboldt.hale.io.xls"/>
       <plugin id="eu.esdihumboldt.hale.io.xls.test"/>
       <plugin id="eu.esdihumboldt.hale.io.xml"/>
@@ -203,6 +205,7 @@
       <plugin id="org.apache.felix.gogo.command"/>
       <plugin id="org.apache.felix.gogo.runtime"/>
       <plugin id="org.apache.felix.gogo.shell"/>
+      <plugin id="org.apache.httpcomponents.fluent-hc"/>
       <plugin id="org.apache.httpcomponents.httpclient"/>
       <plugin id="org.apache.httpcomponents.httpcore"/>
       <plugin id="org.apache.poi"/>

@@ -13,29 +13,35 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.io.wfs;
+package eu.esdihumboldt.hale.io.wfs.capabilities
 
-import eu.esdihumboldt.hale.io.gml.writer.GmlInstanceWriter;
-import eu.esdihumboldt.hale.io.gml.writer.XmlWrapper;
-import eu.esdihumboldt.hale.io.wfs.transactions.WFSInsert;
+import javax.annotation.Nullable
+
+import eu.esdihumboldt.hale.io.wfs.WFSVersion
+import groovy.transform.CompileStatic
+import groovy.transform.Immutable
+
 
 /**
- * XXX Simple WFS writer that is not configurable.
- * 
+ * Encapsulates information we need from WFS capabilities
  * @author Simon Templer
  */
-public class SimpleWFSWriter extends AbstractWFSWriter<GmlInstanceWriter> {
+@CompileStatic
+@Immutable
+class WFSCapabilities {
+	WFSVersion version
+	Map<String, WFSOperation> operations
 
-	/**
-	 * Default constructor.
-	 */
-	public SimpleWFSWriter() {
-		super(new GmlInstanceWriter());
+	@Nullable
+	WFSOperation getTransactionOp() {
+		operations['Transaction']
 	}
+}
 
-	@Override
-	protected XmlWrapper createTransaction() {
-		return new WFSInsert(getWFSVersion());
-	}
-
+@CompileStatic
+@Immutable
+class WFSOperation {
+	String name
+	String httpPostUrl
+	String httpGetUrl
 }
