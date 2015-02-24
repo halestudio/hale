@@ -15,27 +15,16 @@
 
 package eu.esdihumboldt.hale.io.wfs;
 
-import eu.esdihumboldt.hale.io.gml.writer.GmlInstanceWriter;
-import eu.esdihumboldt.hale.io.gml.writer.XmlWrapper;
-import eu.esdihumboldt.hale.io.wfs.transactions.WFSInsert;
-
 /**
- * XXX Simple WFS writer that is not configurable.
+ * WFS related constants.
  * 
  * @author Simon Templer
  */
-public class SimpleWFSWriter extends AbstractWFSWriter<GmlInstanceWriter> {
+public interface WFSConstants {
 
 	/**
-	 * Default constructor.
+	 * ID of the content type registered for WFS-T transactions.
 	 */
-	public SimpleWFSWriter() {
-		super(new GmlInstanceWriter());
-	}
-
-	@Override
-	protected XmlWrapper createTransaction() {
-		return new WFSInsert(getWFSVersion());
-	}
+	public static final String CONTENT_TYPE_ID_WFST = "eu.esdihumboldt.hale.io.wfs-t";
 
 }
