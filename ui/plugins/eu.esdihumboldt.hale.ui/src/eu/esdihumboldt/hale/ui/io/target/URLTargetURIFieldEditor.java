@@ -175,16 +175,21 @@ public class URLTargetURIFieldEditor extends URIFieldEditor {
 			List<String> history = ps.getConfigurationService().getList(SETTING_URL_HISTORY);
 			if (history != null) {
 				List<String> newHistory = new ArrayList<>(history);
-				// remove any occurrences
-				while (newHistory.remove(value)) {
-					// nothing to do
+
+				boolean unchanged = history.size() >= 1 && history.get(0).equals(value);
+
+				if (!unchanged) {
+					// remove any occurrences
+					while (newHistory.remove(value)) {
+						// nothing to do
+					}
+					// insert at beginning
+					newHistory.add(0, value);
+					while (newHistory.size() > HISTORY_MAX_SIZE) {
+						newHistory.remove(newHistory.size() - 1);
+					}
+					ps.getConfigurationService().setList(SETTING_URL_HISTORY, newHistory);
 				}
-				// insert at beginning
-				newHistory.add(0, value);
-				while (newHistory.size() > HISTORY_MAX_SIZE) {
-					newHistory.remove(newHistory.size() - 1);
-				}
-				ps.getConfigurationService().setList(SETTING_URL_HISTORY, newHistory);
 			}
 			else {
 				// just store the new value
