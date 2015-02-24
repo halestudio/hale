@@ -140,6 +140,10 @@
             id="eu.esdihumboldt.hale.ui.transform.projectdata"
             name="Transform project data">
       </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.project.update"
+            name="Update project">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -476,6 +480,26 @@
                </with>
             </and>
          </enabledWhen>
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.service.project.handler.UpdateProjectHandler"
+            commandId="eu.esdihumboldt.hale.ui.project.update">
+         <activeWhen>
+            <or>
+               <with
+                     variable="hale.schemas.has_source">
+                  <equals
+                        value="true">
+                  </equals>
+               </with>
+               <with
+                     variable="hale.schemas.has_target">
+                  <equals
+                        value="true">
+                  </equals>
+               </with>
+            </or>
+         </activeWhen>
       </handler>
    </extension>
    <extension
@@ -1300,6 +1324,10 @@
       <image
             commandId="eu.esdihumboldt.hale.ui.instance.sampling.pref"
             icon="icons/samples_config.png">
+      </image>
+      <image
+            commandId="eu.esdihumboldt.hale.ui.project.update"
+            icon="icons/refresh.gif">
       </image>
    </extension>
    <extension
