@@ -226,6 +226,16 @@
                   name="HALE.separator3"
                   visible="true">
             </separator>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.project.update"
+                  label="Reload and update schemas"
+                  style="push"
+                  tooltip="Reload the project and replace/update schemas">
+            </command>
+            <separator
+                  name="HALE.separator4"
+                  visible="true">
+            </separator>
             <dynamic
                   class="eu.esdihumboldt.hale.ui.service.project.RecentProjectsMenu"
                   id="HALE.recentfiles">

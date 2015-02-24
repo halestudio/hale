@@ -31,9 +31,11 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.content.IContentType;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
@@ -88,6 +90,7 @@ import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.io.project.OpenProjectWizard;
 import eu.esdihumboldt.hale.ui.io.project.SaveProjectWizard;
+import eu.esdihumboldt.hale.ui.io.project.update.SchemaUpdateDialog;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.project.CacheCallback;
 import eu.esdihumboldt.hale.ui.service.project.ProjectResourcesUtil;
@@ -105,6 +108,170 @@ import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
  * @author Simon Templer
  */
 public class ProjectServiceImpl extends AbstractProjectService implements ProjectService {
+
+	/**
+	 * Advisor for opening a project.
+	 */
+	private final class OpenProjectAdvisor extends AbstractIOAdvisor<ProjectReader> {
+
+		private final boolean updateSchema;
+
+		/**
+		 * Create an advisor for opening a project.
+		 * 
+		 * @param updateSchema if the option to update the schema should be
+		 *            offered
+		 */
+		public OpenProjectAdvisor(boolean updateSchema) {
+			super();
+			this.updateSchema = updateSchema;
+		}
+
+		@Override
+		public void updateConfiguration(ProjectReader provider) {
+			super.updateConfiguration(provider);
+
+			// set project files
+			Map<String, ProjectFile> projectFiles = ProjectIO.createDefaultProjectFiles(HaleUI
+					.getServiceProvider());
+			provider.setProjectFiles(projectFiles);
+		}
+
+		@Override
+		public void handleResults(ProjectReader provider) {
+			// no change check as this is performed by clean
+			if (!internalClean()) {
+				return;
+			}
+
+			// check if project reader requires clean-up
+			if (provider instanceof TemporaryFiles || provider instanceof Cleanup) {
+				CleanupService cs = OsgiUtils.getService(CleanupService.class);
+				if (provider instanceof TemporaryFiles) {
+					cs.addTemporaryFiles(CleanupContext.PROJECT, Iterables.toArray(
+							((TemporaryFiles) provider).getTemporaryFiles(), File.class));
+				}
+				if (provider instanceof Cleanup) {
+					cs.addCleaner(CleanupContext.PROJECT, ((Cleanup) provider));
+				}
+			}
+
+			synchronized (ProjectServiceImpl.this) {
+				main = provider.getProject();
+				if (provider.getSource() != null) {
+					// loaded project
+					updater = new UILocationUpdater(main, provider.getSource().getLocation());
+					updater.updateProject(true);
+					if ("file".equalsIgnoreCase(provider.getSource().getLocation().getScheme())) {
+						projectFile = new File(provider.getSource().getLocation());
+					}
+					else {
+						projectFile = null;
+					}
+					projectLocation = provider.getSource().getLocation();
+				}
+				else {
+					// project template (from object)
+					projectFile = null;
+					projectLocation = null;
+				}
+
+				changed = false;
+				RecentProjectsService rfs = (RecentProjectsService) PlatformUI.getWorkbench()
+						.getService(RecentProjectsService.class);
+				if (projectFile != null) {
+					rfs.add(projectFile.getAbsolutePath(), main.getName());
+				}
+				// XXX safe history in case of non-file loaded projects?
+				// possibly always safe URI raw paths (and show the history
+				// with decoded paths and removed file:/ in case of files)?
+				// else
+				// rfs.add(provider.getSource().getLocation().getRawPath(),
+				// main.getName());
+
+				// store the content type the project was loaded with
+				IContentType ct = provider.getContentType();
+				if (ct == null && provider.getSource() != null) {
+					log.warn("Project content type was not determined during load, trying auto-detection");
+					try {
+						URI loc = provider.getSource().getLocation();
+						String filename = null;
+						if (loc != null) {
+							filename = loc.getPath();
+						}
+						ct = HaleIO.findContentType(ProjectReader.class, provider.getSource(),
+								filename);
+					} catch (Exception e) {
+						// ignore
+					}
+					if (ct == null) {
+						log.error("Could not determine content type of loaded project");
+					}
+				}
+				projectLoadContentType = ct;
+			}
+
+			updateWindowTitle();
+
+			// execute loaded I/O configurations
+			List<IOConfiguration> confs;
+			synchronized (ProjectServiceImpl.this) {
+				confs = new ArrayList<IOConfiguration>(main.getResources());
+			}
+
+			// before execution, perform eventual schema update
+			boolean updated = false;
+			if (updateSchema) {
+				final Display display = PlatformUI.getWorkbench().getDisplay();
+				final AtomicReference<List<IOConfiguration>> updatedConfigs = new AtomicReference<>();
+				final List<IOConfiguration> original = confs;
+				display.syncExec(new Runnable() {
+
+					@Override
+					public void run() {
+						SchemaUpdateDialog dlg = new SchemaUpdateDialog(display.getActiveShell(),
+								original);
+						if (dlg.open() == Dialog.OK) {
+							updatedConfigs.set(dlg.getConfigurations());
+						}
+					}
+				});
+
+				List<IOConfiguration> newConfs = updatedConfigs.get();
+				if (newConfs != null && !newConfs.equals(confs)) {
+					// update project
+					synchronized (ProjectServiceImpl.this) {
+						main.getResources().clear();
+						main.getResources().addAll(newConfs);
+					}
+					// replace confs
+					confs = newConfs;
+
+					updated = true;
+				}
+			}
+
+			executeConfigurations(confs);
+
+			// notify listeners
+			Map<String, ProjectFile> projectFiles = provider.getProjectFiles();
+			notifyExportConfigurationChanged();
+			// apply remaining project files
+			for (ProjectFile file : projectFiles.values()) {
+				// XXX do this in a Job or something?
+				file.apply();
+			}
+			// reset changed to false if it was altered through the project
+			// files being applied
+			// FIXME this is ugly XXX what if there actually is a real
+			// resulting change?
+			synchronized (ProjectServiceImpl.this) {
+				changed = updated;
+			}
+			notifyAfterLoad();
+			updateWindowTitle();
+		}
+	}
 
 	/**
 	 * Configuration service backed by the internal {@link Project}
@@ -205,6 +372,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	 */
 	private IContentType projectLoadContentType;
 
+	private final OpenProjectAdvisor updateProjectAdvisor;
+
 	/**
 	 * Default constructor
 	 */
@@ -215,121 +384,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		}
 
 		// create advisors
-		openProjectAdvisor = new AbstractIOAdvisor<ProjectReader>() {
-
-			@Override
-			public void updateConfiguration(ProjectReader provider) {
-				super.updateConfiguration(provider);
-
-				// set project files
-				Map<String, ProjectFile> projectFiles = ProjectIO.createDefaultProjectFiles(HaleUI
-						.getServiceProvider());
-				provider.setProjectFiles(projectFiles);
-			}
-
-			@Override
-			public void handleResults(ProjectReader provider) {
-				// no change check as this is performed by clean
-				if (!internalClean()) {
-					return;
-				}
-
-				// check if project reader requires clean-up
-				if (provider instanceof TemporaryFiles || provider instanceof Cleanup) {
-					CleanupService cs = OsgiUtils.getService(CleanupService.class);
-					if (provider instanceof TemporaryFiles) {
-						cs.addTemporaryFiles(CleanupContext.PROJECT, Iterables.toArray(
-								((TemporaryFiles) provider).getTemporaryFiles(), File.class));
-					}
-					if (provider instanceof Cleanup) {
-						cs.addCleaner(CleanupContext.PROJECT, ((Cleanup) provider));
-					}
-				}
-
-				synchronized (ProjectServiceImpl.this) {
-					main = provider.getProject();
-					if (provider.getSource() != null) {
-						// loaded project
-						updater = new UILocationUpdater(main, provider.getSource().getLocation());
-						updater.updateProject(true);
-						if ("file".equalsIgnoreCase(provider.getSource().getLocation().getScheme())) {
-							projectFile = new File(provider.getSource().getLocation());
-						}
-						else {
-							projectFile = null;
-						}
-						projectLocation = provider.getSource().getLocation();
-					}
-					else {
-						// project template (from object)
-						projectFile = null;
-						projectLocation = null;
-					}
-
-					changed = false;
-					RecentProjectsService rfs = (RecentProjectsService) PlatformUI.getWorkbench()
-							.getService(RecentProjectsService.class);
-					if (projectFile != null) {
-						rfs.add(projectFile.getAbsolutePath(), main.getName());
-					}
-					// XXX safe history in case of non-file loaded projects?
-					// possibly always safe URI raw paths (and show the history
-					// with decoded paths and removed file:/ in case of files)?
-					// else
-					// rfs.add(provider.getSource().getLocation().getRawPath(),
-					// main.getName());
-
-					// store the content type the project was loaded with
-					IContentType ct = provider.getContentType();
-					if (ct == null && provider.getSource() != null) {
-						log.warn("Project content type was not determined during load, trying auto-detection");
-						try {
-							URI loc = provider.getSource().getLocation();
-							String filename = null;
-							if (loc != null) {
-								filename = loc.getPath();
-							}
-							ct = HaleIO.findContentType(ProjectReader.class, provider.getSource(),
-									filename);
-						} catch (Exception e) {
-							// ignore
-						}
-						if (ct == null) {
-							log.error("Could not determine content type of loaded project");
-						}
-					}
-					projectLoadContentType = ct;
-				}
-
-				updateWindowTitle();
-
-				// execute loaded I/O configurations
-				List<IOConfiguration> confs;
-				synchronized (ProjectServiceImpl.this) {
-					confs = new ArrayList<IOConfiguration>(main.getResources());
-				}
-				executeConfigurations(confs);
-
-				// notify listeners
-				Map<String, ProjectFile> projectFiles = provider.getProjectFiles();
-				notifyExportConfigurationChanged();
-				// apply remaining project files
-				for (ProjectFile file : projectFiles.values()) {
-					// XXX do this in a Job or something?
-					file.apply();
-				}
-				// reset changed to false if it was altered through the project
-				// files being applied
-				// FIXME this is ugly XXX what if there actually is a real
-				// resulting change?
-				synchronized (ProjectServiceImpl.this) {
-					changed = false;
-				}
-				notifyAfterLoad();
-				updateWindowTitle();
-			}
-		};
-
+		openProjectAdvisor = new OpenProjectAdvisor(false);
+		updateProjectAdvisor = new OpenProjectAdvisor(true);
 		saveProjectAdvisor = new AbstractIOAdvisor<ProjectWriter>() {
 
 			@Override
@@ -735,6 +791,36 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				dialog.open();
 			}
 		});
+	}
+
+	@Override
+	public void update() {
+		// no change check as this is done by clean before a new project is
+		// loaded
+
+		URI currentLocation = null;
+		synchronized (this) {
+			currentLocation = projectLocation;
+		}
+
+		if (currentLocation != null) {
+			// use I/O provider and content type mechanisms to enable loading of
+			// a project file
+			ProjectReader reader = HaleIO.findIOProvider(ProjectReader.class,
+					new DefaultInputSupplier(currentLocation), currentLocation.getPath());
+			if (reader != null) {
+				// configure reader
+				reader.setSource(new DefaultInputSupplier(currentLocation));
+
+				ProjectResourcesUtil.executeProvider(reader, updateProjectAdvisor, null);
+			}
+			else {
+				log.userError("The project format is not supported.");
+			}
+		}
+		else {
+			log.userError("The project needs to be saved to a file before you can reload it.");
+		}
 	}
 
 	/**
