@@ -226,7 +226,7 @@ public class GetCapabilititiesRetriever {
 					// be another way to get the namespaces
 					result.add(data.getSchema(typename));
 				} catch (Exception ex) {
-					_log.warn("A FeatureType could not be added: " + ex.getMessage()); //$NON-NLS-1$
+					_log.warn("A FeatureType could not be added", ex); //$NON-NLS-1$
 				}
 				monitor.worked(1);
 			}

@@ -41,9 +41,9 @@ public class WFSInsert extends AbstractWFSTransaction {
 		// ID generation (only WFS 1.1.0)
 		if (WFSVersion.V1_1_0.equals(wfsVersion)) {
 			// TODO configurable
-			params.put("idgen", "GenerateNew");
+			params.put("idgen", "UseExisting");
 		}
-		// XXX other values are "UseExisting" or "ReplaceDuplicate"
+		// XXX other values are "GenerateNew" or "ReplaceDuplicate"
 
 		// input format
 		// FIXME should be configurable

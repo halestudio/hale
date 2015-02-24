@@ -5,8 +5,12 @@
          point="eu.esdihumboldt.hale.ui.io.target">
       <providerTarget
             provider="eu.esdihumboldt.hale.io.wfs.write"
-            target="uri">
+            target="wfs-t">
       </providerTarget>
+      <target
+            class="eu.esdihumboldt.hale.io.wfs.ui.WFSTarget"
+            id="wfs-t">
+      </target>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.ui.io.config">

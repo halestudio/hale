@@ -13,29 +13,15 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.io.wfs;
+package eu.esdihumboldt.hale.io.wfs.capabilities
 
-import eu.esdihumboldt.hale.io.gml.writer.GmlInstanceWriter;
-import eu.esdihumboldt.hale.io.gml.writer.XmlWrapper;
-import eu.esdihumboldt.hale.io.wfs.transactions.WFSInsert;
+import groovy.transform.InheritConstructors
+
 
 /**
- * XXX Simple WFS writer that is not configurable.
- * 
+ * Exception for errors when parsing a WFS capabilities document.
  * @author Simon Templer
  */
-public class SimpleWFSWriter extends AbstractWFSWriter<GmlInstanceWriter> {
-
-	/**
-	 * Default constructor.
-	 */
-	public SimpleWFSWriter() {
-		super(new GmlInstanceWriter());
-	}
-
-	@Override
-	protected XmlWrapper createTransaction() {
-		return new WFSInsert(getWFSVersion());
-	}
-
+@InheritConstructors
+class WFSCapabilitiesException extends Exception {
 }

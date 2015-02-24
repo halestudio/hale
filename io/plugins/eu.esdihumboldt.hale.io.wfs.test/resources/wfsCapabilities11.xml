@@ -1,0 +1,228 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<WFS_Capabilities version="1.1.0" xmlns="http://www.opengis.net/wfs" xmlns:ows="http://www.opengis.net/ows" xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
+  <ows:ServiceIdentification>
+    <ows:Title>INSPIRE Addresses</ows:Title>
+    <ows:Abstract>Direct Access Download Service for INSPIRE Addresses</ows:Abstract>
+    <ows:ServiceType>WFS</ows:ServiceType>
+    <ows:ServiceTypeVersion>2.0.0</ows:ServiceTypeVersion>
+    <ows:ServiceTypeVersion>1.1.0</ows:ServiceTypeVersion>
+  </ows:ServiceIdentification>
+  <ows:ServiceProvider>
+    <ows:ProviderName>The deegree project</ows:ProviderName>
+    <ows:ProviderSite xlink:href="http://www.deegree.org"/>
+    <ows:ServiceContact>
+      <ows:IndividualName>Markus Schneider</ows:IndividualName>
+      <ows:PositionName>deegree TMC</ows:PositionName>
+      <ows:ContactInfo>
+        <ows:Phone>
+          <ows:Voice>0228/18496-0</ows:Voice>
+          <ows:Facsimile>0228/18496-29</ows:Facsimile>
+        </ows:Phone>
+        <ows:Address>
+          <ows:DeliveryPoint>Aennchenstr. 19</ows:DeliveryPoint>
+          <ows:City>Bonn</ows:City>
+          <ows:AdministrativeArea>NRW</ows:AdministrativeArea>
+          <ows:PostalCode>53177</ows:PostalCode>
+          <ows:Country>Germany</ows:Country>
+          <ows:ElectronicMailAddress>info@lat-lon.de</ows:ElectronicMailAddress>
+        </ows:Address>
+        <ows:OnlineResource xlink:href="http://www.deegree.org"/>
+        <ows:HoursOfService>24x7</ows:HoursOfService>
+        <ows:ContactInstructions>Do not hesitate to call</ows:ContactInstructions>
+      </ows:ContactInfo>
+      <ows:Role>PointOfContact</ows:Role>
+    </ows:ServiceContact>
+  </ows:ServiceProvider>
+  <ows:OperationsMetadata>
+    <ows:Operation name="DescribeFeatureType">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="http://localhost:8070/services/wfs?"/>
+          <ows:Post xlink:href="http://localhost:8070/services/wfs"/>
+        </ows:HTTP>
+      </ows:DCP>
+      <ows:Parameter name="outputFormat">
+        <ows:Value>application/gml+xml; version=3.2</ows:Value>
+        <ows:Value>text/xml; subtype=gml/3.2.1</ows:Value>
+      </ows:Parameter>
+    </ows:Operation>
+    <ows:Operation name="GetCapabilities">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="http://localhost:8070/services/wfs?"/>
+          <ows:Post xlink:href="http://localhost:8070/services/wfs"/>
+        </ows:HTTP>
+      </ows:DCP>
+      <ows:Parameter name="AcceptVersions">
+        <ows:Value>2.0.0</ows:Value>
+        <ows:Value>1.1.0</ows:Value>
+      </ows:Parameter>
+      <ows:Parameter name="AcceptFormats">
+        <ows:Value>text/xml</ows:Value>
+      </ows:Parameter>
+    </ows:Operation>
+    <ows:Operation name="GetFeature">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="http://localhost:8070/services/wfs?"/>
+          <ows:Post xlink:href="http://localhost:8070/services/wfs"/>
+        </ows:HTTP>
+      </ows:DCP>
+      <ows:Parameter name="resultType">
+        <ows:Value>results</ows:Value>
+        <ows:Value>hits</ows:Value>
+      </ows:Parameter>
+      <ows:Parameter name="outputFormat">
+        <ows:Value>application/gml+xml; version=3.2</ows:Value>
+        <ows:Value>text/xml; subtype=gml/3.2.1</ows:Value>
+      </ows:Parameter>
+    </ows:Operation>
+    <ows:Operation name="GetFeatureWithLock">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="http://localhost:8070/services/wfs?"/>
+          <ows:Post xlink:href="http://localhost:8070/services/wfs"/>
+        </ows:HTTP>
+      </ows:DCP>
+      <ows:Parameter name="resultType">
+        <ows:Value>results</ows:Value>
+        <ows:Value>hits</ows:Value>
+      </ows:Parameter>
+      <ows:Parameter name="outputFormat">
+        <ows:Value>application/gml+xml; version=3.2</ows:Value>
+        <ows:Value>text/xml; subtype=gml/3.2.1</ows:Value>
+      </ows:Parameter>
+    </ows:Operation>
+    <ows:Operation name="GetGmlObject">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="http://localhost:8070/services/wfs?"/>
+          <ows:Post xlink:href="http://localhost:8070/services/wfs"/>
+        </ows:HTTP>
+      </ows:DCP>
+      <ows:Parameter name="outputFormat">
+        <ows:Value>application/gml+xml; version=3.2</ows:Value>
+        <ows:Value>text/xml; subtype=gml/3.2.1</ows:Value>
+      </ows:Parameter>
+    </ows:Operation>
+    <ows:Operation name="LockFeature">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="http://localhost:8070/services/wfs?"/>
+          <ows:Post xlink:href="http://localhost:8070/services/wfs"/>
+        </ows:HTTP>
+      </ows:DCP>
+      <ows:Parameter name="lockAction">
+        <ows:Value>ALL</ows:Value>
+        <ows:Value>SOME</ows:Value>
+      </ows:Parameter>
+    </ows:Operation>
+    <ows:Operation name="Transaction">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="http://localhost:8070/services/wfs?"/>
+          <ows:Post xlink:href="http://localhost:8070/services/wfs"/>
+        </ows:HTTP>
+      </ows:DCP>
+      <ows:Parameter name="inputFormat">
+        <ows:Value>application/gml+xml; version=3.2</ows:Value>
+        <ows:Value>text/xml; subtype=gml/3.2.1</ows:Value>
+      </ows:Parameter>
+      <ows:Parameter name="idgen">
+        <ows:Value>GenerateNew</ows:Value>
+        <ows:Value>UseExisting</ows:Value>
+        <ows:Value>ReplaceDuplicate</ows:Value>
+      </ows:Parameter>
+      <ows:Parameter name="releaseAction">
+        <ows:Value>ALL</ows:Value>
+        <ows:Value>SOME</ows:Value>
+      </ows:Parameter>
+    </ows:Operation>
+  </ows:OperationsMetadata>
+  <FeatureTypeList>
+    <FeatureType>
+      <Name xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">ad:Address</Name>
+      <Title>ad:Address</Title>
+      <Abstract>Harmonized INSPIRE Addresses (Annex I)</Abstract>
+      <DefaultSRS>urn:ogc:def:crs:EPSG::4258</DefaultSRS>
+      <OtherSRS>urn:ogc:def:crs:EPSG::4326</OtherSRS>
+      <OutputFormats>
+        <Format>application/gml+xml; version=3.2</Format>
+        <Format>text/xml; subtype=gml/3.2.1</Format>
+      </OutputFormats>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>-180.000000 -90.000000</ows:LowerCorner>
+        <ows:UpperCorner>180.000000 90.000000</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <MetadataURL type="19139" format="text/xml">http://www.nationaalgeoregister.nl/geonetwork/srv/nl/csw?service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;id=beefcafe-beef-cafe-beef-cafebeefcaf</MetadataURL>
+    </FeatureType>
+  </FeatureTypeList>
+  <ogc:Filter_Capabilities>
+    <ogc:Spatial_Capabilities>
+      <ogc:GeometryOperands xmlns:gml="http://www.opengis.net/gml">
+        <ogc:GeometryOperand>gml:Envelope</ogc:GeometryOperand>
+        <ogc:GeometryOperand>gml:Point</ogc:GeometryOperand>
+        <ogc:GeometryOperand>gml:LineString</ogc:GeometryOperand>
+        <ogc:GeometryOperand>gml:Polygon</ogc:GeometryOperand>
+        <ogc:GeometryOperand>gml:ArcByCenterPoint</ogc:GeometryOperand>
+        <ogc:GeometryOperand>gml:CircleByCenterPoint</ogc:GeometryOperand>
+        <ogc:GeometryOperand>gml:Arc</ogc:GeometryOperand>
+        <ogc:GeometryOperand>gml:Circle</ogc:GeometryOperand>
+        <ogc:GeometryOperand>gml:ArcByBulge</ogc:GeometryOperand>
+      </ogc:GeometryOperands>
+      <ogc:SpatialOperators>
+        <ogc:SpatialOperator name="BBOX"/>
+        <ogc:SpatialOperator name="Equals"/>
+        <ogc:SpatialOperator name="Disjoint"/>
+        <ogc:SpatialOperator name="Intersects"/>
+        <ogc:SpatialOperator name="Touches"/>
+        <ogc:SpatialOperator name="Crosses"/>
+        <ogc:SpatialOperator name="Within"/>
+        <ogc:SpatialOperator name="Contains"/>
+        <ogc:SpatialOperator name="Overlaps"/>
+        <ogc:SpatialOperator name="Beyond"/>
+        <ogc:SpatialOperator name="DWithin"/>
+      </ogc:SpatialOperators>
+    </ogc:Spatial_Capabilities>
+    <ogc:Scalar_Capabilities>
+      <ogc:LogicalOperators/>
+      <ogc:ComparisonOperators>
+        <ogc:ComparisonOperator>LessThan</ogc:ComparisonOperator>
+        <ogc:ComparisonOperator>GreaterThan</ogc:ComparisonOperator>
+        <ogc:ComparisonOperator>LessThanEqualTo</ogc:ComparisonOperator>
+        <ogc:ComparisonOperator>GreaterThanEqualTo</ogc:ComparisonOperator>
+        <ogc:ComparisonOperator>EqualTo</ogc:ComparisonOperator>
+        <ogc:ComparisonOperator>NotEqualTo</ogc:ComparisonOperator>
+        <ogc:ComparisonOperator>Like</ogc:ComparisonOperator>
+        <ogc:ComparisonOperator>Between</ogc:ComparisonOperator>
+        <ogc:ComparisonOperator>NullCheck</ogc:ComparisonOperator>
+      </ogc:ComparisonOperators>
+      <ogc:ArithmeticOperators>
+        <ogc:SimpleArithmetic/>
+        <ogc:Functions>
+          <ogc:FunctionNames>
+            <ogc:FunctionName nArgs="1">Area</ogc:FunctionName>
+            <ogc:FunctionName nArgs="1">Centroid</ogc:FunctionName>
+            <ogc:FunctionName nArgs="1">ExtraProp</ogc:FunctionName>
+            <ogc:FunctionName nArgs="2">GeometryFromWKT</ogc:FunctionName>
+            <ogc:FunctionName nArgs="0">GetCurrentScale</ogc:FunctionName>
+            <ogc:FunctionName nArgs="2">IDiv</ogc:FunctionName>
+            <ogc:FunctionName nArgs="2">IMod</ogc:FunctionName>
+            <ogc:FunctionName nArgs="1">InteriorPoint</ogc:FunctionName>
+            <ogc:FunctionName nArgs="1">IsCurve</ogc:FunctionName>
+            <ogc:FunctionName nArgs="1">IsPoint</ogc:FunctionName>
+            <ogc:FunctionName nArgs="1">IsSurface</ogc:FunctionName>
+            <ogc:FunctionName nArgs="1">Length</ogc:FunctionName>
+            <ogc:FunctionName nArgs="1">Lower</ogc:FunctionName>
+            <ogc:FunctionName nArgs="1">MoveGeometry</ogc:FunctionName>
+            <ogc:FunctionName nArgs="1">Upper</ogc:FunctionName>
+          </ogc:FunctionNames>
+        </ogc:Functions>
+      </ogc:ArithmeticOperators>
+    </ogc:Scalar_Capabilities>
+    <ogc:Id_Capabilities>
+      <ogc:EID/>
+      <ogc:FID/>
+    </ogc:Id_Capabilities>
+  </ogc:Filter_Capabilities>
+</WFS_Capabilities>
