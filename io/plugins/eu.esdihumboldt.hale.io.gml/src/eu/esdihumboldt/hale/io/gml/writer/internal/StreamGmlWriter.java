@@ -52,6 +52,7 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
+import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractGeoInstanceWriter;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.Group;
@@ -138,7 +139,8 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 	/**
 	 * Additional schemas included in the document
 	 */
-	private final List<Schema> additionalSchemas = new ArrayList<Schema>();
+	private final Map<String, Locatable> additionalSchemas = new HashMap<>();
+	private final Map<String, String> additionalSchemaPrefixes = new HashMap<>();
 
 	/**
 	 * States if a feature collection shall be used
@@ -177,6 +179,35 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 	 */
 	public void setDocumentWrapper(@Nullable XmlWrapper documentWrapper) {
 		this.documentWrapper = documentWrapper;
+	}
+
+	@Override
+	public List<? extends Locatable> getValidationSchemas() {
+		List<Locatable> result = new ArrayList<Locatable>();
+		result.addAll(super.getValidationSchemas());
+
+		for (Locatable schema : additionalSchemas.values()) {
+			result.add(schema);
+		}
+
+		return result;
+	}
+
+	/**
+	 * Add a schema that should be included for validation. Should be called
+	 * before or in
+	 * {@link #write(InstanceCollection, ProgressIndicator, IOReporter)} prior
+	 * to writing the schema locations, but after {@link #init(IOReporter)}
+	 * 
+	 * @param namespace the schema namespace
+	 * @param schema the schema location
+	 * @param prefix the desired namespace prefix, may be <code>null</code>
+	 */
+	protected void addValidationSchema(String namespace, Locatable schema, @Nullable String prefix) {
+		additionalSchemas.put(namespace, schema);
+		if (prefix != null) {
+			additionalSchemaPrefixes.put(namespace, prefix);
+		}
 	}
 
 	/**
@@ -314,6 +345,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 		geometryWriter = null;
 		// reset additional schemas
 		additionalSchemas.clear();
+		additionalSchemaPrefixes.clear();
 
 		// create and set-up a writer
 		XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
@@ -461,6 +493,11 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 			throw new IllegalStateException("No root element/container found");
 		}
 
+		// additional schema namespace prefixes
+		for (Entry<String, String> schemaNs : additionalSchemaPrefixes.entrySet()) {
+			GmlWriterUtil.addNamespace(writer, schemaNs.getKey(), schemaNs.getValue());
+		}
+
 		writer.writeStartDocument();
 		if (documentWrapper != null) {
 			documentWrapper.startWrap(writer, reporter);
@@ -475,11 +512,11 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 		locations.append(targetIndex.getNamespace());
 		locations.append(" "); //$NON-NLS-1$
 		locations.append(targetIndex.getLocation().toString());
-		for (Schema schema : additionalSchemas) {
+		for (Entry<String, Locatable> schema : additionalSchemas.entrySet()) {
 			locations.append(" "); //$NON-NLS-1$
-			locations.append(schema.getNamespace());
+			locations.append(schema.getKey());
 			locations.append(" "); //$NON-NLS-1$
-			locations.append(schema.getLocation().toString());
+			locations.append(schema.getValue().getLocation().toString());
 		}
 		writer.writeAttribute(SCHEMA_INSTANCE_NS, "schemaLocation", locations.toString()); //$NON-NLS-1$
 
@@ -660,7 +697,8 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 
 						// add as additional schema, replace location for
 						// verification
-						additionalSchemas.add(new SchemaDecorator(wfsSchema) {
+						additionalSchemas.put(wfsSchema.getNamespace(), new SchemaDecorator(
+								wfsSchema) {
 
 							@Override
 							public URI getLocation() {

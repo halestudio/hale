@@ -13,24 +13,33 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.io.wfs;
+package eu.esdihumboldt.hale.common.core.io.supplier;
+
+import java.net.URI;
 
 /**
- * WFS related constants.
+ * Simple helper when a {@link Locatable} object is needed, that only represents
+ * the corresponding URI.
  * 
  * @author Simon Templer
  */
-public interface WFSConstants {
+public class LocatableURI implements Locatable {
+
+	private final URI location;
 
 	/**
-	 * ID of the content type registered for WFS-T transactions.
+	 * Constructor.
+	 * 
+	 * @param location the location to be represented by this locatable object
 	 */
-	public static final String CONTENT_TYPE_ID_WFST = "eu.esdihumboldt.hale.io.wfs-t";
+	public LocatableURI(URI location) {
+		super();
+		this.location = location;
+	}
 
-	/**
-	 * Name of the parameter specifying the WFS version for I/O providers
-	 * related to WFS.
-	 */
-	public static final String PARAM_WFS_VERSION = "wfsVersion";
+	@Override
+	public URI getLocation() {
+		return location;
+	}
 
 }

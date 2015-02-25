@@ -13,24 +13,25 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.io.wfs;
+package eu.esdihumboldt.hale.io.wfs.file;
+
+import eu.esdihumboldt.hale.io.wfs.WFSVersion;
 
 /**
- * WFS related constants.
+ * Concrete class for writing a WFS 2.0 FeatureCollection. Needed so HALE can
+ * determine without setting a parameter if an appropriate container can be
+ * found.
  * 
  * @author Simon Templer
  */
-public interface WFSConstants {
+public class WFS2FCWriter extends WFSFeatureCollectionWriter {
 
 	/**
-	 * ID of the content type registered for WFS-T transactions.
+	 * Constructor.
 	 */
-	public static final String CONTENT_TYPE_ID_WFST = "eu.esdihumboldt.hale.io.wfs-t";
-
-	/**
-	 * Name of the parameter specifying the WFS version for I/O providers
-	 * related to WFS.
-	 */
-	public static final String PARAM_WFS_VERSION = "wfsVersion";
+	public WFS2FCWriter() {
+		super();
+		setWFSVersion(WFSVersion.V2_0_0);
+	}
 
 }
