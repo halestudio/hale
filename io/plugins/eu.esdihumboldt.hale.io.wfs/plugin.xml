@@ -12,6 +12,28 @@
                ref="eu.esdihumboldt.hale.io.wfs-t">
          </contentType>
       </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.wfs.file.WFS2FCWriter"
+            id="eu.esdihumboldt.hale.io.wfs.fc.write-2.0"
+            name="GML (WFS 2.0 FeatureCollection)">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.gml">
+         </contentType>
+         <contentType
+               ref="eu.esdihumboldt.hale.io.gml.gzip">
+         </contentType>
+      </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.wfs.file.WFS11FCWriter"
+            id="eu.esdihumboldt.hale.io.wfs.fc.write-1.1.0"
+            name="GML (WFS 1.1.0 FeatureCollection)">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.gml">
+         </contentType>
+         <contentType
+               ref="eu.esdihumboldt.hale.io.gml.gzip">
+         </contentType>
+      </provider>
    </extension>
    <extension
          point="org.eclipse.core.contenttype.contentTypes">
