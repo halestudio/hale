@@ -106,7 +106,7 @@ public class TypeEntityDialog extends EntityDialog {
 		viewer.setInput(ss.getSchemas(ssid));
 
 		if (initialSelection instanceof TypeEntityDefinition) {
-			viewer.setSelection(new StructuredSelection(initialSelection.getType()));
+			viewer.setSelection(new StructuredSelection(initialSelection));
 		}
 	}
 
