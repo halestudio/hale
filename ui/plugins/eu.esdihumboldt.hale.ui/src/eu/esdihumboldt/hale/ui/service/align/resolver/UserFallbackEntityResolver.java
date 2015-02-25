@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.ui.service.align.resolver;
 
+import java.util.Collections;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -35,12 +36,14 @@ import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.function.common.PropertyEntityDialog;
 import eu.esdihumboldt.hale.ui.function.common.TypeEntityDialog;
 import eu.esdihumboldt.hale.ui.service.align.resolver.internal.EntityCandidates;
 import eu.esdihumboldt.hale.ui.service.align.resolver.internal.ViewerEntityTray;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
 /**
  * Entity resolver that asks the user for replacement of entities that were not
@@ -127,7 +130,7 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 				public void run() {
 					TypeEntityDialog dlg = new TypeEntityDialog(Display.getCurrent()
 							.getActiveShell(), schemaSpace, "Cell entity could not be resolved",
-							candidate, true) {
+							candidate, false) {
 
 						@Override
 						public void create() {
@@ -154,7 +157,16 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 				return null;
 			}
 			else {
-				return new DefaultType((TypeEntityDefinition) def);
+				TypeEntityDefinition ted = (TypeEntityDefinition) def;
+
+				// make sure that the type is classified as mapping relevant
+				if (!ted.getType().getConstraint(MappingRelevantFlag.class).isEnabled()) {
+					SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(
+							SchemaService.class);
+					ss.toggleMappable(schemaSpace, Collections.singleton(ted.getType()));
+				}
+
+				return new DefaultType(ted);
 			}
 		}
 	}
