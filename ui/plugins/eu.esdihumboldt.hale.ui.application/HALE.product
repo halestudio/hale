@@ -38,6 +38,8 @@ http://www.wetransform.to/products/hale
 ../../../jre/Contents/Home/bin/java</programArgsMac>
       <vmArgs>-Xmx800m
 -XX:MaxPermSize=128m
+-Dsun.net.client.defaultConnectTimeout=10000
+-Dsun.net.client.defaultReadTimeout=20000
 -Dcache.level1.enabled=false
 -Dcache.level1.size=0
 -Dcache.level2.enabled=false
