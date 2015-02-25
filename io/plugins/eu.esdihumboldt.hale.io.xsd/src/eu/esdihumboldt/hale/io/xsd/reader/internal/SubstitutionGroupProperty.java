@@ -138,7 +138,7 @@ public class SubstitutionGroupProperty extends LazyGroupPropertyDefinition {
 	 * @param type the type to be substituted
 	 * @return the substitution types
 	 */
-	private List<XmlElement> collectSubstitutions(QName elementName, TypeDefinition type) {
+	public static List<XmlElement> collectSubstitutions(QName elementName, TypeDefinition type) {
 		Set<QName> substitute = new HashSet<QName>();
 		substitute.add(elementName);
 		Queue<TypeDefinition> subTypes = new LinkedList<TypeDefinition>();
@@ -169,11 +169,9 @@ public class SubstitutionGroupProperty extends LazyGroupPropertyDefinition {
 			while (it.hasNext()) {
 				XmlElement element = it.next();
 				QName subGroup = element.getSubstitutionGroup();
-				if (subGroup != null && substitute.contains(subGroup)) { // only
-																			// if
-																			// substitution
-																			// group
-																			// match
+				if (subGroup != null && substitute.contains(subGroup)) {
+					// only if substitution group match
+
 					// add element name also to the name that may be substituted
 					substitute.add(element.getName());
 					if (!element.getType().getConstraint(AbstractFlag.class).isEnabled()) {
