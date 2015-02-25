@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.io.wfs;
 
+import java.net.URI;
+
 /**
  * Enumeration of (supported) WFS versions.
  * 
@@ -22,9 +24,11 @@ package eu.esdihumboldt.hale.io.wfs;
  */
 public enum WFSVersion {
 	/** WFS 1.1.0 */
-	V1_1_0("1.1.0", "http://www.opengis.net/wfs"),
+	V1_1_0("1.1.0", "http://www.opengis.net/wfs", URI
+			.create("http://schemas.opengis.net/wfs/1.1.0/wfs.xsd")),
 	/** WFS 2.0.0 */
-	V2_0_0("2.0.0", "http://www.opengis.net/wfs/2.0");
+	V2_0_0("2.0.0", "http://www.opengis.net/wfs/2.0", URI
+			.create("http://schemas.opengis.net/wfs/2.0/wfs.xsd"));
 
 	/**
 	 * The version string.
@@ -34,10 +38,15 @@ public enum WFSVersion {
 	 * The WFS namespace.
 	 */
 	public final String wfsNamespace;
+	/**
+	 * The WFS schema location.
+	 */
+	public final URI schemaLocation;
 
-	WFSVersion(String versionString, String wfsNamespace) {
+	WFSVersion(String versionString, String wfsNamespace, URI schemaLocation) {
 		this.versionString = versionString;
 		this.wfsNamespace = wfsNamespace;
+		this.schemaLocation = schemaLocation;
 	}
 
 	@Override
