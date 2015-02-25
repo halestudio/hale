@@ -171,7 +171,7 @@ public class TypeEntityDialog extends EntityDialog {
 							return true;
 				return false;
 			}
-		}, onlyMappingRelevant, true));
+		}, true, true));
 
 		// do not add choice if only mapping relevant types should be selected
 		if (onlyMappingRelevant)
