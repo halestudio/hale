@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.io.wfs.ui.capabilities;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -33,6 +34,7 @@ import org.eclipse.swt.widgets.Display;
 
 import eu.esdihumboldt.hale.io.wfs.capabilities.CapabilitiesHelper;
 import eu.esdihumboldt.hale.io.wfs.capabilities.WFSCapabilities;
+import eu.esdihumboldt.hale.io.wfs.ui.WFSPreferences;
 
 /**
  * WFS location field editor
@@ -140,24 +142,24 @@ public class WFSCapabilitiesFieldEditor extends FieldEditor {
 	 * Load the recently used WFSes
 	 */
 	protected void loadRecent() {
-		/*
-		 * List<String> recent = WfsPreferences.getRecent();
-		 * combo.setItems(recent.toArray(new String[recent.size()])); if
-		 * (!recent.isEmpty() && (combo.getText() == null ||
-		 * combo.getText().isEmpty())) { combo.setText(recent.get(0)); }
-		 */
+		List<String> recent = WFSPreferences.getRecent();
+		combo.setItems(recent.toArray(new String[recent.size()]));
+		if (!recent.isEmpty() && (combo.getText() == null || combo.getText().isEmpty())) {
+			combo.setText(recent.get(0));
+		}
 	}
 
 	/**
 	 * Update the recently used WFSes
 	 */
 	public void updateRecent() {
-		/*
-		 * String value = combo.getText(); if (value != null &&
-		 * !value.isEmpty()) { List<String> recent = WfsPreferences.getRecent();
-		 * recent.remove(value); recent.add(0, value);
-		 * WfsPreferences.setRecent(recent); }
-		 */
+		String value = combo.getText();
+		if (value != null && !value.isEmpty()) {
+			List<String> recent = WFSPreferences.getRecent();
+			recent.remove(value);
+			recent.add(0, value);
+			WFSPreferences.setRecent(recent);
+		}
 	}
 
 	/**

@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.io.gml.ui.wfs.wizard;
+package eu.esdihumboldt.hale.io.wfs.ui;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ import eu.esdihumboldt.hale.io.wfs.ui.internal.WFSUIPlugin;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class WfsPreferences extends AbstractPreferenceInitializer implements WfsPreferenceConstants {
+public class WFSPreferences extends AbstractPreferenceInitializer implements WFSPreferenceConstants {
 
 	/**
 	 * @see AbstractPreferenceInitializer#initializeDefaultPreferences()

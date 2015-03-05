@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
 import eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.capabilities.GetCapabilititiesRetriever;
+import eu.esdihumboldt.hale.io.wfs.ui.WFSPreferences;
 
 /*+-------------+----------------------------------------------------------*
  *|  |  |_|_|_|_|   Fraunhofer-Institut fuer Graphische Datenverarbeitung  *
@@ -147,7 +148,7 @@ public class WfsLocationFieldEditor extends FieldEditor {
 	 * Load the recently used WFSes
 	 */
 	protected void loadRecent() {
-		List<String> recent = WfsPreferences.getRecent();
+		List<String> recent = WFSPreferences.getRecent();
 		combo.setItems(recent.toArray(new String[recent.size()]));
 		if (!recent.isEmpty() && (combo.getText() == null || combo.getText().isEmpty())) {
 			combo.setText(recent.get(0));
@@ -160,10 +161,10 @@ public class WfsLocationFieldEditor extends FieldEditor {
 	public void updateRecent() {
 		String value = combo.getText();
 		if (value != null && !value.isEmpty()) {
-			List<String> recent = WfsPreferences.getRecent();
+			List<String> recent = WFSPreferences.getRecent();
 			recent.remove(value);
 			recent.add(0, value);
-			WfsPreferences.setRecent(recent);
+			WFSPreferences.setRecent(recent);
 		}
 	}
 

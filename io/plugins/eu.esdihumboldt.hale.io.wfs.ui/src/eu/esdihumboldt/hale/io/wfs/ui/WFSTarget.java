@@ -62,7 +62,7 @@ public class WFSTarget extends AbstractTarget<AbstractWFSWriter<?>> implements W
 
 	@Override
 	public void createControls(Composite parent) {
-		GridLayout layout = new GridLayout(4, false);
+		GridLayout layout = new GridLayout(3, false);
 		parent.setLayout(layout);
 
 		// target URL field
@@ -139,7 +139,7 @@ public class WFSTarget extends AbstractTarget<AbstractWFSWriter<?>> implements W
 		versionLabel.setText("WFS Version");
 
 		selectVersion = new ComboViewer(parent);
-		GridDataFactory.swtDefaults().span(2, 1).grab(true, false).align(SWT.FILL, SWT.CENTER)
+		GridDataFactory.swtDefaults().span(1, 1).grab(true, false).align(SWT.FILL, SWT.CENTER)
 				.applyTo(selectVersion.getControl());
 		selectVersion.setContentProvider(EnumContentProvider.getInstance());
 		selectVersion.setLabelProvider(new LabelProvider() {
