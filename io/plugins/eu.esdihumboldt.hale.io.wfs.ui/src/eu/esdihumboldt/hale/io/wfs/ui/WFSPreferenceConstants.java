@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.io.gml.ui.wfs.wizard;
+package eu.esdihumboldt.hale.io.wfs.ui;
 
 /**
  * 
@@ -22,7 +22,7 @@ package eu.esdihumboldt.hale.io.gml.ui.wfs.wizard;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public interface WfsPreferenceConstants {
+public interface WFSPreferenceConstants {
 
 	/**
 	 * The maximum number of recent WFS

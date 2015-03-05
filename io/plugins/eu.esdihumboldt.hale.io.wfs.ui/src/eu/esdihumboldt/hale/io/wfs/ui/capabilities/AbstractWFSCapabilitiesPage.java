@@ -94,8 +94,12 @@ public abstract class AbstractWFSCapabilitiesPage<T> extends ConfigurationWizard
 	@Override
 	public boolean updateConfiguration(T configuration) {
 		if (location.isValid()) {
-			return updateConfiguration(configuration, location.getValue(),
+			boolean result = updateConfiguration(configuration, location.getValue(),
 					location.getCapabilities());
+			if (result) {
+				updateRecent();
+			}
+			return result;
 		}
 
 		return false;
