@@ -54,7 +54,7 @@ import org.opengis.feature.type.PropertyDescriptor;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-import eu.esdihumboldt.hale.io.gml.ui.internal.Messages;
+import eu.esdihumboldt.hale.io.wfs.ui.internal.Messages;
 
 /**
  * SWT Component for specifying a filter

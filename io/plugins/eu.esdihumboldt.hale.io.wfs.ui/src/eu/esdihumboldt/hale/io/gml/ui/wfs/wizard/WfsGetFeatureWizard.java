@@ -16,23 +16,33 @@
 
 package eu.esdihumboldt.hale.io.gml.ui.wfs.wizard;
 
-import eu.esdihumboldt.hale.io.gml.ui.internal.Messages;
+import eu.esdihumboldt.hale.io.wfs.ui.internal.Messages;
 
 /**
- * WFS DescribeFeature wizard
+ * WFS GetFeature wizard
  * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class WfsDescribeFeatureWizard extends AbstractWfsWizard<WfsDescribeFeatureConfiguration> {
+public class WfsGetFeatureWizard extends AbstractWfsWizard<WfsGetFeatureConfiguration> {
 
 	/**
 	 * @see AbstractWfsWizard#AbstractWfsWizard(WfsConfiguration)
 	 */
-	public WfsDescribeFeatureWizard(WfsDescribeFeatureConfiguration configuration) {
+	public WfsGetFeatureWizard(WfsGetFeatureConfiguration configuration) {
 		super(configuration);
 
-		setWindowTitle(Messages.WfsDescribeFeatureWizard_0); //$NON-NLS-1$
+		setWindowTitle(Messages.WfsGetFeatureWizard_0); //$NON-NLS-1$
+	}
+
+	/**
+	 * @see AbstractWfsWizard#addPages()
+	 */
+	@Override
+	public void addPages() {
+		super.addPages();
+
+		addPage(new FilterPage(configuration, getTypes()));
 	}
 
 }

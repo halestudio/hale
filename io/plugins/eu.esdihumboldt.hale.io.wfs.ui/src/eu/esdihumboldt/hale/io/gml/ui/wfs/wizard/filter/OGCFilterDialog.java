@@ -30,7 +30,7 @@ import org.opengis.feature.type.FeatureType;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
-import eu.esdihumboldt.hale.io.gml.ui.internal.Messages;
+import eu.esdihumboldt.hale.io.wfs.ui.internal.Messages;
 
 /**
  * Dialog for creating a filter

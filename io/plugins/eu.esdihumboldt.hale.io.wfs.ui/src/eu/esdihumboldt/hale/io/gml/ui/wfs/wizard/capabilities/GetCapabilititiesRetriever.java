@@ -44,7 +44,7 @@ import org.xml.sax.SAXParseException;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
-import eu.esdihumboldt.hale.io.gml.ui.internal.Messages;
+import eu.esdihumboldt.hale.io.wfs.ui.internal.Messages;
 
 /**
  * This utility class is used to build and handle WFS GetCapabilities Requests

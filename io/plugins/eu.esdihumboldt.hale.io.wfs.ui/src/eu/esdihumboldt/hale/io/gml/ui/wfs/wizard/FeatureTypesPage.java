@@ -27,8 +27,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.hale.io.gml.ui.internal.Messages;
 import eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.FeatureTypeList.TypeSelectionListener;
+import eu.esdihumboldt.hale.io.wfs.ui.internal.Messages;
 
 /**
  * 
