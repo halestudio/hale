@@ -9,8 +9,13 @@ Require-Bundle: eu.esdihumboldt.hale.ui,
  org.eclipse.ui;bundle-version="3.106.0",
  org.eclipse.core.runtime;bundle-version="3.10.0",
  eu.esdihumboldt.hale.io.wfs;bundle-version="2.9.1",
- groovy;bundle-version="2.3.7"
+ groovy;bundle-version="2.3.7",
+ org.eclipse.jface.text;bundle-version="3.9.1",
+ org.geotools;bundle-version="12.2.0",
+ org.opengis;bundle-version="12.2.0"
 Import-Package: com.google.common.io;version="15.0.0",
+ com.vividsolutions.jts.geom;version="1.13.0",
+ de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.core.io,
  eu.esdihumboldt.hale.common.core.io.supplier,
  eu.esdihumboldt.hale.common.core.io.util,
@@ -18,4 +23,8 @@ Import-Package: com.google.common.io;version="15.0.0",
  eu.esdihumboldt.hale.io.gml.writer.internal,
  eu.esdihumboldt.hale.ui.util.io,
  eu.esdihumboldt.hale.ui.util.viewer,
- eu.esdihumboldt.hale.ui.util.wizard
+ eu.esdihumboldt.hale.ui.util.wizard,
+ org.slf4j;version="1.7.2"
+Export-Package: eu.esdihumboldt.hale.io.gml.ui.wfs
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: eu.esdihumboldt.hale.io.wfs.ui.internal.WFSUIPlugin

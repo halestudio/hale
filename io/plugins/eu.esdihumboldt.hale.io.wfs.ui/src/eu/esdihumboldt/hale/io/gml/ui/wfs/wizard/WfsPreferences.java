@@ -22,7 +22,7 @@ import java.util.List;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-import eu.esdihumboldt.hale.io.gml.ui.internal.GmlUIPlugin;
+import eu.esdihumboldt.hale.io.wfs.ui.internal.WFSUIPlugin;
 
 /**
  * WFS preferences
@@ -37,7 +37,7 @@ public class WfsPreferences extends AbstractPreferenceInitializer implements Wfs
 	 */
 	@Override
 	public void initializeDefaultPreferences() {
-		IPreferenceStore preferences = GmlUIPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore preferences = WFSUIPlugin.getDefault().getPreferenceStore();
 
 		preferences.setDefault(KEY_RECENT_WFS_COUNT, 0);
 	}
@@ -48,7 +48,7 @@ public class WfsPreferences extends AbstractPreferenceInitializer implements Wfs
 	 * @param recent the search path
 	 */
 	public static void setRecent(List<String> recent) {
-		IPreferenceStore preferences = GmlUIPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore preferences = WFSUIPlugin.getDefault().getPreferenceStore();
 
 		int size = Math.min(MAX_RECENT_WFS, recent.size());
 
@@ -73,7 +73,7 @@ public class WfsPreferences extends AbstractPreferenceInitializer implements Wfs
 	 * @return the search path
 	 */
 	public static List<String> getRecent() {
-		IPreferenceStore preferences = GmlUIPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore preferences = WFSUIPlugin.getDefault().getPreferenceStore();
 
 		List<String> result = new ArrayList<String>();
 		int count = preferences.getInt(KEY_RECENT_WFS_COUNT);

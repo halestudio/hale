@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.hale.io.gml.ui.internal.Messages;
+import eu.esdihumboldt.hale.io.wfs.ui.internal.Messages;
 
 /**
  * Component for selecting {@link FeatureType}s with a common namespace
@@ -55,11 +55,11 @@ public class FeatureTypeList extends Composite {
 		public void selectionChanged();
 	}
 
-	private org.eclipse.swt.widgets.List _featuresList;
+	private final org.eclipse.swt.widgets.List _featuresList;
 
 	private final Map<String, List<FeatureType>> _types = new HashMap<String, List<FeatureType>>();
 
-	private Combo _namespaces;
+	private final Combo _namespaces;
 
 	private final Set<TypeSelectionListener> listeners = new HashSet<TypeSelectionListener>();
 

@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.io.gml.ui.internal;
+package eu.esdihumboldt.hale.io.wfs.ui.internal;
 
 import org.eclipse.osgi.util.NLS;
 
@@ -24,7 +24,7 @@ import org.eclipse.osgi.util.NLS;
 @SuppressWarnings("all")
 public class Messages extends NLS {
 
-	private static final String BUNDLE_NAME = "eu.esdihumboldt.hale.io.gml.ui.internal.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "eu.esdihumboldt.hale.io.wfs.ui.internal.messages"; //$NON-NLS-1$
 
 	public static String FeatureTypeList_LabelFilter;
 

@@ -48,8 +48,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.hale.io.gml.ui.internal.Messages;
 import eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.filter.OGCFilterDialog;
+import eu.esdihumboldt.hale.io.wfs.ui.internal.Messages;
 
 /**
  * 
