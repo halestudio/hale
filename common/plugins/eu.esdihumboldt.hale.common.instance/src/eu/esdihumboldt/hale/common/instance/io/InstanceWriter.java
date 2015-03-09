@@ -74,4 +74,13 @@ public interface InstanceWriter extends ExportProvider {
 	 */
 	public void checkCompatibility() throws IOProviderConfigurationException;
 
+	/**
+	 * States if the instance writer directly streams the supplied instances in
+	 * one go, i.e. it only acquires the iterator once and consumes it.
+	 * 
+	 * @return the instance writer directly streams the supplied instances in
+	 *         one go
+	 */
+	public boolean isPassthrough();
+
 }
