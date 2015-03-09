@@ -25,6 +25,7 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 
 import eu.esdihumboldt.hale.common.align.transformation.service.InstanceSink;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.orient.OInstance;
 
 /**
@@ -58,6 +59,16 @@ public class OrientInstanceSink implements InstanceSink, Closeable {
 	 */
 	@Override
 	public synchronized void addInstance(Instance instance) {
+		putInstance(instance);
+	}
+
+	/**
+	 * Add an instance to the database and return a reference to it.
+	 * 
+	 * @param instance the instance to add
+	 * @return the instance reference
+	 */
+	public synchronized InstanceReference putInstance(Instance instance) {
 		if (ref == null) {
 			ref = database.openWrite();
 		}
@@ -78,6 +89,9 @@ public class OrientInstanceSink implements InstanceSink, Closeable {
 		ODocument doc = conv.configureDocument(db);
 		// and save it
 		doc.save();
+
+		return new OrientInstanceReference(doc.getIdentity(), instance.getDataSet(),
+				instance.getDefinition());
 	}
 
 	/**
