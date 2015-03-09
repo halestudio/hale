@@ -49,6 +49,7 @@ import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.headless.HeadlessIO;
 import eu.esdihumboldt.hale.common.headless.TransformationEnvironment;
 import eu.esdihumboldt.hale.common.headless.impl.ProjectTransformationEnvironment;
+import eu.esdihumboldt.hale.common.headless.transform.extension.TransformationSinkExtension;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
@@ -157,7 +158,14 @@ public class Transformation {
 
 		MultiInstanceCollection sourceCollection = new MultiInstanceCollection(sourceList);
 
-		final LimboInstanceSink targetSink = new LimboInstanceSink();
+		final TransformationSink targetSink;
+		try {
+			targetSink = TransformationSinkExtension.getInstance().createSink(
+					!target.isPassthrough());
+			targetSink.setTypes(environment.getTargetSchema());
+		} catch (Exception e) {
+			throw new IllegalStateException("Error creating target sink", e);
+		}
 
 		IOAdvisor<InstanceWriter> saveDataAdvisor = new AbstractIOAdvisor<InstanceWriter>() {
 
@@ -209,7 +217,7 @@ public class Transformation {
 	 *         necessary mean there weren't any internal transformation errors)
 	 */
 	public static ListenableFuture<Boolean> transform(InstanceCollection sources,
-			final LimboInstanceSink targetSink, final ExportJob exportJob,
+			final TransformationSink targetSink, final ExportJob exportJob,
 			final ValidationJob validationJob, final Alignment alignment, SchemaSpace sourceSchema,
 			final ReportHandler reportHandler, final ServiceProvider serviceProvider,
 			final Object processId) {
