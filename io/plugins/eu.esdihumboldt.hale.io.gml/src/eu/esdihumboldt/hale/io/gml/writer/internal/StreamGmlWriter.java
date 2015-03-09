@@ -217,6 +217,11 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 //		return result;
 //	}
 
+	@Override
+	public boolean isPassthrough() {
+		return true;
+	}
+
 	/**
 	 * @see AbstractInstanceWriter#validate()
 	 */
