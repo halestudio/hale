@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.PseudoInstanceReference;
+import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
  * Sink that holds instances in a limbo, to be collected through the offered
@@ -78,6 +79,11 @@ public class LimboInstanceSink implements TransformationSink {
 	@Override
 	public InstanceCollection getInstanceCollection() {
 		return collection;
+	}
+
+	@Override
+	public void setTypes(TypeIndex types) {
+		// ignore - not needed
 	}
 
 	@Override
