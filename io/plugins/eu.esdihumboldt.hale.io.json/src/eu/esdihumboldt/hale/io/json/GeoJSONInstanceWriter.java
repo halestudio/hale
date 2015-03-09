@@ -63,6 +63,11 @@ public class GeoJSONInstanceWriter extends AbstractInstanceWriter {
 	}
 
 	@Override
+	public boolean isPassthrough() {
+		return true;
+	}
+
+	@Override
 	protected String getDefaultTypeName() {
 		return "GeoJSON";
 	}

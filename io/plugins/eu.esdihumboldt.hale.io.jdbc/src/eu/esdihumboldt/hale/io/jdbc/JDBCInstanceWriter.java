@@ -119,6 +119,11 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 		return reporter;
 	}
 
+	@Override
+	public boolean isPassthrough() {
+		return true;
+	}
+
 	/**
 	 * Write instances to a database connection
 	 * 

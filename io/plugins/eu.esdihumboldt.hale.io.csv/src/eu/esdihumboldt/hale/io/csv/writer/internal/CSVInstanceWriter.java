@@ -140,6 +140,11 @@ public class CSVInstanceWriter extends AbstractTableInstanceWriter {
 		return reporter;
 	}
 
+	@Override
+	public boolean isPassthrough() {
+		return true;
+	}
+
 	// write current instance to csv file
 	private void writeLine(boolean solveNestedProperties, List<String> headerRow,
 			Instance instance, CSVWriter writer) {
