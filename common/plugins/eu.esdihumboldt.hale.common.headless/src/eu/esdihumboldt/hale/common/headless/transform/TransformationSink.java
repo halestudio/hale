@@ -19,6 +19,7 @@ import eu.esdihumboldt.hale.common.align.transformation.service.InstanceSink;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
  * Instance sink that provides an instance collection of added instances for
@@ -27,6 +28,13 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
  * @author Simon Templer
  */
 public interface TransformationSink extends InstanceSink {
+
+	/**
+	 * Set the schema/types of the transformed data set.
+	 * 
+	 * @param types the transformed data set types
+	 */
+	public void setTypes(TypeIndex types);
 
 	/**
 	 * Called if the transformation is done or cancelled. Subsequent calls to
