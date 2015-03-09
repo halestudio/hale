@@ -42,17 +42,18 @@ import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.headless.transform.ExportJob;
-import eu.esdihumboldt.hale.common.headless.transform.LimboInstanceSink;
 import eu.esdihumboldt.hale.common.headless.transform.ValidationJob;
 import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.DefaultReportHandler;
 import eu.esdihumboldt.hale.ui.io.instance.InstanceExportWizard;
 import eu.esdihumboldt.hale.ui.io.instance.InstanceImportWizard;
 import eu.esdihumboldt.hale.ui.service.project.ProjectResourcesUtil;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.util.io.ThreadProgressMonitor;
 import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 
@@ -68,7 +69,7 @@ public class TransformDataWizardSourcePage extends WizardPage {
 	private ExportJob exportJob;
 	private ValidationJob validationJob;
 
-	private final LimboInstanceSink targetSink;
+	private final TransformationSinkProxy targetSink;
 	private final boolean useProjectData;
 
 	/**
@@ -82,8 +83,8 @@ public class TransformDataWizardSourcePage extends WizardPage {
 	 *            the project should be used, <code>false</code> if the user
 	 *            specify different data
 	 */
-	public TransformDataWizardSourcePage(IWizardContainer container, LimboInstanceSink targetSink,
-			boolean useProjectData) {
+	public TransformDataWizardSourcePage(IWizardContainer container,
+			TransformationSinkProxy targetSink, boolean useProjectData) {
 		super("sourceSelection");
 		this.targetSink = targetSink;
 		this.useProjectData = useProjectData;
@@ -243,16 +244,25 @@ public class TransformDataWizardSourcePage extends WizardPage {
 	 */
 	private class InternalInstanceExportWizard extends InstanceExportWizard {
 
-		/**
-		 * @see eu.esdihumboldt.hale.ui.io.IOWizard#execute(eu.esdihumboldt.hale.common.core.io.IOProvider,
-		 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
-		 */
 		@Override
 		protected IOReport execute(final IOProvider provider, final IOReporter defaultReporter) {
 			// this may get called twice: once for the export, and afterwards
 			// another time for the validation
 			if (exportJob == null) {
-				exportJob = new ExportJob(targetSink, (InstanceWriter) provider, getAdvisor(),
+				InstanceWriter writer = (InstanceWriter) provider;
+
+				// init sink
+				try {
+					targetSink.init(!writer.isPassthrough());
+					SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(
+							SchemaService.class);
+					targetSink.setTypes(ss.getSchemas(SchemaSpaceID.TARGET));
+				} catch (Exception e) {
+					throw new IllegalStateException("Failed to initialize target sink", e);
+				}
+
+				// create export job
+				exportJob = new ExportJob(targetSink, writer, getAdvisor(),
 						DefaultReportHandler.getInstance());
 			}
 			else if (validationJob == null) {

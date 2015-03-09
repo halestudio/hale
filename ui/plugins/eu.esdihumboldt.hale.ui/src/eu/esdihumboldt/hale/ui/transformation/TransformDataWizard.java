@@ -21,7 +21,6 @@ import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
-import eu.esdihumboldt.hale.common.headless.transform.LimboInstanceSink;
 import eu.esdihumboldt.hale.common.headless.transform.Transformation;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.MultiInstanceCollection;
@@ -39,7 +38,7 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
  */
 public class TransformDataWizard extends Wizard {
 
-	private final LimboInstanceSink targetSink;
+	private final TransformationSinkProxy targetSink;
 	private TransformDataWizardSourcePage sourceSelectionPage;
 
 	private final boolean useProjectData;
@@ -57,7 +56,7 @@ public class TransformDataWizard extends Wizard {
 		setWindowTitle("Transform data wizard");
 		setForcePreviousAndNextButtons(true);
 
-		targetSink = new LimboInstanceSink();
+		targetSink = new TransformationSinkProxy();
 		this.useProjectData = useProjectData;
 	}
 
