@@ -214,7 +214,7 @@ public class OrientTransformationSink implements TransformationSink {
 		}
 		database.delete();
 		try {
-			Files.delete(tmpLocation);
+			Files.deleteIfExists(tmpLocation);
 		} catch (IOException e) {
 			log.warn("Could not delete database directory", e);
 		}

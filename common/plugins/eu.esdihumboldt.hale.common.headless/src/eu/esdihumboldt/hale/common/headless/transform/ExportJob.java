@@ -133,6 +133,9 @@ public class ExportJob extends AbstractTransformationJob {
 	 * Necessary as jobs are referenced by the job manager even after execution.
 	 */
 	private void reset() {
+		if (targetSink != null) {
+			targetSink.dispose();
+		}
 		writer = null;
 		targetSink = null;
 		advisor = null;
