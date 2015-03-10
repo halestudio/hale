@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -41,6 +42,7 @@ import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.headless.transform.ExportJob;
 import eu.esdihumboldt.hale.common.headless.transform.ValidationJob;
 import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
@@ -266,8 +268,23 @@ public class TransformDataWizardSourcePage extends WizardPage {
 						DefaultReportHandler.getInstance());
 			}
 			else if (validationJob == null) {
-				validationJob = new ValidationJob((InstanceValidator) provider,
-						DefaultReportHandler.getInstance());
+				final InstanceValidator validator = (InstanceValidator) provider;
+				validationJob = new ValidationJob(validator, DefaultReportHandler.getInstance()) {
+
+					@Override
+					protected IStatus run(IProgressMonitor monitor) {
+						/*
+						 * Reconfigure validator because when it was created the
+						 * writer was not executed yet (and the validation
+						 * schemas thus not updated if applicable)
+						 */
+						List<? extends Locatable> schemas = getProvider().getValidationSchemas();
+						validator.setSchemas(schemas.toArray(new Locatable[schemas.size()]));
+
+						return super.run(monitor);
+					}
+
+				};
 			}
 			else
 				throw new IllegalStateException("Unknown calls to export wizard's execute.");
