@@ -29,6 +29,7 @@ import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
+import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
 
 /**
  * Class to find geometries
@@ -51,36 +52,24 @@ public class GeometryFinder implements InstanceTraversalCallback {
 		defaultCrsDef = crsDef;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.instance.helper.InstanceTraversalCallback#visit(eu.esdihumboldt.hale.common.instance.model.Instance,
-	 *      javax.xml.namespace.QName)
-	 */
 	@Override
-	public boolean visit(Instance instance, QName name) {
+	public boolean visit(Instance instance, QName name, DefinitionGroup parent) {
 		return true;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.instance.helper.InstanceTraversalCallback#visit(eu.esdihumboldt.hale.common.instance.model.Group,
-	 *      javax.xml.namespace.QName)
-	 */
 	@Override
-	public boolean visit(Group group, QName name) {
+	public boolean visit(Group group, QName name, DefinitionGroup parent) {
 		return true;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.instance.helper.InstanceTraversalCallback#visit(java.lang.Object,
-	 *      javax.xml.namespace.QName)
-	 */
 	@Override
-	public boolean visit(Object value, QName name) {
+	public boolean visit(Object value, QName name, DefinitionGroup parent) {
 
 		if (value instanceof Collection<?>) {
 			boolean found = false;
 			// traverse all collection elements
 			for (Object element : ((Collection<?>) value)) {
-				found = found || !visit(element, name);
+				found = found || !visit(element, name, parent);
 			}
 			return !found;
 		}
