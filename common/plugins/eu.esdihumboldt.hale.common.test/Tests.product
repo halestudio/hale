@@ -94,6 +94,8 @@
       <plugin id="eu.esdihumboldt.hale.common.groovy.sandbox.enable"/>
       <plugin id="eu.esdihumboldt.hale.common.headless"/>
       <plugin id="eu.esdihumboldt.hale.common.instance"/>
+      <plugin id="eu.esdihumboldt.hale.common.instance.graph"/>
+      <plugin id="eu.esdihumboldt.hale.common.instance.graph.test"/>
       <plugin id="eu.esdihumboldt.hale.common.instance.groovy"/>
       <plugin id="eu.esdihumboldt.hale.common.instance.groovy.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.instance.orient"/>
