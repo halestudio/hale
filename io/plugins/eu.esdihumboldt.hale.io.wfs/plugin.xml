@@ -34,6 +34,15 @@
                ref="eu.esdihumboldt.hale.io.gml.gzip">
          </contentType>
       </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.wfs.PartitioningWFSWriter"
+            description="Upload to a remote service via WFS-T"
+            id="eu.esdihumboldt.hale.io.wfs.write.partitioned"
+            name="WFS-T (Partitioned upload) [experimental]">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.wfs-t">
+         </contentType>
+      </provider>
    </extension>
    <extension
          point="org.eclipse.core.contenttype.contentTypes">

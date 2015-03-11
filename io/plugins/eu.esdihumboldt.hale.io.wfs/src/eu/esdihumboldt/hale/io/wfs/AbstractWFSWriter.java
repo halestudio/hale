@@ -66,7 +66,7 @@ import eu.esdihumboldt.hale.io.gml.writer.internal.StreamGmlWriter;
  */
 @SuppressWarnings("restriction")
 public abstract class AbstractWFSWriter<T extends StreamGmlWriter> extends
-		GeoInstanceWriterDecorator<T> implements WFSConstants {
+		GeoInstanceWriterDecorator<T> implements WFSWriter, WFSConstants {
 
 	private static final ALogger log = ALoggerFactory.getLogger(AbstractWFSWriter.class);
 
@@ -94,18 +94,12 @@ public abstract class AbstractWFSWriter<T extends StreamGmlWriter> extends
 		super(internalProvider);
 	}
 
-	/**
-	 * Set the WFS version.
-	 * 
-	 * @param version the WFS version
-	 */
+	@Override
 	public void setWFSVersion(WFSVersion version) {
 		setParameter(PARAM_WFS_VERSION, Value.of(version.versionString));
 	}
 
-	/**
-	 * @return the WFS version to use
-	 */
+	@Override
 	public WFSVersion getWFSVersion() {
 		String versionString = getParameter(PARAM_WFS_VERSION).as(String.class);
 		if (versionString == null) {

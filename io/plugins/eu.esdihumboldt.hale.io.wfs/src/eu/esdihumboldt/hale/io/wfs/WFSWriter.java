@@ -15,35 +15,25 @@
 
 package eu.esdihumboldt.hale.io.wfs;
 
-import eu.esdihumboldt.hale.io.gml.writer.GmlInstanceWriter;
-import eu.esdihumboldt.hale.io.gml.writer.XmlWrapper;
-import eu.esdihumboldt.hale.io.wfs.transactions.WFSInsert;
+import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 
 /**
- * Simple WFS writer that is not configurable that writes directly to the
- * service endpoint via HTTP Post.
+ * Common interface for WFS writers.
  * 
  * @author Simon Templer
  */
-public class SimpleWFSWriter extends AbstractWFSWriter<GmlInstanceWriter> {
+public interface WFSWriter extends InstanceWriter {
 
 	/**
-	 * Default constructor.
+	 * Set the WFS version.
+	 * 
+	 * @param version the WFS version
 	 */
-	public SimpleWFSWriter() {
-		super(new GmlInstanceWriter() {
+	public void setWFSVersion(WFSVersion version);
 
-			@Override
-			protected String getTaskName() {
-				return "WFS-T Insert transaction";
-			}
-
-		});
-	}
-
-	@Override
-	protected XmlWrapper createTransaction() {
-		return new WFSInsert(getWFSVersion());
-	}
+	/**
+	 * @return the WFS version to use
+	 */
+	public WFSVersion getWFSVersion();
 
 }

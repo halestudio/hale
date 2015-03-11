@@ -122,8 +122,9 @@ public class ExportJob extends AbstractTransformationJob {
 		}
 		else {
 			reset();
-			log.userError(report.getSummary());
-			return ERROR_STATUS;
+			log.error(report.getSummary());
+			return new Status(Status.ERROR, "eu.esdihumboldt.hale.common.headless",
+					report.getSummary(), null);
 		}
 	}
 
