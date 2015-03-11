@@ -119,7 +119,7 @@ public class ReferenceGraph<T> {
 			}
 
 			partCount++;
-			log.info("Reference based partitioning - Part {} - {} instances", partCount,
+			log.debug("Reference based partitioning - Part {} - {} instances", partCount,
 					part.size());
 
 			return new ReferencesInstanceCollection(part, originalCollection);

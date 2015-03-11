@@ -42,9 +42,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
-import eu.esdihumboldt.hale.io.wfs.AbstractWFSWriter;
 import eu.esdihumboldt.hale.io.wfs.WFSConstants;
 import eu.esdihumboldt.hale.io.wfs.WFSVersion;
+import eu.esdihumboldt.hale.io.wfs.WFSWriter;
 import eu.esdihumboldt.hale.ui.io.target.AbstractTarget;
 import eu.esdihumboldt.hale.ui.util.io.URIFieldEditor;
 import eu.esdihumboldt.hale.ui.util.viewer.EnumContentProvider;
@@ -55,7 +55,7 @@ import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
  * 
  * @author Simon Templer
  */
-public class WFSTarget extends AbstractTarget<AbstractWFSWriter<?>> implements WFSConstants {
+public class WFSTarget extends AbstractTarget<WFSWriter> implements WFSConstants {
 
 	private URIFieldEditor targetURL;
 	private ComboViewer selectVersion;
@@ -178,7 +178,7 @@ public class WFSTarget extends AbstractTarget<AbstractWFSWriter<?>> implements W
 	}
 
 	@Override
-	public boolean updateConfiguration(AbstractWFSWriter<?> provider) {
+	public boolean updateConfiguration(WFSWriter provider) {
 		if (targetURL.isValid()) {
 			final URI url = targetURL.getURI();
 			provider.setTarget(new LocatableOutputSupplier<OutputStream>() {
