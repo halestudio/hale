@@ -16,10 +16,12 @@
 
 package eu.esdihumboldt.hale.common.instance.helper;
 
+import javax.annotation.Nullable;
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
 
 /**
  * Callback for {@link InstanceTraverser}s.
@@ -34,9 +36,10 @@ public interface InstanceTraversalCallback {
 	 * @param instance the instance
 	 * @param name the property name the instance is a value of,
 	 *            <code>null</code> if it is the traversal root
+	 * @param parent the parent group, if applicable
 	 * @return if traversal shall be continued
 	 */
-	public boolean visit(Instance instance, QName name);
+	public boolean visit(Instance instance, @Nullable QName name, @Nullable DefinitionGroup parent);
 
 	/**
 	 * Visit a group that is not an {@link Instance}.
@@ -44,9 +47,10 @@ public interface InstanceTraversalCallback {
 	 * @param group the group
 	 * @param name the property name the group is a value of, <code>null</code>
 	 *            if it is the traversal root
+	 * @param parent the parent group, if applicable
 	 * @return if traversal shall be continued
 	 */
-	public boolean visit(Group group, QName name);
+	public boolean visit(Group group, @Nullable QName name, @Nullable DefinitionGroup parent);
 
 	/**
 	 * Visit a value that is neither {@link Instance} nor {@link Group}.
@@ -54,8 +58,9 @@ public interface InstanceTraversalCallback {
 	 * @param value the value
 	 * @param name the property name the object is a value of, <code>null</code>
 	 *            if it is the traversal root
+	 * @param parent the parent group, if applicable
 	 * @return if traversal shall be continued
 	 */
-	public boolean visit(Object value, QName name);
+	public boolean visit(Object value, @Nullable QName name, @Nullable DefinitionGroup parent);
 
 }

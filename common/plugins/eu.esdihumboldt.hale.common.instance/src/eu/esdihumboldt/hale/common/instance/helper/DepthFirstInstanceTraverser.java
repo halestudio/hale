@@ -20,6 +20,7 @@ import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
 
 /**
  * Instance traverser that traverses the model depth first.
@@ -55,15 +56,16 @@ public class DepthFirstInstanceTraverser implements InstanceTraverser {
 	 */
 	@Override
 	public boolean traverse(Instance instance, InstanceTraversalCallback callback) {
-		return traverse(instance, callback, null);
+		return traverse(instance, callback, null, null);
 	}
 
-	private boolean traverse(Instance instance, InstanceTraversalCallback callback, QName name) {
-		if (callback.visit(instance, name)) {
+	private boolean traverse(Instance instance, InstanceTraversalCallback callback, QName name,
+			DefinitionGroup parent) {
+		if (callback.visit(instance, name, parent)) {
 			// traverse value (if applicable)
 			Object value = instance.getValue();
 			if (value != null) {
-				if (!traverse(value, callback, name)) {
+				if (!traverse(value, callback, name, parent)) {
 					if (!cancelChildTraversalOnly) {
 						// cancel whole traversal
 						return false;
@@ -93,11 +95,12 @@ public class DepthFirstInstanceTraverser implements InstanceTraverser {
 	 */
 	@Override
 	public boolean traverse(Group group, InstanceTraversalCallback callback) {
-		return traverse(group, callback, null);
+		return traverse(group, callback, null, null);
 	}
 
-	private boolean traverse(Group group, InstanceTraversalCallback callback, QName name) {
-		if (callback.visit(group, name)) {
+	private boolean traverse(Group group, InstanceTraversalCallback callback, QName name,
+			DefinitionGroup parent) {
+		if (callback.visit(group, name, parent)) {
 			// traverse children
 			return traverseChildren(group, callback);
 		}
@@ -123,7 +126,7 @@ public class DepthFirstInstanceTraverser implements InstanceTraverser {
 			Object[] values = group.getProperty(name);
 			if (values != null) {
 				for (Object value : values) {
-					if (!traverse(value, callback, name)) {
+					if (!traverse(value, callback, name, group.getDefinition())) {
 						if (!cancelChildTraversalOnly) {
 							return false;
 						}
@@ -140,18 +143,19 @@ public class DepthFirstInstanceTraverser implements InstanceTraverser {
 	 */
 	@Override
 	public boolean traverse(Object value, InstanceTraversalCallback callback) {
-		return traverse(value, callback, null);
+		return traverse(value, callback, null, null);
 	}
 
-	private boolean traverse(Object value, InstanceTraversalCallback callback, QName name) {
+	private boolean traverse(Object value, InstanceTraversalCallback callback, QName name,
+			DefinitionGroup parent) {
 		if (value instanceof Instance) {
-			return traverse((Instance) value, callback, name);
+			return traverse((Instance) value, callback, name, parent);
 		}
 		if (value instanceof Group) {
-			return traverse((Group) value, callback, name);
+			return traverse((Group) value, callback, name, parent);
 		}
 
-		return callback.visit(value, name);
+		return callback.visit(value, name, parent);
 	}
 
 }
