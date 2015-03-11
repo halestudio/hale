@@ -481,7 +481,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 		};
 		progress = sub;
 
-		progress.begin("Generating " + getTypeName(), instances.size());
+		progress.begin(getTaskName(), instances.size());
 
 		XmlElement container = findDefaultContainter(targetIndex, reporter);
 
@@ -600,6 +600,13 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 		writer.writeEndDocument();
 
 		writer.close();
+	}
+
+	/**
+	 * @return the execution task name
+	 */
+	protected String getTaskName() {
+		return "Generating " + getTypeName();
 	}
 
 	/**
