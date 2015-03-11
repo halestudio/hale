@@ -11,6 +11,10 @@
             class="eu.esdihumboldt.hale.io.wfs.ui.WFSTarget"
             id="wfs-t">
       </target>
+      <providerTarget
+            provider="eu.esdihumboldt.hale.io.wfs.write.partitioned"
+            target="wfs-t">
+      </providerTarget>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.ui.io.config">

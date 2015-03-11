@@ -37,6 +37,7 @@ import eu.esdihumboldt.hale.io.gml.writer.GmlInstanceWriter;
 import eu.esdihumboldt.hale.io.gml.writer.internal.GmlWriterUtil;
 import eu.esdihumboldt.hale.io.wfs.WFSConstants;
 import eu.esdihumboldt.hale.io.wfs.WFSVersion;
+import eu.esdihumboldt.hale.io.wfs.WFSWriter;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.SubstitutionGroupProperty;
@@ -47,7 +48,8 @@ import eu.esdihumboldt.hale.io.xsd.reader.internal.SubstitutionGroupProperty;
  * @author Simon Templer
  */
 @SuppressWarnings("restriction")
-public class WFSFeatureCollectionWriter extends GmlInstanceWriter implements WFSConstants {
+public class WFSFeatureCollectionWriter extends GmlInstanceWriter implements WFSWriter,
+		WFSConstants {
 
 	@Override
 	public void validate() throws IOProviderConfigurationException {
@@ -145,18 +147,12 @@ public class WFSFeatureCollectionWriter extends GmlInstanceWriter implements WFS
 		super.writeAdditionalElements(writer, containerDefinition, reporter);
 	}
 
-	/**
-	 * Set the WFS version.
-	 * 
-	 * @param version the WFS version
-	 */
+	@Override
 	public void setWFSVersion(WFSVersion version) {
 		setParameter(PARAM_WFS_VERSION, Value.of(version.versionString));
 	}
 
-	/**
-	 * @return the WFS version to use
-	 */
+	@Override
 	public WFSVersion getWFSVersion() {
 		String versionString = getParameter(PARAM_WFS_VERSION).as(String.class);
 		if (versionString == null) {
