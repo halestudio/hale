@@ -28,8 +28,9 @@ import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import com.tinkerpop.blueprints.Direction;
-import com.tinkerpop.blueprints.Graph;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 import com.tinkerpop.gremlin.java.GremlinPipeline;
@@ -51,6 +52,36 @@ import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
  * @param <T> the identifier type, must have a sensible equals implementation
  */
 public class ReferenceGraph<T> {
+
+	/**
+	 * Custom tinker graph that allows fast access to a random contained vertex
+	 * and to the information if the graph has any vertices.
+	 * 
+	 * This class was created because the call to
+	 * {@link TinkerGraph#getVertices()} is very expensive for large graphs.
+	 */
+	public class CustomTinkerGraph extends TinkerGraph {
+
+		private static final long serialVersionUID = -6470218605426839887L;
+
+		/**
+		 * @return a vertex in the graph
+		 */
+		@Nullable
+		public Vertex someVertex() {
+			if (isEmpty())
+				return null;
+			return vertices.values().iterator().next();
+		}
+
+		/**
+		 * @return if the graph is empty
+		 */
+		public boolean isEmpty() {
+			return vertices.isEmpty();
+		}
+
+	}
 
 	private static final ALogger log = ALoggerFactory.getLogger(ReferenceGraph.class);
 
@@ -83,7 +114,7 @@ public class ReferenceGraph<T> {
 		}
 
 		private boolean verticesLeft() {
-			return graph.getVertices().iterator().hasNext();
+			return !graph.isEmpty();
 		}
 
 		@Override
@@ -142,11 +173,9 @@ public class ReferenceGraph<T> {
 		 * @return the next atomic part from the graph as instance references
 		 */
 		private List<InstanceReference> getNextAtomicPart() {
-			Iterator<Vertex> it = graph.getVertices().iterator();
-			if (it.hasNext()) {
-				// select an arbitrary vertex
-				Vertex vtx = it.next();
-
+			// select an arbitrary vertex
+			Vertex vtx = graph.someVertex();
+			if (vtx != null) {
 				// get all vertices associated with that vertex
 				final Set<Vertex> visited = new LinkedHashSet<>();
 				if (!vtx.getEdges(Direction.BOTH).iterator().hasNext()) {
@@ -212,7 +241,7 @@ public class ReferenceGraph<T> {
 
 	private static final String P_IDENT = "id";
 
-	private final Graph graph;
+	private final CustomTinkerGraph graph;
 
 	private final IdentityReferenceInspector<T> inspector;
 
@@ -232,7 +261,7 @@ public class ReferenceGraph<T> {
 	 * @param instances the
 	 */
 	public ReferenceGraph(IdentityReferenceInspector<T> inspector, InstanceCollection instances) {
-		this.graph = new TinkerGraph();
+		this.graph = new CustomTinkerGraph();
 		this.inspector = inspector;
 		this.originalCollection = instances;
 
