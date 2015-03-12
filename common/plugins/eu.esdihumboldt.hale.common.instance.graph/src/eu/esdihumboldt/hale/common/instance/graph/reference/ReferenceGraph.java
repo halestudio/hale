@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.common.instance.graph.reference;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -27,6 +28,7 @@ import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.Set;
 
+import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Graph;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
@@ -88,7 +90,7 @@ public class ReferenceGraph<T> {
 		public InstanceCollection next() {
 			List<InstanceReference> part = candidates.poll();
 			if (part == null) {
-				part = new LinkedList<>();
+				part = new ArrayList<>(maxObjects);
 			}
 
 			while (verticesLeft() && part.size() < maxObjects) {
@@ -146,27 +148,34 @@ public class ReferenceGraph<T> {
 				Vertex vtx = it.next();
 
 				// get all vertices associated with that vertex
-				GremlinPipeline<Vertex, Vertex> pipe = new GremlinPipeline<>();
 				final Set<Vertex> visited = new LinkedHashSet<>();
-				/**
-				 * Example for the Groovy console - getting all associated
-				 * vertices. <code>
-				 * g = TinkerGraphFactory.createTinkerGraph()
-				 * x = new LinkedHashSet()
-				 * g.v(1).as('ref').aggregate(x).both.loop('ref', { !x.contains(it.object) })
-				 * x
-				 * </code>
-				 */
-				pipe.start(vtx).as("ref").aggregate(visited).both()
-						.loop("ref", new PipeFunction<LoopBundle<Vertex>, Boolean>() {
+				if (!vtx.getEdges(Direction.BOTH).iterator().hasNext()) {
+					// no edges associated - no need to use gremlin
+					// does not speed up the process by much though
+					visited.add(vtx);
+				}
+				else {
+					/**
+					 * Example for the Groovy console - getting all associated
+					 * vertices. <code>
+					 * g = TinkerGraphFactory.createTinkerGraph()
+					 * x = new LinkedHashSet()
+					 * g.v(1).as('ref').aggregate(x).both.loop('ref', { !x.contains(it.object) })
+					 * x
+					 * </code>
+					 */
+					GremlinPipeline<Vertex, Vertex> pipe = new GremlinPipeline<>();
+					pipe.start(vtx).as("ref").aggregate(visited).both()
+							.loop("ref", new PipeFunction<LoopBundle<Vertex>, Boolean>() {
 
-							@Override
-							public Boolean compute(LoopBundle<Vertex> loop) {
-								return !visited.contains(loop.getObject());
-							}
-						}).iterate();
+								@Override
+								public Boolean compute(LoopBundle<Vertex> loop) {
+									return !visited.contains(loop.getObject());
+								}
+							}).iterate();
+				}
 
-				List<InstanceReference> result = new LinkedList<>();
+				List<InstanceReference> result = new ArrayList<>();
 				for (Vertex associated : visited) {
 					InstanceReference ref = associated.getProperty(P_INSTANCE_REFERENCE);
 					if (ref != null) {
