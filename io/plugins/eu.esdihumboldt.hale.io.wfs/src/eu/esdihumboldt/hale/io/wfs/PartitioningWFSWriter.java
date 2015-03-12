@@ -19,6 +19,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -53,7 +57,7 @@ public class PartitioningWFSWriter extends AbstractGeoInstanceWriter implements 
 	public static final int DEFAULT_INSTANCES_THRESHOLD = 15000;
 
 	@Override
-	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
+	protected IOReport execute(final ProgressIndicator progress, final IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 		progress.begin("Upload to WFS-T", IProgressMonitor.UNKNOWN);
 		try {
@@ -69,38 +73,61 @@ public class PartitioningWFSWriter extends AbstractGeoInstanceWriter implements 
 			Iterator<InstanceCollection> parts = rg.partition(threshold);
 
 			int partCount = 0;
-			boolean failed = false;
+			final AtomicBoolean failed = new AtomicBoolean();
 			if (parts.hasNext()) {
+				ExecutorService requestThread = Executors.newSingleThreadExecutor();
+
 				while (parts.hasNext() && !progress.isCanceled()) {
 					partCount++;
 
 					SubtaskProgressIndicator partitionProgress = new SubtaskProgressIndicator(
-							progress);
-					partitionProgress.begin("Assembling part " + partCount,
-							ProgressIndicator.UNKNOWN);
-					InstanceCollection part = parts.next();
-					partitionProgress.end();
+							progress); // only used for first partitioning
+					if (partCount == 1)
+						partitionProgress.begin("Assembling part " + partCount,
+								ProgressIndicator.UNKNOWN);
+					final InstanceCollection part = parts.next(); // not thread
+																	// safe
+					if (partCount == 1)
+						partitionProgress.end();
 
 					progress.setCurrentTask("Upload part " + partCount
 							+ ((part.hasSize()) ? (" (" + part.size() + " instances)") : ("")));
 
-					// XXX do this in multiple threads? does that make sense for
-					// talking to a WFS-T?
+					final int currentPart = partCount;
+					requestThread.submit(new Runnable() {
 
-					IOReport report = uploadInstances(part, reporter, new SubtaskProgressIndicator(
-							progress));
-					if (!report.isSuccess()) {
-						failed = true;
-						reporter.error(new IOMessageImpl("Upload of part " + partCount + " - "
-								+ report.getSummary(), null));
-					}
-					else {
-						reporter.info(new IOMessageImpl("Upload of part " + partCount + " - "
-								+ report.getSummary(), null));
-					}
+						@Override
+						public void run() {
+							try {
+								IOReport report = uploadInstances(part, reporter,
+										new SubtaskProgressIndicator(progress));
+								if (!report.isSuccess()) {
+									failed.set(true);
+									reporter.error(new IOMessageImpl("Upload of part "
+											+ currentPart + " - " + report.getSummary(), null));
+								}
+								else {
+									reporter.info(new IOMessageImpl("Upload of part " + currentPart
+											+ " - " + report.getSummary(), null));
+								}
+							} catch (Exception e) {
+								failed.set(true);
+								reporter.error(new IOMessageImpl("Upload of part " + currentPart
+										+ " failed", e));
+							}
+						}
+					});
+
 				}
 
-				reporter.setSuccess(!failed && reporter.getErrors().isEmpty());
+				// wait for requests completion
+				requestThread.shutdown();
+				if (!requestThread.awaitTermination(24, TimeUnit.HOURS)) {
+					reporter.error(new IOMessageImpl(
+							"Timeout reached waiting for completion of WFS requests", null));
+				}
+
+				reporter.setSuccess(!failed.get() && reporter.getErrors().isEmpty());
 				if (!reporter.isSuccess()) {
 					reporter.setSummary("Errors during upload to WFS-T, please see the report.");
 				}
