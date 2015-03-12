@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.common.instance.graph.reference;
 
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -59,6 +60,8 @@ public class ReferenceGraph<T> {
 		private final Queue<List<InstanceReference>> candidates = new LinkedList<>();
 		private final int maxObjects;
 		private int partCount = 0;
+		private int partSum = 0;
+		private int biggestAtom = 0;
 
 		/**
 		 * @param maxObjects the guiding value for the maximum number of objects
@@ -91,6 +94,7 @@ public class ReferenceGraph<T> {
 			while (verticesLeft() && part.size() < maxObjects) {
 				// add to part
 				List<InstanceReference> instances = getNextAtomicPart();
+				biggestAtom = Math.max(biggestAtom, instances.size());
 
 				if (part.size() + instances.size() > maxObjects) {
 					// add to part candidates for later use
@@ -119,8 +123,15 @@ public class ReferenceGraph<T> {
 			}
 
 			partCount++;
+			partSum += part.size();
 			log.debug("Reference based partitioning - Part {} - {} instances", partCount,
 					part.size());
+
+			if (!hasNext()) {
+				log.info(MessageFormat
+						.format("Completed partitioning of {1} instances in {0} parts, biggest inseparable set of instances was of size {2}.",
+								partCount, partSum, biggestAtom));
+			}
 
 			return new ReferencesInstanceCollection(part, originalCollection);
 		}
