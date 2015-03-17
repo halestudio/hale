@@ -223,18 +223,7 @@ public class TestUtil {
 		}
 
 		for (String bundleName : bundlesToStart) {
-			Bundle bundle = bundles.get(bundleName);
-			assertNotNull("Bundle not found: " + bundleName, bundle);
-			if ((bundle.getState() & Bundle.ACTIVE) != 0)
-				continue;
-			try {
-				bundle.start();
-			} catch (BundleException be) {
-				fail("Could not start bundle " + bundleName + ": " + be.toString());
-			}
-			// without arguments on start a postcondition is that the bundle is
-			// ACTIVE
-			assertTrue("Bundle state not ACTIVE", (bundle.getState() & Bundle.ACTIVE) != 0);
+			startBundle(bundleName, bundles);
 		}
 
 		assertTrue("Service " + serviceToCheck.getSimpleName() + " not available",
@@ -245,5 +234,41 @@ public class TestUtil {
 						return OsgiUtils.getService(serviceToCheck) != null;
 					}
 				}, 30));
+	}
+
+	/**
+	 * Start the bundle with the given name.
+	 * 
+	 * @param bundleName the name of the bundle to start
+	 */
+	public static void startBundle(String bundleName) {
+		BundleContext context = OsgiUtilsActivator.getInstance().getContext();
+		for (Bundle bundle : context.getBundles()) {
+			if (bundleName.equals(bundle.getSymbolicName())) {
+				startBundle(bundle);
+				return;
+			}
+		}
+
+		throw new IllegalStateException("Bundle " + bundleName + " not found");
+	}
+
+	private static void startBundle(String bundleName, Map<String, Bundle> bundles) {
+		Bundle bundle = bundles.get(bundleName);
+		assertNotNull("Bundle not found: " + bundleName, bundle);
+		startBundle(bundle);
+	}
+
+	private static void startBundle(Bundle bundle) {
+		if ((bundle.getState() & Bundle.ACTIVE) != 0)
+			return;
+		try {
+			bundle.start();
+		} catch (BundleException be) {
+			fail("Could not start bundle " + bundle.getSymbolicName() + ": " + be.toString());
+		}
+		// without arguments on start a postcondition is that the bundle is
+		// ACTIVE
+		assertTrue("Bundle state not ACTIVE", (bundle.getState() & Bundle.ACTIVE) != 0);
 	}
 }
