@@ -28,6 +28,8 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -54,6 +56,8 @@ import eu.esdihumboldt.hale.io.jdbc.constraints.internal.GeometryAdvisorConstrai
  * @author Simon Templer
  */
 public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCConstants {
+
+	private static final ALogger log = ALoggerFactory.getLogger(JDBCInstanceWriter.class);
 
 	/**
 	 * Default constructor.
@@ -205,6 +209,13 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 			else
 				connection.rollback();
 		} catch (Exception e) {
+			if (e instanceof SQLException) {
+				SQLException next = ((SQLException) e).getNextException();
+				while (next != null) {
+					log.error("SQL exception", next);
+					next = next.getNextException();
+				}
+			}
 			connection.rollback();
 			throw e;
 		} finally {
