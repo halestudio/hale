@@ -1,0 +1,113 @@
+/*
+ * Copyright (c) 2015 Data Harmonisation Panel
+ * 
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
+ */
+
+package eu.esdihumboldt.hale.io.jdbc.postgresql.test
+
+import static org.junit.Assert.*
+
+import org.junit.Test
+
+import com.vividsolutions.jts.geom.Coordinate
+import com.vividsolutions.jts.geom.Geometry
+import com.vividsolutions.jts.geom.GeometryFactory
+
+import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty
+import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition
+import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder
+import eu.esdihumboldt.hale.common.instance.model.Instance
+import eu.esdihumboldt.hale.common.instance.model.InstanceCollection
+import eu.esdihumboldt.hale.common.instance.model.InstanceUtil
+import eu.esdihumboldt.hale.common.instance.model.ResourceIterator
+import eu.esdihumboldt.hale.common.instance.model.TypeFilter
+import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstanceCollection
+import eu.esdihumboldt.hale.common.schema.model.Schema
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
+import eu.esdihumboldt.hale.common.test.TestUtil
+import groovy.sql.Sql
+
+/**
+ * Database tests reading and writing data.
+ * 
+ * @author Simon Templer
+ */
+class ReadWriteTest extends AbstractDBTest {
+
+	private static final TABLE_LINES = '''CREATE TABLE lines
+		(
+		  ps integer NOT NULL,
+		  name character varying,
+		  geom geometry(LineString, 4326),
+		  dat bytea,
+		  CONSTRAINT lines_pkey PRIMARY KEY (ps)
+		);'''
+
+	@Test
+	void writeRead() {
+		TestUtil.startConversionService()
+
+		// setup
+
+		Sql sql = new Sql(waitForConnection())
+		try {
+			// create table
+			sql.execute TABLE_LINES
+		}
+		finally {
+			sql.close()
+		}
+
+		// read schema
+		Schema schema = readSchema()
+
+		// create objects to write
+		GeometryFactory gf = new GeometryFactory()
+		InstanceCollection instances = new InstanceBuilder(types: schema).createCollection {
+			for (i in 1..20) {
+				lines {
+					ps i
+					name "Some feature $i"
+					geom new DefaultGeometryProperty<Geometry>(new CodeDefinition("EPSG:4326", null), gf.createLineString([new Coordinate(0, 0), new Coordinate(i, i)] as Coordinate[]))
+					dat([0, 1, i, 1, 0] as byte[])
+				}
+			}
+		}
+
+		// write
+		writeInstances(instances, schema)
+
+		// read & test
+		TypeDefinition linesType = schema.getTypes().find { TypeDefinition type ->
+			type.name.localPart == 'lines'
+		}
+		InstanceCollection instances2 = readInstances(schema).select(new TypeFilter(linesType))
+		List<Instance> originals = new DefaultInstanceCollection(instances).toList()
+		ResourceIterator ri = instances2.iterator()
+		int count = 0
+		try {
+			while (ri.hasNext()) {
+				Instance instance = ri.next()
+
+				String error = InstanceUtil.checkInstance(instance, originals)
+				assertNull(error, error)
+
+				count++
+			}
+		} finally {
+			ri.close()
+		}
+
+		assertEquals(20, count)
+	}
+}
