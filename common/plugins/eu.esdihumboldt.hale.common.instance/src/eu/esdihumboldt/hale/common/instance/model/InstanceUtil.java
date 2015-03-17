@@ -64,6 +64,38 @@ public final class InstanceUtil {
 	}
 
 	/**
+	 * Check if an instance is present in the given candidates. If found, will
+	 * remove the match from the candidates collection.
+	 * 
+	 * @param instance the instance to test
+	 * @param candidates the candidates to compare the instance against
+	 * @return the error message if the check failed, otherwise
+	 *         <code>null</code>
+	 */
+	public static String checkInstance(Instance instance, Collection<Instance> candidates) {
+		boolean found = false;
+		Iterator<Instance> candidatesIter = candidates.iterator();
+		while (!found && candidatesIter.hasNext()) {
+			if (InstanceUtil.instanceEqual(instance, candidatesIter.next(), false)) {
+				candidatesIter.remove();
+				found = true;
+			}
+		}
+		if (!found) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("Could not find matching instance for: \n");
+			sb.append(InstanceUtil.instanceToString(instance));
+			sb.append("\n inside the available ones: \n");
+			for (Instance candidate : candidates) {
+				sb.append(InstanceUtil.instanceToString(candidate));
+			}
+			String message = sb.toString();
+			return message;
+		}
+		return null;
+	}
+
+	/**
 	 * Checks whether the two given groups equal each other.
 	 * 
 	 * @param a the first group
