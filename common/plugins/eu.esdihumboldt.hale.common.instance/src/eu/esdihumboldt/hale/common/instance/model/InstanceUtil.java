@@ -36,6 +36,8 @@ import com.google.common.primitives.Ints;
 import com.google.common.primitives.Longs;
 import com.google.common.primitives.Shorts;
 
+import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
+
 /**
  * Instance utility functions.
  * 
@@ -71,11 +73,49 @@ public final class InstanceUtil {
 		return groupEqual(a, b, propertyOrderRelevant);
 	}
 
+	/**
+	 * Equals implementation comparing two objects, with some improvements and
+	 * adaptations.
+	 * 
+	 * @param o1 the first object
+	 * @param o2 the second object
+	 * @return if the two objects are deemed equal
+	 */
 	private static boolean equals(Object o1, Object o2) {
 		if (o1 != null && o2 != null) {
 			// special case: arrays
 			if (o1.getClass().isArray() && o2.getClass().isArray()) {
 				return arrayToList(o1).equals(arrayToList(o2));
+			}
+
+			// special case: geometry properties
+			if (o1 instanceof GeometryProperty<?> && o2 instanceof GeometryProperty<?>) {
+				GeometryProperty<?> g1 = (GeometryProperty<?>) o1;
+				GeometryProperty<?> g2 = (GeometryProperty<?>) o2;
+
+				if (g1.getGeometry() == null && g2.getGeometry() == null) {
+					return true;
+				}
+				else if (g1.getGeometry() != null && g2.getGeometry() != null) {
+					boolean crsEquals;
+					if (g1.getCRSDefinition() != null && g2.getCRSDefinition() != null) {
+						crsEquals = Objects.equal(g1.getCRSDefinition().getCRS(), g2
+								.getCRSDefinition().getCRS());
+					}
+					else {
+						crsEquals = Objects.equal(g1.getCRSDefinition(), g2.getCRSDefinition());
+					}
+
+					// XXX do conversion of geometry?
+
+					// topological comparison
+					boolean geometryEquals = g1.getGeometry().equals(g2.getGeometry());
+
+					return geometryEquals && crsEquals;
+				}
+				else {
+					return false;
+				}
 			}
 		}
 
@@ -149,7 +189,7 @@ public final class InstanceUtil {
 	 * @param b the second group
 	 * @param propertyOrderRelevant whether the order of properties of the same
 	 *            name is relevant or not
-	 * @return true, iff both groups are equal to each
+	 * @return true, if both groups are equal to each
 	 */
 	public static boolean groupEqual(Group a, Group b, boolean propertyOrderRelevant) {
 		if (a == b)
