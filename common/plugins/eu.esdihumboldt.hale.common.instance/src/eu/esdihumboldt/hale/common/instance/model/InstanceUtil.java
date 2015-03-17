@@ -27,6 +27,14 @@ import javax.xml.namespace.QName;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Iterables;
+import com.google.common.primitives.Booleans;
+import com.google.common.primitives.Bytes;
+import com.google.common.primitives.Chars;
+import com.google.common.primitives.Doubles;
+import com.google.common.primitives.Floats;
+import com.google.common.primitives.Ints;
+import com.google.common.primitives.Longs;
+import com.google.common.primitives.Shorts;
 
 /**
  * Instance utility functions.
@@ -57,10 +65,49 @@ public final class InstanceUtil {
 			return false;
 		// compare value
 		// XXX other checks than equals possible?
-		if (!Objects.equal(a.getValue(), b.getValue()))
+		if (!equals(a.getValue(), b.getValue()))
 			return false;
 		// check groups properties
 		return groupEqual(a, b, propertyOrderRelevant);
+	}
+
+	private static boolean equals(Object o1, Object o2) {
+		if (o1 != null && o2 != null) {
+			// special case: arrays
+			if (o1.getClass().isArray() && o2.getClass().isArray()) {
+				return arrayToList(o1).equals(arrayToList(o2));
+			}
+		}
+
+		return Objects.equal(o1, o2);
+	}
+
+	private static List<?> arrayToList(Object array) {
+		if (array instanceof byte[]) {
+			return Bytes.asList((byte[]) array);
+		}
+		if (array instanceof int[]) {
+			return Ints.asList((int[]) array);
+		}
+		if (array instanceof short[]) {
+			return Shorts.asList((short[]) array);
+		}
+		if (array instanceof long[]) {
+			return Longs.asList((long[]) array);
+		}
+		if (array instanceof float[]) {
+			return Floats.asList((float[]) array);
+		}
+		if (array instanceof double[]) {
+			return Doubles.asList((double[]) array);
+		}
+		if (array instanceof char[]) {
+			return Chars.asList((char[]) array);
+		}
+		if (array instanceof boolean[]) {
+			return Booleans.asList((boolean[]) array);
+		}
+		return Arrays.asList((Object[]) array);
 	}
 
 	/**
@@ -164,7 +211,7 @@ public final class InstanceUtil {
 			if (b instanceof Group && groupEqual((Group) a, (Group) b, propertyOrderRelevant))
 				return true;
 		}
-		else if (Objects.equal(a, b))
+		else if (equals(a, b))
 			return true;
 
 		return false;
@@ -208,8 +255,14 @@ public final class InstanceUtil {
 					representation = instanceToString((Instance) propertyValue);
 				else if (propertyValue instanceof Group)
 					representation = groupToString((Group) propertyValue);
-				else if (propertyValue != null)
-					representation = propertyValue.toString();
+				else if (propertyValue != null) {
+					if (propertyValue.getClass().isArray()) {
+						representation = arrayToList(propertyValue).toString();
+					}
+					else {
+						representation = propertyValue.toString();
+					}
+				}
 				else
 					representation = "<null>";
 				builder.append(indent(representation)).append('\n');
