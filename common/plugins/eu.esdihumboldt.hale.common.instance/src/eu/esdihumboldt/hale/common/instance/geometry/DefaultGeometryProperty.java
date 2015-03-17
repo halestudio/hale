@@ -34,8 +34,8 @@ public class DefaultGeometryProperty<T extends Geometry> implements GeometryProp
 
 	private static final long serialVersionUID = 9160846585636648227L;
 
-	private CRSDefinition crsDef;
-	private T geometry;
+	private final CRSDefinition crsDef;
+	private final T geometry;
 
 	// FIXME use custom mechanism for serialization? e.g. WKB for geometries
 
@@ -73,18 +73,22 @@ public class DefaultGeometryProperty<T extends Geometry> implements GeometryProp
 	 */
 	@Override
 	public String toString() {
-		if (crsDef != null && crsDef.getCRS() != null) {
-			ReferenceIdentifier name = crsDef.getCRS().getName();
-			if (name != null) {
-				String ident;
-				if (name.getCode() != null && !name.getCode().isEmpty()) {
-					ident = name.getCode();
+		try {
+			if (crsDef != null && crsDef.getCRS() != null) {
+				ReferenceIdentifier name = crsDef.getCRS().getName();
+				if (name != null) {
+					String ident;
+					if (name.getCode() != null && !name.getCode().isEmpty()) {
+						ident = name.getCode();
+					}
+					else {
+						ident = name.toString();
+					}
+					return "{CRS=" + ident + "} " + geometry.toString();
 				}
-				else {
-					ident = name.toString();
-				}
-				return "{CRS=" + ident + "} " + geometry.toString();
 			}
+		} catch (IllegalStateException e) {
+			// ignore in toString
 		}
 
 		return geometry.toString();
