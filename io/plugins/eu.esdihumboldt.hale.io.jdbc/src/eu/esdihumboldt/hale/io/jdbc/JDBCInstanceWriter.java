@@ -27,9 +27,9 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -265,7 +265,7 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 	 * @return the insert statement
 	 * @throws SQLException if creating the prepared statement fails
 	 */
-	@SuppressFBWarnings(value = "SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING", justification = "Query is built from schema information")
+	@SuppressWarnings(value = "SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING", justification = "Query is built from schema information")
 	private PreparedStatement getInsertStatement(TypeDefinition type, Set<QName> properties,
 			Map<TypeDefinition, Map<Set<QName>, PreparedStatement>> typeStatements,
 			Connection connection) throws SQLException {
