@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.common.instance.model.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import eu.esdihumboldt.hale.common.instance.model.Filter;
@@ -45,6 +46,27 @@ public class DefaultInstanceCollection implements InstanceCollection {
 	public DefaultInstanceCollection(Collection<? extends Instance> collection) {
 		super();
 		this.collection = new ArrayList<Instance>(collection);
+	}
+
+	/**
+	 * Create an instance collection from an existing instance collection. All
+	 * instances will be held in memory.
+	 * 
+	 * @param collection the instance collection holding the initial contained
+	 *            instances
+	 */
+	public DefaultInstanceCollection(InstanceCollection collection) {
+		super();
+
+		LinkedList<Instance> instances = new LinkedList<Instance>();
+		try (ResourceIterator<Instance> it = collection.iterator()) {
+			while (it.hasNext()) {
+				// add instance copies
+				instances.add(new DefaultInstance(it.next()));
+			}
+		}
+
+		this.collection = instances;
 	}
 
 	/**
@@ -122,6 +144,13 @@ public class DefaultInstanceCollection implements InstanceCollection {
 		}
 
 		return null;
+	}
+
+	/**
+	 * @return a list of the contained instances
+	 */
+	public List<Instance> toList() {
+		return new ArrayList<>(collection);
 	}
 
 }
