@@ -54,6 +54,7 @@ import eu.esdihumboldt.hale.ui.views.report.properties.details.tree.ReportTreeLa
 public class DefaultReportDetailsPage implements CustomReportDetailsPage {
 
 	private TreeViewer treeViewer;
+	private MessageType messageType;
 
 	/**
 	 * @see CustomReportDetailsPage#createControls(Composite)
@@ -76,7 +77,15 @@ public class DefaultReportDetailsPage implements CustomReportDetailsPage {
 		treeViewer.setContentProvider(new ReportTreeContentProvider());
 
 		// set label provider
-		treeViewer.setLabelProvider(new ReportTreeLabelProvider());
+		treeViewer.setLabelProvider(new ReportTreeLabelProvider() {
+
+			@Override
+			public MessageType getMessageType(Message message) {
+				// the current message type
+				return messageType;
+			}
+
+		});
 
 		// add menu on right-click
 		MenuManager menuMgr = new MenuManager();
@@ -141,12 +150,9 @@ public class DefaultReportDetailsPage implements CustomReportDetailsPage {
 		}
 	}
 
-	/**
-	 * @see CustomReportDetailsPage#setInput(Collection,
-	 *      CustomReportDetailsPage.MessageType)
-	 */
 	@Override
 	public void setInput(Collection<? extends Message> messages, MessageType type) {
+		this.messageType = type;
 		treeViewer.setInput(messages);
 	}
 
