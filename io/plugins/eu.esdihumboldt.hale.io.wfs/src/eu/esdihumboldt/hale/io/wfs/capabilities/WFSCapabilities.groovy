@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.io.wfs.capabilities
 
 import javax.annotation.Nullable
+import javax.xml.namespace.QName
 
 import eu.esdihumboldt.hale.io.wfs.WFSVersion
 import groovy.transform.CompileStatic
@@ -32,9 +33,19 @@ class WFSCapabilities {
 	WFSVersion version
 	Map<String, WFSOperation> operations
 
+	/**
+	 * Qualified names mapped to exact name from list.
+	 */
+	Set<QName> featureTypes
+
 	@Nullable
 	WFSOperation getTransactionOp() {
 		operations['Transaction']
+	}
+
+	@Nullable
+	WFSOperation getDescribeFeatureOp() {
+		operations['DescribeFeatureType']
 	}
 }
 

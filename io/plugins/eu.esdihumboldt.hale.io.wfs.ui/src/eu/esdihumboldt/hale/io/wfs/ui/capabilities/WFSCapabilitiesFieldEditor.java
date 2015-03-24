@@ -293,10 +293,10 @@ public class WFSCapabilitiesFieldEditor extends FieldEditor {
 					servicePresent = true;
 			}
 			if (!requestPresent) {
-				builder.addParameter("request", "GetCapabilities");
+				builder.addParameter("REQUEST", "GetCapabilities");
 			}
 			if (!servicePresent) {
-				builder.addParameter("service", "WFS");
+				builder.addParameter("SERVICE", "WFS");
 			}
 			usedUrl = builder.build().toURL();
 
