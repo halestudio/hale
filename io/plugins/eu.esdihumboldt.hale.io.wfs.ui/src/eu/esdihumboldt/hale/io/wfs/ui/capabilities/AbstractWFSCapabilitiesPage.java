@@ -108,6 +108,13 @@ public abstract class AbstractWFSCapabilitiesPage<T> extends ConfigurationWizard
 	}
 
 	/**
+	 * @return the recently loaded WFS capabilities
+	 */
+	public WFSCapabilities getCapabilities() {
+		return location.getCapabilities();
+	}
+
+	/**
 	 * Update the configuration
 	 * 
 	 * @param configuration the WMS configuration
