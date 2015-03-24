@@ -15,6 +15,9 @@
 
 package eu.esdihumboldt.hale.io.wfs.capabilities
 
+import javax.xml.XMLConstants
+import javax.xml.namespace.QName
+
 import eu.esdihumboldt.hale.io.wfs.WFSVersion
 
 
@@ -62,7 +65,25 @@ class CapabilitiesHelper {
 			}
 		}
 
+		// feature types
+		Set<QName> featureTypes = new HashSet<>()
+		xml.FeatureTypeList.FeatureType.each {
+			String name = it.Name.text()
+			String lp = name
+			String ns = XMLConstants.NULL_NS_URI
+			String prefix = XMLConstants.DEFAULT_NS_PREFIX
+			def nameExtract = /^([^:]+):(.+)$/
+			def matcher = (name =~ nameExtract)
+			if (matcher.matches()) {
+				prefix = matcher[0][1]
+				ns = it.Name.lookupNamespace(prefix)
+				lp = matcher[0][2]
+			}
+			QName qn = new QName(ns, lp, prefix)
+			featureTypes.add(qn)
+		}
+
 		// create result
-		new WFSCapabilities(version: version, operations: operations)
+		new WFSCapabilities(version: version, operations: operations, featureTypes: featureTypes)
 	}
 }
