@@ -28,6 +28,21 @@ import eu.esdihumboldt.hale.io.wfs.transactions.WFSInsert;
 public class SimpleWFSWriter extends AbstractWFSWriter<GmlInstanceWriter> {
 
 	/**
+	 * Name of the parameter specifying the data's input format.
+	 */
+	public static final String PARAM_INPUT_FORMAT = "inputFormat";
+
+	/**
+	 * Name of the parameter specifying the ID generation strategy.
+	 */
+	public static final String PARAM_ID_GEN = "idgen";
+
+	/**
+	 * Default input format to use if none is provided.
+	 */
+	public static final String DEFAULT_INPUT_FORMAT = "text/xml; subtype=gml/3.2.1";
+
+	/**
 	 * Default constructor.
 	 */
 	public SimpleWFSWriter() {
@@ -43,7 +58,10 @@ public class SimpleWFSWriter extends AbstractWFSWriter<GmlInstanceWriter> {
 
 	@Override
 	protected XmlWrapper createTransaction() {
-		return new WFSInsert(getWFSVersion());
+		String idgen = getParameter(PARAM_ID_GEN).as(String.class);
+		String inputFormat = getParameter(PARAM_INPUT_FORMAT)
+				.as(String.class, DEFAULT_INPUT_FORMAT);
+		return new WFSInsert(getWFSVersion(), idgen, inputFormat);
 	}
 
 }
