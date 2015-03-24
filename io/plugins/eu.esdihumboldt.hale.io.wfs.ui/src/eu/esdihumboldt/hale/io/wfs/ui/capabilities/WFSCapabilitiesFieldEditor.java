@@ -16,11 +16,16 @@
 package eu.esdihumboldt.hale.io.wfs.ui.capabilities;
 
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.annotation.Nullable;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URIBuilder;
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.swt.SWT;
@@ -55,6 +60,8 @@ public class WFSCapabilitiesFieldEditor extends FieldEditor {
 	private Timer timer;
 
 	private WFSCapabilities capabilities;
+
+	private URL usedUrl;
 
 	/**
 	 * @see FieldEditor#FieldEditor(String, String, Composite)
@@ -263,17 +270,37 @@ public class WFSCapabilitiesFieldEditor extends FieldEditor {
 
 		// try to create a URL
 		try {
-			new URL(value);
-		} catch (Throwable e) {
+			new URI(value);
+		} catch (Exception e) {
 			if (page != null) {
 				page.setErrorMessage(e.getLocalizedMessage());
 			}
 			return false;
 		}
 
-		// try to get capabilities?
+		// try to get capabilities
 		try {
-			try (InputStream in = new URL(value).openStream()) {
+			URIBuilder builder = new URIBuilder(value);
+
+			// add fixed parameters
+			boolean requestPresent = false;
+			boolean servicePresent = false;
+			for (NameValuePair param : builder.getQueryParams()) {
+				String name = param.getName().toLowerCase();
+				if (name.equals("request"))
+					requestPresent = true;
+				if (name.equals("service"))
+					servicePresent = true;
+			}
+			if (!requestPresent) {
+				builder.addParameter("request", "GetCapabilities");
+			}
+			if (!servicePresent) {
+				builder.addParameter("service", "WFS");
+			}
+			usedUrl = builder.build().toURL();
+
+			try (InputStream in = usedUrl.openStream()) {
 				capabilities = CapabilitiesHelper.loadCapabilities(in);
 			}
 		} catch (Exception e) {
@@ -290,4 +317,11 @@ public class WFSCapabilitiesFieldEditor extends FieldEditor {
 		return true;
 	}
 
+	/**
+	 * @return the URL used for retrieving the capabilities
+	 */
+	@Nullable
+	public URL getUsedUrl() {
+		return usedUrl;
+	}
 }

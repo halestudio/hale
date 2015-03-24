@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.io.wfs.ui.capabilities;
 
+import java.net.URL;
+
 import javax.annotation.Nullable;
 
 import org.eclipse.jface.preference.FieldEditor;
@@ -94,7 +96,7 @@ public abstract class AbstractWFSCapabilitiesPage<T> extends ConfigurationWizard
 	@Override
 	public boolean updateConfiguration(T configuration) {
 		if (location.isValid()) {
-			boolean result = updateConfiguration(configuration, location.getValue(),
+			boolean result = updateConfiguration(configuration, location.getUsedUrl(),
 					location.getCapabilities());
 			if (result) {
 				updateRecent();
@@ -113,7 +115,7 @@ public abstract class AbstractWFSCapabilitiesPage<T> extends ConfigurationWizard
 	 * @param capabilities the loaded capabilities or <code>null</code>
 	 * @return if the page is valid
 	 */
-	protected abstract boolean updateConfiguration(T configuration, String capabilitiesUrl,
+	protected abstract boolean updateConfiguration(T configuration, URL capabilitiesUrl,
 			WFSCapabilities capabilities);
 
 	/**

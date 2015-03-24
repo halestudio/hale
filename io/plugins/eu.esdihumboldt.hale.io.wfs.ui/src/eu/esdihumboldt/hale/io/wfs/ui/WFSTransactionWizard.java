@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.io.wfs.ui;
 
 import java.net.URI;
+import java.net.URL;
 
 import eu.esdihumboldt.hale.io.wfs.capabilities.WFSCapabilities;
 import eu.esdihumboldt.hale.io.wfs.capabilities.WFSOperation;
@@ -54,7 +55,7 @@ public class WFSTransactionWizard extends ConfigurationWizard<WFSTransactionConf
 
 			@Override
 			protected boolean updateConfiguration(WFSTransactionConfig configuration,
-					String capabilitiesUrl, WFSCapabilities capabilities) {
+					URL capabilitiesUrl, WFSCapabilities capabilities) {
 				if (capabilities != null && capabilities.getTransactionOp() != null) {
 					WFSOperation op = capabilities.getTransactionOp();
 
