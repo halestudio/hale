@@ -24,6 +24,26 @@
          <provider
                ref="eu.esdihumboldt.hale.io.wfs.write">
          </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.wfs.write.partitioned">
+         </provider>
+      </configPage>
+      <configPage
+            class="eu.esdihumboldt.hale.io.wfs.ui.pages.PartitionConfigurationPage"
+            order="0">
+         <provider
+               ref="eu.esdihumboldt.hale.io.wfs.write.partitioned">
+         </provider>
+      </configPage>
+      <configPage
+            class="eu.esdihumboldt.hale.io.wfs.ui.pages.InsertConfigurationPage"
+            order="0">
+         <provider
+               ref="eu.esdihumboldt.hale.io.wfs.write">
+         </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.wfs.write.partitioned">
+         </provider>
       </configPage>
    </extension>
    <extension
