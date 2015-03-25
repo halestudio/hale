@@ -85,6 +85,7 @@ public class WFSDescribeFeatureWizard extends ConfigurationWizard<WFSDescribeFea
 			@Override
 			protected boolean updateConfiguration(WFSDescribeFeatureConfig configuration,
 					Set<QName> selected) {
+				configuration.getTypeNames().clear();
 				configuration.getTypeNames().addAll(selected);
 				return true;
 			}

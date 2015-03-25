@@ -142,11 +142,15 @@ public class WFSGetFeatureWizard extends ConfigurationWizard<WFSGetFeatureConfig
 			@Override
 			protected boolean updateConfiguration(WFSGetFeatureConfig configuration,
 					Set<QName> selected) {
+				configuration.getTypeNames().clear();
 				configuration.getTypeNames().addAll(selected);
 				return true;
 			}
 
 		});
+
+		// FIXME
+		addPage(new BBOXPage(this, capPage));
 	}
 
 }
