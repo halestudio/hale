@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.io.wfs.ui.getfeature
 import javax.xml.namespace.QName
 
 import eu.esdihumboldt.hale.io.wfs.WFSVersion
+import eu.esdihumboldt.hale.io.wfs.capabilities.BBox
 import groovy.transform.CompileStatic
 
 
@@ -30,4 +31,6 @@ class WFSGetFeatureConfig {
 	URI getFeatureUri
 	WFSVersion version
 	final Set<QName> typeNames = new HashSet()
+	BBox bbox
+	String bboxCrsUri
 }
