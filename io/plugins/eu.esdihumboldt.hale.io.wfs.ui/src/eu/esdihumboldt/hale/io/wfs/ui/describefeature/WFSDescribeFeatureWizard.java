@@ -73,7 +73,7 @@ public class WFSDescribeFeatureWizard extends ConfigurationWizard<WFSDescribeFea
 		addPage(capPage);
 
 		addPage(new AbstractFeatureTypesPage<WFSDescribeFeatureConfig>(this, capPage,
-				"Optionally request schema for specific feature types") {
+				"Optionally request schema for specific feature types only") {
 
 			@Override
 			protected void updateState(Set<QName> selected) {
