@@ -16,7 +16,10 @@
 
 package eu.esdihumboldt.hale.io.wfs.ui.types;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -52,6 +55,7 @@ public abstract class AbstractFeatureTypesPage<T> extends ConfigurationWizardPag
 	private final Set<QName> selected = new HashSet<>();
 	private FeatureTypeTreeContentProvider contentProvider;
 	private final AbstractWFSCapabilitiesPage<T> capabilitiesPage;
+	private String lastCapUrl;
 
 	/**
 	 * Constructor
@@ -174,13 +178,51 @@ public abstract class AbstractFeatureTypesPage<T> extends ConfigurationWizardPag
 	protected void onShowPage() {
 		// set input to types from capabilities
 		Set<QName> types = capabilitiesPage.getCapabilities().getFeatureTypes();
+		types = filterTypes(types);
 		viewer.setInput(types);
-		if (selected.retainAll(types)) {
+
+		String capUrl = capabilitiesPage.getCapabilitiesURL();
+		if (!Objects.equals(capUrl, lastCapUrl)) {
+			// capabilities changed
+
+			selected.clear();
+			selected.addAll(initialSelection(types));
+
+			for (QName sel : selected) {
+				viewer.expandToLevel(sel, 0);
+				updateParent(sel);
+			}
+
 			updateState(selected);
 		}
+		else {
+			// capabilities stayed the same
+			if (selected.retainAll(types)) {
+				updateState(selected);
+			}
+		}
 
-		// expand all
-//		viewer.expandAll();
+		lastCapUrl = capUrl;
+	}
+
+	/**
+	 * Filter the types provided via the capabilities.
+	 * 
+	 * @param types the feature type names
+	 * @return the feature type names to display
+	 */
+	protected Set<QName> filterTypes(Set<QName> types) {
+		return types;
+	}
+
+	/**
+	 * Determine the initial selection given the list of types.
+	 * 
+	 * @param types the feature types names as stated in the capabilities
+	 * @return the collection of names to be initially selected
+	 */
+	protected Collection<? extends QName> initialSelection(Set<QName> types) {
+		return Collections.emptySet();
 	}
 
 	private void checkStateOfTypeChanged(QName type, boolean checked) {
@@ -188,12 +230,16 @@ public abstract class AbstractFeatureTypesPage<T> extends ConfigurationWizardPag
 			selected.add(type);
 		else
 			selected.remove(type);
+		updateParent(type);
+		updateState(selected);
+	}
+
+	private void updateParent(QName type) {
 		if (contentProvider != null && checkStateProvider != null) {
 			Object parent = contentProvider.getParent(type);
 			viewer.setGrayed(parent, checkStateProvider.isGrayed(parent));
 			viewer.setChecked(parent, checkStateProvider.isChecked(parent));
 		}
-		updateState(selected);
 	}
 
 	/**
