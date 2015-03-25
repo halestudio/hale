@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.io.wfs.ui.describefeature;
+package eu.esdihumboldt.hale.io.wfs.ui.types;
 
 import java.util.Collection;
 

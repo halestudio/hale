@@ -29,14 +29,14 @@
          </provider>
       </configPage>
       <configPage
-            class="eu.esdihumboldt.hale.io.wfs.ui.pages.PartitionConfigurationPage"
+            class="eu.esdihumboldt.hale.io.wfs.ui.config.PartitionConfigurationPage"
             order="4">
          <provider
                ref="eu.esdihumboldt.hale.io.wfs.write.partitioned">
          </provider>
       </configPage>
       <configPage
-            class="eu.esdihumboldt.hale.io.wfs.ui.pages.InsertConfigurationPage"
+            class="eu.esdihumboldt.hale.io.wfs.ui.config.InsertConfigurationPage"
             order="5">
          <provider
                ref="eu.esdihumboldt.hale.io.wfs.write">
@@ -58,7 +58,7 @@
             priority="0">
       </source>
       <source
-            class="eu.esdihumboldt.hale.io.gml.ui.wfs.WFSGetFeatureSource"
+            class="eu.esdihumboldt.hale.io.wfs.ui.getfeature.WFSGetFeatureSource"
             contentType="eu.esdihumboldt.hale.io.gml"
             description="Load GML data using a WFS GetFeature request"
             icon="icons/service.gif"

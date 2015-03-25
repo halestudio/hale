@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.io.wfs.ui.describefeature;
+package eu.esdihumboldt.hale.io.wfs.ui.types;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;

@@ -13,51 +13,21 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.io.wfs.capabilities
+package eu.esdihumboldt.hale.io.wfs.ui.getfeature
 
-import javax.annotation.Nullable
 import javax.xml.namespace.QName
 
 import eu.esdihumboldt.hale.io.wfs.WFSVersion
 import groovy.transform.CompileStatic
-import groovy.transform.Immutable
 
 
 /**
- * Encapsulates information we need from WFS capabilities
+ * Configuration class for {@link WFSGetFeatureWizard}. 
  * @author Simon Templer
  */
 @CompileStatic
-@Immutable
-class WFSCapabilities {
+class WFSGetFeatureConfig {
+	URI getFeatureUri
 	WFSVersion version
-	Map<String, WFSOperation> operations
-
-	/**
-	 * Qualified names mapped to exact name from list.
-	 */
-	Set<QName> featureTypes
-
-	@Nullable
-	WFSOperation getTransactionOp() {
-		operations['Transaction']
-	}
-
-	@Nullable
-	WFSOperation getDescribeFeatureOp() {
-		operations['DescribeFeatureType']
-	}
-
-	@Nullable
-	WFSOperation getGetFeatureOp() {
-		operations['GetFeature']
-	}
-}
-
-@CompileStatic
-@Immutable
-class WFSOperation {
-	String name
-	String httpPostUrl
-	String httpGetUrl
+	final Set<QName> typeNames = new HashSet()
 }
