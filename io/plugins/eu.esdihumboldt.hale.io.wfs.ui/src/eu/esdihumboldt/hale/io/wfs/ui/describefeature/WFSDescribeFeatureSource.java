@@ -22,6 +22,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -39,6 +41,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Maps.EntryTransformer;
 
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
+import eu.esdihumboldt.hale.io.wfs.WFSVersion;
 import eu.esdihumboldt.hale.io.wfs.ui.AbstractWFSSource;
 import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
 import eu.esdihumboldt.hale.ui.util.io.URIFieldEditor;
@@ -69,7 +72,7 @@ public class WFSDescribeFeatureSource extends AbstractWFSSource<ImportProvider> 
 			builder.addParameter("REQUEST", "DescribeFeatureType");
 			// specify type names
 			if (!result.getTypeNames().isEmpty()) {
-				addTypeNameParameter(builder, result.getTypeNames());
+				addTypeNameParameter(builder, result.getTypeNames(), result.getVersion());
 			}
 
 			try {
@@ -87,8 +90,10 @@ public class WFSDescribeFeatureSource extends AbstractWFSSource<ImportProvider> 
 	 * 
 	 * @param builder the builder for the WFS request URI
 	 * @param selected the type names to include
+	 * @param version the targeted WFS version
 	 */
-	public static void addTypeNameParameter(URIBuilder builder, Iterable<QName> selected) {
+	public static void addTypeNameParameter(URIBuilder builder, Iterable<QName> selected,
+			WFSVersion version) {
 		// namespaces mapped to prefixes
 		Map<String, String> namespaces = new HashMap<>();
 		// type names with updated prefix
@@ -113,10 +118,39 @@ public class WFSDescribeFeatureSource extends AbstractWFSSource<ImportProvider> 
 			typeNames.add(new QName(type.getNamespaceURI(), type.getLocalPart(), prefix));
 		}
 
+		final String paramNamespaces;
+		final String paramTypenames;
+		final String prefixNamespaceDelim;
+		switch (version) {
+		case V1_1_0:
+			paramNamespaces = "NAMESPACE";
+			paramTypenames = "TYPENAME";
+			prefixNamespaceDelim = "=";
+			break;
+		case V2_0_0:
+			/*
+			 * XXX below are the values as defined in the WFS 2 specification.
+			 * But GeoServer does not seem to support them in that manner.
+			 */
+//			paramNamespaces = "NAMESPACES";
+//			paramTypenames = "TYPENAMES";
+//			prefixNamespaceDelim = ",";
+			// fall-back to WFS 1.1 - tested with WFS 2 for GeoServer, deegree
+			paramNamespaces = "NAMESPACE";
+			paramTypenames = "TYPENAME";
+			prefixNamespaceDelim = "=";
+			break;
+		default:
+			// fall-back to WFS 1.1
+			paramNamespaces = "NAMESPACE";
+			paramTypenames = "TYPENAME";
+			prefixNamespaceDelim = "=";
+		}
+
 		// add namespace prefix definitions
 		if (!namespaces.isEmpty()) {
 			builder.addParameter(
-					"NAMESPACE",
+					paramNamespaces,
 					Joiner.on(',').join(
 							Maps.transformEntries(namespaces,
 									new EntryTransformer<String, String, String>() {
@@ -126,7 +160,7 @@ public class WFSDescribeFeatureSource extends AbstractWFSSource<ImportProvider> 
 											StringBuilder sb = new StringBuilder();
 											sb.append("xmlns(");
 											sb.append(prefix);
-											sb.append("=");
+											sb.append(prefixNamespaceDelim);
 											sb.append(namespace);
 											sb.append(")");
 											return sb.toString();
@@ -137,7 +171,7 @@ public class WFSDescribeFeatureSource extends AbstractWFSSource<ImportProvider> 
 		// add type names
 		if (!typeNames.isEmpty()) {
 			builder.addParameter(
-					"TYPENAME",
+					paramTypenames,
 					Joiner.on(',').join(
 							Iterables.transform(typeNames, new Function<QName, String>() {
 
@@ -200,23 +234,36 @@ public class WFSDescribeFeatureSource extends AbstractWFSSource<ImportProvider> 
 					// parse namespaces
 					Map<String, String> prefixToNamespace = new HashMap<>();
 					if (namespace != null && !namespace.isEmpty()) {
-						for (String xmlns : Splitter.on(',').omitEmptyStrings().trimResults()
-								.split(namespace)) {
-							// XXX what if a namespace contains a comma?
-							if (xmlns.startsWith("xmlns(") && xmlns.endsWith(")")) {
-								String mapping = xmlns.substring("xmlns(".length(),
-										xmlns.length() - 1);
-								List<String> mp = Splitter.on('=').limit(2).trimResults()
-										.splitToList(mapping);
-								if (mp.size() == 2) {
-									prefixToNamespace.put(mp.get(0), mp.get(1));
-								}
-								else {
-									// mapping for default namespace
-									prefixToNamespace.put(XMLConstants.NULL_NS_URI, mp.get(0));
-								}
+						Pattern ex = Pattern.compile("xmlns\\((([\\w\\d]+)(=|,))?(.+)\\)");
+						Matcher matcher = ex.matcher(namespace);
+
+						while (matcher.find()) {
+							String prefix = matcher.group(2);
+							if (prefix == null) {
+								prefix = XMLConstants.DEFAULT_NS_PREFIX;
 							}
+							String ns = matcher.group(4);
+							prefixToNamespace.put(prefix, ns);
 						}
+
+						// previously used implementation below does not support
+						// comma separator inside xmlns(...)
+//						for (String xmlns : Splitter.on(',').omitEmptyStrings().trimResults()
+//								.split(namespace)) {
+//							if (xmlns.startsWith("xmlns(") && xmlns.endsWith(")")) {
+//								String mapping = xmlns.substring("xmlns(".length(),
+//										xmlns.length() - 1);
+//								List<String> mp = Splitter.on('=').limit(2).trimResults()
+//										.splitToList(mapping);
+//								if (mp.size() == 2) {
+//									prefixToNamespace.put(mp.get(0), mp.get(1));
+//								}
+//								else {
+//									// mapping for default namespace
+//									prefixToNamespace.put(XMLConstants.DEFAULT_NS_PREFIX, mp.get(0));
+//								}
+//							}
+//						}
 					}
 
 					Set<QName> elements = new HashSet<>();
