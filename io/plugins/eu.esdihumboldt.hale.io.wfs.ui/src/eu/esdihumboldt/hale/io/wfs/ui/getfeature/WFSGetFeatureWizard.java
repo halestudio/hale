@@ -147,6 +147,9 @@ public class WFSGetFeatureWizard extends ConfigurationWizard<WFSGetFeatureConfig
 			}
 
 		});
+
+		// FIXME
+		addPage(new BBOXPage<WFSGetFeatureConfig>(this));
 	}
 
 }
