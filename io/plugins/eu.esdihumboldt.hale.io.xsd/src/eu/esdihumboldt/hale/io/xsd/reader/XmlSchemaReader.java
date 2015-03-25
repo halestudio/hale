@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.MessageFormat;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -65,6 +66,8 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.io.ValueList;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractImportProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -128,6 +131,12 @@ import gnu.trove.TObjectIntHashMap;
  * @author Thorsten Reitz
  */
 public class XmlSchemaReader extends AbstractSchemaReader {
+
+	/**
+	 * Name of the parameter specifying the elements that represent mapping
+	 * relevant types.
+	 */
+	public static final String PARAM_RELEVANT_ELEMENTS = "relevantElements";
 
 	/**
 	 * The display name constraint for choices
@@ -207,13 +216,6 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 		progress.begin(Messages.getString("ApacheSchemaProvider.21"), ProgressIndicator.UNKNOWN); //$NON-NLS-1$
 		this.reporter = reporter;
 
-		// XXX cache should be used through supplier mechanism
-//		try {
-//			is = Request.getInstance().get(location);
-//		} catch (Exception e) {
-//			is = locationURL.openStream();
-//		}
-
 		XmlSchema xmlSchema = null;
 		XmlSchemaCollection schemaCol = new XmlSchemaCollection();
 		// Check if the file is located on web
@@ -229,14 +231,8 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 			schemaCol.setBaseUri(findBaseUri(location) + "/"); //$NON-NLS-1$
 		}
 		else {
-//			URIResolver resolver = schemaCol.getSchemaResolver();
-//			schemaCol.setSchemaResolver(new ProgressURIResolver((resolver == null)?(new DefaultURIResolver()):(resolver), progress));
 			schemaCol
-					.setSchemaResolver(new ProgressURIResolver(new HumboldtURIResolver(), progress)); // XXX
-																										// ok
-																										// using
-																										// this
-																										// resolver?
+					.setSchemaResolver(new ProgressURIResolver(new HumboldtURIResolver(), progress));
 			schemaCol.setBaseUri(findBaseUri(location) + "/"); //$NON-NLS-1$
 		}
 
@@ -255,14 +251,6 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 
 		// create index
 		index = new XmlIndex(namespace, location);
-
-		// add namespace prefixes
-		// XXX instead done for each schema
-//		NamespacePrefixList namespaces = xmlSchema.getNamespaceContext();
-//		Map<String, String> prefixes = index.getPrefixes();
-//		for (String prefix : namespaces.getDeclaredPrefixes()) {
-//			prefixes.put(namespaces.getNamespaceURI(prefix), prefix);
-//		}
 
 		// create group counter
 		groupCounter = new TObjectIntHashMap<String>();
@@ -295,8 +283,81 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 
 		groupCounter.clear();
 
+		// post processing
+		applyRelevantElements(index);
+
 		reporter.setSuccess(true);
 		return reporter;
+	}
+
+	/**
+	 * Apply the relevant elements setting to the given XML index.
+	 * 
+	 * @param index the XML index
+	 */
+	private void applyRelevantElements(XmlIndex index) {
+		Set<? extends QName> names = getRelevantElements();
+
+		if (names != null && !names.isEmpty()) {
+			// only apply if any elements are given
+
+			// get all currently marked relevant types
+			Set<TypeDefinition> toggleTypes = new HashSet<>(index.getMappingRelevantTypes());
+
+			boolean foundAny = false;
+			for (QName name : names) {
+				XmlElement elm = index.getElements().get(name);
+				if (elm != null) {
+					foundAny = true;
+
+					TypeDefinition type = elm.getType();
+					if (toggleTypes.contains(type)) {
+						// do not toggle -> stay relevant
+						toggleTypes.remove(type);
+					}
+					else {
+						// toggle -> become relevant
+						toggleTypes.add(type);
+					}
+				}
+			}
+
+			if (foundAny) {
+				// only apply if one of the given elements was actually found in
+				// the schema
+				index.toggleMappingRelevant(toggleTypes);
+			}
+		}
+	}
+
+	/**
+	 * Set the element names of mapping relevant types.
+	 * 
+	 * @param elementNames the element names
+	 */
+	public void setRelevantElements(Collection<? extends QName> elementNames) {
+		ValueList elementList = new ValueList();
+		for (QName name : elementNames) {
+			elementList.add(Value.of(name));
+		}
+		setParameter(PARAM_RELEVANT_ELEMENTS, elementList.toValue());
+	}
+
+	/**
+	 * @return the names of the elements configured as relevant
+	 */
+	public Set<? extends QName> getRelevantElements() {
+		Set<QName> result = new HashSet<>();
+		ValueList elementList = getParameter(PARAM_RELEVANT_ELEMENTS).as(ValueList.class);
+		if (elementList != null) {
+			for (Value val : elementList) {
+				QName name = val.as(QName.class);
+				if (name != null) {
+					result.add(name);
+				}
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -355,11 +416,8 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 
 				if (elementType != null) {
 					// the element name
-					QName elementName = new QName(namespace, element.getName()); // XXX
-																					// use
-																					// element
-																					// QName
-																					// instead?
+					// XXX use element QName instead?
+					QName elementName = new QName(namespace, element.getName());
 					// the substitution group
 					QName subGroup = element.getSubstitutionGroup();
 					// TODO do we also need an index for substitutions?
