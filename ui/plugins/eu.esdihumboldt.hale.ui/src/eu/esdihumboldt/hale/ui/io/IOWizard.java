@@ -125,7 +125,7 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 	 * 
 	 * @return the action ID
 	 */
-	protected String getActionId() {
+	public String getActionId() {
 		return actionId;
 	}
 

@@ -28,7 +28,7 @@ import eu.esdihumboldt.hale.io.wfs.ui.types.AbstractFeatureTypesPage;
 import eu.esdihumboldt.hale.ui.util.wizard.ConfigurationWizard;
 
 /**
- * Wizard for determining the transaction URL from WFS capabilities.
+ * Wizard for determining a DescribeFeatureType URL from WFS capabilities.
  * 
  * @author Simon Templer
  */

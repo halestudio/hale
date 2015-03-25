@@ -17,13 +17,19 @@ package eu.esdihumboldt.hale.io.wfs.ui.getfeature;
 
 import java.net.URISyntaxException;
 
+import javax.annotation.Nullable;
+
 import org.apache.http.client.utils.URIBuilder;
+import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
+import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.io.wfs.ui.AbstractWFSSource;
 import eu.esdihumboldt.hale.io.wfs.ui.describefeature.WFSDescribeFeatureSource;
+import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.util.io.URIFieldEditor;
 import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 
@@ -37,7 +43,7 @@ public class WFSGetFeatureSource extends AbstractWFSSource<ImportProvider> {
 	@Override
 	protected void determineSource(URIFieldEditor sourceURL) {
 		WFSGetFeatureConfig config = new WFSGetFeatureConfig();
-		WFSGetFeatureWizard wizard = new WFSGetFeatureWizard(config);
+		WFSGetFeatureWizard wizard = new WFSGetFeatureWizard(config, getSchemaSpace());
 		HaleWizardDialog dialog = new HaleWizardDialog(Display.getCurrent().getActiveShell(),
 				wizard);
 
@@ -67,6 +73,35 @@ public class WFSGetFeatureSource extends AbstractWFSSource<ImportProvider> {
 				getPage().setErrorMessage(e.getLocalizedMessage());
 			}
 		}
+	}
+
+	/**
+	 * @return the schema space of the associated action
+	 */
+	@Nullable
+	protected SchemaSpaceID getSchemaSpace() {
+		String actionID = getActionId();
+		if (actionID != null) {
+			switch (actionID) {
+			case InstanceIO.ACTION_LOAD_SOURCE_DATA:
+				return SchemaSpaceID.SOURCE;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * @return the ID of the I/O action in which context the source is used
+	 */
+	@Nullable
+	protected String getActionId() {
+		// get the parent wizard
+		IWizard wizard = getPage().getWizard();
+
+		if (wizard instanceof IOWizard<?>) {
+			return ((IOWizard<?>) wizard).getActionId();
+		}
+		return null;
 	}
 
 	@Override
