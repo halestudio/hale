@@ -58,13 +58,14 @@ public class WFSGetFeatureSource extends AbstractWFSSource<ImportProvider> {
 			builder.addParameter("REQUEST", "GetFeature");
 			// specify type names
 			if (!result.getTypeNames().isEmpty()) {
-				WFSDescribeFeatureSource.addTypeNameParameter(builder, result.getTypeNames());
+				WFSDescribeFeatureSource.addTypeNameParameter(builder, result.getTypeNames(),
+						result.getVersion());
 			}
 
 			// XXX what about other parameters? e.g.
 			// BBOX
 			// FILTER
-			// MAXFEATURES
+			// MAXFEATURES (WFS 1) / COUNT (WFS 2)
 
 			try {
 				sourceURL.setStringValue(builder.build().toASCIIString());
