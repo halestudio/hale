@@ -69,69 +69,7 @@ public class WFSDescribeFeatureSource extends AbstractWFSSource<ImportProvider> 
 			builder.addParameter("REQUEST", "DescribeFeatureType");
 			// specify type names
 			if (!result.getTypeNames().isEmpty()) {
-				// namespaces mapped to prefixes
-				Map<String, String> namespaces = new HashMap<>();
-				// type names with updated prefix
-				Set<QName> typeNames = new HashSet<>();
-
-				for (QName type : result.getTypeNames()) {
-					String prefix;
-					if (type.getNamespaceURI() != null && !type.getNamespaceURI().isEmpty()) {
-						prefix = namespaces.get(type.getNamespaceURI());
-						if (prefix == null) {
-							// no mapping yet for namespace
-							String candidate = type.getPrefix();
-							prefix = addPrefix(candidate, type.getNamespaceURI(), namespaces);
-						}
-					}
-					else {
-						// default namespace
-						prefix = XMLConstants.DEFAULT_NS_PREFIX;
-					}
-
-					// add updated type
-					typeNames.add(new QName(type.getNamespaceURI(), type.getLocalPart(), prefix));
-				}
-
-				// add namespace prefix definitions
-				if (!namespaces.isEmpty()) {
-					builder.addParameter(
-							"NAMESPACE",
-							Joiner.on(',').join(
-									Maps.transformEntries(namespaces,
-											new EntryTransformer<String, String, String>() {
-
-												@Override
-												public String transformEntry(String namespace,
-														String prefix) {
-													StringBuilder sb = new StringBuilder();
-													sb.append("xmlns(");
-													sb.append(prefix);
-													sb.append("=");
-													sb.append(namespace);
-													sb.append(")");
-													return sb.toString();
-												}
-
-											}).values()));
-				}
-				// add type names
-				if (!typeNames.isEmpty()) {
-					builder.addParameter(
-							"TYPENAME",
-							Joiner.on(',').join(
-									Iterables.transform(typeNames, new Function<QName, String>() {
-
-										@Override
-										public String apply(QName typeName) {
-											String prefix = typeName.getPrefix();
-											if (prefix == null || prefix.isEmpty()) {
-												return typeName.getLocalPart();
-											}
-											return prefix + ":" + typeName.getLocalPart();
-										}
-									})));
-				}
+				addTypeNameParameter(builder, result.getTypeNames());
 			}
 
 			try {
@@ -144,6 +82,78 @@ public class WFSDescribeFeatureSource extends AbstractWFSSource<ImportProvider> 
 	}
 
 	/**
+	 * Add typename and namespace parameters for a WFS request to the given URI
+	 * builder.
+	 * 
+	 * @param builder the builder for the WFS request URI
+	 * @param selected the type names to include
+	 */
+	public static void addTypeNameParameter(URIBuilder builder, Iterable<QName> selected) {
+		// namespaces mapped to prefixes
+		Map<String, String> namespaces = new HashMap<>();
+		// type names with updated prefix
+		Set<QName> typeNames = new HashSet<>();
+
+		for (QName type : selected) {
+			String prefix;
+			if (type.getNamespaceURI() != null && !type.getNamespaceURI().isEmpty()) {
+				prefix = namespaces.get(type.getNamespaceURI());
+				if (prefix == null) {
+					// no mapping yet for namespace
+					String candidate = type.getPrefix();
+					prefix = addPrefix(candidate, type.getNamespaceURI(), namespaces);
+				}
+			}
+			else {
+				// default namespace
+				prefix = XMLConstants.DEFAULT_NS_PREFIX;
+			}
+
+			// add updated type
+			typeNames.add(new QName(type.getNamespaceURI(), type.getLocalPart(), prefix));
+		}
+
+		// add namespace prefix definitions
+		if (!namespaces.isEmpty()) {
+			builder.addParameter(
+					"NAMESPACE",
+					Joiner.on(',').join(
+							Maps.transformEntries(namespaces,
+									new EntryTransformer<String, String, String>() {
+
+										@Override
+										public String transformEntry(String namespace, String prefix) {
+											StringBuilder sb = new StringBuilder();
+											sb.append("xmlns(");
+											sb.append(prefix);
+											sb.append("=");
+											sb.append(namespace);
+											sb.append(")");
+											return sb.toString();
+										}
+
+									}).values()));
+		}
+		// add type names
+		if (!typeNames.isEmpty()) {
+			builder.addParameter(
+					"TYPENAME",
+					Joiner.on(',').join(
+							Iterables.transform(typeNames, new Function<QName, String>() {
+
+								@Override
+								public String apply(QName typeName) {
+									String prefix = typeName.getPrefix();
+									if (prefix == null || prefix.isEmpty()) {
+										return typeName.getLocalPart();
+									}
+									return prefix + ":" + typeName.getLocalPart();
+								}
+							})));
+		}
+	}
+
+	/**
 	 * Add a new prefix.
 	 * 
 	 * @param candidate the prefix candidate
@@ -151,7 +161,7 @@ public class WFSDescribeFeatureSource extends AbstractWFSSource<ImportProvider> 
 	 * @param namespaces the current namespaces mapped to prefixes
 	 * @return the prefix to use
 	 */
-	private String addPrefix(String candidate, final String namespace,
+	private static String addPrefix(String candidate, final String namespace,
 			final Map<String, String> namespaces) {
 		int num = 1;
 		while (namespaces.values().contains(candidate)) {
@@ -246,7 +256,7 @@ public class WFSDescribeFeatureSource extends AbstractWFSSource<ImportProvider> 
 
 	@Override
 	protected String getCaption() {
-		return "WFS DescribeFeatureType request";
+		return "WFS DescribeFeatureType KVP request";
 	}
 
 }

@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.io.wfs.ui.describefeature;
+package eu.esdihumboldt.hale.io.wfs.ui.getfeature;
 
 import java.net.URI;
 import java.net.URL;
@@ -32,19 +32,19 @@ import eu.esdihumboldt.hale.ui.util.wizard.ConfigurationWizard;
  * 
  * @author Simon Templer
  */
-public class WFSDescribeFeatureWizard extends ConfigurationWizard<WFSDescribeFeatureConfig> {
+public class WFSGetFeatureWizard extends ConfigurationWizard<WFSGetFeatureConfig> {
 
 	/**
 	 * @see ConfigurationWizard#ConfigurationWizard(Object)
 	 */
-	public WFSDescribeFeatureWizard(WFSDescribeFeatureConfig configuration) {
+	public WFSGetFeatureWizard(WFSGetFeatureConfig configuration) {
 		super(configuration);
 		setWindowTitle("Determine from Capabilities");
 	}
 
 	@Override
-	protected boolean validate(WFSDescribeFeatureConfig configuration) {
-		return configuration.getDescribeFeatureUri() != null && configuration.getVersion() != null;
+	protected boolean validate(WFSGetFeatureConfig configuration) {
+		return configuration.getGetFeatureUri() != null && configuration.getVersion() != null;
 	}
 
 	@Override
@@ -54,16 +54,16 @@ public class WFSDescribeFeatureWizard extends ConfigurationWizard<WFSDescribeFea
 		/**
 		 * Page for specifying the WFS capabilities URL.
 		 */
-		AbstractWFSCapabilitiesPage<WFSDescribeFeatureConfig> capPage = new AbstractWFSCapabilitiesPage<WFSDescribeFeatureConfig>(
+		AbstractWFSCapabilitiesPage<WFSGetFeatureConfig> capPage = new AbstractWFSCapabilitiesPage<WFSGetFeatureConfig>(
 				this) {
 
 			@Override
-			protected boolean updateConfiguration(WFSDescribeFeatureConfig configuration,
+			protected boolean updateConfiguration(WFSGetFeatureConfig configuration,
 					URL capabilitiesUrl, WFSCapabilities capabilities) {
-				if (capabilities != null && capabilities.getDescribeFeatureOp() != null) {
-					WFSOperation op = capabilities.getDescribeFeatureOp();
+				if (capabilities != null && capabilities.getGetFeatureOp() != null) {
+					WFSOperation op = capabilities.getGetFeatureOp();
 
-					configuration.setDescribeFeatureUri(URI.create(op.getHttpGetUrl()));
+					configuration.setGetFeatureUri(URI.create(op.getHttpGetUrl()));
 					configuration.setVersion(capabilities.getVersion());
 					return true;
 				}
@@ -73,17 +73,17 @@ public class WFSDescribeFeatureWizard extends ConfigurationWizard<WFSDescribeFea
 		};
 		addPage(capPage);
 
-		addPage(new AbstractFeatureTypesPage<WFSDescribeFeatureConfig>(this, capPage,
-				"Optionally request schema for specific feature types only") {
+		addPage(new AbstractFeatureTypesPage<WFSGetFeatureConfig>(this, capPage,
+				"Specify the feature types to request") {
 
 			@Override
 			protected void updateState(Set<QName> selected) {
-				// any selection allowed
-				setPageComplete(true);
+				// at least one type must be specified
+				setPageComplete(!selected.isEmpty());
 			}
 
 			@Override
-			protected boolean updateConfiguration(WFSDescribeFeatureConfig configuration,
+			protected boolean updateConfiguration(WFSGetFeatureConfig configuration,
 					Set<QName> selected) {
 				configuration.getTypeNames().addAll(selected);
 				return true;
