@@ -62,6 +62,8 @@ public class WFSTarget extends AbstractTarget<WFSWriter> implements WFSConstants
 
 	@Override
 	public void createControls(Composite parent) {
+		getPage().setMessage("Please specify the WFS Transaction URL");
+
 		GridLayout layout = new GridLayout(3, false);
 		parent.setLayout(layout);
 
