@@ -162,6 +162,8 @@
             </topic>
             <topic href="html/reference/export/inspiregml_data.html" label="INSPIRE SpatialDataSet">
             </topic>
+            <topic href="html/reference/export/wfs.html" label="Transactional WFS">
+            </topic>
             <topic href="html/reference/export/jdbc.html" label="Database">
             </topic>
             <topic href="html/reference/export/xls_data.html" label="XLS">
