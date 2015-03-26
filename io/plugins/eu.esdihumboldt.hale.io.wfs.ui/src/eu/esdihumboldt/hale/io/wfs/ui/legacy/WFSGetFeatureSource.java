@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.io.gml.ui.wfs;
+package eu.esdihumboldt.hale.io.wfs.ui.legacy;
 
 import org.eclipse.swt.widgets.Composite;
 

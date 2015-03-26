@@ -13,7 +13,7 @@
  *     HUMBOLDT EU Integrated Project #030962
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
-package eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.capabilities;
+package eu.esdihumboldt.hale.io.wfs.ui.legacy.wizard.capabilities;
 
 import java.io.IOException;
 import java.net.URL;

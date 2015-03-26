@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.io.gml.ui.wfs.wizard;
+package eu.esdihumboldt.hale.io.wfs.ui.legacy.wizard;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -25,7 +25,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Display;
 import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.capabilities.GetCapabilititiesRetriever;
+import eu.esdihumboldt.hale.io.wfs.ui.legacy.wizard.capabilities.GetCapabilititiesRetriever;
 
 /**
  * 

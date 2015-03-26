@@ -13,7 +13,7 @@
  *     HUMBOLDT EU Integrated Project #030962
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
-package eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.filter;
+package eu.esdihumboldt.hale.io.wfs.ui.legacy.wizard.filter;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
