@@ -36,6 +36,7 @@ public class SelectExportWizard extends MultiWizard<ActionUIWizardPage> {
 		setWindowTitle("Export wizard");
 		setDefaultPageImageDescriptor(HALEUIPlugin.imageDescriptorFromPlugin(
 				HALEUIPlugin.PLUGIN_ID, "/icons/banner/export_wiz.png"));
+		setNeedsProgressMonitor(true);
 	}
 
 	/**
