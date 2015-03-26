@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.io.gml.ui.wfs.wizard;
+package eu.esdihumboldt.hale.io.wfs.ui.legacy.wizard;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -48,8 +48,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.filter.OGCFilterDialog;
 import eu.esdihumboldt.hale.io.wfs.ui.internal.Messages;
+import eu.esdihumboldt.hale.io.wfs.ui.legacy.wizard.filter.OGCFilterDialog;
 
 /**
  * 

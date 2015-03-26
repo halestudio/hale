@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.io.gml.ui.wfs.wizard;
+package eu.esdihumboldt.hale.io.wfs.ui.legacy.wizard;
 
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.dialogs.IPageChangeProvider;

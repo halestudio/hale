@@ -13,7 +13,7 @@
  *     HUMBOLDT EU Integrated Project #030962
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
-package eu.esdihumboldt.hale.io.gml.ui.wfs.wizard;
+package eu.esdihumboldt.hale.io.wfs.ui.legacy.wizard;
 
 import java.net.URL;
 import java.util.List;
@@ -31,8 +31,8 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
-import eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.capabilities.GetCapabilititiesRetriever;
 import eu.esdihumboldt.hale.io.wfs.ui.WFSPreferences;
+import eu.esdihumboldt.hale.io.wfs.ui.legacy.wizard.capabilities.GetCapabilititiesRetriever;
 
 /*+-------------+----------------------------------------------------------*
  *|  |  |_|_|_|_|   Fraunhofer-Institut fuer Graphische Datenverarbeitung  *

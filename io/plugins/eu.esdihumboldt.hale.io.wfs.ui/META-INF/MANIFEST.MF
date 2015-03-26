@@ -45,6 +45,6 @@ Import-Package: com.google.common.base;version="15.0.0",
  org.apache.http;version="4.2.5",
  org.apache.http.client.utils;version="4.2.6",
  org.slf4j;version="1.7.2"
-Export-Package: eu.esdihumboldt.hale.io.gml.ui.wfs
+Export-Package: eu.esdihumboldt.hale.io.wfs.ui.legacy
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.hale.io.wfs.ui.internal.WFSUIPlugin

@@ -13,7 +13,7 @@
  *     HUMBOLDT EU Integrated Project #030962
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
-package eu.esdihumboldt.hale.io.gml.ui.wfs;
+package eu.esdihumboldt.hale.io.wfs.ui.legacy;
 
 import java.net.URL;
 
@@ -24,10 +24,10 @@ import org.eclipse.swt.widgets.Composite;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
-import eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.WfsDescribeFeatureConfiguration;
-import eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.WfsDescribeFeatureWizard;
-import eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.WfsGetFeatureConfiguration;
-import eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.WfsGetFeatureWizard;
+import eu.esdihumboldt.hale.io.wfs.ui.legacy.wizard.WfsDescribeFeatureConfiguration;
+import eu.esdihumboldt.hale.io.wfs.ui.legacy.wizard.WfsDescribeFeatureWizard;
+import eu.esdihumboldt.hale.io.wfs.ui.legacy.wizard.WfsGetFeatureConfiguration;
+import eu.esdihumboldt.hale.io.wfs.ui.legacy.wizard.WfsGetFeatureWizard;
 
 /**
  * This editor can be used to select a valid {@link URL} for a WFS to retrieve
