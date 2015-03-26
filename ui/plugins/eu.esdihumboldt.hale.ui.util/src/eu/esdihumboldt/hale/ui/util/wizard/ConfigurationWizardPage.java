@@ -94,6 +94,9 @@ public abstract class ConfigurationWizardPage<T> extends WizardPage {
 				@Override
 				public void pageChanged(PageChangedEvent event) {
 					if (currentPage == ConfigurationWizardPage.this) {
+						// try to apply current configuration
+						updateConfiguration(getWizard().getConfiguration());
+
 						onHidePage();
 					}
 					currentPage = event.getSelectedPage();
