@@ -41,8 +41,13 @@ class CapabilitiesHelperTest {
 
 		// check feature types
 		assertEquals(1, caps.featureTypes.size())
-		QName ft = caps.featureTypes.iterator().next()
+		QName ft = caps.featureTypes.keySet().iterator().next()
 		assertEquals(FEATURE_TYPE_NAME, ft)
+
+		def ftInfo = caps.featureTypes[ft]
+		assertNotNull(ftInfo)
+		assertEquals('urn:ogc:def:crs:EPSG::4258', ftInfo.defaultCrs)
+		assertNotNull(ftInfo.wgs84BBox)
 	}
 
 	@Test
@@ -63,7 +68,12 @@ class CapabilitiesHelperTest {
 
 		// check feature types
 		assertEquals(1, caps.featureTypes.size())
-		QName ft = caps.featureTypes.iterator().next()
+		QName ft = caps.featureTypes.keySet().iterator().next()
 		assertEquals(FEATURE_TYPE_NAME, ft)
+
+		def ftInfo = caps.featureTypes[ft]
+		assertNotNull(ftInfo)
+		assertEquals('urn:ogc:def:crs:EPSG::4258', ftInfo.defaultCrs)
+		assertNotNull(ftInfo.wgs84BBox)
 	}
 }

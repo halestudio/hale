@@ -36,7 +36,7 @@ class WFSCapabilities {
 	/**
 	 * Qualified names mapped to exact name from list.
 	 */
-	Set<QName> featureTypes
+	Map<QName, FeatureTypeInfo> featureTypes
 
 	@Nullable
 	WFSOperation getTransactionOp() {
@@ -52,6 +52,23 @@ class WFSCapabilities {
 	WFSOperation getGetFeatureOp() {
 		operations['GetFeature']
 	}
+}
+
+@CompileStatic
+@Immutable(knownImmutableClasses = [QName.class])
+class FeatureTypeInfo {
+	QName name
+	String defaultCrs
+	BBox wgs84BBox //TODO support multiple BBs?
+}
+
+@CompileStatic
+@Immutable
+class BBox {
+	double x1
+	double y1
+	double x2
+	double y2
 }
 
 @CompileStatic

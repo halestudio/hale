@@ -15,9 +15,15 @@
 
 package eu.esdihumboldt.hale.io.wfs.capabilities
 
+import java.util.regex.Pattern
+
 import javax.xml.XMLConstants
 import javax.xml.namespace.QName
 
+import com.google.common.base.Splitter
+
+import de.fhg.igd.slf4jplus.ALogger
+import de.fhg.igd.slf4jplus.ALoggerFactory
 import eu.esdihumboldt.hale.io.wfs.WFSVersion
 
 
@@ -26,6 +32,8 @@ import eu.esdihumboldt.hale.io.wfs.WFSVersion
  * @author Simon Templer
  */
 class CapabilitiesHelper {
+
+	private static final ALogger log = ALoggerFactory.getLogger(CapabilitiesHelper)
 
 	static WFSCapabilities loadCapabilities(InputStream input) throws WFSCapabilitiesException {
 		def xml
@@ -66,7 +74,7 @@ class CapabilitiesHelper {
 		}
 
 		// feature types
-		Set<QName> featureTypes = new HashSet<>()
+		Map<QName, FeatureTypeInfo> featureTypes = [:]
 		xml.FeatureTypeList.FeatureType.each {
 			String name = it.Name.text()
 			String lp = name
@@ -80,7 +88,30 @@ class CapabilitiesHelper {
 				lp = matcher[0][2]
 			}
 			QName qn = new QName(ns, lp, prefix)
-			featureTypes.add(qn)
+
+			// determine additional information
+			String defaultCrs = it.DefaultSRS.text() // WFS 1.1
+			if (!defaultCrs) {
+				defaultCrs = it.DefaultCRS.text() // WFS 2.0
+			}
+			BBox wgs84BBox = null
+			def bb = it.WGS84BoundingBox
+			if (!bb.isEmpty()) {
+				Splitter wsSplitter = Splitter.on(Pattern.compile(/\s+/)).omitEmptyStrings().trimResults()
+				List<String> lowerCorner = wsSplitter.split(bb[0].LowerCorner.text()).toList()
+				List<String> upperCorner = wsSplitter.split(bb[0].UpperCorner.text()).toList()
+				if (lowerCorner.size() >= 2 && upperCorner.size() >= 2) {
+					try {
+						wgs84BBox = new BBox(x1: lowerCorner[0] as double, y1: lowerCorner[1] as double, x2: upperCorner[0] as double, y2: upperCorner[1] as double)
+					} catch (Exception e) {
+						log.error("Could not read WGS84 bounding box for feature type $qn", e)
+					}
+				}
+			}
+
+			FeatureTypeInfo info = new FeatureTypeInfo(qn, defaultCrs, wgs84BBox)
+
+			featureTypes.put(qn, info)
 		}
 
 		// create result
