@@ -177,7 +177,7 @@ public abstract class AbstractFeatureTypesPage<T> extends ConfigurationWizardPag
 	@Override
 	protected void onShowPage() {
 		// set input to types from capabilities
-		Set<QName> types = capabilitiesPage.getCapabilities().getFeatureTypes();
+		Set<QName> types = capabilitiesPage.getCapabilities().getFeatureTypes().keySet();
 		types = filterTypes(types);
 		viewer.setInput(types);
 
