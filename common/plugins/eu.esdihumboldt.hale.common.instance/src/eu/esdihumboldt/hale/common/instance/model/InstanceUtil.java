@@ -27,6 +27,16 @@ import javax.xml.namespace.QName;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Iterables;
+import com.google.common.primitives.Booleans;
+import com.google.common.primitives.Bytes;
+import com.google.common.primitives.Chars;
+import com.google.common.primitives.Doubles;
+import com.google.common.primitives.Floats;
+import com.google.common.primitives.Ints;
+import com.google.common.primitives.Longs;
+import com.google.common.primitives.Shorts;
+
+import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 
 /**
  * Instance utility functions.
@@ -57,10 +67,119 @@ public final class InstanceUtil {
 			return false;
 		// compare value
 		// XXX other checks than equals possible?
-		if (!Objects.equal(a.getValue(), b.getValue()))
+		if (!equals(a.getValue(), b.getValue()))
 			return false;
 		// check groups properties
 		return groupEqual(a, b, propertyOrderRelevant);
+	}
+
+	/**
+	 * Equals implementation comparing two objects, with some improvements and
+	 * adaptations.
+	 * 
+	 * @param o1 the first object
+	 * @param o2 the second object
+	 * @return if the two objects are deemed equal
+	 */
+	private static boolean equals(Object o1, Object o2) {
+		if (o1 != null && o2 != null) {
+			// special case: arrays
+			if (o1.getClass().isArray() && o2.getClass().isArray()) {
+				return arrayToList(o1).equals(arrayToList(o2));
+			}
+
+			// special case: geometry properties
+			if (o1 instanceof GeometryProperty<?> && o2 instanceof GeometryProperty<?>) {
+				GeometryProperty<?> g1 = (GeometryProperty<?>) o1;
+				GeometryProperty<?> g2 = (GeometryProperty<?>) o2;
+
+				if (g1.getGeometry() == null && g2.getGeometry() == null) {
+					return true;
+				}
+				else if (g1.getGeometry() != null && g2.getGeometry() != null) {
+					boolean crsEquals;
+					if (g1.getCRSDefinition() != null && g2.getCRSDefinition() != null) {
+						crsEquals = Objects.equal(g1.getCRSDefinition().getCRS(), g2
+								.getCRSDefinition().getCRS());
+					}
+					else {
+						crsEquals = Objects.equal(g1.getCRSDefinition(), g2.getCRSDefinition());
+					}
+
+					// XXX do conversion of geometry?
+
+					// topological comparison
+					boolean geometryEquals = g1.getGeometry().equals(g2.getGeometry());
+
+					return geometryEquals && crsEquals;
+				}
+				else {
+					return false;
+				}
+			}
+		}
+
+		return Objects.equal(o1, o2);
+	}
+
+	private static List<?> arrayToList(Object array) {
+		if (array instanceof byte[]) {
+			return Bytes.asList((byte[]) array);
+		}
+		if (array instanceof int[]) {
+			return Ints.asList((int[]) array);
+		}
+		if (array instanceof short[]) {
+			return Shorts.asList((short[]) array);
+		}
+		if (array instanceof long[]) {
+			return Longs.asList((long[]) array);
+		}
+		if (array instanceof float[]) {
+			return Floats.asList((float[]) array);
+		}
+		if (array instanceof double[]) {
+			return Doubles.asList((double[]) array);
+		}
+		if (array instanceof char[]) {
+			return Chars.asList((char[]) array);
+		}
+		if (array instanceof boolean[]) {
+			return Booleans.asList((boolean[]) array);
+		}
+		return Arrays.asList((Object[]) array);
+	}
+
+	/**
+	 * Check if an instance is present in the given candidates. If found, will
+	 * remove the match from the candidates collection.
+	 * 
+	 * @param instance the instance to test
+	 * @param candidates the candidates to compare the instance against
+	 * @return the error message if the check failed, otherwise
+	 *         <code>null</code>
+	 */
+	public static String checkInstance(Instance instance, Collection<Instance> candidates) {
+		boolean found = false;
+		Iterator<Instance> candidatesIter = candidates.iterator();
+		while (!found && candidatesIter.hasNext()) {
+			if (InstanceUtil.instanceEqual(instance, candidatesIter.next(), false)) {
+				candidatesIter.remove();
+				found = true;
+			}
+		}
+		if (!found) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("Could not find matching instance for: \n");
+			sb.append(InstanceUtil.instanceToString(instance));
+			sb.append("\n inside the available ones: \n");
+			for (Instance candidate : candidates) {
+				sb.append(InstanceUtil.instanceToString(candidate));
+			}
+			String message = sb.toString();
+			return message;
+		}
+		return null;
 	}
 
 	/**
@@ -70,7 +189,7 @@ public final class InstanceUtil {
 	 * @param b the second group
 	 * @param propertyOrderRelevant whether the order of properties of the same
 	 *            name is relevant or not
-	 * @return true, iff both groups are equal to each
+	 * @return true, if both groups are equal to each
 	 */
 	public static boolean groupEqual(Group a, Group b, boolean propertyOrderRelevant) {
 		if (a == b)
@@ -132,7 +251,7 @@ public final class InstanceUtil {
 			if (b instanceof Group && groupEqual((Group) a, (Group) b, propertyOrderRelevant))
 				return true;
 		}
-		else if (Objects.equal(a, b))
+		else if (equals(a, b))
 			return true;
 
 		return false;
@@ -176,8 +295,14 @@ public final class InstanceUtil {
 					representation = instanceToString((Instance) propertyValue);
 				else if (propertyValue instanceof Group)
 					representation = groupToString((Group) propertyValue);
-				else if (propertyValue != null)
-					representation = propertyValue.toString();
+				else if (propertyValue != null) {
+					if (propertyValue.getClass().isArray()) {
+						representation = arrayToList(propertyValue).toString();
+					}
+					else {
+						representation = propertyValue.toString();
+					}
+				}
 				else
 					representation = "<null>";
 				builder.append(indent(representation)).append('\n');

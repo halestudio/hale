@@ -19,6 +19,8 @@ package eu.esdihumboldt.hale.common.instance.geometry;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.ReferenceIdentifier;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -46,9 +48,11 @@ public abstract class CRSDefinitionUtil {
 	 * system.
 	 * 
 	 * @param crs the coordinate reference system
+	 * @param cache the cache for CRS resolving
 	 * @return the CRS definition
 	 */
-	public static CRSDefinition createDefinition(CoordinateReferenceSystem crs) {
+	public static CRSDefinition createDefinition(CoordinateReferenceSystem crs,
+			@Nullable CRSResolveCache cache) {
 		ReferenceIdentifier name = crs.getName();
 		// try by code
 		if (name != null) {
@@ -61,6 +65,14 @@ public abstract class CRSDefinitionUtil {
 				} catch (Exception e) {
 					// ignore
 				}
+			}
+		}
+
+		// try to find CRS in EPSG DB
+		if (cache != null) {
+			CRSDefinition def = cache.resolveCRS(crs);
+			if (def != null) {
+				return def;
 			}
 		}
 

@@ -7,10 +7,87 @@
             class="eu.esdihumboldt.hale.io.wfs.SimpleWFSWriter"
             description="Upload to a remote service via WFS-T"
             id="eu.esdihumboldt.hale.io.wfs.write"
-            name="WFS-T (Direct upload)">
+            name="WFS-T (Direct upload) [experimental]">
          <contentType
                ref="eu.esdihumboldt.hale.io.wfs-t">
          </contentType>
+         <providerParameter
+               label="WFS Version"
+               name="wfsVersion"
+               optional="false">
+            <parameterEnumeration>
+               <enumerationValue
+                     value="1.1.0">
+               </enumerationValue>
+               <enumerationValue
+                     value="2.0.0">
+               </enumerationValue>
+            </parameterEnumeration>
+            <valueDescriptor
+                  sample="2.0.0">
+            </valueDescriptor>
+         </providerParameter>
+      </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.wfs.file.WFS2FCWriter"
+            id="eu.esdihumboldt.hale.io.wfs.fc.write-2.0"
+            name="GML (WFS 2.0 FeatureCollection)">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.gml">
+         </contentType>
+         <contentType
+               ref="eu.esdihumboldt.hale.io.gml.gzip">
+         </contentType>
+      </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.wfs.file.WFS11FCWriter"
+            id="eu.esdihumboldt.hale.io.wfs.fc.write-1.1.0"
+            name="GML (WFS 1.1.0 FeatureCollection)">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.gml">
+         </contentType>
+         <contentType
+               ref="eu.esdihumboldt.hale.io.gml.gzip">
+         </contentType>
+      </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.wfs.PartitioningWFSWriter"
+            description="Upload to a remote service via WFS-T"
+            id="eu.esdihumboldt.hale.io.wfs.write.partitioned"
+            name="WFS-T (Partitioned upload) [experimental]">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.wfs-t">
+         </contentType>
+         <providerParameter
+               label="WFS Version"
+               name="wfsVersion"
+               optional="false">
+            <parameterEnumeration>
+               <enumerationValue
+                     value="1.1.0">
+               </enumerationValue>
+               <enumerationValue
+                     value="2.0.0">
+               </enumerationValue>
+            </parameterEnumeration>
+            <valueDescriptor
+                  sample="2.0.0">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Guiding value for instances per request. The number will be exceeded only in cases where there are too many interelated instances that cannot be separated."
+               label="Instances per request"
+               name="instancesPerRequest"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Integer">
+            </parameterBinding>
+            <valueDescriptor
+                  default="15000"
+                  defaultDescription="By default it will be tried to send 15000 instances per request."
+                  sample="1000">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
    </extension>
    <extension

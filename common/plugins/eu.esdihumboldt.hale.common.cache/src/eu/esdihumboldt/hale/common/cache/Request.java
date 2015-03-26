@@ -285,11 +285,38 @@ public class Request {
 			HttpClientBuilder builder = ClientUtil.threadSafeHttpClientBuilder();
 			builder = ProxyUtil.applyProxy(builder, proxy);
 
-			// set timeout
-			// 3 seconds socket timeout
-			SocketConfig socketconfig = SocketConfig.custom().setSoTimeout(3000).build();
-			// 3 seconds connections timeout
-			RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(3000).build();
+			// set timeouts
+
+			// determine from Oracle VM specific system properties, see
+			// http://docs.oracle.com/javase/7/docs/technotes/guides/net/properties.html
+			int connectTimeout;
+			String cts = System.getProperty("sun.net.client.defaultConnectTimeout");
+			try {
+				connectTimeout = Integer.parseInt(cts);
+			} catch (Exception e) {
+				// fall back to default
+				connectTimeout = 10000;
+			}
+			int socketTimeout;
+			String sts = System.getProperty("sun.net.client.defaultReadTimeout");
+			try {
+				socketTimeout = Integer.parseInt(sts);
+			} catch (Exception e) {
+				// fall back to default
+				socketTimeout = 20000;
+			}
+
+			// socket timeout
+			/*
+			 * Unclear when this setting would apply (doc says for non-blocking
+			 * I/O operations), it does not seem to be applied for requests as
+			 * done in openStream (instead the value in
+			 * RequestConfig.socketTimeout is used)
+			 */
+			SocketConfig socketconfig = SocketConfig.custom().setSoTimeout(socketTimeout).build();
+			// connection and socket timeout
+			RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(socketTimeout)
+					.setConnectTimeout(connectTimeout).build();
 
 			client = builder.setDefaultRequestConfig(requestConfig)
 					.setDefaultSocketConfig(socketconfig).build();

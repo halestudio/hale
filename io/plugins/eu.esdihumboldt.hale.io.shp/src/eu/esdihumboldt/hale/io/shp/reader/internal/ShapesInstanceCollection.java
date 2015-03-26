@@ -39,7 +39,9 @@ import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.instance.geometry.CRSDefinitionUtil;
 import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider;
+import eu.esdihumboldt.hale.common.instance.geometry.CRSResolveCache;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
+import eu.esdihumboldt.hale.common.instance.geometry.impl.EPSGResolveCache;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -157,7 +159,7 @@ public class ShapesInstanceCollection implements InstanceCollection2 {
 
 					CRSDefinition crsDef;
 					if (crs != null) {
-						crsDef = CRSDefinitionUtil.createDefinition(crs);
+						crsDef = CRSDefinitionUtil.createDefinition(crs, crsCache);
 					}
 					else {
 						// ask CRS provider
@@ -214,6 +216,11 @@ public class ShapesInstanceCollection implements InstanceCollection2 {
 	private final TypeDefinition type;
 	private final SimpleFeatureSource source;
 	private final String fileName;
+
+	/**
+	 * Cache for resolved CRSs
+	 */
+	protected final CRSResolveCache crsCache = new EPSGResolveCache();
 
 	/**
 	 * Data store for accessing simple features (from a Shapefile).

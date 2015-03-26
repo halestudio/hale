@@ -41,27 +41,22 @@
                ref="eu.esdihumboldt.hale.io.inspiregml.writer">
          </provider>
       </configPage>
-   </extension>
-   <extension
-         point="eu.esdihumboldt.hale.ui.io.source">
-      <source
-            class="eu.esdihumboldt.hale.io.gml.ui.wfs.WFSDescribeFeatureSource"
-            contentType="eu.esdihumboldt.hale.io.xsd"
-            description="Load a XML schema using a WFS DescribeFeatureType request"
-            icon="icons/service.gif"
-            id="eu.esdihumboldt.hale.io.gml.ui.source.wfs.schema"
-            name="WFS"
-            priority="0">
-      </source>
-      <source
-            class="eu.esdihumboldt.hale.io.gml.ui.wfs.WFSGetFeatureSource"
-            contentType="eu.esdihumboldt.hale.io.gml"
-            description="Load GML data using a WFS GetFeature request"
-            icon="icons/service.gif"
-            id="eu.esdihumboldt.hale.io.gml.ui.source.wfs.instance"
-            name="WFS"
-            priority="0">
-      </source>
+      <configPage
+            class="eu.esdihumboldt.hale.io.gml.ui.GmlWriterSettingsPage"
+            order="10">
+         <provider
+               ref="eu.esdihumboldt.hale.io.xml.writer">
+         </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.citygml.writer">
+         </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.gml.writer">
+         </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.inspiregml.writer">
+         </provider>
+      </configPage>
    </extension>
 
 </plugin>

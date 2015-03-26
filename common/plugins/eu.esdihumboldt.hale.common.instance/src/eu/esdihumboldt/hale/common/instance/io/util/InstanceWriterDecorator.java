@@ -65,4 +65,9 @@ public abstract class InstanceWriterDecorator<T extends InstanceWriter> extends
 		internalProvider.checkCompatibility();
 	}
 
+	@Override
+	public boolean isPassthrough() {
+		return internalProvider.isPassthrough();
+	}
+
 }

@@ -30,6 +30,8 @@
       </topic>
    </topic>
    <topic label="Getting Started">
+      <topic href="html/getting_started/help.html" label="How to use the HALE help">
+      </topic>
       <topic href="html/getting_started/main_workflow.html" label="First steps in HALE">
       </topic>
       <topic href="html/getting_started/confWorkbench.html" label="Configuring your workbench">
@@ -159,6 +161,10 @@
             <topic href="html/reference/export/citygml_data.html" label="CityGML">
             </topic>
             <topic href="html/reference/export/inspiregml_data.html" label="INSPIRE SpatialDataSet">
+            </topic>
+            <topic href="html/reference/export/wfs.html" label="Transactional WFS">
+            </topic>
+            <topic href="html/reference/export/jdbc.html" label="Database">
             </topic>
             <topic href="html/reference/export/xls_data.html" label="XLS">
             </topic>

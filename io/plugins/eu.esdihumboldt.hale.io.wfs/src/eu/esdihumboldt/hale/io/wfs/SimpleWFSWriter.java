@@ -20,22 +20,48 @@ import eu.esdihumboldt.hale.io.gml.writer.XmlWrapper;
 import eu.esdihumboldt.hale.io.wfs.transactions.WFSInsert;
 
 /**
- * XXX Simple WFS writer that is not configurable.
+ * Simple WFS writer that is not configurable that writes directly to the
+ * service endpoint via HTTP Post.
  * 
  * @author Simon Templer
  */
 public class SimpleWFSWriter extends AbstractWFSWriter<GmlInstanceWriter> {
 
 	/**
+	 * Name of the parameter specifying the data's input format.
+	 */
+	public static final String PARAM_INPUT_FORMAT = "inputFormat";
+
+	/**
+	 * Name of the parameter specifying the ID generation strategy.
+	 */
+	public static final String PARAM_ID_GEN = "idgen";
+
+	/**
+	 * Default input format to use if none is provided.
+	 */
+	public static final String DEFAULT_INPUT_FORMAT = "text/xml; subtype=gml/3.2.1";
+
+	/**
 	 * Default constructor.
 	 */
 	public SimpleWFSWriter() {
-		super(new GmlInstanceWriter());
+		super(new GmlInstanceWriter() {
+
+			@Override
+			protected String getTaskName() {
+				return "WFS-T Insert transaction";
+			}
+
+		});
 	}
 
 	@Override
 	protected XmlWrapper createTransaction() {
-		return new WFSInsert(WFSVersion.V2_0_0);
+		String idgen = getParameter(PARAM_ID_GEN).as(String.class);
+		String inputFormat = getParameter(PARAM_INPUT_FORMAT)
+				.as(String.class, DEFAULT_INPUT_FORMAT);
+		return new WFSInsert(getWFSVersion(), idgen, inputFormat);
 	}
 
 }

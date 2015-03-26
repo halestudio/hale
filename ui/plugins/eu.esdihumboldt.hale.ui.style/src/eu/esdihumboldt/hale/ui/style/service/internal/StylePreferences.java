@@ -86,10 +86,18 @@ public class StylePreferences extends AbstractPreferenceInitializer implements
 	public static Color getDefaultColor(DataSet dataSet) {
 		switch (dataSet) {
 		case TRANSFORMED:
-			return getColor(KEY_TRANSFORMED_DEFAULT_COLOR);
+			Color transformedColor = getColor(KEY_TRANSFORMED_DEFAULT_COLOR);
+			if (transformedColor == null) {
+				transformedColor = SwingRcpUtilities.convertToColor(TRANSFORMED_DEFAULT_COLOR);
+			}
+			return transformedColor;
 		case SOURCE:
 		default:
-			return getColor(KEY_SOURCE_DEFAULT_COLOR);
+			Color sourceColor = getColor(KEY_SOURCE_DEFAULT_COLOR);
+			if (sourceColor == null) {
+				sourceColor = SwingRcpUtilities.convertToColor(SOURCE_DEFAULT_COLOR);
+			}
+			return sourceColor;
 		}
 	}
 
@@ -109,7 +117,11 @@ public class StylePreferences extends AbstractPreferenceInitializer implements
 	 * @return the selection color
 	 */
 	public static Color getSelectionColor() {
-		return getColor(KEY_SELECTION_COLOR);
+		Color result = getColor(KEY_SELECTION_COLOR);
+		if (result == null) {
+			result = SwingRcpUtilities.convertToColor(DEFAULT_SELECTION_COLOR);
+		}
+		return result;
 	}
 
 	/**

@@ -45,12 +45,14 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.SubtaskProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
+import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractGeoInstanceWriter;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.Group;
@@ -109,6 +111,12 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 	public static final String PARAM_SIMPLIFY_GEOMETRY = "gml.geometry.simplify";
 
 	/**
+	 * The parameter name for the flag specifying if the output should be
+	 * indented. Defaults to <code>false</code>.
+	 */
+	public static final String PARAM_PRETTY_PRINT = "xml.pretty";
+
+	/**
 	 * The XML stream writer
 	 */
 	private XMLStreamWriter writer;
@@ -131,7 +139,8 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 	/**
 	 * Additional schemas included in the document
 	 */
-	private final List<Schema> additionalSchemas = new ArrayList<Schema>();
+	private final Map<String, Locatable> additionalSchemas = new HashMap<>();
+	private final Map<String, String> additionalSchemaPrefixes = new HashMap<>();
 
 	/**
 	 * States if a feature collection shall be used
@@ -172,6 +181,35 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 		this.documentWrapper = documentWrapper;
 	}
 
+	@Override
+	public List<? extends Locatable> getValidationSchemas() {
+		List<Locatable> result = new ArrayList<Locatable>();
+		result.addAll(super.getValidationSchemas());
+
+		for (Locatable schema : additionalSchemas.values()) {
+			result.add(schema);
+		}
+
+		return result;
+	}
+
+	/**
+	 * Add a schema that should be included for validation. Should be called
+	 * before or in
+	 * {@link #write(InstanceCollection, ProgressIndicator, IOReporter)} prior
+	 * to writing the schema locations, but after {@link #init(IOReporter)}
+	 * 
+	 * @param namespace the schema namespace
+	 * @param schema the schema location
+	 * @param prefix the desired namespace prefix, may be <code>null</code>
+	 */
+	protected void addValidationSchema(String namespace, Locatable schema, @Nullable String prefix) {
+		additionalSchemas.put(namespace, schema);
+		if (prefix != null) {
+			additionalSchemaPrefixes.put(namespace, prefix);
+		}
+	}
+
 	/**
 	 * @see AbstractIOProvider#execute(ProgressIndicator, IOReporter)
 	 */
@@ -187,7 +225,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 
 		try {
 			write(getInstances(), progress, reporter);
-			reporter.setSuccess(true);
+			reporter.setSuccess(reporter.getErrors().isEmpty());
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
 			reporter.setSuccess(false);
@@ -209,6 +247,11 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 //		result.addAll(additionalSchemas);
 //		return result;
 //	}
+
+	@Override
+	public boolean isPassthrough() {
+		return true;
+	}
 
 	/**
 	 * @see AbstractInstanceWriter#validate()
@@ -307,6 +350,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 		geometryWriter = null;
 		// reset additional schemas
 		additionalSchemas.clear();
+		additionalSchemaPrefixes.clear();
 
 		// create and set-up a writer
 		XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
@@ -352,8 +396,13 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 			documentWrapper.configure(tmpWriter, reporter);
 		}
 
-		// TODO make configurable if indendation is used
-		writer = new IndentingXMLStreamWriter(tmpWriter);
+		// prettyPrint if enabled
+		if (isPrettyPrint()) {
+			writer = new IndentingXMLStreamWriter(tmpWriter);
+		}
+		else {
+			writer = tmpWriter;
+		}
 
 		// determine GML namespace from target schema
 		String gml = null;
@@ -377,6 +426,23 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 		}
 
 		return outStream;
+	}
+
+	/**
+	 * @return if the output should be pretty printed
+	 */
+	public boolean isPrettyPrint() {
+		return getParameter(PARAM_PRETTY_PRINT).as(Boolean.class, false);
+	}
+
+	/**
+	 * Set if the output should be pretty printed.
+	 * 
+	 * @param prettyPrint <code>true</code> if the output should be indented,
+	 *            <code>false</code> otherwise
+	 */
+	public void setPrettyPrint(boolean prettyPrint) {
+		setParameter(PARAM_PRETTY_PRINT, Value.of(prettyPrint));
 	}
 
 	/**
@@ -415,7 +481,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 		};
 		progress = sub;
 
-		progress.begin("Generating " + getTypeName(), instances.size());
+		progress.begin(getTaskName(), instances.size());
 
 		XmlElement container = findDefaultContainter(targetIndex, reporter);
 
@@ -432,6 +498,11 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 			throw new IllegalStateException("No root element/container found");
 		}
 
+		// additional schema namespace prefixes
+		for (Entry<String, String> schemaNs : additionalSchemaPrefixes.entrySet()) {
+			GmlWriterUtil.addNamespace(writer, schemaNs.getKey(), schemaNs.getValue());
+		}
+
 		writer.writeStartDocument();
 		if (documentWrapper != null) {
 			documentWrapper.startWrap(writer, reporter);
@@ -446,11 +517,11 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 		locations.append(targetIndex.getNamespace());
 		locations.append(" "); //$NON-NLS-1$
 		locations.append(targetIndex.getLocation().toString());
-		for (Schema schema : additionalSchemas) {
+		for (Entry<String, Locatable> schema : additionalSchemas.entrySet()) {
 			locations.append(" "); //$NON-NLS-1$
-			locations.append(schema.getNamespace());
+			locations.append(schema.getKey());
 			locations.append(" "); //$NON-NLS-1$
-			locations.append(schema.getLocation().toString());
+			locations.append(schema.getValue().getLocation().toString());
 		}
 		writer.writeAttribute(SCHEMA_INSTANCE_NS, "schemaLocation", locations.toString()); //$NON-NLS-1$
 
@@ -529,6 +600,13 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 		writer.writeEndDocument();
 
 		writer.close();
+	}
+
+	/**
+	 * @return the execution task name
+	 */
+	protected String getTaskName() {
+		return "Generating " + getTypeName();
 	}
 
 	/**
@@ -631,7 +709,8 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 
 						// add as additional schema, replace location for
 						// verification
-						additionalSchemas.add(new SchemaDecorator(wfsSchema) {
+						additionalSchemas.put(wfsSchema.getNamespace(), new SchemaDecorator(
+								wfsSchema) {
 
 							@Override
 							public URI getLocation() {
@@ -932,7 +1011,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 				if (pair != null) {
 					String srsName = extractCode(pair.getSecond());
 					// write geometry
-					writeGeometry(pair.getFirst(), propDef, srsName);
+					writeGeometry(pair.getFirst(), propDef, srsName, report);
 				}
 				else {
 					// simple element with value
@@ -956,7 +1035,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 			if (!hasValue && pair != null) {
 				String srsName = extractCode(pair.getSecond());
 				// write geometry
-				writeGeometry(pair.getFirst(), propDef, srsName);
+				writeGeometry(pair.getFirst(), propDef, srsName, report);
 			}
 			else {
 				// write all children (no elements if there is a value)
@@ -1003,12 +1082,13 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 	 * @param geometry the geometry
 	 * @param property the geometry property
 	 * @param srsName the common SRS name, may be <code>null</code>
+	 * @param report the reporter
 	 * @throws XMLStreamException if an error occurs writing the geometry
 	 */
-	private void writeGeometry(Geometry geometry, PropertyDefinition property, String srsName)
-			throws XMLStreamException {
+	private void writeGeometry(Geometry geometry, PropertyDefinition property, String srsName,
+			IOReporter report) throws XMLStreamException {
 		// write geometries
-		getGeometryWriter().write(writer, geometry, property, srsName);
+		getGeometryWriter().write(writer, geometry, property, srsName, report);
 	}
 
 	/**

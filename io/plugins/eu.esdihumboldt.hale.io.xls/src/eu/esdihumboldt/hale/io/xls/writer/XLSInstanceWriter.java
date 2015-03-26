@@ -145,6 +145,11 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 		return reporter;
 	}
 
+	@Override
+	public boolean isPassthrough() {
+		return true;
+	}
+
 	/**
 	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#getDefaultTypeName()
 	 */

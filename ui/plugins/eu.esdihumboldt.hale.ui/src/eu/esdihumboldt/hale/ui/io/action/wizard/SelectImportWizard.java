@@ -36,6 +36,7 @@ public class SelectImportWizard extends MultiWizard<ActionUIWizardPage> {
 		setWindowTitle("Import wizard");
 		setDefaultPageImageDescriptor(HALEUIPlugin.imageDescriptorFromPlugin(
 				HALEUIPlugin.PLUGIN_ID, "/icons/banner/import_wiz.png"));
+		setNeedsProgressMonitor(true);
 	}
 
 	/**

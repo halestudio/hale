@@ -119,16 +119,8 @@ public abstract class AbstractGeometryWriter<T extends Geometry> extends Abstrac
 	 */
 	@Override
 	protected boolean verifyEndPoint(TypeDefinition endPoint) {
-		for (PropertyDefinition attribute : DefinitionUtil.getAllProperties(endPoint)) { // XXX
-																							// is
-																							// this
-																							// enough?
-																							// or
-																							// must
-																							// groups
-																							// be
-																							// handled
-																							// explicitly?
+		for (PropertyDefinition attribute : DefinitionUtil.getAllProperties(endPoint)) {
+			// XXX is this enough? or must groups be handled explicitly?
 			if (SUPPORTED_COORDINATES_TYPES.contains(attribute.asProperty().getPropertyType()
 					.getName().getLocalPart())) {
 				// a valid property was found
@@ -266,16 +258,8 @@ public abstract class AbstractGeometryWriter<T extends Geometry> extends Abstrac
 		String setDelimiter = " "; //$NON-NLS-1$
 
 		// check for DirectPositionListType
-		for (PropertyDefinition att : DefinitionUtil.getAllProperties(elementType)) { // XXX
-																						// is
-																						// this
-																						// enough?
-																						// or
-																						// must
-																						// groups
-																						// be
-																						// handled
-																						// explicitly?
+		for (PropertyDefinition att : DefinitionUtil.getAllProperties(elementType)) {
+			// XXX is this enough? or must groups be handled explicitly?
 			if (att.getPropertyType().getName().equals(new QName(gmlNs, "DirectPositionListType"))) { //$NON-NLS-1$
 				listAttribute = att;
 				break;
@@ -322,6 +306,24 @@ public abstract class AbstractGeometryWriter<T extends Geometry> extends Abstrac
 		else {
 			return false;
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public boolean accepts(Geometry geometry) {
+		return geometryType.isInstance(geometry) && checkValid((T) geometry);
+	}
+
+	/**
+	 * Check if the given geometry is valid to be written by this writer.
+	 * 
+	 * @param geometry the geometry to check
+	 * @return if the geometry is valid, the default implementation just returns
+	 *         <code>true</code>
+	 */
+	protected boolean checkValid(T geometry) {
+		// override me
+		return true;
 	}
 
 }

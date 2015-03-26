@@ -18,7 +18,96 @@
 		file parser in HALE 2.8 and earlier is very strict and fails if it
 		encounters anything unknown.</p>
 
+	<!-- 2.9.1 -->
+	<h2 id="2_9_1_Header">2.9.1</h2>
+	<p>HALE 2.9.1 is a maintenance release with a few tweaks and bug
+		fixes, but also some experimental features that were added.</p>
+	<table border="0" cellpadding="15" cellspacing="0" class="news"
+		id="2_9_1">
+		<tbody>
+			
+			<!-- Experimental features -->
+			<tr>
+				<td class="section" colspan="2" id="2_9_1_EXP" rowspan="1"><h2>Experimental features</h2></td>
+			</tr>
+
+			<tr id="wfs_publish">
+				<td class="title">Publish to WFS</td>
+				<td class="content">Publish GML to a transactional Web Feature
+					Service, for instance for publishing INSPIRE data to a <a
+					href="http://www.deegree.org/" target="_blank">deegree</a> server.
+					<p>
+						Please see the <i><a
+							href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/reference/export/wfs.html">Transactional
+								WFS</a></i> help topic for information on usage and limitations.
+					</p>
+				</td>
+			</tr>
+
+			<tr id="db_export">
+				<td class="title">Database export</td>
+				<td class="content">Experimental support for writing to
+					databases via JDBC.
+					<p>
+						Please see the <i><a
+							href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/reference/export/jdbc.html">Database
+								export</a></i> help topic for information on usage and limitations.
+					</p>
+				</td>
+			</tr>
+
+			<tr id="schema_update">
+				<td class="title">Schema update</td>
+				<td class="content">A new option in the menu allows to replace
+					the schema for an existing project (e.g. updating from a schema to
+					a new version). The migration dialog allows to update the mapping
+					accordingly. We are still working on an improved UI and currently
+					only updating the target schema is possible.</td>
+			</tr>
+			
+			<!-- Tweaks and bug fixes -->
+			<tr>
+				<td class="section" colspan="2" id="2_9_1_TWX" rowspan="1"><h2>Tweaks &amp; bug fixes</h2></td>
+			</tr>
+			
+			<tr id="wfs_reloaded">
+				<td class="title">Better support for accessing data provided via WFS</td>
+				<td class="content">The user interface to construct WFS <i>DescribeFeatureType</i>
+					and <i>GetFeature</i> URLs for loading schemas and data has been
+					improved. It now supports WFS 2.0 and providing a Bounding Box for
+					loading data.
+				</td>
+			</tr>
+			
+			<tr id="tweaks_2_9_1">
+				<td class="title">Minor tweaks</td>
+				<td class="content">
+					<ul>
+						<li>Pretty printing of XML/GML disabled by default - configurable for the export</li>
+						<li>Code lists loaded from the INSPIRE registry now display values in the system language if possible</li>
+						<li>Support for export of GML files using WFS FeatureCollection as container</li>
+						<li>Added <i>Aggregate</i> function for smart aggregation of geometries</li>
+						<li>Prefer MultiSurface over CompositeSurface when encoding MultiPolygons as GML</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr id="fixes_2_9_1">
+				<td class="title">Bug fixes</td>
+				<td class="content">
+					<ul>
+						<li>Fixed GML encoding of curve geometries - invalid curve geometries will give an error during export</li>
+						<li>Fixed UI for <i>Classification</i> and <i>Bound Assign functions</i></li>
+						<li>Added general timeouts for HTTP requests, timeouts are now configurable via system properties</li>
+					</ul>
+				</td>
+			</tr>
+			
+		</tbody>
+	</table>
+
 	<!-- 2.9.0 -->
+	<h2 id="2_9_0_Header">2.9.0</h2>
 	<table border="0" cellpadding="15" cellspacing="0" class="news"
 		id="2_9_0">
 		<tbody>

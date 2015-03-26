@@ -576,7 +576,7 @@ public class TypeStructureTray extends DialogTray implements GroovyConstants {
 
 			StringBuilder example = new StringBuilder();
 			example.append(GroovyConstants.BINDING_TARGET);
-			example.append(" = {\n");
+			example.append(" {\n");
 
 			int indentCount = 1;
 			for (PathTree tree : properties) {

@@ -111,12 +111,27 @@ public class StyledMapView extends MapView {
 
 		super.createPartControl(parent);
 
-		Control mainControl;
+		Control mainControl = null;
 
 		// try to get the Swing embedding composite
 		Control[] children = parent.getChildren();
 		if (children != null && children.length > 0) {
-			mainControl = children[0];
+			for (Control child : children) {
+				// find based on class name (class from CityServer3D)
+				if (child.getClass().getSimpleName().equals("SwingComposite")) {
+					mainControl = child;
+					break;
+				}
+			}
+			if (mainControl == null) {
+				if (children.length >= 2) {
+					// Eclipse 4 - the first composite is the toolbar
+					mainControl = children[0];
+				}
+				else {
+					mainControl = children[0];
+				}
+			}
 		}
 		else {
 			mainControl = parent;

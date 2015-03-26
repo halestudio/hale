@@ -88,7 +88,11 @@ public class GroovyScriptPage extends SourceViewerPage<GroovyAST> implements Gro
 	 * Default constructor.
 	 */
 	public GroovyScriptPage() {
-		super("groovyScript", PARAMETER_SCRIPT, BINDING_TARGET + " {\n\t\n}",
+		super("groovyScript", PARAMETER_SCRIPT,
+		// use empty default value because we don't know in advance if the
+		// target is complex
+				"",
+				// BINDING_TARGET + " {\n\t\n}",
 				new GroovyASTSourceCompiler());
 	}
 

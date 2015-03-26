@@ -17,9 +17,8 @@
 package eu.esdihumboldt.cst.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -86,25 +85,8 @@ public abstract class AbstractTransformationTest {
 				if (transformedData.isEmpty())
 					continue;
 
-				Iterator<Instance> transformedIter = transformedData.iterator();
-				boolean found = false;
-				while (!found && transformedIter.hasNext()) {
-					if (InstanceUtil.instanceEqual(targetInstance, transformedIter.next(), false)) {
-						transformedIter.remove();
-						found = true;
-					}
-				}
-				if (!found) {
-					StringBuilder sb = new StringBuilder();
-					sb.append("Could not find matching instance for: \n");
-					sb.append(InstanceUtil.instanceToString(targetInstance));
-					sb.append("\n inside the available ones: \n");
-					for (Instance transformedInstance : transformedData) {
-						sb.append(InstanceUtil.instanceToString(transformedInstance));
-					}
-					String message = sb.toString();
-					assertTrue(message, found);
-				}
+				String error = InstanceUtil.checkInstance(targetInstance, transformedData);
+				assertNull(error, error);
 			}
 		} finally {
 			targetIter.close();

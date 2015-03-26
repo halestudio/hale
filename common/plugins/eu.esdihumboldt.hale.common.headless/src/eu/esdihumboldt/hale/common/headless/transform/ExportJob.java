@@ -31,7 +31,7 @@ import eu.esdihumboldt.hale.common.core.report.ReportHandler;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 
 /**
- * Job for exporting transformed data supplied in a {@link LimboInstanceSink}.
+ * Job for exporting transformed data supplied in a {@link TransformationSink}.
  * 
  * @author Kai Schwierczek
  * @author Simon Templer
@@ -40,7 +40,7 @@ public class ExportJob extends AbstractTransformationJob {
 
 	private static final ALogger log = ALoggerFactory.getLogger(ExportJob.class);
 
-	private LimboInstanceSink targetSink;
+	private TransformationSink targetSink;
 	private InstanceWriter writer;
 	private IOAdvisor<InstanceWriter> advisor;
 	private ReportHandler reportHandler;
@@ -54,7 +54,7 @@ public class ExportJob extends AbstractTransformationJob {
 	 * @param advisor the advisor, to handle the results
 	 * @param reportHandler the report handler
 	 */
-	public ExportJob(LimboInstanceSink targetSink, InstanceWriter writer,
+	public ExportJob(TransformationSink targetSink, InstanceWriter writer,
 			IOAdvisor<InstanceWriter> advisor, ReportHandler reportHandler) {
 		super("Encoding");
 
@@ -122,8 +122,9 @@ public class ExportJob extends AbstractTransformationJob {
 		}
 		else {
 			reset();
-			log.userError(report.getSummary());
-			return ERROR_STATUS;
+			log.error(report.getSummary());
+			return new Status(Status.ERROR, "eu.esdihumboldt.hale.common.headless",
+					report.getSummary(), null);
 		}
 	}
 
@@ -133,6 +134,9 @@ public class ExportJob extends AbstractTransformationJob {
 	 * Necessary as jobs are referenced by the job manager even after execution.
 	 */
 	private void reset() {
+		if (targetSink != null) {
+			targetSink.dispose();
+		}
 		writer = null;
 		targetSink = null;
 		advisor = null;

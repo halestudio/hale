@@ -226,17 +226,36 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 				String scheme = pathUri.getScheme();
 				LocatableInputSupplier<? extends InputStream> input = null;
 				if (scheme != null) {
-					if (includeWebResources || // web resources are OK
-							!(scheme.equals("http") || scheme.equals("https"))
-					// or not a web resource
-					) {
+					if (scheme.equals("http") || scheme.equals("https")) {
+						// web resource
+						if (includeWebResources) {
+							input = new DefaultInputSupplier(pathUri);
+						}
+						else {
+							// web resource that should not be included this
+							// time
+
+							// but the resolved URI should be stored
+							// nevertheless
+							// otherwise the URI may be invalid if it was
+							// relative
+							providerConfig.put(ImportProvider.PARAM_SOURCE,
+									Value.of(pathUri.toASCIIString()));
+
+							continue;
+						}
+					}
+					else if (scheme.equals("file") || scheme.equals("platform")
+							|| scheme.equals("bundle") || scheme.equals("jar")) {
+						// files need always to be included
+						// platform resources (or other internal resources)
+						// should be included as well
 						input = new DefaultInputSupplier(pathUri);
 					}
 					else {
-						// web resource that should not be included this time
+						// other type of URI, e.g. JDBC
+						// not to be included
 
-						// but the resolved URI should be stored nevertheless
-						// otherwise the URI may be invalid if it was relative
 						providerConfig.put(ImportProvider.PARAM_SOURCE,
 								Value.of(pathUri.toASCIIString()));
 

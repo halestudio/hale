@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Transactional WFS</title>
+</head>
+<body>
+	<h1>Transactional WFS</h1>
+	<p>HALE supports publishing your transformed GML data to a WFS with
+		support for transactions. Currently supported are Transactional Web
+		Feature Services following the OGC WFS 1.1.0 or WFS 2.0.0
+		specifications. There are two different providers for publishing to
+		WFS:</p>
+	<ul>
+		<li>The <strong>direct upload</strong> will do a single request
+			that starts as soon as the first transformed features are available.
+			Use this option if you are sure the WFS can cope with the amount of
+			data in a single transaction.
+		</li>
+		<li>The <strong>partitioned upload</strong> partitions the
+			transformed data before upload to be able to do multiple requests to
+			the WFS-T for large data sets. The partitioning is done based on the
+			references between features. Features that are connected are kept
+			together so the WFS-T is able to retain those references.
+		</li>
+	</ul>
+	<p class="Note">The publishing to WFS in this version of HALE is
+		deemed experimental. This means it does not have the full
+		functionality we want to provide for a WFS publishing feature.
+		However, within its limits it is functional and may be useful to you.</p>
+	<p>The publishing to WFS currently has the following known limitations:</p>
+	<ul>
+		<li>Non-fatal errors during the transformation or the GML
+			encoding are ignored, the features published thus may be incomplete
+			or missing specific information - please note the corresponding
+			messages in the transformation and export reports. There is no
+			automatic recovery, features may have to be deleted manually if they
+			are not desired to be published.<br>
+		<br>HALE behaves like this because both transformation and GML
+			export aim to provide you a result even if there are small errors or
+			inconsistencies.<br><br>
+		</li>
+		<li>HALE will not check the WFS Capabilities if the WFS
+			supports any of the provided GML feature types.</li>
+	</ul>
+	<p>Target location for the WFS-T export is the POST URL for the
+		WFS Transaction operation. The HALE user interface provides a helper to
+		determine that URL from the WFS capabilities.</p>
+	
+	<br>
+	<!-- related concepts -->
+	<div>
+		<br> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelc.png">
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/what_is_instance.html">What is an Instance?</a>
+		</p>
+	</div>
+	
+	<!-- related tasks: save transformed data -->
+	<div>
+		<br> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelt.png">
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/data/save_transformation.html">Save the transformation result</a>
+		</p>
+	</div>
+</body>
+</html>

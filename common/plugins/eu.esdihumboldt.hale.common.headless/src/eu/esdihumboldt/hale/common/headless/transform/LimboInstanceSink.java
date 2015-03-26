@@ -20,7 +20,6 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
-import eu.esdihumboldt.hale.common.align.transformation.service.InstanceSink;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -28,6 +27,7 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.PseudoInstanceReference;
+import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
  * Sink that holds instances in a limbo, to be collected through the offered
@@ -35,7 +35,7 @@ import eu.esdihumboldt.hale.common.instance.model.impl.PseudoInstanceReference;
  * 
  * @author Kai Schwierczek
  */
-public class LimboInstanceSink implements InstanceSink {
+public class LimboInstanceSink implements TransformationSink {
 
 	private static final Instance END = new DefaultInstance(null, null);
 
@@ -46,9 +46,6 @@ public class LimboInstanceSink implements InstanceSink {
 	// XXX use a maximum number of entries?
 	private final BlockingDeque<Instance> queue = new LinkedBlockingDeque<Instance>(50);
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.transformation.service.InstanceSink#addInstance(eu.esdihumboldt.hale.common.instance.model.Instance)
-	 */
 	@Override
 	public synchronized void addInstance(Instance instance) {
 		// ignore incoming instances if we are cancelled
@@ -61,12 +58,7 @@ public class LimboInstanceSink implements InstanceSink {
 		}
 	}
 
-	/**
-	 * Called if the transformation is done or cancelled. Subsequent calls to
-	 * {@link #addInstance(Instance)} result in undetermined behavior.
-	 * 
-	 * @param cancel whether the operation was cancelled or simply finished
-	 */
+	@Override
 	public void done(boolean cancel) {
 		try {
 			if (cancel) {
@@ -84,14 +76,19 @@ public class LimboInstanceSink implements InstanceSink {
 		}
 	}
 
-	/**
-	 * Returns the associated instance collection, whose iterator will receive
-	 * the instances that are added to the instance sink.
-	 * 
-	 * @return the instance collection for this sink
-	 */
+	@Override
 	public InstanceCollection getInstanceCollection() {
 		return collection;
+	}
+
+	@Override
+	public void setTypes(TypeIndex types) {
+		// ignore - not needed
+	}
+
+	@Override
+	public void dispose() {
+		queue.clear();
 	}
 
 	private class TargetResourceIterator implements ResourceIterator<Instance> {

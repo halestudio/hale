@@ -94,6 +94,8 @@
       <plugin id="eu.esdihumboldt.hale.common.groovy.sandbox.enable"/>
       <plugin id="eu.esdihumboldt.hale.common.headless"/>
       <plugin id="eu.esdihumboldt.hale.common.instance"/>
+      <plugin id="eu.esdihumboldt.hale.common.instance.graph"/>
+      <plugin id="eu.esdihumboldt.hale.common.instance.graph.test"/>
       <plugin id="eu.esdihumboldt.hale.common.instance.groovy"/>
       <plugin id="eu.esdihumboldt.hale.common.instance.groovy.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.instance.orient"/>
@@ -126,6 +128,8 @@
       <plugin id="eu.esdihumboldt.hale.io.oml.model.jaxb"/>
       <plugin id="eu.esdihumboldt.hale.io.oml.test"/>
       <plugin id="eu.esdihumboldt.hale.io.shp"/>
+      <plugin id="eu.esdihumboldt.hale.io.wfs"/>
+      <plugin id="eu.esdihumboldt.hale.io.wfs.test"/>
       <plugin id="eu.esdihumboldt.hale.io.xls"/>
       <plugin id="eu.esdihumboldt.hale.io.xls.test"/>
       <plugin id="eu.esdihumboldt.hale.io.xml"/>
@@ -168,7 +172,6 @@
       <plugin id="findbugsAnnotations"/>
       <plugin id="gnu.trove"/>
       <plugin id="groovy"/>
-      <plugin id="hsqldb"/>
       <plugin id="it.geosolutions.imageio-ext.tiff"/>
       <plugin id="it.geosolutions.imageio-ext.utilities"/>
       <plugin id="java3d.vecmath"/>
@@ -182,7 +185,6 @@
       <plugin id="javax.servlet.jsp"/>
       <plugin id="javax.xml"/>
       <plugin id="jcl.over.slf4j"/>
-      <plugin id="jdom"/>
       <plugin id="jgridshift"/>
       <plugin id="jline"/>
       <plugin id="joda-time"/>
@@ -205,11 +207,13 @@
       <plugin id="org.apache.felix.gogo.command"/>
       <plugin id="org.apache.felix.gogo.runtime"/>
       <plugin id="org.apache.felix.gogo.shell"/>
+      <plugin id="org.apache.httpcomponents.fluent-hc"/>
       <plugin id="org.apache.httpcomponents.httpclient"/>
       <plugin id="org.apache.httpcomponents.httpcore"/>
       <plugin id="org.apache.poi"/>
       <plugin id="org.apache.velocity"/>
       <plugin id="org.apache.ws.commons.schema.XmlSchema"/>
+      <plugin id="org.apache.xml.resolver"/>
       <plugin id="org.apache.xmlbeans"/>
       <plugin id="org.codehaus.castor.core"/>
       <plugin id="org.codehaus.castor.xml"/>
@@ -287,9 +291,11 @@
       <plugin id="org.eclipse.zest.layouts"/>
       <plugin id="org.geotools"/>
       <plugin id="org.hamcrest.core"/>
+      <plugin id="org.hsqldb.hsqldb"/>
       <plugin id="org.iq80.snappy"/>
       <plugin id="org.jaitools.jt-utils"/>
       <plugin id="org.jaitools.jt-zonalstats"/>
+      <plugin id="org.jdom"/>
       <plugin id="org.junit"/>
       <plugin id="org.kohsuke.groovy.sandbox"/>
       <plugin id="org.objectweb.asm-4"/>

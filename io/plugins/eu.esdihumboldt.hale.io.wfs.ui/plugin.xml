@@ -5,7 +5,15 @@
          point="eu.esdihumboldt.hale.ui.io.target">
       <providerTarget
             provider="eu.esdihumboldt.hale.io.wfs.write"
-            target="uri">
+            target="wfs-t">
+      </providerTarget>
+      <target
+            class="eu.esdihumboldt.hale.io.wfs.ui.WFSTarget"
+            id="wfs-t">
+      </target>
+      <providerTarget
+            provider="eu.esdihumboldt.hale.io.wfs.write.partitioned"
+            target="wfs-t">
       </providerTarget>
    </extension>
    <extension
@@ -16,7 +24,48 @@
          <provider
                ref="eu.esdihumboldt.hale.io.wfs.write">
          </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.wfs.write.partitioned">
+         </provider>
       </configPage>
+      <configPage
+            class="eu.esdihumboldt.hale.io.wfs.ui.config.PartitionConfigurationPage"
+            order="4">
+         <provider
+               ref="eu.esdihumboldt.hale.io.wfs.write.partitioned">
+         </provider>
+      </configPage>
+      <configPage
+            class="eu.esdihumboldt.hale.io.wfs.ui.config.InsertConfigurationPage"
+            order="5">
+         <provider
+               ref="eu.esdihumboldt.hale.io.wfs.write">
+         </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.wfs.write.partitioned">
+         </provider>
+      </configPage>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.ui.io.source">
+      <source
+            class="eu.esdihumboldt.hale.io.wfs.ui.describefeature.WFSDescribeFeatureSource"
+            contentType="eu.esdihumboldt.hale.io.xsd"
+            description="Load a XML schema using a WFS DescribeFeatureType request"
+            icon="icons/service.gif"
+            id="eu.esdihumboldt.hale.io.gml.ui.source.wfs.schema"
+            name="WFS"
+            priority="0">
+      </source>
+      <source
+            class="eu.esdihumboldt.hale.io.wfs.ui.getfeature.WFSGetFeatureSource"
+            contentType="eu.esdihumboldt.hale.io.gml"
+            description="Load GML data using a WFS GetFeature request"
+            icon="icons/service.gif"
+            id="eu.esdihumboldt.hale.io.gml.ui.source.wfs.instance"
+            name="WFS"
+            priority="0">
+      </source>
    </extension>
 
 </plugin>

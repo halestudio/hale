@@ -23,6 +23,7 @@ import eu.esdihumboldt.hale.common.instance.helper.InstanceTraversalCallback;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
+import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
 
 /**
  * Finds a CRS definition in a GML instance. The first valid definition found
@@ -37,27 +38,18 @@ public class CRSFinder implements InstanceTraversalCallback {
 	 */
 	private CRSDefinition definition;
 
-	/**
-	 * @see InstanceTraversalCallback#visit(Instance, QName)
-	 */
 	@Override
-	public boolean visit(Instance instance, QName name) {
+	public boolean visit(Instance instance, QName name, DefinitionGroup parent) {
 		return true;
 	}
 
-	/**
-	 * @see InstanceTraversalCallback#visit(Group, QName)
-	 */
 	@Override
-	public boolean visit(Group group, QName name) {
+	public boolean visit(Group group, QName name, DefinitionGroup parent) {
 		return true;
 	}
 
-	/**
-	 * @see InstanceTraversalCallback#visit(Object, QName)
-	 */
 	@Override
-	public boolean visit(Object value, QName name) {
+	public boolean visit(Object value, QName name, DefinitionGroup parent) {
 		if (value != null && name != null && name.getLocalPart().equals("srsName")) {
 			String candidate = value.toString();
 

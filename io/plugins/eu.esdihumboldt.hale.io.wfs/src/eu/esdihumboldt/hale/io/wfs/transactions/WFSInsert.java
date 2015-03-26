@@ -31,23 +31,28 @@ public class WFSInsert extends AbstractWFSTransaction {
 	private final Map<String, String> params;
 
 	/**
+	 * Constructor.
+	 * 
 	 * @param wfsVersion the WFS version
+	 * @param idgen the ID generation strategy (only WFS 1.1)
+	 * @param inputFormat the data input format
 	 */
-	public WFSInsert(WFSVersion wfsVersion) {
+	public WFSInsert(WFSVersion wfsVersion, String idgen, String inputFormat) {
 		super(wfsVersion);
 
 		Map<String, String> params = new HashMap<>();
 
 		// ID generation (only WFS 1.1.0)
 		if (WFSVersion.V1_1_0.equals(wfsVersion)) {
-			// TODO configurable
-			params.put("idgen", "GenerateNew");
+			// possible values are "UseExisting", "GenerateNew" or
+			// "ReplaceDuplicate"
+			params.put("idgen", idgen);
 		}
-		// XXX other values are "UseExisting" or "ReplaceDuplicate"
 
 		// input format
-		// FIXME should be configurable
-		params.put("inputFormat", "text/xml; subtype=gml/3.2.1");
+		if (inputFormat != null) {
+			params.put("inputFormat", inputFormat);
+		}
 
 		// reference system
 		// "srsName"
