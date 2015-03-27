@@ -149,8 +149,11 @@ public class WFSGetFeatureWizard extends ConfigurationWizard<WFSGetFeatureConfig
 
 		});
 
-		// FIXME
+		// bounding box
 		addPage(new BBOXPage(this, capPage));
+
+		// additional params
+		addPage(new GetFeatureParamsPage(this));
 	}
 
 }
