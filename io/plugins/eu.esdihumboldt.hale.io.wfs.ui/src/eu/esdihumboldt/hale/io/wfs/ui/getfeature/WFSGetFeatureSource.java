@@ -33,7 +33,7 @@ import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.io.wfs.capabilities.BBox;
 import eu.esdihumboldt.hale.io.wfs.ui.AbstractWFSSource;
-import eu.esdihumboldt.hale.io.wfs.ui.describefeature.WFSDescribeFeatureSource;
+import eu.esdihumboldt.hale.io.wfs.ui.KVPUtil;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.util.io.URIFieldEditor;
 import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
@@ -63,8 +63,7 @@ public class WFSGetFeatureSource extends AbstractWFSSource<ImportProvider> {
 			builder.addParameter("REQUEST", "GetFeature");
 			// specify type names
 			if (!result.getTypeNames().isEmpty()) {
-				WFSDescribeFeatureSource.addTypeNameParameter(builder, result.getTypeNames(),
-						result.getVersion());
+				KVPUtil.addTypeNameParameter(builder, result.getTypeNames(), result.getVersion());
 			}
 
 			// BBOX
