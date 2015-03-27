@@ -22,11 +22,18 @@
 	<h2>Load data from a WFS</h2>
 	<p>
 		<i>HALE</i> offers the possibility to load data based on a WFS <i>GetFeature</i>
-		request. You can specify the request URL manually or use the <i>Change...</i>
-		button to launch a wizard assisting you in building the URL.
+		KVP request. You can specify the request URL manually or use the <i>...</i>
+		button to launch a wizard assisting you in building the URL from the service capabilities.
 	</p>
 	<div>
 		<img src="images/wfs_data.png" class="fit"></img>
+	</div>
+	<p>When determining the URL based on the service capabilities, you
+		can specify the feature types to select from the server. Also, you can
+		specify a bounding box for the features to request or specify a
+		maximum number of features that should be returned by the server.</p>
+	<div>
+		<img src="images/wfs_data_bb.png" class="fit"></img>
 	</div>
 
 	<h2>Troubleshooting loading GML data</h2>
@@ -36,18 +43,12 @@
 			CRS</i> preference page (available through <i>Window</i>&#8594;<i>Settings</i>)
 		to register the Well Known Text of the missing reference system. If
 		you have issues with loading a GML file, please provide us with
-		feedback on the issue. Also please note that many existing WFS
-		implementations have a few peculiarities. HALE has been tested with
-		the following products:
+		feedback on the issue.
 	</p>
-	<ul>
-		<li>GeoServer - OK</li>
-		<li>MapServer - OK</li>
-		<li>CubeWerx WFS - OK</li>
-		<li>ESRI - OK when Schema References are repaired (by default
-			they are often broken</li>
-		<li>GeoMedia - Fails because of coordinate formatting issues</li>
-	</ul>
+	<p>Also please note that many existing WFS implementations have a
+		few peculiarities regarding the support for KVP requests, specifically
+		some WFS 2.0.0 implementations. If experiencing problems with a WFS
+		2.0.0 server, try using the same server via its WFS 1.1.0 interface.</p>
 
 	<br />
 	<!-- related concepts -->
