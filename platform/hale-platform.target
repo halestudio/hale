@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="229">
+<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="230">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="de.fhg.igd.equinox.test.feature.feature.group" version="1.0.0.201407021539"/>
@@ -40,8 +40,8 @@
 <repository location="http://download.eclipse.org/releases/luna/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="eu.esdihumboldt.hale.platform.feature.group" version="3.0.0.bnd-P1Ee4A"/>
-<repository location="http://hale.igd.fraunhofer.de/build-support/538bd587d51d1ff1b04bc301f41daac1a07a9d3a/updatesites/platform"/>
+<unit id="eu.esdihumboldt.hale.platform.feature.group" version="3.0.0.bnd-5KQe7Q"/>
+<repository location="http://hale.igd.fraunhofer.de/build-support/d2c29e46a75ce407ef77422f5588b6333f39a6f9/updatesites/platform"/>
 </location>
 </locations>
 </target>
