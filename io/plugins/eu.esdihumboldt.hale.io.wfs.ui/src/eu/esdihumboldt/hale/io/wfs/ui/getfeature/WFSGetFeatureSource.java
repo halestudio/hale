@@ -33,7 +33,7 @@ import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.io.wfs.capabilities.BBox;
 import eu.esdihumboldt.hale.io.wfs.ui.AbstractWFSSource;
-import eu.esdihumboldt.hale.io.wfs.ui.describefeature.WFSDescribeFeatureSource;
+import eu.esdihumboldt.hale.io.wfs.ui.KVPUtil;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.util.io.URIFieldEditor;
 import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
@@ -63,8 +63,7 @@ public class WFSGetFeatureSource extends AbstractWFSSource<ImportProvider> {
 			builder.addParameter("REQUEST", "GetFeature");
 			// specify type names
 			if (!result.getTypeNames().isEmpty()) {
-				WFSDescribeFeatureSource.addTypeNameParameter(builder, result.getTypeNames(),
-						result.getVersion());
+				KVPUtil.addTypeNameParameter(builder, result.getTypeNames(), result.getVersion());
 			}
 
 			// BBOX
@@ -91,7 +90,19 @@ public class WFSGetFeatureSource extends AbstractWFSSource<ImportProvider> {
 
 			// XXX what about other parameters? e.g.
 			// FILTER (cannot be used with BBOX)
+
 			// MAXFEATURES (WFS 1) / COUNT (WFS 2)
+			if (result.getMaxFeatures() != null) {
+				switch (result.getVersion()) {
+				case V1_1_0:
+					builder.addParameter("MAXFEATURES", String.valueOf(result.getMaxFeatures()));
+					break;
+				case V2_0_0:
+				default:
+					builder.addParameter("COUNT", String.valueOf(result.getMaxFeatures()));
+					break;
+				}
+			}
 
 			try {
 				sourceURL.setStringValue(builder.build().toString());

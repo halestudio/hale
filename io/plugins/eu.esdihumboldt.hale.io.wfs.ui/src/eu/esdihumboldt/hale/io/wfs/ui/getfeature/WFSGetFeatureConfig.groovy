@@ -33,4 +33,5 @@ class WFSGetFeatureConfig {
 	final Set<QName> typeNames = new HashSet()
 	BBox bbox
 	String bboxCrsUri
+	Integer maxFeatures
 }

@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.io.wfs.ui.getfeature;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -180,7 +181,9 @@ public class BBOXPage extends ConfigurationWizardPage<WFSGetFeatureConfig> {
 					GeoPosition topLeft = new GeoPosition(minX, maxY, 4326);
 					GeoPosition bottomRight = new GeoPosition(maxX, minY, 4326);
 
-					server = new ClippingMapServer(server, topLeft, bottomRight);
+					Color back = mapKit.getBackground();
+					server = new ClippingMapServer(server, topLeft, bottomRight, new Color(
+							back.getRed(), back.getGreen(), back.getBlue(), 170));
 
 					positions = new HashSet<>();
 					positions.add(topLeft);

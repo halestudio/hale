@@ -83,7 +83,7 @@ public class WFSGetFeatureWizard extends ConfigurationWizard<WFSGetFeatureConfig
 					configuration.setVersion(capabilities.getVersion());
 					return true;
 				}
-				// TODO show error message ?
+				setErrorMessage("Invalid capabilities or WFS does not support GetFeature KVP");
 				return false;
 			}
 		};
@@ -149,8 +149,11 @@ public class WFSGetFeatureWizard extends ConfigurationWizard<WFSGetFeatureConfig
 
 		});
 
-		// FIXME
+		// bounding box
 		addPage(new BBOXPage(this, capPage));
+
+		// additional params
+		addPage(new GetFeatureParamsPage(this));
 	}
 
 }
