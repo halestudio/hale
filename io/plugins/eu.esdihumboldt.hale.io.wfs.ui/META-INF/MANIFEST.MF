@@ -45,6 +45,13 @@ Import-Package: com.google.common.base;version="15.0.0",
  org.apache.http;version="4.2.5",
  org.apache.http.client.utils;version="4.2.6",
  org.slf4j;version="1.7.2"
-Export-Package: eu.esdihumboldt.hale.io.wfs.ui.legacy
+Export-Package: eu.esdihumboldt.hale.io.wfs.ui,
+ eu.esdihumboldt.hale.io.wfs.ui.capabilities,
+ eu.esdihumboldt.hale.io.wfs.ui.config,
+ eu.esdihumboldt.hale.io.wfs.ui.describefeature,
+ eu.esdihumboldt.hale.io.wfs.ui.getfeature,
+ eu.esdihumboldt.hale.io.wfs.ui.getfeature.internal;x-internal:=true,
+ eu.esdihumboldt.hale.io.wfs.ui.internal;x-internal:=true,
+ eu.esdihumboldt.hale.io.wfs.ui.types
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.hale.io.wfs.ui.internal.WFSUIPlugin
