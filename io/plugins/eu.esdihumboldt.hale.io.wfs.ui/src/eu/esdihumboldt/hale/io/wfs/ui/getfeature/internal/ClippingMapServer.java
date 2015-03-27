@@ -15,6 +15,10 @@
 
 package eu.esdihumboldt.hale.io.wfs.ui.getfeature.internal;
 
+import java.awt.Color;
+
+import javax.annotation.Nullable;
+
 import org.jdesktop.swingx.mapviewer.GeoPosition;
 import org.jdesktop.swingx.mapviewer.TileCache;
 import org.jdesktop.swingx.mapviewer.TileFactory;
@@ -34,6 +38,7 @@ public class ClippingMapServer implements MapServer {
 	private final MapServer server;
 	private final GeoPosition topLeft;
 	private final GeoPosition bottomRight;
+	private final Color customOverlayColor;
 
 	/**
 	 * Decorates the given map server and applies clipping.
@@ -42,12 +47,15 @@ public class ClippingMapServer implements MapServer {
 	 * @param topLeft the top left corner of the region that is clipped to
 	 * @param bottomRight the bottom right corner of the region that is clipped
 	 *            to
+	 * @param customOverlayColor optional custom overlay color
 	 */
-	public ClippingMapServer(MapServer server, GeoPosition topLeft, GeoPosition bottomRight) {
+	public ClippingMapServer(MapServer server, GeoPosition topLeft, GeoPosition bottomRight,
+			@Nullable Color customOverlayColor) {
 		super();
 		this.server = server;
 		this.topLeft = topLeft;
 		this.bottomRight = bottomRight;
+		this.customOverlayColor = customOverlayColor;
 	}
 
 	@Override
@@ -64,7 +72,7 @@ public class ClippingMapServer implements MapServer {
 	public TileFactory getTileFactory(TileCache cache) {
 		TileFactory org = server.getTileFactory(cache);
 		ClippingTileProviderDecorator clipper = new ClippingTileProviderDecorator(
-				org.getTileProvider(), topLeft, bottomRight);
+				org.getTileProvider(), topLeft, bottomRight, 1, customOverlayColor);
 		return new CustomTileFactory(clipper, cache);
 	}
 
