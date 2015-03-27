@@ -288,13 +288,71 @@ def update(o, n, changed) {
 	}
 }
 
+def updateApp(newVersion, release) {
+	// find application bundles
+	def dirs = (ant.fileScanner {
+		fileset(dir: '.') {
+			include name: '**/plugins/*.application'
+		}
+	}).directories().toList()
+
+	if (dirs) {
+		println 'Identified application bundles:'
+		dirs.each {
+			println it
+		}
+	}
+	else {
+		println 'No application bundles found'
+	}
+
+	// look for current versions in bundles
+	def versions = listVersions(dirs, false).keySet()
+	def oldVersions = []
+	println 'with versions:'
+	versions.each { version ->
+		if (version.endsWith('.qualifier')) {
+			version = version[0..-('.qualifier'.length() + 1)]
+		}
+		println version
+		oldVersions << version
+	}
+
+	// replace bundle versions
+	oldVersions.each {
+		updateBundles(it, newVersion, dirs)
+		updatePlugins(it, newVersion, dirs)
+		updateProducts(it, newVersion, dirs)
+	}
+
+	// update build configuration
+	def buildConfig = new File('build/config.groovy')
+
+	// find current version
+	def pattern = /version\s+=\s+'([^']+)'/
+	def matcher = (buildConfig.text =~ pattern)
+	if (matcher) {
+		def oldVersion = matcher[0][1]
+		println "Old version in build config: $oldVersion"
+		def buildVersion = (release) ? (newVersion) : (newVersion + '-SNAPSHOT')
+
+		// replace version
+		ant.replace(file: buildConfig, summary: true, token: "'${oldVersion}'", value: "'${buildVersion}'")
+	}
+	else {
+		println 'Could not detect version in build config'
+	}
+}
+
 def cli = new CliBuilder(usage: 'updateversionnumbers.groovy [options]')
 cli.with {
 	h longOpt: 'help', 'Show usage information'
 	l longOpt: 'list', 'List all plugins and features sorted by their respective version'
 	o longOpt: 'old', args: 1, argName: 'OLD', 'Old version number'
 	n longOpt: 'new', args: 1, argName: 'NEW', 'New version number'
-	_ longOpt: 'changed', 'Only update versions changed since the OLD version tag'
+	_ longOpt: 'changed', 'Only update versions changed since the OLD version tag (use with -o and -n)'
+	_ longOpt: 'snapshot', args: 1, argName: 'VERSION', 'Set versions for application bundles and build to a snapshot version (cannot be combined with other options)'
+	_ longOpt: 'release', args: 1, argName: 'VERSION', 'Set versions for application bundles and build to a release version (cannot be combined with other options)'
 }
 
 def options = cli.parse(args)
@@ -310,6 +368,16 @@ if (options.h) {
 
 if (options.l) {
 	listVersions()
+	return
+}
+
+if (options.snapshot) {
+	updateApp(options.snapshot, false)
+	return
+}
+
+if (options.release) {
+	updateApp(options.release, true)
 	return
 }
 
