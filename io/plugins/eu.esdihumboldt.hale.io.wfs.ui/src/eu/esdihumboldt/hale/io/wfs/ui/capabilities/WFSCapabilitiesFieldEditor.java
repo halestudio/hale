@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
+import eu.esdihumboldt.hale.io.wfs.WFSVersion;
 import eu.esdihumboldt.hale.io.wfs.capabilities.CapabilitiesHelper;
 import eu.esdihumboldt.hale.io.wfs.capabilities.WFSCapabilities;
 import eu.esdihumboldt.hale.io.wfs.ui.WFSPreferences;
@@ -253,6 +254,14 @@ public class WFSCapabilitiesFieldEditor extends FieldEditor {
 	}
 
 	/**
+	 * Revalidate the capabilities.
+	 */
+	public void revalidate() {
+		invalidate();
+		refreshValidState();
+	}
+
+	/**
 	 * Invalidate the editor
 	 */
 	protected void invalidate() {
@@ -285,12 +294,15 @@ public class WFSCapabilitiesFieldEditor extends FieldEditor {
 			// add fixed parameters
 			boolean requestPresent = false;
 			boolean servicePresent = false;
+			String versionParam = null;
 			for (NameValuePair param : builder.getQueryParams()) {
 				String name = param.getName().toLowerCase();
 				if (name.equals("request"))
 					requestPresent = true;
 				if (name.equals("service"))
 					servicePresent = true;
+				if (name.equals("version"))
+					versionParam = param.getName();
 			}
 			if (!requestPresent) {
 				builder.addParameter("REQUEST", "GetCapabilities");
@@ -298,6 +310,14 @@ public class WFSCapabilitiesFieldEditor extends FieldEditor {
 			if (!servicePresent) {
 				builder.addParameter("SERVICE", "WFS");
 			}
+			WFSVersion version = getWFSVersion();
+			if (version != null) {
+				if (versionParam == null) {
+					versionParam = "VERSION";
+				}
+				builder.setParameter(versionParam, version.toString());
+			}
+
 			usedUrl = builder.build().toURL();
 
 			try (InputStream in = usedUrl.openStream()) {
@@ -315,6 +335,15 @@ public class WFSCapabilitiesFieldEditor extends FieldEditor {
 			page.setErrorMessage(null);
 		}
 		return true;
+	}
+
+	/**
+	 * @return the WFS version to use, <code>null</code> to use the server
+	 *         default or the version provided in the base URI
+	 */
+	@Nullable
+	protected WFSVersion getWFSVersion() {
+		return null;
 	}
 
 	/**
