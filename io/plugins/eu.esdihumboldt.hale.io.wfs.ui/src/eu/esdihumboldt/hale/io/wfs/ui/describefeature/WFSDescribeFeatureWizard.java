@@ -67,7 +67,7 @@ public class WFSDescribeFeatureWizard extends ConfigurationWizard<WFSDescribeFea
 					configuration.setVersion(capabilities.getVersion());
 					return true;
 				}
-				// TODO show error message ?
+				setErrorMessage("Invalid capabilities or WFS does not support DescribeFeatureType KVP");
 				return false;
 			}
 		};

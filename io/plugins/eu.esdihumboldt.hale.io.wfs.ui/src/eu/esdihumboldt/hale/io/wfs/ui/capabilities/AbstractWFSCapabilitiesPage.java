@@ -17,17 +17,29 @@
 package eu.esdihumboldt.hale.io.wfs.ui.capabilities;
 
 import java.net.URL;
+import java.util.Arrays;
 
 import javax.annotation.Nullable;
 
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 
+import eu.esdihumboldt.hale.io.wfs.WFSVersion;
 import eu.esdihumboldt.hale.io.wfs.capabilities.WFSCapabilities;
+import eu.esdihumboldt.hale.ui.util.viewer.EnumContentProvider;
 import eu.esdihumboldt.hale.ui.util.wizard.ConfigurationWizard;
 import eu.esdihumboldt.hale.ui.util.wizard.ConfigurationWizardPage;
 
@@ -40,9 +52,17 @@ import eu.esdihumboldt.hale.ui.util.wizard.ConfigurationWizardPage;
 public abstract class AbstractWFSCapabilitiesPage<T> extends ConfigurationWizardPage<T> {
 
 	/**
+	 * Represents no object.
+	 */
+	private static enum NoObject {
+		NONE;
+	}
+
+	/**
 	 * The capabilities URL editor
 	 */
 	private WFSCapabilitiesFieldEditor location;
+	private ComboViewer versionSelect;
 
 	/**
 	 * Constructor
@@ -60,7 +80,25 @@ public abstract class AbstractWFSCapabilitiesPage<T> extends ConfigurationWizard
 		Composite page = new Composite(parent, SWT.NONE);
 		page.setLayout(new GridLayout(2, false));
 
-		location = new WFSCapabilitiesFieldEditor("location", "GetCapabilities URL", page);
+		// capabilities field
+		location = new WFSCapabilitiesFieldEditor("location", "GetCapabilities URL", page) {
+
+			@Override
+			protected WFSVersion getWFSVersion() {
+				if (versionSelect != null) {
+					ISelection sel = versionSelect.getSelection();
+					if (!sel.isEmpty() && sel instanceof IStructuredSelection) {
+						Object selected = ((IStructuredSelection) sel).getFirstElement();
+						if (NoObject.NONE.equals(selected)) {
+							return null;
+						}
+						return (WFSVersion) selected;
+					}
+				}
+				return super.getWFSVersion();
+			}
+
+		};
 		location.setPage(this);
 		location.setPropertyChangeListener(new IPropertyChangeListener() {
 
@@ -76,6 +114,45 @@ public abstract class AbstractWFSCapabilitiesPage<T> extends ConfigurationWizard
 		if (currentValue != null) {
 			location.setValue(currentValue);
 		}
+
+		// version field
+		Label vLabel = new Label(page, SWT.NONE);
+		vLabel.setText("WFS version");
+
+		versionSelect = new ComboViewer(page, SWT.READ_ONLY);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(versionSelect.getControl());
+		versionSelect.setContentProvider(new EnumContentProvider() {
+
+			@Override
+			public Object[] getElements(Object inputElement) {
+				Object[] values = super.getElements(inputElement);
+				// add a NoObject
+				values = Arrays.copyOf(values, values.length + 1, Object[].class);
+				values[values.length - 1] = NoObject.NONE;
+				return values;
+			}
+
+		});
+		versionSelect.setLabelProvider(new LabelProvider() {
+
+			@Override
+			public String getText(Object element) {
+				if (element instanceof NoObject) {
+					return "Based on URL / server default";
+				}
+				return super.getText(element);
+			}
+
+		});
+		versionSelect.setInput(WFSVersion.class);
+		versionSelect.setSelection(new StructuredSelection(NoObject.NONE));
+		versionSelect.addSelectionChangedListener(new ISelectionChangedListener() {
+
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				location.revalidate();
+			}
+		});
 
 		setControl(page);
 

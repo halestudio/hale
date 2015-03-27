@@ -63,7 +63,7 @@ public class WFSTransactionWizard extends ConfigurationWizard<WFSTransactionConf
 					configuration.setVersion(capabilities.getVersion());
 					return true;
 				}
-				// TODO show error message ?
+				setErrorMessage("Invalid capabilities or WFS does not support transactions");
 				return false;
 			}
 		});
