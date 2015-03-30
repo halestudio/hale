@@ -38,6 +38,7 @@ class WFSSchemaHelper {
 					featureMember(namespace: GMLConstants.NS_GML, cardinality: '0..n') { createChildren(b, members) }
 				}
 			case WFSVersion.V2_0_0:
+			case WFSVersion.V2_0_2:
 			// WFS 2.0
 				return b.FeatureCollectionType(namespace: version.wfsNamespace) {
 					member(namespace: version.wfsNamespace, cardinality: '0..n') { createChildren(b, members) }

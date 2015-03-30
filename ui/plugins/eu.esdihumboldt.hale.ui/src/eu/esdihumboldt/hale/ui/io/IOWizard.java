@@ -574,7 +574,12 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 					// no message, we rely on the report being shown/processed
 
 					// let advisor handle results
-					advisor.handleResults(getProvider());
+					try {
+						advisor.handleResults(getProvider());
+					} catch (Exception e) {
+						log.userError("Error processing results:\n" + e.getLocalizedMessage(), e);
+						return false;
+					}
 
 					// add to project service if necessary
 					if (isProjectResource)

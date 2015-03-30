@@ -84,6 +84,7 @@ public class KVPUtil {
 			prefixNamespaceDelim = "=";
 			break;
 		case V2_0_0:
+		case V2_0_2:
 			/*
 			 * XXX below are the values as defined in the WFS 2 specification.
 			 * There have been problems with some GeoServer instances if used in
