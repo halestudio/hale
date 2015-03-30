@@ -19,11 +19,14 @@ package eu.esdihumboldt.hale.io.gml.reader.internal;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
@@ -142,6 +145,9 @@ public class GmlInstanceCollection implements InstanceCollection {
 				if (event == XMLStreamConstants.START_ELEMENT) {
 					if (!rootEncountered) {
 						rootEncountered = true;
+
+						processExceptionReport();
+
 						if (ignoreRoot) {
 							// skip to next element, don't create a root
 							// instance
@@ -186,6 +192,173 @@ public class GmlInstanceCollection implements InstanceCollection {
 					}
 				}
 			}
+		}
+
+		/**
+		 * Process an eventual exception / error report document. This method is
+		 * called at the START_ELEMENT event of the root element.
+		 * 
+		 * @throws XMLStreamException if an error occurs parsing the document
+		 */
+		private void processExceptionReport() throws XMLStreamException {
+			/*
+			 * This code is very specific, handling certain cases of error
+			 * documents that may be encountered.
+			 */
+
+			QName elementName = reader.getName();
+
+			if ("ExceptionReport".equals(elementName.getLocalPart())
+					&& elementName.getNamespaceURI().startsWith("http://www.opengis.net/ows")) {
+				// OWS Exception Report (e.g. WFS 1.1, WFS 2)
+				StringBuilder message = new StringBuilder("Document is a OGC OWS Exception Report");
+
+				// try to extract error information
+				List<String> errors = new ArrayList<>();
+				while (reader.hasNext()) {
+					int event = reader.next();
+					if (event == XMLStreamConstants.START_ELEMENT) {
+						if ("Exception".equals(reader.getLocalName())) {
+							// an individual exception
+							String code = null;
+							String locator = null;
+							for (int i = 0; i < reader.getAttributeCount(); i++) {
+								String name = reader.getAttributeLocalName(i);
+								if (name.equals("exceptionCode")) {
+									code = reader.getAttributeValue(i);
+								}
+								else if (name.equals("locator")) {
+									locator = reader.getAttributeValue(i);
+								}
+							}
+
+							// try getting the exception test
+							int level = 1;
+							String text = null;
+							while (reader.hasNext() && level >= 1) {
+								int insideEvent = reader.next();
+								if (insideEvent == XMLStreamConstants.END_ELEMENT) {
+									level--;
+								}
+								else if (insideEvent == XMLStreamConstants.START_ELEMENT) {
+									if (text == null
+											&& "ExceptionText".equals(reader.getLocalName())) {
+										try {
+											text = reader.getElementText();
+										} catch (XMLStreamException e) {
+											// ignore
+										}
+									}
+									else {
+										level++;
+									}
+								}
+							}
+
+							if (text != null) {
+								errors.add(buildErrorString(text, code, locator));
+							}
+						}
+					}
+				}
+
+				if (!errors.isEmpty()) {
+					message.append(" with the following exceptions reported:");
+					boolean first = true;
+					for (String error : errors) {
+						if (first) {
+							first = false;
+						}
+						else {
+							message.append(',');
+						}
+						message.append('\n');
+						message.append(error);
+					}
+				}
+
+				throw new IllegalStateException(message.toString());
+			}
+
+			if ("ServiceExceptionReport".equals(elementName.getLocalPart())) {
+				// WFS 1.0.0 Exception Report
+
+				/*
+				 * Seems to be returned even by some WFS 1.1/WFS 2 services and
+				 * without proper namespace definition.
+				 */
+				StringBuilder message = new StringBuilder(
+						"Document is a OGC ServiceExceptionReport");
+
+				// try to extract error information
+				List<String> errors = new ArrayList<>();
+				while (reader.hasNext()) {
+					int event = reader.next();
+					if (event == XMLStreamConstants.START_ELEMENT) {
+						if ("ServiceException".equals(reader.getLocalName())) {
+							// an individual exception
+							String code = null;
+							String locator = null;
+							for (int i = 0; i < reader.getAttributeCount(); i++) {
+								String name = reader.getAttributeLocalName(i);
+								if (name.equals("code")) {
+									code = reader.getAttributeValue(i);
+								}
+								else if (name.equals("locator")) {
+									locator = reader.getAttributeValue(i);
+								}
+							}
+
+							String text = null;
+							try {
+								text = reader.getElementText();
+							} catch (XMLStreamException e) {
+								// ignore
+							}
+
+							if (text != null) {
+								errors.add(buildErrorString(text, code, locator));
+							}
+						}
+					}
+				}
+
+				if (!errors.isEmpty()) {
+					message.append(" with the following exceptions reported:");
+					boolean first = true;
+					for (String error : errors) {
+						if (first) {
+							first = false;
+						}
+						else {
+							message.append(',');
+						}
+						message.append('\n');
+						message.append(error);
+					}
+				}
+
+				throw new IllegalStateException(message.toString());
+			}
+		}
+
+		private String buildErrorString(String text, @Nullable String code, @Nullable String locator) {
+			StringBuilder error = new StringBuilder(text);
+			if (code != null || locator != null) {
+				error.append(" [");
+				if (code != null) {
+					error.append("code=");
+					error.append(code);
+					if (locator != null)
+						error.append(", ");
+				}
+				if (locator != null) {
+					error.append("locator=");
+					error.append(locator);
+				}
+				error.append(']');
+			}
+			return error.toString();
 		}
 
 		private void initAllowedTypes() {
