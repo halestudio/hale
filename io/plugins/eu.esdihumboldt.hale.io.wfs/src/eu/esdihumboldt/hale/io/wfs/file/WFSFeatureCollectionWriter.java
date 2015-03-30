@@ -82,6 +82,7 @@ public class WFSFeatureCollectionWriter extends GmlInstanceWriter implements WFS
 					new QName(GMLConstants.NS_GML, "_Feature"));
 			break;
 		case V2_0_0:
+		case V2_0_2:
 			for (XmlElement element : targetIndex.getElements().values()) {
 				if (element.getName().getLocalPart().equals("AbstractFeature")
 						&& element.getName().getNamespaceURI()
@@ -112,8 +113,27 @@ public class WFSFeatureCollectionWriter extends GmlInstanceWriter implements WFS
 	@Override
 	protected void writeAdditionalElements(XMLStreamWriter writer,
 			TypeDefinition containerDefinition, IOReporter reporter) throws XMLStreamException {
-		// TODO write additional needed attributes for WFS 2.0
-		if (WFSVersion.V2_0_0.equals(getWFSVersion())) {
+		// write additional needed attributes for WFS 2.0
+
+		boolean countFeatures;
+		WFSVersion version = getWFSVersion();
+		if (version != null) {
+			switch (version) {
+			case V2_0_0:
+			case V2_0_2:
+				countFeatures = true;
+				break;
+			case V1_1_0:
+			default:
+				countFeatures = false;
+				break;
+			}
+		}
+		else {
+			countFeatures = false;
+		}
+
+		if (countFeatures) {
 			// count features
 			int count = 0;
 			InstanceCollection source = getInstances();
@@ -134,8 +154,9 @@ public class WFSFeatureCollectionWriter extends GmlInstanceWriter implements WFS
 
 			String countString = String.valueOf(count);
 			// numberMatched
-			writer.writeAttribute("numberMatched", countString); // or "unknown"
-																	// ?
+			writer.writeAttribute("numberMatched", countString);
+			// or "unknown" ?
+
 			// numberReturned
 			writer.writeAttribute("numberReturned", countString);
 			// timestamp
@@ -166,7 +187,20 @@ public class WFSFeatureCollectionWriter extends GmlInstanceWriter implements WFS
 	public boolean isPassthrough() {
 		WFSVersion version = getWFSVersion();
 		// WFS 2.0 export does not support pass-through
-		return version != null && !version.equals(WFSVersion.V2_0_0);
+		if (version != null) {
+			switch (version) {
+			case V1_1_0:
+				return true;
+			case V2_0_0:
+			case V2_0_2:
+				return false;
+			default:
+				return false;
+			}
+		}
+		else {
+			return false;
+		}
 	}
 
 }

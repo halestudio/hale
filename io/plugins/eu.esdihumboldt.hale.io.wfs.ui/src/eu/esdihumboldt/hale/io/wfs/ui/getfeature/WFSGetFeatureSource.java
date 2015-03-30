@@ -98,6 +98,7 @@ public class WFSGetFeatureSource extends AbstractWFSSource<ImportProvider> {
 					builder.addParameter("MAXFEATURES", String.valueOf(result.getMaxFeatures()));
 					break;
 				case V2_0_0:
+				case V2_0_2:
 				default:
 					builder.addParameter("COUNT", String.valueOf(result.getMaxFeatures()));
 					break;

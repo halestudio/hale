@@ -28,6 +28,9 @@ public enum WFSVersion {
 			.create("http://schemas.opengis.net/wfs/1.1.0/wfs.xsd")),
 	/** WFS 2.0.0 */
 	V2_0_0("2.0.0", "http://www.opengis.net/wfs/2.0", URI
+			.create("http://schemas.opengis.net/wfs/2.0/wfs.xsd")),
+	/** WFS 2.0.2 */
+	V2_0_2("2.0.2", "http://www.opengis.net/wfs/2.0", URI
 			.create("http://schemas.opengis.net/wfs/2.0/wfs.xsd"));
 
 	/**
@@ -71,6 +74,8 @@ public enum WFSVersion {
 			return V1_1_0;
 		case "2.0.0":
 			return V2_0_0;
+		case "2.0.2":
+			return V2_0_2;
 		default:
 			return defVersion;
 		}
