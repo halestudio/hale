@@ -28,7 +28,7 @@ class CommandLineBuilder {
     private def main = new MainCommand()
     private def jc = new JCommander(main)
     private def commitStage = new CommitStageCommand()
-//    private def integrationTestStage = new IntegrationTestStageCommand()
+    private def integrationStage = new IntegrationStageCommand()
 //    private def deployArtifacts = new DeployArtifactsCommand()
     private def client = new ClientCommand()
     private def server = new ServerCommand()
@@ -45,7 +45,7 @@ class CommandLineBuilder {
     def run(args) {
         jc.setProgramName('build')
         jc.addCommand('commitStage', commitStage)
-//        jc.addCommand('integrationTestStage', integrationTestStage)
+        jc.addCommand('integrationStage', integrationStage)
 //        jc.addCommand('deployArtifacts', deployArtifacts)
         jc.addCommand('client', client)
         jc.addCommand('server', server)
@@ -117,10 +117,17 @@ class CommandLineBuilder {
         }
     }
 
-    @Parameters(commandDescription = 'Compiles everything and runs all integration tests')
-    class IntegrationTestStageCommand {
+    @Parameters(commandDescription = 'Compiles everything and runs all unit and integration tests')
+    class IntegrationStageCommand {
         def run() {
-            project.tasks['cli'].dependsOn(project.tasks['integrationTestStage'])
+			if (!project.ext.testProduct) {
+				throw new IllegalStateException('No test product specified')
+			}
+			
+			// set productFile property to test product
+			project.ext.productFile = project.ext.testProduct
+			
+            project.tasks['cli'].dependsOn(project.tasks['integrationStage'])
         }
     }
 
