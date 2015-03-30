@@ -801,10 +801,10 @@ task packageProduct(dependsOn: buildProduct) << {
 }
 
 /**
- * Runs the OSGi unit tests. This method does not fail the build if one
- * unit test fails.
+ * Run the test product launcher
+ * @param args list of additional arguments
  */
-task runUnitTests(dependsOn: buildProduct) << {
+def runTests(args = []) {
 	def productOutputPath = new File(buildDir, getProductUid())
 	def launcherName = project.ext.testProductLauncher?:'eclipse'
 	def testReportDir = project.file('target/testReports')
@@ -823,11 +823,11 @@ task runUnitTests(dependsOn: buildProduct) << {
 	println 'Starting test product...'
 	outFile.withOutputStream { out ->
 		errFile.withOutputStream { err ->
-			def process = [
+			def process = ([
 				launcherFile as String,
 				'-out',
 				reportFile as String
-			].execute()
+			] + args).execute()
 			process.waitForProcessOutput(out, err)
 			if (process.exitValue() != 0) {
 				throw new IllegalStateException("Test product failed with exit code ${process.exitValue()}")
@@ -862,8 +862,29 @@ task runUnitTests(dependsOn: buildProduct) << {
 }
 
 /**
+ * Runs the OSGi unit tests. This method does not fail the build if one
+ * unit test fails.
+ */
+task runUnitTests(dependsOn: buildProduct) << {
+	runTests(['-unit'])
+}
+
+/**
+ * Runs the OSGi unit and integration tests. This method does not fail the build if one
+ * unit test fails.
+ */
+task runAllTests(dependsOn: buildProduct) << {
+	runTests(['-unit', '-integration'])
+}
+
+/**
  * Runs the commit stage. The commit stage includes building all sources,
- * creating binary artifacts (in this case an update site containing all
- * exported bundles) and running unit tests.
+ * creating binary artifacts and running unit tests.
  */
 task commitStage(dependsOn: runUnitTests)
+
+/**
+ * Runs the integration stage. The integration stage includes building all sources,
+ * creating binary artifacts and running unit and integration tests.
+ */
+task integrationStage(dependsOn: runAllTests)
