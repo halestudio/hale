@@ -128,8 +128,8 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 	}
 
 	@Override
-	public Object convertGeometry(GeometryProperty<?> geom, TypeDefinition columnType)
-			throws Exception {
+	public Object convertGeometry(GeometryProperty<?> geom, TypeDefinition columnType,
+			PGConnection pgconn) throws Exception {
 
 		PGgeometry pGeometry = null;
 		// Transform from sourceCRS to targetCRS
@@ -169,8 +169,8 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 	}
 
 	@Override
-	public GeometryProperty<?> convertToInstanceGeometry(Object geom, TypeDefinition columnType)
-			throws Exception {
+	public GeometryProperty<?> convertToInstanceGeometry(Object geom, TypeDefinition columnType,
+			PGConnection connection) throws Exception {
 
 		if (geom instanceof PGgeometry) {
 			PGgeometry pgeom = (PGgeometry) geom;

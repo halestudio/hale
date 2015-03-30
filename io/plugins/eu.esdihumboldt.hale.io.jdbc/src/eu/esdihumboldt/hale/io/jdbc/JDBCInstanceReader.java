@@ -17,9 +17,12 @@ package eu.esdihumboldt.hale.io.jdbc;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.SQLSyntaxErrorException;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -39,6 +42,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 public class JDBCInstanceReader extends AbstractInstanceReader implements JDBCConstants {
 
 	private MultiInstanceCollection collection;
+	private static final ALogger log = ALoggerFactory.getLogger(JDBCInstanceReader.class);
 
 	/**
 	 * Default constructor.
@@ -66,8 +70,12 @@ public class JDBCInstanceReader extends AbstractInstanceReader implements JDBCCo
 		progress.begin("Configure database connection", ProgressIndicator.UNKNOWN);
 		try {
 			// test connection
-			try (Connection connection = JDBCConnection.getConnection(this)) {
+			Connection connection = JDBCConnection.getConnection(this);
+			try {
 				connection.createStatement().executeQuery("SELECT 1;");
+			} catch (SQLSyntaxErrorException e) {
+				log.warn("SELECT 1 query is not supported by Oracle database. Instead uses SELECT 1 from dual.");
+				connection.createStatement().executeQuery("SELECT 1 from dual");
 			}
 
 			String user = getParameter(PARAM_USER).as(String.class);

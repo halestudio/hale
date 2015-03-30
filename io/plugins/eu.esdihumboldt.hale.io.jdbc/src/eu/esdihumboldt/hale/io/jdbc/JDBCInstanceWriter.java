@@ -178,7 +178,7 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 						connection);
 
 				// populate insert statement with values
-				populateInsertStatement(statement, properties, instance, reporter);
+				populateInsertStatement(statement, properties, instance, reporter, connection);
 
 				statement.addBatch();
 
@@ -324,10 +324,11 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 	 * @param properties the properties to fill the statement with
 	 * @param instance the instance
 	 * @param reporter the reporter
+	 * @param conn Connection (used for Geometry conversion for oracle)
 	 * @throws SQLException if configuring the statement fails
 	 */
 	private void populateInsertStatement(PreparedStatement statement, Set<QName> properties,
-			Instance instance, IOReporter reporter) throws SQLException {
+			Instance instance, IOReporter reporter, Connection conn) throws SQLException {
 		TypeDefinition type = instance.getDefinition();
 
 		int index = 1;
@@ -371,7 +372,7 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 
 			else
 				setStatementParameter(statement, index, value, property, sqlType.getType(),
-						reporter);
+						reporter, conn);
 
 			index++;
 		}
@@ -386,15 +387,20 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 	 * @param propertyDef the associated property definition
 	 * @param sqlType the SQL type
 	 * @param reporter the reporter
+	 * @param conn Connection (currently used for geometry conversion for oracle
+	 *            database
 	 * @throws SQLException if setting the parameter fails
 	 */
+	@SuppressWarnings("unchecked")
 	private void setStatementParameter(PreparedStatement statement, int index, Object value,
-			PropertyDefinition propertyDef, int sqlType, IOReporter reporter) throws SQLException {
+			PropertyDefinition propertyDef, int sqlType, IOReporter reporter, Connection conn)
+			throws SQLException {
 		if (propertyDef.getPropertyType().getConstraint(GeometryType.class).isGeometry()) {
 			// is a geometry column
 
 			// get the geometry advisor
-			GeometryAdvisor<?> advisor = propertyDef.getPropertyType()
+			@SuppressWarnings("rawtypes")
+			GeometryAdvisor advisor = propertyDef.getPropertyType()
 					.getConstraint(GeometryAdvisorConstraint.class).getAdvisor();
 			if (advisor != null) {
 				// use the advisor to convert the geometry
@@ -402,7 +408,7 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 					// XXX JTS geometry conversion needed beforehand?
 					try {
 						value = advisor.convertGeometry((GeometryProperty<?>) value,
-								propertyDef.getPropertyType());
+								propertyDef.getPropertyType(), conn);
 					} catch (Exception e) {
 						reporter.error(new IOMessageImpl("Something went wrong during conversion",
 								e));
