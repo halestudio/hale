@@ -18,7 +18,14 @@ package eu.esdihumboldt.hale.io.wfs.ui;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Collection;
+import java.util.HashSet;
 
+import javax.annotation.Nullable;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URIBuilder;
+import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -32,13 +39,17 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
+import com.google.common.base.Predicate;
+
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
+import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.ui.io.ImportSource;
 import eu.esdihumboldt.hale.ui.io.source.AbstractProviderSource;
 import eu.esdihumboldt.hale.ui.io.source.AbstractSource;
+import eu.esdihumboldt.hale.ui.io.source.URLSourceURIFieldEditor;
 import eu.esdihumboldt.hale.ui.util.io.URIFieldEditor;
 
 /**
@@ -50,25 +61,25 @@ import eu.esdihumboldt.hale.ui.util.io.URIFieldEditor;
  */
 public abstract class AbstractWFSSource<P extends ImportProvider> extends AbstractProviderSource<P> {
 
-	private URIFieldEditor sourceURL;
+	private URLSourceURIFieldEditor sourceURL;
 
 	/**
 	 * @see ImportSource#createControls(Composite)
 	 */
 	@Override
 	public void createControls(Composite parent) {
-		parent.setLayout(new GridLayout(3, false));
+		parent.setLayout(new GridLayout(4, false));
 
 		// caption
 		new Label(parent, SWT.NONE); // placeholder
 
 		Label caption = new Label(parent, SWT.NONE);
 		caption.setText(getCaption());
-		caption.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false, 2, 1));
+		caption.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false, 3, 1));
 
 		// source file
 		// target URL field
-		sourceURL = new URIFieldEditor("sourceURL", "URL:", parent) {
+		sourceURL = new URLSourceURIFieldEditor("sourceURL", "URL:", parent) {
 
 			// the following methods are overridden so the capabilities button
 			// may appear on the same line
@@ -85,6 +96,18 @@ public abstract class AbstractWFSSource<P extends ImportProvider> extends Abstra
 
 		};
 		sourceURL.setPage(getPage());
+
+		// set custom URI filter
+		sourceURL.setURIFilter(createHistoryURIFilter());
+
+		// set content types for URI field
+		Collection<IOProviderDescriptor> factories = getConfiguration().getFactories();
+		HashSet<IContentType> supportedTypes = new HashSet<IContentType>();
+		for (IOProviderDescriptor factory : factories) {
+			supportedTypes.addAll(factory.getSupportedTypes());
+		}
+
+		sourceURL.setContentTypes(supportedTypes);
 
 		sourceURL.setPropertyChangeListener(new IPropertyChangeListener() {
 
@@ -122,11 +145,39 @@ public abstract class AbstractWFSSource<P extends ImportProvider> extends Abstra
 		// create provider combo
 		ComboViewer providers = createProviders(parent);
 		providers.getControl().setLayoutData(
-				new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
+				new GridData(SWT.FILL, SWT.BEGINNING, true, false, 3, 1));
 
 		// initial state update
 		updateState(true);
 	}
+
+	/**
+	 * @return a custom filter for the URI history
+	 */
+	@Nullable
+	protected Predicate<? super URI> createHistoryURIFilter() {
+		return new Predicate<URI>() {
+
+			@Override
+			public boolean apply(URI input) {
+				String expectedRequest = getWFSRequestValue();
+				URIBuilder uri = new URIBuilder(input);
+				for (NameValuePair param : uri.getQueryParams()) {
+					if ("request".equalsIgnoreCase(param.getName())
+							&& expectedRequest.equals(param.getValue())) {
+						return true;
+					}
+				}
+				return false;
+			}
+		};
+	}
+
+	/**
+	 * @return the value to use for the REQUEST parameter for a WFS request with
+	 *         this source
+	 */
+	protected abstract String getWFSRequestValue();
 
 	/**
 	 * Let the user determine the source URL to use, e.g. though a dialog or
