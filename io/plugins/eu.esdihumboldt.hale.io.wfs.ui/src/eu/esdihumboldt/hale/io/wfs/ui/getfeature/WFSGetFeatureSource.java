@@ -144,6 +144,11 @@ public class WFSGetFeatureSource extends AbstractWFSSource<ImportProvider> {
 	}
 
 	@Override
+	protected String getWFSRequestValue() {
+		return "GetFeature";
+	}
+
+	@Override
 	protected String getCaption() {
 		return "WFS GetFeature KVP request";
 	}
