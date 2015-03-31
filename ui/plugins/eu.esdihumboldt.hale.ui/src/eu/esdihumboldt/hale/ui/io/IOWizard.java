@@ -575,7 +575,25 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 
 					// let advisor handle results
 					try {
-						advisor.handleResults(getProvider());
+						getContainer().run(true, false, new IRunnableWithProgress() {
+
+							@Override
+							public void run(IProgressMonitor monitor)
+									throws InvocationTargetException, InterruptedException {
+								monitor.beginTask("Completing operation...",
+										IProgressMonitor.UNKNOWN);
+								try {
+									advisor.handleResults(getProvider());
+								} finally {
+									monitor.done();
+								}
+							}
+
+						});
+					} catch (InvocationTargetException e) {
+						log.userError("Error processing results:\n"
+								+ e.getCause().getLocalizedMessage(), e.getCause());
+						return false;
 					} catch (Exception e) {
 						log.userError("Error processing results:\n" + e.getLocalizedMessage(), e);
 						return false;
