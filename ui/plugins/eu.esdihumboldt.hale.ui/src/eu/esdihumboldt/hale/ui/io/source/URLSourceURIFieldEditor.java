@@ -19,6 +19,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -33,6 +35,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
 import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.service.project.RecentProjectsMenu;
@@ -48,6 +51,7 @@ import eu.esdihumboldt.util.Pair;
 public class URLSourceURIFieldEditor extends URIFieldEditor {
 
 	private Button historyButton;
+	private Predicate<? super URI> filter;
 
 	/**
 	 * @see URIFieldEditor#URIFieldEditor()
@@ -88,6 +92,16 @@ public class URLSourceURIFieldEditor extends URIFieldEditor {
 	}
 
 	/**
+	 * Set a custom filter to apply to URIs. Should be called before any
+	 * {@link #setContentTypes(Set)} call.
+	 * 
+	 * @param filter the filter
+	 */
+	public void setURIFilter(@Nullable Predicate<? super URI> filter) {
+		this.filter = filter;
+	}
+
+	/**
 	 * Set the allowed content types and enable the history button if
 	 * applicable.
 	 * 
@@ -97,15 +111,19 @@ public class URLSourceURIFieldEditor extends URIFieldEditor {
 		RecentResources rr = (RecentResources) PlatformUI.getWorkbench().getService(
 				RecentResources.class);
 		if (rr != null) {
-			final List<Pair<URI, IContentType>> locations = rr.getRecent(types,
-					new Predicate<URI>() {
+			Predicate<URI> selectUris = new Predicate<URI>() {
 
-						@Override
-						public boolean apply(URI uri) {
-							// exclude files
-							return !"file".equals(uri.getScheme());
-						}
-					});
+				@Override
+				public boolean apply(URI uri) {
+					// exclude files
+					return !"file".equals(uri.getScheme());
+				}
+			};
+			if (filter != null) {
+				selectUris = Predicates.and(selectUris, filter);
+			}
+
+			final List<Pair<URI, IContentType>> locations = rr.getRecent(types, selectUris);
 
 			if (!locations.isEmpty()) {
 				historyButton.addSelectionListener(new SelectionAdapter() {
