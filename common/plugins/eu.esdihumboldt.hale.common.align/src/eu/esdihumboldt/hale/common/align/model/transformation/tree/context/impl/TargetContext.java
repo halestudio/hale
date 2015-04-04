@@ -199,14 +199,14 @@ public class TargetContext implements TransformationContext {
 		private final Set<TargetNode> contextTargets;
 
 		// Existing cell nodes for this duplication.
-		private final Multimap<Cell, CellNode> oldCellNodes;
+		private final IdentityHashMultimap<Cell, CellNode> oldCellNodes;
 		// Existing target nodes for this duplication.
 		// All nodes needed!
 		// For example "T(a*, b*) -> T(x(a, b)*)": duplication of "a" leads to
 		// multiple "x"s, which should be used one after another for the "b"s.
-		private final Multimap<EntityDefinition, TargetNode> oldTargetNodes;
+		private final IdentityHashMultimap<EntityDefinition, TargetNode> oldTargetNodes;
 		// Existing source nodes for this duplication.
-		private final Multimap<EntityDefinition, SourceNode> oldSourceNodes;
+		private final IdentityHashMultimap<EntityDefinition, SourceNode> oldSourceNodes;
 		// Created cell nodes in this duplication. A cell node is only created
 		// once in a duplication!
 		private final Map<Cell, CellNodeImpl> newCellNodes;
@@ -230,9 +230,9 @@ public class TargetContext implements TransformationContext {
 			else
 				this.ignoreCells = Collections.emptySet();
 			this.contextTargets = contextTargets;
-			oldCellNodes = ArrayListMultimap.create();
-			oldTargetNodes = ArrayListMultimap.create();
-			oldSourceNodes = ArrayListMultimap.create();
+			oldCellNodes = new IdentityHashMultimap<>();
+			oldTargetNodes = new IdentityHashMultimap<>();
+			oldSourceNodes = new IdentityHashMultimap<>();
 			newCellNodes = new HashMap<Cell, CellNodeImpl>();
 			newTargetNodes = ArrayListMultimap.create();
 		}
@@ -311,7 +311,8 @@ public class TargetContext implements TransformationContext {
 		 * Returns a collection of existing cell nodes with the given cell.
 		 * 
 		 * @param cell the cell
-		 * @return a collection of existing cell nodes
+		 * @return a collection of existing cell nodes, the collection uses the
+		 *         objects identity instead of equals
 		 */
 		Collection<CellNode> getOldCellNodes(Cell cell) {
 			return oldCellNodes.get(cell);
@@ -332,7 +333,8 @@ public class TargetContext implements TransformationContext {
 		 * definition.
 		 * 
 		 * @param entityDef the entity definition
-		 * @return a collection of existing source nodes
+		 * @return a collection of existing source nodes, the collection uses
+		 *         the objects identity instead of equals
 		 */
 		Collection<SourceNode> getOldSourceNodes(EntityDefinition entityDef) {
 			return oldSourceNodes.get(entityDef);
@@ -359,7 +361,8 @@ public class TargetContext implements TransformationContext {
 		 * Returns existing target nodes of the given definition.
 		 * 
 		 * @param entityDef the entity definition
-		 * @return existing target nodes
+		 * @return existing target nodes, the collection uses the objects
+		 *         identity instead of equals
 		 */
 		Collection<TargetNode> getOldTargetNodes(EntityDefinition entityDef) {
 			return oldTargetNodes.get(entityDef);
@@ -870,9 +873,9 @@ public class TargetContext implements TransformationContext {
 				// TargetNodes can be found more than once...
 				Collection<TargetNode> targetNodes = info.getOldTargetNodes(target
 						.getEntityDefinition());
-				for (TargetNode other : targetNodes)
-					if (other == target)
-						return false; // already found & followed...
+				if (targetNodes.contains(target)) {
+					return false; // already found & followed...
+				}
 				info.addOldTargetNode(target.getEntityDefinition(), target);
 				return true;
 			}
@@ -884,9 +887,9 @@ public class TargetContext implements TransformationContext {
 			public boolean visit(CellNode cell) {
 				// CellNodes can be found more than once...
 				Collection<CellNode> cellNodes = info.getOldCellNodes(cell.getCell());
-				for (CellNode other : cellNodes)
-					if (other == cell)
-						return false; // already found & followed...
+				if (cellNodes.contains(cell)) {
+					return false; // already found & followed...
+				}
 				if (!targetsOnly)
 					info.addOldCellNode(cell.getCell(), cell);
 				return true;
