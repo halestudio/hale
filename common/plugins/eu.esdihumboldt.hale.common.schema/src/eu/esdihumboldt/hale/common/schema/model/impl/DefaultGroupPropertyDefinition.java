@@ -34,7 +34,7 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 public class DefaultGroupPropertyDefinition extends
 		AbstractChildDefinition<GroupPropertyConstraint> implements GroupPropertyDefinition {
 
-	private final DefinitionGroup children = new DefaultGroup(true);
+	private final DefinitionGroup children;
 
 	private final boolean allowFlatten;
 
@@ -52,6 +52,7 @@ public class DefaultGroupPropertyDefinition extends
 		super(name, parentGroup);
 
 		this.allowFlatten = allowFlatten;
+		this.children = new DefaultGroup(getIdentifier() + "/children", true);
 	}
 
 	/**
