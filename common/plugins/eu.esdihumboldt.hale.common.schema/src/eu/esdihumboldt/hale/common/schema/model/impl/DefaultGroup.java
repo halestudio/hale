@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.UUID;
 
 import javax.xml.namespace.QName;
 
@@ -40,7 +39,7 @@ import eu.esdihumboldt.hale.common.schema.model.impl.internal.ConstraintOverride
  */
 public class DefaultGroup implements DefinitionGroup {
 
-	private final String identifier = UUID.randomUUID().toString();
+	private final String identifier;
 
 	/**
 	 * The list of declared children (qualified name mapped to child definition,
@@ -55,12 +54,14 @@ public class DefaultGroup implements DefinitionGroup {
 	/**
 	 * Create a group
 	 * 
+	 * @param identifier the reproducable unique identifier of the group
 	 * @param flatten if contained group properties may be replaced by their
 	 *            children if possible
 	 */
-	public DefaultGroup(boolean flatten) {
+	public DefaultGroup(String identifier, boolean flatten) {
 		super();
 		this.flatten = flatten;
+		this.identifier = identifier;
 	}
 
 	/**

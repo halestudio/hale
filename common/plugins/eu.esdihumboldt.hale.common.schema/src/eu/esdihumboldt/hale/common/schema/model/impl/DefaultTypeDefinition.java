@@ -56,7 +56,7 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 	/**
 	 * The declared children
 	 */
-	private final DefinitionGroup declaredChildren = new DefaultGroup(true);
+	private final DefinitionGroup declaredChildren;
 
 	/**
 	 * The list of inherited children, names mapped to child definitions
@@ -70,6 +70,8 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 	 */
 	public DefaultTypeDefinition(QName name) {
 		super(name);
+
+		declaredChildren = new DefaultGroup(getIdentifier() + "/declaredChildren", true);
 	}
 
 	/**
