@@ -484,7 +484,9 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 				// schema attribute group that might be referenced somewhere
 				XmlSchemaAttributeGroup attributeGroup = (XmlSchemaAttributeGroup) item;
 				if (attributeGroup.getName() != null) {
-					XmlAttributeGroup attGroup = new XmlAttributeGroup(true);
+					String groupIdent = attributeGroup.getName().getNamespaceURI() + "/"
+							+ attributeGroup.getName().getLocalPart();
+					XmlAttributeGroup attGroup = new XmlAttributeGroup(groupIdent, true);
 					createAttributes(attributeGroup, attGroup, "", schemaLocation, namespace);
 					index.getAttributeGroups().put(attributeGroup.getName(), attGroup);
 				}
@@ -497,7 +499,9 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 				// group that might be referenced somewhere
 				XmlSchemaGroup schemaGroup = (XmlSchemaGroup) item;
 				if (schemaGroup.getName() != null) {
-					XmlGroup group = new XmlGroup(true);
+					String groupIdent = schemaGroup.getName().getNamespaceURI() + "/"
+							+ schemaGroup.getName().getLocalPart();
+					XmlGroup group = new XmlGroup(groupIdent, true);
 					createPropertiesFromParticle(group, schemaGroup.getParticle(), schemaLocation,
 							namespace, false);
 					index.getGroups().put(schemaGroup.getName(), group);

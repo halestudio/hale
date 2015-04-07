@@ -17,7 +17,7 @@
 package eu.esdihumboldt.cst.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -86,7 +86,7 @@ public abstract class AbstractTransformationTest {
 					continue;
 
 				String error = InstanceUtil.checkInstance(targetInstance, transformedData);
-				assertNull(error, error);
+				assertTrue(error, error == null);
 			}
 		} finally {
 			targetIter.close();

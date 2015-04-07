@@ -16,7 +16,10 @@
 
 package eu.esdihumboldt.hale.common.schema.io;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.content.IContentType;
 
@@ -25,12 +28,9 @@ import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectIO;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
-import eu.esdihumboldt.hale.common.schema.model.Definition;
-import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
-import eu.esdihumboldt.hale.common.schema.model.impl.AbstractDefinition;
 
 /**
  * Schema I/O utilities
@@ -89,19 +89,23 @@ public abstract class SchemaIO {
 	public static void loadMappingRelevantTypesConfig(TypeIndex types, SchemaSpaceID spaceID,
 			IConfigurationService configurationService) {
 		String paramName = getMappingRelevantTypesParameterName(spaceID);
-		List<String> mappableConfig = configurationService.getList(paramName);
-		if (mappableConfig != null) {
+		List<String> config = configurationService.getList(paramName);
+		if (config != null) {
+			Set<String> mappableConfig = new HashSet<>(config);
+
+			// collect types to be toggled
+			List<TypeDefinition> toToggle = new ArrayList<>();
+
 			for (TypeDefinition type : types.getTypes()) {
-				// don't like warnings, and direct cast to
-				// AbstractDefinition<TypeConstraint> gives warning...
-				Definition<TypeConstraint> def = type;
-				if (mappableConfig.contains(type.getName().toString()))
-					((AbstractDefinition<TypeConstraint>) def)
-							.setConstraint(MappingRelevantFlag.ENABLED);
-				else
-					((AbstractDefinition<TypeConstraint>) def)
-							.setConstraint(MappingRelevantFlag.DISABLED);
+				boolean relevant = type.getConstraint(MappingRelevantFlag.class).isEnabled();
+				boolean shouldBeRelevant = mappableConfig.contains(type.getName().toString());
+
+				if (relevant != shouldBeRelevant) {
+					toToggle.add(type);
+				}
 			}
+
+			types.toggleMappingRelevant(toToggle);
 		}
 	}
 

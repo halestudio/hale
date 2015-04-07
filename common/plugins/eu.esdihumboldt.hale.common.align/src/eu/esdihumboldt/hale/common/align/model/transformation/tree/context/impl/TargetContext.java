@@ -28,10 +28,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
@@ -50,6 +52,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.TargetNo
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.AbstractSourceToTargetVisitor;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.AbstractTargetToSourceVisitor;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
+import eu.esdihumboldt.util.IdentityWrapper;
 import eu.esdihumboldt.util.Pair;
 
 /**
@@ -199,12 +202,12 @@ public class TargetContext implements TransformationContext {
 		private final Set<TargetNode> contextTargets;
 
 		// Existing cell nodes for this duplication.
-		private final Multimap<Cell, CellNode> oldCellNodes;
+		private final Multimap<Cell, IdentityWrapper<CellNode>> oldCellNodes;
 		// Existing target nodes for this duplication.
 		// All nodes needed!
 		// For example "T(a*, b*) -> T(x(a, b)*)": duplication of "a" leads to
 		// multiple "x"s, which should be used one after another for the "b"s.
-		private final Multimap<EntityDefinition, TargetNode> oldTargetNodes;
+		private final Multimap<EntityDefinition, IdentityWrapper<TargetNode>> oldTargetNodes;
 		// Existing source nodes for this duplication.
 		private final Multimap<EntityDefinition, SourceNode> oldSourceNodes;
 		// Created cell nodes in this duplication. A cell node is only created
@@ -230,8 +233,8 @@ public class TargetContext implements TransformationContext {
 			else
 				this.ignoreCells = Collections.emptySet();
 			this.contextTargets = contextTargets;
-			oldCellNodes = ArrayListMultimap.create();
-			oldTargetNodes = ArrayListMultimap.create();
+			oldCellNodes = LinkedHashMultimap.create();
+			oldTargetNodes = LinkedHashMultimap.create();
 			oldSourceNodes = ArrayListMultimap.create();
 			newCellNodes = new HashMap<Cell, CellNodeImpl>();
 			newTargetNodes = ArrayListMultimap.create();
@@ -264,7 +267,7 @@ public class TargetContext implements TransformationContext {
 		 * @param target the target node
 		 */
 		void addOldTargetNode(EntityDefinition entityDef, TargetNode target) {
-			oldTargetNodes.put(entityDef, target);
+			oldTargetNodes.put(entityDef, new IdentityWrapper<>(target));
 		}
 
 		/**
@@ -284,7 +287,7 @@ public class TargetContext implements TransformationContext {
 		 * @param cellNode the cell node
 		 */
 		void addOldCellNode(Cell cell, CellNode cellNode) {
-			oldCellNodes.put(cell, cellNode);
+			oldCellNodes.put(cell, new IdentityWrapper<>(cellNode));
 		}
 
 		/**
@@ -311,9 +314,10 @@ public class TargetContext implements TransformationContext {
 		 * Returns a collection of existing cell nodes with the given cell.
 		 * 
 		 * @param cell the cell
-		 * @return a collection of existing cell nodes
+		 * @return a collection of existing cell nodes, the collection uses the
+		 *         objects identity instead of equals
 		 */
-		Collection<CellNode> getOldCellNodes(Cell cell) {
+		Collection<IdentityWrapper<CellNode>> getOldCellNodes(Cell cell) {
 			return oldCellNodes.get(cell);
 		}
 
@@ -332,7 +336,8 @@ public class TargetContext implements TransformationContext {
 		 * definition.
 		 * 
 		 * @param entityDef the entity definition
-		 * @return a collection of existing source nodes
+		 * @return a collection of existing source nodes, the collection uses
+		 *         the objects identity instead of equals
 		 */
 		Collection<SourceNode> getOldSourceNodes(EntityDefinition entityDef) {
 			return oldSourceNodes.get(entityDef);
@@ -347,7 +352,15 @@ public class TargetContext implements TransformationContext {
 		 */
 		Iterable<TargetNode> getAllTargetNodes(EntityDefinition entityDef) {
 			Collection<TargetNode> newTargets = newTargetNodes.get(entityDef);
-			Collection<TargetNode> oldTargets = oldTargetNodes.get(entityDef);
+			Collection<TargetNode> oldTargets = Collections2.transform(
+					oldTargetNodes.get(entityDef),
+					new Function<IdentityWrapper<TargetNode>, TargetNode>() {
+
+						@Override
+						public TargetNode apply(IdentityWrapper<TargetNode> input) {
+							return input.getValue();
+						}
+					});
 			if (newTargets.isEmpty())
 				return oldTargets;
 			if (oldTargets.isEmpty())
@@ -359,9 +372,10 @@ public class TargetContext implements TransformationContext {
 		 * Returns existing target nodes of the given definition.
 		 * 
 		 * @param entityDef the entity definition
-		 * @return existing target nodes
+		 * @return existing target nodes, the collection uses the objects
+		 *         identity instead of equals
 		 */
-		Collection<TargetNode> getOldTargetNodes(EntityDefinition entityDef) {
+		Collection<IdentityWrapper<TargetNode>> getOldTargetNodes(EntityDefinition entityDef) {
 			return oldTargetNodes.get(entityDef);
 		}
 
@@ -519,7 +533,8 @@ public class TargetContext implements TransformationContext {
 			// exists.
 			// If so, add this source to the first so found cell.
 			boolean usedOld = false;
-			for (CellNode oldCellNode : info.getOldCellNodes(cell.getCell())) {
+			for (IdentityWrapper<CellNode> wrapper : info.getOldCellNodes(cell.getCell())) {
+				CellNode oldCellNode = wrapper.getValue();
 				// Skip the cell if it's full.
 				if (oldCellNode.getSources().size() == cell.getSources().size())
 					continue;
@@ -868,11 +883,11 @@ public class TargetContext implements TransformationContext {
 			@Override
 			public boolean visit(TargetNode target) {
 				// TargetNodes can be found more than once...
-				Collection<TargetNode> targetNodes = info.getOldTargetNodes(target
+				Collection<IdentityWrapper<TargetNode>> targetNodes = info.getOldTargetNodes(target
 						.getEntityDefinition());
-				for (TargetNode other : targetNodes)
-					if (other == target)
-						return false; // already found & followed...
+				if (targetNodes.contains(new IdentityWrapper<>(target))) {
+					return false; // already found & followed...
+				}
 				info.addOldTargetNode(target.getEntityDefinition(), target);
 				return true;
 			}
@@ -883,10 +898,11 @@ public class TargetContext implements TransformationContext {
 			@Override
 			public boolean visit(CellNode cell) {
 				// CellNodes can be found more than once...
-				Collection<CellNode> cellNodes = info.getOldCellNodes(cell.getCell());
-				for (CellNode other : cellNodes)
-					if (other == cell)
-						return false; // already found & followed...
+				Collection<IdentityWrapper<CellNode>> cellNodes = info.getOldCellNodes(cell
+						.getCell());
+				if (cellNodes.contains(new IdentityWrapper<>(cell))) {
+					return false; // already found & followed...
+				}
 				if (!targetsOnly)
 					info.addOldCellNode(cell.getCell(), cell);
 				return true;

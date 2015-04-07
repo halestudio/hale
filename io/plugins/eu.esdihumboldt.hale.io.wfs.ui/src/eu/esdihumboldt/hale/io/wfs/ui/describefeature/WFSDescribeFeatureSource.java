@@ -107,7 +107,8 @@ public class WFSDescribeFeatureSource extends AbstractWFSSource<ImportProvider> 
 					// parse namespaces
 					Map<String, String> prefixToNamespace = new HashMap<>();
 					if (namespace != null && !namespace.isEmpty()) {
-						Pattern ex = Pattern.compile("xmlns\\((([\\w\\d]+)(=|,))?(.+)\\)");
+						Pattern ex = Pattern
+								.compile("xmlns\\((([\\w\\d_\\.\\-]+)(=|,))?([^)]+)\\)");
 						Matcher matcher = ex.matcher(namespace);
 
 						while (matcher.find()) {

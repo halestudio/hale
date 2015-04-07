@@ -26,10 +26,10 @@ import eu.esdihumboldt.hale.common.schema.model.impl.DefaultGroup;
 public class XmlAttributeGroup extends DefaultGroup {
 
 	/**
-	 * @see DefaultGroup#DefaultGroup(boolean)
+	 * @see DefaultGroup#DefaultGroup(String, boolean)
 	 */
-	public XmlAttributeGroup(boolean flatten) {
-		super(flatten);
+	public XmlAttributeGroup(String groupIdent, boolean flatten) {
+		super(groupIdent, flatten);
 	}
 
 }

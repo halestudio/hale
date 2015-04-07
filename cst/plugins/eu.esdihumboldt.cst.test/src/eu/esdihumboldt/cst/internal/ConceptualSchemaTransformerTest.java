@@ -231,13 +231,14 @@ public class ConceptualSchemaTransformerTest extends DefaultTransformationTest {
 	@Override
 	protected List<Instance> transformData(TransformationExample example) throws Exception {
 		ConceptualSchemaTransformer transformer = new ConceptualSchemaTransformer();
-		DefaultInstanceSink sink = new DefaultInstanceSink();
+		ThreadSafeInstanceSink<DefaultInstanceSink> sink = new ThreadSafeInstanceSink<>(
+				new DefaultInstanceSink());
 		// FIXME global scope not supported yet
 		ServiceProvider serviceProvider = new ServiceManager(ServiceManager.SCOPE_PROJECT);
 		transformer.transform(example.getAlignment(), example.getSourceInstances(), sink,
 				serviceProvider, new NullProgressIndicator());
 
-		return sink.getInstances();
+		return sink.getDecoratee().getInstances();
 	}
 
 }
