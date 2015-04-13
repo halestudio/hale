@@ -20,8 +20,13 @@ import static org.junit.Assert.assertTrue;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.postgresql.PGConnection;
+
+import eu.esdihumboldt.hale.io.jdbc.test.AbstractDBTest;
+import eu.esdihumboldt.hale.io.jdbc.test.DBImageParameters;
 
 /**
  * Basic database tests.
@@ -46,4 +51,24 @@ public class DBTest extends AbstractDBTest {
 		}
 	}
 
+	/**
+	 * Setup DB, includes create container, start container
+	 */
+	@Before
+	public void setup() {
+
+		DBImageParameters dbi = new DBImageParameters(PostSetup.USER, PostSetup.PASSWORD,
+				PostSetup.DATABASE, PostSetup.HOST, PostSetup.START_URL, PostSetup.PORT,
+				PostSetup.IS_PRIVILEGED, null);
+
+		setupDB(dbi);
+	}
+
+	/**
+	 * Kill and remove docker container
+	 */
+	@After
+	public void tearDown() {
+		tearDownDocker();
+	}
 }

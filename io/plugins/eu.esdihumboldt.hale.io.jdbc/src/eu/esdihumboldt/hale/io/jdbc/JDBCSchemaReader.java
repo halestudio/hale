@@ -153,32 +153,24 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 			// XXX For some advanced info / DBMS specific info we'll need a
 			// properties file. See Config & InformationSchemaViews.
 			level.setTag("hale");
-			String schemas = getParameter(SCHEMAS).as(String.class).replace(',', '|');
-			options.setSchemaInclusionRule(new RegularExpressionInclusionRule(schemas));
+			if (getParameter(SCHEMAS).as(String.class) != null) {
+				String schemas = getParameter(SCHEMAS).as(String.class).replace(',', '|');
+				options.setSchemaInclusionRule(new RegularExpressionInclusionRule(schemas));
+			}
 
 			if (SchemaSpaceID.SOURCE.equals(getSchemaSpace())) {
 				// show views and tables
 				List<String> tableList = Arrays.asList("TABLE", "VIEW");
 
-				options.setTableTypes(tableList/*
-												 * Sameer new TableType[]
-												 * {TableType.table,
-												 * TableType.view }
-												 */);
+				options.setTableTypes(tableList);
 			}
 			else {
 				// only show tables
-				options.setTableTypes(Arrays.asList("TABLE")/*
-															 * sameer new
-															 * TableType[] {
-															 * TableType.table }
-															 */);
+				options.setTableTypes(Arrays.asList("TABLE"));
 			}
 
 			options.setSchemaInfoLevel(level);
 
-			// sameer final Database database =
-			// SchemaCrawlerUtility.getDatabase(connection, options);
 			final Catalog database = SchemaCrawlerUtility.getCatalog(connection, options);
 			String quotes = "\"";
 			try {
@@ -230,11 +222,7 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 					namespace = overallNamespace + ":" + unquote(schema.getName());
 				}
 
-				for (final Table table : database.getTables(schema)/*
-																	 * schema.
-																	 * getTables
-																	 * ()
-																	 */) {
+				for (final Table table : database.getTables(schema)) {
 					// each table is a type
 
 					// get the type definition
@@ -423,19 +411,17 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		type.setConstraint(HasValueFlag.ENABLED);
 
 		CustomType cust = CustomTypeExtension.getInstance().getCustomType(localName, connection);
-		// Oracle jdbc was returning sqltype -6 for NUMBER data type, but it is
-		// bound to boolean by Types.java class.
-		// Configured the sqltype 6 for NUMBER data type.
+		/*
+		 * Oracle jdbc was returning sqltype -6 for NUMBER data type, but it is
+		 * bound to boolean by Types.java class. Configured the sqltype 6 for
+		 * NUMBER data type.
+		 */
 		if (cust != null) {
 			type.setConstraint(SQLType.get(cust.getSQLType()));
 		}
 		else {
 			type.setConstraint(SQLType.get(columnType.getJavaSqlType().getJavaSqlType()));
 		}
-
-		/*
-		 * () sameer getType ( )
-		 */
 
 		if (geomType != null && geomAdvisor != null) {
 			// configure geometry type
@@ -451,8 +437,6 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		else {
 			// configure type
 
-			/* try { */
-			// String className = column.getColumnDataType().getLocalTypeName();
 			Class<?> binding = null;
 			if (cust != null) {
 				binding = cust.getBinding();
@@ -460,26 +444,10 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 			else {
 				binding = column.getColumnDataType().getTypeMappedClass();
 			}
-			/*
-			 * Class<?> binding1; if (className.endsWith("[]")) {
-			 * 
-			 * // determine element class Class<?> elementType =
-			 * loadColumnBinding(className.substring(0, className.length() -
-			 * 2)); type.setConstraint(ElementType.get(elementType));
-			 * 
-			 * // determine array class binding1 =
-			 * Array.newInstance(elementType, 0).getClass(); } else { binding1 =
-			 * loadColumnBinding(className);
-			 * 
-			 * }
-			 */
+
 			type.setConstraint(Binding.get(binding));
 
 			type.setConstraint(HasValueFlag.ENABLED);
-			/*
-			 * } catch (ClassNotFoundException e) { reporter.error(new
-			 * IOMessageImpl("Could not create property type binding", e)); }
-			 */
 
 		}
 
@@ -548,17 +516,17 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		// set primary key if possible
 		PrimaryKey key = table.getPrimaryKey();
 		if (key != null) {
-			/* sameer IndexColumn[] */List<IndexColumn> columns = key.getColumns();
-			if (columns.size()/* sameer length */> 1) {
+			List<IndexColumn> columns = key.getColumns();
+			if (columns.size() > 1) {
 				reporter.warn(new IOMessageImpl(
 						"Primary keys over multiple columns are not yet supported.", null));
 			}
-			else if (columns.size()/* sameerlength */== 1) {
+			else if (columns.size() == 1) {
 				// create constraint, get property definition for original table
 				// column (maybe could use index column, too)
 				type.setConstraint(new eu.esdihumboldt.hale.common.schema.model.constraint.type.PrimaryKey(
 						Collections.<QName> singletonList(getOrCreateProperty(schema, type,
-								table.getColumn(columns.get(0)/* [0] */.getName()), overallNamespace,
+								table.getColumn(columns.get(0).getName()), overallNamespace,
 								namespace, types, connection, reporter).getName())));
 			}
 		}
