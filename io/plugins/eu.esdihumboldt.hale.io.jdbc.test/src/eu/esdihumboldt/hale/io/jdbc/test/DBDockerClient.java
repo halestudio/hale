@@ -33,7 +33,7 @@ public class DBDockerClient {
 	 * 
 	 * @param path
 	 */
-	public DBDockerClient(String path) {
+	public DBDockerClient(String path) { 
 		conf = DockerConfig.getDockerConfig();
 		createContainer(conf, path);
 

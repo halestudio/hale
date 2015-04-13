@@ -72,7 +72,7 @@ public abstract class AbstractDBTest {
 
 		} finally {
 			Thread.currentThread().setContextClassLoader(cl);
-		}
+		} 
 
 		int port = tdc.getPort(dbi.getPort());
 		String hostName = tdc.getHostName();
