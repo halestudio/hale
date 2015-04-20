@@ -1,96 +1,51 @@
 package eu.esdihumboldt.hale.io.jdbc.test;
 
-import java.net.URI;
+/**
+ * Parameters related to database docker configuration
+ * 
+ * @author sameer sheikh
+ */
+public interface DBImageParameters extends ContainerParameters {
 
+	String USER_KEY = ".user";
+	String PASSWORD_KEY = ".password";
+	String DATABASE_KEY = ".database";
+	String PORT_KEY = ".port";
 
-public class DBImageParameters {
-	
-	/**
-	 * The database user name
-	 */
-	private String user ;
-	/**
-	 * The database user password
-	 */
-	private String password ;
-	
-	/**
-	 * The database name
-	 */
-	private String database;
-
-	private String host ;
-	
-	private String startUrl;
-	
-	private int port;
-	
-	private boolean isPriviliged ;
-
+	String START_URL = ".startURL";
+	String DB_UPTIME = ".dbUPTime";
 
 	/**
-	 * The database JDBC URI
+	 * @param tdc
+	 * @return
 	 */
-	protected URI databaseUri;
+	String getJDBCURL(int port, String hostName);
 
+	/**
+	 * @return get username
+	 */
+	String getUser();
 
-	public DBImageParameters(String user, String password, String database,
-			String host, String startUrl, int port, boolean isPriviliged,
-			URI databaseUri) {
-	
-		this.user = user;
-		this.password = password;
-		this.database = database;
-		this.host = host;
-		this.startUrl = startUrl;
-		this.port = port;
-		this.isPriviliged = isPriviliged;
-		this.databaseUri = databaseUri;
-	}
+	/**
+	 * @return get password
+	 */
+	String getPassword();
 
+	/**
+	 * @return get database name
+	 */
+	String getDatabase();
 
-	public String getUser() {
-		return user;
-	}
+	/**
+	 * @return port number
+	 */
+	int getDBPort();
 
+	/**
+	 * @return it is the start of the jdbc uri.
+	 */
+	String getStartURI();
 
-	public String getPassword() {
-		return password;
-	}
+	int getStartUPTime();
 
-
-	public String getDatabase() {
-		return database;
-	}
-
-
-	public String getHost() {
-		return host;
-	}
-
-
-	public String getStartUrl() {
-		return startUrl;
-	}
-
-
-	public int getPort() {
-		return port;
-	}
-
-
-	public boolean isPriviliged() {
-		return isPriviliged;
-	}
-
-
-	public URI getDatabaseUri() {
-		return databaseUri;
-	}
-
-	public void setDatabaseUri(URI uri){
-		this.databaseUri = uri;
-	}
-
-	
 }

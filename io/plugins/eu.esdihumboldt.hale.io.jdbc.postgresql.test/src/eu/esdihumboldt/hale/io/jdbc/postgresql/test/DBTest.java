@@ -20,13 +20,11 @@ import static org.junit.Assert.assertTrue;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.postgresql.PGConnection;
 
 import eu.esdihumboldt.hale.io.jdbc.test.AbstractDBTest;
-import eu.esdihumboldt.hale.io.jdbc.test.DBImageParameters;
+import eu.esdihumboldt.hale.io.jdbc.test.DBConfigInstance;
 
 /**
  * Basic database tests.
@@ -40,6 +38,14 @@ public class DBTest extends AbstractDBTest {
 	 * 
 	 * @throws SQLException if the database cannot be accessed
 	 */
+
+	public DBTest() {
+		super(new DBConfigInstance("postgis"));
+	}
+
+	/**
+	 * @throws SQLException
+	 */
 	@Test
 	public void testConnection() throws SQLException {
 		Connection connection = waitForConnection();
@@ -51,24 +57,4 @@ public class DBTest extends AbstractDBTest {
 		}
 	}
 
-	/**
-	 * Setup DB, includes create container, start container
-	 */
-	@Before
-	public void setup() {
-
-		DBImageParameters dbi = new DBImageParameters(PostSetup.USER, PostSetup.PASSWORD,
-				PostSetup.DATABASE, PostSetup.HOST, PostSetup.START_URL, PostSetup.PORT,
-				PostSetup.IS_PRIVILEGED, null);
-
-		setupDB(dbi);
-	}
-
-	/**
-	 * Kill and remove docker container
-	 */
-	@After
-	public void tearDown() {
-		tearDownDocker();
-	}
 }

@@ -24,7 +24,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-import com.typesafe.config.Config;
+import org.junit.After;
+import org.junit.Before;
+
+import com.spotify.docker.client.DockerException;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -51,45 +54,55 @@ import eu.esdihumboldt.hale.io.jdbc.JDBCSchemaReader;
  */
 public abstract class AbstractDBTest {
 
-	public static final String DB_UPTIME = ".dbUPTime";
-	private DBImageParameters dbi;
-	private DBDockerClient tdc;
-	public static final String ORACLE_DB = "ORCL";
+	/**
+	 * the config key specifying the time in seconds required for starting the
+	 * database
+	 */
+	private final DBImageParameters dbi;
+	private DBDockerClient client;
+	private URI jdbcUri;
+
+	/**
+	 * @param imageParams
+	 * 
+	 */
+	public AbstractDBTest(DBImageParameters imageParams) {
+		this.dbi = imageParams;
+
+	}
 
 	/**
 	 * Setup host and database.
+	 * 
+	 * @throws InterruptedException
+	 * @throws DockerException
 	 */
-	public void setupDB(DBImageParameters dbi) {
+	@Before
+	public void setupDB() throws DockerException, InterruptedException {
 
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
+
 		try {
 			// set context class loaded to this class' class loader to be able
-			// to find docker.conf
-			Thread.currentThread().setContextClassLoader(
-					getClass().getClassLoader());
-			tdc = new DBDockerClient(dbi.getHost());
-			tdc.startContainer(dbi.isPriviliged());
+			// to find hale-docker.conf
+			Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+			client = new DBDockerClient(dbi);
+			client.createContainer();
+			client.startContainer();
 
 		} finally {
 			Thread.currentThread().setContextClassLoader(cl);
-		} 
+		}
 
-		int port = tdc.getPort(dbi.getPort());
-		String hostName = tdc.getHostName();
-
-		URI databaseUri = URI.create(dbi.getStartUrl() + hostName + ":" + port
-				+ "/" + dbi.getDatabase());
-
-		dbi.setDatabaseUri(databaseUri);
-		this.dbi = dbi;
+		jdbcUri = URI.create(dbi.getJDBCURL(client.getHostPort(dbi.getDBPort()),
+				client.getHostName()));
 
 	}
 
 	/**
 	 * Wait for the database to be ready.
 	 * 
-	 * @throws SQLException
-	 *             if connecting to the database fails
+	 * @throws SQLException if connecting to the database fails
 	 */
 	protected void waitForDatabase() throws SQLException {
 		waitForConnection().close();
@@ -100,24 +113,19 @@ public abstract class AbstractDBTest {
 	 * 
 	 * @return the connection to the database once it is set up, the caller is
 	 *         responsible to close it
-	 * @throws SQLException
-	 *             if connecting to the database fails
+	 * @throws SQLException if connecting to the database fails
 	 */
 	protected Connection waitForConnection() throws SQLException {
 		int num = 0;
 		int waitTime = 240;
 		SQLException lastException = null;
 		Connection result = null;
-		Config conf = tdc.getConfig();
 
-		if (conf.hasPath(dbi.getHost() + DB_UPTIME)) {
-			waitTime = conf.getInt(dbi.getHost() + DB_UPTIME);
-		}
+		waitTime = dbi.getStartUPTime();
 
 		while (num < waitTime) {
 			try {
-				result = JDBCConnection.getConnection(dbi.getDatabaseUri(),
-						dbi.getUser(), dbi.getPassword());
+				result = JDBCConnection.getConnection(jdbcUri, dbi.getUser(), dbi.getPassword());
 				break;
 			} catch (SQLException e) {
 				// if (!e.getMessage().toLowerCase().contains("database")) {
@@ -153,24 +161,20 @@ public abstract class AbstractDBTest {
 	 * Load the database schema.
 	 * 
 	 * @return the schema
-	 * @throws Exception
-	 *             if reading the schema fails
+	 * @throws Exception if reading the schema fails
 	 */
 	protected Schema readSchema() throws Exception {
 
 		JDBCSchemaReader schemaReader = new JDBCSchemaReader();
 
-		schemaReader.setSource(new NoStreamInputSupplier(dbi.getDatabaseUri()));
-		schemaReader.setParameter(JDBCSchemaReader.PARAM_USER,
-				Value.of(dbi.getUser()));
-		schemaReader.setParameter(JDBCSchemaReader.PARAM_PASSWORD,
-				Value.of(dbi.getPassword()));
+		schemaReader.setSource(new NoStreamInputSupplier(jdbcUri));
+		schemaReader.setParameter(JDBCSchemaReader.PARAM_USER, Value.of(dbi.getUser()));
+		schemaReader.setParameter(JDBCSchemaReader.PARAM_PASSWORD, Value.of(dbi.getPassword()));
 
 		// This is set for setting inclusion rule for reading schema
-		if (dbi.getDatabase().equalsIgnoreCase(ORACLE_DB)) {
+		if (dbi.getDatabase().equalsIgnoreCase("ORCL")) {
 
-			schemaReader.setParameter(JDBCSchemaReader.SCHEMAS,
-					Value.of("SIMON"/* dbi.getUser() */));
+			schemaReader.setParameter(JDBCSchemaReader.SCHEMAS, Value.of("SIMON"));
 		}
 		IOReport report = schemaReader.execute(null);
 		assertTrue(report.isSuccess());
@@ -183,21 +187,15 @@ public abstract class AbstractDBTest {
 	/**
 	 * Write instances to the database.
 	 * 
-	 * @param instances
-	 *            the collection of instances
-	 * @param schema
-	 *            the target schema
-	 * @throws Exception
-	 *             if writing the instances fails
+	 * @param instances the collection of instances
+	 * @param schema the target schema
+	 * @throws Exception if writing the instances fails
 	 */
-	protected void writeInstances(InstanceCollection instances, Schema schema)
-			throws Exception {
+	protected void writeInstances(InstanceCollection instances, Schema schema) throws Exception {
 		JDBCInstanceWriter writer = new JDBCInstanceWriter();
-		writer.setTarget(new NoStreamOutputSupplier(dbi.getDatabaseUri()));
-		writer.setParameter(JDBCInstanceWriter.PARAM_USER,
-				Value.of(dbi.getUser()));
-		writer.setParameter(JDBCInstanceWriter.PARAM_PASSWORD,
-				Value.of(dbi.getPassword()));
+		writer.setTarget(new NoStreamOutputSupplier(jdbcUri));
+		writer.setParameter(JDBCInstanceWriter.PARAM_USER, Value.of(dbi.getUser()));
+		writer.setParameter(JDBCInstanceWriter.PARAM_PASSWORD, Value.of(dbi.getPassword()));
 		writer.setInstances(instances);
 		DefaultSchemaSpace targetSchema = new DefaultSchemaSpace();
 		targetSchema.addSchema(schema);
@@ -210,21 +208,16 @@ public abstract class AbstractDBTest {
 	/**
 	 * Read instances from the database.
 	 * 
-	 * @param schema
-	 *            the source schema
+	 * @param schema the source schema
 	 * @return the database instances
 	 * 
-	 * @throws Exception
-	 *             if reading the instances fails
+	 * @throws Exception if reading the instances fails
 	 */
-	protected InstanceCollection readInstances(Schema schema)
-			throws Exception {
+	protected InstanceCollection readInstances(Schema schema) throws Exception {
 		JDBCInstanceReader reader = new JDBCInstanceReader();
-		reader.setSource(new NoStreamInputSupplier(dbi.getDatabaseUri()));
-		reader.setParameter(JDBCInstanceWriter.PARAM_USER,
-				Value.of(dbi.getUser()));
-		reader.setParameter(JDBCInstanceWriter.PARAM_PASSWORD,
-				Value.of(dbi.getPassword()));
+		reader.setSource(new NoStreamInputSupplier(jdbcUri));
+		reader.setParameter(JDBCInstanceWriter.PARAM_USER, Value.of(dbi.getUser()));
+		reader.setParameter(JDBCInstanceWriter.PARAM_PASSWORD, Value.of(dbi.getPassword()));
 		DefaultSchemaSpace sourceSchema = new DefaultSchemaSpace();
 		sourceSchema.addSchema(schema);
 		reader.setSourceSchema(sourceSchema);
@@ -233,27 +226,28 @@ public abstract class AbstractDBTest {
 		assertTrue(report.getErrors().isEmpty());
 		return reader.getInstances();
 	}
-/**
- * 
- * @param originalInstances instance created and written to db
- * @param schema schema read
- * @param gType the geometry type
- * @return read the instances from the db, check if it is same as written db and return the count
- * @throws Exception
- */
+
+	/**
+	 * 
+	 * @param originalInstances instance created and written to db
+	 * @param schema schema read
+	 * @param gType the geometry type
+	 * @return read the instances from the db, check if it is same as written db
+	 *         and return the count
+	 * @throws Exception
+	 */
 
 	protected int readAndCountInstances(InstanceCollection originalInstances, Schema schema,
 			TypeDefinition gType) throws Exception {
 
 		InstanceCollection instancesRead = readInstances(schema).select(new TypeFilter(gType));
-		List<Instance> originals = new DefaultInstanceCollection(originalInstances)
-				.toList();
-		
+		List<Instance> originals = new DefaultInstanceCollection(originalInstances).toList();
+
 		ResourceIterator<Instance> ri = instancesRead.iterator();
 		int count = 0;
 		try {
 			while (ri.hasNext()) {
-				Instance instance = (Instance) ri.next();
+				Instance instance = ri.next();
 
 				String error = InstanceUtil.checkInstance(instance, originals);
 
@@ -269,9 +263,12 @@ public abstract class AbstractDBTest {
 
 	/**
 	 * Shutdown database and host.
+	 * 
+	 * @throws Exception
 	 */
-	public void tearDownDocker() {
-		tdc.killAndRemoveContainer();
+	@After
+	public void tearDownDocker() throws Exception {
+		client.killAndRemoveContainer();
 	}
 
 }

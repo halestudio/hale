@@ -17,8 +17,6 @@ package eu.esdihumboldt.hale.io.jdbc.postgresql.test
 
 import static org.junit.Assert.*
 
-import org.junit.After
-import org.junit.Before
 import org.junit.Test
 
 import com.vividsolutions.jts.geom.Coordinate
@@ -33,7 +31,7 @@ import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import eu.esdihumboldt.hale.common.test.TestUtil
 import eu.esdihumboldt.hale.io.jdbc.test.AbstractDBTest
-import eu.esdihumboldt.hale.io.jdbc.test.DBImageParameters
+import eu.esdihumboldt.hale.io.jdbc.test.DBConfigInstance
 import groovy.sql.Sql
 
 
@@ -52,6 +50,11 @@ class ReadWriteTest extends AbstractDBTest{
 		  dat bytea,
 		  CONSTRAINT lines_pkey PRIMARY KEY (ps)
 		);'''
+
+	public ReadWriteTest(){
+		super(new DBConfigInstance("postgis"))
+	}
+
 
 	@Test
 	void writeRead() {
@@ -97,22 +100,6 @@ class ReadWriteTest extends AbstractDBTest{
 		int count = readAndCountInstances(instances,schema,linesType)
 
 		assertEquals(20, count)
-	}
-
-
-
-	@Before
-	public void setupDB() {
-		DBImageParameters dbi = new DBImageParameters(PostSetup.USER, PostSetup.PASSWORD,
-				PostSetup.DATABASE, PostSetup.HOST, PostSetup.START_URL, PostSetup.PORT,
-				PostSetup.IS_PRIVILEGED, null);
-		setupDB(dbi)
-
-	}
-
-	@After
-	public void tearDown(){
-		tearDownDocker()
 	}
 
 }
