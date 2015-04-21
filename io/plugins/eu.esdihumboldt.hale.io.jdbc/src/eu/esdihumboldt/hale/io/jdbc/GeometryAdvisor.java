@@ -70,10 +70,11 @@ public interface GeometryAdvisor<C> {
 	 * @param columnType the type definition of the associated geometry column
 	 *            that was previously configured using
 	 *            {@link #configureGeometryColumnType(Object, Column, DefaultTypeDefinition)}
+	 * @param connection Connection
 	 * @return the converted geometry that can be written to the database
 	 * @throws Exception something went wrong
 	 */
-	public Object convertGeometry(GeometryProperty<?> geom, TypeDefinition columnType)
+	public Object convertGeometry(GeometryProperty<?> geom, TypeDefinition columnType, C connection)
 			throws Exception;
 
 	/**
@@ -83,10 +84,11 @@ public interface GeometryAdvisor<C> {
 	 * @param columnType the type definition of the associated geometry column
 	 *            that was previously configured using
 	 *            {@link #configureGeometryColumnType(Object, Column, DefaultTypeDefinition)}
+	 * @param connection The connection
 	 * @return the geometry property
 	 * @throws Exception if the conversion failed
 	 */
-	public GeometryProperty<?> convertToInstanceGeometry(Object geom, TypeDefinition columnType)
-			throws Exception;
+	public GeometryProperty<?> convertToInstanceGeometry(Object geom, TypeDefinition columnType,
+			C connection) throws Exception;
 
 }
