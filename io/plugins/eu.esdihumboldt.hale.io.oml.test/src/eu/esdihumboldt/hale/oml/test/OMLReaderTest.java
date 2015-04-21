@@ -34,7 +34,6 @@ import org.junit.Test;
 
 import com.google.common.collect.ListMultimap;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -54,7 +53,7 @@ import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
  * @author Kevin Mais
  */
 @SuppressWarnings("null")
-@SuppressFBWarnings("NP_NULL_ON_SOME_PATH")
+@edu.umd.cs.findbugs.annotations.SuppressWarnings("NP_NULL_ON_SOME_PATH")
 public class OMLReaderTest {
 
 	private static Alignment alignment = null;

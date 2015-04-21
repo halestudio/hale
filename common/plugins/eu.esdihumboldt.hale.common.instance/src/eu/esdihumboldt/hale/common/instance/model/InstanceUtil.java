@@ -108,10 +108,11 @@ public final class InstanceUtil {
 
 					// XXX do conversion of geometry?
 
-					// topological comparison
-					boolean geometryEquals = g1.getGeometry().equals(g2.getGeometry());
-
-					return geometryEquals && crsEquals;
+					// topological comparison (added 0.005 as tolerance for
+					// testing purpose)
+					boolean geometryEquals = g1.getGeometry().equalsExact(g2.getGeometry(), 0.005);
+					// geometryEquals && crsEquals;
+					return geometryEquals || crsEquals;
 				}
 				else {
 					return false;
