@@ -130,6 +130,7 @@ public class UserPasswordPage extends AbstractConfigurationPage<IOProvider, IOWi
 	@Override
 	protected void onShowPage(boolean firstShow) {
 		if (firstShow) {
+			// setPageComplete(true);
 			setPageComplete(true);
 		}
 

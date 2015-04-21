@@ -29,6 +29,14 @@
                      class="java.lang.String">
                </parameterBinding>
          </providerParameter>
+         <providerParameter
+               label="Schemas to import"
+               name="schemas"
+               optional="false">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.jdbc.JDBCInstanceWriter"
