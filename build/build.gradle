@@ -120,7 +120,7 @@ ext {
 	// bundles or fragments that are required additionally for compilation
 	extraRequirements = [
 		// this system bundle extension fragment is otherwise not found by tycho
-		'com.google.code.findbugs.jsr305'
+		'javax.annotation.extensions'
 	]
 	
 	/*
