@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.io.jdbc
 
+import java.sql.Connection
 import java.sql.ResultSet
 import java.sql.SQLException
 
@@ -58,7 +59,7 @@ class TableInstanceBuilder {
 	 *   instance from
 	 * @return the created instance
 	 */
-	Instance createInstance(TypeDefinition type, ResultSet row) {
+	Instance createInstance(TypeDefinition type, ResultSet row, Connection connection) {
 		// create instance
 		builder.createInstance(type) {
 			// create properties
@@ -71,7 +72,7 @@ class TableInstanceBuilder {
 					// geometry conversion
 					GeometryAdvisorConstraint gac = property.propertyType.getConstraint(GeometryAdvisorConstraint)
 					if (value != null && gac.advisor != null) {
-						value = gac.advisor.convertToInstanceGeometry(value, property.propertyType)
+						value = gac.advisor.convertToInstanceGeometry(value, property.propertyType, connection)
 					}
 
 					// create property
