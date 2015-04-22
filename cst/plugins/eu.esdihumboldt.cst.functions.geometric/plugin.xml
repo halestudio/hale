@@ -275,6 +275,51 @@
             </property>
          </sourceProperties>
       </propertyFunction>
+      <propertyFunction
+            category="eu.esdihumboldt.cst.functions.geometric"
+            cellExplanation="eu.esdihumboldt.cst.functions.geometric.ReprojectGeometryExplanation"
+            description="Reproject Geometry"
+            icon="icons/geometry.png"
+            identifier="eu.esdihumboldt.cst.functions.geometric.reproject_geometry"
+            name="Reproject Geometry">
+         <targetProperties>
+            <property
+                  description="The property that shall hold the output geometry"
+                  eager="false"
+                  label="Target geometry"
+                  maxOccurrence="1"
+                  minOccurrence="1"
+                  name="target">
+               <geometryOrParentCondition></geometryOrParentCondition>
+            </property>
+         </targetProperties>
+         <sourceProperties>
+            <property
+                  description="The property that shall hold the input geometry"
+                  eager="false"
+                  label="Source geoemtry"
+                  maxOccurrence="1"
+                  minOccurrence="1"
+                  name="source">
+               <geometryOrParentCondition></geometryOrParentCondition>
+            </property>
+         </sourceProperties>
+         <functionParameter
+               deprecated="false"
+               description="Specify the coordinate reference system for the destination geometry"
+               label="Coordinate Reference System"
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="referenceSystem"
+               scriptable="false">
+            <parameterBinding
+                  class="java.lang.String">
+               <validator
+                     class="eu.esdihumboldt.cst.functions.geometric.SRSValidator">
+               </validator>
+            </parameterBinding>
+         </functionParameter>
+      </propertyFunction>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.align.transformation">
@@ -319,6 +364,12 @@
             engine="eu.esdihumboldt.align.java"
             function="eu.esdihumboldt.cst.functions.geometric.aggregate"
             id="eu.esdihumboldt.cst.functions.geometric.aggregate">
+      </propertyTransformation>
+      <propertyTransformation
+            class="eu.esdihumboldt.cst.functions.geometric.ReprojectGeometry"
+            engine="eu.esdihumboldt.align.java"
+            function="eu.esdihumboldt.cst.functions.geometric.reproject_geometry"
+            id="eu.esdihumboldt.cst.functions.geometric.reproject_geometry">
       </propertyTransformation>
    </extension>
 
