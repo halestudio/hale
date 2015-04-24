@@ -15,17 +15,24 @@
 
 package eu.esdihumboldt.hale.io.jdbc.test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Types;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
+import org.springframework.core.convert.ConversionService;
 
 import com.spotify.docker.client.DockerException;
 
@@ -39,13 +46,18 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceUtil;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.TypeFilter;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstanceCollection;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace;
+import eu.esdihumboldt.hale.common.test.TestUtil;
 import eu.esdihumboldt.hale.io.jdbc.JDBCConnection;
 import eu.esdihumboldt.hale.io.jdbc.JDBCInstanceReader;
 import eu.esdihumboldt.hale.io.jdbc.JDBCInstanceWriter;
 import eu.esdihumboldt.hale.io.jdbc.JDBCSchemaReader;
+import eu.esdihumboldt.hale.io.jdbc.constraints.SQLType;
 
 /**
  * Base class for database tests.
@@ -63,7 +75,7 @@ public abstract class AbstractDBTest {
 	private URI jdbcUri;
 
 	/**
-	 * @param imageParams
+	 * @param imageParams DBImageParameters
 	 * 
 	 */
 	public AbstractDBTest(DBImageParameters imageParams) {
@@ -74,8 +86,8 @@ public abstract class AbstractDBTest {
 	/**
 	 * Setup host and database.
 	 * 
-	 * @throws InterruptedException
-	 * @throws DockerException
+	 * @throws InterruptedException InterruptedException
+	 * @throws DockerException DockerException
 	 */
 	@Before
 	public void setupDB() throws DockerException, InterruptedException {
@@ -96,7 +108,10 @@ public abstract class AbstractDBTest {
 
 		jdbcUri = URI.create(dbi.getJDBCURL(client.getHostPort(dbi.getDBPort()),
 				client.getHostName()));
-
+		jdbcUri = URI.create("jdbc:oracle:thin:@//localhost:1521/demoDB");
+		TestUtil.startConversionService();
+		TestUtil.startService(Arrays.asList("eu.esdihumboldt.hale.io.jdbc.oracle"),
+				ConversionService.class);
 	}
 
 	/**
@@ -174,7 +189,8 @@ public abstract class AbstractDBTest {
 		// This is set for setting inclusion rule for reading schema
 		if (dbi.getDatabase().equalsIgnoreCase("ORCL")) {
 
-			schemaReader.setParameter(JDBCSchemaReader.SCHEMAS, Value.of("SIMON"));
+			schemaReader.setParameter(JDBCSchemaReader.SCHEMAS,
+					Value.of(dbi.getUser().toUpperCase()));
 		}
 		IOReport report = schemaReader.execute(null);
 		assertTrue(report.isSuccess());
@@ -182,6 +198,38 @@ public abstract class AbstractDBTest {
 		Schema schema = schemaReader.getSchema();
 		assertNotNull(schema);
 		return schema;
+	}
+
+	/**
+	 * @param map binding map
+	 * @param schema schema
+	 * @throws Exception exception
+	 */
+	protected void checkBidingAndSqlType(Schema schema, Map<String, Class<?>> map) throws Exception {
+		final Map<String, Integer> sqlTypeMap = new HashMap<>();
+		// all types fields
+		for (final Field f : Types.class.getFields()) {
+			sqlTypeMap.put(f.getName(), f.getInt(null));
+		}
+
+		for (TypeDefinition td : schema.getTypes()) {
+			for (ChildDefinition<?> cd : td.getChildren()) {
+
+				PropertyDefinition property = cd.asProperty();
+				String name = property.getPropertyType().getName().getLocalPart().toUpperCase();
+				SQLType t = property.getPropertyType().getConstraint(SQLType.class);
+
+				assertTrue(sqlTypeMap.containsValue(new Integer(t.getType())));
+
+				Binding k = property.getPropertyType().getConstraint(Binding.class);
+				// check bindings for those data type for which expected binding
+				// is mapped.
+				if (map.containsKey(name))
+					assertEquals(map.get(name), k.getBinding());
+
+			}
+		}
+
 	}
 
 	/**
@@ -228,13 +276,13 @@ public abstract class AbstractDBTest {
 	}
 
 	/**
+	 * Read the instances from the db, check if it is same as written db.
 	 * 
 	 * @param originalInstances instance created and written to db
 	 * @param schema schema read
 	 * @param gType the geometry type
-	 * @return read the instances from the db, check if it is same as written db
-	 *         and return the count
-	 * @throws Exception
+	 * @return The count of intances which are equal to the original instances
+	 * @throws Exception exception
 	 */
 
 	protected int readAndCountInstances(InstanceCollection originalInstances, Schema schema,
@@ -264,7 +312,7 @@ public abstract class AbstractDBTest {
 	/**
 	 * Shutdown database and host.
 	 * 
-	 * @throws Exception
+	 * @throws Exception exception
 	 */
 	@After
 	public void tearDownDocker() throws Exception {

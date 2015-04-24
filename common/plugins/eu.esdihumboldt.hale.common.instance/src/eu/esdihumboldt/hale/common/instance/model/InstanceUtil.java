@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.hale.common.instance.model;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -87,7 +88,6 @@ public final class InstanceUtil {
 			if (o1.getClass().isArray() && o2.getClass().isArray()) {
 				return arrayToList(o1).equals(arrayToList(o2));
 			}
-
 			// special case: geometry properties
 			if (o1 instanceof GeometryProperty<?> && o2 instanceof GeometryProperty<?>) {
 				GeometryProperty<?> g1 = (GeometryProperty<?>) o1;
@@ -251,6 +251,11 @@ public final class InstanceUtil {
 		else if (a instanceof Group) {
 			if (b instanceof Group && groupEqual((Group) a, (Group) b, propertyOrderRelevant))
 				return true;
+		}
+		else if (a instanceof BigDecimal && b instanceof BigDecimal) {
+			BigDecimal x = (BigDecimal) a;
+			BigDecimal y = (BigDecimal) b;
+			return x.compareTo(y) == 0;
 		}
 		else if (equals(a, b))
 			return true;
