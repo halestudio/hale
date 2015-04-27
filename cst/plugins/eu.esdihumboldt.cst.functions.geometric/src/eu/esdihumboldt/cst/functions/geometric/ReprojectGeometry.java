@@ -35,8 +35,6 @@ public class ReprojectGeometry extends
 		AbstractSingleTargetPropertyTransformation<TransformationEngine> implements
 		ReprojectGeometryFunction {
 
-	private MathTransform transform;
-
 	@Override
 	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,
 			ListMultimap<String, PropertyValue> variables, String resultName,
@@ -65,30 +63,12 @@ public class ReprojectGeometry extends
 				throw new TransformationException(
 						"Error to find destiantion Cordinate reference System.", e);
 			}
-			// Retrieve transformation
-			try {
-				if (transform == null) {
-					transform = CRS.findMathTransform(sourceCRS, targetCRS, false);
-				}
-				// Transformation cannot be found because the sourceCRS is
-				// missing bursa-wolf parameters
-			} catch (FactoryException ex1) {
-				try {
-					Integer code = CRS.lookupEpsgCode(sourceCRS, true);
-					if (code != null) {
-						transform = CRS.findMathTransform(CRS.decode("EPSG:" + code, true),
-								targetCRS);
-					}
-					else {
-						throw new TransformationException(
-								"Unable to find requested transformation from: " + sourceCRS
-										+ " to " + targetCRS);
-					}
-				} catch (FactoryException ex2) {
-					throw new TransformationException("Problem on execute transformation from: "
-							+ sourceCRS + " to " + targetCRS, ex2);
-				}
-			}
+
+			// Retrieve transformation from cell context, or create a new
+			// instance
+			Map<Object, Object> cellContext = getExecutionContext().getCellContext();
+			MathTransform transform = getOrCreateMathTransform(sourceCRS, targetCRS, cellContext);
+
 			// Apply transformation
 			try {
 				resultGeometry = JTS.transform(sourceGeometry, transform);
@@ -103,4 +83,72 @@ public class ReprojectGeometry extends
 
 	}
 
+	/**
+	 * Attempt to find a math transform between the specified Coordinate
+	 * Reference Systems.
+	 * <p>
+	 * The method first tries to look up a relevant MathTransform instance from
+	 * the provided {@code context} object; then, if none was found, it creates
+	 * a new one and stores it in the context, to allow its reuse by following
+	 * reproject transformations.
+	 * </p>
+	 * 
+	 * @param sourceCRS The source CRS.
+	 * @param targetCRS The target CRS.
+	 * @param context The context.
+	 * @return The math transform from {@code sourceCRS} to {@code targetCRS}.
+	 * @throws TransformationException if no math transform could be found
+	 */
+	private MathTransform getOrCreateMathTransform(CoordinateReferenceSystem sourceCRS,
+			CoordinateReferenceSystem targetCRS, Map<Object, Object> context)
+			throws TransformationException {
+		MathTransform transform = null;
+		String key = sourceCRS.getName().hashCode() + " --> " + targetCRS.getName().hashCode();
+
+		synchronized (context) {
+			transform = (MathTransform) context.get(key);
+			if (transform == null) {
+				transform = createMathTransform(sourceCRS, targetCRS);
+
+				context.put(key, transform);
+			}
+		}
+
+		return transform;
+	}
+
+	/**
+	 * Attempt to find a math transform between the specified Coordinate
+	 * Reference Systems.
+	 * 
+	 * @param sourceCRS The source CRS.
+	 * @param targetCRS The target CRS.
+	 * @return The math transform from {@code sourceCRS} to {@code targetCRS}.
+	 * @throws TransformationException if no math transform could be found
+	 */
+	private MathTransform createMathTransform(CoordinateReferenceSystem sourceCRS,
+			CoordinateReferenceSystem targetCRS) throws TransformationException {
+		MathTransform transform = null;
+		try {
+			transform = CRS.findMathTransform(sourceCRS, targetCRS, false);
+			// Transformation cannot be found because the sourceCRS is
+			// missing bursa-wolf parameters
+		} catch (FactoryException ex1) {
+			try {
+				Integer code = CRS.lookupEpsgCode(sourceCRS, true);
+				if (code != null) {
+					transform = CRS.findMathTransform(CRS.decode("EPSG:" + code, true), targetCRS);
+				}
+				else {
+					throw new TransformationException(
+							"Unable to find requested transformation from: " + sourceCRS + " to "
+									+ targetCRS);
+				}
+			} catch (FactoryException ex2) {
+				throw new TransformationException("Problem on execute transformation from: "
+						+ sourceCRS + " to " + targetCRS, ex2);
+			}
+		}
+		return transform;
+	}
 }
