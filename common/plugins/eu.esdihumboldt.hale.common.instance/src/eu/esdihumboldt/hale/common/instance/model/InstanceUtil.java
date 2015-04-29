@@ -252,6 +252,8 @@ public final class InstanceUtil {
 			if (b instanceof Group && groupEqual((Group) a, (Group) b, propertyOrderRelevant))
 				return true;
 		}
+		// Two BigDecimal objects that are equal in value but have a different
+		// scale (like 2.0 and 2.00) should consider as equal.
 		else if (a instanceof BigDecimal && b instanceof BigDecimal) {
 			BigDecimal x = (BigDecimal) a;
 			BigDecimal y = (BigDecimal) b;
