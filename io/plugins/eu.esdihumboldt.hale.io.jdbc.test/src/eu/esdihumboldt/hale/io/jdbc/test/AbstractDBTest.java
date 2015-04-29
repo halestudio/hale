@@ -25,14 +25,12 @@ import java.net.URI;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
-import org.springframework.core.convert.ConversionService;
 
 import com.spotify.docker.client.DockerException;
 
@@ -115,11 +113,9 @@ public abstract class AbstractDBTest {
 
 		jdbcUri = URI.create(dbi.getJDBCURL(
 				client.getHostPort(dbi.getDBPort()), client.getHostName()));
-		jdbcUri = URI.create("jdbc:oracle:thin:@//localhost:1521/demoDB");
+
 		TestUtil.startConversionService();
-		TestUtil.startService(
-				Arrays.asList("eu.esdihumboldt.hale.io.jdbc.oracle"),
-				ConversionService.class);
+
 	}
 
 	/**
