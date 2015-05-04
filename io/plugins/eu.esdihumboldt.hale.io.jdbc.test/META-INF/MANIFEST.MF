@@ -17,5 +17,6 @@ Import-Package: com.fasterxml.jackson.annotation;version="2.3.0",
  com.typesafe.config;version="1.2.1",
  eu.esdihumboldt.hale.common.test,
  org.junit;version="4.11.0",
+ org.springframework.core.convert;version="3.1.1.RELEASE",
  schemacrawler.schema;version="12.4.2"
 Export-Package: eu.esdihumboldt.hale.io.jdbc.test
