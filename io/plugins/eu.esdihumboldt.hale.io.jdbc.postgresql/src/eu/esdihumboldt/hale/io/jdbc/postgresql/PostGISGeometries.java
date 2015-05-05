@@ -113,6 +113,7 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 		else if (geometryType.equalsIgnoreCase("MultiLineString")) {
 			return MultiLineString.class;
 		}
+		// TODO: shouldn't this be LineString instead?
 		else if (geometryType.equalsIgnoreCase("LinearRing")) {
 			return LinearRing.class;
 		}

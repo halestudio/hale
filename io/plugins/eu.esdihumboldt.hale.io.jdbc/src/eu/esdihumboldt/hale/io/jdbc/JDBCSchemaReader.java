@@ -123,12 +123,20 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 			// connect to the database
 			try {
 				connection = JDBCConnection.getConnection(this);
-				connection.setReadOnly(true);
 			} catch (Exception e) {
 				reporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
 				reporter.setSuccess(false);
 				reporter.setSummary("Failed to connect to database.");
 				return null;
+			}
+
+			// don't fail if Connection.setReadOnly() throws an exception (e.g.
+			// SQLite JDBC driver does not allow changing the flag after the
+			// connection has been created), report a warning message instead
+			try {
+				connection.setReadOnly(true);
+			} catch (SQLException e) {
+				reporter.warn(new IOMessageImpl(e.getLocalizedMessage(), e));
 			}
 
 			URI jdbcURI = getSource().getLocation();
@@ -153,6 +161,16 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 			// XXX For some advanced info / DBMS specific info we'll need a
 			// properties file. See Config & InformationSchemaViews.
 			level.setTag("hale");
+			// only applies (maybe) to Spatialite DBs
+//			InformationSchemaViews infoSchemaViews = new InformationSchemaViews();
+//			infoSchemaViews.setExtTablesSql("SELECT " + "NULL AS TABLE_CATALOG, "
+//					+ "NULL AS TABLE_SCHEMA, " + "name AS TABLE_NAME, "
+//					+ "sql AS TABLE_DEFINITION " + "FROM " + "sqlite_master " + "WHERE "
+//					+ "type = 'table' AND " + "name NOT LIKE '%geometry_columns%' AND "
+//					+ "name NOT LIKE 'idx_%' AND " + "name <> 'spatial_ref_sys' AND "
+//					+ "name <> 'spatialite_history' AND " + "name <> 'sqlite_sequence' AND "
+//					+ "name <> 'sql_statements_log' AND " + "name <> 'SpatialIndex'");
+//			options.setInformationSchemaViews(infoSchemaViews);
 			if (getParameter(SCHEMAS).as(String.class) != null) {
 				String schemas = getParameter(SCHEMAS).as(String.class).replace(',', '|');
 				options.setSchemaInclusionRule(new RegularExpressionInclusionRule(schemas));
@@ -219,7 +237,10 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 					namespace = unquote(schema.getName());
 				}
 				else {
-					namespace = overallNamespace + ":" + unquote(schema.getName());
+					namespace = overallNamespace;
+					if (schema.getName() != null) {
+						namespace += ":" + unquote(schema.getName());
+					}
 				}
 
 				for (final Table table : database.getTables(schema)) {
@@ -235,8 +256,12 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 					Statement stmt = null;
 					try {
 						stmt = connection.createStatement();
-						ResultSet rs = stmt.executeQuery("SELECT * FROM " + quote(schema.getName())
-								+ "." + quote(table.getName()) + " WHERE 1 = 0");
+						String fullTableName = quote(table.getName());
+						if (schema.getName() != null) {
+							fullTableName = quote(schema.getName()) + "." + fullTableName;
+						}
+						ResultSet rs = stmt.executeQuery("SELECT * FROM " + fullTableName
+								+ " WHERE 1 = 0");
 						additionalInfo = SchemaCrawlerUtility.getResultColumns(rs);
 					} catch (SQLException sqle) {
 						reporter.warn(new IOMessageImpl(
@@ -267,7 +292,7 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 							// ResultColumns does not quote the column namen in
 							// contrast to every other place
 							ResultsColumn rc = additionalInfo.getColumn(unquote(column.getName()));
-							if (rc.isAutoIncrement())
+							if (rc != null && rc.isAutoIncrement())
 								property.setConstraint(AutoIncrementFlag.get(true));
 						}
 					}
@@ -514,7 +539,14 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		type.setConstraint(new DatabaseTable(unquote(schema.getName()), unquote(table.getName())));
 
 		// set primary key if possible
-		PrimaryKey key = table.getPrimaryKey();
+		PrimaryKey key = null;
+		try {
+			key = table.getPrimaryKey();
+		} catch (Exception e) {
+			reporter.warn(new IOMessageImpl("Could not read primary key metadata for table: "
+					+ table.getFullName(), e));
+		}
+
 		if (key != null) {
 			List<IndexColumn> columns = key.getColumns();
 			if (columns.size() > 1) {

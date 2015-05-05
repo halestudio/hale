@@ -33,9 +33,11 @@ http://www.wetransform.to/products/hale
    <launcherArgs>
       <programArgs>-clean
 -name &quot;HUMBOLDT Alignment Editor&quot;
---launcher.defaultAction openFile</programArgs>
+--launcher.defaultAction openFile
+      </programArgs>
       <programArgsMac>-vm
-../../../jre/Contents/Home/bin/java</programArgsMac>
+../../../jre/Contents/Home/bin/java
+      </programArgsMac>
       <vmArgs>-Xmx800m
 -XX:MaxPermSize=128m
 -Dsun.net.client.defaultConnectTimeout=10000
@@ -43,8 +45,10 @@ http://www.wetransform.to/products/hale
 -Dcache.level1.enabled=false
 -Dcache.level1.size=0
 -Dcache.level2.enabled=false
--Dcache.level2.size=0</vmArgs>
-      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+-Dcache.level2.size=0
+      </vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      </vmArgsMac>
    </launcherArgs>
 
    <windowImages i32="/eu.esdihumboldt.hale.ui.application/images/hale_icon.png"/>
@@ -113,6 +117,7 @@ http://www.wetransform.to/products/hale
       <plugin id="eu.esdihumboldt.hale.io.csv" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.gml" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.jdbc.postgresql" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.io.jdbc.spatialite" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.shp" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.xml" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.xsd" autoStart="true" startLevel="0" />
