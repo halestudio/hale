@@ -80,7 +80,7 @@ public class PostDataTypesTest extends AbstractDBTest {
 			s.close();
 		}
 		Schema schema = readSchema()
-		checkBidingAndSqlType(schema,map);
+		checkBindingAndSqlType(schema,map);
 		GeometryFactory gf = new GeometryFactory()
 
 		//creating instances
