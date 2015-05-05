@@ -34,11 +34,25 @@
 
    <plugins>
       <plugin id="aopalliance"/>
+      <plugin id="bcpkix"/>
+      <plugin id="bcprov"/>
       <plugin id="cal10n.api"/>
       <plugin id="ch.qos.logback.classic"/>
       <plugin id="ch.qos.logback.core"/>
       <plugin id="colt"/>
-      <plugin id="com.google.code.findbugs.jsr305" fragment="true"/>
+      <plugin id="com.fasterxml.jackson.core.jackson-annotations"/>
+      <plugin id="com.fasterxml.jackson.core.jackson-core"/>
+      <plugin id="com.fasterxml.jackson.core.jackson-databind"/>
+      <plugin id="com.fasterxml.jackson.datatype.jackson-datatype-guava"/>
+      <plugin id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base"/>
+      <plugin id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider"/>
+      <plugin id="com.github.jnr.constants"/>
+      <plugin id="com.github.jnr.enxio"/>
+      <plugin id="com.github.jnr.ffi"/>
+      <plugin id="com.github.jnr.jffi"/>
+      <plugin id="com.github.jnr.posix"/>
+      <plugin id="com.github.jnr.unixsocket"/>
+      <plugin id="com.github.jnr.x86asm"/>
       <plugin id="com.google.guava"/>
       <plugin id="com.googlecode.json-simple"/>
       <plugin id="com.iabcinc.jmep"/>
@@ -47,6 +61,7 @@
       <plugin id="com.orientechnologies.orientdb-client" fragment="true"/>
       <plugin id="com.orientechnologies.orientdb-core"/>
       <plugin id="com.orientechnologies.orientdb-enterprise"/>
+      <plugin id="com.spotify.docker-client"/>
       <plugin id="com.sun.jna"/>
       <plugin id="com.sun.xml.bind.jaxb-core"/>
       <plugin id="com.tinkerpop.blueprints.core"/>
@@ -54,6 +69,7 @@
       <plugin id="com.tinkerpop.gremlin.groovy"/>
       <plugin id="com.tinkerpop.gremlin.java"/>
       <plugin id="com.tinkerpop.pipes"/>
+      <plugin id="com.typesafe.config"/>
       <plugin id="com.vividsolutions.jts"/>
       <plugin id="commons-digester"/>
       <plugin id="commons-httpclient"/>
@@ -130,6 +146,10 @@
       <plugin id="eu.esdihumboldt.hale.io.gml.test"/>
       <plugin id="eu.esdihumboldt.hale.io.html.svg"/>
       <plugin id="eu.esdihumboldt.hale.io.html.svg.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.jdbc"/>
+      <plugin id="eu.esdihumboldt.hale.io.jdbc.postgresql"/>
+      <plugin id="eu.esdihumboldt.hale.io.jdbc.postgresql.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.jdbc.test"/>
       <plugin id="eu.esdihumboldt.hale.io.json"/>
       <plugin id="eu.esdihumboldt.hale.io.json.test"/>
       <plugin id="eu.esdihumboldt.hale.io.oml"/>
@@ -183,6 +203,8 @@
       <plugin id="it.geosolutions.imageio-ext.tiff"/>
       <plugin id="it.geosolutions.imageio-ext.utilities"/>
       <plugin id="java3d.vecmath"/>
+      <plugin id="javassist"/>
+      <plugin id="javax.annotation.extensions" fragment="true"/>
       <plugin id="javax.el"/>
       <plugin id="javax.inject"/>
       <plugin id="javax.mail"/>
@@ -191,6 +213,7 @@
       <plugin id="javax.media.jai_imageio"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.servlet.jsp"/>
+      <plugin id="javax.ws.rs-api"/>
       <plugin id="javax.xml"/>
       <plugin id="jcl.over.slf4j"/>
       <plugin id="jgridshift"/>
@@ -201,13 +224,16 @@
       <plugin id="net.java.dev.jsr-275"/>
       <plugin id="net.sf.ehcache.core"/>
       <plugin id="net.sf.opencsv"/>
+      <plugin id="net.sourceforge.schemacrawler"/>
       <plugin id="org.apache.batik.css"/>
       <plugin id="org.apache.batik.util"/>
       <plugin id="org.apache.batik.util.gui"/>
       <plugin id="org.apache.commons.beanutils"/>
       <plugin id="org.apache.commons.codec"/>
       <plugin id="org.apache.commons.collections"/>
+      <plugin id="org.apache.commons.compress"/>
       <plugin id="org.apache.commons.configuration"/>
+      <plugin id="org.apache.commons.dbcp"/>
       <plugin id="org.apache.commons.io"/>
       <plugin id="org.apache.commons.jxpath"/>
       <plugin id="org.apache.commons.lang"/>
@@ -299,6 +325,16 @@
       <plugin id="org.eclipse.zest.jface"/>
       <plugin id="org.eclipse.zest.layouts"/>
       <plugin id="org.geotools"/>
+      <plugin id="org.glassfish.hk2.api"/>
+      <plugin id="org.glassfish.hk2.locator"/>
+      <plugin id="org.glassfish.hk2.osgi-resource-locator"/>
+      <plugin id="org.glassfish.hk2.utils"/>
+      <plugin id="org.glassfish.jersey.bundles.repackaged.jersey-guava"/>
+      <plugin id="org.glassfish.jersey.connectors.jersey-apache-connector"/>
+      <plugin id="org.glassfish.jersey.core.jersey-client"/>
+      <plugin id="org.glassfish.jersey.core.jersey-client.source"/>
+      <plugin id="org.glassfish.jersey.core.jersey-common"/>
+      <plugin id="org.glassfish.jersey.media.jersey-media-json-jackson"/>
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.hsqldb.hsqldb"/>
       <plugin id="org.iq80.snappy"/>
@@ -317,6 +353,7 @@
       <plugin id="org.parboiled.core"/>
       <plugin id="org.parboiled.java" fragment="true"/>
       <plugin id="org.pegdown"/>
+      <plugin id="org.postgresql.jdbc"/>
       <plugin id="org.springframework.aop"/>
       <plugin id="org.springframework.asm"/>
       <plugin id="org.springframework.beans"/>
@@ -342,6 +379,7 @@
       <plugin id="eu.esdihumboldt.hale.common.convert.wkt" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.common.instance" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.gml" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.io.jdbc.postgresql" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />

@@ -15,39 +15,18 @@
 
 package eu.esdihumboldt.cst.test.internal;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
-import eu.esdihumboldt.cst.test.TransformationExample;
-import eu.esdihumboldt.hale.common.align.model.Alignment;
-import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
-import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
-import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
-import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
-import eu.esdihumboldt.hale.common.schema.model.Schema;
-import eu.esdihumboldt.hale.common.test.TestUtil;
+import eu.esdihumboldt.cst.test.TransformationExampleImpl;
 
 /**
  * Transformation example contained in the CST test bundle.
  * 
  * @author Simon Templer
  */
-public class InternalExample implements TransformationExample {
-
-	private Schema sourceSchema;
-	private Schema targetSchema;
-	private Alignment alignment;
-	private InstanceCollection sourceInstances;
-	private InstanceCollection targetInstances;
-	private final URI sourceSchemaLocation;
-	private final URI alignmentLocation;
-	private final URI targetSchemaLocation;
-	private final URI sourceDataLocation;
-	private final URI targetDataLocation;
-	private final String targetContainerNamespace;
-	private final String targetContainerName;
+public class InternalExample extends TransformationExampleImpl {
 
 	/**
 	 * Create a transformation example. All provided locations are specific to
@@ -66,19 +45,10 @@ public class InternalExample implements TransformationExample {
 	public InternalExample(String sourceSchemaLocation, String targetSchemaLocation,
 			String alignmentLocation, String sourceDataLocation, String targetDataLocation,
 			String targetContainerNamespace, String targetContainerName) throws URISyntaxException {
-		this.sourceSchemaLocation = toLocalURI(sourceSchemaLocation);
-		this.targetSchemaLocation = toLocalURI(targetSchemaLocation);
-		this.sourceDataLocation = toLocalURI(sourceDataLocation);
-		URI tdl = null;
-		try {
-			tdl = toLocalURI(targetDataLocation);
-		} catch (Exception e) {
-			// allow examples w/o target data
-		}
-		this.targetDataLocation = tdl;
-		this.alignmentLocation = toLocalURI(alignmentLocation);
-		this.targetContainerNamespace = targetContainerNamespace;
-		this.targetContainerName = targetContainerName;
+		super(toLocalURI(sourceSchemaLocation, true), toLocalURI(targetSchemaLocation, true),
+				toLocalURI(alignmentLocation, true), toLocalURI(sourceDataLocation, true),
+				(targetDataLocation == null) ? (null) : (toLocalURI(targetDataLocation, false)),
+				targetContainerNamespace, targetContainerName);
 	}
 
 	/**
@@ -86,95 +56,23 @@ public class InternalExample implements TransformationExample {
 	 * <code>getClass().getResource(location).toURI()</code>
 	 * 
 	 * @param location the location
+	 * @param mustExist if the location must exist (i.e. if the result may not
+	 *            be <code>null</code>)
 	 * @return an URI for the location
 	 * @throws URISyntaxException if toURI throws an exception
 	 */
-	private URI toLocalURI(String location) throws URISyntaxException {
-		return InternalExample.class.getResource(location).toURI();
-	}
-
-	@Override
-	public String getTargetContainerNamespace() {
-		return targetContainerNamespace;
-	}
-
-	@Override
-	public String getTargetContainerName() {
-		return targetContainerName;
-	}
-
-	@Override
-	public Schema getSourceSchema() throws IOProviderConfigurationException, IOException {
-		if (sourceSchema == null) {
-			sourceSchema = TestUtil.loadSchema(sourceSchemaLocation);
+	private static URI toLocalURI(String location, boolean mustExist) throws URISyntaxException {
+		URL loc = InternalExample.class.getResource(location);
+		if (loc == null) {
+			if (mustExist) {
+				throw new IllegalStateException("Could not find required resource " + location);
+			}
+			else {
+				return null;
+			}
 		}
-		return sourceSchema;
-	}
 
-	@Override
-	public Schema getTargetSchema() throws IOProviderConfigurationException, IOException {
-		if (targetSchema == null) {
-			targetSchema = TestUtil.loadSchema(targetSchemaLocation);
-		}
-		return targetSchema;
-	}
-
-	@Override
-	public Alignment getAlignment() throws Exception {
-		if (alignment == null) {
-			alignment = TestUtil.loadAlignment(alignmentLocation, getSourceSchema(),
-					getTargetSchema());
-		}
-		return alignment;
-	}
-
-	@Override
-	public InstanceCollection getSourceInstances() throws IOProviderConfigurationException,
-			IOException {
-		if (sourceInstances == null) {
-			sourceInstances = TestUtil.loadInstances(sourceDataLocation, getSourceSchema());
-		}
-		return sourceInstances;
-	}
-
-	@Override
-	public InstanceCollection getTargetInstances() throws IOProviderConfigurationException,
-			IOException {
-		if (targetDataLocation == null) {
-			throw new IllegalStateException("Example has no target data");
-		}
-		if (targetInstances == null) {
-			targetInstances = TestUtil.loadInstances(targetDataLocation, getTargetSchema());
-		}
-		return targetInstances;
-	}
-
-	@Override
-	public LocatableInputSupplier<? extends InputStream> getSourceSchemaInput() {
-		return new DefaultInputSupplier(sourceSchemaLocation);
-	}
-
-	@Override
-	public LocatableInputSupplier<? extends InputStream> getAlignmentInput() {
-		return new DefaultInputSupplier(alignmentLocation);
-	}
-
-	@Override
-	public LocatableInputSupplier<? extends InputStream> getTargetSchemaInput() {
-		return new DefaultInputSupplier(targetSchemaLocation);
-	}
-
-	@Override
-	public LocatableInputSupplier<? extends InputStream> getSourceDataInput() {
-		return new DefaultInputSupplier(sourceDataLocation);
-	}
-
-	@Override
-	public LocatableInputSupplier<? extends InputStream> getTargetDataInput() {
-		if (targetDataLocation == null) {
-			throw new IllegalStateException("Example has no target data");
-		}
-		return new DefaultInputSupplier(targetDataLocation);
+		return loc.toURI();
 	}
 
 }

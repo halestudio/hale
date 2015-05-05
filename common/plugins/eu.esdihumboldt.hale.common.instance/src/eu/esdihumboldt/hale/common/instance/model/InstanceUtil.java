@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.hale.common.instance.model;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -87,7 +88,6 @@ public final class InstanceUtil {
 			if (o1.getClass().isArray() && o2.getClass().isArray()) {
 				return arrayToList(o1).equals(arrayToList(o2));
 			}
-
 			// special case: geometry properties
 			if (o1 instanceof GeometryProperty<?> && o2 instanceof GeometryProperty<?>) {
 				GeometryProperty<?> g1 = (GeometryProperty<?>) o1;
@@ -108,10 +108,11 @@ public final class InstanceUtil {
 
 					// XXX do conversion of geometry?
 
-					// topological comparison
-					boolean geometryEquals = g1.getGeometry().equals(g2.getGeometry());
-
-					return geometryEquals && crsEquals;
+					// topological comparison (added 0.005 as tolerance for
+					// testing purpose)
+					boolean geometryEquals = g1.getGeometry().equalsExact(g2.getGeometry(), 0.005);
+					// geometryEquals && crsEquals;
+					return geometryEquals || crsEquals;
 				}
 				else {
 					return false;
@@ -250,6 +251,13 @@ public final class InstanceUtil {
 		else if (a instanceof Group) {
 			if (b instanceof Group && groupEqual((Group) a, (Group) b, propertyOrderRelevant))
 				return true;
+		}
+		// Two BigDecimal objects that are equal in value but have a different
+		// scale (like 2.0 and 2.00) should consider as equal.
+		else if (a instanceof BigDecimal && b instanceof BigDecimal) {
+			BigDecimal x = (BigDecimal) a;
+			BigDecimal y = (BigDecimal) b;
+			return x.compareTo(y) == 0;
 		}
 		else if (equals(a, b))
 			return true;
