@@ -297,7 +297,7 @@
             <property
                   description="The property that shall hold the input geometry"
                   eager="false"
-                  label="Source geoemtry"
+                  label="Source geometry"
                   maxOccurrence="1"
                   minOccurrence="1"
                   name="source">

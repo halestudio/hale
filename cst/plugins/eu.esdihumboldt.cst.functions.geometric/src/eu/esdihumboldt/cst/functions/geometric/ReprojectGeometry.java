@@ -58,7 +58,7 @@ public class ReprojectGeometry extends
 		String srs = getParameterChecked(PARAMETER_REFERENCE_SYSTEM).as(String.class);
 		if (srs != null) {
 			try {
-				targetCRS = CRS.decode(srs);
+				targetCRS = parseReferenceSystemParamter(srs);
 			} catch (FactoryException e) {
 				throw new TransformationException(
 						"Error to find destiantion Cordinate reference System.", e);
@@ -81,6 +81,33 @@ public class ReprojectGeometry extends
 		return new DefaultGeometryProperty<Geometry>(new CodeDefinition(CRS.toSRS(targetCRS),
 				targetCRS), resultGeometry);
 
+	}
+
+	/**
+	 * Construct a {@link CoordinateReferenceSystem} instance by parsing the
+	 * input string, which may contain either an EPSG code or a full-blown WKT
+	 * definition.
+	 * 
+	 * @param crs either an EPSG code or a WKT definition
+	 * @return the CRS
+	 * @throws FactoryException if the input string is not a valid EPSG code,
+	 *             nor a valid WKT CRS definition
+	 */
+	private CoordinateReferenceSystem parseReferenceSystemParamter(String crs)
+			throws FactoryException {
+		CoordinateReferenceSystem parsedCrs = null;
+
+		if (crs != null) {
+			if (crs.startsWith("EPSG:")) {
+				parsedCrs = CRS.decode(crs);
+			}
+			else {
+				// crs contains a WKT definition
+				parsedCrs = CRS.parseWKT(crs);
+			}
+		}
+
+		return parsedCrs;
 	}
 
 	/**
