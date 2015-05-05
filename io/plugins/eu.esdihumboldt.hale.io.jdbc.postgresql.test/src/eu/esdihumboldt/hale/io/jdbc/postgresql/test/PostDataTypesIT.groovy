@@ -45,7 +45,7 @@ import groovy.sql.Sql
  * SQL type and binding test for postgresql database
  * @author sameer sheikh
  */
-public class PostDataTypesTest extends AbstractDBTest {
+public class PostDataTypesIT extends AbstractDBTest {
 
 	public static final String query = ''' CREATE TABLE employees
 
@@ -64,7 +64,7 @@ public class PostDataTypesTest extends AbstractDBTest {
     ,  CONSTRAINT lines_pkey PRIMARY KEY (EMPLOYEE_ID)
     ) ;'''
 	private final Map<String, Class<?>> map = createMap();
-	public PostDataTypesTest(){
+	public PostDataTypesIT(){
 		super(new DBConfigInstance("postgis"))
 	}
 	/**

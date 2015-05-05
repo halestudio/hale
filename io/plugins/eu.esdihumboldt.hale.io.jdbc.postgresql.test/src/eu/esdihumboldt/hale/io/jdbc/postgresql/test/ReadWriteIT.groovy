@@ -40,7 +40,7 @@ import groovy.sql.Sql
  *
  * @author Simon Templer
  */
-class ReadWriteTest extends AbstractDBTest{
+class ReadWriteIT extends AbstractDBTest{
 
 	private static final TABLE_LINES = '''CREATE TABLE lines
 		(
@@ -51,7 +51,7 @@ class ReadWriteTest extends AbstractDBTest{
 		  CONSTRAINT lines_pkey PRIMARY KEY (ps)
 		);'''
 
-	public ReadWriteTest(){
+	public ReadWriteIT(){
 		super(new DBConfigInstance("postgis"))
 	}
 

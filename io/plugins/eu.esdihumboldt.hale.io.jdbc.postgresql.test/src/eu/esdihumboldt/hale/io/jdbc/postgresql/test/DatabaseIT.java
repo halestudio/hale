@@ -31,20 +31,18 @@ import eu.esdihumboldt.hale.io.jdbc.test.DBConfigInstance;
  * 
  * @author Simon Templer
  */
-public class DBTest extends AbstractDBTest {
+public class DatabaseIT extends AbstractDBTest {
 
 	/**
 	 * Test the connection.
-	 * 
-	 * @throws SQLException if the database cannot be accessed
 	 */
 
-	public DBTest() {
+	public DatabaseIT() {
 		super(new DBConfigInstance("postgis"));
 	}
 
 	/**
-	 * @throws SQLException
+	 * @throws SQLException if the connection cannot be obtained
 	 */
 	@Test
 	public void testConnection() throws SQLException {
