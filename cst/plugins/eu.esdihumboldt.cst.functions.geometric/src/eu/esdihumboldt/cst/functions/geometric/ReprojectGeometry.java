@@ -23,13 +23,21 @@ import eu.esdihumboldt.hale.common.align.transformation.function.TransformationE
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
+import eu.esdihumboldt.hale.common.instance.geometry.CRSDefinitionManager;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.geometry.GeometryFinder;
 import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition;
 import eu.esdihumboldt.hale.common.instance.helper.DepthFirstInstanceTraverser;
 import eu.esdihumboldt.hale.common.instance.helper.InstanceTraverser;
+import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 
+/**
+ * Reproject geometry function.
+ * 
+ * @author Sandro Salari
+ * @author Stefano Costa, GeoSolutions
+ */
 @Immutable
 public class ReprojectGeometry extends
 		AbstractSingleTargetPropertyTransformation<TransformationEngine> implements
@@ -59,9 +67,9 @@ public class ReprojectGeometry extends
 		if (srs != null) {
 			try {
 				targetCRS = parseReferenceSystemParamter(srs);
-			} catch (FactoryException e) {
+			} catch (Exception e) {
 				throw new TransformationException(
-						"Error to find destiantion Cordinate reference System.", e);
+						"Error determining destination Cordinate Reference System.", e);
 			}
 
 			// Retrieve transformation from cell context, or create a new
@@ -85,25 +93,21 @@ public class ReprojectGeometry extends
 
 	/**
 	 * Construct a {@link CoordinateReferenceSystem} instance by parsing the
-	 * input string, which may contain either an EPSG code or a full-blown WKT
-	 * definition.
+	 * input string via a {@link CRSDefinitionManager} instance.
 	 * 
-	 * @param crs either an EPSG code or a WKT definition
-	 * @return the CRS
-	 * @throws FactoryException if the input string is not a valid EPSG code,
-	 *             nor a valid WKT CRS definition
+	 * @param crs string representation of the CRS
+	 * @return the {@link CoordinateReferenceSystem} instance
 	 */
-	private CoordinateReferenceSystem parseReferenceSystemParamter(String crs)
-			throws FactoryException {
+	private CoordinateReferenceSystem parseReferenceSystemParamter(String crs) {
 		CoordinateReferenceSystem parsedCrs = null;
 
 		if (crs != null) {
-			if (crs.startsWith("EPSG:")) {
-				parsedCrs = CRS.decode(crs);
+			CRSDefinition crsDef = CRSDefinitionManager.getInstance().parse(crs);
+			if (crsDef != null) {
+				parsedCrs = crsDef.getCRS();
 			}
 			else {
-				// crs contains a WKT definition
-				parsedCrs = CRS.parseWKT(crs);
+				throw new IllegalArgumentException("Could not parse CRS definition.");
 			}
 		}
 
@@ -158,13 +162,15 @@ public class ReprojectGeometry extends
 		MathTransform transform = null;
 		try {
 			transform = CRS.findMathTransform(sourceCRS, targetCRS, false);
-			// Transformation cannot be found because the sourceCRS is
-			// missing bursa-wolf parameters
+			// Transformation cannot be found because either the sourceCRS or
+			// the targetCRS is missing bursa-wolf parameters
 		} catch (FactoryException ex1) {
 			try {
-				Integer code = CRS.lookupEpsgCode(sourceCRS, true);
-				if (code != null) {
-					transform = CRS.findMathTransform(CRS.decode("EPSG:" + code, true), targetCRS);
+				Integer sourceEpsgCode = CRS.lookupEpsgCode(sourceCRS, true);
+				Integer targetEpsgCode = CRS.lookupEpsgCode(targetCRS, true);
+				if (sourceEpsgCode != null && targetEpsgCode != null) {
+					transform = CRS.findMathTransform(CRS.decode("EPSG:" + sourceEpsgCode, true),
+							CRS.decode("EPSG:" + targetEpsgCode, true));
 				}
 				else {
 					throw new TransformationException(

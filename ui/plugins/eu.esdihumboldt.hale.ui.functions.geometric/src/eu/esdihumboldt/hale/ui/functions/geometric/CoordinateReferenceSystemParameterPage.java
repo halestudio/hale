@@ -21,8 +21,7 @@ import com.google.common.collect.ListMultimap;
 import eu.esdihumboldt.cst.functions.geometric.ReprojectGeometryFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExtension;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
-import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition;
-import eu.esdihumboldt.hale.common.instance.geometry.impl.WKTDefinition;
+import eu.esdihumboldt.hale.common.instance.geometry.CRSDefinitionManager;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.ui.function.generic.pages.AbstractParameterPage;
 import eu.esdihumboldt.hale.ui.io.instance.crs.SelectCRSDialog;
@@ -48,11 +47,7 @@ public class CoordinateReferenceSystemParameterPage extends AbstractParameterPag
 					.get(PARAMETER_REFERENCE_SYSTEM);
 			if (parameters != null && parameters.size() > 0) {
 				String crs = parameters.get(0).getStringRepresentation();
-				if (crs.startsWith("EPSG:")) {
-					crsDef = new CodeDefinition(crs, null);
-				} else {
-					crsDef = new WKTDefinition(crs, null);
-				}
+				crsDef = CRSDefinitionManager.getInstance().parse(crs);
 			}
 		}
 		
@@ -62,17 +57,13 @@ public class CoordinateReferenceSystemParameterPage extends AbstractParameterPag
 	@Override
 	public ListMultimap<String, ParameterValue> getConfiguration() {
 		ListMultimap<String, ParameterValue> conf = ArrayListMultimap.create();
-		
+
 		String crsAsString = null;
 		if (crsDef != null) {
-			if (crsDef instanceof CodeDefinition) {
-				crsAsString = ((CodeDefinition)crsDef).getCode();
-			} else if (crsDef instanceof WKTDefinition) {
-				crsAsString = ((WKTDefinition)crsDef).getWkt();
-			}
+			crsAsString = CRSDefinitionManager.getInstance().asString(crsDef);
 		}
 		conf.put(PARAMETER_REFERENCE_SYSTEM, new ParameterValue(crsAsString));
-		
+
 		return conf;
 	}
 

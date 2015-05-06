@@ -3,6 +3,7 @@ package eu.esdihumboldt.cst.functions.geometric;
 /**
  * Reproject geometry function constants.
  * 
+ * @author Sandro Salari
  * @author Stefano Costa, GeoSolutions
  */
 public interface ReprojectGeometryFunction {

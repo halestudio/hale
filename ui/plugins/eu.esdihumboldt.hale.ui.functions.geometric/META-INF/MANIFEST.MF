@@ -18,4 +18,5 @@ Import-Package: de.fhg.igd.eclipse.util.extension,
  de.fhg.igd.eclipse.util.extension.simple,
  eu.esdihumboldt.hale.common.core.io,
  eu.esdihumboldt.hale.common.schema.geometry,
- eu.esdihumboldt.hale.ui.util.viewer
+ eu.esdihumboldt.hale.ui.util.viewer,
+ eu.esdihumboldt.util.definition
