@@ -17,10 +17,11 @@ package eu.esdihumboldt.hale.common.inspire.apps.templates;
 
 import java.util.regex.Matcher
 
+import javax.xml.XMLConstants
+
 import org.eclipse.core.runtime.content.IContentType
 import org.osgi.framework.Version
 
-import com.google.common.collect.HashMultimap
 import com.google.common.collect.Multimap
 
 import de.fhg.igd.slf4jplus.ALogger
@@ -58,6 +59,8 @@ import eu.esdihumboldt.hale.io.codelist.inspire.reader.INSPIRECodeListReader
 import eu.esdihumboldt.hale.io.gml.geometry.GMLConstants
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
+import groovy.xml.StreamingMarkupBuilder
+import groovy.xml.XmlUtil
 
 /**
  * Generate INSPIRE mapping templates.
@@ -84,18 +87,28 @@ public class GenerateTemplates {
 	 * Generate projects for all application schemas.
 	 */
 	void generate() {
+		// read configuration
+		def config = GenerateTemplatesConfig.readConfig()
+
 		Multimap<String, SchemaInfo> schemas = ApplicationSchemas.getSchemaInfos();
-		Multimap<String, SchemaInfo> schemasByShortId = HashMultimap.create()
+		Map<String, SchemaInfo> schemasByShortId = [:]
 
 		for (SchemaInfo schema : schemas.values()) {
 			// generate single schema templates
 			generate([schema]);
 
 			// associate with short-id
+			//XXX what about different versions of a schema?
 			schemasByShortId.put(extractShortId(schema), schema);
 		}
 
-		//TODO generate for combinations of schemas
+		// generate for combinations of schemas
+		config.combinations.each { combination ->
+			def combinationSchemas = combination.schemaIds.collect { id ->
+				schemasByShortId.get(id)
+			}
+			generate(combinationSchemas)
+		}
 	}
 
 	/**
@@ -110,22 +123,24 @@ public class GenerateTemplates {
 
 		// extract short identifier
 		List<String> shortIds = schemas.collect { extractShortId(it) }
-		def shortId = shortIds.join('-')
-		String filename = "inspire-${shortId}.halex"
+		def shortId = shortIds.join('_')
+		String filename = schemas.size() != 1 ? "inspire-${shortId}.halez" : "inspire-${shortId}.halex"
 		File projectFile = new File(context.targetDir, filename)
 
 		// create project
 		final Project project = new Project();
 
 		String schemaName = schemas[0].name
+		String schemaNameVersion = schemas[0].name + ' ' + schemas[0].version
 		String otherSchemas = schemas.size() > 1 ? schemas[1..-1].collect{ it.name }.join(' and ') : null
 		if (otherSchemas) {
 			schemaName = schemaName + ' with ' + otherSchemas
+			schemaNameVersion = schemaNameVersion + ' with ' + otherSchemas
 		}
 
 		// basic medadata
 		project.author = 'HALE (generated)'
-		project.name = "Map to INSPIRE ${schemas[0].name} ${schemas[0].version}"
+		project.name = "Map to INSPIRE ${schemaNameVersion}"
 		project.description = "Template project for mapping to INSPIRE ${schemaName}."
 		if (context.explicit) {
 			project.haleVersion = Version.parseVersion('2.8.0')
@@ -164,10 +179,15 @@ public class GenerateTemplates {
 		Set<TypeDefinition> relevantTypes = null
 		if (!loadedSchemas.empty) {
 			Set<String> relevantNamespaces = new HashSet<>()
-			schemas.each {
-				relevantNamespaces.addAll(it.directImports as Set)
+
+			// which namespaces are relevant? TODO make configurable?
+			if (schemas.size() == 1) { // currently only include direct imports for single schema projects
+				schemas.each {
+					relevantNamespaces.addAll(it.directImports as Set)
+				}
 			}
-			String mainNamespace = loadedSchemas[0].namespace
+
+			Set<String> mainNamespaces = new HashSet<>(loadedSchemas.collect { it.namespace })
 
 			// determine relevant types
 			relevantTypes = new LinkedHashSet<>()
@@ -177,7 +197,7 @@ public class GenerateTemplates {
 				for (def t : loadedSchema.types) {
 					TypeDefinition type = (TypeDefinition) t
 					if (typeIsMappingRelevant(type)) {
-						if (type.name.namespaceURI == mainNamespace) {
+						if (mainNamespaces.contains(type.name.namespaceURI)) {
 							mainTypes << type
 						}
 						else if (relevantNamespaces.contains(type.name.namespaceURI)) {
@@ -210,7 +230,7 @@ public class GenerateTemplates {
 		// code list readers and associations
 		CodeListAssociations associations = new CodeListAssociations()
 		// collect code lists
-		List<CodeListRef> codeLists = []
+		Set<CodeListRef> codeLists = new LinkedHashSet<>()
 		for (SchemaInfo auxSchema : auxSchemas) {
 			codeLists.addAll(RegistryCodeLists.getCodeLists(auxSchema.appSchemaId))
 		}
@@ -332,18 +352,48 @@ public class GenerateTemplates {
 	}
 
 	private IOConfiguration createSchemaConfiguration(List<SchemaInfo> schemas) {
-		if (schemas.size() == 1) {
-			IOConfiguration result = new IOConfiguration()
+		IOConfiguration result = new IOConfiguration()
+		result.actionId = SchemaIO.ACTION_LOAD_TARGET_SCHEMA
+		result.providerId = XML_SCHEMA_READER_ID
 
-			result.actionId = SchemaIO.ACTION_LOAD_TARGET_SCHEMA
-			result.providerId = XML_SCHEMA_READER_ID
+		if (schemas.size() == 1) {
 			result.getProviderConfiguration().put(ImportProvider.PARAM_SOURCE,
 					Value.of(schemas[0].location.toString()))
-
-			result
 		}
 		else {
-			//TODO create combined schema!
+			// create combined schema
+
+			List<String> shortIds = schemas.collect { extractShortId(it) }
+			def shortId = shortIds.join('_')
+			String filename = "inspire-${shortId}.xsd"
+			File schemaFile = new File(context.targetDir, filename)
+
+			createCombinedSchema(schemaFile, "http://esdi-humboldt.eu/hale/inspire-combined-$shortId", schemas)
+
+			result.getProviderConfiguration().put(ImportProvider.PARAM_SOURCE,
+					Value.of(schemaFile.toURI()))
+		}
+
+		result
+	}
+
+	@CompileStatic(TypeCheckingMode.SKIP)
+	private void createCombinedSchema(File file, targetNamespace, List<SchemaInfo> schemas) {
+		def xmlBuilder = new StreamingMarkupBuilder()
+		def xml = xmlBuilder.bind {
+			mkp.declareNamespace( xsd: XMLConstants.W3C_XML_SCHEMA_NS_URI )
+			schemas.each { schema ->
+				mkp.declareNamespace( (extractShortId(schema)): schema.namespace )
+			}
+			'xsd:schema'(elementFormDefault: 'qualified', targetNamespace: targetNamespace) {
+				schemas.each { schema ->
+					'xsd:import'(namespace: schema.namespace, schemaLocation: schema.location)
+				}
+			}
+		}
+
+		file.withOutputStream {
+			XmlUtil.serialize(xml, it)
 		}
 	}
 

@@ -1,0 +1,10 @@
+{
+	"combinations": [
+		{
+			"schemas": ["pd", "su-vector"]
+		},
+		{
+			"schemas": ["pd", "su-grid"]
+		}
+	]
+}
