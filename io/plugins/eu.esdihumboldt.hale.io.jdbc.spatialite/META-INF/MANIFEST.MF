@@ -23,7 +23,8 @@ Import-Package: com.vividsolutions.jts,
  org.sqlite;version="3.8.7",
  org.sqlite.core;version="3.8.7",
  org.sqlite.jdbc3;version="3.8.7",
- schemacrawler.schema;version="8.16.0"
+ schemacrawler.schema;version="8.16.0",
+ schemacrawler.schemacrawler;version="12.4.2"
 Bundle-ActivationPolicy: lazy
 Require-Bundle: eu.esdihumboldt.hale.io.jdbc;bundle-version="2.9.1",
  eu.esdihumboldt.hale.common.schema;bundle-version="2.9.2"

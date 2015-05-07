@@ -56,6 +56,11 @@
             testUri="jdbc:sqlite:spatialite-test.sqlite"
             uriBuilder="eu.esdihumboldt.hale.io.jdbc.spatialite.SpatiaLiteURIBuilder">
       </driver>
+      <readSchemaAdvisor
+            class="eu.esdihumboldt.hale.io.jdbc.spatialite.SpatialLiteSchemaReaderAdvisor"
+            connection="org.sqlite.SQLiteConnection"
+            id="eu.esdihumboldt.hale.io.jdbc.spatialite">
+      </readSchemaAdvisor>
    </extension>
 
 </plugin>
