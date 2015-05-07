@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: UI for CST geometric functions
+Bundle-SymbolicName: eu.esdihumboldt.hale.ui.functions.geometric;singleton:=true
+Bundle-Version: 2.9.1.qualifier
+Bundle-Vendor: data harmonisation panel
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: eu.esdihumboldt.hale.ui,
+ eu.esdihumboldt.hale.ui.common,
+ eu.esdihumboldt.cst.functions.geometric;bundle-version="2.9.1",
+ eu.esdihumboldt.hale.common.align,
+ com.google.guava,
+ org.eclipse.ui,
+ org.opengis,
+ org.geotools,
+ eu.esdihumboldt.hale.common.instance
+Import-Package: de.fhg.igd.eclipse.util.extension,
+ de.fhg.igd.eclipse.util.extension.simple,
+ eu.esdihumboldt.hale.common.core.io,
+ eu.esdihumboldt.hale.common.schema.geometry,
+ eu.esdihumboldt.hale.ui.util.viewer,
+ eu.esdihumboldt.util.definition

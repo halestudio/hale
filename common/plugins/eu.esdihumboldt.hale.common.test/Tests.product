@@ -7,10 +7,13 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>-consoleLog -clean</programArgs>
+      <programArgs>-consoleLog -clean
+      </programArgs>
       <vmArgs>-Xmx1200M
--XX:MaxPermSize=256m</vmArgs>
-      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+-XX:MaxPermSize=256m
+      </vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      </vmArgsMac>
    </launcherArgs>
 
    <windowImages/>
@@ -81,6 +84,7 @@
       <plugin id="eu.esdihumboldt.cst.doc.functions.dynamic" fragment="true"/>
       <plugin id="eu.esdihumboldt.cst.functions.core"/>
       <plugin id="eu.esdihumboldt.cst.functions.geometric"/>
+      <plugin id="eu.esdihumboldt.cst.functions.geometric.test"/>
       <plugin id="eu.esdihumboldt.cst.functions.groovy"/>
       <plugin id="eu.esdihumboldt.cst.functions.inspire"/>
       <plugin id="eu.esdihumboldt.cst.functions.numeric"/>
