@@ -158,3 +158,10 @@ table.facts tr:nth-child(even) {
 
 /* prevent image forcing scrollbars */
 .fit { max-width: 100% }
+
+table.contributors td {
+	font-size: 16px;
+	vertical-align: middle;
+	height: 32px;
+	padding-right: 8px;
+}
