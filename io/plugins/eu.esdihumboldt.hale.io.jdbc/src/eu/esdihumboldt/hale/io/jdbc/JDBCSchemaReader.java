@@ -75,10 +75,12 @@ import eu.esdihumboldt.hale.io.jdbc.constraints.AutoIncrementFlag;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DatabaseTable;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DefaultValue;
 import eu.esdihumboldt.hale.io.jdbc.constraints.SQLType;
+import eu.esdihumboldt.hale.io.jdbc.extension.JDBCSchemaReaderAdvisor;
 import eu.esdihumboldt.hale.io.jdbc.extension.internal.CustomType;
 import eu.esdihumboldt.hale.io.jdbc.extension.internal.CustomTypeExtension;
 import eu.esdihumboldt.hale.io.jdbc.extension.internal.GeometryTypeExtension;
 import eu.esdihumboldt.hale.io.jdbc.extension.internal.GeometryTypeInfo;
+import eu.esdihumboldt.hale.io.jdbc.extension.internal.SchemaReaderAdvisorExtension;
 
 /**
  * Reads a database schema through JDBC.
@@ -188,6 +190,15 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 			}
 
 			options.setSchemaInfoLevel(level);
+
+			// get advisor
+			// XXX should be created once, and used in other places if
+			// applicable
+			JDBCSchemaReaderAdvisor advisor = SchemaReaderAdvisorExtension.getInstance()
+					.getAdvisor(connection);
+			if (advisor != null) {
+				advisor.configureSchemaCrawler(options);
+			}
 
 			final Catalog database = SchemaCrawlerUtility.getCatalog(connection, options);
 			String quotes = "\"";
