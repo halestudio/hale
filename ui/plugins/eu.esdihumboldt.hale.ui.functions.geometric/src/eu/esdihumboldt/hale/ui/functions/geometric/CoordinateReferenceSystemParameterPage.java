@@ -26,14 +26,24 @@ import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.ui.function.generic.pages.AbstractParameterPage;
 import eu.esdihumboldt.hale.ui.io.instance.crs.SelectCRSDialog;
 
-public class CoordinateReferenceSystemParameterPage extends AbstractParameterPage implements ReprojectGeometryFunction {
+/**
+ * Page for choosing the coordinate reference system to convert to.
+ * 
+ * @author Stefano Costa
+ */
+public class CoordinateReferenceSystemParameterPage extends AbstractParameterPage implements
+		ReprojectGeometryFunction {
 
 	private Label crsLabel;
 	private Button selectCrs;
 	private CRSDefinition crsDef;
-	
+
+	/**
+	 * Default constructor.
+	 */
 	public CoordinateReferenceSystemParameterPage() {
-		super(PropertyFunctionExtension.getInstance().get(ID), "Please select the CRS of the destination geometry");
+		super(PropertyFunctionExtension.getInstance().get(ID),
+				"Please select the CRS of the destination geometry");
 		setPageComplete(false);
 	}
 
@@ -43,14 +53,13 @@ public class CoordinateReferenceSystemParameterPage extends AbstractParameterPag
 
 		if (firstShow && getWizard().getInitCell() != null) {
 			List<ParameterValue> parameters = getWizard().getInitCell()
-					.getTransformationParameters()
-					.get(PARAMETER_REFERENCE_SYSTEM);
+					.getTransformationParameters().get(PARAMETER_REFERENCE_SYSTEM);
 			if (parameters != null && parameters.size() > 0) {
 				String crs = parameters.get(0).getStringRepresentation();
 				crsDef = CRSDefinitionManager.getInstance().parse(crs);
 			}
 		}
-		
+
 		update();
 	}
 
