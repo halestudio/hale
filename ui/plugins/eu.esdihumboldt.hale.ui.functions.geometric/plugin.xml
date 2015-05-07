@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.ui.function">
+      <propertyParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.geometric.CoordinateReferenceSystemParameterPage"
+            function="eu.esdihumboldt.cst.functions.geometric.reproject_geometry"
+            id="eu.esdihumboldt.hale.ui.functions.geometric.reproject_geometry"
+            order="0">
+         <parameter
+               name="referenceSystem">
+         </parameter>
+      </propertyParameterPage>
+   </extension>
+
+</plugin>

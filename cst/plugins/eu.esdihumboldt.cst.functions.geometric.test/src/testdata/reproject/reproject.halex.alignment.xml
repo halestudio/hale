@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.cst.functions.geometric.reproject_geometry" id="C98c00ad2-b81b-4a42-8148-2c09cdb41e9a" priority="normal">
+        <source name="source">
+            <property>
+                <type name="TestType" ns="eu:esdihumboldt:hale:test"/>
+                <child name="geometry" ns="eu:esdihumboldt:hale:test"/>
+            </property>
+        </source>
+        <target name="target">
+            <property>
+                <type name="TestType" ns="eu:esdihumboldt:hale:test"/>
+                <child name="geometry" ns="eu:esdihumboldt:hale:test"/>
+            </property>
+        </target>
+        <parameter value="code:EPSG:4326" name="referenceSystem"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="C1ad52cf2-d954-4548-b795-fa64e2a14860" priority="normal">
+        <source>
+            <class>
+                <type name="TestType" ns="eu:esdihumboldt:hale:test"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="TestType" ns="eu:esdihumboldt:hale:test"/>
+            </class>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C77d7f540-1a40-464f-814a-068dcca25d4b" priority="normal">
+        <source>
+            <property>
+                <type name="TestType" ns="eu:esdihumboldt:hale:test"/>
+                <child name="description" ns="http://www.opengis.net/gml"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="TestType" ns="eu:esdihumboldt:hale:test"/>
+                <child name="description" ns="http://www.opengis.net/gml"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="Cc498f452-7868-46f2-a341-39281297e233" priority="normal">
+        <source>
+            <property>
+                <type name="TestType" ns="eu:esdihumboldt:hale:test"/>
+                <child name="name" ns="http://www.opengis.net/gml"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="TestType" ns="eu:esdihumboldt:hale:test"/>
+                <child name="name" ns="http://www.opengis.net/gml"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+</alignment>
