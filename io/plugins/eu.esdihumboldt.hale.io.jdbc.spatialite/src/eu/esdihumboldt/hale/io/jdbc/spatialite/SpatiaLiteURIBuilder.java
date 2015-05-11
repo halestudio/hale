@@ -6,6 +6,8 @@ import eu.esdihumboldt.hale.io.jdbc.extension.URIBuilder;
 
 public class SpatiaLiteURIBuilder implements URIBuilder {
 
+	private static final String PREFIX = "jdbc:sqlite:";
+
 	/**
 	 * {@code host} parameter is ignored.
 	 */
@@ -15,7 +17,19 @@ public class SpatiaLiteURIBuilder implements URIBuilder {
 			throw new IllegalArgumentException("A database name must be provided");
 		}
 
-		return URI.create("jdbc:sqlite:" + database);
+		return URI.create(PREFIX + database);
+	}
+
+	/**
+	 * @param jdbcUri
+	 * @return the file system path to the SpatiaLite database
+	 */
+	public static String getDatabase(URI jdbcUri) {
+		if (jdbcUri == null) {
+			throw new IllegalArgumentException("JDBC URI must be provided");
+		}
+
+		return jdbcUri.toString().substring(PREFIX.length());
 	}
 
 }

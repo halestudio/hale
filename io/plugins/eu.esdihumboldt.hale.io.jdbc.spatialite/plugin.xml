@@ -62,5 +62,41 @@
             id="eu.esdihumboldt.hale.io.jdbc.spatialite">
       </readSchemaAdvisor>
    </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            file-extensions="sqlite"
+            id="eu.esdihumboldt.hale.io.spatialite"
+            name="SpatiaLite Database"
+            priority="normal">
+      </content-type>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.provider">
+      <provider
+            class="eu.esdihumboldt.hale.io.jdbc.spatialite.reader.internal.SpatiaLiteSchemaReader"
+            id="eu.esdihumboldt.hale.io.spatialite.reader.schema"
+            name="SpatiaLite Database">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.spatialite">
+         </contentType>
+      </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.jdbc.spatialite.reader.internal.SpatiaLiteInstanceReader"
+            id="eu.esdihumboldt.hale.io.spatialite.reader.instance"
+            name="SpatiaLite Database">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.spatialite">
+         </contentType>
+      </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.jdbc.spatialite.writer.internal.SpatiaLiteInstanceWriter"
+            id="eu.esdihumboldt.hale.io.spatialite.writer.instance"
+            name="SpatiaLite Database">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.spatialite">
+         </contentType>
+      </provider>
+   </extension>
 
 </plugin>

@@ -15,6 +15,11 @@
 
 package eu.esdihumboldt.hale.io.jdbc.spatialite;
 
+import java.util.regex.Pattern;
+
+import schemacrawler.schemacrawler.DatabaseSpecificOverrideOptions;
+import schemacrawler.schemacrawler.InclusionRule;
+import schemacrawler.schemacrawler.InformationSchemaViews;
 import schemacrawler.schemacrawler.SchemaCrawlerOptions;
 import eu.esdihumboldt.hale.io.jdbc.JDBCSchemaReader;
 import eu.esdihumboldt.hale.io.jdbc.extension.JDBCSchemaReaderAdvisor;
@@ -26,10 +31,106 @@ import eu.esdihumboldt.hale.io.jdbc.extension.JDBCSchemaReaderAdvisor;
  */
 public class SpatialLiteSchemaReaderAdvisor implements JDBCSchemaReaderAdvisor {
 
+	private static final String VIEWS_SQL = ""
+			+ "	SELECT "
+			+ "		NULL AS TABLE_CATALOG, "
+			+ "		NULL AS TABLE_SCHEMA, "
+			+ "		name AS TABLE_NAME, "
+			+ "		sql AS VIEW_DEFINITION, "
+			+ "		'UNKNOWN' AS CHECK_OPTION, "
+			+ "		'N' AS IS_UPDATABLE "
+			+ "	FROM "
+			+ "		sqlite_master "
+			+ "	WHERE "
+			+ "		type = 'view' "
+			+ "	ORDER BY "
+			+ "		name";
+	private static final String TRIGGERS_SQL = ""
+			+ "	SELECT "
+			+ "		NULL AS TRIGGER_CATALOG, "
+			+ "		NULL AS TRIGGER_SCHEMA, "
+			+ "		name AS TRIGGER_NAME, "
+			+ "		CASE "
+			+ "			WHEN sql LIKE '%INSERT ON%' THEN 'INSERT' "
+			+ "			WHEN sql LIKE '%UPDATE ON%'  THEN 'UPDATE' "
+			+ "			WHEN sql LIKE '%DELETE ON%'  THEN 'DELETE' "
+			+ "			ELSE 'UNKNOWN' "
+			+ "		END "
+			+ "			AS EVENT_MANIPULATION, "
+			+ "		NULL AS EVENT_OBJECT_CATALOG, "
+			+ "		NULL AS EVENT_OBJECT_SCHEMA, "
+			+ "		tbl_name AS EVENT_OBJECT_TABLE, "
+			+ "		0 AS ACTION_ORDER, "
+			+ "		'' AS ACTION_CONDITION, "
+			+ "		CASE "
+			+ "			WHEN sql LIKE '%ROW%' THEN 'ROW' "
+			+ "			WHEN sql LIKE '%STATEMENT%' THEN 'STATEMENT' "
+			+ "		ELSE 'UNKNOWN' "
+			+ "		END"
+			+ "			AS ACTION_ORIENTATION, "
+			+ "		CASE "
+			+ "			WHEN sql LIKE '%AFTER%' THEN 'AFTER' "
+			+ "			WHEN sql LIKE '%BEFORE%' THEN 'BEFORE' "
+			+ "		ELSE 'INSTEAD OF'"
+			+ "		END"
+			+ "			AS CONDITION_TIMING, "
+			+ "		sql AS ACTION_STATEMENT"
+			+ "	FROM "
+			+ "		sqlite_master "
+			+ "	WHERE "
+			+ "		type = 'trigger' "
+			+ "	ORDER BY "
+			+ "		name";
+
 	@Override
 	public void configureSchemaCrawler(SchemaCrawlerOptions options) {
-		// TODO adapt configuration
-//		options.setTableInclusionRule(tableInclusionRule);
+
+		InformationSchemaViews infoSchemaViews = new InformationSchemaViews();
+		infoSchemaViews.setViewsSql(VIEWS_SQL);
+		infoSchemaViews.setTriggersSql(TRIGGERS_SQL);
+
+		DatabaseSpecificOverrideOptions dbOvrOptions = new DatabaseSpecificOverrideOptions();
+		dbOvrOptions.setIdentifierQuoteString("\"");
+		dbOvrOptions.setSupportsSchemas(false);
+
+		options.setDatabaseSpecificOverrideOptions(dbOvrOptions);
+		options.setInformationSchemaViews(infoSchemaViews);
+
+		options.setTableInclusionRule(new InclusionRule() {
+
+			@Override
+			public boolean test(String t) {
+				final String[] excludedTables = new String[] { "spatial_ref_sys",
+						"geom_cols_ref_sys", "spatialite_history", "sqlite_sequence",
+						"sql_statements_log", "SpatialIndex"};
+				final Pattern geometryColumnsTablePattern = Pattern.compile(".*geometry_columns.*");
+				final Pattern indexTablePattern = Pattern.compile("idx.*");
+				final Pattern vectorLayersViewPattern = Pattern.compile("vector_layers.*");
+
+				boolean isGeometryColumnsTable = geometryColumnsTablePattern.matcher(t).matches();
+				if (isGeometryColumnsTable) {
+					return false;
+				}
+
+				boolean isIndexTable = indexTablePattern.matcher(t).matches();
+				if (isIndexTable) {
+					return false;
+				}
+
+				boolean isVectorLayersTable = vectorLayersViewPattern.matcher(t).matches();
+				if (isVectorLayersTable) {
+					return false;
+				}
+
+				for (String excludedTable: excludedTables) {
+					if (excludedTable.equalsIgnoreCase(t)) {
+						return false;
+					}
+				}
+
+				return true;
+			}
+		});
 	}
 
 }

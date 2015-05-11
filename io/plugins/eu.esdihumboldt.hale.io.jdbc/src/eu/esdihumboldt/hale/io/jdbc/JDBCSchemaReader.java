@@ -163,16 +163,6 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 			// XXX For some advanced info / DBMS specific info we'll need a
 			// properties file. See Config & InformationSchemaViews.
 			level.setTag("hale");
-			// only applies (maybe) to Spatialite DBs
-//			InformationSchemaViews infoSchemaViews = new InformationSchemaViews();
-//			infoSchemaViews.setExtTablesSql("SELECT " + "NULL AS TABLE_CATALOG, "
-//					+ "NULL AS TABLE_SCHEMA, " + "name AS TABLE_NAME, "
-//					+ "sql AS TABLE_DEFINITION " + "FROM " + "sqlite_master " + "WHERE "
-//					+ "type = 'table' AND " + "name NOT LIKE '%geometry_columns%' AND "
-//					+ "name NOT LIKE 'idx_%' AND " + "name <> 'spatial_ref_sys' AND "
-//					+ "name <> 'spatialite_history' AND " + "name <> 'sqlite_sequence' AND "
-//					+ "name <> 'sql_statements_log' AND " + "name <> 'SpatialIndex'");
-//			options.setInformationSchemaViews(infoSchemaViews);
 			if (getParameter(SCHEMAS).as(String.class) != null) {
 				String schemas = getParameter(SCHEMAS).as(String.class).replace(',', '|');
 				options.setSchemaInclusionRule(new RegularExpressionInclusionRule(schemas));

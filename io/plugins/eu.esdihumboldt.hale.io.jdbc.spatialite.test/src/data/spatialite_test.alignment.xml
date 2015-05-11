@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="Cd6ebcfa7-6950-4c71-baf4-ae52aa87bfcf" priority="normal">
+        <source>
+            <class>
+                <type name="tasmania_water_bodies" ns="jdbc:sqlite:home/stefano/Lavoro/GeoSolutions/projects/hale/data/tasmania_water_bodies.sqlite"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="tasmania_water_bodies_target" ns="jdbc:sqlite:home/stefano/Lavoro/GeoSolutions/projects/hale/data/tasmania_water_bodies_target.sqlite"/>
+            </class>
+        </target>
+        <parameter value="false" name="structuralRename"/>
+        <parameter value="false" name="ignoreNamespaces"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C80799abf-1c41-46b2-9aa4-dd717e1b594e" priority="normal">
+        <source>
+            <property>
+                <type name="tasmania_water_bodies" ns="jdbc:sqlite:home/stefano/Lavoro/GeoSolutions/projects/hale/data/tasmania_water_bodies.sqlite"/>
+                <child name="Geometry"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="tasmania_water_bodies_target" ns="jdbc:sqlite:home/stefano/Lavoro/GeoSolutions/projects/hale/data/tasmania_water_bodies_target.sqlite"/>
+                <child name="geom"/>
+            </property>
+        </target>
+        <parameter value="false" name="structuralRename"/>
+        <parameter value="false" name="ignoreNamespaces"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.cst.functions.geometric.calculatearea" id="C87f31131-1ce9-4d4b-b7ac-1238441eaaab" priority="normal">
+        <source>
+            <property>
+                <type name="tasmania_water_bodies" ns="jdbc:sqlite:home/stefano/Lavoro/GeoSolutions/projects/hale/data/tasmania_water_bodies.sqlite"/>
+                <child name="Geometry"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="tasmania_water_bodies_target" ns="jdbc:sqlite:home/stefano/Lavoro/GeoSolutions/projects/hale/data/tasmania_water_bodies_target.sqlite"/>
+                <child name="AREA"/>
+            </property>
+        </target>
+    </cell>
+    <cell relation="eu.esdihumboldt.cst.functions.geometric.calculatelength" id="Ce1560ee0-d55c-44ea-bd41-a0f1b80c5896" priority="normal">
+        <source>
+            <property>
+                <type name="tasmania_water_bodies" ns="jdbc:sqlite:home/stefano/Lavoro/GeoSolutions/projects/hale/data/tasmania_water_bodies.sqlite"/>
+                <child name="Geometry"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="tasmania_water_bodies_target" ns="jdbc:sqlite:home/stefano/Lavoro/GeoSolutions/projects/hale/data/tasmania_water_bodies_target.sqlite"/>
+                <child name="PERIMETER"/>
+            </property>
+        </target>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C4555109a-7540-4024-a78f-c17c5d341075" priority="normal">
+        <source>
+            <property>
+                <type name="tasmania_water_bodies" ns="jdbc:sqlite:home/stefano/Lavoro/GeoSolutions/projects/hale/data/tasmania_water_bodies.sqlite"/>
+                <child name="CNTRY_NAME"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="tasmania_water_bodies_target" ns="jdbc:sqlite:home/stefano/Lavoro/GeoSolutions/projects/hale/data/tasmania_water_bodies_target.sqlite"/>
+                <child name="CNTRY_NAME"/>
+            </property>
+        </target>
+        <parameter value="false" name="structuralRename"/>
+        <parameter value="false" name="ignoreNamespaces"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C7b002f9b-41ee-44ce-a64d-22014b4f0578" priority="normal">
+        <source>
+            <property>
+                <type name="tasmania_water_bodies" ns="jdbc:sqlite:home/stefano/Lavoro/GeoSolutions/projects/hale/data/tasmania_water_bodies.sqlite"/>
+                <child name="CONTINENT"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="tasmania_water_bodies_target" ns="jdbc:sqlite:home/stefano/Lavoro/GeoSolutions/projects/hale/data/tasmania_water_bodies_target.sqlite"/>
+                <child name="CONTINENT"/>
+            </property>
+        </target>
+        <parameter value="false" name="structuralRename"/>
+        <parameter value="false" name="ignoreNamespaces"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="Cb00cc047-a787-4825-8682-759c0e864ee0" priority="normal">
+        <source>
+            <property>
+                <type name="tasmania_water_bodies" ns="jdbc:sqlite:home/stefano/Lavoro/GeoSolutions/projects/hale/data/tasmania_water_bodies.sqlite"/>
+                <child name="WATER_TYPE"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="tasmania_water_bodies_target" ns="jdbc:sqlite:home/stefano/Lavoro/GeoSolutions/projects/hale/data/tasmania_water_bodies_target.sqlite"/>
+                <child name="WATER_TYPE"/>
+            </property>
+        </target>
+        <parameter value="false" name="structuralRename"/>
+        <parameter value="false" name="ignoreNamespaces"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.cst.functions.numeric.mathexpression" id="Cb5f89511-ae4a-4f23-9561-ec64981ca774" priority="normal">
+        <source name="var">
+            <property>
+                <type name="tasmania_water_bodies" ns="jdbc:sqlite:home/stefano/Lavoro/GeoSolutions/projects/hale/data/tasmania_water_bodies.sqlite"/>
+                <child name="PK_UID"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="tasmania_water_bodies_target" ns="jdbc:sqlite:home/stefano/Lavoro/GeoSolutions/projects/hale/data/tasmania_water_bodies_target.sqlite"/>
+                <child name="UID"/>
+            </property>
+        </target>
+        <parameter value="PK_UID + 1000" name="expression"/>
+    </cell>
+</alignment>
