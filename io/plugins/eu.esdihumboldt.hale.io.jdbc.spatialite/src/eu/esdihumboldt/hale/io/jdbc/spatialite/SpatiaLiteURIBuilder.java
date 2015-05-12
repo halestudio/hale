@@ -4,6 +4,11 @@ import java.net.URI;
 
 import eu.esdihumboldt.hale.io.jdbc.extension.URIBuilder;
 
+/**
+ * Create JDBC URIs for SQLite/SpatiaLite.
+ * 
+ * @author Stefano Costa, GeoSolutions
+ */
 public class SpatiaLiteURIBuilder implements URIBuilder {
 
 	private static final String PREFIX = "jdbc:sqlite:";
@@ -21,7 +26,7 @@ public class SpatiaLiteURIBuilder implements URIBuilder {
 	}
 
 	/**
-	 * @param jdbcUri
+	 * @param jdbcUri the JDBC URI
 	 * @return the file system path to the SpatiaLite database
 	 */
 	public static String getDatabase(URI jdbcUri) {

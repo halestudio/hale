@@ -21,9 +21,10 @@ import java.net.URI;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 
 /**
- * TODO Type description
+ * I/O supplier for SpatiaLite databases. Converts a file path to a JDBC URI and
+ * viceversa.
  * 
- * @author stefano
+ * @author Stefano Costa, GeoSolutions
  */
 public class SpatiaLiteJdbcIOSupplier extends FileIOSupplier {
 
@@ -55,6 +56,9 @@ public class SpatiaLiteJdbcIOSupplier extends FileIOSupplier {
 		return jdbcUri;
 	}
 
+	/**
+	 * @return the absolute path of the SpatiaLite database file
+	 */
 	public String getDatabaseFilePath() {
 		return SpatiaLiteURIBuilder.getDatabase(getLocation());
 	}

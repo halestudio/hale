@@ -15,6 +15,9 @@
 
 package eu.esdihumboldt.hale.io.jdbc.spatialite.reader.internal;
 
+import static eu.esdihumboldt.hale.io.jdbc.spatialite.test.SpatiaLiteTestUtil.SOUURCE_TYPE_LOCAL_NAME;
+import static eu.esdihumboldt.hale.io.jdbc.spatialite.test.SpatiaLiteTestUtil.checkType;
+import static eu.esdihumboldt.hale.io.jdbc.spatialite.test.SpatiaLiteTestUtil.getSourceTempFilePath;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -22,7 +25,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.junit.AfterClass;
@@ -34,25 +36,26 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.impl.LogProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
-import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.test.TestUtil;
 import eu.esdihumboldt.hale.io.jdbc.spatialite.test.SpatiaLiteTestUtil;
 
 /**
- * TODO Type description
+ * Test class for {@link SpatiaLiteSchemaReader}. The tests are automatically
+ * skipped if the SpatiaLite extension can't be found on the system.
  * 
- * @author stefano
+ * @author Stefano Costa, GeoSolutions
  */
 public class SpatiaLiteSchemaReaderTest {
 
 	private static final ALogger log = ALoggerFactory.getLogger(SpatiaLiteSchemaReaderTest.class);
 
 	/**
-	 * Wait for needed services to be running
+	 * Wait for needed services to be running and create source database file in
+	 * a system dependent temporary folder.
 	 * 
-	 * @throws IOException
+	 * @throws IOException if temp file can't be created
 	 */
 	@BeforeClass
 	public static void waitForServices() throws IOException {
@@ -61,15 +64,18 @@ public class SpatiaLiteSchemaReaderTest {
 		SpatiaLiteTestUtil.createSourceTempFile();
 	}
 
+	/**
+	 * Delete any temporary file created for the test.
+	 */
 	@AfterClass
 	public static void cleanUp() {
 		SpatiaLiteTestUtil.deleteSourceTempFile();
 	}
 
 	/**
-	 * Test for given property names and property types
+	 * Test - reads a sample SpatiaLite schema
 	 * 
-	 * @throws Exception the Exception thrown if the test fails
+	 * @throws Exception if an error occurs
 	 */
 	@Test
 	public void testRead() throws Exception {
@@ -78,12 +84,11 @@ public class SpatiaLiteSchemaReaderTest {
 			return;
 		}
 
-		Set<String> properties = new HashSet<String>(
+		Set<String> propertyNames = new HashSet<String>(
 				Arrays.asList(SpatiaLiteTestUtil.SOUURCE_TYPE_PROPERTY_NAMES));
 
 		SpatiaLiteSchemaReader schemaReader = new SpatiaLiteSchemaReader();
-		schemaReader.setSource(new FileIOSupplier(new File(SpatiaLiteTestUtil
-				.getSourceTempFilePath())));
+		schemaReader.setSource(new FileIOSupplier(new File(getSourceTempFilePath())));
 
 		IOReport report = schemaReader.execute(new LogProgressIndicator());
 		assertTrue(report.isSuccess());
@@ -91,11 +96,8 @@ public class SpatiaLiteSchemaReaderTest {
 		Schema schema = schemaReader.getSchema();
 		assertEquals(1, schema.getMappingRelevantTypes().size());
 		TypeDefinition type = schema.getMappingRelevantTypes().iterator().next();
-		assertTrue(type.getName().getLocalPart().equals(SpatiaLiteTestUtil.SOUURCE_TYPE_LOCAL_NAME));
 
-		Iterator<? extends ChildDefinition<?>> it = type.getChildren().iterator();
-		while (it.hasNext()) {
-			assertTrue(properties.contains(it.next().getName().getLocalPart()));
-		}
+		checkType(type, SOUURCE_TYPE_LOCAL_NAME, propertyNames);
 	}
+
 }

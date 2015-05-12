@@ -25,12 +25,15 @@ import eu.esdihumboldt.hale.io.jdbc.JDBCInstanceReader;
 import eu.esdihumboldt.hale.io.jdbc.spatialite.SpatiaLiteJdbcIOSupplier;
 
 /**
- * TODO Type description
+ * Reads instances from a SpatiaLite DB. Wraps {@link JDBCInstanceReader}.
  * 
- * @author stefano
+ * @author Stefano Costa, GeoSolutions
  */
 public class SpatiaLiteInstanceReader extends InstanceReaderDecorator<JDBCInstanceReader> {
 
+	/**
+	 * Default constructor.
+	 */
 	public SpatiaLiteInstanceReader() {
 		super(new JDBCInstanceReader());
 	}

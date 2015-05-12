@@ -25,12 +25,15 @@ import eu.esdihumboldt.hale.io.jdbc.JDBCSchemaReader;
 import eu.esdihumboldt.hale.io.jdbc.spatialite.SpatiaLiteJdbcIOSupplier;
 
 /**
- * TODO Type description
+ * Reads a schema from a SpatiaLite DB. Wraps {@link JDBCSchemaReader}.
  * 
- * @author stefano
+ * @author Stefano Costa, GeoSolutions
  */
 public class SpatiaLiteSchemaReader extends SchemaReaderDecorator<JDBCSchemaReader> {
 
+	/**
+	 * Default constructor.
+	 */
 	public SpatiaLiteSchemaReader() {
 		super(new JDBCSchemaReader());
 	}

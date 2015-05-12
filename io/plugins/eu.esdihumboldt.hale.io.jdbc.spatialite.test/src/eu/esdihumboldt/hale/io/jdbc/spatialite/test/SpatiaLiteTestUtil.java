@@ -1,11 +1,21 @@
 package eu.esdihumboldt.hale.io.jdbc.spatialite.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import javax.xml.namespace.QName;
 
 import org.sqlite.SQLiteConfig;
 
@@ -19,7 +29,25 @@ import com.vividsolutions.jts.io.WKTReader;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.io.impl.LogProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.report.IOReport;
+import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.Schema;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.io.jdbc.spatialite.reader.internal.SpatiaLiteInstanceReader;
+import eu.esdihumboldt.hale.io.jdbc.spatialite.reader.internal.SpatiaLiteSchemaReader;
+import eu.esdihumboldt.hale.io.jdbc.spatialite.writer.internal.SpatiaLiteInstanceWriter;
 
+/**
+ * Utility class with shared constants and methods used by SpatiaLite test
+ * classes.
+ * 
+ * @author Stefano Costa, GeoSolutions
+ */
 public class SpatiaLiteTestUtil {
 
 	private static final ALogger log = ALoggerFactory.getLogger(SpatiaLiteTestUtil.class);
@@ -49,20 +77,55 @@ public class SpatiaLiteTestUtil {
 		}
 	}
 
+	/**
+	 * File name of the source database.
+	 */
 	public static final String SOURCE_DB_NAME = "tasmania_water_bodies.sqlite";
+	/**
+	 * Resource name of the source database.
+	 */
 	public static final String SOURCE_DB_LOCATION = "/data/" + SOURCE_DB_NAME;
-	public static final String TARGET_DB_NAME = "tasmania_water_bodies_target.sqlite";
-	public static final String TARGET_DB_LOCATION = "/data/" + TARGET_DB_NAME;
-
+	/**
+	 * Unqualified name of the only type stored in the source database.
+	 */
 	public static final String SOUURCE_TYPE_LOCAL_NAME = "tasmania_water_bodies";
-	public static final String TARGET_TYPE_LOCAL_NAME = "tasmania_water_bodies_target";
+
+	/**
+	 * ID property name.
+	 */
+	public static final String PROPERTY_ID_NAME = "PK_UID";
+	/**
+	 * ID of the only instance that will be checked by tests.
+	 */
+	public static final Integer PROPERTY_ID_VALUE = 1;
+
+	/**
+	 * Property names of the source type.
+	 */
 	public static final String[] SOUURCE_TYPE_PROPERTY_NAMES = new String[] { "AREA", "CNTRY_NAME",
-			"CONTINENT", "Geometry", "PERIMETER", "PK_UID", "WATER_TYPE" };
+			"CONTINENT", "Geometry", "PERIMETER", PROPERTY_ID_NAME, "WATER_TYPE" };
+	/**
+	 * Property values of the only instance that will be checked by tests.
+	 */
 	public static final Object[] SOUURCE_TYPE_PROPERTY_VALUES = new Object[] { 1064866676,
 			"Australia", "Australia", POLYGON, 1071221047, 1, "Lake" };
+	/**
+	 * Number of instances in the source database.
+	 */
+	public static final int SOURCE_INSTANCES_COUNT = 7;
+
+	/**
+	 * File name of the target database.
+	 */
+	public static final String TARGET_DB_NAME = "tasmania_water_bodies_target.sqlite";
 
 	private static Long RANDOM_NUMBER = null;
 
+	/**
+	 * Copies the source database to a temporary file.
+	 * 
+	 * @throws IOException if temp file can't be created
+	 */
 	public static void createSourceTempFile() throws IOException {
 		ByteSource source = Resources.asByteSource(SpatiaLiteTestUtil.class
 				.getResource(SOURCE_DB_LOCATION));
@@ -71,26 +134,74 @@ public class SpatiaLiteTestUtil {
 		source.copyTo(dest);
 	}
 
+	/**
+	 * Copies the target database to a temporary file and deletes all instances
+	 * in it.
+	 * 
+	 * @throws IOException if temp file can't be created or instances can't be
+	 *             deleted
+	 */
 	public static void createTargetTempFile() throws IOException {
 		ByteSource source = Resources.asByteSource(SpatiaLiteTestUtil.class
-				.getResource(TARGET_DB_LOCATION));
+				.getResource(SOURCE_DB_LOCATION));
 		ByteSink dest = Files.asByteSink(new File(getTargetTempFilePath()));
 
 		source.copyTo(dest);
+
+		Connection conn = null;
+		try {
+			conn = DriverManager.getConnection("jdbc:sqlite:" + getTargetTempFilePath());
+
+			Statement stmt = conn.createStatement();
+			stmt.executeUpdate("DELETE FROM " + SOUURCE_TYPE_LOCAL_NAME);
+		} catch (SQLException e) {
+			throw new IOException("Could not empty target DB", e);
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// ignore
+				}
+			}
+		}
+
 	}
 
+	/**
+	 * Deletes the source temp file.
+	 */
 	public static void deleteSourceTempFile() {
 		deleteTempFile(getSourceTempFilePath());
 	}
 
+	/**
+	 * Deletes the target temp file.
+	 */
 	public static void deleteTargetTempFile() {
 		deleteTempFile(getTargetTempFilePath());
 	}
 
+	/**
+	 * Generates a random path (within the system's temporary folder) for the
+	 * source database. The random number used to construct the path is saved in
+	 * a static variable and thus the path will remain constant for the whole
+	 * run.
+	 * 
+	 * @return the absolute path of the source temp file
+	 */
 	public static String getSourceTempFilePath() {
 		return getTempDir() + File.separator + getRandomNumber() + "_" + SOURCE_DB_NAME;
 	}
 
+	/**
+	 * Generates a random path (within the system's temporary folder) for the
+	 * target database. The random number used to construct the path is saved in
+	 * a static variable and thus the path will remain constant for the whole
+	 * run.
+	 * 
+	 * @return the absolute path of the target temp file
+	 */
 	public static String getTargetTempFilePath() {
 		return getTempDir() + File.separator + getRandomNumber() + "_" + TARGET_DB_NAME;
 	}
@@ -113,6 +224,15 @@ public class SpatiaLiteTestUtil {
 		}
 	}
 
+	/**
+	 * Checks whether the SpatiaLite extension is available on the system, by
+	 * connecting to the source database and running the query:
+	 * <p>
+	 * {@code SELECT load_extension('mod_spatialite')}
+	 * </p>
+	 * 
+	 * @return true if the SpatiaLite extension could be loaded, false otherwise
+	 */
 	public static boolean isSpatiaLiteExtensionAvailable() {
 		Connection conn = null;
 
@@ -149,6 +269,130 @@ public class SpatiaLiteTestUtil {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Reads a schema from a SpatiaLite database file.
+	 * 
+	 * @param sourceFilePath the path to the source database file
+	 * @return the schema
+	 * @throws Exception any exception thrown by {@link SpatiaLiteSchemaReader}
+	 */
+	public static Schema readSchema(String sourceFilePath) throws Exception {
+
+		SpatiaLiteSchemaReader schemaReader = new SpatiaLiteSchemaReader();
+		schemaReader.setSource(new FileIOSupplier(new File(sourceFilePath)));
+
+		IOReport report = schemaReader.execute(new LogProgressIndicator());
+		assertTrue(report.isSuccess());
+
+		return schemaReader.getSchema();
+
+	}
+
+	/**
+	 * Reads instances from from a SpatiaLite database file with the provided
+	 * schema.
+	 * 
+	 * @param sourceSchema the schema of the source database
+	 * @param sourceFilePath the path to the source database file
+	 * @return the read instances
+	 * @throws Exception any exception thrown by
+	 *             {@link SpatiaLiteInstanceReader}
+	 */
+	public static InstanceCollection readInstances(Schema sourceSchema, String sourceFilePath)
+			throws Exception {
+
+		SpatiaLiteInstanceReader instanceReader = new SpatiaLiteInstanceReader();
+		instanceReader.setSource(new FileIOSupplier(new File(sourceFilePath)));
+		instanceReader.setSourceSchema(sourceSchema);
+
+		// Test instances
+		IOReport report = instanceReader.execute(new LogProgressIndicator());
+		assertTrue("Data import was not successfull.", report.isSuccess());
+
+		return instanceReader.getInstances();
+
+	}
+
+	/**
+	 * Writes the provided instances to a SpatiaLite database.
+	 * 
+	 * @param targetFilePath the path to the target database file
+	 * @param instances the instances to write
+	 * @throws Exception any exception thrown by
+	 *             {@link SpatiaLiteInstanceWriter}
+	 */
+	public static void writeInstances(String targetFilePath, InstanceCollection instances)
+			throws Exception {
+
+		SpatiaLiteInstanceWriter instanceWriter = new SpatiaLiteInstanceWriter();
+		instanceWriter.setInstances(instances);
+		instanceWriter.setTarget(new FileIOSupplier(new File(targetFilePath)));
+
+		// Test instances
+		IOReport report = instanceWriter.execute(new LogProgressIndicator());
+		assertTrue("Data export was not successfull.", report.isSuccess());
+
+	}
+
+	/**
+	 * Checks the property definitions and values of the provided instances.
+	 * Values will be checked for just one instance (the one with
+	 * {@link #PROPERTY_ID_NAME} = {@link #PROPERTY_ID_VALUE}).
+	 * 
+	 * @param instances the instances to check
+	 * @param propertyMap the expected property names / values
+	 */
+	public static void checkInstances(InstanceCollection instances, Map<String, Object> propertyMap) {
+		// get type to check property definition
+		TypeDefinition type = instances.iterator().next().getDefinition();
+		checkType(type, SOUURCE_TYPE_LOCAL_NAME, propertyMap.keySet());
+
+		// Check the values of Instance with ID = 1
+		Instance instance = null;
+		Iterator<Instance> instanceIterator = instances.iterator();
+		while (instanceIterator.hasNext()) {
+			Instance currentInstance = instanceIterator.next();
+			Integer id = (Integer) currentInstance.getProperty(QName.valueOf(PROPERTY_ID_NAME))[0];
+			if (PROPERTY_ID_VALUE.equals(id)) {
+				instance = currentInstance;
+				break;
+			}
+		}
+
+		if (instance == null) {
+			fail(String.format("No instance found with %s = %s", PROPERTY_ID_NAME,
+					PROPERTY_ID_VALUE));
+		}
+
+		for (String propertyName : propertyMap.keySet()) {
+			@SuppressWarnings("null")
+			Object value = instance.getProperty(QName.valueOf(propertyName))[0];
+			if (value instanceof GeometryProperty) {
+				assertTrue(((Geometry) propertyMap.get(propertyName)).equalsExact(
+						((GeometryProperty) value).getGeometry(), 0.000001));
+			}
+			else {
+				assertEquals(propertyMap.get(propertyName), value);
+			}
+		}
+	}
+
+	/**
+	 * Checks the name and the property definitions of the given type.
+	 * 
+	 * @param type the type to check
+	 * @param typeName the expected type name
+	 * @param propertyNames the expected property names
+	 */
+	public static void checkType(TypeDefinition type, String typeName, Set<String> propertyNames) {
+		assertNotNull(type);
+		assertEquals(typeName, type.getDisplayName());
+
+		for (ChildDefinition<?> child : type.getChildren()) {
+			assertTrue(propertyNames.contains(child.getName().getLocalPart()));
+		}
 	}
 
 }

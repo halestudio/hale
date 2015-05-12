@@ -28,9 +28,13 @@ import eu.esdihumboldt.hale.io.jdbc.extension.JDBCSchemaReaderAdvisor;
  * Adapts {@link JDBCSchemaReader} behavior for SpatialLite.
  * 
  * @author Simon Templer
+ * @author Stefano Costa, GeoSolutions
  */
 public class SpatialLiteSchemaReaderAdvisor implements JDBCSchemaReaderAdvisor {
 
+	/*
+	 * taken from SchemaCrawler v. 12.04.02
+	 */
 	private static final String VIEWS_SQL = ""
 			+ "	SELECT "
 			+ "		NULL AS TABLE_CATALOG, "
@@ -91,11 +95,12 @@ public class SpatialLiteSchemaReaderAdvisor implements JDBCSchemaReaderAdvisor {
 
 		DatabaseSpecificOverrideOptions dbOvrOptions = new DatabaseSpecificOverrideOptions();
 		dbOvrOptions.setIdentifierQuoteString("\"");
-		dbOvrOptions.setSupportsSchemas(false);
+		dbOvrOptions.setSupportsSchemas(false); // SQLite has no notion of schemas
 
 		options.setDatabaseSpecificOverrideOptions(dbOvrOptions);
 		options.setInformationSchemaViews(infoSchemaViews);
 
+		// exclude system tables / views
 		options.setTableInclusionRule(new InclusionRule() {
 
 			@Override

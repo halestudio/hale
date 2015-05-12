@@ -25,12 +25,15 @@ import eu.esdihumboldt.hale.io.jdbc.JDBCInstanceWriter;
 import eu.esdihumboldt.hale.io.jdbc.spatialite.SpatiaLiteJdbcIOSupplier;
 
 /**
- * TODO Type description
+ * Writes instances to a SpatiaLite DB. Wraps {@link JDBCInstanceWriter}.
  * 
- * @author stefano
+ * @author Stefano Costa, GeoSolutions
  */
 public class SpatiaLiteInstanceWriter extends InstanceWriterDecorator<JDBCInstanceWriter> {
 
+	/**
+	 * Default constructor.
+	 */
 	public SpatiaLiteInstanceWriter() {
 		super(new JDBCInstanceWriter());
 	}

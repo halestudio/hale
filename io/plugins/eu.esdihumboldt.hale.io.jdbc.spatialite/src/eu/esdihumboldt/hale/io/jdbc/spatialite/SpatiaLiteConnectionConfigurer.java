@@ -10,8 +10,14 @@ import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.io.jdbc.extension.ConnectionConfigurer;
 
-public class SpatiaLiteConnectionConfigurer implements
-		ConnectionConfigurer<SQLiteConnection> {
+/**
+ * 
+ * Enables SpatiaLite extension on the given {@link SQLiteConnection}. If native
+ * SpatiaLite library is not found, an exception is logged.
+ * 
+ * @author Stefano Costa, GeoSolutions
+ */
+public class SpatiaLiteConnectionConfigurer implements ConnectionConfigurer<SQLiteConnection> {
 
 	private static final ALogger log = ALoggerFactory
 			.getLogger(SpatiaLiteConnectionConfigurer.class);
