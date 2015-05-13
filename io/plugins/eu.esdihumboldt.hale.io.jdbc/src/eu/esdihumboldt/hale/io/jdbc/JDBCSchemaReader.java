@@ -75,10 +75,12 @@ import eu.esdihumboldt.hale.io.jdbc.constraints.AutoIncrementFlag;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DatabaseTable;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DefaultValue;
 import eu.esdihumboldt.hale.io.jdbc.constraints.SQLType;
+import eu.esdihumboldt.hale.io.jdbc.extension.JDBCSchemaReaderAdvisor;
 import eu.esdihumboldt.hale.io.jdbc.extension.internal.CustomType;
 import eu.esdihumboldt.hale.io.jdbc.extension.internal.CustomTypeExtension;
 import eu.esdihumboldt.hale.io.jdbc.extension.internal.GeometryTypeExtension;
 import eu.esdihumboldt.hale.io.jdbc.extension.internal.GeometryTypeInfo;
+import eu.esdihumboldt.hale.io.jdbc.extension.internal.SchemaReaderAdvisorExtension;
 
 /**
  * Reads a database schema through JDBC.
@@ -123,12 +125,20 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 			// connect to the database
 			try {
 				connection = JDBCConnection.getConnection(this);
-				connection.setReadOnly(true);
 			} catch (Exception e) {
 				reporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
 				reporter.setSuccess(false);
 				reporter.setSummary("Failed to connect to database.");
 				return null;
+			}
+
+			// don't fail if Connection.setReadOnly() throws an exception (e.g.
+			// SQLite JDBC driver does not allow changing the flag after the
+			// connection has been created), report a warning message instead
+			try {
+				connection.setReadOnly(true);
+			} catch (SQLException e) {
+				reporter.warn(new IOMessageImpl(e.getLocalizedMessage(), e));
 			}
 
 			URI jdbcURI = getSource().getLocation();
@@ -170,6 +180,15 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 			}
 
 			options.setSchemaInfoLevel(level);
+
+			// get advisor
+			// XXX should be created once, and used in other places if
+			// applicable
+			JDBCSchemaReaderAdvisor advisor = SchemaReaderAdvisorExtension.getInstance()
+					.getAdvisor(connection);
+			if (advisor != null) {
+				advisor.configureSchemaCrawler(options);
+			}
 
 			final Catalog database = SchemaCrawlerUtility.getCatalog(connection, options);
 			String quotes = "\"";
@@ -219,7 +238,10 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 					namespace = unquote(schema.getName());
 				}
 				else {
-					namespace = overallNamespace + ":" + unquote(schema.getName());
+					namespace = overallNamespace;
+					if (schema.getName() != null) {
+						namespace += ":" + unquote(schema.getName());
+					}
 				}
 
 				for (final Table table : database.getTables(schema)) {
@@ -235,8 +257,12 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 					Statement stmt = null;
 					try {
 						stmt = connection.createStatement();
-						ResultSet rs = stmt.executeQuery("SELECT * FROM " + quote(schema.getName())
-								+ "." + quote(table.getName()) + " WHERE 1 = 0");
+						String fullTableName = quote(table.getName());
+						if (schema.getName() != null) {
+							fullTableName = quote(schema.getName()) + "." + fullTableName;
+						}
+						ResultSet rs = stmt.executeQuery("SELECT * FROM " + fullTableName
+								+ " WHERE 1 = 0");
 						additionalInfo = SchemaCrawlerUtility.getResultColumns(rs);
 					} catch (SQLException sqle) {
 						reporter.warn(new IOMessageImpl(
@@ -267,7 +293,7 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 							// ResultColumns does not quote the column namen in
 							// contrast to every other place
 							ResultsColumn rc = additionalInfo.getColumn(unquote(column.getName()));
-							if (rc.isAutoIncrement())
+							if (rc != null && rc.isAutoIncrement())
 								property.setConstraint(AutoIncrementFlag.get(true));
 						}
 					}
@@ -514,7 +540,14 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		type.setConstraint(new DatabaseTable(unquote(schema.getName()), unquote(table.getName())));
 
 		// set primary key if possible
-		PrimaryKey key = table.getPrimaryKey();
+		PrimaryKey key = null;
+		try {
+			key = table.getPrimaryKey();
+		} catch (Exception e) {
+			reporter.warn(new IOMessageImpl("Could not read primary key metadata for table: "
+					+ table.getFullName(), e));
+		}
+
 		if (key != null) {
 			List<IndexColumn> columns = key.getColumns();
 			if (columns.size() > 1) {

@@ -30,6 +30,10 @@ public class JDBCUtil {
 	 * @return the string with one pair of quotes less if possible
 	 */
 	public static String unquote(String s) {
+		if (s == null) {
+			return null;
+		}
+
 		char startChar = s.charAt(0);
 		char endChar = s.charAt(s.length() - 1);
 		if ((startChar == '\'' || startChar == '"') && startChar == endChar)
@@ -45,6 +49,10 @@ public class JDBCUtil {
 	 * @return the quoted string
 	 */
 	public static String quote(String s) {
+		if (s == null) {
+			return null;
+		}
+
 		char startChar = s.charAt(0);
 		char endChar = s.charAt(s.length() - 1);
 		if ((startChar == '\'' || startChar == '"') && startChar == endChar)

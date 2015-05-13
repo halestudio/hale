@@ -147,10 +147,25 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin         
-       id="eu.esdihumboldt.hale.common.instance.graph"
+   <plugin
+         id="eu.esdihumboldt.hale.common.instance.graph"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="eu.esdihumboldt.hale.io.jdbc.spatialite"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.xerial.sqlite-jdbc"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>

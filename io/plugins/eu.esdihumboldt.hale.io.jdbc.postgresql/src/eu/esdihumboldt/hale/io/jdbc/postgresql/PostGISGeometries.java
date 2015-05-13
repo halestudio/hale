@@ -47,6 +47,7 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 import eu.esdihumboldt.hale.io.jdbc.GeometryAdvisor;
+import eu.esdihumboldt.hale.io.jdbc.constraints.GeometryMetadata;
 
 /**
  * Geometry advisor for PostGIS.
@@ -113,6 +114,7 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 		else if (geometryType.equalsIgnoreCase("MultiLineString")) {
 			return MultiLineString.class;
 		}
+		// TODO: shouldn't this be LineString instead?
 		else if (geometryType.equalsIgnoreCase("LinearRing")) {
 			return LinearRing.class;
 		}
