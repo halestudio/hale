@@ -31,7 +31,7 @@ public class SpatiaLiteJdbcIOSupplier extends FileIOSupplier {
 	private URI jdbcUri;
 
 	/**
-	 * @param file
+	 * @param file the Spatialite file
 	 */
 	public SpatiaLiteJdbcIOSupplier(File file) {
 		super(file);

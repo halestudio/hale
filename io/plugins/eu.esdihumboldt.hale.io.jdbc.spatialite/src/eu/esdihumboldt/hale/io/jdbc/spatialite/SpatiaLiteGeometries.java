@@ -245,8 +245,9 @@ public class SpatiaLiteGeometries implements GeometryAdvisor<SQLiteConnection> {
 		return new DefaultGeometryProperty<Geometry>(crsDef, jtsGeom);
 	}
 
-	private Geometry decodeGeometryValue(Object geom, GeometryMetadata metadata,
-			SQLiteConnection connection) throws ParseException, SQLException {
+	private Geometry decodeGeometryValue(Object geom,
+			@SuppressWarnings("unused") GeometryMetadata metadata, SQLiteConnection connection)
+			throws ParseException, SQLException {
 		// geom parameter is a byte[] in SpatiaLite's internal BLOB format;
 		// for easy parsing with JTS, I must re-read geometry from DB in WKB
 		// format
