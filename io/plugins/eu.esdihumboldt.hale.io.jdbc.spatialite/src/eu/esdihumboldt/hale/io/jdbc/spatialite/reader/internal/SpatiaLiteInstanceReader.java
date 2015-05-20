@@ -17,8 +17,11 @@ package eu.esdihumboldt.hale.io.jdbc.spatialite.reader.internal;
 
 import java.io.File;
 import java.io.InputStream;
+import java.net.URI;
+import java.util.Map;
 
-import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
+import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.instance.io.util.InstanceReaderDecorator;
 import eu.esdihumboldt.hale.io.jdbc.JDBCInstanceReader;
@@ -31,6 +34,8 @@ import eu.esdihumboldt.hale.io.jdbc.spatialite.SpatiaLiteJdbcIOSupplier;
  */
 public class SpatiaLiteInstanceReader extends InstanceReaderDecorator<JDBCInstanceReader> {
 
+	private LocatableInputSupplier<? extends InputStream> source;
+
 	/**
 	 * Default constructor.
 	 */
@@ -38,20 +43,37 @@ public class SpatiaLiteInstanceReader extends InstanceReaderDecorator<JDBCInstan
 		super(new JDBCInstanceReader());
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.util.ImportProviderDecorator#getSource()
-	 */
 	@Override
 	public LocatableInputSupplier<? extends InputStream> getSource() {
-		SpatiaLiteJdbcIOSupplier source = (SpatiaLiteJdbcIOSupplier) internalProvider.getSource();
-		return new FileIOSupplier(new File(source.getDatabaseFilePath()));
+		return source;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.util.ImportProviderDecorator#setSource(eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier)
-	 */
+	@Override
+	public void loadConfiguration(Map<String, Value> configuration) {
+		super.loadConfiguration(configuration);
+
+		Value source = configuration.get(PARAM_SOURCE);
+		if (source != null && !source.isEmpty()) {
+			setSource(new DefaultInputSupplier(URI.create(source.as(String.class))));
+		}
+	}
+
+	@Override
+	public void storeConfiguration(Map<String, Value> configuration) {
+		super.storeConfiguration(configuration);
+
+		// store original source
+		if (source != null) {
+			URI location = source.getUsedLocation();
+			if (location != null) {
+				configuration.put(PARAM_SOURCE, Value.of(location.toString()));
+			}
+		}
+	}
+
 	@Override
 	public void setSource(LocatableInputSupplier<? extends InputStream> source) {
+		this.source = source;
 		internalProvider.setSource(new SpatiaLiteJdbcIOSupplier(new File(source.getLocation())));
 	}
 

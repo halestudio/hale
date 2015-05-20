@@ -35,55 +35,55 @@ public class SpatialLiteSchemaReaderAdvisor implements JDBCSchemaReaderAdvisor {
 	/*
 	 * taken from SchemaCrawler v. 12.04.02
 	 */
-	private static final String VIEWS_SQL = ""
-			+ "	SELECT "
-			+ "		NULL AS TABLE_CATALOG, "
-			+ "		NULL AS TABLE_SCHEMA, "
-			+ "		name AS TABLE_NAME, "
-			+ "		sql AS VIEW_DEFINITION, "
-			+ "		'UNKNOWN' AS CHECK_OPTION, "
-			+ "		'N' AS IS_UPDATABLE "
-			+ "	FROM "
-			+ "		sqlite_master "
-			+ "	WHERE "
-			+ "		type = 'view' "
-			+ "	ORDER BY "
+	private static final String VIEWS_SQL = "" //
+			+ "	SELECT " //
+			+ "		NULL AS TABLE_CATALOG, " //
+			+ "		NULL AS TABLE_SCHEMA, " //
+			+ "		name AS TABLE_NAME, " //
+			+ "		sql AS VIEW_DEFINITION, " //
+			+ "		'UNKNOWN' AS CHECK_OPTION, " //
+			+ "		'N' AS IS_UPDATABLE " //
+			+ "	FROM " //
+			+ "		sqlite_master " //
+			+ "	WHERE " //
+			+ "		type = 'view' " //
+			+ "	ORDER BY " //
 			+ "		name";
-	private static final String TRIGGERS_SQL = ""
-			+ "	SELECT "
-			+ "		NULL AS TRIGGER_CATALOG, "
-			+ "		NULL AS TRIGGER_SCHEMA, "
-			+ "		name AS TRIGGER_NAME, "
-			+ "		CASE "
-			+ "			WHEN sql LIKE '%INSERT ON%' THEN 'INSERT' "
-			+ "			WHEN sql LIKE '%UPDATE ON%'  THEN 'UPDATE' "
-			+ "			WHEN sql LIKE '%DELETE ON%'  THEN 'DELETE' "
-			+ "			ELSE 'UNKNOWN' "
-			+ "		END "
-			+ "			AS EVENT_MANIPULATION, "
-			+ "		NULL AS EVENT_OBJECT_CATALOG, "
-			+ "		NULL AS EVENT_OBJECT_SCHEMA, "
-			+ "		tbl_name AS EVENT_OBJECT_TABLE, "
-			+ "		0 AS ACTION_ORDER, "
-			+ "		'' AS ACTION_CONDITION, "
-			+ "		CASE "
-			+ "			WHEN sql LIKE '%ROW%' THEN 'ROW' "
-			+ "			WHEN sql LIKE '%STATEMENT%' THEN 'STATEMENT' "
-			+ "		ELSE 'UNKNOWN' "
-			+ "		END"
-			+ "			AS ACTION_ORIENTATION, "
-			+ "		CASE "
-			+ "			WHEN sql LIKE '%AFTER%' THEN 'AFTER' "
-			+ "			WHEN sql LIKE '%BEFORE%' THEN 'BEFORE' "
-			+ "		ELSE 'INSTEAD OF'"
-			+ "		END"
-			+ "			AS CONDITION_TIMING, "
-			+ "		sql AS ACTION_STATEMENT"
-			+ "	FROM "
-			+ "		sqlite_master "
-			+ "	WHERE "
-			+ "		type = 'trigger' "
-			+ "	ORDER BY "
+	private static final String TRIGGERS_SQL = "" //
+			+ "	SELECT " //
+			+ "		NULL AS TRIGGER_CATALOG, " //
+			+ "		NULL AS TRIGGER_SCHEMA, " //
+			+ "		name AS TRIGGER_NAME, " //
+			+ "		CASE " //
+			+ "			WHEN sql LIKE '%INSERT ON%' THEN 'INSERT' " //
+			+ "			WHEN sql LIKE '%UPDATE ON%'  THEN 'UPDATE' " //
+			+ "			WHEN sql LIKE '%DELETE ON%'  THEN 'DELETE' " //
+			+ "			ELSE 'UNKNOWN' " //
+			+ "		END " //
+			+ "			AS EVENT_MANIPULATION, " //
+			+ "		NULL AS EVENT_OBJECT_CATALOG, " //
+			+ "		NULL AS EVENT_OBJECT_SCHEMA, " //
+			+ "		tbl_name AS EVENT_OBJECT_TABLE, " //
+			+ "		0 AS ACTION_ORDER, " //
+			+ "		'' AS ACTION_CONDITION, " //
+			+ "		CASE " //
+			+ "			WHEN sql LIKE '%ROW%' THEN 'ROW' " //
+			+ "			WHEN sql LIKE '%STATEMENT%' THEN 'STATEMENT' " //
+			+ "		ELSE 'UNKNOWN' " //
+			+ "		END" //
+			+ "			AS ACTION_ORIENTATION, " //
+			+ "		CASE " //
+			+ "			WHEN sql LIKE '%AFTER%' THEN 'AFTER' " //
+			+ "			WHEN sql LIKE '%BEFORE%' THEN 'BEFORE' " //
+			+ "		ELSE 'INSTEAD OF'" //
+			+ "		END" //
+			+ "			AS CONDITION_TIMING, " //
+			+ "		sql AS ACTION_STATEMENT" //
+			+ "	FROM " //
+			+ "		sqlite_master " //
+			+ "	WHERE " //
+			+ "		type = 'trigger' " //
+			+ "	ORDER BY " //
 			+ "		name";
 
 	@Override
@@ -95,7 +95,8 @@ public class SpatialLiteSchemaReaderAdvisor implements JDBCSchemaReaderAdvisor {
 
 		DatabaseSpecificOverrideOptions dbOvrOptions = new DatabaseSpecificOverrideOptions();
 		dbOvrOptions.setIdentifierQuoteString("\"");
-		dbOvrOptions.setSupportsSchemas(false); // SQLite has no notion of schemas
+		dbOvrOptions.setSupportsSchemas(false); // SQLite has no notion of
+												// schemas
 
 		options.setDatabaseSpecificOverrideOptions(dbOvrOptions);
 		options.setInformationSchemaViews(infoSchemaViews);
@@ -103,11 +104,13 @@ public class SpatialLiteSchemaReaderAdvisor implements JDBCSchemaReaderAdvisor {
 		// exclude system tables / views
 		options.setTableInclusionRule(new InclusionRule() {
 
+			private static final long serialVersionUID = -1559715487368953641L;
+
 			@Override
 			public boolean test(String t) {
 				final String[] excludedTables = new String[] { "spatial_ref_sys",
 						"geom_cols_ref_sys", "spatialite_history", "sqlite_sequence",
-						"sql_statements_log", "SpatialIndex"};
+						"sql_statements_log", "SpatialIndex" };
 				final Pattern geometryColumnsTablePattern = Pattern.compile(".*geometry_columns.*");
 				final Pattern indexTablePattern = Pattern.compile("idx.*");
 				final Pattern vectorLayersViewPattern = Pattern.compile("vector_layers.*");
@@ -127,7 +130,7 @@ public class SpatialLiteSchemaReaderAdvisor implements JDBCSchemaReaderAdvisor {
 					return false;
 				}
 
-				for (String excludedTable: excludedTables) {
+				for (String excludedTable : excludedTables) {
 					if (excludedTable.equalsIgnoreCase(t)) {
 						return false;
 					}
