@@ -36,7 +36,7 @@ public class SpatiaLiteJdbcIOSupplier extends FileIOSupplier {
 	public SpatiaLiteJdbcIOSupplier(File file) {
 		super(file);
 		if (file != null) {
-			jdbcUri = new SpatiaLiteURIBuilder().createJdbcUri(null, file.getAbsolutePath());
+			jdbcUri = new SpatiaLiteURIBuilder().createJdbcUri(null, file.toURI().getPath());
 		}
 	}
 
