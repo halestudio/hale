@@ -42,7 +42,7 @@ import eu.esdihumboldt.hale.common.align.model.CellExplanation;
  * @author Simon Templer
  */
 @Immutable
-public abstract class AbstractFunction<P extends AbstractParameter> implements Function {
+public abstract class AbstractFunction<P extends ParameterDefinition> implements Function {
 
 	private final ALogger log = ALoggerFactory.getLogger(AbstractFunction.class);
 
@@ -176,7 +176,7 @@ public abstract class AbstractFunction<P extends AbstractParameter> implements F
 	 * @param paramName the parameter name
 	 * @return the parameter or <code>null</code> if it doesn't exist
 	 */
-	public FunctionParameter getParameter(String paramName) {
+	public FunctionParameterDefinition getParameter(String paramName) {
 		return parameters.get(paramName);
 	}
 

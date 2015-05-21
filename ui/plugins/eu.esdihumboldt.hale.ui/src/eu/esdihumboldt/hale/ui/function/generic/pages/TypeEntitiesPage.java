@@ -20,7 +20,7 @@ import java.util.Set;
 
 import org.eclipse.swt.widgets.Composite;
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.ParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeParameter;
 import eu.esdihumboldt.hale.common.align.model.Cell;
@@ -44,7 +44,7 @@ public class TypeEntitiesPage extends EntitiesPage<TypeFunction, TypeParameter, 
 	}
 
 	/**
-	 * @see EntitiesPage#createField(AbstractParameter, SchemaSpaceID,
+	 * @see EntitiesPage#createField(ParameterDefinition, SchemaSpaceID,
 	 *      Composite, Set, Cell)
 	 */
 	@Override

@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.eclipse.swt.widgets.Composite;
 
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
@@ -71,7 +71,7 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 	}
 
 	@Override
-	public Editor<?> createEditor(Composite parent, FunctionParameter parameter,
+	public Editor<?> createEditor(Composite parent, FunctionParameterDefinition parameter,
 			ParameterValue initialValue) {
 		Class<?> binding = parameter.getBinding();
 		// assume String as default binding for parameters

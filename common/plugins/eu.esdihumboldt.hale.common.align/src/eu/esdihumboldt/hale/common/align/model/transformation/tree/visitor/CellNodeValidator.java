@@ -24,8 +24,8 @@ import com.google.common.collect.ListMultimap;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
+import eu.esdihumboldt.hale.common.align.extension.function.ParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
@@ -126,7 +126,7 @@ public class CellNodeValidator extends AbstractTargetToSourceVisitor {
 		AbstractFunction<?> function = FunctionUtil.getFunction(functionId);
 		if (function != null) {
 			// check source node occurrence for mandatory source entities
-			for (AbstractParameter sourceParam : function.getSource()) {
+			for (ParameterDefinition sourceParam : function.getSource()) {
 				int min = sourceParam.getMinOccurrence();
 				if (sources.get(sourceParam.getName()).size() < min) {
 					return false;

@@ -37,6 +37,7 @@ import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.cst.functions.inspire.IdentifierFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExtension;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
@@ -237,7 +238,7 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		ccLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		ccLabel.setText(Messages.IdentifierFunctionWizardPage_5);
 
-		FunctionParameter param = function.getParameter(COUNTRY_PARAMETER_NAME);
+		FunctionParameterDefinition param = function.getParameter(COUNTRY_PARAMETER_NAME);
 		configureParameterLabel(ccLabel, param);
 
 		this.countryCode = new Text(nsGroup, SWT.BORDER | SWT.SINGLE);
@@ -386,7 +387,7 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 	 * @param paramLabel the parameter label
 	 * @param param the associated function parameter
 	 */
-	private void configureParameterLabel(Label paramLabel, FunctionParameter param) {
+	private void configureParameterLabel(Label paramLabel, FunctionParameterDefinition param) {
 		if (param != null) {
 			String name = param.getDisplayName();
 			if (name != null && !name.isEmpty()) {

@@ -35,7 +35,7 @@ import eu.esdihumboldt.hale.common.core.parameter.Validator;
  * @author Simon Templer
  */
 @Immutable
-public final class FunctionParameter extends AbstractParameter {
+public final class FunctionParameter extends AbstractParameter implements FunctionParameterDefinition {
 
 	private final Class<?> binding;
 	private final Validator validator;
@@ -64,67 +64,61 @@ public final class FunctionParameter extends AbstractParameter {
 	}
 
 	/**
-	 * Returns the binding class for this function parameter or null if there is
-	 * an enumeration present.
-	 * 
-	 * @return the binding or <code>null</code>
+	 * @see eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition#getBinding()
 	 */
+	@Override
 	public @Nullable
 	Class<?> getBinding() {
 		return binding;
 	}
 
 	/**
-	 * Returns the enumeration of allowed values for this function parameter or
-	 * null if there is a binding present.
-	 * 
-	 * @return the value enumeration or <code>null</code>
+	 * @see eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition#getEnumeration()
 	 */
+	@Override
 	public @Nullable
 	List<String> getEnumeration() {
 		return enumeration;
 	}
 
 	/**
-	 * Returns the validator associated with this function parameter or null if
-	 * there is none. A validator can only be present if a binding is present.
-	 * 
-	 * @return the validator or <code>null</code>
+	 * @see eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition#getValidator()
 	 */
+	@Override
 	public @Nullable
 	Validator getValidator() {
 		return validator;
 	}
 
 	/**
-	 * Whether this function parameter may be scripted or not.
-	 * 
-	 * @return whether this function parameter may be scripted or not
+	 * @see eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition#isScriptable()
 	 */
+	@Override
 	public boolean isScriptable() {
 		return scriptable;
 	}
 
 	/**
-	 * @return whether this function parameter is deprecated
+	 * @see eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition#isDeprecated()
 	 */
+	@Override
 	public boolean isDeprecated() {
 		return deprecated;
 	}
 
 	/**
-	 * @return the complex value definition associated to the parameter, or
-	 *         <code>null</code>
+	 * @see eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition#getComplexBinding()
 	 */
+	@Override
 	public @Nullable
 	ComplexValueDefinition getComplexBinding() {
 		return complexBinding;
 	}
 
 	/**
-	 * @return the value descriptor associated to the parameter, or
-	 *         <code>null</code>
+	 * @see eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition#getValueDescriptor()
 	 */
+	@Override
 	public @Nullable
 	ParameterValueDescriptor getValueDescriptor() {
 		return valueDescriptor;

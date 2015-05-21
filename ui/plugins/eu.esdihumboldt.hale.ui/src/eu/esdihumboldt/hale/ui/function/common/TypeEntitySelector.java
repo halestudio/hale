@@ -23,7 +23,7 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.ParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeParameter;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
@@ -58,7 +58,7 @@ public class TypeEntitySelector extends EntitySelector<TypeParameter> {
 
 	/**
 	 * @see EntitySelector#createEntityDialog(Shell, SchemaSpaceID,
-	 *      AbstractParameter)
+	 *      ParameterDefinition)
 	 */
 	@Override
 	protected EntityDialog createEntityDialog(Shell parentShell, SchemaSpaceID ssid,

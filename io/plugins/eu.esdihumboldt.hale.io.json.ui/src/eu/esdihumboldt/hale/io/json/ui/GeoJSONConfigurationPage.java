@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.condition.PropertyCondition;
@@ -119,7 +120,7 @@ public class GeoJSONConfigurationPage extends
 
 			PropertyCondition condition = new PropertyOrChildrenTypeCondition(
 					new GeometryCondition());
-			PropertyParameter param = new PropertyParameter("", 0, 1, "Geometry", null,
+			PropertyParameterDefinition param = new PropertyParameter("", 0, 1, "Geometry", null,
 					Collections.singletonList(condition), false);
 			PropertyEntitySelector selector = new PropertyEntitySelector(SchemaSpaceID.TARGET,
 					param, parent, new TypeEntityDefinition(type, SchemaSpaceID.TARGET, null));

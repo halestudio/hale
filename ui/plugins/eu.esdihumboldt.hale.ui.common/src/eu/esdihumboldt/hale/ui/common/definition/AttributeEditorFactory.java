@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.ui.common.definition;
 
 import org.eclipse.swt.widgets.Composite;
 
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
@@ -56,6 +56,6 @@ public interface AttributeEditorFactory {
 	 * @param initialValue initial value, may be <code>null</code>
 	 * @return the attribute editor
 	 */
-	public Editor<?> createEditor(Composite parent, FunctionParameter parameter,
+	public Editor<?> createEditor(Composite parent, FunctionParameterDefinition parameter,
 			ParameterValue initialValue);
 }

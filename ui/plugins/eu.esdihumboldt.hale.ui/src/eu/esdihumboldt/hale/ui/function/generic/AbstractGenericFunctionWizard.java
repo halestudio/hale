@@ -40,8 +40,8 @@ import de.fhg.igd.eclipse.util.extension.FactoryFilter;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.ParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
@@ -66,7 +66,7 @@ import eu.esdihumboldt.hale.ui.util.wizard.TitleImageWizard;
  * @param <P> the field definition type
  * @author Simon Templer
  */
-public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter, T extends AbstractFunction<P>>
+public abstract class AbstractGenericFunctionWizard<P extends ParameterDefinition, T extends AbstractFunction<P>>
 		extends AbstractFunctionWizard implements TitleImageWizard {
 
 	private static final ALogger log = ALoggerFactory

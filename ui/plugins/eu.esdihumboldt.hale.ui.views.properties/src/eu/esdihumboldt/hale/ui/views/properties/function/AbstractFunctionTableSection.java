@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.ParameterDefinition;
 import eu.esdihumboldt.hale.ui.views.properties.AbstractTextSection;
 
 /**
@@ -43,7 +43,7 @@ import eu.esdihumboldt.hale.ui.views.properties.AbstractTextSection;
  * @author Patrick
  * @param <P> the Function parameter
  */
-public abstract class AbstractFunctionTableSection<P extends AbstractParameter> extends
+public abstract class AbstractFunctionTableSection<P extends ParameterDefinition> extends
 		AbstractTextSection {
 
 	private TableViewer tableViewer;

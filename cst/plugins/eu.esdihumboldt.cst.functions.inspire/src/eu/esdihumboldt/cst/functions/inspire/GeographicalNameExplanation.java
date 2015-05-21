@@ -19,7 +19,7 @@ package eu.esdihumboldt.cst.functions.inspire;
 import java.text.MessageFormat;
 import java.util.List;
 
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExtension;
 import eu.esdihumboldt.hale.common.align.model.Cell;
@@ -153,7 +153,7 @@ public class GeographicalNameExplanation extends AbstractCellExplanation impleme
 			PropertyFunction function, boolean html) {
 		String value = CellUtil.getFirstParameter(cell, paramName).as(String.class);
 		if (value != null && !value.isEmpty()) {
-			FunctionParameter param = function.getParameter(paramName);
+			FunctionParameterDefinition param = function.getParameter(paramName);
 
 			if (html) {
 				sb.append("<li><i>");

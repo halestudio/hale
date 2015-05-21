@@ -24,7 +24,7 @@ import org.pegdown.PegDownProcessor
 import org.w3c.dom.Element
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil
 import eu.esdihumboldt.hale.common.align.model.Alignment
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil
@@ -175,7 +175,7 @@ class MappingDocumentation {
 			// list of function parameters
 			if (cell.transformationParameters) {
 				cell.transformationParameters.entries().each { Entry<String, ParameterValue> entry ->
-					FunctionParameter paramDef = function?.getParameter(entry.key)
+					FunctionParameterDefinition paramDef = function?.getParameter(entry.key)
 					json 'functionParameters[]', {
 						// label and value
 						json 'paramLabel', paramDef?.displayName?:entry.key

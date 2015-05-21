@@ -27,6 +27,7 @@ import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.ui.common.EditorFactory;
 import eu.esdihumboldt.hale.ui.function.extension.ParameterEditorFactory;
@@ -41,7 +42,7 @@ public class ParameterEditorFactoryImpl extends AbstractConfigurationFactory<Edi
 
 	private static final ALogger _log = ALoggerFactory.getLogger(ParameterEditorFactoryImpl.class);
 
-	private FunctionParameter associatedFunctionParameter;
+	private FunctionParameterDefinition associatedFunctionParameter;
 
 	/**
 	 * Create a parameter page factory based on the given configuration element.
@@ -111,7 +112,7 @@ public class ParameterEditorFactoryImpl extends AbstractConfigurationFactory<Edi
 	 * @see ParameterEditorFactory#getAssociatedParameter()
 	 */
 	@Override
-	public FunctionParameter getAssociatedParameter() {
+	public FunctionParameterDefinition getAssociatedParameter() {
 		if (associatedFunctionParameter == null) {
 			// get defined parameters
 			Collection<FunctionParameter> definedParameters = FunctionUtil.getFunction(

@@ -26,7 +26,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.Function;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeParameter;
 import eu.esdihumboldt.util.Pair;
@@ -78,10 +78,10 @@ public class FunctionGraphContentProvider extends ArrayContentProvider implement
 			}
 
 			if (inputElement instanceof PropertyFunction) {
-				for (PropertyParameter prop : ((PropertyFunction) function).getSource()) {
+				for (PropertyParameterDefinition prop : ((PropertyFunction) function).getSource()) {
 					collection.add(new Pair<Object, Object>(prop, function));
 				}
-				for (PropertyParameter prop : ((PropertyFunction) function).getTarget()) {
+				for (PropertyParameterDefinition prop : ((PropertyFunction) function).getTarget()) {
 					collection.add(prop);
 				}
 			}

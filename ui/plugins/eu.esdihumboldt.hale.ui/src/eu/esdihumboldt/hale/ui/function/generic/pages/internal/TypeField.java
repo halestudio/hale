@@ -20,7 +20,7 @@ import java.util.Set;
 
 import org.eclipse.swt.widgets.Composite;
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.ParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeParameter;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
@@ -35,7 +35,8 @@ import eu.esdihumboldt.hale.ui.function.common.TypeEntitySelector;
 public class TypeField extends Field<TypeParameter, TypeEntitySelector> {
 
 	/**
-	 * @see Field#Field(AbstractParameter, SchemaSpaceID, Composite, Set, Cell)
+	 * @see Field#Field(ParameterDefinition, SchemaSpaceID, Composite, Set,
+	 *      Cell)
 	 */
 	public TypeField(TypeParameter definition, SchemaSpaceID ssid, Composite parent,
 			Set<EntityDefinition> candidates, Cell initialCell) {
@@ -43,7 +44,7 @@ public class TypeField extends Field<TypeParameter, TypeEntitySelector> {
 	}
 
 	/**
-	 * @see Field#createEntitySelector(SchemaSpaceID, AbstractParameter,
+	 * @see Field#createEntitySelector(SchemaSpaceID, ParameterDefinition,
 	 *      Composite)
 	 */
 	@Override

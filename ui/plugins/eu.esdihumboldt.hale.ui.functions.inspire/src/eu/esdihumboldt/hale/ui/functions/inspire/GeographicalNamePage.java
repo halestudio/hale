@@ -56,6 +56,7 @@ import eu.esdihumboldt.cst.functions.inspire.data.GrammaticalNumberValue;
 import eu.esdihumboldt.cst.functions.inspire.data.NameStatusValue;
 import eu.esdihumboldt.cst.functions.inspire.data.NativenessValue;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExtension;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -771,7 +772,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 	 */
 	private void configureParameterLabel(Label paramLabel, String paramName,
 			PropertyFunction function) {
-		FunctionParameter param = function.getParameter(paramName);
+		FunctionParameterDefinition param = function.getParameter(paramName);
 		if (param != null) {
 //			String name = param.getDisplayName();
 //			if (name != null && !name.isEmpty()) {

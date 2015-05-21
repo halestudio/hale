@@ -20,7 +20,7 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.ParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
@@ -35,7 +35,7 @@ import eu.esdihumboldt.hale.ui.util.selector.AbstractViewerSelectionDialog;
  * @param <F> the field type
  * @author Simon Templer
  */
-public abstract class EntitySelector<F extends AbstractParameter> extends
+public abstract class EntitySelector<F extends ParameterDefinition> extends
 		AbstractSelector<EntityDefinition> {
 
 	private final F field;

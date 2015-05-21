@@ -31,6 +31,7 @@ import java.util.UUID;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
+import eu.esdihumboldt.hale.common.align.extension.function.Function;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell;
@@ -86,6 +87,8 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 
 	private final Map<String, Cell> idToCell = new HashMap<String, Cell>();
 
+	private final Map<String, Function> idToPropertyFunction = new HashMap<>();
+
 	/**
 	 * Default constructor.
 	 */
@@ -108,6 +111,12 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 			internalAdd(new DefaultCell(cell));
 		}
 		baseAlignments.putAll(alignment.getBaseAlignments());
+		idToPropertyFunction.putAll(alignment.getCustomPropertyFunctions());
+	}
+
+	@Override
+	public Map<String, Function> getCustomPropertyFunctions() {
+		return Collections.unmodifiableMap(idToPropertyFunction);
 	}
 
 	/**

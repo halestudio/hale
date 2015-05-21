@@ -25,6 +25,7 @@ import org.eclipse.zest.core.viewers.EntityConnectionData;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.ParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
@@ -114,7 +115,7 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 
 		if (element instanceof AbstractParameter) {
 			figure = new ParameterFigure(new FingerPost(10, SWT.LEFT),
-					getOccurenceString((AbstractParameter) element),
+					getOccurenceString((ParameterDefinition) element),
 					((AbstractParameter) element).getDescription(), showAll);
 		}
 		else {
@@ -132,7 +133,7 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 			}
 			else if (element instanceof AbstractParameter) {
 				figure = new ParameterFigure(new FingerPost(10, SWT.RIGHT),
-						getOccurenceString((AbstractParameter) element),
+						getOccurenceString((ParameterDefinition) element),
 						((AbstractParameter) element).getDescription(), showAll);
 			}
 		}
@@ -177,7 +178,7 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 		super.dispose();
 	}
 
-	private String getOccurenceString(AbstractParameter parameter) {
+	private String getOccurenceString(ParameterDefinition parameter) {
 
 		String max;
 		String min;

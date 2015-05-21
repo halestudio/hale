@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
  * @author Yasmina Kammeyer
  */
 @Immutable
-public class AbstractCommonParameter {
+public class AbstractCommonParameter implements NamedDefinition {
 
 	private final String name;
 	private final String label;
@@ -60,19 +60,17 @@ public class AbstractCommonParameter {
 	}
 
 	/**
-	 * @return the parameter name
+	 * @see eu.esdihumboldt.hale.common.core.parameter.NamedDefinition#getName()
 	 */
+	@Override
 	public final String getName() {
 		return name;
 	}
 
 	/**
-	 * Get the display name for the parameter. If present the parameter label
-	 * will be used, otherwise the parameter name is returned. In case the
-	 * parameter name is <code>null</code> an empty string is returned.
-	 * 
-	 * @return the parameter display name
+	 * @see eu.esdihumboldt.hale.common.core.parameter.NamedDefinition#getDisplayName()
 	 */
+	@Override
 	public String getDisplayName() {
 		String displayName = label;
 		if (displayName == null) {
@@ -85,10 +83,9 @@ public class AbstractCommonParameter {
 	}
 
 	/**
-	 * Get the parameter description
-	 * 
-	 * @return the description, may be <code>null</code>
+	 * @see eu.esdihumboldt.hale.common.core.parameter.NamedDefinition#getDescription()
 	 */
+	@Override
 	public String getDescription() {
 		return description;
 	}

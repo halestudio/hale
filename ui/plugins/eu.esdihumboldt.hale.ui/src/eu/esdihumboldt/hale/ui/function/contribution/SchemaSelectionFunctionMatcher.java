@@ -21,8 +21,10 @@ import java.util.Set;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.ParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeParameter;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
@@ -174,12 +176,12 @@ public class SchemaSelectionFunctionMatcher {
 	 */
 	protected boolean checkMandatoryConditions(Set<EntityDefinition> schemaEntities,
 			Iterable<? extends AbstractParameter> functionEntities) {
-		for (AbstractParameter functionEntity : functionEntities) {
+		for (ParameterDefinition functionEntity : functionEntities) {
 			if (functionEntity.getMinOccurrence() != 0) {
 				// entity is mandatory
 
 				if (functionEntity instanceof PropertyParameter) {
-					PropertyParameter pp = (PropertyParameter) functionEntity;
+					PropertyParameterDefinition pp = (PropertyParameterDefinition) functionEntity;
 					if (!pp.getConditions().isEmpty()) {
 						// check if there is an entity given that matches the
 						// conditions
@@ -324,7 +326,7 @@ public class SchemaSelectionFunctionMatcher {
 		int min = 0;
 		int max = 0;
 
-		for (AbstractParameter param : entities) {
+		for (ParameterDefinition param : entities) {
 			min += param.getMinOccurrence();
 			if (max != AbstractParameter.UNBOUNDED) {
 				int pMax = param.getMaxOccurrence();

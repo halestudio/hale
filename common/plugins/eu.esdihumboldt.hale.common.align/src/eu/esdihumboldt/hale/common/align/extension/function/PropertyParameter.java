@@ -47,7 +47,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
  * 
  * @author Simon Templer
  */
-public final class PropertyParameter extends AbstractParameter {
+public final class PropertyParameter extends AbstractParameter implements PropertyParameterDefinition {
 
 	private static final ALogger log = ALoggerFactory.getLogger(PropertyParameter.class);
 
@@ -212,20 +212,17 @@ public final class PropertyParameter extends AbstractParameter {
 	}
 
 	/**
-	 * Get the property conditions. All conditions have to match.
-	 * 
-	 * @return the property conditions
+	 * @see eu.esdihumboldt.hale.common.align.extension.function.PropertyParameterDefinition#getConditions()
 	 */
+	@Override
 	public List<PropertyCondition> getConditions() {
 		return Collections.unmodifiableList(conditions);
 	}
 
 	/**
-	 * Get if the property is eager, i.e. if it wants to consume all property
-	 * values instead of one at a time.
-	 * 
-	 * @return if the property is eager
+	 * @see eu.esdihumboldt.hale.common.align.extension.function.PropertyParameterDefinition#isEager()
 	 */
+	@Override
 	public boolean isEager() {
 		return eager;
 	}

@@ -92,14 +92,14 @@ public interface Function extends Identifiable {
 	 * 
 	 * @return the source entities
 	 */
-	public Set<? extends AbstractParameter> getSource();
+	public Set<? extends ParameterDefinition> getSource();
 
 	/**
 	 * Get the target entities
 	 * 
 	 * @return the target entities
 	 */
-	public Set<? extends AbstractParameter> getTarget();
+	public Set<? extends ParameterDefinition> getTarget();
 
 //	/**
 //	 * Get the help file ID of the text to be included
