@@ -28,6 +28,7 @@ import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.function.extension.ParameterPageFactory;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
 
@@ -107,7 +108,7 @@ public class ParameterPageFactoryImpl extends AbstractConfigurationFactory<Param
 			Set<FunctionParameter> params = new HashSet<FunctionParameter>();
 			// get defined parameters
 			Collection<FunctionParameter> definedParameters = FunctionUtil.getFunction(
-					getFunctionId()).getDefinedParameters();
+					getFunctionId(), HaleUI.getServiceProvider()).getDefinedParameters();
 			// walk over conf parameters
 			IConfigurationElement[] parameterElements = conf.getChildren("parameter");
 			for (IConfigurationElement parameterElement : parameterElements) {

@@ -16,10 +16,11 @@
 
 package eu.esdihumboldt.hale.ui.function.generic;
 
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExtension;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.function.generic.pages.EntitiesPage;
 import eu.esdihumboldt.hale.ui.function.generic.pages.PropertyEntitiesPage;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
@@ -52,8 +53,7 @@ public class GenericPropertyFunctionWizard extends
 	 */
 	@Override
 	public PropertyFunction getFunction() {
-		PropertyFunctionExtension pfe = PropertyFunctionExtension.getInstance();
-		return pfe.get(getFunctionId());
+		return FunctionUtil.getPropertyFunction(getFunctionId(), HaleUI.getServiceProvider());
 	}
 
 	/**

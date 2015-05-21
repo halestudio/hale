@@ -572,6 +572,9 @@
          <service
                serviceClass="eu.esdihumboldt.util.groovy.sandbox.GroovyService">
          </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.common.align.service.FunctionService">
+         </service>
       </serviceFactory>
       <sourceProvider
             provider="eu.esdihumboldt.hale.ui.service.schema.internal.SchemaServiceSource">

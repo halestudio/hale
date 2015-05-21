@@ -96,8 +96,8 @@ public class CellInfo implements ICellInfo {
 	private String getExplanationInternal(boolean asHtml) {
 		if (cellExpl == null) {
 			// determine cell explanation
-			AbstractFunction<?> function = FunctionUtil.getFunction(cell
-					.getTransformationIdentifier());
+			AbstractFunction<?> function = FunctionUtil.getFunction(
+					cell.getTransformationIdentifier(), null);
 			if (function != null) {
 				cellExpl = function.getExplanation();
 				if (cellExpl == null) {

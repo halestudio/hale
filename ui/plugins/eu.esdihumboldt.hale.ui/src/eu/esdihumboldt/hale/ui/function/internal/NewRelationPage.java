@@ -41,6 +41,7 @@ import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.ui.HALEContextProvider;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;
 import eu.esdihumboldt.hale.ui.function.contribution.SchemaSelectionFunctionMatcher;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
@@ -246,7 +247,8 @@ public class NewRelationPage extends ViewerWizardSelectionPage {
 
 			if (functionId != null) {
 				// create function wizard node and select it
-				AbstractFunction<?> function = FunctionUtil.getFunction(functionId);
+				AbstractFunction<?> function = FunctionUtil.getFunction(functionId,
+						HaleUI.getServiceProvider());
 				if (function != null) {
 					FunctionWizardNode node = new FunctionWizardNode(function, getContainer(),
 							initialSelection);

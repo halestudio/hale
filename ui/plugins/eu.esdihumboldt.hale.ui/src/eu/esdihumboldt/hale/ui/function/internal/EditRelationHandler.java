@@ -38,6 +38,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardDescriptor;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardExtension;
@@ -94,8 +95,9 @@ public class EditRelationHandler extends AbstractHandler {
 				}
 
 				if (wizard == null) {
-					AbstractFunction<?> function = FunctionUtil.getFunction(originalCell
-							.getTransformationIdentifier());
+					AbstractFunction<?> function = FunctionUtil
+							.getFunction(originalCell.getTransformationIdentifier(),
+									HaleUI.getServiceProvider());
 					if (function == null) {
 						log.userError(MessageFormat.format(
 								"Function with identifier ''{0}'' is unknown.",

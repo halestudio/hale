@@ -48,6 +48,7 @@ import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
 import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
 
@@ -286,7 +287,8 @@ public class SourceTargetTypeSelector implements ISelectionProvider {
 
 			String label;
 			String functionId = cell.getTransformationIdentifier();
-			AbstractFunction<?> function = FunctionUtil.getFunction(functionId);
+			AbstractFunction<?> function = FunctionUtil.getFunction(functionId,
+					HaleUI.getServiceProvider());
 			if (function != null)
 				label = functionLabels.getText(function);
 			else

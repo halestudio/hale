@@ -329,7 +329,8 @@ public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWr
 			}
 		}
 
-		AbstractFunction<?> function = FunctionUtil.getFunction(cell.getTransformationIdentifier());
+		AbstractFunction<?> function = FunctionUtil.getFunction(cell.getTransformationIdentifier(),
+				getServiceProvider());
 
 		if (function != null) {
 			// column relation name

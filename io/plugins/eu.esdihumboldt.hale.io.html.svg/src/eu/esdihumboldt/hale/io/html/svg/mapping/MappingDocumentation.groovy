@@ -159,7 +159,7 @@ class MappingDocumentation {
 
 		// get the associated function
 		AbstractFunction<?> function = FunctionUtil.getFunction(cell
-				.getTransformationIdentifier())
+				.getTransformationIdentifier(), null)
 
 		// create JSON representation of individual cell
 		json {

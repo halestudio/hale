@@ -30,6 +30,7 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTreeUtil;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
 
@@ -66,8 +67,8 @@ public class PropertiesLabelProvider extends LabelProvider {
 
 		if (element instanceof Cell) {
 			Cell cell = (Cell) element;
-			AbstractFunction<?> function = FunctionUtil.getFunction(cell
-					.getTransformationIdentifier());
+			AbstractFunction<?> function = FunctionUtil.getFunction(
+					cell.getTransformationIdentifier(), HaleUI.getServiceProvider());
 			if (function != null) {
 				element = function;
 			}
@@ -115,7 +116,7 @@ public class PropertiesLabelProvider extends LabelProvider {
 		}
 
 		if (element instanceof Cell) {
-			return CellUtil.getCellDescription((Cell) element);
+			return CellUtil.getCellDescription((Cell) element, HaleUI.getServiceProvider());
 		}
 
 		return super.getText(element);

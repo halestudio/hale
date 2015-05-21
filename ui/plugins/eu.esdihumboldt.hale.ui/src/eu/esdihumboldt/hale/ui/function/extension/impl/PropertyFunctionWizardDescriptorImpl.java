@@ -18,8 +18,9 @@ package eu.esdihumboldt.hale.ui.function.extension.impl;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExtension;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardDescriptor;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardFactory;
 import eu.esdihumboldt.hale.ui.function.extension.PropertyFunctionWizardDescriptor;
@@ -46,8 +47,7 @@ public class PropertyFunctionWizardDescriptorImpl extends
 	 */
 	@Override
 	public PropertyFunction getFunction() {
-		PropertyFunctionExtension pfe = PropertyFunctionExtension.getInstance();
-		return pfe.get(getFunctionId());
+		return FunctionUtil.getPropertyFunction(getFunctionId(), HaleUI.getServiceProvider());
 	}
 
 	/**

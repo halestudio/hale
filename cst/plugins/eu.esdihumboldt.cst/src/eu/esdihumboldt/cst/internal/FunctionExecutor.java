@@ -82,7 +82,7 @@ public class FunctionExecutor extends CellNodeValidator {
 	 */
 	public FunctionExecutor(TransformationReporter reporter, EngineManager engines,
 			TransformationContext context, Priority functionPriority) {
-		super(reporter);
+		super(reporter, context.getServiceProvider());
 		this.engines = engines;
 		this.context = context;
 		this.functionPriority = functionPriority;
@@ -182,7 +182,8 @@ public class FunctionExecutor extends CellNodeValidator {
 		for (Entry<String, Pair<SourceNode, Entity>> sourceEntry : sources.entries()) {
 			EntityDefinition def = sourceEntry.getValue().getSecond().getDefinition();
 			SourceNode sourceNode = sourceEntry.getValue().getFirst();
-			if (TransformationTreeUtil.isEager(cell, sourceNode, cellLog)) {
+			if (TransformationTreeUtil.isEager(cell, sourceNode, cellLog,
+					context.getServiceProvider())) {
 				// eager source - all values
 				Object[] values = sourceNode.getAllValues();
 				if (values != null) {

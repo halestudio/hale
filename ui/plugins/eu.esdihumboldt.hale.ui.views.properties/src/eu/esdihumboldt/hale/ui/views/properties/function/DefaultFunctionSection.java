@@ -20,6 +20,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.Function;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTreeUtil;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.views.properties.AbstractTextSection;
 
 /**
@@ -40,7 +41,7 @@ public class DefaultFunctionSection<F extends Function> extends AbstractFunction
 
 		if (input instanceof Cell) {
 			String id = ((Cell) input).getTransformationIdentifier();
-			input = FunctionUtil.getFunction(id);
+			input = FunctionUtil.getFunction(id, HaleUI.getServiceProvider());
 		}
 
 		if (input instanceof Function) {

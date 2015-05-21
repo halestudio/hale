@@ -16,10 +16,11 @@
 
 package eu.esdihumboldt.hale.ui.function.generic;
 
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionExtension;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeParameter;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.function.generic.pages.EntitiesPage;
 import eu.esdihumboldt.hale.ui.function.generic.pages.TypeEntitiesPage;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
@@ -52,8 +53,7 @@ public class GenericTypeFunctionWizard extends
 	 */
 	@Override
 	public TypeFunction getFunction() {
-		TypeFunctionExtension tfe = TypeFunctionExtension.getInstance();
-		return tfe.get(getFunctionId());
+		return FunctionUtil.getTypeFunction(getFunctionId(), HaleUI.getServiceProvider());
 	}
 
 	/**

@@ -52,6 +52,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.TargetNo
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.AbstractSourceToTargetVisitor;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.AbstractTargetToSourceVisitor;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.util.IdentityWrapper;
 import eu.esdihumboldt.util.Pair;
 
@@ -390,14 +391,18 @@ public class TargetContext implements TransformationContext {
 	}
 
 	private final Set<TargetNode> contextTargets;
+	private final ServiceProvider serviceProvider;
 
 	/**
 	 * Create a transformation context that duplicates subgraphs leading to
 	 * given target nodes.
+	 * 
+	 * @param serviceProvider
 	 */
-	public TargetContext() {
+	public TargetContext(ServiceProvider serviceProvider) {
 		super();
 		this.contextTargets = new HashSet<TargetNode>();
+		this.serviceProvider = serviceProvider;
 	}
 
 	/**
@@ -472,7 +477,7 @@ public class TargetContext implements TransformationContext {
 			collectExistingNodes(originalSource,
 					Collections.<EntityDefinition, SourceNode> emptyMap(), info, true);
 
-			duplicateTree(originalSource, duplicate, info, log);
+			duplicateTree(originalSource, duplicate, info, log, serviceProvider);
 		}
 		else
 			throw new IllegalStateException(
@@ -512,14 +517,15 @@ public class TargetContext implements TransformationContext {
 	 * @param duplicate the duplication target
 	 * @param info the duplication info object
 	 * @param log the transformation log
+	 * @param serviceProvider service provider for resolving functions
 	 */
 	private static void duplicateTree(SourceNode source, SourceNode duplicate,
-			DuplicationInformation info, TransformationLog log) {
+			DuplicationInformation info, TransformationLog log, ServiceProvider serviceProvider) {
 		// Duplicate relations.
 		for (CellNode cell : source.getRelations(false)) {
 
 			// check whether the cell is eager for the source node
-			if (TransformationTreeUtil.isEager(cell, source, log))
+			if (TransformationTreeUtil.isEager(cell, source, log, serviceProvider))
 				continue;
 
 			// Check whether the cell is ignored.
@@ -571,7 +577,7 @@ public class TargetContext implements TransformationContext {
 			SourceNode duplicatedChild = new SourceNodeImpl(child.getEntityDefinition(), duplicate,
 					true);
 			duplicatedChild.setContext(child.getContext());
-			duplicateTree(child, duplicatedChild, info, log);
+			duplicateTree(child, duplicatedChild, info, log, serviceProvider);
 		}
 	}
 

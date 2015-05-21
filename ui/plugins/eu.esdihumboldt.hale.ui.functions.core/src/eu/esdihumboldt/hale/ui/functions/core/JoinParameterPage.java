@@ -63,7 +63,7 @@ import com.google.common.collect.ListMultimap;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
-import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionExtension;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -84,6 +84,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Reference;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.PrimaryKey;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
@@ -119,7 +120,8 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 	 * Constructor.
 	 */
 	public JoinParameterPage() {
-		super(TypeFunctionExtension.getInstance().get(ID), "Please configure the join order");
+		super(FunctionUtil.getTypeFunction(ID, HaleUI.getServiceProvider()),
+				"Please configure the join order");
 		setPageComplete(false);
 	}
 

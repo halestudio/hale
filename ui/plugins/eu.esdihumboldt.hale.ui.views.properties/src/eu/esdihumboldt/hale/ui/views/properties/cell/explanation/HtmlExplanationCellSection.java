@@ -71,8 +71,8 @@ public class HtmlExplanationCellSection extends AbstractCellSection {
 
 		Cell cell = getCell();
 		if (cell != null) {
-			AbstractFunction<?> function = FunctionUtil.getFunction(cell
-					.getTransformationIdentifier());
+			AbstractFunction<?> function = FunctionUtil.getFunction(
+					cell.getTransformationIdentifier(), HaleUI.getServiceProvider());
 			if (function != null) {
 				CellExplanation explanation = function.getExplanation();
 				if (explanation != null) {

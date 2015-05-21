@@ -29,6 +29,8 @@ import com.google.common.base.Strings;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.service.FunctionService;
+import eu.esdihumboldt.hale.common.align.service.impl.AlignmentFunctionService;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
@@ -143,6 +145,8 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 			sourceSchema = advisor.getSourceSchema();
 			targetSchema = advisor.getTargetSchema();
 			alignment = advisor.getAlignment();
+
+			addService(FunctionService.class, new AlignmentFunctionService(alignment));
 
 			init(project);
 		}

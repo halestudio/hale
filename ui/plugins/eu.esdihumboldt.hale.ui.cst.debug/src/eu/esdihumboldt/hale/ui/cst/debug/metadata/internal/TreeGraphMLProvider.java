@@ -48,7 +48,7 @@ public class TreeGraphMLProvider implements TreeGraphProvider {
 	 */
 	public TreeGraphMLProvider(TransformationTree tree) {
 		this.tree = tree;
-		graphVisitor = new TreeToGraphVisitor();
+		graphVisitor = new TreeToGraphVisitor(null);
 	}
 
 	/**
@@ -129,7 +129,7 @@ public class TreeGraphMLProvider implements TreeGraphProvider {
 			vertex.setProperty(
 					"name",
 					FunctionUtil.getFunction(
-							((CellNode) node).getCell().getTransformationIdentifier())
+							((CellNode) node).getCell().getTransformationIdentifier(), null)
 							.getDisplayName());
 			vertex.setProperty("type", "cell");
 		}

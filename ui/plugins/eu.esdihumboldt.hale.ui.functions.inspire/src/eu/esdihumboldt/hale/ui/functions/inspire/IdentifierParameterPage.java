@@ -38,14 +38,15 @@ import com.google.common.collect.ListMultimap;
 import eu.esdihumboldt.cst.functions.inspire.IdentifierFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExtension;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.common.AttributeEditor;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeEditorFactory;
@@ -174,7 +175,8 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 			page.dispose();
 		}
 
-		PropertyFunction function = PropertyFunctionExtension.getInstance().get(ID);
+		PropertyFunction function = FunctionUtil.getPropertyFunction(ID,
+				HaleUI.getServiceProvider());
 
 		// create a composite to hold the widgets
 		page = new Composite(parent, SWT.NULL);

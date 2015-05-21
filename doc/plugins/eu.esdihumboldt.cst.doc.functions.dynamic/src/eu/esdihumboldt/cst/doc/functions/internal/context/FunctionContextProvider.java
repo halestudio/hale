@@ -81,7 +81,7 @@ public class FunctionContextProvider extends AbstractContextProvider implements
 		if (pluginId.equals(PLUGIN_ID)) {
 			try {
 				String functionId = ONameUtil.decodeName(shortContextId);
-				AbstractFunction<?> function = FunctionUtil.getFunction(functionId);
+				AbstractFunction<?> function = FunctionUtil.getFunction(functionId, null);
 				if (function != null) {
 					FunctionTopic topic = new ContextFunctionTopic(function);
 					String description = function.getDescription();

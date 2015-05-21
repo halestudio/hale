@@ -57,12 +57,13 @@ import eu.esdihumboldt.cst.functions.inspire.data.NameStatusValue;
 import eu.esdihumboldt.cst.functions.inspire.data.NativenessValue;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExtension;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
@@ -232,7 +233,8 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		composite.setSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		composite.setFont(parent.getFont());
 
-		PropertyFunction function = PropertyFunctionExtension.getInstance().get(ID);
+		PropertyFunction function = FunctionUtil.getPropertyFunction(ID,
+				HaleUI.getServiceProvider());
 
 		createSpellingGroup(composite, function);
 		createPronounciationGroup(composite, function);

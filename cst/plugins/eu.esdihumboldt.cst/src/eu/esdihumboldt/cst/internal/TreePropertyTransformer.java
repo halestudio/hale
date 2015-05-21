@@ -94,8 +94,8 @@ public class TreePropertyTransformer implements PropertyTransformer {
 //		this.reporter = reporter;
 		this.sink = sink;
 
-		ContextMatcher matcher = new AsDeepAsPossible(); // XXX how to determine
-															// matcher?
+		// XXX how to determine matcher?
+		ContextMatcher matcher = new AsDeepAsPossible(context.getServiceProvider());
 		treePool = new TransformationTreePool(alignment, matcher);
 
 		/*

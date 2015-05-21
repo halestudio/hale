@@ -16,6 +16,13 @@
 
 package eu.esdihumboldt.hale.common.align.extension.function;
 
+import java.util.Collection;
+
+import javax.annotation.Nullable;
+
+import eu.esdihumboldt.hale.common.align.service.FunctionService;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
+
 /**
  * Function utility methods
  * 
@@ -24,13 +31,24 @@ package eu.esdihumboldt.hale.common.align.extension.function;
 public abstract class FunctionUtil {
 
 	/**
-	 * Get the function w/ the given identifier.
+	 * Get the function w/ the given identifier. Falls back to static function
+	 * declarations if no service is available.
 	 * 
 	 * @param id the function ID
+	 * @param serviceProvider the service provider to retrieve the function
+	 *            service for resolving the function identifier
 	 * @return the function or <code>null</code> if no function with the given
 	 *         identifier was found
 	 */
-	public static AbstractFunction<?> getFunction(String id) {
+	public static AbstractFunction<?> getFunction(String id,
+			@Nullable ServiceProvider serviceProvider) {
+		if (serviceProvider != null) {
+			FunctionService fs = serviceProvider.getService(FunctionService.class);
+			if (fs != null) {
+				return fs.getFunction(id);
+			}
+		}
+
 		AbstractFunction<?> result = null;
 
 		result = TypeFunctionExtension.getInstance().get(id);
@@ -40,6 +58,97 @@ public abstract class FunctionUtil {
 		}
 
 		return result;
+	}
+
+	/**
+	 * Get the property function w/ the given identifier. Falls back to static
+	 * function declarations if no service is available.
+	 * 
+	 * @param id the function ID
+	 * @param serviceProvider the service provider to retrieve the function
+	 *            service for resolving the function identifier
+	 * @return the function or <code>null</code> if no function with the given
+	 *         identifier was found
+	 */
+	public static PropertyFunction getPropertyFunction(String id,
+			@Nullable ServiceProvider serviceProvider) {
+		if (serviceProvider != null) {
+			FunctionService fs = serviceProvider.getService(FunctionService.class);
+			if (fs != null) {
+				return fs.getPropertyFunction(id);
+			}
+		}
+
+		return PropertyFunctionExtension.getInstance().get(id);
+	}
+
+	/**
+	 * Get the type function w/ the given identifier. Falls back to static
+	 * function declarations if no service is available.
+	 * 
+	 * @param id the function ID
+	 * @param serviceProvider the service provider to retrieve the function
+	 *            service for resolving the function identifier
+	 * @return the function or <code>null</code> if no function with the given
+	 *         identifier was found
+	 */
+	public static TypeFunction getTypeFunction(String id, @Nullable ServiceProvider serviceProvider) {
+		if (serviceProvider != null) {
+			FunctionService fs = serviceProvider.getService(FunctionService.class);
+			if (fs != null) {
+				return fs.getTypeFunction(id);
+			}
+		}
+
+		return TypeFunctionExtension.getInstance().get(id);
+	}
+
+	public static Collection<? extends TypeFunction> getTypeFunctions(
+			@Nullable ServiceProvider serviceProvider) {
+		if (serviceProvider != null) {
+			FunctionService fs = serviceProvider.getService(FunctionService.class);
+			if (fs != null) {
+				return fs.getTypeFunctions();
+			}
+		}
+
+		return TypeFunctionExtension.getInstance().getElements();
+	}
+
+	public static Collection<? extends PropertyFunction> getPropertyFunctions(
+			@Nullable ServiceProvider serviceProvider) {
+		if (serviceProvider != null) {
+			FunctionService fs = serviceProvider.getService(FunctionService.class);
+			if (fs != null) {
+				return fs.getPropertyFunctions();
+			}
+		}
+
+		return PropertyFunctionExtension.getInstance().getElements();
+	}
+
+	public static Collection<? extends TypeFunction> getTypeFunctions(String categoryId,
+			@Nullable ServiceProvider serviceProvider) {
+		if (serviceProvider != null) {
+			FunctionService fs = serviceProvider.getService(FunctionService.class);
+			if (fs != null) {
+				return fs.getTypeFunctions();
+			}
+		}
+
+		return TypeFunctionExtension.getInstance().getFunctions(categoryId);
+	}
+
+	public static Collection<? extends PropertyFunction> getPropertyFunctions(String categoryId,
+			@Nullable ServiceProvider serviceProvider) {
+		if (serviceProvider != null) {
+			FunctionService fs = serviceProvider.getService(FunctionService.class);
+			if (fs != null) {
+				return fs.getPropertyFunctions();
+			}
+		}
+
+		return PropertyFunctionExtension.getInstance().getFunctions(categoryId);
 	}
 
 }

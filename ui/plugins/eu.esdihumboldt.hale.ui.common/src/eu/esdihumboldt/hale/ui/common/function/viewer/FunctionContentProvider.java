@@ -30,8 +30,7 @@ import com.google.common.collect.Collections2;
 import eu.esdihumboldt.hale.common.align.extension.category.Category;
 import eu.esdihumboldt.hale.common.align.extension.category.CategoryExtension;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExtension;
-import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionExtension;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.ui.common.internal.Messages;
 
 /**
@@ -96,9 +95,9 @@ public class FunctionContentProvider implements ITreeContentProvider,
 
 			List<AbstractFunction<?>> functions = new ArrayList<AbstractFunction<?>>();
 			functions.addAll(Collections2.filter(
-					TypeFunctionExtension.getInstance().getFunctions(category.getId()), this));
-			functions.addAll(Collections2.filter(PropertyFunctionExtension.getInstance()
-					.getFunctions(category.getId()), this));
+					FunctionUtil.getTypeFunctions(category.getId(), null), this));
+			functions.addAll(Collections2.filter(
+					FunctionUtil.getPropertyFunctions(category.getId(), null), this));
 
 			return functions.toArray();
 		}

@@ -213,7 +213,7 @@ public class DefaultCell implements Cell, MutableCell {
 	@Override
 	public String toString() {
 		try {
-			return CellUtil.getCellDescription(this);
+			return CellUtil.getCellDescription(this, null);
 		} catch (Throwable e) {
 			return super.toString();
 		}

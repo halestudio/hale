@@ -42,7 +42,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.cst.functions.numeric.sequentialid.SequentialIDConstants;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExtension;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
@@ -50,6 +50,7 @@ import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.ValidationConstraint;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.function.generic.pages.AbstractParameterPage;
 import eu.esdihumboldt.hale.ui.util.viewer.EnumContentProvider;
@@ -77,7 +78,7 @@ public class SequentialIDParameterPage extends AbstractParameterPage implements
 	 * Default constructor.
 	 */
 	public SequentialIDParameterPage() {
-		super(PropertyFunctionExtension.getInstance().get(ID),
+		super(FunctionUtil.getPropertyFunction(ID, HaleUI.getServiceProvider()),
 				"Please configure the identifier generation");
 	}
 
