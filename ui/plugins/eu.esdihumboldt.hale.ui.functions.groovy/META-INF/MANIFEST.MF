@@ -54,4 +54,5 @@ Import-Package: de.fhg.igd.slf4jplus,
  eu.esdihumboldt.util.groovy.paths,
  eu.esdihumboldt.util.groovy.sandbox,
  org.slf4j;version="1.5.11"
-Export-Package: eu.esdihumboldt.hale.ui.functions.groovy
+Export-Package: eu.esdihumboldt.hale.ui.functions.groovy,
+ eu.esdihumboldt.hale.ui.functions.groovy.internal;x-internal:=true

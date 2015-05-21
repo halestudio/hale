@@ -56,6 +56,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 import eu.esdihumboldt.hale.ui.HaleUI;
+import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.InstanceBuilderCompletions;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.PageHelp;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray;
@@ -74,7 +75,7 @@ import groovy.lang.Script;
  * 
  * @author Simon Templer
  */
-public class GroovyTransformationPage extends GroovyScriptPage {
+public class GroovyTransformationPage extends GroovyScriptPage<AbstractGenericFunctionWizard<?, ?>> {
 
 	private final TestValues testValues;
 

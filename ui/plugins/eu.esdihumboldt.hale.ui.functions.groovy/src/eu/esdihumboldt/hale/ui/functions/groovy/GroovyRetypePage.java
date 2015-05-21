@@ -40,6 +40,7 @@ import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.HaleUI;
+import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.InstanceBuilderCompletions;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.PageHelp;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray;
@@ -59,7 +60,7 @@ import groovy.lang.Script;
  * @author Simon Templer
  */
 @SuppressWarnings("restriction")
-public class GroovyRetypePage extends GroovyScriptPage {
+public class GroovyRetypePage extends GroovyScriptPage<AbstractGenericFunctionWizard<?, ?>> {
 
 	private final TestValues testValues;
 
