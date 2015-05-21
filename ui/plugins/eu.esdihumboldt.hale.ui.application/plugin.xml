@@ -356,6 +356,14 @@
                   name="transformation.separator0"
                   visible="true">
             </separator>
+            <menu
+                  label="Custom transformation functions">
+               <command
+                     commandId="eu.esdihumboldt.hale.ui.function.custom.create"
+                     label="Define..."
+                     style="push">
+               </command>
+            </menu>
             <command
                   commandId="eu.esdihumboldt.hale.ui.groovy.toggle_restriction"
                   style="toggle">

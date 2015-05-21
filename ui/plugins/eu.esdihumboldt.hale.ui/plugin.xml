@@ -144,6 +144,10 @@
             id="eu.esdihumboldt.hale.ui.project.update"
             name="Update project">
       </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.function.custom.create"
+            name="Define custom function">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -500,6 +504,10 @@
                </with>
             </or>
          </activeWhen>
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.function.custom.NewCustomPropertyFunctionHandler"
+            commandId="eu.esdihumboldt.hale.ui.function.custom.create">
       </handler>
    </extension>
    <extension
