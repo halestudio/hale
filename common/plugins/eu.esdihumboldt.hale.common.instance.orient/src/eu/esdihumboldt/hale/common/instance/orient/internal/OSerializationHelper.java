@@ -370,8 +370,12 @@ public abstract class OSerializationHelper {
 
 			// extract geometry
 			value = geomProp.getGeometry();
-
-			serType = SERIALIZATION_TYPE_GEOM_PROP;
+			if (value != null) {
+				serType = SERIALIZATION_TYPE_GEOM_PROP;
+			}
+			else {
+				return null;
+			}
 		}
 
 		if (value.getClass().isArray() && value.getClass().getComponentType().equals(byte.class)) {
