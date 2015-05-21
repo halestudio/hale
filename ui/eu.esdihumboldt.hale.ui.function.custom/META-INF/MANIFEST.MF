@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Custom Functions UI
+Bundle-SymbolicName: eu.esdihumboldt.hale.ui.function.custom;singleton:=true
+Bundle-Version: 2.9.3.qualifier
+Bundle-Vendor: data harmonisation panel
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.eclipse.ui;bundle-version="3.106.0",
+ org.eclipse.core.runtime;bundle-version="3.10.0",
+ eu.esdihumboldt.hale.ui;bundle-version="2.9.1",
+ eu.esdihumboldt.hale.common.align;bundle-version="2.9.2",
+ eu.esdihumboldt.hale.common.schema;bundle-version="2.9.2"
+Import-Package: de.fhg.igd.slf4jplus,
+ eu.esdihumboldt.hale.ui.common,
+ eu.esdihumboldt.hale.ui.common.editors,
+ eu.esdihumboldt.hale.ui.util,
+ eu.esdihumboldt.hale.ui.util.components,
+ eu.esdihumboldt.hale.ui.util.handler,
+ eu.esdihumboldt.hale.ui.util.wizard,
+ org.slf4j;version="1.7.2"
