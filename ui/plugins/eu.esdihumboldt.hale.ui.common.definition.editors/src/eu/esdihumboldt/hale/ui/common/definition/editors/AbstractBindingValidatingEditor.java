@@ -20,7 +20,7 @@ import org.springframework.core.convert.ConversionService;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
-import eu.esdihumboldt.hale.ui.common.editors.AbstractEditor;
+import eu.esdihumboldt.hale.ui.common.editors.AbstractAttributeEditor;
 
 /**
  * Abstract editor that is based on a binding and a validator. Expects the input
@@ -29,7 +29,7 @@ import eu.esdihumboldt.hale.ui.common.editors.AbstractEditor;
  * @author Kai Schwierczek
  * @param <T> the attribute value type/binding
  */
-public abstract class AbstractBindingValidatingEditor<T> extends AbstractEditor<T> {
+public abstract class AbstractBindingValidatingEditor<T> extends AbstractAttributeEditor<T> {
 
 	private final ConversionService cs = OsgiUtils.getService(ConversionService.class);
 	private final Class<? extends T> binding;
@@ -113,7 +113,7 @@ public abstract class AbstractBindingValidatingEditor<T> extends AbstractEditor<
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#setValue(java.lang.Object)
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#setValue(java.lang.Object)
 	 */
 	@Override
 	public void setValue(T value) {
@@ -121,7 +121,7 @@ public abstract class AbstractBindingValidatingEditor<T> extends AbstractEditor<
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#getValue()
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#getValue()
 	 * 
 	 * @throws IllegalStateException if the current input is not valid
 	 */
@@ -134,7 +134,7 @@ public abstract class AbstractBindingValidatingEditor<T> extends AbstractEditor<
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#getAsText()
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#getAsText()
 	 */
 	@Override
 	public String getAsText() {
@@ -148,7 +148,7 @@ public abstract class AbstractBindingValidatingEditor<T> extends AbstractEditor<
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#isValid()
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#isValid()
 	 */
 	@Override
 	public boolean isValid() {
@@ -158,7 +158,7 @@ public abstract class AbstractBindingValidatingEditor<T> extends AbstractEditor<
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#getValueType()
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#getValueType()
 	 */
 	@Override
 	public String getValueType() {

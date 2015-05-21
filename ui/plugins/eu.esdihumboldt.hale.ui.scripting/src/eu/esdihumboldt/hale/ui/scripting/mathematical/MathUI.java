@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.ui.scripting.mathematical;
 import org.eclipse.swt.widgets.Composite;
 
 import eu.esdihumboldt.hale.common.scripting.Script;
-import eu.esdihumboldt.hale.ui.common.Editor;
+import eu.esdihumboldt.hale.ui.common.AttributeEditor;
 import eu.esdihumboldt.hale.ui.scripting.ScriptUI;
 
 /**
@@ -35,7 +35,7 @@ public class MathUI implements ScriptUI {
 	 *      java.lang.Class)
 	 */
 	@Override
-	public Editor<String> createEditor(Composite parent, Class<?> binding) {
+	public AttributeEditor<String> createEditor(Composite parent, Class<?> binding) {
 		// XXX allow String? Boolean?
 		if (!Number.class.isAssignableFrom(binding))
 			throw new IllegalArgumentException("Can not create editor for binding class "

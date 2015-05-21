@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
-import eu.esdihumboldt.hale.ui.common.Editor;
+import eu.esdihumboldt.hale.ui.common.AttributeEditor;
 
 /**
  * Attribute editor for boolean values
@@ -36,7 +36,7 @@ import eu.esdihumboldt.hale.ui.common.Editor;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class BooleanEditor extends AbstractEditor<Boolean> {
+public class BooleanEditor extends AbstractAttributeEditor<Boolean> {
 
 	private Boolean value;
 	private final ComboViewer combo;
@@ -70,7 +70,7 @@ public class BooleanEditor extends AbstractEditor<Boolean> {
 	}
 
 	/**
-	 * @see Editor#getAsText()
+	 * @see AttributeEditor#getAsText()
 	 */
 	@Override
 	public String getAsText() {
@@ -78,7 +78,7 @@ public class BooleanEditor extends AbstractEditor<Boolean> {
 	}
 
 	/**
-	 * @see Editor#getControl()
+	 * @see AttributeEditor#getControl()
 	 */
 	@Override
 	public Control getControl() {
@@ -86,7 +86,7 @@ public class BooleanEditor extends AbstractEditor<Boolean> {
 	}
 
 	/**
-	 * @see Editor#getValue()
+	 * @see AttributeEditor#getValue()
 	 */
 	@Override
 	public Boolean getValue() {
@@ -94,7 +94,7 @@ public class BooleanEditor extends AbstractEditor<Boolean> {
 	}
 
 	/**
-	 * @see Editor#setAsText(String)
+	 * @see AttributeEditor#setAsText(String)
 	 */
 	@Override
 	public void setAsText(String text) {
@@ -102,7 +102,7 @@ public class BooleanEditor extends AbstractEditor<Boolean> {
 	}
 
 	/**
-	 * @see Editor#setValue(Object)
+	 * @see AttributeEditor#setValue(Object)
 	 */
 	@Override
 	public void setValue(Boolean value) {
@@ -110,7 +110,7 @@ public class BooleanEditor extends AbstractEditor<Boolean> {
 	}
 
 	/**
-	 * @see Editor#isValid()
+	 * @see AttributeEditor#isValid()
 	 */
 	@Override
 	public boolean isValid() {
@@ -118,7 +118,7 @@ public class BooleanEditor extends AbstractEditor<Boolean> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#getValueType()
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#getValueType()
 	 */
 	@Override
 	public String getValueType() {

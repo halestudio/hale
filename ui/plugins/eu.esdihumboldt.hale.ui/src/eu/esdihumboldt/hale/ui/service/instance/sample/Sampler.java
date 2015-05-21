@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
-import eu.esdihumboldt.hale.ui.common.Editor;
+import eu.esdihumboldt.hale.ui.common.AttributeEditor;
 
 /**
  * Provides samples from given instance collections. A sampler may not hold any
@@ -56,7 +56,7 @@ public interface Sampler {
 	 * @param parent the parent composite
 	 * @return the settings editor
 	 */
-	public Editor<Value> createEditor(Composite parent);
+	public AttributeEditor<Value> createEditor(Composite parent);
 
 	/**
 	 * Get the default settings for the sampler.

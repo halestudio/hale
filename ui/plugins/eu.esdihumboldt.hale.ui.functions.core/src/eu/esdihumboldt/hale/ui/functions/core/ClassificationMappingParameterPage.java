@@ -94,7 +94,7 @@ import eu.esdihumboldt.hale.io.csv.ui.LookupTableExportWizard;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
-import eu.esdihumboldt.hale.ui.common.Editor;
+import eu.esdihumboldt.hale.ui.common.AttributeEditor;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeInputDialog;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
@@ -791,7 +791,7 @@ public class ClassificationMappingParameterPage extends
 						targetEntity, Display.getCurrent().getActiveShell(), "Set default value",
 						"This value will be assigned to targets when the source value is not mapped");
 				if (initialValue != null) {
-					Editor<?> editor = dialog.getEditor();
+					AttributeEditor<?> editor = dialog.getEditor();
 					if (editor != null) {
 						editor.setAsText(initialValue);
 					}

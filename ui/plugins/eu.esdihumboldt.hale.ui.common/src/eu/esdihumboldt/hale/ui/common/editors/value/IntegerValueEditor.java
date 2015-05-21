@@ -16,7 +16,7 @@
 package eu.esdihumboldt.hale.ui.common.editors.value;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
-import eu.esdihumboldt.hale.ui.common.Editor;
+import eu.esdihumboldt.hale.ui.common.AttributeEditor;
 
 /**
  * Value editor wrapping an integer editor.
@@ -30,7 +30,7 @@ public class IntegerValueEditor extends ValueEditor<Integer> {
 	 * 
 	 * @param editor the editor to wrap
 	 */
-	public IntegerValueEditor(Editor<Integer> editor) {
+	public IntegerValueEditor(AttributeEditor<Integer> editor) {
 		super(editor);
 	}
 

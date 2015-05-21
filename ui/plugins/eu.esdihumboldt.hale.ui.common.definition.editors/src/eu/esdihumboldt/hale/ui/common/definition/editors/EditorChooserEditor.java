@@ -38,8 +38,8 @@ import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.scripting.ScriptExtension;
 import eu.esdihumboldt.hale.common.scripting.ScriptFactory;
-import eu.esdihumboldt.hale.ui.common.Editor;
-import eu.esdihumboldt.hale.ui.common.editors.AbstractEditor;
+import eu.esdihumboldt.hale.ui.common.AttributeEditor;
+import eu.esdihumboldt.hale.ui.common.editors.AbstractAttributeEditor;
 import eu.esdihumboldt.hale.ui.common.editors.BooleanEditor;
 import eu.esdihumboldt.hale.ui.scripting.ScriptUI;
 import eu.esdihumboldt.hale.ui.scripting.ScriptUIExtension;
@@ -50,12 +50,12 @@ import eu.esdihumboldt.hale.ui.scripting.ScriptUIExtension;
  * @author Kai Schwierczek
  * @param <T> the attribute value type/binding
  */
-public abstract class EditorChooserEditor<T> extends AbstractEditor<T> implements
+public abstract class EditorChooserEditor<T> extends AbstractAttributeEditor<T> implements
 		IPropertyChangeListener {
 
 	private final Composite composite;
 	private final ComboViewer comboViewer;
-	private Editor<T> currentEditor;
+	private AttributeEditor<T> currentEditor;
 	private String currentScriptId;
 	private final Class<? extends T> binding;
 	private final Entry defaultEntry;
@@ -139,12 +139,12 @@ public abstract class EditorChooserEditor<T> extends AbstractEditor<T> implement
 		currentScriptId = newEditor.scriptId;
 		if ("default".equals(currentScriptId)) {
 			if (Boolean.class.equals(binding))
-				currentEditor = (Editor<T>) new BooleanEditor(composite);
+				currentEditor = (AttributeEditor<T>) new BooleanEditor(composite);
 			else
 				currentEditor = createDefaultEditor(composite);
 		}
 		else
-			currentEditor = (Editor<T>) newEditor.scriptUI.createEditor(composite, binding);
+			currentEditor = (AttributeEditor<T>) newEditor.scriptUI.createEditor(composite, binding);
 
 		currentEditor.getControl().setLayoutData(
 				GridDataFactory.fillDefaults().grab(true, true).create());
@@ -165,10 +165,10 @@ public abstract class EditorChooserEditor<T> extends AbstractEditor<T> implement
 	 * @param parent the parent composite
 	 * @return the created editor
 	 */
-	protected abstract Editor<T> createDefaultEditor(Composite parent);
+	protected abstract AttributeEditor<T> createDefaultEditor(Composite parent);
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#getControl()
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#getControl()
 	 */
 	@Override
 	public Control getControl() {
@@ -176,7 +176,7 @@ public abstract class EditorChooserEditor<T> extends AbstractEditor<T> implement
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#setValue(java.lang.Object)
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#setValue(java.lang.Object)
 	 */
 	@Override
 	public void setValue(T value) {
@@ -184,7 +184,7 @@ public abstract class EditorChooserEditor<T> extends AbstractEditor<T> implement
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#getValue()
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#getValue()
 	 */
 	@Override
 	public T getValue() {
@@ -192,7 +192,7 @@ public abstract class EditorChooserEditor<T> extends AbstractEditor<T> implement
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#setAsText(java.lang.String)
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#setAsText(java.lang.String)
 	 */
 	@Override
 	public void setAsText(String text) {
@@ -200,7 +200,7 @@ public abstract class EditorChooserEditor<T> extends AbstractEditor<T> implement
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#getAsText()
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#getAsText()
 	 */
 	@Override
 	public String getAsText() {
@@ -208,7 +208,7 @@ public abstract class EditorChooserEditor<T> extends AbstractEditor<T> implement
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#isValid()
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#isValid()
 	 */
 	@Override
 	public boolean isValid() {
@@ -242,7 +242,7 @@ public abstract class EditorChooserEditor<T> extends AbstractEditor<T> implement
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.editors.AbstractEditor#setVariables(java.util.Collection)
+	 * @see eu.esdihumboldt.hale.ui.common.editors.AbstractAttributeEditor#setVariables(java.util.Collection)
 	 */
 	@Override
 	public void setVariables(Collection<PropertyEntityDefinition> properties) {
@@ -260,7 +260,7 @@ public abstract class EditorChooserEditor<T> extends AbstractEditor<T> implement
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#getValueType()
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#getValueType()
 	 */
 	@Override
 	public String getValueType() {

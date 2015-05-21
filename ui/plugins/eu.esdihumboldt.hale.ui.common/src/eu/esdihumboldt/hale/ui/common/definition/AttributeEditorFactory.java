@@ -22,7 +22,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDef
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
-import eu.esdihumboldt.hale.ui.common.Editor;
+import eu.esdihumboldt.hale.ui.common.AttributeEditor;
 
 /**
  * Factory for editors based on {@link PropertyDefinition}s
@@ -45,7 +45,7 @@ public interface AttributeEditorFactory {
 	 * @return the attribute editor or <code>null</code> if no editor could be
 	 *         created for the property
 	 */
-	public Editor<?> createEditor(Composite parent, PropertyDefinition property,
+	public AttributeEditor<?> createEditor(Composite parent, PropertyDefinition property,
 			EntityDefinition entityDef, boolean allowScripts);
 
 	/**
@@ -56,6 +56,6 @@ public interface AttributeEditorFactory {
 	 * @param initialValue initial value, may be <code>null</code>
 	 * @return the attribute editor
 	 */
-	public Editor<?> createEditor(Composite parent, FunctionParameterDefinition parameter,
+	public AttributeEditor<?> createEditor(Composite parent, FunctionParameterDefinition parameter,
 			ParameterValue initialValue);
 }

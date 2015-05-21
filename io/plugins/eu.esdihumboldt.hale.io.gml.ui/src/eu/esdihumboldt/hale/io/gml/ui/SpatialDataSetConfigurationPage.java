@@ -45,7 +45,7 @@ import eu.esdihumboldt.hale.io.gml.writer.internal.StreamGmlWriter;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
-import eu.esdihumboldt.hale.ui.common.Editor;
+import eu.esdihumboldt.hale.ui.common.AttributeEditor;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeEditorFactory;
 import eu.esdihumboldt.hale.ui.common.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
@@ -65,8 +65,8 @@ import eu.esdihumboldt.util.groovy.paths.Path;
 public class SpatialDataSetConfigurationPage extends
 		AbstractConfigurationPage<InspireInstanceWriter, IOWizard<InspireInstanceWriter>> {
 
-	private Editor<?> localIdEditor;
-	private Editor<?> namespaceEditor;
+	private AttributeEditor<?> localIdEditor;
+	private AttributeEditor<?> namespaceEditor;
 	private OpenFileFieldEditor metadataFile;
 
 	/**
@@ -144,7 +144,7 @@ public class SpatialDataSetConfigurationPage extends
 
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
-				if (event.getProperty().equals(Editor.IS_VALID)
+				if (event.getProperty().equals(AttributeEditor.IS_VALID)
 						|| event.getProperty().equals(FileFieldEditor.IS_VALID))
 					updateState();
 			}

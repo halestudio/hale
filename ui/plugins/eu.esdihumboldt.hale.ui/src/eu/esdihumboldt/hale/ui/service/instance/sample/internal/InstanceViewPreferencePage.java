@@ -46,7 +46,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
-import eu.esdihumboldt.hale.ui.common.Editor;
+import eu.esdihumboldt.hale.ui.common.AttributeEditor;
 import eu.esdihumboldt.hale.ui.service.instance.sample.Sampler;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 
@@ -66,7 +66,7 @@ public class InstanceViewPreferencePage extends PreferencePage implements IWorkb
 
 	private Button enabled;
 
-	private Editor<Value> currentEditor;
+	private AttributeEditor<Value> currentEditor;
 
 	private Sampler currentSampler;
 
@@ -84,7 +84,7 @@ public class InstanceViewPreferencePage extends PreferencePage implements IWorkb
 
 		@Override
 		public void propertyChange(PropertyChangeEvent event) {
-			if (Editor.VALUE.equals(event.getProperty())) {
+			if (AttributeEditor.VALUE.equals(event.getProperty())) {
 				changed = true;
 			}
 		}

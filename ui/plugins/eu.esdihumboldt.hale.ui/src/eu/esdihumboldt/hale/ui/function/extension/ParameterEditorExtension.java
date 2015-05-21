@@ -29,7 +29,7 @@ import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
-import eu.esdihumboldt.hale.ui.common.Editor;
+import eu.esdihumboldt.hale.ui.common.AttributeEditor;
 import eu.esdihumboldt.hale.ui.common.EditorFactory;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeEditorFactory;
 import eu.esdihumboldt.hale.ui.function.extension.impl.ParameterEditorFactoryImpl;
@@ -86,7 +86,7 @@ public class ParameterEditorExtension extends
 	 * @param initialValue the initial value, may be <code>null</code>
 	 * @return the editor
 	 */
-	public Editor<?> createEditor(final Composite parent, final String functionId,
+	public AttributeEditor<?> createEditor(final Composite parent, final String functionId,
 			final FunctionParameter parameter, final ParameterValue initialValue) {
 		List<ParameterEditorFactory> factories = getFactories(new FactoryFilter<EditorFactory, ParameterEditorFactory>() {
 
@@ -106,7 +106,7 @@ public class ParameterEditorExtension extends
 		if (!factories.isEmpty()) {
 			ParameterEditorFactory fact = factories.get(0);
 			try {
-				Editor<?> editor = fact.createExtensionObject().createEditor(parent);
+				AttributeEditor<?> editor = fact.createExtensionObject().createEditor(parent);
 				if (initialValue != null)
 					editor.setAsText(initialValue.as(String.class));
 				return editor;

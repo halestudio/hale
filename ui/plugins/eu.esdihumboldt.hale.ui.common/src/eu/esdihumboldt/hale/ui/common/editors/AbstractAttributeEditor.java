@@ -16,24 +16,25 @@
 
 package eu.esdihumboldt.hale.ui.common.editors;
 
-import org.eclipse.swt.widgets.Composite;
+import java.util.Collection;
 
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.ui.common.AttributeEditor;
-import eu.esdihumboldt.hale.ui.common.EditorFactory;
 
 /**
- * Creates a {@link BooleanEditor}.
+ * Abstract base class for editors for events.
  * 
- * @author Simon Templer
+ * @author Kai Schwierczek
+ * @param <T> the attribute value type/binding
  */
-public class BooleanEditorFactory implements EditorFactory {
+public abstract class AbstractAttributeEditor<T> extends AbstractEditor<T> implements
+		AttributeEditor<T> {
 
 	/**
-	 * @see EditorFactory#createEditor(Composite)
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#setVariables(java.util.Collection)
 	 */
 	@Override
-	public AttributeEditor<?> createEditor(Composite parent) {
-		return new BooleanEditor(parent);
+	public void setVariables(Collection<PropertyEntityDefinition> properties) {
+		// ignore variables by default
 	}
-
 }

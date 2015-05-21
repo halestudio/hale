@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.ui.scripting.groovy;
 import org.eclipse.swt.widgets.Composite;
 
 import eu.esdihumboldt.hale.common.scripting.Script;
-import eu.esdihumboldt.hale.ui.common.Editor;
+import eu.esdihumboldt.hale.ui.common.AttributeEditor;
 import eu.esdihumboldt.hale.ui.scripting.ScriptUI;
 
 /**
@@ -43,7 +43,7 @@ public class GroovyUI implements ScriptUI {
 	 *      java.lang.Class)
 	 */
 	@Override
-	public Editor<String> createEditor(Composite parent, Class<?> binding) {
+	public AttributeEditor<String> createEditor(Composite parent, Class<?> binding) {
 		return new GroovyEditor(parent, script, binding);
 	}
 }

@@ -33,6 +33,6 @@ public interface EditorFactory {
 	 * @param parent the parent composite
 	 * @return the created editor
 	 */
-	public Editor<?> createEditor(Composite parent);
+	public AttributeEditor<?> createEditor(Composite parent);
 
 }
