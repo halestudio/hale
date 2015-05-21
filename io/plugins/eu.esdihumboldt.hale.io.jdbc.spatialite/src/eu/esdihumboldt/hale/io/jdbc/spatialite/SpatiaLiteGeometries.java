@@ -266,7 +266,11 @@ public class SpatiaLiteGeometries implements GeometryAdvisor<SQLiteConnection> {
 			GeometryFactory factory = new GeometryFactory();
 			WKBReader wkbReader = new WKBReader(factory);
 
-			jtsGeom = wkbReader.read(geomAsByteArray);
+			try {
+				jtsGeom = wkbReader.read(geomAsByteArray);
+			} catch (Exception e) {
+				log.error("Could not load geometry from database", e);
+			}
 		}
 
 		return jtsGeom;
