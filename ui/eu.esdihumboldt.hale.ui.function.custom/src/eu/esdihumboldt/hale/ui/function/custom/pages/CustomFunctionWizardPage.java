@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Data Harmonisation Panel
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -10,27 +10,24 @@
  * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
  * 
  * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.function.custom;
+package eu.esdihumboldt.hale.ui.function.custom.pages;
 
-import org.eclipse.jface.wizard.IWizard;
-
-import eu.esdihumboldt.hale.ui.util.handler.AbstractWizardHandler;
+import org.eclipse.jface.wizard.IWizardPage;
 
 /**
- * TODO Type description
+ * Function wizard page interface
  * 
  * @author Simon Templer
  */
-public class NewCustomPropertyFunctionHandler extends AbstractWizardHandler {
+public interface CustomFunctionWizardPage extends IWizardPage {
 
-	@Override
-	protected IWizard createWizard() {
-		CustomPropertyFunctionWizard wiz = new CustomPropertyFunctionWizard();
-		wiz.init();
-		return wiz;
-	}
+	/**
+	 * Configure the parent wizard's custom function.
+	 */
+	public abstract void apply();
 
 }

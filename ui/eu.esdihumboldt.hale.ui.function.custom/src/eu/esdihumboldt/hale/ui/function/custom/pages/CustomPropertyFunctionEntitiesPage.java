@@ -41,7 +41,7 @@ import eu.esdihumboldt.hale.ui.util.components.DynamicScrolledComposite;
  * @author Simon Templer
  */
 public class CustomPropertyFunctionEntitiesPage extends
-		HaleWizardPage<CustomPropertyFunctionWizard> {
+		HaleWizardPage<CustomPropertyFunctionWizard> implements CustomFunctionWizardPage {
 
 	private CustomPropertyFunctionEntityEditor target;
 	private CustomPropertyFunctionEntityList sources;
@@ -218,8 +218,9 @@ public class CustomPropertyFunctionEntitiesPage extends
 		setPageComplete(true);
 	}
 
+	@Override
 	public void apply() {
-		DefaultCustomPropertyFunction cf = getWizard().getResult();
+		DefaultCustomPropertyFunction cf = getWizard().getResultFunction();
 		if (cf != null && sources != null && target != null) {
 			cf.setSources(sources.getValues());
 			cf.setTarget(target.getValue());

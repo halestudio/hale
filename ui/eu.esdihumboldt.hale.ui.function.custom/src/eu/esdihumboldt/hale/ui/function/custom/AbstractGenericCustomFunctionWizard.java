@@ -19,8 +19,11 @@ package eu.esdihumboldt.hale.ui.function.custom;
 import org.eclipse.jface.dialogs.IPageChangingListener;
 import org.eclipse.jface.dialogs.PageChangingEvent;
 import org.eclipse.jface.wizard.IWizardContainer;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
@@ -28,7 +31,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomFunctio
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationFunction;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.function.AbstractFunctionWizard;
-import eu.esdihumboldt.hale.ui.function.FunctionWizard;
+import eu.esdihumboldt.hale.ui.function.custom.pages.CustomFunctionWizardPage;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 
@@ -196,51 +199,50 @@ public abstract class AbstractGenericCustomFunctionWizard<C extends CustomFuncti
 	}
 
 	/**
-	 * @see FunctionWizard#getResult()
-	 */
-	@Override
-	public C getResult() {
-		return customFunction;
-	}
-
-	/**
 	 * @see Wizard#performFinish()
 	 */
 	@Override
 	public boolean performFinish() {
-//		ListMultimap<String, ParameterValue> parameters = ArrayListMultimap.create();
-//		resultCell.setTransformationParameters(parameters);
-//		// configure cell with all pages
-//		for (IWizardPage page : getPages())
-//			if (page instanceof FunctionWizardPage)
-//				((FunctionWizardPage) page).configureCell(resultCell);
-//			else if (page instanceof ParameterPage)
-//				parameters.putAll(((ParameterPage) page).getConfiguration());
+		for (IWizardPage page : getPages()) {
+			if (page instanceof CustomFunctionWizardPage) {
+				((CustomFunctionWizardPage) page).apply();
+			}
+		}
 
 		return true;
 	}
 
-//	/**
-//	 * Returns the cell that would be created if the wizard would be finished
-//	 * now.
-//	 * 
-//	 * @return the cell
-//	 */
-//	public Cell getUnfinishedCell() {
-//		MutableCell current = new DefaultCell();
-//		current.setTransformationIdentifier(getFunctionId());
-//		ListMultimap<String, ParameterValue> parameters = ArrayListMultimap.create();
-//		current.setTransformationParameters(parameters);
-//		for (IWizardPage page : getPages()) {
-//			// stop at first uncompleted page
-//			if (!page.isPageComplete())
-//				break;
-//			if (page instanceof FunctionWizardPage)
-//				((FunctionWizardPage) page).configureCell(current);
-//			else if (page instanceof ParameterPage)
-//				parameters.putAll(((ParameterPage) page).getConfiguration());
-//		}
-//		return current;
-//	}
+	/**
+	 * Returns the cell that would be created if the wizard would be finished
+	 * now.
+	 * 
+	 * @return the cell
+	 */
+	public C getUnfinishedFunction() {
+		if (getResultFunction() == null) {
+			return null;
+		}
+
+		final Display display = PlatformUI.getWorkbench().getDisplay();
+		display.syncExec(new Runnable() {
+
+			@Override
+			public void run() {
+				for (IWizardPage page : getPages()) {
+					// stop at first uncompleted page
+					if (!page.isPageComplete())
+						break;
+					if (page instanceof CustomFunctionWizardPage)
+						((CustomFunctionWizardPage) page).apply();
+				}
+			}
+		});
+		return getResultFunction();
+	}
+
+	@Override
+	public C getResultFunction() {
+		return customFunction;
+	}
 
 }

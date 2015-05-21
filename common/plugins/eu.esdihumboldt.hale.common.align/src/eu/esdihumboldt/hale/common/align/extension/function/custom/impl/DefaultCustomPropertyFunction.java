@@ -20,6 +20,7 @@ import java.util.List;
 import eu.esdihumboldt.hale.common.align.extension.function.Function;
 import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyTransformation;
+import eu.esdihumboldt.hale.common.core.io.Value;
 
 /**
  * Custom property function.
@@ -30,6 +31,37 @@ public class DefaultCustomPropertyFunction implements CustomPropertyFunction {
 
 	private DefaultCustomPropertyFunctionEntity target;
 	private List<DefaultCustomPropertyFunctionEntity> sources;
+
+	private String functionType;
+	private Value functionDefinition;
+
+	/**
+	 * @return the functionType
+	 */
+	public String getFunctionType() {
+		return functionType;
+	}
+
+	/**
+	 * @param functionType the functionType to set
+	 */
+	public void setFunctionType(String functionType) {
+		this.functionType = functionType;
+	}
+
+	/**
+	 * @return the functionDefinition
+	 */
+	public Value getFunctionDefinition() {
+		return functionDefinition;
+	}
+
+	/**
+	 * @param functionDefinition the functionDefinition to set
+	 */
+	public void setFunctionDefinition(Value functionDefinition) {
+		this.functionDefinition = functionDefinition;
+	}
 
 	/**
 	 * @return the target

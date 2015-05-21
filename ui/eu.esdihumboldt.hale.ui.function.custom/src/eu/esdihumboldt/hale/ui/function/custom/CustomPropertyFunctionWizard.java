@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.ui.function.custom;
 import eu.esdihumboldt.hale.common.align.extension.function.custom.impl.DefaultCustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyTransformation;
 import eu.esdihumboldt.hale.ui.function.custom.pages.CustomPropertyFunctionEntitiesPage;
+import eu.esdihumboldt.hale.ui.function.custom.pages.PropertyFunctionScriptPage;
 
 /**
  * TODO Type description
@@ -29,6 +30,7 @@ public class CustomPropertyFunctionWizard
 		AbstractGenericCustomFunctionWizard<DefaultCustomPropertyFunction, PropertyTransformation<?>> {
 
 	private CustomPropertyFunctionEntitiesPage entityPage;
+	private PropertyFunctionScriptPage scriptPage;
 
 	/**
 	 * Default constructor.
@@ -46,8 +48,15 @@ public class CustomPropertyFunctionWizard
 	public void addPages() {
 		super.addPages();
 
+		// variables page
 		entityPage = new CustomPropertyFunctionEntitiesPage();
 		addPage(entityPage);
+
+		// TODO parameters page
+
+		// script page
+		scriptPage = new PropertyFunctionScriptPage();
+		addPage(scriptPage);
 	}
 
 }

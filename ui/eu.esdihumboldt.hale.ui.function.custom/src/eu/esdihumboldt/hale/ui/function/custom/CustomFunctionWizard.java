@@ -37,6 +37,8 @@ public interface CustomFunctionWizard<T extends TransformationFunction<?>> exten
 	 * 
 	 * @return the result cell
 	 */
-	public CustomFunction<T> getResult();
+	public CustomFunction<T> getResultFunction();
+
+//	public CustomFunction<T> getUnfinishedFunction();
 
 }
