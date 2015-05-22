@@ -38,9 +38,8 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.common.Editor;
@@ -238,7 +237,8 @@ public abstract class AbstractValueList<T, C extends Editor<T>> extends Observab
 		}
 
 		// create control that encompasses editor and remove button
-		Composite comp = new Composite(parent, SWT.NONE);
+//		Composite comp = new Composite(parent, SWT.NONE);
+		Group comp = new Group(parent, SWT.NONE);
 		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(comp);
 
 		// editor
@@ -249,8 +249,8 @@ public abstract class AbstractValueList<T, C extends Editor<T>> extends Observab
 		// remove button
 		Button remove = new Button(comp, SWT.PUSH);
 		remove.setToolTipText("Remove");
-		remove.setImage(PlatformUI.getWorkbench().getSharedImages()
-				.getImage(ISharedImages.IMG_ELCL_REMOVE));
+		remove.setImage(CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_REMOVE));
+		GridDataFactory.swtDefaults().align(SWT.END, SWT.BEGINNING).applyTo(remove);
 		remove.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -273,9 +273,13 @@ public abstract class AbstractValueList<T, C extends Editor<T>> extends Observab
 			return;
 		}
 
+		GridDataFactory addData = GridDataFactory.swtDefaults().align(SWT.BEGINNING, SWT.BEGINNING);
+
 		Composite addComp = new Composite(editorContainer, SWT.NONE);
+		addData.applyTo(addComp);
 		GridLayoutFactory.swtDefaults().numColumns(1).applyTo(addComp);
 		Button add = new Button(addComp, SWT.PUSH);
+		addData.applyTo(add);
 		add.setToolTipText("Add");
 		add.setImage(CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_ADD));
 		add.addSelectionListener(new SelectionAdapter() {

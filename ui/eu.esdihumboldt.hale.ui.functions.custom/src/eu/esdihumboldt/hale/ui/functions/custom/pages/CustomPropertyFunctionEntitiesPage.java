@@ -55,7 +55,7 @@ public class CustomPropertyFunctionEntitiesPage extends
 		super("entities");
 
 		setTitle("Define input and output");
-		setDescription("Specify input and output variables");
+		setDescription("Specify input variables and output type");
 
 //		fieldObserver = new Observer() {
 //
@@ -142,7 +142,7 @@ public class CustomPropertyFunctionEntitiesPage extends
 		// propagate to this place.
 		ScrolledComposite sc = new DynamicScrolledComposite(holder, SWT.V_SCROLL);
 		sc.setExpandHorizontal(true);
-		sc.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).hint(200, 200).create());
+		sc.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).hint(300, 400).create());
 
 		Group main = new Group(sc, SWT.NONE);
 		sc.setContent(main);
@@ -151,53 +151,18 @@ public class CustomPropertyFunctionEntitiesPage extends
 		// set group title
 		switch (ssid) {
 		case SOURCE:
-			main.setText("Source");
+			main.setText("Input variables");
 			sources = new CustomPropertyFunctionEntityList(null, null, main,
 					Collections.<DefaultCustomPropertyFunctionEntity> emptyList());
 			break;
 		case TARGET:
-			main.setText("Target");
+			main.setText("Output");
 			target = new CustomPropertyFunctionEntityEditor(main);
 			break;
 		}
 
-		// create fields
-//		for (D field : fields) {
-//			F functionField = createField(ssid, field, main);
-//			if (functionField != null) {
-//				functionFields.add(functionField);
-//				functionField.addObserver(fieldObserver);
-//			}
-//		}
-
 		return holder;
 	}
-
-//	/**
-//	 * @see FunctionWizardPage#configureCell(MutableCell)
-//	 */
-//	@Override
-//	public void configureCell(MutableCell cell) {
-//		ListMultimap<String, Entity> source = ArrayListMultimap.create();
-//		ListMultimap<String, Entity> target = ArrayListMultimap.create();
-//
-//		// collect entities from fields
-//		for (F field : functionFields) {
-//			switch (field.getSchemaSpace()) {
-//			case SOURCE:
-//				field.fillEntities(source);
-//				break;
-//			case TARGET:
-//				field.fillEntities(target);
-//				break;
-//			default:
-//				throw new IllegalStateException("Illegal schema space");
-//			}
-//		}
-//
-//		cell.setSource(source);
-//		cell.setTarget(target);
-//	}
 
 	/**
 	 * Update the page complete state
