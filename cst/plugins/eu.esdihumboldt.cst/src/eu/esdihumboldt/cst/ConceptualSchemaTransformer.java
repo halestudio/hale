@@ -34,13 +34,13 @@ import eu.esdihumboldt.cst.internal.EngineManager;
 import eu.esdihumboldt.cst.internal.TransformationContext;
 import eu.esdihumboldt.cst.internal.TreePropertyTransformer;
 import eu.esdihumboldt.cst.internal.util.CountingInstanceSink;
-import eu.esdihumboldt.hale.common.align.extension.transformation.TypeTransformationExtension;
 import eu.esdihumboldt.hale.common.align.extension.transformation.TypeTransformationFactory;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.Type;
+import eu.esdihumboldt.hale.common.align.service.TransformationFunctionService;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.InstanceHandler;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
@@ -88,6 +88,9 @@ public class ConceptualSchemaTransformer implements TransformationService {
 				"Instance transformation", true);
 		TransformationContext context = new TransformationContext(serviceProvider);
 
+		TransformationFunctionService functions = serviceProvider
+				.getService(TransformationFunctionService.class);
+
 		final SubtaskProgressIndicator sub = new SubtaskProgressIndicator(progressIndicator) {
 
 			@Override
@@ -121,17 +124,14 @@ public class ConceptualSchemaTransformer implements TransformationService {
 			PropertyTransformer transformer = new TreePropertyTransformer(alignment, reporter,
 					target, engines, context);
 
-			TypeTransformationExtension typesTransformations = TypeTransformationExtension
-					.getInstance();
-
 			Collection<? extends Cell> typeCells = alignment.getActiveTypeCells();
 			for (Cell typeCell : typeCells) {
 				if (progressIndicator.isCanceled()) {
 					break;
 				}
 
-				List<TypeTransformationFactory> transformations = typesTransformations
-						.getTransformations(typeCell.getTransformationIdentifier());
+				List<TypeTransformationFactory> transformations = functions
+						.getTypeTransformations(typeCell.getTransformationIdentifier());
 
 				if (transformations == null || transformations.isEmpty()) {
 					reporter.error(new TransformationMessageImpl(

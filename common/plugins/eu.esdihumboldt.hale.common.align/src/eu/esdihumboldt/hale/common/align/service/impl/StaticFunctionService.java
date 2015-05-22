@@ -26,7 +26,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionExtensio
 import eu.esdihumboldt.hale.common.align.service.FunctionService;
 
 /**
- * TODO Type description
+ * Function service implementation using only statically defined functions.
  * 
  * @author Simon Templer
  */

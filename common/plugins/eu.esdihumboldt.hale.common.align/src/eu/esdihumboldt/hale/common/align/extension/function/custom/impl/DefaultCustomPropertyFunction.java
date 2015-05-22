@@ -230,10 +230,10 @@ public class DefaultCustomPropertyFunction implements CustomPropertyFunction {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.align.extension.function.custom.CustomFunction#getTransformation()
+	 * @see eu.esdihumboldt.hale.common.align.extension.function.custom.CustomFunction#createTransformationFunction()
 	 */
 	@Override
-	public PropertyTransformation<?> getTransformation() {
+	public PropertyTransformation<?> createTransformationFunction() {
 		// TODO Auto-generated method stub
 		return null;
 	}

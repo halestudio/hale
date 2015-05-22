@@ -15,7 +15,10 @@
 
 package eu.esdihumboldt.hale.common.align.compatibility;
 
+import javax.annotation.Nullable;
+
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
  * The purpose of this class is to check up compatibility of transformation
@@ -30,9 +33,11 @@ public interface CompatibilityMode {
 	 * checks the functions id of compatibility
 	 * 
 	 * @param id the functions id
+	 * @param serviceProvider the service provider, may be <code>null</code> if
+	 *            none is available in the context
 	 * @return true, if the function is compatible
 	 */
-	public boolean supportsFunction(String id);
+	public boolean supportsFunction(String id, @Nullable ServiceProvider serviceProvider);
 
 	/**
 	 * checks the functions compatibility through its cell

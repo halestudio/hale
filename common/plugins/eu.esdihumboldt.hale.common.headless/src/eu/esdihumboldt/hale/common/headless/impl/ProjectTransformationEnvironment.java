@@ -30,7 +30,9 @@ import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.service.FunctionService;
+import eu.esdihumboldt.hale.common.align.service.TransformationFunctionService;
 import eu.esdihumboldt.hale.common.align.service.impl.AlignmentFunctionService;
+import eu.esdihumboldt.hale.common.align.service.impl.AlignmentTransformationFunctionService;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
@@ -147,6 +149,8 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 			alignment = advisor.getAlignment();
 
 			addService(FunctionService.class, new AlignmentFunctionService(alignment));
+			addService(TransformationFunctionService.class,
+					new AlignmentTransformationFunctionService(alignment));
 
 			init(project);
 		}

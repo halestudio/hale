@@ -287,7 +287,8 @@ public class SourceTargetTypeSelector implements ISelectionProvider {
 
 			String label;
 			String functionId = cell.getTransformationIdentifier();
-			FunctionDefinition function = FunctionUtil.getFunction(functionId, HaleUI.getServiceProvider());
+			FunctionDefinition<?> function = FunctionUtil.getFunction(functionId,
+					HaleUI.getServiceProvider());
 			if (function != null)
 				label = functionLabels.getText(function);
 			else

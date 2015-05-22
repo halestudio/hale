@@ -13,28 +13,32 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.align.extension.function.custom;
+package eu.esdihumboldt.hale.common.align.service.impl;
 
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
-import eu.esdihumboldt.hale.common.align.transformation.function.TransformationFunction;
+import eu.esdihumboldt.hale.common.align.model.Alignment;
 
 /**
- * Custom function interface.
+ * Transformation function service based on a specific alignment.
  * 
- * @param <T> the transformation function type
- * @param <F> the function type
  * @author Simon Templer
  */
-public interface CustomFunction<F extends FunctionDefinition<?>, T extends TransformationFunction<?>> {
+public class AlignmentTransformationFunctionService extends
+		AbstractDefaultTransformationFunctionService {
+
+	private final Alignment alignment;
 
 	/**
-	 * @return the function descriptor
+	 * Create a function service based on the given alignment.
+	 * 
+	 * @param alignment the alignment
 	 */
-	F getDescriptor();
+	public AlignmentTransformationFunctionService(Alignment alignment) {
+		this.alignment = alignment;
+	}
 
-	/**
-	 * @return the transformation function implementation
-	 */
-	T createTransformationFunction();
+	@Override
+	protected Alignment getCurrentAlignment() {
+		return alignment;
+	}
 
 }

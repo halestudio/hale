@@ -37,6 +37,7 @@ import eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.filter.definition.CQLFilterDefinition;
 import eu.esdihumboldt.hale.common.filter.definition.ECQLFilterDefinition;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityModeFactory;
 import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityService;
 import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityServiceListener;
@@ -249,8 +250,8 @@ public class CompatibilityServiceImpl extends
 			Iterator<Cell> cit = cells.iterator();
 			while (cit.hasNext()) {
 				Cell cell = cit.next();
-				boolean isCompatibleNow = mode.supportsFunction(cell.getTransformationIdentifier())
-						&& mode.supportsCell(cell);
+				boolean isCompatibleNow = mode.supportsFunction(cell.getTransformationIdentifier(),
+						HaleUI.getServiceProvider()) && mode.supportsCell(cell);
 
 				if (!isCompatibleNow) {
 					incompatibleCells.add(cell);
@@ -272,7 +273,8 @@ public class CompatibilityServiceImpl extends
 					incompatibleCells.remove(e.getKey());
 				}
 
-				if (!mode.supportsFunction(e.getValue().getTransformationIdentifier())
+				if (!mode.supportsFunction(e.getValue().getTransformationIdentifier(),
+						HaleUI.getServiceProvider())
 						|| !mode.supportsCell(e.getValue())) {
 					incompatibleCells.add(e.getValue());
 				}
@@ -335,8 +337,8 @@ public class CompatibilityServiceImpl extends
 			CompatibilityMode mode = getCurrent();
 			while (cit.hasNext()) {
 				Cell cell = cit.next();
-				boolean isCompatibleNow = mode.supportsFunction(cell.getTransformationIdentifier())
-						&& mode.supportsCell(cell);
+				boolean isCompatibleNow = mode.supportsFunction(cell.getTransformationIdentifier(),
+						HaleUI.getServiceProvider()) && mode.supportsCell(cell);
 
 				if (!isCompatibleNow) {
 					incompatibleCells.add(cell);

@@ -31,6 +31,7 @@ import org.eclipse.ui.part.WorkbenchPart;
 import de.fhg.igd.eclipse.util.extension.exclusive.ExclusiveExtension.ExclusiveExtensionListener;
 import eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionContentProvider;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
@@ -72,7 +73,8 @@ public class FunctionsView extends PropertiesViewPart {
 					if (element instanceof AbstractFunction<?>) {
 						if (((CompatibilityService) PlatformUI.getWorkbench().getService(
 								CompatibilityService.class)).getCurrent().supportsFunction(
-								((AbstractFunction<?>) element).getId())) {
+								((AbstractFunction<?>) element).getId(),
+								HaleUI.getServiceProvider())) {
 							return true;
 						}
 						else

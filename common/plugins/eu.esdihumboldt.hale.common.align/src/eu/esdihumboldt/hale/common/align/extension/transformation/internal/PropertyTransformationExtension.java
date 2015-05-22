@@ -14,11 +14,13 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.align.extension.transformation;
+package eu.esdihumboldt.hale.common.align.extension.transformation.internal;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
 import de.fhg.igd.eclipse.util.extension.AbstractExtension;
+import eu.esdihumboldt.hale.common.align.extension.transformation.AbstractTransformationFactory;
+import eu.esdihumboldt.hale.common.align.extension.transformation.PropertyTransformationFactory;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyTransformation;
 
 /**
