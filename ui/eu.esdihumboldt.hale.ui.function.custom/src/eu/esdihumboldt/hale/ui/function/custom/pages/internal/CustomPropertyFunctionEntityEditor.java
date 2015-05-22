@@ -24,8 +24,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 
+import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunctionEntity;
 import eu.esdihumboldt.hale.common.align.extension.function.ParameterDefinition;
-import eu.esdihumboldt.hale.common.align.extension.function.custom.impl.DefaultCustomPropertyFunctionEntity;
 import eu.esdihumboldt.hale.ui.common.editors.AbstractCompositeEditor;
 
 /**

@@ -26,8 +26,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 
-import eu.esdihumboldt.hale.common.align.extension.function.custom.impl.DefaultCustomPropertyFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.custom.impl.DefaultCustomPropertyFunctionEntity;
+import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunction;
+import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunctionEntity;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.function.custom.CustomPropertyFunctionWizard;

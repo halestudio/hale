@@ -15,8 +15,8 @@
 
 package eu.esdihumboldt.hale.ui.function.custom;
 
+import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionDefinition;
-import eu.esdihumboldt.hale.common.align.extension.function.custom.impl.DefaultCustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyTransformation;
 import eu.esdihumboldt.hale.ui.function.custom.pages.CustomPropertyFunctionEntitiesPage;
 import eu.esdihumboldt.hale.ui.function.custom.pages.MainPage;

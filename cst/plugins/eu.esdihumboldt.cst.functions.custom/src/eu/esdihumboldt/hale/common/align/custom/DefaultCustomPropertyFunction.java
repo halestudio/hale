@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.align.extension.function.custom.impl;
+package eu.esdihumboldt.hale.common.align.custom;
 
 import java.net.URL;
 import java.util.Collection;
@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import eu.esdihumboldt.hale.common.align.custom.groovy.CustomGroovyTransformation;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameterDefinition;
@@ -221,21 +222,14 @@ public class DefaultCustomPropertyFunction implements CustomPropertyFunction {
 		this.sources = sources;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.extension.function.custom.CustomFunction#getDescriptor()
-	 */
 	@Override
 	public PropertyFunctionDefinition getDescriptor() {
 		return descriptor;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.extension.function.custom.CustomFunction#createTransformationFunction()
-	 */
 	@Override
 	public PropertyTransformation<?> createTransformationFunction() {
-		// TODO Auto-generated method stub
-		return null;
+		return new CustomGroovyTransformation(this);
 	}
 
 }

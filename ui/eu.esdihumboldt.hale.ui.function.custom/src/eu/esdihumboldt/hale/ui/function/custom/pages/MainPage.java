@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import eu.esdihumboldt.hale.common.align.extension.function.custom.impl.DefaultCustomPropertyFunction;
+import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunction;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.function.custom.CustomPropertyFunctionWizard;
 

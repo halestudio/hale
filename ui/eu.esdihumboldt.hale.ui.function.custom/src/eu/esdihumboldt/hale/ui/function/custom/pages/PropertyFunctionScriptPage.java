@@ -27,8 +27,9 @@ import org.eclipse.swt.widgets.ToolBar;
 
 import com.google.common.collect.ImmutableList;
 
-import eu.esdihumboldt.hale.common.align.extension.function.custom.impl.DefaultCustomPropertyFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.custom.impl.DefaultCustomPropertyFunctionEntity;
+import eu.esdihumboldt.hale.common.align.custom.CustomPropertyFunctionType;
+import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunction;
+import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunctionEntity;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
@@ -306,7 +307,7 @@ public class PropertyFunctionScriptPage extends GroovyScriptPage<CustomPropertyF
 		if (cf == null)
 			return;
 
-		cf.setFunctionType("groovy");
+		cf.setFunctionType(CustomPropertyFunctionType.GROOVY);
 
 		List<ParameterValue> script = getConfiguration().get(PARAMETER_SCRIPT);
 		if (script != null && !script.isEmpty()) {

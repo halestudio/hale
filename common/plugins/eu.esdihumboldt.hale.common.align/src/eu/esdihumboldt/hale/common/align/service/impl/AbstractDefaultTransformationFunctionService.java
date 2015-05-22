@@ -47,7 +47,7 @@ public abstract class AbstractDefaultTransformationFunctionService extends
 
 		@Override
 		public String getEngineId() {
-			return null;
+			return "eu.esdihumboldt.align.java";
 		}
 
 		@Override
@@ -99,11 +99,11 @@ public abstract class AbstractDefaultTransformationFunctionService extends
 
 		Alignment al = getCurrentAlignment();
 		if (al != null) {
-			List<PropertyTransformationFactory> cfs = new ArrayList<>();
-			for (CustomPropertyFunction cf : al.getCustomPropertyFunctions().values()) {
+			List<PropertyTransformationFactory> cfs = new ArrayList<>(functions);
+			CustomPropertyFunction cf = al.getCustomPropertyFunctions().get(functionId);
+			if (cf != null) {
 				cfs.add(new CustomPropertyFunctionFactory(cf));
 			}
-			cfs.addAll(functions);
 
 			functions = cfs;
 		}

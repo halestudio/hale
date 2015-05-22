@@ -22,10 +22,10 @@ import java.util.Set;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.ParameterDefinition;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameterDefinition;
-import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
@@ -81,13 +81,13 @@ public class SchemaSelectionFunctionMatcher {
 	 *             type nor a property function)
 	 */
 	public boolean matchFunction(FunctionDefinition<?> function, SchemaSelection selection) {
-		if (function instanceof TypeFunction) {
-			TypeFunction tf = (TypeFunction) function;
+		if (function instanceof TypeFunctionDefinition) {
+			TypeFunctionDefinition tf = (TypeFunctionDefinition) function;
 			// match selection against function definition
 			return matchTypeFunction(tf, selection);
 		}
-		else if (function instanceof PropertyFunction) {
-			PropertyFunction pf = (PropertyFunction) function;
+		else if (function instanceof PropertyFunctionDefinition) {
+			PropertyFunctionDefinition pf = (PropertyFunctionDefinition) function;
 			// match selection against function definition
 			return matchPropertyFunction(pf, selection);
 		}
@@ -104,7 +104,8 @@ public class SchemaSelectionFunctionMatcher {
 	 * @return <code>true</code> if the definition matches the selection,
 	 *         <code>false</code> otherwise
 	 */
-	public boolean matchPropertyFunction(PropertyFunction function, SchemaSelection selection) {
+	public boolean matchPropertyFunction(PropertyFunctionDefinition function,
+			SchemaSelection selection) {
 		/*
 		 * Deactivated restriction that property cells can only be created with
 		 * existing type cells.
@@ -176,7 +177,7 @@ public class SchemaSelectionFunctionMatcher {
 	 * @return if the conditions on mandatory function entities can be met
 	 */
 	protected boolean checkMandatoryConditions(Set<EntityDefinition> schemaEntities,
-			Iterable<? extends AbstractParameter> functionEntities) {
+			Iterable<? extends ParameterDefinition> functionEntities) {
 		for (ParameterDefinition functionEntity : functionEntities) {
 			if (functionEntity.getMinOccurrence() != 0) {
 				// entity is mandatory
@@ -264,7 +265,7 @@ public class SchemaSelectionFunctionMatcher {
 	 * @return <code>true</code> if the definition matches the selection,
 	 *         <code>false</code> otherwise
 	 */
-	public boolean matchTypeFunction(TypeFunction function, SchemaSelection selection) {
+	public boolean matchTypeFunction(TypeFunctionDefinition function, SchemaSelection selection) {
 		// check types
 		Set<EntityDefinition> sourceItems = selection.getSourceItems();
 		if (!ignoreSource && !checkType(sourceItems, TypeEntityDefinition.class)) {
@@ -322,7 +323,7 @@ public class SchemaSelectionFunctionMatcher {
 	 * @param isTarget if the entities are target entities
 	 * @return if then entity count is compatible with the definitions
 	 */
-	protected boolean checkCount(int count, Set<? extends AbstractParameter> entities,
+	protected boolean checkCount(int count, Set<? extends ParameterDefinition> entities,
 			boolean isTarget) {
 		int min = 0;
 		int max = 0;

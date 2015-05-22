@@ -19,7 +19,7 @@ import java.util.List;
 
 import org.eclipse.swt.widgets.Composite;
 
-import eu.esdihumboldt.hale.common.align.extension.function.custom.impl.DefaultCustomPropertyFunctionEntity;
+import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunctionEntity;
 
 /**
  * TODO Type description
