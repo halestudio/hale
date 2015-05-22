@@ -12,7 +12,7 @@
  * Contributors:
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
-package eu.esdihumboldt.hale.ui.function.custom;
+package eu.esdihumboldt.hale.ui.functions.custom;
 
 import org.eclipse.jface.wizard.IWizard;
 

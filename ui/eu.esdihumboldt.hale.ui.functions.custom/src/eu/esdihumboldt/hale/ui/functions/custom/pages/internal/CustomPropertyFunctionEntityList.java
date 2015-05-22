@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.function.custom.pages.internal;
+package eu.esdihumboldt.hale.ui.functions.custom.pages.internal;
 
 import java.util.List;
 

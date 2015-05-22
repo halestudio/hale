@@ -445,10 +445,9 @@
          unpack="false"/>
 
    <plugin
-         id="eu.esdihumboldt.hale.ui.function.custom"
+         id="eu.esdihumboldt.hale.ui.functions.custom"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+         version="0.0.0"/>
 
 </feature>

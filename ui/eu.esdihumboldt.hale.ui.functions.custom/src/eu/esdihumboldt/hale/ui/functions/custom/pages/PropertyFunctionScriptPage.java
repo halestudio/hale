@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.function.custom.pages;
+package eu.esdihumboldt.hale.ui.functions.custom.pages;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,7 +43,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
-import eu.esdihumboldt.hale.ui.function.custom.CustomPropertyFunctionWizard;
+import eu.esdihumboldt.hale.ui.functions.custom.CustomPropertyFunctionWizard;
 import eu.esdihumboldt.hale.ui.functions.groovy.GroovyScriptPage;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.InstanceBuilderCompletions;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.PageHelp;

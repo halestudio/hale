@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.function.custom;
+package eu.esdihumboldt.hale.ui.functions.custom;
 
 import org.eclipse.jface.dialogs.IPageChangingListener;
 import org.eclipse.jface.dialogs.PageChangingEvent;
@@ -32,7 +32,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomFunctio
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationFunction;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.function.AbstractFunctionWizard;
-import eu.esdihumboldt.hale.ui.function.custom.pages.CustomFunctionWizardPage;
+import eu.esdihumboldt.hale.ui.functions.custom.pages.CustomFunctionWizardPage;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 

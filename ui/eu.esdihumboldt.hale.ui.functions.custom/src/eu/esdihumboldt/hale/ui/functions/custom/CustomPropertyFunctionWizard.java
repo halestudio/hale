@@ -13,14 +13,14 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.function.custom;
+package eu.esdihumboldt.hale.ui.functions.custom;
 
 import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyTransformation;
-import eu.esdihumboldt.hale.ui.function.custom.pages.CustomPropertyFunctionEntitiesPage;
-import eu.esdihumboldt.hale.ui.function.custom.pages.MainPage;
-import eu.esdihumboldt.hale.ui.function.custom.pages.PropertyFunctionScriptPage;
+import eu.esdihumboldt.hale.ui.functions.custom.pages.CustomPropertyFunctionEntitiesPage;
+import eu.esdihumboldt.hale.ui.functions.custom.pages.MainPage;
+import eu.esdihumboldt.hale.ui.functions.custom.pages.PropertyFunctionScriptPage;
 
 /**
  * TODO Type description

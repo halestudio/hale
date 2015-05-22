@@ -11,7 +11,7 @@
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="eu.esdihumboldt.hale.ui.function.custom.NewCustomPropertyFunctionHandler"
+            class="eu.esdihumboldt.hale.ui.functions.custom.NewCustomPropertyFunctionHandler"
             commandId="eu.esdihumboldt.hale.ui.function.custom.create">
       </handler>
    </extension>

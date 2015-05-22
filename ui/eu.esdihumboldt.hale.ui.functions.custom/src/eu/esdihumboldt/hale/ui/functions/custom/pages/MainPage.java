@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.function.custom.pages;
+package eu.esdihumboldt.hale.ui.functions.custom.pages;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunction;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
-import eu.esdihumboldt.hale.ui.function.custom.CustomPropertyFunctionWizard;
+import eu.esdihumboldt.hale.ui.functions.custom.CustomPropertyFunctionWizard;
 
 /**
  * TODO Type description

@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.function.custom.pages;
+package eu.esdihumboldt.hale.ui.functions.custom.pages;
 
 import java.util.Collections;
 
@@ -30,9 +30,9 @@ import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunctionEntity;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
-import eu.esdihumboldt.hale.ui.function.custom.CustomPropertyFunctionWizard;
-import eu.esdihumboldt.hale.ui.function.custom.pages.internal.CustomPropertyFunctionEntityEditor;
-import eu.esdihumboldt.hale.ui.function.custom.pages.internal.CustomPropertyFunctionEntityList;
+import eu.esdihumboldt.hale.ui.functions.custom.CustomPropertyFunctionWizard;
+import eu.esdihumboldt.hale.ui.functions.custom.pages.internal.CustomPropertyFunctionEntityEditor;
+import eu.esdihumboldt.hale.ui.functions.custom.pages.internal.CustomPropertyFunctionEntityList;
 import eu.esdihumboldt.hale.ui.util.components.DynamicScrolledComposite;
 
 /**

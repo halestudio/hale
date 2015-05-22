@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.function.custom.pages;
+package eu.esdihumboldt.hale.ui.functions.custom.pages;
 
 import org.eclipse.jface.wizard.IWizardPage;
 
