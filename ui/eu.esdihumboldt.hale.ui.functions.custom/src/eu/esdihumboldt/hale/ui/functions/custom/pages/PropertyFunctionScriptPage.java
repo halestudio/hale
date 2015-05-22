@@ -30,6 +30,7 @@ import com.google.common.collect.ImmutableList;
 import eu.esdihumboldt.hale.common.align.custom.CustomPropertyFunctionType;
 import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunctionEntity;
+import eu.esdihumboldt.hale.common.align.custom.groovy.CustomGroovyTransformation;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
@@ -242,11 +243,6 @@ public class PropertyFunctionScriptPage extends GroovyScriptPage<CustomPropertyF
 
 				DefaultCustomPropertyFunction cf = getWizard().getUnfinishedFunction();
 
-//				boolean useInstanceValues = CellUtil.getOptionalParameter(cell,
-//						GroovyTransformation.PARAM_INSTANCE_VARIABLES, Value.of(false)).as(
-//						Boolean.class);
-				boolean useInstanceValues = false;
-
 				int index = 0;
 				for (EntityDefinition variable : getVariables()) {
 					DefaultCustomPropertyFunctionEntity source = cf.getSources().get(index);
@@ -255,7 +251,9 @@ public class PropertyFunctionScriptPage extends GroovyScriptPage<CustomPropertyF
 						PropertyDefinition prop = (PropertyDefinition) variable.getDefinition();
 
 						TypeDefinition propertyType;
-						if (useInstanceValues) {
+						boolean useInstanceValue = CustomGroovyTransformation
+								.useInstanceVariableForSource(source);
+						if (useInstanceValue) {
 							// use instance type
 							propertyType = prop.getPropertyType();
 						}
