@@ -160,7 +160,7 @@
       <plugin id="it.geosolutions.imageio-ext.utilities"/>
       <plugin id="java3d.vecmath"/>
       <plugin id="javassist"/>
-      <plugin id="javax.annotation-api"/>
+      <plugin id="javax.annotation"/>
       <plugin id="javax.annotation.extensions" fragment="true"/>
       <plugin id="javax.el"/>
       <plugin id="javax.inject.javax.inject"/>
