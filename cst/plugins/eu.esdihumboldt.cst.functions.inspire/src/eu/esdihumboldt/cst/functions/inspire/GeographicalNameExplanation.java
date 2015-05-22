@@ -21,7 +21,7 @@ import java.util.List;
 
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionDefinition;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -40,7 +40,7 @@ public class GeographicalNameExplanation extends AbstractCellExplanation impleme
 	protected String getExplanation(Cell cell, boolean html) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 
-		PropertyFunction function = FunctionUtil.getPropertyFunction(ID, null);
+		PropertyFunctionDefinition function = FunctionUtil.getPropertyFunction(ID, null);
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("The {0} property is populated with an Inspire Geographical Name composed as follows:");
@@ -150,7 +150,7 @@ public class GeographicalNameExplanation extends AbstractCellExplanation impleme
 	}
 
 	private void addOptionalParameter(StringBuilder sb, Cell cell, String paramName,
-			PropertyFunction function, boolean html) {
+			PropertyFunctionDefinition function, boolean html) {
 		String value = CellUtil.getFirstParameter(cell, paramName).as(String.class);
 		if (value != null && !value.isEmpty()) {
 			FunctionParameterDefinition param = function.getParameter(paramName);

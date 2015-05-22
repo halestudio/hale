@@ -25,7 +25,8 @@ import eu.esdihumboldt.hale.ui.views.properties.AbstractTextSection;
  * @author Patrick Lieb
  * @param <F> the function
  */
-public abstract class AbstractFunctionSection<F extends FunctionDefinition> extends AbstractTextSection {
+public abstract class AbstractFunctionSection<F extends FunctionDefinition<?>> extends
+		AbstractTextSection {
 
 	/**
 	 * the Function for this section

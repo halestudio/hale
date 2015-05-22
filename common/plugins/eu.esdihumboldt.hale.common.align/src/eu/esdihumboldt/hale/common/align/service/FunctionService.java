@@ -20,8 +20,8 @@ import java.util.Collection;
 import javax.annotation.Nullable;
 
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionDefinition;
 
 /**
  * Interface for service resolving functions definitions.
@@ -38,7 +38,7 @@ public interface FunctionService {
 	 *         identifier was found
 	 */
 	@Nullable
-	FunctionDefinition getFunction(String id);
+	FunctionDefinition<?> getFunction(String id);
 
 	/**
 	 * Get the property function w/ the given identifier.
@@ -48,7 +48,7 @@ public interface FunctionService {
 	 *         identifier was found
 	 */
 	@Nullable
-	PropertyFunction getPropertyFunction(String id);
+	PropertyFunctionDefinition getPropertyFunction(String id);
 
 	/**
 	 * Get the type function w/ the given identifier.
@@ -58,21 +58,21 @@ public interface FunctionService {
 	 *         identifier was found
 	 */
 	@Nullable
-	TypeFunction getTypeFunction(String id);
+	TypeFunctionDefinition getTypeFunction(String id);
 
 	/**
 	 * Get all type functions.
 	 * 
 	 * @return the collection of available type functions
 	 */
-	Collection<? extends TypeFunction> getTypeFunctions();
+	Collection<? extends TypeFunctionDefinition> getTypeFunctions();
 
 	/**
 	 * Get all property functions.
 	 * 
 	 * @return the collection of available property functions
 	 */
-	Collection<? extends PropertyFunction> getPropertyFunctions();
+	Collection<? extends PropertyFunctionDefinition> getPropertyFunctions();
 
 	/**
 	 * Get the type functions associated to the category with the given ID
@@ -80,7 +80,7 @@ public interface FunctionService {
 	 * @param categoryId the category ID, may be <code>null</code>
 	 * @return the list of functions or an empty list
 	 */
-	Collection<? extends TypeFunction> getTypeFunctions(@Nullable String categoryId);
+	Collection<? extends TypeFunctionDefinition> getTypeFunctions(@Nullable String categoryId);
 
 	/**
 	 * Get the property functions associated to the category with the given ID
@@ -88,6 +88,7 @@ public interface FunctionService {
 	 * @param categoryId the category ID, may be <code>null</code>
 	 * @return the list of functions or an empty list
 	 */
-	Collection<? extends PropertyFunction> getPropertyFunctions(@Nullable String categoryId);
+	Collection<? extends PropertyFunctionDefinition> getPropertyFunctions(
+			@Nullable String categoryId);
 
 }

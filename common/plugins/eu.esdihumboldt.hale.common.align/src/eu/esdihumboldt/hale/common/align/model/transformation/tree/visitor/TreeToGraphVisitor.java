@@ -120,7 +120,7 @@ public class TreeToGraphVisitor extends AbstractTargetToSourceVisitor {
 		}
 
 		String functionName;
-		FunctionDefinition function = null;
+		FunctionDefinition<?> function = null;
 		if (functionService != null) {
 			function = functionService.getFunction(cell.getCell().getTransformationIdentifier());
 		}

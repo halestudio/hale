@@ -65,7 +65,7 @@ public abstract class AbstractParameterPage extends
 	 * @param description the page description, if <code>null</code> the
 	 *            function description will be used
 	 */
-	public AbstractParameterPage(FunctionDefinition function, String description) {
+	public AbstractParameterPage(FunctionDefinition<?> function, String description) {
 		super(function.getId(), function.getDisplayName(), null);
 
 		if (description == null) {

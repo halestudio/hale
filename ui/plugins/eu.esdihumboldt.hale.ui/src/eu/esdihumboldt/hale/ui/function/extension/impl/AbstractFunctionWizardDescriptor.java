@@ -24,7 +24,7 @@ import de.fhg.igd.eclipse.util.extension.AbstractConfigurationFactory;
 import de.fhg.igd.eclipse.util.extension.AbstractObjectFactory;
 import de.fhg.igd.eclipse.util.extension.ExtensionObjectDefinition;
 import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardDescriptor;
@@ -37,7 +37,7 @@ import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
  * @param <T> the function definition type
  * @author Simon Templer
  */
-public abstract class AbstractFunctionWizardDescriptor<T extends AbstractFunction<?>> extends
+public abstract class AbstractFunctionWizardDescriptor<T extends FunctionDefinition<?>> extends
 		AbstractConfigurationFactory<FunctionWizardFactory> implements FunctionWizardDescriptor<T> {
 
 	private FunctionWizardFactory factory;

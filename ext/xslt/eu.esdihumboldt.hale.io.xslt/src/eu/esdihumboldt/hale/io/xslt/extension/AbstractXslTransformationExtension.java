@@ -37,7 +37,7 @@ import eu.esdihumboldt.hale.io.xslt.XslTypeTransformation;
  * @param <X> the concrete function type associated to the XSLT transformation
  *            type
  */
-public abstract class AbstractXslTransformationExtension<T extends XslTransformation, X extends FunctionDefinition>
+public abstract class AbstractXslTransformationExtension<T extends XslTransformation, X extends FunctionDefinition<?>>
 		extends AbstractExtension<T, XslTransformationFactory<T, X>> implements
 		XslExtensionConstants {
 

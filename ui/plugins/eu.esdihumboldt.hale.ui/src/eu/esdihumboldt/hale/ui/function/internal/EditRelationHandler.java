@@ -95,7 +95,7 @@ public class EditRelationHandler extends AbstractHandler {
 				}
 
 				if (wizard == null) {
-					FunctionDefinition function = FunctionUtil
+					FunctionDefinition<?> function = FunctionUtil
 							.getFunction(originalCell.getTransformationIdentifier(),
 									HaleUI.getServiceProvider());
 					if (function == null) {

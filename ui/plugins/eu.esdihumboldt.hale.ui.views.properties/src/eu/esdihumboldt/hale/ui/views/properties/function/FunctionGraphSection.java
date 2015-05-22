@@ -38,7 +38,8 @@ import eu.esdihumboldt.hale.ui.common.graph.layout.FunctionTreeLayoutAlgorithm;
  * @author Patrick Lieb
  * @param <F> the function for the section
  */
-public class FunctionGraphSection<F extends FunctionDefinition> extends DefaultFunctionSection<F> {
+public class FunctionGraphSection<F extends FunctionDefinition<?>> extends
+		DefaultFunctionSection<F> {
 
 	private GraphViewer viewer;
 

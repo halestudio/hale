@@ -42,7 +42,8 @@ import eu.esdihumboldt.hale.common.align.model.CellExplanation;
  * @author Simon Templer
  */
 @Immutable
-public abstract class AbstractFunction<P extends ParameterDefinition> implements FunctionDefinition {
+public abstract class AbstractFunction<P extends ParameterDefinition> implements
+		FunctionDefinition<P> {
 
 	private final ALogger log = ALoggerFactory.getLogger(AbstractFunction.class);
 
@@ -113,12 +114,7 @@ public abstract class AbstractFunction<P extends ParameterDefinition> implements
 	@Override
 	public abstract Set<? extends P> getTarget();
 
-	/**
-	 * States if the function represents an augmentation of a target instance
-	 * instead of a transformation.
-	 * 
-	 * @return if the function is an augmentation
-	 */
+	@Override
 	public boolean isAugmentation() {
 		return getSource().isEmpty();
 	}

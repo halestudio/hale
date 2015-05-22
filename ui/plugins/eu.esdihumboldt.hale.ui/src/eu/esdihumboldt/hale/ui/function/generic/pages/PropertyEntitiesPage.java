@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
@@ -44,7 +44,7 @@ import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
  * @author Simon Templer
  */
 public class PropertyEntitiesPage extends
-		EntitiesPage<PropertyFunction, PropertyParameterDefinition, PropertyField> {
+		EntitiesPage<PropertyFunctionDefinition, PropertyParameterDefinition, PropertyField> {
 
 //	private ComboViewer typeRelation;
 	private SourceTargetTypeSelector sourceTargetSelector;

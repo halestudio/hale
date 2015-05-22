@@ -15,10 +15,18 @@
 
 package eu.esdihumboldt.hale.common.align.extension.function.custom.impl;
 
+import java.net.URL;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomPropertyFunction;
+import eu.esdihumboldt.hale.common.align.model.CellExplanation;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyTransformation;
 import eu.esdihumboldt.hale.common.core.io.Value;
 
@@ -32,14 +40,108 @@ public class DefaultCustomPropertyFunction implements CustomPropertyFunction {
 	private DefaultCustomPropertyFunctionEntity target;
 	private List<DefaultCustomPropertyFunctionEntity> sources;
 
+	private String identifier;
+	private String name;
 	private String functionType;
 	private Value functionDefinition;
+	private final PropertyFunctionDefinition descriptor = new PropertyFunctionDefinition() {
+
+		@Override
+		public String getId() {
+			return identifier;
+		}
+
+		@Override
+		public boolean isAugmentation() {
+			return sources == null || sources.isEmpty();
+		}
+
+		@Override
+		public Set<? extends PropertyParameterDefinition> getTarget() {
+			if (target == null) {
+				return Collections.emptySet();
+			}
+			return Collections.singleton(createParamDefinition(target));
+		}
+
+		@Override
+		public Set<? extends PropertyParameterDefinition> getSource() {
+			Set<PropertyParameterDefinition> sourceDefs = new HashSet<>();
+
+			if (sources != null && !sources.isEmpty()) {
+				for (DefaultCustomPropertyFunctionEntity source : sources) {
+					sourceDefs.add(createParamDefinition(source));
+				}
+			}
+
+			return sourceDefs;
+		}
+
+		@Override
+		public FunctionParameterDefinition getParameter(String paramName) {
+			// TODO Auto-generated method stub
+			// XXX no parameters yet
+			return null;
+		}
+
+		@Override
+		public URL getIconURL() {
+			return null;
+		}
+
+		@Override
+		public URL getHelpURL() {
+			return null;
+		}
+
+		@Override
+		public CellExplanation getExplanation() {
+			return null;
+		}
+
+		@Override
+		public String getDisplayName() {
+			return name;
+		}
+
+		@Override
+		public String getDescription() {
+			return null;
+		}
+
+		@Override
+		public String getDefiningBundle() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Collection<FunctionParameterDefinition> getDefinedParameters() {
+			// TODO Auto-generated method stub
+			return Collections.emptyList();
+		}
+
+		@Override
+		public String getCategoryId() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+	};
 
 	/**
 	 * @return the functionType
 	 */
 	public String getFunctionType() {
 		return functionType;
+	}
+
+	/**
+	 * @param target2
+	 * @return
+	 */
+	protected PropertyParameterDefinition createParamDefinition(
+			final DefaultCustomPropertyFunctionEntity entity) {
+		return entity;
 	}
 
 	/**
@@ -95,9 +197,8 @@ public class DefaultCustomPropertyFunction implements CustomPropertyFunction {
 	 * @see eu.esdihumboldt.hale.common.align.extension.function.custom.CustomFunction#getDescriptor()
 	 */
 	@Override
-	public PropertyFunction getDescriptor() {
-		// TODO Auto-generated method stub
-		return null;
+	public PropertyFunctionDefinition getDescriptor() {
+		return descriptor;
 	}
 
 	/**

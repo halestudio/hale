@@ -26,9 +26,10 @@ import eu.esdihumboldt.hale.common.align.model.CellExplanation;
 /**
  * Basic interface for function definitions
  * 
+ * @param <P> entity parameter definition type
  * @author Simon Templer
  */
-public interface FunctionDefinition extends Identifiable {
+public interface FunctionDefinition<P extends ParameterDefinition> extends Identifiable {
 
 	/**
 	 * Get the human readable name of the function
@@ -50,6 +51,14 @@ public interface FunctionDefinition extends Identifiable {
 	 * @return the category ID, may be <code>null</code>
 	 */
 	public String getCategoryId();
+
+	/**
+	 * States if the function represents an augmentation of a target instance
+	 * instead of a transformation.
+	 * 
+	 * @return if the function is an augmentation
+	 */
+	public boolean isAugmentation();
 
 	/**
 	 * Get the defined parameters for the function
@@ -100,14 +109,14 @@ public interface FunctionDefinition extends Identifiable {
 	 * 
 	 * @return the source entities
 	 */
-	public Set<? extends ParameterDefinition> getSource();
+	public Set<? extends P> getSource();
 
 	/**
 	 * Get the target entities
 	 * 
 	 * @return the target entities
 	 */
-	public Set<? extends ParameterDefinition> getTarget();
+	public Set<? extends P> getTarget();
 
 //	/**
 //	 * Get the help file ID of the text to be included

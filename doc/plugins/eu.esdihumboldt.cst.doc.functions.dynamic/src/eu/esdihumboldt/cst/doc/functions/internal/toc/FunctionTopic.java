@@ -31,14 +31,14 @@ import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
  */
 public class FunctionTopic implements ITopic, FunctionReferenceConstants {
 
-	private final FunctionDefinition function;
+	private final FunctionDefinition<?> function;
 
 	/**
 	 * Create the function topic.
 	 * 
 	 * @param function the associated function
 	 */
-	public FunctionTopic(FunctionDefinition function) {
+	public FunctionTopic(FunctionDefinition<?> function) {
 		super();
 		this.function = function;
 	}

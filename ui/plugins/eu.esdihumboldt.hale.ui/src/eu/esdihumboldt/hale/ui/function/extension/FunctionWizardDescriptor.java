@@ -17,7 +17,7 @@
 package eu.esdihumboldt.hale.ui.function.extension;
 
 import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 
 /**
  * Function wizard descriptor
@@ -26,7 +26,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public interface FunctionWizardDescriptor<T extends AbstractFunction<?>> extends
+public interface FunctionWizardDescriptor<T extends FunctionDefinition<?>> extends
 		ExtensionObjectFactory<FunctionWizardFactory>, FunctionWizardFactory {
 
 	/**

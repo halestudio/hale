@@ -27,8 +27,8 @@ import eu.esdihumboldt.hale.io.xslt.XslTransformation;
  * @param <X> the concrete function type associated to the XSLT transformation
  *            type
  */
-public interface XslTransformationFactory<T extends XslTransformation, X extends FunctionDefinition> extends
-		ExtensionObjectFactory<T> {
+public interface XslTransformationFactory<T extends XslTransformation, X extends FunctionDefinition<?>>
+		extends ExtensionObjectFactory<T> {
 
 	/**
 	 * Get the identifier of the function the {@link XslTransformation} is

@@ -32,8 +32,8 @@ public class HtmlExplanationCellFilter extends AbstractCellFilter {
 
 	@Override
 	public boolean isFiltered(Cell cell) {
-		FunctionDefinition function = FunctionUtil.getFunction(cell.getTransformationIdentifier(),
-				HaleUI.getServiceProvider());
+		FunctionDefinition<?> function = FunctionUtil.getFunction(
+				cell.getTransformationIdentifier(), HaleUI.getServiceProvider());
 		if (function != null) {
 			CellExplanation explanation = function.getExplanation();
 			if (explanation != null) {

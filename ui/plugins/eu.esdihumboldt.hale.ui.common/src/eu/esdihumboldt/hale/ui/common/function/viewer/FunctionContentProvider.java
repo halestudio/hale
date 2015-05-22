@@ -30,6 +30,7 @@ import com.google.common.collect.Collections2;
 import eu.esdihumboldt.hale.common.align.extension.category.Category;
 import eu.esdihumboldt.hale.common.align.extension.category.CategoryExtension;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.ui.common.internal.Messages;
 
@@ -40,7 +41,7 @@ import eu.esdihumboldt.hale.ui.common.internal.Messages;
  * @author Simon Templer
  */
 public class FunctionContentProvider implements ITreeContentProvider,
-		Predicate<AbstractFunction<?>> {
+		Predicate<FunctionDefinition<?>> {
 
 	private static final Category CAT_OTHER = new Category(null,
 			Messages.FunctionContentProvider_others, Messages.FunctionContentProvider_description);
@@ -81,7 +82,7 @@ public class FunctionContentProvider implements ITreeContentProvider,
 	}
 
 	@Override
-	public boolean apply(AbstractFunction<?> function) {
+	public boolean apply(FunctionDefinition<?> function) {
 		return true;
 	}
 
@@ -93,7 +94,7 @@ public class FunctionContentProvider implements ITreeContentProvider,
 		if (parentElement instanceof Category) {
 			Category category = (Category) parentElement;
 
-			List<AbstractFunction<?>> functions = new ArrayList<AbstractFunction<?>>();
+			List<FunctionDefinition<?>> functions = new ArrayList<>();
 			functions.addAll(Collections2.filter(
 					FunctionUtil.getTypeFunctions(category.getId(), null), this));
 			functions.addAll(Collections2.filter(

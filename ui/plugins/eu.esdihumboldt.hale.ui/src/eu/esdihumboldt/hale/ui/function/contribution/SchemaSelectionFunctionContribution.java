@@ -20,7 +20,7 @@ import org.eclipse.ui.PlatformUI;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityService;
 import eu.esdihumboldt.hale.ui.function.contribution.internal.AbstractWizardAction;
 import eu.esdihumboldt.hale.ui.function.contribution.internal.SchemaSelectionWizardAction;
@@ -73,7 +73,7 @@ public class SchemaSelectionFunctionContribution extends AbstractFunctionWizardC
 	 */
 	@Override
 	public boolean isActive(FunctionWizardDescriptor<?> descriptor) {
-		AbstractFunction<?> function = descriptor.getFunction();
+		FunctionDefinition<?> function = descriptor.getFunction();
 		// rule out functions not supported by the compatibility mode
 		try {
 			if (!((CompatibilityService) PlatformUI.getWorkbench().getService(

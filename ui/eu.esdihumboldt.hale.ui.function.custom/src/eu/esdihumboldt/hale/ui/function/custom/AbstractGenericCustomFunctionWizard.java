@@ -44,7 +44,7 @@ import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
  * @param <C> the custom function type
  * @author Simon Templer
  */
-public abstract class AbstractGenericCustomFunctionWizard<C extends CustomFunction<F, T>, F extends FunctionDefinition, T extends TransformationFunction<?>>
+public abstract class AbstractGenericCustomFunctionWizard<C extends CustomFunction<F, T>, F extends FunctionDefinition<?>, T extends TransformationFunction<?>>
 		extends AbstractCustomFunctionWizard<C> {
 
 	private static final ALogger log = ALoggerFactory
@@ -61,7 +61,6 @@ public abstract class AbstractGenericCustomFunctionWizard<C extends CustomFuncti
 	 * selection
 	 * 
 	 * @param selection the schema selection, may be <code>null</code>
-	 * @param functionId the function identifier
 	 */
 	public AbstractGenericCustomFunctionWizard(SchemaSelection selection) {
 		super(selection);

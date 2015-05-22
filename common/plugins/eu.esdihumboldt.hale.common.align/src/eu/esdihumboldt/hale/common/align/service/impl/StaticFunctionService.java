@@ -19,9 +19,9 @@ import java.util.Collection;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExtension;
-import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionExtension;
 import eu.esdihumboldt.hale.common.align.service.FunctionService;
 
@@ -33,7 +33,7 @@ import eu.esdihumboldt.hale.common.align.service.FunctionService;
 public class StaticFunctionService implements FunctionService {
 
 	@Override
-	public FunctionDefinition getFunction(String id) {
+	public FunctionDefinition<?> getFunction(String id) {
 		AbstractFunction<?> result = null;
 
 		result = TypeFunctionExtension.getInstance().get(id);
@@ -46,32 +46,32 @@ public class StaticFunctionService implements FunctionService {
 	}
 
 	@Override
-	public PropertyFunction getPropertyFunction(String id) {
+	public PropertyFunctionDefinition getPropertyFunction(String id) {
 		return PropertyFunctionExtension.getInstance().get(id);
 	}
 
 	@Override
-	public TypeFunction getTypeFunction(String id) {
+	public TypeFunctionDefinition getTypeFunction(String id) {
 		return TypeFunctionExtension.getInstance().get(id);
 	}
 
 	@Override
-	public Collection<? extends TypeFunction> getTypeFunctions() {
+	public Collection<? extends TypeFunctionDefinition> getTypeFunctions() {
 		return TypeFunctionExtension.getInstance().getElements();
 	}
 
 	@Override
-	public Collection<? extends PropertyFunction> getPropertyFunctions() {
+	public Collection<? extends PropertyFunctionDefinition> getPropertyFunctions() {
 		return PropertyFunctionExtension.getInstance().getElements();
 	}
 
 	@Override
-	public Collection<? extends TypeFunction> getTypeFunctions(String categoryId) {
+	public Collection<? extends TypeFunctionDefinition> getTypeFunctions(String categoryId) {
 		return TypeFunctionExtension.getInstance().getFunctions(categoryId);
 	}
 
 	@Override
-	public Collection<? extends PropertyFunction> getPropertyFunctions(String categoryId) {
+	public Collection<? extends PropertyFunctionDefinition> getPropertyFunctions(String categoryId) {
 		return PropertyFunctionExtension.getInstance().getFunctions(categoryId);
 	}
 

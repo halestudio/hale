@@ -247,7 +247,7 @@ public class NewRelationPage extends ViewerWizardSelectionPage {
 
 			if (functionId != null) {
 				// create function wizard node and select it
-				FunctionDefinition function = FunctionUtil.getFunction(functionId,
+				FunctionDefinition<?> function = FunctionUtil.getFunction(functionId,
 						HaleUI.getServiceProvider());
 				if (function != null) {
 					FunctionWizardNode node = new FunctionWizardNode(function, getContainer(),

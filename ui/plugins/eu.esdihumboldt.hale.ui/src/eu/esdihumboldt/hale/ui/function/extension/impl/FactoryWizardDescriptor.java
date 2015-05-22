@@ -19,7 +19,7 @@ package eu.esdihumboldt.hale.ui.function.extension.impl;
 import java.net.URL;
 
 import de.fhg.igd.eclipse.util.extension.AbstractObjectFactory;
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardDescriptor;
@@ -32,7 +32,7 @@ import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
  * @param <T> the function type
  * @author Simon Templer
  */
-public class FactoryWizardDescriptor<T extends AbstractFunction<?>> extends
+public class FactoryWizardDescriptor<T extends FunctionDefinition<?>> extends
 		AbstractObjectFactory<FunctionWizardFactory> implements FunctionWizardDescriptor<T> {
 
 	private static final String IDENTIFIER_PREFIX = "GENERIC_";

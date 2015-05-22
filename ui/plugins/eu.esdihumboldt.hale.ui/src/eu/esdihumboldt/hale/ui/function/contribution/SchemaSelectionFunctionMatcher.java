@@ -19,14 +19,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.ParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.TypeParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.align.model.Type;
@@ -79,7 +80,7 @@ public class SchemaSelectionFunctionMatcher {
 	 * @throws IllegalStateException if the function type is unknown (neither a
 	 *             type nor a property function)
 	 */
-	public boolean matchFunction(AbstractFunction<?> function, SchemaSelection selection) {
+	public boolean matchFunction(FunctionDefinition<?> function, SchemaSelection selection) {
 		if (function instanceof TypeFunction) {
 			TypeFunction tf = (TypeFunction) function;
 			// match selection against function definition
@@ -192,7 +193,7 @@ public class SchemaSelectionFunctionMatcher {
 					}
 				}
 				else if (functionEntity instanceof TypeParameter) {
-					TypeParameter tp = (TypeParameter) functionEntity;
+					TypeParameterDefinition tp = (TypeParameterDefinition) functionEntity;
 					if (!tp.getConditions().isEmpty()) {
 						// check if there is an entity given that matches the
 						// conditions

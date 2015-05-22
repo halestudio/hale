@@ -29,7 +29,8 @@ import eu.esdihumboldt.hale.ui.views.properties.AbstractTextSection;
  * @author Patrick Lieb
  * @param <F> the Function
  */
-public class DefaultFunctionSection<F extends FunctionDefinition> extends AbstractFunctionSection<F> {
+public class DefaultFunctionSection<F extends FunctionDefinition<?>> extends
+		AbstractFunctionSection<F> {
 
 	/**
 	 * @see AbstractTextSection#setInput(Object)

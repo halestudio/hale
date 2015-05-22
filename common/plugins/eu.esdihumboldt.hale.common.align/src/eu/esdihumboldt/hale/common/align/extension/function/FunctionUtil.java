@@ -40,7 +40,8 @@ public abstract class FunctionUtil {
 	 * @return the function or <code>null</code> if no function with the given
 	 *         identifier was found
 	 */
-	public static FunctionDefinition getFunction(String id, @Nullable ServiceProvider serviceProvider) {
+	public static FunctionDefinition<?> getFunction(String id,
+			@Nullable ServiceProvider serviceProvider) {
 		if (serviceProvider != null) {
 			FunctionService fs = serviceProvider.getService(FunctionService.class);
 			if (fs != null) {
@@ -69,7 +70,7 @@ public abstract class FunctionUtil {
 	 * @return the function or <code>null</code> if no function with the given
 	 *         identifier was found
 	 */
-	public static PropertyFunction getPropertyFunction(String id,
+	public static PropertyFunctionDefinition getPropertyFunction(String id,
 			@Nullable ServiceProvider serviceProvider) {
 		if (serviceProvider != null) {
 			FunctionService fs = serviceProvider.getService(FunctionService.class);
@@ -91,7 +92,8 @@ public abstract class FunctionUtil {
 	 * @return the function or <code>null</code> if no function with the given
 	 *         identifier was found
 	 */
-	public static TypeFunction getTypeFunction(String id, @Nullable ServiceProvider serviceProvider) {
+	public static TypeFunctionDefinition getTypeFunction(String id,
+			@Nullable ServiceProvider serviceProvider) {
 		if (serviceProvider != null) {
 			FunctionService fs = serviceProvider.getService(FunctionService.class);
 			if (fs != null) {
@@ -102,7 +104,7 @@ public abstract class FunctionUtil {
 		return TypeFunctionExtension.getInstance().get(id);
 	}
 
-	public static Collection<? extends TypeFunction> getTypeFunctions(
+	public static Collection<? extends TypeFunctionDefinition> getTypeFunctions(
 			@Nullable ServiceProvider serviceProvider) {
 		if (serviceProvider != null) {
 			FunctionService fs = serviceProvider.getService(FunctionService.class);
@@ -114,7 +116,7 @@ public abstract class FunctionUtil {
 		return TypeFunctionExtension.getInstance().getElements();
 	}
 
-	public static Collection<? extends PropertyFunction> getPropertyFunctions(
+	public static Collection<? extends PropertyFunctionDefinition> getPropertyFunctions(
 			@Nullable ServiceProvider serviceProvider) {
 		if (serviceProvider != null) {
 			FunctionService fs = serviceProvider.getService(FunctionService.class);
@@ -126,7 +128,7 @@ public abstract class FunctionUtil {
 		return PropertyFunctionExtension.getInstance().getElements();
 	}
 
-	public static Collection<? extends TypeFunction> getTypeFunctions(String categoryId,
+	public static Collection<? extends TypeFunctionDefinition> getTypeFunctions(String categoryId,
 			@Nullable ServiceProvider serviceProvider) {
 		if (serviceProvider != null) {
 			FunctionService fs = serviceProvider.getService(FunctionService.class);
@@ -138,8 +140,8 @@ public abstract class FunctionUtil {
 		return TypeFunctionExtension.getInstance().getFunctions(categoryId);
 	}
 
-	public static Collection<? extends PropertyFunction> getPropertyFunctions(String categoryId,
-			@Nullable ServiceProvider serviceProvider) {
+	public static Collection<? extends PropertyFunctionDefinition> getPropertyFunctions(
+			String categoryId, @Nullable ServiceProvider serviceProvider) {
 		if (serviceProvider != null) {
 			FunctionService fs = serviceProvider.getService(FunctionService.class);
 			if (fs != null) {

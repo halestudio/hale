@@ -154,7 +154,7 @@ public class AbstractFunctionParameterSection extends AbstractFunctionSection<Ab
 	@Override
 	protected void setInput(Object input) {
 		if (input instanceof FunctionDefinition) {
-			tableViewer.setInput(((FunctionDefinition) input).getDefinedParameters());
+			tableViewer.setInput(((FunctionDefinition<?>) input).getDefinedParameters());
 		}
 
 	}

@@ -41,7 +41,7 @@ import eu.esdihumboldt.hale.ui.util.wizard.ExtendedWizardNode;
  */
 public class FunctionWizardNode extends AbstractWizardNode {
 
-	private final FunctionDefinition function;
+	private final FunctionDefinition<?> function;
 
 	private final SchemaSelection initialSelection;
 
@@ -51,7 +51,7 @@ public class FunctionWizardNode extends AbstractWizardNode {
 	 * @param function the function
 	 * @param container the wizard container
 	 */
-	public FunctionWizardNode(FunctionDefinition function, IWizardContainer container) {
+	public FunctionWizardNode(FunctionDefinition<?> function, IWizardContainer container) {
 		this(function, container, null);
 	}
 
@@ -64,7 +64,7 @@ public class FunctionWizardNode extends AbstractWizardNode {
 	 *            with, may be <code>null</code> to start with an empty
 	 *            configuration
 	 */
-	public FunctionWizardNode(FunctionDefinition function, IWizardContainer container,
+	public FunctionWizardNode(FunctionDefinition<?> function, IWizardContainer container,
 			SchemaSelection initialSelection) {
 		super(container);
 
@@ -135,7 +135,7 @@ public class FunctionWizardNode extends AbstractWizardNode {
 	/**
 	 * @return the function
 	 */
-	public FunctionDefinition getFunction() {
+	public FunctionDefinition<?> getFunction() {
 		return function;
 	}
 

@@ -20,8 +20,8 @@ import java.util.Collection;
 import java.util.List;
 
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 
@@ -39,8 +39,8 @@ public abstract class AbstractDefaultFunctionService extends StaticFunctionServi
 	protected abstract Alignment getCurrentAlignment();
 
 	@Override
-	public FunctionDefinition getFunction(String id) {
-		FunctionDefinition function = super.getFunction(id);
+	public FunctionDefinition<?> getFunction(String id) {
+		FunctionDefinition<?> function = super.getFunction(id);
 
 		if (function == null) {
 			return getCustomPropertyFunction(id);
@@ -48,7 +48,7 @@ public abstract class AbstractDefaultFunctionService extends StaticFunctionServi
 		return function;
 	}
 
-	private PropertyFunction getCustomPropertyFunction(String id) {
+	private PropertyFunctionDefinition getCustomPropertyFunction(String id) {
 		Alignment al = getCurrentAlignment();
 		if (al != null) {
 			CustomPropertyFunction cf = al.getCustomPropertyFunctions().get(id);
@@ -61,8 +61,8 @@ public abstract class AbstractDefaultFunctionService extends StaticFunctionServi
 	}
 
 	@Override
-	public PropertyFunction getPropertyFunction(String id) {
-		PropertyFunction function = super.getPropertyFunction(id);
+	public PropertyFunctionDefinition getPropertyFunction(String id) {
+		PropertyFunctionDefinition function = super.getPropertyFunction(id);
 
 		if (function == null) {
 			return getCustomPropertyFunction(id);
@@ -71,22 +71,22 @@ public abstract class AbstractDefaultFunctionService extends StaticFunctionServi
 	}
 
 	@Override
-	public TypeFunction getTypeFunction(String id) {
+	public TypeFunctionDefinition getTypeFunction(String id) {
 		return super.getTypeFunction(id);
 	}
 
 	@Override
-	public Collection<? extends TypeFunction> getTypeFunctions() {
+	public Collection<? extends TypeFunctionDefinition> getTypeFunctions() {
 		return super.getTypeFunctions();
 	}
 
 	@Override
-	public Collection<? extends PropertyFunction> getPropertyFunctions() {
-		Collection<? extends PropertyFunction> functions = super.getPropertyFunctions();
+	public Collection<? extends PropertyFunctionDefinition> getPropertyFunctions() {
+		Collection<? extends PropertyFunctionDefinition> functions = super.getPropertyFunctions();
 
 		Alignment al = getCurrentAlignment();
 		if (al != null) {
-			List<PropertyFunction> cfs = new ArrayList<>();
+			List<PropertyFunctionDefinition> cfs = new ArrayList<>();
 			for (CustomPropertyFunction cf : al.getCustomPropertyFunctions().values()) {
 				cfs.add(cf.getDescriptor());
 			}
@@ -99,18 +99,18 @@ public abstract class AbstractDefaultFunctionService extends StaticFunctionServi
 	}
 
 	@Override
-	public Collection<? extends TypeFunction> getTypeFunctions(String categoryId) {
+	public Collection<? extends TypeFunctionDefinition> getTypeFunctions(String categoryId) {
 		return super.getTypeFunctions(categoryId);
 	}
 
 	@Override
-	public Collection<? extends PropertyFunction> getPropertyFunctions(String categoryId) {
-		Collection<? extends PropertyFunction> functions = super.getPropertyFunctions();
+	public Collection<? extends PropertyFunctionDefinition> getPropertyFunctions(String categoryId) {
+		Collection<? extends PropertyFunctionDefinition> functions = super.getPropertyFunctions();
 
 		Alignment al = getCurrentAlignment();
 		if (al != null && categoryId == null) { // XXX for now custom functions
 												// in category OTHER
-			List<PropertyFunction> cfs = new ArrayList<>();
+			List<PropertyFunctionDefinition> cfs = new ArrayList<>();
 			for (CustomPropertyFunction cf : al.getCustomPropertyFunctions().values()) {
 				cfs.add(cf.getDescriptor());
 			}

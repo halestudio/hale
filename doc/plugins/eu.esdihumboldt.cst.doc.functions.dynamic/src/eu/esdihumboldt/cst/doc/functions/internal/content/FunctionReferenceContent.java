@@ -138,7 +138,7 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 
 	private InputStream getFunctionContent(String func_id) throws Exception {
 		// maps "function" to the real function ID (used by the template)
-		final FunctionDefinition function = FunctionUtil.getFunction(func_id, null);
+		final FunctionDefinition<?> function = FunctionUtil.getFunction(func_id, null);
 
 		if (function == null) {
 			log.warn("Unknown function " + func_id);
@@ -216,7 +216,7 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 
 	private InputStream getImageContent(String func_id) throws Exception {
 
-		final FunctionDefinition function = FunctionUtil.getFunction(func_id, null);
+		final FunctionDefinition<?> function = FunctionUtil.getFunction(func_id, null);
 
 		if (function == null) {
 			log.warn("Unknown function " + func_id);
@@ -304,7 +304,7 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 	}
 
 	private InputStream getIconContent(String func_id) {
-		FunctionDefinition function = FunctionUtil.getFunction(func_id, null);
+		FunctionDefinition<?> function = FunctionUtil.getFunction(func_id, null);
 
 		URL url = function.getIconURL();
 

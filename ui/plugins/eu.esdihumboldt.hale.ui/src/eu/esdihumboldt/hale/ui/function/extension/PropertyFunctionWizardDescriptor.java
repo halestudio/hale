@@ -16,7 +16,7 @@
 
 package eu.esdihumboldt.hale.ui.function.extension;
 
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionDefinition;
 
 /**
  * TODO Type description
@@ -24,7 +24,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
  * @author Simon Templer
  */
 public interface PropertyFunctionWizardDescriptor extends
-		FunctionWizardDescriptor<PropertyFunction> {
+		FunctionWizardDescriptor<PropertyFunctionDefinition> {
 
 	// concrete typed interface
 

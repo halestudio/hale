@@ -13,18 +13,14 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.align.extension.function.custom;
-
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionDefinition;
-import eu.esdihumboldt.hale.common.align.transformation.function.PropertyTransformation;
+package eu.esdihumboldt.hale.common.align.extension.function;
 
 /**
- * Custom property function.
+ * Type function definition.
  * 
  * @author Simon Templer
  */
-public interface CustomPropertyFunction extends
-		CustomFunction<PropertyFunctionDefinition, PropertyTransformation<?>> {
+public interface TypeFunctionDefinition extends FunctionDefinition<TypeParameterDefinition> {
 
 	// concrete typed interface
 

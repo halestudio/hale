@@ -13,28 +13,24 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.align.extension.function.custom;
+package eu.esdihumboldt.hale.common.align.extension.function;
 
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
-import eu.esdihumboldt.hale.common.align.transformation.function.TransformationFunction;
+import java.util.List;
+
+import eu.esdihumboldt.hale.common.align.model.condition.TypeCondition;
 
 /**
- * Custom function interface.
+ * Type entity parameter definition.
  * 
- * @param <T> the transformation function type
- * @param <F> the function type
  * @author Simon Templer
  */
-public interface CustomFunction<F extends FunctionDefinition<?>, T extends TransformationFunction<?>> {
+public interface TypeParameterDefinition extends ParameterDefinition {
 
 	/**
-	 * @return the function descriptor
+	 * Get the property conditions. All conditions have to match.
+	 * 
+	 * @return the property conditions
 	 */
-	F getDescriptor();
-
-	/**
-	 * @return the transformation function implementation
-	 */
-	T getTransformation();
+	public abstract List<TypeCondition> getConditions();
 
 }

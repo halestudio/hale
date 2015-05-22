@@ -57,7 +57,7 @@ import eu.esdihumboldt.cst.functions.inspire.data.NameStatusValue;
 import eu.esdihumboldt.cst.functions.inspire.data.NativenessValue;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionDefinition;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
@@ -232,7 +232,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		composite.setSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		composite.setFont(parent.getFont());
 
-		PropertyFunction function = FunctionUtil.getPropertyFunction(ID,
+		PropertyFunctionDefinition function = FunctionUtil.getPropertyFunction(ID,
 				HaleUI.getServiceProvider());
 
 		createSpellingGroup(composite, function);
@@ -243,7 +243,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		super.setControl(composite);
 	}
 
-	private void createOptionalAttributes(Composite parent, PropertyFunction function) {
+	private void createOptionalAttributes(Composite parent, PropertyFunctionDefinition function) {
 		final Composite configurationComposite = new Composite(parent, SWT.NONE);
 		GridData configurationLayoutData = new GridData(GridData.GRAB_HORIZONTAL
 				| GridData.FILL_HORIZONTAL);
@@ -462,7 +462,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		});
 	}
 
-	private void createPronounciationGroup(Composite parent, PropertyFunction function) {
+	private void createPronounciationGroup(Composite parent, PropertyFunctionDefinition function) {
 		// define Pronounciatiation Group composite
 		Group configurationGroup = new Group(parent, SWT.NONE);
 		configurationGroup.setText(PRONOUNCIATION_GRPOUP_TEXT);
@@ -538,7 +538,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		});
 	}
 
-	private void createSpellingGroup(Composite parent, PropertyFunction function) {
+	private void createSpellingGroup(Composite parent, PropertyFunctionDefinition function) {
 		// define Spelling Group composite
 		Group configurationGroup = new Group(parent, SWT.NONE);
 		configurationGroup.setText(SPELLING_GROUP_TEXT);
@@ -772,7 +772,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 	 * @param function the function
 	 */
 	private void configureParameterLabel(Label paramLabel, String paramName,
-			PropertyFunction function) {
+			PropertyFunctionDefinition function) {
 		FunctionParameterDefinition param = function.getParameter(paramName);
 		if (param != null) {
 //			String name = param.getDisplayName();

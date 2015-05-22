@@ -66,8 +66,8 @@ public class PropertiesLabelProvider extends LabelProvider {
 
 		if (element instanceof Cell) {
 			Cell cell = (Cell) element;
-			FunctionDefinition function = FunctionUtil.getFunction(cell.getTransformationIdentifier(),
-					HaleUI.getServiceProvider());
+			FunctionDefinition<?> function = FunctionUtil.getFunction(
+					cell.getTransformationIdentifier(), HaleUI.getServiceProvider());
 			if (function != null) {
 				element = function;
 			}

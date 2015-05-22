@@ -128,8 +128,8 @@ public class CellNodeValidator extends AbstractTargetToSourceVisitor {
 			ListMultimap<String, Pair<SourceNode, Entity>> sources,
 			ListMultimap<String, Pair<TargetNode, Entity>> targets) {
 		String functionId = node.getCell().getTransformationIdentifier();
-		FunctionDefinition function = serviceProvider.getService(FunctionService.class).getFunction(
-				functionId);
+		FunctionDefinition<?> function = serviceProvider.getService(FunctionService.class)
+				.getFunction(functionId);
 		if (function != null) {
 			// check source node occurrence for mandatory source entities
 			for (ParameterDefinition sourceParam : function.getSource()) {

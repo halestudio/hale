@@ -22,6 +22,7 @@ import java.util.List;
 import org.eclipse.jface.wizard.IWizardContainer;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionContentProvider;
 import eu.esdihumboldt.hale.ui.function.contribution.SchemaSelectionFunctionMatcher;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
@@ -88,7 +89,7 @@ public class FunctionWizardNodeContentProvider extends FunctionContentProvider {
 	}
 
 	@Override
-	public boolean apply(AbstractFunction<?> function) {
+	public boolean apply(FunctionDefinition<?> function) {
 		if (initialSelection != null && selectionMatcher != null) {
 			// use selection matcher to determine if function should be
 			// displayed

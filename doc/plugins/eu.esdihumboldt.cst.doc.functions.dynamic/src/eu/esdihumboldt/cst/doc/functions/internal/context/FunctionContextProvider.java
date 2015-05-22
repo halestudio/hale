@@ -45,7 +45,7 @@ public class FunctionContextProvider extends AbstractContextProvider implements
 		/**
 		 * @see FunctionTopic#FunctionTopic(FunctionDefinition)
 		 */
-		public ContextFunctionTopic(FunctionDefinition function) {
+		public ContextFunctionTopic(FunctionDefinition<?> function) {
 			super(function);
 		}
 
@@ -81,7 +81,7 @@ public class FunctionContextProvider extends AbstractContextProvider implements
 		if (pluginId.equals(PLUGIN_ID)) {
 			try {
 				String functionId = ONameUtil.decodeName(shortContextId);
-				FunctionDefinition function = FunctionUtil.getFunction(functionId, null);
+				FunctionDefinition<?> function = FunctionUtil.getFunction(functionId, null);
 				if (function != null) {
 					FunctionTopic topic = new ContextFunctionTopic(function);
 					String description = function.getDescription();

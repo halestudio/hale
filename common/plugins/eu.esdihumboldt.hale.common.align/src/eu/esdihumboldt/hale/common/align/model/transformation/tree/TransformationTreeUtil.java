@@ -21,8 +21,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.align.transformation.report.impl.TransformationMessageImpl;
@@ -104,12 +104,12 @@ public abstract class TransformationTreeUtil {
 		// get all entity names the cell is associated to the source node with
 		Set<String> names = cell.getSourceNames(source);
 
-		PropertyFunction function = FunctionUtil.getPropertyFunction(cell.getCell()
+		PropertyFunctionDefinition function = FunctionUtil.getPropertyFunction(cell.getCell()
 				.getTransformationIdentifier(), serviceProvider);
 		if (function != null) {
-			Set<PropertyParameter> defSources = function.getSource();
+			Set<? extends PropertyParameterDefinition> defSources = function.getSource();
 			Set<String> eager = new HashSet<String>();
-			for (PropertyParameter sourceDef : defSources) {
+			for (PropertyParameterDefinition sourceDef : defSources) {
 				String name = sourceDef.getName();
 				if (sourceDef.isEager() && names.contains(name)) {
 					eager.add(name);

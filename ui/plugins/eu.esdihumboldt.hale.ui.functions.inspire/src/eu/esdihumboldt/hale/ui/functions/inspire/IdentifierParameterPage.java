@@ -38,7 +38,7 @@ import com.google.common.collect.ListMultimap;
 import eu.esdihumboldt.cst.functions.inspire.IdentifierFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionDefinition;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
@@ -174,7 +174,7 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 			page.dispose();
 		}
 
-		PropertyFunction function = FunctionUtil.getPropertyFunction(ID,
+		PropertyFunctionDefinition function = FunctionUtil.getPropertyFunction(ID,
 				HaleUI.getServiceProvider());
 
 		// create a composite to hold the widgets
