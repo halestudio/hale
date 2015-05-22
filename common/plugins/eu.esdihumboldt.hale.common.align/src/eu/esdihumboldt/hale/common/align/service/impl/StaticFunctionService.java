@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.common.align.service.impl;
 import java.util.Collection;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExtension;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
@@ -33,7 +33,7 @@ import eu.esdihumboldt.hale.common.align.service.FunctionService;
 public class StaticFunctionService implements FunctionService {
 
 	@Override
-	public Function getFunction(String id) {
+	public FunctionDefinition getFunction(String id) {
 		AbstractFunction<?> result = null;
 
 		result = TypeFunctionExtension.getInstance().get(id);

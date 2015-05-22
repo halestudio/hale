@@ -42,7 +42,7 @@ import eu.esdihumboldt.hale.common.align.model.CellExplanation;
  * @author Simon Templer
  */
 @Immutable
-public abstract class AbstractFunction<P extends ParameterDefinition> implements Function {
+public abstract class AbstractFunction<P extends ParameterDefinition> implements FunctionDefinition {
 
 	private final ALogger log = ALoggerFactory.getLogger(AbstractFunction.class);
 
@@ -81,7 +81,7 @@ public abstract class AbstractFunction<P extends ParameterDefinition> implements
 	}
 
 	/**
-	 * @see Function#getExplanation()
+	 * @see FunctionDefinition#getExplanation()
 	 */
 	@Override
 	public CellExplanation getExplanation() {
@@ -132,7 +132,7 @@ public abstract class AbstractFunction<P extends ParameterDefinition> implements
 	}
 
 	/**
-	 * @see Function#getDefiningBundle()
+	 * @see FunctionDefinition#getDefiningBundle()
 	 */
 	@Override
 	public String getDefiningBundle() {
@@ -140,7 +140,7 @@ public abstract class AbstractFunction<P extends ParameterDefinition> implements
 	}
 
 	/**
-	 * @see Function#getDisplayName()
+	 * @see FunctionDefinition#getDisplayName()
 	 */
 	@Override
 	public final String getDisplayName() {
@@ -148,7 +148,7 @@ public abstract class AbstractFunction<P extends ParameterDefinition> implements
 	}
 
 	/**
-	 * @see Function#getDescription()
+	 * @see FunctionDefinition#getDescription()
 	 */
 	@Override
 	public final String getDescription() {
@@ -156,7 +156,7 @@ public abstract class AbstractFunction<P extends ParameterDefinition> implements
 	}
 
 	/**
-	 * @see Function#getCategoryId()
+	 * @see FunctionDefinition#getCategoryId()
 	 */
 	@Override
 	public final String getCategoryId() {
@@ -164,7 +164,7 @@ public abstract class AbstractFunction<P extends ParameterDefinition> implements
 	}
 
 	/**
-	 * @see Function#getDefinedParameters()
+	 * @see FunctionDefinition#getDefinedParameters()
 	 */
 	@Override
 	public final Collection<FunctionParameterDefinition> getDefinedParameters() {
@@ -177,7 +177,7 @@ public abstract class AbstractFunction<P extends ParameterDefinition> implements
 	}
 
 	/**
-	 * @see Function#getIconURL()
+	 * @see FunctionDefinition#getIconURL()
 	 */
 	@Override
 	public URL getIconURL() {
@@ -199,7 +199,7 @@ public abstract class AbstractFunction<P extends ParameterDefinition> implements
 	}
 
 	/**
-	 * @see Function#getHelpURL
+	 * @see FunctionDefinition#getHelpURL
 	 */
 	@Override
 	public URL getHelpURL() {

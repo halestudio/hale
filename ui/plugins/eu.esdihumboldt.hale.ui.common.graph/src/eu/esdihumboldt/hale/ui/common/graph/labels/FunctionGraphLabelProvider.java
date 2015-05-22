@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.zest.core.viewers.EntityConnectionData;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
-import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.ParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
@@ -37,7 +37,7 @@ import eu.esdihumboldt.hale.ui.util.graph.shapes.FingerPost;
 import eu.esdihumboldt.util.Pair;
 
 /**
- * Label provider for graphs based on {@link Function}(s).
+ * Label provider for graphs based on {@link FunctionDefinition}(s).
  * 
  * @author Patrick Lieb
  */

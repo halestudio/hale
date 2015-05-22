@@ -19,7 +19,7 @@ import java.util.Collection;
 
 import javax.annotation.Nullable;
 
-import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
 
@@ -38,7 +38,7 @@ public interface FunctionService {
 	 *         identifier was found
 	 */
 	@Nullable
-	Function getFunction(String id);
+	FunctionDefinition getFunction(String id);
 
 	/**
 	 * Get the property function w/ the given identifier.

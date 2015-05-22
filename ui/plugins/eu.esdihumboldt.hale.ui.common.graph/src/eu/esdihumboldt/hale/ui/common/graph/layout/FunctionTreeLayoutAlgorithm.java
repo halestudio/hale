@@ -26,10 +26,10 @@ import org.eclipse.zest.layouts.algorithms.TreeLayoutObserver.TreeNode;
 import org.eclipse.zest.layouts.dataStructures.DisplayIndependentRectangle;
 import org.eclipse.zest.layouts.interfaces.LayoutContext;
 
-import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 
 /**
- * Tree layout algorithm to show {@link Function}(s) layered in a tree-like
+ * Tree layout algorithm to show {@link FunctionDefinition}(s) layered in a tree-like
  * layout and placed the root in the middle of the tree
  * 
  * @author Patrick Lieb

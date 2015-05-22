@@ -24,7 +24,7 @@ import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
-import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
@@ -32,7 +32,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.TypeParameter;
 import eu.esdihumboldt.util.Pair;
 
 /**
- * Graph content provider to model the source and target of a {@link Function}
+ * Graph content provider to model the source and target of a {@link FunctionDefinition}
  * 
  * @author Patrick Lieb
  */
@@ -45,8 +45,8 @@ public class FunctionGraphContentProvider extends ArrayContentProvider implement
 	@Override
 	public Object[] getConnectedTo(Object entity) {
 		Collection<Object> result = new ArrayList<Object>();
-		if (entity instanceof Function) {
-			return ((Function) entity).getTarget().toArray();
+		if (entity instanceof FunctionDefinition) {
+			return ((FunctionDefinition) entity).getTarget().toArray();
 		}
 		if (entity instanceof Pair<?, ?>) {
 			Pair<?, ?> pair = (Pair<?, ?>) entity;

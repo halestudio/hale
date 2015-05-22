@@ -25,7 +25,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
-import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellExplanation;
@@ -71,7 +71,7 @@ public class HtmlExplanationCellSection extends AbstractCellSection {
 
 		Cell cell = getCell();
 		if (cell != null) {
-			Function function = FunctionUtil.getFunction(cell.getTransformationIdentifier(),
+			FunctionDefinition function = FunctionUtil.getFunction(cell.getTransformationIdentifier(),
 					HaleUI.getServiceProvider());
 			if (function != null) {
 				CellExplanation explanation = function.getExplanation();

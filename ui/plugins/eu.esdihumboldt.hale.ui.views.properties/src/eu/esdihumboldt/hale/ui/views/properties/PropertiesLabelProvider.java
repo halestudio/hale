@@ -20,7 +20,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
@@ -66,14 +66,14 @@ public class PropertiesLabelProvider extends LabelProvider {
 
 		if (element instanceof Cell) {
 			Cell cell = (Cell) element;
-			Function function = FunctionUtil.getFunction(cell.getTransformationIdentifier(),
+			FunctionDefinition function = FunctionUtil.getFunction(cell.getTransformationIdentifier(),
 					HaleUI.getServiceProvider());
 			if (function != null) {
 				element = function;
 			}
 		}
 
-		if (element instanceof Function) {
+		if (element instanceof FunctionDefinition) {
 			return functionLabels.getImage(element);
 		}
 
@@ -110,7 +110,7 @@ public class PropertiesLabelProvider extends LabelProvider {
 			return definitionLabels.getText(element);
 		}
 
-		if (element instanceof Function) {
+		if (element instanceof FunctionDefinition) {
 			return functionLabels.getText(element);
 		}
 

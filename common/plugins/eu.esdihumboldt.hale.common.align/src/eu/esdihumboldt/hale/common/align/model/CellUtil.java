@@ -111,7 +111,7 @@ public abstract class CellUtil {
 
 		// include function name if possible
 		String functionId = cell.getTransformationIdentifier();
-		eu.esdihumboldt.hale.common.align.extension.function.Function function = null;
+		eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition function = null;
 		if (serviceProvider != null) {
 			FunctionService fs = serviceProvider.getService(FunctionService.class);
 			if (fs != null) {

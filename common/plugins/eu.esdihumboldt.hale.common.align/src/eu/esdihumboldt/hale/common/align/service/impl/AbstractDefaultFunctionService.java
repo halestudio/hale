@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomPropertyFunction;
@@ -39,8 +39,8 @@ public abstract class AbstractDefaultFunctionService extends StaticFunctionServi
 	protected abstract Alignment getCurrentAlignment();
 
 	@Override
-	public Function getFunction(String id) {
-		Function function = super.getFunction(id);
+	public FunctionDefinition getFunction(String id) {
+		FunctionDefinition function = super.getFunction(id);
 
 		if (function == null) {
 			return getCustomPropertyFunction(id);

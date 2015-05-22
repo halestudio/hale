@@ -15,7 +15,7 @@
 
 package eu.esdihumboldt.hale.common.align.extension.function.custom;
 
-import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationFunction;
 
 /**
@@ -25,7 +25,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.TransformationF
  * @param <F> the function type
  * @author Simon Templer
  */
-public interface CustomFunction<F extends Function, T extends TransformationFunction<?>> {
+public interface CustomFunction<F extends FunctionDefinition, T extends TransformationFunction<?>> {
 
 	/**
 	 * @return the function descriptor

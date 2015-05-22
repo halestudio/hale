@@ -16,7 +16,7 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.function;
 
-import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTreeUtil;
@@ -29,7 +29,7 @@ import eu.esdihumboldt.hale.ui.views.properties.AbstractTextSection;
  * @author Patrick Lieb
  * @param <F> the Function
  */
-public class DefaultFunctionSection<F extends Function> extends AbstractFunctionSection<F> {
+public class DefaultFunctionSection<F extends FunctionDefinition> extends AbstractFunctionSection<F> {
 
 	/**
 	 * @see AbstractTextSection#setInput(Object)
@@ -44,7 +44,7 @@ public class DefaultFunctionSection<F extends Function> extends AbstractFunction
 			input = FunctionUtil.getFunction(id, HaleUI.getServiceProvider());
 		}
 
-		if (input instanceof Function) {
+		if (input instanceof FunctionDefinition) {
 			setFunction((F) input);
 		}
 	}

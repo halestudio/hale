@@ -35,7 +35,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.ui.views.properties.function.AbstractFunctionSection;
 
@@ -153,8 +153,8 @@ public class AbstractFunctionParameterSection extends AbstractFunctionSection<Ab
 	 */
 	@Override
 	protected void setInput(Object input) {
-		if (input instanceof Function) {
-			tableViewer.setInput(((Function) input).getDefinedParameters());
+		if (input instanceof FunctionDefinition) {
+			tableViewer.setInput(((FunctionDefinition) input).getDefinedParameters());
 		}
 
 	}

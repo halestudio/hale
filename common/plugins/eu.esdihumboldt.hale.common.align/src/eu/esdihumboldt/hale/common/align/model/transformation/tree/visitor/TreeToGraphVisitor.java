@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
-import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
@@ -120,7 +120,7 @@ public class TreeToGraphVisitor extends AbstractTargetToSourceVisitor {
 		}
 
 		String functionName;
-		Function function = null;
+		FunctionDefinition function = null;
 		if (functionService != null) {
 			function = functionService.getFunction(cell.getCell().getTransformationIdentifier());
 		}

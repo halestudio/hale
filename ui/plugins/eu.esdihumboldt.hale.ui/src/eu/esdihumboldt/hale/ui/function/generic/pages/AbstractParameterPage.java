@@ -27,7 +27,7 @@ import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimaps;
 
-import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
@@ -65,7 +65,7 @@ public abstract class AbstractParameterPage extends
 	 * @param description the page description, if <code>null</code> the
 	 *            function description will be used
 	 */
-	public AbstractParameterPage(Function function, String description) {
+	public AbstractParameterPage(FunctionDefinition function, String description) {
 		super(function.getId(), function.getDisplayName(), null);
 
 		if (description == null) {

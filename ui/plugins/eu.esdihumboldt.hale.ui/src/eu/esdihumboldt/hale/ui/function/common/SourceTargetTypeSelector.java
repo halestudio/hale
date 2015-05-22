@@ -37,7 +37,7 @@ import org.eclipse.swt.widgets.Control;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
@@ -287,7 +287,7 @@ public class SourceTargetTypeSelector implements ISelectionProvider {
 
 			String label;
 			String functionId = cell.getTransformationIdentifier();
-			Function function = FunctionUtil.getFunction(functionId, HaleUI.getServiceProvider());
+			FunctionDefinition function = FunctionUtil.getFunction(functionId, HaleUI.getServiceProvider());
 			if (function != null)
 				label = functionLabels.getText(function);
 			else

@@ -28,7 +28,7 @@ import eu.esdihumboldt.hale.common.align.model.CellExplanation;
  * 
  * @author Simon Templer
  */
-public interface Function extends Identifiable {
+public interface FunctionDefinition extends Identifiable {
 
 	/**
 	 * Get the human readable name of the function

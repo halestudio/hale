@@ -27,7 +27,7 @@ import org.eclipse.ui.PlatformUI;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
-import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomFunction;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationFunction;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
@@ -44,7 +44,7 @@ import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
  * @param <C> the custom function type
  * @author Simon Templer
  */
-public abstract class AbstractGenericCustomFunctionWizard<C extends CustomFunction<F, T>, F extends Function, T extends TransformationFunction<?>>
+public abstract class AbstractGenericCustomFunctionWizard<C extends CustomFunction<F, T>, F extends FunctionDefinition, T extends TransformationFunction<?>>
 		extends AbstractCustomFunctionWizard<C> {
 
 	private static final ALogger log = ALoggerFactory

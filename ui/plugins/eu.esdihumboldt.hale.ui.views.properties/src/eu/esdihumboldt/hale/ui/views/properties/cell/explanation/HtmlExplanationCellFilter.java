@@ -16,7 +16,7 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.cell.explanation;
 
-import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellExplanation;
@@ -32,7 +32,7 @@ public class HtmlExplanationCellFilter extends AbstractCellFilter {
 
 	@Override
 	public boolean isFiltered(Cell cell) {
-		Function function = FunctionUtil.getFunction(cell.getTransformationIdentifier(),
+		FunctionDefinition function = FunctionUtil.getFunction(cell.getTransformationIdentifier(),
 				HaleUI.getServiceProvider());
 		if (function != null) {
 			CellExplanation explanation = function.getExplanation();
