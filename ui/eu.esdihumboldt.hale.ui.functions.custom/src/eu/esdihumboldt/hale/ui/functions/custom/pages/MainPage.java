@@ -18,6 +18,8 @@ package eu.esdihumboldt.hale.ui.functions.custom.pages;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -45,6 +47,8 @@ public class MainPage extends HaleWizardPage<CustomPropertyFunctionWizard> imple
 
 		setTitle("Custom function definition");
 		setDescription("Please provide information to identify your custom function");
+
+		setPageComplete(false);
 	}
 
 	@Override
@@ -60,9 +64,17 @@ public class MainPage extends HaleWizardPage<CustomPropertyFunctionWizard> imple
 	protected void createContent(Composite page) {
 		GridLayoutFactory.swtDefaults().numColumns(2).equalWidth(false).applyTo(page);
 
-		GridDataFactory labelData = GridDataFactory.swtDefaults().align(SWT.END, SWT.BEGINNING);
+		GridDataFactory labelData = GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER);
 		GridDataFactory fieldData = GridDataFactory.swtDefaults().align(SWT.FILL, SWT.BEGINNING)
 				.grab(true, false);
+
+		ModifyListener modify = new ModifyListener() {
+
+			@Override
+			public void modifyText(ModifyEvent e) {
+				updateState();
+			}
+		};
 
 		// identifier
 
@@ -71,6 +83,7 @@ public class MainPage extends HaleWizardPage<CustomPropertyFunctionWizard> imple
 		labelData.applyTo(labelIdent);
 
 		ident = new Text(page, SWT.SINGLE | SWT.BORDER);
+		ident.addModifyListener(modify);
 		fieldData.applyTo(ident);
 
 		// name
@@ -80,9 +93,41 @@ public class MainPage extends HaleWizardPage<CustomPropertyFunctionWizard> imple
 		labelData.applyTo(labelName);
 
 		name = new Text(page, SWT.SINGLE | SWT.BORDER);
+		name.addModifyListener(modify);
 		fieldData.applyTo(name);
 
 		// TODO description
+
+		updateState();
+	}
+
+	/**
+	 * Update the page state.
+	 */
+	private void updateState() {
+		boolean complete = false;
+		if (ident != null) {
+			String id = ident.getText();
+			if (id == null || id.isEmpty()) {
+				setErrorMessage("Please specify an identifier for the function");
+			}
+			else {
+				// TODO check identifier for uniqueness?
+
+				String nameStr = name.getText();
+				if (nameStr == null || nameStr.isEmpty()) {
+					setErrorMessage("Please provide a name for the function");
+				}
+				else {
+					complete = true;
+				}
+			}
+		}
+
+		if (complete) {
+			setErrorMessage(null);
+		}
+		setPageComplete(complete);
 	}
 
 }

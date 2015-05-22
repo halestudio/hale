@@ -120,6 +120,8 @@ public class PropertyFunctionScriptPage extends GroovyScriptPage<CustomPropertyF
 		List<DefaultCustomPropertyFunctionEntity> sources = getWizard().getUnfinishedFunction()
 				.getSources();
 
+		// TODO create test values and do validation?
+
 //		List<PropertyValue> values = new ArrayList<PropertyValue>();
 //		for (EntityDefinition var : getVariables()) {
 //			if (var instanceof PropertyEntityDefinition) {
