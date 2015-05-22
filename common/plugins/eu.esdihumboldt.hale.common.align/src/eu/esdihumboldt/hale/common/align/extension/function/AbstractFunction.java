@@ -51,7 +51,7 @@ public abstract class AbstractFunction<P extends ParameterDefinition> implements
 	 */
 	protected final IConfigurationElement conf;
 
-	private final Map<String, FunctionParameter> parameters;
+	private final Map<String, FunctionParameterDefinition> parameters;
 
 	/**
 	 * Create a function definition based on the given configuration element
@@ -65,8 +65,9 @@ public abstract class AbstractFunction<P extends ParameterDefinition> implements
 		this.parameters = createParameters(conf);
 	}
 
-	private static Map<String, FunctionParameter> createParameters(IConfigurationElement conf) {
-		Map<String, FunctionParameter> parameters = new LinkedHashMap<String, FunctionParameter>();
+	private static Map<String, FunctionParameterDefinition> createParameters(
+			IConfigurationElement conf) {
+		Map<String, FunctionParameterDefinition> parameters = new LinkedHashMap<String, FunctionParameterDefinition>();
 
 		IConfigurationElement[] pars = conf.getChildren("functionParameter");
 		if (pars != null) {
@@ -166,16 +167,11 @@ public abstract class AbstractFunction<P extends ParameterDefinition> implements
 	 * @see Function#getDefinedParameters()
 	 */
 	@Override
-	public final Collection<FunctionParameter> getDefinedParameters() {
+	public final Collection<FunctionParameterDefinition> getDefinedParameters() {
 		return Collections.unmodifiableCollection(parameters.values());
 	}
 
-	/**
-	 * Get the function parameter with the given name.
-	 * 
-	 * @param paramName the parameter name
-	 * @return the parameter or <code>null</code> if it doesn't exist
-	 */
+	@Override
 	public FunctionParameterDefinition getParameter(String paramName) {
 		return parameters.get(paramName);
 	}

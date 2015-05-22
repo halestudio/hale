@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.ui.function.custom;
 
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.custom.impl.DefaultCustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyTransformation;
 import eu.esdihumboldt.hale.ui.function.custom.pages.CustomPropertyFunctionEntitiesPage;
@@ -27,7 +28,7 @@ import eu.esdihumboldt.hale.ui.function.custom.pages.PropertyFunctionScriptPage;
  */
 public class CustomPropertyFunctionWizard
 		extends
-		AbstractGenericCustomFunctionWizard<DefaultCustomPropertyFunction, PropertyTransformation<?>> {
+		AbstractGenericCustomFunctionWizard<DefaultCustomPropertyFunction, PropertyFunction, PropertyTransformation<?>> {
 
 	private CustomPropertyFunctionEntitiesPage entityPage;
 	private PropertyFunctionScriptPage scriptPage;

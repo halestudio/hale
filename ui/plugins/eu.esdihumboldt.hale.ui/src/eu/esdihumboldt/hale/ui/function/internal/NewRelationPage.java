@@ -38,7 +38,7 @@ import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.Function;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.ui.HALEContextProvider;
 import eu.esdihumboldt.hale.ui.HaleUI;
@@ -247,7 +247,7 @@ public class NewRelationPage extends ViewerWizardSelectionPage {
 
 			if (functionId != null) {
 				// create function wizard node and select it
-				AbstractFunction<?> function = FunctionUtil.getFunction(functionId,
+				Function function = FunctionUtil.getFunction(functionId,
 						HaleUI.getServiceProvider());
 				if (function != null) {
 					FunctionWizardNode node = new FunctionWizardNode(function, getContainer(),

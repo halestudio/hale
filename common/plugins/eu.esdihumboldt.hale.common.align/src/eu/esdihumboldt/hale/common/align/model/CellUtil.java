@@ -26,7 +26,6 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ListMultimap;
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.service.FunctionService;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
@@ -112,7 +111,7 @@ public abstract class CellUtil {
 
 		// include function name if possible
 		String functionId = cell.getTransformationIdentifier();
-		AbstractFunction<?> function = null;
+		eu.esdihumboldt.hale.common.align.extension.function.Function function = null;
 		if (serviceProvider != null) {
 			FunctionService fs = serviceProvider.getService(FunctionService.class);
 			if (fs != null) {

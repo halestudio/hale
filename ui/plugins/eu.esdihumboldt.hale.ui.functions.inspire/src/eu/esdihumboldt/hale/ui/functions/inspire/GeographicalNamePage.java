@@ -55,7 +55,6 @@ import eu.esdihumboldt.cst.functions.inspire.data.GrammaticalGenderValue;
 import eu.esdihumboldt.cst.functions.inspire.data.GrammaticalNumberValue;
 import eu.esdihumboldt.cst.functions.inspire.data.NameStatusValue;
 import eu.esdihumboldt.cst.functions.inspire.data.NativenessValue;
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
@@ -134,7 +133,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 	 * @see ParameterPage#setParameter(Set, ListMultimap)
 	 */
 	@Override
-	public void setParameter(Set<FunctionParameter> params,
+	public void setParameter(Set<FunctionParameterDefinition> params,
 			ListMultimap<String, ParameterValue> initialValues) {
 		if (initialValues != null && initialValues.size() != 0) {
 			// set the initial values if they exist

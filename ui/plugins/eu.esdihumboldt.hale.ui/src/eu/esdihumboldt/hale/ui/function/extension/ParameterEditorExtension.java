@@ -27,7 +27,7 @@ import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactoryCollection;
 import de.fhg.igd.eclipse.util.extension.FactoryFilter;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.ui.common.AttributeEditor;
 import eu.esdihumboldt.hale.ui.common.EditorFactory;
@@ -87,7 +87,7 @@ public class ParameterEditorExtension extends
 	 * @return the editor
 	 */
 	public AttributeEditor<?> createEditor(final Composite parent, final String functionId,
-			final FunctionParameter parameter, final ParameterValue initialValue) {
+			final FunctionParameterDefinition parameter, final ParameterValue initialValue) {
 		List<ParameterEditorFactory> factories = getFactories(new FactoryFilter<EditorFactory, ParameterEditorFactory>() {
 
 			@Override

@@ -31,7 +31,7 @@ import org.eclipse.ui.PlatformUI;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.AssignFunction;
@@ -97,7 +97,7 @@ public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionW
 	 *      com.google.common.collect.ListMultimap)
 	 */
 	@Override
-	public void setParameter(Set<FunctionParameter> params,
+	public void setParameter(Set<FunctionParameterDefinition> params,
 			ListMultimap<String, ParameterValue> initialValues) {
 		// this page is only for parameter value, ignore params
 		if (initialValues == null)

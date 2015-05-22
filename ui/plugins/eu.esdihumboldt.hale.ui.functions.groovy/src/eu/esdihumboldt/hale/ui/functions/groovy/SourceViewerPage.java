@@ -38,7 +38,7 @@ import org.eclipse.swt.widgets.ToolBar;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.core.io.Text;
 import eu.esdihumboldt.hale.common.core.io.Value;
@@ -86,7 +86,7 @@ public class SourceViewerPage<C, W extends Wizard> extends HaleWizardPage<W> imp
 	}
 
 	@Override
-	public void setParameter(Set<FunctionParameter> params,
+	public void setParameter(Set<FunctionParameterDefinition> params,
 			ListMultimap<String, ParameterValue> initialValues) {
 		if (initialValues != null) {
 			List<ParameterValue> val = initialValues.get(parameterName);

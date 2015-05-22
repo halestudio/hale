@@ -17,15 +17,14 @@ package eu.esdihumboldt.hale.ui.function.custom;
 import org.eclipse.jface.wizard.IWizard;
 
 import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomFunction;
-import eu.esdihumboldt.hale.common.align.transformation.function.TransformationFunction;
 
 /**
- * Function wizard interface
+ * Custom function wizard interface
  * 
+ * @param <C> the type of the custom function
  * @author Simon Templer
- * @param <T> the transformation type of the custom function
  */
-public interface CustomFunctionWizard<T extends TransformationFunction<?>> extends IWizard {
+public interface CustomFunctionWizard<C extends CustomFunction<?, ?>> extends IWizard {
 
 	/**
 	 * Initialize the wizard. Is called after wizard construction.
@@ -37,7 +36,7 @@ public interface CustomFunctionWizard<T extends TransformationFunction<?>> exten
 	 * 
 	 * @return the result cell
 	 */
-	public CustomFunction<T> getResultFunction();
+	public C getResultFunction();
 
 //	public CustomFunction<T> getUnfinishedFunction();
 

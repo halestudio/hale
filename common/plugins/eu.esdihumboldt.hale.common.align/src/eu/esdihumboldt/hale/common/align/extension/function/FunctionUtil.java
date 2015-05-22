@@ -40,8 +40,7 @@ public abstract class FunctionUtil {
 	 * @return the function or <code>null</code> if no function with the given
 	 *         identifier was found
 	 */
-	public static AbstractFunction<?> getFunction(String id,
-			@Nullable ServiceProvider serviceProvider) {
+	public static Function getFunction(String id, @Nullable ServiceProvider serviceProvider) {
 		if (serviceProvider != null) {
 			FunctionService fs = serviceProvider.getService(FunctionService.class);
 			if (fs != null) {

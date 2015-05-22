@@ -22,7 +22,7 @@ import org.eclipse.jface.wizard.IWizardPage;
 
 import com.google.common.collect.ListMultimap;
 
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 
 /**
@@ -42,7 +42,7 @@ public interface ParameterPage extends IWizardPage {
 	 * @param initialValues initial values of those parameters, may be
 	 *            <code>null</code>, should not be changed
 	 */
-	public void setParameter(Set<FunctionParameter> params,
+	public void setParameter(Set<FunctionParameterDefinition> params,
 			ListMultimap<String, ParameterValue> initialValues);
 
 	/**

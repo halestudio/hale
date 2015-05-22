@@ -17,19 +17,19 @@ package eu.esdihumboldt.hale.ui.function.custom;
 
 import org.eclipse.jface.wizard.Wizard;
 
+import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomFunction;
 import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.common.align.transformation.function.TransformationFunction;
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 
 /**
  * Abstract custom function wizard
  * 
- * @param <T> the transformation type of the custom function
+ * @param <C> the type of the custom function
  * @author Simon Templer
  */
-public abstract class AbstractCustomFunctionWizard<T extends TransformationFunction<?>> extends
-		Wizard implements CustomFunctionWizard<T> {
+public abstract class AbstractCustomFunctionWizard<C extends CustomFunction<?, ?>> extends Wizard
+		implements CustomFunctionWizard<C> {
 
 //	private final Cell initCell;
 

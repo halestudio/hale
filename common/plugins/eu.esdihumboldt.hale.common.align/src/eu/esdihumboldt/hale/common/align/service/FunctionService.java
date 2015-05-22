@@ -19,14 +19,14 @@ import java.util.Collection;
 
 import javax.annotation.Nullable;
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.Function;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
 
 /**
- * TODO Type description
+ * Interface for service resolving functions definitions.
  * 
- * @author simon
+ * @author Simon Templer
  */
 public interface FunctionService {
 
@@ -38,7 +38,7 @@ public interface FunctionService {
 	 *         identifier was found
 	 */
 	@Nullable
-	AbstractFunction<?> getFunction(String id);
+	Function getFunction(String id);
 
 	/**
 	 * Get the property function w/ the given identifier.
@@ -60,12 +60,34 @@ public interface FunctionService {
 	@Nullable
 	TypeFunction getTypeFunction(String id);
 
+	/**
+	 * Get all type functions.
+	 * 
+	 * @return the collection of available type functions
+	 */
 	Collection<? extends TypeFunction> getTypeFunctions();
 
+	/**
+	 * Get all property functions.
+	 * 
+	 * @return the collection of available property functions
+	 */
 	Collection<? extends PropertyFunction> getPropertyFunctions();
 
-	Collection<? extends TypeFunction> getTypeFunctions(String categoryId);
+	/**
+	 * Get the type functions associated to the category with the given ID
+	 * 
+	 * @param categoryId the category ID, may be <code>null</code>
+	 * @return the list of functions or an empty list
+	 */
+	Collection<? extends TypeFunction> getTypeFunctions(@Nullable String categoryId);
 
-	Collection<? extends PropertyFunction> getPropertyFunctions(String categoryId);
+	/**
+	 * Get the property functions associated to the category with the given ID
+	 * 
+	 * @param categoryId the category ID, may be <code>null</code>
+	 * @return the list of functions or an empty list
+	 */
+	Collection<? extends PropertyFunction> getPropertyFunctions(@Nullable String categoryId);
 
 }

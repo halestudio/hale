@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell;
@@ -115,6 +116,13 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 			alignment.addCell(cell);
 		}
 		notifyCellsAdded(Collections.singletonList((Cell) cell));
+	}
+
+	@Override
+	public void addCustomPropertyFunction(CustomPropertyFunction function) {
+		alignment.addCustomPropertyFunction(function);
+
+		// TODO notification? -> function service event?
 	}
 
 	/**

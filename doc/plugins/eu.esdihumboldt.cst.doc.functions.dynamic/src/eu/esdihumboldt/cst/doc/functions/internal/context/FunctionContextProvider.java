@@ -24,7 +24,7 @@ import org.eclipse.help.IContext;
 
 import eu.esdihumboldt.cst.doc.functions.FunctionReferenceConstants;
 import eu.esdihumboldt.cst.doc.functions.internal.toc.FunctionTopic;
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.Function;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.instance.orient.ONameUtil;
 import eu.esdihumboldt.hale.doc.util.context.SingleTopicContext;
@@ -43,9 +43,9 @@ public class FunctionContextProvider extends AbstractContextProvider implements
 	public class ContextFunctionTopic extends FunctionTopic {
 
 		/**
-		 * @see FunctionTopic#FunctionTopic(AbstractFunction)
+		 * @see FunctionTopic#FunctionTopic(Function)
 		 */
-		public ContextFunctionTopic(AbstractFunction<?> function) {
+		public ContextFunctionTopic(Function function) {
 			super(function);
 		}
 
@@ -81,7 +81,7 @@ public class FunctionContextProvider extends AbstractContextProvider implements
 		if (pluginId.equals(PLUGIN_ID)) {
 			try {
 				String functionId = ONameUtil.decodeName(shortContextId);
-				AbstractFunction<?> function = FunctionUtil.getFunction(functionId, null);
+				Function function = FunctionUtil.getFunction(functionId, null);
 				if (function != null) {
 					FunctionTopic topic = new ContextFunctionTopic(function);
 					String description = function.getDescription();

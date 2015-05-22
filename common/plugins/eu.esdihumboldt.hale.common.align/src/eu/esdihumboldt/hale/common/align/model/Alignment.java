@@ -20,7 +20,7 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.Map;
 
-import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomPropertyFunction;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
@@ -51,7 +51,14 @@ public interface Alignment {
 	 * 
 	 * @return function identifiers mapped to function descriptors
 	 */
-	public Map<String, Function> getCustomPropertyFunctions();
+	public Map<String, CustomPropertyFunction> getCustomPropertyFunctions();
+
+	/**
+	 * Add a custom property function that is saved as part of the alignment.
+	 * 
+	 * @param function the custom function
+	 */
+	public void addCustomPropertyFunction(CustomPropertyFunction function);
 
 	/**
 	 * Get the collection of cells contained in the alignment.

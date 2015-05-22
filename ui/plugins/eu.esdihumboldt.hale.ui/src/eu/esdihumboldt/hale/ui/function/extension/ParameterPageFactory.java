@@ -19,7 +19,7 @@ package eu.esdihumboldt.hale.ui.function.extension;
 import java.util.Set;
 
 import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
 
 /**
@@ -41,5 +41,5 @@ public interface ParameterPageFactory extends ExtensionObjectFactory<ParameterPa
 	 * 
 	 * @return the associated parameters
 	 */
-	public Set<FunctionParameter> getAssociatedParameters();
+	public Set<FunctionParameterDefinition> getAssociatedParameters();
 }

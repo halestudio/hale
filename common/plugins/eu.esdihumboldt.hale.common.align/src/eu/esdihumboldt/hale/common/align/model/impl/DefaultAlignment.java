@@ -31,7 +31,7 @@ import java.util.UUID;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell;
@@ -87,7 +87,7 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 
 	private final Map<String, Cell> idToCell = new HashMap<String, Cell>();
 
-	private final Map<String, Function> idToPropertyFunction = new HashMap<>();
+	private final Map<String, CustomPropertyFunction> idToPropertyFunction = new HashMap<>();
 
 	/**
 	 * Default constructor.
@@ -115,8 +115,13 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	}
 
 	@Override
-	public Map<String, Function> getCustomPropertyFunctions() {
+	public Map<String, CustomPropertyFunction> getCustomPropertyFunctions() {
 		return Collections.unmodifiableMap(idToPropertyFunction);
+	}
+
+	@Override
+	public void addCustomPropertyFunction(CustomPropertyFunction function) {
+		idToPropertyFunction.put(function.getDescriptor().getId(), function);
 	}
 
 	/**

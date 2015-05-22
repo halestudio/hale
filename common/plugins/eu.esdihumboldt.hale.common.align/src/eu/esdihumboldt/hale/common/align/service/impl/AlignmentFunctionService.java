@@ -27,7 +27,9 @@ public class AlignmentFunctionService extends AbstractDefaultFunctionService {
 	private final Alignment alignment;
 
 	/**
-	 * @param alignment
+	 * Create a function service based on the given alignment.
+	 * 
+	 * @param alignment the alignment
 	 */
 	public AlignmentFunctionService(Alignment alignment) {
 		this.alignment = alignment;

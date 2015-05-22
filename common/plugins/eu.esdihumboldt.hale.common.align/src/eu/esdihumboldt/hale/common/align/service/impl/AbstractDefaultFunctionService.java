@@ -15,83 +15,111 @@
 
 package eu.esdihumboldt.hale.common.align.service.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.Function;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 
 /**
- * TODO Type description
+ * Function service that includes dynamic content in addition to the statically
+ * defined functions.
  * 
- * @author simon
+ * @author Simon Templer
  */
 public abstract class AbstractDefaultFunctionService extends StaticFunctionService {
 
+	/**
+	 * @return the current alignment
+	 */
 	protected abstract Alignment getCurrentAlignment();
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.service.impl.StaticFunctionService#getFunction(java.lang.String)
-	 */
 	@Override
-	public AbstractFunction<?> getFunction(String id) {
-		// TODO Auto-generated method stub
-		return super.getFunction(id);
+	public Function getFunction(String id) {
+		Function function = super.getFunction(id);
+
+		if (function == null) {
+			return getCustomPropertyFunction(id);
+		}
+		return function;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.service.impl.StaticFunctionService#getPropertyFunction(java.lang.String)
-	 */
+	private PropertyFunction getCustomPropertyFunction(String id) {
+		Alignment al = getCurrentAlignment();
+		if (al != null) {
+			CustomPropertyFunction cf = al.getCustomPropertyFunctions().get(id);
+			if (cf != null) {
+				return cf.getDescriptor();
+			}
+		}
+
+		return null;
+	}
+
 	@Override
 	public PropertyFunction getPropertyFunction(String id) {
-		// TODO Auto-generated method stub
-		return super.getPropertyFunction(id);
+		PropertyFunction function = super.getPropertyFunction(id);
+
+		if (function == null) {
+			return getCustomPropertyFunction(id);
+		}
+		return function;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.service.impl.StaticFunctionService#getTypeFunction(java.lang.String)
-	 */
 	@Override
 	public TypeFunction getTypeFunction(String id) {
-		// TODO Auto-generated method stub
 		return super.getTypeFunction(id);
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.service.impl.StaticFunctionService#getTypeFunctions()
-	 */
 	@Override
 	public Collection<? extends TypeFunction> getTypeFunctions() {
-		// TODO Auto-generated method stub
 		return super.getTypeFunctions();
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.service.impl.StaticFunctionService#getPropertyFunctions()
-	 */
 	@Override
 	public Collection<? extends PropertyFunction> getPropertyFunctions() {
-		// TODO Auto-generated method stub
-		return super.getPropertyFunctions();
+		Collection<? extends PropertyFunction> functions = super.getPropertyFunctions();
+
+		Alignment al = getCurrentAlignment();
+		if (al != null) {
+			List<PropertyFunction> cfs = new ArrayList<>();
+			for (CustomPropertyFunction cf : al.getCustomPropertyFunctions().values()) {
+				cfs.add(cf.getDescriptor());
+			}
+			cfs.addAll(functions);
+
+			functions = cfs;
+		}
+
+		return functions;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.service.impl.StaticFunctionService#getTypeFunctions(java.lang.String)
-	 */
 	@Override
 	public Collection<? extends TypeFunction> getTypeFunctions(String categoryId) {
-		// TODO Auto-generated method stub
 		return super.getTypeFunctions(categoryId);
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.service.impl.StaticFunctionService#getPropertyFunctions(java.lang.String)
-	 */
 	@Override
 	public Collection<? extends PropertyFunction> getPropertyFunctions(String categoryId) {
-		// TODO Auto-generated method stub
-		return super.getPropertyFunctions(categoryId);
+		Collection<? extends PropertyFunction> functions = super.getPropertyFunctions();
+
+		Alignment al = getCurrentAlignment();
+		if (al != null && categoryId == null) { // XXX for now custom functions
+												// in category OTHER
+			List<PropertyFunction> cfs = new ArrayList<>();
+			for (CustomPropertyFunction cf : al.getCustomPropertyFunctions().values()) {
+				cfs.add(cf.getDescriptor());
+			}
+			cfs.addAll(functions);
+
+			functions = cfs;
+		}
+
+		return functions;
 	}
 
 }

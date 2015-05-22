@@ -46,7 +46,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -71,9 +71,9 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 		implements ParameterPage {
 
 	private ListMultimap<String, ParameterValue> initialValues;
-	private Set<FunctionParameter> params;
-	private final ListMultimap<FunctionParameter, Pair<AttributeEditor<?>, Button>> inputFields;
-	private final HashMap<FunctionParameter, Button> addButtons;
+	private Set<FunctionParameterDefinition> params;
+	private final ListMultimap<FunctionParameterDefinition, Pair<AttributeEditor<?>, Button>> inputFields;
+	private final HashMap<FunctionParameterDefinition, Button> addButtons;
 	private static final Image removeImage = HALEUIPlugin.getImageDescriptor("icons/remove.gif")
 			.createImage();
 
@@ -87,7 +87,7 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 		setDescription("Specify the parameters for the relation");
 
 		inputFields = ArrayListMultimap.create();
-		addButtons = new HashMap<FunctionParameter, Button>();
+		addButtons = new HashMap<FunctionParameterDefinition, Button>();
 
 		setPageComplete(false);
 	}
@@ -116,7 +116,8 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 	 * Update the page state.
 	 */
 	private void updateState() {
-		for (Map.Entry<FunctionParameter, Pair<AttributeEditor<?>, Button>> entry : inputFields.entries())
+		for (Map.Entry<FunctionParameterDefinition, Pair<AttributeEditor<?>, Button>> entry : inputFields
+				.entries())
 			if (!entry.getValue().getFirst().isValid()) {
 				setPageComplete(false);
 				return;
@@ -129,7 +130,7 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 	 *      com.google.common.collect.ListMultimap)
 	 */
 	@Override
-	public void setParameter(Set<FunctionParameter> params,
+	public void setParameter(Set<FunctionParameterDefinition> params,
 			ListMultimap<String, ParameterValue> initialValues) {
 		this.params = params;
 		if (initialValues == null)
@@ -140,7 +141,8 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 	@Override
 	public ListMultimap<String, ParameterValue> getConfiguration() {
 		ListMultimap<String, ParameterValue> conf = ArrayListMultimap.create();
-		for (Map.Entry<FunctionParameter, Pair<AttributeEditor<?>, Button>> entry : inputFields.entries())
+		for (Map.Entry<FunctionParameterDefinition, Pair<AttributeEditor<?>, Button>> entry : inputFields
+				.entries())
 			conf.put(entry.getKey().getName(), //
 					new ParameterValue( //
 							entry.getValue().getFirst().getValueType(), //
@@ -156,7 +158,7 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 		page.setLayout(GridLayoutFactory.swtDefaults().create());
 
 		// create section for each function parameter
-		for (final FunctionParameter fp : params) {
+		for (final FunctionParameterDefinition fp : params) {
 			boolean fixed = fp.getMinOccurrence() == fp.getMaxOccurrence();
 			boolean unbounded = fp.getMaxOccurrence() == AbstractParameter.UNBOUNDED;
 
@@ -212,7 +214,7 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 	 * @param fp the function parameter
 	 * @param addEnabled whether the add button is enabled in the beginning
 	 */
-	private void createAddButton(final Composite parent, final FunctionParameter fp,
+	private void createAddButton(final Composite parent, final FunctionParameterDefinition fp,
 			boolean addEnabled) {
 		// create add button -> left
 		final Button addButton = new Button(parent, SWT.PUSH);
@@ -229,7 +231,8 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 				// add text field
 				List<Pair<AttributeEditor<?>, Button>> texts = inputFields.get(fp);
 				boolean removeButtonsDisabled = texts.size() == fp.getMinOccurrence();
-				Pair<AttributeEditor<?>, Button> added = createField(addButton.getParent(), fp, null, false);
+				Pair<AttributeEditor<?>, Button> added = createField(addButton.getParent(), fp,
+						null, false);
 				added.getFirst().getControl().moveAbove(addButton);
 				added.getSecond().moveAbove(addButton);
 
@@ -264,12 +267,12 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 	 *            circumstances (-> no remove button)
 	 * @return the created text field
 	 */
-	private Pair<AttributeEditor<?>, Button> createField(Composite parent, final FunctionParameter fp,
-			ParameterValue initialValue, boolean fixed) {
+	private Pair<AttributeEditor<?>, Button> createField(Composite parent,
+			final FunctionParameterDefinition fp, ParameterValue initialValue, boolean fixed) {
 		// create editor, button and pair
 
-		final AttributeEditor<?> editor = ParameterEditorExtension.getInstance().createEditor(parent,
-				getWizard().getFunctionId(), fp, initialValue);
+		final AttributeEditor<?> editor = ParameterEditorExtension.getInstance().createEditor(
+				parent, getWizard().getFunctionId(), fp, initialValue);
 
 		// listen to valid changes
 		editor.setPropertyChangeListener(new IPropertyChangeListener() {

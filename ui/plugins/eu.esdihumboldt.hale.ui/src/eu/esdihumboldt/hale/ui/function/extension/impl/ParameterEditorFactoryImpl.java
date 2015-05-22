@@ -26,7 +26,6 @@ import de.fhg.igd.eclipse.util.extension.ExtensionObjectDefinition;
 import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.ui.HaleUI;
@@ -116,12 +115,12 @@ public class ParameterEditorFactoryImpl extends AbstractConfigurationFactory<Edi
 	public FunctionParameterDefinition getAssociatedParameter() {
 		if (associatedFunctionParameter == null) {
 			// get defined parameters
-			Collection<FunctionParameter> definedParameters = FunctionUtil.getFunction(
+			Collection<FunctionParameterDefinition> definedParameters = FunctionUtil.getFunction(
 					getFunctionId(), HaleUI.getServiceProvider()).getDefinedParameters();
 			// search for defined parameter, add it to associated params
 			// XXX throw some exception if param name is not defined?
 			String name = getParameterName();
-			for (FunctionParameter definedParameter : definedParameters) {
+			for (FunctionParameterDefinition definedParameter : definedParameters) {
 				if (definedParameter.getName().equals(name)) {
 					associatedFunctionParameter = definedParameter;
 					break;

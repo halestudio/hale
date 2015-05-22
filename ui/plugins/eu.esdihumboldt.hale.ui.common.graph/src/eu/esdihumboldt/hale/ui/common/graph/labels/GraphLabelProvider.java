@@ -41,7 +41,6 @@ import org.eclipse.zest.core.viewers.IEntityStyleProvider;
 import org.eclipse.zest.core.viewers.IFigureProvider;
 import org.eclipse.zest.core.widgets.ZestStyles;
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.Function;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
@@ -238,7 +237,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			// use function image if possible
 			Cell cell = (Cell) element;
 			String functionId = cell.getTransformationIdentifier();
-			AbstractFunction<?> function = FunctionUtil.getFunction(functionId, serviceProvider);
+			Function function = FunctionUtil.getFunction(functionId, serviceProvider);
 			if (function != null) {
 				Image image = functionLabels.getImage(function);
 				if (cell.isBaseCell()) {
@@ -291,7 +290,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			// use function name if possible
 			Cell cell = (Cell) element;
 			String functionId = cell.getTransformationIdentifier();
-			AbstractFunction<?> function = FunctionUtil.getFunction(functionId, serviceProvider);
+			Function function = FunctionUtil.getFunction(functionId, serviceProvider);
 
 			if (function != null) {
 				return functionLabels.getText(function);
@@ -446,8 +445,8 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	public IFigure getTooltip(Object entity) {
 		if (entity instanceof Cell) {
 			Cell cell = (Cell) entity;
-			AbstractFunction<?> function = FunctionUtil.getFunction(
-					cell.getTransformationIdentifier(), serviceProvider);
+			Function function = FunctionUtil.getFunction(cell.getTransformationIdentifier(),
+					serviceProvider);
 			if (function != null) {
 				CellExplanation explanation = function.getExplanation();
 				if (explanation != null) {

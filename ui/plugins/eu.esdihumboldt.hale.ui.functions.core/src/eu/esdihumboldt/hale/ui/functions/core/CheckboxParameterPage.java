@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Composite;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
@@ -45,7 +45,7 @@ import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
 public class CheckboxParameterPage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>>
 		implements ParameterPage {
 
-	private HashMap<FunctionParameter, Boolean> selected;
+	private HashMap<FunctionParameterDefinition, Boolean> selected;
 
 	/**
 	 * Constructor.
@@ -66,10 +66,10 @@ public class CheckboxParameterPage extends HaleWizardPage<AbstractGenericFunctio
 	}
 
 	@Override
-	public void setParameter(Set<FunctionParameter> params,
+	public void setParameter(Set<FunctionParameterDefinition> params,
 			ListMultimap<String, ParameterValue> initialValues) {
-		selected = new HashMap<FunctionParameter, Boolean>((int) (params.size() * 1.4));
-		for (FunctionParameter param : params) {
+		selected = new HashMap<FunctionParameterDefinition, Boolean>((int) (params.size() * 1.4));
+		for (FunctionParameterDefinition param : params) {
 			if (initialValues != null && !initialValues.get(param.getName()).isEmpty())
 				selected.put(param,
 						initialValues.get(param.getName()).get(0).as(Boolean.class, false));
@@ -85,7 +85,7 @@ public class CheckboxParameterPage extends HaleWizardPage<AbstractGenericFunctio
 	@Override
 	public ListMultimap<String, ParameterValue> getConfiguration() {
 		ListMultimap<String, ParameterValue> result = ArrayListMultimap.create(selected.size(), 1);
-		for (Entry<FunctionParameter, Boolean> entry : selected.entrySet())
+		for (Entry<FunctionParameterDefinition, Boolean> entry : selected.entrySet())
 			result.put(entry.getKey().getName(), new ParameterValue(entry.getValue().toString()));
 
 		return result;
@@ -99,7 +99,7 @@ public class CheckboxParameterPage extends HaleWizardPage<AbstractGenericFunctio
 		page.setLayout(GridLayoutFactory.swtDefaults().create());
 
 		// create section for each function parameter
-		for (final FunctionParameter fp : selected.keySet()) {
+		for (final FunctionParameterDefinition fp : selected.keySet()) {
 			Button checkbox = new Button(page, SWT.CHECK);
 			checkbox.setText(fp.getDisplayName());
 			checkbox.setSelection(selected.get(fp));

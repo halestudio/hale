@@ -17,7 +17,7 @@ package eu.esdihumboldt.hale.common.align.extension.function.custom.impl;
 
 import java.util.List;
 
-import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyTransformation;
 import eu.esdihumboldt.hale.common.core.io.Value;
@@ -95,7 +95,7 @@ public class DefaultCustomPropertyFunction implements CustomPropertyFunction {
 	 * @see eu.esdihumboldt.hale.common.align.extension.function.custom.CustomFunction#getDescriptor()
 	 */
 	@Override
-	public Function getDescriptor() {
+	public PropertyFunction getDescriptor() {
 		// TODO Auto-generated method stub
 		return null;
 	}

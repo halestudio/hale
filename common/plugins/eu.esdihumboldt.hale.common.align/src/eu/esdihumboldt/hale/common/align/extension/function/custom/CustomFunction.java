@@ -21,15 +21,16 @@ import eu.esdihumboldt.hale.common.align.transformation.function.TransformationF
 /**
  * Custom function interface.
  * 
- * @author Simon Templer
  * @param <T> the transformation function type
+ * @param <F> the function type
+ * @author Simon Templer
  */
-public interface CustomFunction<T extends TransformationFunction<?>> {
+public interface CustomFunction<F extends Function, T extends TransformationFunction<?>> {
 
 	/**
 	 * @return the function descriptor
 	 */
-	Function getDescriptor();
+	F getDescriptor();
 
 	/**
 	 * @return the transformation function implementation

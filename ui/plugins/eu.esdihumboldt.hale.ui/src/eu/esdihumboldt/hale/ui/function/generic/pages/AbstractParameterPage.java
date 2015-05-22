@@ -28,7 +28,7 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimaps;
 
 import eu.esdihumboldt.hale.common.align.extension.function.Function;
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
@@ -42,7 +42,7 @@ public abstract class AbstractParameterPage extends
 		HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements ParameterPage {
 
 	private ListMultimap<String, ParameterValue> initialValues;
-	private ImmutableMap<String, FunctionParameter> parametersToHandle;
+	private ImmutableMap<String, FunctionParameterDefinition> parametersToHandle;
 
 	/**
 	 * @see HaleWizardPage#HaleWizardPage(String)
@@ -80,10 +80,10 @@ public abstract class AbstractParameterPage extends
 	 * @see ParameterPage#setParameter(Set, ListMultimap)
 	 */
 	@Override
-	public void setParameter(Set<FunctionParameter> params,
+	public void setParameter(Set<FunctionParameterDefinition> params,
 			ListMultimap<String, ParameterValue> initialValues) {
-		Builder<String, FunctionParameter> builder = ImmutableMap.builder();
-		for (FunctionParameter param : params) {
+		Builder<String, FunctionParameterDefinition> builder = ImmutableMap.builder();
+		for (FunctionParameterDefinition param : params) {
 			builder.put(param.getName(), param);
 		}
 		this.parametersToHandle = builder.build();
@@ -109,7 +109,7 @@ public abstract class AbstractParameterPage extends
 	 * 
 	 * @return the set of function parameters to handle (unmodifiable)
 	 */
-	protected ImmutableMap<String, FunctionParameter> getParametersToHandle() {
+	protected ImmutableMap<String, FunctionParameterDefinition> getParametersToHandle() {
 		return parametersToHandle;
 	}
 

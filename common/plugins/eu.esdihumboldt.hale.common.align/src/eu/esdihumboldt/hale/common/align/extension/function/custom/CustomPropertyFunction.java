@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.common.align.extension.function.custom;
 
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyTransformation;
 
 /**
@@ -22,7 +23,8 @@ import eu.esdihumboldt.hale.common.align.transformation.function.PropertyTransfo
  * 
  * @author Simon Templer
  */
-public interface CustomPropertyFunction extends CustomFunction<PropertyTransformation<?>> {
+public interface CustomPropertyFunction extends
+		CustomFunction<PropertyFunction, PropertyTransformation<?>> {
 
 	// concrete typed interface
 

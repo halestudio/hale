@@ -56,7 +56,15 @@ public interface Function extends Identifiable {
 	 * 
 	 * @return the defined parameters
 	 */
-	public Collection<FunctionParameter> getDefinedParameters();
+	public Collection<FunctionParameterDefinition> getDefinedParameters();
+
+	/**
+	 * Get the function parameter with the given name.
+	 * 
+	 * @param paramName the parameter name
+	 * @return the parameter or <code>null</code> if it doesn't exist
+	 */
+	public FunctionParameterDefinition getParameter(String paramName);
 
 	/**
 	 * Get the icon URL

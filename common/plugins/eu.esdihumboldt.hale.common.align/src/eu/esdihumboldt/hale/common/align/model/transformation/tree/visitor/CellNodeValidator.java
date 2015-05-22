@@ -23,7 +23,7 @@ import com.google.common.collect.ListMultimap;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.Function;
 import eu.esdihumboldt.hale.common.align.extension.function.ParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -128,8 +128,8 @@ public class CellNodeValidator extends AbstractTargetToSourceVisitor {
 			ListMultimap<String, Pair<SourceNode, Entity>> sources,
 			ListMultimap<String, Pair<TargetNode, Entity>> targets) {
 		String functionId = node.getCell().getTransformationIdentifier();
-		AbstractFunction<?> function = serviceProvider.getService(FunctionService.class)
-				.getFunction(functionId);
+		Function function = serviceProvider.getService(FunctionService.class).getFunction(
+				functionId);
 		if (function != null) {
 			// check source node occurrence for mandatory source entities
 			for (ParameterDefinition sourceParam : function.getSource()) {

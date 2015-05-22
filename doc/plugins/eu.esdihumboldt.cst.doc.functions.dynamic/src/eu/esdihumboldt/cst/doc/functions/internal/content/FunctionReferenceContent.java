@@ -54,8 +54,8 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.cst.doc.functions.FunctionReferenceConstants;
 import eu.esdihumboldt.hale.common.align.extension.category.Category;
 import eu.esdihumboldt.hale.common.align.extension.category.CategoryExtension;
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.doc.util.content.AbstractVelocityContent;
@@ -138,7 +138,7 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 
 	private InputStream getFunctionContent(String func_id) throws Exception {
 		// maps "function" to the real function ID (used by the template)
-		final AbstractFunction<?> function = FunctionUtil.getFunction(func_id, null);
+		final Function function = FunctionUtil.getFunction(func_id, null);
 
 		if (function == null) {
 			log.warn("Unknown function " + func_id);
@@ -155,7 +155,7 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 
 				// Map<paramDisplayName, sampleDataStringRepresentation>
 				Map<String, String> parameterDocu = new HashMap<String, String>();
-				for (FunctionParameter param : function.getDefinedParameters()) {
+				for (FunctionParameterDefinition param : function.getDefinedParameters()) {
 					if (param.getValueDescriptor() != null
 							&& param.getValueDescriptor().getSampleData() != null) {
 						Value sample = param.getValueDescriptor().getSampleData();
@@ -216,7 +216,7 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 
 	private InputStream getImageContent(String func_id) throws Exception {
 
-		final AbstractFunction<?> function = FunctionUtil.getFunction(func_id, null);
+		final Function function = FunctionUtil.getFunction(func_id, null);
 
 		if (function == null) {
 			log.warn("Unknown function " + func_id);
@@ -304,7 +304,7 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 	}
 
 	private InputStream getIconContent(String func_id) {
-		AbstractFunction<?> function = FunctionUtil.getFunction(func_id, null);
+		Function function = FunctionUtil.getFunction(func_id, null);
 
 		URL url = function.getIconURL();
 

@@ -22,7 +22,7 @@ import org.eclipse.help.ITopic;
 import org.eclipse.help.IUAElement;
 
 import eu.esdihumboldt.cst.doc.functions.FunctionReferenceConstants;
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.Function;
 
 /**
  * Topic representing a function.
@@ -31,14 +31,14 @@ import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
  */
 public class FunctionTopic implements ITopic, FunctionReferenceConstants {
 
-	private final AbstractFunction<?> function;
+	private final Function function;
 
 	/**
 	 * Create the function topic.
 	 * 
 	 * @param function the associated function
 	 */
-	public FunctionTopic(AbstractFunction<?> function) {
+	public FunctionTopic(Function function) {
 		super();
 		this.function = function;
 	}

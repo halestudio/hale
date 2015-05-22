@@ -24,6 +24,7 @@ import org.pegdown.PegDownProcessor
 import org.w3c.dom.Element
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction
+import eu.esdihumboldt.hale.common.align.extension.function.Function
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil
 import eu.esdihumboldt.hale.common.align.model.Alignment
@@ -158,7 +159,7 @@ class MappingDocumentation {
 		// collect cell information
 
 		// get the associated function
-		AbstractFunction<?> function = FunctionUtil.getFunction(cell
+		Function function = FunctionUtil.getFunction(cell
 				.getTransformationIdentifier(), null)
 
 		// create JSON representation of individual cell

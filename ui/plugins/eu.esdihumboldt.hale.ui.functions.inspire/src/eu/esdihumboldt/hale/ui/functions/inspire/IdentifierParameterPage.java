@@ -36,7 +36,6 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.cst.functions.inspire.IdentifierFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
@@ -107,7 +106,7 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 	}
 
 	@Override
-	public void setParameter(Set<FunctionParameter> params,
+	public void setParameter(Set<FunctionParameterDefinition> params,
 			ListMultimap<String, ParameterValue> initialValues) {
 		if (initialValues != null) {
 			initialCountry = initialValues.get(COUNTRY_PARAMETER_NAME).get(0).as(String.class);

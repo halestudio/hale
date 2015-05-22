@@ -15,8 +15,9 @@
 
 package eu.esdihumboldt.hale.ui.function.custom;
 
-import org.eclipse.jface.wizard.IWizard;
+import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.util.handler.AbstractWizardHandler;
 
 /**
@@ -32,6 +33,13 @@ public class NewCustomPropertyFunctionHandler extends
 		CustomPropertyFunctionWizard wiz = new CustomPropertyFunctionWizard();
 		wiz.init();
 		return wiz;
+	}
+
+	@Override
+	protected void onComplete(CustomPropertyFunctionWizard wizard) {
+		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+				AlignmentService.class);
+		as.addCustomPropertyFunction(wizard.getResultFunction());
 	}
 
 }
