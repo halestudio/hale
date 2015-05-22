@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunctionEntity;
 import eu.esdihumboldt.hale.common.align.extension.function.ParameterDefinition;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.common.editors.AbstractCompositeEditor;
 
 /**
@@ -41,6 +42,7 @@ public class CustomPropertyFunctionEntityEditor extends
 	private Spinner maxSpinner;
 	private Button eagerSelect;
 	private Button unboundedSelect;
+	private BindingOrTypeEditor bindingOrType;
 
 	/**
 	 * @see AbstractCompositeEditor#AbstractCompositeEditor(Composite)
@@ -67,6 +69,13 @@ public class CustomPropertyFunctionEntityEditor extends
 		nameText = new Text(page, SWT.SINGLE | SWT.BORDER);
 		longFieldStyle.applyTo(nameText);
 
+		// binding / type
+		Label typeLabel = new Label(page, SWT.NONE);
+		typeLabel.setText("Type:");
+		labelStyle.applyTo(typeLabel);
+		bindingOrType = new BindingOrTypeEditor(page, SchemaSpaceID.SOURCE);
+		longFieldStyle.applyTo(bindingOrType.getControl());
+
 		// min
 		Label minLabel = new Label(page, SWT.NONE);
 		minLabel.setText("Min:");
@@ -92,8 +101,6 @@ public class CustomPropertyFunctionEntityEditor extends
 		unboundedSelect = new Button(page, SWT.CHECK);
 		unboundedSelect.setText("unbounded");
 		checkStyle.applyTo(unboundedSelect);
-
-		// TODO binding / type
 	}
 
 	@Override
@@ -119,7 +126,14 @@ public class CustomPropertyFunctionEntityEditor extends
 		}
 		eagerSelect.setSelection(value.isEager());
 
-		// TODO binding type
+		// binding type
+		BindingOrType bot = new BindingOrType();
+
+		bot.setType(value.getBindingType());
+		bot.setBinding(value.getBindingClass());
+		bot.setUseBinding(value.getBindingType() == null);
+
+		bindingOrType.setValue(bot);
 	}
 
 	@Override
@@ -132,7 +146,16 @@ public class CustomPropertyFunctionEntityEditor extends
 				: (maxSpinner.getSelection()));
 		result.setMinOccurrence(minSpinner.getSelection());
 
-		// FIXME binding type
+		// binding type
+		BindingOrType bot = bindingOrType.getValue();
+		if (bot.isUseBinding()) {
+			result.setBindingType(null);
+			result.setBindingClass(bot.getBinding());
+		}
+		else {
+			result.setBindingClass(null);
+			result.setBindingType(bot.getType());
+		}
 		result.setBindingClass(String.class);
 
 		return result;

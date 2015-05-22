@@ -31,7 +31,8 @@ import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunctionEnt
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.functions.custom.CustomPropertyFunctionWizard;
-import eu.esdihumboldt.hale.ui.functions.custom.pages.internal.CustomPropertyFunctionEntityEditor;
+import eu.esdihumboldt.hale.ui.functions.custom.pages.internal.BindingOrType;
+import eu.esdihumboldt.hale.ui.functions.custom.pages.internal.BindingOrTypeEditor;
 import eu.esdihumboldt.hale.ui.functions.custom.pages.internal.CustomPropertyFunctionEntityList;
 import eu.esdihumboldt.hale.ui.util.components.DynamicScrolledComposite;
 
@@ -43,7 +44,7 @@ import eu.esdihumboldt.hale.ui.util.components.DynamicScrolledComposite;
 public class CustomPropertyFunctionEntitiesPage extends
 		HaleWizardPage<CustomPropertyFunctionWizard> implements CustomFunctionWizardPage {
 
-	private CustomPropertyFunctionEntityEditor target;
+	private BindingOrTypeEditor target;
 	private CustomPropertyFunctionEntityList sources;
 
 //	private final Observer fieldObserver;
@@ -157,7 +158,8 @@ public class CustomPropertyFunctionEntitiesPage extends
 			break;
 		case TARGET:
 			main.setText("Output");
-			target = new CustomPropertyFunctionEntityEditor(main);
+			target = new BindingOrTypeEditor(main, SchemaSpaceID.TARGET);
+			GridDataFactory.fillDefaults().grab(true, false).applyTo(target.getControl());
 			break;
 		}
 
@@ -188,8 +190,31 @@ public class CustomPropertyFunctionEntitiesPage extends
 		DefaultCustomPropertyFunction cf = getWizard().getResultFunction();
 		if (cf != null && sources != null && target != null) {
 			cf.setSources(sources.getValues());
-			cf.setTarget(target.getValue());
+			cf.setTarget(createTargetEntity(target.getValue()));
 		}
+	}
+
+	/**
+	 * @param value
+	 * @return
+	 */
+	private DefaultCustomPropertyFunctionEntity createTargetEntity(BindingOrType value) {
+		DefaultCustomPropertyFunctionEntity result = new DefaultCustomPropertyFunctionEntity();
+
+		result.setMinOccurrence(1);
+		result.setMaxOccurrence(1);
+		result.setEager(false); // not applicable for target
+
+		if (value.isUseBinding()) {
+			result.setBindingType(null);
+			result.setBindingClass(value.getBinding());
+		}
+		else {
+			result.setBindingClass(null);
+			result.setBindingType(value.getType());
+		}
+
+		return result;
 	}
 
 }

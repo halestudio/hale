@@ -35,7 +35,7 @@ public class DefaultCustomPropertyFunctionEntity extends MinimalParameter implem
 		CustomPropertyFunctionEntity {
 
 	private boolean eager;
-	private Class<?> bindingClass;
+	private Class<?> bindingClass = String.class; // default binding
 	private TypeDefinition bindingType;
 
 	/**
