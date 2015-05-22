@@ -19,6 +19,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionDefi
 import eu.esdihumboldt.hale.common.align.extension.function.custom.impl.DefaultCustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyTransformation;
 import eu.esdihumboldt.hale.ui.function.custom.pages.CustomPropertyFunctionEntitiesPage;
+import eu.esdihumboldt.hale.ui.function.custom.pages.MainPage;
 import eu.esdihumboldt.hale.ui.function.custom.pages.PropertyFunctionScriptPage;
 
 /**
@@ -48,6 +49,8 @@ public class CustomPropertyFunctionWizard
 	@Override
 	public void addPages() {
 		super.addPages();
+
+		addPage(new MainPage());
 
 		// variables page
 		entityPage = new CustomPropertyFunctionEntitiesPage();
