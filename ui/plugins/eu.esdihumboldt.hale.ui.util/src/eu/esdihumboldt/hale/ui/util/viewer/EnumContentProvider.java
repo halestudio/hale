@@ -83,6 +83,7 @@ public class EnumContentProvider implements IStructuredContentProvider {
 			Class<? extends Enum<?>> enumClass = (Class<? extends Enum<?>>) inputElement;
 			try {
 				Method method = enumClass.getMethod("values");
+				method.setAccessible(true);
 				return (Object[]) method.invoke(null);
 			} catch (Exception e) {
 				log.error("Could not get values from enum.");
