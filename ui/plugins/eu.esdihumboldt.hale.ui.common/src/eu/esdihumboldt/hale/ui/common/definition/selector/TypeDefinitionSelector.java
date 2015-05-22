@@ -24,6 +24,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.util.selector.AbstractSelector;
+import eu.esdihumboldt.hale.ui.util.selector.AbstractUniformSelector;
 import eu.esdihumboldt.hale.ui.util.selector.AbstractViewerSelectionDialog;
 
 /**
@@ -31,7 +32,7 @@ import eu.esdihumboldt.hale.ui.util.selector.AbstractViewerSelectionDialog;
  * 
  * @author Simon Templer
  */
-public class TypeDefinitionSelector extends AbstractSelector<TypeDefinition> {
+public class TypeDefinitionSelector extends AbstractUniformSelector<TypeDefinition> {
 
 	private final String dialogTitle;
 	private final TypeIndex typeIndex;

@@ -53,7 +53,7 @@ public class PropertyEntitySelector extends EntitySelector<PropertyParameterDefi
 	 * @param ssid the schema space
 	 * @param field the field definition, may be <code>null</code>
 	 * @param parent the parent composite
-	 * @param parentType the parent type
+	 * @param parentType the parent type, may be <code>null</code>
 	 */
 	public PropertyEntitySelector(SchemaSpaceID ssid, PropertyParameterDefinition field,
 			Composite parent, TypeEntityDefinition parentType) {

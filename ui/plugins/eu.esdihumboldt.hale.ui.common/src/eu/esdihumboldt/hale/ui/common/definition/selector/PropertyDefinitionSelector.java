@@ -28,7 +28,7 @@ import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
-import eu.esdihumboldt.hale.ui.util.selector.AbstractSelector;
+import eu.esdihumboldt.hale.ui.util.selector.AbstractUniformSelector;
 import eu.esdihumboldt.hale.ui.util.selector.AbstractViewerSelectionDialog;
 
 /**
@@ -37,7 +37,7 @@ import eu.esdihumboldt.hale.ui.util.selector.AbstractViewerSelectionDialog;
  * 
  * @author Simon Templer
  */
-public class PropertyDefinitionSelector extends AbstractSelector<EntityDefinition> {
+public class PropertyDefinitionSelector extends AbstractUniformSelector<EntityDefinition> {
 
 	private TypeDefinition parentType;
 

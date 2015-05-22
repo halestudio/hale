@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.StyledDefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.util.selector.AbstractSelector;
+import eu.esdihumboldt.hale.ui.util.selector.AbstractUniformSelector;
 import eu.esdihumboldt.hale.ui.util.selector.AbstractViewerSelectionDialog;
 
 /**
@@ -36,7 +37,7 @@ import eu.esdihumboldt.hale.ui.util.selector.AbstractViewerSelectionDialog;
  * @author Simon Templer
  */
 public abstract class EntitySelector<F extends ParameterDefinition> extends
-		AbstractSelector<EntityDefinition> {
+		AbstractUniformSelector<EntityDefinition> {
 
 	private final F field;
 
