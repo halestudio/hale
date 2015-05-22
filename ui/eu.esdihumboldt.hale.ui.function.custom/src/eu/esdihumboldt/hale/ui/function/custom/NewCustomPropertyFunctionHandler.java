@@ -24,10 +24,11 @@ import eu.esdihumboldt.hale.ui.util.handler.AbstractWizardHandler;
  * 
  * @author Simon Templer
  */
-public class NewCustomPropertyFunctionHandler extends AbstractWizardHandler {
+public class NewCustomPropertyFunctionHandler extends
+		AbstractWizardHandler<CustomPropertyFunctionWizard> {
 
 	@Override
-	protected IWizard createWizard() {
+	protected CustomPropertyFunctionWizard createWizard() {
 		CustomPropertyFunctionWizard wiz = new CustomPropertyFunctionWizard();
 		wiz.init();
 		return wiz;
