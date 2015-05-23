@@ -83,6 +83,8 @@
       <plugin id="eu.esdihumboldt.cst.doc.functions.dummy" fragment="true"/>
       <plugin id="eu.esdihumboldt.cst.doc.functions.dynamic" fragment="true"/>
       <plugin id="eu.esdihumboldt.cst.functions.core"/>
+      <plugin id="eu.esdihumboldt.cst.functions.custom"/>
+      <plugin id="eu.esdihumboldt.cst.functions.custom.test"/>
       <plugin id="eu.esdihumboldt.cst.functions.geometric"/>
       <plugin id="eu.esdihumboldt.cst.functions.geometric.test"/>
       <plugin id="eu.esdihumboldt.cst.functions.groovy"/>
