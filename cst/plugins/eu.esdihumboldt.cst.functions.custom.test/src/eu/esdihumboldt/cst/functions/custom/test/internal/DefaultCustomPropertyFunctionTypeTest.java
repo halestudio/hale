@@ -20,12 +20,15 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.junit.Test;
 import org.w3c.dom.Element;
 
 import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunctionEntity;
+import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunctionParameter;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.Text;
 import eu.esdihumboldt.hale.common.core.io.Value;
@@ -56,6 +59,27 @@ public class DefaultCustomPropertyFunctionTypeTest {
 		f.setSources(sources);
 
 		f.setTarget(createEntity(null, 1, 1, false));
+
+		List<DefaultCustomPropertyFunctionParameter> parameters = new ArrayList<>();
+
+		DefaultCustomPropertyFunctionParameter param1 = new DefaultCustomPropertyFunctionParameter();
+		param1.setName("gender");
+		Set<String> enumeration = new TreeSet<>();
+		enumeration.add("male");
+		enumeration.add("female");
+		param1.setMinOccurrence(1);
+		param1.setMaxOccurrence(1);
+		param1.setEnumeration(enumeration);
+		parameters.add(param1);
+
+		DefaultCustomPropertyFunctionParameter param2 = new DefaultCustomPropertyFunctionParameter();
+		param2.setName("name");
+		param2.setBindingClass(String.class);
+		param2.setMinOccurrence(0);
+		param2.setMaxOccurrence(1);
+		parameters.add(param2);
+
+		f.setParameters(parameters);
 
 		// convert to DOM
 		Element fragment = HaleIO.getComplexElement(f);
@@ -90,6 +114,19 @@ public class DefaultCustomPropertyFunctionTypeTest {
 
 		// target
 		assertNotNull(conv.getTarget());
+
+		// parameters
+		assertEquals(2, conv.getParameters().size());
+
+		DefaultCustomPropertyFunctionParameter cp1 = conv.getParameters().get(0);
+		assertEquals("gender", cp1.getName());
+		assertEquals(2, cp1.getEnumeration().size());
+
+		DefaultCustomPropertyFunctionParameter cp2 = conv.getParameters().get(1);
+		assertEquals("name", cp2.getName());
+		assertEquals(0, cp2.getMinOccurrence());
+		assertEquals(1, cp2.getMaxOccurrence());
+		assertEquals(String.class, cp2.getBindingClass());
 	}
 
 	private DefaultCustomPropertyFunctionEntity createEntity(String name, int min, int max,

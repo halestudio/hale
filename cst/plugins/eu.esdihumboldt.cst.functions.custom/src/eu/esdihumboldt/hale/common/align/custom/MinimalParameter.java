@@ -29,6 +29,25 @@ public class MinimalParameter implements ParameterDefinition {
 	private int maxOccurrence;
 
 	/**
+	 * Default constructor.
+	 */
+	public MinimalParameter() {
+		super();
+	}
+
+	/**
+	 * Copy constructor.
+	 * 
+	 * @param other the object to copy
+	 */
+	public MinimalParameter(MinimalParameter other) {
+		super();
+		setName(other.getName());
+		setMinOccurrence(other.getMinOccurrence());
+		setMaxOccurrence(other.getMaxOccurrence());
+	}
+
+	/**
 	 * @param name the parameter name to set
 	 */
 	public void setName(String name) {

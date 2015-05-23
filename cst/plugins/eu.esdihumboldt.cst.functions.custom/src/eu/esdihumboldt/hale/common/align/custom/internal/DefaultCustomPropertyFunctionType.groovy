@@ -19,6 +19,7 @@ import org.w3c.dom.Element
 
 import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunction
 import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunctionEntity
+import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunctionParameter
 import eu.esdihumboldt.hale.common.align.io.LoadAlignmentContext
 import eu.esdihumboldt.hale.common.core.io.ComplexValueType
 import eu.esdihumboldt.hale.common.core.io.DOMValueUtil
@@ -60,6 +61,13 @@ ComplexValueType<DefaultCustomPropertyFunction, LoadAlignmentContext> {
 				result.target = entityFromTag(targetTag, context)
 			}
 
+			def params = []
+			// parameters
+			for (param in fragment.children(NS_CUSTOM_FUNCTION, 'param')) {
+				params << paramFromTag(param)
+			}
+			result.parameters = params
+
 			// definition
 			def defTag = fragment.firstChild(NS_CUSTOM_FUNCTION, "definition")
 			if (defTag) {
@@ -80,13 +88,23 @@ ComplexValueType<DefaultCustomPropertyFunction, LoadAlignmentContext> {
 				type: value.functionType) {
 
 					// input variables
-					for (def source in value.sources) {
-						entityTag(builder, 'cf:input', source)
+					if (value.sources) {
+						for (def source in value.sources) {
+							entityTag(builder, 'cf:input', source)
+						}
 					}
 
 					// output
 					entityTag(builder, 'cf:output', value.target)
 
+					// parameters
+					if (value.parameters) {
+						for (def param in value.parameters) {
+							paramTag(builder, 'cf:param', param)
+						}
+					}
+
+					// definition
 					DOMValueUtil.valueTag(builder, 'cf:definition', value.functionDefinition ?: Value.NULL)
 				}
 
@@ -132,6 +150,60 @@ ComplexValueType<DefaultCustomPropertyFunction, LoadAlignmentContext> {
 							'cf:binding'(entity.bindingClass.getName())
 						}
 						//TODO binding type
+					}
+		}
+		else {
+			null
+		}
+	}
+
+	DefaultCustomPropertyFunctionParameter paramFromTag(Element element) {
+		DefaultCustomPropertyFunctionParameter param = new DefaultCustomPropertyFunctionParameter()
+
+		use (NSDOMCategory) {
+			// attributes
+			param.name = element.getAttribute('name')
+			param.minOccurrence = Integer.parseInt(element.getAttribute('minOccurs'))
+			param.maxOccurrence = Integer.parseInt(element.getAttribute('maxOccurs'))
+
+			// binding class
+			def bindingElem = element.firstChild(NS_CUSTOM_FUNCTION, 'binding')
+			if (bindingElem) {
+				try {
+					param.bindingClass = Class.forName(bindingElem.text())
+				} catch (e) {
+					//FIXME
+					e.printStackTrace()
+				}
+			}
+
+			// enumeration
+			def values = new LinkedHashSet<String>()
+			element.children(NS_CUSTOM_FUNCTION, 'value').collect(values) { it.text() }
+			if (values) {
+				param.enumeration = values
+			}
+		}
+
+		param
+	}
+
+	Element paramTag(NSDOMBuilder builder, String tagName, DefaultCustomPropertyFunctionParameter param) {
+		if (param) {
+			builder."$tagName"(
+					name: param.name,
+					minOccurs: param.minOccurrence,
+					maxOccurs: param.maxOccurrence) {
+						if (param.bindingClass) {
+							// binding class
+							'cf:binding'(param.bindingClass.getName())
+						}
+						if (param.enumeration) {
+							// enumeration
+							for (def value in param.enumeration) {
+								'cf:value'(value)
+							}
+						}
 					}
 		}
 		else {

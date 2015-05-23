@@ -18,10 +18,13 @@ package eu.esdihumboldt.hale.common.align.custom;
 /**
  * TODO Type description
  * 
- * @author simon
+ * @author Simon Templer
  */
 public interface CustomPropertyFunctionType {
 
+	/**
+	 * Constant for Groovy custom property function type.
+	 */
 	public static final String GROOVY = "groovy";
 
 }

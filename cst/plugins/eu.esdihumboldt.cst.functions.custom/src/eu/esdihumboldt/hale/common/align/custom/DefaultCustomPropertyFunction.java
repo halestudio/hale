@@ -39,13 +39,6 @@ import eu.esdihumboldt.hale.common.core.io.Value;
  */
 public class DefaultCustomPropertyFunction implements CustomPropertyFunction {
 
-	private DefaultCustomPropertyFunctionEntity target;
-	private List<DefaultCustomPropertyFunctionEntity> sources;
-
-	private String identifier;
-	private String name;
-	private String functionType;
-	private Value functionDefinition;
 	private final PropertyFunctionDefinition descriptor = new PropertyFunctionDefinition() {
 
 		@Override
@@ -127,6 +120,16 @@ public class DefaultCustomPropertyFunction implements CustomPropertyFunction {
 			return "eu.esdihumboldt.cst.functions.custom";
 		}
 	};
+
+	private DefaultCustomPropertyFunctionEntity target;
+	private List<DefaultCustomPropertyFunctionEntity> sources;
+
+	private List<DefaultCustomPropertyFunctionParameter> parameters;
+
+	private String identifier;
+	private String name;
+	private String functionType;
+	private Value functionDefinition;
 
 	/**
 	 * Default constructor.
@@ -256,6 +259,20 @@ public class DefaultCustomPropertyFunction implements CustomPropertyFunction {
 	 */
 	public void setSources(List<DefaultCustomPropertyFunctionEntity> sources) {
 		this.sources = sources;
+	}
+
+	/**
+	 * @return the parameters
+	 */
+	public List<DefaultCustomPropertyFunctionParameter> getParameters() {
+		return parameters;
+	}
+
+	/**
+	 * @param parameters the parameters to set
+	 */
+	public void setParameters(List<DefaultCustomPropertyFunctionParameter> parameters) {
+		this.parameters = parameters;
 	}
 
 	@Override
