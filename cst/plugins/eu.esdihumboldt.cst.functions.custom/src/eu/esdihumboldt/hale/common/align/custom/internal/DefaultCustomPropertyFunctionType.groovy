@@ -51,17 +51,20 @@ ComplexValueType<DefaultCustomPropertyFunction, LoadAlignmentContext> {
 			def sources = []
 			// input
 			for (source in fragment.children(NS_CUSTOM_FUNCTION, 'input')) {
-				sources << entityFromTag(source)
+				sources << entityFromTag(source, context)
 			}
 			result.sources = sources
 			// output
 			def targetTag = fragment.firstChild(NS_CUSTOM_FUNCTION, 'output')
 			if (targetTag) {
-				result.target = entityFromTag(targetTag)
+				result.target = entityFromTag(targetTag, context)
 			}
 
 			// definition
-			result.functionDefinition = DOMValueUtil.fromTag(fragment, context)
+			def defTag = fragment.firstChild(NS_CUSTOM_FUNCTION, "definition")
+			if (defTag) {
+				result.functionDefinition = DOMValueUtil.fromTag(defTag, context)
+			}
 		}
 
 		result
@@ -84,7 +87,7 @@ ComplexValueType<DefaultCustomPropertyFunction, LoadAlignmentContext> {
 					// output
 					entityTag(builder, 'cf:output', value.target)
 
-					DOMValueUtil.valueTag(builder, 'cf:definition', value.functionDefinition)
+					DOMValueUtil.valueTag(builder, 'cf:definition', value.functionDefinition ?: Value.NULL)
 				}
 
 		return fragment;
@@ -96,8 +99,8 @@ ComplexValueType<DefaultCustomPropertyFunction, LoadAlignmentContext> {
 		use (NSDOMCategory) {
 			// attributes
 			entity.name = element.getAttribute('name')
-			entity.minOccurrence = element.getAttribute('minOccurs')
-			entity.maxOccurrence = element.getAttribute('maxOccurs')
+			entity.minOccurrence = Integer.parseInt(element.getAttribute('minOccurs'))
+			entity.maxOccurrence = Integer.parseInt(element.getAttribute('maxOccurs'))
 			entity.eager = Boolean.parseBoolean(element.getAttribute('eager'))
 
 			// binding class
@@ -118,17 +121,22 @@ ComplexValueType<DefaultCustomPropertyFunction, LoadAlignmentContext> {
 	}
 
 	Element entityTag(NSDOMBuilder builder, String tagName, DefaultCustomPropertyFunctionEntity entity) {
-		builder."$tagName"(
-				name: entity.name,
-				minOccurs: entity.minOccurrence,
-				maxOccurs: entity.maxOccurrence,
-				eager: entity.eager) {
-					if (entity.bindingClass) {
-						// binding class
-						'cf:binding'(entity.bindingClass.getName())
+		if (entity) {
+			builder."$tagName"(
+					name: entity.name,
+					minOccurs: entity.minOccurrence,
+					maxOccurs: entity.maxOccurrence,
+					eager: entity.eager) {
+						if (entity.bindingClass) {
+							// binding class
+							'cf:binding'(entity.bindingClass.getName())
+						}
+						//TODO binding type
 					}
-					//TODO binding type
-				}
+		}
+		else {
+			null
+		}
 	}
 
 	@Override

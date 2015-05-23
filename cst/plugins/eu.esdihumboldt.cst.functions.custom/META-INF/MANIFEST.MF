@@ -1,12 +1,13 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Custom transformation functions
-Bundle-SymbolicName: eu.esdihumboldt.cst.functions.custom
+Bundle-SymbolicName: eu.esdihumboldt.cst.functions.custom;singleton:=true
 Bundle-Version: 2.9.3.qualifier
 Bundle-Vendor: data harmonisation panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: eu.esdihumboldt.hale.common.align.custom,
- eu.esdihumboldt.hale.common.align.custom.groovy
+ eu.esdihumboldt.hale.common.align.custom.groovy,
+ eu.esdihumboldt.hale.common.align.custom.internal;x-internal:=true
 Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.9.2",
  eu.esdihumboldt.cst.functions.groovy;bundle-version="2.9.0",
  groovy;bundle-version="2.3.7",
