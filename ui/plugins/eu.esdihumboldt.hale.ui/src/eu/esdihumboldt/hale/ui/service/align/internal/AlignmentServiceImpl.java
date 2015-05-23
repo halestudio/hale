@@ -220,9 +220,17 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 						alignment.getBaseAlignmentCells(baseAlignment.getValue()));
 		}
 
+		// add custom functions
+		synchronized (this) {
+			for (CustomPropertyFunction cf : alignment.getCustomPropertyFunctions().values()) {
+				this.alignment.addCustomPropertyFunction(cf);
+			}
+		}
+
 		if (!added.isEmpty()) {
 			notifyCellsAdded(added);
 		}
+
 	}
 
 	/**

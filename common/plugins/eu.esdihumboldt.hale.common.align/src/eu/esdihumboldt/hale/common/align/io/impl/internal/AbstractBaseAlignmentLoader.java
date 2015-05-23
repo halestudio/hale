@@ -415,6 +415,8 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 		processBaseAlignments(alignment, sourceTypes, targetTypes, prefixMapping, alignmentToInfo,
 				reporter);
 
+		loadCustomFunctions(start, alignment, sourceTypes, targetTypes);
+
 		// add cells of main alignment
 		for (C mainCell : getCells(start)) {
 			MutableCell cell = createCell(mainCell, sourceTypes, targetTypes, reporter);
@@ -428,6 +430,17 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 
 		return alignment;
 	}
+
+	/**
+	 * Load custom functions and add them to the alignment.
+	 * 
+	 * @param source the alignment source
+	 * @param alignment the alignment
+	 * @param sourceTypes the source types
+	 * @param targetTypes the target types
+	 */
+	protected abstract void loadCustomFunctions(A source, DefaultAlignment alignment,
+			TypeIndex sourceTypes, TypeIndex targetTypes);
 
 	/**
 	 * Function to fill the prefixMapping and alignmentToInfo maps.

@@ -30,12 +30,15 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
+import org.w3c.dom.Element;
+
 import com.google.common.base.Function;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.extension.annotation.AnnotationExtension;
+import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.io.EntityResolver;
 import eu.esdihumboldt.hale.common.align.io.LoadAlignmentContext;
 import eu.esdihumboldt.hale.common.align.io.impl.DefaultEntityResolver;
@@ -46,6 +49,7 @@ import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AlignmentTyp
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AnnotationType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.CellType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ComplexParameterType;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.CustomFunctionType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.DocumentationType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ModifierType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ModifierType.DisableFor;
@@ -58,7 +62,9 @@ import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.Priority;
 import eu.esdihumboldt.hale.common.align.model.TransformationMode;
+import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
+import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.impl.ElementValue;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
@@ -358,6 +364,28 @@ public class JaxbToAlignment extends
 		context.setSourceTypes(sourceTypes);
 		context.setTargetTypes(targetTypes);
 		return convert(cell, context, reporter, resolver);
+	}
+
+	@Override
+	protected void loadCustomFunctions(AlignmentType source, DefaultAlignment alignment,
+			TypeIndex sourceTypes, TypeIndex targetTypes) {
+		LoadAlignmentContextImpl context = new LoadAlignmentContextImpl();
+		context.setSourceTypes(sourceTypes);
+		context.setTargetTypes(targetTypes);
+
+		List<CustomFunctionType> functions = source.getCustomFunction();
+		if (functions != null) {
+			for (CustomFunctionType function : functions) {
+				Element elem = function.getAny();
+				if (elem != null) {
+					CustomPropertyFunction cf = HaleIO.getComplexValue(elem,
+							CustomPropertyFunction.class, context);
+					if (cf != null) {
+						alignment.addCustomPropertyFunction(cf);
+					}
+				}
+			}
+		}
 	}
 
 	/**

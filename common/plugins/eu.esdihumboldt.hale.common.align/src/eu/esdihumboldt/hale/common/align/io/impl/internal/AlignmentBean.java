@@ -42,6 +42,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.TransformationMode;
+import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.util.io.PathUpdate;
@@ -265,6 +266,12 @@ public class AlignmentBean extends
 	@Override
 	protected Collection<CellBean> getCells(AlignmentBean alignment) {
 		return alignment.cells;
+	}
+
+	@Override
+	protected void loadCustomFunctions(AlignmentBean source, DefaultAlignment alignment,
+			TypeIndex sourceTypes, TypeIndex targetTypes) {
+		// not supported
 	}
 
 	/**
