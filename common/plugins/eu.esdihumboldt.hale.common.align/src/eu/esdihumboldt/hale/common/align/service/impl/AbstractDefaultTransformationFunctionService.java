@@ -33,7 +33,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.PropertyTransfo
  * @author Simon Templer
  */
 public abstract class AbstractDefaultTransformationFunctionService extends
-		StaticTransformationFunctionService {
+		StaticTransformationFunctionService implements CustomFunctionIdentifiers {
 
 	private static class CustomPropertyFunctionFactory extends
 			AbstractObjectFactory<PropertyTransformation<?>> implements
@@ -41,6 +41,12 @@ public abstract class AbstractDefaultTransformationFunctionService extends
 
 		private final CustomPropertyFunction customFunction;
 
+		/**
+		 * Create a transformation function factory for the given custom
+		 * function.
+		 * 
+		 * @param customFunction the custom function
+		 */
 		public CustomPropertyFunctionFactory(CustomPropertyFunction customFunction) {
 			this.customFunction = customFunction;
 		}
@@ -52,7 +58,7 @@ public abstract class AbstractDefaultTransformationFunctionService extends
 
 		@Override
 		public String getFunctionId() {
-			return customFunction.getDescriptor().getId();
+			return PREFIX_ALIGNMENT_FUNCTION + customFunction.getDescriptor().getId();
 		}
 
 		@Override
@@ -100,7 +106,11 @@ public abstract class AbstractDefaultTransformationFunctionService extends
 		Alignment al = getCurrentAlignment();
 		if (al != null) {
 			List<PropertyTransformationFactory> cfs = new ArrayList<>(functions);
-			CustomPropertyFunction cf = al.getCustomPropertyFunctions().get(functionId);
+			String localId = functionId;
+			if (localId.startsWith(PREFIX_ALIGNMENT_FUNCTION)) {
+				localId = localId.substring(PREFIX_ALIGNMENT_FUNCTION.length());
+			}
+			CustomPropertyFunction cf = al.getCustomPropertyFunctions().get(localId);
 			if (cf != null) {
 				cfs.add(new CustomPropertyFunctionFactory(cf));
 			}
@@ -110,5 +120,4 @@ public abstract class AbstractDefaultTransformationFunctionService extends
 
 		return functions;
 	}
-
 }

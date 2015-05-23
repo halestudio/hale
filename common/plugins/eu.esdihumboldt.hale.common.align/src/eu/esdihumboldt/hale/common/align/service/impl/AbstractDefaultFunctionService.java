@@ -15,15 +15,20 @@
 
 package eu.esdihumboldt.hale.common.align.service.impl;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.model.CellExplanation;
 
 /**
  * Function service that includes dynamic content in addition to the statically
@@ -31,7 +36,84 @@ import eu.esdihumboldt.hale.common.align.model.Alignment;
  * 
  * @author Simon Templer
  */
-public abstract class AbstractDefaultFunctionService extends StaticFunctionService {
+public abstract class AbstractDefaultFunctionService extends StaticFunctionService implements
+		CustomFunctionIdentifiers {
+
+	private static class AlignmentFunctionDescriptor implements PropertyFunctionDefinition {
+
+		private final PropertyFunctionDefinition descriptor;
+
+		public AlignmentFunctionDescriptor(PropertyFunctionDefinition descriptor) {
+			this.descriptor = descriptor;
+		}
+
+		@Override
+		public String getDisplayName() {
+			return descriptor.getDisplayName();
+		}
+
+		@Override
+		public String getDescription() {
+			return descriptor.getDescription();
+		}
+
+		@Override
+		public String getCategoryId() {
+			// TODO specific category for these kind of functions?
+			return descriptor.getCategoryId();
+		}
+
+		@Override
+		public boolean isAugmentation() {
+			return descriptor.isAugmentation();
+		}
+
+		@Override
+		public String getId() {
+			return PREFIX_ALIGNMENT_FUNCTION + descriptor.getId();
+		}
+
+		@Override
+		public Collection<FunctionParameterDefinition> getDefinedParameters() {
+			return descriptor.getDefinedParameters();
+		}
+
+		@Override
+		public FunctionParameterDefinition getParameter(String paramName) {
+			return descriptor.getParameter(paramName);
+		}
+
+		@Override
+		public URL getIconURL() {
+			return descriptor.getIconURL();
+		}
+
+		@Override
+		public String getDefiningBundle() {
+			return descriptor.getDefiningBundle();
+		}
+
+		@Override
+		public URL getHelpURL() {
+			return descriptor.getHelpURL();
+		}
+
+		@Override
+		public CellExplanation getExplanation() {
+			return descriptor.getExplanation();
+		}
+
+		@Override
+		public Set<? extends PropertyParameterDefinition> getSource() {
+			return descriptor.getSource();
+		}
+
+		@Override
+		public Set<? extends PropertyParameterDefinition> getTarget() {
+			return descriptor.getTarget();
+		}
+
+	}
 
 	/**
 	 * @return the current alignment
@@ -51,9 +133,13 @@ public abstract class AbstractDefaultFunctionService extends StaticFunctionServi
 	private PropertyFunctionDefinition getCustomPropertyFunction(String id) {
 		Alignment al = getCurrentAlignment();
 		if (al != null) {
-			CustomPropertyFunction cf = al.getCustomPropertyFunctions().get(id);
+			String localId = id;
+			if (localId.startsWith(PREFIX_ALIGNMENT_FUNCTION)) {
+				localId = localId.substring(PREFIX_ALIGNMENT_FUNCTION.length());
+			}
+			CustomPropertyFunction cf = al.getCustomPropertyFunctions().get(localId);
 			if (cf != null) {
-				return cf.getDescriptor();
+				return new AlignmentFunctionDescriptor(cf.getDescriptor());
 			}
 		}
 
@@ -88,7 +174,7 @@ public abstract class AbstractDefaultFunctionService extends StaticFunctionServi
 		if (al != null) {
 			List<PropertyFunctionDefinition> cfs = new ArrayList<>();
 			for (CustomPropertyFunction cf : al.getCustomPropertyFunctions().values()) {
-				cfs.add(cf.getDescriptor());
+				cfs.add(new AlignmentFunctionDescriptor(cf.getDescriptor()));
 			}
 			cfs.addAll(functions);
 
@@ -112,7 +198,7 @@ public abstract class AbstractDefaultFunctionService extends StaticFunctionServi
 												// in category OTHER
 			List<PropertyFunctionDefinition> cfs = new ArrayList<>();
 			for (CustomPropertyFunction cf : al.getCustomPropertyFunctions().values()) {
-				cfs.add(cf.getDescriptor());
+				cfs.add(new AlignmentFunctionDescriptor(cf.getDescriptor()));
 			}
 			cfs.addAll(functions);
 
