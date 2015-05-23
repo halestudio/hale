@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.common.align.custom;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -128,6 +129,43 @@ public class DefaultCustomPropertyFunction implements CustomPropertyFunction {
 			return null;
 		}
 	};
+
+	/**
+	 * Default constructor.
+	 */
+	public DefaultCustomPropertyFunction() {
+		super();
+	}
+
+	/**
+	 * Copy constructor.
+	 * 
+	 * @param other the function to copy
+	 */
+	public DefaultCustomPropertyFunction(DefaultCustomPropertyFunction other) {
+		setIdentifier(other.getIdentifier());
+		setName(other.getName());
+		setFunctionType(other.getFunctionType());
+
+		setFunctionDefinition(other.getFunctionDefinition());
+
+		DefaultCustomPropertyFunctionEntity otherTarget = other.getTarget();
+		if (otherTarget != null) {
+			setTarget(new DefaultCustomPropertyFunctionEntity(otherTarget));
+		}
+		else {
+			setTarget(null);
+		}
+
+		List<DefaultCustomPropertyFunctionEntity> sources = new ArrayList<>();
+		List<DefaultCustomPropertyFunctionEntity> targetSources = other.getSources();
+		if (targetSources != null) {
+			for (DefaultCustomPropertyFunctionEntity source : targetSources) {
+				sources.add(new DefaultCustomPropertyFunctionEntity(source));
+			}
+		}
+		setSources(sources);
+	}
 
 	/**
 	 * @return the functionType

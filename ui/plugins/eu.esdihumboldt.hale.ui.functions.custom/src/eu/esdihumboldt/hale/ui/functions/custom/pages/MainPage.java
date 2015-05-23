@@ -98,6 +98,15 @@ public class MainPage extends HaleWizardPage<CustomPropertyFunctionWizard> imple
 
 		// TODO description
 
+		// load from initial function
+		DefaultCustomPropertyFunction cf = getWizard().getResultFunction();
+		if (cf.getName() != null) {
+			name.setText(cf.getName());
+		}
+		if (cf.getIdentifier() != null) {
+			ident.setText(cf.getIdentifier());
+		}
+
 		updateState();
 	}
 

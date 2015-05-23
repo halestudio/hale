@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.ui.functions.custom;
 
+import javax.annotation.Nullable;
+
 import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyTransformation;
@@ -25,7 +27,7 @@ import eu.esdihumboldt.hale.ui.functions.custom.pages.PropertyFunctionScriptPage
 /**
  * TODO Type description
  * 
- * @author simon
+ * @author Simon Templer
  */
 public class CustomPropertyFunctionWizard
 		extends
@@ -35,15 +37,29 @@ public class CustomPropertyFunctionWizard
 	private PropertyFunctionScriptPage scriptPage;
 
 	/**
-	 * Default constructor.
+	 * Default constructor
 	 */
 	public CustomPropertyFunctionWizard() {
-		super(null);
+		this(null);
+	}
+
+	/**
+	 * Create a wizard based on an existing function.
+	 * 
+	 * @param function the function, may be <code>null</code>
+	 */
+	public CustomPropertyFunctionWizard(@Nullable DefaultCustomPropertyFunction function) {
+		super(function);
 	}
 
 	@Override
-	protected DefaultCustomPropertyFunction createCustomFunction() {
-		return new DefaultCustomPropertyFunction();
+	protected DefaultCustomPropertyFunction createCustomFunction(DefaultCustomPropertyFunction org) {
+		if (org == null) {
+			return new DefaultCustomPropertyFunction();
+		}
+		else {
+			return new DefaultCustomPropertyFunction(org);
+		}
 	}
 
 	@Override

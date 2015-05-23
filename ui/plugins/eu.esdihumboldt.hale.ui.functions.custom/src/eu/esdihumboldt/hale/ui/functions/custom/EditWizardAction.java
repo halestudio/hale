@@ -17,31 +17,44 @@ package eu.esdihumboldt.hale.ui.functions.custom;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 
 import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunction;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
+import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 
 /**
- * TODO Type description
+ * Action for showing a wizard to edit a custom function.
  * 
- * @author simon
+ * @author Simon Templer
  */
 public class EditWizardAction extends Action {
 
-	/**
-	 * @param cf
-	 * @param alignmentService
-	 */
-	public EditWizardAction(DefaultCustomPropertyFunction cf, AlignmentService alignmentService) {
-		super(cf.getName(), IAction.AS_PUSH_BUTTON);
-	}
+	private final AlignmentService alignmentService;
+	private final DefaultCustomPropertyFunction customFunction;
 
 	/**
-	 * @see org.eclipse.jface.action.Action#run()
+	 * @param customFunction the custom function to edit
+	 * @param alignmentService the alignment service
 	 */
+	public EditWizardAction(DefaultCustomPropertyFunction customFunction,
+			AlignmentService alignmentService) {
+		super(customFunction.getName(), IAction.AS_PUSH_BUTTON);
+		this.customFunction = customFunction;
+		this.alignmentService = alignmentService;
+	}
+
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+		CustomPropertyFunctionWizard wizard = new CustomPropertyFunctionWizard(customFunction);
+		wizard.init();
+
+		Shell shell = Display.getCurrent().getActiveShell();
+		HaleWizardDialog dialog = new HaleWizardDialog(shell, wizard);
+		if (dialog.open() == HaleWizardDialog.OK) {
+			alignmentService.addCustomPropertyFunction(wizard.getResultFunction());
+		}
 	}
 
 }

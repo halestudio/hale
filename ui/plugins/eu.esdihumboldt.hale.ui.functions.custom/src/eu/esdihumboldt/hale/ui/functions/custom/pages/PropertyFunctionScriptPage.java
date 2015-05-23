@@ -23,14 +23,18 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.custom.CustomPropertyFunctionType;
 import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunctionEntity;
 import eu.esdihumboldt.hale.common.align.custom.groovy.CustomGroovyTransformation;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
@@ -316,6 +320,19 @@ public class PropertyFunctionScriptPage extends GroovyScriptPage<CustomPropertyF
 		else {
 			cf.setFunctionDefinition(Value.NULL);
 		}
+	}
+
+	@Override
+	protected void createContent(Composite page) {
+		getConfiguration().clear();
+		DefaultCustomPropertyFunction cf = getWizard().getResultFunction();
+		if (cf.getFunctionDefinition() != null) {
+			ListMultimap<String, ParameterValue> initialValues = ArrayListMultimap.create();
+			initialValues.put(PARAMETER_SCRIPT, new ParameterValue(cf.getFunctionDefinition()));
+			setParameter(Collections.<FunctionParameterDefinition> emptySet(), initialValues);
+		}
+
+		super.createContent(page);
 	}
 
 	@Override

@@ -15,8 +15,6 @@
 
 package eu.esdihumboldt.hale.ui.functions.custom.pages;
 
-import java.util.Collections;
-
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
@@ -149,17 +147,30 @@ public class CustomPropertyFunctionEntitiesPage extends
 		sc.setContent(main);
 		main.setLayout(GridLayoutFactory.swtDefaults().numColumns(1).margins(10, 5).create());
 
+		// load from initial function
+		DefaultCustomPropertyFunction cf = getWizard().getResultFunction();
+
 		// set group title
 		switch (ssid) {
 		case SOURCE:
 			main.setText("Input variables");
-			sources = new CustomPropertyFunctionEntityList(null, null, main,
-					Collections.<DefaultCustomPropertyFunctionEntity> emptyList());
+			sources = new CustomPropertyFunctionEntityList(null, null, main, cf.getSources());
 			break;
 		case TARGET:
 			main.setText("Output");
 			target = new BindingOrTypeEditor(main, SchemaSpaceID.TARGET);
 			GridDataFactory.fillDefaults().grab(true, false).applyTo(target.getControl());
+
+			if (cf.getTarget() != null) {
+				BindingOrType bot = new BindingOrType();
+
+				bot.setType(cf.getTarget().getBindingType());
+				bot.setBinding(cf.getTarget().getBindingClass());
+				bot.setUseBinding(cf.getTarget().getBindingType() == null);
+
+				target.setValue(bot);
+			}
+
 			break;
 		}
 

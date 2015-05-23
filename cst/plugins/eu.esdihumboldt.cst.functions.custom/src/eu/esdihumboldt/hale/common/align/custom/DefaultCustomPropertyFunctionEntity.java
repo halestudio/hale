@@ -39,6 +39,27 @@ public class DefaultCustomPropertyFunctionEntity extends MinimalParameter implem
 	private TypeDefinition bindingType;
 
 	/**
+	 * Default constructor.
+	 */
+	public DefaultCustomPropertyFunctionEntity() {
+		super();
+	}
+
+	/**
+	 * Copy constructor.
+	 * 
+	 * @param other the entity to copy
+	 */
+	public DefaultCustomPropertyFunctionEntity(DefaultCustomPropertyFunctionEntity other) {
+		setName(other.getName());
+		setMinOccurrence(other.getMinOccurrence());
+		setMaxOccurrence(other.getMaxOccurrence());
+		setEager(other.isEager());
+		setBindingClass(other.getBindingClass());
+		setBindingType(other.getBindingType());
+	}
+
+	/**
 	 * @param eager the eager to set
 	 */
 	public void setEager(boolean eager) {

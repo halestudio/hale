@@ -18,9 +18,6 @@ package eu.esdihumboldt.hale.ui.functions.custom;
 import org.eclipse.jface.wizard.Wizard;
 
 import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomFunction;
-import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.ui.function.FunctionWizard;
-import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 
 /**
  * Abstract custom function wizard
@@ -31,79 +28,35 @@ import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 public abstract class AbstractCustomFunctionWizard<C extends CustomFunction<?, ?>> extends Wizard
 		implements CustomFunctionWizard<C> {
 
-//	private final Cell initCell;
-
-	private final SchemaSelection initSelection;
-
-//	/**
-//	 * Create a function wizard based on an existing cell
-//	 * 
-//	 * @param cell the existing cell
-//	 */
-//	public AbstractCustomFunctionWizard(Cell cell) {
-//		super();
-//
-//		this.initCell = cell;
-//		this.initSelection = null;
-//	}
+	private final C initFunction;
 
 	/**
-	 * Create a function wizard based on a schema selection
+	 * Create a custom function wizard from scratch or based on an existing
+	 * function.
 	 * 
-	 * @param selection the schema selection, may be <code>null</code>
+	 * @param function the existing custom function, or <code>null</code>
 	 */
-	public AbstractCustomFunctionWizard(SchemaSelection selection) {
+	public AbstractCustomFunctionWizard(C function) {
 		super();
 
-//		this.initCell = null;
-		this.initSelection = selection;
+		this.initFunction = function;
 	}
 
 	/**
-	 * Calls {@link #init(Cell)} or {@link #init(SchemaSelection)}
-	 * 
-	 * @see FunctionWizard#init()
+	 * Calls {@link #init(CustomFunction)}
 	 */
 	@Override
 	public void init() {
-//		if (initCell != null) {
-//			init(initCell);
-//		}
-//		else {
-		init(initSelection);
-//		}
-	}
-
-//	/**
-//	 * @return the initCell
-//	 */
-//	public Cell getInitCell() {
-//		return initCell;
-//	}
-
-	/**
-	 * @return the initSelection
-	 */
-	public SchemaSelection getInitSelection() {
-		return initSelection;
+		init(initFunction);
 	}
 
 	/**
-	 * Initialize the wizard based on a schema selection.
+	 * Initialize the wizard based on an existing custom function.
 	 * 
-	 * @param selection the schema selection, may be <code>null</code>
+	 * @param function the custom function, may be <code>null</code>
 	 */
-	protected void init(SchemaSelection selection) {
+	protected void init(C function) {
 		// override me
 	}
-
-//	/**
-//	 * Initialize the wizard based on an existing cell.
-//	 * 
-//	 * @param cell the cell
-//	 */
-//	protected void init(Cell cell) {
-//		// override me
-//	}
 
 }

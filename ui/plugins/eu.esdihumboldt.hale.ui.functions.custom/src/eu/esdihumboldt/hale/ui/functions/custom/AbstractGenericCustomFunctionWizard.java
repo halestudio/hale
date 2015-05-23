@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.ui.functions.custom;
 
+import javax.annotation.Nullable;
+
 import org.eclipse.jface.dialogs.IPageChangingListener;
 import org.eclipse.jface.dialogs.PageChangingEvent;
 import org.eclipse.jface.wizard.IWizardContainer;
@@ -25,15 +27,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
-import de.fhg.igd.slf4jplus.ALogger;
-import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomFunction;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationFunction;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.function.AbstractFunctionWizard;
 import eu.esdihumboldt.hale.ui.functions.custom.pages.CustomFunctionWizardPage;
-import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 
 /**
@@ -47,8 +46,8 @@ import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 public abstract class AbstractGenericCustomFunctionWizard<C extends CustomFunction<F, T>, F extends FunctionDefinition<?>, T extends TransformationFunction<?>>
 		extends AbstractCustomFunctionWizard<C> {
 
-	private static final ALogger log = ALoggerFactory
-			.getLogger(AbstractGenericCustomFunctionWizard.class);
+//	private static final ALogger log = ALoggerFactory
+//			.getLogger(AbstractGenericCustomFunctionWizard.class);
 
 	private C customFunction;
 
@@ -57,13 +56,13 @@ public abstract class AbstractGenericCustomFunctionWizard<C extends CustomFuncti
 //	private List<ParameterPage> parameterPages;
 
 	/**
-	 * Create a generic function wizard for a certain function based on a schema
-	 * selection
+	 * Create a custom function wizard from scratch or based on an existing
+	 * custom function.
 	 * 
-	 * @param selection the schema selection, may be <code>null</code>
+	 * @param function the custom function or <code>null</code>
 	 */
-	public AbstractGenericCustomFunctionWizard(SchemaSelection selection) {
-		super(selection);
+	public AbstractGenericCustomFunctionWizard(C function) {
+		super(function);
 
 		setHelpAvailable(true);
 	}
@@ -98,13 +97,10 @@ public abstract class AbstractGenericCustomFunctionWizard<C extends CustomFuncti
 		// create editor page
 	}
 
-	/**
-	 * @see AbstractFunctionWizard#init(SchemaSelection)
-	 */
 	@Override
-	protected void init(SchemaSelection selection) {
+	protected void init(C function) {
 		// create a new function
-		customFunction = createCustomFunction();
+		customFunction = createCustomFunction(function);
 	}
 
 //	/**
@@ -135,11 +131,13 @@ public abstract class AbstractGenericCustomFunctionWizard<C extends CustomFuncti
 //			Cell initCell);
 
 	/**
-	 * Create a new custom function.
+	 * Create a custom function.
+	 * 
+	 * @param org an existing custom function to copy or <code>null</code>
 	 * 
 	 * @return the function definition
 	 */
-	protected abstract C createCustomFunction();
+	protected abstract C createCustomFunction(@Nullable C org);
 
 	@Override
 	public void createPageControls(Composite pageContainer) {
