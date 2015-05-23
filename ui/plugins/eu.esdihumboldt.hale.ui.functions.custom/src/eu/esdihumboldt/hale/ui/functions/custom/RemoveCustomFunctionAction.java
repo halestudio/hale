@@ -18,30 +18,35 @@ package eu.esdihumboldt.hale.ui.functions.custom;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 
-import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomPropertyFunction;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 
 /**
- * TODO Type description
+ * Action that removes a custom function.
  * 
- * @author simon
+ * @author Simon Templer
  */
 public class RemoveCustomFunctionAction extends Action {
 
-	/**
-	 * @param cf
-	 * @param alignmentService
-	 */
-	public RemoveCustomFunctionAction(DefaultCustomPropertyFunction cf, AlignmentService alignmentService) {
-		super(cf.getName(), IAction.AS_PUSH_BUTTON);
-	}
+	private final CustomPropertyFunction customFunction;
+	private final AlignmentService alignmentService;
 
 	/**
-	 * @see org.eclipse.jface.action.Action#run()
+	 * Create an action to remove a custom function.
+	 * 
+	 * @param customFunction the custom function to remove
+	 * @param alignmentService the alignment service
 	 */
+	public RemoveCustomFunctionAction(CustomPropertyFunction customFunction,
+			AlignmentService alignmentService) {
+		super(customFunction.getDescriptor().getDisplayName(), IAction.AS_PUSH_BUTTON);
+		this.customFunction = customFunction;
+		this.alignmentService = alignmentService;
+	}
+
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+		alignmentService.removeCustomPropertyFunction(customFunction.getDescriptor().getId());
 	}
 
 }

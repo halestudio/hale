@@ -125,6 +125,13 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 		// TODO notification? -> function service event?
 	}
 
+	@Override
+	public void removeCustomPropertyFunction(String id) {
+		alignment.removeCustomPropertyFunction(id);
+
+		// TODO notification? -> function service event?
+	}
+
 	/**
 	 * @see AlignmentService#replaceCell(Cell, MutableCell)
 	 */

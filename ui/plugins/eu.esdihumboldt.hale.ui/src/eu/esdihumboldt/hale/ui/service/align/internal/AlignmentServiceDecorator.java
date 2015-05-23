@@ -134,4 +134,9 @@ public abstract class AlignmentServiceDecorator implements AlignmentService {
 		alignmentService.addCustomPropertyFunction(function);
 	}
 
+	@Override
+	public void removeCustomPropertyFunction(String id) {
+		alignmentService.removeCustomPropertyFunction(id);
+	}
+
 }

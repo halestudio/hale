@@ -41,7 +41,19 @@ public interface AlignmentService {
 	 */
 	public Alignment getAlignment();
 
+	/**
+	 * Add a custom function.
+	 * 
+	 * @param function the custom function to add
+	 */
 	public void addCustomPropertyFunction(CustomPropertyFunction function);
+
+	/**
+	 * Remove the custom function with the given identifier.
+	 * 
+	 * @param id the function identifier
+	 */
+	public void removeCustomPropertyFunction(String id);
 
 	/**
 	 * Adds the cells contained in the given alignment to the current alignment.<br>

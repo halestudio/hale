@@ -43,6 +43,14 @@ public interface MutableAlignment extends Alignment {
 	public boolean removeCell(Cell cell);
 
 	/**
+	 * Remove the custom function with the given identifier.
+	 * 
+	 * @param id the function identifier
+	 * @return if the function was present and removed
+	 */
+	public boolean removeCustomPropertyFunction(String id);
+
+	/**
 	 * Adds a base alignment.
 	 * 
 	 * @param prefix the alignment prefix

@@ -124,6 +124,11 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 		idToPropertyFunction.put(function.getDescriptor().getId(), function);
 	}
 
+	@Override
+	public boolean removeCustomPropertyFunction(String id) {
+		return idToPropertyFunction.remove(id) != null;
+	}
+
 	/**
 	 * @see MutableAlignment#addCell(MutableCell)
 	 */
