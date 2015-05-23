@@ -25,8 +25,8 @@ import org.eclipse.help.ITopic;
 import org.eclipse.help.IUAElement;
 
 import eu.esdihumboldt.cst.doc.functions.FunctionReferenceConstants;
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunctionExtension;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 
 /**
  * Function reference topic for a set of functions
@@ -95,7 +95,7 @@ public class FunctionsTopic implements ITopic, FunctionReferenceConstants {
 			Collection<ITopic> topics = new ArrayList<ITopic>();
 
 			// initialize function topics
-			for (AbstractFunction<?> function : functions.getElements()) {
+			for (FunctionDefinition<?> function : functions.getElements()) {
 				// TODO topic per category?!
 				ITopic functionTopic = new FunctionTopic(function);
 				topics.add(functionTopic);

@@ -16,7 +16,7 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.function.propertyfunction;
 
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionDefinition;
 import eu.esdihumboldt.hale.ui.views.properties.function.FunctionGraphSection;
 
 /**
@@ -24,7 +24,7 @@ import eu.esdihumboldt.hale.ui.views.properties.function.FunctionGraphSection;
  * 
  * @author Patrick Lieb
  */
-public class PropertyFunctionGraphSection extends FunctionGraphSection<PropertyFunction> {
+public class PropertyFunctionGraphSection extends FunctionGraphSection<PropertyFunctionDefinition> {
 
 	// specifies the function type only
 }

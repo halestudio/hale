@@ -34,7 +34,6 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.ui.views.properties.function.AbstractFunctionSection;
@@ -44,7 +43,8 @@ import eu.esdihumboldt.hale.ui.views.properties.function.AbstractFunctionSection
  * 
  * @author Patrick Lieb
  */
-public class AbstractFunctionParameterSection extends AbstractFunctionSection<AbstractFunction<?>> {
+public class AbstractFunctionParameterSection extends
+		AbstractFunctionSection<FunctionDefinition<?>> {
 
 	private TableViewer tableViewer;
 

@@ -29,7 +29,6 @@ import com.google.common.collect.Collections2;
 
 import eu.esdihumboldt.hale.common.align.extension.category.Category;
 import eu.esdihumboldt.hale.common.align.extension.category.CategoryExtension;
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.ui.common.internal.Messages;
@@ -111,8 +110,8 @@ public class FunctionContentProvider implements ITreeContentProvider,
 	 */
 	@Override
 	public Object getParent(Object element) {
-		if (element instanceof AbstractFunction<?>) {
-			String catId = ((AbstractFunction<?>) element).getCategoryId();
+		if (element instanceof FunctionDefinition<?>) {
+			String catId = ((FunctionDefinition<?>) element).getCategoryId();
 
 			Category cat = (catId == null) ? (null) : (CategoryExtension.getInstance().get(catId));
 			if (cat == null) {

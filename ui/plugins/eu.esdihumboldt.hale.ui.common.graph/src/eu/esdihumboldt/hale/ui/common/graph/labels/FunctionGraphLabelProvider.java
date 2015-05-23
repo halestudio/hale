@@ -26,8 +26,8 @@ import org.eclipse.zest.core.viewers.EntityConnectionData;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.ParameterDefinition;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionDefinition;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.ui.common.graph.figures.FunctionFigure;
 import eu.esdihumboldt.hale.ui.common.graph.figures.ParameterFigure;
@@ -123,18 +123,18 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 				element = ((Pair<?, ?>) element).getFirst();
 			}
 
-			if (element instanceof PropertyFunction) {
+			if (element instanceof PropertyFunctionDefinition) {
 				figure = new FunctionFigure(resourceManager,
-						((PropertyFunction) element).getDefinedParameters(), showAll);
+						((PropertyFunctionDefinition) element).getDefinedParameters(), showAll);
 			}
-			else if (element instanceof TypeFunction) {
+			else if (element instanceof TypeFunctionDefinition) {
 				figure = new FunctionFigure(resourceManager,
-						((TypeFunction) element).getDefinedParameters(), showAll);
+						((TypeFunctionDefinition) element).getDefinedParameters(), showAll);
 			}
-			else if (element instanceof AbstractParameter) {
+			else if (element instanceof ParameterDefinition) {
 				figure = new ParameterFigure(new FingerPost(10, SWT.RIGHT),
 						getOccurenceString((ParameterDefinition) element),
-						((AbstractParameter) element).getDescription(), showAll);
+						((ParameterDefinition) element).getDescription(), showAll);
 			}
 		}
 

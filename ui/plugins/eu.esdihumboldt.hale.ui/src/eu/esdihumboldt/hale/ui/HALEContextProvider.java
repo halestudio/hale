@@ -19,7 +19,7 @@ package eu.esdihumboldt.hale.ui;
 import org.eclipse.jface.viewers.ISelectionProvider;
 
 import eu.esdihumboldt.cst.doc.functions.FunctionReferenceConstants;
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
@@ -58,8 +58,8 @@ public class HALEContextProvider extends SelectionContextProvider {
 					+ ONameUtil.encodeName(cell.getTransformationIdentifier());
 		}
 
-		if (object instanceof AbstractFunction<?>) {
-			AbstractFunction<?> function = (AbstractFunction<?>) object;
+		if (object instanceof FunctionDefinition<?>) {
+			FunctionDefinition<?> function = (FunctionDefinition<?>) object;
 			return FunctionReferenceConstants.PLUGIN_ID + "."
 					+ ONameUtil.encodeName(function.getId());
 		}

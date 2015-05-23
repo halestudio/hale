@@ -23,7 +23,6 @@ import org.pegdown.Extensions
 import org.pegdown.PegDownProcessor
 import org.w3c.dom.Element
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil
@@ -120,7 +119,7 @@ class MappingDocumentation {
 	@CompileStatic(TypeCheckingMode.SKIP)
 	private static String cellExplanation(Cell cell) {
 		// get the associated function
-		AbstractFunction<?> function = FunctionUtil.getFunction(cell
+		FunctionDefinition<?> function = FunctionUtil.getFunction(cell
 				.getTransformationIdentifier())
 
 		String exp = null

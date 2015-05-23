@@ -109,8 +109,8 @@ public class FunctionWizardNodeContentProvider extends FunctionContentProvider {
 		List<Object> result = new ArrayList<Object>(children.length);
 
 		for (Object child : children) {
-			if (child instanceof AbstractFunction<?>) {
-				child = new FunctionWizardNode((AbstractFunction<?>) child, container,
+			if (child instanceof FunctionDefinition<?>) {
+				child = new FunctionWizardNode((FunctionDefinition<?>) child, container,
 						initialSelection);
 			}
 
