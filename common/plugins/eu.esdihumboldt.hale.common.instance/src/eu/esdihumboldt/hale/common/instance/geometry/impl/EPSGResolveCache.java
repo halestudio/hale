@@ -44,11 +44,17 @@ public class EPSGResolveCache implements CRSResolveCache {
 					String code = "EPSG:" + String.valueOf(epsgCode);
 					CoordinateReferenceSystem resolved = CRS.decode(code);
 					result = new CodeDefinition(code, resolved);
-					cached.put(crs, result);
 				}
 			} catch (FactoryException e) {
 				// ignore
 			}
+
+			if (result == null) {
+				// prevent further lookups of this CRS
+				result = new WKTDefinition(crs.toWKT(), crs);
+			}
+
+			cached.put(crs, result);
 		}
 
 		return result;
