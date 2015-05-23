@@ -21,6 +21,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.base.Objects;
+
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionDefinition;
@@ -59,7 +61,6 @@ public abstract class AbstractDefaultFunctionService extends StaticFunctionServi
 
 		@Override
 		public String getCategoryId() {
-			// TODO specific category for these kind of functions?
 			return descriptor.getCategoryId();
 		}
 
@@ -191,14 +192,17 @@ public abstract class AbstractDefaultFunctionService extends StaticFunctionServi
 
 	@Override
 	public Collection<? extends PropertyFunctionDefinition> getPropertyFunctions(String categoryId) {
-		Collection<? extends PropertyFunctionDefinition> functions = super.getPropertyFunctions();
+		Collection<? extends PropertyFunctionDefinition> functions = super
+				.getPropertyFunctions(categoryId);
 
 		Alignment al = getCurrentAlignment();
-		if (al != null && categoryId == null) { // XXX for now custom functions
-												// in category OTHER
+		if (al != null) {
 			List<PropertyFunctionDefinition> cfs = new ArrayList<>();
 			for (CustomPropertyFunction cf : al.getCustomPropertyFunctions().values()) {
-				cfs.add(new AlignmentFunctionDescriptor(cf.getDescriptor()));
+				PropertyFunctionDefinition descriptor = cf.getDescriptor();
+				if (Objects.equal(categoryId, descriptor.getCategoryId())) {
+					cfs.add(new AlignmentFunctionDescriptor(descriptor));
+				}
 			}
 			cfs.addAll(functions);
 

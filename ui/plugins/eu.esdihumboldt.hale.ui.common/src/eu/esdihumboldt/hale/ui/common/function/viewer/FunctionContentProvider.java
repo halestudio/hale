@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
+import javax.annotation.Nullable;
+
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -31,6 +33,7 @@ import eu.esdihumboldt.hale.common.align.extension.category.Category;
 import eu.esdihumboldt.hale.common.align.extension.category.CategoryExtension;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.ui.common.internal.Messages;
 
 /**
@@ -44,6 +47,20 @@ public class FunctionContentProvider implements ITreeContentProvider,
 
 	private static final Category CAT_OTHER = new Category(null,
 			Messages.FunctionContentProvider_others, Messages.FunctionContentProvider_description);
+
+	@Nullable
+	private final ServiceProvider serviceProvider;
+
+	/**
+	 * Create a new function content provider.
+	 * 
+	 * @param serviceProvider the service provider, may be <code>null</code> if
+	 *            none is accessible
+	 */
+	public FunctionContentProvider(@Nullable ServiceProvider serviceProvider) {
+		super();
+		this.serviceProvider = serviceProvider;
+	}
 
 	/**
 	 * @see IContentProvider#dispose()
@@ -95,9 +112,9 @@ public class FunctionContentProvider implements ITreeContentProvider,
 
 			List<FunctionDefinition<?>> functions = new ArrayList<>();
 			functions.addAll(Collections2.filter(
-					FunctionUtil.getTypeFunctions(category.getId(), null), this));
+					FunctionUtil.getTypeFunctions(category.getId(), serviceProvider), this));
 			functions.addAll(Collections2.filter(
-					FunctionUtil.getPropertyFunctions(category.getId(), null), this));
+					FunctionUtil.getPropertyFunctions(category.getId(), serviceProvider), this));
 
 			return functions.toArray();
 		}

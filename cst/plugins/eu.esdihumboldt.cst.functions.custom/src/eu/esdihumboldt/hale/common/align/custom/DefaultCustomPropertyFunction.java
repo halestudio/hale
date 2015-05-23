@@ -113,8 +113,7 @@ public class DefaultCustomPropertyFunction implements CustomPropertyFunction {
 
 		@Override
 		public String getDefiningBundle() {
-			// TODO Auto-generated method stub
-			return null;
+			return "eu.esdihumboldt.cst.functions.custom";
 		}
 
 		@Override
@@ -125,8 +124,7 @@ public class DefaultCustomPropertyFunction implements CustomPropertyFunction {
 
 		@Override
 		public String getCategoryId() {
-			// TODO Auto-generated method stub
-			return null;
+			return "eu.esdihumboldt.cst.functions.custom";
 		}
 	};
 

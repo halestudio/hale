@@ -133,7 +133,7 @@ public abstract class FunctionUtil {
 		if (serviceProvider != null) {
 			FunctionService fs = serviceProvider.getService(FunctionService.class);
 			if (fs != null) {
-				return fs.getTypeFunctions();
+				return fs.getTypeFunctions(categoryId);
 			}
 		}
 
@@ -145,7 +145,7 @@ public abstract class FunctionUtil {
 		if (serviceProvider != null) {
 			FunctionService fs = serviceProvider.getService(FunctionService.class);
 			if (fs != null) {
-				return fs.getPropertyFunctions();
+				return fs.getPropertyFunctions(categoryId);
 			}
 		}
 

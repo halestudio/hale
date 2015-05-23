@@ -23,6 +23,7 @@ import org.eclipse.jface.wizard.IWizardContainer;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionContentProvider;
 import eu.esdihumboldt.hale.ui.function.contribution.SchemaSelectionFunctionMatcher;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
@@ -54,7 +55,7 @@ public class FunctionWizardNodeContentProvider extends FunctionContentProvider {
 	 */
 	public FunctionWizardNodeContentProvider(IWizardContainer container,
 			SchemaSelection initialSelection, SchemaSelectionFunctionMatcher selectionMatcher) {
-		super();
+		super(HaleUI.getServiceProvider());
 		this.container = container;
 		this.initialSelection = initialSelection;
 		this.selectionMatcher = selectionMatcher;
