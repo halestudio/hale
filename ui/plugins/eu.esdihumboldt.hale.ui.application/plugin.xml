@@ -363,6 +363,20 @@
                      label="Define..."
                      style="push">
                </command>
+               <menu
+                     label="Edit">
+                  <dynamic
+                        class="eu.esdihumboldt.hale.ui.functions.custom.EditCustomFunctionContribution"
+                        id="transformation.custom.edit">
+                  </dynamic>
+               </menu>
+               <menu
+                     label="Remove">
+                  <dynamic
+                        class="eu.esdihumboldt.hale.ui.functions.custom.RemoveCustomFunctionContribution"
+                        id="transformation.custom.remove">
+                  </dynamic>
+               </menu>
             </menu>
             <command
                   commandId="eu.esdihumboldt.hale.ui.groovy.toggle_restriction"
