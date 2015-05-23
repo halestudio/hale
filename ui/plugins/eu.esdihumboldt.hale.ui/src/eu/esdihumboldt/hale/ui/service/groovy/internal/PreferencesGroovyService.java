@@ -132,6 +132,11 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 			}
 
 			@Override
+			public void customFunctionsChanged() {
+				PreferencesGroovyService.this.alignmentChanged();
+			}
+
+			@Override
 			public void alignmentChanged() {
 				PreferencesGroovyService.this.alignmentChanged();
 			}

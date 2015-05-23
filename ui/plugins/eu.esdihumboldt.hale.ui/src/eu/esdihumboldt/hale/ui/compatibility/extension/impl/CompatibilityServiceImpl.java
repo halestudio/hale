@@ -325,6 +325,12 @@ public class CompatibilityServiceImpl extends
 				}
 		}
 
+		@Override
+		public void customFunctionsChanged() {
+			// re-evaluate all cells
+			alignmentChanged();
+		}
+
 		/**
 		 * @see eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener#alignmentChanged()
 		 */

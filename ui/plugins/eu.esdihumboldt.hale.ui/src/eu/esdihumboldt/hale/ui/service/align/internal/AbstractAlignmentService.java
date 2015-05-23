@@ -125,6 +125,16 @@ public abstract class AbstractAlignmentService implements AlignmentService {
 	}
 
 	/**
+	 * Call when the custom function definitions have changed
+	 * (added/removed/replaced).
+	 */
+	protected void notifyCustomFunctionsChanged() {
+		for (AlignmentServiceListener listener : listeners) {
+			listener.customFunctionsChanged();
+		}
+	}
+
+	/**
 	 * Call when the alignment had some unspecified update.
 	 */
 	protected void notifyAlignmentChanged() {

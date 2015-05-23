@@ -153,6 +153,11 @@ public class ServiceSchemaExplorer {
 			}
 
 			@Override
+			public void customFunctionsChanged() {
+				// no update needed
+			}
+
+			@Override
 			public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
 				// Cell disabling/enabling can affect schema view
 				if (Cell.PROPERTY_DISABLE_FOR.equals(propertyName)

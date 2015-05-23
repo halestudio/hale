@@ -110,6 +110,11 @@ public abstract class AbstractInstanceService implements InstanceService {
 			}
 
 			@Override
+			public void customFunctionsChanged() {
+				retransform();
+			}
+
+			@Override
 			public void alignmentChanged() {
 				retransform();
 			}

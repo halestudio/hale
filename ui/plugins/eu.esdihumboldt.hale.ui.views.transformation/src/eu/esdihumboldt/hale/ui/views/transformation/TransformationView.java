@@ -143,6 +143,11 @@ public class TransformationView extends AbstractMappingView {
 			}
 
 			@Override
+			public void customFunctionsChanged() {
+				update();
+			}
+
+			@Override
 			public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
 				if (Cell.PROPERTY_DISABLE_FOR.equals(propertyName)
 						|| Cell.PROPERTY_ENABLE_FOR.equals(propertyName))

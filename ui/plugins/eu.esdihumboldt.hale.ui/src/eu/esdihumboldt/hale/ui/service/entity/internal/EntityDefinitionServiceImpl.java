@@ -147,6 +147,11 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 			}
 
 			@Override
+			public void customFunctionsChanged() {
+				// custom functions don't affect entity definitions
+			}
+
+			@Override
 			public void alignmentChanged() {
 				// XXX clear first?
 				addMissingContexts(alignmentService.getAlignment().getCells());

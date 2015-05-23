@@ -81,6 +81,11 @@ public class AlignmentServiceSource extends AbstractSourceProvider {
 			}
 
 			@Override
+			public void customFunctionsChanged() {
+				// custom functions don't affect source currently
+			}
+
+			@Override
 			public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
 				// no properties that affect source
 			}

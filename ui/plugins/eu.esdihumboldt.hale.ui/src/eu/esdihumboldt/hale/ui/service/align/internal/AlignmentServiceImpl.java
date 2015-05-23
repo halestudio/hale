@@ -104,6 +104,11 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 				projectService.setChanged();
 			}
 
+			@Override
+			public void customFunctionsChanged() {
+				projectService.setChanged();
+			}
+
 		});
 	}
 
@@ -122,14 +127,14 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 	public void addCustomPropertyFunction(CustomPropertyFunction function) {
 		alignment.addCustomPropertyFunction(function);
 
-		// TODO notification? -> function service event?
+		notifyCustomFunctionsChanged();
 	}
 
 	@Override
 	public void removeCustomPropertyFunction(String id) {
 		alignment.removeCustomPropertyFunction(id);
 
-		// TODO notification? -> function service event?
+		notifyCustomFunctionsChanged();
 	}
 
 	/**
@@ -228,9 +233,11 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 		}
 
 		// add custom functions
+		boolean addedFunctions = false;
 		synchronized (this) {
 			for (CustomPropertyFunction cf : alignment.getCustomPropertyFunctions().values()) {
 				this.alignment.addCustomPropertyFunction(cf);
+				addedFunctions = true;
 			}
 		}
 
@@ -238,6 +245,9 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 			notifyCellsAdded(added);
 		}
 
+		if (addedFunctions) {
+			notifyCustomFunctionsChanged();
+		}
 	}
 
 	/**

@@ -301,6 +301,11 @@ public class AlignmentView extends AbstractMappingView {
 				refreshGraph();
 			}
 
+			@Override
+			public void customFunctionsChanged() {
+				refreshGraph();
+			}
+
 		});
 
 		// initialize compatibility checkup and display
