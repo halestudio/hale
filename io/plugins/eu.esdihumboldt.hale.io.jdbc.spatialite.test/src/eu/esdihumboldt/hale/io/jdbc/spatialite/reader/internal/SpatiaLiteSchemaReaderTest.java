@@ -15,31 +15,12 @@
 
 package eu.esdihumboldt.hale.io.jdbc.spatialite.reader.internal;
 
-import static eu.esdihumboldt.hale.io.jdbc.spatialite.test.SpatiaLiteTestUtil.SOUURCE_TYPE_LOCAL_NAME;
-import static eu.esdihumboldt.hale.io.jdbc.spatialite.test.SpatiaLiteTestUtil.checkType;
-import static eu.esdihumboldt.hale.io.jdbc.spatialite.test.SpatiaLiteTestUtil.getSourceTempFilePath;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.fhg.igd.slf4jplus.ALogger;
-import de.fhg.igd.slf4jplus.ALoggerFactory;
-import eu.esdihumboldt.hale.common.core.io.impl.LogProgressIndicator;
-import eu.esdihumboldt.hale.common.core.io.report.IOReport;
-import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
-import eu.esdihumboldt.hale.common.schema.model.Schema;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.test.TestUtil;
-import eu.esdihumboldt.hale.io.jdbc.spatialite.test.SpatiaLiteTestUtil;
+import eu.esdihumboldt.hale.io.jdbc.spatialite.test.SpatiaLiteTestSuite;
+import eu.esdihumboldt.hale.io.jdbc.spatialite.test.SpatiaLiteTestSuiteVersion3;
+import eu.esdihumboldt.hale.io.jdbc.spatialite.test.SpatiaLiteTestSuiteVersion4;
 
 /**
  * Test class for {@link SpatiaLiteSchemaReader}. The tests are automatically
@@ -49,55 +30,46 @@ import eu.esdihumboldt.hale.io.jdbc.spatialite.test.SpatiaLiteTestUtil;
  */
 public class SpatiaLiteSchemaReaderTest {
 
-	private static final ALogger log = ALoggerFactory.getLogger(SpatiaLiteSchemaReaderTest.class);
-
 	/**
-	 * Wait for needed services to be running and create source database file in
-	 * a system dependent temporary folder.
-	 * 
-	 * @throws IOException if temp file can't be created
+	 * Wait for needed services to be running.
 	 */
-	@BeforeClass
-	public static void waitForServices() throws IOException {
+	public static void waitForServices() {
 		TestUtil.startConversionService();
-
-		SpatiaLiteTestUtil.createSourceTempFile();
 	}
 
 	/**
-	 * Delete any temporary file created for the test.
-	 */
-	@AfterClass
-	public static void cleanUp() {
-		SpatiaLiteTestUtil.deleteSourceTempFile();
-	}
-
-	/**
-	 * Test - reads a sample SpatiaLite schema
+	 * Invoke {@link SpatiaLiteTestSuite#schemaReaderTest()} on the test suite
+	 * class for SpatiaLite version 3 or less.
 	 * 
 	 * @throws Exception if an error occurs
 	 */
 	@Test
-	public void testRead() throws Exception {
-		if (!SpatiaLiteTestUtil.isSpatiaLiteExtensionAvailable()) {
-			log.info("Skipping test because SpatiaLite extension is not available");
-			return;
+	public void testReadVersion3() throws Exception {
+		SpatiaLiteTestSuite testSuite = new SpatiaLiteTestSuiteVersion3();
+
+		testRead(testSuite);
+	}
+
+	/**
+	 * Invoke {@link SpatiaLiteTestSuite#schemaReaderTest()} on the test suite
+	 * class for SpatiaLite version 4 or higher.
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testReadVersion4() throws Exception {
+		SpatiaLiteTestSuite testSuite = new SpatiaLiteTestSuiteVersion4();
+
+		testRead(testSuite);
+	}
+
+	private void testRead(SpatiaLiteTestSuite testSuite) throws Exception {
+		try {
+			testSuite.createSourceTempFile();
+			testSuite.schemaReaderTest();
+		} finally {
+			testSuite.deleteSourceTempFile();
 		}
-
-		Set<String> propertyNames = new HashSet<String>(
-				Arrays.asList(SpatiaLiteTestUtil.SOUURCE_TYPE_PROPERTY_NAMES));
-
-		SpatiaLiteSchemaReader schemaReader = new SpatiaLiteSchemaReader();
-		schemaReader.setSource(new FileIOSupplier(new File(getSourceTempFilePath())));
-
-		IOReport report = schemaReader.execute(new LogProgressIndicator());
-		assertTrue(report.isSuccess());
-
-		Schema schema = schemaReader.getSchema();
-		assertEquals(1, schema.getMappingRelevantTypes().size());
-		TypeDefinition type = schema.getMappingRelevantTypes().iterator().next();
-
-		checkType(type, SOUURCE_TYPE_LOCAL_NAME, propertyNames);
 	}
 
 }
