@@ -95,7 +95,8 @@ public class SpatialLiteSchemaReaderAdvisor implements JDBCSchemaReaderAdvisor {
 
 		DatabaseSpecificOverrideOptions dbOvrOptions = new DatabaseSpecificOverrideOptions();
 		dbOvrOptions.setIdentifierQuoteString("\"");
-		dbOvrOptions.setSupportsSchemas(false); // SQLite has no notion of schemas
+		dbOvrOptions.setSupportsSchemas(false); // SQLite has no notion of
+												// schemas
 
 		options.setDatabaseSpecificOverrideOptions(dbOvrOptions);
 		options.setInformationSchemaViews(infoSchemaViews);
@@ -107,7 +108,8 @@ public class SpatialLiteSchemaReaderAdvisor implements JDBCSchemaReaderAdvisor {
 			public boolean test(String t) {
 				final String[] excludedTables = new String[] { "spatial_ref_sys",
 						"geom_cols_ref_sys", "spatialite_history", "sqlite_sequence",
-						"sql_statements_log", "SpatialIndex"};
+						"sqlite_stat1", "sql_statements_log", "SpatialIndex", "raster_pyramids",
+						"views_layer_statistics" };
 				final Pattern geometryColumnsTablePattern = Pattern.compile(".*geometry_columns.*");
 				final Pattern indexTablePattern = Pattern.compile("idx.*");
 				final Pattern vectorLayersViewPattern = Pattern.compile("vector_layers.*");
@@ -127,7 +129,7 @@ public class SpatialLiteSchemaReaderAdvisor implements JDBCSchemaReaderAdvisor {
 					return false;
 				}
 
-				for (String excludedTable: excludedTables) {
+				for (String excludedTable : excludedTables) {
 					if (excludedTable.equalsIgnoreCase(t)) {
 						return false;
 					}
