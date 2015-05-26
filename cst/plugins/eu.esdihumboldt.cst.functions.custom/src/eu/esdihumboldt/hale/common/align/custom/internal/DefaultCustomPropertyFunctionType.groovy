@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.common.align.custom.internal;
 
+import javax.xml.namespace.QName
+
 import org.w3c.dom.Element
 
 import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunction
@@ -24,6 +26,7 @@ import eu.esdihumboldt.hale.common.align.io.LoadAlignmentContext
 import eu.esdihumboldt.hale.common.core.io.ComplexValueType
 import eu.esdihumboldt.hale.common.core.io.DOMValueUtil
 import eu.esdihumboldt.hale.common.core.io.Value
+import eu.esdihumboldt.hale.common.schema.model.TypeIndex
 import eu.esdihumboldt.util.groovy.xml.NSDOMBuilder
 import eu.esdihumboldt.util.groovy.xml.NSDOMCategory
 
@@ -52,13 +55,13 @@ ComplexValueType<DefaultCustomPropertyFunction, LoadAlignmentContext> {
 			def sources = []
 			// input
 			for (source in fragment.children(NS_CUSTOM_FUNCTION, 'input')) {
-				sources << entityFromTag(source, context)
+				sources << entityFromTag(source, context?.sourceTypes)
 			}
 			result.sources = sources
 			// output
 			def targetTag = fragment.firstChild(NS_CUSTOM_FUNCTION, 'output')
 			if (targetTag) {
-				result.target = entityFromTag(targetTag, context)
+				result.target = entityFromTag(targetTag, context?.targetTypes)
 			}
 
 			def params = []
@@ -111,7 +114,7 @@ ComplexValueType<DefaultCustomPropertyFunction, LoadAlignmentContext> {
 		return fragment;
 	}
 
-	DefaultCustomPropertyFunctionEntity entityFromTag(Element element, LoadAlignmentContext context) {
+	DefaultCustomPropertyFunctionEntity entityFromTag(Element element, TypeIndex types) {
 		DefaultCustomPropertyFunctionEntity entity = new DefaultCustomPropertyFunctionEntity()
 
 		use (NSDOMCategory) {
@@ -132,7 +135,18 @@ ComplexValueType<DefaultCustomPropertyFunction, LoadAlignmentContext> {
 				}
 			}
 
-			// TODO binding type
+			//FIXME binding type
+			//XXX for now use qname
+			def typeElem = element.firstChild(NS_CUSTOM_FUNCTION, 'type')
+			if (typeElem) {
+				def name = new QName(typeElem.getAttribute('ns'), typeElem.getAttribute('name'))
+				if (types) {
+					entity.bindingType = types.getType(name)
+				}
+				else {
+					println('No type index for resolving custom function entity type provided')
+				}
+			}
 		}
 
 		entity
@@ -149,7 +163,11 @@ ComplexValueType<DefaultCustomPropertyFunction, LoadAlignmentContext> {
 							// binding class
 							'cf:binding'(entity.bindingClass.getName())
 						}
-						//TODO binding type
+						//FIXME binding type
+						//XXX for now use the type name
+						if (entity.bindingType) {
+							'cf:type'(name: entity.bindingType.name.localPart, ns: entity.bindingType.name.namespaceURI)
+						}
 					}
 		}
 		else {
