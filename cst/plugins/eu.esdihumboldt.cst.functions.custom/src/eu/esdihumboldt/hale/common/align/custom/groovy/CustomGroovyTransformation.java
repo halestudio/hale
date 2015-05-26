@@ -55,6 +55,8 @@ public class CustomGroovyTransformation extends
 		AbstractSingleTargetPropertyTransformation<TransformationEngine> implements
 		PropertyTransformation<TransformationEngine> {
 
+	public static final String BINDING_PARAMS = "_params";
+
 	private final DefaultCustomPropertyFunction customFunction;
 
 	/**
