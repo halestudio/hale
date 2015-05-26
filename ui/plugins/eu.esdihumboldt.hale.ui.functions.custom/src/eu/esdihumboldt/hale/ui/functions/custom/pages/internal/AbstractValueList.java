@@ -200,12 +200,14 @@ public abstract class AbstractValueList<T, C extends Editor<T>> extends Observab
 		};
 
 		// add initial fields
-		for (T param : params) {
-			// create editor
-			EditorWrapper<C> wrapper = createEditorWrapper(editorContainer, param);
+		if (params != null) {
+			for (T param : params) {
+				// create editor
+				EditorWrapper<C> wrapper = createEditorWrapper(editorContainer, param);
 
-			// add the editor now
-			addEditor(wrapper);
+				// add the editor now
+				addEditor(wrapper);
+			}
 		}
 
 		createAddControl();
