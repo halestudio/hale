@@ -93,7 +93,7 @@ public class CustomGroovyTransformation extends
 		Object result;
 		try {
 			GroovyService service = getExecutionContext().getService(GroovyService.class);
-			Script groovyScript = GroovyUtil.getScript(this, binding, service);
+			Script groovyScript = GroovyUtil.getScript(this, binding, service, true);
 
 			// evaluate the script
 			result = GroovyTransformation.evaluate(groovyScript, builder, resultProperty

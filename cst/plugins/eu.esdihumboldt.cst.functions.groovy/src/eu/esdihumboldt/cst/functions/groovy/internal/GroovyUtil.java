@@ -83,16 +83,34 @@ public class GroovyUtil implements GroovyConstants {
 	 * @throws TransformationException if getting the script parameter from the
 	 *             function fails
 	 */
-	@SuppressWarnings("unchecked")
 	public static Script getScript(AbstractTransformationFunction<?> function, Binding binding,
 			GroovyService service) throws TransformationException {
+		return getScript(function, binding, service, false);
+	}
+
+	/**
+	 * Get the compiled script.
+	 * 
+	 * @param function the transformation function the script is associated to
+	 * @param binding the binding to set on the script
+	 * @param service the Groovy service
+	 * @param functionCached if the script should be cached per function instead
+	 *            of per cell
+	 * @return the script
+	 * @throws TransformationException if getting the script parameter from the
+	 *             function fails
+	 */
+	@SuppressWarnings("unchecked")
+	public static Script getScript(AbstractTransformationFunction<?> function, Binding binding,
+			GroovyService service, boolean functionCached) throws TransformationException {
 		/*
 		 * The compiled script is stored in a ThreadLocal variable in the
 		 * execution context, so it needs only to be created once per
 		 * transformation thread.
 		 */
 		ThreadLocal<Script> localScript;
-		Map<Object, Object> context = function.getExecutionContext().getCellContext();
+		Map<Object, Object> context = (functionCached) ? (function.getExecutionContext()
+				.getFunctionContext()) : (function.getExecutionContext().getCellContext());
 		synchronized (context) {
 			Object tmp = context.get(CONTEXT_SCRIPT);
 
