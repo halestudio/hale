@@ -40,7 +40,6 @@ import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSi
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.PropertyValueImpl;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
-import eu.esdihumboldt.hale.common.convert.ConversionUtil;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -297,26 +296,10 @@ public class GroovyTransformation extends
 	 */
 	public static Object getUseValue(Object value, boolean useInstanceVariables) {
 		// determine the variable value
-		boolean asIs = false;
 		if (value instanceof Instance) {
-			if (useInstanceVariables) {
-				// use instance as is
-				asIs = true;
-			}
-			else {
+			if (!useInstanceVariables) {
 				// extract value from instance
 				value = ((Instance) value).getValue();
-			}
-		}
-		if (value instanceof Number) {
-			// use numbers as is
-		}
-		else if (!asIs) {
-			// try conversion to String as default
-			try {
-				value = ConversionUtil.getAs(value, String.class);
-			} catch (Exception e) {
-				// ignore
 			}
 		}
 
