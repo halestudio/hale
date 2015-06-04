@@ -50,12 +50,18 @@ public class HtmlExplanationCellSection extends AbstractCellSection {
 		super.createControls(parent, aTabbedPropertySheetPage);
 
 		Composite page = getWidgetFactory().createComposite(parent);
-		page.setLayout(new FillLayout());
+		FillLayout fillLayout = new FillLayout();
+		page.setLayout(fillLayout);
 
 		try {
 			browser = new Browser(page, SWT.NONE);
 		} catch (Throwable e) {
 			log.warn("Could not create embedded browser, using text field as fall-back", e);
+
+			// add some margin
+			fillLayout.marginHeight = 10;
+			fillLayout.marginWidth = 10;
+
 			textField = new Text(page, SWT.MULTI | SWT.WRAP);
 		}
 	}
@@ -69,6 +75,8 @@ public class HtmlExplanationCellSection extends AbstractCellSection {
 	public void refresh() {
 		super.refresh();
 
+		String text = null;
+
 		Cell cell = getCell();
 		if (cell != null) {
 			AbstractFunction<?> function = FunctionUtil.getFunction(cell
@@ -77,27 +85,22 @@ public class HtmlExplanationCellSection extends AbstractCellSection {
 				CellExplanation explanation = function.getExplanation();
 				if (explanation != null) {
 					if (browser != null) {
-						String text = explanation.getExplanationAsHtml(cell,
-								HaleUI.getServiceProvider());
+						text = explanation.getExplanationAsHtml(cell, HaleUI.getServiceProvider());
 						if (text == null) {
 							text = explanation.getExplanation(cell, HaleUI.getServiceProvider());
 						}
-						if (text != null) {
-							browser.setText(text);
-							return;
-						}
 					}
 					else if (textField != null) {
-						String text = explanation.getExplanation(cell, HaleUI.getServiceProvider());
-						if (text != null) {
-							textField.setText(text);
-						}
+						text = explanation.getExplanation(cell, HaleUI.getServiceProvider());
 					}
 				}
 			}
 		}
 
-		String text = "Sorry, no explanation available.";
+		if (text == null) {
+			text = "Sorry, no explanation available.";
+		}
+
 		if (browser != null) {
 			browser.setText(text);
 		}
