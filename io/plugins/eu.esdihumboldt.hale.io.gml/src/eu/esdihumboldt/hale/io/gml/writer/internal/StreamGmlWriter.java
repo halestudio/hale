@@ -28,6 +28,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.annotation.Nullable;
 import javax.xml.XMLConstants;
@@ -407,10 +409,31 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 		// determine GML namespace from target schema
 		String gml = null;
 		if (index.getPrefixes() != null) {
+			Set<String> candidates = new TreeSet<>();
 			for (String ns : index.getPrefixes().keySet()) {
 				if (ns.startsWith(GML_NAMESPACE_CORE)) { //$NON-NLS-1$
-					gml = ns;
-					break;
+					candidates.add(ns);
+				}
+			}
+			if (!candidates.isEmpty()) {
+				if (candidates.size() == 1) {
+					gml = candidates.iterator().next();
+				}
+				else {
+					log.warn("Multiple candidates for GML namespace found");
+					// TODO how to choose the right one?
+
+					// prefer known GML namespaces
+					if (candidates.contains(NS_GML_32)) {
+						gml = NS_GML_32;
+					}
+					else if (candidates.contains(NS_GML)) {
+						gml = NS_GML;
+					}
+					else {
+						// fall back to first namespace
+						gml = candidates.iterator().next();
+					}
 				}
 			}
 		}
