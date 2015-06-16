@@ -293,5 +293,18 @@
             class="eu.esdihumboldt.cst.functions.groovy.internal.TargetCollector">
       </allow>
    </extension>
+   <extension
+         point="eu.esdihumboldt.util.groovy.meta">
+      <metaClass
+            for="java.lang.Object"
+            forArray="true"
+            implementation="eu.esdihumboldt.cst.functions.groovy.internal.AsMultiValueMetaClass">
+      </metaClass>
+      <metaClass
+            for="java.lang.Iterable"
+            forArray="false"
+            implementation="eu.esdihumboldt.cst.functions.groovy.internal.AsMultiValueMetaClass">
+      </metaClass>
+   </extension>
 
 </plugin>
