@@ -39,11 +39,7 @@ public class CustomMetaClassCreationHandle extends MetaClassCreationHandle {
 		MetaClass metaClass = super.createNormalMetaClass(theClass, registry);
 
 		for (MetaClassDescriptor descriptor : ext.getElements()) {
-			Class<?> forClass = descriptor.getForClass();
-
-			if (forClass.equals(theClass)
-//					|| (forClass.isInterface() && forClass.isAssignableFrom(theClass))) {
-					|| forClass.isAssignableFrom(theClass)) {
+			if (descriptorApplies(descriptor, theClass)) {
 				// create meta class
 				Class<?> delegatingMetaClass = descriptor.getMetaClass();
 				try {
@@ -57,6 +53,40 @@ public class CustomMetaClassCreationHandle extends MetaClassCreationHandle {
 		}
 
 		return metaClass;
+	}
+
+	/**
+	 * Check if a meta class descriptor applies to a given class.
+	 * 
+	 * @param descriptor the meta class descriptor
+	 * @param theClass the class for which should be determined if the
+	 *            descriptor applies
+	 * @return <code>true</code> if the descriptor applies to the class,
+	 *         <code>false</code> otherwise
+	 */
+	private boolean descriptorApplies(MetaClassDescriptor descriptor,
+			@SuppressWarnings("rawtypes") Class theClass) {
+		Class<?> forClass = descriptor.getForClass();
+		if (descriptor.isForArray()) {
+			if (theClass.isArray()) {
+				Class<?> componentClass = theClass.getComponentType();
+				if (componentClass != null) {
+					return forClass.equals(componentClass)
+							|| forClass.isAssignableFrom(componentClass);
+				}
+				else {
+					// should actually not happen
+					return false;
+				}
+			}
+			else {
+				// no array
+				return false;
+			}
+		}
+		else {
+			return forClass.equals(theClass) || forClass.isAssignableFrom(theClass);
+		}
 	}
 
 }

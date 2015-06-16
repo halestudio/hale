@@ -69,6 +69,13 @@
                </appinfo>
             </annotation>
          </attribute>
+         <attribute name="forArray" type="boolean" use="default" value="false">
+            <annotation>
+               <documentation>
+                  Specifies if the meta class should apply for arrays of the &quot;for&quot; class
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
