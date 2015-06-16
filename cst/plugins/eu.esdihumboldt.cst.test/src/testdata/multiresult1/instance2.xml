@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:collection xmlns:tns="http://www.example.org/t2/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.example.org/t2/ t2.xsd">
+    <tns:t2>
+        <name>Yoda</name>
+        <name>Luke</name>
+        <name>Leia</name>
+    </tns:t2>
+    <tns:t2>
+        <name>Mike</name>
+    </tns:t2>
+    <tns:t2>
+        <name>Paula</name>
+        <name>Lara</name>
+        <name>Sarah</name>
+        <name>Michelle</name>
+        <name>Samantha</name>
+    </tns:t2>
+</tns:collection>
