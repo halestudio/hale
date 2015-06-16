@@ -156,7 +156,15 @@ public class GroovyTransformation extends
 
 					// use script result as instance value (if possible)
 					if (result instanceof MutableInstance && scriptResult != target) {
-						((MutableInstance) result).setValue(scriptResult);
+						MutableInstance resInstance = ((MutableInstance) result);
+						if (resInstance.getValue() == null) {
+							// only override value with script result if current
+							// value is null
+							// XXX there may still be cases there this is not
+							// desired and users instead have to make sure they
+							// return null from the function
+							resInstance.setValue(scriptResult);
+						}
 					}
 
 					return result;
