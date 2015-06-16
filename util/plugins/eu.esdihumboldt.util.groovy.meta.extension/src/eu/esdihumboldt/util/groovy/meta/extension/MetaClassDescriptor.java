@@ -30,6 +30,7 @@ public class MetaClassDescriptor implements Identifiable {
 	private final String id;
 	private final Class<?> metaClass;
 	private final Class<?> forClass;
+	private final boolean forArray;
 
 	/**
 	 * Constructor.
@@ -42,6 +43,8 @@ public class MetaClassDescriptor implements Identifiable {
 
 		metaClass = ExtensionUtil.loadClass(conf, "implementation");
 		forClass = ExtensionUtil.loadClass(conf, "for");
+		String arrayValue = conf.getAttribute("forArray");
+		forArray = (arrayValue == null) ? (false) : (Boolean.parseBoolean(arrayValue));
 	}
 
 	/**
@@ -56,6 +59,14 @@ public class MetaClassDescriptor implements Identifiable {
 	 */
 	public Class<?> getForClass() {
 		return forClass;
+	}
+
+	/**
+	 * @return if the meta class should be applied for arrays of the
+	 *         {@link #getForClass()}
+	 */
+	public boolean isForArray() {
+		return forArray;
 	}
 
 	@Override
