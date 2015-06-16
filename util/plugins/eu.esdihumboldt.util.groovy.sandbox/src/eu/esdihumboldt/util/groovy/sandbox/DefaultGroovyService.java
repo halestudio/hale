@@ -86,8 +86,9 @@ public class DefaultGroovyService implements GroovyService {
 		ImportCustomizer importCustomizer = new ImportCustomizer();
 
 		// TODO make configurable?
-		// MultiValue
+		// MultiValue and alias
 		importCustomizer.addImport("MultiValue", "eu.esdihumboldt.cst.MultiValue");
+		importCustomizer.addImport("MultiResult", "eu.esdihumboldt.cst.MultiValue");
 
 		cc.addCompilationCustomizers(importCustomizer);
 
