@@ -66,12 +66,7 @@
 					</Extension>
 				</ProgId>
 			</Component>
-			<Component Id="@{BUILDID}.ini" Guid="*">
-				<File Id="@{BUILDID}.ini" Source="@{SRC}\@{BUILDID}.ini" KeyPath="yes" />
-			</Component>
-			<Component Id="artifacts.xml" Guid="*">
-				<File Id="artifacts.xml" Source="@{SRC}\artifacts.xml" KeyPath="yes" />
-			</Component>
+			@{ROOTCOMPONENTS}
 		</DirectoryRef>
 		
 		<!-- Add shortcut -->
@@ -92,8 +87,6 @@
 		<Feature Id="@{BUILDID}" Title="@{TITLE}" Level="1">
 			@{COMPONENTREFS}
 			<ComponentRef Id="@{BUILDID}.exe" />
-			<ComponentRef Id="@{BUILDID}.ini" />
-			<ComponentRef Id="artifacts.xml" />
 			<ComponentRef Id="ApplicationShortcut" />
 		</Feature>
 		
