@@ -106,7 +106,14 @@ public class DefaultGroovyService implements GroovyService {
 
 	@Override
 	public Script parseScript(String script, Binding binding) {
-		return createShell(binding).parse(script);
+		GroovyShell shell = createShell(binding);
+		ClassLoader orgLoader = Thread.currentThread().getContextClassLoader();
+		try {
+			Thread.currentThread().setContextClassLoader(shell.getClassLoader());
+			return shell.parse(script);
+		} finally {
+			Thread.currentThread().setContextClassLoader(orgLoader);
+		}
 	}
 
 	@Override
