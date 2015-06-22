@@ -85,10 +85,10 @@ def getProductLauncher() {
  */
 String productVersion(String version) {
 	def qualifier = project.ext.contextQualifier
-	
+
 	if (version.endsWith('.qualifier')) {
 		// replace qualifier (omit if RELEASE)
-		version[0..-11] + ((qualifier == 'RELEASE')?(''):('.' + qualifier)) 
+		version[0..-11] + ((qualifier == 'RELEASE')?(''):('.' + qualifier))
 	}
 	else if (version.endsWith('-SNAPSHOT')) {
 		// replace SNAPSHOT (omit if RELEASE)
@@ -127,6 +127,21 @@ def productContainsUIBundles() {
 	else {
 		// defined through bundles
 		return dlcdoc.plugins.plugin.any { it.@id.toString() == 'org.eclipse.ui' }
+	}
+}
+
+/**
+ * @return 'true' if the product to build contains HALE I/O bundles
+ */
+def productContainsHaleIOBundles() {
+    def dlcdoc = new XmlSlurper().parse(project.file(getProductFile()))
+	if (dlcdoc.@useFeatures.toString() == 'true') {
+		// defined through features
+		return (dlcdoc.features.feature.any { it.@id.toString().contains('eu.esdihumboldt.hale.io') })
+	}
+	else {
+		// defined through bundles
+		return dlcdoc.plugins.plugin.any { it.@id.toString().contains('eu.esdihumboldt.hale.io') }
 	}
 }
 
@@ -215,7 +230,7 @@ def filterPlatformSpecificFragments(productFile) {
             }
         }
 		/*
-		 * Find OS specific bundles. 
+		 * Find OS specific bundles.
 		 */
 		if (project.ext.properties.containsKey('osSpecificBundles')) {
 			def os = project.ext.osSpecificBundles[id]
@@ -225,7 +240,7 @@ def filterPlatformSpecificFragments(productFile) {
 			}
 		}
     }
-	
+
 	// also check features
 	dlcdoc.features.feature.each { f ->
 		def id = f.@id.toString()
@@ -246,7 +261,7 @@ def filterPlatformSpecificFragments(productFile) {
         productFileContents = productFileContents.replaceAll(/<plugin.*id="${p}".+\r?\n\s+/, '')
 		println "Removed platform specific bundle $p from product configuration"
     }
-	
+
 	// remove features from product file
 	featuresToRemove.each { f ->
 		productFileContents = productFileContents.replaceAll(/<feature.*id="${f}".+\r?\n\s+/, '')
@@ -336,7 +351,7 @@ def includeAdditionalFiles(artifacts, relsrcpath, productOutputPath, reldstpath,
 				    }
 				} catch (ex) {
 				    throw new IllegalStateException("Unable to unpack ${name} - The MacOSX build requires a UNIX-based system with tar installed:\n${ex.toString()}")
-				}	
+				}
 			}
         }
     } else {
@@ -345,7 +360,7 @@ def includeAdditionalFiles(artifacts, relsrcpath, productOutputPath, reldstpath,
 }
 
 /**
- * Replace placeholders in product about text with information on build and revision. 
+ * Replace placeholders in product about text with information on build and revision.
  */
 void updateAboutInfo(productOutputPath) {
 	def productBundle = getProductDefiningBundleName()
@@ -355,16 +370,16 @@ void updateAboutInfo(productOutputPath) {
 		println "Could not find product defining bundle $productBundle"
 		return
 	}
-	
+
 	println "Updating about information in ${productBundle}..."
-	
+
 	File productBundleJar = jars.iterator().next()
 	File tmpDir = Files.createTempDirectory('product-app').toFile()
-	
+
 	// extract product bundle to temporary directory
 	println "Extracting product bundle ${productBundleJar}"
 	ant.unzip(src: productBundleJar, dest: tmpDir)
-	
+
 	// determine revision
 	def revision = System.getenv()['GIT_COMMIT'] // set by jenkins
 	if (!revision) {
@@ -376,22 +391,22 @@ void updateAboutInfo(productOutputPath) {
 		// unable to detect revision
 		revision = 'unknown'
 	}
-	
+
 	// determine version from manifest
 	File manifestFile = new File(tmpDir, 'META-INF/MANIFEST.MF')
 	def bundleVersion = new BundleParser(project).readVersion(manifestFile, true)
-	
+
 	// replace tokens in plugin.xml
 	File pluginXml = new File(tmpDir, 'plugin.xml')
 	ant.replace(file: pluginXml, token: '___build___', value: project.ext.buildId, summary: true)
 	ant.replace(file: pluginXml, token: '___revision___', value: revision, summary: true)
 	ant.replace(file: pluginXml, token: '___version___', value: bundleVersion, summary: true)
-	
+
 	// update original jar with updated plugin.xml
 	ant.jar(update: 'true', destfile: productBundleJar) {
 		fileset(dir: tmpDir, includes: 'plugin.xml')
 	}
-	
+
 	tmpDir.deleteDir()
 }
 
@@ -401,28 +416,28 @@ void updateAboutInfo(productOutputPath) {
 def packageClient(productOutputPath) {
     if (Helper.buildForWindows(project)) {
 		boolean packageAsZip = project.hasProperty('noInstaller') && project.ext.noInstaller
-		
+
 		if (!packageAsZip) {
 			try {
 		        // get path to Windows Installer XML Kit
 		        if (!project.ext.properties.containsKey("wixDir")) {
 		            def dirs = fileTree(dir: 'C:\\', includes: [ 'Program Files*\\Windows Installer XML v3*\\bin\\candle.exe',
 		                    'Program Files*\\WiX Toolset v3*\\bin\\candle.exe' ])
-		
+
 		            if (dirs.isEmpty()) {
 		                throw new IllegalStateException("Could not guess WIX installation directory. Please specify it " +
 		                        "in the 'wixDir' property")
 		            }
-		
+
 		            if (dirs.files.size() > 1) {
 		                throw new IllegalStateException("More than one WiX installation found. Please select the right " +
 		                        "one in the 'wixDir' property")
 		            }
-		
+
 		            project.ext.wixDir = dirs.singleFile.parentFile.parentFile
 		            println('Guessing WIX directory: ' + project.ext.wixDir)
 		        }
-		
+
 		        // call legacy Ant file to build the Windows installer
 		        def wixArch
 		        if (Helper.buildFor64bit(project)) {
@@ -454,16 +469,16 @@ def packageClient(productOutputPath) {
 		        }
 			} catch (e) {
 				println "Could not find WiX installation ($e.message), packaging as ZIP instead"
-				
+
 				packageAsZip = true
 			}
 		}
-		
+
 		if (packageAsZip) {
 			// package as ZIP
 			def packageName = getPackageName()
 			def packageFileName = new File('target', packageName + '.zip')
-			
+
 			println('Creating package ' + packageFileName + ' ...')
 			ant.zip(destfile: packageFileName) {
 				zipfileset(dir: productOutputPath, prefix: packageName)
@@ -496,7 +511,7 @@ def packageClient(productOutputPath) {
 		// package as .tar.gz using external tar command to preserve symbolic links in jdk
 		def packageName = getPackageName()
 		def launcherName = getProductLauncher()
-		
+
 		// Set file permissions
 		def permCmd = ['chmod', '755', launcherName, "${launcherName}.app/Contents/MacOS/${launcherName}"]
 		def permProc = permCmd.execute(null, productOutputPath)
@@ -508,7 +523,7 @@ def packageClient(productOutputPath) {
 		    println("ls".execute(null, productOutputPath).text)
 		    throw new IllegalStateException("Unable to set required file permissions:\n${permBuffer.toString()}");
 		}
-		
+
 		// Pack tar archive
 		println('Creating package ' + packageName + '.tar.gz' + ' ...')
 		def targetDir = new File(productOutputPath.absolutePath + '/../../target')
@@ -683,18 +698,18 @@ task makeProductFile << {
         // set environment variable to the path to the new temporary
         // product file, so subsequent tasks can use it
         project.ext.productFile = productFileTemp.path
-		
+
 		// set tag from product definition
 		project.ext.tag = productDef['Tag']
 
         // set global variables for additional files so
         // subsequent tasks can use it
-        if (productDef['IncludeMongoDB'] != null) {
-            project.ext.includeMongoDB = productDef['IncludeMongoDB']
-        }
-        if (productDef['IncludeTranscoder'] != null) {
-            project.ext.includeTranscoder = productDef['IncludeTranscoder']
-        }
+        // if (productDef['IncludeMongoDB'] != null) {
+        //     project.ext.includeMongoDB = productDef['IncludeMongoDB']
+        // }
+        // if (productDef['IncludeTranscoder'] != null) {
+        //     project.ext.includeTranscoder = productDef['IncludeTranscoder']
+        // }
         if (productDef['AdditionalFiles'] != null) {
             project.ext.additionalFilesToPackage = productDef['AdditionalFiles']
         }
@@ -767,11 +782,11 @@ task buildProduct(dependsOn: createProductFeature) << {
     includeAdditionalFiles(project.ext.jreArtifacts, 'jre', productOutputPath, 'jre', 'JRE')
 
     // Include additional files
-    if (project.ext.includeMongoDB) {
-        includeAdditionalFiles(project.ext.mongodbArtifacts, 'mongodb', productOutputPath, 'mongodb', 'MongoDB')
-    }
-    if (project.ext.includeTranscoder) {
-        includeAdditionalFiles(project.ext.transcoderArtifacts, 'transcoder', productOutputPath, 'transcoder', 'Transcoder')
+    // if (project.ext.includeMongoDB) {
+    //     includeAdditionalFiles(project.ext.mongodbArtifacts, 'mongodb', productOutputPath, 'mongodb', 'MongoDB')
+    // }
+    if (productContainsHaleIOBundles()) {
+        includeAdditionalFiles(project.ext.spatialiteArtifacts, 'spatialite', productOutputPath, '', 'Spatialite')
     }
     if (!project.ext.additionalFilesToPackage.isEmpty()) {
         println('Copying additional files ...')
@@ -783,7 +798,7 @@ task buildProduct(dependsOn: createProductFeature) << {
             }
         }
     }
-	
+
 	updateAboutInfo(productOutputPath)
 }
 
@@ -809,12 +824,12 @@ def runTests(args = []) {
 	def launcherName = project.ext.testProductLauncher?:'eclipse'
 	def testReportDir = project.file('target/testReports')
 	testReportDir.mkdirs()
-	
+
 	File outFile = new File(testReportDir, "${launcherName}.out")
 	File errFile = new File(testReportDir, "${launcherName}.err")
 	File reportFile = new File(testReportDir, "${launcherName}.xml")
 	File launcherFile = new File(productOutputPath, launcherName)
-	
+
 	// make launcher executable
 	ant.chmod(file: launcherFile, perm:'a+x')
 	// make JRE executable (linux)
@@ -835,7 +850,7 @@ def runTests(args = []) {
 		}
 	}
 	println 'Test product execution completed.'
-	
+
 	// evaluate test report
 	def root = new groovy.util.XmlSlurper().parse(reportFile)
 	def failures = root.@failures as String
@@ -844,7 +859,7 @@ def runTests(args = []) {
 	println "> ${failures} failed"
 	println "> ${root.@skip} skipped"
 	println "in ${root.@time} seconds"
-	
+
 	// print failures
 	if (failures && failures != '0') {
 		println 'Failures: '
@@ -852,7 +867,7 @@ def runTests(args = []) {
 			if (test.failure.size() > 0) {
 				def testClass = test.@classname as String
 				def testName = test.@name as String
-				
+
 				println "> ${testClass}:${testName}"
 				println test.failure[0].text()
 				println()
