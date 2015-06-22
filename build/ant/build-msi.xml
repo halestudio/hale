@@ -260,10 +260,59 @@
 			result["componentrefs"] += result4["componentrefs"];
 			result["componentrefs"] += result5["componentrefs"];
 			
+			// root components
+
+			/*
+			 * Create root components except for .exe files.
+			 */
+			function root_files(root) {
+				//get relative path to the folder where the source
+				//files are located
+				var relroot = root.substring(0, root.lastIndexOf('\\') + 1);
+			
+				//create empty result object
+				var result = new Object();
+				result["components"] = "";
+				result["componentrefs"] = "";
+				
+				var parentDir = new File(root);
+				var localcomponents = "";
+				var files = parentDir.listFiles();
+				for (var i = 0; i < files.length; ++i) {
+					var child = new File(files[i]);
+					if (!child.isDirectory() && !files[i].toString().toLowerCase().endsWith(".exe")) {
+						//handle a single file...
+						//create <Component /> entry
+						var id = "sourcefile" + currentfileid;
+						++currentfileid;
+						var filename = files[i].toString().substring(
+							relroot.length());
+						localcomponents += "\t<Component Id=\"" + id +
+							"\" Guid=\"*\">\n";
+						localcomponents += "\t\t<File Id=\"" + id +
+							"\" Source=\"" + filename + "\" " +
+							"KeyPath=\"yes\" />\n";
+						localcomponents += "\t</Component>\n";
+						
+						result["componentrefs"] += "<ComponentRef Id=\"" +
+							id + "\" />\n";
+					}
+				}
+				
+				//save values in the result object
+				result["components"] += localcomponents;
+				return result;
+			}
+				
+			var rootresult = root_files(src);
+
+			result["componentrefs"] += rootresult["componentrefs"];
+
 			//set result properties
 			project.setProperty("directories", result["dirs"]);
 			project.setProperty("components", result["components"]);
 			project.setProperty("componentrefs", result["componentrefs"]);
+			project.setProperty("rootcomponents", rootresult["components"]);
 		]]></script>
 		
 		<!-- create short version from version property -->
@@ -282,6 +331,8 @@
 			}
 			project.setProperty("shortversion", shortversion);
 		]]></script>
+		
+		<echo message="Short version: ${shortversion}" />
 		
 		<!-- get relative path to the folder where the source
 			 files are located -->
@@ -373,6 +424,7 @@
 		<replace file="${filename}" token="@{PROGRAMFILESFOLDER}" value="${ProgramFilesFolder}" />
 		<replace file="${filename}" token="@{DIRECTORIES}" value="${directories}" />
 		<replace file="${filename}" token="@{COMPONENTS}" value="${components}" />
+		<replace file="${filename}" token="@{ROOTCOMPONENTS}" value="${rootcomponents}" />
 		<replace file="${filename}" token="@{COMPONENTREFS}" value="${componentrefs}" />
 		<replace file="${filename}" token="@{SRC}" value="${relsrc}" />
 		<replace file="${filename}" token="@{BUILDID}" value="${buildId}" />
