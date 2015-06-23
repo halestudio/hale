@@ -322,6 +322,7 @@
 		<replace file="${build}/${wxs.file.config}.wxs" token="@{DEPLOYMENTSPECIFICWXS}" value="${deploymentSpecificWxsInclude}" />
 		
 		<!-- compile MSI file -->
+		<!-- Example call: "C:\Program Files (x86)\WiX Toolset v3.9\bin\candle.exe" -nologo -arch x64 -out .\ WixProduct.wxs WixUI_Product.wxs -->
 		<echo message="Compiling WiX source files..." />
 		<exec executable="${wix.dir}\bin\candle" failonerror="yes" >
 			<arg value="-nologo" />
@@ -339,6 +340,7 @@
 		</exec>
 		
 		<!-- link MSI file -->
+		<!-- Example call: "C:\Program Files (x86)\WiX Toolset v3.9\bin\light.exe" -nologo -sw1076 -out ./installer.msi -ext "C:\Program Files (x86)\WiX Toolset v3.9\bin\WixUIExtension.dll" WixProduct.wixobj WixUI_Product.wixobj -->
 		<echo message="Linking MSI file..." />
 		<exec executable="${wix.dir}\bin\light" failonerror="yes">
 			<arg value="-nologo" />
