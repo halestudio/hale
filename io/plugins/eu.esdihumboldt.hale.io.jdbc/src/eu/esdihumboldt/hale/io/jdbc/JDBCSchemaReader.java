@@ -138,7 +138,8 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 			try {
 				connection.setReadOnly(true);
 			} catch (SQLException e) {
-				reporter.warn(new IOMessageImpl(e.getLocalizedMessage(), e));
+				// ignore
+//				reporter.warn(new IOMessageImpl(e.getLocalizedMessage(), e));
 			}
 
 			URI jdbcURI = getSource().getLocation();
