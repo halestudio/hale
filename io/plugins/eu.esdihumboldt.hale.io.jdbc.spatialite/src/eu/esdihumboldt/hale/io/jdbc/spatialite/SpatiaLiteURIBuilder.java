@@ -1,5 +1,6 @@
 package eu.esdihumboldt.hale.io.jdbc.spatialite;
 
+import java.io.File;
 import java.net.URI;
 
 import eu.esdihumboldt.hale.io.jdbc.extension.URIBuilder;
@@ -22,6 +23,12 @@ public class SpatiaLiteURIBuilder implements URIBuilder {
 			throw new IllegalArgumentException("A database name must be provided");
 		}
 
+		// replace system-dependent file separator characters (JDBC URIs must
+		// contain forward slash chars only)
+		if (File.separatorChar != '/') {
+			database = database.replace(File.separatorChar, '/');
+		}
+
 		return URI.create(PREFIX + database);
 	}
 
@@ -34,7 +41,13 @@ public class SpatiaLiteURIBuilder implements URIBuilder {
 			throw new IllegalArgumentException("JDBC URI must be provided");
 		}
 
-		return jdbcUri.toString().substring(PREFIX.length());
+		String database = jdbcUri.toString().substring(PREFIX.length());
+		// restores system-dependent file separator characters
+		if (File.separatorChar != '/') {
+			database.replace('/', File.separatorChar);
+		}
+
+		return database;
 	}
 
 }
