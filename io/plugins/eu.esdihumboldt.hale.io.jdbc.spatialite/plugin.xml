@@ -92,7 +92,7 @@
       <provider
             class="eu.esdihumboldt.hale.io.jdbc.spatialite.writer.internal.SpatiaLiteInstanceWriter"
             id="eu.esdihumboldt.hale.io.spatialite.writer.instance"
-            name="SQLite/SpatiaLite Database">
+            name="SQLite/SpatiaLite Database [experimental]">
          <contentType
                ref="eu.esdihumboldt.hale.io.spatialite">
          </contentType>
