@@ -76,7 +76,7 @@
       <provider
             class="eu.esdihumboldt.hale.io.jdbc.spatialite.reader.internal.SpatiaLiteSchemaReader"
             id="eu.esdihumboldt.hale.io.spatialite.reader.schema"
-            name="SpatiaLite Database">
+            name="SQLite/SpatiaLite Database">
          <contentType
                ref="eu.esdihumboldt.hale.io.spatialite">
          </contentType>
@@ -84,7 +84,7 @@
       <provider
             class="eu.esdihumboldt.hale.io.jdbc.spatialite.reader.internal.SpatiaLiteInstanceReader"
             id="eu.esdihumboldt.hale.io.spatialite.reader.instance"
-            name="SpatiaLite Database">
+            name="SQLite/SpatiaLite Database">
          <contentType
                ref="eu.esdihumboldt.hale.io.spatialite">
          </contentType>
@@ -92,7 +92,7 @@
       <provider
             class="eu.esdihumboldt.hale.io.jdbc.spatialite.writer.internal.SpatiaLiteInstanceWriter"
             id="eu.esdihumboldt.hale.io.spatialite.writer.instance"
-            name="SpatiaLite Database">
+            name="SQLite/SpatiaLite Database">
          <contentType
                ref="eu.esdihumboldt.hale.io.spatialite">
          </contentType>
