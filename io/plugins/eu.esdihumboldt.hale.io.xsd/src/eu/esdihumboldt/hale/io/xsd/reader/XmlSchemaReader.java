@@ -89,6 +89,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Enumeration;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
 import eu.esdihumboldt.hale.common.schema.model.impl.AbstractDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultGroupPropertyDefinition;
@@ -117,7 +118,6 @@ import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlGroupReferenceProperty;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeDefinition;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeUtil;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.ElementName;
-import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.MappableUsingXsiType;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.XLinkReference;
 import eu.esdihumboldt.util.Identifiers;
 import gnu.trove.TObjectIntHashMap;
@@ -705,7 +705,8 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 
 			// set mappable constraint
 			// don't override mappable explicitly set to false
-			type.setConstraintIfNotSet(new MappableUsingXsiType(type));
+			type.setConstraintIfNotSet(MappableFlag.ENABLED);
+			// new MappableUsingXsiType(type));
 
 			// set type metadata and constraints
 			setMetadataAndConstraints(type, complexType, schemaLocation);
