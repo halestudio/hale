@@ -87,12 +87,12 @@ String productVersion(String version) {
 	def qualifier = project.ext.contextQualifier
 
 	if (version.endsWith('.qualifier')) {
-		// replace qualifier (omit if RELEASE)
-		version[0..-11] + ((qualifier == 'RELEASE')?(''):('.' + qualifier))
+		// replace qualifier (omit if release)
+		version[0..-11] + ((qualifier == 'release')?(''):('.' + qualifier))
 	}
 	else if (version.endsWith('-SNAPSHOT')) {
-		// replace SNAPSHOT (omit if RELEASE)
-		version[0..-10] + ((qualifier == 'RELEASE')?(''):('.' + qualifier))
+		// replace SNAPSHOT (omit if release)
+		version[0..-10] + ((qualifier == 'release')?(''):('.' + qualifier))
 	}
 	else {
 		// return as-is
