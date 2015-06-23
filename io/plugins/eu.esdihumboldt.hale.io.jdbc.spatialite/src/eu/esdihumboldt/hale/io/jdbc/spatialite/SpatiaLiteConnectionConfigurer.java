@@ -38,7 +38,10 @@ public class SpatiaLiteConnectionConfigurer implements ConnectionConfigurer<SQLi
 			// loading SpatiaLite
 			stmt.execute("SELECT load_extension('mod_spatialite')");
 		} catch (SQLException e) {
-			log.error("Failed to load SpatiaLite extension.", e);
+			// just a warning - maybe only SQLite is needed
+			log.warn(
+					"Failed to load SpatiaLite extension (mod_spatialite). Please check the help on how to make it available.",
+					e);
 		} finally {
 			if (stmt != null) {
 				try {
