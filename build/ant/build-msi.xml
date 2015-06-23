@@ -149,7 +149,7 @@
 		                              be installed
 		-->
 		<script language="javascript"><![CDATA[
-			importClass(java.io.File);
+			var File = java.io.File;
 			
 			//counters for unique identifiers
 			var currentdirid = 0;
