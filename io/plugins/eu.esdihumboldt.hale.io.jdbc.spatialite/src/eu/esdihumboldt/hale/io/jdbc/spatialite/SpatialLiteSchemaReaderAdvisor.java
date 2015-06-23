@@ -142,4 +142,14 @@ public class SpatialLiteSchemaReaderAdvisor implements JDBCSchemaReaderAdvisor {
 		});
 	}
 
+	@Override
+	public boolean includePathInNamespace() {
+		/*
+		 * We don't want the path to be included in the namespace, because that
+		 * would mean that the namespace is different for probably every system
+		 * (as the SQLite file will usually lie on a different path).
+		 */
+		return false;
+	}
+
 }

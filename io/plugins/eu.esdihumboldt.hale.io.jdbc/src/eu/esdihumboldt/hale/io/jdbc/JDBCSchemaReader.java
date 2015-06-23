@@ -214,7 +214,8 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 				}
 				ns.append(specificURI.getScheme());
 			}
-			if (specificURI.getPath() != null) {
+			if ((advisor == null || advisor.includePathInNamespace())
+					&& specificURI.getPath() != null) {
 				if (ns.length() > 0) {
 					ns.append(':');
 				}

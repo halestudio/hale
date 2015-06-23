@@ -33,6 +33,13 @@ public interface JDBCSchemaReaderAdvisor {
 	 */
 	void configureSchemaCrawler(SchemaCrawlerOptions options);
 
-	// TODO any additional possibilities for adaption needed?
+	/**
+	 * Specifies if the path in the JDBC URI should be included in the namespace
+	 * for the table types.
+	 * 
+	 * @return <code>true</code> if the path should be included in the
+	 *         namespace, <code>false</code> otherwise
+	 */
+	boolean includePathInNamespace();
 
 }
