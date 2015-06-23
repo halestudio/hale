@@ -319,7 +319,8 @@
 		<script language="javascript"><![CDATA[
 			var version = project.getProperty("version");
 			var shortversion = "";
-			var elements = version.split("\\.");
+			// make Nashorn and Rhino happy - http://stackoverflow.com/questions/29211960/nashorn-and-rhino-splitting-strings-by-whitespace-regexp
+			var elements = String(version).split(/\./);
 			if (elements.length > 0) {
 				shortversion = shortversion + elements[0];
 			}
