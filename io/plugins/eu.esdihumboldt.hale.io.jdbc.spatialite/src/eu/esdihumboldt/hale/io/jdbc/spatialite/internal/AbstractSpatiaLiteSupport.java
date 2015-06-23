@@ -75,9 +75,6 @@ public abstract class AbstractSpatiaLiteSupport implements SpatiaLiteSupport {
 		return meta;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.io.jdbc.spatialite.internal.SpatiaLiteSupport#getSrsMetadata(int)
-	 */
 	@Override
 	public SrsMetadata getSrsMetadata(SQLiteConnection conn, int srid) {
 
