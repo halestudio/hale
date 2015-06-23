@@ -89,6 +89,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Enumeration;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
 import eu.esdihumboldt.hale.common.schema.model.impl.AbstractDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultGroupPropertyDefinition;
@@ -167,6 +168,12 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 	 * relevant types.
 	 */
 	public static final String PARAM_RELEVANT_ELEMENTS = "relevantElements";
+
+	/**
+	 * Name of the parameter specifying if only those types are deemed mappable,
+	 * that have an associated global element definition.
+	 */
+	public static final String PARAM_ONLY_ELEMENTS_MAPPABLE = "onlyElementsMappable";
 
 	/**
 	 * The display name constraint for choices
@@ -400,6 +407,24 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * Set if only elements should be mappable. Otherwise all types with a
+	 * global type definition are mappable.
+	 * 
+	 * @param onlyElements if only elements should be mappable
+	 */
+	public void setOnlyElementsMappable(boolean onlyElements) {
+		setParameter(PARAM_ONLY_ELEMENTS_MAPPABLE, Value.of(onlyElements));
+	}
+
+	/**
+	 * @return states if only types with associated global elements are
+	 *         classified as mappable types
+	 */
+	public boolean isOnlyElementsMappable() {
+		return getParameter(PARAM_ONLY_ELEMENTS_MAPPABLE).as(Boolean.class, true);
 	}
 
 	/**
@@ -704,8 +729,16 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 			}
 
 			// set mappable constraint
-			// don't override mappable explicitly set to false
-			type.setConstraintIfNotSet(new MappableUsingXsiType(type));
+			// don't override mappable if explicitly set to false
+			if (isOnlyElementsMappable()) {
+				// only types with a global element definition (or with a super
+				// type that matches this condition)
+				type.setConstraintIfNotSet(new MappableUsingXsiType(type));
+			}
+			else {
+				// all global complex type definitions should be mappable
+				type.setConstraintIfNotSet(MappableFlag.ENABLED);
+			}
 
 			// set type metadata and constraints
 			setMetadataAndConstraints(type, complexType, schemaLocation);
