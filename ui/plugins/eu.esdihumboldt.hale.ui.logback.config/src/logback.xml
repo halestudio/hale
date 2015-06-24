@@ -16,6 +16,9 @@
   <logger name="org.geotools.referencing.operation.projection" level="ERROR" />
   <logger name="java.util.prefs" level="ERROR" />
   
+  <!-- ignore errors related to castor messages -->
+  <logger name="org.castor.core.util.Messages" level="OFF" />
+  
   <root level="WARN">
     <appender-ref ref="CONSOLE"/>
     <appender-ref ref="SERVICE"/>
