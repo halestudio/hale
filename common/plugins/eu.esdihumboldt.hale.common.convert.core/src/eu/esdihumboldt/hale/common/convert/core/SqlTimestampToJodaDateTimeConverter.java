@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Data Harmonisation Panel
+ * Copyright (c) 2015 Data Harmonisation Panel
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -10,30 +10,29 @@
  * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
  * 
  * Contributors:
- *     HUMBOLDT EU Integrated Project #030962
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.convert.core;
 
-import java.sql.Time;
-import java.util.Date;
+import java.sql.Timestamp;
 
+import org.joda.time.DateTime;
 import org.springframework.core.convert.converter.Converter;
 
 /**
- * Convert a {@link Date} to a {@link Time}.
+ * Convert from {@link Timestamp} to {@link DateTime}.
  * 
  * @author Simon Templer
  */
-public class DateToSqlTimeConverter implements Converter<Date, Time> {
+public class SqlTimestampToJodaDateTimeConverter implements Converter<Timestamp, DateTime> {
 
 	@Override
-	public Time convert(Date source) {
+	public DateTime convert(Timestamp source) {
 		if (source == null) {
 			return null;
 		}
-		return new Time(source.getTime());
+		return new DateTime(source);
 	}
 
 }

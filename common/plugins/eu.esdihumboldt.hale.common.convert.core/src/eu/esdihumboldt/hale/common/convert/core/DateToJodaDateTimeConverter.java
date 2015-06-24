@@ -16,24 +16,24 @@
 
 package eu.esdihumboldt.hale.common.convert.core;
 
-import java.sql.Time;
 import java.util.Date;
 
+import org.joda.time.DateTime;
 import org.springframework.core.convert.converter.Converter;
 
 /**
- * Convert a {@link Date} to a {@link Time}.
+ * Convert a {@link Date} to a {@link DateTime}.
  * 
  * @author Simon Templer
  */
-public class DateToSqlTimeConverter implements Converter<Date, Time> {
+public class DateToJodaDateTimeConverter implements Converter<Date, DateTime> {
 
 	@Override
-	public Time convert(Date source) {
+	public DateTime convert(Date source) {
 		if (source == null) {
 			return null;
 		}
-		return new Time(source.getTime());
+		return new DateTime(source);
 	}
 
 }

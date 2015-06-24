@@ -16,24 +16,32 @@
 
 package eu.esdihumboldt.hale.common.convert.core;
 
-import java.sql.Time;
-import java.util.Date;
+import java.sql.Timestamp;
 
 import org.springframework.core.convert.converter.Converter;
 
 /**
- * Convert a {@link Date} to a {@link Time}.
+ * Convert a {@link String} to a {@link Timestamp}.
  * 
  * @author Simon Templer
  */
-public class DateToSqlTimeConverter implements Converter<Date, Time> {
+public class StringToSqlTimestampConverter implements Converter<String, Timestamp> {
+
+	private static final StringToJodaDateTimeConverter stringToJoda = new StringToJodaDateTimeConverter();
+
+	private static final JodaDateTimeToSqlTimestampConverter jodaToTimestamp = new JodaDateTimeToSqlTimestampConverter();
 
 	@Override
-	public Time convert(Date source) {
+	public Timestamp convert(String source) {
 		if (source == null) {
 			return null;
 		}
-		return new Time(source.getTime());
+		try {
+			// try with default format
+			return Timestamp.valueOf(source);
+		} catch (IllegalArgumentException e) {
+			// fall back to joda parser
+			return jodaToTimestamp.convert(stringToJoda.convert(source));
+		}
 	}
-
 }

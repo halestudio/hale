@@ -16,24 +16,36 @@
 
 package eu.esdihumboldt.hale.common.convert.core;
 
-import java.sql.Date;
-
 import org.joda.time.DateTime;
 import org.springframework.core.convert.converter.Converter;
 
+import com.google.common.collect.ImmutableSet;
+
 /**
- * Converts a {@link DateTime} to a {@link Date}.
+ * Converts a {@link String} to a {@link DateTime}. Use this as base or
+ * fall-back if creating other conversions from strings.
  * 
- * @author Christian Malewski
+ * @author Simon Templer
  */
-public class JodaDateTimeToSqlDateConverter implements Converter<DateTime, Date> {
+public class StringToJodaDateTimeConverter implements Converter<String, DateTime> {
+
+	/**
+	 * Some String representations of dates have a strange sense of representing
+	 * <code>null</code> values.
+	 */
+	private static ImmutableSet<String> NULL_VALUES = ImmutableSet.of( //
+			"0000-00-00T00:00:00", //
+			"0000-00-00 00:00:00", //
+			"0000-00-00 00:00:00.000", //
+			"0000-00-00");
 
 	@Override
-	public Date convert(DateTime source) {
-		if (source == null) {
+	public DateTime convert(String source) {
+		if (source == null || NULL_VALUES.contains(source)) {
 			return null;
 		}
-		return new Date(source.toDate().getTime());
+		// parse ISO format
+		return DateTime.parse(source);
 	}
 
 }

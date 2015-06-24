@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Data Harmonisation Panel
+ * Copyright (c) 2013 Data Harmonisation Panel
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -16,24 +16,24 @@
 
 package eu.esdihumboldt.hale.common.convert.core;
 
-import java.sql.Time;
 import java.util.Date;
 
+import org.joda.time.DateTime;
 import org.springframework.core.convert.converter.Converter;
 
 /**
- * Convert a {@link Date} to a {@link Time}.
+ * Converts a {@link DateTime} to a {@link Date}.
  * 
  * @author Simon Templer
  */
-public class DateToSqlTimeConverter implements Converter<Date, Time> {
+public class JodaDateTimeToDateConverter implements Converter<DateTime, Date> {
 
 	@Override
-	public Time convert(Date source) {
+	public Date convert(DateTime source) {
 		if (source == null) {
 			return null;
 		}
-		return new Time(source.getTime());
+		return source.toDate();
 	}
 
 }
