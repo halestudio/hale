@@ -198,14 +198,14 @@
          <attribute name="sqltype" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  ID as defined in java.sql.Types
                </documentation>
             </annotation>
          </attribute>
          <attribute name="id" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  Unique identifier
                </documentation>
             </annotation>
          </attribute>
