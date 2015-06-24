@@ -61,6 +61,13 @@
             connection="org.sqlite.SQLiteConnection"
             id="eu.esdihumboldt.hale.io.jdbc.spatialite">
       </readSchemaAdvisor>
+      <customtype
+            binding="java.lang.Object"
+            connection="org.sqlite.SQLiteConnection"
+            id="jdbc.sqlite.blob"
+            name="BLOB"
+            sqltype="-3">
+      </customtype>
    </extension>
    <extension
          point="org.eclipse.core.contenttype.contentTypes">
