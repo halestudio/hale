@@ -9,6 +9,12 @@
 	<p>Database schemas and data are imported in HALE using JDBC. HALE
 		offers support for PostgreSQL and PostGIS databases out of the box,
 		support for other databases can be added through plug-ins.</p>
+	<p>The database import currently has the following known limitations:</p>
+	<ul>
+		<li>The database schema must already exist. It should be loaded
+			as source schema from the database.</li>
+		<li>Primary keys over multiple columns are not supported.</li>
+	</ul>
 	<p>
 		To load the schema or data from the database, you can either use the <i>From
 			Database (JDBC)</i> tab in the import dialog, or use a JDBC URL in <i>From
