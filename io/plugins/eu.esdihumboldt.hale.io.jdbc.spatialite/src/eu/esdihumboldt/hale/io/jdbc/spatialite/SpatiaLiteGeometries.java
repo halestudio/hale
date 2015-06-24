@@ -15,7 +15,7 @@ import schemacrawler.schema.ColumnDataType;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.io.WKBReader;
+import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.io.WKTWriter;
 
 import de.fhg.igd.slf4jplus.ALogger;
@@ -130,7 +130,17 @@ public class SpatiaLiteGeometries implements GeometryAdvisor<SQLiteConnection> {
 			SQLiteConnection connection) throws SQLException {
 		// convert JTS geometry to SpatiaLite's internal BLOB format
 		WKTWriter wktWriter = new WKTWriter(metadata.getDimension());
+		/*
+		 * FIXME does the WKT writer actually produce 3D geometries for geometry
+		 * objects with three dimensional coordinates?
+		 */
 		String sqlGeomFromText = "SELECT GeomFromText(?, ?)";
+		/*
+		 * XXX is the SpatiaLite WKT parser robust enough to handle 3D
+		 * geometries that don't have the proper geometry type code? The
+		 * WKTWriter for example does produce "MULTIPOLGON" instead of
+		 * "MULTIPOLYGON Z"
+		 */
 
 		PreparedStatement stmt = connection.prepareStatement(sqlGeomFromText);
 		stmt.setString(1, wktWriter.write(value));
@@ -176,25 +186,68 @@ public class SpatiaLiteGeometries implements GeometryAdvisor<SQLiteConnection> {
 			@SuppressWarnings("unused") GeometryMetadata metadata, SQLiteConnection connection)
 			throws SQLException {
 		// geom parameter is a byte[] in SpatiaLite's internal BLOB format;
-		// for easy parsing with JTS, I must re-read geometry from DB in WKB
-		// format
-		String sqlGeomAsWKB = "SELECT AsBinary(?)";
+		// for easy parsing with JTS, I must re-read geometry from DB in WKT or
+		// WKB format
 
-		PreparedStatement stmt = connection.prepareStatement(sqlGeomAsWKB);
+		/*
+		 * We could use the WKT - but the JTS WKTReader does not support
+		 * properly encoded 3D geometries (e.g. "MULTIPOLYON Z" instead of just
+		 * "MULTIPOLYGON")
+		 */
+//		String sqlGeomAsWKX = "SELECT ST_AsText(?)";
+
+		/*
+		 * We could use the 2D WKT - but this will reduce all 3D geometries to a
+		 * 2D projection.
+		 */
+//		String sqlGeomAsWKX = "SELECT AsWKT(?)";
+
+		/*
+		 * We could use the WKB - but the JTS WKBReader does not properly
+		 * support geometry type codes of 1000 and above (e.g. 1007 for a
+		 * GeometryCollection with Z coordinate)
+		 */
+//		String sqlGeomAsWKX = "SELECT ST_AsBinary(?)";
+
+		/*
+		 * We could use the EWKB - but the JTS WKBReader does not handle that
+		 * properly as well (wrong geometry type extracted, 3D not recognized).
+		 */
+//		String sqlGeomAsWKX = "SELECT AsEWKB(?)";
+
+		/*
+		 * We can use the EWKT - but the JTS WKTReader will fail if there is a
+		 * preceding SRID (which we can remove).
+		 */
+		String sqlGeomAsWKX = "SELECT AsEWKT(?)";
+
+		PreparedStatement stmt = connection.prepareStatement(sqlGeomAsWKX);
 		stmt.setObject(1, geom);
 
 		ResultSet rs = stmt.executeQuery();
 
 		Geometry jtsGeom = null;
 		if (rs.next()) {
-			byte[] geomAsByteArray = rs.getBytes(1);
+			// WKB
+//			byte[] geomAsByteArray = rs.getBytes(1);
+			// WKT
+			String geomAsText = rs.getString(1);
+			// remove SRID from EWKT
+			if (geomAsText.startsWith("SRID")) {
+				int index = geomAsText.indexOf(';');
+				if (index >= 0 && index + 1 < geomAsText.length()) {
+					geomAsText = geomAsText.substring(index + 1);
+				}
+			}
 
-			// conversion to JTS via WKB
+			// conversion to JTS via WKB/WKT
 			GeometryFactory factory = new GeometryFactory();
-			WKBReader wkbReader = new WKBReader(factory);
+//			WKBReader wkbReader = new WKBReader(factory);
+			WKTReader wktReader = new WKTReader(factory);
 
 			try {
-				jtsGeom = wkbReader.read(geomAsByteArray);
+//				jtsGeom = wkbReader.read(geomAsByteArray);
+				jtsGeom = wktReader.read(geomAsText);
 			} catch (Exception e) {
 				log.error("Could not load geometry from database", e);
 			}
