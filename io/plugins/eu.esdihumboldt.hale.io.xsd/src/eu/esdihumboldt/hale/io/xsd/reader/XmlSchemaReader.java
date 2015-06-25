@@ -62,6 +62,8 @@ import org.apache.ws.commons.schema.XmlSchemaType;
 import org.apache.ws.commons.schema.constants.Constants;
 import org.apache.ws.commons.schema.utils.NamespacePrefixList;
 
+import com.google.common.collect.ImmutableSet;
+
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
@@ -77,6 +79,7 @@ import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.common.schema.io.impl.AbstractSchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.DisplayName;
@@ -84,6 +87,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.Enumeration;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
 import eu.esdihumboldt.hale.common.schema.model.impl.AbstractDefinition;
@@ -178,6 +182,18 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 	 * Qualified name of the XLink reference attribute.
 	 */
 	private static final QName NAME_XLINK_REF = new QName("http://www.w3.org/1999/xlink", "href");
+
+	/**
+	 * Name for virtual INSPIRE NilReason type with adapted enumeration.
+	 */
+	private static final QName INSPIRE_NILREASON_TYPENAME = new QName(
+			"http://www.esdi-humboldt.eu/hale/inspire/ext", "NilReasonType");
+
+	/**
+	 * Values for the virtual INSPIRE NilReason type.
+	 */
+	private static final Collection<? extends String> INSPIRE_NILREASON_VALUES = ImmutableSet.of(
+			"unknown", "unpopulated", "withheld");
 
 	/**
 	 * The XML definition index
@@ -1438,12 +1454,14 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 		// create attributes
 		QName typeName = attribute.getSchemaTypeName();
 		if (typeName != null) {
+			QName attributeName = determineAttributeName(attribute, schemaNamespace);
+
 			// resolve type by name
-			XmlTypeDefinition type = this.index.getOrCreateType(typeName);
+			XmlTypeDefinition type = getTypeForAttribute(typeName, declaringGroup, attributeName);
 
 			// create property
-			DefaultPropertyDefinition property = new DefaultPropertyDefinition(
-					determineAttributeName(attribute, schemaNamespace), declaringGroup, type);
+			DefaultPropertyDefinition property = new DefaultPropertyDefinition(attributeName,
+					declaringGroup, type);
 
 			// set metadata and constraints
 			setMetadataAndConstraints(property, attribute, schemaLocation);
@@ -1495,6 +1513,60 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 			setMetadataAndConstraints(property, attribute, schemaLocation);
 		}
 
+	}
+
+	/**
+	 * Get the named type to use for a specific XML attribute.
+	 * 
+	 * @param typeName the name of the referenced type
+	 * @param declaringGroup the declaring group of the attribute
+	 * @param attributeName the attribute name
+	 * @return the type definition that should be used as the attribute type
+	 */
+	private XmlTypeDefinition getTypeForAttribute(QName typeName, DefinitionGroup declaringGroup,
+			QName attributeName) {
+		// special case handling
+
+		// XXX INSPIRE nilReason hack
+		// detect nilReason attribute TODO check GML namespace?
+		if (attributeName.getLocalPart().equals("nilReason")
+				&& "NilReasonType".equals(typeName.getLocalPart())
+				&& declaringGroup instanceof Definition<?>) {
+			Definition<?> parentDef = (Definition<?>) declaringGroup;
+			// determine if parent is defined in INSPIRE
+			if (parentDef.getName().getNamespaceURI() != null
+					&& parentDef.getName().getNamespaceURI()
+							.startsWith("http://inspire.ec.europa.eu/schemas")) {
+				// get or create custom INSPIRE NilReason type
+				XmlTypeDefinition customType = (XmlTypeDefinition) this.index
+						.getType(INSPIRE_NILREASON_TYPENAME);
+				if (customType == null) {
+					// not yet created, configure now
+					customType = this.index.getOrCreateType(INSPIRE_NILREASON_TYPENAME);
+
+					// use the original type as super type
+					customType.setSuperType(this.index.getOrCreateType(typeName));
+
+					// description with documentation of the values
+					customType
+							.setDescription("Virtual type representing the GML NilReasonType adapted for the valid values specified by INSPIRE:\n\n"
+									+ "unknown:\nThe correct value for the specific spatial object is not known to, and not computable by, the data provider. However, a correct value may exist.\n"
+									+ "NOTE 'unknown' is applied on an object-by-object basis in a spatial data set.\n\n"
+									+ "unpopulated:\nThe characteristic is not part of the dataset maintained by the data provider. However, the characteristic may exist in the real world.\n"
+									+ "NOTE The characteristic receives this value for all objects in the spatial data set.\n\n"
+									+ "withheld:\nThe characteristic may exist, but is confidential and not divulged by the data provider.");
+
+					// define a custom enumeration based on valid INSPIRE void
+					// reasons
+					customType
+							.setConstraint(new Enumeration<String>(INSPIRE_NILREASON_VALUES, true));
+				}
+				return customType;
+			}
+		}
+
+		// default case
+		return this.index.getOrCreateType(typeName);
 	}
 
 	/**
