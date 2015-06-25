@@ -23,6 +23,7 @@ import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.xml.XMLConstants;
@@ -133,6 +134,31 @@ import gnu.trove.TObjectIntHashMap;
 public class XmlSchemaReader extends AbstractSchemaReader {
 
 	/**
+	 * Namespace prefix generator.
+	 */
+	private static final class NamespaceIdentifiers extends Identifiers<String> {
+
+		/**
+		 * @see Identifiers#Identifiers(String, boolean, int)
+		 */
+		private NamespaceIdentifiers(String prefix, boolean useEquals, int startCounter) {
+			super(prefix, useEquals, startCounter);
+		}
+
+		/**
+		 * Add existing identifiers (to avoid conflicts).
+		 * 
+		 * @param objectsAndIdentifiers objects (namespaces) mapped to
+		 *            identifiers (prefixes)
+		 */
+		public void addIdentifiers(Map<String, String> objectsAndIdentifiers) {
+			for (Entry<String, String> entry : objectsAndIdentifiers.entrySet()) {
+				putObjectIdentifier(entry.getKey(), entry.getValue());
+			}
+		}
+	}
+
+	/**
 	 * Name of the parameter specifying the elements that represent mapping
 	 * relevant types.
 	 */
@@ -172,7 +198,7 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 	/**
 	 * The generated namespace prefixes
 	 */
-	private final Identifiers<String> namespaceGeneratedPrefixes = new Identifiers<String>("ns",
+	private final NamespaceIdentifiers namespaceGeneratedPrefixes = new NamespaceIdentifiers("ns",
 			true, 1);
 
 	/**
@@ -590,23 +616,24 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 				}
 			}
 		}
+
+		// update namespace identifiers with current prefixes
+		namespaceGeneratedPrefixes.addIdentifiers(prefixes);
+
 		// handle orphaned namespaces
 		for (String ns : orphanedNamespaces) {
-			if (!XMLConstants.XML_NS_URI.equals(ns)) { // exclude XML namespace,
-														// its prefix is fixed
+			if (!XMLConstants.XML_NS_URI.equals(ns)) {
+				// exclude XML namespace, its prefix is fixed
+
 				String prefix = namespaceGeneratedPrefixes.getId(ns);
 				prefixes.put(ns, prefix);
 			}
 		}
 		// special handling of default namespace (add it if not known)
 		if (!mainSchema && !prefixes.containsKey(defaultNamespace)
-				&& !XMLConstants.XML_NS_URI.equals(defaultNamespace)) { // exclude
-																		// XML
-																		// namespace,
-																		// its
-																		// prefix
-																		// is
-																		// fixed
+				&& !XMLConstants.XML_NS_URI.equals(defaultNamespace)) {
+			// exclude XML namespace, its prefix is fixed
+
 			// generate a namespace prefix for imported schemas that might have
 			// none
 			String prefix = namespaceGeneratedPrefixes.getId(defaultNamespace);
