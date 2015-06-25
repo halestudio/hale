@@ -81,7 +81,7 @@ public class Identifiers<T> extends IdentifiersBase<T> {
 		String id = ids.get(object);
 
 		if (id == null) {
-			while (id == null || ids.containsKey(id)) {
+			while (id == null || objects.containsKey(id)) {
 				// make sure the ID was not already added through other means
 				id = prefix + num++;
 			}
