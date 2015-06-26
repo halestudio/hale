@@ -97,8 +97,18 @@ public class CRSFinder implements InstanceTraversalCallback {
 				Integer.parseInt(codePart);
 
 				if (authPart.equalsIgnoreCase(prefix)) {
-					definition = new CodeDefinition("EPSG:" + codePart, null);
-					// XXX check if valid through getCRS()?
+					definition = new CodeDefinition(candidate, null);
+					// check if valid
+					try {
+						definition.getCRS();
+					} catch (Exception e) {
+						// code seems to be not valid
+
+						// fall back to only using code part
+						definition = new CodeDefinition("EPSG:" + codePart, null);
+						// XXX check as well? (and return false on failure?)
+					}
+
 					return true;
 				}
 			} catch (NumberFormatException e) {
