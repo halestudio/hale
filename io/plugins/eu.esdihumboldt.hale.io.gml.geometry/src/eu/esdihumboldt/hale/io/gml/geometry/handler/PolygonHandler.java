@@ -121,6 +121,9 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 		// to parse inner linear rings
 		if (polygon == null) {
 			values = PropertyResolver.getValues(instance, "interior.LinearRing", false);
+			Collection<Object> ringValues = PropertyResolver.getValues(instance, "interior.Ring",
+					false);
+			values = combineCollections(values, ringValues);
 			if (values != null && !values.isEmpty()) {
 				Iterator<Object> iterator = values.iterator();
 				List<LinearRing> innerRings = new ArrayList<LinearRing>();
@@ -140,6 +143,8 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 
 			// to parse outer linear rings
 			values = PropertyResolver.getValues(instance, "exterior.LinearRing", false);
+			ringValues = PropertyResolver.getValues(instance, "exterior.Ring", false);
+			values = combineCollections(values, ringValues);
 			LinearRing outerRing = null;
 			if (values != null && !values.isEmpty()) {
 				Iterator<Object> iterator = values.iterator();
@@ -157,17 +162,6 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 				polygon = getGeometryFactory().createPolygon(outerRing, holes);
 			}
 		}
-		// only for triangle and rectangle geometries to resolve ring with
-		// generic geometry handler
-		// normal rings should automatically be handled with generic geometry
-		// handler
-		if (polygon == null) {
-			values = PropertyResolver.getValues(instance, "exterior.Ring", false);
-			if (values != null && !values.isEmpty()) {
-				GenericGeometryHandler handler = new GenericGeometryHandler();
-				return handler.createGeometry(instance, srsDimension);
-			}
-		}
 
 		if (polygon != null) {
 			if (crs == null) {
@@ -176,6 +170,21 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 			return new DefaultGeometryProperty<Polygon>(crs, polygon);
 		}
 		throw new GeometryNotSupportedException();
+	}
+
+	private Collection<Object> combineCollections(Collection<Object> values1,
+			Collection<Object> values2) {
+		if (values1 == null) {
+			return values2;
+		}
+		if (values2 == null) {
+			return values1;
+		}
+
+		Collection<Object> result = new ArrayList<>(values1.size() + values2.size());
+		result.addAll(values1);
+		result.addAll(values2);
+		return result;
 	}
 
 	private CRSDefinition checkCommonCrs(CRSDefinition commonCrs, CRSDefinition newCrs) {

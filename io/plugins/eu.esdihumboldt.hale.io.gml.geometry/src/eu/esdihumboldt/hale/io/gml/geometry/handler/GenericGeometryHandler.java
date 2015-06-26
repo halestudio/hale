@@ -149,7 +149,7 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 	 * @see GeometryHandler#createGeometry(Instance, int)
 	 */
 	@Override
-	public Object createGeometry(Instance instance, int srsDimension)
+	public Collection<GeometryProperty<?>> createGeometry(Instance instance, int srsDimension)
 			throws GeometryNotSupportedException {
 		CRSDefinition defaultCrsDef = GMLGeometryUtil.findCRS(instance);
 
@@ -177,8 +177,9 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 	 *             represent a geometry type supported by the handler
 	 */
 	@SuppressWarnings("unused")
-	protected Object createGeometry(Instance instance, List<GeometryProperty<?>> childGeometries,
-			CRSDefinition defaultCrs) throws GeometryNotSupportedException {
+	protected Collection<GeometryProperty<?>> createGeometry(Instance instance,
+			List<GeometryProperty<?>> childGeometries, CRSDefinition defaultCrs)
+			throws GeometryNotSupportedException {
 
 		List<Geometry> geomList = new ArrayList<Geometry>();
 
@@ -258,7 +259,9 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 				// returned combined property
 				CRSDefinition crs = (commonCrs != null && commonCrs.getCrsDef() != null) ? (commonCrs
 						.getCrsDef()) : (defaultCrs);
-				return Collections.singleton(new DefaultGeometryProperty<Geometry>(crs, geom));
+				return Collections
+						.<GeometryProperty<?>> singleton(new DefaultGeometryProperty<Geometry>(crs,
+								geom));
 			}
 		}
 
