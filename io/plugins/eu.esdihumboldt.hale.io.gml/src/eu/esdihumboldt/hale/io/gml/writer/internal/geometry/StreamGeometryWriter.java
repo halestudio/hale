@@ -30,6 +30,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
 
@@ -166,6 +167,9 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 
 		// write any srsName attribute on the parent element
 		writeSrsName(writer, property.getPropertyType(), geometry, srsName);
+
+		// write any srsDimension attribute on the parent element
+		writeSrsDimension(writer, property.getPropertyType(), geometry);
 
 		if (simplifyGeometry) {
 			// if geometry collection containing only one geometry,
@@ -395,6 +399,8 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 					GmlWriterUtil.writeRequiredID(writer, step.getType(), null, false);
 					// write eventual srsName
 					writeSrsName(writer, step.getType(), geometry, srsName);
+					// write eventual srsDimension
+					writeSrsDimension(writer, step.getType(), geometry);
 				}
 			}
 
@@ -445,6 +451,57 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 				GmlWriterUtil.writeAttribute(writer, srsName, srsAtt);
 			}
 		}
+	}
+
+	/**
+	 * Write the SRS dimension if a corresponding attribute is present
+	 * 
+	 * @param writer the XML stream writer
+	 * @param type the element type definition
+	 * @param geometry the geometry
+	 * @throws XMLStreamException if writing the SRS dimension fails
+	 */
+	private void writeSrsDimension(XMLStreamWriter writer, TypeDefinition type, Geometry geometry)
+			throws XMLStreamException {
+		// detect geometry dimension if possible
+		Integer dimension = detectDimension(geometry);
+
+		if (dimension != null) {
+			PropertyDefinition dimensionAtt = null;
+			for (ChildDefinition<?> att : DefinitionUtil.getAllProperties(type)) {
+				// XXX is this enough? or should groups be handled explicitly?
+				if (att.asProperty() != null
+						// if we write an attribute, it must be an attribute ;)
+						&& att.asProperty().getConstraint(XmlAttributeFlag.class).isEnabled()
+						&& att.getName().getLocalPart().equals("srsDimension") //$NON-NLS-1$
+						&& (att.getName().getNamespaceURI() == null
+								|| att.getName().getNamespaceURI().equals(gmlNs) || att.getName()
+								.getNamespaceURI().isEmpty())) {
+					dimensionAtt = att.asProperty();
+					break;
+				}
+			}
+
+			if (dimensionAtt != null) {
+				GmlWriterUtil.writeAttribute(writer, dimension, dimensionAtt);
+			}
+		}
+	}
+
+	@Nullable
+	private Integer detectDimension(Geometry geometry) {
+		// test the coordinate dimension
+		Coordinate coord = geometry.getCoordinate();
+		if (coord != null) {
+			int dimension = 2;
+			if (!Double.isNaN(coord.z)) {
+				dimension = 3;
+			}
+			return dimension;
+		}
+
+		// not able to detect
+		return null;
 	}
 
 	/**
