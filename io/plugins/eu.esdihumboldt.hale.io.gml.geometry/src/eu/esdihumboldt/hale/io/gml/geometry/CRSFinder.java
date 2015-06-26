@@ -18,6 +18,8 @@ package eu.esdihumboldt.hale.io.gml.geometry;
 
 import javax.xml.namespace.QName;
 
+import org.geotools.gml2.SrsSyntax;
+
 import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition;
 import eu.esdihumboldt.hale.common.instance.helper.InstanceTraversalCallback;
 import eu.esdihumboldt.hale.common.instance.model.Group;
@@ -53,10 +55,11 @@ public class CRSFinder implements InstanceTraversalCallback {
 		if (value != null && name != null && name.getLocalPart().equals("srsName")) {
 			String candidate = value.toString();
 
-			// EPSG:(:)xxx style codes
-			if (checkCode(candidate, "EPSG:")) {
-				// if definition is set, abort the traversal
-				return false;
+			for (SrsSyntax srsSyntax : SrsSyntax.values()) {
+				if (checkCode(candidate, srsSyntax.getPrefix())) {
+					// if definition is set, abort the traversal
+					return false;
+				}
 			}
 
 			// urn:ogc:def:crs:EPSG:(:)xxx style code
@@ -65,11 +68,6 @@ public class CRSFinder implements InstanceTraversalCallback {
 				return false;
 			}
 
-			// urn:x-ogc:def:crs:EPSG:(:)xxx style code
-			if (checkCode(candidate, "urn:x-ogc:def:crs:EPSG:")) {
-				// if definition is set, abort the traversal
-				return false;
-			}
 		}
 
 		return true;
