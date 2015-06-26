@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.common.instance.io;
 
+import javax.annotation.Nullable;
+
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 
 /**
@@ -36,8 +38,7 @@ public interface GeoInstanceWriter extends InstanceWriter {
 	 * Name of the parameter specifying a prefix for EPSG codes. Support of this
 	 * parameter is optional.
 	 */
-	// XXX needed?
-//	public static final String PARAM_CRS_CODE_FORMAT = "crs.epsg.prefix";
+	public static final String PARAM_CRS_CODE_FORMAT = "crs.epsg.prefix";
 
 	/**
 	 * Set the target CRS for written instances. Note that supporting the target
@@ -45,7 +46,7 @@ public interface GeoInstanceWriter extends InstanceWriter {
 	 * 
 	 * @param crs the CRS definition
 	 */
-	public void setTargetCRS(CRSDefinition crs);
+	public void setTargetCRS(@Nullable CRSDefinition crs);
 
 	/**
 	 * Get the target CRS to convert instance geometries to. Note that
@@ -53,6 +54,23 @@ public interface GeoInstanceWriter extends InstanceWriter {
 	 * 
 	 * @return the target CRS definition or <code>null</code>
 	 */
+	@Nullable
 	public CRSDefinition getTargetCRS();
+
+	/**
+	 * Set a custom prefix to be used to encode target EPSG CRS codes.
+	 * 
+	 * @param epsgPrefix the custom EPSG code prefix or <code>null</code> to
+	 *            leave the CRS code untouched
+	 */
+	public void setCustomEPSGPrefix(@Nullable String epsgPrefix);
+
+	/**
+	 * Get the custom prefix to be used to encode target EPSG CRS codes.
+	 * 
+	 * @return the custom EPSG code prefix or <code>null</code>
+	 */
+	@Nullable
+	public String getCustomEPSGPrefix();
 
 }

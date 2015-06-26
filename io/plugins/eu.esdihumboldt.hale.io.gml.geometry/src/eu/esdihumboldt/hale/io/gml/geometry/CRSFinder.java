@@ -82,38 +82,22 @@ public class CRSFinder implements InstanceTraversalCallback {
 	 * @return if {@link #definition} was set
 	 */
 	private boolean checkCode(String candidate, String prefix) {
-		if (candidate.length() > prefix.length()) {
-			String authPart = candidate.substring(0, prefix.length());
-			String codePart = candidate.substring(prefix.length());
+		String codePart = CodeDefinition.extractCode(candidate, prefix);
 
+		if (codePart != null) {
+			definition = new CodeDefinition(candidate, null);
+			// check if valid
 			try {
-				// ignore anything before the last colon
-				int colonIndex = codePart.lastIndexOf(':');
-				if (colonIndex >= 0) {
-					codePart = codePart.substring(colonIndex + 1);
-				}
+				definition.getCRS();
+			} catch (Exception e) {
+				// code seems to be not valid
 
-				// check if codePart represents an integer
-				Integer.parseInt(codePart);
-
-				if (authPart.equalsIgnoreCase(prefix)) {
-					definition = new CodeDefinition(candidate, null);
-					// check if valid
-					try {
-						definition.getCRS();
-					} catch (Exception e) {
-						// code seems to be not valid
-
-						// fall back to only using code part
-						definition = new CodeDefinition("EPSG:" + codePart, null);
-						// XXX check as well? (and return false on failure?)
-					}
-
-					return true;
-				}
-			} catch (NumberFormatException e) {
-				// invalid
+				// fall back to only using code part
+				definition = new CodeDefinition("EPSG:" + codePart, null);
+				// XXX check as well? (and return false on failure?)
 			}
+
+			return true;
 		}
 
 		return false;

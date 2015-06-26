@@ -19,6 +19,11 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -26,6 +31,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.geotools.gml2.SrsSyntax;
 import org.geotools.referencing.CRS;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
@@ -33,6 +39,7 @@ import eu.esdihumboldt.hale.common.instance.io.GeoInstanceWriter;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.instance.crs.SelectCRSDialog;
+import eu.esdihumboldt.hale.ui.util.viewer.EnumContentProvider;
 
 /**
  * Configuration page for the character encoding.
@@ -49,6 +56,8 @@ public class TargetCRSConfigurationPage<P extends GeoInstanceWriter, W extends I
 	private Button checkConvert;
 	private Button selectCrs;
 	private CRSDefinition crsDef;
+	private Button checkPrefix;
+	private ComboViewer prefixCombo;
 
 	/**
 	 * Default constructor.
@@ -94,6 +103,19 @@ public class TargetCRSConfigurationPage<P extends GeoInstanceWriter, W extends I
 			provider.setTargetCRS(null);
 		}
 
+		String prefix = null;
+		if (checkPrefix.getSelection()) {
+			ISelection sel = prefixCombo.getSelection();
+			if (!sel.isEmpty() && sel instanceof IStructuredSelection) {
+				Object selected = ((IStructuredSelection) prefixCombo.getSelection())
+						.getFirstElement();
+				if (selected instanceof SrsSyntax) {
+					prefix = ((SrsSyntax) selected).getPrefix();
+				}
+			}
+		}
+		provider.setCustomEPSGPrefix(prefix);
+
 		return true;
 	}
 
@@ -138,6 +160,39 @@ public class TargetCRSConfigurationPage<P extends GeoInstanceWriter, W extends I
 
 		});
 
+		Group prefixGroup = new Group(page, SWT.NONE);
+		prefixGroup.setText("EPSG prefix");
+		GridLayoutFactory.swtDefaults().numColumns(1).applyTo(prefixGroup);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(prefixGroup);
+
+		checkPrefix = new Button(prefixGroup, SWT.CHECK);
+		checkPrefix.setText("Use a specific EPSG prefix for SRS names");
+		GridDataFactory.swtDefaults().applyTo(checkConvert);
+		checkPrefix.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				update();
+			}
+		});
+
+		prefixCombo = new ComboViewer(prefixGroup);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(prefixCombo.getControl());
+		prefixCombo.setContentProvider(EnumContentProvider.getInstance());
+		prefixCombo.setLabelProvider(new LabelProvider() {
+
+			@Override
+			public String getText(Object element) {
+				if (element instanceof SrsSyntax) {
+					return ((SrsSyntax) element).getPrefix();
+				}
+				return super.getText(element);
+			}
+
+		});
+		prefixCombo.setInput(SrsSyntax.class);
+		prefixCombo.setSelection(new StructuredSelection(SrsSyntax.OGC_HTTP_URI));
+
 		// only update on first show
 		// update();
 	}
@@ -160,6 +215,8 @@ public class TargetCRSConfigurationPage<P extends GeoInstanceWriter, W extends I
 		// button status
 		selectCrs.setEnabled(checkConvert.getSelection());
 		crsLabel.setEnabled(checkConvert.getSelection());
+
+		prefixCombo.getControl().setEnabled(checkPrefix.getSelection());
 
 		// page status
 		if (checkConvert.getSelection()) {
