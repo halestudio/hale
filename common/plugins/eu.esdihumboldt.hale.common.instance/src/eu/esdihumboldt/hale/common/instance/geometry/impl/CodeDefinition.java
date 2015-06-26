@@ -16,8 +16,14 @@
 
 package eu.esdihumboldt.hale.common.instance.geometry.impl;
 
+import java.util.concurrent.TimeUnit;
+
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 
@@ -32,6 +38,17 @@ public class CodeDefinition implements CRSDefinition {
 
 	private final String code;
 	private CoordinateReferenceSystem crs;
+
+	private static final LoadingCache<String, CoordinateReferenceSystem> CRS_CACHE = CacheBuilder
+			.newBuilder().maximumSize(100).expireAfterAccess(1, TimeUnit.HOURS)
+			.build(new CacheLoader<String, CoordinateReferenceSystem>() {
+
+				@Override
+				public CoordinateReferenceSystem load(String code) throws Exception {
+					return CRS.decode(code);
+				}
+
+			});
 
 	/**
 	 * Constructor
@@ -51,7 +68,7 @@ public class CodeDefinition implements CRSDefinition {
 	public CoordinateReferenceSystem getCRS() {
 		if (crs == null) {
 			try {
-				crs = CRS.decode(code);
+				crs = CRS_CACHE.get(code);
 			} catch (Exception e) {
 				throw new IllegalStateException("Invalid CRS code", e);
 			}
