@@ -20,15 +20,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Collection;
-
 import javax.xml.namespace.QName;
 
 import org.junit.Test;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.LinearRing;
 
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -43,18 +41,17 @@ import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest
  */
 public class RingGeometryTest extends AbstractHandlerTest {
 
-	private MultiLineString reference;
+	private LinearRing reference;
 
 	@Override
 	public void init() {
 		super.init();
 
 		Coordinate[] coordinates = new Coordinate[] { new Coordinate(0.01, 3.2),
-				new Coordinate(3.33, 3.33), new Coordinate(0.01, -3.2) };
+				new Coordinate(3.33, 3.33), new Coordinate(0.01, -3.2), new Coordinate(0.01, 3.2) };
 		LineString linestring = geomFactory.createLineString(coordinates);
 
-		LineString[] lines = new LineString[] { linestring };
-		reference = geomFactory.createMultiLineString(lines);
+		reference = geomFactory.createLinearRing(linestring.getCoordinates());
 	}
 
 	/**
@@ -93,15 +90,12 @@ public class RingGeometryTest extends AbstractHandlerTest {
 	}
 
 	private void checkGeomInstance(Instance geomInstance) {
-		assertTrue(geomInstance.getValue() instanceof Collection<?>);
-		for (Object instance : ((Collection<?>) geomInstance.getValue())) {
-			assertTrue(instance instanceof GeometryProperty<?>);
-			@SuppressWarnings("unchecked")
-			MultiLineString multilinestring = ((GeometryProperty<MultiLineString>) instance)
-					.getGeometry();
-			assertTrue("Read geometry does not match the reference geometry",
-					multilinestring.equalsExact(reference));
-		}
+		assertTrue(geomInstance.getValue() instanceof GeometryProperty<?>);
+		@SuppressWarnings("unchecked")
+		LinearRing linearring = ((GeometryProperty<LinearRing>) geomInstance.getValue())
+				.getGeometry();
+		assertTrue("Read geometry does not match the reference geometry",
+				linearring.equalsExact(reference));
 	}
 
 }

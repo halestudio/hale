@@ -13,7 +13,7 @@
 					<gml:Curve>
 						<gml:segments>
 							<gml:LineStringSegment>
-								<gml:coordinates>0.01,3.2 3.33,3.33 0.01,-3.2</gml:coordinates>
+								<gml:coordinates>0.01,3.2 3.33,3.33 0.01,-3.2 0.01,3.2</gml:coordinates>
 							</gml:LineStringSegment>
 						</gml:segments>
 					</gml:Curve>
