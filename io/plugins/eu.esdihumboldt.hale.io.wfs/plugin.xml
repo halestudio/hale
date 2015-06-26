@@ -27,6 +27,34 @@
                   sample="2.0.0">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="Prefix to use for all CRS codes based on EPSG in geometry srsNames."
+               label="Custom EPSG prefix"
+               name="crs.epsg.prefix"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default the CRS code is not modified."
+                  sample="http://www.opengis.net/def/crs/EPSG/0/"
+                  sampleDescription="Make sure that all SRS names use this kind of notation. The EPSG code number is appended to the provided parameter to build the SRS name.">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Target coordinate reference system the data should be transformed to."
+               label="Target CRS"
+               name="crs"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default no CRS transformation is performed, the existing geometries are written with their respective CRS."
+                  sample="code:EPSG:4326"
+                  sampleDescription="Reference systems can be defined either as code or WKT (preceded with code: or wkt: respectively)">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.wfs.file.WFS2FCWriter"
@@ -38,6 +66,58 @@
          <contentType
                ref="eu.esdihumboldt.hale.io.gml.gzip">
          </contentType>
+         <providerParameter
+               description="Prefix to use for all CRS codes based on EPSG in geometry srsNames."
+               label="Custom EPSG prefix"
+               name="crs.epsg.prefix"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default the CRS code is not modified."
+                  sample="http://www.opengis.net/def/crs/EPSG/0/"
+                  sampleDescription="Make sure that all SRS names use this kind of notation. The EPSG code number is appended to the provided parameter to build the SRS name.">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Target coordinate reference system the data should be transformed to."
+               label="Target CRS"
+               name="crs"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default no CRS transformation is performed, the existing geometries are written with their respective CRS."
+                  sample="code:EPSG:4326"
+                  sampleDescription="Reference systems can be defined either as code or WKT (preceded with code: or wkt: respectively)">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="If geometries should be simplified (e.g. a MultiPolygon to a Polygon), if possible, before writing them."
+               label="Simplify geometries"
+               name="gml.geometry.simplify"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="true">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="If the output should be pretty printed (indented)"
+               label="Pretty print"
+               name="xml.pretty"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="false">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.wfs.file.WFS11FCWriter"
@@ -49,6 +129,58 @@
          <contentType
                ref="eu.esdihumboldt.hale.io.gml.gzip">
          </contentType>
+         <providerParameter
+               description="Prefix to use for all CRS codes based on EPSG in geometry srsNames."
+               label="Custom EPSG prefix"
+               name="crs.epsg.prefix"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default the CRS code is not modified."
+                  sample="http://www.opengis.net/def/crs/EPSG/0/"
+                  sampleDescription="Make sure that all SRS names use this kind of notation. The EPSG code number is appended to the provided parameter to build the SRS name.">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Target coordinate reference system the data should be transformed to."
+               label="Target CRS"
+               name="crs"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default no CRS transformation is performed, the existing geometries are written with their respective CRS."
+                  sample="code:EPSG:4326"
+                  sampleDescription="Reference systems can be defined either as code or WKT (preceded with code: or wkt: respectively)">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="If geometries should be simplified (e.g. a MultiPolygon to a Polygon), if possible, before writing them."
+               label="Simplify geometries"
+               name="gml.geometry.simplify"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="true">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="If the output should be pretty printed (indented)"
+               label="Pretty print"
+               name="xml.pretty"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="false">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.wfs.PartitioningWFSWriter"
@@ -86,6 +218,34 @@
                   default="15000"
                   defaultDescription="By default it will be tried to send 15000 instances per request."
                   sample="1000">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Prefix to use for all CRS codes based on EPSG in geometry srsNames."
+               label="Custom EPSG prefix"
+               name="crs.epsg.prefix"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default the CRS code is not modified."
+                  sample="http://www.opengis.net/def/crs/EPSG/0/"
+                  sampleDescription="Make sure that all SRS names use this kind of notation. The EPSG code number is appended to the provided parameter to build the SRS name.">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Target coordinate reference system the data should be transformed to."
+               label="Target CRS"
+               name="crs"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default no CRS transformation is performed, the existing geometries are written with their respective CRS."
+                  sample="code:EPSG:4326"
+                  sampleDescription="Reference systems can be defined either as code or WKT (preceded with code: or wkt: respectively)">
             </valueDescriptor>
          </providerParameter>
       </provider>

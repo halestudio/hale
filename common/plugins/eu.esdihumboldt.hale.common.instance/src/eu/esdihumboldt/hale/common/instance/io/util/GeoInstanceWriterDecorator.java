@@ -45,4 +45,14 @@ public class GeoInstanceWriterDecorator<T extends GeoInstanceWriter> extends
 		return internalProvider.getTargetCRS();
 	}
 
+	@Override
+	public void setCustomEPSGPrefix(String epsgPrefix) {
+		internalProvider.setCustomEPSGPrefix(epsgPrefix);
+	}
+
+	@Override
+	public String getCustomEPSGPrefix() {
+		return internalProvider.getCustomEPSGPrefix();
+	}
+
 }

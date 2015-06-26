@@ -29,6 +29,7 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.instance.geometry.CRSDefinitionManager;
 import eu.esdihumboldt.hale.common.instance.geometry.CRSDefinitionUtil;
+import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition;
 import eu.esdihumboldt.hale.common.instance.io.GeoInstanceWriter;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
@@ -52,6 +53,16 @@ public abstract class AbstractGeoInstanceWriter extends AbstractInstanceWriter i
 	public CRSDefinition getTargetCRS() {
 		return CRSDefinitionManager.getInstance().parse(
 				getParameter(PARAM_TARGET_CRS).as(String.class));
+	}
+
+	@Override
+	public void setCustomEPSGPrefix(String epsgPrefix) {
+		setParameter(PARAM_CRS_CODE_FORMAT, Value.of(epsgPrefix));
+	}
+
+	@Override
+	public String getCustomEPSGPrefix() {
+		return getParameter(PARAM_CRS_CODE_FORMAT).as(String.class);
 	}
 
 	/**
@@ -137,7 +148,16 @@ public abstract class AbstractGeoInstanceWriter extends AbstractInstanceWriter i
 		if (crsDef == null) {
 			return null;
 		}
-		return CRSDefinitionUtil.getCode(crsDef);
+		String orgCode = CRSDefinitionUtil.getCode(crsDef);
+		String customPrefix = getCustomEPSGPrefix();
+		if (orgCode != null && customPrefix != null) {
+			// try to extract EPSG code
+			String epsgCode = CodeDefinition.extractEPSGCode(orgCode);
+			if (epsgCode != null) {
+				return customPrefix + epsgCode;
+			}
+		}
+		return orgCode;
 	}
 
 }

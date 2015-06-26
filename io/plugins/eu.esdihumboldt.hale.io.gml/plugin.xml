@@ -208,6 +208,20 @@
                   default="false">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="Prefix to use for all CRS codes based on EPSG in geometry srsNames."
+               label="Custom EPSG prefix"
+               name="crs.epsg.prefix"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default the CRS code is not modified."
+                  sample="http://www.opengis.net/def/crs/EPSG/0/"
+                  sampleDescription="Make sure that all SRS names use this kind of notation. The EPSG code number is appended to the provided parameter to build the SRS name.">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.gml.writer.XmlInstanceWriter"
@@ -275,6 +289,20 @@
                   default="false">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="Prefix to use for all CRS codes based on EPSG in geometry srsNames."
+               label="Custom EPSG prefix"
+               name="crs.epsg.prefix"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default the CRS code is not modified."
+                  sample="http://www.opengis.net/def/crs/EPSG/0/"
+                  sampleDescription="Make sure that all SRS names use this kind of notation. The EPSG code number is appended to the provided parameter to build the SRS name.">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.gml.writer.CityGMLInstanceWriter"
@@ -322,6 +350,20 @@
             </parameterBinding>
             <valueDescriptor
                   default="false">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Prefix to use for all CRS codes based on EPSG in geometry srsNames."
+               label="Custom EPSG prefix"
+               name="crs.epsg.prefix"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default the CRS code is not modified."
+                  sample="http://www.opengis.net/def/crs/EPSG/0/"
+                  sampleDescription="Make sure that all SRS names use this kind of notation. The EPSG code number is appended to the provided parameter to build the SRS name.">
             </valueDescriptor>
          </providerParameter>
       </provider>
@@ -483,6 +525,20 @@
             </parameterBinding>
             <valueDescriptor
                   default="false">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Prefix to use for all CRS codes based on EPSG in geometry srsNames."
+               label="Custom EPSG prefix"
+               name="crs.epsg.prefix"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default the CRS code is not modified."
+                  sample="http://www.opengis.net/def/crs/EPSG/0/"
+                  sampleDescription="Make sure that all SRS names use this kind of notation. The EPSG code number is appended to the provided parameter to build the SRS name.">
             </valueDescriptor>
          </providerParameter>
       </provider>
