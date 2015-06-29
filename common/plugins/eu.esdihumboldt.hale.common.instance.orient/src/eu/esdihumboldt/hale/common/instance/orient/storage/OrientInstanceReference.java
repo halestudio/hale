@@ -28,7 +28,6 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
-import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.instance.orient.OInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
@@ -141,14 +140,24 @@ public class OrientInstanceReference implements InstanceReference {
 	 */
 	public Instance load(LocalOrientDB lodb) {
 		DatabaseReference<ODatabaseDocumentTx> db = lodb.openRead();
+		DatabaseHandle handle = new DatabaseHandle(db.getDatabase());
 		try {
 			ODocument document = db.getDatabase().load(getId());
 			if (document != null) {
 				OInstance instance = new OInstance(document, getTypeDefinition(), db.getDatabase(),
 						getDataSet());
-				// return a copy of the instance, so no database connection is
-				// needed
-				return new DefaultInstance(instance);
+				handle.addReference(instance);
+				return instance;
+				/*
+				 * Alternative: Returning a copy of the instance.
+				 * 
+				 * But this can be very expensive if dealing with an instance
+				 * with deep sub-structures. Example: A Merge on ~150 GML
+				 * features took ~200 times longer (over 6 minutes instead of 2
+				 * seconds) when copying instances that were retrieved through
+				 * instance references.
+				 */
+//				return new DefaultInstance(instance);
 			}
 			else
 				return null;
@@ -163,7 +172,11 @@ public class OrientInstanceReference implements InstanceReference {
 			}
 			return null;
 		} finally {
-			db.dispose();
+			// connection is closed in DatabaseHandle
+			db.dispose(false);
+			// try closing the database handle (e.g. if no objects were
+			// added)
+			handle.tryClose();
 		}
 	}
 
