@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.ui.service.align.resolver.internal
 
+import de.fhg.igd.slf4jplus.ALogger
+import de.fhg.igd.slf4jplus.ALoggerFactory
 import eu.esdihumboldt.hale.common.align.io.impl.dummy.EntityToDef
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ChildContextType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType
@@ -35,6 +37,8 @@ import groovy.transform.TypeCheckingMode
 @CompileStatic
 class EntityCandidates {
 
+	private static final ALogger log = ALoggerFactory.getLogger(EntityCandidates)
+
 	public static boolean isCandidate(ClassType.Type clazz, TypeDefinition type) {
 		type.name.localPart == clazz.name
 	}
@@ -47,12 +51,16 @@ class EntityCandidates {
 	 */
 	public static EntityDefinition find(PropertyType entity, TypeIndex schema, SchemaSpaceID schemaSpace) {
 		EntityDefinition result = null
-		schema.types.findAll(EntityCandidates.&isCandidate.curry(entity.type)).find { TypeDefinition typeCand ->
-			// each type candidate
-			EntityDefinition typeDef = EntityToDef.toDef(entity.type, typeCand, schemaSpace)
+		try {
+			schema.types.findAll(EntityCandidates.&isCandidate.curry(entity.type)).find { TypeDefinition typeCand ->
+				// each type candidate
+				EntityDefinition typeDef = EntityToDef.toDef(entity.type, typeCand, schemaSpace)
 
-			// check if there is a candidate for the children
-			result = findChildren(typeDef, entity)
+				// check if there is a candidate for the children
+				result = findChildren(typeDef, entity)
+			}
+		} catch (Exception e) {
+			log.error('Error looking for entity definition resolve candidate', e);
 		}
 
 		result
