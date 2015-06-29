@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nullable;
 import javax.xml.namespace.QName;
 
 import org.eclipse.jface.layout.GridDataFactory;
@@ -42,6 +43,8 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ListMultimap;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
@@ -68,6 +71,8 @@ import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
  */
 public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>>
 		implements ParameterPage {
+
+	private static final ALogger log = ALoggerFactory.getLogger(MergeParameterPage.class);
 
 	private static final String PARAMETER_PROPERTY = "property";
 	private static final String PARAMETER_ADDITIONAL_PROPERTY = "additional_property";
@@ -246,32 +251,34 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 		// add initial selection
 		if (sourceType != null && initialSelection != null) {
 			for (String propertyPath : initialSelection) {
-				ArrayList<ChildContext> contextPath = new ArrayList<ChildContext>();
-				List<QName> path = PropertyResolver.getQNamesFromPath(propertyPath);
-				Iterator<QName> iter = path.iterator();
-				ChildDefinition<?> child = sourceType.getChild(iter.next());
-				contextPath.add(new ChildContext(child));
-				while (iter.hasNext()) {
-					child = DefinitionUtil.getChild(child, iter.next());
-					contextPath.add(new ChildContext(child));
+				EntityDefinition entity = getEntityDefinition(propertyPath, sourceType);
+				if (entity != null) {
+					selection.add(entity);
 				}
-				selection.add(getEntityDefinition(propertyPath, sourceType));
+				else {
+					log.warn("Could not find child for property path " + propertyPath);
+				}
 			}
 			viewer.setCheckedElements(selection.toArray());
 		}
 	}
 
+	@Nullable
 	private EntityDefinition getEntityDefinition(String propertyPath, TypeDefinition sourceType) {
 		ArrayList<ChildContext> contextPath = new ArrayList<ChildContext>();
 		List<QName> path = PropertyResolver.getQNamesFromPath(propertyPath);
 		Iterator<QName> iter = path.iterator();
 		ChildDefinition<?> child = sourceType.getChild(iter.next());
-		contextPath.add(new ChildContext(child));
-		while (iter.hasNext()) {
-			child = DefinitionUtil.getChild(child, iter.next());
+		if (child != null) {
 			contextPath.add(new ChildContext(child));
+			while (iter.hasNext()) {
+				child = DefinitionUtil.getChild(child, iter.next());
+				contextPath.add(new ChildContext(child));
+			}
+			return AlignmentUtil.createEntity(sourceType, contextPath, SchemaSpaceID.SOURCE, null);
 		}
-		return AlignmentUtil.createEntity(sourceType, contextPath, SchemaSpaceID.SOURCE, null);
+
+		return null;
 	}
 
 	/**
