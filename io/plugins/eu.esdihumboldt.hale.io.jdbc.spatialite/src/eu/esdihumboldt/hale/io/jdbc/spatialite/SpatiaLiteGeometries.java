@@ -131,20 +131,19 @@ public class SpatiaLiteGeometries implements GeometryAdvisor<SQLiteConnection> {
 		// convert JTS geometry to SpatiaLite's internal BLOB format
 		WKTWriter wktWriter = new WKTWriter(metadata.getDimension());
 		/*
-		 * FIXME does the WKT writer actually produce 3D geometries for geometry
-		 * objects with three dimensional coordinates?
+		 * Note: WKTWriter does produce wrong WKT (as of the OGC specification)
+		 * for 3D geometries. For example does produce "MULTIPOLGON" instead of
+		 * "MULTIPOLYGON Z".
+		 * 
+		 * This is why we use the GeomFromEWKT function. See also
+		 * http://postgis.
+		 * refractions.net/docs/using_postgis_dbmanagement.html#EWKB_EWKT
 		 */
-		String sqlGeomFromText = "SELECT GeomFromText(?, ?)";
-		/*
-		 * XXX is the SpatiaLite WKT parser robust enough to handle 3D
-		 * geometries that don't have the proper geometry type code? The
-		 * WKTWriter for example does produce "MULTIPOLGON" instead of
-		 * "MULTIPOLYGON Z"
-		 */
+		String sqlGeomFromText = "SELECT GeomFromEWKT(?)";
 
+		String sridPrefix = "SRID=" + metadata.getSrs() + ";";
 		PreparedStatement stmt = connection.prepareStatement(sqlGeomFromText);
-		stmt.setString(1, wktWriter.write(value));
-		stmt.setInt(2, Integer.valueOf(metadata.getSrs()));
+		stmt.setString(1, sridPrefix + wktWriter.write(value));
 
 		ResultSet rs = stmt.executeQuery();
 
