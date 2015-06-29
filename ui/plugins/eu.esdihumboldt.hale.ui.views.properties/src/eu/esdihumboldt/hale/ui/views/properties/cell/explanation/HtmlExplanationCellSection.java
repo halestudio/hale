@@ -16,9 +16,12 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.cell.explanation;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
@@ -45,24 +48,25 @@ public class HtmlExplanationCellSection extends AbstractCellSection {
 
 	private Text textField;
 
+	private static final AtomicBoolean BROWSER_ERROR_REPORTED = new AtomicBoolean();
+
 	@Override
 	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
 
 		Composite page = getWidgetFactory().createComposite(parent);
-		FillLayout fillLayout = new FillLayout();
-		page.setLayout(fillLayout);
+		page.setLayout(GridLayoutFactory.fillDefaults().margins(8, 8).create());
 
 		try {
 			browser = new Browser(page, SWT.NONE);
+			browser.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
 		} catch (Throwable e) {
-			log.warn("Could not create embedded browser, using text field as fall-back", e);
+			if (BROWSER_ERROR_REPORTED.compareAndSet(false, true)) {
+				log.error("Could not create embedded browser, using text field as fall-back", e);
+			}
 
-			// add some margin
-			fillLayout.marginHeight = 10;
-			fillLayout.marginWidth = 10;
-
-			textField = new Text(page, SWT.MULTI | SWT.WRAP);
+			textField = new Text(page, SWT.MULTI | SWT.WRAP | SWT.BORDER | SWT.V_SCROLL);
+			textField.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
 		}
 	}
 
