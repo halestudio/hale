@@ -216,7 +216,11 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 					next = next.getNextException();
 				}
 			}
-			connection.rollback();
+			try {
+				connection.rollback();
+			} catch (Exception e1) {
+				// ignore
+			}
 			throw e;
 		} finally {
 			// close iterator
