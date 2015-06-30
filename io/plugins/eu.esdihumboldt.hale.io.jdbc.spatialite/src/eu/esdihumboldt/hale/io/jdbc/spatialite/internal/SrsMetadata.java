@@ -25,18 +25,21 @@ public class SrsMetadata {
 	private final String srText;
 	private final int authSrid;
 	private final String authName;
+	private final int srid;
 
 	/**
 	 * 
 	 * @param srText The SR WKT definition
 	 * @param authSrid The SR ID
 	 * @param authName The authority name e.g. EPSG
+	 * @param srid the global SR ID
 	 */
-	public SrsMetadata(String srText, int authSrid, String authName) {
+	public SrsMetadata(String srText, int authSrid, String authName, int srid) {
 		super();
 		this.srText = srText;
 		this.authSrid = authSrid;
 		this.authName = authName;
+		this.srid = srid;
 	}
 
 	/**
@@ -58,6 +61,13 @@ public class SrsMetadata {
 	 */
 	public String getAuthName() {
 		return authName;
+	}
+
+	/**
+	 * @return the srid
+	 */
+	public int getSrid() {
+		return srid;
 	}
 
 }

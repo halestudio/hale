@@ -46,4 +46,14 @@ public interface SpatiaLiteSupport {
 	 */
 	public SrsMetadata getSrsMetadata(SQLiteConnection conn, int srid);
 
+	/**
+	 * Extract metadata about the specified Spatial Reference System.
+	 * 
+	 * @param conn connection to SpatiaLite DB
+	 * @param auth the SRS authority
+	 * @param code the SRS authority code
+	 * @return properly initialized {@link SrsMetadata} instance
+	 */
+	public SrsMetadata getSrsMetadata(SQLiteConnection conn, String auth, int code);
+
 }

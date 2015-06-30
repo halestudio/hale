@@ -95,10 +95,43 @@ public abstract class AbstractSpatiaLiteSupport implements SpatiaLiteSupport {
 				String authName = rs.getString("auth_name");
 				String srText = rs.getString("srtext");
 
-				meta = new SrsMetadata(srText, authSrid, authName);
+				meta = new SrsMetadata(srText, authSrid, authName, srid);
 			}
 		} catch (SQLException e) {
 			String errMsg = String.format("Error extracting SRS metadata for SRID: %d", srid);
+			log.error(errMsg, e);
+		} finally {
+			closeFinally(stmt, rs);
+		}
+
+		return meta;
+	}
+
+	@Override
+	public SrsMetadata getSrsMetadata(SQLiteConnection conn, String auth, int code) {
+
+		SrsMetadata meta = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+
+		try {
+			String sqlMeta = getSrsMetadataFromAuthSQL();
+			stmt = conn.prepareStatement(sqlMeta);
+			stmt.setString(1, auth);
+			stmt.setInt(2, code);
+			rs = stmt.executeQuery();
+
+			if (rs.next()) {
+				int authSrid = rs.getInt("auth_srid");
+				String authName = rs.getString("auth_name");
+				String srText = rs.getString("srtext");
+				int srid = rs.getInt("srid");
+
+				meta = new SrsMetadata(srText, authSrid, authName, srid);
+			}
+		} catch (SQLException e) {
+			String errMsg = String.format("Error extracting SRS metadata for SRS: %s:%d", auth,
+					code);
 			log.error(errMsg, e);
 		} finally {
 			closeFinally(stmt, rs);
@@ -158,6 +191,19 @@ public abstract class AbstractSpatiaLiteSupport implements SpatiaLiteSupport {
 	 *         <code>spatial_ref_sys</code> metadata table
 	 */
 	protected abstract String getSrsMetadataSQL();
+
+	/**
+	 * Return a SpatiaLite version dependent SQL query selecting at least three
+	 * columns: <code>auth_srid</code> (integer), <code>auth_name</code>
+	 * (string), <code>srtext</code> (string) and <code>srid</code> (integer).
+	 * <p>
+	 * Template method, implementation is provided by subclasses.
+	 * </p>
+	 * 
+	 * @return SQL statement to extract SRS metadata from the
+	 *         <code>spatial_ref_sys</code> metadata table
+	 */
+	protected abstract String getSrsMetadataFromAuthSQL();
 
 	/**
 	 * Utility method to close a {@link ResultSet} and a {@link Statement}

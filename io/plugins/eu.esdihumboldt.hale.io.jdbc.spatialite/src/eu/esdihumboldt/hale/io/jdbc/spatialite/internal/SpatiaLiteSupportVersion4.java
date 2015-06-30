@@ -48,6 +48,11 @@ public class SpatiaLiteSupportVersion4 extends AbstractSpatiaLiteSupport {
 		return "SELECT auth_srid, auth_name, srtext FROM spatial_ref_sys WHERE srid = ?";
 	}
 
+	@Override
+	protected String getSrsMetadataFromAuthSQL() {
+		return "SELECT auth_srid, auth_name, srtext, srid FROM spatial_ref_sys WHERE auth_name = ? AND auth_srid = ?";
+	}
+
 	/**
 	 * @see eu.esdihumboldt.hale.io.jdbc.spatialite.internal.AbstractSpatiaLiteSupport#getGeometryType(java.lang.Object)
 	 */

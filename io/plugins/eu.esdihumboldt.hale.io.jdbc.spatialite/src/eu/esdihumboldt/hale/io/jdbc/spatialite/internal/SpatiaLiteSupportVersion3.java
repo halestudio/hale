@@ -49,6 +49,11 @@ public class SpatiaLiteSupportVersion3 extends AbstractSpatiaLiteSupport {
 	}
 
 	@Override
+	protected String getSrsMetadataFromAuthSQL() {
+		return "SELECT auth_srid, auth_name, srs_wkt AS srtext, srid FROM spatial_ref_sys WHERE auth_name = ? AND auth_srid = ?";
+	}
+
+	@Override
 	protected int getCoordDimensionAsInt(Object coordDimension) {
 		String coordDimensionAsString = String.class.cast(coordDimension);
 

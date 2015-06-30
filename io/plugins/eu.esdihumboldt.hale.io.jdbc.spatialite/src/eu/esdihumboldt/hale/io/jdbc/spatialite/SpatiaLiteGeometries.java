@@ -20,6 +20,7 @@ import com.vividsolutions.jts.io.WKTWriter;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.instance.geometry.CRSDefinitionUtil;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition;
 import eu.esdihumboldt.hale.common.instance.geometry.impl.WKTDefinition;
@@ -122,19 +123,43 @@ public class SpatiaLiteGeometries implements GeometryAdvisor<SQLiteConnection> {
 			MathTransform transform = CRS.findMathTransform(geom.getCRSDefinition().getCRS(),
 					targetCRS);
 			targetGeometry = JTS.transform(geom.getGeometry(), transform);
+
+			// encode JTS Geometry
+			return encodeGeometryValue(targetGeometry, columnTypeMetadata.getSrs(),
+					columnTypeMetadata.getDimension(), connection);
 		}
 		else {
 			targetGeometry = geom.getGeometry();
-		}
 
-		// encode JTS Geometry
-		return encodeGeometryValue(targetGeometry, columnTypeMetadata, connection);
+			String srid = "-1";
+			if (geom.getCRSDefinition() != null) {
+				// try to get SRID for source SRS
+				String epsgCode = CRSDefinitionUtil.getEPSG(geom.getCRSDefinition());
+				if (epsgCode != null) {
+					try {
+						int epsgNumber = Integer.parseInt(epsgCode);
+						SrsMetadata srsMeta = SpatiaLiteSupportFactory.getInstance()
+								.createSpatiaLiteSupport(connection)
+								.getSrsMetadata(connection, "epsg", epsgNumber);
+						if (srsMeta != null) {
+							srid = String.valueOf(srsMeta.getSrid());
+						}
+					} catch (NumberFormatException e) {
+						// ignore
+					}
+				}
+			}
+
+			// encode JTS Geometry
+			return encodeGeometryValue(targetGeometry, srid, columnTypeMetadata.getDimension(),
+					connection);
+		}
 	}
 
-	private Object encodeGeometryValue(Geometry value, GeometryMetadata metadata,
+	private Object encodeGeometryValue(Geometry value, String srid, int dimension,
 			SQLiteConnection connection) throws SQLException {
 		// convert JTS geometry to SpatiaLite's internal BLOB format
-		WKTWriter wktWriter = new WKTWriter(metadata.getDimension());
+		WKTWriter wktWriter = new WKTWriter(dimension);
 		/*
 		 * Note: WKTWriter does produce wrong WKT (as of the OGC specification)
 		 * for 3D geometries. For example does produce "MULTIPOLGON" instead of
@@ -146,7 +171,10 @@ public class SpatiaLiteGeometries implements GeometryAdvisor<SQLiteConnection> {
 		 */
 		String sqlGeomFromText = "SELECT GeomFromEWKT(?)";
 
-		String sridPrefix = "SRID=" + metadata.getSrs() + ";";
+		String sridPrefix = "";
+		if (srid != null) {
+			sridPrefix = "SRID=" + srid + ";";
+		}
 		PreparedStatement stmt = connection.prepareStatement(sqlGeomFromText);
 		stmt.setString(1, sridPrefix + wktWriter.write(value));
 
