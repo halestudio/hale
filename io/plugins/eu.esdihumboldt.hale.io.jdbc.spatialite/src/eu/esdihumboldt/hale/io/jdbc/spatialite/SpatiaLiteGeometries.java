@@ -71,14 +71,19 @@ public class SpatiaLiteGeometries implements GeometryAdvisor<SQLiteConnection> {
 		if (geomTypeMeta != null) {
 			SrsMetadata srsMeta = slSupport.getSrsMetadata(connection, geomTypeMeta.getSrid());
 
+			GeometryMetadata columnTypeConstraint;
 			if (srsMeta != null) {
 				// Create constraint to save the informations
-				GeometryMetadata columnTypeConstraint = new GeometryMetadata(
+				columnTypeConstraint = new GeometryMetadata(
 						Integer.toString(srsMeta.getAuthSrid()), geomTypeMeta.getCoordDimension(),
 						srsMeta.getSrText(), srsMeta.getAuthName());
-
-				type.setConstraint(columnTypeConstraint);
 			}
+			else {
+				// no SRS information, just dimension
+				columnTypeConstraint = new GeometryMetadata(geomTypeMeta.getCoordDimension());
+			}
+
+			type.setConstraint(columnTypeConstraint);
 
 			return geomTypeMeta.getGeomType();
 		}
@@ -101,14 +106,14 @@ public class SpatiaLiteGeometries implements GeometryAdvisor<SQLiteConnection> {
 
 		// transform
 		CoordinateReferenceSystem targetCRS = null;
-		if (columnTypeMetadata.getAuthName().equalsIgnoreCase("EPSG")) {
-			targetCRS = CRS.decode(columnTypeMetadata.getAuthName() + ":"
-					+ columnTypeMetadata.getSrs());
+		String authName = columnTypeMetadata.getAuthName();
+		if (authName != null && authName.equalsIgnoreCase("EPSG")) {
+			targetCRS = CRS.decode(authName + ":" + columnTypeMetadata.getSrs());
 		}
 		else {
 			String wkt = columnTypeMetadata.getSrsText();
 			if (wkt != null && !wkt.isEmpty()) {
-				targetCRS = CRS.parseWKT(columnTypeMetadata.getSrsText());
+				targetCRS = CRS.parseWKT(wkt);
 			}
 		}
 
@@ -170,12 +175,16 @@ public class SpatiaLiteGeometries implements GeometryAdvisor<SQLiteConnection> {
 
 		// determine CRS
 		CRSDefinition crsDef = null;
-		if (columnTypeMetadata.getAuthName().equalsIgnoreCase("EPSG")) {
-			String epsgCode = columnTypeMetadata.getAuthName() + ":" + columnTypeMetadata.getSrs();
+		String authName = columnTypeMetadata.getAuthName();
+		if (authName != null && authName.equalsIgnoreCase("EPSG")) {
+			String epsgCode = authName + ":" + columnTypeMetadata.getSrs();
 			crsDef = new CodeDefinition(epsgCode, null);
 		}
 		else {
-			crsDef = new WKTDefinition(columnTypeMetadata.getSrsText(), null);
+			String wkt = columnTypeMetadata.getSrsText();
+			if (wkt != null) {
+				crsDef = new WKTDefinition(wkt, null);
+			}
 		}
 
 		return new DefaultGeometryProperty<Geometry>(crsDef, jtsGeom);

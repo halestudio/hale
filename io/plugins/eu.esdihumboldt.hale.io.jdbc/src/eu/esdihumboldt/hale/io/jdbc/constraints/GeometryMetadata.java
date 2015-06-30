@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.io.jdbc.constraints;
 
+import javax.annotation.Nullable;
+
 import eu.esdihumboldt.hale.common.schema.model.Constraint;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 
@@ -50,10 +52,10 @@ public class GeometryMetadata implements TypeConstraint {
 	 * Default constructor
 	 */
 	public GeometryMetadata() {
-		this.auth_name = "";
-		this.srs = "";
+		this.auth_name = null;
+		this.srs = null;
 		this.dimension = 0;
-		this.srsText = "";
+		this.srsText = null;
 	}
 
 	/**
@@ -64,7 +66,8 @@ public class GeometryMetadata implements TypeConstraint {
 	 * @param srsText the srsText or null if there isnt one
 	 * @param auth_name the auth name e.g. EPSG
 	 */
-	public GeometryMetadata(String srs, int dimension, String srsText, String auth_name) {
+	public GeometryMetadata(@Nullable String srs, int dimension, @Nullable String srsText,
+			@Nullable String auth_name) {
 		this.auth_name = auth_name;
 		this.srs = srs;
 		this.dimension = dimension;
@@ -72,8 +75,18 @@ public class GeometryMetadata implements TypeConstraint {
 	}
 
 	/**
+	 * Create geometry metadata without SRS information.
+	 * 
+	 * @param dimension the dimension
+	 */
+	public GeometryMetadata(int dimension) {
+		this(null, dimension, null, null);
+	}
+
+	/**
 	 * @return the srs
 	 */
+	@Nullable
 	public String getSrs() {
 		return srs;
 	}
@@ -81,6 +94,7 @@ public class GeometryMetadata implements TypeConstraint {
 	/**
 	 * @return the srsText
 	 */
+	@Nullable
 	public String getSrsText() {
 		return srsText;
 	}
@@ -95,13 +109,11 @@ public class GeometryMetadata implements TypeConstraint {
 	/**
 	 * @return the auth_name
 	 */
+	@Nullable
 	public String getAuthName() {
 		return auth_name;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.schema.model.TypeConstraint#isInheritable()
-	 */
 	@Override
 	public boolean isInheritable() {
 		return false;
