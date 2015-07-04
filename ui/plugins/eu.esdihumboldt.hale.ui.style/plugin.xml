@@ -33,6 +33,10 @@
             id="eu.esdihumboldt.hale.ui.style.randomcolor"
             name="Assign random color">
       </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.style.spectrum"
+            name="Generate styles color scheme">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -90,6 +94,26 @@
             </with>
          </activeWhen>
       </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.style.handler.SpectrumColorSchemeHandler"
+            commandId="eu.esdihumboldt.hale.ui.style.spectrum">
+         <activeWhen>
+            <or>
+               <with
+                     variable="hale.schemas.has_mappable_source">
+                  <equals
+                        value="true">
+                  </equals>
+               </with>
+               <with
+                     variable="hale.schemas.has_mappable_target">
+                  <equals
+                        value="true">
+                  </equals>
+               </with>
+            </or>
+         </activeWhen>
+      </handler>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -120,6 +144,10 @@
       </image>
       <image
             commandId="eu.esdihumboldt.hale.ui.style.randomcolor"
+            icon="icons/qmark.gif">
+      </image>
+      <image
+            commandId="eu.esdihumboldt.hale.ui.style.spectrum"
             icon="icons/random.gif">
       </image>
    </extension>

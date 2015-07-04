@@ -307,6 +307,10 @@
                </visibleWhen>
             </command>
             <command
+                  commandId="eu.esdihumboldt.hale.ui.style.spectrum"
+                  style="push">
+            </command>
+            <command
                   commandId="eu.esdihumboldt.hale.ui.geometry.setAsDefault"
                   style="push">
                <visibleWhen

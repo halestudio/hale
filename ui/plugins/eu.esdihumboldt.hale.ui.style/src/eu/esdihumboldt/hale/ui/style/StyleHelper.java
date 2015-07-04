@@ -17,11 +17,15 @@
 package eu.esdihumboldt.hale.ui.style;
 
 import java.awt.Color;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
+import org.eclipse.ui.PlatformUI;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.NameImpl;
 import org.geotools.styling.FeatureTypeStyle;
@@ -42,6 +46,8 @@ import com.google.common.collect.SetMultimap;
 
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
+import eu.esdihumboldt.hale.ui.geometry.service.GeometrySchemaService;
 import eu.esdihumboldt.hale.ui.style.service.internal.StylePreferences;
 
 /**
@@ -152,6 +158,77 @@ public abstract class StyleHelper {
 			fts.featureTypeNames().add(new NameImpl(getFeatureTypeName(typeDef)));
 
 			style.featureTypeStyles().add(fts);
+		}
+
+		return style;
+	}
+
+	/**
+	 * Returns a default style for the given type.
+	 * 
+	 * @param dataSetTypes type definitions associated to their data set
+	 * @return the style
+	 */
+	public static Style getSpectrumStyles(SetMultimap<DataSet, TypeDefinition> dataSetTypes) {
+		int defWidth = StylePreferences.getDefaultWidth();
+
+		Style style = styleFactory.createStyle();
+
+		GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench().getService(
+				GeometrySchemaService.class);
+
+		for (DataSet dataSet : dataSetTypes.keySet()) {
+			float saturation;
+			float brightness;
+			switch (dataSet) {
+			case TRANSFORMED:
+				saturation = 0.8f;
+				brightness = 0.6f;
+				break;
+			case SOURCE:
+			default:
+				saturation = 0.75f;
+				brightness = 0.8f;
+				break;
+			}
+
+			Set<TypeDefinition> types = new HashSet<>(dataSetTypes.get(dataSet));
+			Iterator<TypeDefinition> it = types.iterator();
+			while (it.hasNext()) {
+				TypeDefinition type = it.next();
+				// remove invalid types
+				if (type.getConstraint(AbstractFlag.class).isEnabled()
+						|| gss.getDefaultGeometry(type) == null) {
+					it.remove();
+				}
+			}
+
+			int numberOfTypes = types.size();
+			int index = 0;
+			for (TypeDefinition typeDef : types) {
+				FeatureTypeStyle fts;
+
+				// TODO based on default geometry?
+				// polygon is always OK as it contains stroke and fill
+
+				// Color color = generateRandomColor(Color.WHITE);
+
+				Color color;
+				if (numberOfTypes == 1) {
+					color = generateRandomColor(saturation, brightness);
+				}
+				else {
+					color = Color.getHSBColor((float) index / (float) numberOfTypes, saturation,
+							brightness);
+				}
+				fts = createPolygonStyle(color, defWidth);
+
+				fts.featureTypeNames().add(new NameImpl(getFeatureTypeName(typeDef)));
+
+				style.featureTypeStyles().add(fts);
+
+				index++;
+			}
 		}
 
 		return style;
