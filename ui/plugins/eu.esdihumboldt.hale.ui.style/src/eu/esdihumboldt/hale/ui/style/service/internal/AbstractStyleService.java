@@ -20,8 +20,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.eclipse.swt.graphics.RGB;
 
-import eu.esdihumboldt.hale.ui.style.service.StyleService;
-import eu.esdihumboldt.hale.ui.style.service.StyleServiceListener;
+import eu.esdihumboldt.hale.ui.common.service.style.StyleService;
+import eu.esdihumboldt.hale.ui.common.service.style.StyleServiceListener;
 
 /**
  * Base {@link StyleService} implementation

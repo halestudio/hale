@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.ui.service.schema.handler;
 
 import java.util.Collections;
+import java.util.Iterator;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -46,13 +47,26 @@ public class MarkTypeUnmappableHandler extends AbstractHandler {
 		if (selection instanceof IStructuredSelection && !selection.isEmpty()) {
 			SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench().getService(
 					SchemaService.class);
-			TypeDefinition type = ((TypeEntityDefinition) ((IStructuredSelection) selection)
-					.getFirstElement()).getDefinition();
-			if (schemaService.getSchemas(SchemaSpaceID.SOURCE).getMappingRelevantTypes()
-					.contains(type))
-				schemaService.toggleMappable(SchemaSpaceID.SOURCE, Collections.singleton(type));
-			else
-				schemaService.toggleMappable(SchemaSpaceID.TARGET, Collections.singleton(type));
+			Iterator<?> it = ((IStructuredSelection) selection).iterator();
+			while (it.hasNext()) {
+				Object selected = it.next();
+				TypeDefinition type = null;
+				if (selected instanceof TypeEntityDefinition) {
+					type = ((TypeEntityDefinition) selected).getDefinition();
+				}
+				else if (selected instanceof TypeDefinition) {
+					type = (TypeDefinition) selected;
+				}
+				if (type != null) {
+					if (schemaService.getSchemas(SchemaSpaceID.SOURCE).getMappingRelevantTypes()
+							.contains(type))
+						schemaService.toggleMappable(SchemaSpaceID.SOURCE,
+								Collections.singleton(type));
+					else
+						schemaService.toggleMappable(SchemaSpaceID.TARGET,
+								Collections.singleton(type));
+				}
+			}
 		}
 
 		return null;

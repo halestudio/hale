@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="HALE Server" uid="eu.esdihumboldt.hale.server" id="eu.esdihumboldt.hale.server.application.Server" application="eu.esdihumboldt.hale.server.application" version="2.9.2.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="HALE Server" uid="eu.esdihumboldt.hale.server" id="eu.esdihumboldt.hale.server.application.Server" application="eu.esdihumboldt.hale.server.application" version="2.9.3.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -56,7 +56,6 @@
       <plugin id="com.fasterxml.jackson.core.jackson-core"/>
       <plugin id="com.fasterxml.jackson.core.jackson-databind"/>
       <plugin id="com.github.sommeri.less4j"/>
-      <plugin id="com.google.code.findbugs.jsr305" fragment="true"/>
       <plugin id="com.google.guava"/>
       <plugin id="com.google.inject"/>
       <plugin id="com.google.javascript.closure-compiler"/>
@@ -162,6 +161,7 @@
       <plugin id="it.geosolutions.imageio-ext.utilities"/>
       <plugin id="java3d.vecmath"/>
       <plugin id="javassist"/>
+      <plugin id="javax.annotation.extensions" fragment="true"/>
       <plugin id="javax.el"/>
       <plugin id="javax.inject.javax.inject"/>
       <plugin id="javax.mail"/>
@@ -191,6 +191,7 @@
       <plugin id="org.apache.commons.codec"/>
       <plugin id="org.apache.commons.collections"/>
       <plugin id="org.apache.commons.configuration"/>
+      <plugin id="org.apache.commons.dbcp"/>
       <plugin id="org.apache.commons.fileupload"/>
       <plugin id="org.apache.commons.io"/>
       <plugin id="org.apache.commons.jxpath"/>

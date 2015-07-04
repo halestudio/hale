@@ -38,4 +38,10 @@ public interface JDBCConstants {
 	 */
 	public static final String PARAM_PASSWORD = "jdbc.password";
 
+	/**
+	 * Parameter name for the schemas selected
+	 */
+
+	public static final String SCHEMAS = "schemas";
+
 }

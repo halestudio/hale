@@ -48,6 +48,7 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.WorkbenchPart;
+import org.eclipse.zest.core.viewers.GraphViewer;
 import org.eclipse.zest.layouts.LayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
@@ -438,11 +439,11 @@ public class AlignmentView extends AbstractMappingView {
 	}
 
 	/**
-	 * @see AbstractMappingView#createLabelProvider()
+	 * @see AbstractMappingView#createLabelProvider(GraphViewer)
 	 */
 	@Override
-	protected IBaseLabelProvider createLabelProvider() {
-		return new GraphLabelProvider(HaleUI.getServiceProvider()) {
+	protected IBaseLabelProvider createLabelProvider(GraphViewer viewer) {
+		return new GraphLabelProvider(viewer, HaleUI.getServiceProvider()) {
 
 			/**
 			 * @see eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider#isInherited(eu.esdihumboldt.hale.common.align.model.Cell)

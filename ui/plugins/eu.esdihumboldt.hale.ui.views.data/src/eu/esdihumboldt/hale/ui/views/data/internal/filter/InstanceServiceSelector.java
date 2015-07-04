@@ -151,7 +151,7 @@ public class InstanceServiceSelector implements InstanceSelector {
 			typeDefinitions = new ComboViewer(this, SWT.READ_ONLY);
 			typeDefinitions.setContentProvider(ArrayContentProvider.getInstance());
 			typeDefinitions.setComparator(new DefinitionComparator());
-			typeDefinitions.setLabelProvider(new DefinitionLabelProvider());
+			typeDefinitions.setLabelProvider(new DefinitionLabelProvider(null));
 			typeDefinitions.addSelectionChangedListener(new ISelectionChangedListener() {
 
 				@Override

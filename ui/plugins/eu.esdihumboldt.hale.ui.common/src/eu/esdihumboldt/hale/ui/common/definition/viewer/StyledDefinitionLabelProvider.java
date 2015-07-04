@@ -18,10 +18,13 @@ package eu.esdihumboldt.hale.ui.common.definition.viewer;
 
 import java.text.MessageFormat;
 
+import javax.annotation.Nullable;
+
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.graphics.Color;
@@ -49,10 +52,22 @@ public class StyledDefinitionLabelProvider extends StyledCellLabelProvider imple
 	private final boolean suppressCardinality;
 
 	/**
-	 * Default constructor
+	 * Default constructor.
+	 * 
+	 * Styled definition label provider without support for style legend images.
 	 */
 	public StyledDefinitionLabelProvider() {
-		this(new DefinitionLabelProvider());
+		this(new DefinitionLabelProvider(null));
+	}
+
+	/**
+	 * Default constructor
+	 * 
+	 * @param associatedViewer the associated viewer (needed for style legend
+	 *            support) or <code>null</code>
+	 */
+	public StyledDefinitionLabelProvider(@Nullable Viewer associatedViewer) {
+		this(new DefinitionLabelProvider(associatedViewer));
 	}
 
 	/**

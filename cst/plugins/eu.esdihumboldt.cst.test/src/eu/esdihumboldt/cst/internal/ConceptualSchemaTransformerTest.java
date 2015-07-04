@@ -68,6 +68,28 @@ public class ConceptualSchemaTransformerTest extends DefaultTransformationTest {
 		testTransform(TransformationExamples.getExample(TransformationExamples.GROOVY3));
 	}
 
+	/**
+	 * Test for using the Groovy transformation function to return multiple
+	 * results that should result in multiple properties.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testMultiResult1() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.MULTI_RESULT_1));
+	}
+
+	/**
+	 * Test for using the Groovy transformation function to return multiple
+	 * results that should result in multiple complex properties.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testMultiResult2() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.MULTI_RESULT_2));
+	}
+
 	@Ignore
 	// XXX not working with the current CST
 	@Override

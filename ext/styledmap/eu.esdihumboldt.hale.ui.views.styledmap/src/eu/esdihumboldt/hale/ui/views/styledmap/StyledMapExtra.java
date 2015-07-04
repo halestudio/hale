@@ -28,9 +28,9 @@ import de.fhg.igd.mapviewer.view.MapView;
 import de.fhg.igd.mapviewer.view.MapViewExtension;
 import de.fhg.igd.mapviewer.view.overlay.ITileOverlayService;
 import de.fhg.igd.mapviewer.view.overlay.TileOverlayFactory;
+import eu.esdihumboldt.hale.ui.common.service.style.StyleService;
 import eu.esdihumboldt.hale.ui.geometry.service.GeometrySchemaService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
-import eu.esdihumboldt.hale.ui.style.service.StyleService;
 import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension.PainterLayoutController;
 import eu.esdihumboldt.hale.ui.views.styledmap.painter.AbstractInstancePainter;
 

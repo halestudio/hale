@@ -18,6 +18,8 @@ package eu.esdihumboldt.hale.io.gml.geometry;
 
 import javax.xml.namespace.QName;
 
+import org.geotools.gml2.SrsSyntax;
+
 import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition;
 import eu.esdihumboldt.hale.common.instance.helper.InstanceTraversalCallback;
 import eu.esdihumboldt.hale.common.instance.model.Group;
@@ -53,10 +55,11 @@ public class CRSFinder implements InstanceTraversalCallback {
 		if (value != null && name != null && name.getLocalPart().equals("srsName")) {
 			String candidate = value.toString();
 
-			// EPSG:(:)xxx style codes
-			if (checkCode(candidate, "EPSG:")) {
-				// if definition is set, abort the traversal
-				return false;
+			for (SrsSyntax srsSyntax : SrsSyntax.values()) {
+				if (checkCode(candidate, srsSyntax.getPrefix())) {
+					// if definition is set, abort the traversal
+					return false;
+				}
 			}
 
 			// urn:ogc:def:crs:EPSG:(:)xxx style code
@@ -65,11 +68,6 @@ public class CRSFinder implements InstanceTraversalCallback {
 				return false;
 			}
 
-			// urn:x-ogc:def:crs:EPSG:(:)xxx style code
-			if (checkCode(candidate, "urn:x-ogc:def:crs:EPSG:")) {
-				// if definition is set, abort the traversal
-				return false;
-			}
 		}
 
 		return true;
@@ -84,28 +82,22 @@ public class CRSFinder implements InstanceTraversalCallback {
 	 * @return if {@link #definition} was set
 	 */
 	private boolean checkCode(String candidate, String prefix) {
-		if (candidate.length() > prefix.length()) {
-			String authPart = candidate.substring(0, prefix.length());
-			String codePart = candidate.substring(prefix.length());
+		String codePart = CodeDefinition.extractCode(candidate, prefix);
 
+		if (codePart != null) {
+			definition = new CodeDefinition(candidate, null);
+			// check if valid
 			try {
-				// ignore anything before the last colon
-				int colonIndex = codePart.lastIndexOf(':');
-				if (colonIndex >= 0) {
-					codePart = codePart.substring(colonIndex + 1);
-				}
+				definition.getCRS();
+			} catch (Exception e) {
+				// code seems to be not valid
 
-				// check if codePart represents an integer
-				Integer.parseInt(codePart);
-
-				if (authPart.equalsIgnoreCase(prefix)) {
-					definition = new CodeDefinition("EPSG:" + codePart, null);
-					// XXX check if valid through getCRS()?
-					return true;
-				}
-			} catch (NumberFormatException e) {
-				// invalid
+				// fall back to only using code part
+				definition = new CodeDefinition("EPSG:" + codePart, null);
+				// XXX check as well? (and return false on failure?)
 			}
+
+			return true;
 		}
 
 		return false;

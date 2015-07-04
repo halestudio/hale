@@ -16,6 +16,9 @@
          <provider
                ref="eu.esdihumboldt.hale.io.shape.reader.instance">
          </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.shape.reader.schema">
+         </provider>
       </configPage>
    </extension>
 

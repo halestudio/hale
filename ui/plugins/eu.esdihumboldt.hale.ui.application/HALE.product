@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="HUMBOLDT Alignment Editor" uid="eu.esdihumboldt.hale" id="eu.esdihumboldt.hale.ui.application.HALE" application="eu.esdihumboldt.hale.ui.application" version="2.9.2.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="HUMBOLDT Alignment Editor" uid="eu.esdihumboldt.hale" id="eu.esdihumboldt.hale.ui.application.HALE" application="eu.esdihumboldt.hale.ui.application" version="2.9.3.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/eu.esdihumboldt.hale.ui.application/images/hale_about.gif"/>
@@ -14,16 +14,16 @@ Build ___build___
 Revision ___revision___
 
 Project page:
-http://www.esdi-community.eu/projects/show/hale
+http://www.wetransform.to/products/hale
 
 Forum:
 http://www.esdi-community.eu/projects/hale/boards
 
 News:
-http://blog.dhpanel.eu
+http://www.wetransform.to/news
 
 Get professional support:
-http://www.wetransform.to/products/hale
+http://www.wetransform.to/services/support
       </text>
    </aboutInfo>
 
@@ -33,9 +33,11 @@ http://www.wetransform.to/products/hale
    <launcherArgs>
       <programArgs>-clean
 -name &quot;HUMBOLDT Alignment Editor&quot;
---launcher.defaultAction openFile</programArgs>
+--launcher.defaultAction openFile
+      </programArgs>
       <programArgsMac>-vm
-../../../jre/Contents/Home/bin/java</programArgsMac>
+../../../jre/Contents/Home/bin/java
+      </programArgsMac>
       <vmArgs>-Xmx800m
 -XX:MaxPermSize=128m
 -Dsun.net.client.defaultConnectTimeout=10000
@@ -43,8 +45,10 @@ http://www.wetransform.to/products/hale
 -Dcache.level1.enabled=false
 -Dcache.level1.size=0
 -Dcache.level2.enabled=false
--Dcache.level2.size=0</vmArgs>
-      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+-Dcache.level2.size=0
+      </vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      </vmArgsMac>
    </launcherArgs>
 
    <windowImages i32="/eu.esdihumboldt.hale.ui.application/images/hale_icon.png"/>
@@ -58,6 +62,7 @@ http://www.wetransform.to/products/hale
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
@@ -112,6 +117,7 @@ http://www.wetransform.to/products/hale
       <plugin id="eu.esdihumboldt.hale.io.csv" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.gml" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.jdbc.postgresql" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.io.jdbc.spatialite" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.shp" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.xml" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.xsd" autoStart="true" startLevel="0" />

@@ -9,6 +9,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import javax.annotation.Nullable;
 
 import org.codehaus.groovy.control.CompilerConfiguration;
+import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.kohsuke.groovy.sandbox.SandboxTransformer;
@@ -80,10 +81,23 @@ public class DefaultGroovyService implements GroovyService {
 	public GroovyShell createShell(Binding binding) {
 		// TODO use a specific classloader?
 		CompilerConfiguration cc = new CompilerConfiguration();
+
+		// add pre-defined imports
+		ImportCustomizer importCustomizer = new ImportCustomizer();
+
+		// TODO make configurable?
+		// MultiValue and alias
+		importCustomizer.addImport("MultiValue", "eu.esdihumboldt.cst.MultiValue");
+		importCustomizer.addImport("MultiResult", "eu.esdihumboldt.cst.MultiValue");
+
+		cc.addCompilationCustomizers(importCustomizer);
+
 		if (isRestrictionActive()) {
+			// configure restriction
 			cc.addCompilationCustomizers(new SandboxTransformer());
 			cc.setScriptBaseClass(SecureScript.class.getName());
 		}
+
 		if (binding != null)
 			return new GroovyShell(binding, cc);
 		else

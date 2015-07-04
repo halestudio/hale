@@ -16,9 +16,12 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.cell.explanation;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
@@ -45,18 +48,25 @@ public class HtmlExplanationCellSection extends AbstractCellSection {
 
 	private Text textField;
 
+	private static final AtomicBoolean BROWSER_ERROR_REPORTED = new AtomicBoolean();
+
 	@Override
 	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
 
 		Composite page = getWidgetFactory().createComposite(parent);
-		page.setLayout(new FillLayout());
+		page.setLayout(GridLayoutFactory.fillDefaults().margins(8, 8).create());
 
 		try {
 			browser = new Browser(page, SWT.NONE);
+			browser.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
 		} catch (Throwable e) {
-			log.warn("Could not create embedded browser, using text field as fall-back", e);
-			textField = new Text(page, SWT.MULTI | SWT.WRAP);
+			if (BROWSER_ERROR_REPORTED.compareAndSet(false, true)) {
+				log.error("Could not create embedded browser, using text field as fall-back", e);
+			}
+
+			textField = new Text(page, SWT.MULTI | SWT.WRAP | SWT.BORDER | SWT.V_SCROLL);
+			textField.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
 		}
 	}
 
@@ -69,6 +79,8 @@ public class HtmlExplanationCellSection extends AbstractCellSection {
 	public void refresh() {
 		super.refresh();
 
+		String text = null;
+
 		Cell cell = getCell();
 		if (cell != null) {
 			AbstractFunction<?> function = FunctionUtil.getFunction(cell
@@ -77,27 +89,22 @@ public class HtmlExplanationCellSection extends AbstractCellSection {
 				CellExplanation explanation = function.getExplanation();
 				if (explanation != null) {
 					if (browser != null) {
-						String text = explanation.getExplanationAsHtml(cell,
-								HaleUI.getServiceProvider());
+						text = explanation.getExplanationAsHtml(cell, HaleUI.getServiceProvider());
 						if (text == null) {
 							text = explanation.getExplanation(cell, HaleUI.getServiceProvider());
 						}
-						if (text != null) {
-							browser.setText(text);
-							return;
-						}
 					}
 					else if (textField != null) {
-						String text = explanation.getExplanation(cell, HaleUI.getServiceProvider());
-						if (text != null) {
-							textField.setText(text);
-						}
+						text = explanation.getExplanation(cell, HaleUI.getServiceProvider());
 					}
 				}
 			}
 		}
 
-		String text = "Sorry, no explanation available.";
+		if (text == null) {
+			text = "Sorry, no explanation available.";
+		}
+
 		if (browser != null) {
 			browser.setText(text);
 		}

@@ -52,8 +52,8 @@ public abstract class EntitySelector<F extends AbstractParameter> extends
 	 */
 	public EntitySelector(final SchemaSpaceID ssid, F field, Composite parent,
 			ViewerFilter[] filters) {
-		super(parent, new StyledDefinitionLabelProvider(new DefinitionLabelProvider(true, true),
-				true), filters);
+		super(parent, new StyledDefinitionLabelProvider(new DefinitionLabelProvider(null, true,
+				true), true), filters);
 		this.field = field;
 		this.ssid = ssid;
 	}

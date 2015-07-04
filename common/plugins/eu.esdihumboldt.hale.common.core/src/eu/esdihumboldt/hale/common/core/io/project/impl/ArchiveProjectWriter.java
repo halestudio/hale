@@ -285,6 +285,16 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 				// the filename
 				String name = path.toString().substring(path.lastIndexOf("/") + 1, path.length());
 
+				// remove any query string from the filename
+				int queryIndex = name.indexOf('?');
+				if (queryIndex >= 0) {
+					name = name.substring(0, queryIndex);
+				}
+
+				if (name.isEmpty()) {
+					name = "file";
+				}
+
 				File newFile = new File(newDirectory, name);
 				Path target = newFile.toPath();
 

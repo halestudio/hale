@@ -20,6 +20,13 @@
             testUri="jdbc:postgresql://localhost/db"
             uriBuilder="eu.esdihumboldt.hale.io.jdbc.postgresql.PostURIBuilder">
       </driver>
+      <customtype
+            binding="java.math.BigDecimal"
+            connection="org.postgresql.PGConnection"
+            id="postgresql.money"
+            name="money"
+            sqltype="2">
+      </customtype>
    </extension>
 
 </plugin>

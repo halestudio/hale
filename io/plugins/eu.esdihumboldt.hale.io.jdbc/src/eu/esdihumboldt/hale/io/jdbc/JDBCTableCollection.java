@@ -19,6 +19,7 @@ import java.net.URI;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 
 import de.fhg.igd.slf4jplus.ALogger;
@@ -129,9 +130,19 @@ public class JDBCTableCollection implements InstanceCollection {
 				}
 				else if (currentResults == null) {
 					// retrieve result set
-					Statement st = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY,
-							ResultSet.CONCUR_READ_ONLY, ResultSet.CLOSE_CURSORS_AT_COMMIT);
+					Statement st = null;
+					try {
+						st = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY,
+								ResultSet.CONCUR_READ_ONLY, ResultSet.CLOSE_CURSORS_AT_COMMIT);
 
+					} catch (SQLFeatureNotSupportedException e) {
+
+						log.warn("Oracle Database supports only HOLD_CURSORS_OVER_COMMIT");
+
+						st = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY,
+								ResultSet.CONCUR_READ_ONLY, ResultSet.HOLD_CURSORS_OVER_COMMIT);
+
+					}
 					currentResults = st.executeQuery("SELECT * FROM " + fullTableName);
 
 					proceedToNext();
@@ -148,7 +159,7 @@ public class JDBCTableCollection implements InstanceCollection {
 
 			if (hasNext) {
 				// create instance from current cursor
-				Instance instance = builder.createInstance(type, currentResults);
+				Instance instance = builder.createInstance(type, currentResults, connection);
 
 				consumed = true;
 
@@ -263,8 +274,6 @@ public class JDBCTableCollection implements InstanceCollection {
 			if (res.next()) {
 				count = res.getInt(1);
 			}
-
-			st.close();
 
 			return count;
 		} catch (SQLException e) {

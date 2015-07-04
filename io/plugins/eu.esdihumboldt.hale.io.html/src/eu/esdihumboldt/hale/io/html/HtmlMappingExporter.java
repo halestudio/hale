@@ -268,7 +268,7 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements Proj
 					@Override
 					protected void configureViewer(GraphViewer viewer) {
 						IContentProvider contentProvider = new CellGraphContentProvider();
-						GraphLabelProvider labelProvider = new GraphLabelProvider(HaleUI
+						GraphLabelProvider labelProvider = new GraphLabelProvider(null, HaleUI
 								.getServiceProvider());
 						viewer.setContentProvider(contentProvider);
 						viewer.setLabelProvider(labelProvider);

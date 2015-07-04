@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 
@@ -84,7 +85,7 @@ public class SchemaExplorer {
 
 		tree = filteredTree.getViewer();
 		tree.setUseHashlookup(true);
-		SchemaExplorerLabelProvider labelProvider = new SchemaExplorerLabelProvider();
+		SchemaExplorerLabelProvider labelProvider = new SchemaExplorerLabelProvider(tree);
 		tree.setLabelProvider(labelProvider);
 		tree.setContentProvider(createContentProvider(tree));
 		tree.getControl().setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
@@ -100,6 +101,19 @@ public class SchemaExplorer {
 
 		// TODO add delay for tooltip
 //		new ColumnBrowserTip(tree, 400, 300, true, 0, labelProvider);
+	}
+
+	/**
+	 * Refresh the tree viewer in the display thread.
+	 */
+	protected void refreshInDisplayThread() {
+		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+
+			@Override
+			public void run() {
+				tree.refresh();
+			}
+		});
 	}
 
 	/**

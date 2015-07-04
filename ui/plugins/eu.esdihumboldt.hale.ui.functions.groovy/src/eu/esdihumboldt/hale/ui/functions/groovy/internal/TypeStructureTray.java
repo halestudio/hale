@@ -199,7 +199,7 @@ public class TypeStructureTray extends DialogTray implements GroovyConstants {
 
 		TreeViewer tree = filteredTree.getViewer();
 		tree.setUseHashlookup(true);
-		StyledDefinitionLabelProvider labelProvider = new StyledDefinitionLabelProvider();
+		StyledDefinitionLabelProvider labelProvider = new StyledDefinitionLabelProvider(tree);
 		tree.setLabelProvider(labelProvider);
 		IContentProvider contentProvider;
 		if (types.size() == 1) {

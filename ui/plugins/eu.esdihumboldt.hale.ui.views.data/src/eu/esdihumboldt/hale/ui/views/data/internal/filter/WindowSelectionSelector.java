@@ -98,7 +98,7 @@ public class WindowSelectionSelector implements AdvancedInstanceSelector {
 			instanceTypes = new ComboViewer(this, SWT.READ_ONLY);
 			instanceTypes.setContentProvider(ArrayContentProvider.getInstance());
 			instanceTypes.setComparator(new DefinitionComparator());
-			instanceTypes.setLabelProvider(new DefinitionLabelProvider());
+			instanceTypes.setLabelProvider(new DefinitionLabelProvider(null));
 			instanceTypes.addSelectionChangedListener(new ISelectionChangedListener() {
 
 				@Override

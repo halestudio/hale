@@ -21,6 +21,8 @@
             <element ref="connection"/>
             <element ref="geometrytype"/>
             <element ref="driver"/>
+            <element ref="customtype"/>
+            <element ref="readSchemaAdvisor"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -158,6 +160,89 @@
                </documentation>
                <appinfo>
                   <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="customtype">
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="connection" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The connection type for which the geometry type applies
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="binding" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="sqltype" type="string" use="required">
+            <annotation>
+               <documentation>
+                  ID as defined in java.sql.Types
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Unique identifier
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="readSchemaAdvisor">
+      <annotation>
+         <documentation>
+            An advisor to be used by the JDBC Schema Reader for a specific connection type.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The unique schema reader advisor identifier.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The advisor implementation class.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.io.jdbc.extension.JDBCSchemaReaderAdvisor"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="connection" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The connection class/interface the advisor should be applied for.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java"/>
                </appinfo>
             </annotation>
          </attribute>

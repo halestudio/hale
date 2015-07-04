@@ -3,19 +3,21 @@ hale
 
 (Spatial) data harmonisation with the HUMBOLDT Alignment Editor
 
-The HUMBOLDT Alignment Editor (HALE) enables you to transform and harmonise spatial data, with a focus on highly complex data sets. HALE can be used for defining and evaluating conceptual schema mappings, to create logically and semantically consistent mappings. Furthermore, HALE documents the schema transformation process and its impact on data quality.
+The HUMBOLDT Alignment Editor (HALE) enables you to transform and harmonise spatial data, with a focus on highly complex data sets. Set up reporting, analysis and data publishing workflows easily by defining schema mappings. Furthermore, HALE documents the data transformation process and its impact on data quality.
 
 [![App](http://www.dhpanel.eu/images/content/hale-screenshot.jpg "HALE's main perspective")] (http://www.dhpanel.eu/humboldt-framework/hale.html)
 
 ## Features
-* Real-time, interactive geodata transformation
+* Real-time, interactive geodata transformation and validation
+* Makes work with large and complex models easy
 * SLD-Compatible Map display
-* Import and Export GML 3.2.1
+* Import and Export GML 3.2.1, Shapefile, JSON/GeoJSON and many many other formats
+* Create INSPIRE DataSets for Download Services, write to Transactional Web Feature Services
 * Built on Java and Eclipse RCP.
 
 ## Instructions
 
-1. To contribute: Fork and then clone the repository. Send us pull requests with your contributions. [Read here how to set up the development environment](http://www.esdi-community.eu/projects/hale/wiki/Set_up_your_development_environment)
+1. To contribute: Fork and then clone the repository. Send us pull requests with your contributions. [Read here how to set up the development environment](http://www.esdi-community.eu/projects/hale/wiki/Set_up_your_development_environment). Note that you will need to sign the Contributor License Agreement.
 2. To download: Clone or Download the .zip file to build HALE. To get the last release + nightly builds, visit the [HALE Community Website](http://community.esdi-humboldt.eu/projects/hale/files)
 
 ## System Requirements

@@ -20,16 +20,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Collection;
-
 import javax.xml.namespace.QName;
 
 import org.junit.Test;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.Polygon;
 
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -47,8 +43,6 @@ public class TriangleGeometryTest extends AbstractHandlerTest {
 
 	private Polygon referencePolygon;
 
-	private MultiLineString referenceMultiLineString;
-
 	@Override
 	public void init() {
 		super.init();
@@ -59,9 +53,6 @@ public class TriangleGeometryTest extends AbstractHandlerTest {
 
 		LinearRing linearRing = geomFactory.createLinearRing(coordinates);
 		referencePolygon = geomFactory.createPolygon(linearRing, null);
-
-		LineString[] lineStrings = new LineString[] { geomFactory.createLineString(coordinates) };
-		referenceMultiLineString = geomFactory.createMultiLineString(lineStrings);
 	}
 
 	/**
@@ -81,18 +72,18 @@ public class TriangleGeometryTest extends AbstractHandlerTest {
 			// 1. segments with LineStringSegment defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkTrianglePropertyWithLinearRingInstance(instance);
+			checkTrianglePropertyPolygon(instance);
 
 			// 1. segments with LineStringSegment defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			instance = it.next();
-			checTrianglePropertyWithRingInstance(instance);
+			checkTrianglePropertyPolygon(instance);
 		} finally {
 			it.close();
 		}
 	}
 
-	private void checkTrianglePropertyWithLinearRingInstance(Instance instance) {
+	private void checkTrianglePropertyPolygon(Instance instance) {
 		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
 		assertNotNull(geomVals);
 		assertEquals(1, geomVals.length);
@@ -108,23 +99,4 @@ public class TriangleGeometryTest extends AbstractHandlerTest {
 				polygon.equalsExact(referencePolygon));
 	}
 
-	private void checTrianglePropertyWithRingInstance(Instance instance) {
-		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
-		assertNotNull(geomVals);
-		assertEquals(1, geomVals.length);
-
-		Object geom = geomVals[0];
-		assertTrue(geom instanceof Instance);
-
-		Instance geomInstance = (Instance) geom;
-		assertTrue(geomInstance.getValue() instanceof Collection<?>);
-		for (Object insta : ((Collection<?>) geomInstance.getValue())) {
-			assertTrue(insta instanceof GeometryProperty<?>);
-			@SuppressWarnings("unchecked")
-			MultiLineString multiLineString = ((GeometryProperty<MultiLineString>) insta)
-					.getGeometry();
-			assertTrue("Read geometry does not match the reference geometry",
-					multiLineString.equalsExact(referenceMultiLineString));
-		}
-	}
 }

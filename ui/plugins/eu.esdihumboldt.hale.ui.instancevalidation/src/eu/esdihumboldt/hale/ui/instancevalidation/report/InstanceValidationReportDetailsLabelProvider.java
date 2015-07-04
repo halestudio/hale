@@ -42,7 +42,7 @@ public class InstanceValidationReportDetailsLabelProvider extends StyledCellLabe
 		ILabelProvider {
 
 	private final InstanceValidationReportDetailsContentProvider contentProvider;
-	private final DefinitionLabelProvider dlp = new DefinitionLabelProvider(false, true);
+	private final DefinitionLabelProvider dlp = new DefinitionLabelProvider(null, false, true);
 
 	/**
 	 * Constructor.

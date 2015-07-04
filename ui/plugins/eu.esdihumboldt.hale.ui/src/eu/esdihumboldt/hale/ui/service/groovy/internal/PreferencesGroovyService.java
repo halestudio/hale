@@ -61,7 +61,7 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 	private final AlignmentService alignmentService;
 
 	// for caching the value for the current project
-	private boolean restrictionActive = true;
+	private volatile boolean restrictionActive = true;
 	private URI restrictionActiveURI = null;
 	/**
 	 * scriptHash must not be accessed directly, but through
@@ -192,7 +192,7 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 	}
 
 	@Override
-	public void setRestrictionActive(boolean active) {
+	public void setRestrictionActive(final boolean active) {
 		if (restrictionActive != active) {
 			restrictionActive = active;
 			if (restrictionActiveURI != null) {
@@ -203,7 +203,17 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 					preferences.remove(restrictionActiveURI);
 				savePreferences(preferences);
 			}
-			notifyRestrictionChanged(active);
+
+			// notification must happen asynchronously
+			// (otherwise loading a project may fail)
+			// XXX use another possibility, not the display thread?
+			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+
+				@Override
+				public void run() {
+					notifyRestrictionChanged(active);
+				}
+			});
 		}
 	}
 

@@ -22,17 +22,17 @@ import org.joda.time.DateTime;
 import org.springframework.core.convert.converter.Converter;
 
 /**
- * Converts a {@link Date} to a {@link DateTime}.
+ * Converts a {@link DateTime} to a {@link Date}.
  * 
  * @author Christian Malewski
  */
 public class JodaDateTimeToSqlDateConverter implements Converter<DateTime, Date> {
 
-	/**
-	 * @see Converter#convert(java.lang.Object)
-	 */
 	@Override
 	public Date convert(DateTime source) {
+		if (source == null) {
+			return null;
+		}
 		return new Date(source.toDate().getTime());
 	}
 

@@ -40,8 +40,8 @@ public class TypeDefinitionStructure extends DefaultDefinitionSection<TypeDefini
 
 	private TreeViewer tree;
 
-	private StyledDefinitionLabelProvider definitionImages = new StyledDefinitionLabelProvider(
-			new DefinitionLabelProvider() {
+	private final StyledDefinitionLabelProvider definitionImages = new StyledDefinitionLabelProvider(
+			new DefinitionLabelProvider(null) {
 
 				@Override
 				public String getText(Object element) {

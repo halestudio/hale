@@ -17,18 +17,38 @@
 		schema (see <a
 			href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/schema/load_browse_schema.html">Loading
 			and browsing schemas</a>).<br> The GML Application Schemas are
-		provided by the European Commission. You can either download them or
-		use the schema repositories maintained by the JRC.
+		provided by the European Commission. You can either use the schema
+		presets defined in HALE (choose &quot;From preset&quot; when importing
+		a schema) or the <a href="http://inspire.ec.europa.eu/schemas/"
+			target="_blank">schema repository</a> maintained by the JRC.
 	</p>
 	<p>
 		Downloads for the data specifications are available here:<br> <a
 			href="http://inspire.jrc.ec.europa.eu/index.cfm/pageid/2/list/datamodels"
-			target="_blank">http://inspire.jrc.ec.europa.eu/index.cfm/pageid/2/list/datamodels</a><br>
-		For use in <i>HALE</i>, the downloads <strong>GML</strong> - contains
-		the GML Application Schemas - and <strong>Code list
-			dictionaries</strong> are relevant. The code lists can be loaded in <i>HALE</i>
-		in addition to the schemas.
+			target="_blank">http://inspire.jrc.ec.europa.eu/index.cfm/pageid/2/list/datamodels</a>
 	</p>
+	<p>HALE provides some pre-defined schema locations you can choose
+		from - currently the INSPIRE schemas for Annex I, II and III in
+		versions 3.0 and 4.0 are listed:</p>
+	<div>
+		<img src="images/presets_inspire.png" class="fit">
+	</div>
+	<p>
+		To access them choose <em>From preset</em> when loading a schema.
+	</p>
+	<p>
+		Another option to quickly start with mapping to an INSPIRE schema is
+		using the <i>Open web template</i> option from the toolbar.
+	</p>
+	<div>
+		<img src="images/web_template_button.png">
+	</div>
+	<p>It allows you to find predefined templates that already include
+		target schema and code lists, or even example projects including real
+		data.</p>
+	<div>
+		<img src="images/web_templates_inspire.png" class="fit">
+	</div>
 	<p>
 		Alternatively, the schemas are available in the following
 		repositories:<br> <a href="http://inspire.ec.europa.eu/schemas/"
@@ -38,20 +58,41 @@
 		schemas)<br> <br> The schemas available there are not meant
 		for download - instead their URLs should be used to load them into
 		HALE (e.g. by browsing the repository and using &quot;Copy Link
-		Location&quot; for a schema file to copy its URL to the clipboard).
+		Location&quot; for a schema file to copy its URL to the clipboard and
+		further providing it in &quot;From URL&quot; when importing a schema).
 	</p>
-	<p>HALE also provides some pre-defined schema locations you can
-		choose from - currently for INSPIRE the approved schemas from Annex I
-		are listed:</p>
+	<h2>Code lists</h2>
+	<p>
+		The INSPIRE data models make heavy use of code lists. A lot of these
+		code lists are provided through the <a
+			href="http://inspire.ec.europa.eu/codelist/" target="_blank">INSPIRE
+			code list register</a>. With HALE you can easily load them to use them
+		for a convenient selection from the available values. In the code list
+		import, select &quot;From INSPIRE registry&quot; to download the
+		current list of code lists and select a code list to load into the
+		current project.
+	</p>
 	<div>
-		<img src="images/presets_inspire.png" class="fit">
+		<img src="images/registry_codelists.png" class="fit">
 	</div>
 	<p>
-		To access them choose <em>From preset</em> when loading a schema.
+		You can use the loaded code lists for instance in the <i>Assign</i> or
+		<i>Classification</i> transformation functions - use the <i>Assign
+			a code list</i> option to associate a code list with a target property,
+		to be able to select a value from the code list. The actual values
+		that reside in the data are actually URLs pointing to the code list
+		value definition.
 	</p>
+	<div>
+		<img src="images/assign_codelist.png">
+	</div>
+	<p>Note that code lists may be pre-defined, extensible or even
+		empty. Some code lists are meant to be provided by the national
+		INSPIRE registries or via other organisations.</p>
 
 	<br>
 	<!-- related concepts -->
+	
 	<div>
 		<br> <img
 			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelc.png">

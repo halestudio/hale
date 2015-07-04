@@ -20,6 +20,7 @@ import java.util.Collection;
 
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -54,9 +55,12 @@ public class SchemaExplorerLabelProvider extends StyledDefinitionLabelProvider i
 
 	/**
 	 * Default constructor
+	 * 
+	 * @param associatedViewer the associated viewer (needed for style legend
+	 *            support) or <code>null</code>
 	 */
-	public SchemaExplorerLabelProvider() {
-		super();
+	public SchemaExplorerLabelProvider(Viewer associatedViewer) {
+		super(associatedViewer);
 
 		final Display display = PlatformUI.getWorkbench().getDisplay();
 

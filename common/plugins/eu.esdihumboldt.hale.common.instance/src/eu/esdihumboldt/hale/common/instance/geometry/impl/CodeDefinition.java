@@ -16,8 +16,17 @@
 
 package eu.esdihumboldt.hale.common.instance.geometry.impl;
 
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.Nullable;
+
+import org.geotools.gml2.SrsSyntax;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 
@@ -32,6 +41,17 @@ public class CodeDefinition implements CRSDefinition {
 
 	private final String code;
 	private CoordinateReferenceSystem crs;
+
+	private static final LoadingCache<String, CoordinateReferenceSystem> CRS_CACHE = CacheBuilder
+			.newBuilder().maximumSize(100).expireAfterAccess(1, TimeUnit.HOURS)
+			.build(new CacheLoader<String, CoordinateReferenceSystem>() {
+
+				@Override
+				public CoordinateReferenceSystem load(String code) throws Exception {
+					return CRS.decode(code);
+				}
+
+			});
 
 	/**
 	 * Constructor
@@ -51,7 +71,7 @@ public class CodeDefinition implements CRSDefinition {
 	public CoordinateReferenceSystem getCRS() {
 		if (crs == null) {
 			try {
-				crs = CRS.decode(code);
+				crs = CRS_CACHE.get(code);
 			} catch (Exception e) {
 				throw new IllegalStateException("Invalid CRS code", e);
 			}
@@ -99,6 +119,60 @@ public class CodeDefinition implements CRSDefinition {
 		else if (!code.equals(other.code))
 			return false;
 		return true;
+	}
+
+	// helpers
+
+	/**
+	 * Extract EPSG code number from a given CRS code.
+	 * 
+	 * @param candidate the CRS code
+	 * @return the EPSG code as string or <code>null</code> if it cannot be
+	 *         identified
+	 */
+	@Nullable
+	public static String extractEPSGCode(String candidate) {
+		for (SrsSyntax srsSyntax : SrsSyntax.values()) {
+			String code = extractCode(candidate, srsSyntax.getPrefix());
+			if (code != null) {
+				return code;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Extract code number from a given CRS code for a specified prefix.
+	 * 
+	 * @param candidate the CRS code
+	 * @param prefix the allowed prefix / authority
+	 * @return the CRS code part w/o prefix or <code>null</code>
+	 */
+	@Nullable
+	public static String extractCode(String candidate, String prefix) {
+		if (candidate.length() > prefix.length()) {
+			String authPart = candidate.substring(0, prefix.length());
+			String codePart = candidate.substring(prefix.length());
+
+			try {
+				// ignore anything before the last colon
+				int colonIndex = codePart.lastIndexOf(':');
+				if (colonIndex >= 0) {
+					codePart = codePart.substring(colonIndex + 1);
+				}
+
+				// check if codePart represents an integer
+				Integer.parseInt(codePart);
+
+				if (authPart.equalsIgnoreCase(prefix)) {
+					return codePart;
+				}
+			} catch (NumberFormatException e) {
+				// invalid
+			}
+		}
+		return null;
 	}
 
 }

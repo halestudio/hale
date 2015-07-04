@@ -80,7 +80,7 @@ public class TypeEntityDialog extends EntityDialog {
 	 */
 	@Override
 	protected void setupViewer(TreeViewer viewer, EntityDefinition initialSelection) {
-		viewer.setLabelProvider(new StyledDefinitionLabelProvider());
+		viewer.setLabelProvider(new StyledDefinitionLabelProvider(viewer));
 		EntityDefinitionService entityDefinitionService = (EntityDefinitionService) PlatformUI
 				.getWorkbench().getService(EntityDefinitionService.class);
 

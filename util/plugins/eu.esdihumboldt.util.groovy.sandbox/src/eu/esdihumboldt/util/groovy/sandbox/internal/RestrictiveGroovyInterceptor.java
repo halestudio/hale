@@ -293,7 +293,8 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 	private void checkExecute(Object receiver, String method) {
 		if ("execute".equals(method)) {
 			if (receiver instanceof List || receiver instanceof String
-					|| receiver instanceof String[] || receiver instanceof GString) {
+					|| receiver.getClass().isArray() || receiver instanceof String[]
+					|| receiver instanceof GString) {
 				throw new GroovyRestrictionException(
 						"Possible access of method execute on List, String, String[] and GString is not allowed in Groovy transformations!");
 			}
@@ -429,6 +430,11 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 		// an element is added several times then, which doesn't matter.
 
 		if (instanceAllowedClasses.contains(clazz))
+			return true;
+
+		// allow accessing arrays in general
+		// (calls like execute are disallowed by another mechanism)
+		if (clazz.isArray())
 			return true;
 
 		// allow nested classes of allowed classes

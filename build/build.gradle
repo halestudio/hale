@@ -42,15 +42,15 @@ gradle.taskGraph.whenReady {
 		buildID = dateFormat.format(calendar.getTime())
 	}
 	project.ext.buildId = buildID
-	
+
 	// determine context qualifier
 	if (project.version.endsWith("-SNAPSHOT")) {
 		// buildID as qualifier
 		project.ext.contextQualifier = buildID
 	}
 	else {
-		// mark as RELEASE (used for product, application bundles only)
-		project.ext.contextQualifier = 'RELEASE'
+		// mark as release (used for product, application bundles only)
+		project.ext.contextQualifier = 'release'
 	}
 }
 
@@ -66,20 +66,20 @@ ext {
 
     // suffix for bundle version numbers
     versionSuffix = ''
-	
+
 	// ID of generated update site feature
 	generatedUpdateSiteFeatureId = 'eu.esdihumboldt.hale.all.feature'
 	generatedUpdateSiteFeatureLabel = 'Generated overall feature'
 
     // path to the platform bundle
     platformBundle = file('../platform')
-	
+
 	// name of the platform definition file (w/o extension [.target])
-	platformFileName = 'hale-platform' 
-	
+	platformFileName = 'hale-platform'
+
 	// pattern for recognizing unit test bundles
 	testBundlePattern = '*.test_*.jar'
-	
+
     // true if MongoDB should be included in the final product
     includeMongoDB = false
 
@@ -110,23 +110,23 @@ ext {
 		file('../ext/ageobw'),
 		file('../ext/fme')
     ]
-	
+
 	// bundles to exclude for the build (symbolic names)
 	excludeBundles = [
 	  // dependencies for this feature currently not included in platform
     //'eu.esdihumboldt.hale.ui.feature.liveeditor'
 	]
-	
+
 	// bundles or fragments that are required additionally for compilation
 	extraRequirements = [
 		// this system bundle extension fragment is otherwise not found by tycho
-		'com.google.code.findbugs.jsr305'
+		'javax.annotation.extensions'
 	]
-	
+
 	/*
 	 * Specify OS specific bundles or features. Maps symbolic names
 	 * to OS identifiers.
-	 * 
+	 *
 	 * Maven tycho has problems with platform/os specific bundles.
 	 * Thus we have to filter them in the product configuration.
 	 * As this happens based on the bundle symbolic names, we have
@@ -145,7 +145,7 @@ ext {
 	]
 
     // URL to the directory containing mirrored artifacts (Maven, JRE, ...)
-    artifactsMirrorUrl = 'http://hale.igd.fraunhofer.de/build-support/38157ce25358e0c2010d1ff67ff5cfd7806215b7'
+    artifactsMirrorUrl = 'http://hale.igd.fraunhofer.de/build-support/1a7ed39df3f250142be386c172ddf5a1166aa887'
 
     // Names of zip files containing Java Runtimes (sorted by their respective platform)
     jreArtifacts = [
@@ -182,15 +182,15 @@ ext {
 //        ]
 //    ]
 
-    // Names of zip files containing Transcoder instances (sorted by their respective platform)
-//    transcoderArtifacts = [
-//        'win32': [
-//            'win32': [
-//                'x86': 'transcoder_0_2_6.zip',
-//                'x86_64': 'transcoder_0_2_6.zip'
-//            ]
-//        ]
-//    ]
+    // Names of zip files containing Spatialite libraries (sorted by their respective platform)
+    spatialiteArtifacts = [
+       'win32': [
+           'win32': [
+               'x86': 'mod_spatialite-4.2.0-win-x86.zip',
+               'x86_64': 'mod_spatialite-4.2.0-win-amd64.zip'
+           ]
+       ]
+    ]
 }
 
 if (project.ext.has('additionalConfig')) {
@@ -204,19 +204,19 @@ def applyExternalConfiguration(File configFile) {
 	assert configFile.exists()
 	// execute config file as groovy script...
 	Binding binding = new Binding();
-	
+
 	// specify the binding for the script
 	binding.setVariable('parentDir', configFile.parentFile);
-	
+
 	GroovyShell shell = new GroovyShell(binding);
 	def res = shell.evaluate(configFile.text)
-	
+
 	// ... creating a closure to configure the project
 	def prjClosure = binding.project.clone()
 	prjClosure.delegate = project
 	prjClosure.resolveStrategy = Closure.DELEGATE_FIRST
 	prjClosure()
-	
+
 //	def extClosure = binding.ext.clone()
 //	extClosure.delegate = project.ext
 //	extClosure.resolveStrategy = Closure.DELEGATE_FIRST

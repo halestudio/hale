@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.io.feature.core"
       label="Core I/O Providers"
-      version="2.9.1.qualifier"
+      version="2.9.3.qualifier"
       provider-name="data harmonisation panel"
       plugin="eu.esdihumboldt.hale.ui.application">
 
@@ -149,6 +149,20 @@
 
    <plugin
          id="eu.esdihumboldt.hale.common.instance.graph"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="eu.esdihumboldt.hale.io.jdbc.spatialite"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.xerial.sqlite-jdbc"
          download-size="0"
          install-size="0"
          version="0.0.0"

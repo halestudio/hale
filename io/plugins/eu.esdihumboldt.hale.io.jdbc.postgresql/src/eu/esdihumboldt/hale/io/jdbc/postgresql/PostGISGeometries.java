@@ -47,6 +47,7 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 import eu.esdihumboldt.hale.io.jdbc.GeometryAdvisor;
+import eu.esdihumboldt.hale.io.jdbc.constraints.GeometryMetadata;
 
 /**
  * Geometry advisor for PostGIS.
@@ -95,6 +96,10 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 					type.setConstraint(columnTypeConstraint);
 				}
 			}
+			else {
+				// XXX what if no SRID information is present? is that a case
+				// that may still be valid?
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -113,6 +118,7 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 		else if (geometryType.equalsIgnoreCase("MultiLineString")) {
 			return MultiLineString.class;
 		}
+		// TODO: shouldn't this be LineString instead?
 		else if (geometryType.equalsIgnoreCase("LinearRing")) {
 			return LinearRing.class;
 		}
@@ -128,8 +134,8 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 	}
 
 	@Override
-	public Object convertGeometry(GeometryProperty<?> geom, TypeDefinition columnType)
-			throws Exception {
+	public Object convertGeometry(GeometryProperty<?> geom, TypeDefinition columnType,
+			PGConnection pgconn) throws Exception {
 
 		PGgeometry pGeometry = null;
 		// Transform from sourceCRS to targetCRS
@@ -137,14 +143,14 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 
 		// transform
 		CoordinateReferenceSystem targetCRS = null;
-		if (columnTypeMetadata.getAuthName().equals("EPSG")) {
-			targetCRS = CRS.decode(columnTypeMetadata.getAuthName() + ":"
-					+ columnTypeMetadata.getSrs());
+		String authName = columnTypeMetadata.getAuthName();
+		if (authName != null && authName.equals("EPSG")) {
+			targetCRS = CRS.decode(authName + ":" + columnTypeMetadata.getSrs());
 		}
 		else {
 			String wkt = columnTypeMetadata.getSrsText();
 			if (wkt != null && !wkt.isEmpty()) {
-				targetCRS = CRS.parseWKT(columnTypeMetadata.getSrsText());
+				targetCRS = CRS.parseWKT(wkt);
 			}
 		}
 
@@ -169,8 +175,8 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 	}
 
 	@Override
-	public GeometryProperty<?> convertToInstanceGeometry(Object geom, TypeDefinition columnType)
-			throws Exception {
+	public GeometryProperty<?> convertToInstanceGeometry(Object geom, TypeDefinition columnType,
+			PGConnection connection) throws Exception {
 
 		if (geom instanceof PGgeometry) {
 			PGgeometry pgeom = (PGgeometry) geom;
@@ -189,12 +195,15 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 			// determine CRS
 			GeometryMetadata columnTypeMetadata = columnType.getConstraint(GeometryMetadata.class);
 			CRSDefinition crsDef = null;
-			if (columnTypeMetadata.getAuthName().equals("EPSG")) {
-				crsDef = new CodeDefinition(columnTypeMetadata.getAuthName() + ":"
-						+ columnTypeMetadata.getSrs(), null);
+			String authName = columnTypeMetadata.getAuthName();
+			if (authName != null && authName.equals("EPSG")) {
+				crsDef = new CodeDefinition(authName + ":" + columnTypeMetadata.getSrs(), null);
 			}
 			else {
-				crsDef = new WKTDefinition(columnTypeMetadata.getSrsText(), null);
+				String wkt = columnTypeMetadata.getSrsText();
+				if (wkt != null) {
+					crsDef = new WKTDefinition(wkt, null);
+				}
 			}
 
 			return new DefaultGeometryProperty<Geometry>(crsDef, jtsGeom);

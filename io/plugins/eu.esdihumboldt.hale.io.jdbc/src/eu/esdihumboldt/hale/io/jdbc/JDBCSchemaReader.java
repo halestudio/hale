@@ -20,25 +20,27 @@ import static eu.esdihumboldt.hale.io.jdbc.JDBCUtil.quote;
 import static eu.esdihumboldt.hale.io.jdbc.JDBCUtil.unquote;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URI;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import schemacrawler.schema.Catalog;
 import schemacrawler.schema.Column;
 import schemacrawler.schema.ColumnDataType;
-import schemacrawler.schema.Database;
+//import schemacrawler.schema.Database;
 import schemacrawler.schema.IndexColumn;
 import schemacrawler.schema.PrimaryKey;
 import schemacrawler.schema.ResultsColumn;
 import schemacrawler.schema.ResultsColumns;
 import schemacrawler.schema.Table;
-import schemacrawler.schema.TableType;
+import schemacrawler.schemacrawler.RegularExpressionInclusionRule;
 import schemacrawler.schemacrawler.SchemaCrawlerException;
 import schemacrawler.schemacrawler.SchemaCrawlerOptions;
 import schemacrawler.schemacrawler.SchemaInfoLevel;
@@ -61,7 +63,6 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Reference;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.ElementType;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
@@ -74,8 +75,12 @@ import eu.esdihumboldt.hale.io.jdbc.constraints.AutoIncrementFlag;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DatabaseTable;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DefaultValue;
 import eu.esdihumboldt.hale.io.jdbc.constraints.SQLType;
+import eu.esdihumboldt.hale.io.jdbc.extension.JDBCSchemaReaderAdvisor;
+import eu.esdihumboldt.hale.io.jdbc.extension.internal.CustomType;
+import eu.esdihumboldt.hale.io.jdbc.extension.internal.CustomTypeExtension;
 import eu.esdihumboldt.hale.io.jdbc.extension.internal.GeometryTypeExtension;
 import eu.esdihumboldt.hale.io.jdbc.extension.internal.GeometryTypeInfo;
+import eu.esdihumboldt.hale.io.jdbc.extension.internal.SchemaReaderAdvisorExtension;
 
 /**
  * Reads a database schema through JDBC.
@@ -83,6 +88,8 @@ import eu.esdihumboldt.hale.io.jdbc.extension.internal.GeometryTypeInfo;
  * @author Simon Templer
  */
 public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBCConstants {
+
+//	public static final String PARAM_SCHEMAS = "schemas";
 
 	/**
 	 * Default constructor
@@ -118,12 +125,21 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 			// connect to the database
 			try {
 				connection = JDBCConnection.getConnection(this);
-				connection.setReadOnly(true);
 			} catch (Exception e) {
 				reporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
 				reporter.setSuccess(false);
 				reporter.setSummary("Failed to connect to database.");
 				return null;
+			}
+
+			// don't fail if Connection.setReadOnly() throws an exception (e.g.
+			// SQLite JDBC driver does not allow changing the flag after the
+			// connection has been created), report a warning message instead
+			try {
+				connection.setReadOnly(true);
+			} catch (SQLException e) {
+				// ignore
+//				reporter.warn(new IOMessageImpl(e.getLocalizedMessage(), e));
 			}
 
 			URI jdbcURI = getSource().getLocation();
@@ -148,19 +164,34 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 			// XXX For some advanced info / DBMS specific info we'll need a
 			// properties file. See Config & InformationSchemaViews.
 			level.setTag("hale");
+			if (getParameter(SCHEMAS).as(String.class) != null) {
+				String schemas = getParameter(SCHEMAS).as(String.class).replace(',', '|');
+				options.setSchemaInclusionRule(new RegularExpressionInclusionRule(schemas));
+			}
 
 			if (SchemaSpaceID.SOURCE.equals(getSchemaSpace())) {
 				// show views and tables
-				options.setTableTypes(new TableType[] { TableType.table, TableType.view });
+				List<String> tableList = Arrays.asList("TABLE", "VIEW");
+
+				options.setTableTypes(tableList);
 			}
 			else {
 				// only show tables
-				options.setTableTypes(new TableType[] { TableType.table });
+				options.setTableTypes(Arrays.asList("TABLE"));
 			}
 
 			options.setSchemaInfoLevel(level);
 
-			final Database database = SchemaCrawlerUtility.getDatabase(connection, options);
+			// get advisor
+			// XXX should be created once, and used in other places if
+			// applicable
+			JDBCSchemaReaderAdvisor advisor = SchemaReaderAdvisorExtension.getInstance()
+					.getAdvisor(connection);
+			if (advisor != null) {
+				advisor.configureSchemaCrawler(options);
+			}
+
+			final Catalog database = SchemaCrawlerUtility.getCatalog(connection, options);
 			String quotes = "\"";
 			try {
 				quotes = connection.getMetaData().getIdentifierQuoteString();
@@ -184,14 +215,25 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 				ns.append(specificURI.getScheme());
 			}
 			if (specificURI.getPath() != null) {
-				if (ns.length() > 0) {
-					ns.append(':');
+				String path = null;
+				if (advisor != null) {
+					path = advisor.adaptPathForNamespace(specificURI.getPath());
 				}
-				String path = specificURI.getPath();
-				if (path.startsWith("/")) {
-					path = path.substring(1);
+				else {
+					// default handling
+					path = specificURI.getPath();
+					if (path.startsWith("/")) {
+						path = path.substring(1);
+					}
 				}
-				ns.append(path);
+
+				if (path != null && !path.isEmpty()) {
+					if (ns.length() > 0) {
+						ns.append(':');
+					}
+
+					ns.append(path);
+				}
 			}
 			String overallNamespace = ns.toString();
 			if (overallNamespace == null) {
@@ -208,10 +250,13 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 					namespace = unquote(schema.getName());
 				}
 				else {
-					namespace = overallNamespace + ":" + unquote(schema.getName());
+					namespace = overallNamespace;
+					if (schema.getName() != null) {
+						namespace += ":" + unquote(schema.getName());
+					}
 				}
 
-				for (final Table table : schema.getTables()) {
+				for (final Table table : database.getTables(schema)) {
 					// each table is a type
 
 					// get the type definition
@@ -224,8 +269,12 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 					Statement stmt = null;
 					try {
 						stmt = connection.createStatement();
-						ResultSet rs = stmt.executeQuery("SELECT * FROM " + quote(schema.getName())
-								+ "." + quote(table.getName()) + " WHERE 1 = 0");
+						String fullTableName = quote(table.getName());
+						if (schema.getName() != null) {
+							fullTableName = quote(schema.getName()) + "." + fullTableName;
+						}
+						ResultSet rs = stmt.executeQuery("SELECT * FROM " + fullTableName
+								+ " WHERE 1 = 0");
 						additionalInfo = SchemaCrawlerUtility.getResultColumns(rs);
 					} catch (SQLException sqle) {
 						reporter.warn(new IOMessageImpl(
@@ -256,7 +305,7 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 							// ResultColumns does not quote the column namen in
 							// contrast to every other place
 							ResultsColumn rc = additionalInfo.getColumn(unquote(column.getName()));
-							if (rc.isAutoIncrement())
+							if (rc != null && rc.isAutoIncrement())
 								property.setConstraint(AutoIncrementFlag.get(true));
 						}
 					}
@@ -364,7 +413,7 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		// TODO the size/width info (VARCHAR(_30_)) is in column, the
 		// columntype/-name is not sufficient
 
-		ColumnDataType columnType = column.getType();
+		ColumnDataType columnType = column.getColumnDataType();// getType();
 		String localName = columnType.getName();
 
 		QName typeName = new QName(overallNamespace, localName);
@@ -398,7 +447,19 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		// create new type
 		DefaultTypeDefinition type = new DefaultTypeDefinition(typeName);
 		type.setConstraint(HasValueFlag.ENABLED);
-		type.setConstraint(SQLType.get(columnType.getType()));
+
+		CustomType cust = CustomTypeExtension.getInstance().getCustomType(localName, connection);
+		/*
+		 * Oracle jdbc was returning sqltype -6 for NUMBER data type, but it is
+		 * bound to boolean by Types.java class. Configured the sqltype 6 for
+		 * NUMBER data type.
+		 */
+		if (cust != null) {
+			type.setConstraint(SQLType.get(cust.getSQLType()));
+		}
+		else {
+			type.setConstraint(SQLType.get(columnType.getJavaSqlType().getJavaSqlType()));
+		}
 
 		if (geomType != null && geomAdvisor != null) {
 			// configure geometry type
@@ -413,27 +474,19 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		}
 		else {
 			// configure type
-			try {
-				String className = column.getType().getTypeClassName();
-				Class<?> binding;
-				if (className.endsWith("[]")) {
-					// determine element class
-					Class<?> elementType = loadColumnBinding(className.substring(0,
-							className.length() - 2));
-					type.setConstraint(ElementType.get(elementType));
 
-					// determine array class
-					binding = Array.newInstance(elementType, 0).getClass();
-				}
-				else {
-					binding = loadColumnBinding(className);
-				}
-				type.setConstraint(Binding.get(binding));
-
-				type.setConstraint(HasValueFlag.ENABLED);
-			} catch (ClassNotFoundException e) {
-				reporter.error(new IOMessageImpl("Could not create property type binding", e));
+			Class<?> binding = null;
+			if (cust != null) {
+				binding = cust.getBinding();
 			}
+			else {
+				binding = column.getColumnDataType().getTypeMappedClass();
+			}
+
+			type.setConstraint(Binding.get(binding));
+
+			type.setConstraint(HasValueFlag.ENABLED);
+
 		}
 
 		// TODO validation constraint
@@ -445,6 +498,7 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		return type;
 	}
 
+	@SuppressWarnings("unused")
 	private Class<?> loadColumnBinding(String name) throws ClassNotFoundException {
 		switch (name) {
 		case "byte":
@@ -498,20 +552,27 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		type.setConstraint(new DatabaseTable(unquote(schema.getName()), unquote(table.getName())));
 
 		// set primary key if possible
-		PrimaryKey key = table.getPrimaryKey();
+		PrimaryKey key = null;
+		try {
+			key = table.getPrimaryKey();
+		} catch (Exception e) {
+			reporter.warn(new IOMessageImpl("Could not read primary key metadata for table: "
+					+ table.getFullName(), e));
+		}
+
 		if (key != null) {
-			IndexColumn[] columns = key.getColumns();
-			if (columns.length > 1) {
+			List<IndexColumn> columns = key.getColumns();
+			if (columns.size() > 1) {
 				reporter.warn(new IOMessageImpl(
 						"Primary keys over multiple columns are not yet supported.", null));
 			}
-			else if (columns.length == 1) {
+			else if (columns.size() == 1) {
 				// create constraint, get property definition for original table
 				// column (maybe could use index column, too)
 				type.setConstraint(new eu.esdihumboldt.hale.common.schema.model.constraint.type.PrimaryKey(
 						Collections.<QName> singletonList(getOrCreateProperty(schema, type,
-								table.getColumn(columns[0].getName()), overallNamespace, namespace,
-								types, connection, reporter).getName())));
+								table.getColumn(columns.get(0).getName()), overallNamespace,
+								namespace, types, connection, reporter).getName())));
 			}
 		}
 

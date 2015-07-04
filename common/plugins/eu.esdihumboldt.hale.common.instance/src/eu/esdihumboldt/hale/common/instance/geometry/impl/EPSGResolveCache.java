@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.common.instance.geometry.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.geotools.gml2.SrsSyntax;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -41,14 +42,20 @@ public class EPSGResolveCache implements CRSResolveCache {
 			try {
 				Integer epsgCode = CRS.lookupEpsgCode(crs, true);
 				if (epsgCode != null) {
-					String code = "EPSG:" + String.valueOf(epsgCode);
+					String code = SrsSyntax.OGC_URN + String.valueOf(epsgCode);
 					CoordinateReferenceSystem resolved = CRS.decode(code);
 					result = new CodeDefinition(code, resolved);
-					cached.put(crs, result);
 				}
 			} catch (FactoryException e) {
 				// ignore
 			}
+
+			if (result == null) {
+				// prevent further lookups of this CRS
+				result = new WKTDefinition(crs.toWKT(), crs);
+			}
+
+			cached.put(crs, result);
 		}
 
 		return result;
