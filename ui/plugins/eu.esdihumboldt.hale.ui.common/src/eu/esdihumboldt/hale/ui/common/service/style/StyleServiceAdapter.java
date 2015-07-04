@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.style.service;
+package eu.esdihumboldt.hale.ui.common.service.style;
 
 import org.eclipse.swt.graphics.RGB;
 

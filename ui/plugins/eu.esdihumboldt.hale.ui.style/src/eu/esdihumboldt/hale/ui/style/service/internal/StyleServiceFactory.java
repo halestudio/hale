@@ -19,9 +19,9 @@ package eu.esdihumboldt.hale.ui.style.service.internal;
 import org.eclipse.ui.services.AbstractServiceFactory;
 import org.eclipse.ui.services.IServiceLocator;
 
+import eu.esdihumboldt.hale.ui.common.service.style.StyleService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
-import eu.esdihumboldt.hale.ui.style.service.StyleService;
 
 /**
  * Service factory for the style service

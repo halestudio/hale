@@ -20,7 +20,7 @@
       <serviceFactory
             factoryClass="eu.esdihumboldt.hale.ui.style.service.internal.StyleServiceFactory">
          <service
-               serviceClass="eu.esdihumboldt.hale.ui.style.service.StyleService"></service>
+               serviceClass="eu.esdihumboldt.hale.ui.common.service.style.StyleService"></service>
       </serviceFactory>
    </extension>
    <extension
