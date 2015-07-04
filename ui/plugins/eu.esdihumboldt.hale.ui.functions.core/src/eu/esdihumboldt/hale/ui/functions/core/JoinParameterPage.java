@@ -167,7 +167,7 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 
 		table = new TableViewer(page, SWT.V_SCROLL | SWT.BORDER | SWT.SINGLE);
 		table.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 2));
-		table.setLabelProvider(new StyledDefinitionLabelProvider());
+		table.setLabelProvider(new StyledDefinitionLabelProvider(table));
 		table.setContentProvider(ArrayContentProvider.getInstance());
 		table.setInput(types);
 
@@ -522,7 +522,7 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 			});
 			viewer.setContentProvider(ArrayContentProvider.getInstance());
 
-			final DefinitionLabelProvider dlp = new DefinitionLabelProvider(true, true);
+			final DefinitionLabelProvider dlp = new DefinitionLabelProvider(viewer, true, true);
 			viewer.getTable().addDisposeListener(new DisposeListener() {
 
 				@Override
@@ -664,7 +664,7 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 					.getService(EntityDefinitionService.class);
 			viewer.setContentProvider(new TreePathProviderAdapter(
 					new EntityTypeIterableContentProvider(eds, SchemaSpaceID.SOURCE)));
-			viewer.setLabelProvider(new StyledDefinitionLabelProvider());
+			viewer.setLabelProvider(new StyledDefinitionLabelProvider(viewer));
 
 			viewer.setInput(input);
 			viewer.addSelectionChangedListener(new ISelectionChangedListener() {

@@ -59,7 +59,7 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 	 *            shown
 	 */
 	public FunctionGraphLabelProvider(ServiceProvider provider, boolean showAll) {
-		super(provider);
+		super(null, provider);
 		final Display display = Display.getCurrent();
 
 		this.showAll = showAll;

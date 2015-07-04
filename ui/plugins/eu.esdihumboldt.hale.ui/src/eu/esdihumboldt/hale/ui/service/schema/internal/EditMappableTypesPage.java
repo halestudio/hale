@@ -79,7 +79,7 @@ public class EditMappableTypesPage extends WizardPage {
 		}
 	};
 
-	private final DefinitionLabelProvider definitionLabels = new DefinitionLabelProvider() {
+	private final DefinitionLabelProvider definitionLabels = new DefinitionLabelProvider(null) {
 
 		private final Image lockImg = HALEUIPlugin.getImageDescriptor("icons/lock.gif")
 				.createImage();

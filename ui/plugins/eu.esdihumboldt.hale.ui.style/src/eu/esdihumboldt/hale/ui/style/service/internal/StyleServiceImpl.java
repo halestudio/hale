@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import javax.annotation.Nullable;
 import javax.xml.namespace.QName;
 
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -229,7 +230,7 @@ public class StyleServiceImpl extends AbstractStyleService {
 	 * @see StyleService#getStyle(TypeDefinition, DataSet)
 	 */
 	@Override
-	public Style getStyle(TypeDefinition type, DataSet dataSet) {
+	public Style getStyle(TypeDefinition type, @Nullable DataSet dataSet) {
 		FeatureTypeStyle fts = styles.get(type);
 		Style style = styleFactory.createStyle();
 		if (fts != null) {

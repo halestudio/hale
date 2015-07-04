@@ -33,6 +33,7 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.WorkbenchPart;
+import org.eclipse.zest.core.viewers.GraphViewer;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -125,16 +126,10 @@ public class MappingView extends AbstractMappingView {
 		}
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.views.mapping.AbstractMappingView#createLabelProvider()
-	 */
 	@Override
-	protected IBaseLabelProvider createLabelProvider() {
-		return new GraphLabelProvider(HaleUI.getServiceProvider()) {
+	protected IBaseLabelProvider createLabelProvider(GraphViewer viewer) {
+		return new GraphLabelProvider(viewer, HaleUI.getServiceProvider()) {
 
-			/**
-			 * @see eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider#isInherited(eu.esdihumboldt.hale.common.align.model.Cell)
-			 */
 			@Override
 			protected boolean isInherited(Cell cell) {
 				// cannot inherit type cells

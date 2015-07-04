@@ -60,7 +60,7 @@ public abstract class AbstractMappingView extends PropertiesViewPart implements
 		viewer.setContentProvider(createContentProvider());
 //		viewer.setContentProvider(new CellRelationshipContentProvider());
 //		viewer.setContentProvider(new NestedCellRelationshipContentProvider());
-		viewer.setLabelProvider(createLabelProvider());
+		viewer.setLabelProvider(createLabelProvider(viewer));
 		viewer.setInput(null);
 		LayoutAlgorithm layout = createLayout();
 		viewer.setLayoutAlgorithm(layout, true);
@@ -97,10 +97,12 @@ public abstract class AbstractMappingView extends PropertiesViewPart implements
 	/**
 	 * Create the label provider to be used for the graph
 	 * 
+	 * @param viewer the graph viewer the label provider will be associated with
+	 * 
 	 * @return the label provider
 	 */
-	protected IBaseLabelProvider createLabelProvider() {
-		return new GraphLabelProvider(HaleUI.getServiceProvider());
+	protected IBaseLabelProvider createLabelProvider(GraphViewer viewer) {
+		return new GraphLabelProvider(viewer, HaleUI.getServiceProvider());
 	}
 
 	/**

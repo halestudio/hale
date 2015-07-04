@@ -83,7 +83,7 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 	private TypeDefinition sourceType;
 	private Set<EntityDefinition> selection = new HashSet<EntityDefinition>();
 	private Set<EntityDefinition> filtered = new HashSet<EntityDefinition>();
-	private final DefinitionLabelProvider labelProvider = new DefinitionLabelProvider();
+	private final DefinitionLabelProvider labelProvider = new DefinitionLabelProvider(null);
 
 	/**
 	 * Constructor.

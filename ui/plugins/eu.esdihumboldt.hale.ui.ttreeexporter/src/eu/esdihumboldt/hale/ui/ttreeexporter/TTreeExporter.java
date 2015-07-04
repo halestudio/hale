@@ -50,7 +50,7 @@ public class TTreeExporter implements TransformationTreeHook {
 			public void run() {
 				final TransformationTreeContentProvider contentProvider = new TransformationTreeContentProvider();
 				final TransformationTreeLabelProvider labelProvider = new TransformationTreeLabelProvider(
-						HaleUI.getServiceProvider());
+						null, HaleUI.getServiceProvider());
 				final TreeLayoutAlgorithm layoutAlgorithm = new TreeLayoutAlgorithm(
 						TreeLayoutAlgorithm.RIGHT_LEFT);
 				OffscreenGraph offscreenGraph = new OffscreenGraph(1024, 768) {

@@ -105,7 +105,7 @@ public class PropertyDefinitionDialog extends
 
 	@Override
 	protected void setupViewer(TreeViewer viewer, EntityDefinition initialSelection) {
-		viewer.setLabelProvider(new DefinitionLabelProvider());
+		viewer.setLabelProvider(new DefinitionLabelProvider(viewer));
 		viewer.setContentProvider(new TreePathProviderAdapter(new TypePropertyContentProvider(
 				viewer)));
 

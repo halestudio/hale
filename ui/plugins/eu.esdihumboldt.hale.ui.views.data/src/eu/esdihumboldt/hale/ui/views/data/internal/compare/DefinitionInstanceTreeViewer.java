@@ -106,7 +106,7 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 
 		treeViewer.setContentProvider(new TypeMetaPairContentProvider(treeViewer, schemaSpace));
 
-		treeViewer.setLabelProvider(new DefinitionMetaCompareLabelProvider());
+		treeViewer.setLabelProvider(new DefinitionMetaCompareLabelProvider(treeViewer));
 
 		// Add an editor for selecting specific paths.
 		editor = new TreeEditor(treeViewer.getTree());
@@ -336,7 +336,7 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 			TreeViewerColumn column = new TreeViewerColumn(treeViewer, SWT.LEFT);
 			column.getColumn().setText(type.getDisplayName());
 			column.setLabelProvider(new TreeColumnViewerLabelProvider(
-					new DefinitionMetaCompareLabelProvider()));
+					new DefinitionMetaCompareLabelProvider(treeViewer)));
 			if (layout instanceof TreeColumnLayout) {
 				((TreeColumnLayout) layout).setColumnData(column.getColumn(), new ColumnWeightData(
 						1));

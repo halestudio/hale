@@ -16,29 +16,47 @@
 
 package eu.esdihumboldt.hale.ui.common.definition;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
+import org.geotools.legend.Drawer;
+import org.geotools.styling.LineSymbolizer;
+import org.geotools.styling.PointSymbolizer;
+import org.geotools.styling.PolygonSymbolizer;
+import org.geotools.styling.SLD;
+import org.geotools.styling.Style;
+import org.geotools.styling.Symbolizer;
+import org.opengis.feature.simple.SimpleFeature;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.schema.Classification;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImagesConstants;
 import eu.esdihumboldt.hale.ui.common.internal.CommonUIPlugin;
 import eu.esdihumboldt.hale.ui.common.service.population.Population;
 import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
+import eu.esdihumboldt.hale.ui.common.service.style.StyleService;
 import eu.esdihumboldt.hale.ui.geometry.DefaultGeometryUtil;
+import eu.esdihumboldt.hale.ui.geometry.service.GeometrySchemaService;
+import eu.esdihumboldt.hale.ui.util.swing.SwingRcpUtilities;
 
 /**
  * Manages images for definitions. Should be {@link #dispose()}d when the images
@@ -47,6 +65,17 @@ import eu.esdihumboldt.hale.ui.geometry.DefaultGeometryUtil;
  * @author Simon Templer
  */
 public class DefinitionImages implements CommonSharedImagesConstants {
+
+	// constants for style images
+
+	private static final int WIDTH = 16;
+
+	private static final int HEIGHT = 16;
+
+	private static final int[] LINE_POINTS = new int[] { 0, HEIGHT - 1, WIDTH - 1, 0 };
+
+	private static final int[] POLY_POINTS = new int[] { 0, 0, WIDTH - 1, 0, WIDTH - 1, HEIGHT - 1,
+			0, HEIGHT - 1 };
 
 	/**
 	 * Represents a image configuration
@@ -140,9 +169,11 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 
 	private final Map<ImageConf, Image> overlayedImages = new HashMap<ImageConf, Image>();
 
-//	private final Map<String, Image> styleImages = new HashMap<String, Image>();
+	private final Map<String, Image> styleImages = new HashMap<String, Image>();
 
 	private boolean suppressMandatory = false;
+
+	private boolean showStyleLegend = true;
 
 	/**
 	 * Dispose all images. {@link #getImage(Definition)} may not be called after
@@ -154,10 +185,10 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 		}
 		overlayedImages.clear();
 
-//		for (Image image : styleImages.values()) {
-//			image.dispose();
-//		}
-//		styleImages.clear();
+		for (Image image : styleImages.values()) {
+			image.dispose();
+		}
+		styleImages.clear();
 
 		attribOverlay.dispose();
 		defOverlay.dispose();
@@ -185,6 +216,75 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 	}
 
 	/**
+	 * Determines if a type definition has a geometry.
+	 * 
+	 * @param type the type definition to test
+	 * @return <code>true</code> if the type has a geometry, false otherwise
+	 */
+	protected boolean hasGeometry(TypeDefinition type) {
+		GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench().getService(
+				GeometrySchemaService.class);
+
+		return gss.getDefaultGeometry(type) != null;
+	}
+
+	/**
+	 * Get a legend image for a given type definition
+	 * 
+	 * @param type the type definition
+	 * @param dataSet the data set the type definition belongs to
+	 * @param definedOnly if only for defined styles a image shall be created
+	 * @return the legend image or <code>null</code>
+	 */
+	protected BufferedImage getLegendImage(TypeDefinition type, DataSet dataSet, boolean definedOnly) {
+		StyleService ss = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
+		Style style = (definedOnly) ? (ss.getDefinedStyle(type)) : (ss.getStyle(type, dataSet));
+		if (style == null) {
+			return null;
+		}
+
+		// create a dummy feature based on the style
+		Drawer d = Drawer.create();
+		SimpleFeature feature = null;
+		Symbolizer[] symbolizers = SLD.symbolizers(style);
+		if (symbolizers.length > 0) {
+			Symbolizer symbolizer = symbolizers[0];
+
+			if (symbolizer instanceof LineSymbolizer) {
+				feature = d.feature(d.line(LINE_POINTS));
+			}
+			else if (symbolizer instanceof PointSymbolizer) {
+				feature = d.feature(d.point(WIDTH / 2, HEIGHT / 2));
+			}
+			if (symbolizer instanceof PolygonSymbolizer) {
+				feature = d.feature(d.polygon(POLY_POINTS));
+			}
+		}
+
+		if (feature != null) {
+			BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+//				GraphicsEnvironment.getLocalGraphicsEnvironment().
+//    				getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(WIDTH, HEIGHT,
+//    				Transparency.TRANSLUCENT);
+
+			// use white background to have a neutral color even if selected
+			Color bg = Color.WHITE;
+			Graphics2D g = image.createGraphics();
+			try {
+				g.setColor(bg);
+				g.fillRect(0, 0, WIDTH, HEIGHT);
+			} finally {
+				g.dispose();
+			}
+
+			d.drawDirect(image, feature, style);
+			return image;
+		}
+
+		return null;
+	}
+
+	/**
 	 * Get the image for the given definition
 	 * 
 	 * @param entityDef the entity definition, may be <code>null</code>
@@ -209,105 +309,114 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 
 		// legend image
 		// XXX not supported yet
-//		if (to.getDefinition() != null && (to.getDefinition() instanceof TypeDefinition) 
-//				&& ((TypeDefinition) to.getDefinition()).hasGeometry() 
-//				&& to.getPropertyType() instanceof FeatureType) {
-//			FeatureType type = (FeatureType) to.getPropertyType();
-//			BufferedImage img = StyleHelper.getLegendImage(type, true);
-//			if (img != null) {
-//				// replace image with style image
-//				ImageData imgData = SwingRcpUtilities.convertToSWT(img);
-//				image = new Image(Display.getCurrent(), imgData);
-//				
-//				String key = to.getName().getURI();
-//				Image old = null;
-//				if (styleImages.containsKey(key)) {
-//					old = styleImages.get(key);
-//				}
-//				styleImages.put(key, image);
-//				if (old != null) {
-//					old.dispose(); // ok here?
-//				}
-//			}
-//		}
+		if (def instanceof TypeDefinition
+				&& !((TypeDefinition) def).getConstraint(AbstractFlag.class).isEnabled()
+				&& hasGeometry((TypeDefinition) def)) {
+			TypeDefinition type = (TypeDefinition) def;
+
+			DataSet dataSet = DataSet.SOURCE; // FIXME how to find out?
+			if (entityDef != null) {
+				dataSet = DataSet.forSchemaSpace(entityDef.getSchemaSpace());
+			}
+			String typeKey = dataSet.name() + "::" + type.getIdentifier();
+
+			// XXX check if style image is already there?
+			// XXX how to handle style changes?
+
+			BufferedImage img = getLegendImage(type, dataSet, true);
+			if (img != null) {
+				// replace image with style image
+				ImageData imgData = SwingRcpUtilities.convertToSWT(img);
+				image = new Image(Display.getCurrent(), imgData);
+
+				Image old = null;
+				if (styleImages.containsKey(typeKey)) {
+					old = styleImages.get(typeKey);
+				}
+				styleImages.put(typeKey, image);
+				if (old != null) {
+					old.dispose(); // ok here?
+				}
+			}
+		}
 		// check for inline attributes
-//		else {
-		boolean attribute = (def instanceof PropertyDefinition)
-				&& ((PropertyDefinition) def).getConstraint(XmlAttributeFlag.class).isEnabled();
-		boolean mandatory = false;
-		if (!suppressMandatory) {
-			if (def instanceof PropertyDefinition) {
-				Cardinality cardinality = ((PropertyDefinition) def)
-						.getConstraint(Cardinality.class);
-				mandatory = cardinality.getMinOccurs() > 0
-						&& !((PropertyDefinition) def).getConstraint(NillableFlag.class)
-								.isEnabled();
-			}
-			else if (def instanceof GroupPropertyDefinition) {
-				Cardinality cardinality = ((GroupPropertyDefinition) def)
-						.getConstraint(Cardinality.class);
-				mandatory = cardinality.getMinOccurs() > 0;
-			}
-		}
-
-		boolean deflt = false;
-		boolean faded = false;
-		if (entityDef != null) {
-			// entity definition needed to determine if item is a default
-			// geometry
-			deflt = DefaultGeometryUtil.isDefaultGeometry(entityDef);
-
-			// and to determine population
-			PopulationService ps = (PopulationService) PlatformUI.getWorkbench().getService(
-					PopulationService.class);
-			if (ps != null && ps.hasPopulation(entityDef.getSchemaSpace())) {
-				Population pop = ps.getPopulation(entityDef);
-				faded = (pop != null && pop.getOverallCount() == 0);
-			}
-		}
-
-		if (deflt || mandatory || attribute || faded) {
-			// overlayed image
-			ImageConf conf = new ImageConf(imageName, attribute, deflt, mandatory, faded);
-			Image overlayedImage = overlayedImages.get(conf);
-
-			if (overlayedImage == null) {
-				// apply overlays to image
-
-				Image copy = new Image(image.getDevice(), image.getBounds());
-				// draw on image
-				GC gc = new GC(copy);
-				try {
-					gc.drawImage(image, 0, 0);
-					if (attribute) {
-						gc.drawImage(attribOverlay, 0, 0);
-					}
-					if (deflt) {
-						gc.drawImage(defOverlay, 0, 0);
-					}
-					if (mandatory) {
-						gc.drawImage(mandatoryOverlay, 0, 0);
-					}
-				} finally {
-					gc.dispose();
+		else {
+			boolean attribute = (def instanceof PropertyDefinition)
+					&& ((PropertyDefinition) def).getConstraint(XmlAttributeFlag.class).isEnabled();
+			boolean mandatory = false;
+			if (!suppressMandatory) {
+				if (def instanceof PropertyDefinition) {
+					Cardinality cardinality = ((PropertyDefinition) def)
+							.getConstraint(Cardinality.class);
+					mandatory = cardinality.getMinOccurs() > 0
+							&& !((PropertyDefinition) def).getConstraint(NillableFlag.class)
+									.isEnabled();
 				}
-
-				if (faded) {
-					ImageData imgData = copy.getImageData();
-					imgData.alpha = 150;
-					Image copy2 = new Image(image.getDevice(), imgData);
-					copy.dispose();
-					copy = copy2;
+				else if (def instanceof GroupPropertyDefinition) {
+					Cardinality cardinality = ((GroupPropertyDefinition) def)
+							.getConstraint(Cardinality.class);
+					mandatory = cardinality.getMinOccurs() > 0;
 				}
-
-				image = copy;
-				overlayedImages.put(conf, copy);
 			}
-			else {
-				image = overlayedImage;
+
+			boolean deflt = false;
+			boolean faded = false;
+			if (entityDef != null) {
+				// entity definition needed to determine if item is a default
+				// geometry
+				deflt = DefaultGeometryUtil.isDefaultGeometry(entityDef);
+
+				// and to determine population
+				PopulationService ps = (PopulationService) PlatformUI.getWorkbench().getService(
+						PopulationService.class);
+				if (ps != null && ps.hasPopulation(entityDef.getSchemaSpace())) {
+					Population pop = ps.getPopulation(entityDef);
+					faded = (pop != null && pop.getOverallCount() == 0);
+				}
+			}
+
+			if (deflt || mandatory || attribute || faded) {
+				// overlayed image
+				ImageConf conf = new ImageConf(imageName, attribute, deflt, mandatory, faded);
+				Image overlayedImage = overlayedImages.get(conf);
+
+				if (overlayedImage == null) {
+					// apply overlays to image
+
+					Image copy = new Image(image.getDevice(), image.getBounds());
+					// draw on image
+					GC gc = new GC(copy);
+					try {
+						gc.drawImage(image, 0, 0);
+						if (attribute) {
+							gc.drawImage(attribOverlay, 0, 0);
+						}
+						if (deflt) {
+							gc.drawImage(defOverlay, 0, 0);
+						}
+						if (mandatory) {
+							gc.drawImage(mandatoryOverlay, 0, 0);
+						}
+					} finally {
+						gc.dispose();
+					}
+
+					if (faded) {
+						ImageData imgData = copy.getImageData();
+						imgData.alpha = 150;
+						Image copy2 = new Image(image.getDevice(), imgData);
+						copy.dispose();
+						copy = copy2;
+					}
+
+					image = copy;
+					overlayedImages.put(conf, copy);
+				}
+				else {
+					image = overlayedImage;
+				}
 			}
 		}
-//		}
 
 		return image;
 	}
@@ -357,6 +466,20 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 	 */
 	public void setSuppressMandatory(boolean suppressMandatory) {
 		this.suppressMandatory = suppressMandatory;
+	}
+
+	/**
+	 * @return the showStyleLegend
+	 */
+	public boolean isShowStyleLegend() {
+		return showStyleLegend;
+	}
+
+	/**
+	 * @param showStyleLegend the showStyleLegend to set
+	 */
+	public void setShowStyleLegend(boolean showStyleLegend) {
+		this.showStyleLegend = showStyleLegend;
 	}
 
 }

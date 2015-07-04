@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.common.instance.model;
 
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+
 /**
  * This enumeration is used to identify the different data sets handled by the
  * application.
@@ -24,5 +26,37 @@ public enum DataSet {
 	/** The source data set */
 	SOURCE,
 	/** The transformed data set */
-	TRANSFORMED
+	TRANSFORMED;
+
+	/**
+	 * Yield the (default) data set for a schema space.
+	 * 
+	 * @param ssid the schema space ID
+	 * @return the corresponding data set
+	 */
+	public static DataSet forSchemaSpace(SchemaSpaceID ssid) {
+		if (ssid == null) {
+			return null;
+		}
+		switch (ssid) {
+		case SOURCE:
+			return DataSet.SOURCE;
+		case TARGET:
+			return DataSet.TRANSFORMED;
+		}
+		return null;
+	}
+
+	/**
+	 * @return the ID of the schema space associated with the data set
+	 */
+	public SchemaSpaceID getSchemaSpace() {
+		switch (this) {
+		case SOURCE:
+			return SchemaSpaceID.SOURCE;
+		case TRANSFORMED:
+			return SchemaSpaceID.TARGET;
+		}
+		throw new IllegalStateException("Unknown data set type");
+	}
 }

@@ -64,7 +64,7 @@ public class ViewerEntityTray extends DialogTray {
 		// viewer for dummy entity
 		TreeViewer viewer = new TreeViewer(page, SWT.BORDER);
 		viewer.setContentProvider(new EntityContentProvider());
-		viewer.setLabelProvider(new StyledDefinitionLabelProvider());
+		viewer.setLabelProvider(new StyledDefinitionLabelProvider(viewer));
 		viewer.setInput(Collections.singleton(entity));
 		viewer.getControl().setEnabled(false);
 		viewer.expandAll();

@@ -41,7 +41,7 @@ import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
  */
 public class PropertiesLabelProvider extends LabelProvider {
 
-	private final DefinitionLabelProvider definitionLabels = new DefinitionLabelProvider(true);
+	private final DefinitionLabelProvider definitionLabels = new DefinitionLabelProvider(null, true);
 
 	private final FunctionLabelProvider functionLabels = new FunctionLabelProvider();
 

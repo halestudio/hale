@@ -17,6 +17,8 @@ package eu.esdihumboldt.hale.ui.common.service.style;
 
 import java.net.URL;
 
+import javax.annotation.Nullable;
+
 import org.eclipse.swt.graphics.RGB;
 import org.geotools.styling.Style;
 
@@ -35,10 +37,10 @@ public interface StyleService {
 	 * Get the style for a given type.
 	 * 
 	 * @param type the type definition
-	 * @param dataSet the type data set
+	 * @param dataSet the type data set if known
 	 * @return a {@link Style} for the given type.
 	 */
-	public Style getStyle(TypeDefinition type, DataSet dataSet);
+	public Style getStyle(TypeDefinition type, @Nullable DataSet dataSet);
 
 	/**
 	 * Get a style combining all registered styles.

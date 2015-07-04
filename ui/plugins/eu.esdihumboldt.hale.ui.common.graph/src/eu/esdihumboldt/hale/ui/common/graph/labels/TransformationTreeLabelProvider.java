@@ -27,6 +27,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.zest.core.viewers.EntityConnectionData;
+import org.eclipse.zest.core.viewers.GraphViewer;
 
 import com.google.common.base.Joiner;
 
@@ -66,11 +67,13 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 	/**
 	 * Default constructor
 	 * 
+	 * @param associatedViewer the associated viewer (needed for style legend
+	 *            support) or <code>null</code>
 	 * @param provider the service provider that may be needed to obtain cell
 	 *            explanations, may be <code>null</code>
 	 */
-	public TransformationTreeLabelProvider(ServiceProvider provider) {
-		super(provider);
+	public TransformationTreeLabelProvider(GraphViewer associatedViewer, ServiceProvider provider) {
+		super(associatedViewer, provider);
 
 		Display display = PlatformUI.getWorkbench().getDisplay();
 		disabledBackgroundColor = new Color(display, 240, 240, 240);
@@ -78,11 +81,11 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 	}
 
 	/**
-	 * @see GraphLabelProvider#createDefinitionLabels()
+	 * @see GraphLabelProvider#createDefinitionLabels(GraphViewer)
 	 */
 	@Override
-	protected LabelProvider createDefinitionLabels() {
-		return new DefinitionLabelProvider(false, true);
+	protected LabelProvider createDefinitionLabels(GraphViewer viewer) {
+		return new DefinitionLabelProvider(viewer, false, true);
 	}
 
 	/**

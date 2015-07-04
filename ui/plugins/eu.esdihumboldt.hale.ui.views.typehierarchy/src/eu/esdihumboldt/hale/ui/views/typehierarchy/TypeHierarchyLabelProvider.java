@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.ui.views.typehierarchy;
 
 import org.eclipse.jface.viewers.IColorProvider;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -33,6 +34,14 @@ import eu.esdihumboldt.hale.ui.views.typehierarchy.TypeHierarchyContentProvider.
 public class TypeHierarchyLabelProvider extends DefinitionLabelProvider implements IColorProvider {
 
 	private Color mainColor;
+
+	/**
+	 * @param associatedViewer the associated viewer (needed for style legend
+	 *            support) or <code>null</code>
+	 */
+	public TypeHierarchyLabelProvider(Viewer associatedViewer) {
+		super(associatedViewer);
+	}
 
 	/**
 	 * @see DefinitionLabelProvider#getText(Object)
