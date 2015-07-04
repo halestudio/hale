@@ -353,23 +353,18 @@
          <activeWhen>
             <with
                   variable="selection">
-               <and>
-                  <iterate
-                        ifEmpty="false"
-                        operator="or">
-                     <and>
-	                     <instanceof
-	                           value="eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition">
-	                     </instanceof>
-	                     <test
-	                           property="eu.esdihumboldt.hale.ui.service.schema.type.allow_mark_unmappable">
-	                     </test>
-                     </and>
-                  </iterate>
-                  <count
-                        value="1">
-                  </count>
-               </and>
+               <iterate
+                     ifEmpty="false"
+                     operator="and">
+                  <and>
+                     <instanceof
+                           value="eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition">
+                     </instanceof>
+                     <test
+                           property="eu.esdihumboldt.hale.ui.service.schema.type.allow_mark_unmappable">
+                     </test>
+                  </and>
+               </iterate>
             </with>
          </activeWhen>
       </handler>
