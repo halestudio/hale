@@ -299,6 +299,14 @@
                </visibleWhen>
             </command>
             <command
+                  commandId="eu.esdihumboldt.hale.ui.style.randomcolor"
+                  label="Assign random color"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="true">
+               </visibleWhen>
+            </command>
+            <command
                   commandId="eu.esdihumboldt.hale.ui.geometry.setAsDefault"
                   style="push">
                <visibleWhen
@@ -617,6 +625,12 @@
             contextId="org.eclipse.ui.contexts.window"
             schemeId="eu.esdihumboldt.hale.ui.application.bindings"
             sequence="M1+M2+Z">
+      </key>
+      <key
+            commandId="eu.esdihumboldt.hale.ui.style.randomcolor"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="eu.esdihumboldt.hale.ui.application.bindings"
+            sequence="M1+M2+R">
       </key>
    </extension>
    <extension

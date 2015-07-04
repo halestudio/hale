@@ -314,7 +314,9 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 				&& hasGeometry((TypeDefinition) def)) {
 			TypeDefinition type = (TypeDefinition) def;
 
-			DataSet dataSet = DataSet.SOURCE; // FIXME how to find out?
+			DataSet dataSet = DataSet.SOURCE;
+			// XXX dataSet: how to find out? - does not matter with only using
+			// defined styles
 			if (entityDef != null) {
 				dataSet = DataSet.forSchemaSpace(entityDef.getSchemaSpace());
 			}

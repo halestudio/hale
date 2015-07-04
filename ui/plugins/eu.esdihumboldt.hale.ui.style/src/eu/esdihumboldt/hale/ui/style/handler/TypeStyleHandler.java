@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.style;
+package eu.esdihumboldt.hale.ui.style.handler;
 
 import java.util.Map.Entry;
 
@@ -39,6 +39,7 @@ import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
+import eu.esdihumboldt.hale.ui.style.DataSetTypeSelectionDialog;
 import eu.esdihumboldt.hale.ui.style.dialog.FeatureStyleDialog;
 import eu.esdihumboldt.util.Pair;
 
@@ -55,39 +56,9 @@ public class TypeStyleHandler extends AbstractHandler {
 	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		ISelection selection = HandlerUtil.getCurrentSelection(event);
 
 		// collect types and associated data sets
-		SetMultimap<DataSet, TypeDefinition> types = HashMultimap.create();
-		if (selection instanceof IStructuredSelection && !selection.isEmpty()) {
-			for (Object object : ((IStructuredSelection) selection).toArray()) {
-				if (object instanceof TypeDefinition) {
-					TypeDefinition type = (TypeDefinition) object;
-					if (!types.containsValue(type)) {
-						DataSet dataSet = findDataSet(type);
-						types.put(dataSet, type);
-					}
-				}
-				if (object instanceof EntityDefinition) {
-					EntityDefinition entityDef = (EntityDefinition) object;
-					if (entityDef.getPropertyPath().isEmpty()) {
-						DataSet dataSet = (entityDef.getSchemaSpace() == SchemaSpaceID.SOURCE) ? (DataSet.SOURCE)
-								: (DataSet.TRANSFORMED);
-						types.put(dataSet, entityDef.getType());
-					}
-				}
-				if (object instanceof InstanceReference) {
-					InstanceService is = (InstanceService) HandlerUtil
-							.getActiveWorkbenchWindow(event).getWorkbench()
-							.getService(InstanceService.class);
-					object = is.getInstance((InstanceReference) object);
-				}
-				if (object instanceof Instance) {
-					Instance instance = (Instance) object;
-					types.put(instance.getDataSet(), instance.getDefinition());
-				}
-			}
-		}
+		SetMultimap<DataSet, TypeDefinition> types = collectTypesFromSelection(event);
 
 		Pair<TypeDefinition, DataSet> typeInfo = null;
 
@@ -137,6 +108,50 @@ public class TypeStyleHandler extends AbstractHandler {
 
 		// default to source
 		return DataSet.SOURCE;
+	}
+
+	/**
+	 * Collect all type definitions and data sets from the current selection of
+	 * {@link TypeDefinition}s, {@link EntityDefinition}s, {@link Instance}s and
+	 * {@link InstanceReference}s.
+	 * 
+	 * @param event the handler execution event
+	 * @return the collected type definitions
+	 */
+	public static SetMultimap<DataSet, TypeDefinition> collectTypesFromSelection(
+			ExecutionEvent event) {
+		SetMultimap<DataSet, TypeDefinition> types = HashMultimap.create();
+		ISelection selection = HandlerUtil.getCurrentSelection(event);
+		if (selection instanceof IStructuredSelection && !selection.isEmpty()) {
+			for (Object object : ((IStructuredSelection) selection).toArray()) {
+				if (object instanceof TypeDefinition) {
+					TypeDefinition type = (TypeDefinition) object;
+					if (!types.containsValue(type)) {
+						DataSet dataSet = findDataSet(type);
+						types.put(dataSet, type);
+					}
+				}
+				if (object instanceof EntityDefinition) {
+					EntityDefinition entityDef = (EntityDefinition) object;
+					if (entityDef.getPropertyPath().isEmpty()) {
+						DataSet dataSet = (entityDef.getSchemaSpace() == SchemaSpaceID.SOURCE) ? (DataSet.SOURCE)
+								: (DataSet.TRANSFORMED);
+						types.put(dataSet, entityDef.getType());
+					}
+				}
+				if (object instanceof InstanceReference) {
+					InstanceService is = (InstanceService) HandlerUtil
+							.getActiveWorkbenchWindow(event).getWorkbench()
+							.getService(InstanceService.class);
+					object = is.getInstance((InstanceReference) object);
+				}
+				if (object instanceof Instance) {
+					Instance instance = (Instance) object;
+					types.put(instance.getDataSet(), instance.getDefinition());
+				}
+			}
+		}
+		return types;
 	}
 
 }

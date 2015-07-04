@@ -29,12 +29,43 @@
             id="eu.esdihumboldt.hale.ui.style.typestyle"
             name="Change style">
       </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.style.randomcolor"
+            name="Assign random color">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="eu.esdihumboldt.hale.ui.style.TypeStyleHandler"
+            class="eu.esdihumboldt.hale.ui.style.handler.TypeStyleHandler"
             commandId="eu.esdihumboldt.hale.ui.style.typestyle">
+         <activeWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false"
+                     operator="or">
+                  <or>
+                     <instanceof
+                           value="eu.esdihumboldt.hale.common.schema.model.TypeDefinition">
+                     </instanceof>
+                     <instanceof
+                           value="eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition">
+                     </instanceof>
+                     <instanceof
+                           value="eu.esdihumboldt.hale.common.instance.model.InstanceReference">
+                     </instanceof>
+                     <instanceof
+                           value="eu.esdihumboldt.hale.common.instance.model.Instance">
+                     </instanceof>
+                  </or>
+               </iterate>
+            </with>
+         </activeWhen>
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.style.handler.TypeRandomColorHandler"
+            commandId="eu.esdihumboldt.hale.ui.style.randomcolor">
          <activeWhen>
             <with
                   variable="selection">
@@ -72,6 +103,13 @@
                   checkEnabled="true">
             </visibleWhen>
          </command>
+         <command
+               commandId="eu.esdihumboldt.hale.ui.style.randomcolor"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
+         </command>
       </menuContribution>
    </extension>
    <extension
@@ -79,6 +117,10 @@
       <image
             commandId="eu.esdihumboldt.hale.ui.style.typestyle"
             icon="icons/styles.gif">
+      </image>
+      <image
+            commandId="eu.esdihumboldt.hale.ui.style.randomcolor"
+            icon="icons/random.gif">
       </image>
    </extension>
    <extension
