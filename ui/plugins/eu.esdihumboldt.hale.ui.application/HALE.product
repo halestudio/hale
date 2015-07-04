@@ -14,16 +14,16 @@ Build ___build___
 Revision ___revision___
 
 Project page:
-http://www.esdi-community.eu/projects/show/hale
+http://www.wetransform.to/products/hale
 
 Forum:
 http://www.esdi-community.eu/projects/hale/boards
 
 News:
-http://blog.dhpanel.eu
+http://www.wetransform.to/news
 
 Get professional support:
-http://www.wetransform.to/products/hale
+http://www.wetransform.to/services/support
       </text>
    </aboutInfo>
 
@@ -62,6 +62,7 @@ http://www.wetransform.to/products/hale
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
