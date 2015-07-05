@@ -110,7 +110,13 @@ public class DefinitionLabelProvider extends LabelProvider {
 						@Override
 						public void run() {
 							// update labels
-							associatedViewer.refresh();
+							if (!associatedViewer.getControl().isDisposed()) {
+								try {
+									associatedViewer.refresh();
+								} catch (Exception e) {
+									// ignore
+								}
+							}
 						}
 					});
 				}
