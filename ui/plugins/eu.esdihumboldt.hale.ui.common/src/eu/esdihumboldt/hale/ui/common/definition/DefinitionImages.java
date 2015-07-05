@@ -331,13 +331,28 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 				ImageData imgData = SwingRcpUtilities.convertToSWT(img);
 				image = new Image(Display.getCurrent(), imgData);
 
-				Image old = null;
+				final Image old;
 				if (styleImages.containsKey(typeKey)) {
 					old = styleImages.get(typeKey);
 				}
+				else {
+					old = null;
+				}
 				styleImages.put(typeKey, image);
 				if (old != null) {
-					old.dispose(); // ok here?
+					/*
+					 * Defer disposing the old image, otherwise there may be
+					 * problems with SWT trying to access an already disposed
+					 * image (e.g. when switching between hierarchy and list
+					 * view in the Schema Explorer).
+					 */
+					PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+
+						@Override
+						public void run() {
+							old.dispose();
+						}
+					});
 				}
 			}
 		}
