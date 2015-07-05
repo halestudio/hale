@@ -55,21 +55,11 @@ class PomGenerator {
 		// determine context qualifier to use
 		// default is buildId
 		def contextQualifier = project.buildId
-
-        /*
-         * Using release qualifiers for all bundles is safe as long as the
-         * version numbers are properly updated (see RELEASE.md).
-         */
-        contextQualifier = project.contextQualifier
-        
-        /* 
-         * XXX Outdated:
-		// use the release contextQualifier for application bundles only
+		// use the RELEASE contextQualifier for application bundles only
 		// that have the same version as the product
 		if (version.startsWith(project.version) && symbolicName.endsWith('.application')) {
-			contextQualifier = project.contextQualifier
+			contextQualifier = project.contextQualifier 
 		}
-        */
 		
         new File(path, 'pom.xml').withWriter { w ->
             def template = new GStringTemplateEngine().createTemplate(resolveTemplate(templateName))
