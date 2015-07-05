@@ -18,6 +18,108 @@
 		file parser in HALE 2.8 and earlier is very strict and fails if it
 		encounters anything unknown.</p>
 
+	<!-- 2.9.3 -->
+	<h2 id="2_9_3_Header">2.9.3</h2>
+	<p>HALE 2.9.3 is a maintenance release with a few tweaks and bug
+		fixes, but also two noticeable features that were added.</p>
+	<table border="0" cellpadding="15" cellspacing="0" class="news"
+		id="2_9_3">
+		<tbody>
+			
+			<!-- New features -->
+			<tr>
+				<td class="section" colspan="2" id="2_9_3_Features" rowspan="1"><h2>New features</h2></td>
+			</tr>
+
+			<tr id="spatialite">
+				<td class="title">Support for SQLite and SpatiaLite</td>
+				<td class="content">You can now work with SQLite and SpatiaLite
+					files using HALE. This was made possible by a <a
+					href="http://www.geo-solutions.it/blog/inspire-support-in-geoserver-made-easy-with-hale/"
+					target="_blank">contribution from GeoSolutions</a>. Special thanks
+					to Stefano Costa and Sandro	Salari!
+					<p>
+						Please see the corresponding help topics for more information on
+						SQLite/SpatiaLite <a
+							href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/reference/import/sqlite.html">import</a>
+						and <a
+							href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/reference/export/sqlite.html">export</a>.
+					</p>
+				</td>
+			</tr>
+
+			<tr id="colorstyles">
+				<td class="title">Colored styles generator</td>
+				<td class="content">Create individual styles for your feature
+					types with just one click. Using specific styles provides a better
+					overview in the map. To easily identify associated types, the type
+					symbol reflects the style.
+					<p>As an additional option you can quickly assign a random
+						color to a selected type. For more control specify a custom style
+						with the style editor.</p>
+					<p>
+						<img src="2_9_0_images/styles-colors.png" />
+					</p>
+				</td>
+			</tr>
+
+			<!-- Tweaks and bug fixes -->
+			<tr>
+				<td class="section" colspan="2" id="2_9_3_TWX" rowspan="1"><h2>Tweaks &amp; bug fixes</h2></td>
+			</tr>
+			
+			<tr id="inspire4">
+				<td class="title">INSPIRE 4.0 schema presets</td>
+				<td class="content">Experienced HALE users know they can load
+					any GML/XML Schema using the corresponding XSD file. However, it's
+					more convenient to just search and select a schema from the presets
+					defined in HALE. INSPIRE version 4.0 schemas now included.</td>
+			</tr>
+			
+			<tr id="inspire_nil">
+				<td class="title">Improved UX for INSPIRE <i>voidable</i> attributes</td>
+				<td class="content">When assigning a <i>nilReason</i> for a <i>voidable</i>
+					attribute, so far you were offered the values that are proposed by
+					GML, not those defined in INSPIRE. To make it more convenient for
+					you, you can now select from the INSPIRE values <i>unpopulated</i>, <i>unknown</i>
+					and <i>withheld</i>, even though those are not defined in the
+					schema itself. Thanks to Helen Eriksson for this idea on making it
+					easier for users to map to INSPIRE schemas.
+				</td>
+			</tr>
+			
+			<tr id="tweaks_2_9_3">
+				<td class="title">Minor tweaks</td>
+				<td class="content">
+					<ul>
+						<li><i>Schema Explorer</i>: added filter to hide unpopulated types (e.g. for large schemas).</li>
+						<li>Improved GML export: <i>srsDimension</i> is provided and you can select a preferred prefix for representing EPSG codes.</li>
+						<li>You can now specify a character encoding to use when loading a schema from a Shapefile.</li>
+						<li>Excluding types from the mapping via the <i>Schema Explorer</i> now works also with a selection of multiple types.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr id="fixes_2_9_3">
+				<td class="title">Bug fixes</td>
+				<td class="content">
+					<ul>
+						<li>Fixed wrong detection of GML namespace that could happen if certain GML 3.3 schemas were imported in a schema (Thanks to Fabio Vinci for the bug report).</li>
+						<li>Fixed error on XML export that could lead to an invalid file (Thanks to Giuseppe Procino for the bug report).</li>
+						<li>Fixed parsing GML geometries defined through a <i>Ring</i> instead of a <i>LinearRing</i>.</li>
+						<li>Show 3D WKT (instead of 2D WKT) for 3D geometries in the data views.</li>
+						<li>Fixed error that could lead to a <i>Merge</i> relation no longer being editable after a schema upgrade.</li>
+						<li>Variable values for Groovy scripts are no longer converted and passed as a String by default.</li>
+						<li>Fixed deadlock that could occur when disabling the Groovy restriction when a project is loaded.</li>
+						<li>Fixed behavior that could lead to a drastic performance loss for <i>Merge</i> and <i>Join</i> operations on very complex instances.</li>
+						<li>Fixed saving a project as a project archive if resources include a query string (e.g. WFS requests).</li>
+					</ul>
+				</td>
+			</tr>
+			
+		</tbody>
+	</table>
+
 	<!-- 2.9.1 -->
 	<h2 id="2_9_1_Header">2.9.1</h2>
 	<p>HALE 2.9.1 is a maintenance release with a few tweaks and bug
