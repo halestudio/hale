@@ -19,7 +19,9 @@ package eu.esdihumboldt.hale.io.gml.geometry;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -32,6 +34,7 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.io.gml.geometry.extension.InterlisHandlerConfExtension;
 import eu.esdihumboldt.util.reflection.ReflectionHelper;
 
 /**
@@ -61,6 +64,7 @@ public class Geometries implements GeometryHandler {
 	 * Type names mapped to geometry handlers
 	 */
 	private final Multimap<QName, GeometryHandler> handlers = HashMultimap.create();
+	private final Map<String, GeometryHandler> interlisHandlers = new HashMap<String, GeometryHandler>();
 
 	/**
 	 * Default constructor
@@ -70,7 +74,11 @@ public class Geometries implements GeometryHandler {
 		try {
 			List<Class<?>> classes = ReflectionHelper.getClassesFromPackage(getClass().getPackage()
 					.getName() + ".handler", getClass().getClassLoader());
+			// Interlis classes
+			InterlisHandlerConfExtension extension = InterlisHandlerConfExtension.getInstance();
+			List<Class<?>> handlers = extension.getInterlisHandlers();
 
+			classes.addAll(handlers);
 			for (Class<?> clazz : classes) {
 				try {
 					if (!Modifier.isAbstract(clazz.getModifiers())
@@ -95,9 +103,19 @@ public class Geometries implements GeometryHandler {
 	 * @param handler the geometry handler
 	 */
 	public void register(GeometryHandler handler) {
-		synchronized (handlers) {
-			for (QName name : handler.getSupportedTypes()) {
-				handlers.put(name, handler);
+
+		if (handler.identifiesTypeByName()) {
+			synchronized (interlisHandlers) {
+				for (QName name : handler.getSupportedTypes()) {
+					interlisHandlers.put(name.getLocalPart(), handler);
+				}
+			}
+		}
+		else {
+			synchronized (handlers) {
+				for (QName name : handler.getSupportedTypes()) {
+					handlers.put(name, handler);
+				}
 			}
 		}
 	}
@@ -116,14 +134,35 @@ public class Geometries implements GeometryHandler {
 	@Override
 	public Iterable<TypeConstraint> getTypeConstraints(TypeDefinition type)
 			throws GeometryNotSupportedException {
-		synchronized (handlers) {
-			for (GeometryHandler handler : handlers.get(type.getName())) {
-				try {
-					return handler.getTypeConstraints(type);
-				} catch (Throwable e) {
-					// ignore
+		if (supportsType(type)) {
+			synchronized (handlers) {
+
+				for (GeometryHandler handler : handlers.get(type.getName())) {
+					try {
+						return handler.getTypeConstraints(type);
+					} catch (Throwable e) {
+						// ignore
+					}
 				}
 			}
+		}
+		else if (type.getName().getNamespaceURI().startsWith(INTERLIS_NAME)) {
+
+			String[] n = type.getName().getNamespaceURI().split("/");
+			String name = n[n.length - 1];
+			GeometryHandler handler = interlisHandlers.get(name);
+
+			if (handler != null)
+				synchronized (interlisHandlers) {
+
+					try {
+						return handler.getTypeConstraints(type);
+					} catch (Throwable e) {
+						// do nothing
+					}
+
+				}
+
 		}
 
 		throw new GeometryNotSupportedException("No geometry handler for type available");
@@ -148,6 +187,23 @@ public class Geometries implements GeometryHandler {
 		}
 
 		throw new GeometryNotSupportedException("No geometry handler for type available");
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler#identifyTypeByName()
+	 */
+	@Override
+	public boolean identifiesTypeByName() {
+
+		return false;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler#supportsType(eu.esdihumboldt.hale.common.schema.model.TypeDefinition)
+	 */
+	@Override
+	public boolean supportsType(TypeDefinition type) {
+		return handlers.containsKey(type.getName());
 	}
 
 }

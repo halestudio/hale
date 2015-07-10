@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.io.handlers">
+      <handlers
+            geometryhandler="eu.esdihumboldt.hale.io.interlis.handlers.InterlisLineStringHandler"
+            handlertype="interlis"
+            id="InterlisLineStringHandler">
+      </handlers>
+      <handlers
+            geometryhandler="eu.esdihumboldt.hale.io.interlis.handlers.InterlisPolygonHandler"
+            handlertype="interlis"
+            id="InterlisPolygonHandler">
+      </handlers>
+      <handlers
+            geometryhandler="eu.esdihumboldt.hale.io.interlis.handlers.InterlisMultiPolygonHandler"
+            handlertype="interlis"
+            id="InterlisMultiPolygonHandler">
+      </handlers>
+   </extension>
+
+</plugin>

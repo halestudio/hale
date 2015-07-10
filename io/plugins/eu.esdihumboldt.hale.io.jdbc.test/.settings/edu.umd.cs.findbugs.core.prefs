@@ -1,5 +1,10 @@
+
 #Created from default preferences May 7, 2015 12:54:04 PM
 #Thu May 07 12:54:04 CEST 2015
+
+
+
+
 cloud_id=edu.umd.cs.findbugs.cloud.doNothingCloud
 detectorAppendingToAnObjectOutputStream=AppendingToAnObjectOutputStream|true
 detectorAtomicityProblem=AtomicityProblem|true

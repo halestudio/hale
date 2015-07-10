@@ -1,30 +1,31 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: GML schema geometry support
-Bundle-SymbolicName: eu.esdihumboldt.hale.io.gml.geometry
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.gml.geometry;singleton:=true
 Bundle-Version: 2.9.3.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.base;version="9.0.0",
  com.google.common.collect;version="9.0.0",
+ com.vividsolutions.jts.awt;version="1.13.0",
  com.vividsolutions.jts.geom,
+ com.vividsolutions.jts.util;version="1.13.0",
+ de.fhg.igd.eclipse.util.extension,
+ de.fhg.igd.eclipse.util.extension.simple,
  de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.convert,
- eu.esdihumboldt.hale.common.core.io.supplier,
- eu.esdihumboldt.hale.common.instance.geometry,
- eu.esdihumboldt.hale.common.instance.geometry.impl,
- eu.esdihumboldt.hale.common.instance.helper,
- eu.esdihumboldt.hale.common.instance.model,
- eu.esdihumboldt.hale.common.schema.geometry,
- eu.esdihumboldt.hale.common.schema.model,
- eu.esdihumboldt.hale.common.schema.model.constraint,
- eu.esdihumboldt.hale.common.schema.model.constraint.type,
  eu.esdihumboldt.util.reflection,
  javax.annotation,
+ org.eclipse.core.runtime;version="3.4.0",
  org.geotools.gml2;version="12.2.0.combined",
+ org.opengis.geometry.coordinate;version="12.2.0",
  org.opengis.referencing.crs;version="8.0.0",
  org.slf4j;version="1.5.11",
  org.springframework.core.convert;version="3.0.0.RELEASE"
 Export-Package: eu.esdihumboldt.hale.io.gml.geometry,
  eu.esdihumboldt.hale.io.gml.geometry.constraint,
+ eu.esdihumboldt.hale.io.gml.geometry.extension,
  eu.esdihumboldt.hale.io.gml.geometry.handler
 Bundle-Vendor: data harmonisation panel
+Require-Bundle: eu.esdihumboldt.hale.common.core;bundle-version="2.9.3",
+ eu.esdihumboldt.hale.common.schema;bundle-version="2.9.3",
+ eu.esdihumboldt.hale.common.instance;bundle-version="2.9.3"

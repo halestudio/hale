@@ -38,11 +38,28 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 public interface GeometryHandler {
 
 	/**
+	 * interlis name
+	 */
+	public static final String INTERLIS_NAME = "http://www.interlis.ch/INTERLIS";
+
+	/**
 	 * Get the geometry types supported by the geometry handler.
 	 * 
 	 * @return the names of the supported types
 	 */
 	public Set<QName> getSupportedTypes();
+
+	/**
+	 * @param qname
+	 * @return
+	 */
+	public boolean identifiesTypeByName();
+
+	/**
+	 * @param type
+	 * @return
+	 */
+	public boolean supportsType(TypeDefinition type);
 
 	/**
 	 * Get the type constraints to associated with a geometry type definition.<br>

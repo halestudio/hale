@@ -588,6 +588,17 @@ public abstract class XmlTypeUtil {
 			// ignore - is no geometry or is not recognized
 		}
 
+		// XXX added to read xml internal structure for interlis
+		/*
+		 * String[] geomName = type.getName().getNamespaceURI().split("/");
+		 * String geom = geomName[geomName.length - 1]; if
+		 * (type.getName().getLocalPart().equals("POLYLINE") ||
+		 * geom.equals("POLYLINE")) {
+		 * type.setConstraint(Binding.get(GeometryProperty.class));
+		 * type.setConstraint(AugmentedValueFlag.ENABLED);
+		 * type.setConstraint(SkipGeometryValidation.getInstance()); }
+		 */
+
 		// XXX the old way
 //		if (GML_GEOMETRY_TYPES.contains(type.getName())) {
 //			//XXX just assign GeometryProperty binding for now

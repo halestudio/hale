@@ -23,6 +23,8 @@ import javax.xml.namespace.QName;
 
 import com.vividsolutions.jts.geom.GeometryFactory;
 
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+
 /**
  * Base class for geometry handlers.
  * 
@@ -51,6 +53,16 @@ public abstract class AbstractGeometryHandler implements GeometryHandler, GMLCon
 	 * @return the set of supported type names
 	 */
 	protected abstract Set<? extends QName> initSupportedTypes();
+
+	@Override
+	public boolean identifiesTypeByName() {
+		return false;
+	}
+
+	@Override
+	public boolean supportsType(TypeDefinition type) {
+		return getSupportedTypes().contains(type.getName());
+	}
 
 	/**
 	 * Get a geometry factory instance.

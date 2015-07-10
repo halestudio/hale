@@ -1,13 +1,36 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="253">
+<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="256">
 <locations>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="de.fhg.igd.equinox.test.feature.feature.group" version="1.1.0.201503301812"/>
+<repository location="http://hale.igd.fraunhofer.de/jenkins/job/site-equinox-test/4/updatesite/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="platform.feature.feature.group" version="1.0.0.bnd-xGYnKw"/>
+<repository location="http://127.0.0.1:8000"/>
+</location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.sdk.ide" version="4.4.1.M20140925-0400"/>
 <repository location="http://download.eclipse.org/eclipse/updates/4.4"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="de.fhg.igd.eclipse.util.feature.feature.group" version="1.0.0.201407081822"/>
+<unit id="de.fhg.igd.eclipse.ui.util.feature.feature.group" version="1.0.0.201407081822"/>
+<repository location="http://hale.igd.fraunhofer.de/jenkins/job/site-eclipse-util/1/updatesite"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="de.fhg.igd.equinox.test.feature.feature.group" version="1.1.0.201503301812"/>
 <repository location="http://hale.igd.fraunhofer.de/jenkins/job/site-equinox-test/4/updatesite/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.scala-ide.sdt.feature.feature.group" version="3.0.3.v-2_10-201403271605-8d2c756"/>
+<unit id="org.scala-ide.sdt.source.feature.feature.group" version="3.0.3.v-2_10-201403271605-8d2c756"/>
+<repository location="http://download.scala-ide.org/sdk/helium/e38/scala210/stable/site"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.scala-ide.sdt.feature.feature.group" version="3.0.3.v-2_10-201403271605-8d2c756"/>
+<unit id="org.scala-ide.sdt.source.feature.feature.group" version="3.0.3.v-2_10-201403271605-8d2c756"/>
+<repository location="http://download.scala-ide.org/sdk/helium/e38/scala210/stable/site"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.gef.sdk.feature.group" version="3.9.101.201408150207"/>
@@ -17,22 +40,65 @@
 <unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.7.0.v201409021027"/>
 <unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.7.0.v201409021051"/>
 <unit id="org.eclipse.equinox.sdk.feature.group" version="3.10.0.v20140909-1633"/>
+<unit id="eu.esdihumboldt.hale.platform.zest.source.feature.group" version="2.0.0.201204272302-i20150413"/>
+<unit id="platform.shared.groovy-all.feature.group" version="2.3.7.i20150413"/>
+<unit id="platform.shared.postgis.feature.group" version="3.0.0.i20150413"/>
+<unit id="platform.shared.spring.core.source.feature.group" version="3.1.1.RELEASE-i20150413"/>
+<unit id="platform.shared.gemini-blueprint.source.feature.group" version="1.0.0.RELEASE-i20150413"/>
+<unit id="eu.esdihumboldt.hale.platform.schemacrawler.feature.group" version="12.4.2.i20150612"/>
+<unit id="eu.esdihumboldt.hale.platform.jetty.source.feature.group" version="9.2.1.v20140609-i20150511"/>
+<unit id="platform.shared.wicket.feature.group" version="6.10.0.i20150413"/>
+<unit id="eu.esdihumboldt.hale.platform.wicket-bootstrap.source.feature.group" version="0.8.4.i201504131740"/>
+<unit id="platform.shared.spring.modules.source.feature.group" version="3.1.1.RELEASE-i20150413"/>
+<unit id="platform.shared.geotools.feature.group" version="12.2.0.i20150610"/>
+<unit id="platform.shared.gemini-blueprint.feature.group" version="1.0.0.RELEASE-i20150413"/>
+<unit id="eu.esdihumboldt.hale.platform.resources.source.feature.group" version="3.0.0.i20150511"/>
+<unit id="platform.shared.orientdb.graphdb.feature.group" version="1.5.1.i201504131603"/>
+<unit id="platform.shared.wicket.source.feature.group" version="6.10.0.i20150413"/>
+<unit id="eu.esdihumboldt.hale.platform.cs3d-map.source.feature.group" version="8.0.1.i20150413"/>
+<unit id="platform.shared.spring.security.feature.group" version="3.1.1.RELEASE-i20150413"/>
+<unit id="eu.esdihumboldt.hale.platform.groovy-sandbox.source.feature.group" version="1.6.0.hale-i20150402"/>
+<unit id="platform.shared.spring.security.source.feature.group" version="3.1.1.RELEASE-i20150413"/>
+<unit id="platform.shared.poi.source.feature.group" version="3.9.0.i20150413"/>
+<unit id="eu.esdihumboldt.hale.platform.schemacrawler.source.feature.group" version="12.4.2.i20150612"/>
+<unit id="platform.shared.slf4jlogback.feature.group" version="1.7.10.i20150413"/>
+<unit id="platform.shared.geotools.source.feature.group" version="12.2.0.i20150610"/>
+<unit id="eu.esdihumboldt.hale.platform.feature.group" version="3.0.0.i20150612"/>
+<unit id="com.spotify.docker-client.source.feature.group" version="2.7.7.i201504131740"/>
+<unit id="platform.shared.groovy-all.source.feature.group" version="2.3.7.i20150413"/>
+<unit id="platform.shared.slf4jlogback.source.feature.group" version="1.7.10.i20150413"/>
+<unit id="eu.esdihumboldt.hale.platform.resources.feature.group" version="3.0.0.i20150511"/>
+<unit id="platform.shared.spring.modules.feature.group" version="3.1.1.RELEASE-i20150413"/>
+<unit id="eu.esdihumboldt.hale.platform.groovy-sandbox.feature.group" version="1.6.0.hale-i20150402"/>
+<unit id="platform.shared.poi.feature.group" version="3.9.0.i20150413"/>
+<unit id="platform.shared.spring.core.feature.group" version="3.1.1.RELEASE-i20150413"/>
+<unit id="platform.shared.orientdb.core.source.feature.group" version="1.5.1.i20150413"/>
+<unit id="eu.esdihumboldt.hale.platform.jetty.feature.group" version="9.2.1.v20140609-i20150511"/>
+<unit id="platform.shared.postgis.source.feature.group" version="3.0.0.i20150413"/>
+<unit id="com.spotify.docker-client.feature.group" version="2.7.7.i201504131740"/>
+<unit id="eu.esdihumboldt.hale.platform.cs3d-map.feature.group" version="8.0.1.i20150413"/>
+<unit id="platform.shared.orientdb.core.feature.group" version="1.5.1.i20150413"/>
+<unit id="eu.esdihumboldt.hale.platform.wicket-bootstrap.feature.group" version="0.8.4.i201504131740"/>
+<unit id="platform.shared.orientdb.graphdb.source.feature.group" version="1.5.1.i201504131603"/>
+<unit id="eu.esdihumboldt.hale.platform.zest.feature.group" version="2.0.0.201204272302-i20150413"/>
 <repository location="http://download.eclipse.org/releases/luna/"/>
+<repository location="http://hale.igd.fraunhofer.de/build-support/cfe88da3c981fbb75d3ba827d02cebc609bcf559/updatesites/platform/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="de.fhg.igd.eclipse.util.feature.feature.group" version="1.0.0.201407081822"/>
-<unit id="de.fhg.igd.eclipse.ui.util.feature.feature.group" version="1.0.0.201407081822"/>
-<repository location="http://hale.igd.fraunhofer.de/jenkins/job/site-eclipse-util/1/updatesite"/>
+<unit id="de.fhg.igd.equinox.test.feature.feature.group" version="1.1.0.201503301812"/>
+<repository location="http://hale.igd.fraunhofer.de/jenkins/job/site-equinox-test/4/updatesite/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.scala-ide.sdt.feature.feature.group" version="3.0.3.v-2_10-201403271605-8d2c756"/>
-<unit id="org.scala-ide.sdt.source.feature.feature.group" version="3.0.3.v-2_10-201403271605-8d2c756"/>
-<repository location="http://download.scala-ide.org/sdk/helium/e38/scala210/stable/site"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="de.fhg.igd.slf4jplus.feature.feature.group" version="1.2.0.201503311443"/>
-<unit id="de.fhg.igd.slf4jplus.ui.feature.feature.group" version="1.2.0.201503311443"/>
-<repository location="http://hale.igd.fraunhofer.de/jenkins/view/Libraries/job/slf4jplus/10/updatesite"/>
+<unit id="platform.shared.sqlite.feature.group" version="3.8.7.bnd-uQXCA"/>
+<unit id="org.eclipse.gef.sdk.feature.group" version="3.9.101.201408150207"/>
+<unit id="org.eclipse.xtext.sdk.feature.group" version="2.7.2.v201409160908"/>
+<unit id="org.eclipse.emf.sdk.feature.group" version="2.10.1.v20140901-1055"/>
+<unit id="org.eclipse.gmf.runtime.sdk.feature.group" version="1.8.1.201408201453"/>
+<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.7.0.v201409021027"/>
+<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.7.0.v201409021051"/>
+<unit id="org.eclipse.equinox.sdk.feature.group" version="3.10.0.v20140909-1633"/>
+<repository location="http://hale.igd.fraunhofer.de/jenkins/view/p2/job/site-sqlite-osgi/2/updatesite"/>
+<repository location="http://download.eclipse.org/releases/luna/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.e4.core.tools.feature.source.feature.group" version="0.14.0.v20140806-0758"/>
@@ -40,12 +106,17 @@
 <repository location="http://download.eclipse.org/e4/downloads/drops/S-0.16-201408072200/repository"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="platform.shared.sqlite.feature.group" version="3.8.7.bnd-uQXCA"/>
-<repository location="http://hale.igd.fraunhofer.de/jenkins/view/p2/job/site-sqlite-osgi/2/updatesite"/>
+<unit id="org.eclipse.sdk.ide" version="4.4.1.M20140925-0400"/>
+<repository location="http://download.eclipse.org/eclipse/updates/4.4"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="eu.esdihumboldt.hale.platform.feature.group" version="3.0.0.i20150705"/>
 <repository location="http://hale.igd.fraunhofer.de/build-support/bb2b9e20ad3a36e825441ff131329a2462992a3e/updatesites/platform/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="de.fhg.igd.slf4jplus.feature.feature.group" version="1.2.0.201503311443"/>
+<unit id="de.fhg.igd.slf4jplus.ui.feature.feature.group" version="1.2.0.201503311443"/>
+<repository location="http://hale.igd.fraunhofer.de/jenkins/view/Libraries/job/slf4jplus/10/updatesite"/>
 </location>
 </locations>
 </target>
