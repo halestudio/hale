@@ -230,6 +230,45 @@
             </parameterComplexValue>
          </functionParameter>
       </typeFunction>
+      <typeFunction
+            category="eu.esdihumboldt.cst.functions.groovy"
+            cellExplanation="eu.esdihumboldt.hale.common.align.model.functions.explanations.JoinExplanation"
+            description="Joins multiple instances of different source types into one instance of the target type, based on one or more matching properties."
+            icon="icons/star.png"
+            identifier="eu.esdihumboldt.cst.functions.groovy.join"
+            name="Groovy Join">
+         <sourceTypes>
+            <type
+                  description="The source types that are to be joined based on their properties."
+                  maxOccurrence="n"
+                  minOccurrence="2"
+                  name="types">
+            </type>
+         </sourceTypes>
+         <targetTypes>
+            <type
+                  maxOccurrence="1"
+                  minOccurrence="1">
+            </type>
+         </targetTypes>
+         <functionParameter
+               description="Join definition"
+               label="Join definition"
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="join">
+            <parameterBinding></parameterBinding>
+         </functionParameter>
+         <functionParameter
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="script"
+               scriptable="false">
+            <parameterComplexValue
+                  ref="eu.esdihumboldt.hale.common.core.text">
+            </parameterComplexValue>
+         </functionParameter>
+      </typeFunction>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.align.transformation">
@@ -262,6 +301,12 @@
             engine="eu.esdihumboldt.align.java"
             function="eu.esdihumboldt.cst.functions.groovy.merge"
             id="eu.esdihumboldt.cst.functions.groovy.merge">
+      </typeTransformation>
+      <typeTransformation
+            class="eu.esdihumboldt.cst.functions.groovy.GroovyJoin"
+            engine="eu.esdihumboldt.align.java"
+            function="eu.esdihumboldt.cst.functions.groovy.join"
+            id="eu.esdihumboldt.cst.functions.groovy.join">
       </typeTransformation>
    </extension>
    <extension
