@@ -175,6 +175,8 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 
 	private boolean showStyleLegend = true;
 
+	private final ImageHandles handles = new ImageHandles();
+
 	/**
 	 * Dispose all images. {@link #getImage(Definition)} may not be called after
 	 * calling this method.
@@ -340,19 +342,9 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 				}
 				styleImages.put(typeKey, image);
 				if (old != null) {
-					/*
-					 * Defer disposing the old image, otherwise there may be
-					 * problems with SWT trying to access an already disposed
-					 * image (e.g. when switching between hierarchy and list
-					 * view in the Schema Explorer).
-					 */
-					PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-
-						@Override
-						public void run() {
-							old.dispose();
-						}
-					});
+					// schedule image to be disposed when there are no
+					// references to it
+					handles.addReference(image);
 				}
 			}
 		}
