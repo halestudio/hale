@@ -7,6 +7,10 @@
             for="eu.esdihumboldt.hale.common.instance.model.Group"
             implementation="eu.esdihumboldt.hale.common.instance.groovy.meta.InstanceAccessorMetaClass">
       </metaClass>
+      <metaClass
+            for="eu.esdihumboldt.hale.common.instance.model.FamilyInstance"
+            implementation="eu.esdihumboldt.hale.common.instance.groovy.meta.InstanceFamilyAccessorMetaClass">
+      </metaClass>
    </extension>
    <extension
          point="eu.esdihumboldt.util.groovy.sandbox">
