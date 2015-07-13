@@ -1,0 +1,6 @@
+<workspace>
+  #if( $workspaceId && !$workspaceId.empty )
+    <id>$workspaceId</id>
+  #end
+  <name>$workspaceName</name>
+</workspace>
