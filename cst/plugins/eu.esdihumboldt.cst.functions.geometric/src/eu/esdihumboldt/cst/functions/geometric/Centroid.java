@@ -35,6 +35,7 @@ import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.geometry.GeometryFinder;
 import eu.esdihumboldt.hale.common.instance.helper.DepthFirstInstanceTraverser;
 import eu.esdihumboldt.hale.common.instance.helper.InstanceTraverser;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -57,13 +58,36 @@ public class Centroid extends AbstractSingleTargetPropertyTransformation<Transfo
 		PropertyValue input = variables.get(null).get(0);
 		Object inputValue = input.getValue();
 
+		GeometryProperty<?> result = calculateCentroid(inputValue);
+
+		// try to yield a result compatible to the target
+		TypeDefinition targetType = resultProperty.getDefinition().getPropertyType();
+		// TODO check element type?
+		Class<?> binding = targetType.getConstraint(Binding.class).getBinding();
+		if (Geometry.class.isAssignableFrom(binding) && binding.isAssignableFrom(result.getClass())) {
+			return result.getGeometry();
+		}
+		return result;
+	}
+
+	/**
+	 * Calculate the centroid for a given geometry or object holding a geometry.
+	 * 
+	 * @param geometryHolder {@link Geometry}, {@link GeometryProperty} or
+	 *            {@link Instance} holding a geometry
+	 * @return the centroid of the geometry
+	 * @throws TransformationException if the no geometry could be extracted
+	 *             from the input
+	 */
+	public static GeometryProperty<?> calculateCentroid(Object geometryHolder)
+			throws TransformationException {
 		// depth first traverser that on cancel continues traversal but w/o the
 		// children of the current object
 		InstanceTraverser traverser = new DepthFirstInstanceTraverser(true);
 
 		GeometryFinder geoFind = new GeometryFinder(null);
 
-		traverser.traverse(inputValue, geoFind);
+		traverser.traverse(geometryHolder, geoFind);
 
 		List<GeometryProperty<?>> geoms = geoFind.getGeometries();
 
@@ -97,13 +121,6 @@ public class Centroid extends AbstractSingleTargetPropertyTransformation<Transfo
 			}
 		}
 
-		// try to yield a result compatible to the target
-		TypeDefinition targetType = resultProperty.getDefinition().getPropertyType();
-		// TODO check element type?
-		Class<?> binding = targetType.getConstraint(Binding.class).getBinding();
-		if (Geometry.class.isAssignableFrom(binding) && binding.isAssignableFrom(result.getClass())) {
-			return result;
-		}
 		return new DefaultGeometryProperty<Geometry>(oldCRS, result);
 	}
 

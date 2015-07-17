@@ -16,6 +16,7 @@
 package eu.esdihumboldt.cst.functions.groovy.internal;
 
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
+import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctions;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -175,6 +176,7 @@ public class GroovyUtil implements GroovyConstants {
 			TransformationLog log, ExecutionContext executionContext) {
 		Binding binding = new Binding();
 		binding.setVariable(BINDING_TARGET, new TargetCollector());
+		binding.setVariable(BINDING_HELPER_FUNCTIONS, HelperFunctions.createDefault());
 		binding.setVariable(BINDING_BUILDER, builder);
 		binding.setVariable(BINDING_CELL, cell);
 		binding.setVariable(BINDING_LOG, new TransformationLogWrapper(log));

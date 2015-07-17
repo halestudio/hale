@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="eu.esdihumboldt.cst.functions.groovy.helper" name="Helper functions for Groovy scripts" schema="schema/eu.esdihumboldt.cst.functions.groovy.helper.exsd"/>
    <extension
          point="eu.esdihumboldt.hale.align.function">
       <propertyFunction
