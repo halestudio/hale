@@ -372,5 +372,19 @@
             id="eu.esdihumboldt.cst.functions.geometric.reproject_geometry">
       </propertyTransformation>
    </extension>
+   <extension
+         point="eu.esdihumboldt.cst.functions.groovy.helper">
+      <category
+            path="geom">
+      </category>
+      <helper
+            category="geom"
+            class="eu.esdihumboldt.cst.functions.geometric.extent.ExtentHelperFunctions">
+      </helper>
+      <helper
+            category="geom"
+            class="eu.esdihumboldt.cst.functions.geometric.GeometryHelperFunctions">
+      </helper>
+   </extension>
 
 </plugin>

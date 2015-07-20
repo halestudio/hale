@@ -6,9 +6,13 @@ Bundle-Version: 2.9.3.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.base;version="9.0.0",
  com.google.common.collect;version="9.0.0",
+ com.vividsolutions.jts.awt;version="1.13.0",
+ de.fhg.igd.eclipse.util.extension,
+ de.fhg.igd.osgi.util;version="1.0.0",
  de.fhg.igd.slf4jplus,
  eu.esdihumboldt.cst,
  eu.esdihumboldt.cst.functions.core,
+ eu.esdihumboldt.cst.functions.core.join,
  eu.esdihumboldt.cst.functions.core.merge,
  eu.esdihumboldt.hale.common.convert,
  eu.esdihumboldt.hale.common.core.io,
@@ -22,12 +26,17 @@ Import-Package: com.google.common.base;version="9.0.0",
  eu.esdihumboldt.hale.common.schema.model.constraint.type,
  eu.esdihumboldt.util.groovy.builder,
  eu.esdihumboldt.util.groovy.sandbox,
+ javax.annotation,
+ org.slf4j;version="1.7.2",
  org.springframework.core.convert;version="3.0.0.RELEASE"
 Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.5.0",
  eu.esdihumboldt.hale.common.instance.groovy;bundle-version="2.7.0",
  groovy;bundle-version="2.1.5",
- org.kohsuke.groovy.sandbox;bundle-version="1.5.0"
+ org.kohsuke.groovy.sandbox;bundle-version="1.5.0",
+ org.eclipse.core.runtime;bundle-version="3.10.0"
 Export-Package: eu.esdihumboldt.cst.functions.groovy,
  eu.esdihumboldt.cst.functions.groovy.internal;x-internal:=true
 Bundle-ClassPath: .
 Bundle-Vendor: data harmonisation panel
+Bundle-Activator: eu.esdihumboldt.cst.functions.groovy.internal.Activator
+Bundle-ActivationPolicy: lazy

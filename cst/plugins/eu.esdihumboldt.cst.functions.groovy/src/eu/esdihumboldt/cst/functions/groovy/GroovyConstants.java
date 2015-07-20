@@ -60,6 +60,11 @@ public interface GroovyConstants {
 	public static final String BINDING_TARGET = "_target";
 
 	/**
+	 * Name of the helper functions accessor.
+	 */
+	public static final String BINDING_HELPER_FUNCTIONS = "_";
+
+	/**
 	 * Name of the top level source type entities variable in the binding (not
 	 * applicable for {@link GroovyCreate}).
 	 */

@@ -18,6 +18,8 @@ package eu.esdihumboldt.hale.ui.functions.groovy;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import org.codehaus.groovy.control.ErrorCollector;
 import org.codehaus.groovy.control.MultipleCompilationErrorsException;
 import org.codehaus.groovy.syntax.SyntaxException;
@@ -129,19 +131,7 @@ public class GroovyScriptPage extends SourceViewerPage<GroovyAST> implements Gro
 	 * @return if the script was validated successfully
 	 */
 	protected boolean handleValidationResult(Script script, final Exception exception) {
-		// set page message
-		getShell().getDisplay().syncExec(new Runnable() {
-
-			@Override
-			public void run() {
-				if (exception == null) {
-					setMessage(null);
-				}
-				else {
-					setMessage(exception.getMessage(), ERROR);
-				}
-			}
-		});
+		setValidationError((exception == null) ? (null) : (exception.getMessage()));
 
 		// add annotation based on exception
 		if (exception != null) {
@@ -150,6 +140,30 @@ public class GroovyScriptPage extends SourceViewerPage<GroovyAST> implements Gro
 
 		// return valid if NPE, as this might be caused by null test values
 		return exception == null || exception instanceof NullPointerException;
+	}
+
+	/**
+	 * Set or reset the validation error on the page.
+	 * 
+	 * @param message the error message or <code>null</code> for no error
+	 * @return if the represented state is valid, i.e. if the message is
+	 *         <code>null</code>
+	 */
+	protected boolean setValidationError(@Nullable final String message) {
+		// set page message
+		getShell().getDisplay().syncExec(new Runnable() {
+
+			@Override
+			public void run() {
+				if (message == null) {
+					setMessage(null);
+				}
+				else {
+					setMessage(message, ERROR);
+				}
+			}
+		});
+		return message != null;
 	}
 
 	/**

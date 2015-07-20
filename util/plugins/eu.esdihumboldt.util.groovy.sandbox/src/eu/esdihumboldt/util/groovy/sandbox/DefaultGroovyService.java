@@ -85,10 +85,8 @@ public class DefaultGroovyService implements GroovyService {
 		// add pre-defined imports
 		ImportCustomizer importCustomizer = new ImportCustomizer();
 
-		// TODO make configurable?
-		// MultiValue and alias
-		importCustomizer.addImport("MultiValue", "eu.esdihumboldt.cst.MultiValue");
-		importCustomizer.addImport("MultiResult", "eu.esdihumboldt.cst.MultiValue");
+		// add extension-defined imports
+		configureImportsFromExtensions(importCustomizer);
 
 		cc.addCompilationCustomizers(importCustomizer);
 
@@ -102,6 +100,45 @@ public class DefaultGroovyService implements GroovyService {
 			return new GroovyShell(binding, cc);
 		else
 			return new GroovyShell(cc);
+	}
+
+	/**
+	 * Add imports defined as extensions.
+	 * 
+	 * @param importCustomizer the import customizer
+	 */
+	private static void configureImportsFromExtensions(ImportCustomizer importCustomizer) {
+		for (IConfigurationElement conf : Platform.getExtensionRegistry()
+				.getConfigurationElementsFor(ID)) {
+			if (conf.getName().equals("import")) {
+				String className = conf.getAttribute("class");
+				String alias = conf.getAttribute("alias");
+
+				if (className != null && !className.isEmpty()) {
+					if (alias == null || alias.isEmpty()) {
+						int lastDotIndex = className.lastIndexOf('.');
+						if (lastDotIndex >= 0) {
+							if (lastDotIndex < className.length() - 1) {
+								alias = className.substring(lastDotIndex + 1);
+							}
+							else {
+								alias = null;
+							}
+						}
+						else {
+							alias = className;
+						}
+					}
+
+					if (alias != null) {
+						importCustomizer.addImport(alias, className);
+					}
+				}
+			}
+
+			// TODO support also other kind of imports?
+			// e.g. star imports, static imports...
+		}
 	}
 
 	@Override

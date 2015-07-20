@@ -49,6 +49,11 @@ public class DigitCountValidator extends AbstractValidator {
 	 */
 	@Override
 	public String validate(Object value) {
+		// ignore null values, rely on the NillableFlagValidator for that.
+		if (value == null) {
+			return null;
+		}
+
 		BigDecimal decimal;
 		try {
 			decimal = getObjectAs(value, BigDecimal.class);

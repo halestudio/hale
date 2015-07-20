@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="eu.esdihumboldt.util.groovy.sandbox" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="eu.esdihumboldt.cst.functions.groovy" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="eu.esdihumboldt.util.groovy.sandbox" id="eu.esdihumboldt.util.groovy.sandbox" name="Groovy Sandbox restriction configuration"/>
+         <meta.schema plugin="eu.esdihumboldt.cst.functions.groovy" id="eu.esdihumboldt.cst.functions.groovy.helper" name="Helper functions for Groovy scripts"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
@@ -18,9 +18,8 @@
       </annotation>
       <complexType>
          <choice minOccurs="1" maxOccurs="unbounded">
-            <element ref="allow"/>
-            <element ref="allowPackage"/>
-            <element ref="import"/>
+            <element ref="helper"/>
+            <element ref="category"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -49,80 +48,45 @@
       </complexType>
    </element>
 
-   <element name="allow">
-      <annotation>
-         <documentation>
-            Allows the use of a class. Nested classes are allowed, too.
-         </documentation>
-      </annotation>
+   <element name="helper">
       <complexType>
+         <attribute name="category" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.cst.functions.groovy.helper/category/@path"/>
+               </appinfo>
+            </annotation>
+         </attribute>
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  The class which is allowed to use.
+                  
                </documentation>
                <appinfo>
                   <meta.attribute kind="java"/>
                </appinfo>
             </annotation>
          </attribute>
-         <attribute name="allowAll" type="boolean" use="default" value="false">
+         <attribute name="name" type="string">
             <annotation>
                <documentation>
-                  Whether all calls to the class are allowed or (default) only calls to declared methods.
-This should only be set to true for Groovy-classes which actually accept all method calls.
+                  
                </documentation>
             </annotation>
          </attribute>
       </complexType>
    </element>
 
-   <element name="allowPackage">
-      <annotation>
-         <documentation>
-            Allow the use of all classes in a package.
-         </documentation>
-      </annotation>
+   <element name="category">
       <complexType>
-         <attribute name="name" type="string" use="required">
+         <attribute name="path" type="string" use="required">
             <annotation>
                <documentation>
-                  The package name whose classes are allowed to use.
+                  
                </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="allowChildren" type="boolean" use="default" value="true">
-            <annotation>
-               <documentation>
-                  Whether classes in child-packages are allowed, too. Default is &quot;true&quot;.
-               </documentation>
-            </annotation>
-         </attribute>
-      </complexType>
-   </element>
-
-   <element name="import">
-      <annotation>
-         <documentation>
-            Specifies a class to import into Groovy scripts by default. Allows specifying an alias.
-         </documentation>
-      </annotation>
-      <complexType>
-         <attribute name="alias" type="string">
-            <annotation>
-               <documentation>
-                  The alias for the import.
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="class" type="string" use="required">
-            <annotation>
-               <documentation>
-                  The class to import.
-               </documentation>
-               <appinfo>
-                  <meta.attribute kind="java"/>
-               </appinfo>
             </annotation>
          </attribute>
       </complexType>
