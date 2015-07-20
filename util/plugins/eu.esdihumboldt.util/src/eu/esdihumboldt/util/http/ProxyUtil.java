@@ -27,8 +27,11 @@ import java.util.Set;
 
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.fluent.Executor;
+import org.apache.http.client.fluent.Request;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.ProxyAuthenticationStrategy;
@@ -137,6 +140,38 @@ public class ProxyUtil {
 		}
 
 		return builder;
+	}
+
+	/**
+	 * setup the given request object to go via proxy
+	 * 
+	 * @param request A fluent request
+	 * @param proxy applying proxy to the fluent request
+	 * @return Executor, for a fluent request
+	 */
+	public static Executor setProxy(Request request, Proxy proxy) {
+		init();
+		Executor executor = Executor.newInstance();
+
+		if (proxy != null && proxy.type() == Type.HTTP) {
+			InetSocketAddress proxyAddress = (InetSocketAddress) proxy.address();
+
+			// set the proxy
+			HttpHost proxyHost = new HttpHost(proxyAddress.getHostName(), proxyAddress.getPort());
+			request.viaProxy(proxyHost);
+
+			String userName = System.getProperty("http.proxyUser");
+			String password = System.getProperty("http.proxyPassword");
+
+			boolean useProxyAuth = userName != null && !userName.isEmpty();
+
+			if (useProxyAuth) {
+				Credentials cred = new UsernamePasswordCredentials(userName, password);
+
+				executor.auth(new AuthScope(proxyHost.getHostName(), proxyHost.getPort()), cred);
+			}
+		}
+		return executor;
 	}
 
 	/**
