@@ -32,6 +32,8 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.ui.application.internal.Messages;
 import eu.esdihumboldt.hale.ui.application.workbench.WorkbenchHook;
 import eu.esdihumboldt.hale.ui.application.workbench.extension.WorkbenchHookExtension;
@@ -39,6 +41,7 @@ import eu.esdihumboldt.hale.ui.application.workbench.extension.WorkbenchHookFact
 import eu.esdihumboldt.hale.ui.launchaction.LaunchAction;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.RecentResources;
+import eu.esdihumboldt.hale.ui.util.proxy.ProxySettings;
 
 /**
  * The {@link ApplicationWorkbenchAdvisor} controls the appearance of the
@@ -49,6 +52,8 @@ import eu.esdihumboldt.hale.ui.service.project.RecentResources;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
+
+	private static final ALogger _log = ALoggerFactory.getLogger(ApplicationWorkbenchAdvisor.class);
 
 	private static final String PERSPECTIVE_ID = "eu.esdihumboldt.hale.ui.application.perspective.default"; //$NON-NLS-1$
 
@@ -195,6 +200,12 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	@Override
 	public void preStartup() {
 		super.preStartup();
+
+		try {
+			ProxySettings.install();
+		} catch (Exception ex) {
+			_log.warn("Setting the Proxy configuration failed: " + ex.getMessage()); //$NON-NLS-1$
+		}
 
 		/*
 		 * Initialize RecentResources so they are not loaded when the first

@@ -2,6 +2,7 @@ package eu.esdihumboldt.hale.io.codelist.inspire.reader;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.Proxy;
 import java.net.URI;
 import java.util.Locale;
 
@@ -19,6 +20,7 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
 import org.w3c.dom.Document;
@@ -37,6 +39,7 @@ import eu.esdihumboldt.hale.common.core.io.impl.AbstractImportProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.util.http.ProxyUtil;
 import eu.esdihumboldt.util.resource.Resources;
 
 /**
@@ -122,34 +125,39 @@ public class INSPIRECodeListReader extends AbstractImportProvider implements Cod
 	 * @throws ClientProtocolException if retrieving the document fails
 	 */
 	public static Document loadXmlDocument(URI loc) throws ClientProtocolException, IOException {
-		return Request.Get(loc)
-				.addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_XML.getMimeType())
-				.addHeader(HttpHeaders.ACCEPT_LANGUAGE, Locale.getDefault().getLanguage())
-				.execute().handleResponse(new ResponseHandler<Document>() {
 
-					@Override
-					public Document handleResponse(HttpResponse response)
-							throws ClientProtocolException, IOException {
-						StatusLine statusLine = response.getStatusLine();
-						HttpEntity entity = response.getEntity();
-						if (statusLine.getStatusCode() >= 300) {
-							throw new HttpResponseException(statusLine.getStatusCode(), statusLine
-									.getReasonPhrase());
-						}
-						if (entity == null) {
-							throw new ClientProtocolException("Response contains no content");
-						}
-						DocumentBuilderFactory dbfac = DocumentBuilderFactory.newInstance();
-						try {
-							DocumentBuilder docBuilder = dbfac.newDocumentBuilder();
-							return docBuilder.parse(entity.getContent());
-						} catch (ParserConfigurationException ex) {
-							throw new IllegalStateException(ex);
-						} catch (SAXException ex) {
-							throw new ClientProtocolException("Malformed XML document", ex);
-						}
-					}
-				});
+		Request request = Request.Get(loc)
+				.addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_XML.getMimeType())
+				.addHeader(HttpHeaders.ACCEPT_LANGUAGE, Locale.getDefault().getLanguage());
+
+		Proxy proxy = ProxyUtil.findProxy(loc);
+		Executor executor = ProxyUtil.setProxy(request, proxy);
+
+		return executor.execute(request).handleResponse(new ResponseHandler<Document>() {
+
+			@Override
+			public Document handleResponse(HttpResponse response) throws ClientProtocolException,
+					IOException {
+				StatusLine statusLine = response.getStatusLine();
+				HttpEntity entity = response.getEntity();
+				if (statusLine.getStatusCode() >= 300) {
+					throw new HttpResponseException(statusLine.getStatusCode(), statusLine
+							.getReasonPhrase());
+				}
+				if (entity == null) {
+					throw new ClientProtocolException("Response contains no content");
+				}
+				DocumentBuilderFactory dbfac = DocumentBuilderFactory.newInstance();
+				try {
+					DocumentBuilder docBuilder = dbfac.newDocumentBuilder();
+					return docBuilder.parse(entity.getContent());
+				} catch (ParserConfigurationException ex) {
+					throw new IllegalStateException(ex);
+				} catch (SAXException ex) {
+					throw new ClientProtocolException("Malformed XML document", ex);
+				}
+			}
+		});
 	}
 
 	private boolean parse(Document doc, URI location, IOReporter reporter) throws Exception {
