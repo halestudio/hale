@@ -22,6 +22,10 @@
             allowAll="true"
             class="eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder">
       </allow>
+      <allow
+            allowAll="true"
+            class="eu.esdihumboldt.hale.common.instance.groovy.InstanceFamilyAccessor">
+      </allow>
    </extension>
 
 </plugin>

@@ -338,6 +338,10 @@
             allowAll="false"
             class="eu.esdihumboldt.cst.functions.groovy.internal.TargetCollector">
       </allow>
+      <allow
+            allowAll="true"
+            class="eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctions">
+      </allow>
    </extension>
    <extension
          point="eu.esdihumboldt.util.groovy.meta">
