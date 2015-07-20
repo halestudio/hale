@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.function.ExecutionContext;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractTransformationFunction;
+import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.core.io.Text;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
@@ -129,9 +130,12 @@ public class GroovyUtil implements GroovyConstants {
 	 * @return the created instance
 	 * @throws TransformationException if the target binding does not contain
 	 *             exactly one result after script evaluation
+	 * @throws NoResultException if the script implies that no result should be
+	 *             created
 	 */
 	public static MutableInstance evaluate(Script script, final InstanceBuilder builder,
-			final TypeDefinition type, GroovyService service) throws TransformationException {
+			final TypeDefinition type, GroovyService service) throws TransformationException,
+			NoResultException {
 		try {
 			return service.evaluate(script, new ResultProcessor<MutableInstance>() {
 
@@ -154,7 +158,7 @@ public class GroovyUtil implements GroovyConstants {
 					return (MutableInstance) result;
 				}
 			});
-		} catch (RuntimeException | TransformationException e) {
+		} catch (RuntimeException | TransformationException | NoResultException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new TransformationException(e.getMessage(), e);
