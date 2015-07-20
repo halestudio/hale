@@ -564,6 +564,13 @@
             allowChildren="true"
             name="eu.esdihumboldt.hale.common.align.model">
       </allowPackage>
+      <import
+            class="eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException">
+      </import>
+      <allow
+            allowAll="false"
+            class="eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException">
+      </allow>
    </extension>
 
 </plugin>
