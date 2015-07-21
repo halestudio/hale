@@ -51,5 +51,15 @@
          </contentType>
       </provider>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.resource">
+      <advisor
+            class="eu.esdihumboldt.hale.io.codelist.InspireCodeListAdvisor"
+            id="eu.esdihumboldt.hale.io.codelist.inspire.advisor">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.codelist.inspire">
+         </contentType>
+      </advisor>
+   </extension>
 
 </plugin>

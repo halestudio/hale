@@ -22,6 +22,7 @@ import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
+import org.apache.http.client.fluent.Response;
 import org.apache.http.entity.ContentType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -252,5 +253,31 @@ public class INSPIRECodeListReader extends AbstractImportProvider implements Cod
 	@Override
 	protected String getDefaultTypeName() {
 		return "INSPIRE code list";
+	}
+
+	/**
+	 * This method creates a fluent request for the given URI reference resource
+	 * location, adds header to accept application/xml content type. Sets the
+	 * proxy if proxy is configured. Executes the fluent request and returns the
+	 * fluent response
+	 * 
+	 * @param uri uri reference of the resource location.
+	 * @return Executor, returns the executor for executing fluent request
+	 * @throws IOException throws if there are some interruption I/O operations
+	 *             while executing the fluent request
+	 * @throws ClientProtocolException throws if it fails while executing the
+	 *             request
+	 */
+	public static Response getResponse(URI uri) throws ClientProtocolException, IOException {
+
+		Request request = Request.Get(uri)
+				.addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_XML.getMimeType())
+				.addHeader(HttpHeaders.ACCEPT_LANGUAGE, Locale.getDefault().getLanguage());
+
+		Proxy proxy = ProxyUtil.findProxy(uri);
+		// If proxy is configured then set the proxy
+		Executor executor = ProxyUtil.setProxy(request, proxy);
+
+		return executor.execute(request);
 	}
 }
