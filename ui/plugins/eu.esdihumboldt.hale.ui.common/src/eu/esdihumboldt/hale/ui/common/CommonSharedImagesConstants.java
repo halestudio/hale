@@ -231,4 +231,9 @@ public interface CommonSharedImagesConstants {
 	 */
 	public static final String IMG_HELP = "IMG_HELP";
 
+	/**
+	 * Key for function image.
+	 */
+	public static final String IMG_FUNCTION = "IMG_FUNCTION";
+
 }

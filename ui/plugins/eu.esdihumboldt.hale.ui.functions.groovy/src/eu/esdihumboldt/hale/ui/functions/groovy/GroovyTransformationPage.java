@@ -33,6 +33,7 @@ import com.google.common.collect.ListMultimap;
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
 import eu.esdihumboldt.cst.functions.groovy.GroovyGreedyTransformation;
 import eu.esdihumboldt.cst.functions.groovy.GroovyTransformation;
+import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctionsService;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
@@ -56,6 +57,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 import eu.esdihumboldt.hale.ui.HaleUI;
+import eu.esdihumboldt.hale.ui.functions.groovy.internal.HelperFunctionsCompletions;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.InstanceBuilderCompletions;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.PageHelp;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray;
@@ -105,10 +107,14 @@ public class GroovyTransformationPage extends GroovyScriptPage {
 			}
 		};
 
+		HelperFunctionsCompletions functionCompletions = new HelperFunctionsCompletions(HaleUI
+				.getServiceProvider().getService(HelperFunctionsService.class));
+
 		return new SimpleGroovySourceViewerConfiguration(colorManager, ImmutableList.of(
 				BINDING_BUILDER, BINDING_TARGET, BINDING_SOURCE_TYPES, BINDING_TARGET_TYPE,
 				BINDING_CELL, BINDING_LOG, BINDING_CELL_CONTEXT, BINDING_FUNCTION_CONTEXT,
-				BINDING_TRANSFORMATION_CONTEXT), ImmutableList.of(targetCompletions));
+				BINDING_TRANSFORMATION_CONTEXT, BINDING_HELPER_FUNCTIONS), ImmutableList.of(
+				targetCompletions, functionCompletions));
 	}
 
 	@Override
