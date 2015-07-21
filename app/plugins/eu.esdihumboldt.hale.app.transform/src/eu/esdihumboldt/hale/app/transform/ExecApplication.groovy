@@ -210,7 +210,10 @@ HALE -nosplash -application hale.transform
 	protected URI fileOrUri(String value) {
 		try {
 			URI uri = URI.create(value)
-			if (uri.scheme) {
+			if (uri.scheme && uri.scheme.length() > 1) {
+				// only accept as URI if a schema is present
+				// and the scheme is more than just one character
+				// which is likely a Windows drive letter
 				return uri
 			}
 			else {
