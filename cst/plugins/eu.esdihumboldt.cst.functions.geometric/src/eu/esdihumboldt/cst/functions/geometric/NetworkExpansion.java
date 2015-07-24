@@ -19,6 +19,7 @@ package eu.esdihumboldt.cst.functions.geometric;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
 import javax.script.ScriptException;
 
 import org.springframework.core.convert.ConversionException;
@@ -96,10 +97,37 @@ public class NetworkExpansion extends
 			inputValue = ((Instance) inputValue).getValue();
 		}
 
+		GeometryProperty<Geometry> result = calculateBuffer(inputValue, bufferWidth, log);
+
+		// try to yield a result compatible to the target
+		if (result != null) {
+			TypeDefinition targetType = resultProperty.getDefinition().getPropertyType();
+			// TODO check element type?
+			Class<?> binding = targetType.getConstraint(Binding.class).getBinding();
+			if (Geometry.class.isAssignableFrom(binding)
+					&& binding.isAssignableFrom(result.getGeometry().getClass())) {
+				return result.getGeometry();
+			}
+		}
+
+		throw new TransformationException("Geometry for network expansion could not be retrieved.");
+	}
+
+	/**
+	 * Calculate a buffer geometry.
+	 * 
+	 * @param geometryHolder the geometry or object holding a geometry
+	 * @param bufferWidth the buffer width
+	 * @param log the transformation log, may be <code>null</code>
+	 * @return the buffer geometry or <code>null</code>
+	 */
+	@Nullable
+	public static GeometryProperty<Geometry> calculateBuffer(Object geometryHolder,
+			double bufferWidth, @Nullable TransformationLog log) {
 		// find contained geometries
 		InstanceTraverser traverser = new DepthFirstInstanceTraverser(true);
 		GeometryFinder geoFind = new GeometryFinder(null);
-		traverser.traverse(inputValue, geoFind);
+		traverser.traverse(geometryHolder, geoFind);
 
 		List<GeometryProperty<?>> geometries = geoFind.getGeometries();
 
@@ -108,13 +136,16 @@ public class NetworkExpansion extends
 			old_geometry = geometries.get(0);
 
 			if (geometries.size() > 1) {
-				log.warn(log
-						.createMessage(
-								"Multiple geometries found, but network expansion is only done on the first.",
-								null));
+				if (log != null) {
+					log.warn(log
+							.createMessage(
+									"Multiple geometries found, but network expansion is only done on the first.",
+									null));
+				}
 			}
 		}
 
+		GeometryProperty<Geometry> result = null;
 		if (old_geometry != null) {
 			Geometry new_geometry = null;
 			BufferParameters bufferParameters = new BufferParameters();
@@ -122,19 +153,11 @@ public class NetworkExpansion extends
 			BufferBuilder bb = new BufferBuilder(new BufferParameters());
 			new_geometry = bb.buffer(old_geometry.getGeometry(), bufferWidth);
 
-			// try to yield a result compatible to the target
-			TypeDefinition targetType = resultProperty.getDefinition().getPropertyType();
-			// TODO check element type?
-			Class<?> binding = targetType.getConstraint(Binding.class).getBinding();
-			if (Geometry.class.isAssignableFrom(binding)
-					&& binding.isAssignableFrom(new_geometry.getClass())) {
-				return new_geometry;
-			}
-			return new DefaultGeometryProperty<Geometry>(old_geometry.getCRSDefinition(),
+			result = new DefaultGeometryProperty<Geometry>(old_geometry.getCRSDefinition(),
 					new_geometry);
 		}
 
-		throw new TransformationException("Geometry for network expansion could not be retrieved.");
+		return result;
 	}
 
 }
