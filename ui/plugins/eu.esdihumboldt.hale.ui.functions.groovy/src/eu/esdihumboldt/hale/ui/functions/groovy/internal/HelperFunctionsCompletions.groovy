@@ -184,8 +184,9 @@ public class HelperFunctionsCompletions implements GroovyCompletionProposals, AS
 					cursor, //
 					image, // image
 					name, // display string
-					null, // context information - how to display?
-					null) // additional info - how to display?
+					null, // new ContextInformation("context", "context info"),
+					// context information - how to display?
+					null) // additional info (supports limited set of HTML; see DefaultInformationControl)
 
 			result << prop
 		}
