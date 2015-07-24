@@ -19,6 +19,8 @@ import javax.annotation.Nullable;
 
 import com.vividsolutions.jts.geom.Geometry;
 
+import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctionArgument;
+import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctionSpecification;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
@@ -29,6 +31,14 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
  * @author Simon Templer
  */
 public class GeometryHelperFunctions {
+
+	/**
+	 * specification for a centroid function
+	 */
+	public static final HelperFunctionSpecification _centroid_spec = new HelperFunctionSpecification(
+			"Calculate the centroid of a given geometry.", "centroid of the geometry",
+			new HelperFunctionArgument("geometry holder",
+					"Geometry or geometry property or instance holding a geometry"));
 
 	/**
 	 * Calculate the centroid of a given geometry.
