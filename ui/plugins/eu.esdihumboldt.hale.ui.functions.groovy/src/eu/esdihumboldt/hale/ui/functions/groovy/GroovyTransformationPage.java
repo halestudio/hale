@@ -59,6 +59,7 @@ import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.HelperFunctionsCompletions;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.InstanceBuilderCompletions;
+import eu.esdihumboldt.hale.ui.functions.groovy.internal.PageFunctions;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.PageHelp;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray.TypeProvider;
@@ -292,6 +293,8 @@ public class GroovyTransformationPage extends GroovyScriptPage {
 				return Collections.emptyList();
 			}
 		});
+
+		PageFunctions.createToolItem(toolbar, this);
 	}
 
 	@Override

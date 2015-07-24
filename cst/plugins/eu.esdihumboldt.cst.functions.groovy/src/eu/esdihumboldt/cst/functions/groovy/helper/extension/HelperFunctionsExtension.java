@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.cst.functions.groovy.helper.extension;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.text.MessageFormat;
@@ -36,6 +37,7 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.cst.functions.groovy.helper.Category;
 import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunction;
 import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctionOrCategory;
+import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctionSpecification;
 import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctionsService;
 
 /**
@@ -52,6 +54,7 @@ public class HelperFunctionsExtension implements HelperFunctionsService {
 	private final Map<Category, Map<String, HelperFunctionOrCategory>> children = new HashMap<>();
 
 	private final AtomicBoolean initialized = new AtomicBoolean();
+	private static final String SPEC_END = "_spec";
 
 	/**
 	 * Initialize the extension point from the registered extensions (if not
@@ -151,7 +154,8 @@ public class HelperFunctionsExtension implements HelperFunctionsService {
 			List<HelperFunctionWrapper> functions = new ArrayList<>();
 			for (Method method : helperClass.getMethods()) {
 				int modifiers = method.getModifiers();
-				if (method.getName().startsWith("_") && !Modifier.isAbstract(modifiers)) {
+				if (method.getName().startsWith("_") && !Modifier.isAbstract(modifiers)
+						&& !method.getName().endsWith(SPEC_END)) {
 					// a candidate -> check parameters
 					Class<?>[] params = method.getParameterTypes();
 					if (params != null && params.length == 1) {
@@ -159,6 +163,38 @@ public class HelperFunctionsExtension implements HelperFunctionsService {
 //						final boolean paramIsMap = Map.class.isAssignableFrom(params[0]);
 						final boolean isStatic = Modifier.isStatic(modifiers);
 						final Method callMethod = method;
+
+						// Get the specification from field
+						String fieldOrMethodName = callMethod.getName() + SPEC_END;
+
+						Object fieldV = null;
+						try {
+							Field field = helperClass.getField(fieldOrMethodName);
+							int fieldModifiers = field.getModifiers();
+							if (Modifier.isStatic(fieldModifiers)
+									&& Modifier.isFinal(fieldModifiers)) {
+								fieldV = field.get(null);
+							}
+						} catch (Exception e) {
+							// do nothing
+						}
+						final Object fieldValue = fieldV;
+
+						// Get spec from method
+						Method meth = null;
+						boolean isSpecStatic = false;
+						try {
+							meth = helperClass.getMethod(fieldOrMethodName,
+									new Class[] { String.class });
+							int specModifier = meth.getModifiers();
+							isSpecStatic = Modifier.isStatic(specModifier);
+
+						} catch (Exception e) {
+							// do nothing
+						}
+						final Method specMethod = meth;
+						final boolean isSpecMethodStatic = isSpecStatic;
+
 						HelperFunction<Object> function = new HelperFunction<Object>() {
 
 							@Override
@@ -170,6 +206,29 @@ public class HelperFunctionsExtension implements HelperFunctionsService {
 									Object helper = helperClass.newInstance();
 									return callMethod.invoke(helper, arg);
 								}
+							}
+
+							@Override
+							public HelperFunctionSpecification getSpec(String name)
+									throws Exception {
+								if (fieldValue != null
+										&& fieldValue instanceof HelperFunctionSpecification) {
+
+									return ((HelperFunctionSpecification) fieldValue);
+								}
+								else if (specMethod != null) {
+									if (isSpecMethodStatic) {
+										return (HelperFunctionSpecification) specMethod.invoke(
+												null, name);
+									}
+									else {
+										Object helper = helperClass.newInstance();
+										return (HelperFunctionSpecification) specMethod.invoke(
+												helper, name);
+									}
+
+								}
+								return null;
 							}
 						};
 
