@@ -15,10 +15,13 @@
 
 package eu.esdihumboldt.cst.functions.geometric.extent;
 
+import java.text.MessageFormat;
 import java.util.Collections;
 
 import javax.annotation.Nullable;
 
+import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctionArgument;
+import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctionSpecification;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
@@ -39,16 +42,37 @@ public class ExtentHelperFunctions {
 		return computeExtent(geometryHolders, ExtentType.UNION);
 	}
 
+	public static final HelperFunctionSpecification _union_spec = new HelperFunctionSpecification(
+			"Union of the geometries or instances containing geometries", "union",
+			new HelperFunctionArgument("geometry holder",
+					"Geometry or geometry property or instance holding a geometry"));
+
 	@Nullable
 	public GeometryProperty<?> _convexHull(Object geometryHolders) throws TransformationException,
 			NoResultException {
 		return computeExtent(geometryHolders, ExtentType.CONVEX_HULL);
 	}
 
+	public static final HelperFunctionSpecification _convexHull_spec = new HelperFunctionSpecification(
+			"calculates the convex hull of the geometry", "convexhull", new HelperFunctionArgument(
+					"geometry holder",
+					"Geometry or geometry property or instance holding a geometry"));
+
+//	public HelperFunctionSpecification _convexHull_spec() {
+//		return new HelperFunctionSpecification("description", "result", new HelperFunctionArgument("name", "descr"));
+//	}
+
 	@Nullable
 	public GeometryProperty<?> _bbox(Object geometryHolders) throws TransformationException,
 			NoResultException {
 		return computeExtent(geometryHolders, ExtentType.BBOX);
+	}
+
+	public HelperFunctionSpecification _bbox_spec(String name) {
+		return new HelperFunctionSpecification(MessageFormat.format(
+				"The {0} function calculates the bounding box of the geometry", name),
+				"boundingbox", new HelperFunctionArgument("geometry holder",
+						"Geometry or geometry property or instance holding a geometry"));
 	}
 
 	@Nullable

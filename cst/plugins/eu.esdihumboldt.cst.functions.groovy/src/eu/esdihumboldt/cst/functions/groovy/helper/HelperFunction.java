@@ -19,6 +19,7 @@ package eu.esdihumboldt.cst.functions.groovy.helper;
  * Interface for helper functions that can be accessed from Groovy scripts.
  * 
  * @author Simon Templer
+ * @author Sameer Sheikh
  * @param <R> the function return type
  */
 public interface HelperFunction<R> {
@@ -32,5 +33,12 @@ public interface HelperFunction<R> {
 	 * @throws Exception if the function call fails due to an exception
 	 */
 	public R call(Object arg) throws Exception;
+
+	/**
+	 * @param functionName the name the function is registered with
+	 * @return The specification of the function
+	 * @throws Exception if function call fails
+	 */
+	public HelperFunctionSpecification getSpec(String functionName) throws Exception;
 
 }
