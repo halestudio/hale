@@ -15,20 +15,21 @@
 
 package eu.esdihumboldt.cst.functions.geometric;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nullable
 
-import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Geometry
 
-import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
-import eu.esdihumboldt.hale.common.instance.model.Instance;
-import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
+import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException
+import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty
+import groovy.transform.CompileStatic
 
 /**
  * Geometry helper functions for Groovy scripts.
  * 
  * @author Simon Templer
  */
-public class GeometryHelperFunctions {
+@CompileStatic
+class GeometryHelperFunctions {
 
 	/**
 	 * Calculate the centroid of a given geometry.
@@ -38,7 +39,7 @@ public class GeometryHelperFunctions {
 	 * @return the centroid of the geometry or <code>null</code>
 	 */
 	@Nullable
-	public static GeometryProperty<?> _centroid(Object geometryHolder) {
+	static GeometryProperty<? extends Geometry> _centroid(def geometryHolder) {
 		GeometryProperty<?> result;
 		try {
 			result = Centroid.calculateCentroid(geometryHolder);
@@ -47,11 +48,31 @@ public class GeometryHelperFunctions {
 			return null;
 		}
 
-		if (result.getGeometry() == null || result.getGeometry().isEmpty()) {
+		if (!result.geometry || result.geometry.isEmpty()) {
 			return null;
 		}
 
 		return result;
 	}
 
+	/**
+	 * Calculate a buffer from an existing geometry.
+	 *
+	 * @param args the function arguments
+	 * @return the buffer geometry or <code>null</code>
+	 */
+	@Nullable
+	static GeometryProperty<? extends Geometry> _buffer(Map args) {
+		GeometryProperty<?> result = NetworkExpansion.calculateBuffer(
+				args.geometry, // the geometry holder
+				args.distance as double, // buffer distance
+				null)
+
+		if (result && result.geometry && !result.geometry.isEmpty()) {
+			result
+		}
+		else {
+			null
+		}
+	}
 }
