@@ -370,7 +370,7 @@
       <provider
             class="eu.esdihumboldt.hale.io.gml.writer.InspireInstanceWriter"
             id="eu.esdihumboldt.hale.io.inspiregml.writer"
-            name="GML (INSPIRE SpatialDataSet)">
+            name="GML (INSPIRE SpatialDataSet) [deprecated by INSPIRE]">
          <contentType
                ref="eu.esdihumboldt.hale.io.gml">
          </contentType>
