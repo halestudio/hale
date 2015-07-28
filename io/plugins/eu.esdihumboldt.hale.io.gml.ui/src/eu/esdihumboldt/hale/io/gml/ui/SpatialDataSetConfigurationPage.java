@@ -33,6 +33,7 @@ import org.eclipse.ui.PlatformUI;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
+import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.groovy.DefinitionAccessor;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
@@ -111,9 +112,14 @@ public class SpatialDataSetConfigurationPage extends
 				.applyTo(page);
 
 		// Get the property definitions of localId and namespace.
+		String action = getWizard().getActionId();
 		SchemaService ss = (SchemaService) PlatformUI.getWorkbench()
 				.getService(SchemaService.class);
-		SchemaSpace target = ss.getSchemas(SchemaSpaceID.TARGET);
+		SchemaSpaceID ssid = SchemaSpaceID.TARGET;
+		if (InstanceIO.ACTION_SAVE_SOURCE_DATA.equals(action)) {
+			ssid = SchemaSpaceID.SOURCE;
+		}
+		SchemaSpace target = ss.getSchemas(ssid);
 		XmlIndex index = StreamGmlWriter.getXMLIndex(target);
 		XmlElement sdsElement = InspireUtil.findSpatialDataSet(index);
 		TypeDefinition sdsType = null;
