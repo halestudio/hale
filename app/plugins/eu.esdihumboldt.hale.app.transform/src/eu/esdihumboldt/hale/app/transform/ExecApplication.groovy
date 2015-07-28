@@ -111,7 +111,7 @@ HALE -nosplash -application hale.transform
      -source <file-or-URI-to-source-data>
          [-providerId <ID-of-source-reader>]
          [<setting>...]
-     -target <target-file>
+     -target <target-file-or-URI>
          [-preset <name-of-export-preset>]
          [-providerId <ID-of-target-writer>]
          [<setting>...]
