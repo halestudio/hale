@@ -356,5 +356,11 @@
             implementation="eu.esdihumboldt.cst.functions.groovy.internal.AsMultiValueMetaClass">
       </metaClass>
    </extension>
+   <extension
+         point="eu.esdihumboldt.cst.functions.groovy.helper">
+      <category
+            path="ROOT">
+      </category>
+   </extension>
 
 </plugin>

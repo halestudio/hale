@@ -69,6 +69,9 @@ public class HelperFunctionsExtension implements HelperFunctionsService {
 				for (IConfigurationElement element : elements) {
 					if ("helper".equals(element.getName())) {
 						String category = element.getAttribute("category");
+						if ("ROOT".equals(category)) {
+							category = "";
+						}
 						String customName = element.getAttribute("name");
 						Class<?> helperClass = ExtensionUtil.loadClass(element, "class");
 
