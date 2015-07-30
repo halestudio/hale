@@ -23,6 +23,9 @@ import eu.esdihumboldt.cst.functions.groovy.helper.spec.*
 import eu.esdihumboldt.cst.functions.groovy.helper.spec.impl.HelperFunctionArgument
 import eu.esdihumboldt.cst.functions.groovy.helper.spec.impl.HelperFunctionSpecification
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException
+import eu.esdihumboldt.hale.common.instance.geometry.GeometryFinder
+import eu.esdihumboldt.hale.common.instance.helper.DepthFirstInstanceTraverser
+import eu.esdihumboldt.hale.common.instance.helper.InstanceTraverser
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty
 import groovy.transform.CompileStatic
 
@@ -33,13 +36,15 @@ import groovy.transform.CompileStatic
  */
 class GeometryHelperFunctions {
 
+	public static final String GEOM_HOLDER_DESC = 'A geometry, geometry property or instance holding a geometry'
+
 	/**
 	 * Specification for the centroid function
 	 */
 	public static final Specification _centroid_spec = SpecBuilder.newSpec( //
 	description: 'Calculate the centroid of a geometry.',
 	result: 'The Point geometry that is the centroid of the given geometry (wrapped in a GeometryProperty) or null.') { //
-		geometry("A geometry, geometry property or instance holding a geometry") }
+		geometry(GEOM_HOLDER_DESC) }
 
 	/**
 	 * Calculate the centroid of a given geometry.
@@ -97,4 +102,65 @@ class GeometryHelperFunctions {
 			null
 		}
 	}
+
+	/**
+	 * Specification for the find function
+	 */
+	public static final Specification _find_spec = SpecBuilder.newSpec( //
+	description: 'Find a geometry in the given objects.',
+	result: 'the first geometry found (wrapped in a GeometryProperty) or null.') { //
+		objects('An object or a list of objects to search for geometries') }
+
+	@CompileStatic
+	static GeometryProperty<? extends Geometry> _find(def geometryHolder) {
+		// depth first traverser that on cancel stops further traversal
+		InstanceTraverser traverser = new DepthFirstInstanceTraverser(false)
+		GeometryFinder geoFind = new GeometryFinder(null)
+
+		if (geometryHolder instanceof Iterable<?>) {
+			geometryHolder.each {
+				traverser.traverse(it, geoFind)
+			}
+		}
+		else {
+			traverser.traverse(geometryHolder, geoFind)
+		}
+
+		List<GeometryProperty<?>> geoms = geoFind.getGeometries()
+
+		if (geoms) {
+			geoms[0]
+		}
+		else {
+			null
+		}
+	}
+
+	/**
+	 * Specification for the find function
+	 */
+	public static final Specification _findAll_spec = SpecBuilder.newSpec( //
+	description: 'Find geometries in the given objects.',
+	result: 'the list of found geometries (each wrapped in a GeometryProperty)') { //
+		objects('An object or a list of objects to search for geometries') }
+
+	@CompileStatic
+	static List<GeometryProperty<? extends Geometry>> _findAll(def geometryHolder) {
+		// depth first traverser that on cancel continues traversal but w/o the
+		// children of the current object
+		InstanceTraverser traverser = new DepthFirstInstanceTraverser(false)
+		GeometryFinder geoFind = new GeometryFinder(null)
+
+		if (geometryHolder instanceof Iterable<?>) {
+			geometryHolder.each {
+				traverser.traverse(it, geoFind)
+			}
+		}
+		else {
+			traverser.traverse(geometryHolder, geoFind)
+		}
+
+		geoFind.getGeometries()
+	}
+
 }
