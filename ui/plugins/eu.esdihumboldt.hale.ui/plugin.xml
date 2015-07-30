@@ -815,6 +815,24 @@
             </with>
          </enabledWhen>
       </action-ui>
+  <action-ui
+        action="eu.esdihumboldt.hale.io.align.write"
+        customTitle="Create export configuration"
+        id="eu.esdihumboldt.hale.io.align.write.save.ui"
+        label="Create custom alignment export..."
+        priority="9"
+        projectResource="false"
+        wizard="eu.esdihumboldt.hale.ui.io.align.exportconfig.SaveConfigurationAlignmentExportWizard">
+     <enabledWhen
+           disabledReason="The current alignment is empty">
+        <with
+              variable="hale.alignment.has_cells">
+           <equals
+                 value="true">
+           </equals>
+        </with>
+     </enabledWhen>
+  </action-ui>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.ui.io.source">

@@ -1,0 +1,7 @@
+<namespace>
+  #if( $namespaceId && !$namespaceId.empty )
+    <id>$namespaceId</id>
+  #end
+  <prefix>$prefix</prefix>
+  <uri>$uri</uri>
+</namespace>
