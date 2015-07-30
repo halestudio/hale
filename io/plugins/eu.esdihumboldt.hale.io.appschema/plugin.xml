@@ -30,7 +30,7 @@
             id="eu.esdihumboldt.hale.io.appschema.datastore"
             name="DataStore"
             namespace="http://www.geotools.org/app-schema"
-            type="org.geotools.app_schema.SourceDataStoresPropertyType$DataStore">
+            type="eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.SourceDataStoresPropertyType$DataStore">
       </complexValue>
    </extension>
    <extension
