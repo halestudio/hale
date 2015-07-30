@@ -19,8 +19,8 @@ import javax.annotation.Nullable
 
 import com.vividsolutions.jts.geom.Geometry
 
-import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctionArgument
-import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctionSpecification
+import eu.esdihumboldt.cst.functions.groovy.helper.spec.impl.HelperFunctionArgument;
+import eu.esdihumboldt.cst.functions.groovy.helper.spec.impl.HelperFunctionSpecification;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty
 import groovy.transform.CompileStatic

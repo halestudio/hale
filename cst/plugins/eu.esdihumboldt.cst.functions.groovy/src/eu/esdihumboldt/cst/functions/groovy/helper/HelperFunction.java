@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.cst.functions.groovy.helper;
 
+import eu.esdihumboldt.cst.functions.groovy.helper.spec.Specification;
+
 /**
  * Interface for helper functions that can be accessed from Groovy scripts.
  * 
@@ -41,6 +43,6 @@ public interface HelperFunction<R> {
 	 * @return The specification of the function
 	 * @throws Exception if function call fails
 	 */
-	public HelperFunctionSpecification getSpec(String functionName) throws Exception;
+	public Specification getSpec(String functionName) throws Exception;
 
 }

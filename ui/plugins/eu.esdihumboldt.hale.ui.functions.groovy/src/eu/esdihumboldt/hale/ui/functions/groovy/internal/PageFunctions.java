@@ -47,10 +47,10 @@ import com.google.common.collect.ImmutableList;
 
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
 import eu.esdihumboldt.cst.functions.groovy.helper.Category;
-import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctionArgument;
 import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctionOrCategory;
-import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctionSpecification;
 import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctionsService;
+import eu.esdihumboldt.cst.functions.groovy.helper.spec.Argument;
+import eu.esdihumboldt.cst.functions.groovy.helper.spec.Specification;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
@@ -209,13 +209,13 @@ public class PageFunctions extends DialogTray implements GroovyConstants {
 			private String getFunctionSpec(HelperFunctionOrCategory f) throws Exception {
 
 				StringBuilder example = new StringBuilder();
-				HelperFunctionSpecification spec = f.asFunction().getSpec(f.getName());
+				Specification spec = f.asFunction().getSpec(f.getName());
 
 				example.append("Description: \n");
 				example.append("\t");
 				example.append(spec.getDescription());
 				example.append(" \n\nParameters: \n");
-				for (HelperFunctionArgument arg : spec.getArguments()) {
+				for (Argument arg : spec.getArguments()) {
 					example.append("\t");
 					example.append(arg.getName());
 					example.append(" : ");

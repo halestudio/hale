@@ -37,8 +37,8 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.cst.functions.groovy.helper.Category;
 import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunction;
 import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctionOrCategory;
-import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctionSpecification;
 import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctionsService;
+import eu.esdihumboldt.cst.functions.groovy.helper.spec.Specification;
 
 /**
  * Groovy script helper functions extension point.
@@ -209,22 +209,18 @@ public class HelperFunctionsExtension implements HelperFunctionsService {
 							}
 
 							@Override
-							public HelperFunctionSpecification getSpec(String name)
-									throws Exception {
-								if (fieldValue != null
-										&& fieldValue instanceof HelperFunctionSpecification) {
+							public Specification getSpec(String name) throws Exception {
+								if (fieldValue != null && fieldValue instanceof Specification) {
 
-									return ((HelperFunctionSpecification) fieldValue);
+									return ((Specification) fieldValue);
 								}
 								else if (specMethod != null) {
 									if (isSpecMethodStatic) {
-										return (HelperFunctionSpecification) specMethod.invoke(
-												null, name);
+										return (Specification) specMethod.invoke(null, name);
 									}
 									else {
 										Object helper = helperClass.newInstance();
-										return (HelperFunctionSpecification) specMethod.invoke(
-												helper, name);
+										return (Specification) specMethod.invoke(helper, name);
 									}
 
 								}

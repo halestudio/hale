@@ -13,41 +13,23 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.cst.functions.groovy.helper;
+package eu.esdihumboldt.cst.functions.groovy.helper.spec;
 
 /**
- * Denotes the helper function argument
+ * Describes a helper function argument.
  * 
- * @author Sameer Sheikh
+ * @author Simon Templer
  */
-public class HelperFunctionArgument {
-
-	private final String name;
-	private final String description;
-
-	/**
-	 * Parameterized constructor
-	 * 
-	 * @param name name of the argument
-	 * @param description description of the argument
-	 */
-	public HelperFunctionArgument(String name, String description) {
-		this.name = name;
-		this.description = description;
-	}
+public interface Argument {
 
 	/**
 	 * @return the name of the argument
 	 */
-	public String getName() {
-		return name;
-	}
+	public String getName();
 
 	/**
-	 * @return the description about the argument
+	 * @return the description of the argument
 	 */
-	public String getDescription() {
-		return description;
-	}
+	public String getDescription();
 
 }

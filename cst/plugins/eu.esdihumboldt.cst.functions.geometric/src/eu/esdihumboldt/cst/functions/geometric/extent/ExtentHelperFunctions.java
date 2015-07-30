@@ -20,8 +20,8 @@ import java.util.Collections;
 
 import javax.annotation.Nullable;
 
-import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctionArgument;
-import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctionSpecification;
+import eu.esdihumboldt.cst.functions.groovy.helper.spec.impl.HelperFunctionArgument;
+import eu.esdihumboldt.cst.functions.groovy.helper.spec.impl.HelperFunctionSpecification;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
