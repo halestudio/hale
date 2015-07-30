@@ -38,6 +38,7 @@ import eu.esdihumboldt.hale.io.geoserver.DataStoreFile.Extension;
 import eu.esdihumboldt.hale.io.geoserver.Namespace;
 import eu.esdihumboldt.hale.io.geoserver.ResourceBuilder;
 
+@SuppressWarnings("javadoc")
 public class ResourceManagerTest {
 
 	// TODO: make this configurable
@@ -147,6 +148,7 @@ public class ResourceManagerTest {
 	public void testDataStoreFileManager() throws Exception {
 
 		NamespaceManager nsMgr = new NamespaceManager(GEOSERVER_URL);
+		@SuppressWarnings("unused")
 		Namespace ns = createNamespace(nsMgr, APP_SCHEMA_WORKSPACE, APP_SCHEMA_URI);
 
 		InputStream resourceStream = getClass().getResourceAsStream(APP_SCHEMA_MAPPING_FILE);

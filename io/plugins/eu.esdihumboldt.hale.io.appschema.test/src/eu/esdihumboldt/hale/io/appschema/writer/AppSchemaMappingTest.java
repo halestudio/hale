@@ -90,6 +90,7 @@ import eu.esdihumboldt.hale.io.appschema.writer.internal.RenameHandler;
 import eu.esdihumboldt.hale.io.appschema.writer.internal.RetypeHandler;
 import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
 
+@SuppressWarnings("javadoc")
 public class AppSchemaMappingTest {
 
 	private static final String SOURCE_PATH = "/data/source.hsd";

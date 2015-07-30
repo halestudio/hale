@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2015 Data Harmonisation Panel
+ * 
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
+ */
+
 package eu.esdihumboldt.hale.io.appschema.writer;
 
 import static eu.esdihumboldt.hale.io.appschema.AppSchemaIO.getFirstElementByTagName;
@@ -77,6 +92,7 @@ import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.Sour
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.SourceDataStoresPropertyType.DataStore.Parameters.Parameter;
 import eu.esdihumboldt.util.io.PathUpdate;
 
+@SuppressWarnings("javadoc")
 public class AppSchemaFileWriterTest {
 
 	private static final ALogger log = ALoggerFactory.getLogger(AppSchemaFileWriterTest.class);
@@ -297,6 +313,7 @@ public class AppSchemaFileWriterTest {
 			fail("Exception parsing mapping schema: " + e.getMessage());
 		}
 
+		@SuppressWarnings("null")
 		Validator validator = schema.newValidator();
 		try {
 			validator.validate(xmlFile);
