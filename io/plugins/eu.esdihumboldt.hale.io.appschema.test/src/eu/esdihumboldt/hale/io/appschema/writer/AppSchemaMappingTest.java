@@ -75,6 +75,7 @@ import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeIndex;
 import eu.esdihumboldt.hale.common.schema.persist.hsd.HaleSchemaReader;
+import eu.esdihumboldt.hale.common.test.TestUtil;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.AppSchemaDataAccessType;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.AttributeMappingType;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.AttributeMappingType.ClientProperty;
@@ -129,6 +130,8 @@ public class AppSchemaMappingTest {
 
 	@BeforeClass
 	public static void init() throws Exception {
+
+		TestUtil.startConversionService();
 
 		source = loadSchema(new HaleSchemaReader(), SOURCE_PATH);
 		assertNotNull(source);
