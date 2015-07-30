@@ -19,8 +19,9 @@ import javax.annotation.Nullable
 
 import com.vividsolutions.jts.geom.Geometry
 
-import eu.esdihumboldt.cst.functions.groovy.helper.spec.impl.HelperFunctionArgument;
-import eu.esdihumboldt.cst.functions.groovy.helper.spec.impl.HelperFunctionSpecification;
+import eu.esdihumboldt.cst.functions.groovy.helper.spec.*
+import eu.esdihumboldt.cst.functions.groovy.helper.spec.impl.HelperFunctionArgument
+import eu.esdihumboldt.cst.functions.groovy.helper.spec.impl.HelperFunctionSpecification
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty
 import groovy.transform.CompileStatic
@@ -30,16 +31,15 @@ import groovy.transform.CompileStatic
  * 
  * @author Simon Templer
  */
-@CompileStatic
 class GeometryHelperFunctions {
 
 	/**
-	 * specification for a centroid function
+	 * Specification for the centroid function
 	 */
-	public static final HelperFunctionSpecification _centroid_spec = new HelperFunctionSpecification(
-	"Calculate the centroid of a given geometry.", "centroid of the geometry",
-	new HelperFunctionArgument("geometry",
-	"Geometry, geometry property or instance holding a geometry"));
+	public static final Specification _centroid_spec = SpecBuilder.newSpec( //
+	description: 'Calculate the centroid of a geometry.',
+	result: 'The Point geometry that is the centroid of the given geometry (wrapped in a GeometryProperty) or null.') { //
+		geometry("A geometry, geometry property or instance holding a geometry") }
 
 	/**
 	 * Calculate the centroid of a given geometry.
@@ -48,6 +48,7 @@ class GeometryHelperFunctions {
 	 *            {@link Instance} holding a geometry
 	 * @return the centroid of the geometry or <code>null</code>
 	 */
+	@CompileStatic
 	@Nullable
 	static GeometryProperty<? extends Geometry> _centroid(def geometryHolder) {
 		GeometryProperty<?> result;
@@ -81,6 +82,7 @@ class GeometryHelperFunctions {
 	 * @param args the function arguments
 	 * @return the buffer geometry or <code>null</code>
 	 */
+	@CompileStatic
 	@Nullable
 	static GeometryProperty<? extends Geometry> _buffer(Map args) {
 		GeometryProperty<?> result = NetworkExpansion.calculateBuffer(
