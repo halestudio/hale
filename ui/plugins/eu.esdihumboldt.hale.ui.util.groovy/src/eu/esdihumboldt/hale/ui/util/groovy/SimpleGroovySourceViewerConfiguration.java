@@ -290,6 +290,8 @@ public class SimpleGroovySourceViewerConfiguration extends SourceViewerConfigura
 		ContentAssistant assistant = new ContentAssistant();
 		assistant.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
 
+		assistant.enableColoredLabels(true);
+
 		IContentAssistProcessor testProcessor = new GroovyASTCompletionProcessor(fCustomCompletions);
 		assistant.setContentAssistProcessor(testProcessor, IDocument.DEFAULT_CONTENT_TYPE);
 

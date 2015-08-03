@@ -79,7 +79,7 @@ class GeometryHelperFunctions {
 	new HelperFunctionArgument("geometry",
 	"Geometry, geometry property or instance holding the geometry to calculate a buffer on"),
 	new HelperFunctionArgument("distance",
-	"Buffer distance"));
+	"Buffer distance", 0));
 
 	/**
 	 * Calculate a buffer from an existing geometry.

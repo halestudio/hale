@@ -20,8 +20,8 @@ import org.codehaus.groovy.ast.expr.BinaryExpression
 import org.codehaus.groovy.ast.expr.ConstantExpression
 import org.codehaus.groovy.ast.expr.PropertyExpression
 import org.eclipse.jface.text.ITextViewer
-import org.eclipse.jface.text.contentassist.CompletionProposal
 import org.eclipse.jface.text.contentassist.ICompletionProposal
+import org.eclipse.jface.viewers.StyledString
 import org.eclipse.swt.graphics.Image
 
 import com.google.common.base.Splitter
@@ -34,6 +34,7 @@ import de.fhg.igd.slf4jplus.ALoggerFactory
 import eu.esdihumboldt.cst.functions.groovy.helper.Category
 import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctionOrCategory
 import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctionsService
+import eu.esdihumboldt.cst.functions.groovy.helper.spec.impl.HelperFunctionSpecification
 import eu.esdihumboldt.cst.functions.groovy.internal.GroovyUtil
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages
 import eu.esdihumboldt.hale.ui.common.CommonSharedImagesConstants
@@ -156,6 +157,8 @@ public class HelperFunctionsCompletions implements GroovyCompletionProposals, AS
 			}
 		}
 
+
+
 		// TODO sort?
 		def sorted = catsOrFuns
 
@@ -164,35 +167,65 @@ public class HelperFunctionsCompletions implements GroovyCompletionProposals, AS
 		// create proposals
 		sorted.each { HelperFunctionOrCategory catOrFun ->
 			String name = catOrFun.name
-
+			StringBuilder b = new StringBuilder(name);
+			StyledString styledDisplay = new StyledString(name)
+			String addnInfo = null;
 			Image image = null;
 			if (catOrFun.asCategory()) {
 				image = CommonSharedImages.getImageRegistry().get(CommonSharedImagesConstants.IMG_DEFINITION_GROUP)
+				addnInfo = "This is a function group"
 			}
 			else {
+
+
+				HelperFunctionSpecification hfs = null;
+				try {
+
+					hfs = (HelperFunctionSpecification) catOrFun.asFunction().getSpec(name);
+					styledDisplay.append(PageFunctions.getStyledParameters(hfs));
+					addnInfo = PageFunctions.getFunctionSpecHTML(hfs)
+
+				} catch (Exception e) {
+					//
+				}
+
 				image = CommonSharedImages.getImageRegistry().get(CommonSharedImagesConstants.IMG_FUNCTION)
+
+
 			}
 
-			String proposal = name
-			int cursor = name.length()
 
-			ICompletionProposal prop = new CompletionProposal( //
+			String proposal = styledDisplay.toString()
+			int cursor = proposal.indexOf('?') >= 0 ? proposal.indexOf('?') : proposal.length()
+			ICompletionProposal prop = new HelperFunctionCompletionPropasal( //
 					proposal, // replacement string
 					offset - namePrefix.length(), // replacement position
 					namePrefix.length(), // length of the text to be replaced
-					// new cursor position relative to replacement position
-					cursor, //
+					cursor, // new cursor position relative to replacement position
 					image, // image
-					name, // display string
+					styledDisplay, // display styled string
 					null, // new ContextInformation("context", "context info"),
 					// context information - how to display?
-					null) // additional info (supports limited set of HTML; see DefaultInformationControl)
+					addnInfo)
 
 			result << prop
 		}
+		//sort the proposals alphabetically.
+		Collections.sort(result,new Comparator<ICompletionProposal>() {
+
+					@Override
+					public int compare(ICompletionProposal o1, ICompletionProposal o2) {
+						String name1 = o1.displayString;
+						String name2 = o2.displayString;
+						return name1.compareTo(name2);
+
+					}
+				});
 
 		result
+
 	}
+
 
 	/**
 	 * Checks if the given vertex represents the closure assignment or a closure call of the

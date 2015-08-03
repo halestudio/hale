@@ -27,15 +27,28 @@ public class HelperFunctionArgument implements Argument {
 	private String name;
 	private String description;
 
+	private Object defaultValue;
+
+	/**
+	 * @param name name of an argument
+	 * @param description description about an argument
+	 */
+	public HelperFunctionArgument(String name, String description) {
+		this(name, description, null);
+
+	}
+
 	/**
 	 * Parameterized constructor
 	 * 
 	 * @param name name of the argument
 	 * @param description description of the argument
+	 * @param defaultValue the default value of an argument
 	 */
-	public HelperFunctionArgument(String name, String description) {
+	public HelperFunctionArgument(String name, String description, Object defaultValue) {
 		this.name = name;
 		this.description = description;
+		this.defaultValue = defaultValue;
 	}
 
 	/**
@@ -67,6 +80,25 @@ public class HelperFunctionArgument implements Argument {
 	@Override
 	public String getDescription() {
 		return description;
+	}
+
+	/**
+	 * @return gets default value
+	 */
+	public Object getDefaultValue() {
+		return defaultValue;
+	}
+
+	/**
+	 * @return the defaultValue of an argument
+	 */
+	public String getDefaultValueDisplay() {
+
+		if (defaultValue instanceof Number || defaultValue instanceof String
+				|| defaultValue instanceof Boolean) {
+			return String.valueOf(defaultValue);
+		}
+		return null;
 	}
 
 }
