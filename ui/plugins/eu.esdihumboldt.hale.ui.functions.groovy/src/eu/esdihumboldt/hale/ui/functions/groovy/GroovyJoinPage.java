@@ -41,6 +41,7 @@ import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.HaleUI;
+import eu.esdihumboldt.hale.ui.functions.groovy.internal.JoinTypeStructureTray;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.PageFunctions;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.PageHelp;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.TypeStructureTray;
@@ -136,20 +137,22 @@ public class GroovyJoinPage extends GroovyRetypePage {
 
 		// FIXME TypeStructureTray does not support FamilyInstances
 		// XXX for now only use Join base type
-		TypeStructureTray.createToolItem(toolbar, this, SchemaSpaceID.SOURCE, new TypeProvider() {
+		JoinTypeStructureTray.createToolItem(toolbar, this, SchemaSpaceID.SOURCE,
+				new TypeProvider() {
 
-			@Override
-			public Collection<? extends TypeDefinition> getTypes() {
-				ParameterValue param = CellUtil.getFirstParameter(getWizard().getUnfinishedCell(),
-						JoinFunction.PARAMETER_JOIN);
-				JoinParameter joinParameter = param.as(JoinParameter.class);
-				if (joinParameter != null && joinParameter.types != null
-						&& !joinParameter.types.isEmpty()) {
-					return Collections.singleton(joinParameter.types.get(0).getDefinition());
-				}
-				return Collections.emptyList();
-			}
-		});
+					@Override
+					public Collection<? extends TypeDefinition> getTypes() {
+						ParameterValue param = CellUtil.getFirstParameter(getWizard()
+								.getUnfinishedCell(), JoinFunction.PARAMETER_JOIN);
+						JoinParameter joinParameter = param.as(JoinParameter.class);
+						if (joinParameter != null && joinParameter.types != null
+								&& !joinParameter.types.isEmpty()) {
+							return Collections
+									.singleton(joinParameter.types.get(0).getDefinition());
+						}
+						return Collections.emptyList();
+					}
+				});
 
 		TypeStructureTray.createToolItem(toolbar, this, SchemaSpaceID.TARGET, new TypeProvider() {
 

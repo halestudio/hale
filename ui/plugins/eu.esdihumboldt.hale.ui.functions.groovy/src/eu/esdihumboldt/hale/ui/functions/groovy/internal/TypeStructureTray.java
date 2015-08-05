@@ -120,6 +120,7 @@ public class TypeStructureTray extends DialogTray implements GroovyConstants {
 	 */
 	public static void createToolItem(ToolBar bar, final HaleWizardPage<?> page,
 			final SchemaSpaceID schemaSpace, final TypeProvider types) {
+
 		ToolItem item = new ToolItem(bar, SWT.PUSH);
 		switch (schemaSpace) {
 		case SOURCE:
@@ -201,13 +202,8 @@ public class TypeStructureTray extends DialogTray implements GroovyConstants {
 		tree.setUseHashlookup(true);
 		StyledDefinitionLabelProvider labelProvider = new StyledDefinitionLabelProvider(tree);
 		tree.setLabelProvider(labelProvider);
-		IContentProvider contentProvider;
-		if (types.size() == 1) {
-			contentProvider = new TreePathProviderAdapter(new TypePropertyContentProvider(tree));
-		}
-		else {
-			contentProvider = new TreePathProviderAdapter(new TypeDefinitionContentProvider(tree));
-		}
+		IContentProvider contentProvider = createContentProvider(tree);
+
 		tree.setContentProvider(contentProvider);
 		GridDataFactory.fillDefaults().grab(true, true).hint(280, 400).applyTo(filteredTree);
 
@@ -304,6 +300,27 @@ public class TypeStructureTray extends DialogTray implements GroovyConstants {
 		tree.setSelection(StructuredSelection.EMPTY);
 
 		return page;
+	}
+
+	/**
+	 * 
+	 * Returns an appropriate content provider
+	 * 
+	 * @param tree a tree viewer
+	 * 
+	 * @return content provider
+	 */
+	protected IContentProvider createContentProvider(TreeViewer tree) {
+
+		IContentProvider contentProvider;
+		if (types.getTypes().size() == 1) {
+			contentProvider = new TreePathProviderAdapter(new TypePropertyContentProvider(tree));
+
+		}
+		else {
+			contentProvider = new TreePathProviderAdapter(new TypeDefinitionContentProvider(tree));
+		}
+		return contentProvider;
 	}
 
 	/**
@@ -490,7 +507,7 @@ public class TypeStructureTray extends DialogTray implements GroovyConstants {
 					example.append("// access all instances as list\n");
 					example.append("def instanceList = ");
 					example.append(access);
-					example.append(".all()\n\n");
+					example.append(".list()\n\n");
 
 					// iterate over instances
 					example.append("// iterate over instances\n");
