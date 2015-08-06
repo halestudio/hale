@@ -58,13 +58,35 @@ public class GroovyJoinContentProvider extends TypePropertyContentProvider {
 		JoinParameter joinParameter = param.as(JoinParameter.class);
 
 		for (JoinCondition j : joinParameter.conditions) {
-			if (j.baseProperty.getType() == inputElement) {
+			if (j.baseProperty.getType().equals(inputElement)) {
 
 				elements.add(j.joinProperty.getType());
 			}
 		}
 
 		elements.addAll(Arrays.asList(super.getElements(inputElement)));
+
+		return elements.toArray(new Object[elements.size()]);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.common.definition.viewer.TypeIndexContentProvider#getChildren(java.lang.Object)
+	 */
+	@Override
+	public Object[] getChildren(Object parentElement) {
+
+		List<Object> elements = new ArrayList<Object>();
+
+		JoinParameter joinParameter = param.as(JoinParameter.class);
+
+		for (JoinCondition j : joinParameter.conditions) {
+			if (j.baseProperty.getType().equals(parentElement)) {
+
+				elements.add(j.joinProperty.getType());
+			}
+		}
+
+		elements.addAll(Arrays.asList(super.getChildren(parentElement)));
 
 		return elements.toArray(new Object[elements.size()]);
 	}

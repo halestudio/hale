@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>Groovy Join</title>
+</head>
+<body>
+	<h1>Groovy Join</h1>
+	<div id="help">
+
+		<p>
+			With <i>Groovy Join</i> function, you could join two source schemas
+			based on the conditions entered. This function allows user to add the
+			entities for the function, gives the ability to configure the join
+			order of the added source types and asks for the conditions on which
+			two types should be joined. You can add multiple join conditions. The
+			joined structures can be viewed in the <b>show source structure</b>.
+			Based on the conditions given for the join, structure will be
+			appeared in the hierarchical manner. You can select any property or
+			type and it will give the examples stating the usage of the function.
+			The screenshot below depicts the hierarchy in the groovy join.
+		</p>
+
+		<h2>Access source properties</h2>
+		<include
+			path="eu.esdihumboldt.cst.functions.groovy/help/common.xhtml/accessor" />
+
+
+		<div>
+			<img
+				src="../../eu.esdihumboldt.cst.functions.groovy/help/groovy-join.png" />
+		</div>
+
+		<h2>Build the target instance</h2>
+		<include
+			path="eu.esdihumboldt.cst.functions.groovy/help/common.xhtml/builder" />
+		<include
+			path="eu.esdihumboldt.cst.functions.groovy/help/common.xhtml/builder-accessor" />
+
+		<h2>Helper Function Specification</h2>
+		<p>
+
+			This allows user to get the specification of the helper function.
+			This is available on click of <b>Show functions</b> item. The tray
+			lists down all the available helper functions. When an individual
+			function is clicked in this tray, the specification about that
+			function will be displayed in the tray located at bottom right. This
+			specification includes :
+		</p>
+		<ul>
+			<li>Description about the function.</li>
+			<li>The parameters in the function, description of each
+				parameter and its default value.</li>
+			<li>If function takes more than one parameters and if the
+				default value is not given then it will display <b>?</b> to show
+				that default value is unknown.
+			</li>
+			<li>Description about the return type of the function.</li>
+		</ul>
+		<div>
+			<img
+				src="../../eu.esdihumboldt.cst.functions.groovy/help/helper-function-spec.png" />
+		</div>
+		<p>
+			The helper functions with specification is also appeared in
+			completion proposal. The code starts with <b><code>_.</code></b> and
+			then pressing <b> ctrl + space </b>would give the completion
+			proposal. If you select a particular function and highlight it, it
+			would also show some additional information regarding the function.
+			The additional information include description of the function, what
+			parameters the function takes, description of each parameter with
+			their default values, and the return of the function. This can be
+			shown in the below screenshot where, trying to auto complete all the
+			helper function which starts with alphabet <b>b</b>.
+		</p>
+
+		<div>
+			<img
+				src="../../eu.esdihumboldt.cst.functions.groovy/help/auto-complete.png" />
+		</div>
+
+		<include
+			path="eu.esdihumboldt.cst.functions.groovy/help/common.xhtml/binding-content" />
+	</div>
+</body>
+</html>
