@@ -63,6 +63,7 @@ public class AppSchemaMappingWrapper {
 	private final Map<String, Namespace> namespaceUriMap;
 	private final Map<String, Namespace> namespacePrefixMap;
 	private final Map<Integer, FeatureTypeMapping> featureTypeMappings;
+	private final Map<Integer, Integer> featureLinkCounter;
 	private final Map<Integer, AttributeMappingType> attributeMappings;
 
 	private final AppSchemaDataAccessType appSchemaMapping;
@@ -78,6 +79,7 @@ public class AppSchemaMappingWrapper {
 		this.namespaceUriMap = new HashMap<String, Namespace>();
 		this.namespacePrefixMap = new HashMap<String, Namespace>();
 		this.featureTypeMappings = new HashMap<Integer, FeatureTypeMapping>();
+		this.featureLinkCounter = new HashMap<Integer, Integer>();
 		this.attributeMappings = new HashMap<Integer, AttributeMappingType>();
 
 		if (this.appSchemaMapping.getNamespaces() == null) {
@@ -316,6 +318,14 @@ public class AppSchemaMappingWrapper {
 			// know which element corresponds to a type?
 			featureTypeMapping.setTargetElement(targetType.getName().getPrefix() + ":"
 					+ targetType.getDisplayName());
+			if (mappingName != null && !mappingName.isEmpty()) {
+				// playing defensive: always enclose mapping name in single
+				// quotes
+				String quotedMappingName = "'" + mappingName + "'";
+//				String qualifiedMappingName = targetType.getName().getPrefix() + ":"
+//						+ quotedMappingName;
+				featureTypeMapping.setMappingName(quotedMappingName);
+			}
 
 			appSchemaMapping.getTypeMappings().getFeatureTypeMapping().add(featureTypeMapping);
 			featureTypeMappings.put(hashKey, featureTypeMapping);
@@ -333,6 +343,34 @@ public class AppSchemaMappingWrapper {
 	}
 
 	/**
+	 * Returns the unique <code>FEATURE_LINK</code> attribute name for the
+	 * specified feature type mapping.
+	 * 
+	 * <p>
+	 * E.g. the first time the method is called, it will return
+	 * <code>FEATURE_LINK[1]</code>; if it is called a second time, with the
+	 * same input parameters, it will return <code>FEATURE_LINK[2]</code>, and
+	 * so on.
+	 * </p>
+	 * 
+	 * @param featureType the feature type
+	 * @param mappingName the feature type's mapping name (may be
+	 *            <code>null</code>)
+	 * @return a unique <code>FEATURE_LINK[i]</code> attribute name
+	 */
+	public String getUniqueFeatureLinkAttribute(TypeDefinition featureType, String mappingName) {
+		Integer featureTypeKey = getFeatureTypeMappingHashKey(featureType, mappingName);
+		if (!featureLinkCounter.containsKey(featureTypeKey)) {
+			featureLinkCounter.put(featureTypeKey, 0);
+		}
+		Integer counter = featureLinkCounter.get(featureTypeKey);
+		// update counter
+		featureLinkCounter.put(featureTypeKey, ++counter);
+
+		return String.format("%s[%d]", FEATURE_LINK_FIELD, counter);
+	}
+
+	/**
 	 * Return the attribute mapping associated to the provided property.
 	 * 
 	 * <p>
@@ -341,11 +379,12 @@ public class AppSchemaMappingWrapper {
 	 * </p>
 	 * 
 	 * @param owningType the type owning the property
+	 * @param mappingName the mapping name
 	 * @param propertyPath the property path
 	 * @return the attribute mapping
 	 */
 	public AttributeMappingType getOrCreateAttributeMapping(TypeDefinition owningType,
-			List<ChildContext> propertyPath) {
+			String mappingName, List<ChildContext> propertyPath) {
 		if (propertyPath == null || propertyPath.isEmpty()) {
 			return null;
 		}
@@ -355,7 +394,7 @@ public class AppSchemaMappingWrapper {
 			// create
 			AttributeMappingType attrMapping = new AttributeMappingType();
 			// add to owning type mapping
-			FeatureTypeMapping ftMapping = getOrCreateFeatureTypeMapping(owningType);
+			FeatureTypeMapping ftMapping = getOrCreateFeatureTypeMapping(owningType, mappingName);
 			ftMapping.getAttributeMappings().getAttributeMapping().add(attrMapping);
 			// put into internal map
 			attributeMappings.put(hashKey, attrMapping);

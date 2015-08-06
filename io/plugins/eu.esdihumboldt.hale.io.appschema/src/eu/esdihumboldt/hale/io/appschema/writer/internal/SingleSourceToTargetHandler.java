@@ -17,7 +17,6 @@ package eu.esdihumboldt.hale.io.appschema.writer.internal;
 
 import com.google.common.collect.ListMultimap;
 
-import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -32,13 +31,12 @@ import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.Type
 public abstract class SingleSourceToTargetHandler implements TypeTransformationHandler {
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.appschema.writer.internal.TypeTransformationHandler#handleTypeTransformation(eu.esdihumboldt.hale.common.align.model.Alignment,
-	 *      eu.esdihumboldt.hale.common.align.model.Cell,
-	 *      eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingWrapper)
+	 * @see eu.esdihumboldt.hale.io.appschema.writer.internal.TypeTransformationHandler#handleTypeTransformation(eu.esdihumboldt.hale.common.align.model.Cell,
+	 *      eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingContext)
 	 */
 	@Override
-	public FeatureTypeMapping handleTypeTransformation(Alignment alignment, Cell typeCell,
-			AppSchemaMappingWrapper mapping) {
+	public FeatureTypeMapping handleTypeTransformation(Cell typeCell,
+			AppSchemaMappingContext context) {
 		ListMultimap<String, ? extends Entity> sourceEntities = typeCell.getSource();
 		if (sourceEntities == null || sourceEntities.size() == 0) {
 			throw new IllegalStateException("No source type has been specified.");
@@ -54,7 +52,8 @@ public abstract class SingleSourceToTargetHandler implements TypeTransformationH
 		Entity targetType = targetEntities.values().iterator().next();
 		TypeDefinition targetTypeDef = targetType.getDefinition().getType();
 
-		FeatureTypeMapping ftMapping = mapping.getOrCreateFeatureTypeMapping(targetTypeDef);
+		FeatureTypeMapping ftMapping = context.getMappingWrapper().getOrCreateFeatureTypeMapping(
+				targetTypeDef);
 		ftMapping.setSourceType(sourceType.getDefinition().getType().getName().getLocalPart());
 
 		return ftMapping;

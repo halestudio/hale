@@ -46,6 +46,10 @@ public abstract class AppSchemaIO {
 	 */
 	public static final String PARAM_DATASTORE = "appschema.source.datastore";
 	/**
+	 * Feature chaining configuration parameter name.
+	 */
+	public static final String PARAM_CHAINING = "appschema.feature.chaining";
+	/**
 	 * REST user configuration parameter name.
 	 */
 	public static final String PARAM_USER = "appschema.rest.user";

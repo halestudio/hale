@@ -19,6 +19,7 @@ Import-Package: com.google.common.base;version="17.0.0",
  eu.esdihumboldt.cst.functions.string,
  eu.esdihumboldt.hale.common.align.extension.function,
  eu.esdihumboldt.hale.common.align.io.impl,
+ eu.esdihumboldt.hale.common.align.io.impl.internal.generated;version="2.9.3",
  eu.esdihumboldt.hale.common.align.model,
  eu.esdihumboldt.hale.common.align.model.functions,
  eu.esdihumboldt.hale.common.align.model.impl,
@@ -53,4 +54,5 @@ Import-Package: com.google.common.base;version="17.0.0",
  org.apache.xmlbeans;version="2.4.0",
  org.slf4j;version="1.5.11"
 Export-Package: eu.esdihumboldt.hale.io.appschema,
+ eu.esdihumboldt.hale.io.appschema.model,
  eu.esdihumboldt.hale.io.appschema.writer

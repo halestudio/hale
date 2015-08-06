@@ -13,29 +13,46 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.io.appschema.writer.internal;
+package eu.esdihumboldt.hale.io.appschema.writer;
+
+import static eu.esdihumboldt.hale.common.align.model.functions.JoinFunction.PARAMETER_JOIN;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
+
+import org.w3c.dom.Element;
 
 import com.google.common.collect.ListMultimap;
 
+import eu.esdihumboldt.hale.common.align.io.EntityResolver;
+import eu.esdihumboldt.hale.common.align.io.impl.DefaultEntityResolver;
+import eu.esdihumboldt.hale.common.align.io.impl.JaxbAlignmentIO;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.PropertyType;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
+import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
+import eu.esdihumboldt.hale.io.appschema.model.ChainConfiguration;
+import eu.esdihumboldt.hale.io.appschema.model.FeatureChaining;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 
 /**
@@ -258,18 +275,6 @@ public class AppSchemaMappingUtils {
 		return Collections.emptyList();
 	}
 
-	private static int findOwningFeatureTypeIndex(List<ChildContext> propertyPath) {
-		for (int i = propertyPath.size() - 1; i >= 0; i--) {
-			ChildContext childContext = propertyPath.get(i);
-			TypeDefinition parentType = childContext.getChild().getParentType();
-			if (isFeatureType(parentType)) {
-				return i;
-			}
-		}
-
-		return -1;
-	}
-
 	/**
 	 * Looks for a feature type among the children of the provided type.
 	 * 
@@ -290,6 +295,153 @@ public class AppSchemaMappingUtils {
 					if (childPropertyDef != null) {
 						TypeDefinition childPropertyType = childPropertyDef.getPropertyType();
 						if (isFeatureType(childPropertyType)) {
+							return childPropertyType;
+						}
+					}
+				}
+			}
+		}
+
+		return null;
+	}
+
+	private static int findOwningFeatureTypeIndex(List<ChildContext> propertyPath) {
+		for (int i = propertyPath.size() - 1; i >= 0; i--) {
+			ChildContext childContext = propertyPath.get(i);
+			TypeDefinition parentType = childContext.getChild().getParentType();
+			if (isFeatureType(parentType)) {
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
+	/**
+	 * Determines which is the closest type containing the specified property,
+	 * among the provided collection of allowed types.
+	 * 
+	 * <p>
+	 * The lookup is done by traversing the property path backwards (i.e. from
+	 * end to beginning).
+	 * </p>
+	 * 
+	 * @param propertyEntityDef the property definition
+	 * @param allowedTypes the allowed types
+	 * @return the type containing the specified property
+	 */
+	public static TypeDefinition findOwningType(PropertyEntityDefinition propertyEntityDef,
+			Collection<? extends TypeDefinition> allowedTypes) {
+		List<ChildContext> propertyPath = propertyEntityDef.getPropertyPath();
+
+		return findOwningType(propertyPath, allowedTypes);
+	}
+
+	/**
+	 * Determines which is the closest type containing the specified property,
+	 * among the provided collection of allowed types.
+	 * 
+	 * <p>
+	 * The lookup is done by traversing the property path backwards (i.e. from
+	 * end to beginning).
+	 * </p>
+	 * 
+	 * @param propertyPath the property path
+	 * @param allowedTypes the allowed types
+	 * @return the type containing the specified property
+	 */
+	public static TypeDefinition findOwningType(List<ChildContext> propertyPath,
+			Collection<? extends TypeDefinition> allowedTypes) {
+		int ftIdx = findOwningTypeIndex(propertyPath, allowedTypes);
+
+		if (ftIdx >= 0) {
+			return propertyPath.get(ftIdx).getChild().getParentType();
+		}
+		else {
+			return null;
+		}
+	}
+
+	private static int findOwningTypeIndex(List<ChildContext> propertyPath,
+			Collection<? extends TypeDefinition> allowedTypes) {
+		for (int i = propertyPath.size() - 1; i >= 0; i--) {
+			ChildContext childContext = propertyPath.get(i);
+			TypeDefinition parentType = childContext.getChild().getParentType();
+			if (allowedTypes.contains(parentType)) {
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
+	/**
+	 * Determines the path to the closest type containing the specified
+	 * property, among the provided collection of allowed types.
+	 * 
+	 * <p>
+	 * The lookup is done by traversing the property path backwards (i.e. from
+	 * end to beginning).
+	 * </p>
+	 * 
+	 * @param propertyEntityDef the property definition
+	 * @param allowedTypes the allowed types
+	 * @return the path to the type containing the specified property
+	 */
+	public static List<ChildContext> findOwningTypePath(PropertyEntityDefinition propertyEntityDef,
+			Collection<? extends TypeDefinition> allowedTypes) {
+		List<ChildContext> propertyPath = propertyEntityDef.getPropertyPath();
+
+		return findOwningTypePath(propertyPath, allowedTypes);
+	}
+
+	/**
+	 * Determines the path to the closest type containing the specified
+	 * property, among the provided collection of allowed types.
+	 * 
+	 * <p>
+	 * The lookup is done by traversing the property path backwards (i.e. from
+	 * end to beginning).
+	 * </p>
+	 * 
+	 * @param propertyPath the property path
+	 * @param allowedTypes the allowed types
+	 * @return the path to the type containing the specified property
+	 */
+	public static List<ChildContext> findOwningTypePath(List<ChildContext> propertyPath,
+			Collection<? extends TypeDefinition> allowedTypes) {
+		int ftIdx = findOwningTypeIndex(propertyPath, allowedTypes);
+
+		if (ftIdx >= 0) {
+			return getContainerPropertyPath(propertyPath.subList(0, ftIdx));
+		}
+
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Looks for one of the allowed types, among the children of the provided
+	 * type.
+	 * 
+	 * <p>
+	 * NOTE: if more than one of the allowed types are found, only the first one
+	 * is returned.
+	 * </p>
+	 * 
+	 * @param typeDef the type definition
+	 * @param allowedTypes the allowed types
+	 * @return the first child of <code>typeDef</code> who is a feature type
+	 */
+	public static TypeDefinition findChildType(TypeDefinition typeDef,
+			Collection<? extends TypeDefinition> allowedTypes) {
+		if (typeDef != null) {
+			Collection<? extends ChildDefinition<?>> children = typeDef.getChildren();
+			if (children != null) {
+				for (ChildDefinition<?> child : children) {
+					PropertyDefinition childPropertyDef = child.asProperty();
+					if (childPropertyDef != null) {
+						TypeDefinition childPropertyType = childPropertyDef.getPropertyType();
+						if (allowedTypes.contains(childPropertyType)) {
 							return childPropertyType;
 						}
 					}
@@ -404,5 +556,94 @@ public class AppSchemaMappingUtils {
 	 */
 	public static boolean isJoin(Cell typeCell) {
 		return typeCell != null && JoinFunction.ID.equals(typeCell.getTransformationIdentifier());
+	}
+
+	/**
+	 * @param joinCell the join cell
+	 * @return the {@link JoinParameter} transformation parameter, or
+	 *         <code>null</code> if none is found.
+	 */
+	public static JoinParameter getJoinParameter(Cell joinCell) {
+		if (joinCell != null && joinCell.getTransformationParameters() != null) {
+			List<ParameterValue> joinParameterList = joinCell.getTransformationParameters().get(
+					PARAMETER_JOIN);
+			if (joinParameterList != null && joinParameterList.size() > 0) {
+				return joinParameterList.get(0).as(JoinParameter.class);
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Converts the given element to a JAXB property type. If any exception
+	 * occurs <code>null</code> is returned.
+	 * 
+	 * @param fragment the fragment to convert
+	 * @return the property type or <code>null</code>
+	 */
+	public static PropertyType propertyTypeFromDOM(Element fragment) {
+		try {
+			JAXBContext jc = JAXBContext.newInstance(JaxbAlignmentIO.ALIGNMENT_CONTEXT,
+					PropertyType.class.getClassLoader());
+			Unmarshaller u = jc.createUnmarshaller();
+
+			// it will debug problems while unmarshalling
+			u.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
+
+			JAXBElement<PropertyType> root = u.unmarshal(fragment, PropertyType.class);
+
+			return root.getValue();
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	/**
+	 * Goes through all chain configurations in the provided feature chaining
+	 * configuration and attempts to resolve all unresolved property entity
+	 * definitions.
+	 * 
+	 * <p>
+	 * More specifically, resolution for a particular chain configuration is
+	 * attempted if {@link ChainConfiguration#getJaxbNestedTypeTarget()} returns
+	 * a value, while {@link ChainConfiguration#getNestedTypeTarget()} returns
+	 * <code>null</code>.
+	 * </p>
+	 * 
+	 * <p>
+	 * Upon successful resolution,
+	 * {@link ChainConfiguration#setJaxbNestedTypeTarget(PropertyType)} is
+	 * invoked with a <code>null</code> argument, to avoid further entity
+	 * resolution attempts.
+	 * </p>
+	 * 
+	 * <p>
+	 * A {@link DefaultEntityResolver} instance is used to resolve entities.
+	 * </p>
+	 * 
+	 * @param featureChaining the global feature chaining configuration
+	 * @param types the schema to use for entity lookup
+	 * @param ssid the schema space identifier
+	 */
+	public static void resolvePropertyTypes(FeatureChaining featureChaining, TypeIndex types,
+			SchemaSpaceID ssid) {
+		if (featureChaining != null) {
+			EntityResolver resolver = new DefaultEntityResolver();
+			for (String joinCellId : featureChaining.getJoins().keySet()) {
+				List<ChainConfiguration> chains = featureChaining.getChains(joinCellId);
+				for (ChainConfiguration chain : chains) {
+					if (chain.getNestedTypeTarget() == null
+							&& chain.getJaxbNestedTypeTarget() != null) {
+						Property resolved = resolver.resolveProperty(
+								chain.getJaxbNestedTypeTarget(), types, ssid);
+						if (resolved != null) {
+							chain.setNestedTypeTarget(resolved.getDefinition());
+							chain.setJaxbNestedTypeTarget(null);
+						}
+					}
+				}
+			}
+		}
 	}
 }

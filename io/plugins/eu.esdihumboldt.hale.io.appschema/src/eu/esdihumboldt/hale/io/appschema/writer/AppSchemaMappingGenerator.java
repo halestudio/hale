@@ -54,6 +54,8 @@ import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.Obje
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.SourceDataStoresPropertyType.DataStore;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.SourceDataStoresPropertyType.DataStore.Parameters.Parameter;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.TypeMappingsPropertyType.FeatureTypeMapping;
+import eu.esdihumboldt.hale.io.appschema.model.FeatureChaining;
+import eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingContext;
 import eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingWrapper;
 import eu.esdihumboldt.hale.io.appschema.writer.internal.PropertyTransformationHandler;
 import eu.esdihumboldt.hale.io.appschema.writer.internal.PropertyTransformationHandlerFactory;
@@ -82,6 +84,7 @@ public class AppSchemaMappingGenerator {
 	private final SchemaSpace targetSchemaSpace;
 	private final Schema targetSchema;
 	private final DataStore dataStore;
+	private final FeatureChaining chainingConf;
 	private AppSchemaMappingWrapper mappingWrapper;
 
 	/**
@@ -90,15 +93,17 @@ public class AppSchemaMappingGenerator {
 	 * @param alignment the alignment to translate
 	 * @param targetSchemaSpace the target schema space
 	 * @param dataStore the DataStore configuration to use
+	 * @param chainingConf the feature chaining configuration
 	 */
 	public AppSchemaMappingGenerator(Alignment alignment, SchemaSpace targetSchemaSpace,
-			DataStore dataStore) {
+			DataStore dataStore, FeatureChaining chainingConf) {
 		this.alignment = alignment;
 		this.targetSchemaSpace = targetSchemaSpace;
 		// pick the target schemas from which interpolation variables will be
 		// derived
 		this.targetSchema = pickTargetSchema();
 		this.dataStore = dataStore;
+		this.chainingConf = chainingConf;
 	}
 
 	/**
@@ -128,7 +133,9 @@ public class AppSchemaMappingGenerator {
 		createTargetTypes();
 
 		// populate typeMappings element
-		createTypeMappings(reporter);
+		AppSchemaMappingContext context = new AppSchemaMappingContext(mappingWrapper, alignment,
+				targetSchema.getMappingRelevantTypes(), chainingConf);
+		createTypeMappings(context, reporter);
 
 		return mappingWrapper;
 	}
@@ -450,7 +457,7 @@ public class AppSchemaMappingGenerator {
 		}
 	}
 
-	private void createTypeMappings(IOReporter reporter) {
+	private void createTypeMappings(AppSchemaMappingContext context, IOReporter reporter) {
 		Collection<? extends Cell> typeCells = alignment.getTypeCells();
 		for (Cell typeCell : typeCells) {
 			String typeTransformId = typeCell.getTransformationIdentifier();
@@ -460,7 +467,7 @@ public class AppSchemaMappingGenerator {
 				typeTransformHandler = TypeTransformationHandlerFactory.getInstance()
 						.createTypeTransformationHandler(typeTransformId);
 				FeatureTypeMapping ftMapping = typeTransformHandler.handleTypeTransformation(
-						alignment, typeCell, mappingWrapper);
+						typeCell, context);
 
 				if (ftMapping != null) {
 					Collection<? extends Cell> propertyCells = alignment.getPropertyCells(typeCell);
@@ -473,7 +480,7 @@ public class AppSchemaMappingGenerator {
 									.getInstance().createPropertyTransformationHandler(
 											propertyTransformId);
 							propertyTransformHandler.handlePropertyTransformation(typeCell,
-									propertyCell, mappingWrapper);
+									propertyCell, context);
 						} catch (UnsupportedTransformationException e) {
 							String errMsg = MessageFormat.format(
 									"Error processing property cell {0}", propertyCell.getId());

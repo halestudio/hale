@@ -16,20 +16,24 @@
 package eu.esdihumboldt.hale.io.appschema.writer.internal;
 
 import static eu.esdihumboldt.hale.common.align.model.functions.JoinFunction.PARAMETER_JOIN;
-import static eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingUtils.findChildFeatureType;
-import static eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingUtils.findOwningFeatureType;
-import static eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingUtils.findOwningFeatureTypePath;
-import static eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingUtils.getTargetProperty;
-import static eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingUtils.isHRefAttribute;
+import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.findOwningType;
+import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.findOwningTypePath;
+//import static eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingUtils.findChildFeatureType;
+import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.getTargetProperty;
+import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.getTargetType;
+import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.isHRefAttribute;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import eu.esdihumboldt.cst.functions.core.Join;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
-import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter;
 import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter.JoinCondition;
@@ -40,6 +44,9 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.AttributeExpressionMappingType;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.AttributeMappingType;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.TypeMappingsPropertyType.FeatureTypeMapping;
+import eu.esdihumboldt.hale.io.appschema.model.ChainConfiguration;
+import eu.esdihumboldt.hale.io.appschema.model.FeatureChaining;
+import eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils;
 
 /**
  * Translates a type cell specifying a {@link Join} transformation function to
@@ -64,137 +71,214 @@ public class JoinHandler implements TypeTransformationHandler {
 	private PropertyEntityDefinition joinProperty;
 
 	/**
-	 * 
-	 * @see eu.esdihumboldt.hale.io.appschema.writer.internal.TypeTransformationHandler#handleTypeTransformation(eu.esdihumboldt.hale.common.align.model.Alignment,
-	 *      eu.esdihumboldt.hale.common.align.model.Cell,
-	 *      eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingWrapper)
+	 * @see eu.esdihumboldt.hale.io.appschema.writer.internal.TypeTransformationHandler#handleTypeTransformation(eu.esdihumboldt.hale.common.align.model.Cell,
+	 *      eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingContext)
 	 */
 	@Override
-	public FeatureTypeMapping handleTypeTransformation(Alignment alignment, Cell typeCell,
-			AppSchemaMappingWrapper context) {
+	public FeatureTypeMapping handleTypeTransformation(Cell typeCell,
+			AppSchemaMappingContext context) {
+		AppSchemaMappingWrapper mapping = context.getMappingWrapper();
+		Alignment alignment = context.getAlignment();
+		FeatureChaining featureChaining = context.getFeatureChaining();
 
-		JoinParameter joinParameter = typeCell.getTransformationParameters().get(PARAMETER_JOIN)
-				.get(0).as(JoinParameter.class);
+		final JoinParameter joinParameter = typeCell.getTransformationParameters()
+				.get(PARAMETER_JOIN).get(0).as(JoinParameter.class);
 
 		String validation = joinParameter.validate();
 		if (validation != null)
 			throw new IllegalArgumentException("Join parameter invalid: " + validation);
 
-		if (joinParameter.types.size() > 2) {
-			throw new IllegalArgumentException("Only join between 2 types is supported so far");
+		// check only single predicate conditions have been used
+		int[] conditionCount = new int[joinParameter.types.size()];
+		Map<Integer, JoinCondition> conditionMap = new HashMap<Integer, JoinCondition>();
+		for (JoinCondition joinCondition : joinParameter.conditions) {
+			TypeEntityDefinition baseType = AlignmentUtil.getTypeEntity(joinCondition.baseProperty);
+			int typeIdx = joinParameter.types.indexOf(baseType);
+			conditionCount[typeIdx]++;
+			if (conditionCount[typeIdx] > 1) {
+				throw new IllegalArgumentException(
+						"Only single condition joins are supported so far");
+			}
+			conditionMap.put(typeIdx, joinCondition);
 		}
 
-		if (joinParameter.conditions.size() > 1) {
-			throw new IllegalArgumentException("Only single condition joins are supported so far");
-		}
+		FeatureTypeMapping topMostMapping = null;
+		for (int chainIdx = 0; chainIdx < joinParameter.types.size() - 1; chainIdx++) {
+			ChainConfiguration previousChainConf = null;
+			ChainConfiguration chainConf = null;
+			if (featureChaining != null) {
+				if (chainIdx > 0) {
+					previousChainConf = featureChaining.getChain(typeCell.getId(), chainIdx - 1);
+				}
+				chainConf = featureChaining.getChain(typeCell.getId(), chainIdx);
+			}
 
-		// TODO: I assume the first type is the container type, whereas the
-		// second type is nested in the first
-		TypeEntityDefinition containerType = joinParameter.types.get(0);
-		TypeEntityDefinition nestedType = joinParameter.types.get(1);
-		JoinCondition joinCondition = joinParameter.conditions.iterator().next();
-		baseProperty = joinCondition.baseProperty;
-		joinProperty = joinCondition.joinProperty;
+			// join is done pair-wise: I assume the first type is the container
+			// type, whereas the second type is nested in the first
+			TypeEntityDefinition containerType = joinParameter.types.get(chainIdx);
+			TypeEntityDefinition nestedType = joinParameter.types.get(chainIdx + 1);
+			JoinCondition joinCondition = conditionMap.get(chainIdx);
+			baseProperty = joinCondition.baseProperty;
+			joinProperty = joinCondition.joinProperty;
 
-		// build FeatureTypeMapping for container type
-		Entity containerTypeTarget = typeCell.getTarget().values().iterator().next();
-		TypeDefinition containerTypeTargetType = containerTypeTarget.getDefinition().getType();
+			// build FeatureTypeMapping for container type
+//			Entity containerTypeTarget = typeCell.getTarget().values().iterator().next();
+//			TypeDefinition containerTypeTargetType = containerTypeTarget.getDefinition().getType();
+			EntityDefinition containerTypeTarget = null;
+			TypeDefinition containerTypeTargetType = null;
+			String containerTypeTargetMappingName = null;
+			if (previousChainConf == null) {
+				containerTypeTarget = getTargetType(typeCell).getDefinition();
+				containerTypeTargetType = containerTypeTarget.getType();
+			}
+			else {
+				containerTypeTarget = previousChainConf.getNestedTypeTarget();
+				containerTypeTargetType = previousChainConf.getNestedTypeTarget().getDefinition()
+						.getPropertyType();
+				containerTypeTargetMappingName = previousChainConf.getMappingName();
+			}
 
-		FeatureTypeMapping containerFTMapping = context
-				.getOrCreateFeatureTypeMapping(containerTypeTargetType);
-		containerFTMapping.setSourceType(containerType.getDefinition().getName().getLocalPart());
+			String containerMappingName = null;
+			if (previousChainConf != null) {
+				containerMappingName = previousChainConf.getMappingName();
+			}
+			FeatureTypeMapping containerFTMapping = mapping.getOrCreateFeatureTypeMapping(
+					containerTypeTargetType, containerMappingName);
+			containerFTMapping
+					.setSourceType(containerType.getDefinition().getName().getLocalPart());
 
-		// build FeatureTypeMapping for nested type
-		FeatureTypeMapping nestedFTMapping = null;
-		TypeDefinition nestedFT = null;
-		List<ChildContext> nestedFTPath = null;
-		Collection<? extends Cell> propertyCells = alignment.getPropertyCells(typeCell);
-		for (Cell propertyCell : propertyCells) {
-			Property sourceProperty = AppSchemaMappingUtils.getSourceProperty(propertyCell);
-			if (sourceProperty != null) {
-				TypeDefinition sourceType = sourceProperty.getDefinition().getDefinition()
-						.getParentType();
-				if (sourceType.getName().equals(nestedType.getDefinition().getName())) {
-					// source property belongs to nested type: determine
-					// target type
-					Property targetProperty = getTargetProperty(propertyCell);
-					nestedFT = findOwningFeatureType(targetProperty.getDefinition());
-					if (nestedFT != null
-							&& !nestedFT.getName().equals(containerTypeTargetType.getName())) {
-						// target property belongs to a feature type different
-						// from the already mapped one: build a new mapping
-						nestedFTPath = findOwningFeatureTypePath(targetProperty.getDefinition());
+			// build FeatureTypeMapping for nested type
+			TypeDefinition nestedFT = null;
+			List<ChildContext> nestedFTPath = null;
+			FeatureTypeMapping nestedFTMapping = null;
 
-						nestedFTMapping = context.getOrCreateFeatureTypeMapping(nestedFT);
-						nestedFTMapping.setSourceType(nestedType.getDefinition().getName()
-								.getLocalPart());
+			if (chainConf != null) {
+				nestedFT = chainConf.getNestedTypeTarget().getDefinition().getPropertyType();
+				nestedFTPath = chainConf.getNestedTypeTarget().getPropertyPath();
+				// remove last element
+				nestedFTPath = nestedFTPath.subList(0, nestedFTPath.size() - 1);
+				nestedFTMapping = mapping.getOrCreateFeatureTypeMapping(nestedFT,
+						chainConf.getMappingName());
+				nestedFTMapping.setSourceType(nestedType.getDefinition().getName().getLocalPart());
+			}
+			else {
+				if (joinParameter.types.size() > 2) {
+					throw new IllegalArgumentException(
+							"If no feature chaining configuration is provided, only join between 2 types is supported");
+				}
 
-						// TODO: I assume at most 2 FeatureTypes are involved in
-						// the join
-						break;
-					}
-					else if (isHRefAttribute(targetProperty.getDefinition().getDefinition())) {
-						// check if target property is a href attribute
-						Property hrefProperty = targetProperty;
-						List<ChildContext> hrefPropertyPath = hrefProperty.getDefinition()
-								.getPropertyPath();
-						List<ChildContext> hrefContainerPath = hrefPropertyPath.subList(0,
-								hrefPropertyPath.size() - 1);
-						TypeDefinition hrefParentType = hrefProperty.getDefinition()
-								.getDefinition().getParentType();
-						TypeDefinition childFT = findChildFeatureType(hrefParentType);
+				// do your best to figure it out on your own... good luck!
+				Collection<? extends Cell> propertyCells = alignment.getPropertyCells(typeCell);
+				for (Cell propertyCell : propertyCells) {
+					Property sourceProperty = AppSchemaMappingUtils.getSourceProperty(propertyCell);
+					if (sourceProperty != null) {
+						TypeDefinition sourceType = sourceProperty.getDefinition().getDefinition()
+								.getParentType();
+						if (sourceType.getName().equals(nestedType.getDefinition().getName())) {
+							// source property belongs to nested type: determine
+							// target type
+							Property targetProperty = getTargetProperty(propertyCell);
+							// nestedFT =
+							// findOwningFeatureType(targetProperty.getDefinition());
+							nestedFT = findOwningType(targetProperty.getDefinition(),
+									context.getRelevantTargetTypes());
+							if (nestedFT != null
+									&& !nestedFT.getName()
+											.equals(containerTypeTargetType.getName())) {
+								// target property belongs to a feature type
+								// different from the already mapped one: build
+								// a new mapping
+								nestedFTPath = findOwningTypePath(targetProperty.getDefinition(),
+										context.getRelevantTargetTypes());
 
-						if (childFT != null) {
-							nestedFTPath = hrefContainerPath;
-							nestedFTMapping = context.getOrCreateFeatureTypeMapping(childFT);
-							nestedFTMapping.setSourceType(nestedType.getDefinition().getName()
-									.getLocalPart());
+								// TODO: always generate unique mapping name?
+								nestedFTMapping = mapping.getOrCreateFeatureTypeMapping(nestedFT);
+								nestedFTMapping.setSourceType(nestedType.getDefinition().getName()
+										.getLocalPart());
 
-							// TODO: I assume at most 2 FeatureTypes are
-							// involved in the join
-							break;
+								// I assume at most 2 FeatureTypes are involved
+								// in the join
+								break;
+							}
+							else if (isHRefAttribute(targetProperty.getDefinition().getDefinition())) {
+								// check if target property is a href attribute
+								Property hrefProperty = targetProperty;
+								List<ChildContext> hrefPropertyPath = hrefProperty.getDefinition()
+										.getPropertyPath();
+								List<ChildContext> hrefContainerPath = hrefPropertyPath.subList(0,
+										hrefPropertyPath.size() - 1);
+								TypeDefinition hrefParentType = hrefProperty.getDefinition()
+										.getDefinition().getParentType();
+								// TypeDefinition childFT =
+								// findChildFeatureType(hrefParentType);
+								TypeDefinition childFT = AppSchemaMappingUtils.findChildType(
+										hrefParentType, context.getRelevantTargetTypes());
+
+								if (childFT != null) {
+									nestedFTPath = hrefContainerPath;
+									// TODO: always generate unique mapping
+									// name?
+									nestedFTMapping = mapping
+											.getOrCreateFeatureTypeMapping(childFT);
+									nestedFTMapping.setSourceType(nestedType.getDefinition()
+											.getName().getLocalPart());
+
+									// I assume at most 2 FeatureTypes are
+									// involved in the join
+									break;
+								}
+							}
 						}
 					}
 				}
 			}
-		}
 
-		// build join mapping
-		if (nestedFTMapping != null && nestedFTPath != null) {
-			AttributeMappingType containerJoinMapping = context.getOrCreateAttributeMapping(
-					containerTypeTargetType, nestedFTPath);
-			containerJoinMapping.setTargetAttribute(context.buildAttributeXPath(nestedFT,
-					nestedFTPath));
-			// set isMultiple attribute
-			PropertyDefinition targetPropertyDef = nestedFTPath.get(nestedFTPath.size() - 1)
-					.getChild().asProperty();
-			if (AppSchemaMappingUtils.isMultiple(targetPropertyDef)) {
-				containerJoinMapping.setIsMultiple(true);
+			// build join mapping
+			if (nestedFTMapping != null && nestedFTPath != null) {
+				AttributeMappingType containerJoinMapping = mapping.getOrCreateAttributeMapping(
+						containerTypeTargetType, containerTypeTargetMappingName, nestedFTPath);
+				containerJoinMapping.setTargetAttribute(mapping.buildAttributeXPath(
+						containerTypeTargetType, nestedFTPath));
+				// set isMultiple attribute
+				PropertyDefinition targetPropertyDef = nestedFTPath.get(nestedFTPath.size() - 1)
+						.getChild().asProperty();
+				if (AppSchemaMappingUtils.isMultiple(targetPropertyDef)) {
+					containerJoinMapping.setIsMultiple(true);
+				}
+
+				AttributeExpressionMappingType containerSourceExpr = new AttributeExpressionMappingType();
+				// join column extracted from join condition
+				containerSourceExpr.setOCQL(baseProperty.getDefinition().getName().getLocalPart());
+				containerSourceExpr.setLinkElement(getLinkElementValue(nestedFTMapping));
+				String linkField = mapping.getUniqueFeatureLinkAttribute(nestedFT,
+						nestedFTMapping.getMappingName());
+				containerSourceExpr.setLinkField(linkField);
+				containerJoinMapping.setSourceExpression(containerSourceExpr);
+
+				AttributeMappingType nestedJoinMapping = new AttributeMappingType();
+				AttributeExpressionMappingType nestedSourceExpr = new AttributeExpressionMappingType();
+				// join column extracted from join condition
+				nestedSourceExpr.setOCQL(joinProperty.getDefinition().getName().getLocalPart());
+				nestedJoinMapping.setSourceExpression(nestedSourceExpr);
+				nestedJoinMapping.setTargetAttribute(linkField);
+				nestedFTMapping.getAttributeMappings().getAttributeMapping().add(nestedJoinMapping);
 			}
 
-			AttributeExpressionMappingType containerSourceExpr = new AttributeExpressionMappingType();
-			// join column extracted from join condition
-			containerSourceExpr.setOCQL(baseProperty.getDefinition().getName().getLocalPart());
-			containerSourceExpr.setLinkElement(nestedFTMapping.getTargetElement());
-			// TODO: support multiple joins (e.g. FEATURE_LINK[1],
-			// FEATURE_LINK[2],
-			// ...)
-			containerSourceExpr.setLinkField(AppSchemaMappingWrapper.FEATURE_LINK_FIELD);
-			containerJoinMapping.setSourceExpression(containerSourceExpr);
-
-			AttributeMappingType nestedJoinMapping = new AttributeMappingType();
-			AttributeExpressionMappingType nestedSourceExpr = new AttributeExpressionMappingType();
-			// join column extracted from join condition
-			nestedSourceExpr.setOCQL(joinProperty.getDefinition().getName().getLocalPart());
-			nestedJoinMapping.setSourceExpression(nestedSourceExpr);
-			// TODO: support multiple joins (e.g. FEATURE_LINK[1],
-			// FEATURE_LINK[2],
-			// ...)
-			nestedJoinMapping.setTargetAttribute(AppSchemaMappingWrapper.FEATURE_LINK_FIELD);
-			nestedFTMapping.getAttributeMappings().getAttributeMapping().add(nestedJoinMapping);
+			if (chainIdx == 0) {
+				topMostMapping = containerFTMapping;
+			}
 		}
 
-		return containerFTMapping;
+		return topMostMapping;
 	}
 
+	private String getLinkElementValue(FeatureTypeMapping nestedFeatureTypeMapping) {
+		if (nestedFeatureTypeMapping.getMappingName() != null
+				&& !nestedFeatureTypeMapping.getMappingName().isEmpty()) {
+			return nestedFeatureTypeMapping.getMappingName();
+		}
+		else {
+			return nestedFeatureTypeMapping.getTargetElement();
+		}
+	}
 }

@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.io.appschema.writer.internal;
 
 import eu.esdihumboldt.cst.functions.core.Rename;
 import eu.esdihumboldt.hale.common.align.model.Property;
+import eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils;
 
 /**
  * Translates a property cell specifying an {@link Rename} transformation

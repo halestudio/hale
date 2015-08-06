@@ -15,12 +15,12 @@
 
 package eu.esdihumboldt.hale.io.appschema.writer.internal;
 
-import static eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingUtils.findOwningFeatureType;
-import static eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingUtils.getTargetProperty;
-import static eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingUtils.getTargetType;
-import static eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingUtils.isGeometryType;
-import static eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingUtils.isGmlId;
-import static eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingUtils.isXmlAttribute;
+import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.findOwningType;
+import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.getTargetProperty;
+import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.getTargetType;
+import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.isGeometryType;
+import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.isGmlId;
+import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.isXmlAttribute;
 
 import java.util.List;
 
@@ -41,6 +41,9 @@ import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.Attr
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.AttributeMappingType.ClientProperty;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.NamespacesPropertyType.Namespace;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.TypeMappingsPropertyType.FeatureTypeMapping;
+import eu.esdihumboldt.hale.io.appschema.model.ChainConfiguration;
+import eu.esdihumboldt.hale.io.appschema.model.FeatureChaining;
+import eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 
 /**
@@ -55,6 +58,10 @@ public abstract class AbstractPropertyTransformationHandler implements
 	 * The app-schema mapping configuration under construction.
 	 */
 	protected AppSchemaMappingWrapper mapping;
+	/**
+	 * The type cell owning the property cell to handle.
+	 */
+	protected Cell typeCell;
 	/**
 	 * The property cell to handle.
 	 */
@@ -75,23 +82,52 @@ public abstract class AbstractPropertyTransformationHandler implements
 	protected AttributeMappingType attributeMapping;
 
 	/**
-	 * 
 	 * @see eu.esdihumboldt.hale.io.appschema.writer.internal.PropertyTransformationHandler#handlePropertyTransformation(eu.esdihumboldt.hale.common.align.model.Cell,
-	 *      eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingWrapper)
+	 *      eu.esdihumboldt.hale.common.align.model.Cell,
+	 *      eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingContext)
 	 */
 	@Override
 	public AttributeMappingType handlePropertyTransformation(Cell typeCell, Cell propertyCell,
-			AppSchemaMappingWrapper mapping) {
-		this.mapping = mapping;
+			AppSchemaMappingContext context) {
+		this.mapping = context.getMappingWrapper();
+		this.typeCell = typeCell;
 		this.propertyCell = propertyCell;
 		// TODO: does this hold for any transformation function?
 		this.targetProperty = getTargetProperty(propertyCell);
-
 		PropertyEntityDefinition targetPropertyEntityDef = targetProperty.getDefinition();
 		PropertyDefinition targetPropertyDef = targetPropertyEntityDef.getDefinition();
+
 		TypeDefinition featureType = null;
+		String mappingName = null;
 		if (AppSchemaMappingUtils.isJoin(typeCell)) {
-			featureType = findOwningFeatureType(targetPropertyEntityDef);
+//			TypeDefinition sourceType = null;
+//			// TODO: this may not work as expected for trasformation functions
+//			// with none or multiple source properties
+//			Property sourceProperty = getSourceProperty(propertyCell);
+//			if (sourceProperty != null) {
+//				sourceType = sourceProperty.getDefinition().getDefinition().getParentType();
+//			}
+//			TypeEntityDefinition nestedEntityType = AppSchemaMappingUtils.getNestedType(typeCell);
+//			TypeDefinition nestedType = (nestedEntityType != null) ? nestedEntityType
+//					.getDefinition() : null;
+//			if (sourceType != null && sourceType.equals(nestedType)) {
+//				// featureType = findOwningFeatureType(targetPropertyEntityDef);
+//				featureType = AppSchemaMappingUtils.findOwningType(targetPropertyEntityDef,
+//						context.getRelevantTargetTypes());
+//			}
+			if (context.getFeatureChaining() != null) {
+				ChainConfiguration chainConf = findChainConfiguration(context);
+				if (chainConf != null) {
+					featureType = chainConf.getNestedTypeTargetType();
+					mappingName = chainConf.getMappingName();
+				}
+			}
+			else {
+				// this is just a best effort attempt to determine the target
+				// feature type, may result in incorrect mappings
+				featureType = findOwningType(targetPropertyEntityDef,
+						context.getRelevantTargetTypes());
+			}
 		}
 		if (featureType == null) {
 			featureType = getTargetType(typeCell).getDefinition().getType();
@@ -100,26 +136,122 @@ public abstract class AbstractPropertyTransformationHandler implements
 		// in a well-formed mapping, should always be != null
 		if (featureType != null) {
 			// fetch FeatureTypeMapping from mapping configuration
-			this.featureTypeMapping = mapping.getOrCreateFeatureTypeMapping(featureType);
+			this.featureTypeMapping = mapping.getOrCreateFeatureTypeMapping(featureType,
+					mappingName);
+
+			// TODO: verify source property (if any) belongs to mapped source
+			// type
 
 			// fetch AttributeMappingType from mapping
 			if (isXmlAttribute(targetPropertyDef)) {
 				// gml:id attribute requires special handling
 				if (isGmlId(targetPropertyDef)
 						&& featureType.equals(targetPropertyDef.getParentType())) {
-					handleAsGmlId(featureType);
+					handleAsGmlId(featureType, mappingName);
 				}
 				else {
-					handleAsXmlAttribute(featureType);
+					handleAsXmlAttribute(featureType, mappingName);
 				}
 			}
 			else {
-				handleAsXmlElement(featureType);
+				handleAsXmlElement(featureType, mappingName);
 			}
 		}
 
 		return attributeMapping;
 	}
+
+	/**
+	 * @param context the mapping context
+	 * @return the chain configuration that applies to the current property
+	 *         mapping
+	 */
+	private ChainConfiguration findChainConfiguration(AppSchemaMappingContext context) {
+		ChainConfiguration chainConf = null;
+
+		PropertyEntityDefinition targetPropertyEntityDef = targetProperty.getDefinition();
+		FeatureChaining featureChaining = context.getFeatureChaining();
+		if (featureChaining != null) {
+			List<ChildContext> targetPropertyPath = targetPropertyEntityDef.getPropertyPath();
+			List<ChainConfiguration> chains = featureChaining.getChains(typeCell.getId());
+			if (chains != null && chains.size() > 0) {
+				int maxPathLength = 0;
+				for (ChainConfiguration chain : chains) {
+					List<ChildContext> nestedTargetPath = chain.getNestedTypeTarget()
+							.getPropertyPath();
+					if (nestedTargetPath.size() >= targetPropertyPath.size()) {
+						continue;
+					}
+
+					boolean isContained = true;
+					for (int i = 0; i < nestedTargetPath.size(); i++) {
+						if (!nestedTargetPath.get(i).equals(targetPropertyPath.get(i))) {
+							isContained = false;
+							break;
+						}
+					}
+
+					if (isContained && maxPathLength < nestedTargetPath.size()) {
+						maxPathLength = nestedTargetPath.size();
+						chainConf = chain;
+					}
+				}
+			}
+		}
+
+		return chainConf;
+	}
+
+	/**
+	 * Lookup owning type leveraging feature chaining configuration.
+	 * 
+	 * TODO: explain the rationale behind the code
+	 * 
+	 * @param context the mapping context
+	 * @return the nested type owning the target property
+	 */
+//	private TypeDefinition findOwningNestedType(AppSchemaMappingContext context) {
+//		TypeDefinition owningNestedType = null;
+//
+//		PropertyEntityDefinition targetPropertyEntityDef = targetProperty.getDefinition();
+//		FeatureChaining featureChaining = context.getFeatureChaining();
+//		if (featureChaining != null) {
+//			List<ChildContext> targetPropertyPath = targetPropertyEntityDef.getPropertyPath();
+//			List<ChainConfiguration> chains = featureChaining.getChains(typeCell.getId());
+//			if (chains != null && chains.size() > 0) {
+//				int maxPathLength = 0;
+//				TypeDefinition longestPathType = null;
+//				for (ChainConfiguration chain : chains) {
+//					List<ChildContext> nestedTargetPath = chain.getNestedTypeTarget()
+//							.getPropertyPath();
+//					if (nestedTargetPath.size() >= targetPropertyPath.size()) {
+//						continue;
+//					}
+//
+//					boolean isContained = true;
+//					for (int i = 0; i < nestedTargetPath.size(); i++) {
+//						if (!nestedTargetPath.get(i).equals(targetPropertyPath.get(i))) {
+//							isContained = false;
+//							break;
+//						}
+//					}
+//
+//					if (isContained && maxPathLength < nestedTargetPath.size()) {
+//						maxPathLength = nestedTargetPath.size();
+//						longestPathType = chain.getNestedTypeTarget().getDefinition()
+//								.getPropertyType();
+//					}
+//				}
+//				owningNestedType = longestPathType;
+//			}
+//		}
+//		else {
+//			owningNestedType = findOwningType(targetPropertyEntityDef,
+//					context.getRelevantTargetTypes());
+//		}
+//
+//		return owningNestedType;
+//	}
 
 	/**
 	 * This method is invoked when the target property is <code>gml:id</code>,
@@ -132,15 +264,18 @@ public abstract class AbstractPropertyTransformationHandler implements
 	 * </p>
 	 * 
 	 * @param featureType the target feature type
+	 * @param mappingName the target feature type's mapping name (may be
+	 *            <code>null</code>)
 	 */
-	protected void handleAsGmlId(TypeDefinition featureType) {
+	protected void handleAsGmlId(TypeDefinition featureType, String mappingName) {
 		PropertyEntityDefinition targetPropertyEntityDef = targetProperty.getDefinition();
 		List<ChildContext> gmlIdPath = targetPropertyEntityDef.getPropertyPath();
 
-		attributeMapping = mapping.getOrCreateAttributeMapping(featureType, gmlIdPath);
+		attributeMapping = mapping.getOrCreateAttributeMapping(featureType, mappingName, gmlIdPath);
 		// set targetAttribute to feature type qualified name
-		attributeMapping.setTargetAttribute(mapping.getOrCreateFeatureTypeMapping(featureType)
-				.getTargetElement());
+//		attributeMapping.setTargetAttribute(mapping.getOrCreateFeatureTypeMapping(featureType)
+//				.getTargetElement());
+		attributeMapping.setTargetAttribute(featureTypeMapping.getTargetElement());
 		// set id expression
 		AttributeExpressionMappingType idExpression = new AttributeExpressionMappingType();
 		idExpression.setOCQL(getSourceExpressionAsCQL());
@@ -168,8 +303,10 @@ public abstract class AbstractPropertyTransformationHandler implements
 	 * </p>
 	 * 
 	 * @param featureType the target feature type
+	 * @param mappingName the target feature type's mapping name (may be
+	 *            <code>null</code>)
 	 */
-	protected void handleAsXmlAttribute(TypeDefinition featureType) {
+	protected void handleAsXmlAttribute(TypeDefinition featureType, String mappingName) {
 		PropertyEntityDefinition targetPropertyEntityDef = targetProperty.getDefinition();
 		PropertyDefinition targetPropertyDef = targetPropertyEntityDef.getDefinition();
 
@@ -180,7 +317,7 @@ public abstract class AbstractPropertyTransformationHandler implements
 			PropertyDefinition parentPropertyDef = parentPropertyPath
 					.get(parentPropertyPath.size() - 1).getChild().asProperty();
 			if (parentPropertyDef != null) {
-				attributeMapping = mapping.getOrCreateAttributeMapping(featureType,
+				attributeMapping = mapping.getOrCreateAttributeMapping(featureType, mappingName,
 						parentPropertyPath);
 				// set targetAttribute if empty
 				if (attributeMapping.getTargetAttribute() == null
@@ -214,13 +351,15 @@ public abstract class AbstractPropertyTransformationHandler implements
 	 * This method is invoked when the target property is a regular XML element.
 	 * 
 	 * @param featureType the target feature type
+	 * @param mappingName the target feature type's mapping name (may be
+	 *            <code>null</code>)
 	 */
-	protected void handleAsXmlElement(TypeDefinition featureType) {
+	protected void handleAsXmlElement(TypeDefinition featureType, String mappingName) {
 		PropertyEntityDefinition targetPropertyEntityDef = targetProperty.getDefinition();
 		PropertyDefinition targetPropertyDef = targetPropertyEntityDef.getDefinition();
 		TypeDefinition targetPropertyType = targetPropertyDef.getPropertyType();
 
-		attributeMapping = mapping.getOrCreateAttributeMapping(featureType,
+		attributeMapping = mapping.getOrCreateAttributeMapping(featureType, mappingName,
 				targetPropertyEntityDef.getPropertyPath());
 
 		if (isGeometryType(targetPropertyType)) {

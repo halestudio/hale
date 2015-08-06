@@ -1,5 +1,7 @@
 package eu.esdihumboldt.hale.io.appschema.writer;
 
+import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.resolvePropertyTypes;
+
 import java.io.IOException;
 
 import eu.esdihumboldt.hale.common.align.io.impl.AbstractAlignmentWriter;
@@ -8,8 +10,10 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.io.appschema.AppSchemaIO;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.SourceDataStoresPropertyType.DataStore;
+import eu.esdihumboldt.hale.io.appschema.model.FeatureChaining;
 
 /**
  * Base class for HALE alignment to app-schema mapping translators.
@@ -39,8 +43,14 @@ public abstract class AbstractAppSchemaConfigurator extends AbstractAlignmentWri
 		}
 
 		DataStore dataStoreParam = getDataStoreParameter();
+
+		FeatureChaining featureChainingParam = getFeatureChainingParameter();
+		// resolve property entity definitions here, could't do it on project
+		// loading
+		resolvePropertyTypes(featureChainingParam, getTargetSchema(), SchemaSpaceID.TARGET);
+
 		AppSchemaMappingGenerator generator = new AppSchemaMappingGenerator(getAlignment(),
-				getTargetSchema(), dataStoreParam);
+				getTargetSchema(), dataStoreParam, featureChainingParam);
 		try {
 			generator.generateMapping(reporter);
 
@@ -70,6 +80,15 @@ public abstract class AbstractAppSchemaConfigurator extends AbstractAlignmentWri
 	 */
 	protected DataStore getDataStoreParameter() {
 		return getParameter(AppSchemaIO.PARAM_DATASTORE).as(DataStore.class);
+	}
+
+	/**
+	 * Retrieves the FeatureChaining configuration.
+	 * 
+	 * @return the feature chaining configuration
+	 */
+	protected FeatureChaining getFeatureChainingParameter() {
+		return getParameter(AppSchemaIO.PARAM_CHAINING).as(FeatureChaining.class);
 	}
 
 	/**

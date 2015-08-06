@@ -19,7 +19,7 @@ import static eu.esdihumboldt.hale.common.align.model.functions.ClassificationMa
 import static eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingFunction.USE_FIXED_VALUE_ACTION_PREFIX;
 import static eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingFunction.USE_NULL_ACTION;
 import static eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingFunction.USE_SOURCE_ACTION;
-import static eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingUtils.asCqlLiteral;
+import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.asCqlLiteral;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +30,7 @@ import com.google.common.collect.ListMultimap;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.cst.functions.core.ClassificationMapping;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingUtil;
@@ -37,11 +38,13 @@ import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.service.ServiceManager;
 import eu.esdihumboldt.hale.common.lookup.LookupTable;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils;
 
 /**
- * TODO Type description
+ * Translates a property cell specifying a {@link ClassificationMapping}
+ * transformation function to an app-schema attribute mapping.
  * 
- * @author stefano
+ * @author Stefano Costa, GeoSolutions
  */
 public class ClassificationHandler extends AbstractPropertyTransformationHandler {
 
