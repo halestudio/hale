@@ -235,6 +235,7 @@
             category="eu.esdihumboldt.cst.functions.groovy"
             cellExplanation="eu.esdihumboldt.hale.common.align.model.functions.explanations.JoinExplanation"
             description="Joins multiple instances of different source types into one instance of the target type, based on one or more matching properties."
+            help="help/join.xhtml"
             icon="icons/star.png"
             identifier="eu.esdihumboldt.cst.functions.groovy.join"
             name="Groovy Join">

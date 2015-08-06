@@ -363,17 +363,18 @@ public class TypeStructureTray extends DialogTray implements GroovyConstants {
 	 * @return the sample code or <code>null</code>
 	 */
 	private String createSourceSample(TreePath path, Collection<? extends TypeDefinition> types) {
+
 		DefinitionGroup parent;
 		int startIndex = 0;
+		boolean hasPropDef = false;
 		StringBuilder access = new StringBuilder();
 
 		// determine parent type
 		if (path.getFirstSegment() instanceof TypeDefinition) {
 			// types are the top level elements
-//			parent = (DefinitionGroup) path.getFirstSegment();
-//			startIndex = 1;
-			// TODO not supported currently (join)
-			return null;
+			parent = (DefinitionGroup) path.getFirstSegment();
+			startIndex = 1;
+			access.append(GroovyConstants.BINDING_SOURCE);
 		}
 		else {
 			// types are not in the tree, single type must be root
@@ -412,15 +413,37 @@ public class TypeStructureTray extends DialogTray implements GroovyConstants {
 				}
 			}
 			else {
-				return null;
+				// return null;
 			}
 		}
-
-		access.append(".p");
+		if (path.getFirstSegment() instanceof TypeDefinition) {
+			access.append(".links." + ((TypeDefinition) path.getFirstSegment()).getDisplayName());
+		}
+		else {
+			access.append(".p");
+			// check for encountering property definition, so that there should
+			// not be 2 'p's appended.
+			hasPropDef = true;
+		}
 
 		for (int i = startIndex; i < path.getSegmentCount(); i++) {
 			Definition<?> def = (Definition<?>) path.getSegment(i);
 			if (def instanceof PropertyDefinition) {
+				// check if the previous segments are type definition
+
+				for (int j = i - 1; j >= 0; j--) {
+					Definition<?> def1 = (Definition<?>) path.getSegment(j);
+					if (def1 instanceof TypeDefinition) {
+						// do nothing
+					}
+					else {
+						hasPropDef = true;
+					}
+				}
+				if (!hasPropDef) {
+					access.append(".p");
+				}
+
 				// property name
 				access.append('.');
 				access.append(def.getName().getLocalPart());
@@ -438,8 +461,8 @@ public class TypeStructureTray extends DialogTray implements GroovyConstants {
 					access.append("')");
 				}
 			}
-			else {
-				// groups are ignored
+			else if (def instanceof TypeDefinition) {
+				access.append("." + ((TypeDefinition) def).getDisplayName());
 			}
 
 			// set the new parent
@@ -452,6 +475,9 @@ public class TypeStructureTray extends DialogTray implements GroovyConstants {
 			StringBuilder example = new StringBuilder();
 
 			boolean canOccurMultipleTimes = false;
+			if (path.getFirstSegment() instanceof TypeDefinition) {
+				canOccurMultipleTimes = true;
+			}
 			/*
 			 * Instances/values may occur multiple times if any element in the
 			 * path may occur multiple times.
