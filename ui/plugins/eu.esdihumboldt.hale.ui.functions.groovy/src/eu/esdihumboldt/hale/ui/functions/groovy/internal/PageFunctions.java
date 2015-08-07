@@ -68,7 +68,7 @@ public class PageFunctions extends DialogTray implements GroovyConstants {
 
 	private static final AtomicBoolean BROWSER_ERROR_REPORTED = new AtomicBoolean();
 	private static final ALogger log = ALoggerFactory.getLogger(PageFunctions.class);
-	private static final String TAB_SPACE = "&nbsp; &nbsp; &nbsp; &nbsp;";
+	private static final String TAB_SPACE = "&nbsp;&nbsp;&nbsp;&nbsp;";
 
 	private Text textField;
 	private Browser browser = null;
@@ -144,13 +144,12 @@ public class PageFunctions extends DialogTray implements GroovyConstants {
 
 		// Examples
 		Label example = new Label(comp, SWT.NONE);
-		example.setText("Helper function specification");
+		example.setText("Function documentation");
 
 		try {
 			browser = new Browser(comp, SWT.WRAP | SWT.BORDER);
 			browser.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).hint(300, 250)
 					.create());
-			browser.setBounds(5, 75, 600, 400);
 		} catch (Throwable e) {
 
 			if (BROWSER_ERROR_REPORTED.compareAndSet(false, true)) {
@@ -178,12 +177,11 @@ public class PageFunctions extends DialogTray implements GroovyConstants {
 						TreePath path = paths[0];
 						for (int i = 0; i < path.getSegmentCount(); i++) {
 							if (path.getSegment(i) instanceof Category) {
-								eg = "Select a function to see an example.";
+								eg = "Select a function to see its documentation.";
 								if (browser != null) {
 									browser.setText(eg);
 								}
 								else if (textField != null) {
-
 									textField.setText(eg);
 								}
 							}
@@ -205,8 +203,6 @@ public class PageFunctions extends DialogTray implements GroovyConstants {
 								if (browser != null) {
 									eg = getFunctionSpecHTML(hfs);
 									browser.setText(eg);
-									browser.setFont(JFaceResources.getDefaultFont());
-
 								}
 								else if (textField != null) {
 									eg = getFunctionSpecText(hfs);
@@ -236,8 +232,8 @@ public class PageFunctions extends DialogTray implements GroovyConstants {
 
 		StringBuilder example = new StringBuilder();
 
-		example.append("Description:");
-		example.append("\n\t");
+//		example.append("Description:");
+//		example.append("\n\t");
 		example.append(spec.getDescription());
 		example.append(" \n\nParameters: ");
 		for (Argument arg : spec.getArguments()) {
@@ -248,13 +244,13 @@ public class PageFunctions extends DialogTray implements GroovyConstants {
 
 			example.append("\n \t");
 			example.append(arg.getName());
-			example.append(" : ");
+			example.append(": ");
 			example.append(arg.getDescription());
 			if (helperArg != null && helperArg.getDefaultValueDisplay() != null) {
 				example.append(" - ");
-				example.append("Default value : ");
-				example.append(helperArg.getDefaultValueDisplay() + " ( "
-						+ helperArg.getDefaultValue().getClass().getSimpleName() + " )");
+				example.append("default value: ");
+				example.append(helperArg.getDefaultValueDisplay() + " ("
+						+ helperArg.getDefaultValue().getClass().getSimpleName() + ")");
 			}
 		}
 		example.append("\n\nReturns: \n");
@@ -273,11 +269,12 @@ public class PageFunctions extends DialogTray implements GroovyConstants {
 	 */
 	public static String getFunctionSpecHTML(HelperFunctionSpecification hfs) {
 
-		StringBuilder example = new StringBuilder("<html><body>");
-		example.append(" <H3>Description:</H3> ");
-		example.append(TAB_SPACE + hfs.getDescription());
+		StringBuilder example = new StringBuilder("<div>");
+//		example.append(" <H3>Description:</H3> ");
+//		example.append(TAB_SPACE);
+		example.append(hfs.getDescription());
 
-		example.append("<br><br><H3>Parameters:</H3>");
+		example.append("<br><br><h3>Parameters:</h3>");
 
 		for (Argument arg : hfs.getArguments()) {
 
@@ -285,21 +282,21 @@ public class PageFunctions extends DialogTray implements GroovyConstants {
 			if (arg instanceof HelperFunctionArgument) {
 				helperArg = (HelperFunctionArgument) arg;
 			}
-			example.append("<B>");
+			example.append("<b>");
 			example.append(TAB_SPACE + arg.getName());
-			example.append("</B>");
-			example.append(" : ");
+			example.append("</b>");
+			example.append(": ");
 			example.append(arg.getDescription());
 			if (helperArg != null && helperArg.getDefaultValue() != null)
-				example.append("  Default value : " + helperArg.getDefaultValueDisplay() + " ( "
-						+ helperArg.getDefaultValue().getClass().getSimpleName() + " )");
+				example.append(" - default value: " + helperArg.getDefaultValueDisplay() + " ("
+						+ helperArg.getDefaultValue().getClass().getSimpleName() + ")");
 			example.append("<br>");
 
 		}
-		example.append("<br><H3>Returns: </H3>");
+		example.append("<br><h3>Returns: </h3>");
 
 		example.append(TAB_SPACE + hfs.getResultDescription());
-		example.append("</body></html>");
+		example.append("</div>");
 
 		return example.toString();
 	}
