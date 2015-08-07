@@ -151,7 +151,7 @@ public class PageFunctions extends DialogTray implements GroovyConstants {
 			browser.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).hint(300, 250)
 					.create());
 			browser.setBounds(5, 75, 600, 400);
-		} catch (Exception e) {
+		} catch (Throwable e) {
 
 			if (BROWSER_ERROR_REPORTED.compareAndSet(false, true)) {
 				log.error("Could not create embedded browser, using text field as fall-back", e);
