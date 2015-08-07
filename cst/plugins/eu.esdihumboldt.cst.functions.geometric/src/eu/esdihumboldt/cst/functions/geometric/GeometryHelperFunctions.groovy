@@ -75,7 +75,7 @@ class GeometryHelperFunctions {
 	 * Specification for a _buffer function
 	 */
 	public static final HelperFunctionSpecification _buffer_spec = new HelperFunctionSpecification(
-	"Calculate a buffer geometry from a given geometry.", "buffered geometry or null",
+	"Calculate a buffer geometry from a given geometry.", "the buffered geometry (wrapped in a GeometryProperty) or null",
 	new HelperFunctionArgument("geometry",
 	"Geometry, geometry property or instance holding the geometry to calculate a buffer on"),
 	new HelperFunctionArgument("distance",

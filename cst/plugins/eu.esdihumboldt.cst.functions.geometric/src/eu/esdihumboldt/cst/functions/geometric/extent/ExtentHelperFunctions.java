@@ -20,6 +20,7 @@ import java.util.Collections;
 
 import javax.annotation.Nullable;
 
+import eu.esdihumboldt.cst.functions.groovy.helper.spec.Argument;
 import eu.esdihumboldt.cst.functions.groovy.helper.spec.impl.HelperFunctionArgument;
 import eu.esdihumboldt.cst.functions.groovy.helper.spec.impl.HelperFunctionSpecification;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
@@ -34,7 +35,9 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 @SuppressWarnings("javadoc")
 public class ExtentHelperFunctions {
 
-//	public static final String PARAM_GEOMETRIES = "geometries";
+	private static final Argument GEOMETRIES_ARG_SPEC = new HelperFunctionArgument(
+			"geometries",
+			"A single or multiple (as a list/iterable) geometries, geometry properties or instances holding a geometry");
 
 	@Nullable
 	public GeometryProperty<?> _union(Object geometryHolders) throws TransformationException,
@@ -43,9 +46,8 @@ public class ExtentHelperFunctions {
 	}
 
 	public static final HelperFunctionSpecification _union_spec = new HelperFunctionSpecification(
-			"Union of the geometries or instances containing geometries", "union",
-			new HelperFunctionArgument("geometry holder",
-					"Geometry or geometry property or instance holding a geometry"));
+			"Calculate the union of the given geometries",
+			"the calculated union geometry (wrapped in a GeometryProperty)", GEOMETRIES_ARG_SPEC);
 
 	@Nullable
 	public GeometryProperty<?> _convexHull(Object geometryHolders) throws TransformationException,
@@ -54,9 +56,8 @@ public class ExtentHelperFunctions {
 	}
 
 	public static final HelperFunctionSpecification _convexHull_spec = new HelperFunctionSpecification(
-			"calculates the convex hull of the geometry", "convexhull", new HelperFunctionArgument(
-					"geometry holder",
-					"Geometry or geometry property or instance holding a geometry"));
+			"Calculate the convex hull of the given geometries",
+			"the calculated convex hull (wrapped in a GeometryProperty)", GEOMETRIES_ARG_SPEC);
 
 	@Nullable
 	public GeometryProperty<?> _bbox(Object geometryHolders) throws TransformationException,
@@ -66,15 +67,14 @@ public class ExtentHelperFunctions {
 
 	public HelperFunctionSpecification _bbox_spec(String name) {
 		return new HelperFunctionSpecification(MessageFormat.format(
-				"The {0} function calculates the bounding box of the geometry", name),
-				"boundingbox", new HelperFunctionArgument("geometry holder",
-						"Geometry or geometry property or instance holding a geometry"));
+				"The {0} function calculates the bounding box of the given geometries", name),
+				"the calculated bounding box (wrapped in a GeometryProperty)", //
+				GEOMETRIES_ARG_SPEC);
 	}
 
 	@Nullable
 	private GeometryProperty<?> computeExtent(Object geometryHolders, ExtentType type)
 			throws TransformationException, NoResultException {
-//		Object geometryHolders = params.get(PARAM_GEOMETRIES);
 		Iterable<?> geoms;
 		if (geometryHolders == null) {
 			return null;

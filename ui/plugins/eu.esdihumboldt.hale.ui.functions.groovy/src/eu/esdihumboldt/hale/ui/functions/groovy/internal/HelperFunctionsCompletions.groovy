@@ -157,43 +157,32 @@ public class HelperFunctionsCompletions implements GroovyCompletionProposals, AS
 			}
 		}
 
-
-
-		// TODO sort?
-		def sorted = catsOrFuns
-
 		List<ICompletionProposal> result = []
 
 		// create proposals
-		sorted.each { HelperFunctionOrCategory catOrFun ->
+		catsOrFuns.each { HelperFunctionOrCategory catOrFun ->
 			String name = catOrFun.name
 			StringBuilder b = new StringBuilder(name);
 			StyledString styledDisplay = new StyledString(name)
 			String addnInfo = null;
 			Image image = null;
 			if (catOrFun.asCategory()) {
+				// a category
 				image = CommonSharedImages.getImageRegistry().get(CommonSharedImagesConstants.IMG_DEFINITION_GROUP)
-				addnInfo = "This is a function group"
 			}
 			else {
-
-
+				// a function
 				HelperFunctionSpecification hfs = null;
 				try {
-
 					hfs = (HelperFunctionSpecification) catOrFun.asFunction().getSpec(name);
 					styledDisplay.append(PageFunctions.getStyledParameters(hfs));
 					addnInfo = PageFunctions.getFunctionSpecHTML(hfs)
-
 				} catch (Exception e) {
-					//
+					// ignore
 				}
 
 				image = CommonSharedImages.getImageRegistry().get(CommonSharedImagesConstants.IMG_FUNCTION)
-
-
 			}
-
 
 			String proposal = styledDisplay.toString()
 			int cursor = proposal.indexOf('?') >= 0 ? proposal.indexOf('?') : proposal.length()
@@ -210,6 +199,7 @@ public class HelperFunctionsCompletions implements GroovyCompletionProposals, AS
 
 			result << prop
 		}
+
 		//sort the proposals alphabetically.
 		Collections.sort(result,new Comparator<ICompletionProposal>() {
 
@@ -218,12 +208,10 @@ public class HelperFunctionsCompletions implements GroovyCompletionProposals, AS
 						String name1 = o1.displayString;
 						String name2 = o2.displayString;
 						return name1.compareTo(name2);
-
 					}
 				});
 
 		result
-
 	}
 
 
