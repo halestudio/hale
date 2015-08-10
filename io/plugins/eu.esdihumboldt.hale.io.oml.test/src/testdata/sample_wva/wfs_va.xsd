@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <xs:schema  targetNamespace="http://www.esdi-humboldt.org/waterVA"  xmlns:waterVA="http://www.esdi-humboldt.org/waterVA" xmlns:gml="http://www.opengis.net/gml" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0">
-<xs:import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/2.1.2.1/feature.xsd"/>
+<xs:import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/2.1.2/feature.xsd"/>
 <xs:complexType xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="Watercourses_VA_Type">
  <xs:complexContent>
  <xs:extension base="gml:AbstractFeatureType">
