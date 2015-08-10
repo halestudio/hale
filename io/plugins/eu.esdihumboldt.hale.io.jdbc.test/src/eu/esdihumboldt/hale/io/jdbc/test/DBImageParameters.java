@@ -1,5 +1,7 @@
 package eu.esdihumboldt.hale.io.jdbc.test;
 
+import eu.esdihumboldt.hale.common.test.docker.config.ContainerParameters;
+
 /**
  * Parameters related to database docker configuration
  * 
@@ -7,17 +9,40 @@ package eu.esdihumboldt.hale.io.jdbc.test;
  */
 public interface DBImageParameters extends ContainerParameters {
 
-	String USER_KEY = ".user";
-	String PASSWORD_KEY = ".password";
-	String DATABASE_KEY = ".database";
-	String PORT_KEY = ".port";
-
-	String START_URL = ".startURL";
-	String DB_UPTIME = ".dbUPTime";
+	/**
+	 * Configuration key for a username
+	 */
+	String USER_KEY = "user";
+	/**
+	 * Configuration key for password
+	 */
+	String PASSWORD_KEY = "password";
 
 	/**
-	 * @param tdc
-	 * @return
+	 * Configuration key for a database name
+	 */
+	String DATABASE_KEY = "database";
+	/**
+	 * Configuration key for a port number
+	 */
+	String PORT_KEY = "port";
+
+	/**
+	 * Configuration key for a start url for a database connection
+	 */
+	String START_URL = "startURL";
+	/**
+	 * Configuration key for a DB uptime which is the time taken by docker
+	 * database image to get started
+	 */
+	String DB_UPTIME = "dbUPTime";
+
+	/**
+	 * It creates a JDBC url for a database connection.
+	 * 
+	 * @param port port number
+	 * @param hostName a hopstname
+	 * @return a jdbc url for a database connection
 	 */
 	String getJDBCURL(int port, String hostName);
 
@@ -46,6 +71,9 @@ public interface DBImageParameters extends ContainerParameters {
 	 */
 	String getStartURI();
 
+	/**
+	 * @return get start up time required to start a database docker image
+	 */
 	int getStartUPTime();
 
 }

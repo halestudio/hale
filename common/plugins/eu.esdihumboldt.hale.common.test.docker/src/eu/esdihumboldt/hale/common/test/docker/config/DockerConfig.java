@@ -1,4 +1,4 @@
-package eu.esdihumboldt.hale.io.jdbc.test;
+package eu.esdihumboldt.hale.common.test.docker.config;
 
 import java.io.File;
 import java.io.InputStream;
@@ -8,6 +8,10 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
 /**
+ * A docker config class which is responsible for getting the docker
+ * configuration information. It searches for the configuration in System
+ * properties, working directory, home directory and classpath. It overrides the
+ * configuration information.
  * 
  * @author Sameer Sheikh
  * 
@@ -29,9 +33,9 @@ public class DockerConfig {
 	public static final String DOCKER_CONF_FILE = "docker.conf.file";
 
 	/**
-	 * Gets the file from user directory/.overcast/docker.conf
+	 * Looks for the configuration file in the home directory
 	 * 
-	 * @return the absolute path of the file
+	 * @return the absolute path of the configuration file in the home directory
 	 */
 	private static String getHomeDirConf() {
 
@@ -40,15 +44,23 @@ public class DockerConfig {
 
 	}
 
+	/**
+	 * Looks for the configuration file in the working directory
+	 * 
+	 * @return the absolute path of the configuration file in the working
+	 *         directory
+	 */
 	private static String getWorkDirConf() {
 
 		return new File(System.getProperty("user.dir"), DOCKER_CONF).getAbsolutePath();
 	}
 
 	/**
-	 * get the Docker config
+	 * Checks for the configuration file in the system properties, home
+	 * directory, working directory and then class path.
 	 * 
-	 * @return config
+	 * @return A config object which maps configuration keys to configuration
+	 *         values.
 	 */
 
 	public static Config getDockerConfig() {
@@ -60,9 +72,9 @@ public class DockerConfig {
 	}
 
 	/**
-	 * loads the config file from the class path
+	 * gets the configuration file from the class path.
 	 * 
-	 * @return config
+	 * @return config object which maps config key to config value
 	 */
 
 	private static Config loadConfigFromClassPath() {
@@ -80,7 +92,7 @@ public class DockerConfig {
 	 * loads the config from the given path
 	 * 
 	 * @param path config path
-	 * @return Config
+	 * @return config which maps config key to config value
 	 */
 	private static Config loadConfigFromPath(String path) {
 		if (path == null) {
