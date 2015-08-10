@@ -15,17 +15,15 @@
 
 package eu.esdihumboldt.hale.io.jdbc.test;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.typesafe.config.Config;
+import eu.esdihumboldt.hale.common.test.docker.config.DockerConfigInstance;
 
 /**
- * TODO Type description
+ * A configuration instance which provides the functionality to get the
+ * configuration for starting a database docker image
  * 
- * @author sameer sheikh
+ * @author Sameer Sheikh
  */
-public class DBConfigInstance implements DBImageParameters, ContainerParameters {
+public class DBConfigInstance extends DockerConfigInstance implements DBImageParameters {
 
 	/**
 	 * colon
@@ -35,21 +33,15 @@ public class DBConfigInstance implements DBImageParameters, ContainerParameters 
 	 * forward slash
 	 */
 	public static final String FORW_SLASH = "/";
-	private final Config conf;
-	private final String confKey;
 
 	/**
-	 * @param confKey
+	 * @param confKey a configuration key
 	 */
 	public DBConfigInstance(String confKey) {
-		this.confKey = confKey;
-		this.conf = DockerConfig.getDockerConfig();
+		super(confKey);
+
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.io.jdbc.test.ConfigParameters#getJDBCURI(java.lang.String,
-	 *      java.lang.String, int)
-	 */
 	@Override
 	public String getJDBCURL(int port, String hostName) {
 		return new StringBuilder().append(getStartURI()).append(hostName).append(COLON)
@@ -85,18 +77,7 @@ public class DBConfigInstance implements DBImageParameters, ContainerParameters 
 	 */
 	@Override
 	public int getDBPort() {
-		if (conf.hasPath(confKey + PORT_KEY)) {
-			return conf.getInt(confKey + PORT_KEY);
-		}
-		return 0;
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.io.jdbc.test.DBImageParameters#isPrivileged()
-	 */
-	@Override
-	public boolean isPrivileged() {
-		return getBooleanValue(IS_PRIVILEGED);
+		return getIntValue(PORT_KEY);
 	}
 
 	/**
@@ -112,91 +93,7 @@ public class DBConfigInstance implements DBImageParameters, ContainerParameters 
 	 */
 	@Override
 	public int getStartUPTime() {
-
-		if (conf.hasPath(confKey + DB_UPTIME)) {
-			return conf.getInt(confKey + DB_UPTIME);
-		}
-		return 0;
-
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.io.jdbc.test.ContainerParameters#getImageName()
-	 */
-	@Override
-	public String getImageName() {
-		return getStringValue(DOCKER_IMAGE);
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.io.jdbc.test.ContainerParameters#getexposedPortList()
-	 */
-	@Override
-	public List<String> getexposedPortList() {
-		return getListValues(EXPOSED_PORTS_LIST);
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.io.jdbc.test.ContainerParameters#getCommands()
-	 */
-	@Override
-	public List<String> getCommands() {
-		return getListValues(DOCKER_COMMAND);
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.io.jdbc.test.ContainerParameters#isRemove()
-	 */
-	@Override
-	public boolean isRemove() {
-		return getBooleanValue(REMOVE);
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.io.jdbc.test.ContainerParameters#isexposeAllPorts()
-	 */
-	@Override
-	public boolean isexposeAllPorts() {
-		return getBooleanValue(EXPOSE_ALL_PORTS);
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.io.jdbc.test.DBImageParameters#dockerHost()
-	 */
-	@Override
-	public String getDockerHost() {
-		return getStringValue(DOCKER_HOST);
-
-	}
-
-	private String getStringValue(String key) {
-
-		if (conf.hasPath(confKey + key)) {
-			return conf.getString(confKey + key);
-		}
-		return null;
-
-	}
-
-	/**
-	 * @param exposedPortsList
-	 * @return
-	 */
-	private List<String> getListValues(String key) {
-
-		if (conf.hasPath(confKey + key)) {
-			return conf.getStringList(confKey + key);
-		}
-		return new ArrayList<String>();
-
-	}
-
-	private boolean getBooleanValue(String key) {
-
-		if (conf.hasPath(confKey + key)) {
-			return conf.getBoolean(confKey + key);
-		}
-		return false;
+		return getIntValue(DB_UPTIME);
 
 	}
 
