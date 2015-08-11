@@ -58,6 +58,11 @@ public interface ContainerParameters {
 	String IS_PRIVILEGED = "isPrivileged";
 
 	/**
+	 * A global configuration key.
+	 */
+	String GLOBAL = "global";
+
+	/**
 	 * @return the image name configured in the configuration file
 	 */
 	String getImageName();
@@ -75,7 +80,7 @@ public interface ContainerParameters {
 	/**
 	 * @return exposed All ports flag value configured in the configuration file
 	 */
-	boolean isexposeAllPorts();
+	boolean isExposeAllPorts();
 
 	/**
 	 * @return docker host name configured in the configuration file
@@ -112,18 +117,20 @@ public interface ContainerParameters {
 	 * config value.
 	 * 
 	 * @param key a config key
+	 * @param defaultValue a default value when no configuration is configured
 	 * @return boolean value associated with the given key
 	 */
-	public boolean getBooleanValue(String key);
+	public boolean getBooleanValue(String key, boolean defaultValue);
 
 	/**
 	 * gets a int value from a config map which maps the config key with the
 	 * config value.
 	 * 
 	 * @param key a config key
+	 * @param defaultValue a default value when no configuration is configured
 	 * @return int value associated with the given key
 	 */
-	public int getIntValue(String key);
+	public int getIntValue(String key, int defaultValue);
 
 	/**
 	 * returns a config which maps configuration key path to a configuration
