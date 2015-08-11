@@ -1,7 +1,5 @@
 package eu.esdihumboldt.hale.common.test.docker.helper;
 
-import de.fhg.igd.slf4jplus.ALogger;
-import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.test.docker.config.DockerConfigInstance;
 import eu.esdihumboldt.hale.common.test.docker.config.HaleDockerClient;
 import eu.esdihumboldt.hale.common.test.docker.config.RunWithContainer;
@@ -16,8 +14,6 @@ import eu.esdihumboldt.hale.common.test.docker.config.RunWithContainer;
  */
 public class DockerConfigHelper {
 
-	private static final ALogger log = ALoggerFactory.getLogger(DockerConfigHelper.class);
-
 	/**
 	 * fetches the configuration parameters for the key <b> configName </b>
 	 * which is usefull in creating a docker container. It starts a container,
@@ -25,9 +21,10 @@ public class DockerConfigHelper {
 	 * 
 	 * @param configName a name for the configuration group
 	 * @param runInstance an anonymous class object
+	 * @return the result of run method execution of a RunWithContainer class
 	 * @throws Exception exception if it fails to kill the container
 	 */
-	public static void withContainer(String configName, RunWithContainer<?> runInstance)
+	public static <T> T withContainer(String configName, RunWithContainer<T> runInstance)
 			throws Exception {
 
 		DockerConfigInstance dci = new DockerConfigInstance(configName);
@@ -35,10 +32,8 @@ public class DockerConfigHelper {
 		client.createContainer();
 		try {
 			client.startContainer();
-			runInstance.run(client, dci);
+			return runInstance.run(client, dci);
 
-		} catch (Exception e) {
-			log.userError("Error while starting or killing a docker container", e);
 		} finally {
 			client.killAndRemoveContainer();
 		}
