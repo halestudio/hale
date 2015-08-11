@@ -36,9 +36,10 @@ public class DBConfigInstance extends DockerConfigInstance implements DBImagePar
 
 	/**
 	 * @param confKey a configuration key
+	 * @param cl class loader
 	 */
-	public DBConfigInstance(String confKey) {
-		super(confKey);
+	public DBConfigInstance(String confKey, ClassLoader cl) {
+		super(confKey, cl);
 
 	}
 
@@ -77,7 +78,7 @@ public class DBConfigInstance extends DockerConfigInstance implements DBImagePar
 	 */
 	@Override
 	public int getDBPort() {
-		return getIntValue(PORT_KEY);
+		return getIntValue(PORT_KEY, 0);
 	}
 
 	/**
@@ -93,7 +94,7 @@ public class DBConfigInstance extends DockerConfigInstance implements DBImagePar
 	 */
 	@Override
 	public int getStartUPTime() {
-		return getIntValue(DB_UPTIME);
+		return getIntValue(DB_UPTIME, 0);
 
 	}
 

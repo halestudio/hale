@@ -21,10 +21,13 @@ public class DockerConfigInstance implements ContainerParameters {
 	 * Parameterized constructor
 	 * 
 	 * @param confKey a key for the configuration group
+	 * @param cl a class loader to fetch the configuration from class path
 	 */
-	public DockerConfigInstance(String confKey) {
+	public DockerConfigInstance(String confKey, ClassLoader cl) {
+
 		this.configKey = confKey;
-		conf = DockerConfig.getDockerConfig();
+		conf = DockerConfig.getDockerConfig(cl);
+
 	}
 
 	@Override
@@ -43,18 +46,36 @@ public class DockerConfigInstance implements ContainerParameters {
 	}
 
 	@Override
-	public boolean isexposeAllPorts() {
-		return getBooleanValue(EXPOSE_ALL_PORTS);
+	public boolean isExposeAllPorts() {
+		return getBooleanValue(EXPOSE_ALL_PORTS, true);
 	}
 
+	/**
+	 * It checks if the global configuration for the docker host is available.
+	 * It overrides the local configuration for the docker host and takes the
+	 * global configuration.
+	 * 
+	 * @see eu.esdihumboldt.hale.common.test.docker.config.ContainerParameters#getDockerHost()
+	 */
 	@Override
 	public String getDockerHost() {
+
+		Config global = null;
+		try {
+			global = getConfig(GLOBAL);
+		} catch (Exception e) {
+			// do nothing
+		}
+
+		if (global != null && global.hasPath(DOCKER_HOST)) {
+			return global.getString(DOCKER_HOST);
+		}
 		return getStringValue(DOCKER_HOST);
 	}
 
 	@Override
 	public boolean isPrivileged() {
-		return getBooleanValue(IS_PRIVILEGED);
+		return getBooleanValue(IS_PRIVILEGED, false);
 	}
 
 	@Override
@@ -80,29 +101,38 @@ public class DockerConfigInstance implements ContainerParameters {
 	}
 
 	@Override
-	public boolean getBooleanValue(String key) {
+	public boolean getBooleanValue(String key, boolean defaultValue) {
 		String valueKey = configKey + DOT + key;
 
 		if (conf.hasPath(valueKey)) {
 			return conf.getBoolean(valueKey);
 		}
-		return false;
+		return defaultValue;
 
 	}
 
 	@Override
-	public int getIntValue(String key) {
+	public int getIntValue(String key, int defaultValue) {
 		String valueKey = configKey + DOT + key;
 
 		if (conf.hasPath(valueKey)) {
 			return conf.getInt(valueKey);
 		}
-		return 0;
+		return defaultValue;
 	}
 
 	@Override
 	public Config getConfig() {
 		return conf.getConfig(configKey);
+	}
+
+	/**
+	 * @param keyValue a key path to the config
+	 * @return a config object associated at the given key path
+	 * @throws Exception if it fails to find the config at given path
+	 */
+	public Config getConfig(String keyValue) throws Exception {
+		return conf.getConfig(keyValue);
 	}
 
 }

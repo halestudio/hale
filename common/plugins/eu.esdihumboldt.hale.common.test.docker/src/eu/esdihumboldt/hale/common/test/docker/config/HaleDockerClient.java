@@ -79,7 +79,7 @@ public class HaleDockerClient implements DockerContainer {
 		creation = dc.createContainer(containerConf);
 		containerId = creation.id();
 
-		final HostConfig hostConfig = HostConfig.builder().publishAllPorts(true)
+		final HostConfig hostConfig = HostConfig.builder().publishAllPorts(dbc.isExposeAllPorts())
 				.privileged(dbc.isPrivileged()).build();
 
 		dc.startContainer(containerId, hostConfig);
