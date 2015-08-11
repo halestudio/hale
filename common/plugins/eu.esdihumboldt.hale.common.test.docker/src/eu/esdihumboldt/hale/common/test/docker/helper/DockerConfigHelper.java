@@ -21,13 +21,14 @@ public class DockerConfigHelper {
 	 * 
 	 * @param configName a name for the configuration group
 	 * @param runInstance an anonymous class object
+	 * @param cl A class loader to fetch configuration from classpath
 	 * @return the result of run method execution of a RunWithContainer class
 	 * @throws Exception exception if it fails to kill the container
 	 */
-	public static <T> T withContainer(String configName, RunWithContainer<T> runInstance)
-			throws Exception {
+	public static <T> T withContainer(String configName, RunWithContainer<T> runInstance,
+			ClassLoader cl) throws Exception {
 
-		DockerConfigInstance dci = new DockerConfigInstance(configName);
+		DockerConfigInstance dci = new DockerConfigInstance(configName, cl);
 		HaleDockerClient client = new HaleDockerClient(dci);
 		client.createContainer();
 		try {

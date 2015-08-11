@@ -65,7 +65,7 @@ public class PostDataTypesIT extends AbstractDBTest {
     ) ;'''
 	private final Map<String, Class<?>> map = createMap();
 	public PostDataTypesIT(){
-		super(new DBConfigInstance("postgis"))
+		super(new DBConfigInstance("postgis", PostDataTypesIT.class.getClassLoader()))
 	}
 	/**
 	 * Test for checking sql type and binding

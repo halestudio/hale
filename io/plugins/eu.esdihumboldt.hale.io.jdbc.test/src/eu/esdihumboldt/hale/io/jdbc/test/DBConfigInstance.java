@@ -36,9 +36,10 @@ public class DBConfigInstance extends DockerConfigInstance implements DBImagePar
 
 	/**
 	 * @param confKey a configuration key
+	 * @param cl class loader
 	 */
-	public DBConfigInstance(String confKey) {
-		super(confKey);
+	public DBConfigInstance(String confKey, ClassLoader cl) {
+		super(confKey, cl);
 
 	}
 
