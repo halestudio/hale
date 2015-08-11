@@ -59,28 +59,31 @@ public class DockerConfig {
 	 * Checks for the configuration file in the system properties, home
 	 * directory, working directory and then class path.
 	 * 
+	 * @param cl a class loader to fetch the configuration from class path
+	 * 
 	 * @return A config object which maps configuration keys to configuration
 	 *         values.
 	 */
 
-	public static Config getDockerConfig() {
+	public static Config getDockerConfig(ClassLoader cl) {
 		return ConfigFactory.systemProperties()
 				.withFallback(loadConfigFromPath(System.getProperty(DOCKER_CONF_FILE)))
 				.withFallback(loadConfigFromPath(getHomeDirConf()))
 				.withFallback(loadConfigFromPath(getWorkDirConf()))
-				.withFallback(loadConfigFromClassPath()).resolve();
+				.withFallback(loadConfigFromClassPath(cl)).resolve();
 	}
 
 	/**
 	 * gets the configuration file from the class path.
 	 * 
+	 * @param cl a class loader to fetch the configuration from class path
+	 * 
 	 * @return config object which maps config key to config value
 	 */
 
-	private static Config loadConfigFromClassPath() {
+	private static Config loadConfigFromClassPath(ClassLoader cl) {
 
-		InputStream is = Thread.currentThread().getContextClassLoader()
-				.getResourceAsStream(DOCKER_CONF);
+		InputStream is = cl.getResourceAsStream(DOCKER_CONF);
 
 		if (is == null)
 			return ConfigFactory.empty();

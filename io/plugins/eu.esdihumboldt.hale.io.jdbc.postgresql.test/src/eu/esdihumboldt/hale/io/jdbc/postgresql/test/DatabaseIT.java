@@ -38,7 +38,8 @@ public class DatabaseIT extends AbstractDBTest {
 	 */
 
 	public DatabaseIT() {
-		super(new DBConfigInstance("postgis"));
+
+		super(new DBConfigInstance("postgis", DatabaseIT.class.getClassLoader()));
 	}
 
 	/**

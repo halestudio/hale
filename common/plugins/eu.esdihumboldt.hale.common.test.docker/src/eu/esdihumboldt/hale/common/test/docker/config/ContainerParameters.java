@@ -58,6 +58,11 @@ public interface ContainerParameters {
 	String IS_PRIVILEGED = "isPrivileged";
 
 	/**
+	 * A global configuration key.
+	 */
+	String GLOBAL = "global";
+
+	/**
 	 * @return the image name configured in the configuration file
 	 */
 	String getImageName();
