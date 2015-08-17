@@ -20,8 +20,11 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,11 +42,13 @@ import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.instance.model.TypeFilter;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.Reference;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DatabaseTable;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DefaultValue;
@@ -99,10 +104,20 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 				reporter.setSummary("Failed to connect to database.");
 				return reporter;
 			}
+			Set<TypeDefinition> sortedSet = new LinkedHashSet<TypeDefinition>();
+
+			for (TypeDefinition td : getTargetSchema().getMappingRelevantTypes()) {
+				if (!sortedSet.contains(td)) {
+					sortedSet.addAll((getReferencesTd(td)));
+				}
+
+			}
 
 //			URI jdbcURI = getTarget().getLocation();
 
-			writeInstances(connection, instances, progress, reporter);
+			for (TypeDefinition td : sortedSet) {
+				writeInstances(connection, instances.select(new TypeFilter(td)), progress, reporter);
+			}
 
 			reporter.setSuccess(true);
 		} catch (Exception e) {
@@ -125,7 +140,8 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 
 	@Override
 	public boolean isPassthrough() {
-		return true;
+		// return true;
+		return false;
 	}
 
 	/**
@@ -237,6 +253,31 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 //		if (progress.isCanceled() && it.hasNext()) {
 //			reporter.error(new IOMessageImpl("Saving to database was canceled, not all instances were saved.", null));
 //		}
+	}
+
+	/**
+	 * gets the list of the referenced type definitions.
+	 * 
+	 * @param td type definition of the referencee
+	 * @return list of type definitions of referenced
+	 */
+	private List<TypeDefinition> getReferencesTd(TypeDefinition td) {
+
+		List<TypeDefinition> referencedTD = new ArrayList<TypeDefinition>();
+		for (ChildDefinition<?> cd : td.getChildren()) {
+			PropertyDefinition pd = cd.asProperty();
+			Reference ref = pd.getConstraint(Reference.class);
+			// check if it has the references
+			if (ref.getReferencedTypes() != null) {
+				for (TypeDefinition t : ref.getReferencedTypes()) {
+					referencedTD.addAll(getReferencesTd(t));
+				}
+			}
+		}
+		if (!referencedTD.contains(td))
+			referencedTD.add(td);
+
+		return referencedTD;
 	}
 
 	/**
