@@ -20,8 +20,12 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,11 +43,13 @@ import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.instance.model.TypeFilter;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.Reference;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DatabaseTable;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DefaultValue;
@@ -58,6 +64,8 @@ import eu.esdihumboldt.hale.io.jdbc.constraints.internal.GeometryAdvisorConstrai
 public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCConstants {
 
 	private static final ALogger log = ALoggerFactory.getLogger(JDBCInstanceWriter.class);
+
+	private Map<TypeDefinition, Boolean> visitedType;
 
 	/**
 	 * Default constructor.
@@ -99,10 +107,14 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 				reporter.setSummary("Failed to connect to database.");
 				return reporter;
 			}
+			Set<TypeDefinition> sortedSet = getSortedSchemas(getTargetSchema()
+					.getMappingRelevantTypes());
 
 //			URI jdbcURI = getTarget().getLocation();
 
-			writeInstances(connection, instances, progress, reporter);
+			for (TypeDefinition td : sortedSet) {
+				writeInstances(connection, instances.select(new TypeFilter(td)), progress, reporter);
+			}
 
 			reporter.setSuccess(true);
 		} catch (Exception e) {
@@ -125,7 +137,8 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 
 	@Override
 	public boolean isPassthrough() {
-		return true;
+		// return true;
+		return false;
 	}
 
 	/**
@@ -237,6 +250,98 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 //		if (progress.isCanceled() && it.hasNext()) {
 //			reporter.error(new IOMessageImpl("Saving to database was canceled, not all instances were saved.", null));
 //		}
+	}
+
+	/**
+	 * 
+	 * Retrieves the target schema and orders it based on the references, so
+	 * that there should not be any integrity constrain violation exception.
+	 * <p>
+	 * <b> Algorithm for sorting </b>
+	 * </p>
+	 * The steps for sorting the types based on references are as follows:
+	 * <ol>
+	 * <li>Create a new <code>set</code> for the sorted types</li>
+	 * <li>Create a visited type map to keep hold of the types whose references
+	 * have already been checked.
+	 * 
+	 * <li>Iterate over the types that needs to be sorted
+	 * <ol>
+	 * <li>If the type is already in the visited map means references for this
+	 * type have already been checked. (Again checking could lead to cyclic
+	 * referencing in the infinite loop)</li>
+	 * <li>Exit the current recursion.</li>
+	 * <li>Iterate over the child definition of the types and check for the
+	 * referenced types</li>
+	 * <li>If there are reference types then iterate over each referenced type
+	 * and recurse to the step (3.1) with this iterated referenced type</li>
+	 * <li>Traverse till the type whose childs do not have any reference, add
+	 * this type to the sorted set first</li>
+	 * <li>Add the iterated type</li>
+	 * 
+	 * </ol>
+	 * </li>
+	 * <li>Add the sorted types in the sorted set</li>
+	 * </ol>
+	 * 
+	 * 
+	 * @param collection types to be sorted
+	 * 
+	 * @return returns the sorted schema based on the references
+	 * 
+	 */
+	public Set<TypeDefinition> getSortedSchemas(Collection<? extends TypeDefinition> collection) {
+
+		Set<TypeDefinition> sortedSet = new LinkedHashSet<TypeDefinition>();
+		visitedType = new HashMap<TypeDefinition, Boolean>();
+		for (TypeDefinition td : collection) {
+			if (!sortedSet.contains(td)) {
+				List<TypeDefinition> references = getReferencesTd(td);
+				if (references != null)
+					sortedSet.addAll(references);
+			}
+
+		}
+
+		return sortedSet;
+	}
+
+	/**
+	 * gets the list of the referenced type definitions. This is used for
+	 * sorting the types based on the references. This method recursively calls
+	 * itself till it finds a type which does not have any reference and that
+	 * type to the sorted list as first element.
+	 * 
+	 * @param td type definition of the reference
+	 * @return list of type definitions of referenced
+	 */
+	private List<TypeDefinition> getReferencesTd(TypeDefinition td) {
+
+		if (visitedType.containsKey(td) && visitedType.get(td)) {
+			return null;
+		}
+		else {
+			visitedType.put(td, true);
+		}
+		List<TypeDefinition> referencedTD = new ArrayList<TypeDefinition>();
+		for (ChildDefinition<?> cd : td.getChildren()) {
+			PropertyDefinition pd = cd.asProperty();
+			if (pd != null) {
+				Reference ref = pd.getConstraint(Reference.class);
+				// check if it has the references
+				if (ref.getReferencedTypes() != null) {
+					for (TypeDefinition t : ref.getReferencedTypes()) {
+						List<TypeDefinition> references = getReferencesTd(t);
+						if (references != null)
+							referencedTD.addAll(references);
+					}
+				}
+			}
+		}
+		if (!referencedTD.contains(td))
+			referencedTD.add(td);
+
+		return referencedTD;
 	}
 
 	/**
