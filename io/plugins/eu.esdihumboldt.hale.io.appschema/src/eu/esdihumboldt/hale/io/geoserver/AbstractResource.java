@@ -128,7 +128,7 @@ public abstract class AbstractResource implements Resource {
 			BufferedOutputStream output = new BufferedOutputStream(out);
 			try {
 
-				for (int b = input.read(); b > 0; b = input.read()) {
+				for (int b = input.read(); b >= 0; b = input.read()) {
 					output.write(b);
 				}
 			} finally {

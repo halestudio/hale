@@ -82,6 +82,10 @@ public abstract class AppSchemaIO {
 	 * Layer configuration file name.
 	 */
 	public static final String LAYER_FILE = "layer.xml";
+	/**
+	 * Included types mapping configuration file name.
+	 */
+	public static final String INCLUDED_TYPES_MAPPING_FILE = "includedTypes.xml";
 
 	/**
 	 * Retrieve the first element descendant of <code>parent</code>, with the

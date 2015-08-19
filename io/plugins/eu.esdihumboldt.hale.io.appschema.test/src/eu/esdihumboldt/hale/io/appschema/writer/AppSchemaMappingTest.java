@@ -219,8 +219,10 @@ public class AppSchemaMappingTest {
 		handler.handleTypeTransformation(joinCell, new AppSchemaMappingContext(mappingWrapper,
 				alignment, targetTypes));
 
-		List<FeatureTypeMapping> ftMappings = mappingWrapper.getAppSchemaMapping()
-				.getTypeMappings().getFeatureTypeMapping();
+//		List<FeatureTypeMapping> ftMappings = mappingWrapper.getAppSchemaMapping()
+//				.getTypeMappings().getFeatureTypeMapping();
+		List<FeatureTypeMapping> ftMappings = mappingWrapper.getMainMapping().getTypeMappings()
+				.getFeatureTypeMapping();
 		assertEquals(2, ftMappings.size());
 
 		FeatureTypeMapping lcdMapping = null, lcuMapping = null;
@@ -282,8 +284,10 @@ public class AppSchemaMappingTest {
 		RenameHandler rename = new RenameHandler();
 		rename.handlePropertyTransformation(joinCell, renameCell, context);
 
-		List<FeatureTypeMapping> ftMappings = mappingWrapper.getAppSchemaMapping()
-				.getTypeMappings().getFeatureTypeMapping();
+//		List<FeatureTypeMapping> ftMappings = mappingWrapper.getAppSchemaMapping()
+//				.getTypeMappings().getFeatureTypeMapping();
+		List<FeatureTypeMapping> ftMappings = mappingWrapper.getMainMapping().getTypeMappings()
+				.getFeatureTypeMapping();
 		assertEquals(2, ftMappings.size());
 
 		FeatureTypeMapping lcdMapping = null, lcuMapping = null;

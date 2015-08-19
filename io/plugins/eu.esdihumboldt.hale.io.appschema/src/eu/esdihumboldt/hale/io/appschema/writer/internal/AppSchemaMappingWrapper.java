@@ -16,9 +16,13 @@
 package eu.esdihumboldt.hale.io.appschema.writer.internal;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import com.google.common.base.Joiner;
@@ -27,19 +31,25 @@ import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.io.appschema.AppSchemaIO;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.AppSchemaDataAccessType;
+import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.AttributeExpressionMappingType;
+import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.AttributeExpressionMappingType.Expression;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.AttributeMappingType;
+import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.AttributeMappingType.ClientProperty;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.IncludesPropertyType;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.NamespacesPropertyType;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.NamespacesPropertyType.Namespace;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.SourceDataStoresPropertyType;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.SourceDataStoresPropertyType.DataStore;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.SourceDataStoresPropertyType.DataStore.Parameters;
+import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.SourceDataStoresPropertyType.DataStore.Parameters.Parameter;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.TargetTypesPropertyType;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.TargetTypesPropertyType.FeatureType;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.TypeMappingsPropertyType;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.TypeMappingsPropertyType.FeatureTypeMapping;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.TypeMappingsPropertyType.FeatureTypeMapping.AttributeMappings;
+import eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils;
 
 /**
  * App-schema mapping configuration wrapper.
@@ -66,6 +76,9 @@ public class AppSchemaMappingWrapper {
 	private final Map<Integer, Integer> featureLinkCounter;
 	private final Map<Integer, AttributeMappingType> attributeMappings;
 
+	private final Map<String, Set<FeatureTypeMapping>> featureTypesByTargetElement;
+	private final Map<String, Set<FeatureTypeMapping>> nonFeatureTypesByTargetElement;
+
 	private final AppSchemaDataAccessType appSchemaMapping;
 
 	/**
@@ -76,30 +89,15 @@ public class AppSchemaMappingWrapper {
 	public AppSchemaMappingWrapper(AppSchemaDataAccessType appSchemaMapping) {
 		this.appSchemaMapping = appSchemaMapping;
 
+		initMapping(this.appSchemaMapping);
+
 		this.namespaceUriMap = new HashMap<String, Namespace>();
 		this.namespacePrefixMap = new HashMap<String, Namespace>();
 		this.featureTypeMappings = new HashMap<Integer, FeatureTypeMapping>();
 		this.featureLinkCounter = new HashMap<Integer, Integer>();
 		this.attributeMappings = new HashMap<Integer, AttributeMappingType>();
-
-		if (this.appSchemaMapping.getNamespaces() == null) {
-			this.appSchemaMapping.setNamespaces(new NamespacesPropertyType());
-		}
-		if (this.appSchemaMapping.getSourceDataStores() == null) {
-			this.appSchemaMapping.setSourceDataStores(new SourceDataStoresPropertyType());
-		}
-		if (this.appSchemaMapping.getIncludedTypes() == null) {
-			this.appSchemaMapping.setIncludedTypes(new IncludesPropertyType());
-		}
-		if (this.appSchemaMapping.getTargetTypes() == null) {
-			this.appSchemaMapping.setTargetTypes(new TargetTypesPropertyType());
-		}
-		if (this.appSchemaMapping.getTargetTypes().getFeatureType() == null) {
-			this.appSchemaMapping.getTargetTypes().setFeatureType(new FeatureType());
-		}
-		if (this.appSchemaMapping.getTypeMappings() == null) {
-			this.appSchemaMapping.setTypeMappings(new TypeMappingsPropertyType());
-		}
+		this.featureTypesByTargetElement = new HashMap<String, Set<FeatureTypeMapping>>();
+		this.nonFeatureTypesByTargetElement = new HashMap<String, Set<FeatureTypeMapping>>();
 	}
 
 	/**
@@ -319,16 +317,12 @@ public class AppSchemaMappingWrapper {
 			featureTypeMapping.setTargetElement(targetType.getName().getPrefix() + ":"
 					+ targetType.getDisplayName());
 			if (mappingName != null && !mappingName.isEmpty()) {
-				// playing defensive: always enclose mapping name in single
-				// quotes
-				String quotedMappingName = "'" + mappingName + "'";
-//				String qualifiedMappingName = targetType.getName().getPrefix() + ":"
-//						+ quotedMappingName;
-				featureTypeMapping.setMappingName(quotedMappingName);
+				featureTypeMapping.setMappingName(mappingName);
 			}
 
 			appSchemaMapping.getTypeMappings().getFeatureTypeMapping().add(featureTypeMapping);
 			featureTypeMappings.put(hashKey, featureTypeMapping);
+			addToFeatureTypeMappings(targetType, featureTypeMapping);
 		}
 		return featureTypeMappings.get(hashKey);
 	}
@@ -340,6 +334,50 @@ public class AppSchemaMappingWrapper {
 		}
 
 		return hashBase.hashCode();
+	}
+
+	private void addToFeatureTypeMappings(TypeDefinition targetType, FeatureTypeMapping typeMapping) {
+		Map<String, Set<FeatureTypeMapping>> mappingsByTargetElement = null;
+		if (AppSchemaMappingUtils.isFeatureType(targetType)) {
+			mappingsByTargetElement = featureTypesByTargetElement;
+		}
+		else {
+			mappingsByTargetElement = nonFeatureTypesByTargetElement;
+		}
+
+		if (!mappingsByTargetElement.containsKey(typeMapping.getTargetElement())) {
+			mappingsByTargetElement.put(typeMapping.getTargetElement(),
+					new HashSet<FeatureTypeMapping>());
+		}
+		mappingsByTargetElement.get(typeMapping.getTargetElement()).add(typeMapping);
+	}
+
+	public Set<String> getFeatureTypeElements() {
+		return featureTypesByTargetElement.keySet();
+	}
+
+	public Set<String> getNonFeatureTypeElements() {
+		return nonFeatureTypesByTargetElement.keySet();
+	}
+
+	public Set<FeatureTypeMapping> getFeatureTypeMappings(String featureTypeElement) {
+		return getTypeMappingsByElement(featureTypesByTargetElement, featureTypeElement);
+	}
+
+	public Set<FeatureTypeMapping> getNonFeatureTypeMappings(String nonFeatureTypeElement) {
+		return getTypeMappingsByElement(nonFeatureTypesByTargetElement, nonFeatureTypeElement);
+	}
+
+	private Set<FeatureTypeMapping> getTypeMappingsByElement(
+			Map<String, Set<FeatureTypeMapping>> mappingsByTargetElement, String typeElement) {
+		Set<FeatureTypeMapping> mappings = null;
+		if (mappingsByTargetElement.containsKey(typeElement)) {
+			mappings = mappingsByTargetElement.get(typeElement);
+		}
+		else {
+			mappings = Collections.emptySet();
+		}
+		return mappings;
 	}
 
 	/**
@@ -425,10 +463,319 @@ public class AppSchemaMappingWrapper {
 	}
 
 	/**
-	 * @return the wrapped app-schema mapping
+	 * @return a copy of the wrapped app-schema mapping
 	 */
 	public AppSchemaDataAccessType getAppSchemaMapping() {
-		return appSchemaMapping;
+		return cloneMapping(appSchemaMapping);
 	}
 
+	/**
+	 * Returns true if the wrapped app-schema mapping configuration must be
+	 * split in multiple files.
+	 * 
+	 * <p>
+	 * The configuration will be split in a main file containing mappings for
+	 * all top-level feature types, and a second file containing mappings for
+	 * non-feature types (and alternative mappings for the feature types
+	 * configured in the main file).
+	 * </p>
+	 * 
+	 * @return true if multiple files are required to store the mapping
+	 *         configuration, false otherwise
+	 */
+	public boolean requiresMultipleFiles() {
+		// if non-feature type mappings are present, return true
+		if (nonFeatureTypesByTargetElement.size() > 0) {
+			return true;
+		}
+
+		// check whether multiple mappings of the same feature type are present
+		for (String targetElement : featureTypesByTargetElement.keySet()) {
+			if (featureTypesByTargetElement.get(targetElement).size() > 1) {
+				return true;
+			}
+		}
+
+		// don't need multiple files
+		return false;
+	}
+
+	/**
+	 * Returns the mapping configuration for the main mapping file.
+	 * 
+	 * <p>
+	 * If the mapping does not require multiple files, this method is equivalent
+	 * to {@link #getAppSchemaMapping()}.
+	 * </p>
+	 * 
+	 * @return a copy of the main mapping configuration
+	 */
+	public AppSchemaDataAccessType getMainMapping() {
+		AppSchemaDataAccessType mainMapping = cloneMapping(appSchemaMapping);
+
+		if (requiresMultipleFiles()) {
+			// add included types configuration
+			mainMapping.getIncludedTypes().getInclude()
+					.add(AppSchemaIO.INCLUDED_TYPES_MAPPING_FILE);
+
+			Set<FeatureTypeMapping> toBeRemoved = new HashSet<FeatureTypeMapping>();
+			Set<FeatureTypeMapping> toBeKept = new HashSet<FeatureTypeMapping>();
+			groupTypeMappings(toBeKept, toBeRemoved);
+			purgeTypeMappings(mainMapping, toBeRemoved);
+		}
+
+		return mainMapping;
+	}
+
+	/**
+	 * Returns the mapping configuration for the included types mapping file.
+	 * 
+	 * <p>
+	 * If the mapping does not require multiple files, <code>null</code> is
+	 * returned.
+	 * </p>
+	 * 
+	 * @return a copy of the included types mapping configuration, or
+	 *         <code>null</code>
+	 */
+	public AppSchemaDataAccessType getIncludedTypesMapping() {
+		if (requiresMultipleFiles()) {
+			AppSchemaDataAccessType includedTypesMapping = cloneMapping(appSchemaMapping);
+
+			Set<FeatureTypeMapping> toBeRemoved = new HashSet<FeatureTypeMapping>();
+			Set<FeatureTypeMapping> toBeKept = new HashSet<FeatureTypeMapping>();
+			groupTypeMappings(toBeRemoved, toBeKept);
+			purgeTypeMappings(includedTypesMapping, toBeRemoved);
+
+			return includedTypesMapping;
+		}
+		else {
+			return null;
+		}
+	}
+
+	private void groupTypeMappings(Set<FeatureTypeMapping> mainTypes,
+			Set<FeatureTypeMapping> includedTypes) {
+		// look for multiple mappings of the same feature type and determine
+		// the top level feature type mappings
+		for (Set<FeatureTypeMapping> ftMappings : featureTypesByTargetElement.values()) {
+			if (ftMappings.size() > 1) {
+				FeatureTypeMapping topLevelMapping = null;
+				for (FeatureTypeMapping m : ftMappings) {
+					if (topLevelMapping != null) {
+						// top level mapping already found, drop the others
+						includedTypes.add(m);
+					}
+					else {
+						if (m.getMappingName() == null || m.getMappingName().trim().isEmpty()) {
+							// use this as top level mapping
+							// TODO: there's no guarantee this is the right one
+							// to pick
+							topLevelMapping = m;
+						}
+					}
+				}
+				if (topLevelMapping == null) {
+					// pick the first one (it's pretty much a random choice)
+					topLevelMapping = ftMappings.iterator().next();
+				}
+				mainTypes.add(topLevelMapping);
+			}
+			else {
+				mainTypes.add(ftMappings.iterator().next());
+			}
+		}
+
+		// non-feature type mappings go in the "included types" group
+		for (Set<FeatureTypeMapping> ftMappings : nonFeatureTypesByTargetElement.values()) {
+			includedTypes.addAll(ftMappings);
+		}
+	}
+
+	private void purgeTypeMappings(AppSchemaDataAccessType mapping,
+			Set<FeatureTypeMapping> toBeRemoved) {
+		Set<String> usedStores = new HashSet<String>();
+		Iterator<FeatureTypeMapping> featureIt = mapping.getTypeMappings().getFeatureTypeMapping()
+				.iterator();
+		while (featureIt.hasNext()) {
+			FeatureTypeMapping ftMapping = featureIt.next();
+			if (lookupTypeMapping(ftMapping, toBeRemoved) != null) {
+				featureIt.remove();
+			}
+			else {
+				usedStores.add(ftMapping.getSourceDataStore());
+			}
+		}
+
+		// remove unnecessary DataStores
+		Iterator<DataStore> storeIt = mapping.getSourceDataStores().getDataStore().iterator();
+		while (storeIt.hasNext()) {
+			if (!usedStores.contains(storeIt.next().getId())) {
+				storeIt.remove();
+			}
+		}
+	}
+
+	private FeatureTypeMapping lookupTypeMapping(FeatureTypeMapping ftMapping,
+			Set<FeatureTypeMapping> candidates) {
+		for (FeatureTypeMapping candidate : candidates) {
+			boolean sameElement = ftMapping.getTargetElement().equals(candidate.getTargetElement());
+			boolean noMappingName = ftMapping.getMappingName() == null
+					&& candidate.getMappingName() == null;
+			boolean sameMappingName = false;
+			if (!noMappingName) {
+				sameMappingName = ftMapping.getMappingName() != null
+						&& ftMapping.getMappingName().equals(candidate.getMappingName());
+			}
+			if (sameElement && (noMappingName || sameMappingName)) {
+				return candidate;
+			}
+		}
+
+		return null;
+	}
+
+	static AppSchemaDataAccessType cloneMapping(AppSchemaDataAccessType mapping) {
+		AppSchemaDataAccessType clone = new AppSchemaDataAccessType();
+
+		initMapping(clone);
+
+		clone.setCatalog(mapping.getCatalog());
+		clone.getIncludedTypes().getInclude().addAll(mapping.getIncludedTypes().getInclude());
+		for (Namespace ns : mapping.getNamespaces().getNamespace()) {
+			clone.getNamespaces().getNamespace().add(cloneNamespace(ns));
+		}
+		for (DataStore ds : mapping.getSourceDataStores().getDataStore()) {
+			clone.getSourceDataStores().getDataStore().add(cloneDataStore(ds));
+		}
+		clone.getTargetTypes().getFeatureType().getSchemaUri()
+				.addAll(mapping.getTargetTypes().getFeatureType().getSchemaUri());
+		for (FeatureTypeMapping ftMapping : mapping.getTypeMappings().getFeatureTypeMapping()) {
+			clone.getTypeMappings().getFeatureTypeMapping().add(cloneFeatureTypeMapping(ftMapping));
+		}
+
+		return clone;
+	}
+
+	static Namespace cloneNamespace(Namespace ns) {
+		if (ns == null) {
+			return null;
+		}
+
+		Namespace clone = new Namespace();
+		clone.setPrefix(ns.getPrefix());
+		clone.setUri(ns.getUri());
+
+		return clone;
+	}
+
+	static DataStore cloneDataStore(DataStore ds) {
+		DataStore clone = new DataStore();
+		clone.setParameters(new Parameters());
+		clone.setId(ds.getId());
+		clone.setIdAttribute(ds.getIdAttribute());
+
+		if (ds.getParameters() != null) {
+			for (Parameter param : ds.getParameters().getParameter()) {
+				Parameter paramClone = new Parameter();
+				paramClone.setName(param.getName());
+				paramClone.setValue(param.getValue());
+				clone.getParameters().getParameter().add(paramClone);
+			}
+		}
+
+		return clone;
+	}
+
+	static FeatureTypeMapping cloneFeatureTypeMapping(FeatureTypeMapping ftMapping) {
+		FeatureTypeMapping clone = new FeatureTypeMapping();
+		clone.setAttributeMappings(new AttributeMappings());
+		if (ftMapping.getAttributeMappings() != null) {
+			for (AttributeMappingType attrMapping : ftMapping.getAttributeMappings()
+					.getAttributeMapping()) {
+				clone.getAttributeMappings().getAttributeMapping()
+						.add(cloneAttributeMapping(attrMapping));
+			}
+		}
+		clone.setIsDenormalised(ftMapping.isIsDenormalised());
+		clone.setIsXmlDataStore(ftMapping.isIsXmlDataStore());
+		clone.setItemXpath(ftMapping.getItemXpath());
+		clone.setMappingName(ftMapping.getMappingName());
+		clone.setSourceDataStore(ftMapping.getSourceDataStore());
+		clone.setSourceType(ftMapping.getSourceType());
+		clone.setTargetElement(ftMapping.getTargetElement());
+
+		return clone;
+	}
+
+	static AttributeMappingType cloneAttributeMapping(AttributeMappingType attrMapping) {
+		AttributeMappingType clone = new AttributeMappingType();
+
+		clone.setEncodeIfEmpty(attrMapping.isEncodeIfEmpty());
+		clone.setIsList(attrMapping.isIsList());
+		clone.setIsMultiple(attrMapping.isIsMultiple());
+		for (ClientProperty clientProp : attrMapping.getClientProperty()) {
+			ClientProperty clientPropClone = new ClientProperty();
+			clientPropClone.setName(clientProp.getName());
+			clientPropClone.setValue(clientProp.getValue());
+			clone.getClientProperty().add(clientPropClone);
+		}
+		clone.setIdExpression(cloneAttributeExpression(attrMapping.getIdExpression()));
+		clone.setInstancePath(attrMapping.getInstancePath());
+		clone.setLabel(attrMapping.getLabel());
+		clone.setParentLabel(attrMapping.getParentLabel());
+		clone.setSourceExpression(cloneAttributeExpression(attrMapping.getSourceExpression()));
+		clone.setTargetAttribute(attrMapping.getTargetAttribute());
+		clone.setTargetAttributeNode(attrMapping.getTargetAttributeNode());
+		clone.setTargetQueryString(attrMapping.getTargetQueryString());
+
+		return clone;
+	}
+
+	static AttributeExpressionMappingType cloneAttributeExpression(
+			AttributeExpressionMappingType attrExpression) {
+		if (attrExpression == null) {
+			return attrExpression;
+		}
+
+		AttributeExpressionMappingType clone = new AttributeExpressionMappingType();
+		if (attrExpression.getExpression() != null) {
+			clone.setExpression(new Expression());
+			// TODO: Expression is xs:anyType, how can I make a copy of it?
+			clone.getExpression().setExpression(attrExpression.getExpression().getExpression());
+		}
+		clone.setIndex(attrExpression.getIndex());
+		clone.setInputAttribute(attrExpression.getInputAttribute());
+		clone.setLinkElement(attrExpression.getLinkElement());
+		clone.setLinkField(attrExpression.getLinkField());
+		clone.setOCQL(attrExpression.getOCQL());
+
+		return clone;
+	}
+
+	/**
+	 * If necessary, initializes fields to minimize the risk of undesired NPEs.
+	 * 
+	 * @param mapping the mapping
+	 */
+	private static void initMapping(AppSchemaDataAccessType mapping) {
+		if (mapping.getNamespaces() == null) {
+			mapping.setNamespaces(new NamespacesPropertyType());
+		}
+		if (mapping.getSourceDataStores() == null) {
+			mapping.setSourceDataStores(new SourceDataStoresPropertyType());
+		}
+		if (mapping.getIncludedTypes() == null) {
+			mapping.setIncludedTypes(new IncludesPropertyType());
+		}
+		if (mapping.getTargetTypes() == null) {
+			mapping.setTargetTypes(new TargetTypesPropertyType());
+		}
+		if (mapping.getTargetTypes().getFeatureType() == null) {
+			mapping.getTargetTypes().setFeatureType(new FeatureType());
+		}
+		if (mapping.getTypeMappings() == null) {
+			mapping.setTypeMappings(new TypeMappingsPropertyType());
+		}
+	}
 }

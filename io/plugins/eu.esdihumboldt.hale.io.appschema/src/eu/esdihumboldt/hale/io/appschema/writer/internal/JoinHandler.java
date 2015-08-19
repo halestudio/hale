@@ -275,7 +275,8 @@ public class JoinHandler implements TypeTransformationHandler {
 	private String getLinkElementValue(FeatureTypeMapping nestedFeatureTypeMapping) {
 		if (nestedFeatureTypeMapping.getMappingName() != null
 				&& !nestedFeatureTypeMapping.getMappingName().isEmpty()) {
-			return nestedFeatureTypeMapping.getMappingName();
+			// playing safe: always enclose mapping name in single quotes
+			return "'" + nestedFeatureTypeMapping.getMappingName() + "'";
 		}
 		else {
 			return nestedFeatureTypeMapping.getTargetElement();

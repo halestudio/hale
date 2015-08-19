@@ -22,6 +22,11 @@ import eu.esdihumboldt.hale.io.appschema.model.FeatureChaining;
  */
 public abstract class AbstractAppSchemaConfigurator extends AbstractAlignmentWriter {
 
+	/**
+	 * The app-schema mapping generator.
+	 */
+	protected AppSchemaMappingGenerator generator;
+
 	@Override
 	public boolean isCancelable() {
 		return false;
@@ -49,12 +54,12 @@ public abstract class AbstractAppSchemaConfigurator extends AbstractAlignmentWri
 		// loading
 		resolvePropertyTypes(featureChainingParam, getTargetSchema(), SchemaSpaceID.TARGET);
 
-		AppSchemaMappingGenerator generator = new AppSchemaMappingGenerator(getAlignment(),
-				getTargetSchema(), dataStoreParam, featureChainingParam);
+		generator = new AppSchemaMappingGenerator(getAlignment(), getTargetSchema(),
+				dataStoreParam, featureChainingParam);
 		try {
 			generator.generateMapping(reporter);
 
-			handleMapping(generator, progress, reporter);
+			handleMapping(progress, reporter);
 		} catch (IOProviderConfigurationException pce) {
 			throw pce;
 		} catch (Exception e) {
@@ -96,15 +101,13 @@ public abstract class AbstractAppSchemaConfigurator extends AbstractAlignmentWri
 	 * write the generated app-schema mapping to the specified target in the
 	 * format specified by the content type parameter.
 	 * 
-	 * @param generator holds the generated app-schema mapping
 	 * @param progress progress indicator
 	 * @param reporter status reporter
 	 * @throws IOProviderConfigurationException if an unsupported content type
 	 *             has been specified
 	 * @throws IOException if an error occurs writing to target
 	 */
-	protected abstract void handleMapping(AppSchemaMappingGenerator generator,
-			ProgressIndicator progress, IOReporter reporter)
+	protected abstract void handleMapping(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException;
 
 }

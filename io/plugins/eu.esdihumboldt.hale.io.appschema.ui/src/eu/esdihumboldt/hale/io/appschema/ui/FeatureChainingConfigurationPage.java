@@ -84,7 +84,7 @@ import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
  * Configuration page for feature chaining settings.
  * 
  * <p>
- * This class is actually a stub whose only responsibility is to create an
+ * This page is actually a stub whose only responsibility is to create an
  * adequate number of {@link ChainPage} child pages.
  * </p>
  * 
@@ -216,7 +216,7 @@ public class FeatureChainingConfigurationPage extends
 		if (pages.size() > 0)
 			return pages.get(0);
 		else
-			return null;
+			return super.getNextPage();
 	}
 
 	/**

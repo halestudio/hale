@@ -20,6 +20,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 
+import org.apache.http.entity.ContentType;
+
 /**
  * TODO Type description
  * 
@@ -39,6 +41,10 @@ public class ResourceBuilder {
 
 	public static ResourceBuilder dataStoreFile(InputStream stream) {
 		return new ResourceBuilder(new DataStoreFile(stream));
+	}
+
+	public static ResourceBuilder dataStoreFile(InputStream stream, ContentType contentType) {
+		return new ResourceBuilder(new DataStoreFile(stream, contentType));
 	}
 
 	public static <T extends DataStore> ResourceBuilder dataStore(String name,
