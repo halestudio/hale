@@ -196,6 +196,24 @@ public class AppSchemaMappingWrapper {
 	}
 
 	/**
+	 * Updates a schema URI in the generated mapping configuration.
+	 * 
+	 * @param oldSchemaURI the current schema URI
+	 * @param newSchemaURI the updated schema URI
+	 */
+	public void updateSchemaURI(String oldSchemaURI, String newSchemaURI) {
+		if (oldSchemaURI != null && !oldSchemaURI.isEmpty() && newSchemaURI != null
+				&& !newSchemaURI.isEmpty()) {
+			List<String> uris = this.appSchemaMapping.getTargetTypes().getFeatureType()
+					.getSchemaUri();
+			if (uris.contains(oldSchemaURI)) {
+				uris.remove(oldSchemaURI);
+				uris.add(newSchemaURI);
+			}
+		}
+	}
+
+	/**
 	 * @see AppSchemaMappingWrapper#buildAttributeXPath(TypeDefinition, List)
 	 * 
 	 * @param owningType the type owning the target property
@@ -352,18 +370,42 @@ public class AppSchemaMappingWrapper {
 		mappingsByTargetElement.get(typeMapping.getTargetElement()).add(typeMapping);
 	}
 
+	/**
+	 * Returns the value of the <code>&lt;targetElement&gt;</code> tag for all
+	 * feature types in the mapping configuration.
+	 * 
+	 * @return the set of feature type element names
+	 */
 	public Set<String> getFeatureTypeElements() {
 		return featureTypesByTargetElement.keySet();
 	}
 
+	/**
+	 * Returns the value of the <code>&lt;targetElement&gt;</code> tag for all
+	 * non-feature types in the mapping configuration.
+	 * 
+	 * @return the set of non-feature type element names
+	 */
 	public Set<String> getNonFeatureTypeElements() {
 		return nonFeatureTypesByTargetElement.keySet();
 	}
 
+	/**
+	 * Returns all configured mappings for the provided feature type.
+	 * 
+	 * @param featureTypeElement the feature type's element name
+	 * @return the mappings
+	 */
 	public Set<FeatureTypeMapping> getFeatureTypeMappings(String featureTypeElement) {
 		return getTypeMappingsByElement(featureTypesByTargetElement, featureTypeElement);
 	}
 
+	/**
+	 * Returns all configured mappings for the provided non-feature type.
+	 * 
+	 * @param nonFeatureTypeElement the non-feature type's element name
+	 * @return the mappings
+	 */
 	public Set<FeatureTypeMapping> getNonFeatureTypeMappings(String nonFeatureTypeElement) {
 		return getTypeMappingsByElement(nonFeatureTypesByTargetElement, nonFeatureTypeElement);
 	}

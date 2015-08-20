@@ -84,7 +84,7 @@ public class AppSchemaMappingFileWriter extends AbstractAppSchemaConfigurator {
 			writeMappingFile();
 		}
 		else if (getContentType().getId().equals(AppSchemaIO.CONTENT_TYPE_ARCHIVE)) {
-			writeArchive();
+			writeArchive(progress, reporter);
 		}
 		else {
 			throw new IOProviderConfigurationException("Unsupported content type: "
@@ -111,7 +111,7 @@ public class AppSchemaMappingFileWriter extends AbstractAppSchemaConfigurator {
 		return inclTypesMappingFile;
 	}
 
-	private void writeArchive() throws IOException {
+	private void writeArchive(ProgressIndicator progress, IOReporter reporter) throws IOException {
 		Workspace ws = generator.getMainWorkspace();
 		Namespace mainNs = generator.getMainNamespace();
 		DataStore ds = generator.getAppSchemaDataStore();
@@ -138,6 +138,10 @@ public class AppSchemaMappingFileWriter extends AbstractAppSchemaConfigurator {
 		zip.putNextEntry(new ZipEntry(dataStoreFolder.getName() + DATASTORE_FILE));
 		copyAndCloseInputStream(ds.asStream(), zip);
 		zip.closeEntry();
+		// add target schema to zip
+		if (getIncludeSchemaParameter()) {
+			addTargetSchemaToZip(zip, progress, reporter);
+		}
 		// add main mapping file
 		Map<String, String> connectionParams = ds.getConnectionParameters();
 		zip.putNextEntry(new ZipEntry(dataStoreFolder.getName()

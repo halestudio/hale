@@ -71,7 +71,6 @@ import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.SchemaPatternFilter;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.StyledDefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
-import eu.esdihumboldt.hale.ui.io.ExportSelectTargetPage;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
@@ -248,11 +247,11 @@ public class FeatureChainingConfigurationPage extends
 					Object currentPage = event.getCurrentPage();
 					Object targetPage = event.getTargetPage();
 
-					if (currentPage instanceof ChainPage
+					if ((currentPage instanceof ChainPage || currentPage instanceof AppSchemaDataStoreConfigurationPage)
 							&& targetPage instanceof FeatureChainingConfigurationPage) {
 						goingBack = true;
 					}
-					else if (currentPage instanceof ExportSelectTargetPage
+					else if (currentPage instanceof IncludeSchemaConfigurationPage
 							&& targetPage instanceof FeatureChainingConfigurationPage) {
 						goingBack = false;
 					}

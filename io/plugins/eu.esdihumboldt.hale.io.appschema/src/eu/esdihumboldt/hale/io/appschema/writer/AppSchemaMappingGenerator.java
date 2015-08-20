@@ -160,6 +160,9 @@ public class AppSchemaMappingGenerator {
 		includedTypesMapping = null;
 	}
 
+	/**
+	 * @return the generated mapping configuration
+	 */
 	public AppSchemaMappingWrapper getGeneratedMapping() {
 		checkMappingGenerated();
 
@@ -206,6 +209,26 @@ public class AppSchemaMappingGenerator {
 		generateMapping(reporter);
 
 		writeIncludedTypesMappingConf(output);
+	}
+
+	/**
+	 * Updates a schema URI in the generated mapping configuration.
+	 * 
+	 * <p>
+	 * It is used mainly by exporters that need to change the target schema
+	 * location.
+	 * </p>
+	 * 
+	 * @param oldSchemaURI the current schema URI
+	 * @param newSchemaURI the updated schema URI
+	 */
+	public void updateSchemaURI(String oldSchemaURI, String newSchemaURI) {
+		checkMappingGenerated();
+
+		mappingWrapper.updateSchemaURI(oldSchemaURI, newSchemaURI);
+		// regenerate cached mappings
+		mainMapping = mappingWrapper.getMainMapping();
+		includedTypesMapping = mappingWrapper.getIncludedTypesMapping();
 	}
 
 	/**

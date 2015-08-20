@@ -42,6 +42,10 @@ public abstract class AppSchemaIO {
 	 */
 	public static final String CONTENT_TYPE_ARCHIVE = "eu.esdihumboldt.hale.io.appschema.archive";
 	/**
+	 * ID of app-schema configuration REST content type
+	 */
+	public static final String CONTENT_TYPE_REST = "eu.esdihumboldt.hale.io.appschema.rest";
+	/**
 	 * Datastore configuration parameter name.
 	 */
 	public static final String PARAM_DATASTORE = "appschema.source.datastore";
@@ -49,6 +53,10 @@ public abstract class AppSchemaIO {
 	 * Feature chaining configuration parameter name.
 	 */
 	public static final String PARAM_CHAINING = "appschema.feature.chaining";
+	/**
+	 * Include schema configuration parameter name.
+	 */
+	public static final String PARAM_INCLUDE_SCHEMA = "appschema.include.schema";
 	/**
 	 * REST user configuration parameter name.
 	 */

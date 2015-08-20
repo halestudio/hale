@@ -59,10 +59,10 @@ public class AppSchemaMappingUploader extends AbstractAppSchemaConfigurator {
 	private URL geoserverURL;
 	private String username;
 	private String password;
+	private boolean includeTargetSchema = false;
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.appschema.writer.AbstractAppSchemaConfigurator#handleMapping(eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingGenerator,
-	 *      eu.esdihumboldt.hale.common.core.io.ProgressIndicator,
+	 * @see eu.esdihumboldt.hale.io.appschema.writer.AbstractAppSchemaConfigurator#handleMapping(eu.esdihumboldt.hale.common.core.io.ProgressIndicator,
 	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
 	 */
 	@Override
@@ -73,10 +73,11 @@ public class AppSchemaMappingUploader extends AbstractAppSchemaConfigurator {
 		geoserverURL = target.getLocation().toURL();
 		username = getParameter(AppSchemaIO.PARAM_USER).as(String.class);
 		password = getParameter(AppSchemaIO.PARAM_PASSWORD).as(String.class);
+		includeTargetSchema = getIncludeSchemaParameter();
 
 		publishNamespaces();
 
-		publishAppSchemaDataStore();
+		publishAppSchemaDataStore(progress, reporter);
 	}
 
 	private void publishNamespaces() {
@@ -102,7 +103,8 @@ public class AppSchemaMappingUploader extends AbstractAppSchemaConfigurator {
 		}
 	}
 
-	private void publishAppSchemaDataStore() throws IOException {
+	private void publishAppSchemaDataStore(ProgressIndicator progress, IOReporter reporter)
+			throws IOException {
 		Workspace ws = generator.getMainWorkspace();
 
 		// build datastore resource
@@ -120,9 +122,8 @@ public class AppSchemaMappingUploader extends AbstractAppSchemaConfigurator {
 		}
 
 		// build mapping file resource
-		byte[] content = writeContent(dataStore);
-		ContentType contentType = (generator.getGeneratedMapping().requiresMultipleFiles()) ? ContentType
-				.create("application/zip") : DataStoreFile.DEF_CONTENT_TYPE;
+		ContentType contentType = getMimeType();
+		byte[] content = writeContent(dataStore.name(), contentType, progress, reporter);
 		DataStoreFile mappingFile = ResourceBuilder
 				.dataStoreFile(new ByteArrayInputStream(content), contentType)
 				.setAttribute(DataStoreFile.EXTENSION, "appschema")
@@ -137,17 +138,33 @@ public class AppSchemaMappingUploader extends AbstractAppSchemaConfigurator {
 		dsFileMgr.update(updateParams);
 	}
 
-	private byte[] writeContent(DataStore ds) throws IOException {
+	private ContentType getMimeType() {
+		if (generator.getGeneratedMapping().requiresMultipleFiles() || includeTargetSchema) {
+			return DataStoreFile.ZIP_CONTENT_TYPE;
+		}
+		else {
+			return DataStoreFile.DEF_CONTENT_TYPE;
+		}
+	}
+
+	private byte[] writeContent(String mappingFileName, ContentType contentType,
+			ProgressIndicator progress, IOReporter reporter) throws IOException {
 		try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-			if (generator.getGeneratedMapping().requiresMultipleFiles()) {
+			if (contentType.equals(DataStoreFile.ZIP_CONTENT_TYPE)) {
 				try (ZipOutputStream zos = new ZipOutputStream(bos)) {
+					if (includeTargetSchema) {
+						// add target schema to zip
+						addTargetSchemaToZip(zos, progress, reporter);
+					}
 					// main mapping configuration file
-					zos.putNextEntry(new ZipEntry(ds.name() + ".appschema"));
+					zos.putNextEntry(new ZipEntry(mappingFileName + ".appschema"));
 					generator.writeMappingConf(zos);
 					zos.closeEntry();
-					zos.putNextEntry(new ZipEntry(AppSchemaIO.INCLUDED_TYPES_MAPPING_FILE));
-					generator.writeIncludedTypesMappingConf(zos);
-					zos.closeEntry();
+					if (generator.getGeneratedMapping().requiresMultipleFiles()) {
+						zos.putNextEntry(new ZipEntry(AppSchemaIO.INCLUDED_TYPES_MAPPING_FILE));
+						generator.writeIncludedTypesMappingConf(zos);
+						zos.closeEntry();
+					}
 				}
 			}
 			else {
