@@ -160,14 +160,14 @@ public abstract class AbstractAppSchemaConfigurator extends AbstractAlignmentWri
 	 * @param reporter the reporter
 	 * @throws IOException if an error occurs
 	 */
-	protected void addTargetSchemaToZip(ZipOutputStream zip, ProgressIndicator progress,
-			IOReporter reporter) throws IOException {
+	protected void addTargetSchemaToZip(ZipOutputStream zip, ZipEntry parentEntry,
+			ProgressIndicator progress, IOReporter reporter) throws IOException {
 		File tmpDir = Files.createTempDir();
 		try {
 			Map<URI, String> resources = updateTargetSchemaResources(tmpDir, progress, reporter);
 			File[] dirs = tmpDir.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
 			for (File dir : dirs) {
-				addDirToZip(dir, null, zip);
+				addDirToZip(dir, parentEntry, zip);
 			}
 			for (Entry<URI, String> resource : resources.entrySet()) {
 				String oldSchemaURI = resource.getKey().toString();
@@ -212,8 +212,6 @@ public abstract class AbstractAppSchemaConfigurator extends AbstractAlignmentWri
 
 					// check if path was already handled
 					if (handledResources.containsKey(pathUri)) {
-						providerConfig.put(ImportProvider.PARAM_SOURCE,
-								Value.of(handledResources.get(pathUri)));
 						// skip copying the resource
 						continue;
 					}

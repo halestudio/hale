@@ -154,7 +154,7 @@ public class AppSchemaMappingUploader extends AbstractAppSchemaConfigurator {
 				try (ZipOutputStream zos = new ZipOutputStream(bos)) {
 					if (includeTargetSchema) {
 						// add target schema to zip
-						addTargetSchemaToZip(zos, progress, reporter);
+						addTargetSchemaToZip(zos, null, progress, reporter);
 					}
 					// main mapping configuration file
 					zos.putNextEntry(new ZipEntry(mappingFileName + ".appschema"));

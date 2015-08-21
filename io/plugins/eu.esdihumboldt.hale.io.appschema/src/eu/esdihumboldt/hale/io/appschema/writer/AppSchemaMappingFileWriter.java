@@ -140,7 +140,7 @@ public class AppSchemaMappingFileWriter extends AbstractAppSchemaConfigurator {
 		zip.closeEntry();
 		// add target schema to zip
 		if (getIncludeSchemaParameter()) {
-			addTargetSchemaToZip(zip, progress, reporter);
+			addTargetSchemaToZip(zip, dataStoreFolder, progress, reporter);
 		}
 		// add main mapping file
 		Map<String, String> connectionParams = ds.getConnectionParameters();

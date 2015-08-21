@@ -575,6 +575,18 @@ public class AppSchemaMappingUtils {
 		return null;
 	}
 
+	public static ParameterValue getTransformationParameter(Cell cell, String parameterName) {
+		ListMultimap<String, ParameterValue> parameters = cell.getTransformationParameters();
+
+		if (parameters != null && !parameters.isEmpty() && parameters.get(parameterName) != null
+				&& !parameters.get(parameterName).isEmpty()) {
+			return parameters.get(parameterName).get(0);
+		}
+		else {
+			return null;
+		}
+	}
+
 	/**
 	 * Converts the given element to a JAXB property type. If any exception
 	 * occurs <code>null</code> is returned.

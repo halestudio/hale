@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.io.appschema.writer.internal;
 
+import eu.esdihumboldt.cst.functions.geometric.extent.ExtentTransformation;
 import eu.esdihumboldt.cst.functions.numeric.MathematicalExpressionFunction;
 import eu.esdihumboldt.cst.functions.string.DateExtractionFunction;
 import eu.esdihumboldt.hale.common.align.model.functions.AssignFunction;
@@ -84,6 +85,9 @@ public class PropertyTransformationHandlerFactory {
 		}
 		else if (propertyTransformationIdentifier.equals(ClassificationMappingFunction.ID)) {
 			return new ClassificationHandler();
+		}
+		else if (propertyTransformationIdentifier.equals(ExtentTransformation.ID)) {
+			return new ExtentHandler();
 		}
 		else {
 			String errMsg = String.format("Unsupported property transformation %s",
