@@ -133,7 +133,22 @@ public abstract class AbstractPropertyTransformationHandler implements
 			featureType = getTargetType(typeCell).getDefinition().getType();
 		}
 
-		// in a well-formed mapping, should always be != null
+		// double check: don't map properties that belong to a feature
+		// chaining configuration other than the current one
+		if (context.getFeatureChaining() != null) {
+			for (String joinId : context.getFeatureChaining().getJoins().keySet()) {
+				List<ChainConfiguration> chains = context.getFeatureChaining().getChains(joinId);
+				ChainConfiguration chainConf = findLongestContainedPath(
+						targetPropertyEntityDef.getPropertyPath(), chains);
+				if (chainConf != null && !chainConf.getNestedTypeTargetType().equals(featureType)) {
+					// don't translate mapping, will do it (or have done it)
+					// elsewhere!
+					featureType = null;
+					break;
+				}
+			}
+		}
+
 		if (featureType != null) {
 			// fetch FeatureTypeMapping from mapping configuration
 			this.featureTypeMapping = mapping.getOrCreateFeatureTypeMapping(featureType,
@@ -174,27 +189,36 @@ public abstract class AbstractPropertyTransformationHandler implements
 		if (featureChaining != null) {
 			List<ChildContext> targetPropertyPath = targetPropertyEntityDef.getPropertyPath();
 			List<ChainConfiguration> chains = featureChaining.getChains(typeCell.getId());
-			if (chains != null && chains.size() > 0) {
-				int maxPathLength = 0;
-				for (ChainConfiguration chain : chains) {
-					List<ChildContext> nestedTargetPath = chain.getNestedTypeTarget()
-							.getPropertyPath();
-					if (nestedTargetPath.size() >= targetPropertyPath.size()) {
-						continue;
-					}
+			chainConf = findLongestContainedPath(targetPropertyPath, chains);
+		}
 
-					boolean isContained = true;
-					for (int i = 0; i < nestedTargetPath.size(); i++) {
-						if (!nestedTargetPath.get(i).equals(targetPropertyPath.get(i))) {
-							isContained = false;
-							break;
-						}
-					}
+		return chainConf;
+	}
 
-					if (isContained && maxPathLength < nestedTargetPath.size()) {
-						maxPathLength = nestedTargetPath.size();
-						chainConf = chain;
+	private ChainConfiguration findLongestContainedPath(List<ChildContext> targetPropertyPath,
+			List<ChainConfiguration> chains) {
+		ChainConfiguration chainConf = null;
+
+		if (chains != null && chains.size() > 0 && targetPropertyPath != null
+				&& targetPropertyPath.size() > 0) {
+			int maxPathLength = 0;
+			for (ChainConfiguration chain : chains) {
+				List<ChildContext> nestedTargetPath = chain.getNestedTypeTarget().getPropertyPath();
+				if (nestedTargetPath.size() >= targetPropertyPath.size()) {
+					continue;
+				}
+
+				boolean isContained = true;
+				for (int i = 0; i < nestedTargetPath.size(); i++) {
+					if (!nestedTargetPath.get(i).equals(targetPropertyPath.get(i))) {
+						isContained = false;
+						break;
 					}
+				}
+
+				if (isContained && maxPathLength < nestedTargetPath.size()) {
+					maxPathLength = nestedTargetPath.size();
+					chainConf = chain;
 				}
 			}
 		}
@@ -342,7 +366,18 @@ public abstract class AbstractPropertyTransformationHandler implements
 				clientProperty.setName(clientPropName);
 				clientProperty.setValue(getSourceExpressionAsCQL());
 
-				attributeMapping.getClientProperty().add(clientProperty);
+				boolean hasClientProperty = false;
+				for (ClientProperty existentProperty : attributeMapping.getClientProperty()) {
+					if (clientProperty.getName().equals(existentProperty.getName())) {
+						hasClientProperty = true;
+						break;
+					}
+				}
+
+				// don't add client property if it already exists
+				if (!hasClientProperty) {
+					attributeMapping.getClientProperty().add(clientProperty);
+				}
 			}
 		}
 	}

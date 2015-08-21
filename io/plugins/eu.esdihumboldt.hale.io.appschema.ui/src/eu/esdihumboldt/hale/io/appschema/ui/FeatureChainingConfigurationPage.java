@@ -15,6 +15,10 @@
 
 package eu.esdihumboldt.hale.io.appschema.ui;
 
+import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.getJoinParameter;
+import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.getSortedJoinConditions;
+import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.getTargetType;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -49,9 +53,11 @@ import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter;
+import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter.JoinCondition;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.core.io.impl.ComplexValue;
@@ -182,13 +188,13 @@ public class FeatureChainingConfigurationPage extends
 			Collection<? extends Cell> typeCells = alignment.getActiveTypeCells();
 			for (Cell typeCell : typeCells) {
 				if (AppSchemaMappingUtils.isJoin(typeCell)) {
-					JoinParameter joinParameter = AppSchemaMappingUtils.getJoinParameter(typeCell);
-					TypeEntityDefinition joinTarget = AppSchemaMappingUtils.getTargetType(typeCell)
-							.getDefinition();
+					JoinParameter joinParameter = getJoinParameter(typeCell);
+					List<JoinCondition> conditions = getSortedJoinConditions(joinParameter);
+					TypeEntityDefinition joinTarget = getTargetType(typeCell).getDefinition();
 
 					for (int i = 0; i < joinParameter.types.size() - 1; i++) {
 						ChainPage chainPage = new ChainPage(pageIdx, typeCell.getId(), i,
-								joinParameter.types, joinTarget);
+								joinParameter.types, conditions, joinTarget);
 
 						chainPage.setWizard(getWizard());
 						pages.add(chainPage);
@@ -276,6 +282,7 @@ public class FeatureChainingConfigurationPage extends
 		private final TypeEntityDefinition nestedTypeSource;
 		private EntityDefinition containerTypeTarget;
 		private PropertyEntityDefinition nestedTypeTarget;
+		private JoinCondition joinCondition;
 		private boolean uniqueMapping = false;
 
 		// UI
@@ -283,7 +290,8 @@ public class FeatureChainingConfigurationPage extends
 		private Button checkUniqueMapping;
 
 		protected ChainPage(int pageIdx, String joinCellId, int chainIdx,
-				List<TypeEntityDefinition> joinTypes, TypeEntityDefinition joinTarget) {
+				List<TypeEntityDefinition> joinTypes, List<JoinCondition> joinConditions,
+				TypeEntityDefinition joinTarget) {
 			super("join-" + joinCellId + "; chain-" + chainIdx, "Chain "
 					+ joinTypes.get(chainIdx).getDefinition().getDisplayName() + " and "
 					+ joinTypes.get(chainIdx + 1).getDefinition().getDisplayName(), null);
@@ -297,6 +305,15 @@ public class FeatureChainingConfigurationPage extends
 			this.chainIdx = chainIdx;
 			this.containerTypeSource = joinTypes.get(chainIdx);
 			this.nestedTypeSource = joinTypes.get(chainIdx + 1);
+			// TODO: this code assumes only single condition joins are allowed
+			for (JoinCondition condition : joinConditions) {
+				TypeEntityDefinition baseType = AlignmentUtil.getTypeEntity(condition.baseProperty);
+				TypeEntityDefinition joinType = AlignmentUtil.getTypeEntity(condition.joinProperty);
+				if (baseType.equals(containerTypeSource) && joinType.equals(nestedTypeSource)) {
+					this.joinCondition = condition;
+					break;
+				}
+			}
 		}
 
 		/**
@@ -398,6 +415,10 @@ public class FeatureChainingConfigurationPage extends
 			layout.setColumnData(roleColumn.getColumn(), new ColumnWeightData(2, true));
 			roleColumn.setLabelProvider(new RoleLabelProvider());
 
+			TableViewerColumn conditionColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+			layout.setColumnData(conditionColumn.getColumn(), new ColumnWeightData(2, true));
+			conditionColumn.setLabelProvider(new ConditionLabelProvider());
+
 			TableViewerColumn targetColumn = new TableViewerColumn(tableViewer, SWT.NONE);
 			layout.setColumnData(targetColumn.getColumn(), new ColumnWeightData(2, true));
 			targetColumn.setLabelProvider(new TargetLabelProvider());
@@ -487,6 +508,18 @@ public class FeatureChainingConfigurationPage extends
 			public String getText(Object element) {
 				TypeEntityDefinition typeEntityDef = (TypeEntityDefinition) element;
 				return (typeEntityDef.equals(containerTypeSource)) ? "CONTAINER" : "NESTED";
+			}
+
+		}
+
+		private class ConditionLabelProvider extends ColumnLabelProvider {
+
+			@Override
+			public String getText(Object element) {
+				TypeEntityDefinition typeEntityDef = (TypeEntityDefinition) element;
+				PropertyEntityDefinition property = (typeEntityDef.equals(containerTypeSource)) ? joinCondition.baseProperty
+						: joinCondition.joinProperty;
+				return property.getDefinition().getDisplayName();
 			}
 
 		}

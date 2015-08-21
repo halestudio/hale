@@ -17,8 +17,10 @@ package eu.esdihumboldt.hale.io.appschema.writer;
 
 import static eu.esdihumboldt.hale.common.align.model.functions.JoinFunction.PARAMETER_JOIN;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -34,6 +36,7 @@ import eu.esdihumboldt.hale.common.align.io.EntityResolver;
 import eu.esdihumboldt.hale.common.align.io.impl.DefaultEntityResolver;
 import eu.esdihumboldt.hale.common.align.io.impl.JaxbAlignmentIO;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.PropertyType;
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -42,7 +45,9 @@ import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
 import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter;
+import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter.JoinCondition;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
@@ -573,6 +578,26 @@ public class AppSchemaMappingUtils {
 		}
 
 		return null;
+	}
+
+	public static List<JoinCondition> getSortedJoinConditions(final JoinParameter joinParameter) {
+		List<JoinCondition> conditions = new ArrayList<JoinCondition>();
+
+		if (joinParameter != null) {
+			conditions.addAll(joinParameter.conditions);
+			Collections.sort(conditions, new Comparator<JoinCondition>() {
+
+				@Override
+				public int compare(JoinCondition o1, JoinCondition o2) {
+					TypeEntityDefinition o1Type = AlignmentUtil.getTypeEntity(o1.baseProperty);
+					TypeEntityDefinition o2Type = AlignmentUtil.getTypeEntity(o2.baseProperty);
+					return joinParameter.types.indexOf(o1Type)
+							- joinParameter.types.indexOf(o2Type);
+				}
+			});
+		}
+
+		return conditions;
 	}
 
 	public static ParameterValue getTransformationParameter(Cell cell, String parameterName) {
