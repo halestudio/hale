@@ -130,7 +130,13 @@ public abstract class AbstractAppSchemaConfigurator extends AbstractAlignmentWri
 	 * @return the include schema parameter value
 	 */
 	protected boolean getIncludeSchemaParameter() {
-		return getParameter(AppSchemaIO.PARAM_INCLUDE_SCHEMA).as(Boolean.class);
+		Value parameterValue = getParameter(AppSchemaIO.PARAM_INCLUDE_SCHEMA);
+		if (Value.NULL.equals(parameterValue)) {
+			return false;
+		}
+		else {
+			return parameterValue.as(Boolean.class);
+		}
 	}
 
 	/**
@@ -156,6 +162,7 @@ public abstract class AbstractAppSchemaConfigurator extends AbstractAlignmentWri
 	 * </p>
 	 * 
 	 * @param zip the zip archive to copy to
+	 * @param parentEntry the parent zip entry (may be null)
 	 * @param progress the progress indicator
 	 * @param reporter the reporter
 	 * @throws IOException if an error occurs

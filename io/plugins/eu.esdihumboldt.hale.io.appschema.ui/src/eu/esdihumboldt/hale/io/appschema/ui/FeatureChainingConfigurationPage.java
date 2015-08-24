@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.io.appschema.ui;
 import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.getJoinParameter;
 import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.getSortedJoinConditions;
 import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.getTargetType;
+import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.isNested;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,6 +56,7 @@ import org.eclipse.ui.dialogs.PatternFilter;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter;
 import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter.JoinCondition;
@@ -274,6 +276,7 @@ public class FeatureChainingConfigurationPage extends
 
 	private class ChainPage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> {
 
+		private final List<TypeEntityDefinition> joinTypes;
 		private final TypeEntityDefinition joinTarget;
 		private final int pageIdx;
 		private final String joinCellId;
@@ -282,7 +285,7 @@ public class FeatureChainingConfigurationPage extends
 		private final TypeEntityDefinition nestedTypeSource;
 		private EntityDefinition containerTypeTarget;
 		private PropertyEntityDefinition nestedTypeTarget;
-		private JoinCondition joinCondition;
+		private final JoinCondition joinCondition;
 		private boolean uniqueMapping = false;
 
 		// UI
@@ -293,27 +296,28 @@ public class FeatureChainingConfigurationPage extends
 				List<TypeEntityDefinition> joinTypes, List<JoinCondition> joinConditions,
 				TypeEntityDefinition joinTarget) {
 			super("join-" + joinCellId + "; chain-" + chainIdx, "Chain "
-					+ joinTypes.get(chainIdx).getDefinition().getDisplayName() + " and "
-					+ joinTypes.get(chainIdx + 1).getDefinition().getDisplayName(), null);
+					+ AlignmentUtil.getTypeEntity(joinConditions.get(chainIdx).baseProperty)
+							.getDefinition().getDisplayName()
+					+ " and "
+					+ AlignmentUtil.getTypeEntity(joinConditions.get(chainIdx).joinProperty)
+							.getDefinition().getDisplayName(), null);
+			this.joinCondition = joinConditions.get(chainIdx);
 			setDescription("Please configure feature chaining between "
-					+ joinTypes.get(chainIdx).getDefinition().getDisplayName() + " and "
-					+ joinTypes.get(chainIdx + 1).getDefinition().getDisplayName());
+					+ AlignmentUtil.getTypeEntity(joinCondition.baseProperty).getDefinition()
+							.getDisplayName()
+					+ " and "
+					+ AlignmentUtil.getTypeEntity(joinCondition.joinProperty).getDefinition()
+							.getDisplayName());
 			setPageComplete(false);
+			this.joinTypes = joinTypes;
 			this.joinTarget = joinTarget;
 			this.pageIdx = pageIdx;
 			this.joinCellId = joinCellId;
 			this.chainIdx = chainIdx;
-			this.containerTypeSource = joinTypes.get(chainIdx);
-			this.nestedTypeSource = joinTypes.get(chainIdx + 1);
-			// TODO: this code assumes only single condition joins are allowed
-			for (JoinCondition condition : joinConditions) {
-				TypeEntityDefinition baseType = AlignmentUtil.getTypeEntity(condition.baseProperty);
-				TypeEntityDefinition joinType = AlignmentUtil.getTypeEntity(condition.joinProperty);
-				if (baseType.equals(containerTypeSource) && joinType.equals(nestedTypeSource)) {
-					this.joinCondition = condition;
-					break;
-				}
-			}
+			this.containerTypeSource = AlignmentUtil
+					.getTypeEntity(joinConditions.get(chainIdx).baseProperty);
+			this.nestedTypeSource = AlignmentUtil
+					.getTypeEntity(joinConditions.get(chainIdx).joinProperty);
 		}
 
 		/**
@@ -323,17 +327,13 @@ public class FeatureChainingConfigurationPage extends
 		protected void onShowPage(boolean firstShow) {
 			super.onShowPage(firstShow);
 
-			containerTypeTarget = null;
-			if (chainIdx > 0) {
-				ChainConfiguration previousChainConf = featureChaining.getChain(joinCellId,
-						chainIdx - 1);
-				containerTypeTarget = previousChainConf.getNestedTypeTarget();
-			}
-			else {
-				containerTypeTarget = joinTarget;
-			}
-
+			// can't reliably get the previous chain configuration from current
+			// chain configuration, because the latter may not exist yet
+			int previousChainIndex = joinTypes.indexOf(containerTypeSource) - 1;
+			ChainConfiguration previousChainConf = (previousChainIndex >= 0) ? featureChaining
+					.getChain(joinCellId, previousChainIndex) : null;
 			ChainConfiguration chainConf = featureChaining.getChain(joinCellId, chainIdx);
+			// set nested type target
 			if (chainConf != null) {
 				nestedTypeTarget = chainConf.getNestedTypeTarget();
 				uniqueMapping = (chainConf.getMappingName() != null && !chainConf.getMappingName()
@@ -345,6 +345,14 @@ public class FeatureChainingConfigurationPage extends
 				uniqueMapping = false;
 				checkUniqueMapping.setSelection(uniqueMapping);
 			}
+			// set container type target
+			if (previousChainConf != null) {
+				containerTypeTarget = previousChainConf.getNestedTypeTarget();
+			}
+			else {
+				containerTypeTarget = joinTarget;
+			}
+
 			joinTypesViewer.refresh();
 		}
 
@@ -461,11 +469,16 @@ public class FeatureChainingConfigurationPage extends
 								.getFirstElement();
 						TypeDefinition selectedPropertyType = selectedProperty.getDefinition()
 								.getPropertyType();
+						List<ChildContext> selectedPropertyPath = selectedProperty
+								.getPropertyPath();
 
 						SchemaService schemaService = HaleUI.getServiceProvider().getService(
 								SchemaService.class);
 						SchemaSpace targetSchema = schemaService.getSchemas(SchemaSpaceID.TARGET);
-						if (targetSchema.getMappingRelevantTypes().contains(selectedPropertyType)) {
+						List<ChildContext> containerPath = containerTypeTarget.getPropertyPath();
+
+						if (targetSchema.getMappingRelevantTypes().contains(selectedPropertyType)
+								&& isNested(containerPath, selectedPropertyPath)) {
 							nestedTypeTarget = selectedProperty;
 							setPageComplete(true);
 							joinTypesViewer.refresh();
@@ -492,6 +505,10 @@ public class FeatureChainingConfigurationPage extends
 				featureChaining.putChain(joinCellId, chainIdx, conf);
 			}
 			conf.setChainIndex(chainIdx);
+			int containerTypeIdx = joinTypes.indexOf(containerTypeSource);
+			// if container type is the first element in the list, no previous
+			// chain exists
+			conf.setPrevChainIndex(containerTypeIdx - 1);
 			conf.setNestedTypeTarget(nestedTypeTarget);
 			uniqueMapping = checkUniqueMapping.getSelection();
 			if (uniqueMapping) {

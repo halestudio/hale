@@ -21,15 +21,19 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Holds the feature chaining configuration for a single pair of container /
- * nested types.
+ * nested target types.
  * 
  * <p>
  * A chain is identified by a chain index, which is unique per Join cell and
- * depends on the types forming the chain.
+ * depends on the types forming the chain. The chain configuration only stores
+ * information on the nested target type; the container target type can be
+ * inferred from the previous chain, as it is equivalent to the previous chain's
+ * nested target type.
  * </p>
  * <p>
- * E.g. in a join involving three types, chain 0 would refer to types 0 and 1,
- * while chain 1 would refer to types 1 and 2.
+ * E.g. in a join involving three types, chain 0 would refer to types 1 (nested)
+ * and 0 (container), while chain 1 would refer to types 2 (nested) and either 0
+ * or 1 (container), depending on the join configuration.
  * </p>
  * 
  * @author Stefano Costa, GeoSolutions
@@ -37,6 +41,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 public class ChainConfiguration {
 
 	int chainIndex;
+	int prevChainIndex = -1;
 	PropertyType jaxbNestedTypeTarget;
 	PropertyEntityDefinition nestedTypeTarget;
 	String mappingName;
@@ -53,6 +58,20 @@ public class ChainConfiguration {
 	 */
 	public void setChainIndex(int chainIndex) {
 		this.chainIndex = chainIndex;
+	}
+
+	/**
+	 * @return the previous chain index
+	 */
+	public int getPrevChainIndex() {
+		return prevChainIndex;
+	}
+
+	/**
+	 * @param prevChainIndex the previous chain index
+	 */
+	public void setPrevChainIndex(int prevChainIndex) {
+		this.prevChainIndex = prevChainIndex;
 	}
 
 	/**

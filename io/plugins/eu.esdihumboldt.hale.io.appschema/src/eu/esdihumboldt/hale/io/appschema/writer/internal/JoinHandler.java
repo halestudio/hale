@@ -18,15 +18,14 @@ package eu.esdihumboldt.hale.io.appschema.writer.internal;
 import static eu.esdihumboldt.hale.common.align.model.functions.JoinFunction.PARAMETER_JOIN;
 import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.findOwningType;
 import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.findOwningTypePath;
+import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.getSortedJoinConditions;
 //import static eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingUtils.findChildFeatureType;
 import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.getTargetProperty;
 import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.getTargetType;
 import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.isHRefAttribute;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import eu.esdihumboldt.cst.functions.core.Join;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
@@ -90,16 +89,15 @@ public class JoinHandler implements TypeTransformationHandler {
 
 		// check only single predicate conditions have been used
 		int[] conditionCount = new int[joinParameter.types.size()];
-		Map<Integer, JoinCondition> conditionMap = new HashMap<Integer, JoinCondition>();
-		for (JoinCondition joinCondition : joinParameter.conditions) {
-			TypeEntityDefinition baseType = AlignmentUtil.getTypeEntity(joinCondition.baseProperty);
-			int typeIdx = joinParameter.types.indexOf(baseType);
+		List<JoinCondition> joinConditions = getSortedJoinConditions(joinParameter);
+		for (JoinCondition joinCondition : joinConditions) {
+			TypeEntityDefinition joinType = AlignmentUtil.getTypeEntity(joinCondition.joinProperty);
+			int typeIdx = joinParameter.types.indexOf(joinType);
 			conditionCount[typeIdx]++;
 			if (conditionCount[typeIdx] > 1) {
 				throw new IllegalArgumentException(
 						"Only single condition joins are supported so far");
 			}
-			conditionMap.put(typeIdx, joinCondition);
 		}
 
 		FeatureTypeMapping topMostMapping = null;
@@ -107,19 +105,20 @@ public class JoinHandler implements TypeTransformationHandler {
 			ChainConfiguration previousChainConf = null;
 			ChainConfiguration chainConf = null;
 			if (featureChaining != null) {
-				if (chainIdx > 0) {
-					previousChainConf = featureChaining.getChain(typeCell.getId(), chainIdx - 1);
-				}
 				chainConf = featureChaining.getChain(typeCell.getId(), chainIdx);
+				if (chainConf != null && chainConf.getPrevChainIndex() >= 0) {
+					previousChainConf = featureChaining.getChain(typeCell.getId(),
+							chainConf.getPrevChainIndex());
+				}
 			}
 
 			// join is done pair-wise: I assume the first type is the container
 			// type, whereas the second type is nested in the first
-			TypeEntityDefinition containerType = joinParameter.types.get(chainIdx);
-			TypeEntityDefinition nestedType = joinParameter.types.get(chainIdx + 1);
-			JoinCondition joinCondition = conditionMap.get(chainIdx);
+			JoinCondition joinCondition = joinConditions.get(chainIdx);
 			baseProperty = joinCondition.baseProperty;
 			joinProperty = joinCondition.joinProperty;
+			TypeEntityDefinition containerType = AlignmentUtil.getTypeEntity(baseProperty);
+			TypeEntityDefinition nestedType = AlignmentUtil.getTypeEntity(joinProperty);
 
 			// build FeatureTypeMapping for container type
 //			Entity containerTypeTarget = typeCell.getTarget().values().iterator().next();

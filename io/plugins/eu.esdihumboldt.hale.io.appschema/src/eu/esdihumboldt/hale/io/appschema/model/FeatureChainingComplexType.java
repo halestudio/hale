@@ -76,6 +76,8 @@ public class FeatureChainingComplexType implements ComplexValueType<FeatureChain
 
 					ChainConfiguration chainConf = new ChainConfiguration();
 					chainConf.setChainIndex(Integer.valueOf(chainEl.getAttribute("index")));
+					chainConf.setPrevChainIndex(Integer.valueOf(chainEl
+							.getAttribute("prevChainIndex")));
 
 					Element nestedTypeTargetEl = AppSchemaIO.getFirstElementByTagName(chainEl,
 							"property");
@@ -125,6 +127,8 @@ public class FeatureChainingComplexType implements ComplexValueType<FeatureChain
 							Element chainEl = doc.createElementNS(APP_SCHEMA_NAMESPACE, "chain");
 							chainEl.setAttribute("index",
 									Integer.toString(chainConf.getChainIndex()));
+							chainEl.setAttribute("prevChainIndex",
+									Integer.toString(chainConf.getPrevChainIndex()));
 							joinEl.appendChild(chainEl);
 
 							PropertyEntityDefinition nestedTypeTarget = chainConf

@@ -20,6 +20,7 @@ import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.get
 import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.getTargetType;
 import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.isGeometryType;
 import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.isGmlId;
+import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.isNested;
 import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.isXmlAttribute;
 
 import java.util.List;
@@ -100,21 +101,6 @@ public abstract class AbstractPropertyTransformationHandler implements
 		TypeDefinition featureType = null;
 		String mappingName = null;
 		if (AppSchemaMappingUtils.isJoin(typeCell)) {
-//			TypeDefinition sourceType = null;
-//			// TODO: this may not work as expected for trasformation functions
-//			// with none or multiple source properties
-//			Property sourceProperty = getSourceProperty(propertyCell);
-//			if (sourceProperty != null) {
-//				sourceType = sourceProperty.getDefinition().getDefinition().getParentType();
-//			}
-//			TypeEntityDefinition nestedEntityType = AppSchemaMappingUtils.getNestedType(typeCell);
-//			TypeDefinition nestedType = (nestedEntityType != null) ? nestedEntityType
-//					.getDefinition() : null;
-//			if (sourceType != null && sourceType.equals(nestedType)) {
-//				// featureType = findOwningFeatureType(targetPropertyEntityDef);
-//				featureType = AppSchemaMappingUtils.findOwningType(targetPropertyEntityDef,
-//						context.getRelevantTargetTypes());
-//			}
 			if (context.getFeatureChaining() != null) {
 				ChainConfiguration chainConf = findChainConfiguration(context);
 				if (chainConf != null) {
@@ -138,7 +124,7 @@ public abstract class AbstractPropertyTransformationHandler implements
 		if (context.getFeatureChaining() != null) {
 			for (String joinId : context.getFeatureChaining().getJoins().keySet()) {
 				List<ChainConfiguration> chains = context.getFeatureChaining().getChains(joinId);
-				ChainConfiguration chainConf = findLongestContainedPath(
+				ChainConfiguration chainConf = findLongestNestedPath(
 						targetPropertyEntityDef.getPropertyPath(), chains);
 				if (chainConf != null && !chainConf.getNestedTypeTargetType().equals(featureType)) {
 					// don't translate mapping, will do it (or have done it)
@@ -189,13 +175,13 @@ public abstract class AbstractPropertyTransformationHandler implements
 		if (featureChaining != null) {
 			List<ChildContext> targetPropertyPath = targetPropertyEntityDef.getPropertyPath();
 			List<ChainConfiguration> chains = featureChaining.getChains(typeCell.getId());
-			chainConf = findLongestContainedPath(targetPropertyPath, chains);
+			chainConf = findLongestNestedPath(targetPropertyPath, chains);
 		}
 
 		return chainConf;
 	}
 
-	private ChainConfiguration findLongestContainedPath(List<ChildContext> targetPropertyPath,
+	private ChainConfiguration findLongestNestedPath(List<ChildContext> targetPropertyPath,
 			List<ChainConfiguration> chains) {
 		ChainConfiguration chainConf = null;
 
@@ -204,19 +190,10 @@ public abstract class AbstractPropertyTransformationHandler implements
 			int maxPathLength = 0;
 			for (ChainConfiguration chain : chains) {
 				List<ChildContext> nestedTargetPath = chain.getNestedTypeTarget().getPropertyPath();
-				if (nestedTargetPath.size() >= targetPropertyPath.size()) {
-					continue;
-				}
 
-				boolean isContained = true;
-				for (int i = 0; i < nestedTargetPath.size(); i++) {
-					if (!nestedTargetPath.get(i).equals(targetPropertyPath.get(i))) {
-						isContained = false;
-						break;
-					}
-				}
+				boolean isNested = isNested(nestedTargetPath, targetPropertyPath);
 
-				if (isContained && maxPathLength < nestedTargetPath.size()) {
+				if (isNested && maxPathLength < nestedTargetPath.size()) {
 					maxPathLength = nestedTargetPath.size();
 					chainConf = chain;
 				}
@@ -225,57 +202,6 @@ public abstract class AbstractPropertyTransformationHandler implements
 
 		return chainConf;
 	}
-
-	/**
-	 * Lookup owning type leveraging feature chaining configuration.
-	 * 
-	 * TODO: explain the rationale behind the code
-	 * 
-	 * @param context the mapping context
-	 * @return the nested type owning the target property
-	 */
-//	private TypeDefinition findOwningNestedType(AppSchemaMappingContext context) {
-//		TypeDefinition owningNestedType = null;
-//
-//		PropertyEntityDefinition targetPropertyEntityDef = targetProperty.getDefinition();
-//		FeatureChaining featureChaining = context.getFeatureChaining();
-//		if (featureChaining != null) {
-//			List<ChildContext> targetPropertyPath = targetPropertyEntityDef.getPropertyPath();
-//			List<ChainConfiguration> chains = featureChaining.getChains(typeCell.getId());
-//			if (chains != null && chains.size() > 0) {
-//				int maxPathLength = 0;
-//				TypeDefinition longestPathType = null;
-//				for (ChainConfiguration chain : chains) {
-//					List<ChildContext> nestedTargetPath = chain.getNestedTypeTarget()
-//							.getPropertyPath();
-//					if (nestedTargetPath.size() >= targetPropertyPath.size()) {
-//						continue;
-//					}
-//
-//					boolean isContained = true;
-//					for (int i = 0; i < nestedTargetPath.size(); i++) {
-//						if (!nestedTargetPath.get(i).equals(targetPropertyPath.get(i))) {
-//							isContained = false;
-//							break;
-//						}
-//					}
-//
-//					if (isContained && maxPathLength < nestedTargetPath.size()) {
-//						maxPathLength = nestedTargetPath.size();
-//						longestPathType = chain.getNestedTypeTarget().getDefinition()
-//								.getPropertyType();
-//					}
-//				}
-//				owningNestedType = longestPathType;
-//			}
-//		}
-//		else {
-//			owningNestedType = findOwningType(targetPropertyEntityDef,
-//					context.getRelevantTargetTypes());
-//		}
-//
-//		return owningNestedType;
-//	}
 
 	/**
 	 * This method is invoked when the target property is <code>gml:id</code>,

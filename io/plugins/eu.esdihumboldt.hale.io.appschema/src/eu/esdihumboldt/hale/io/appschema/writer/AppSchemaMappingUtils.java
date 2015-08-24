@@ -472,6 +472,31 @@ public class AppSchemaMappingUtils {
 	}
 
 	/**
+	 * Checks whether the property with path <code>nestedPath</code> is actually
+	 * nested inside the property with path <code>containerPath</code>.
+	 * 
+	 * @param containerPath the container property path
+	 * @param nestedPath the nested property path
+	 * @return <code>true</code> if it is contained, false otherwise
+	 */
+	public static boolean isNested(List<ChildContext> containerPath, List<ChildContext> nestedPath) {
+		boolean isContained = true;
+		if (containerPath.size() >= nestedPath.size()) {
+			isContained = false;
+		}
+		else {
+			for (int i = 0; i < containerPath.size(); i++) {
+				if (!containerPath.get(i).equals(nestedPath.get(i))) {
+					isContained = false;
+					break;
+				}
+			}
+		}
+
+		return isContained;
+	}
+
+	/**
 	 * Return the first target {@link Entity}, which is assumed to be a
 	 * {@link Property}.
 	 * 
@@ -580,6 +605,10 @@ public class AppSchemaMappingUtils {
 		return null;
 	}
 
+	/**
+	 * @param joinParameter the join parameter
+	 * @return the list of join conditions, sorted by join type
+	 */
 	public static List<JoinCondition> getSortedJoinConditions(final JoinParameter joinParameter) {
 		List<JoinCondition> conditions = new ArrayList<JoinCondition>();
 
@@ -589,8 +618,8 @@ public class AppSchemaMappingUtils {
 
 				@Override
 				public int compare(JoinCondition o1, JoinCondition o2) {
-					TypeEntityDefinition o1Type = AlignmentUtil.getTypeEntity(o1.baseProperty);
-					TypeEntityDefinition o2Type = AlignmentUtil.getTypeEntity(o2.baseProperty);
+					TypeEntityDefinition o1Type = AlignmentUtil.getTypeEntity(o1.joinProperty);
+					TypeEntityDefinition o2Type = AlignmentUtil.getTypeEntity(o2.joinProperty);
 					return joinParameter.types.indexOf(o1Type)
 							- joinParameter.types.indexOf(o2Type);
 				}
@@ -600,6 +629,12 @@ public class AppSchemaMappingUtils {
 		return conditions;
 	}
 
+	/**
+	 * @param cell the cell
+	 * @param parameterName the parameter name
+	 * @return the value of the specified parameter, or <code>null</code> if it
+	 *         is not found
+	 */
 	public static ParameterValue getTransformationParameter(Cell cell, String parameterName) {
 		ListMultimap<String, ParameterValue> parameters = cell.getTransformationParameters();
 
