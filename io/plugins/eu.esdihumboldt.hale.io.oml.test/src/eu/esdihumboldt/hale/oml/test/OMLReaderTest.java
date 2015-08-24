@@ -54,6 +54,7 @@ import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
  */
 @SuppressWarnings("null")
 @edu.umd.cs.findbugs.annotations.SuppressWarnings("NP_NULL_ON_SOME_PATH")
+@Ignore
 public class OMLReaderTest {
 
 	private static Alignment alignment = null;
