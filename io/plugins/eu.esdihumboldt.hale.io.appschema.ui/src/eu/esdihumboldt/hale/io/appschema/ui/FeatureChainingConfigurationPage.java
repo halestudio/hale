@@ -34,6 +34,7 @@ import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TreeSelection;
@@ -286,6 +287,7 @@ public class FeatureChainingConfigurationPage extends
 		private EntityDefinition containerTypeTarget;
 		private PropertyEntityDefinition nestedTypeTarget;
 		private final JoinCondition joinCondition;
+		private final String message;
 		private boolean uniqueMapping = false;
 
 		// UI
@@ -302,13 +304,9 @@ public class FeatureChainingConfigurationPage extends
 					+ AlignmentUtil.getTypeEntity(joinConditions.get(chainIdx).joinProperty)
 							.getDefinition().getDisplayName(), null);
 			this.joinCondition = joinConditions.get(chainIdx);
-			setDescription("Please configure feature chaining between "
-					+ AlignmentUtil.getTypeEntity(joinCondition.baseProperty).getDefinition()
-							.getDisplayName()
-					+ " and "
+			this.message = "Please select target for nested source type "
 					+ AlignmentUtil.getTypeEntity(joinCondition.joinProperty).getDefinition()
-							.getDisplayName());
-			setPageComplete(false);
+							.getDisplayName();
 			this.joinTypes = joinTypes;
 			this.joinTarget = joinTarget;
 			this.pageIdx = pageIdx;
@@ -318,6 +316,18 @@ public class FeatureChainingConfigurationPage extends
 					.getTypeEntity(joinConditions.get(chainIdx).baseProperty);
 			this.nestedTypeSource = AlignmentUtil
 					.getTypeEntity(joinConditions.get(chainIdx).joinProperty);
+
+			setPageComplete(false);
+			setMessage();
+		}
+
+		private void setMessage() {
+			if (!isPageComplete()) {
+				setMessage(this.message, ERROR);
+			}
+			else {
+				setMessage("");
+			}
 		}
 
 		/**
@@ -393,13 +403,24 @@ public class FeatureChainingConfigurationPage extends
 			GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 2);
 			gridData.minimumHeight = 150;
 			tableParent.setLayoutData(gridData);
-			TableViewer tableViewer = new TableViewer(tableParent, SWT.H_SCROLL | SWT.V_SCROLL
-					| SWT.BORDER);
+
+			final TableViewer tableViewer = new TableViewer(tableParent, SWT.H_SCROLL
+					| SWT.V_SCROLL | SWT.BORDER);
 			tableViewer.getControl().setLayoutData(
 					new GridData(SWT.FILL, SWT.FILL, true, true, 3, 2));
 			tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 			tableViewer.getTable().setHeaderVisible(true);
 			tableViewer.getTable().setLinesVisible(true);
+			// disable selection on table viewer
+			tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
+				@Override
+				public void selectionChanged(final SelectionChangedEvent event) {
+					if (!event.getSelection().isEmpty()) {
+						tableViewer.setSelection(StructuredSelection.EMPTY);
+					}
+				}
+			});
 
 			final DefinitionLabelProvider dlp = new DefinitionLabelProvider(tableViewer, true, true);
 			TableViewerColumn typeColumn = new TableViewerColumn(tableViewer, SWT.NONE);
@@ -418,18 +439,22 @@ public class FeatureChainingConfigurationPage extends
 					return dlp.getImage(typeEntityDef);
 				}
 			});
+			typeColumn.getColumn().setText("Source Type");
 
 			TableViewerColumn roleColumn = new TableViewerColumn(tableViewer, SWT.NONE);
 			layout.setColumnData(roleColumn.getColumn(), new ColumnWeightData(2, true));
 			roleColumn.setLabelProvider(new RoleLabelProvider());
+			roleColumn.getColumn().setText("Role");
 
 			TableViewerColumn conditionColumn = new TableViewerColumn(tableViewer, SWT.NONE);
 			layout.setColumnData(conditionColumn.getColumn(), new ColumnWeightData(2, true));
 			conditionColumn.setLabelProvider(new ConditionLabelProvider());
+			conditionColumn.getColumn().setText("Join Property");
 
 			TableViewerColumn targetColumn = new TableViewerColumn(tableViewer, SWT.NONE);
 			layout.setColumnData(targetColumn.getColumn(), new ColumnWeightData(2, true));
 			targetColumn.setLabelProvider(new TargetLabelProvider());
+			targetColumn.getColumn().setText("Target Type");
 
 			tableViewer
 					.setInput(new TypeEntityDefinition[] { containerTypeSource, nestedTypeSource });
@@ -517,6 +542,8 @@ public class FeatureChainingConfigurationPage extends
 			else {
 				conf.setMappingName(null);
 			}
+
+			setMessage();
 		}
 
 		private class RoleLabelProvider extends ColumnLabelProvider {
@@ -542,6 +569,13 @@ public class FeatureChainingConfigurationPage extends
 		}
 
 		private class TargetLabelProvider extends StyledDefinitionLabelProvider {
+
+			/**
+			 * Suppresses mandatory and cardinality attributes display
+			 */
+			public TargetLabelProvider() {
+				super(new DefinitionLabelProvider(null, false, true), true);
+			}
 
 			/**
 			 * @see eu.esdihumboldt.hale.ui.common.definition.viewer.StyledDefinitionLabelProvider#extractElement(java.lang.Object)
