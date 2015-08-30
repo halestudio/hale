@@ -17,7 +17,15 @@
 package eu.esdihumboldt.hale.ui.style;
 
 import java.awt.Color;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.Random;
+import java.util.Set;
 
+import javax.annotation.Nullable;
+
+import org.eclipse.ui.PlatformUI;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.NameImpl;
 import org.geotools.styling.FeatureTypeStyle;
@@ -34,8 +42,12 @@ import org.geotools.styling.StyleFactory;
 import org.geotools.styling.Symbolizer;
 import org.opengis.filter.FilterFactory;
 
+import com.google.common.collect.SetMultimap;
+
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
+import eu.esdihumboldt.hale.ui.geometry.service.GeometrySchemaService;
 import eu.esdihumboldt.hale.ui.style.service.internal.StylePreferences;
 
 /**
@@ -46,21 +58,10 @@ import eu.esdihumboldt.hale.ui.style.service.internal.StylePreferences;
  */
 public abstract class StyleHelper {
 
-	private static final int WIDTH = 16;
-
-	private static final int HEIGHT = 16;
-
-	@SuppressWarnings("unused")
-	private static final int[] LINE_POINTS = new int[] { 0, HEIGHT - 1, WIDTH - 1, 0 };
-
-	@SuppressWarnings("unused")
-	private static final int[] POLY_POINTS = new int[] { 0, 0, WIDTH - 1, 0, WIDTH - 1, HEIGHT - 1,
-			0, HEIGHT - 1 };
-
 	/**
 	 * Default fill opacity
 	 */
-	public static final double DEFAULT_FILL_OPACITY = 0.3;
+	public static final double DEFAULT_FILL_OPACITY = 0.4;
 
 	private static final StyleBuilder styleBuilder = new StyleBuilder();
 
@@ -68,73 +69,25 @@ public abstract class StyleHelper {
 
 	private static final FilterFactory filterFactory = CommonFactoryFinder.getFilterFactory(null);
 
-//	/**
-//	 * Get a legend image for a given feature type
-//	 * @param type the feature type
-//	 * @param definedOnly if only for defined styles a image shall be created
-//	 * @return the legend image or <code>null</code>
-//	 */
-//	public static BufferedImage getLegendImage(FeatureType type, boolean definedOnly) {
-//		StyleService ss = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
-//		Style style = (definedOnly)?(ss.getDefinedStyle(type)):(ss.getStyle(type));
-//		if (style == null) {
-//			return null;
-//		}
-//		
-//		// create a dummy feature based on the style
-//		Drawer d = Drawer.create();
-//		SimpleFeature feature = null;
-//		Symbolizer[] symbolizers = SLD.symbolizers(style);
-//		if (symbolizers.length > 0) {
-//			Symbolizer symbolizer = symbolizers[0];
-//			
-//			if (symbolizer instanceof LineSymbolizer) {
-//				feature = d.feature(d.line(LINE_POINTS));
-//			}
-//			else if (symbolizer instanceof PointSymbolizer) {
-//				feature = d.feature(d.point(WIDTH / 2, HEIGHT / 2));
-//			}
-//			if (symbolizer instanceof PolygonSymbolizer) {
-//				feature = d.feature(d.polygon(POLY_POINTS));
-//			}
-//		}
-//		
-//		if (feature != null) {
-//			BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB); 
-////				GraphicsEnvironment.getLocalGraphicsEnvironment().
-////    				getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(WIDTH, HEIGHT,
-////    				Transparency.TRANSLUCENT);
-//			
-//			RGB rgb = ss.getBackground();
-//			Color color = new Color(rgb.red, rgb.green, rgb.blue);
-//			Graphics2D g = image.createGraphics();
-//			try {
-//				g.setColor(color);
-//				g.fillRect(0, 0, WIDTH, HEIGHT);
-//			} finally {
-//				g.dispose();
-//			}
-//			
-//			d.drawDirect(image, feature, style);
-//			return image;
-//		}
-//		
-//		return null;
-//	}
-
 	/**
 	 * Returns a default style for the given type.
 	 * 
 	 * @param typeDef the type definition
-	 * @param dataSet the data set
+	 * @param dataSet the data set (if known)
 	 * @return the style
 	 */
-	public static FeatureTypeStyle getDefaultStyle(TypeDefinition typeDef, DataSet dataSet) {
+	public static FeatureTypeStyle getDefaultStyle(TypeDefinition typeDef, @Nullable DataSet dataSet) {
 //		GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench().getService(GeometrySchemaService.class);
 //		List<QName> geomPath = gss.getDefaultGeometry(typeDef);
 		// TODO determine default style from default geometry?
 
-		Color defColor = StylePreferences.getDefaultColor(dataSet);
+		Color defColor;
+		if (dataSet != null) {
+			defColor = StylePreferences.getDefaultColor(dataSet);
+		}
+		else {
+			defColor = Color.DARK_GRAY;
+		}
 		int defWidth = StylePreferences.getDefaultWidth();
 
 		FeatureTypeStyle result;
@@ -163,6 +116,170 @@ public abstract class StyleHelper {
 		result.featureTypeNames().add(new NameImpl(getFeatureTypeName(typeDef)));
 
 		return result;
+	}
+
+	/**
+	 * Returns a default style for the given type.
+	 * 
+	 * @param dataSetTypes type definitions associated to their data set
+	 * @return the style
+	 */
+	public static Style getRandomStyles(SetMultimap<DataSet, TypeDefinition> dataSetTypes) {
+		int defWidth = StylePreferences.getDefaultWidth();
+
+		Style style = styleFactory.createStyle();
+
+		for (Entry<DataSet, TypeDefinition> entry : dataSetTypes.entries()) {
+			DataSet dataSet = entry.getKey();
+			TypeDefinition typeDef = entry.getValue();
+
+			FeatureTypeStyle fts;
+
+			// TODO based on default geometry?
+			// polygon is always OK as it contains stroke and fill
+
+			// Color color = generateRandomColor(Color.WHITE);
+			float saturation;
+			float brightness;
+			switch (dataSet) {
+			case TRANSFORMED:
+				saturation = 0.8f;
+				brightness = 0.6f;
+				break;
+			case SOURCE:
+			default:
+				saturation = 0.75f;
+				brightness = 0.8f;
+				break;
+			}
+			Color color = generateRandomColor(saturation, brightness);
+			fts = createPolygonStyle(color, defWidth);
+
+			fts.featureTypeNames().add(new NameImpl(getFeatureTypeName(typeDef)));
+
+			style.featureTypeStyles().add(fts);
+		}
+
+		return style;
+	}
+
+	/**
+	 * Returns a default style for the given type.
+	 * 
+	 * @param dataSetTypes type definitions associated to their data set
+	 * @return the style
+	 */
+	public static Style getSpectrumStyles(SetMultimap<DataSet, TypeDefinition> dataSetTypes) {
+		int defWidth = StylePreferences.getDefaultWidth();
+
+		Style style = styleFactory.createStyle();
+
+		GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench().getService(
+				GeometrySchemaService.class);
+
+		for (DataSet dataSet : dataSetTypes.keySet()) {
+			float saturation;
+			float brightness;
+			switch (dataSet) {
+			case TRANSFORMED:
+				saturation = 0.8f;
+				brightness = 0.6f;
+				break;
+			case SOURCE:
+			default:
+				saturation = 0.75f;
+				brightness = 0.8f;
+				break;
+			}
+
+			Set<TypeDefinition> types = new HashSet<>(dataSetTypes.get(dataSet));
+			Iterator<TypeDefinition> it = types.iterator();
+			while (it.hasNext()) {
+				TypeDefinition type = it.next();
+				// remove invalid types
+				if (type.getConstraint(AbstractFlag.class).isEnabled()
+						|| gss.getDefaultGeometry(type) == null) {
+					it.remove();
+				}
+			}
+
+			int numberOfTypes = types.size();
+			int index = 0;
+			for (TypeDefinition typeDef : types) {
+				FeatureTypeStyle fts;
+
+				// TODO based on default geometry?
+				// polygon is always OK as it contains stroke and fill
+
+				// Color color = generateRandomColor(Color.WHITE);
+
+				Color color;
+				if (numberOfTypes == 1) {
+					color = generateRandomColor(saturation, brightness);
+				}
+				else {
+					color = Color.getHSBColor((float) index / (float) numberOfTypes, saturation,
+							brightness);
+				}
+				fts = createPolygonStyle(color, defWidth);
+
+				fts.featureTypeNames().add(new NameImpl(getFeatureTypeName(typeDef)));
+
+				style.featureTypeStyles().add(fts);
+
+				index++;
+			}
+		}
+
+		return style;
+	}
+
+	/**
+	 * Generate a random color. Mixing in WHITE will create pastel colors.
+	 * Mixing in a pastel color will create tinted colors.
+	 * 
+	 * @param mix color to mix in (use average of RGB values)
+	 * @return the generated color
+	 */
+	public static Color generateRandomColor(@Nullable Color mix) {
+		Random random = new Random();
+		int red = random.nextInt(256);
+		int green = random.nextInt(256);
+		int blue = random.nextInt(256);
+
+		// mix the color
+		if (mix != null) {
+			red = (red + mix.getRed()) / 2;
+			green = (green + mix.getGreen()) / 2;
+			blue = (blue + mix.getBlue()) / 2;
+		}
+
+		Color color = new Color(red, green, blue);
+		return color;
+	}
+
+	private static float GOLDEN_RATIO_CONJUGATE = 0.618033988749895f;
+
+	/**
+	 * Generate a random color.
+	 * 
+	 * Inspired by
+	 * http://martin.ankerl.com/2009/12/09/how-to-create-random-colors
+	 * -programmatically/
+	 * 
+	 * @param saturation the saturation (between 0.0f and 1.0f)
+	 * @param brightness the brightness (between 0.0f and 1.0f)
+	 * 
+	 * @return the random color
+	 */
+	public static Color generateRandomColor(float saturation, float brightness) {
+		Random random = new Random();
+
+		float rand = random.nextFloat();
+		rand = rand + GOLDEN_RATIO_CONJUGATE;
+		rand = rand % 1;
+
+		return Color.getHSBColor(rand, saturation, brightness);
 	}
 
 	// XXX StyleBuilder does not support feature type names with namespace

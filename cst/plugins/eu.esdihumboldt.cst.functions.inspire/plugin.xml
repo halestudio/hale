@@ -21,7 +21,7 @@
       <propertyFunction
             category="inspire"
             cellExplanation="eu.esdihumboldt.cst.functions.inspire.IdentifierExplanation"
-            description="Creates an Inspire Identifier structure. For the local ID part a source property is used, while the namespace is derived from information supplied for country, provider and product."
+            description="(deprecated) Creates an Inspire Identifier structure. For the local ID part a source property is used, while the namespace is derived from information supplied for country, provider and product. For new mappings please map to the individual properties of the INSPIRE identifier (e.g. localId, namespace) directly."
             icon="icons/inspire.gif"
             identifier="eu.esdihumboldt.cst.functions.inspire.identifier"
             name="Inspire Identifier">

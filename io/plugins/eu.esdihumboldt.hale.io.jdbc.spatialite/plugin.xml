@@ -61,6 +61,13 @@
             connection="org.sqlite.SQLiteConnection"
             id="eu.esdihumboldt.hale.io.jdbc.spatialite">
       </readSchemaAdvisor>
+      <customtype
+            binding="java.lang.Object"
+            connection="org.sqlite.SQLiteConnection"
+            id="jdbc.sqlite.blob"
+            name="BLOB"
+            sqltype="-3">
+      </customtype>
    </extension>
    <extension
          point="org.eclipse.core.contenttype.contentTypes">
@@ -76,7 +83,7 @@
       <provider
             class="eu.esdihumboldt.hale.io.jdbc.spatialite.reader.internal.SpatiaLiteSchemaReader"
             id="eu.esdihumboldt.hale.io.spatialite.reader.schema"
-            name="SpatiaLite Database">
+            name="SQLite/SpatiaLite Database">
          <contentType
                ref="eu.esdihumboldt.hale.io.spatialite">
          </contentType>
@@ -84,7 +91,7 @@
       <provider
             class="eu.esdihumboldt.hale.io.jdbc.spatialite.reader.internal.SpatiaLiteInstanceReader"
             id="eu.esdihumboldt.hale.io.spatialite.reader.instance"
-            name="SpatiaLite Database">
+            name="SQLite/SpatiaLite Database">
          <contentType
                ref="eu.esdihumboldt.hale.io.spatialite">
          </contentType>
@@ -92,7 +99,7 @@
       <provider
             class="eu.esdihumboldt.hale.io.jdbc.spatialite.writer.internal.SpatiaLiteInstanceWriter"
             id="eu.esdihumboldt.hale.io.spatialite.writer.instance"
-            name="SpatiaLite Database">
+            name="SQLite/SpatiaLite Database [experimental]">
          <contentType
                ref="eu.esdihumboldt.hale.io.spatialite">
          </contentType>

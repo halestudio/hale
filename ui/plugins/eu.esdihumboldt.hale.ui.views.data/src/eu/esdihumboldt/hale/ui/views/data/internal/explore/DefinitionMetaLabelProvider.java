@@ -20,8 +20,11 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Image;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
@@ -47,13 +50,16 @@ public class DefinitionMetaLabelProvider extends DefinitionLabelProvider {
 	 * Create a label provider for {@link Definition}s and
 	 * {@link EntityDefinition}, which supports Images for Meta Data
 	 * 
+	 * @param associatedViewer the associated viewer (needed for style legend
+	 *            support) or <code>null</code>
 	 * @param longNames if for {@link EntityDefinition}s long names shall be
 	 *            used
 	 * @param suppressMandatory if the mandatory overlay for properties shall be
 	 *            suppressed (defaults to <code>false</code>)
 	 */
-	public DefinitionMetaLabelProvider(boolean longNames, boolean suppressMandatory) {
-		super(longNames, suppressMandatory);
+	public DefinitionMetaLabelProvider(@Nullable Viewer associatedViewer, boolean longNames,
+			boolean suppressMandatory) {
+		super(associatedViewer, longNames, suppressMandatory);
 		metaimages = new HashMap<String, Image>();
 	}
 
@@ -61,20 +67,25 @@ public class DefinitionMetaLabelProvider extends DefinitionLabelProvider {
 	 * Create a label provider for {@link Definition}s and
 	 * {@link EntityDefinition}.
 	 * 
+	 * @param associatedViewer the associated viewer (needed for style legend
+	 *            support) or <code>null</code>
 	 * @param longNames if for {@link EntityDefinition}s long names shall be
 	 *            used
 	 */
-	public DefinitionMetaLabelProvider(boolean longNames) {
-		super(longNames, false);
+	public DefinitionMetaLabelProvider(@Nullable Viewer associatedViewer, boolean longNames) {
+		super(associatedViewer, longNames, false);
 		metaimages = new HashMap<String, Image>();
 	}
 
 	/**
 	 * Create a label provider that will use short names for
 	 * {@link EntityDefinition}s.
+	 * 
+	 * @param associatedViewer the associated viewer (needed for style legend
+	 *            support) or <code>null</code>
 	 */
-	public DefinitionMetaLabelProvider() {
-		super();
+	public DefinitionMetaLabelProvider(@Nullable Viewer associatedViewer) {
+		super(associatedViewer);
 		metaimages = new HashMap<String, Image>();
 	}
 

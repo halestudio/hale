@@ -21,6 +21,7 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import org.geotools.gml2.SrsSyntax;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.ReferenceIdentifier;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -102,7 +103,7 @@ public abstract class CRSDefinitionUtil {
 							CRS.lookupEpsgCode(def.getCRS(), true);
 						}
 						if (epsgcode != null) {
-							code = "EPSG:" + epsgcode;
+							code = SrsSyntax.OGC_URN.getPrefix() + epsgcode;
 							// TODO support formatting the code?
 						}
 					} catch (Exception e) {

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<hale-project version="2.9.3.qualifier">
+    <name>MultiResult Test</name>
+    <author>Simon Templer</author>
+    <created>2015-06-16T10:51:41.200+02:00</created>
+    <modified>2015-06-16T15:56:20.825+02:00</modified>
+    <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
+        <setting name="projectFiles.separate">false</setting>
+        <setting name="target">file:/home/simon/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/multiresult2/t1t2.halex</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
+    </save-config>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.source" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="resourceId">de5d21e0-12f3-4c25-87ab-4d9a86648489</setting>
+        <setting name="source">file:/home/simon/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/multiresult2/t1.xsd</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.target" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="resourceId">c126e293-e693-4310-9ce6-6cd52147e98a</setting>
+        <setting name="source">file:/home/simon/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/multiresult2/t2.xsd</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.instance.read.source" provider-id="eu.esdihumboldt.hale.io.xml.reader">
+        <setting name="resourceId">a399f95e-1278-4d7f-bfc2-34f178cb738b</setting>
+        <setting name="source">file:/home/simon/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/multiresult2/instance1.xml</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="contentType">org.eclipse.core.runtime.xml</setting>
+    </resource>
+    <file name="styles.sld" location="t1t2.halex.styles.sld"/>
+    <file name="alignment.xml" location="t1t2.halex.alignment.xml"/>
+    <property name="mappableSourceType/1">{http://www.example.org/t1/}T1</property>
+    <property name="mappableSourceType/count">1</property>
+    <property name="mappableTargetType/1">{http://www.example.org/t2/}T2</property>
+    <property name="mappableTargetType/count">1</property>
+</hale-project>

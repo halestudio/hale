@@ -30,10 +30,10 @@ import org.geotools.styling.Style;
 
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.common.service.style.StyleService;
 import eu.esdihumboldt.hale.ui.style.StyleHelper;
 import eu.esdihumboldt.hale.ui.style.internal.InstanceStylePlugin;
 import eu.esdihumboldt.hale.ui.style.internal.Messages;
-import eu.esdihumboldt.hale.ui.style.service.StyleService;
 import eu.esdihumboldt.hale.ui.util.dialog.MultiPageDialog;
 
 /**

@@ -83,6 +83,10 @@
                   commandId="eu.esdihumboldt.hale.ui.views.styledmap.zoomToSelection"
                   style="push">
             </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.style.spectrum"
+                  style="push">
+            </command>
             <separator
                   name="eu.esdihumboldt.hale.ui.views.styledmap.mapmenu.separator"
                   visible="true">
@@ -115,6 +119,13 @@
             locationURI="menu:eu.esdihumboldt.hale.ui.views.styledmap">
          <separator
                name="eu.esdihumboldt.hale.ui.views.styledmap.separator1">
+         </separator>
+         <command
+               commandId="eu.esdihumboldt.hale.ui.style.spectrum"
+               style="push">
+         </command>
+         <separator
+               name="eu.esdihumboldt.hale.ui.views.styledmap.separator2">
          </separator>
          <dynamic
                class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension.IconPainterLayoutContribution"

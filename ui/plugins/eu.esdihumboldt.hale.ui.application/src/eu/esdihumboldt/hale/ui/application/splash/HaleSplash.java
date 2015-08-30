@@ -120,7 +120,7 @@ public class HaleSplash extends EclipseSplashHandler {
 			// RELEASE is given
 			boolean developmentVersion = haleVersion.getQualifier() != null
 					&& !haleVersion.getQualifier().isEmpty()
-					&& !haleVersion.getQualifier().equals("RELEASE");
+					&& !haleVersion.getQualifier().equalsIgnoreCase("RELEASE");
 
 			if (!developmentVersion) {
 				// strip qualifier for RELEASE

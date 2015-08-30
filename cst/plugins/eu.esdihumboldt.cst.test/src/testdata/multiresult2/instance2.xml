@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:collection xmlns:tns="http://www.example.org/t2/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.example.org/t2/ t2.xsd">
+    <tns:t2>
+        <name>
+            <spelling>Yoda</spelling>
+        </name>
+        <name>
+            <spelling>Luke</spelling>
+        </name>
+        <name>
+            <spelling>Leia</spelling>
+        </name>
+    </tns:t2>
+    <tns:t2>
+        <name>
+            <spelling>Mike</spelling>
+        </name>
+    </tns:t2>
+    <tns:t2>
+        <name>
+            <spelling>Paula</spelling>
+        </name>
+        <name>
+            <spelling>Lara</spelling>
+        </name>
+        <name>
+            <spelling>Sarah</spelling>
+        </name>
+        <name>
+            <spelling>Michelle</spelling>
+        </name>
+        <name>
+            <spelling>Samantha</spelling>
+        </name>
+    </tns:t2>
+</tns:collection>

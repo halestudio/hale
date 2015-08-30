@@ -96,6 +96,10 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 					type.setConstraint(columnTypeConstraint);
 				}
 			}
+			else {
+				// XXX what if no SRID information is present? is that a case
+				// that may still be valid?
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -139,14 +143,14 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 
 		// transform
 		CoordinateReferenceSystem targetCRS = null;
-		if (columnTypeMetadata.getAuthName().equals("EPSG")) {
-			targetCRS = CRS.decode(columnTypeMetadata.getAuthName() + ":"
-					+ columnTypeMetadata.getSrs());
+		String authName = columnTypeMetadata.getAuthName();
+		if (authName != null && authName.equals("EPSG")) {
+			targetCRS = CRS.decode(authName + ":" + columnTypeMetadata.getSrs());
 		}
 		else {
 			String wkt = columnTypeMetadata.getSrsText();
 			if (wkt != null && !wkt.isEmpty()) {
-				targetCRS = CRS.parseWKT(columnTypeMetadata.getSrsText());
+				targetCRS = CRS.parseWKT(wkt);
 			}
 		}
 
@@ -191,12 +195,15 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 			// determine CRS
 			GeometryMetadata columnTypeMetadata = columnType.getConstraint(GeometryMetadata.class);
 			CRSDefinition crsDef = null;
-			if (columnTypeMetadata.getAuthName().equals("EPSG")) {
-				crsDef = new CodeDefinition(columnTypeMetadata.getAuthName() + ":"
-						+ columnTypeMetadata.getSrs(), null);
+			String authName = columnTypeMetadata.getAuthName();
+			if (authName != null && authName.equals("EPSG")) {
+				crsDef = new CodeDefinition(authName + ":" + columnTypeMetadata.getSrs(), null);
 			}
 			else {
-				crsDef = new WKTDefinition(columnTypeMetadata.getSrsText(), null);
+				String wkt = columnTypeMetadata.getSrsText();
+				if (wkt != null) {
+					crsDef = new WKTDefinition(wkt, null);
+				}
 			}
 
 			return new DefaultGeometryProperty<Geometry>(crsDef, jtsGeom);

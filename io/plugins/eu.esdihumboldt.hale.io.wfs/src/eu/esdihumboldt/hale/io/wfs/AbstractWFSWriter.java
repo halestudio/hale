@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.net.Proxy;
 import java.net.URI;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -37,6 +38,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Response;
 import org.apache.http.entity.ContentType;
@@ -57,6 +59,7 @@ import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 import eu.esdihumboldt.hale.common.instance.io.util.GeoInstanceWriterDecorator;
 import eu.esdihumboldt.hale.io.gml.writer.XmlWrapper;
 import eu.esdihumboldt.hale.io.gml.writer.internal.StreamGmlWriter;
+import eu.esdihumboldt.util.http.ProxyUtil;
 
 /**
  * Base class for WFS writers that directly write to the WFS-T.
@@ -146,9 +149,14 @@ public abstract class AbstractWFSWriter<T extends StreamGmlWriter> extends
 
 				@Override
 				public Response call() throws Exception {
+
+					Proxy proxy = ProxyUtil.findProxy(targetWfs.getLocation());
+					Request request = Request.Post(targetWfs.getLocation()).bodyStream(pIn,
+							ContentType.APPLICATION_XML);
+					Executor executor = ProxyUtil.setProxy(request, proxy);
+
 					try {
-						return Request.Post(targetWfs.getLocation())
-								.bodyStream(pIn, ContentType.APPLICATION_XML).execute();
+						return executor.execute(request);
 					} finally {
 						pIn.close();
 					}

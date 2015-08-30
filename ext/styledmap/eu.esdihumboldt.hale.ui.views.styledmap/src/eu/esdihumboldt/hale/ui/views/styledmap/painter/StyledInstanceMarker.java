@@ -66,9 +66,9 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
+import eu.esdihumboldt.hale.ui.common.service.style.StyleService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.style.StyleHelper;
-import eu.esdihumboldt.hale.ui.style.service.StyleService;
 import eu.esdihumboldt.hale.ui.style.service.internal.StylePreferences;
 import eu.esdihumboldt.hale.ui.views.styledmap.util.CRSConverter;
 

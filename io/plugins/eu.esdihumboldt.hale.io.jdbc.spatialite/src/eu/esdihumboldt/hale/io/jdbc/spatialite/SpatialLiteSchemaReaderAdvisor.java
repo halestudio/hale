@@ -110,7 +110,8 @@ public class SpatialLiteSchemaReaderAdvisor implements JDBCSchemaReaderAdvisor {
 			public boolean test(String t) {
 				final String[] excludedTables = new String[] { "spatial_ref_sys",
 						"geom_cols_ref_sys", "spatialite_history", "sqlite_sequence",
-						"sql_statements_log", "SpatialIndex" };
+						"sqlite_stat1", "sql_statements_log", "SpatialIndex", "raster_pyramids",
+						"views_layer_statistics" };
 				final Pattern geometryColumnsTablePattern = Pattern.compile(".*geometry_columns.*");
 				final Pattern indexTablePattern = Pattern.compile("idx.*");
 				final Pattern vectorLayersViewPattern = Pattern.compile("vector_layers.*");
@@ -139,6 +140,29 @@ public class SpatialLiteSchemaReaderAdvisor implements JDBCSchemaReaderAdvisor {
 				return true;
 			}
 		});
+	}
+
+	@Override
+	public String adaptPathForNamespace(String path) {
+		if (path == null) {
+			return null;
+		}
+
+		// extract file name from path
+		int index = path.lastIndexOf("/");
+		String name;
+		if (index >= 0 && index + 1 < path.length()) {
+			name = path.substring(index + 1).toLowerCase();
+		}
+		else {
+			name = path.toLowerCase();
+		}
+		// remove extension
+		if (name.endsWith(".sqlite")) {
+			name = name.substring(0, name.length() - 7);
+		}
+
+		return name;
 	}
 
 }

@@ -21,7 +21,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Image;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
@@ -45,9 +48,12 @@ public class DefinitionMetaCompareLabelProvider extends DefinitionLabelProvider 
 	/**
 	 * Create a label provider that will use short names for
 	 * {@link EntityDefinition}s.
+	 * 
+	 * @param associatedViewer the associated viewer (needed for style legend
+	 *            support) or <code>null</code>
 	 */
-	public DefinitionMetaCompareLabelProvider() {
-		super();
+	public DefinitionMetaCompareLabelProvider(@Nullable Viewer associatedViewer) {
+		super(associatedViewer);
 		metaimages = new HashMap<String, Image>();
 	}
 
@@ -57,9 +63,11 @@ public class DefinitionMetaCompareLabelProvider extends DefinitionLabelProvider 
 	 * 
 	 * @param longNames if for {@link EntityDefinition}s long names shall be
 	 *            used
+	 * @param associatedViewer the associated viewer (needed for style legend
+	 *            support) or <code>null</code>
 	 */
-	public DefinitionMetaCompareLabelProvider(boolean longNames) {
-		super(longNames, false);
+	public DefinitionMetaCompareLabelProvider(@Nullable Viewer associatedViewer, boolean longNames) {
+		super(associatedViewer, longNames, false);
 		metaimages = new HashMap<String, Image>();
 	}
 
@@ -71,9 +79,12 @@ public class DefinitionMetaCompareLabelProvider extends DefinitionLabelProvider 
 	 *            used
 	 * @param suppressMandatory if the mandatory overlay for properties shall be
 	 *            suppressed (defaults to <code>false</code>)
+	 * @param associatedViewer the associated viewer (needed for style legend
+	 *            support) or <code>null</code>
 	 */
-	public DefinitionMetaCompareLabelProvider(boolean longNames, boolean suppressMandatory) {
-		super(longNames, suppressMandatory);
+	public DefinitionMetaCompareLabelProvider(@Nullable Viewer associatedViewer, boolean longNames,
+			boolean suppressMandatory) {
+		super(associatedViewer, longNames, suppressMandatory);
 		metaimages = new HashMap<String, Image>();
 	}
 

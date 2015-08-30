@@ -18,6 +18,8 @@ package eu.esdihumboldt.cst.functions.geometric.extent;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
@@ -60,6 +62,31 @@ public class ExtentTransformation extends
 			ListMultimap<String, PropertyValue> variables, String resultName,
 			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
 			TransformationLog log) throws TransformationException, NoResultException {
+		String paramType = getOptionalParameter(PARAM_TYPE, new ParameterValue(PARAM_BOUNDING_BOX))
+				.as(String.class);
+		Iterable<Object> geometries = Iterables.transform(variables.get(null),
+				new Function<PropertyValue, Object>() {
+
+					@Override
+					public Object apply(PropertyValue input) {
+						return input.getValue();
+					}
+				});
+		return calculateExtent(geometries, ExtentType.forId(paramType));
+	}
+
+	/**
+	 * Calculate the extent of a set of geometries.
+	 * 
+	 * @param geometries the geometries or instances containing geometries
+	 * @param type the type of extent to calculate
+	 * @return the calculated extent
+	 * @throws TransformationException if source geometries don't have a common
+	 *             CRS
+	 * @throws NoResultException if the result extent would be <code>null</code>
+	 */
+	public static GeometryProperty<?> calculateExtent(Iterable<?> geometries, ExtentType type)
+			throws TransformationException, NoResultException {
 
 		InstanceTraverser traverser = new DepthFirstInstanceTraverser(true);
 		GeometryFinder geoFind = new GeometryFinder(null);
@@ -72,15 +99,9 @@ public class ExtentTransformation extends
 
 //		int count = 0;
 
-		String paramType = getOptionalParameter(PARAM_TYPE, new ParameterValue(PARAM_BOUNDING_BOX))
-				.as(String.class);
-
 		// System.err.println("Geoms Currently Processed;TotalMem;FreeMem");
 
-		for (PropertyValue pv : variables.get(null)) {
-
-			// find contained geometries
-			Object value = pv.getValue();
+		for (Object value : geometries) {
 			traverser.traverse(value, geoFind);
 //			count += geoFind.getGeometries().size();
 
@@ -111,7 +132,7 @@ public class ExtentTransformation extends
 					geomsCollectingArray[geomsCollectedIdx] = g; // add last
 																	// geometry
 					GeometryCollection gc = new GeometryCollection(geomsCollectingArray, fact);
-					geomsCollectingArray[0] = resolveParam(gc, paramType);
+					geomsCollectingArray[0] = resolveParam(gc, type);
 					geomsCollectedIdx = 1;
 
 				}
@@ -123,7 +144,7 @@ public class ExtentTransformation extends
 
 		Geometry extent = resolveParam(
 				new GeometryCollection(Arrays.copyOfRange(geomsCollectingArray, 0,
-						geomsCollectedIdx), fact), paramType);
+						geomsCollectedIdx), fact), type);
 
 		if (extent != null) {
 			return new DefaultGeometryProperty<Geometry>(commonCrs, extent);
@@ -136,35 +157,30 @@ public class ExtentTransformation extends
 	 * extent type.
 	 * 
 	 * @param gc GeometryCollection, the extent function is processed on
-	 * @param paramType extent option parameter
+	 * @param type extent option parameter
 	 * @return Geometry representing extent of input geometries
 	 */
-	private Geometry resolveParam(GeometryCollection gc, String paramType) {
+	private static Geometry resolveParam(GeometryCollection gc, ExtentType type) {
 
 		Geometry extent = null;
 
-		// Compute bounding box.
-		if (paramType.equalsIgnoreCase(PARAM_BOUNDING_BOX)) {
-			extent = gc.getEnvelope();
-		}
-
-		// Compute convex hull.
-		else if (paramType.equalsIgnoreCase(PARAM_CONVEX_HULL)) {
+		switch (type) {
+		case CONVEX_HULL:
+			// Compute convex hull.
 			extent = gc.convexHull();
-		}
-
-		// Compute union.
-		else if (paramType.equalsIgnoreCase(PARAM_UNION)) {
+			break;
+		case UNION:
+			// Compute union.
 
 			// Alternative function <extent.union()> is slower and results in
 			// inconsistent topology errors within the jts-lib.
 			// lib-intern errors due to topology inconsistency errros.
 			extent = gc.buffer(0);
-
-		}
-
-		// Ensure extent is not null. Default case is bounding box.
-		if (extent == null) {
+			break;
+		case BBOX:
+			// Compute bounding box.
+		default:
+			// Ensure extent is not null. Default case is bounding box.
 			extent = gc.getEnvelope();
 		}
 

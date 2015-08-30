@@ -197,8 +197,13 @@ public class BBOXPage extends ConfigurationWizardPage<WFSGetFeatureConfig> {
 
 		mapKit.setServer(server, true);
 		if (positions != null) {
-			mapKit.zoomToPositions(positions);
+			try {
+				mapKit.zoomToPositions(positions);
+			} catch (Exception e) {
+				// ignore error
+			}
 		}
+		mapKit.refresh();
 	}
 
 	@Override

@@ -38,6 +38,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stax.StAXResult;
 
+import org.geotools.gml2.SrsSyntax;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -123,6 +124,11 @@ public class InspireInstanceWriter extends GmlInstanceWriter {
 		for (String param : InspireDatasetFeedWriter.getAdditionalParams()) {
 			addSupportedParameter(param);
 		}
+
+		// set alternating default values
+
+		// EPSG prefix:
+		setCustomEPSGPrefix(SrsSyntax.OGC_HTTP_URI.getPrefix());
 	}
 
 	@Override

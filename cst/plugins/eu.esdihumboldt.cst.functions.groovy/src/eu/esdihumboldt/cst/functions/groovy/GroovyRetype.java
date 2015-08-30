@@ -23,6 +23,7 @@ import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEng
 import eu.esdihumboldt.hale.common.align.transformation.function.ExecutionContext;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractTypeTransformation;
+import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
 import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
@@ -60,6 +61,11 @@ public class GroovyRetype extends AbstractTypeTransformation<TransformationEngin
 			getPropertyTransformer().publish(getSource(), target, log, cell);
 		} catch (TransformationException e) {
 			throw e;
+		} catch (NoResultException e) {
+			log.info(log
+					.createMessage(
+							"Skipping target instance because received NoResultException from script",
+							null));
 		} catch (Exception e) {
 			throw new TransformationException(e.getMessage(), e);
 		}

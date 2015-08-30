@@ -47,7 +47,7 @@ public class TypeDefinitionSelector extends AbstractUniformSelector<TypeDefiniti
 	 */
 	public TypeDefinitionSelector(Composite parent, String dialogTitle, TypeIndex typeIndex,
 			ViewerFilter[] filters) {
-		super(parent, new DefinitionLabelProvider(), filters);
+		super(parent, new DefinitionLabelProvider(null), filters);
 		this.dialogTitle = dialogTitle;
 		this.typeIndex = typeIndex;
 	}

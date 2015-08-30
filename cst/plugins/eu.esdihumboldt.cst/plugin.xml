@@ -23,6 +23,17 @@
             allowAll="false"
             class="eu.esdihumboldt.cst.internal.ExecutionContextImpl">
       </allow>
+      <allow
+            allowAll="false"
+            class="eu.esdihumboldt.cst.MultiValue">
+      </allow>
+      <import
+            class="eu.esdihumboldt.cst.MultiValue">
+      </import>
+      <import
+            alias="MultiResult"
+            class="eu.esdihumboldt.cst.MultiValue">
+      </import>
    </extension>
 
 </plugin>

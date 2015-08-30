@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import org.eclipse.draw2d.ConnectionRouter;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.jface.resource.FontDescriptor;
@@ -36,6 +38,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.services.IDisposable;
+import org.eclipse.zest.core.viewers.GraphViewer;
 import org.eclipse.zest.core.viewers.IEntityConnectionStyleProvider;
 import org.eclipse.zest.core.viewers.IEntityStyleProvider;
 import org.eclipse.zest.core.viewers.IFigureProvider;
@@ -126,14 +129,17 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	/**
 	 * Default constructor
 	 * 
+	 * @param associatedViewer the associated viewer (needed for style legend)
+	 *            or <code>null</code>
 	 * @param provider the service provider that may be needed to obtain cell
 	 *            explanations, may be <code>null</code>
 	 */
-	public GraphLabelProvider(ServiceProvider provider) {
+	public GraphLabelProvider(@Nullable GraphViewer associatedViewer,
+			@Nullable ServiceProvider provider) {
 		super();
 
 		serviceProvider = provider;
-		definitionLabels = createDefinitionLabels();
+		definitionLabels = createDefinitionLabels(associatedViewer);
 
 		final Display display = Display.getCurrent();
 
@@ -202,10 +208,12 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	 * Create the label provider for {@link Definition}s and
 	 * {@link EntityDefinition}s.
 	 * 
+	 * @param associatedViewer the associated viewer (needed for style legend)
+	 *            or <code>null</code>
 	 * @return the label provider
 	 */
-	protected LabelProvider createDefinitionLabels() {
-		return new DefinitionLabelProvider(true);
+	protected LabelProvider createDefinitionLabels(@Nullable GraphViewer associatedViewer) {
+		return new DefinitionLabelProvider(associatedViewer, true);
 	}
 
 	/**

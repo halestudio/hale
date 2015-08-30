@@ -58,6 +58,9 @@ abstract class TransformationExamples {
 	public static final String GROOVY2 = 'groovy2'
 	public static final String GROOVY3 = 'groovy3'
 
+	public static final String MULTI_RESULT_1 = 'multiresult1'
+	public static final String MULTI_RESULT_2 = 'multiresult2'
+
 	public static final String PROPCONDITION1 = 'propcondition1'
 	public static final String PROPCONDITION2 = 'propcondition2'
 	public static final String TYPEFILTER = 'typefilter'
@@ -164,6 +167,9 @@ abstract class TransformationExamples {
 		(GROOVY1): defaultExample(GROOVY1),
 		(GROOVY2): defaultExample(GROOVY2),
 		(GROOVY3): defaultExample(GROOVY3),
+
+		(MULTI_RESULT_1): defaultExample(MULTI_RESULT_1),
+		(MULTI_RESULT_2): defaultExample(MULTI_RESULT_2),
 
 		// context matching examples
 		(CM_UNION_1): defaultExample(CM_UNION_1),

@@ -73,7 +73,7 @@ public class TypeHierarchyView extends PropertiesViewPart {
 	public void createViewControl(Composite parent) {
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		viewer.setContentProvider(new TypeHierarchyContentProvider());
-		viewer.setLabelProvider(new TypeHierarchyLabelProvider());
+		viewer.setLabelProvider(new TypeHierarchyLabelProvider(viewer));
 		viewer.setComparator(new DefinitionComparator());
 
 		contributeToActionBars();

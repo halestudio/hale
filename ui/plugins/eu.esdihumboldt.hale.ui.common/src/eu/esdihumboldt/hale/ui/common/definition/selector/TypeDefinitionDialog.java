@@ -89,7 +89,7 @@ public class TypeDefinitionDialog extends AbstractViewerSelectionDialog<TypeDefi
 
 	@Override
 	protected void setupViewer(TreeViewer viewer, TypeDefinition initialSelection) {
-		viewer.setLabelProvider(new DefinitionLabelProvider());
+		viewer.setLabelProvider(new DefinitionLabelProvider(viewer));
 		viewer.setContentProvider(new TypesContentProvider(viewer));
 
 		viewer.setInput(types);

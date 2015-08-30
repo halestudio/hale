@@ -136,7 +136,7 @@ public class InstanceExplorer implements InstanceViewer {
 		TreeViewerColumn column = new TreeViewerColumn(viewer, SWT.LEFT);
 		column.getColumn().setText("Definition");
 		column.setLabelProvider(new TreeColumnViewerLabelProvider(new PairLabelProvider(true,
-				new DefinitionMetaLabelProvider(false, true))));
+				new DefinitionMetaLabelProvider(viewer, false, true))));
 		layout.setColumnData(column.getColumn(), new ColumnWeightData(1));
 
 		// add value column

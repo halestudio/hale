@@ -302,8 +302,9 @@ public class DefaultPropertyEditor extends AbstractBindingValidatingEditor<Objec
 			codeList = clService.findCodeListByIdentifier(codeListNamespace, codeListName);
 		if (codeList != null) {
 			// XXX check values against validator and binding?
-			// XXX currently codeList is ignored for enumerations
-			if (values.isEmpty())
+			// codeList values are only added if no enumeration is present or
+			// other values are explicitly allowed by the enumerations
+			if (values.isEmpty() || otherValuesAllowed)
 				values.addAll(codeList.getEntries());
 		}
 		values.trimToSize();

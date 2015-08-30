@@ -34,6 +34,7 @@ import eu.esdihumboldt.hale.ui.service.entity.util.ContentProviderAction;
 import eu.esdihumboldt.hale.ui.service.entity.util.EntityTypeIndexContentProvider;
 import eu.esdihumboldt.hale.ui.service.entity.util.EntityTypeIndexHierarchy;
 import eu.esdihumboldt.hale.ui.service.population.UnpopulatedPropertiesFilter;
+import eu.esdihumboldt.hale.ui.service.population.UnpopulatedTypesFilter;
 import eu.esdihumboldt.hale.ui.util.viewer.FilterAction;
 import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.SchemasViewPlugin;
@@ -69,8 +70,8 @@ public class EntitySchemaExplorer extends SchemaExplorer {
 		EntityDefinitionService service = (EntityDefinitionService) PlatformUI.getWorkbench()
 				.getService(EntityDefinitionService.class);
 
-		hierarchyProvider = new TreePathProviderAdapter(new EntityTypeIndexHierarchy(
-				service, getSchemaSpace()));
+		hierarchyProvider = new TreePathProviderAdapter(new EntityTypeIndexHierarchy(service,
+				getSchemaSpace()));
 		listProvider = new TreePathProviderAdapter(new EntityTypeIndexContentProvider(service,
 				getSchemaSpace()));
 
@@ -82,6 +83,8 @@ public class EntitySchemaExplorer extends SchemaExplorer {
 	 */
 	@Override
 	protected void prependToolbarActions(ToolBarManager manager) {
+		// structure
+
 		manager.add(new ContentProviderAction("Types as list", SchemasViewPlugin
 				.getImageDescriptor("icons/flat_hierarchy.png"), getTreeViewer(), listProvider,
 				true));
@@ -91,6 +94,17 @@ public class EntitySchemaExplorer extends SchemaExplorer {
 				hierarchyProvider, false));
 
 		manager.add(new Separator());
+
+		// type filters
+
+		ViewerFilter typeUnpopulated = new UnpopulatedTypesFilter();
+		manager.add(new FilterAction("Hide unpopulated types", "Show unpopulated types",
+				SchemasViewPlugin.getImageDescriptor("icons/type_empty.gif"), getTreeViewer(),
+				typeUnpopulated, true, true));
+
+		manager.add(new Separator());
+
+		// properties filters
 
 		ViewerFilter unpopulated = new UnpopulatedPropertiesFilter();
 		manager.add(new FilterAction("Hide unpopulated properties", "Show unpopulated properties",

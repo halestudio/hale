@@ -44,6 +44,11 @@ public class EnumerationValidator extends AbstractValidator {
 	 */
 	@Override
 	public String validate(Object value) {
+		// ignore null values, rely on the NillableFlagValidator for that.
+		if (value == null) {
+			return null;
+		}
+
 		String stringValue = getObjectAs(value, String.class);
 		if (values.contains(stringValue))
 			return null;

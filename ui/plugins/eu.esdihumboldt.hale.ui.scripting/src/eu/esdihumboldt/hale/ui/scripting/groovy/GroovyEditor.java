@@ -155,7 +155,7 @@ public class GroovyEditor extends AbstractAttributeEditor<String> {
 		TableViewerColumn column = new TableViewerColumn(varTable, SWT.NONE);
 		columnLayout.setColumnData(column.getColumn(), new ColumnWeightData(1, false));
 		varTable.setContentProvider(ArrayContentProvider.getInstance());
-		varTable.setLabelProvider(new DefinitionLabelProvider(true, true) {
+		varTable.setLabelProvider(new DefinitionLabelProvider(null, true, true) {
 
 			/**
 			 * @see eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider#getText(java.lang.Object)

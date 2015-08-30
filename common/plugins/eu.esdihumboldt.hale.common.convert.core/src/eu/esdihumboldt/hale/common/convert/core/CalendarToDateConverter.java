@@ -16,24 +16,23 @@
 
 package eu.esdihumboldt.hale.common.convert.core;
 
-import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 
 import org.springframework.core.convert.converter.Converter;
 
 /**
- * Convert a {@link Date} to a {@link Timestamp}.
+ * Convert a {@link Calendar} to a {@link Date}.
  * 
  * @author Simon Templer
  */
 public class CalendarToDateConverter implements Converter<Calendar, Date> {
 
-	/**
-	 * @see Converter#convert(java.lang.Object)
-	 */
 	@Override
 	public Date convert(Calendar source) {
+		if (source == null) {
+			return null;
+		}
 		return source.getTime();
 	}
 

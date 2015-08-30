@@ -138,7 +138,8 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 			try {
 				connection.setReadOnly(true);
 			} catch (SQLException e) {
-				reporter.warn(new IOMessageImpl(e.getLocalizedMessage(), e));
+				// ignore
+//				reporter.warn(new IOMessageImpl(e.getLocalizedMessage(), e));
 			}
 
 			URI jdbcURI = getSource().getLocation();
@@ -214,14 +215,25 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 				ns.append(specificURI.getScheme());
 			}
 			if (specificURI.getPath() != null) {
-				if (ns.length() > 0) {
-					ns.append(':');
+				String path = null;
+				if (advisor != null) {
+					path = advisor.adaptPathForNamespace(specificURI.getPath());
 				}
-				String path = specificURI.getPath();
-				if (path.startsWith("/")) {
-					path = path.substring(1);
+				else {
+					// default handling
+					path = specificURI.getPath();
+					if (path.startsWith("/")) {
+						path = path.substring(1);
+					}
 				}
-				ns.append(path);
+
+				if (path != null && !path.isEmpty()) {
+					if (ns.length() > 0) {
+						ns.append(':');
+					}
+
+					ns.append(path);
+				}
 			}
 			String overallNamespace = ns.toString();
 			if (overallNamespace == null) {

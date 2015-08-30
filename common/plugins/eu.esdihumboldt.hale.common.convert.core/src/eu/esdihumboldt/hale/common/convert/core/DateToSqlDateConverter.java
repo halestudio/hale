@@ -27,11 +27,11 @@ import org.springframework.core.convert.converter.Converter;
  */
 public class DateToSqlDateConverter implements Converter<Date, java.sql.Date> {
 
-	/**
-	 * @see Converter#convert(java.lang.Object)
-	 */
 	@Override
 	public java.sql.Date convert(Date source) {
+		if (source == null) {
+			return null;
+		}
 		return new java.sql.Date(source.getTime());
 	}
 

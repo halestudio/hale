@@ -6,7 +6,7 @@
 	<Product Id="*" UpgradeCode="@{GUID.UPGRADECODE}"
 			Version="@{SHORTVERSION}" Language="@{LANGID}"
 			Name="@{TITLE} @{SHORTVERSION}"
-			Manufacturer="data harmonisation panel">
+			Manufacturer="wetransform GmbH">
 		<Package Id="*" InstallerVersion="300" Compressed="yes"/>
 		<Media Id="1" Cabinet="@{BUILDID}.cab" EmbedCab="yes" />
 		
@@ -30,7 +30,7 @@
 		<!-- Define target directory structure -->
 		<Directory Id="TARGETDIR" Name="SourceDir">
 			<Directory Id="@{PROGRAMFILESFOLDER}">
-				<Directory Id="MANUFACTURERDIR" Name="dhpanel">
+				<Directory Id="MANUFACTURERDIR" Name="wetransform">
 					<Directory Id="INSTALLDIR" Name="@{BUILDID}">
 						@{DIRECTORIES}
 					</Directory>
@@ -52,26 +52,21 @@
 				</File>
 				<ProgId Id="HALE.projectfile.archive" Description="HALE project archive">
 					<Extension Id="halez" ContentType="application/hale-archive">
-						<Verb Id="open" Command="Open" TargetFile="@{BUILDID}.exe" Argument="-data &quot;$(env.APPDATA)\dhpanel\@{BUILDID}&quot; --launcher.openFile &quot;%1&quot;" />
+						<Verb Id="open" Command="Open" TargetFile="@{BUILDID}.exe" Argument="-data &quot;$(env.APPDATA)\wetransform\@{BUILDID}&quot; --launcher.openFile &quot;%1&quot;" />
 					</Extension>
 				</ProgId>
 				<ProgId Id="HALE.projectfile" Description="HALE project file">
 					<Extension Id="hale" ContentType="application/hale">
-						<Verb Id="open" Command="Open" TargetFile="@{BUILDID}.exe" Argument="-data &quot;$(env.APPDATA)\dhpanel\@{BUILDID}&quot; --launcher.openFile &quot;%1&quot;" />
+						<Verb Id="open" Command="Open" TargetFile="@{BUILDID}.exe" Argument="-data &quot;$(env.APPDATA)\wetransform\@{BUILDID}&quot; --launcher.openFile &quot;%1&quot;" />
 					</Extension>
 				</ProgId>
 				<ProgId Id="HALE.projectfile.xml" Description="HALE XML project file">
 					<Extension Id="halex" ContentType="application/hale-xml">
-						<Verb Id="open" Command="Open" TargetFile="@{BUILDID}.exe" Argument="-data &quot;$(env.APPDATA)\dhpanel\@{BUILDID}&quot; --launcher.openFile &quot;%1&quot;" />
+						<Verb Id="open" Command="Open" TargetFile="@{BUILDID}.exe" Argument="-data &quot;$(env.APPDATA)\wetransform\@{BUILDID}&quot; --launcher.openFile &quot;%1&quot;" />
 					</Extension>
 				</ProgId>
 			</Component>
-			<Component Id="@{BUILDID}.ini" Guid="*">
-				<File Id="@{BUILDID}.ini" Source="@{SRC}\@{BUILDID}.ini" KeyPath="yes" />
-			</Component>
-			<Component Id="artifacts.xml" Guid="*">
-				<File Id="artifacts.xml" Source="@{SRC}\artifacts.xml" KeyPath="yes" />
-			</Component>
+			@{ROOTCOMPONENTS}
 		</DirectoryRef>
 		
 		<!-- Add shortcut -->
@@ -79,11 +74,11 @@
 			<Component Id="ApplicationShortcut" Guid="@{GUID.APPLICATIONSHORTCUT}">
 				<Shortcut Id="ApplicationStartMenuShortcut" 
 					Name="@{TITLE}"
-					Arguments="-clean -data &quot;%APPDATA%\dhpanel\@{BUILDID}&quot;"
+					Arguments="-clean -data &quot;%APPDATA%\wetransform\@{BUILDID}&quot;"
 					Target="[INSTALLDIR]@{BUILDID}.exe"
 					WorkingDirectory="INSTALLDIR" />
 				<RemoveFolder Id="ApplicationProgramsFolder" On="uninstall" />
-				<RegistryValue Root="HKCU" Key="Software\dhpanel\@{BUILDID}"
+				<RegistryValue Root="HKCU" Key="Software\wetransform\@{BUILDID}"
 					Name="Installed" Type="integer" Value="1" KeyPath="yes" />
 			</Component>
 		</DirectoryRef>
@@ -92,8 +87,6 @@
 		<Feature Id="@{BUILDID}" Title="@{TITLE}" Level="1">
 			@{COMPONENTREFS}
 			<ComponentRef Id="@{BUILDID}.exe" />
-			<ComponentRef Id="@{BUILDID}.ini" />
-			<ComponentRef Id="artifacts.xml" />
 			<ComponentRef Id="ApplicationShortcut" />
 		</Feature>
 		

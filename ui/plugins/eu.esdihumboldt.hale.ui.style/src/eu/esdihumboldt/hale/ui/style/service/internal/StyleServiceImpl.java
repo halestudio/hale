@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import javax.annotation.Nullable;
 import javax.xml.namespace.QName;
 
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -55,14 +56,14 @@ import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
+import eu.esdihumboldt.hale.ui.common.service.style.StyleService;
+import eu.esdihumboldt.hale.ui.common.service.style.StyleServiceListener;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;
 import eu.esdihumboldt.hale.ui.style.StyleHelper;
 import eu.esdihumboldt.hale.ui.style.internal.InstanceStylePlugin;
-import eu.esdihumboldt.hale.ui.style.service.StyleService;
-import eu.esdihumboldt.hale.ui.style.service.StyleServiceListener;
 
 /**
  * A default {@link StyleService} implementation that will provide simple styles
@@ -229,7 +230,7 @@ public class StyleServiceImpl extends AbstractStyleService {
 	 * @see StyleService#getStyle(TypeDefinition, DataSet)
 	 */
 	@Override
-	public Style getStyle(TypeDefinition type, DataSet dataSet) {
+	public Style getStyle(TypeDefinition type, @Nullable DataSet dataSet) {
 		FeatureTypeStyle fts = styles.get(type);
 		Style style = styleFactory.createStyle();
 		if (fts != null) {

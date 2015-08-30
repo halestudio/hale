@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="C6f4e0539-f9d5-40b1-bf5b-6226da3f5595" priority="normal">
+        <source>
+            <class>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="T2" ns="http://www.example.org/t2/"/>
+            </class>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.cst.functions.groovy" id="Ce271824c-922e-403a-b40f-ca1a199ee401" priority="normal">
+        <source name="var">
+            <property>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+                <child name="names"/>
+            </property>
+        </source>
+        <target name="result">
+            <property>
+                <type name="T2" ns="http://www.example.org/t2/"/>
+                <child name="name"/>
+            </property>
+        </target>
+        <complexParameter name="script">
+            <core:text xmlns:core="http://www.esdi-humboldt.eu/hale/core" xml:space="preserve">names.split(/\s+/) as MultiResult</core:text>
+        </complexParameter>
+        <parameter value="false" name="variablesAsInstances"/>
+    </cell>
+</alignment>

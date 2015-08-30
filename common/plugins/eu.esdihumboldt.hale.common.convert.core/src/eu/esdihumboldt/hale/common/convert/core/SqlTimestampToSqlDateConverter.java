@@ -27,12 +27,11 @@ import org.springframework.core.convert.converter.Converter;
  */
 public class SqlTimestampToSqlDateConverter implements Converter<Timestamp, Date> {
 
-	/**
-	 * @see org.springframework.core.convert.converter.Converter#convert(java.lang.Object)
-	 */
 	@Override
 	public Date convert(Timestamp source) {
-
+		if (source == null) {
+			return null;
+		}
 		return new Date(source.getTime());
 	}
 

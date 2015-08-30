@@ -9,6 +9,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import javax.annotation.Nullable;
 
 import org.codehaus.groovy.control.CompilerConfiguration;
+import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.kohsuke.groovy.sandbox.SandboxTransformer;
@@ -80,14 +81,64 @@ public class DefaultGroovyService implements GroovyService {
 	public GroovyShell createShell(Binding binding) {
 		// TODO use a specific classloader?
 		CompilerConfiguration cc = new CompilerConfiguration();
+
+		// add pre-defined imports
+		ImportCustomizer importCustomizer = new ImportCustomizer();
+
+		// add extension-defined imports
+		configureImportsFromExtensions(importCustomizer);
+
+		cc.addCompilationCustomizers(importCustomizer);
+
 		if (isRestrictionActive()) {
+			// configure restriction
 			cc.addCompilationCustomizers(new SandboxTransformer());
 			cc.setScriptBaseClass(SecureScript.class.getName());
 		}
+
 		if (binding != null)
 			return new GroovyShell(binding, cc);
 		else
 			return new GroovyShell(cc);
+	}
+
+	/**
+	 * Add imports defined as extensions.
+	 * 
+	 * @param importCustomizer the import customizer
+	 */
+	private static void configureImportsFromExtensions(ImportCustomizer importCustomizer) {
+		for (IConfigurationElement conf : Platform.getExtensionRegistry()
+				.getConfigurationElementsFor(ID)) {
+			if (conf.getName().equals("import")) {
+				String className = conf.getAttribute("class");
+				String alias = conf.getAttribute("alias");
+
+				if (className != null && !className.isEmpty()) {
+					if (alias == null || alias.isEmpty()) {
+						int lastDotIndex = className.lastIndexOf('.');
+						if (lastDotIndex >= 0) {
+							if (lastDotIndex < className.length() - 1) {
+								alias = className.substring(lastDotIndex + 1);
+							}
+							else {
+								alias = null;
+							}
+						}
+						else {
+							alias = className;
+						}
+					}
+
+					if (alias != null) {
+						importCustomizer.addImport(alias, className);
+					}
+				}
+			}
+
+			// TODO support also other kind of imports?
+			// e.g. star imports, static imports...
+		}
 	}
 
 	@Override

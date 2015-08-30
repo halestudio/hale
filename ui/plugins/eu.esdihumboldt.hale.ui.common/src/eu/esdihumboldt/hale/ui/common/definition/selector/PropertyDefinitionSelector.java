@@ -52,7 +52,7 @@ public class PropertyDefinitionSelector extends AbstractUniformSelector<EntityDe
 	 */
 	public PropertyDefinitionSelector(Composite parent, TypeDefinition parentType,
 			SchemaSpaceID ssid) {
-		super(parent, new DefinitionLabelProvider(false, true), null);
+		super(parent, new DefinitionLabelProvider(null, false, true), null);
 
 		this.parentType = parentType;
 		this.ssid = ssid;

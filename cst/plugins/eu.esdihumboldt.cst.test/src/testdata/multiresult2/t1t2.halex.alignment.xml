@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="C17194ed9-de28-4954-9468-a6c3d707ef16" priority="normal">
+        <source>
+            <class>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="T2" ns="http://www.example.org/t2/"/>
+            </class>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.cst.functions.groovy" id="C499f8de8-7404-4a13-b68e-020dd62eaeac" priority="normal">
+        <source name="var">
+            <property>
+                <type name="T1" ns="http://www.example.org/t1/"/>
+                <child name="names"/>
+            </property>
+        </source>
+        <target name="result">
+            <property>
+                <type name="T2" ns="http://www.example.org/t2/"/>
+                <child name="name"/>
+            </property>
+        </target>
+        <complexParameter name="script">
+            <core:text xmlns:core="http://www.esdi-humboldt.eu/hale/core" xml:space="preserve">
+names.split(/\s+/).each { name -&gt;
+	// for each name in the source, create a complex target property
+	_target {
+		spelling( name )
+	}
+}
+
+null
+</core:text>
+        </complexParameter>
+        <parameter value="false" name="variablesAsInstances"/>
+    </cell>
+</alignment>

@@ -95,7 +95,7 @@ public class DataSetTypeSelectionDialog extends
 
 	@Override
 	protected void setupViewer(TreeViewer viewer, Pair<TypeDefinition, DataSet> initialSelection) {
-		viewer.setLabelProvider(new DefinitionLabelProvider() {
+		viewer.setLabelProvider(new DefinitionLabelProvider(viewer) {
 
 			@Override
 			public String getText(Object element) {

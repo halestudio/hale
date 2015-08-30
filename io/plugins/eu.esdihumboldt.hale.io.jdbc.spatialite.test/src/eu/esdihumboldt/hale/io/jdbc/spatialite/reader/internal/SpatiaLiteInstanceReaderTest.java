@@ -15,32 +15,12 @@
 
 package eu.esdihumboldt.hale.io.jdbc.spatialite.reader.internal;
 
-import static eu.esdihumboldt.hale.io.jdbc.spatialite.test.SpatiaLiteTestUtil.SOURCE_INSTANCES_COUNT;
-import static eu.esdihumboldt.hale.io.jdbc.spatialite.test.SpatiaLiteTestUtil.SOUURCE_TYPE_LOCAL_NAME;
-import static eu.esdihumboldt.hale.io.jdbc.spatialite.test.SpatiaLiteTestUtil.checkInstances;
-import static eu.esdihumboldt.hale.io.jdbc.spatialite.test.SpatiaLiteTestUtil.checkType;
-import static eu.esdihumboldt.hale.io.jdbc.spatialite.test.SpatiaLiteTestUtil.getSourceTempFilePath;
-import static eu.esdihumboldt.hale.io.jdbc.spatialite.test.SpatiaLiteTestUtil.readInstances;
-import static eu.esdihumboldt.hale.io.jdbc.spatialite.test.SpatiaLiteTestUtil.readSchema;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.fhg.igd.slf4jplus.ALogger;
-import de.fhg.igd.slf4jplus.ALoggerFactory;
-import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
-import eu.esdihumboldt.hale.common.schema.model.Schema;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.test.TestUtil;
-import eu.esdihumboldt.hale.io.jdbc.spatialite.test.SpatiaLiteTestUtil;
+import eu.esdihumboldt.hale.io.jdbc.spatialite.test.SpatiaLiteTestSuite;
+import eu.esdihumboldt.hale.io.jdbc.spatialite.test.SpatiaLiteTestSuiteVersion3;
+import eu.esdihumboldt.hale.io.jdbc.spatialite.test.SpatiaLiteTestSuiteVersion4;
 
 /**
  * Test class for {@link SpatiaLiteInstanceReader}. The tests are automatically
@@ -50,66 +30,46 @@ import eu.esdihumboldt.hale.io.jdbc.spatialite.test.SpatiaLiteTestUtil;
  */
 public class SpatiaLiteInstanceReaderTest {
 
-	private static final ALogger log = ALoggerFactory.getLogger(SpatiaLiteInstanceReaderTest.class);
-
 	/**
-	 * Wait for needed services to be running and create source database file in
-	 * a system dependent temporary folder.
-	 * 
-	 * @throws IOException if temp file can't be created
+	 * Wait for needed services to be running.
 	 */
-	@BeforeClass
-	public static void waitForServices() throws IOException {
+	public static void waitForServices() {
 		TestUtil.startConversionService();
-
-		SpatiaLiteTestUtil.createSourceTempFile();
 	}
 
 	/**
-	 * Delete any temporary file created for the test.
-	 */
-	@AfterClass
-	public static void cleanUp() {
-		SpatiaLiteTestUtil.deleteSourceTempFile();
-	}
-
-	/**
-	 * Test - reads a sample SpatiaLite schema and data.
+	 * Invoke {@link SpatiaLiteTestSuite#instanceReaderTest()} on the test suite
+	 * class for SpatiaLite version 3 or less.
 	 * 
 	 * @throws Exception if an error occurs
 	 */
 	@Test
-	public void testRead() throws Exception {
-		if (!SpatiaLiteTestUtil.isSpatiaLiteExtensionAvailable()) {
-			log.info("Skipping test because SpatiaLite extension is not available");
-			return;
-		}
+	public void testReadVersion3() throws Exception {
+		SpatiaLiteTestSuite testSuite = new SpatiaLiteTestSuiteVersion3();
 
-		Map<String, Object> propertyMap = new HashMap<String, Object>();
-		for (int i = 0; i < SpatiaLiteTestUtil.SOUURCE_TYPE_PROPERTY_NAMES.length; i++) {
-			String key = SpatiaLiteTestUtil.SOUURCE_TYPE_PROPERTY_NAMES[i];
-			Object value = SpatiaLiteTestUtil.SOUURCE_TYPE_PROPERTY_VALUES[i];
-			propertyMap.put(key, value);
-		}
-
-		// ****** read Schema ******//
-
-		Schema schema = readSchema(getSourceTempFilePath());
-		assertNotNull(schema);
-		assertEquals(1, schema.getMappingRelevantTypes().size());
-
-		// Test properties
-		TypeDefinition schemaType = schema.getMappingRelevantTypes().iterator().next();
-		// Check every property for their existence
-		checkType(schemaType, SOUURCE_TYPE_LOCAL_NAME, propertyMap.keySet());
-
-		// ****** read Instances ******//
-		InstanceCollection instances = readInstances(schema, getSourceTempFilePath());
-		assertTrue(instances.hasSize());
-		assertEquals(SOURCE_INSTANCES_COUNT, instances.size());
-
-		checkInstances(instances, propertyMap);
-
+		testRead(testSuite);
 	}
 
+	/**
+	 * Invoke {@link SpatiaLiteTestSuite#instanceReaderTest()} on the test suite
+	 * class for SpatiaLite version 4 or more.
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testReadVersion4() throws Exception {
+		SpatiaLiteTestSuite testSuite = new SpatiaLiteTestSuiteVersion4();
+
+		testRead(testSuite);
+	}
+
+	private void testRead(SpatiaLiteTestSuite testSuite) throws Exception {
+		try {
+			testSuite.createSourceTempFile();
+			testSuite.instanceReaderTest();
+		} finally {
+			testSuite.deleteSourceTempFile();
+		}
+
+	}
 }

@@ -94,7 +94,7 @@ public class TypeCellSelectionDialog extends AbstractViewerSelectionDialog<Cell,
 	protected void setupViewer(final GraphViewer viewer, Cell initialSelection) {
 		// content and label provider
 		viewer.setContentProvider(new ReverseCellGraphContentProvider());
-		viewer.setLabelProvider(new GraphLabelProvider(HaleUI.getServiceProvider()));
+		viewer.setLabelProvider(new GraphLabelProvider(viewer, HaleUI.getServiceProvider()));
 
 		// layout
 		final TreeLayoutAlgorithm layout = new TreeLayoutAlgorithm(TreeLayoutAlgorithm.RIGHT_LEFT);

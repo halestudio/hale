@@ -102,7 +102,7 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 			typesCombo = new ComboViewer(this, SWT.READ_ONLY);
 			typesCombo.setContentProvider(ArrayContentProvider.getInstance());
 			typesCombo.setComparator(new DefinitionComparator());
-			typesCombo.setLabelProvider(new DefinitionLabelProvider());
+			typesCombo.setLabelProvider(new DefinitionLabelProvider(null));
 			typesCombo.addSelectionChangedListener(new ISelectionChangedListener() {
 
 				@Override

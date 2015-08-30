@@ -70,7 +70,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		Version appVersion = Version.parseVersion(Display.getAppVersion());
 
 		// strip RELEASE qualifier
-		if ("RELEASE".equals(appVersion.getQualifier())) {
+		if ("RELEASE".equalsIgnoreCase(appVersion.getQualifier())) {
 			appVersion = new Version(appVersion.getMajor(), appVersion.getMinor(),
 					appVersion.getMicro());
 		}

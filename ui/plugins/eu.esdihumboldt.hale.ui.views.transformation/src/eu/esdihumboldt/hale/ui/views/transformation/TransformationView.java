@@ -37,6 +37,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
+import org.eclipse.zest.core.viewers.GraphViewer;
 import org.eclipse.zest.layouts.LayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
@@ -268,11 +269,11 @@ public class TransformationView extends AbstractMappingView {
 	}
 
 	/**
-	 * @see AbstractMappingView#createLabelProvider()
+	 * @see AbstractMappingView#createLabelProvider(GraphViewer)
 	 */
 	@Override
-	protected IBaseLabelProvider createLabelProvider() {
-		return new TransformationTreeLabelProvider(HaleUI.getServiceProvider());
+	protected IBaseLabelProvider createLabelProvider(GraphViewer viewer) {
+		return new TransformationTreeLabelProvider(viewer, HaleUI.getServiceProvider());
 	}
 
 	/**

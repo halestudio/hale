@@ -84,7 +84,7 @@
          </property>
          <property
                name="aboutText"
-               value="HUMBOLDT Alignment Editor (HALE)&#x0A;&#x0A;Version ___version___&#x0A;&#x0A;Build ___build___&#x0A;Revision ___revision___&#x0A;&#x0A;Project page:&#x0A;http://www.esdi-community.eu/projects/show/hale&#x0A;&#x0A;Forum:&#x0A;http://www.esdi-community.eu/projects/hale/boards&#x0A;&#x0A;News:&#x0A;http://blog.dhpanel.eu&#x0A;&#x0A;Get professional support:&#x0A;http://www.wetransform.to/products/hale">
+               value="HUMBOLDT Alignment Editor (HALE)&#x0A;&#x0A;Version ___version___&#x0A;&#x0A;Build ___build___&#x0A;Revision ___revision___&#x0A;&#x0A;Project page:&#x0A;http://www.wetransform.to/products/hale&#x0A;&#x0A;Forum:&#x0A;http://www.esdi-community.eu/projects/hale/boards&#x0A;&#x0A;News:&#x0A;http://www.wetransform.to/news&#x0A;&#x0A;Get professional support:&#x0A;http://www.wetransform.to/services/support">
          </property>
          <property
                name="introTitle"
@@ -104,7 +104,7 @@
          </property>
          <property
                name="splashCopyrightNotice"
-               value="© 2015 data harmonisation panel www.dhpanel.eu">
+               value="© 2015 wetransform GmbH » www.wetransform.to">
          </property>
          <property
                name="build"
@@ -297,6 +297,18 @@
                <visibleWhen
                      checkEnabled="true">
                </visibleWhen>
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.style.randomcolor"
+                  label="Assign random color"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="true">
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.style.spectrum"
+                  style="push">
             </command>
             <command
                   commandId="eu.esdihumboldt.hale.ui.geometry.setAsDefault"
@@ -639,6 +651,12 @@
             contextId="org.eclipse.ui.contexts.window"
             schemeId="eu.esdihumboldt.hale.ui.application.bindings"
             sequence="M1+M2+Z">
+      </key>
+      <key
+            commandId="eu.esdihumboldt.hale.ui.style.randomcolor"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="eu.esdihumboldt.hale.ui.application.bindings"
+            sequence="M1+M2+R">
       </key>
    </extension>
    <extension

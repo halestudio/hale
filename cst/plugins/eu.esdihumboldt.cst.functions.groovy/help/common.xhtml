@@ -16,14 +16,14 @@
 			<li>Retrieve the first property value with <code>.value()</code></li>
 			<li>Retrieve a list of all property values with <code>.values()</code></li>
 			<li>Retrieve the first property instance or value with <code>.first()</code></li>
-			<li>Retrieve a list of all property instances or values with <code>.all()</code></li>
+			<li>Retrieve a list of all property instances or values with <code>.list()</code></li>
 			<li>Iterate over all property instances or values with <code>.each{}</code></li>
 		</ul>
 		<p>
 			Whether you get instances or values with
 			<code>first()</code>
 			,
-			<code>all()</code>
+			<code>list()</code>
 			or
 			<code>each{}</code>
 			depends on whether the corresponding property has sub-properties of
@@ -232,6 +232,59 @@
     }
   }
 }</code></pre>
+	</div>
+	
+	<!-- Helper functions -->
+	<div id="helper-functions">
+		<h2>Helper Functions</h2>
+		<p>HALE provides the possibility to extend it with helper
+			functions that can be conveniently called from Groovy scripts. An
+			overview on the available functions can be found in the functions
+			tray (see below). Select an individual function to get detailed
+			information on:</p>
+		<ul>
+			<li>What the function does and how it behaves (description)</li>
+			<li>How it should be called (description of each parameter and
+				if applicable its default value)</li>
+			<li>What it returns</li>
+		</ul>
+		<div>
+			<img
+				src="../../eu.esdihumboldt.cst.functions.groovy/help/helper-function-spec.png" />
+		</div>
+		<p>
+			The functions are accessible through the
+			<code>
+				<b>_</b>
+			</code>
+			binding in the script, and are organized in categories/packages.
+		</p>
+		<p>Generally, if a function supports multiple parameters, you have
+			to use the named parameters notation of Groovy. For Example:</p>
+		<pre><code><b>_</b>.geom.buffer(geometry: g, distance: 10)</code></pre>
+		<p>
+			Above the function
+			<code>buffer</code>
+			in the package
+			<code>geom</code>
+			is called with two parameters, the variable <i>g</i> as the <i>geometry</i>
+			and <i>10</i> as the <i>distance</i>.
+		</p>
+		<p>
+			There is auto-completion available for helper functions as well.
+			Auto-completion can be triggered with <b>Ctrl + Space</b>. Make sure
+			to start with
+			<code>
+				<b>_</b>.
+			</code>
+			, you may have to specify a start character to have a valid script
+			for the completion processor to work.
+		</p>
+
+		<div>
+			<img
+				src="../../eu.esdihumboldt.cst.functions.groovy/help/auto-complete.png" />
+		</div>
 	</div>
 	
 	<!-- Binding content -->

@@ -258,7 +258,7 @@ public abstract class SourceListParameterPage<T> extends
 		columnLayout.setColumnData(entityColumn.getColumn(), new ColumnWeightData(2, true));
 		entityColumn.getColumn().setText("Entity");
 		varTable.setContentProvider(ArrayContentProvider.getInstance());
-		varTable.setLabelProvider(new StyledDefinitionLabelProvider() {
+		varTable.setLabelProvider(new StyledDefinitionLabelProvider(varTable) {
 
 			@Override
 			protected Object extractElement(Object element) {

@@ -18,7 +18,9 @@ package eu.esdihumboldt.hale.common.instance.geometry;
 
 import org.opengis.referencing.ReferenceIdentifier;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.WKTWriter;
 
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
@@ -84,13 +86,28 @@ public class DefaultGeometryProperty<T extends Geometry> implements GeometryProp
 					else {
 						ident = name.toString();
 					}
-					return "{CRS=" + ident + "} " + geometry.toString();
+					return "{CRS=" + ident + "} " + geometryToString(geometry);
 				}
 			}
 		} catch (IllegalStateException e) {
 			// ignore in toString
 		}
 
+		return geometryToString(geometry);
+	}
+
+	private String geometryToString(T geometry) {
+		// test the coordinate dimension
+		Coordinate coord = geometry.getCoordinate();
+		if (coord != null) {
+			int dimension = 2;
+			if (!Double.isNaN(coord.z)) {
+				dimension = 3;
+			}
+			return new WKTWriter(dimension).write(geometry);
+		}
+
+		// fall-back to toString (does not support 3D geometries)
 		return geometry.toString();
 	}
 

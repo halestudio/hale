@@ -28,11 +28,11 @@ import org.springframework.core.convert.converter.Converter;
  */
 public class SqlDateToJodaDateTimeConverter implements Converter<Date, DateTime> {
 
-	/**
-	 * @see Converter#convert(java.lang.Object)
-	 */
 	@Override
 	public DateTime convert(Date source) {
+		if (source == null) {
+			return null;
+		}
 		return new DateTime(source.getTime());
 	}
 
