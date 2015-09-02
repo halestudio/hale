@@ -119,6 +119,12 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 	public static final String PARAM_PRETTY_PRINT = "xml.pretty";
 
 	/**
+	 * The parameter name for the flag specifying an identifier (XML ID) for the
+	 * container.
+	 */
+	public static final String PARAM_CONTAINER_ID = "xml.containerId";
+
+	/**
 	 * The XML stream writer
 	 */
 	private XMLStreamWriter writer;
@@ -533,7 +539,8 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 		GmlWriterUtil.writeStartElement(writer, containerName);
 
 		// generate mandatory id attribute (for feature collection)
-		GmlWriterUtil.writeRequiredID(writer, containerDefinition, null, false);
+		String containerId = getParameter(PARAM_CONTAINER_ID).as(String.class);
+		GmlWriterUtil.writeID(writer, containerDefinition, null, false, containerId);
 
 		// write schema locations
 		StringBuffer locations = new StringBuffer();
