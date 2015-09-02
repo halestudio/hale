@@ -14,27 +14,34 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.style.io.impl;
+package eu.esdihumboldt.hale.common.style.io.impl;
 
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
 
-import org.geotools.styling.SLDTransformer;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.styling.SLDParser;
+import org.geotools.styling.Style;
+import org.geotools.styling.StyleFactory;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
+import eu.esdihumboldt.hale.common.core.io.impl.AbstractImportProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.style.io.StyleReader;
 
 /**
- * Writes styles to SLD.
+ * Read styles from SLD.
  * 
  * @author Simon Templer
  */
-public class SLDStyleWriter extends AbstractStyleWriter {
+public class SLDStyleReader extends AbstractImportProvider implements StyleReader {
+
+	private Style[] styles;
 
 	/**
 	 * @see IOProvider#isCancelable()
@@ -45,25 +52,32 @@ public class SLDStyleWriter extends AbstractStyleWriter {
 	}
 
 	/**
+	 * @see StyleReader#getStyles()
+	 */
+	@Override
+	public Style[] getStyles() {
+		return styles;
+	}
+
+	/**
 	 * @see AbstractIOProvider#execute(ProgressIndicator, IOReporter)
 	 */
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
-		progress.begin("Save styles to SLD", ProgressIndicator.UNKNOWN);
+		progress.begin("Load styles from SLD", ProgressIndicator.UNKNOWN);
 
-		SLDTransformer trans = new SLDTransformer();
-		trans.setIndentation(2);
-
-		OutputStream out = getTarget().getOutput();
+		StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory(null);
+		InputStream in = getSource().getInput();
 		try {
-			trans.transform(getStyle(), out);
+			SLDParser stylereader = new SLDParser(styleFactory, in);
+			styles = stylereader.readXML();
 			reporter.setSuccess(true);
 		} catch (Exception e) {
-			reporter.error(new IOMessageImpl("Saving the style as SLD failed.", e));
+			reporter.error(new IOMessageImpl("Loading styles from SLD failed.", e));
 			reporter.setSuccess(false);
 		} finally {
-			out.close();
+			in.close();
 			progress.end();
 		}
 
