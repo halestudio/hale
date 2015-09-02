@@ -134,7 +134,8 @@ HALE -nosplash -application hale.transform
   control which files to load.
   If you do not specify -include, it defaults to "**", i.e. all files being
   included, even if they are in sub-directories.
-  Patterns use the glob pattern syntax as defined in Java, see
+  Patterns use the glob pattern syntax as defined in Java and should be quoted
+  to not be interpreted by the shell, see
   http://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html#getPathMatcher-java.lang.String-
 		""".trim()
 

@@ -130,11 +130,11 @@
 		parameters to control which files to load. If you do not specify
 		<code>-include</code>
 		, it defaults to
-		<code>**</code>
+		<code>"**"</code>
 		, i.e. all files being included, even if they are in sub-directories.
 		Patterns use the <a target="_blank"
 			href="http://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html#getPathMatcher-java.lang.String-">glob
-			pattern syntax as defined in Java</a>.
+			pattern syntax as defined in Java</a> and should be quoted to not be interpreted by the shell.
 	</p>
 	<p>
 		You can transform data from multiple sources if you provide a
