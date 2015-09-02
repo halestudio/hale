@@ -109,6 +109,8 @@ Usage:
 HALE -nosplash -application hale.transform
      -project <file-or-URI-to-HALE-project>
      -source <file-or-URI-to-source-data>
+         [-include <file-pattern>]
+         [-exclude <file-pattern>]
          [-providerId <ID-of-source-reader>]
          [<setting>...]
      -target <target-file-or-URI>
@@ -126,6 +128,14 @@ HALE -nosplash -application hale.transform
      -reportsOut <reports-file>
      -stacktrace
      -trustGroovy
+
+  You can provide multiple sources for the transformation. If the source is a
+  directory, you can specify multiple -include and -exclude parameters to
+  control which files to load.
+  If you do not specify -include, it defaults to "**", i.e. all files being
+  included, even if they are in sub-directories.
+  Patterns use the glob pattern syntax as defined in Java, see
+  http://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html#getPathMatcher-java.lang.String-
 		""".trim()
 
 		// general error code
@@ -145,6 +155,8 @@ HALE -nosplash -application hale.transform
 			// source file or URI to source data
 				executionContext.sources << fileOrUri(value)
 				executionContext.sourceProviderIds << null
+				executionContext.sourceIncludes << []
+				executionContext.sourceExcludes << []
 				executionContext.sourcesSettings << [:]
 				lastConfigurable = Configurable.source
 				break
@@ -186,6 +198,21 @@ HALE -nosplash -application hale.transform
 					warn('Unexpected parameter -providerId')
 				}
 				break
+			case '-exclude': // fall through
+			case '-include':
+				if (lastConfigurable == Configurable.source) {
+					List<List<String>> cludes = (param == '-include') ? (executionContext.sourceIncludes) : (executionContext.sourceExcludes)
+					int sourceIndex = executionContext.sources.size() - 1
+					List<String> cludeList = cludes[sourceIndex]
+					if (!cludeList) {
+						cludeList = []
+						cludes[sourceIndex] = cludeList
+					}
+					cludeList << value
+				}
+				else {
+					warn("Unexpected parameter $param, only allowed for configuring a source")
+				}
 			default:
 				if (param.startsWith(SETTING_PREFIX) && param.length() > SETTING_PREFIX.length()) {
 					// setting

@@ -42,6 +42,16 @@ class ExecContext {
 	List<String> sourceProviderIds = []
 
 	/**
+	 * Includes in case the source is a directory
+	 */
+	List<List<String>> sourceIncludes = []
+
+	/**
+	 * Excludes in case the source is a directory
+	 */
+	List<List<String>> sourceExcludes = []
+
+	/**
 	 * Settings for reading the source.
 	 */
 	List<Map<String, Value>> sourcesSettings = []
