@@ -34,7 +34,6 @@ import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.PropertyType
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.core.io.ComplexValueType;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
-import eu.esdihumboldt.hale.io.appschema.AppSchemaIO;
 
 /**
  * Complex value for {@link FeatureChaining} configuration.
@@ -62,7 +61,7 @@ public class FeatureChainingComplexType implements ComplexValueType<FeatureChain
 		FeatureChaining value = new FeatureChaining();
 
 		if (fragment != null) {
-			NodeList joinElList = fragment.getElementsByTagName("join");
+			NodeList joinElList = fragment.getElementsByTagNameNS(APP_SCHEMA_NAMESPACE, "join");
 			for (int i = 0; i < joinElList.getLength(); i++) {
 				Element joinEl = (Element) joinElList.item(i);
 
@@ -79,17 +78,17 @@ public class FeatureChainingComplexType implements ComplexValueType<FeatureChain
 					chainConf.setPrevChainIndex(Integer.valueOf(chainEl
 							.getAttribute("prevChainIndex")));
 
-					Element nestedTypeTargetEl = AppSchemaIO.getFirstElementByTagName(chainEl,
-							"property");
+					Element nestedTypeTargetEl = getFirstElementByTagName(chainEl, "property",
+							"http://www.esdi-humboldt.eu/hale/alignment");
 					// I can't resolve the property entity definition here,
 					// 'cause I've no target schema index available to perform
 					// the resolution: I'll do it later, during the export
 					PropertyType propertyType = propertyTypeFromDOM(nestedTypeTargetEl);
 					chainConf.setJaxbNestedTypeTarget(propertyType);
 
-					Element mappingNameEl = getFirstElementByTagName(nestedTypeTargetEl, "mapping");
+					Element mappingNameEl = getFirstElementByTagName(chainEl, "mapping");
 					if (mappingNameEl != null) {
-						String mappingName = mappingNameEl.getAttribute("mapping");
+						String mappingName = mappingNameEl.getAttribute("name");
 						chainConf.setMappingName(mappingName);
 					}
 
