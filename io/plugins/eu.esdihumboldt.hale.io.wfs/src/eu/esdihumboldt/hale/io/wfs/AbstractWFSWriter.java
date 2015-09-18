@@ -23,6 +23,7 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.net.Proxy;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -234,8 +235,12 @@ public abstract class AbstractWFSWriter<T extends StreamGmlWriter> extends
 			ParserConfigurationException, SAXException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
-		try (InputStream response = new ByteArrayInputStream(EntityUtils.toByteArray(entity))) {
+		byte[] data = EntityUtils.toByteArray(entity);
+		try (InputStream response = new ByteArrayInputStream(data)) {
 			return builder.parse(response);
+		} catch (SAXException e) {
+			String response = new String(data, StandardCharsets.UTF_8);
+			throw new SAXException("Invalid XML response: " + response, e);
 		}
 	}
 
