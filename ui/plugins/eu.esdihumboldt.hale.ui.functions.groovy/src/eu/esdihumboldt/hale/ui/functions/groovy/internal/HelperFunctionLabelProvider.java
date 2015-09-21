@@ -15,11 +15,16 @@
 
 package eu.esdihumboldt.hale.ui.functions.groovy.internal;
 
-import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.StyledCellLabelProvider;
+import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.graphics.Image;
 
 import eu.esdihumboldt.cst.functions.groovy.helper.Category;
+import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunction;
 import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctionOrCategory;
+import eu.esdihumboldt.cst.functions.groovy.helper.spec.impl.HelperFunctionSpecification;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImagesConstants;
 
@@ -28,7 +33,7 @@ import eu.esdihumboldt.hale.ui.common.CommonSharedImagesConstants;
  * 
  * @author sameer sheikh
  */
-public class HelperFunctionLabelProvider extends LabelProvider {
+public class HelperFunctionLabelProvider extends StyledCellLabelProvider implements ILabelProvider {
 
 	/**
 	 * Gets the label image for a Category or a functions
@@ -65,5 +70,41 @@ public class HelperFunctionLabelProvider extends LabelProvider {
 			return ((HelperFunctionOrCategory) element).getName();
 		}
 		return null;
+	}
+
+	/**
+	 * @see org.eclipse.jface.viewers.StyledCellLabelProvider#update(org.eclipse.jface.viewers.ViewerCell)
+	 */
+	@Override
+	public void update(ViewerCell cell) {
+		Object element = cell.getElement();
+		String elementName = null;
+
+		if (element instanceof Category) {
+			cell.setText(((Category) element).getName());
+			cell.setImage(CommonSharedImages.getImageRegistry().get(
+					CommonSharedImagesConstants.IMG_DEFINITION_GROUP));
+		}
+		else if (element instanceof HelperFunctionOrCategory) {
+
+			HelperFunctionSpecification hfs = null;
+			elementName = ((HelperFunctionOrCategory) element).getName();
+			StyledString text = new StyledString(elementName);
+			try {
+				HelperFunction<?> helper = ((HelperFunctionOrCategory) element).asFunction();
+				hfs = (HelperFunctionSpecification) helper.getSpec(elementName);
+				text.append(PageFunctions.getStyledParameters(hfs));
+			} catch (Exception e) {
+				//
+			}
+
+			cell.setText(text.getString());
+			cell.setImage(CommonSharedImages.getImageRegistry().get(
+					CommonSharedImagesConstants.IMG_FUNCTION));
+			cell.setStyleRanges(text.getStyleRanges());
+
+		}
+
+		super.update(cell);
 	}
 }

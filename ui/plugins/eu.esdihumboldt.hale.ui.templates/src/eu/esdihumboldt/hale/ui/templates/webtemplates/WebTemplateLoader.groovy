@@ -15,10 +15,18 @@
 
 package eu.esdihumboldt.hale.ui.templates.webtemplates
 
+import java.net.Proxy.Type
+
+import org.apache.http.auth.AuthScope
+import org.apache.http.auth.Credentials
+import org.apache.http.auth.UsernamePasswordCredentials
+
 import eu.esdihumboldt.hale.ui.templates.internal.TemplatesUIPlugin
 import eu.esdihumboldt.hale.ui.templates.preferences.WebTemplatesPreferences
+import eu.esdihumboldt.util.http.ProxyUtil
+import groovy.transform.CompileStatic
+import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.RESTClient
-
 
 /**
  * Loads web templates.
@@ -34,12 +42,41 @@ class WebTemplateLoader {
 		List<WebTemplate> result = []
 
 		def client = new RESTClient(templatesUrl)
-
+		applyProxy(client)
 		def resp = client.get(path: 'api/all')
 		assert resp.status == 200
 
 		resp.data.templates.each { result << new WebTemplate(id: it.id, name: it.name, project: URI.create(it.project), site: URI.create(it.site)) }
 
 		result
+	}
+	/**
+	 * Applies the proxy if there is any to the builder. 
+	 * Sets the credential configured in the HALE settings.
+	 * 
+	 * @param builder a http builder
+	 */
+	@CompileStatic
+	public static void applyProxy(HTTPBuilder builder){
+
+		Proxy proxy = ProxyUtil.findProxy(builder.uri as URI)
+
+		if (proxy != null && proxy.type() == Type.HTTP) {
+
+			InetSocketAddress proxyAddress = (InetSocketAddress) proxy.address()
+
+			String userName = System.getProperty("http.proxyUser");
+			String password = System.getProperty("http.proxyPassword");
+			boolean useProxyAuth = userName != null && !userName.isEmpty();
+
+			if(useProxyAuth){
+
+				Credentials cred = new UsernamePasswordCredentials(userName, password);
+
+				builder.getClient().getCredentialsProvider().setCredentials(new AuthScope(proxyAddress.getHostName(),proxyAddress.getPort()),cred)
+			}
+
+			builder.setProxy(proxyAddress.getHostName(), proxyAddress.getPort(), "http")
+		}
 	}
 }

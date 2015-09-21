@@ -16,4 +16,8 @@
       <description>Follow the link below to learn how to transform properties with a Groovy script.</description>
       <topic href="help/script.xhtml" label="Groovy script"/>
    </context>
+   <context id="join" title="Groovy Join">
+      <description>Follow the link below on how to use the Groovy Join function, accessing the linked source instances and building a target instance.</description>
+      <topic href="help/join.xhtml" label="Groovy Join"/>
+   </context>
 </contexts>

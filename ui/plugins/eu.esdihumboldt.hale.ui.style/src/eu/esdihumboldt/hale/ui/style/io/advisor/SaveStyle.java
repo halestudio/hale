@@ -18,9 +18,9 @@ package eu.esdihumboldt.hale.ui.style.io.advisor;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
+import eu.esdihumboldt.hale.common.style.io.StyleWriter;
 import eu.esdihumboldt.hale.ui.common.service.style.StyleService;
 import eu.esdihumboldt.hale.ui.io.DefaultIOAdvisor;
-import eu.esdihumboldt.hale.ui.style.io.StyleWriter;
 
 /**
  * Save the styles present in the {@link StyleService}.

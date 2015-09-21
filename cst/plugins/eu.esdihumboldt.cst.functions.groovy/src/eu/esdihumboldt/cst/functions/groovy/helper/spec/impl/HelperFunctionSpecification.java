@@ -41,7 +41,7 @@ public class HelperFunctionSpecification implements Specification {
 	 * @param description Description about a function
 	 * @param arguments arguments that can be passed into the function
 	 */
-	public HelperFunctionSpecification(String resultDescription, String description,
+	public HelperFunctionSpecification(String description, String resultDescription,
 			Argument... arguments) {
 
 		this.arguments = Arrays.asList(arguments);

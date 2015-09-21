@@ -73,8 +73,8 @@ public class ConversionHelper implements HelperFunction<Object> {
 	@Override
 	public Specification getSpec(String functionName) throws Exception {
 		return new HelperFunctionSpecification(
-				"the converted value or null if the conversion is not possible", // result
 				"Converts a given value to a target class using the ConversionService.", // description
+				"the converted value or null if the conversion is not possible", // result
 				new HelperFunctionArgument(ARG_VALUE, "the value to convert"),
 				new HelperFunctionArgument(ARG_TO, "the class to convert to"));
 	}

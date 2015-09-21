@@ -9,8 +9,8 @@
       <Pattern>%d{dd.MM.yyyy HH:mm:ss} %-5level %C{1}.%M\(%L\) - %m%n</Pattern>
     </encoder>
   </appender>
-  <logger name="to.wetf" level="INFO" />
-  <logger name="eu.esdihumboldt" level="INFO" />
+  <logger name="to.wetf" level="${log.hale.level:-INFO}" />
+  <logger name="eu.esdihumboldt" level="${log.hale.level:-INFO}" />
   
   <!-- ignore some warnings: -->
   <logger name="org.geotools.referencing.operation.projection" level="ERROR" />
@@ -19,7 +19,7 @@
   <!-- ignore errors related to castor messages -->
   <logger name="org.castor.core.util.Messages" level="OFF" />
   
-  <root level="WARN">
+  <root level="${log.root.level:-WARN}">
     <appender-ref ref="CONSOLE"/>
     <appender-ref ref="SERVICE"/>
   </root>

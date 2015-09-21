@@ -222,6 +222,15 @@
                   sampleDescription="Make sure that all SRS names use this kind of notation. The EPSG code number is appended to the provided parameter to build the SRS name.">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="XML ID to specify for the container element, if possible"
+               label="Container ID"
+               name="xml.containerId"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.gml.writer.XmlInstanceWriter"
@@ -302,6 +311,15 @@
                   sample="http://www.opengis.net/def/crs/EPSG/0/"
                   sampleDescription="Make sure that all SRS names use this kind of notation. The EPSG code number is appended to the provided parameter to build the SRS name.">
             </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="XML ID to specify for the container element, if possible"
+               label="Container ID"
+               name="xml.containerId"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
          </providerParameter>
       </provider>
       <provider

@@ -1,4 +1,4 @@
-package eu.esdihumboldt.hale.io.jdbc.test;
+package eu.esdihumboldt.hale.common.test.docker.config;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -17,10 +17,12 @@ import com.spotify.docker.client.messages.HostConfig;
 import com.spotify.docker.client.messages.PortBinding;
 
 /**
+ * A Hale docker client
+ * 
  * @author Sameer Sheikh
  * 
  */
-public class DBDockerClient {
+public class HaleDockerClient implements DockerContainer {
 
 	private DockerClient dc;
 	private ContainerConfig containerConf;
@@ -28,27 +30,25 @@ public class DBDockerClient {
 	private String containerId;
 	private URI uri;
 	private final ContainerParameters dbc;
+	private ContainerCreation creation;
 
 	/**
+	 * A parameterized constructor
 	 * 
-	 * @param conf
-	 * @param path
+	 * @param dbc parameters related to a general docker client
 	 */
-	public DBDockerClient(ContainerParameters dbc) {
+	public HaleDockerClient(ContainerParameters dbc) {
 		this.dbc = dbc;
 
 	}
 
 	/**
-	 * create a container
+	 * creates a container using the parameters.
 	 * 
-	 * @param conf config
-	 * 
-	 * @param path host Path
 	 */
 	public void createContainer() {
 
-		Set<String> exposedPorts = new HashSet<String>(dbc.getexposedPortList());
+		Set<String> exposedPorts = new HashSet<String>(dbc.getExposedPortList());
 		uri = URI.create(dbc.getDockerHost());
 		dc = new DefaultDockerClient(uri);
 
@@ -58,30 +58,28 @@ public class DBDockerClient {
 	}
 
 	/**
-	 * @param key key
-	 * @return boolean value
+	 * Gets the host name from the url configured in the docker configuration
 	 * 
-	 *         /**
-	 * @return get docker host name
+	 * @return host name configured
 	 */
+	@Override
 	public String getHostName() {
 		return uri.getHost();
 	}
 
 	/**
-	 * start a container in privilged mode
+	 * start a container. Container can be started in the privileged mode if the
+	 * 'isPrivileged' key in the configuration is set as true.
 	 * 
-	 * @param isPriviliged to start container in privileged mode or not
 	 * @throws DockerException docker exception
 	 * @throws InterruptedException interrupted exception
 	 */
 	public void startContainer() throws DockerException, InterruptedException {
 
-		ContainerCreation creation;
 		creation = dc.createContainer(containerConf);
 		containerId = creation.id();
 
-		final HostConfig hostConfig = HostConfig.builder().publishAllPorts(true)
+		final HostConfig hostConfig = HostConfig.builder().publishAllPorts(dbc.isExposeAllPorts())
 				.privileged(dbc.isPrivileged()).build();
 
 		dc.startContainer(containerId, hostConfig);
@@ -92,11 +90,12 @@ public class DBDockerClient {
 	}
 
 	/**
-	 * get the host port
+	 * gets the binded docker host port
 	 * 
-	 * @param port host port
-	 * @return
+	 * @param port the configured port number
+	 * @return the binded docker host port number for the given port
 	 */
+	@Override
 	public int getHostPort(int port) {
 
 		ArrayList<PortBinding> bindings = (ArrayList<PortBinding>) portMapper.get(port + "/tcp");
@@ -117,13 +116,19 @@ public class DBDockerClient {
 	/**
 	 * kill and remove the container
 	 * 
-	 * @throws Exception
+	 * @throws Exception if fails to kill the container or remove it
 	 */
 	public void killAndRemoveContainer() throws Exception {
 
-		dc.killContainer(containerId);
-		dc.removeContainer(containerId);
+		try {
+			dc.killContainer(containerId);
+		} finally {
+			dc.removeContainer(containerId);
+		}
 
 	}
 
+	public String getContainerId() {
+		return creation.id();
+	}
 }

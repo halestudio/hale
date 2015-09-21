@@ -6,7 +6,7 @@
          id="Server"
          point="org.eclipse.core.runtime.products">
       <product
-            application="org.eclipse.ui.ide.workbench"
+            application="eu.esdihumboldt.hale.server.application"
             name="HALE Server">
          <property
                name="appName"
