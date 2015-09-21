@@ -19,6 +19,8 @@ import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.http.entity.ContentType;
+
 /**
  * Class representing a datastore file resource.
  * 
@@ -48,6 +50,7 @@ public class DataStoreFile extends AbstractResource {
 	}
 
 	private final InputStream resourceStream;
+	private final ContentType contentType;
 
 	/**
 	 * Constructor.
@@ -56,6 +59,26 @@ public class DataStoreFile extends AbstractResource {
 	 */
 	public DataStoreFile(InputStream resourceStream) {
 		this.resourceStream = resourceStream;
+		this.contentType = DEF_CONTENT_TYPE;
+	}
+
+	/**
+	 * Two-args constructor.
+	 * 
+	 * @param resourceStream the input stream providing the file contents
+	 * @param contentType the content type
+	 */
+	public DataStoreFile(InputStream resourceStream, ContentType contentType) {
+		this.resourceStream = resourceStream;
+		this.contentType = contentType;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.io.geoserver.AbstractResource#contentType()
+	 */
+	@Override
+	public ContentType contentType() {
+		return contentType;
 	}
 
 	/**

@@ -22,6 +22,8 @@ import static eu.esdihumboldt.hale.io.appschema.AppSchemaIO.NAMESPACE_FILE;
 import static eu.esdihumboldt.hale.io.appschema.AppSchemaIO.WORKSPACE_FILE;
 
 import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -67,23 +69,22 @@ public class AppSchemaMappingFileWriter extends AbstractAppSchemaConfigurator {
 	private static final String DEFAULT_CONTENT_TYPE_ID = AppSchemaIO.CONTENT_TYPE_MAPPING;
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.appschema.writer.AbstractAppSchemaConfigurator#handleMapping(eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingGenerator,
-	 *      eu.esdihumboldt.hale.common.core.io.ProgressIndicator,
+	 * @see eu.esdihumboldt.hale.io.appschema.writer.AbstractAppSchemaConfigurator#handleMapping(eu.esdihumboldt.hale.common.core.io.ProgressIndicator,
 	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
 	 */
 	@Override
-	protected void handleMapping(AppSchemaMappingGenerator generator, ProgressIndicator progress,
-			IOReporter reporter) throws IOProviderConfigurationException, IOException {
+	protected void handleMapping(ProgressIndicator progress, IOReporter reporter)
+			throws IOProviderConfigurationException, IOException {
 		if (getContentType() == null) {
 			// contentType was not specified, use default (mapping file)
 			setContentType(Platform.getContentTypeManager().getContentType(DEFAULT_CONTENT_TYPE_ID));
 		}
 
 		if (getContentType().getId().equals(AppSchemaIO.CONTENT_TYPE_MAPPING)) {
-			writeMappingFile(generator, reporter);
+			writeMappingFile();
 		}
 		else if (getContentType().getId().equals(AppSchemaIO.CONTENT_TYPE_ARCHIVE)) {
-			writeArchive(generator, reporter);
+			writeArchive(progress, reporter);
 		}
 		else {
 			throw new IOProviderConfigurationException("Unsupported content type: "
@@ -91,15 +92,26 @@ public class AppSchemaMappingFileWriter extends AbstractAppSchemaConfigurator {
 		}
 	}
 
-	private void writeMappingFile(AppSchemaMappingGenerator generator, IOReporter reporter)
-			throws IOException {
+	private void writeMappingFile() throws IOException {
 		OutputStream out = getTarget().getOutput();
-		generator.generateMapping(out, reporter);
+		generator.writeMappingConf(out);
 		out.flush();
+
+		if (generator.getGeneratedMapping().requiresMultipleFiles()) {
+			try (OutputStream includedTypesOut = new FileOutputStream(getIncludedTypesFile())) {
+				generator.writeIncludedTypesMappingConf(includedTypesOut);
+			}
+		}
 	}
 
-	private void writeArchive(AppSchemaMappingGenerator generator, IOReporter reporter)
-			throws IOException {
+	private File getIncludedTypesFile() {
+		String parentDir = new File(getTarget().getLocation()).getParent();
+		File inclTypesMappingFile = new File(parentDir, AppSchemaIO.INCLUDED_TYPES_MAPPING_FILE);
+
+		return inclTypesMappingFile;
+	}
+
+	private void writeArchive(ProgressIndicator progress, IOReporter reporter) throws IOException {
 		Workspace ws = generator.getMainWorkspace();
 		Namespace mainNs = generator.getMainNamespace();
 		DataStore ds = generator.getAppSchemaDataStore();
@@ -126,12 +138,23 @@ public class AppSchemaMappingFileWriter extends AbstractAppSchemaConfigurator {
 		zip.putNextEntry(new ZipEntry(dataStoreFolder.getName() + DATASTORE_FILE));
 		copyAndCloseInputStream(ds.asStream(), zip);
 		zip.closeEntry();
-		// add mapping file
+		// add target schema to zip
+		if (getIncludeSchemaParameter()) {
+			addTargetSchemaToZip(zip, dataStoreFolder, progress, reporter);
+		}
+		// add main mapping file
 		Map<String, String> connectionParams = ds.getConnectionParameters();
 		zip.putNextEntry(new ZipEntry(dataStoreFolder.getName()
 				+ connectionParams.get("mappingFileName")));
 		generator.writeMappingConf(zip);
 		zip.closeEntry();
+		// add included types mapping file, if necessary
+		if (generator.getGeneratedMapping().requiresMultipleFiles()) {
+			zip.putNextEntry(new ZipEntry(dataStoreFolder.getName()
+					+ AppSchemaIO.INCLUDED_TYPES_MAPPING_FILE));
+			generator.writeIncludedTypesMappingConf(zip);
+			zip.closeEntry();
+		}
 
 		// add feature type entries
 		List<FeatureType> featureTypes = generator.getFeatureTypes();

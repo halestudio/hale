@@ -30,10 +30,10 @@ public interface PropertyTransformationHandler {
 	 * 
 	 * @param typeCell the type cell owning the property cell
 	 * @param propertyCell the property cell
-	 * @param mappingWrapper the app-schema mapping wrapper
+	 * @param context the app-schema mapping context
 	 * @return the attribute mapping
 	 */
 	public AttributeMappingType handlePropertyTransformation(Cell typeCell, Cell propertyCell,
-			AppSchemaMappingWrapper mappingWrapper);
+			AppSchemaMappingContext context);
 
 }

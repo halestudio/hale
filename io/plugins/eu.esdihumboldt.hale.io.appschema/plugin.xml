@@ -26,11 +26,18 @@
    <extension
          point="eu.esdihumboldt.hale.io.complexvalue">
       <complexValue
-            descriptor="eu.esdihumboldt.hale.io.appschema.DataStoreComplexType"
+            descriptor="eu.esdihumboldt.hale.io.appschema.model.DataStoreComplexType"
             id="eu.esdihumboldt.hale.io.appschema.datastore"
             name="DataStore"
             namespace="http://www.geotools.org/app-schema"
             type="eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.SourceDataStoresPropertyType$DataStore">
+      </complexValue>
+      <complexValue
+            descriptor="eu.esdihumboldt.hale.io.appschema.model.FeatureChainingComplexType"
+            id="eu.esdihumboldt.hale.io.appschema.featurechaining"
+            name="FeatureChaining"
+            namespace="http://www.geotools.org/app-schema"
+            type="eu.esdihumboldt.hale.io.appschema.model.FeatureChaining">
       </complexValue>
    </extension>
    <extension

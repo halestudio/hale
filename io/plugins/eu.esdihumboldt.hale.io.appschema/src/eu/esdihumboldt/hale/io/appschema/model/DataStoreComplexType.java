@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.io.appschema;
+package eu.esdihumboldt.hale.io.appschema.model;
 
 import static eu.esdihumboldt.hale.io.appschema.AppSchemaIO.APP_SCHEMA_NAMESPACE;
 import static eu.esdihumboldt.hale.io.appschema.AppSchemaIO.APP_SCHEMA_PREFIX;

@@ -4,8 +4,28 @@
    <extension
          point="eu.esdihumboldt.hale.ui.io.config">
       <configPage
+            class="eu.esdihumboldt.hale.io.appschema.ui.IncludeSchemaConfigurationPage"
+            order="1">
+         <provider
+               ref="eu.esdihumboldt.hale.io.appschema.writer">
+         </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.appschema.uploader">
+         </provider>
+      </configPage>
+      <configPage
+            class="eu.esdihumboldt.hale.io.appschema.ui.FeatureChainingConfigurationPage"
+            order="2">
+         <provider
+               ref="eu.esdihumboldt.hale.io.appschema.writer">
+         </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.appschema.uploader">
+         </provider>
+      </configPage>
+      <configPage
             class="eu.esdihumboldt.hale.io.appschema.ui.AppSchemaDataStoreConfigurationPage"
-            order="0">
+            order="3">
          <provider
                ref="eu.esdihumboldt.hale.io.appschema.writer">
          </provider>

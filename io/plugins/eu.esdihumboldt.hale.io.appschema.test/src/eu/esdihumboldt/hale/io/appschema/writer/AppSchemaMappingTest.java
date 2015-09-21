@@ -25,8 +25,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 
@@ -80,6 +82,7 @@ import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.AppS
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.AttributeMappingType;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.AttributeMappingType.ClientProperty;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.TypeMappingsPropertyType.FeatureTypeMapping;
+import eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingContext;
 import eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingWrapper;
 import eu.esdihumboldt.hale.io.appschema.writer.internal.AssignHandler;
 import eu.esdihumboldt.hale.io.appschema.writer.internal.ClassificationHandler;
@@ -125,6 +128,7 @@ public class AppSchemaMappingTest {
 	private static TypeDefinition landCoverType;
 	private static TypeDefinition landCoverUnitType;
 	private static TypeDefinition landCoverDatasetType;
+	private static Set<TypeDefinition> targetTypes = new HashSet<TypeDefinition>();
 
 	private AppSchemaMappingWrapper mappingWrapper;
 
@@ -147,6 +151,8 @@ public class AppSchemaMappingTest {
 		landCoverDatasetType = target.getType(new QName(LANDCOVER_NS, "LandCoverDatasetType"));
 		assertNotNull(landCoverDatasetType);
 
+		targetTypes.add(landCoverDatasetType);
+		targetTypes.add(landCoverUnitType);
 	}
 
 	@Before
@@ -189,7 +195,8 @@ public class AppSchemaMappingTest {
 		cell.setTarget(target);
 
 		RetypeHandler handler = new RetypeHandler();
-		FeatureTypeMapping ftMapping = handler.handleTypeTransformation(null, cell, mappingWrapper);
+		FeatureTypeMapping ftMapping = handler.handleTypeTransformation(cell,
+				new AppSchemaMappingContext(mappingWrapper));
 		assertEquals("landcover_norm", ftMapping.getSourceType());
 		assertEquals("lcv:LandCoverUnit", ftMapping.getTargetElement());
 	}
@@ -209,10 +216,13 @@ public class AppSchemaMappingTest {
 		alignment.addCell(renameCell);
 
 		JoinHandler handler = new JoinHandler();
-		handler.handleTypeTransformation(alignment, joinCell, mappingWrapper);
+		handler.handleTypeTransformation(joinCell, new AppSchemaMappingContext(mappingWrapper,
+				alignment, targetTypes));
 
-		List<FeatureTypeMapping> ftMappings = mappingWrapper.getAppSchemaMapping()
-				.getTypeMappings().getFeatureTypeMapping();
+//		List<FeatureTypeMapping> ftMappings = mappingWrapper.getAppSchemaMapping()
+//				.getTypeMappings().getFeatureTypeMapping();
+		List<FeatureTypeMapping> ftMappings = mappingWrapper.getMainMapping().getTypeMappings()
+				.getFeatureTypeMapping();
 		assertEquals(2, ftMappings.size());
 
 		FeatureTypeMapping lcdMapping = null, lcuMapping = null;
@@ -242,12 +252,12 @@ public class AppSchemaMappingTest {
 		AttributeMappingType containerMapping = lcdAttrMappings.get(0);
 		assertEquals("lcv:member", containerMapping.getTargetAttribute());
 		assertEquals("lcv:LandCoverUnit", containerMapping.getSourceExpression().getLinkElement());
-		assertEquals("FEATURE_LINK", containerMapping.getSourceExpression().getLinkField());
+		assertEquals("FEATURE_LINK[1]", containerMapping.getSourceExpression().getLinkField());
 		assertEquals(SOURCE_DATASET_ID, containerMapping.getSourceExpression().getOCQL());
 		assertTrue(containerMapping.isIsMultiple());
 
 		AttributeMappingType nestedMapping = lcuAttrMappings.get(0);
-		assertEquals("FEATURE_LINK", nestedMapping.getTargetAttribute());
+		assertEquals("FEATURE_LINK[1]", nestedMapping.getTargetAttribute());
 		assertEquals(SOURCE_DATASET_ID, nestedMapping.getSourceExpression().getOCQL());
 		assertNull(nestedMapping.getSourceExpression().getLinkElement());
 		assertNull(nestedMapping.getSourceExpression().getLinkField());
@@ -267,13 +277,17 @@ public class AppSchemaMappingTest {
 		alignment.addCell(joinCell);
 		alignment.addCell(renameCell);
 
+		AppSchemaMappingContext context = new AppSchemaMappingContext(mappingWrapper, alignment,
+				targetTypes);
 		JoinHandler handler = new JoinHandler();
-		handler.handleTypeTransformation(alignment, joinCell, mappingWrapper);
+		handler.handleTypeTransformation(joinCell, context);
 		RenameHandler rename = new RenameHandler();
-		rename.handlePropertyTransformation(joinCell, renameCell, mappingWrapper);
+		rename.handlePropertyTransformation(joinCell, renameCell, context);
 
-		List<FeatureTypeMapping> ftMappings = mappingWrapper.getAppSchemaMapping()
-				.getTypeMappings().getFeatureTypeMapping();
+//		List<FeatureTypeMapping> ftMappings = mappingWrapper.getAppSchemaMapping()
+//				.getTypeMappings().getFeatureTypeMapping();
+		List<FeatureTypeMapping> ftMappings = mappingWrapper.getMainMapping().getTypeMappings()
+				.getFeatureTypeMapping();
 		assertEquals(2, ftMappings.size());
 
 		FeatureTypeMapping lcdMapping = null, lcuMapping = null;
@@ -303,7 +317,7 @@ public class AppSchemaMappingTest {
 		AttributeMappingType containerMapping = lcdAttrMappings.get(0);
 		assertEquals("lcv:member", containerMapping.getTargetAttribute());
 		assertEquals("lcv:LandCoverUnit", containerMapping.getSourceExpression().getLinkElement());
-		assertEquals("FEATURE_LINK", containerMapping.getSourceExpression().getLinkField());
+		assertEquals("FEATURE_LINK[1]", containerMapping.getSourceExpression().getLinkField());
 		assertEquals(SOURCE_DATASET_ID, containerMapping.getSourceExpression().getOCQL());
 		assertTrue(containerMapping.isIsMultiple());
 		assertNotNull(containerMapping.getClientProperty());
@@ -312,7 +326,7 @@ public class AppSchemaMappingTest {
 		assertEquals(SOURCE_UNIT_ID, containerMapping.getClientProperty().get(0).getValue());
 
 		AttributeMappingType nestedMapping = lcuAttrMappings.get(0);
-		assertEquals("FEATURE_LINK", nestedMapping.getTargetAttribute());
+		assertEquals("FEATURE_LINK[1]", nestedMapping.getTargetAttribute());
 		assertEquals(SOURCE_DATASET_ID, nestedMapping.getSourceExpression().getOCQL());
 		assertNull(nestedMapping.getSourceExpression().getLinkElement());
 		assertNull(nestedMapping.getSourceExpression().getLinkField());
@@ -364,7 +378,8 @@ public class AppSchemaMappingTest {
 
 		RenameHandler renameHandler = new RenameHandler();
 		AttributeMappingType attrMapping = renameHandler.handlePropertyTransformation(
-				getDefaultTypeCell(landCoverType, landCoverUnitType), cell, mappingWrapper);
+				getDefaultTypeCell(landCoverType, landCoverUnitType), cell,
+				new AppSchemaMappingContext(mappingWrapper));
 		assertEquals("uuid_v1", attrMapping.getSourceExpression().getOCQL());
 		assertEquals(TARGET_LOCAL_ID, attrMapping.getTargetAttribute());
 	}
@@ -387,7 +402,8 @@ public class AppSchemaMappingTest {
 
 		DateExtractionHandler handler = new DateExtractionHandler();
 		AttributeMappingType attrMapping = handler.handlePropertyTransformation(
-				getDefaultTypeCell(landCoverType, landCoverUnitType), cell, mappingWrapper);
+				getDefaultTypeCell(landCoverType, landCoverUnitType), cell,
+				new AppSchemaMappingContext(mappingWrapper));
 		assertEquals(OCQL, attrMapping.getSourceExpression().getOCQL());
 		assertEquals(TARGET_FIRST_OBSERVATION_DATE, attrMapping.getTargetAttribute());
 	}
@@ -412,7 +428,8 @@ public class AppSchemaMappingTest {
 
 		FormattedStringHandler handler = new FormattedStringHandler();
 		AttributeMappingType attrMapping = handler.handlePropertyTransformation(
-				getDefaultTypeCell(landCoverType, landCoverUnitType), cell, mappingWrapper);
+				getDefaultTypeCell(landCoverType, landCoverUnitType), cell,
+				new AppSchemaMappingContext(mappingWrapper));
 		assertEquals(OCQL, attrMapping.getSourceExpression().getOCQL());
 		assertEquals(TARGET_DESCRIPTION, attrMapping.getTargetAttribute());
 	}
@@ -439,7 +456,8 @@ public class AppSchemaMappingTest {
 
 		MathematicalExpressionHandler handler = new MathematicalExpressionHandler();
 		AttributeMappingType attrMapping = handler.handlePropertyTransformation(
-				getDefaultTypeCell(landCoverType, landCoverUnitType), cell, mappingWrapper);
+				getDefaultTypeCell(landCoverType, landCoverUnitType), cell,
+				new AppSchemaMappingContext(mappingWrapper));
 		assertEquals(OCQL, attrMapping.getSourceExpression().getOCQL());
 		assertEquals(TARGET_LOCAL_ID, attrMapping.getTargetAttribute());
 	}
@@ -464,7 +482,7 @@ public class AppSchemaMappingTest {
 
 		AssignHandler assignHandler = new AssignHandler();
 		AttributeMappingType attrMapping = assignHandler.handlePropertyTransformation(typeCell,
-				cell, mappingWrapper);
+				cell, new AppSchemaMappingContext(mappingWrapper));
 		assertEquals(OCQL, attrMapping.getSourceExpression().getOCQL());
 		assertEquals(TARGET_LOCAL_ID, attrMapping.getTargetAttribute());
 
@@ -476,8 +494,8 @@ public class AppSchemaMappingTest {
 		cellCopy.setSource(source);
 		cellCopy.setTransformationIdentifier(AssignFunction.ID_BOUND);
 
-		attrMapping = assignHandler
-				.handlePropertyTransformation(typeCell, cellCopy, mappingWrapper);
+		attrMapping = assignHandler.handlePropertyTransformation(typeCell, cellCopy,
+				new AppSchemaMappingContext(mappingWrapper));
 		assertEquals(OCQL_BOUND, attrMapping.getSourceExpression().getOCQL());
 		assertEquals(TARGET_LOCAL_ID, attrMapping.getTargetAttribute());
 	}
@@ -536,7 +554,7 @@ public class AppSchemaMappingTest {
 
 		ClassificationHandler classificationHandler = new ClassificationHandler();
 		AttributeMappingType attrMapping = classificationHandler.handlePropertyTransformation(
-				typeCell, cell, mappingWrapper);
+				typeCell, cell, new AppSchemaMappingContext(mappingWrapper));
 		assertNotNull(attrMapping.getClientProperty());
 		assertEquals(1, attrMapping.getClientProperty().size());
 		assertEquals("xlink:href", attrMapping.getClientProperty().get(0).getName());
@@ -550,7 +568,7 @@ public class AppSchemaMappingTest {
 				ClassificationMapping.USE_NULL_ACTION));
 		cell.setTransformationParameters(parameters);
 		attrMapping = classificationHandler.handlePropertyTransformation(typeCell, cell,
-				mappingWrapper);
+				new AppSchemaMappingContext(mappingWrapper));
 		assertNotNull(attrMapping.getClientProperty());
 		assertEquals(1, attrMapping.getClientProperty().size());
 		assertEquals("xlink:href", attrMapping.getClientProperty().get(0).getName());
@@ -564,7 +582,7 @@ public class AppSchemaMappingTest {
 				ClassificationMapping.USE_FIXED_VALUE_ACTION_PREFIX + FIXED_VALUE));
 		cell.setTransformationParameters(parameters);
 		attrMapping = classificationHandler.handlePropertyTransformation(typeCell, cell,
-				mappingWrapper);
+				new AppSchemaMappingContext(mappingWrapper));
 		assertNotNull(attrMapping.getClientProperty());
 		assertEquals(1, attrMapping.getClientProperty().size());
 		assertEquals("xlink:href", attrMapping.getClientProperty().get(0).getName());
@@ -582,7 +600,8 @@ public class AppSchemaMappingTest {
 
 		RenameHandler renameHandler = new RenameHandler();
 		AttributeMappingType attrMapping = renameHandler.handlePropertyTransformation(
-				getDefaultTypeCell(landCoverType, landCoverUnitType), cell, mappingWrapper);
+				getDefaultTypeCell(landCoverType, landCoverUnitType), cell,
+				new AppSchemaMappingContext(mappingWrapper));
 		assertEquals(SOURCE_GEOM, attrMapping.getSourceExpression().getOCQL());
 		assertEquals(TARGET_GEOMETRY, attrMapping.getTargetAttribute());
 		assertEquals("gml:MultiSurfaceType", attrMapping.getTargetAttributeNode());
@@ -598,7 +617,8 @@ public class AppSchemaMappingTest {
 
 		RenameHandler renameHandler = new RenameHandler();
 		AttributeMappingType attrMapping = renameHandler.handlePropertyTransformation(
-				getDefaultTypeCell(landCoverType, landCoverUnitType), cell, mappingWrapper);
+				getDefaultTypeCell(landCoverType, landCoverUnitType), cell,
+				new AppSchemaMappingContext(mappingWrapper));
 		assertNull(attrMapping.getSourceExpression());
 		assertEquals(SOURCE_UNIT_ID, attrMapping.getIdExpression().getOCQL());
 		assertEquals("lcv:LandCoverUnit", attrMapping.getTargetAttribute());
@@ -620,7 +640,8 @@ public class AppSchemaMappingTest {
 
 		AssignHandler handler = new AssignHandler();
 		AttributeMappingType attrMapping = handler.handlePropertyTransformation(
-				getDefaultTypeCell(landCoverType, landCoverUnitType), cell, mappingWrapper);
+				getDefaultTypeCell(landCoverType, landCoverUnitType), cell,
+				new AppSchemaMappingContext(mappingWrapper));
 		assertNull(attrMapping.getSourceExpression());
 		assertEquals("gml:name", attrMapping.getTargetAttribute());
 		assertNotNull(attrMapping.getClientProperty());

@@ -49,6 +49,10 @@ public abstract class AbstractResource implements Resource {
 	 */
 	public static final ContentType DEF_CONTENT_TYPE = ContentType.APPLICATION_XML
 			.withCharset("UTF-8");
+	/**
+	 * Zipped archive content type.
+	 */
+	public static final ContentType ZIP_CONTENT_TYPE = ContentType.create("application/zip");
 
 	/**
 	 * Resource attributes.
@@ -128,7 +132,7 @@ public abstract class AbstractResource implements Resource {
 			BufferedOutputStream output = new BufferedOutputStream(out);
 			try {
 
-				for (int b = input.read(); b > 0; b = input.read()) {
+				for (int b = input.read(); b >= 0; b = input.read()) {
 					output.write(b);
 				}
 			} finally {

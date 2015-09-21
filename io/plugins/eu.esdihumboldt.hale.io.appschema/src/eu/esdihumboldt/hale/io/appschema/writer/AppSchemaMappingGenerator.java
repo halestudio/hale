@@ -54,6 +54,8 @@ import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.Obje
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.SourceDataStoresPropertyType.DataStore;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.SourceDataStoresPropertyType.DataStore.Parameters.Parameter;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.TypeMappingsPropertyType.FeatureTypeMapping;
+import eu.esdihumboldt.hale.io.appschema.model.FeatureChaining;
+import eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingContext;
 import eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingWrapper;
 import eu.esdihumboldt.hale.io.appschema.writer.internal.PropertyTransformationHandler;
 import eu.esdihumboldt.hale.io.appschema.writer.internal.PropertyTransformationHandlerFactory;
@@ -82,7 +84,10 @@ public class AppSchemaMappingGenerator {
 	private final SchemaSpace targetSchemaSpace;
 	private final Schema targetSchema;
 	private final DataStore dataStore;
+	private final FeatureChaining chainingConf;
 	private AppSchemaMappingWrapper mappingWrapper;
+	private AppSchemaDataAccessType mainMapping;
+	private AppSchemaDataAccessType includedTypesMapping;
 
 	/**
 	 * Constructor.
@@ -90,15 +95,17 @@ public class AppSchemaMappingGenerator {
 	 * @param alignment the alignment to translate
 	 * @param targetSchemaSpace the target schema space
 	 * @param dataStore the DataStore configuration to use
+	 * @param chainingConf the feature chaining configuration
 	 */
 	public AppSchemaMappingGenerator(Alignment alignment, SchemaSpace targetSchemaSpace,
-			DataStore dataStore) {
+			DataStore dataStore, FeatureChaining chainingConf) {
 		this.alignment = alignment;
 		this.targetSchemaSpace = targetSchemaSpace;
 		// pick the target schemas from which interpolation variables will be
 		// derived
 		this.targetSchema = pickTargetSchema();
 		this.dataStore = dataStore;
+		this.chainingConf = chainingConf;
 	}
 
 	/**
@@ -109,26 +116,55 @@ public class AppSchemaMappingGenerator {
 	 * @throws IOException if an error occurs loading the mapping template file
 	 */
 	public AppSchemaMappingWrapper generateMapping(IOReporter reporter) throws IOException {
-		AppSchemaDataAccessType mapping = loadMappingTemplate();
 		// reset wrapper
-		mappingWrapper = new AppSchemaMappingWrapper(mapping);
+		resetMappingState();
 
-		// create namespace objects for all target types / properties
-		// TODO: this removes all namespaces that were defined in the
-		// template file, add code to cope with pre-configured namespaces
-		// instead
-		mapping.getNamespaces().getNamespace().clear();
-		createNamespaces();
+		try {
+			AppSchemaDataAccessType mapping = loadMappingTemplate();
+			mappingWrapper = new AppSchemaMappingWrapper(mapping);
 
-		// apply datastore configuration, if any
-		// TODO: for now, only a single datastore is supported
-		applyDataStoreConfig();
+			// create namespace objects for all target types / properties
+			// TODO: this removes all namespaces that were defined in the
+			// template file, add code to cope with pre-configured namespaces
+			// instead
+			mapping.getNamespaces().getNamespace().clear();
+			createNamespaces();
 
-		// populate targetTypes element
-		createTargetTypes();
+			// apply datastore configuration, if any
+			// TODO: for now, only a single datastore is supported
+			applyDataStoreConfig();
 
-		// populate typeMappings element
-		createTypeMappings(reporter);
+			// populate targetTypes element
+			createTargetTypes();
+
+			// populate typeMappings element
+			AppSchemaMappingContext context = new AppSchemaMappingContext(mappingWrapper,
+					alignment, targetSchema.getMappingRelevantTypes(), chainingConf);
+			createTypeMappings(context, reporter);
+
+			// cache mainMapping and includedTypesMapping for performance
+			mainMapping = mappingWrapper.getMainMapping();
+			includedTypesMapping = mappingWrapper.getIncludedTypesMapping();
+
+			return mappingWrapper;
+		} catch (Exception e) {
+			// making sure state is reset in case an exception is thrown
+			resetMappingState();
+			throw e;
+		}
+	}
+
+	private void resetMappingState() {
+		mappingWrapper = null;
+		mainMapping = null;
+		includedTypesMapping = null;
+	}
+
+	/**
+	 * @return the generated mapping configuration
+	 */
+	public AppSchemaMappingWrapper getGeneratedMapping() {
+		checkMappingGenerated();
 
 		return mappingWrapper;
 	}
@@ -136,6 +172,11 @@ public class AppSchemaMappingGenerator {
 	/**
 	 * Generates the app-schema mapping configuration and writes it to the
 	 * provided output stream.
+	 * 
+	 * <p>
+	 * If the mapping configuration requires multiple files, only the main
+	 * configuration file will be written.
+	 * </p>
 	 * 
 	 * @param output the output stream to write to
 	 * @param reporter the status reporter
@@ -145,6 +186,49 @@ public class AppSchemaMappingGenerator {
 		generateMapping(reporter);
 
 		writeMappingConf(output);
+	}
+
+	/**
+	 * Generates the app-schema mapping configuration for the included types
+	 * (non-feature types or non-top level feature types) and writes it to the
+	 * provided output stream.
+	 * 
+	 * <p>
+	 * If the mapping configuration does not require multiple files, an
+	 * {@link IllegalStateException} is thrown.
+	 * </p>
+	 * 
+	 * @param output the output stream to write to
+	 * @param reporter the status reporter
+	 * @throws IOException if an I/O error occurs
+	 * @throws IllegalStateException if the mapping configuration does not
+	 *             require multiple files
+	 */
+	public void generateIncludedTypesMapping(OutputStream output, IOReporter reporter)
+			throws IOException {
+		generateMapping(reporter);
+
+		writeIncludedTypesMappingConf(output);
+	}
+
+	/**
+	 * Updates a schema URI in the generated mapping configuration.
+	 * 
+	 * <p>
+	 * It is used mainly by exporters that need to change the target schema
+	 * location.
+	 * </p>
+	 * 
+	 * @param oldSchemaURI the current schema URI
+	 * @param newSchemaURI the updated schema URI
+	 */
+	public void updateSchemaURI(String oldSchemaURI, String newSchemaURI) {
+		checkMappingGenerated();
+
+		mappingWrapper.updateSchemaURI(oldSchemaURI, newSchemaURI);
+		// regenerate cached mappings
+		mainMapping = mappingWrapper.getMainMapping();
+		includedTypesMapping = mappingWrapper.getIncludedTypesMapping();
 	}
 
 	/**
@@ -221,7 +305,8 @@ public class AppSchemaMappingGenerator {
 		checkTargetSchemaAvailable();
 
 		List<eu.esdihumboldt.hale.io.geoserver.Namespace> secondaryNamespaces = new ArrayList<eu.esdihumboldt.hale.io.geoserver.Namespace>();
-		for (Namespace ns : mappingWrapper.getAppSchemaMapping().getNamespaces().getNamespace()) {
+//		for (Namespace ns : mappingWrapper.getAppSchemaMapping().getNamespaces().getNamespace()) {
+		for (Namespace ns : mainMapping.getNamespaces().getNamespace()) {
 			if (!ns.getUri().equals(targetSchema.getNamespace())) {
 				secondaryNamespaces.add(getNamespace(ns));
 			}
@@ -271,8 +356,9 @@ public class AppSchemaMappingGenerator {
 		eu.esdihumboldt.hale.io.geoserver.DataStore dataStore = getAppSchemaDataStore();
 
 		List<FeatureType> featureTypes = new ArrayList<FeatureType>();
-		for (FeatureTypeMapping ftMapping : mappingWrapper.getAppSchemaMapping().getTypeMappings()
-				.getFeatureTypeMapping()) {
+//		for (FeatureTypeMapping ftMapping : mappingWrapper.getAppSchemaMapping().getTypeMappings()
+//				.getFeatureTypeMapping()) {
+		for (FeatureTypeMapping ftMapping : mainMapping.getTypeMappings().getFeatureTypeMapping()) {
 			featureTypes.add(getFeatureType(dataStore, ftMapping));
 		}
 
@@ -312,7 +398,8 @@ public class AppSchemaMappingGenerator {
 	}
 
 	private void checkMappingGenerated() {
-		if (mappingWrapper == null) {
+		if (mappingWrapper == null || mainMapping == null
+				|| (includedTypesMapping == null && mappingWrapper.requiresMultipleFiles())) {
 			throw new IllegalStateException("No mapping has been generated yet");
 		}
 	}
@@ -450,7 +537,7 @@ public class AppSchemaMappingGenerator {
 		}
 	}
 
-	private void createTypeMappings(IOReporter reporter) {
+	private void createTypeMappings(AppSchemaMappingContext context, IOReporter reporter) {
 		Collection<? extends Cell> typeCells = alignment.getTypeCells();
 		for (Cell typeCell : typeCells) {
 			String typeTransformId = typeCell.getTransformationIdentifier();
@@ -460,7 +547,7 @@ public class AppSchemaMappingGenerator {
 				typeTransformHandler = TypeTransformationHandlerFactory.getInstance()
 						.createTypeTransformationHandler(typeTransformId);
 				FeatureTypeMapping ftMapping = typeTransformHandler.handleTypeTransformation(
-						alignment, typeCell, mappingWrapper);
+						typeCell, context);
 
 				if (ftMapping != null) {
 					Collection<? extends Cell> propertyCells = alignment.getPropertyCells(typeCell);
@@ -473,7 +560,7 @@ public class AppSchemaMappingGenerator {
 									.getInstance().createPropertyTransformationHandler(
 											propertyTransformId);
 							propertyTransformHandler.handlePropertyTransformation(typeCell,
-									propertyCell, mappingWrapper);
+									propertyCell, context);
 						} catch (UnsupportedTransformationException e) {
 							String errMsg = MessageFormat.format(
 									"Error processing property cell {0}", propertyCell.getId());
@@ -515,6 +602,11 @@ public class AppSchemaMappingGenerator {
 	/**
 	 * Writes the generated app-schema mapping to the provided output stream.
 	 * 
+	 * <p>
+	 * If the mapping configuration requires multiple files, only the main
+	 * configuration file will be written.
+	 * </p>
+	 * 
 	 * @param out the output stream to write to
 	 * @throws IOException if an I/O error occurs
 	 */
@@ -522,22 +614,58 @@ public class AppSchemaMappingGenerator {
 		checkMappingGenerated();
 
 		try {
-			JAXBContext context = createJaxbContext();
-
-			Marshaller marshaller = context.createMarshaller();
-			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-
-			JAXBElement<AppSchemaDataAccessType> mappingConfElement = new ObjectFactory()
-					.createAppSchemaDataAccess(mappingWrapper.getAppSchemaMapping());
-
-			marshaller.marshal(mappingConfElement, out);
+			writeMapping(out, mainMapping);
 		} catch (JAXBException e) {
 			throw new IOException(e);
 		}
 
 	}
 
-	private JAXBContext createJaxbContext() throws JAXBException {
+	/**
+	 * Writes the generated app-schema mapping configuration for the included
+	 * types (non-feature types or non-top level feature types) to the provided
+	 * output stream.
+	 * 
+	 * <p>
+	 * If the mapping configuration does not require multiple files, an
+	 * {@link IllegalStateException} is thrown.
+	 * </p>
+	 * 
+	 * @param out the output stream to write to
+	 * @throws IOException if an I/O error occurs
+	 * @throws IllegalStateException if the mapping configuration does not
+	 *             require multiple files
+	 */
+	public void writeIncludedTypesMappingConf(OutputStream out) throws IOException {
+		checkMappingGenerated();
+
+		if (!mappingWrapper.requiresMultipleFiles()) {
+			throw new IllegalStateException(
+					"No included types configuration is available for the generated mapping");
+		}
+
+		try {
+			writeMapping(out, includedTypesMapping);
+		} catch (JAXBException e) {
+			throw new IOException(e);
+		}
+
+	}
+
+	private static void writeMapping(OutputStream out, AppSchemaDataAccessType mapping)
+			throws JAXBException {
+		JAXBContext context = createJaxbContext();
+
+		Marshaller marshaller = context.createMarshaller();
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+
+		JAXBElement<AppSchemaDataAccessType> mappingConfElement = new ObjectFactory()
+				.createAppSchemaDataAccess(mapping);
+
+		marshaller.marshal(mappingConfElement, out);
+	}
+
+	private static JAXBContext createJaxbContext() throws JAXBException {
 		JAXBContext context = JAXBContext.newInstance(NET_OPENGIS_OGC_CONTEXT + ":"
 				+ APP_SCHEMA_CONTEXT);
 
