@@ -18,11 +18,13 @@ package eu.esdihumboldt.hale.io.xls.reader;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.io.xls.XLSUtil;
 
 /**
  * Default lookup table reader for xls files
@@ -46,13 +48,14 @@ public class DefaultXLSLookupTableReader {
 			int valueColumn) {
 		Map<Value, Value> map = new LinkedHashMap<Value, Value>();
 		Sheet sheet = workbook.getSheetAt(0);
+		FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
 		int row = 0;
 		if (skipFirst)
 			row++;
 		for (; row < sheet.getPhysicalNumberOfRows(); row++) {
 			Row currentRow = sheet.getRow(row);
-			map.put(Value.of(currentRow.getCell(keyColumn).getStringCellValue()),
-					Value.of(currentRow.getCell(valueColumn).getStringCellValue()));
+			map.put(Value.of(XLSUtil.extractText(currentRow.getCell(keyColumn), evaluator)),
+					Value.of(XLSUtil.extractText(currentRow.getCell(valueColumn), evaluator)));
 		}
 
 		return map;
