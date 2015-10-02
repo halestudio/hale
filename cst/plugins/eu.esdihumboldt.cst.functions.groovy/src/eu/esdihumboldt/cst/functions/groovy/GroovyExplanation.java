@@ -23,6 +23,8 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
+import eu.esdihumboldt.hale.common.core.io.Text;
+import eu.esdihumboldt.hale.common.core.io.Value;
 
 /**
  * Explanation for groovy cells.
@@ -31,8 +33,8 @@ import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
  */
 public class GroovyExplanation extends AbstractCellExplanation implements GroovyConstants {
 
-	private static final String EXPLANATION_PATTERN = "Populates the {0} property with the result of the following groovy script:\n"
-			+ "{1}\nSource property names are bound to the corresponding value, if the context condition/index matches, otherwise the value isn't set.";
+	private static final String EXPLANATION_PATTERN = "Populates the {0} property with the result of the following groovy script:\n\n"
+			+ "{1}\n\nSource property names are bound to the corresponding value, if the context condition/index matches, otherwise the value isn't set.";
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell,
@@ -42,7 +44,18 @@ public class GroovyExplanation extends AbstractCellExplanation implements Groovy
 	protected String getExplanation(Cell cell, boolean html) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 
-		String script = CellUtil.getFirstParameter(cell, PARAMETER_SCRIPT).as(String.class);
+		Value scriptValue = CellUtil.getFirstParameter(cell, PARAMETER_SCRIPT);
+		String script;
+		// try retrieving as text
+		Text text = scriptValue.as(Text.class);
+		if (text != null) {
+			script = text.getText();
+		}
+		else {
+			// fall back to string value
+			script = scriptValue.as(String.class);
+		}
+
 		List<? extends Entity> sources = (cell.getSource() == null) ? (null) : (cell.getSource()
 				.get(ENTITY_VARIABLE));
 
