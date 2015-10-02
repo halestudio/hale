@@ -43,6 +43,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -78,6 +79,7 @@ public class LookupTablePage extends LookupTableImportConfigurationPage implemen
 	private TableViewerColumn sourceColumn;
 	private TableViewerColumn targetColumn;
 	private Composite tableContainer;
+	private Button ignoreEmptyString;
 
 	/**
 	 * Default Constructor
@@ -106,6 +108,11 @@ public class LookupTablePage extends LookupTableImportConfigurationPage implemen
 		choose.setItems(selection);
 		choose.select(1);
 		choose.addSelectionListener(this);
+
+		ignoreEmptyString = new Button(head, SWT.CHECK);
+		ignoreEmptyString.setText("Ignore empty string values");
+		ignoreEmptyString.addSelectionListener(this);
+		GridDataFactory.swtDefaults().span(2, 1).grab(true, false).applyTo(ignoreEmptyString);
 
 		// selection of columns to be connected
 		l = new Label(page, SWT.NONE);
@@ -172,6 +179,9 @@ public class LookupTablePage extends LookupTableImportConfigurationPage implemen
 	@Override
 	public boolean updateConfiguration(LookupTableImport provider) {
 		provider.setParameter(LookupTableExportConstants.PARAM_SKIP_FIRST_LINE, Value.of(skip));
+
+		provider.setParameter(LookupTableExportConstants.PARAM_IGNORE_EMPTY_STRING,
+				Value.of(ignoreEmptyString.getSelection()));
 
 		if (keyColumn.getSelectionIndex() != -1 && valueColumn.getSelectionIndex() != -1) {
 			provider.setParameter(LookupTableExportConstants.LOOKUP_KEY_COLUMN,
@@ -344,7 +354,7 @@ public class LookupTablePage extends LookupTableImportConfigurationPage implemen
 					return new HashMap<Value, Value>();
 				DefaultXLSLookupTableReader reader = new DefaultXLSLookupTableReader();
 				lookupTable = reader.read(workbook, skip, keyColumn.getSelectionIndex(),
-						valueColumn.getSelectionIndex());
+						valueColumn.getSelectionIndex(), ignoreEmptyString.getSelection());
 			}
 		} catch (IOException e) {
 			return lookupTable;

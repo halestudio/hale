@@ -42,10 +42,12 @@ public class DefaultXLSLookupTableReader {
 	 * @param skipFirst true, if first row should be skipped
 	 * @param keyColumn source column of the lookup table
 	 * @param valueColumn target column of the lookup table
+	 * @param ignoreEmptyStrings if empty strings should be ignored and treated
+	 *            as <code>null</code>
 	 * @return the lookup table as map
 	 */
 	public Map<Value, Value> read(Workbook workbook, boolean skipFirst, int keyColumn,
-			int valueColumn) {
+			int valueColumn, boolean ignoreEmptyStrings) {
 		Map<Value, Value> map = new LinkedHashMap<Value, Value>();
 		Sheet sheet = workbook.getSheetAt(0);
 		FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
@@ -54,8 +56,11 @@ public class DefaultXLSLookupTableReader {
 			row++;
 		for (; row < sheet.getPhysicalNumberOfRows(); row++) {
 			Row currentRow = sheet.getRow(row);
-			map.put(Value.of(XLSUtil.extractText(currentRow.getCell(keyColumn), evaluator)),
-					Value.of(XLSUtil.extractText(currentRow.getCell(valueColumn), evaluator)));
+			String value = XLSUtil.extractText(currentRow.getCell(valueColumn), evaluator);
+			if (value != null && (!ignoreEmptyStrings || !value.isEmpty())) {
+				map.put(Value.of(XLSUtil.extractText(currentRow.getCell(keyColumn), evaluator)),
+						Value.of(value));
+			}
 		}
 
 		return map;
