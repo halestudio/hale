@@ -17,7 +17,6 @@
 package eu.esdihumboldt.cst.functions.groovy;
 
 import java.text.MessageFormat;
-import java.util.List;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
@@ -46,8 +45,8 @@ public class GroovyExplanation extends AbstractCellExplanation implements Groovy
 
 		String script = getScript(cell);
 
-		List<? extends Entity> sources = (cell.getSource() == null) ? (null) : (cell.getSource()
-				.get(ENTITY_VARIABLE));
+//		List<? extends Entity> sources = (cell.getSource() == null) ? (null) : (cell.getSource()
+//				.get(ENTITY_VARIABLE));
 
 		if (target != null && script != null) {
 			if (html)
@@ -56,17 +55,17 @@ public class GroovyExplanation extends AbstractCellExplanation implements Groovy
 					formatEntity(target, html, true), script);
 			if (html)
 				explanation = explanation.replaceAll("\n", "<br />");
-			if (html && sources != null) {
-				StringBuilder sb = new StringBuilder();
-				sb.append("<br /><br />Replacement table:<br />");
-				sb.append("<table border=\"1\"><tr><th>Variable name</th><th>Value of the following property</th></tr>");
-				for (Entity entity : sources)
-					sb.append(String.format("<tr><td>%s</td><td>%s</td></tr>",
-							getEntityNameWithoutCondition(entity).replace('.', '_'),
-							formatEntity(entity, true, false)));
-				sb.append("</table>");
-				explanation += sb.toString();
-			}
+//			if (html && sources != null) {
+//				StringBuilder sb = new StringBuilder();
+//				sb.append("<br /><br />Replacement table:<br />");
+//				sb.append("<table border=\"1\"><tr><th>Variable name</th><th>Value of the following property</th></tr>");
+//				for (Entity entity : sources)
+//					sb.append(String.format("<tr><td>%s</td><td>%s</td></tr>",
+//							getEntityNameWithoutCondition(entity).replace('.', '_'),
+//							formatEntity(entity, true, false)));
+//				sb.append("</table>");
+//				explanation += sb.toString();
+//			}
 			return explanation;
 		}
 
