@@ -233,7 +233,7 @@
       </typeFunction>
       <typeFunction
             category="eu.esdihumboldt.cst.functions.groovy"
-            cellExplanation="eu.esdihumboldt.hale.common.align.model.functions.explanations.JoinExplanation"
+            cellExplanation="eu.esdihumboldt.cst.functions.groovy.GroovyJoinExplanation"
             description="Joins multiple instances of different source types into one instance of the target type, based on one or more matching properties."
             help="help/join.xhtml"
             icon="icons/star.png"

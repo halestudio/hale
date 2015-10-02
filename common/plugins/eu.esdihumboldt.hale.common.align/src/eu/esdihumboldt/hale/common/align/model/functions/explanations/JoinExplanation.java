@@ -16,9 +16,15 @@
 
 package eu.esdihumboldt.hale.common.align.model.functions.explanations;
 
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.CellUtil;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
+import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter;
+import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter.JoinCondition;
 import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 
 /**
  * Explanation for join function cells.
@@ -33,6 +39,58 @@ public class JoinExplanation extends AbstractCellExplanation implements JoinFunc
 	 */
 	@Override
 	protected String getExplanation(Cell cell, boolean html) {
+		JoinParameter join = CellUtil.getFirstParameter(cell, PARAMETER_JOIN).as(
+				JoinParameter.class);
+
+		if (join != null && join.types != null && !join.types.isEmpty()) {
+			StringBuilder sb = new StringBuilder();
+
+			// types
+			sb.append("Joins the types ");
+			boolean first = true;
+			for (TypeEntityDefinition type : join.types) {
+				if (first) {
+					first = false;
+				}
+				else {
+					sb.append(", ");
+				}
+				sb.append(formatEntity(type, html, false));
+			}
+			sb.append(" based on the following conditions:\n\n");
+
+			// conditions
+
+			for (JoinCondition condition : join.conditions) {
+				sb.append(formatFullEntity(condition.baseProperty, html));
+				sb.append(" = ");
+				sb.append(formatFullEntity(condition.joinProperty, html));
+				sb.append('\n');
+			}
+			sb.append('\n');
+
+			// finalize
+
+			String explanation = sb.toString();
+
+			if (html)
+				explanation = explanation.replaceAll("\n", "<br />");
+
+			return explanation;
+		}
+
 		return null;
+	}
+
+	private String formatFullEntity(EntityDefinition ed, boolean html) {
+		String result = "";
+		while (ed != null) {
+			if (!result.isEmpty()) {
+				result = "." + result;
+			}
+			result = formatEntity(ed, html, false) + result;
+			ed = AlignmentUtil.getParent(ed);
+		}
+		return result;
 	}
 }

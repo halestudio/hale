@@ -34,7 +34,7 @@ import eu.esdihumboldt.hale.common.core.io.Value;
 public class GroovyExplanation extends AbstractCellExplanation implements GroovyConstants {
 
 	private static final String EXPLANATION_PATTERN = "Populates the {0} property with the result of the following groovy script:\n\n"
-			+ "{1}\n\nSource property names are bound to the corresponding value, if the context condition/index matches, otherwise the value isn't set.";
+			+ "{1}\n\nSource property names are bound to the corresponding value, if the context condition/index matches, otherwise the value isn''t set.";
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell,
@@ -44,17 +44,7 @@ public class GroovyExplanation extends AbstractCellExplanation implements Groovy
 	protected String getExplanation(Cell cell, boolean html) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 
-		Value scriptValue = CellUtil.getFirstParameter(cell, PARAMETER_SCRIPT);
-		String script;
-		// try retrieving as text
-		Text text = scriptValue.as(Text.class);
-		if (text != null) {
-			script = text.getText();
-		}
-		else {
-			// fall back to string value
-			script = scriptValue.as(String.class);
-		}
+		String script = getScript(cell);
 
 		List<? extends Entity> sources = (cell.getSource() == null) ? (null) : (cell.getSource()
 				.get(ENTITY_VARIABLE));
@@ -81,5 +71,26 @@ public class GroovyExplanation extends AbstractCellExplanation implements Groovy
 		}
 
 		return null;
+	}
+
+	/**
+	 * Get the script stored in a Groovy function cell.
+	 * 
+	 * @param cell the cell
+	 * @return the Groovy script string or <code>null</code>
+	 */
+	public static String getScript(Cell cell) {
+		Value scriptValue = CellUtil.getFirstParameter(cell, PARAMETER_SCRIPT);
+		String script;
+		// try retrieving as text
+		Text text = scriptValue.as(Text.class);
+		if (text != null) {
+			script = text.getText();
+		}
+		else {
+			// fall back to string value
+			script = scriptValue.as(String.class);
+		}
+		return script;
 	}
 }
