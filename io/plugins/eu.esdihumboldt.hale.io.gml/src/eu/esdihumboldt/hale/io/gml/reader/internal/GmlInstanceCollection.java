@@ -511,6 +511,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 	private boolean emptyInitialized = false;
 	private boolean empty = false;
 	private final CRSProvider crsProvider;
+	private final boolean ignoreNamespaces;
 
 	/**
 	 * Create an XMl/GML instance collection based on the given source.
@@ -524,17 +525,21 @@ public class GmlInstanceCollection implements InstanceCollection {
 	 * @param strict if associating elements with properties should be done
 	 *            strictly according to the schema, otherwise a fall-back is
 	 *            used trying to populate values also on invalid property paths
+	 * @param ignoreNamespaces if parsing of the XML instances should allow
+	 *            types and properties with namespaces that differ from those
+	 *            defined in the schema
 	 * @param crsProvider CRS provider in case no CRS is specified, may be
 	 *            <code>null</code>
 	 */
 	public GmlInstanceCollection(LocatableInputSupplier<? extends InputStream> source,
 			TypeIndex sourceSchema, boolean restrictToFeatures, boolean ignoreRoot, boolean strict,
-			CRSProvider crsProvider) {
+			boolean ignoreNamespaces, CRSProvider crsProvider) {
 		this.source = source;
 		this.sourceSchema = sourceSchema;
 		this.restrictToFeatures = restrictToFeatures;
 		this.ignoreRoot = ignoreRoot;
 		this.strict = strict;
+		this.ignoreNamespaces = ignoreNamespaces;
 		this.crsProvider = crsProvider;
 	}
 
