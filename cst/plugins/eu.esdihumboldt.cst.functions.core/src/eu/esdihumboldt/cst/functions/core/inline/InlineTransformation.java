@@ -15,13 +15,25 @@
 
 package eu.esdihumboldt.cst.functions.core.inline;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
+import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.align.model.TransformationMode;
+import eu.esdihumboldt.hale.common.align.model.Type;
+import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
+import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
+import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
@@ -37,6 +49,7 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.impl.LogProgressIndicator;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstanceCollection;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
@@ -69,11 +82,47 @@ public class InlineTransformation extends
 		TypeDefinition sourceType = sourceInstance.getDefinition();
 
 		// get the original alignment
-		Alignment alignment = getExecutionContext().getAlignment();
+		Alignment orgAlignment = getExecutionContext().getAlignment();
+		MutableAlignment alignment = new DefaultAlignment(orgAlignment);
 
-		// TODO identify relevant type cell(s)?
+		// identify relevant type cell(s)
+		MutableCell queryCell = new DefaultCell();
+		ListMultimap<String, Type> sourceEntities = ArrayListMultimap.create();
+		sourceEntities.put(null, new DefaultType(new TypeEntityDefinition(sourceType,
+				SchemaSpaceID.SOURCE, null)));
+		queryCell.setSource(sourceEntities);
+		ListMultimap<String, Type> targetEntities = ArrayListMultimap.create();
+		targetEntities.put(null, new DefaultType(new TypeEntityDefinition(resultProperty
+				.getDefinition().getPropertyType(), SchemaSpaceID.TARGET, null)));
+		queryCell.setTarget(targetEntities);
+		Collection<? extends Cell> candidates = alignment.getTypeCells(queryCell);
+		if (candidates.isEmpty()) {
+			log.error(log.createMessage("No type transformations found for inline transformation",
+					null));
+			throw new NoResultException();
+		}
 
-		// TODO filter alignment -> only keep relevant type relations
+		// filter alignment -> only keep relevant type relations
+		List<Cell> allTypeCells = new ArrayList<>(alignment.getTypeCells());
+		for (Cell cell : allTypeCells) {
+			// remove cell
+			alignment.removeCell(cell);
+
+			if (!cell.getTransformationMode().equals(TransformationMode.disabled)) {
+				// only readd if not disabled
+
+				MutableCell copy = new DefaultCell(cell);
+				if (candidates.contains(cell)) {
+					// readd as active
+					copy.setTransformationMode(TransformationMode.active);
+				}
+				else {
+					// readd as passive
+					copy.setTransformationMode(TransformationMode.passive);
+				}
+				alignment.addCell(copy);
+			}
+		}
 
 		// prepare transformation input/output
 		DefaultInstanceCollection sourceInstances = new DefaultInstanceCollection();
