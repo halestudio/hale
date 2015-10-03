@@ -19,6 +19,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
 import eu.esdihumboldt.hale.common.align.transformation.function.ExecutionContext;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
@@ -35,6 +37,11 @@ public class DummyExecutionContext implements ExecutionContext {
 	private final Map<Object, Object> transformationContext = Collections
 			.synchronizedMap(new HashMap<>());
 	private final ServiceProvider serviceProvider;
+
+	/**
+	 * Empty alignment
+	 */
+	private final Alignment alignment = new DefaultAlignment();
 
 	/**
 	 * Constructor which only requires a service provider.
@@ -64,4 +71,10 @@ public class DummyExecutionContext implements ExecutionContext {
 	public Map<Object, Object> getTransformationContext() {
 		return transformationContext;
 	}
+
+	@Override
+	public Alignment getAlignment() {
+		return alignment;
+	}
+
 }
