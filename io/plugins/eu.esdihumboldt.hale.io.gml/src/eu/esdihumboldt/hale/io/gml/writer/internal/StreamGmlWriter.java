@@ -74,6 +74,8 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.ElementType;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.io.gml.geometry.GMLConstants;
 import eu.esdihumboldt.hale.io.gml.internal.simpletype.SimpleTypeUtil;
@@ -1156,8 +1158,34 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 			}
 		}
 		else {
-			// write value as content
-			writer.writeCharacters(SimpleTypeUtil.convertToXml(value, propDef.getPropertyType()));
+			TypeDefinition propType = propDef.getPropertyType();
+
+			if (value instanceof Iterable
+					&& List.class.isAssignableFrom(propType.getConstraint(Binding.class)
+							.getBinding())
+					&& propType.getConstraint(ElementType.class).getBinding() != null) {
+				// element is a list
+				// TODO more robust detection?
+
+				boolean first = true;
+				for (Object element : ((Iterable<?>) value)) {
+					if (first) {
+						first = false;
+					}
+					else {
+						// space delimits list elements
+						writer.writeCharacters(" ");
+					}
+
+					// write the element
+					writer.writeCharacters(SimpleTypeUtil.convertToXml(element, propType
+							.getConstraint(ElementType.class).getDefinition()));
+				}
+			}
+			else {
+				// write value as content
+				writer.writeCharacters(SimpleTypeUtil.convertToXml(value, propDef.getPropertyType()));
+			}
 		}
 	}
 
