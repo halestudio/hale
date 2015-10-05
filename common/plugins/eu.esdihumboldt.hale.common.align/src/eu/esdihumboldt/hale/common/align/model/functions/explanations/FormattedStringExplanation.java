@@ -34,7 +34,7 @@ public class FormattedStringExplanation extends AbstractCellExplanation implemen
 		FormattedStringFunction {
 
 	private static final String EXPLANATION_PATTERN = "Populates the {0} property with a string formatted according to this pattern:\n"
-			+ "{1}\nSource property names in curly braces are replaced by the corresponding property value, if the context condition/index matches, otherwise the value isn't set.";
+			+ "{1}\nSource property names in curly braces are replaced by the corresponding property value, if the context condition/index matches, otherwise the value isn''t set.";
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell,
@@ -44,7 +44,11 @@ public class FormattedStringExplanation extends AbstractCellExplanation implemen
 	protected String getExplanation(Cell cell, boolean html) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		String pattern = CellUtil.getFirstParameter(cell, PARAMETER_PATTERN).as(String.class);
-		List<? extends Entity> sources = cell.getSource().get(ENTITY_VARIABLE);
+
+		List<? extends Entity> sources = null;
+		if (cell.getSource() != null) {
+			sources = cell.getSource().get(ENTITY_VARIABLE);
+		}
 
 		if (target != null && pattern != null) {
 			if (html)
@@ -53,7 +57,7 @@ public class FormattedStringExplanation extends AbstractCellExplanation implemen
 					formatEntity(target, html, true), pattern);
 			if (html)
 				explanation = explanation.replaceAll("\n", "<br />");
-			if (html) {
+			if (sources != null && html) {
 				StringBuilder sb = new StringBuilder();
 				sb.append("<br /><br />Replacement table:<br />");
 				sb.append("<table border=\"1\"><tr><th>Variable name</th><th>Value of the following property</th></tr>");
