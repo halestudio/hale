@@ -159,7 +159,8 @@ public class OGroup implements MutableGroup {
 				List<ORecordAbstract<?>> recs = new ArrayList<ORecordAbstract<?>>();
 				if (field.getValue() instanceof Collection<?>) {
 					for (Object value : (Collection<?>) field.getValue()) {
-						if (value instanceof ODocument) {
+						if (value instanceof ODocument
+								&& !getSpecialFieldNames().contains(field.getKey())) {
 							docs.add((ODocument) value);
 						}
 						else if (value instanceof ORecordAbstract<?>) {
