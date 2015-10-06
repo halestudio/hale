@@ -78,12 +78,30 @@ public abstract class AbstractCellExplanation implements CellExplanation {
 	protected String formatEntity(Entity entity, boolean html, boolean indexInFront) {
 		if (entity == null)
 			return null;
+
+		return formatEntity(entity.getDefinition(), html, indexInFront);
+	}
+
+	/**
+	 * Format an entity for inclusion in an explanation.
+	 * 
+	 * @param entityDef the entity definition, may be <code>null</code>
+	 * @param html if the format should be HMTL, otherwise the format is just
+	 *            text
+	 * @param indexInFront whether index conditions should be in front of the
+	 *            property name or behind in brackets
+	 * @return the formatted entity name or <code>null</code> in case of
+	 *         <code>null</code> input
+	 */
+	protected String formatEntity(EntityDefinition entityDef, boolean html, boolean indexInFront) {
+		if (entityDef == null)
+			return null;
 		// get name and standard text
-		String name = entity.getDefinition().getDefinition().getDisplayName();
+		String name = entityDef.getDefinition().getDisplayName();
 		String text = quoteText(name, html);
 
 		// modify text with filter
-		List<ChildContext> path = entity.getDefinition().getPropertyPath();
+		List<ChildContext> path = entityDef.getPropertyPath();
 		// different output than AlignmentUtil in case of property with index
 		// condition
 		if (path != null && !path.isEmpty() && path.get(path.size() - 1).getIndex() != null) {
@@ -95,7 +113,7 @@ public abstract class AbstractCellExplanation implements CellExplanation {
 						+ " value)";
 		}
 		else {
-			String filterString = AlignmentUtil.getContextText(entity.getDefinition());
+			String filterString = AlignmentUtil.getContextText(entityDef);
 			if (html) {
 				filterString = StringEscapeUtils.escapeHtml(filterString);
 			}

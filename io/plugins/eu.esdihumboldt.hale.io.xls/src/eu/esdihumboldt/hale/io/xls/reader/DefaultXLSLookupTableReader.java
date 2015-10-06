@@ -18,11 +18,13 @@ package eu.esdihumboldt.hale.io.xls.reader;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.io.xls.XLSUtil;
 
 /**
  * Default lookup table reader for xls files
@@ -40,19 +42,25 @@ public class DefaultXLSLookupTableReader {
 	 * @param skipFirst true, if first row should be skipped
 	 * @param keyColumn source column of the lookup table
 	 * @param valueColumn target column of the lookup table
+	 * @param ignoreEmptyStrings if empty strings should be ignored and treated
+	 *            as <code>null</code>
 	 * @return the lookup table as map
 	 */
 	public Map<Value, Value> read(Workbook workbook, boolean skipFirst, int keyColumn,
-			int valueColumn) {
+			int valueColumn, boolean ignoreEmptyStrings) {
 		Map<Value, Value> map = new LinkedHashMap<Value, Value>();
 		Sheet sheet = workbook.getSheetAt(0);
+		FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
 		int row = 0;
 		if (skipFirst)
 			row++;
 		for (; row < sheet.getPhysicalNumberOfRows(); row++) {
 			Row currentRow = sheet.getRow(row);
-			map.put(Value.of(currentRow.getCell(keyColumn).getStringCellValue()),
-					Value.of(currentRow.getCell(valueColumn).getStringCellValue()));
+			String value = XLSUtil.extractText(currentRow.getCell(valueColumn), evaluator);
+			if (value != null && (!ignoreEmptyStrings || !value.isEmpty())) {
+				map.put(Value.of(XLSUtil.extractText(currentRow.getCell(keyColumn), evaluator)),
+						Value.of(value));
+			}
 		}
 
 		return map;

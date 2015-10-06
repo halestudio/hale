@@ -74,6 +74,8 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.ElementType;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.io.gml.geometry.GMLConstants;
 import eu.esdihumboldt.hale.io.gml.internal.simpletype.SimpleTypeUtil;
@@ -1068,17 +1070,72 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 				writeGeometry(pair.getFirst(), propDef, srsName, report);
 			}
 			else {
-				// write all children (no elements if there is a value)
-				writeProperties(group, group.getDefinition(), !hasValue, report);
+				boolean hasOnlyNilReason = hasOnlyNilReason(group);
+
+				// write no elements if there is a value or only a nil reason
+				boolean writeElements = !hasValue && !hasOnlyNilReason;
+
+				// write all children
+				writeProperties(group, group.getDefinition(), writeElements, report);
 
 				// write value
 				if (hasValue) {
 					writeElementValue(value, propDef);
 				}
+				else if (hasOnlyNilReason) {
+					// complex element with a nil value -> write xsi:nil if
+					// possible
+
+					/*
+					 * XXX open question: should xsi:nil be there also if there
+					 * are other attributes than nilReason?
+					 */
+
+					writeElementValue(null, propDef);
+				}
 			}
 
 			writer.writeEndElement();
 		}
+	}
+
+	/**
+	 * Determines if a group has as its only property the nilReason attribute.
+	 * 
+	 * @param group the group to test
+	 * @return <code>true</code> if the group has the nilReason attribute and no
+	 *         other children, or no children at all, <code>false</code>
+	 *         otherwise
+	 */
+	private boolean hasOnlyNilReason(Group group) {
+		int count = 0;
+		QName nilReasonName = null;
+		for (QName name : group.getPropertyNames()) {
+			if (count > 0)
+				// more than one property
+				return false;
+			if (!name.getLocalPart().equals("nilReason"))
+				// a property different from nilReason
+				return false;
+			nilReasonName = name;
+			count++;
+		}
+
+		if (nilReasonName != null) {
+			// make sure it is an attribute
+			DefinitionGroup parent = group.getDefinition();
+			ChildDefinition<?> child = parent.getChild(nilReasonName);
+			if (child.asProperty() == null) {
+				// is a group
+				return false;
+			}
+			if (!child.asProperty().getConstraint(XmlAttributeFlag.class).isEnabled()) {
+				// not an attribute
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**
@@ -1101,8 +1158,34 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 			}
 		}
 		else {
-			// write value as content
-			writer.writeCharacters(SimpleTypeUtil.convertToXml(value, propDef.getPropertyType()));
+			TypeDefinition propType = propDef.getPropertyType();
+
+			if (value instanceof Iterable
+					&& List.class.isAssignableFrom(propType.getConstraint(Binding.class)
+							.getBinding())
+					&& propType.getConstraint(ElementType.class).getBinding() != null) {
+				// element is a list
+				// TODO more robust detection?
+
+				boolean first = true;
+				for (Object element : ((Iterable<?>) value)) {
+					if (first) {
+						first = false;
+					}
+					else {
+						// space delimits list elements
+						writer.writeCharacters(" ");
+					}
+
+					// write the element
+					writer.writeCharacters(SimpleTypeUtil.convertToXml(element, propType
+							.getConstraint(ElementType.class).getDefinition()));
+				}
+			}
+			else {
+				// write value as content
+				writer.writeCharacters(SimpleTypeUtil.convertToXml(value, propDef.getPropertyType()));
+			}
 		}
 	}
 
