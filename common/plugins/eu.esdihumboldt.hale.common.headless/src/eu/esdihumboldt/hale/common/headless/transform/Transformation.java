@@ -37,6 +37,7 @@ import com.google.common.util.concurrent.SettableFuture;
 import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.functions.CreateFunction;
 import eu.esdihumboldt.hale.common.align.model.functions.RetypeFunction;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReport;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
@@ -226,11 +227,12 @@ public class Transformation {
 		final InstanceCollection sourceToUse;
 
 		// Check whether to create a temporary database or not.
-		// Currently do not create a temporary DB is there are Retypes only.
+		// Currently do not create a temporary DB is there are Retypes/Creates
+		// only.
 		boolean useTempDatabase = false;
 		final LocalOrientDB db;
 		for (Cell cell : alignment.getActiveTypeCells())
-			if (!RetypeFunction.ID.equals(cell.getTransformationIdentifier())) {
+			if (!isStreamingTypeTransformation(cell.getTransformationIdentifier())) {
 				useTempDatabase = true;
 				break;
 			}
@@ -394,6 +396,28 @@ public class Transformation {
 		}
 
 		return result;
+	}
+
+	/**
+	 * Determine if a function is streaming capable (and does not need an index
+	 * to be built).
+	 * 
+	 * @param transformationIdentifier the function ID
+	 * @return <code>true</code> if the function is streaming capable,
+	 *         <code>false</code> otherwise
+	 */
+	private static boolean isStreamingTypeTransformation(String transformationIdentifier) {
+		// XXX rather decide based on function declaration or anything like
+		// that?
+		switch (transformationIdentifier) {
+		case RetypeFunction.ID: // fall through
+		case CreateFunction.ID: // fall through
+		case "eu.esdihumboldt.cst.functions.groovy.retype": // fall through
+		case "eu.esdihumboldt.cst.functions.groovy.create":
+			return true;
+		default:
+			return false;
+		}
 	}
 
 	private static void failure(SettableFuture<Boolean> result, IJobChangeEvent event) {
