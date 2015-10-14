@@ -368,8 +368,14 @@ public class ExecTransformation implements ConsoleConstants {
 		if (factory == null) {
 			throw fail("Instance writer with ID " + writerId + " not found");
 		}
-		List<IContentType> cts = HaleIO.findContentTypesFor(factory.getSupportedTypes(), null,
-				context.getTarget().getPath());
+		String path = context.getTarget().getPath();
+		List<IContentType> cts;
+		if (path != null) {
+			cts = HaleIO.findContentTypesFor(factory.getSupportedTypes(), null, path);
+		}
+		else {
+			cts = new ArrayList<>(factory.getSupportedTypes());
+		}
 		if (!cts.isEmpty()) {
 			target.setContentType(cts.get(0));
 		}

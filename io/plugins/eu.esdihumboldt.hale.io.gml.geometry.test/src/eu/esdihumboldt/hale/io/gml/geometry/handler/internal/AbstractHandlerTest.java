@@ -20,6 +20,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -31,7 +34,9 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.test.TestUtil;
@@ -102,6 +107,29 @@ public abstract class AbstractHandlerTest {
 		assertTrue(instanceReport.isSuccess());
 
 		return instanceReader.getInstances();
+	}
+
+	/**
+	 * Retrieve geometries from an instances holding them as value.
+	 * 
+	 * @param geomInstance the instance with a geometry value
+	 * @return the list of geometry properties
+	 */
+	protected List<? extends GeometryProperty<?>> getGeometries(Instance geomInstance) {
+		List<GeometryProperty<?>> result = new ArrayList<>();
+		if (geomInstance.getValue() instanceof Collection<?>) {
+			for (Object instance : ((Collection<?>) geomInstance.getValue())) {
+				assertTrue(instance instanceof GeometryProperty<?>);
+				result.add((GeometryProperty<?>) instance);
+			}
+		}
+		else if (geomInstance.getValue() instanceof GeometryProperty<?>) {
+			result.add((GeometryProperty<?>) geomInstance.getValue());
+		}
+		else {
+			throw new IllegalStateException("No geometries encountered in instance");
+		}
+		return result;
 	}
 
 }
