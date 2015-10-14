@@ -30,6 +30,11 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 public interface InstanceReader extends ImportProvider {
 
 	/**
+	 * The configuration parameter name for the default SRS.
+	 */
+	public static final String PARAM_DEFAULT_SRS = "defaultSrs";
+
+	/**
 	 * Set the instance source schema
 	 * 
 	 * @param sourceSchema the source schema

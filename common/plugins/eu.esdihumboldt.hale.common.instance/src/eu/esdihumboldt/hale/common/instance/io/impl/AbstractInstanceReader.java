@@ -16,11 +16,18 @@
 
 package eu.esdihumboldt.hale.common.instance.io.impl;
 
+import java.util.List;
+
+import javax.xml.namespace.QName;
+
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractImportProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.GZipEnabledImport;
+import eu.esdihumboldt.hale.common.instance.geometry.CRSDefinitionManager;
 import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
+import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
@@ -34,6 +41,20 @@ public abstract class AbstractInstanceReader extends GZipEnabledImport implement
 	private TypeIndex sourceSchema;
 
 	private CRSProvider crsProvider;
+
+	private final CRSProvider wrappingProvider = new CRSProvider() {
+
+		@Override
+		public CRSDefinition getCRS(TypeDefinition parentType, List<QName> propertyPath) {
+			CRSDefinition result = getDefaultSRS();
+
+			if (result == null && crsProvider != null) {
+				result = crsProvider.getCRS(parentType, propertyPath);
+			}
+
+			return result;
+		}
+	};
 
 	/**
 	 * @see InstanceReader#setSourceSchema(TypeIndex)
@@ -72,12 +93,26 @@ public abstract class AbstractInstanceReader extends GZipEnabledImport implement
 	}
 
 	/**
-	 * Get the CRS provider.
+	 * Get the default SRS if it is configured.
+	 * 
+	 * @return the default SRS or <code>null</code>
+	 */
+	protected CRSDefinition getDefaultSRS() {
+		String srsString = getParameter(PARAM_DEFAULT_SRS).as(String.class, null);
+		if (srsString == null || srsString.isEmpty()) {
+			return null;
+		}
+		return CRSDefinitionManager.getInstance().parse(srsString);
+	}
+
+	/**
+	 * Get the CRS provider. It also respects if a default SRS is set on the
+	 * input.
 	 * 
 	 * @return the CRS provider
 	 */
 	protected CRSProvider getCrsProvider() {
-		return crsProvider;
+		return wrappingProvider;
 	}
 
 }
