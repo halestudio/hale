@@ -19,12 +19,14 @@ package eu.esdihumboldt.hale.io.gml.reader.internal;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.Nullable;
 import javax.xml.XMLConstants;
@@ -34,6 +36,8 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
@@ -157,7 +161,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 
 					// check element and try to determine associated type
 					QName elementName = new QName(reader.getNamespaceURI(), reader.getLocalName());
-					TypeDefinition def = allowedTypes.get(elementName);
+					TypeDefinition def = findType(elementName);
 
 					// also check for xsi:type
 					if (reader.getAttributeCount() > 0) {
@@ -182,7 +186,12 @@ public class GmlInstanceCollection implements InstanceCollection {
 								String ns = reader.getNamespaceURI(prefix);
 
 								// override with xsi:type
-								def = allowedTypes.get(new QName(ns, type));
+								/*
+								 * FIXME will this always find the right type?
+								 * initAllowedTypes only adds type names if no
+								 * element names are available
+								 */
+								def = findType(new QName(ns, type));
 							}
 						}
 					}
@@ -192,6 +201,33 @@ public class GmlInstanceCollection implements InstanceCollection {
 					}
 				}
 			}
+		}
+
+		/**
+		 * Find the type for a given name.
+		 * 
+		 * @param name the type or element name
+		 * @return the found type or <code>null</code>
+		 */
+		private TypeDefinition findType(QName name) {
+			TypeDefinition result = allowedTypes.get(name);
+
+			if (result == null && ignoreNamespaces) {
+				// also allow a local name match
+				for (Entry<QName, TypeDefinition> entry : allowedTypes.entrySet()) {
+					TypeDefinition type = entry.getValue();
+					if (entry.getKey().getLocalPart().equals(name.getLocalPart())
+							|| type.getName().getLocalPart().equals(name.getLocalPart())) {
+						result = type;
+						log.info(MessageFormat.format(
+								"Using type with differing namespace - {0} replaced with {1}",
+								name.toString(), entry.getKey().toString()));
+						break;
+					}
+				}
+			}
+
+			return result;
 		}
 
 		/**
@@ -418,7 +454,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 
 			try {
 				return StreamGmlHelper.parseInstance(reader, nextType, elementIndex++, strict,
-						null, crsProvider, nextType, null, false);
+						null, crsProvider, nextType, null, false, ignoreNamespaces);
 			} catch (XMLStreamException e) {
 				throw new IllegalStateException(e);
 			} finally {
@@ -502,6 +538,8 @@ public class GmlInstanceCollection implements InstanceCollection {
 
 	}
 
+	protected final ALogger log = ALoggerFactory.getLogger(GmlInstanceCollection.class);
+
 	private final TypeIndex sourceSchema;
 	private final LocatableInputSupplier<? extends InputStream> source;
 	private final boolean restrictToFeatures;
@@ -511,6 +549,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 	private boolean emptyInitialized = false;
 	private boolean empty = false;
 	private final CRSProvider crsProvider;
+	private final boolean ignoreNamespaces;
 
 	/**
 	 * Create an XMl/GML instance collection based on the given source.
@@ -524,17 +563,21 @@ public class GmlInstanceCollection implements InstanceCollection {
 	 * @param strict if associating elements with properties should be done
 	 *            strictly according to the schema, otherwise a fall-back is
 	 *            used trying to populate values also on invalid property paths
+	 * @param ignoreNamespaces if parsing of the XML instances should allow
+	 *            types and properties with namespaces that differ from those
+	 *            defined in the schema
 	 * @param crsProvider CRS provider in case no CRS is specified, may be
 	 *            <code>null</code>
 	 */
 	public GmlInstanceCollection(LocatableInputSupplier<? extends InputStream> source,
 			TypeIndex sourceSchema, boolean restrictToFeatures, boolean ignoreRoot, boolean strict,
-			CRSProvider crsProvider) {
+			boolean ignoreNamespaces, CRSProvider crsProvider) {
 		this.source = source;
 		this.sourceSchema = sourceSchema;
 		this.restrictToFeatures = restrictToFeatures;
 		this.ignoreRoot = ignoreRoot;
 		this.strict = strict;
+		this.ignoreNamespaces = ignoreNamespaces;
 		this.crsProvider = crsProvider;
 	}
 

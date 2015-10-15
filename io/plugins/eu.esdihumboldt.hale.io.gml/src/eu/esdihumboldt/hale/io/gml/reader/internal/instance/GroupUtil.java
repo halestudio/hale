@@ -25,6 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import javax.annotation.Nullable;
 import javax.xml.namespace.QName;
 
 import de.fhg.igd.slf4jplus.ALogger;
@@ -59,11 +60,13 @@ public class GroupUtil {
 	 * @param propertyName the property name
 	 * @param allowFallback states if falling back to non-strict mode is allowed
 	 *            for determining the property definition
+	 * @param ignoreNamespaces if a property with a differing namespace may be
+	 *            accepted
 	 * @return the group property or <code>null</code> if none is found
 	 */
 	static GroupProperty determineProperty(List<MutableGroup> groups, QName propertyName,
-			boolean allowFallback) {
-		return determineProperty(groups, propertyName, true, allowFallback);
+			boolean allowFallback, boolean ignoreNamespaces) {
+		return determineProperty(groups, propertyName, true, allowFallback, ignoreNamespaces);
 	}
 
 	/**
@@ -77,10 +80,12 @@ public class GroupUtil {
 	 * @param allowFallback states if with strict mode being enabled, falling
 	 *            back to non-strict mode is allowed (this will not be
 	 *            propagated to subsequent calls)
+	 * @param ignoreNamespaces if a property with a differing namespace may be
+	 *            accepted
 	 * @return the group property or <code>null</code> if none is found
 	 */
 	private static GroupProperty determineProperty(List<MutableGroup> groups, QName propertyName,
-			boolean strict, boolean allowFallback) {
+			boolean strict, boolean allowFallback, boolean ignoreNamespaces) {
 		if (groups.isEmpty()) {
 			return null;
 		}
@@ -126,13 +131,10 @@ public class GroupUtil {
 			}
 
 			int maxDescent = close.size() - 1;
-			List<MutableGroup> stackPrototype = new ArrayList<MutableGroup>(keep); // prototype
-																					// that
-																					// is
-																					// copied
-																					// for
-																					// each
-																					// parent
+
+			// prototype that is copied for each parent
+			List<MutableGroup> stackPrototype = new ArrayList<MutableGroup>(keep);
+
 			LinkedList<GroupPath> level = new LinkedList<GroupPath>();
 			LinkedList<GroupPath> nextLevel = new LinkedList<GroupPath>();
 			for (int i = 0; i < parents.size(); i++) {
@@ -143,7 +145,7 @@ public class GroupUtil {
 
 				// check for a direct match in the group
 				PropertyDefinition property = determineDirectProperty(parents.get(i), propertyName,
-						strict);
+						strict, ignoreNamespaces);
 				if (property != null) {
 					gp = new GroupProperty(property, path);
 				}
@@ -152,7 +154,8 @@ public class GroupUtil {
 														// maxDescent 0 we get
 														// siblings
 					// check the sub-properties
-					gp = determineSubProperty(level, propertyName, nextLevel, 0, strict);
+					gp = determineSubProperty(level, propertyName, nextLevel, 0, strict,
+							ignoreNamespaces);
 				}
 
 				if (gp != null) {
@@ -182,7 +185,8 @@ public class GroupUtil {
 		}
 
 		// preferred 2: property of the current group
-		PropertyDefinition property = determineDirectProperty(currentGroup, propertyName, strict);
+		PropertyDefinition property = determineDirectProperty(currentGroup, propertyName, strict,
+				ignoreNamespaces);
 		if (property != null) {
 			return new GroupProperty(property, new GroupPath(groups, null));
 		}
@@ -191,7 +195,8 @@ public class GroupUtil {
 		// sub-group
 		siblings.addFirst(new GroupPath(groups, null)); // add current group
 		// check the sub-properties
-		GroupProperty gp = determineSubProperty(siblings, propertyName, null, -1, strict);
+		GroupProperty gp = determineSubProperty(siblings, propertyName, null, -1, strict,
+				ignoreNamespaces);
 
 		if (gp != null) {
 			return gp;
@@ -203,10 +208,37 @@ public class GroupUtil {
 			log.warn(MessageFormat
 					.format("Could not find valid property path for {0}, source data might be invalid regarding the source schema.",
 							propertyName));
-			return determineProperty(groups, propertyName, false, false);
+			return determineProperty(groups, propertyName, false, false, ignoreNamespaces);
 		}
 
 		return null;
+	}
+
+	/**
+	 * Find a child definition based on the name.
+	 * 
+	 * @param parent the parent type or group
+	 * @param propertyName the property name
+	 * @param ignoreNamespaces if matches with differing namespace should be
+	 *            allowed
+	 * @return the child definition or <code>null</code>
+	 */
+	@Nullable
+	static ChildDefinition<?> findChild(DefinitionGroup parent, QName propertyName,
+			boolean ignoreNamespaces) {
+		ChildDefinition<?> result = parent.getChild(propertyName);
+
+		if (result == null && ignoreNamespaces) {
+			// look for local name match
+			for (ChildDefinition<?> candidate : DefinitionUtil.getAllChildren(parent)) {
+				if (candidate.getName().getLocalPart().equals(propertyName.getLocalPart())) {
+					result = candidate;
+					break;
+				}
+			}
+		}
+
+		return result;
 	}
 
 	/**
@@ -217,12 +249,14 @@ public class GroupUtil {
 	 * @param propertyName the property name
 	 * @param strict states if additional checks are applied apart from whether
 	 *            the property exists
+	 * @param ignoreNamespaces if a property with a differing namespace may be
+	 *            accepted
 	 * @return the property definition or <code>null</code> if none is found or
 	 *         no value may be added
 	 */
 	private static PropertyDefinition determineDirectProperty(MutableGroup group,
-			QName propertyName, boolean strict) {
-		ChildDefinition<?> child = group.getDefinition().getChild(propertyName);
+			QName propertyName, boolean strict, boolean ignoreNamespaces) {
+		ChildDefinition<?> child = findChild(group.getDefinition(), propertyName, ignoreNamespaces);
 		if (child != null && child.asProperty() != null
 				&& (!strict || allowAdd(group, null, child.asProperty().getName()))) {
 			return child.asProperty();
@@ -245,10 +279,12 @@ public class GroupUtil {
 	 * @param maxDescent the maximum descent, -1 for no maximum descent
 	 * @param strict states if additional checks are applied apart from whether
 	 *            the property exists
+	 * @param ignoreNamespaces if a property with a differing namespace may be
+	 *            accepted
 	 * @return the property definition or <code>null</code> if none is found
 	 */
 	private static GroupProperty determineSubProperty(Queue<GroupPath> paths, QName propertyName,
-			Queue<GroupPath> leafs, int maxDescent, boolean strict) {
+			Queue<GroupPath> leafs, int maxDescent, boolean strict, boolean ignoreNamespaces) {
 		if (maxDescent != -1 && maxDescent < 0) {
 			return null;
 		}
@@ -259,8 +295,9 @@ public class GroupUtil {
 			DefinitionGroup lastDef = null;
 			if (path.getChildren() != null && !path.getChildren().isEmpty()) {
 				// check if path is a valid result
-				if (path.allowAdd(propertyName, strict)) {
-					ChildDefinition<?> property = path.getLastDefinition().getChild(propertyName);
+				if (path.allowAdd(propertyName, strict, ignoreNamespaces)) {
+					ChildDefinition<?> property = findChild(path.getLastDefinition(), propertyName,
+							ignoreNamespaces);
 
 					if (property != null && property.asProperty() != null) {
 						// return group property
