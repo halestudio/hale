@@ -124,6 +124,18 @@
                      default="false">
                </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="States if parsing of the XML instances should allow types and properties with namespaces that differ from those defined in the schema."
+               label="Ignore namespaces"
+               name="ignoreNamespaces"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="false">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.gml.reader.internal.XmlInstanceReader"
@@ -158,6 +170,18 @@
                <valueDescriptor
                      default="false">
                </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="States if parsing of the XML instances should allow types and properties with namespaces that differ from those defined in the schema."
+               label="Ignore namespaces"
+               name="ignoreNamespaces"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="false">
+            </valueDescriptor>
          </providerParameter>
       </provider>
       <provider

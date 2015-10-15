@@ -29,19 +29,18 @@ import javax.xml.namespace.QName;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.core.convert.ConversionService;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
-import de.fhg.igd.osgi.util.OsgiUtils.Condition;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.test.TestUtil;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
@@ -60,13 +59,7 @@ public class GmlInstanceCollectionTest {
 	 */
 	@BeforeClass
 	public static void waitForServices() {
-		assertTrue("Conversion service not available", OsgiUtils.waitUntil(new Condition() {
-
-			@Override
-			public boolean evaluate() {
-				return OsgiUtils.getService(ConversionService.class) != null;
-			}
-		}, 30));
+		TestUtil.startConversionService();
 	}
 
 	/**
@@ -324,6 +317,29 @@ public class GmlInstanceCollectionTest {
 				getClass().getResource("/data/sample_wva/wfs_va.xsd").toURI(), getClass()
 						.getResource("/data/sample_wva/wfs_va_sample.gml").toURI(), true);
 
+		testWVAInstances(instances);
+	}
+
+	/**
+	 * Test loading a (relatively) simple GML file with one instance. Includes
+	 * groups and a geometry.
+	 * 
+	 * The namespace in the file differs from the schema namespace. The
+	 * ignoreNamespace setting is used to load the file nethertheless.
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testLoadWVAIgnoreNamespace() throws Exception {
+		GmlInstanceCollection instances = loadInstances(
+				getClass().getResource("/data/sample_wva/wfs_va.xsd").toURI(), getClass()
+						.getResource("/data/sample_wva/wfs_va_sample_namespace.gml").toURI(), true,
+				true);
+
+		testWVAInstances(instances);
+	}
+
+	private void testWVAInstances(InstanceCollection instances) {
 		String ns = "http://www.esdi-humboldt.org/waterVA";
 		String gmlNs = "http://www.opengis.net/gml";
 
@@ -449,6 +465,12 @@ public class GmlInstanceCollectionTest {
 
 	private GmlInstanceCollection loadInstances(URI schemaLocation, URI xmlLocation,
 			boolean restrictToFeatures) throws IOException, IOProviderConfigurationException {
+		return loadInstances(schemaLocation, xmlLocation, restrictToFeatures, true);
+	}
+
+	private GmlInstanceCollection loadInstances(URI schemaLocation, URI xmlLocation,
+			boolean restrictToFeatures, boolean ignoreNamespace) throws IOException,
+			IOProviderConfigurationException {
 		SchemaReader reader = new XmlSchemaReader();
 		reader.setSharedTypes(null);
 		reader.setSource(new DefaultInputSupplier(schemaLocation));
@@ -457,7 +479,7 @@ public class GmlInstanceCollectionTest {
 		Schema sourceSchema = reader.getSchema();
 
 		return new GmlInstanceCollection(new DefaultInputSupplier(xmlLocation), sourceSchema,
-				restrictToFeatures, false, true, null);
+				restrictToFeatures, false, true, ignoreNamespace, null);
 	}
 
 }
