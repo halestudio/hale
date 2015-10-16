@@ -1,6 +1,7 @@
 package eu.esdihumboldt.hale.common.test.docker.config;
 
 import java.net.URI;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -120,13 +121,19 @@ public class HaleDockerClient implements DockerContainer {
 			dc.inspectImage(containerConf.image());
 		} catch (ImageNotFoundException e) {
 			// pull image if it is not present
-			LOGGER.info("Docker image not found, attempting to pull image " + containerConf.image());
+			LOGGER.info(MessageFormat.format(
+					"Docker image not found, attempting to pull image {0}...",
+					containerConf.image()));
 			dc.pull(containerConf.image());
 		}
 		// TODO also add a setting to pull the image always?
 
+		LOGGER.info(MessageFormat.format("Preparing container for image {0}...",
+				containerConf.image()));
 		creation = dc.createContainer(containerConf);
 		containerId = creation.id();
+		LOGGER.info(MessageFormat.format("Created container with ID {0}, now starting...",
+				containerId));
 
 		final HostConfig hostConfig = HostConfig.builder().publishAllPorts(dbc.isExposeAllPorts())
 				.privileged(dbc.isPrivileged()).build();
@@ -135,7 +142,6 @@ public class HaleDockerClient implements DockerContainer {
 
 		final ContainerInfo info = dc.inspectContainer(containerId);
 		portMapper = info.networkSettings().ports();
-
 	}
 
 	/**
@@ -168,16 +174,28 @@ public class HaleDockerClient implements DockerContainer {
 	 * @throws Exception if fails to kill the container or remove it
 	 */
 	public void killAndRemoveContainer() throws Exception {
-
+		if (containerId == null) {
+			return;
+		}
 		try {
+			LOGGER.info(MessageFormat.format("Killing container {0}...", containerId));
 			dc.killContainer(containerId);
 		} finally {
+			LOGGER.info(MessageFormat.format("Removing container {0}...", containerId));
 			dc.removeContainer(containerId);
 		}
-
 	}
 
+	/**
+	 * @return the container ID or <code>null</code> if no container was created
+	 *         yet
+	 */
 	public String getContainerId() {
-		return creation.id();
+		if (creation != null) {
+			return creation.id();
+		}
+		else {
+			return null;
+		}
 	}
 }
