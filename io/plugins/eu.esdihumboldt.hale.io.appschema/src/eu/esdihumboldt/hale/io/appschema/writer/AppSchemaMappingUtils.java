@@ -40,6 +40,7 @@ import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.align.model.Type;
@@ -457,6 +458,25 @@ public class AppSchemaMappingUtils {
 		return null;
 	}
 
+	/**
+	 * Makes sure the provided property entity is indeed a geometry, and
+	 * retrieves its container property entity (i.e. the geometry property, in
+	 * GML parlance).
+	 * 
+	 * @param geometry the geometry entity
+	 * @return the geometry property entity
+	 */
+	public static EntityDefinition getGeometryPropertyEntity(PropertyEntityDefinition geometry) {
+		if (!isGeometryType(geometry.getDefinition().getPropertyType())) {
+			throw new IllegalArgumentException("Provided entity definition is not a geometry");
+		}
+
+		List<ChildContext> geometryPropertyPath = getContainerPropertyPath(geometry
+				.getPropertyPath());
+		return AlignmentUtil.createEntity(geometry.getType(), geometryPropertyPath,
+				geometry.getSchemaSpace(), geometry.getFilter());
+	}
+
 	private static List<ChildContext> getContainerPropertyPath(List<ChildContext> propertyPath) {
 		if (propertyPath == null || propertyPath.size() == 0) {
 			return Collections.emptyList();
@@ -465,7 +485,7 @@ public class AppSchemaMappingUtils {
 		int lastIdx = propertyPath.size() - 1;
 		// make sure last element is a property and not a group (e.g. a choice
 		// element)
-		while (lastIdx > 0 && propertyPath.get(lastIdx).getChild().asProperty() == null) {
+		while (lastIdx > 0 && propertyPath.get(lastIdx - 1).getChild().asProperty() == null) {
 			lastIdx--;
 		}
 		return propertyPath.subList(0, lastIdx);

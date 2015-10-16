@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.io.appschema.writer.internal;
 
 import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.findOwningType;
+import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.getGeometryPropertyEntity;
 import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.getTargetProperty;
 import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.getTargetType;
 import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.isGeometryType;
@@ -26,6 +27,8 @@ import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.isX
 import java.util.List;
 
 import javax.xml.namespace.QName;
+
+import com.google.common.base.Strings;
 
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
@@ -145,10 +148,21 @@ public abstract class AbstractPropertyTransformationHandler implements
 
 			// fetch AttributeMappingType from mapping
 			if (isXmlAttribute(targetPropertyDef)) {
-				// gml:id attribute requires special handling
-				if (isGmlId(targetPropertyDef)
-						&& featureType.equals(targetPropertyDef.getParentType())) {
-					handleAsGmlId(featureType, mappingName);
+				// gml:id attribute requires special handling, i.e. an
+				// <idExpression> tag must be added to the attribute mapping for
+				// target feature types and geometry types
+				TypeDefinition parentType = targetPropertyDef.getParentType();
+				if (isGmlId(targetPropertyDef)) {
+					// TODO: handle gml:id for geometry types
+					if (featureType.equals(parentType)) {
+						handleAsFeatureGmlId(featureType, mappingName);
+					}
+					else if (isGeometryType(parentType)) {
+						handleAsGeometryGmlId(featureType, mappingName);
+					}
+					else {
+						handleAsXmlAttribute(featureType, mappingName);
+					}
 				}
 				else {
 					handleAsXmlAttribute(featureType, mappingName);
@@ -204,33 +218,74 @@ public abstract class AbstractPropertyTransformationHandler implements
 	}
 
 	/**
-	 * This method is invoked when the target property is <code>gml:id</code>,
+	 * This method is invoked when the target type is the feature type owning
+	 * this attribute mapping, and the target property is <code>gml:id</code>,
 	 * which needs special handling.
 	 * 
 	 * <p>
 	 * In practice, this means that <code>&lt;idExpression&gt;</code> is used in
-	 * place of <code>&lt;sourceExpression&gt;</code> and that the target
-	 * attribute is set to the mapped feature type name.
+	 * place of:
+	 * 
+	 * <pre>
+	 *   &lt;ClientProperty&gt;
+	 *     &lt;name&gt;...&lt;/name&gt;
+	 *     &lt;value&gt;...&lt;/value&gt;
+	 *   &lt;/ClientProperty&gt;
+	 * </pre>
+	 * 
+	 * and that the target attribute is set to the mapped feature type name.
+	 * 
 	 * </p>
 	 * 
 	 * @param featureType the target feature type
 	 * @param mappingName the target feature type's mapping name (may be
 	 *            <code>null</code>)
 	 */
-	protected void handleAsGmlId(TypeDefinition featureType, String mappingName) {
+	protected void handleAsFeatureGmlId(TypeDefinition featureType, String mappingName) {
 		PropertyEntityDefinition targetPropertyEntityDef = targetProperty.getDefinition();
 		List<ChildContext> gmlIdPath = targetPropertyEntityDef.getPropertyPath();
 
 		attributeMapping = mapping.getOrCreateAttributeMapping(featureType, mappingName, gmlIdPath);
 		// set targetAttribute to feature type qualified name
-//		attributeMapping.setTargetAttribute(mapping.getOrCreateFeatureTypeMapping(featureType)
-//				.getTargetElement());
 		attributeMapping.setTargetAttribute(featureTypeMapping.getTargetElement());
 		// set id expression
 		AttributeExpressionMappingType idExpression = new AttributeExpressionMappingType();
 		idExpression.setOCQL(getSourceExpressionAsCQL());
-		// TODO: not sure whether any CQL expression can be used
-		// here
+		// TODO: not sure whether any CQL expression can be used here
+		attributeMapping.setIdExpression(idExpression);
+	}
+
+	/**
+	 * This method is invoked when the target property's parent is a geometry
+	 * and the target property is <code>gml:id</code> (which needs special
+	 * handling).
+	 * 
+	 * <p>
+	 * In practice, this means that <code>&lt;idExpression&gt;</code> is used in
+	 * place of:
+	 * 
+	 * <pre>
+	 *   &lt;ClientProperty&gt;
+	 *     &lt;name&gt;...&lt;/name&gt;
+	 *     &lt;value&gt;...&lt;/value&gt;
+	 *   &lt;/ClientProperty&gt;
+	 * </pre>
+	 * 
+	 * @param featureType the target feature type
+	 * @param mappingName the target feature type's mapping name (may be
+	 *            <code>null</code>)
+	 */
+	protected void handleAsGeometryGmlId(TypeDefinition featureType, String mappingName) {
+		PropertyEntityDefinition targetPropertyEntityDef = targetProperty.getDefinition();
+		PropertyEntityDefinition geometry = (PropertyEntityDefinition) AlignmentUtil
+				.getParent(targetPropertyEntityDef);
+
+		createGeometryAttributeMapping(featureType, mappingName, geometry);
+
+		// set id expression
+		AttributeExpressionMappingType idExpression = new AttributeExpressionMappingType();
+		idExpression.setOCQL(getSourceExpressionAsCQL());
+		// TODO: not sure whether any CQL expression can be used here
 		attributeMapping.setIdExpression(idExpression);
 	}
 
@@ -276,13 +331,11 @@ public abstract class AbstractPropertyTransformationHandler implements
 							parentPropertyPath));
 				}
 
-				Namespace parentPropNS = mapping.getOrCreateNamespace(parentPropertyDef.getName()
-						.getNamespaceURI(), parentPropertyDef.getName().getPrefix());
 				Namespace targetPropNS = mapping.getOrCreateNamespace(targetPropertyDef.getName()
 						.getNamespaceURI(), targetPropertyDef.getName().getPrefix());
 				String unqualifiedName = targetPropertyDef.getName().getLocalPart();
 				boolean isQualified = targetPropNS != null
-						&& !parentPropNS.getUri().equals(targetPropNS.getUri());
+						&& !Strings.isNullOrEmpty(targetPropNS.getPrefix());
 
 				// encode attribute as <ClientProperty>
 				ClientProperty clientProperty = new ClientProperty();
@@ -320,13 +373,12 @@ public abstract class AbstractPropertyTransformationHandler implements
 		PropertyDefinition targetPropertyDef = targetPropertyEntityDef.getDefinition();
 		TypeDefinition targetPropertyType = targetPropertyDef.getPropertyType();
 
-		attributeMapping = mapping.getOrCreateAttributeMapping(featureType, mappingName,
-				targetPropertyEntityDef.getPropertyPath());
-
 		if (isGeometryType(targetPropertyType)) {
-			handleXmlElementAsGeometryType(featureType);
+			handleXmlElementAsGeometryType(featureType, mappingName);
 		}
 		else {
+			attributeMapping = mapping.getOrCreateAttributeMapping(featureType, mappingName,
+					targetPropertyEntityDef.getPropertyPath());
 			List<ChildContext> targetPropertyPath = targetPropertyEntityDef.getPropertyPath();
 			// set target attribute
 			attributeMapping.setTargetAttribute(mapping.buildAttributeXPath(featureType,
@@ -356,14 +408,17 @@ public abstract class AbstractPropertyTransformationHandler implements
 	 * </p>
 	 * 
 	 * @param featureType the target feature type
+	 * @param mappingName the target feature type's mapping name (may be
+	 *            <code>null</code>)
 	 */
-	protected void handleXmlElementAsGeometryType(TypeDefinition featureType) {
-		PropertyEntityDefinition targetPropertyEntityDef = targetProperty.getDefinition();
-		TypeDefinition targetPropertyType = targetPropertyEntityDef.getDefinition()
-				.getPropertyType();
+	protected void handleXmlElementAsGeometryType(TypeDefinition featureType, String mappingName) {
+		PropertyEntityDefinition geometry = targetProperty.getDefinition();
+
+		createGeometryAttributeMapping(featureType, mappingName, geometry);
 
 		// GeometryTypes require special handling
-		QName geomTypeName = targetPropertyType.getName();
+		TypeDefinition geometryType = geometry.getDefinition().getPropertyType();
+		QName geomTypeName = geometryType.getName();
 		Namespace geomNS = mapping.getOrCreateNamespace(geomTypeName.getNamespaceURI(),
 				geomTypeName.getPrefix());
 		attributeMapping.setTargetAttributeNode(geomNS.getPrefix() + ":"
@@ -375,7 +430,7 @@ public abstract class AbstractPropertyTransformationHandler implements
 		// {http://www.opengis.net/gml/3.2}AbstractGeometry element
 		// to
 		// {http://www.opengis.net/gml/3.2/AbstractGeometry}choice
-		EntityDefinition parentEntityDef = AlignmentUtil.getParent(targetPropertyEntityDef);
+		EntityDefinition parentEntityDef = AlignmentUtil.getParent(geometry);
 		Definition<?> parentDef = parentEntityDef.getDefinition();
 		String parentQName = geomNS.getPrefix() + ":" + parentDef.getDisplayName();
 		List<ChildContext> targetPropertyPath = parentEntityDef.getPropertyPath();
@@ -436,4 +491,12 @@ public abstract class AbstractPropertyTransformationHandler implements
 	 */
 	protected abstract String getSourceExpressionAsCQL();
 
+	private void createGeometryAttributeMapping(TypeDefinition featureType, String mappingName,
+			PropertyEntityDefinition geometry) {
+		EntityDefinition geometryProperty = getGeometryPropertyEntity(geometry);
+
+		// use geometry property path to create / retrieve attribute mapping
+		attributeMapping = mapping.getOrCreateAttributeMapping(featureType, mappingName,
+				geometryProperty.getPropertyPath());
+	}
 }
