@@ -10,6 +10,7 @@ import java.util.Set;
 import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerException;
+import com.spotify.docker.client.ImageNotFoundException;
 import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerCreation;
 import com.spotify.docker.client.messages.ContainerInfo;
@@ -49,7 +50,7 @@ public class HaleDockerClient implements DockerContainer {
 
 	/**
 	 * Checks the availability of the Docker server.
-	 *
+	 * 
 	 * @return <code>true</code> if the Docker server is available,
 	 *         <code>false</code> otherwise
 	 */
@@ -115,6 +116,14 @@ public class HaleDockerClient implements DockerContainer {
 	 * @throws InterruptedException interrupted exception
 	 */
 	public void startContainer() throws DockerException, InterruptedException {
+		try {
+			dc.inspectImage(containerConf.image());
+		} catch (ImageNotFoundException e) {
+			// pull image if it is not present
+			LOGGER.info("Docker image not found, attempting to pull image " + containerConf.image());
+			dc.pull(containerConf.image());
+		}
+		// TODO also add a setting to pull the image always?
 
 		creation = dc.createContainer(containerConf);
 		containerId = creation.id();
