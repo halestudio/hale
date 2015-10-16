@@ -107,6 +107,8 @@ public class AppSchemaMappingTest {
 	private static final String BASE_PREFIX = "base";
 	private static final String GML_NS = "http://www.opengis.net/gml/3.2";
 	private static final String GML_PREFIX = "gml";
+	private static final String GMD_NS = "http://www.isotc211.org/2005/gmd";
+	private static final String GMD_PREFIX = "gmd";
 	private static final String XLINK_NS = "http://www.w3.org/1999/xlink";
 	private static final String XLINK_PREFIX = "xlink";
 
@@ -119,13 +121,14 @@ public class AppSchemaMappingTest {
 	private static final String TARGET_LOCAL_ID = "lcv:inspireId/base:Identifier/base:localId";
 	private static final String TARGET_FIRST_OBSERVATION_DATE = "lcv:landCoverObservation[1]/lcv:LandCoverObservation/lcv:observationDate";
 	private static final String TARGET_DESCRIPTION = "gml:description";
-	private static final String TARGET_GEOMETRY = "lcv:geometry/gml:AbstractGeometry";
+	private static final String TARGET_GEOMETRY_LCD = "lcv:extent/gmd:EX_Extent/gmd:geographicElement/gmd:EX_BoundingPolygon/gmd:polygon/gml:AbstractGeometry";
+	private static final String TARGET_GEOMETRY_LCU = "lcv:geometry";
 	private static final String TARGET_METADATA = "gml:metaDataProperty";
 
 	private static Schema source;
 	private static Schema target;
 	private static TypeDefinition datasetType;
-	private static TypeDefinition landCoverType;
+	private static TypeDefinition unitType;
 	private static TypeDefinition landCoverUnitType;
 	private static TypeDefinition landCoverDatasetType;
 	private static Set<TypeDefinition> targetTypes = new HashSet<TypeDefinition>();
@@ -144,8 +147,8 @@ public class AppSchemaMappingTest {
 
 		datasetType = source.getType(new QName(SOURCE_NS, "dataset_norm"));
 		assertNotNull(datasetType);
-		landCoverType = source.getType(new QName(SOURCE_NS, "landcover_norm"));
-		assertNotNull(landCoverType);
+		unitType = source.getType(new QName(SOURCE_NS, "landcover_norm"));
+		assertNotNull(unitType);
 		landCoverUnitType = target.getType(new QName(LANDCOVER_NS, "LandCoverUnitType"));
 		assertNotNull(landCoverUnitType);
 		landCoverDatasetType = target.getType(new QName(LANDCOVER_NS, "LandCoverDatasetType"));
@@ -162,6 +165,7 @@ public class AppSchemaMappingTest {
 		mappingWrapper.getOrCreateNamespace(LANDCOVER_NS, LANDCOVER_PREFIX);
 		mappingWrapper.getOrCreateNamespace(BASE_NS, BASE_PREFIX);
 		mappingWrapper.getOrCreateNamespace(GML_NS, GML_PREFIX);
+		mappingWrapper.getOrCreateNamespace(GMD_NS, GMD_PREFIX);
 		mappingWrapper.getOrCreateNamespace(XLINK_NS, XLINK_PREFIX);
 	}
 
@@ -186,8 +190,8 @@ public class AppSchemaMappingTest {
 		cell.setTransformationIdentifier(RetypeFunction.ID);
 
 		ListMultimap<String, Type> source = ArrayListMultimap.create();
-		source.put(null, new DefaultType(new TypeEntityDefinition(landCoverType,
-				SchemaSpaceID.SOURCE, null)));
+		source.put(null, new DefaultType(new TypeEntityDefinition(unitType, SchemaSpaceID.SOURCE,
+				null)));
 		ListMultimap<String, Type> target = ArrayListMultimap.create();
 		target.put(null, new DefaultType(new TypeEntityDefinition(landCoverUnitType,
 				SchemaSpaceID.TARGET, null)));
@@ -338,7 +342,7 @@ public class AppSchemaMappingTest {
 
 		TypeEntityDefinition datasetEntityDef = new TypeEntityDefinition(datasetType,
 				SchemaSpaceID.SOURCE, null);
-		TypeEntityDefinition landcoverEntityDef = new TypeEntityDefinition(landCoverType,
+		TypeEntityDefinition landcoverEntityDef = new TypeEntityDefinition(unitType,
 				SchemaSpaceID.SOURCE, null);
 		ListMultimap<String, Type> source = ArrayListMultimap.create();
 		source.put(JoinFunction.JOIN_TYPES, new DefaultType(datasetEntityDef));
@@ -351,8 +355,8 @@ public class AppSchemaMappingTest {
 
 		PropertyEntityDefinition baseProperty = getDatasetIdSourceProperty().values().iterator()
 				.next().getDefinition();
-		PropertyEntityDefinition joinProperty = getLandCoverIdSourceProperty().values().iterator()
-				.next().getDefinition();
+		PropertyEntityDefinition joinProperty = getUnitDatasetIdSourceProperty().values()
+				.iterator().next().getDefinition();
 		JoinCondition joinClause = new JoinCondition(baseProperty, joinProperty);
 		JoinParameter joinParam = new JoinParameter(Arrays.asList(datasetEntityDef,
 				landcoverEntityDef), Collections.singleton(joinClause));
@@ -378,8 +382,8 @@ public class AppSchemaMappingTest {
 
 		RenameHandler renameHandler = new RenameHandler();
 		AttributeMappingType attrMapping = renameHandler.handlePropertyTransformation(
-				getDefaultTypeCell(landCoverType, landCoverUnitType), cell,
-				new AppSchemaMappingContext(mappingWrapper));
+				getDefaultTypeCell(unitType, landCoverUnitType), cell, new AppSchemaMappingContext(
+						mappingWrapper));
 		assertEquals("uuid_v1", attrMapping.getSourceExpression().getOCQL());
 		assertEquals(TARGET_LOCAL_ID, attrMapping.getTargetAttribute());
 	}
@@ -402,8 +406,8 @@ public class AppSchemaMappingTest {
 
 		DateExtractionHandler handler = new DateExtractionHandler();
 		AttributeMappingType attrMapping = handler.handlePropertyTransformation(
-				getDefaultTypeCell(landCoverType, landCoverUnitType), cell,
-				new AppSchemaMappingContext(mappingWrapper));
+				getDefaultTypeCell(unitType, landCoverUnitType), cell, new AppSchemaMappingContext(
+						mappingWrapper));
 		assertEquals(OCQL, attrMapping.getSourceExpression().getOCQL());
 		assertEquals(TARGET_FIRST_OBSERVATION_DATE, attrMapping.getTargetAttribute());
 	}
@@ -428,8 +432,8 @@ public class AppSchemaMappingTest {
 
 		FormattedStringHandler handler = new FormattedStringHandler();
 		AttributeMappingType attrMapping = handler.handlePropertyTransformation(
-				getDefaultTypeCell(landCoverType, landCoverUnitType), cell,
-				new AppSchemaMappingContext(mappingWrapper));
+				getDefaultTypeCell(unitType, landCoverUnitType), cell, new AppSchemaMappingContext(
+						mappingWrapper));
 		assertEquals(OCQL, attrMapping.getSourceExpression().getOCQL());
 		assertEquals(TARGET_DESCRIPTION, attrMapping.getTargetAttribute());
 	}
@@ -456,8 +460,8 @@ public class AppSchemaMappingTest {
 
 		MathematicalExpressionHandler handler = new MathematicalExpressionHandler();
 		AttributeMappingType attrMapping = handler.handlePropertyTransformation(
-				getDefaultTypeCell(landCoverType, landCoverUnitType), cell,
-				new AppSchemaMappingContext(mappingWrapper));
+				getDefaultTypeCell(unitType, landCoverUnitType), cell, new AppSchemaMappingContext(
+						mappingWrapper));
 		assertEquals(OCQL, attrMapping.getSourceExpression().getOCQL());
 		assertEquals(TARGET_LOCAL_ID, attrMapping.getTargetAttribute());
 	}
@@ -469,7 +473,7 @@ public class AppSchemaMappingTest {
 		final String OCQL_BOUND = "if_then_else(isNull(" + SOURCE_UUID_V1 + "), Expression.NIL, '"
 				+ ASSIGN_VALUE + "')";
 
-		Cell typeCell = getDefaultTypeCell(landCoverType, landCoverUnitType);
+		Cell typeCell = getDefaultTypeCell(unitType, landCoverUnitType);
 
 		DefaultCell cell = new DefaultCell();
 		cell.setTransformationIdentifier(AssignFunction.ID);
@@ -511,7 +515,7 @@ public class AppSchemaMappingTest {
 		final String FIXED_VALUE = "http://www.example.com/unknown";
 		final String OCQL_PATTERN = "if_then_else(in(unit_id,%s), Recode(unit_id,%s), %s)";
 
-		Cell typeCell = getDefaultTypeCell(landCoverType, landCoverUnitType);
+		Cell typeCell = getDefaultTypeCell(unitType, landCoverUnitType);
 
 		DefaultCell cell = new DefaultCell();
 		cell.setTransformationIdentifier(ClassificationMappingFunction.ID);
@@ -595,20 +599,113 @@ public class AppSchemaMappingTest {
 		DefaultCell cell = new DefaultCell();
 		cell.setTransformationIdentifier(RenameFunction.ID);
 
-		cell.setSource(getGeomSourceProperty());
-		cell.setTarget(getGeometryTargetProperty());
+		cell.setSource(getUnitGeomSourceProperty());
+		cell.setTarget(getLandCoverDatasetGeometryTargetProperty());
 
 		RenameHandler renameHandler = new RenameHandler();
 		AttributeMappingType attrMapping = renameHandler.handlePropertyTransformation(
-				getDefaultTypeCell(landCoverType, landCoverUnitType), cell,
+				getDefaultTypeCell(datasetType, landCoverDatasetType), cell,
 				new AppSchemaMappingContext(mappingWrapper));
 		assertEquals(SOURCE_GEOM, attrMapping.getSourceExpression().getOCQL());
-		assertEquals(TARGET_GEOMETRY, attrMapping.getTargetAttribute());
+		assertEquals(TARGET_GEOMETRY_LCD, attrMapping.getTargetAttribute());
 		assertEquals("gml:MultiSurfaceType", attrMapping.getTargetAttributeNode());
 	}
 
 	@Test
-	public void testGmlIdEncoding() {
+	public void testGmlGeometryPropertyIdEncoding() {
+		final String GML_ID_PATTERN = "geom.{dataset_id}.{unit_id}";
+		final String GML_ID_OCQL = "strConcat(strConcat(strConcat('geom.', dataset_id), '.'), unit_id)";
+
+		// create mapping context
+		AppSchemaMappingContext context = new AppSchemaMappingContext(mappingWrapper);
+		// create retype cell
+		Cell retypeCell = getDefaultTypeCell(unitType, landCoverUnitType);
+
+		// create rename cell to produce LCU's geometry
+		DefaultCell geomRenameCell = new DefaultCell();
+		geomRenameCell.setTransformationIdentifier(RenameFunction.ID);
+
+		geomRenameCell.setSource(getUnitGeomSourceProperty());
+		geomRenameCell.setTarget(getLandCoverUnitGeometryTargetProperty());
+
+		// create formatted string cell to produce LCU geometry's gml:id
+		DefaultCell geomGmlIdFormatCell = new DefaultCell();
+		geomGmlIdFormatCell.setTransformationIdentifier(FormattedStringFunction.ID);
+
+		ListMultimap<String, ParameterValue> parameters = ArrayListMultimap.create();
+		parameters.put(FormattedStringFunction.PARAMETER_PATTERN,
+				new ParameterValue(GML_ID_PATTERN));
+
+		ListMultimap<String, Property> source = ArrayListMultimap.create();
+		source.putAll(FormattedStringFunction.ENTITY_VARIABLE, getUnitDatasetIdSourceProperty()
+				.values());
+		source.putAll(FormattedStringFunction.ENTITY_VARIABLE, getUnitIdSourceProperty().values());
+		geomGmlIdFormatCell.setSource(source);
+		geomGmlIdFormatCell.setTarget(getLandCoverUnitGeometryGmlIdTargetProperty());
+		geomGmlIdFormatCell.setTransformationParameters(parameters);
+
+		// process cells in whatever order
+		FormattedStringHandler formatHandler = new FormattedStringHandler();
+		formatHandler.handlePropertyTransformation(retypeCell, geomGmlIdFormatCell, context);
+		RenameHandler renameHandler = new RenameHandler();
+		AttributeMappingType attrMapping = renameHandler.handlePropertyTransformation(retypeCell,
+				geomRenameCell, context);
+
+		assertEquals(SOURCE_GEOM, attrMapping.getSourceExpression().getOCQL());
+		assertNull(attrMapping.getTargetAttributeNode());
+		assertEquals(TARGET_GEOMETRY_LCU, attrMapping.getTargetAttribute());
+		assertNotNull(attrMapping.getIdExpression());
+		assertEquals(GML_ID_OCQL, attrMapping.getIdExpression().getOCQL());
+	}
+
+	@Test
+	public void testGenericGeometryPropertyIdEncoding() {
+		final String GML_ID_PATTERN = "geom.{dataset_id}";
+		final String GML_ID_OCQL = "strConcat('geom.', dataset_id)";
+
+		// create mapping context
+		AppSchemaMappingContext context = new AppSchemaMappingContext(mappingWrapper);
+		// create retype cell
+		Cell retypeCell = getDefaultTypeCell(datasetType, landCoverDatasetType);
+
+		// create rename cell to produce LCD's geometry
+		DefaultCell geomRenameCell = new DefaultCell();
+		geomRenameCell.setTransformationIdentifier(RenameFunction.ID);
+
+		geomRenameCell.setSource(getDatasetGeomSourceProperty());
+		geomRenameCell.setTarget(getLandCoverDatasetGeometryTargetProperty());
+
+		// create formatted string cell to produce LCD geometry's gml:id
+		DefaultCell geomGmlIdFormatCell = new DefaultCell();
+		geomGmlIdFormatCell.setTransformationIdentifier(FormattedStringFunction.ID);
+
+		ListMultimap<String, ParameterValue> parameters = ArrayListMultimap.create();
+		parameters.put(FormattedStringFunction.PARAMETER_PATTERN,
+				new ParameterValue(GML_ID_PATTERN));
+
+		ListMultimap<String, Property> source = ArrayListMultimap.create();
+		source.putAll(FormattedStringFunction.ENTITY_VARIABLE, getDatasetIdSourceProperty()
+				.values());
+		geomGmlIdFormatCell.setSource(source);
+		geomGmlIdFormatCell.setTarget(getLandCoverDatasetGeometryGmlIdTargetProperty());
+		geomGmlIdFormatCell.setTransformationParameters(parameters);
+
+		// process cells in whatever order
+		FormattedStringHandler formatHandler = new FormattedStringHandler();
+		formatHandler.handlePropertyTransformation(retypeCell, geomGmlIdFormatCell, context);
+		RenameHandler renameHandler = new RenameHandler();
+		AttributeMappingType attrMapping = renameHandler.handlePropertyTransformation(retypeCell,
+				geomRenameCell, context);
+
+		assertEquals(SOURCE_GEOM, attrMapping.getSourceExpression().getOCQL());
+		assertEquals("gml:MultiSurfaceType", attrMapping.getTargetAttributeNode());
+		assertEquals(TARGET_GEOMETRY_LCD, attrMapping.getTargetAttribute());
+		assertNotNull(attrMapping.getIdExpression());
+		assertEquals(GML_ID_OCQL, attrMapping.getIdExpression().getOCQL());
+	}
+
+	@Test
+	public void testFeatureGmlIdEncoding() {
 		DefaultCell cell = new DefaultCell();
 		cell.setTransformationIdentifier(RenameFunction.ID);
 
@@ -617,15 +714,15 @@ public class AppSchemaMappingTest {
 
 		RenameHandler renameHandler = new RenameHandler();
 		AttributeMappingType attrMapping = renameHandler.handlePropertyTransformation(
-				getDefaultTypeCell(landCoverType, landCoverUnitType), cell,
-				new AppSchemaMappingContext(mappingWrapper));
+				getDefaultTypeCell(unitType, landCoverUnitType), cell, new AppSchemaMappingContext(
+						mappingWrapper));
 		assertNull(attrMapping.getSourceExpression());
 		assertEquals(SOURCE_UNIT_ID, attrMapping.getIdExpression().getOCQL());
 		assertEquals("lcv:LandCoverUnit", attrMapping.getTargetAttribute());
 	}
 
 	@Test
-	public void testXmlAttributeEncoding() {
+	public void testXmlAttributeEncodingUnqualified() {
 		final String CODE_SPACE = "http://www.example.com/codespace";
 		final String OCQL = "'" + CODE_SPACE + "'";
 
@@ -640,14 +737,43 @@ public class AppSchemaMappingTest {
 
 		AssignHandler handler = new AssignHandler();
 		AttributeMappingType attrMapping = handler.handlePropertyTransformation(
-				getDefaultTypeCell(landCoverType, landCoverUnitType), cell,
-				new AppSchemaMappingContext(mappingWrapper));
+				getDefaultTypeCell(unitType, landCoverUnitType), cell, new AppSchemaMappingContext(
+						mappingWrapper));
 		assertNull(attrMapping.getSourceExpression());
 		assertEquals("gml:name", attrMapping.getTargetAttribute());
 		assertNotNull(attrMapping.getClientProperty());
 		assertEquals(1, attrMapping.getClientProperty().size());
 		ClientProperty attr = attrMapping.getClientProperty().get(0);
 		assertEquals("codeSpace", attr.getName());
+		assertEquals(OCQL, attr.getValue());
+	}
+
+	@Test
+	public void testXmlAttributeEncodingQualified() {
+		final String GML_ID = "ti.ds.landcover";
+		final String OCQL = "'" + GML_ID + "'";
+
+		DefaultCell cell = new DefaultCell();
+		cell.setTransformationIdentifier(AssignFunction.ID);
+
+		ListMultimap<String, ParameterValue> parameters = ArrayListMultimap.create();
+		parameters.put(AssignFunction.PARAMETER_VALUE, new ParameterValue(GML_ID));
+		cell.setTransformationParameters(parameters);
+
+		cell.setTarget(getTimeInstantGmlIdTargetProperty());
+
+		AssignHandler handler = new AssignHandler();
+		AttributeMappingType attrMapping = handler.handlePropertyTransformation(
+				getDefaultTypeCell(datasetType, landCoverDatasetType), cell,
+				new AppSchemaMappingContext(mappingWrapper));
+		assertNull(attrMapping.getSourceExpression());
+		assertEquals(
+				"lcv:extent/gmd:EX_Extent/gmd:temporalElement/gmd:EX_TemporalExtent/gmd:extent/gml:TimeInstant",
+				attrMapping.getTargetAttribute());
+		assertNotNull(attrMapping.getClientProperty());
+		assertEquals(1, attrMapping.getClientProperty().size());
+		ClientProperty attr = attrMapping.getClientProperty().get(0);
+		assertEquals("gml:id", attr.getName());
 		assertEquals(OCQL, attr.getValue());
 	}
 
@@ -659,52 +785,54 @@ public class AppSchemaMappingTest {
 		return createSourceProperty(datasetType, childDef);
 	}
 
-	private ListMultimap<String, Property> getLandCoverIdSourceProperty() {
-		ChildDefinition<?> childDef = DefinitionUtil.getChild(landCoverType, new QName(
-				SOURCE_DATASET_ID));
+	private ListMultimap<String, Property> getUnitDatasetIdSourceProperty() {
+		ChildDefinition<?> childDef = DefinitionUtil.getChild(unitType,
+				new QName(SOURCE_DATASET_ID));
 		assertNotNull(childDef);
 
-		return createSourceProperty(landCoverType, childDef);
+		return createSourceProperty(unitType, childDef);
 	}
 
 	private ListMultimap<String, Property> getUnitIdSourceProperty() {
-		ChildDefinition<?> childDef = DefinitionUtil.getChild(landCoverType, new QName(
-				SOURCE_UNIT_ID));
+		ChildDefinition<?> childDef = DefinitionUtil.getChild(unitType, new QName(SOURCE_UNIT_ID));
 		assertNotNull(childDef);
 
-		return createSourceProperty(landCoverType, childDef);
+		return createSourceProperty(unitType, childDef);
 	}
 
 	private ListMultimap<String, Property> getUuidSourceProperty() {
-		ChildDefinition<?> childDef = DefinitionUtil.getChild(landCoverType, new QName(
-				SOURCE_UUID_V1));
+		ChildDefinition<?> childDef = DefinitionUtil.getChild(unitType, new QName(SOURCE_UUID_V1));
 		assertNotNull(childDef);
 
-		return createSourceProperty(landCoverType, childDef);
+		return createSourceProperty(unitType, childDef);
 	}
 
 	private ListMultimap<String, Property> getUcs2007SourceProperty() {
-		ChildDefinition<?> childDef = DefinitionUtil.getChild(landCoverType, new QName(
-				SOURCE_UCS2007));
+		ChildDefinition<?> childDef = DefinitionUtil.getChild(unitType, new QName(SOURCE_UCS2007));
 		assertNotNull(childDef);
 
-		return createSourceProperty(landCoverType, childDef);
+		return createSourceProperty(unitType, childDef);
 	}
 
 	private ListMultimap<String, Property> getUcs2013SourceProperty() {
-		ChildDefinition<?> childDef = DefinitionUtil.getChild(landCoverType, new QName(
-				SOURCE_UCS2013));
+		ChildDefinition<?> childDef = DefinitionUtil.getChild(unitType, new QName(SOURCE_UCS2013));
 		assertNotNull(childDef);
 
-		return createSourceProperty(landCoverType, childDef);
+		return createSourceProperty(unitType, childDef);
 	}
 
-	private ListMultimap<String, Property> getGeomSourceProperty() {
-		ChildDefinition<?> childDef = DefinitionUtil
-				.getChild(landCoverType, new QName(SOURCE_GEOM));
+	private ListMultimap<String, Property> getUnitGeomSourceProperty() {
+		ChildDefinition<?> childDef = DefinitionUtil.getChild(unitType, new QName(SOURCE_GEOM));
 		assertNotNull(childDef);
 
-		return createSourceProperty(landCoverType, childDef);
+		return createSourceProperty(unitType, childDef);
+	}
+
+	private ListMultimap<String, Property> getDatasetGeomSourceProperty() {
+		ChildDefinition<?> childDef = DefinitionUtil.getChild(datasetType, new QName(SOURCE_GEOM));
+		assertNotNull(childDef);
+
+		return createSourceProperty(datasetType, childDef);
 	}
 
 	private ListMultimap<String, Property> createSourceProperty(TypeDefinition sourceType,
@@ -804,20 +932,96 @@ public class AppSchemaMappingTest {
 		return createTargetProperty(childDefs);
 	}
 
-	private ListMultimap<String, Property> getGeometryTargetProperty() {
-		ChildDefinition<?> geometryChildDef = DefinitionUtil.getChild(landCoverUnitType, new QName(
-				LANDCOVER_NS, "geometry"));
-		ChildDefinition<?> abstractGeometryChildDef = DefinitionUtil.getChild(geometryChildDef,
-				new QName("http://www.opengis.net/gml/3.2/AbstractGeometry", "choice"));
-		ChildDefinition<?> multiSurfaceChildDef = DefinitionUtil.getChild(abstractGeometryChildDef,
-				new QName(GML_NS, "MultiSurface"));
-
-		List<ChildDefinition<?>> childDefs = new ArrayList<ChildDefinition<?>>();
-		childDefs.add(geometryChildDef);
-		childDefs.add(abstractGeometryChildDef);
-		childDefs.add(multiSurfaceChildDef);
+	private ListMultimap<String, Property> getLandCoverUnitGeometryTargetProperty() {
+		List<ChildDefinition<?>> childDefs = getLandCoverUnitGeometryPath();
 
 		return createTargetProperty(childDefs);
+	}
+
+	private ListMultimap<String, Property> getLandCoverUnitGeometryGmlIdTargetProperty() {
+		List<ChildDefinition<?>> childDefs = getLandCoverUnitGeometryPath();
+		ChildDefinition<?> geometry = childDefs.get(childDefs.size() - 1);
+		ChildDefinition<?> abstractGeometry = DefinitionUtil.getChild(geometry, new QName(
+				"http://www.opengis.net/gml/3.2/AbstractGeometry", "choice"));
+		assertNotNull(abstractGeometry);
+		ChildDefinition<?> multiSurface = DefinitionUtil.getChild(abstractGeometry, new QName(
+				GML_NS, "MultiSurface"));
+		assertNotNull(multiSurface);
+		ChildDefinition<?> gmlId = DefinitionUtil.getChild(multiSurface, new QName(GML_NS, "id"));
+		assertNotNull(gmlId);
+
+		childDefs.add(abstractGeometry);
+		childDefs.add(multiSurface);
+		childDefs.add(gmlId);
+
+		return createTargetProperty(childDefs);
+	}
+
+	private List<ChildDefinition<?>> getLandCoverUnitGeometryPath() {
+		ChildDefinition<?> geometry = DefinitionUtil.getChild(landCoverUnitType, new QName(
+				LANDCOVER_NS, "geometry"));
+		assertNotNull(geometry);
+
+		List<ChildDefinition<?>> childDefs = new ArrayList<ChildDefinition<?>>();
+		childDefs.add(geometry);
+
+		return childDefs;
+	}
+
+	private ListMultimap<String, Property> getLandCoverDatasetGeometryTargetProperty() {
+		List<ChildDefinition<?>> childDefs = getLandCoverDatasetGeometryPath();
+
+		return createTargetProperty(childDefs);
+	}
+
+	private ListMultimap<String, Property> getLandCoverDatasetGeometryGmlIdTargetProperty() {
+		List<ChildDefinition<?>> childDefs = getLandCoverDatasetGeometryPath();
+		ChildDefinition<?> gmlId = DefinitionUtil.getChild(childDefs.get(childDefs.size() - 1),
+				new QName(GML_NS, "id"));
+
+		childDefs.add(gmlId);
+
+		return createTargetProperty(childDefs);
+	}
+
+	private List<ChildDefinition<?>> getLandCoverDatasetGeometryPath() {
+		ChildDefinition<?> extent = DefinitionUtil.getChild(landCoverDatasetType, new QName(
+				LANDCOVER_NS, "extent"));
+		assertNotNull(extent);
+		ChildDefinition<?> exExtent = DefinitionUtil.getChild(extent,
+				new QName(GMD_NS, "EX_Extent"));
+		assertNotNull(exExtent);
+		ChildDefinition<?> geographicElement = DefinitionUtil.getChild(exExtent, new QName(GMD_NS,
+				"geographicElement"));
+		assertNotNull(geographicElement);
+		ChildDefinition<?> exGeographicExtentChoice = DefinitionUtil
+				.getChild(geographicElement, new QName(
+						"http://www.isotc211.org/2005/gmd/AbstractEX_GeographicExtent", "choice"));
+		assertNotNull(exGeographicExtentChoice);
+		ChildDefinition<?> exBoundingPolygon = DefinitionUtil.getChild(exGeographicExtentChoice,
+				new QName(GMD_NS, "EX_BoundingPolygon"));
+		assertNotNull(exBoundingPolygon);
+		ChildDefinition<?> polygon = DefinitionUtil.getChild(exBoundingPolygon, new QName(GMD_NS,
+				"polygon"));
+		assertNotNull(polygon);
+		ChildDefinition<?> abstractGeometry = DefinitionUtil.getChild(polygon, new QName(
+				"http://www.opengis.net/gml/3.2/AbstractGeometry", "choice"));
+		assertNotNull(abstractGeometry);
+		ChildDefinition<?> multiSurface = DefinitionUtil.getChild(abstractGeometry, new QName(
+				GML_NS, "MultiSurface"));
+		assertNotNull(multiSurface);
+
+		List<ChildDefinition<?>> childDefs = new ArrayList<ChildDefinition<?>>();
+		childDefs.add(extent);
+		childDefs.add(exExtent);
+		childDefs.add(geographicElement);
+		childDefs.add(exGeographicExtentChoice);
+		childDefs.add(exBoundingPolygon);
+		childDefs.add(polygon);
+		childDefs.add(abstractGeometry);
+		childDefs.add(multiSurface);
+
+		return childDefs;
 	}
 
 	private ListMultimap<String, Property> getGmlIdTargetProperty() {
@@ -831,7 +1035,7 @@ public class AppSchemaMappingTest {
 	}
 
 	private ListMultimap<String, Property> getCodeSpaceTargetProperty() {
-		ChildDefinition<?> nameChildDef = DefinitionUtil.getChild(landCoverUnitType, new QName(
+		ChildDefinition<?> nameChildDef = DefinitionUtil.getChild(landCoverDatasetType, new QName(
 				GML_NS, "name"));
 		ChildDefinition<?> codeSpaceChildDef = DefinitionUtil.getChild(nameChildDef, new QName(
 				"codeSpace"));
@@ -839,6 +1043,49 @@ public class AppSchemaMappingTest {
 		List<ChildDefinition<?>> childDefs = new ArrayList<ChildDefinition<?>>();
 		childDefs.add(nameChildDef);
 		childDefs.add(codeSpaceChildDef);
+
+		return createTargetProperty(childDefs);
+	}
+
+	private ListMultimap<String, Property> getTimeInstantGmlIdTargetProperty() {
+		ChildDefinition<?> extent = DefinitionUtil.getChild(landCoverDatasetType, new QName(
+				LANDCOVER_NS, "extent"));
+		assertNotNull(extent);
+		ChildDefinition<?> exExtent = DefinitionUtil.getChild(extent,
+				new QName(GMD_NS, "EX_Extent"));
+		assertNotNull(exExtent);
+		ChildDefinition<?> temporalElement = DefinitionUtil.getChild(exExtent, new QName(GMD_NS,
+				"temporalElement"));
+		assertNotNull(temporalElement);
+		ChildDefinition<?> exTemporalExtentChoice = DefinitionUtil.getChild(temporalElement,
+				new QName("http://www.isotc211.org/2005/gmd/EX_TemporalExtent", "choice"));
+		assertNotNull(exTemporalExtentChoice);
+		ChildDefinition<?> exTemporalExtent = DefinitionUtil.getChild(exTemporalExtentChoice,
+				new QName(GMD_NS, "EX_TemporalExtent"));
+		assertNotNull(exTemporalExtent);
+		ChildDefinition<?> temporalExtent = DefinitionUtil.getChild(exTemporalExtent, new QName(
+				GMD_NS, "extent"));
+		assertNotNull(temporalExtent);
+		ChildDefinition<?> abstractTimePrimitive = DefinitionUtil.getChild(temporalExtent,
+				new QName("http://www.opengis.net/gml/3.2/AbstractTimePrimitive", "choice"));
+		assertNotNull(abstractTimePrimitive);
+		ChildDefinition<?> timeInstant = DefinitionUtil.getChild(abstractTimePrimitive, new QName(
+				GML_NS, "TimeInstant"));
+		assertNotNull(timeInstant);
+		ChildDefinition<?> timeInstantGmlId = DefinitionUtil.getChild(timeInstant, new QName(
+				GML_NS, "id"));
+		assertNotNull(timeInstantGmlId);
+
+		List<ChildDefinition<?>> childDefs = new ArrayList<ChildDefinition<?>>();
+		childDefs.add(extent);
+		childDefs.add(exExtent);
+		childDefs.add(temporalElement);
+		childDefs.add(exTemporalExtentChoice);
+		childDefs.add(exTemporalExtent);
+		childDefs.add(temporalExtent);
+		childDefs.add(abstractTimePrimitive);
+		childDefs.add(timeInstant);
+		childDefs.add(timeInstantGmlId);
 
 		return createTargetProperty(childDefs);
 	}
