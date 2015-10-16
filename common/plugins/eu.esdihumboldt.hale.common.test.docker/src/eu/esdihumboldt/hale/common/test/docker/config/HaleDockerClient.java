@@ -10,11 +10,15 @@ import java.util.Set;
 import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerException;
+import com.spotify.docker.client.ImageNotFoundException;
 import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerCreation;
 import com.spotify.docker.client.messages.ContainerInfo;
 import com.spotify.docker.client.messages.HostConfig;
 import com.spotify.docker.client.messages.PortBinding;
+
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 
 /**
  * A Hale docker client
@@ -23,6 +27,8 @@ import com.spotify.docker.client.messages.PortBinding;
  * 
  */
 public class HaleDockerClient implements DockerContainer {
+
+	private static final ALogger LOGGER = ALoggerFactory.getLogger(HaleDockerClient.class);
 
 	private DockerClient dc;
 	private ContainerConfig containerConf;
@@ -75,6 +81,14 @@ public class HaleDockerClient implements DockerContainer {
 	 * @throws InterruptedException interrupted exception
 	 */
 	public void startContainer() throws DockerException, InterruptedException {
+		try {
+			dc.inspectImage(containerConf.image());
+		} catch (ImageNotFoundException e) {
+			// pull image if it is not present
+			LOGGER.info("Docker image not found, attempting to pull image " + containerConf.image());
+			dc.pull(containerConf.image());
+		}
+		// TODO also add a setting to pull the image always?
 
 		creation = dc.createContainer(containerConf);
 		containerId = creation.id();
