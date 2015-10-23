@@ -51,7 +51,6 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
-import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
@@ -173,6 +172,12 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 		ListMultimap<String, ParameterValue> configuration = ArrayListMultimap.create();
 		for (EntityDefinition selected : selection) {
 			// build property path (QNames separated by .)
+			/*
+			 * FIXME this is problematic with property names that contain dots
+			 * and only works out because only top level properties are allowed.
+			 * If multiple levels are needed, properties should be stored as
+			 * Lists of QNames (Complex values) or EntityDefinitions.
+			 */
 			String propertyPath = Joiner.on('.').join(
 					Collections2.transform(selected.getPropertyPath(),
 							new Function<ChildContext, String>() {
@@ -266,7 +271,13 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 	@Nullable
 	private EntityDefinition getEntityDefinition(String propertyPath, TypeDefinition sourceType) {
 		ArrayList<ChildContext> contextPath = new ArrayList<ChildContext>();
-		List<QName> path = PropertyResolver.getQNamesFromPath(propertyPath);
+
+		// XXX removed because it causes problems with dots in property names
+//		List<QName> path = PropertyResolver.getQNamesFromPath(propertyPath);
+		// FIXME quick fix that only works because only first level properties
+		// are supported
+		List<QName> path = Collections.singletonList(QName.valueOf(propertyPath));
+
 		Iterator<QName> iter = path.iterator();
 		ChildDefinition<?> child = sourceType.getChild(iter.next());
 		if (child != null) {

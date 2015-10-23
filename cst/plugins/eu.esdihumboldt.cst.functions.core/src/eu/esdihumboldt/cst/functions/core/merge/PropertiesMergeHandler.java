@@ -18,6 +18,7 @@ package eu.esdihumboldt.cst.functions.core.merge;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -26,17 +27,14 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.MergeFunction;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
-import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
+import eu.esdihumboldt.hale.common.instance.groovy.InstanceAccessor;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceMetadata;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
@@ -79,7 +77,12 @@ public class PropertiesMergeHandler extends
 		if (transformationParameters.containsKey(PARAMETER_PROPERTY)
 				&& !transformationParameters.get(PARAMETER_PROPERTY).isEmpty()) {
 			for (ParameterValue property : transformationParameters.get(PARAMETER_PROPERTY)) {
-				properties.add(PropertyResolver.getQNamesFromPath(property.as(String.class)));
+				// XXX removed because it causes problems with dots in property
+				// names
+//				properties.add(PropertyResolver.getQNamesFromPath(property.as(String.class)));
+				// FIXME quick fix that only works because only first level
+				// properties are supported
+				properties.add(Collections.singletonList(QName.valueOf(property.as(String.class))));
 			}
 		}
 
@@ -87,8 +90,14 @@ public class PropertiesMergeHandler extends
 		if (transformationParameters.containsKey(PARAMETER_ADDITIONAL_PROPERTY)) {
 			for (ParameterValue property : transformationParameters
 					.get(PARAMETER_ADDITIONAL_PROPERTY)) {
-				additionalProperties.add(PropertyResolver.getQNamesFromPath(property
-						.as(String.class)));
+				// XXX removed because it causes problems with dots in property
+				// names
+//				additionalProperties.add(PropertyResolver.getQNamesFromPath(property
+//						.as(String.class)));
+				// FIXME quick fix that only works because only first level
+				// properties are supported
+				additionalProperties.add(Collections.singletonList(QName.valueOf(property
+						.as(String.class))));
 			}
 		}
 
@@ -115,16 +124,13 @@ public class PropertiesMergeHandler extends
 		List<Object> valueList = new ArrayList<Object>(mergeConfig.keyProperties.size());
 
 		for (List<QName> propertyPath : mergeConfig.keyProperties) {
-			String query = Joiner.on('.').join(
-					Collections2.transform(propertyPath, new Function<QName, String>() {
-
-						@Override
-						public String apply(QName input) {
-							return input.toString();
-						}
-					}));
-
-			valueList.add(PropertyResolver.getValues(instance, query, false));
+			// retrieve values from instance
+			InstanceAccessor accessor = new InstanceAccessor(instance);
+			for (QName name : propertyPath) {
+				accessor.findChildren(name.getLocalPart(),
+						Collections.singletonList(name.getNamespaceURI()));
+			}
+			valueList.add(accessor.list(true));
 		}
 
 		return new DeepIterableKey(valueList);
