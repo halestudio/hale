@@ -39,6 +39,7 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace;
 import eu.esdihumboldt.hale.io.jdbc.spatialite.reader.internal.SpatiaLiteInstanceReader;
 import eu.esdihumboldt.hale.io.jdbc.spatialite.reader.internal.SpatiaLiteSchemaReader;
 import eu.esdihumboldt.hale.io.jdbc.spatialite.writer.internal.SpatiaLiteInstanceWriter;
@@ -316,7 +317,7 @@ public abstract class SpatiaLiteTestSuite {
 		assertTrue(targetInstances.hasSize());
 		assertEquals(0, targetInstances.size());
 
-		writeInstances(getTargetTempFilePath(), instances);
+		writeInstances(schema, getTargetTempFilePath(), instances);
 
 		// re-read instances to check they were written correctly
 		targetInstances = readInstances(schema, getTargetTempFilePath());
@@ -420,16 +421,20 @@ public abstract class SpatiaLiteTestSuite {
 	/**
 	 * Writes the provided instances to a SpatiaLite database.
 	 * 
+	 * @param schema the target schema
 	 * @param targetFilePath the path to the target database file
 	 * @param instances the instances to write
 	 * @throws Exception any exception thrown by
 	 *             {@link SpatiaLiteInstanceWriter}
 	 */
-	public void writeInstances(String targetFilePath, InstanceCollection instances)
+	public void writeInstances(Schema schema, String targetFilePath, InstanceCollection instances)
 			throws Exception {
 
 		SpatiaLiteInstanceWriter instanceWriter = new SpatiaLiteInstanceWriter();
 		instanceWriter.setInstances(instances);
+		DefaultSchemaSpace ss = new DefaultSchemaSpace();
+		ss.addSchema(schema);
+		instanceWriter.setTargetSchema(ss);
 		instanceWriter.setTarget(new FileIOSupplier(new File(targetFilePath)));
 
 		// Test instances
@@ -446,6 +451,7 @@ public abstract class SpatiaLiteTestSuite {
 	 * @param instances the instances to check
 	 * @param propertyMap the expected property names / values
 	 */
+	@SuppressWarnings("rawtypes")
 	public void checkInstances(InstanceCollection instances, Map<String, Object> propertyMap) {
 		// get type to check property definition
 		TypeDefinition type = instances.iterator().next().getDefinition();
