@@ -72,7 +72,7 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 	 */
 	private static final String PARAM_UNORDERED = "unordered";
 
-	private final Map<TypeDefinition, Map<Long, Long>> typAuto = new HashMap<TypeDefinition, Map<Long, Long>>();
+	private final Map<TypeDefinition, Map<Object, Long>> typAuto = new HashMap<>();
 
 	private Map<TypeDefinition, Boolean> visitedType;
 
@@ -290,17 +290,25 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 	 * 
 	 * @param type a type definition whose child has the auto incremented
 	 *            constraint
-	 * @param orgId original id
+	 * @param orgId original id as string
 	 * @param genId auto incremented id
 	 */
-	private void addIDMapping(TypeDefinition type, Long orgId, Long genId) {
+	private void addIDMapping(TypeDefinition type, Object orgId, Long genId) {
+		orgId = processLookupId(orgId);
 
-		Map<Long, Long> autoInc = typAuto.get(type);
+		Map<Object, Long> autoInc = typAuto.get(type);
 		if (autoInc == null) {
 			autoInc = new HashMap<>();
 			typAuto.put(type, autoInc);
 		}
 		autoInc.put(orgId, genId);
+	}
+
+	private Object processLookupId(Object orgId) {
+		if (orgId instanceof Number) {
+			return ((Number) orgId).longValue();
+		}
+		return orgId;
 	}
 
 	/**
@@ -512,7 +520,7 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 		TypeDefinition type = instance.getDefinition();
 
 		int index = 1;
-		Long oldValue = null;
+		Object oldValue = null;
 		boolean isAutoIncremented = false;
 		for (QName propertyName : properties) {
 			PropertyDefinition property = (PropertyDefinition) type.getChild(propertyName);
@@ -539,8 +547,7 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 				if (auto.isEnabled()) {
 					isAutoIncremented = true;
 					if (value != null) {
-						// XXX support other types of IDs?
-						oldValue = ((Number) value).longValue();
+						oldValue = value;
 					}
 					continue;
 				}
@@ -549,11 +556,10 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 			Reference ref = property.getConstraint(Reference.class);
 			if (ref.getReferencedTypes() != null) {
 				TypeDefinition td = (TypeDefinition) ref.getReferencedTypes().toArray()[0];
-				Map<Long, Long> marshMallow = typAuto.get(td);
+				Map<Object, Long> marshMallow = typAuto.get(td);
 				if (marshMallow != null && value != null) {
-					// XXX support other types of IDs?
-					Long key = ((Number) value).longValue();
-					value = marshMallow.get(key);
+					// lookup identifier for reference
+					value = marshMallow.get(processLookupId(value));
 				}
 			}
 
