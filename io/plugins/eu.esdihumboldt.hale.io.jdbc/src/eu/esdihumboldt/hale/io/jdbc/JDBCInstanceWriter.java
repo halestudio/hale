@@ -550,7 +550,7 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 			if (ref.getReferencedTypes() != null) {
 				TypeDefinition td = (TypeDefinition) ref.getReferencedTypes().toArray()[0];
 				Map<Long, Long> marshMallow = typAuto.get(td);
-				if (value != null) {
+				if (marshMallow != null && value != null) {
 					// XXX support other types of IDs?
 					Long key = ((Number) value).longValue();
 					value = marshMallow.get(key);
