@@ -47,7 +47,7 @@ import eu.esdihumboldt.hale.io.geoserver.Namespace;
 import eu.esdihumboldt.hale.io.geoserver.ResourceBuilder;
 
 @SuppressWarnings("javadoc")
-public class ResourceManagerTest extends AbstractDockerTest {
+public class ResourceManagerIT extends AbstractDockerTest {
 
 	private static final String GEOSERVER_USER = "admin";
 	private static final String GEOSERVER_PASSWORD = "geoserver";
@@ -61,12 +61,11 @@ public class ResourceManagerTest extends AbstractDockerTest {
 
 	private static String geoserverURL;
 	private static HaleDockerClient client;
-	private static boolean shouldRun;
 
 	private final Namespace ns;
 	private final DataStore ds;
 
-	public ResourceManagerTest() {
+	public ResourceManagerIT() {
 		ns = ResourceBuilder.namespace(NAMESPACE_PREFIX).setAttribute(Namespace.URI, NAMESPACE_URI)
 				.build();
 
@@ -83,18 +82,14 @@ public class ResourceManagerTest extends AbstractDockerTest {
 	@BeforeClass
 	public static void startGeoServer() throws Exception {
 		DockerConfigInstance conf = new DockerConfigInstance("appschema",
-				ResourceManagerTest.class.getClassLoader());
+				ResourceManagerIT.class.getClassLoader());
 		client = new HaleDockerClient(conf);
 		client.createContainer();
-		shouldRun = client.isServerAvailable();
+		client.startContainer();
 
-		if (shouldRun) {
-			client.startContainer();
+		geoserverURL = "http://localhost:" + client.getHostPort(8080) + "/geoserver";
 
-			geoserverURL = "http://localhost:" + client.getHostPort(8080) + "/geoserver";
-
-			waitForGeoServer();
-		}
+		waitForGeoServer();
 	}
 
 	private static void waitForGeoServer() throws Exception {
@@ -128,39 +123,23 @@ public class ResourceManagerTest extends AbstractDockerTest {
 
 	@AfterClass
 	public static void tearDownGeoServer() throws Exception {
-		if (!shouldRun) {
-			return;
-		}
-
 		client.killAndRemoveContainer();
 	}
 
 	@Before
 	public void setUp() throws Exception {
-		if (!shouldRun) {
-			return;
-		}
-
 		deleteDataStore();
 		createNamespace();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		if (!shouldRun) {
-			return;
-		}
-
 		deleteDataStore();
 		deleteNamespace();
 	}
 
 	@Test
 	public void testNamespaceManager() throws Exception {
-		if (!shouldRun) {
-			return;
-		}
-
 		NamespaceManager nsMgr = createNamespaceManager();
 
 		// check namespace was created correctly
@@ -192,10 +171,6 @@ public class ResourceManagerTest extends AbstractDockerTest {
 
 	@Test
 	public void testDataStoreManager() throws Exception {
-		if (!shouldRun) {
-			return;
-		}
-
 		DataStoreManager dsMgr = createDataStoreManager();
 
 		// create datastore
@@ -221,10 +196,6 @@ public class ResourceManagerTest extends AbstractDockerTest {
 
 	@Test
 	public void testConfigArchiveUpload() throws Exception {
-		if (!shouldRun) {
-			return;
-		}
-
 		// build mapping file resource
 		ContentType contentType = DataStoreFile.ZIP_CONTENT_TYPE;
 		InputStream is = getClass().getResourceAsStream(APP_SCHEMA_CONFIG_ARCHIVE);
