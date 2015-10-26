@@ -82,8 +82,8 @@ class CommandLineBuilder {
             clean.run()
         } else if (cmd == 'help') {
             help.run()
-        } else if (cmd == 'integrationTestStage') {
-            integrationTestStage.run()
+        } else if (cmd == 'integrationStage') {
+            integrationStage.run()
         } else if (cmd == 'deployArtifacts') {
             deployArtifacts.run()
         } else if (cmd == 'product') {
@@ -91,7 +91,8 @@ class CommandLineBuilder {
 		} else if (cmd == 'site') {
 			site.run()
         } else {
-            commitStage.run()
+			println ("Command $cmd not properly handled, please adapt CommandLineBuilder")
+			help.run()
         }
     }
 
