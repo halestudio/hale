@@ -30,7 +30,7 @@ import groovy.sql.Sql
  * 
  * @author Sameer Sheikh
  */
-public class TestAutoGenKeyReference extends AbstractDBTest {
+public class AutoGenKeyReferenceIT extends AbstractDBTest {
 
 	private static final String STATISTICAL_UNIT = '''create table statisticalunits
 	(
@@ -47,8 +47,8 @@ public class TestAutoGenKeyReference extends AbstractDBTest {
 	/**
 	 * Constructor
 	 */
-	public TestAutoGenKeyReference() {
-		super(new DBConfigInstance("postgis", TestAutoGenKeyReference.class.getClassLoader()));
+	public AutoGenKeyReferenceIT() {
+		super(new DBConfigInstance("postgis", AutoGenKeyReferenceIT.class.getClassLoader()));
 	}
 
 	/**
