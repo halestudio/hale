@@ -36,7 +36,7 @@ import groovy.sql.Sql
  * 
  * @author Sameer Sheikh
  */
-public class WriteInstanceOrder extends AbstractDBTest {
+public class WriteInstanceOrderIT extends AbstractDBTest {
 	private static final FIRST_TABLE_LINES = '''CREATE TABLE statisticalunits
 		(
 	ID VARCHAR(10) PRIMARY KEY,
@@ -60,8 +60,8 @@ public class WriteInstanceOrder extends AbstractDBTest {
 	/**
 	 * constructor
 	 */
-	public WriteInstanceOrder() {
-		super(new DBConfigInstance("postgis", WriteInstanceOrder.class.getClassLoader()));
+	public WriteInstanceOrderIT() {
+		super(new DBConfigInstance("postgis", WriteInstanceOrderIT.class.getClassLoader()));
 	}
 
 	/**

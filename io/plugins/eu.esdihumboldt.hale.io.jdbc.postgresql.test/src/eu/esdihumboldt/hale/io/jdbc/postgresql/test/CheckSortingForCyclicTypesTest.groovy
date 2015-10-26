@@ -35,7 +35,7 @@ import eu.esdihumboldt.hale.io.jdbc.JDBCInstanceWriter
  * 
  * @author Sameer Sheikh
  */
-public class CheckSortingForCyclicTypes {
+public class CheckSortingForCyclicTypesTest {
 
 	private static final NAMESPACE = "jdbc:postgresql:gis:public";
 	/**

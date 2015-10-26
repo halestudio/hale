@@ -34,7 +34,7 @@ import groovy.sql.Sql
  * 
  * @author Sameer Sheikh
  */
-public class CheckComplexTypeOrder extends AbstractDBTest{
+public class CheckComplexTypeOrderIT extends AbstractDBTest{
 	private static final FIRST_TABLE_LINES = '''CREATE TABLE FIRST_TABLE
 		(
 	first_id VARCHAR(10) REFERENCES SECOND_TABLE(second_id),
@@ -64,8 +64,8 @@ public class CheckComplexTypeOrder extends AbstractDBTest{
 	description VARCHAR(254)
 	);'''
 
-	public CheckComplexTypeOrder(){
-		super(new DBConfigInstance("postgis",CheckComplexTypeOrder.class.getClassLoader()));
+	public CheckComplexTypeOrderIT(){
+		super(new DBConfigInstance("postgis",CheckComplexTypeOrderIT.class.getClassLoader()));
 	}
 
 	@Test
