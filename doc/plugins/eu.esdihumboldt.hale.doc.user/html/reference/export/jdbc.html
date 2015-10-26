@@ -21,7 +21,10 @@
 		<li>IDs (primary keys) generated in the database during insertion
 			are not available to be used to create references between different
 			tables. To be able to link tables, IDs and references must be
-			provided as part of the mapping/transformation.</li>
+			provided as part of the mapping/transformation. For auto-generated
+			numerical columns (auto-increment) referenced in foreign keys, the
+			identifier assigned during transformation will be replaced by the
+			auto-generated value.</li>
 	</ul>
 	<p>When storing geometries in PostGIS, HALE will try to detect the
 		spatial reference system associated to the target column and transform
