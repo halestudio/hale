@@ -14,13 +14,13 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.style.io.impl;
+package eu.esdihumboldt.hale.common.style.io.impl;
 
 import org.geotools.styling.Style;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractExportProvider;
-import eu.esdihumboldt.hale.ui.style.io.StyleWriter;
+import eu.esdihumboldt.hale.common.style.io.StyleWriter;
 
 /**
  * Base class for {@link StyleWriter} implementations.

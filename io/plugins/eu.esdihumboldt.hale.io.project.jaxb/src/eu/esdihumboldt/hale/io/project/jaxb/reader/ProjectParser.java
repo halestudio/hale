@@ -55,12 +55,12 @@ import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.schema.io.SchemaIO;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
+import eu.esdihumboldt.hale.common.style.io.StyleReader;
 import eu.esdihumboldt.hale.io.project.jaxb.generated.ConfigData;
 import eu.esdihumboldt.hale.io.project.jaxb.generated.ConfigSection;
 import eu.esdihumboldt.hale.io.project.jaxb.generated.HaleProject;
 import eu.esdihumboldt.hale.io.project.jaxb.generated.ObjectFactory;
 import eu.esdihumboldt.hale.io.project.jaxb.internal.Messages;
-import eu.esdihumboldt.hale.ui.style.io.StyleReader;
 
 /**
  * The project parser reads a given project XML file and populates a

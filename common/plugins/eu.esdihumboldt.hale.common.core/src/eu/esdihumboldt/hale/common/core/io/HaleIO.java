@@ -205,7 +205,8 @@ public abstract class HaleIO {
 
 					@Override
 					public boolean acceptFactory(IOProviderDescriptor descriptor) {
-						return providerType.isAssignableFrom(descriptor.getProviderType());
+						return descriptor != null && descriptor.getProviderType() != null
+								&& providerType.isAssignableFrom(descriptor.getProviderType());
 					}
 
 					@Override

@@ -74,6 +74,9 @@ public class XLSLookupTableReader extends AbstractLookupImport {
 		boolean skipFirst = getParameter(LookupTableExportConstants.PARAM_SKIP_FIRST_LINE).as(
 				Boolean.class);
 
+		boolean ignoreEmptyStrings = getParameter(
+				LookupTableExportConstants.PARAM_IGNORE_EMPTY_STRING).as(Boolean.class);
+
 		Workbook workbook;
 		// write xls file
 		if (getContentType().getId().equals("eu.esdihumboldt.hale.io.xls.xls")) {
@@ -90,7 +93,8 @@ public class XLSLookupTableReader extends AbstractLookupImport {
 
 		DefaultXLSLookupTableReader reader = new DefaultXLSLookupTableReader();
 
-		Map<Value, Value> map = reader.read(workbook, skipFirst, keyColumn, valueColumn);
+		Map<Value, Value> map = reader.read(workbook, skipFirst, keyColumn, valueColumn,
+				ignoreEmptyStrings);
 
 		lookupTable = new LookupTableInfoImpl(new LookupTableImpl(map), getName(), getDescription());
 

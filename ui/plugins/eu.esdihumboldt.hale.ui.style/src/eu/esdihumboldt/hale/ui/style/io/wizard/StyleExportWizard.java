@@ -16,8 +16,8 @@
 
 package eu.esdihumboldt.hale.ui.style.io.wizard;
 
+import eu.esdihumboldt.hale.common.style.io.StyleWriter;
 import eu.esdihumboldt.hale.ui.io.ExportWizard;
-import eu.esdihumboldt.hale.ui.style.io.StyleWriter;
 
 /**
  * Wizard for style export.

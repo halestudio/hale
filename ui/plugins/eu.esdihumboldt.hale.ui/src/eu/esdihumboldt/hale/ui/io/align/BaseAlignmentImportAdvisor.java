@@ -19,6 +19,7 @@ import eu.esdihumboldt.hale.common.align.io.BaseAlignmentReader;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.io.DefaultIOAdvisor;
+import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
 /**
@@ -41,5 +42,8 @@ public class BaseAlignmentImportAdvisor extends DefaultIOAdvisor<BaseAlignmentRe
 		SchemaService ss = getService(SchemaService.class);
 		provider.setSourceSchema(ss.getSchemas(SchemaSpaceID.SOURCE));
 		provider.setTargetSchema(ss.getSchemas(SchemaSpaceID.TARGET));
+
+		ProjectService ps = getService(ProjectService.class);
+		provider.setProjectLocation(ps.getLoadLocation());
 	}
 }

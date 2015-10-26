@@ -51,6 +51,13 @@ public class StreamGmlReader extends AbstractInstanceReader {
 	 */
 	public static final String PARAM_STRICT = "strict";
 
+	/**
+	 * The name of the parameter specifying if parsing of the XML instances
+	 * should allow types and properties with namespaces that differ from those
+	 * defined in the schema. Parameter value defaults to <code>false</code>.
+	 */
+	public static final String PARAM_IGNORE_NAMESPACES = "ignoreNamespaces";
+
 	private InstanceCollection instances;
 
 	private final boolean restrictToFeatures;
@@ -67,6 +74,7 @@ public class StreamGmlReader extends AbstractInstanceReader {
 
 		addSupportedParameter(PARAM_IGNORE_ROOT);
 		addSupportedParameter(PARAM_STRICT);
+		addSupportedParameter(PARAM_IGNORE_NAMESPACES);
 	}
 
 	/**
@@ -80,9 +88,11 @@ public class StreamGmlReader extends AbstractInstanceReader {
 		try {
 			boolean ignoreRoot = getParameter(PARAM_IGNORE_ROOT).as(Boolean.class, true);
 			boolean strict = getParameter(PARAM_STRICT).as(Boolean.class, false);
+			boolean ignoreNamespaces = getParameter(PARAM_IGNORE_NAMESPACES).as(Boolean.class,
+					false);
 
 			instances = new GmlInstanceCollection(getSource(), getSourceSchema(),
-					restrictToFeatures, ignoreRoot, strict, getCrsProvider());
+					restrictToFeatures, ignoreRoot, strict, ignoreNamespaces, getCrsProvider());
 			// TODO any kind of analysis on file? e.g. types and size - would
 			// also give feedback to the user if the file can be loaded
 			reporter.setSuccess(true);

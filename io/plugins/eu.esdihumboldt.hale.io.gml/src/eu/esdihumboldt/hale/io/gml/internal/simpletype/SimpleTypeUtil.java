@@ -188,6 +188,10 @@ public class SimpleTypeUtil {
 	 * @return the XmlBeans simple type class
 	 */
 	private static Class<? extends XmlAnySimpleType> getSimpleType(TypeDefinition type) {
+		if (type == null) {
+			return null;
+		}
+
 		if (type.getName().getNamespaceURI().equals(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
 			Class<? extends XmlAnySimpleType> simpleType = TYPE_MAP.get(type.getName()
 					.getLocalPart());

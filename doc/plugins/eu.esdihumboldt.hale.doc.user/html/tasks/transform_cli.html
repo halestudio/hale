@@ -72,6 +72,8 @@
 	<pre><code>HALE -nosplash -application hale.transform
      -project &lt;file-or-URI-to-HALE-project&gt;
      -source &lt;file-or-URI-to-source-data&gt;
+         [-include &lt;file-pattern&gt;]
+         [-exclude &lt;file-pattern&gt;]
          [-providerId &lt;ID-of-source-reader&gt;]
          [&lt;setting&gt;...]
      -target &lt;target-file-or-URI&gt;
@@ -120,6 +122,20 @@
 		GetFeature request. Specifying a source data location is mandatory,
 		any source data configured in the HALE project will be ignored for the
 		transformation.</p>
+	<p>
+		If the source is a directory, you can specify multiple
+		<code>-include</code>
+		and
+		<code>-exclude</code>
+		parameters to control which files to load. If you do not specify
+		<code>-include</code>
+		, it defaults to
+		<code>"**"</code>
+		, i.e. all files being included, even if they are in sub-directories.
+		Patterns use the <a target="_blank"
+			href="http://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html#getPathMatcher-java.lang.String-">glob
+			pattern syntax as defined in Java</a> and should be quoted to not be interpreted by the shell.
+	</p>
 	<p>
 		You can transform data from multiple sources if you provide a
 		<code>-source</code>

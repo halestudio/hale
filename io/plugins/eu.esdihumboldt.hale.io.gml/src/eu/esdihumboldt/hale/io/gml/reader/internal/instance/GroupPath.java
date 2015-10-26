@@ -155,14 +155,17 @@ public class GroupPath {
 	 * @param propertyName the property name
 	 * @param strict states if additional checks are applied apart from whether
 	 *            the property exists
+	 * @param ignoreNamespaces if a property with a differing namespace may be
+	 *            accepted
 	 * @return if adding the property value to the last element in the path is
 	 *         allowed
 	 */
-	public boolean allowAdd(QName propertyName, boolean strict) {
+	public boolean allowAdd(QName propertyName, boolean strict, boolean ignoreNamespaces) {
 		if (children == null || children.isEmpty()) {
 			// check last parent
 			MutableGroup parent = parents.get(parents.size() - 1);
-			ChildDefinition<?> child = parent.getDefinition().getChild(propertyName);
+			ChildDefinition<?> child = GroupUtil.findChild(parent.getDefinition(), propertyName,
+					ignoreNamespaces);
 			if (child.asProperty() != null) {
 				return !strict || GroupUtil.allowAdd(parent, null, child.asProperty().getName());
 			}
@@ -173,7 +176,8 @@ public class GroupPath {
 		else {
 			// check last child
 			DefinitionGroup child = children.get(children.size() - 1);
-			ChildDefinition<?> property = child.getChild(propertyName);
+			ChildDefinition<?> property = GroupUtil
+					.findChild(child, propertyName, ignoreNamespaces);
 			if (property == null) {
 				return false;
 			}
@@ -185,7 +189,7 @@ public class GroupPath {
 				return true;
 			}
 
-			return !strict || GroupUtil.allowAdd(null, child, propertyName);
+			return !strict || GroupUtil.allowAdd(null, child, property.getName());
 		}
 	}
 

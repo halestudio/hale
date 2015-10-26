@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.net.URI;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -128,39 +127,7 @@ public abstract class AbstractAnalyseTable {
 	 * @return the cell text
 	 */
 	protected String extractText(Cell cell) {
-		if (cell == null)
-			return null;
-
-		if (cell.getCellType() == Cell.CELL_TYPE_BLANK) {
-			// do this check here as the evaluator seems to return null on a
-			// blank
-			return null;
-		}
-
-		CellValue value = evaluator.evaluate(cell);
-
-		switch (value.getCellType()) {
-		case Cell.CELL_TYPE_BLANK:
-			return null;
-		case Cell.CELL_TYPE_BOOLEAN:
-			return String.valueOf(value.getBooleanValue());
-		case Cell.CELL_TYPE_NUMERIC:
-			// number formatting
-			double number = value.getNumberValue();
-			if (number == Math.floor(number)) {
-				// it's an integer
-				return String.valueOf((int) number);
-			}
-			return String.valueOf(value.getNumberValue());
-		case Cell.CELL_TYPE_STRING:
-			return value.getStringValue();
-		case Cell.CELL_TYPE_FORMULA:
-			// will not happen as we used the evaluator
-		case Cell.CELL_TYPE_ERROR:
-			// fall through
-		default:
-			return null;
-		}
+		return XLSUtil.extractText(cell, evaluator);
 	}
 
 }

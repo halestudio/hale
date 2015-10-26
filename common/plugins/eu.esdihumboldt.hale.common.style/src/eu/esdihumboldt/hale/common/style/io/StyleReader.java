@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.style.io;
+package eu.esdihumboldt.hale.common.style.io;
 
 import org.geotools.styling.Style;
 

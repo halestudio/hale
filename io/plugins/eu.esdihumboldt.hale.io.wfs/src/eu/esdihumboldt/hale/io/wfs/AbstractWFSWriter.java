@@ -23,6 +23,8 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.net.Proxy;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.text.MessageFormat;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -174,7 +176,6 @@ public abstract class AbstractWFSWriter<T extends StreamGmlWriter> extends
 			Response response = futureResponse.get();
 			HttpResponse res = response.returnResponse();
 			int statusCode = res.getStatusLine().getStatusCode();
-			Document responseDoc = parseResponse(res.getEntity());
 			XPathFactory xPathfactory = XPathFactory.newInstance();
 			XPath xpath = xPathfactory.newXPath();
 			if (statusCode >= 200 && statusCode < 300) {
@@ -183,6 +184,8 @@ public abstract class AbstractWFSWriter<T extends StreamGmlWriter> extends
 
 				// construct summary from response
 				try {
+					Document responseDoc = parseResponse(res.getEntity());
+
 					// totalInserted
 					String inserted = xpath.compile("//TransactionSummary/totalInserted").evaluate(
 							responseDoc);
@@ -192,6 +195,11 @@ public abstract class AbstractWFSWriter<T extends StreamGmlWriter> extends
 					reporter.setSummary("Inserted " + inserted + " features.");
 				} catch (XPathExpressionException e) {
 					log.error("Error in XPath used to evaluate service response");
+				} catch (ParserConfigurationException | SAXException e) {
+					reporter.error(new IOMessageImpl(MessageFormat.format(
+							"Server returned status code {0}, but could not parse server response",
+							statusCode), e));
+					reporter.setSuccess(false);
 				}
 			}
 			else {
@@ -202,18 +210,19 @@ public abstract class AbstractWFSWriter<T extends StreamGmlWriter> extends
 				reporter.setSuccess(false);
 
 				try {
+					Document responseDoc = parseResponse(res.getEntity());
 					String errorText = xpath.compile("//ExceptionText/text()")
 							.evaluate(responseDoc);
 					reporter.setSummary("Request failed: " + errorText);
 				} catch (XPathExpressionException e) {
 					log.error("Error in XPath used to evaluate service response");
+				} catch (ParserConfigurationException | SAXException e) {
+					reporter.error(new IOMessageImpl("Could not parse server response", e));
+					reporter.setSuccess(false);
 				}
 			}
 		} catch (ExecutionException | InterruptedException e) {
 			reporter.error(new IOMessageImpl("Failed to execute WFS-T request", e));
-			reporter.setSuccess(false);
-		} catch (ParserConfigurationException | SAXException e) {
-			reporter.error(new IOMessageImpl("Could not parse server response", e));
 			reporter.setSuccess(false);
 		}
 
@@ -226,8 +235,12 @@ public abstract class AbstractWFSWriter<T extends StreamGmlWriter> extends
 			ParserConfigurationException, SAXException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
-		try (InputStream response = new ByteArrayInputStream(EntityUtils.toByteArray(entity))) {
+		byte[] data = EntityUtils.toByteArray(entity);
+		try (InputStream response = new ByteArrayInputStream(data)) {
 			return builder.parse(response);
+		} catch (SAXException e) {
+			String response = new String(data, StandardCharsets.UTF_8);
+			throw new SAXException("Invalid XML response: " + response, e);
 		}
 	}
 

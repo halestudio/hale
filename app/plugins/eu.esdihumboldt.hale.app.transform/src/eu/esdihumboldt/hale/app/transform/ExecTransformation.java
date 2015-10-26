@@ -18,13 +18,22 @@ package eu.esdihumboldt.hale.app.transform;
 import static eu.esdihumboldt.hale.app.transform.ExecUtil.fail;
 import static eu.esdihumboldt.hale.app.transform.ExecUtil.info;
 import static eu.esdihumboldt.hale.app.transform.ExecUtil.status;
+import static eu.esdihumboldt.hale.app.transform.ExecUtil.warn;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
+import java.nio.file.Path;
+import java.nio.file.PathMatcher;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -61,6 +70,99 @@ import eu.esdihumboldt.util.groovy.sandbox.GroovyService;
 public class ExecTransformation implements ConsoleConstants {
 
 	/**
+	 * Visitor that collects files to be included.
+	 */
+	private static final class DirVisitor implements FileVisitor<Path> {
+
+		private final List<Path> collectedFiles = new ArrayList<>();
+		private final Path parentDir;
+		private final List<PathMatcher> includes;
+		private final List<PathMatcher> excludes;
+
+		/**
+		 * Constructor.
+		 * 
+		 * @param parentDir the parent directory
+		 * @param includes the include patterns
+		 * @param excludes the exclude patterns
+		 */
+		public DirVisitor(Path parentDir, List<String> includes, List<String> excludes) {
+			this.parentDir = parentDir;
+			this.includes = new ArrayList<>(includes.size());
+			for (String pattern : includes) {
+				PathMatcher matcher = parentDir.getFileSystem().getPathMatcher("glob:" + pattern);
+				this.includes.add(matcher);
+			}
+			this.excludes = new ArrayList<>(excludes.size());
+			for (String pattern : excludes) {
+				PathMatcher matcher = parentDir.getFileSystem().getPathMatcher("glob:" + pattern);
+				this.excludes.add(matcher);
+			}
+		}
+
+		@Override
+		public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs)
+				throws IOException {
+			/*
+			 * XXX currently cannot determine from the patterns if a directory
+			 * should be inspected or not
+			 */
+			return FileVisitResult.CONTINUE;
+		}
+
+		@Override
+		public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+			if (accept(file)) {
+				collectedFiles.add(file);
+			}
+			return FileVisitResult.CONTINUE;
+		}
+
+		private boolean accept(Path file) {
+			Path relative = parentDir.relativize(file);
+
+			boolean included = false;
+			for (PathMatcher include : includes) {
+				if (include.matches(relative)) {
+					included = true;
+					break;
+				}
+			}
+
+			if (!included) {
+				return false;
+			}
+
+			for (PathMatcher exclude : excludes) {
+				if (exclude.matches(relative)) {
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		@Override
+		public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+			// ignore, but log
+			warn("Could not access file " + file);
+			return FileVisitResult.CONTINUE;
+		}
+
+		@Override
+		public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+			return FileVisitResult.CONTINUE;
+		}
+
+		/**
+		 * @return the list of files collected from the directory
+		 */
+		public List<Path> getCollectedFiles() {
+			return Collections.unmodifiableList(collectedFiles);
+		}
+	}
+
+	/**
 	 * ID for the transformation
 	 */
 	private final String id = UUID.randomUUID().toString();
@@ -93,7 +195,30 @@ public class ExecTransformation implements ConsoleConstants {
 		Iterator<URI> sourceIt = context.getSources().iterator();
 		int index = 0;
 		while (sourceIt.hasNext()) {
-			setupReader(sourceIt.next(), index);
+			URI uri = sourceIt.next();
+
+			Path path;
+			try {
+				path = Paths.get(uri);
+			} catch (Exception e) {
+				path = null;
+			}
+
+			if (path != null && java.nio.file.Files.isDirectory(path)) {
+				// directory handling
+				List<Path> files = getIncludedFiles(path, index);
+				info(MessageFormat
+						.format("{0} files identified for source {1}", files.size(), path));
+				for (Path file : files) {
+					setupReader(file.toUri(), index);
+				}
+			}
+			else {
+				// file / URI handling
+				setupReader(uri, index);
+			}
+
+			// increase source index
 			index++;
 		}
 
@@ -114,6 +239,31 @@ public class ExecTransformation implements ConsoleConstants {
 
 		// exit OK
 		return 0;
+	}
+
+	/**
+	 * Get the files to load from a directory.
+	 * 
+	 * @param parentDir the directory
+	 * @param index the source index
+	 * @return the list of file
+	 */
+	private List<Path> getIncludedFiles(Path parentDir, int index) {
+		List<String> includes = context.getSourceIncludes().get(index);
+		if (includes.isEmpty()) {
+			// default include - all files
+			includes.add("**");
+		}
+
+		List<String> excludes = context.getSourceExcludes().get(index);
+
+		DirVisitor visitor = new DirVisitor(parentDir, includes, excludes);
+		try {
+			java.nio.file.Files.walkFileTree(parentDir, visitor);
+		} catch (IOException e) {
+			throw new IllegalStateException("Error browsing source directory " + parentDir, e);
+		}
+		return visitor.getCollectedFiles();
 	}
 
 	private void setupReportHandler() {
@@ -218,8 +368,14 @@ public class ExecTransformation implements ConsoleConstants {
 		if (factory == null) {
 			throw fail("Instance writer with ID " + writerId + " not found");
 		}
-		List<IContentType> cts = HaleIO.findContentTypesFor(factory.getSupportedTypes(), null,
-				context.getTarget().getPath());
+		String path = context.getTarget().getPath();
+		List<IContentType> cts;
+		if (path != null) {
+			cts = HaleIO.findContentTypesFor(factory.getSupportedTypes(), null, path);
+		}
+		else {
+			cts = new ArrayList<>(factory.getSupportedTypes());
+		}
 		if (!cts.isEmpty()) {
 			target.setContentType(cts.get(0));
 		}
