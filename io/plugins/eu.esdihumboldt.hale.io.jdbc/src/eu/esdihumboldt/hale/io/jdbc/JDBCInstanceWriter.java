@@ -33,7 +33,6 @@ import javax.xml.namespace.QName;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -65,6 +64,11 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 
 	private static final ALogger log = ALoggerFactory.getLogger(JDBCInstanceWriter.class);
 
+	/**
+	 * Name of the parameter specifying if the data may be written unordered.
+	 */
+	private static final String PARAM_UNORDERED = "unordered";
+
 	private Map<TypeDefinition, Boolean> visitedType;
 
 	/**
@@ -75,6 +79,7 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 
 		addSupportedParameter(PARAM_USER);
 		addSupportedParameter(PARAM_PASSWORD);
+		addSupportedParameter(PARAM_UNORDERED);
 	}
 
 	@Override
@@ -107,13 +112,23 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 				reporter.setSummary("Failed to connect to database.");
 				return reporter;
 			}
-			Set<TypeDefinition> sortedSet = getSortedSchemas(getTargetSchema()
-					.getMappingRelevantTypes());
 
-//			URI jdbcURI = getTarget().getLocation();
+			boolean writeUnordered = getParameter(PARAM_UNORDERED).as(Boolean.class, false);
 
-			for (TypeDefinition td : sortedSet) {
-				writeInstances(connection, instances.select(new TypeFilter(td)), progress, reporter);
+			if (writeUnordered) {
+				// write instances as they come in
+				writeInstances(connection, instances, progress, reporter);
+			}
+			else {
+				// write instances based on type order needed for insert
+				// (to avoid violating constraints)
+				Set<TypeDefinition> sortedSet = getSortedSchemas(getTargetSchema()
+						.getMappingRelevantTypes());
+
+				for (TypeDefinition td : sortedSet) {
+					writeInstances(connection, instances.select(new TypeFilter(td)), progress,
+							reporter);
+				}
 			}
 
 			reporter.setSuccess(true);
@@ -137,8 +152,10 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 
 	@Override
 	public boolean isPassthrough() {
-		// return true;
-		return false;
+		boolean writeUnordered = getParameter(PARAM_UNORDERED).as(Boolean.class, false);
+
+		// only pass-through if written directly
+		return writeUnordered;
 	}
 
 	/**
@@ -374,7 +391,6 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 	 * @return the insert statement
 	 * @throws SQLException if creating the prepared statement fails
 	 */
-	@SuppressWarnings(value = "SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING", justification = "Query is built from schema information")
 	private PreparedStatement getInsertStatement(TypeDefinition type, Set<QName> properties,
 			Map<TypeDefinition, Map<Set<QName>, PreparedStatement>> typeStatements,
 			Connection connection) throws SQLException {
