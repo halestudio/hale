@@ -35,7 +35,7 @@ public interface TransformationService {
 	 * 
 	 * @param alignment the alignment
 	 * @param source the source instances
-	 * @param target the transformed instance sink
+	 * @param target the transformed instance sink, must be thread safe
 	 * @param serviceProvider provider for services that can be accessed by
 	 *            transformation functions in context of the transformation
 	 * @param progressIndicator the progress indicator

@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
+import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.transformation.function.ExecutionContext;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
@@ -47,15 +48,19 @@ public class TransformationContext {
 
 	private final ServiceProvider serviceProvider;
 
+	private final Alignment alignment;
+
 	/**
 	 * Create a transformation context.
 	 * 
 	 * @param serviceProvider the provider for services needed by transformation
 	 *            functions
+	 * @param alignment the transformation alignment
 	 */
-	public TransformationContext(ServiceProvider serviceProvider) {
+	public TransformationContext(ServiceProvider serviceProvider, Alignment alignment) {
 		super();
 		this.serviceProvider = serviceProvider;
+		this.alignment = alignment;
 	}
 
 	/**
@@ -69,7 +74,7 @@ public class TransformationContext {
 		synchronized (cachedContexts) {
 			context = cachedContexts.get(cell);
 			if (context == null) {
-				context = new ExecutionContextImpl(serviceProvider, functionContexts,
+				context = new ExecutionContextImpl(serviceProvider, alignment, functionContexts,
 						TransformationContext.this.context, cell);
 			}
 			cachedContexts.put(cell, context);

@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.common.align.transformation.function;
 
 import java.util.Map;
 
+import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
@@ -25,8 +26,8 @@ import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
  * execution context is held for the whole transformation process. It can be
  * used by transformation functions to share information. For implementations
  * please be aware that if the transformation may be executed in multiple
- * threads, the getters defined here as well as the returned maps have to use
- * mechanisms to ensure their consistency (e.g. locking/synchronization).
+ * threads, the context getters defined here as well as the returned maps have
+ * to use mechanisms to ensure their consistency (e.g. locking/synchronization).
  * 
  * @author Simon Templer
  */
@@ -65,5 +66,12 @@ public interface ExecutionContext extends ServiceProvider {
 	 * @return the function context map
 	 */
 	public Map<Object, Object> getTransformationContext();
+
+	/**
+	 * Get the (immutable) transformation alignment.
+	 * 
+	 * @return the transformation alignment
+	 */
+	public Alignment getAlignment();
 
 }

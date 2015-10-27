@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.cst.internal;
+package eu.esdihumboldt.hale.common.align.transformation.service.impl;
 
 import eu.esdihumboldt.hale.common.align.transformation.service.InstanceSink;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
