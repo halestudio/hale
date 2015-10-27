@@ -20,6 +20,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
@@ -31,6 +35,7 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
@@ -62,6 +67,31 @@ public class AggregateTransformation extends
 			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
 			TransformationLog log) throws TransformationException, NoResultException {
 
+		Iterable<Object> geometries = Iterables.transform(variables.get(null),
+				new Function<PropertyValue, Object>() {
+
+					@Override
+					public Object apply(PropertyValue input) {
+						return input.getValue();
+					}
+				});
+		return aggregateGeometries(geometries, log, getCell());
+	}
+
+	/**
+	 * Aggregates geometries contained in the provided objects.
+	 * 
+	 * @param geometries the geometries or instances containing geometries
+	 * @param cell the currently process cell or <code>null</code>
+	 * @param log the transformation log or <code>null</code>
+	 * @return the aggregated geometry
+	 * @throws TransformationException if source geometries don't have a common
+	 *             CRS
+	 * @throws NoResultException if the result extent would be <code>null</code>
+	 */
+	public static GeometryProperty<?> aggregateGeometries(Iterable<?> geometries,
+			@Nullable TransformationLog log, @Nullable Cell cell) throws NoResultException,
+			TransformationException {
 		InstanceTraverser traverser = new DepthFirstInstanceTraverser(true);
 		GeometryFinder geoFind = new GeometryFinder(null);
 
@@ -70,10 +100,9 @@ public class AggregateTransformation extends
 
 		List<Geometry> collectedGeometries = new ArrayList<>();
 
-		for (PropertyValue pv : variables.get(null)) {
+		for (Object value : geometries) {
 
 			// find contained geometries
-			Object value = pv.getValue();
 			traverser.traverse(value, geoFind);
 
 			for (GeometryProperty<?> geom : geoFind.getGeometries()) {
@@ -119,8 +148,10 @@ public class AggregateTransformation extends
 		}
 
 		if (commonGeometryType != null && commonGeometryType.equals(Geometry.class)) {
-			log.warn(new TransformationMessageImpl(getCell(),
-					"Could not find common geometry type for aggregation", null));
+			if (log != null && cell != null) {
+				log.warn(new TransformationMessageImpl(cell,
+						"Could not find common geometry type for aggregation", null));
+			}
 		}
 
 		if (commonGeometryType != null) {
@@ -131,7 +162,7 @@ public class AggregateTransformation extends
 	}
 
 	@SuppressWarnings("unchecked")
-	private Geometry combineGeometries(List<? extends Geometry> collectedGeometries,
+	private static Geometry combineGeometries(List<? extends Geometry> collectedGeometries,
 			Class<? extends Geometry> commonGeometryType) throws ClassCastException {
 		GeometryFactory fact = new GeometryFactory();
 
@@ -158,7 +189,8 @@ public class AggregateTransformation extends
 	 * @param clazz the geometry class
 	 * @return the contained geometry typed
 	 */
-	private Class<? extends Geometry> getContainedGeometryType(Class<? extends Geometry> clazz) {
+	private static Class<? extends Geometry> getContainedGeometryType(
+			Class<? extends Geometry> clazz) {
 		if (GeometryCollection.class.isAssignableFrom(clazz)) {
 			if (MultiLineString.class.isAssignableFrom(clazz)) {
 				return LineString.class;
