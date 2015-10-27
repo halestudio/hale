@@ -1,5 +1,3 @@
-
-
 /*
  * Copyright (c) 2014 Data Harmonisation Panel
  * 
@@ -67,6 +65,7 @@ class ExecApplication extends AbstractApplication<ExecContext> {
 		}
 		else if (validate(executionContext)) {
 			try {
+				applyProxySettings()
 				new ExecTransformation().run(executionContext)
 			} catch (Exception | AssertionError e) {
 				error "Transformation execution failed: $e.message"
@@ -78,6 +77,19 @@ class ExecApplication extends AbstractApplication<ExecContext> {
 		}
 		else {
 			usage()
+		}
+	}
+
+	protected void applyProxySettings() {
+		// unable to access ProxySettings class here (UI dependency)
+		// --> just use system properties (they have to be provided)
+
+		// in addition, set default Authenticator based on system properties
+		String proxyUser = System.getProperty('http.proxyUser')
+		String proxyPassword = System.getProperty('http.proxyPassword')
+
+		if (proxyUser && proxyPassword) {
+			Authenticator.setDefault(new eu.esdihumboldt.util.http.HttpAuth(proxyUser, proxyPassword))
 		}
 	}
 
