@@ -55,8 +55,12 @@ import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
+import eu.esdihumboldt.hale.common.instance.model.Filter;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.MultiInstanceCollection;
+import eu.esdihumboldt.hale.common.instance.orient.OInstance;
 import eu.esdihumboldt.hale.common.instance.orient.storage.BrowseOrientInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.orient.storage.LocalOrientDB;
 import eu.esdihumboldt.hale.common.instance.orient.storage.StoreInstancesJob;
@@ -245,7 +249,23 @@ public class Transformation {
 			tmpDir.deleteOnExit();
 
 			// get instance collection
-			sourceToUse = new BrowseOrientInstanceCollection(db, sourceSchema, DataSet.SOURCE);
+//			sourceToUse = new BrowseOrientInstanceCollection(db, sourceSchema, DataSet.SOURCE);
+			// only yield instances that were actually inserted
+			// this is also done in OrientInstanceService
+			// TODO make configurable?
+			sourceToUse = FilteredInstanceCollection.applyFilter(
+					new BrowseOrientInstanceCollection(db, sourceSchema, DataSet.SOURCE),
+					new Filter() {
+
+						@Override
+						public boolean match(Instance instance) {
+							if (instance instanceof OInstance) {
+								return ((OInstance) instance).isInserted();
+							}
+							return true;
+						}
+
+					});
 		}
 		else {
 			sourceToUse = sources;
