@@ -33,6 +33,7 @@
       <plugin id="eu.esdihumboldt.cst.doc.functions"/>
       <plugin id="eu.esdihumboldt.cst.doc.functions.dummy" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.doc.application"/>
+      <plugin id="eu.esdihumboldt.hale.doc.appschema"/>
       <plugin id="eu.esdihumboldt.hale.doc.user"/>
       <plugin id="eu.esdihumboldt.hale.doc.user.views.styledmap"/>
       <plugin id="findbugsAnnotations"/>

@@ -50,6 +50,41 @@ public class HaleDockerClient implements DockerContainer {
 	}
 
 	/**
+	 * Checks the availability of the Docker server.
+	 * 
+	 * @return <code>true</code> if the Docker server is available,
+	 *         <code>false</code> otherwise
+	 */
+	public boolean isServerAvailable() {
+		if (dc == null) {
+			throw new IllegalStateException(
+					"Docker client not created yet: call createContainer() first");
+		}
+
+		int numAttempts = 3;
+		for (int i = 0; i < numAttempts; i++) {
+			try {
+				String result = dc.ping();
+				if ("OK".equals(result)) {
+					return true;
+				}
+			} catch (Exception e) {
+				int attemptsLeft = numAttempts - (i + 1);
+				LOGGER.debug("Exception occurred connection to docker server: " + attemptsLeft
+						+ " attempts left", e);
+
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e1) {
+					// ignore
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * creates a container using the parameters.
 	 * 
 	 */
