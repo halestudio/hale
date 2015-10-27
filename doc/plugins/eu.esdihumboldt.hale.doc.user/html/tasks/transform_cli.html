@@ -24,21 +24,65 @@
 	<p>You can run HALE on the command line either using the HALE
 		executable (e.g. HALE.exe) or using Java directly. Depending on the
 		operating system, behavior may be different, but in general it is
-		better to use Java directly (but make sure you have a compatible
-		version of Java installed), especially if you include the task in an
-		automated process. The advantage of using the HALE executable is that
-		it uses the Java version that is shipped with HALE automatically. The following are
-		the commands to show the usage information of the command line interface, with the
-		executable or via Java, assuming your working directory is the HALE
-		installation folder:</p>
+		better to use Java directly (either use locally installed compatible
+		version of Java or the version shipped with HALE), especially if you
+		include the task in an automated process. The advantage of using the
+		HALE executable is that it uses the Java version that is shipped with
+		HALE automatically and sets some important system properties for you.
+		The following are the commands to show the usage information of the
+		command line interface, with the executable or via Java, assuming your
+		working directory is the HALE installation folder:</p>
 	<p>Running the HALE executable:</p>
 	<pre class="cli"><code><b>&gt;</b> <i>HALE -nosplash</i> -application hale.transform</code></pre>
 	<p>Running Java:</p>
-	<pre class="cli"><code><b>&gt;</b> <i>java -jar plugins\org.eclipse.equinox.launcher_1.3.0.v20140415-2008.jar</i> -application hale.transform</code></pre>
-	<p>
-		Running the command above will show the usage information of the
+	<pre class="cli"><code><b>&gt;</b> <i>java -Xmx1024m -Dcache.level1.enabled=false -Dcache.level1.size=0 -Dcache.level2.enabled=false -Dcache.level2.size=0 -jar plugins\org.eclipse.equinox.launcher_1.3.0.v20140415-2008.jar</i> -application hale.transform</code></pre>
+	<p>Running the command above will show the usage information of the
 		transformation application. Please note that for the Java call, the
-		version of the launcher JAR file may change with new HALE versions.
+		version of the launcher JAR file may change with new HALE versions and
+		you should use a path delimiter appropriate for your system.</p>
+	<p>Additionally, the Java call specifies settings and system
+		properties for the Java VM. You cannot provide these settings to a
+		call to the HALE executable - in that case you have to adapt the file
+		<code>HALE.ini</code>. Following is a short description of the most important
+		VM arguments:</p>
+	<ul>
+		<li style="padding-bottom: 16px;"><code>-Xmx1024m</code><br><br>This setting specifies the
+			<b>maximum heap memory</b> provided as working memory for HALE. If you are
+			with very large individual instances you may need to increase the
+			value. The example specifies a maximum heap space of 1024 MB.</li>
+		<li style="padding-bottom: 16px;"><code>-Dcache.level1.enabled=false
+				-Dcache.level1.size=0 -Dcache.level2.enabled=false
+				-Dcache.level2.size=0</code><br><br>These settings are important for the
+			temporary database used within HALE. If you do not use them you may
+			run into memory issues.</li>
+		<li style="padding-bottom: 16px;"><code>-Dlog.hale.level=INFO -Dlog.root.level=WARN</code><br><br>These
+			settings allow you to <b>configure the log level</b> for log events emitted
+			by HALE. These log events may overlap with messages from the reports,
+			but are generally independent. <code>log.hale.level</code> controls
+			the log level for components of HALE, while <code>log.root.level</code>
+			controls the log level for other code, such as third party libraries.
+			See the <a href="http://logback.qos.ch/manual/configuration.html"
+			target="_blank">logback documentation</a> for more information on
+			logging levels and other details about the logging configuration.</li>
+		<li style="padding-bottom: 16px;">If you need HALE to <b>connect to the internet via a
+				proxy server</b>, you need to provide that information as system
+			properties as well. The command line interface will not read the
+			proxy settings you configured in the HALE user interface.<br><br>
+			The following system properties can be provided to configure the proxy:
+			<ul>
+				<li><code>http.proxyHost</code> - the proxy host name or IP address</li>
+				<li><code>http.proxyPort</code> - the proxy port number</li>
+				<li><code>http.nonProxyHosts</code> - hosts for which the proxy should not be used, separated by | (optional)</li>
+				<li><code>http.proxyUser</code> - user name for authentication with the proxy (optional)</li>
+				<li><code>http.proxyPassword</code> - password for authentication with the proxy (optional)</li>
+			</ul>
+			Specifying the system properties for configuration of the proxy could look like in this example:<br>
+			<code>-Dhttp.proxyHost=webcache.example.com -Dhttp.proxyPort=8080
+-Dhttp.nonProxyHosts="localhost|host.example.com"</code><br><br>
+			More information on proxy configuration in Java can be found <a target="_blank" href="https://docs.oracle.com/javase/7/docs/technotes/guides/net/proxies.html">here</a>.
+		</li>
+	</ul>
+	<p>
 		For simplicity, the following examples will use the
 		<code>HALE</code>
 		executable, you can substitute HALE by the call to Java as above.
