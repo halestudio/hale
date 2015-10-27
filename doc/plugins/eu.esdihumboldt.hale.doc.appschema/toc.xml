@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<toc label="HALE Plug-in for GeoServer App-Schema">
+<toc label="GeoServer App-Schema Plug-in for HALE">
    <topic href="html/introduction/intro.html" label="Introduction">
       <anchor id="introduction"/>
    </topic>
