@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="257">
+<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="258">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="de.fhg.igd.equinox.test.feature.feature.group" version="1.1.0.201503301812"/>
@@ -46,6 +46,10 @@
 <unit id="org.eclipse.emf.sdk.feature.group" version="2.10.2.v20150123-0452"/>
 <unit id="org.eclipse.gef.sdk.feature.group" version="3.9.101.201408150207"/>
 <repository location="http://download.eclipse.org/releases/luna/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.jetty.bundles.f.feature.group" version="8.1.18.201510140934"/>
+<repository location="http://download.eclipse.org/jetty/updates/jetty-bundles-8.x/8.1.18.v20150929"/>
 </location>
 </locations>
 </target>
