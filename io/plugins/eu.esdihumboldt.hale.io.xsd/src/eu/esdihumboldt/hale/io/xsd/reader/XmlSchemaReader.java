@@ -1365,6 +1365,9 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 					createAttributesFromCollection(attributeCollection, typeDef, null,
 							schemaLocation, schemaNamespace);
 				}
+				// complex content does not have a value
+				// (only if it is mixed, which can override this setting)
+				typeDef.setConstraintIfNotSet(HasValueFlag.DISABLED);
 				// </extension>
 				// </complexContent>
 			}
@@ -1384,6 +1387,9 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 					createAttributesFromCollection(attributeCollection, typeDef, null,
 							schemaLocation, schemaNamespace);
 				}
+				// complex content does not have a value
+				// (only if it is mixed, which can override this setting)
+				typeDef.setConstraintIfNotSet(HasValueFlag.DISABLED);
 				// </restriction>
 				// </complexContent>
 			}
