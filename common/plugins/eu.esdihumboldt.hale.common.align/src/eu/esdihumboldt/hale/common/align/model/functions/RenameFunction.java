@@ -41,4 +41,11 @@ public interface RenameFunction {
 	 */
 	public static final String PARAMETER_IGNORE_NAMESPACES = "ignoreNamespaces";
 
+	/**
+	 * Name of the parameter specifying whether for the structural rename,
+	 * geometry objects should be copied. Default value for the parameter is
+	 * <code>true</code>.
+	 */
+	public static final String PARAMETER_COPY_GEOMETRIES = "copyGeometries";
+
 }
