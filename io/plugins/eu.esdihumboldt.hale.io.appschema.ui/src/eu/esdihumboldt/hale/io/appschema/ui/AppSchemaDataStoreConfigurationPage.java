@@ -34,6 +34,7 @@ public class AppSchemaDataStoreConfigurationPage extends
 
 	private static final String DEFAULT_MESSAGE = " Specify PostGIS datastore parameters";
 	private static final Parameter DBTYPE_PARAMETER = new Parameter();
+	private static final String HAS_WHITESPACE = ".*\\s.*";
 
 	static {
 		DBTYPE_PARAMETER.setName("dbtype");
@@ -79,6 +80,10 @@ public class AppSchemaDataStoreConfigurationPage extends
 		}
 		if (!validateDatabase()) {
 			updateMessage(Field.DATABASE);
+			return false;
+		}
+		if (!validateSchema()) {
+			updateMessage(Field.SCHEMA);
 			return false;
 		}
 
@@ -156,6 +161,14 @@ public class AppSchemaDataStoreConfigurationPage extends
 				resetMessage();
 			}
 			break;
+		case SCHEMA:
+			if (!validateSchema()) {
+				setErrorMessage("Invalid schema specified.");
+			}
+			else {
+				resetMessage();
+			}
+			break;
 		default:
 			break;
 		}
@@ -214,8 +227,14 @@ public class AppSchemaDataStoreConfigurationPage extends
 
 	private boolean validateDatabase() {
 		String databaseValue = database.getText();
-		// TODO: database name should not contain spaces, as well as schema name
-		return databaseValue != null && !databaseValue.trim().isEmpty();
+		// database name shall be specified and shall not contain spaces
+		return databaseValue != null && !databaseValue.matches(HAS_WHITESPACE);
+	}
+
+	private boolean validateSchema() {
+		String schemaValue = schema.getText();
+		// if specified, schema name shall not contain spaces
+		return (schemaValue == null) || (!schemaValue.matches(HAS_WHITESPACE));
 	}
 
 	@Override
@@ -262,6 +281,13 @@ public class AppSchemaDataStoreConfigurationPage extends
 		labelData.applyTo(labelSchema);
 
 		schema = new Text(page, SWT.BORDER | SWT.SINGLE);
+		schema.addKeyListener(new KeyAdapter() {
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				updateMessage(Field.SCHEMA);
+			}
+		});
 		compData.applyTo(schema);
 
 		// user
@@ -287,9 +313,11 @@ public class AppSchemaDataStoreConfigurationPage extends
 
 		exposePK = new Button(page, SWT.CHECK);
 		compData.applyTo(exposePK);
+		// set initial value to true
+		exposePK.setSelection(true);
 	}
 
 	private enum Field {
-		HOST, DATABASE
+		HOST, DATABASE, SCHEMA
 	}
 }
