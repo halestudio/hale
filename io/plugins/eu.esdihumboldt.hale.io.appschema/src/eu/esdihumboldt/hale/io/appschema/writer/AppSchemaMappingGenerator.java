@@ -652,7 +652,7 @@ public class AppSchemaMappingGenerator {
 
 	}
 
-	private static void writeMapping(OutputStream out, AppSchemaDataAccessType mapping)
+	static void writeMapping(OutputStream out, AppSchemaDataAccessType mapping)
 			throws JAXBException {
 		JAXBContext context = createJaxbContext();
 
