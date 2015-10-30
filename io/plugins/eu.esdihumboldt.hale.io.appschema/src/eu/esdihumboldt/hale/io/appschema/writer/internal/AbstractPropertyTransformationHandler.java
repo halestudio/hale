@@ -28,8 +28,15 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.geotools.filter.text.cql2.CQL;
+import org.geotools.filter.text.cql2.CQLException;
+import org.opengis.filter.expression.Expression;
+import org.opengis.filter.expression.Literal;
+
 import com.google.common.base.Strings;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
@@ -57,6 +64,9 @@ import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
  */
 public abstract class AbstractPropertyTransformationHandler implements
 		PropertyTransformationHandler {
+
+	private static final ALogger log = ALoggerFactory
+			.getLogger(AbstractPropertyTransformationHandler.class);
 
 	/**
 	 * The app-schema mapping configuration under construction.
@@ -344,6 +354,7 @@ public abstract class AbstractPropertyTransformationHandler implements
 						+ unqualifiedName : unqualifiedName;
 				clientProperty.setName(clientPropName);
 				clientProperty.setValue(getSourceExpressionAsCQL());
+				setEncodeIfEmpty(clientProperty);
 
 				boolean hasClientProperty = false;
 				for (ClientProperty existentProperty : attributeMapping.getClientProperty()) {
@@ -498,5 +509,23 @@ public abstract class AbstractPropertyTransformationHandler implements
 		// use geometry property path to create / retrieve attribute mapping
 		attributeMapping = mapping.getOrCreateAttributeMapping(featureType, mappingName,
 				geometryProperty.getPropertyPath());
+	}
+
+	/**
+	 * If client property is set to a constant expression, add
+	 * &lt;encodeIfEmpty&gt;true&lt;/encodeIfEmpty&gt; to the attribute mapping
+	 * to make sure the element is encoded also if it has no value.
+	 * 
+	 * @param clientProperty the client property to test
+	 */
+	private void setEncodeIfEmpty(ClientProperty clientProperty) {
+		try {
+			Expression expr = CQL.toExpression(getSourceExpressionAsCQL());
+			if (expr != null && expr instanceof Literal) {
+				attributeMapping.setEncodeIfEmpty(true);
+			}
+		} catch (CQLException e) {
+			log.warn("Cannot set encodeIfEmpty value. Reason: " + e.getMessage());
+		}
 	}
 }

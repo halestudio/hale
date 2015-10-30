@@ -777,6 +777,64 @@ public class AppSchemaMappingTest {
 		assertEquals(OCQL, attr.getValue());
 	}
 
+	@Test
+	public void testEncodeIfEmptyTrue() {
+		final String XLINK_HREF_CONSTANT = "#lcu.123";
+		final String OCQL_LITERAL = "'" + XLINK_HREF_CONSTANT + "'";
+
+		DefaultCell assign = new DefaultCell();
+		assign.setTransformationIdentifier(AssignFunction.ID);
+		ListMultimap<String, ParameterValue> parameters = ArrayListMultimap.create();
+		parameters.put(AssignFunction.PARAMETER_VALUE, new ParameterValue(XLINK_HREF_CONSTANT));
+		assign.setTransformationParameters(parameters);
+		assign.setTarget(getNestedHrefTargetProperty());
+
+		AssignHandler assignHandler = new AssignHandler();
+		AttributeMappingType attrMapping = assignHandler.handlePropertyTransformation(
+				getDefaultTypeCell(datasetType, landCoverDatasetType), assign,
+				new AppSchemaMappingContext(mappingWrapper));
+		assertNull(attrMapping.getSourceExpression());
+		assertEquals("lcv:member", attrMapping.getTargetAttribute());
+		assertNotNull(attrMapping.getClientProperty());
+		assertEquals(1, attrMapping.getClientProperty().size());
+		assertEquals("xlink:href", attrMapping.getClientProperty().get(0).getName());
+		assertEquals(OCQL_LITERAL, attrMapping.getClientProperty().get(0).getValue());
+		// expression is constant, so encodeIfEmpty=true
+		assertNotNull(attrMapping.isEncodeIfEmpty());
+		assertTrue(attrMapping.isEncodeIfEmpty());
+	}
+
+	@Test
+	public void testEncodeIfEmptyFalse() {
+		final String XLINK_HREF_PATTERN = "#lcu.{unit_id}";
+		final String OCQL_STR_CONCAT = "strConcat('#lcu.', unit_id)";
+
+		DefaultCell format = new DefaultCell();
+		format.setTransformationIdentifier(FormattedStringFunction.ID);
+		ListMultimap<String, ParameterValue> formatParameters = ArrayListMultimap.create();
+		formatParameters.put(FormattedStringFunction.PARAMETER_PATTERN, new ParameterValue(
+				XLINK_HREF_PATTERN));
+		ListMultimap<String, Property> source = ArrayListMultimap.create();
+		source.putAll(FormattedStringFunction.ENTITY_VARIABLE, getUnitIdSourceProperty().values());
+		format.setSource(source);
+		format.setTarget(getNestedHrefTargetProperty());
+		format.setTransformationParameters(formatParameters);
+
+		FormattedStringHandler formatHandler = new FormattedStringHandler();
+		AttributeMappingType attrMapping = formatHandler.handlePropertyTransformation(
+				getDefaultTypeCell(datasetType, landCoverDatasetType), format,
+				new AppSchemaMappingContext(mappingWrapper));
+		assertNull(attrMapping.getSourceExpression());
+		assertEquals("lcv:member", attrMapping.getTargetAttribute());
+		assertNotNull(attrMapping.getClientProperty());
+		assertEquals(1, attrMapping.getClientProperty().size());
+		assertEquals("xlink:href", attrMapping.getClientProperty().get(0).getName());
+		assertEquals(OCQL_STR_CONCAT, attrMapping.getClientProperty().get(0).getValue());
+		// expression is NOT constant, so encodeIfEmpty=null (won't be XML
+		// encoded)
+		assertNull(attrMapping.isEncodeIfEmpty());
+	}
+
 	private ListMultimap<String, Property> getDatasetIdSourceProperty() {
 		ChildDefinition<?> childDef = DefinitionUtil.getChild(datasetType, new QName(
 				SOURCE_DATASET_ID));
