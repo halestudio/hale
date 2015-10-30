@@ -29,6 +29,7 @@ import com.google.common.base.Strings;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.transformation.service.TransformationSchemas;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
@@ -46,6 +47,7 @@ import eu.esdihumboldt.hale.common.headless.HeadlessIO;
 import eu.esdihumboldt.hale.common.headless.TransformationEnvironment;
 import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 
 /**
@@ -143,6 +145,22 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 			sourceSchema = advisor.getSourceSchema();
 			targetSchema = advisor.getTargetSchema();
 			alignment = advisor.getAlignment();
+
+			// make TransformationSchemas service available
+			addService(TransformationSchemas.class, new TransformationSchemas() {
+
+				@Override
+				public SchemaSpace getSchemas(SchemaSpaceID spaceID) {
+					switch (spaceID) {
+					case SOURCE:
+						return sourceSchema;
+					case TARGET:
+						return targetSchema;
+					default:
+						return null;
+					}
+				}
+			});
 
 			init(project);
 		}
