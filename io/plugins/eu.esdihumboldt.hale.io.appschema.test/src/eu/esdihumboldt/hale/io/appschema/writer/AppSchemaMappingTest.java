@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.io.appschema.writer;
 
+import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.GML_NIL_REASON;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -835,6 +836,128 @@ public class AppSchemaMappingTest {
 		assertNull(attrMapping.isEncodeIfEmpty());
 	}
 
+	@Test
+	public void testNillable() {
+		final String nilReason = "missing";
+		final String nilReasonCQL = "'" + nilReason + "'";
+		final String expectedXsiNilWithSource = "if_then_else(isNull(" + SOURCE_UNIT_ID
+				+ "), 'true', Expression.NIL)";
+
+		DefaultCell renameBeginLifespan = new DefaultCell();
+		renameBeginLifespan.setTransformationIdentifier(RenameFunction.ID);
+		renameBeginLifespan.setSource(getUnitIdSourceProperty());
+		renameBeginLifespan.setTarget(getBeginLifespanTargetProperty());
+
+		DefaultCell assignNilReason = new DefaultCell();
+		assignNilReason.setTransformationIdentifier(AssignFunction.ID);
+		ListMultimap<String, ParameterValue> parameters = ArrayListMultimap.create();
+		parameters.put(AssignFunction.PARAMETER_VALUE, new ParameterValue(nilReason));
+		assignNilReason.setTarget(getBeginLifespanNilReasonTargetProperty());
+		assignNilReason.setTransformationParameters(parameters);
+
+		Cell typeCell = getDefaultTypeCell(unitType, landCoverUnitType);
+
+		AttributeMappingType attrMapping = null;
+		AppSchemaMappingContext context = new AppSchemaMappingContext(mappingWrapper);
+
+		AssignHandler assignHandler = new AssignHandler();
+		attrMapping = assignHandler
+				.handlePropertyTransformation(typeCell, assignNilReason, context);
+		assertNotNull(attrMapping);
+		assertEquals("lcv:beginLifespanVersion", attrMapping.getTargetAttribute());
+		assertNull(attrMapping.getSourceExpression());
+		assertEquals(2, attrMapping.getClientProperty().size());
+		assertEquals(GML_NIL_REASON, attrMapping.getClientProperty().get(0).getName());
+		assertEquals(nilReasonCQL, attrMapping.getClientProperty().get(0).getValue());
+		assertEquals("xsi:nil", attrMapping.getClientProperty().get(1).getName());
+		assertEquals("if_then_else(isNull(" + nilReasonCQL + "), Expression.NIL, 'true')",
+				attrMapping.getClientProperty().get(1).getValue());
+		assertTrue(attrMapping.isEncodeIfEmpty());
+
+		// element mapping should cause xsi:nil expression being overridden
+		RenameHandler renameHandler = new RenameHandler();
+		attrMapping = renameHandler.handlePropertyTransformation(typeCell, renameBeginLifespan,
+				context);
+		assertNotNull(attrMapping);
+		assertNotNull(attrMapping.getSourceExpression());
+		assertEquals(SOURCE_UNIT_ID, attrMapping.getSourceExpression().getOCQL());
+		assertEquals("lcv:beginLifespanVersion", attrMapping.getTargetAttribute());
+		assertEquals(2, attrMapping.getClientProperty().size());
+		boolean xsiNilFound = false;
+		for (ClientProperty property : attrMapping.getClientProperty()) {
+			if ("xsi:nil".equals(property.getName())) {
+				assertEquals(expectedXsiNilWithSource, property.getValue());
+				xsiNilFound = true;
+			}
+		}
+		assertTrue(xsiNilFound);
+		assertTrue(attrMapping.isEncodeIfEmpty());
+
+		// remove nilReason client property
+		attrMapping.getClientProperty().remove(0);
+		// run again assing handler, nothing should change
+		attrMapping = assignHandler
+				.handlePropertyTransformation(typeCell, assignNilReason, context);
+		assertEquals(2, attrMapping.getClientProperty().size());
+		assertEquals("xsi:nil", attrMapping.getClientProperty().get(0).getName());
+		assertEquals(expectedXsiNilWithSource, attrMapping.getClientProperty().get(0).getValue());
+	}
+
+	@Test
+	public void testNilReasonOnNotNillableElement() {
+		final String nilReason = "missing";
+		final String nilReasonAssignCQL = "'" + nilReason + "'";
+		final String nilReasonRenameCQL = SOURCE_UUID_V1;
+
+		// --- test with a constant mapping --- //
+
+		DefaultCell assignNilReason = new DefaultCell();
+		assignNilReason.setTransformationIdentifier(AssignFunction.ID);
+		ListMultimap<String, ParameterValue> parameters = ArrayListMultimap.create();
+		parameters.put(AssignFunction.PARAMETER_VALUE, new ParameterValue(nilReason));
+		assignNilReason.setTarget(getDescriptionNilReasonTargetProperty());
+		assignNilReason.setTransformationParameters(parameters);
+
+		Cell typeCell = getDefaultTypeCell(unitType, landCoverUnitType);
+
+		AttributeMappingType attrMapping = null;
+		AppSchemaMappingContext context = new AppSchemaMappingContext(mappingWrapper);
+
+		AssignHandler assignHandler = new AssignHandler();
+		attrMapping = assignHandler
+				.handlePropertyTransformation(typeCell, assignNilReason, context);
+		assertNotNull(attrMapping);
+		assertEquals("gml:description", attrMapping.getTargetAttribute());
+		assertNull(attrMapping.getSourceExpression());
+		assertEquals(1, attrMapping.getClientProperty().size());
+		assertEquals(GML_NIL_REASON, attrMapping.getClientProperty().get(0).getName());
+		assertEquals(nilReasonAssignCQL, attrMapping.getClientProperty().get(0).getValue());
+		// encodeIfEmpty=true because we are using a constant mapping
+		assertTrue(attrMapping.isEncodeIfEmpty());
+
+		// --- test with a non-constant mapping --- //
+
+		DefaultCell rename = new DefaultCell();
+		rename.setTransformationIdentifier(RenameFunction.ID);
+		rename.setSource(getUuidSourceProperty());
+		rename.setTarget(getDescriptionNilReasonTargetProperty());
+		// reset mapping
+		initMapping();
+		context = new AppSchemaMappingContext(mappingWrapper);
+		// process rename
+		RenameHandler renameHandler = new RenameHandler();
+		attrMapping = renameHandler.handlePropertyTransformation(typeCell, rename, context);
+		assertNotNull(attrMapping);
+		assertEquals("gml:description", attrMapping.getTargetAttribute());
+		assertNull(attrMapping.getSourceExpression());
+		assertEquals(1, attrMapping.getClientProperty().size());
+		assertEquals(GML_NIL_REASON, attrMapping.getClientProperty().get(0).getName());
+		assertEquals(nilReasonRenameCQL, attrMapping.getClientProperty().get(0).getValue());
+		// encodeIfEmpty has not been set, because we are using a mapping which
+		// is a function of the source value
+		assertNull(attrMapping.isEncodeIfEmpty());
+	}
+
 	private ListMultimap<String, Property> getDatasetIdSourceProperty() {
 		ChildDefinition<?> childDef = DefinitionUtil.getChild(datasetType, new QName(
 				SOURCE_DATASET_ID));
@@ -986,6 +1109,47 @@ public class AppSchemaMappingTest {
 
 		List<ChildDefinition<?>> childDefs = new ArrayList<ChildDefinition<?>>();
 		childDefs.add(descriptionChildDef);
+
+		return createTargetProperty(childDefs);
+	}
+
+	private ListMultimap<String, Property> getDescriptionNilReasonTargetProperty() {
+		ChildDefinition<?> description = DefinitionUtil.getChild(landCoverUnitType, new QName(
+				GML_NS, "description"));
+		assertNotNull(description);
+		ChildDefinition<?> nilReason = DefinitionUtil.getChild(description, new QName(
+				GML_NIL_REASON));
+		assertNotNull(nilReason);
+
+		List<ChildDefinition<?>> childDefs = new ArrayList<ChildDefinition<?>>();
+		childDefs.add(description);
+		childDefs.add(nilReason);
+
+		return createTargetProperty(childDefs);
+	}
+
+	private ListMultimap<String, Property> getBeginLifespanTargetProperty() {
+		ChildDefinition<?> beginLifeSpan = DefinitionUtil.getChild(landCoverUnitType, new QName(
+				LANDCOVER_NS, "beginLifespanVersion"));
+		assertNotNull(beginLifeSpan);
+
+		List<ChildDefinition<?>> childDefs = new ArrayList<ChildDefinition<?>>();
+		childDefs.add(beginLifeSpan);
+
+		return createTargetProperty(childDefs);
+	}
+
+	private ListMultimap<String, Property> getBeginLifespanNilReasonTargetProperty() {
+		ChildDefinition<?> beginLifeSpan = DefinitionUtil.getChild(landCoverUnitType, new QName(
+				LANDCOVER_NS, "beginLifespanVersion"));
+		assertNotNull(beginLifeSpan);
+		ChildDefinition<?> nilReason = DefinitionUtil.getChild(beginLifeSpan, new QName(
+				GML_NIL_REASON));
+		assertNotNull(nilReason);
+
+		List<ChildDefinition<?>> childDefs = new ArrayList<ChildDefinition<?>>();
+		childDefs.add(beginLifeSpan);
+		childDefs.add(nilReason);
 
 		return createTargetProperty(childDefs);
 	}
