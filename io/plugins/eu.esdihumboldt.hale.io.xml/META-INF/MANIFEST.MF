@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: XML Validation
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.xml;singleton:=true
-Bundle-Version: 2.9.1.qualifier
+Bundle-Version: 2.9.4.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.io;version="1.6.0",
  de.fhg.igd.slf4jplus,
