@@ -439,7 +439,11 @@ public abstract class OSerializationHelper {
 			}
 			else {
 				ChildDefinition<?> child = parent.getDefinition().getChild(childName);
-				if (child.asProperty() != null) {
+				if (child == null) {
+					// unclassified instance or group
+					return new OInstance((ODocument) value, null, parent.getDb(), null);
+				}
+				else if (child.asProperty() != null) {
 					return new OInstance((ODocument) value, child.asProperty().getPropertyType(),
 							parent.getDb(), null); // no data set necessary for
 													// nested instances

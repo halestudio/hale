@@ -43,6 +43,11 @@ public interface GroovyConstants {
 	public static final String BINDING_BUILDER = "_b";
 
 	/**
+	 * Name of the instance builder factory variable in the binding.
+	 */
+	public static final String BINDING_BUILDER_FACTORY = "_builder";
+
+	/**
 	 * Name of the source instance variable in the binding (not applicable for
 	 * {@link GroovyCreate}).
 	 */

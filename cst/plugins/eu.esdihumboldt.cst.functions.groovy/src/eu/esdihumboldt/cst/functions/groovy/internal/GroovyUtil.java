@@ -182,6 +182,8 @@ public class GroovyUtil implements GroovyConstants {
 		binding.setVariable(BINDING_TARGET, new TargetCollector());
 		binding.setVariable(BINDING_HELPER_FUNCTIONS, HelperFunctions.createDefault());
 		binding.setVariable(BINDING_BUILDER, builder);
+		binding.setVariable(BINDING_BUILDER_FACTORY, new InstanceBuilderFactory(executionContext,
+				log));
 		binding.setVariable(BINDING_CELL, cell);
 		binding.setVariable(BINDING_LOG, new TransformationLogWrapper(log));
 		binding.setVariable(BINDING_CELL_CONTEXT,

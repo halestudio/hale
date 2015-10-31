@@ -181,7 +181,10 @@ public class OGroup implements MutableGroup {
 						ChildDefinition<?> child = definition.getChild(decodeProperty(field
 								.getKey()));
 						DefinitionGroup childGroup;
-						if (child.asProperty() != null) {
+						if (child == null) {
+							childGroup = null;
+						}
+						else if (child.asProperty() != null) {
 							childGroup = child.asProperty().getPropertyType();
 						}
 						else if (child.asGroup() != null) {
