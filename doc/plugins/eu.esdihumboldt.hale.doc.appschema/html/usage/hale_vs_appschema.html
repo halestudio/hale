@@ -52,9 +52,22 @@
 	It is also worth mentioning that, although in HALE multiple join conditions can be specified for each source type,
 	App-Schema only supports single-condition joins; thus, in order to be translateable to a GeoServer
 	App-Schema configuration, an alignment should not contain more than one join condition for the same source type.
+	<br>See the section on <a href="./export.html#chaining">Feature Chaining</a> for more details.
 	</p>
 
-	<p>See the section on <a href="./export.html#chaining">Feature Chaining</a> for more details.</p>
+	<p>
+	Another limitation worth noting is that <strong>all target types must belong to the namespace
+	of the target schema</strong>. For example, if the imported target schema is the <a href="http://inspire.ec.europa.eu/schemas/lcv/3.0/LandCoverVector.xsd" target="_blank">INSPIRE application
+	schema for Land Cover Vector</a>, the target element of all generated Feature Type mappings must
+	belong to the namespace <em>http://inspire.ec.europa.eu/schemas/lcv/3.0</em>.<br>
+	This restriction stems from the fact that currently the alignment is translated to a single App-Schema
+	mapping configuration, driving a single App-Schema data store, which in GeoServer must belong to
+	a single namespace. This in practice means that all feature types served by the store must be in
+	its namespace. This does <strong>not</strong> mean that attribute mappings cannot refer to types
+	belonging to different namespaces: the restriction only applies to the feature types the store will
+	serve.<br>
+	The limitation may be removed in a future release.
+	</p>
 
 	<a name="id_merging"></a>
 	<h2>Instance identity and merging</h2>
@@ -117,5 +130,34 @@
 	will likely be removed in a future release.
 	</p>
 
+	<h2>Mapping nillable mandatory elements</h2>
+
+	<p>
+	There are cases when a complex type contains a lot of elements that are mandatory, but can be
+	<em>nil</em>, i.e. have an attribute <em>xsi:nil="true"</em>. A famous example is <em>GeographicalNameType</em>,
+	from the <a href="http://inspire.ec.europa.eu/schemas/gn/3.0/GeographicalNames.xsd" target="_blank">INSPIRE application schema Geographical Names</a>.
+	</p>
+
+	<p>
+	If no mapping is present in the alignment for a nillable mandatory element, upon data export HALE
+	automatically creates an empty element with an <em>xsi:nil="true"</em> attribute. On the contrary,
+	App-Schema does not handle this situation automatically, but requires the user to explicitly map
+	the <em>xsi:nil</em> attribute in the configuration file.
+	</p>
+
+	<p>
+	The App-Schema plug-in for HALE strives to alleviate this nuisance by tuning the generated Attribute
+	Mappings of nillable elements for which a mapping has been defined in the alignment. The tuning
+	results in an <em>xsi:nil="true"</em> attribute being automatically added to the element when it has no value.
+	</p>
+
+	<p>
+	However, this only applies to mapped elements. For nillable elements that do not participate in the
+	alignment, the user is required to provide a mapping, to make the generation of the necessary
+	App-Schema configuration possible. HALE does not allow to map the <em>xsi:nil</em> attribute directly,
+	so the plug-in relies on the <em>nilReason</em> attribute: if a mapping exists for the <em>nilReason</em>
+	attribute of a nillable element, the generated Attribute Mapping is altered so that an <em>xsi:nil="true"</em>
+	attribute will appear on the element when a value exists for the <em>nilReason</em> attribute.
+	</p>
 </body>
 </html>
