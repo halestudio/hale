@@ -389,8 +389,8 @@ public class AppSchemaMappingTest {
 
 		processJoinAlignment(alignment, chainingConf);
 
-		logMapping(mappingWrapper.getMainMapping());
-		logMapping(mappingWrapper.getIncludedTypesMapping());
+//		logMapping(mappingWrapper.getMainMapping());
+//		logMapping(mappingWrapper.getIncludedTypesMapping());
 
 		List<FeatureTypeMapping> mainMappings = mappingWrapper.getMainMapping().getTypeMappings()
 				.getFeatureTypeMapping();
