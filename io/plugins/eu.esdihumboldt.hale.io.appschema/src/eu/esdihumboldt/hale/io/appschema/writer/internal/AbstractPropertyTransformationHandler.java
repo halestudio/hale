@@ -15,13 +15,18 @@
 
 package eu.esdihumboldt.hale.io.appschema.writer.internal;
 
+import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.QNAME_XSI_NIL;
+import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.XSI_PREFIX;
+import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.XSI_URI;
 import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.findOwningType;
 import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.getGeometryPropertyEntity;
 import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.getTargetProperty;
 import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.getTargetType;
 import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.isGeometryType;
 import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.isGmlId;
+import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.isNilReason;
 import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.isNested;
+import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.isNillable;
 import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.isXmlAttribute;
 
 import java.util.List;
@@ -356,17 +361,18 @@ public abstract class AbstractPropertyTransformationHandler implements
 				clientProperty.setValue(getSourceExpressionAsCQL());
 				setEncodeIfEmpty(clientProperty);
 
-				boolean hasClientProperty = false;
-				for (ClientProperty existentProperty : attributeMapping.getClientProperty()) {
-					if (clientProperty.getName().equals(existentProperty.getName())) {
-						hasClientProperty = true;
-						break;
-					}
-				}
-
 				// don't add client property if it already exists
-				if (!hasClientProperty) {
+				if (!hasClientProperty(clientProperty.getName())) {
 					attributeMapping.getClientProperty().add(clientProperty);
+
+					// if mapping nilReason, parent property is nillable and no
+					// sourceExpression has been set yet, add xsi:nil attribute
+					// following the same encoding logic of nilReason (i.e. null
+					// when nilReason is null and viceversa)
+					if (isNilReason(targetPropertyDef) && isNillable(parentPropertyDef)
+							&& attributeMapping.getSourceExpression() == null) {
+						addOrReplaceXsiNilAttribute(clientProperty.getValue(), true);
+					}
 				}
 			}
 		}
@@ -403,6 +409,11 @@ public abstract class AbstractPropertyTransformationHandler implements
 		attributeMapping.setSourceExpression(sourceExpression);
 		if (AppSchemaMappingUtils.isMultiple(targetPropertyDef)) {
 			attributeMapping.setIsMultiple(true);
+		}
+		// if element is nillable, add xsi:nil attribute with inverted logic
+		// (i.e. null if source expression is NOT null, and viceversa)
+		if (isNillable(targetPropertyDef)) {
+			addOrReplaceXsiNilAttribute(attributeMapping.getSourceExpression().getOCQL(), false);
 		}
 		// TODO: isList?
 		// TODO: targetAttributeNode?
@@ -527,5 +538,61 @@ public abstract class AbstractPropertyTransformationHandler implements
 		} catch (CQLException e) {
 			log.warn("Cannot set encodeIfEmpty value. Reason: " + e.getMessage());
 		}
+	}
+
+	/**
+	 * Adds an {@code xsi:nil} client property to the attribute mapping, or
+	 * updates the existing one.
+	 * 
+	 * <p>
+	 * The CQL expression for the property's value is derived from the provided
+	 * source expression in this way:
+	 * 
+	 * <ul>
+	 * <li>{@code sameLogic=true} -->
+	 * {@code if_then_else(isNull([sourceExpression]), Expression.NIL, 'true')}</li>
+	 * <li>{@code sameLogic=false} -->
+	 * {@code if_then_else(isNull([sourceExpression]), 'true', Expression.NIL)}</li>
+	 * </ul>
+	 * </p>
+	 * 
+	 * @param sourceExpression the source expression
+	 * @param sameLogic if {@code true}, {@code xsi:nil} will be {@code null}
+	 *            when {@code sourceExpression} is and {@code 'true'} when it
+	 *            isn't, if {@code false} the opposite applies
+	 */
+	private void addOrReplaceXsiNilAttribute(String sourceExpression, boolean sameLogic) {
+		final String sameLogicPattern = "if_then_else(isNull(%s), Expression.NIL, 'true')";
+		final String invertedLogicPattern = "if_then_else(isNull(%s), 'true', Expression.NIL)";
+		final String pattern = sameLogic ? sameLogicPattern : invertedLogicPattern;
+
+		// make sure xsi namespace is included in the mapping
+		mapping.getOrCreateNamespace(XSI_URI, XSI_PREFIX);
+
+		String xsiNilQName = QNAME_XSI_NIL.getPrefix() + ":" + QNAME_XSI_NIL.getLocalPart();
+
+		ClientProperty xsiNil = getClientProperty(xsiNilQName);
+		if (xsiNil == null) {
+			xsiNil = new ClientProperty();
+			// add xsi:nil attribute
+			attributeMapping.getClientProperty().add(xsiNil);
+		}
+		xsiNil.setName(xsiNilQName);
+		xsiNil.setValue(String.format(pattern, sourceExpression));
+		// force element be encoded also if it has no value
+		attributeMapping.setEncodeIfEmpty(true);
+	}
+
+	private boolean hasClientProperty(String name) {
+		return getClientProperty(name) != null;
+	}
+
+	private ClientProperty getClientProperty(String name) {
+		for (ClientProperty existentProperty : attributeMapping.getClientProperty()) {
+			if (name.equals(existentProperty.getName())) {
+				return existentProperty;
+			}
+		}
+		return null;
 	}
 }
