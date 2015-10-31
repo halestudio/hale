@@ -478,6 +478,22 @@ public class AppSchemaFileWriterTest {
 			checkNamespaceDocument(doc, "xlink_namespace", "xlink", "http://www.w3.org/1999/xlink");
 			zis.closeEntry();
 
+			ZipEntry xsiWsDir = zis.getNextEntry();
+			checkDirEntry(xsiWsDir, "xsi/");
+			zis.closeEntry();
+
+			ZipEntry xsiWsFile = zis.getNextEntry();
+			checkFileEntry(xsiWsFile, "xsi/" + AppSchemaIO.WORKSPACE_FILE);
+			doc = readDocument(zis);
+			checkWorkspaceDocument(doc, "xsi_workspace", "xsi");
+			zis.closeEntry();
+
+			ZipEntry xsiNsFile = zis.getNextEntry();
+			checkFileEntry(xsiNsFile, "xsi/" + AppSchemaIO.NAMESPACE_FILE);
+			doc = readDocument(zis);
+			checkNamespaceDocument(doc, "xsi_namespace", "xsi", AppSchemaMappingUtils.XSI_URI);
+			zis.closeEntry();
+
 			assertNull(zis.getNextEntry());
 		} catch (ZipException e) {
 			fail("Exception reading generated ZIP archive: " + e.getMessage());
