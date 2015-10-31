@@ -55,6 +55,7 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.io.appschema.model.ChainConfiguration;
@@ -85,9 +86,35 @@ public class AppSchemaMappingUtils {
 	 */
 	public static final String GML_ABSTRACT_GEOMETRY_TYPE = "AbstractGeometryType";
 	/**
+	 * GML nil reason type name.
+	 */
+	public static final String GML_NIL_REASON_TYPE = "NilReasonType";
+	/**
+	 * GML nil reason attribute name.
+	 */
+	public static final String GML_NIL_REASON = "nilReason";
+	/**
 	 * xlink:href qualified name.
 	 */
 	public static final QName QNAME_XLINK_XREF = new QName("http://www.w3.org/1999/xlink", "href");
+
+	/**
+	 * XMLSchema-instance prefix.
+	 */
+	public static final String XSI_PREFIX = "xsi";
+	/**
+	 * XMLSchema-instance URI.
+	 */
+	public static final String XSI_URI = "http://www.w3.org/2001/XMLSchema-instance";
+	/**
+	 * xsi:nil qualified name.
+	 */
+	public static final QName QNAME_XSI_NIL = new QName(XSI_URI, "nil", XSI_PREFIX);
+
+	/**
+	 * HALE INSPIRE extension URI.
+	 */
+	public static final String HALE_INSPIRE_EXT_URI = "http://www.esdi-humboldt.eu/hale/inspire/ext";
 
 	/**
 	 * Tests whether the provided property definition describes a
@@ -108,6 +135,36 @@ public class AppSchemaMappingUtils {
 	}
 
 	/**
+	 * Tests whether the provided property definition describes a
+	 * <code>nilReason</code> attribute.
+	 * 
+	 * <p>
+	 * Returns {@code true} if the property name is {@code nilReason} and the
+	 * property type is either {@code gml:NilReasonType} or the special
+	 * <code>&#123;http://www.esdi-humboldt.eu/hale/inspire/ext&#125;NilReasonType</code>
+	 * .
+	 * </p>
+	 * 
+	 * @param propertyDef the property definition
+	 * @return <code>true</code> if <code>properyDef</code> defines a
+	 *         <code>nilReason</code> attribute, <code>false</code> otherwise.
+	 */
+	public static boolean isNilReason(PropertyDefinition propertyDef) {
+		if (propertyDef == null) {
+			return false;
+		}
+
+		QName propertyName = propertyDef.getName();
+		QName propertyTypeName = propertyDef.getPropertyType().getName();
+
+		//
+		return (hasGmlNamespace(propertyTypeName) || HALE_INSPIRE_EXT_URI.equals(propertyTypeName
+				.getNamespaceURI()))
+				&& GML_NIL_REASON_TYPE.equals(propertyTypeName.getLocalPart())
+				&& GML_NIL_REASON.equals(propertyName.getLocalPart());
+	}
+
+	/**
 	 * Tests whether the provided property definition describes an XML
 	 * attribute.
 	 * 
@@ -119,6 +176,20 @@ public class AppSchemaMappingUtils {
 		XmlAttributeFlag xmlAttrFlag = propertyDef.getConstraint(XmlAttributeFlag.class);
 
 		return xmlAttrFlag != null && xmlAttrFlag.isEnabled();
+	}
+
+	/**
+	 * Tests whether the provided property definition describes a nillable XML
+	 * element.
+	 * 
+	 * @param propertyDef the property definition
+	 * @return <code>true</code> if <code>properyDef</code> is nillable,
+	 *         <code>false</code> otherwise.
+	 */
+	public static boolean isNillable(PropertyDefinition propertyDef) {
+		NillableFlag nillableFlag = propertyDef.getConstraint(NillableFlag.class);
+
+		return nillableFlag != null && nillableFlag.isEnabled();
 	}
 
 	/**
