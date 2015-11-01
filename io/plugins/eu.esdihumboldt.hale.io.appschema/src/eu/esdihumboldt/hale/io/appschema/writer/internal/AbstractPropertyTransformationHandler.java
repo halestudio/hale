@@ -24,8 +24,8 @@ import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.get
 import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.getTargetType;
 import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.isGeometryType;
 import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.isGmlId;
-import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.isNilReason;
 import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.isNested;
+import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.isNilReason;
 import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.isNillable;
 import static eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils.isXmlAttribute;
 
@@ -579,8 +579,6 @@ public abstract class AbstractPropertyTransformationHandler implements
 		}
 		xsiNil.setName(xsiNilQName);
 		xsiNil.setValue(String.format(pattern, sourceExpression));
-		// force element be encoded also if it has no value
-		attributeMapping.setEncodeIfEmpty(true);
 	}
 
 	private boolean hasClientProperty(String name) {
