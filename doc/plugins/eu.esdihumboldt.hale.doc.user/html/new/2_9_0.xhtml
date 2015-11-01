@@ -68,6 +68,19 @@
 					transformation of properties that have the corresponding source and
 					target type.
 					<p>
+						As an example, let's assume we are looking at a mapping between
+						different CityGML schemas or ADEs. In both source and target there
+						is the concept of a <i>Building</i> and a <i>BuildingPart</i>. <i>BuildingParts</i>
+						can be features on their own, thus a mapping is defined based on a
+						<i>Retype</i> between the corresponding source and target types.<br />
+						<i>Buildings</i> however can also contain <i>BuildingParts</i>,
+						and to transform these internal <i>BuildingParts</i> we can use
+						the <i>Inline transformation</i> to tell HALE that it should
+						transform the internal objects the same way as it would standalone
+						features, with the additional step to include it in the respective
+						target property.
+					</p>
+					<p>
 						<img src="2_9_0_images/inline.png" />
 					</p>
 				</td>
@@ -130,6 +143,8 @@
 						<li>Added a Groovy variant of the <i>Join</i> transformation that allows for more control on the creation of transformed instances.</li>
 						<li>Introduced the concept of helper functions available from Groovy scripts. Currently included are helpers for dealing with geometries and performing type conversions.</li>
 						<li>Structural copies with <i>Rename</i> and <i>Retype</i> can now explicitly exclude geometry objects parsed by HALE, for cases where the original geometry encoding should be retained.</li>
+						<li>A default SRS can now be specified on the command line, for reading data from a specific source, in case HALE cannot correctly detect the SRS.</li>
+						<li>Handling foreign key constraints during the export to a database has been improved.</li>
 					</ul>
 				</td>
 			</tr>
