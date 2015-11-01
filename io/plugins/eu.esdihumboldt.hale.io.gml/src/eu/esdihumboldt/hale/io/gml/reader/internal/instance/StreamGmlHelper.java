@@ -86,14 +86,17 @@ public abstract class StreamGmlHelper {
 	 * @param propertyPath the property path down from the topmost instance, may
 	 *            be <code>null</code>
 	 * @param allowNull if a <code>null</code> result is allowed
+	 * @param ignoreNamespaces if parsing of the XML instances should allow
+	 *            types and properties with namespaces that differ from those
+	 *            defined in the schema
 	 * @return the parsed instance, may be <code>null</code> if allowNull is
 	 *         <code>true</code>
 	 * @throws XMLStreamException if parsing the instance failed
 	 */
 	public static Instance parseInstance(XMLStreamReader reader, TypeDefinition type,
 			Integer indexInStream, boolean strict, Integer srsDimension, CRSProvider crsProvider,
-			TypeDefinition parentType, List<QName> propertyPath, boolean allowNull)
-			throws XMLStreamException {
+			TypeDefinition parentType, List<QName> propertyPath, boolean allowNull,
+			boolean ignoreNamespaces) throws XMLStreamException {
 		checkState(reader.getEventType() == XMLStreamConstants.START_ELEMENT);
 		if (propertyPath == null) {
 			propertyPath = Collections.emptyList();
@@ -126,7 +129,7 @@ public abstract class StreamGmlHelper {
 
 			// instance properties
 			parseProperties(reader, instance, strict, srsDimension, crsProvider, parentType,
-					propertyPath, false);
+					propertyPath, false, ignoreNamespaces);
 
 			// nil instance w/o properties
 			if (allowNull && isNil && Iterables.isEmpty(instance.getPropertyNames())) {
@@ -164,7 +167,7 @@ public abstract class StreamGmlHelper {
 
 			// instance properties (attributes only)
 			parseProperties(reader, instance, strict, srsDimension, crsProvider, parentType,
-					propertyPath, true);
+					propertyPath, true, ignoreNamespaces);
 
 			// combined text
 			String value = readText(reader);
@@ -313,11 +316,15 @@ public abstract class StreamGmlHelper {
 	 * @param parentType the type of the topmost instance
 	 * @param propertyPath the property path down from the topmost instance
 	 * @param onlyAttributes if only attributes should be parsed
+	 * @param ignoreNamespaces if parsing of the XML instances should allow
+	 *            types and properties with namespaces that differ from those
+	 *            defined in the schema
 	 * @throws XMLStreamException if parsing the properties failed
 	 */
 	private static void parseProperties(XMLStreamReader reader, MutableGroup group, boolean strict,
 			Integer srsDimension, CRSProvider crsProvider, TypeDefinition parentType,
-			List<QName> propertyPath, boolean onlyAttributes) throws XMLStreamException {
+			List<QName> propertyPath, boolean onlyAttributes, boolean ignoreNamespaces)
+			throws XMLStreamException {
 		final MutableGroup topGroup = group;
 
 		// attributes (usually only present in Instances)
@@ -328,7 +335,8 @@ public abstract class StreamGmlHelper {
 			// for group support there would have to be some other kind of
 			// handling than for elements, cause order doesn't matter for
 			// attributes
-			ChildDefinition<?> child = group.getDefinition().getChild(propertyName);
+			ChildDefinition<?> child = GroupUtil.findChild(group.getDefinition(), propertyName,
+					ignoreNamespaces);
 			if (child != null && child.asProperty() != null) {
 				// add property value
 				addSimpleProperty(group, child.asProperty(), reader.getAttributeValue(i));
@@ -359,7 +367,7 @@ public abstract class StreamGmlHelper {
 					// determine property definition, allow fall-back to
 					// non-strict mode
 					GroupProperty gp = GroupUtil.determineProperty(groups, reader.getName(),
-							!strict);
+							!strict, ignoreNamespaces);
 					if (gp != null) {
 						// update the stack from the path
 						groups = gp.getPath().getAllGroups(strict);
@@ -373,7 +381,8 @@ public abstract class StreamGmlHelper {
 						if (hasElements(property.getPropertyType())) {
 							// use an instance as value
 							Instance inst = parseInstance(reader, property.getPropertyType(), null,
-									strict, srsDimension, crsProvider, parentType, path, true);
+									strict, srsDimension, crsProvider, parentType, path, true,
+									ignoreNamespaces);
 							if (inst != null) {
 								group.addProperty(property.getName(), inst);
 							}
@@ -385,7 +394,7 @@ public abstract class StreamGmlHelper {
 								// an instance value if possible
 								Instance inst = parseInstance(reader, property.getPropertyType(),
 										null, strict, srsDimension, crsProvider, parentType, path,
-										true);
+										true, ignoreNamespaces);
 								if (inst != null) {
 									group.addProperty(property.getName(), inst);
 								}

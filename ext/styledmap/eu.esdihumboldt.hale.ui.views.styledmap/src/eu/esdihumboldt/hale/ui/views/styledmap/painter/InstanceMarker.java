@@ -45,8 +45,6 @@ import de.cs3d.common.metamodel.Point3D;
 import de.cs3d.common.metamodel.helperGeometry.BoundingBox;
 import de.cs3d.common.metamodel.shape.Line2D;
 import de.cs3d.common.metamodel.shape.Surface;
-import de.fhg.igd.slf4jplus.ALogger;
-import de.fhg.igd.slf4jplus.ALoggerFactory;
 import de.fhg.igd.mapviewer.marker.AbstractMarker;
 import de.fhg.igd.mapviewer.marker.BoundingBoxMarker;
 import de.fhg.igd.mapviewer.marker.Marker;
@@ -55,6 +53,8 @@ import de.fhg.igd.mapviewer.marker.area.Area;
 import de.fhg.igd.mapviewer.marker.area.MultiArea;
 import de.fhg.igd.mapviewer.marker.area.PolygonArea;
 import de.fhg.igd.mapviewer.waypoints.SelectableWaypoint;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.ui.style.StyleHelper;
@@ -134,7 +134,8 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 		// map CRS
 		CoordinateReferenceSystem mapCRS;
 		try {
-			mapCRS = CRSDecode.getCRS(converter.getMapEpsg());
+			mapCRS = CRSDecode.getLonLatCRS(converter.getMapEpsg());
+			// map (GeoPosition) assumes lon/lat order
 		} catch (Throwable e) {
 			log.error("Could not decode map CRS", e);
 			return null;

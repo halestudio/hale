@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="eu.esdihumboldt.cst.functions.groovy.helper" name="Helper functions for Groovy scripts" schema="schema/eu.esdihumboldt.cst.functions.groovy.helper.exsd"/>
    <extension
          point="eu.esdihumboldt.hale.align.function">
       <propertyFunction
@@ -230,6 +231,46 @@
             </parameterComplexValue>
          </functionParameter>
       </typeFunction>
+      <typeFunction
+            category="eu.esdihumboldt.cst.functions.groovy"
+            cellExplanation="eu.esdihumboldt.cst.functions.groovy.GroovyJoinExplanation"
+            description="Joins multiple instances of different source types into one instance of the target type, based on one or more matching properties."
+            help="help/join.xhtml"
+            icon="icons/star.png"
+            identifier="eu.esdihumboldt.cst.functions.groovy.join"
+            name="Groovy Join">
+         <sourceTypes>
+            <type
+                  description="The source types that are to be joined based on their properties."
+                  maxOccurrence="n"
+                  minOccurrence="2"
+                  name="types">
+            </type>
+         </sourceTypes>
+         <targetTypes>
+            <type
+                  maxOccurrence="1"
+                  minOccurrence="1">
+            </type>
+         </targetTypes>
+         <functionParameter
+               description="Join definition"
+               label="Join definition"
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="join">
+            <parameterBinding></parameterBinding>
+         </functionParameter>
+         <functionParameter
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="script"
+               scriptable="false">
+            <parameterComplexValue
+                  ref="eu.esdihumboldt.hale.common.core.text">
+            </parameterComplexValue>
+         </functionParameter>
+      </typeFunction>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.align.transformation">
@@ -263,6 +304,12 @@
             function="eu.esdihumboldt.cst.functions.groovy.merge"
             id="eu.esdihumboldt.cst.functions.groovy.merge">
       </typeTransformation>
+      <typeTransformation
+            class="eu.esdihumboldt.cst.functions.groovy.GroovyJoin"
+            engine="eu.esdihumboldt.align.java"
+            function="eu.esdihumboldt.cst.functions.groovy.join"
+            id="eu.esdihumboldt.cst.functions.groovy.join">
+      </typeTransformation>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.align.category">
@@ -292,6 +339,10 @@
             allowAll="false"
             class="eu.esdihumboldt.cst.functions.groovy.internal.TargetCollector">
       </allow>
+      <allow
+            allowAll="true"
+            class="eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctions">
+      </allow>
    </extension>
    <extension
          point="eu.esdihumboldt.util.groovy.meta">
@@ -305,6 +356,12 @@
             forArray="false"
             implementation="eu.esdihumboldt.cst.functions.groovy.internal.AsMultiValueMetaClass">
       </metaClass>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.cst.functions.groovy.helper">
+      <category
+            path="ROOT">
+      </category>
    </extension>
 
 </plugin>

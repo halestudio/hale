@@ -326,7 +326,11 @@ public abstract class DefaultAlignmentIOTest {
 
 		Schema schema = TestUtil.loadSchema(getClass().getResource("/testdata/simple/t1.xsd")
 				.toURI());
-		TypeDefinition t = schema.getMappingRelevantTypes().iterator().next();
+		Iterator<? extends TypeDefinition> iter = schema.getMappingRelevantTypes().iterator();
+		TypeDefinition t = iter.next();
+		if (!t.getName().getLocalPart().equals("T1")) {
+			t = iter.next();
+		}
 
 		DefaultCell cell1 = new DefaultCell();
 		cell1.setTransformationIdentifier("trans1");
@@ -411,6 +415,9 @@ public abstract class DefaultAlignmentIOTest {
 
 		Iterator<? extends TypeDefinition> iter = schema.getMappingRelevantTypes().iterator();
 		TypeDefinition t = iter.next();
+		if (!t.getName().getLocalPart().equals("T1")) {
+			t = iter.next();
+		}
 
 		// generate base alignment
 		DefaultCell cell1 = new DefaultCell();

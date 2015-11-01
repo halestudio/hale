@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="HALE Infocenter" uid="eu.esdihumboldt.hale.infocenter" id="eu.esdihumboldt.hale.doc.application.InfoCenter" application="eu.esdihumboldt.hale.doc.application.infocenterApplication" version="2.9.3.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="HALE Infocenter" uid="eu.esdihumboldt.hale.infocenter" id="eu.esdihumboldt.hale.doc.application.InfoCenter" application="eu.esdihumboldt.hale.doc.application.infocenterApplication" version="2.9.4.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -33,6 +33,7 @@
       <plugin id="eu.esdihumboldt.cst.doc.functions"/>
       <plugin id="eu.esdihumboldt.cst.doc.functions.dummy" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.doc.application"/>
+      <plugin id="eu.esdihumboldt.hale.doc.appschema"/>
       <plugin id="eu.esdihumboldt.hale.doc.user"/>
       <plugin id="eu.esdihumboldt.hale.doc.user.views.styledmap"/>
       <plugin id="findbugsAnnotations"/>
@@ -79,13 +80,13 @@
       <plugin id="org.eclipse.help"/>
       <plugin id="org.eclipse.help.base"/>
       <plugin id="org.eclipse.help.webapp"/>
-      <plugin id="org.eclipse.jetty.continuation" version="8.1.14.v20131031"/>
-      <plugin id="org.eclipse.jetty.http" version="8.1.14.v20131031"/>
-      <plugin id="org.eclipse.jetty.io" version="8.1.14.v20131031"/>
-      <plugin id="org.eclipse.jetty.security" version="8.1.14.v20131031"/>
-      <plugin id="org.eclipse.jetty.server" version="8.1.14.v20131031"/>
-      <plugin id="org.eclipse.jetty.servlet" version="8.1.14.v20131031"/>
-      <plugin id="org.eclipse.jetty.util" version="8.1.14.v20131031"/>
+      <plugin id="org.eclipse.jetty.continuation"/>
+      <plugin id="org.eclipse.jetty.http"/>
+      <plugin id="org.eclipse.jetty.io"/>
+      <plugin id="org.eclipse.jetty.security"/>
+      <plugin id="org.eclipse.jetty.server"/>
+      <plugin id="org.eclipse.jetty.servlet"/>
+      <plugin id="org.eclipse.jetty.util"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.services"/>
       <plugin id="org.hamcrest.core"/>

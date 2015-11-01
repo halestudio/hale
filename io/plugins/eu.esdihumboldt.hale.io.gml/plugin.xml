@@ -124,6 +124,18 @@
                      default="false">
                </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="States if parsing of the XML instances should allow types and properties with namespaces that differ from those defined in the schema."
+               label="Ignore namespaces"
+               name="ignoreNamespaces"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="false">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.gml.reader.internal.XmlInstanceReader"
@@ -158,6 +170,18 @@
                <valueDescriptor
                      default="false">
                </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="States if parsing of the XML instances should allow types and properties with namespaces that differ from those defined in the schema."
+               label="Ignore namespaces"
+               name="ignoreNamespaces"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="false">
+            </valueDescriptor>
          </providerParameter>
       </provider>
       <provider
@@ -221,6 +245,15 @@
                   sample="http://www.opengis.net/def/crs/EPSG/0/"
                   sampleDescription="Make sure that all SRS names use this kind of notation. The EPSG code number is appended to the provided parameter to build the SRS name.">
             </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="XML ID to specify for the container element, if possible"
+               label="Container ID"
+               name="xml.containerId"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
          </providerParameter>
       </provider>
       <provider
@@ -303,6 +336,15 @@
                   sampleDescription="Make sure that all SRS names use this kind of notation. The EPSG code number is appended to the provided parameter to build the SRS name.">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="XML ID to specify for the container element, if possible"
+               label="Container ID"
+               name="xml.containerId"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.gml.writer.CityGMLInstanceWriter"
@@ -370,7 +412,7 @@
       <provider
             class="eu.esdihumboldt.hale.io.gml.writer.InspireInstanceWriter"
             id="eu.esdihumboldt.hale.io.inspiregml.writer"
-            name="GML (INSPIRE SpatialDataSet)">
+            name="GML (INSPIRE SpatialDataSet) [deprecated by INSPIRE]">
          <contentType
                ref="eu.esdihumboldt.hale.io.gml">
          </contentType>

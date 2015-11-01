@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Tests" uid="eu.esdihumboldt.hale.tests" id="eu.esdihumboldt.hale.common.test.Tests" application="de.fhg.igd.equinox.test" version="2.9.3.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="Tests" uid="eu.esdihumboldt.hale.tests" id="eu.esdihumboldt.hale.common.test.Tests" application="de.fhg.igd.equinox.test" version="2.9.4.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -132,8 +132,12 @@
       <plugin id="eu.esdihumboldt.hale.common.schema.test"/>
       <plugin id="eu.esdihumboldt.hale.common.scripting"/>
       <plugin id="eu.esdihumboldt.hale.common.test"/>
+      <plugin id="eu.esdihumboldt.hale.common.test.docker"/>
       <plugin id="eu.esdihumboldt.hale.doc.util"/>
       <plugin id="eu.esdihumboldt.hale.instance.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.appschema"/>
+      <plugin id="eu.esdihumboldt.hale.io.appschema.model.jaxb"/>
+      <plugin id="eu.esdihumboldt.hale.io.appschema.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.csv"/>
       <plugin id="eu.esdihumboldt.hale.io.csv.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.gml"/>

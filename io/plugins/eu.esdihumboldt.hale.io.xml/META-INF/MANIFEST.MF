@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: XML Validation
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.xml;singleton:=true
-Bundle-Version: 2.9.1.qualifier
+Bundle-Version: 2.9.4.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.io;version="1.6.0",
  de.fhg.igd.slf4jplus,
@@ -10,6 +10,7 @@ Import-Package: com.google.common.io;version="1.6.0",
  eu.esdihumboldt.hale.common.instance.io,
  eu.esdihumboldt.hale.common.instance.io.impl,
  eu.esdihumboldt.util.resource,
+ org.apache.http.client.fluent;version="4.3.6",
  org.slf4j;version="1.5.11"
 Bundle-ClassPath: lib/xercesImpl-2.9.1.jar,
  .

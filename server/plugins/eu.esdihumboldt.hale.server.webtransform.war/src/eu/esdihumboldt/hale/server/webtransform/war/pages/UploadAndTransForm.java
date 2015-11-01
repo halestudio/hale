@@ -107,7 +107,7 @@ public class UploadAndTransForm extends Form<Void> {
 
 		@Override
 		public String getObject() {
-			Value value = getTarget().getProviderConfiguration().get(param);
+			Value value = getTarget().getConfig().getProviderConfiguration().get(param);
 			if (value != null) {
 				return value.as(String.class);
 			}
@@ -117,7 +117,7 @@ public class UploadAndTransForm extends Form<Void> {
 
 		@Override
 		public void setObject(String object) {
-			getTarget().getProviderConfiguration().put(param, Value.of(object));
+			getTarget().getConfig().getProviderConfiguration().put(param, Value.of(object));
 		}
 
 	}
@@ -152,7 +152,7 @@ public class UploadAndTransForm extends Form<Void> {
 
 	private final FileUploadField file;
 
-	private IOConfiguration target;
+	private NamedIOConfiguration target;
 
 	private static final IOptionRenderer<NamedIOConfiguration> RENDERER = new IOptionRenderer<NamedIOConfiguration>() {
 
@@ -204,8 +204,8 @@ public class UploadAndTransForm extends Form<Void> {
 		});
 
 		// target selection
-		Select<IOConfiguration> selectTarget = new Select<IOConfiguration>("target",
-				new PropertyModel<IOConfiguration>(this, "target"));
+		Select<NamedIOConfiguration> selectTarget = new Select<NamedIOConfiguration>("target",
+				new PropertyModel<NamedIOConfiguration>(this, "target"));
 		add(selectTarget);
 
 		TransformationEnvironment env = environmentService.getEnvironment(projectId);
@@ -230,10 +230,10 @@ public class UploadAndTransForm extends Form<Void> {
 
 		// initial selection
 		if (!presetList.isEmpty()) {
-			setTarget(presetList.iterator().next().getConfig());
+			setTarget(presetList.iterator().next());
 		}
 		else if (!templateList.isEmpty()) {
-			setTarget(templateList.iterator().next().getConfig());
+			setTarget(templateList.iterator().next());
 		}
 
 		// panel for I/O configuration
@@ -249,13 +249,13 @@ public class UploadAndTransForm extends Form<Void> {
 			protected List<String> load() {
 				Set<String> properties = new LinkedHashSet<String>();
 
-				if (target != null && target.getProviderId() != null) {
+				if (target != null && target.getConfig().getProviderId() != null) {
 					// must have
 					properties.add(IOProvider.PARAM_CONTENT_TYPE);
 
 					// what is supported
 
-					IOProvider p = HeadlessIO.loadProvider(target);
+					IOProvider p = HeadlessIO.loadProvider(target.getConfig());
 					properties.addAll(p.getSupportedParameters());
 
 					// not allowed
@@ -287,7 +287,7 @@ public class UploadAndTransForm extends Form<Void> {
 				DropDownChoice<String> contentType;
 				if (isContentType) {
 					IOProviderDescriptor pf = HaleIO.findIOProviderFactory(InstanceWriter.class,
-							null, getTarget().getProviderId());
+							null, getTarget().getConfig().getProviderId());
 					List<String> types = new ArrayList<String>();
 					for (IContentType type : pf.getSupportedTypes()) {
 						types.add(type.getId());
@@ -376,7 +376,7 @@ public class UploadAndTransForm extends Form<Void> {
 				});
 
 		try {
-			workspace.transform(projectId, readers, target);
+			workspace.transform(projectId, readers, target.getConfig());
 			setResponsePage(StatusPage.class,
 					new PageParameters().add(StatusPage.PARAMETER_WORKSPACE, workspace.getId()));
 		} catch (Exception e) {
@@ -389,14 +389,14 @@ public class UploadAndTransForm extends Form<Void> {
 	/**
 	 * @return the target
 	 */
-	public IOConfiguration getTarget() {
+	public NamedIOConfiguration getTarget() {
 		return target;
 	}
 
 	/**
 	 * @param target the target to set
 	 */
-	public void setTarget(IOConfiguration target) {
+	public void setTarget(NamedIOConfiguration target) {
 		this.target = target;
 	}
 

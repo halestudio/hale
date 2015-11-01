@@ -20,8 +20,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Collection;
-
 import javax.xml.namespace.QName;
 
 import org.junit.Test;
@@ -225,9 +223,7 @@ public class MultiPointGeometryTest extends AbstractHandlerTest {
 	}
 
 	private void checkGeomInstance(Instance geomInstance) {
-		assertTrue(geomInstance.getValue() instanceof Collection<?>);
-		for (Object instance : ((Collection<?>) geomInstance.getValue())) {
-			assertTrue(instance instanceof GeometryProperty<?>);
+		for (GeometryProperty<?> instance : getGeometries(geomInstance)) {
 			@SuppressWarnings("unchecked")
 			MultiPoint multipoint = ((GeometryProperty<MultiPoint>) instance).getGeometry();
 			assertTrue("Read geometry does not match the reference geometry",

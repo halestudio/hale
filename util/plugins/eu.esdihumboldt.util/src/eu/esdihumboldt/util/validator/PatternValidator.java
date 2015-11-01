@@ -43,8 +43,10 @@ public class PatternValidator extends AbstractValidator {
 	 */
 	@Override
 	public String validate(Object value) {
-		if (value == null)
+		// ignore null values, rely on the NillableFlagValidator for that.
+		if (value == null) {
 			return null;
+		}
 
 		String s = getObjectAs(value, String.class);
 		if (regEx == null)

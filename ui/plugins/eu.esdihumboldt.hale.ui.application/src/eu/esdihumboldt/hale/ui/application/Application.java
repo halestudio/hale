@@ -68,10 +68,12 @@ public class Application extends AbstractApplication<ApplicationContext> impleme
 //				Application.basepath = location_path;
 
 		// read and set proxy settings
+		// may not work if a user/password is set (because UI is not there) ->
+		// proxy settings are also installed pre workbench startup
 		try {
 			ProxySettings.install();
 		} catch (Exception ex) {
-			_log.warn("Setting the Proxy configuration failed: " + ex.getMessage()); //$NON-NLS-1$
+			// ignore here
 		}
 
 		// launch action

@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.transformation.function.ExecutionContext;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
@@ -36,19 +37,22 @@ public class ExecutionContextImpl implements ExecutionContext {
 	private final Map<Object, Object> transformationContext;
 	private final Map<Object, Object> cellContext;
 	private final Cell cell;
+	private final Alignment alignment;
 
 	/**
 	 * Creates a execution context.
 	 * 
 	 * @param serviceProvider the service provider to use
+	 * @param alignment the transformation alignment
 	 * @param functionContexts used to acquire a function context
 	 * @param transformationContext the transformation context to use, should
 	 *            already be synchronized
 	 * @param cell the cell this context is for
 	 */
-	public ExecutionContextImpl(ServiceProvider serviceProvider, FunctionContexts functionContexts,
-			Map<Object, Object> transformationContext, Cell cell) {
+	public ExecutionContextImpl(ServiceProvider serviceProvider, Alignment alignment,
+			FunctionContexts functionContexts, Map<Object, Object> transformationContext, Cell cell) {
 		this.serviceProvider = serviceProvider;
+		this.alignment = alignment;
 		this.functionContexts = functionContexts;
 		this.transformationContext = transformationContext;
 		this.cell = cell;
@@ -73,6 +77,11 @@ public class ExecutionContextImpl implements ExecutionContext {
 	@Override
 	public Map<Object, Object> getTransformationContext() {
 		return transformationContext;
+	}
+
+	@Override
+	public Alignment getAlignment() {
+		return alignment;
 	}
 
 }

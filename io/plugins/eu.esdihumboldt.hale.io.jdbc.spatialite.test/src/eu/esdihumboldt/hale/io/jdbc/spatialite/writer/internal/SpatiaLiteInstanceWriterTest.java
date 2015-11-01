@@ -44,7 +44,7 @@ public class SpatiaLiteInstanceWriterTest {
 	 * @throws Exception if an error occurs
 	 */
 	@Test
-	public void testReadVersion3() throws Exception {
+	public void testWriteVersion3() throws Exception {
 		SpatiaLiteTestSuite testSuite = new SpatiaLiteTestSuiteVersion3();
 
 		testWrite(testSuite);
@@ -57,7 +57,7 @@ public class SpatiaLiteInstanceWriterTest {
 	 * @throws Exception if an error occurs
 	 */
 	@Test
-	public void testReadVersion4() throws Exception {
+	public void testWriteVersion4() throws Exception {
 		SpatiaLiteTestSuite testSuite = new SpatiaLiteTestSuiteVersion4();
 
 		testWrite(testSuite);

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WFS I/O UI
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.wfs.ui;singleton:=true
-Bundle-Version: 2.9.3.qualifier
+Bundle-Version: 2.9.4.qualifier
 Bundle-Vendor: data harmonisation panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: eu.esdihumboldt.hale.ui,
@@ -22,6 +22,7 @@ Import-Package: com.google.common.base;version="15.0.0",
  com.google.common.io;version="15.0.0",
  com.vividsolutions.jts.geom;version="1.13.0",
  de.fhg.igd.slf4jplus,
+ eu.esdihumboldt.hale.common.align.transformation.service,
  eu.esdihumboldt.hale.common.core.io,
  eu.esdihumboldt.hale.common.core.io.extension,
  eu.esdihumboldt.hale.common.core.io.impl,

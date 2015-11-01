@@ -47,6 +47,11 @@ public class NumberValidator extends AbstractValidator {
 	 */
 	@Override
 	public String validate(Object value) {
+		// ignore null values, rely on the NillableFlagValidator for that.
+		if (value == null) {
+			return null;
+		}
+
 		BigDecimal bdValue;
 		try {
 			bdValue = getObjectAs(value, BigDecimal.class);

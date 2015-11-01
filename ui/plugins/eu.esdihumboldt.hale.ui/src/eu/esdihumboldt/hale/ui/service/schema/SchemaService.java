@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.ui.service.schema;
 
 import java.util.Collection;
 
+import eu.esdihumboldt.hale.common.align.transformation.service.TransformationSchemas;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
@@ -29,7 +30,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * @author Thorsten Reitz
  * @author Simon Templer
  */
-public interface SchemaService {
+public interface SchemaService extends TransformationSchemas {
 
 	/**
 	 * The action id used for reading source schemas.
@@ -40,13 +41,7 @@ public interface SchemaService {
 	 */
 	public static final String ACTION_READ_TARGET = "eu.esdihumboldt.hale.io.schema.read.target";
 
-	/**
-	 * Get the source or target schema space.
-	 * 
-	 * @param spaceID the schema space ID, either {@link SchemaSpaceID#SOURCE}
-	 *            or {@link SchemaSpaceID#TARGET}
-	 * @return the schema space
-	 */
+	@Override
 	public SchemaSpace getSchemas(SchemaSpaceID spaceID);
 
 	/**

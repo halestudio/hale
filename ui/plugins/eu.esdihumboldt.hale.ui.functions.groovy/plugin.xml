@@ -93,6 +93,24 @@
                name="script">
          </parameter>
       </typeParameterPage>
+      <typeParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.groovy.GroovyJoinPage"
+            function="eu.esdihumboldt.cst.functions.groovy.join"
+            id="eu.esdihumboldt.cst.functions.groovy.join3"
+            order="10">
+         <parameter
+               name="script">
+         </parameter>
+      </typeParameterPage>
+      <typeParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.core.JoinParameterPage"
+            function="eu.esdihumboldt.cst.functions.groovy.join"
+            id="eu.esdihumboldt.cst.functions.groovy.join1"
+            order="0">
+         <parameter
+               name="join">
+         </parameter>
+      </typeParameterPage>
    </extension>
    <extension
          point="eu.esdihumboldt.util.groovy.sandbox">

@@ -17,12 +17,13 @@
 package eu.esdihumboldt.cst.functions.groovy;
 
 import java.text.MessageFormat;
-import java.util.List;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
+import eu.esdihumboldt.hale.common.core.io.Text;
+import eu.esdihumboldt.hale.common.core.io.Value;
 
 /**
  * Explanation for groovy cells.
@@ -31,8 +32,8 @@ import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
  */
 public class GroovyExplanation extends AbstractCellExplanation implements GroovyConstants {
 
-	private static final String EXPLANATION_PATTERN = "Populates the {0} property with the result of the following groovy script:\n"
-			+ "{1}\nSource property names are bound to the corresponding value, if the context condition/index matches, otherwise the value isn't set.";
+	private static final String EXPLANATION_PATTERN = "Populates the {0} property with the result of the following groovy script:\n\n"
+			+ "{1}\n\nSource property names are bound to the corresponding value, if the context condition/index matches, otherwise the value isn''t set.";
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell,
@@ -42,9 +43,10 @@ public class GroovyExplanation extends AbstractCellExplanation implements Groovy
 	protected String getExplanation(Cell cell, boolean html) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 
-		String script = CellUtil.getFirstParameter(cell, PARAMETER_SCRIPT).as(String.class);
-		List<? extends Entity> sources = (cell.getSource() == null) ? (null) : (cell.getSource()
-				.get(ENTITY_VARIABLE));
+		String script = getScript(cell);
+
+//		List<? extends Entity> sources = (cell.getSource() == null) ? (null) : (cell.getSource()
+//				.get(ENTITY_VARIABLE));
 
 		if (target != null && script != null) {
 			if (html)
@@ -53,20 +55,41 @@ public class GroovyExplanation extends AbstractCellExplanation implements Groovy
 					formatEntity(target, html, true), script);
 			if (html)
 				explanation = explanation.replaceAll("\n", "<br />");
-			if (html && sources != null) {
-				StringBuilder sb = new StringBuilder();
-				sb.append("<br /><br />Replacement table:<br />");
-				sb.append("<table border=\"1\"><tr><th>Variable name</th><th>Value of the following property</th></tr>");
-				for (Entity entity : sources)
-					sb.append(String.format("<tr><td>%s</td><td>%s</td></tr>",
-							getEntityNameWithoutCondition(entity).replace('.', '_'),
-							formatEntity(entity, true, false)));
-				sb.append("</table>");
-				explanation += sb.toString();
-			}
+//			if (html && sources != null) {
+//				StringBuilder sb = new StringBuilder();
+//				sb.append("<br /><br />Replacement table:<br />");
+//				sb.append("<table border=\"1\"><tr><th>Variable name</th><th>Value of the following property</th></tr>");
+//				for (Entity entity : sources)
+//					sb.append(String.format("<tr><td>%s</td><td>%s</td></tr>",
+//							getEntityNameWithoutCondition(entity).replace('.', '_'),
+//							formatEntity(entity, true, false)));
+//				sb.append("</table>");
+//				explanation += sb.toString();
+//			}
 			return explanation;
 		}
 
 		return null;
+	}
+
+	/**
+	 * Get the script stored in a Groovy function cell.
+	 * 
+	 * @param cell the cell
+	 * @return the Groovy script string or <code>null</code>
+	 */
+	public static String getScript(Cell cell) {
+		Value scriptValue = CellUtil.getFirstParameter(cell, PARAMETER_SCRIPT);
+		String script;
+		// try retrieving as text
+		Text text = scriptValue.as(Text.class);
+		if (text != null) {
+			script = text.getText();
+		}
+		else {
+			// fall back to string value
+			script = scriptValue.as(String.class);
+		}
+		return script;
 	}
 }

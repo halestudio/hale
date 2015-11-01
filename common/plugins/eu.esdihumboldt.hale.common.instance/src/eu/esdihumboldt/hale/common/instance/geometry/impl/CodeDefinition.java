@@ -139,6 +139,13 @@ public class CodeDefinition implements CRSDefinition {
 			}
 		}
 
+		// other syntax that may occur
+		String prefix = "urn:ogc:def:crs:EPSG:";
+		String code = extractCode(candidate, prefix);
+		if (code != null) {
+			return code;
+		}
+
 		return null;
 	}
 

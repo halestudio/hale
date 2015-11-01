@@ -52,7 +52,7 @@ class ReadWriteIT extends AbstractDBTest{
 		);'''
 
 	public ReadWriteIT(){
-		super(new DBConfigInstance("postgis"))
+		super(new DBConfigInstance("postgis", ReadWriteIT.class.getClassLoader()))
 	}
 
 

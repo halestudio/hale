@@ -26,6 +26,7 @@ import eu.esdihumboldt.cst.test.DefaultTransformationTest;
 import eu.esdihumboldt.cst.test.TransformationExample;
 import eu.esdihumboldt.cst.test.TransformationExamples;
 import eu.esdihumboldt.hale.common.align.transformation.service.impl.DefaultInstanceSink;
+import eu.esdihumboldt.hale.common.align.transformation.service.impl.ThreadSafeInstanceSink;
 import eu.esdihumboldt.hale.common.core.io.impl.NullProgressIndicator;
 import eu.esdihumboldt.hale.common.core.service.ServiceManager;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;

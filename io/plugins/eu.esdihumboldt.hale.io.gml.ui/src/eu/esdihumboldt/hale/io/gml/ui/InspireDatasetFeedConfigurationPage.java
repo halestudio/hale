@@ -35,6 +35,7 @@ import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.io.gml.writer.InspireDatasetFeedWriter;
 import eu.esdihumboldt.hale.io.gml.writer.InspireInstanceWriter;
+import eu.esdihumboldt.hale.io.gml.writer.internal.StreamGmlWriter;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 
@@ -43,8 +44,9 @@ import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
  * 
  * @author Kai Schwierczek
  */
+@SuppressWarnings("restriction")
 public class InspireDatasetFeedConfigurationPage extends
-		AbstractConfigurationPage<InspireInstanceWriter, IOWizard<InspireInstanceWriter>> {
+		AbstractConfigurationPage<StreamGmlWriter, IOWizard<StreamGmlWriter>> {
 
 	private Composite parent;
 	private BooleanFieldEditor create;
@@ -171,7 +173,7 @@ public class InspireDatasetFeedConfigurationPage extends
 	}
 
 	@Override
-	public boolean updateConfiguration(InspireInstanceWriter provider) {
+	public boolean updateConfiguration(StreamGmlWriter provider) {
 		// ATOM allows basically anything (well, mail must match '.+@.+')
 		// so no validation here...
 		boolean createFeed = create.getBooleanValue();

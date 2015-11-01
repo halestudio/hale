@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="HALE Server" uid="eu.esdihumboldt.hale.server" id="eu.esdihumboldt.hale.server.application.Server" application="eu.esdihumboldt.hale.server.application" version="2.9.3.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="HALE Server" uid="eu.esdihumboldt.hale.server" id="eu.esdihumboldt.hale.server.application.Server" application="eu.esdihumboldt.hale.server.application" version="2.9.4.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -86,6 +86,7 @@
       <plugin id="eu.esdihumboldt.cst.functions.core"/>
       <plugin id="eu.esdihumboldt.cst.functions.geometric"/>
       <plugin id="eu.esdihumboldt.cst.functions.groovy"/>
+      <plugin id="eu.esdihumboldt.cst.functions.groovy.helpers"/>
       <plugin id="eu.esdihumboldt.cst.functions.inspire"/>
       <plugin id="eu.esdihumboldt.cst.functions.numeric"/>
       <plugin id="eu.esdihumboldt.cst.functions.string"/>
@@ -200,6 +201,7 @@
       <plugin id="org.apache.felix.gogo.command"/>
       <plugin id="org.apache.felix.gogo.runtime"/>
       <plugin id="org.apache.felix.gogo.shell"/>
+      <plugin id="org.apache.httpcomponents.fluent-hc"/>
       <plugin id="org.apache.httpcomponents.httpclient"/>
       <plugin id="org.apache.httpcomponents.httpcore"/>
       <plugin id="org.apache.wicket.core"/>

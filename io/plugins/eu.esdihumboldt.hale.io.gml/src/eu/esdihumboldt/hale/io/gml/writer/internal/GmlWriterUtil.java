@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -189,7 +190,7 @@ public abstract class GmlWriterUtil implements GMLConstants {
 	}
 
 	/**
-	 * Write any required ID attribute, generating a random ID if needed
+	 * Write any required ID attribute, generating a random ID if needed.
 	 * 
 	 * @param writer the XML stream writer
 	 * @param type the type definition
@@ -202,11 +203,30 @@ public abstract class GmlWriterUtil implements GMLConstants {
 	 */
 	public static void writeRequiredID(XMLStreamWriter writer, DefinitionGroup type, Group parent,
 			boolean onlyIfNotSet) throws XMLStreamException {
+		writeID(writer, type, parent, onlyIfNotSet, null);
+	}
+
+	/**
+	 * Write any required ID attribute, generating a random ID if needed. If a
+	 * desired ID is given, write it even if the attribute is not required.
+	 * 
+	 * @param writer the XML stream writer
+	 * @param type the type definition
+	 * @param parent the parent object, may be <code>null</code>. If it is set
+	 *            the value for the ID will be tried to be retrieved from the
+	 *            parent object, otherwise a random ID will be generated
+	 * @param onlyIfNotSet if the ID shall only be written if no value is set in
+	 *            the parent object
+	 * @param desiredId a desired identifier or <code>null</code>
+	 * @throws XMLStreamException if an error occurs writing the ID
+	 */
+	public static void writeID(XMLStreamWriter writer, DefinitionGroup type, Group parent,
+			boolean onlyIfNotSet, @Nullable String desiredId) throws XMLStreamException {
 		// find ID attribute
 		PropertyDefinition idProp = null;
 		for (PropertyDefinition prop : collectProperties(DefinitionUtil.getAllChildren(type))) {
 			if (prop.getConstraint(XmlAttributeFlag.class).isEnabled()
-					&& prop.getConstraint(Cardinality.class).getMinOccurs() > 0
+					&& (desiredId != null || prop.getConstraint(Cardinality.class).getMinOccurs() > 0)
 					&& isID(prop.getPropertyType())) {
 				idProp = prop;
 				break; // we assume there is only one ID attribute
@@ -229,6 +249,10 @@ public abstract class GmlWriterUtil implements GMLConstants {
 				// don't write the ID
 				return;
 			}
+		}
+
+		if (value == null) {
+			value = desiredId;
 		}
 
 		if (value != null) {

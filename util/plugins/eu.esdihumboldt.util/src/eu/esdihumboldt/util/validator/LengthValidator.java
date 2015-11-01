@@ -43,6 +43,11 @@ public class LengthValidator extends AbstractValidator {
 	 */
 	@Override
 	public String validate(Object value) {
+		// ignore null values, rely on the NillableFlagValidator for that.
+		if (value == null) {
+			return null;
+		}
+
 		String s = getObjectAs(value, String.class);
 		switch (type) {
 		case MINIMUM:

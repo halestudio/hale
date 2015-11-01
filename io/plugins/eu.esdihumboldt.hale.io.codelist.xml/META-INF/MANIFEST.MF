@@ -2,9 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: XML CodeList I/O
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.codelist.xml;singleton:=true
-Bundle-Version: 2.9.1.qualifier
+Bundle-Version: 2.9.4.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.io;version="1.6.0",
+ com.ibm.icu.impl,
  de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.codelist,
  eu.esdihumboldt.hale.common.codelist.io,
@@ -14,9 +15,12 @@ Import-Package: com.google.common.io;version="1.6.0",
  eu.esdihumboldt.hale.common.core.io.report.impl,
  eu.esdihumboldt.hale.common.core.io.supplier,
  eu.esdihumboldt.hale.common.core.report,
+ eu.esdihumboldt.util.http,
  eu.esdihumboldt.util.resource,
  org.apache.http;version="4.3.2",
+ org.apache.http.auth;version="4.3.6",
  org.apache.http.client;version="4.3.3",
+ org.apache.http.client.config;version="4.3.6",
  org.apache.http.client.fluent;version="4.3.3",
  org.apache.http.entity;version="4.3.2",
  org.eclipse.osgi.util,

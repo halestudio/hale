@@ -15,8 +15,9 @@
  */
 package eu.esdihumboldt.hale.ui.service.schema.handler;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -38,9 +39,6 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
  */
 public class MarkTypeUnmappableHandler extends AbstractHandler {
 
-	/**
-	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
@@ -48,6 +46,8 @@ public class MarkTypeUnmappableHandler extends AbstractHandler {
 			SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench().getService(
 					SchemaService.class);
 			Iterator<?> it = ((IStructuredSelection) selection).iterator();
+			List<TypeDefinition> sourceTypes = new ArrayList<>();
+			List<TypeDefinition> targetTypes = new ArrayList<>();
 			while (it.hasNext()) {
 				Object selected = it.next();
 				TypeDefinition type = null;
@@ -59,13 +59,21 @@ public class MarkTypeUnmappableHandler extends AbstractHandler {
 				}
 				if (type != null) {
 					if (schemaService.getSchemas(SchemaSpaceID.SOURCE).getMappingRelevantTypes()
-							.contains(type))
-						schemaService.toggleMappable(SchemaSpaceID.SOURCE,
-								Collections.singleton(type));
-					else
-						schemaService.toggleMappable(SchemaSpaceID.TARGET,
-								Collections.singleton(type));
+							.contains(type)) {
+						sourceTypes.add(type);
+					}
+					else {
+						targetTypes.add(type);
+					}
 				}
+			}
+
+			if (!sourceTypes.isEmpty()) {
+				schemaService.toggleMappable(SchemaSpaceID.SOURCE, sourceTypes);
+			}
+
+			if (!targetTypes.isEmpty()) {
+				schemaService.toggleMappable(SchemaSpaceID.TARGET, targetTypes);
 			}
 		}
 

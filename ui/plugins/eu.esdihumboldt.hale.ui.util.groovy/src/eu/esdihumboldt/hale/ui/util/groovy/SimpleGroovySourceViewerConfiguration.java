@@ -290,6 +290,8 @@ public class SimpleGroovySourceViewerConfiguration extends SourceViewerConfigura
 		ContentAssistant assistant = new ContentAssistant();
 		assistant.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
 
+		assistant.enableColoredLabels(true);
+
 		IContentAssistProcessor testProcessor = new GroovyASTCompletionProcessor(fCustomCompletions);
 		assistant.setContentAssistProcessor(testProcessor, IDocument.DEFAULT_CONTENT_TYPE);
 
@@ -312,13 +314,17 @@ public class SimpleGroovySourceViewerConfiguration extends SourceViewerConfigura
 //
 //			ContentAssistPreference.configure(assistant, fPreferenceStore);
 //
-//			assistant.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
-//			assistant.setInformationControlCreator(new IInformationControlCreator() {
-//				public IInformationControl createInformationControl(Shell parent) {
-//					return new DefaultInformationControl(parent, JavaPlugin.getAdditionalInfoAffordanceString());
-//				}
-//			});
-//
+//		assistant.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
+
+		// set how to show "additional information" in a completion proposal
+		assistant.setInformationControlCreator(new IInformationControlCreator() {
+
+			@Override
+			public IInformationControl createInformationControl(Shell parent) {
+				return new DefaultInformationControl(parent, true);
+			}
+		});
+
 		return assistant;
 //		}
 

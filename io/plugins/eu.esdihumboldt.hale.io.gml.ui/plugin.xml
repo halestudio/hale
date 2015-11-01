@@ -40,6 +40,9 @@
          <provider
                ref="eu.esdihumboldt.hale.io.inspiregml.writer">
          </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.wfs.fc.write-2.0">
+         </provider>
       </configPage>
       <configPage
             class="eu.esdihumboldt.hale.io.gml.ui.GmlWriterSettingsPage"
@@ -55,6 +58,16 @@
          </provider>
          <provider
                ref="eu.esdihumboldt.hale.io.inspiregml.writer">
+         </provider>
+      </configPage>
+      <configPage
+            class="eu.esdihumboldt.hale.io.gml.ui.GmlReaderSettingsPage"
+            order="10">
+         <provider
+               ref="eu.esdihumboldt.hale.io.xml.reader">
+         </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.gml.reader">
          </provider>
       </configPage>
    </extension>

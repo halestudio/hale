@@ -184,28 +184,22 @@ public class OrientInstanceService extends AbstractInstanceService {
 		 * Only return instances that actually were inserted, not those that
 		 * were only created because they are substructures of the inserted
 		 * instances.
+		 * 
+		 * This is also done in the headless Transformation
+		 * 
+		 * XXX make configurable?
 		 */
-		if (dataset.equals(DataSet.TRANSFORMED)) {
-			/*
-			 * XXX for now do it only for the transformed data, we have to see
-			 * if it is necessary for the source data as well. If so, the
-			 * headless transformation must be updated accordingly as well.
-			 */
+		return FilteredInstanceCollection.applyFilter(result, new Filter() {
 
-			return FilteredInstanceCollection.applyFilter(result, new Filter() {
-
-				@Override
-				public boolean match(Instance instance) {
-					if (instance instanceof OInstance) {
-						return ((OInstance) instance).isInserted();
-					}
-					return true;
+			@Override
+			public boolean match(Instance instance) {
+				if (instance instanceof OInstance) {
+					return ((OInstance) instance).isInserted();
 				}
+				return true;
+			}
 
-			});
-		}
-
-		return result;
+		});
 	}
 
 	/**

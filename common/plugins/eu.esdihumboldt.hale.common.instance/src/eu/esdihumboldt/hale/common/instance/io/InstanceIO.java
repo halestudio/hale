@@ -42,6 +42,12 @@ public abstract class InstanceIO {
 	public static final String ACTION_SAVE_TRANSFORMED_DATA = "eu.esdihumboldt.hale.io.instance.write.transformed";
 
 	/**
+	 * ID of the action to save source data. Reflects the ID defined in the
+	 * extension.
+	 */
+	public static final String ACTION_SAVE_SOURCE_DATA = "eu.esdihumboldt.hale.io.instance.write.source";
+
+	/**
 	 * Creates an instance writer instance
 	 * 
 	 * @param contentType the content type the provider must match, may be

@@ -51,6 +51,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace;
 import eu.esdihumboldt.hale.common.test.TestUtil;
+import eu.esdihumboldt.hale.common.test.docker.config.HaleDockerClient;
 import eu.esdihumboldt.hale.io.jdbc.JDBCConnection;
 import eu.esdihumboldt.hale.io.jdbc.JDBCInstanceReader;
 import eu.esdihumboldt.hale.io.jdbc.JDBCInstanceWriter;
@@ -69,7 +70,7 @@ public abstract class AbstractDBTest {
 	 * database
 	 */
 	private final DBImageParameters dbi;
-	private DBDockerClient client;
+	private HaleDockerClient client;
 	private URI jdbcUri;
 
 	/**
@@ -103,7 +104,7 @@ public abstract class AbstractDBTest {
 			// to find hale-docker.conf
 			Thread.currentThread().setContextClassLoader(
 					getClass().getClassLoader());
-			client = new DBDockerClient(dbi);
+			client = new HaleDockerClient(dbi);
 			client.createContainer();
 			client.startContainer();
 

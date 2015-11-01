@@ -37,6 +37,7 @@ import com.google.common.util.concurrent.SettableFuture;
 import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.functions.CreateFunction;
 import eu.esdihumboldt.hale.common.align.model.functions.RetypeFunction;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReport;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
@@ -54,8 +55,12 @@ import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
+import eu.esdihumboldt.hale.common.instance.model.Filter;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.MultiInstanceCollection;
+import eu.esdihumboldt.hale.common.instance.orient.OInstance;
 import eu.esdihumboldt.hale.common.instance.orient.storage.BrowseOrientInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.orient.storage.LocalOrientDB;
 import eu.esdihumboldt.hale.common.instance.orient.storage.StoreInstancesJob;
@@ -226,11 +231,12 @@ public class Transformation {
 		final InstanceCollection sourceToUse;
 
 		// Check whether to create a temporary database or not.
-		// Currently do not create a temporary DB is there are Retypes only.
+		// Currently do not create a temporary DB is there are Retypes/Creates
+		// only.
 		boolean useTempDatabase = false;
 		final LocalOrientDB db;
 		for (Cell cell : alignment.getActiveTypeCells())
-			if (!RetypeFunction.ID.equals(cell.getTransformationIdentifier())) {
+			if (!isStreamingTypeTransformation(cell.getTransformationIdentifier())) {
 				useTempDatabase = true;
 				break;
 			}
@@ -243,7 +249,23 @@ public class Transformation {
 			tmpDir.deleteOnExit();
 
 			// get instance collection
-			sourceToUse = new BrowseOrientInstanceCollection(db, sourceSchema, DataSet.SOURCE);
+//			sourceToUse = new BrowseOrientInstanceCollection(db, sourceSchema, DataSet.SOURCE);
+			// only yield instances that were actually inserted
+			// this is also done in OrientInstanceService
+			// TODO make configurable?
+			sourceToUse = FilteredInstanceCollection.applyFilter(
+					new BrowseOrientInstanceCollection(db, sourceSchema, DataSet.SOURCE),
+					new Filter() {
+
+						@Override
+						public boolean match(Instance instance) {
+							if (instance instanceof OInstance) {
+								return ((OInstance) instance).isInserted();
+							}
+							return true;
+						}
+
+					});
 		}
 		else {
 			sourceToUse = sources;
@@ -394,6 +416,28 @@ public class Transformation {
 		}
 
 		return result;
+	}
+
+	/**
+	 * Determine if a function is streaming capable (and does not need an index
+	 * to be built).
+	 * 
+	 * @param transformationIdentifier the function ID
+	 * @return <code>true</code> if the function is streaming capable,
+	 *         <code>false</code> otherwise
+	 */
+	private static boolean isStreamingTypeTransformation(String transformationIdentifier) {
+		// XXX rather decide based on function declaration or anything like
+		// that?
+		switch (transformationIdentifier) {
+		case RetypeFunction.ID: // fall through
+		case CreateFunction.ID: // fall through
+		case "eu.esdihumboldt.cst.functions.groovy.retype": // fall through
+		case "eu.esdihumboldt.cst.functions.groovy.create":
+			return true;
+		default:
+			return false;
+		}
 	}
 
 	private static void failure(SettableFuture<Boolean> result, IJobChangeEvent event) {

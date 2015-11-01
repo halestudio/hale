@@ -89,6 +89,35 @@
 		#end
 	</ul>
 	#end
+	#if ($providerType.equals("reader"))
+	<p>The following configuration parameters are shared for all instance readers.</p>
+	<ul>
+		<li>
+			<div>
+				<h3>Default SRS</h3>
+				<p>
+					For cases where the spatial reference system cannot be detected
+					from the data you can specify a default SRS to assume for these
+					geometries. The SRS can be provided as code (with prefix
+					<code>code:</code>
+					) or as WKT (with prefix
+					<code>wkt:</code>
+					)
+				</p>
+				<table class="facts">
+					<tr>
+						<th style="text-align: right;">Setting name</th>
+						<td><code>defaultSrs</code></td>
+					</tr>
+					<tr>
+						<th style="text-align: right;">Example value</th>
+						<td>code:EPSG:25832</td>
+					</tr>
+				</table>
+			</div>
+		</li>
+	</ul>
+	#end
 	<p>The following configuration parameters are shared for all I/O providers.</p>
 	<ul>
 		<li>

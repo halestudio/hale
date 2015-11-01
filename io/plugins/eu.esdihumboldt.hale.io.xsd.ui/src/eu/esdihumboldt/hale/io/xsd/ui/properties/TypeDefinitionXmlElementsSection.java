@@ -94,7 +94,7 @@ public class TypeDefinitionXmlElementsSection extends DefaultDefinitionSection<T
 		data.top = new FormAttachment(text, 0, SWT.CENTER);
 		namespaceLabel.setLayoutData(data);
 
-		text.setText(elm[0].getName().getNamespaceURI().toString());
+		text.setText(elm[0].getName().toString());
 
 		textarray[0] = text;
 

@@ -63,8 +63,14 @@ public class XMLInspector implements IdentityReferenceInspector<String> {
 					Reference ref = def.asProperty().getConstraint(Reference.class);
 					if (ref.isReference()) {
 						String idRef = ref.extractId(value).toString();
-						if (!idRef.contains("#")) {
+						if (!idRef.contains("#") && !idRef.startsWith("http://")
+								&& !idRef.startsWith("https://")) {
 							// an extracted local reference will not contain #
+
+							// also have to filter out by protocol because there
+							// can be code list references being detected as
+							// references (e.g. INSPIRE code lists)
+
 							referencedIDs.add(idRef);
 						}
 					}

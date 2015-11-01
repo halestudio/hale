@@ -20,6 +20,7 @@
          <choice minOccurs="1" maxOccurs="unbounded">
             <element ref="allow"/>
             <element ref="allowPackage"/>
+            <element ref="import"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -95,6 +96,33 @@ This should only be set to true for Groovy-classes which actually accept all met
                <documentation>
                   Whether classes in child-packages are allowed, too. Default is &quot;true&quot;.
                </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="import">
+      <annotation>
+         <documentation>
+            Specifies a class to import into Groovy scripts by default. Allows specifying an alias.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="alias" type="string">
+            <annotation>
+               <documentation>
+                  The alias for the import.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The class to import.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java"/>
+               </appinfo>
             </annotation>
          </attribute>
       </complexType>

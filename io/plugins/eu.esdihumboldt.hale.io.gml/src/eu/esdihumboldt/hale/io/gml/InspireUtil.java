@@ -34,6 +34,10 @@ public class InspireUtil implements InspireConstants {
 	 * @return the spatial data set element or <code>null</code> if not found
 	 */
 	public static XmlElement findSpatialDataSet(XmlIndex index) {
+		if (index == null) {
+			return null;
+		}
+
 		// first try with default namespace
 		XmlElement result = index.getElements().get(
 				new QName(DEFAULT_INSPIRE_NAMESPACE_BASETYPES, ELEMENT_SPATIAL_DATASET));

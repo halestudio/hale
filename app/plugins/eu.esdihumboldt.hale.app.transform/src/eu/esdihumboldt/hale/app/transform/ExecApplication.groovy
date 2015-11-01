@@ -1,5 +1,3 @@
-
-
 /*
  * Copyright (c) 2014 Data Harmonisation Panel
  * 
@@ -67,6 +65,7 @@ class ExecApplication extends AbstractApplication<ExecContext> {
 		}
 		else if (validate(executionContext)) {
 			try {
+				applyProxySettings()
 				new ExecTransformation().run(executionContext)
 			} catch (Exception | AssertionError e) {
 				error "Transformation execution failed: $e.message"
@@ -78,6 +77,19 @@ class ExecApplication extends AbstractApplication<ExecContext> {
 		}
 		else {
 			usage()
+		}
+	}
+
+	protected void applyProxySettings() {
+		// unable to access ProxySettings class here (UI dependency)
+		// --> just use system properties (they have to be provided)
+
+		// in addition, set default Authenticator based on system properties
+		String proxyUser = System.getProperty('http.proxyUser')
+		String proxyPassword = System.getProperty('http.proxyPassword')
+
+		if (proxyUser && proxyPassword) {
+			Authenticator.setDefault(new eu.esdihumboldt.util.http.HttpAuth(proxyUser, proxyPassword))
 		}
 	}
 
@@ -109,9 +121,11 @@ Usage:
 HALE -nosplash -application hale.transform
      -project <file-or-URI-to-HALE-project>
      -source <file-or-URI-to-source-data>
+         [-include <file-pattern>]
+         [-exclude <file-pattern>]
          [-providerId <ID-of-source-reader>]
          [<setting>...]
-     -target <target-file>
+     -target <target-file-or-URI>
          [-preset <name-of-export-preset>]
          [-providerId <ID-of-target-writer>]
          [<setting>...]
@@ -126,6 +140,15 @@ HALE -nosplash -application hale.transform
      -reportsOut <reports-file>
      -stacktrace
      -trustGroovy
+
+  You can provide multiple sources for the transformation. If the source is a
+  directory, you can specify multiple -include and -exclude parameters to
+  control which files to load.
+  If you do not specify -include, it defaults to "**", i.e. all files being
+  included, even if they are in sub-directories.
+  Patterns use the glob pattern syntax as defined in Java and should be quoted
+  to not be interpreted by the shell, see
+  http://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html#getPathMatcher-java.lang.String-
 		""".trim()
 
 		// general error code
@@ -145,6 +168,8 @@ HALE -nosplash -application hale.transform
 			// source file or URI to source data
 				executionContext.sources << fileOrUri(value)
 				executionContext.sourceProviderIds << null
+				executionContext.sourceIncludes << []
+				executionContext.sourceExcludes << []
 				executionContext.sourcesSettings << [:]
 				lastConfigurable = Configurable.source
 				break
@@ -186,6 +211,21 @@ HALE -nosplash -application hale.transform
 					warn('Unexpected parameter -providerId')
 				}
 				break
+			case '-exclude': // fall through
+			case '-include':
+				if (lastConfigurable == Configurable.source) {
+					List<List<String>> cludes = (param == '-include') ? (executionContext.sourceIncludes) : (executionContext.sourceExcludes)
+					int sourceIndex = executionContext.sources.size() - 1
+					List<String> cludeList = cludes[sourceIndex]
+					if (!cludeList) {
+						cludeList = []
+						cludes[sourceIndex] = cludeList
+					}
+					cludeList << value
+				}
+				else {
+					warn("Unexpected parameter $param, only allowed for configuring a source")
+				}
 			default:
 				if (param.startsWith(SETTING_PREFIX) && param.length() > SETTING_PREFIX.length()) {
 					// setting
@@ -210,7 +250,10 @@ HALE -nosplash -application hale.transform
 	protected URI fileOrUri(String value) {
 		try {
 			URI uri = URI.create(value)
-			if (uri.scheme) {
+			if (uri.scheme && uri.scheme.length() > 1) {
+				// only accept as URI if a schema is present
+				// and the scheme is more than just one character
+				// which is likely a Windows drive letter
 				return uri
 			}
 			else {

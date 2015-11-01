@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -136,12 +137,12 @@ public class TransformDataWizardSourcePage extends WizardPage {
 					// ProjectService.rememberIO
 					importWizard.setAdvisor(advisor, null);
 
-					new HaleWizardDialog(getShell(), importWizard).open();
-
-					if (advisor.getInstances() != null) {
-						sourceCollections.add(advisor.getInstances());
-						listViewer.add(advisor.getLocation());
-						getContainer().updateButtons();
+					if (new HaleWizardDialog(getShell(), importWizard).open() == Dialog.OK) {
+						if (advisor.getInstances() != null) {
+							sourceCollections.add(advisor.getInstances());
+							listViewer.add(advisor.getLocation());
+							getContainer().updateButtons();
+						}
 					}
 				}
 			});

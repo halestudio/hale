@@ -22,10 +22,10 @@
       <Pattern>%d{dd.MM.yyyy HH:mm:ss} %-5level [%mdc{user}:%mdc{remote}] %C{1}.%M\(%L\) - %m%n</Pattern>
     </encoder>
   </appender>
-  <logger name="to.wetf" level="INFO" />
-  <logger name="eu.esdihumboldt" level="INFO" />
-  <logger name="org.springframework" level="INFO" />
-  <root level="WARN">
+  <logger name="to.wetf" level="${log.hale.level:-INFO}" />
+  <logger name="eu.esdihumboldt" level="${log.hale.level:-INFO}" />
+  <logger name="org.springframework" level="${log.spring.level:-INFO}" />
+  <root level="${log.root.level:-WARN}">
     <appender-ref ref="CONSOLE"/>
     <appender-ref ref="FILE"/>
   </root>

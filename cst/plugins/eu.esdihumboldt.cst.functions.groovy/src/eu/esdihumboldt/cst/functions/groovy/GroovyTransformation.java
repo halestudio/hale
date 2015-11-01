@@ -79,9 +79,12 @@ public class GroovyTransformation extends
 		InstanceBuilder builder = createBuilder(resultProperty);
 
 		// create the script binding
-		Binding binding = createGroovyBinding(variables.get(ENTITY_VARIABLE), getCell().getSource()
-				.get(ENTITY_VARIABLE), getCell(), getTypeCell(), builder, useInstanceVariables,
-				log, getExecutionContext());
+		List<? extends Entity> varDefs = null;
+		if (getCell().getSource() != null) {
+			varDefs = getCell().getSource().get(ENTITY_VARIABLE);
+		}
+		Binding binding = createGroovyBinding(variables.get(ENTITY_VARIABLE), varDefs, getCell(),
+				getTypeCell(), builder, useInstanceVariables, log, getExecutionContext());
 
 		Object result;
 		try {
@@ -154,7 +157,8 @@ public class GroovyTransformation extends
 					}
 
 					// use script result as instance value (if possible)
-					if (result instanceof MutableInstance && scriptResult != target) {
+					if (result instanceof MutableInstance && scriptResult != target
+							&& scriptResult != result) {
 						MutableInstance resInstance = ((MutableInstance) result);
 						if (resInstance.getValue() == null) {
 							// only override value with script result if current
