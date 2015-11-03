@@ -108,6 +108,9 @@ public class NetworkExpansion extends
 					&& binding.isAssignableFrom(result.getGeometry().getClass())) {
 				return result.getGeometry();
 			}
+			else {
+				return result;
+			}
 		}
 
 		throw new TransformationException("Geometry for network expansion could not be retrieved.");

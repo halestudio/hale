@@ -33,6 +33,7 @@ import eu.esdihumboldt.hale.common.align.service.FunctionService;
 import eu.esdihumboldt.hale.common.align.service.TransformationFunctionService;
 import eu.esdihumboldt.hale.common.align.service.impl.AlignmentFunctionService;
 import eu.esdihumboldt.hale.common.align.service.impl.AlignmentTransformationFunctionService;
+import eu.esdihumboldt.hale.common.align.transformation.service.TransformationSchemas;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
@@ -50,6 +51,7 @@ import eu.esdihumboldt.hale.common.headless.HeadlessIO;
 import eu.esdihumboldt.hale.common.headless.TransformationEnvironment;
 import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 
 /**
@@ -151,6 +153,21 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 			addService(FunctionService.class, new AlignmentFunctionService(alignment));
 			addService(TransformationFunctionService.class,
 					new AlignmentTransformationFunctionService(alignment));
+			// make TransformationSchemas service available
+			addService(TransformationSchemas.class, new TransformationSchemas() {
+
+				@Override
+				public SchemaSpace getSchemas(SchemaSpaceID spaceID) {
+					switch (spaceID) {
+					case SOURCE:
+						return sourceSchema;
+					case TARGET:
+						return targetSchema;
+					default:
+						return null;
+					}
+				}
+			});
 
 			init(project);
 		}

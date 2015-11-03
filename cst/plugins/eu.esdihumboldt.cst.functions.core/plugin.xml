@@ -63,6 +63,12 @@
             function="eu.esdihumboldt.hale.align.assign.bound"
             id="eu.esdihumboldt.cst.functions.core.assign">
       </propertyTransformation>
+      <propertyTransformation
+            class="eu.esdihumboldt.cst.functions.core.inline.InlineTransformation"
+            engine="eu.esdihumboldt.align.java"
+            function="eu.esdihumboldt.hale.align.inline"
+            id="eu.esdihumboldt.cst.functions.core.inline">
+      </propertyTransformation>
    </extension>
 
 </plugin>

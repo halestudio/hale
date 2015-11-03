@@ -19,10 +19,12 @@ import javax.annotation.Nullable
 
 import com.vividsolutions.jts.geom.Geometry
 
+import eu.esdihumboldt.cst.functions.geometric.aggregate.AggregateTransformation
 import eu.esdihumboldt.cst.functions.groovy.helper.spec.*
 import eu.esdihumboldt.cst.functions.groovy.helper.spec.impl.HelperFunctionArgument
 import eu.esdihumboldt.cst.functions.groovy.helper.spec.impl.HelperFunctionSpecification
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException
+import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException
 import eu.esdihumboldt.hale.common.instance.geometry.GeometryFinder
 import eu.esdihumboldt.hale.common.instance.helper.DepthFirstInstanceTraverser
 import eu.esdihumboldt.hale.common.instance.helper.InstanceTraverser
@@ -161,6 +163,33 @@ class GeometryHelperFunctions {
 		}
 
 		geoFind.getGeometries()
+	}
+
+	/**
+	 * Specification for the aggregate function
+	 */
+	public static final Specification _aggregate_spec = SpecBuilder.newSpec( //
+	description: 'Aggregate geometries in the given objects.',
+	result: 'the aggregated geometry (wrapped in a GeometryProperty) or null') { //
+		geometries('A single or multiple (as a list/iterable) geometries, geometry properties or instances holding a geometry') }
+
+	@CompileStatic
+	static GeometryProperty<? extends Geometry> _aggregate(def geometryHolders) {
+		Iterable<?> geoms;
+		if (geometryHolders == null) {
+			return null;
+		}
+		else if (geometryHolders instanceof Iterable) {
+			geoms = (Iterable<?>) geometryHolders;
+		}
+		else {
+			geoms = Collections.singleton(geometryHolders);
+		}
+		try {
+			return AggregateTransformation.aggregateGeometries(geoms, null, null)
+		} catch (NoResultException e) {
+			return null
+		}
 	}
 
 }

@@ -64,6 +64,19 @@
                      class="java.lang.String">
                </parameterBinding>
          </providerParameter>
+         <providerParameter
+               description="States if instances should be directly passed to the database instead of attempting to assure an order that will avoid any constraint violations for foreign keys."
+               label="Direct passthrough"
+               name="unordered"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="false"
+                  defaultDescription="By default instances are sorted before inserting them.">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.jdbc.JDBCInstanceReader"

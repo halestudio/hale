@@ -123,9 +123,12 @@ public class CRSConverter {
 		// XXX does this error only occur for CRS related to shapefiles?
 		this.math = CRS.findMathTransform(source, target, true);
 
-		// FIXME flip needed/supported?
-		this.initialFlip = flipCRS(source);
-		this.finalFlip = flipCRS(target);
+		/*
+		 * XXX do not flip the coordinates - the math transformation should
+		 * handle it correctly, because it is based on the CRS definitions
+		 */
+		this.initialFlip = false; // flipCRS(source);
+		this.finalFlip = false; // flipCRS(target);
 	}
 
 	/**

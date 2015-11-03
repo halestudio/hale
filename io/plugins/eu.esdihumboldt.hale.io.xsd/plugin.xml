@@ -27,6 +27,18 @@
          <contentType
                ref="eu.esdihumboldt.hale.io.xsd">
          </contentType>
+         <providerParameter
+               description="If only types with associated global elements may be mapped, or all types with a global type definition"
+               label="Only types with associated global elements may be mapped"
+               name="onlyElementsMappable"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="true">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
    </extension>
    <extension

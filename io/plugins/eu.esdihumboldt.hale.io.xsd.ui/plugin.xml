@@ -34,5 +34,15 @@
          </propertySection>
       </propertySections>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.ui.io.config">
+      <configPage
+            class="eu.esdihumboldt.hale.io.xsd.ui.XsdReaderSettingsPage"
+            order="0">
+         <provider
+               ref="eu.esdihumboldt.hale.io.xsd.reader">
+         </provider>
+      </configPage>
+   </extension>
 
 </plugin>

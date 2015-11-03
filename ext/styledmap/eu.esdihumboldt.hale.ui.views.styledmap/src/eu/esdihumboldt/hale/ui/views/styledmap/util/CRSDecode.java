@@ -50,7 +50,7 @@ public abstract class CRSDecode {
 		CoordinateReferenceSystem crs = crsMap.get(code);
 
 		if (crs == null) {
-			crs = CRS.decode(code); // XXX
+			crs = CRS.decode(code);
 		}
 
 		return crs;
@@ -67,6 +67,44 @@ public abstract class CRSDecode {
 	public static CoordinateReferenceSystem getCRS(int epsg) throws NoSuchAuthorityCodeException,
 			FactoryException {
 		return getCRS("EPSG:" + epsg);
+	}
+
+	/**
+	 * Code mapped to CRS
+	 */
+	private static final Map<String, CoordinateReferenceSystem> crsMapLonLat = new HashMap<String, CoordinateReferenceSystem>();
+
+	/**
+	 * Get or create the CRS with the given code.
+	 * 
+	 * @param code the CRS code
+	 * @return the coordinate reference system
+	 * @throws NoSuchAuthorityCodeException if a code with an unknown authority
+	 *             was supplied
+	 * @throws FactoryException if creation of the CRS failed
+	 */
+	public synchronized static CoordinateReferenceSystem getLonLatCRS(String code)
+			throws NoSuchAuthorityCodeException, FactoryException {
+		CoordinateReferenceSystem crs = crsMapLonLat.get(code);
+
+		if (crs == null) {
+			crs = CRS.decode(code, true);
+		}
+
+		return crs;
+	}
+
+	/**
+	 * Get or create the CRS with the given code.
+	 * 
+	 * @param epsg the EPSG code of the CRS
+	 * @return the coordinate reference system
+	 * @throws NoSuchAuthorityCodeException if EPSG is not known to the system
+	 * @throws FactoryException if creation of the CRS failed
+	 */
+	public static CoordinateReferenceSystem getLonLatCRS(int epsg)
+			throws NoSuchAuthorityCodeException, FactoryException {
+		return getLonLatCRS("EPSG:" + epsg);
 	}
 
 }

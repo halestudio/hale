@@ -66,7 +66,8 @@ public class HtmlExplanationCellSection extends AbstractCellSection {
 			}
 
 			textField = new Text(page, SWT.MULTI | SWT.WRAP | SWT.BORDER | SWT.V_SCROLL);
-			textField.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
+			textField.setLayoutData(GridDataFactory.fillDefaults().hint(17, 17).grab(true, true)
+					.create());
 		}
 	}
 

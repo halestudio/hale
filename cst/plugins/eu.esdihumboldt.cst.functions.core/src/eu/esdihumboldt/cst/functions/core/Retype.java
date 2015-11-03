@@ -59,7 +59,10 @@ public class Retype extends AbstractTypeTransformation<TransformationEngine> imp
 			boolean ignoreNamespaces = getOptionalParameter(
 					RenameFunction.PARAMETER_IGNORE_NAMESPACES, Value.of(false)).as(Boolean.class,
 					false);
-			target = doStructuralRename(getSource(), targetType, ignoreNamespaces, log);
+			boolean copyGeometries = getOptionalParameter(RenameFunction.PARAMETER_COPY_GEOMETRIES,
+					Value.of(true)).as(Boolean.class);
+			target = doStructuralRename(getSource(), targetType, ignoreNamespaces, copyGeometries,
+					log);
 		}
 		if (target == null) {
 			target = getInstanceFactory().createInstance(targetType);
@@ -69,13 +72,13 @@ public class Retype extends AbstractTypeTransformation<TransformationEngine> imp
 	}
 
 	private MutableInstance doStructuralRename(FamilyInstance source, TypeDefinition targetType,
-			boolean ignoreNamespaces, TransformationLog log) {
+			boolean ignoreNamespaces, boolean copyGeometries, TransformationLog log) {
 		// create a dummy child definition for the structural rename
 		PropertyDefinition dummyProp = new DefaultPropertyDefinition(new QName("dummyProp"),
 				new DefaultTypeDefinition(new QName("dummyType")), targetType);
 
 		Object result = Rename.structuralRename(source, dummyProp, ignoreNamespaces,
-				getInstanceFactory());
+				getInstanceFactory(), copyGeometries);
 		if (result instanceof MutableInstance) {
 			return ((MutableInstance) result);
 		}

@@ -86,7 +86,7 @@ public class ConceptualSchemaTransformer implements TransformationService {
 			ProgressIndicator progressIndicator) {
 		TransformationReporter reporter = new DefaultTransformationReporter(
 				"Instance transformation", true);
-		TransformationContext context = new TransformationContext(serviceProvider);
+		TransformationContext context = new TransformationContext(serviceProvider, alignment);
 
 		TransformationFunctionService functions = serviceProvider
 				.getService(TransformationFunctionService.class);

@@ -40,8 +40,7 @@ public class ExtentHelperFunctions {
 			"A single or multiple (as a list/iterable) geometries, geometry properties or instances holding a geometry");
 
 	@Nullable
-	public GeometryProperty<?> _union(Object geometryHolders) throws TransformationException,
-			NoResultException {
+	public GeometryProperty<?> _union(Object geometryHolders) throws TransformationException {
 		return computeExtent(geometryHolders, ExtentType.UNION);
 	}
 
@@ -50,8 +49,7 @@ public class ExtentHelperFunctions {
 			"the calculated union geometry (wrapped in a GeometryProperty)", GEOMETRIES_ARG_SPEC);
 
 	@Nullable
-	public GeometryProperty<?> _convexHull(Object geometryHolders) throws TransformationException,
-			NoResultException {
+	public GeometryProperty<?> _convexHull(Object geometryHolders) throws TransformationException {
 		return computeExtent(geometryHolders, ExtentType.CONVEX_HULL);
 	}
 
@@ -60,8 +58,7 @@ public class ExtentHelperFunctions {
 			"the calculated convex hull (wrapped in a GeometryProperty)", GEOMETRIES_ARG_SPEC);
 
 	@Nullable
-	public GeometryProperty<?> _bbox(Object geometryHolders) throws TransformationException,
-			NoResultException {
+	public GeometryProperty<?> _bbox(Object geometryHolders) throws TransformationException {
 		return computeExtent(geometryHolders, ExtentType.BBOX);
 	}
 
@@ -74,7 +71,7 @@ public class ExtentHelperFunctions {
 
 	@Nullable
 	private GeometryProperty<?> computeExtent(Object geometryHolders, ExtentType type)
-			throws TransformationException, NoResultException {
+			throws TransformationException {
 		Iterable<?> geoms;
 		if (geometryHolders == null) {
 			return null;
@@ -85,7 +82,11 @@ public class ExtentHelperFunctions {
 		else {
 			geoms = Collections.singleton(geometryHolders);
 		}
-		return ExtentTransformation.calculateExtent(geoms, type);
+		try {
+			return ExtentTransformation.calculateExtent(geoms, type);
+		} catch (NoResultException e) {
+			return null;
+		}
 	}
 
 }

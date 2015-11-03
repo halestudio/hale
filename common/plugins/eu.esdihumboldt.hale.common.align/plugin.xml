@@ -45,6 +45,9 @@
             <parameterBinding
                   class="java.lang.Boolean">
             </parameterBinding>
+            <valueDescriptor
+                  default="false">
+            </valueDescriptor>
          </functionParameter>
          <functionParameter
                description="Specifies if for the structural rename it is allowed to do copying independent of property namespaces."
@@ -55,6 +58,22 @@
             <parameterBinding
                   class="java.lang.Boolean">
             </parameterBinding>
+            <valueDescriptor
+                  default="false">
+            </valueDescriptor>
+         </functionParameter>
+         <functionParameter
+               description="Specifies if for the structural rename geometry objects should be copied."
+               label="Copy geometry objects in structural rename"
+               maxOccurrence="1"
+               minOccurrence="0"
+               name="copyGeometries">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="true">
+            </valueDescriptor>
          </functionParameter>
       </typeFunction>
       <propertyFunction
@@ -86,6 +105,9 @@
             <parameterBinding
                class="java.lang.Boolean">
             </parameterBinding>
+            <valueDescriptor
+                  default="false">
+            </valueDescriptor>
          </functionParameter>
          <functionParameter
                description="Specifies if for the structural rename it is allowed to do copying independent of property namespaces."
@@ -96,6 +118,22 @@
             <parameterBinding
                class="java.lang.Boolean">
             </parameterBinding>
+            <valueDescriptor
+                  default="false">
+            </valueDescriptor>
+         </functionParameter>
+         <functionParameter
+               description="Specifies if for the structural rename geometry objects should be copied."
+               label="Copy geometry objects in structural rename"
+               maxOccurrence="1"
+               minOccurrence="0"
+               name="copyGeometries">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="true">
+            </valueDescriptor>
          </functionParameter>
       </propertyFunction>
       <propertyFunction
@@ -321,6 +359,7 @@
       </typeFunction>
       <propertyFunction
             category="eu.esdihumboldt.hale.align.general"
+            cellExplanation="eu.esdihumboldt.hale.common.align.model.functions.explanations.InlineExplanation"
             description="Inline transformation of property types."
             identifier="eu.esdihumboldt.hale.align.inline"
             name="Inline transformation">

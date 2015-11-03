@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: XML Schema I/O UI
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.xsd.ui;singleton:=true
-Bundle-Version: 2.9.0.qualifier
+Bundle-Version: 2.9.4.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.ui;bundle-version="3.6.2",
  org.eclipse.ui.views.properties.tabbed;bundle-version="3.5.100",
@@ -10,11 +10,15 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.6.2",
  eu.esdihumboldt.hale.io.xsd
 Import-Package: eu.esdihumboldt.hale.common.align.model,
  eu.esdihumboldt.hale.common.align.model.impl,
+ eu.esdihumboldt.hale.common.core.io,
+ eu.esdihumboldt.hale.common.core.io.impl,
  eu.esdihumboldt.hale.common.core.io.supplier,
  eu.esdihumboldt.hale.common.schema.model,
  eu.esdihumboldt.hale.common.schema.model.constraint,
  eu.esdihumboldt.hale.common.schema.model.constraint.type,
  eu.esdihumboldt.hale.common.schema.model.impl,
  eu.esdihumboldt.hale.io.xsd.constraint,
+ eu.esdihumboldt.hale.ui.io,
+ eu.esdihumboldt.hale.ui.io.config,
  eu.esdihumboldt.hale.ui.views.properties,
  eu.esdihumboldt.hale.ui.views.properties.definition

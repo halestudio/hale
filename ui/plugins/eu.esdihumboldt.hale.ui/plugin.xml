@@ -573,6 +573,9 @@
          <service
                serviceClass="eu.esdihumboldt.hale.common.align.service.TransformationFunctionService">
          </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.common.align.transformation.service.TransformationSchemas">
+         </service>
       </serviceFactory>
       <sourceProvider
             provider="eu.esdihumboldt.hale.ui.service.schema.internal.SchemaServiceSource">

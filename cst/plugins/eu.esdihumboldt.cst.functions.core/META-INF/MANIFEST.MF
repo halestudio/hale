@@ -2,15 +2,17 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CST Core Functions
 Bundle-SymbolicName: eu.esdihumboldt.cst.functions.core;singleton:=true
-Bundle-Version: 2.9.0.qualifier
+Bundle-Version: 2.9.4.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.2.0",
  groovy;bundle-version="1.8.6"
 Import-Package: com.google.common.base;version="9.0.0",
  com.google.common.collect,
+ com.vividsolutions.jts.geom;version="1.13.0",
  de.fhg.igd.osgi.util;version="1.0.0",
  eu.esdihumboldt.hale.common.convert,
  eu.esdihumboldt.hale.common.core.io,
+ eu.esdihumboldt.hale.common.core.io.impl,
  eu.esdihumboldt.hale.common.core.report,
  eu.esdihumboldt.hale.common.core.service,
  eu.esdihumboldt.hale.common.instance.groovy,
@@ -20,7 +22,9 @@ Import-Package: com.google.common.base;version="9.0.0",
  eu.esdihumboldt.hale.common.lookup,
  eu.esdihumboldt.hale.common.lookup.impl,
  eu.esdihumboldt.hale.common.schema,
+ eu.esdihumboldt.hale.common.schema.geometry,
  eu.esdihumboldt.hale.common.schema.model,
+ eu.esdihumboldt.hale.common.schema.model.constraint,
  eu.esdihumboldt.hale.common.schema.model.constraint.property,
  eu.esdihumboldt.hale.common.schema.model.constraint.type,
  eu.esdihumboldt.hale.common.schema.model.impl,

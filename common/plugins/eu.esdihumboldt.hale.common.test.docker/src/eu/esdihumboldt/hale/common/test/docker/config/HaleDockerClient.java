@@ -1,6 +1,7 @@
 package eu.esdihumboldt.hale.common.test.docker.config;
 
 import java.net.URI;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -10,11 +11,15 @@ import java.util.Set;
 import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerException;
+import com.spotify.docker.client.ImageNotFoundException;
 import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerCreation;
 import com.spotify.docker.client.messages.ContainerInfo;
 import com.spotify.docker.client.messages.HostConfig;
 import com.spotify.docker.client.messages.PortBinding;
+
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 
 /**
  * A Hale docker client
@@ -23,6 +28,8 @@ import com.spotify.docker.client.messages.PortBinding;
  * 
  */
 public class HaleDockerClient implements DockerContainer {
+
+	private static final ALogger LOGGER = ALoggerFactory.getLogger(HaleDockerClient.class);
 
 	private DockerClient dc;
 	private ContainerConfig containerConf;
@@ -40,6 +47,41 @@ public class HaleDockerClient implements DockerContainer {
 	public HaleDockerClient(ContainerParameters dbc) {
 		this.dbc = dbc;
 
+	}
+
+	/**
+	 * Checks the availability of the Docker server.
+	 * 
+	 * @return <code>true</code> if the Docker server is available,
+	 *         <code>false</code> otherwise
+	 */
+	public boolean isServerAvailable() {
+		if (dc == null) {
+			throw new IllegalStateException(
+					"Docker client not created yet: call createContainer() first");
+		}
+
+		int numAttempts = 3;
+		for (int i = 0; i < numAttempts; i++) {
+			try {
+				String result = dc.ping();
+				if ("OK".equals(result)) {
+					return true;
+				}
+			} catch (Exception e) {
+				int attemptsLeft = numAttempts - (i + 1);
+				LOGGER.debug("Exception occurred connection to docker server: " + attemptsLeft
+						+ " attempts left", e);
+
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e1) {
+					// ignore
+				}
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -75,9 +117,23 @@ public class HaleDockerClient implements DockerContainer {
 	 * @throws InterruptedException interrupted exception
 	 */
 	public void startContainer() throws DockerException, InterruptedException {
+		try {
+			dc.inspectImage(containerConf.image());
+		} catch (ImageNotFoundException e) {
+			// pull image if it is not present
+			LOGGER.info(MessageFormat.format(
+					"Docker image not found, attempting to pull image {0}...",
+					containerConf.image()));
+			dc.pull(containerConf.image());
+		}
+		// TODO also add a setting to pull the image always?
 
+		LOGGER.info(MessageFormat.format("Preparing container for image {0}...",
+				containerConf.image()));
 		creation = dc.createContainer(containerConf);
 		containerId = creation.id();
+		LOGGER.info(MessageFormat.format("Created container with ID {0}, now starting...",
+				containerId));
 
 		final HostConfig hostConfig = HostConfig.builder().publishAllPorts(dbc.isExposeAllPorts())
 				.privileged(dbc.isPrivileged()).build();
@@ -86,7 +142,6 @@ public class HaleDockerClient implements DockerContainer {
 
 		final ContainerInfo info = dc.inspectContainer(containerId);
 		portMapper = info.networkSettings().ports();
-
 	}
 
 	/**
@@ -119,16 +174,28 @@ public class HaleDockerClient implements DockerContainer {
 	 * @throws Exception if fails to kill the container or remove it
 	 */
 	public void killAndRemoveContainer() throws Exception {
-
+		if (containerId == null) {
+			return;
+		}
 		try {
+			LOGGER.info(MessageFormat.format("Killing container {0}...", containerId));
 			dc.killContainer(containerId);
 		} finally {
+			LOGGER.info(MessageFormat.format("Removing container {0}...", containerId));
 			dc.removeContainer(containerId);
 		}
-
 	}
 
+	/**
+	 * @return the container ID or <code>null</code> if no container was created
+	 *         yet
+	 */
 	public String getContainerId() {
-		return creation.id();
+		if (creation != null) {
+			return creation.id();
+		}
+		else {
+			return null;
+		}
 	}
 }

@@ -18,6 +18,159 @@
 		file parser in HALE 2.8 and earlier is very strict and fails if it
 		encounters anything unknown.</p>
 
+	<!-- 2.9.4 -->
+	<h2 id="2_9_4_Header">2.9.4</h2>
+	<p>HALE 2.9.4 is a maintenance release with a few tweaks and bug
+		fixes, but also two noticeable experimental features that were added.</p>
+	<table border="0" cellpadding="15" cellspacing="0" class="news"
+		id="2_9_4">
+		<tbody>
+			
+			<!-- New features -->
+			<tr>
+				<td class="section" colspan="2" id="2_9_4_Features" rowspan="1"><h2>New features</h2></td>
+			</tr>
+
+			<tr id="geoserver">
+				<td class="title">GeoServer App-Schema configuration</td>
+				<td class="content">Publishing OGC services based on GML
+					Application Schemas and Complex Features with GeoServer is now
+					easier than ever. You can use HALE to define and manage the mapping
+					from your data store to an application schema and upload the
+					resulting configuration for the GeoServer App-Schema plugin
+					directly to your GeoServer instance.
+					<p>
+						<img src="2_9_0_images/geoserver-appschema.png" />
+					</p>
+					<p>
+						This is the first release of this integration of HALE and
+						GeoServer and though functional, should still be considered
+						experimental. Please see the <a
+							href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.appschema/html/introduction/intro.html">GeoServer
+							App-Schema Plug-in for HALE help</a> for more information on usage
+						and limitations.
+					</p>
+					<p>Thanks to GeoSolutions and Stefano Costa for this
+						contribution to HALE.</p>
+				</td>
+			</tr>
+
+			<tr id="inline-cst">
+				<td class="title">Inline transformation</td>
+				<td class="content">When you encounter complex embedded
+					structures in your data (like for instance embedded Features), even
+					with the powerful declarative approach of HALE, the mapping can get
+					quite complicated. Especially when the same structures in the
+					source often have the same structure in the target to be
+					transformed to, there should be a possibility for reuse. With the
+					Inline transformation function you have the possibility to make use
+					of a type transformation defined in the mapping for any
+					transformation of properties that have the corresponding source and
+					target type.
+					<p>
+						As an example, let's assume we are looking at a mapping between
+						different CityGML schemas or ADEs. In both source and target there
+						is the concept of a <i>Building</i> and a <i>BuildingPart</i>. <i>BuildingParts</i>
+						can be features on their own, thus a mapping is defined based on a
+						<i>Retype</i> between the corresponding source and target types.<br />
+						<i>Buildings</i> however can also contain <i>BuildingParts</i>,
+						and to transform these internal <i>BuildingParts</i> we can use
+						the <i>Inline transformation</i> to tell HALE that it should
+						transform the internal objects the same way as it would standalone
+						features, with the additional step to include it in the respective
+						target property.
+					</p>
+					<p>
+						<img src="2_9_0_images/inline.png" />
+					</p>
+				</td>
+			</tr>
+
+			<!-- Tweaks and bug fixes -->
+			<tr>
+				<td class="section" colspan="2" id="2_9_4_TWX" rowspan="1"><h2>Tweaks &amp; bug fixes</h2></td>
+			</tr>
+			
+			<tr id="cli_folders">
+				<td class="title">CLI: Transform folders</td>
+				<td class="content">The <a
+					href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/transform_cli.html">command
+						line interface</a> has been extended with the capability to use whole
+					folders as source for the transformation. Files to include or
+					exclude can be specified with corresponding patterns. This can be
+					very handy if you have a set of files to transform, for example if
+					your data set is tiled or files are generated and the file names
+					are unknown beforehand.
+					<p>
+						Thanks to <i>Landesbetrieb Geoinformation und Vermessung
+							Hamburg</i> for funding this work under a <a target="_blank"
+							href="https://www.wetransform.to/services/support/">Professional
+							Support Subscription for HALE</a>.
+					</p>
+				</td>
+			</tr>
+
+			<tr id="lenient_xml_reader">
+				<td class="title">Namespace agnostic loading of XML/GML</td>
+				<td class="content">HALE relies on schemas for transformation
+					and handling data. If you have data that is very similarly
+					structured but has a different schema, the difference often is a
+					difference in namespaces. This can be the case for instance when
+					using data based on a previous version of a schema or for data that
+					is published via an OGC Web Feature Service. Now there is an option
+					when loading XML or GML data, that instances will be loaded even if
+					the namespaces do not match the schema's exactly.
+					<p>
+						Thanks to <i>HL Consulting BVBA</i> for funding this work under a
+						<a target="_blank" href="https://www.wetransform.to/services/support/">Professional
+							Support Subscription for HALE</a>. They use this feature to define
+						their alignments on a schema that allows them to make extensive
+						use of relation inheritance in their alignment, to have one
+						mapping that they can use to transform data from different
+						services.
+					</p>
+				</td>
+			</tr>
+
+			<tr id="tweaks_2_9_4">
+				<td class="title">Minor tweaks</td>
+				<td class="content">
+					<ul>
+						<li>Added an option for loading an XML Schema that allows to use all globally defined types for the alignment.</li>
+						<li>Deprecated INSPIRE SpatialDataSet export, as INSPIRE now recommends to use a WFS 2.0 FeatureCollection instead.</li>
+						<li>Support generating a Dataset Feed file for an ATOM-based INSPIRE predefined Dataset Download Service when exporting to a WFS 2.0 FeatureCollection.</li>
+						<li>Groovy type transformations can throw a <i>NoResultException</i> to prevent the creation of a target instance.</li>
+						<li>Added a Groovy variant of the <i>Join</i> transformation that allows for more control on the creation of transformed instances.</li>
+						<li>Introduced the concept of helper functions available from Groovy scripts. Currently included are helpers for dealing with geometries and performing type conversions.</li>
+						<li>Structural copies with <i>Rename</i> and <i>Retype</i> can now explicitly exclude geometry objects parsed by HALE, for cases where the original geometry encoding should be retained.</li>
+						<li>A default SRS can now be specified on the command line, for reading data from a specific source, in case HALE cannot correctly detect the SRS.</li>
+						<li>Handling foreign key constraints during the export to a database has been improved.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr id="fixes_2_9_4">
+				<td class="title">Bug fixes</td>
+				<td class="content">
+					<ul>
+						<li>Fixed erroneous flipping of coordinates when displaying geometries in the map view (Thanks to Willem Stolte for the bug report).</li>
+						<li>Fixed the File Dialog on Mac OS X being rendered unusable after first use (Thanks to Olav Peeters for the bug report).</li>
+						<li>Fixed handling of nillable complex XML elements containing only a nilReason (Thanks  to Ann Crabbe for the bug report).</li>
+						<li>Fixed proxy configuration not being applied when loading code lists, accessing the INSPIRE registry or loading web templates.</li>
+						<li>Fixed <i>Merge</i> type transformation configuration for property names containing dots (Thanks to Willem Stolte for the bug report).</li>
+						<li>Fixed encoding of simple type lists in XML.</li>
+						<li>Fixed handling of target URI without path in the Command Line Interface.</li>
+						<li>Fixed handling of absolute file locations in the Command Line Interface on Windows.</li>
+						<li>Fixed live validation based on XML Schema which sometimes treated <i>null</i> values wrong.</li>
+						<li>Fixed UI problems when using type conditions and custom map styles.</li>
+						<li>Fixed the inconsistent behavior on which instances can be retrieved from the internal temporary database in comparison to a file or other source.</li>
+					</ul>
+				</td>
+			</tr>
+			
+		</tbody>
+	</table>
+
 	<!-- 2.9.3 -->
 	<h2 id="2_9_3_Header">2.9.3</h2>
 	<p>HALE 2.9.3 is a maintenance release with a few tweaks and bug
