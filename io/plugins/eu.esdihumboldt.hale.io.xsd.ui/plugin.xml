@@ -45,17 +45,6 @@
       </configPage>
    </extension>
    <extension
-         point="org.eclipse.ui.menus">
-      <menuContribution
-            allPopups="false"
-            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
-         <command
-               commandId="eu.esdihumboldt.hale.io.xsd.ui.configureAnyType"
-               style="push">
-         </command>
-      </menuContribution>
-   </extension>
-   <extension
          point="org.eclipse.ui.commands">
       <command
             id="eu.esdihumboldt.hale.io.xsd.ui.configureAnyType"
