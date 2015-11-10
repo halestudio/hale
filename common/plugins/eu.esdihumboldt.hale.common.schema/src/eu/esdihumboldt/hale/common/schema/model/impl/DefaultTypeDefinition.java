@@ -94,9 +94,19 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 	 * @param name the type name
 	 */
 	public DefaultTypeDefinition(QName name) {
+		this(name, true);
+	}
+
+	/**
+	 * Create a type definition with the given name
+	 * 
+	 * @param name the type name
+	 * @param flattenAllowed if flattening of declared groups is allowed
+	 */
+	public DefaultTypeDefinition(QName name, boolean flattenAllowed) {
 		super(name);
 
-		declaredChildren = new DefaultGroup(getIdentifier() + "/declaredChildren", true);
+		declaredChildren = new DefaultGroup(getIdentifier() + "/declaredChildren", flattenAllowed);
 	}
 
 	/**

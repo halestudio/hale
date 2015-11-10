@@ -28,6 +28,7 @@ import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.DisplayName;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
@@ -137,10 +138,11 @@ public class CustomTypeContentHelper {
 			CustomTypeContent config, XmlIndex index) {
 		// build new property type based on config
 		DefaultTypeDefinition type = new DefaultTypeDefinition(new QName(propDef.getIdentifier(),
-				"customElementsContentType"));
+				"customElementsContentType"), false);
 		type.setConstraint(MappableFlag.DISABLED);
 		DefaultGroupPropertyDefinition choice = new DefaultGroupPropertyDefinition(new QName(
 				propDef.getIdentifier(), "customElementsContentChoice"), type, false);
+		choice.setConstraint(new DisplayName("elements"));
 		choice.setConstraint(ChoiceFlag.ENABLED);
 		choice.setConstraint(Cardinality.CC_ANY_NUMBER);
 
