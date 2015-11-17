@@ -37,7 +37,6 @@ import groovy.sql.Sql
 class OneDimensionalArraysIT extends AbstractDBTest {
 
 	public static final String query = '''
-	DROP TABLE IF EXISTS test;
 	CREATE TABLE test (
 		id			INTEGER,
 		friends		INTEGER[],
@@ -75,21 +74,25 @@ class OneDimensionalArraysIT extends AbstractDBTest {
 		// check binding
 		checkBindingAndSqlType(schema, [
 			INT: Integer.class, //
+			SERIAL: Integer.class, //
 			INT4: Integer.class, //
 			_INT4: Integer.class, // Array as multi-occurrence property
 			BOOL: Boolean.class, //
 			_BOOL: Boolean.class, // Array as multi-occurrence property
 			DECIMAL: BigDecimal.class, //
 			_DECIMAL: BigDecimal.class, // Array as multi-occurrence property
+			NUMERIC: BigDecimal.class, //
+			_NUMERIC: BigDecimal.class, // Array as multi-occurrence property
 			VARCHAR: String.class, //
-			_VARCHAR: String.class // Array as multi-occurrence property
+			_VARCHAR: String.class, // Array as multi-occurrence property
+			FLOAT8: Double.class, //
 		]);
 
 		// check cardinalities
 		def expectedCardinalities = [
 			id: [1, 1],
 			friends: [0, -1],
-			settings: [3, 3],
+			settings: [0, -1], // XXX size cannot be determined
 			values: [0, -1],
 			notes: [0, -1]]
 		for (def p : DefinitionUtil.getAllProperties(type)) {
@@ -110,7 +113,7 @@ class OneDimensionalArraysIT extends AbstractDBTest {
 		// create instances
 		InstanceCollection instances = new InstanceBuilder(types: schema).createCollection {
 			test {
-				id i
+				id 1
 				friends 2
 				friends 4
 				friends 9
