@@ -165,7 +165,12 @@ public abstract class AbstractDBTest {
 			}
 
 			num++;
-			System.out.print(num + " ");
+			if (num % 10 == 0) {
+				System.out.print(num);
+			}
+			else {
+				System.out.print('.');
+			}
 
 			try {
 				Thread.sleep(1000);
