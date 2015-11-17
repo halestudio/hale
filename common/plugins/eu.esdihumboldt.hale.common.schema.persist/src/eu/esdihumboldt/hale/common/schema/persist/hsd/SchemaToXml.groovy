@@ -85,7 +85,7 @@ class SchemaToXml implements HaleSchemaConstants {
 		List<TypeDefinition> types = []
 		types.addAll(schema.types)
 		// sort to have a reproducible order (e.g. for versioning)
-		types.sort()
+		types.sort(true)
 
 		Map<TypeDefinition, String> typeIndex = [:]
 		List<Integer> relevantTypes = []
