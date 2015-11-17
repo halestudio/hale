@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:typeContentConfig xmlns:xsd="http://www.esdi-humboldt.eu/hale/io/xsd">
+  <core:list xmlns:core="http://www.esdi-humboldt.eu/hale/core">
+    <core:entry>
+      <xsd:association>
+        <xsd:property>
+          <core:list>
+            <core:entry>
+              <core:name namespace="http://www.opengis.net/om/2.0">OM_ObservationType</core:name>
+            </core:entry>
+            <core:entry>
+              <core:name namespace="http://www.opengis.net/om/2.0">result</core:name>
+            </core:entry>
+          </core:list>
+        </xsd:property>
+        <xsd:config>
+          <xsd:typeContent mode="elements">
+            <xsd:elements>
+              <core:list>
+                <core:entry>
+                  <core:name namespace="http://www.opengis.net/swe/2.0">Quantity</core:name>
+                </core:entry>
+              </core:list>
+            </xsd:elements>
+          </xsd:typeContent>
+        </xsd:config>
+      </xsd:association>
+    </core:entry>
+  </core:list>
+</xsd:typeContentConfig>
