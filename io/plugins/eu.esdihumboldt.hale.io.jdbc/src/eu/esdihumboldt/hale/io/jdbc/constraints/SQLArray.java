@@ -48,6 +48,8 @@ public class SQLArray implements TypeConstraint {
 
 	private final int[] sizes;
 
+	private final String elementTypeName;
+
 	/**
 	 * Default constructor.
 	 */
@@ -57,21 +59,25 @@ public class SQLArray implements TypeConstraint {
 		this.elementType = null;
 		this.dimension = UNKNOWN_DIMENSION;
 		this.sizes = null;
+		this.elementTypeName = null;
 	}
 
 	/**
 	 * Constructor.
 	 * 
 	 * @param elementType the element type
+	 * @param elementTypeName the element type name used in the database
 	 * @param dimension the array dimension
 	 * @param sizes the array sizes by dimension
 	 */
-	public SQLArray(@Nullable Class<?> elementType, int dimension, @Nullable int[] sizes) {
+	public SQLArray(Class<?> elementType, String elementTypeName, int dimension,
+			@Nullable int[] sizes) {
 		super();
 		this.enabled = true;
 		this.elementType = elementType;
 		this.dimension = dimension;
 		this.sizes = sizes;
+		this.elementTypeName = elementTypeName;
 	}
 
 	/**
@@ -124,6 +130,14 @@ public class SQLArray implements TypeConstraint {
 		}
 
 		return false;
+	}
+
+	/**
+	 * @return the element type name used in the database
+	 */
+	@Nullable
+	public String getElementTypeName() {
+		return elementTypeName;
 	}
 
 	/**

@@ -536,6 +536,8 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 					if (itemType == null) {
 						// generic binding
 						elementBinding = Object.class;
+						reporter.error(new IOMessageImpl(
+								"Could not determine element type for array column", null));
 					}
 					else {
 						elementBinding = itemType.getTypeMappedClass();
@@ -556,7 +558,10 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 
 					// XXX for now, stick to what we can determine
 					int dimension = SQLArray.UNKNOWN_DIMENSION;
-					type.setConstraint(new SQLArray(elementBinding, dimension, null));
+					String specificTypeName = (itemType != null) ? (itemType
+							.getDatabaseSpecificTypeName()) : (null);
+					type.setConstraint(new SQLArray(elementBinding, specificTypeName, dimension,
+							null));
 
 					// set binding
 					if (dimension <= 1) {
