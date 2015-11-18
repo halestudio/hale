@@ -15,6 +15,10 @@
 
 package eu.esdihumboldt.hale.io.jdbc.constraints;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
@@ -29,6 +33,11 @@ import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 @Constraint(mutable = false)
 @Immutable
 public class SQLArray implements TypeConstraint {
+
+	/**
+	 * Instance representing a type that is no array.
+	 */
+	public static final SQLArray NO_ARRAY = new SQLArray();
 
 	/**
 	 * Integer value representing an unknown array dimension.
@@ -112,6 +121,23 @@ public class SQLArray implements TypeConstraint {
 		}
 
 		return UNKNOWN_SIZE;
+	}
+
+	/**
+	 * @return the list of sizes per dimension
+	 */
+	public List<Integer> getSizes() {
+		List<Integer> result;
+		if (sizes != null) {
+			result = new ArrayList<>(sizes.length);
+			for (int size : sizes) {
+				result.add(size);
+			}
+		}
+		else {
+			result = Collections.<Integer> emptyList();
+		}
+		return result;
 	}
 
 	/**
