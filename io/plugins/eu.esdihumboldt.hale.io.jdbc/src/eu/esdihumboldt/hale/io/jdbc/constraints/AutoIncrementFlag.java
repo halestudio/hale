@@ -23,16 +23,24 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.AbstractFlagConstrain
 /**
  * Specifies whether a property is an auto increment property.
  * 
- * XXX It is questionable whether it is possible to really use this,
- * as it is not supported by all database types
- *
+ * XXX It is questionable whether it is possible to really use this, as it is
+ * not supported by all database types
+ * 
  * @author Kai Schwierczek
  */
 @Constraint(mutable = false)
 public class AutoIncrementFlag extends AbstractFlagConstraint implements PropertyConstraint {
-	private static final AutoIncrementFlag ENABLED = new AutoIncrementFlag(true);
-	private static final AutoIncrementFlag DISABLED = new AutoIncrementFlag(false);
-	
+
+	/**
+	 * Enabled auto increment flag instance.
+	 */
+	public static final AutoIncrementFlag ENABLED = new AutoIncrementFlag(true);
+
+	/**
+	 * Disabled auto increment flag instance.
+	 */
+	public static final AutoIncrementFlag DISABLED = new AutoIncrementFlag(false);
+
 	/**
 	 * Get the auto increment flag.
 	 * 
@@ -52,7 +60,7 @@ public class AutoIncrementFlag extends AbstractFlagConstraint implements Propert
 
 	/**
 	 * Create a auto increment flag with the specified enabled state.
-	 *
+	 * 
 	 * @param enabled if the flag shall be enabled
 	 */
 	private AutoIncrementFlag(boolean enabled) {

@@ -113,5 +113,18 @@
             priority="normal">
       </content-type>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.schema.valueconstraint">
+      <valueconstraint
+            factory="eu.esdihumboldt.hale.io.jdbc.constraints.factory.AutoIncrementFlagFactory"
+            id="jdbc.autoinc"
+            type="eu.esdihumboldt.hale.io.jdbc.constraints.AutoIncrementFlag">
+      </valueconstraint>
+      <valueconstraint
+            factory="eu.esdihumboldt.hale.io.jdbc.constraints.factory.SQLArrayFactory"
+            id="jdbc.array"
+            type="eu.esdihumboldt.hale.io.jdbc.constraints.SQLArray">
+      </valueconstraint>
+   </extension>
 
 </plugin>
