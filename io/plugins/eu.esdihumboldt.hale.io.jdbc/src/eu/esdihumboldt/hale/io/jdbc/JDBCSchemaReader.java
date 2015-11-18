@@ -571,7 +571,7 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 						binding = elementBinding;
 					}
 					else {
-						// XXX use collection or something simiar instead?
+						// XXX use collection or something similar instead?
 						binding = Object.class;
 					}
 				}

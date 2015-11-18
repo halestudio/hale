@@ -41,7 +41,8 @@ class MultiDimensionalArraysIT extends AbstractDBTest {
 
 	public static final String query = '''
 	CREATE TABLE test (
-		matrix		INTEGER[][]
+		matrix		INTEGER[][],
+		puzzle		CHARACTER VARYING[][]
     );'''
 
 	MultiDimensionalArraysIT(){
@@ -78,15 +79,15 @@ class MultiDimensionalArraysIT extends AbstractDBTest {
 			DECIMAL: BigDecimal.class, //
 			NUMERIC: BigDecimal.class, //
 			VARCHAR: String.class, //
+			_VARCHAR: String.class, // XXX currently array as multi-occurrence property
 			FLOAT8: Double.class, //
 		]);
 
 		// check cardinalities
 		def expectedCardinalities = [
-			matrix: [
-				0,
-				-1] // XXX currently array as multi-occurrence property
-		]
+			// XXX currently array as multi-occurrence property
+			matrix: [0, -1],
+			puzzle: [0, -1]]
 		for (def p : DefinitionUtil.getAllProperties(type)) {
 			def name = p.name.localPart
 			Cardinality card = p.getConstraint(Cardinality)
@@ -109,6 +110,13 @@ class MultiDimensionalArraysIT extends AbstractDBTest {
 				matrix ([1, 0, 0] as int[])
 				matrix ([0, 1, 0] as int[])
 				matrix ([0, 0, 1] as int[])
+
+				puzzle ([
+					['A', 'B', 'C'] as String[],
+					['X', 'Y', 'Z'] as String[]] as String[][])
+				puzzle ([
+					['a', 'b', 'c'] as String[],
+					['x', 'y', 'z'] as String[]] as String[][])
 			}
 		}
 
