@@ -153,6 +153,8 @@ public abstract class AbstractDBTest {
 
 		waitTime = dbi.getStartUPTime();
 
+		System.out.print("Waiting for database to start");
+
 		while (num < waitTime) {
 			try {
 				result = JDBCConnection.getConnection(jdbcUri, dbi.getUser(), dbi.getPassword());
@@ -179,9 +181,7 @@ public abstract class AbstractDBTest {
 			}
 		}
 
-		if (num > 0) {
-			System.out.println();
-		}
+		System.out.println("...complete");
 
 		if (result != null) {
 			return result;
