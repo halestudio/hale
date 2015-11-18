@@ -34,8 +34,8 @@ public class GeometryMetadataFactory implements ValueConstraintFactory<GeometryM
 
 	private static final String NAME_SRS = "srs";
 	private static final String NAME_DIMENSION = "dimension";
-	private static final String NAME_SRS_TEXT = "srs_text";
-	private static final String NAME_AUTH_NAME = "auth_name";
+	private static final String NAME_SRS_TEXT = "srsText";
+	private static final String NAME_AUTH_NAME = "authName";
 
 	@Override
 	public Value store(GeometryMetadata constraint, Map<TypeDefinition, String> typeIndex)
