@@ -76,7 +76,7 @@ public class SQLArrayFactory implements ValueConstraintFactory<SQLArray> {
 				props.put(NAME_SIZES, Value.complex(sizeList));
 			}
 
-			return Value.complex(props);
+			return props.toValue();
 		}
 		else {
 			return null;
@@ -90,20 +90,20 @@ public class SQLArrayFactory implements ValueConstraintFactory<SQLArray> {
 		if (props != null) {
 			// read element class
 			Class<?> elementType = null;
-			String className = props.get(NAME_ELEMENT_CLASS).as(String.class);
+			String className = props.getSafe(NAME_ELEMENT_CLASS).as(String.class);
 			if (className != null) {
 				elementType = resolver.loadClass(className);
 			}
 
 			// read element database type name
-			String elementTypeName = props.get(NAME_ELEMENT_TYPE_NAME).as(String.class);
+			String elementTypeName = props.getSafe(NAME_ELEMENT_TYPE_NAME).as(String.class);
 
 			// read dimension
-			int dimension = props.get(NAME_DIMENSION).as(Integer.class, 0);
+			int dimension = props.getSafe(NAME_DIMENSION).as(Integer.class, 0);
 
 			// read array dimension sizes
 			int[] sizes = null;
-			ValueList sizeList = props.get(NAME_SIZES).as(ValueList.class);
+			ValueList sizeList = props.getSafe(NAME_SIZES).as(ValueList.class);
 			if (sizeList != null) {
 				sizes = new int[sizeList.size()];
 				int index = 0;

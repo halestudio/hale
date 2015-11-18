@@ -59,7 +59,7 @@ public class GeometryMetadataFactory implements ValueConstraintFactory<GeometryM
 			props.put(NAME_AUTH_NAME, Value.of(auth_name));
 		}
 
-		return Value.complex(props);
+		return props.toValue();
 	}
 
 	@Override
@@ -67,10 +67,10 @@ public class GeometryMetadataFactory implements ValueConstraintFactory<GeometryM
 			Map<String, TypeDefinition> typeIndex, ClassResolver resolver) throws Exception {
 		ValueProperties props = value.as(ValueProperties.class);
 		if (props != null) {
-			String srs = props.get(NAME_SRS).as(String.class);
-			int dimension = props.get(NAME_DIMENSION).as(Integer.class, 0);
-			String srsText = props.get(NAME_SRS_TEXT).as(String.class);
-			String auth_name = props.get(NAME_AUTH_NAME).as(String.class);
+			String srs = props.getSafe(NAME_SRS).as(String.class);
+			int dimension = props.getSafe(NAME_DIMENSION).as(Integer.class, 0);
+			String srsText = props.getSafe(NAME_SRS_TEXT).as(String.class);
+			String auth_name = props.getSafe(NAME_AUTH_NAME).as(String.class);
 
 			return new GeometryMetadata(srs, dimension, srsText, auth_name);
 		}

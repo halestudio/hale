@@ -50,7 +50,7 @@ public class DatabaseTableFactory implements ValueConstraintFactory<DatabaseTabl
 			props.put(NAME_TABLE, Value.of(table));
 		}
 
-		return Value.complex(props);
+		return props.toValue();
 	}
 
 	@Override
@@ -61,8 +61,8 @@ public class DatabaseTableFactory implements ValueConstraintFactory<DatabaseTabl
 
 		ValueProperties props = value.as(ValueProperties.class);
 		if (props != null) {
-			schema = props.get(NAME_SCHEMA).as(String.class);
-			table = props.get(NAME_TABLE).as(String.class);
+			schema = props.getSafe(NAME_SCHEMA).as(String.class);
+			table = props.getSafe(NAME_TABLE).as(String.class);
 		}
 
 		if (table == null) {

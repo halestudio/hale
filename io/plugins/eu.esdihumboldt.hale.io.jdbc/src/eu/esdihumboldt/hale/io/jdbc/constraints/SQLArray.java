@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.io.jdbc.constraints;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -126,11 +127,15 @@ public class SQLArray implements TypeConstraint {
 	 * @return the list of sizes per dimension
 	 */
 	public List<Integer> getSizes() {
-		List<Integer> result = new ArrayList<>(sizes.length);
+		List<Integer> result;
 		if (sizes != null) {
+			result = new ArrayList<>(sizes.length);
 			for (int size : sizes) {
 				result.add(size);
 			}
+		}
+		else {
+			result = Collections.<Integer> emptyList();
 		}
 		return result;
 	}
