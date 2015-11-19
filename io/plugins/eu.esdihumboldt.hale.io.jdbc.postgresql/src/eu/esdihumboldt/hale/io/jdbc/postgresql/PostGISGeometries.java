@@ -72,7 +72,7 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 		Connection con = (Connection) connection;
 
 		String columnValueName = column.getParent().getName();
-		String geometryType = "";
+		String geometryType = null;
 		try {
 			Statement stmt = con.createStatement();
 			// Get the srid, dimension and geometry type
@@ -104,9 +104,10 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 			e.printStackTrace();
 		}
 
-		// In this case we have no geometry column
-		if (geometryType.equals("")) {
-			return null;
+		// In this case we have no geometry column information
+		if (geometryType == null) {
+			// use geometry even if no geometry column is present describing it
+			return Geometry.class;
 		}
 		// return the geometryType
 		if (geometryType.equalsIgnoreCase("MultiPolygon")) {
