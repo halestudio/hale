@@ -1,4 +1,4 @@
-package eu.esdihumboldt.cst.functions.geometric;
+package eu.esdihumboldt.cst.functions.geometric.test.reprojectgeometry;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

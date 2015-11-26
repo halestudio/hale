@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.cst.functions.geometric;
+package eu.esdihumboldt.cst.functions.geometric.test.reprojectgeometry;
 
 import static org.junit.Assert.assertTrue;
 
