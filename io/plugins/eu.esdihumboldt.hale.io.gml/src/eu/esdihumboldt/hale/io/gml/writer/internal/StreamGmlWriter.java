@@ -879,7 +879,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 //		Name elementName = GmlWriterUtil.getElementName(type);
 //		writer.writeStartElement(elementName.getNamespaceURI(), elementName.getLocalPart());
 
-		writeProperties(instance, type, true, report);
+		writeProperties(instance, type, true, false, report);
 
 //		writer.writeEndElement(); // type element name
 	}
@@ -890,11 +890,12 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 	 * @param group the feature
 	 * @param definition the feature type
 	 * @param allowElements if element properties may be written
+	 * @param parentIsNil if the parent property is nil
 	 * @param report the reporter
 	 * @throws XMLStreamException if writing the properties fails
 	 */
 	private void writeProperties(Group group, DefinitionGroup definition, boolean allowElements,
-			IOReporter report) throws XMLStreamException {
+			boolean parentIsNil, IOReporter report) throws XMLStreamException {
 		// eventually generate mandatory ID that is not set
 		GmlWriterUtil.writeRequiredID(writer, definition, group, true);
 
@@ -903,11 +904,12 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 		// structure! (e.g. including groups)
 
 		// write the attributes, as they must be handled first
-		writeProperties(group, DefinitionUtil.getAllChildren(definition), true, report);
+		writeProperties(group, DefinitionUtil.getAllChildren(definition), true, parentIsNil, report);
 
 		if (allowElements) {
 			// write the elements
-			writeProperties(group, DefinitionUtil.getAllChildren(definition), false, report);
+			writeProperties(group, DefinitionUtil.getAllChildren(definition), false, parentIsNil,
+					report);
 		}
 	}
 
@@ -919,11 +921,12 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 	 * @param attributes <code>true</code> if attribute properties shall be
 	 *            written, <code>false</code> if element properties shall be
 	 *            written
+	 * @param parentIsNil if the parent property is nil
 	 * @param report the reporter
 	 * @throws XMLStreamException if writing the attributes/elements fails
 	 */
 	private void writeProperties(Group parent, Collection<? extends ChildDefinition<?>> children,
-			boolean attributes, IOReporter report) throws XMLStreamException {
+			boolean attributes, boolean parentIsNil, IOReporter report) throws XMLStreamException {
 		if (parent == null) {
 			return;
 		}
@@ -941,8 +944,19 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 
 				if (attributes && isAttribute) {
 					if (values != null && values.length > 0) {
+						boolean allowWrite = true;
+
+						// special case handling: nilReason
+						Cardinality propCard = propDef.getConstraint(Cardinality.class);
+						if ("nilReason".equals(propDef.getName().getLocalPart())
+								&& propCard.getMinOccurs() < 1) {
+							allowWrite = parentIsNil;
+						}
+
 						// write attribute
-						writeAttribute(values[0], propDef);
+						if (allowWrite) {
+							writeAttribute(values[0], propDef);
+						}
 
 						if (values.length > 1) {
 							// TODO warning?!
@@ -992,7 +1006,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 						if (value instanceof Group) {
 							writeProperties((Group) value,
 									DefinitionUtil.getAllChildren(child.asGroup()), attributes,
-									report);
+									parentIsNil, report);
 						}
 						else {
 							// TODO warning/error?
@@ -1074,9 +1088,10 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 
 				// write no elements if there is a value or only a nil reason
 				boolean writeElements = !hasValue && !hasOnlyNilReason;
+				boolean isNil = !writeElements && (!hasValue || value == null);
 
 				// write all children
-				writeProperties(group, group.getDefinition(), writeElements, report);
+				writeProperties(group, group.getDefinition(), writeElements, isNil, report);
 
 				// write value
 				if (hasValue) {
