@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.cst.functions.geometric.test;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.awt.BasicStroke;
@@ -59,7 +60,7 @@ public class InteriorPointTest {
 //	private static final Polygon XXX = factory.createPolygon(...);
 
 	// create test images in temp folder
-	private static final boolean GEN_IMAGES = true;
+	private static final boolean GEN_IMAGES = false;
 	private static final int MAX_SIZE = 1000;
 	private static final int POINT_SIZE = 10;
 
@@ -82,7 +83,13 @@ public class InteriorPointTest {
 
 	@SuppressWarnings("javadoc")
 	protected void testPointWithin(MultiPolygon geometry) throws Exception {
-		Point point = calculatePoint(geometry);
+		Point point = null;
+		Exception storedException = null;
+		try {
+			point = calculatePoint(geometry);
+		} catch (Exception e) {
+			storedException = e;
+		}
 
 		if (GEN_IMAGES) {
 			SVGGraphics2D g = createSVGGraphics();
@@ -123,15 +130,22 @@ public class InteriorPointTest {
 					pointSize);
 
 			// draw point
-			g.setColor(Color.RED);
-			g.fillOval((int) Math.round((point.getCoordinate().x - minX) * factor),
-					(int) Math.round((point.getCoordinate().y - minY) * factor), pointSize,
-					pointSize);
+			if (point != null) {
+				g.setColor(Color.RED);
+				g.fillOval((int) Math.round((point.getCoordinate().x - minX) * factor),
+						(int) Math.round((point.getCoordinate().y - minY) * factor), pointSize,
+						pointSize);
+			}
 
 			writeSVG(g, file);
 			System.out.println("Test graphic written to " + file);
 		}
 
+		if (storedException != null) {
+			throw storedException;
+		}
+
+		assertNotNull(point);
 		assertTrue("Point is not contained in the polygon", point.within(geometry));
 	}
 
@@ -492,6 +506,25 @@ public class InteriorPointTest {
 		Polygon poly2 = factory.createPolygon(outer2);
 
 		testPointWithin(factory.createMultiPolygon(new Polygon[] { poly1, poly2 }));
+	}
+
+	/**
+	 * Test with a problem case from real data.
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testProblemCase() throws Exception {
+		LinearRing outer1 = factory.createLinearRing(new Coordinate[] {
+				new Coordinate(466713.482, 5974979.283), new Coordinate(466737.125, 5974995.621),
+				new Coordinate(466737.125, 5974995.621), new Coordinate(467230.558, 5975071.481),
+				new Coordinate(467230.558, 5975071.481), new Coordinate(467309.28, 5975083.867),
+				new Coordinate(467309.28, 5975083.867), new Coordinate(466776.829, 5975009.807),
+				new Coordinate(466776.829, 5975009.807), new Coordinate(466742.764, 5974999.507),
+				new Coordinate(466713.482, 5974979.283) });
+		Polygon poly1 = factory.createPolygon(outer1);
+
+		testPointWithin(factory.createMultiPolygon(new Polygon[] { poly1 }));
 	}
 
 }

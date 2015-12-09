@@ -20,6 +20,7 @@ import java.util.Map;
 
 import com.google.common.collect.ListMultimap;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.TopologyException;
 
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
@@ -99,7 +100,13 @@ public class InteriorPoint extends AbstractSingleTargetPropertyTransformation<Tr
 		}
 
 		if (geom != null) {
-			result = geom.getInteriorPoint();
+			try {
+				result = geom.getInteriorPoint();
+			} catch (TopologyException e) {
+				// calculate the point for a geometry with a small buffer to
+				// avoid error with polygons that have overlapping lines
+				result = geom.buffer(0.001).getInteriorPoint();
+			}
 		}
 		else {
 			return null;
