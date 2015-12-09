@@ -255,6 +255,20 @@
                   class="java.lang.String">
             </parameterBinding>
          </providerParameter>
+         <providerParameter
+               description="Don&apos;t encode nilReason attributes for elements that are not nil."
+               label="Omit unnecessary nilReasons"
+               name="xml.notNil.omitNilReason"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="true"
+                  defaultDescription="By default, nilReason attributes are omitted for elements that are not nil."
+                  sample="false">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.gml.writer.XmlInstanceWriter"
@@ -345,6 +359,20 @@
                   class="java.lang.String">
             </parameterBinding>
          </providerParameter>
+         <providerParameter
+               description="Don&apos;t encode nilReason attributes for elements that are not nil."
+               label="Omit unnecessary nilReasons"
+               name="xml.notNil.omitNilReason"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="true"
+                  defaultDescription="By default, nilReason attributes are omitted for elements that are not nil."
+                  sample="false">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.gml.writer.CityGMLInstanceWriter"
@@ -406,6 +434,20 @@
                   defaultDescription="By default the CRS code is not modified."
                   sample="http://www.opengis.net/def/crs/EPSG/0/"
                   sampleDescription="Make sure that all SRS names use this kind of notation. The EPSG code number is appended to the provided parameter to build the SRS name.">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Don&apos;t encode nilReason attributes for elements that are not nil."
+               label="Omit unnecessary nilReasons"
+               name="xml.notNil.omitNilReason"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="true"
+                  defaultDescription="By default, nilReason attributes are omitted for elements that are not nil."
+                  sample="false">
             </valueDescriptor>
          </providerParameter>
       </provider>
@@ -581,6 +623,20 @@
                   defaultDescription="By default the CRS code is not modified."
                   sample="http://www.opengis.net/def/crs/EPSG/0/"
                   sampleDescription="Make sure that all SRS names use this kind of notation. The EPSG code number is appended to the provided parameter to build the SRS name.">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Don&apos;t encode nilReason attributes for elements that are not nil."
+               label="Omit unnecessary nilReasons"
+               name="xml.notNil.omitNilReason"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="true"
+                  defaultDescription="By default, nilReason attributes are omitted for elements that are not nil."
+                  sample="false">
             </valueDescriptor>
          </providerParameter>
       </provider>

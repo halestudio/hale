@@ -127,6 +127,12 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 	public static final String PARAM_CONTAINER_ID = "xml.containerId";
 
 	/**
+	 * The parameter name of the flag specifying if nilReason attributes should
+	 * be omitted if an element is not nil.
+	 */
+	public static final String PARAM_OMIT_NIL_REASON = "xml.notNil.omitNilReason";
+
+	/**
 	 * The XML stream writer
 	 */
 	private XMLStreamWriter writer;
@@ -947,10 +953,12 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter implements XmlWri
 						boolean allowWrite = true;
 
 						// special case handling: nilReason
-						Cardinality propCard = propDef.getConstraint(Cardinality.class);
-						if ("nilReason".equals(propDef.getName().getLocalPart())
-								&& propCard.getMinOccurs() < 1) {
-							allowWrite = parentIsNil;
+						if (getParameter(PARAM_OMIT_NIL_REASON).as(Boolean.class, true)) {
+							Cardinality propCard = propDef.getConstraint(Cardinality.class);
+							if ("nilReason".equals(propDef.getName().getLocalPart())
+									&& propCard.getMinOccurs() < 1) {
+								allowWrite = parentIsNil;
+							}
 						}
 
 						// write attribute

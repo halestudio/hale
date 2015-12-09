@@ -40,6 +40,7 @@ public class GmlWriterSettingsPage extends
 
 	private Button prettyPrint;
 	private Button simplify;
+	private Button nilReason;
 
 	/**
 	 * Default constructor
@@ -56,6 +57,8 @@ public class GmlWriterSettingsPage extends
 		provider.setPrettyPrint(prettyPrint.getSelection());
 		provider.setParameter(StreamGmlWriter.PARAM_SIMPLIFY_GEOMETRY,
 				Value.of(simplify.getSelection()));
+		provider.setParameter(StreamGmlWriter.PARAM_OMIT_NIL_REASON,
+				Value.of(nilReason.getSelection()));
 		return true;
 	}
 
@@ -85,6 +88,16 @@ public class GmlWriterSettingsPage extends
 		simplify.setSelection(true);
 		Label desc = new Label(geom, SWT.NONE);
 		desc.setText("(for example for a MultiPolygon with only one Polygon use only the contained Polygon)");
+
+		Group nil = new Group(page, SWT.NONE);
+		nil.setLayout(new GridLayout(1, false));
+		nil.setText("nilReason");
+		groupData.applyTo(nil);
+
+		nilReason = new Button(nil, SWT.CHECK);
+		nilReason.setText("Omit nilReason attributes for elements that are not nil");
+		// default
+		nilReason.setSelection(true);
 
 		setPageComplete(true);
 	}
