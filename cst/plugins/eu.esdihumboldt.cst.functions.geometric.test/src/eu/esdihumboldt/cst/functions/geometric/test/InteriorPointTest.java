@@ -17,49 +17,185 @@ package eu.esdihumboldt.cst.functions.geometric.test;
 
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Ignore;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import org.apache.batik.dom.GenericDOMImplementation;
+import org.apache.batik.svggen.SVGGraphics2D;
 import org.junit.Test;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
-import eu.esdihumboldt.cst.functions.geometric.Centroid;
+import eu.esdihumboldt.cst.functions.geometric.interiorpoint.InteriorPoint;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 
 /**
- * Tests checking if a calculated centroid is inside the original area.
+ * Tests checking if a calculated point is inside the original area.
  * 
  * Test polygons created using {@link "http://codepen.io/stempler/full/PPrjMW/"}
  * .
  * 
  * @author Simon Templer
  */
-@Ignore
-public class CentroidWithinTest {
+public class InteriorPointTest {
 
 	private final GeometryFactory factory = new GeometryFactory();
 
 //	private static final Polygon XXX = factory.createPolygon(...);
 
+	// create test images in temp folder
+	private static final boolean GEN_IMAGES = true;
+	private static final int MAX_SIZE = 1000;
+	private static final int POINT_SIZE = 10;
+
 	/**
-	 * Do the centroid calculation for a polygon.
+	 * Do the interior point calculation for a polygon.
 	 * 
-	 * @param polygon the geometry
-	 * @return the centroid point
+	 * @param geometry the geometry
+	 * @return the interior point
 	 * @throws Exception if an error occurs
 	 */
-	protected Point calculateCentroid(Polygon polygon) throws Exception {
-		GeometryProperty<?> prop = Centroid.calculateCentroid(polygon);
+	protected Point calculatePoint(MultiPolygon geometry) throws Exception {
+		GeometryProperty<?> prop = InteriorPoint.calculateInteriorPoint(geometry);
 		return (Point) prop.getGeometry();
 	}
 
 	@SuppressWarnings("javadoc")
-	protected void testCentroidCovered(Polygon polygon) throws Exception {
-		Point centroid = calculateCentroid(polygon);
-		assertTrue("Centroid is not contained in the polygon", centroid.within(polygon));
+	protected void testPointWithin(Polygon geometry) throws Exception {
+		testPointWithin(factory.createMultiPolygon(new Polygon[] { geometry }));
+	}
+
+	@SuppressWarnings("javadoc")
+	protected void testPointWithin(MultiPolygon geometry) throws Exception {
+		Point point = calculatePoint(geometry);
+
+		if (GEN_IMAGES) {
+			SVGGraphics2D g = createSVGGraphics();
+			Path file = File.createTempFile("pointwithin", ".svg").toPath();
+
+			Envelope envelope = geometry.getEnvelopeInternal();
+			int height;
+			int width;
+			double factor;
+			if (envelope.getHeight() > envelope.getWidth()) {
+				height = MAX_SIZE;
+				width = (int) Math.ceil(height * envelope.getWidth() / envelope.getHeight());
+				factor = height / envelope.getHeight();
+			}
+			else {
+				width = MAX_SIZE;
+				height = (int) Math.ceil(width * envelope.getHeight() / envelope.getWidth());
+				factor = width / envelope.getWidth();
+			}
+			double minX = envelope.getMinX();
+			double minY = envelope.getMinY();
+
+			// draw polygon
+			g.setColor(Color.BLACK);
+			g.setStroke(new BasicStroke(2.0f));
+			for (int i = 0; i < geometry.getNumGeometries(); i++) {
+				Polygon polygon = (Polygon) geometry.getGeometryN(i);
+				drawPolygon(g, polygon, minX, minY, factor);
+			}
+
+			int pointSize = POINT_SIZE;
+
+			// draw centroid as reference
+			Point centroid = geometry.getCentroid();
+			g.setColor(Color.BLUE);
+			g.fillOval((int) Math.round((centroid.getCoordinate().x - minX) * factor),
+					(int) Math.round((centroid.getCoordinate().y - minY) * factor), pointSize,
+					pointSize);
+
+			// draw point
+			g.setColor(Color.RED);
+			g.fillOval((int) Math.round((point.getCoordinate().x - minX) * factor),
+					(int) Math.round((point.getCoordinate().y - minY) * factor), pointSize,
+					pointSize);
+
+			writeSVG(g, file);
+			System.out.println("Test graphic written to " + file);
+		}
+
+		assertTrue("Point is not contained in the polygon", point.within(geometry));
+	}
+
+	private void drawPolygon(SVGGraphics2D g, Polygon geometry, double minX, double minY,
+			double factor) {
+		// exterior
+		Coordinate[] coordinates = geometry.getExteriorRing().getCoordinates();
+		java.awt.Polygon outerPolygon = createPolygon(coordinates, minX, minY, factor);
+
+		if (geometry.getNumInteriorRing() > 0) {
+			// polygon has interior geometries
+
+			java.awt.geom.Area drawArea = new java.awt.geom.Area(outerPolygon);
+
+			// interior
+			for (int i = 0; i < geometry.getNumInteriorRing(); i++) {
+				LineString interior = geometry.getInteriorRingN(i);
+				java.awt.Polygon innerPolygon = createPolygon(interior.getCoordinates(), minX,
+						minY, factor);
+				drawArea.subtract(new java.awt.geom.Area(innerPolygon));
+			}
+
+//			g.fill(drawArea);
+			g.draw(drawArea);
+		}
+		else {
+			// polygon has no interior
+			// use polygon instead of Area for painting, as painting small
+			// Areas sometimes produces strange results (some are not
+			// visible)
+//			g.fill(outerPolygon);
+			g.draw(outerPolygon);
+		}
+	}
+
+	private java.awt.Polygon createPolygon(Coordinate[] coordinates, double minX, double minY,
+			double factor) {
+		java.awt.Polygon result = new java.awt.Polygon();
+		for (Coordinate coord : coordinates) {
+			result.addPoint((int) Math.round((coord.x - minX) * factor),
+					(int) Math.round((coord.y - minY) * factor));
+		}
+		return result;
+	}
+
+	private SVGGraphics2D createSVGGraphics() {
+		// Get a DOMImplementation.
+		DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
+
+		// Create an instance of org.w3c.dom.Document.
+		String svgNS = "http://www.w3.org/2000/svg";
+		Document document = domImpl.createDocument(svgNS, "svg", null);
+
+		// Create an instance of the SVG Generator.
+		return new SVGGraphics2D(document);
+	}
+
+	private void writeSVG(SVGGraphics2D svg, Path file) throws IOException {
+		// Finally, stream out SVG to the standard output using
+		// UTF-8 encoding.
+		boolean useCSS = true; // we want to use CSS style attributes
+		try (BufferedWriter writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
+			svg.stream(writer, useCSS);
+		}
 	}
 
 	/**
@@ -73,7 +209,7 @@ public class CentroidWithinTest {
 				new Coordinate(49.87401, 8.65491), new Coordinate(49.87318, 8.65606),
 				new Coordinate(49.87297, 8.6545), new Coordinate(49.87401, 8.65491) });
 		Polygon geom = factory.createPolygon(outer);
-		testCentroidCovered(geom);
+		testPointWithin(geom);
 	}
 
 	/**
@@ -90,7 +226,7 @@ public class CentroidWithinTest {
 				new Coordinate(49.87374, 8.65501), new Coordinate(49.87327, 8.65566),
 				new Coordinate(49.87313, 8.65478), new Coordinate(49.87374, 8.65501) });
 		Polygon geom = factory.createPolygon(outer, new LinearRing[] { inner });
-		testCentroidCovered(geom);
+		testPointWithin(geom);
 	}
 
 	/**
@@ -109,7 +245,7 @@ public class CentroidWithinTest {
 				new Coordinate(49.87371, 8.65497), new Coordinate(49.87376, 8.65444),
 				new Coordinate(49.87385, 8.6545), new Coordinate(49.87377, 8.65508) });
 		Polygon geom = factory.createPolygon(outer);
-		testCentroidCovered(geom);
+		testPointWithin(geom);
 	}
 
 	/**
@@ -141,7 +277,7 @@ public class CentroidWithinTest {
 				new Coordinate(49.87358, 8.6541), new Coordinate(49.87377, 8.65413),
 				new Coordinate(49.87385, 8.6545), new Coordinate(49.87377, 8.65508) });
 		Polygon geom = factory.createPolygon(outer);
-		testCentroidCovered(geom);
+		testPointWithin(geom);
 	}
 
 	/**
@@ -169,7 +305,7 @@ public class CentroidWithinTest {
 				new Coordinate(49.87338, 8.65723), new Coordinate(49.8734, 8.65701),
 				new Coordinate(49.8736, 8.65698), new Coordinate(49.87367, 8.65714) });
 		Polygon geom = factory.createPolygon(outer);
-		testCentroidCovered(geom);
+		testPointWithin(geom);
 	}
 
 	/**
@@ -188,7 +324,7 @@ public class CentroidWithinTest {
 				new Coordinate(49.87411, 8.64877), new Coordinate(49.87514, 8.64844),
 				new Coordinate(49.87517, 8.64862) });
 		Polygon geom = factory.createPolygon(outer);
-		testCentroidCovered(geom);
+		testPointWithin(geom);
 	}
 
 	/**
@@ -211,7 +347,7 @@ public class CentroidWithinTest {
 				new Coordinate(49.8746, 8.64924), new Coordinate(49.87454, 8.64887),
 				new Coordinate(49.87478, 8.6488) });
 		Polygon geom = factory.createPolygon(outer, new LinearRing[] { inner });
-		testCentroidCovered(geom);
+		testPointWithin(geom);
 	}
 
 	/**
@@ -231,7 +367,7 @@ public class CentroidWithinTest {
 				new Coordinate(49.87468, 8.65265), new Coordinate(49.87479, 8.65261),
 				new Coordinate(49.87494, 8.65267) });
 		Polygon geom = factory.createPolygon(outer);
-		testCentroidCovered(geom);
+		testPointWithin(geom);
 	}
 
 	/**
@@ -259,7 +395,7 @@ public class CentroidWithinTest {
 				new Coordinate(49.87258, 8.65483), new Coordinate(49.87267, 8.65475),
 				new Coordinate(49.87274, 8.6547) });
 		Polygon geom = factory.createPolygon(outer);
-		testCentroidCovered(geom);
+		testPointWithin(geom);
 	}
 
 	/**
@@ -295,7 +431,7 @@ public class CentroidWithinTest {
 				new Coordinate(49.87238, 8.65539), new Coordinate(49.87243, 8.65539),
 				new Coordinate(49.87245, 8.65541), new Coordinate(49.87246, 8.65545) });
 		Polygon geom = factory.createPolygon(outer, new LinearRing[] { inner });
-		testCentroidCovered(geom);
+		testPointWithin(geom);
 	}
 
 	/**
@@ -314,7 +450,7 @@ public class CentroidWithinTest {
 				new Coordinate(49.87583, 8.65489), new Coordinate(49.87448, 8.65505),
 				new Coordinate(49.87359, 8.65558) });
 		Polygon geom = factory.createPolygon(outer);
-		testCentroidCovered(geom);
+		testPointWithin(geom);
 	}
 
 	/**
@@ -333,7 +469,29 @@ public class CentroidWithinTest {
 				new Coordinate(49.87583, 8.65433), new Coordinate(49.87469, 8.65438),
 				new Coordinate(49.87343, 8.65491) });
 		Polygon geom = factory.createPolygon(outer);
-		testCentroidCovered(geom);
+		testPointWithin(geom);
+	}
+
+	/**
+	 * Test with a multi-polygon.
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testMulti1() throws Exception {
+		LinearRing outer1 = factory.createLinearRing(new Coordinate[] {
+				new Coordinate(49.87585, 8.64984), new Coordinate(49.87597, 8.65059),
+				new Coordinate(49.87557, 8.65071), new Coordinate(49.87545, 8.64993),
+				new Coordinate(49.87585, 8.64984) });
+		Polygon poly1 = factory.createPolygon(outer1);
+
+		LinearRing outer2 = factory.createLinearRing(new Coordinate[] {
+				new Coordinate(49.87599, 8.6507), new Coordinate(49.8761, 8.65147),
+				new Coordinate(49.87568, 8.6516), new Coordinate(49.87558, 8.65081),
+				new Coordinate(49.87599, 8.6507) });
+		Polygon poly2 = factory.createPolygon(outer2);
+
+		testPointWithin(factory.createMultiPolygon(new Polygon[] { poly1, poly2 }));
 	}
 
 }

@@ -20,6 +20,7 @@ import javax.annotation.Nullable
 import com.vividsolutions.jts.geom.Geometry
 
 import eu.esdihumboldt.cst.functions.geometric.aggregate.AggregateTransformation
+import eu.esdihumboldt.cst.functions.geometric.interiorpoint.InteriorPoint
 import eu.esdihumboldt.cst.functions.groovy.helper.spec.*
 import eu.esdihumboldt.cst.functions.groovy.helper.spec.impl.HelperFunctionArgument
 import eu.esdihumboldt.cst.functions.groovy.helper.spec.impl.HelperFunctionSpecification
@@ -65,6 +66,33 @@ class GeometryHelperFunctions {
 			// XXX what should the behavior be?
 			return null;
 		}
+
+		if (!result.geometry || result.geometry.isEmpty()) {
+			return null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * Specification for the interior point function
+	 */
+	public static final Specification _interiorPoint_spec = SpecBuilder.newSpec( //
+	description: 'Computes an interior point of a geometry (up to 2D). An interior point is guaranteed to lie in the interior of the geometry, if it is possible to calculate such a point exactly. Otherwise, the point may lie on the boundary of the geometry  (e.g. if the geometry is a line).',
+	result: 'A point geometry that lies within (or, if this is not possible, on the boundary) of the given geometry (wrapped in a GeometryProperty) or null.') { //
+		geometry(GEOM_HOLDER_DESC) }
+
+	/**
+	 * Calculate an interior point of a given geometry.
+	 *
+	 * @param geometryHolder the {@link Geometry}, {@link GeometryProperty} or
+	 *            {@link Instance} holding a geometry
+	 * @return an interior point of the geometry or <code>null</code>
+	 */
+	@CompileStatic
+	@Nullable
+	static GeometryProperty<? extends Geometry> _interiorPoint(def geometryHolder) {
+		GeometryProperty<?> result = InteriorPoint.calculateInteriorPoint(geometryHolder);
 
 		if (!result.geometry || result.geometry.isEmpty()) {
 			return null;
