@@ -1,4 +1,4 @@
-package eu.esdihumboldt.cst.functions.geometric;
+package eu.esdihumboldt.cst.functions.geometric.test.reprojectgeometry;
 
 /**
  * Test data configurations for geometry transformation tests.

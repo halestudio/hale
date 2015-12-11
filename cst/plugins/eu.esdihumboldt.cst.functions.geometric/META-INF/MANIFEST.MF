@@ -41,5 +41,6 @@ Import-Package: com.google.common.base;version="17.0.0",
  org.opengis.referencing.crs,
  org.springframework.core.convert
 Export-Package: eu.esdihumboldt.cst.functions.geometric,
- eu.esdihumboldt.cst.functions.geometric.extent
+ eu.esdihumboldt.cst.functions.geometric.extent,
+ eu.esdihumboldt.cst.functions.geometric.interiorpoint
 Bundle-Vendor: data harmonisation panel

@@ -1,4 +1,4 @@
-package eu.esdihumboldt.cst.functions.geometric;
+package eu.esdihumboldt.cst.functions.geometric.test.reprojectgeometry;
 
 import java.net.URI;
 import java.net.URISyntaxException;
