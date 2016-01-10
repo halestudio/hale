@@ -28,6 +28,7 @@ import java.util.Set;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
+import org.apache.http.auth.NTCredentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.fluent.Executor;
@@ -128,9 +129,23 @@ public class ProxyUtil {
 			if (useProxyAuth) {
 				// set the proxy credentials
 				CredentialsProvider credsProvider = new BasicCredentialsProvider();
+
+				Credentials credentials;
+				int sepIndex = user.indexOf('\\');
+				if (sepIndex > 0 && sepIndex + 1 < user.length()) {
+					// assume this is DOMAIN \ user for NTLM authentication
+					String userName = user.substring(sepIndex + 1);
+					String domain = user.substring(0, sepIndex);
+					String workstation = null;
+					credentials = new NTCredentials(userName, password, workstation, domain);
+				}
+				else {
+					credentials = new UsernamePasswordCredentials(user, password);
+				}
+
 				credsProvider.setCredentials(
 						new AuthScope(proxyAddress.getHostName(), proxyAddress.getPort()),
-						new UsernamePasswordCredentials(user, password));
+						credentials);
 				builder = builder.setDefaultCredentialsProvider(credsProvider)
 						.setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy());
 			}
