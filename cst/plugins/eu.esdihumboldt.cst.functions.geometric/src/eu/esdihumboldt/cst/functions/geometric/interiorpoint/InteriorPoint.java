@@ -75,8 +75,11 @@ public class InteriorPoint extends AbstractSingleTargetPropertyTransformation<Tr
 	 * @param geometryHolder {@link Geometry}, {@link GeometryProperty} or
 	 *            {@link Instance} holding a geometry
 	 * @return an interior point of the geometry
+	 * @throws TransformationException if the interior point could not be
+	 *             calculated
 	 */
-	public static GeometryProperty<?> calculateInteriorPoint(Object geometryHolder) {
+	public static GeometryProperty<?> calculateInteriorPoint(Object geometryHolder)
+			throws TransformationException {
 		// depth first traverser that on cancel continues traversal but w/o the
 		// children of the current object
 		InstanceTraverser traverser = new DepthFirstInstanceTraverser(true);
@@ -105,7 +108,13 @@ public class InteriorPoint extends AbstractSingleTargetPropertyTransformation<Tr
 			} catch (TopologyException e) {
 				// calculate the point for a geometry with a small buffer to
 				// avoid error with polygons that have overlapping lines
-				result = geom.buffer(0.001).getInteriorPoint();
+				result = geom.buffer(0.000001).getInteriorPoint();
+				if (!result.within(geom)) {
+					// fail if the point does not actually lie within the
+					// geometry
+					throw new TransformationException(
+							"Could not determine interior point for geometry");
+				}
 			}
 		}
 		else {
