@@ -293,9 +293,37 @@ public class GmlInstanceCollection implements InstanceCollection {
 		 * @return the type definition or <code>null</code>
 		 */
 		private TypeDefinition findTypeByName(QName name) {
-			return sourceSchema.getType(name);
+			TypeDefinition result = sourceSchema.getType(name);
 
-			// TODO support ignoreNamespaces?
+			if (result == null && ignoreNamespaces) {
+				// also allow a local name match
+
+				// first try mapping relevant types
+				for (TypeDefinition type : sourceSchema.getMappingRelevantTypes()) {
+					if (type.getName().getLocalPart().equals(name.getLocalPart())) {
+						result = type;
+						log.info(MessageFormat.format(
+								"Using type with differing namespace - {0} replaced with {1}",
+								name.toString(), type.getName().toString()));
+						break;
+					}
+				}
+
+				// then try all types
+				if (result == null) {
+					for (TypeDefinition type : sourceSchema.getTypes()) {
+						if (type.getName().getLocalPart().equals(name.getLocalPart())) {
+							result = type;
+							log.info(MessageFormat.format(
+									"Using type with differing namespace - {0} replaced with {1}",
+									name.toString(), type.getName().toString()));
+							break;
+						}
+					}
+				}
+			}
+
+			return result;
 		}
 
 		private TypeDefinition findType(TypeDefinition parentType, QName elementName) {
@@ -310,14 +338,27 @@ public class GmlInstanceCollection implements InstanceCollection {
 			}
 
 			// try children nested in groups
-			for (PropertyDefinition property : DefinitionUtil.getAllProperties(parentType)) {
+			Collection<? extends PropertyDefinition> allProperties = DefinitionUtil
+					.getAllProperties(parentType);
+			for (PropertyDefinition property : allProperties) {
 				if (!property.getConstraint(XmlAttributeFlag.class).isEnabled()
 						&& property.getName().equals(elementName)) {
 					return property.getPropertyType();
 				}
 			}
 
-			// TODO search with ignoreNamespaces?
+			if (ignoreNamespaces) {
+				// also allow a local name match
+				for (PropertyDefinition property : allProperties) {
+					if (!property.getConstraint(XmlAttributeFlag.class).isEnabled()
+							&& property.getName().getLocalPart().equals(elementName.getLocalPart())) {
+						log.debug(MessageFormat
+								.format("Descending property with differing namespace - {0} replaced with {1}",
+										elementName.toString(), property.getName().toString()));
+						return property.getPropertyType();
+					}
+				}
+			}
 
 			return null;
 		}
