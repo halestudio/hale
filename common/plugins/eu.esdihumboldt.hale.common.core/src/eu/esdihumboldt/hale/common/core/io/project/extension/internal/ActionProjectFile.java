@@ -157,7 +157,9 @@ public class ActionProjectFile implements ProjectFile {
 			}
 
 			if (provider == null) {
-				throw new IllegalStateException("No provider for loading project file found");
+				throw new IllegalStateException(
+						"No provider for loading project file found (Action ID " + action.getId()
+								+ ")");
 			}
 
 			// find advisor
