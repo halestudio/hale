@@ -205,15 +205,21 @@ public final class ContentTypeCatalog {
 		IContentDescriber describer = type.getDescriber();
 		try {
 			if (contents.isText()) {
-				if (describer instanceof XMLRootElementContentDescriber2) {
-					return ((XMLRootElementContentDescriber2) describer).describe((Reader) contents, description, properties);
+				if (describer instanceof eu.esdihumboldt.hale.util.nonosgi.contenttype.describer.XMLRootElementContentDescriber2) {
+					return ((eu.esdihumboldt.hale.util.nonosgi.contenttype.describer.XMLRootElementContentDescriber2) describer).describe((Reader) contents, description, properties);
+				} else if (describer instanceof XMLRootElementContentDescriber2) {
+					// replace with new instance that works also if not in OSGi
+					return (new eu.esdihumboldt.hale.util.nonosgi.contenttype.describer.XMLRootElementContentDescriber2().describe((Reader) contents, description, properties));
 				} else if (describer instanceof XMLRootElementContentDescriber) {
 					return ((XMLRootElementContentDescriber) describer).describe((Reader) contents, description, properties);
 				}
 				return ((ITextContentDescriber) describer).describe((Reader) contents, description);
 			} else {
-				if (describer instanceof XMLRootElementContentDescriber2) {
-					return ((XMLRootElementContentDescriber2) describer).describe((InputStream) contents, description, properties);
+				if (describer instanceof eu.esdihumboldt.hale.util.nonosgi.contenttype.describer.XMLRootElementContentDescriber2) {
+					return ((eu.esdihumboldt.hale.util.nonosgi.contenttype.describer.XMLRootElementContentDescriber2) describer).describe((InputStream) contents, description, properties);
+				} else if (describer instanceof XMLRootElementContentDescriber2) {
+					// replace with new instance that works also if not in OSGi
+					return (new eu.esdihumboldt.hale.util.nonosgi.contenttype.describer.XMLRootElementContentDescriber2().describe((InputStream) contents, description, properties));
 				} else if (describer instanceof XMLRootElementContentDescriber) {
 					return ((XMLRootElementContentDescriber) describer).describe((InputStream) contents, description, properties);
 				}
