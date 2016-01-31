@@ -17,7 +17,6 @@ package eu.esdihumboldt.hale.ui.codelist.inspire;
 
 import java.io.InputStream;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -27,6 +26,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 import eu.esdihumboldt.hale.common.codelist.io.CodeListReader;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderExtension;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
@@ -114,7 +114,7 @@ public class RegistrySource extends AbstractSource<CodeListReader> {
 
 		// initial configuration (fixed values)
 		getConfiguration().setContentType(
-				Platform.getContentTypeManager().getContentType(
+				HalePlatform.getContentTypeManager().getContentType(
 						INSPIRECodeListConstants.CONTENT_TYPE_ID));
 		getConfiguration().setProviderFactory(
 				IOProviderExtension.getInstance().getFactory(INSPIRECodeListConstants.PROVIDER_ID));

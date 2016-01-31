@@ -17,9 +17,9 @@ package eu.esdihumboldt.hale.common.core.io.project.model;
 
 import java.net.URI;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.Value;
 
@@ -86,7 +86,7 @@ public class IOConfigurationResource implements Resource {
 	public IContentType getContentType() {
 		Value ctValue = config.getProviderConfiguration().get(ImportProvider.PARAM_CONTENT_TYPE);
 		if (ctValue != null) {
-			return Platform.getContentTypeManager().getContentType(ctValue.as(String.class));
+			return HalePlatform.getContentTypeManager().getContentType(ctValue.as(String.class));
 		}
 		return null;
 	}

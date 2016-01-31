@@ -22,7 +22,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 
 import com.google.common.collect.HashMultimap;
@@ -39,6 +38,7 @@ import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.impl.NullProgressIndicator;
@@ -180,7 +180,7 @@ public class GenerateDuplicates implements BGISAppConstants {
 		System.out.println("Writing alignment to " + context.getOut().getAbsolutePath());
 
 		// create alignment writer
-		IContentType contentType = Platform.getContentTypeManager().getContentType(
+		IContentType contentType = HalePlatform.getContentTypeManager().getContentType(
 				ALIGNMENT_CONTENT_TYPE);
 		IOProviderDescriptor factory = HaleIO.findIOProviderFactory(AlignmentWriter.class,
 				contentType, null);
