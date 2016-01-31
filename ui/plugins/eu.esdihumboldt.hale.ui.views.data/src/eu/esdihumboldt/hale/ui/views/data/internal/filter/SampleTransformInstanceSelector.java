@@ -47,11 +47,11 @@ import org.eclipse.ui.PlatformUI;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReport;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
 import eu.esdihumboldt.hale.common.align.transformation.service.impl.DefaultInstanceSink;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.ProgressMonitorIndicator;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -196,7 +196,7 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 								.getWorkbench().getService(InstanceSampleService.class);
 						final AlignmentService alService = (AlignmentService) PlatformUI
 								.getWorkbench().getService(AlignmentService.class);
-						final TransformationService cst = OsgiUtils
+						final TransformationService cst = HalePlatform
 								.getService(TransformationService.class);
 
 						// get reference instances

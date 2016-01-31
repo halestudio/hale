@@ -529,7 +529,7 @@ public abstract class HaleIO {
 //			String prefix) {
 //		SortedSet<String> exts = new TreeSet<String>();
 //		
-//		ContentTypeService cts = OsgiUtils.getService(ContentTypeService.class);
+//		ContentTypeService cts = HalePlatform.getService(ContentTypeService.class);
 //		String[] typeExts = cts.getFileExtensions(contentType);
 //		if (typeExts != null) {
 //			for (String typeExt : typeExts) {
@@ -562,7 +562,7 @@ public abstract class HaleIO {
 //			String prefix) {
 //		SortedSet<String> exts = new TreeSet<String>();
 //		
-//		ContentTypeService cts = OsgiUtils.getService(ContentTypeService.class);
+//		ContentTypeService cts = HalePlatform.getService(ContentTypeService.class);
 //		for (ContentType contentType : contentTypes) {
 //			String[] typeExts = cts.getFileExtensions(contentType);
 //			if (typeExts != null) {

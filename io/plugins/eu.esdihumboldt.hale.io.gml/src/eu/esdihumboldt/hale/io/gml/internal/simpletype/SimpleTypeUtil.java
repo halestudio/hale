@@ -30,7 +30,7 @@ import org.apache.xmlbeans.XmlTime;
 import org.springframework.core.convert.ConversionException;
 import org.springframework.core.convert.ConversionService;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.ElementType;
@@ -74,7 +74,7 @@ public class SimpleTypeUtil {
 			return null;
 		}
 
-		ConversionService conversionService = OsgiUtils.getService(ConversionService.class);
+		ConversionService conversionService = HalePlatform.getService(ConversionService.class);
 		Class<? extends XmlAnySimpleType> simpleType = getSimpleType(type);
 
 		if (simpleType != null) {
@@ -149,7 +149,7 @@ public class SimpleTypeUtil {
 
 	private static Object convertFromXml(String value,
 			Class<? extends XmlAnySimpleType> simpleType, Class<?> binding) {
-		ConversionService conversionService = OsgiUtils.getService(ConversionService.class);
+		ConversionService conversionService = HalePlatform.getService(ConversionService.class);
 
 		// try using simple type for conversion
 		if (simpleType != null && conversionService.canConvert(String.class, simpleType)) {

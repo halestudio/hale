@@ -15,13 +15,12 @@
 
 package eu.esdihumboldt.cst.functions.groovy.helper;
 
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import groovy.lang.GroovyObjectSupport;
 
 import java.text.MessageFormat;
 
 import org.codehaus.groovy.runtime.InvokerHelper;
-
-import de.fhg.igd.osgi.util.OsgiUtils;
 
 /**
  * Accessor for Groovy script helper functions and categories.
@@ -41,7 +40,7 @@ public class HelperFunctions extends GroovyObjectSupport {
 	 * @return the helper functions accessor
 	 */
 	public static HelperFunctions createDefault() {
-		HelperFunctionsService functions = OsgiUtils.getService(HelperFunctionsService.class);
+		HelperFunctionsService functions = HalePlatform.getService(HelperFunctionsService.class);
 		return new HelperFunctions(functions, Category.ROOT);
 	}
 

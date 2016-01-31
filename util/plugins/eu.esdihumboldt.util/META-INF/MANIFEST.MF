@@ -25,6 +25,7 @@ Import-Package: com.google.common.base;version="9.0.0",
  org.osgi.framework;version="1.5.0",
  org.slf4j;version="1.5.11",
  org.springframework.core.convert,
+ org.springframework.core.convert.support;version="3.1.1.RELEASE",
  org.springframework.util
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.util.internal.Activator

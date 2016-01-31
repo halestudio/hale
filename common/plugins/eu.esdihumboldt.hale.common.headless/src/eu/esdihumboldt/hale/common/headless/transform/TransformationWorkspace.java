@@ -138,7 +138,7 @@ public class TransformationWorkspace {
 	 *             exist
 	 */
 	protected TransformationWorkspace(final String workspaceId, ReadableDuration leaseDuration) {
-		workspaces = OsgiUtils.getService(WorkspaceService.class);
+		workspaces = HalePlatform.getService(WorkspaceService.class);
 
 		if (workspaces == null) {
 			throw new IllegalStateException("WorkspaceService not available through OSGi");
@@ -181,7 +181,7 @@ public class TransformationWorkspace {
 	 */
 	public ListenableFuture<Boolean> transform(String envId, List<InstanceReader> sources,
 			IOConfiguration target) throws Exception {
-		EnvironmentService environments = OsgiUtils.getService(EnvironmentService.class);
+		EnvironmentService environments = HalePlatform.getService(EnvironmentService.class);
 		if (environments == null) {
 			throw new IllegalStateException("WorkspaceService not available through OSGi");
 		}

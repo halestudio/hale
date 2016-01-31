@@ -96,7 +96,7 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		File baseFile = new File(tempDir, "project.halex");
 
 		// mark the temporary directory for clean-up if the project is closed
-		CleanupService clean = OsgiUtils.getService(CleanupService.class);
+		CleanupService clean = HalePlatform.getService(CleanupService.class);
 		clean.addTemporaryFiles(CleanupContext.PROJECT, tempDir);
 
 		LocatableOutputSupplier<OutputStream> out = new FileIOSupplier(baseFile);

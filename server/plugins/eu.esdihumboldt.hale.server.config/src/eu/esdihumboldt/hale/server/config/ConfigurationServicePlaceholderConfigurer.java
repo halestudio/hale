@@ -24,10 +24,10 @@ import org.springframework.util.PropertyPlaceholderHelper;
 import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
 import org.springframework.util.StringValueResolver;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 
 /**
  * Placeholder configurer backed by the {@link IConfigurationService} provided
@@ -53,7 +53,7 @@ public class ConfigurationServicePlaceholderConfigurer extends PlaceholderConfig
 
 				@Override
 				public String resolvePlaceholder(String placeholderName) {
-					IConfigurationService cs = OsgiUtils.getService(IConfigurationService.class);
+					IConfigurationService cs = HalePlatform.getService(IConfigurationService.class);
 					if (cs != null) {
 						return cs.get(placeholderName);
 					}

@@ -11,8 +11,9 @@ Import-Package: de.fhg.igd.eclipse.ui.util.extension,
  de.fhg.igd.eclipse.ui.util.extension.selective,
  de.fhg.igd.eclipse.util.extension,
  de.fhg.igd.eclipse.util.extension.selective,
- de.fhg.igd.slf4jplus,
  de.fhg.igd.osgi.util;version="1.0.0",
+ de.fhg.igd.slf4jplus,
+ eu.esdihumboldt.hale.common.core,
  org.slf4j;version="1.5.11"
 Service-Component: OSGI-INF/ttreehooks.xml
 Bundle-ActivationPolicy: lazy
