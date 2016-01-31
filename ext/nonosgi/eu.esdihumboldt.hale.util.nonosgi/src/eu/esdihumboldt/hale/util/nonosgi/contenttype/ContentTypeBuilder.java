@@ -23,6 +23,8 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferenceNodeVisitor;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.service.prefs.BackingStoreException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class is a sidekick for ContentTypeManager that provides mechanisms for 
@@ -31,6 +33,9 @@ import org.osgi.service.prefs.BackingStoreException;
  */
 @SuppressWarnings({"restriction", "deprecation", "rawtypes"})
 public class ContentTypeBuilder {
+	
+	private static final Logger log = LoggerFactory.getLogger(ContentTypeBuilder.class);
+	
 	public static final String PT_CONTENTTYPES = "contentTypes"; //$NON-NLS-1$	
 	private ContentTypeCatalog catalog;
 
@@ -118,7 +123,7 @@ public class ContentTypeBuilder {
 				}
 			});
 		} catch (BackingStoreException bse) {
-			ContentType.log(ContentMessages.content_errorLoadingSettings, bse);
+			log.error(ContentMessages.content_errorLoadingSettings, bse);
 		}
 	}
 

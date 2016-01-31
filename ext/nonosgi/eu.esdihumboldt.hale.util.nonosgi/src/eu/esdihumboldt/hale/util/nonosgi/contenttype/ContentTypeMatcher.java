@@ -18,12 +18,16 @@ import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.content.*;
 import org.eclipse.core.runtime.preferences.*;
 import org.osgi.service.prefs.BackingStoreException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @since 3.1
  */
 @SuppressWarnings({"restriction", "rawtypes"})
 public class ContentTypeMatcher implements IContentTypeMatcher {
+	
+	private static final Logger log = LoggerFactory.getLogger(ContentTypeMatcher.class);
 
 	private IScopeContext context;
 	private IContentTypeManager.ISelectionPolicy policy;
@@ -130,7 +134,7 @@ public class ContentTypeMatcher implements IContentTypeMatcher {
 
 			});
 		} catch (BackingStoreException bse) {
-			ContentType.log(ContentMessages.content_errorLoadingSettings, bse);
+			log.error(ContentMessages.content_errorLoadingSettings, bse);
 		}
 		return result == null ? Collections.EMPTY_SET : result;
 	}

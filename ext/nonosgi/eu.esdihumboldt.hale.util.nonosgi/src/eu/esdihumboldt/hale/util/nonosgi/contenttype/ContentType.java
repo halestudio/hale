@@ -16,19 +16,22 @@ import java.util.*;
 import org.eclipse.core.internal.content.ContentMessages;
 import org.eclipse.core.internal.content.ILazySource;
 import org.eclipse.core.internal.content.Util;
-import org.eclipse.core.internal.runtime.RuntimeLog;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.content.*;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @see IContentType
  */
 @SuppressWarnings({"restriction", "rawtypes", "deprecation"})
 public final class ContentType implements IContentType, IContentTypeInfo {
+	
+	private static final Logger log = LoggerFactory.getLogger(ContentType.class);
 
 	/* A placeholder for missing/invalid binary/text describers. */
 	private class InvalidDescriber implements IContentDescriber, ITextContentDescriber {
@@ -122,12 +125,6 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 	@SuppressWarnings("unused")
 	private static String getValidationString(byte validation) {
 		return validation == STATUS_VALID ? "VALID" : (validation == STATUS_INVALID ? "INVALID" : "UNKNOWN"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-	}
-
-	public static void log(String message, Throwable reason) {
-		// don't log CoreExceptions again
-		IStatus status = new Status(IStatus.ERROR, ContentMessages.OWNER_NAME, 0, message, reason instanceof CoreException ? null : reason);
-		RuntimeLog.log(status);
 	}
 
 	public ContentType(ContentTypeManager manager) {
@@ -501,7 +498,7 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 
 	public IContentDescriber invalidateDescriber(Throwable reason) {
 		String message = NLS.bind(ContentMessages.content_invalidContentDescriber, id);
-		log(message, reason);
+		log.error(message, reason);
 		return (IContentDescriber) (describer = new InvalidDescriber());
 	}
 
