@@ -34,6 +34,8 @@ import eu.esdihumboldt.hale.common.core.service.cleanup.impl.CleanupServiceImpl;
  */
 public class CoreBundle implements BundleActivator {
 
+	private static boolean activated = false;
+
 	private BundleContext context;
 
 	private CleanupServiceImpl cleanupService;
@@ -45,6 +47,7 @@ public class CoreBundle implements BundleActivator {
 	 */
 	@Override
 	public void start(BundleContext context) throws Exception {
+		CoreBundle.activated = true;
 		this.context = context;
 
 		cleanupService = new CleanupServiceImpl();
@@ -62,6 +65,7 @@ public class CoreBundle implements BundleActivator {
 		cleanupService = null;
 
 		this.context = null;
+		CoreBundle.activated = false;
 	}
 
 	/**
@@ -69,6 +73,13 @@ public class CoreBundle implements BundleActivator {
 	 */
 	public BundleContext getContext() {
 		return context;
+	}
+
+	/**
+	 * @return if the application is running in an OSGi context
+	 */
+	public static boolean isOsgi() {
+		return activated;
 	}
 
 }
